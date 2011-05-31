@@ -1,16 +1,24 @@
-Message-ID: <4DE53D52.4040508@ru.mvista.com>
-Date: Tue, 31 May 2011 23:11:14 +0400
-From: Sergei Shtylyov <sshtylyov@mvista.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QRVPh-0001k6-Fa
+	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 20:19:47 +0000
+Received: by fxm14 with SMTP id 14so4423844fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 May 2011 13:19:34 -0700 (PDT)
 MIME-Version: 1.0
-To: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH v6 1/8] MTD: Add integrator-flash feature to physmap
-References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
-	<1305637877-24436-2-git-send-email-marc.zyngier@arm.com>
-In-Reply-To: <1305637877-24436-2-git-send-email-marc.zyngier@arm.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <BANLkTimsTWAcR4HgOoHguDMv9P-Eox=kbg@mail.gmail.com>
+References: <1306360741-12770-1-git-send-email-computersforpeace@gmail.com>
+	<4DDDE19D.9010505@compulab.co.il> <1306387008.2785.138.camel@localhost>
+	<BANLkTimsTWAcR4HgOoHguDMv9P-Eox=kbg@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 31 May 2011 16:19:14 -0400
+Message-ID: <BANLkTik0g56VqYLkTDz9dKiPyhg1HMwZUw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: generalized error messages with __func__
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Igor Grinberg <grinberg@compulab.co.il>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Tue, May 31, 2011 at 14:52, Brian Norris wrote:
+>> On Thu, 2011-05-26 at 08:14 +0300, Igor Grinberg wrote:
+>>> On 05/26/11 00:59, Brian Norris wrote:
+>>> pr_err() will save you from the need to define the log level each time.
+>>> pr_fmt will save you the need to add %s: and __func__.
+>
+> Also, it seems that the second statement is not necessarily true. In
+> fact, in include/linux/printk.h, we default to the following
+> declaration:
+> =C2=A0 =C2=A0 #define pr_fmt(fmt) fmt
+> So it seems that, when we desire to print out the relevant function
+> name, we should manually use __func__ instead of relying on
+> pr_fmt...or should we define our own pr_fmt in include/linux/mtd.h?
 
-Marc Zyngier wrote:
-
-> In the process of moving platforms away from integrator-flash
-> (aka armflash), add to physmap the few features that make
-> armflash unique:
-
-> - optionnal probing for the AFS partition type
-> - init() and exit() methods, used by Integrator to control
->   write access to the various onboard programmable components
-
-> Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-[...]
-
-> diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
-> index bcfd9f7..d37cca0 100644
-> --- a/include/linux/mtd/physmap.h
-> +++ b/include/linux/mtd/physmap.h
-> @@ -22,6 +22,8 @@ struct map_info;
->  
->  struct physmap_flash_data {
->  	unsigned int		width;
-> +	int			(*init)(struct platform_device *);
-> +	void			(*exit)(struct platform_device *);
-
-    How about a declaration for 'struct platform_device' beforehand? This breaks 
-build on other platforms at least...
-
-WBR, Sergei
+while it might run afoul of some people's sense of style, it is
+technically possible.  try something like this:
+#define pr_fmt(fmt) "%s: " fmt, __func__
+-mike
