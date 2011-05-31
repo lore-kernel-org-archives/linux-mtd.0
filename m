@@ -1,19 +1,17 @@
-Received: from [173.214.191.51] (helo=host113.kvchosting.com)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRW9M-0002K0-Rw
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 21:06:53 +0000
-Received: from etomakin by host113.kvchosting.com with local (Exim 4.69)
-	(envelope-from <etomakin@host113.kvchosting.com>) id 1QRW9J-0028oh-Mv
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 16:06:49 -0500
-To: linux-mtd@lists.infradead.org
-Subject: Hello Would You Like To Earn
-From: Sharon.Burns <sharon_burns72@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1QRW9J-0028oh-Mv@host113.kvchosting.com>
-Date: Tue, 31 May 2011 16:06:49 -0500
-Reply-To: sharon_burns72@gmail.com
+Date: Tue, 31 May 2011 22:44:28 +0100
+From: Marc Zyngier <marc.zyngier@arm.com>
+To: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: Re: [PATCH v6 1/8] MTD: Add integrator-flash feature to physmap
+Message-ID: <20110531224428.6636e283@taxman.wild-wind.fr.eu.org>
+In-Reply-To: <4DE53D52.4040508@ru.mvista.com>
+References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
+	<1305637877-24436-2-git-send-email-marc.zyngier@arm.com>
+	<4DE53D52.4040508@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello linux-mtd
+On Tue, 31 May 2011 23:11:14 +0400
+Sergei Shtylyov <sshtylyov@mvista.com> wrote:
 
-Would you like to earn an extra $200 everyday?, for just 45 minutes work? You could quit your job and make double the money at home working for yourself.
+> Hello.
+> 
+> Marc Zyngier wrote:
+> 
+> > In the process of moving platforms away from integrator-flash
+> > (aka armflash), add to physmap the few features that make
+> > armflash unique:
+> 
+> > - optionnal probing for the AFS partition type
+> > - init() and exit() methods, used by Integrator to control
+> >   write access to the various onboard programmable components
+> 
+> > Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> [...]
+> 
+> > diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+> > index bcfd9f7..d37cca0 100644
+> > --- a/include/linux/mtd/physmap.h
+> > +++ b/include/linux/mtd/physmap.h
+> > @@ -22,6 +22,8 @@ struct map_info;
+> >  
+> >  struct physmap_flash_data {
+> >  	unsigned int		width;
+> > +	int			(*init)(struct platform_device *);
+> > +	void			(*exit)(struct platform_device *);
+> 
+>     How about a declaration for 'struct platform_device' beforehand? This breaks 
+> build on other platforms at least...
 
-visit->http:tinyurl.com/3brnlpx
+Sure. Please send a patch.
 
-Regards,
-
-Sharon Burns
-
-Survey Human Resources Dept.
+	M.
+-- 
+I'm the slime oozin' out from your TV set...
