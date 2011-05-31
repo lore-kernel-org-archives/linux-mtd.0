@@ -1,8 +1,10 @@
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/8] clean-up NAND / BBT code, flags
-Date: Tue, 31 May 2011 16:31:19 -0700
-Message-ID: <1306884687-1824-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 1/8] mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
+Date: Tue, 31 May 2011 16:31:20 -0700
+Message-ID: <1306884687-1824-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1306884687-1824-1-git-send-email-computersforpeace@gmail.com>
+References: <1306884687-1824-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -37,68 +39,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+This patch reverts most of:
+    commit 58373ff0afff4cc8ac40608872995f4d87eb72ec
+    mtd: nand: more BB Detection refactoring and dynamic scan options
 
-This patch series handles several issues with NAND chip flags and BBT
-flags, especially those related to the nand_chip.options and
-nand_bbt_descr.options fields. This topic was discussed and reviewed a
-bit on the linux-mtd thread found here:
-    http://lists.infradead.org/pipermail/linux-mtd/2011-April/035146.html
-
-These changes have affected many drivers in relatively small ways, so
-I copied all the maintainers/contributors given by the
-scripts/getmaintainer.pl scripts. FYI, this patch set is based on the
-mtd-2.6.git repository from linux-mtd.
-
-Also, the first patch:
-    mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
-solves the regression issues discussed here:
+According to the discussion at:
     http://lists.infradead.org/pipermail/linux-mtd/2011-May/035696.html
+the NAND_BBT_SCANBYTE1AND6 flag, although technically valid, can break
+some existing ECC layouts that use the 6th byte in the OOB for ECC data.
+Furthermore, we apparently do not need to scan both bytes 1 and 6 in
+the OOB region of the devices under consideration; instead, we only need
+to scan one or the other.
 
-Thanks for the review.
+Thus, the NAND_BBT_SCANBYTE1AND6 flag is at best unnecessary and at
+worst a regression.
 
-Brian
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |   29 +++++------------------------
+ drivers/mtd/nand/nand_bbt.c  |   32 +-------------------------------
+ include/linux/mtd/bbm.h      |    2 --
+ 3 files changed, 6 insertions(+), 57 deletions(-)
 
-Brian Norris (8):
-  mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
-  mtd: nand: separate chip options / bbt_options
-  mtd: nand: consolidate redundant flash-based BBT flags
-  mtd: nand: rename NAND_USE_FLASH_BBT
-  mtd: nand: move NAND_CREATE_EMPTY_BBT flag
-  mtd: nand: rename CREATE_EMPTY bbt flag with proper prefix
-  mtd: nand: renumber the reorganized flags in nand.h / bbm.h
-  mtd: nand: improve comment on NAND_BBT_DYNAMIC_STRUCT
-
- Documentation/DocBook/mtdnand.tmpl             |    5 +--
- arch/arm/mach-davinci/board-da830-evm.c        |    2 +-
- arch/arm/mach-davinci/board-da850-evm.c        |    2 +-
- arch/arm/mach-davinci/board-dm355-evm.c        |    2 +-
- arch/arm/mach-davinci/board-dm355-leopard.c    |    2 +-
- arch/arm/mach-davinci/board-dm365-evm.c        |    2 +-
- arch/arm/mach-davinci/board-dm644x-evm.c       |    2 +-
- arch/arm/mach-davinci/board-mityomapl138.c     |    3 +-
- arch/arm/mach-davinci/board-neuros-osd2.c      |    2 +-
- arch/arm/mach-davinci/board-tnetv107x-evm.c    |    2 +-
- arch/arm/mach-davinci/include/mach/nand.h      |    4 +-
- arch/arm/mach-orion5x/ts78xx-setup.c           |    2 +-
- arch/cris/arch-v32/drivers/mach-a3/nandflash.c |    2 +-
- arch/cris/arch-v32/drivers/mach-fs/nandflash.c |    2 +-
- drivers/mtd/nand/atmel_nand.c                  |    2 +-
- drivers/mtd/nand/autcpu12.c                    |    4 +-
- drivers/mtd/nand/bcm_umi_nand.c                |    2 +-
- drivers/mtd/nand/cafe_nand.c                   |    3 +-
- drivers/mtd/nand/cs553x_nand.c                 |    3 +-
- drivers/mtd/nand/davinci_nand.c                |    4 +-
- drivers/mtd/nand/denali.c                      |    3 +-
- drivers/mtd/nand/diskonchip.c                  |    2 +-
- drivers/mtd/nand/fsl_elbc_nand.c               |    4 +-
- drivers/mtd/nand/mpc5121_nfc.c                 |    3 +-
- drivers/mtd/nand/mxc_nand.c                    |    2 +-
- drivers/mtd/nand/nand_base.c                   |   41 ++++------------
- drivers/mtd/nand/nand_bbt.c                    |   59 ++++++------------------
- drivers/mtd/nand/nandsim.c                     |    4 +-
- drivers/mtd/nand/pasemi_nand.c                 |    3 +-
- drivers/mtd/nand/s3c2410.c                     |    6 ++-
- include/linux/mtd/bbm.h                        |   39 +++++++++++-----
- include/linux/mtd/nand.h                       |   22 +++------
- 32 files changed, 103 insertions(+), 137 deletions(-)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a46e9bb..456fb34 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -410,10 +410,11 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	else {
+ 		nand_get_device(chip, mtd, FL_WRITING);
+ 
+-		/* Write to first two pages and to byte 1 and 6 if necessary.
+-		 * If we write to more than one location, the first error
+-		 * encountered quits the procedure. We write two bytes per
+-		 * location, so we dont have to mess with 16 bit access.
++		/*
++		 * Write to first two pages if necessary. If we write to more
++		 * than one location, the first error encountered quits the
++		 * procedure. We write two bytes per location, so we dont have
++		 * to mess with 16 bit access.
+ 		 */
+ 		do {
+ 			chip->ops.len = chip->ops.ooblen = 2;
+@@ -423,11 +424,6 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ 			ret = nand_do_write_oob(mtd, ofs, &chip->ops);
+ 
+-			if (!ret && (chip->options & NAND_BBT_SCANBYTE1AND6)) {
+-				chip->ops.ooboffs = NAND_SMALL_BADBLOCK_POS
+-					& ~0x01;
+-				ret = nand_do_write_oob(mtd, ofs, &chip->ops);
+-			}
+ 			i++;
+ 			ofs += mtd->writesize;
+ 		} while (!ret && (chip->options & NAND_BBT_SCAN2NDPAGE) &&
+@@ -3131,16 +3127,6 @@ ident_done:
+ 			 *maf_id == NAND_MFR_MICRON))
+ 		chip->options |= NAND_BBT_SCAN2NDPAGE;
+ 
+-	/*
+-	 * Numonyx/ST 2K pages, x8 bus use BOTH byte 1 and 6
+-	 */
+-	if (!(busw & NAND_BUSWIDTH_16) &&
+-			*maf_id == NAND_MFR_STMICRO &&
+-			mtd->writesize == 2048) {
+-		chip->options |= NAND_BBT_SCANBYTE1AND6;
+-		chip->badblockpos = 0;
+-	}
+-
+ 	/* Check for AND chips with 4 page planes */
+ 	if (chip->options & NAND_4PAGE_ARRAY)
+ 		chip->erase_cmd = multi_erase_cmd;
+@@ -3538,11 +3524,6 @@ void nand_release(struct mtd_info *mtd)
+ 	kfree(chip->bbt);
+ 	if (!(chip->options & NAND_OWN_BUFFERS))
+ 		kfree(chip->buffers);
+-
+-	/* Free bad block descriptor memory */
+-	if (chip->badblock_pattern && chip->badblock_pattern->options
+-			& NAND_BBT_DYNAMICSTRUCT)
+-		kfree(chip->badblock_pattern);
+ }
+ EXPORT_SYMBOL_GPL(nand_release);
+ 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index ccbeaa1..5ffb9a4 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -114,28 +114,6 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
+ 			return -1;
+ 	}
+ 
+-	/* Check both positions 1 and 6 for pattern? */
+-	if (td->options & NAND_BBT_SCANBYTE1AND6) {
+-		if (td->options & NAND_BBT_SCANEMPTY) {
+-			p += td->len;
+-			end += NAND_SMALL_BADBLOCK_POS - td->offs;
+-			/* Check region between positions 1 and 6 */
+-			for (i = 0; i < NAND_SMALL_BADBLOCK_POS - td->offs - td->len;
+-					i++) {
+-				if (*p++ != 0xff)
+-					return -1;
+-			}
+-		}
+-		else {
+-			p += NAND_SMALL_BADBLOCK_POS - td->offs;
+-		}
+-		/* Compare the pattern */
+-		for (i = 0; i < td->len; i++) {
+-			if (p[i] != td->pattern[i])
+-				return -1;
+-		}
+-	}
+-
+ 	if (td->options & NAND_BBT_SCANEMPTY) {
+ 		p += td->len;
+ 		end += td->len;
+@@ -167,13 +145,6 @@ static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
+ 		if (p[td->offs + i] != td->pattern[i])
+ 			return -1;
+ 	}
+-	/* Need to check location 1 AND 6? */
+-	if (td->options & NAND_BBT_SCANBYTE1AND6) {
+-		for (i = 0; i < td->len; i++) {
+-			if (p[NAND_SMALL_BADBLOCK_POS + i] != td->pattern[i])
+-				return -1;
+-		}
+-	}
+ 	return 0;
+ }
+ 
+@@ -1330,8 +1301,7 @@ static struct nand_bbt_descr bbt_mirror_no_bbt_descr = {
+ 	.pattern = mirror_pattern
+ };
+ 
+-#define BBT_SCAN_OPTIONS (NAND_BBT_SCANLASTPAGE | NAND_BBT_SCAN2NDPAGE | \
+-		NAND_BBT_SCANBYTE1AND6)
++#define BBT_SCAN_OPTIONS (NAND_BBT_SCANLASTPAGE | NAND_BBT_SCAN2NDPAGE)
+ /**
+  * nand_create_default_bbt_descr - [Internal] Creates a BBT descriptor structure
+  * @this:	NAND chip to create descriptor for
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 57cc0e6..08ffa21 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -98,8 +98,6 @@ struct nand_bbt_descr {
+ #define NAND_BBT_SCAN2NDPAGE	0x00004000
+ /* Search good / bad pattern on the last page of the eraseblock */
+ #define NAND_BBT_SCANLASTPAGE	0x00008000
+-/* Chip stores bad block marker on BOTH 1st and 6th bytes of OOB */
+-#define NAND_BBT_SCANBYTE1AND6 0x00100000
+ /* The nand_bbt_descr was created dynamicaly and must be freed */
+ #define NAND_BBT_DYNAMICSTRUCT 0x00200000
+ /* The bad block table does not OOB for marker */
+-- 
+1.7.0.4
