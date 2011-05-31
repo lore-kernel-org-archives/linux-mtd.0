@@ -1,80 +1,44 @@
-From: bengardiner@nanometrics.ca (Ben Gardiner)
-Date: Mon, 30 May 2011 14:56:15 -0400
-Subject: [PATCH] UBIFS: intialize LPT earlier
-Message-ID: <mailman.1.1306923080.5904.linux-mtd@lists.infradead.org>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Tue, 31 May 2011 07:03:21 +0300
+Subject: [PATCH] UBIFS: fix shrinker object count reports
+Message-ID: <mailman.5.1307113874.24103.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-The current 'mount_ubifs()' implementation does not initialize the LPT until the
-the master node is marked dirty. Move the LPT initialization to before marking
-the master node dirty. This is a preparation for the next patch which will move
-the free-space-fixup check to before marking the master node dirty, because we
-have to fix-up the free space before doing any writes.
+Sometimes VM asks the shrinker to return amount of objects it can shrink,
+and we return the ubifs_clean_zn_cnt in that case. However, it is possible
+that this counter is negative for a short period of time, due to the way
+UBIFS TNC code updates it. And I can observe the following warnings sometimes:
 
-Artem: massaged the patch and commit message.
+shrink_slab: ubifs_shrinker+0x0/0x2b7 [ubifs] negative objects to delete nr=-8541616642706119788
 
-Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+This patch makes sure UBIFS never returns negative count of objects.
+
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: stable at kernel.org
 ---
- fs/ubifs/super.c |   29 ++++++++++++++++-------------
- 1 files changed, 16 insertions(+), 13 deletions(-)
+ fs/ubifs/shrinker.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 1e40db7..6d357fd 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1282,17 +1282,24 @@ static int mount_ubifs(struct ubifs_info *c)
- 	if (err)
- 		goto out_master;
+diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+index ca953a9..9e1d056 100644
+--- a/fs/ubifs/shrinker.c
++++ b/fs/ubifs/shrinker.c
+@@ -284,7 +284,11 @@ int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
+ 	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
  
--	init_constants_master(c);
--
- 	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
- 		ubifs_msg("recovery needed");
- 		c->need_recovery = 1;
--		if (!c->ro_mount) {
--			err = ubifs_recover_inl_heads(c, c->sbuf);
--			if (err)
--				goto out_master;
--		}
--	} else if (!c->ro_mount) {
-+	}
-+
-+	init_constants_master(c);
-+
-+	if (c->need_recovery && !c->ro_mount) {
-+		err = ubifs_recover_inl_heads(c, c->sbuf);
-+		if (err)
-+			goto out_master;
-+	}
-+
-+	err = ubifs_lpt_init(c, 1, !c->ro_mount);
-+	if (err)
-+		goto out_master;
-+
-+	if (!c->ro_mount) {
+ 	if (nr == 0)
+-		return clean_zn_cnt;
++		/*
++		 * Due to the way UBIFS updates the clean znode counter it may
++		 * temporarily be negative.
++		 */
++		return clean_zn_cnt >= 0 ? clean_zn_cnt : 1;
+ 
+ 	if (!clean_zn_cnt) {
  		/*
- 		 * Set the "dirty" flag so that if we reboot uncleanly we
- 		 * will notice this immediately on the next mount.
-@@ -1300,13 +1307,9 @@ static int mount_ubifs(struct ubifs_info *c)
- 		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
- 		err = ubifs_write_master(c);
- 		if (err)
--			goto out_master;
-+			goto out_lpt;
- 	}
- 
--	err = ubifs_lpt_init(c, 1, !c->ro_mount);
--	if (err)
--		goto out_lpt;
--
- 	err = dbg_check_idx_size(c, c->bi.old_idx_sz);
- 	if (err)
- 		goto out_lpt;
 -- 
 1.7.2.3
-
-
 
 -- 
 Best Regards,
