@@ -1,23 +1,23 @@
-Received: from na3sys009aog113.obsmtp.com ([74.125.149.209])
+Received: from [74.125.149.201] (helo=na3sys009aog109.obsmtp.com)
 	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRR12-0003lq-9m
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 15:38:00 +0000
-Received: by vxc11 with SMTP id 11so4710415vxc.23
+	id 1QRRaU-0005vt-7T
+	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 16:14:45 +0000
+Received: by mail-vx0-f182.google.com with SMTP id 34so4527374vxc.41
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 31 May 2011 08:37:51 -0700 (PDT)
+	Tue, 31 May 2011 09:10:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BANLkTinu7dX5Tfhs0ak0BEfc212mpJKb+w@mail.gmail.com>
-References: <cover.1306780983.git.bengardiner@nanometrics.ca>
-	<BANLkTinu7dX5Tfhs0ak0BEfc212mpJKb+w@mail.gmail.com>
-Date: Tue, 31 May 2011 11:37:51 -0400
-Message-ID: <BANLkTikFx1Cwtnh+k-eJBcj0Y7mhh5Nbnw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] fix-up free space earlier in mount_ubifs()
+In-Reply-To: <BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
+References: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
+	<BANLkTin9hvdNCMeVRSj806R19obN_91v5w@mail.gmail.com>
+	<BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
+Date: Tue, 31 May 2011 12:10:47 -0400
+Message-ID: <BANLkTim+sNbXG3yk_DGZk4=+0Za+gb65BA@mail.gmail.com>
+Subject: Re: ubifs_decompress: cannot decompress ...
 From: Ben Gardiner <bengardiner@nanometrics.ca>
 To: "Matthew L. Creech" <mlcreech@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: MTD list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,126 +29,176 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Matthew,
 
-To answer your other question:
-
-On Tue, May 31, 2011 at 10:43 AM, Matthew L. Creech <mlcreech@gmail.com> wr=
+On Tue, May 31, 2011 at 11:47 AM, Matthew L. Creech <mlcreech@gmail.com> wr=
 ote:
-> [...]
+> On Mon, May 30, 2011 at 8:29 AM, Ben Gardiner
+> <bengardiner@nanometrics.ca> wrote:
+>>
+>> I don't see any debug statements in lzo1x_decompress_safe() that can
+>> be enabled, so you might want to add some printing to
+>> lzo1x_decompress_safe() or at least print the non-ok return code of
+>> lzo1x_decompress_safe() in lzo_decompress() to get an idea of how the
+>> decompressor is failing.
+>>
 >
-> Do you happen to know if the same thing occurs when you uncleanly
-> reboot (so that recovery is needed on the next boot)? =A0It looks like
-> ubifs_recover_master_node() reads the same data that
-> fixup_leb_free_space() does, so I'd expect it to fail similarly if
-> that's what's happening, regardless of whether fix-up is performed or
-> not.
+> Looks like it's returning LZO_E_LOOKBEHIND_OVERRUN. =A0I don't know what
+> that indicates, but there is trailing 0xff data in the block to be
+> decompressed if that matters:
 
-To test unclean w/o free-space-fixup flag set I did a powercut during
-'yes > /test-file';
+Interesting -- does the trailing 0xff have ECC set, or is it erased
+pages of 0xff?
 
-The first time I hsaw a dump from ubifs_check_node:
+> XXXX: LZO_E_LOOKBEHIND_OVERRUN
 
-UBIFS: recovery needed
-UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0x4763322d,
-read 0x4c8c2537
-UBIFS error (pid 1): ubifs_check_node: bad node at LEB 501:81608
-Backtrace:
-[<c002dd8c>] (dump_backtrace+0x0/0x10c) from [<c02ecbac>] (dump_stack+0x18/=
-0x1c)
- r7:00013ec8 r6:c781f000 r5:c89f0ec8 r4:ffffff8b
-[<c02ecb94>] (dump_stack+0x0/0x1c) from [<c015ba88>]
-(ubifs_check_node+0x1b8/0x2ec)
-[<c015b8d0>] (ubifs_check_node+0x0/0x2ec) from [<c0163ee4>]
-(ubifs_scan_a_node+0x180/0x398)
-[<c0163d64>] (ubifs_scan_a_node+0x0/0x398) from [<c017b498>]
-(ubifs_recover_leb+0xd4/0xa94)
-[<c017b3c4>] (ubifs_recover_leb+0x0/0xa94) from [<c0164e90>]
-(ubifs_replay_journal+0x6ac/0x1c30)
-[<c01647e4>] (ubifs_replay_journal+0x0/0x1c30) from [<c01571a8>]
-(ubifs_fill_super+0xdf4/0x1ee4)
-[<c01563b4>] (ubifs_fill_super+0x0/0x1ee4) from [<c0158508>]
-(ubifs_mount+0x270/0x3a4)
-[<c0158298>] (ubifs_mount+0x0/0x3a4) from [<c00afe5c>] (mount_fs+0x1c/0xe8)
-[<c00afe40>] (mount_fs+0x0/0xe8) from [<c00cc8c0>] (vfs_kern_mount+0x58/0x9=
-4)
- r6:00008000 r5:c780c780 r4:c7a78b80
-[<c00cc868>] (vfs_kern_mount+0x0/0x94) from [<c00cc958>]
-(do_kern_mount+0x3c/0xd4)
- r9:c782dee8 r8:c03ebaa8 r7:c7a78b60 r6:00000000 r5:c7a78b80
-r4:00008000
-[<c00cc91c>] (do_kern_mount+0x0/0xd4) from [<c00ccb3c>] (do_mount+0x14c/0x7=
-34)
- r9:c782dee8 r8:00000020 r7:c7a78b60 r6:c7a78b80 r5:00008000
-r4:00000000
-[<c00cc9f0>] (do_mount+0x0/0x734) from [<c00cd1c4>] (sys_mount+0xa0/0xd0)
-[<c00cd124>] (sys_mount+0x0/0xd0) from [<c0008dd4>]
-(mount_block_root+0x98/0x2c8)
- r7:c0023e88 r6:c781b000 r5:00008000 r4:c781b000
-[<c0008d3c>] (mount_block_root+0x0/0x2c8) from [<c00090f0>]
-(prepare_namespace+0x80/0x1c4)
-[<c0009070>] (prepare_namespace+0x0/0x1c4) from [<c0008480>]
-(kernel_init+0x110/0x158)
- r7:00000013 r6:c0023300 r5:c0023668 r4:c0023668
-[<c0008370>] (kernel_init+0x0/0x158) from [<c0043d58>] (do_exit+0x0/0x750)
- r7:00000013 r6:c0043d58 r5:c0008370 r4:00000000
-UBIFS: recovery completed
+Can't say much more about this than lzo-2.05/doc/LZOAPI.TXT [1] does:
 
-every time after that there is nothing printed during recovery:
+  LZO_E_LOOKBEHIND_OVERRUN
+    Your data is corrupted.
 
-UBIFS: recovery needed
-UBIFS: recovery completed
-UBIFS: mounted UBI device 0, volume 1, name "rootfs"
+> UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
+> compressor lzo, error -22
+> 00000000: 00 0f 69 6e 3a 61 74 74 72 00 c2 38 1c 03 39 03 =A0..in:attr..8=
+..9.
+> 00000010: 2f 30 31 2f 6d 57 43 2f 2e 56 61 6c 75 65 4d 61 =A0/01/mWC/.Val=
+ueMa
+> 00000020: 78 3a 61 91 03 94 31 72 00 69 6e d0 03 00 01 37 =A0x:a...1r.in.=
+...7
+> 00000030: 1c 03 3d 01 2f 53 65 72 69 61 6c 4e 75 6d 62 65 =A0..=3D./Seria=
+lNumbe
+> 00000040: 72 2f 98 07 98 03 00 0a 04 2f 03 63 01 2f 53 6f =A0r/......./.c=
+./So
+> 00000050: 66 74 77 61 72 65 2f 43 6f 6d 6d 61 6e 64 73 2f =A0ftware/Comma=
+nds/
+> 00000060: 6e 65 78 74 d2 01 49 44 29 bc 00 03 06 47 04 81 =A0next..ID)...=
+.G..
+> 00000070: 0d 03 28 c0 00 00 04 44 61 74 61 20 53 65 72 76 =A0..(....Data =
+Serv
+> 00000080: 65 72 73 2f 42 41 43 6e 65 74 2d 49 50 c4 01 0b =A0ers/BACnet-I=
+P...
+> 00000090: 44 65 76 69 63 65 49 6e 73 74 61 6e 63 65 29 14 =A0DeviceInstan=
+ce).
+> 000000a0: 01 05 00 f7 28 41 04 81 03 02 20 0c 1f 01 4d 41 =A0....(A.... .=
+..MA
+> 000000b0: 43 29 08 01 03 02 19 42 04 81 05 20 0d 07 01 4e =A0C).....B... =
+...N
+> 000000c0: 61 6d 2a 14 02 02 02 18 3c 03 7b 20 02 04 01 07 =A0am*.....<.{ =
+....
+> 000000d0: 42 4d 44 41 64 64 72 65 73 73 2a fc 01 02 1d 40 =A0BMDAddress*.=
+...@
+> 000000e0: 04 81 01 20 05 f4 00 06 54 69 6d 65 54 6f 4c 69 =A0... ....Time=
+ToLi
+> 000000f0: 76 2b f5 01 1e 20 05 f4 01 02 61 73 65 49 64 80 =A0v+... ....as=
+eId.
+> 00000100: 36 2a f5 01 20 20 05 f4 03 07 44 65 66 61 75 6c =A06*.. =A0....=
+Defaul
+> 00000110: 74 4e 65 74 2f e4 07 03 02 1a 46 04 81 0d 20 01 =A0tNet/.....F.=
+.. .
+> 00000120: 00 03 00 02 45 6e 61 62 6c 65 42 61 73 65 46 6f =A0....EnableBa=
+seFo
+> 00000130: 72 47 61 74 65 77 61 79 2a 24 02 02 1f 45 04 81 =A0rGateway*$..=
+.E..
+> 00000140: 0b 20 0e 18 01 03 52 6f 75 74 65 64 2a 14 01 02 =A0. ....Routed=
+*...
+> 00000150: 21 50 04 81 21 20 01 14 01 c2 07 30 31 3e 84 09 =A0!P..! .....0=
+1>..
+> 00000160: 03 01 f4 4b 04 81 17 20 17 40 01 2d a8 09 02 24 =A0...K... .@.-=
+...$
+> 00000170: 4c 04 81 19 20 17 2c 01 2e d0 09 01 23 3a 03 77 =A0L... .,.....=
+#:.w
+> 00000180: 20 07 2c 01 2d 1d 02 1c 20 05 d0 0c b0 24 33 cc =A0 .,.-... ...=
+.$3.
+> 00000190: 07 02 1b 00 00 00 11 6c 00 00 3f 6a 68 2e 73 ec =A0.......l..?j=
+h.s.
+> 000001a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000001b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000001c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000001d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000001e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000001f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000210: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000220: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000230: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000240: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000250: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000260: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000270: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000280: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000290: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000002f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000300: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000310: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000320: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000330: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000340: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000350: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000360: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000370: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 00000390: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =A0............=
+....
+> 000003f0: ff ff
+> UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196=
+)
+> UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
+> 556196, error -22
 
-To test unclean with free-space-flag set, I did powercut during 'nand
-write' in u-boot.
 
-When attempting to mount the rootfs I got dumps from ubifs_read_node:
+Could it be possible that writing the page was interrupted? I guess
+the CRC checks above decompress would catch that though.
 
-UBIFS error (pid 1): ubifs_read_node: bad node type (255 but expected 9)
-UBIFS error (pid 1): ubifs_read_node: bad node at LEB 496:101088, LEB
-mapping status 0
-Backtrace:
-[<c002dd8c>] (dump_backtrace+0x0/0x10c) from [<c02ecbac>] (dump_stack+0x18/=
-0x1c)
- r7:c782c000 r6:c781f000 r5:c7859780 r4:ffffffea
-[<c02ecb94>] (dump_stack+0x0/0x1c) from [<c015bdf4>]
-(ubifs_read_node+0x238/0x2ec)
-[<c015bbbc>] (ubifs_read_node+0x0/0x2ec) from [<c0168080>]
-(dbg_old_index_check_init+0x70/0xe0)
-[<c0168010>] (dbg_old_index_check_init+0x0/0xe0) from [<c0163864>]
-(ubifs_read_master+0xdbc/0xe20)
-[<c0162aa8>] (ubifs_read_master+0x0/0xe20) from [<c0156ffc>]
-(ubifs_fill_super+0xc48/0x1ee4)
-[<c01563b4>] (ubifs_fill_super+0x0/0x1ee4) from [<c0158508>]
-(ubifs_mount+0x270/0x3a4)
-[<c0158298>] (ubifs_mount+0x0/0x3a4) from [<c00afe5c>] (mount_fs+0x1c/0xe8)
-[<c00afe40>] (mount_fs+0x0/0xe8) from [<c00cc8c0>] (vfs_kern_mount+0x58/0x9=
-4)
- r6:00008000 r5:c780c780 r4:c7a848e0
-[<c00cc868>] (vfs_kern_mount+0x0/0x94) from [<c00cc958>]
-(do_kern_mount+0x3c/0xd4)
- r9:c782dee8 r8:c03ebaa8 r7:c7a848c0 r6:00000000 r5:c7a848e0
-r4:00008000
-[<c00cc91c>] (do_kern_mount+0x0/0xd4) from [<c00ccb3c>] (do_mount+0x14c/0x7=
-34)
- r9:c782dee8 r8:00000020 r7:c7a848c0 r6:c7a848e0 r5:00008000
-r4:00000000
-[<c00cc9f0>] (do_mount+0x0/0x734) from [<c00cd1c4>] (sys_mount+0xa0/0xd0)
-[<c00cd124>] (sys_mount+0x0/0xd0) from [<c0008dd4>]
-(mount_block_root+0x98/0x2c8)
- r7:c0023e88 r6:c781b000 r5:00008000 r4:c781b000
-[<c0008d3c>] (mount_block_root+0x0/0x2c8) from [<c00090f0>]
-(prepare_namespace+0x80/0x1c4)
-[<c0009070>] (prepare_namespace+0x0/0x1c4) from [<c0008480>]
-(kernel_init+0x110/0x158)
- r7:00000013 r6:c0023300 r5:c0023668 r4:c0023668
-[<c0008370>] (kernel_init+0x0/0x158) from [<c0043d58>] (do_exit+0x0/0x750)
- r7:00000013 r6:c0043d58 r5:c0008370 r4:00000000
-
-I didn't ever see the -74 errors or the assertion I placed in
-ubifs_write_node().
+Sorry I can't be of more help here.
 
 Best Regards,
 Ben Gardiner
+
+[1] http://www.oberhumer.com/opensource/lzo/download/
 
 ---
 Nanometrics Inc.
