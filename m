@@ -1,23 +1,25 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRU45-0007zW-Ma
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 18:53:18 +0000
-Received: by wwb39 with SMTP id 39so4091358wwb.18
+	id 1QRSj7-0004cd-Sx
+	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 17:27:34 +0000
+Received: by wwb39 with SMTP id 39so4024997wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 31 May 2011 11:52:10 -0700 (PDT)
+	Tue, 31 May 2011 10:26:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1306387008.2785.138.camel@localhost>
-References: <1306360741-12770-1-git-send-email-computersforpeace@gmail.com>
-	<4DDDE19D.9010505@compulab.co.il>
-	<1306387008.2785.138.camel@localhost>
-Date: Tue, 31 May 2011 11:52:10 -0700
-Message-ID: <BANLkTimsTWAcR4HgOoHguDMv9P-Eox=kbg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: generalized error messages with __func__
+In-Reply-To: <4DDE0991.8040900@linutronix.de>
+References: <1301903526.2760.38.camel@localhost>
+	<1303283589-14415-1-git-send-email-computersforpeace@gmail.com>
+	<1303459329.2757.40.camel@localhost>
+	<BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
+	<4DDE0991.8040900@linutronix.de>
+Date: Tue, 31 May 2011 10:25:41 -0700
+Message-ID: <BANLkTinq9BbK5VbHW8hFe17r1r24cDZ9Yg@mail.gmail.com>
+Subject: Re: [RFC] mtd: nand: separate chip options / bbt_options
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>
+Cc: linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Sebastian,
 
-Sorry if this is a second message anyone, I didn't hit Reply-All.
+On Thu, May 26, 2011 at 1:04 AM, Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+> It is kinda required here :) The long story:
+> The NAND-controller needs the complete OOB area for ECC. So we have no
+> room for BBT in OOB. Therefore we use BBT table on flash without the
+> recognition marking in the OOB area.
 
-On Wed, May 25, 2011 at 10:16 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> Right, but in this _particular_ case the best thing to do is to just
-> kill the error messages - if any of the allocation functions fail they
-> print a large scary warning with a backtrace anyway, and the backtrace
-> will contain the caller function names.
->
-> Brian, would you please instead just zap the prints?
+I assume you're using CREATE_EMPTY_BBT along with the new flag
+NAND_USE_FLASH_BBT_NO_OOB, then? FYI, I'm reworking that option as
+well so please review my patches.
 
-Sure, can do. In general, then, is it best practice to simply 'return
--ENOMEM' or similar (without any printing) in all MTD code?
+> On the second
+> scan we use the on-flash BBT information (which is created by mtd) so it
+> is not empty again.
 
-> On Thu, 2011-05-26 at 08:14 +0300, Igor Grinberg wrote:
->> On 05/26/11 00:59, Brian Norris wrote:
->> pr_err() will save you from the need to define the log level each time.
->> pr_fmt will save you the need to add %s: and __func__.
+I'm a little confused here. Who/what gives the on-flash BBT
+information? It seems to me like a combination of the
+"FLASH_BBT_NO_OOB" options and "CREATE_EMPTY_BBT" will leave you with
+an empty, flash-based BBT that is stored in-band. It would not contain
+any manufacturer info, as you stated that "information in OOB is
+lost."
 
-Also, it seems that the second statement is not necessarily true. In
-fact, in include/linux/printk.h, we default to the following
-declaration:
-     #define pr_fmt(fmt) fmt
-So it seems that, when we desire to print out the relevant function
-name, we should manually use __func__ instead of relying on
-pr_fmt...or should we define our own pr_fmt in include/linux/mtd.h?
+Anyway, it looks like this option may be worth saving, but I'm just
+trying to get a handle of the rationale and usage so that we can
+properly document it.
 
 Brian
