@@ -1,23 +1,21 @@
-Received: from na3sys009aog113.obsmtp.com ([74.125.149.209])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRnLg-0005sE-07
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 15:28:44 +0000
-Received: by mail-vx0-f174.google.com with SMTP id 39so4155939vxi.19
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 08:28:42 -0700 (PDT)
+Message-ID: <4DE668CB.9040408@ru.mvista.com>
+Date: Wed, 01 Jun 2011 20:28:59 +0400
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-In-Reply-To: <1306941256.4405.123.camel@localhost>
-References: <1306923407.4405.94.camel@localhost>
-	<1306940008-28454-1-git-send-email-bengardiner@nanometrics.ca>
-	<1306941256.4405.123.camel@localhost>
-Date: Wed, 1 Jun 2011 11:28:41 -0400
-Message-ID: <BANLkTimzuZ5URhDj2BxPj3g_YaHmZufWsg@mail.gmail.com>
-Subject: Re: [PATCH] UBIFS: fixup merged 'UBIFS: fix-up free space earlier'
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	"Matthew L. Creech" <mlcreech@gmail.com>
+To: Marc Zyngier <Marc.Zyngier@arm.com>
+Subject: Re: [PATCH v6 1/8] MTD: Add integrator-flash feature to physmap
+References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>	
+	<1305637877-24436-2-git-send-email-marc.zyngier@arm.com>	
+	<4DE53D52.4040508@ru.mvista.com>	
+	<20110531224428.6636e283@taxman.wild-wind.fr.eu.org>	
+	<BANLkTim0xrx+33BeoSbXbQcu2Ab6Oin=Wg@mail.gmail.com>
+	<1306914546.27474.349.camel@e102391-lin.cambridge.arm.com>
+In-Reply-To: <1306914546.27474.349.camel@e102391-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-kernel@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, Sergei Shtylyov <sshtylyov@mvista.com>,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Marc Zyngier wrote:
 
-On Wed, Jun 1, 2011 at 11:14 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2011-06-01 at 10:53 -0400, Ben Gardiner wrote:
->> When the patch 'UBIFS: intialize LPT earlier' was massaged before being applied
->> the context of the next patch 'UBIFS: fix-up free space earlier' was muddled
->> sufficiently for the order of allocate-lpt then free-space-fixup was reversed --
->> I think.
->>
->> Put the free-space-fixup after allocate-lpt.
->>
->> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
->>
->> ---
->> With this fixup applied on-top-of the ubifs-2.6 master I am able to mount a
->> ubinized image containing a UBIFS volume which has the free-space-fixup flag
->> set. No assertions are displayed.
->
-> Thanks. Merged this patch to the 3rd one and pushed out.
+>>>>> In the process of moving platforms away from integrator-flash
+>>>>> (aka armflash), add to physmap the few features that make
+>>>>> armflash unique:
+>>>>> - optionnal probing for the AFS partition type
+>>>>> - init() and exit() methods, used by Integrator to control
+>>>>>   write access to the various onboard programmable components
+>>>>> Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+>>>>> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+>>>>> Cc: David Woodhouse <dwmw2@infradead.org>
+>>>> [...]
 
-You're most welcome.
+>>>>> diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+>>>>> index bcfd9f7..d37cca0 100644
+>>>>> --- a/include/linux/mtd/physmap.h
+>>>>> +++ b/include/linux/mtd/physmap.h
+>>>>> @@ -22,6 +22,8 @@ struct map_info;
+>>>>>
+>>>>>  struct physmap_flash_data {
+>>>>>     unsigned int            width;
+>>>>> +   int                     (*init)(struct platform_device *);
+>>>>> +   void                    (*exit)(struct platform_device *);
 
-Both branches master and linux-next are working as expected.
+>>>>     How about a declaration for 'struct platform_device' beforehand? This breaks
+>>>> build on other platforms at least...
 
-Best Regards,
-Ben Gardiner
+>>> Sure. Please send a patch.
 
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+>> uhh, what ?  you broke things, so you fix them.  i already pointed out
+>> this breakage to you over a week ago.
+
+> Mike,
+
+> Sorry I missed your earlier comment about this. My bad.
+
+> Now, about my reply to Sergei:
+>       * Sergei identified the problem, and proposed a valid fix. It's
+>         only fair he gets credited for his work (yes, you did it before
+>         he did, but I didn't know it). The SOB on a patch is the proper
+>         way of managing the attribution.
+>       * Posting a patch is the quickest way for the maintainer (in this
+>         case David) to be able to push a fix to mainline.
+>       * It also helps other folks reading the ML and facing the same
+>         issue. They can grab the patch, apply it locally and go on with
+>         their own stuff until the patch is merged.
+>       * The person reporting the problem probably has a configuration
+>         showing the problem. If any of my platforms had shown that
+>         error, I would have fixed it long before it hit the mailing
+>         list.
+
+    Actually, I'm not a primary reporter. The issue came up on the #mipslinux 
+IRC channel, I then just remembered that I saw the patch set touching this file, 
+and it was easy enough to complain to you after finding the corresponding mails.
+    This happens to break MIPS platforms because they use warnings-as-errors 
+option of gcc.
+
+WBR, Sergei
