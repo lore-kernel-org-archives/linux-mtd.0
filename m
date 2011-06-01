@@ -1,22 +1,25 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRiae-0003ix-Lt
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 10:23:53 +0000
-Received: by yic15 with SMTP id 15so2584103yic.36
+	id 1QRibe-0003mV-6a
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 10:24:54 +0000
+Received: by fxm14 with SMTP id 14so4870888fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 03:23:49 -0700 (PDT)
+	Wed, 01 Jun 2011 03:24:52 -0700 (PDT)
 Subject: Re: [PATCH 0/3] fix-up free space earlier in mount_ubifs()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-In-Reply-To: <cover.1306780983.git.bengardiner@nanometrics.ca>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTi=_8nSWYt=7+EgoORiYHqpRhOQurw@mail.gmail.com>
 References: <cover.1306780983.git.bengardiner@nanometrics.ca>
+	<BANLkTinu7dX5Tfhs0ak0BEfc212mpJKb+w@mail.gmail.com>
+	<BANLkTikPqkDON4mzBEko46JdgACrbTOiiA@mail.gmail.com>
+	<BANLkTi=_8nSWYt=7+EgoORiYHqpRhOQurw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Jun 2011 13:19:25 +0300
-Message-ID: <1306923565.4405.96.camel@localhost>
+Date: Wed, 01 Jun 2011 13:20:28 +0300
+Message-ID: <1306923628.4405.97.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew
-	L. Creech" <mlcreech@gmail.com>
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,21 +30,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-05-30 at 14:56 -0400, Ben Gardiner wrote:
-> In testing Mattew Creech's free-space-fixup flag series I found that was unable
-> to boot a da850evm which had flashed to it's NAND a ubinized image containing a
-> UBIFS that has the free-space-fixup flag set.
-> 
-> The cause of the problem was found to be the call to ubifs_write_master() from
-> mount_ubifs() as is evidenced the backtrace produced by the assertion
-> introduced in the first patch of this series; where the assertion introduced is
-> that c->space_fixup is false when ubifs_write_node() is called.
+On Tue, 2011-05-31 at 11:22 -0400, Matthew L. Creech wrote:
+> Reviewed-by: Matthew L. Creech <mlcreech@gmail.com>
 
-So the fixes are now in the ubifs tree. You can see them in the
-linux-next banch's tip or in the master branch under a pile of other
-changes. The point is that linux-next currently contains what I want to
-merge to linux-3.0 and master branch contains the same plus a pile of
-things for linux-3.1.
+OK, added.
 
 -- 
 Best Regards,
