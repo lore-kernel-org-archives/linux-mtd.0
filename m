@@ -1,22 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-yi0-f49.google.com ([209.85.218.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRgsB-0003Li-Ko
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 08:33:52 +0000
-Received: by wyb28 with SMTP id 28so5132807wyb.36
+	id 1QRgyu-0003cL-Ai
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 08:40:49 +0000
+Received: by yic15 with SMTP id 15so2555873yic.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 01:33:48 -0700 (PDT)
+	Wed, 01 Jun 2011 01:40:46 -0700 (PDT)
 Subject: Re: [Ubi] Wrong major:minor
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Gilles <gilles.ganault@free.fr>
-In-Reply-To: <BANLkTimab0pKp68f_coPfsjm_6GdKAxSew@mail.gmail.com>
+In-Reply-To: <5d84u6d24de3ikt776vdrqpnhhecs3aoio@4ax.com>
 References: <5d84u6d24de3ikt776vdrqpnhhecs3aoio@4ax.com>
-	<BANLkTimab0pKp68f_coPfsjm_6GdKAxSew@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Jun 2011 11:29:23 +0300
-Message-ID: <1306916963.4405.72.camel@localhost>
+Date: Wed, 01 Jun 2011 11:36:21 +0300
+Message-ID: <1306917381.4405.76.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,32 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-05-29 at 11:54 -0400, Mike Frysinger wrote:
-> On Sun, May 29, 2011 at 06:39, Gilles wrote:
-> > I'm no Linux expert, and was wondering how to find out what the
-> > correct major:minor is for the Ubi device nodes?
+On Sun, 2011-05-29 at 12:39 +0200, Gilles wrote:
+> Hello
 > 
-> they're most likely dynamic and there's no safe way you could create
-> the nodes ahead of time with a device table.  simply run mdev to take
-> care of /dev for you.
+> I used the following data to compile Ubi(fs) into a uClinux kernel:
 > 
-> you can check /proc/devices to be sure ... anything over 250 is dynamic
-> -mike
+> ========= device_table.txt
+> #UBIFS nodes
+> /dev/ubi_ctrl	c	644	0	0	10	63	0	0	-
+> /dev/ubi0	c	644	0	0	253	0	0	0	-
+> ========= 
 
-Right, UBI allocates device numbers dynamically, so pre-creating device
-nodes is not a good idea.
+But I guess you may add an UBI module parameter which will ask UBI to
+use major numbers you want - should be easy to do. E.g., if you add a
+'major_base=200' parameter then UBI will use 200:0 for ubi0, 201:0 for
+ubi1, 200:1 for ubi0_0, 200:2 for ubi0_1, etc.
 
-Major/minor for every UBI device / UBI volume can be found at:
+Then you could do:
 
-/sys/class/ubi/ubiX/dev
-/sys/class/ubi/ubiX_Y/dev
+modprobe ubi major_base=200
 
-Or the major number can be indeed found at /proc/devices, and then the
-minor numbers follow the following fomula:
+or add
 
-UBI Volume major number = UBI device major number.
-UBI Volume minor number = UBI volume ID + 1.
+ubi.major_base=200
 
+to you kernel parameters if you have UBI compiled-in.
+ 
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
