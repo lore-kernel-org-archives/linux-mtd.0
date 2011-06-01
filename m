@@ -1,22 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRk6L-0000y7-8F
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 12:00:43 +0000
-Received: by fxm14 with SMTP id 14so4937797fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 05:00:39 -0700 (PDT)
-Subject: Re: U-Boot: using nand write to flash an ubi image, ubi part fails
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lars Michael <lh_post@yahoo.com>, u-boot@lists.denx.de
-In-Reply-To: <891190.21758.qm@web30201.mail.mud.yahoo.com>
-References: <891190.21758.qm@web30201.mail.mud.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Jun 2011 14:56:15 +0300
-Message-ID: <1306929375.4405.116.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Ben Gardiner <bengardiner@nanometrics.ca>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4DE63F4F.60108@atmel.com>
+Date: Wed, 01 Jun 2011 15:31:59 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+MIME-Version: 1.0
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH] ATMEL, AVR32: inline nand partition table access
+References: <1306676962-22308-1-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1306676962-22308-1-git-send-email-dbaryshkov@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+	Andrew Victor <linux@maxim.org.za>, linux-mtd@lists.infradead.org,
+	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +22,611 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-01 at 00:57 -0700, Lars Michael wrote:
-> Hello,
+Le 29/05/2011 15:49, Dmitry Eremin-Solenikov :
+> Currently atmel_nand driver used by AT91 and AVR32 calls a special callback
+> which return nand partition table and number of partitions. However in all
+> boards this callback returns just static data. So drop this callback and
+> make atmel_nand use partition table provided statically via platform_data.
 > 
-> Using mkfs.ubifs and ubinize I have created an image with 5 volumes.
-> In Linux I could flash it using "ubiformat /dev/mtd1 -f /root/ubi.img"
-> and attach it using "ubiattach /dev/ubi_ctrl -m 1". It worked.
+> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 
-OK.
+Good. So, for the AT91 part of it:
 
-> In production I would prefer to write the image from U-Boot. So in
-> U-Boot I used "nand erase" then "nand write" to flash the image. Then
-> I want to attach by "ubi part" command - but this fails: "UBI error:
-> ubi_init: UBI error: cannot initialize UBI, error -17"
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Sorry, I'm not familiar with U-boot, so probably cc-ing U-boot mailing
-list would be a good idea.
+Best regards,
 
-> Then I booted Linux (via nfs) and tried to re-format+attach, but now
-> it fails. Format complains about eraseblock contents and missing erase
-> counters: 
+> ---
+>  arch/arm/mach-at91/board-afeb-9260v1.c      |    9 ++-------
+>  arch/arm/mach-at91/board-cam60.c            |    9 ++-------
+>  arch/arm/mach-at91/board-cap9adk.c          |    9 ++-------
+>  arch/arm/mach-at91/board-kb9202.c           |    9 ++-------
+>  arch/arm/mach-at91/board-neocore926.c       |    9 ++-------
+>  arch/arm/mach-at91/board-qil-a9260.c        |    9 ++-------
+>  arch/arm/mach-at91/board-rm9200dk.c         |    9 ++-------
+>  arch/arm/mach-at91/board-sam9-l9260.c       |    9 ++-------
+>  arch/arm/mach-at91/board-sam9260ek.c        |    9 ++-------
+>  arch/arm/mach-at91/board-sam9261ek.c        |    9 ++-------
+>  arch/arm/mach-at91/board-sam9263ek.c        |    9 ++-------
+>  arch/arm/mach-at91/board-sam9g20ek.c        |    9 ++-------
+>  arch/arm/mach-at91/board-sam9m10g45ek.c     |    9 ++-------
+>  arch/arm/mach-at91/board-sam9rlek.c         |    9 ++-------
+>  arch/arm/mach-at91/board-snapper9260.c      |   10 ++--------
+>  arch/arm/mach-at91/board-usb-a9260.c        |    9 ++-------
+>  arch/arm/mach-at91/board-usb-a9263.c        |    9 ++-------
+>  arch/arm/mach-at91/board-yl-9200.c          |    9 ++-------
+>  arch/arm/mach-at91/include/mach/board.h     |    3 ++-
+>  arch/avr32/boards/atngw100/setup.c          |    8 ++------
+>  arch/avr32/boards/atstk1000/atstk1002.c     |    9 ++-------
+>  arch/avr32/mach-at32ap/include/mach/board.h |    3 ++-
+>  drivers/mtd/nand/atmel_nand.c               |    7 ++++---
+>  23 files changed, 48 insertions(+), 145 deletions(-)
 > 
-> ubiformat: warning!: 1099 of 2036 eraseblocks contain non-ubifs data
-> ubiformat: warning!: only 937 of 2036 eraseblocks have valid erase
-> counter
+> diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
+> index a4924de..78c77fc 100644
+> --- a/arch/arm/mach-at91/board-afeb-9260v1.c
+> +++ b/arch/arm/mach-at91/board-afeb-9260v1.c
+> @@ -136,19 +136,14 @@ static struct mtd_partition __initdata afeb9260_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(afeb9260_nand_partition);
+> -	return afeb9260_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata afeb9260_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+>  	.bus_width_16	= 0,
+> +	.parts		= afeb9260_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(afeb9260_nand_partition),
+>  };
+>  
+>  
+> diff --git a/arch/arm/mach-at91/board-cam60.c b/arch/arm/mach-at91/board-cam60.c
+> index 148fccb..eefae5b 100644
+> --- a/arch/arm/mach-at91/board-cam60.c
+> +++ b/arch/arm/mach-at91/board-cam60.c
+> @@ -138,19 +138,14 @@ static struct mtd_partition __initdata cam60_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(cam60_nand_partition);
+> -	return cam60_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata cam60_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  	// .det_pin	= ... not there
+>  	.rdy_pin	= AT91_PIN_PA9,
+>  	.enable_pin	= AT91_PIN_PA7,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= cam60_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(cam60_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata cam60_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-cap9adk.c b/arch/arm/mach-at91/board-cap9adk.c
+> index 1904fdf..8aaa6e6 100644
+> --- a/arch/arm/mach-at91/board-cap9adk.c
+> +++ b/arch/arm/mach-at91/board-cap9adk.c
+> @@ -175,19 +175,14 @@ static struct mtd_partition __initdata cap9adk_nand_partitions[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(cap9adk_nand_partitions);
+> -	return cap9adk_nand_partitions;
+> -}
+> -
+>  static struct atmel_nand_data __initdata cap9adk_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  //	.rdy_pin	= ... not connected
+>  	.enable_pin	= AT91_PIN_PD15,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= cap9adk_nand_partitions,
+> +	.num_parts	= ARRAY_SIZE(cap9adk_nand_partitions),
+>  };
+>  
+>  static struct sam9_smc_config __initdata cap9adk_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-kb9202.c b/arch/arm/mach-at91/board-kb9202.c
+> index a813a74..0cac9d3 100644
+> --- a/arch/arm/mach-at91/board-kb9202.c
+> +++ b/arch/arm/mach-at91/board-kb9202.c
+> @@ -102,19 +102,14 @@ static struct mtd_partition __initdata kb9202_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(kb9202_nand_partition);
+> -	return kb9202_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata kb9202_nand_data = {
+>  	.ale		= 22,
+>  	.cle		= 21,
+>  	// .det_pin	= ... not there
+>  	.rdy_pin	= AT91_PIN_PC29,
+>  	.enable_pin	= AT91_PIN_PC28,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= kb9202_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(kb9202_nand_partition),
+>  };
+>  
+>  static void __init kb9202_board_init(void)
+> diff --git a/arch/arm/mach-at91/board-neocore926.c b/arch/arm/mach-at91/board-neocore926.c
+> index 961e805..a63a4c9 100644
+> --- a/arch/arm/mach-at91/board-neocore926.c
+> +++ b/arch/arm/mach-at91/board-neocore926.c
+> @@ -188,19 +188,14 @@ static struct mtd_partition __initdata neocore926_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(neocore926_nand_partition);
+> -	return neocore926_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata neocore926_nand_data = {
+>  	.ale			= 21,
+>  	.cle			= 22,
+>  	.rdy_pin		= AT91_PIN_PB19,
+>  	.rdy_pin_active_low	= 1,
+>  	.enable_pin		= AT91_PIN_PD15,
+> -	.partition_info		= nand_partitions,
+> +	.parts			= neocore926_nand_partition,
+> +	.num_parts		= ARRAY_SIZE(neocore926_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata neocore926_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-qil-a9260.c b/arch/arm/mach-at91/board-qil-a9260.c
+> index d1a6001..86c163f 100644
+> --- a/arch/arm/mach-at91/board-qil-a9260.c
+> +++ b/arch/arm/mach-at91/board-qil-a9260.c
+> @@ -136,19 +136,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-rm9200dk.c b/arch/arm/mach-at91/board-rm9200dk.c
+> index aef9627..7c9af30 100644
+> --- a/arch/arm/mach-at91/board-rm9200dk.c
+> +++ b/arch/arm/mach-at91/board-rm9200dk.c
+> @@ -143,19 +143,14 @@ static struct mtd_partition __initdata dk_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(dk_nand_partition);
+> -	return dk_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata dk_nand_data = {
+>  	.ale		= 22,
+>  	.cle		= 21,
+>  	.det_pin	= AT91_PIN_PB1,
+>  	.rdy_pin	= AT91_PIN_PC2,
+>  	// .enable_pin	= ... not there
+> -	.partition_info	= nand_partitions,
+> +	.parts		= dk_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(dk_nand_partition),
+>  };
+>  
+>  #define DK_FLASH_BASE	AT91_CHIPSELECT_0
+> diff --git a/arch/arm/mach-at91/board-sam9-l9260.c b/arch/arm/mach-at91/board-sam9-l9260.c
+> index aaf1bf0..3646c2b 100644
+> --- a/arch/arm/mach-at91/board-sam9-l9260.c
+> +++ b/arch/arm/mach-at91/board-sam9-l9260.c
+> @@ -137,19 +137,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9260ek.c b/arch/arm/mach-at91/board-sam9260ek.c
+> index d600dc1..d6d9b21 100644
+> --- a/arch/arm/mach-at91/board-sam9260ek.c
+> +++ b/arch/arm/mach-at91/board-sam9260ek.c
+> @@ -179,19 +179,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9261ek.c b/arch/arm/mach-at91/board-sam9261ek.c
+> index f897f84..b4a3e18 100644
+> --- a/arch/arm/mach-at91/board-sam9261ek.c
+> +++ b/arch/arm/mach-at91/board-sam9261ek.c
+> @@ -185,19 +185,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 22,
+>  	.cle		= 21,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC15,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9263ek.c b/arch/arm/mach-at91/board-sam9263ek.c
+> index 605b26f..4e6d586 100644
+> --- a/arch/arm/mach-at91/board-sam9263ek.c
+> +++ b/arch/arm/mach-at91/board-sam9263ek.c
+> @@ -186,19 +186,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PA22,
+>  	.enable_pin	= AT91_PIN_PD15,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+> index 7624cf0..b0488b1 100644
+> --- a/arch/arm/mach-at91/board-sam9g20ek.c
+> +++ b/arch/arm/mach-at91/board-sam9g20ek.c
+> @@ -163,19 +163,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  /* det_pin is not connected */
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9m10g45ek.c b/arch/arm/mach-at91/board-sam9m10g45ek.c
+> index 063c95d..0bb3468 100644
+> --- a/arch/arm/mach-at91/board-sam9m10g45ek.c
+> +++ b/arch/arm/mach-at91/board-sam9m10g45ek.c
+> @@ -143,19 +143,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  /* det_pin is not connected */
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  	.rdy_pin	= AT91_PIN_PC8,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-sam9rlek.c b/arch/arm/mach-at91/board-sam9rlek.c
+> index effb399..7aee8ab 100644
+> --- a/arch/arm/mach-at91/board-sam9rlek.c
+> +++ b/arch/arm/mach-at91/board-sam9rlek.c
+> @@ -94,19 +94,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PD17,
+>  	.enable_pin	= AT91_PIN_PB6,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-snapper9260.c b/arch/arm/mach-at91/board-snapper9260.c
+> index 3eb0a11..a481451 100644
+> --- a/arch/arm/mach-at91/board-snapper9260.c
+> +++ b/arch/arm/mach-at91/board-snapper9260.c
+> @@ -102,18 +102,12 @@ static struct mtd_partition __initdata snapper9260_nand_partitions[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition * __init
+> -snapper9260_nand_partition_info(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(snapper9260_nand_partitions);
+> -	return snapper9260_nand_partitions;
+> -}
+> -
+>  static struct atmel_nand_data __initdata snapper9260_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  	.rdy_pin	= AT91_PIN_PC13,
+> -	.partition_info	= snapper9260_nand_partition_info,
+> +	.parts		= snapper9260_nand_partitions,
+> +	.num_parts	= ARRAY_SIZE(snapper9260_nand_partitions),
+>  	.bus_width_16	= 0,
+>  };
+>  
+> diff --git a/arch/arm/mach-at91/board-usb-a9260.c b/arch/arm/mach-at91/board-usb-a9260.c
+> index 0e784e6..43f40ef 100644
+> --- a/arch/arm/mach-at91/board-usb-a9260.c
+> +++ b/arch/arm/mach-at91/board-usb-a9260.c
+> @@ -110,19 +110,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	}
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC13,
+>  	.enable_pin	= AT91_PIN_PC14,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-usb-a9263.c b/arch/arm/mach-at91/board-usb-a9263.c
+> index cf626dd..288d764 100644
+> --- a/arch/arm/mach-at91/board-usb-a9263.c
+> +++ b/arch/arm/mach-at91/board-usb-a9263.c
+> @@ -123,19 +123,14 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+>  	}
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+> -	return ek_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata ek_nand_data = {
+>  	.ale		= 21,
+>  	.cle		= 22,
+>  //	.det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PA22,
+>  	.enable_pin	= AT91_PIN_PD15,
+> -	.partition_info	= nand_partitions,
+> +	.parts		= ek_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+>  };
+>  
+>  static struct sam9_smc_config __initdata ek_nand_smc_config = {
+> diff --git a/arch/arm/mach-at91/board-yl-9200.c b/arch/arm/mach-at91/board-yl-9200.c
+> index c208cc3..9ebc1ed 100644
+> --- a/arch/arm/mach-at91/board-yl-9200.c
+> +++ b/arch/arm/mach-at91/board-yl-9200.c
+> @@ -178,19 +178,14 @@ static struct mtd_partition __initdata yl9200_nand_partition[] = {
+>  	}
+>  };
+>  
+> -static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(yl9200_nand_partition);
+> -	return yl9200_nand_partition;
+> -}
+> -
+>  static struct atmel_nand_data __initdata yl9200_nand_data = {
+>  	.ale		= 6,
+>  	.cle		= 7,
+>  	// .det_pin	= ... not connected
+>  	.rdy_pin	= AT91_PIN_PC14,	/* R/!B (Sheet10) */
+>  	.enable_pin	= AT91_PIN_PC15,	/* !CE  (Sheet10) */
+> -	.partition_info	= nand_partitions,
+> +	.parts		= yl9200_nand_partition,
+> +	.num_parts	= ARRAY_SIZE(yl9200_nand_partition),
+>  };
+>  
+>  /*
+> diff --git a/arch/arm/mach-at91/include/mach/board.h b/arch/arm/mach-at91/include/mach/board.h
+> index ed544a0..6643531 100644
+> --- a/arch/arm/mach-at91/include/mach/board.h
+> +++ b/arch/arm/mach-at91/include/mach/board.h
+> @@ -112,7 +112,8 @@ struct atmel_nand_data {
+>  	u8		ale;		/* address line number connected to ALE */
+>  	u8		cle;		/* address line number connected to CLE */
+>  	u8		bus_width_16;	/* buswidth is 16 bit */
+> -	struct mtd_partition* (*partition_info)(int, int*);
+> +	struct mtd_partition *parts;
+> +	unsigned int	num_parts;
+>  };
+>  extern void __init at91_add_device_nand(struct atmel_nand_data *data);
+>  
+> diff --git a/arch/avr32/boards/atngw100/setup.c b/arch/avr32/boards/atngw100/setup.c
+> index fafed4c..1f17bde 100644
+> --- a/arch/avr32/boards/atngw100/setup.c
+> +++ b/arch/avr32/boards/atngw100/setup.c
+> @@ -90,11 +90,6 @@ static struct mtd_partition nand_partitions[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition *nand_part_info(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(nand_partitions);
+> -	return nand_partitions;
+> -}
+>  
+>  static struct atmel_nand_data atngw100mkii_nand_data __initdata = {
+>  	.cle		= 21,
+> @@ -102,7 +97,8 @@ static struct atmel_nand_data atngw100mkii_nand_data __initdata = {
+>  	.rdy_pin	= GPIO_PIN_PB(28),
+>  	.enable_pin	= GPIO_PIN_PE(23),
+>  	.bus_width_16	= true,
+> -	.partition_info	= nand_part_info,
+> +	.parts		= nand_partitions,
+> +	.num_parts	= ARRAY_SIZE(nand_partitions),
+>  };
+>  #endif
+>  
+> diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/atstk1000/atstk1002.c
+> index 6ce30fb..4643ff5 100644
+> --- a/arch/avr32/boards/atstk1000/atstk1002.c
+> +++ b/arch/avr32/boards/atstk1000/atstk1002.c
+> @@ -90,18 +90,13 @@ static struct mtd_partition nand_partitions[] = {
+>  	},
+>  };
+>  
+> -static struct mtd_partition *nand_part_info(int size, int *num_partitions)
+> -{
+> -	*num_partitions = ARRAY_SIZE(nand_partitions);
+> -	return nand_partitions;
+> -}
+> -
+>  static struct atmel_nand_data atstk1006_nand_data __initdata = {
+>  	.cle		= 21,
+>  	.ale		= 22,
+>  	.rdy_pin	= GPIO_PIN_PB(30),
+>  	.enable_pin	= GPIO_PIN_PB(29),
+> -	.partition_info	= nand_part_info,
+> +	.parts		= nand_partitions,
+> +	.num_parts	= ARRAY_SIZE(num_partitions),
+>  };
+>  #endif
+>  
+> diff --git a/arch/avr32/mach-at32ap/include/mach/board.h b/arch/avr32/mach-at32ap/include/mach/board.h
+> index 679458d..5d7ffca 100644
+> --- a/arch/avr32/mach-at32ap/include/mach/board.h
+> +++ b/arch/avr32/mach-at32ap/include/mach/board.h
+> @@ -128,7 +128,8 @@ struct atmel_nand_data {
+>  	u8	ale;		/* address line number connected to ALE */
+>  	u8	cle;		/* address line number connected to CLE */
+>  	u8	bus_width_16;	/* buswidth is 16 bit */
+> -	struct mtd_partition *(*partition_info)(int size, int *num_partitions);
+> +	struct mtd_partition *parts;
+> +	unsigned int	num_parts;
+>  };
+>  struct platform_device *
+>  at32_add_device_nand(unsigned int id, struct atmel_nand_data *data);
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index b300705..10605ed 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -659,9 +659,10 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+>  	num_partitions = parse_mtd_partitions(mtd, part_probes,
+>  					      &partitions, 0);
+>  #endif
+> -	if (num_partitions <= 0 && host->board->partition_info)
+> -		partitions = host->board->partition_info(mtd->size,
+> -							 &num_partitions);
+> +	if (num_partitions <= 0 && host->board->parts) {
+> +		partitions = host->board->parts;
+> +		num_partitions = host->board->num_parts;
+> +	}
+>  
+>  	if ((!partitions) || (num_partitions == 0)) {
+>  		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
 
-OK, this means that many eraseblocks in the flash contain some data
-which does not look like UBI headers.
-
-> 
-> The ubiattach now reports lots of:
-> ...
-> UBI error: check_corruption: PEB 0 contains corrupted VID header, and
-> the data does not contain all 0xFF, this may be a non-UBI PEB or a
-> severe VID header corruption which requires manual inspection
-> 
-> UBI warning: process_eb: valid VID header but corrupted EC header at
-> PEB 4
-> ...
-
-OK.
-
-> I realize that the U-Boot 'nand erase' does not preserve the erase
-> counters. So what would be the correct way to erase and write in
-> U-Boot?
-
-I do not know, you need to ask U-boot-aware people. I've CCed some.
-
->  And why is the ubiformat not able to correct the problems?
-
-It should be able to format any flash. Probably this is a bug. Can you
-reproduce this with nandsim please? Just insmod nandsim on your PC (see
-http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim or
-modinfo nandsim), write some garbage there or your image, and try to
-format it.
-
-If you can describe how I can reproduce this in my PC, I might look at
-this. Or you can just debug ubiformat yourself.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Nicolas Ferre
