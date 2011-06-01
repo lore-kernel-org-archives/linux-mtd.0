@@ -1,21 +1,26 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRgEf-0001HT-Jm
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 07:53:02 +0000
-Received: by fxm14 with SMTP id 14so4775548fxm.36
+	id 1QRgHS-0001PE-9h
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 07:55:54 +0000
+Received: by eyh6 with SMTP id 6so2156004eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 00:53:00 -0700 (PDT)
+	Wed, 01 Jun 2011 00:55:51 -0700 (PDT)
 Subject: Re: ubifs_decompress: cannot decompress ...
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
+In-Reply-To: <BANLkTimyNmXpKeCP3oHwx1SV2gdb4r7oNg@mail.gmail.com>
 References: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
+	<BANLkTin9hvdNCMeVRSj806R19obN_91v5w@mail.gmail.com>
+	<BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
+	<BANLkTim+sNbXG3yk_DGZk4=+0Za+gb65BA@mail.gmail.com>
+	<BANLkTimyNmXpKeCP3oHwx1SV2gdb4r7oNg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Jun 2011 10:48:34 +0300
-Message-ID: <1306914514.4405.51.camel@localhost>
+Date: Wed, 01 Jun 2011 10:51:26 +0300
+Message-ID: <1306914686.4405.53.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: MTD list <linux-mtd@lists.infradead.org>
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>,
+	MTD list <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-27 at 17:12 -0400, Matthew L. Creech wrote:
-> Hi,
-> 
-> We encountered a device which has the following error:
-> 
-> UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
-> compressor lzo, error -22
-> UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196)
-> UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
-> 556196, error -22
-> UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
-> compressor lzo, error -22
-> UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196)
-> UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
-> 556196, error -22
-> 
-> The device is still bootable (though not functional), so I can get
-> more debug info if needed.  Any ideas on what could cause this?
+On Tue, 2011-05-31 at 17:47 -0400, Matthew L. Creech wrote:
+> Unfortunately it's not repeatable enough for us to capture adequate
+> debug output - we've had several devices logging extensive debug
+> output via netconsole for months now, but none have recreated this
+> problem so far under those conditions.
 
-Yes, you can enable mount and recovery debugging messages and send me
-the log.
-
-> - MPC8313 (using fsl_elbc_nand driver)
-> - 1GB NAND flash (partitioned into 5MB for U-Boot, remainder for UBI/UBIFS)
-> - 2.6.39 kernel
-> 
-> Thanks!
-> 
-
+How this happens? What do you do? Does this happen after mount when you
+first read your data? Or this happens at some point while you stress
+testing your system? Or this happens after a power cut?
 
 -- 
 Best Regards,
