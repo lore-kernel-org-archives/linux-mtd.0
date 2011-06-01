@@ -1,29 +1,25 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRgR1-0001nA-V6
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 08:05:49 +0000
-Date: Wed, 1 Jun 2011 09:05:13 +0100
-From: Russell King <rmk@arm.linux.org.uk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH -next] mtd: fix physmap.h warnings
-Message-ID: <20110601080513.GA21186@flint.arm.linux.org.uk>
-References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
-	<20110523113709.4357b4ba.randy.dunlap@oracle.com>
-	<1306216431.2785.46.camel@localhost>
-	<1306216683.2785.47.camel@localhost>
-	<20110524074020.GA9490@flint.arm.linux.org.uk>
-	<1306222943.2785.55.camel@localhost>
-	<1306914354.4405.49.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1306914354.4405.49.camel@localhost>
-Sender: Russell King <rmk@arm.linux.org.uk>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Marc Zyngier <Marc.Zyngier@arm.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+	id 1QRgRn-0001qU-2s
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 08:06:36 +0000
+Received: by fxm14 with SMTP id 14so4784223fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 01 Jun 2011 01:06:33 -0700 (PDT)
+Subject: Re: ubifs_decompress: cannot decompress ...
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
+References: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
+	<BANLkTin9hvdNCMeVRSj806R19obN_91v5w@mail.gmail.com>
+	<BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 01 Jun 2011 11:02:08 +0300
+Message-ID: <1306915328.4405.62.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>,
+	MTD list <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,28 +29,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 01, 2011 at 10:45:54AM +0300, Artem Bityutskiy wrote:
-> On Tue, 2011-05-24 at 10:42 +0300, Artem Bityutskiy wrote:
-> > From: Randy Dunlap <randy.dunlap@oracle.com>
-> > Subject: [PATCH] mtd: fix physmap.h warnings
-> > 
-> > Fix build warnings in physmap.h:
-> > 
-> > include/linux/mtd/physmap.h:25: warning: 'struct platform_device' declared inside parameter list
-> > include/linux/mtd/physmap.h:25: warning: its scope is only this definition or declaration, which is probably not what you want
-> > include/linux/mtd/physmap.h:26: warning: 'struct platform_device' declared inside parameter list
-> > include/linux/mtd/physmap.h:27: warning: 'struct platform_device' declared inside parameter list
-> > 
-> > Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-> > Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Tue, 2011-05-31 at 11:47 -0400, Matthew L. Creech wrote:
+> On Mon, May 30, 2011 at 8:29 AM, Ben Gardiner
+> <bengardiner@nanometrics.ca> wrote:
+> >
+> > I don't see any debug statements in lzo1x_decompress_safe() that can
+> > be enabled, so you might want to add some printing to
+> > lzo1x_decompress_safe() or at least print the non-ok return code of
+> > lzo1x_decompress_safe() in lzo_decompress() to get an idea of how the
+> > decompressor is failing.
+> >
 > 
-> David, it looks like Russel did not merge this patch and people
-                            ^^
-> complain. Could you please merge it?
+> Looks like it's returning LZO_E_LOOKBEHIND_OVERRUN.  I don't know what
+> that indicates, but there is trailing 0xff data in the block to be
+> decompressed if that matters:
+> 
+> XXXX: LZO_E_LOOKBEHIND_OVERRUN
+> UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
+> compressor lzo, error -22
+> 00000000: 00 0f 69 6e 3a 61 74 74 72 00 c2 38 1c 03 39 03  ..in:attr..8..9.
+> 00000010: 2f 30 31 2f 6d 57 43 2f 2e 56 61 6c 75 65 4d 61  /01/mWC/.ValueMa
+> 00000020: 78 3a 61 91 03 94 31 72 00 69 6e d0 03 00 01 37  x:a...1r.in....7
+> 00000030: 1c 03 3d 01 2f 53 65 72 69 61 6c 4e 75 6d 62 65  ..=./SerialNumbe
+> 00000040: 72 2f 98 07 98 03 00 0a 04 2f 03 63 01 2f 53 6f  r/......./.c./So
+> 00000050: 66 74 77 61 72 65 2f 43 6f 6d 6d 61 6e 64 73 2f  ftware/Commands/
+> 00000060: 6e 65 78 74 d2 01 49 44 29 bc 00 03 06 47 04 81  next..ID)....G..
+> 00000070: 0d 03 28 c0 00 00 04 44 61 74 61 20 53 65 72 76  ..(....Data Serv
+> 00000080: 65 72 73 2f 42 41 43 6e 65 74 2d 49 50 c4 01 0b  ers/BACnet-IP...
+> 00000090: 44 65 76 69 63 65 49 6e 73 74 61 6e 63 65 29 14  DeviceInstance).
+> 000000a0: 01 05 00 f7 28 41 04 81 03 02 20 0c 1f 01 4d 41  ....(A.... ...MA
+> 000000b0: 43 29 08 01 03 02 19 42 04 81 05 20 0d 07 01 4e  C).....B... ...N
+> 000000c0: 61 6d 2a 14 02 02 02 18 3c 03 7b 20 02 04 01 07  am*.....<.{ ....
+> 000000d0: 42 4d 44 41 64 64 72 65 73 73 2a fc 01 02 1d 40  BMDAddress*....@
+> 000000e0: 04 81 01 20 05 f4 00 06 54 69 6d 65 54 6f 4c 69  ... ....TimeToLi
+> 000000f0: 76 2b f5 01 1e 20 05 f4 01 02 61 73 65 49 64 80  v+... ....aseId.
+> 00000100: 36 2a f5 01 20 20 05 f4 03 07 44 65 66 61 75 6c  6*..  ....Defaul
+> 00000110: 74 4e 65 74 2f e4 07 03 02 1a 46 04 81 0d 20 01  tNet/.....F... .
+> 00000120: 00 03 00 02 45 6e 61 62 6c 65 42 61 73 65 46 6f  ....EnableBaseFo
+> 00000130: 72 47 61 74 65 77 61 79 2a 24 02 02 1f 45 04 81  rGateway*$...E..
+> 00000140: 0b 20 0e 18 01 03 52 6f 75 74 65 64 2a 14 01 02  . ....Routed*...
+> 00000150: 21 50 04 81 21 20 01 14 01 c2 07 30 31 3e 84 09  !P..! .....01>..
+> 00000160: 03 01 f4 4b 04 81 17 20 17 40 01 2d a8 09 02 24  ...K... .@.-...$
+> 00000170: 4c 04 81 19 20 17 2c 01 2e d0 09 01 23 3a 03 77  L... .,.....#:.w
+> 00000180: 20 07 2c 01 2d 1d 02 1c 20 05 d0 0c b0 24 33 cc   .,.-... ....$3.
+> 00000190: 07 02 1b 00 00 00 11 6c 00 00 3f 6a 68 2e 73 ec  .......l..?jh.s.
+> 000001a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000001b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000001c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000001d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000001e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000001f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000210: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000220: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000230: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000240: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000250: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000260: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000270: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000280: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000290: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000002f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000300: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000310: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000320: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000330: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000340: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000350: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000360: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000370: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 00000390: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+> 000003f0: ff ff
+> UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196)
+> UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
+> 556196, error -22
 
-Bah, it got lost in the depths of my mailboxes and forgotten...
+I see the following possibilities:
+
+1. The data has been written like this - then the bug is at writing
+side. Check the data node - what is its length, is CRC correct? It would
+be useful to dump the node which cannot be decompressed - I'd accept
+such patch with great delight.
+
+2. You had power cuts while this peace of data has been written and
+recovery did not work correctly. Enabling mount and recovery messages
+would help.
+
+3. I merged several changes to 2.6.39 which could in theory break
+recovery. Try to reproduce this with 2.6.38.
+
+4. The fixup feature might have broke this - we might for some reason
+read less data than there. Although I see FFs start at offset 416, which
+is strange.
 
 -- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
