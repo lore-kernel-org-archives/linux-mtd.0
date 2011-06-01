@@ -1,10 +1,10 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRn1s-0005fW-3D
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 15:08:16 +0000
-Received: by ewy3 with SMTP id 3so2263118ewy.36
+	id 1QRnC2-0005lj-0F
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2011 15:18:46 +0000
+Received: by bwz1 with SMTP id 1so182660bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 08:08:14 -0700 (PDT)
+	Wed, 01 Jun 2011 08:18:42 -0700 (PDT)
 Subject: Re: [PATCH] UBIFS: fixup merged 'UBIFS: fix-up free space earlier'
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ben Gardiner <bengardiner@nanometrics.ca>
@@ -12,8 +12,8 @@ In-Reply-To: <1306940008-28454-1-git-send-email-bengardiner@nanometrics.ca>
 References: <1306923407.4405.94.camel@localhost>
 	<1306940008-28454-1-git-send-email-bengardiner@nanometrics.ca>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Jun 2011 18:03:51 +0300
-Message-ID: <1306940631.4405.122.camel@localhost>
+Date: Wed, 01 Jun 2011 18:14:16 +0300
+Message-ID: <1306941256.4405.123.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew
@@ -37,8 +37,13 @@ On Wed, 2011-06-01 at 10:53 -0400, Ben Gardiner wrote:
 > Put the free-space-fixup after allocate-lpt.
 > 
 > Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+> 
+> ---
+> With this fixup applied on-top-of the ubifs-2.6 master I am able to mount a
+> ubinized image containing a UBIFS volume which has the free-space-fixup flag
+> set. No assertions are displayed.
 
-I'll take a look at this and fold this change in a bit later, thanks.
+Thanks. Merged this patch to the 3rd one and pushed out.
 
 -- 
 Best Regards,
