@@ -1,24 +1,15 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRzcR-0008AB-S4
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 04:34:52 +0000
-Received: by vws8 with SMTP id 8so509176vws.36
+	id 1QRzzv-0008FB-BL
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 04:59:11 +0000
+Received: by gwb1 with SMTP id 1so266675gwb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Jun 2011 21:34:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1306915328.4405.62.camel@localhost>
-References: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
-	<BANLkTin9hvdNCMeVRSj806R19obN_91v5w@mail.gmail.com>
-	<BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
-	<1306915328.4405.62.camel@localhost>
-Date: Thu, 2 Jun 2011 00:34:50 -0400
-Message-ID: <BANLkTinFZqjt5cp8u_Oqmd9B9ycec16Lhg@mail.gmail.com>
-Subject: Re: ubifs_decompress: cannot decompress ...
+	Wed, 01 Jun 2011 21:59:03 -0700 (PDT)
 From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ben Gardiner <bengardiner@nanometrics.ca>,
-	MTD list <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBIFS FAQ: kernel version 2.6.40 -> 3.0
+Date: Thu,  2 Jun 2011 00:59:00 -0400
+Message-Id: <1306990740-7741-1-git-send-email-mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 1, 2011 at 4:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> 4. The fixup feature might have broke this - we might for some reason
-> read less data than there. Although I see FFs start at offset 416, which
-> is strange.
->
+---
+ faq/ubifs.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Also, I can rule this possibility out - although the device is now
-running a recent kernel with the fix-up code present, it was upgraded
-last week from an older version.  So the UBIFS image it was originally
-programmed with (and is still using) didn't have the fixup flag set.
-
+diff --git a/faq/ubifs.xml b/faq/ubifs.xml
+index 06ae05b..3348da4 100644
+--- a/faq/ubifs.xml
++++ b/faq/ubifs.xml
+@@ -629,7 +629,7 @@ time. But this happens only once, and the "free space fixup" procedure then
+ unsets the "fixup" UBIFS superblock flag.</p>
+ 
+ <p>This option is supported if you are running a kernel version
+-<code>2.6.40</code> or higher, or if you have pulled the changes from a UBIFS
++<code>3.0</code> or higher, or if you have pulled the changes from a UBIFS
+ <a href="../doc/ubifs.html#L_source">back-port tree</a>.  Note that
+ <code>ubiformat</code> is still the preferred flashing method if the image is
+ not being flashed for the first time, since it preserves existing erase
 -- 
-Matthew L. Creech
+1.7.4.1
