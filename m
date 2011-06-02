@@ -1,18 +1,21 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSCnR-0002It-RA
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 18:39:06 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH] mtd: nand: remove unnecessary TODO
-Date: Thu, 2 Jun 2011 11:38:26 -0700
-Message-ID: <1307039906-6462-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QSD04-0002Qq-Jn
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 18:52:09 +0000
+Received: by fxm14 with SMTP id 14so1286396fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 02 Jun 2011 11:52:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Florian Fainelli <ffainelli@freebox.fr>
+In-Reply-To: <1307038511-5968-1-git-send-email-computersforpeace@gmail.com>
+References: <1307038511-5968-1-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 2 Jun 2011 14:51:45 -0400
+Message-ID: <BANLkTim3uCTqGav2PkJ6D2DfZBjKRg2gcw@mail.gmail.com>
+Subject: Re: [RFC] nanddump: skip bad blocks, print full length with --omitbad
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I believe this TODO was unnecessary back when it was introduced:
-	commit d1e1f4e42b5df063712ca2926e50c07b95c96b96
-	mtd: nand: add support for reading ONFI parameters...
+On Thu, Jun 2, 2011 at 14:15, Brian Norris wrote:
+> I'm not sure the original intended use of nanddump's '--omitbad' option,
+> but as described below, it doesn't seem to make the most sense to me.
+> I'm curiouse whether this change should be implemented as yet another
+> new nanddump option (perhaps a '--skipbad' vs. '--omitbad'? this starts
+> getting confusing) or if we can simply modify the old behavior of
+> '--omitbad'.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_base.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a46e9bb..7781988 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3151,7 +3151,6 @@ ident_done:
- 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
- 		chip->cmdfunc = nand_command_lp;
- 
--	/* TODO onfi flash name */
- 	printk(KERN_INFO "NAND device: Manufacturer ID:"
- 		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
- 		nand_manuf_ids[maf_idx].name,
--- 
-1.7.0.4
+pretty sure the opt operates as i intended.  sounds like you want to
+add --skipbad.
+-mike
