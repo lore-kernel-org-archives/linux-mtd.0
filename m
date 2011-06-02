@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QS9FQ-00074e-Q9
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:46 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so758005wwb.18
+	id 1QS9FU-00074g-A2
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:49 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so758040wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 07:51:44 -0700 (PDT)
+	Thu, 02 Jun 2011 07:51:48 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 043/104] mtd: physmap_of: use ofpart through generic parsing
-Date: Thu,  2 Jun 2011 18:51:21 +0400
-Message-Id: <1307026293-8535-9-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 044/104] mtd: fsl_elbc_nand: use ofpart through generic parsing
+Date: Thu,  2 Jun 2011 18:51:22 +0400
+Message-Id: <1307026293-8535-10-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,43 +26,42 @@ parse_mtd_partitions().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/physmap_of.c |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c |    9 ++-------
+ 1 files changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index d251d1d..312eb17 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -165,7 +165,8 @@ static struct mtd_info * __devinit obsolete_probe(struct platform_device *dev,
-    specifies the list of partition probers to use. If none is given then the
-    default is use. These take precedence over other device tree
-    information. */
--static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
-+static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot",
-+					"ofpart", NULL };
- static const char ** __devinit of_get_probes(struct device_node *dp)
- {
- 	const char *cp;
-@@ -331,6 +332,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	if (err)
- 		goto err_out;
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 0bb254c..b818264 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -842,7 +842,7 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+ 	struct resource res;
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
+ 	static const char *part_probe_types[]
+-		= { "cmdlinepart", "RedBoot", NULL };
++		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
+ 	struct mtd_partition *parts;
+ 	int ret;
+ 	int bank;
+@@ -910,6 +910,7 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
-+	info->cmtd->node = dp;
- 	part_probe_types = of_get_probes(dp);
- 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
- 				   &info->parts, 0);
-@@ -341,12 +343,6 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	of_free_probes(part_probe_types);
++	priv->mtd.node = pdev->dev.of_node;
+ 	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
+@@ -938,12 +939,6 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err;
  
- 	if (err == 0) {
--		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
--		if (err < 0)
--			goto err_out;
+-	if (ret == 0) {
+-		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
+-		if (ret < 0)
+-			goto err;
 -	}
 -
--	if (err == 0) {
- 		err = parse_obsolete_partitions(dev, info, dp);
- 		if (err < 0)
- 			goto err_out;
+ 	mtd_device_register(&priv->mtd, parts, ret);
+ 
+ 	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
 -- 
 1.7.4.4
