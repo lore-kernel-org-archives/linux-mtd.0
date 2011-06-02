@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QS9FU-00074g-A2
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:49 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so758040wwb.18
+	id 1QS9FV-00074e-SI
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:50 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so758005wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 07:51:48 -0700 (PDT)
+	Thu, 02 Jun 2011 07:51:49 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 044/104] mtd: fsl_elbc_nand: use ofpart through generic parsing
-Date: Thu,  2 Jun 2011 18:51:22 +0400
-Message-Id: <1307026293-8535-10-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 045/104] mtd: fsl_upm: use ofpart through generic parsing
+Date: Thu,  2 Jun 2011 18:51:23 +0400
+Message-Id: <1307026293-8535-11-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,42 +26,34 @@ parse_mtd_partitions().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |    9 ++-------
- 1 files changed, 2 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/fsl_upm.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 0bb254c..b818264 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -842,7 +842,7 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 	struct resource res;
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
- 	static const char *part_probe_types[]
--		= { "cmdlinepart", "RedBoot", NULL };
-+		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
- 	struct mtd_partition *parts;
- 	int ret;
- 	int bank;
-@@ -910,6 +910,7 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 		goto err;
- 	}
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 7c782eb..253b8ff 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -175,6 +175,7 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
  
-+	priv->mtd.node = pdev->dev.of_node;
- 	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
- 	if (!priv->mtd.name) {
- 		ret = -ENOMEM;
-@@ -938,12 +939,6 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto err;
+ 	fun->mtd.priv = &fun->chip;
+ 	fun->mtd.owner = THIS_MODULE;
++	fun->mtd.node = flash_np;
  
+ 	flash_np = of_get_next_child(upm_np, NULL);
+ 	if (!flash_np)
+@@ -193,13 +194,6 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
+ 
+ 	ret = parse_mtd_partitions(&fun->mtd, NULL, &fun->parts, 0);
+ 
+-#ifdef CONFIG_MTD_OF_PARTS
 -	if (ret == 0) {
--		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
+-		ret = of_mtd_parse_partitions(fun->dev, flash_np, &fun->parts);
 -		if (ret < 0)
 -			goto err;
 -	}
--
- 	mtd_device_register(&priv->mtd, parts, ret);
- 
- 	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
+-#endif
+ 	ret = mtd_device_register(&fun->mtd, fun->parts, ret);
+ err:
+ 	of_node_put(flash_np);
 -- 
 1.7.4.4
