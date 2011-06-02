@@ -1,16 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QS9FI-00074g-BN
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:37 +0000
-Received: by wwb39 with SMTP id 39so758040wwb.18
+	id 1QS9FJ-00074f-1v
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:38 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so928274wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 07:51:35 -0700 (PDT)
+	Thu, 02 Jun 2011 07:51:36 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 005/104] mtd: cafe_nand: drop reference to
-	CONFIG_MTD_CMDLINE_PARTS
-Date: Thu,  2 Jun 2011 18:51:15 +0400
-Message-Id: <1307026293-8535-3-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 006/104] mtdpart: default to cmdlinepart,
+	NULL partitions probing
+Date: Thu,  2 Jun 2011 18:51:16 +0400
+Message-Id: <1307026293-8535-4-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,27 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is no need to guard mtd->name with CONFIG_MTD_CMDLINE_PARTS
-as name can be used by other parts.
+Lots of MTD devices default to cmdlinepart, NULL as partition parsing
+order. Make it a default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/cafe_nand.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdpart.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 87ebb4e..2cb3141 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -802,9 +802,7 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
- 	/* We register the whole device first, separate from the partitions */
- 	mtd_device_register(mtd, NULL, 0);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 630be3e..3477e16 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -712,12 +712,17 @@ int deregister_mtd_parser(struct mtd_part_parser *p)
+ }
+ EXPORT_SYMBOL_GPL(deregister_mtd_parser);
  
--#ifdef CONFIG_MTD_CMDLINE_PARTS
- 	mtd->name = "cafe_nand";
--#endif
- 	nr_parts = parse_mtd_partitions(mtd, part_probes, &parts, 0);
- 	if (nr_parts > 0) {
- 		cafe->parts = parts;
++static const char *default_mtd_part_types[] = {"cmdlinepart", NULL};
++
+ int parse_mtd_partitions(struct mtd_info *master, const char **types,
+ 			 struct mtd_partition **pparts, unsigned long origin)
+ {
+ 	struct mtd_part_parser *parser;
+ 	int ret = 0;
+ 
++	if (!types)
++		types = default_mtd_part_types;
++
+ 	for ( ; ret <= 0 && *types; types++) {
+ 		parser = get_partition_parser(*types);
+ 		if (!parser && !request_module("%s", *types))
 -- 
 1.7.4.4
