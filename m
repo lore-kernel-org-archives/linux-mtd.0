@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QS9FP-00074g-3l
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:44 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so758040wwb.18
+	id 1QS9FQ-00074e-Q9
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:46 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so758005wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 07:51:42 -0700 (PDT)
+	Thu, 02 Jun 2011 07:51:44 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 042/104] mtd: m25p80: use ofpart through generic parsing
-Date: Thu,  2 Jun 2011 18:51:20 +0400
-Message-Id: <1307026293-8535-8-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 043/104] mtd: physmap_of: use ofpart through generic parsing
+Date: Thu,  2 Jun 2011 18:51:21 +0400
+Message-Id: <1307026293-8535-9-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,34 +26,43 @@ parse_mtd_partitions().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c |    8 +-------
- 1 files changed, 1 insertions(+), 7 deletions(-)
+ drivers/mtd/maps/physmap_of.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 70d5fca..a1cdb52 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -928,6 +928,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	if (info->flags & M25P_NO_ERASE)
- 		flash->mtd.flags |= MTD_NO_ERASE;
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index d251d1d..312eb17 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -165,7 +165,8 @@ static struct mtd_info * __devinit obsolete_probe(struct platform_device *dev,
+    specifies the list of partition probers to use. If none is given then the
+    default is use. These take precedence over other device tree
+    information. */
+-static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
++static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot",
++					"ofpart", NULL };
+ static const char ** __devinit of_get_probes(struct device_node *dp)
+ {
+ 	const char *cp;
+@@ -331,6 +332,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
+ 	if (err)
+ 		goto err_out;
  
-+	flash->mtd.node = spi->dev.of_node;
- 	flash->mtd.dev.parent = &spi->dev;
- 	flash->page_size = info->page_size;
++	info->cmtd->node = dp;
+ 	part_probe_types = of_get_probes(dp);
+ 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
+ 				   &info->parts, 0);
+@@ -341,12 +343,6 @@ static int __devinit of_flash_probe(struct platform_device *dev)
+ 	of_free_probes(part_probe_types);
  
-@@ -975,13 +976,6 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 		nr_parts = data->nr_parts;
- 	}
- 
--#ifdef CONFIG_MTD_OF_PARTS
--	if (nr_parts <= 0 && spi->dev.of_node) {
--		nr_parts = of_mtd_parse_partitions(&spi->dev,
--						   spi->dev.of_node, &parts);
+ 	if (err == 0) {
+-		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
+-		if (err < 0)
+-			goto err_out;
 -	}
--#endif
 -
- 	if (nr_parts > 0) {
- 		for (i = 0; i < nr_parts; i++) {
- 			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+-	if (err == 0) {
+ 		err = parse_obsolete_partitions(dev, info, dp);
+ 		if (err < 0)
+ 			goto err_out;
 -- 
 1.7.4.4
