@@ -1,16 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QS9FJ-00074f-1v
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:38 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so928274wyb.36
+	id 1QS9FK-00074g-HB
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 14:51:39 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so758040wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 07:51:36 -0700 (PDT)
+	Thu, 02 Jun 2011 07:51:38 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 006/104] mtdpart: default to cmdlinepart,
-	NULL partitions probing
-Date: Thu,  2 Jun 2011 18:51:16 +0400
-Message-Id: <1307026293-8535-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 007/104] mtd: m25p80 don't specify default parsing options
+Date: Thu,  2 Jun 2011 18:51:17 +0400
+Message-Id: <1307026293-8535-5-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,35 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Lots of MTD devices default to cmdlinepart, NULL as partition parsing
-order. Make it a default.
+Since 'cmdline, NULL' is now a default for parse_mtd_partitions, don't specify
+this in every driver, instead pass NULL to force parse_mtd_partitions
+to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/mtdpart.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ drivers/mtd/devices/m25p80.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 630be3e..3477e16 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -712,12 +712,17 @@ int deregister_mtd_parser(struct mtd_part_parser *p)
- }
- EXPORT_SYMBOL_GPL(deregister_mtd_parser);
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 35180e4..70d5fca 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -968,13 +968,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	/* partitions should match sector boundaries; and it may be good to
+ 	 * use readonly partitions for writeprotected sectors (BP2..BP0).
+ 	 */
+-	if (mtd_has_cmdlinepart()) {
+-		static const char *part_probes[]
+-			= { "cmdlinepart", NULL, };
+-
+-		nr_parts = parse_mtd_partitions(&flash->mtd,
+-						part_probes, &parts, 0);
+-	}
++	nr_parts = parse_mtd_partitions(&flash->mtd, NULL, &parts, 0);
  
-+static const char *default_mtd_part_types[] = {"cmdlinepart", NULL};
-+
- int parse_mtd_partitions(struct mtd_info *master, const char **types,
- 			 struct mtd_partition **pparts, unsigned long origin)
- {
- 	struct mtd_part_parser *parser;
- 	int ret = 0;
- 
-+	if (!types)
-+		types = default_mtd_part_types;
-+
- 	for ( ; ret <= 0 && *types; types++) {
- 		parser = get_partition_parser(*types);
- 		if (!parser && !request_module("%s", *types))
+ 	if (nr_parts <= 0 && data && data->parts) {
+ 		parts = data->parts;
 -- 
 1.7.4.4
