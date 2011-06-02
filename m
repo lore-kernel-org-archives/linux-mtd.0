@@ -1,23 +1,18 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSCZD-0002CA-RJ
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 18:24:25 +0000
-Received: by wyb28 with SMTP id 28so1175640wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Jun 2011 11:24:21 -0700 (PDT)
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QSCnR-0002It-RA
+	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2011 18:39:06 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: remove unnecessary TODO
+Date: Thu, 2 Jun 2011 11:38:26 -0700
+Message-ID: <1307039906-6462-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <BANLkTin0ki3brkxP02pxuZ2m6QBe=9bNhA@mail.gmail.com>
-References: <1306936600-28870-1-git-send-email-jiri.pinkava@vscht.cz>
-	<BANLkTin0ki3brkxP02pxuZ2m6QBe=9bNhA@mail.gmail.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Thu, 2 Jun 2011 23:54:01 +0530
-Message-ID: <BANLkTi=aex1zmOS+V1FiWVgoY+LySMfZFw@mail.gmail.com>
-Subject: Re: [PATCH] nand: Remove meaningless delay from nand_unlock
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, Vimal Singh <vimalsingh@ti.com>, jiri.pinkava@vscht.cz,
-	linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Florian Fainelli <ffainelli@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 2, 2011 at 9:53 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Wed, Jun 1, 2011 at 6:56 AM, =A0<jiri.pinkava@vscht.cz> wrote:
->> From: Jiri Pinkava <jiri.pinkava@vscht.cz>
->>
->> This delay is meaningless. If delay is needed it is device specific
->> and must be reimplemented by specific driver, otherwise no delay is
->> needed.
-Indeed, these delays are not required. I guess it was left out code
-before posting the patch.
-Here is my ack:
+I believe this TODO was unnecessary back when it was introduced:
+	commit d1e1f4e42b5df063712ca2926e50c07b95c96b96
+	mtd: nand: add support for reading ONFI parameters...
 
-Acked-by: Vimal Singh <vimal.newwork@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
---=20
-Regards,
-Vimal Singh
-
->>
->> This function is not used by any current kernel code, affects only
->> external code (like main).
->
-> Looks ok to me, but I don't have hardware to test this with.
->
-> CC'ing Vimal who added this code originally.
->
-> Brian
->
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a46e9bb..7781988 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3151,7 +3151,6 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	/* TODO onfi flash name */
+ 	printk(KERN_INFO "NAND device: Manufacturer ID:"
+ 		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
+ 		nand_manuf_ids[maf_idx].name,
+-- 
+1.7.0.4
