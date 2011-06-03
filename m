@@ -1,20 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSVSC-0007Lv-64
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 14:34:24 +0000
-Received: by eyh6 with SMTP id 6so869478eyh.36
+	id 1QSW1o-0001Dz-1s
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:11:12 +0000
+Received: by ewy3 with SMTP id 3so883796ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 07:34:22 -0700 (PDT)
+	Fri, 03 Jun 2011 08:11:08 -0700 (PDT)
 Subject: Re: [PATCH 05/10] UBIFS: fix shrinker object count reports
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <1307108926.3069.0.camel@localhost>
+In-Reply-To: <1307111413.3069.5.camel@localhost>
 References: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 	<1307109001-19761-6-git-send-email-dedekind1@gmail.com>
-	<1307108926.3069.0.camel@localhost>
+	<1307108926.3069.0.camel@localhost> <1307111413.3069.5.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 17:30:13 +0300
-Message-ID: <1307111413.3069.5.camel@localhost>
+Date: Fri, 03 Jun 2011 18:06:59 +0300
+Message-ID: <1307113619.3069.14.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Reply-To: dedekind1@gmail.com
@@ -27,23 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-06-03 at 16:48 +0300, Artem Bityutskiy wrote:
-> On Fri, 2011-06-03 at 16:49 +0300, Artem Bityutskiy wrote:
-> > +		/*
-> > +		 * Due to the way UBIFS updates the clean znode counter it may
-> > +		 * temporarily be negative.
-> > +		 */
-> > +		return clean_zn_cnt > 0 ?: 1;
-> 
-> Oh, this should be  clean_zn_cnt >= 0 ?: 1;
+So,
 
-Crap, sorry, stupid me :-)
+>From cf610bf4199770420629d3bc273494bd27ad6c1d Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Tue, 31 May 2011 07:03:21 +0300
+Subject: [PATCH] UBIFS: fix shrinker object count reports
 
-return clean_zn_cnt < 0 ?: clean_zn_cnt;
+Sometimes VM asks the shrinker to return amount of objects it can shrink,
+and we return the ubifs_clean_zn_cnt in that case. However, it is possible
+that this counter is negative for a short period of time, due to the way
+UBIFS TNC code updates it. And I can observe the following warnings sometimes:
 
-But yeah, it is saner to not use "?:" at all:
+shrink_slab: ubifs_shrinker+0x0/0x2b7 [ubifs] negative objects to delete nr=-8541616642706119788
 
-return clean_zn_cnt >= 0 ? clean_zn_cnt: 1;
+This patch makes sure UBIFS never returns negative count of objects.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: stable@kernel.org
+---
+ fs/ubifs/shrinker.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+index ca953a9..9e1d056 100644
+--- a/fs/ubifs/shrinker.c
++++ b/fs/ubifs/shrinker.c
+@@ -284,7 +284,11 @@ int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
+ 	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
+ 
+ 	if (nr == 0)
+-		return clean_zn_cnt;
++		/*
++		 * Due to the way UBIFS updates the clean znode counter it may
++		 * temporarily be negative.
++		 */
++		return clean_zn_cnt >= 0 ? clean_zn_cnt : 1;
+ 
+ 	if (!clean_zn_cnt) {
+ 		/*
+-- 
+1.7.2.3
 
 -- 
 Best Regards,
