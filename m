@@ -1,15 +1,21 @@
-MIME-Version: 1.0
-In-Reply-To: <1307075905.4405.130.camel@localhost>
-References: <1307015648-17505-1-git-send-email-dbaryshkov@gmail.com>
-	<1307075905.4405.130.camel@localhost>
-Date: Fri, 3 Jun 2011 09:02:47 +0400
-Message-ID: <BANLkTi=TQfMec9Kuq4-P9Rokp44g67Tx6A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] clps711x/ceiva: port to use physmap flash
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Artem.Bityutskiy@nokia.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Russell King <linux@arm.linux.org.uk>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-px0-f171.google.com ([209.85.212.171])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QSMiD-00075z-6w
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 05:14:21 +0000
+Received: by pxi7 with SMTP id 7so885013pxi.16
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 02 Jun 2011 22:14:17 -0700 (PDT)
+Subject: [PATCH 1/2] mtd: pxa3xx_nand: fix a memory leak
+From: Axel Lin <axel.lin@gmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 03 Jun 2011 13:14:10 +0800
+Message-ID: <1307078050.4167.1.camel@phoenix>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/3/11, Artem Bityutskiy <Artem.Bityutskiy@nokia.com> wrote:
-> On Thu, 2011-06-02 at 15:54 +0400, Dmitry Eremin-Solenikov wrote:
->> Port ceiva machine to use physmap flash instead of custom mapping driver
->> (which even can't compile cleanly with current kernels). All info
->> is gathered from drivers/mtd/maps/ceiva.c. Compile tested only.
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->> ---
->>  arch/arm/mach-clps711x/ceiva.c |   60
->> ++++++++++++++++++++++++++++++++++++++++
->>  1 files changed, 60 insertions(+), 0 deletions(-)
->
-> Is ceiva used and not dead? May be we could kill it completely?
+In pxa3xx_nand_remove, we should call nand_release instead of
+mtd_device_unregister to properly free bad block table memory
+and bad block descriptor memory.
 
-No functional changes to board file since start of git history. Also
-I don't know how useful can be contemporary Linux on 4 MiB of RAM
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1fb3b3a..f7040ea 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1119,7 +1119,7 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 	clk_put(info->clk);
+ 
+ 	if (mtd) {
+-		mtd_device_unregister(mtd);
++		nand_release(mtd);
+ 		kfree(mtd);
+ 	}
+ 	return 0;
 -- 
-With best wishes
-Dmitry
+1.7.4.1
