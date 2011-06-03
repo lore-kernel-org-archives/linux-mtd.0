@@ -1,23 +1,18 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSW1o-0001Dz-1s
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:11:12 +0000
-Received: by ewy3 with SMTP id 3so883796ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 08:11:08 -0700 (PDT)
-Subject: Re: [PATCH 05/10] UBIFS: fix shrinker object count reports
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1307111413.3069.5.camel@localhost>
-References: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
-	<1307109001-19761-6-git-send-email-dedekind1@gmail.com>
-	<1307108926.3069.0.camel@localhost> <1307111413.3069.5.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 18:06:59 +0300
-Message-ID: <1307113619.3069.14.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <1305865207-7869-1-git-send-email-leiwen@marvell.com>
+References: <BANLkTimos3-Ds4Y8FDfDZegqAhH7nSS4PA@mail.gmail.com>
+	<1305865207-7869-1-git-send-email-leiwen@marvell.com>
+Date: Fri, 3 Jun 2011 23:11:54 +0800
+Message-ID: <BANLkTinuqQmp43K4H0iPDbb-H-rDA_nL9w@mail.gmail.com>
+Subject: Re: [PATCH] MTD: pxa3xx_nand: fix nand detection issue
+From: Lei Wen <adrian.wenl@gmail.com>
+To: Lei Wen <leiwen@marvell.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+	stable@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So,
+Tested-by: Daniel Mack <zonque@gmail.com>
 
->From cf610bf4199770420629d3bc273494bd27ad6c1d Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Tue, 31 May 2011 07:03:21 +0300
-Subject: [PATCH] UBIFS: fix shrinker object count reports
+Also cc to MTD maillist and stable kernel.
 
-Sometimes VM asks the shrinker to return amount of objects it can shrink,
-and we return the ubifs_clean_zn_cnt in that case. However, it is possible
-that this counter is negative for a short period of time, due to the way
-UBIFS TNC code updates it. And I can observe the following warnings sometimes:
-
-shrink_slab: ubifs_shrinker+0x0/0x2b7 [ubifs] negative objects to delete nr=-8541616642706119788
-
-This patch makes sure UBIFS never returns negative count of objects.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: stable@kernel.org
----
- fs/ubifs/shrinker.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
-
-diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
-index ca953a9..9e1d056 100644
---- a/fs/ubifs/shrinker.c
-+++ b/fs/ubifs/shrinker.c
-@@ -284,7 +284,11 @@ int ubifs_shrinker(struct shrinker *shrink, struct shrink_control *sc)
- 	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
- 
- 	if (nr == 0)
--		return clean_zn_cnt;
-+		/*
-+		 * Due to the way UBIFS updates the clean znode counter it may
-+		 * temporarily be negative.
-+		 */
-+		return clean_zn_cnt >= 0 ? clean_zn_cnt : 1;
- 
- 	if (!clean_zn_cnt) {
- 		/*
--- 
-1.7.2.3
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+On Fri, May 20, 2011 at 12:20 PM, Lei Wen <leiwen@marvell.com> wrote:
+> When keep_config is set, the detection would goes different routine.
+> That the driver would read out the setting which is set previously
+> by bootloader. While most bootloader keep the irq mask as off, and
+> current driver need all irq default open, keep_config behavior would
+> lead to no irq at all.
+>
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
+> ---
+> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 12 +++++++-----
+> =A01 files changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
+d.c
+> index ff07012..9896aef 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -813,7 +813,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_na=
+nd_info *info)
+> =A0 =A0 =A0 =A0info->page_size =3D ndcr & NDCR_PAGE_SZ ? 2048 : 512;
+> =A0 =A0 =A0 =A0/* set info fields needed to read id */
+> =A0 =A0 =A0 =A0info->read_id_bytes =3D (info->page_size =3D=3D 2048) ? 4 =
+: 2;
+> - =A0 =A0 =A0 info->reg_ndcr =3D ndcr;
+> + =A0 =A0 =A0 info->reg_ndcr =3D ndcr & ~NDCR_INT_MASK;
+> =A0 =A0 =A0 =A0info->cmdset =3D &default_cmdset;
+>
+> =A0 =A0 =A0 =A0info->ndtr0cs0 =3D nand_readl(info, NDTR0CS0);
+> @@ -882,7 +882,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0struct pxa3xx_nand_info *info =3D mtd->priv;
+> =A0 =A0 =A0 =A0struct platform_device *pdev =3D info->pdev;
+> =A0 =A0 =A0 =A0struct pxa3xx_nand_platform_data *pdata =3D pdev->dev.plat=
+form_data;
+> - =A0 =A0 =A0 struct nand_flash_dev pxa3xx_flash_ids[2] =3D { {NULL,}, {N=
+ULL,} };
+> + =A0 =A0 =A0 struct nand_flash_dev pxa3xx_flash_ids[2], *def =3D NULL;
+> =A0 =A0 =A0 =A0const struct pxa3xx_nand_flash *f =3D NULL;
+> =A0 =A0 =A0 =A0struct nand_chip *chip =3D mtd->priv;
+> =A0 =A0 =A0 =A0uint32_t id =3D -1;
+> @@ -942,8 +942,10 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0pxa3xx_flash_ids[0].erasesize =3D f->page_size * f->page_p=
+er_block;
+> =A0 =A0 =A0 =A0if (f->flash_width =3D=3D 16)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pxa3xx_flash_ids[0].options =3D NAND_BUSWI=
+DTH_16;
+> + =A0 =A0 =A0 pxa3xx_flash_ids[1].name =3D NULL;
+> + =A0 =A0 =A0 def =3D pxa3xx_flash_ids;
+> =A0KEEP_CONFIG:
+> - =A0 =A0 =A0 if (nand_scan_ident(mtd, 1, pxa3xx_flash_ids))
+> + =A0 =A0 =A0 if (nand_scan_ident(mtd, 1, def))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENODEV;
+> =A0 =A0 =A0 =A0/* calculate addressing information */
+> =A0 =A0 =A0 =A0info->col_addr_cycles =3D (mtd->writesize >=3D 2048) ? 2 :=
+ 1;
+> @@ -954,9 +956,9 @@ KEEP_CONFIG:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0info->row_addr_cycles =3D 2;
+> =A0 =A0 =A0 =A0mtd->name =3D mtd_names[0];
+> =A0 =A0 =A0 =A0chip->ecc.mode =3D NAND_ECC_HW;
+> - =A0 =A0 =A0 chip->ecc.size =3D f->page_size;
+> + =A0 =A0 =A0 chip->ecc.size =3D info->page_size;
+>
+> - =A0 =A0 =A0 chip->options =3D (f->flash_width =3D=3D 16) ? NAND_BUSWIDT=
+H_16 : 0;
+> + =A0 =A0 =A0 chip->options =3D (info->reg_ndcr & NDCR_DWIDTH_M) ? NAND_B=
+USWIDTH_16 : 0;
+> =A0 =A0 =A0 =A0chip->options |=3D NAND_NO_AUTOINCR;
+> =A0 =A0 =A0 =A0chip->options |=3D NAND_NO_READRDY;
+>
+> --
+> 1.7.0.4
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
