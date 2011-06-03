@@ -1,21 +1,23 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSWmV-0002Fv-Sy
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:59:28 +0000
-Received: by ewy3 with SMTP id 3so903167ewy.36
+	id 1QSWq0-0002M5-2P
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 16:03:04 +0000
+Received: by ewy3 with SMTP id 3so904645ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 08:59:25 -0700 (PDT)
-Subject: Re: [RFC PATCH 000/104] mtd: cleanup partition parsing interface
+	Fri, 03 Jun 2011 09:03:02 -0700 (PDT)
+Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
-References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>, Roman Tereshonkov
+	<roman.tereshonkov@nokia.com>
+In-Reply-To: <20110602064832.GA7319@july>
+References: <20110602064832.GA7319@july>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 18:55:15 +0300
-Message-ID: <1307116515.3069.24.camel@localhost>
+Date: Fri, 03 Jun 2011 18:58:52 +0300
+Message-ID: <1307116732.3069.26.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	m.szyprowski@samsung.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,29 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-02 at 18:51 +0400, Dmitry Eremin-Solenikov wrote:
-> Hello,
+On Thu, 2011-06-02 at 15:48 +0900, Kyungmin Park wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
 > 
-> This is an RFC for a huge serie of patches converting most mtd drivers to use
-> single instance of code for managing mtd partitions parsing and handling.
+> There's no case to use the subpage for 4KiB pagesize.
 > 
-> Currently each driver responsible for partitions implements this part of code
-> on it's own, resulting in memory leaks, possible frees of non-allocated memory,
-> etc. As the patch serie is huge, I'm posting only patches I consider
-> "interesting", i. e. from the subserie doing the same cleanup for different
-> drivers I post only first patch. Rest are available through the gitweb.
-> 
-> Only one driver still uses parse_mtd_partitions after this serie (edb7312),
-> as it registers both parsed partitions and the whole mtd device and I ain't
-> sure how to behave at this case.
-> 
-> If the idea seems find to be commited, I'll post the whole serie for full
-> review.
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 
-Hi, sure this is interesting. I'll try to find time and go through this
-and push to l2 tree. But then please, ping dwmw2 to look at this,
-because otherwise it will not get to linux-next till the end of the next
-merge window.
+I think Roman was testing subpage support with 4KiB pages and it worked,
+but I'm not sure and I did not read the specs. Let's ask Roman.
 
 -- 
 Best Regards,
