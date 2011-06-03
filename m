@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSUhL-0004hf-QF
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:46:03 +0000
+	id 1QSUhL-0004hd-Q9
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:46:05 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p53Djuqg013884
+	p53Djuqf013884
 	for <linux-mtd@lists.infradead.org>; Fri, 3 Jun 2011 16:45:56 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/10] UBIFS: amend ubifs_recover_leb interface
-Date: Fri,  3 Jun 2011 16:49:54 +0300
-Message-Id: <1307109001-19761-4-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 02/10] UBIFS: introduce a "grouped" journal head flag
+Date: Fri,  3 Jun 2011 16:49:53 +0300
+Message-Id: <1307109001-19761-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 References: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,100 +25,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Instead of passing "grouped" parameter to 'ubifs_recover_leb()' which tells
-whether the nodes are grouped in the LEB to recover, pass the journal head
-number and let 'ubifs_recover_leb()' look at the journal head's 'grouped' flag.
+Journal heads are different in a way how UBIFS writes nodes there. All normal
+journal heads receive grouped nodes, while the GC journal heads receives
+ungrouped nodes. This patch adds a 'grouped' flag to 'struct ubifs_jhead' which
+describes this property.
 
-This patch is a preparation to a further fix where we'll need to know the
-journal head number for other purposes.
+This patch is a preparation to a further recovery fix.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/orphan.c   |    2 +-
- fs/ubifs/recovery.c |   10 ++++++----
- fs/ubifs/replay.c   |    3 +--
- fs/ubifs/ubifs.h    |    2 +-
- 4 files changed, 9 insertions(+), 8 deletions(-)
+ fs/ubifs/super.c |    5 ++++-
+ fs/ubifs/ubifs.h |    2 ++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
 
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index bd644bf..a5422ff 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -674,7 +674,7 @@ static int kill_orphans(struct ubifs_info *c)
- 		if (IS_ERR(sleb)) {
- 			if (PTR_ERR(sleb) == -EUCLEAN)
- 				sleb = ubifs_recover_leb(c, lnum, 0,
--							 c->sbuf, 0);
-+							 c->sbuf, -1);
- 			if (IS_ERR(sleb)) {
- 				err = PTR_ERR(sleb);
- 				break;
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 95e2418..6adb532 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -604,7 +604,8 @@ static int drop_last_node(struct ubifs_scan_leb *sleb, int *offs, int grouped)
-  * @lnum: LEB number
-  * @offs: offset
-  * @sbuf: LEB-sized buffer to use
-- * @grouped: nodes may be grouped for recovery
-+ * @jhead: journal head number this LEB belongs to (%-1 if the LEB does not
-+ *         belong to any journal head)
-  *
-  * This function does a scan of a LEB, but caters for errors that might have
-  * been caused by the unclean unmount from which we are attempting to recover.
-@@ -612,13 +613,14 @@ static int drop_last_node(struct ubifs_scan_leb *sleb, int *offs, int grouped)
-  * found, and a negative error code in case of failure.
-  */
- struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
--					 int offs, void *sbuf, int grouped)
-+					 int offs, void *sbuf, int jhead)
- {
- 	int ret = 0, err, len = c->leb_size - offs, start = offs, min_io_unit;
-+	int grouped = jhead == -1 ? 0 : c->jheads[jhead].grouped;
- 	struct ubifs_scan_leb *sleb;
- 	void *buf = sbuf + offs;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 1ab0d22..1e40db7 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -811,15 +811,18 @@ static int alloc_wbufs(struct ubifs_info *c)
  
--	dbg_rcvry("%d:%d", lnum, offs);
-+	dbg_rcvry("%d:%d, jhead %d, grouped %d", lnum, offs, jhead, grouped);
- 
- 	sleb = ubifs_start_scan(c, lnum, offs, sbuf);
- 	if (IS_ERR(sleb))
-@@ -881,7 +883,7 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
- 		}
- 		ubifs_scan_destroy(sleb);
+ 		c->jheads[i].wbuf.sync_callback = &bud_wbuf_callback;
+ 		c->jheads[i].wbuf.jhead = i;
++		c->jheads[i].grouped = 1;
  	}
--	return ubifs_recover_leb(c, lnum, offs, sbuf, 0);
-+	return ubifs_recover_leb(c, lnum, offs, sbuf, -1);
- }
  
- /**
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 6617280..5e97161 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -557,8 +557,7 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
- 		 * these LEBs could possibly be written to at the power cut
- 		 * time.
- 		 */
--		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf,
--					 b->bud->jhead != GCHD);
-+		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf, b->bud->jhead);
- 	else
- 		sleb = ubifs_scan(c, lnum, offs, c->sbuf, 0);
- 	if (IS_ERR(sleb))
+ 	c->jheads[BASEHD].wbuf.dtype = UBI_SHORTTERM;
+ 	/*
+ 	 * Garbage Collector head likely contains long-term data and
+-	 * does not need to be synchronized by timer.
++	 * does not need to be synchronized by timer. Also GC head nodes are
++	 * not grouped.
+ 	 */
+ 	c->jheads[GCHD].wbuf.dtype = UBI_LONGTERM;
+ 	c->jheads[GCHD].wbuf.no_timer = 1;
++	c->jheads[GCHD].grouped = 0;
+ 
+ 	return 0;
+ }
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index adeca14..f79983d 100644
+index a70d7b4..adeca14 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -1744,7 +1744,7 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
- int ubifs_recover_master_node(struct ubifs_info *c);
- int ubifs_write_rcvrd_mst_node(struct ubifs_info *c);
- struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
--					 int offs, void *sbuf, int grouped);
-+					 int offs, void *sbuf, int jhead);
- struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
- 					     int offs, void *sbuf);
- int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf);
+@@ -722,12 +722,14 @@ struct ubifs_bud {
+  * struct ubifs_jhead - journal head.
+  * @wbuf: head's write-buffer
+  * @buds_list: list of bud LEBs belonging to this journal head
++ * @grouped: non-zero if UBIFS groups nodes when writing to this journal head
+  *
+  * Note, the @buds list is protected by the @c->buds_lock.
+  */
+ struct ubifs_jhead {
+ 	struct ubifs_wbuf wbuf;
+ 	struct list_head buds_list;
++	unsigned int grouped:1;
+ };
+ 
+ /**
 -- 
 1.7.2.3
