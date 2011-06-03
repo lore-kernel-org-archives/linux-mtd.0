@@ -1,24 +1,24 @@
 Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSTzC-00046g-HT
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:00:23 +0000
-Received: by pvh11 with SMTP id 11so1180987pvh.36
+	id 1QSU0v-000493-PA
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:02:10 +0000
+Received: by pvh11 with SMTP id 11so1181898pvh.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 06:00:18 -0700 (PDT)
+	Fri, 03 Jun 2011 06:02:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1307086473.7474.1.camel@phoenix>
-References: <1307086473.7474.1.camel@phoenix>
-Date: Fri, 3 Jun 2011 15:00:18 +0200
-Message-ID: <BANLkTinfOmA1cW6Ktuka1NS+7D0RhFqMvw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: remove unused variable 'mtd'
+In-Reply-To: <1307078050.4167.1.camel@phoenix>
+References: <1307078050.4167.1.camel@phoenix>
+Date: Fri, 3 Jun 2011 15:02:07 +0200
+Message-ID: <BANLkTikNC8F2TPY2TFHuHtU=-xhwef2ikw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: pxa3xx_nand: fix a memory leak
 From: Daniel Mack <zonque@gmail.com>
 To: Axel Lin <axel.lin@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
 	Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	linux-mtd@lists.infradead.org, Lei Wen <adrian.wenl@gmail.com>
+	Haojian Zhuang <haojian.zhuang@marvell.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Lei Wen <adrian.wenl@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(cc Lei Wen)
+(Cc Lei Wen)
 
-On Fri, Jun 3, 2011 at 9:34 AM, Axel Lin <axel.lin@gmail.com> wrote:
-> Remove unused variable 'mtd' to eliminate below warning.
->
-> =A0CC =A0 =A0 =A0drivers/mtd/nand/pxa3xx_nand.o
-> drivers/mtd/nand/pxa3xx_nand.c: In function 'pxa3xx_nand_suspend':
-> drivers/mtd/nand/pxa3xx_nand.c:1167: warning: unused variable 'mtd'
-> drivers/mtd/nand/pxa3xx_nand.c: In function 'pxa3xx_nand_resume':
-> drivers/mtd/nand/pxa3xx_nand.c:1180: warning: unused variable 'mtd'
+On Fri, Jun 3, 2011 at 7:14 AM, Axel Lin <axel.lin@gmail.com> wrote:
+> In pxa3xx_nand_remove, we should call nand_release instead of
+> mtd_device_unregister to properly free bad block table memory
+> and bad block descriptor memory.
 >
 > Signed-off-by: Axel Lin <axel.lin@gmail.com>
-
-Lei, I had the same patch queued up on my side and dropped it now. Can
-you apply this one?
-
-Thanks,
-Daniel
-
-
-
 > ---
-> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 =A02 --
-> =A01 files changed, 0 insertions(+), 2 deletions(-)
+> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
 >
 > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
 d.c
-> index 1fb3b3a..5cae8ae 100644
+> index 1fb3b3a..f7040ea 100644
 > --- a/drivers/mtd/nand/pxa3xx_nand.c
 > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1164,7 +1164,6 @@ static int pxa3xx_nand_probe(struct platform_device=
- *pdev)
-> =A0static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_messag=
-e_t state)
-> =A0{
-> =A0 =A0 =A0 =A0struct pxa3xx_nand_info *info =3D platform_get_drvdata(pde=
-v);
-> - =A0 =A0 =A0 struct mtd_info *mtd =3D info->mtd;
+> @@ -1119,7 +1119,7 @@ static int pxa3xx_nand_remove(struct platform_devic=
+e *pdev)
+> =A0 =A0 =A0 =A0clk_put(info->clk);
 >
-> =A0 =A0 =A0 =A0if (info->state) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0dev_err(&pdev->dev, "driver busy, state =
-=3D %d\n", info->state);
-> @@ -1177,7 +1176,6 @@ static int pxa3xx_nand_suspend(struct platform_devi=
-ce *pdev, pm_message_t state)
-> =A0static int pxa3xx_nand_resume(struct platform_device *pdev)
-> =A0{
-> =A0 =A0 =A0 =A0struct pxa3xx_nand_info *info =3D platform_get_drvdata(pde=
-v);
-> - =A0 =A0 =A0 struct mtd_info *mtd =3D info->mtd;
->
-> =A0 =A0 =A0 =A0nand_writel(info, NDTR0CS0, info->ndtr0cs0);
-> =A0 =A0 =A0 =A0nand_writel(info, NDTR1CS0, info->ndtr1cs0);
+> =A0 =A0 =A0 =A0if (mtd) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 mtd_device_unregister(mtd);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 nand_release(mtd);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(mtd);
+> =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0return 0;
 > --
 > 1.7.4.1
 >
