@@ -1,21 +1,21 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSWO5-0001co-My
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:34:14 +0000
-Received: by ewy3 with SMTP id 3so893337ewy.36
+	id 1QSWQb-0001fj-BH
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:36:50 +0000
+Received: by eyh6 with SMTP id 6so894806eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 08:34:11 -0700 (PDT)
-Subject: Re: [PATCH] mkfs.ubifs: trivial: 2.6.40 -> 3.0
+	Fri, 03 Jun 2011 08:36:46 -0700 (PDT)
+Subject: Re: [PATCH] nand: Remove meaningless delay from nand_unlock
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-In-Reply-To: <1306936176-24533-1-git-send-email-bengardiner@nanometrics.ca>
-References: <1306936176-24533-1-git-send-email-bengardiner@nanometrics.ca>
+To: jiri.pinkava@vscht.cz
+In-Reply-To: <1306936600-28870-1-git-send-email-jiri.pinkava@vscht.cz>
+References: <1306936600-28870-1-git-send-email-jiri.pinkava@vscht.cz>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 18:30:01 +0300
-Message-ID: <1307115001.3069.15.camel@localhost>
+Date: Fri, 03 Jun 2011 18:32:36 +0300
+Message-ID: <1307115156.3069.16.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,16 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-01 at 09:49 -0400, Ben Gardiner wrote:
-> In commit 04665066ebedb0a31335b525fb5f19df32cb8cfe it was noted that the free
-> space fixup feature would be available in kernels 2.6.40 or greater. Since
-> then it has been decided that the release following 2.6.39 will be 3.0.
+On Wed, 2011-06-01 at 15:56 +0200, jiri.pinkava@vscht.cz wrote:
+> From: Jiri Pinkava <jiri.pinkava@vscht.cz>
 > 
-> Replace the instances of 2.6.40 with 3.0.
+> This delay is meaningless. If delay is needed it is device specific
+> and must be reimplemented by specific driver, otherwise no delay is
+> needed.
 > 
-> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+> This function is not used by any current kernel code, affects only
+> external code (like main).
+> 
+> Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
 
-Pushed to mtd-utils.git, thanks.
+Pushed to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
