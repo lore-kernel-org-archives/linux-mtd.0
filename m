@@ -1,20 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSRRn-00029G-LC
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:17:45 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so1154847wwb.18
+	id 1QSRfY-0002Xh-M0
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:31:57 +0000
+Received: by wyb28 with SMTP id 28so1813293wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 03:17:43 -0700 (PDT)
+	Fri, 03 Jun 2011 03:31:53 -0700 (PDT)
+Date: Fri, 3 Jun 2011 11:31:49 +0100
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/6] mtd/denali: support for cmdline partitioning
-Date: Fri,  3 Jun 2011 11:17:18 +0100
-Message-Id: <1307096238-25751-7-git-send-email-jamie@jamieiles.com>
-In-Reply-To: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
+Subject: Re: [PATCH 0/6] Further Denali NAND enhancements
+Message-ID: <20110603103149.GI2637@pulham.picochip.com>
 References: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Chuanxiao Dong <chuanxiao.dong@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for command line partitioning.  This is favoured over
-platform data based partitions.
+On Fri, Jun 03, 2011 at 11:17:12AM +0100, Jamie Iles wrote:
+> This series performs a couple of minor cleanups to the Denali NAND
+> controller driver and then introduces support for newer versions of the
+> IP where ECC fixup is supported in hardware.
+> 
+> Finally add support for partitioning through platform data and cmdline
+> partitioning.
+> 
+> Jamie Iles (6):
+>   nand/denali: convert to dev_() printk helpers
+>   nand/denali: annotate pci init/exit functions with correct section
+>   nand/denali: allow the number of ECC bits to be set by pdata
+>   nand/denali: support hardware with internal ECC fixup
+>   nand/denali: support MTD partitioning
+>   mtd/denali: support for cmdline partitioning
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Signed-off-by: Jamie Iles <jamie@jamieiles.com>
----
- drivers/mtd/nand/denali.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+Please disregard this series; I was too trigger happy with git 
+send-email after a rebase.  A respin follows with apologies.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 19998ed..4e440d6 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1420,6 +1420,9 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	struct denali_nand_info *denali;
- 	int ret;
- 	struct denali_nand_pdata *pdata;
-+	struct mtd_partition *partitions = NULL;
-+	int nr_parts = 0;
-+	const char *part_probes[] = { "cmdlinepart", NULL };
- 
- 	denali = kzalloc(sizeof(*denali), GFP_KERNEL);
- 	if (!denali)
-@@ -1645,7 +1648,11 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 		goto failed_req_irq;
- 	}
- 
--	if (pdata && pdata->parts)
-+	nr_parts = parse_mtd_partitions(&denali->mtd, part_probes,
-+					&partitions, 0);
-+	if (partitions && nr_parts > 0)
-+		ret = mtd_device_register(&denali->mtd, partitions, nr_parts);
-+	else if (pdata && pdata->parts)
- 		ret = mtd_device_register(&denali->mtd, pdata->parts,
- 					 pdata->nr_parts);
- 	else
--- 
-1.7.4.1
+Jamie
