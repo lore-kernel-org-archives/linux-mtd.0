@@ -1,21 +1,26 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSWQb-0001fj-BH
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:36:50 +0000
-Received: by eyh6 with SMTP id 6so894806eyh.36
+	id 1QSWTB-0001iZ-IL
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 15:39:30 +0000
+Received: by ewy3 with SMTP id 3so895338ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 08:36:46 -0700 (PDT)
-Subject: Re: [PATCH] nand: Remove meaningless delay from nand_unlock
+	Fri, 03 Jun 2011 08:39:28 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mtd: nand: generalized error messages with __func__
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: jiri.pinkava@vscht.cz
-In-Reply-To: <1306936600-28870-1-git-send-email-jiri.pinkava@vscht.cz>
-References: <1306936600-28870-1-git-send-email-jiri.pinkava@vscht.cz>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <BANLkTi=BYeQ+cBMpRodDDY_KapjEoHVA+A@mail.gmail.com>
+References: <1306360741-12770-1-git-send-email-computersforpeace@gmail.com>
+	<4DDDE19D.9010505@compulab.co.il> <1306387008.2785.138.camel@localhost>
+	<BANLkTimsTWAcR4HgOoHguDMv9P-Eox=kbg@mail.gmail.com>
+	<1306924235.4405.102.camel@localhost>
+	<BANLkTi=BYeQ+cBMpRodDDY_KapjEoHVA+A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 18:32:36 +0300
-Message-ID: <1307115156.3069.16.camel@localhost>
+Date: Fri, 03 Jun 2011 18:35:17 +0300
+Message-ID: <1307115317.3069.18.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Igor Grinberg <grinberg@compulab.co.il>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,19 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-01 at 15:56 +0200, jiri.pinkava@vscht.cz wrote:
-> From: Jiri Pinkava <jiri.pinkava@vscht.cz>
+On Wed, 2011-06-01 at 11:37 -0700, Brian Norris wrote:
+> On Wed, Jun 1, 2011 at 3:30 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >> or should we define our own pr_fmt in include/linux/mtd.h?
+> >
+> > Yes, before you include files.
 > 
-> This delay is meaningless. If delay is needed it is device specific
-> and must be reimplemented by specific driver, otherwise no delay is
-> needed.
-> 
-> This function is not used by any current kernel code, affects only
-> external code (like main).
-> 
-> Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
+> Well, I've tried this, and as I suspected, I can't just include it in
+> mtd.h at the top, since we can't guarantee that <linux/mtd/mtd.h> is
+> going to be the first included header in other files.
 
-Pushed to l2-mtd-2.6.git, thanks.
+In any case we do not want to blow the kernel binary size by too many
+__func__ strings. They should be used only when needed.
+
+>  Specifically, in
+> include/linux/mtd/nand.h, we include other headers before mtd.h and so
+> printk.h has already defined pr_fmt() for us, so this doesn't work.
+> I'm not sure if there's a nice place to define pr_fmt() right now...
+
+.c files, AFAIU.
 
 -- 
 Best Regards,
