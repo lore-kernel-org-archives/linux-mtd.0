@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSRgj-0002ZT-Ho
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:33:10 +0000
+	id 1QSRgm-0002ZT-RA
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:33:14 +0000
 Received: by mail-wy0-f177.google.com with SMTP id 28so1814016wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 03:33:09 -0700 (PDT)
+	Fri, 03 Jun 2011 03:33:12 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 4/6] nand/denali: support hardware with internal ECC fixup
-Date: Fri,  3 Jun 2011 11:32:47 +0100
-Message-Id: <1307097169-11744-5-git-send-email-jamie@jamieiles.com>
+Subject: [PATCHv2 5/6] nand/denali: support MTD partitioning
+Date: Fri,  3 Jun 2011 11:32:48 +0100
+Message-Id: <1307097169-11744-6-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1307097169-11744-1-git-send-email-jamie@jamieiles.com>
 References: <1307097169-11744-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -24,108 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some versions of the IP have the ECC fixup handled in hardware.  For
-these devices we have a new interrupt status/enable mapping that tells
-us when we have an uncorrectable error.  Unfortunately this replaces
-existing interrupt bits and there is no way to probe for this capability
-so we have to do it through platform data.
+Allow the platform to specify partitions through platform data.  If
+there are no partitions specified then the whole device will be
+registered.
 
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/denali.c            |   18 +++++++++++++++---
- drivers/mtd/nand/denali.h            |    9 +++++++++
- include/linux/platform_data/denali.h |    1 +
- 3 files changed, 25 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/denali.c            |    8 +++++++-
+ include/linux/platform_data/denali.h |    8 ++++++--
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 5557d7b..229696b 100644
+index 229696b..e24e214 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -55,7 +55,8 @@ MODULE_PARM_DESC(onfi_timing_mode, "Overrides default ONFI setting."
- 			INTR_STATUS__TIME_OUT | \
- 			INTR_STATUS__ERASE_FAIL | \
- 			INTR_STATUS__RST_COMP | \
--			INTR_STATUS__ERASE_COMP)
-+			INTR_STATUS__ERASE_COMP | \
-+			INTR_STATUS__ECC_UNCOR_ERR)
+@@ -25,6 +25,7 @@
+ #include <linux/slab.h>
+ #include <linux/pci.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/module.h>
+ #include <linux/platform_data/denali.h>
  
- /* indicates whether or not the internal value for the flash bank is
-  * valid or not */
-@@ -913,6 +914,14 @@ static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
- {
- 	bool check_erased_page = false;
- 
-+	if (denali->have_hw_ecc_fixup &&
-+	    (irq_status & INTR_STATUS__ECC_UNCOR_ERR)) {
-+		clear_interrupts(denali);
-+		denali_set_intr_modes(denali, true);
-+
-+		return true;
-+	}
-+
- 	if (irq_status & INTR_STATUS__ECC_ERR) {
- 		/* read the ECC errors. we'll ignore them for now */
- 		uint32_t err_address = 0, err_correction_info = 0;
-@@ -1111,8 +1120,9 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = denali->mtd.writesize + denali->mtd.oobsize;
- 
- 	uint32_t irq_status = 0;
--	uint32_t irq_mask = INTR_STATUS__ECC_TRANSACTION_DONE |
--			    INTR_STATUS__ECC_ERR;
-+	uint32_t irq_mask = denali->have_hw_ecc_fixup ?
-+		(INTR_STATUS__ECC_TRANSACTION_DONE | INTR_STATUS__ECC_ERR) :
-+		(INTR_STATUS__DMA_CMD_COMP | INTR_STATUS__ECC_UNCOR_ERR);
- 	bool check_erased_page = false;
- 
- 	if (page != denali->page) {
-@@ -1427,6 +1437,8 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 		goto failed_alloc_memery;
+@@ -1643,7 +1644,12 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		goto failed_req_irq;
  	}
  
-+	denali->have_hw_ecc_fixup = pdata ? pdata->have_hw_ecc_fixup : false;
+-	ret = mtd_device_register(&denali->mtd, NULL, 0);
++	if (pdata && pdata->parts)
++		ret = mtd_device_register(&denali->mtd, pdata->parts,
++					 pdata->nr_parts);
++	else
++		ret = mtd_device_register(&denali->mtd, NULL, 0);
 +
- 	if (id->driver_data == INTEL_CE4100) {
- 		/* Due to a silicon limitation, we can only support
- 		 * ONFI timing mode 1 and below.
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index b428ce3..f0b5e91 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -231,6 +231,14 @@
- #define     INTR_STATUS__PIPE_CMD_ERR			0x4000
- #define     INTR_STATUS__PAGE_XFER_INC			0x8000
- 
-+/*
-+ * Some versions of the IP have the ECC fixup handled in hardware.  In this
-+ * configuration we only get interrupted when the error is uncorrectable.
-+ * Unfortunately this bit replaces INTR_STATUS__ECC_TRANSACTION_DONE from the
-+ * old IP.
-+ */
-+#define     INTR_STATUS__ECC_UNCOR_ERR			0x0001
-+
- #define     INTR_EN__ECC_TRANSACTION_DONE		0x0001
- #define     INTR_EN__ECC_ERR				0x0002
- #define     INTR_EN__DMA_CMD_COMP			0x0004
-@@ -495,6 +503,7 @@ struct denali_nand_info {
- 	uint32_t bbtskipbytes;
- 	uint32_t max_banks;
- 	int nr_ecc_bits;
-+	bool have_hw_ecc_fixup;
- };
- 
- #endif /*_LLD_NAND_*/
+ 	if (ret) {
+ 		dev_err(denali->dev, "Spectra: Failed to register MTD: %d\n",
+ 				ret);
 diff --git a/include/linux/platform_data/denali.h b/include/linux/platform_data/denali.h
-index cfdb775..3767333 100644
+index 3767333..141da35 100644
 --- a/include/linux/platform_data/denali.h
 +++ b/include/linux/platform_data/denali.h
-@@ -16,6 +16,7 @@
+@@ -14,9 +14,13 @@
+ #ifndef __DENALI_PDATA_H__
+ #define __DENALI_PDATA_H__
  
++struct mtd_partition;
++
  struct denali_nand_pdata {
- 	int	nr_ecc_bits;
-+	bool	have_hw_ecc_fixup;
+-	int	nr_ecc_bits;
+-	bool	have_hw_ecc_fixup;
++	int				nr_ecc_bits;
++	bool				have_hw_ecc_fixup;
++	const struct mtd_partition	*parts;
++	unsigned int			nr_parts;
  };
  
  #endif /* __DENALI_PDATA_H__ */
