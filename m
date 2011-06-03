@@ -1,25 +1,26 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSPH4-0000pL-GQ
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 07:58:31 +0000
-Received: by yxh35 with SMTP id 35so829020yxh.36
+	id 1QSQZ5-0001VZ-86
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 09:21:12 +0000
+Received: by wwb39 with SMTP id 39so1118467wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 00:58:27 -0700 (PDT)
+	Fri, 03 Jun 2011 02:21:06 -0700 (PDT)
+Date: Fri, 3 Jun 2011 10:20:57 +0100
+From: Jamie Iles <jamie@jamieiles.com>
+To: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH] mtd: denali: remove calling mtd_device_unregister()
+	after nand_release()
+Message-ID: <20110603092057.GC2637@pulham.picochip.com>
+References: <1307063535.10001.1.camel@phoenix>
 MIME-Version: 1.0
-In-Reply-To: <BANLkTikt4y3ZKJD2Ld_hxAAzjOpevEqFfA@mail.gmail.com>
-References: <1307086473.7474.1.camel@phoenix>
-	<BANLkTikt4y3ZKJD2Ld_hxAAzjOpevEqFfA@mail.gmail.com>
-From: Axel Lin <axel.lin@gmail.com>
-Date: Fri, 3 Jun 2011 15:58:07 +0800
-Message-ID: <BANLkTikEEMGwsACR0404r54jpFKZxX5S=w@mail.gmail.com>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: remove unused variable 'mtd'
-To: Daniel Mack <zonque@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1307063535.10001.1.camel@phoenix>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	linux-mtd@lists.infradead.org, Lei Wen <adrian.wenl@gmail.com>
-Reply-To: axel.lin@gmail.com
+	Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Jamie Iles <jamie@jamieiles.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +30,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Do you actually use this driver? I'm asking because there's some sort
-> of nasty regression in the changes between 2.6.38 and 2.6.39 which
-> makes the driver fail to work on my PXA300 based board. Lei and me
-> tried to nail these issues down, but we didn't succeed yet.
+On Fri, Jun 03, 2011 at 09:12:15AM +0800, Axel Lin wrote:
+> The implementation of nand_release() already call mtd_device_unregister(),
+> no need to call it again.
 
-hi Daniel,
+Good catch!
 
-I no longer have the device handy.
-Last time I use this driver on a pxa310 device is running on 2.6.37 kernel.
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Regards,
-Axel
+Acked-by: Jamie Iles <jamie@jamieiles.com>
