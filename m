@@ -8,12 +8,12 @@ References: <1307015648-17505-1-git-send-email-dbaryshkov@gmail.com>
 	<1307077842.4405.133.camel@localhost>
 	<BANLkTimG86aN5hUBy=GgpMAxhiQSPbetPg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jun 2011 08:21:28 +0300
-Message-ID: <1307078488.4405.139.camel@localhost>
+Date: Fri, 03 Jun 2011 08:31:09 +0300
+Message-ID: <1307079069.4405.142.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>
+Cc: Russell King <linux@arm.linux.org.uk>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -52,10 +52,11 @@ On Fri, 2011-06-03 at 09:17 +0400, Dmitry Eremin-Solenikov wrote:
 > (there is really no point on mtd/maps/ceiva.c), and removing ceiva
 > depends on Russell's decision.
 
-There is as well little point in changing ceiva code if we can just kill
-it instead. So let's first try to ask Russell if he is fine with killing
-ceiva or not. Could you please do this in a separate thread with an
-appropriate subject.
+If you care about conflicts and how to merge all that - you can remove
+ceiva via the arm tree, and at the same time modify the driver in the
+mtd tree, and we'll just put a not to the commit message that during the
+merge this change has to be discarded. Linus did a similar thing this
+merge window for one board which mtd modified and arm tree removed.
 
 -- 
 Best Regards,
