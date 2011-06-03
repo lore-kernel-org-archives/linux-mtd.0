@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSUhL-0004hj-Qi
+	id 1QSUhL-0004hf-QF
 	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:46:03 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p53Djuqk013884
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Jun 2011 16:45:57 +0300
+	p53Djuqg013884
+	for <linux-mtd@lists.infradead.org>; Fri, 3 Jun 2011 16:45:56 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/10] UBIFS: fix clean znode counter corruption in error cases
-Date: Fri,  3 Jun 2011 16:49:58 +0300
-Message-Id: <1307109001-19761-8-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/10] UBIFS: amend ubifs_recover_leb interface
+Date: Fri,  3 Jun 2011 16:49:54 +0300
+Message-Id: <1307109001-19761-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 References: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,44 +25,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-UBIFS maintains per-filesystem and global clean znode counters
-('c->clean_zn_cnt' and 'ubifs_clean_zn_cnt'). It is important to maintain
-correct values there since the shrinker relies on 'ubifs_clean_zn_cnt'.
+Instead of passing "grouped" parameter to 'ubifs_recover_leb()' which tells
+whether the nodes are grouped in the LEB to recover, pass the journal head
+number and let 'ubifs_recover_leb()' look at the journal head's 'grouped' flag.
 
-However, in case of failures during commit the counters were corrupted. E.g.,
-if a failure happens in the middle of 'write_index()', then some nodes in the
-commit list ('c->cnext') are marked as clean, and some are marked as dirty. And
-the 'ubifs_destroy_tnc_subtree()' frees does not retrun correct count, and we
-end up with non-zero 'c->clean_zn_cnt' when unmounting. This means that if we
-have 2 file-sytem and one of them fails, and we unmount it,
-'ubifs_clean_zn_cnt' stays incorrect and confuses the shrinker.
+This patch is a preparation to a further fix where we'll need to know the
+journal head number for other purposes.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/tnc.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ fs/ubifs/orphan.c   |    2 +-
+ fs/ubifs/recovery.c |   10 ++++++----
+ fs/ubifs/replay.c   |    3 +--
+ fs/ubifs/ubifs.h    |    2 +-
+ 4 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 8119b1f..91b4213 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -2876,12 +2876,13 @@ static void tnc_destroy_cnext(struct ubifs_info *c)
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index bd644bf..a5422ff 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -674,7 +674,7 @@ static int kill_orphans(struct ubifs_info *c)
+ 		if (IS_ERR(sleb)) {
+ 			if (PTR_ERR(sleb) == -EUCLEAN)
+ 				sleb = ubifs_recover_leb(c, lnum, 0,
+-							 c->sbuf, 0);
++							 c->sbuf, -1);
+ 			if (IS_ERR(sleb)) {
+ 				err = PTR_ERR(sleb);
+ 				break;
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 95e2418..6adb532 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -604,7 +604,8 @@ static int drop_last_node(struct ubifs_scan_leb *sleb, int *offs, int grouped)
+  * @lnum: LEB number
+  * @offs: offset
+  * @sbuf: LEB-sized buffer to use
+- * @grouped: nodes may be grouped for recovery
++ * @jhead: journal head number this LEB belongs to (%-1 if the LEB does not
++ *         belong to any journal head)
+  *
+  * This function does a scan of a LEB, but caters for errors that might have
+  * been caused by the unclean unmount from which we are attempting to recover.
+@@ -612,13 +613,14 @@ static int drop_last_node(struct ubifs_scan_leb *sleb, int *offs, int grouped)
+  * found, and a negative error code in case of failure.
   */
- void ubifs_tnc_close(struct ubifs_info *c)
+ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+-					 int offs, void *sbuf, int grouped)
++					 int offs, void *sbuf, int jhead)
  {
--	long clean_freed;
--
- 	tnc_destroy_cnext(c);
- 	if (c->zroot.znode) {
--		clean_freed = ubifs_destroy_tnc_subtree(c->zroot.znode);
--		atomic_long_sub(clean_freed, &ubifs_clean_zn_cnt);
-+		long n;
-+
-+		ubifs_destroy_tnc_subtree(c->zroot.znode);
-+		n = atomic_long_read(&c->clean_zn_cnt);
-+		atomic_long_sub(n, &ubifs_clean_zn_cnt);
+ 	int ret = 0, err, len = c->leb_size - offs, start = offs, min_io_unit;
++	int grouped = jhead == -1 ? 0 : c->jheads[jhead].grouped;
+ 	struct ubifs_scan_leb *sleb;
+ 	void *buf = sbuf + offs;
+ 
+-	dbg_rcvry("%d:%d", lnum, offs);
++	dbg_rcvry("%d:%d, jhead %d, grouped %d", lnum, offs, jhead, grouped);
+ 
+ 	sleb = ubifs_start_scan(c, lnum, offs, sbuf);
+ 	if (IS_ERR(sleb))
+@@ -881,7 +883,7 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+ 		}
+ 		ubifs_scan_destroy(sleb);
  	}
- 	kfree(c->gap_lebs);
- 	kfree(c->ilebs);
+-	return ubifs_recover_leb(c, lnum, offs, sbuf, 0);
++	return ubifs_recover_leb(c, lnum, offs, sbuf, -1);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 6617280..5e97161 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -557,8 +557,7 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ 		 * these LEBs could possibly be written to at the power cut
+ 		 * time.
+ 		 */
+-		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf,
+-					 b->bud->jhead != GCHD);
++		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf, b->bud->jhead);
+ 	else
+ 		sleb = ubifs_scan(c, lnum, offs, c->sbuf, 0);
+ 	if (IS_ERR(sleb))
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index adeca14..f79983d 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1744,7 +1744,7 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
+ int ubifs_recover_master_node(struct ubifs_info *c);
+ int ubifs_write_rcvrd_mst_node(struct ubifs_info *c);
+ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+-					 int offs, void *sbuf, int grouped);
++					 int offs, void *sbuf, int jhead);
+ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+ 					     int offs, void *sbuf);
+ int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf);
 -- 
 1.7.2.3
