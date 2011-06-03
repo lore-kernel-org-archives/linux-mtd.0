@@ -1,16 +1,21 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSRRZ-00029G-6n
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:17:29 +0000
-Received: by wwb39 with SMTP id 39so1154847wwb.18
+	id 1QSRRc-00029G-5l
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 10:17:33 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so1154847wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Jun 2011 03:17:25 -0700 (PDT)
+	Fri, 03 Jun 2011 03:17:31 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/6] Further Denali NAND enhancements
-Date: Fri,  3 Jun 2011 11:17:12 +0100
-Message-Id: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>
+Subject: [PATCH 2/6] nand/denali: annotate pci init/exit functions with
+	correct section
+Date: Fri,  3 Jun 2011 11:17:14 +0100
+Message-Id: <1307096238-25751-3-git-send-email-jamie@jamieiles.com>
+In-Reply-To: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
+References: <1307096238-25751-1-git-send-email-jamie@jamieiles.com>
+Cc: Jamie Iles <jamie@jamieiles.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Chuanxiao Dong <chuanxiao.dong@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series performs a couple of minor cleanups to the Denali NAND
-controller driver and then introduces support for newer versions of the
-IP where ECC fixup is supported in hardware.
+The module init exit functions should be annotated with __init and
+__exit.
 
-Finally add support for partitioning through platform data and cmdline
-partitioning.
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+---
+ drivers/mtd/nand/denali.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Jamie Iles (6):
-  nand/denali: convert to dev_() printk helpers
-  nand/denali: annotate pci init/exit functions with correct section
-  nand/denali: allow the number of ECC bits to be set by pdata
-  nand/denali: support hardware with internal ECC fixup
-  nand/denali: support MTD partitioning
-  mtd/denali: support for cmdline partitioning
-
- drivers/mtd/nand/denali.c            |  195 ++++++++++++++++++----------------
- drivers/mtd/nand/denali.h            |   10 ++
- include/linux/platform_data/denali.h |   26 +++++
- 3 files changed, 140 insertions(+), 91 deletions(-)
- create mode 100644 include/linux/platform_data/denali.h
-
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index a4b4a29..491458a 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1686,14 +1686,14 @@ static struct pci_driver denali_pci_driver = {
+ 	.remove = denali_pci_remove,
+ };
+ 
+-static int __devinit denali_init(void)
++static int __init denali_init(void)
+ {
+ 	pr_info(KERN_INFO "Spectra MTD driver\n");
+ 	return pci_register_driver(&denali_pci_driver);
+ }
+ 
+ /* Free memory */
+-static void __devexit denali_exit(void)
++static void __exit denali_exit(void)
+ {
+ 	pci_unregister_driver(&denali_pci_driver);
+ }
 -- 
 1.7.4.1
