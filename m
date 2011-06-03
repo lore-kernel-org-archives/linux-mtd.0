@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QSUhL-0004he-Q3
+	id 1QSUhL-0004hl-Qu
 	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2011 13:46:06 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p53Djuqe013884
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Jun 2011 16:45:56 +0300
+	p53Djuqm013884
+	for <linux-mtd@lists.infradead.org>; Fri, 3 Jun 2011 16:45:58 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 01/10] UBIFS: supress false error messages
-Date: Fri,  3 Jun 2011 16:49:52 +0300
-Message-Id: <1307109001-19761-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 09/10] UBIFS: intialize LPT earlier
+Date: Fri,  3 Jun 2011 16:50:00 +0300
+Message-Id: <1307109001-19761-10-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 References: <1307109001-19761-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,41 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+From: Ben Gardiner <bengardiner@nanometrics.ca>
 
-Commit ab51afe05273741f72383529ef488aa1ea598ec6 was a good clean-up, but
-it introduced a regression - now UBIFS prints scary error messages during
-recovery on all corrupted nodes, even though the corruptions are expected
-(due to a power cut). This patch fixes the issue.
+The current 'mount_ubifs()' implementation does not initialize the LPT until the
+the master node is marked dirty. Move the LPT initialization to before marking
+the master node dirty. This is a preparation for the next patch which will move
+the free-space-fixup check to before marking the master node dirty, because we
+have to fix-up the free space before doing any writes.
 
-Additionally fix a typo in a commentary introduced by the same commit.
+Artem: massaged the patch and commit message.
 
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+Reviewed-by: Matthew L. Creech <mlcreech@gmail.com>
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/recovery.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/super.c |   29 ++++++++++++++++-------------
+ 1 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 731d9e2..95e2418 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -635,7 +635,7 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
- 		 * Scan quietly until there is an error from which we cannot
- 		 * recover
- 		 */
--		ret = ubifs_scan_a_node(c, buf, len, lnum, offs, 0);
-+		ret = ubifs_scan_a_node(c, buf, len, lnum, offs, 1);
- 		if (ret == SCANNED_A_NODE) {
- 			/* A valid node, and not a padding node */
- 			struct ubifs_ch *ch = buf;
-@@ -701,7 +701,7 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
- 	 * While we are in the middle of the same min. I/O unit keep dropping
- 	 * nodes. So basically, what we want is to make sure that the last min.
- 	 * I/O unit where we saw the corruption is dropped completely with all
--	 * the uncorrupted node which may possibly sit there.
-+	 * the uncorrupted nodes which may possibly sit there.
- 	 *
- 	 * In other words, let's name the min. I/O unit where the corruption
- 	 * starts B, and the previous min. I/O unit A. The below code tries to
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 1e40db7..6d357fd 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1282,17 +1282,24 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	if (err)
+ 		goto out_master;
+ 
+-	init_constants_master(c);
+-
+ 	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
+ 		ubifs_msg("recovery needed");
+ 		c->need_recovery = 1;
+-		if (!c->ro_mount) {
+-			err = ubifs_recover_inl_heads(c, c->sbuf);
+-			if (err)
+-				goto out_master;
+-		}
+-	} else if (!c->ro_mount) {
++	}
++
++	init_constants_master(c);
++
++	if (c->need_recovery && !c->ro_mount) {
++		err = ubifs_recover_inl_heads(c, c->sbuf);
++		if (err)
++			goto out_master;
++	}
++
++	err = ubifs_lpt_init(c, 1, !c->ro_mount);
++	if (err)
++		goto out_master;
++
++	if (!c->ro_mount) {
+ 		/*
+ 		 * Set the "dirty" flag so that if we reboot uncleanly we
+ 		 * will notice this immediately on the next mount.
+@@ -1300,13 +1307,9 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
+ 		err = ubifs_write_master(c);
+ 		if (err)
+-			goto out_master;
++			goto out_lpt;
+ 	}
+ 
+-	err = ubifs_lpt_init(c, 1, !c->ro_mount);
+-	if (err)
+-		goto out_lpt;
+-
+ 	err = dbg_check_idx_size(c, c->bi.old_idx_sz);
+ 	if (err)
+ 		goto out_lpt;
 -- 
 1.7.2.3
