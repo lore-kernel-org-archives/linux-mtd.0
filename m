@@ -1,15 +1,16 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVwD-00071b-5V
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:34 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
+	id 1QTVwF-000726-W5
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:36 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682940wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:17:32 -0700 (PDT)
+	Mon, 06 Jun 2011 02:17:35 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 31/32] mtd: onenand/omap2 don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:21 +0400
-Message-Id: <1307351782-7456-31-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 32/32] mtd: samsung/onenand don't specify default parsing
+	options
+Date: Mon,  6 Jun 2011 13:16:22 +0400
+Message-Id: <1307351782-7456-32-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +29,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/onenand/omap2.c |    4 +---
+ drivers/mtd/onenand/samsung.c |    4 +---
  1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 0d9073d..5ca2053 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -67,8 +67,6 @@ struct omap2_onenand {
- 	struct regulator *regulator;
- };
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 3306b5b..78a08ea 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -157,8 +157,6 @@ struct s3c_onenand {
  
--static const char *part_probes[] = { "cmdlinepart", NULL,  };
+ static struct s3c_onenand *onenand;
+ 
+-static const char *part_probes[] = { "cmdlinepart", NULL, };
 -
- static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
+ static inline int s3c_read_reg(int offset)
  {
- 	struct omap2_onenand *c = data;
-@@ -754,7 +752,7 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
- 		goto err_release_regulator;
+ 	return readl(onenand->base + offset);
+@@ -1017,7 +1015,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 	if (s3c_read_reg(MEM_CFG_OFFSET) & ONENAND_SYS_CFG1_SYNC_READ)
+ 		dev_info(&onenand->pdev->dev, "OneNAND Sync. Burst Read enabled\n");
  
--	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
-+	r = parse_mtd_partitions(&c->mtd, NULL, &c->parts, 0);
- 	if (r > 0)
- 		r = mtd_device_register(&c->mtd, c->parts, r);
- 	else if (pdata->parts != NULL)
+-	err = parse_mtd_partitions(mtd, part_probes, &onenand->parts, 0);
++	err = parse_mtd_partitions(mtd, NULL, &onenand->parts, 0);
+ 	if (err > 0)
+ 		mtd_device_register(mtd, onenand->parts, err);
+ 	else if (err <= 0 && pdata && pdata->parts)
 -- 
 1.7.4.4
