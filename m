@@ -1,16 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvD-00073I-CX
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:32 +0000
-Received: by wwb39 with SMTP id 39so2799739wwb.18
+	id 1QTVvE-000726-Io
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:34 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682940wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:30 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:32 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/32] mtd: rbtx4939-flash don't specify default parsing
-	options
-Date: Mon,  6 Jun 2011 13:15:56 +0400
-Message-Id: <1307351782-7456-6-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 07/32] mtd: atmel_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:15:57 +0400
+Message-Id: <1307351782-7456-7-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -29,30 +28,36 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/rbtx4939-flash.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
-index 761fb45..a272678 100644
---- a/drivers/mtd/maps/rbtx4939-flash.c
-+++ b/drivers/mtd/maps/rbtx4939-flash.c
-@@ -50,7 +50,6 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 7c35739..2e6c5b9 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -480,10 +480,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ 	}
  }
  
- static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", NULL };
--static const char *part_probe_types[] = { "cmdlinepart", NULL };
- 
- static int rbtx4939_flash_probe(struct platform_device *dev)
- {
-@@ -107,8 +106,7 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
- 	info->mtd->owner = THIS_MODULE;
- 	if (err)
- 		goto err_out;
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-static const char *part_probes[] = { "cmdlinepart", NULL };
+-#endif
 -
--	err = parse_mtd_partitions(info->mtd, part_probe_types,
-+	err = parse_mtd_partitions(info->mtd, NULL,
- 				&info->parts, 0);
- 	if (err > 0) {
- 		mtd_device_register(info->mtd, info->parts, err);
+ /*
+  * Probe for the NAND device.
+  */
+@@ -654,11 +650,9 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		goto err_scan_tail;
+ 	}
+ 
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	mtd->name = "atmel_nand";
+-	num_partitions = parse_mtd_partitions(mtd, part_probes,
++	num_partitions = parse_mtd_partitions(mtd, NULL,
+ 					      &partitions, 0);
+-#endif
+ 	if (num_partitions <= 0 && host->board->parts) {
+ 		partitions = host->board->parts;
+ 		num_partitions = host->board->num_parts;
 -- 
 1.7.4.4
