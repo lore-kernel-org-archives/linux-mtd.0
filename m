@@ -1,25 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTYz6-0003nl-1Q
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 12:32:44 +0000
-Received: by fxm14 with SMTP id 14so3493933fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 05:32:42 -0700 (PDT)
-Subject: Re: [PATCH 5/5] flash_{lock, unlock}: fix off-by-one error for
-	"entire device" length
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1307333354-26583-5-git-send-email-vapier@gentoo.org>
-References: <1307333354-26583-1-git-send-email-vapier@gentoo.org>
-	<1307333354-26583-5-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jun 2011 15:28:26 +0300
-Message-ID: <1307363306.3112.52.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Vimal Singh <vimal.newwork@gmail.com>, Vimal Singh <vimalsingh@ti.com>,
-	linux-mtd@lists.infradead.org, Steven Miao <realmz6@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from mail.gw-instruments.de ([82.144.60.34]
+	helo=redbean.intranet.gw-instruments.de)
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QTZcL-0004Ts-Mr
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 13:13:18 +0000
+Date: Mon, 6 Jun 2011 15:11:12 +0200 (CEST)
+From: Peter Wippich <pewi@gw-instruments.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: nandwrite with raw oob data
+In-Reply-To: <1307362246.3112.45.camel@localhost>
+Message-ID: <alpine.LSU.2.00.1106061449030.26001@redbean.intranet.gw-instruments.de>
+References: <alpine.LSU.2.00.1106051821580.26001@redbean.intranet.gw-instruments.de>
+	<1307362246.3112.45.camel@localhost>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,16 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 00:09 -0400, Mike Frysinger wrote:
-> From: Steven Miao <realmz6@gmail.com>
-> 
-> This basically reverts commit 43feb39f35a9ee0ed3 which changed the full
-> length calculation to be one less than one sector.  I don't understand
-> the logic in the commit message where it states that the length should
-> be one sector smaller as this results in misbehavior at runtime.
 
-Pushed as well, thanks!
+Hi Artem,
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+On Mon, 6 Jun 2011, Artem Bityutskiy wrote:
+
+> On Sun, 2011-06-05 at 18:40 +0200, Peter Wippich wrote:
+>> Dear all,
+>>
+>> I run into the same problem as outlined here before:
+>> http://lists.infradead.org/pipermail/linux-mtd/2011-March/034516.html
+>>
+>> Going a little bit deeper it looks to me that writing any nand flash data
+>> with raw (precomputed ECC) OOB data is not possible at all with a recent
+>> Kernel and nandwrite version.
+>>
+>> What happens here is that nandwrite will set MTD_MODE_RAW when noecc is
+>> specified. Doing so will force the kernel driver to write OOB data only on
+>> a normal write. Obviously this will fail when someone is trying to write
+>> normal data to flash in MODE_RAW.
+>>
+>> Question: is this realy the intended behaviour ???
+>>
+>> It may be easy to fix this on kernel level, but may be there is some good
+>> reason I don't know to do it as it is. And I don't want to break things.
+>>
+>> Any comments welcome.
+>
+> I think that is just broken stuff which is rarely used. Please, send a
+> set of fixes, but please, try to:
+>
+> 1. Fix both nandwrite and the kernel.
+> 2. Test that non-raw functionality is not broken.
+>
+
+Digged a little bit deeper. The problem is much simpler:
+
+Indeed write_oob can be used to write the data block. This is just what 
+happens when writing in MODE_RAW. However, the initialization 
+of the mtd_oob_ops structure used is to lazy and causes the write to fail 
+later on. I will send a trivial patch later on.
+
+Cheers,
+
+Peter
