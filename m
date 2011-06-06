@@ -1,25 +1,25 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTZjX-0004gq-1t
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 13:20:44 +0000
-Received: by bwz1 with SMTP id 1so4682239bwz.36
+	id 1QTZl9-0004jt-KI
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 13:22:24 +0000
+Received: by wyb28 with SMTP id 28so3871073wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 06:20:41 -0700 (PDT)
-Subject: Re: [PATCHv2 2/6] nand/denali: annotate pci init/exit functions
-	with correct section
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jamie Iles <jamie@jamieiles.com>
-In-Reply-To: <1307097169-11744-3-git-send-email-jamie@jamieiles.com>
+	Mon, 06 Jun 2011 06:22:20 -0700 (PDT)
+Date: Mon, 6 Jun 2011 14:22:16 +0100
+From: Jamie Iles <jamie@jamieiles.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCHv2 1/6] nand/denali: convert to dev_() printk helpers
+Message-ID: <20110606132216.GJ11191@pulham.picochip.com>
 References: <1307097169-11744-1-git-send-email-jamie@jamieiles.com>
-	<1307097169-11744-3-git-send-email-jamie@jamieiles.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jun 2011 16:16:24 +0300
-Message-ID: <1307366184.3112.70.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	<1307097169-11744-2-git-send-email-jamie@jamieiles.com>
+	<1307365915.3112.68.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1307365915.3112.68.camel@localhost>
+Cc: Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
 	Chuanxiao Dong <chuanxiao.dong@intel.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-06-03 at 11:32 +0100, Jamie Iles wrote:
-> The module init exit functions should be annotated with __init and
-> __exit.
+On Mon, Jun 06, 2011 at 04:11:55PM +0300, Artem Bityutskiy wrote:
+> On Fri, 2011-06-03 at 11:32 +0100, Jamie Iles wrote:
+> >  	if ((data_invalid - acc_clks * CLK_X) < 2)
+> > -		dev_warn(denali->dev, "%s, Line %d: Warning!\n",
+> > -			__FILE__, __LINE__);
+> > +		dev_warn(denali->dev, "%s, Line %d: Warning!\n", __FILE__,
+> > +			 __LINE__);
 > 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+> Do you really need __FILE__ and __LINE__ here? And may be you could also
+> change the warning message? Just printing "warning!" is a bit silly.
 
-Would you please use "mtd: denali:" prefix?
+OK, fair point (and the rest of your comments).  I'll respin this and 
+try to rationalise the messages at the same time.
 
-I cannot apply this patch because it depends on the previous patch. You
-could re-structure the code and make simpler patches like this go first,
-then they could be taken quicker.
-
-Thanks!
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Jamie
