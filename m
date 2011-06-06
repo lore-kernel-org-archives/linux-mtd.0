@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvH-00071b-Pa
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:36 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
+	id 1QTVvL-00073I-2J
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:39 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so2799739wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:35 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:38 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 09/32] mtd: cmx270_nand don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:15:59 +0400
-Message-Id: <1307351782-7456-9-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 11/32] mtd: davinci_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:01 +0400
+Message-Id: <1307351782-7456-11-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,38 +28,28 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/cmx270_nand.c |    7 ++-----
- 1 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/davinci_nand.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 6fc043a..f8f5b7c 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -50,8 +50,6 @@ static struct mtd_partition partition_info[] = {
- };
- #define NUM_PARTITIONS (ARRAY_SIZE(partition_info))
- 
--const char *part_probes[] = { "cmdlinepart", NULL };
--
- static u_char cmx270_read_byte(struct mtd_info *mtd)
- {
- 	struct nand_chip *this = mtd->priv;
-@@ -222,14 +220,13 @@ static int __init cmx270_init(void)
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index a4c82b4..0c582ed 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -753,14 +753,7 @@ syndrome_done:
+ 	if (ret < 0)
  		goto err_scan;
- 	}
  
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, part_probes,
-+	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, NULL,
- 					    &mtd_parts, 0);
- 	if (mtd_parts_nb > 0)
- 		part_type = "command line";
- 	else
- 		mtd_parts_nb = 0;
--#endif
-+
- 	if (!mtd_parts_nb) {
- 		mtd_parts = partition_info;
- 		mtd_parts_nb = NUM_PARTITIONS;
+-	if (mtd_has_cmdlinepart()) {
+-		static const char *probes[] __initconst = {
+-			"cmdlinepart", NULL
+-		};
+-
+-		mtd_parts_nb = parse_mtd_partitions(&info->mtd, probes,
+-						    &mtd_parts, 0);
+-	}
++	mtd_parts_nb = parse_mtd_partitions(&info->mtd, NULL, &mtd_parts, 0);
+ 
+ 	if (mtd_parts_nb <= 0) {
+ 		mtd_parts = pdata->parts;
 -- 
 1.7.4.4
