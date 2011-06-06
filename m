@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvO-000737-9O
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:43 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799709wwb.18
+	id 1QTVvQ-00071T-Rm
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:45 +0000
+Received: by mail-ww0-f41.google.com with SMTP id 18so1223527wwi.0
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:41 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:44 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/32] mtd: fsl_upm don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:03 +0400
-Message-Id: <1307351782-7456-13-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 14/32] mtd: fsmc_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:04 +0400
+Message-Id: <1307351782-7456-14-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,29 +28,50 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/fsl_upm.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 23752fd..7c782eb 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -158,7 +158,6 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
- {
- 	int ret;
- 	struct device_node *flash_np;
--	static const char *part_types[] = { "cmdlinepart", NULL, };
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index e9b275a..80abbb2 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -177,9 +177,6 @@ static struct mtd_partition partition_info_128KB_blk[] = {
+ 	},
+ };
  
- 	fun->chip.IO_ADDR_R = fun->io_base;
- 	fun->chip.IO_ADDR_W = fun->io_base;
-@@ -192,7 +191,7 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
- 	if (ret)
- 		goto err;
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-const char *part_probes[] = { "cmdlinepart", NULL };
+-#endif
  
--	ret = parse_mtd_partitions(&fun->mtd, part_types, &fun->parts, 0);
-+	ret = parse_mtd_partitions(&fun->mtd, NULL, &fun->parts, 0);
+ /**
+  * struct fsmc_nand_data - structure for FSMC NAND device state
+@@ -716,15 +713,13 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	 * platform data,
+ 	 * default partition information present in driver.
+ 	 */
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	/*
+-	 * Check if partition info passed via command line
++	 * Check for partition info passed
+ 	 */
+ 	host->mtd.name = "nand";
+-	host->nr_partitions = parse_mtd_partitions(&host->mtd, part_probes,
++	host->nr_partitions = parse_mtd_partitions(&host->mtd, NULL,
+ 			&host->partitions, 0);
+ 	if (host->nr_partitions <= 0) {
+-#endif
+ 		/*
+ 		 * Check if partition info passed via command line
+ 		 */
+@@ -769,9 +764,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 				}
+ 			}
+ 		}
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	}
+-#endif
  
- #ifdef CONFIG_MTD_OF_PARTS
- 	if (ret == 0) {
+ 	ret = mtd_device_register(&host->mtd, host->partitions,
+ 				  host->nr_partitions);
 -- 
 1.7.4.4
