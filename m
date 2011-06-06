@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvG-000737-6n
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:35 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799709wwb.18
+	id 1QTVvH-00071b-Pa
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:36 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:33 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:35 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 08/32] mtd: bcm_umi_nand don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:15:58 +0400
-Message-Id: <1307351782-7456-8-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 09/32] mtd: cmx270_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:15:59 +0400
+Message-Id: <1307351782-7456-9-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +28,38 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/bcm_umi_nand.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/cmx270_nand.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index 7ac8607..7752d59 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -52,8 +52,6 @@
- static const __devinitconst char gBanner[] = KERN_INFO \
- 	"BCM UMI MTD NAND Driver: 1.00\n";
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+index 6fc043a..f8f5b7c 100644
+--- a/drivers/mtd/nand/cmx270_nand.c
++++ b/drivers/mtd/nand/cmx270_nand.c
+@@ -50,8 +50,6 @@ static struct mtd_partition partition_info[] = {
+ };
+ #define NUM_PARTITIONS (ARRAY_SIZE(partition_info))
  
 -const char *part_probes[] = { "cmdlinepart", NULL };
 -
- #if NAND_ECC_BCH
- static uint8_t scan_ff_pattern[] = { 0xff };
+ static u_char cmx270_read_byte(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *this = mtd->priv;
+@@ -222,14 +220,13 @@ static int __init cmx270_init(void)
+ 		goto err_scan;
+ 	}
  
-@@ -497,7 +495,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 
- 		board_mtd->name = "bcm_umi-nand";
- 		nr_partitions =
--		    parse_mtd_partitions(board_mtd, part_probes,
-+		    parse_mtd_partitions(board_mtd, NULL,
- 					 &partition_info, 0);
- 
- 		if (nr_partitions <= 0) {
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, part_probes,
++	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, NULL,
+ 					    &mtd_parts, 0);
+ 	if (mtd_parts_nb > 0)
+ 		part_type = "command line";
+ 	else
+ 		mtd_parts_nb = 0;
+-#endif
++
+ 	if (!mtd_parts_nb) {
+ 		mtd_parts = partition_info;
+ 		mtd_parts_nb = NUM_PARTITIONS;
 -- 
 1.7.4.4
