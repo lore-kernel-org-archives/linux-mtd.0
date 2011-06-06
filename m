@@ -1,19 +1,24 @@
-Received: from mail.gw-instruments.de ([82.144.60.34]
-	helo=redbean.intranet.gw-instruments.de)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTbw7-0008Bu-Bd
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 15:41:52 +0000
-Date: Mon, 6 Jun 2011 17:39:45 +0200 (CEST)
-From: Peter Wippich <pewi@gw-instruments.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QTc30-0008Jh-ME
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 15:48:59 +0000
+Received: by fxm14 with SMTP id 14so3684920fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jun 2011 08:48:56 -0700 (PDT)
 Subject: Re: [PATCH 1/1] MTD mtdchar: add missing initializer on raw write
-In-Reply-To: <1307374439.3112.81.camel@localhost>
-Message-ID: <alpine.LSU.2.00.1106061737130.3821@redbean.intranet.gw-instruments.de>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Peter Wippich <pewi@gw-instruments.de>
+In-Reply-To: <alpine.LSU.2.00.1106061737130.3821@redbean.intranet.gw-instruments.de>
 References: <alpine.LSU.2.00.1106061541210.26001@redbean.intranet.gw-instruments.de>
 	<1307374439.3112.81.camel@localhost>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	<alpine.LSU.2.00.1106061737130.3821@redbean.intranet.gw-instruments.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 18:44:40 +0300
+Message-ID: <1307375080.3112.84.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2011-06-06 at 17:39 +0200, Peter Wippich wrote:
+> Next time I'll add a tested by .......
 
-Hi Artem,
+I meant a tested-by from Ricard, as an independent person :-)
 
-On Mon, 6 Jun 2011, Artem Bityutskiy wrote:
-
-> On Mon, 2011-06-06 at 15:50 +0200, Peter Wippich wrote:
->> On writes in MODE_RAW the mtd_oob_ops struct is not sufficiently
->> initialized which may cause nandwrite to fail. With this patch
->> it is possible to write raw nand/oob data without additional ECC
->> (either for testing or when some sectors need different oob layout
->> e.g. bootloader) like
->> nandwrite  -n -r -o  /dev/mtd0 <myfile>
->>
->> Signed-off-by: Peter Wippich <pewi@gw-instruments.de>
->
-> Pushed your patch to the l2-mtd-2.6.git tree, thanks. It did not apply,
-> but I amended it. I guess it is against some old kernel tree. Also, I've
-> added "Cc: stable@kernel.org" to make sure it reaches the -stable tree.
->
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/87d5d1460c4e13636406a613f5740ef5e5cdbbfa
->
-> A "Tested-by" would be great!
->
->
-
-thanks. Thought it was again linux-next. May be a messed up something.
-Next time I'll add a tested by .......
-
-Cheers,
-
-Peter
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
