@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVv7-000726-QA
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:26 +0000
-Received: by wyb28 with SMTP id 28so3682940wyb.36
+	id 1QTVv8-00071b-ES
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:27 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:24 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:26 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/32] mtd: h720x-flash don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:15:53 +0400
-Message-Id: <1307351782-7456-3-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 04/32] mtd: impa7 don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:15:54 +0400
+Message-Id: <1307351782-7456-4-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +28,29 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/h720x-flash.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/maps/impa7.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
-index 7f03586..f331a2c 100644
---- a/drivers/mtd/maps/h720x-flash.c
-+++ b/drivers/mtd/maps/h720x-flash.c
-@@ -60,8 +60,6 @@ static struct mtd_partition h720x_partitions[] = {
+diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
+index 404a50c..2d45a48 100644
+--- a/drivers/mtd/maps/impa7.c
++++ b/drivers/mtd/maps/impa7.c
+@@ -61,7 +61,6 @@ static struct mtd_partition static_partitions[] =
+ static int mtd_parts_nb[NUM_FLASHBANKS];
+ static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
  
- static int                   nr_mtd_parts;
- static struct mtd_partition *mtd_parts;
 -static const char *probes[] = { "cmdlinepart", NULL };
--
- /*
-  * Initialize FLASH support
-  */
-@@ -92,7 +90,7 @@ static int __init h720x_mtd_init(void)
- 	if (mymtd) {
- 		mymtd->owner = THIS_MODULE;
  
--		nr_mtd_parts = parse_mtd_partitions(mymtd, probes, &mtd_parts, 0);
-+		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
- 		if (nr_mtd_parts > 0)
- 			part_type = "command line";
- 		if (nr_mtd_parts <= 0) {
+ static int __init init_impa7(void)
+ {
+@@ -98,7 +97,7 @@ static int __init init_impa7(void)
+ 			impa7_mtd[i]->owner = THIS_MODULE;
+ 			devicesfound++;
+ 			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
+-							       probes,
++							       NULL,
+ 							       &mtd_parts[i],
+ 							       0);
+ 			if (mtd_parts_nb[i] > 0) {
 -- 
 1.7.4.4
