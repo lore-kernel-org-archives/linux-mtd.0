@@ -1,15 +1,17 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVv6-00071T-EU
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:25 +0000
-Received: by wwi18 with SMTP id 18so1223527wwi.0
+	id 1QTVv7-000726-QA
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:26 +0000
+Received: by wyb28 with SMTP id 28so3682940wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:20 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:24 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 01/32] mtd: mtd_dataflash don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:15:51 +0400
-Message-Id: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 03/32] mtd: h720x-flash don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:15:53 +0400
+Message-Id: <1307351782-7456-3-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
+References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,26 +28,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/mtd_dataflash.c |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+ drivers/mtd/maps/h720x-flash.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 13749d4..4d4a9cd 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -677,12 +677,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
+diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
+index 7f03586..f331a2c 100644
+--- a/drivers/mtd/maps/h720x-flash.c
++++ b/drivers/mtd/maps/h720x-flash.c
+@@ -60,8 +60,6 @@ static struct mtd_partition h720x_partitions[] = {
  
--	if (mtd_has_cmdlinepart()) {
--		static const char *part_probes[] = { "cmdlinepart", NULL, };
+ static int                   nr_mtd_parts;
+ static struct mtd_partition *mtd_parts;
+-static const char *probes[] = { "cmdlinepart", NULL };
 -
--		nr_parts = parse_mtd_partitions(device, part_probes, &parts,
--						0);
--	}
-+	nr_parts = parse_mtd_partitions(device, NULL, &parts, 0);
+ /*
+  * Initialize FLASH support
+  */
+@@ -92,7 +90,7 @@ static int __init h720x_mtd_init(void)
+ 	if (mymtd) {
+ 		mymtd->owner = THIS_MODULE;
  
- 	if (nr_parts <= 0 && pdata && pdata->parts) {
- 		parts = pdata->parts;
+-		nr_mtd_parts = parse_mtd_partitions(mymtd, probes, &mtd_parts, 0);
++		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
+ 		if (nr_mtd_parts > 0)
+ 			part_type = "command line";
+ 		if (nr_mtd_parts <= 0) {
 -- 
 1.7.4.4
