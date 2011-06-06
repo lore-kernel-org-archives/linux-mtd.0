@@ -1,16 +1,22 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTYct-0003BL-Um
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 12:09:48 +0000
-Message-ID: <4DECC41F.5060808@free-electrons.com>
-Date: Mon, 06 Jun 2011 14:12:15 +0200
-From: David Wagner <david.wagner@free-electrons.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: impact of 2X_PROGRAM on read operations
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: kmpark@infradead.org
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QTYi0-0003FJ-HC
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 12:15:05 +0000
+Received: by fxm14 with SMTP id 14so3480065fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jun 2011 05:15:02 -0700 (PDT)
+Subject: Re: nandwrite with raw oob data
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Peter Wippich <pewi@gw-instruments.de>
+In-Reply-To: <alpine.LSU.2.00.1106051821580.26001@redbean.intranet.gw-instruments.de>
+References: <alpine.LSU.2.00.1106051821580.26001@redbean.intranet.gw-instruments.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 15:10:46 +0300
+Message-ID: <1307362246.3112.45.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Sun, 2011-06-05 at 18:40 +0200, Peter Wippich wrote:
+> Dear all,
+> 
+> I run into the same problem as outlined here before:
+> http://lists.infradead.org/pipermail/linux-mtd/2011-March/034516.html
+> 
+> Going a little bit deeper it looks to me that writing any nand flash data 
+> with raw (precomputed ECC) OOB data is not possible at all with a recent 
+> Kernel and nandwrite version.
+> 
+> What happens here is that nandwrite will set MTD_MODE_RAW when noecc is 
+> specified. Doing so will force the kernel driver to write OOB data only on 
+> a normal write. Obviously this will fail when someone is trying to write 
+> normal data to flash in MODE_RAW.
+> 
+> Question: is this realy the intended behaviour ???
+> 
+> It may be easy to fix this on kernel level, but may be there is some good 
+> reason I don't know to do it as it is. And I don't want to break things.
+> 
+> Any comments welcome.
 
-I have been trying to understand what does the 2X_PROGRAM configuration
-(and the IS_2PLANE macro).
-At first, I was confused to see that, in onenand_command(), when the
-command is "READ", the IS_2PLANE macro modifies the block and page
-address. I was expecting this option only to affect program operations.
-Then, after seeing jffs2 not finding its magic bitmask after switching
-the 2X_PROGRAM configuration off, I understood that, since the 2X
-Program only programs one OOB for two blocks, the read operations had to
-be impacted anyway.
+I think that is just broken stuff which is rarely used. Please, send a
+set of fixes, but please, try to:
 
-So, is the following right/almost/wrong ?
-Let the size of physical pages/block sizes be 2KiB/128KiB
-A filesystem on top of a 2X_PROGRAM-enabled mtd layer sees 4KiB-big
-pages. When this FS wants to read one 4KiB page, the mtd layer will read
-2KiB pages, two times. The layout of the blocks and pages is:
+1. Fix both nandwrite and the kernel.
+2. Test that non-raw functionality is not broken.
 
-
-       Even plane           Odd plane
-+--------------------+--------------------+
-|        page 0      |  page 1   (oob 0&1)| <---  one logical page
-|        page 2      |  page 3   (oob 2&3)|    as seen by a filesystem
-|        page 4      |  page 5   (oob 4&5)|
-|          .         |          .         |
-|          .         |          .         |
-|          .         |          .         |
-| (Block 0)          | (Block 1)          |
-+--------------------+--------------------+
-|       page 128     | page 129 (oob)     |
-|          .         |          .         |
-|          .         |          .         |
-|          .         |          .         |
-| (Block 2)          | (Block 3)          |
-+--------------------+--------------------+
-
-(the page number is not the one that would be computed within
-onenand_command but indicates the order in which pages get read or
-programmed.)
-
-
-
-Is there a way to safely read without 2X_PROGRAM enabled once it has
-been flashed with a 2X_PROGRAM-enabled flasher (e.g. patched u-boot).
-
-
-Regards,
-David Wagner.
 -- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
