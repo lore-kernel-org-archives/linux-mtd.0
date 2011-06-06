@@ -1,15 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvV-00071b-KX
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:50 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
+	id 1QTVvY-00071T-D2
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:53 +0000
+Received: by mail-ww0-f41.google.com with SMTP id 18so1223527wwi.0
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:49 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:52 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 17/32] mtd: lantiq-flash don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:07 +0400
-Message-Id: <1307351782-7456-17-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 18/32] mtd: latch-addr-flash don't specify default parsing
+	options
+Date: Mon,  6 Jun 2011 13:16:08 +0400
+Message-Id: <1307351782-7456-18-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +29,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/lantiq-flash.c |    4 +---
+ drivers/mtd/maps/latch-addr-flash.c |    4 +---
  1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index a90cabd..6c7a5b9 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -107,8 +107,6 @@ ltq_copy_to(struct map_info *map, unsigned long to,
- 	spin_unlock_irqrestore(&ebu_lock, flags);
- }
+diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
+index 5936c46..7b2199e 100644
+--- a/drivers/mtd/maps/latch-addr-flash.c
++++ b/drivers/mtd/maps/latch-addr-flash.c
+@@ -97,8 +97,6 @@ static void lf_copy_from(struct map_info *map, void *to,
  
--static const char const *part_probe_types[] = { "cmdlinepart", NULL };
+ static char *rom_probe_types[] = { "cfi_probe", NULL };
+ 
+-static char *part_probe_types[] = { "cmdlinepart", NULL };
 -
- static int __init
- ltq_mtd_probe(struct platform_device *pdev)
+ static int latch_addr_flash_remove(struct platform_device *dev)
  {
-@@ -173,7 +171,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	cfi->addr_unlock2 ^= 1;
+ 	struct latch_addr_flash_info *info;
+@@ -206,7 +204,7 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
+ 	}
+ 	info->mtd->owner = THIS_MODULE;
  
- 	nr_parts = parse_mtd_partitions(ltq_mtd->mtd,
--				part_probe_types, &parts, 0);
-+				NULL, &parts, 0);
- 	if (nr_parts > 0) {
- 		dev_info(&pdev->dev,
- 			"using %d partitions from cmdline", nr_parts);
+-	err = parse_mtd_partitions(info->mtd, (const char **)part_probe_types,
++	err = parse_mtd_partitions(info->mtd, NULL,
+ 				   &info->parts, 0);
+ 	if (err > 0) {
+ 		mtd_device_register(info->mtd, info->parts, err);
 -- 
 1.7.4.4
