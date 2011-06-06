@@ -1,23 +1,24 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTXqV-0002QQ-SV
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 11:19:48 +0000
-Received: by vxd2 with SMTP id 2so3535766vxd.36
+	id 1QTYGp-0002qE-A7
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 11:47:01 +0000
+Received: by fxm14 with SMTP id 14so3459325fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 04:19:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1307358294.3112.38.camel@localhost>
+	Mon, 06 Jun 2011 04:46:56 -0700 (PDT)
+Subject: Re: [PATCH 06/32] mtd: rbtx4939-flash don't specify default
+	parsing options
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+In-Reply-To: <1307351782-7456-6-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
-	<1307358294.3112.38.camel@localhost>
-Date: Mon, 6 Jun 2011 15:19:44 +0400
-Message-ID: <BANLkTinUq_V_QkGDm6ejtGQ7Gnq1K8EHmA@mail.gmail.com>
-Subject: Re: [PATCH 01/32] mtd: mtd_dataflash don't specify default parsing
-	options
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: dedekind1 <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+	<1307351782-7456-6-git-send-email-dbaryshkov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 14:42:39 +0300
+Message-ID: <1307360559.3112.39.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, 2011-06-06 at 13:15 +0400, Dmitry Eremin-Solenikov wrote:
+>  static int rbtx4939_flash_probe(struct platform_device *dev)
+>  {
+> @@ -107,8 +106,7 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
+>  	info->mtd->owner = THIS_MODULE;
+>  	if (err)
+>  		goto err_out;
+> -
+> -	err = parse_mtd_partitions(info->mtd, part_probe_types,
+> +	err = parse_mtd_partitions(info->mtd, NULL,
+>  				&info->parts, 0);
 
-On Mon, Jun 6, 2011 at 3:04 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2011-06-06 at 13:15 +0400, Dmitry Eremin-Solenikov wrote:
->> Since 'cmdline, NULL' is now a default for parse_mtd_partitions, don't specify
->> this in every driver, instead pass NULL to force parse_mtd_partitions
->> to use default.
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->
-> Do you have a git URL with these patches?
+This can become one-line. I can do this.
 
-Yes. Unfortunately git.kernel.org syncs too slow now, so the kernel
-wasn't available
-at the time of sending an e-mail.
+>  	if (err > 0) {
+>  		mtd_device_register(info->mtd, info->parts, err);
 
-Here it goes:
-
-The following changes since commit 099fbd4fd91fde9748d9ad927e59b6c36a2651cf:
-
-  mtd: drop mtd_has_cmdlinepart() (2011-06-06 10:31:22 +0300)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/lumag/mtd-cleanup.git
-mtd-cleanup-cmdline
 
 -- 
-With best wishes
-Dmitry
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
