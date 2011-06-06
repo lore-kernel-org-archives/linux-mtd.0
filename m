@@ -1,16 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTeRP-0003yi-Al
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 18:22:21 +0000
+	id 1QTeRW-0003zi-Ih
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 18:22:27 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id C1B2B1B4015
+	by smtp.gentoo.org (Postfix) with ESMTP id A71FA1B4013
 	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Jun 2011 18:22:16 +0000 (UTC)
+	Mon,  6 Jun 2011 18:22:15 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/4] flash_info: display MEMGETINFO and MEMISLOCKED
-Date: Mon,  6 Jun 2011 14:22:17 -0400
-Message-Id: <1307384537-9607-4-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 2/4] flash_info: allow people to get info on multiple devices
+Date: Mon,  6 Jun 2011 14:22:15 -0400
+Message-Id: <1307384537-9607-2-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
 References: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,139 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found the existing flash_info output to be a little lacking, so
-add decoders for MEMGETINFO and MEMISLOCKED.
-
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- flash_info.c |   98 +++++++++++++++++++++++++++++++++++++++++++++++++++------
- 1 files changed, 87 insertions(+), 11 deletions(-)
+ flash_info.c |   36 +++++++++++++++++++++---------------
+ 1 files changed, 21 insertions(+), 15 deletions(-)
 
 diff --git a/flash_info.c b/flash_info.c
-index 6c518b2..0e056f3 100644
+index d4887da..6c518b2 100644
 --- a/flash_info.c
 +++ b/flash_info.c
-@@ -23,6 +23,52 @@ static void usage(int status)
+@@ -18,39 +18,45 @@
+ static void usage(int status)
+ {
+ 	fprintf(status ? stderr : stdout,
+-		"Usage: %s <device>\n",
++		"Usage: %s <device> [devices]\n",
+ 		PROGRAM_NAME);
  	exit(status);
  }
  
-+#define T(t) [MTD_##t] = #t
-+static const char * const mtdtypes[] = {
-+	T(ABSENT),
-+	T(RAM),
-+	T(ABSENT),
-+	T(RAM),
-+	T(ROM),
-+	T(NORFLASH),
-+	T(NANDFLASH),
-+	T(DATAFLASH),
-+	T(UBIVOLUME),
-+};
-+static const char *mtdtype(int type)
-+{
-+	if (type < ARRAY_SIZE(mtdtypes) && mtdtypes[type])
-+		return mtdtypes[type];
-+	return "UNKNOWN";
-+}
-+
-+/* Show a pretty map of all the sectors on this device */
-+static void show_sector_map(int fd, const region_info_t *reginfo)
-+{
-+	erase_info_t einfo;
-+	int i, width;
-+
-+	printf(" sector map:\n");
-+
-+	einfo.length = reginfo->erasesize;
-+	/* figure out the number of spaces to pad w/out libm */
-+	for (i = 1, width = 0; i < reginfo->numblocks; i *= 10, ++width)
-+		continue;
-+
-+	for (i = 0; i < reginfo->numblocks; ++i) {
-+		einfo.start = reginfo->offset + i * reginfo->erasesize;
-+		printf(" %*i: %08x ", width, i, einfo.start);
-+		if (ioctl(fd, MEMISLOCKED, &einfo))
-+			printf("RO ");
-+		else
-+			printf("   ");
-+		if (((i + 1) % 4) == 0)
-+			printf("\n");
-+	}
-+	if (i % 4)
-+		printf("\n");
-+}
-+
  int main(int argc, char *argv[])
  {
- 	int fd, i, regcount;
-@@ -36,6 +82,7 @@ int main(int argc, char *argv[])
- 		const char *dev = argv[i];
- 		int r;
+-	int regcount;
+-	int fd;
++	int fd, i, regcount;
+ 
+ 	if (argc < 2)
+ 		usage(1);
+ 	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
+ 		usage(0);
+ 
+-	/* Open and size the device */
+-	fd = open(argv[1], O_RDONLY);
+-	if (fd < 0)
+-		sys_errmsg_die("could not open: %s", argv[1]);
+-
+-	if (ioctl(fd, MEMGETREGIONCOUNT, &regcount) == 0) {
+-		int i;
++	for (i = 1; i < argc; ++i) {
++		const char *dev = argv[i];
++		int r;
  		region_info_t reginfo;
-+		mtd_info_t mtdinfo;
- 
- 		/* Open and size the device */
- 		fd = open(dev, O_RDONLY);
-@@ -44,20 +91,49 @@ int main(int argc, char *argv[])
- 			continue;
- 		}
- 
--		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount))
-+		/* Print out general device info first */
-+		if (ioctl(fd, MEMGETINFO, &mtdinfo)) {
-+			sys_errmsg("could not get mtd info: %s", dev);
- 			continue;
+-		printf("Device %s has %d erase regions\n", argv[1], regcount);
+-		for (i = 0; i < regcount; i++) {
+-			reginfo.regionindex = i;
++
++		/* Open and size the device */
++		fd = open(dev, O_RDONLY);
++		if (fd < 0) {
++			sys_errmsg("could not open: %s", dev);
++			continue;
 +		}
 +
-+		printf("%s: type: %i (%s)\n flags: %#x ( ",
-+			dev, mtdinfo.type, mtdtype(mtdinfo.type), mtdinfo.flags);
-+		if (mtdinfo.flags & MTD_POWERUP_LOCK)
-+			printf("powerup_lock ");
-+		if (mtdinfo.flags & MTD_NO_ERASE)
-+			printf("no_erase ");
-+		if (mtdinfo.flags & MTD_BIT_WRITEABLE)
-+			printf("bit_writeable ");
-+		if (mtdinfo.flags & MTD_WRITEABLE)
-+			printf("writeable ");
-+		printf(")\n sizes: total %#x write %#x erase %#x oob %#x\n",
-+			mtdinfo.size, mtdinfo.writesize,
-+			mtdinfo.erasesize, mtdinfo.oobsize);
- 
--		printf("%s: %d erase regions\n", dev, regcount);
--		for (r = 0; r < regcount; ++r) {
--			reginfo.regionindex = r;
--			if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
--				printf("Region %d is at 0x%x with size 0x%x and "
--						"has 0x%x blocks\n", r, reginfo.offset,
--						reginfo.erasesize, reginfo.numblocks);
--			} else {
--				warnmsg("can not read region %d from a %d region device",
--					r, regcount);
-+		/* Print out the region info (if the device has any) */
-+		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount) == 0) {
-+			printf(" erase regions: %i\n", regcount);
-+			for (r = 0; r < regcount; ++r) {
-+				reginfo.regionindex = r;
-+				if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
-+					printf(" region %i: offset: %#x size: %#x numblocks: %#x\n",
-+						r, reginfo.offset, reginfo.erasesize,
-+						reginfo.numblocks);
-+					show_sector_map(fd, &reginfo);
-+				} else
-+					warnmsg(" region %i: can not read region info!?", r);
- 			}
-+		} else
-+			regcount = 0;
++		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount))
++			continue;
 +
-+		/* If the flash has no regions, then show the whole thing */
-+		if (regcount == 0) {
-+			reginfo.offset = 0;
-+			reginfo.erasesize = mtdinfo.erasesize;
-+			reginfo.numblocks = mtdinfo.size / mtdinfo.erasesize,
-+			reginfo.regionindex = 0;
-+			show_sector_map(fd, &reginfo);
++		printf("%s: %d erase regions\n", dev, regcount);
++		for (r = 0; r < regcount; ++r) {
++			reginfo.regionindex = r;
+ 			if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
+ 				printf("Region %d is at 0x%x with size 0x%x and "
+-						"has 0x%x blocks\n", i, reginfo.offset,
++						"has 0x%x blocks\n", r, reginfo.offset,
+ 						reginfo.erasesize, reginfo.numblocks);
+ 			} else {
+ 				warnmsg("can not read region %d from a %d region device",
+-					i, regcount);
++					r, regcount);
+ 			}
  		}
  	}
- 
 -- 
 1.7.5.3
