@@ -1,19 +1,24 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTaPo-0005oy-GC
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 14:04:25 +0000
-Received: by wwi18 with SMTP id 18so1446685wwi.0
+	id 1QTapl-0006gh-Hq
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 14:31:14 +0000
+Received: by fxm14 with SMTP id 14so3602854fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 07:04:22 -0700 (PDT)
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] mtd: plat-nand: drop unused fields from platform_nand_data
-Date: Mon,  6 Jun 2011 18:04:16 +0400
-Message-Id: <1307369056-29319-4-git-send-email-dbaryshkov@gmail.com>
-In-Reply-To: <1307369056-29319-1-git-send-email-dbaryshkov@gmail.com>
-References: <1307369056-29319-1-git-send-email-dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, dedekind1@gmail.com
+	Mon, 06 Jun 2011 07:31:10 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: nand: multi-line comment style fixups
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1306360741-12770-2-git-send-email-computersforpeace@gmail.com>
+References: <1306360741-12770-1-git-send-email-computersforpeace@gmail.com>
+	<1306360741-12770-2-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 17:26:52 +0300
+Message-ID: <1307370412.3112.74.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Brian Norris <norris@broadcom.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Drop now unused set_parts from struct platform_nand_data. Also, while we are
-at it, drop long unused priv field from platform_nand_data.
+On Wed, 2011-05-25 at 14:59 -0700, Brian Norris wrote:
+> From: Brian Norris <norris@broadcom.com>
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
----
- drivers/mtd/nand/plat_nand.c |    2 --
- include/linux/mtd/nand.h     |    2 --
- 2 files changed, 0 insertions(+), 4 deletions(-)
+I kind of rejected the first patch in this series, but forgot about this
+one. I've now pushed it to the l2 tree with additional comments
+clean-ups from me - just did them while looking at your patch and to the
+code, and accidentally used git commit --amend, so they were merged with
+yours. But this should not be a big deal - we ended up with one big
+comments cleanup patch.
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 633c04b..1339fa8 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -108,8 +108,6 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 			return 0;
- 		}
- 	}
--	if (pdata->chip.set_parts)
--		pdata->chip.set_parts(data->mtd.size, &pdata->chip);
- 	if (pdata->chip.partitions) {
- 		data->parts = pdata->chip.partitions;
- 		err = mtd_device_register(&data->mtd, data->parts,
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 585d49b..da6e252 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -617,8 +617,6 @@ struct platform_nand_chip {
- 	int chip_delay;
- 	unsigned int options;
- 	const char **part_probe_types;
--	void (*set_parts)(uint64_t size, struct platform_nand_chip *chip);
--	void *priv;
- };
- 
- /* Keep gcc happy */
+Thanks - it is in the l2-mtd-2.6.git now.
+
 -- 
-1.7.4.4
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
