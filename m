@@ -1,26 +1,20 @@
-Received: from qnaomail1.qinetiq-na.com ([96.45.212.10])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTeag-0004BV-At
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 18:31:55 +0000
-Received: from qnamail1.qinetiq-na.com ([172.16.64.16]) by
-	qnaomail1.QinetiQ-NA.com with ESMTP id 7qyJR6ITgVGKjOuX for
-	<linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 14:31:51 -0400 (EDT)
-Content-class: urn:content-classes:message
+	id 1QTeqC-0004K6-Ac
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 18:47:56 +0000
+Received: by wyb28 with SMTP id 28so4196157wyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jun 2011 11:47:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-Subject: RE: ubi image only mounts once
-Date: Mon, 6 Jun 2011 14:31:51 -0400
-Message-ID: <29EDD457F13D0846B91A4845A68C3836E466A0@BOSQNAOMAIL1.qnao.net>
-In-Reply-To: <1307376483.3112.94.camel@localhost>
-References: <29EDD457F13D0846B91A4845A68C3836DF7DEF@BOSQNAOMAIL1.qnao.net>
-	<BANLkTi=ymbNh93riTAjJ5RVFXogYt9HPYg@mail.gmail.com>
-	<29EDD457F13D0846B91A4845A68C3836E4657A@BOSQNAOMAIL1.qnao.net>
-	<1307376483.3112.94.camel@localhost>
-From: "Douglass, Woody" <Woodrow.Douglass@QinetiQ-NA.com>
-To: <dedekind1@gmail.com>
+In-Reply-To: <1307384537-9607-3-git-send-email-vapier@gentoo.org>
+References: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
+	<1307384537-9607-3-git-send-email-vapier@gentoo.org>
+Date: Mon, 6 Jun 2011 11:47:53 -0700
+Message-ID: <BANLkTik+8WBu6T-OT6a+4qZfZQ_kNHUWHw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] include/mtd: sync with kernel
+From: Brian Norris <computersforpeace@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,57 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW0sDQoNClRoYW5rcywgeW91J3JlIGNvcnJlY3QsIHN1YnBhZ2VzIGFyZW4ndCB3b3JraW5n
-IHByb3Blcmx5ISBGaXJzdCBJIHRyaWVkIGFwcGx5aW5nIHRoaXMgcGF0Y2ggdG8gc29sdmUgdGhl
-IGlzc3VlOiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzc0OTc2Mi8NCg0KVGhl
-IHRlc3Qgc3RpbGwgZmFpbHMuIE5leHQsIEkgY2hhbmdlZCB0aGUgLXMgYXJndW1lbnQgdG8gdWJp
-bml6ZSBmcm9tIDUxMiB0byAyMDQ4OyBJIGFsc28gYWRkZWQgLXMgMjA0OCB0byBteSB1Ymlmb3Jt
-YXQgYXJndW1lbnRzLg0KDQpOb3csIG9uIGJvb3QsIHRoaXMgaGFwcGVuczoNCg0KWyAgMzU3Ljk5
-Mjc2N10gVUJJOiBhdHRhY2hpbmcgbXRkNCB0byB1YmkwDQpbICAzNTcuOTk2NjczXSBVQkk6IHBo
-eXNpY2FsIGVyYXNlYmxvY2sgc2l6ZTogICAxMzEwNzIgYnl0ZXMgKDEyOCBLaUIpDQpbICAzNTgu
-MDAzNjMxXSBVQkk6IGxvZ2ljYWwgZXJhc2VibG9jayBzaXplOiAgICAxMjkwMjQgYnl0ZXMNClsg
-IDM1OC4wMDkxODVdIFVCSTogc21hbGxlc3QgZmxhc2ggSS9PIHVuaXQ6ICAgIDIwNDgNClsgIDM1
-OC4wMTM5MTZdIFVCSTogc3ViLXBhZ2Ugc2l6ZTogICAgICAgICAgICAgIDUxMg0KWyAgMzU4LjAx
-ODY0Nl0gVUJJOiBWSUQgaGVhZGVyIG9mZnNldDogICAgICAgICAgNTEyIChhbGlnbmVkIDUxMikN
-ClsgIDM1OC4wMjQ1MDVdIFVCSTogZGF0YSBvZmZzZXQ6ICAgICAgICAgICAgICAgIDIwNDgNClsg
-IDM1OC4wMzA2MzldIFVCSSBlcnJvcjogdmFsaWRhdGVfZWNfaGRyOiBiYWQgVklEIGhlYWRlciBv
-ZmZzZXQgMjA0OCwgZXhwZWN0ZWQgNTEyDQpbICAzNTguMDM4MDg1XSBVQkkgZXJyb3I6IHZhbGlk
-YXRlX2VjX2hkcjogYmFkIEVDIGhlYWRlcg0KWyAgMzU4LjA0MzQyNl0gVUJJIGVycm9yOiB1Ymlf
-aW9fcmVhZF9lY19oZHI6IHZhbGlkYXRpb24gZmFpbGVkIGZvciBQRUIgMA0KWyAgMzU4LjA1MDI5
-Ml0gVUJJIGVycm9yOiB1YmlfaW5pdDogY2Fubm90IGF0dGFjaCBtdGQ0DQpbICAzNTguMDU3NzA4
-XSBVQkkgZXJyb3I6IHViaV9pbml0OiBVQkkgZXJyb3I6IGNhbm5vdCBpbml0aWFsaXplIFVCSSwg
-ZXJyb3IgLTIyDQoNCkhvdyBjYW4gSSByZSBzZXQgdGhlIHN1Yi1wYWdlIHNpemU/DQoNCi1Xb29k
-eQ0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJ0ZW0gQml0eXV0
-c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+IFNlbnQ6IE1vbmRheSwgSnVuZSAw
-NiwgMjAxMSAxMjowOCBQTSAxMg0KPiBUbzogRG91Z2xhc3MsIFdvb2R5DQo+IENjOiBNYXR0aGV3
-IEwuIENyZWVjaDsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUkU6
-IHViaSBpbWFnZSBvbmx5IG1vdW50cyBvbmNlDQo+IA0KPiBPbiBNb24sIDIwMTEtMDYtMDYgYXQg
-MTE6NTMgLTA0MDAsIERvdWdsYXNzLCBXb29keSB3cm90ZToNCj4gPiBNYXR0LA0KPiA+DQo+ID4g
-VGhhbmtzIGZvciB0aGUgcXVpY2sgcmVwbHkuIEkgaGF2ZSB0cmllZCBib3RoIHViaWZvcm1hdCAo
-cGFzc2luZyAtZg0KPiB3aXRoDQo+ID4gbXkgaW1hZ2UpIGFuZCBuYW5kd3JpdGUsIGJvdGggc2Vl
-bSB0byBiZWhhdmUgdGhlIHNhbWUgd2F5LiBUaGUNCj4gPiBmaWxlc3lzdGVtIG1vdW50cyBvbmNl
-LCBidXQgd2hlbiBJIHJlYm9vdCwgaXQgZG9lc24ndCBldmVyIG1vdW50DQo+IGFnYWluLg0KPiA+
-DQo+ID4gSSBjYW5ub3QgdXBncmFkZSBteSBrZXJuZWwgYXMgbXkgZGV2ZWxvcG1lbnQgc2NoZWR1
-bGUgaXMgdG9vDQo+IGFnZ3Jlc3NpdmU7DQo+ID4gSSBkb24ndCBoYXZlIHRpbWUuIEknbSB1c2lu
-ZyAyLjYuMzIgZm9yIG5vdzsgaWYgSSBmYWlsIGF0IGdldHRpbmcgVUJJDQo+IHRvDQo+ID4gd29y
-aywgSSBjYW4gZmFsbCBiYWNrIG9uIGpmZnMyLCB3aGljaCB3b3JrcywgYnV0IEkgcHJlZmVyIFVC
-SUZTLg0KPiA+DQo+ID4gTm90ZSB0aGF0IEkgZGlkIHN1Y2Nlc3NmdWxseSBsb2FkIGEgdWJpIGlt
-YWdlIHdpdGggdGhpcyBrZXJuZWwgSW4gdGhlDQo+ID4gcGFzdCB3aXRoIGEgZmlsZXN5c3RlbSBp
-bWFnZSBnZW5lcmF0ZWQgZnJvbSBPcGVuRW1iZWRkZWQuIENvdWxkIG15DQo+ID4gbWtmcy51Ymlm
-cy91YmluaXplIGJlIHRoZSBpc3N1ZT8NCj4gDQo+IEkgYW0gc3VyZSB0aGUgcHJvYmxlbSBpcyB5
-b3VyIE9NQVAgZmxhc2ggZHJpdmVyIC0gaXQgZG9lcyBub3Qgc3VwcG9ydA0KPiBzdWItcGFnZXMg
-Y29ycmVjdGx5LiBUaGVyZSB3ZXJlIHNldmVyYWwgZGlzY3Vzc2lvbnMuIEkgaGF2ZSBub3QgaWRl
-YQ0KPiB3aGF0IGlzIHlvdXIga2VybmVsIGFuZCB3aGljaCBoYWNrcyBpdCBoYXMuDQo+IA0KPiBB
-bnl3YXksIGZpcnN0IHRyeSB0byBjaGVjayBpZiBJIHdhcyByaWdodCAtIHJ1biB0aGUgbXRkX3N1
-YnBhZ2V0ZXN0DQo+IHRlc3Q6IGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZG9j
-L2dlbmVyYWwuaHRtbCNMX210ZF90ZXN0cw0KPiANCj4gTXkgcHJlZGljdGlvbiAtIGl0IHdpbGwg
-ZmFpbC4gTGV0J3MgY2hlY2sgdGhpcy4NCj4gDQo+IElmIEknbSByaWdodCAtIHlvdSBoYXZlIDIg
-Y2hvaWNlczoNCj4gDQo+IDEuIEZpeCB0aGUgZHJpdmVyLg0KPiAyLiBEbyBub3QgdXNlIHN1Yi1w
-YWdlcyAobWVhbnMgeW91J2xsIHdhc3RlIGEgYml0IG1vcmUgZmxhc2ggc3BhY2UpLg0KPiANCj4g
-Rm9yIHRoZSBsYXR0ZXIgLSBhc3N1bWUgeW91ciBzdWItcGFnZSBzaXplID0gcGFnZSBzaXplID0g
-MjA0OCBieXRlcywNCj4gYW5kDQo+IGFkanVzdCB5b3VyIG1rZnMudWJpZnMvdWJpbmlzZS91Ymlz
-Zm9ybWF0IHBhcmFtZXRlcnMgYWNjb3JkaW5nbHkuIEZlZWwNCj4gZnJlZSB0byBhc2sgZm9yIG1v
-cmUgaGVscCAtIEkgZG8gbm90IHdhbnQgdG8gd3JpdGUgbXVjaCBub3cgYmVmb3JlIHlvdQ0KPiBo
-YXZlIHZlcmlmaWVkIG15IHRoZW9yeS4NCj4gDQo+IEFsc28sIHJ1bm5pbmcgYWxsIG10ZCB0ZXN0
-cyBpcyBhIGdvb2QgaWRlYS4NCj4gDQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0
-eXV0c2tpeSAo0JDRgNGC0ZHQvCDQkdC40YLRjtGG0LrQuNC5KQ0KDQo=
+On Mon, Jun 6, 2011 at 11:22 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+
+I probably should have done this a while ago alongside the
+ECCGETLAYOUT changes...
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
