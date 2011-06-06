@@ -1,15 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVw0-000737-7u
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:21 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799709wwb.18
+	id 1QTVwA-000726-EM
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:31 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682940wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:17:19 -0700 (PDT)
+	Mon, 06 Jun 2011 02:17:30 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 29/32] mtd: txx9ndfmc don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:19 +0400
-Message-Id: <1307351782-7456-29-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 30/32] mtd: onenand/generic don't specify default parsing
+	options
+Date: Mon,  6 Jun 2011 13:16:20 +0400
+Message-Id: <1307351782-7456-30-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,29 +29,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/txx9ndfmc.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ drivers/mtd/onenand/generic.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index bfba4e3..91b05b9 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -287,7 +287,6 @@ static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
- static int __init txx9ndfmc_probe(struct platform_device *dev)
- {
- 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
--	static const char *probes[] = { "cmdlinepart", NULL };
- 	int hold, spw;
- 	int i;
- 	struct txx9ndfmc_drvdata *drvdata;
-@@ -393,7 +392,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		}
- 		mtd->name = txx9_priv->mtdname;
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index 2d70d35..bca1c49 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -30,8 +30,6 @@
+  */
+ #define DRIVER_NAME	"onenand-flash"
  
--		nr_parts = parse_mtd_partitions(mtd, probes,
-+		nr_parts = parse_mtd_partitions(mtd, NULL,
- 						&drvdata->parts[i], 0);
- 		mtd_device_register(mtd, drvdata->parts[i], nr_parts);
- 		drvdata->mtds[i] = mtd;
+-static const char *part_probes[] = { "cmdlinepart", NULL,  };
+-
+ struct onenand_info {
+ 	struct mtd_info		mtd;
+ 	struct mtd_partition	*parts;
+@@ -73,7 +71,7 @@ static int __devinit generic_onenand_probe(struct platform_device *pdev)
+ 		goto out_iounmap;
+ 	}
+ 
+-	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
++	err = parse_mtd_partitions(&info->mtd, NULL, &info->parts, 0);
+ 	if (err > 0)
+ 		mtd_device_register(&info->mtd, info->parts, err);
+ 	else if (err <= 0 && pdata && pdata->parts)
 -- 
 1.7.4.4
