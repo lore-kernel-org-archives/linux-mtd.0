@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvs-00073I-Vz
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:14 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799739wwb.18
+	id 1QTVvw-00071b-9O
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:17 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:17:12 -0700 (PDT)
+	Mon, 06 Jun 2011 02:17:15 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 27/32] mtd: socrates_nand don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:17 +0400
-Message-Id: <1307351782-7456-27-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 28/32] mtd: tmio_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:18 +0400
+Message-Id: <1307351782-7456-28-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,37 +28,33 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/socrates_nand.c |    6 +-----
- 1 files changed, 1 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/tmio_nand.c |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index ca2d055..6ed53e1 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -155,8 +155,6 @@ static int socrates_nand_device_ready(struct mtd_info *mtd)
- 	return 1;
- }
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 11e8371..b6ffad6 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -121,9 +121,6 @@ struct tmio_nand {
  
--static const char *part_probes[] = { "cmdlinepart", NULL };
--
- /*
-  * Probe for the NAND device.
-  */
-@@ -225,14 +223,12 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
- 		goto out;
- 	}
+ #define mtd_to_tmio(m)			container_of(m, struct tmio_nand, mtd)
  
 -#ifdef CONFIG_MTD_CMDLINE_PARTS
--	num_partitions = parse_mtd_partitions(mtd, part_probes,
-+	num_partitions = parse_mtd_partitions(mtd, NULL,
- 					      &partitions, 0);
- 	if (num_partitions < 0) {
- 		res = num_partitions;
- 		goto release;
- 	}
+-static const char *part_probes[] = { "cmdlinepart", NULL };
 -#endif
  
- 	if (num_partitions == 0) {
- 		num_partitions = of_mtd_parse_partitions(&ofdev->dev,
+ /*--------------------------------------------------------------------------*/
+ 
+@@ -461,9 +458,7 @@ static int tmio_probe(struct platform_device *dev)
+ 		goto err_scan;
+ 	}
+ 	/* Register the partitions */
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-	nbparts = parse_mtd_partitions(mtd, part_probes, &parts, 0);
+-#endif
++	nbparts = parse_mtd_partitions(mtd, NULL, &parts, 0);
+ 	if (nbparts <= 0 && data) {
+ 		parts = data->partition;
+ 		nbparts = data->num_partitions;
 -- 
 1.7.4.4
