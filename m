@@ -1,16 +1,20 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTR2O-0003eX-OG
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 04:03:38 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id D6F441B4002
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Jun 2011 04:09:12 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/5] flash_lock/flash_unlock/flash_info: clean up style
-Date: Mon,  6 Jun 2011 00:09:10 -0400
-Message-Id: <1307333354-26583-1-git-send-email-vapier@gentoo.org>
+Subject: Re: [PATCH] ATMEL, AVR32: inline nand partition table access
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+In-Reply-To: <BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
+References: <1306676962-22308-1-git-send-email-dbaryshkov@gmail.com>
+	<1306935129.1097.3.camel@hcegtvedt.norway.atmel.com>
+	<BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 07:49:31 +0200
+Message-ID: <1307339371.9413.5.camel@hcegtvedt.norway.atmel.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Nicolas Ferre <nicolas.ferre@atmel.com>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+	Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,192 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- flash_info.c   |   31 +++++++++++++------------------
- flash_lock.c   |   37 +++++++++++++++----------------------
- flash_unlock.c |   16 +++++-----------
- 3 files changed, 33 insertions(+), 51 deletions(-)
+On Wed, 2011-06-01 at 18:54 +0400, Dmitry Eremin-Solenikov wrote:
+> On 6/1/11, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com> wrote:
+> > On Sun, 2011-05-29 at 17:49 +0400, Dmitry Eremin-Solenikov wrote:
+> >> Currently atmel_nand driver used by AT91 and AVR32 calls a special
+> >> callback
+> >> which return nand partition table and number of partitions. However in all
+> >> boards this callback returns just static data. So drop this callback and
+> >> make atmel_nand use partition table provided statically via platform_data.
+> >>
+> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> >
+> > Thanks for this update, always nice seeing code being optimized. I
+> > really can't recall why it was made like this in the first place...
+> >
+> > For the AVR32 related parts:
+> >
+> > Acked-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+> >
+> > <snipp diff>
+> >
+> > Will this go through the linux-mtd tree (since it spans two archs) or
+> > should it go through an arch tree?
+> 
+> On one hand, I'd prefer for this to go through the linux-mtd, if noone objects,
+> as I'd also like to submit several (a pile) patches cleaning up mtd
+> partitioning, which would depend on this.
 
-diff --git a/flash_info.c b/flash_info.c
-index ad7b30a..f8b7efa 100644
---- a/flash_info.c
-+++ b/flash_info.c
-@@ -14,44 +14,39 @@
- 
- #include <mtd/mtd-user.h>
- 
--int main(int argc,char *argv[])
-+int main(int argc, char *argv[])
- {
- 	int regcount;
--	int Fd;
-+	int fd;
- 
--	if (1 >= argc)
--	{
--		fprintf(stderr,"Usage: %s device\n", PROGRAM_NAME);
-+	if (1 >= argc) {
-+		fprintf(stderr, "Usage: %s device\n", PROGRAM_NAME);
- 		return 16;
- 	}
- 
--	// Open and size the device
--	if ((Fd = open(argv[1],O_RDONLY)) < 0)
--	{
--		fprintf(stderr,"File open error\n");
-+	/* Open and size the device */
-+	fd = open(argv[1], O_RDONLY);
-+	if (fd < 0) {
-+		fprintf(stderr, "File open error\n");
- 		return 8;
- 	}
- 
--	if (ioctl(Fd,MEMGETREGIONCOUNT,&regcount) == 0)
--	{
-+	if (ioctl(fd, MEMGETREGIONCOUNT, &regcount) == 0) {
- 		int i;
- 		region_info_t reginfo;
- 		printf("Device %s has %d erase regions\n", argv[1], regcount);
--		for (i = 0; i < regcount; i++)
--		{
-+		for (i = 0; i < regcount; i++) {
- 			reginfo.regionindex = i;
--			if(ioctl(Fd, MEMGETREGIONINFO, &reginfo) == 0)
--			{
-+			if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
- 				printf("Region %d is at 0x%x with size 0x%x and "
- 						"has 0x%x blocks\n", i, reginfo.offset,
- 						reginfo.erasesize, reginfo.numblocks);
--			}
--			else
--			{
-+			} else {
- 				printf("Strange can not read region %d from a %d region device\n",
- 						i, regcount);
- 			}
- 		}
- 	}
-+
- 	return 0;
- }
-diff --git a/flash_lock.c b/flash_lock.c
-index ef75234..8cd1b82 100644
---- a/flash_lock.c
-+++ b/flash_lock.c
-@@ -29,53 +29,46 @@ int main(int argc, char *argv[])
- 	/*
- 	 * Parse command line options
- 	 */
--	if(argc != 4)
--	{
-+	if (argc != 4) {
- 		fprintf(stderr, "USAGE: %s <mtd device> <ofs in hex> <num of sectors in decimal or -1 for all sectors>\n", PROGRAM_NAME);
- 		exit(1);
--	}
--	else if(strncmp(argv[1], "/dev/mtd", 8) != 0)
--	{
-+	} else if (strncmp(argv[1], "/dev/mtd", 8) != 0) {
- 		fprintf(stderr, "'%s' is not a MTD device.  Must specify mtd device: /dev/mtd?\n", argv[1]);
- 		exit(1);
- 	}
- 
- 	fd = open(argv[1], O_RDWR);
--	if(fd < 0)
--	{
-+	if (fd < 0) {
- 		fprintf(stderr, "Could not open mtd device: %s\n", argv[1]);
- 		exit(1);
- 	}
- 
--	if(ioctl(fd, MEMGETINFO, &mtdInfo))
--	{
-+	if (ioctl(fd, MEMGETINFO, &mtdInfo)) {
- 		fprintf(stderr, "Could not get MTD device info from %s\n", argv[1]);
- 		close(fd);
- 		exit(1);
- 	}
--	sscanf(argv[2], "%x",&ofs);
--	sscanf(argv[3], "%d",&num_sectors);
--	if(ofs > mtdInfo.size - mtdInfo.erasesize)
--	{
--		fprintf(stderr, "%x is beyond device size %x\n",ofs,(unsigned int)(mtdInfo.size - mtdInfo.erasesize));
-+	sscanf(argv[2], "%x", &ofs);
-+	sscanf(argv[3], "%d", &num_sectors);
-+	if (ofs > mtdInfo.size - mtdInfo.erasesize) {
-+		fprintf(stderr, "%x is beyond device size %x\n", ofs,
-+			(unsigned int)(mtdInfo.size - mtdInfo.erasesize));
- 		exit(1);
- 	}
- 
- 	if (num_sectors == -1) {
--		num_sectors = mtdInfo.size/mtdInfo.erasesize;
--	}
--	else {
--		if(num_sectors > mtdInfo.size/mtdInfo.erasesize)
--		{
--			fprintf(stderr, "%d are too many sectors, device only has %d\n",num_sectors,(int)(mtdInfo.size/mtdInfo.erasesize));
-+		num_sectors = mtdInfo.size / mtdInfo.erasesize;
-+	} else {
-+		if (num_sectors > mtdInfo.size / mtdInfo.erasesize) {
-+			fprintf(stderr, "%d are too many sectors, device only has %d\n",
-+				num_sectors, (int)(mtdInfo.size / mtdInfo.erasesize));
- 			exit(1);
- 		}
- 	}
- 
- 	mtdLockInfo.start = ofs;
- 	mtdLockInfo.length = (num_sectors - 1) * mtdInfo.erasesize;
--	if(ioctl(fd, MEMLOCK, &mtdLockInfo))
--	{
-+	if (ioctl(fd, MEMLOCK, &mtdLockInfo)) {
- 		fprintf(stderr, "Could not lock MTD device: %s\n", argv[1]);
- 		close(fd);
- 		exit(1);
-diff --git a/flash_unlock.c b/flash_unlock.c
-index 3d29a92..26721a5 100644
---- a/flash_unlock.c
-+++ b/flash_unlock.c
-@@ -28,26 +28,21 @@ int main(int argc, char *argv[])
- 	/*
- 	 * Parse command line options
- 	 */
--	if(argc < 2)
--	{
-+	if (argc < 2) {
- 		fprintf(stderr, "USAGE: %s <mtd device> <offset in hex> <block count in decimal number>\n", PROGRAM_NAME);
- 		exit(1);
--	}
--	else if(strncmp(argv[1], "/dev/mtd", 8) != 0)
--	{
-+	} else if (strncmp(argv[1], "/dev/mtd", 8) != 0) {
- 		fprintf(stderr, "'%s' is not a MTD device.  Must specify mtd device: /dev/mtd?\n", argv[1]);
- 		exit(1);
- 	}
- 
- 	fd = open(argv[1], O_RDWR);
--	if(fd < 0)
--	{
-+	if (fd < 0) {
- 		fprintf(stderr, "Could not open mtd device: %s\n", argv[1]);
- 		exit(1);
- 	}
- 
--	if(ioctl(fd, MEMGETINFO, &mtdInfo))
--	{
-+	if (ioctl(fd, MEMGETINFO, &mtdInfo)) {
- 		fprintf(stderr, "Could not get MTD device info from %s\n", argv[1]);
- 		close(fd);
- 		exit(1);
-@@ -65,8 +60,7 @@ int main(int argc, char *argv[])
- 		mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
- 	}
- 
--	if(ioctl(fd, MEMUNLOCK, &mtdLockInfo))
--	{
-+	if (ioctl(fd, MEMUNLOCK, &mtdLockInfo)) {
- 		fprintf(stderr, "Could not unlock MTD device: %s\n", argv[1]);
- 		close(fd);
- 		exit(1);
+I'm fine by sending the changes for AVR32 through linux-mtd, they are
+minor and so far doesn't touch anything else that is changed.
+
+> OTOH, I think there will be a cleanup of AT91 platform, which would bring
+> lot's of conflicts with this patch, if it goes through linux-mtd.
+
+AT91 will probably be worse, yes, should be doable by git to solve the
+conflicts on its own. I'll leave it to Nicolas to give his verdict.
+
 -- 
-1.7.5.3
+Hans-Christian Egtvedt
