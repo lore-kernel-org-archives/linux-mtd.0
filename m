@@ -1,24 +1,25 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTWi2-0000nw-0F
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 10:06:58 +0000
-Received: by fxm14 with SMTP id 14so3394889fxm.36
+	id 1QTWl4-0000u3-9k
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 10:10:06 +0000
+Received: by wyb28 with SMTP id 28so3718401wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 03:06:54 -0700 (PDT)
-Subject: RE: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: roman.tereshonkov@nokia.com
-In-Reply-To: <E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
-References: <20110602064832.GA7319@july> <1307115701.3069.20.camel@localhost>
-	<E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jun 2011 13:02:37 +0300
-Message-ID: <1307354557.3112.21.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kmpark@infradead.org, dwmw2@infradead.org,
-	m.szyprowski@samsung.com
-Reply-To: dedekind1@gmail.com
+	Mon, 06 Jun 2011 03:10:04 -0700 (PDT)
+Message-ID: <4DECA77B.8050907@gmail.com>
+Date: Mon, 06 Jun 2011 14:10:03 +0400
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 041/104] mtd: prepare to convert of_mtd_parse_partitions
+	to partition parser
+References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>	
+	<1307026293-8535-7-git-send-email-dbaryshkov@gmail.com>	
+	<1307347054.3135.28.camel@localhost> <4DEC8C85.6090904@gmail.com>
+	<1307348383.3135.41.camel@localhost>
+In-Reply-To: <1307348383.3135.41.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 09:42 +0000, roman.tereshonkov@nokia.com wrote:
-> What do mean by "no case to use the subpage"?
-> 
-> According to the spec KFM4G16Q4M-xEBx the Number of Partial Program Cycles in the page (NOP)
-> is equal to 4 -> subpage_sft=2.
+On 06.06.2011 12:19, Artem Bityutskiy wrote:
+> On Mon, 2011-06-06 at 12:15 +0400, Dmitry Eremin-Solenikov wrote:
+>> Answering both of your questions here:
+>> My idea is to have an of node connected to mtd device, if there is
+>> any.
+>
+> I just think the connection should be different. Probably the best would
+> be to have an OF-specific object (some struct of_info) containing struct
+> mtd_info inside, and then OF code can use container_of().
 
-I thought this means "not supported by HW". But if this is supported,
-then I'm very surprised why would we remove it. I'm dropping this patch
-from my tree.
+That will be agains current linux coding practices. E.g. check the gpio, 
+i2c, etc. code. All add device_node field to existing structs.
+
+>> It can be used by ofpart.c, ofoldpart.c (extract from physmap_of),
+>> maybe some other parsers/drivers/etc.
+>
+> I'm still not convinced we need ofoldpart.c - that is a small piece of
+> cade which can be put to ofpart.c.
+
+Agreed.
+
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+With best wishes
+Dmitry
