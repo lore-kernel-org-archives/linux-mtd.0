@@ -1,29 +1,18 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTcIG-0000Cw-I6
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 16:04:45 +0000
-Received: by vws8 with SMTP id 8so3831434vws.36
+	id 1QTcP7-0000IB-Hf
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 16:11:50 +0000
+Received: by wyb28 with SMTP id 28so4044358wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 09:04:42 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1307354316.3112.19.camel@localhost>
-References: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
-	<BANLkTin9hvdNCMeVRSj806R19obN_91v5w@mail.gmail.com>
-	<BANLkTinyQ1hoRDzJ8QKNZYP1m8X+AyPUGQ@mail.gmail.com>
-	<BANLkTim+sNbXG3yk_DGZk4=+0Za+gb65BA@mail.gmail.com>
-	<BANLkTimyNmXpKeCP3oHwx1SV2gdb4r7oNg@mail.gmail.com>
-	<1306914686.4405.53.camel@localhost>
-	<BANLkTi=ATYnYKrRvZLyFPxfbW0_RVwTROA@mail.gmail.com>
-	<BANLkTimsanbjqD8ZqJ26wcp42iQWt+vFdw@mail.gmail.com>
-	<1307354316.3112.19.camel@localhost>
-Date: Mon, 6 Jun 2011 12:04:42 -0400
-Message-ID: <BANLkTimNweAZ0wKT+LApBsWAV0W8Akmijg@mail.gmail.com>
-Subject: Re: ubifs_decompress: cannot decompress ...
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ben Gardiner <bengardiner@nanometrics.ca>,
-	MTD list <linux-mtd@lists.infradead.org>
+	Mon, 06 Jun 2011 09:11:43 -0700 (PDT)
+From: Jamie Iles <jamie@jamieiles.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: denali: detect the number of banks before resetting NAND
+Date: Mon,  6 Jun 2011 17:11:34 +0100
+Message-Id: <1307376694-17905-1-git-send-email-jamie@jamieiles.com>
+Cc: Jamie Iles <jamie@jamieiles.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 6, 2011 at 5:58 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> So the corruption starts exactly at the NAND page boundary. This makes
-> me believe that the reason is most probably power cut recovery. But you
-> say your client ensures there were none...
->
-> Yes, you are right that info from past is gone... What I'd like to see
-> is a dump of the whole LEB. Could you please add 'dbg_dump_leb()' -
-> basically I want to look if this LEB was passed through GC.
->
+Commit c89eeda810f0ec4f0eee0206ebb79e476df9f83e (mtd: denali: detect the
+number of banks) introduced runtime detection of the number of banks.
 
-[Repost, gmail mangled my node dump]
+However, denali_nand_reset() uses uses denanli_nand_info::max_banks so
+we need to detect the maximum number of banks before doing the reset.
 
-The dbg_dump_leb() call fails due to a bad CRC; I've posted its output
-plus the corresponding raw LEB dump (obtained via mtd->read_oob())
-here:
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+---
 
-http://mcreech.com/work/ubifs-decompress-err-rawleb.txt
+Artem, I believe that this one will be needed for 3.0 to avoid breakage
+on Moorestown.
 
+ drivers/mtd/nand/denali.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index eebdfb5..3984d48 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1346,6 +1346,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	 * */
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
++	detect_max_banks(denali);
+ 	denali_nand_reset(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+@@ -1356,7 +1357,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	/* Should set value for these registers when init */
+ 	iowrite32(0, denali->flash_reg + TWO_ROW_ADDR_CYCLES);
+ 	iowrite32(1, denali->flash_reg + ECC_ENABLE);
+-	detect_max_banks(denali);
+ 	denali_nand_timing_set(denali);
+ 	denali_irq_init(denali);
+ }
 -- 
-Matthew L. Creech
+1.7.4.1
