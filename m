@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVv8-00071b-ES
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:27 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
+	id 1QTVvD-000737-CS
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:32 +0000
+Received: by wwb39 with SMTP id 39so2799709wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:26 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:28 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/32] mtd: impa7 don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:15:54 +0400
-Message-Id: <1307351782-7456-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 05/32] mtd: intel_vr_nor don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:15:55 +0400
+Message-Id: <1307351782-7456-5-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,29 +28,25 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/impa7.c |    3 +--
+ drivers/mtd/maps/intel_vr_nor.c |    3 +--
  1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
-index 404a50c..2d45a48 100644
---- a/drivers/mtd/maps/impa7.c
-+++ b/drivers/mtd/maps/impa7.c
-@@ -61,7 +61,6 @@ static struct mtd_partition static_partitions[] =
- static int mtd_parts_nb[NUM_FLASHBANKS];
- static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
- 
--static const char *probes[] = { "cmdlinepart", NULL };
- 
- static int __init init_impa7(void)
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index d2f47be..fd612c7 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -72,11 +72,10 @@ static void __devexit vr_nor_destroy_partitions(struct vr_nor_mtd *p)
+ static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
  {
-@@ -98,7 +97,7 @@ static int __init init_impa7(void)
- 			impa7_mtd[i]->owner = THIS_MODULE;
- 			devicesfound++;
- 			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
--							       probes,
-+							       NULL,
- 							       &mtd_parts[i],
- 							       0);
- 			if (mtd_parts_nb[i] > 0) {
+ 	struct mtd_partition *parts;
+-	static const char *part_probes[] = { "cmdlinepart", NULL };
+ 
+ 	/* register the flash bank */
+ 	/* partition the flash bank */
+-	p->nr_parts = parse_mtd_partitions(p->info, part_probes, &parts, 0);
++	p->nr_parts = parse_mtd_partitions(p->info, NULL, &parts, 0);
+ 	return mtd_device_register(p->info, parts, p->nr_parts);
+ }
+ 
 -- 
 1.7.4.4
