@@ -1,20 +1,24 @@
-Message-ID: <4DEC8A56.1030707@atmel.com>
-Date: Mon, 06 Jun 2011 10:05:42 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	Andrew Victor <linux@maxim.org.za>,
-	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] ATMEL, AVR32: inline nand partition table access
-References: <1306676962-22308-1-git-send-email-dbaryshkov@gmail.com>	<1306935129.1097.3.camel@hcegtvedt.norway.atmel.com>
-	<BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
-In-Reply-To: <BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QTUpQ-0005aM-5U
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 08:06:29 +0000
+Received: by bwz1 with SMTP id 1so4432395bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jun 2011 01:06:26 -0700 (PDT)
+Subject: Re: [PATCH 050/104] physmap_of: separate parse_obsolete_partitions
+	to separate parser
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+In-Reply-To: <1307026293-8535-16-git-send-email-dbaryshkov@gmail.com>
+References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
+	<1307026293-8535-16-git-send-email-dbaryshkov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Jun 2011 11:02:10 +0300
+Message-ID: <1307347330.3135.29.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 01/06/2011 16:54, Dmitry Eremin-Solenikov :
-> On 6/1/11, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com> wrote:
->> On Sun, 2011-05-29 at 17:49 +0400, Dmitry Eremin-Solenikov wrote:
->>> Currently atmel_nand driver used by AT91 and AVR32 calls a special
->>> callback
->>> which return nand partition table and number of partitions. However in all
->>> boards this callback returns just static data. So drop this callback and
->>> make atmel_nand use partition table provided statically via platform_data.
->>>
->>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->>
->> Thanks for this update, always nice seeing code being optimized. I
->> really can't recall why it was made like this in the first place...
->>
->> For the AVR32 related parts:
->>
->> Acked-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
->>
->> <snipp diff>
->>
->> Will this go through the linux-mtd tree (since it spans two archs) or
->> should it go through an arch tree?
+On Thu, 2011-06-02 at 18:51 +0400, Dmitry Eremin-Solenikov wrote:
+> Separate parse_obsolete_partitions() to external ofoldpart partitions parser.
 > 
-> On one hand, I'd prefer for this to go through the linux-mtd, if noone objects,
-> as I'd also like to submit several (a pile) patches cleaning up mtd
-> partitioning, which would depend on this.
+> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> ---
+>  drivers/mtd/Kconfig           |   10 +++++
+>  drivers/mtd/Makefile          |    1 +
+>  drivers/mtd/maps/physmap_of.c |   53 +------------------------
+>  drivers/mtd/ofoldpart.c       |   89 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 101 insertions(+), 52 deletions(-)
+>  create mode 100644 drivers/mtd/ofoldpart.c
 > 
-> OTOH, I think there will be a cleanup of AT91 platform, which would bring
-> lot's of conflicts with this patch, if it goes through linux-mtd.
+> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> index 4be8373..2aa8afb 100644
+> --- a/drivers/mtd/Kconfig
+> +++ b/drivers/mtd/Kconfig
+> @@ -144,6 +144,16 @@ config MTD_OF_PARTS
+>  	  the partition map from the children of the flash node,
+>  	  as described in Documentation/powerpc/booting-without-of.txt.
+>  
+> +config MTD_OF_OLD_PARTS
+> +	bool "Obsolete OF tree partition info"
+> +	depends on OF
+> +	help
+> +	  This provides a partition parsing function which derives
+> +	  the partition map from the the flash node, being an obsolete
+> +	  way to describe physmap_of partitioning info.
+> +
+> +	  If you aren't sure you need this, you can say N.
 
+I think this tiny piece of code does not deserve to be a separate
+module...
 
-I am in favor for a mainline inclusion through linux-mtd tree.
-
-On the AT91 side, we will have to take this inclusion into account to
-avoid merge conflicts... But as long as this cleanup is not ready yet, I
-prefer to go forward this way.
-
-For that purpose, that would be good to see this patch in linux-next.
-
-Thanks to all of you, bye,
 -- 
-Nicolas Ferre
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
