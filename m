@@ -1,25 +1,18 @@
-Received: from qnaomail1.qinetiq-na.com ([96.45.212.10])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTfFw-0004ci-97
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 19:14:33 +0000
-Received: from qnamail1.qinetiq-na.com ([172.16.64.16]) by
-	qnaomail1.QinetiQ-NA.com with ESMTP id B7l043QgE5B9SQJl for
-	<linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 15:14:31 -0400 (EDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-Subject: RE: ubi image only mounts once
-Date: Mon, 6 Jun 2011 15:14:30 -0400
-Message-ID: <29EDD457F13D0846B91A4845A68C3836E46705@BOSQNAOMAIL1.qnao.net>
-In-Reply-To: <BANLkTimrmjMXAMg9yJ_Fmi+1oXgYi7A7FQ@mail.gmail.com>
-References: <29EDD457F13D0846B91A4845A68C3836DF7DEF@BOSQNAOMAIL1.qnao.net><BANLkTi=ymbNh93riTAjJ5RVFXogYt9HPYg@mail.gmail.com><29EDD457F13D0846B91A4845A68C3836E4657A@BOSQNAOMAIL1.qnao.net><1307376483.3112.94.camel@localhost><29EDD457F13D0846B91A4845A68C3836E466A0@BOSQNAOMAIL1.qnao.net>
-	<BANLkTimrmjMXAMg9yJ_Fmi+1oXgYi7A7FQ@mail.gmail.com>
-From: "Douglass, Woody" <Woodrow.Douglass@QinetiQ-NA.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1QTfqU-00056v-EB
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 19:52:19 +0000
+Received: by yxk30 with SMTP id 30so560519yxk.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jun 2011 12:52:15 -0700 (PDT)
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: ubifs_decompress: cannot decompress ...
+Date: Mon,  6 Jun 2011 15:52:06 -0400
+Message-Id: <1307389926-12209-1-git-send-email-mlcreech@gmail.com>
+In-Reply-To: <1307377091.3112.100.camel@localhost>
+References: <1307377091.3112.100.camel@localhost>
+Cc: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW0sDQoNClRoYXQgZml4ZWQgaXQhDQoNClRoYW5rcyBmb3IgYWxsIG9mIHlvdXIgaGVscDsg
-TXkgbmV4dCB0YXNrIGlzIHRvIGZpbmQgdGhlIHJpZ2h0IHNldCBvZiBwYXRjaGVzIGZvciB0aGlz
-IG5hbmQgZHJpdmVyOyBidXQgSSBoYXZlIGEgdGVtcG9yYXJ5IHNvbHV0aW9uIGluIHRoZSBtZWFu
-IHRpbWUuDQoNClRoYW5rcyBhZ2FpbiwNCldvb2R5DQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVkZWtpbmQxQGdtYWls
-LmNvbV0NCj4gU2VudDogTW9uZGF5LCBKdW5lIDA2LCAyMDExIDI6NTQgUE0gMTQNCj4gVG86IERv
-dWdsYXNzLCBXb29keQ0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3Vi
-amVjdDogUmU6IHViaSBpbWFnZSBvbmx5IG1vdW50cyBvbmNlDQo+IA0KPiBPbiBNb24sIEp1biA2
-LCAyMDExIGF0IDk6MzEgUE0sIERvdWdsYXNzLCBXb29keQ0KPiA8V29vZHJvdy5Eb3VnbGFzc0Bx
-aW5ldGlxLW5hLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBBcnRlbSwNCj4gPg0KPiA+IFRoYW5rcywg
-eW91J3JlIGNvcnJlY3QsIHN1YnBhZ2VzIGFyZW4ndCB3b3JraW5nIHByb3Blcmx5ISBGaXJzdCBJ
-DQo+IHRyaWVkIGFwcGx5aW5nIHRoaXMgcGF0Y2ggdG8gc29sdmUgdGhlIGlzc3VlOg0KPiBodHRw
-czovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzc0OTc2Mi8NCj4gPg0KPiA+IFRoZSB0ZXN0
-IHN0aWxsIGZhaWxzLiBOZXh0LCBJIGNoYW5nZWQgdGhlIC1zIGFyZ3VtZW50IHRvIHViaW5pemUg
-ZnJvbQ0KPiA1MTIgdG8gMjA0ODsgSSBhbHNvIGFkZGVkIC1zIDIwNDggdG8gbXkgdWJpZm9ybWF0
-IGFyZ3VtZW50cy4NCj4gPg0KPiA+IE5vdywgb24gYm9vdCwgdGhpcyBoYXBwZW5zOg0KPiA+DQo+
-ID4gWyDCoDM1Ny45OTI3NjddIFVCSTogYXR0YWNoaW5nIG10ZDQgdG8gdWJpMA0KPiA+IFsgwqAz
-NTcuOTk2NjczXSBVQkk6IHBoeXNpY2FsIGVyYXNlYmxvY2sgc2l6ZTogwqAgMTMxMDcyIGJ5dGVz
-ICgxMjgNCj4gS2lCKQ0KPiA+IFsgwqAzNTguMDAzNjMxXSBVQkk6IGxvZ2ljYWwgZXJhc2VibG9j
-ayBzaXplOiDCoCDCoDEyOTAyNCBieXRlcw0KPiA+IFsgwqAzNTguMDA5MTg1XSBVQkk6IHNtYWxs
-ZXN0IGZsYXNoIEkvTyB1bml0OiDCoCDCoDIwNDgNCj4gPiBbIMKgMzU4LjAxMzkxNl0gVUJJOiBz
-dWItcGFnZSBzaXplOiDCoCDCoCDCoCDCoCDCoCDCoCDCoDUxMg0KPiA+IFsgwqAzNTguMDE4NjQ2
-XSBVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiDCoCDCoCDCoCDCoCDCoDUxMiAoYWxpZ25lZCA1MTIp
-DQo+ID4gWyDCoDM1OC4wMjQ1MDVdIFVCSTogZGF0YSBvZmZzZXQ6IMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgMjA0OA0KPiA+IFsgwqAzNTguMDMwNjM5XSBVQkkgZXJyb3I6IHZhbGlkYXRlX2VjX2hk
-cjogYmFkIFZJRCBoZWFkZXIgb2Zmc2V0DQo+IDIwNDgsIGV4cGVjdGVkIDUxMg0KPiA+IFsgwqAz
-NTguMDM4MDg1XSBVQkkgZXJyb3I6IHZhbGlkYXRlX2VjX2hkcjogYmFkIEVDIGhlYWRlcg0KPiA+
-IFsgwqAzNTguMDQzNDI2XSBVQkkgZXJyb3I6IHViaV9pb19yZWFkX2VjX2hkcjogdmFsaWRhdGlv
-biBmYWlsZWQgZm9yDQo+IFBFQiAwDQo+ID4gWyDCoDM1OC4wNTAyOTJdIFVCSSBlcnJvcjogdWJp
-X2luaXQ6IGNhbm5vdCBhdHRhY2ggbXRkNA0KPiA+IFsgwqAzNTguMDU3NzA4XSBVQkkgZXJyb3I6
-IHViaV9pbml0OiBVQkkgZXJyb3I6IGNhbm5vdCBpbml0aWFsaXplIFVCSSwNCj4gZXJyb3IgLTIy
-DQo+ID4NCj4gPiBIb3cgY2FuIEkgcmUgc2V0IHRoZSBzdWItcGFnZSBzaXplPw0KPiANCj4gVGFr
-ZSBhIGxvb2sgaGVyZToNCj4gaHR0cDovL2xpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2ZhcS91Ymku
-aHRtbCNMX3ZpZF9vZmZzZXRfbWlzbWF0Y2gNCj4gDQo+IEFsc28gbW9kaW5mbyB1YmkNCj4gDQo+
-IElmIHlvdSBhdHRhY2ggVUJJIHVzaW5nIHRoZSBrZXJuZWwgYm9vdCBwYXJhbWV0ZXJzLCB1c2Ug
-bXRkPVgsMjA0OCwNCj4gd2hlcmUgWCBpcyB5b3VyIG51bWJlci4NCj4gDQo+IC0tDQo+IEJlc3Qg
-UmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0c2tpeSAo0JHQuNGC0Y7RhtC60LjQuSDQkNGA0YLRkdC8
-KQ0K
+On Mon, Jun 6, 2011 at 12:18 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>
+> I have to go home now - could you please improve dbg_dump_leb().
+> Currently it calls ubifs_scan(), which scans, finds corrupted node,
+> prints corruption information and returns -EUCLEAN and destroys the
+> scanned data.
+>
+
+Will something like this be okay?  Or do you still want to dump the
+partially-parsed data from the corrupt node as well (not just the raw contents
+of the LEB)?
+
+
+Currently an error in ubifs_scan() will cause dbg_dump_leb() to abort without
+completing the dump.  Instead, we should abandon parsing the data, but dump
+the raw (uninterpreted) LEB contents instead.
+
+Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
+---
+ fs/ubifs/debug.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 26d4c61..6ab43e4 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -901,6 +901,9 @@ void dbg_dump_leb(const struct ubifs_info *c, int lnum)
+ 	sleb = ubifs_scan(c, lnum, 0, buf, 0);
+ 	if (IS_ERR(sleb)) {
+ 		ubifs_err("scan error %d", (int)PTR_ERR(sleb));
++		printk(KERN_DEBUG "\tLEB data buffer:\n");
++		print_hex_dump(KERN_DEBUG, "\t", DUMP_PREFIX_OFFSET, 32, 1,
++			       buf, c->leb_size, 0);
+ 		goto out;
+ 	}
+ 
+-- 
+1.6.3.3
