@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVva-000737-KM
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:55 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799709wwb.18
+	id 1QTVvd-000726-91
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:58 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682940wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:54 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:56 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 19/32] mtd: mpc5121_nfc don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:09 +0400
-Message-Id: <1307351782-7456-19-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 20/32] mtd: ndfc don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:10 +0400
+Message-Id: <1307351782-7456-20-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +28,33 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/mpc5121_nfc.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/ndfc.c |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index e0e0846..0b61367 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -131,8 +131,6 @@ struct mpc5121_nfc_prv {
- 
- static void mpc5121_nfc_done(struct mtd_info *mtd);
- 
--static const char *mpc5121_nfc_pprobes[] = { "cmdlinepart", NULL };
--
- /* Read NFC register */
- static inline u16 nfc_read(struct mtd_info *mtd, uint reg)
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index ea2dea8..cb66fd7 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -159,11 +159,6 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 			  struct device_node *node)
  {
-@@ -838,7 +836,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	dev_set_drvdata(dev, mtd);
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-	static const char *part_types[] = { "cmdlinepart", NULL };
+-#else
+-	static const char *part_types[] = { NULL };
+-#endif
+ 	struct device_node *flash_np;
+ 	struct nand_chip *chip = &ndfc->chip;
+ 	int ret;
+@@ -204,7 +199,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	if (ret)
+ 		goto err;
  
- 	/* Register device in MTD */
--	retval = parse_mtd_partitions(mtd, mpc5121_nfc_pprobes, &parts, 0);
-+	retval = parse_mtd_partitions(mtd, NULL, &parts, 0);
- #ifdef CONFIG_MTD_OF_PARTS
- 	if (retval == 0)
- 		retval = of_mtd_parse_partitions(dev, dn, &parts);
+-	ret = parse_mtd_partitions(&ndfc->mtd, part_types, &ndfc->parts, 0);
++	ret = parse_mtd_partitions(&ndfc->mtd, NULL, &ndfc->parts, 0);
+ 	if (ret < 0)
+ 		goto err;
+ 
 -- 
 1.7.4.4
