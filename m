@@ -1,26 +1,16 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTYaO-00036t-M1
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 12:07:13 +0000
-Received: by fxm14 with SMTP id 14so3474175fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 05:07:10 -0700 (PDT)
-Subject: Re: [PATCH 01/32] mtd: mtd_dataflash don't specify default parsing
-	options
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <BANLkTinUq_V_QkGDm6ejtGQ7Gnq1K8EHmA@mail.gmail.com>
-References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
-	<1307358294.3112.38.camel@localhost>
-	<BANLkTinUq_V_QkGDm6ejtGQ7Gnq1K8EHmA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jun 2011 15:02:53 +0300
-Message-ID: <1307361773.3112.43.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QTYct-0003BL-Um
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 12:09:48 +0000
+Message-ID: <4DECC41F.5060808@free-electrons.com>
+Date: Mon, 06 Jun 2011 14:12:15 +0200
+From: David Wagner <david.wagner@free-electrons.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: impact of 2X_PROGRAM on read operations
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 15:19 +0400, Dmitry Eremin-Solenikov wrote:
-> Hello,
-> 
-> On Mon, Jun 6, 2011 at 3:04 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Mon, 2011-06-06 at 13:15 +0400, Dmitry Eremin-Solenikov wrote:
-> >> Since 'cmdline, NULL' is now a default for parse_mtd_partitions, don't specify
-> >> this in every driver, instead pass NULL to force parse_mtd_partitions
-> >> to use default.
-> >>
-> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> >
-> > Do you have a git URL with these patches?
-> 
-> Yes. Unfortunately git.kernel.org syncs too slow now, so the kernel
-> wasn't available
-> at the time of sending an e-mail.
-> 
-> Here it goes:
-> 
-> The following changes since commit 099fbd4fd91fde9748d9ad927e59b6c36a2651cf:
-> 
->   mtd: drop mtd_has_cmdlinepart() (2011-06-06 10:31:22 +0300)
-> 
-> are available in the git repository at:
->   git://git.kernel.org/pub/scm/linux/kernel/git/lumag/mtd-cleanup.git
-> mtd-cleanup-cmdline
+Hello,
 
-OK, thanks, all the patches are in the l2 tree now. But one note:
-please, after a mechanical change go through the patches and check that
-them. E.g., in this case many patches could also merge the list of
-parameters. I mean, if you are substituting something long by something
-short, you check if you can merge lines. Otherwise, you check if some
-lines became too long...
+I have been trying to understand what does the 2X_PROGRAM configuration
+(and the IS_2PLANE macro).
+At first, I was confused to see that, in onenand_command(), when the
+command is "READ", the IS_2PLANE macro modifies the block and page
+address. I was expecting this option only to affect program operations.
+Then, after seeing jffs2 not finding its magic bitmask after switching
+the 2X_PROGRAM configuration off, I understood that, since the 2X
+Program only programs one OOB for two blocks, the read operations had to
+be impacted anyway.
 
-Thanks!
+So, is the following right/almost/wrong ?
+Let the size of physical pages/block sizes be 2KiB/128KiB
+A filesystem on top of a 2X_PROGRAM-enabled mtd layer sees 4KiB-big
+pages. When this FS wants to read one 4KiB page, the mtd layer will read
+2KiB pages, two times. The layout of the blocks and pages is:
 
+
+       Even plane           Odd plane
++--------------------+--------------------+
+|        page 0      |  page 1   (oob 0&1)| <---  one logical page
+|        page 2      |  page 3   (oob 2&3)|    as seen by a filesystem
+|        page 4      |  page 5   (oob 4&5)|
+|          .         |          .         |
+|          .         |          .         |
+|          .         |          .         |
+| (Block 0)          | (Block 1)          |
++--------------------+--------------------+
+|       page 128     | page 129 (oob)     |
+|          .         |          .         |
+|          .         |          .         |
+|          .         |          .         |
+| (Block 2)          | (Block 3)          |
++--------------------+--------------------+
+
+(the page number is not the one that would be computed within
+onenand_command but indicates the order in which pages get read or
+programmed.)
+
+
+
+Is there a way to safely read without 2X_PROGRAM enabled once it has
+been flashed with a 2X_PROGRAM-enabled flasher (e.g. patched u-boot).
+
+
+Regards,
+David Wagner.
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
