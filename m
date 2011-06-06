@@ -1,18 +1,24 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVy8-0007j6-DQ
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:19:33 +0000
-Received: by wyb28 with SMTP id 28so3685058wyb.36
+	id 1QTW0P-0008DL-8m
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:21:54 +0000
+Received: by wwb39 with SMTP id 39so2803373wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:19:30 -0700 (PDT)
+	Mon, 06 Jun 2011 02:21:51 -0700 (PDT)
+Message-ID: <4DEC9C27.7070508@gmail.com>
+Date: Mon, 06 Jun 2011 13:21:43 +0400
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 10/32] mtd: cs553x_nand don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:00 +0400
-Message-Id: <1307351782-7456-10-git-send-email-dbaryshkov@gmail.com>
-In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
-References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 041/104] mtd: prepare to convert of_mtd_parse_partitions
+	to partition parser
+References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>	
+	<1307026293-8535-7-git-send-email-dbaryshkov@gmail.com>
+	<1307347548.3135.31.camel@localhost>
+In-Reply-To: <1307347548.3135.31.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since 'cmdline, NULL' is now a default for parse_mtd_partitions, don't specify
-this in every driver, instead pass NULL to force parse_mtd_partitions
-to use default.
+On 06.06.2011 12:05, Artem Bityutskiy wrote:
+> On Thu, 2011-06-02 at 18:51 +0400, Dmitry Eremin-Solenikov wrote:
+>> Prepare to convert of_mtd_parse_partitions() to usual partitions parser:
+>> 1) Register ofpart parser
+>> 2) Internally don't use passed device for error printing
+>> 3) Add device_node to mtd_info struct
+>> 4) Move of_mtd_parse_partitions from __devinit to common text section
+>> 5) add ofpart to the default list of partition parsers
+>>
+>> Signed-off-by: Dmitry Eremin-Solenikov<dbaryshkov@gmail.com>
+>
+> Do not apply this and further changes so far - I had some questions.
+>
+> Anyway, your series consists of as set of logical steps, which is really
+> nice, so let's finish with the first cmdline consolidation step, and
+> then move on.
 
-Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
----
- drivers/mtd/nand/cs553x_nand.c |    6 +-----
- 1 files changed, 1 insertions(+), 5 deletions(-)
+BTW: what about fixing order of parsing to:
+cmdlinepart,
+RedBoot,
+afs,
+ofpart/ofoldpart,
+platform-default-hook.
 
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index b354961..b2bdf72 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -278,8 +278,6 @@ static int is_geode(void)
- 	return 0;
- }
- 
--static const char *part_probes[] = { "cmdlinepart", NULL };
--
- static int __init cs553x_init(void)
- {
- 	int err = -ENXIO;
-@@ -318,9 +316,7 @@ static int __init cs553x_init(void)
- 		if (cs553x_mtd[i]) {
- 
- 			/* If any devices registered, return success. Else the last error. */
--			mtd_parts_nb = parse_mtd_partitions(cs553x_mtd[i], part_probes, &mtd_parts, 0);
--			if (mtd_parts_nb > 0)
--				printk(KERN_NOTICE "Using command line partition definition\n");
-+			mtd_parts_nb = parse_mtd_partitions(cs553x_mtd[i], NULL, &mtd_parts, 0);
- 			mtd_device_register(cs553x_mtd[i], mtd_parts,
- 					    mtd_parts_nb);
- 			err = 0;
+This will allow me to drop "parse order" options from all relevant 
+functions.
+
 -- 
-1.7.4.4
+With best wishes
+Dmitry
