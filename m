@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvf-00073I-F7
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:00 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799739wwb.18
+	id 1QTVvh-00071b-OX
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:17:02 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:59 -0700 (PDT)
+	Mon, 06 Jun 2011 02:17:01 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 21/32] mtd: omap2 don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:11 +0400
-Message-Id: <1307351782-7456-21-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 22/32] mtd: orion_nand don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:12 +0400
+Message-Id: <1307351782-7456-22-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,30 +28,33 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/omap2.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/orion_nand.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 0db2c0e..8783c08 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -94,8 +94,6 @@
- #define P4e_s(a)	(TF(a & NAND_Ecc_P4e)		<< 0)
- #define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 7794d06..5c55981 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -21,8 +21,6 @@
+ #include <mach/hardware.h>
+ #include <plat/orion_nand.h>
  
 -static const char *part_probes[] = { "cmdlinepart", NULL };
 -
- /* oob info generated runtime depending on ecc algorithm and layout selected */
- static struct nand_ecclayout omap_oobinfo;
- /* Define some generic bad / good block scan pattern which are used
-@@ -1103,7 +1101,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		goto out_release_mem_region;
+ static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+ 	struct nand_chip *nc = mtd->priv;
+@@ -132,10 +130,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 		goto no_dev;
  	}
  
--	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
-+	err = parse_mtd_partitions(&info->mtd, NULL, &info->parts, 0);
- 	if (err > 0)
- 		mtd_device_register(&info->mtd, info->parts, err);
- 	else if (pdata->parts)
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	mtd->name = "orion_nand";
+-	num_part = parse_mtd_partitions(mtd, part_probes, &partitions, 0);
+-#endif
++	num_part = parse_mtd_partitions(mtd, NULL, &partitions, 0);
+ 	/* If cmdline partitions have been passed, let them be used */
+ 	if (num_part <= 0) {
+ 		num_part = board->nr_parts;
 -- 
 1.7.4.4
