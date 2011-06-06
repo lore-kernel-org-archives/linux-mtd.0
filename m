@@ -1,16 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvY-00071T-D2
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:53 +0000
-Received: by mail-ww0-f41.google.com with SMTP id 18so1223527wwi.0
+	id 1QTVva-000737-KM
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:55 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so2799709wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:52 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:54 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 18/32] mtd: latch-addr-flash don't specify default parsing
-	options
-Date: Mon,  6 Jun 2011 13:16:08 +0400
-Message-Id: <1307351782-7456-18-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 19/32] mtd: mpc5121_nfc don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:09 +0400
+Message-Id: <1307351782-7456-19-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -29,30 +28,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/latch-addr-flash.c |    4 +---
+ drivers/mtd/nand/mpc5121_nfc.c |    4 +---
  1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
-index 5936c46..7b2199e 100644
---- a/drivers/mtd/maps/latch-addr-flash.c
-+++ b/drivers/mtd/maps/latch-addr-flash.c
-@@ -97,8 +97,6 @@ static void lf_copy_from(struct map_info *map, void *to,
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index e0e0846..0b61367 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -131,8 +131,6 @@ struct mpc5121_nfc_prv {
  
- static char *rom_probe_types[] = { "cfi_probe", NULL };
+ static void mpc5121_nfc_done(struct mtd_info *mtd);
  
--static char *part_probe_types[] = { "cmdlinepart", NULL };
+-static const char *mpc5121_nfc_pprobes[] = { "cmdlinepart", NULL };
 -
- static int latch_addr_flash_remove(struct platform_device *dev)
+ /* Read NFC register */
+ static inline u16 nfc_read(struct mtd_info *mtd, uint reg)
  {
- 	struct latch_addr_flash_info *info;
-@@ -206,7 +204,7 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
- 	}
- 	info->mtd->owner = THIS_MODULE;
+@@ -838,7 +836,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 	dev_set_drvdata(dev, mtd);
  
--	err = parse_mtd_partitions(info->mtd, (const char **)part_probe_types,
-+	err = parse_mtd_partitions(info->mtd, NULL,
- 				   &info->parts, 0);
- 	if (err > 0) {
- 		mtd_device_register(info->mtd, info->parts, err);
+ 	/* Register device in MTD */
+-	retval = parse_mtd_partitions(mtd, mpc5121_nfc_pprobes, &parts, 0);
++	retval = parse_mtd_partitions(mtd, NULL, &parts, 0);
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (retval == 0)
+ 		retval = of_mtd_parse_partitions(dev, dn, &parts);
 -- 
 1.7.4.4
