@@ -1,18 +1,17 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTR7s-0002yJ-AH
+	id 1QTR7s-0002yK-Dq
 	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 04:09:17 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 91E781B400F
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Jun 2011 04:09:14 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/5] flash_{lock,unlock}: convert to common code
-Date: Mon,  6 Jun 2011 00:09:13 -0400
-Message-Id: <1307333354-26583-4-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 5/5] flash_{lock,
+	unlock}: fix off-by-one error for "entire device" length
+Date: Mon,  6 Jun 2011 00:09:14 -0400
+Message-Id: <1307333354-26583-5-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1307333354-26583-1-git-send-email-vapier@gentoo.org>
 References: <1307333354-26583-1-git-send-email-vapier@gentoo.org>
+Cc: Vimal Singh <vimalsingh@ti.com>, Vimal Singh <vimal.newwork@gmail.com>,
+	Steven Miao <realmz6@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,126 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Steven Miao <realmz6@gmail.com>
+
+This basically reverts commit 43feb39f35a9ee0ed3 which changed the full
+length calculation to be one less than one sector.  I don't understand
+the logic in the commit message where it states that the length should
+be one sector smaller as this results in misbehavior at runtime.
+
+For example, with a mtd device with total size 0x400000 and erase block
+size of 0x20000 (which gives us a total of 32 sectors), this new logic
+results in:
+	mtdLockInfo.start = 0;
+	mtdLockInfo.length = 0x3e0000; /* (32 - 1) * 0x20000 */
+
+Calling MEMLOCK/MEMUNLOCK on the device with this range leaves the last
+sector unchanged which is certainly not what we want.  So drop this -1
+part of the calculation.
+
+To look at it another way, if we only attempt to lock one sector, this
+calculation would end up with the .length set to 0.  Calling MEMLOCK
+with a length of 0 does not lock the sector as this simple code shows:
+	int main(int argc, char *argv[]) {
+		erase_info_t e0 = { 0, 0 }, e1 = { 0, 0x20000 };
+		int fd = open(argv[1], O_RDONLY);
+		ioctl(fd, MEMUNLOCK, &e1);
+		printf("%i\n", ioctl(fd, MEMISLOCKED, &e1));
+		ioctl(fd, MEMLOCK, &e0);
+		printf("%i\n", ioctl(fd, MEMISLOCKED, &e1));
+	}
+MEMISLOCKED returns 0 both times.  If we change the argument to MEMLOCK
+to e1, then MEMISLOCKED returns 1.
+
+CC: Vimal Singh <vimal.newwork@gmail.com>
+CC: Vimal Singh <vimalsingh@ti.com>
+Signed-off-by: Steven Miao <realmz6@gmail.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- flash_unlock.c |   75 ++++++++++++++++++++++++++++++-------------------------
- 1 files changed, 41 insertions(+), 34 deletions(-)
+ flash_unlock.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/flash_unlock.c b/flash_unlock.c
-index 759a5bc..3d7dd53 100644
+index 3d7dd53..9fb089a 100644
 --- a/flash_unlock.c
 +++ b/flash_unlock.c
-@@ -22,48 +22,57 @@
- #include <sys/mount.h>
- #include <string.h>
- 
-+#include "common.h"
- #include <mtd/mtd-user.h>
- 
-+static void usage(int status)
-+{
-+	fprintf(status ? stderr : stdout,
-+		"Usage: %s <mtd device> [offset] [block count]\n\n"
-+		"If offset is not specified, it defaults to 0.\n"
-+		"If block count is not specified, it defaults to all blocks.\n",
-+		PROGRAM_NAME);
-+	exit(status);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int fd, request;
- 	struct mtd_info_user mtdInfo;
- 	struct erase_info_user mtdLockInfo;
- 	int count;
-+	const char *dev;
- 
- 	/*
- 	 * Parse command line options
- 	 */
--	if (argc < 2) {
--		fprintf(stderr, "USAGE: %s <mtd device> <offset> <block count>\n", PROGRAM_NAME);
--		exit(1);
--	} else if (strncmp(argv[1], "/dev/mtd", 8) != 0) {
--		fprintf(stderr, "'%s' is not a MTD device.  Must specify mtd device: /dev/mtd?\n", argv[1]);
--		exit(1);
--	}
-+	if (argc < 2 || argc > 4)
-+		usage(1);
-+	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
-+		usage(0);
- 
--	fd = open(argv[1], O_RDWR);
--	if (fd < 0) {
--		fprintf(stderr, "Could not open mtd device: %s\n", argv[1]);
--		exit(1);
--	}
-+	dev = argv[1];
-+
-+	/*
-+	 * Get the device info to compare to command line sizes
-+	 */
-+	fd = open(dev, O_RDWR);
-+	if (fd < 0)
-+		sys_errmsg_die("could not open: %s", dev);
- 
--	if (ioctl(fd, MEMGETINFO, &mtdInfo)) {
--		fprintf(stderr, "Could not get MTD device info from %s\n", argv[1]);
--		close(fd);
--		exit(1);
--	}
-+	if (ioctl(fd, MEMGETINFO, &mtdInfo))
-+		sys_errmsg_die("could not get mtd info: %s", dev);
- 
-+	/*
-+	 * Make sure user options are valid
-+	 */
- 	if (argc > 2)
- 		mtdLockInfo.start = strtol(argv[2], NULL, 0);
- 	else
- 		mtdLockInfo.start = 0;
--	if (mtdLockInfo.start > mtdInfo.size) {
--		fprintf(stderr, "%#x is beyond device size %#x\n",
-+	if (mtdLockInfo.start > mtdInfo.size)
-+		errmsg_die("%#x is beyond device size %#x",
- 			mtdLockInfo.start, mtdInfo.size);
--		close(fd);
--		exit(1);
--	}
- 
+@@ -77,11 +77,11 @@ int main(int argc, char *argv[])
  	if (argc > 3) {
  		count = strtol(argv[3], NULL, 0);
-@@ -71,21 +80,19 @@ int main(int argc, char *argv[])
- 			mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
+ 		if (count == -1)
+-			mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
++			mtdLockInfo.length = mtdInfo.size;
  		else
  			mtdLockInfo.length = mtdInfo.erasesize * count;
--	} else {
-+	} else
- 		mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
--	}
--	if (mtdLockInfo.start + mtdLockInfo.length > mtdInfo.size) {
--		fprintf(stderr, "%s range is more than device supports\n", FLASH_MSG);
--		exit(1);
--	}
-+	if (mtdLockInfo.start + mtdLockInfo.length > mtdInfo.size)
-+		errmsg_die("range is more than device supports: %#x + %#x > %#x",
-+			mtdLockInfo.start, mtdLockInfo.length, mtdInfo.size);
- 
-+	/*
-+	 * Finally do the operation
-+	 */
- 	request = FLASH_UNLOCK ? MEMUNLOCK : MEMLOCK;
--	if (ioctl(fd, request, &mtdLockInfo)) {
--		fprintf(stderr, "Could not %s MTD device: %s\n",
--			FLASH_MSG, argv[1]);
--		close(fd);
--		exit(1);
--	}
-+	if (ioctl(fd, request, &mtdLockInfo))
-+		sys_errmsg_die("could not %s device: %s\n",
-+			FLASH_MSG, dev);
- 
- 	return 0;
- }
+ 	} else
+-		mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
++		mtdLockInfo.length = mtdInfo.size;
+ 	if (mtdLockInfo.start + mtdLockInfo.length > mtdInfo.size)
+ 		errmsg_die("range is more than device supports: %#x + %#x > %#x",
+ 			mtdLockInfo.start, mtdLockInfo.length, mtdInfo.size);
 -- 
 1.7.5.3
