@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTVvT-00073I-Ke
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:48 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so2799739wwb.18
+	id 1QTVvV-00071b-KX
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 09:16:50 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so3682911wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 02:16:47 -0700 (PDT)
+	Mon, 06 Jun 2011 02:16:49 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 16/32] mtd: jz4740_nand don't specify default parsing options
-Date: Mon,  6 Jun 2011 13:16:06 +0400
-Message-Id: <1307351782-7456-16-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 17/32] mtd: lantiq-flash don't specify default parsing options
+Date: Mon,  6 Jun 2011 13:16:07 +0400
+Message-Id: <1307351782-7456-17-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307351782-7456-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,35 +28,30 @@ to use default.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/jz4740_nand.c |    9 +--------
- 1 files changed, 1 insertions(+), 8 deletions(-)
+ drivers/mtd/maps/lantiq-flash.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index 6e813da..920719c 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -251,10 +251,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
- 	return 0;
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index a90cabd..6c7a5b9 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -107,8 +107,6 @@ ltq_copy_to(struct map_info *map, unsigned long to,
+ 	spin_unlock_irqrestore(&ebu_lock, flags);
  }
  
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--static const char *part_probes[] = {"cmdline", NULL};
--#endif
+-static const char const *part_probe_types[] = { "cmdlinepart", NULL };
 -
- static int jz_nand_ioremap_resource(struct platform_device *pdev,
- 	const char *name, struct resource **res, void __iomem **base)
+ static int __init
+ ltq_mtd_probe(struct platform_device *pdev)
  {
-@@ -373,10 +369,7 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
- 		goto err_gpio_free;
- 	}
+@@ -173,7 +171,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	cfi->addr_unlock2 ^= 1;
  
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--	num_partitions = parse_mtd_partitions(mtd, part_probes,
--						&partition_info, 0);
--#endif
-+	num_partitions = parse_mtd_partitions(mtd, NULL, &partition_info, 0);
- 	if (num_partitions <= 0 && pdata) {
- 		num_partitions = pdata->num_partitions;
- 		partition_info = pdata->partitions;
+ 	nr_parts = parse_mtd_partitions(ltq_mtd->mtd,
+-				part_probe_types, &parts, 0);
++				NULL, &parts, 0);
+ 	if (nr_parts > 0) {
+ 		dev_info(&pdev->dev,
+ 			"using %d partitions from cmdline", nr_parts);
 -- 
 1.7.4.4
