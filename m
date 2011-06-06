@@ -1,24 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTUkz-0005OG-Nw
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2011 08:01:54 +0000
-Received: by fxm14 with SMTP id 14so3318179fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 01:01:50 -0700 (PDT)
-Subject: Re: [PATCH 041/104] mtd: prepare to convert
-	of_mtd_parse_partitions to partition parser
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <1307026293-8535-7-git-send-email-dbaryshkov@gmail.com>
-References: <1307026293-8535-1-git-send-email-dbaryshkov@gmail.com>
-	<1307026293-8535-7-git-send-email-dbaryshkov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jun 2011 10:57:34 +0300
-Message-ID: <1307347054.3135.28.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4DEC8A56.1030707@atmel.com>
+Date: Mon, 06 Jun 2011 10:05:42 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+MIME-Version: 1.0
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Andrew Victor <linux@maxim.org.za>,
+	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] ATMEL, AVR32: inline nand partition table access
+References: <1306676962-22308-1-git-send-email-dbaryshkov@gmail.com>	<1306935129.1097.3.camel@hcegtvedt.norway.atmel.com>
+	<BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
+In-Reply-To: <BANLkTi=s4kGg5NKrzNs1nu8S00Ue_Zv8vQ@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-02 at 18:51 +0400, Dmitry Eremin-Solenikov wrote:
-> Prepare to convert of_mtd_parse_partitions() to usual partitions parser:
-> 1) Register ofpart parser
-> 2) Internally don't use passed device for error printing
-> 3) Add device_node to mtd_info struct
-> 4) Move of_mtd_parse_partitions from __devinit to common text section
-> 5) add ofpart to the default list of partition parsers
+Le 01/06/2011 16:54, Dmitry Eremin-Solenikov :
+> On 6/1/11, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com> wrote:
+>> On Sun, 2011-05-29 at 17:49 +0400, Dmitry Eremin-Solenikov wrote:
+>>> Currently atmel_nand driver used by AT91 and AVR32 calls a special
+>>> callback
+>>> which return nand partition table and number of partitions. However in all
+>>> boards this callback returns just static data. So drop this callback and
+>>> make atmel_nand use partition table provided statically via platform_data.
+>>>
+>>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>>
+>> Thanks for this update, always nice seeing code being optimized. I
+>> really can't recall why it was made like this in the first place...
+>>
+>> For the AVR32 related parts:
+>>
+>> Acked-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+>>
+>> <snipp diff>
+>>
+>> Will this go through the linux-mtd tree (since it spans two archs) or
+>> should it go through an arch tree?
 > 
-> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> On one hand, I'd prefer for this to go through the linux-mtd, if noone objects,
+> as I'd also like to submit several (a pile) patches cleaning up mtd
+> partitioning, which would depend on this.
+> 
+> OTOH, I think there will be a cleanup of AT91 platform, which would bring
+> lot's of conflicts with this patch, if it goes through linux-mtd.
 
-Good idea, but 
 
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/partitions.h>
-> @@ -446,6 +447,10 @@ int mtd_device_register(struct mtd_info *master,
->  			const struct mtd_partition *parts,
->  			int nr_parts)
->  {
-> +#ifdef CONFIG_OF
-> +	if (master->node)
-> +		of_node_get(master->node);
-> +#endif
+I am in favor for a mainline inclusion through linux-mtd tree.
 
-Could all the OF-specific things be done in the ofpart.c ?
+On the AT91 side, we will have to take this inclusion into account to
+avoid merge conflicts... But as long as this cleanup is not ready yet, I
+prefer to go forward this way.
 
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -171,6 +171,9 @@ struct mtd_info {
->  	// Kernel-only stuff starts here.
->  	const char *name;
->  	int index;
-> +#ifdef CONFIG_OF
-> +	struct device_node *node;
-> +#endif
+For that purpose, that would be good to see this patch in linux-next.
 
-And designe-wise this does not look like a good idea to have such fields
-in mtd_info ... Who initializes this "node" field?
-
+Thanks to all of you, bye,
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Nicolas Ferre
