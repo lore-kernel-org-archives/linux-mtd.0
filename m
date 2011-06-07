@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTA-0001Ql-L0
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:21 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
+	id 1QTwTC-0001Qj-93
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:23 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:20 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:21 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 21/44] mtd: wr_sbc82xx_flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:20 +0400
-Message-Id: <1307453803-31950-22-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 22/44] mtd: atmel_nand.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:21 +0400
+Message-Id: <1307453803-31950-23-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,76 +28,48 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/wr_sbc82xx_flash.c |   30 +++++++++++-------------------
- 1 files changed, 11 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |   19 ++-----------------
+ 1 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/maps/wr_sbc82xx_flash.c b/drivers/mtd/maps/wr_sbc82xx_flash.c
-index 901ce96..aaec902 100644
---- a/drivers/mtd/maps/wr_sbc82xx_flash.c
-+++ b/drivers/mtd/maps/wr_sbc82xx_flash.c
-@@ -20,7 +20,6 @@
- #include <asm/immap_cpm2.h>
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index a19a112..6702208 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -491,8 +491,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	struct resource *regs;
+ 	struct resource *mem;
+ 	int res;
+-	struct mtd_partition *partitions = NULL;
+-	int num_partitions = 0;
  
- static struct mtd_info *sbcmtd[3];
--static struct mtd_partition *sbcmtd_parts[3];
- 
- struct map_info sbc82xx_flash_map[3] = {
- 	{.name = "Boot flash"},
-@@ -101,6 +100,7 @@ static int __init init_sbc82xx_flash(void)
- 	for (i=0; i<3; i++) {
- 		int8_t flashcs[3] = { 0, 6, 1 };
- 		int nr_parts;
-+		struct mtd_partition *defparts;
- 
- 		printk(KERN_NOTICE "PowerQUICC II %s (%ld MiB on CS%d",
- 		       sbc82xx_flash_map[i].name,
-@@ -129,24 +129,20 @@ static int __init init_sbc82xx_flash(void)
- 
- 		sbcmtd[i]->owner = THIS_MODULE;
- 
--		nr_parts = parse_mtd_partitions(sbcmtd[i], part_probes,
--						&sbcmtd_parts[i], 0);
--		if (nr_parts > 0) {
--			mtd_device_register(sbcmtd[i], sbcmtd_parts[i],
--					    nr_parts);
--			continue;
--		}
--
- 		/* No partitioning detected. Use default */
- 		if (i == 2) {
--			mtd_device_register(sbcmtd[i], NULL, 0);
-+			defparts = NULL;
-+			nr_parts = 0;
- 		} else if (i == bigflash) {
--			mtd_device_register(sbcmtd[i], bigflash_parts,
--					    ARRAY_SIZE(bigflash_parts));
-+			defparts = bigflash_parts;
-+			nr_parts = ARRAY_SIZE(bigflash_parts);
- 		} else {
--			mtd_device_register(sbcmtd[i], smallflash_parts,
--					    ARRAY_SIZE(smallflash_parts));
-+			defparts = smallflash_parts;
-+			nr_parts = ARRAY_SIZE(smallflash_parts);
- 		}
-+
-+		mtd_device_parse_register(sbcmtd[i], part_probes, 0,
-+				defparts, nr_parts);
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!mem) {
+@@ -651,24 +649,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
  	}
- 	return 0;
- }
-@@ -159,12 +155,8 @@ static void __exit cleanup_sbc82xx_flash(void)
- 		if (!sbcmtd[i])
- 			continue;
  
--		if (i<2 || sbcmtd_parts[i])
--			mtd_device_unregister(sbcmtd[i]);
--		else
--			mtd_device_unregister(sbcmtd[i]);
-+		mtd_device_unregister(sbcmtd[i]);
+ 	mtd->name = "atmel_nand";
+-	num_partitions = parse_mtd_partitions(mtd, NULL, &partitions, 0);
+-	if (num_partitions <= 0 && host->board->parts) {
+-		partitions = host->board->parts;
+-		num_partitions = host->board->num_parts;
+-	}
+-
+-	if ((!partitions) || (num_partitions == 0)) {
+-		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
+-		res = -ENXIO;
+-		goto err_no_partitions;
+-	}
+-
+-	res = mtd_device_register(mtd, partitions, num_partitions);
++	res = mtd_device_parse_register(mtd, NULL, 0,
++			host->board->parts, host->board->num_parts);
+ 	if (!res)
+ 		return res;
  
--		kfree(sbcmtd_parts[i]);
- 		map_destroy(sbcmtd[i]);
- 
- 		iounmap((void *)sbc82xx_flash_map[i].virt);
+-err_no_partitions:
+-	nand_release(mtd);
+ err_scan_tail:
+ err_scan_ident:
+ err_no_card:
 -- 
 1.7.4.4
