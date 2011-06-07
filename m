@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwT7-0001Tv-AV
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:18 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so3852637wwb.18
+	id 1QTwT8-0001Qj-Vn
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:20 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:17 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:18 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 19/44] mtd: sa1100-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:18 +0400
-Message-Id: <1307453803-31950-20-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 20/44] mtd: solutionengine.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:19 +0400
+Message-Id: <1307453803-31950-21-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,73 +28,74 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/sa1100-flash.c |   30 +++---------------------------
- 1 files changed, 3 insertions(+), 27 deletions(-)
+ drivers/mtd/maps/solutionengine.c |   30 +++++++-----------------------
+ 1 files changed, 7 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index a9b5e0e..fa9c0a9 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -131,10 +131,8 @@ struct sa_subdev_info {
- };
+diff --git a/drivers/mtd/maps/solutionengine.c b/drivers/mtd/maps/solutionengine.c
+index cbf6bad..496c407 100644
+--- a/drivers/mtd/maps/solutionengine.c
++++ b/drivers/mtd/maps/solutionengine.c
+@@ -19,8 +19,6 @@
+ static struct mtd_info *flash_mtd;
+ static struct mtd_info *eprom_mtd;
  
- struct sa_info {
--	struct mtd_partition	*parts;
- 	struct mtd_info		*mtd;
- 	int			num_subdev;
--	unsigned int		nr_parts;
- 	struct sa_subdev_info	subdev[0];
+-static struct mtd_partition *parsed_parts;
+-
+ struct map_info soleng_eprom_map = {
+ 	.name = "Solution Engine EPROM",
+ 	.size = 0x400000,
+@@ -51,12 +49,14 @@ static struct mtd_partition superh_se_partitions[] = {
+ 		.size = MTDPART_SIZ_FULL,
+ 	}
  };
++#define NUM_PARTITIONS ARRAY_SIZE(superh_se_partitions)
++#else
++#define superh_se_partitions NULL
++#define NUM_PARTITIONS 0
+ #endif /* CONFIG_MTD_SUPERH_RESERVE */
  
-@@ -231,8 +229,6 @@ static void sa1100_destroy(struct sa_info *info, struct flash_platform_data *pla
- 			mtd_concat_destroy(info->mtd);
+ static int __init init_soleng_maps(void)
+ {
+-	int nr_parts = 0;
+-
+ 	/* First probe at offset 0 */
+ 	soleng_flash_map.phys = 0;
+ 	soleng_flash_map.virt = (void __iomem *)P2SEGADDR(0);
+@@ -92,21 +92,8 @@ static int __init init_soleng_maps(void)
+ 		mtd_device_register(eprom_mtd, NULL, 0);
  	}
  
--	kfree(info->parts);
+-	nr_parts = parse_mtd_partitions(flash_mtd, probes, &parsed_parts, 0);
 -
- 	for (i = info->num_subdev - 1; i >= 0; i--)
- 		sa1100_destroy_subdev(&info->subdev[i]);
- 	kfree(info);
-@@ -341,10 +337,8 @@ static const char *part_probes[] = { "cmdlinepart", "RedBoot", NULL };
- static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
- {
- 	struct flash_platform_data *plat = pdev->dev.platform_data;
--	struct mtd_partition *parts;
--	const char *part_type = NULL;
- 	struct sa_info *info;
--	int err, nr_parts = 0;
-+	int err;
- 
- 	if (!plat)
- 		return -ENODEV;
-@@ -358,26 +352,8 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
- 	/*
- 	 * Partition selection stuff.
- 	 */
--	nr_parts = parse_mtd_partitions(info->mtd, part_probes, &parts, 0);
--	if (nr_parts > 0) {
--		info->parts = parts;
--		part_type = "dynamic";
--	} else {
--		parts = plat->parts;
--		nr_parts = plat->nr_parts;
--		part_type = "static";
+-#ifdef CONFIG_MTD_SUPERH_RESERVE
+-	if (nr_parts <= 0) {
+-		printk(KERN_NOTICE "Using configured partition at 0x%08x.\n",
+-		       CONFIG_MTD_SUPERH_RESERVE);
+-		parsed_parts = superh_se_partitions;
+-		nr_parts = sizeof(superh_se_partitions)/sizeof(*parsed_parts);
 -	}
+-#endif /* CONFIG_MTD_SUPERH_RESERVE */
 -
--	if (nr_parts == 0)
--		printk(KERN_NOTICE "SA1100 flash: no partition info "
--			"available, registering whole flash\n");
+-	if (nr_parts > 0)
+-		mtd_device_register(flash_mtd, parsed_parts, nr_parts);
 -	else
--		printk(KERN_NOTICE "SA1100 flash: using %s partition "
--			"definition\n", part_type);
--
--	mtd_device_register(info->mtd, parts, nr_parts);
--
--	info->nr_parts = nr_parts;
-+	mtd_device_parse_register(info->mtd, part_probes, 0,
-+			plat->parts, plat->nr_parts);
+-		mtd_device_register(flash_mtd, NULL, 0);
++	mtd_device_parse_register(flash_mtd, probes, 0,
++			superh_se_partitions, NUM_PARTITIONS);
  
- 	platform_set_drvdata(pdev, info);
- 	err = 0;
+ 	return 0;
+ }
+@@ -118,10 +105,7 @@ static void __exit cleanup_soleng_maps(void)
+ 		map_destroy(eprom_mtd);
+ 	}
+ 
+-	if (parsed_parts)
+-		mtd_device_unregister(flash_mtd);
+-	else
+-		mtd_device_unregister(flash_mtd);
++	mtd_device_unregister(flash_mtd);
+ 	map_destroy(flash_mtd);
+ }
+ 
 -- 
 1.7.4.4
