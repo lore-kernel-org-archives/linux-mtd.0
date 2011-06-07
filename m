@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSf-0001Ql-8q
+	id 1QTwSf-0001Qm-9S
 	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:50 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
+Received: by wwi18 with SMTP id 18so2387416wwi.0
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:48 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:47 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/44] mtd: mtd_dataflash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:02 +0400
-Message-Id: <1307453803-31950-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 02/44] mtd: lart.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:01 +0400
+Message-Id: <1307453803-31950-3-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,48 +28,47 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/mtd_dataflash.c |   21 +++------------------
- 1 files changed, 3 insertions(+), 18 deletions(-)
+ drivers/mtd/devices/lart.c |   12 ++++--------
+ 1 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 4d4a9cd..8f6b02c 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -637,8 +637,6 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 	struct flash_platform_data	*pdata = spi->dev.platform_data;
- 	char				*otp_tag = "";
- 	int				err = 0;
--	struct mtd_partition		*parts;
--	int				nr_parts = 0;
+diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
+index 772a0ff..48b513f 100644
+--- a/drivers/mtd/devices/lart.c
++++ b/drivers/mtd/devices/lart.c
+@@ -619,6 +619,10 @@ static struct mtd_partition lart_partitions[] = {
+ 		.size	= INITRD_LEN,		/* MTDPART_SIZ_FULL */
+ 	}
+ };
++#define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
++#else
++#define lart_partitions NULL
++#define NUM_PARTITIONS 0
+ #endif
  
- 	priv = kzalloc(sizeof *priv, GFP_KERNEL);
- 	if (!priv)
-@@ -677,23 +675,10 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
+ static int __init lart_flash_init (void)
+@@ -683,23 +687,15 @@ static int __init lart_flash_init (void)
+ #endif
+ #endif
  
--	nr_parts = parse_mtd_partitions(device, NULL, &parts, 0);
-+	err = mtd_device_parse_register(device, NULL, 0,
-+			pdata ? pdata->parts : NULL,
-+			pdata ? pdata->nr_parts : 0);
+-#ifndef HAVE_PARTITIONS
+-   result = mtd_device_register(&mtd, NULL, 0);
+-#else
+    result = mtd_device_register(&mtd, lart_partitions,
+                                 ARRAY_SIZE(lart_partitions));
+-#endif
  
--	if (nr_parts <= 0 && pdata && pdata->parts) {
--		parts = pdata->parts;
--		nr_parts = pdata->nr_parts;
--	}
--
--	if (nr_parts > 0) {
--		priv->partitioned = 1;
--		err = mtd_device_register(device, parts, nr_parts);
--		goto out;
--	}
--
--	if (mtd_device_register(device, NULL, 0) == 1)
--		err = -ENODEV;
--
--out:
- 	if (!err)
- 		return 0;
+    return (result);
+ }
  
+ static void __exit lart_flash_exit (void)
+ {
+-#ifndef HAVE_PARTITIONS
+    mtd_device_unregister(&mtd);
+-#else
+-   mtd_device_unregister(&mtd);
+-#endif
+ }
+ 
+ module_init (lart_flash_init);
 -- 
 1.7.4.4
