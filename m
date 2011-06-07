@@ -1,12 +1,12 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QU5Hq-0002Fj-OL
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 23:02:17 +0000
+	id 1QU5Hq-0002Fh-O9
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 23:02:18 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 1/4] mtd: remove printk's for [kv][mz]alloc failures
-Date: Tue, 7 Jun 2011 16:01:54 -0700
-Message-ID: <1307487717-25402-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/4] mtd: nand: replace DEBUG() with dev_dbg()
+Date: Tue, 7 Jun 2011 16:01:56 -0700
+Message-ID: <1307487717-25402-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1307487717-25402-1-git-send-email-computersforpeace@gmail.com>
 References: <1307487717-25402-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -24,172 +24,250 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When a memory allocation fails, the kernel will print out a backtrace
-automatically. These print statements are unnecessary.
+Start moving away from the MTD_DEBUG_LEVEL messages. The dynamic
+debugging feature is a generic kernel feature that provides more
+flexibility.
+
+(See Documentation/dynamic-debug-howto.txt)
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/cmdlinepart.c         |    3 ---
- drivers/mtd/inftlcore.c           |    4 +---
- drivers/mtd/nand/nand_bbt.c       |   13 +++----------
- drivers/mtd/nand/rtc_from4.c      |    1 -
- drivers/mtd/nftlcore.c            |    4 +---
- drivers/mtd/onenand/onenand_bbt.c |    4 +---
- drivers/mtd/ssfdc.c               |   10 ++--------
- 7 files changed, 8 insertions(+), 31 deletions(-)
+ drivers/mtd/nand/nand_base.c |   46 +++++++++++++++++++++---------------------
+ drivers/mtd/nand/nand_bbt.c  |    9 ++-----
+ 2 files changed, 26 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index e790f38..be0c121 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -188,10 +188,7 @@ static struct mtd_partition * newpart(char *s,
- 			     extra_mem_size;
- 		parts = kzalloc(alloc_size, GFP_KERNEL);
- 		if (!parts)
--		{
--			printk(KERN_ERR ERRP "out of memory\n");
- 			return NULL;
--		}
- 		extra_mem = (unsigned char *)(parts + *num_parts);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9a11eea..95a4e71 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -113,20 +113,20 @@ static int check_offs_len(struct mtd_info *mtd,
+ 
+ 	/* Start address must align on block boundary */
+ 	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
++		dev_dbg(&mtd->dev, "%s: Unaligned address\n", __func__);
+ 		ret = -EINVAL;
  	}
- 	/* enter this partition (offset will be calculated later if it is zero at this point) */
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index d7592e6..c9a31e6 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -67,10 +67,8 @@ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
  
- 	inftl = kzalloc(sizeof(*inftl), GFP_KERNEL);
+ 	/* Length must align on block boundary */
+ 	if (len & ((1 << chip->phys_erase_shift) - 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
++		dev_dbg(&mtd->dev, "%s: Length not block aligned\n",
+ 					__func__);
+ 		ret = -EINVAL;
+ 	}
  
--	if (!inftl) {
--		printk(KERN_WARNING "INFTL: Out of memory for data structures\n");
-+	if (!inftl)
- 		return;
--	}
+ 	/* Do not allow past end of device */
+ 	if (ofs + len > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
++		dev_dbg(&mtd->dev, "%s: Past end of device\n",
+ 					__func__);
+ 		ret = -EINVAL;
+ 	}
+@@ -912,7 +912,7 @@ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+ 	udelay(1000);
+ 	/* See if device thinks it succeeded */
+ 	if (status & 0x01) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
++		dev_dbg(&mtd->dev, "%s: Error status = 0x%08x\n",
+ 					__func__, status);
+ 		ret = -EIO;
+ 	}
+@@ -934,7 +934,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	int chipnr;
+ 	struct nand_chip *chip = mtd->priv;
  
- 	inftl->mbd.mtd = mtd;
- 	inftl->mbd.devnum = -1;
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index ba40166..8875d6d 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1121,10 +1121,8 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- 	 * table.
- 	 */
- 	this->bbt = kzalloc(len, GFP_KERNEL);
--	if (!this->bbt) {
--		printk(KERN_ERR "nand_scan_bbt: Out of memory\n");
-+	if (!this->bbt)
- 		return -ENOMEM;
--	}
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
+ 			__func__, (unsigned long long)ofs, len);
  
- 	/*
- 	 * If no primary table decriptor is given, scan the device to build a
-@@ -1146,7 +1144,6 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- 	len += (len >> this->page_shift) * mtd->oobsize;
- 	buf = vmalloc(len);
- 	if (!buf) {
--		printk(KERN_ERR "nand_bbt: Out of memory\n");
- 		kfree(this->bbt);
- 		this->bbt = NULL;
- 		return -ENOMEM;
-@@ -1195,10 +1192,8 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
- 	len = (1 << this->bbt_erase_shift);
- 	len += (len >> this->page_shift) * mtd->oobsize;
- 	buf = kmalloc(len, GFP_KERNEL);
--	if (!buf) {
--		printk(KERN_ERR "nand_update_bbt: Out of memory\n");
-+	if (!buf)
- 		return -ENOMEM;
--	}
+ 	if (check_offs_len(mtd, ofs, len))
+@@ -953,7 +953,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
  
- 	writeops = md != NULL ? 0x03 : 0x01;
+ 	/* Check, if it is write protected */
+ 	if (nand_check_wp(mtd)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
+ 					__func__);
+ 		ret = -EIO;
+ 		goto out;
+@@ -987,7 +987,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	int chipnr, status, page;
+ 	struct nand_chip *chip = mtd->priv;
  
-@@ -1307,10 +1302,8 @@ static int nand_create_default_bbt_descr(struct nand_chip *this)
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
+ 			__func__, (unsigned long long)ofs, len);
+ 
+ 	if (check_offs_len(mtd, ofs, len))
+@@ -1002,7 +1002,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ 	/* Check, if it is write protected */
+ 	if (nand_check_wp(mtd)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
+ 					__func__);
+ 		status = MTD_ERASE_FAILED;
+ 		ret = -EIO;
+@@ -1018,7 +1018,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	udelay(1000);
+ 	/* See if device thinks it succeeded */
+ 	if (status & 0x01) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
++		dev_dbg(&mtd->dev, "%s: Error status = 0x%08x\n",
+ 					__func__, status);
+ 		ret = -EIO;
+ 		goto out;
+@@ -1757,7 +1757,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	int len;
+ 	uint8_t *buf = ops->oobbuf;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: from = 0x%08Lx, len = %i\n",
++	dev_dbg(&mtd->dev, "%s: from = 0x%08Lx, len = %i\n",
+ 			__func__, (unsigned long long)from, readlen);
+ 
+ 	if (ops->mode == MTD_OOB_AUTO)
+@@ -1766,7 +1766,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 		len = mtd->oobsize;
+ 
+ 	if (unlikely(ops->ooboffs >= len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start read "
++		dev_dbg(&mtd->dev, "%s: Attempt to start read "
+ 					"outside oob\n", __func__);
  		return -EINVAL;
  	}
- 	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
--	if (!bd) {
--		printk(KERN_ERR "nand_create_default_bbt_descr: Out of memory\n");
-+	if (!bd)
- 		return -ENOMEM;
--	}
- 	bd->options = this->bbt_options;
- 	bd->offs = this->badblockpos;
- 	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
-diff --git a/drivers/mtd/nand/rtc_from4.c b/drivers/mtd/nand/rtc_from4.c
-index c9f9127..a07da2a 100644
---- a/drivers/mtd/nand/rtc_from4.c
-+++ b/drivers/mtd/nand/rtc_from4.c
-@@ -444,7 +444,6 @@ static int rtc_from4_errstat(struct mtd_info *mtd, struct nand_chip *this,
- 		len = mtd->writesize;
- 		buf = kmalloc(len, GFP_KERNEL);
- 		if (!buf) {
--			printk(KERN_ERR "rtc_from4_errstat: Out of memory!\n");
- 			er_stat = 1;
- 			goto out;
- 		}
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index b155666..f3b3239 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -67,10 +67,8 @@ static void nftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+@@ -1775,7 +1775,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	if (unlikely(from >= mtd->size ||
+ 		     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
+ 					(from >> chip->page_shift)) * len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
++		dev_dbg(&mtd->dev, "%s: Attempt read beyond end "
+ 					"of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+@@ -1851,7 +1851,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
  
- 	nftl = kzalloc(sizeof(struct NFTLrecord), GFP_KERNEL);
+ 	/* Do not allow reads past end of device */
+ 	if (ops->datbuf && (from + ops->len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read "
++		dev_dbg(&mtd->dev, "%s: Attempt read "
+ 				"beyond end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+@@ -2341,7 +2341,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 	int chipnr, page, status, len;
+ 	struct nand_chip *chip = mtd->priv;
  
--	if (!nftl) {
--		printk(KERN_WARNING "NFTL: out of memory for data structures\n");
-+	if (!nftl)
- 		return;
--	}
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: to = 0x%08x, len = %i\n",
++	dev_dbg(&mtd->dev, "%s: to = 0x%08x, len = %i\n",
+ 			 __func__, (unsigned int)to, (int)ops->ooblen);
  
- 	nftl->mbd.mtd = mtd;
- 	nftl->mbd.devnum = -1;
-diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onenand_bbt.c
-index fc2c16a..09a7d1f 100644
---- a/drivers/mtd/onenand/onenand_bbt.c
-+++ b/drivers/mtd/onenand/onenand_bbt.c
-@@ -188,10 +188,8 @@ int onenand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- 	len = this->chipsize >> (this->erase_shift + 2);
- 	/* Allocate memory (2bit per block) and clear the memory bad block table */
- 	bbm->bbt = kzalloc(len, GFP_KERNEL);
--	if (!bbm->bbt) {
--		printk(KERN_ERR "onenand_scan_bbt: Out of memory\n");
-+	if (!bbm->bbt)
- 		return -ENOMEM;
--	}
+ 	if (ops->mode == MTD_OOB_AUTO)
+@@ -2351,13 +2351,13 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
  
- 	/* Set the bad block position */
- 	bbm->badblockpos = ONENAND_BADBLOCK_POS;
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index 5cd1897..00d1405 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -304,11 +304,8 @@ static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 		return;
+ 	/* Do not allow write past end of page */
+ 	if ((ops->ooboffs + ops->ooblen) > len) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to write "
++		dev_dbg(&mtd->dev, "%s: Attempt to write "
+ 				"past end of page\n", __func__);
+ 		return -EINVAL;
+ 	}
  
- 	ssfdc = kzalloc(sizeof(struct ssfdcr_record), GFP_KERNEL);
--	if (!ssfdc) {
--		printk(KERN_WARNING
--			"SSFDC_RO: out of memory for data structures\n");
-+	if (!ssfdc)
- 		return;
--	}
+ 	if (unlikely(ops->ooboffs >= len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start "
++		dev_dbg(&mtd->dev, "%s: Attempt to start "
+ 				"write outside oob\n", __func__);
+ 		return -EINVAL;
+ 	}
+@@ -2367,7 +2367,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 		     ops->ooboffs + ops->ooblen >
+ 			((mtd->size >> chip->page_shift) -
+ 			 (to >> chip->page_shift)) * len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
++		dev_dbg(&mtd->dev, "%s: Attempt write beyond "
+ 				"end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+@@ -2423,7 +2423,7 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
  
- 	ssfdc->mbd.mtd = mtd;
- 	ssfdc->mbd.devnum = -1;
-@@ -342,11 +339,8 @@ static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	/* Allocate logical block map */
- 	ssfdc->logic_block_map = kmalloc(sizeof(ssfdc->logic_block_map[0]) *
- 					 ssfdc->map_len, GFP_KERNEL);
--	if (!ssfdc->logic_block_map) {
--		printk(KERN_WARNING
--			"SSFDC_RO: out of memory for data structures\n");
-+	if (!ssfdc->logic_block_map)
- 		goto out_err;
--	}
- 	memset(ssfdc->logic_block_map, 0xff, sizeof(ssfdc->logic_block_map[0]) *
- 		ssfdc->map_len);
+ 	/* Do not allow writes past end of device */
+ 	if (ops->datbuf && (to + ops->len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
++		dev_dbg(&mtd->dev, "%s: Attempt write beyond "
+ 				"end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+@@ -2513,7 +2513,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 	unsigned int bbt_masked_page = 0xffffffff;
+ 	loff_t len;
  
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
+ 				__func__, (unsigned long long)instr->addr,
+ 				(unsigned long long)instr->len);
+ 
+@@ -2537,7 +2537,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 
+ 	/* Check, if it is write protected */
+ 	if (nand_check_wp(mtd)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
+ 					__func__);
+ 		instr->state = MTD_ERASE_FAILED;
+ 		goto erase_exit;
+@@ -2589,7 +2589,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 
+ 		/* See if block erase succeeded */
+ 		if (status & NAND_STATUS_FAIL) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "%s: Failed erase, "
++			dev_dbg(&mtd->dev, "%s: Failed erase, "
+ 					"page 0x%08x\n", __func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
+ 			instr->fail_addr =
+@@ -2650,7 +2650,7 @@ erase_exit:
+ 		if (!rewrite_bbt[chipnr])
+ 			continue;
+ 		/* Update the BBT for chip */
+-		DEBUG(MTD_DEBUG_LEVEL0, "%s: nand_update_bbt "
++		dev_dbg(&mtd->dev, "%s: nand_update_bbt "
+ 			"(%d:0x%0llx 0x%0x)\n", __func__, chipnr,
+ 			rewrite_bbt[chipnr], chip->bbt_td->pages[chipnr]);
+ 		nand_update_bbt(mtd, rewrite_bbt[chipnr]);
+@@ -2670,7 +2670,7 @@ static void nand_sync(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: called\n", __func__);
++	dev_dbg(&mtd->dev, "%s: called\n", __func__);
+ 
+ 	/* Grab the lock and see if the device is available */
+ 	nand_get_device(chip, mtd, FL_SYNCING);
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index b8551e9..4d18098 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -225,10 +225,6 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 					mtd->ecc_stats.bbtblocks++;
+ 					continue;
+ 				}
+-				/*
+-				 * Leave it for now, if it's matured we can
+-				 * move this message to MTD_DEBUG_LEVEL0.
+-				 */
+ 				pr_debug("nand_read_bbt: Bad block at 0x%012llx\n",
+ 				       (loff_t)((offs << 2) + (act >> 1)) << this->bbt_erase_shift);
+ 				/* Factory marked bad or worn out? */
+@@ -1378,8 +1374,9 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+ 	block = (int)(offs >> (this->bbt_erase_shift - 1));
+ 	res = (this->bbt[block >> 3] >> (block & 0x06)) & 0x03;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL2, "nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+-	      (unsigned int)offs, block >> 1, res);
++	dev_dbg(&mtd->dev, "nand_isbad_bbt(): bbt info for offs 0x%08x: "
++			   "(block %d) 0x%02x\n",
++			   (unsigned int)offs, block >> 1, res);
+ 
+ 	switch ((int)res) {
+ 	case 0x00:
 -- 
 1.7.0.4
