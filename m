@@ -1,16 +1,28 @@
-Received: from dakia2.marvell.com ([65.219.4.35])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTt62-0005s2-Ig
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 10:01:16 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	linux-arm-kernel@lists.infradead.org,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	linux-mtd@lists.infradead.org, adrian.wenl@gmail.com
-Subject: [PATCH 1/2] MTD: pxa3xx_nand: fix nand detection issue
-Date: Tue,  7 Jun 2011 03:01:06 -0700
-Message-Id: <1307440867-18993-1-git-send-email-leiwen@marvell.com>
+	id 1QTtEq-0006Ap-Vv
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 10:10:22 +0000
+Received: by vxd2 with SMTP id 2so4548342vxd.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Jun 2011 03:10:16 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <E942AFD653C85241BF3CCD5F471BEDA203FD21D7@008-AM1MPN1-041.mgdnok.nokia.com>
+References: <20110602064832.GA7319@july> <1307115701.3069.20.camel@localhost>
+	<E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
+	<1307354557.3112.21.camel@localhost>
+	<1307354791.3112.24.camel@localhost>
+	<BANLkTinPBum1WB=-tx833hj032mfs1TdVg@mail.gmail.com>
+	<E942AFD653C85241BF3CCD5F471BEDA203FD21D7@008-AM1MPN1-041.mgdnok.nokia.com>
+Date: Tue, 7 Jun 2011 19:10:15 +0900
+Message-ID: <BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
+From: Kyungmin Park <kmpark@infradead.org>
+To: roman.tereshonkov@nokia.com
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, m.szyprowski@samsung.com,
+	linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,64 +32,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When keep_config is set, the detection would goes different routine.
-That the driver would read out the setting which is set previously
-by bootloader. While most bootloader keep the irq mask as off, and
-current driver need all irq default open, keep_config behavior would
-lead to no irq at all.
+2011/6/7  <roman.tereshonkov@nokia.com>:
+>
+>
+>>-----Original Message-----
+>>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On
+>>Behalf Of ext Kyungmin Park
+>>Sent: 07 June, 2011 02:56
+>>To: dedekind1@gmail.com
+>>Cc: Tereshonkov Roman (Nokia-SD/Helsinki);
+>>linux-mtd@lists.infradead.org; dwmw2@infradead.org;
+>>m.szyprowski@samsung.com
+>>Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at
+>>4KiB pagesize
+>>
+>>On Mon, Jun 6, 2011 at 7:06 PM, Artem Bityutskiy
+>><dedekind1@gmail.com> wrote:
+>>> On Mon, 2011-06-06 at 13:02 +0300, Artem Bityutskiy wrote:
+>>>> On Mon, 2011-06-06 at 09:42 +0000,
+>>roman.tereshonkov@nokia.com wrote:
+>>>> > What do mean by "no case to use the subpage"?
+>>>> >
+>>>> > According to the spec KFM4G16Q4M-xEBx the Number of
+>>Partial Program Cycles in the page (NOP)
+>>>> > is equal to 4 -> subpage_sft=3D2.
+>>
+>>It's really strange. Two OneNAND spec which has 4KiB pagesize
+>>say it has 1 NOP.
+>>
+>>Number of Partial Program Cycles in the page (Including main and spare
+>>area) NOP - - 1 cycles
+>>(KFM4G16Q5M-xEBx)
+>>
+>>that's reason I first set subpage_sft =3D 0 at original code.
+>>
+>>The different thing between you and me is the page architecture
+>>number. yes 4 is the correct number but 5 also has the 4KiB pagesize.
+>>I think it's mean the manufacturing difference. can you check the
+>>which XXnm manufacturing for your devices?
+>>In our case. it's 3Xnm. and previous is 4Xnm.
+>
+>
+>
+> It seems the spec does not specify the nm-technology used.
+>
+> Can we somehow use the DeviceID and VersionID registers to differ
+> our chips?
+> For my case KFM4G16Q4M DeviceID=3D0x0050, VersionID=3D0x0131,
+> and KFM8G16Q4M DeviceID=3D0x0068, VersionID=3D0x0131.
+>
+> BTW. Another spec KFM4G16Q4B also tells about NOP=3D4 cycles.
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
-Tested-by: Daniel Mack <zonque@gmail.com>
-Cc: stable@kernel.org
----
- drivers/mtd/nand/pxa3xx_nand.c |   12 +++++++-----
- 1 files changed, 7 insertions(+), 5 deletions(-)
+Here's my device register values.
+005000ec 0800013e 01010200 00000000
+DeviceID=3D0x0050, VersionID=3D0x013e
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 1fb3b3a..faa0edd 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -813,7 +813,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	info->page_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
- 	/* set info fields needed to read id */
- 	info->read_id_bytes = (info->page_size == 2048) ? 4 : 2;
--	info->reg_ndcr = ndcr;
-+	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
- 	info->cmdset = &default_cmdset;
- 
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
-@@ -882,7 +882,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	struct pxa3xx_nand_info *info = mtd->priv;
- 	struct platform_device *pdev = info->pdev;
- 	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
--	struct nand_flash_dev pxa3xx_flash_ids[2] = { {NULL,}, {NULL,} };
-+	struct nand_flash_dev pxa3xx_flash_ids[2], *def = NULL;
- 	const struct pxa3xx_nand_flash *f = NULL;
- 	struct nand_chip *chip = mtd->priv;
- 	uint32_t id = -1;
-@@ -942,8 +942,10 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	pxa3xx_flash_ids[0].erasesize = f->page_size * f->page_per_block;
- 	if (f->flash_width == 16)
- 		pxa3xx_flash_ids[0].options = NAND_BUSWIDTH_16;
-+	pxa3xx_flash_ids[1].name = NULL;
-+	def = pxa3xx_flash_ids;
- KEEP_CONFIG:
--	if (nand_scan_ident(mtd, 1, pxa3xx_flash_ids))
-+	if (nand_scan_ident(mtd, 1, def))
- 		return -ENODEV;
- 	/* calculate addressing information */
- 	info->col_addr_cycles = (mtd->writesize >= 2048) ? 2 : 1;
-@@ -954,9 +956,9 @@ KEEP_CONFIG:
- 		info->row_addr_cycles = 2;
- 	mtd->name = mtd_names[0];
- 	chip->ecc.mode = NAND_ECC_HW;
--	chip->ecc.size = f->page_size;
-+	chip->ecc.size = info->page_size;
- 
--	chip->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16 : 0;
-+	chip->options = (info->reg_ndcr & NDCR_DWIDTH_M) ? NAND_BUSWIDTH_16 : 0;
- 	chip->options |= NAND_NO_AUTOINCR;
- 	chip->options |= NAND_NO_READRDY;
- 
--- 
-1.7.0.4
+The lower 4 bits of VersionID is different. even though VersionID is
+different. it's dangerous to detect the NOP 4 or not.
+
+I sent the email to OneNAND person and share the result soon. (he's on
+business trip and return at June 9).
+
+Thank you,
+Kyungmin Park
+
+
+>
+>
+>
+>>
+>>>>
+>>>> I thought this means "not supported by HW". But if this is
+>>supported,
+>>>> then I'm very surprised why would we remove it. I'm
+>>dropping this patch
+>>>> from my tree.
+>>>
+>>> OK, I actually did not put it to the l2 tree. And AFAICS this patch
+>>> basically reverts commit
+>>99b17c08bca2810f5910b3027f1b9d82edf7a576, but
+>>> still leaves the data structures like onenand_oob_128.
+>>>
+>>> So NACK for this patch - poor commit message, weird changes. I'm
+>>> surprised to see this from kmpark.
+>>
+>>since we got some different OneNAND Spec. even though it has
+>>same 4KiB pagesize.
+>>
+>>Thank you,
+>>Kyungmin Park
+>>>
+>>> --
+>>> Best Regards,
+>>> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>>>
+>>>
+>>
