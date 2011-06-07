@@ -1,18 +1,19 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTo1H-0001MP-Mo
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:36:00 +0000
-Received: by eyh6 with SMTP id 6so1933624eyh.36
+	id 1QTo3w-0001P4-P0
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:38:45 +0000
+Received: by eyh6 with SMTP id 6so1934128eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 21:35:58 -0700 (PDT)
-Subject: Re: [PATCH] ignore (FLAT) gdb files
+	Mon, 06 Jun 2011 21:38:42 -0700 (PDT)
+Subject: Re: ubifs_decompress: cannot decompress ...
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1307380501-30946-1-git-send-email-vapier@gentoo.org>
-References: <1307380501-30946-1-git-send-email-vapier@gentoo.org>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <1307389926-12209-1-git-send-email-mlcreech@gmail.com>
+References: <1307377091.3112.100.camel@localhost>
+	<1307389926-12209-1-git-send-email-mlcreech@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 07:31:41 +0300
-Message-ID: <1307421101.11104.8.camel@localhost>
+Date: Tue, 07 Jun 2011 07:34:26 +0300
+Message-ID: <1307421266.11104.10.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,14 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 13:15 -0400, Mike Frysinger wrote:
-> Linux FLAT toolchains produce .gdb files alongside the normal program
-> for debugging purposes (so linking to "foo" will also produce "foo.gdb").
-> Ignore these too.
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+On Mon, 2011-06-06 at 15:52 -0400, Matthew L. Creech wrote:
+>  		ubifs_err("scan error %d", (int)PTR_ERR(sleb));
+> +		printk(KERN_DEBUG "\tLEB data buffer:\n");
+> +		print_hex_dump(KERN_DEBUG, "\t", DUMP_PREFIX_OFFSET, 32, 1,
+> +			       buf, c->leb_size, 0);
 
-Pushed this patch to mtd-utils.git, thanks.
+No, I have difficulties reading hexdumps. You have set of good nodes
+following by one broken node. I wanted to see a human-readable dump of
+the good nodes at the beginning of the LEB.
 
 -- 
 Best Regards,
