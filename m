@@ -1,15 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSf-0001Qm-9S
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:50 +0000
-Received: by wwi18 with SMTP id 18so2387416wwi.0
+	id 1QTwSg-0001Qj-Ja
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:52 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:47 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:50 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/44] mtd: lart.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:01 +0400
-Message-Id: <1307453803-31950-3-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 04/44] mtd: sst25l.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:03 +0400
+Message-Id: <1307453803-31950-5-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,47 +28,65 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/lart.c |   12 ++++--------
- 1 files changed, 4 insertions(+), 8 deletions(-)
+ drivers/mtd/devices/sst25l.c |   32 ++++----------------------------
+ 1 files changed, 4 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-index 772a0ff..48b513f 100644
---- a/drivers/mtd/devices/lart.c
-+++ b/drivers/mtd/devices/lart.c
-@@ -619,6 +619,10 @@ static struct mtd_partition lart_partitions[] = {
- 		.size	= INITRD_LEN,		/* MTDPART_SIZ_FULL */
- 	}
+diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
+index cd095af..faa9d3b 100644
+--- a/drivers/mtd/devices/sst25l.c
++++ b/drivers/mtd/devices/sst25l.c
+@@ -53,7 +53,6 @@ struct sst25l_flash {
+ 	struct mutex		lock;
+ 	struct mtd_info		mtd;
+ 
+-	int 			partitioned;
  };
-+#define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
-+#else
-+#define lart_partitions NULL
-+#define NUM_PARTITIONS 0
- #endif
  
- static int __init lart_flash_init (void)
-@@ -683,23 +687,15 @@ static int __init lart_flash_init (void)
- #endif
- #endif
+ struct flash_info {
+@@ -381,8 +380,6 @@ static int __devinit sst25l_probe(struct spi_device *spi)
+ 	struct sst25l_flash *flash;
+ 	struct flash_platform_data *data;
+ 	int ret, i;
+-	struct mtd_partition *parts = NULL;
+-	int nr_parts = 0;
  
--#ifndef HAVE_PARTITIONS
--   result = mtd_device_register(&mtd, NULL, 0);
--#else
-    result = mtd_device_register(&mtd, lart_partitions,
-                                 ARRAY_SIZE(lart_partitions));
--#endif
+ 	flash_info = sst25l_match_device(spi);
+ 	if (!flash_info)
+@@ -423,31 +420,10 @@ static int __devinit sst25l_probe(struct spi_device *spi)
+ 	      flash->mtd.numeraseregions);
  
-    return (result);
- }
  
- static void __exit lart_flash_exit (void)
- {
--#ifndef HAVE_PARTITIONS
-    mtd_device_unregister(&mtd);
--#else
--   mtd_device_unregister(&mtd);
--#endif
- }
- 
- module_init (lart_flash_init);
+-	nr_parts = parse_mtd_partitions(&flash->mtd, NULL, &parts, 0);
+-
+-	if (nr_parts <= 0 && data && data->parts) {
+-		parts = data->parts;
+-		nr_parts = data->nr_parts;
+-	}
+-
+-	if (nr_parts > 0) {
+-		for (i = 0; i < nr_parts; i++) {
+-			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+-			      "{.name = %s, .offset = 0x%llx, "
+-			      ".size = 0x%llx (%lldKiB) }\n",
+-			      i, parts[i].name,
+-			      (long long)parts[i].offset,
+-			      (long long)parts[i].size,
+-			      (long long)(parts[i].size >> 10));
+-		}
+-
+-		flash->partitioned = 1;
+-		return mtd_device_register(&flash->mtd, parts,
+-					   nr_parts);
+-	}
+-
+-	ret = mtd_device_register(&flash->mtd, NULL, 0);
+-	if (ret == 1) {
++	ret = mtd_device_parse_register(&flash->mtd, NULL, 0,
++			data ? data->parts : NULL,
++			data ? data->nr_parts : 0);
++	if (ret) {
+ 		kfree(flash);
+ 		dev_set_drvdata(&spi->dev, NULL);
+ 		return -ENODEV;
 -- 
 1.7.4.4
