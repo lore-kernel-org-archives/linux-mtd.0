@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTc-0001Tv-3Z
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:49 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so3852637wwb.18
+	id 1QTwTh-0001Qj-09
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:54 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:47 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:52 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 35/44] mtd: plat_nand.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:34 +0400
-Message-Id: <1307453803-31950-36-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 38/44] mtd: s3c2410.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:37 +0400
+Message-Id: <1307453803-31950-39-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,55 +28,38 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/plat_nand.c |   22 +++-------------------
- 1 files changed, 3 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/s3c2410.c |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 1339fa8..e62468b 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -21,8 +21,6 @@ struct plat_nand_data {
- 	struct nand_chip	chip;
- 	struct mtd_info		mtd;
- 	void __iomem		*io_base;
--	int			nr_parts;
--	struct mtd_partition	*parts;
- };
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 17954ba..b0f8e77 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -748,21 +748,11 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+ 				      struct s3c2410_nand_set *set)
+ {
+-	struct mtd_partition *part_info;
+-	int nr_part = 0;
++	if (set)
++		mtd->mtd.name = set->name;
  
- /*
-@@ -99,21 +97,9 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 		goto out;
- 	}
- 
--	if (pdata->chip.part_probe_types) {
--		err = parse_mtd_partitions(&data->mtd,
--					pdata->chip.part_probe_types,
--					&data->parts, 0);
--		if (err > 0) {
--			mtd_device_register(&data->mtd, data->parts, err);
--			return 0;
--		}
+-	if (set == NULL)
+-		return mtd_device_register(&mtd->mtd, NULL, 0);
+-
+-	mtd->mtd.name = set->name;
+-	nr_part = parse_mtd_partitions(&mtd->mtd, NULL, &part_info, 0);
+-
+-	if (nr_part <= 0 && set->nr_partitions > 0) {
+-		nr_part = set->nr_partitions;
+-		part_info = set->partitions;
 -	}
--	if (pdata->chip.partitions) {
--		data->parts = pdata->chip.partitions;
--		err = mtd_device_register(&data->mtd, data->parts,
--			pdata->chip.nr_partitions);
--	} else
--		err = mtd_device_register(&data->mtd, NULL, 0);
-+	err = mtd_device_parse_register(&data->mtd,
-+			pdata->chip.part_probe_types, 0,
-+			pdata->chip.partitions, pdata->chip.nr_partitions);
+-
+-	return mtd_device_register(&mtd->mtd, part_info, nr_part);
++	return mtd_device_parse_register(&mtd->mtd, NULL, 0,
++			set->partitions, set->nr_partitions);
+ }
  
- 	if (!err)
- 		return err;
-@@ -143,8 +129,6 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	nand_release(&data->mtd);
--	if (data->parts && data->parts != pdata->chip.partitions)
--		kfree(data->parts);
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
+ /**
 -- 
 1.7.4.4
