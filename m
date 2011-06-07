@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSi-0001Ql-Gg
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:53 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
+	id 1QTwSl-0001Qj-Sk
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:57 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:52 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:55 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/44] mtd: bfin-async-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:04 +0400
-Message-Id: <1307453803-31950-6-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 07/44] mtd: gpio-addr-flash.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:06 +0400
+Message-Id: <1307453803-31950-8-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,49 +28,43 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/bfin-async-flash.c |   16 ++--------------
+ drivers/mtd/maps/gpio-addr-flash.c |   16 ++--------------
  1 files changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-index d4297a9..246890e 100644
---- a/drivers/mtd/maps/bfin-async-flash.c
-+++ b/drivers/mtd/maps/bfin-async-flash.c
-@@ -41,7 +41,6 @@ struct async_state {
- 	uint32_t flash_ambctl0, flash_ambctl1;
- 	uint32_t save_ambctl0, save_ambctl1;
- 	unsigned long irq_flags;
--	struct mtd_partition *parts;
- };
- 
- static void switch_to_flash(struct async_state *state)
-@@ -165,18 +164,8 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 7568c5f..1ec66f0 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -187,7 +187,6 @@ static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+  */
+ static int __devinit gpio_flash_probe(struct platform_device *pdev)
+ {
+-	int nr_parts;
+ 	size_t i, arr_size;
+ 	struct physmap_flash_data *pdata;
+ 	struct resource *memory;
+@@ -252,20 +251,9 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
  		return -ENXIO;
  	}
  
--	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
--	if (ret > 0) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
--		mtd_device_register(state->mtd, pdata->parts, ret);
--		state->parts = pdata->parts;
+-	nr_parts = parse_mtd_partitions(state->mtd, part_probe_types,
+-					&pdata->parts, 0);
+-	if (nr_parts > 0) {
+-		pr_devinit(KERN_NOTICE PFX "Using commandline partition definition\n");
+-		kfree(pdata->parts);
 -	} else if (pdata->nr_parts) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
--		mtd_device_register(state->mtd, pdata->parts, pdata->nr_parts);
+-		pr_devinit(KERN_NOTICE PFX "Using board partition definition\n");
+-		nr_parts = pdata->nr_parts;
 -	} else {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": no partition info available, registering whole flash at once\n");
--		mtd_device_register(state->mtd, NULL, 0);
+-		pr_devinit(KERN_NOTICE PFX "no partition info available, registering whole flash at once\n");
+-		nr_parts = 0;
 -	}
+ 
+-	mtd_device_register(state->mtd, pdata->parts, nr_parts);
 +	mtd_device_parse_register(state->mtd, part_probe_types, 0,
 +			pdata->parts, pdata->nr_parts);
  
- 	platform_set_drvdata(pdev, state);
- 
-@@ -188,7 +177,6 @@ static int __devexit bfin_flash_remove(struct platform_device *pdev)
- 	struct async_state *state = platform_get_drvdata(pdev);
- 	gpio_free(state->enet_flash_pin);
- 	mtd_device_unregister(state->mtd);
--	kfree(state->parts);
- 	map_destroy(state->mtd);
- 	kfree(state);
  	return 0;
+ }
 -- 
 1.7.4.4
