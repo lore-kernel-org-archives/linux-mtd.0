@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSo-0001Tv-Hl
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:00 +0000
-Received: by wwb39 with SMTP id 39so3852637wwb.18
+	id 1QTwSp-0001Qm-JX
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:01 +0000
+Received: by mail-ww0-f41.google.com with SMTP id 18so2387416wwi.0
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:57 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:59 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 08/44] mtd: h720x-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:07 +0400
-Message-Id: <1307453803-31950-9-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 09/44] mtd: impa7.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:08 +0400
+Message-Id: <1307453803-31950-10-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,59 +28,55 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/h720x-flash.c |   21 ++-------------------
- 1 files changed, 2 insertions(+), 19 deletions(-)
+ drivers/mtd/maps/impa7.c |   25 +++----------------------
+ 1 files changed, 3 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
-index f331a2c..49c1418 100644
---- a/drivers/mtd/maps/h720x-flash.c
-+++ b/drivers/mtd/maps/h720x-flash.c
-@@ -58,16 +58,11 @@ static struct mtd_partition h720x_partitions[] = {
+diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
+index 2d45a48..7b8b5d8 100644
+--- a/drivers/mtd/maps/impa7.c
++++ b/drivers/mtd/maps/impa7.c
+@@ -58,15 +58,10 @@ static struct mtd_partition static_partitions[] =
+ 	},
+ };
  
- #define NUM_PARTITIONS ARRAY_SIZE(h720x_partitions)
- 
--static int                   nr_mtd_parts;
--static struct mtd_partition *mtd_parts;
- /*
-  * Initialize FLASH support
-  */
- static int __init h720x_mtd_init(void)
+-static int mtd_parts_nb[NUM_FLASHBANKS];
+-static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
+-
+-
+ static int __init init_impa7(void)
  {
+ 	static const char *rom_probe_types[] = PROBETYPES;
+ 	const char **type;
+-	const char *part_type = 0;
+ 	int i;
+ 	static struct { u_long addr; u_long size; } pt[NUM_FLASHBANKS] = {
+ 	  { WINDOW_ADDR0, WINDOW_SIZE0 },
+@@ -96,23 +91,9 @@ static int __init init_impa7(void)
+ 		if (impa7_mtd[i]) {
+ 			impa7_mtd[i]->owner = THIS_MODULE;
+ 			devicesfound++;
+-			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
+-							       NULL,
+-							       &mtd_parts[i],
+-							       0);
+-			if (mtd_parts_nb[i] > 0) {
+-				part_type = "command line";
+-			} else {
+-				mtd_parts[i] = static_partitions;
+-				mtd_parts_nb[i] = ARRAY_SIZE(static_partitions);
+-				part_type = "static";
+-			}
 -
--	char	*part_type = NULL;
--
- 	h720x_map.virt = ioremap(h720x_map.phys, h720x_map.size);
- 
- 	if (!h720x_map.virt) {
-@@ -90,16 +85,8 @@ static int __init h720x_mtd_init(void)
- 	if (mymtd) {
- 		mymtd->owner = THIS_MODULE;
- 
--		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
--		if (nr_mtd_parts > 0)
--			part_type = "command line";
--		if (nr_mtd_parts <= 0) {
--			mtd_parts = h720x_partitions;
--			nr_mtd_parts = NUM_PARTITIONS;
--			part_type = "builtin";
--		}
--		printk(KERN_INFO "Using %s partition table\n", part_type);
--		mtd_device_register(mymtd, mtd_parts, nr_mtd_parts);
-+		mtd_device_parse_register(mymtd, NULL, 0,
-+				h720x_partitions, NUM_PARTITIONS);
- 		return 0;
- 	}
- 
-@@ -118,10 +105,6 @@ static void __exit h720x_mtd_cleanup(void)
- 		map_destroy(mymtd);
- 	}
- 
--	/* Free partition info, if commandline partition was used */
--	if (mtd_parts && (mtd_parts != h720x_partitions))
--		kfree (mtd_parts);
--
- 	if (h720x_map.virt) {
- 		iounmap((void *)h720x_map.virt);
- 		h720x_map.virt = 0;
+-			printk(KERN_NOTICE MSG_PREFIX
+-			       "using %s partition definition\n",
+-			       part_type);
+-			mtd_device_register(impa7_mtd[i],
+-					    mtd_parts[i], mtd_parts_nb[i]);
++			mtd_device_parse_register(impa7_mtd[i], NULL, 0,
++					static_partitions,
++					ARRAY_SIZE(static_partitions));
+ 		}
+ 		else
+ 			iounmap((void *)impa7_map[i].virt);
 -- 
 1.7.4.4
