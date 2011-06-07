@@ -1,19 +1,19 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTpyQ-0002mK-Cy
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:41:10 +0000
-Received: by eyh6 with SMTP id 6so1959752eyh.36
+	id 1QTq6Z-0002vR-NF
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:49:36 +0000
+Received: by eyh6 with SMTP id 6so1961683eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 23:41:06 -0700 (PDT)
-Subject: Re: [PATCH 2/6] mtdinfo: send help/version info to stdout
+	Mon, 06 Jun 2011 23:49:33 -0700 (PDT)
+Subject: Re: [PATCH 3/6] libmtd: use O_CLOEXEC
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1307427548-29306-2-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1307427548-29306-3-git-send-email-vapier@gentoo.org>
 References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
-	<1307427548-29306-2-git-send-email-vapier@gentoo.org>
+	<1307427548-29306-3-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 09:36:49 +0300
-Message-ID: <1307428609.11104.39.camel@localhost>
+Date: Tue, 07 Jun 2011 09:45:16 +0300
+Message-ID: <1307429116.11104.40.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -28,15 +28,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2011-06-07 at 02:19 -0400, Mike Frysinger wrote:
-> Usage/version information should go to stdout when it is expected behavior
-> (i.e. the user requested it explicitly).  This info should go to stderr
-> only when the usage info is being shown as a result of incorrect options.
+> Not strictly necessary, but this is good library behavior and
+> should carry no runtime overhead.
 > 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  include/common.h |    5 +++++
+>  lib/libmtd.c     |   10 +++++-----
+>  2 files changed, 10 insertions(+), 5 deletions(-)
 
-This is fine, but all other ubi utils need this change then as well. I
-think this piece of code was copypasted in all ubi-utils, so you should
-easily find it and change.
+Pushed this one, thanks!
 
 -- 
 Best Regards,
