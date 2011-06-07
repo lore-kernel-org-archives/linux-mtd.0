@@ -1,17 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTpd8-0002S9-AC
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:19:12 +0000
+	id 1QTpdA-0002TG-LC
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:19:13 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id D852B1B4015
+	by smtp.gentoo.org (Postfix) with ESMTP id 0FA551B401E
 	for <linux-mtd@lists.infradead.org>;
-	Tue,  7 Jun 2011 06:19:07 +0000 (UTC)
+	Tue,  7 Jun 2011 06:19:10 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/6] libmtd: add helper funcs for getting fds, regioninfo,
-	and locked info
-Date: Tue,  7 Jun 2011 02:19:06 -0400
-Message-Id: <1307427548-29306-4-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 5/6] mtdinfo: add regioninfo/sectormap display
+Date: Tue,  7 Jun 2011 02:19:07 -0400
+Message-Id: <1307427548-29306-5-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
 References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,149 +22,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This extends the libmtd with the helper functions:
-	mtd_open_dev1: open a MTD device by its number
-	mtd_regioninfo: interface to MEMGETREGIONINFO
-	mtd_islocked: interface to MEMISLOCKED
-
-Users of these functions will follow shortly ...
+This brings the mtdinfo utility in line with the functionality
+of the flash_info utility.  It dumps the erase regioninfo (if
+the devices has it) as well as showing a handy sector map (if
+the user has requested it).  The sector map also utilizes the
+MEMISLOCKED ioctl in order to show which sectors exactly are
+locked.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- include/libmtd.h |   37 +++++++++++++++++++++++++++++++++++++
- lib/libmtd.c     |   51 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 88 insertions(+), 0 deletions(-)
+ ubi-utils/src/mtdinfo.c |   75 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 70 insertions(+), 5 deletions(-)
 
-diff --git a/include/libmtd.h b/include/libmtd.h
-index e30c8a6..ba1348a 100644
---- a/include/libmtd.h
-+++ b/include/libmtd.h
-@@ -35,6 +35,9 @@ extern "C" {
- /* MTD library descriptor */
- typedef void * libmtd_t;
+diff --git a/ubi-utils/src/mtdinfo.c b/ubi-utils/src/mtdinfo.c
+index f20fe49..3dab27a 100644
+--- a/ubi-utils/src/mtdinfo.c
++++ b/ubi-utils/src/mtdinfo.c
+@@ -29,6 +29,7 @@
+ #include <getopt.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <unistd.h>
+ #include <mtd/mtd-user.h>
  
-+/* Forward decls */
-+struct region_info_user;
-+
- /**
-  * @mtd_dev_cnt: count of MTD devices in system
-  * @lowest_mtd_num: lowest MTD device number in system
-@@ -138,6 +141,15 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd);
- int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd);
+ #include <libubigen.h>
+@@ -41,6 +42,7 @@ struct args {
+ 	int mtdn;
+ 	unsigned int all:1;
+ 	unsigned int ubinfo:1;
++	unsigned int sectormap:1;
+ 	const char *node;
+ };
  
- /**
-+ * mtd_open_dev1 - get a fd to an MTD device.
-+ * @desc: MTD library descriptor
-+ * @mtd_num: MTD device number to fetch information about
-+ *
-+ * Based on a MTD device number, attempt to open the corresponding node.
-+ */
-+int mtd_open_dev1(int mtd_num);
-+
-+/**
-  * mtd_lock - lock eraseblocks.
-  * @desc: MTD library descriptor
-  * @mtd: MTD device description object
-@@ -174,6 +186,31 @@ int mtd_unlock(const struct mtd_dev_info *mtd, int fd, int eb);
- int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb);
+@@ -58,14 +60,15 @@ static const char optionsstr[] =
+ "-m, --mtdn=<MTD device number>  MTD device number to get information about\n"
+ "-u, --ubi-info                  print what would UBI layout be if it was put\n"
+ "                                on this MTD device\n"
++"-s, --sector-map                print sector map\n"
+ "-a, --all                       print information about all MTD devices\n"
+ "-h, --help                      print help message\n"
+ "-V, --version                   print program version";
  
- /**
-+ * mtd_regioninfo - get information about an erase region.
-+ * @fd: MTD device node file descriptor
-+ * @regidx: index of region to look up
-+ * @reginfo: the region information is returned here
-+ *
-+ * This function gets information about an erase region defined by the
-+ * @regidx index and saves this information in the @reginfo object.
-+ * Returns %0 in case of success and %-1 in case of failure. If the
-+ * @regidx is not valid or unavailable, errno is set to @ENODEV.
-+ */
-+int mtd_regioninfo(int fd, int regidx, struct region_info_user *reginfo);
-+
-+/**
-+ * mtd_islocked - see if the specified eraseblock is locked.
-+ * @mtd: MTD device description object
-+ * @fd: MTD device node file descriptor
-+ * @eb: eraseblock to check
-+ *
-+ * This function checks to see if eraseblock @eb of MTD device described
-+ * by @fd is locked. Returns %0 if it is unlocked, %1 if it is locked, and
-+ * %-1 in case of failure.
-+ */
-+int mtd_islocked(const struct mtd_dev_info *mtd, int fd, int eb);
-+
-+/**
-  * mtd_torture - torture an eraseblock.
-  * @desc: MTD library descriptor
-  * @mtd: MTD device description object
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index a651808..3be28c4 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -787,6 +787,25 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd)
- 	return mtd_get_dev_info1(desc, mtd_num, mtd);
- }
+ static const char usage[] =
+-"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-h] [-V] [--mtdn <MTD device number>]\n"
++"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-s] [-h] [-V] [--mtdn <MTD device number>]\n"
+ "\t\t[--ubi-info] [--help] [--version]\n"
+-"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-h] [-V] [--ubi-info] [--help]\n"
++"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-s] [-h] [-V] [--ubi-info] [--help]\n"
+ "\t\t[--version]\n"
+ "Example 1: " PROGRAM_NAME " - (no arguments) print general MTD information\n"
+ "Example 2: " PROGRAM_NAME " -m 1 - print information about MTD device number 1\n"
+@@ -78,6 +81,7 @@ static const char usage[] =
+ static const struct option long_options[] = {
+ 	{ .name = "mtdn",      .has_arg = 1, .flag = NULL, .val = 'm' },
+ 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
++	{ .name = "sector-map",.has_arg = 0, .flag = NULL, .val = 's' },
+ 	{ .name = "all",       .has_arg = 0, .flag = NULL, .val = 'a' },
+ 	{ .name = "help",      .has_arg = 0, .flag = NULL, .val = 'h' },
+ 	{ .name = "version",   .has_arg = 0, .flag = NULL, .val = 'V' },
+@@ -89,7 +93,7 @@ static int parse_opt(int argc, char * const argv[])
+ 	while (1) {
+ 		int key, error = 0;
  
-+int mtd_open_dev1(int mtd_num)
-+{
-+	char devpath[128];
-+	int fd;
+-		key = getopt_long(argc, argv, "am:uhV", long_options, NULL);
++		key = getopt_long(argc, argv, "am:ushV", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -109,6 +113,10 @@ static int parse_opt(int argc, char * const argv[])
+ 
+ 			break;
+ 
++		case 's':
++			args.sectormap = 1;
++			break;
 +
-+	sprintf(devpath, "/dev/mtd%i", mtd_num);
-+	fd = open(devpath, O_RDONLY | O_CLOEXEC);
-+	if (fd < 0)
-+		return sys_errmsg("cannot open \"%s\"", devpath);
-+
-+	/*
-+	 * XXX: We could do a stat on the fd and make sure the dev
-+	 *      major/minor matches what is expected ... but no real
-+	 *      way for us to recover from a mismatch.
-+	 */
-+
-+	return fd;
-+}
-+
- static inline int mtd_ioctl_error(const struct mtd_dev_info *mtd, int eb,
- 				  const char *sreq)
- {
-@@ -883,6 +902,38 @@ int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 		case 'h':
+ 			printf("%s\n\n", doc);
+ 			printf("%s\n\n", usage);
+@@ -159,9 +167,36 @@ static int translate_dev(libmtd_t libmtd, const char *node)
  	return 0;
  }
  
-+int mtd_regioninfo(int fd, int regidx, struct region_info_user *reginfo)
++static void print_sector_map(const struct mtd_dev_info *mtd, int fd,
++			     const region_info_t *reginfo)
 +{
-+	int ret;
++	unsigned long start;
++	int i, width;
 +
-+	if (regidx < 0) {
-+		errno = ENODEV;
-+		return -1;
++	printf("Sector map:\n");
++
++	/* figure out the number of spaces to pad w/out libm */
++	for (i = 1, width = 0; i < reginfo->numblocks; i *= 10, ++width)
++		continue;
++
++	for (i = 0; i < reginfo->numblocks; ++i) {
++		start = reginfo->offset + i * reginfo->erasesize;
++		printf(" %*i: %08lx ", width, i, start);
++		if (mtd_islocked(mtd, fd, i) == 1)
++			printf("RO ");
++		else
++			printf("   ");
++		if (((i + 1) % 4) == 0)
++			printf("\n");
++	}
++	if (i % 4)
++		printf("\n");
++}
++
+ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int mtdn)
+ {
+-	int err;
++	int err, fd = -1;
++	region_info_t reginfo;
+ 	struct mtd_dev_info mtd;
+ 	struct ubigen_info ui;
+ 
+@@ -195,8 +230,25 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
+ 	if (mtd.oob_size > 0)
+ 		printf("OOB size:                       %d bytes\n",
+ 		       mtd.oob_size);
+-	if (mtd.region_cnt > 0)
++	if (mtd.region_cnt > 0) {
+ 		printf("Additional erase regions:       %d\n", mtd.oob_size);
++		fd = mtd_open_dev1(mtdn);
++		if (fd != -1) {
++			int r;
++
++			for (r = 0; r < mtd.region_cnt; ++r) {
++				printf(" region %i: ", r);
++				if (mtd_regioninfo(fd, r, &reginfo) == 0) {
++					printf(" offset: %#x size: %#x numblocks: %#x\n",
++						reginfo.offset, reginfo.erasesize,
++						reginfo.numblocks);
++					if (args.sectormap)
++						print_sector_map(&mtd, fd, &reginfo);
++				} else
++					printf(" info is unavailable\n");
++			}
++		}
++	}
+ 	if (mtd_info->sysfs_supported)
+ 		printf("Character device major/minor:   %d:%d\n",
+ 		       mtd.major, mtd.minor);
+@@ -224,6 +276,19 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
+ 	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
+ 
+ out:
++	if (args.sectormap && mtd.region_cnt == 0) {
++		if (fd == -1)
++			fd = mtd_open_dev1(mtdn);
++		reginfo.offset = 0;
++		reginfo.erasesize = mtd.eb_size;
++		reginfo.numblocks = mtd.eb_cnt;
++		reginfo.regionindex = 0;
++		print_sector_map(&mtd, fd, &reginfo);
 +	}
 +
-+	ret = ioctl(fd, MEMGETREGIONINFO, reginfo);
-+	if (ret < 0)
-+		return sys_errmsg("%s ioctl failed for erase region %d",
-+			"MEMGETREGIONINFO", regidx);
++	if (fd != -1)
++		close(fd);
 +
-+	return 0;
-+}
-+
-+int mtd_islocked(const struct mtd_dev_info *mtd, int fd, int eb)
-+{
-+	int ret;
-+	erase_info_t ei;
-+
-+	ei.start = eb * mtd->eb_size;
-+	ei.length = mtd->eb_size;
-+
-+	ret = ioctl(fd, MEMISLOCKED, &ei);
-+	if (ret < 0)
-+		return mtd_ioctl_error(mtd, eb, "MEMISLOCKED");
-+
-+	return ret;
-+}
-+
- /* Patterns to write to a physical eraseblock when torturing it */
- static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
- 
+ 	printf("\n");
+ 	return 0;
+ }
 -- 
 1.7.5.3
