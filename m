@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSl-0001Qj-Sk
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:57 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
+	id 1QTwSm-0001St-2C
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:58 +0000
+Received: by wwb39 with SMTP id 39so3852593wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:55 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:53 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/44] mtd: gpio-addr-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:06 +0400
-Message-Id: <1307453803-31950-8-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 06/44] mtd: dc21285.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:05 +0400
+Message-Id: <1307453803-31950-7-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,43 +28,46 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c |   16 ++--------------
- 1 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/mtd/maps/dc21285.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 7568c5f..1ec66f0 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -187,7 +187,6 @@ static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
-  */
- static int __devinit gpio_flash_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
+index 7a9e198..f43b365 100644
+--- a/drivers/mtd/maps/dc21285.c
++++ b/drivers/mtd/maps/dc21285.c
+@@ -145,14 +145,10 @@ static struct map_info dc21285_map = {
+ 
+ 
+ /* Partition stuff */
+-static struct mtd_partition *dc21285_parts;
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+ 
+ static int __init init_dc21285(void)
  {
--	int nr_parts;
- 	size_t i, arr_size;
- 	struct physmap_flash_data *pdata;
- 	struct resource *memory;
-@@ -252,20 +251,9 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
+-
+-	int nrparts;
+-
+ 	/* Determine bankwidth */
+ 	switch (*CSR_SA110_CNTL & (3<<14)) {
+ 		case SA110_CNTL_ROMWIDTH_8:
+@@ -200,8 +196,7 @@ static int __init init_dc21285(void)
  
--	nr_parts = parse_mtd_partitions(state->mtd, part_probe_types,
--					&pdata->parts, 0);
--	if (nr_parts > 0) {
--		pr_devinit(KERN_NOTICE PFX "Using commandline partition definition\n");
--		kfree(pdata->parts);
--	} else if (pdata->nr_parts) {
--		pr_devinit(KERN_NOTICE PFX "Using board partition definition\n");
--		nr_parts = pdata->nr_parts;
--	} else {
--		pr_devinit(KERN_NOTICE PFX "no partition info available, registering whole flash at once\n");
--		nr_parts = 0;
--	}
+ 	dc21285_mtd->owner = THIS_MODULE;
  
--	mtd_device_register(state->mtd, pdata->parts, nr_parts);
-+	mtd_device_parse_register(state->mtd, part_probe_types, 0,
-+			pdata->parts, pdata->nr_parts);
+-	nrparts = parse_mtd_partitions(dc21285_mtd, probes, &dc21285_parts, 0);
+-	mtd_device_register(dc21285_mtd, dc21285_parts, nrparts);
++	mtd_device_parse_register(dc21285_mtd, probes, 0, NULL, 0);
  
- 	return 0;
+ 	if(machine_is_ebsa285()) {
+ 		/*
+@@ -224,8 +219,6 @@ static int __init init_dc21285(void)
+ static void __exit cleanup_dc21285(void)
+ {
+ 	mtd_device_unregister(dc21285_mtd);
+-	if (dc21285_parts)
+-		kfree(dc21285_parts);
+ 	map_destroy(dc21285_mtd);
+ 	iounmap(dc21285_map.virt);
  }
 -- 
 1.7.4.4
