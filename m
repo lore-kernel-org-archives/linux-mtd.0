@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTk-0001St-Kx
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:58 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so3852593wwb.18
+	id 1QTwTm-0001Tv-88
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:59 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so3852637wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:56 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:57 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 40/44] mtd: tmio_nand.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:39 +0400
-Message-Id: <1307453803-31950-41-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 41/44] mtd: txx9ndfmc.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:40 +0400
+Message-Id: <1307453803-31950-42-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,38 +28,47 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/tmio_nand.c |   12 +++---------
- 1 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/txx9ndfmc.c |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index b6ffad6..d476857 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -378,8 +378,6 @@ static int tmio_probe(struct platform_device *dev)
- 	struct tmio_nand *tmio;
- 	struct mtd_info *mtd;
- 	struct nand_chip *nand_chip;
--	struct mtd_partition *parts;
--	int nbparts = 0;
- 	int retval;
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 91b05b9..ace46fd 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -74,7 +74,6 @@ struct txx9ndfmc_drvdata {
+ 	unsigned char hold;	/* in gbusclock */
+ 	unsigned char spw;	/* in gbusclock */
+ 	struct nand_hw_control hw_control;
+-	struct mtd_partition *parts[MAX_TXX9NDFMC_DEV];
+ };
  
- 	if (data == NULL)
-@@ -458,13 +456,9 @@ static int tmio_probe(struct platform_device *dev)
- 		goto err_scan;
+ static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
+@@ -332,7 +331,6 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		struct txx9ndfmc_priv *txx9_priv;
+ 		struct nand_chip *chip;
+ 		struct mtd_info *mtd;
+-		int nr_parts;
+ 
+ 		if (!(plat->ch_mask & (1 << i)))
+ 			continue;
+@@ -392,9 +390,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		}
+ 		mtd->name = txx9_priv->mtdname;
+ 
+-		nr_parts = parse_mtd_partitions(mtd, NULL,
+-						&drvdata->parts[i], 0);
+-		mtd_device_register(mtd, drvdata->parts[i], nr_parts);
++		mtd_device_parse_register(mtd, NULL, 0, NULL, 0);
+ 		drvdata->mtds[i] = mtd;
  	}
- 	/* Register the partitions */
--	nbparts = parse_mtd_partitions(mtd, NULL, &parts, 0);
--	if (nbparts <= 0 && data) {
--		parts = data->partition;
--		nbparts = data->num_partitions;
--	}
--
--	retval = mtd_device_register(mtd, parts, nbparts);
-+	retval = mtd_device_register(mtd, NULL, 0,
-+			data ? data->partition : NULL,
-+			data ? data->num_partitions : 0);
- 	if (!retval)
- 		return retval;
  
+@@ -420,7 +416,6 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
+ 		txx9_priv = chip->priv;
+ 
+ 		nand_release(mtd);
+-		kfree(drvdata->parts[i]);
+ 		kfree(txx9_priv->mtdname);
+ 		kfree(txx9_priv);
+ 	}
 -- 
 1.7.4.4
