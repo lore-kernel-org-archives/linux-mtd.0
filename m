@@ -1,18 +1,18 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTo0g-0001KY-Tu
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:35:23 +0000
-Received: by eyh6 with SMTP id 6so1933502eyh.36
+	id 1QTo1H-0001MP-Mo
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:36:00 +0000
+Received: by eyh6 with SMTP id 6so1933624eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 21:35:20 -0700 (PDT)
-Subject: Re: [PATCH 1/4] flash_info: convert to common.h
+	Mon, 06 Jun 2011 21:35:58 -0700 (PDT)
+Subject: Re: [PATCH] ignore (FLAT) gdb files
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
-References: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1307380501-30946-1-git-send-email-vapier@gentoo.org>
+References: <1307380501-30946-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 07:31:04 +0300
-Message-ID: <1307421064.11104.7.camel@localhost>
+Date: Tue, 07 Jun 2011 07:31:41 +0300
+Message-ID: <1307421101.11104.8.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,15 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 14:22 -0400, Mike Frysinger wrote:
+On Mon, 2011-06-06 at 13:15 -0400, Mike Frysinger wrote:
+> Linux FLAT toolchains produce .gdb files alongside the normal program
+> for debugging purposes (so linking to "foo" will also produce "foo.gdb").
+> Ignore these too.
+> 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
->  flash_info.c |   27 +++++++++++++++++----------
->  1 files changed, 17 insertions(+), 10 deletions(-)
 
-How about killing this utility completely and use mtdinfo from ubi-utils
-instead? Yes, before creating mtdinfo I should have noticed flash_info,
-but I did not. Did you look at mtdinfo?
+Pushed this patch to mtd-utils.git, thanks.
 
 -- 
 Best Regards,
