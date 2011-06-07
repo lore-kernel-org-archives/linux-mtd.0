@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSm-0001St-2C
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:36:58 +0000
-Received: by wwb39 with SMTP id 39so3852593wwb.18
+	id 1QTwSo-0001Tv-Hl
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:00 +0000
+Received: by wwb39 with SMTP id 39so3852637wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:36:53 -0700 (PDT)
+	Tue, 07 Jun 2011 06:36:57 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/44] mtd: dc21285.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:05 +0400
-Message-Id: <1307453803-31950-7-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 08/44] mtd: h720x-flash.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:07 +0400
+Message-Id: <1307453803-31950-9-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,46 +28,59 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/dc21285.c |    9 +--------
- 1 files changed, 1 insertions(+), 8 deletions(-)
+ drivers/mtd/maps/h720x-flash.c |   21 ++-------------------
+ 1 files changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
-index 7a9e198..f43b365 100644
---- a/drivers/mtd/maps/dc21285.c
-+++ b/drivers/mtd/maps/dc21285.c
-@@ -145,14 +145,10 @@ static struct map_info dc21285_map = {
+diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
+index f331a2c..49c1418 100644
+--- a/drivers/mtd/maps/h720x-flash.c
++++ b/drivers/mtd/maps/h720x-flash.c
+@@ -58,16 +58,11 @@ static struct mtd_partition h720x_partitions[] = {
  
+ #define NUM_PARTITIONS ARRAY_SIZE(h720x_partitions)
  
- /* Partition stuff */
--static struct mtd_partition *dc21285_parts;
- static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
- 
- static int __init init_dc21285(void)
+-static int                   nr_mtd_parts;
+-static struct mtd_partition *mtd_parts;
+ /*
+  * Initialize FLASH support
+  */
+ static int __init h720x_mtd_init(void)
  {
 -
--	int nrparts;
+-	char	*part_type = NULL;
 -
- 	/* Determine bankwidth */
- 	switch (*CSR_SA110_CNTL & (3<<14)) {
- 		case SA110_CNTL_ROMWIDTH_8:
-@@ -200,8 +196,7 @@ static int __init init_dc21285(void)
+ 	h720x_map.virt = ioremap(h720x_map.phys, h720x_map.size);
  
- 	dc21285_mtd->owner = THIS_MODULE;
+ 	if (!h720x_map.virt) {
+@@ -90,16 +85,8 @@ static int __init h720x_mtd_init(void)
+ 	if (mymtd) {
+ 		mymtd->owner = THIS_MODULE;
  
--	nrparts = parse_mtd_partitions(dc21285_mtd, probes, &dc21285_parts, 0);
--	mtd_device_register(dc21285_mtd, dc21285_parts, nrparts);
-+	mtd_device_parse_register(dc21285_mtd, probes, 0, NULL, 0);
+-		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
+-		if (nr_mtd_parts > 0)
+-			part_type = "command line";
+-		if (nr_mtd_parts <= 0) {
+-			mtd_parts = h720x_partitions;
+-			nr_mtd_parts = NUM_PARTITIONS;
+-			part_type = "builtin";
+-		}
+-		printk(KERN_INFO "Using %s partition table\n", part_type);
+-		mtd_device_register(mymtd, mtd_parts, nr_mtd_parts);
++		mtd_device_parse_register(mymtd, NULL, 0,
++				h720x_partitions, NUM_PARTITIONS);
+ 		return 0;
+ 	}
  
- 	if(machine_is_ebsa285()) {
- 		/*
-@@ -224,8 +219,6 @@ static int __init init_dc21285(void)
- static void __exit cleanup_dc21285(void)
- {
- 	mtd_device_unregister(dc21285_mtd);
--	if (dc21285_parts)
--		kfree(dc21285_parts);
- 	map_destroy(dc21285_mtd);
- 	iounmap(dc21285_map.virt);
- }
+@@ -118,10 +105,6 @@ static void __exit h720x_mtd_cleanup(void)
+ 		map_destroy(mymtd);
+ 	}
+ 
+-	/* Free partition info, if commandline partition was used */
+-	if (mtd_parts && (mtd_parts != h720x_partitions))
+-		kfree (mtd_parts);
+-
+ 	if (h720x_map.virt) {
+ 		iounmap((void *)h720x_map.virt);
+ 		h720x_map.virt = 0;
 -- 
 1.7.4.4
