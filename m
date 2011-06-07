@@ -1,15 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwSw-0001Qm-NQ
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:08 +0000
-Received: by mail-ww0-f41.google.com with SMTP id 18so2387416wwi.0
+	id 1QTwSy-0001Ql-Iu
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:09 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:06 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:08 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/44] mtd: lantiq-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:12 +0400
-Message-Id: <1307453803-31950-14-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 14/44] mtd: latch-addr-flash.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:13 +0400
+Message-Id: <1307453803-31950-15-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,41 +28,54 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/lantiq-flash.c |   14 ++------------
- 1 files changed, 2 insertions(+), 12 deletions(-)
+ drivers/mtd/maps/latch-addr-flash.c |   21 ++-------------------
+ 1 files changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 57ea3fe..f750784 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -112,9 +112,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- {
- 	struct physmap_flash_data *ltq_mtd_data = dev_get_platdata(&pdev->dev);
- 	struct ltq_mtd *ltq_mtd;
--	struct mtd_partition *parts;
- 	struct resource *res;
--	int nr_parts = 0;
- 	struct cfi_private *cfi;
- 	int err;
+diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
+index 09cf704..119baa7 100644
+--- a/drivers/mtd/maps/latch-addr-flash.c
++++ b/drivers/mtd/maps/latch-addr-flash.c
+@@ -33,9 +33,6 @@ struct latch_addr_flash_info {
+ 	/* cache; could be found out of res */
+ 	unsigned long		win_mask;
  
-@@ -170,16 +168,8 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	cfi->addr_unlock1 ^= 1;
- 	cfi->addr_unlock2 ^= 1;
+-	int			nr_parts;
+-	struct mtd_partition	*parts;
+-
+ 	spinlock_t		lock;
+ };
  
--	nr_parts = parse_mtd_partitions(ltq_mtd->mtd, NULL, &parts, 0);
--	if (nr_parts > 0) {
--		dev_info(&pdev->dev,
--			"using %d partitions from cmdline", nr_parts);
--	} else {
--		nr_parts = ltq_mtd_data->nr_parts;
--		parts = ltq_mtd_data->parts;
+@@ -110,8 +107,6 @@ static int latch_addr_flash_remove(struct platform_device *dev)
+ 	latch_addr_data = dev->dev.platform_data;
+ 
+ 	if (info->mtd != NULL) {
+-		if (info->nr_parts)
+-			kfree(info->parts);
+ 		mtd_device_unregister(info->mtd);
+ 		map_destroy(info->mtd);
+ 	}
+@@ -204,20 +199,8 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
+ 	}
+ 	info->mtd->owner = THIS_MODULE;
+ 
+-	err = parse_mtd_partitions(info->mtd, NULL, &info->parts, 0);
+-	if (err > 0) {
+-		mtd_device_register(info->mtd, info->parts, err);
+-		return 0;
+-	}
+-	if (latch_addr_data->nr_parts) {
+-		pr_notice("Using latch-addr-flash partition information\n");
+-		mtd_device_register(info->mtd,
+-				    latch_addr_data->parts,
+-				    latch_addr_data->nr_parts);
+-		return 0;
 -	}
 -
--	err = add_mtd_partitions(ltq_mtd->mtd, parts, nr_parts);
-+	err = mtd_device_parse_register(ltq_mtd->mtd, NULL, 0,
-+			ltq_mtd_data->parts, ltq_mtd_data->nr_parts);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to add partitions\n");
- 		goto err_destroy;
+-	mtd_device_register(info->mtd, NULL, 0);
++	mtd_device_parse_register(info->mtd, NULL, 0,
++			latch_addr_data->parts, latch_addr_data->nr_parts);
+ 	return 0;
+ 
+ iounmap:
 -- 
 1.7.4.4
