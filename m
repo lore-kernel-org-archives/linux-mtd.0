@@ -1,16 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTpdA-0002TG-LC
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:19:13 +0000
+	id 1QTpdB-0002Ta-Il
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:19:14 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 0FA551B401E
+	by smtp.gentoo.org (Postfix) with ESMTP id 7A2451B400C
 	for <linux-mtd@lists.infradead.org>;
-	Tue,  7 Jun 2011 06:19:10 +0000 (UTC)
+	Tue,  7 Jun 2011 06:19:12 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/6] mtdinfo: add regioninfo/sectormap display
-Date: Tue,  7 Jun 2011 02:19:07 -0400
-Message-Id: <1307427548-29306-5-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 6/6] flash_info: punt in favor of mtdinfo
+Date: Tue,  7 Jun 2011 02:19:08 -0400
+Message-Id: <1307427548-29306-6-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
 References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,168 +22,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This brings the mtdinfo utility in line with the functionality
-of the flash_info utility.  It dumps the erase regioninfo (if
-the devices has it) as well as showing a handy sector map (if
-the user has requested it).  The sector map also utilizes the
-MEMISLOCKED ioctl in order to show which sectors exactly are
-locked.
+Now that the mtdinfo utility can do everything that flash_info
+could do (and better), punt it.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- ubi-utils/src/mtdinfo.c |   75 +++++++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 70 insertions(+), 5 deletions(-)
+ Makefile     |    2 +-
+ flash_info.c |  141 ----------------------------------------------------------
+ 2 files changed, 1 insertions(+), 142 deletions(-)
+ delete mode 100644 flash_info.c
 
-diff --git a/ubi-utils/src/mtdinfo.c b/ubi-utils/src/mtdinfo.c
-index f20fe49..3dab27a 100644
---- a/ubi-utils/src/mtdinfo.c
-+++ b/ubi-utils/src/mtdinfo.c
-@@ -29,6 +29,7 @@
- #include <getopt.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <unistd.h>
- #include <mtd/mtd-user.h>
+diff --git a/Makefile b/Makefile
+index 8bdba8e..0c8eb9f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,7 +16,7 @@ SUBDIRS = lib ubi-utils mkfs.ubifs
+ TESTS = tests
  
- #include <libubigen.h>
-@@ -41,6 +42,7 @@ struct args {
- 	int mtdn;
- 	unsigned int all:1;
- 	unsigned int ubinfo:1;
-+	unsigned int sectormap:1;
- 	const char *node;
- };
- 
-@@ -58,14 +60,15 @@ static const char optionsstr[] =
- "-m, --mtdn=<MTD device number>  MTD device number to get information about\n"
- "-u, --ubi-info                  print what would UBI layout be if it was put\n"
- "                                on this MTD device\n"
-+"-s, --sector-map                print sector map\n"
- "-a, --all                       print information about all MTD devices\n"
- "-h, --help                      print help message\n"
- "-V, --version                   print program version";
- 
- static const char usage[] =
--"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-h] [-V] [--mtdn <MTD device number>]\n"
-+"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-s] [-h] [-V] [--mtdn <MTD device number>]\n"
- "\t\t[--ubi-info] [--help] [--version]\n"
--"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-h] [-V] [--ubi-info] [--help]\n"
-+"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-s] [-h] [-V] [--ubi-info] [--help]\n"
- "\t\t[--version]\n"
- "Example 1: " PROGRAM_NAME " - (no arguments) print general MTD information\n"
- "Example 2: " PROGRAM_NAME " -m 1 - print information about MTD device number 1\n"
-@@ -78,6 +81,7 @@ static const char usage[] =
- static const struct option long_options[] = {
- 	{ .name = "mtdn",      .has_arg = 1, .flag = NULL, .val = 'm' },
- 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
-+	{ .name = "sector-map",.has_arg = 0, .flag = NULL, .val = 's' },
- 	{ .name = "all",       .has_arg = 0, .flag = NULL, .val = 'a' },
- 	{ .name = "help",      .has_arg = 0, .flag = NULL, .val = 'h' },
- 	{ .name = "version",   .has_arg = 0, .flag = NULL, .val = 'V' },
-@@ -89,7 +93,7 @@ static int parse_opt(int argc, char * const argv[])
- 	while (1) {
- 		int key, error = 0;
- 
--		key = getopt_long(argc, argv, "am:uhV", long_options, NULL);
-+		key = getopt_long(argc, argv, "am:ushV", long_options, NULL);
- 		if (key == -1)
- 			break;
- 
-@@ -109,6 +113,10 @@ static int parse_opt(int argc, char * const argv[])
- 
- 			break;
- 
-+		case 's':
-+			args.sectormap = 1;
-+			break;
-+
- 		case 'h':
- 			printf("%s\n\n", doc);
- 			printf("%s\n\n", usage);
-@@ -159,9 +167,36 @@ static int translate_dev(libmtd_t libmtd, const char *node)
- 	return 0;
- }
- 
-+static void print_sector_map(const struct mtd_dev_info *mtd, int fd,
-+			     const region_info_t *reginfo)
-+{
-+	unsigned long start;
-+	int i, width;
-+
-+	printf("Sector map:\n");
-+
-+	/* figure out the number of spaces to pad w/out libm */
-+	for (i = 1, width = 0; i < reginfo->numblocks; i *= 10, ++width)
-+		continue;
-+
-+	for (i = 0; i < reginfo->numblocks; ++i) {
-+		start = reginfo->offset + i * reginfo->erasesize;
-+		printf(" %*i: %08lx ", width, i, start);
-+		if (mtd_islocked(mtd, fd, i) == 1)
-+			printf("RO ");
-+		else
-+			printf("   ");
-+		if (((i + 1) % 4) == 0)
-+			printf("\n");
-+	}
-+	if (i % 4)
-+		printf("\n");
-+}
-+
- static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int mtdn)
- {
--	int err;
-+	int err, fd = -1;
-+	region_info_t reginfo;
- 	struct mtd_dev_info mtd;
- 	struct ubigen_info ui;
- 
-@@ -195,8 +230,25 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
- 	if (mtd.oob_size > 0)
- 		printf("OOB size:                       %d bytes\n",
- 		       mtd.oob_size);
--	if (mtd.region_cnt > 0)
-+	if (mtd.region_cnt > 0) {
- 		printf("Additional erase regions:       %d\n", mtd.oob_size);
-+		fd = mtd_open_dev1(mtdn);
-+		if (fd != -1) {
-+			int r;
-+
-+			for (r = 0; r < mtd.region_cnt; ++r) {
-+				printf(" region %i: ", r);
-+				if (mtd_regioninfo(fd, r, &reginfo) == 0) {
-+					printf(" offset: %#x size: %#x numblocks: %#x\n",
-+						reginfo.offset, reginfo.erasesize,
-+						reginfo.numblocks);
-+					if (args.sectormap)
-+						print_sector_map(&mtd, fd, &reginfo);
-+				} else
-+					printf(" info is unavailable\n");
-+			}
-+		}
-+	}
- 	if (mtd_info->sysfs_supported)
- 		printf("Character device major/minor:   %d:%d\n",
- 		       mtd.major, mtd.minor);
-@@ -224,6 +276,19 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
- 	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
- 
- out:
-+	if (args.sectormap && mtd.region_cnt == 0) {
-+		if (fd == -1)
-+			fd = mtd_open_dev1(mtdn);
-+		reginfo.offset = 0;
-+		reginfo.erasesize = mtd.eb_size;
-+		reginfo.numblocks = mtd.eb_cnt;
-+		reginfo.regionindex = 0;
-+		print_sector_map(&mtd, fd, &reginfo);
-+	}
-+
-+	if (fd != -1)
-+		close(fd);
-+
- 	printf("\n");
- 	return 0;
- }
+ TARGETS = ftl_format flash_erase nanddump doc_loadbios \
+-	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
++	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+ 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
+ 	jffs2dump \
+ 	nftldump nftl_format docfdisk \
+diff --git a/flash_info.c b/flash_info.c
+deleted file mode 100644
+index 0e056f3..0000000
+--- a/flash_info.c
++++ /dev/null
+@@ -1,141 +0,0 @@
+-/*
+- * flash_info.c -- print info about a MTD device
+- */
+-
+-#define PROGRAM_NAME "flash_info"
+-
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <fcntl.h>
+-#include <time.h>
+-#include <sys/ioctl.h>
+-#include <sys/mount.h>
+-
+-#include "common.h"
+-#include <mtd/mtd-user.h>
+-
+-static void usage(int status)
+-{
+-	fprintf(status ? stderr : stdout,
+-		"Usage: %s <device> [devices]\n",
+-		PROGRAM_NAME);
+-	exit(status);
+-}
+-
+-#define T(t) [MTD_##t] = #t
+-static const char * const mtdtypes[] = {
+-	T(ABSENT),
+-	T(RAM),
+-	T(ABSENT),
+-	T(RAM),
+-	T(ROM),
+-	T(NORFLASH),
+-	T(NANDFLASH),
+-	T(DATAFLASH),
+-	T(UBIVOLUME),
+-};
+-static const char *mtdtype(int type)
+-{
+-	if (type < ARRAY_SIZE(mtdtypes) && mtdtypes[type])
+-		return mtdtypes[type];
+-	return "UNKNOWN";
+-}
+-
+-/* Show a pretty map of all the sectors on this device */
+-static void show_sector_map(int fd, const region_info_t *reginfo)
+-{
+-	erase_info_t einfo;
+-	int i, width;
+-
+-	printf(" sector map:\n");
+-
+-	einfo.length = reginfo->erasesize;
+-	/* figure out the number of spaces to pad w/out libm */
+-	for (i = 1, width = 0; i < reginfo->numblocks; i *= 10, ++width)
+-		continue;
+-
+-	for (i = 0; i < reginfo->numblocks; ++i) {
+-		einfo.start = reginfo->offset + i * reginfo->erasesize;
+-		printf(" %*i: %08x ", width, i, einfo.start);
+-		if (ioctl(fd, MEMISLOCKED, &einfo))
+-			printf("RO ");
+-		else
+-			printf("   ");
+-		if (((i + 1) % 4) == 0)
+-			printf("\n");
+-	}
+-	if (i % 4)
+-		printf("\n");
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	int fd, i, regcount;
+-
+-	if (argc < 2)
+-		usage(1);
+-	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
+-		usage(0);
+-
+-	for (i = 1; i < argc; ++i) {
+-		const char *dev = argv[i];
+-		int r;
+-		region_info_t reginfo;
+-		mtd_info_t mtdinfo;
+-
+-		/* Open and size the device */
+-		fd = open(dev, O_RDONLY);
+-		if (fd < 0) {
+-			sys_errmsg("could not open: %s", dev);
+-			continue;
+-		}
+-
+-		/* Print out general device info first */
+-		if (ioctl(fd, MEMGETINFO, &mtdinfo)) {
+-			sys_errmsg("could not get mtd info: %s", dev);
+-			continue;
+-		}
+-
+-		printf("%s: type: %i (%s)\n flags: %#x ( ",
+-			dev, mtdinfo.type, mtdtype(mtdinfo.type), mtdinfo.flags);
+-		if (mtdinfo.flags & MTD_POWERUP_LOCK)
+-			printf("powerup_lock ");
+-		if (mtdinfo.flags & MTD_NO_ERASE)
+-			printf("no_erase ");
+-		if (mtdinfo.flags & MTD_BIT_WRITEABLE)
+-			printf("bit_writeable ");
+-		if (mtdinfo.flags & MTD_WRITEABLE)
+-			printf("writeable ");
+-		printf(")\n sizes: total %#x write %#x erase %#x oob %#x\n",
+-			mtdinfo.size, mtdinfo.writesize,
+-			mtdinfo.erasesize, mtdinfo.oobsize);
+-
+-		/* Print out the region info (if the device has any) */
+-		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount) == 0) {
+-			printf(" erase regions: %i\n", regcount);
+-			for (r = 0; r < regcount; ++r) {
+-				reginfo.regionindex = r;
+-				if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
+-					printf(" region %i: offset: %#x size: %#x numblocks: %#x\n",
+-						r, reginfo.offset, reginfo.erasesize,
+-						reginfo.numblocks);
+-					show_sector_map(fd, &reginfo);
+-				} else
+-					warnmsg(" region %i: can not read region info!?", r);
+-			}
+-		} else
+-			regcount = 0;
+-
+-		/* If the flash has no regions, then show the whole thing */
+-		if (regcount == 0) {
+-			reginfo.offset = 0;
+-			reginfo.erasesize = mtdinfo.erasesize;
+-			reginfo.numblocks = mtdinfo.size / mtdinfo.erasesize,
+-			reginfo.regionindex = 0;
+-			show_sector_map(fd, &reginfo);
+-		}
+-	}
+-
+-	return 0;
+-}
 -- 
 1.7.5.3
