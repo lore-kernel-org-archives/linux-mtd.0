@@ -1,22 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTorE-00025C-Sk
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 05:29:41 +0000
-Received: by eyh6 with SMTP id 6so1944114eyh.36
+	id 1QTpd7-0002S7-QY
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 06:19:10 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 1CD121B4020
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 22:29:38 -0700 (PDT)
-Subject: Re: region info exposed via sysfs ?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <BANLkTi=EFZfoDAK7g-+8RMck5vneCOoKhA@mail.gmail.com>
-References: <BANLkTi=EFZfoDAK7g-+8RMck5vneCOoKhA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 08:25:21 +0300
-Message-ID: <1307424321.11104.33.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Tue,  7 Jun 2011 06:19:07 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 3/6] libmtd: use O_CLOEXEC
+Date: Tue,  7 Jun 2011 02:19:05 -0400
+Message-Id: <1307427548-29306-3-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
+References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-07 at 01:24 -0400, Mike Frysinger wrote:
-> i see that while MEMGETINFO and MEMGETREGIONCOUNT are accessible via
-> sysfs, i cant find the equivalent for MEMGETREGIONINFO.  but i also
-> dont have any devices here that have numeraseregions > 0 as both my
-> physmap nor flashes and nand flashes all report numeraseregions == 0.
-> 
-> is it exposed via sysfs and i'm just not seeing it ?  or is this info
-> only available via the ioctl ?
+Not strictly necessary, but this is good library behavior and
+should carry no runtime overhead.
 
-I think MEMGETREGIONINFO is not exposed via sysfs.
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ include/common.h |    5 +++++
+ lib/libmtd.c     |   10 +++++-----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
+diff --git a/include/common.h b/include/common.h
+index c37660c..7ea282c 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -23,6 +23,7 @@
+ #include <stdlib.h>
+ #include <ctype.h>
+ #include <string.h>
++#include <fcntl.h>
+ #include <errno.h>
+ 
+ #ifndef PROGRAM_NAME
+@@ -42,6 +43,10 @@ extern "C" {
+ #define min(a, b) MIN(a, b) /* glue for linux kernel source */
+ #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+ 
++#ifndef O_CLOEXEC
++#define O_CLOEXEC 0
++#endif
++
+ /* Verbose messages */
+ #define bareverbose(verbose, fmt, ...) do {                        \
+ 	if (verbose)                                               \
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 7fabd80..a651808 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -77,7 +77,7 @@ static int read_data(const char *file, void *buf, int buf_len)
+ {
+ 	int fd, rd, tmp, tmp1;
+ 
+-	fd = open(file, O_RDONLY);
++	fd = open(file, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1)
+ 		return -1;
+ 
+@@ -201,7 +201,7 @@ static int read_hex_ll(const char *file, long long *value)
+ 	int fd, rd;
+ 	char buf[50];
+ 
+-	fd = open(file, O_RDONLY);
++	fd = open(file, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1)
+ 		return -1;
+ 
+@@ -253,7 +253,7 @@ static int read_pos_ll(const char *file, long long *value)
+ 	int fd, rd;
+ 	char buf[50];
+ 
+-	fd = open(file, O_RDONLY);
++	fd = open(file, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1)
+ 		return -1;
+ 
+@@ -538,7 +538,7 @@ static int sysfs_is_supported(struct libmtd *lib)
+ 		return 0;
+ 
+ 	sprintf(file, lib->mtd_name, num);
+-	fd = open(file, O_RDONLY);
++	fd = open(file, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1)
+ 		return 0;
+ 
+@@ -1193,7 +1193,7 @@ int mtd_write_img(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+ 		return -1;
+ 	}
+ 
+-	in_fd = open(img_name, O_RDONLY);
++	in_fd = open(img_name, O_RDONLY | O_CLOEXEC);
+ 	if (in_fd == -1)
+ 		return sys_errmsg("cannot open \"%s\"", img_name);
+ 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.5.3
