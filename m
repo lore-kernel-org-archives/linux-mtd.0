@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwT3-0001Ql-De
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:14 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
+	id 1QTwT5-0001St-CE
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:16 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so3852593wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:13 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:15 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 17/44] mtd: pxa2xx-flash.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:16 +0400
-Message-Id: <1307453803-31950-18-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 18/44] mtd: rbtx4939-flash.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:17 +0400
+Message-Id: <1307453803-31950-19-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,68 +28,51 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/pxa2xx-flash.c |   20 +-------------------
- 1 files changed, 1 insertions(+), 19 deletions(-)
+ drivers/mtd/maps/rbtx4939-flash.c |   18 ++----------------
+ 1 files changed, 2 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index f59d62f..8fb8198 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -41,8 +41,6 @@ static void pxa2xx_map_inval_cache(struct map_info *map, unsigned long from,
- }
- 
- struct pxa2xx_flash_info {
--	struct mtd_partition	*parts;
--	int			nr_parts;
- 	struct mtd_info		*mtd;
- 	struct map_info		map;
- };
-@@ -55,9 +53,7 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
- {
- 	struct flash_platform_data *flash = pdev->dev.platform_data;
- 	struct pxa2xx_flash_info *info;
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index 5d15b6b..95f816c 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -25,8 +25,6 @@
+ struct rbtx4939_flash_info {
+ 	struct mtd_info *mtd;
+ 	struct map_info map;
+-	int nr_parts;
 -	struct mtd_partition *parts;
- 	struct resource *res;
--	int ret = 0;
+ };
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res)
-@@ -71,8 +67,6 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
- 	info->map.bankwidth = flash->width;
- 	info->map.phys = res->start;
- 	info->map.size = res->end - res->start + 1;
--	info->parts = flash->parts;
--	info->nr_parts = flash->nr_parts;
+ static int rbtx4939_flash_remove(struct platform_device *dev)
+@@ -41,8 +39,6 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
+ 	if (info->mtd) {
+ 		struct rbtx4939_flash_data *pdata = dev->dev.platform_data;
  
- 	info->map.virt = ioremap(info->map.phys, info->map.size);
- 	if (!info->map.virt) {
-@@ -104,18 +98,7 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
+-		if (info->nr_parts)
+-			kfree(info->parts);
+ 		mtd_device_unregister(info->mtd);
+ 		map_destroy(info->mtd);
  	}
+@@ -106,18 +102,8 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
  	info->mtd->owner = THIS_MODULE;
- 
--	ret = parse_mtd_partitions(info->mtd, probes, &parts, 0);
--
--	if (ret > 0) {
--		info->nr_parts = ret;
--		info->parts = parts;
+ 	if (err)
+ 		goto err_out;
+-	err = parse_mtd_partitions(info->mtd, NULL, &info->parts, 0);
+-	if (err > 0) {
+-		mtd_device_register(info->mtd, info->parts, err);
+-		info->nr_parts = err;
+-		return 0;
 -	}
 -
--	if (!info->nr_parts)
--		printk("Registering %s as whole device\n",
--		       info->map.name);
--
--	mtd_device_register(info->mtd, info->parts, info->nr_parts);
-+	mtd_device_parse_register(info->mtd, probes, 0, NULL, 0);
+-	if (pdata->nr_parts) {
+-		pr_notice("Using rbtx4939 partition information\n");
+-		mtd_device_register(info->mtd, pdata->parts, pdata->nr_parts);
+-		return 0;
+-	}
++	err = mtd_device_parse_register(info->mtd, NULL, 0,
++			pdata->parts, pdata->nr_parts);
  
- 	platform_set_drvdata(pdev, info);
+ 	mtd_device_register(info->mtd, NULL, 0);
  	return 0;
-@@ -133,7 +116,6 @@ static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
- 	iounmap(info->map.virt);
- 	if (info->map.cached)
- 		iounmap(info->map.cached);
--	kfree(info->parts);
- 	kfree(info);
- 	return 0;
- }
 -- 
 1.7.4.4
