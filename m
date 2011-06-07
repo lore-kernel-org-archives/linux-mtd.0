@@ -1,24 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from 50.23.254.54-static.reverse.softlayer.com ([50.23.254.54]
+	helo=softlayer.compulab.co.il)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTqf2-0003cC-1J
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 07:25:13 +0000
-Received: by wyb28 with SMTP id 28so4621755wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 00:25:08 -0700 (PDT)
-Subject: Re: [PATCH 1/6] jffs2: make lzo optional at build time
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <BANLkTi=A_TjJ4JwRQLjgTz217ZhR0eCHVQ@mail.gmail.com>
-References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
-	<1307428482.11104.38.camel@localhost>
-	<BANLkTi=A_TjJ4JwRQLjgTz217ZhR0eCHVQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 10:20:51 +0300
-Message-ID: <1307431251.11104.55.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1QTqgS-0003h1-P4
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 07:26:41 +0000
+Message-ID: <4DEDD2A3.8030408@compulab.co.il>
+Date: Tue, 07 Jun 2011 10:26:27 +0300
+From: Igor Grinberg <grinberg@compulab.co.il>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: generalized error messages with __func__
+References: <1306360741-12770-1-git-send-email-computersforpeace@gmail.com>	<4DDDE19D.9010505@compulab.co.il>	<1306387008.2785.138.camel@localhost>	<BANLkTimsTWAcR4HgOoHguDMv9P-Eox=kbg@mail.gmail.com>	<1306924235.4405.102.camel@localhost>
+	<BANLkTi=BYeQ+cBMpRodDDY_KapjEoHVA+A@mail.gmail.com>
+In-Reply-To: <BANLkTi=BYeQ+cBMpRodDDY_KapjEoHVA+A@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-07 at 02:59 -0400, Mike Frysinger wrote:
-> On Tue, Jun 7, 2011 at 02:34, Artem Bityutskiy wrote:
-> > On Tue, 2011-06-07 at 02:19 -0400, Mike Frysinger wrote:
-> >> The external lzo dep can be a pain to deal with when cross-compiling,
-> >> so make it optional for jffs2.  This is useful if people aren't even
-> >> using the functionality, or for quicker development.
-> >
-> > How about mkfs.ubifs - it requires lzo as well. And then mkfs.jffs2
-> > wants libacl which might be the same PITA.
-> 
-> libacl already has a knob.
+On 06/01/11 21:37, Brian Norris wrote:
 
-OK.
+> On Wed, Jun 1, 2011 at 3:30 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>>> or should we define our own pr_fmt in include/linux/mtd.h?
+>> Yes, before you include files.
+> Well, I've tried this, and as I suspected, I can't just include it in
+> mtd.h at the top, since we can't guarantee that <linux/mtd/mtd.h> is
+> going to be the first included header in other files. Specifically, in
+> include/linux/mtd/nand.h, we include other headers before mtd.h and so
+> printk.h has already defined pr_fmt() for us, so this doesn't work.
+> I'm not sure if there's a nice place to define pr_fmt() right now...
 
->   i didnt bother with mkfs.ubifs because it
-> additionally requires libuuid which comes from util-linux.
+You should not define pr_fmt() in .h file.
+pr_fmt() should be defined in _.c_ file at the top - _before any include is done_.
+And yes, like Artem already said, _only_ in those _.c_ files where we want to use it.
 
-Yeah. The only reason for this is that it wants to generate an UUID for
-the new file-system. We could just use pseudo-random numbers as a
-work-around.
-
->   also, it
-> seemed like lzo is the only compression supported by UBI, so making it
-> optional didnt seem like it'd result in anything useful.
-
-Not really, UBIFS currently supports lzo, zlib, and no compression. But
-lzo is the default.
-
->   at least
-> jffs2 can operate without it by using other compression schemes.
-
-UBIFS as well.
-
-But please, do not bother with UBIFS if you do not need this. Just
-verify that mkfs.jffs2 fails if you have not compiled lzo and try to use
-it. I mean, mkfs.jffs2 should not silently use zlib in this case.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards,
+Igor.
