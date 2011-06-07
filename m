@@ -1,24 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTyFY-0005RU-K5
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 15:31:25 +0000
-Received: by fxm14 with SMTP id 14so4628358fxm.36
+	id 1QTyWZ-0005n8-6g
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 15:49:00 +0000
+Received: by wyb28 with SMTP id 28so5036144wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 08:31:22 -0700 (PDT)
-MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1307432463.11104.65.camel@localhost>
-References: <1307427548-29306-1-git-send-email-vapier@gentoo.org>
-	<1307427548-29306-5-git-send-email-vapier@gentoo.org>
-	<1307432463.11104.65.camel@localhost>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 7 Jun 2011 11:31:02 -0400
-Message-ID: <BANLkTimY1DwxBBi=peQzqwoLktgVna-0KA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] mtdinfo: add regioninfo/sectormap display
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	Tue, 07 Jun 2011 08:48:56 -0700 (PDT)
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 01/44] mtd: add new API for handling MTD registration
+Date: Tue,  7 Jun 2011 19:48:58 +0400
+Message-Id: <1307461738-16811-1-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <20110607134429.GE21174@pulham.picochip.com>
+References: <20110607134429.GE21174@pulham.picochip.com>
+Cc: Jamie Iles <jamie@jamieiles.com>, David Woodhouse <dwmw2@infradead.org>,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,71 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 7, 2011 at 03:41, Artem Bityutskiy wrote:
-> On Tue, 2011-06-07 at 02:19 -0400, Mike Frysinger wrote:
->> @@ -58,14 +60,15 @@ static const char optionsstr[] =3D
->> =C2=A0"-m, --mtdn=3D<MTD device number> =C2=A0MTD device number to get i=
-nformation about\n"
->> =C2=A0"-u, --ubi-info =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0print what would UBI layout be if it was put\n"
->> =C2=A0" =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0on this MTD device\n"
->> +"-s, --sector-map =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0print sector map\n"
->> =C2=A0"-a, --all =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 print information about all MTD devices\n"
->> =C2=A0"-h, --help =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0print help message\n"
->> =C2=A0"-V, --version =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 print program version";
->>
->> =C2=A0static const char usage[] =3D
->> -"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-h] [-V] [--m=
-tdn <MTD device number>]\n"
->> +"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-s] [-h] [-V]=
- [--mtdn <MTD device number>]\n"
->> =C2=A0"\t\t[--ubi-info] [--help] [--version]\n"
->> -"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-h] [-V] [=
---ubi-info] [--help]\n"
->> +"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-s] [-h] [=
--V] [--ubi-info] [--help]\n"
->> =C2=A0"\t\t[--version]\n"
->> =C2=A0"Example 1: " PROGRAM_NAME " - (no arguments) print general MTD in=
-formation\n"
->> =C2=A0"Example 2: " PROGRAM_NAME " -m 1 - print information about MTD de=
-vice number 1\n"
->> @@ -78,6 +81,7 @@ static const char usage[] =3D
->> =C2=A0static const struct option long_options[] =3D {
->> =C2=A0 =C2=A0 =C2=A0 { .name =3D "mtdn", =C2=A0 =C2=A0 =C2=A0.has_arg =
-=3D 1, .flag =3D NULL, .val =3D 'm' },
->> =C2=A0 =C2=A0 =C2=A0 { .name =3D "ubi-info", =C2=A0.has_arg =3D 0, .flag=
- =3D NULL, .val =3D 'u' },
->> + =C2=A0 =C2=A0 { .name =3D "sector-map",.has_arg =3D 0, .flag =3D NULL,=
- .val =3D 's' },
->
-> Is sector-map a good name?
+Lots (nearly all) mtd drivers contain nearly the similar code that
+calls parse_mtd_partitions, provides some platform-default values, if
+parsing fails, and registers  mtd device.
 
-it's what i'm used to calling it ;)
+This is an aim to provide single implementation of this scenario:
+mtd_device_parse_register() which will handle all this parsing and
+defaults.
 
-> May be we should call this feature "lock
-> info" or something which suggests this is about detailed lock
-> information? In this case you should also print an error message if the
-> ISLOCKED ioctl is not supported. Probably adding a "islocked_supported"
-> flag to 'struct mtd_info' (similarly to sysfs_supported) makes sense?
-> Then you could just check this flag and refuse -s option?
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ drivers/mtd/mtdcore.c   |   47 +++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/mtd.h |    5 +++++
+ 2 files changed, 52 insertions(+), 0 deletions(-)
 
-honestly, i was more interested in the sector map than the ISLOCKED
-info.  that was just a bonus for me.
-
-> Also, could we avoid using term sector because it is overloaded and
-> confusing. Could you please use term "eraseblock" instead (in prints and
-> in internal names)?
-
-ok
-
-> Or you meant that this is like general per-sector info? So if we have
-> more information to print, we add it there? In this case, could you
-> please print "bad" or something for bad eraseblocks as well?
-
-if MEMGETBADBLOCK provides that info, should be easy to add
--mike
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index c510aff..d538e0a 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -452,6 +452,53 @@ int mtd_device_register(struct mtd_info *master,
+ EXPORT_SYMBOL_GPL(mtd_device_register);
+ 
+ /**
++ * mtd_device_parse_register - register an MTD device.
++ *
++ * @mtd: the MTD device to register
++ * @part_probe_types: the list of MTD partition probes to try
++ * @origin: start address of MTD device. =0 unless you are sure you need this.
++ * @defparts: default partition information to register. Only valid if
++ *		defnr_parts > 0
++ * @defnr_parts: the number of partitions in defparts.  If zero then the full
++ *		MTD device is registered if no partition info is found
++ *
++ * Extract partition info and register MTD device (partitions or a whole device)
++ * It calls parse_mtd_partitions(), checks the result. If there were no
++ * partitions found, it uses default info specified (via defparts/defnr_parts)
++ * and then registers either partitions, or (if no partitions were
++ * found/specified) the whow MTD.
++ */
++int mtd_device_parse_register(struct mtd_info *mtd,
++			      const char **part_probe_types,
++			      unsigned long origin,
++			      const struct mtd_partition *defparts,
++			      int defnr_parts)
++{
++	int err;
++	struct mtd_partition *parts;
++
++	err = parse_mtd_partitions(mtd, part_probe_types, &parts, origin);
++	if (err <= 0 && defnr_parts) {
++		parts = kmemdup(defparts, sizeof(*parts) * defnr_parts,
++				GFP_KERNEL);
++		if (!parts)
++			err = -ENOMEM;
++	}
++
++	if (err > 0) {
++		err = add_mtd_partitions(mtd, parts, err);
++		kfree(parts);
++	} else if (err == 0) {
++		err = add_mtd_device(mtd);
++		if (err == 1)
++			err = -ENODEV;
++	}
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(mtd_device_parse_register);
++
++/**
+  * mtd_device_unregister - unregister an existing MTD device.
+  *
+  * @master: the MTD device to unregister.  This will unregister both the master
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 2541fb8..d28a241 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -327,6 +327,11 @@ struct mtd_partition;
+ extern int mtd_device_register(struct mtd_info *master,
+ 			       const struct mtd_partition *parts,
+ 			       int nr_parts);
++extern int mtd_device_parse_register(struct mtd_info *mtd,
++			      const char **part_probe_types,
++			      unsigned long origin,
++			      const struct mtd_partition *defparts,
++			      int defnr_parts);
+ extern int mtd_device_unregister(struct mtd_info *master);
+ extern struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num);
+ extern int __get_mtd_device(struct mtd_info *mtd);
+-- 
+1.7.4.4
