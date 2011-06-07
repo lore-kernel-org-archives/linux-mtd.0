@@ -1,23 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTo3w-0001P4-P0
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:38:45 +0000
-Received: by eyh6 with SMTP id 6so1934128eyh.36
+	id 1QTo6f-0001Rp-GC
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 04:41:34 +0000
+Received: by fxm14 with SMTP id 14so4170654fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Jun 2011 21:38:42 -0700 (PDT)
-Subject: Re: ubifs_decompress: cannot decompress ...
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1307389926-12209-1-git-send-email-mlcreech@gmail.com>
-References: <1307377091.3112.100.camel@localhost>
-	<1307389926-12209-1-git-send-email-mlcreech@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jun 2011 07:34:26 +0300
-Message-ID: <1307421266.11104.10.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	Mon, 06 Jun 2011 21:41:30 -0700 (PDT)
+MIME-Version: 1.0
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1307421064.11104.7.camel@localhost>
+References: <1307384537-9607-1-git-send-email-vapier@gentoo.org>
+	<1307421064.11104.7.camel@localhost>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 7 Jun 2011 00:41:10 -0400
+Message-ID: <BANLkTimBGH0UW-YP=CZ7aDf_-nXXDhfz4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/4] flash_info: convert to common.h
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-06 at 15:52 -0400, Matthew L. Creech wrote:
->  		ubifs_err("scan error %d", (int)PTR_ERR(sleb));
-> +		printk(KERN_DEBUG "\tLEB data buffer:\n");
-> +		print_hex_dump(KERN_DEBUG, "\t", DUMP_PREFIX_OFFSET, 32, 1,
-> +			       buf, c->leb_size, 0);
+On Tue, Jun 7, 2011 at 00:31, Artem Bityutskiy wrote:
+> On Mon, 2011-06-06 at 14:22 -0400, Mike Frysinger wrote:
+>> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>> ---
+>> =C2=A0flash_info.c | =C2=A0 27 +++++++++++++++++----------
+>> =C2=A01 files changed, 17 insertions(+), 10 deletions(-)
+>
+> How about killing this utility completely and use mtdinfo from ubi-utils
+> instead? Yes, before creating mtdinfo I should have noticed flash_info,
+> but I did not. Did you look at mtdinfo?
 
-No, I have difficulties reading hexdumps. You have set of good nodes
-following by one broken node. I wanted to see a human-readable dump of
-the good nodes at the beginning of the LEB.
+didnt even notice it :P
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+if mtdinfo provides all the details that my new flash_info does, then
+i dont care about punting it.  be nice to merge my fixes before
+deleting it though, otherwise i feel like i wasted quite a bit of time
+for nothing ;).
+-mike
