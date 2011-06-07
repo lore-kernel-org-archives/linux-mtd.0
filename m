@@ -1,12 +1,12 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QU5Hq-0002Fh-O9
+	id 1QU5Hq-0002Fi-OP
 	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 23:02:18 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 3/4] mtd: nand: replace DEBUG() with dev_dbg()
-Date: Tue, 7 Jun 2011 16:01:56 -0700
-Message-ID: <1307487717-25402-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/4] mtd: nand: convert printk() to pr_*()
+Date: Tue, 7 Jun 2011 16:01:55 -0700
+Message-ID: <1307487717-25402-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1307487717-25402-1-git-send-email-computersforpeace@gmail.com>
 References: <1307487717-25402-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -24,250 +24,359 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Start moving away from the MTD_DEBUG_LEVEL messages. The dynamic
-debugging feature is a generic kernel feature that provides more
-flexibility.
-
-(See Documentation/dynamic-debug-howto.txt)
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   46 +++++++++++++++++++++---------------------
- drivers/mtd/nand/nand_bbt.c  |    9 ++-----
- 2 files changed, 26 insertions(+), 29 deletions(-)
+ drivers/mtd/nand/nand_base.c |   44 +++++++++++++++++++++---------------------
+ drivers/mtd/nand/nand_bbt.c  |   39 ++++++++++++++++++-------------------
+ 2 files changed, 41 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9a11eea..95a4e71 100644
+index 019187b..9a11eea 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -113,20 +113,20 @@ static int check_offs_len(struct mtd_info *mtd,
+@@ -2167,7 +2167,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
  
- 	/* Start address must align on block boundary */
- 	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
-+		dev_dbg(&mtd->dev, "%s: Unaligned address\n", __func__);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Length must align on block boundary */
- 	if (len & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
-+		dev_dbg(&mtd->dev, "%s: Length not block aligned\n",
- 					__func__);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Do not allow past end of device */
- 	if (ofs + len > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
-+		dev_dbg(&mtd->dev, "%s: Past end of device\n",
- 					__func__);
- 		ret = -EINVAL;
- 	}
-@@ -912,7 +912,7 @@ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
- 	udelay(1000);
- 	/* See if device thinks it succeeded */
- 	if (status & 0x01) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
-+		dev_dbg(&mtd->dev, "%s: Error status = 0x%08x\n",
- 					__func__, status);
- 		ret = -EIO;
- 	}
-@@ -934,7 +934,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	int chipnr;
- 	struct nand_chip *chip = mtd->priv;
- 
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
-+	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
- 			__func__, (unsigned long long)ofs, len);
- 
- 	if (check_offs_len(mtd, ofs, len))
-@@ -953,7 +953,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- 	/* Check, if it is write protected */
- 	if (nand_check_wp(mtd)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
-+		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
- 					__func__);
- 		ret = -EIO;
- 		goto out;
-@@ -987,7 +987,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	int chipnr, status, page;
- 	struct nand_chip *chip = mtd->priv;
- 
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
-+	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
- 			__func__, (unsigned long long)ofs, len);
- 
- 	if (check_offs_len(mtd, ofs, len))
-@@ -1002,7 +1002,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- 	/* Check, if it is write protected */
- 	if (nand_check_wp(mtd)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
-+		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
- 					__func__);
- 		status = MTD_ERASE_FAILED;
- 		ret = -EIO;
-@@ -1018,7 +1018,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	udelay(1000);
- 	/* See if device thinks it succeeded */
- 	if (status & 0x01) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
-+		dev_dbg(&mtd->dev, "%s: Error status = 0x%08x\n",
- 					__func__, status);
- 		ret = -EIO;
- 		goto out;
-@@ -1757,7 +1757,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	int len;
- 	uint8_t *buf = ops->oobbuf;
- 
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: from = 0x%08Lx, len = %i\n",
-+	dev_dbg(&mtd->dev, "%s: from = 0x%08Lx, len = %i\n",
- 			__func__, (unsigned long long)from, readlen);
- 
- 	if (ops->mode == MTD_OOB_AUTO)
-@@ -1766,7 +1766,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 		len = mtd->oobsize;
- 
- 	if (unlikely(ops->ooboffs >= len)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start read "
-+		dev_dbg(&mtd->dev, "%s: Attempt to start read "
- 					"outside oob\n", __func__);
+ 	/* Reject writes, which are not page aligned */
+ 	if (NOTALIGNED(to) || NOTALIGNED(ops->len)) {
+-		printk(KERN_NOTICE "%s: Attempt to write not "
++		pr_notice("%s: Attempt to write not "
+ 				"page aligned data\n", __func__);
  		return -EINVAL;
  	}
-@@ -1775,7 +1775,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	if (unlikely(from >= mtd->size ||
- 		     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
- 					(from >> chip->page_shift)) * len)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
-+		dev_dbg(&mtd->dev, "%s: Attempt read beyond end "
- 					"of device\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -1851,7 +1851,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 
- 	/* Do not allow reads past end of device */
- 	if (ops->datbuf && (from + ops->len) > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read "
-+		dev_dbg(&mtd->dev, "%s: Attempt read "
- 				"beyond end of device\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -2341,7 +2341,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 	int chipnr, page, status, len;
- 	struct nand_chip *chip = mtd->priv;
- 
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: to = 0x%08x, len = %i\n",
-+	dev_dbg(&mtd->dev, "%s: to = 0x%08x, len = %i\n",
- 			 __func__, (unsigned int)to, (int)ops->ooblen);
- 
- 	if (ops->mode == MTD_OOB_AUTO)
-@@ -2351,13 +2351,13 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 
- 	/* Do not allow write past end of page */
- 	if ((ops->ooboffs + ops->ooblen) > len) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to write "
-+		dev_dbg(&mtd->dev, "%s: Attempt to write "
- 				"past end of page\n", __func__);
- 		return -EINVAL;
- 	}
- 
- 	if (unlikely(ops->ooboffs >= len)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start "
-+		dev_dbg(&mtd->dev, "%s: Attempt to start "
- 				"write outside oob\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -2367,7 +2367,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		     ops->ooboffs + ops->ooblen >
- 			((mtd->size >> chip->page_shift) -
- 			 (to >> chip->page_shift)) * len)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
-+		dev_dbg(&mtd->dev, "%s: Attempt write beyond "
- 				"end of device\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -2423,7 +2423,7 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 
- 	/* Do not allow writes past end of device */
- 	if (ops->datbuf && (to + ops->len) > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
-+		dev_dbg(&mtd->dev, "%s: Attempt write beyond "
- 				"end of device\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -2513,7 +2513,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 	unsigned int bbt_masked_page = 0xffffffff;
- 	loff_t len;
- 
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
-+	dev_dbg(&mtd->dev, "%s: start = 0x%012llx, len = %llu\n",
- 				__func__, (unsigned long long)instr->addr,
- 				(unsigned long long)instr->len);
- 
-@@ -2537,7 +2537,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 
- 	/* Check, if it is write protected */
- 	if (nand_check_wp(mtd)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
-+		dev_dbg(&mtd->dev, "%s: Device is write protected!!!\n",
- 					__func__);
- 		instr->state = MTD_ERASE_FAILED;
- 		goto erase_exit;
-@@ -2589,7 +2589,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 
- 		/* See if block erase succeeded */
- 		if (status & NAND_STATUS_FAIL) {
--			DEBUG(MTD_DEBUG_LEVEL0, "%s: Failed erase, "
-+			dev_dbg(&mtd->dev, "%s: Failed erase, "
- 					"page 0x%08x\n", __func__, page);
+@@ -2561,7 +2561,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		/* Heck if we have a bad block, we do not erase bad blocks! */
+ 		if (nand_block_checkbad(mtd, ((loff_t) page) <<
+ 					chip->page_shift, 0, allowbbt)) {
+-			printk(KERN_WARNING "%s: attempt to erase a bad block "
++			pr_warning("%s: attempt to erase a bad block "
+ 					"at page 0x%08x\n", __func__, page);
  			instr->state = MTD_ERASE_FAILED;
- 			instr->fail_addr =
-@@ -2650,7 +2650,7 @@ erase_exit:
- 		if (!rewrite_bbt[chipnr])
- 			continue;
- 		/* Update the BBT for chip */
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: nand_update_bbt "
-+		dev_dbg(&mtd->dev, "%s: nand_update_bbt "
- 			"(%d:0x%0llx 0x%0x)\n", __func__, chipnr,
- 			rewrite_bbt[chipnr], chip->bbt_td->pages[chipnr]);
- 		nand_update_bbt(mtd, rewrite_bbt[chipnr]);
-@@ -2670,7 +2670,7 @@ static void nand_sync(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
+ 			goto erase_exit;
+@@ -2735,7 +2735,7 @@ static void nand_resume(struct mtd_info *mtd)
+ 	if (chip->state == FL_PM_SUSPENDED)
+ 		nand_release_device(mtd);
+ 	else
+-		printk(KERN_ERR "%s called for a chip which is not "
++		pr_err("%s called for a chip which is not "
+ 		       "in suspended state\n", __func__);
+ }
  
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: called\n", __func__);
-+	dev_dbg(&mtd->dev, "%s: called\n", __func__);
+@@ -2827,13 +2827,13 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+ 		return 0;
  
- 	/* Grab the lock and see if the device is available */
- 	nand_get_device(chip, mtd, FL_SYNCING);
+-	printk(KERN_INFO "ONFI flash detected\n");
++	pr_info("ONFI flash detected\n");
+ 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+ 	for (i = 0; i < 3; i++) {
+ 		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+ 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+ 				le16_to_cpu(p->crc)) {
+-			printk(KERN_INFO "ONFI param page %d valid\n", i);
++			pr_info("ONFI param page %d valid\n", i);
+ 			break;
+ 		}
+ 	}
+@@ -2857,7 +2857,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->onfi_version = 0;
+ 
+ 	if (!chip->onfi_version) {
+-		printk(KERN_INFO "%s: unsupported ONFI version: %d\n",
++		pr_info("%s: unsupported ONFI version: %d\n",
+ 								__func__, val);
+ 		return 0;
+ 	}
+@@ -2923,7 +2923,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		id_data[i] = chip->read_byte(mtd);
+ 
+ 	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
+-		printk(KERN_INFO "%s: second ID read did not match "
++		pr_info("%s: second ID read did not match "
+ 		       "%02x,%02x against %02x,%02x\n", __func__,
+ 		       *maf_id, *dev_id, id_data[0], id_data[1]);
+ 		return ERR_PTR(-ENODEV);
+@@ -3068,10 +3068,10 @@ ident_done:
+ 	 * chip correct!
+ 	 */
+ 	if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+-		printk(KERN_INFO "NAND device: Manufacturer ID:"
++		pr_info("NAND device: Manufacturer ID:"
+ 		       " 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id,
+ 		       *dev_id, nand_manuf_ids[maf_idx].name, mtd->name);
+-		printk(KERN_WARNING "NAND bus width %d instead %d bit\n",
++		pr_warning("NAND bus width %d instead %d bit\n",
+ 		       (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+ 		       busw ? 16 : 8);
+ 		return ERR_PTR(-EINVAL);
+@@ -3129,7 +3129,7 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	printk(KERN_INFO "NAND device: Manufacturer ID:"
++	pr_info("NAND device: Manufacturer ID:"
+ 		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
+ 		nand_manuf_ids[maf_idx].name,
+ 		chip->onfi_version ? chip->onfi_params.model : type->name);
+@@ -3166,7 +3166,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 
+ 	if (IS_ERR(type)) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+-			printk(KERN_WARNING "No NAND device found.\n");
++			pr_warning("No NAND device found.\n");
+ 		chip->select_chip(mtd, -1);
+ 		return PTR_ERR(type);
+ 	}
+@@ -3184,7 +3184,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 			break;
+ 	}
+ 	if (i > 1)
+-		printk(KERN_INFO "%d NAND chips detected\n", i);
++		pr_info("%d NAND chips detected\n", i);
+ 
+ 	/* Store the number of chips and calc total size for mtd */
+ 	chip->numchips = i;
+@@ -3234,7 +3234,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			chip->ecc.layout = &nand_oob_128;
+ 			break;
+ 		default:
+-			printk(KERN_WARNING "No oob scheme defined for "
++			pr_warning("No oob scheme defined for "
+ 			       "oobsize %d\n", mtd->oobsize);
+ 			BUG();
+ 		}
+@@ -3253,7 +3253,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		/* Similar to NAND_ECC_HW, but a separate read_page handle */
+ 		if (!chip->ecc.calculate || !chip->ecc.correct ||
+ 		     !chip->ecc.hwctl) {
+-			printk(KERN_WARNING "No ECC functions supplied; "
++			pr_warning("No ECC functions supplied; "
+ 			       "Hardware ECC not possible\n");
+ 			BUG();
+ 		}
+@@ -3282,7 +3282,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		     chip->ecc.read_page == nand_read_page_hwecc ||
+ 		     !chip->ecc.write_page ||
+ 		     chip->ecc.write_page == nand_write_page_hwecc)) {
+-			printk(KERN_WARNING "No ECC functions supplied; "
++			pr_warning("No ECC functions supplied; "
+ 			       "Hardware ECC not possible\n");
+ 			BUG();
+ 		}
+@@ -3302,7 +3302,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 		if (mtd->writesize >= chip->ecc.size)
+ 			break;
+-		printk(KERN_WARNING "%d byte HW ECC not possible on "
++		pr_warning("%d byte HW ECC not possible on "
+ 		       "%d byte page size, fallback to SW ECC\n",
+ 		       chip->ecc.size, mtd->writesize);
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+@@ -3324,7 +3324,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 	case NAND_ECC_SOFT_BCH:
+ 		if (!mtd_nand_has_bch()) {
+-			printk(KERN_WARNING "CONFIG_MTD_ECC_BCH not enabled\n");
++			pr_warning("CONFIG_MTD_ECC_BCH not enabled\n");
+ 			BUG();
+ 		}
+ 		chip->ecc.calculate = nand_bch_calculate_ecc;
+@@ -3351,13 +3351,13 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 					       chip->ecc.bytes,
+ 					       &chip->ecc.layout);
+ 		if (!chip->ecc.priv) {
+-			printk(KERN_WARNING "BCH ECC initialization failed!\n");
++			pr_warning("BCH ECC initialization failed!\n");
+ 			BUG();
+ 		}
+ 		break;
+ 
+ 	case NAND_ECC_NONE:
+-		printk(KERN_WARNING "NAND_ECC_NONE selected by board driver. "
++		pr_warning("NAND_ECC_NONE selected by board driver. "
+ 		       "This is not recommended !!\n");
+ 		chip->ecc.read_page = nand_read_page_raw;
+ 		chip->ecc.write_page = nand_write_page_raw;
+@@ -3370,7 +3370,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		break;
+ 
+ 	default:
+-		printk(KERN_WARNING "Invalid NAND_ECC_MODE %d\n",
++		pr_warning("Invalid NAND_ECC_MODE %d\n",
+ 		       chip->ecc.mode);
+ 		BUG();
+ 	}
+@@ -3392,7 +3392,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 */
+ 	chip->ecc.steps = mtd->writesize / chip->ecc.size;
+ 	if (chip->ecc.steps * chip->ecc.size != mtd->writesize) {
+-		printk(KERN_WARNING "Invalid ecc parameters\n");
++		pr_warning("Invalid ecc parameters\n");
+ 		BUG();
+ 	}
+ 	chip->ecc.total = chip->ecc.steps * chip->ecc.bytes;
+@@ -3483,7 +3483,7 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+ 
+ 	/* Many callers got this wrong, so check for it for a while... */
+ 	if (!mtd->owner && caller_is_module()) {
+-		printk(KERN_CRIT "%s called with NULL mtd->owner!\n",
++		pr_crit("%s called with NULL mtd->owner!\n",
+ 				__func__);
+ 		BUG();
+ 	}
 diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index b8551e9..4d18098 100644
+index 8875d6d..b8551e9 100644
 --- a/drivers/mtd/nand/nand_bbt.c
 +++ b/drivers/mtd/nand/nand_bbt.c
-@@ -225,10 +225,6 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
- 					mtd->ecc_stats.bbtblocks++;
+@@ -205,10 +205,10 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 		res = mtd->read(mtd, from, len, &retlen, buf);
+ 		if (res < 0) {
+ 			if (retlen != len) {
+-				printk(KERN_INFO "nand_bbt: Error reading bad block table\n");
++				pr_info("nand_bbt: Error reading bad block table\n");
+ 				return res;
+ 			}
+-			printk(KERN_WARNING "nand_bbt: ECC error while reading bad block table\n");
++			pr_warn("nand_bbt: ECC error while reading bad block table\n");
+ 		}
+ 
+ 		/* Analyse data */
+@@ -219,7 +219,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 				if (tmp == msk)
  					continue;
- 				}
--				/*
--				 * Leave it for now, if it's matured we can
--				 * move this message to MTD_DEBUG_LEVEL0.
--				 */
- 				pr_debug("nand_read_bbt: Bad block at 0x%012llx\n",
+ 				if (reserved_block_code && (tmp == reserved_block_code)) {
+-					printk(KERN_DEBUG "nand_read_bbt: Reserved block at 0x%012llx\n",
++					pr_debug("nand_read_bbt: Reserved block at 0x%012llx\n",
+ 					       (loff_t)((offs << 2) + (act >> 1)) << this->bbt_erase_shift);
+ 					this->bbt[offs + (act >> 3)] |= 0x2 << (act & 0x06);
+ 					mtd->ecc_stats.bbtblocks++;
+@@ -229,7 +229,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 				 * Leave it for now, if it's matured we can
+ 				 * move this message to MTD_DEBUG_LEVEL0.
+ 				 */
+-				printk(KERN_DEBUG "nand_read_bbt: Bad block at 0x%012llx\n",
++				pr_debug("nand_read_bbt: Bad block at 0x%012llx\n",
  				       (loff_t)((offs << 2) + (act >> 1)) << this->bbt_erase_shift);
  				/* Factory marked bad or worn out? */
-@@ -1378,8 +1374,9 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 	block = (int)(offs >> (this->bbt_erase_shift - 1));
- 	res = (this->bbt[block >> 3] >> (block & 0x06)) & 0x03;
+ 				if (tmp == 0)
+@@ -383,7 +383,7 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
+ 		scan_read_raw(mtd, buf, (loff_t)td->pages[0] << this->page_shift,
+ 			      mtd->writesize, td);
+ 		td->version[0] = buf[bbt_get_ver_offs(mtd, td)];
+-		printk(KERN_DEBUG "Bad block table at page %d, version 0x%02X\n",
++		pr_debug("Bad block table at page %d, version 0x%02X\n",
+ 		       td->pages[0], td->version[0]);
+ 	}
  
--	DEBUG(MTD_DEBUG_LEVEL2, "nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
--	      (unsigned int)offs, block >> 1, res);
-+	dev_dbg(&mtd->dev, "nand_isbad_bbt(): bbt info for offs 0x%08x: "
-+			   "(block %d) 0x%02x\n",
-+			   (unsigned int)offs, block >> 1, res);
+@@ -392,7 +392,7 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
+ 		scan_read_raw(mtd, buf, (loff_t)md->pages[0] << this->page_shift,
+ 			      mtd->writesize, td);
+ 		md->version[0] = buf[bbt_get_ver_offs(mtd, md)];
+-		printk(KERN_DEBUG "Bad block table at page %d, version 0x%02X\n",
++		pr_debug("Bad block table at page %d, version 0x%02X\n",
+ 		       md->pages[0], md->version[0]);
+ 	}
+ 	return 1;
+@@ -466,7 +466,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	loff_t from;
+ 	size_t readlen;
  
- 	switch ((int)res) {
- 	case 0x00:
+-	printk(KERN_INFO "Scanning device for bad blocks\n");
++	pr_info("Scanning device for bad blocks\n");
+ 
+ 	if (bd->options & NAND_BBT_SCANALLPAGES)
+ 		len = 1 << (this->bbt_erase_shift - this->page_shift);
+@@ -495,7 +495,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		from = 0;
+ 	} else {
+ 		if (chip >= this->numchips) {
+-			printk(KERN_WARNING "create_bbt(): chipnr (%d) > available chips (%d)\n",
++			pr_warn("create_bbt(): chipnr (%d) > available chips (%d)\n",
+ 			       chip + 1, this->numchips);
+ 			return -EINVAL;
+ 		}
+@@ -524,7 +524,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ 		if (ret) {
+ 			this->bbt[i >> 3] |= 0x03 << (i & 0x6);
+-			printk(KERN_WARNING "Bad eraseblock %d at 0x%012llx\n",
++			pr_warn("Bad eraseblock %d at 0x%012llx\n",
+ 			       i >> 1, (unsigned long long)from);
+ 			mtd->ecc_stats.badblocks++;
+ 		}
+@@ -607,10 +607,10 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 	/* Check, if we found a bbt for each requested chip */
+ 	for (i = 0; i < chips; i++) {
+ 		if (td->pages[i] == -1)
+-			printk(KERN_WARNING "Bad block table not found for chip %d\n", i);
++			pr_warn("Bad block table not found for chip %d\n", i);
+ 		else
+-			printk(KERN_DEBUG "Bad block table found at page %d, version 0x%02X\n", td->pages[i],
+-			       td->version[i]);
++			pr_debug("Bad block table found at page %d, version "
++				 "0x%02X\n", td->pages[i], td->version[i]);
+ 	}
+ 	return 0;
+ }
+@@ -723,7 +723,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			if (!md || md->pages[chip] != page)
+ 				goto write;
+ 		}
+-		printk(KERN_ERR "No space left to write bad block table\n");
++		pr_err("No space left to write bad block table\n");
+ 		return -ENOSPC;
+ 	write:
+ 
+@@ -758,12 +758,12 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			res = mtd->read(mtd, to, len, &retlen, buf);
+ 			if (res < 0) {
+ 				if (retlen != len) {
+-					printk(KERN_INFO "nand_bbt: Error "
++					pr_info("nand_bbt: Error "
+ 					       "reading block for writing "
+ 					       "the bad block table\n");
+ 					return res;
+ 				}
+-				printk(KERN_WARNING "nand_bbt: ECC error "
++				pr_warn("nand_bbt: ECC error "
+ 				       "while reading block for writing "
+ 				       "bad block table\n");
+ 			}
+@@ -840,7 +840,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		if (res < 0)
+ 			goto outerr;
+ 
+-		printk(KERN_DEBUG "Bad block table written to 0x%012llx, version "
++		pr_debug("Bad block table written to 0x%012llx, version "
+ 		       "0x%02X\n", (unsigned long long)to, td->version[chip]);
+ 
+ 		/* Mark it as used */
+@@ -849,8 +849,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	return 0;
+ 
+  outerr:
+-	printk(KERN_WARNING
+-	       "nand_bbt: Error while writing bad block table %d\n", res);
++	pr_warning("nand_bbt: Error while writing bad block table %d\n", res);
+ 	return res;
+ }
+ 
+@@ -1130,7 +1129,7 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	 */
+ 	if (!td) {
+ 		if ((res = nand_memory_bbt(mtd, bd))) {
+-			printk(KERN_ERR "nand_bbt: Can't scan flash and build the RAM-based BBT\n");
++			pr_err("nand_bbt: Can't scan flash and build the RAM-based BBT\n");
+ 			kfree(this->bbt);
+ 			this->bbt = NULL;
+ 		}
+@@ -1298,7 +1297,7 @@ static int nand_create_default_bbt_descr(struct nand_chip *this)
+ {
+ 	struct nand_bbt_descr *bd;
+ 	if (this->badblock_pattern) {
+-		printk(KERN_WARNING "BBT descr already allocated; not replacing.\n");
++		pr_warn("BBT descr already allocated; not replacing.\n");
+ 		return -EINVAL;
+ 	}
+ 	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
 -- 
 1.7.0.4
