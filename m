@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTC-0001Qj-93
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:23 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
+	id 1QTwTE-0001Ql-3d
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:25 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898925wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:21 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:23 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 22/44] mtd: atmel_nand.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:21 +0400
-Message-Id: <1307453803-31950-23-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 23/44] mtd: bcm_umi_nand.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:22 +0400
+Message-Id: <1307453803-31950-24-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,48 +28,38 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/atmel_nand.c |   19 ++-----------------
+ drivers/mtd/nand/bcm_umi_nand.c |   19 ++-----------------
  1 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index a19a112..6702208 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -491,8 +491,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	struct resource *regs;
- 	struct resource *mem;
- 	int res;
--	struct mtd_partition *partitions = NULL;
--	int num_partitions = 0;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
-@@ -651,24 +649,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+index e0230c5..d98bc48 100644
+--- a/drivers/mtd/nand/bcm_umi_nand.c
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -489,23 +489,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
  	}
  
- 	mtd->name = "atmel_nand";
--	num_partitions = parse_mtd_partitions(mtd, NULL, &partitions, 0);
--	if (num_partitions <= 0 && host->board->parts) {
--		partitions = host->board->parts;
--		num_partitions = host->board->num_parts;
--	}
+ 	/* Register the partitions */
+-	{
+-		int nr_partitions;
+-		struct mtd_partition *partition_info;
 -
--	if ((!partitions) || (num_partitions == 0)) {
--		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
--		res = -ENXIO;
--		goto err_no_partitions;
--	}
+-		board_mtd->name = "bcm_umi-nand";
+-		nr_partitions = parse_mtd_partitions(board_mtd, NULL,
+-						     &partition_info, 0);
 -
--	res = mtd_device_register(mtd, partitions, num_partitions);
-+	res = mtd_device_parse_register(mtd, NULL, 0,
-+			host->board->parts, host->board->num_parts);
- 	if (!res)
- 		return res;
+-		if (nr_partitions <= 0) {
+-			printk(KERN_ERR "BCM UMI NAND: Too few partitions - %d\n",
+-			       nr_partitions);
+-			iounmap(bcm_umi_io_base);
+-			kfree(board_mtd);
+-			return -EIO;
+-		}
+-		mtd_device_register(board_mtd, partition_info, nr_partitions);
+-	}
++	board_mtd->name = "bcm_umi-nand";
++	mtd_device_parse_register(board_mtd, NULL, 0, NULL, 0);
  
--err_no_partitions:
--	nand_release(mtd);
- err_scan_tail:
- err_scan_ident:
- err_no_card:
+ 	/* Return happy */
+ 	return 0;
 -- 
 1.7.4.4
