@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTK-0001St-OV
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:32 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so3852593wwb.18
+	id 1QTwTM-0001Qj-SH
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:34 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:30 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:32 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 27/44] mtd: davinci_nand.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:26 +0400
-Message-Id: <1307453803-31950-28-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 28/44] mtd: edb7312.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:27 +0400
+Message-Id: <1307453803-31950-29-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,58 +28,45 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/davinci_nand.c |   25 ++-----------------------
- 1 files changed, 2 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/edb7312.c |   17 ++---------------
+ 1 files changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 0c582ed..6492213 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -57,7 +57,6 @@ struct davinci_nand_info {
+diff --git a/drivers/mtd/nand/edb7312.c b/drivers/mtd/nand/edb7312.c
+index 2f9374b..0b1bb91 100644
+--- a/drivers/mtd/nand/edb7312.c
++++ b/drivers/mtd/nand/edb7312.c
+@@ -104,9 +104,6 @@ static int ep7312_device_ready(struct mtd_info *mtd)
+ static int __init ep7312_init(void)
+ {
+ 	struct nand_chip *this;
+-	const char *part_type = 0;
+-	int mtd_parts_nb = 0;
+-	struct mtd_partition *mtd_parts = 0;
+ 	void __iomem *ep7312_fio_base;
  
- 	struct device		*dev;
- 	struct clk		*clk;
--	bool			partitioned;
- 
- 	bool			is_readmode;
- 
-@@ -530,8 +529,6 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	int				ret;
- 	uint32_t			val;
- 	nand_ecc_modes_t		ecc_mode;
--	struct mtd_partition		*mtd_parts = NULL;
--	int				mtd_parts_nb = 0;
- 
- 	/* insist on board-specific configuration */
- 	if (!pdata)
-@@ -753,26 +750,8 @@ syndrome_done:
- 	if (ret < 0)
- 		goto err_scan;
- 
--	mtd_parts_nb = parse_mtd_partitions(&info->mtd, NULL, &mtd_parts, 0);
--
--	if (mtd_parts_nb <= 0) {
--		mtd_parts = pdata->parts;
--		mtd_parts_nb = pdata->nr_parts;
+ 	/* Allocate memory for MTD device structure and private data */
+@@ -156,20 +153,10 @@ static int __init ep7312_init(void)
+ 		return -ENXIO;
+ 	}
+ 	ep7312_mtd->name = "edb7312-nand";
+-	mtd_parts_nb = parse_mtd_partitions(ep7312_mtd, NULL, &mtd_parts, 0);
+-	if (mtd_parts_nb > 0)
+-		part_type = "command line";
+-	else
+-		mtd_parts_nb = 0;
+-	if (mtd_parts_nb == 0) {
+-		mtd_parts = partition_info;
+-		mtd_parts_nb = NUM_PARTITIONS;
+-		part_type = "static";
 -	}
--
--	/* Register any partitions */
--	if (mtd_parts_nb > 0) {
--		ret = mtd_device_register(&info->mtd, mtd_parts,
--					  mtd_parts_nb);
--		if (ret == 0)
--			info->partitioned = true;
--	}
--
--	/* If there's no partition info, just package the whole chip
--	 * as a single MTD device.
--	 */
--	if (!info->partitioned)
--		ret = mtd_device_register(&info->mtd, NULL, 0) ? -ENODEV : 0;
-+	ret = mtd_device_parse_register(&info->mtd, NULL, 0,
-+			pdata->parts, pdata->nr_parts);
  
- 	if (ret < 0)
- 		goto err_scan;
+ 	/* Register the partitions */
+-	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+-	mtd_device_register(ep7312_mtd, mtd_parts, mtd_parts_nb);
++	mtd_device_register(ep7312_mtd, NULL, 0,
++			partition_info, NUM_PARTITIONS);
+ 
+ 	/* Return happy */
+ 	return 0;
 -- 
 1.7.4.4
