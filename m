@@ -1,15 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QTwTF-0001Qm-PJ
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:27 +0000
-Received: by mail-ww0-f41.google.com with SMTP id 18so2387416wwi.0
+	id 1QTwTH-0001Qj-EY
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2011 13:37:28 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so4898888wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 06:37:25 -0700 (PDT)
+	Tue, 07 Jun 2011 06:37:27 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 24/44] mtd: cafe_nand.c: use mtd_device_parse_register
-Date: Tue,  7 Jun 2011 17:36:23 +0400
-Message-Id: <1307453803-31950-25-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 25/44] mtd: cmx270_nand.c: use mtd_device_parse_register
+Date: Tue,  7 Jun 2011 17:36:24 +0400
+Message-Id: <1307453803-31950-26-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,44 +28,47 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/cafe_nand.c |   11 ++---------
- 1 files changed, 2 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/cmx270_nand.c |   20 ++------------------
+ 1 files changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 88ac4b5..db3bfac 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -57,7 +57,6 @@
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+index f8f5b7c..8305692 100644
+--- a/drivers/mtd/nand/cmx270_nand.c
++++ b/drivers/mtd/nand/cmx270_nand.c
+@@ -149,9 +149,6 @@ static int cmx270_device_ready(struct mtd_info *mtd)
+ static int __init cmx270_init(void)
+ {
+ 	struct nand_chip *this;
+-	const char *part_type;
+-	struct mtd_partition *mtd_parts;
+-	int mtd_parts_nb = 0;
+ 	int ret;
  
- struct cafe_priv {
- 	struct nand_chip nand;
--	struct mtd_partition *parts;
- 	struct pci_dev *pdev;
- 	void __iomem *mmio;
- 	struct rs_control *rs;
-@@ -630,8 +629,6 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
- 	struct cafe_priv *cafe;
- 	uint32_t ctrl;
- 	int err = 0;
--	struct mtd_partition *parts;
--	int nr_parts;
+ 	if (!(machine_is_armcore() && cpu_is_pxa27x()))
+@@ -220,22 +217,9 @@ static int __init cmx270_init(void)
+ 		goto err_scan;
+ 	}
  
- 	/* Very old versions shared the same PCI ident for all three
- 	   functions on the chip. Verify the class too... */
-@@ -804,12 +801,8 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
- 	mtd_device_register(mtd, NULL, 0);
- 
- 	mtd->name = "cafe_nand";
--	nr_parts = parse_mtd_partitions(mtd, part_probes, &parts, 0);
--	if (nr_parts > 0) {
--		cafe->parts = parts;
--		dev_info(&cafe->pdev->dev, "%d partitions found\n", nr_parts);
--		mtd_device_register(mtd, parts, nr_parts);
+-	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, NULL,
+-					    &mtd_parts, 0);
+-	if (mtd_parts_nb > 0)
+-		part_type = "command line";
+-	else
+-		mtd_parts_nb = 0;
+-
+-	if (!mtd_parts_nb) {
+-		mtd_parts = partition_info;
+-		mtd_parts_nb = NUM_PARTITIONS;
+-		part_type = "static";
 -	}
-+	mtd_device_parse_register(mtd, part_probes, 0, NULL, 0);
-+
- 	goto out;
+-
+ 	/* Register the partitions */
+-	pr_notice("Using %s partition definition\n", part_type);
+-	ret = mtd_device_register(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
++	ret = mtd_device_parse_register(cmx270_nand_mtd, NULL, 0,
++			partition_info, NUM_PARTITIONS);
+ 	if (ret)
+ 		goto err_scan;
  
-  out_irq:
 -- 
 1.7.4.4
