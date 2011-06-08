@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHX-0007LR-Hk
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:07:01 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
+	id 1QULHZ-0007GE-Oy
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:07:02 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so531513wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:59 -0700 (PDT)
+	Wed, 08 Jun 2011 09:07:01 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 37/43] mtd: s3c2410.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:46 +0400
-Message-Id: <1307549152-7085-38-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 38/43] mtd: sharpsl.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:47 +0400
+Message-Id: <1307549152-7085-39-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,38 +29,38 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/s3c2410.c |   18 ++++--------------
- 1 files changed, 4 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/sharpsl.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 17954ba..b0f8e77 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -748,21 +748,11 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 				      struct s3c2410_nand_mtd *mtd,
- 				      struct s3c2410_nand_set *set)
+diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
+index b3377f8..619d2a5 100644
+--- a/drivers/mtd/nand/sharpsl.c
++++ b/drivers/mtd/nand/sharpsl.c
+@@ -109,8 +109,6 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat,
+ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
  {
--	struct mtd_partition *part_info;
--	int nr_part = 0;
-+	if (set)
-+		mtd->mtd.name = set->name;
+ 	struct nand_chip *this;
+-	struct mtd_partition *sharpsl_partition_info;
+-	int nr_partitions;
+ 	struct resource *r;
+ 	int err = 0;
+ 	struct sharpsl_nand *sharpsl;
+@@ -182,14 +180,9 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
  
--	if (set == NULL)
--		return mtd_device_register(&mtd->mtd, NULL, 0);
--
--	mtd->mtd.name = set->name;
--	nr_part = parse_mtd_partitions(&mtd->mtd, NULL, &part_info, 0);
--
--	if (nr_part <= 0 && set->nr_partitions > 0) {
--		nr_part = set->nr_partitions;
--		part_info = set->partitions;
+ 	/* Register the partitions */
+ 	sharpsl->mtd.name = "sharpsl-nand";
+-	nr_partitions = parse_mtd_partitions(&sharpsl->mtd, NULL, &sharpsl_partition_info, 0);
+-	if (nr_partitions <= 0) {
+-		nr_partitions = data->nr_partitions;
+-		sharpsl_partition_info = data->partitions;
 -	}
--
--	return mtd_device_register(&mtd->mtd, part_info, nr_part);
-+	return mtd_device_parse_register(&mtd->mtd, NULL, 0,
-+			set->partitions, set->nr_partitions);
- }
  
- /**
+-	err = mtd_device_register(&sharpsl->mtd, sharpsl_partition_info,
+-				  nr_partitions);
++	err = mtd_device_parse_register(&sharpsl->mtd, NULL, 0,
++			data->partitions, data->nr_partitions);
+ 	if (err)
+ 		goto err_add;
+ 
 -- 
 1.7.4.4
