@@ -1,22 +1,26 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUJcT-0005Su-Um
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 14:20:30 +0000
-Received: by fxm14 with SMTP id 14so470459fxm.36
+	id 1QUJe2-0005VJ-Tl
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 14:22:07 +0000
+Received: by vws8 with SMTP id 8so486210vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 07:20:27 -0700 (PDT)
-Subject: Re: [PATCH] UBIFS: optionally return partial LEB scan results
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1307479967-3909-1-git-send-email-mlcreech@gmail.com>
-References: <1307479967-3909-1-git-send-email-mlcreech@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 08 Jun 2011 17:16:09 +0300
-Message-ID: <1307542569.31223.101.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Wed, 08 Jun 2011 07:22:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1307542329.31223.98.camel@localhost>
+References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
+	<1307453803-31950-6-git-send-email-dbaryshkov@gmail.com>
+	<1307523682.31223.32.camel@localhost>
+	<1307523765.31223.33.camel@localhost>
+	<BANLkTinZ_QVBpyB+PjcPDZ44obpBmOZpcA@mail.gmail.com>
+	<1307542329.31223.98.camel@localhost>
+Date: Wed, 8 Jun 2011 18:22:01 +0400
+Message-ID: <BANLkTinqjZJuAOfCvFjZGCcj8qQwTYB7dQ@mail.gmail.com>
+Subject: Re: [PATCH 05/44] mtd: bfin-async-flash.c: use
+	mtd_device_parse_register
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-07 at 16:52 -0400, Matthew L. Creech wrote:
-> ubifs_scan() currently returns -EUCLEAN when it encounters corrupted data
-> while scanning a LEB.  This is usually the right thing to do, but it prevents
-> us from debugging certain kinds of corruption, since ubifs_scan() is called
-> from dbg_dump_leb().
-> 
-> Add a flag which makes ubifs_scan() return partial node data when corruption
-> is encountered, and use that flag in dbg_dump_leb().
-> 
-> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
-> ---
->  fs/ubifs/debug.c      |    2 +-
->  fs/ubifs/gc.c         |    2 +-
->  fs/ubifs/log.c        |    2 +-
->  fs/ubifs/lprops.c     |    2 +-
->  fs/ubifs/master.c     |    4 ++--
->  fs/ubifs/orphan.c     |    4 ++--
->  fs/ubifs/recovery.c   |    2 +-
->  fs/ubifs/replay.c     |    4 ++--
->  fs/ubifs/scan.c       |   16 ++++++++++++----
->  fs/ubifs/tnc_commit.c |    2 +-
->  fs/ubifs/ubifs.h      |    2 +-
->  11 files changed, 25 insertions(+), 17 deletions(-)
+On 6/8/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2011-06-08 at 18:06 +0400, Dmitry Eremin-Solenikov wrote:
+>> On 6/8/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> > On Wed, 2011-06-08 at 12:01 +0300, Artem Bityutskiy wrote:
+>> >> On Tue, 2011-06-07 at 17:36 +0400, Dmitry Eremin-Solenikov wrote:
+>> >> > +       mtd_device_parse_register(state->mtd, part_probe_types, 0,
+>> >> > +                       pdata->parts, pdata->nr_parts);
+>> >>
+>> >> How about checking the return code? :-)
+>> >
+>> > Ok, you did not do it because the original function did not do it. Fair
+>> > enough, this is a separate thing.
+>>
+>> Nice idea. Making mtd_device_parse_register a __must_check function :)
+>
+> But please, do it as a separate patch.
 
-Thanks, but I think I'll do it differently. If the ubifs_scan() quiet
-parameter is 0, then I can notice that this mean that the caller expects
-corruptions and will fix it up. In which case current code will re-scan
-the LEB. And I will make it so that if quiet == 0, then the scanned
-buffer is not destroyed.
-
-This will first of all make sure we do not read the same LEB 2 times
-when recovering. And second of all - this is anyway needed to handle
-unstable bits. So I'll be working on this change myself.
+Why not make it a __must_check from the beginning? And fixup problematic
+drivers later.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+With best wishes
+Dmitry
