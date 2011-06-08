@@ -1,22 +1,25 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUF5z-0007Pz-Cc
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 09:30:40 +0000
-Received: by fxm14 with SMTP id 14so246519fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 02:30:35 -0700 (PDT)
-Subject: Re: [PATCH 00/44] Cleanup of parse/register scenario
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
-References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 08 Jun 2011 12:26:18 +0300
-Message-ID: <1307525178.31223.38.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUFXG-0004OY-L6
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 09:58:51 +0000
+From: <roman.tereshonkov@nokia.com>
+To: <kmpark@infradead.org>
+Subject: RE: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
+Date: Wed, 8 Jun 2011 09:56:53 +0000
+Message-ID: <E942AFD653C85241BF3CCD5F471BEDA203FD4B1D@008-AM1MPN1-042.mgdnok.nokia.com>
+References: <20110602064832.GA7319@july> <1307115701.3069.20.camel@localhost>
+	<E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
+	<1307354557.3112.21.camel@localhost>	<1307354791.3112.24.camel@localhost>
+	<BANLkTinPBum1WB=-tx833hj032mfs1TdVg@mail.gmail.com>
+	<E942AFD653C85241BF3CCD5F471BEDA203FD21D7@008-AM1MPN1-041.mgdnok.nokia.com>
+	<BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
+In-Reply-To: <BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: dwmw2@infradead.org, m.szyprowski@samsung.com,
+	linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +29,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-07 at 17:35 +0400, Dmitry Eremin-Solenikov wrote:
-> Lots of mtd drivers have more or less the same common logic:
-> parse partitions, then register them. Currently this ends up
-> with lots of code duplication, each copy having it's own features
-> and bugs. In this patch serie I create a special function
-> (mtd_device_parse_register) which handles all issues with acquiring
-> partition information, registering mtd device(s) and returning correct
-> error code.
-> 
-> The following changes since commit 85bd7e882840f4cb4d213768d252c754f22440ac:
-> 
->   mtd: pxa3xx_nand: Fix blank page ECC mismatch (2011-06-07 15:40:29 +0300)
-> 
-> are available in the git repository at:
->   git://git.infradead.org/users/dbaryshkov/mtd-cleanup.git mtd-parse-1st
+=20
 
-Dmitry, the patch-set is a great clean-up! Could you please address few
-nit-picks I sent and also go through your patches and join the
-unnecessary 2 lines in your 'mtd_device_parse_register()' invocations? I
-think I can see several of them.
+>-----Original Message-----
+>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On=20
+>Behalf Of ext Kyungmin Park
+>Sent: 07 June, 2011 13:10
+>To: Tereshonkov Roman (Nokia-SD/Helsinki)
+>Cc: dedekind1@gmail.com; linux-mtd@lists.infradead.org;=20
+>dwmw2@infradead.org; m.szyprowski@samsung.com
+>Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at=20
+>4KiB pagesize
+>
+>2011/6/7  <roman.tereshonkov@nokia.com>:
+>>
+>>
+>>>-----Original Message-----
+>>>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On
+>>>Behalf Of ext Kyungmin Park
+>>>Sent: 07 June, 2011 02:56
+>>>To: dedekind1@gmail.com
+>>>Cc: Tereshonkov Roman (Nokia-SD/Helsinki);
+>>>linux-mtd@lists.infradead.org; dwmw2@infradead.org;
+>>>m.szyprowski@samsung.com
+>>>Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at
+>>>4KiB pagesize
+>>>
+>>>On Mon, Jun 6, 2011 at 7:06 PM, Artem Bityutskiy
+>>><dedekind1@gmail.com> wrote:
+>>>> On Mon, 2011-06-06 at 13:02 +0300, Artem Bityutskiy wrote:
+>>>>> On Mon, 2011-06-06 at 09:42 +0000,
+>>>roman.tereshonkov@nokia.com wrote:
+>>>>> > What do mean by "no case to use the subpage"?
+>>>>> >
+>>>>> > According to the spec KFM4G16Q4M-xEBx the Number of
+>>>Partial Program Cycles in the page (NOP)
+>>>>> > is equal to 4 -> subpage_sft=3D2.
+>>>
+>>>It's really strange. Two OneNAND spec which has 4KiB pagesize
+>>>say it has 1 NOP.
+>>>
+>>>Number of Partial Program Cycles in the page (Including main=20
+>and spare
+>>>area) NOP - - 1 cycles
+>>>(KFM4G16Q5M-xEBx)
+>>>
+>>>that's reason I first set subpage_sft =3D 0 at original code.
+>>>
+>>>The different thing between you and me is the page architecture
+>>>number. yes 4 is the correct number but 5 also has the 4KiB pagesize.
+>>>I think it's mean the manufacturing difference. can you check the
+>>>which XXnm manufacturing for your devices?
+>>>In our case. it's 3Xnm. and previous is 4Xnm.
+>>
+>>
+>>
+>> It seems the spec does not specify the nm-technology used.
+>>
+>> Can we somehow use the DeviceID and VersionID registers to differ
+>> our chips?
+>> For my case KFM4G16Q4M DeviceID=3D0x0050, VersionID=3D0x0131,
+>> and KFM8G16Q4M DeviceID=3D0x0068, VersionID=3D0x0131.
+>>
+>> BTW. Another spec KFM4G16Q4B also tells about NOP=3D4 cycles.
+>
+>Here's my device register values.
+>005000ec 0800013e 01010200 00000000
+>DeviceID=3D0x0050, VersionID=3D0x013e
 
-I mean,
 
-mtd_device_parse_register(x, y, z,
-			a, b)
+Our difference is in Stepping field of the VersionId register:
+0xe means "Version 1.0 (initial)", and 0x1 means "CS version 1.0".
 
-should become
+Does anybody know what does "CS" mean in this context? Is it Customer SoC o=
+r something else?
 
-mtd_device_parse_register(x, y, z, a, b)
+How do different Stepping versions differ from each other?
 
-if this fits 80 characters.
 
-Thanks!
+Regards
+Roman Tereshonkov
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+
+>
+>The lower 4 bits of VersionID is different. even though VersionID is
+>different. it's dangerous to detect the NOP 4 or not.
+>
+>I sent the email to OneNAND person and share the result soon. (he's on
+>business trip and return at June 9).
+>
+>Thank you,
+>Kyungmin Park
+>
+>
+>>
+>>
+>>
+>>>
+>>>>>
+>>>>> I thought this means "not supported by HW". But if this is
+>>>supported,
+>>>>> then I'm very surprised why would we remove it. I'm
+>>>dropping this patch
+>>>>> from my tree.
+>>>>
+>>>> OK, I actually did not put it to the l2 tree. And AFAICS this patch
+>>>> basically reverts commit
+>>>99b17c08bca2810f5910b3027f1b9d82edf7a576, but
+>>>> still leaves the data structures like onenand_oob_128.
+>>>>
+>>>> So NACK for this patch - poor commit message, weird changes. I'm
+>>>> surprised to see this from kmpark.
+>>>
+>>>since we got some different OneNAND Spec. even though it has
+>>>same 4KiB pagesize.
+>>>
+>>>Thank you,
+>>>Kyungmin Park
+>>>>
+>>>> --
+>>>> Best Regards,
+>>>> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>>>>
+>>>>
+>>>
+>=
