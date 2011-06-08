@@ -1,76 +1,57 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: reply: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for
-	imx23/imx28
-Date: Fri, 1 Jul 2011 00:29:51 +0200
-References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-In-Reply-To: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201107010029.51965.arnd@arndb.de>
-Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"w.sang@pengutronix.de" <w.sang@pengutronix.de>,
-	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
-	Huang Shijie-B32955 <B32955@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-	"LW@karo-electronics.de" <LW@karo-electronics.de>
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Wed, 8 Jun 2011 11:42:27 +0300
+Subject: [PATCH] mtd: document parse_mtd_partitions
+Message-ID: <mailman.8.1307522517.24103.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-On Thursday 30 June 2011 18:12:27 Huang Shijie-B32955 wrote:
-> 
-> I think gpmi-nfc is much better then gpmi-nand or gpmi-flash.
+Add a kerneldoc comment for the 'parse_mtd_partitions()' function - its
+behavior has changed recently so it is good idea to have it documented.
 
-Then how do you want to name the near field communication drivers?
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/mtdpart.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
-> >I know that you didn't start this pattern, but I find these macros
-> >extremely annoying. It obscures the use of the macros with the
-> >string concatenation and the macro names are way too generic
-> >for something platform specific. If people think it's a good idea
-> >to have these, please submit a patch to add macros (without the
-> >string concatenation) into include/linux/ioport.h.
-> 
-> >Until then, better spell out the resources.
-> 
-> ==============================================
-> I ever tried several methods,  but  I can not find a better method to
-> replace the current method.
-> 
-> It's annoying, but it really saves some lines.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index b7372050..2b71ccb 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -725,8 +725,30 @@ int deregister_mtd_parser(struct mtd_part_parser *p)
+ }
+ EXPORT_SYMBOL_GPL(deregister_mtd_parser);
+ 
++/*
++ * Do not forget to update 'parse_mtd_partitions()' kerneldoc comment if you
++ * are changing this array!
++ */
+ static const char *default_mtd_part_types[] = {"cmdlinepart", NULL};
+ 
++/**
++ * parse_mtd_partitions - parse MTD partitions
++ * @master: the master partition (describes whole MTD device)
++ * @types: names of partition parsers to try or %NULL
++ * @pparts: array of partitions found is returned here
++ * @origin: MTD device start address (use %0 if unsure)
++ *
++ * This function tries to find partition on MTD device @master. It uses MTD
++ * partition parsers, specified in @types. However, if @types is %NULL, then
++ * the default list of parsers is used. The default list contains only the
++ * "cmdlinepart" parser ATM.
++ *
++ * This function may return:
++ * o a negative error code in case of failure
++ * o zero if no partitions were found
++ * o a positive number of found partitions, in which case on exit @pparts will
++ *   point to an array containing this number of &struct mtd_info objects.
++ */
+ int parse_mtd_partitions(struct mtd_info *master, const char **types,
+ 			 struct mtd_partition **pparts, unsigned long origin)
+ {
+-- 
+1.7.2.3
 
-It would save more lines if you introduce the macros globally and
-convert all existing resource definitions ;-)
 
-Making code shorter is usually a good idea, but not when it conflicts
-with readability. Adding custom macros that do string concatenation
-is such a case.
-
-> >When adding new infrastructure, always keep in mind how you want it to look
-> >after the device tree conversion. The partitions and min/max_* are easily covered
-> >with that, but the init/exit function pointers are somewhat problematic.
-> 
-> >Fortunately, you don't really require these functions for this driver. The _exit
-> >function is completely unused, so just get rid of it.
-> ===================================================
-> I am reluctant to remove it, I am not sure whether I will use the _exit() in future.
-> But, yes, it can be removed now.
-
-As a rule, you should never introduce infrastructure just because you might
-need it in the future but don't know if you will really need it.
-
-This is even more important for the actual driver, as I mentioned in my other
-mail. You have a hardware abstraction layer, but only one variant of the hardware
-posted along with the driver. Without seeing different hardware, how should
-anyone be able to tell whether the abstraction is really needed or if it's the
-correct abstraction?
-
-	Arnd
+-- 
+Best Regards,
+Artem Bityutskiy (?????????? ????????????????)
