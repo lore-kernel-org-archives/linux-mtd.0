@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULGg-0007Bz-Fv
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:08 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
+	id 1QULGj-0007CU-NV
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:10 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so630582wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:06 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:09 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/43] mtd: h720x-flash.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:16 +0400
-Message-Id: <1307549152-7085-8-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 09/43] mtd: intel_vr_nor.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:18 +0400
+Message-Id: <1307549152-7085-10-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,59 +29,34 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/h720x-flash.c |   21 ++-------------------
- 1 files changed, 2 insertions(+), 19 deletions(-)
+ drivers/mtd/maps/intel_vr_nor.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
-index f331a2c..49c1418 100644
---- a/drivers/mtd/maps/h720x-flash.c
-+++ b/drivers/mtd/maps/h720x-flash.c
-@@ -58,16 +58,11 @@ static struct mtd_partition h720x_partitions[] = {
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index fd612c7..08c2396 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -44,7 +44,6 @@ struct vr_nor_mtd {
+ 	void __iomem *csr_base;
+ 	struct map_info map;
+ 	struct mtd_info *info;
+-	int nr_parts;
+ 	struct pci_dev *dev;
+ };
  
- #define NUM_PARTITIONS ARRAY_SIZE(h720x_partitions)
+@@ -71,12 +70,9 @@ static void __devexit vr_nor_destroy_partitions(struct vr_nor_mtd *p)
  
--static int                   nr_mtd_parts;
--static struct mtd_partition *mtd_parts;
- /*
-  * Initialize FLASH support
-  */
- static int __init h720x_mtd_init(void)
+ static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
  {
+-	struct mtd_partition *parts;
 -
--	char	*part_type = NULL;
--
- 	h720x_map.virt = ioremap(h720x_map.phys, h720x_map.size);
+ 	/* register the flash bank */
+ 	/* partition the flash bank */
+-	p->nr_parts = parse_mtd_partitions(p->info, NULL, &parts, 0);
+-	return mtd_device_register(p->info, parts, p->nr_parts);
++	return mtd_device_parse_register(p->info, NULL, 0, NULL, 0);
+ }
  
- 	if (!h720x_map.virt) {
-@@ -90,16 +85,8 @@ static int __init h720x_mtd_init(void)
- 	if (mymtd) {
- 		mymtd->owner = THIS_MODULE;
- 
--		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
--		if (nr_mtd_parts > 0)
--			part_type = "command line";
--		if (nr_mtd_parts <= 0) {
--			mtd_parts = h720x_partitions;
--			nr_mtd_parts = NUM_PARTITIONS;
--			part_type = "builtin";
--		}
--		printk(KERN_INFO "Using %s partition table\n", part_type);
--		mtd_device_register(mymtd, mtd_parts, nr_mtd_parts);
-+		mtd_device_parse_register(mymtd, NULL, 0,
-+				h720x_partitions, NUM_PARTITIONS);
- 		return 0;
- 	}
- 
-@@ -118,10 +105,6 @@ static void __exit h720x_mtd_cleanup(void)
- 		map_destroy(mymtd);
- 	}
- 
--	/* Free partition info, if commandline partition was used */
--	if (mtd_parts && (mtd_parts != h720x_partitions))
--		kfree (mtd_parts);
--
- 	if (h720x_map.virt) {
- 		iounmap((void *)h720x_map.virt);
- 		h720x_map.virt = 0;
+ static void __devexit vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
 -- 
 1.7.4.4
