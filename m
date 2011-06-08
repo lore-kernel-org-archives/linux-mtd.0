@@ -1,29 +1,28 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QU776-0003QO-Ks
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 00:59:18 +0000
-Received: by vws8 with SMTP id 8so11510vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Jun 2011 17:59:13 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
-References: <20110602064832.GA7319@july> <1307115701.3069.20.camel@localhost>
-	<E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
-	<1307354557.3112.21.camel@localhost>
-	<1307354791.3112.24.camel@localhost>
-	<BANLkTinPBum1WB=-tx833hj032mfs1TdVg@mail.gmail.com>
-	<E942AFD653C85241BF3CCD5F471BEDA203FD21D7@008-AM1MPN1-041.mgdnok.nokia.com>
-	<BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
-Date: Wed, 8 Jun 2011 09:59:13 +0900
-Message-ID: <BANLkTin3zBCy3MFHS0Q=L4uoRyG3YERE-g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QU80b-0003mY-AJ
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 01:56:38 +0000
+Received: from epcpsbgm2.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LMG00HE380XM670@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 10:56:30 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net
+	(unknown [165.213.149.150])
+	by mmp1.samsung.com (Oracle Communications Messaging Exchange Server
+	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
+	<0LMG0073U8251V90@mmp1.samsung.com>
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 10:56:29 +0900 (KST)
+Date: Wed, 08 Jun 2011 10:56:25 +0900
 From: Kyungmin Park <kmpark@infradead.org>
-To: roman.tereshonkov@nokia.com
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, m.szyprowski@samsung.com,
-	linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: linux-mtd@lists.infradead.org, roman.tereshonkov@nokia.com
+Subject: [PATCH] mtd: OneNAND: Detect the correct NOP when 4KiB pagesize
+Message-id: <20110608015625.GA27537@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-disposition: inline
+Cc: m.szyprowski@samsung.com, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,113 +32,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2011/6/7 Kyungmin Park <kmpark@infradead.org>:
-> 2011/6/7 =9A<roman.tereshonkov@nokia.com>:
->>
->>
->>>-----Original Message-----
->>>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On
->>>Behalf Of ext Kyungmin Park
->>>Sent: 07 June, 2011 02:56
->>>To: dedekind1@gmail.com
->>>Cc: Tereshonkov Roman (Nokia-SD/Helsinki);
->>>linux-mtd@lists.infradead.org; dwmw2@infradead.org;
->>>m.szyprowski@samsung.com
->>>Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at
->>>4KiB pagesize
->>>
->>>On Mon, Jun 6, 2011 at 7:06 PM, Artem Bityutskiy
->>><dedekind1@gmail.com> wrote:
->>>> On Mon, 2011-06-06 at 13:02 +0300, Artem Bityutskiy wrote:
->>>>> On Mon, 2011-06-06 at 09:42 +0000,
->>>roman.tereshonkov@nokia.com wrote:
->>>>> > What do mean by "no case to use the subpage"?
->>>>> >
->>>>> > According to the spec KFM4G16Q4M-xEBx the Number of
->>>Partial Program Cycles in the page (NOP)
->>>>> > is equal to 4 -> subpage_sft=3D2.
->>>
->>>It's really strange. Two OneNAND spec which has 4KiB pagesize
->>>say it has 1 NOP.
->>>
->>>Number of Partial Program Cycles in the page (Including main and spare
->>>area) NOP - - 1 cycles
->>>(KFM4G16Q5M-xEBx)
->>>
->>>that's reason I first set subpage_sft =3D 0 at original code.
->>>
->>>The different thing between you and me is the page architecture
->>>number. yes 4 is the correct number but 5 also has the 4KiB pagesize.
->>>I think it's mean the manufacturing difference. can you check the
->>>which XXnm manufacturing for your devices?
->>>In our case. it's 3Xnm. and previous is 4Xnm.
->>
->>
->>
->> It seems the spec does not specify the nm-technology used.
->>
->> Can we somehow use the DeviceID and VersionID registers to differ
->> our chips?
->> For my case KFM4G16Q4M DeviceID=3D0x0050, VersionID=3D0x0131,
->> and KFM8G16Q4M DeviceID=3D0x0068, VersionID=3D0x0131.
->>
->> BTW. Another spec KFM4G16Q4B also tells about NOP=3D4 cycles.
->
-> Here's my device register values.
-> 005000ec 0800013e 01010200 00000000
-> DeviceID=3D0x0050, VersionID=3D0x013e
->
-> The lower 4 bits of VersionID is different. even though VersionID is
-> different. it's dangerous to detect the NOP 4 or not.
->
-> I sent the email to OneNAND person and share the result soon. (he's on
-> business trip and return at June 9).
+From: Kyungmin Park <kyungmin.park@samsung.com>
 
-BOTH are right.
-Now you have the NOP 4. but my chip has NOP 1. Memory division splits
-the chip for each customer.
+There are two different 4KiB pagesize chips
+KFM4G16Q4M series have NOP 4 with version ID 0x0131
+But KFM4G16Q5M has NOP 1 with versoin ID 0x013e
 
-then how to detect the NOP for similar chip? Using VersionID? or
-simply the minimum value?
+Note that Q5M means that it has NOP 1.
 
-Please give your opinions.
-
-Thank you,
-Kyungmin Park
->
-> Thank you,
-> Kyungmin Park
->
->
->>
->>
->>
->>>
->>>>>
->>>>> I thought this means "not supported by HW". But if this is
->>>supported,
->>>>> then I'm very surprised why would we remove it. I'm
->>>dropping this patch
->>>>> from my tree.
->>>>
->>>> OK, I actually did not put it to the l2 tree. And AFAICS this patch
->>>> basically reverts commit
->>>99b17c08bca2810f5910b3027f1b9d82edf7a576, but
->>>> still leaves the data structures like onenand_oob_128.
->>>>
->>>> So NACK for this patch - poor commit message, weird changes. I'm
->>>> surprised to see this from kmpark.
->>>
->>>since we got some different OneNAND Spec. even though it has
->>>same 4KiB pagesize.
->>>
->>>Thank you,
->>>Kyungmin Park
->>>>
->>>> --
->>>> Best Regards,
->>>> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
->>>>
->>>>
->>>
->
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index ac9e959..2adca63 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -3429,6 +3429,13 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 		else if (numbufs == 1) {
+ 			this->options |= ONENAND_HAS_4KB_PAGE;
+ 			this->options |= ONENAND_HAS_CACHE_PROGRAM;
++			/*
++			 * There are two different 4KiB pagesize chips
++			 * KFM4G16Q4M has NOP 4 with version ID 0x0131
++			 * KFM4G16Q5M has NOP 1 with versoin ID 0x013e
++			 */
++			if ((this->version_id & 0xf) == 0xe)
++				this->options |= ONENAND_HAS_NOP_1;
+ 		}
+ 
+ 	case ONENAND_DEVICE_DENSITY_2Gb:
+@@ -4054,6 +4061,8 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 			this->ecclayout = &onenand_oob_128;
+ 			mtd->subpage_sft = 2;
+ 		}
++		if (ONENAND_IS_NOP_1(this))
++			mtd->subpage_sft = 0;
+ 		break;
+ 	case 64:
+ 		this->ecclayout = &onenand_oob_64;
+diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
+index 52b6f18..4596503 100644
+--- a/include/linux/mtd/onenand.h
++++ b/include/linux/mtd/onenand.h
+@@ -184,6 +184,9 @@ struct onenand_chip {
+ #define ONENAND_IS_CACHE_PROGRAM(this)					\
+ 	(this->options & ONENAND_HAS_CACHE_PROGRAM)
+ 
++#define ONENAND_IS_NOP_1(this)						\
++	(this->options & ONENAND_HAS_NOP_1)
++
+ /* Check byte access in OneNAND */
+ #define ONENAND_CHECK_BYTE_ACCESS(addr)		(addr & 0x1)
+ 
+@@ -195,6 +198,7 @@ struct onenand_chip {
+ #define ONENAND_HAS_2PLANE		(0x0004)
+ #define ONENAND_HAS_4KB_PAGE		(0x0008)
+ #define ONENAND_HAS_CACHE_PROGRAM	(0x0010)
++#define ONENAND_HAS_NOP_1		(0x0020)
+ #define ONENAND_SKIP_UNLOCK_CHECK	(0x0100)
+ #define ONENAND_PAGEBUF_ALLOC		(0x1000)
+ #define ONENAND_OOBBUF_ALLOC		(0x2000)
