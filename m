@@ -1,24 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUHNi-0002Qo-Sz
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 11:57:07 +0000
-Received: by eyh6 with SMTP id 6so166835eyh.36
+	id 1QUHlz-0002gM-Jh
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 12:22:12 +0000
+Received: by vws8 with SMTP id 8so368266vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 04:57:04 -0700 (PDT)
-Subject: Re: [PATCH v2] libmtd: add helper funcs for getting regioninfo and
-	locked info
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1307460482-3745-1-git-send-email-vapier@gentoo.org>
-References: <1307427548-29306-4-git-send-email-vapier@gentoo.org>
-	<1307460482-3745-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 08 Jun 2011 14:52:46 +0300
-Message-ID: <1307533966.31223.66.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Wed, 08 Jun 2011 05:22:09 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20110608101909.GG21174@pulham.picochip.com>
+References: <20110607134429.GE21174@pulham.picochip.com>
+	<1307461738-16811-1-git-send-email-dbaryshkov@gmail.com>
+	<20110608101909.GG21174@pulham.picochip.com>
+Date: Wed, 8 Jun 2011 16:22:08 +0400
+Message-ID: <BANLkTikhuyQ3JN9EHLvoCtej6bMYtCZm8A@mail.gmail.com>
+Subject: Re: [PATCH 01/44] mtd: add new API for handling MTD registration
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: Jamie Iles <jamie@jamieiles.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-07 at 11:28 -0400, Mike Frysinger wrote:
-> This extends the libmtd with the helper functions:
-> 	mtd_regioninfo: interface to MEMGETREGIONINFO
-> 	mtd_islocked: interface to MEMISLOCKED
-> 
-> Users of these functions will follow shortly ...
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+On 6/8/11, Jamie Iles <jamie@jamieiles.com> wrote:
+> On Tue, Jun 07, 2011 at 07:48:58PM +0400, Dmitry Eremin-Solenikov wrote:
+>> Lots (nearly all) mtd drivers contain nearly the similar code that
+>> calls parse_mtd_partitions, provides some platform-default values, if
+>> parsing fails, and registers  mtd device.
+>>
+>> This is an aim to provide single implementation of this scenario:
+>> mtd_device_parse_register() which will handle all this parsing and
+>> defaults.
+>>
+>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>> ---
+>>  drivers/mtd/mtdcore.c   |   47
+>> +++++++++++++++++++++++++++++++++++++++++++++++
+>>  include/linux/mtd/mtd.h |    5 +++++
+>>  2 files changed, 52 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index c510aff..d538e0a 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -452,6 +452,53 @@ int mtd_device_register(struct mtd_info *master,
+>>  EXPORT_SYMBOL_GPL(mtd_device_register);
+>>
+>>  /**
+>> + * mtd_device_parse_register - register an MTD device.
+>> + *
+>> + * @mtd: the MTD device to register
+>> + * @part_probe_types: the list of MTD partition probes to try
+>> + * @origin: start address of MTD device. =0 unless you are sure you need
+>> this.
+>> + * @defparts: default partition information to register. Only valid if
+>> + *		defnr_parts > 0
+>> + * @defnr_parts: the number of partitions in defparts.  If zero then the
+>> full
+>> + *		MTD device is registered if no partition info is found
+>> + *
+>> + * Extract partition info and register MTD device (partitions or a whole
+>> device)
+>> + * It calls parse_mtd_partitions(), checks the result. If there were no
+>> + * partitions found, it uses default info specified (via
+>> defparts/defnr_parts)
+>> + * and then registers either partitions, or (if no partitions were
+>> + * found/specified) the whow MTD.
+>
+> s/whow/whole ?
 
-Pushed with a small tweak, thanks!
+Yup.
 
-> +int mtd_islocked(const struct mtd_dev_info *mtd, int fd, int eb)
-> +{
-> +	int ret;
-> +	erase_info_t ei;
-> +
-> +	ei.start = eb * mtd->eb_size;
-> +	ei.length = mtd->eb_size;
-> +
-> +	ret = ioctl(fd, MEMISLOCKED, &ei);
-> +	if (ret < 0)
-> +		return mtd_ioctl_error(mtd, eb, "MEMISLOCKED");
-> +
+>> + */
+>> +int mtd_device_parse_register(struct mtd_info *mtd,
+>> +			      const char **part_probe_types,
+>> +			      unsigned long origin,
+>> +			      const struct mtd_partition *defparts,
+>> +			      int defnr_parts)
+>> +{
+>> +	int err;
+>> +	struct mtd_partition *parts;
+>> +
+>> +	err = parse_mtd_partitions(mtd, part_probe_types, &parts, origin);
+>> +	if (err <= 0 && defnr_parts) {
+>> +		parts = kmemdup(defparts, sizeof(*parts) * defnr_parts,
+>> +				GFP_KERNEL);
+>> +		if (!parts)
+>> +			err = -ENOMEM;
+>> +	}
+>
+> I see that some of your patches for drivers (e.g. plat_nand) remove the
+> kfree() of the partitions but this doesn't appear to be handled anywhere
+> else afaict.  I don't think this can be done in mtd_device_unregister()
+> as it doesn't have the mtd_partition array so probably needs to remain
+> in the driver.
 
-I've removed this error message - if we fail, better return an error
-code silently. At least your next patch is built a way that it will keep
-iterating and executing this function.
+It's handled by kfree right aftert add_mtd_partitions. No mtd partitions
+information is exported out of mtd_device_parse_register(). In fact I'll have
+to check if I can remove all <mtd/partitions.h> includes from drivers.
 
-We might as well print an error message if (!ENOTTY && !ENOTSUPP), but I
-did not do this. I expect you to send a correction patch if you do not
-like this :-)
-
-Thanks!
+Anyway I'll post a V2 later after fixing issues identified by you and Artem.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+With best wishes
+Dmitry
