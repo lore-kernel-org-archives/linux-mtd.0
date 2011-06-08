@@ -1,19 +1,19 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUEgO-0006uS-FF
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 09:04:13 +0000
-Received: by fxm14 with SMTP id 14so229770fxm.36
+	id 1QUEhI-0006wa-IP
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 09:05:09 +0000
+Received: by fxm14 with SMTP id 14so230379fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 02:04:10 -0700 (PDT)
-Subject: Re: [PATCH 02/44] mtd: lart.c: use mtd_device_parse_register
+	Wed, 08 Jun 2011 02:05:06 -0700 (PDT)
+Subject: Re: [PATCH 04/44] mtd: sst25l.c: use mtd_device_parse_register
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <1307453803-31950-3-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1307453803-31950-5-git-send-email-dbaryshkov@gmail.com>
 References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
-	<1307453803-31950-3-git-send-email-dbaryshkov@gmail.com>
+	<1307453803-31950-5-git-send-email-dbaryshkov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 08 Jun 2011 11:59:51 +0300
-Message-ID: <1307523591.31223.30.camel@localhost>
+Date: Wed, 08 Jun 2011 12:00:49 +0300
+Message-ID: <1307523649.31223.31.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
@@ -33,53 +33,22 @@ On Tue, 2011-06-07 at 17:36 +0400, Dmitry Eremin-Solenikov wrote:
 > handling of all errors, fallback to default partitions, etc.
 > 
 > Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-
-Sorry, but the code does not match the description: you do not use
-'mtd_device_parse_register(); there.
-
 > ---
->  drivers/mtd/devices/lart.c |   12 ++++--------
->  1 files changed, 4 insertions(+), 8 deletions(-)
+>  drivers/mtd/devices/sst25l.c |   32 ++++----------------------------
+>  1 files changed, 4 insertions(+), 28 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-> index 772a0ff..48b513f 100644
-> --- a/drivers/mtd/devices/lart.c
-> +++ b/drivers/mtd/devices/lart.c
-> @@ -619,6 +619,10 @@ static struct mtd_partition lart_partitions[] = {
->  		.size	= INITRD_LEN,		/* MTDPART_SIZ_FULL */
->  	}
+> diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
+> index cd095af..faa9d3b 100644
+> --- a/drivers/mtd/devices/sst25l.c
+> +++ b/drivers/mtd/devices/sst25l.c
+> @@ -53,7 +53,6 @@ struct sst25l_flash {
+>  	struct mutex		lock;
+>  	struct mtd_info		mtd;
+>  
+> -	int 			partitioned;
 >  };
-> +#define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
-> +#else
-> +#define lart_partitions NULL
-> +#define NUM_PARTITIONS 0
->  #endif
->  
->  static int __init lart_flash_init (void)
-> @@ -683,23 +687,15 @@ static int __init lart_flash_init (void)
->  #endif
->  #endif
->  
-> -#ifndef HAVE_PARTITIONS
-> -   result = mtd_device_register(&mtd, NULL, 0);
-> -#else
->     result = mtd_device_register(&mtd, lart_partitions,
->                                  ARRAY_SIZE(lart_partitions));
-> -#endif
->  
->     return (result);
->  }
->  
->  static void __exit lart_flash_exit (void)
->  {
-> -#ifndef HAVE_PARTITIONS
->     mtd_device_unregister(&mtd);
-> -#else
-> -   mtd_device_unregister(&mtd);
-> -#endif
->  }
->  
->  module_init (lart_flash_init);
+
+How about removing the unneeded newline as well? :-)
 
 
 -- 
