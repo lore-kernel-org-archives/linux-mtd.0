@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHV-0007Bz-TW
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:59 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
+	id 1QULHX-0007LR-Hk
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:07:01 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:57 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:59 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 36/43] mtd: pxa3xx_nand.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:45 +0400
-Message-Id: <1307549152-7085-37-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 37/43] mtd: s3c2410.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:46 +0400
+Message-Id: <1307549152-7085-38-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,37 +29,38 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |   11 ++---------
- 1 files changed, 2 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/s3c2410.c |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 5c3af2f..b7db1b2 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1133,8 +1133,6 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 17954ba..b0f8e77 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -748,21 +748,11 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+ 				      struct s3c2410_nand_set *set)
  {
- 	struct pxa3xx_nand_platform_data *pdata;
- 	struct pxa3xx_nand_info *info;
--	struct mtd_partition *parts;
--	int nr_parts;
+-	struct mtd_partition *part_info;
+-	int nr_part = 0;
++	if (set)
++		mtd->mtd.name = set->name;
  
- 	pdata = pdev->dev.platform_data;
- 	if (!pdata) {
-@@ -1152,13 +1150,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
+-	if (set == NULL)
+-		return mtd_device_register(&mtd->mtd, NULL, 0);
 -
--	nr_parts = parse_mtd_partitions(info->mtd, NULL, &parts, 0);
+-	mtd->mtd.name = set->name;
+-	nr_part = parse_mtd_partitions(&mtd->mtd, NULL, &part_info, 0);
 -
--	if (nr_parts)
--		return mtd_device_register(info->mtd, parts, nr_parts);
+-	if (nr_part <= 0 && set->nr_partitions > 0) {
+-		nr_part = set->nr_partitions;
+-		part_info = set->partitions;
+-	}
 -
--	return mtd_device_register(info->mtd, pdata->parts, pdata->nr_parts);
-+	return mtd_device_parse_register(info->mtd, NULL, 0,
-+			pdata->parts, pdata->nr_parts);
+-	return mtd_device_register(&mtd->mtd, part_info, nr_part);
++	return mtd_device_parse_register(&mtd->mtd, NULL, 0,
++			set->partitions, set->nr_partitions);
  }
  
- #ifdef CONFIG_PM
+ /**
 -- 
 1.7.4.4
