@@ -1,15 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULGe-0007Bf-K4
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:06 +0000
-Received: by mail-ww0-f41.google.com with SMTP id 18so3505551wwi.0
+	id 1QULGg-0007Bz-Fv
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:08 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:04 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:06 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/43] mtd: gpio-addr-flash.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:15 +0400
-Message-Id: <1307549152-7085-7-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 07/43] mtd: h720x-flash.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:16 +0400
+Message-Id: <1307549152-7085-8-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,43 +29,59 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c |   16 ++--------------
- 1 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/mtd/maps/h720x-flash.c |   21 ++-------------------
+ 1 files changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 7568c5f..1ec66f0 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -187,7 +187,6 @@ static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
+index f331a2c..49c1418 100644
+--- a/drivers/mtd/maps/h720x-flash.c
++++ b/drivers/mtd/maps/h720x-flash.c
+@@ -58,16 +58,11 @@ static struct mtd_partition h720x_partitions[] = {
+ 
+ #define NUM_PARTITIONS ARRAY_SIZE(h720x_partitions)
+ 
+-static int                   nr_mtd_parts;
+-static struct mtd_partition *mtd_parts;
+ /*
+  * Initialize FLASH support
   */
- static int __devinit gpio_flash_probe(struct platform_device *pdev)
+ static int __init h720x_mtd_init(void)
  {
--	int nr_parts;
- 	size_t i, arr_size;
- 	struct physmap_flash_data *pdata;
- 	struct resource *memory;
-@@ -252,20 +251,9 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
- 		return -ENXIO;
+-
+-	char	*part_type = NULL;
+-
+ 	h720x_map.virt = ioremap(h720x_map.phys, h720x_map.size);
+ 
+ 	if (!h720x_map.virt) {
+@@ -90,16 +85,8 @@ static int __init h720x_mtd_init(void)
+ 	if (mymtd) {
+ 		mymtd->owner = THIS_MODULE;
+ 
+-		nr_mtd_parts = parse_mtd_partitions(mymtd, NULL, &mtd_parts, 0);
+-		if (nr_mtd_parts > 0)
+-			part_type = "command line";
+-		if (nr_mtd_parts <= 0) {
+-			mtd_parts = h720x_partitions;
+-			nr_mtd_parts = NUM_PARTITIONS;
+-			part_type = "builtin";
+-		}
+-		printk(KERN_INFO "Using %s partition table\n", part_type);
+-		mtd_device_register(mymtd, mtd_parts, nr_mtd_parts);
++		mtd_device_parse_register(mymtd, NULL, 0,
++				h720x_partitions, NUM_PARTITIONS);
+ 		return 0;
  	}
  
--	nr_parts = parse_mtd_partitions(state->mtd, part_probe_types,
--					&pdata->parts, 0);
--	if (nr_parts > 0) {
--		pr_devinit(KERN_NOTICE PFX "Using commandline partition definition\n");
--		kfree(pdata->parts);
--	} else if (pdata->nr_parts) {
--		pr_devinit(KERN_NOTICE PFX "Using board partition definition\n");
--		nr_parts = pdata->nr_parts;
--	} else {
--		pr_devinit(KERN_NOTICE PFX "no partition info available, registering whole flash at once\n");
--		nr_parts = 0;
--	}
+@@ -118,10 +105,6 @@ static void __exit h720x_mtd_cleanup(void)
+ 		map_destroy(mymtd);
+ 	}
  
--	mtd_device_register(state->mtd, pdata->parts, nr_parts);
-+	mtd_device_parse_register(state->mtd, part_probe_types, 0,
-+			pdata->parts, pdata->nr_parts);
- 
- 	return 0;
- }
+-	/* Free partition info, if commandline partition was used */
+-	if (mtd_parts && (mtd_parts != h720x_partitions))
+-		kfree (mtd_parts);
+-
+ 	if (h720x_map.virt) {
+ 		iounmap((void *)h720x_map.virt);
+ 		h720x_map.virt = 0;
 -- 
 1.7.4.4
