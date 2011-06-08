@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHd-0007LR-AM
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:07:06 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
+	id 1QULHg-0007Bz-Lj
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:07:10 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:07:05 -0700 (PDT)
+	Wed, 08 Jun 2011 09:07:08 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 40/43] mtd: txx9ndfmc.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:49 +0400
-Message-Id: <1307549152-7085-41-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 41/43] mtd: onenand/generic.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:50 +0400
+Message-Id: <1307549152-7085-42-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,47 +29,37 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/txx9ndfmc.c |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+ drivers/mtd/onenand/generic.c |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 91b05b9..ace46fd 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -74,7 +74,6 @@ struct txx9ndfmc_drvdata {
- 	unsigned char hold;	/* in gbusclock */
- 	unsigned char spw;	/* in gbusclock */
- 	struct nand_hw_control hw_control;
--	struct mtd_partition *parts[MAX_TXX9NDFMC_DEV];
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index bca1c49..8152a31 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -32,7 +32,6 @@
+ 
+ struct onenand_info {
+ 	struct mtd_info		mtd;
+-	struct mtd_partition	*parts;
+ 	struct onenand_chip	onenand;
  };
  
- static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
-@@ -332,7 +331,6 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		struct txx9ndfmc_priv *txx9_priv;
- 		struct nand_chip *chip;
- 		struct mtd_info *mtd;
--		int nr_parts;
- 
- 		if (!(plat->ch_mask & (1 << i)))
- 			continue;
-@@ -392,9 +390,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		}
- 		mtd->name = txx9_priv->mtdname;
- 
--		nr_parts = parse_mtd_partitions(mtd, NULL,
--						&drvdata->parts[i], 0);
--		mtd_device_register(mtd, drvdata->parts[i], nr_parts);
-+		mtd_device_parse_register(mtd, NULL, 0, NULL, 0);
- 		drvdata->mtds[i] = mtd;
+@@ -71,13 +70,9 @@ static int __devinit generic_onenand_probe(struct platform_device *pdev)
+ 		goto out_iounmap;
  	}
  
-@@ -420,7 +416,6 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
- 		txx9_priv = chip->priv;
+-	err = parse_mtd_partitions(&info->mtd, NULL, &info->parts, 0);
+-	if (err > 0)
+-		mtd_device_register(&info->mtd, info->parts, err);
+-	else if (err <= 0 && pdata && pdata->parts)
+-		mtd_device_register(&info->mtd, pdata->parts, pdata->nr_parts);
+-	else
+-		err = mtd_device_register(&info->mtd, NULL, 0);
++	err = mtd_device_parse_register(&info->mtd, NULL, 0,
++			pdata ? pdata->parts : NULL,
++			pdata ? pdata->nr_parts : 0);
  
- 		nand_release(mtd);
--		kfree(drvdata->parts[i]);
- 		kfree(txx9_priv->mtdname);
- 		kfree(txx9_priv);
- 	}
+ 	platform_set_drvdata(pdev, info);
+ 
 -- 
 1.7.4.4
