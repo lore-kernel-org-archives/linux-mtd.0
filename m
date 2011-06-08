@@ -1,25 +1,24 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUEa8-0006kQ-9R
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 08:57:45 +0000
-Received: by vws8 with SMTP id 8so238551vws.36
+	id 1QUEcK-0006nX-H3
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 09:00:01 +0000
+Received: by fxm14 with SMTP id 14so226924fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 01:57:42 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1307522251.31223.10.camel@localhost>
-References: <1307453803-31950-1-git-send-email-dbaryshkov@gmail.com>
-	<1307453803-31950-2-git-send-email-dbaryshkov@gmail.com>
-	<20110607134429.GE21174@pulham.picochip.com>
-	<4DEE36D6.2070009@gmail.com> <1307522251.31223.10.camel@localhost>
-Date: Wed, 8 Jun 2011 12:57:41 +0400
-Message-ID: <BANLkTimzBiuJd+rupHi=ka0UB3MaxqZ2zw@mail.gmail.com>
+	Wed, 08 Jun 2011 01:59:58 -0700 (PDT)
 Subject: Re: [PATCH 01/44] mtd: add new API for handling MTD registration
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+In-Reply-To: <1307461738-16811-1-git-send-email-dbaryshkov@gmail.com>
+References: <20110607134429.GE21174@pulham.picochip.com>
+	<1307461738-16811-1-git-send-email-dbaryshkov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 08 Jun 2011 11:55:40 +0300
+Message-ID: <1307523340.31223.28.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Jamie Iles <jamie@jamieiles.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,88 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/8/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2011-06-07 at 18:33 +0400, Dmitry Eremin-Solenikov wrote:
->> >  Also some kernel-doc to describe the search order would be nice.
->>
->> Search order is mainly detailed either by defaults specified in
->> mtdpart.c or by probe types which user specifies.
->
-> I look at the functions and they are difficult to understand. We need to
-> start with good kerneldoc comment for 'parse_mtd_partitions()'. The
-> default behavior has to be well-documented. I'd like to apply this
-> patch, how does it look to you?
+I agree we need a good comment, but I find this one difficult to follow.
 
-Looks good.
+On Tue, 2011-06-07 at 19:48 +0400, Dmitry Eremin-Solenikov wrote:
+>  /**
+> + * mtd_device_parse_register - register an MTD device.
 
+Not just register, it also contains parsing functionality.
 
-> From 1606f9966d891cb79bdfb935baf87038a7029198 Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Date: Wed, 8 Jun 2011 11:42:27 +0300
-> Subject: [PATCH] mtd: document parse_mtd_partitions
->
-> Add a kerneldoc comment for the 'parse_mtd_partitions()' function - its
-> behavior has changed recently so it is good idea to have it documented.
->
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> ---
->  drivers/mtd/mtdpart.c |   22 ++++++++++++++++++++++
->  1 files changed, 22 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index b7372050..2b71ccb 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -725,8 +725,30 @@ int deregister_mtd_parser(struct mtd_part_parser *p)
->  }
->  EXPORT_SYMBOL_GPL(deregister_mtd_parser);
->
-> +/*
-> + * Do not forget to update 'parse_mtd_partitions()' kerneldoc comment if
-> you
-> + * are changing this array!
-> + */
->  static const char *default_mtd_part_types[] =3D {"cmdlinepart", NULL};
->
-> +/**
-> + * parse_mtd_partitions - parse MTD partitions
-> + * @master: the master partition (describes whole MTD device)
-> + * @types: names of partition parsers to try or %NULL
-> + * @pparts: array of partitions found is returned here
-> + * @origin: MTD device start address (use %0 if unsure)
 > + *
-> + * This function tries to find partition on MTD device @master. It uses =
-MTD
-> + * partition parsers, specified in @types. However, if @types is %NULL,
-> then
-> + * the default list of parsers is used. The default list contains only t=
-he
-> + * "cmdlinepart" parser ATM.
+> + * @mtd: the MTD device to register
+> + * @part_probe_types: the list of MTD partition probes to try
+
+Please, name it 'types' to be consistent with 'parse_mtd_partitions()'.
+Also, you do not say that this can be %NULL. With my patch, you can
+refer the reader like "see 'parse_mtd_partitions()' for more
+information'.
+
+> + * @origin: start address of MTD device. =0 unless you are sure you need this.
+
+Try to avoid using dots. Also, constants should be prefixed with %,
+i.e., use %0.
+
+> + * @defparts: default partition information to register. Only valid if
+> + *		defnr_parts > 0
+
+Ditto about a dot, prefix variables with @, i.e., in this case:
+@defnr_parts > %0.
+
+Also about naming: why "default"? What is default there? This is more
+like "alternative, or fall-back" - you first try to detect partition
+specified in @part_probe_types, if if you fail - you use "alternative"
+partitions.
+
+Please, rename it.
+
+> + * @defnr_parts: the number of partitions in defparts.  If zero then the full
+> + *		MTD device is registered if no partition info is found
+
+Ditto.
+
 > + *
-> + * This function may return:
-> + * o a negative error code in case of failure
-> + * o zero if no partitions were found
-> + * o a positive number of found partitions, in which case on exit @ppart=
-s
-> will
-> + *   point to an array containing this number of &struct mtd_info object=
-s.
+> + * Extract partition info and register MTD device (partitions or a whole device)
+> + * It calls parse_mtd_partitions(), checks the result. If there were no
+> + * partitions found, it uses default info specified (via defparts/defnr_parts)
+> + * and then registers either partitions, or (if no partitions were
+> + * found/specified) the whow MTD.
 > + */
->  int parse_mtd_partitions(struct mtd_info *master, const char **types,
->  			 struct mtd_partition **pparts, unsigned long origin)
->  {
-> --
-> 1.7.2.3
->
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
 
+Sorry, I find this unreadable.
 
---=20
-With best wishes
-Dmitry
+I suggest something like this.
+
+This function aggregates MTD partitions parsing (done by
+'parse_mtd_partitions()') and MTD device and partitions registering. It
+basically follows the most common pattern found in many MTD drivers:
+
+o It first tries to probe partitions on MTD device @mtd using parsers
+  specified in @types (if @types is %NULL, then the default list of
+  parsers is used, see 'parse_mtd_partitions()' for more information).
+o If this succeeds, this function registers the found partitions, as
+  well as the whole MTD device @mtd.
+o If no partitions were found this function just registers the MTD
+  device @mtd and exits.
+
+Returns zero in case of success and a negative error code in case of
+failure.
+
+Would you please amend the patch and re-send?
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
