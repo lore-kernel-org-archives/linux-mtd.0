@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULH6-0007Bz-QF
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:34 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
+	id 1QULHD-0007CU-R0
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:41 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so630582wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:32 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:39 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 22/43] mtd: bcm_umi_nand.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:31 +0400
-Message-Id: <1307549152-7085-23-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 26/43] mtd: davinci_nand.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:35 +0400
+Message-Id: <1307549152-7085-27-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,38 +29,58 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/bcm_umi_nand.c |   19 ++-----------------
- 1 files changed, 2 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/davinci_nand.c |   25 ++-----------------------
+ 1 files changed, 2 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index e0230c5..d98bc48 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -489,23 +489,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 	}
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 70c92a5..c153e1f 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -57,7 +57,6 @@ struct davinci_nand_info {
  
- 	/* Register the partitions */
--	{
--		int nr_partitions;
--		struct mtd_partition *partition_info;
+ 	struct device		*dev;
+ 	struct clk		*clk;
+-	bool			partitioned;
+ 
+ 	bool			is_readmode;
+ 
+@@ -530,8 +529,6 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 	int				ret;
+ 	uint32_t			val;
+ 	nand_ecc_modes_t		ecc_mode;
+-	struct mtd_partition		*mtd_parts = NULL;
+-	int				mtd_parts_nb = 0;
+ 
+ 	/* insist on board-specific configuration */
+ 	if (!pdata)
+@@ -753,26 +750,8 @@ syndrome_done:
+ 	if (ret < 0)
+ 		goto err_scan;
+ 
+-	mtd_parts_nb = parse_mtd_partitions(&info->mtd, NULL, &mtd_parts, 0);
 -
--		board_mtd->name = "bcm_umi-nand";
--		nr_partitions = parse_mtd_partitions(board_mtd, NULL,
--						     &partition_info, 0);
--
--		if (nr_partitions <= 0) {
--			printk(KERN_ERR "BCM UMI NAND: Too few partitions - %d\n",
--			       nr_partitions);
--			iounmap(bcm_umi_io_base);
--			kfree(board_mtd);
--			return -EIO;
--		}
--		mtd_device_register(board_mtd, partition_info, nr_partitions);
+-	if (mtd_parts_nb <= 0) {
+-		mtd_parts = pdata->parts;
+-		mtd_parts_nb = pdata->nr_parts;
 -	}
-+	board_mtd->name = "bcm_umi-nand";
-+	mtd_device_parse_register(board_mtd, NULL, 0, NULL, 0);
+-
+-	/* Register any partitions */
+-	if (mtd_parts_nb > 0) {
+-		ret = mtd_device_register(&info->mtd, mtd_parts,
+-					  mtd_parts_nb);
+-		if (ret == 0)
+-			info->partitioned = true;
+-	}
+-
+-	/* If there's no partition info, just package the whole chip
+-	 * as a single MTD device.
+-	 */
+-	if (!info->partitioned)
+-		ret = mtd_device_register(&info->mtd, NULL, 0) ? -ENODEV : 0;
++	ret = mtd_device_parse_register(&info->mtd, NULL, 0,
++			pdata->parts, pdata->nr_parts);
  
- 	/* Return happy */
- 	return 0;
+ 	if (ret < 0)
+ 		goto err_scan;
 -- 
 1.7.4.4
