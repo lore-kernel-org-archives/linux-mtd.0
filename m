@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHM-0007LR-RY
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:49 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
+	id 1QULHO-0007GE-Gg
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:51 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so531513wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:48 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:50 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 31/43] mtd: mxc_nand.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:40 +0400
-Message-Id: <1307549152-7085-32-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 32/43] mtd: omap2.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:41 +0400
+Message-Id: <1307549152-7085-33-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,48 +29,36 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/mxc_nand.c |   15 +++------------
- 1 files changed, 3 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/omap2.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index ca42c8f..4c2bb4a 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -143,7 +143,6 @@
- struct mxc_nand_host {
- 	struct mtd_info		mtd;
- 	struct nand_chip	nand;
--	struct mtd_partition	*parts;
- 	struct device		*dev;
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 8783c08..c5e33fd 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -112,7 +112,6 @@ struct omap_nand_info {
+ 	struct nand_hw_control		controller;
+ 	struct omap_nand_platform_data	*pdata;
+ 	struct mtd_info			mtd;
+-	struct mtd_partition		*parts;
+ 	struct nand_chip		nand;
+ 	struct platform_device		*pdev;
  
- 	void			*spare0;
-@@ -1044,7 +1043,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	struct mxc_nand_platform_data *pdata = pdev->dev.platform_data;
- 	struct mxc_nand_host *host;
- 	struct resource *res;
--	int err = 0, __maybe_unused nr_parts = 0;
-+	int err = 0;
- 	struct nand_ecclayout *oob_smallpage, *oob_largepage;
- 
- 	/* Allocate memory for MTD device structure and private data */
-@@ -1231,16 +1230,8 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+@@ -1101,13 +1100,8 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		goto out_release_mem_region;
  	}
  
- 	/* Register the partitions */
--	nr_parts =
--	    parse_mtd_partitions(mtd, part_probes, &host->parts, 0);
--	if (nr_parts > 0)
--		mtd_device_register(mtd, host->parts, nr_parts);
+-	err = parse_mtd_partitions(&info->mtd, NULL, &info->parts, 0);
+-	if (err > 0)
+-		mtd_device_register(&info->mtd, info->parts, err);
 -	else if (pdata->parts)
--		mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
--	else {
--		pr_info("Registering %s as whole device\n", mtd->name);
--		mtd_device_register(mtd, NULL, 0);
--	}
-+	mtd_device_parse_register(mtd, part_probes, 0,
+-		mtd_device_register(&info->mtd, pdata->parts, pdata->nr_parts);
+-	else
+-		mtd_device_register(&info->mtd, NULL, 0);
++	mtd_device_parse_register(&info->mtd, NULL, 0,
 +			pdata->parts, pdata->nr_parts);
  
- 	platform_set_drvdata(pdev, host);
+ 	platform_set_drvdata(pdev, &info->mtd);
  
 -- 
 1.7.4.4
