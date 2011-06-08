@@ -1,89 +1,80 @@
 From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Wed, 8 Jun 2011 15:30:14 +0300
-Subject: [PATCH] libmtd: improve mtd_islocked interface
-Message-ID: <mailman.10.1307536333.24103.linux-mtd@lists.infradead.org>
+Date: Wed, 8 Jun 2011 16:21:40 +0300
+Subject: [PATCH] mtdinfo: separate out ubi information printing
+Message-ID: <mailman.11.1307540753.24103.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-This patch first of all, re-names 'mtd_islocked()' into 'mtd_is_locked()' since
-this seems to be the name Mike wanted, and it looks a bit nicer.
-
-This patch also makes 'mtd_is_locked()' print an error message if it fails. I'm
-not sure if it is good idea for a library to do so, but all functions do this,
-so it certainly _not_ a good idea to be inconsistent.
-
-However, for the special case, when the the "is locked" ioctl is not supported
-or is not valid for this device, we do not print an error message and return
-ENOTSUPP error code.
-
-Thus, the user can distinguish between real errors and non-fatal "not
-supported" cases.
+We are going to add some more code which prints eraseblocks map, so we need to
+make 'print_dev_info()' a bit smaller to keep the code readable.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- include/libmtd.h |    8 +++++---
- lib/libmtd.c     |   13 +++++++++++--
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ ubi-utils/src/mtdinfo.c |   41 +++++++++++++++++++++++------------------
+ 1 files changed, 23 insertions(+), 18 deletions(-)
 
-diff --git a/include/libmtd.h b/include/libmtd.h
-index 7275246..9efccbc 100644
---- a/include/libmtd.h
-+++ b/include/libmtd.h
-@@ -190,16 +190,18 @@ int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb);
- int mtd_regioninfo(int fd, int regidx, struct region_info_user *reginfo);
- 
- /**
-- * mtd_islocked - see if the specified eraseblock is locked.
-+ * mtd_is_locked - see if the specified eraseblock is locked.
-  * @mtd: MTD device description object
-  * @fd: MTD device node file descriptor
-  * @eb: eraseblock to check
-  *
-  * This function checks to see if eraseblock @eb of MTD device described
-  * by @fd is locked. Returns %0 if it is unlocked, %1 if it is locked, and
-- * %-1 in case of failure.
-+ * %-1 in case of failure. If the ioctl is not supported (support was added in
-+ * Linux kernel 2.6.36) or this particular device does not support it, errno is
-+ * set to @ENOTSUPP.
-  */
--int mtd_islocked(const struct mtd_dev_info *mtd, int fd, int eb);
-+int mtd_is_locked(const struct mtd_dev_info *mtd, int fd, int eb);
- 
- /**
-  * mtd_torture - torture an eraseblock.
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 2573cc7..c34874e 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -900,14 +900,23 @@ int mtd_regioninfo(int fd, int regidx, struct region_info_user *reginfo)
+diff --git a/ubi-utils/src/mtdinfo.c b/ubi-utils/src/mtdinfo.c
+index 666d739..ca0ad71 100644
+--- a/ubi-utils/src/mtdinfo.c
++++ b/ubi-utils/src/mtdinfo.c
+@@ -160,6 +160,27 @@ static int translate_dev(libmtd_t libmtd, const char *node)
  	return 0;
  }
  
--int mtd_islocked(const struct mtd_dev_info *mtd, int fd, int eb)
-+int mtd_is_locked(const struct mtd_dev_info *mtd, int fd, int eb)
- {
-+	int ret;
- 	erase_info_t ei;
- 
- 	ei.start = eb * mtd->eb_size;
- 	ei.length = mtd->eb_size;
- 
--	return ioctl(fd, MEMISLOCKED, &ei);
-+	ret = ioctl(fd, MEMISLOCKED, &ei);
-+	if (ret < 0) {
-+		if (errno != ENOTTY && errno != EOPNOTSUPP)
-+			return mtd_ioctl_error(mtd, eb, "MEMISLOCKED");
-+		else
-+			errno = EOPNOTSUPP;
++static void print_ubi_info(const struct mtd_info *mtd_info,
++			   const struct mtd_dev_info *mtd)
++{
++	struct ubigen_info ui;
++
++	if (!mtd_info->sysfs_supported) {
++		errmsg("cannot provide UBI info, becasue sub-page size is "
++		       "not known");
++		return;
 +	}
 +
-+	return ret;
- }
++	ubigen_info_init(&ui, mtd->eb_size, mtd->min_io_size, mtd->subpage_size,
++			 0, 1, 0);
++	printf("Default UBI VID header offset:  %d\n", ui.vid_hdr_offs);
++	printf("Default UBI data offset:        %d\n", ui.data_offs);
++	printf("Default UBI LEB size:           ");
++	ubiutils_print_bytes(ui.leb_size, 0);
++	printf("\n");
++	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
++}
++
+ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int mtdn)
+ {
+ 	int err;
+@@ -206,25 +227,9 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
+ 	printf("Device is writable:             %s\n",
+ 	      mtd.writable ? "true" : "false");
  
- /* Patterns to write to a physical eraseblock when torturing it */
+-	if (!args.ubinfo)
+-		goto out;
+-
+-	if (!mtd_info->sysfs_supported) {
+-		errmsg("cannot provide UBI info, becasue sub-page size is "
+-		       "not known");
+-		goto out;
+-	}
+-
+-	ubigen_info_init(&ui, mtd.eb_size, mtd.min_io_size, mtd.subpage_size,
+-			 0, 1, 0);
+-	printf("Default UBI VID header offset:  %d\n", ui.vid_hdr_offs);
+-	printf("Default UBI data offset:        %d\n", ui.data_offs);
+-	printf("Default UBI LEB size:           ");
+-	ubiutils_print_bytes(ui.leb_size, 0);
+-	printf("\n");
+-	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
++	if (args.ubinfo)
++		print_ubi_info(mtd_info, &mtd);
+ 
+-out:
+ 	printf("\n");
+ 	return 0;
+ }
 -- 
 1.7.2.3
-
 
 
 -- 
