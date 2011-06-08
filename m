@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULGb-0007Bz-5a
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:02 +0000
+	id 1QULGc-0007Bz-V8
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:04 +0000
 Received: by mail-ww0-f49.google.com with SMTP id 39so531325wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:00 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:02 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/43] mtd: bfin-async-flash.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:13 +0400
-Message-Id: <1307549152-7085-5-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 05/43] mtd: dc21285.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:14 +0400
+Message-Id: <1307549152-7085-6-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,49 +29,46 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/bfin-async-flash.c |   16 ++--------------
- 1 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/mtd/maps/dc21285.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-index d4297a9..246890e 100644
---- a/drivers/mtd/maps/bfin-async-flash.c
-+++ b/drivers/mtd/maps/bfin-async-flash.c
-@@ -41,7 +41,6 @@ struct async_state {
- 	uint32_t flash_ambctl0, flash_ambctl1;
- 	uint32_t save_ambctl0, save_ambctl1;
- 	unsigned long irq_flags;
--	struct mtd_partition *parts;
- };
+diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
+index 7a9e198..f43b365 100644
+--- a/drivers/mtd/maps/dc21285.c
++++ b/drivers/mtd/maps/dc21285.c
+@@ -145,14 +145,10 @@ static struct map_info dc21285_map = {
  
- static void switch_to_flash(struct async_state *state)
-@@ -165,18 +164,8 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
  
--	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
--	if (ret > 0) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
--		mtd_device_register(state->mtd, pdata->parts, ret);
--		state->parts = pdata->parts;
--	} else if (pdata->nr_parts) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
--		mtd_device_register(state->mtd, pdata->parts, pdata->nr_parts);
--	} else {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": no partition info available, registering whole flash at once\n");
--		mtd_device_register(state->mtd, NULL, 0);
--	}
-+	mtd_device_parse_register(state->mtd, part_probe_types, 0,
-+			pdata->parts, pdata->nr_parts);
+ /* Partition stuff */
+-static struct mtd_partition *dc21285_parts;
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
  
- 	platform_set_drvdata(pdev, state);
+ static int __init init_dc21285(void)
+ {
+-
+-	int nrparts;
+-
+ 	/* Determine bankwidth */
+ 	switch (*CSR_SA110_CNTL & (3<<14)) {
+ 		case SA110_CNTL_ROMWIDTH_8:
+@@ -200,8 +196,7 @@ static int __init init_dc21285(void)
  
-@@ -188,7 +177,6 @@ static int __devexit bfin_flash_remove(struct platform_device *pdev)
- 	struct async_state *state = platform_get_drvdata(pdev);
- 	gpio_free(state->enet_flash_pin);
- 	mtd_device_unregister(state->mtd);
--	kfree(state->parts);
- 	map_destroy(state->mtd);
- 	kfree(state);
- 	return 0;
+ 	dc21285_mtd->owner = THIS_MODULE;
+ 
+-	nrparts = parse_mtd_partitions(dc21285_mtd, probes, &dc21285_parts, 0);
+-	mtd_device_register(dc21285_mtd, dc21285_parts, nrparts);
++	mtd_device_parse_register(dc21285_mtd, probes, 0, NULL, 0);
+ 
+ 	if(machine_is_ebsa285()) {
+ 		/*
+@@ -224,8 +219,6 @@ static int __init init_dc21285(void)
+ static void __exit cleanup_dc21285(void)
+ {
+ 	mtd_device_unregister(dc21285_mtd);
+-	if (dc21285_parts)
+-		kfree(dc21285_parts);
+ 	map_destroy(dc21285_mtd);
+ 	iounmap(dc21285_map.virt);
+ }
 -- 
 1.7.4.4
