@@ -1,20 +1,29 @@
-Received: from chilli.tip.net.au ([2402:b800:7003:1::44] helo=smtps.tip.net.au)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QU6gQ-0003Hv-M7
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 00:31:44 +0000
-Date: Wed, 8 Jun 2011 10:31:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: dedekind1@gmail.com
-Subject: Re: l2-mtd-2.6.git to linux-next
-Message-Id: <20110608103122.5b7b54d0.sfr@canb.auug.org.au>
-In-Reply-To: <1307345850.3135.24.camel@localhost>
-References: <1307345850.3135.24.camel@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Wed__8_Jun_2011_10_31_22_+1000_cR9EG/VMwclvv8v0"
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-next@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QU776-0003QO-Ks
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 00:59:18 +0000
+Received: by vws8 with SMTP id 8so11510vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Jun 2011 17:59:13 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
+References: <20110602064832.GA7319@july> <1307115701.3069.20.camel@localhost>
+	<E942AFD653C85241BF3CCD5F471BEDA203FC6E79@008-AM1MPN1-041.mgdnok.nokia.com>
+	<1307354557.3112.21.camel@localhost>
+	<1307354791.3112.24.camel@localhost>
+	<BANLkTinPBum1WB=-tx833hj032mfs1TdVg@mail.gmail.com>
+	<E942AFD653C85241BF3CCD5F471BEDA203FD21D7@008-AM1MPN1-041.mgdnok.nokia.com>
+	<BANLkTi=aukCraGS1iOuemwuCvWrOaY0oxA@mail.gmail.com>
+Date: Wed, 8 Jun 2011 09:59:13 +0900
+Message-ID: <BANLkTin3zBCy3MFHS0Q=L4uoRyG3YERE-g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at 4KiB pagesize
+From: Kyungmin Park <kmpark@infradead.org>
+To: roman.tereshonkov@nokia.com
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, m.szyprowski@samsung.com,
+	linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +33,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Wed__8_Jun_2011_10_31_22_+1000_cR9EG/VMwclvv8v0
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Artem,
-
-On Mon, 06 Jun 2011 10:37:30 +0300 Artem Bityutskiy <dedekind1@gmail.com> w=
-rote:
+2011/6/7 Kyungmin Park <kmpark@infradead.org>:
+> 2011/6/7 =9A<roman.tereshonkov@nokia.com>:
+>>
+>>
+>>>-----Original Message-----
+>>>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On
+>>>Behalf Of ext Kyungmin Park
+>>>Sent: 07 June, 2011 02:56
+>>>To: dedekind1@gmail.com
+>>>Cc: Tereshonkov Roman (Nokia-SD/Helsinki);
+>>>linux-mtd@lists.infradead.org; dwmw2@infradead.org;
+>>>m.szyprowski@samsung.com
+>>>Subject: Re: [PATCH] mtd: OneNAND: Fix wrong subpage_sft at
+>>>4KiB pagesize
+>>>
+>>>On Mon, Jun 6, 2011 at 7:06 PM, Artem Bityutskiy
+>>><dedekind1@gmail.com> wrote:
+>>>> On Mon, 2011-06-06 at 13:02 +0300, Artem Bityutskiy wrote:
+>>>>> On Mon, 2011-06-06 at 09:42 +0000,
+>>>roman.tereshonkov@nokia.com wrote:
+>>>>> > What do mean by "no case to use the subpage"?
+>>>>> >
+>>>>> > According to the spec KFM4G16Q4M-xEBx the Number of
+>>>Partial Program Cycles in the page (NOP)
+>>>>> > is equal to 4 -> subpage_sft=3D2.
+>>>
+>>>It's really strange. Two OneNAND spec which has 4KiB pagesize
+>>>say it has 1 NOP.
+>>>
+>>>Number of Partial Program Cycles in the page (Including main and spare
+>>>area) NOP - - 1 cycles
+>>>(KFM4G16Q5M-xEBx)
+>>>
+>>>that's reason I first set subpage_sft =3D 0 at original code.
+>>>
+>>>The different thing between you and me is the page architecture
+>>>number. yes 4 is the correct number but 5 also has the 4KiB pagesize.
+>>>I think it's mean the manufacturing difference. can you check the
+>>>which XXnm manufacturing for your devices?
+>>>In our case. it's 3Xnm. and previous is 4Xnm.
+>>
+>>
+>>
+>> It seems the spec does not specify the nm-technology used.
+>>
+>> Can we somehow use the DeviceID and VersionID registers to differ
+>> our chips?
+>> For my case KFM4G16Q4M DeviceID=3D0x0050, VersionID=3D0x0131,
+>> and KFM8G16Q4M DeviceID=3D0x0068, VersionID=3D0x0131.
+>>
+>> BTW. Another spec KFM4G16Q4B also tells about NOP=3D4 cycles.
 >
-> as we've discussed, please, include l2-mtd-2.6.git tree to linux-next:
->=20
-> git://git.infradead.org/users/dedekind/l2-mtd-2.6.git master
+> Here's my device register values.
+> 005000ec 0800013e 01010200 00000000
+> DeviceID=3D0x0050, VersionID=3D0x013e
+>
+> The lower 4 bits of VersionID is different. even though VersionID is
+> different. it's dangerous to detect the NOP 4 or not.
+>
+> I sent the email to OneNAND person and share the result soon. (he's on
+> business trip and return at June 9).
 
-I have added this today.
+BOTH are right.
+Now you have the NOP 4. but my chip has NOP 1. Memory division splits
+the chip for each customer.
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgment of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
+then how to detect the NOP for similar chip? Using VersionID? or
+simply the minimum value?
 
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-	Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
+Please give your opinions.
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
-Legal Stuff:
-By participating in linux-next, your subsystem tree contributions are
-public and will be included in the linux-next trees.  You may be sent
-e-mail messages indicating errors or other issues when the
-patches/commits from your subsystem tree are merged and tested in
-linux-next.  These messages may also be cross-posted to the linux-next
-mailing list, the linux-kernel mailing list, etc.  The linux-next tree
-project and IBM (my employer) make no warranties regarding the linux-next
-project, the testing procedures, the results, the e-mails, etc.  If you
-don't agree to these ground rules, let me know and I'll remove your tree
-from participation in linux-next.
-
---Signature=_Wed__8_Jun_2011_10_31_22_+1000_cR9EG/VMwclvv8v0
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJN7sLaAAoJEDMEi1NhKgbso7oIAIcBvWYNm8mVy86kgaCGysK9
-4X+FmkVMcWFCPwfYdsylCkloMJbfPIRJdNOowEP5ZBV7gFIB8m3yOFY1hy8KXetn
-8ykltLKTN2cOpFD6GDxTBlOe5jRu2s+5ZkphS2VLDYUXUZCkCiXg0oJLsGq2SZA6
-d61w/KWD+S6AvpCEU13/J0nwcqCtXZKyN/OquyfDtgkCpQyi77IW2uK67VChh1FP
-+3c7DmjSWW832giFJhx4vD3lEzVfl8tfB3NNX2SvTgX4O+AX0WFzgtmUVX36P5IG
-U7F6dFYmN+m8aCtYx8gN3Mu2Jl0XQMHPfURl6B3VHc83M5R9uDZuwpgNkwHVIR8=
-=Huzf
------END PGP SIGNATURE-----
-
---Signature=_Wed__8_Jun_2011_10_31_22_+1000_cR9EG/VMwclvv8v0--
+Thank you,
+Kyungmin Park
+>
+> Thank you,
+> Kyungmin Park
+>
+>
+>>
+>>
+>>
+>>>
+>>>>>
+>>>>> I thought this means "not supported by HW". But if this is
+>>>supported,
+>>>>> then I'm very surprised why would we remove it. I'm
+>>>dropping this patch
+>>>>> from my tree.
+>>>>
+>>>> OK, I actually did not put it to the l2 tree. And AFAICS this patch
+>>>> basically reverts commit
+>>>99b17c08bca2810f5910b3027f1b9d82edf7a576, but
+>>>> still leaves the data structures like onenand_oob_128.
+>>>>
+>>>> So NACK for this patch - poor commit message, weird changes. I'm
+>>>> surprised to see this from kmpark.
+>>>
+>>>since we got some different OneNAND Spec. even though it has
+>>>same 4KiB pagesize.
+>>>
+>>>Thank you,
+>>>Kyungmin Park
+>>>>
+>>>> --
+>>>> Best Regards,
+>>>> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>>>>
+>>>>
+>>>
+>
