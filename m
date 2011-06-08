@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHO-0007GE-Gg
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:51 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so531513wwb.18
+	id 1QULHQ-0007CU-Hp
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:53 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so630582wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:50 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:52 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 32/43] mtd: omap2.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:41 +0400
-Message-Id: <1307549152-7085-33-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 33/43] mtd: orion_nand.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:42 +0400
+Message-Id: <1307549152-7085-34-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,36 +29,38 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/omap2.c |   10 ++--------
- 1 files changed, 2 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/orion_nand.c |   12 ++----------
+ 1 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 8783c08..c5e33fd 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -112,7 +112,6 @@ struct omap_nand_info {
- 	struct nand_hw_control		controller;
- 	struct omap_nand_platform_data	*pdata;
- 	struct mtd_info			mtd;
--	struct mtd_partition		*parts;
- 	struct nand_chip		nand;
- 	struct platform_device		*pdev;
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 5c55981..29f505a 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -79,8 +79,6 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *io_base;
+ 	int ret = 0;
+-	struct mtd_partition *partitions = NULL;
+-	int num_part = 0;
  
-@@ -1101,13 +1100,8 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		goto out_release_mem_region;
+ 	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
+ 	if (!nc) {
+@@ -131,14 +129,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
  	}
  
--	err = parse_mtd_partitions(&info->mtd, NULL, &info->parts, 0);
--	if (err > 0)
--		mtd_device_register(&info->mtd, info->parts, err);
--	else if (pdata->parts)
--		mtd_device_register(&info->mtd, pdata->parts, pdata->nr_parts);
--	else
--		mtd_device_register(&info->mtd, NULL, 0);
-+	mtd_device_parse_register(&info->mtd, NULL, 0,
-+			pdata->parts, pdata->nr_parts);
- 
- 	platform_set_drvdata(pdev, &info->mtd);
- 
+ 	mtd->name = "orion_nand";
+-	num_part = parse_mtd_partitions(mtd, NULL, &partitions, 0);
+-	/* If cmdline partitions have been passed, let them be used */
+-	if (num_part <= 0) {
+-		num_part = board->nr_parts;
+-		partitions = board->parts;
+-	}
+-
+-	ret = mtd_device_register(mtd, partitions, num_part);
++	ret = mtd_device_parse_register(mtd, NULL, 0,
++			board->parts, board->nr_parts);
+ 	if (ret) {
+ 		nand_release(mtd);
+ 		goto no_dev;
 -- 
 1.7.4.4
