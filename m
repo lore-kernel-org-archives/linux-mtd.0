@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHJ-0007LR-0a
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:46 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
+	id 1QULHK-0007CU-R8
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:47 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so630582wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:44 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:46 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 29/43] mtd: h1910.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:38 +0400
-Message-Id: <1307549152-7085-30-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 30/43] mtd: jz4740_nand.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:39 +0400
+Message-Id: <1307549152-7085-31-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,43 +29,37 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/h1910.c |   15 ++-------------
- 1 files changed, 2 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/jz4740_nand.c |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/h1910.c b/drivers/mtd/nand/h1910.c
-index 42f9177..5dc6f0d 100644
---- a/drivers/mtd/nand/h1910.c
-+++ b/drivers/mtd/nand/h1910.c
-@@ -81,9 +81,6 @@ static int h1910_device_ready(struct mtd_info *mtd)
- static int __init h1910_init(void)
- {
- 	struct nand_chip *this;
--	const char *part_type = 0;
--	int mtd_parts_nb = 0;
--	struct mtd_partition *mtd_parts = 0;
- 	void __iomem *nandaddr;
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index 920719c..e266407 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -295,8 +295,6 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
+ 	struct jz_nand_platform_data *pdata = pdev->dev.platform_data;
+-	struct mtd_partition *partition_info;
+-	int num_partitions = 0;
  
- 	if (!machine_is_h1900())
-@@ -136,18 +133,10 @@ static int __init h1910_init(void)
- 		iounmap((void *)nandaddr);
- 		return -ENXIO;
+ 	nand = kzalloc(sizeof(*nand), GFP_KERNEL);
+ 	if (!nand) {
+@@ -369,12 +367,9 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
+ 		goto err_gpio_free;
  	}
--	mtd_parts_nb = parse_mtd_partitions(h1910_nand_mtd, NULL, &mtd_parts, 0);
--	if (mtd_parts_nb > 0)
--		part_type = "command line";
--	else {
--		mtd_parts = partition_info;
--		mtd_parts_nb = NUM_PARTITIONS;
--		part_type = "static";
+ 
+-	num_partitions = parse_mtd_partitions(mtd, NULL, &partition_info, 0);
+-	if (num_partitions <= 0 && pdata) {
+-		num_partitions = pdata->num_partitions;
+-		partition_info = pdata->partitions;
 -	}
+-	ret = mtd_device_register(mtd, partition_info, num_partitions);
++	ret = mtd_device_parse_register(mtd, NULL, 0,
++			pdata ? pdata->partitions : NULL,
++			pdata ? pdata->num_partitions : 0);
  
- 	/* Register the partitions */
--	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
--	mtd_device_register(h1910_nand_mtd, mtd_parts, mtd_parts_nb);
-+	mtd_device_parse_register(h1910_nand_mtd, NULL, 0,
-+			partition_info, NUM_PARTITIONS);
- 
- 	/* Return happy */
- 	return 0;
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to add mtd device\n");
 -- 
 1.7.4.4
