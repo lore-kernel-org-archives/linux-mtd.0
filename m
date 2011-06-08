@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QULHS-0007LR-Au
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:55 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so631181wyb.36
+	id 1QULHU-0007CU-2w
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 16:06:57 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so630582wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 09:06:54 -0700 (PDT)
+	Wed, 08 Jun 2011 09:06:55 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 34/43] mtd: plat_nand.c: use mtd_device_parse_register
-Date: Wed,  8 Jun 2011 20:05:43 +0400
-Message-Id: <1307549152-7085-35-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 35/43] mtd: ppchameleonevb.c: use mtd_device_parse_register
+Date: Wed,  8 Jun 2011 20:05:44 +0400
+Message-Id: <1307549152-7085-36-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,55 +29,79 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/plat_nand.c |   22 +++-------------------
- 1 files changed, 3 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/ppchameleonevb.c |   42 ++++++++----------------------------
+ 1 files changed, 10 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 1339fa8..e62468b 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -21,8 +21,6 @@ struct plat_nand_data {
- 	struct nand_chip	chip;
- 	struct mtd_info		mtd;
- 	void __iomem		*io_base;
--	int			nr_parts;
--	struct mtd_partition	*parts;
- };
+diff --git a/drivers/mtd/nand/ppchameleonevb.c b/drivers/mtd/nand/ppchameleonevb.c
+index 9376633..7e52af5 100644
+--- a/drivers/mtd/nand/ppchameleonevb.c
++++ b/drivers/mtd/nand/ppchameleonevb.c
+@@ -191,9 +191,6 @@ static int ppchameleonevb_device_ready(struct mtd_info *minfo)
+ static int __init ppchameleonevb_init(void)
+ {
+ 	struct nand_chip *this;
+-	const char *part_type = 0;
+-	int mtd_parts_nb = 0;
+-	struct mtd_partition *mtd_parts = 0;
+ 	void __iomem *ppchameleon_fio_base;
+ 	void __iomem *ppchameleonevb_fio_base;
  
- /*
-@@ -99,21 +97,9 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 		goto out;
+@@ -276,24 +273,13 @@ static int __init ppchameleonevb_init(void)
+ #endif
+ 
+ 	ppchameleon_mtd->name = "ppchameleon-nand";
+-	mtd_parts_nb = parse_mtd_partitions(ppchameleon_mtd, NULL, &mtd_parts, 0);
+-	if (mtd_parts_nb > 0)
+-		part_type = "command line";
+-	else
+-		mtd_parts_nb = 0;
+-
+-	if (mtd_parts_nb == 0) {
+-		if (ppchameleon_mtd->size == NAND_SMALL_SIZE)
+-			mtd_parts = partition_info_me;
+-		else
+-			mtd_parts = partition_info_hi;
+-		mtd_parts_nb = NUM_PARTITIONS;
+-		part_type = "static";
+-	}
+ 
+ 	/* Register the partitions */
+-	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+-	mtd_device_register(ppchameleon_mtd, mtd_parts, mtd_parts_nb);
++	mtd_device_parse_register(ppchameleon_mtd, NULL, 0,
++			ppchameleon_mtd->size == NAND_SMALL_SIZE ?
++				partition_info_me :
++				partition_info_hi,
++			NUM_PARTITIONS);
+ 
+  nand_evb_init:
+ 	/****************************
+@@ -377,21 +363,13 @@ static int __init ppchameleonevb_init(void)
  	}
  
--	if (pdata->chip.part_probe_types) {
--		err = parse_mtd_partitions(&data->mtd,
--					pdata->chip.part_probe_types,
--					&data->parts, 0);
--		if (err > 0) {
--			mtd_device_register(&data->mtd, data->parts, err);
--			return 0;
--		}
+ 	ppchameleonevb_mtd->name = NAND_EVB_MTD_NAME;
+-	mtd_parts_nb = parse_mtd_partitions(ppchameleonevb_mtd, NULL, &mtd_parts, 0);
+-	if (mtd_parts_nb > 0)
+-		part_type = "command line";
+-	else
+-		mtd_parts_nb = 0;
+-
+-	if (mtd_parts_nb == 0) {
+-		mtd_parts = partition_info_evb;
+-		mtd_parts_nb = NUM_PARTITIONS;
+-		part_type = "static";
 -	}
--	if (pdata->chip.partitions) {
--		data->parts = pdata->chip.partitions;
--		err = mtd_device_register(&data->mtd, data->parts,
--			pdata->chip.nr_partitions);
--	} else
--		err = mtd_device_register(&data->mtd, NULL, 0);
-+	err = mtd_device_parse_register(&data->mtd,
-+			pdata->chip.part_probe_types, 0,
-+			pdata->chip.partitions, pdata->chip.nr_partitions);
  
- 	if (!err)
- 		return err;
-@@ -143,8 +129,6 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	/* Register the partitions */
+-	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+-	mtd_device_register(ppchameleonevb_mtd, mtd_parts, mtd_parts_nb);
++	mtd_device_parse_register(ppchameleonevb_mtd, NULL, 0,
++			ppchameleon_mtd->size == NAND_SMALL_SIZE ?
++				partition_info_me :
++				partition_info_hi,
++			NUM_PARTITIONS);
  
- 	nand_release(&data->mtd);
--	if (data->parts && data->parts != pdata->chip.partitions)
--		kfree(data->parts);
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
+ 	/* Return happy */
+ 	return 0;
 -- 
 1.7.4.4
