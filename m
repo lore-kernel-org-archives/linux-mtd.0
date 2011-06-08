@@ -1,18 +1,18 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <201105240059.p4O0xPfN009516@hera.kernel.org>
-References: <201105240059.p4O0xPfN009516@hera.kernel.org>
-Date: Wed, 8 Jun 2011 20:53:23 +0200
-Message-ID: <BANLkTim1=DBd1AvPw1VuPfGi_Z5ktAhyPg@mail.gmail.com>
-Subject: Re: ARM: 6910/1: MTD: physmap: let set_vpp() pass a platform_device
-	instead of a map_info
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Marc Zyngier <Marc.Zyngier@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Russell King <rmk+kernel@arm.linux.org.uk>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUO1F-0002d0-0U
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2011 19:02:22 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 7F4F71B401F
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  8 Jun 2011 19:02:19 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3] mtdinfo: add regioninfo/eraseblock map display
+Date: Wed,  8 Jun 2011 15:02:22 -0400
+Message-Id: <1307559742-29134-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1307461999-6483-1-git-send-email-vapier@gentoo.org>
+References: <1307461999-6483-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +22,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 24, 2011 at 02:59, Linux Kernel Mailing List
-<linux-kernel@vger.kernel.org> wrote:
-> =C2=A0 =C2=A0ARM: 6910/1: MTD: physmap: let set_vpp() pass a platform_dev=
-ice instead of a map_info
->
-> =C2=A0 =C2=A0The set_vpp() method provided by physmap passes a map_info b=
-ack to
-> =C2=A0 =C2=A0the platform code, which has little relevance as far as the =
-platform
-> =C2=A0 =C2=A0is concerned (this parameter is completely unused).
->
-> =C2=A0 =C2=A0Instead, pass the platform_device, which can be used in the =
-pismo
-> =C2=A0 =C2=A0driver to retrieve some important information in a nicer way=
-, instead
-> =C2=A0 =C2=A0of the hack that was in place.
->
-> =C2=A0 =C2=A0The empty set_vpp function in board-at572d940hf_ek.c is left=
- untouched,
-> =C2=A0 =C2=A0as the board/SoC is scheduled for removal.
->
-> =C2=A0 =C2=A0Cc: Andrew Victor <linux@maxim.org.za>
-> =C2=A0 =C2=A0Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> =C2=A0 =C2=A0Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosof=
-t.com>
-> =C2=A0 =C2=A0Cc: Philipp Zabel <philipp.zabel@gmail.com>
-> =C2=A0 =C2=A0Cc: Eric Miao <eric.y.miao@gmail.com>
-> =C2=A0 =C2=A0Cc: Ben Dooks <ben-linux@fluff.org>
-> =C2=A0 =C2=A0Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> =C2=A0 =C2=A0Acked-by: David Woodhouse <dwmw2@infradead.org>
-> =C2=A0 =C2=A0Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-> =C2=A0 =C2=A0Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+This brings the mtdinfo utility in line with the functionality
+of the flash_info utility.  It dumps the erase regioninfo (if
+the devices has it) as well as showing a handy eraseblock map
+(if the user has requested it).  The eraseblock map also shows
+which blocks are locked and which ones are bad.
 
-> --- a/include/linux/mtd/physmap.h
-> +++ b/include/linux/mtd/physmap.h
-> @@ -24,7 +24,7 @@ struct physmap_flash_data {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0width;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 (*init)(struct platform_device *);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0(*exit)(struct platform_device *);
-> - =C2=A0 =C2=A0 =C2=A0 void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0(*set_vpp)(struct map_info *, int);
-> + =C2=A0 =C2=A0 =C2=A0 void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0(*set_vpp)(struct platform_device *, int);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0nr_parts;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0pfow_base;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0char =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0*probe_type;
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+v3
+	- unify region and map printing
 
-You forgot to update the set_vpp parameter of physmap_configure():
+ ubi-utils/src/mtdinfo.c |  119 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 116 insertions(+), 3 deletions(-)
 
-void physmap_configure(unsigned long addr, unsigned long size,
-                int bankwidth, void (*set_vpp)(struct map_info *, int) );
-
-causing
-
-drivers/mtd/maps/physmap.c: In function =E2=80=98physmap_configure=E2=80=99=
-:
-drivers/mtd/maps/physmap.c:255: warning: assignment from incompatible
-pointer type
-
-Interestingly, there are no (in-tree) users of physmap_configure()?
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/ubi-utils/src/mtdinfo.c b/ubi-utils/src/mtdinfo.c
+index 38b63ca..045f5c9 100644
+--- a/ubi-utils/src/mtdinfo.c
++++ b/ubi-utils/src/mtdinfo.c
+@@ -29,6 +29,7 @@
+ #include <getopt.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <unistd.h>
+ #include <mtd/mtd-user.h>
+ 
+ #include <libubigen.h>
+@@ -41,6 +42,7 @@ struct args {
+ 	int mtdn;
+ 	unsigned int all:1;
+ 	unsigned int ubinfo:1;
++	unsigned int map:1;
+ 	const char *node;
+ };
+ 
+@@ -59,14 +61,15 @@ static const char optionsstr[] =
+ "                                (deprecated option, will be removed, do not use)\n"
+ "-u, --ubi-info                  print what would UBI layout be if it was put\n"
+ "                                on this MTD device\n"
++"-M, --map                       print eraseblock map\n"
+ "-a, --all                       print information about all MTD devices\n"
+ "-h, --help                      print help message\n"
+ "-V, --version                   print program version";
+ 
+ static const char usage[] =
+-"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-h] [-V] [--mtdn <MTD device number>]\n"
++"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-M] [-h] [-V] [--mtdn <MTD device number>]\n"
+ "\t\t[--ubi-info] [--help] [--version]\n"
+-"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-h] [-V] [--ubi-info] [--help]\n"
++"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-M] [-h] [-V] [--ubi-info] [--help]\n"
+ "\t\t[--version]\n"
+ "Example 1: " PROGRAM_NAME " - (no arguments) print general MTD information\n"
+ "Example 2: " PROGRAM_NAME " -m 1 - print information about MTD device number 1\n"
+@@ -79,6 +82,7 @@ static const char usage[] =
+ static const struct option long_options[] = {
+ 	{ .name = "mtdn",      .has_arg = 1, .flag = NULL, .val = 'm' },
+ 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
++	{ .name = "map",       .has_arg = 0, .flag = NULL, .val = 'M' },
+ 	{ .name = "all",       .has_arg = 0, .flag = NULL, .val = 'a' },
+ 	{ .name = "help",      .has_arg = 0, .flag = NULL, .val = 'h' },
+ 	{ .name = "version",   .has_arg = 0, .flag = NULL, .val = 'V' },
+@@ -90,7 +94,7 @@ static int parse_opt(int argc, char * const argv[])
+ 	while (1) {
+ 		int key, error = 0;
+ 
+-		key = getopt_long(argc, argv, "am:uhV", long_options, NULL);
++		key = getopt_long(argc, argv, "am:uMhV", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -110,6 +114,10 @@ static int parse_opt(int argc, char * const argv[])
+ 			warnmsg("-m/--mtdn is depecated, will be removed in mtd-utils-1.4.6");
+ 			break;
+ 
++		case 'M':
++			args.map = 1;
++			break;
++
+ 		case 'h':
+ 			printf("%s\n\n", doc);
+ 			printf("%s\n\n", usage);
+@@ -139,6 +147,9 @@ static int parse_opt(int argc, char * const argv[])
+ 		args.node = NULL;
+ 	}
+ 
++	if (args.map && !args.node)
++		return errmsg("-M requires MTD device node name");
++
+ 	return 0;
+ }
+ 
+@@ -181,6 +192,105 @@ static void print_ubi_info(const struct mtd_info *mtd_info,
+ 	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
+ }
+ 
++static void print_region_map(const struct mtd_dev_info *mtd, int fd,
++			     const region_info_t *reginfo)
++{
++	unsigned long start;
++	int i, width;
++	int ret_locked, errno_locked, ret_bad, errno_bad;
++
++	printf("Eraseblock map:\n");
++
++	/* figure out the number of spaces to pad w/out libm */
++	for (i = 1, width = 0; i < reginfo->numblocks; i *= 10, ++width)
++		continue;
++
++	/* if we don't have a fd to query, just show the bare map */
++	if (fd == -1) {
++		ret_locked = ret_bad = -1;
++		errno_locked = errno_bad = ENODEV;
++	} else
++		ret_locked = ret_bad = errno_locked = errno_bad = 0;
++
++	for (i = 0; i < reginfo->numblocks; ++i) {
++		start = reginfo->offset + i * reginfo->erasesize;
++		printf(" %*i: %08lx ", width, i, start);
++
++		if (ret_locked != -1) {
++			ret_locked = mtd_is_locked(mtd, fd, i);
++			if (ret_locked == 1)
++				printf("RO ");
++			else
++				errno_locked = errno;
++		}
++		if (ret_locked != 1)
++			printf("   ");
++
++		if (ret_bad != -1) {
++			ret_bad = mtd_is_bad(mtd, fd, i);
++			if (ret_bad == 1)
++				printf("BAD ");
++			else
++				errno_bad = errno;
++		}
++		if (ret_bad != 1)
++			printf("    ");
++
++		if (((i + 1) % 4) == 0)
++			printf("\n");
++	}
++	if (i % 4)
++		printf("\n");
++
++	if (ret_locked == -1 && errno_locked != EOPNOTSUPP) {
++		errno = errno_locked;
++		sys_errmsg("could not read locked block info");
++	}
++
++	if (mtd->bb_allowed && ret_bad == -1 && errno_bad != EOPNOTSUPP) {
++		errno = errno_bad;
++		sys_errmsg("could not read bad block info");
++	}
++}
++
++static void print_region_info(const struct mtd_dev_info *mtd)
++{
++	region_info_t reginfo;
++	int r, fd;
++
++	/* First open the device so we can query it */
++	fd = open(args.node, O_RDONLY | O_CLOEXEC);
++	if (fd == -1) {
++		sys_errmsg("couldn't open MTD dev: %s", args.node);
++		if (mtd->region_cnt)
++			return;
++	}
++
++	/* walk all the regions and show the map for them */
++	if (mtd->region_cnt) {
++		for (r = 0; r < mtd->region_cnt; ++r) {
++			printf("Eraseblock region %i: ", r);
++			if (mtd_regioninfo(fd, r, &reginfo) == 0) {
++				printf(" offset: %#x size: %#x numblocks: %#x\n",
++					reginfo.offset, reginfo.erasesize,
++					reginfo.numblocks);
++				if (args.map)
++					print_region_map(mtd, fd, &reginfo);
++			} else
++				printf(" info is unavailable\n");
++		}
++	} else {
++		reginfo.offset = 0;
++		reginfo.erasesize = mtd->eb_size;
++		reginfo.numblocks = mtd->eb_cnt;
++		reginfo.regionindex = 0;
++		print_region_map(mtd, fd, &reginfo);
++	}
++
++	if (fd != -1)
++		close(fd);
++}
++
+ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int mtdn)
+ {
+ 	int err;
+@@ -229,6 +339,9 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
+ 	if (args.ubinfo)
+ 		print_ubi_info(mtd_info, &mtd);
+ 
++	if (args.map)
++		print_region_info(&mtd);
++
+ 	printf("\n");
+ 	return 0;
+ }
+-- 
+1.7.5.3
