@@ -1,29 +1,26 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUh1o-0000Jj-O2
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:20:13 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QUh1i-0005Qf-J7
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 17:20:06 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2011 17:20:06 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2011 17:20:06 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
-Date: Thu, 09 Jun 2011 17:19:30 +0200
-Message-ID: <e2p1v6tlj2gka1lq4q2bd0mk5al776ivms@4ax.com>
-References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-	<4DF0B36E.2020605@free-electrons.com>
-	<7.0.1.0.2.20110609135430.06967d28@free.fr>
-	<4DF0BFA0.4030402@free-electrons.com>
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUh3S-0000Nt-Un
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:21:55 +0000
+Received: by wwi18 with SMTP id 18so4438178wwi.0
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Jun 2011 08:21:53 -0700 (PDT)
+Subject: Re: [PATCH 01/17] mtd: prepare to convert of_mtd_parse_partitions
+	to partition parser
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+In-Reply-To: <4DF0E1E8.9010307@gmail.com>
+References: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
+	<1307629388-24769-2-git-send-email-dbaryshkov@gmail.com>
+	<1307629589.7374.103.camel@localhost>  <4DF0DA9A.2050301@gmail.com>
+	<1307631767.7374.111.camel@localhost>  <4DF0E1E8.9010307@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 09 Jun 2011 18:17:34 +0300
+Message-ID: <1307632654.7374.121.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,32 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 09 Jun 2011 14:42:08 +0200, David Wagner
-<david.wagner@free-electrons.com> wrote:
->>> In most cases, the formula for the offset boils down to:
->>> LEB_size = PEB_size - (((Subpage_size + Page_size) * Page_size) /
->>> Page_size)
->> 
->> Thanks for the tip, but after recompiling a new root filesystem, I'm
->> still getting the same error:
->[...]
->> BTW, using the formula above, I find this: 131.072 - ((( 512 + 2.048) *
->> 2.048 ) / 2.048 ) = 128.512
->> 
->> I wonder if maybe I should leave some room in the NAND partition for the
->> Ubifs journal + error log? I used vol_size=248MiB in ubi.cfg, but maybe
->> this is toot big?
->
->(I forgot to reply to all in my first answer)
->
->Oops, sorry, the formula is
->((Subpage_size + Page_size)) / Page_size) * Page_size
->That is, subpage+page truncated to page.
+On Thu, 2011-06-09 at 19:08 +0400, Dmitry Eremin-Solenikov wrote:
+> >>>> +#ifdef CONFIG_OF
+> >>>> +	if (master->node)
+> >>>> +		of_node_get(master->node);
+> >>>> +#endif
+> >>>
+> >>> These ifdefs are not very nice, do you have ideas how to avoid them?
+> >>> Ideally, mtdcore should not know or bother about OF things. All
+> >>> OF-specific things should be done in ofpart.c...
+> >>
+> >> I know they aren't nice. OTOH ofpart.c also seems a bit non-logical: one
+> >> can have of node in the MTD, but doesn't (strangely) want to compile in
+> >> ofpart.c. Of course I can add separate small of-handling functions (to
+> >> do OF handling) to mtdcore.c to be replaced by empty functions in the
+> >> absence of CONFIG_OF, but this also look like overhead for me.
+> >
+> > How about turning the "origin" argument into "void *private" and
+> > declaring that this is "parser-specific info". It then can become
+> > "origin" for the RedBoot parser and the OF node pointer for the ofpart
+> > parser?
+> 
+> And what will happen when ixp4xx (the only user of redboot "exception") 
+> will get OF support?
 
-Thanks, but I must have misunderstood the formula, as I find the same
-number:
+Hmm, may be introducing something like:
 
-PEB_size - ((Subpage_size + Page_size)) / Page_size) * Page_size =
-LEB_size
+/**
+ * struct mtd_part_parser_data - used to pass data to MTD partition parsers.
+ * @origin: blah blah, RedBoot-specific
+ * @of_node: points to the OF node describing the partitions, ofpart-specific
+ */
+struct mtd_part_parser_data {
+	unsigned long origin;
+	struct device_node *of_node;
+};
 
-131.072 - ((512 + 2048 ) / 2048) * 2048) = 128.512
+And change the current "origin" argument with a
+"struct mtd_part_parser_data *data" pointer?
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
