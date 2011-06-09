@@ -1,26 +1,24 @@
-Received: from service87.mimecast.com ([94.185.240.25])
-	by casper.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUaBQ-00012Y-2B
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 08:01:40 +0000
-Message-ID: <4DF07DCE.60707@arm.com>
-Date: Thu, 09 Jun 2011 09:01:18 +0100
-From: Marc Zyngier <marc.zyngier@arm.com>
-MIME-Version: 1.0
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: ARM: 6910/1: MTD: physmap: let set_vpp() pass a platform_device
-	instead of a map_info
-References: <201105240059.p4O0xPfN009516@hera.kernel.org>
-	<BANLkTim1=DBd1AvPw1VuPfGi_Z5ktAhyPg@mail.gmail.com>
-In-Reply-To: <BANLkTim1=DBd1AvPw1VuPfGi_Z5ktAhyPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Russell King <rmk+kernel@arm.linux.org.uk>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUaQq-000279-Q7
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 08:17:37 +0000
+Received: by fxm14 with SMTP id 14so1154493fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Jun 2011 01:17:33 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
+References: <1307544227.31223.115.camel@localhost>
+	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 09 Jun 2011 11:13:14 +0300
+Message-ID: <1307607194.7374.49.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Igor Grinberg <grinberg@compulab.co.il>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,86 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/06/11 19:53, Geert Uytterhoeven wrote:
+Brian, would you please send a new series? I suggest you the following
+order of things.
 
-Hi Geert,
+1. clean-up of non-DEBUG() messages.
+   1.1. go through all printks and check if KERN_* is ok, fix. E.g.,
+        I can see that all KERN_DEBUG should become KERN_INFO
+   1.2. go through all printks and check if the function name prefix
+        makes sense there - kill those which do not.
 
-> On Tue, May 24, 2011 at 02:59, Linux Kernel Mailing List
-> <linux-kernel@vger.kernel.org> wrote:
->>    ARM: 6910/1: MTD: physmap: let set_vpp() pass a platform_device inste=
-ad of a map_info
->>
->>    The set_vpp() method provided by physmap passes a map_info back to
->>    the platform code, which has little relevance as far as the platform
->>    is concerned (this parameter is completely unused).
->>
->>    Instead, pass the platform_device, which can be used in the pismo
->>    driver to retrieve some important information in a nicer way, instead
->>    of the hack that was in place.
->>
->>    The empty set_vpp function in board-at572d940hf_ek.c is left untouche=
-d,
->>    as the board/SoC is scheduled for removal.
->>
->>    Cc: Andrew Victor <linux@maxim.org.za>
->>    Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
->>    Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
->>    Cc: Philipp Zabel <philipp.zabel@gmail.com>
->>    Cc: Eric Miao <eric.y.miao@gmail.com>
->>    Cc: Ben Dooks <ben-linux@fluff.org>
->>    Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->>    Acked-by: David Woodhouse <dwmw2@infradead.org>
->>    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
->>    Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
->=20
->> --- a/include/linux/mtd/physmap.h
->> +++ b/include/linux/mtd/physmap.h
->> @@ -24,7 +24,7 @@ struct physmap_flash_data {
->>        unsigned int            width;
->>        int                     (*init)(struct platform_device *);
->>        void                    (*exit)(struct platform_device *);
->> -       void                    (*set_vpp)(struct map_info *, int);
->> +       void                    (*set_vpp)(struct platform_device *, int=
-);
->>        unsigned int            nr_parts;
->>        unsigned int            pfow_base;
->>        char                    *probe_type;
->=20
-> You forgot to update the set_vpp parameter of physmap_configure():
->=20
-> void physmap_configure(unsigned long addr, unsigned long size,
->                 int bankwidth, void (*set_vpp)(struct map_info *, int) );
->=20
-> causing
->=20
-> drivers/mtd/maps/physmap.c: In function =E2=80=98physmap_configure=E2=80=
-=99:
-> drivers/mtd/maps/physmap.c:255: warning: assignment from incompatible
-> pointer type
->=20
-> Interestingly, there are no (in-tree) users of physmap_configure()?
+   Also, while doing this, keep in mind that messages will be later
+   turned into dev_* (dev_info(), dev_err(), etc) so they will be
+   automatically prefixed with the device name which is already some
+   identification of the source of the message.
 
-It's already been removed in -next:
+   1.3. turn messages to dev_*
+   1.4. make another pass and do all the lines consolidations,
+        alignments, punctuation, etc etc.
 
-commit 3b1b2b07088ed190090f0b1973416b6c8e49a2a1
-Author: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Date:   Thu Jun 2 18:51:14 2011 +0400
+2. clean-up of DEBUG() cruft.
+   2.1 change DEBUG() with dev_dbg()
 
-    mtd: drop physmap_configure
+   Kill all function name prefixes as well. The rationale is: dev_dbg()
+   already adds function name prefixe (and process id) if dynamic
+   debugging is enabled. In case of debugging with DEBUG macro, you
+   anyway have to change the code (adding #define DEBUG) so you might
+   easily defind pr_fmt at the same time for youself.
 
-    physmap_configure() and physmap_set_partitions() have no users in
-kernel.
-    Out of kernel users should have been converted to regular platform
-device
-    long ago. Drop support for this obsolete API.
+How does this sound to you?
 
-    Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+FWIW: I've moved the patches I pushed from the master branch to the
+"brian" branch of l2-mtd-2.6.git tree. But they will not be useful
+for you, I guess.
 
-Maybe this should be merged to -rc3.
-
-Thanks for the heads up.
-
-=09M.
---=20
-Jazz is not dead. It just smells funny...
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
