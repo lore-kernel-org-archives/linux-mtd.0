@@ -1,25 +1,22 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUYUF-0000S6-V0
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 06:13:00 +0000
-Received: by vxd2 with SMTP id 2so1242588vxd.36
+	id 1QUYee-0000XA-LL
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 06:23:45 +0000
+Received: by ewy3 with SMTP id 3so527421ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 23:12:56 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1307539156.31223.69.camel@localhost>
-References: <20110608015625.GA27537@july> <1307530994.31223.46.camel@localhost>
-	<BANLkTinOBRUiaAGrbPcxve-EzZN3YdS__g@mail.gmail.com>
-	<1307539156.31223.69.camel@localhost>
-Date: Thu, 9 Jun 2011 15:12:56 +0900
-Message-ID: <BANLkTi=LJJTTr=SGmyfh3wDAvdg4+0SN3w@mail.gmail.com>
-Subject: Re: [PATCH] mtd: OneNAND: Detect the correct NOP when 4KiB pagesize
-From: Kyungmin Park <kmpark@infradead.org>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	roman.tereshonkov@nokia.com, m.szyprowski@samsung.com
+	Wed, 08 Jun 2011 23:23:41 -0700 (PDT)
+Subject: Re: [PATCH] mtdinfo: remove now unused ubigen info
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1307559148-28483-1-git-send-email-vapier@gentoo.org>
+References: <1307559148-28483-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 09 Jun 2011 09:19:23 +0300
+Message-ID: <1307600363.7374.1.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 8, 2011 at 10:19 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Wed, 2011-06-08 at 22:21 +0900, Kyungmin Park wrote:
->> > 1. Add a comment that this is a hacky quirk to work around HW
->> > =C2=A0 identification flaw, to make it clear for the people who read t=
-he
->> > =C2=A0 code.
->>
->> For the record, chip maker (memory) made different chips for each
->> vendor (Samsung Mobile, and Nokia)
->> with the design flaw, it made a workaround, not hacky quirk.
->
-> OK :-) Would you please send an updated patch ?
+On Wed, 2011-06-08 at 14:52 -0400, Mike Frysinger wrote:
+> A previous commit moved the code using this var into a diff func.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  ubi-utils/src/mtdinfo.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
 
-BTW, as you mentioned, it's already checked. DeviceID is just
-capacity, I mean size is already checked and 4KiB pagesize is also
-checked by numbufs... So check the version ID is enough in this case?
+Pushed, thanks you!
 
-How do you think?
-
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
