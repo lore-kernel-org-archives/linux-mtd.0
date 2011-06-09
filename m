@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUb6u-0002SP-Hm
+	id 1QUb6u-0002S3-H4
 	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:08 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p5990wE6028399
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:02 +0300
+	p5990wE3028399
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:00 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/30] UBIFS: minor cleanup: use S_ISREG helper
-Date: Thu,  9 Jun 2011 12:04:46 +0300
-Message-Id: <1307610310-28691-7-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/30] UBIFS: dump stack when pnode or nnode reading fails
+Date: Thu,  9 Jun 2011 12:04:43 +0300
+Message-Id: <1307610310-28691-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 References: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,26 +25,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Instead of using long "(inode->i_mode & S_IFMT) != S_IFREG" expression, use
-shorted "!S_ISREG(inode->i_mode)".
+When we fail to read a pnode or nnode - print stacktrace if debugging is enabled.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/super.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ fs/ubifs/lpt.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 55161c6..70e8c92 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -85,7 +85,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
- 	if (ui->data_len < 0 || ui->data_len > UBIFS_MAX_INO_DATA)
- 		return 4;
+diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+index ef5155e..04713cd 100644
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -1247,6 +1247,7 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
  
--	if (ui->xattr && (inode->i_mode & S_IFMT) != S_IFREG)
-+	if (ui->xattr && !S_ISREG(inode->i_mode))
- 		return 5;
- 
- 	if (!ubifs_compr_present(ui->compr_type)) {
+ out:
+ 	ubifs_err("error %d reading nnode at %d:%d", err, lnum, offs);
++	dbg_dump_stack();
+ 	kfree(nnode);
+ 	return err;
+ }
+@@ -1312,6 +1313,7 @@ static int read_pnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
+ out:
+ 	ubifs_err("error %d reading pnode at %d:%d", err, lnum, offs);
+ 	dbg_dump_pnode(c, pnode, parent, iip);
++	dbg_dump_stack();
+ 	dbg_msg("calc num: %d", calc_pnode_num_from_parent(c, parent, iip));
+ 	kfree(pnode);
+ 	return err;
 -- 
 1.7.2.3
