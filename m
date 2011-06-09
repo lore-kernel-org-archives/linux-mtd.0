@@ -1,25 +1,27 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUgqM-00009D-1g
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:08:22 +0000
-Received: by wwb39 with SMTP id 39so1344454wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 08:08:20 -0700 (PDT)
-Message-ID: <4DF0E1E8.9010307@gmail.com>
-Date: Thu, 09 Jun 2011 19:08:24 +0400
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 01/17] mtd: prepare to convert of_mtd_parse_partitions
-	to partition parser
-References: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>	
-	<1307629388-24769-2-git-send-email-dbaryshkov@gmail.com>	
-	<1307629589.7374.103.camel@localhost> <4DF0DA9A.2050301@gmail.com>
-	<1307631767.7374.111.camel@localhost>
-In-Reply-To: <1307631767.7374.111.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUh0X-0000Gw-7v
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:18:55 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QUh0U-0004o2-4T
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 17:18:50 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2011 17:18:50 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2011 17:18:50 +0200
+To: linux-mtd@lists.infradead.org
+From: Gilles <gilles.ganault@free.fr>
+Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
+Date: Thu, 09 Jun 2011 17:18:35 +0200
+Message-ID: <mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
+References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
+	<1307623105.7374.91.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,65 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09.06.2011 19:02, Artem Bityutskiy wrote:
-> On Thu, 2011-06-09 at 18:37 +0400, Dmitry Eremin-Solenikov wrote:
->> On 09.06.2011 18:26, Artem Bityutskiy wrote:
->>> On Thu, 2011-06-09 at 18:22 +0400, Dmitry Eremin-Solenikov wrote:
->>>> Prepare to convert of_mtd_parse_partitions() to usual partitions parser:
->>>> 1) Register ofpart parser
->>>> 2) Internally don't use passed device for error printing
->>>> 3) Add device_node to mtd_info struct
->>>> 4) Move of_mtd_parse_partitions from __devinit to common text section
->>>> 5) add ofpart to the default list of partition parsers
->>>>
->>>> Signed-off-by: Dmitry Eremin-Solenikov<dbaryshkov@gmail.com>
->>>> ---
->>>>    drivers/mtd/mtdcore.c          |   19 +++++++++++++++++++
->>>>    drivers/mtd/mtdpart.c          |    8 ++++++--
->>>>    drivers/mtd/ofpart.c           |   30 ++++++++++++++++++++++++++++--
->>>>    include/linux/mtd/mtd.h        |    5 +++++
->>>>    include/linux/mtd/partitions.h |    2 +-
->>>>    5 files changed, 59 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->>>> index 1326747..2d5b865 100644
->>>> --- a/drivers/mtd/mtdcore.c
->>>> +++ b/drivers/mtd/mtdcore.c
->>>> @@ -36,6 +36,7 @@
->>>>    #include<linux/idr.h>
->>>>    #include<linux/backing-dev.h>
->>>>    #include<linux/gfp.h>
->>>> +#include<linux/of.h>
->>>>
->>>>    #include<linux/mtd/mtd.h>
->>>>    #include<linux/mtd/partitions.h>
->>>> @@ -446,6 +447,10 @@ int mtd_device_register(struct mtd_info *master,
->>>>    			const struct mtd_partition *parts,
->>>>    			int nr_parts)
->>>>    {
->>>> +#ifdef CONFIG_OF
->>>> +	if (master->node)
->>>> +		of_node_get(master->node);
->>>> +#endif
->>>
->>> These ifdefs are not very nice, do you have ideas how to avoid them?
->>> Ideally, mtdcore should not know or bother about OF things. All
->>> OF-specific things should be done in ofpart.c...
->>
->> I know they aren't nice. OTOH ofpart.c also seems a bit non-logical: one
->> can have of node in the MTD, but doesn't (strangely) want to compile in
->> ofpart.c. Of course I can add separate small of-handling functions (to
->> do OF handling) to mtdcore.c to be replaced by empty functions in the
->> absence of CONFIG_OF, but this also look like overhead for me.
+On Thu, 09 Jun 2011 15:38:25 +0300, Artem Bityutskiy
+<dedekind1@gmail.com> wrote:
+>On Thu, 2011-06-09 at 12:24 +0200, Gilles wrote:
+>> vol_size=248MiB
 >
-> How about turning the "origin" argument into "void *private" and
-> declaring that this is "parser-specific info". It then can become
-> "origin" for the RedBoot parser and the OF node pointer for the ofpart
-> parser?
+>Put, say, 230MiB here. 248MiB is the total amount of space. UBI adds
+>some overhead, so your volume size will be smaller, see here:
 
-And what will happen when ixp4xx (the only user of redboot "exception") 
-will get OF support?
+After updating ubi.cfg with "vol_size=230MiB" and re-running "ubinize
+-o rootfs.ubi.img -m 2048 -p 128KiB -s 512 ./ubi.cfg", I reformateed
+the appliance and tried to attach mtd2 to Ubi... and it worked! :-)
 
--- 
-With best wishes
-Dmitry
+===============
+appliance:> ubiformat /dev/mtd2 -s 512 -f rootfs.ubi.img
+
+appliance:> ubiattach /dev/ubi_ctrl -m 2
+UBI: attaching mtd2 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    129024 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          512 (aligned 512)
+UBI: data offset:                2048
+UBI: volume 0 ("rootfs") re-sized from 1870 to 1961 LEBs
+UBI: attached mtd2 to ubi0
+UBI: MTD device name:            "filesystem_nand"
+UBI: MTD device size:            248 MiB
+UBI: number of good PEBs:        1984
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 1984
+UBI: number of PEBs reserved for bad PEB handling: 19
+UBI: max/mean erase counter: 14/9
+UBI: image sequence number: 1879706523
+mtd: Giving out device 3 to rootfs
+UBI: background thread "ubi_bgt0d" started, PID 136
+UBI device number 0, total 1984 LEBs (255983616 bytes, 244.1 MiB),
+available 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
+===============
+
+So apparently, I lost about 4MiB in the process (248MiB -> 244.1).
+
+I'll take advantage of this thread to ask a few questions that I have
+after reading the docs + experimenting:
+
+1. After running "ubiattach", I get a new mtd3 partition that is
+linked to mtd2:
+
+appliance> cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00800000 00001000 "ROMfs"
+mtd1: 00800000 00020000 "kernel_nand"
+mtd2: 0f800000 00020000 "filesystem_nand"
+mtd3: 0f14b800 0001f800 "rootfs"
+
+To reboot and use the NAND partition as root filesystem, am I correct
+that I should forget about mtd2, and use this kernel command line:
+
+"ubi.mtd=3 rootfstype=ubifs root=ubi0:rootfs rw"
+
+?
+
+2. ubiformat takes about 10-15mn to complete: Is there a way to speed
+things up, or is it just due to the CPU+NAND that the appliance uses?
+
+3. Finally, when do I have to use ubimkvol?
+
+Thank you.
