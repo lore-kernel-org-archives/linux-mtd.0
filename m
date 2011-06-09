@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUb6y-0002NV-5N
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:10 +0000
+	id 1QUb6x-0002NU-Vz
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:09 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p5990wEL028399
+	p5990wEK028399
 	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:06 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 21/30] UBIFS: remove unused and unneeded debugging function
-Date: Thu,  9 Jun 2011 12:05:01 +0300
-Message-Id: <1307610310-28691-22-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 20/30] UBIFS: add global debugfs knobs
+Date: Thu,  9 Jun 2011 12:05:00 +0300
+Message-Id: <1307610310-28691-21-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 References: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,136 +25,266 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This patch contains several minor clean-up and preparational cahnges.
-
-1. Remove 'dbg_read()', 'dbg_write()', 'dbg_change()', and 'dbg_leb_erase()'
-   functions as they are not used.
-2. Remove 'dbg_leb_read()' and 'dbg_is_mapped()' as they are not really needed,
-   it is fine to let reads go through in failure mode.
-3. Rename 'offset' argument to 'offs' to be consistent with the rest of UBIFS
-   code.
+Now we have per-FS (superblock) debugfs knobs, but they have one drawback - you
+have to first mount the FS and only after this you can switch self-checks
+on/off. But often we want to have the checks enabled during the mount.
+Introduce global debugging knobs for this purpose.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/debug.c |   33 ++-------------------------------
- fs/ubifs/debug.h |   27 +--------------------------
- 2 files changed, 3 insertions(+), 57 deletions(-)
+ fs/ubifs/debug.c |  138 ++++++++++++++++++++++++++++++++++++++++++++++++++----
+ fs/ubifs/debug.h |   35 +++++++++++---
+ 2 files changed, 157 insertions(+), 16 deletions(-)
 
 diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 741f939..a159cfd 100644
+index 91ac72c..741f939 100644
 --- a/fs/ubifs/debug.c
 +++ b/fs/ubifs/debug.c
-@@ -2718,16 +2718,8 @@ static void cut_data(const void *buf, int len)
- 		p[i] = 0xff;
+@@ -3056,7 +3056,7 @@ out_remove:
+ 	debugfs_remove_recursive(d->dfs_dir);
+ out:
+ 	err = dent ? PTR_ERR(dent) : -ENODEV;
+-	ubifs_err("cannot create \"%s\" debugfs filr or directory, error %d\n",
++	ubifs_err("cannot create \"%s\" debugfs file or directory, error %d\n",
+ 		  fname, err);
+ 	return err;
+ }
+@@ -3070,6 +3070,74 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c)
+ 	debugfs_remove_recursive(c->dbg->dfs_dir);
  }
  
--int dbg_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
--		 int len, int check)
--{
--	if (in_failure_mode(desc))
--		return -EROFS;
--	return ubi_leb_read(desc, lnum, buf, offset, len, check);
--}
--
- int dbg_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
--		  int offset, int len, int dtype)
-+		  int offs, int len, int dtype)
++struct ubifs_global_debug_info ubifs_dbg;
++
++static struct dentry *dfs_chk_gen;
++static struct dentry *dfs_chk_index;
++static struct dentry *dfs_chk_orph;
++static struct dentry *dfs_chk_lprops;
++static struct dentry *dfs_chk_fs;
++static struct dentry *dfs_tst_rcvry;
++
++static ssize_t dfs_global_file_read(struct file *file, char __user *u,
++				    size_t count, loff_t *ppos)
++{
++	struct dentry *dent = file->f_path.dentry;
++	int val;
++
++	if (dent == dfs_chk_gen)
++		val = ubifs_dbg.chk_gen;
++	else if (dent == dfs_chk_index)
++		val = ubifs_dbg.chk_index;
++	else if (dent == dfs_chk_orph)
++		val = ubifs_dbg.chk_orph;
++	else if (dent == dfs_chk_lprops)
++		val = ubifs_dbg.chk_lprops;
++	else if (dent == dfs_chk_fs)
++		val = ubifs_dbg.chk_fs;
++	else if (dent == dfs_tst_rcvry)
++		val = ubifs_dbg.tst_rcvry;
++	else
++		return -EINVAL;
++
++	return provide_user_output(val, u, count, ppos);
++}
++
++static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
++				     size_t count, loff_t *ppos)
++{
++	struct dentry *dent = file->f_path.dentry;
++	int val;
++
++	val = interpret_user_input(u, count);
++	if (val < 0)
++		return val;
++
++	if (dent == dfs_chk_gen)
++		ubifs_dbg.chk_gen = val;
++	else if (dent == dfs_chk_index)
++		ubifs_dbg.chk_index = val;
++	else if (dent == dfs_chk_orph)
++		ubifs_dbg.chk_orph = val;
++	else if (dent == dfs_chk_lprops)
++		ubifs_dbg.chk_lprops = val;
++	else if (dent == dfs_chk_fs)
++		ubifs_dbg.chk_fs = val;
++	else if (dent == dfs_tst_rcvry)
++		ubifs_dbg.tst_rcvry = val;
++	else
++		return -EINVAL;
++
++	return count;
++}
++
++static const struct file_operations dfs_global_fops = {
++	.read = dfs_global_file_read,
++	.write = dfs_global_file_write,
++	.owner = THIS_MODULE,
++	.llseek = no_llseek,
++};
++
+ /**
+  * dbg_debugfs_init - initialize debugfs file-system.
+  *
+@@ -3080,15 +3148,67 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c)
+  */
+ int dbg_debugfs_init(void)
  {
- 	int err, failing;
- 
-@@ -2736,7 +2728,7 @@ int dbg_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 	failing = do_fail(desc, lnum, 1);
- 	if (failing)
- 		cut_data(buf, len);
--	err = ubi_leb_write(desc, lnum, buf, offset, len, dtype);
-+	err = ubi_leb_write(desc, lnum, buf, offs, len, dtype);
- 	if (err)
- 		return err;
- 	if (failing)
-@@ -2759,20 +2751,6 @@ int dbg_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 	return 0;
- }
- 
--int dbg_leb_erase(struct ubi_volume_desc *desc, int lnum)
--{
--	int err;
--
--	if (do_fail(desc, lnum, 0))
--		return -EROFS;
--	err = ubi_leb_erase(desc, lnum);
--	if (err)
+-	dfs_rootdir = debugfs_create_dir("ubifs", NULL);
+-	if (IS_ERR_OR_NULL(dfs_rootdir)) {
+-		int err = dfs_rootdir ? PTR_ERR(dfs_rootdir) : -ENODEV;
+-		ubifs_err("cannot create \"ubifs\" debugfs directory, "
+-			  "error %d\n", err);
 -		return err;
--	if (do_fail(desc, lnum, 0))
--		return -EROFS;
--	return 0;
--}
--
- int dbg_leb_unmap(struct ubi_volume_desc *desc, int lnum)
- {
- 	int err;
-@@ -2787,13 +2765,6 @@ int dbg_leb_unmap(struct ubi_volume_desc *desc, int lnum)
+-	}
++	int err;
++	const char *fname;
++	struct dentry *dent;
++
++	fname = "ubifs";
++	dent = debugfs_create_dir(fname, NULL);
++	if (IS_ERR_OR_NULL(dent))
++		goto out;
++	dfs_rootdir = dent;
++
++	fname = "chk_general";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_chk_gen = dent;
++
++	fname = "chk_index";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_chk_index = dent;
++
++	fname = "chk_orphans";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_chk_orph = dent;
++
++	fname = "chk_lprops";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_chk_lprops = dent;
++
++	fname = "chk_fs";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_chk_fs = dent;
++
++	fname = "tst_recovery";
++	dent = debugfs_create_file(fname, S_IRUSR | S_IWUSR, dfs_rootdir, NULL,
++				   &dfs_global_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++	dfs_tst_rcvry = dent;
+ 
  	return 0;
++
++out_remove:
++	debugfs_remove_recursive(dfs_rootdir);
++out:
++	err = dent ? PTR_ERR(dent) : -ENODEV;
++	ubifs_err("cannot create \"%s\" debugfs file or directory, error %d\n",
++		  fname, err);
++	return err;
  }
  
--int dbg_is_mapped(struct ubi_volume_desc *desc, int lnum)
--{
--	if (in_failure_mode(desc))
--		return -EROFS;
--	return ubi_is_mapped(desc, lnum);
--}
--
- int dbg_leb_map(struct ubi_volume_desc *desc, int lnum, int dtype)
+ /**
+@@ -3096,7 +3216,7 @@ int dbg_debugfs_init(void)
+  */
+ void dbg_debugfs_exit(void)
  {
- 	int err;
+-	debugfs_remove(dfs_rootdir);
++	debugfs_remove_recursive(dfs_rootdir);
+ }
+ 
+ /**
 diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index 43ec5d1..e1dcfd2 100644
+index 8c3bdd3..43ec5d1 100644
 --- a/fs/ubifs/debug.h
 +++ b/fs/ubifs/debug.h
-@@ -302,44 +302,19 @@ int dbg_check_data_nodes_order(struct ubifs_info *c, struct list_head *head);
- int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head);
+@@ -126,6 +126,25 @@ struct ubifs_debug_info {
+ 	struct dentry *dfs_tst_rcvry;
+ };
  
- #ifndef UBIFS_DBG_PRESERVE_UBI
--#define ubi_leb_read   dbg_leb_read
- #define ubi_leb_write  dbg_leb_write
- #define ubi_leb_change dbg_leb_change
--#define ubi_leb_erase  dbg_leb_erase
- #define ubi_leb_unmap  dbg_leb_unmap
--#define ubi_is_mapped  dbg_is_mapped
- #define ubi_leb_map    dbg_leb_map
- #endif
++/**
++ * ubifs_global_debug_info - global (not per-FS) UBIFS debugging information.
++ *
++ * @chk_gen: if general extra checks are enabled
++ * @chk_index: if index xtra checks are enabled
++ * @chk_orph: if orphans extra checks are enabled
++ * @chk_lprops: if lprops extra checks are enabled
++ * @chk_fs: if UBIFS contents extra checks are enabled
++ * @tst_rcvry: if UBIFS recovery testing mode enabled
++ */
++struct ubifs_global_debug_info {
++	unsigned int chk_gen:1;
++	unsigned int chk_index:1;
++	unsigned int chk_orph:1;
++	unsigned int chk_lprops:1;
++	unsigned int chk_fs:1;
++	unsigned int tst_rcvry:1;
++};
++
+ #define ubifs_assert(expr) do {                                                \
+ 	if (unlikely(!(expr))) {                                               \
+ 		printk(KERN_CRIT "UBIFS assert failed in %s at %u (pid %d)\n", \
+@@ -162,6 +181,8 @@ const char *dbg_key_str1(const struct ubifs_info *c,
+ #define DBGKEY(key) dbg_key_str0(c, (key))
+ #define DBGKEY1(key) dbg_key_str1(c, (key))
  
--int dbg_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
--		 int len, int check);
- int dbg_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
--		  int offset, int len, int dtype);
-+		  int offs, int len, int dtype);
- int dbg_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 		   int len, int dtype);
--int dbg_leb_erase(struct ubi_volume_desc *desc, int lnum);
- int dbg_leb_unmap(struct ubi_volume_desc *desc, int lnum);
--int dbg_is_mapped(struct ubi_volume_desc *desc, int lnum);
- int dbg_leb_map(struct ubi_volume_desc *desc, int lnum, int dtype);
++extern spinlock_t dbg_lock;
++
+ #define ubifs_dbg_msg(type, fmt, ...) do {                        \
+ 	spin_lock(&dbg_lock);                                     \
+ 	pr_debug("UBIFS DBG " type ": " fmt "\n", ##__VA_ARGS__); \
+@@ -197,31 +218,31 @@ const char *dbg_key_str1(const struct ubifs_info *c,
+ /* Additional recovery messages */
+ #define dbg_rcvry(fmt, ...) ubifs_dbg_msg("rcvry", fmt, ##__VA_ARGS__)
  
--static inline int dbg_read(struct ubi_volume_desc *desc, int lnum, char *buf,
--			   int offset, int len)
--{
--	return dbg_leb_read(desc, lnum, buf, offset, len, 0);
--}
--
--static inline int dbg_write(struct ubi_volume_desc *desc, int lnum,
--			    const void *buf, int offset, int len)
--{
--	return dbg_leb_write(desc, lnum, buf, offset, len, UBI_UNKNOWN);
--}
--
--static inline int dbg_change(struct ubi_volume_desc *desc, int lnum,
--				    const void *buf, int len)
--{
--	return dbg_leb_change(desc, lnum, buf, len, UBI_UNKNOWN);
--}
--
- /* Debugfs-related stuff */
- int dbg_debugfs_init(void);
- void dbg_debugfs_exit(void);
+-extern spinlock_t dbg_lock;
++extern struct ubifs_global_debug_info ubifs_dbg;
+ 
+ static inline int dbg_is_chk_gen(const struct ubifs_info *c)
+ {
+-	return c->dbg->chk_gen;
++	return !!(ubifs_dbg.chk_gen || c->dbg->chk_gen);
+ }
+ static inline int dbg_is_chk_index(const struct ubifs_info *c)
+ {
+-	return c->dbg->chk_index;
++	return !!(ubifs_dbg.chk_index || c->dbg->chk_index);
+ }
+ static inline int dbg_is_chk_orph(const struct ubifs_info *c)
+ {
+-	return c->dbg->chk_orph;
++	return !!(ubifs_dbg.chk_orph || c->dbg->chk_orph);
+ }
+ static inline int dbg_is_chk_lprops(const struct ubifs_info *c)
+ {
+-	return c->dbg->chk_lprops;
++	return !!(ubifs_dbg.chk_lprops || c->dbg->chk_lprops);
+ }
+ static inline int dbg_is_chk_fs(const struct ubifs_info *c)
+ {
+-	return c->dbg->chk_fs;
++	return !!(ubifs_dbg.chk_fs || c->dbg->chk_fs);
+ }
+ static inline int dbg_is_tst_rcvry(const struct ubifs_info *c)
+ {
+-	return c->dbg->tst_rcvry;
++	return !!(ubifs_dbg.tst_rcvry || c->dbg->tst_rcvry);
+ }
+ 
+ int ubifs_debugging_init(struct ubifs_info *c);
 -- 
 1.7.2.3
