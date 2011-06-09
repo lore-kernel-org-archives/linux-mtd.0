@@ -1,19 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUah9-0002JN-76
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 08:34:27 +0000
-Received: by wwb39 with SMTP id 39so1057706wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 01:34:25 -0700 (PDT)
-Date: Thu, 9 Jun 2011 12:34:19 +0400
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+	id 1QUb6u-0002S0-I2
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:06 +0000
+Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
+	[172.21.38.109])
+	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
+	p5990wE0028399
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:00:59 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Question reg. parsing of mtd partitions
-Message-ID: <20110609083419.GA23553@doriath.ww600.siemens.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+Subject: [PATCH 00/30] UBIFS: latest patches
+Date: Thu,  9 Jun 2011 12:04:40 +0300
+Message-Id: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +21,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, colleagues,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-While doing MTD partitions cleanup I noticed one strange thing.
-parse_mtd_partitions function bears one extra argument (origin)
-which isn't clearly described, set to non-zero only by ixp4xx.c
-driver and then read by redboot partition table handling. I wander if we
-can add some other way to handle this situation and drop this extra 0
-argument from lots of drivers/handlers/etc.
+Hi,
 
-Could you please check it?
+here are latest UBIFS patches. Most of them are about cleaning up debugging
+stuff and switching to debugfs knobs.
 
--- 
-With best wishes
-Dmitry
+Artem.
