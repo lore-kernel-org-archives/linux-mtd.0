@@ -1,22 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUadt-0002Gy-SO
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 08:31:07 +0000
-Received: by fxm14 with SMTP id 14so1161998fxm.36
+	id 1QUah9-0002JN-76
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 08:34:27 +0000
+Received: by wwb39 with SMTP id 39so1057706wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 01:31:03 -0700 (PDT)
-Subject: Re: nanddump badblock options
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
-References: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Jun 2011 11:26:44 +0300
-Message-ID: <1307608004.7374.56.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind1@gmail.com
+	Thu, 09 Jun 2011 01:34:25 -0700 (PDT)
+Date: Thu, 9 Jun 2011 12:34:19 +0400
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Question reg. parsing of mtd partitions
+Message-ID: <20110609083419.GA23553@doriath.ww600.siemens.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,90 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello, colleagues,
 
-On Wed, 2011-06-08 at 13:01 -0700, Brian Norris wrote:
-> I have some ideas to implement in nanddump regarding the variety of bad block
-> handling options. I thought I'd at least get some feedback before working up a
-> full patch, so please comment on my ideas.
-> 
-> (1) The comments in nandwrite say that nandwrite is an "inverse operation" to
-> nanddump. However, take, for example, the following command:
-> 
->    nandwrite --length=131072 /dev/mtd1 myfile
-> 
-> Then, if we consider that there may be bad blocks at the beginning of the
-> device, nandwrite may skip to the second block in order to write this data.
-> Now, the default behavior of nanddump does not at all fit the "inverse" of this
-> very simple nandwrite operation. While you might expect the following to be an
-> inverse:
-> 
->    nanddump --length=131072 /dev/mtd1 --file=myfile.dump
-> 
-> you in fact will not get the same data that you wrote from the original file.
-> Instead, you will get all 0xFF since by default nanddump substitutes 0xFF for
-> all the data of the bad block. I call this (unwanted) behavior `padding'.
-> 
-> Thus, in short, I'm recommending that nanddump default to using --skipbad as
-> a default option, with a new `padbad' option to cover the original behavior.
-> Perhaps the "default" nanddump should have a warning over a period of time,
-> before changing the default operation? See (3), Deprecation schedule.
+While doing MTD partitions cleanup I noticed one strange thing.
+parse_mtd_partitions function bears one extra argument (origin)
+which isn't clearly described, set to non-zero only by ixp4xx.c
+driver and then read by redboot partition table handling. I wander if we
+can add some other way to handle this situation and drop this extra 0
+argument from lots of drivers/handlers/etc.
 
-Sounds good to me.
-
-> (2) There are now (with my addition of `skipbad', and the current default
-> `padbad') four methods used for handling bad blocks we come across when dumping
-> flash data. I think they'd be cleaner if they were all grouped under a single
-> option that would work something like:
-> 
->    --bb=METHOD
-> 
-> where METHOD could be `padbad', `dumpbad', `skipbad', and `omitbad'. Notice the
-> renaming of --noskipbad to --bb=dumpbad, since --noskipbad seems like an
-> inverse to --skipbad, which it is not. See (5), Summary table.
-> 
-> I think eventually, we would just drop both the short and long options for the
-> --omitbad, --noskipbad, and --skipbad options.
-> 
-> (3) Deprecation schedule:
-> 
-> Assuming the above is agreeable to everyone, how soon can we:
->    * drop the --noskipbad, --skipbad, --omitbad (pluse -b, -k, -N) flags in
->      favor of --bb=METHOD?
->    * change the default behavior from `padbad' to `skipbad'?
-
-As soon as you implement this stuff and we push it, then one release
-with warnings, next release we can remove that stuff. We already have
-many changes, but I can wait for yours, then we release mtd-1.4.5, and
-then we can kill the options next day.
-
-> I was thinkig the old methods (--omitbad, --noskipbad, --skipbad) should remain
-> for the time being, with a warning to tell of their deprecation/removal in next
-> release.
-> 
-> Additionally, we could perhaps include a warning when nanddump is called
-> without an explicit BB handling option, alerting users that the default will be
-> changing to --bb=skipbad in the next release.
-
-Yes.
-
-> (4) Can Mike provide a good explanation for --bb=omitbad in the table below? I
-> personally don't understand it's exact use, nor do I know how to describe it
-> best (to provide contrast against the other options), but I understand that you
-> would like to keep the option. I would appreciate some help.
-> 
-> (5) Summary table:
-> 
-> -----------------------------------------------------------------------------------------------------------------
->  Old option         New option                   Comment
-> -----------------------------------------------------------------------------------------------------------------
->  <default>     =>   --bb=padbad                  dump flash data, substituting 0xFF for any bad blocks
->  --noskipbad   =>   --bb=dumpbad                 dump flash data, including any bad blocks
->  --skipbad     =>   --bb=skipbad, <default>      dump good data, completely skipping any bad blocks (new default)
->  --omitbad     =>   --bb=omitbad                 (dump flash data, substituting nothing for any bad blocks?)
-
-Hmm...
+Could you please check it?
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+With best wishes
+Dmitry
