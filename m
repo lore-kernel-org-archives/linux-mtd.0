@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUg8t-0007V4-7v
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 14:23:28 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so1305393wwb.18
+	id 1QUg8u-0007V5-Pc
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 14:23:29 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so1305416wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 07:23:26 -0700 (PDT)
+	Thu, 09 Jun 2011 07:23:28 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 11/17] mtd: m25p80.c: use mtd_device_parse_register
-Date: Thu,  9 Jun 2011 18:23:00 +0400
-Message-Id: <1307629388-24769-12-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 11/17] mtd: physmap_of.c: use mtd_device_parse_register
+Date: Thu,  9 Jun 2011 18:23:01 +0400
+Message-Id: <1307629388-24769-13-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -28,61 +28,58 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c |   28 +++-------------------------
- 1 files changed, 3 insertions(+), 25 deletions(-)
+ drivers/mtd/maps/physmap_of.c |   18 +++---------------
+ 1 files changed, 3 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index a1cdb52..f76db1d 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -88,7 +88,6 @@ struct m25p {
- 	struct spi_device	*spi;
- 	struct mutex		lock;
- 	struct mtd_info		mtd;
--	unsigned		partitioned:1;
- 	u16			page_size;
- 	u16			addr_width;
- 	u8			erase_opcode;
-@@ -825,8 +824,6 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	struct m25p			*flash;
- 	struct flash_info		*info;
- 	unsigned			i;
--	struct mtd_partition		*parts = NULL;
--	int				nr_parts = 0;
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index c953db3..779b184 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -34,13 +34,10 @@ struct of_flash_list {
  
- 	/* Platform data helps sort out which chip type we have, as
- 	 * well as how this board partitions it.  If we don't have
-@@ -969,28 +966,9 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	/* partitions should match sector boundaries; and it may be good to
- 	 * use readonly partitions for writeprotected sectors (BP2..BP0).
- 	 */
--	nr_parts = parse_mtd_partitions(&flash->mtd, NULL, &parts, 0);
+ struct of_flash {
+ 	struct mtd_info		*cmtd;
+-	struct mtd_partition	*parts;
+ 	int list_size; /* number of elements in of_flash_list */
+ 	struct of_flash_list	list[0];
+ };
+ 
+-#define OF_FLASH_PARTS(info)	((info)->parts)
 -
--	if (nr_parts <= 0 && data && data->parts) {
--		parts = data->parts;
--		nr_parts = data->nr_parts;
+ static int of_flash_remove(struct platform_device *dev)
+ {
+ 	struct of_flash *info;
+@@ -56,11 +53,8 @@ static int of_flash_remove(struct platform_device *dev)
+ 		mtd_concat_destroy(info->cmtd);
+ 	}
+ 
+-	if (info->cmtd) {
+-		if (OF_FLASH_PARTS(info))
+-			kfree(OF_FLASH_PARTS(info));
++	if (info->cmtd)
+ 		mtd_device_unregister(info->cmtd);
 -	}
--
--	if (nr_parts > 0) {
--		for (i = 0; i < nr_parts; i++) {
--			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
--			      "{.name = %s, .offset = 0x%llx, "
--			      ".size = 0x%llx (%lldKiB) }\n",
--			      i, parts[i].name,
--			      (long long)parts[i].offset,
--			      (long long)parts[i].size,
--			      (long long)(parts[i].size >> 10));
--		}
--		flash->partitioned = 1;
+ 
+ 	for (i = 0; i < info->list_size; i++) {
+ 		if (info->list[i].mtd)
+@@ -289,16 +283,10 @@ static int __devinit of_flash_probe(struct platform_device *dev)
+ 
+ 	info->cmtd->node = dp;
+ 	part_probe_types = of_get_probes(dp);
+-	err = parse_mtd_partitions(info->cmtd, part_probe_types,
+-				   &info->parts, 0);
+-	if (err < 0) {
+-		of_free_probes(part_probe_types);
+-		goto err_out;
 -	}
++	mtd_device_parse_register(info->cmtd, part_probe_types, 0,
++			NULL, 0);
+ 	of_free_probes(part_probe_types);
+ 
+-	mtd_device_register(info->cmtd, info->parts, err);
 -
--	return mtd_device_register(&flash->mtd, parts, nr_parts) == 1 ?
--		-ENODEV : 0;
-+	return mtd_device_parse_register(&flash->mtd, NULL, 0,
-+			data ? data->parts : NULL,
-+			data ? data->nr_parts : 0);
- }
+ 	kfree(mtd_list);
  
- 
+ 	return 0;
 -- 
 1.7.5.3
