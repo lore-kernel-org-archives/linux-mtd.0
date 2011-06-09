@@ -1,22 +1,23 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUh3S-0000Nt-Un
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:21:55 +0000
-Received: by wwi18 with SMTP id 18so4438178wwi.0
+	id 1QUh6S-0000RJ-Mq
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 15:25:01 +0000
+Received: by fxm14 with SMTP id 14so1492664fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 08:21:53 -0700 (PDT)
+	Thu, 09 Jun 2011 08:24:58 -0700 (PDT)
 Subject: Re: [PATCH 01/17] mtd: prepare to convert of_mtd_parse_partitions
 	to partition parser
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <4DF0E1E8.9010307@gmail.com>
+In-Reply-To: <1307632654.7374.121.camel@localhost>
 References: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
 	<1307629388-24769-2-git-send-email-dbaryshkov@gmail.com>
 	<1307629589.7374.103.camel@localhost>  <4DF0DA9A.2050301@gmail.com>
 	<1307631767.7374.111.camel@localhost>  <4DF0E1E8.9010307@gmail.com>
+	<1307632654.7374.121.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Jun 2011 18:17:34 +0300
-Message-ID: <1307632654.7374.121.camel@localhost>
+Date: Thu, 09 Jun 2011 18:20:40 +0300
+Message-ID: <1307632840.7374.123.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
@@ -30,44 +31,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-09 at 19:08 +0400, Dmitry Eremin-Solenikov wrote:
-> >>>> +#ifdef CONFIG_OF
-> >>>> +	if (master->node)
-> >>>> +		of_node_get(master->node);
-> >>>> +#endif
-> >>>
-> >>> These ifdefs are not very nice, do you have ideas how to avoid them?
-> >>> Ideally, mtdcore should not know or bother about OF things. All
-> >>> OF-specific things should be done in ofpart.c...
-> >>
-> >> I know they aren't nice. OTOH ofpart.c also seems a bit non-logical: one
-> >> can have of node in the MTD, but doesn't (strangely) want to compile in
-> >> ofpart.c. Of course I can add separate small of-handling functions (to
-> >> do OF handling) to mtdcore.c to be replaced by empty functions in the
-> >> absence of CONFIG_OF, but this also look like overhead for me.
-> >
-> > How about turning the "origin" argument into "void *private" and
-> > declaring that this is "parser-specific info". It then can become
-> > "origin" for the RedBoot parser and the OF node pointer for the ofpart
-> > parser?
-> 
-> And what will happen when ixp4xx (the only user of redboot "exception") 
-> will get OF support?
+On Thu, 2011-06-09 at 18:17 +0300, Artem Bityutskiy wrote:
+> And change the current "origin" argument with a
+> "struct mtd_part_parser_data *data" pointer?
 
-Hmm, may be introducing something like:
-
-/**
- * struct mtd_part_parser_data - used to pass data to MTD partition parsers.
- * @origin: blah blah, RedBoot-specific
- * @of_node: points to the OF node describing the partitions, ofpart-specific
- */
-struct mtd_part_parser_data {
-	unsigned long origin;
-	struct device_node *of_node;
-};
-
-And change the current "origin" argument with a
-"struct mtd_part_parser_data *data" pointer?
+Which of course can be NULL if there is nothing to say, as well as
+of_node may be NULL, in which case the parsers which needs those things
+can just return "no partitions" or something like that?
 
 -- 
 Best Regards,
