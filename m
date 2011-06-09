@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUb6z-0002Wt-J9
+	id 1QUb6z-0002Ws-Ib
 	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:25 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p5990wEO028399
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:08 +0300
+	p5990wEN028399
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:07 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 24/30] UBIFS: switch to ubifs_leb_read
-Date: Thu,  9 Jun 2011 12:05:04 +0300
-Message-Id: <1307610310-28691-25-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 23/30] UBIFS: introduce more I/O helpers
+Date: Thu,  9 Jun 2011 12:05:03 +0300
+Message-Id: <1307610310-28691-24-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 References: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,317 +25,356 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Instead of using 'ubi_read()' function directly, used the 'ubifs_leb_read()'
-helper function instead. This allows to get rid of several redundant error
-messages and make sure that we always have a stack dump on read errors.
+Introduce the following I/O helper functions: 'ubifs_leb_read()',
+'ubifs_leb_write()', 'ubifs_leb_change()', 'ubifs_leb_unmap()',
+'ubifs_leb_map()', 'ubifs_is_mapped().
+
+The idea is to wrap all UBI I/O functions in order to encapsulate various
+assertions and error path handling (error message, stack dump, switching to R/O
+mode). And there are some other benefits of this which will be used in the
+following patches.
+
+This patch does not switch whole UBIFS to use these functions yet.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/io.c         |   15 ++++-----------
- fs/ubifs/lpt.c        |   17 +++++++++--------
- fs/ubifs/lpt_commit.c |   23 +++++++++++------------
- fs/ubifs/recovery.c   |   17 +++++++++--------
- fs/ubifs/replay.c     |    3 +--
- fs/ubifs/sb.c         |    2 +-
- fs/ubifs/scan.c       |    2 +-
- fs/ubifs/tnc.c        |    8 ++++----
- 8 files changed, 40 insertions(+), 47 deletions(-)
+ fs/ubifs/debug.h    |   16 +++++++
+ fs/ubifs/io.c       |  117 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/misc.h     |   80 -----------------------------------
+ fs/ubifs/recovery.c |    9 ++--
+ fs/ubifs/ubifs.h    |   13 +++++-
+ 5 files changed, 148 insertions(+), 87 deletions(-)
 
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index e1dcfd2..b0b005b 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -244,6 +244,10 @@ static inline int dbg_is_tst_rcvry(const struct ubifs_info *c)
+ {
+ 	return !!(ubifs_dbg.tst_rcvry || c->dbg->tst_rcvry);
+ }
++static inline int dbg_is_power_cut(const struct ubifs_info *c)
++{
++	return !!c->dbg->failure_mode;
++}
+ 
+ int ubifs_debugging_init(struct ubifs_info *c);
+ void ubifs_debugging_exit(struct ubifs_info *c);
+@@ -445,12 +449,24 @@ static inline int
+ dbg_check_nondata_nodes_order(struct ubifs_info *c,
+ 			      struct list_head *head)             { return 0; }
+ 
++static inline int dbg_leb_write(struct ubi_volume_desc *desc,
++				int lnum, const void *buf,
++				int offset, int len, int dtype)   { return 0; }
++static inline int dbg_leb_change(struct ubi_volume_desc *desc,
++				 int lnum, const void *buf,
++				 int len, int dtype)              { return 0; }
++static inline int dbg_leb_unmap(struct ubi_volume_desc *desc,
++				int lnum)                         { return 0; }
++static inline int dbg_leb_map(struct ubi_volume_desc *desc,
++			      int lnum, int dtype)                { return 0; }
++
+ static inline int dbg_is_chk_gen(const struct ubifs_info *c)      { return 0; }
+ static inline int dbg_is_chk_index(const struct ubifs_info *c)    { return 0; }
+ static inline int dbg_is_chk_orph(const struct ubifs_info *c)     { return 0; }
+ static inline int dbg_is_chk_lprops(const struct ubifs_info *c)   { return 0; }
+ static inline int dbg_is_chk_fs(const struct ubifs_info *c)       { return 0; }
+ static inline int dbg_is_tst_rcvry(const struct ubifs_info *c)    { return 0; }
++static inline int dbg_is_power_cut(const struct ubifs_info *c)    { return 0; }
+ 
+ static inline int dbg_debugfs_init(void)                          { return 0; }
+ static inline void dbg_debugfs_exit(void)                         { return; }
 diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 239899d..f58f11b 100644
+index 48e1680..239899d 100644
 --- a/fs/ubifs/io.c
 +++ b/fs/ubifs/io.c
-@@ -941,13 +941,9 @@ int ubifs_read_node_wbuf(struct ubifs_wbuf *wbuf, void *buf, int type, int len,
- 
- 	if (rlen > 0) {
- 		/* Read everything that goes before write-buffer */
--		err = ubi_read(c->ubi, lnum, buf, offs, rlen);
--		if (err && err != -EBADMSG) {
--			ubifs_err("failed to read node %d from LEB %d:%d, "
--				  "error %d", type, lnum, offs, err);
--			dbg_dump_stack();
-+		err = ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
-+		if (err && err != -EBADMSG)
- 			return err;
--		}
+@@ -90,6 +90,123 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
  	}
+ }
  
- 	if (type != ch->node_type) {
-@@ -1002,12 +998,9 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
- 	ubifs_assert(!(offs & 7) && offs < c->leb_size);
- 	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
++/*
++ * Below are simple wrappers over UBI I/O functions which include some
++ * additional checks and UBIFS debugging stuff. See corresponding UBI function
++ * for more information.
++ */
++
++int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
++		   int len, int even_ebadmsg)
++{
++	int err;
++
++	err = ubi_read(c->ubi, lnum, buf, offs, len);
++	/*
++	 * In case of %-EBADMSG print the error message only if the
++	 * @even_ebadmsg is true.
++	 */
++	if (err && (err != -EBADMSG || even_ebadmsg)) {
++		ubifs_err("reading %d bytes from LEB %d:%d failed, error %d",
++			  len, lnum, offs, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
++int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
++		    int len, int dtype)
++{
++	int err;
++
++	ubifs_assert(!c->ro_media && !c->ro_mount);
++	if (c->ro_error)
++		return -EROFS;
++	if (!dbg_is_tst_rcvry(c))
++		err = ubi_leb_write(c->ubi, lnum, buf, offs, len, dtype);
++	else
++		err = dbg_leb_write(c->ubi, lnum, buf, offs, len, dtype);
++	if (err) {
++		ubifs_err("writing %d bytes to LEB %d:%d failed, error %d",
++			  len, lnum, offs, err);
++		ubifs_ro_mode(c, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
++int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
++		     int dtype)
++{
++	int err;
++
++	ubifs_assert(!c->ro_media && !c->ro_mount);
++	if (c->ro_error)
++		return -EROFS;
++	if (!dbg_is_tst_rcvry(c))
++		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
++	else
++		err = dbg_leb_change(c->ubi, lnum, buf, len, dtype);
++	if (err) {
++		ubifs_err("changing %d bytes in LEB %d failed, error %d",
++			  len, lnum, err);
++		ubifs_ro_mode(c, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
++int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
++{
++	int err;
++
++	ubifs_assert(!c->ro_media && !c->ro_mount);
++	if (c->ro_error)
++		return -EROFS;
++	if (!dbg_is_tst_rcvry(c))
++		err = ubi_leb_unmap(c->ubi, lnum);
++	else
++		err = dbg_leb_unmap(c->ubi, lnum);
++	if (err) {
++		ubifs_err("unmap LEB %d failed, error %d", lnum, err);
++		ubifs_ro_mode(c, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
++int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype)
++{
++	int err;
++
++	ubifs_assert(!c->ro_media && !c->ro_mount);
++	if (c->ro_error)
++		return -EROFS;
++	if (!dbg_is_tst_rcvry(c))
++		err = ubi_leb_map(c->ubi, lnum, dtype);
++	else
++		err = dbg_leb_map(c->ubi, lnum, dtype);
++	if (err) {
++		ubifs_err("mapping LEB %d failed, error %d", lnum, err);
++		ubifs_ro_mode(c, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
++int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
++{
++	int err;
++
++	err = ubi_is_mapped(c->ubi, lnum);
++	if (err < 0) {
++		ubifs_err("ubi_is_mapped failed for LEB %d, error %d",
++			  lnum, err);
++		dbg_dump_stack();
++	}
++	return err;
++}
++
+ /**
+  * ubifs_check_node - check node.
+  * @c: UBIFS file-system description object
+diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
+index 160cd90..ee7cb5e 100644
+--- a/fs/ubifs/misc.h
++++ b/fs/ubifs/misc.h
+@@ -145,86 +145,6 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
+ }
  
--	err = ubi_read(c->ubi, lnum, buf, offs, len);
--	if (err && err != -EBADMSG) {
--		ubifs_err("cannot read node %d from LEB %d:%d, error %d",
--			  type, lnum, offs, err);
-+	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
-+	if (err && err != -EBADMSG)
- 		return err;
--	}
- 
- 	if (type != ch->node_type) {
- 		ubifs_err("bad node type (%d but expected %d)",
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index ab91ca6..8b9ee9f 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -1222,7 +1222,7 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
- 		if (c->big_lpt)
- 			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
- 	} else {
--		err = ubi_read(c->ubi, lnum, buf, offs, c->nnode_sz);
-+		err = ubifs_leb_read(c, lnum, buf, offs, c->nnode_sz, 1);
- 		if (err)
- 			goto out;
- 		err = ubifs_unpack_nnode(c, buf, nnode);
-@@ -1291,7 +1291,7 @@ static int read_pnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
- 			lprops->flags = ubifs_categorize_lprops(c, lprops);
- 		}
- 	} else {
--		err = ubi_read(c->ubi, lnum, buf, offs, c->pnode_sz);
-+		err = ubifs_leb_read(c, lnum, buf, offs, c->pnode_sz, 1);
- 		if (err)
- 			goto out;
- 		err = unpack_pnode(c, buf, pnode);
-@@ -1333,7 +1333,7 @@ static int read_ltab(struct ubifs_info *c)
- 	buf = vmalloc(c->ltab_sz);
- 	if (!buf)
- 		return -ENOMEM;
--	err = ubi_read(c->ubi, c->ltab_lnum, buf, c->ltab_offs, c->ltab_sz);
-+	err = ubifs_leb_read(c, c->ltab_lnum, buf, c->ltab_offs, c->ltab_sz, 1);
- 	if (err)
- 		goto out;
- 	err = unpack_ltab(c, buf);
-@@ -1356,7 +1356,8 @@ static int read_lsave(struct ubifs_info *c)
- 	buf = vmalloc(c->lsave_sz);
- 	if (!buf)
- 		return -ENOMEM;
--	err = ubi_read(c->ubi, c->lsave_lnum, buf, c->lsave_offs, c->lsave_sz);
-+	err = ubifs_leb_read(c, c->lsave_lnum, buf, c->lsave_offs,
-+			     c->lsave_sz, 1);
- 	if (err)
- 		goto out;
- 	err = unpack_lsave(c, buf);
-@@ -1816,8 +1817,8 @@ static struct ubifs_nnode *scan_get_nnode(struct ubifs_info *c,
- 		if (c->big_lpt)
- 			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
- 	} else {
--		err = ubi_read(c->ubi, branch->lnum, buf, branch->offs,
--			       c->nnode_sz);
-+		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
-+				     c->nnode_sz, 1);
- 		if (err)
- 			return ERR_PTR(err);
- 		err = ubifs_unpack_nnode(c, buf, nnode);
-@@ -1885,8 +1886,8 @@ static struct ubifs_pnode *scan_get_pnode(struct ubifs_info *c,
- 		ubifs_assert(branch->lnum >= c->lpt_first &&
- 			     branch->lnum <= c->lpt_last);
- 		ubifs_assert(branch->offs >= 0 && branch->offs < c->leb_size);
--		err = ubi_read(c->ubi, branch->lnum, buf, branch->offs,
--			       c->pnode_sz);
-+		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
-+				     c->pnode_sz, 1);
- 		if (err)
- 			return ERR_PTR(err);
- 		err = unpack_pnode(c, buf, pnode);
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index f13addf..cddd6bd 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -1161,11 +1161,11 @@ static int lpt_gc_lnum(struct ubifs_info *c, int lnum)
- 	void *buf = c->lpt_buf;
- 
- 	dbg_lp("LEB %d", lnum);
--	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
+ /**
+- * ubifs_leb_unmap - unmap an LEB.
+- * @c: UBIFS file-system description object
+- * @lnum: LEB number to unmap
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-static inline int ubifs_leb_unmap(const struct ubifs_info *c, int lnum)
+-{
+-	int err;
+-
+-	ubifs_assert(!c->ro_media && !c->ro_mount);
+-	if (c->ro_error)
+-		return -EROFS;
+-	err = ubi_leb_unmap(c->ubi, lnum);
 -	if (err) {
--		ubifs_err("cannot read LEB %d, error %d", lnum, err);
-+
-+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
-+	if (err)
- 		return err;
+-		ubifs_err("unmap LEB %d failed, error %d", lnum, err);
+-		return err;
 -	}
-+
- 	while (1) {
- 		if (!is_a_node(c, buf, len)) {
- 			int pad_len;
-@@ -1651,11 +1651,11 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
- 	}
- 
- 	dbg_lp("LEB %d", lnum);
--	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
+-
+-	return 0;
+-}
+-
+-/**
+- * ubifs_leb_write - write to a LEB.
+- * @c: UBIFS file-system description object
+- * @lnum: LEB number to write
+- * @buf: buffer to write from
+- * @offs: offset within LEB to write to
+- * @len: length to write
+- * @dtype: data type
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-static inline int ubifs_leb_write(const struct ubifs_info *c, int lnum,
+-				  const void *buf, int offs, int len, int dtype)
+-{
+-	int err;
+-
+-	ubifs_assert(!c->ro_media && !c->ro_mount);
+-	if (c->ro_error)
+-		return -EROFS;
+-	err = ubi_leb_write(c->ubi, lnum, buf, offs, len, dtype);
 -	if (err) {
--		dbg_msg("ubi_read failed, LEB %d, error %d", lnum, err);
-+
-+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
-+	if (err)
- 		goto out;
+-		ubifs_err("writing %d bytes at %d:%d, error %d",
+-			  len, lnum, offs, err);
+-		return err;
 -	}
-+
- 	while (1) {
- 		if (!is_a_node(c, p, len)) {
- 			int i, pad_len;
-@@ -1902,11 +1902,10 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
- 		return;
- 	}
- 
--	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
+-
+-	return 0;
+-}
+-
+-/**
+- * ubifs_leb_change - atomic LEB change.
+- * @c: UBIFS file-system description object
+- * @lnum: LEB number to write
+- * @buf: buffer to write from
+- * @len: length to write
+- * @dtype: data type
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-static inline int ubifs_leb_change(const struct ubifs_info *c, int lnum,
+-				   const void *buf, int len, int dtype)
+-{
+-	int err;
+-
+-	ubifs_assert(!c->ro_media && !c->ro_mount);
+-	if (c->ro_error)
+-		return -EROFS;
+-	err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
 -	if (err) {
--		ubifs_err("cannot read LEB %d, error %d", lnum, err);
-+	err = ubifs_leb_read(c, lnum, buf, 0, c->leb_size, 1);
-+	if (err)
- 		goto out;
+-		ubifs_err("changing %d bytes in LEB %d, error %d",
+-			  len, lnum, err);
+-		return err;
 -	}
-+
- 	while (1) {
- 		offs = c->leb_size - len;
- 		if (!is_a_node(c, p, len)) {
+-
+-	return 0;
+-}
+-
+-/**
+  * ubifs_encode_dev - encode device node IDs.
+  * @dev: UBIFS device node information
+  * @rdev: device IDs to encode
 diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index c591549..f28070c 100644
+index 783d8e0..c591549 100644
 --- a/fs/ubifs/recovery.c
 +++ b/fs/ubifs/recovery.c
-@@ -117,7 +117,7 @@ static int get_master_node(const struct ubifs_info *c, int lnum, void **pbuf,
- 	if (!sbuf)
- 		return -ENOMEM;
+@@ -919,8 +919,7 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-static int recover_head(const struct ubifs_info *c, int lnum, int offs,
+-			void *sbuf)
++static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ {
+ 	int len = c->max_write_size, err;
  
--	err = ubi_read(c->ubi, lnum, sbuf, 0, c->leb_size);
-+	err = ubifs_leb_read(c, lnum, sbuf, 0, c->leb_size, 0);
- 	if (err && err != -EBADMSG)
- 		goto out_free;
+@@ -962,7 +961,7 @@ static int recover_head(const struct ubifs_info *c, int lnum, int offs,
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf)
++int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
+ {
+ 	int err;
  
-@@ -539,8 +539,8 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 			int len = ALIGN(endpt, c->min_io_size);
+@@ -993,7 +992,7 @@ int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf)
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-static int clean_an_unclean_leb(const struct ubifs_info *c,
++static int clean_an_unclean_leb(struct ubifs_info *c,
+ 				struct ubifs_unclean_leb *ucleb, void *sbuf)
+ {
+ 	int err, lnum = ucleb->lnum, offs = 0, len = ucleb->endpt, quiet = 1;
+@@ -1089,7 +1088,7 @@ static int clean_an_unclean_leb(const struct ubifs_info *c,
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-int ubifs_clean_lebs(const struct ubifs_info *c, void *sbuf)
++int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf)
+ {
+ 	dbg_rcvry("recovery");
+ 	while (!list_empty(&c->unclean_leb_list)) {
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 3304aad..702b792 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1468,6 +1468,15 @@ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
  
- 			if (start) {
--				err = ubi_read(c->ubi, lnum, sleb->buf, 0,
--					       start);
-+				err = ubifs_leb_read(c, lnum, sleb->buf, 0,
-+						     start, 1);
- 				if (err)
- 					return err;
- 			}
-@@ -819,7 +819,8 @@ static int get_cs_sqnum(struct ubifs_info *c, int lnum, int offs,
- 		return -ENOMEM;
- 	if (c->leb_size - offs < UBIFS_CS_NODE_SZ)
- 		goto out_err;
--	err = ubi_read(c->ubi, lnum, (void *)cs_node, offs, UBIFS_CS_NODE_SZ);
-+	err = ubifs_leb_read(c, lnum, (void *)cs_node, offs,
-+			     UBIFS_CS_NODE_SZ, 0);
- 	if (err && err != -EBADMSG)
- 		goto out_free;
- 	ret = ubifs_scan_a_node(c, cs_node, UBIFS_CS_NODE_SZ, lnum, offs, 0);
-@@ -930,12 +931,12 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
- 		return 0;
- 
- 	/* Read at the head location and check it is empty flash */
--	err = ubi_read(c->ubi, lnum, sbuf, offs, len);
-+	err = ubifs_leb_read(c, lnum, sbuf, offs, len, 1);
- 	if (err || !is_empty(sbuf, len)) {
- 		dbg_rcvry("cleaning head at %d:%d", lnum, offs);
- 		if (offs == 0)
- 			return ubifs_leb_unmap(c, lnum);
--		err = ubi_read(c->ubi, lnum, sbuf, 0, offs);
-+		err = ubifs_leb_read(c, lnum, sbuf, 0, offs, 1);
- 		if (err)
- 			return err;
- 		return ubi_leb_change(c->ubi, lnum, sbuf, offs, UBI_UNKNOWN);
-@@ -1008,7 +1009,7 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
- 		return 0;
- 	}
- 
--	err = ubi_read(c->ubi, lnum, buf, offs, len);
-+	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
- 	if (err && err != -EBADMSG)
- 		return err;
- 
-@@ -1453,7 +1454,7 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
- 	if (i_size >= e->d_size)
- 		return 0;
- 	/* Read the LEB */
--	err = ubi_read(c->ubi, lnum, c->sbuf, 0, c->leb_size);
-+	err = ubifs_leb_read(c, lnum, c->sbuf, 0, c->leb_size, 1);
- 	if (err)
- 		goto out;
- 	/* Change the size field and recalculate the CRC */
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 5e97161..ccabaf1 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -523,8 +523,7 @@ static int is_last_bud(struct ubifs_info *c, struct ubifs_bud *bud)
- 	if (!list_is_last(&next->list, &jh->buds_list))
- 		return 0;
- 
--	err = ubi_read(c->ubi, next->lnum, (char *)&data,
--		       next->start, 4);
-+	err = ubifs_leb_read(c, next->lnum, (char *)&data, next->start, 4, 1);
- 	if (err)
- 		return 0;
- 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index c606f01..701dccc 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -678,7 +678,7 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
- 	}
- 
- 	dbg_mnt("fixup LEB %d, data len %d", lnum, len);
--	err = ubi_read(c->ubi, lnum, c->sbuf, 0, len);
-+	err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 1);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
-index c7df916..37383e8 100644
---- a/fs/ubifs/scan.c
-+++ b/fs/ubifs/scan.c
-@@ -148,7 +148,7 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
- 	INIT_LIST_HEAD(&sleb->nodes);
- 	sleb->buf = sbuf;
- 
--	err = ubi_read(c->ubi, lnum, sbuf + offs, offs, c->leb_size - offs);
-+	err = ubifs_leb_read(c, lnum, sbuf + offs, offs, c->leb_size - offs, 0);
- 	if (err && err != -EBADMSG) {
- 		ubifs_err("cannot read %d bytes from LEB %d:%d,"
- 			  " error %d", c->leb_size - offs, lnum, offs, err);
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 526b63c..0667386 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -462,7 +462,7 @@ static int try_read_node(const struct ubifs_info *c, void *buf, int type,
- 
- 	dbg_io("LEB %d:%d, %s, length %d", lnum, offs, dbg_ntype(type), len);
- 
--	err = ubi_read(c->ubi, lnum, buf, offs, len);
-+	err = ubifs_leb_read(c, lnum, buf, offs, len, 1);
- 	if (err) {
- 		ubifs_err("cannot read node type %d from LEB %d:%d, error %d",
- 			  type, lnum, offs, err);
-@@ -1666,7 +1666,7 @@ static int read_wbuf(struct ubifs_wbuf *wbuf, void *buf, int len, int lnum,
- 	if (!overlap) {
- 		/* We may safely unlock the write-buffer and read the data */
- 		spin_unlock(&wbuf->lock);
--		return ubi_read(c->ubi, lnum, buf, offs, len);
-+		return ubifs_leb_read(c, lnum, buf, offs, len, 0);
- 	}
- 
- 	/* Don't read under wbuf */
-@@ -1680,7 +1680,7 @@ static int read_wbuf(struct ubifs_wbuf *wbuf, void *buf, int len, int lnum,
- 
- 	if (rlen > 0)
- 		/* Read everything that goes before write-buffer */
--		return ubi_read(c->ubi, lnum, buf, offs, rlen);
-+		return ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
- 
- 	return 0;
- }
-@@ -1767,7 +1767,7 @@ int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu)
- 	if (wbuf)
- 		err = read_wbuf(wbuf, bu->buf, len, lnum, offs);
- 	else
--		err = ubi_read(c->ubi, lnum, bu->buf, offs, len);
-+		err = ubifs_leb_read(c, lnum, bu->buf, offs, len, 0);
- 
- 	/* Check for a race with GC */
- 	if (maybe_leb_gced(c, lnum, bu->gc_seq))
+ /* io.c */
+ void ubifs_ro_mode(struct ubifs_info *c, int err);
++int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
++		   int len, int even_ebadmsg);
++int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
++		    int len, int dtype);
++int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
++		     int dtype);
++int ubifs_leb_unmap(struct ubifs_info *c, int lnum);
++int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype);
++int ubifs_is_mapped(const struct ubifs_info *c, int lnum);
+ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len);
+ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
+ 			   int dtype);
+@@ -1747,8 +1756,8 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+ 					 int offs, void *sbuf, int jhead);
+ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+ 					     int offs, void *sbuf);
+-int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf);
+-int ubifs_clean_lebs(const struct ubifs_info *c, void *sbuf);
++int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf);
++int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf);
+ int ubifs_rcvry_gc_commit(struct ubifs_info *c);
+ int ubifs_recover_size_accum(struct ubifs_info *c, union ubifs_key *key,
+ 			     int deletion, loff_t new_size);
 -- 
 1.7.2.3
