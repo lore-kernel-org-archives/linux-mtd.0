@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUb6w-0002VF-RR
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:18 +0000
+	id 1QUb6x-0002Vi-Fo
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:21 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p5990wEH028399
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:05 +0300
+	p5990wEJ028399
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:06 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 17/30] UBIFS: be more informative in failure mode
-Date: Thu,  9 Jun 2011 12:04:57 +0300
-Message-Id: <1307610310-28691-18-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 19/30] UBIFS: introduce debugfs helpers
+Date: Thu,  9 Jun 2011 12:04:59 +0300
+Message-Id: <1307610310-28691-20-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 References: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,101 +25,130 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-When we are testing UBIFS recovery, it is better to print in which eraseblock
-we are going to fail. Currently UBIFS prints it only if recovery debugging
-messages are enabled, but this is not very practical. So change 'dbg_rcvry()'
-messages to 'ubifs_warn()' messages.
+Separate out pieces of code from the debugfs file read/write functions and
+create separate 'interpret_user_input()'/'provide_user_output()' helpers. These
+helpers will be needed in one of the following patches, so this is just a
+preparational change.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/debug.c |   26 +++++++++++++-------------
- 1 files changed, 13 insertions(+), 13 deletions(-)
+ fs/ubifs/debug.c |   76 +++++++++++++++++++++++++++++++++++++++--------------
+ 1 files changed, 56 insertions(+), 20 deletions(-)
 
 diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index fdfa5de..05fae3f 100644
+index 515658c..91ac72c 100644
 --- a/fs/ubifs/debug.c
 +++ b/fs/ubifs/debug.c
-@@ -2631,11 +2631,11 @@ static int do_fail(struct ubi_volume_desc *desc, int lnum, int write)
- 				d->fail_delay = 1;
- 				d->fail_timeout = jiffies +
- 						  msecs_to_jiffies(delay);
--				dbg_rcvry("failing after %ums", delay);
-+				ubifs_warn("failing after %ums", delay);
- 			} else {
- 				d->fail_delay = 2;
- 				d->fail_cnt_max = delay;
--				dbg_rcvry("failing after %u calls", delay);
-+				ubifs_warn("failing after %u calls", delay);
- 			}
- 		}
- 		d->fail_cnt += 1;
-@@ -2653,56 +2653,56 @@ static int do_fail(struct ubi_volume_desc *desc, int lnum, int write)
- 				return 0;
- 		} else if (chance(19, 20))
- 			return 0;
--		dbg_rcvry("failing in super block LEB %d", lnum);
-+		ubifs_warn("failing in super block LEB %d", lnum);
- 	} else if (lnum == UBIFS_MST_LNUM || lnum == UBIFS_MST_LNUM + 1) {
- 		if (chance(19, 20))
- 			return 0;
--		dbg_rcvry("failing in master LEB %d", lnum);
-+		ubifs_warn("failing in master LEB %d", lnum);
- 	} else if (lnum >= UBIFS_LOG_LNUM && lnum <= c->log_last) {
- 		if (write) {
- 			if (chance(99, 100))
- 				return 0;
- 		} else if (chance(399, 400))
- 			return 0;
--		dbg_rcvry("failing in log LEB %d", lnum);
-+		ubifs_warn("failing in log LEB %d", lnum);
- 	} else if (lnum >= c->lpt_first && lnum <= c->lpt_last) {
- 		if (write) {
- 			if (chance(7, 8))
- 				return 0;
- 		} else if (chance(19, 20))
- 			return 0;
--		dbg_rcvry("failing in LPT LEB %d", lnum);
-+		ubifs_warn("failing in LPT LEB %d", lnum);
- 	} else if (lnum >= c->orph_first && lnum <= c->orph_last) {
- 		if (write) {
- 			if (chance(1, 2))
- 				return 0;
- 		} else if (chance(9, 10))
- 			return 0;
--		dbg_rcvry("failing in orphan LEB %d", lnum);
-+		ubifs_warn("failing in orphan LEB %d", lnum);
- 	} else if (lnum == c->ihead_lnum) {
- 		if (chance(99, 100))
- 			return 0;
--		dbg_rcvry("failing in index head LEB %d", lnum);
-+		ubifs_warn("failing in index head LEB %d", lnum);
- 	} else if (c->jheads && lnum == c->jheads[GCHD].wbuf.lnum) {
- 		if (chance(9, 10))
- 			return 0;
--		dbg_rcvry("failing in GC head LEB %d", lnum);
-+		ubifs_warn("failing in GC head LEB %d", lnum);
- 	} else if (write && !RB_EMPTY_ROOT(&c->buds) &&
- 		   !ubifs_search_bud(c, lnum)) {
- 		if (chance(19, 20))
- 			return 0;
--		dbg_rcvry("failing in non-bud LEB %d", lnum);
-+		ubifs_warn("failing in non-bud LEB %d", lnum);
- 	} else if (c->cmt_state == COMMIT_RUNNING_BACKGROUND ||
- 		   c->cmt_state == COMMIT_RUNNING_REQUIRED) {
- 		if (chance(999, 1000))
- 			return 0;
--		dbg_rcvry("failing in bud LEB %d commit running", lnum);
-+		ubifs_warn("failing in bud LEB %d commit running", lnum);
- 	} else {
- 		if (chance(9999, 10000))
- 			return 0;
--		dbg_rcvry("failing in bud LEB %d commit not running", lnum);
-+		ubifs_warn("failing in bud LEB %d commit not running", lnum);
- 	}
--	ubifs_err("*** SETTING FAILURE MODE ON (LEB %d) ***", lnum);
+@@ -2820,13 +2820,39 @@ static int dfs_file_open(struct inode *inode, struct file *file)
+ 	return nonseekable_open(inode, file);
+ }
+ 
++/**
++ * provide_user_output - provide output to the user reading a debugfs file.
++ * @val: boolean value for the answer
++ * @u: the buffer to store the answer at
++ * @count: size of the buffer
++ * @ppos: position in the @u output buffer
++ *
++ * This is a simple helper function which stores @val boolean value in the user
++ * buffer when the user reads one of UBIFS debugfs files. Returns amount of
++ * bytes written to @u in case of success and a negative error code in case of
++ * failure.
++ */
++static int provide_user_output(int val, char __user *u, size_t count,
++			       loff_t *ppos)
++{
++	char buf[3];
 +
- 	d->failure_mode = 1;
- 	dump_stack();
- 	return 1;
++	if (val)
++		buf[0] = '1';
++	else
++		buf[0] = '0';
++	buf[1] = '\n';
++	buf[2] = 0x00;
++
++	return simple_read_from_buffer(u, count, ppos, buf, 2);
++}
++
+ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
+ 			     loff_t *ppos)
+ {
+ 	struct dentry *dent = file->f_path.dentry;
+ 	struct ubifs_info *c = file->private_data;
+ 	struct ubifs_debug_info *d = c->dbg;
+-	char buf[3];
+ 	int val;
+ 
+ 	if (dent == d->dfs_chk_gen)
+@@ -2844,14 +2870,33 @@ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
+ 	else
+ 		return -EINVAL;
+ 
+-	if (val)
+-		buf[0] = '1';
+-	else
+-		buf[0] = '0';
+-	buf[1] = '\n';
+-	buf[2] = 0x00;
++	return provide_user_output(val, u, count, ppos);
++}
+ 
+-	return simple_read_from_buffer(u, count, ppos, buf, 2);
++/**
++ * interpret_user_input - interpret user debugfs file input.
++ * @u: user-provided buffer with the input
++ * @count: buffer size
++ *
++ * This is a helper function which interpret user input to a boolean UBIFS
++ * debugfs file. Returns %0 or %1 in case of success and a negative error code
++ * in case of failure.
++ */
++static int interpret_user_input(const char __user *u, size_t count)
++{
++	size_t buf_size;
++	char buf[8];
++
++	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
++	if (copy_from_user(buf, u, buf_size))
++		return -EFAULT;
++
++	if (buf[0] == '1')
++		return 1;
++	else if (buf[0] == '0')
++		return 0;
++
++	return -EINVAL;
+ }
+ 
+ static ssize_t dfs_file_write(struct file *file, const char __user *u,
+@@ -2860,8 +2905,6 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
+ 	struct ubifs_info *c = file->private_data;
+ 	struct ubifs_debug_info *d = c->dbg;
+ 	struct dentry *dent = file->f_path.dentry;
+-	size_t buf_size;
+-	char buf[8];
+ 	int val;
+ 
+ 	/*
+@@ -2883,16 +2926,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
+ 		return count;
+ 	}
+ 
+-	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
+-	if (copy_from_user(buf, u, buf_size))
+-		return -EFAULT;
+-
+-	if (buf[0] == '1')
+-		val = 1;
+-	else if (buf[0] == '0')
+-		val = 0;
+-	else
+-		return -EINVAL;
++	val = interpret_user_input(u, count);
++	if (val < 0)
++		return val;
+ 
+ 	if (dent == d->dfs_chk_gen)
+ 		d->chk_gen = val;
 -- 
 1.7.2.3
