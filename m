@@ -1,20 +1,19 @@
 Received: from mail.free-electrons.com ([88.190.12.23])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUeWD-0006Ow-FH
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 12:39:26 +0000
-Message-ID: <4DF0BFA0.4030402@free-electrons.com>
-Date: Thu, 09 Jun 2011 14:42:08 +0200
+	id 1QUeYi-0006VA-HP
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 12:42:01 +0000
+Message-ID: <4DF0C03E.90909@free-electrons.com>
+Date: Thu, 09 Jun 2011 14:44:46 +0200
 From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-To: Gilles Ganault <gilles.ganault@free.fr>
-Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
-References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-	<4DF0B36E.2020605@free-electrons.com>
-	<7.0.1.0.2.20110609135430.06967d28@free.fr>
-In-Reply-To: <7.0.1.0.2.20110609135430.06967d28@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
+To: dedekind1@gmail.com
+Subject: Re: impact of 2X_PROGRAM on read operations
+References: <4DECC41F.5060808@free-electrons.com>
+	<1307370761.3112.76.camel@localhost>
+In-Reply-To: <1307370761.3112.76.camel@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/09/2011 02:26 PM, Gilles Ganault wrote:
-> Hello
+On 06/06/2011 04:32 PM, Artem Bityutskiy wrote:
+> On Mon, 2011-06-06 at 14:12 +0200, David Wagner wrote:
+>> Is there a way to safely read without 2X_PROGRAM enabled once it has
+>> been flashed with a 2X_PROGRAM-enabled flasher (e.g. patched u-boot).
 > 
-> At 13:50 09/06/2011, you wrote:
->> > Eraseblock size:                131072 bytes, 128.0 KiB
->> >  [...]
->> > Default UBI LEB size:           129024 bytes, 126.0 KiB
->> > Maximum UBI volumes count:      128
->> > ==============
->> > #Create root filesystem
->> > ubuntu:/> mkfs.ubifs --squash-uids -m 2048 -e 131072 -c 1984 -d
->> > ./romfs -D device_table-min.txt -o ./images/rootfs.ubifs
->> >
->>
->> The -e option of mkfs.ubifs takes the logical eraseblock size.
->> But you specified 131072, the physical eraseblock size.
->> So here, you should have -e 129024
->> The details for computing the LEB size are at
->> http://git.infradead.org/mtd-utils.git/blob/HEAD:/ubi-utils/src/libubigen.c#l40
->>
->> In most cases, the formula for the offset boils down to:
->> LEB_size = PEB_size - (((Subpage_size + Page_size) * Page_size) /
->> Page_size)
+> Not sure about u-boot, but AFAIK 2x is a completely separate mode which
+> gives you I/O speed-up but makes things incompatible with "normal" mode.
+> E.g., you can mount JFFS2 only in one of the modes.
 > 
-> Thanks for the tip, but after recompiling a new root filesystem, I'm
-> still getting the same error:
-[...]
-> BTW, using the formula above, I find this: 131.072 - ((( 512 + 2.048) *
-> 2.048 ) / 2.048 ) = 128.512
-> 
-> I wonder if maybe I should leave some room in the NAND partition for the
-> Ubifs journal + error log? I used vol_size=248MiB in ubi.cfg, but maybe
-> this is toot big?
 
-(I forgot to reply to all in my first answer)
+Ok, so I guess it doesn't make sense trying to address the issue of
+incompatibilities.
 
-Oops, sorry, the formula is
-((Subpage_size + Page_size)) / Page_size) * Page_size
-That is, subpage+page truncated to page.
+I may have to check once again, but I'm pretty sure, however, that I
+managed to flash a UBI image with a 2X_PROGRAM-enabled u-boot and read
+it with a regular kernel. The u-boot code for 2X_PROGRAM handling seems
+to basically be a copy-paste from the kernel.
+If the diagram in my first mail is correct, that could not be possible.
 
-Maybe you have to take the reserved LEBs into account: 1% of the PEBs.
-I'm not sure if they are already included in what mtdinfo displays, though.
+Kyungmin, do you know what's wrong in my reasoning ?
 
+
+Regards,
+David Wagner.
 -- 
 David Wagner, Free Electrons
 Kernel, drivers, real-time and embedded Linux
