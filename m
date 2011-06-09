@@ -1,19 +1,19 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUZ4z-0000sI-Ui
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 06:50:58 +0000
-Received: by ewy3 with SMTP id 3so533827ewy.36
+	id 1QUZBI-00012F-EB
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 06:57:29 +0000
+Received: by wwb39 with SMTP id 39so999544wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jun 2011 23:50:55 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] mtd: nand: replace DEBUG() with dev_dbg()
+	Wed, 08 Jun 2011 23:57:26 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1307557650-31323-1-git-send-email-computersforpeace@gmail.com>
-References: <1307544295.31223.116.camel@localhost>
-	<1307557650-31323-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
+References: <1307544227.31223.115.camel@localhost>
+	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Jun 2011 09:46:37 +0300
-Message-ID: <1307601997.7374.10.camel@localhost>
+Date: Thu, 09 Jun 2011 09:53:08 +0300
+Message-ID: <1307602388.7374.13.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
@@ -28,11 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-08 at 11:27 -0700, Brian Norris wrote:
-> +               dev_dbg(&mtd->dev, "%s: error status = 0x%08x\n",
->                                         __func__, status); 
+On Wed, 2011-06-08 at 11:25 -0700, Brian Norris wrote:
+> -		printk(KERN_DEBUG "Bad block table written to 0x%012llx, version "
+> +		pr_debug("Bad block table written to 0x%012llx, version "
+>  		       "0x%02X\n", (unsigned long long)to, td->version[chip]);
 
-Aligned things like this and pushed, thank you!
+Hmm, the side effect of this change is this message will disappear if
+DEBUG is undefined / dynamic debugging is disabled.
+
+So I think we need to change all these pr_debug to pr_info, because this
+is really just info.
 
 -- 
 Best Regards,
