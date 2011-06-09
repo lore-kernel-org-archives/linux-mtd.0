@@ -1,23 +1,23 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUZnS-0001ae-6R
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 07:36:55 +0000
-Received: by fxm14 with SMTP id 14so1131282fxm.36
+	id 1QUZyl-0001l5-Qb
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 07:48:37 +0000
+Received: by fxm14 with SMTP id 14so1137869fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 00:36:51 -0700 (PDT)
-Subject: Re: [PATCH 14/43] mtd: physmap.c: use mtd_device_parse_register
+	Thu, 09 Jun 2011 00:48:34 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <1307549152-7085-15-git-send-email-dbaryshkov@gmail.com>
-References: <1307549152-7085-1-git-send-email-dbaryshkov@gmail.com>
-	<1307549152-7085-15-git-send-email-dbaryshkov@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
+References: <1307544227.31223.115.camel@localhost>
+	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Jun 2011 10:32:32 +0300
-Message-ID: <1307604752.7374.34.camel@localhost>
+Date: Thu, 09 Jun 2011 10:44:16 +0300
+Message-ID: <1307605456.7374.35.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Russell King <linux@arm.linux.org.uk>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Igor Grinberg <grinberg@compulab.co.il>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,20 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-08 at 20:05 +0400, Dmitry Eremin-Solenikov wrote:
-> -	if (physmap_data->nr_parts) {
-> -		printk(KERN_NOTICE "Using physmap partition information\n");
-> -		mtd_device_register(info->cmtd, physmap_data->parts,
-> -				    physmap_data->nr_parts);
-> -		return 0;
-> -	}
-> -
-> -	mtd_device_register(info->cmtd, NULL, 0);
-> -
-> +	mtd_device_parse_register(info->cmtd, part_probe_types, 0,
-> +			physmap_data->parts, physmap_data->nr_parts);
+On Wed, 2011-06-08 at 11:25 -0700, Brian Norris wrote:
+> Also fix some punctuation, indentation, and capitalization that went
+> along with the affected lines.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   65 ++++++++++++++++++++----------------------
+>  drivers/mtd/nand/nand_bbt.c  |   39 ++++++++++++-------------
+>  2 files changed, 50 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 019187b..7550cea 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2167,8 +2167,8 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+>  
+>  	/* Reject writes, which are not page aligned */
+>  	if (NOTALIGNED(to) || NOTALIGNED(ops->len)) {
+> -		printk(KERN_NOTICE "%s: Attempt to write not "
+> -				"page aligned data\n", __func__);
+> +		pr_notice("%s: attempt to write non page aligned data\n",
+> +			   __func__);
+>  		return -EINVAL;
 
-Same here.
+Wait, and why are we using pr_* while it is better to use dbg_* ? :-)
 
 -- 
 Best Regards,
