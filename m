@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUg8g-0007Vd-C6
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 14:23:15 +0000
-Received: by wyb28 with SMTP id 28so1555625wyb.36
+	id 1QUg8j-0007V4-8H
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 14:23:18 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so1305393wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 07:23:13 -0700 (PDT)
+	Thu, 09 Jun 2011 07:23:16 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/17] mtd: m25p80: use ofpart through generic parsing
-Date: Thu,  9 Jun 2011 18:22:52 +0400
-Message-Id: <1307629388-24769-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 05/17] mtd: fsl_upm: use ofpart through generic parsing
+Date: Thu,  9 Jun 2011 18:22:54 +0400
+Message-Id: <1307629388-24769-6-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307629388-24769-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -27,34 +27,34 @@ parse_mtd_partitions().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c |    8 +-------
+ drivers/mtd/nand/fsl_upm.c |    8 +-------
  1 files changed, 1 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 70d5fca..a1cdb52 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -928,6 +928,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	if (info->flags & M25P_NO_ERASE)
- 		flash->mtd.flags |= MTD_NO_ERASE;
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 7c782eb..253b8ff 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -175,6 +175,7 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
  
-+	flash->mtd.node = spi->dev.of_node;
- 	flash->mtd.dev.parent = &spi->dev;
- 	flash->page_size = info->page_size;
+ 	fun->mtd.priv = &fun->chip;
+ 	fun->mtd.owner = THIS_MODULE;
++	fun->mtd.node = flash_np;
  
-@@ -975,13 +976,6 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 		nr_parts = data->nr_parts;
- 	}
+ 	flash_np = of_get_next_child(upm_np, NULL);
+ 	if (!flash_np)
+@@ -193,13 +194,6 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
+ 
+ 	ret = parse_mtd_partitions(&fun->mtd, NULL, &fun->parts, 0);
  
 -#ifdef CONFIG_MTD_OF_PARTS
--	if (nr_parts <= 0 && spi->dev.of_node) {
--		nr_parts = of_mtd_parse_partitions(&spi->dev,
--						   spi->dev.of_node, &parts);
+-	if (ret == 0) {
+-		ret = of_mtd_parse_partitions(fun->dev, flash_np, &fun->parts);
+-		if (ret < 0)
+-			goto err;
 -	}
 -#endif
--
- 	if (nr_parts > 0) {
- 		for (i = 0; i < nr_parts; i++) {
- 			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+ 	ret = mtd_device_register(&fun->mtd, fun->parts, ret);
+ err:
+ 	of_node_put(flash_np);
 -- 
 1.7.5.3
