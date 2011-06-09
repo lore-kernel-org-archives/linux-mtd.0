@@ -1,22 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUeZS-0006Xd-Um
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 12:42:47 +0000
-Received: by eyh6 with SMTP id 6so639439eyh.36
+	id 1QUerO-0006kJ-AZ
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 13:01:19 +0000
+Received: by vxd2 with SMTP id 2so1485471vxd.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 05:42:44 -0700 (PDT)
-Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gilles <gilles.ganault@free.fr>
-In-Reply-To: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Jun 2011 15:38:25 +0300
-Message-ID: <1307623105.7374.91.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Thu, 09 Jun 2011 06:01:14 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <4DF0C03E.90909@free-electrons.com>
+References: <4DECC41F.5060808@free-electrons.com>
+	<1307370761.3112.76.camel@localhost>
+	<4DF0C03E.90909@free-electrons.com>
+Date: Thu, 9 Jun 2011 22:01:14 +0900
+Message-ID: <BANLkTikOR5_XZoh7DWwvcqK2t_fy28=NyQ@mail.gmail.com>
+Subject: Re: impact of 2X_PROGRAM on read operations
+From: Kyungmin Park <kmpark@infradead.org>
+To: David Wagner <david.wagner@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-09 at 12:24 +0200, Gilles wrote:
-> vol_size=248MiB
+On Thu, Jun 9, 2011 at 9:44 PM, David Wagner
+<david.wagner@free-electrons.com> wrote:
+> On 06/06/2011 04:32 PM, Artem Bityutskiy wrote:
+>> On Mon, 2011-06-06 at 14:12 +0200, David Wagner wrote:
+>>> Is there a way to safely read without 2X_PROGRAM enabled once it has
+>>> been flashed with a 2X_PROGRAM-enabled flasher (e.g. patched u-boot).
+>>
+>> Not sure about u-boot, but AFAIK 2x is a completely separate mode which
+>> gives you I/O speed-up but makes things incompatible with "normal" mode.
+>> E.g., you can mount JFFS2 only in one of the modes.
+>>
+>
+> Ok, so I guess it doesn't make sense trying to address the issue of
+> incompatibilities.
+>
+> I may have to check once again, but I'm pretty sure, however, that I
+> managed to flash a UBI image with a 2X_PROGRAM-enabled u-boot and read
+> it with a regular kernel. The u-boot code for 2X_PROGRAM handling seems
+> to basically be a copy-paste from the kernel.
+> If the diagram in my first mail is correct, that could not be possible.
+>
+> Kyungmin, do you know what's wrong in my reasoning ?
+Since we don't know how program hen 2x_program mode. even though
+logically BufferRAM0 data will be located block even, BufferRAM1 will
+be copied to block odd. but it's not clear.
 
-Put, say, 230MiB here. 248MiB is the total amount of space. UBI adds
-some overhead, so your volume size will be smaller, see here:
+Can you tried to program the sample 4KiB data when 2X_PROGRAM and read
+(block even, page n) and read (block odd, page n) and compare it? then
+you can find a difference.
 
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_overhead
+I'm not tried to compare the compatible issue between normal and 2x mode.
 
-The autoresize flag that you specified will make sure your volume will
-be automatically re-sized to the maximum size when you first attach the
-MTD device.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thank you,
+Kyungmin Park
+>
+>
+> Regards,
+> David Wagner.
+> --
+> David Wagner, Free Electrons
+> Kernel, drivers, real-time and embedded Linux
+> development, consulting, training and support.
+> http://free-electrons.com
+>
