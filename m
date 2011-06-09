@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUb6u-0002SL-HA
+	id 1QUb6u-0002SR-Hf
 	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2011 09:01:11 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p5990wE5028399
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:00 +0300
+	p5990wE8028399
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2011 12:01:02 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/30] UBIFS: rename dbg_check_dir_size function
-Date: Thu,  9 Jun 2011 12:04:45 +0300
-Message-Id: <1307610310-28691-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/30] UBIFS: remove dead code
+Date: Thu,  9 Jun 2011 12:04:48 +0300
+Message-Id: <1307610310-28691-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 References: <1307610310-28691-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,63 +25,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Since this function is not only about size checking, rename it to
-'dbg_check_dir()'.
+Remove dead pieces of code under "if (c->min_io_size == 1)" statement -
+we never execute it because in UBIFS 'c->min_io_size' is always at least 8.
+This are leftovers from old pre-mainline prototype.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/debug.c |    2 +-
- fs/ubifs/debug.h |    4 ++--
- fs/ubifs/super.c |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ fs/ubifs/tnc_commit.c |  106 ++++++++++++++-----------------------------------
+ 1 files changed, 30 insertions(+), 76 deletions(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 4a2170d..26d4c61 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -1177,7 +1177,7 @@ int dbg_check_synced_i_size(struct inode *inode)
-  * Note, it is good idea to make sure the @dir->i_mutex is locked before
-  * calling this function.
-  */
--int dbg_check_dir_size(struct ubifs_info *c, const struct inode *dir)
-+int dbg_check_dir(struct ubifs_info *c, const struct inode *dir)
- {
- 	unsigned int nlink = 2;
- 	union ubifs_key key;
-diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index c6ad9ea..a51c20b 100644
---- a/fs/ubifs/debug.h
-+++ b/fs/ubifs/debug.h
-@@ -248,7 +248,7 @@ int dbg_check_ltab(struct ubifs_info *c);
- int dbg_chk_lpt_free_spc(struct ubifs_info *c);
- int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len);
- int dbg_check_synced_i_size(struct inode *inode);
--int dbg_check_dir_size(struct ubifs_info *c, const struct inode *dir);
-+int dbg_check_dir(struct ubifs_info *c, const struct inode *dir);
- int dbg_check_tnc(struct ubifs_info *c, int extra);
- int dbg_check_idx_size(struct ubifs_info *c, long long idx_size);
- int dbg_check_filesystem(struct ubifs_info *c);
-@@ -417,7 +417,7 @@ static inline int dbg_chk_lpt_free_spc(struct ubifs_info *c)      { return 0; }
- static inline int dbg_chk_lpt_sz(struct ubifs_info *c,
- 				 int action, int len)             { return 0; }
- static inline int dbg_check_synced_i_size(struct inode *inode)    { return 0; }
--static inline int dbg_check_dir_size(struct ubifs_info *c,
-+static inline int dbg_check_dir(struct ubifs_info *c,
- 				const struct inode *dir)          { return 0; }
- static inline int dbg_check_tnc(struct ubifs_info *c, int extra)  { return 0; }
- static inline int dbg_check_idx_size(struct ubifs_info *c,
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b5aeb5a..55161c6 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -94,7 +94,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
- 			   ubifs_compr_name(ui->compr_type));
+diff --git a/fs/ubifs/tnc_commit.c b/fs/ubifs/tnc_commit.c
+index 41920f3..8315387 100644
+--- a/fs/ubifs/tnc_commit.c
++++ b/fs/ubifs/tnc_commit.c
+@@ -491,25 +491,6 @@ static int layout_in_empty_space(struct ubifs_info *c)
+ 		else
+ 			next_len = ubifs_idx_node_sz(c, cnext->child_cnt);
+ 
+-		if (c->min_io_size == 1) {
+-			buf_offs += ALIGN(len, 8);
+-			if (next_len) {
+-				if (buf_offs + next_len <= c->leb_size)
+-					continue;
+-				err = ubifs_update_one_lp(c, lnum, 0,
+-						c->leb_size - buf_offs, 0, 0);
+-				if (err)
+-					return err;
+-				lnum = -1;
+-				continue;
+-			}
+-			err = ubifs_update_one_lp(c, lnum,
+-					c->leb_size - buf_offs, 0, 0, 0);
+-			if (err)
+-				return err;
+-			break;
+-		}
+-
+ 		/* Update buffer positions */
+ 		wlen = used + len;
+ 		used += ALIGN(len, 8);
+@@ -830,7 +811,7 @@ static int write_index(struct ubifs_info *c)
+ 	struct ubifs_idx_node *idx;
+ 	struct ubifs_znode *znode, *cnext;
+ 	int i, lnum, offs, len, next_len, buf_len, buf_offs, used;
+-	int avail, wlen, err, lnum_pos = 0;
++	int avail, wlen, err, lnum_pos = 0, blen, nxt_offs;
+ 
+ 	cnext = c->enext;
+ 	if (!cnext)
+@@ -938,65 +919,38 @@ static int write_index(struct ubifs_info *c)
+ 		else
+ 			next_len = ubifs_idx_node_sz(c, cnext->child_cnt);
+ 
+-		if (c->min_io_size == 1) {
+-			/*
+-			 * Write the prepared index node immediately if there is
+-			 * no minimum IO size
+-			 */
+-			err = ubifs_leb_write(c, lnum, c->cbuf, buf_offs,
+-					      wlen, UBI_SHORTTERM);
+-			if (err)
+-				return err;
+-			buf_offs += ALIGN(wlen, 8);
+-			if (next_len) {
+-				used = 0;
+-				avail = buf_len;
+-				if (buf_offs + next_len > c->leb_size) {
+-					err = ubifs_update_one_lp(c, lnum,
+-						LPROPS_NC, 0, 0, LPROPS_TAKEN);
+-					if (err)
+-						return err;
+-					lnum = -1;
+-				}
++		nxt_offs = buf_offs + used + next_len;
++		if (next_len && nxt_offs <= c->leb_size) {
++			if (avail > 0)
+ 				continue;
+-			}
++			else
++				blen = buf_len;
+ 		} else {
+-			int blen, nxt_offs = buf_offs + used + next_len;
+-
+-			if (next_len && nxt_offs <= c->leb_size) {
+-				if (avail > 0)
+-					continue;
+-				else
+-					blen = buf_len;
+-			} else {
+-				wlen = ALIGN(wlen, 8);
+-				blen = ALIGN(wlen, c->min_io_size);
+-				ubifs_pad(c, c->cbuf + wlen, blen - wlen);
+-			}
+-			/*
+-			 * The buffer is full or there are no more znodes
+-			 * to do
+-			 */
+-			err = ubifs_leb_write(c, lnum, c->cbuf, buf_offs,
+-					      blen, UBI_SHORTTERM);
+-			if (err)
+-				return err;
+-			buf_offs += blen;
+-			if (next_len) {
+-				if (nxt_offs > c->leb_size) {
+-					err = ubifs_update_one_lp(c, lnum,
+-						LPROPS_NC, 0, 0, LPROPS_TAKEN);
+-					if (err)
+-						return err;
+-					lnum = -1;
+-				}
+-				used -= blen;
+-				if (used < 0)
+-					used = 0;
+-				avail = buf_len - used;
+-				memmove(c->cbuf, c->cbuf + blen, used);
+-				continue;
++			wlen = ALIGN(wlen, 8);
++			blen = ALIGN(wlen, c->min_io_size);
++			ubifs_pad(c, c->cbuf + wlen, blen - wlen);
++		}
++
++		/* The buffer is full or there are no more znodes to do */
++		err = ubifs_leb_write(c, lnum, c->cbuf, buf_offs, blen,
++				      UBI_SHORTTERM);
++		if (err)
++			return err;
++		buf_offs += blen;
++		if (next_len) {
++			if (nxt_offs > c->leb_size) {
++				err = ubifs_update_one_lp(c, lnum, LPROPS_NC, 0,
++							  0, LPROPS_TAKEN);
++				if (err)
++					return err;
++				lnum = -1;
+ 			}
++			used -= blen;
++			if (used < 0)
++				used = 0;
++			avail = buf_len - used;
++			memmove(c->cbuf, c->cbuf + blen, used);
++			continue;
+ 		}
+ 		break;
  	}
- 
--	err = dbg_check_dir_size(c, inode);
-+	err = dbg_check_dir(c, inode);
- 	return err;
- }
- 
 -- 
 1.7.2.3
