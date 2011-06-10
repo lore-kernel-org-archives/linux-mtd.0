@@ -1,25 +1,17 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QVM2o-0003KD-3l
-	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2011 11:07:59 +0000
-Received: by vxd2 with SMTP id 2so3567924vxd.36
+	id 1QVMV4-00041k-5v
+	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2011 11:37:11 +0000
+Received: by fxm14 with SMTP id 14so2903971fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 11 Jun 2011 04:07:56 -0700 (PDT)
+	Sat, 11 Jun 2011 04:37:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <201106100849.29032.brian@walsh.ws>
-References: <20110609083419.GA23553@doriath.ww600.siemens.net>
-	<4DF08D79.9090707@gmail.com>
-	<BANLkTi=rBr0YS9vApbhTGJLEWAsfWWu8Fg@mail.gmail.com>
-	<201106100849.29032.brian@walsh.ws>
-Date: Fri, 10 Jun 2011 17:09:33 +0400
-Message-ID: <BANLkTinQnExQvS5p7OJy7WfDLiXO6M6i9Q@mail.gmail.com>
-Subject: Re: Question reg. parsing of mtd partitions
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Brian Walsh <brian@walsh.ws>
+Date: Fri, 10 Jun 2011 08:23:55 -0300
+Message-ID: <BANLkTimFywX1=e+48Wb3qM9Rrvh1vaPJWA@mail.gmail.com>
+Subject: [JFFS2] No space for garbage collection
+From: Caio <caiortp@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org,
-	Deepak Sanexa <dsanexa@mvista.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +21,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/10/11, Brian Walsh <brian@walsh.ws> wrote:
-> On Thursday, June 09, 2011 05:23:31 am Dmitry Eremin-Solenikov wrote:
->> On 6/9/11, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> wrote:
->> > On 09.06.2011 12:34, Dmitry Eremin-Solenikov wrote:
->> >> Hello, colleagues,
->> >>
->> >> While doing MTD partitions cleanup I noticed one strange thing.
->> >> parse_mtd_partitions function bears one extra argument (origin)
->> >> which isn't clearly described, set to non-zero only by ixp4xx.c
->> >> driver and then read by redboot partition table handling. I wander if
->> >> we
->> >> can add some other way to handle this situation and drop this extra 0
->> >> argument from lots of drivers/handlers/etc.
->> >>
->> >> Could you please check it?
->> >
->> > At least the ixp4xx part was added by commit f40a6f1cc7fe522,
->> > back in 2006:
->> >
->> > If the amount of flash is not divisible by 2 then the mask in
->> > parse_mtd_partitions would fail to work as designed.  Passing in the
->> > base address corrects this problem.
->>
->> Found the original patch/report at
->> http://thread.gmane.org/gmane.linux.ports.arm.kernel/24662
->>
->> Awaiting for comments on this.
->>
->
-> The problem apparently only affects ixp4xx based boards running RedBoot as a
-> boot loader. I thought that it should possibly go as a fix in
-> drivers/mtd/redboot.c but I found the dev->resource->start parameter to
-> parse_mtd_partitions to be the most graceful at the time.
->
-> RedBoot on ixp4xx based boards starts flash addresses at 0x50000000 which
-> Linux
-> then starts at 0. So the partition table address entries are all offset by
-> the
-> RedBoot start point.
->
-> I may be the only one who actually ran into the problem. I was working with
-> a
-> modified design that only had 48MB of flash. So as far as I am concerned it
-> can
-> be dropped. If every other board is using zero for that parameter it seems
-> like
-> it would make more sense to handle this condition in drivers/mtd/redboot.c?
+Hello,
 
-I see your problem. It seems default code depends on size being a power of 2
-_and_ start addr being aligned to the flash size. I think that usually that is
-correct assumption, but we will need some override for the cases like yours.
+In my system I use Jffs2 in a NOR Flash (8MB), and there's a daemon
+that write a configuration in a periodic time.
+After few minutes the filesystem is corrupted and show a message
 
-Anyway I'm going to agree on the Artem's way to handle such cases.
 
--- 
-With best wishes
-Dmitry
+No space for garbage collection
+
+MTD do_write_oneword(): WRITE 0x007fc0ac(0x00000085)
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+Write of 880 bytes at 0x005fc0ac failed. returned -5, retlen 0
+Not marking the space at 0x005fc0ac as dirty because the flash driver returned o
+MTD do_write_oneword(): WRITE 0x007fc0ac(0x00000085)
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+Write of 880 bytes at 0x005fc0ac failed. returned -5, retlen 0
+Not marking the space at 0x005fc0ac as dirty because the flash driver returned o
+Error garbage collecting node at 003112f8!
+No space for garbage collection. Aborting GC thread
+
+There's a way to call the garbage collector in my daemon?
+
+I'm using kernel 2.6.30 but with a lot of patches
+
+
+I applied all MTD/JFFS2 commits of the 2.6.30 to 2.6.31
+
+
+MTD Patches
+
+0001-mtd-nftl-write-support-is-broken.patch
+0002-mtd-nftl-fix-offset-alignments.patch
+1837-mtd_blkdevs-dequeue-in-flight-request.patch
+2903--MTD-set-blkdev-parent-to-the-mtd-device-not-its-p.patch
+2904--MTD-Restore-suspend-resume-support-for-mtd-devices.patch
+2905--MTD-Remove-mtd-suspend-resume-calls-from-board.patch
+2907--MTD-Remove-option-for-add_mtd_partitions-to-not.patch
+3257-mtd-DIL-NetPC-broken-for-now.patch
+3258-mtd-Add-armflash-support-for-multiple-blocks-of-fla.patch
+3259-mtd-Fix-handling-of-mtdname-in-txx9ndfmc.c.patch
+3261-mtd-add-MEMERASE64-ioctl-for-4GiB-devices.patch
+3267-mtd-compat_ioctl-cleanup.patch
+3268-mtd-add-OOB-ioctls-for-4GiB-devices.patch
+3269-mtd-Handle-compat-ioctls-directly-remove-all-trace.patch
+3270-mtd-Fix-pointer-handling-in-compat-ioctls-to-use-co.patch
+3906-mtd-plat_nand-fix-section-error.patch
+3909-mtd-nand-don-t-walk-past-end-of-oobfree.patch
+3910-mtd-nand-minor-davinci_nand-cleanup.patch
+3911-mtd-nand-davinci_nand-4-bit-ECC-for-smallpage.patch
+3912-mtd-nand-fix-512-byte-software-ecc-support.patch
+3913-mtd-mxc_nand-add-correct-dev_id-parameter-to-free_.patch
+3914-mtd-m25p80-nand-add-m45pe10-ids.patch
+3915-mtd-OneNAND-add-support-for-OneNAND-manufactured-b.patch
+3916-mtd-davinci_nand-cmdlinepart-uses-MTD-IDs.patch
+3917-mtd-add-SST39SF040-chip-to-jedec_probe.patch
+3918-mtd-extend-plat_nand-for-read-write-_buf.patch
+3919-mtd-CFI-quirk-for-PF38F4476.patch
+3920-mtd-CFI-1.0-and-CFI-1.1.patch
+3921-mtd-m25p80-add-support-for-Macronix-MX25L12805D.patch
+3922-mtd-OneNAND-add-missing-__devexit_p.patch
+3923-mtd-remove-pmcmsp-ramroot.c.patch
+3924-mtd-plat_nand-add-platform-probe-remove-callbacks.patch
+3925-mtd-plat_nand-allow-platform-to-set-partitions.patch
+3926-mtd-MXC-NAND-support-for-2KiB-page-size-flashes.patch
+3927-mtd-add-on-flash-BBT-support-for-Atmel-NAND-driver.patch
+3928-mtd-blackfin-NFC-remove-pointless-return-value-in.patch
+3929-mtd-blackfin-NFC-fix-hang-when-using-NAND-on-BF527.patch
+3930-mtd-uclinux-allow-systems-to-override-map-addr-siz.patch
+3931-mtd-uclinux-do-not-allow-to-be-built-as-a-module.patch
+3932-mtd-uclinux-mark-local-stuff-static.patch
+3933-mtd-maps-Blackfin-async-fix-memory-leaks-in-probe.patch
+3935-mtd-nand-add-OMAP2-OMAP3-NAND-driver.patch
+3936-mtd-Flex-OneNAND-support.patch
+3937-mtd-onenand-add-bbt_wait-unlock_all-as-replaceab.patch
+3940-mtd-nand-s3c2410_nand_setrate-use-correct-macro.patch
+3941-mtd-nand-max_retries-off-by-one-in-mxc_nand.patch
+3942-mtd-physmap_of-Add-multiple-regions-and-concatenat.patch
+4072-mtd-nand-s3c6400-support-for-s3c2410-driver.patch
+4073-mtd-orion_nand-use-burst-reads-with-double-word-ac.patch
+4279-mtd-nand-Fix-memory-leak-on-txx9ndfmc-probe-failur.patch
+5279-trivial-mtd-fix-Kconfig-comment-about-armflash.patch
+6043-mtd-OneNAND-Allow-setting-of-boundary-information.patch
+6044-sh-Add-support-mtd-mapping-for-highlander.patch
+8425-mtd-maps-Remove-BUS_ID_SIZE-from-integrator_flash.patch
+8471-mtd-cmdlineparts-Use-64-bit-format-when-printing-a.patch
+8472-mtd-atmel_nand-Fix-typo-s-parititions-partitions.patch
+8580-mtd-m25p80-timeout-too-short-for-worst-case-m25p16.patch
+8603-mtd-Use-BLOCK_NIL-consistently-in-NFTL-INFTL.patch
+8609-mtd-nand-fix-build-failure-and-incorrect-return-fr.patch
+9940-mtd-let-include-linux-mtd-partitions.h-stand-on-its.patch
+9941-mtd-fix-the-conversion-from-dev-to-mtd_info.patch
+9942-mtd-blkdevs-do-not-forget-to-get-MTD-devices.patch
+9943-mtd-OneNAND-fix-incorrect-bufferram-offset.patch
+9944-mtd-OneNAND-OMAP2-3-free-GPMC-CS-on-module-remova.patch
+9945-mtd-remove-SBC8240-Wind-River-Device-Driver-Code.patch
+9946-mtd-mtdblock-introduce-mtdblks_lock.patch
+
+
+JFFS2 Patches
+
+
+3907-Kill-jffs2-user.h.patch
+5046-jffs2-move-jffs2_write_super-to-super.c.patch
+5079-jffs2-call-jffs2_write_super-from-jffs2_sync_fs.patch
+5597-jffs2-leaking-jffs2_summary-in-function-jffs2_scan_.patch
+8133-jffs2-fix-another-potential-leak-on-error-path-in-s.patch
+8413-switch-jffs2-to-inode-i_acl.patch
+9947-jffs2-Fix-return-value-from-jffs2_do_readpage_noloc.patch
+
+
+My system:
+Core: Nios2
+NOR Flash: S29JL0674
+
+Creating filesystem
+mkfs.jffs2 -l -e64KiB -p -d romfs -D device_table.txt -o romfs.jffs2
+
+Boot:
+root=/dev/mtdblock0 rw rootfstype=jffs2
+
+
+There's something I'm doing wrong? Maybe some ideia to fix this problem?
+
+Thanks
+
+Best Regards,
+
+Caio Pereira
+
+
+----------------------------------------------
+Caio Pereira
