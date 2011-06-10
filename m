@@ -1,24 +1,19 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUt0s-0000QY-GN
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 04:08:03 +0000
-Received: by eyh6 with SMTP id 6so954125eyh.36
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUxA5-0002K6-3k
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 08:33:49 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
+	by co202.xi-lite.net (Postfix) with ESMTPS id 31D43260300
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jun 2011 21:07:59 -0700 (PDT)
-Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gilles <gilles.ganault@free.fr>
-In-Reply-To: <mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
-References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-	<1307623105.7374.91.camel@localhost>
-	<mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 10 Jun 2011 07:03:40 +0300
-Message-ID: <1307678620.7374.131.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Fri, 10 Jun 2011 12:27:49 +0200 (CEST)
+Message-ID: <4DF1D6C5.8080503@parrot.com>
+Date: Fri, 10 Jun 2011 10:33:09 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: omap2 : bug in omap_wait
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-09 at 17:18 +0200, Gilles wrote:
-> 2. ubiformat takes about 10-15mn to complete: Is there a way to speed
-> things up, or is it just due to the CPU+NAND that the appliance uses?
+Hi,
 
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_attach_faster
+omap nand driver implement the nand.waitfunc[1] but it is buggy and can lead to
+ nand write/erase error :
+- status = NAND_STATUS_FAIL
+- timeo is computed
+- thread is preempted
+- timeo is expired and we never enter the loop
+- we return NAND_STATUS_FAIL, even if the real status is okay.
 
-> 3. Finally, when do I have to use ubimkvol?
+The correct behavior is to read again the status after the loop like in nand_wait.
 
-When you want to dynamically (run-time) create a new UBI volume. You do
-not necessarily have to do this.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+BTW why omap2 driver doesn't use nand_wait ?
+
+Matthieu
+
+[1]
+static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
+{
+    struct nand_chip *this = mtd->priv;
+    struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+                            mtd);
+    unsigned long timeo = jiffies;
+    int status = NAND_STATUS_FAIL, state = this->state;
+
+    if (state == FL_ERASING)
+        timeo += (HZ * 400) / 1000;
+    else
+        timeo += (HZ * 20) / 1000;
+
+    gpmc_nand_write(info->gpmc_cs,
+            GPMC_NAND_COMMAND, (NAND_CMD_STATUS & 0xFF));
+    while (time_before(jiffies, timeo)) {
+        status = gpmc_nand_read(info->gpmc_cs, GPMC_NAND_DATA);
+        if (status & NAND_STATUS_READY)
+            break;
+        cond_resched();
+    }
+    return status;
+}
