@@ -1,28 +1,24 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUprX-0007xK-8n
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 00:46:11 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QUprV-0005sE-0s
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 02:46:09 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2011 02:46:09 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2011 02:46:09 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QUt0s-0000QY-GN
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 04:08:03 +0000
+Received: by eyh6 with SMTP id 6so954125eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Jun 2011 21:07:59 -0700 (PDT)
 Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
-Date: Fri, 10 Jun 2011 02:45:55 +0200
-Message-ID: <2tp2v6ld5qijnuc8gshkq63d4hr1d474nr@4ax.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Gilles <gilles.ganault@free.fr>
+In-Reply-To: <mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
 References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
-	<ics1v6h6c3h777js8uh4j8bve2i1q7m5d0@4ax.com>
-	<66k2v6hfdbhcd6onjr6binvhpujidimja0@4ax.com>
+	<1307623105.7374.91.camel@localhost>
+	<mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 10 Jun 2011 07:03:40 +0300
+Message-ID: <1307678620.7374.131.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Jun 2011 01:05:56 +0200, Gilles <gilles.ganault@free.fr>
-wrote:
->Even after correcting the mistake above ("ubi.mtd2" should be
->"ubi=mtd2"), uClinux still can't access Ubifs on mtd2 and crashes.
+On Thu, 2011-06-09 at 17:18 +0200, Gilles wrote:
+> 2. ubiformat takes about 10-15mn to complete: Is there a way to speed
+> things up, or is it just due to the CPU+NAND that the appliance uses?
 
-Wrong again (blush)
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_attach_faster
 
-Here's the correct bootargs:
-===========
-bootargs=... rootfstype=ubifs ubi.mtd=2 root=ubi0:rootfs rw
-===========
+> 3. Finally, when do I have to use ubimkvol?
 
-Don't forget the trailing "rw", or it will be read-only and cause a
-few errors.
+When you want to dynamically (run-time) create a new UBI volume. You do
+not necessarily have to do this.
 
-I'm now successfully running with the root filesystem on the NAND with
-Ubifs.
-
-Thanks everyone for the great help.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
