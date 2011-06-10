@@ -1,18 +1,28 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from lo.gmane.org ([80.91.229.12])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QUxA5-0002K6-3k
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 08:33:49 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
-	by co202.xi-lite.net (Postfix) with ESMTPS id 31D43260300
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Jun 2011 12:27:49 +0200 (CEST)
-Message-ID: <4DF1D6C5.8080503@parrot.com>
-Date: Fri, 10 Jun 2011 10:33:09 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: omap2 : bug in omap_wait
-Content-Type: text/plain; charset="ISO-8859-1"
+	id 1QUxyP-0002yI-Np
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 09:25:50 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QUxyL-0002FZ-QS
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2011 11:25:45 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2011 11:25:45 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2011 11:25:45 +0200
+To: linux-mtd@lists.infradead.org
+From: Gilles <gilles.ganault@free.fr>
+Subject: Re: [Ubiattach] "vtbl_check: too large reserved_pebs"
+Date: Fri, 10 Jun 2011 11:25:30 +0200
+Message-ID: <ono3v6hd67aqe28icbs3s0qmpgojdgs4d8@4ax.com>
+References: <mv61v65qqumjmnr9dkejjacgg4id8srbe7@4ax.com>
+	<1307623105.7374.91.camel@localhost>
+	<mkn1v6d8n8i3pnsg89gppnv69ht102hj0c@4ax.com>
+	<1307678620.7374.131.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,44 +33,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 10 Jun 2011 07:03:40 +0300, Artem Bityutskiy
+<dedekind1@gmail.com> wrote:
+>When you want to dynamically (run-time) create a new UBI volume. You do
+>not necessarily have to do this.
 
-omap nand driver implement the nand.waitfunc[1] but it is buggy and can lead to
- nand write/erase error :
-- status = NAND_STATUS_FAIL
-- timeo is computed
-- thread is preempted
-- timeo is expired and we never enter the loop
-- we return NAND_STATUS_FAIL, even if the real status is okay.
-
-The correct behavior is to read again the status after the loop like in nand_wait.
-
-
-BTW why omap2 driver doesn't use nand_wait ?
-
-Matthieu
-
-[1]
-static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
-{
-    struct nand_chip *this = mtd->priv;
-    struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
-                            mtd);
-    unsigned long timeo = jiffies;
-    int status = NAND_STATUS_FAIL, state = this->state;
-
-    if (state == FL_ERASING)
-        timeo += (HZ * 400) / 1000;
-    else
-        timeo += (HZ * 20) / 1000;
-
-    gpmc_nand_write(info->gpmc_cs,
-            GPMC_NAND_COMMAND, (NAND_CMD_STATUS & 0xFF));
-    while (time_before(jiffies, timeo)) {
-        status = gpmc_nand_read(info->gpmc_cs, GPMC_NAND_DATA);
-        if (status & NAND_STATUS_READY)
-            break;
-        cond_resched();
-    }
-    return status;
-}
+Thanks for the infos.
