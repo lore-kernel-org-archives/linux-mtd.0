@@ -1,24 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QVNUB-0006RI-Mh
-	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2011 12:40:20 +0000
-Received: by wwb39 with SMTP id 39so2722585wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 11 Jun 2011 05:40:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BANLkTik9T_R5xZO5_GrzyznxwNnpv4931g@mail.gmail.com>
-References: <1307544227.31223.115.camel@localhost>
-	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
-	<1307607194.7374.49.camel@localhost>
-	<BANLkTik9T_R5xZO5_GrzyznxwNnpv4931g@mail.gmail.com>
-Date: Fri, 10 Jun 2011 11:25:15 -0700
-Message-ID: <BANLkTin+pjQC6Y_BzME8RUFa-AtL_nJ14Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>
+In-Reply-To: <20110611092224.GB16318@ibawizard.net>
+References: <1307369056-29319-1-git-send-email-dbaryshkov@gmail.com>
+	<1307369056-29319-3-git-send-email-dbaryshkov@gmail.com>
+	<20110611092224.GB16318@ibawizard.net>
+Date: Sun, 12 Jun 2011 01:02:21 +0400
+Message-ID: <BANLkTik4vJ6y6Y1igb_9HfaJ+ADeZ4xT0g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ts72xx: use MTDPART_OFS_RETAIN for mtd partitioning
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: =?UTF-8?Q?Petr_=C5=A0tetiar?= <ynezz@true.cz>
+Content-Type: multipart/mixed; boundary=0016e646060890cf0704a57600f0
+Cc: Russell King <linux@arm.linux.org.uk>, dedekind1@gmail.com,
+	Mika Westerberg <mika.westerberg@iki.fi>,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+	Ryan Mallon <ryan@bluewatersys.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +23,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 9, 2011 at 9:22 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Thu, Jun 9, 2011 at 1:13 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> Brian, would you please send a new series? I suggest you the following
->> order of things.
-...
->> How does this sound to you?
+--0016e646060890cf0704a57600f0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello, colleagues,
+
+On 6/11/11, Petr =C5=A0tetiar <ynezz@true.cz> wrote:
+> Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> [2011-06-06 18:04:15]:
+>> Instead of specifying a callback for dynamic partitioning, use
+>> MTDPART_OFS_RETAIN for reserving a place near the end of flash for
+>> RedBoot.
 >
-> Sounds good. Will send patches later today, I think.
+> [...]
+>
+>> -		.offset		=3D MTDPART_OFS_APPEND,
+>> -		.size		=3D 0,			/* filled in later */
+>> +		.offset		=3D MTDPART_OFS_RETAIN,
+>> +		.size		=3D TS72XX_REDBOOT_PART_SIZE,
+>> +				/* leave so much for last partition */
+>
+> thank you for the mtd cleanup work. While testing this patch, I've notice=
+d,
+> that the TS72XX_REDBOOT_PART_SIZE is by 16K bigger, then it should be:
+>
+> Redboot:
+>
+> 	RedBoot> fis list
+> 	Name              FLASH addr  Mem addr    Length      Entry point
+> 	(reserved)        0x60000000  0x60000000  0x01D04000  0x00000000
+> 	RedBoot           0x61D04000  0x61D04000  0x00040000  0x00000000
+> 	vmlinux           0x61D44000  0x00218000  0x000C0000  0x00218000
+> 	FIS directory     0x61FFC000  0x61FFC000  0x00003000  0x00000000
+> 	RedBoot config    0x61FFF000  0x61FFF000  0x00001000  0x00000000
+>
+> Linux:
+>
+> 	0x000000000000-0x000000004000 : "TS-BOOTROM"
+> 	0x000000004000-0x000001d00000 : "Linux"
+> 	0x000001d00000-0x000002000000 : "RedBoot"
+>
+> So if I simply read now first 4 bytes from /dev/mtdblock2, there's no 'CR=
+US'
+> or 'SURC' boot HeaderID/signature and it means, that there's no valid
+> Redboot
+> for ep93xx. The correct value is:
+>
+> 	#define TS72XX_REDBOOT_PART_SIZE	(SZ_2M + SZ_1M - SZ_16K)
 
-Hmm, actually, I'll get to this again on Monday! Have a good weekend.
+Could you please verify/ack the attached patch?
 
-Brian
+--=20
+With best wishes
+Dmitry
+
+--0016e646060890cf0704a57600f0
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ts72xx-correct-partition-sizes.patch"
+Content-Disposition: attachment;
+	filename="0001-ts72xx-correct-partition-sizes.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: file0
+
+RnJvbSA5YTdhNjkwNDMwMDRkMmY3MzhlMzIxYzI0NDNmODFmMzQ1YmY5YjFlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEbWl0cnkgRXJlbWluLVNvbGVuaWtvdiA8ZGJhcnlzaGtvdkBn
+bWFpbC5jb20+CkRhdGU6IFN1biwgMTIgSnVuIDIwMTEgMDA6NTg6MzggKzA0MDAKU3ViamVjdDog
+W1BBVENIXSB0czcyeHg6IGNvcnJlY3QgcGFydGl0aW9uIHNpemVzCgpTaW5jZSBhZmU0MzIyM2Qg
+KHRzNzJ4eDogdXNlIE1URFBBUlRfT0ZTX1JFVEFJTiBmb3IgbXRkIHBhcnRpdGlvbmluZyksCnRz
+NzJ4eCB1c2VzIGluY29ycmVjdCBzaXplIGZvciBMaW51eCBwYXJ0aXRpb24gKGRpZmZlcmVuY2Ug
+aXMgMTZrKSwKY29ycmVjdCB0aGF0IHNvIHRoYXQgdXNlcnMgaGF2ZSBjb3JyZWN0IGFjY2VzcyB0
+byBSZWRCb290IHBhcnRpdGlvbi4KClNpZ25lZC1vZmYtYnk6IERtaXRyeSBFcmVtaW4tU29sZW5p
+a292IDxkYmFyeXNoa292QGdtYWlsLmNvbT4KLS0tCiBhcmNoL2FybS9tYWNoLWVwOTN4eC90czcy
+eHguYyB8ICAgIDIgKy0KIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtZXA5M3h4L3RzNzJ4eC5jIGIvYXJj
+aC9hcm0vbWFjaC1lcDkzeHgvdHM3Mnh4LmMKaW5kZXggZGVhNDJlMi4uOTUxMGFlMCAxMDA2NDQK
+LS0tIGEvYXJjaC9hcm0vbWFjaC1lcDkzeHgvdHM3Mnh4LmMKKysrIGIvYXJjaC9hcm0vbWFjaC1l
+cDkzeHgvdHM3Mnh4LmMKQEAgLTEwNiw3ICsxMDYsNyBAQCBzdGF0aWMgaW50IHRzNzJ4eF9uYW5k
+X2RldmljZV9yZWFkeShzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIHN0YXRpYyBjb25zdCBjaGFyICp0
+czcyeHhfbmFuZF9wYXJ0X3Byb2Jlc1tdID0geyAiY21kbGluZXBhcnQiLCBOVUxMIH07CiAKICNk
+ZWZpbmUgVFM3MlhYX0JPT1RST01fUEFSVF9TSVpFCShTWl8xNkspCi0jZGVmaW5lIFRTNzJYWF9S
+RURCT09UX1BBUlRfU0laRQkoU1pfMk0gKyBTWl8xTSkKKyNkZWZpbmUgVFM3MlhYX1JFREJPT1Rf
+UEFSVF9TSVpFCShTWl8yTSArIFNaXzFNIC0gU1pfMTZLKQogCiBzdGF0aWMgc3RydWN0IG10ZF9w
+YXJ0aXRpb24gdHM3Mnh4X25hbmRfcGFydHNbXSA9IHsKIAl7Ci0tIAoxLjcuNS4zCgo=
+--0016e646060890cf0704a57600f0--
