@@ -1,15 +1,15 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QVXLh-00011e-TJ
-	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2011 23:12:15 +0000
-Received: by mail-ey0-f177.google.com with SMTP id 6so1530638eyh.36
+	id 1QVXLj-00012e-Re
+	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2011 23:12:17 +0000
+Received: by mail-ey0-f177.google.com with SMTP id 6so1530647eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 11 Jun 2011 16:12:13 -0700 (PDT)
+	Sat, 11 Jun 2011 16:12:15 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/18] mtd: mpc5121_nfc: use ofpart through generic parsing
-Date: Sun, 12 Jun 2011 03:11:51 +0400
-Message-Id: <1307833922-21602-8-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 08/18] mtd: ndfc: use ofpart through generic parsing
+Date: Sun, 12 Jun 2011 03:11:52 +0400
+Message-Id: <1307833922-21602-9-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
 References: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -27,41 +27,47 @@ parse_mtd_partitions().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/mpc5121_nfc.c |    8 +++-----
- 1 files changed, 3 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/ndfc.c |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 0b61367..996ee29 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -661,6 +661,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	int resettime = 0;
- 	int retval = 0;
- 	int rev, len;
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 70c04ff..1528734 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -161,6 +161,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ {
+ 	struct device_node *flash_np;
+ 	struct nand_chip *chip = &ndfc->chip;
 +	struct mtd_part_parser_data ppdata;
+ 	int ret;
  
- 	/*
- 	 * Check SoC revision. This driver supports only NFC
-@@ -725,6 +726,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	}
+ 	chip->IO_ADDR_R = ndfc->ndfcbase + NDFC_DATA;
+@@ -188,6 +189,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	if (!flash_np)
+ 		return -ENODEV;
  
- 	mtd->name = "MPC5121 NAND";
-+	ppdata.of_node = dn;
- 	chip->dev_ready = mpc5121_nfc_dev_ready;
- 	chip->cmdfunc = mpc5121_nfc_command;
- 	chip->read_byte = mpc5121_nfc_read_byte;
-@@ -836,11 +838,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	dev_set_drvdata(dev, mtd);
++	ppdata->of_node = flash_np;
+ 	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
+ 			dev_name(&ndfc->ofdev->dev), flash_np->name);
+ 	if (!ndfc->mtd.name) {
+@@ -199,17 +201,10 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	if (ret)
+ 		goto err;
  
- 	/* Register device in MTD */
--	retval = parse_mtd_partitions(mtd, NULL, &parts, 0);
--#ifdef CONFIG_MTD_OF_PARTS
--	if (retval == 0)
--		retval = of_mtd_parse_partitions(dev, dn, &parts);
--#endif
-+	retval = parse_mtd_partitions(mtd, NULL, &parts, &ppdata);
- 	if (retval < 0) {
- 		dev_err(dev, "Error parsing MTD partitions!\n");
- 		devm_free_irq(dev, prv->irq, mtd);
+-	ret = parse_mtd_partitions(&ndfc->mtd, NULL, &ndfc->parts, 0);
++	ret = parse_mtd_partitions(&ndfc->mtd, NULL, &ndfc->parts, &ppdata);
+ 	if (ret < 0)
+ 		goto err;
+ 
+-	if (ret == 0) {
+-		ret = of_mtd_parse_partitions(&ndfc->ofdev->dev, flash_np,
+-					      &ndfc->parts);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	ret = mtd_device_register(&ndfc->mtd, ndfc->parts, ret);
+ 
+ err:
 -- 
 1.7.5.3
