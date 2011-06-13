@@ -1,12 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QWGfx-00066L-H8
+	id 1QWGfx-00066K-H9
 	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2011 23:36:11 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 5/6] feature-removal-schedule: describe nanddump changes
-Date: Mon, 13 Jun 2011 16:32:02 -0700
-Message-ID: <1308007923-6820-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/6] nanddump: deprecation messages for old BB options
+Date: Mon, 13 Jun 2011 16:32:00 -0700
+Message-ID: <1308007923-6820-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1308007923-6820-1-git-send-email-computersforpeace@gmail.com>
 References: <1308007923-6820-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,46 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Include a few notes about the edited options and new default options in
-nanddump.
+--omitbad and --noskipbad will soon be replaced by --bb=omitbad and
+--bb=dumpbad. Please plan to migrate to the new usage shortly.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- feature-removal-schedule.txt |   25 +++++++++++++++++++++++++
- 1 files changed, 25 insertions(+), 0 deletions(-)
+ nanddump.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
-index a5980f7..0f1f5c5 100644
---- a/feature-removal-schedule.txt
-+++ b/feature-removal-schedule.txt
-@@ -40,3 +40,28 @@ This is duplicating behavior with the mtdinfo utility.  Now the util
- warns when people use it, but it'll be removed in release 1.4.6.
- 
- ---------------------------
-+
-+4. Rename --omitbad and --noskipbad options for nanddump, change default
-+
-+These and a few other bad block handling methods are getting disorganized. They
-+will be replaced by a series of --bb=METHOD options (see 'nanddump --help').
-+
-+In addition, the previous default bad block behavior was to dump 0xFF in place
-+of bad blocks. This was not a good "inverse operation" of nandwrite. Thus, the
-+current default behavior has become the (new) option --bb=padbad, and in 1.4.6,
-+the default will be --bb=skipbad.
-+
-+All of these changes will occur in 1.4.6. For now, there are appropriate
-+deprecation warning messages and an alert telling about the soon-to-be-default
-+options.
-+
-+Transition summary table:
-+-----------------------------------------------------------------------------------------------------------
-+ Old option     New option                 Comment
-+-----------------------------------------------------------------------------------------------------------
-+ <default>      --bb=padbad                dump flash data, substituting 0xFF for any bad blocks
-+ --noskipbad    --bb=dumpbad               dump flash data, including any bad blocks
-+ --skipbad      --bb=skipbad, <default>    dump good data, completely skipping any bad blocks (new default)
-+ --omitbad      --bb=omitbad               dump flash data, substituting nothing for any bad blocks
-+
-+---------------------------
+diff --git a/nanddump.c b/nanddump.c
+index a945081..4f28e33 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -54,17 +54,21 @@ static void display_help(void)
+ "                                    skipbad\n"
+ "                                    omitbad\n"
+ "-a         --forcebinary        Force printing of binary data to tty\n"
+-"-b         --omitbad            Omit bad blocks from the dump\n"
+ "-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
+ "-f file    --file=file          Dump to file\n"
+ "-l length  --length=length      Length\n"
+ "-n         --noecc              Read without error correction\n"
+-"-N         --noskipbad          Read without bad block skipping\n"
+ "-o         --omitoob            Omit oob data\n"
+ "-p         --prettyprint        Print nice (hexdump)\n"
+ "-q         --quiet              Don't display progress and status messages\n"
+ "-s addr    --startaddress=addr  Start address\n"
+ "\n"
++"Deprecated options:\n"
++"The following options are being replaced by --bb=METHOD flags.\n"
++"Do not continue to use these options.\n"
++"-b         --omitbad            Omit bad blocks from the dump\n"
++"-N         --noskipbad          Read without bad block skipping\n"
++"\n"
+ "Notes on --bb=omitbad and --bb=skipbad:\n"
+ "  With either option, we stop dumping data when we encounter a bad block\n"
+ "  and resume dumping at the next good block. However, with `omitbad', we\n"
+@@ -171,6 +175,9 @@ static void process_options(int argc, char * const argv[])
+ 				if (bb_default) {
+ 					bb_default = false;
+ 					bb_method = omitbad;
++					fprintf(stderr, "Warning: --omitbad is being deprecated in favor of --bb=omitbad.\n"
++							"         --omitbad will not be available in future releases.\n"
++							"         Please update your usage accordingly.\n");
+ 				} else {
+ 					error++;
+ 				}
+@@ -209,6 +216,9 @@ static void process_options(int argc, char * const argv[])
+ 				if (bb_default) {
+ 					bb_default = false;
+ 					bb_method = dumpbad;
++					fprintf(stderr, "Warning: --noskipbad is being deprecated in favor of --bb=dumpbad.\n"
++							"         --noskipbad will not be available in future releases.\n"
++							"         Please update your usage accordingly.\n");
+ 				} else {
+ 					error++;
+ 				}
 -- 
 1.7.0.4
