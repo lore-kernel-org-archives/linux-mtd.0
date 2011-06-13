@@ -1,17 +1,25 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
-	helo=CH1EHSOBE018.bigfish.com)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QVxcm-0001Ie-Bf
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2011 03:15:38 +0000
-From: Shaohui Xie <Shaohui.Xie@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH] powerpc/85xx: fix NAND_CMD_READID read bytes number
-Date: Mon, 13 Jun 2011 10:23:12 +0800
-Message-ID: <1307931792-30386-1-git-send-email-Shaohui.Xie@freescale.com>
+	id 1QWBoK-0003qs-Bd
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2011 18:24:29 +0000
+Received: by wwb39 with SMTP id 39so3995384wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Jun 2011 11:24:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org,
-	Shaohui Xie <Shaohui.Xie@freescale.com>
+In-Reply-To: <1307635412.7374.128.camel@localhost>
+References: <1307544227.31223.115.camel@localhost>
+	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
+	<1307605456.7374.35.camel@localhost>
+	<BANLkTin5KLu8QknuM4ATHpLQP4Uq09tekA@mail.gmail.com>
+	<1307635412.7374.128.camel@localhost>
+Date: Mon, 13 Jun 2011 11:24:23 -0700
+Message-ID: <BANLkTimh12AhqfE+Yx3Yi_m=NyUb34JoXA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Igor Grinberg <grinberg@compulab.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-when nand_get_flash_type() is called, it will read 8 bytes of ID instead of 5,
-but the driver only read 5 bytes, so kernel will dump error messages like:
+On Thu, Jun 9, 2011 at 9:03 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2011-06-09 at 09:00 -0700, Brian Norris wrote:
+>> On Thu, Jun 9, 2011 at 12:44 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> > Wait, and why are we using pr_* while it is better to use dbg_* ? :-)
+>>
+>> Just so we're on the same page...did you say "dbg_*" when you really
+>> meant "dev_*"?
+>
+> Yes, I meant dev_*
+>
+>> Anyway, the answer is: I'm mostly trying to do as little shakeup as
+>> possible, so "printk" could translate pretty directly to the "pr_*"
+>> with shorter code, etc. If it makes as much (or more) sense to have
+>> the device name on all the prints, then I can just as well do it that
+>> way.
+>
+> Yes, I think it makes much more sense to specify for which device (out
+> of possibly many!) this message belongs.
 
-fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
-fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
-fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
+I've been testing some of the "dev_*" printing, and it seems as if our
+mtd_info structs never have fully initialized "device" fields (i.e.,
+mtd->dev.driver, mtd->dev.bus, mtd->dev.class, mtd->dev.init_name,
+etc. are never filled in with anything meaningful). That means that
+our dev_* messages do not have anything to work from and simply print
+" (null): " references before our strings instead of device
+driver/name information, for example:
 
-Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
-Acked-by: Scott Wood <scottwood@freescale.com>
----
- drivers/mtd/nand/fsl_elbc_nand.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ (null): ONFI flash detected
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 0bb254c..33d8aad 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -339,9 +339,9 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		                    (FIR_OP_UA  << FIR_OP1_SHIFT) |
- 		                    (FIR_OP_RBW << FIR_OP2_SHIFT));
- 		out_be32(&lbc->fcr, NAND_CMD_READID << FCR_CMD0_SHIFT);
--		/* 5 bytes for manuf, device and exts */
--		out_be32(&lbc->fbcr, 5);
--		elbc_fcm_ctrl->read_bytes = 5;
-+		/* nand_get_flash_type() reads 8 bytes of entire ID string */
-+		out_be32(&lbc->fbcr, 8);
-+		elbc_fcm_ctrl->read_bytes = 8;
- 		elbc_fcm_ctrl->use_mdr = 1;
- 		elbc_fcm_ctrl->mdr = 0;
- 
--- 
-1.6.4
+I'm a little new to the Linux device model, so I'm not sure if it's
+safe and sensible to add lines to a driver's nand_probe function,
+like, for plat_nand.c:
+data->mtd.dev.driver = pdev->dev.driver;
+data->mtd.dev.init_name = dev_name(&pdev->dev);
+
+Is there some better way to initialize these device values? Or should
+we scrap the whole dev_* thing since MTD doesn't match the device
+model well enough?
+
+Brian
