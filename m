@@ -1,21 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QWCdU-0004Fr-Fh
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2011 19:17:21 +0000
-Received: by wwb39 with SMTP id 39so4031619wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Jun 2011 12:17:18 -0700 (PDT)
+Received: from swampdragon.chaosbits.net ([90.184.90.115])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QWDhG-0004bq-Ag
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2011 20:25:19 +0000
+Date: Mon, 13 Jun 2011 22:16:44 +0200 (CEST)
+From: Jesper Juhl <jj@chaosbits.net>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH/Trivial] jffs2: Avoid unneeded 'if' before kfree
+Message-ID: <alpine.LNX.2.00.1106132213500.30934@swampdragon.chaosbits.net>
 MIME-Version: 1.0
-In-Reply-To: <1307608004.7374.56.camel@localhost>
-References: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
-	<1307608004.7374.56.camel@localhost>
-Date: Mon, 13 Jun 2011 12:17:18 -0700
-Message-ID: <BANLkTimU-fzEj6ByC9X6DX=tUQ0ay_eYrQ@mail.gmail.com>
-Subject: Re: nanddump badblock options
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: trivial@kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-One last idea, while I'm trying to bring nanddump and nandwrite a
-little closer together:
+kfree() deals gracefully with NULL pointers, so it's pointless to test for 
+one prior to calling it.
+This removes such a test from jffs2_scan_medium().
 
-It makes sense for nanddump and nandwrite to have the same defaults
-regarding OOB. Right now, nandwrite doesn't write OOB by default, and
-nanddump dumps OOB by default. Is it OK to unify this and make
-nanddump default to *not* dumping OOB? Then the nanddump '-o' and
-'--oob' options would stand for 'Dump OOB data'. Unfortunately, this
-makes the '-o' option completely reverse its meaning...
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ scan.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-I would include this with my other change-ups if that's alright
-(they're ready to send).
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 8d8cd34..28107ca 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -275,9 +275,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 	else
+ 		c->mtd->unpoint(c->mtd, 0, c->mtd->size);
+ #endif
+-	if (s)
+-		kfree(s);
+-
++	kfree(s);
+ 	return ret;
+ }
+ 
 
-Mike:
-any comments on my '--omitbad' question?
-
-Thanks,
-Brian
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
