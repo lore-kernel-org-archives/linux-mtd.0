@@ -1,23 +1,21 @@
-Received: from out4.smtp.messagingengine.com ([66.111.4.28])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QWWXe-0006hC-A6
-	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2011 16:32:39 +0000
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.messagingengine.com (Postfix) with ESMTP id 719D920671
+	id 1QWsGr-00031U-9s
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2011 15:44:46 +0000
+Received: by wyb28 with SMTP id 28so486641wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Jun 2011 12:32:33 -0400 (EDT)
-Received: from [10.2.11.198] (mail.linn.co.uk [195.59.102.251])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 1F359403563
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Jun 2011 12:32:33 -0400 (EDT)
-Message-ID: <4DF78D22.6030101@eml.cc>
-Date: Tue, 14 Jun 2011 17:32:34 +0100
-From: Tim Cussins <timcussins@eml.cc>
+	Wed, 15 Jun 2011 08:44:41 -0700 (PDT)
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Runtime repartitioning
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <4DF78D22.6030101@eml.cc>
+References: <4DF78D22.6030101@eml.cc>
+Date: Wed, 15 Jun 2011 08:44:41 -0700
+Message-ID: <BANLkTimSoZqt-NR=AG69PQnMC2wpMB63Eg@mail.gmail.com>
+Subject: Re: Runtime repartitioning
+From: Brian Norris <computersforpeace@gmail.com>
+To: Tim Cussins <timcussins@eml.cc>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Tim,
 
-In July 2010 a couple of competing patchsets were submitted that aimed 
-to provide runtime repartitioning of mtd devices.
+On Tue, Jun 14, 2011 at 9:32 AM, Tim Cussins <timcussins@eml.cc> wrote:
+> Hi all,
+>
+> In July 2010 a couple of competing patchsets were submitted that aimed to
+> provide runtime repartitioning of mtd devices.
+>
+> http://thread.gmane.org/gmane.linux.drivers.mtd/30458
+> http://thread.gmane.org/gmane.linux.drivers.mtd/30950
+> http://thread.gmane.org/gmane.linux.drivers.mtd/30949
+>
+> Neither submission was accepted, comments were given on and off list, and
+> that was the end of it :)
+>
+> The ability to create new mtd partitions after boot would be awesome - how
+> can I get involved in getting such functionality into the tree?
 
-http://thread.gmane.org/gmane.linux.drivers.mtd/30458
-http://thread.gmane.org/gmane.linux.drivers.mtd/30950
-http://thread.gmane.org/gmane.linux.drivers.mtd/30949
+It's probably a good idea to at least CC those who worked on this
+before...I added Roman Tereshonkov, the one who started the
+discussion.
 
-Neither submission was accepted, comments were given on and off list, 
-and that was the end of it :)
+Anyway, it looks like Roman ended up submitting a revised version of
+the patch from the first discussion. His work made it into the kernel
+as the following two commits. You can feel free to test it yourself!
 
-The ability to create new mtd partitions after boot would be awesome - 
-how can I get involved in getting such functionality into the tree?
+5daa7b21496aebf057c12be03038e7220e33353b
+mtd: prepare partition add and del functions for ioctl requests
 
-Cheers,
-Tim
+d0f7959e2b708d775c3b6b53cc6a8abb8ff0a00b
+mtd: add BLKPG API based repartition support
+
+Brian
