@@ -1,17 +1,23 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QWw4q-0005jF-5B
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2011 19:48:40 +0000
-Received: by vws8 with SMTP id 8so776024vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Jun 2011 12:48:32 -0700 (PDT)
+Received: from mail.elutions.com ([64.31.159.3])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QWwWh-0006Fg-4j
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2011 20:17:26 +0000
+Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
+	v3.2r9) id hv41580171st for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Jun 2011 15:04:49 -0400 (envelope-from
+	<prvs=11471e88ec=mhench@elutions.com>)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Wed, 15 Jun 2011 15:48:32 -0400
-Message-ID: <BANLkTi=L8CqtTt=+sJ-CHVyXyTsxTR_o8Q@mail.gmail.com>
-Subject: NAND BBT corruption on MPC83xx
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: NAND BBT corruption on MPC83xx
+Date: Wed, 15 Jun 2011 16:17:19 -0400
+Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC0259E00F@tpamail.elutions.com>
+In-Reply-To: <BANLkTi=L8CqtTt=+sJ-CHVyXyTsxTR_o8Q@mail.gmail.com>
+From: "Mike Hench" <mhench@elutions.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>,
+	"MTD list" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,6 +26,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+This is the read page -1 problem we discussed earlier Round about line
+485 of linux-2.6.39.1/drivers/mtd/nand/fsl_elbc_nand.c
+
+        /* Read back the page in order to fill in the ECC for the
+         * caller.  Is this really needed?
+         */
+        if (full_page && elbc_fcm_ctrl->oob_poi) {
+            out_be32(&lbc->fbcr, 3);
+            set_addr(mtd, 6, page_addr, 1);
+
+page_addr at this point is always -1.
+now WHY a read corrupts that last block I do not know.
+-1 is not a valid page address, the address 'protocol' allows more bits
+Than the flash uses. So it does not mean 'last block', or last page in
+last block.
+Maybe it is upsetting the state machine in the flash.
+Maybe it is upsetting the ELBC.
+You will find that the secondary bad block table (first page, second to
+last block) is fine.
+
+the kernel works fine without that block of code. So oob_poi must not be
+used anywhere. In any case it is always garbage with the above code.
+I raised this issue on this list earlier, no response.
+I think Freescale might be more likely to notice on the PPC list.
+I don't think they hang out here.
+
+I am happy without that block of useless code.
+
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Matthew L.
+Creech
+Sent: Wednesday, June 15, 2011 2:49 PM
+To: MTD list
+Subject: NAND BBT corruption on MPC83xx
 
 Hi, I'm not sure whether this list or the U-Boot list is more
 appropriate, but figured I'd start here and see if anyone can help.
@@ -80,5 +123,9 @@ More info on this board:
 - Linux 2.6.31
 - U-Boot 2009.06
 
--- 
+--=20
 Matthew L. Creech
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
