@@ -1,23 +1,20 @@
-Received: from if00-mail-sr07-mia.mta.terra.com ([208.84.243.14])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QX0sT-00007H-8N
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 00:56:11 +0000
-Message-ID: <DEF16A5C46894A5DB447E0F7C81A9D5F@THOR>
-From: =?iso-8859-1?Q?Fl=E1vio_Silveira?= <fggs@terra.com.br>
-To: "Fabio Giovagnini" <fabio.giovagnini@aurion-tech.com>,
-	<linux-mtd@lists.infradead.org>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com><AANLkTinQ=vHZgQ5B2YnsDkKzmCD288JwzTUgTUP-9whV@mail.gmail.com><AANLkTimUVCRZLQma2xRChr51y1Fi5E2p31qFQS=B20Sw@mail.gmail.com>
-	<201010221950.57594.fabio.giovagnini@aurion-tech.com>
-In-Reply-To: <201010221950.57594.fabio.giovagnini@aurion-tech.com>
-Subject: Re: [Help] SST39VF6401B Support
-Date: Wed, 15 Jun 2011 21:55:57 -0300
+Received: from out4.smtp.messagingengine.com ([66.111.4.28])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QX8JF-0003qW-IR
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 08:52:18 +0000
+Message-ID: <4DF9C43C.2060405@eml.cc>
+Date: Thu, 16 Jun 2011 09:52:12 +0100
+From: Tim Cussins <timcussins@eml.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 8bit
-Cc: yidong zhang <zhangyd6@gmail.com>, David.Woodhouse@intel.com,
-	Wolfram Sang <w.sang@pengutronix.de>, yegorslists@googlemail.com,
-	Guillaume LECERF <glecerf@gmail.com>, taliaferro62@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: Runtime repartitioning
+References: <4DF78D22.6030101@eml.cc>
+	<BANLkTimSoZqt-NR=AG69PQnMC2wpMB63Eg@mail.gmail.com>
+In-Reply-To: <BANLkTimSoZqt-NR=AG69PQnMC2wpMB63Eg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,196 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys,
-
-  I've tested this patch on kernel 2.6.23 (actually it's called 2.6.24.111) 
-and didn't work.
-
-  Below are my diffs and I can post original files as well, please help me 
-make it work!
-
-Thanks in advance!
-
-cfi_util.c
-
-29a30,107
-> int __xipram cfi_qry_present(struct map_info *map, __u32 base,
->         struct cfi_private *cfi)
-> {
->  int osf = cfi->interleave * cfi->device_type; /* scale factor */
->  map_word val[3];
->  map_word qry[3];
+On 15/06/11 16:44, Brian Norris wrote:
+> Hi Tim,
 >
->  qry[0] = cfi_build_cmd('Q', map, cfi);
->  qry[1] = cfi_build_cmd('R', map, cfi);
->  qry[2] = cfi_build_cmd('Y', map, cfi);
+> On Tue, Jun 14, 2011 at 9:32 AM, Tim Cussins<timcussins@eml.cc>  wrote:
+>> Hi all,
+>>
+>> In July 2010 a couple of competing patchsets were submitted that aimed to
+>> provide runtime repartitioning of mtd devices.
+>>
+>> http://thread.gmane.org/gmane.linux.drivers.mtd/30458
+>> http://thread.gmane.org/gmane.linux.drivers.mtd/30950
+>> http://thread.gmane.org/gmane.linux.drivers.mtd/30949
+>>
+>> Neither submission was accepted, comments were given on and off list, and
+>> that was the end of it :)
+>>
+>> The ability to create new mtd partitions after boot would be awesome - how
+>> can I get involved in getting such functionality into the tree?
 >
->  val[0] = map_read(map, base + osf*0x10);
->  val[1] = map_read(map, base + osf*0x11);
->  val[2] = map_read(map, base + osf*0x12);
+> It's probably a good idea to at least CC those who worked on this
+> before...I added Roman Tereshonkov, the one who started the
+> discussion.
 >
->  if (!map_word_equal(map, qry[0], val[0]))
->   return 0;
+> Anyway, it looks like Roman ended up submitting a revised version of
+> the patch from the first discussion. His work made it into the kernel
+> as the following two commits. You can feel free to test it yourself!
 >
->  if (!map_word_equal(map, qry[1], val[1]))
->   return 0;
+> 5daa7b21496aebf057c12be03038e7220e33353b
+> mtd: prepare partition add and del functions for ioctl requests
 >
->  if (!map_word_equal(map, qry[2], val[2]))
->   return 0;
+> d0f7959e2b708d775c3b6b53cc6a8abb8ff0a00b
+> mtd: add BLKPG API based repartition support
 >
->  return 1;  /* "QRY" found */
-> }
-> EXPORT_SYMBOL_GPL(cfi_qry_present);
->
-> int __xipram cfi_qry_mode_on(uint32_t base, struct map_info *map,
->         struct cfi_private *cfi)
-> {
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
->  if (cfi_qry_present(map, base, cfi))
->   return 1;
->  /* QRY not found probably we deal with some odd CFI chips */
->  /* Some revisions of some old Intel chips? */
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
->  if (cfi_qry_present(map, base, cfi))
->   return 1;
->  /* ST M29DW chips */
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
->  if (cfi_qry_present(map, base, cfi))
->   return 1;
->  /* some old SST chips, e.g. 39VF160x/39VF320x */
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0xAA, 0x5555, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x55, 0x2AAA, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x98, 0x5555, base, map, cfi, cfi->device_type, NULL);
->  if (cfi_qry_present(map, base, cfi))
->   return 1;
->  /* SST 39VF640xB */
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0xAA, 0x555, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x55, 0x2AA, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
->  if (cfi_qry_present(map, base, cfi))
->   return 1;
->  /* QRY not found */
->  return 0;
-> }
-> EXPORT_SYMBOL_GPL(cfi_qry_mode_on);
->
-> void __xipram cfi_qry_mode_off(uint32_t base, struct map_info *map,
->           struct cfi_private *cfi)
-> {
->  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
->  /* M29W128G flashes require an additional reset command
->     when exit qry mode */
->  if ((cfi->mfr == CFI_MFR_ST) && (cfi->id == 0x227E || cfi->id == 0x7E))
->   cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-> }
-> EXPORT_SYMBOL_GPL(cfi_qry_mode_off);
->
+> Brian
 
-cfi_cmdset_0002.c
+Hi Brian,
 
-219a220,253
-> static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
-> {
->    struct map_info *map = mtd->priv;
->    struct cfi_private *cfi = map->fldrv_priv;
->
->    /*
->     * These flashes report two seperate eraseblock regions based on the
->     * sector_erase-size and block_erase-size, although they both operate 
-> on the
->     * same memory. This is not allowed according to CFI, so we just pick 
-> the
->     * sector_erase-size.
->     */
->    cfi->cfiq->NumEraseRegions = 1;
-> }
->
-> static void fixup_sst39vf_rev_b(struct mtd_info *mtd, void *param)
-> {
->    struct map_info *map = mtd->priv;
->    struct cfi_private *cfi = map->fldrv_priv;
->
->    fixup_old_sst_eraseregion(mtd);
->
->    cfi->addr_unlock1 = 0x555;
->    cfi->addr_unlock2 = 0x2AA;
-> }
->
-> /* Used to fix CFI-Tables of chips without Extended Query Tables */
-> static struct cfi_fixup cfi_nopri_fixup_table[] = {
->    { CFI_MFR_SST, 0x235C, fixup_sst39vf_rev_b, NULL, }, // SST39VF3202B
->    { CFI_MFR_SST, 0x235D, fixup_sst39vf_rev_b, NULL, }, // SST39VF3201B
->    { CFI_MFR_SST, 0x236C, fixup_sst39vf_rev_b, NULL, }, // SST39VF6402B
->    { CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
->    { 0, 0, NULL, NULL }
-> };
->
+Whoa, they've been in for a while... I was looking in mtd-api.h for ioctls
 
-
------ Original Message ----- 
-From: "Fabio Giovagnini" <fabio.giovagnini@aurion-tech.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: "yidong zhang" <zhangyd6@gmail.com>; <David.Woodhouse@intel.com>; 
-"Wolfram Sang" <w.sang@pengutronix.de>; <yegorslists@googlemail.com>; 
-"Guillaume LECERF" <glecerf@gmail.com>; <taliaferro62@gmail.com>
-Sent: Friday, October 22, 2010 2:50 PM
-Subject: Re: [Help] SST39VF6401B Support
-
-
-Hi Guys,
-As Gullelm remeber for sure, I used the jedec probe for such a flash in a 
-very
-old 2.6 kernel.
-
-Now I'm migrating to the newets one kernel.
-Do you tell me how the kernel will be updated with the last mtd stuff
-developed; or in place of it how to patch a standard kernel?
-
-Thanks a  lot and sorry for my question if it is improper
-
-
-In data venerdì 22 ottobre 2010 17:42:39, yidong zhang ha scritto:
-: > On Fri, Oct 22, 2010 at 11:36 PM, Guillaume LECERF <glecerf@gmail.com>
-wrote:
-> > 2010/10/22 yidong zhang <zhangyd6@gmail.com>:
-> >>> Could you try setting cif->cfiq->EraseRegionInfo[0] to 0x02003FF in
-> >>> fixup_sst39vf_rev_b() ?
-> >>
-> >> Hi
-> >>  how about this attached patch.
-> >
-> > If it works for you, I'll send a patch series for SST 39VF640xB and
-> > 38VF640x, because both chips needs 0x50 as erase command.
->
-> Sorry, i cannot test it right now.  I will sent the result as soon as i
-> can.
->
-> > --
-> > Guillaume LECERF
-> > GeeXboX developer - www.geexbox.org
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Ing. Fabio Giovagnini
-
-Aurion s.r.l.
-P.I e C.F.
-00885711200
-skype: aurion.giovagnini
-Tel. +39.051.594.78.24
-Cell. +39.335.83.50.919
-www.aurion-tech.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks heaps,
+Tim
