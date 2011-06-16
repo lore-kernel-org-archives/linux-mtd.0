@@ -1,23 +1,23 @@
-Received: from mail.elutions.com ([64.31.159.3])
+Received: from if00-mail-sr07-mia.mta.terra.com ([208.84.243.14])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QWwWh-0006Fg-4j
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2011 20:17:26 +0000
-Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
-	v3.2r9) id hv41580171st for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Jun 2011 15:04:49 -0400 (envelope-from
-	<prvs=11471e88ec=mhench@elutions.com>)
-Content-class: urn:content-classes:message
+	id 1QX0sT-00007H-8N
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 00:56:11 +0000
+Message-ID: <DEF16A5C46894A5DB447E0F7C81A9D5F@THOR>
+From: =?iso-8859-1?Q?Fl=E1vio_Silveira?= <fggs@terra.com.br>
+To: "Fabio Giovagnini" <fabio.giovagnini@aurion-tech.com>,
+	<linux-mtd@lists.infradead.org>
+References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com><AANLkTinQ=vHZgQ5B2YnsDkKzmCD288JwzTUgTUP-9whV@mail.gmail.com><AANLkTimUVCRZLQma2xRChr51y1Fi5E2p31qFQS=B20Sw@mail.gmail.com>
+	<201010221950.57594.fabio.giovagnini@aurion-tech.com>
+In-Reply-To: <201010221950.57594.fabio.giovagnini@aurion-tech.com>
+Subject: Re: [Help] SST39VF6401B Support
+Date: Wed, 15 Jun 2011 21:55:57 -0300
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: NAND BBT corruption on MPC83xx
-Date: Wed, 15 Jun 2011 16:17:19 -0400
-Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC0259E00F@tpamail.elutions.com>
-In-Reply-To: <BANLkTi=L8CqtTt=+sJ-CHVyXyTsxTR_o8Q@mail.gmail.com>
-From: "Mike Hench" <mhench@elutions.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>,
-	"MTD list" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 8bit
+Cc: yidong zhang <zhangyd6@gmail.com>, David.Woodhouse@intel.com,
+	Wolfram Sang <w.sang@pengutronix.de>, yegorslists@googlemail.com,
+	Guillaume LECERF <glecerf@gmail.com>, taliaferro62@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,104 +27,195 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the read page -1 problem we discussed earlier Round about line
-485 of linux-2.6.39.1/drivers/mtd/nand/fsl_elbc_nand.c
+Hi guys,
 
-        /* Read back the page in order to fill in the ECC for the
-         * caller.  Is this really needed?
-         */
-        if (full_page && elbc_fcm_ctrl->oob_poi) {
-            out_be32(&lbc->fbcr, 3);
-            set_addr(mtd, 6, page_addr, 1);
+  I've tested this patch on kernel 2.6.23 (actually it's called 2.6.24.111) 
+and didn't work.
 
-page_addr at this point is always -1.
-now WHY a read corrupts that last block I do not know.
--1 is not a valid page address, the address 'protocol' allows more bits
-Than the flash uses. So it does not mean 'last block', or last page in
-last block.
-Maybe it is upsetting the state machine in the flash.
-Maybe it is upsetting the ELBC.
-You will find that the secondary bad block table (first page, second to
-last block) is fine.
+  Below are my diffs and I can post original files as well, please help me 
+make it work!
 
-the kernel works fine without that block of code. So oob_poi must not be
-used anywhere. In any case it is always garbage with the above code.
-I raised this issue on this list earlier, no response.
-I think Freescale might be more likely to notice on the PPC list.
-I don't think they hang out here.
+Thanks in advance!
 
-I am happy without that block of useless code.
+cfi_util.c
+
+29a30,107
+> int __xipram cfi_qry_present(struct map_info *map, __u32 base,
+>         struct cfi_private *cfi)
+> {
+>  int osf = cfi->interleave * cfi->device_type; /* scale factor */
+>  map_word val[3];
+>  map_word qry[3];
+>
+>  qry[0] = cfi_build_cmd('Q', map, cfi);
+>  qry[1] = cfi_build_cmd('R', map, cfi);
+>  qry[2] = cfi_build_cmd('Y', map, cfi);
+>
+>  val[0] = map_read(map, base + osf*0x10);
+>  val[1] = map_read(map, base + osf*0x11);
+>  val[2] = map_read(map, base + osf*0x12);
+>
+>  if (!map_word_equal(map, qry[0], val[0]))
+>   return 0;
+>
+>  if (!map_word_equal(map, qry[1], val[1]))
+>   return 0;
+>
+>  if (!map_word_equal(map, qry[2], val[2]))
+>   return 0;
+>
+>  return 1;  /* "QRY" found */
+> }
+> EXPORT_SYMBOL_GPL(cfi_qry_present);
+>
+> int __xipram cfi_qry_mode_on(uint32_t base, struct map_info *map,
+>         struct cfi_private *cfi)
+> {
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+>  if (cfi_qry_present(map, base, cfi))
+>   return 1;
+>  /* QRY not found probably we deal with some odd CFI chips */
+>  /* Some revisions of some old Intel chips? */
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+>  if (cfi_qry_present(map, base, cfi))
+>   return 1;
+>  /* ST M29DW chips */
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
+>  if (cfi_qry_present(map, base, cfi))
+>   return 1;
+>  /* some old SST chips, e.g. 39VF160x/39VF320x */
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0xAA, 0x5555, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x55, 0x2AAA, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x98, 0x5555, base, map, cfi, cfi->device_type, NULL);
+>  if (cfi_qry_present(map, base, cfi))
+>   return 1;
+>  /* SST 39VF640xB */
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0xAA, 0x555, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x55, 0x2AA, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
+>  if (cfi_qry_present(map, base, cfi))
+>   return 1;
+>  /* QRY not found */
+>  return 0;
+> }
+> EXPORT_SYMBOL_GPL(cfi_qry_mode_on);
+>
+> void __xipram cfi_qry_mode_off(uint32_t base, struct map_info *map,
+>           struct cfi_private *cfi)
+> {
+>  cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+>  /* M29W128G flashes require an additional reset command
+>     when exit qry mode */
+>  if ((cfi->mfr == CFI_MFR_ST) && (cfi->id == 0x227E || cfi->id == 0x7E))
+>   cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+> }
+> EXPORT_SYMBOL_GPL(cfi_qry_mode_off);
+>
+
+cfi_cmdset_0002.c
+
+219a220,253
+> static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
+> {
+>    struct map_info *map = mtd->priv;
+>    struct cfi_private *cfi = map->fldrv_priv;
+>
+>    /*
+>     * These flashes report two seperate eraseblock regions based on the
+>     * sector_erase-size and block_erase-size, although they both operate 
+> on the
+>     * same memory. This is not allowed according to CFI, so we just pick 
+> the
+>     * sector_erase-size.
+>     */
+>    cfi->cfiq->NumEraseRegions = 1;
+> }
+>
+> static void fixup_sst39vf_rev_b(struct mtd_info *mtd, void *param)
+> {
+>    struct map_info *map = mtd->priv;
+>    struct cfi_private *cfi = map->fldrv_priv;
+>
+>    fixup_old_sst_eraseregion(mtd);
+>
+>    cfi->addr_unlock1 = 0x555;
+>    cfi->addr_unlock2 = 0x2AA;
+> }
+>
+> /* Used to fix CFI-Tables of chips without Extended Query Tables */
+> static struct cfi_fixup cfi_nopri_fixup_table[] = {
+>    { CFI_MFR_SST, 0x235C, fixup_sst39vf_rev_b, NULL, }, // SST39VF3202B
+>    { CFI_MFR_SST, 0x235D, fixup_sst39vf_rev_b, NULL, }, // SST39VF3201B
+>    { CFI_MFR_SST, 0x236C, fixup_sst39vf_rev_b, NULL, }, // SST39VF6402B
+>    { CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
+>    { 0, 0, NULL, NULL }
+> };
+>
 
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Matthew L.
-Creech
-Sent: Wednesday, June 15, 2011 2:49 PM
-To: MTD list
-Subject: NAND BBT corruption on MPC83xx
-
-Hi, I'm not sure whether this list or the U-Boot list is more
-appropriate, but figured I'd start here and see if anyone can help.
-
-We've gotten some devices back from the field which all suffer from
-this same problem on bootup when attaching UBI (these messages are
-from U-Boot):
+----- Original Message ----- 
+From: "Fabio Giovagnini" <fabio.giovagnini@aurion-tech.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: "yidong zhang" <zhangyd6@gmail.com>; <David.Woodhouse@intel.com>; 
+"Wolfram Sang" <w.sang@pengutronix.de>; <yegorslists@googlemail.com>; 
+"Guillaume LECERF" <glecerf@gmail.com>; <taliaferro62@gmail.com>
+Sent: Friday, October 22, 2010 2:50 PM
+Subject: Re: [Help] SST39VF6401B Support
 
 
-...
-Bad block table found at page 524224, version 0x01
-Bad block table found at page 524160, version 0x01
-nand_bbt: ECC error while reading bad block table
-...(long stream of bogus bad blocks)...
-UBI: attaching mtd1 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI error: vtbl_check: volume table check failed: record 0, error 9
-UBI error: ubi_init: cannot attach mtd1
-UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
-UBI init error -22
+Hi Guys,
+As Gullelm remeber for sure, I used the jedec probe for such a flash in a 
+very
+old 2.6 kernel.
 
-A full console dump is here:
+Now I'm migrating to the newets one kernel.
+Do you tell me how the kernel will be updated with the last mtd stuff
+developed; or in place of it how to patch a standard kernel?
 
-http://mcreech.com/work/bbt-ecc-error.txt
+Thanks a  lot and sorry for my question if it is improper
 
-Question #1: Is the UBI error here attributable to the blocks which
-are wrongly marked as bad?  I would assume that it's a red herring,
-and I should focus on figuring out how the BBT got corrupted, but
-figured I'd check first.
 
-Question #2: Are there any known issues that could cause the BBT to
-become corrupt like this?
+In data venerdì 22 ottobre 2010 17:42:39, yidong zhang ha scritto:
+: > On Fri, Oct 22, 2010 at 11:36 PM, Guillaume LECERF <glecerf@gmail.com>
+wrote:
+> > 2010/10/22 yidong zhang <zhangyd6@gmail.com>:
+> >>> Could you try setting cif->cfiq->EraseRegionInfo[0] to 0x02003FF in
+> >>> fixup_sst39vf_rev_b() ?
+> >>
+> >> Hi
+> >>  how about this attached patch.
+> >
+> > If it works for you, I'll send a patch series for SST 39VF640xB and
+> > 38VF640x, because both chips needs 0x50 as erase command.
+>
+> Sorry, i cannot test it right now.  I will sent the result as soon as i
+> can.
+>
+> > --
+> > Guillaume LECERF
+> > GeeXboX developer - www.geexbox.org
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-I noticed that the reported bad blocks were all aligned at multiples
-of 0x80000 (with one exception).  Dumping the last 2 blocks shows:
-  - one BBT with lots of bytes that have their lower 1 or 2 bits
-un-set (e.g. 0xfe instead of 0xff): this explains all the
-each-4th-block alignment.
-  - the other BBT shows only one factory-marked bad block at
-0x062e0000, which is presumably correct.  This is preserved in the
-bogus BBT, and is the only non-0x80000-aligned bad block in the table.
-  - Only the first 1024 bytes of the BBT contain bogus info - the
-latter half of the BBT is all correct
+-- 
+Ing. Fabio Giovagnini
 
-It seems like the original BBT somehow had 0-2 bits corrupted at the
-low end of each of its bytes, either while in memory or when the BBT
-was written to NAND.  Any ideas on what I can do to isolate the
-problem?  Thanks in advance!
-
-More info on this board:
-- MPC 8313 SoC
-- 1GB Samsung NAND flash (K9K8G08U0B)
-- Linux 2.6.31
-- U-Boot 2009.06
-
---=20
-Matthew L. Creech
+Aurion s.r.l.
+P.I e C.F.
+00885711200
+skype: aurion.giovagnini
+Tel. +39.051.594.78.24
+Cell. +39.335.83.50.919
+www.aurion-tech.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
