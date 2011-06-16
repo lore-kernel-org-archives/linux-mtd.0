@@ -1,20 +1,25 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QX8Ng-0003wB-Uj
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 08:56:54 +0000
-Received: by vxd2 with SMTP id 2so1200364vxd.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Jun 2011 01:56:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
-References: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
-Date: Thu, 16 Jun 2011 12:56:50 +0400
-Message-ID: <BANLkTi=DAYYsB0SqhsXtdY_KN4ACVh0qKg@mail.gmail.com>
-Subject: Re: [PATCH V2 00/18] last part of big cleanup of partition handling
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QXAgH-0005qf-FJ
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 11:24:17 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QXAgA-0007Ic-RC
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2011 13:24:06 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2011 13:24:06 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2011 13:24:06 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+From: Gilles <gilles.ganault@free.fr>
+Subject: [NAND] Are partitions persistent?
+Date: Thu, 16 Jun 2011 13:23:52 +0200
+Message-ID: <khpjv6l6bhe815s0rj9frue0l5qqpb8hfq@4ax.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello
 
-On 6/12/11, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> wrote:
-> Hello,
->
-> Changes in V2 of this serie:
-> * Introduce special struct mtd_parts_parser_data structure to hold data args
->   passed to parsers
-> * small cleanups
->
-> The following changes since commit 3e1643b282542cf524d30cfab4cfe38f6b2afa99:
->
->   mtd: edb7312: correctly pass MTD name to parsers (2011-06-09 15:30:44
-> +0300)
->
-> are available in the git repository at:
->   git://git.infradead.org/users/dbaryshkov/mtd-cleanup.git mtd-big-cleanup
->
-> Dmitry Eremin-Solenikov (18):
->       mtd: abstract last MTD partition parser argument
->       mtd: prepare to convert of_mtd_parse_partitions to partition parser
->       mtd: physmap_of: use ofpart through generic parsing
->       mtd: m25p80: use ofpart through generic parsing
->       mtd: fsl_elbc_nand: use ofpart through generic parsing
->       mtd: fsl_upm: use ofpart through generic parsing
->       mtd: mpc5121_nfc: use ofpart through generic parsing
->       mtd: ndfc: use ofpart through generic parsing
->       mtd: socrates_nand: use ofpart through generic parsing
->       mtd: drop of_mtd_parse_partitions()
->       mtd: physmap_of: move parse_obsolete_partitions to become separate
-> parser
->       mtd: physmap_of.c: use mtd_device_parse_register
->       mtd: m25p80.c: use mtd_device_parse_register
->       mtd: fsl_elbc_nand.c: use mtd_device_parse_register
->       mtd: fsl_upm.c: use mtd_device_parse_register
->       mtd: mpc5121_nfc.c: use mtd_device_parse_register
->       mtd: ndfc.c: use mtd_device_parse_register
->       mtd: socrates_nand.c: use mtd_device_parse_register
->
->  drivers/mtd/cmdlinepart.c        |    2 +-
->  drivers/mtd/devices/m25p80.c     |   37 ++------------
->  drivers/mtd/maps/physmap_of.c    |   80 +++--------------------------
->  drivers/mtd/mtdcore.c            |    6 +-
->  drivers/mtd/mtdpart.c            |   15 ++++--
->  drivers/mtd/nand/fsl_elbc_nand.c |   17 ++-----
->  drivers/mtd/nand/fsl_upm.c       |   13 +----
->  drivers/mtd/nand/mpc5121_nfc.c   |   17 +-----
->  drivers/mtd/nand/ndfc.c          |   16 +-----
->  drivers/mtd/nand/socrates_nand.c |   23 +-------
->  drivers/mtd/ofpart.c             |  104
-> ++++++++++++++++++++++++++++++++++++--
->  drivers/mtd/redboot.c            |    6 +-
->  include/linux/mtd/mtd.h          |    3 +-
->  include/linux/mtd/partitions.h   |   32 +++++-------
->  14 files changed, 160 insertions(+), 211 deletions(-)
+	I was wondering: Are partitions on NAND persistent, or is it up to
+the developer to make sure the images used to populate the different
+partitions are small enough to fit the partitions set in the NAND
+driver?
 
-What about this patchset?
+For instance, this found through Google:
+=============
+static struct mtd_partition bfin_spi_flash_partitions[ ] = {
+    {
+        .name = "bootloader(spi)",
+        .size = 0x00040000,
+        .offset = 0,
+        .mask_flags = MTD_CAP_ROM
+    }, {
+        .name = "linux kernel(spi)",
+        .size = 0x180000,
+        .offset = MTDPART_OFS_APPEND,
+};
+=============
 
--- 
-With best wishes
-Dmitry
+Does it mean that, for instance, when using Uboot's nandwrite to
+update the bootloader above, it's up to me to make sure that the image
+is smaller than 0x40000 and Uboot will happily keep going and erase
+part of the linux kernel, or is the MTDPART_OFS_APPEND option
+precisely made to avoid this and trigger an error?
+
+Thank you.
