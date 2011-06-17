@@ -1,21 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXSVt-0001ih-DG
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 06:26:42 +0000
-Received: by fxm14 with SMTP id 14so2055577fxm.36
+	id 1QXU8B-0002X2-Iz
+	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 08:10:20 +0000
+Received: by iyb39 with SMTP id 39so2281553iyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Jun 2011 23:26:36 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <khpjv6l6bhe815s0rj9frue0l5qqpb8hfq@4ax.com>
-References: <khpjv6l6bhe815s0rj9frue0l5qqpb8hfq@4ax.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 17 Jun 2011 02:26:15 -0400
-Message-ID: <BANLkTi=fnNB2CXkbSGhrs91TLUB05KWwrQ@mail.gmail.com>
-Subject: Re: [NAND] Are partitions persistent?
-To: Gilles <gilles.ganault@free.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	Fri, 17 Jun 2011 01:10:17 -0700 (PDT)
+Subject: [PATCH 1/2] mtd: onenand/omap2.c: fix build error
+From: Axel Lin <axel.lin@gmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 17 Jun 2011 16:09:36 +0800
+Message-ID: <1308298176.13535.1.camel@phoenix>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 16, 2011 at 07:23, Gilles wrote:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0I was wondering: Are partitions on NAND persis=
-tent, or is it up to
-> the developer to make sure the images used to populate the different
-> partitions are small enough to fit the partitions set in the NAND
-> driver?
->
-> For instance, this found through Google:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> static struct mtd_partition bfin_spi_flash_partitions[ ] =3D {
-> =C2=A0 =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.name =3D "bootloader(spi)",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.size =3D 0x00040000,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.offset =3D 0,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.mask_flags =3D MTD_CAP_ROM
-> =C2=A0 =C2=A0}, {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.name =3D "linux kernel(spi)",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.size =3D 0x180000,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.offset =3D MTDPART_OFS_APPEND,
-> };
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Does it mean that, for instance, when using Uboot's nandwrite to
-> update the bootloader above, it's up to me to make sure that the image
-> is smaller than 0x40000 and Uboot will happily keep going and erase
-> part of the linux kernel, or is the MTDPART_OFS_APPEND option
-> precisely made to avoid this and trigger an error?
+Fix below build error:
+  CC      drivers/mtd/onenand/omap2.o
+drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_probe':
+drivers/mtd/onenand/omap2.c:754: error: 'info' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:754: error: (Each undeclared identifier is reported only once
+drivers/mtd/onenand/omap2.c:754: error: for each function it appears in.)
+make[3]: *** [drivers/mtd/onenand/omap2.o] Error 1
+make[2]: *** [drivers/mtd/onenand] Error 2
+make[1]: *** [drivers/mtd] Error 2
+make: *** [drivers] Error 2
 
-the kernel's concept of partitions really has nothing to do with
-u-boot.  further, the layout you define in the kernel via platform
-resources is static and always used exactly as declared regardless of
-the content on there.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ drivers/mtd/onenand/omap2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-u-boot by default does not know any of partitions, only offsets and
-lengths.  it is up to you to make sure the two concepts are kept in
-line.
--mike
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index eb9cbd9..06efa14 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -751,7 +751,7 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+ 		goto err_release_regulator;
+ 
+-	r = mtd_device_parse_register(&info->mtd, NULL, 0,
++	r = mtd_device_parse_register(&c->mtd, NULL, 0,
+ 			pdata ? pdata->parts : NULL,
+ 			pdata ? pdata->nr_parts : 0);
+ 	if (r)
+-- 
+1.7.4.1
