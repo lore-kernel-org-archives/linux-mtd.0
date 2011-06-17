@@ -1,22 +1,20 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXdJq-00009e-6F
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 17:59:00 +0000
-Received: by pzk28 with SMTP id 28so2255472pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Jun 2011 10:58:53 -0700 (PDT)
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QXgAM-0001VT-Ik
+	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 21:01:23 +0000
+Date: Fri, 17 Jun 2011 23:00:14 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Peter Barada <peter.barada@gmail.com>
+Subject: Re: Problem with clean markers/partial writes on Micron 4-bit ECC NAND
+Message-ID: <20110617210014.GA28332@parrot.com>
+References: <4DFB9458.1030304@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1307931792-30386-1-git-send-email-Shaohui.Xie@freescale.com>
-References: <1307931792-30386-1-git-send-email-Shaohui.Xie@freescale.com>
-Date: Fri, 17 Jun 2011 10:58:53 -0700
-Message-ID: <BANLkTikoRk9OUrQGOFJZjMWOLLT5GXAEDQ@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/85xx: fix NAND_CMD_READID read bytes number
-From: Bryan Hundven <bryanhundven@gmail.com>
-To: Shaohui Xie <Shaohui.Xie@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4DFB9458.1030304@gmail.com>
+Cc: Eric Nelson <eric.nelson@logicpd.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Peter Barada <peter.barada@logicpd.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 12, 2011 at 7:23 PM, Shaohui Xie <Shaohui.Xie@freescale.com> wr=
-ote:
-> when nand_get_flash_type() is called, it will read 8 bytes of ID instead =
-of 5,
-> but the driver only read 5 bytes, so kernel will dump error messages like=
-:
->
-> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
-> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
-> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
->
-> Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
-> Acked-by: Scott Wood <scottwood@freescale.com>
-> ---
-> =C2=A0drivers/mtd/nand/fsl_elbc_nand.c | =C2=A0 =C2=A06 +++---
-> =C2=A01 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc=
-_nand.c
-> index 0bb254c..33d8aad 100644
-> --- a/drivers/mtd/nand/fsl_elbc_nand.c
-> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-> @@ -339,9 +339,9 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, un=
-signed int command,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(FIR_OP_UA =C2=A0<< FIR=
-_OP1_SHIFT) |
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(FIR_OP_RBW << FIR_OP2_=
-SHIFT));
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0out_be32(&lbc->fcr=
-, NAND_CMD_READID << FCR_CMD0_SHIFT);
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* 5 bytes for manuf, =
-device and exts */
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 out_be32(&lbc->fbcr, 5=
-);
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 elbc_fcm_ctrl->read_by=
-tes =3D 5;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* nand_get_flash_type=
-() reads 8 bytes of entire ID string */
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 out_be32(&lbc->fbcr, 8=
-);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 elbc_fcm_ctrl->read_by=
-tes =3D 8;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0elbc_fcm_ctrl->use=
-_mdr =3D 1;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0elbc_fcm_ctrl->mdr=
- =3D 0;
->
-> --
-> 1.6.4
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+On Fri, Jun 17, 2011 at 06:52:24PM +0100, Peter Barada wrote:
+(...)
+> The problem I'm running into with JFFS2 is that empty flash is first 
+> marked with a clean marker into the OOB, and then a 2nd write to the 
+> main data area is done (w/o an intervening erase) to that page with data 
+> which corrupts the ECCs that were first modified by writing the cleanmarker.
+> 
+(...)
+> 
+> I believe I've figured out a workaround:
+> 
+> 1) Modify the ecclayout to add the other 8 bytes of the OOB that are NOT 
+> ECCd *after* the 16 bytes that are ECCd (so the ecc layout looks like):
+> 
+(...)
+> 2) Then set ops.ooboffs to 16 in jffs2_write_nand_cleanmarker and 
+> jffs2_check_nand_cleanmarker.
+> 
+> This "offsets" the read/writes by 16 bytes to move the cleanmarker into 
+> OOB bytes that do not perturb the ECCs, and so far it looks to work.
+> 
 
-Shaohui,
+OK, so now the cleanmarker is in an unprotected area; did you also patch
+jffs2_check_nand_cleanmarker() so that it does its pattern comparison in a
+bitflip-robust way (instead of just doing a memcmp) ?
+I think you may also need to modify jffs2_check_oob_empty() to take into
+account the new offset of your cleanmarker.
 
-I have tested this on p1011rdb, p1020rdb, and p2020rdb on 2.6.35.13
-and 2.6.39.1.
-Thank you for fixing this :-)
+> However I feel this is a hack as our product will use two different NAND 
+> chips, the other being a more traditional SLC that can use 1-bit hamming 
+> for ECC (which does not ECC any bytes in the OOB).
+> 
+> How can I best code this into the MTD layer such that JFFS2 (and other 
+> NAND FSs that does partial writes including OOB bytes) can understand 
+> that some OOB bytes perturb the data area ECC?
+> 
+> I think adding a "non_ecc_oob_offset" variable to the ecclayout could 
+> capture this nuance of the OOB/ECC interaction for this chip and JFFS2 
+> could set ops.ooboffs to non_ecc_oob_offset in 
+> jffs2_write_nand_cleanmarker and jffs2_check_nand_cleanmarker.
 
--Bryan
+I believe JFFS2 only uses oob for its cleanmarker; then, maybe you could just
+omit the ecc-protected bytes from the .oobfree list, like this:
+
+  ecclayout = {
+         eccbytes = 32,
+         eccpos = { 8, 9, 10, 11, 12, 13, 14, 15,
+                 24, 25, 26, 27, 28, 19, 30, 31,
+                 40, 41, 42, 43, 44, 45, 46, 47,
+                 56, 57, 58, 59, 60, 61, 62, 63},
+         .oobfree = {
+                 { .offset = 2,
+                   .length = 2},
+                 { .offset = 18,
+                   .length = 2},
+                 { .offset = 24,
+                   .length = 2},
+                 { .offset = 42,
+                   .length = 2},
+         },
+};
+
+and only modify jffs2_check_nand_cleanmarker() and jffs2_check_oob_empty()
+so that they are robust to bitflips in unprotected oob bytes ?
+Or are you also using on the same mtd device another filesystem requiring
+protected oob bytes, like YAFFS2 ?
+Regards,
+
+Ivan
