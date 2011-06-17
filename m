@@ -1,27 +1,22 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXUyJ-0003n3-Al
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 09:04:12 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QXUyG-0001gh-BC
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 11:04:08 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2011 11:04:08 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2011 11:04:08 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [NAND] Are partitions persistent?
-Date: Fri, 17 Jun 2011 11:03:57 +0200
-Message-ID: <u26mv6p5o25fugrjepefl74q8rgct8uq0s@4ax.com>
-References: <khpjv6l6bhe815s0rj9frue0l5qqpb8hfq@4ax.com>
-	<BANLkTi=fnNB2CXkbSGhrs91TLUB05KWwrQ@mail.gmail.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QXWsv-0004hE-Jf
+	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 11:06:46 +0000
+Received: by iyb39 with SMTP id 39so2397388iyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 17 Jun 2011 04:06:42 -0700 (PDT)
+Subject: [PATCH] mtd: onenand: remove redundant mtd_device_unregister
+	before onenand_release
+From: Axel Lin <axel.lin@gmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 17 Jun 2011 19:06:33 +0800
+Message-ID: <1308308793.2628.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,10 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Jun 2011 02:26:15 -0400, Mike Frysinger
-<vapier.adi@gmail.com> wrote:
->u-boot by default does not know any of partitions, only offsets and
->lengths.  it is up to you to make sure the two concepts are kept in
->line.
+onenand_release() will call mtd_device_unregister(), thus remove the redundant
+mtd_device_unregister() call before onenand_release().
 
-Thanks Mike, that's what I thought.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ drivers/mtd/onenand/generic.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index 8152a31..7813095 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -97,7 +97,6 @@ static int __devexit generic_onenand_remove(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, NULL);
+ 
+ 	if (info) {
+-		mtd_device_unregister(&info->mtd);
+ 		onenand_release(&info->mtd);
+ 		release_mem_region(res->start, size);
+ 		iounmap(info->onenand.base);
+-- 
+1.7.4.1
