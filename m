@@ -1,16 +1,18 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXU8B-0002X2-Iz
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 08:10:20 +0000
-Received: by iyb39 with SMTP id 39so2281553iyb.36
+	id 1QXU9V-0002ZE-Ec
+	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2011 08:11:42 +0000
+Received: by iyb39 with SMTP id 39so2282339iyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Jun 2011 01:10:17 -0700 (PDT)
-Subject: [PATCH 1/2] mtd: onenand/omap2.c: fix build error
+	Fri, 17 Jun 2011 01:11:40 -0700 (PDT)
+Subject: [PATCH 2/2] mtd: onenand/samsung.c: fix build error
 From: Axel Lin <axel.lin@gmail.com>
 To: linux-kernel@vger.kernel.org
+In-Reply-To: <1308298176.13535.1.camel@phoenix>
+References: <1308298176.13535.1.camel@phoenix>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Jun 2011 16:09:36 +0800
-Message-ID: <1308298176.13535.1.camel@phoenix>
+Date: Fri, 17 Jun 2011 16:11:34 +0800
+Message-ID: <1308298294.13535.3.camel@phoenix>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
@@ -27,33 +29,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Fix below build error:
-  CC      drivers/mtd/onenand/omap2.o
-drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_probe':
-drivers/mtd/onenand/omap2.c:754: error: 'info' undeclared (first use in this function)
-drivers/mtd/onenand/omap2.c:754: error: (Each undeclared identifier is reported only once
-drivers/mtd/onenand/omap2.c:754: error: for each function it appears in.)
-make[3]: *** [drivers/mtd/onenand/omap2.o] Error 1
+  CC      drivers/mtd/onenand/samsung.o
+drivers/mtd/onenand/samsung.c: In function 's3c_onenand_probe':
+drivers/mtd/onenand/samsung.c:1017: error: 'info' undeclared (first use in this function)
+drivers/mtd/onenand/samsung.c:1017: error: (Each undeclared identifier is reported only once
+drivers/mtd/onenand/samsung.c:1017: error: for each function it appears in.)
+make[3]: *** [drivers/mtd/onenand/samsung.o] Error 1
 make[2]: *** [drivers/mtd/onenand] Error 2
 make[1]: *** [drivers/mtd] Error 2
 make: *** [drivers] Error 2
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- drivers/mtd/onenand/omap2.c |    2 +-
+ drivers/mtd/onenand/samsung.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index eb9cbd9..06efa14 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -751,7 +751,7 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
- 		goto err_release_regulator;
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 597dffc..d324074 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -1014,7 +1014,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 	if (s3c_read_reg(MEM_CFG_OFFSET) & ONENAND_SYS_CFG1_SYNC_READ)
+ 		dev_info(&onenand->pdev->dev, "OneNAND Sync. Burst Read enabled\n");
  
--	r = mtd_device_parse_register(&info->mtd, NULL, 0,
-+	r = mtd_device_parse_register(&c->mtd, NULL, 0,
+-	err = mtd_device_parse_register(&info->mtd, NULL, 0,
++	err = mtd_device_parse_register(onenand->mtd, NULL, 0,
  			pdata ? pdata->parts : NULL,
  			pdata ? pdata->nr_parts : 0);
- 	if (r)
+ 
 -- 
 1.7.4.1
