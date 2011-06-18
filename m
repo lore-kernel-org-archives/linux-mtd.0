@@ -1,25 +1,24 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXzee-0007W2-J8
-	for linux-mtd@lists.infradead.org; Sat, 18 Jun 2011 17:49:57 +0000
-Received: by pzk28 with SMTP id 28so2912479pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Jun 2011 10:49:52 -0700 (PDT)
+Received: from mail.elutions.com ([64.31.159.3])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QXzjd-0007YK-3l
+	for linux-mtd@lists.infradead.org; Sat, 18 Jun 2011 17:55:05 +0000
+Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
+	v3.2r9) id hvjal00171sp for <linux-mtd@lists.infradead.org>;
+	Sat, 18 Jun 2011 12:41:49 -0400 (envelope-from
+	<prvs=11509943cb=mhench@elutions.com>)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <4DFCD44A.4090909@gmail.com>
-References: <4DFB9458.1030304@gmail.com> <20110617210014.GA28332@parrot.com>
-	<4DFCD44A.4090909@gmail.com>
-Date: Sat, 18 Jun 2011 10:49:52 -0700
-Message-ID: <BANLkTinXQ7aPOf7L1tqj362SR+b3TRe-XQ@mail.gmail.com>
-Subject: Re: Problem with clean markers/partial writes on Micron 4-bit ECC NAND
-From: Kevin Cernekee <cernekee@gmail.com>
-To: Peter Barada <peter.barada@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Eric Nelson <eric.nelson@logicpd.com>,
-	Peter Barada <peter.barada@logicpd.com>
+Subject: RE: NAND BBT corruption on MPC83xx
+Date: Sat, 18 Jun 2011 13:55:01 -0400
+Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC0259E343@tpamail.elutions.com>
+In-Reply-To: <20110617163442.204348a0@schlenkerla.am.freescale.net>
+From: "Mike Hench" <mhench@elutions.com>
+To: "Scott Wood" <scottwood@freescale.com>,
+	"Matthew L. Creech" <mlcreech@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 18, 2011 at 9:37 AM, Peter Barada <peter.barada@gmail.com> wrot=
-e:
-> The issue I have is how can I best tell MTD (and FS layers on top of it)
-> that some of the OOB bytes can not be used in partial writes due to those
-> bytes perturbing the ECC, or how to change JFFS2 to erase the block after
-> writing the cleanmarker when it wants to write data into the block.
+Scott Wood wrote:
+> As for the corruption, could it be degradation from repeated reads of
+that
+> one page?
 
-FWIW, the product I work on used to utilize JFFS2 and YAFFS2.  We
-needed to hack around many of the same OOB/NOP limitations you are
-seeing.  (As well as several cases where corrupted filesystem metadata
-caused a kernel oops on mount.)
+Read Disturb. I Did not know SLC did that.
+It just takes 10x as long as MLC, on the order of a million reads.
+Supposedly erasing the block fixes it.
+It is not a permanent damage thing.
+I was seeing ~9 hours before failure with heavy writes.
+~4GByte/hour =3D 2M pages, total ~18 million reads before errors in that
+last block showed up.
 
-Once UBIFS became a viable alternative, we found that supporting
-JFFS2/YAFFS2 on NAND flash was far more trouble than it was worth.
+Cool. Now we know.
+Thanks.
 
-> Why does JFFS2 write a clean marker into the empty block? =C2=A0Is it to =
-cover
-> some state transition where power could be interrupted?
-
-Here is a good explanation:
-
-http://linux-mtd.infradead.org/faq/jffs2.html#L_clmarker
+Mike Hench
