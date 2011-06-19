@@ -1,24 +1,14 @@
-Received: from mail.elutions.com ([64.31.159.3])
+Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QXzjd-0007YK-3l
-	for linux-mtd@lists.infradead.org; Sat, 18 Jun 2011 17:55:05 +0000
-Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
-	v3.2r9) id hvjal00171sp for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Jun 2011 12:41:49 -0400 (envelope-from
-	<prvs=11509943cb=mhench@elutions.com>)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: NAND BBT corruption on MPC83xx
-Date: Sat, 18 Jun 2011 13:55:01 -0400
-Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC0259E343@tpamail.elutions.com>
-In-Reply-To: <20110617163442.204348a0@schlenkerla.am.freescale.net>
-From: "Mike Hench" <mhench@elutions.com>
-To: "Scott Wood" <scottwood@freescale.com>,
-	"Matthew L. Creech" <mlcreech@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+	id 1QYDpR-00029C-KG
+	for linux-mtd@lists.infradead.org; Sun, 19 Jun 2011 08:58:02 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: dwmw2@infradead.org,
+	Artem.Bityutskiy@nokia.com
+Subject: [PATCH v2 0/1] mtd/docg3: M-Systems DOC G3 support
+Date: Sun, 19 Jun 2011 10:57:27 +0200
+Message-Id: <1308473848-27065-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scott Wood wrote:
-> As for the corruption, could it be degradation from repeated reads of
-that
-> one page?
+Hi Artem and David,
 
-Read Disturb. I Did not know SLC did that.
-It just takes 10x as long as MLC, on the order of a million reads.
-Supposedly erasing the block fixes it.
-It is not a permanent damage thing.
-I was seeing ~9 hours before failure with heavy writes.
-~4GByte/hour =3D 2M pages, total ~18 million reads before errors in that
-last block showed up.
+I posted this 3 weeks ago, and unfortunately nobody commented the
+submission.
 
-Cool. Now we know.
-Thanks.
+This is the new version of the same driver, with only my own review
+and Artem's comment on new mtd partitions API.
+Please either comment or schedule for one of your linux-next tree, but
+don't let it sleeping for weeks.
 
-Mike Hench
+Cheers.
+
+--
+Robert
+
+Robert Jarzmik (1):
+  mtd: Add DiskOnChip G3 support
+
+ drivers/mtd/devices/Kconfig  |   10 +
+ drivers/mtd/devices/Makefile |    1 +
+ drivers/mtd/devices/docg3.c  | 1138 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/docg3.h  |  224 +++++++++
+ 4 files changed, 1373 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/devices/docg3.c
+ create mode 100644 drivers/mtd/devices/docg3.h
+
+-- 
+1.7.4.4
