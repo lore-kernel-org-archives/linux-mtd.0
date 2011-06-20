@@ -1,22 +1,21 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYjpt-0008O3-9v
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 19:08:41 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'ANDY KENNEDY' <ANDY.KENNEDY@adtran.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 20 Jun 2011 15:08:34 -0400
-Subject: RE: NAND OOB data.
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A7208F91E@dekaexchange07.deka.local>
-References: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
-	<0A40042D85E7C84DB443060EC44B3FD32A7208F91A@dekaexchange07.deka.local>
-	<F9C551623D2CBB4C9488801D14F864C6036086@ex-mb1.corp.adtran.com>
-In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6036086@ex-mb1.corp.adtran.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1QYk3t-0000Re-Kd
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 19:23:10 +0000
+Received: by fxm14 with SMTP id 14so778026fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Jun 2011 12:23:02 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
+References: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 20 Jun 2011 15:22:40 -0400
+Message-ID: <BANLkTi=aU5j9FJ_-bsye6Whh-+PzxrHKCA@mail.gmail.com>
+Subject: Re: nanddump badblock options
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,87 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andy:
+On Wed, Jun 8, 2011 at 16:01, Brian Norris wrote:
+> I have some ideas to implement in nanddump regarding the variety of bad b=
+lock
+> handling options. I thought I'd at least get some feedback before working=
+ up a
+> full patch, so please comment on my ideas.
 
-> All the other boards apparently are all good
-> (is that normal?),
+your ideas sound good to me
 
-  It happens; we're in the midst of switching from
-  MLC to SLC flash and while I'd never expect that
-  from our MLC parts, it seems to be pretty-commonly
-  true for our SLC parts.
-
-
-> Okay, so how do I (without the luxury of u-boot), in user or
-> kernel space, wipe the OOB data?  I'm looking at the code for
-> u-boot nand_erase_nand right now.  I mean, I'm not above writing
-> an userspace app that will do kernel level work for me.  I'm okay
-> with using /dev/mem and screwing with stuff.  Am I on the right
-> track?  I mean, I hate to go down this road if I'm just heading
-> for a dead-end.
-
-  I think there's enough "stuff" available simply through
-  /dev/mtd... to let you do any of this. I do a lot of
-  Flash manipulation simply using Perl, mtdinfo, ubinfo
-  and the /dev/mtd... and /dev/ubi... devices.
-
-  (Unfortunately, I can't share any of that code.)
-
-                               Atlant
-
------Original Message-----
-From: ANDY KENNEDY [mailto:ANDY.KENNEDY@adtran.com]
-Sent: Monday, June 20, 2011 13:54
-To: Atlant Schmidt; linux-mtd@lists.infradead.org
-Subject: RE: NAND OOB data.
-
-> -----Original Message-----
-> From: Atlant Schmidt [mailto:aschmidt@dekaresearch.com]
-> Sent: Monday, June 20, 2011 6:14 AM
-> To: ANDY KENNEDY; linux-mtd@lists.infradead.org
-> Subject: RE: NAND OOB data.
+> (4) Can Mike provide a good explanation for --bb=3Domitbad in the table b=
+elow? I
+> personally don't understand it's exact use, nor do I know how to describe=
+ it
+> best (to provide contrast against the other options), but I understand th=
+at you
+> would like to keep the option. I would appreciate some help.
 >
-> Andy:
+> (5) Summary table:
 >
->   If you don't have the old bad block information saved
->   away somewhere (a bad block table, a scrap of paper,
->   etc.), then you *CAN'T* completely recover from this
->   situation; the original bad block data for that chip
->   is probably irretrievably lost.*
+> -------------------------------------------------------------------------=
+----------------------------------------
+> =C2=A0Old option =C2=A0 =C2=A0 =C2=A0 =C2=A0 New option =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Comment
+> -------------------------------------------------------------------------=
+----------------------------------------
+> =C2=A0<default> =C2=A0 =C2=A0 =3D> =C2=A0 --bb=3Dpadbad =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0dump flash data, substituting =
+0xFF for any bad blocks
 
-All the other boards apparently are all good (is that normal?), but,
-I'm not worried about the NAND having KNOWN bad blocks as this board
-is supposed to be mine.
+maybe add a pad option so people can specify the data rather than just
+0xff ?  although that's probably just overkill and no one would
+actually use it ...
 
->
->   You can mark all the blocks as "good", of course, and
->   then exercise the chip a bit, marking bad blocks as you
->   go. You'll probably never achieve the same depth of
->   testing that the factory was able to achieve using
->   voltage, temperature, and timing margining, of course,
->   but the results may be "good enough".
->
->                           Atlant
+> =C2=A0--noskipbad =C2=A0 =3D> =C2=A0 --bb=3Ddumpbad =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dump flash data, including any bad block=
+s
+> =C2=A0--skipbad =C2=A0 =C2=A0 =3D> =C2=A0 --bb=3Dskipbad, <default> =C2=
+=A0 =C2=A0 =C2=A0dump good data, completely skipping any bad blocks (new de=
+fault)
+> =C2=A0--omitbad =C2=A0 =C2=A0 =3D> =C2=A0 --bb=3Domitbad =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (dump flash data, substituting no=
+thing for any bad blocks?)
 
-Okay, so how do I (without the luxury of u-boot), in user or
-kernel space, wipe the OOB data?  I'm looking at the code for
-u-boot nand_erase_nand right now.  I mean, I'm not above writing
-an userspace app that will do kernel level work for me.  I'm okay
-with using /dev/mem and screwing with stuff.  Am I on the right
-track?  I mean, I hate to go down this road if I'm just heading
-for a dead-end.
-
-Andy
-
-
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+i think omitbad is covered by the other options.  the one i'm really
+concerned in keeping is --bb=3Ddumpbad for cases where the bbt says it's
+bad, but it isnt really, so i want the data unmolested.
+-mike
