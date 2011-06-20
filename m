@@ -1,20 +1,19 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYaiQ-0003nd-2H
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 09:24:19 +0000
-Received: from [192.168.0.16] (col31-4-88-188-83-94.fbx.proxad.net
-	[88.188.83.94])
-	by mail.free-electrons.com (Postfix) with ESMTPSA id F3F161B4
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Jun 2011 11:24:06 +0200 (CEST)
-Message-ID: <4DFF129E.6070808@free-electrons.com>
-Date: Mon, 20 Jun 2011 11:27:58 +0200
-From: David Wagner <david.wagner@free-electrons.com>
+Received: from smail6.alcatel.fr ([64.208.49.42])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QYak4-00049l-Fz
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 09:26:01 +0000
+From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+To: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Date: Mon, 20 Jun 2011 11:25:34 +0200
+Subject: RE: NAND OOB data.
+Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4D634@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+References: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
+In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: clarify the volume notification types' doc
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found the UBI_VOLUME_REMOVED inline documentation not to be clear.
-This patch fixes it and tweaks the documentation of the other
-notification types.
+Andy Kennedy wrote:
+>=20
+> I have overwritten my OOB data, to the point where all blocks=20
+> are seen as bad.  What do I do to recover from this?
 
-Signed-off-by David Wagner <david.wagner@free-electrons.com>
----
- include/linux/mtd/ubi.h |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+If you're using u-boot then you can use the 'nand scrub' command which wipe=
+s all of the data from NAND, including OOB data. Only problem with that is =
+you will lose any factory marked bad block markers, but sounds like in your=
+ current situation that isn't much of a concern for you. :o)
 
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index b31bd9e..ddc453f 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -134,11 +134,11 @@ struct ubi_device_info {
+>=20
+> Thanks,
+> Andy
 
- /*
-  * enum - volume notification types.
-- * @UBI_VOLUME_ADDED: volume has been added
-- * @UBI_VOLUME_REMOVED: start volume volume
-- * @UBI_VOLUME_RESIZED: volume size has been re-sized
-- * @UBI_VOLUME_RENAMED: volume name has been re-named
-- * @UBI_VOLUME_UPDATED: volume name has been updated
-+ * @UBI_VOLUME_ADDED: a volume has been added (attached)
-+ * @UBI_VOLUME_REMOVED: a volume has been removed (detached)
-+ * @UBI_VOLUME_RESIZED: a volume has been re-sized
-+ * @UBI_VOLUME_RENAMED: a volume has been re-named
-+ * @UBI_VOLUME_UPDATED: data has been written to a volume
-  *
-  * These constants define which type of event has happened when a volume
-  * notification function is invoked.
--- 
-1.7.0.4
+Thanks
 
--- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Adam=
