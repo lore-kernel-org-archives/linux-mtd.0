@@ -1,20 +1,20 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYYdW-0000xI-PE
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 07:11:07 +0000
-Received: by pvh11 with SMTP id 11so2760968pvh.36
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QYaiQ-0003nd-2H
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 09:24:19 +0000
+Received: from [192.168.0.16] (col31-4-88-188-83-94.fbx.proxad.net
+	[88.188.83.94])
+	by mail.free-electrons.com (Postfix) with ESMTPSA id F3F161B4
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Jun 2011 00:11:02 -0700 (PDT)
-Date: Mon, 20 Jun 2011 10:10:24 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Subject: [patch] ubifs: dereferencing an ERR_PTR in ubifs_mount()
-Message-ID: <20110620071024.GF14591@shale.localdomain>
+	Mon, 20 Jun 2011 11:24:06 +0200 (CEST)
+Message-ID: <4DFF129E.6070808@free-electrons.com>
+Date: Mon, 20 Jun 2011 11:27:58 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	dedekind1@gmail.com
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBI: clarify the volume notification types' doc
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-d251ed271d5 "ubifs: fix sget races" left out the goto from this
-error path so the static checkers complain that we're dereferencing
-"sb" when it's an ERR_PTR.
+I found the UBI_VOLUME_REMOVED inline documentation not to be clear.
+This patch fixes it and tweaks the documentation of the other
+notification types.
 
-Signed-off-by: Dan Carpenter <error27@gmail.com>
+Signed-off-by David Wagner <david.wagner@free-electrons.com>
+---
+ include/linux/mtd/ubi.h |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 8c892c2..529be05 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2146,6 +2146,7 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
- 	if (IS_ERR(sb)) {
- 		err = PTR_ERR(sb);
- 		kfree(c);
-+		goto out_close;
- 	}
- 
- 	if (sb->s_root) {
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index b31bd9e..ddc453f 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -134,11 +134,11 @@ struct ubi_device_info {
+
+ /*
+  * enum - volume notification types.
+- * @UBI_VOLUME_ADDED: volume has been added
+- * @UBI_VOLUME_REMOVED: start volume volume
+- * @UBI_VOLUME_RESIZED: volume size has been re-sized
+- * @UBI_VOLUME_RENAMED: volume name has been re-named
+- * @UBI_VOLUME_UPDATED: volume name has been updated
++ * @UBI_VOLUME_ADDED: a volume has been added (attached)
++ * @UBI_VOLUME_REMOVED: a volume has been removed (detached)
++ * @UBI_VOLUME_RESIZED: a volume has been re-sized
++ * @UBI_VOLUME_RENAMED: a volume has been re-named
++ * @UBI_VOLUME_UPDATED: data has been written to a volume
+  *
+  * These constants define which type of event has happened when a volume
+  * notification function is invoked.
+-- 
+1.7.0.4
+
+-- 
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
