@@ -1,20 +1,23 @@
 Received: from mail.dekaresearch.com ([208.65.175.196]
 	helo=dekaexchange07.deka.local)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYcQR-0007Vx-8w
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 11:13:52 +0000
+	id 1QYcYk-0007la-SS
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 11:22:27 +0000
 From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'ANDY KENNEDY' <ANDY.KENNEDY@adtran.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 20 Jun 2011 07:13:45 -0400
-Subject: RE: NAND OOB data.
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A7208F91A@dekaexchange07.deka.local>
-References: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
-In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
+To: 'Mike Hench' <mhench@elutions.com>, Scott Wood <scottwood@freescale.com>,
+	"Matthew L. Creech" <mlcreech@gmail.com>
+Date: Mon, 20 Jun 2011 07:22:26 -0400
+Subject: RE: NAND BBT corruption on MPC83xx
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A7208F91B@dekaexchange07.deka.local>
+References: <20110617163442.204348a0@schlenkerla.am.freescale.net>
+	<F87D23B7E1F84E4AB52E4FA4A55F85DC0259E343@tpamail.elutions.com>
+In-Reply-To: <F87D23B7E1F84E4AB52E4FA4A55F85DC0259E343@tpamail.elutions.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andy:
+Mike:
 
-  If you don't have the old bad block information saved
-  away somewhere (a bad block table, a scrap of paper,
-  etc.), then you *CAN'T* completely recover from this
-  situation; the original bad block data for that chip
-  is probably irretrievably lost.*
+> It is not a permanent damage thing.
 
-  You can mark all the blocks as "good", of course, and
-  then exercise the chip a bit, marking bad blocks as you
-  go. You'll probably never achieve the same depth of
-  testing that the factory was able to achieve using
-  voltage, temperature, and timing margining, of course,
-  but the results may be "good enough".
+  A "read disturb" does no permanent damage to the chip
+  but if the read disturb event involves more bits than
+  can be corrected by your ECC code, it can do permanent
+  damage to the *DATA* you've stored in that block.
 
-                          Atlant
+  For this reason, a good flash management system manages
+  to at least occasionally read through *ALL* of the in-use
+  blocks in the device so that single-bit errors can be
+  scrubbed out (read and successfully corrected) before
+  an adjacent bit in the block also fails (which would
+  eventually lead to a multi-bit error that might be
+  beyond the ability to be corrected by the ECC).
 
+  As far as I know (and I'm sure the list will correct
+  me if I'm wrong! ;-) ), neither UBI nor UBIFS nor any
+  Linux layer provides this routine scrubbing; you have
+  to code it up yourself, probably by accessing the
+  device at the UBI (underlying block device/LEB) layer.
 
-* A few chip designs apparently blow fuses for the
-  factory bad sectors and these blown fuses prevent
-  you from ever writing the OOB bits to the state
-  that would indicate a good block. For chips of
-  these designs, you can fully recover the factory
-  bad block data.
-
+                        Atlant
 
 -----Original Message-----
 From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
-.infradead.org] On Behalf Of ANDY KENNEDY
-Sent: Friday, June 17, 2011 18:09
-To: linux-mtd@lists.infradead.org
-Subject: NAND OOB data.
+.infradead.org] On Behalf Of Mike Hench
+Sent: Saturday, June 18, 2011 13:55
+To: Scott Wood; Matthew L. Creech
+Cc: linuxppc-dev@lists.ozlabs.org; linux-mtd@lists.infradead.org
+Subject: RE: NAND BBT corruption on MPC83xx
 
-I have overwritten my OOB data, to the point where all blocks are seen
-as bad.  What do I do to recover from this?
+Scott Wood wrote:
+> As for the corruption, could it be degradation from repeated reads of
+that
+> one page?
 
-Thanks,
-Andy
+Read Disturb. I Did not know SLC did that.
+It just takes 10x as long as MLC, on the order of a million reads.
+Supposedly erasing the block fixes it.
+It is not a permanent damage thing.
+I was seeing ~9 hours before failure with heavy writes.
+~4GByte/hour =3D 2M pages, total ~18 million reads before errors in that
+last block showed up.
+
+Cool. Now we know.
+Thanks.
+
+Mike Hench
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
