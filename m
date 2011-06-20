@@ -1,22 +1,22 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYgHP-00045q-Q4
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 15:20:48 +0000
-Received: by vxd3 with SMTP id 3so2823383vxd.36
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QYgQs-0004DZ-1i
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2011 15:30:34 +0000
+Received: from [192.168.0.34] (col31-4-88-188-83-94.fbx.proxad.net
+	[88.188.83.94])
+	by mail.free-electrons.com (Postfix) with ESMTPSA id 3AF1213A
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Jun 2011 08:20:45 -0700 (PDT)
+	Mon, 20 Jun 2011 17:30:25 +0200 (CEST)
+Message-ID: <4DFF687B.6070806@free-electrons.com>
+Date: Mon, 20 Jun 2011 17:34:19 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <20110617163442.204348a0@schlenkerla.am.freescale.net>
-References: <BANLkTikyKObukzVw+c10HyDz+Q=PH4jozA@mail.gmail.com>
-	<20110617163442.204348a0@schlenkerla.am.freescale.net>
-Date: Mon, 20 Jun 2011 11:20:45 -0400
-Message-ID: <BANLkTik7W-9mLOAUCU20O9+KXCimL6Y1+g@mail.gmail.com>
-Subject: Re: NAND BBT corruption on MPC83xx
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCHv2] UBI: clarify the volume notification types' doc
+References: <4DFF129E.6070808@free-electrons.com>
+In-Reply-To: <4DFF129E.6070808@free-electrons.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	mhench@elutions.com
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 17, 2011 at 5:34 PM, Scott Wood <scottwood@freescale.com> wrote:
->
-> As for the corruption, could it be degradation from repeated reads of that
-> one page?
->
+I realized the new descriptions of ADDED and REMOVED could also be
+misleading: they can also be triggered after using a userland util
+(ubi{mk,rm}vol).
 
-Could be.  I think Mike's theory was that the -1 page_addr sort of
-"wrapped around", and caused us to read in the last block on flash
-each time NAND_CMD_PAGEPROG was performed.  So with a lot of writes
-happening, we could end up with a BBT that looks like this.
+(the indentation looks odd but is fine once the patch has been applied)
 
-That makes sense I guess, since set_addr() in fsl_elbc_nand.c uses
-page_addr to set FBAR.  I don't see anything about it in the manual,
-but if FBAR wraps beyond the end of the chip, maybe the bits that
-don't make sense are simply ignored.  (In which case we should
-probably add a check in set_addr() to prevent anything like this in
-the future)
+Signed-off-by David Wagner <david.wagner@free-electrons.com>
+---
+ include/linux/mtd/ubi.h |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
 
-In theory I should be able to prove it out by running 2 devices in
-parallel - one with that block of code still there, and one with it
-removed.  If the former device sees bit-flips in the BBT and the
-latter one doesn't, we'll be sure of the culprit.  I'll try this and
-come back with the results.
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index b31bd9e..b79e741 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -134,11 +134,13 @@ struct ubi_device_info {
 
-Thanks!
+ /*
+  * enum - volume notification types.
+- * @UBI_VOLUME_ADDED: volume has been added
+- * @UBI_VOLUME_REMOVED: start volume volume
+- * @UBI_VOLUME_RESIZED: volume size has been re-sized
+- * @UBI_VOLUME_RENAMED: volume name has been re-named
+- * @UBI_VOLUME_UPDATED: volume name has been updated
++ * @UBI_VOLUME_ADDED: a volume has been added (containing device attached
++ *		      or volume created from a userland util)
++ * @UBI_VOLUME_REMOVED: a volume has been removed (containing device
+detached
++ *			or volume created from a userland util)
++ * @UBI_VOLUME_RESIZED: a volume has been re-sized
++ * @UBI_VOLUME_RENAMED: a volume has been re-named
++ * @UBI_VOLUME_UPDATED: data has been written to a volume
+  *
+  * These constants define which type of event has happened when a volume
+  * notification function is invoked.
+-- 
+1.7.0.4
 
 -- 
-Matthew L. Creech
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
