@@ -1,13 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZ3CX-0008BZ-HE
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 15:49:22 +0000
+	id 1QZ3Cf-0008C5-5K
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 15:49:30 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 5/7] feature-removal-schedule: describe nanddump
- changes
-Date: Tue, 21 Jun 2011 08:46:39 -0700
-Message-ID: <1308671201-18197-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 6/7] nanddump: add --oob option
+Date: Tue, 21 Jun 2011 08:46:40 -0700
+Message-ID: <1308671201-18197-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1308671201-18197-1-git-send-email-computersforpeace@gmail.com>
 References: <1308671201-18197-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,46 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Include a few notes about the edited options and new default options in
-nanddump.
+Adds an explicit option for including OOB data in our data dump.
+Currently, this is the default behavior, but in the next release, the
+default will be to exclude OOB data. This is done to mirror the '-o'
+option in nandwrite.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- feature-removal-schedule.txt |   25 +++++++++++++++++++++++++
- 1 files changed, 25 insertions(+), 0 deletions(-)
+ nanddump.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
-index a5980f7..b1bc3e4 100644
---- a/feature-removal-schedule.txt
-+++ b/feature-removal-schedule.txt
-@@ -40,3 +40,28 @@ This is duplicating behavior with the mtdinfo utility.  Now the util
- warns when people use it, but it'll be removed in release 1.4.6.
- 
- ---------------------------
-+
-+4. Rename --noskipbad option, kill --omitbad, change default BB method for nanddump
-+
-+Our bad block handling methods are getting disorganized. They will be replaced
-+by a series of --bb=METHOD options (see `nanddump --help').
-+
-+In addition, the previous default bad block behavior was to dump 0xFF in place
-+of bad blocks. This was not a good "inverse operation" of nandwrite. Thus, the
-+current default behavior has become the (new) option --bb=padbad, and in 1.4.6,
-+the default will be --bb=skipbad.
-+
-+All of these changes will occur in 1.4.6. For now, there are appropriate
-+deprecation warning messages and an alert telling about the soon-to-be-default
-+options.
-+
-+Transition summary table:
-+-----------------------------------------------------------------------------------------------------------
-+ Old option     New option                 Comment
-+-----------------------------------------------------------------------------------------------------------
-+ <default>      --bb=padbad                dump flash data, substituting 0xFF for any bad blocks
-+ --noskipbad    --bb=dumpbad               dump flash data, including any bad blocks
-+ --skipbad      --bb=skipbad, <default>    dump good data, completely skipping any bad blocks (new default)
-+ --omitbad      N/A                        very similar to `skipbad', will be removed soon
-+
-+---------------------------
+diff --git a/nanddump.c b/nanddump.c
+index 81ada28..7941aa2 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -59,6 +59,7 @@ static void display_help(void)
+ "-l length  --length=length      Length\n"
+ "-n         --noecc              Read without error correction\n"
+ "-o         --omitoob            Omit oob data\n"
++"           --oob                Dump OOB data\n"
+ "-p         --prettyprint        Print nice (hexdump)\n"
+ "-q         --quiet              Don't display progress and status messages\n"
+ "-s addr    --startaddress=addr  Start address\n"
+@@ -127,6 +128,7 @@ static void process_options(int argc, char * const argv[])
+ 			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
+ 			{"bb", required_argument, 0, 0},
++			{"oob", no_argument, 0, 0},
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+ 			{"file", required_argument, 0, 'f'},
+@@ -170,6 +172,9 @@ static void process_options(int argc, char * const argv[])
+ 							error++;
+ 						bb_default = false;
+ 						break;
++					case 3: /* --oob */
++						omitoob = false;
++						break;
+ 				}
+ 				break;
+ 			case 'b':
 -- 
 1.7.0.4
