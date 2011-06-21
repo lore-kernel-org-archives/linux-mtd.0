@@ -1,13 +1,12 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZ3Bx-00085Y-M7
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 15:48:46 +0000
+	id 1QZ3C2-00087g-W9
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 15:48:51 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 3/7] nanddump: deprecation messages for old BB
- options
-Date: Tue, 21 Jun 2011 08:46:37 -0700
-Message-ID: <1308671201-18197-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 4/7] nanddump: warn about new default BB handling
+Date: Tue, 21 Jun 2011 08:46:38 -0700
+Message-ID: <1308671201-18197-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1308671201-18197-1-git-send-email-computersforpeace@gmail.com>
 References: <1308671201-18197-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,61 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---omitbad and --noskipbad will soon be replaced by --bb=omitbad and
---bb=dumpbad. Please plan to migrate to the new usage shortly.
+In an upcoming release, we will no longer default to --bb=padbad. Instead,
+the default will be --bb=skipbad. This makes nanddump a better inverse
+operation to nandwrite.
+
+This patch prints warnings for users so that they get a chance to update
+their scripts before the default changes officially.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |   14 ++++++++++++--
- 1 files changed, 12 insertions(+), 2 deletions(-)
+ nanddump.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index 28862a9..d9f24a1 100644
+index d9f24a1..81ada28 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -54,17 +54,21 @@ static void display_help(void)
- "                                    skipbad\n"
- "                                    omitbad (DEPRECATED)\n"
- "-a         --forcebinary        Force printing of binary data to tty\n"
--"-b         --omitbad            Omit bad blocks from the dump\n"
- "-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
- "-f file    --file=file          Dump to file\n"
- "-l length  --length=length      Length\n"
- "-n         --noecc              Read without error correction\n"
--"-N         --noskipbad          Read without bad block skipping\n"
- "-o         --omitoob            Omit oob data\n"
- "-p         --prettyprint        Print nice (hexdump)\n"
- "-q         --quiet              Don't display progress and status messages\n"
- "-s addr    --startaddress=addr  Start address\n"
- "\n"
-+"Deprecated options:\n"
-+"The following options are being replaced by --bb=METHOD flags.\n"
-+"Do not continue to use these options.\n"
-+"-b         --omitbad            Omit bad blocks from the dump\n"
-+"-N         --noskipbad          Read without bad block skipping\n"
-+"\n"
- "Notes on --bb=omitbad and --bb=skipbad:\n"
- "* `omitbad' and `skipbad' are very similar; we are deprecating `omitbad'\n"
- "  in favor of `skipbad'.\n"
-@@ -173,6 +177,9 @@ static void process_options(int argc, char * const argv[])
- 				if (bb_default) {
- 					bb_default = false;
- 					bb_method = omitbad;
-+					fprintf(stderr, "Warning: --omitbad is being deprecated in favor of --bb=omitbad.\n"
-+							"         --omitbad will not be available in future releases.\n"
-+							"         Please update your usage accordingly.\n");
- 				} else {
- 					error++;
- 				}
-@@ -211,6 +218,9 @@ static void process_options(int argc, char * const argv[])
- 				if (bb_default) {
- 					bb_default = false;
- 					bb_method = dumpbad;
-+					fprintf(stderr, "Warning: --noskipbad is being deprecated in favor of --bb=dumpbad.\n"
-+							"         --noskipbad will not be available in future releases.\n"
-+							"         Please update your usage accordingly.\n");
- 				} else {
- 					error++;
- 				}
+@@ -251,6 +251,11 @@ static void process_options(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	if (bb_default)
++		fprintf(stderr, "Warning: you did not specify a default bad-block handling\n"
++				"  method. In future versions, the default will change to\n"
++				"  --bb=skipbad. Use \"nanddump --help\" for more information.\n");
++
+ 	if ((argc - optind) != 1 || error)
+ 		display_help();
+ 
 -- 
 1.7.0.4
