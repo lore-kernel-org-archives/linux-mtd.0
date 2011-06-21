@@ -1,22 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QYoba-0004OX-9g
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 00:14:15 +0000
-Received: by fxm14 with SMTP id 14so951068fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Jun 2011 17:14:01 -0700 (PDT)
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZ3AN-00081G-D0
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2011 15:47:08 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v2 0/7] new nanddump defaults
+Date: Tue, 21 Jun 2011 08:46:34 -0700
+Message-ID: <1308671201-18197-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <BANLkTikGuHsp8DOO3cBMJERwVAVPVW3-aw@mail.gmail.com>
-References: <1307563284-32416-1-git-send-email-computersforpeace@gmail.com>
-	<BANLkTi=aU5j9FJ_-bsye6Whh-+PzxrHKCA@mail.gmail.com>
-	<BANLkTikGuHsp8DOO3cBMJERwVAVPVW3-aw@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 20 Jun 2011 20:13:41 -0400
-Message-ID: <BANLkTi=2OjDXX=Bjf=GVMHRhSEpqT+VFdA@mail.gmail.com>
-Subject: Re: nanddump badblock options
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 20, 2011 at 19:09, Brian Norris wrote:
-> Also, I haven't heard any comments on my idea of changing the default
-> OOB options, where nanddump should NOT, by default, dump OOB data
-> (like nandwrite, which does NOT write OOB by default). I'm thinking we
-> could change the default here and add an option to force it to include
-> OOB:
+I sent a few of these patches without CC'ing the mailing list. Sorry for the
+resend...
 
-i think that makes sense
+This series adds, changes, and deprecates several nanddump options, helping
+keep them more in line with being an "inverse to nandwrite."
 
-> This is mostly just a question of what is least confusing to the
-> mtd-utils user community; I can adapt to my own code changes!
+Brian Norris (7):
+  nanddump: add --bb=METHOD option
+  nanddump: remove --skipbad, leaving --bb=skipbad
+  nanddump: deprecation messages for old BB options
+  nanddump: warn about new default BB handling
+  feature-removal-schedule: describe nanddump changes
+  nanddump: add --oob option
+  nanddump: document, warn about future default --omitoob
 
-u-boot changed defaults similar to this and there werent really any
-complaints.  i believe nandwrite/nanddump output info by default,
-right ?  if we make it explicit what it's doing, people should be
-fine.
--mike
+ feature-removal-schedule.txt |   36 +++++++++++
+ nanddump.c                   |  136 +++++++++++++++++++++++++++++++-----------
+ 2 files changed, 137 insertions(+), 35 deletions(-)
