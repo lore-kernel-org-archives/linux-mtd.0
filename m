@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJtW-00040t-I3
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:47 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 23so536878wyf.36
+	id 1QZJtY-00040s-Qq
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:50 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 23so536851wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:38:46 -0700 (PDT)
+	Wed, 22 Jun 2011 02:38:48 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 15/18] mtd: fsl_upm.c: use mtd_device_parse_register
-Date: Wed, 22 Jun 2011 13:37:49 +0400
-Message-Id: <1308735472-32640-16-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 16/18] mtd: mpc5121_nfc.c: use mtd_device_parse_register
+Date: Wed, 22 Jun 2011 13:37:50 +0400
+Message-Id: <1308735472-32640-17-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,23 +29,37 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/fsl_upm.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/mpc5121_nfc.c |   11 +----------
+ 1 files changed, 1 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 714d831..da92fed 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -193,9 +193,7 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
- 		goto err;
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 996ee29..871095f 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -654,7 +654,6 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 	struct mpc5121_nfc_prv *prv;
+ 	struct resource res;
+ 	struct mtd_info *mtd;
+-	struct mtd_partition *parts;
+ 	struct nand_chip *chip;
+ 	unsigned long regs_paddr, regs_size;
+ 	const __be32 *chips_no;
+@@ -838,15 +837,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 	dev_set_drvdata(dev, mtd);
  
- 	ppdata.of_node = flash_np;
--	ret = parse_mtd_partitions(&fun->mtd, NULL, &fun->parts, &ppdata);
+ 	/* Register device in MTD */
+-	retval = parse_mtd_partitions(mtd, NULL, &parts, &ppdata);
+-	if (retval < 0) {
+-		dev_err(dev, "Error parsing MTD partitions!\n");
+-		devm_free_irq(dev, prv->irq, mtd);
+-		retval = -EINVAL;
+-		goto error;
+-	}
 -
--	ret = mtd_device_register(&fun->mtd, fun->parts, ret);
-+	ret = mtd_device_parse_register(&fun->mtd, NULL, &ppdata, NULL, 0);
- err:
- 	of_node_put(flash_np);
- 	return ret;
+-	retval = mtd_device_register(mtd, parts, retval);
++	retval = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+ 	if (retval) {
+ 		dev_err(dev, "Error adding MTD device!\n");
+ 		devm_free_irq(dev, prv->irq, mtd);
 -- 
 1.7.5.3
