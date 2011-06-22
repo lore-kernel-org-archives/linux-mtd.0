@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJtS-00040s-Ro
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:44 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 23so536851wyf.36
+	id 1QZJtP-00040t-S9
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:41 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 23so536878wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:38:42 -0700 (PDT)
+	Wed, 22 Jun 2011 02:38:39 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 14/18] mtd: fsl_elbc_nand.c: use mtd_device_parse_register
-Date: Wed, 22 Jun 2011 13:37:48 +0400
-Message-Id: <1308735472-32640-15-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 13/18] mtd: m25p80.c: use mtd_device_parse_register
+Date: Wed, 22 Jun 2011 13:37:47 +0400
+Message-Id: <1308735472-32640-14-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,34 +29,61 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |    8 ++------
- 1 files changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/devices/m25p80.c |   28 +++-------------------------
+ 1 files changed, 3 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 4d225ba..915b4a4 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -843,7 +843,6 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
- 	static const char *part_probe_types[]
- 		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
--	struct mtd_partition *parts;
- 	int ret;
- 	int bank;
- 	struct device *dev;
-@@ -936,11 +935,8 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 399c234..66a3555 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -88,7 +88,6 @@ struct m25p {
+ 	struct spi_device	*spi;
+ 	struct mutex		lock;
+ 	struct mtd_info		mtd;
+-	unsigned		partitioned:1;
+ 	u16			page_size;
+ 	u16			addr_width;
+ 	u8			erase_opcode;
+@@ -825,8 +824,6 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	struct m25p			*flash;
+ 	struct flash_info		*info;
+ 	unsigned			i;
+-	struct mtd_partition		*parts = NULL;
+-	int				nr_parts = 0;
+ 	struct mtd_part_parser_data	ppdata;
  
- 	/* First look for RedBoot table or partitions on the command
- 	 * line, these take precedence over device tree information */
--	ret = parse_mtd_partitions(&priv->mtd, part_probe_types, &parts, &ppdata);
--	if (ret < 0)
--		goto err;
+ 	/* Platform data helps sort out which chip type we have, as
+@@ -970,28 +967,9 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	/* partitions should match sector boundaries; and it may be good to
+ 	 * use readonly partitions for writeprotected sectors (BP2..BP0).
+ 	 */
+-	nr_parts = parse_mtd_partitions(&flash->mtd, NULL, &parts, &ppdata);
 -
--	mtd_device_register(&priv->mtd, parts, ret);
-+	mtd_device_parse_register(&priv->mtd, part_probe_types, &ppdata,
-+				  NULL, 0);
+-	if (nr_parts <= 0 && data && data->parts) {
+-		parts = data->parts;
+-		nr_parts = data->nr_parts;
+-	}
+-
+-	if (nr_parts > 0) {
+-		for (i = 0; i < nr_parts; i++) {
+-			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+-			      "{.name = %s, .offset = 0x%llx, "
+-			      ".size = 0x%llx (%lldKiB) }\n",
+-			      i, parts[i].name,
+-			      (long long)parts[i].offset,
+-			      (long long)parts[i].size,
+-			      (long long)(parts[i].size >> 10));
+-		}
+-		flash->partitioned = 1;
+-	}
+-
+-	return mtd_device_register(&flash->mtd, parts, nr_parts) == 1 ?
+-		-ENODEV : 0;
++	return mtd_device_parse_register(&flash->mtd, NULL, &ppdata,
++			data ? data->parts : NULL,
++			data ? data->nr_parts : 0);
+ }
  
- 	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
- 	       (unsigned long long)res.start, priv->bank);
+ 
 -- 
 1.7.5.3
