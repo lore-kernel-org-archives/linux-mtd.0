@@ -1,12 +1,13 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZQdy-00053T-Bo
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 16:51:11 +0000
+	id 1QZQe8-00051H-GS
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 16:51:22 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v3 4/7] nanddump: warn about new default BB handling
-Date: Wed, 22 Jun 2011 09:49:20 -0700
-Message-ID: <1308761363-16512-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 5/7] feature-removal-schedule: describe nanddump
+ changes
+Date: Wed, 22 Jun 2011 09:49:21 -0700
+Message-ID: <1308761363-16512-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
 References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
 MIME-Version: 1.0
@@ -24,33 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In an upcoming release, we will no longer default to --bb=padbad. Instead,
-the default will be --bb=skipbad. This makes nanddump a better inverse
-operation to nandwrite.
-
-This patch prints warnings for users so that they get a chance to update
-their scripts before the default changes officially.
+Include a few notes about the edited options and new defaults for bad
+block handling in nanddump.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ feature-removal-schedule.txt |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index 103ad06..b6307cf 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -249,6 +249,11 @@ static void process_options(int argc, char * const argv[])
- 		exit(EXIT_FAILURE);
- 	}
+diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
+index a5980f7..f9910f1 100644
+--- a/feature-removal-schedule.txt
++++ b/feature-removal-schedule.txt
+@@ -40,3 +40,29 @@ This is duplicating behavior with the mtdinfo utility.  Now the util
+ warns when people use it, but it'll be removed in release 1.4.6.
  
-+	if (bb_default)
-+		warnmsg("you did not specify a default bad-block handling\n"
-+			"  method. In future versions, the default will change to\n"
-+			"  --bb=skipbad. Use \"nanddump --help\" for more information.");
+ ---------------------------
 +
- 	if ((argc - optind) != 1 || error)
- 		display_help();
- 
++4. Rename --noskipbad option, kill --omitbad, change default BB method for nanddump
++
++Our bad block handling methods are getting disorganized. They will be replaced
++by a series of --bb=METHOD options (see `nanddump --help').
++
++In addition, the previous default bad block behavior was to dump 0xFF in place
++of bad blocks. This was not a good "inverse operation" of nandwrite. Thus, the
++current default behavior has become the (new) option --bb=padbad, and in 1.4.6,
++the default will be --bb=skipbad.
++
++The new `--bb=METHOD' options are included in this release, but all feature
++removals and changed defaults will occur in 1.4.6. For now, there are
++appropriate deprecation warning messages and an alert telling about the
++soon-to-be-default settings.
++
++Transition summary table:
++-----------------------------------------------------------------------------------------------------------
++ Old option     New option                 Comment
++-----------------------------------------------------------------------------------------------------------
++ <default>      --bb=padbad                dump flash data, substituting 0xFF for any bad blocks
++ --noskipbad    --bb=dumpbad               dump flash data, including any bad blocks
++ --skipbad      --bb=skipbad, <default>    dump good data, completely skipping any bad blocks (new default)
++ --omitbad      N/A                        very similar to `skipbad', will be removed soon
++
++---------------------------
 -- 
 1.7.0.4
