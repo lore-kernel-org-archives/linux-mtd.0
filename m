@@ -1,27 +1,17 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJXL-0003dh-Ev
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:15:52 +0000
-Received: by pwi3 with SMTP id 3so545217pwi.36
+	id 1QZJsu-00040s-RL
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:10 +0000
+Received: by wyf23 with SMTP id 23so536851wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:15:47 -0700 (PDT)
-Subject: Re: [PATCH 01/18] mtd: abstract last MTD partition parser argument
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Date: Wed, 22 Jun 2011 12:16:29 +0300
-In-Reply-To: <BANLkTimFJsAv+u7i_csaBrQpsORze1uWOw@mail.gmail.com>
-References: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
-	<1307833922-21602-2-git-send-email-dbaryshkov@gmail.com>
-	<1308716496.18119.8.camel@sauron>
-	<BANLkTimc-syC35X8Tej2w3owyXZttU0wKw@mail.gmail.com>
-	<1308732940.18119.55.camel@sauron>
-	<BANLkTimFJsAv+u7i_csaBrQpsORze1uWOw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1308734194.18119.56.camel@sauron>
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Wed, 22 Jun 2011 02:38:06 -0700 (PDT)
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH V2 00/18] mtd: cleanup partition handling in OF-enabled drivers
+Date: Wed, 22 Jun 2011 13:37:34 +0400
+Message-Id: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-22 at 13:05 +0400, Dmitry Eremin-Solenikov wrote:
-> >> No, no and no. This data is passed to all parsers, so it should be valid
-> >> for all
-> >> of them. Either we have to add a way to specify, what exactly we have
-> >> provided,
-> >> or we have to leave data as separate struct fields.
-> >
-> > I do not see why we should waste memory - union will work well. This is
-> > parser-specific object and the parser should know which fields belong to
-> > him. And this object is not shared between parsers so they cannot screw
-> > each other. Yes, this is not the most beautiful way to go, but it is
-> > simple enough and suits this situation, I think.
-> 
-> It _is_ shared between parsers. See: driver creates one mtd_part_parser_data
-> instance, populates it and passes to parse_mtd_partitions (directly or
-> indirectly).
-> Then each parser uses the same object to get data. Consider what will happen
-> when ixp4xx driver (which currently uses origin for RedBoot) will also gain
-> OF support (as it's expected for all ARM-related things). It will set both
-> origin (for RedBoot) and of_node (for ofpart).
+Changes since V1:
+ * Tab-vs-space cleanup
+ * 80-column cleanup
+ * documented of_node parser data field
+ * changed documentation for parser_data arguments
 
-Agree, please, ignore that part of my feedback.
+The following changes since commit 6a146696fdcf383d90753145dfb367e499790940:
 
--- 
-Best Regards,
-Artem Bityutskiy
+  mtd: nand_base: always initialise oob_poi before writing OOB data (2011-06-22 08:50:28 +0300)
+
+are available in the git repository at:
+  git://git.infradead.org/users/dbaryshkov/mtd-cleanup.git mtd-big-cleanup
+
+Dmitry Eremin-Solenikov (18):
+      mtd: abstract last MTD partition parser argument
+      mtd: prepare to convert of_mtd_parse_partitions to partition parser
+      mtd: physmap_of: use ofpart through generic parsing
+      mtd: m25p80: use ofpart through generic parsing
+      mtd: fsl_elbc_nand: use ofpart through generic parsing
+      mtd: fsl_upm: use ofpart through generic parsing
+      mtd: mpc5121_nfc: use ofpart through generic parsing
+      mtd: ndfc: use ofpart through generic parsing
+      mtd: socrates_nand: use ofpart through generic parsing
+      mtd: drop of_mtd_parse_partitions()
+      mtd: physmap_of: move parse_obsolete_partitions to become separate parser
+      mtd: physmap_of.c: use mtd_device_parse_register
+      mtd: m25p80.c: use mtd_device_parse_register
+      mtd: fsl_elbc_nand.c: use mtd_device_parse_register
+      mtd: fsl_upm.c: use mtd_device_parse_register
+      mtd: mpc5121_nfc.c: use mtd_device_parse_register
+      mtd: ndfc.c: use mtd_device_parse_register
+      mtd: socrates_nand.c: use mtd_device_parse_register
+
+ drivers/mtd/afs.c                |    4 +-
+ drivers/mtd/ar7part.c            |    2 +-
+ drivers/mtd/cmdlinepart.c        |    4 +-
+ drivers/mtd/devices/m25p80.c     |   37 ++------------
+ drivers/mtd/maps/physmap_of.c    |   80 +++--------------------------
+ drivers/mtd/mtdcore.c            |    6 +-
+ drivers/mtd/mtdpart.c            |   15 ++++--
+ drivers/mtd/nand/fsl_elbc_nand.c |   18 ++-----
+ drivers/mtd/nand/fsl_upm.c       |   13 +----
+ drivers/mtd/nand/mpc5121_nfc.c   |   17 +-----
+ drivers/mtd/nand/ndfc.c          |   16 +-----
+ drivers/mtd/nand/socrates_nand.c |   23 +-------
+ drivers/mtd/ofpart.c             |  104 ++++++++++++++++++++++++++++++++++++--
+ drivers/mtd/redboot.c            |   13 ++---
+ include/linux/mtd/mtd.h          |    3 +-
+ include/linux/mtd/partitions.h   |   36 +++++++-------
+ 16 files changed, 172 insertions(+), 219 deletions(-)
