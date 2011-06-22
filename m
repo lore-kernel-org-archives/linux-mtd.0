@@ -1,23 +1,19 @@
-Received: from smail2.alcatel.fr ([64.208.49.57])
+Received: from gate.crashing.org ([63.228.1.57])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZLIq-0005xW-0I
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 11:09:01 +0000
-From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Wed, 22 Jun 2011 13:08:44 +0200
-Subject: RE: [PATCH upstream] nand: nand_base: Always initialise oob_poi
-	before writing OOB data
-Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DDB3@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-References: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AACE12D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-	<1308722112.18119.36.camel@sauron>
-	<E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DD8D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-	<1308740228.18119.70.camel@sauron>
-In-Reply-To: <1308740228.18119.70.camel@sauron>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+	id 1QZLIt-0005yH-Ha
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 11:09:04 +0000
+Subject: Re: [PATCH] powerpc/85xx: fix NAND_CMD_READID read bytes number
+Mime-Version: 1.0 (Apple Message framework v1084)
+Content-Type: text/plain; charset=us-ascii
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <1307931792-30386-1-git-send-email-Shaohui.Xie@freescale.com>
+Date: Wed, 22 Jun 2011 06:08:49 -0500
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-Id: <A930A3E6-3999-4240-A40B-03F3A9A5B481@kernel.crashing.org>
+References: <1307931792-30386-1-git-send-email-Shaohui.Xie@freescale.com>
+To: Shaohui Xie <Shaohui.Xie@freescale.com>
+Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem wrote:
 
-> I did not figure out why you sent 2 separate patches. Usually=20
-> it is one patch which goes upstream, then GregKH and others=20
-> pick it up and back ports to various stable trees. If they=20
-> have issues, they may come and ask for help. So there should=20
-> be 1 patch.
->=20
-> >  That patch version (v3)did
-> > not remove the final memset from nand_do_write_oob, as you=20
-> requested.
->=20
-> Did I request so? I thought I just expressed a thought that=20
-> the memset is redundant and should be killed, and I thought=20
-> you'd take a deeper look and decide whether it is safe to do or not.
->=20
-> > Named both patches the same as they were pretty much indentical,=20
-> > except for the memset. Didn't know the convention for patch naming=20
-> > where one was going to stable, and the other to the latest=20
-> so marked=20
-> > the latest as upstream to differentiate.
->=20
-> So do we need that memset or not? :-)
+On Jun 12, 2011, at 9:23 PM, Shaohui Xie wrote:
 
-The original request was for a stable patch, and that would be accepted
-if I provided a proper tidy fix also. To be fair it was a few weeks ago
-now that that mail was sent. :-) Anyway, as it turns out the tidy fix was
-almost identical, and we don't need the memset as far as I can tell
-from reviewing code and from testing. Will run up your patch today to
-verify your additional change, but should be fine.
-
+> when nand_get_flash_type() is called, it will read 8 bytes of ID =
+instead of 5,
+> but the driver only read 5 bytes, so kernel will dump error messages =
+like:
 >=20
-> --
-> Best Regards,
-> Artem Bityutskiy
+> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
+> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
+> fsl-lbc ffe124000.localbus: read_byte beyond end of buffer
 >=20
->=20
+> Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
+> Acked-by: Scott Wood <scottwood@freescale.com>
+> ---
+> drivers/mtd/nand/fsl_elbc_nand.c |    6 +++---
+> 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
+applied to merge
 
-Adam=
+- k=
