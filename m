@@ -1,24 +1,25 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZIpS-0002PZ-BC
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 08:30:31 +0000
-Received: by iwn35 with SMTP id 35so596907iwn.36
+	id 1QZJD6-0002mS-Um
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 08:54:57 +0000
+Received: by pzk28 with SMTP id 28so416088pzk.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 01:30:27 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
-References: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Wed, 22 Jun 2011 10:30:07 +0200
-Message-ID: <BANLkTimj-1sFRG9hkcFfu0yjpUa4eeP5qA@mail.gmail.com>
-Subject: Re: mkfs.jffs2 min erase block size: 4 vs 8 KiB
-To: Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	Wed, 22 Jun 2011 01:54:53 -0700 (PDT)
+Subject: Re: [PATCH 01/18] mtd: abstract last MTD partition parser argument
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Date: Wed, 22 Jun 2011 11:55:36 +0300
+In-Reply-To: <BANLkTimc-syC35X8Tej2w3owyXZttU0wKw@mail.gmail.com>
+References: <1307833922-21602-1-git-send-email-dbaryshkov@gmail.com>
+	<1307833922-21602-2-git-send-email-dbaryshkov@gmail.com>
+	<1308716496.18119.8.camel@sauron>
+	<BANLkTimc-syC35X8Tej2w3owyXZttU0wKw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1308732940.18119.55.camel@sauron>
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +29,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mike,
+On Wed, 2011-06-22 at 12:21 +0400, Dmitry Eremin-Solenikov wrote:
+> On 6/22/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > I see a lot of checkpatch.pl warnings, could you please take a look?
+> >
+> > Also, my gcc produces warnings with this patch because you have not
+> > fixed up MPT parsers, e.g., like this:
+> 
+> Sorry, I was also busy that time and forgot about this :)
+> 
+> BTW: the patches should be applicable clearly to the l2-mtd at the time
+> I've sent them.
+> 
+> I'll fix all of your comments except this one:
+> 
+> > Could you please embrace the origin field into an anonymous union - once
+> > we add the of_node field they do not have to be at separate addresses. I
+> > mean:
+> >
+> > struct mtd_part_parser_data {
+> > 	union {
+> > 		unsigned long origin;
+> > 		struct device_node *of_node;
+> > 	};
+> > };
+> 
+> No, no and no. This data is passed to all parsers, so it should be valid for all
+> of them. Either we have to add a way to specify, what exactly we have provided,
+> or we have to leave data as separate struct fields.
 
-2011/6/22 Mike Frysinger <vapier.adi@gmail.com>:
-> the current mkfs.jffs2 util has in its --eraseblock handling:
-> /* If it's less than 8KiB, they're not allowed */
-> if (erase_block_size < 0x2000) {
-> =C2=A0 =C2=A0fprintf(stderr, "Erase size 0x%x too small. Increasing to 8K=
-iB minimum\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0erase_block_size);
-> =C2=A0 =C2=A0erase_block_size =3D 0x2000;
-> }
->
-> but i cant seem to find documentation on where this comes from. =C2=A0it'=
-s
-> not uncommon to have SPI flashes with 4KiB erase sectors, and removing
-> this sanity check and allowing 4 KiB seems to produce an image that
-> works OK.
->
-> am i missing something ? =C2=A0or should i send a patch to drop this chec=
-k ?
+I do not see why we should waste memory - union will work well. This is
+parser-specific object and the parser should know which fields belong to
+him. And this object is not shared between parsers so they cannot screw
+each other. Yes, this is not the most beautiful way to go, but it is
+simple enough and suits this situation, I think.
 
-This has already be pointed by Fabio Giovagnini :
-http://lists.infradead.org/pipermail/linux-mtd/2011-February/033992.html
-He patched mkfs.jffs2 to allow "--eraseblock=3D0x1000" and he reported
-it works ok.
-
-AFAIK, there should be no problem removing this sanity check.
-Artem, david, objections ?
-
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+-- 
+Best Regards,
+Artem Bityutskiy
