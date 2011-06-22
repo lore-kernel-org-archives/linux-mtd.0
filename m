@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJtc-00041T-Ep
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:53 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 22so452817wwf.18
+	id 1QZJtg-00040t-3Y
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:57 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 23so536878wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:38:52 -0700 (PDT)
+	Wed, 22 Jun 2011 02:38:55 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 17/18] mtd: ndfc.c: use mtd_device_parse_register
-Date: Wed, 22 Jun 2011 13:37:51 +0400
-Message-Id: <1308735472-32640-18-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 18/18] mtd: socrates_nand.c: use mtd_device_parse_register
+Date: Wed, 22 Jun 2011 13:37:52 +0400
+Message-Id: <1308735472-32640-19-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -29,33 +29,40 @@ handling of all errors, fallback to default partitions, etc.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/nand/ndfc.c |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/socrates_nand.c |   11 +----------
+ 1 files changed, 1 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 1528734..ee17139 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -42,7 +42,6 @@ struct ndfc_controller {
- 	struct nand_chip chip;
- 	int chip_select;
- 	struct nand_hw_control ndfc_control;
--	struct mtd_partition *parts;
- };
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index f4f79ec..0fb24f9 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -164,8 +164,6 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nand_chip;
+ 	int res;
+-	struct mtd_partition *partitions = NULL;
+-	int num_partitions = 0;
+ 	struct mtd_part_parser_data ppdata;
  
- static struct ndfc_controller ndfc_ctrl[NDFC_MAX_CS];
-@@ -201,11 +200,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
- 	if (ret)
- 		goto err;
+ 	/* Allocate memory for the device structure (and zero it) */
+@@ -225,17 +223,10 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 		goto out;
+ 	}
  
--	ret = parse_mtd_partitions(&ndfc->mtd, NULL, &ndfc->parts, &ppdata);
--	if (ret < 0)
--		goto err;
+-	num_partitions = parse_mtd_partitions(mtd, NULL, &partitions, &ppdata);
+-	if (num_partitions < 0) {
+-		res = num_partitions;
+-		goto release;
+-	}
 -
--	ret = mtd_device_register(&ndfc->mtd, ndfc->parts, ret);
-+	ret = mtd_device_parse_register(&ndfc->mtd, NULL, &ppdata, NULL, 0);
+-	res = mtd_device_register(mtd, partitions, num_partitions);
++	res = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+ 	if (!res)
+ 		return res;
  
- err:
- 	of_node_put(flash_np);
+-release:
+ 	nand_release(mtd);
+ 
+ out:
 -- 
 1.7.5.3
