@@ -1,15 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJt0-00040s-NF
+	id 1QZJt0-00041T-6z
 	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:16 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 23so536851wyf.36
+Received: by wwf22 with SMTP id 22so452817wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:38:14 -0700 (PDT)
+	Wed, 22 Jun 2011 02:38:11 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/18] mtd: physmap_of: use ofpart through generic parsing
-Date: Wed, 22 Jun 2011 13:37:37 +0400
-Message-Id: <1308735472-32640-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 02/18] mtd: prepare to convert of_mtd_parse_partitions to
+	partition parser
+Date: Wed, 22 Jun 2011 13:37:36 +0400
+Message-Id: <1308735472-32640-3-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -23,60 +24,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Convert the driver to use ofpart partitions parsing through the generic
-parse_mtd_partitions().
+Prepare to convert of_mtd_parse_partitions() to usual partitions parser:
+1) Register ofpart parser
+2) Internally don't use passed device for error printing
+3) Add device_node to mtd_part_parser_data struct
+4) Move of_mtd_parse_partitions from __devinit to common text section
+5) add ofpart to the default list of partition parsers
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/physmap_of.c |   13 +++++--------
- 1 files changed, 5 insertions(+), 8 deletions(-)
+ drivers/mtd/mtdpart.c          |    8 ++++++--
+ drivers/mtd/ofpart.c           |   27 +++++++++++++++++++++++++--
+ include/linux/mtd/partitions.h |    6 +++++-
+ 3 files changed, 36 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index d251d1d..6a75743 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -165,7 +165,8 @@ static struct mtd_info * __devinit obsolete_probe(struct platform_device *dev,
-    specifies the list of partition probers to use. If none is given then the
-    default is use. These take precedence over other device tree
-    information. */
--static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
-+static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot",
-+					"ofpart", NULL };
- static const char ** __devinit of_get_probes(struct device_node *dp)
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 34d582c..9e8ee05 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -729,7 +729,11 @@ EXPORT_SYMBOL_GPL(deregister_mtd_parser);
+  * Do not forget to update 'parse_mtd_partitions()' kerneldoc comment if you
+  * are changing this array!
+  */
+-static const char *default_mtd_part_types[] = {"cmdlinepart", NULL};
++static const char *default_mtd_part_types[] = {
++	"cmdlinepart",
++	"ofpart",
++	NULL
++};
+ 
+ /**
+  * parse_mtd_partitions - parse MTD partitions
+@@ -741,7 +745,7 @@ static const char *default_mtd_part_types[] = {"cmdlinepart", NULL};
+  * This function tries to find partition on MTD device @master. It uses MTD
+  * partition parsers, specified in @types. However, if @types is %NULL, then
+  * the default list of parsers is used. The default list contains only the
+- * "cmdlinepart" parser ATM.
++ * "cmdlinepart" and "ofpart" parsers ATM.
+  *
+  * This function may return:
+  * o a negative error code in case of failure
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index a996718..7c2c926 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -20,7 +20,17 @@
+ #include <linux/slab.h>
+ #include <linux/mtd/partitions.h>
+ 
+-int __devinit of_mtd_parse_partitions(struct device *dev,
++static int parse_ofpart_partitions(struct mtd_info *master,
++				   struct mtd_partition **pparts,
++				   struct mtd_part_parser_data *data)
++{
++	if (!data || !data->of_node)
++		return 0;
++
++	return of_mtd_parse_partitions(NULL, data->of_node, pparts);
++}
++
++int of_mtd_parse_partitions(struct device *dev,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts)
  {
- 	const char *cp;
-@@ -218,6 +219,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	int reg_tuple_size;
- 	struct mtd_info **mtd_list = NULL;
- 	resource_size_t res_size;
-+	struct mtd_part_parser_data ppdata;
+@@ -69,7 +79,7 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
  
- 	match = of_match_device(of_flash_match, &dev->dev);
- 	if (!match)
-@@ -331,9 +333,10 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	if (err)
- 		goto err_out;
+ 	if (!i) {
+ 		of_node_put(pp);
+-		dev_err(dev, "No valid partition found on %s\n", node->full_name);
++		pr_err("No valid partition found on %s\n", node->full_name);
+ 		kfree(*pparts);
+ 		*pparts = NULL;
+ 		return -EINVAL;
+@@ -79,4 +89,17 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
+ }
+ EXPORT_SYMBOL(of_mtd_parse_partitions);
  
-+	ppdata.of_node = dp;
- 	part_probe_types = of_get_probes(dp);
- 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
--				   &info->parts, 0);
-+				   &info->parts, &ppdata);
- 	if (err < 0) {
- 		of_free_probes(part_probe_types);
- 		goto err_out;
-@@ -341,12 +344,6 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	of_free_probes(part_probe_types);
++static struct mtd_part_parser ofpart_parser = {
++	.owner = THIS_MODULE,
++	.parse_fn = parse_ofpart_partitions,
++	.name = "ofpart",
++};
++
++static int __init ofpart_parser_init(void)
++{
++	return register_mtd_parser(&ofpart_parser);
++}
++
++module_init(ofpart_parser_init);
++
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index df125fa..6e724af 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -51,14 +51,18 @@ struct mtd_partition {
  
- 	if (err == 0) {
--		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
--		if (err < 0)
--			goto err_out;
--	}
--
--	if (err == 0) {
- 		err = parse_obsolete_partitions(dev, info, dp);
- 		if (err < 0)
- 			goto err_out;
+ 
+ struct mtd_info;
++struct device_node;
+ 
+ /**
+  * struct mtd_part_parser_data - used to pass data to MTD partition parsers.
+  * @origin: for RedBoot, start address of MTD device,
+  *					%0 unless you are sure you need this.
++ * @of_node: for OpenFirmware based parsers, pass device node containing
++ *					partitioning information
+  */
+ struct mtd_part_parser_data {
+ 	unsigned long origin;
++	struct device_node *of_node;
+ };
+ 
+ 
+@@ -86,7 +90,7 @@ struct device;
+ struct device_node;
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+-int __devinit of_mtd_parse_partitions(struct device *dev,
++int of_mtd_parse_partitions(struct device *dev,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts);
+ #else
 -- 
 1.7.5.3
