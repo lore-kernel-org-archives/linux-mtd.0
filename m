@@ -1,26 +1,17 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZFc0-0000ZR-Jt
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 05:04:25 +0000
-Received: by pwi3 with SMTP id 3so443107pwi.36
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZFcb-00037t-AC
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 05:05:03 +0000
+Received: by fxm14 with SMTP id 14so520486fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Jun 2011 22:04:22 -0700 (PDT)
-Subject: Re: [PATCH] mtd: onenand: remove redundant mtd_device_unregister
-	before onenand_release
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Axel Lin <axel.lin@gmail.com>
-Date: Wed, 22 Jun 2011 08:05:04 +0300
-In-Reply-To: <1308308793.2628.0.camel@phoenix>
-References: <1308308793.2628.0.camel@phoenix>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1308719109.18119.29.camel@sauron>
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Tue, 21 Jun 2011 22:03:13 -0700 (PDT)
+MIME-Version: 1.0
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 22 Jun 2011 01:02:52 -0400
+Message-ID: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
+Subject: mkfs.jffs2 min erase block size: 4 vs 8 KiB
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,14 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-06-17 at 19:06 +0800, Axel Lin wrote:
-> onenand_release() will call mtd_device_unregister(), thus remove the redundant
-> mtd_device_unregister() call before onenand_release().
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+the current mkfs.jffs2 util has in its --eraseblock handling:
+/* If it's less than 8KiB, they're not allowed */
+if (erase_block_size < 0x2000) {
+    fprintf(stderr, "Erase size 0x%x too small. Increasing to 8KiB minimum\n",
+        erase_block_size);
+    erase_block_size = 0x2000;
+}
 
-Pushed to l2-mtd-2.6.git, thanks.
+but i cant seem to find documentation on where this comes from.  it's
+not uncommon to have SPI flashes with 4KiB erase sectors, and removing
+this sanity check and allowing 4 KiB seems to produce an image that
+works OK.
 
--- 
-Best Regards,
-Artem Bityutskiy
+am i missing something ?  or should i send a patch to drop this check ?
+-mike
