@@ -1,19 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from smail2.alcatel.fr ([64.208.49.57])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZJtg-00040t-3Y
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 09:38:57 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 23so536878wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jun 2011 02:38:55 -0700 (PDT)
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 18/18] mtd: socrates_nand.c: use mtd_device_parse_register
-Date: Wed, 22 Jun 2011 13:37:52 +0400
-Message-Id: <1308735472-32640-19-git-send-email-dbaryshkov@gmail.com>
-In-Reply-To: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
-References: <1308735472-32640-1-git-send-email-dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1QZKuB-0005b6-TU
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 10:43:32 +0000
+From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Wed, 22 Jun 2011 12:41:10 +0200
+Subject: RE: [PATCH upstream] nand: nand_base: Always initialise oob_poi
+	before writing OOB data
+Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DD8D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+References: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AACE12D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+	<1308722112.18119.36.camel@sauron>
+In-Reply-To: <1308722112.18119.36.camel@sauron>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace custom invocations of parse_mtd_partitions and mtd_device_register
-with common mtd_device_parse_register call. This would bring: standard
-handling of all errors, fallback to default partitions, etc.
+Artem Wrote:
 
-Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
----
- drivers/mtd/nand/socrates_nand.c |   11 +----------
- 1 files changed, 1 insertions(+), 10 deletions(-)
+>
+> Added the -stable CC here and pushed to l2-mtd-2.6.git with
+> some modifications.
+>
 
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index f4f79ec..0fb24f9 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -164,8 +164,6 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
- 	struct mtd_info *mtd;
- 	struct nand_chip *nand_chip;
- 	int res;
--	struct mtd_partition *partitions = NULL;
--	int num_partitions = 0;
- 	struct mtd_part_parser_data ppdata;
- 
- 	/* Allocate memory for the device structure (and zero it) */
-@@ -225,17 +223,10 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
- 		goto out;
- 	}
- 
--	num_partitions = parse_mtd_partitions(mtd, NULL, &partitions, &ppdata);
--	if (num_partitions < 0) {
--		res = num_partitions;
--		goto release;
--	}
--
--	res = mtd_device_register(mtd, partitions, num_partitions);
-+	res = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
- 	if (!res)
- 		return res;
- 
--release:
- 	nand_release(mtd);
- 
- out:
--- 
-1.7.5.3
+This is probably my fault, but the mail previous to this had the
+version which contained the stable line. That patch version (v3)did
+not remove the final memset from nand_do_write_oob, as you requested.
+Named both patches the same as they were pretty much indentical,
+except for the memset. Didn't know the convention for patch naming
+where one was going to stable, and the other to the latest so
+marked the latest as upstream to differentiate.
+
+> >   * nand_fill_oob - [Internal] Transfer client buffer to oob
+> >   * @chip:  nand chip structure
+> > + * @mtd:   MTD device structure
+> >   * @oob:   oob data buffer
+> >   * @len:   oob data write length
+> >   * @ops:   oob ops structure
+> >   */
+> > -static uint8_t *nand_fill_oob(struct nand_chip *chip,
+> uint8_t *oob, size_t len,
+> > -                                           struct mtd_oob_ops *ops)
+> > +static uint8_t *nand_fill_oob(struct nand_chip *chip,
+> struct mtd_info *mtd,
+> > +                         uint8_t *oob, size_t len, struct
+> mtd_oob_ops *ops)
+> >  {
+>
+> Since we can get chip from mtd->prive, it is not necessary to
+> pass both chip and mtd to this function, it is enough to only
+> pass mtd.
+
+Fair enough. Didn't spot that. :)
+
+>
+> I've done this modification, the resulting patch is here:
+> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/
+6a146696fdcf383d90753145dfb367e499790940
+>
+> Would you please take a look and even better - give it a try?
+>
+
+Yep, no problem. Will run it up on target an check all still works.
+
+> Thanks!
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>=20
+
+Thanks
+
+Adam
