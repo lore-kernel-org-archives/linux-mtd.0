@@ -1,24 +1,20 @@
-Received: from smail3.alcatel.fr ([64.208.49.56])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZPXb-00040f-BL
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 15:40:32 +0000
-From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Wed, 22 Jun 2011 17:40:09 +0200
-Subject: RE: [PATCH upstream] nand: nand_base: Always initialise oob_poi
-	before writing OOB data
-Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DF22@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-References: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AACE12D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-	<1308722112.18119.36.camel@sauron>
-	<E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DD8D@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-	<1308740228.18119.70.camel@sauron>
-	<E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DDB3@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-In-Reply-To: <E14CAA9D00C5044EACE0C59FC2A1C7F5059AB4DDB3@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mms3.broadcom.com ([216.31.210.19])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZQd9-0004z5-Jv
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 16:50:20 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v3 0/7] prepare new nanddump options, defaults
+Date: Wed, 22 Jun 2011 09:49:16 -0700
+Message-ID: <1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
+References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adam Thomson Wrote:
->=20
-> The original request was for a stable patch, and that would=20
-> be accepted if I provided a proper tidy fix also. To be fair=20
-> it was a few weeks ago now that that mail was sent. :-)=20
-> Anyway, as it turns out the tidy fix was almost identical,=20
-> and we don't need the memset as far as I can tell from=20
-> reviewing code and from testing. Will run up your patch today=20
-> to verify your additional change, but should be fine.
->=20
+Hello,
 
-Have tested the updated patch on hardware, and all seems good.
-No problems with OOB corruption, and mtd tests run without failure.
+I think this should be the last version necessary for this particular patch
+series...
 
-Thanks
+This series adds, changes, and deprecates several nanddump options, helping make
+nanddump a closer inverse to nandwrite. This is mostly a preparation for the
+next release, when several defaults might change. A short list of the planned
+changes:
 
-Adam=
+ * unify bad block methods under `--bb=METHOD', deprecating old ones
+ * kill --omitbad in favor of --bb=skipbad
+ * skip bad blocks by default (i.e., --bb=skipbad)
+ * do not dump OOB by default (--omitoob)
+ * add `--oob' to force dumping OOB
+
+Please let me know when these are accepted and the 1.4.5 release is made, so I
+can send a proper patchset to clean this all up as planned for the 1.4.6
+release.
+
+BTW, is each utility supposed to have its own version? (e.g., nanddump has
+version 1.30?) Should these versions be kept in any kind of sync with the
+mtd-utils revision tags? And does Artem take care of this stuff?
+
+Thanks,
+Brian
+
+Brian Norris (7):
+  nanddump: add --bb=METHOD option
+  nanddump: remove --skipbad, leaving --bb=skipbad
+  nanddump: update help message for BB method changes
+  nanddump: warn about new default BB handling
+  feature-removal-schedule: describe nanddump changes
+  nanddump: add --oob option
+  nanddump: document, warn about future default --omitoob
+
+ feature-removal-schedule.txt |   37 ++++++++++++
+ nanddump.c                   |  132 +++++++++++++++++++++++++++++++-----------
+ 2 files changed, 134 insertions(+), 35 deletions(-)
