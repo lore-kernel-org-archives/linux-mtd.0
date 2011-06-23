@@ -1,37 +1,17 @@
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZr5G-0006of-NY
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 21:05:09 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e31.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p5NKlsMt000465
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jun 2011 14:47:54 -0600
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	p5NL4hp1106748
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jun 2011 15:04:44 -0600
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
-	id p5NL9pY7019922
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jun 2011 15:09:51 -0600
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-To: linux-security-module@vger.kernel.org
-Subject: [PATCH] security: new security_inode_init_security API adds function
-	callback
-Date: Thu, 23 Jun 2011 17:04:11 -0400
-Message-Id: <1308863051-9521-1-git-send-email-zohar@linux.vnet.ibm.com>
-Cc: Dave Kleikamp <shaggy@kernel.org>, jfs-discussion@lists.sourceforge.net,
-	Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-	linux-mtd@lists.infradead.org, Mimi Zohar <zohar@us.ibm.com>,
-	James Morris <jmorris@namei.org>, cluster-devel@redhat.com,
-	Alex Elder <aelder@sgi.com>, linux-ext4@vger.kernel.org,
-	Mimi Zohar <zohar@linux.vnet.ibm.com>,
-	Mark Fasheh <mfasheh@suse.com>, xfs-masters@oss.sgi.com,
-	Joel Becker <jlbec@evilplan.org>, Steven Whitehouse <swhiteho@redhat.com>,
-	Chris Mason <chris.mason@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, ocfs2-devel@oss.oracle.com
+Received: from mms3.broadcom.com ([216.31.210.19])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZrCa-0006rh-16
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 21:12:45 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH] mtd: spelling, capitalization, uniformity
+Date: Thu, 23 Jun 2011 14:12:08 -0700
+Message-ID: <1308863528-32194-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,737 +21,1048 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The recently posted EVM/IMA-appraisal patches added a new hook
-evm_inode_post_init_security() to calculate the security.evm extended
-attribute(xattr) and an additional call to set_xattr().
+Therefor -> Therefore
+[Intern], [Internal] -> [INTERN]
+[REPLACABLE] -> [REPLACEABLE]
+syndrom, syndom -> syndrome
+ecc -> ECC
+buswith -> buswidth
+endianess -> endianness
+dont -> don't
+occures -> occurs
+independend -> independent
+wihin -> within
+erease -> erase
+blockes -> blocks
+...
 
-        security_inode_init_security(&lsm_xattr)
-        set_xattr(&lsm_xattr)
+(This is based on Artem's l2-mtd-2.6 git tree)
 
-        evm_inode_post_init_security(&lsm_xattr, &evm_xattr)
-        set_xattr(&evm_xattr)
-
-The ensuing mailing list discussion centered around:
-- Steve Whitehouse's questioning the need for two set_xattr() calls.
-- Casey Schaufler's multiple LSM xattr support reminder.
-- Dave Chinner's questioning the need for the new
-  evm_inode_post_init_security() hook.
-
-This patch changes the security_inode_init_security API by adding a
-filesystem specific callback to write security extended attributes.
-The change is in preparation for supporting the initialization of
-multiple LSM xattrs and the EVM xattr.  Initially the callback function
-walks an array of xattrs, writing each xattr separately, but could be
-optimized to write multiple xattrs at once.
-
-For existing security_inode_init_security() calls, which have yet to
-be converted to use the new callback function, such as those in reiserfs
-and ocfs2, this patch defines security_old_inode_init_security().
-
-Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- security/security.c          |   39 ++++++++++++++++++++++++++--
- fs/ext2/xattr_security.c     |   34 +++++++++++++-----------
- fs/ext3/xattr_security.c     |   36 ++++++++++++++-----------
- fs/ext4/xattr_security.c     |   36 ++++++++++++++-----------
- fs/btrfs/xattr.c             |   52 +++++++++++++++++++-------------------
- fs/gfs2/inode.c              |   38 +++++++++++++--------------
- fs/jffs2/security.c          |   37 ++++++++++++++------------
- fs/jfs/xattr.c               |   57 ++++++++++++++++++++---------------------
- fs/ocfs2/xattr.c             |   38 +++++++++++++++++----------
- fs/reiserfs/xattr_security.c |    4 +-
- fs/xfs/linux-2.6/xfs_iops.c  |   39 ++++++++++++++--------------
- mm/shmem.c                   |    4 +-
- include/linux/security.h     |   17 +++++++++---
- include/linux/xattr.h        |    6 ++++
- 14 files changed, 252 insertions(+), 185 deletions(-)
+ drivers/mtd/chips/jedec_probe.c    |    2 +-
+ drivers/mtd/devices/doc2000.c      |    2 +-
+ drivers/mtd/devices/doc2001.c      |    2 +-
+ drivers/mtd/devices/doc2001plus.c  |    2 +-
+ drivers/mtd/devices/docecc.c       |    2 +-
+ drivers/mtd/mtdchar.c              |    6 +-
+ drivers/mtd/nand/au1550nd.c        |   29 +++++------
+ drivers/mtd/nand/cafe_nand.c       |    2 +-
+ drivers/mtd/nand/diskonchip.c      |    4 +-
+ drivers/mtd/nand/nand_base.c       |  105 ++++++++++++++++++------------------
+ drivers/mtd/nand/nand_bbt.c        |    8 ++--
+ drivers/mtd/nand/nand_ecc.c        |   10 ++--
+ drivers/mtd/nand/rtc_from4.c       |    2 +-
+ drivers/mtd/onenand/onenand_base.c |   12 ++--
+ drivers/mtd/sm_ftl.c               |    2 +-
+ include/linux/mtd/mtd.h            |    2 +-
+ include/linux/mtd/nand.h           |   50 +++++++++---------
+ 17 files changed, 119 insertions(+), 123 deletions(-)
 
-diff --git a/security/security.c b/security/security.c
-index 4ba6d4c..3464d58 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -18,6 +18,8 @@
- #include <linux/security.h>
- #include <linux/ima.h>
- 
-+#define MAX_LSM_XATTR	1
-+
- /* Boot-time LSM user choice */
- static __initdata char chosen_lsm[SECURITY_NAME_MAX + 1] =
- 	CONFIG_DEFAULT_SECURITY;
-@@ -339,15 +341,46 @@ void security_inode_free(struct inode *inode)
- }
- 
- int security_inode_init_security(struct inode *inode, struct inode *dir,
--				 const struct qstr *qstr, char **name,
--				 void **value, size_t *len)
-+				 const struct qstr *qstr,
-+				 const initxattrs initxattrs, void *fs_data)
-+{
-+	struct xattr new_xattrs[MAX_LSM_XATTR + 1];
-+	struct xattr *lsm_xattr;
-+	int ret;
-+
-+	if (unlikely(IS_PRIVATE(inode)))
-+		return -EOPNOTSUPP;
-+
-+	memset(new_xattrs, 0, sizeof new_xattrs);
-+	if (!initxattrs)
-+		return security_ops->inode_init_security(inode, dir, qstr,
-+							 NULL, NULL, NULL);
-+	lsm_xattr = new_xattrs;
-+	ret = security_ops->inode_init_security(inode, dir, qstr,
-+						&lsm_xattr->name,
-+						&lsm_xattr->value,
-+						&lsm_xattr->value_len);
-+	if (ret)
-+		goto out;
-+	ret = initxattrs(inode, new_xattrs, fs_data);
-+out:
-+	kfree(lsm_xattr->name);
-+	kfree(lsm_xattr->value);
-+
-+	return (ret == -EOPNOTSUPP) ? 0 : ret;
-+}
-+EXPORT_SYMBOL(security_inode_init_security);
-+
-+int security_old_inode_init_security(struct inode *inode, struct inode *dir,
-+				     const struct qstr *qstr, char **name,
-+				     void **value, size_t *len)
- {
- 	if (unlikely(IS_PRIVATE(inode)))
- 		return -EOPNOTSUPP;
- 	return security_ops->inode_init_security(inode, dir, qstr, name, value,
- 						 len);
- }
--EXPORT_SYMBOL(security_inode_init_security);
-+EXPORT_SYMBOL(security_old_inode_init_security);
- 
- #ifdef CONFIG_SECURITY_PATH
- int security_path_mknod(struct path *dir, struct dentry *dentry, int mode,
-diff --git a/fs/ext2/xattr_security.c b/fs/ext2/xattr_security.c
-index 5d979b4..fc80cf4 100644
---- a/fs/ext2/xattr_security.c
-+++ b/fs/ext2/xattr_security.c
-@@ -46,26 +46,28 @@ ext2_xattr_security_set(struct dentry *dentry, const char *name,
- 			      value, size, flags);
- }
- 
-+int ext2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		    void *fs_info)
-+{
-+	const struct xattr *xattr;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = ext2_xattr_set(inode, EXT2_XATTR_INDEX_SECURITY,
-+				     xattr->name, xattr->value,
-+				     xattr->value_len, 0);
-+		if (err < 0)
-+			break;
-+	}
-+	return err;
-+}
-+
- int
- ext2_init_security(struct inode *inode, struct inode *dir,
- 		   const struct qstr *qstr)
- {
--	int err;
--	size_t len;
--	void *value;
--	char *name;
--
--	err = security_inode_init_security(inode, dir, qstr, &name, &value, &len);
--	if (err) {
--		if (err == -EOPNOTSUPP)
--			return 0;
--		return err;
--	}
--	err = ext2_xattr_set(inode, EXT2_XATTR_INDEX_SECURITY,
--			     name, value, len, 0);
--	kfree(name);
--	kfree(value);
--	return err;
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &ext2_initxattrs, NULL);
- }
- 
- const struct xattr_handler ext2_xattr_security_handler = {
-diff --git a/fs/ext3/xattr_security.c b/fs/ext3/xattr_security.c
-index b8d9f83..4202683 100644
---- a/fs/ext3/xattr_security.c
-+++ b/fs/ext3/xattr_security.c
-@@ -48,26 +48,30 @@ ext3_xattr_security_set(struct dentry *dentry, const char *name,
- 			      name, value, size, flags);
- }
- 
-+int ext3_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		    void *fs_info)
-+{
-+	const struct xattr *xattr;
-+	handle_t *handle = fs_info;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = ext3_xattr_set_handle(handle, inode,
-+					    EXT3_XATTR_INDEX_SECURITY,
-+					    xattr->name, xattr->value,
-+					    xattr->value_len, 0);
-+		if (err < 0)
-+			break;
-+	}
-+	return err;
-+}
-+
- int
- ext3_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
- 		   const struct qstr *qstr)
- {
--	int err;
--	size_t len;
--	void *value;
--	char *name;
--
--	err = security_inode_init_security(inode, dir, qstr, &name, &value, &len);
--	if (err) {
--		if (err == -EOPNOTSUPP)
--			return 0;
--		return err;
--	}
--	err = ext3_xattr_set_handle(handle, inode, EXT3_XATTR_INDEX_SECURITY,
--				    name, value, len, 0);
--	kfree(name);
--	kfree(value);
--	return err;
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &ext3_initxattrs, handle);
- }
- 
- const struct xattr_handler ext3_xattr_security_handler = {
-diff --git a/fs/ext4/xattr_security.c b/fs/ext4/xattr_security.c
-index 007c3bf..e8ccf3a 100644
---- a/fs/ext4/xattr_security.c
-+++ b/fs/ext4/xattr_security.c
-@@ -48,26 +48,30 @@ ext4_xattr_security_set(struct dentry *dentry, const char *name,
- 			      name, value, size, flags);
- }
- 
-+int ext4_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		    void *fs_info)
-+{
-+	const struct xattr *xattr;
-+	handle_t *handle = fs_info;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = ext4_xattr_set_handle(handle, inode,
-+					    EXT4_XATTR_INDEX_SECURITY,
-+					    xattr->name, xattr->value,
-+					    xattr->value_len, 0);
-+		if (err < 0)
-+			break;
-+	}
-+	return err;
-+}
-+
- int
- ext4_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
- 		   const struct qstr *qstr)
- {
--	int err;
--	size_t len;
--	void *value;
--	char *name;
--
--	err = security_inode_init_security(inode, dir, qstr, &name, &value, &len);
--	if (err) {
--		if (err == -EOPNOTSUPP)
--			return 0;
--		return err;
--	}
--	err = ext4_xattr_set_handle(handle, inode, EXT4_XATTR_INDEX_SECURITY,
--				    name, value, len, 0);
--	kfree(name);
--	kfree(value);
--	return err;
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &ext4_initxattrs, handle);
- }
- 
- const struct xattr_handler ext4_xattr_security_handler = {
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 5366fe4..53c2317 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -360,36 +360,36 @@ int btrfs_removexattr(struct dentry *dentry, const char *name)
- 				XATTR_REPLACE);
- }
- 
--int btrfs_xattr_security_init(struct btrfs_trans_handle *trans,
--			      struct inode *inode, struct inode *dir,
--			      const struct qstr *qstr)
-+int btrfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		     void *fs_info)
- {
--	int err;
--	size_t len;
--	void *value;
--	char *suffix;
-+	const struct xattr *xattr;
-+	struct btrfs_trans_handle *trans = fs_info;
- 	char *name;
--
--	err = security_inode_init_security(inode, dir, qstr, &suffix, &value,
--					   &len);
--	if (err) {
--		if (err == -EOPNOTSUPP)
--			return 0;
--		return err;
--	}
--
--	name = kmalloc(XATTR_SECURITY_PREFIX_LEN + strlen(suffix) + 1,
--		       GFP_NOFS);
--	if (!name) {
--		err = -ENOMEM;
--	} else {
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		name = kmalloc(XATTR_SECURITY_PREFIX_LEN + 
-+			       strlen(xattr->name) + 1, GFP_NOFS);
-+		if (!name) {
-+			err = -ENOMEM;
-+			break;
-+		}
- 		strcpy(name, XATTR_SECURITY_PREFIX);
--		strcpy(name + XATTR_SECURITY_PREFIX_LEN, suffix);
--		err = __btrfs_setxattr(trans, inode, name, value, len, 0);
-+		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
-+		err = __btrfs_setxattr(trans, inode, name,
-+				       xattr->value, xattr->value_len, 0);
- 		kfree(name);
-+		if (err < 0)
-+			break;
- 	}
--
--	kfree(suffix);
--	kfree(value);
- 	return err;
- }
-+
-+int btrfs_xattr_security_init(struct btrfs_trans_handle *trans,
-+			      struct inode *inode, struct inode *dir,
-+			      const struct qstr *qstr)
-+{
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &btrfs_initxattrs, trans);
-+}
-diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
-index 03e0c52..b6dabfe 100644
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -624,31 +624,29 @@ fail:
- 	return error;
- }
- 
--static int gfs2_security_init(struct gfs2_inode *dip, struct gfs2_inode *ip,
--			      const struct qstr *qstr)
-+int gfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		    void *fs_info)
- {
--	int err;
--	size_t len;
--	void *value;
--	char *name;
--
--	err = security_inode_init_security(&ip->i_inode, &dip->i_inode, qstr,
--					   &name, &value, &len);
--
--	if (err) {
--		if (err == -EOPNOTSUPP)
--			return 0;
--		return err;
-+	const struct xattr *xattr;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = __gfs2_xattr_set(inode, xattr->name, xattr->value,
-+				       xattr->value_len, 0,
-+				       GFS2_EATYPE_SECURITY);
-+		if (err < 0)
-+			break;
- 	}
--
--	err = __gfs2_xattr_set(&ip->i_inode, name, value, len, 0,
--			       GFS2_EATYPE_SECURITY);
--	kfree(value);
--	kfree(name);
--
- 	return err;
- }
- 
-+static int gfs2_security_init(struct gfs2_inode *dip, struct gfs2_inode *ip,
-+			      const struct qstr *qstr)
-+{
-+	return security_inode_init_security(&ip->i_inode, &dip->i_inode, qstr,
-+					    &gfs2_initxattrs, NULL);
-+}
-+
- /**
-  * gfs2_create_inode - Create a new inode
-  * @dir: The parent directory
-diff --git a/fs/jffs2/security.c b/fs/jffs2/security.c
-index cfeb716..2f27244 100644
---- a/fs/jffs2/security.c
-+++ b/fs/jffs2/security.c
-@@ -22,26 +22,29 @@
- #include <linux/security.h>
- #include "nodelist.h"
- 
--/* ---- Initial Security Label Attachment -------------- */
--int jffs2_init_security(struct inode *inode, struct inode *dir,
--			const struct qstr *qstr)
-+/* ---- Initial Security Label(s) Attachment callback --- */
-+int jffs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		     void *fs_info)
- {
--	int rc;
--	size_t len;
--	void *value;
--	char *name;
--
--	rc = security_inode_init_security(inode, dir, qstr, &name, &value, &len);
--	if (rc) {
--		if (rc == -EOPNOTSUPP)
--			return 0;
--		return rc;
-+	const struct xattr *xattr;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY,
-+					xattr->name, xattr->value,
-+					xattr->value_len, 0);
-+		if (err < 0)
-+			break;
- 	}
--	rc = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY, name, value, len, 0);
-+	return err;
-+}
- 
--	kfree(name);
--	kfree(value);
--	return rc;
-+/* ---- Initial Security Label(s) Attachment ----------- */
-+int jffs2_init_security(struct inode *inode, struct inode *dir,
-+			const struct qstr *qstr)
-+{
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &jffs2_initxattrs, NULL);
- }
- 
- /* ---- XATTR Handler for "security.*" ----------------- */
-diff --git a/fs/jfs/xattr.c b/fs/jfs/xattr.c
-index 24838f1..516afd5 100644
---- a/fs/jfs/xattr.c
-+++ b/fs/jfs/xattr.c
-@@ -1091,38 +1091,37 @@ int jfs_removexattr(struct dentry *dentry, const char *name)
- }
- 
- #ifdef CONFIG_JFS_SECURITY
--int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
--		      const struct qstr *qstr)
-+int jfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		   void *fs_info)
- {
--	int rc;
--	size_t len;
--	void *value;
--	char *suffix;
-+	const struct xattr *xattr;
-+	tid_t *tid = fs_info;
- 	char *name;
--
--	rc = security_inode_init_security(inode, dir, qstr, &suffix, &value,
--					  &len);
--	if (rc) {
--		if (rc == -EOPNOTSUPP)
--			return 0;
--		return rc;
--	}
--	name = kmalloc(XATTR_SECURITY_PREFIX_LEN + 1 + strlen(suffix),
--		       GFP_NOFS);
--	if (!name) {
--		rc = -ENOMEM;
--		goto kmalloc_failed;
-+	int err = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		name = kmalloc(XATTR_SECURITY_PREFIX_LEN +
-+			       strlen(xattr->name) + 1, GFP_NOFS);
-+		if (!name) {
-+			err = -ENOMEM;
-+			break;
-+		}
-+		strcpy(name, XATTR_SECURITY_PREFIX);
-+		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
-+		
-+		err = __jfs_setxattr(*tid, inode, name, 
-+				     xattr->value, xattr->value_len, 0);
-+		kfree(name);
-+		if (err < 0)
-+			break;
- 	}
--	strcpy(name, XATTR_SECURITY_PREFIX);
--	strcpy(name + XATTR_SECURITY_PREFIX_LEN, suffix);
--
--	rc = __jfs_setxattr(tid, inode, name, value, len, 0);
--
--	kfree(name);
--kmalloc_failed:
--	kfree(suffix);
--	kfree(value);
-+	return err;
-+}
- 
--	return rc;
-+int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
-+		      const struct qstr *qstr)
-+{
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &jfs_initxattrs, &tid);
- }
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index ea832ea..d40c410 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -1914,7 +1914,7 @@ static void jedec_reset(u32 base, struct map_info *map, struct cfi_private *cfi)
+ 	 * (oh and incidentaly the jedec spec - 3.5.3.3) the reset
+ 	 * sequence is *supposed* to be 0xaa at 0x5555, 0x55 at
+ 	 * 0x2aaa, 0xF0 at 0x5555 this will not affect the AMD chips
+-	 * as they will ignore the writes and dont care what address
++	 * as they will ignore the writes and don't care what address
+ 	 * the F0 is written to */
+ 	if (cfi->addr_unlock1) {
+ 		DEBUG( MTD_DEBUG_LEVEL3,
+diff --git a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
+index f7fbf60..ed15447 100644
+--- a/drivers/mtd/devices/doc2000.c
++++ b/drivers/mtd/devices/doc2000.c
+@@ -699,7 +699,7 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+ #ifdef ECC_DEBUG
+ 			printk(KERN_ERR "DiskOnChip ECC Error: Read at %lx\n", (long)from);
  #endif
-diff --git a/fs/ocfs2/xattr.c b/fs/ocfs2/xattr.c
-index 81ecf9c..40d9956 100644
---- a/fs/ocfs2/xattr.c
-+++ b/fs/ocfs2/xattr.c
-@@ -7185,20 +7185,9 @@ int ocfs2_init_security_and_acl(struct inode *dir,
- {
- 	int ret = 0;
- 	struct buffer_head *dir_bh = NULL;
--	struct ocfs2_security_xattr_info si = {
--		.enable = 1,
--	};
- 
--	ret = ocfs2_init_security_get(inode, dir, qstr, &si);
-+	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
- 	if (!ret) {
--		ret = ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_SECURITY,
--				      si.name, si.value, si.value_len,
--				      XATTR_CREATE);
--		if (ret) {
--			mlog_errno(ret);
--			goto leave;
--		}
--	} else if (ret != -EOPNOTSUPP) {
- 		mlog_errno(ret);
- 		goto leave;
+-			/* Read the ECC syndrom through the DiskOnChip ECC
++			/* Read the ECC syndrome through the DiskOnChip ECC
+ 			   logic.  These syndrome will be all ZERO when there
+ 			   is no error */
+ 			for (i = 0; i < 6; i++) {
+diff --git a/drivers/mtd/devices/doc2001.c b/drivers/mtd/devices/doc2001.c
+index 241192f..c6ea860 100644
+--- a/drivers/mtd/devices/doc2001.c
++++ b/drivers/mtd/devices/doc2001.c
+@@ -464,7 +464,7 @@ static int doc_read (struct mtd_info *mtd, loff_t from, size_t len,
+ #ifdef ECC_DEBUG
+ 		printk("DiskOnChip ECC Error: Read at %lx\n", (long)from);
+ #endif
+-		/* Read the ECC syndrom through the DiskOnChip ECC logic.
++		/* Read the ECC syndrome through the DiskOnChip ECC logic.
+ 		   These syndrome will be all ZERO when there is no error */
+ 		for (i = 0; i < 6; i++) {
+ 			syndrome[i] = ReadDOC(docptr, ECCSyndrome0 + i);
+diff --git a/drivers/mtd/devices/doc2001plus.c b/drivers/mtd/devices/doc2001plus.c
+index 09ae0ad..fe82fbf 100644
+--- a/drivers/mtd/devices/doc2001plus.c
++++ b/drivers/mtd/devices/doc2001plus.c
+@@ -655,7 +655,7 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+ #ifdef ECC_DEBUG
+ 		printk("DiskOnChip ECC Error: Read at %lx\n", (long)from);
+ #endif
+-		/* Read the ECC syndrom through the DiskOnChip ECC logic.
++		/* Read the ECC syndrome through the DiskOnChip ECC logic.
+ 		   These syndrome will be all ZERO when there is no error */
+ 		for (i = 0; i < 6; i++)
+ 			syndrome[i] = ReadDOC(docptr, Mplus_ECCSyndrome0 + i);
+diff --git a/drivers/mtd/devices/docecc.c b/drivers/mtd/devices/docecc.c
+index 37ef29a..4a1c39b 100644
+--- a/drivers/mtd/devices/docecc.c
++++ b/drivers/mtd/devices/docecc.c
+@@ -2,7 +2,7 @@
+  * ECC algorithm for M-systems disk on chip. We use the excellent Reed
+  * Solmon code of Phil Karn (karn@ka9q.ampr.org) available under the
+  * GNU GPL License. The rest is simply to convert the disk on chip
+- * syndrom into a standard syndom.
++ * syndrome into a standard syndome.
+  *
+  * Author: Fabrice Bellard (fabrice.bellard@netgem.com)
+  * Copyright (C) 2000 Netgem S.A.
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 9f8658e..92fa82d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -233,9 +233,9 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 		default:
+ 			ret = mtd->read(mtd, *ppos, len, &retlen, kbuf);
+ 		}
+-		/* Nand returns -EBADMSG on ecc errors, but it returns
++		/* Nand returns -EBADMSG on ECC errors, but it returns
+ 		 * the data. For our userspace tools it is important
+-		 * to dump areas with ecc errors !
++		 * to dump areas with ECC errors!
+ 		 * For kernel internal usage it also might return -EUCLEAN
+ 		 * to signal the caller that a bitflip has occurred and has
+ 		 * been corrected by the ECC algorithm.
+@@ -883,7 +883,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
  	}
-@@ -7255,6 +7244,22 @@ static int ocfs2_xattr_security_set(struct dentry *dentry, const char *name,
- 			       name, value, size, flags);
- }
+ #endif
  
-+int ocfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		     void *fs_info)
-+{
-+	const struct xattr *xattr;
-+	int err = 0;
-+
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		err = ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_SECURITY,
-+				      xattr->name, xattr->value, 
-+				      xattr->value_len, XATTR_CREATE);
-+		if (err)
-+			break;
-+	}
-+	return err;
-+}
-+
- int ocfs2_init_security_get(struct inode *inode,
- 			    struct inode *dir,
- 			    const struct qstr *qstr,
-@@ -7263,8 +7268,13 @@ int ocfs2_init_security_get(struct inode *inode,
- 	/* check whether ocfs2 support feature xattr */
- 	if (!ocfs2_supports_xattr(OCFS2_SB(dir->i_sb)))
- 		return -EOPNOTSUPP;
--	return security_inode_init_security(inode, dir, qstr, &si->name,
--					    &si->value, &si->value_len);
-+	if (si)
-+		return security_old_inode_init_security(inode, dir, qstr,
-+							&si->name, &si->value,
-+							&si->value_len);
-+	
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &ocfs2_initxattrs, NULL);
- }
- 
- int ocfs2_init_security_set(handle_t *handle,
-diff --git a/fs/reiserfs/xattr_security.c b/fs/reiserfs/xattr_security.c
-index ef66c18..534668f 100644
---- a/fs/reiserfs/xattr_security.c
-+++ b/fs/reiserfs/xattr_security.c
-@@ -66,8 +66,8 @@ int reiserfs_security_init(struct inode *dir, struct inode *inode,
- 	if (IS_PRIVATE(dir))
- 		return 0;
- 
--	error = security_inode_init_security(inode, dir, qstr, &sec->name,
--					     &sec->value, &sec->length);
-+	error = security_old_inode_init_security(inode, dir, qstr, &sec->name,
-+						 &sec->value, &sec->length);
- 	if (error) {
- 		if (error == -EOPNOTSUPP)
- 			error = 0;
-diff --git a/fs/xfs/linux-2.6/xfs_iops.c b/fs/xfs/linux-2.6/xfs_iops.c
-index dd21784..1f8eeb8 100644
---- a/fs/xfs/linux-2.6/xfs_iops.c
-+++ b/fs/xfs/linux-2.6/xfs_iops.c
-@@ -93,37 +93,38 @@ xfs_mark_inode_dirty(
- 		mark_inode_dirty(inode);
- }
- 
-+
-+int xfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
-+		   void *fs_info)
-+{
-+	const struct xattr *xattr;
-+	struct xfs_inode *ip = XFS_I(inode);
-+	int error = 0;
-+	
-+	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+		error = xfs_attr_set(ip, xattr->name, xattr->value,
-+				     xattr->value_len, ATTR_SECURE);
-+		if (error < 0)
-+			break;
-+	}
-+	return error;
-+}
-+
- /*
-  * Hook in SELinux.  This is not quite correct yet, what we really need
-  * here (as we do for default ACLs) is a mechanism by which creation of
-  * these attrs can be journalled at inode creation time (along with the
-  * inode, of course, such that log replay can't cause these to be lost).
+-	/* This ioctl is being deprecated - it truncates the ecc layout */
++	/* This ioctl is being deprecated - it truncates the ECC layout */
+ 	case ECCGETLAYOUT:
+ 	{
+ 		struct nand_ecclayout_user *usrlay;
+diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
+index e7767ee..60d58d3 100644
+--- a/drivers/mtd/nand/au1550nd.c
++++ b/drivers/mtd/nand/au1550nd.c
+@@ -48,7 +48,7 @@ static const struct mtd_partition partition_info[] = {
+  * au_read_byte -  read one byte from the chip
+  * @mtd:	MTD device structure
+  *
+- *  read function for 8bit buswith
++ * read function for 8bit buswidth
   */
-+
- STATIC int
- xfs_init_security(
- 	struct inode	*inode,
- 	struct inode	*dir,
- 	const struct qstr *qstr)
+ static u_char au_read_byte(struct mtd_info *mtd)
  {
--	struct xfs_inode *ip = XFS_I(inode);
--	size_t		length;
--	void		*value;
--	unsigned char	*name;
--	int		error;
--
--	error = security_inode_init_security(inode, dir, qstr, (char **)&name,
--					     &value, &length);
--	if (error) {
--		if (error == -EOPNOTSUPP)
--			return 0;
--		return -error;
--	}
--
--	error = xfs_attr_set(ip, name, value, length, ATTR_SECURE);
--
--	kfree(name);
--	kfree(value);
--	return error;
-+	return security_inode_init_security(inode, dir, qstr,
-+					    &xfs_initxattrs, NULL);
+@@ -63,7 +63,7 @@ static u_char au_read_byte(struct mtd_info *mtd)
+  * @mtd:	MTD device structure
+  * @byte:	pointer to data byte to write
+  *
+- *  write function for 8it buswith
++ * write function for 8it buswidth
+  */
+ static void au_write_byte(struct mtd_info *mtd, u_char byte)
+ {
+@@ -73,11 +73,10 @@ static void au_write_byte(struct mtd_info *mtd, u_char byte)
  }
  
- static void
-diff --git a/mm/shmem.c b/mm/shmem.c
-index d221a1c..518f27c 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1877,7 +1877,7 @@ shmem_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
- 	inode = shmem_get_inode(dir->i_sb, dir, mode, dev, VM_NORESERVE);
- 	if (inode) {
- 		error = security_inode_init_security(inode, dir,
--						     &dentry->d_name, NULL,
-+						     &dentry->d_name,
- 						     NULL, NULL);
- 		if (error) {
- 			if (error != -EOPNOTSUPP) {
-@@ -2017,7 +2017,7 @@ static int shmem_symlink(struct inode *dir, struct dentry *dentry, const char *s
- 	if (!inode)
- 		return -ENOSPC;
- 
--	error = security_inode_init_security(inode, dir, &dentry->d_name, NULL,
-+	error = security_inode_init_security(inode, dir, &dentry->d_name,
- 					     NULL, NULL);
- 	if (error) {
- 		if (error != -EOPNOTSUPP) {
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 8ce59ef..ebad5fb 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -36,6 +36,7 @@
- #include <linux/key.h>
- #include <linux/xfrm.h>
- #include <linux/slab.h>
-+#include <linux/xattr.h>
- #include <net/flow.h>
- 
- /* Maximum number of letters for an LSM name string */
-@@ -147,6 +148,10 @@ extern int mmap_min_addr_handler(struct ctl_table *table, int write,
- 				 void __user *buffer, size_t *lenp, loff_t *ppos);
- #endif
- 
-+/* security_inode_init_security callback function to write xattrs */
-+typedef int (*initxattrs) (struct inode *inode,
-+			   const struct xattr *xattr_array, void *fs_data);
-+
- #ifdef CONFIG_SECURITY
- 
- struct security_mnt_opts {
-@@ -1704,8 +1709,11 @@ int security_sb_parse_opts_str(char *options, struct security_mnt_opts *opts);
- int security_inode_alloc(struct inode *inode);
- void security_inode_free(struct inode *inode);
- int security_inode_init_security(struct inode *inode, struct inode *dir,
--				 const struct qstr *qstr, char **name,
--				 void **value, size_t *len);
-+				 const struct qstr *qstr,
-+				 initxattrs initxattrs, void *fs_data);
-+int security_old_inode_init_security(struct inode *inode, struct inode *dir,
-+				     const struct qstr *qstr, char **name,
-+				     void **value, size_t *len);
- int security_inode_create(struct inode *dir, struct dentry *dentry, int mode);
- int security_inode_link(struct dentry *old_dentry, struct inode *dir,
- 			 struct dentry *new_dentry);
-@@ -2035,9 +2043,8 @@ static inline void security_inode_free(struct inode *inode)
- static inline int security_inode_init_security(struct inode *inode,
- 						struct inode *dir,
- 						const struct qstr *qstr,
--						char **name,
--						void **value,
--						size_t *len)
-+						initxattrs initxattrs,
-+				 		void *fs_data)
+ /**
+- * au_read_byte16 -  read one byte endianess aware from the chip
++ * au_read_byte16 -  read one byte endianness aware from the chip
+  * @mtd:	MTD device structure
+  *
+- *  read function for 16bit buswith with
+- * endianess conversion
++ * read function for 16bit buswidth with endianness conversion
+  */
+ static u_char au_read_byte16(struct mtd_info *mtd)
  {
- 	return -EOPNOTSUPP;
+@@ -88,12 +87,11 @@ static u_char au_read_byte16(struct mtd_info *mtd)
  }
-diff --git a/include/linux/xattr.h b/include/linux/xattr.h
-index aed54c5..7a37866 100644
---- a/include/linux/xattr.h
-+++ b/include/linux/xattr.h
-@@ -67,6 +67,12 @@ struct xattr_handler {
- 		   size_t size, int flags, int handler_flags);
+ 
+ /**
+- * au_write_byte16 -  write one byte endianess aware to the chip
++ * au_write_byte16 -  write one byte endianness aware to the chip
+  * @mtd:	MTD device structure
+  * @byte:	pointer to data byte to write
+  *
+- *  write function for 16bit buswith with
+- * endianess conversion
++ * write function for 16bit buswidth with endianness conversion
+  */
+ static void au_write_byte16(struct mtd_info *mtd, u_char byte)
+ {
+@@ -106,8 +104,7 @@ static void au_write_byte16(struct mtd_info *mtd, u_char byte)
+  * au_read_word -  read one word from the chip
+  * @mtd:	MTD device structure
+  *
+- *  read function for 16bit buswith without
+- * endianess conversion
++ * read function for 16bit buswidth without endianness conversion
+  */
+ static u16 au_read_word(struct mtd_info *mtd)
+ {
+@@ -123,7 +120,7 @@ static u16 au_read_word(struct mtd_info *mtd)
+  * @buf:	data buffer
+  * @len:	number of bytes to write
+  *
+- *  write function for 8bit buswith
++ * write function for 8bit buswidth
+  */
+ static void au_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+@@ -142,7 +139,7 @@ static void au_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+  * @buf:	buffer to store date
+  * @len:	number of bytes to read
+  *
+- *  read function for 8bit buswith
++ * read function for 8bit buswidth
+  */
+ static void au_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+@@ -161,7 +158,7 @@ static void au_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+  * @buf:	buffer containing the data to compare
+  * @len:	number of bytes to compare
+  *
+- *  verify function for 8bit buswith
++ * verify function for 8bit buswidth
+  */
+ static int au_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+@@ -183,7 +180,7 @@ static int au_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+  * @buf:	data buffer
+  * @len:	number of bytes to write
+  *
+- *  write function for 16bit buswith
++ * write function for 16bit buswidth
+  */
+ static void au_write_buf16(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+@@ -205,7 +202,7 @@ static void au_write_buf16(struct mtd_info *mtd, const u_char *buf, int len)
+  * @buf:	buffer to store date
+  * @len:	number of bytes to read
+  *
+- *  read function for 16bit buswith
++ * read function for 16bit buswidth
+  */
+ static void au_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
+ {
+@@ -226,7 +223,7 @@ static void au_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
+  * @buf:	buffer containing the data to compare
+  * @len:	number of bytes to compare
+  *
+- *  verify function for 16bit buswith
++ * verify function for 16bit buswidth
+  */
+ static int au_verify_buf16(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index db3bfac..661e5dc 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -370,7 +370,7 @@ static int cafe_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return 1;
+ }
+ /**
+- * cafe_nand_read_page_syndrome - {REPLACABLE] hardware ecc syndrom based page read
++ * cafe_nand_read_page_syndrome - [REPLACEABLE] hardware ecc syndrome based page read
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index b657d7f..de93a98 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -132,7 +132,7 @@ static struct rs_control *rs_decoder;
+ 
+ /*
+  * The HW decoder in the DoC ASIC's provides us a error syndrome,
+- * which we must convert to a standard syndrom usable by the generic
++ * which we must convert to a standard syndrome usable by the generic
+  * Reed-Solomon library code.
+  *
+  * Fabrice Bellard figured this out in the old docecc code. I added
+@@ -153,7 +153,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+ 	ds[3] = ((ecc[3] & 0xc0) >> 6) | ((ecc[0] & 0xff) << 2);
+ 	parity = ecc[1];
+ 
+-	/* Initialize the syndrom buffer */
++	/* Initialize the syndrome buffer */
+ 	for (i = 0; i < NROOTS; i++)
+ 		s[i] = ds[0];
+ 	/*
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0a3cc39..f41d1af 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -21,7 +21,7 @@
+  *  TODO:
+  *	Enable cached programming for 2k page size chips
+  *	Check, if mtd->ecctype should be set to MTD_ECC_HW
+- *	if we have HW ecc support.
++ *	if we have HW ECC support.
+  *	The AG-AND chips have nice features for speed improvement,
+  *	which are not supported yet. Read / program 4 pages in one go.
+  *	BBT table is not serialized, has to be fixed
+@@ -159,7 +159,7 @@ static void nand_release_device(struct mtd_info *mtd)
+  * nand_read_byte - [DEFAULT] read one byte from the chip
+  * @mtd: MTD device structure
+  *
+- * Default read function for 8bit buswith.
++ * Default read function for 8bit buswidth
+  */
+ static uint8_t nand_read_byte(struct mtd_info *mtd)
+ {
+@@ -169,9 +169,11 @@ static uint8_t nand_read_byte(struct mtd_info *mtd)
+ 
+ /**
+  * nand_read_byte16 - [DEFAULT] read one byte endianess aware from the chip
++ * nand_read_byte16 - [DEFAULT] read one byte endianness aware from the chip
+  * @mtd: MTD device structure
+  *
+- * Default read function for 16bit buswith with endianess conversion.
++ * Default read function for 16bit buswidth with endianness conversion.
++ *
+  */
+ static uint8_t nand_read_byte16(struct mtd_info *mtd)
+ {
+@@ -183,7 +185,7 @@ static uint8_t nand_read_byte16(struct mtd_info *mtd)
+  * nand_read_word - [DEFAULT] read one word from the chip
+  * @mtd: MTD device structure
+  *
+- * Default read function for 16bit buswith without endianess conversion.
++ * Default read function for 16bit buswidth without endianness conversion.
+  */
+ static u16 nand_read_word(struct mtd_info *mtd)
+ {
+@@ -220,7 +222,7 @@ static void nand_select_chip(struct mtd_info *mtd, int chipnr)
+  * @buf: data buffer
+  * @len: number of bytes to write
+  *
+- * Default write function for 8bit buswith.
++ * Default write function for 8bit buswidth.
+  */
+ static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+@@ -237,7 +239,7 @@ static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+  * @buf: buffer to store date
+  * @len: number of bytes to read
+  *
+- * Default read function for 8bit buswith.
++ * Default read function for 8bit buswidth.
+  */
+ static void nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ {
+@@ -254,7 +256,7 @@ static void nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+  * @buf: buffer containing the data to compare
+  * @len: number of bytes to compare
+  *
+- * Default verify function for 8bit buswith.
++ * Default verify function for 8bit buswidth.
+  */
+ static int nand_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+@@ -273,7 +275,7 @@ static int nand_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+  * @buf: data buffer
+  * @len: number of bytes to write
+  *
+- * Default write function for 16bit buswith.
++ * Default write function for 16bit buswidth.
+  */
+ static void nand_write_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+@@ -293,7 +295,7 @@ static void nand_write_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
+  * @buf: buffer to store date
+  * @len: number of bytes to read
+  *
+- * Default read function for 16bit buswith.
++ * Default read function for 16bit buswidth.
+  */
+ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+ {
+@@ -312,7 +314,7 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+  * @buf: buffer containing the data to compare
+  * @len: number of bytes to compare
+  *
+- * Default verify function for 16bit buswith.
++ * Default verify function for 16bit buswidth.
+  */
+ static int nand_verify_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+@@ -499,7 +501,7 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
+ 	}
+ }
+ 
+-/* Wait for the ready pin, after a command. The timeout is catched later */
++/* Wait for the ready pin, after a command. The timeout is caught later. */
+ void nand_wait_ready(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+@@ -510,7 +512,7 @@ void nand_wait_ready(struct mtd_info *mtd)
+ 		return panic_nand_wait_ready(mtd, 400);
+ 
+ 	led_trigger_event(nand_led_trigger, LED_FULL);
+-	/* Wait until command is processed or timeout occures */
++	/* Wait until command is processed or timeout occurs */
+ 	do {
+ 		if (chip->dev_ready(mtd))
+ 			break;
+@@ -629,8 +631,8 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+  * @page_addr: the page address for this command, -1 if none
+  *
+  * Send command to NAND device. This is the version for the new large page
+- * devices We dont have the separate regions as we have in the small page
+- * devices.  We must emulate NAND_CMD_READOOB to keep the code compatible.
++ * devices. We don't have the separate regions as we have in the small page
++ * devices. We must emulate NAND_CMD_READOOB to keep the code compatible.
+  */
+ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 			    int column, int page_addr)
+@@ -754,7 +756,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ static void panic_nand_get_device(struct nand_chip *chip,
+ 		      struct mtd_info *mtd, int new_state)
+ {
+-	/* Hardware controller shared among independend devices */
++	/* Hardware controller shared among independent devices */
+ 	chip->controller->active = chip;
+ 	chip->state = new_state;
+ }
+@@ -1032,14 +1034,13 @@ out:
+ EXPORT_SYMBOL(nand_lock);
+ 
+ /**
+- * nand_read_page_raw - [Intern] read raw page data without ecc
++ * nand_read_page_raw - [INTERN] read raw page data without ecc
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+  * @page: page number to read
+  *
+- * Not for syndrome calculating ecc controllers, which use a special oob
+- * layout.
++ * Not for syndrome calculating ECC controllers, which use a special oob layout.
+  */
+ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 			      uint8_t *buf, int page)
+@@ -1050,7 +1051,7 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_read_page_raw_syndrome - [Intern] read raw page data without ecc
++ * nand_read_page_raw_syndrome - [INTERN] read raw page data without ecc
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+@@ -1093,7 +1094,7 @@ static int nand_read_page_raw_syndrome(struct mtd_info *mtd,
+ }
+ 
+ /**
+- * nand_read_page_swecc - [REPLACABLE] software ecc based page read function
++ * nand_read_page_swecc - [REPLACEABLE] software ECC based page read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+@@ -1134,7 +1135,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
++ * nand_read_subpage - [REPLACEABLE] software ECC based sub-page read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @data_offs: offset of requested data within the page
+@@ -1152,7 +1153,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
+ 	int index = 0;
+ 
+-	/* Column address wihin the page aligned to ECC size (256bytes) */
++	/* Column address within the page aligned to ECC size (256bytes) */
+ 	start_step = data_offs / chip->ecc.size;
+ 	end_step = (data_offs + readlen - 1) / chip->ecc.size;
+ 	num_steps = end_step - start_step + 1;
+@@ -1175,7 +1176,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	/*
+ 	 * The performance is faster if we position offsets according to
+-	 * ecc.pos. Let's make sure that there are no gaps in ecc positions.
++	 * ecc.pos. Let's make sure that there are no gaps in ECC positions.
+ 	 */
+ 	for (i = 0; i < eccfrag_len - 1; i++) {
+ 		if (eccpos[i + start_step * chip->ecc.bytes] + 1 !=
+@@ -1189,7 +1190,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+ 	} else {
+ 		/*
+-		 * Send the command to read the particular ecc bytes take care
++		 * Send the command to read the particular ECC bytes take care
+ 		 * about buswidth alignment in read_buf.
+ 		 */
+ 		index = start_step * chip->ecc.bytes;
+@@ -1224,14 +1225,13 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_read_page_hwecc - [REPLACABLE] hardware ecc based page read function
++ * nand_read_page_hwecc - [REPLACEABLE] hardware ECC based page read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+  * @page: page number to read
+  *
+- * Not for syndrome calculating ecc controllers which need a special oob
+- * layout.
++ * Not for syndrome calculating ECC controllers which need a special oob layout.
+  */
+ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 				uint8_t *buf, int page)
+@@ -1270,7 +1270,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
++ * nand_read_page_hwecc_oob_first - [REPLACEABLE] hw ecc, read oob first
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+@@ -1318,7 +1318,7 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+ }
+ 
+ /**
+- * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
++ * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome based page read
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: buffer to store read data
+@@ -1373,7 +1373,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_transfer_oob - [Internal] Transfer oob to client buffer
++ * nand_transfer_oob - [INTERN] Transfer oob to client buffer
+  * @chip: nand chip structure
+  * @oob: oob destination address
+  * @ops: oob ops structure
+@@ -1421,7 +1421,7 @@ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
+ }
+ 
+ /**
+- * nand_do_read_ops - [Internal] Read data with ECC
++ * nand_do_read_ops - [INTERN] Read data with ECC
+  * @mtd: MTD device structure
+  * @from: offset to read from
+  * @ops: oob ops structure
+@@ -1599,7 +1599,7 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ }
+ 
+ /**
+- * nand_read_oob_std - [REPLACABLE] the most common OOB data read function
++ * nand_read_oob_std - [REPLACEABLE] the most common OOB data read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @page: page number to read
+@@ -1617,7 +1617,7 @@ static int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_read_oob_syndrome - [REPLACABLE] OOB data read function for HW ECC
++ * nand_read_oob_syndrome - [REPLACEABLE] OOB data read function for HW ECC
+  *			    with syndromes
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+@@ -1656,7 +1656,7 @@ static int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_write_oob_std - [REPLACABLE] the most common OOB data write function
++ * nand_write_oob_std - [REPLACEABLE] the most common OOB data write function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @page: page number to write
+@@ -1679,7 +1679,7 @@ static int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_write_oob_syndrome - [REPLACABLE] OOB data write function for HW ECC
++ * nand_write_oob_syndrome - [REPLACEABLE] OOB data write function for HW ECC
+  *			     with syndrome - only for large page flash
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+@@ -1738,7 +1738,7 @@ static int nand_write_oob_syndrome(struct mtd_info *mtd,
+ }
+ 
+ /**
+- * nand_do_read_oob - [Intern] NAND read out-of-band
++ * nand_do_read_oob - [INTERN] NAND read out-of-band
+  * @mtd: MTD device structure
+  * @from: offset to read from
+  * @ops: oob operations description structure
+@@ -1878,13 +1878,12 @@ out:
+ 
+ 
+ /**
+- * nand_write_page_raw - [Intern] raw page write function
++ * nand_write_page_raw - [INTERN] raw page write function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: data buffer
+  *
+- * Not for syndrome calculating ecc controllers, which use a special oob
+- * layout.
++ * Not for syndrome calculating ECC controllers, which use a special oob layout.
+  */
+ static void nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 				const uint8_t *buf)
+@@ -1894,7 +1893,7 @@ static void nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_write_page_raw_syndrome - [Intern] raw page write function
++ * nand_write_page_raw_syndrome - [INTERN] raw page write function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: data buffer
+@@ -1933,7 +1932,7 @@ static void nand_write_page_raw_syndrome(struct mtd_info *mtd,
+ 		chip->write_buf(mtd, oob, size);
+ }
+ /**
+- * nand_write_page_swecc - [REPLACABLE] software ecc based page write function
++ * nand_write_page_swecc - [REPLACEABLE] software ECC based page write function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: data buffer
+@@ -1948,7 +1947,7 @@ static void nand_write_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	const uint8_t *p = buf;
+ 	uint32_t *eccpos = chip->ecc.layout->eccpos;
+ 
+-	/* Software ecc calculation */
++	/* Software ECC calculation */
+ 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+ 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+ 
+@@ -1959,7 +1958,7 @@ static void nand_write_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_write_page_hwecc - [REPLACABLE] hardware ecc based page write function
++ * nand_write_page_hwecc - [REPLACEABLE] hardware ECC based page write function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: data buffer
+@@ -1987,7 +1986,7 @@ static void nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_write_page_syndrome - [REPLACABLE] hardware ecc syndrom based page write
++ * nand_write_page_syndrome - [REPLACEABLE] hardware ECC syndrome based page write
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+  * @buf: data buffer
+@@ -2052,7 +2051,7 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->ecc.write_page(mtd, chip, buf);
+ 
+ 	/*
+-	 * Cached progamming disabled for now, Not sure if its worth the
++	 * Cached progamming disabled for now. Not sure if it's worth the
+ 	 * trouble. The speed gain is not very impressive. (2.3->2.6Mib/s).
+ 	 */
+ 	cached = 0;
+@@ -2087,7 +2086,7 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_fill_oob - [Internal] Transfer client buffer to oob
++ * nand_fill_oob - [INTERN] Transfer client buffer to oob
+  * @mtd: MTD device structure
+  * @oob: oob data buffer
+  * @len: oob data write length
+@@ -2145,7 +2144,7 @@ static uint8_t *nand_fill_oob(struct mtd_info *mtd, uint8_t *oob, size_t len,
+ #define NOTALIGNED(x)	((x & (chip->subpagesize - 1)) != 0)
+ 
+ /**
+- * nand_do_write_ops - [Internal] NAND write with ECC
++ * nand_do_write_ops - [INTERN] NAND write with ECC
+  * @mtd: MTD device structure
+  * @to: offset to write to
+  * @ops: oob operations description structure
+@@ -2451,7 +2450,7 @@ out:
+ }
+ 
+ /**
+- * single_erease_cmd - [GENERIC] NAND standard block erase command function
++ * single_erase_cmd - [GENERIC] NAND standard block erase command function
+  * @mtd: MTD device structure
+  * @page: the page address of the block which will be erased
+  *
+@@ -2466,7 +2465,7 @@ static void single_erase_cmd(struct mtd_info *mtd, int page)
+ }
+ 
+ /**
+- * multi_erease_cmd - [GENERIC] AND specific block erase command function
++ * multi_erase_cmd - [GENERIC] AND specific block erase command function
+  * @mtd: MTD device structure
+  * @page: the page address of the block which will be erased
+  *
+@@ -2497,7 +2496,7 @@ static int nand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 
+ #define BBT_PAGE_MASK	0xffffff3f
+ /**
+- * nand_erase_nand - [Internal] erase block(s)
++ * nand_erase_nand - [INTERN] erase block(s)
+  * @mtd: MTD device structure
+  * @instr: erase instruction
+  * @allowbbt: allow erasing the bbt area
+@@ -2547,7 +2546,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 	 * If BBT requires refresh, set the BBT page mask to see if the BBT
+ 	 * should be rewritten. Otherwise the mask is set to 0xffffffff which
+ 	 * can not be matched. This is also done when the bbt is actually
+-	 * erased to avoid recusrsive updates.
++	 * erased to avoid recursive updates.
+ 	 */
+ 	if (chip->options & BBT_AUTO_REFRESH && !allowbbt)
+ 		bbt_masked_page = chip->bbt_td->pages[chipnr] & BBT_PAGE_MASK;
+@@ -2821,7 +2820,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int i;
+ 	int val;
+ 
+-	/* Try ONFI for unknow chip or LP */
++	/* Try ONFI for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+ 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
+ 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+@@ -3392,7 +3391,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 */
+ 	chip->ecc.steps = mtd->writesize / chip->ecc.size;
+ 	if (chip->ecc.steps * chip->ecc.size != mtd->writesize) {
+-		printk(KERN_WARNING "Invalid ecc parameters\n");
++		printk(KERN_WARNING "Invalid ECC parameters\n");
+ 		BUG();
+ 	}
+ 	chip->ecc.total = chip->ecc.steps * chip->ecc.bytes;
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 8875d6d..f30807c 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -149,7 +149,7 @@ static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
+  * add_marker_len - compute the length of the marker in data area
+  * @td: BBT descriptor used for computation
+  *
+- * The length will be 0 if the markeris located in OOB area.
++ * The length will be 0 if the marker is located in OOB area.
+  */
+ static u32 add_marker_len(struct nand_bbt_descr *td)
+ {
+@@ -170,7 +170,7 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
+  * @buf: temporary buffer
+  * @page: the starting page
+  * @num: the number of bbt descriptors to read
+- * @td:	 the bbt describtion table
++ * @td: the bbt describtion table
+  * @offs: offset in the memory table
+  *
+  * Read the bad block table starting from page.
+@@ -1241,7 +1241,7 @@ static struct nand_bbt_descr agand_flashbased = {
+ 	.pattern = scan_agand_pattern
  };
  
-+struct xattr {
-+	char *name;
-+	void *value;
-+	size_t value_len;
-+};
-+
- ssize_t xattr_getsecurity(struct inode *, const char *, void *, size_t);
- ssize_t vfs_getxattr(struct dentry *, const char *, void *, size_t);
- ssize_t vfs_listxattr(struct dentry *d, char *list, size_t size);
+-/* Generic flash bbt decriptors */
++/* Generic flash bbt descriptors */
+ static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+ static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
+ 
+@@ -1286,7 +1286,7 @@ static struct nand_bbt_descr bbt_mirror_no_bbt_descr = {
+ };
+ 
+ /**
+- * nand_create_default_bbt_descr - [Internal] Creates a BBT descriptor structure
++ * nand_create_default_bbt_descr - [INTERN] Creates a BBT descriptor structure
+  * @this: NAND chip to create descriptor for
+  *
+  * This function allocates and initializes a nand_bbt_descr for BBM detection
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+index 271b8e7..b7cfe0d 100644
+--- a/drivers/mtd/nand/nand_ecc.c
++++ b/drivers/mtd/nand/nand_ecc.c
+@@ -110,7 +110,7 @@ static const char bitsperbyte[256] = {
+ 
+ /*
+  * addressbits is a lookup table to filter out the bits from the xor-ed
+- * ecc data that identify the faulty location.
++ * ECC data that identify the faulty location.
+  * this is only used for repairing parity
+  * see the comments in nand_correct_data for more details
+  */
+@@ -153,7 +153,7 @@ static const char addressbits[256] = {
+  * __nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
+  *			 block
+  * @buf:	input buffer with raw data
+- * @eccsize:	data bytes per ecc step (256 or 512)
++ * @eccsize:	data bytes per ECC step (256 or 512)
+  * @code:	output buffer with ECC
+  */
+ void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
+@@ -348,7 +348,7 @@ void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
+ 		rp17 = (par ^ rp16) & 0xff;
+ 
+ 	/*
+-	 * Finally calculate the ecc bits.
++	 * Finally calculate the ECC bits.
+ 	 * Again here it might seem that there are performance optimisations
+ 	 * possible, but benchmarks showed that on the system this is developed
+ 	 * the code below is the fastest
+@@ -436,7 +436,7 @@ EXPORT_SYMBOL(nand_calculate_ecc);
+  * @buf:	raw data read from the chip
+  * @read_ecc:	ECC from the chip
+  * @calc_ecc:	the ECC calculated from raw data
+- * @eccsize:	data bytes per ecc step (256 or 512)
++ * @eccsize:	data bytes per ECC step (256 or 512)
+  *
+  * Detect and correct a 1 bit error for eccsize byte block
+  */
+@@ -505,7 +505,7 @@ int __nand_correct_data(unsigned char *buf,
+ 	}
+ 	/* count nr of bits; use table lookup, faster than calculating it */
+ 	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) == 1)
+-		return 1;	/* error in ecc data; no action needed */
++		return 1;	/* error in ECC data; no action needed */
+ 
+ 	printk(KERN_ERR "uncorrectable error : ");
+ 	return -1;
+diff --git a/drivers/mtd/nand/rtc_from4.c b/drivers/mtd/nand/rtc_from4.c
+index a07da2a..33fe922 100644
+--- a/drivers/mtd/nand/rtc_from4.c
++++ b/drivers/mtd/nand/rtc_from4.c
+@@ -351,7 +351,7 @@ static int rtc_from4_correct_data(struct mtd_info *mtd, const u_char *buf, u_cha
+ 		return 0;
+ 	}
+ 
+-	/* Read the syndrom pattern from the FPGA and correct the bitorder */
++	/* Read the syndrome pattern from the FPGA and correct the bitorder */
+ 	rs_ecc = (volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECC);
+ 	for (i = 0; i < 8; i++) {
+ 		ecc[i] = bitrev8(*rs_ecc);
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index ac9e959..5ac37d6 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1015,7 +1015,7 @@ static void onenand_release_device(struct mtd_info *mtd)
+ }
+ 
+ /**
+- * onenand_transfer_auto_oob - [Internal] oob auto-placement transfer
++ * onenand_transfer_auto_oob - [INTERN] oob auto-placement transfer
+  * @param mtd		MTD device structure
+  * @param buf		destination address
+  * @param column	oob offset to read from
+@@ -1821,7 +1821,7 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ }
+ 
+ /**
+- * onenand_fill_auto_oob - [Internal] oob auto-placement transfer
++ * onenand_fill_auto_oob - [INTERN] oob auto-placement transfer
+  * @param mtd		MTD device structure
+  * @param oob_buf	oob buffer
+  * @param buf		source address
+@@ -2055,7 +2055,7 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 
+ 
+ /**
+- * onenand_write_oob_nolock - [Internal] OneNAND write out-of-band
++ * onenand_write_oob_nolock - [INTERN] OneNAND write out-of-band
+  * @param mtd		MTD device structure
+  * @param to		offset to write to
+  * @param len		number of bytes to write
+@@ -2281,7 +2281,7 @@ static int onenand_multiblock_erase_verify(struct mtd_info *mtd,
+ }
+ 
+ /**
+- * onenand_multiblock_erase - [Internal] erase block(s) using multiblock erase
++ * onenand_multiblock_erase - [INTERN] erase block(s) using multiblock erase
+  * @param mtd		MTD device structure
+  * @param instr		erase instruction
+  * @param region	erase region
+@@ -2397,7 +2397,7 @@ static int onenand_multiblock_erase(struct mtd_info *mtd,
+ 
+ 
+ /**
+- * onenand_block_by_block_erase - [Internal] erase block(s) using regular erase
++ * onenand_block_by_block_erase - [INTERN] erase block(s) using regular erase
+  * @param mtd		MTD device structure
+  * @param instr		erase instruction
+  * @param region	erase region
+@@ -2922,7 +2922,7 @@ static int onenand_otp_command(struct mtd_info *mtd, int cmd, loff_t addr,
+ }
+ 
+ /**
+- * onenand_otp_write_oob_nolock - [Internal] OneNAND write out-of-band, specific to OTP
++ * onenand_otp_write_oob_nolock - [INTERN] OneNAND write out-of-band, specific to OTP
+  * @param mtd		MTD device structure
+  * @param to		offset to write to
+  * @param len		number of bytes to write
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index ed3d6cd..a8befde 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -138,7 +138,7 @@ static int sm_get_lba(uint8_t *lba)
+ 	if ((lba[0] & 0xF8) != 0x10)
+ 		return -2;
+ 
+-	/* check parity - endianess doesn't matter */
++	/* check parity - endianness doesn't matter */
+ 	if (hweight16(*(uint16_t *)lba) & 1)
+ 		return -2;
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index b2b454b..db8a2b0 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -172,7 +172,7 @@ struct mtd_info {
+ 	const char *name;
+ 	int index;
+ 
+-	/* ecc layout structure pointer - read only ! */
++	/* ECC layout structure pointer - read only! */
+ 	struct nand_ecclayout *ecclayout;
+ 
+ 	/* Data for variable erase regions. If numeraseregions is zero,
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index da6e252..38a2fb6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -42,10 +42,10 @@ extern void nand_release(struct mtd_info *mtd);
+ /* Internal helper for board drivers which need to override command function */
+ extern void nand_wait_ready(struct mtd_info *mtd);
+ 
+-/* locks all blockes present in the device */
++/* locks all blocks present in the device */
+ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 
+-/* unlocks specified locked blockes */
++/* unlocks specified locked blocks */
+ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 
+ /* The maximum number of NAND chips in an array */
+@@ -150,7 +150,7 @@ typedef enum {
+ #define NAND_ECC_READ		0
+ /* Reset Hardware ECC for write */
+ #define NAND_ECC_WRITE		1
+-/* Enable Hardware ECC before syndrom is read back from flash */
++/* Enable Hardware ECC before syndrome is read back from flash */
+ #define NAND_ECC_READSYN	2
+ 
+ /* Bit mask for flags passed to do_nand_read_ecc */
+@@ -163,7 +163,7 @@ typedef enum {
+  */
+ /* Chip can not auto increment pages */
+ #define NAND_NO_AUTOINCR	0x00000001
+-/* Buswitdh is 16 bit */
++/* Buswidth is 16 bit */
+ #define NAND_BUSWIDTH_16	0x00000002
+ /* Device supports partial programming without padding */
+ #define NAND_NO_PADDING		0x00000004
+@@ -319,26 +319,26 @@ struct nand_hw_control {
+ };
+ 
+ /**
+- * struct nand_ecc_ctrl - Control structure for ecc
+- * @mode:	ecc mode
+- * @steps:	number of ecc steps per page
+- * @size:	data bytes per ecc step
+- * @bytes:	ecc bytes per step
+- * @total:	total number of ecc bytes per page
+- * @prepad:	padding information for syndrome based ecc generators
+- * @postpad:	padding information for syndrome based ecc generators
++ * struct nand_ecc_ctrl - Control structure for ECC
++ * @mode:	ECC mode
++ * @steps:	number of ECC steps per page
++ * @size:	data bytes per ECC step
++ * @bytes:	ECC bytes per step
++ * @total:	total number of ECC bytes per page
++ * @prepad:	padding information for syndrome based ECC generators
++ * @postpad:	padding information for syndrome based ECC generators
+  * @layout:	ECC layout control struct pointer
+- * @priv:	pointer to private ecc control data
+- * @hwctl:	function to control hardware ecc generator. Must only
++ * @priv:	pointer to private ECC control data
++ * @hwctl:	function to control hardware ECC generator. Must only
+  *		be provided if an hardware ECC is available
+- * @calculate:	function for ecc calculation or readback from ecc hardware
+- * @correct:	function for ecc correction, matching to ecc generator (sw/hw)
++ * @calculate:	function for ECC calculation or readback from ECC hardware
++ * @correct:	function for ECC correction, matching to ECC generator (sw/hw)
+  * @read_page_raw:	function to read a raw page without ECC
+  * @write_page_raw:	function to write a raw page without ECC
+- * @read_page:	function to read a page according to the ecc generator
++ * @read_page:	function to read a page according to the ECC generator
+  *		requirements.
+  * @read_subpage:	function to read parts of the page covered by ECC.
+- * @write_page:	function to write a page according to the ecc generator
++ * @write_page:	function to write a page according to the ECC generator
+  *		requirements.
+  * @read_oob:	function to read chip OOB data
+  * @write_oob:	function to write chip OOB data
+@@ -376,8 +376,8 @@ struct nand_ecc_ctrl {
+ 
+ /**
+  * struct nand_buffers - buffer structure for read/write
+- * @ecccalc:	buffer for calculated ecc
+- * @ecccode:	buffer for ecc read from flash
++ * @ecccalc:	buffer for calculated ECC
++ * @ecccode:	buffer for ECC read from flash
+  * @databuf:	buffer for data - dynamically sized
+  *
+  * Do not change the order of buffers. databuf and oobrbuf must be in
+@@ -410,7 +410,7 @@ struct nand_buffers {
+  *			mtd->oobsize, mtd->writesize and so on.
+  *			@id_data contains the 8 bytes values of NAND_CMD_READID.
+  *			Return with the bus width.
+- * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accesing
++ * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accessing
+  *			device ready/busy line. If set to NULL no access to
+  *			ready/busy is available and the ready/busy information
+  *			is read from the chip status register.
+@@ -418,7 +418,7 @@ struct nand_buffers {
+  *			commands to the chip.
+  * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
+  *			ready.
+- * @ecc:		[BOARDSPECIFIC] ecc control ctructure
++ * @ecc:		[BOARDSPECIFIC] ECC control structure
+  * @buffers:		buffer structure for read/write
+  * @hwcontrol:		platform-specific hardware control structure
+  * @ops:		oob operation operands
+@@ -455,7 +455,7 @@ struct nand_buffers {
+  *			non 0 if ONFI supported.
+  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  *			supported, 0 otherwise.
+- * @ecclayout:		[REPLACEABLE] the default ecc placement scheme
++ * @ecclayout:		[REPLACEABLE] the default ECC placement scheme
+  * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+  *			lookup.
+@@ -463,7 +463,7 @@ struct nand_buffers {
+  * @badblock_pattern:	[REPLACEABLE] bad block scan pattern used for initial
+  *			bad block scan.
+  * @controller:		[REPLACEABLE] a pointer to a hardware controller
+- *			structure which is shared among multiple independend
++ *			structure which is shared among multiple independent
+  *			devices.
+  * @priv:		[OPTIONAL] pointer to private chip date
+  * @errstat:		[OPTIONAL] hardware specific function to perform
+@@ -603,7 +603,7 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
+  * @partitions:		mtd partition list
+  * @chip_delay:		R/B delay value in us
+  * @options:		Option flags, e.g. 16bit buswidth
+- * @ecclayout:		ecc layout info structure
++ * @ecclayout:		ECC layout info structure
+  * @part_probe_types:	NULL-terminated array of probe types
+  * @set_parts:		platform specific function to set partitions
+  * @priv:		hardware controller specific settings
 -- 
-1.7.3.4
+1.7.0.4
