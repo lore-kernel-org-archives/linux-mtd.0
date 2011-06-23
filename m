@@ -1,18 +1,32 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZtbL-0008AN-CU
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 23:46:24 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH] mtd: nand: handle ECC errors in OOB
-Date: Thu, 23 Jun 2011 16:45:24 -0700
-Message-ID: <1308872724-6196-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZtd6-0008Dq-DW
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 23:48:12 +0000
+Received: by wyf23 with SMTP id 23so2031851wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Jun 2011 16:48:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <BANLkTimM1YgPru1ksPNNxYNpVYHRbrCEDQ@mail.gmail.com>
+References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
+	<1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
+	<1308841377.23597.10.camel@sauron>
+	<1308841503.23597.12.camel@sauron>
+	<BANLkTimTu1ORjEvtJ7XSCCqwzDbid957Aw@mail.gmail.com>
+	<BANLkTi=cUqQcQzeinQaqh_VBFtfnfkVinw@mail.gmail.com>
+	<BANLkTimJN8yOXCqsNscax6bmkTWTzvHphA@mail.gmail.com>
+	<BANLkTinXV-5GWzxn5EoGAfSe2fTWEGjQZw@mail.gmail.com>
+	<BANLkTi=ZW99673rk-03VDHWb7aoUf1LFtQ@mail.gmail.com>
+	<BANLkTin5jFjjB=o1nhDD=_pB9MQ-cLxm5Q@mail.gmail.com>
+	<BANLkTimM1YgPru1ksPNNxYNpVYHRbrCEDQ@mail.gmail.com>
+Date: Thu, 23 Jun 2011 16:48:04 -0700
+Message-ID: <BANLkTikYsCtgb80mPzZZ95QuOPzd7H0cgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] prepare new nanddump options, defaults
+From: Brian Norris <computersforpeace@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +36,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While the standard NAND OOB functions do not do ECC on the spare area,
-it is possible for a driver to supply its own OOB ECC functions (e.g., HW
-ECC). nand_do_read_oob should act like nand_do_read_ops in checking the
-ECC stats and returning -EBADMSG or -EUCLEAN on uncorrectable errors or
-correctable bitflips, respectively. These error codes could be used in
-flash-based BBT code or in YAFFS, for example.
+On Thu, Jun 23, 2011 at 4:45 PM, Mike Frysinger <vapier.adi@gmail.com> wrot=
+e:
+> On Thu, Jun 23, 2011 at 19:40, Brian Norris wrote:
+>> On Thu, Jun 23, 2011 at 4:36 PM, Mike Frysinger wrote:
+>>> did someone forget to tag/push v1.4.[56] ? =A0i dont see it in the git =
+repo.
+>>
+>> No, that was my step 2 :) Let me know if the steps are unreasonable.
+>
+> i misread that. =A0but where's 1.4.5 ? :)
 
-Doing this, however, messes with the behavior of mtd_do_readoob. Now,
-mtd_do_readoob should check whether we had -EUCLEAN or -EBADMSG errors
-and discard those as "non-fatal" so that the ioctls can still succeed
-with (possibly uncorrected) data.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/mtdchar.c        |   15 +++++++++++++++
- drivers/mtd/nand/nand_base.c |    9 ++++++++-
- 2 files changed, 23 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 3f92731..8a45525 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -472,6 +472,21 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
- 		ret = -EFAULT;
- 
- 	kfree(ops.oobbuf);
-+
-+	/*
-+	 * NAND returns -EBADMSG on ECC errors, but it returns the OOB
-+	 * data. For our userspace tools it is important to dump areas
-+	 * with ECC errors!
-+	 * For kernel internal usage it also might return -EUCLEAN
-+	 * to signal the caller that a bitflip has occured and has
-+	 * been corrected by the ECC algorithm.
-+	 *
-+	 * Note: most NAND ECC algorithms do not calculate ECC
-+	 * for the OOB area.
-+	 */
-+	if (ret == -EUCLEAN || ret == -EBADMSG)
-+		return 0;
-+
- 	return ret;
- }
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a46e9bb..f0ba2da 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1761,6 +1761,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- {
- 	int page, realpage, chipnr, sndcmd = 1;
- 	struct nand_chip *chip = mtd->priv;
-+	struct mtd_ecc_stats stats;
- 	int blkcheck = (1 << (chip->phys_erase_shift - chip->page_shift)) - 1;
- 	int readlen = ops->ooblen;
- 	int len;
-@@ -1769,6 +1770,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	DEBUG(MTD_DEBUG_LEVEL3, "%s: from = 0x%08Lx, len = %i\n",
- 			__func__, (unsigned long long)from, readlen);
- 
-+	stats = mtd->ecc_stats;
-+
- 	if (ops->mode == MTD_OOB_AUTO)
- 		len = chip->ecc.layout->oobavail;
- 	else
-@@ -1838,7 +1841,11 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	}
- 
- 	ops->oobretlen = ops->ooblen;
--	return 0;
-+
-+	if (mtd->ecc_stats.failed - stats.failed)
-+		return -EBADMSG;
-+
-+	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
- }
- 
- /**
--- 
-1.7.0.4
+I guess I miswrote that. Step 2 should be 1.4.5 and Step 7 should be
+1.4.6. Silly me.
