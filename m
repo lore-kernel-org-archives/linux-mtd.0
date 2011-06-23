@@ -1,22 +1,23 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZlFE-00067W-4W
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 14:51:01 +0000
-Received: by pvg20 with SMTP id 20so1288378pvg.36
+	id 1QZlQ5-0006FU-Tw
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 15:02:14 +0000
+Received: by pzk28 with SMTP id 28so1324321pzk.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 07:50:52 -0700 (PDT)
-Subject: Re: [PATCHv2] UBI: clarify the volume notification types' doc
+	Thu, 23 Jun 2011 08:02:08 -0700 (PDT)
+Subject: Re: [PATCH v3 0/7] prepare new nanddump options, defaults
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Wagner <david.wagner@free-electrons.com>
-Date: Thu, 23 Jun 2011 17:51:36 +0300
-In-Reply-To: <4DFF687B.6070806@free-electrons.com>
-References: <4DFF129E.6070808@free-electrons.com>
-	<4DFF687B.6070806@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 23 Jun 2011 18:02:51 +0300
+In-Reply-To: <1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
+References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
+	<1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1308840701.23597.8.camel@sauron>
+Message-ID: <1308841377.23597.10.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,39 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-20 at 17:34 +0200, David Wagner wrote:
-> I realized the new descriptions of ADDED and REMOVED could also be
-> misleading: they can also be triggered after using a userland util
-> (ubi{mk,rm}vol).
+On Wed, 2011-06-22 at 09:49 -0700, Brian Norris wrote:
+> Hello,
 > 
-> (the indentation looks odd but is fine once the patch has been applied)
+> I think this should be the last version necessary for this particular patch
+> series...
 > 
-> Signed-off-by David Wagner <david.wagner@free-electrons.com>
-> ---
->  include/linux/mtd/ubi.h |   12 +++++++-----
->  1 files changed, 7 insertions(+), 5 deletions(-)
+> This series adds, changes, and deprecates several nanddump options, helping make
+> nanddump a closer inverse to nandwrite. This is mostly a preparation for the
+> next release, when several defaults might change. A short list of the planned
+> changes:
 > 
-> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-> index b31bd9e..b79e741 100644
-> --- a/include/linux/mtd/ubi.h
-> +++ b/include/linux/mtd/ubi.h
-> @@ -134,11 +134,13 @@ struct ubi_device_info {
+>  * unify bad block methods under `--bb=METHOD', deprecating old ones
+>  * kill --omitbad in favor of --bb=skipbad
+>  * skip bad blocks by default (i.e., --bb=skipbad)
+>  * do not dump OOB by default (--omitoob)
+>  * add `--oob' to force dumping OOB
 > 
->  /*
->   * enum - volume notification types.
-> - * @UBI_VOLUME_ADDED: volume has been added
-> - * @UBI_VOLUME_REMOVED: start volume volume
-> - * @UBI_VOLUME_RESIZED: volume size has been re-sized
-> - * @UBI_VOLUME_RENAMED: volume name has been re-named
-> - * @UBI_VOLUME_UPDATED: volume name has been updated
-> + * @UBI_VOLUME_ADDED: a volume has been added (containing device attached
-> + *		      or volume created from a userland util)
-> + * @UBI_VOLUME_REMOVED: a volume has been removed (containing device
-> detached
+> Please let me know when these are accepted and the 1.4.5 release is made, so I
+> can send a proper patchset to clean this all up as planned for the 1.4.6
+> release.
 
-The patch is corrupted because of line-wrapping, but I fixed it and
-amended the comments a bit (did not like the "userland util" phrase),
-and pushed to ubi-2.6.git tree, thanks.
+Pushed, thank you!
+
+> BTW, is each utility supposed to have its own version? (e.g., nanddump has
+> version 1.30?) Should these versions be kept in any kind of sync with the
+> mtd-utils revision tags? And does Artem take care of this stuff?
+
+Actually no, I do not take care of this and this is messy. Probably it
+would be easier if all utils had the same version as the release...
 
 -- 
 Best Regards,
