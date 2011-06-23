@@ -1,21 +1,21 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZThY-00070y-5s
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2011 20:07:04 +0000
-Date: Wed, 22 Jun 2011 22:06:21 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Peter Barada <peter.barada@gmail.com>
-Subject: Re: Preventing JFFS2 partial page writes?
-Message-ID: <20110622200621.GA26973@parrot.com>
-References: <4DF789FC.1030305@gmail.com> <1308722655.18119.40.camel@sauron>
-	<4E020A36.6070708@gmail.com> <20110622170747.GC25928@parrot.com>
-	<4E023FCD.9010800@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4E023FCD.9010800@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <BANLkTim54jEKmxAQFNMGCyWwAu+FhVu0KA@mail.gmail.com>
+References: <1308712645-5986-1-git-send-email-leiwen@marvell.com>
+	<BANLkTinQB-hXMRy5+BXKQSrPq=sVrorCVA@mail.gmail.com>
+	<BANLkTimk0+2LUeo5sq8w4ohRq-qCe_2t_Q@mail.gmail.com>
+	<BANLkTim54jEKmxAQFNMGCyWwAu+FhVu0KA@mail.gmail.com>
+Date: Thu, 23 Jun 2011 14:22:11 +0800
+Message-ID: <BANLkTinsw59F-X2LFrdu3Xtau5xY-=CSnA@mail.gmail.com>
+Subject: Re: [PATCH] MTD: pxa3xx_nand: enable multiple chip select support
+From: Lei Wen <adrian.wenl@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 22, 2011 at 08:17:33PM +0100, Peter Barada wrote:
-> On 06/22/2011 01:07 PM, Ivan Djelic wrote:
-> >
-> > On one hand it sure would be nice (and a bit complicated) to accurately
-> > describe OOB write constraints, for easier JFFS2/YAFFS2 integration.
-> > On the other hand, I am not sure such a complication is really worth the
-> > trouble, given that on next nand generation:
-> > - OOB areas will not be usable anymore for metadata storage (8-bit ecc leaves
-> >    only 6 spare bytes out of 64)
-> > - partial writes will probably be limited to 1 (like in MLC), meaning that
-> >    JFFS2 clean marking step will be forbidden anyway
-> > Furthermore, userspace will probably need to handle case 3) anyway (no
-> > protected oob bytes) to stay portable...
-> >
-> SLC parts (including this one) look to be around for a while, as well as 
-> the products they are already in.  So I think the issue of JFFS2's 
-> cleanmarker in the context of this Micron NAND needs to be solved, 
-> preferably in a general way so the next oddball NAND chip that comes 
-> along doesn't cause MTD, mtd-utils, JFFS2 (and other NAND FS) fits.
-> 
-> Does UBIFS do any of the "partial writes" (i.e. write OOB/data area 
-> multiple times) as JFFS2 does?
- 
-No it doesn't. UBIFS relies on UBI, which itself does not rely on oob for
-storing metadata. BTW, have you considered using UBIFS instead of JFFS2/YAFFS2?
+Hi Daniel,
 
---
-Ivan
+On Wed, Jun 22, 2011 at 9:06 PM, Daniel Mack <zonque@gmail.com> wrote:
+> Hi Lei,
+>
+> On Wed, Jun 22, 2011 at 2:21 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
+>> Hi Daniel,
+>>
+>> On Wed, Jun 22, 2011 at 7:39 PM, Daniel Mack <zonque@gmail.com> wrote:
+>>> On Wed, Jun 22, 2011 at 5:17 AM, Lei Wen <leiwen@marvell.com> wrote:
+>>>> Current pxa3xx_nand controller has two chip select which
+>>>> both be workable. This patch enable this feature.
+>>>>
+>>>> Update platform driver to support this feature.
+>>>>
+>>>> Another notice should be taken that:
+>>>> When you want to use this feature, you should not enable the
+>>>> keep configuration feature, for two chip select could be
+>>>> attached with different nand chip. The different page size
+>>>> and timing requirement make the keep configuration impossible.
+>>>>
+>>>> Signed-off-by: Lei Wen <leiwen@marvell.com>
+>>>> ---
+>>>> =A0arch/arm/mach-mmp/aspenite.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =
+=A05 +-
+>>>> =A0arch/arm/mach-pxa/cm-x300.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =
+=A0 =A05 +-
+>>>> =A0arch/arm/mach-pxa/colibri-pxa3xx.c =A0 =A0 =A0 =A0 =A0 | =A0 =A05 +=
+-
+>>>> =A0arch/arm/mach-pxa/littleton.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
+=A05 +-
+>>>> =A0arch/arm/mach-pxa/mxm8x10.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =
+=A0 =A09 +-
+>>>> =A0arch/arm/mach-pxa/raumfeld.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =
+=A05 +-
+>>>> =A0arch/arm/mach-pxa/zylonite.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =
+=A05 +-
+>>>> =A0arch/arm/plat-pxa/include/plat/pxa3xx_nand.h | =A0 =A08 +-
+>>>> =A0drivers/mtd/nand/pxa3xx_nand.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0735=
+ +++++++++++++++-----------
+>>>> =A09 files changed, 444 insertions(+), 338 deletions(-)
+>>>
+>>> This patch doesn't apply for me on top of Linus' master branch. Which
+>>> tree are you based on currently?
+>>
+>> Actually it is based on Linux 3.0-rc2 and add two patches pending to
+>> l2-mtd-2.6.git already:
+>>
+>> mtd: pxa3xx_nand: fix nand detection issue
+>> mtd: pxa3xx_nand: Fix blank page ECC mismatch
+>
+> I have a similar setup, also with those two patches on top, but
+> applying your patch gives me:
+>
+> Applying: MTD: pxa3xx_nand: enable multiple chip select support
+> error: patch failed: drivers/mtd/nand/pxa3xx_nand.c:477
+> error: drivers/mtd/nand/pxa3xx_nand.c: patch does not apply
+> Patch failed at 0001 MTD: pxa3xx_nand: enable multiple chip select suppor=
+t
+> When you have resolved this problem run "git am --resolved".
+> If you would prefer to skip this patch, instead run "git am --skip".
+> To restore the original branch and stop patching run "git am --abort".
+>
+> Could you push your branch somewhere?
+>
+>>>> =A0#ifdef CONFIG_PM
+>>>> @@ -1183,8 +1278,8 @@ static int pxa3xx_nand_resume(struct platform_de=
+vice *pdev)
+>>>> =A0 =A0 =A0 =A0struct pxa3xx_nand_info *info =3D platform_get_drvdata(=
+pdev);
+>>>> =A0 =A0 =A0 =A0struct mtd_info *mtd =3D info->mtd;
+>>>>
+>>>> - =A0 =A0 =A0 nand_writel(info, NDTR0CS0, info->ndtr0cs0);
+>>>> - =A0 =A0 =A0 nand_writel(info, NDTR1CS0, info->ndtr1cs0);
+>>>> + =A0 =A0 =A0 nand_writel(nand, NDTR0CS0, info->ndtr0cs0);
+>>>> + =A0 =A0 =A0 nand_writel(nand, NDTR1CS0, info->ndtr1cs0);
+>>>> =A0 =A0 =A0 =A0clk_enable(info->clk);
+>>>
+>>> This won't compile.
+>>
+>> Could you post your build log?
+>
+> I didn't compile it because I couldn't, but "nand" is certainly
+> undefined in this context now. Did you compile and test this code with
+> "CONFIG_PM=3Dy"?
+
+You're right, I haven't take open PM config...
+I would rebase this patch over l2-mtd-2.6.git for next post.
+
+Thanks,
+Lei
