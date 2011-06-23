@@ -1,21 +1,20 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZkvB-0005v9-9h
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 14:30:18 +0000
-Received: by pzk1 with SMTP id 1so1721153pzk.16
+	id 1QZlFE-00067W-4W
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 14:51:01 +0000
+Received: by pvg20 with SMTP id 20so1288378pvg.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 07:30:13 -0700 (PDT)
-Subject: Re: "warning!: only 995 of 1984 eraseblocks have valid erase counter"
+	Thu, 23 Jun 2011 07:50:52 -0700 (PDT)
+Subject: Re: [PATCHv2] UBI: clarify the volume notification types' doc
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gilles <gilles.ganault@free.fr>
-Date: Thu, 23 Jun 2011 17:30:57 +0300
-In-Reply-To: <2016071dvg4slfufk95id9ov68n2kvbp4j@4ax.com>
-References: <o4krv69m77vomji84cs3flljf6obpgfgcs@4ax.com>
-	<1308820444.19443.0.camel@sauron>
-	<2016071dvg4slfufk95id9ov68n2kvbp4j@4ax.com>
+To: David Wagner <david.wagner@free-electrons.com>
+Date: Thu, 23 Jun 2011 17:51:36 +0300
+In-Reply-To: <4DFF687B.6070806@free-electrons.com>
+References: <4DFF129E.6070808@free-electrons.com>
+	<4DFF687B.6070806@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1308839462.23597.5.camel@sauron>
+Message-ID: <1308840701.23597.8.camel@sauron>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -28,33 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-23 at 11:19 +0200, Gilles wrote:
-> On Thu, 23 Jun 2011 12:14:01 +0300, Artem Bityutskiy
-> <dedekind1@gmail.com> wrote:
-> >I think it is self-explanatory. Please, ask specific question. WRT to
-> >consequences - it should not be critical.
+On Mon, 2011-06-20 at 17:34 +0200, David Wagner wrote:
+> I realized the new descriptions of ADDED and REMOVED could also be
+> misleading: they can also be triggered after using a userland util
+> (ubi{mk,rm}vol).
 > 
-> I went ahead, answered yes, and it seems to work OK, but I was curious
-> to understand what the message really means.
+> (the indentation looks odd but is fine once the patch has been applied)
+> 
+> Signed-off-by David Wagner <david.wagner@free-electrons.com>
+> ---
+>  include/linux/mtd/ubi.h |   12 +++++++-----
+>  1 files changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+> index b31bd9e..b79e741 100644
+> --- a/include/linux/mtd/ubi.h
+> +++ b/include/linux/mtd/ubi.h
+> @@ -134,11 +134,13 @@ struct ubi_device_info {
+> 
+>  /*
+>   * enum - volume notification types.
+> - * @UBI_VOLUME_ADDED: volume has been added
+> - * @UBI_VOLUME_REMOVED: start volume volume
+> - * @UBI_VOLUME_RESIZED: volume size has been re-sized
+> - * @UBI_VOLUME_RENAMED: volume name has been re-named
+> - * @UBI_VOLUME_UPDATED: volume name has been updated
+> + * @UBI_VOLUME_ADDED: a volume has been added (containing device attached
+> + *		      or volume created from a userland util)
+> + * @UBI_VOLUME_REMOVED: a volume has been removed (containing device
+> detached
 
-What exactly is unclear in the messages? :-)
-
-> Before reflashing memory with an image, does ubiformat always warn the
-> user that the empty blocks after the image will have their erase
-> counter set to the average computed from the used blocks, regardless
-> of their actual usage so far?
-
-Yes. If you properly use tools - you should never see the warnings. Most
-probably you flash images using UBI-unaware tools, or you erase the
-flash using UBI-unaware tools like flash_erase or do it in u-boot.
-
-But I agree that ubiformat could probably be smarter and avoid printing
-this warning if half of the flash is UBI-formatted and the other half is
-empty.
-
-Current logic is - if not everything is UBI-formatted - warn. But it
-could be - if not everything is UBI-formatted and the eraseblocks are
-not empty - warn. Feel free to send a patch :-)
+The patch is corrupted because of line-wrapping, but I fixed it and
+amended the comments a bit (did not like the "userland util" phrase),
+and pushed to ubi-2.6.git tree, thanks.
 
 -- 
 Best Regards,
