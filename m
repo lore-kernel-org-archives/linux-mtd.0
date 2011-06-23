@@ -1,17 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZifW-0004Qx-68
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:05:59 +0000
-Received: by wwf22 with SMTP id 22so1295670wwf.18
+	id 1QZifW-0004Qy-R1
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:06:00 +0000
+Received: by wyf23 with SMTP id 23so1542162wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 05:05:50 -0700 (PDT)
+	Thu, 23 Jun 2011 05:05:53 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/5] mtd/maps: drop edb7312 support
-Date: Thu, 23 Jun 2011 16:05:27 +0400
-Message-Id: <1308830731-5698-2-git-send-email-dbaryshkov@gmail.com>
+Subject: =?UTF-8?q?=5BPATCH=202/5=5D=20mtd/nand=3A=20drop=20edb7312=20support?=
+Date: Thu, 23 Jun 2011 16:05:28 +0400
+Message-Id: <1308830731-5698-3-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308830731-5698-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308830731-5698-1-git-send-email-dbaryshkov@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,189 +25,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-EDB7312 isn't supported by mainline kernel, this driver wasn't working
-before recent fixes, the same functionality can be achieved via physmap,
-so drop it now. If the board support will ever be submitted to mainline,
-one either can revert this commit, or use physmap mtd map driver.
+EDB7312 isn't supported by mainline kernel, so drop it now.
+If the board support will ever be submitted to mainline,
+one can revert this commit.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/maps/Kconfig   |    7 --
- drivers/mtd/maps/Makefile  |    1 -
- drivers/mtd/maps/edb7312.c |  135 --------------------------------------------
- 3 files changed, 0 insertions(+), 143 deletions(-)
- delete mode 100644 drivers/mtd/maps/edb7312.c
+ drivers/mtd/nand/Kconfig   |    7 --
+ drivers/mtd/nand/Makefile  |    1 -
+ drivers/mtd/nand/edb7312.c |  188 --------------------------------------------
+ 3 files changed, 0 insertions(+), 196 deletions(-)
+ delete mode 100644 drivers/mtd/nand/edb7312.c
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 46eca3b..891a9e6 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -392,13 +392,6 @@ config MTD_AUTCPU12
- 	  This enables access to the NV-RAM on autronix autcpu12 board.
- 	  If you have such a board, say 'Y'.
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 4c34252..17235d0 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -83,13 +83,6 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+           scratch register here to enable this feature. On Intel Moorestown
+           boards, the scratch register is at 0xFF108018.
  
--config MTD_EDB7312
--	tristate "CFI Flash device mapped on EDB7312"
--	depends on ARCH_EDB7312 && MTD_CFI
+-config MTD_NAND_EDB7312
+-	tristate "Support for Cirrus Logic EBD7312 evaluation board"
+-	depends on ARCH_EDB7312
 -	help
--	  This enables access to the CFI Flash on the Cogent EDB7312 board.
--	  If you have such a board, say 'Y' here.
+-	  This enables the driver for the Cirrus Logic EBD7312 evaluation
+-	  board to access the onboard NAND Flash.
 -
- config MTD_IMPA7
- 	tristate "JEDEC Flash device mapped on impA7"
- 	depends on ARM && MTD_JEDECPROBE
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index d6379fe..45dcb8b 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -39,7 +39,6 @@ obj-$(CONFIG_MTD_DBOX2)		+= dbox2-flash.o
- obj-$(CONFIG_MTD_SOLUTIONENGINE)+= solutionengine.o
- obj-$(CONFIG_MTD_PCI)		+= pci.o
- obj-$(CONFIG_MTD_AUTCPU12)	+= autcpu12-nvram.o
--obj-$(CONFIG_MTD_EDB7312)	+= edb7312.o
- obj-$(CONFIG_MTD_IMPA7)		+= impa7.o
- obj-$(CONFIG_MTD_FORTUNET)	+= fortunet.o
- obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
-diff --git a/drivers/mtd/maps/edb7312.c b/drivers/mtd/maps/edb7312.c
+ config MTD_NAND_H1900
+ 	tristate "iPAQ H1900 flash"
+ 	depends on ARCH_PXA
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 5745d83..c9334e9 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -13,7 +13,6 @@ obj-$(CONFIG_MTD_NAND_SPIA)		+= spia.o
+ obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
+ obj-$(CONFIG_MTD_NAND_AUTCPU12)		+= autcpu12.o
+ obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
+-obj-$(CONFIG_MTD_NAND_EDB7312)		+= edb7312.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+ obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
+ obj-$(CONFIG_MTD_NAND_PPCHAMELEONEVB)	+= ppchameleonevb.o
+diff --git a/drivers/mtd/nand/edb7312.c b/drivers/mtd/nand/edb7312.c
 deleted file mode 100644
-index b07acd6..0000000
---- a/drivers/mtd/maps/edb7312.c
+index 0b1bb91..0000000
+--- a/drivers/mtd/nand/edb7312.c
 +++ /dev/null
-@@ -1,135 +0,0 @@
+@@ -1,188 +0,0 @@
 -/*
-- * Handle mapping of the NOR flash on Cogent EDB7312 boards
+- *  drivers/mtd/nand/edb7312.c
 - *
-- * Copyright 2002 SYSGO Real-Time Solutions GmbH
+- *  Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
+- *
+- *  Derived from drivers/mtd/nand/autcpu12.c
+- *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
 - *
 - * This program is free software; you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License version 2 as
 - * published by the Free Software Foundation.
+- *
+- *  Overview:
+- *   This is a device driver for the NAND flash device found on the
+- *   CLEP7312 board which utilizes the Toshiba TC58V64AFT part. This is
+- *   a 64Mibit (8MiB x 8 bits) NAND flash device.
 - */
 -
+-#include <linux/slab.h>
 -#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
 -#include <linux/init.h>
--#include <asm/io.h>
 -#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
+-#include <linux/mtd/nand.h>
 -#include <linux/mtd/partitions.h>
--
--#define WINDOW_ADDR 0x00000000      /* physical properties of flash */
--#define WINDOW_SIZE 0x01000000
--#define BUSWIDTH    2
--#define FLASH_BLOCKSIZE_MAIN	0x20000
--#define FLASH_NUMBLOCKS_MAIN	128
--/* can be "cfi_probe", "jedec_probe", "map_rom", NULL }; */
--#define PROBETYPES { "cfi_probe", NULL }
--
--#define MSG_PREFIX "EDB7312-NOR:"   /* prefix for our printk()'s */
--#define MTDID      "edb7312-nor"    /* for mtdparts= partitioning */
--
--static struct mtd_info *mymtd;
--
--struct map_info edb7312nor_map = {
--	.name = "NOR flash on EDB7312",
--	.size = WINDOW_SIZE,
--	.bankwidth = BUSWIDTH,
--	.phys = WINDOW_ADDR,
--};
+-#include <asm/io.h>
+-#include <mach/hardware.h>	/* for CLPS7111_VIRT_BASE */
+-#include <asm/sizes.h>
+-#include <asm/hardware/clps7111.h>
 -
 -/*
-- * MTD partitioning stuff
+- * MTD structure for EDB7312 board
 - */
--static struct mtd_partition static_partitions[3] =
--{
--	{
--		.name = "ARMboot",
--		.size = 0x40000,
--		.offset = 0
--	},
--	{
--		.name = "Kernel",
--		.size = 0x200000,
--		.offset = 0x40000
--	},
--	{
--		.name = "RootFS",
--		.size = 0xDC0000,
--		.offset = 0x240000
--	},
+-static struct mtd_info *ep7312_mtd = NULL;
+-
+-/*
+- * Values specific to the EDB7312 board (used with EP7312 processor)
+- */
+-#define EP7312_FIO_PBASE 0x10000000	/* Phys address of flash */
+-#define EP7312_PXDR	0x0001	/*
+-				 * IO offset to Port B data register
+-				 * where the CLE, ALE and NCE pins
+-				 * are wired to.
+-				 */
+-#define EP7312_PXDDR	0x0041	/*
+-				 * IO offset to Port B data direction
+-				 * register so we can control the IO
+-				 * lines.
+-				 */
+-
+-/*
+- * Module stuff
+- */
+-
+-static unsigned long ep7312_fio_pbase = EP7312_FIO_PBASE;
+-static void __iomem *ep7312_pxdr = (void __iomem *)EP7312_PXDR;
+-static void __iomem *ep7312_pxddr = (void __iomem *)EP7312_PXDDR;
+-
+-/*
+- * Define static partitions for flash device
+- */
+-static struct mtd_partition partition_info[] = {
+-	{.name = "EP7312 Nand Flash",
+-	 .offset = 0,
+-	 .size = 8 * 1024 * 1024}
 -};
 -
--static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-#define NUM_PARTITIONS 1
 -
--static int                   mtd_parts_nb = 0;
--static struct mtd_partition *mtd_parts    = 0;
--
--static int __init init_edb7312nor(void)
+-/*
+- *	hardware specific access to control-lines
+- *
+- *	NAND_NCE: bit 0 -> bit 6 (bit 7 = 1)
+- *	NAND_CLE: bit 1 -> bit 4
+- *	NAND_ALE: bit 2 -> bit 5
+- */
+-static void ep7312_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 -{
--	static const char *rom_probe_types[] = PROBETYPES;
--	const char **type;
--	const char *part_type = 0;
+-	struct nand_chip *chip = mtd->priv;
 -
--       	printk(KERN_NOTICE MSG_PREFIX "0x%08x at 0x%08x\n",
--	       WINDOW_SIZE, WINDOW_ADDR);
--	edb7312nor_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+-	if (ctrl & NAND_CTRL_CHANGE) {
+-		unsigned char bits = 0x80;
 -
--	if (!edb7312nor_map.virt) {
--		printk(MSG_PREFIX "failed to ioremap\n");
+-		bits |= (ctrl & (NAND_CLE | NAND_ALE)) << 3;
+-		bits |= (ctrl & NAND_NCE) ? 0x00 : 0x40;
+-
+-		clps_writeb((clps_readb(ep7312_pxdr)  & 0xF0) | bits,
+-			    ep7312_pxdr);
+-	}
+-	if (cmd != NAND_CMD_NONE)
+-		writeb(cmd, chip->IO_ADDR_W);
+-}
+-
+-/*
+- *	read device ready pin
+- */
+-static int ep7312_device_ready(struct mtd_info *mtd)
+-{
+-	return 1;
+-}
+-
+-/*
+- * Main initialization routine
+- */
+-static int __init ep7312_init(void)
+-{
+-	struct nand_chip *this;
+-	void __iomem *ep7312_fio_base;
+-
+-	/* Allocate memory for MTD device structure and private data */
+-	ep7312_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!ep7312_mtd) {
+-		printk("Unable to allocate EDB7312 NAND MTD device structure.\n");
+-		return -ENOMEM;
+-	}
+-
+-	/* map physical address */
+-	ep7312_fio_base = ioremap(ep7312_fio_pbase, SZ_1K);
+-	if (!ep7312_fio_base) {
+-		printk("ioremap EDB7312 NAND flash failed\n");
+-		kfree(ep7312_mtd);
 -		return -EIO;
 -	}
 -
--	simple_map_init(&edb7312nor_map);
+-	/* Get pointer to private data */
+-	this = (struct nand_chip *)(&ep7312_mtd[1]);
 -
--	mymtd = 0;
--	type = rom_probe_types;
--	for(; !mymtd && *type; type++) {
--		mymtd = do_map_probe(*type, &edb7312nor_map);
+-	/* Initialize structures */
+-	memset(ep7312_mtd, 0, sizeof(struct mtd_info));
+-	memset(this, 0, sizeof(struct nand_chip));
+-
+-	/* Link the private data with the MTD structure */
+-	ep7312_mtd->priv = this;
+-	ep7312_mtd->owner = THIS_MODULE;
+-
+-	/*
+-	 * Set GPIO Port B control register so that the pins are configured
+-	 * to be outputs for controlling the NAND flash.
+-	 */
+-	clps_writeb(0xf0, ep7312_pxddr);
+-
+-	/* insert callbacks */
+-	this->IO_ADDR_R = ep7312_fio_base;
+-	this->IO_ADDR_W = ep7312_fio_base;
+-	this->cmd_ctrl = ep7312_hwcontrol;
+-	this->dev_ready = ep7312_device_ready;
+-	/* 15 us command delay time */
+-	this->chip_delay = 15;
+-
+-	/* Scan to find existence of the device */
+-	if (nand_scan(ep7312_mtd, 1)) {
+-		iounmap((void *)ep7312_fio_base);
+-		kfree(ep7312_mtd);
+-		return -ENXIO;
 -	}
--	if (mymtd) {
--		mymtd->owner = THIS_MODULE;
--		mymtd->name = MTDID;
+-	ep7312_mtd->name = "edb7312-nand";
 -
--		mtd_parts_nb = parse_mtd_partitions(mymtd, probes, &mtd_parts, 0);
--		if (mtd_parts_nb > 0)
--			part_type = "detected";
+-	/* Register the partitions */
+-	mtd_device_register(ep7312_mtd, NULL, 0,
+-			partition_info, NUM_PARTITIONS);
 -
--		if (mtd_parts_nb == 0) {
--			mtd_parts = static_partitions;
--			mtd_parts_nb = ARRAY_SIZE(static_partitions);
--			part_type = "static";
--		}
--
--		if (mtd_parts_nb == 0)
--			printk(KERN_NOTICE MSG_PREFIX "no partition info available\n");
--		else
--			printk(KERN_NOTICE MSG_PREFIX
--			       "using %s partition definition\n", part_type);
--		/* Register the whole device first. */
--		mtd_device_register(mymtd, NULL, 0);
--		mtd_device_register(mymtd, mtd_parts, mtd_parts_nb);
--		return 0;
--	}
--
--	iounmap((void *)edb7312nor_map.virt);
--	return -ENXIO;
+-	/* Return happy */
+-	return 0;
 -}
 -
--static void __exit cleanup_edb7312nor(void)
+-module_init(ep7312_init);
+-
+-/*
+- * Clean up routine
+- */
+-static void __exit ep7312_cleanup(void)
 -{
--	if (mymtd) {
--		mtd_device_unregister(mymtd);
--		map_destroy(mymtd);
--	}
--	if (edb7312nor_map.virt) {
--		iounmap((void *)edb7312nor_map.virt);
--		edb7312nor_map.virt = 0;
--	}
+-	struct nand_chip *this = (struct nand_chip *)&ep7312_mtd[1];
+-
+-	/* Release resources, unregister device */
+-	nand_release(ap7312_mtd);
+-
+-	/* Release io resource */
+-	iounmap(this->IO_ADDR_R);
+-
+-	/* Free the MTD device structure */
+-	kfree(ep7312_mtd);
 -}
 -
--module_init(init_edb7312nor);
--module_exit(cleanup_edb7312nor);
+-module_exit(ep7312_cleanup);
 -
 -MODULE_LICENSE("GPL");
 -MODULE_AUTHOR("Marius Groeger <mag@sysgo.de>");
--MODULE_DESCRIPTION("Generic configurable MTD map driver");
+-MODULE_DESCRIPTION("MTD map driver for Cogent EDB7312 board");
 -- 
 1.7.5.3
