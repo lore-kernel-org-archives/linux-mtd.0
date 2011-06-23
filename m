@@ -1,20 +1,24 @@
-Received: from mail.greitas.lt ([84.55.46.2] helo=mail.greitas)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZjO4-0005AF-B4
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:52:01 +0000
-Received: from mail.greitas.lt (localhost.greitas.lt [127.0.0.1])
-	by mail.greitas (Postfix) with ESMTP id 8AB6770EE1C
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZkvB-0005v9-9h
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 14:30:18 +0000
+Received: by pzk1 with SMTP id 1so1721153pzk.16
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 11:45:19 +0000 (UTC)
-Date: Thu, 23 Jun 2011 11:45:19 GMT
-Message-Id: <201106231145.p5NBjJ1P048770@mail.greitas.lt>
-To: linux-mtd@lists.infradead.org
-Subject: 23rd June 2011 : Investment interest
-From: "MR. HARRY BROWN" <mrharrbrown@one.co.il>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Reply-To: mrbrown2@one.co.il
+	Thu, 23 Jun 2011 07:30:13 -0700 (PDT)
+Subject: Re: "warning!: only 995 of 1984 eraseblocks have valid erase counter"
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Gilles <gilles.ganault@free.fr>
+Date: Thu, 23 Jun 2011 17:30:57 +0300
+In-Reply-To: <2016071dvg4slfufk95id9ov68n2kvbp4j@4ax.com>
+References: <o4krv69m77vomji84cs3flljf6obpgfgcs@4ax.com>
+	<1308820444.19443.0.camel@sauron>
+	<2016071dvg4slfufk95id9ov68n2kvbp4j@4ax.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1308839462.23597.5.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Attn:
+On Thu, 2011-06-23 at 11:19 +0200, Gilles wrote:
+> On Thu, 23 Jun 2011 12:14:01 +0300, Artem Bityutskiy
+> <dedekind1@gmail.com> wrote:
+> >I think it is self-explanatory. Please, ask specific question. WRT to
+> >consequences - it should not be critical.
+> 
+> I went ahead, answered yes, and it seems to work OK, but I was curious
+> to understand what the message really means.
 
-Can you secure for me a lucrative investment opportunities in your country?
+What exactly is unclear in the messages? :-)
 
-My interest of investment is in MINING, exotic properties for commercial, residential and development properties and Hotels, and any other viable investment opportunities in your country you deem lucrative based on your recommendation, will be highly welcomed.
+> Before reflashing memory with an image, does ubiformat always warn the
+> user that the empty blocks after the image will have their erase
+> counter set to the average computed from the used blocks, regardless
+> of their actual usage so far?
 
-You see, I can only invest in your country with assistance of a very competent person like you to guide and direct me appropriately.
+Yes. If you properly use tools - you should never see the warnings. Most
+probably you flash images using UBI-unaware tools, or you erase the
+flash using UBI-unaware tools like flash_erase or do it in u-boot.
 
-Waiting to hear from you.
+But I agree that ubiformat could probably be smarter and avoid printing
+this warning if half of the flash is UBI-formatted and the other half is
+empty.
 
-Regards,
+Current logic is - if not everything is UBI-formatted - warn. But it
+could be - if not everything is UBI-formatted and the eraseblocks are
+not empty - warn. Feel free to send a patch :-)
 
-Mr. Brown.
-Tel: +2348054454333.
+-- 
+Best Regards,
+Artem Bityutskiy
