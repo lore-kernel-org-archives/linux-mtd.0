@@ -1,16 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZig8-0001Nc-I3
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:06:37 +0000
-Received: by wwf22 with SMTP id 22so1295642wwf.18
+Received: from mail.greitas.lt ([84.55.46.2] helo=mail.greitas)
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QZjO4-0005AF-B4
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:52:01 +0000
+Received: from mail.greitas.lt (localhost.greitas.lt [127.0.0.1])
+	by mail.greitas (Postfix) with ESMTP id 8AB6770EE1C
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 05:05:46 -0700 (PDT)
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+	Thu, 23 Jun 2011 11:45:19 +0000 (UTC)
+Date: Thu, 23 Jun 2011 11:45:19 GMT
+Message-Id: <201106231145.p5NBjJ1P048770@mail.greitas.lt>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/5] Few additional cleanup patches
-Date: Thu, 23 Jun 2011 16:05:26 +0400
-Message-Id: <1308830731-5698-1-git-send-email-dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+Subject: 23rd June 2011 : Investment interest
+From: "MR. HARRY BROWN" <mrharrbrown@one.co.il>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Reply-To: mrbrown2@one.co.il
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following changes since commit 8c2ce1c78ba6cce94d0dfe6c674ea6c0cba56899:
+Attn:
 
-  mtd: socrates_nand.c: use mtd_device_parse_register (2011-06-23 10:43:39 +0300)
+Can you secure for me a lucrative investment opportunities in your country?
 
-are available in the git repository at:
-  git://git.infradead.org/users/dbaryshkov/mtd-cleanup.git mtd-big-cleanup
+My interest of investment is in MINING, exotic properties for commercial, residential and development properties and Hotels, and any other viable investment opportunities in your country you deem lucrative based on your recommendation, will be highly welcomed.
 
-Dmitry Eremin-Solenikov (5):
-      mtd/maps: drop edb7312 support
-      mtd/nand: drop edb7312 support
-      mtd: hide parse_mtd_partitions
-      mtd: remove put_partition_parser() from public header
-      mtd: drop mtd_device_register
+You see, I can only invest in your country with assistance of a very competent person like you to guide and direct me appropriately.
 
- drivers/mtd/maps/Kconfig       |    7 --
- drivers/mtd/maps/Makefile      |    1 -
- drivers/mtd/maps/edb7312.c     |  135 ----------------------------
- drivers/mtd/mtdcore.c          |   23 -----
- drivers/mtd/mtdcore.h          |    4 +
- drivers/mtd/mtdpart.c          |    3 +-
- drivers/mtd/nand/Kconfig       |    7 --
- drivers/mtd/nand/Makefile      |    1 -
- drivers/mtd/nand/edb7312.c     |  188 ----------------------------------------
- include/linux/mtd/mtd.h        |    5 +-
- include/linux/mtd/partitions.h |    5 -
- 11 files changed, 8 insertions(+), 371 deletions(-)
- delete mode 100644 drivers/mtd/maps/edb7312.c
- delete mode 100644 drivers/mtd/nand/edb7312.c
+Waiting to hear from you.
+
+Regards,
+
+Mr. Brown.
+Tel: +2348054454333.
