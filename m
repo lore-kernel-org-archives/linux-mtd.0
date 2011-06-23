@@ -1,22 +1,24 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZfYC-00030n-ON
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 08:46:14 +0000
-Received: by pwi3 with SMTP id 3so1270055pwi.36
+	id 1QZfdr-00033Y-IA
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 08:52:04 +0000
+Received: by pvg20 with SMTP id 20so1102350pvg.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 01:46:08 -0700 (PDT)
-Subject: Re: Problem with clean markers/partial writes on Micron 4-bit ECC NAND
+	Thu, 23 Jun 2011 01:51:55 -0700 (PDT)
+Subject: RE: NAND OOB data.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Peter Barada <peter.barada@gmail.com>
-Date: Thu, 23 Jun 2011 11:46:52 +0300
-In-Reply-To: <4DFB9458.1030304@gmail.com>
-References: <4DFB9458.1030304@gmail.com>
+To: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
+Date: Thu, 23 Jun 2011 11:52:40 +0300
+In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6036086@ex-mb1.corp.adtran.com>
+References: <F9C551623D2CBB4C9488801D14F864C6034536@ex-mb1.corp.adtran.com>
+	<0A40042D85E7C84DB443060EC44B3FD32A7208F91A@dekaexchange07.deka.local>
+	<F9C551623D2CBB4C9488801D14F864C6036086@ex-mb1.corp.adtran.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1308818817.18119.103.camel@sauron>
+Message-ID: <1308819164.18119.106.camel@sauron>
 Mime-Version: 1.0
-Cc: Eric Nelson <eric.nelson@logicpd.com>, linux-mtd@lists.infradead.org,
-	Peter Barada <peter.barada@logicpd.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Atlant Schmidt <aschmidt@dekaresearch.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,21 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-06-17 at 13:52 -0400, Peter Barada wrote:
-> I'm using a 2K page Micron NAND that has an internal 4-bit ECC engine.
+On Mon, 2011-06-20 at 17:53 +0000, ANDY KENNEDY wrote:
+> > -----Original Message-----
+> > From: Atlant Schmidt [mailto:aschmidt@dekaresearch.com]
+> > Sent: Monday, June 20, 2011 6:14 AM
+> > To: ANDY KENNEDY; linux-mtd@lists.infradead.org
+> > Subject: RE: NAND OOB data.
+> > 
+> > Andy:
+> > 
+> >   If you don't have the old bad block information saved
+> >   away somewhere (a bad block table, a scrap of paper,
+> >   etc.), then you *CAN'T* completely recover from this
+> >   situation; the original bad block data for that chip
+> >   is probably irretrievably lost.*
 > 
-> The Micron NAND chip uses 8-bytes per 512 bytes of main data area + 4 
-> bytes of the OOB.  This allows the 32 bytes of ECC to correct 2048 bytes 
-> of the main data area and 16 bytes of the OOB area.
-> 
-> The problem I'm running into with JFFS2 is that empty flash is first 
-> marked with a clean marker into the OOB, and then a 2nd write to the 
-> main data area is done (w/o an intervening erase) to that page with data 
-> which corrupts the ECCs that were first modified by writing the cleanmarker.
+> All the other boards apparently are all good (is that normal?), but,
+> I'm not worried about the NAND having KNOWN bad blocks as this board
+> is supposed to be mine.
 
-I remember someone sent patches to teach JFFS2 to avoid using clean
-markers, but I do not remembers the details and whether the patches made
-it into the mainline.
+I think someone implemented an utility or ioctl for this, probably
+Matthew Castet, but I asked for some more improvements or something, and
+he disappeared. Try to find the thread, may be you can continue his
+work.
+
+But in general, I think the ideal way would be:
+
+1. be able to distinguish between factory-marked and user-marked bad
+blocks.
+2. allow unmarking user-marked bad blocks, but not factory marked.
+
+Not sure this is always possible, though.
 
 -- 
 Best Regards,
