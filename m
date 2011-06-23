@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZifZ-0004Rt-Vu
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:06:03 +0000
-Received: by wyf23 with SMTP id 23so1542235wyf.36
+	id 1QZifd-0004Qz-CD
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 12:06:06 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 22so1295734wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 05:06:00 -0700 (PDT)
+	Thu, 23 Jun 2011 05:06:05 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/5] mtd: remove put_partition_parser() from public header
-Date: Thu, 23 Jun 2011 16:05:30 +0400
-Message-Id: <1308830731-5698-5-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 5/5] mtd: drop mtd_device_register
+Date: Thu, 23 Jun 2011 16:05:31 +0400
+Message-Id: <1308830731-5698-6-git-send-email-dbaryshkov@gmail.com>
 In-Reply-To: <1308830731-5698-1-git-send-email-dbaryshkov@gmail.com>
 References: <1308830731-5698-1-git-send-email-dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
@@ -22,40 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is no need to pollute public header with a definition private
-to mtdpart.c. Move it from mtd/partitions.h to mtdpart.c
+mtd_device_register() is a limited version of mtd_device_parse_register.
+Replace it with macro calling mtd_device_parse_register().
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/mtdpart.c          |    2 ++
- include/linux/mtd/partitions.h |    2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdcore.c   |   23 -----------------------
+ include/linux/mtd/mtd.h |    5 ++---
+ 2 files changed, 2 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6997c6c..c90b7ba 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -706,6 +706,8 @@ static struct mtd_part_parser *get_partition_parser(const char *name)
- 	return ret;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e186399..f9cc2d2 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -429,29 +429,6 @@ out_error:
  }
  
-+#define put_partition_parser(p) do { module_put((p)->owner); } while (0)
-+
- int register_mtd_parser(struct mtd_part_parser *p)
- {
- 	spin_lock(&part_parser_lock);
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index c98d6b8..2475228 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -79,8 +79,6 @@ struct mtd_part_parser {
- extern int register_mtd_parser(struct mtd_part_parser *parser);
- extern int deregister_mtd_parser(struct mtd_part_parser *parser);
- 
--#define put_partition_parser(p) do { module_put((p)->owner); } while(0)
+ /**
+- * mtd_device_register - register an MTD device.
+- *
+- * @master: the MTD device to register
+- * @parts: the partitions to register - only valid if nr_parts > 0
+- * @nr_parts: the number of partitions in parts.  If zero then the full MTD
+- *            device is registered
+- *
+- * Register an MTD device with the system and optionally, a number of
+- * partitions.  If nr_parts is 0 then the whole device is registered, otherwise
+- * only the partitions are registered.  To register both the full device *and*
+- * the partitions, call mtd_device_register() twice, once with nr_parts == 0
+- * and once equal to the number of partitions.
+- */
+-int mtd_device_register(struct mtd_info *master,
+-			const struct mtd_partition *parts,
+-			int nr_parts)
+-{
+-	return parts ? add_mtd_partitions(master, parts, nr_parts) :
+-		add_mtd_device(master);
+-}
+-EXPORT_SYMBOL_GPL(mtd_device_register);
 -
- int mtd_is_partition(struct mtd_info *mtd);
- int mtd_add_partition(struct mtd_info *master, char *name,
- 		      long long offset, long long length);
+-/**
+  * mtd_device_parse_register - parse partitions and register an MTD device.
+  *
+  * @mtd: the MTD device to register
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index b2b454b..67774f9 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -325,14 +325,13 @@ static inline uint32_t mtd_mod_by_ws(uint64_t sz, struct mtd_info *mtd)
+ struct mtd_partition;
+ struct mtd_part_parser_data;
+ 
+-extern int mtd_device_register(struct mtd_info *master,
+-			       const struct mtd_partition *parts,
+-			       int nr_parts);
+ extern int mtd_device_parse_register(struct mtd_info *mtd,
+ 			      const char **part_probe_types,
+ 			      struct mtd_part_parser_data *parser_data,
+ 			      const struct mtd_partition *defparts,
+ 			      int defnr_parts);
++#define mtd_device_register(master, parts, nr_parts)	\
++	mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
+ extern int mtd_device_unregister(struct mtd_info *master);
+ extern struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num);
+ extern int __get_mtd_device(struct mtd_info *mtd);
 -- 
 1.7.5.3
