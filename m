@@ -1,18 +1,20 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaAld-0000lj-OL
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:06:13 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 6/6] integck: fix build error (MS_DIRSYNC, MS_RELATIME)
-Date: Fri, 24 Jun 2011 11:03:14 -0700
-Message-ID: <1308938594-20486-7-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
-References: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QaAoM-0000wO-8b
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:08:58 +0000
+Received: by wwf22 with SMTP id 22so2196977wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Jun 2011 11:08:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1308938594-20486-2-git-send-email-computersforpeace@gmail.com>
+References: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
+	<1308938594-20486-2-git-send-email-computersforpeace@gmail.com>
+Date: Fri, 24 Jun 2011 11:08:54 -0700
+Message-ID: <BANLkTi=aOniZ2FYom=_Nte0dmKu7MxUYXg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] nanddump: kill --omitbad, --noskipbad
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: David Woodhouse <dwmw2@infradead.org>,
 	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
 	Mike Frysinger <vapier.adi@gmail.com>
@@ -25,36 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Need to include <linux/fs.h>, at least for my build system. Otherwise,
-you can't build the 'tests'.
+On Fri, Jun 24, 2011 at 11:03 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> As mentioned previously, we are killing --omitbad in favor of the new
+> --bb=skipbad option, which functions fairly similarly. Also, --noskipbad
+> has become --bb=noskipbad, so remove the old `-N' and `--noskipbad' flags.
 
-integck.c: In function =E2=80=98parse_mount_options=E2=80=99:
-integck.c:2862: error: =E2=80=98MS_DIRSYNC=E2=80=99 undeclared (first use i=
-n this
-function)
-integck.c:2862: error: (Each undeclared identifier is reported only once
-integck.c:2862: error: for each function it appears in.)
-integck.c:2872: error: =E2=80=98MS_RELATIME=E2=80=99 undeclared (first use =
-in this
-function)
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- tests/fs-tests/integrity/integck.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/=
-integck.c
-index 54e5ddc..30322cd 100644
---- a/tests/fs-tests/integrity/integck.c
-+++ b/tests/fs-tests/integrity/integck.c
-@@ -36,6 +36,7 @@
- #include <sys/vfs.h>
- #include <sys/mount.h>
- #include <sys/statvfs.h>
-+#include <linux/fs.h>
-=20
- #define PROGRAM_VERSION "1.1"
- #define PROGRAM_NAME "integck"
---=20
-1.7.0.4
+Oops, I meant `--bb=dumpbad', not `--bb=noskipbad'. I'll resend if you
+need me to change the commit msg...
