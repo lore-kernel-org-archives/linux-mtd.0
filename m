@@ -1,22 +1,27 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qa9ty-0008JY-CG
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 17:10:44 +0000
-Received: by iwn35 with SMTP id 35so3108724iwn.36
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QaAL1-0000wR-FC
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 17:38:40 +0000
+Received: by wwf22 with SMTP id 22so2181625wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 10:10:38 -0700 (PDT)
+	Fri, 24 Jun 2011 10:37:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1308917226.7715.6.camel@koala>
-References: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
-	<1308917226.7715.6.camel@koala>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 24 Jun 2011 13:10:18 -0400
-Message-ID: <BANLkTikeC+kfbuowKHbx_yC4ZmcX4nT6Pw@mail.gmail.com>
-Subject: Re: mkfs.jffs2 min erase block size: 4 vs 8 KiB
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <BANLkTi=cUqQcQzeinQaqh_VBFtfnfkVinw@mail.gmail.com>
+References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
+	<1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
+	<1308841377.23597.10.camel@sauron>
+	<1308841503.23597.12.camel@sauron>
+	<BANLkTimTu1ORjEvtJ7XSCCqwzDbid957Aw@mail.gmail.com>
+	<BANLkTi=cUqQcQzeinQaqh_VBFtfnfkVinw@mail.gmail.com>
+Date: Fri, 24 Jun 2011 10:37:29 -0700
+Message-ID: <BANLkTi=b9tnk5tS9FZZ5WP4Nz9PUhMb02A@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] prepare new nanddump options, defaults
+From: Brian Norris <computersforpeace@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +31,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 24, 2011 at 08:07, Artem Bityutskiy wrote:
-> On Wed, 2011-06-22 at 01:02 -0400, Mike Frysinger wrote:
->> the current mkfs.jffs2 util has in its --eraseblock handling:
->> /* If it's less than 8KiB, they're not allowed */
->> if (erase_block_size < 0x2000) {
->> =C2=A0 =C2=A0 fprintf(stderr, "Erase size 0x%x too small. Increasing to =
-8KiB minimum\n",
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 erase_block_size);
->> =C2=A0 =C2=A0 erase_block_size =3D 0x2000;
->> }
+Hello,
+
+On Thu, Jun 23, 2011 at 4:00 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Thu, Jun 23, 2011 at 8:52 AM, Mike Frysinger <vapier.adi@gmail.com> wr=
+ote:
+>> On Thu, Jun 23, 2011 at 11:04, Artem Bityutskiy wrote:
+>>> But
+>>> even better we could make the version numbers to be the same as release
+>>> number, then this process would be more automated and version would mak=
+e
+>>> some sense...
 >>
->> but i cant seem to find documentation on where this comes from. =C2=A0it=
-'s
->> not uncommon to have SPI flashes with 4KiB erase sectors, and removing
->> this sanity check and allowing 4 KiB seems to produce an image that
->> works OK.
->>
->> am i missing something ? =C2=A0or should i send a patch to drop this che=
-ck ?
+>> the version isnt encoded anywhere. =A0so if you started using something
+>> like the kernel where the VERSION was in the Makefile, we could use
+>> that to create a header file which all the utils would include.
+>> -mike
 >
-> I do not believe JFFS2 is able to work with such small erase blocks. In
-> JFFS2 (and in UBIFS as well) an eraseblock is the basic garbage
-> collection unit, and nodes cannot cross eraseblock boundaries. And the
-> maximum node size is 4KiB of data plus few bytes of node header. So 4KiB
-> won't even fit the largest data node, e.g., containing uncompressible
-> data.
->
-> Even 8KiB is bad, because the amount of wasted space will be large -
-> JFFS2 will waste the rest of the eraseblock if it does not fit the node.
-> So the smaller EB is, the more wasted space you have.
+> I like Mike's idea on the VERSION thing.
 
-i'll send a patch then to mkfs.jffs2 with a little bit of info.  i
-couldnt find a FAQ on the mtd webpage that covered this.
+I took a little look at doing this "kernel style," but I'm running
+into problems. It seems like this would be a little more difficult
+because of the less centralized nature of mtd-utils (in comparison
+with the kernel). Plus, I'm not very good with the GNU make system and
+don't wanna mess too deep into something that could easily break
+various people's build systems...
 
-> For SPI flashes the way out is to emulate larger eraseblock sizes on MTD
-> level. I'd recommend at least 32 KiB.
+Also, is it just me or is the mtd-utils build setup pretty ugly? Maybe
+I'm just used to how simplistic, unified, and informative the kernel
+build system is, whereas mtd-utils prints out all sorts of detailed
+info at the expense of *clearly* showing what it's doing.
 
-sorry, but emulate how ?  just tell jffs2 to use an eraseblock size of
-32KiB when creating the fs ?
--mike
+OK, end of complaint (for now) ; I have some tangential noobish
+questions, if anyone would be kind enough to answer:
+
+Are the "ubi-utils" and "tests" meant to have the option of compiling
+separately from the other mtd-utils?
+Are these tools ever distributed separately? If not, do they need to
+be independently buildable? It looks to me like ubi-utils is dependent
+on first compiling "lib", but otherwise, they can all be built
+separately... Anyway, I think this kinda screws with the centralized
+VERSION thing above.
+Why is mtdinfo under ubi-utils? Perhaps it should be moved when it
+replaces flash_info? I think this is a fair interpretation of Item 3
+in the feature-removal plan...
+
+Thanks for putting up with me.
+
+Cheers,
+Brian
