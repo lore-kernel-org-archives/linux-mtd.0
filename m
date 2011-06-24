@@ -1,21 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qa5AH-0004HY-Fs
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 12:07:14 +0000
-Received: by bwz1 with SMTP id 1so2932052bwz.36
+	id 1Qa5JQ-0004Lw-39
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 12:16:44 +0000
+Received: by bwz1 with SMTP id 1so2939868bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 05:07:08 -0700 (PDT)
-Subject: Re: mkfs.jffs2 min erase block size: 4 vs 8 KiB
+	Fri, 24 Jun 2011 05:16:35 -0700 (PDT)
+Subject: Re: [PATCH v2] mtd: OneNAND: Detect the correct NOP when 4KiB pagesize
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 24 Jun 2011 15:07:02 +0300
-In-Reply-To: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
-References: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>
+Date: Fri, 24 Jun 2011 15:16:30 +0300
+In-Reply-To: <20110622051649.GA19948@july>
+References: <20110622051649.GA19948@july>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-ID: <1308917226.7715.6.camel@koala>
+Message-ID: <1308917793.7715.8.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	roman.tereshonkov@nokia.com, m.szyprowski@samsung.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-22 at 01:02 -0400, Mike Frysinger wrote:
-> the current mkfs.jffs2 util has in its --eraseblock handling:
-> /* If it's less than 8KiB, they're not allowed */
-> if (erase_block_size < 0x2000) {
->     fprintf(stderr, "Erase size 0x%x too small. Increasing to 8KiB minimum\n",
->         erase_block_size);
->     erase_block_size = 0x2000;
-> }
+On Wed, 2011-06-22 at 14:16 +0900, Kyungmin Park wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
 > 
-> but i cant seem to find documentation on where this comes from.  it's
-> not uncommon to have SPI flashes with 4KiB erase sectors, and removing
-> this sanity check and allowing 4 KiB seems to produce an image that
-> works OK.
+> There are two different 4KiB pagesize chips
+> KFM4G16Q4M series have NOP 4 with version ID 0x0131
+> But KFM4G16Q5M has NOP 1 with versoin ID 0x013e
 > 
-> am i missing something ?  or should i send a patch to drop this check ?
+> Note that Q5M means that it has NOP 1.
+> 
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 
-I do not believe JFFS2 is able to work with such small erase blocks. In
-JFFS2 (and in UBIFS as well) an eraseblock is the basic garbage
-collection unit, and nodes cannot cross eraseblock boundaries. And the
-maximum node size is 4KiB of data plus few bytes of node header. So 4KiB
-won't even fit the largest data node, e.g., containing uncompressible
-data.
-
-Even 8KiB is bad, because the amount of wasted space will be large -
-JFFS2 will waste the rest of the eraseblock if it does not fit the node.
-So the smaller EB is, the more wasted space you have.
-
-For SPI flashes the way out is to emulate larger eraseblock sizes on MTD
-level. I'd recommend at least 32 KiB.
+Pushed to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
