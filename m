@@ -1,30 +1,22 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qa58g-0004F4-GS
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 12:05:35 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1Qa58a-0000XX-Hd
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 14:05:28 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2011 14:05:28 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2011 14:05:28 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [Ubi] Wrong major:minor
-Date: Fri, 24 Jun 2011 14:05:13 +0200
-Message-ID: <8av807po08nju08nd167d549hios21adn1@4ax.com>
-References: <5d84u6d24de3ikt776vdrqpnhhecs3aoio@4ax.com>
-	<1306917381.4405.76.camel@localhost>
-	<1306917455.4405.77.camel@localhost>
-	<BANLkTikha6F8GbWDNpwB4Q-v1V36ARcVVA@mail.gmail.com>
-	<87mxh78nai.fsf@macbook.be.48ers.dk>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qa5AH-0004HY-Fs
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 12:07:14 +0000
+Received: by bwz1 with SMTP id 1so2932052bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Jun 2011 05:07:08 -0700 (PDT)
+Subject: Re: mkfs.jffs2 min erase block size: 4 vs 8 KiB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 24 Jun 2011 15:07:02 +0300
+In-Reply-To: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
+References: <BANLkTi=G+HxWtLgj6wUSQAY1FfjTFC8JjQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <1308917226.7715.6.camel@koala>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,15 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 24 Jun 2011 13:46:29 +0200, Peter Korsgaard
-<jacmet@sunsite.dk> wrote:
->>>>> "Mike" == Mike Frysinger <vapier.adi@gmail.com> writes:
-> Mike> yeah, i dont think there should be.  at least nothing specific to
-> Mike> ubi.  perhaps a general kernel thing where you could match the
-> Mike> registered name to a static #, but then that wouldnt be ubi's
-> Mike> problem.  that'd be in the core logic and work for all devices.
->
->That already exists - CONFIG_DEVTMPFS.
+On Wed, 2011-06-22 at 01:02 -0400, Mike Frysinger wrote:
+> the current mkfs.jffs2 util has in its --eraseblock handling:
+> /* If it's less than 8KiB, they're not allowed */
+> if (erase_block_size < 0x2000) {
+>     fprintf(stderr, "Erase size 0x%x too small. Increasing to 8KiB minimum\n",
+>         erase_block_size);
+>     erase_block_size = 0x2000;
+> }
+> 
+> but i cant seem to find documentation on where this comes from.  it's
+> not uncommon to have SPI flashes with 4KiB erase sectors, and removing
+> this sanity check and allowing 4 KiB seems to produce an image that
+> works OK.
+> 
+> am i missing something ?  or should i send a patch to drop this check ?
 
-Thanks for the tip. Turns out mdev is fast enough to create the dev
-nodes at run-time, but it's good to know there's an alternative.
+I do not believe JFFS2 is able to work with such small erase blocks. In
+JFFS2 (and in UBIFS as well) an eraseblock is the basic garbage
+collection unit, and nodes cannot cross eraseblock boundaries. And the
+maximum node size is 4KiB of data plus few bytes of node header. So 4KiB
+won't even fit the largest data node, e.g., containing uncompressible
+data.
+
+Even 8KiB is bad, because the amount of wasted space will be large -
+JFFS2 will waste the rest of the eraseblock if it does not fit the node.
+So the smaller EB is, the more wasted space you have.
+
+For SPI flashes the way out is to emulate larger eraseblock sizes on MTD
+level. I'd recommend at least 32 KiB.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
