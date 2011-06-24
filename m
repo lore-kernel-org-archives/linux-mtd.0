@@ -1,31 +1,25 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QZtd6-0008Dq-DW
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2011 23:48:12 +0000
-Received: by wyf23 with SMTP id 23so2031851wyf.36
+	id 1Qa4qO-00047q-Oc
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 11:46:42 +0000
+Received: by wyf23 with SMTP id 23so2355345wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jun 2011 16:48:04 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <BANLkTimM1YgPru1ksPNNxYNpVYHRbrCEDQ@mail.gmail.com>
-References: <BANLkTi=-25MExYfuB-ANK4ceh3gWy+BqCg@mail.gmail.com>
-	<1308761363-16512-1-git-send-email-computersforpeace@gmail.com>
-	<1308841377.23597.10.camel@sauron>
-	<1308841503.23597.12.camel@sauron>
-	<BANLkTimTu1ORjEvtJ7XSCCqwzDbid957Aw@mail.gmail.com>
-	<BANLkTi=cUqQcQzeinQaqh_VBFtfnfkVinw@mail.gmail.com>
-	<BANLkTimJN8yOXCqsNscax6bmkTWTzvHphA@mail.gmail.com>
-	<BANLkTinXV-5GWzxn5EoGAfSe2fTWEGjQZw@mail.gmail.com>
-	<BANLkTi=ZW99673rk-03VDHWb7aoUf1LFtQ@mail.gmail.com>
-	<BANLkTin5jFjjB=o1nhDD=_pB9MQ-cLxm5Q@mail.gmail.com>
-	<BANLkTimM1YgPru1ksPNNxYNpVYHRbrCEDQ@mail.gmail.com>
-Date: Thu, 23 Jun 2011 16:48:04 -0700
-Message-ID: <BANLkTikYsCtgb80mPzZZ95QuOPzd7H0cgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/7] prepare new nanddump options, defaults
-From: Brian Norris <computersforpeace@gmail.com>
+	Fri, 24 Jun 2011 04:46:35 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
 To: Mike Frysinger <vapier.adi@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+Subject: Re: [Ubi] Wrong major:minor
+References: <5d84u6d24de3ikt776vdrqpnhhecs3aoio@4ax.com>
+	<1306917381.4405.76.camel@localhost>
+	<1306917455.4405.77.camel@localhost>
+	<BANLkTikha6F8GbWDNpwB4Q-v1V36ARcVVA@mail.gmail.com>
+Date: Fri, 24 Jun 2011 13:46:29 +0200
+In-Reply-To: <BANLkTikha6F8GbWDNpwB4Q-v1V36ARcVVA@mail.gmail.com> (Mike
+	Frysinger's message of "Wed, 1 Jun 2011 06:11:49 -0400")
+Message-ID: <87mxh78nai.fsf@macbook.be.48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Gilles <gilles.ganault@free.fr>, linux-mtd@lists.infradead.org,
 	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,16 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 23, 2011 at 4:45 PM, Mike Frysinger <vapier.adi@gmail.com> wrot=
-e:
-> On Thu, Jun 23, 2011 at 19:40, Brian Norris wrote:
->> On Thu, Jun 23, 2011 at 4:36 PM, Mike Frysinger wrote:
->>> did someone forget to tag/push v1.4.[56] ? =A0i dont see it in the git =
-repo.
->>
->> No, that was my step 2 :) Let me know if the steps are unreasonable.
->
-> i misread that. =A0but where's 1.4.5 ? :)
+>>>>> "Mike" == Mike Frysinger <vapier.adi@gmail.com> writes:
 
-I guess I miswrote that. Step 2 should be 1.4.5 and Step 7 should be
-1.4.6. Silly me.
+Hi,
+
+ >> Although I'm not sure - dynamic numbers were introduced because
+ >> fixed numbers are PITA, so adding such a parameter would be a step
+ >> backward.  Not sure...
+
+ Mike> yeah, i dont think there should be.  at least nothing specific to
+ Mike> ubi.  perhaps a general kernel thing where you could match the
+ Mike> registered name to a static #, but then that wouldnt be ubi's
+ Mike> problem.  that'd be in the core logic and work for all devices.
+
+That already exists - CONFIG_DEVTMPFS.
+
+-- 
+Bye, Peter Korsgaard
