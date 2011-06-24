@@ -1,12 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaAlR-0000f8-Qq
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:05:58 +0000
+	id 1QaAlZ-0000lj-0g
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:06:05 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 4/6] nanddump: default to NOT dumping OOB data
-Date: Fri, 24 Jun 2011 11:03:12 -0700
-Message-ID: <1308938594-20486-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 5/6] feature-removal: remove completed tasks
+Date: Fri, 24 Jun 2011 11:03:13 -0700
+Message-ID: <1308938594-20486-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
 References: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -24,67 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since nandwrite doesn't write OOB data by default, we don't dump OOB data
-by default, in order to be a more proper inverse function.
-
-Remove the warnings and change the default.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |   20 ++++----------------
- 1 files changed, 4 insertions(+), 16 deletions(-)
+ feature-removal-schedule.txt |   37 -------------------------------------
+ 1 files changed, 0 insertions(+), 37 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index adf268b..54198ae 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -53,8 +53,8 @@ static void display_help(void)
- "-f file    --file=file          Dump to file\n"
- "-l length  --length=length      Length\n"
- "-n         --noecc              Read without error correction\n"
--"           --omitoob            Omit OOB data (default in next release)\n"
--"-o         --oob                Dump OOB data (current default)\n"
-+"           --omitoob            Omit OOB data (default)\n"
-+"-o         --oob                Dump OOB data\n"
- "-p         --prettyprint        Print nice (hexdump)\n"
- "-q         --quiet              Don't display progress and status messages\n"
- "-s addr    --startaddress=addr  Start address\n"
-@@ -62,14 +62,7 @@ static void display_help(void)
- "--bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':\n"
- "    padbad:  dump flash data, substituting 0xFF for any bad blocks\n"
- "    dumpbad: dump flash data, including any bad blocks\n"
--"    skipbad: dump good data, completely skipping any bad blocks (default)\n"
--"\n"
--"Note on --oob, --omitoob:\n"
--"  To make nanddump act more like an inverse to nandwrite, we are changing\n"
--"  the default OOB behavior. In the next release, nanddump will not dump\n"
--"  OOB data by default. We will leave both the `--omitoob' and `--oob'\n"
--"  options, but to mirror nandwrite, the short option `-o' will then stand\n"
--"  for `--oob', not `--omitoob'. Please adjust your usage accordingly.\n",
-+"    skipbad: dump good data, completely skipping any bad blocks (default)\n",
- 	PROGRAM_NAME);
- 	exit(EXIT_SUCCESS);
- }
-@@ -92,7 +85,7 @@ static void display_version(void)
+diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
+index 338bc08..a5980f7 100644
+--- a/feature-removal-schedule.txt
++++ b/feature-removal-schedule.txt
+@@ -40,40 +40,3 @@ This is duplicating behavior with the mtdinfo utility.  Now the util
+ warns when people use it, but it'll be removed in release 1.4.6.
  
- static bool			pretty_print = false;	// print nice
- static bool			noecc = false;		// don't error correct
--static bool			omitoob = false;	// omit oob data
-+static bool			omitoob = true;		// omit oob data
- static long long		start_addr;		// start address
- static long long		length;			// dump length
- static const char		*mtddev;		// mtd device name
-@@ -229,11 +222,6 @@ static void process_options(int argc, char * const argv[])
- 		exit(EXIT_FAILURE);
- 	}
- 
--	if (oob_default)
--		warnmsg("in next release, nanddump will not dump OOB\n"
--			"  by default. Use `nanddump --oob' explicitly to ensure\n"
--			"  it is dumped.");
+ ---------------------------
 -
- 	if ((argc - optind) != 1 || error)
- 		display_help();
- 
+-4. Rename --noskipbad option, kill --omitbad, change default BB method for nanddump
+-
+-Our bad block handling methods are getting disorganized. They will be replaced
+-by a series of --bb=METHOD options (see `nanddump --help').
+-
+-In addition, the previous default bad block behavior was to dump 0xFF in place
+-of bad blocks. This was not a good "inverse operation" of nandwrite. Thus, the
+-current default behavior has become the (new) option --bb=padbad, and in 1.4.6,
+-the default will be --bb=skipbad.
+-
+-The new `--bb=METHOD' options are included in this release, but all feature
+-removals and changed defaults will occur in 1.4.6. For now, there are
+-appropriate deprecation warning messages and an alert telling about the
+-soon-to-be-default settings.
+-
+-Transition summary table:
+------------------------------------------------------------------------------------------------------------
+- Old option     New option                 Comment
+------------------------------------------------------------------------------------------------------------
+- <default>      --bb=padbad                dump flash data, substituting 0xFF for any bad blocks
+- --noskipbad    --bb=dumpbad               dump flash data, including any bad blocks
+- --skipbad      --bb=skipbad, <default>    dump good data, completely skipping any bad blocks (new default)
+- --omitbad      N/A                        very similar to `skipbad', will be removed soon
+-
+----------------------------
+-
+-5. nanddump will not dump OOB by default
+-
+-In 1.4.6, nanddump will not dump OOB by default. To dump OOB, you will have to
+-explicitly use the option `--oob'. For now, there is simply a warning every
+-time you use nanddump without explicitly choosing `--oob' or `--omitoob'.
+-
+-Note that `-o' will no longer stand for `--omitoob'. To unify with nandwrite,
+-it will stand for `--oob' (Dump OOB data).
+-
+----------------------------
 -- 
 1.7.0.4
