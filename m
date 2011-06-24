@@ -1,17 +1,18 @@
 Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaAlZ-0000lj-0g
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:06:05 +0000
+	id 1QaAld-0000lj-OL
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2011 18:06:13 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 5/6] feature-removal: remove completed tasks
-Date: Fri, 24 Jun 2011 11:03:13 -0700
-Message-ID: <1308938594-20486-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 6/6] integck: fix build error (MS_DIRSYNC, MS_RELATIME)
+Date: Fri, 24 Jun 2011 11:03:14 -0700
+Message-ID: <1308938594-20486-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
 References: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Cc: David Woodhouse <dwmw2@infradead.org>,
 	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
 	Mike Frysinger <vapier.adi@gmail.com>
@@ -24,55 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Need to include <linux/fs.h>, at least for my build system. Otherwise,
+you can't build the 'tests'.
+
+integck.c: In function =E2=80=98parse_mount_options=E2=80=99:
+integck.c:2862: error: =E2=80=98MS_DIRSYNC=E2=80=99 undeclared (first use i=
+n this
+function)
+integck.c:2862: error: (Each undeclared identifier is reported only once
+integck.c:2862: error: for each function it appears in.)
+integck.c:2872: error: =E2=80=98MS_RELATIME=E2=80=99 undeclared (first use =
+in this
+function)
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- feature-removal-schedule.txt |   37 -------------------------------------
- 1 files changed, 0 insertions(+), 37 deletions(-)
+ tests/fs-tests/integrity/integck.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
-index 338bc08..a5980f7 100644
---- a/feature-removal-schedule.txt
-+++ b/feature-removal-schedule.txt
-@@ -40,40 +40,3 @@ This is duplicating behavior with the mtdinfo utility.  Now the util
- warns when people use it, but it'll be removed in release 1.4.6.
- 
- ---------------------------
--
--4. Rename --noskipbad option, kill --omitbad, change default BB method for nanddump
--
--Our bad block handling methods are getting disorganized. They will be replaced
--by a series of --bb=METHOD options (see `nanddump --help').
--
--In addition, the previous default bad block behavior was to dump 0xFF in place
--of bad blocks. This was not a good "inverse operation" of nandwrite. Thus, the
--current default behavior has become the (new) option --bb=padbad, and in 1.4.6,
--the default will be --bb=skipbad.
--
--The new `--bb=METHOD' options are included in this release, but all feature
--removals and changed defaults will occur in 1.4.6. For now, there are
--appropriate deprecation warning messages and an alert telling about the
--soon-to-be-default settings.
--
--Transition summary table:
-------------------------------------------------------------------------------------------------------------
-- Old option     New option                 Comment
-------------------------------------------------------------------------------------------------------------
-- <default>      --bb=padbad                dump flash data, substituting 0xFF for any bad blocks
-- --noskipbad    --bb=dumpbad               dump flash data, including any bad blocks
-- --skipbad      --bb=skipbad, <default>    dump good data, completely skipping any bad blocks (new default)
-- --omitbad      N/A                        very similar to `skipbad', will be removed soon
--
-----------------------------
--
--5. nanddump will not dump OOB by default
--
--In 1.4.6, nanddump will not dump OOB by default. To dump OOB, you will have to
--explicitly use the option `--oob'. For now, there is simply a warning every
--time you use nanddump without explicitly choosing `--oob' or `--omitoob'.
--
--Note that `-o' will no longer stand for `--omitoob'. To unify with nandwrite,
--it will stand for `--oob' (Dump OOB data).
--
-----------------------------
--- 
+diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/=
+integck.c
+index 54e5ddc..30322cd 100644
+--- a/tests/fs-tests/integrity/integck.c
++++ b/tests/fs-tests/integrity/integck.c
+@@ -36,6 +36,7 @@
+ #include <sys/vfs.h>
+ #include <sys/mount.h>
+ #include <sys/statvfs.h>
++#include <linux/fs.h>
+=20
+ #define PROGRAM_VERSION "1.1"
+ #define PROGRAM_NAME "integck"
+--=20
 1.7.0.4
