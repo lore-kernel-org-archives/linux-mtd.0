@@ -1,21 +1,28 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaMQO-0006EU-Ig
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:33:02 +0000
-Received: by iyn15 with SMTP id 15so3540347iyn.36
+	id 1QaMSk-0006Gw-NY
+	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:35:27 +0000
+Received: by bwf12 with SMTP id 12so523253bwf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 23:32:57 -0700 (PDT)
-MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1308983405-27064-1-git-send-email-vapier@gentoo.org>
-References: <1308983405-27064-1-git-send-email-vapier@gentoo.org>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 25 Jun 2011 02:32:37 -0400
-Message-ID: <BANLkTinmFuH-40b855YMqcHSfy7bg=DE_A@mail.gmail.com>
-Subject: Re: [PATCH] rewrite build system to avoid recursion
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+	Fri, 24 Jun 2011 23:35:23 -0700 (PDT)
+Subject: Re: linux-next: Tree for June 24 (mtd + of)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Date: Sat, 25 Jun 2011 09:35:13 +0300
+In-Reply-To: <4E04F5D0.9090900@oracle.com>
+References: <20110624155822.cb8cf6eb.sfr@canb.auug.org.au>
+	<20110624090456.191f1fda.randy.dunlap@oracle.com>
+	<1308947172.13493.37.camel@koala> <4E04F5D0.9090900@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <1308983721.23868.2.camel@koala>
+Mime-Version: 1.0
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Vitaly Wool <vwool@ru.mvista.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +32,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU2F0LCBKdW4gMjUsIDIwMTEgYXQgMDI6MzAsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+IFRo
-ZSB1YmktdXRpbHMvc3JjLyBzdWJkaXIgaXMgdG9zc2VkIGFzIGl0IGp1c3QgY29tcGxpY2F0ZXMg
-dGhpbmdzIGZvciBubwo+IHJlYWwgZ2Fpbi4KPgo+IMKgdWJpLXV0aWxzL2RpY3Rpb25hcnkuYyDC
-oCDCoCDCoCDCoCDCoHwgwqA0MDUgKysrKysrKysrKysrCj4gwqB1YmktdXRpbHMvZGljdGlvbmFy
-eS5oIMKgIMKgIMKgIMKgIMKgfCDCoDE3NCArKysrKwo+IMKgdWJpLXV0aWxzL2xpYmluaXBhcnNl
-ci5jIMKgIMKgIMKgIMKgfCDCoDY0NiArKysrKysrKysrKysrKysrKysKPiDCoHViaS11dGlscy9s
-aWJzY2FuLmMgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoDIyNSArKysrKysrCj4gwqB1YmktdXRpbHMv
-bGlidWJpLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IDEzNzIgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrCj4gwqB1YmktdXRpbHMvbGlidWJpX2ludC5oIMKgIMKgIMKgIMKg
-IMKgfCDCoDEzMSArKysrCj4gwqB1YmktdXRpbHMvbGlidWJpZ2VuLmMgwqAgwqAgwqAgwqAgwqAg
-fCDCoDMxNSArKysrKysrKysKPiDCoHViaS11dGlscy9tdGRpbmZvLmMgwqAgwqAgwqAgwqAgwqAg
-wqAgfCDCoDQ0NiArKysrKysrKysrKysrCj4gwqB1YmktdXRpbHMvc3JjL2RpY3Rpb25hcnkuYyDC
-oCDCoCDCoHwgwqA0MDUgLS0tLS0tLS0tLS0tCj4gwqB1YmktdXRpbHMvc3JjL2RpY3Rpb25hcnku
-aCDCoCDCoCDCoHwgwqAxNzQgLS0tLS0KPiDCoHViaS11dGlscy9zcmMvbGliaW5pcGFyc2VyLmMg
-wqAgwqB8IMKgNjQ2IC0tLS0tLS0tLS0tLS0tLS0tLQo+IMKgdWJpLXV0aWxzL3NyYy9saWJzY2Fu
-LmMgwqAgwqAgwqAgwqAgfCDCoDIyNSAtLS0tLS0tCj4gwqB1YmktdXRpbHMvc3JjL2xpYnViaS5j
-IMKgIMKgIMKgIMKgIMKgfCAxMzcyIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQo+IMKgdWJpLXV0aWxzL3NyYy9saWJ1YmlfaW50LmggwqAgwqAgwqB8IMKgMTMxIC0tLS0K
-PiDCoHViaS11dGlscy9zcmMvbGlidWJpZ2VuLmMgwqAgwqAgwqAgfCDCoDMxNSAtLS0tLS0tLS0K
-PiDCoHViaS11dGlscy9zcmMvbXRkaW5mby5jIMKgIMKgIMKgIMKgIHwgwqA0NDYgLS0tLS0tLS0t
-LS0tLQo+IMKgdWJpLXV0aWxzL3NyYy91YmlhdHRhY2guYyDCoCDCoCDCoCB8IMKgMjI1IC0tLS0t
-LS0KPiDCoHViaS11dGlscy9zcmMvdWJpY3JjMzIuYyDCoCDCoCDCoCDCoHwgwqAxMjQgLS0tLQo+
-IMKgdWJpLXV0aWxzL3NyYy91YmlkZXRhY2guYyDCoCDCoCDCoCB8IMKgMjA4IC0tLS0tLQo+IMKg
-dWJpLXV0aWxzL3NyYy91Ymlmb3JtYXQuYyDCoCDCoCDCoCB8IMKgOTUwIC0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQo+IMKgdWJpLXV0aWxzL3NyYy91Ymlta3ZvbC5jIMKgIMKgIMKgIMKgfCDC
-oDI5NSAtLS0tLS0tLS0KPiDCoHViaS11dGlscy9zcmMvdWJpbmZvLmMgwqAgwqAgwqAgwqAgwqB8
-IMKgNDM0IC0tLS0tLS0tLS0tLS0KPiDCoHViaS11dGlscy9zcmMvdWJpbml6ZS5jIMKgIMKgIMKg
-IMKgIHwgwqA2MjggLS0tLS0tLS0tLS0tLS0tLS0tCj4gwqB1YmktdXRpbHMvc3JjL3ViaXJlbmFt
-ZS5jIMKgIMKgIMKgIHwgwqAxNDcgLS0tLS0KPiDCoHViaS11dGlscy9zcmMvdWJpcm12b2wuYyDC
-oCDCoCDCoCDCoHwgwqAyMTEgLS0tLS0tCj4gwqB1YmktdXRpbHMvc3JjL3ViaXJzdm9sLmMgwqAg
-wqAgwqAgwqB8IMKgMjQ1IC0tLS0tLS0KPiDCoHViaS11dGlscy9zcmMvdWJpdXBkYXRldm9sLmMg
-wqAgwqB8IMKgMzI0IC0tLS0tLS0tLQo+IMKgdWJpLXV0aWxzL3NyYy91Yml1dGlscy1jb21tb24u
-YyB8IMKgMjExIC0tLS0tLQo+IMKgdWJpLXV0aWxzL3ViaWF0dGFjaC5jIMKgIMKgIMKgIMKgIMKg
-IHwgwqAyMjUgKysrKysrKwo+IMKgdWJpLXV0aWxzL3ViaWNyYzMyLmMgwqAgwqAgwqAgwqAgwqAg
-wqB8IMKgMTI0ICsrKysKPiDCoHViaS11dGlscy91YmlkZXRhY2guYyDCoCDCoCDCoCDCoCDCoCB8
-IMKgMjA4ICsrKysrKwo+IMKgdWJpLXV0aWxzL3ViaWZvcm1hdC5jIMKgIMKgIMKgIMKgIMKgIHwg
-wqA5NTAgKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gwqB1YmktdXRpbHMvdWJpbWt2b2wu
-YyDCoCDCoCDCoCDCoCDCoCDCoHwgwqAyOTUgKysrKysrKysrCj4gwqB1YmktdXRpbHMvdWJpbmZv
-LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgNDM0ICsrKysrKysrKysrKysKPiDCoHViaS11dGls
-cy91YmluaXplLmMgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoDYyOCArKysrKysrKysrKysrKysrKysK
-PiDCoHViaS11dGlscy91YmlyZW5hbWUuYyDCoCDCoCDCoCDCoCDCoCB8IMKgMTQ3ICsrKysrCj4g
-wqB1YmktdXRpbHMvdWJpcm12b2wuYyDCoCDCoCDCoCDCoCDCoCDCoHwgwqAyMTEgKysrKysrCj4g
-wqB1YmktdXRpbHMvdWJpcnN2b2wuYyDCoCDCoCDCoCDCoCDCoCDCoHwgwqAyNDUgKysrKysrKwo+
-IMKgdWJpLXV0aWxzL3ViaXVwZGF0ZXZvbC5jIMKgIMKgIMKgIMKgfCDCoDMyNCArKysrKysrKysK
-PiDCoHViaS11dGlscy91Yml1dGlscy1jb21tb24uYyDCoCDCoCB8IMKgMjExICsrKysrKwo+IMKg
-NDUgZmlsZXMgY2hhbmdlZCwgNzgwNCBpbnNlcnRpb25zKCspLCA3ODY2IGRlbGV0aW9ucygtKQoK
-dWdoLCBpIHJlYWxseSBoYXZlIHRvIHJlbWVtYmVyIHRvIHVzZSB0aGUgLU0gZmxhZyB3aXRoIHRo
-ZXNlIHRoaW5ncy4KdGhpcyBpcyBhbGwganVzdCByZW5hbWluZy4KLW1pa2UK
+On Fri, 2011-06-24 at 13:38 -0700, Randy Dunlap wrote:
+> On 06/24/11 13:26, Artem Bityutskiy wrote:
+> > On Fri, 2011-06-24 at 09:04 -0700, Randy Dunlap wrote:
+> >> On Fri, 24 Jun 2011 15:58:22 +1000 Stephen Rothwell wrote:
+> >>
+> >>> Hi all,
+> >>>
+> >>> Changes since 20110623:
+> >>>
+> >>> My fixes tree includes:
+> >>> 	(as an experiment) the early part of mmotm-2011-06-22-13-05
+> >>> 	STAGING: Comedi: Build only on arches providing PAGE_KERNEL_NOCACHE
+> >>
+> >>
+> >> When CONFIG_MTD=m, CONFIG_MTD_OF_PARTS=y:
+> >>
+> >> drivers/mtd/ofpart.o: In function `init_module':
+> >> ofpart.c:(.init.text+0x0): multiple definition of `init_module'
+> >> drivers/mtd/mtdcore.o:(.init.text+0x43): first defined here
+> > 
+> > I guess this is some old issue? I do not think ofpart can be compiled-in
+> > if the mtd core is a module...
+> 
+> [adding driver author, Vitaly]
+> 
+> No, it's a current issue.
+
+I meant that the subject suggests this is about linux-next, but this
+problem should be in upstream.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
