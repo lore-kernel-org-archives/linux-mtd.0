@@ -1,21 +1,19 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaM3b-00061d-03
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:09:28 +0000
-Received: by bwf12 with SMTP id 12so513737bwf.36
+	id 1QaM6G-00064X-0Q
+	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:12:12 +0000
+Received: by bwf12 with SMTP id 12so514708bwf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 23:09:14 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: bump nanddump, mtdinfo version numbers
+	Fri, 24 Jun 2011 23:12:10 -0700 (PDT)
+Subject: Re: [PATCH] punt redundant libcrc32
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Sat, 25 Jun 2011 09:09:05 +0300
-In-Reply-To: <BANLkTine75yQYoJ2F6Xy=LOZ26SxXK=ZaA@mail.gmail.com>
-References: <1308870587-5300-1-git-send-email-computersforpeace@gmail.com>
-	<1308946617.13493.33.camel@koala>
-	<BANLkTine75yQYoJ2F6Xy=LOZ26SxXK=ZaA@mail.gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 25 Jun 2011 09:12:03 +0300
+In-Reply-To: <1308977857-3220-1-git-send-email-vapier@gentoo.org>
+References: <1308977857-3220-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-ID: <1308982153.23868.0.camel@koala>
+Message-ID: <1308982328.23868.1.camel@koala>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -28,20 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-06-24 at 15:38 -0700, Brian Norris wrote:
-> On Fri, Jun 24, 2011 at 1:16 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Thu, 2011-06-23 at 16:09 -0700, Brian Norris wrote:
-> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> ---
-> >>  nanddump.c              |    2 +-
-> >>  ubi-utils/src/mtdinfo.c |    2 +-
-> >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > Pushed, thanks!
+On Sat, 2011-06-25 at 00:57 -0400, Mike Frysinger wrote:
+> The libcrc32.a is only used in one place: mkfs.ubifs.  But this also
+> uses libmtd.a, and the only file in libcrc32.a is also in libmtd.a.
+> So libcrc32.a itself is completely redundant.  Punt!
 > 
-> You sure? It looks like you missed :)
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-Oops, fixed!
+Pushed, thank you!
 
 -- 
 Best Regards,
