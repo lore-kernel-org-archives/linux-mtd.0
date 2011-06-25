@@ -1,20 +1,25 @@
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QaWRT-0001nv-Ko
+	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 17:14:48 +0000
+Received: by iyn15 with SMTP id 15so3804139iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 25 Jun 2011 10:14:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BANLkTimY2+qV_A7gSWOjAk0f54zKRC2wCg@mail.gmail.com>
-References: <4E031900.50108@compulab.co.il>
-	<1309000666-5242-1-git-send-email-leiwen@marvell.com>
-	<BANLkTimY2+qV_A7gSWOjAk0f54zKRC2wCg@mail.gmail.com>
-Date: Sat, 25 Jun 2011 20:51:35 +0800
-Message-ID: <BANLkTinyjRFdzBzmhnREOTN+B4cCQMyqXg@mail.gmail.com>
-Subject: Re: [PATCH] MTD: pxa3xx_nand: enable multiple chip select support
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Daniel Mack <zonque@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Sender: vapier.adi@gmail.com
+In-Reply-To: <BANLkTinJkfNpJ-13yTwpx9u-FaX1TKScuw@mail.gmail.com>
+References: <1308983405-27064-1-git-send-email-vapier@gentoo.org>
+	<1308984770-6594-1-git-send-email-vapier@gentoo.org>
+	<1308986033.23868.8.camel@koala>
+	<BANLkTinJkfNpJ-13yTwpx9u-FaX1TKScuw@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 25 Jun 2011 13:08:10 -0400
+Message-ID: <BANLkTin+Or+320Uz5bSj26yFJE2BZgO2dA@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v2] rewrite build system to avoid recursion
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
-
-On Sat, Jun 25, 2011 at 8:32 PM, Daniel Mack <zonque@gmail.com> wrote:
-> On Sat, Jun 25, 2011 at 1:17 PM, Lei Wen <leiwen@marvell.com> wrote:
->> Current pxa3xx_nand controller has two chip select which
->> both be workable. This patch enable this feature.
->>
->> Update platform driver to support this feature.
->>
->> Another notice should be taken that:
->> When you want to use this feature, you should not enable the
->> keep configuration feature, for two chip select could be
->> attached with different nand chip. The different page size
->> and timing requirement make the keep configuration impossible.
->>
->> Signed-off-by: Lei Wen <leiwen@marvell.com>
+On Sat, Jun 25, 2011 at 03:48, Mike Frysinger wrote:
+> On Sat, Jun 25, 2011 at 03:13, Artem Bityutskiy wrote:
+>> =C2=A0CC =C2=A0 =C2=A0 =C2=A0ubi-utils/ubinize.o
+>> In file included from ubi-utils/ubinize.c:38:0:
+>> ./ubi-utils/include/libiniparser.h:35:24: fatal error: dictionary.h: No
+>> such file or directory
+>> compilation terminated.
+>> make: *** [/home/dedekind/git/mtd-utils/ubi-utils/ubinize.o] Error 1
 >
-> I tested this on a PXA303 platform with one chipselect only, at at
-> least I can say that this patch doesn't seem to cause any regression
-> here. But I couldn't test the new feature it adds.
->
-> So, FWIW:
->
-> Tested-by: Daniel Mack <zonque@gmail.com>
+> weird ... i'm not seeing that. =C2=A0i'll double check my system in the
+> morning to see what's going on.
 
-Thanks for testing!
+i had /usr/include/dictionary.h which provided the same thing
 
-Best regards,
-Lei
+so how to solve ... i dont quite understand the file layout in
+ubi-utils.  why isnt dictionary.h in the include/ subdir ?  after all,
+that's where the include is coming from:
+ubi-utils/include/libiniparser.h.
+-mike
