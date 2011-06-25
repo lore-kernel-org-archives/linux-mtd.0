@@ -1,19 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaMmP-0006Tn-QQ
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:55:46 +0000
-Received: by bwf12 with SMTP id 12so530511bwf.36
+	id 1QaMuT-0006XK-Hb
+	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 07:04:06 +0000
+Received: by bwf12 with SMTP id 12so533237bwf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 23:55:44 -0700 (PDT)
-Subject: mtd-utils-1.4.5 is out
+	Sat, 25 Jun 2011 00:03:59 -0700 (PDT)
+Subject: Re: [PATCH 0/6] complete nanddump feature-removals
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Date: Sat, 25 Jun 2011 09:55:41 +0300
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Sat, 25 Jun 2011 10:03:40 +0300
+In-Reply-To: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
+References: <1308938594-20486-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-ID: <1308984943.23868.4.camel@koala>
+Message-ID: <1308985422.23868.5.camel@koala>
 Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
 	Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,8 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, I've just tagged mtd-utils-1.4.5 and uploaded a tarball to the usual
-place.
+On Fri, 2011-06-24 at 11:03 -0700, Brian Norris wrote:
+> Here's my patchset to complete the feature removals and change of
+> defaults for nanddump (+ 1 bug fix for integck...). These should
+> be pushed after the 1.4.5 release.
+
+Pushed this series, thanks!
 
 -- 
 Best Regards,
