@@ -1,25 +1,18 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaR8a-0008Dm-OS
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 11:34:57 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QaR8Y-0001FZ-7w
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 13:34:54 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2011 13:34:54 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2011 13:34:54 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: [Ubifs] Reboot -> "recovery needed"?
-Date: Sat, 25 Jun 2011 13:34:41 +0200
-Message-ID: <1rhb079etc7nr1tasfal6eag1d6lmfhd73@4ax.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+In-Reply-To: <BANLkTin_Z8ndAjp9vw6QcNb5bT82uoR9ng@mail.gmail.com>
+References: <1307440867-18993-1-git-send-email-leiwen@marvell.com>
+	<1307440867-18993-2-git-send-email-leiwen@marvell.com>
+	<1307445467.11104.80.camel@localhost>
+	<BANLkTin_Z8ndAjp9vw6QcNb5bT82uoR9ng@mail.gmail.com>
+Date: Sat, 25 Jun 2011 13:48:56 +0200
+Message-ID: <BANLkTi=7f2+LK32p6WG1doXzYWGf1wJQJQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] MTD: pxa3xx_nand: Fix blank page ECC mismatch
+From: Daniel Mack <zonque@gmail.com>
+To: Lei Wen <adrian.wenl@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <David.Woodhouse@intel.com>, dedekind1@gmail.com,
+	Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@marvell.com>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
+On Tue, Jun 7, 2011 at 2:28 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
+> On Tue, Jun 7, 2011 at 7:17 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> On Tue, 2011-06-07 at 03:01 -0700, Lei Wen wrote:
+>>> From: Daniel Mack <zonque@gmail.com>
+>>>
+>>> This bug was introduced in f8155a40 ("mtd: pxa3xx_nand: rework irq
+>>> logic") and causes the PXA3xx NAND controller fail to operate with NAND
+>>> flash that has empty pages. According to the comment in this block, the
+>>> hardware controller will report a double-bit error for empty pages,
+>>> which can and must be ignored.
+>>>
+>>> This patch restores the original behaviour of the driver.
+>>>
+>>> Signed-off-by: Daniel Mack <zonque@gmail.com>
+>>> Acked-by: Lei Wen <leiwen@marvell.com>
+>>> Cc: Haojian Zhuang <haojian.zhuang@marvell.com>
+>>> Cc: David Woodhouse <David.Woodhouse@intel.com>
+>>> Cc: stable@kernel.org
+>>
+>> This was introduced in 2.6.38, so let's make it:
+>>
+>> Cc: stable@kernel.org [2.6.38+]
+>>
+> Thanks for correcting this.
 
-	The root filesystem lives in a partition on a NAND, and I noticed
-that after running "reboot", at the next boot, I get this message:
+Has anyone queued this for 3.0 yet? This fixes a serious regression,
+so we need this merged, along with Lei's other patch titled "MTD:
+pxa3xx_nand: fix nand detection issue".
 
-===============
-...
-UBIFS: recovery needed
-UBIFS: recovery completed
-UBIFS: mounted UBI device 0, volume 0, name "rootfs"
-UBIFS: file system size:   251596800 bytes (245700 KiB, 239 MiB, 1950
-LEBs)
-UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
-UBIFS: media format:       w4/r0 (latest is w4/r0)
-UBIFS: default compressor: lzo
-UBIFS: reserved for root:  0 bytes (0 KiB)
-VFS: Mounted root (ubifs filesystem) on device 0:10.
-===============
 
-Is this the way Ubifs works, or should I run a command prior to
-"reboot"?
-
-Thank you.
+Thanks,
+Daniel
