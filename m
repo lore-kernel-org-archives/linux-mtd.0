@@ -1,22 +1,16 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QaM6G-00064X-0Q
-	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:12:12 +0000
-Received: by bwf12 with SMTP id 12so514708bwf.36
+	id 1QaMNZ-0006AF-1B
+	for linux-mtd@lists.infradead.org; Sat, 25 Jun 2011 06:30:05 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 1B3521B4017
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jun 2011 23:12:10 -0700 (PDT)
-Subject: Re: [PATCH] punt redundant libcrc32
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 25 Jun 2011 09:12:03 +0300
-In-Reply-To: <1308977857-3220-1-git-send-email-vapier@gentoo.org>
-References: <1308977857-3220-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1308982328.23868.1.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Sat, 25 Jun 2011 06:30:03 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] build: remove old SYMLINKS variable
+Date: Sat, 25 Jun 2011 02:30:01 -0400
+Message-Id: <1308983401-27015-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2011-06-25 at 00:57 -0400, Mike Frysinger wrote:
-> The libcrc32.a is only used in one place: mkfs.ubifs.  But this also
-> uses libmtd.a, and the only file in libcrc32.a is also in libmtd.a.
-> So libcrc32.a itself is completely redundant.  Punt!
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+This is only used to create symlinks to out of tree files.  I doubt it
+has any relevance anymore now that jffs2 has been merged into mainline.
 
-Pushed, thank you!
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ Makefile |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 8bdba8e..d69206a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -25,8 +25,6 @@ TARGETS = ftl_format flash_erase nanddump doc_loadbios \
+ 	sumtool #jffs2reader
+ SCRIPTS = flash_eraseall
+ 
+-SYMLINKS =
+-
+ LDLIBS = -L$(BUILDDIR)/lib -lmtd
+ LDDEPS = $(BUILDDIR)/lib/libmtd.a
+ 
+@@ -36,7 +34,6 @@ include common.mk
+ subdirs_mkfs.ubifs_all: subdirs_ubi-utils_all
+ 
+ clean::
+-	-rm -f $(SYMLINKS)
+ ifneq ($(BUILDDIR)/.git,)
+ ifneq ($(BUILDDIR),.)
+ ifneq ($(BUILDDIR),$(CURDIR))
+@@ -46,9 +43,6 @@ endif
+ endif
+ 	$(MAKE) -C $(TESTS) clean
+ 
+-$(SYMLINKS):
+-	ln -sf ../fs/jffs2/$@ $@
+-
+ $(BUILDDIR)/mkfs.jffs2: $(addprefix $(BUILDDIR)/,\
+ 	compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
+ 	compr.o rbtree.o)
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.7.5.3
