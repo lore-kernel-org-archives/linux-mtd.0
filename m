@@ -1,16 +1,16 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QasAw-0006aI-UD
-	for linux-mtd@lists.infradead.org; Sun, 26 Jun 2011 16:27:12 +0000
-Received: by wyf23 with SMTP id 23so3462571wyf.36
+	id 1QasAx-0006aK-88
+	for linux-mtd@lists.infradead.org; Sun, 26 Jun 2011 16:27:13 +0000
+Received: by wyf23 with SMTP id 23so3462583wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Jun 2011 09:27:06 -0700 (PDT)
+	Sun, 26 Jun 2011 09:27:10 -0700 (PDT)
 Sender: Castet Matthieu <matthieu.castet@gmail.com>
 From: Matthieu CASTET <matthieu.castet@parrot.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/6] nand_wait : warn if the nand is busy on exit
-Date: Sun, 26 Jun 2011 18:26:52 +0200
-Message-Id: <1309105616-3609-2-git-send-email-matthieu.castet@parrot.com>
+Subject: [PATCH 5/6] nand_flash_detect_onfi propagate busw info
+Date: Sun, 26 Jun 2011 18:26:55 +0200
+Message-Id: <1309105616-3609-5-git-send-email-matthieu.castet@parrot.com>
 In-Reply-To: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
 References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>
@@ -23,27 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch allow to detect buggy driver/hardware with
-bad RnB (dev_ready) management.
-This check cost nothing and could help to detect bugs.
+there is a bug in nand_flash_detect_onfi, busw need to be passed
+by pointer to return it.
 
 Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 ---
- drivers/mtd/nand/nand_base.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a3c7fd3..095dfea 100644
+index 5f0a0de..e7c8bdd 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -885,6 +885,8 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	led_trigger_event(nand_led_trigger, LED_OFF);
+@@ -2850,7 +2850,7 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise
+  */
+ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+-					int busw)
++					int *busw)
+ {
+ 	struct nand_onfi_params *p = &chip->onfi_params;
+ 	int i;
+@@ -2905,9 +2905,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	mtd->erasesize = le32_to_cpu(p->pages_per_block) * mtd->writesize;
+ 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+ 	chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) * mtd->erasesize;
+-	busw = 0;
++	*busw = 0;
+ 	if (le16_to_cpu(p->features) & 1)
+-		busw = NAND_BUSWIDTH_16;
++		*busw = NAND_BUSWIDTH_16;
  
- 	status = (int)chip->read_byte(mtd);
-+	/* This can happen if in case of timeout or buggy dev_ready */
-+	WARN_ON(!(status & NAND_STATUS_READY));
- 	return status;
- }
- 
+ 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
+ 	chip->options |= (NAND_NO_READRDY |
+@@ -2973,7 +2973,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
+ 		/* Check is chip is ONFI compliant */
+-		ret = nand_flash_detect_onfi(mtd, chip, busw);
++		ret = nand_flash_detect_onfi(mtd, chip, &busw);
+ 		if (ret)
+ 			goto ident_done;
+ 	}
 -- 
 1.7.5.4
