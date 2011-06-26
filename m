@@ -1,19 +1,31 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QasBh-0006D8-Tm
-	for linux-mtd@lists.infradead.org; Sun, 26 Jun 2011 16:27:59 +0000
-Received: by wwf22 with SMTP id 22so2949770wwf.18
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qave0-0007Sa-1E
+	for linux-mtd@lists.infradead.org; Sun, 26 Jun 2011 20:09:26 +0000
+Received: by vws8 with SMTP id 8so3645757vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Jun 2011 09:27:07 -0700 (PDT)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/6] refactor mtd wait code
-Date: Sun, 26 Jun 2011 18:26:53 +0200
-Message-Id: <1309105616-3609-3-git-send-email-matthieu.castet@parrot.com>
-In-Reply-To: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
-References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
-Cc: Matthieu CASTET <matthieu.castet@parrot.com>
+	Sun, 26 Jun 2011 13:09:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1309081426.6618.0.camel@koala>
+References: <20110624155822.cb8cf6eb.sfr@canb.auug.org.au>
+	<20110624090456.191f1fda.randy.dunlap@oracle.com>
+	<1308947172.13493.37.camel@koala> <4E04F5D0.9090900@oracle.com>
+	<1308983721.23868.2.camel@koala>
+	<20110625152009.f264be78.randy.dunlap@oracle.com>
+	<BANLkTi=Q-7bCHaH+-z6gnbwvexpGLYH6pA@mail.gmail.com>
+	<1309081426.6618.0.camel@koala>
+Date: Mon, 27 Jun 2011 00:09:16 +0400
+Message-ID: <BANLkTikUbL0d49mhrYYLy2ZvOF9Wa0b+mw@mail.gmail.com>
+Subject: Re: linux-next: Tree for June 24 (mtd + of)
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>, Vitaly Wool <vwool@ru.mvista.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,237 +35,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch move the common wait code for read and reset in the function
-nand_wait_reset and nand_wait_read.
+On 6/26/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sun, 2011-06-26 at 00:11 -0600, Grant Likely wrote:
+>> > 3.0-rc4 does not have this build error when I use the .config file with
+>> > it...
+>> > however, I think that 3.0-rc4 also does not build ofpart.ko as it
+>> > should.
+>> >
+>> > Looks to me like changes in drivers/mtd/{Kconfig && Makefile} caused
+>> > this
+>> > build error.
+>>
+>> The following commit in linux-next appears to be the culprit:
+>>
+>> commit 1a6bc893044b961caae1c5a9c6c2065e608da427
+>> Author: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>> Date:   Sun May 29 21:32:33 2011 +0400
+>>
+>>     mtd: prepare to convert of_mtd_parse_partitions to partition parser
+>>
+>>     Prepare to convert of_mtd_parse_partitions() to usual partitions
+>> parser:
+>>     1) Register ofpart parser
+>>     2) Internally don't use passed device for error printing
+>>     3) Add device_node to mtd_part_parser_data struct
+>>     4) Move of_mtd_parse_partitions from __devinit to common text section
+>>     5) add ofpart to the default list of partition parsers
+>>
+>>     Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>>     Signed-off-by: Artem Bityutskiy <dedekind1@gmail.com>
+>>
+>> It adds a module_init() call to ofpart.c which does not work the way
+>> that ofpart.c is linked to mtdcore.o.  Seems like that commit series
+>> still needs work.
+>
+> OK, let's ask Dmitry to take a look at this.
 
-The only fonctionnal change are :
-- there is a 5s timeout for nand reset (there was no timeout before)
-- For AUTOINC nand, we wait 100ns before pooling RnB (to be similar of
-what we do after a read command).
+Yes, I've forgot about this... ofpart can be made a simple module now.
+I'll send two patches in five minutes or so.
 
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
----
- drivers/mtd/nand/nand_base.c |  148 ++++++++++++++++++++++--------------------
- 1 files changed, 78 insertions(+), 70 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 095dfea..70af1c0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -99,6 +99,9 @@ static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
- static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 			     struct mtd_oob_ops *ops);
- 
-+static void nand_wait_reset(struct mtd_info *mtd, struct nand_chip *chip);
-+static void nand_wait_read(struct mtd_info *mtd, struct nand_chip *chip);
-+
- /*
-  * For devices which display every fart in the system on a separate LED. Is
-  * compiled away when LED support is disabled.
-@@ -603,33 +606,11 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 		return;
- 
- 	case NAND_CMD_RESET:
--		if (chip->dev_ready)
--			break;
--		udelay(chip->chip_delay);
--		chip->cmd_ctrl(mtd, NAND_CMD_STATUS,
--			       NAND_CTRL_CLE | NAND_CTRL_CHANGE);
--		chip->cmd_ctrl(mtd,
--			       NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
--		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
--				;
-+		nand_wait_reset(mtd, chip);
- 		return;
--
--		/* This applies to read commands */
--	default:
--		/*
--		 * If we don't have access to the busy pin, we apply the given
--		 * command delay
--		 */
--		if (!chip->dev_ready) {
--			udelay(chip->chip_delay);
--			return;
--		}
- 	}
--	/* Apply this short delay always to ensure that we do wait tWB in
--	 * any case on any machine. */
--	ndelay(100);
--
--	nand_wait_ready(mtd);
-+	/* This applies to read commands */
-+	nand_wait_read(mtd, chip);
- }
- 
- /**
-@@ -710,15 +691,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 		return;
- 
- 	case NAND_CMD_RESET:
--		if (chip->dev_ready)
--			break;
--		udelay(chip->chip_delay);
--		chip->cmd_ctrl(mtd, NAND_CMD_STATUS,
--			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
--		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
--			       NAND_NCE | NAND_CTRL_CHANGE);
--		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
--				;
-+		nand_wait_reset(mtd, chip);
- 		return;
- 
- 	case NAND_CMD_RNDOUT:
-@@ -734,24 +707,9 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
- 		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
- 			       NAND_NCE | NAND_CTRL_CHANGE);
--
--		/* This applies to read commands */
--	default:
--		/*
--		 * If we don't have access to the busy pin, we apply the given
--		 * command delay
--		 */
--		if (!chip->dev_ready) {
--			udelay(chip->chip_delay);
--			return;
--		}
- 	}
--
--	/* Apply this short delay always to ensure that we do wait tWB in
--	 * any case on any machine. */
--	ndelay(100);
--
--	nand_wait_ready(mtd);
-+	/* This applies to read commands */
-+	nand_wait_read(mtd, chip);
- }
- 
- /**
-@@ -838,25 +796,19 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- /**
-- * nand_wait - [DEFAULT]  wait until the command is done
-+ * nand_wait_timeout - wait until the command is done
-  * @mtd:	MTD device structure
-  * @chip:	NAND chip structure
-+ * @timeout : timeout (in jiffies) to wait
-  *
-- * Wait for command done. This applies to erase and program only
-- * Erase can take up to 400ms and program up to 20ms according to
-- * general NAND and SmartMedia specs
-+ * Wait for command done. This applies to erase, program and reset
-  */
--static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
-+static int nand_wait_timeout(struct mtd_info *mtd, struct nand_chip *chip,
-+					unsigned long timeo)
- {
- 
--	unsigned long timeo = jiffies;
- 	int status, state = chip->state;
- 
--	if (state == FL_ERASING)
--		timeo += (HZ * 400) / 1000;
--	else
--		timeo += (HZ * 20) / 1000;
--
- 	led_trigger_event(nand_led_trigger, LED_FULL);
- 
- 	/* Apply this short delay always to ensure that we do wait tWB in
-@@ -891,6 +843,68 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- }
- 
- /**
-+ * nand_wait - [DEFAULT]  wait until the command is done
-+ * @mtd:	MTD device structure
-+ * @chip:	NAND chip structure
-+ *
-+ * Wait for command done. This applies to erase and program only
-+ * Erase can take up to 400ms and program up to 20ms according to
-+ * general NAND and SmartMedia specs
-+ */
-+static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
-+{
-+	unsigned long timeo = jiffies;
-+	int state = chip->state;
-+
-+	if (state == FL_ERASING)
-+		timeo += (HZ * 400) / 1000;
-+	else
-+		timeo += (HZ * 20) / 1000;
-+
-+	return nand_wait_timeout(mtd, chip, timeo);
-+}
-+
-+/**
-+ * nand_wait_reset - wait until the reset is done
-+ * @mtd:	MTD device structure
-+ * @chip:	NAND chip structure
-+ *
-+ * Wait for command done. This applies to erase and program only
-+ */
-+static void nand_wait_reset(struct mtd_info *mtd, struct nand_chip *chip)
-+{
-+	/* 5s timeout */
-+	unsigned long timeo = jiffies + (HZ * 5000) / 1000;
-+	nand_wait_timeout(mtd, chip, timeo);
-+
-+	return;
-+}
-+
-+/**
-+  * This is call after sending a read command, or for autoincrement
-+  * chip that need it (!NAND_NO_READRDY).
-+  *
-+  * We can't call NAND_CMD_STATUS here, because the read command
-+  * is not finished
-+  */
-+static void nand_wait_read(struct mtd_info *mtd, struct nand_chip *chip)
-+{
-+	/*
-+	 * If we don't have access to the busy pin, we apply the given
-+	 * command delay
-+	 */
-+	if (!chip->dev_ready) {
-+		udelay(chip->chip_delay);
-+	}
-+	else {
-+		/* Apply this short delay always to ensure that we do wait tWB in
-+		 * any case on any machine. */
-+		ndelay(100);
-+		nand_wait_ready(mtd);
-+	}
-+}
-+
-+/**
-  * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
-  *
-  * @mtd: mtd info
-@@ -1526,10 +1540,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 				 * increment is marked as NOAUTOINCR by the
- 				 * board driver.
- 				 */
--				if (!chip->dev_ready)
--					udelay(chip->chip_delay);
--				else
--					nand_wait_ready(mtd);
-+				nand_wait_read(mtd, chip);
- 			}
- 		} else {
- 			memcpy(buf, chip->buffers->databuf + col, bytes);
-@@ -1811,10 +1822,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 			 * chip which does auto increment is marked as
- 			 * NOAUTOINCR by the board driver.
- 			 */
--			if (!chip->dev_ready)
--				udelay(chip->chip_delay);
--			else
--				nand_wait_ready(mtd);
-+			nand_wait_read(mtd, chip);
- 		}
- 
- 		readlen -= len;
 -- 
-1.7.5.4
+With best wishes
+Dmitry
