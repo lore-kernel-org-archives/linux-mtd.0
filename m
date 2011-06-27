@@ -1,21 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbB1p-0005xt-Cq
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 12:35:02 +0000
-Received: by wwf22 with SMTP id 22so3401543wwf.18
+	id 1QbBOC-00079r-Ri
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 12:58:11 +0000
+Received: by wyf23 with SMTP id 23so3944376wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Jun 2011 05:34:59 -0700 (PDT)
+	Mon, 27 Jun 2011 05:58:07 -0700 (PDT)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd/ofpart: add ofoldpart alias
-Date: Mon, 27 Jun 2011 16:34:46 +0400
-Message-Id: <1309178086-10604-1-git-send-email-dbaryshkov@gmail.com>
-In-Reply-To: <1309154611.23597.18.camel@sauron>
-References: <1309154611.23597.18.camel@sauron>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>, dedekind1@gmail.com,
-	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
-	linux-next@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: tmio_nand should call mtd_device_parse_register
+Date: Mon, 27 Jun 2011 16:58:01 +0400
+Message-Id: <1309179481-30957-1-git-send-email-dbaryshkov@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ofpart.ko also provides ofoldpart MTD parser. Add respective
-MODULE_ALIAS("ofoldpart"); declaration.
+While patching tmio_nand for mtd_device_parse_register(), I've changed
+it to correctly pass arguments, but didn't change the function call
+itself, so correct that mistake.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- drivers/mtd/ofpart.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/tmio_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index aa33b8a..77f0640 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -176,3 +176,6 @@ module_init(ofpart_parser_init);
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Parser for MTD partitioning information in device tree");
- MODULE_AUTHOR("Vitaly Wool, David Gibson");
-+/* Required so that this module will be picked up ofoldpart
-+ * MTD partition information parser */
-+MODULE_ALIAS("ofoldpart");
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index d476857..beebd95 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -456,7 +456,7 @@ static int tmio_probe(struct platform_device *dev)
+ 		goto err_scan;
+ 	}
+ 	/* Register the partitions */
+-	retval = mtd_device_register(mtd, NULL, 0,
++	retval = mtd_device_parse_register(mtd, NULL, 0,
+ 			data ? data->partition : NULL,
+ 			data ? data->num_partitions : 0);
+ 	if (!retval)
 -- 
 1.7.5.4
