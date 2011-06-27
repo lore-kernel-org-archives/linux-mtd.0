@@ -1,12 +1,13 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbGXY-0003Dh-1g
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:08 +0000
+	id 1QbGXn-0003FX-T8
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:24 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 01/10] mtd-tests: checkfs: fix size_t related warning
-Date: Mon, 27 Jun 2011 11:27:18 -0700
-Message-ID: <1309199247-19248-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 02/10] mtd-tests: io_paral: build error,
+	"variable length strings"
+Date: Mon, 27 Jun 2011 11:27:19 -0700
+Message-ID: <1309199247-19248-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,31 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Depending on your compiler, size_t may or may not be long unsigned int.
-Use printf's %zu format to clarify.
+Some compilers will complain about use of strlen() within a static array
+size declaration. For this type of string, "sizeof() - 1" is equivalent
+and prevents the build error.
 
-Warning message:
+Error:
 
-   checkfs.c:524:28: warning: format '%lu' expects type
-   'long unsigned int', but argument 2 has type 'unsigned int'
+   io_paral.c:48:13: error: variably modified 'vol_nodes' at file scope
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- tests/checkfs/checkfs.c |    2 +-
+ tests/ubi-tests/io_paral.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/tests/checkfs/checkfs.c b/tests/checkfs/checkfs.c
-index 8e74da8..0e67626 100644
---- a/tests/checkfs/checkfs.c
-+++ b/tests/checkfs/checkfs.c
-@@ -520,7 +520,7 @@ void processCmdLine(int argc, char **argv)
-                 FileSizeMax = (float)atoi(argv[++cnt]);
-                 if(FileSizeMax > (MAX_INTS_ALLOW*sizeof(int)))
-                 {
--                    printf("Max file size allowed is %lu.\n",
-+                    printf("Max file size allowed is %zu.\n",
-                            MAX_INTS_ALLOW*sizeof(int));
-                     exit(0);
-                 }
+diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
+index 9754a0d..1d9a97c 100644
+--- a/tests/ubi-tests/io_paral.c
++++ b/tests/ubi-tests/io_paral.c
+@@ -45,7 +45,7 @@ static int vol_size;
+ 
+ static struct ubi_mkvol_request reqests[THREADS_NUM + 1];
+ static char vol_name[THREADS_NUM + 1][100];
+-static char vol_nodes[THREADS_NUM + 1][strlen(UBI_VOLUME_PATTERN) + 100];
++static char vol_nodes[THREADS_NUM + 1][sizeof(UBI_VOLUME_PATTERN) + 99];
+ static unsigned char *wbufs[THREADS_NUM + 1];
+ static unsigned char *rbufs[THREADS_NUM + 1];
+ 
 -- 
 1.7.0.4
