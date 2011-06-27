@@ -1,12 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbGYJ-0003IJ-Sp
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:57 +0000
+	id 1QbGYL-0003Dh-04
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:59 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 08/10] mtd-utils: kill flash_info
-Date: Mon, 27 Jun 2011 11:27:25 -0700
-Message-ID: <1309199247-19248-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 09/10] mtdinfo: kill -m option
+Date: Mon, 27 Jun 2011 11:27:26 -0700
+Message-ID: <1309199247-19248-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,116 +23,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to "feature-removal-schedule," we kill flash_info in favor of
-mtdinfo.
+According to feature-removal-schedule, we shouldn't use `-m', since
+it relies on a specific device-naming pattern.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- Makefile                     |    2 +-
- feature-removal-schedule.txt |    6 ----
- flash_info.c                 |   67 ------------------------------------------
- 3 files changed, 1 insertions(+), 74 deletions(-)
- delete mode 100644 flash_info.c
+ feature-removal-schedule.txt |    8 --------
+ ubi-utils/mtdinfo.c          |   25 ++++++-------------------
+ 2 files changed, 6 insertions(+), 27 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 8f871c6..afbe201 100644
---- a/Makefile
-+++ b/Makefile
-@@ -18,7 +18,7 @@ TESTS = tests
- 
- MTD_BINS = \
- 	ftl_format flash_erase nanddump doc_loadbios \
--	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
-+	ftl_check mkfs.jffs2 flash_lock flash_unlock \
- 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
- 	jffs2dump \
- 	nftldump nftl_format docfdisk \
 diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
-index a5980f7..0920203 100644
+index 0920203..69a8155 100644
 --- a/feature-removal-schedule.txt
 +++ b/feature-removal-schedule.txt
-@@ -34,9 +34,3 @@ the -m option. For now, we just have a warning, but the option will be
- removed in release 1.4.6.
+@@ -26,11 +26,3 @@ to stop using them.
+ The further step is to remove both of them.
  
  ---------------------------
--3. flash_info utility
+-2. Kill -m parameter of mtdinfo
 -
--This is duplicating behavior with the mtdinfo utility.  Now the util
--warns when people use it, but it'll be removed in release 1.4.6.
+-We cannot assume that mtd device names follow the "/dev/mtd%d" pattern,
+-because it is up to udev rules to name the devices. So we are removing
+-the -m option. For now, we just have a warning, but the option will be
+-removed in release 1.4.6.
 -
 ----------------------------
-diff --git a/flash_info.c b/flash_info.c
-deleted file mode 100644
-index d9a4492..0000000
---- a/flash_info.c
-+++ /dev/null
-@@ -1,67 +0,0 @@
--/*
-- * flash_info.c -- print info about a MTD device
-- */
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index ab00ce0..dd5da53 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -56,8 +56,6 @@ static const char doc[] = PROGRAM_NAME " version " VERSION
+ 			 " - a tool to print MTD information.";
+ 
+ static const char optionsstr[] =
+-"-m, --mtdn=<MTD device number>  MTD device number to get information about\n"
+-"                                (deprecated option, will be removed, do not use)\n"
+ "-u, --ubi-info                  print what would UBI layout be if it was put\n"
+ "                                on this MTD device\n"
+ "-M, --map                       print eraseblock map\n"
+@@ -66,20 +64,16 @@ static const char optionsstr[] =
+ "-V, --version                   print program version";
+ 
+ static const char usage[] =
+-"Usage 1: " PROGRAM_NAME " [-m <MTD device number>] [-u] [-M] [-h] [-V] [--mtdn <MTD device number>]\n"
+-"\t\t[--ubi-info] [--help] [--version]\n"
+-"Usage 2: " PROGRAM_NAME " <MTD device node file name> [-u] [-M] [-h] [-V] [--ubi-info] [--help]\n"
++"Usage: " PROGRAM_NAME " <MTD device node file name> [-u] [-M] [-h] [-V] [--ubi-info] [--help]\n"
+ "\t\t[--version]\n"
+ "Example 1: " PROGRAM_NAME " - (no arguments) print general MTD information\n"
+-"Example 2: " PROGRAM_NAME " -m 1 - print information about MTD device number 1\n"
+-"Example 3: " PROGRAM_NAME " /dev/mtd0 - print information MTD device /dev/mtd0\n"
+-"Example 4: " PROGRAM_NAME " /dev/mtd0 -u - print information MTD device /dev/mtd0\n"
++"Example 2: " PROGRAM_NAME " /dev/mtd0 - print information MTD device /dev/mtd0\n"
++"Example 3: " PROGRAM_NAME " /dev/mtd0 -u - print information MTD device /dev/mtd0\n"
+ "\t\t\t\tand include UBI layout information\n"
+-"Example 5: " PROGRAM_NAME " -a - print information about all MTD devices\n"
++"Example 4: " PROGRAM_NAME " -a - print information about all MTD devices\n"
+ "\t\t\tand include UBI layout information\n";
+ 
+ static const struct option long_options[] = {
+-	{ .name = "mtdn",      .has_arg = 1, .flag = NULL, .val = 'm' },
+ 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
+ 	{ .name = "map",       .has_arg = 0, .flag = NULL, .val = 'M' },
+ 	{ .name = "all",       .has_arg = 0, .flag = NULL, .val = 'a' },
+@@ -91,9 +85,9 @@ static const struct option long_options[] = {
+ static int parse_opt(int argc, char * const argv[])
+ {
+ 	while (1) {
+-		int key, error = 0;
++		int key;
+ 
+-		key = getopt_long(argc, argv, "am:uMhV", long_options, NULL);
++		key = getopt_long(argc, argv, "auMhV", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -106,13 +100,6 @@ static int parse_opt(int argc, char * const argv[])
+ 			args.ubinfo = 1;
+ 			break;
+ 
+-		case 'm':
+-			args.mtdn = simple_strtoul(optarg, &error);
+-			if (error || args.mtdn < 0)
+-				return errmsg("bad MTD device number: \"%s\"", optarg);
+-			warnmsg("-m/--mtdn is depecated, will be removed in mtd-utils-1.4.6");
+-			break;
 -
--#define PROGRAM_NAME "flash_info"
--
--#include <unistd.h>
--#include <stdlib.h>
--#include <stdio.h>
--#include <fcntl.h>
--#include <time.h>
--#include <sys/ioctl.h>
--#include <sys/mount.h>
--
--#include "common.h"
--#include <mtd/mtd-user.h>
--
--static void usage(int status)
--{
--	fprintf(status ? stderr : stdout,
--		"Usage: %s <device> [devices]\n",
--		PROGRAM_NAME);
--	exit(status);
--}
--
--int main(int argc, char *argv[])
--{
--	int fd, i, regcount;
--
--	warnmsg("this utility is deprecated in favor of `mtdinfo` and will be removed in mtd-utils-1.4.6");
--
--	if (argc < 2)
--		usage(1);
--	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
--		usage(0);
--
--	for (i = 1; i < argc; ++i) {
--		const char *dev = argv[i];
--		int r;
--		region_info_t reginfo;
--
--		/* Open and size the device */
--		fd = open(dev, O_RDONLY);
--		if (fd < 0) {
--			sys_errmsg("could not open: %s", dev);
--			continue;
--		}
--
--		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount))
--			continue;
--
--		printf("%s: %d erase regions\n", dev, regcount);
--		for (r = 0; r < regcount; ++r) {
--			reginfo.regionindex = r;
--			if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
--				printf("Region %d is at 0x%x with size 0x%x and "
--						"has 0x%x blocks\n", r, reginfo.offset,
--						reginfo.erasesize, reginfo.numblocks);
--			} else {
--				warnmsg("can not read region %d from a %d region device",
--					r, regcount);
--			}
--		}
--	}
--
--	return 0;
--}
+ 		case 'M':
+ 			args.map = 1;
+ 			break;
 -- 
 1.7.0.4
