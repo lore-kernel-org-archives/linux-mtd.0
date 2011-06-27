@@ -1,12 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbGY6-0003IJ-TX
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:47 +0000
+	id 1QbGYJ-0003IJ-Sp
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:28:57 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 04/10] mtd-utils: update .gitignore files
-Date: Mon, 27 Jun 2011 11:27:21 -0700
-Message-ID: <1309199247-19248-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 08/10] mtd-utils: kill flash_info
+Date: Mon, 27 Jun 2011 11:27:25 -0700
+Message-ID: <1309199247-19248-9-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,102 +23,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First, the top-level Makefile should not tell git to ignore sub-level
-.gitignore files.
-
-Second, add simple .gitignores to ignore the executables generated under
-the various `tests' subdirectories.
+According to "feature-removal-schedule," we kill flash_info in favor of
+mtdinfo.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- .gitignore                             |    5 +++++
- tests/checkfs/.gitignore               |    2 ++
- tests/fs-tests/integrity/.gitignore    |    1 +
- tests/fs-tests/simple/.gitignore       |    5 +++++
- tests/fs-tests/stress/atoms/.gitignore |   10 ++++++++++
- tests/fs-tests/utils/.gitignore        |    2 ++
- tests/jittertest/.gitignore            |    2 ++
- 7 files changed, 27 insertions(+), 0 deletions(-)
- create mode 100644 tests/checkfs/.gitignore
- create mode 100644 tests/fs-tests/integrity/.gitignore
- create mode 100644 tests/fs-tests/simple/.gitignore
- create mode 100644 tests/fs-tests/stress/atoms/.gitignore
- create mode 100644 tests/fs-tests/utils/.gitignore
- create mode 100644 tests/jittertest/.gitignore
+ Makefile                     |    2 +-
+ feature-removal-schedule.txt |    6 ----
+ flash_info.c                 |   67 ------------------------------------------
+ 3 files changed, 1 insertions(+), 74 deletions(-)
+ delete mode 100644 flash_info.c
 
-diff --git a/.gitignore b/.gitignore
-index 86aee63..3a56d0d 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -48,6 +48,11 @@
- #
+diff --git a/Makefile b/Makefile
+index 8f871c6..afbe201 100644
+--- a/Makefile
++++ b/Makefile
+@@ -18,7 +18,7 @@ TESTS = tests
  
- #
-+# git files that we don't want to ignore even it they are dot-files
-+#
-+!.gitignore
-+
-+#
- # Generated include files
- #
- /include/version.h
-diff --git a/tests/checkfs/.gitignore b/tests/checkfs/.gitignore
-new file mode 100644
-index 0000000..52e7b5d
---- /dev/null
-+++ b/tests/checkfs/.gitignore
-@@ -0,0 +1,2 @@
-+/checkfs
-+/makefiles
-diff --git a/tests/fs-tests/integrity/.gitignore b/tests/fs-tests/integrity/.gitignore
-new file mode 100644
-index 0000000..2ea8e69
---- /dev/null
-+++ b/tests/fs-tests/integrity/.gitignore
-@@ -0,0 +1 @@
-+/integck
-diff --git a/tests/fs-tests/simple/.gitignore b/tests/fs-tests/simple/.gitignore
-new file mode 100644
-index 0000000..f3ccde4
---- /dev/null
-+++ b/tests/fs-tests/simple/.gitignore
-@@ -0,0 +1,5 @@
-+/ftrunc
-+/orph
-+/perf
-+/test_1
-+/test_2
-diff --git a/tests/fs-tests/stress/atoms/.gitignore b/tests/fs-tests/stress/atoms/.gitignore
-new file mode 100644
-index 0000000..67dede0
---- /dev/null
-+++ b/tests/fs-tests/stress/atoms/.gitignore
-@@ -0,0 +1,10 @@
-+/fwrite00
-+/gcd_hupper
-+/pdfrun
-+/rmdir00
-+/rndrm00
-+/rndrm99
-+/rndwrite00
-+/stress_1
-+/stress_2
-+/stress_3
-diff --git a/tests/fs-tests/utils/.gitignore b/tests/fs-tests/utils/.gitignore
-new file mode 100644
-index 0000000..f3cdf5f
---- /dev/null
-+++ b/tests/fs-tests/utils/.gitignore
-@@ -0,0 +1,2 @@
-+/free_space
-+/fstest_monitor
-diff --git a/tests/jittertest/.gitignore b/tests/jittertest/.gitignore
-new file mode 100644
-index 0000000..05d4e9e
---- /dev/null
-+++ b/tests/jittertest/.gitignore
-@@ -0,0 +1,2 @@
-+/JitterTest
-+/plotJittervsFill
+ MTD_BINS = \
+ 	ftl_format flash_erase nanddump doc_loadbios \
+-	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
++	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+ 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
+ 	jffs2dump \
+ 	nftldump nftl_format docfdisk \
+diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
+index a5980f7..0920203 100644
+--- a/feature-removal-schedule.txt
++++ b/feature-removal-schedule.txt
+@@ -34,9 +34,3 @@ the -m option. For now, we just have a warning, but the option will be
+ removed in release 1.4.6.
+ 
+ ---------------------------
+-3. flash_info utility
+-
+-This is duplicating behavior with the mtdinfo utility.  Now the util
+-warns when people use it, but it'll be removed in release 1.4.6.
+-
+----------------------------
+diff --git a/flash_info.c b/flash_info.c
+deleted file mode 100644
+index d9a4492..0000000
+--- a/flash_info.c
++++ /dev/null
+@@ -1,67 +0,0 @@
+-/*
+- * flash_info.c -- print info about a MTD device
+- */
+-
+-#define PROGRAM_NAME "flash_info"
+-
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <fcntl.h>
+-#include <time.h>
+-#include <sys/ioctl.h>
+-#include <sys/mount.h>
+-
+-#include "common.h"
+-#include <mtd/mtd-user.h>
+-
+-static void usage(int status)
+-{
+-	fprintf(status ? stderr : stdout,
+-		"Usage: %s <device> [devices]\n",
+-		PROGRAM_NAME);
+-	exit(status);
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	int fd, i, regcount;
+-
+-	warnmsg("this utility is deprecated in favor of `mtdinfo` and will be removed in mtd-utils-1.4.6");
+-
+-	if (argc < 2)
+-		usage(1);
+-	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
+-		usage(0);
+-
+-	for (i = 1; i < argc; ++i) {
+-		const char *dev = argv[i];
+-		int r;
+-		region_info_t reginfo;
+-
+-		/* Open and size the device */
+-		fd = open(dev, O_RDONLY);
+-		if (fd < 0) {
+-			sys_errmsg("could not open: %s", dev);
+-			continue;
+-		}
+-
+-		if (ioctl(fd, MEMGETREGIONCOUNT, &regcount))
+-			continue;
+-
+-		printf("%s: %d erase regions\n", dev, regcount);
+-		for (r = 0; r < regcount; ++r) {
+-			reginfo.regionindex = r;
+-			if (ioctl(fd, MEMGETREGIONINFO, &reginfo) == 0) {
+-				printf("Region %d is at 0x%x with size 0x%x and "
+-						"has 0x%x blocks\n", r, reginfo.offset,
+-						reginfo.erasesize, reginfo.numblocks);
+-			} else {
+-				warnmsg("can not read region %d from a %d region device",
+-					r, regcount);
+-			}
+-		}
+-	}
+-
+-	return 0;
+-}
 -- 
 1.7.0.4
