@@ -1,23 +1,21 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qb51q-0001ef-Va
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 06:10:42 +0000
-Received: by pwi3 with SMTP id 3so3197902pwi.36
+	id 1QbB1p-0005xt-Cq
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 12:35:02 +0000
+Received: by wwf22 with SMTP id 22so3401543wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Jun 2011 23:10:35 -0700 (PDT)
-Subject: Re: [PATCH 1/2 v3] rewrite build system to avoid recursion
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 27 Jun 2011 09:11:24 +0300
-In-Reply-To: <1309022438-10093-1-git-send-email-vapier@gentoo.org>
-References: <1308983405-27064-1-git-send-email-vapier@gentoo.org>
-	<1309022438-10093-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1309155088.23597.20.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Mon, 27 Jun 2011 05:34:59 -0700 (PDT)
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/2] mtd/ofpart: add ofoldpart alias
+Date: Mon, 27 Jun 2011 16:34:46 +0400
+Message-Id: <1309178086-10604-1-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1309154611.23597.18.camel@sauron>
+References: <1309154611.23597.18.camel@sauron>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>, dedekind1@gmail.com,
+	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	linux-next@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2011-06-25 at 13:20 -0400, Mike Frysinger wrote:
-> The ubi-utils/src/ subdir is tossed as it just complicates things for no
-> real gain.  The dictionary.h header is relocated to the ubi-utils/include/
-> since other headers in there need it.
-> 
-> The top level clean is replaced with a `find -delete` on objects, so it
-> might prune more than necessary, but many projects now do this sort of
-> thing and no one complained there.
-> 
-> A "mkdep" helper generates the actual rule, and the variables are used
-> with "foreach" to expand these automatically.
-> 
-> The tests subdir is updated only to reflect the ubi-utils source move.
-> Otherwise, it is left untouched as making that non-recursive isn't really
-> worth the effort.
-> 
-> While we're gutting things, also through in kbuild style output while
-> building to make things more legible.
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+ofpart.ko also provides ofoldpart MTD parser. Add respective
+MODULE_ALIAS("ofoldpart"); declaration.
 
-Pushed both, thanks, this makes a lot of difference!
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ drivers/mtd/ofpart.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index aa33b8a..77f0640 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -176,3 +176,6 @@ module_init(ofpart_parser_init);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Parser for MTD partitioning information in device tree");
+ MODULE_AUTHOR("Vitaly Wool, David Gibson");
++/* Required so that this module will be picked up ofoldpart
++ * MTD partition information parser */
++MODULE_ALIAS("ofoldpart");
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.5.4
