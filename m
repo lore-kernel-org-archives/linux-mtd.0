@@ -1,22 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbHCv-0003zu-Kk
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 19:10:54 +0000
-Received: by bwf12 with SMTP id 12so2152496bwf.36
+	id 1QbHGY-00045Y-Ge
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 19:14:39 +0000
+Received: by bwf12 with SMTP id 12so2155647bwf.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Jun 2011 12:10:47 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: handle ECC errors in OOB
+	Mon, 27 Jun 2011 12:14:34 -0700 (PDT)
+Subject: Re: [RFC] ubiblk: read-only block layer on top of UBI
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 27 Jun 2011 22:10:43 +0300
-In-Reply-To: <1308872724-6196-1-git-send-email-computersforpeace@gmail.com>
-References: <1308872724-6196-1-git-send-email-computersforpeace@gmail.com>
+To: david.wagner@free-electrons.com
+Date: Mon, 27 Jun 2011 22:14:30 +0300
+In-Reply-To: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-ID: <1309201845.24805.0.camel@koala>
+Message-ID: <1309202072.24805.4.camel@koala>
 Mime-Version: 1.0
-Cc: Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
-	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,26 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-23 at 16:45 -0700, Brian Norris wrote:
-> While the standard NAND OOB functions do not do ECC on the spare area,
-> it is possible for a driver to supply its own OOB ECC functions (e.g., HW
-> ECC). nand_do_read_oob should act like nand_do_read_ops in checking the
-> ECC stats and returning -EBADMSG or -EUCLEAN on uncorrectable errors or
-> correctable bitflips, respectively. These error codes could be used in
-> flash-based BBT code or in YAFFS, for example.
-> 
-> Doing this, however, messes with the behavior of mtd_do_readoob. Now,
-> mtd_do_readoob should check whether we had -EUCLEAN or -EBADMSG errors
-> and discard those as "non-fatal" so that the ioctls can still succeed
-> with (possibly uncorrected) data.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/mtdchar.c        |   15 +++++++++++++++
->  drivers/mtd/nand/nand_base.c |    9 ++++++++-
->  2 files changed, 23 insertions(+), 1 deletions(-)
+Hi,
 
-Looks good, pushed to l2-mtd-2.6.git, thanks!
+thanks, for the driver.
+
+On Fri, 2011-06-24 at 15:34 +0200, david.wagner@free-electrons.com
+wrote:
+> I'm submitting it for review, comments (on the concept as well as on the
+> implementation) and advice.  It is my first kernel module - a lot of code was
+> taken from mtd_blkdevs and some from gluebi.
+
+If you borrow code from anywhere, you should preserve Copyrights.
 
 -- 
 Best Regards,
