@@ -1,20 +1,22 @@
-Message-ID: <4E0883FD.3080707@compulab.co.il>
-Date: Mon, 27 Jun 2011 16:22:05 +0300
-From: Igor Grinberg <grinberg@compulab.co.il>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbCrX-00083T-9T
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 14:32:32 +0000
+Received: by yxe42 with SMTP id 42so2250902yxe.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Jun 2011 07:31:40 -0700 (PDT)
+Message-ID: <4E089441.3010809@gmail.com>
+Date: Mon, 27 Jun 2011 10:31:29 -0400
+From: Peter Barada <peter.barada@gmail.com>
 MIME-Version: 1.0
-To: Lei Wen <leiwen@marvell.com>
-Subject: Re: [PATCH] MTD: pxa3xx_nand: enable multiple chip select support
-References: <4E031900.50108@compulab.co.il>
-	<1309000666-5242-1-git-send-email-leiwen@marvell.com>
-In-Reply-To: <1309000666-5242-1-git-send-email-leiwen@marvell.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: dedekind1@gmail.com
+Subject: Re: Preventing JFFS2 partial page writes?
+References: <4DF789FC.1030305@gmail.com> <1308722655.18119.40.camel@sauron>	
+	<4E020A36.6070708@gmail.com> <1308943581.13493.15.camel@koala>
+In-Reply-To: <1308943581.13493.15.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Peter Barada <peter.barada@logicpd.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/25/11 14:17, Lei Wen wrote:
+On 06/24/2011 03:26 PM, Artem Bityutskiy wrote:
+> On Wed, 2011-06-22 at 11:28 -0400, Peter Barada wrote:
+>> Thoughts?
+> Sorry, could you please define the problem you are trying to solve?
+> Sorry if you did define it in your long post, but I could not easily
+> find it.
+The problem I'm trying to solve is that the Micron NAND  I'm using has 
+an internal 4-bit ECC engine and uses four 8-byte ECCs that provide 
+4-bit protection per 512 data bytes + four OOB bytes.  The ecclayout I'm 
+using is:
 
-> Current pxa3xx_nand controller has two chip select which
-> both be workable. This patch enable this feature.
->
-> Update platform driver to support this feature.
->
-> Another notice should be taken that:
-> When you want to use this feature, you should not enable the
-> keep configuration feature, for two chip select could be
-> attached with different nand chip. The different page size
-> and timing requirement make the keep configuration impossible.
->
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> ---
->  arch/arm/mach-mmp/aspenite.c                 |    5 +-
->  arch/arm/mach-pxa/cm-x300.c                  |    5 +-
->  arch/arm/mach-pxa/colibri-pxa3xx.c           |    5 +-
->  arch/arm/mach-pxa/littleton.c                |    5 +-
->  arch/arm/mach-pxa/mxm8x10.c                  |    9 +-
->  arch/arm/mach-pxa/raumfeld.c                 |    5 +-
->  arch/arm/mach-pxa/zylonite.c                 |    5 +-
->  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   19 +-
->  drivers/mtd/nand/pxa3xx_nand.c               |  512 +++++++++++++++-----------
->  9 files changed, 346 insertions(+), 224 deletions(-)
+ecclayout = {
+         eccbytes = 32,
+         eccpos = { 8, 9, 10, 11, 12, 13, 14, 15, /* ECC data bytes 
+0-511 + OOB bytes 4-7 */
+                 24, 25, 26, 27, 28, 19, 30, 31, /* ECC data bytes 
+512-1023 + OOB bytes 20-23 */
+                 40, 41, 42, 43, 44, 45, 46, 47,  /* ECC data bytes 
+1024-1535 + OOB bytes 36-39 */
+                 56, 57, 58, 59, 60, 61, 62, 63},  /* ECC data bytes 
+1536-2047 + OOB bytes 52-55 */
+         .oobfree = {
+                 { .offset = 4,
+                   .length = 4},
+                 { .offset = 20,
+                   .length = 4},
+                 { .offset = 36,
+                   .length = 4},
+                 { .offset = 52,
+                   .length = 4},
+         },
+};
 
-~100 lines less - nice!
+After the JFFS2 cleanmarker is written into bytes 4-7 and 16-23 of the 
+OOB, nanddump shows:
 
-[...]
+   OOB Data: ff ff ff ff 85 19 03 20 5a e3 da 69 01 40 f1 36
+   OOB Data: ff ff ff ff 08 00 00 00 91 99 3c 05 01 d0 5d b3
+   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index b7db1b2..0825b7d 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+Note that the ECC bytes 8-15 and 24-31 are no longer FF due to bytes 4-7 
+and bytes 20-23 being written with non-zero data.
 
-[...]
+When data is later written to this same page (w/o an intervening erase 
+of its block) reading the page causes an uncorrectable ECC error.
 
-> @@ -616,7 +627,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
->  
->  	default:
->  		exec_cmd = 0;
-> -		printk(KERN_ERR "pxa3xx-nand: non-supported"
-> +		dev_err(&info->pdev->dev, "pxa3xx-nand: non-supported"
+There are eight additional bytes of OOB space available for writing, but 
+they are not ECC'd.
 
-If you use dev_err(), why do you still need pxa3xx-nand in the message?
-
+The issue I'm trying to solve is how to communicate from MTD to JFFS2 
+that some bytes of the oobfree array perturb the data ECC and can not be 
+used to write the cleanmarker.
 
 -- 
-Regards,
-Igor.
+Peter Barada
+peter.barada@gmail.com
