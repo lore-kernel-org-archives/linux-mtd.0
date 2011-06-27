@@ -1,19 +1,23 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbGYe-0003IJ-CM
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 18:29:17 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 10/10] nanddump: remove unused variable
-Date: Mon, 27 Jun 2011 11:27:27 -0700
-Message-ID: <1309199247-19248-11-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
-References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbHCv-0003zu-Kk
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 19:10:54 +0000
+Received: by bwf12 with SMTP id 12so2152496bwf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Jun 2011 12:10:47 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: handle ECC errors in OOB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 27 Jun 2011 22:10:43 +0300
+In-Reply-To: <1308872724-6196-1-git-send-email-computersforpeace@gmail.com>
+References: <1308872724-6196-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <1309201845.24805.0.camel@koala>
+Mime-Version: 1.0
+Cc: Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
+	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The "bb_default" bool was temporarily being used to straighten out
-potential issues with the changing --bb=METHOD options and to warn
-users properly. Now, it's unnecessary.
+On Thu, 2011-06-23 at 16:45 -0700, Brian Norris wrote:
+> While the standard NAND OOB functions do not do ECC on the spare area,
+> it is possible for a driver to supply its own OOB ECC functions (e.g., HW
+> ECC). nand_do_read_oob should act like nand_do_read_ops in checking the
+> ECC stats and returning -EBADMSG or -EUCLEAN on uncorrectable errors or
+> correctable bitflips, respectively. These error codes could be used in
+> flash-based BBT code or in YAFFS, for example.
+> 
+> Doing this, however, messes with the behavior of mtd_do_readoob. Now,
+> mtd_do_readoob should check whether we had -EUCLEAN or -EBADMSG errors
+> and discard those as "non-fatal" so that the ioctls can still succeed
+> with (possibly uncorrected) data.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/mtdchar.c        |   15 +++++++++++++++
+>  drivers/mtd/nand/nand_base.c |    9 ++++++++-
+>  2 files changed, 23 insertions(+), 1 deletions(-)
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- nanddump.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Looks good, pushed to l2-mtd-2.6.git, thanks!
 
-diff --git a/nanddump.c b/nanddump.c
-index 27b0f7a..0b931db 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -102,7 +102,7 @@ static enum {
- static void process_options(int argc, char * const argv[])
- {
- 	int error = 0;
--	bool bb_default = true, oob_default = true;
-+	bool oob_default = true;
- 
- 	for (;;) {
- 		int option_index = 0;
-@@ -149,7 +149,6 @@ static void process_options(int argc, char * const argv[])
- 							bb_method = skipbad;
- 						else
- 							error++;
--						bb_default = false;
- 						break;
- 					case 3: /* --omitoob */
- 						if (oob_default) {
 -- 
-1.7.0.4
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
