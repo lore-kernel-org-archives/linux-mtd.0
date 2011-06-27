@@ -1,28 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qb4u8-0001bt-BA
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 06:02:40 +0000
-Received: by iyn15 with SMTP id 15so4701467iyn.36
+	id 1Qb51q-0001ef-Va
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 06:10:42 +0000
+Received: by pwi3 with SMTP id 3so3197902pwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Jun 2011 23:02:39 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd/ofpart: add ofoldpart alias
+	Sun, 26 Jun 2011 23:10:35 -0700 (PDT)
+Subject: Re: [PATCH 1/2 v3] rewrite build system to avoid recursion
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Date: Mon, 27 Jun 2011 09:03:26 +0300
-In-Reply-To: <BANLkTikmCY8UjJWRKTkM_QW2_Bxw4yqPfQ@mail.gmail.com>
-References: <1309122180-12838-1-git-send-email-dbaryshkov@gmail.com>
-	<1309122180-12838-3-git-send-email-dbaryshkov@gmail.com>
-	<1309153545.23597.13.camel@sauron>
-	<BANLkTikmCY8UjJWRKTkM_QW2_Bxw4yqPfQ@mail.gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 27 Jun 2011 09:11:24 +0300
+In-Reply-To: <1309022438-10093-1-git-send-email-vapier@gentoo.org>
+References: <1308983405-27064-1-git-send-email-vapier@gentoo.org>
+	<1309022438-10093-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309154611.23597.18.camel@sauron>
+Message-ID: <1309155088.23597.20.camel@sauron>
 Mime-Version: 1.0
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,22 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-27 at 09:51 +0400, Dmitry Eremin-Solenikov wrote:
-> On 6/27/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Mon, 2011-06-27 at 01:03 +0400, Dmitry Eremin-Solenikov wrote:
-> >> ofpart.ko also provides ofoldpart MTD parser. Add respective
-> >> MODULE_ALIAS("ofoldpart"); declaration.
-> >>
-> >
-> > Why we need the alias?
+On Sat, 2011-06-25 at 13:20 -0400, Mike Frysinger wrote:
+> The ubi-utils/src/ subdir is tossed as it just complicates things for no
+> real gain.  The dictionary.h header is relocated to the ubi-utils/include/
+> since other headers in there need it.
 > 
-> Please check the parse_mtd_partitions code. If requested parser
-> isn't registered, it tries to load corresponding module. So, this alias
-> is necessary in the semi-bogus case when one will have the list
-> of parsers containing ofoldpart, but not ofpart partition parser.
+> The top level clean is replaced with a `find -delete` on objects, so it
+> might prune more than necessary, but many projects now do this sort of
+> thing and no one complained there.
+> 
+> A "mkdep" helper generates the actual rule, and the variables are used
+> with "foreach" to expand these automatically.
+> 
+> The tests subdir is updated only to reflect the ubi-utils source move.
+> Otherwise, it is left untouched as making that non-recursive isn't really
+> worth the effort.
+> 
+> While we're gutting things, also through in kbuild style output while
+> building to make things more legible.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-Fair enough, but would you please prepend MODULE_ALIAS with a comment
-like this which explains why we need the alias?
+Pushed both, thanks, this makes a lot of difference!
 
 -- 
 Best Regards,
