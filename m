@@ -1,13 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbhjP-0000gz-2d
+	id 1QbhjP-0000h0-2h
 	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 23:30:11 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 2/3] mtd: tests: ignore corrected bitflips in OOB on
-	mtd_readtest
-Date: Tue, 28 Jun 2011 16:28:59 -0700
-Message-ID: <1309303740-9936-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/3] mtd: edit NAND-related comment
+Date: Tue, 28 Jun 2011 16:29:00 -0700
+Message-ID: <1309303740-9936-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
 References: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,27 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-read_oob may now return ECC error codes. If the code is -EUCLEAN, then
-we can safely ignore the error as a corrected bitflip.
+This comment was unclear regarding which NAND functions do and do not
+support ECC on the spare area. This update should reflect the current
+status of the NAND system but can be updated if changes are made in
+the standard functions.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/tests/mtd_readtest.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ drivers/mtd/mtdchar.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/tests/mtd_readtest.c b/drivers/mtd/tests/mtd_readtest.c
-index afe71aa..de23e8e 100644
---- a/drivers/mtd/tests/mtd_readtest.c
-+++ b/drivers/mtd/tests/mtd_readtest.c
-@@ -75,7 +75,8 @@ static int read_eraseblock_by_page(int ebnum)
- 			ops.datbuf    = NULL;
- 			ops.oobbuf    = oobbuf;
- 			ret = mtd->read_oob(mtd, addr, &ops);
--			if (ret || ops.oobretlen != mtd->oobsize) {
-+			if (ret && ret != -EUCLEAN ||
-+					ops.oobretlen != mtd->oobsize) {
- 				printk(PRINT_PREF "error: read oob failed at "
- 						  "%#llx\n", (long long)addr);
- 				if (!err)
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 0995e8e..978e084 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -482,8 +482,9 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+ 	 * to signal the caller that a bitflip has occured and has
+ 	 * been corrected by the ECC algorithm.
+ 	 *
+-	 * Note: most NAND ECC algorithms do not calculate ECC
+-	 * for the OOB area.
++	 * Note: currently the standard NAND function, nand_read_oob_std,
++	 * does not calculate ECC for the OOB area, so do not rely on
++	 * this behavior unless you have replaced it with your own.
+ 	 */
+ 	if (ret == -EUCLEAN || ret == -EBADMSG)
+ 		return 0;
 -- 
 1.7.0.4
