@@ -1,29 +1,20 @@
-Received: from lo.gmane.org ([80.91.229.12])
+Received: from mail.free-electrons.com ([88.190.12.23])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbWUa-0007Gp-Od
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 11:30:09 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QbWUW-0006Do-Sr
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 13:30:04 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2011 13:30:04 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2011 13:30:04 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [Ubifs] Reboot -> "recovery needed"?
-Date: Tue, 28 Jun 2011 13:25:33 +0200
-Message-ID: <gfej07dg451r0l2co91fuvn4k2ujktk1ta@4ax.com>
-References: <1rhb079etc7nr1tasfal6eag1d6lmfhd73@4ax.com>
-	<1309246418.23597.31.camel@sauron>
-	<45ej07pjslh20fb66illqsmn9r0au0fejb@4ax.com>
-	<1309260162.23597.66.camel@sauron>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1QbWZh-0007KM-Vb
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 11:35:26 +0000
+Message-ID: <4E09BC89.40306@free-electrons.com>
+Date: Tue, 28 Jun 2011 13:35:37 +0200
+From: David Wagner <david.wagner@free-electrons.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] UBI: new module ubiblk: block layer on top of UBI
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>	<1308922482-14967-2-git-send-email-david.wagner@free-electrons.com>
+	<1309202771.24805.11.camel@koala>
+In-Reply-To: <1309202771.24805.11.camel@koala>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 28 Jun 2011 14:22:38 +0300, Artem Bityutskiy
-<dedekind1@gmail.com> wrote:
->> Thanks for the info. I'll see if I can edit the source code to
->> "reboot" to unmount the root filesystem, or replace "reboot" with
->> another application or script.
->
->I think it may be enough to re-mount read-only, and probably it is
->impossible to unmount in many cases. But I am not 100% sure.
+Hi,
 
-So I could rename "reboot" something else, then write a shell script
-named "reboot" that will first remount the Ubifs partition ro, and
-then call the real "reboot"?
+On 06/27/2011 09:26 PM, Artem Bityutskiy wrote:
+> On Fri, 2011-06-24 at 15:34 +0200, david.wagner@free-electrons.com
+> wrote:
+>> +	/* Stolen from mtd_blkdevs.c */
+>> +	/* Create processing thread */
+>> +	dev->thread = kthread_run(ubi_ubiblk_thread, dev, "%s%d_%d",
+>> +				  "kubiblkd", dev->ubi_num, dev->vol_id);
+>> +	if (IS_ERR(dev->thread)) {
+>> +		ret = PTR_ERR(dev->thread);
+>> +		goto out_thread;
+>> +	}
+> 
+> Why we need a kernel thread? Could you please describe when exactly it
+> is needed and why we cannot avoid having it?
+
+Do you mean that there could be another/better way ?
+I read that workqueues could be used for that but since they seem to
+internally use kthreads, I don't see the advantage yet. Simpler API ?
+
+I also tried without a kthread altogether (and call do_ubiblk_request
+directly within the callback registered with blk_init_queue) but got
+lost in locks/context debugging ...
+
+It seems that do_ubiblk_request needs to be in process context because
+there are thousands causes for blocking (locking, page fault, for
+instance, are the one I encountered). And on the other hand,
+blk_run_queue must not block ; So we need to wake the thread up and
+return (what ubi_ubiblk_request does).
+So, would this be a sufficient justification ?
+
+
+It's probably possible, however, to have only one thread for the whole
+module instead of having one for each volume ; but that seemed good
+enough on first approach.
+
+
+I fixed the read errors issue with filesystems != SquashFS, so they
+should all work, now.
+I'll send the next iteration, probably later today.
+
+-- 
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
