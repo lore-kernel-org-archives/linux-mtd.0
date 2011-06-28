@@ -1,20 +1,21 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
-	helo=TX2EHSOBE006.bigfish.com)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbOIc-0000h5-Gm
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 02:45:16 +0000
-From: <b35362@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 2/2] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
-Date: Tue, 28 Jun 2011 09:50:52 +0800
-Message-ID: <1309225852-1664-2-git-send-email-b35362@freescale.com>
-In-Reply-To: <1309225852-1664-1-git-send-email-b35362@freescale.com>
-References: <1309225852-1664-1-git-send-email-b35362@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Liu Shuo <b35362@freescale.com>, linuxppc-dev@ozlabs.org,
-	Li Yang <leoli@freescale.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD: pxa3xx_nand: enable multiple chip select support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Lei Wen <leiwen@marvell.com>
+Date: Tue, 28 Jun 2011 10:32:36 +0300
+In-Reply-To: <1309000666-5242-1-git-send-email-leiwen@marvell.com>
+References: <4E031900.50108@compulab.co.il>
+	<1309000666-5242-1-git-send-email-leiwen@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309246361.23597.30.camel@sauron>
+Mime-Version: 1.0
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+	Igor Grinberg <grinberg@compulab.co.il>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,140 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Liu Shuo <b35362@freescale.com>
+On Sat, 2011-06-25 at 04:17 -0700, Lei Wen wrote:
+> Current pxa3xx_nand controller has two chip select which
+> both be workable. This patch enable this feature.
+> 
+> Update platform driver to support this feature.
+> 
+> Another notice should be taken that:
+> When you want to use this feature, you should not enable the
+> keep configuration feature, for two chip select could be
+> attached with different nand chip. The different page size
+> and timing requirement make the keep configuration impossible.
+> 
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
+> ---
+>  arch/arm/mach-mmp/aspenite.c                 |    5 +-
+>  arch/arm/mach-pxa/cm-x300.c                  |    5 +-
+>  arch/arm/mach-pxa/colibri-pxa3xx.c           |    5 +-
+>  arch/arm/mach-pxa/littleton.c                |    5 +-
+>  arch/arm/mach-pxa/mxm8x10.c                  |    9 +-
+>  arch/arm/mach-pxa/raumfeld.c                 |    5 +-
+>  arch/arm/mach-pxa/zylonite.c                 |    5 +-
+>  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   19 +-
+>  drivers/mtd/nand/pxa3xx_nand.c               |  512 +++++++++++++++-----------
+>  9 files changed, 346 insertions(+), 224 deletions(-)
 
-Freescale FCM controller has a 2K size limitation of buffer RAM. In order
-to support the Nand flash chip whose page size is larger than 2K bytes,
-we divide a page into multi-2K pages for MTD layer driver. In that case,
-we force to set the page size to 2K bytes. We convert the page address of
-MTD layer driver to a real page address in flash chips and a column index
-in fsl_elbc driver. We can issue any column address by UA instruction of
-elbc controller.
+In general huge patches like this are not encouraged and it is better to
+split them. At least the printk changes can be in a separate patch. Then
+re-naming host to info probably could be another patch. Could you please
+rather do a series of smaller patches? Also, if you use dev_info and the
+like functions, you probably do not need the pxa3xx_nand prefix anymore.
 
-Signed-off-by: Liu Shuo <b35362@freescale.com>
-Signed-off-by: Li Yang <leoli@freescale.com>
----
- drivers/mtd/nand/fsl_elbc_nand.c |   61 +++++++++++++++++++++++++++++--------
- 1 files changed, 48 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index a212116..eea7a22 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -76,6 +76,10 @@ struct fsl_elbc_fcm_ctrl {
- 	unsigned int oob;        /* Non zero if operating on OOB data     */
- 	unsigned int counter;	 /* counter for the initializations	  */
- 	char *oob_poi;           /* Place to write ECC after read back    */
-+
-+	int subpage_shift;       /* If writesize > 2048, these two members*/
-+	int subpage_mask;        /* are used to calculate the real page   */
-+	                         /* address and real column address       */
- };
- 
- /* These map to the positions used by the FCM hardware ECC generator */
-@@ -164,18 +168,27 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
- 	int buf_num;
-+	u32 real_ca = column;
- 
--	elbc_fcm_ctrl->page = page_addr;
-+	if (priv->page_size && elbc_fcm_ctrl->subpage_shift) {
-+		real_ca = (page_addr & elbc_fcm_ctrl->subpage_mask) * 2112;
-+		page_addr >>= elbc_fcm_ctrl->subpage_shift;
-+	}
- 
--	out_be32(&lbc->fbar,
--	         page_addr >> (chip->phys_erase_shift - chip->page_shift));
-+	elbc_fcm_ctrl->page = page_addr;
- 
- 	if (priv->page_size) {
-+		real_ca += (oob ? 2048 : 0);
-+		elbc_fcm_ctrl->use_mdr = 1;
-+		elbc_fcm_ctrl->mdr = real_ca;
-+
-+		out_be32(&lbc->fbar, page_addr >> 6);
- 		out_be32(&lbc->fpar,
- 		         ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
- 		         (oob ? FPAR_LP_MS : 0) | column);
- 		buf_num = (page_addr & 1) << 2;
- 	} else {
-+		out_be32(&lbc->fbar, page_addr >> 5);
- 		out_be32(&lbc->fpar,
- 		         ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
- 		         (oob ? FPAR_SP_MS : 0) | column);
-@@ -256,10 +269,11 @@ static void fsl_elbc_do_read(struct nand_chip *chip, int oob)
- 	if (priv->page_size) {
- 		out_be32(&lbc->fir,
- 		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
--		         (FIR_OP_CA  << FIR_OP1_SHIFT) |
--		         (FIR_OP_PA  << FIR_OP2_SHIFT) |
--		         (FIR_OP_CM1 << FIR_OP3_SHIFT) |
--		         (FIR_OP_RBW << FIR_OP4_SHIFT));
-+		         (FIR_OP_UA  << FIR_OP1_SHIFT) |
-+		         (FIR_OP_UA  << FIR_OP2_SHIFT) |
-+		         (FIR_OP_PA  << FIR_OP3_SHIFT) |
-+		         (FIR_OP_CM1 << FIR_OP4_SHIFT) |
-+		         (FIR_OP_RBW << FIR_OP5_SHIFT));
- 
- 		out_be32(&lbc->fcr, (NAND_CMD_READ0 << FCR_CMD0_SHIFT) |
- 		                    (NAND_CMD_READSTART << FCR_CMD1_SHIFT));
-@@ -399,12 +413,13 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		if (priv->page_size) {
- 			out_be32(&lbc->fir,
- 			         (FIR_OP_CM2 << FIR_OP0_SHIFT) |
--			         (FIR_OP_CA  << FIR_OP1_SHIFT) |
--			         (FIR_OP_PA  << FIR_OP2_SHIFT) |
--			         (FIR_OP_WB  << FIR_OP3_SHIFT) |
--			         (FIR_OP_CM3 << FIR_OP4_SHIFT) |
--			         (FIR_OP_CW1 << FIR_OP5_SHIFT) |
--			         (FIR_OP_RS  << FIR_OP6_SHIFT));
-+			         (FIR_OP_UA  << FIR_OP1_SHIFT) |
-+			         (FIR_OP_UA  << FIR_OP2_SHIFT) |
-+			         (FIR_OP_PA  << FIR_OP3_SHIFT) |
-+			         (FIR_OP_WB  << FIR_OP4_SHIFT) |
-+			         (FIR_OP_CM3 << FIR_OP5_SHIFT) |
-+			         (FIR_OP_CW1 << FIR_OP6_SHIFT) |
-+			         (FIR_OP_RS  << FIR_OP7_SHIFT));
- 		} else {
- 			out_be32(&lbc->fir,
- 			         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
-@@ -453,6 +468,9 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 			full_page = 1;
- 		}
- 
-+		if (priv->page_size)
-+			elbc_fcm_ctrl->use_mdr = 1;
-+
- 		fsl_elbc_run_command(mtd);
- 
- 		/* Read back the page in order to fill in the ECC for the
-@@ -654,9 +672,26 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 	struct nand_chip *chip = mtd->priv;
- 	struct fsl_elbc_mtd *priv = chip->priv;
- 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
-+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
- 	unsigned int al;
- 
-+	/* Hack for supporting the flash chip whose writesize is
-+	 * larger than 2K bytes.
-+	 */
-+	if (mtd->writesize > 2048) {
-+		elbc_fcm_ctrl->subpage_shift = ffs(mtd->writesize >> 11) - 1;
-+		elbc_fcm_ctrl->subpage_mask =
-+			(1 << elbc_fcm_ctrl->subpage_shift) - 1;
-+		/* Rewrite mtd->writesize, mtd->oobsize, chip->page_shift
-+		 * and chip->pagemask.
-+		 */
-+		mtd->writesize = 2048;
-+		mtd->oobsize = 64;
-+		chip->page_shift = ffs(mtd->writesize) - 1;
-+		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-+	}
-+
- 	/* calculate FMR Address Length field */
- 	al = 0;
- 	if (chip->pagemask & 0xffff0000)
 -- 
-1.7.1
+Best Regards,
+Artem Bityutskiy
