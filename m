@@ -1,17 +1,16 @@
 Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbZpy-0002eP-Hw
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 15:04:28 +0000
-Message-ID: <4E09ED56.2070704@parrot.com>
-Date: Tue, 28 Jun 2011 17:03:50 +0200
+	id 1QbZvJ-0002pF-Uv
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 15:09:58 +0000
+Message-ID: <4E09EEA9.2040307@parrot.com>
+Date: Tue, 28 Jun 2011 17:09:29 +0200
 From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
 To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/6] nand_wait : warn if the nand is busy on exit
-References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>	
-	<1309105616-3609-2-git-send-email-matthieu.castet@parrot.com>
-	<1309247836.23597.42.camel@sauron>
-In-Reply-To: <1309247836.23597.42.camel@sauron>
+Subject: Re: [PATCH 1/6] nand_wait_ready timeout fix
+References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
+	<1309247324.23597.37.camel@sauron>
+In-Reply-To: <1309247324.23597.37.camel@sauron>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -26,45 +25,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Artem Bityutskiy a écrit :
 > On Sun, 2011-06-26 at 18:26 +0200, Matthieu CASTET wrote:
->> This patch allow to detect buggy driver/hardware with
->> bad RnB (dev_ready) management.
->> This check cost nothing and could help to detect bugs.
+>> nand_wait_ready timeout should not assume HZ=1000.
+>> Make it independent of HZ value.
 >>
 >> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 >> ---
->>  drivers/mtd/nand/nand_base.c |    2 ++
->>  1 files changed, 2 insertions(+), 0 deletions(-)
+>>  drivers/mtd/nand/nand_base.c |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
 >>
 >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index a3c7fd3..095dfea 100644
+>> index a46e9bb..a3c7fd3 100644
 >> --- a/drivers/mtd/nand/nand_base.c
 >> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -885,6 +885,8 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
->>  	led_trigger_event(nand_led_trigger, LED_OFF);
->>  
->>  	status = (int)chip->read_byte(mtd);
->> +	/* This can happen if in case of timeout or buggy dev_ready */
->> +	WARN_ON(!(status & NAND_STATUS_READY));
->>  	return status;
+>> @@ -512,7 +512,7 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
+>>  void nand_wait_ready(struct mtd_info *mtd)
+>>  {
+>>  	struct nand_chip *chip = mtd->priv;
+>> -	unsigned long timeo = jiffies + 2;
+>> +	unsigned long timeo = jiffies + (2 * HZ) / 1000;
 > 
-> This seem to completely miss the chip->dev_ready != NULL case, e.g.,
-> piece of code above is like this
+> I agree that the code is buggy, but your fix is strange: if HZ = 100, (2
+> * HZ) / 1000 will be zero?
 > 
->                 while (time_before(jiffies, timeo)) {
->                         if (chip->dev_ready) {
->                                 if (chip->dev_ready(mtd))
->                                         break;
->                         } else {
->                                 if (chip->read_byte(mtd) & NAND_STATUS_READY)
->                                         break;
->                         }
->                         cond_resched();
->                 }
+> I think you should instead know for how many msecs you want to wait, and
+> use msecs_to_jiffies().
 > 
-Sorry, I don't understand what you mean.
+Your right, I assume the code was written for HZ=100, and the code should wait
+for 20 ms :
+unsigned long timeo = jiffies + (20 * HZ) / 1000;
 
-We don't care what's done in the loop (chip->dev_ready != NULL or, not). We only
-check when the loop exit, that READY bit is set in the status.
+this will match with the
+static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+{
 
+    unsigned long timeo = jiffies;
+    int status, state = chip->state;
+
+    if (state == FL_ERASING)
+        timeo += (HZ * 400) / 1000;
+    else
+        timeo += (HZ * 20) / 1000;
+[...]
+}
 
 Matthieu
