@@ -1,22 +1,26 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
+Received: from mail.elutions.com ([64.31.159.3])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbaGS-0003CF-BE
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 15:31:48 +0000
-Message-ID: <4E09F3F1.7080109@free-electrons.com>
-Date: Tue, 28 Jun 2011 17:32:01 +0200
-From: David Wagner <david.wagner@free-electrons.com>
+	id 1QbaJn-0003Fc-QQ
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 15:35:16 +0000
+Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
+	v3.2r9) id h17hfo0171sa for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Jun 2011 10:19:36 -0400 (envelope-from
+	<prvs=1160450366=mhench@elutions.com>)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH] UBI: new module ubiblk: block layer on top of UBI
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>	<1308922482-14967-2-git-send-email-david.wagner@free-electrons.com>	<1309202771.24805.11.camel@koala>
-	<4E09EA52.8090006@parrot.com>
-In-Reply-To: <4E09EA52.8090006@parrot.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH 2/2] mtd/nand : workaround for Freescale FCM to
+	supportlarge-page Nand chip
+Date: Tue, 28 Jun 2011 11:35:12 -0400
+Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC0262C53D@tpamail.elutions.com>
+In-Reply-To: <1309225852-1664-2-git-send-email-b35362@freescale.com>
+From: "Mike Hench" <mhench@elutions.com>
+To: <b35362@freescale.com>,
+	<dwmw2@infradead.org>
+Cc: linuxppc-dev@ozlabs.org, Li Yang <leoli@freescale.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +30,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/28/2011 04:50 PM, Matthieu CASTET wrote:
-> Hi,
->
-[...]
-> Also what are the advantage against gluebi + mtdblock_ro ?
 
-The main advantage is a reduced number of layers ; I must say I cannot
-see much more for now.  I could add that the Kconfig help of gluebi
-advises not to use it except when needed by legacy software.
+Any boot ideas ?
+Will the FCM load 2k and run it?
 
--- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Thanks for any insight you might have.
