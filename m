@@ -1,20 +1,20 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbLk1-00084M-Vv
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 00:01:22 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 06/10] mtd-utils: add common version printing
- function
-Date: Mon, 27 Jun 2011 17:00:29 -0700
-Message-ID: <1309219229-5604-2-git-send-email-computersforpeace@gmail.com>
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbLsu-0008At-BV
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 00:10:32 +0000
+Received: by ywf9 with SMTP id 9so2498473ywf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Jun 2011 17:10:29 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <1309219229-5604-1-git-send-email-computersforpeace@gmail.com>
 References: <1309219229-5604-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 27 Jun 2011 20:10:09 -0400
+Message-ID: <BANLkTink1FKj=AMPBSOYc=yDFCvGpKqSrA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] more mtd-utils cleanup
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- include/common.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+On Mon, Jun 27, 2011 at 20:00, Brian Norris wrote:
+> This series fixes several mtd-utils issues and takes care of a few things
+> on the feature-removal schedule.
+>
+> v2: addressed comments about common_version_print() (patch 6)
+>
+> I'm only bothering to send patch 6, since the other 9 should be identical.
+> I'll resend if you want...
 
-diff --git a/include/common.h b/include/common.h
-index 65ec086..88b67e5 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -129,6 +129,12 @@ simple_strtoX(strtoll, long long int)
- simple_strtoX(strtoul, unsigned long int)
- simple_strtoX(strtoull, unsigned long long int)
- 
-+/* Simple version-printing for utils */
-+#define common_print_version() \
-+do { \
-+	printf("%s %s\n", PROGRAM_NAME, VERSION); \
-+} while (0)
-+
- #include "xalloc.h"
- 
- #ifdef __cplusplus
--- 
-1.7.0.4
+i dont think that's necessary
+-mike
