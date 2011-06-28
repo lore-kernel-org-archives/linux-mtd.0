@@ -1,35 +1,16 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbXfQ-0000EI-6w
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 12:45:24 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QbXfN-0000tR-FB
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 14:45:21 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2011 14:45:21 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2011 14:45:21 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [Ubifs] Reboot -> "recovery needed"?
-Date: Tue, 28 Jun 2011 14:45:07 +0200
-Message-ID: <46jj07dq6egqupjbbgvttn01sn8344s876@4ax.com>
-References: <1rhb079etc7nr1tasfal6eag1d6lmfhd73@4ax.com>
-	<1309246418.23597.31.camel@sauron>
-	<45ej07pjslh20fb66illqsmn9r0au0fejb@4ax.com>
-	<1309260162.23597.66.camel@sauron>
-	<gfej07dg451r0l2co91fuvn4k2ujktk1ta@4ax.com>
-	<1309261088.23597.68.camel@sauron>
-	<enfj071fg5ebr0n2u15t2nogem32afb5kh@4ax.com>
-	<1309263271.23597.70.camel@sauron>
-	<1bij07h511u24jct1qrpvo4622jogipiuj@4ax.com>
-	<1309265018.23597.74.camel@sauron>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <4E09DDE9.2070900@atmel.com>
+Date: Tue, 28 Jun 2011 15:58:01 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH] MTD: atmel_nand: optimize read/write buffer functions
+References: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
+	<20110628111043.GH6588@pengutronix.de>
+In-Reply-To: <20110628111043.GH6588@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: hong.xu@atmel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,9 +20,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 28 Jun 2011 15:43:33 +0300, Artem Bityutskiy
-<dedekind1@gmail.com> wrote:
->This all is done automatically by UBIFS, you do not have to worry. Just
->make sure you sync before reboot.
+Le 28/06/2011 13:10, Uwe Kleine-König :
+> On Tue, Jun 28, 2011 at 01:50:56PM +0200, Nicolas Ferre wrote:
+>> For PIO NAND access functions, we use the features of the SMC:
+>> - no need to take into account the NAND bus width: SMC will deal with this
+>> - a word aligned memcpy on the NAND chip-select space is able to generate
+>>   proper SMC behavior while optimizing AHB bus usage thanks to optimized memcpy
+>>   implementation.
+>>
+>> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+>> ---
+>>  drivers/mtd/nand/atmel_nand.c |   71 +++++++++++++++++-----------------------
+>>  1 files changed, 30 insertions(+), 41 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index b300705..cb8a04b 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -160,37 +160,6 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
+>>                  !!host->board->rdy_pin_active_low;
+>>  }
+>>  
+>> -/*
+>> - * Minimal-overhead PIO for data access.
+>> - */
+>> -static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
+>> -{
+>> -	struct nand_chip	*nand_chip = mtd->priv;
+>> -
+>> -	__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
+>> -}
+>> -
+>> -static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
+>> -{
+>> -	struct nand_chip	*nand_chip = mtd->priv;
+>> -
+>> -	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
+>> -}
+>> -
+>> -static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
+>> -{
+>> -	struct nand_chip	*nand_chip = mtd->priv;
+>> -
+>> -	__raw_writesb(nand_chip->IO_ADDR_W, buf, len);
+>> -}
+>> -
+>> -static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
+>> -{
+>> -	struct nand_chip	*nand_chip = mtd->priv;
+>> -
+>> -	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
+>> -}
+>> -
+>>  static void dma_complete_func(void *completion)
+>>  {
+>>  	complete(completion);
+>> @@ -265,33 +234,53 @@ err_buf:
+>>  static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
+>>  {
+>>  	struct nand_chip *chip = mtd->priv;
+>> -	struct atmel_nand_host *host = chip->priv;
+>> +	u32 align;
+>> +	u8 *pbuf;
+>>  
+>>  	if (use_dma && len > mtd->oobsize)
+>>  		/* only use DMA for bigger than oob size: better performances */
+>>  		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
+>>  			return;
+>>  
+>> -	if (host->board->bus_width_16)
+>> -		atmel_read_buf16(mtd, buf, len);
+>> -	else
+>> -		atmel_read_buf8(mtd, buf, len);
+>> +	/* if no DMA operation possible, use PIO */
+>> +	pbuf = buf;
+>> +	align = 0x03 & ((unsigned)pbuf);
+>> +
+>> +	if (align) {
+>> +		u32 align_len = 4 - align;
+>> +
+>> +		/* non aligned buffer: re-align to next word boundary */
+>> +		ioread8_rep(chip->IO_ADDR_R, pbuf, align_len);
+>> +		pbuf += align_len;
+>> +		len -= align_len;
+>> +	}
+>> +	memcpy((void *)pbuf, chip->IO_ADDR_R, len);
+> I think you don't need to cast to (void *). I think you need to cast the
+> 2nd parameter instead because sparse don't like you passing an void
+> __iomem *.
 
-Ok, problem solved then. Thank you for your help.
+Yes but if I try to cast it, sparse will notice it anyway. So yes, it
+seems that I am doing something _bad_ and that the use of memcpy() here
+is not the preferred way to deal with hardware FIFO.
+On the other hand, the memcpy_fromio() function is far from being as
+optimized as the ARM memcpy() implementation... I am wandering what is
+the best solution?
+
+> Is it correct to read from chip->IO_ADDR_R, don't you need
+> chip->IO_ADDR_R + align_len?
+
+No, it is a FIFO, so each reading from it will give the next data.
+
+> Taking this into account, does it really help to align pbuf?
+
+Aligning to next 32bit word address avoid having to deal with memcpy()
+alignment management that reads twice to rearrange data (loosing datas
+in the case of a FIFO ;-)). So yes, aligning really helps.
+
+So, all this leads me to append RFC to this patch title...
+
+Best regards,
+-- 
+Nicolas Ferre
