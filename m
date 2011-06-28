@@ -1,21 +1,21 @@
 Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbUfU-00055V-M0
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 09:33:17 +0000
-Received: by pwi3 with SMTP id 3so26008pwi.36
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbUlo-0006IQ-7z
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 09:39:48 +0000
+Received: by pwi3 with SMTP id 3so28599pwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Jun 2011 02:33:12 -0700 (PDT)
+	Tue, 28 Jun 2011 02:38:57 -0700 (PDT)
 Subject: Re: Preventing JFFS2 partial page writes?
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Peter Barada <peter.barada@gmail.com>
-Date: Tue, 28 Jun 2011 12:34:02 +0300
-In-Reply-To: <4E089441.3010809@gmail.com>
+Date: Tue, 28 Jun 2011 12:39:47 +0300
+In-Reply-To: <1309253646.23597.58.camel@sauron>
 References: <4DF789FC.1030305@gmail.com> <1308722655.18119.40.camel@sauron>
 	<4E020A36.6070708@gmail.com> <1308943581.13493.15.camel@koala>
-	<4E089441.3010809@gmail.com>
+	<4E089441.3010809@gmail.com> <1309253646.23597.58.camel@sauron>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309253646.23597.58.camel@sauron>
+Message-ID: <1309253992.23597.62.camel@sauron>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, Peter Barada <peter.barada@logicpd.com>
 Reply-To: dedekind1@gmail.com
@@ -28,79 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-06-27 at 10:31 -0400, Peter Barada wrote:
-> On 06/24/2011 03:26 PM, Artem Bityutskiy wrote:
-> > On Wed, 2011-06-22 at 11:28 -0400, Peter Barada wrote:
-> >> Thoughts?
-> > Sorry, could you please define the problem you are trying to solve?
-> > Sorry if you did define it in your long post, but I could not easily
-> > find it.
-> The problem I'm trying to solve is that the Micron NAND  I'm using has 
-> an internal 4-bit ECC engine and uses four 8-byte ECCs that provide 
-> 4-bit protection per 512 data bytes + four OOB bytes.  The ecclayout I'm 
-> using is:
+On Tue, 2011-06-28 at 12:34 +0300, Artem Bityutskiy wrote:
+> OK, thanks for explanation. I am not very good in this area as I do not
+> have much experience dealing with OOB, but here is what I thing.
 > 
-> ecclayout = {
->          eccbytes = 32,
->          eccpos = { 8, 9, 10, 11, 12, 13, 14, 15, /* ECC data bytes 
-> 0-511 + OOB bytes 4-7 */
->                  24, 25, 26, 27, 28, 19, 30, 31, /* ECC data bytes 
-> 512-1023 + OOB bytes 20-23 */
->                  40, 41, 42, 43, 44, 45, 46, 47,  /* ECC data bytes 
-> 1024-1535 + OOB bytes 36-39 */
->                  56, 57, 58, 59, 60, 61, 62, 63},  /* ECC data bytes 
-> 1536-2047 + OOB bytes 52-55 */
->          .oobfree = {
->                  { .offset = 4,
->                    .length = 4},
->                  { .offset = 20,
->                    .length = 4},
->                  { .offset = 36,
->                    .length = 4},
->                  { .offset = 52,
->                    .length = 4},
->          },
-> };
-> 
-> After the JFFS2 cleanmarker is written into bytes 4-7 and 16-23 of the 
-> OOB, nanddump shows:
-> 
->    OOB Data: ff ff ff ff 85 19 03 20 5a e3 da 69 01 40 f1 36
->    OOB Data: ff ff ff ff 08 00 00 00 91 99 3c 05 01 d0 5d b3
->    OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->    OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> 
-> Note that the ECC bytes 8-15 and 24-31 are no longer FF due to bytes 4-7 
-> and bytes 20-23 being written with non-zero data.
-> 
-> When data is later written to this same page (w/o an intervening erase 
-> of its block) reading the page causes an uncorrectable ECC error.
-> 
-> There are eight additional bytes of OOB space available for writing, but 
-> they are not ECC'd.
-> 
-> The issue I'm trying to solve is how to communicate from MTD to JFFS2 
-> that some bytes of the oobfree array perturb the data ECC and can not be 
-> used to write the cleanmarker.
+> 1. Linux MTD code was _not_ designed for "ECC'ed OOB".
+> 2. I do not really know what MTD_OOB_RAW is, and the comment in mtd.h
+>    is not very verbose.
+> 3. But in my opinion MTD_OOB_AUTO makes most sense and should be used
+>    everywhere except for some tricky cases when you want to test things
+>    by writing incorrect ECC, or you have an image with ECC and you want
+>    to flash it as is.
+> 4. In general, OOB should be considered as belonging to the driver, and
+>    modern software should not rely on OOB at all.
+> 5. So MTD_OOB_AUTO make free bytes in OOB look like a contiguous buffer
+>    which the _user_ can freely and _independently_ use.
+> 6. In your case only this assumption does not work and your ecclayout is
+>    incorrect because the OOB areas you expose are not independent.
+> 7. So in your case your ecclayout should be changed and you should
+>    expose only independent ECC bytes.
 
-OK, thanks for explanation. I am not very good in this area as I do not
-have much experience dealing with OOB, but here is what I thing.
+To put it differently, I current model does not distinguish (I think,
+correct me if I am wrong) between ECC'd OOB bytes and ECC'less OOB
+bytes. BTW, does your flash has the latter?
 
-1. Linux MTD code was _not_ designed for "ECC'ed OOB".
-2. I do not really know what MTD_OOB_RAW is, and the comment in mtd.h
-   is not very verbose.
-3. But in my opinion MTD_OOB_AUTO makes most sense and should be used
-   everywhere except for some tricky cases when you want to test things
-   by writing incorrect ECC, or you have an image with ECC and you want
-   to flash it as is.
-4. In general, OOB should be considered as belonging to the driver, and
-   modern software should not rely on OOB at all.
-5. So MTD_OOB_AUTO make free bytes in OOB look like a contiguous buffer
-   which the _user_ can freely and _independently_ use.
-6. In your case only this assumption does not work and your ecclayout is
-   incorrect because the OOB areas you expose are not independent.
-7. So in your case your ecclayout should be changed and you should
-   expose only independent ECC bytes.
+So MTD would need some work to make it distinguish between those 2 types
+of OOB bytes - probably additional info could be added to the ooblayout
+structure, and the interfaces could be improved. How exactly - dunno,
+I'd first need to figure out what MTD_OOB_RAW is - may be Brian or Ivan
+could comment.
 
 -- 
 Best Regards,
