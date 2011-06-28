@@ -1,20 +1,21 @@
-Subject: Re: [PATCH] MTD: pxa3xx_nand: enable multiple chip select support
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbSmu-0002EU-Ew
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 07:32:49 +0000
+Received: by pwi3 with SMTP id 3so3951636pwi.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Jun 2011 00:32:44 -0700 (PDT)
+Subject: Re: [Ubifs] Reboot -> "recovery needed"?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lei Wen <leiwen@marvell.com>
-Date: Tue, 28 Jun 2011 10:32:36 +0300
-In-Reply-To: <1309000666-5242-1-git-send-email-leiwen@marvell.com>
-References: <4E031900.50108@compulab.co.il>
-	<1309000666-5242-1-git-send-email-leiwen@marvell.com>
+To: Gilles <gilles.ganault@free.fr>
+Date: Tue, 28 Jun 2011 10:33:34 +0300
+In-Reply-To: <1rhb079etc7nr1tasfal6eag1d6lmfhd73@4ax.com>
+References: <1rhb079etc7nr1tasfal6eag1d6lmfhd73@4ax.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309246361.23597.30.camel@sauron>
+Message-ID: <1309246418.23597.31.camel@sauron>
 Mime-Version: 1.0
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,36 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2011-06-25 at 04:17 -0700, Lei Wen wrote:
-> Current pxa3xx_nand controller has two chip select which
-> both be workable. This patch enable this feature.
+On Sat, 2011-06-25 at 13:34 +0200, Gilles wrote:
+> Hello
 > 
-> Update platform driver to support this feature.
+> 	The root filesystem lives in a partition on a NAND, and I noticed
+> that after running "reboot", at the next boot, I get this message:
 > 
-> Another notice should be taken that:
-> When you want to use this feature, you should not enable the
-> keep configuration feature, for two chip select could be
-> attached with different nand chip. The different page size
-> and timing requirement make the keep configuration impossible.
+> ===============
+> ...
+> UBIFS: recovery needed
+> UBIFS: recovery completed
+> UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+> UBIFS: file system size:   251596800 bytes (245700 KiB, 239 MiB, 1950
+> LEBs)
+> UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+> UBIFS: media format:       w4/r0 (latest is w4/r0)
+> UBIFS: default compressor: lzo
+> UBIFS: reserved for root:  0 bytes (0 KiB)
+> VFS: Mounted root (ubifs filesystem) on device 0:10.
+> ===============
 > 
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> ---
->  arch/arm/mach-mmp/aspenite.c                 |    5 +-
->  arch/arm/mach-pxa/cm-x300.c                  |    5 +-
->  arch/arm/mach-pxa/colibri-pxa3xx.c           |    5 +-
->  arch/arm/mach-pxa/littleton.c                |    5 +-
->  arch/arm/mach-pxa/mxm8x10.c                  |    9 +-
->  arch/arm/mach-pxa/raumfeld.c                 |    5 +-
->  arch/arm/mach-pxa/zylonite.c                 |    5 +-
->  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   19 +-
->  drivers/mtd/nand/pxa3xx_nand.c               |  512 +++++++++++++++-----------
->  9 files changed, 346 insertions(+), 224 deletions(-)
+> Is this the way Ubifs works, or should I run a command prior to
+> "reboot"?
 
-In general huge patches like this are not encouraged and it is better to
-split them. At least the printk changes can be in a separate patch. Then
-re-naming host to info probably could be another patch. Could you please
-rather do a series of smaller patches? Also, if you use dev_info and the
-like functions, you probably do not need the pxa3xx_nand prefix anymore.
+Your reboot command does not unmount the file-system, so from UBIFS's
+point of view you do unclean reboot, and UBIFS needs to do recovery.
 
 -- 
 Best Regards,
