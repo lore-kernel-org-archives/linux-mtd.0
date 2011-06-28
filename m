@@ -1,21 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbIRc-000510-0r
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2011 20:30:09 +0000
-Received: by wwf22 with SMTP id 22so3704817wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Jun 2011 13:30:01 -0700 (PDT)
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbLjp-00084M-T0
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2011 00:01:11 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v2 00/10] more mtd-utils cleanup
+Date: Mon, 27 Jun 2011 17:00:28 -0700
+Message-ID: <1309219229-5604-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <BANLkTimMhBbAJENgDJ8+8abMn3Qgi0iLHw@mail.gmail.com>
-References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
-	<BANLkTimMhBbAJENgDJ8+8abMn3Qgi0iLHw@mail.gmail.com>
-Date: Mon, 27 Jun 2011 13:30:00 -0700
-Message-ID: <BANLkTimo+M1107M+6fcvL8DBXHwYnZzA6g@mail.gmail.com>
-Subject: Re: [PATCH 00/10] more mtd-utils cleanup
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 27, 2011 at 12:52 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
-> except for the one i commented on, the rest look fine to me
-> Acked-by: Mike Frysinger <vapier@gentoo.org>
-> -mike
+This series fixes several mtd-utils issues and takes care of a few things
+on the feature-removal schedule.
 
-Thanks. I'll send v2 soon if I don't get any more comments.
+v2: addressed comments about common_version_print() (patch 6)
 
+I'm only bothering to send patch 6, since the other 9 should be identical.
+I'll resend if you want...
+
+Thanks,
 Brian
+
+Brian Norris (10):
+  mtd-tests: checkfs: fix size_t related warning
+  mtd-tests: io_paral: build error, "variable length strings"
+  mtd-utils: remove whitespace at end of lines
+  mtd-utils: update .gitignore files
+  mkfs.ubifs: use common.h
+  mtd-utils: add common version printing function
+  mtd-utils: switch more utils to unified versioning
+  mtd-utils: kill flash_info
+  mtdinfo: kill -m option
+  nanddump: remove unused variable
+
+ .gitignore                               |    5 ++
+ Makefile                                 |    2 +-
+ device_table.txt                         |    6 +-
+ feature-removal-schedule.txt             |   14 ------
+ flash_info.c                             |   67 ------------------------------
+ include/common.h                         |    6 +++
+ include/linux/jffs2.h                    |    2 +-
+ jffs2dump.c                              |    2 +-
+ lib/libfec.c                             |   14 +++---
+ mcast_image.h                            |    4 +-
+ mkfs.jffs2.1                             |    6 +-
+ mkfs.jffs2.c                             |    6 +-
+ mkfs.ubifs/hashtable/hashtable.c         |   14 +++---
+ mkfs.ubifs/hashtable/hashtable.h         |   30 +++++++-------
+ mkfs.ubifs/hashtable/hashtable_itr.c     |   12 +++---
+ mkfs.ubifs/hashtable/hashtable_itr.h     |   12 +++---
+ mkfs.ubifs/hashtable/hashtable_private.h |   12 +++---
+ mkfs.ubifs/mkfs.ubifs.c                  |   12 ++----
+ nanddump.c                               |    3 +-
+ nandtest.c                               |   16 ++++----
+ rbtree.c                                 |    6 +-
+ rbtree.h                                 |    4 +-
+ recv_image.c                             |   24 +++++-----
+ serve_image.c                            |   30 +++++++-------
+ tests/checkfs/.gitignore                 |    2 +
+ tests/checkfs/README                     |   26 ++++++------
+ tests/checkfs/checkfs.c                  |    2 +-
+ tests/fs-tests/integrity/.gitignore      |    1 +
+ tests/fs-tests/simple/.gitignore         |    5 ++
+ tests/fs-tests/stress/atoms/.gitignore   |   10 ++++
+ tests/fs-tests/utils/.gitignore          |    2 +
+ tests/jittertest/.gitignore              |    2 +
+ tests/jittertest/README                  |   18 ++++----
+ tests/jittertest/filljffs2.sh            |    2 +-
+ tests/ubi-tests/io_paral.c               |    2 +-
+ ubi-utils/dictionary.c                   |    6 +-
+ ubi-utils/libiniparser.c                 |    8 ++--
+ ubi-utils/mtdinfo.c                      |   30 ++++----------
+ ubi-utils/ubiattach.c                    |    5 +-
+ ubi-utils/ubicrc32.c                     |    5 +-
+ ubi-utils/ubidetach.c                    |    5 +-
+ ubi-utils/ubiformat.c                    |    5 +-
+ ubi-utils/ubimkvol.c                     |    5 +-
+ ubi-utils/ubinfo.c                       |    5 +-
+ ubi-utils/ubinize.c                      |    5 +-
+ ubi-utils/ubirename.c                    |    1 -
+ ubi-utils/ubirmvol.c                     |    5 +-
+ ubi-utils/ubirsvol.c                     |    5 +-
+ ubi-utils/ubiupdatevol.c                 |    5 +-
+ 49 files changed, 199 insertions(+), 277 deletions(-)
+ delete mode 100644 flash_info.c
+ create mode 100644 tests/checkfs/.gitignore
+ create mode 100644 tests/fs-tests/integrity/.gitignore
+ create mode 100644 tests/fs-tests/simple/.gitignore
+ create mode 100644 tests/fs-tests/stress/atoms/.gitignore
+ create mode 100644 tests/fs-tests/utils/.gitignore
+ create mode 100644 tests/jittertest/.gitignore
