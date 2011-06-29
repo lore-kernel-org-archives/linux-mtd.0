@@ -1,22 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbxnT-0002WW-Fy
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 16:39:28 +0000
-Received: by wyf23 with SMTP id 23so1218211wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Jun 2011 09:37:39 -0700 (PDT)
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+	helo=CH1EHSOBE006.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qbxre-0001PX-Dn
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 16:43:47 +0000
+Date: Wed, 29 Jun 2011 11:43:29 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 2/2] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+Message-ID: <20110629114329.154aaef2@schlenkerla.am.freescale.net>
+In-Reply-To: <1309328529.23597.106.camel@sauron>
+References: <1309225852-1664-1-git-send-email-b35362@freescale.com>
+	<1309225852-1664-2-git-send-email-b35362@freescale.com>
+	<1309328529.23597.106.camel@sauron>
 MIME-Version: 1.0
-In-Reply-To: <1309105616-3609-6-git-send-email-matthieu.castet@parrot.com>
-References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
-	<1309105616-3609-6-git-send-email-matthieu.castet@parrot.com>
-Date: Wed, 29 Jun 2011 09:37:39 -0700
-Message-ID: <BANLkTinwT=63yoqfJnab6RUSB4wL-92iEg@mail.gmail.com>
-Subject: Re: [PATCH 6/6] add NAND_BUSWIDTH_AUTO
-From: Brian Norris <computersforpeace@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, b35362@freescale.com, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 29 Jun 2011 09:22:04 +0300
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-I have a few comments below.
+> On Tue, 2011-06-28 at 09:50 +0800, b35362@freescale.com wrote:
+> > +	/* Hack for supporting the flash chip whose writesize is
+> > +	 * larger than 2K bytes.
+> > +	 */
+> 
+> Please, use proper kernel multi-line comments. Please, make sure
+> checkpatch.pl does not generate 13 errors with this patch.
 
-On Sun, Jun 26, 2011 at 9:26 AM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3096,11 +3096,16 @@ ident_done:
-...
-> + =A0 =A0 =A0 if (chip->options & NAND_BUSWIDTH_AUTO) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 BUG_ON(chip->options & NAND_BUSWIDTH_16);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->options |=3D busw;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 nand_set_defaults(chip, busw);
-> + =A0 =A0 =A0 }
+Most of the checkpatch complaints are about existing style in the file --
+particularly, the use of tabs only for indentation, with spaces used for
+alignment beyond the indentation point.
 
-Doesn't this get called after nand_set_defaults() is already called?
-(see nand_scan_ident) If so, then changing the buswidth here won't
-actually affect any of the function assignments. That's probably not
-your expected behavior, is it?
-
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -240,6 +240,11 @@ typedef enum {
-...
-> +/* autodetect nand buswidth with readid. This suppose the driver will
-> + * configure the hardware has 8 bit in nand_scan_ident, and update
-> + * configuration before calling nand_scan_tail
-> + */
-
-This is not the correct multi-line comment format.
-
-> +#define NAND_BUSWIDTH_AUTO =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x020=
-00000
-
-I recently did some revamping of a lot of these flags, so the
-numbering has all changed in Artem's staging tree, l2-mtd-2.6.git.
-Assuming both our patches are taken into mainline, it'd probably be
-good if you rebased on the l2 tree and choose a new bit value for this
-flag. AFAICT it'd be good like:
-
-+#define NAND_BUSWIDTH_AUTO                     0x00080000
-
-Brian
+-Scott
