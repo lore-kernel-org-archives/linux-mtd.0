@@ -1,18 +1,24 @@
-Message-ID: <4E0B2427.9020202@atmel.com>
-Date: Wed, 29 Jun 2011 15:09:59 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qbuiv-0006as-KD
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 13:22:35 +0000
+Received: by vws8 with SMTP id 8so1083421vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Jun 2011 06:22:26 -0700 (PDT)
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC PATCH] MTD: atmel_nand: optimize read/write buffer	functions
-References: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
-	<20110628111043.GH6588@pengutronix.de>
-	<20110628145937.GG21898@n2100.arm.linux.org.uk>
-In-Reply-To: <20110628145937.GG21898@n2100.arm.linux.org.uk>
+In-Reply-To: <1309199247-19248-3-git-send-email-computersforpeace@gmail.com>
+References: <1309199247-19248-1-git-send-email-computersforpeace@gmail.com>
+	<1309199247-19248-3-git-send-email-computersforpeace@gmail.com>
+Date: Wed, 29 Jun 2011 09:22:26 -0400
+Message-ID: <BANLkTin6-=8sH8HazumX577-94TRk5Wi2g@mail.gmail.com>
+Subject: Re: [PATCH 02/10] mtd-tests: io_paral: build error,
+	"variable length strings"
+From: Josh Boyer <jwboyer@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: hong.xu@atmel.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	=?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 28/06/2011 16:59, Russell King - ARM Linux :
-> On Tue, Jun 28, 2011 at 01:10:43PM +0200, Uwe Kleine-König wrote:
->>> @@ -265,33 +234,53 @@ err_buf:
->>>  static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
->>>  {
->>>  	struct nand_chip *chip = mtd->priv;
->>> -	struct atmel_nand_host *host = chip->priv;
->>> +	u32 align;
->>> +	u8 *pbuf;
->>>  
->>>  	if (use_dma && len > mtd->oobsize)
->>>  		/* only use DMA for bigger than oob size: better performances */
->>>  		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
->>>  			return;
->>>  
->>> -	if (host->board->bus_width_16)
->>> -		atmel_read_buf16(mtd, buf, len);
->>> -	else
->>> -		atmel_read_buf8(mtd, buf, len);
->>> +	/* if no DMA operation possible, use PIO */
->>> +	pbuf = buf;
->>> +	align = 0x03 & ((unsigned)pbuf);
->>> +
->>> +	if (align) {
->>> +		u32 align_len = 4 - align;
->>> +
->>> +		/* non aligned buffer: re-align to next word boundary */
->>> +		ioread8_rep(chip->IO_ADDR_R, pbuf, align_len);
->>> +		pbuf += align_len;
->>> +		len -= align_len;
->>> +	}
->>> +	memcpy((void *)pbuf, chip->IO_ADDR_R, len);
->> I think you don't need to cast to (void *). I think you need to cast the
->> 2nd parameter instead because sparse don't like you passing an void
->> __iomem *.
->> Is it correct to read from chip->IO_ADDR_R, don't you need
->> chip->IO_ADDR_R + align_len? Taking this into account, does it really
->> help to align pbuf?
-> 
-> I think you need to read Documentation/bus-virt-phys-mapping.txt,
-> particularly the part after "NOTE NOTE NOTE".
-> 
-> Dereferencing ioremap'd memory is not permitted.  That includes passing
-> it to memcpy.  Even with a cast.
+On Mon, Jun 27, 2011 at 2:27 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Some compilers will complain about use of strlen() within a static array
+> size declaration. For this type of string, "sizeof() - 1" is equivalent
+> and prevents the build error.
+>
+> Error:
+>
+> =A0 io_paral.c:48:13: error: variably modified 'vol_nodes' at file scope
 
-So that means that I should use memcpy_fromio() even if the code if far
-less optimized.
+Out of curiosity, which compiler does that?  Newer versions of GCC, or
+some other compiler altogether?
 
-Shouldn't I re-implement some kind of IO copying function to deal with
-this IO memory so that I could take advantage of 8 words bursts?
-
-Best regards,
--- 
-Nicolas Ferre
+josh
