@@ -1,23 +1,20 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qboml-00052t-Gp
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 07:02:08 +0000
-Received: by iyn15 with SMTP id 15so983274iyn.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Jun 2011 00:02:05 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd: nand: ignore ECC errors for simple BBM scans
+Subject: Re: [PATCH 2/9] MTD: pxa3xx_nand: enable multiple chip select support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 29 Jun 2011 10:02:55 +0300
-In-Reply-To: <1309303740-9936-2-git-send-email-computersforpeace@gmail.com>
-References: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
-	<1309303740-9936-2-git-send-email-computersforpeace@gmail.com>
+To: Lei Wen <leiwen@marvell.com>
+Date: Wed, 29 Jun 2011 10:11:22 +0300
+In-Reply-To: <1309319494-17951-3-git-send-email-leiwen@marvell.com>
+References: <1309246361.23597.30.camel@sauron>
+	<1309319494-17951-3-git-send-email-leiwen@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309330980.23597.126.camel@sauron>
+Message-ID: <1309331487.23597.131.camel@sauron>
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, Jim Quinlan <jim2101024@gmail.com>,
-	linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+	Igor Grinberg <grinberg@compulab.co.il>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,20 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-28 at 16:28 -0700, Brian Norris wrote:
-> Now that nand_do_readoob() may return -EUCLEAN or -EBADMSG on ECC errors,
-> we need to handle the return value specially in some cases.
+On Tue, 2011-06-28 at 20:51 -0700, Lei Wen wrote:
+> Current pxa3xx_nand controller has two chip select which
+> both be workable. This patch enable this feature.
 > 
-> When scanning for simple bad block markers, reacting to an ECC error is
-> not very useful, as we assume that the relevant markers are still
-> non-0xFF for true bad blocks.
+> Update platform driver to support this feature.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Another notice should be taken that:
+> When you want to use this feature, you should not enable the
+> keep configuration feature, for two chip select could be
+> attached with different nand chip. The different page size
+> and timing requirement make the keep configuration impossible.
+> 
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
 > ---
->  drivers/mtd/nand/nand_bbt.c |   13 ++++++++++---
->  1 files changed, 10 insertions(+), 3 deletions(-)
+>  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   19 +-
+>  drivers/mtd/nand/pxa3xx_nand.c               |  493 +++++++++++++++----------
+>  2 files changed, 313 insertions(+), 199 deletions(-)
 
-Pushed to l2-mtd-2.6.git, thanks!
+If someone can review this patch - good let's see how many Reviewed-by
+tags we get. But I think it is not very reviewable because of the size.
+
+AFAICK, what you do here is
+
+1. Introduce new structure struct pxa3xx_nand_host
+2. Move several fields from struct pxa3xx_nand_info to struct
+pxa3xx_nand_host
+
+And only this alone adds a lot of noise to the patch.
+
+And also you have some real functional changes.
+
+So I'd suggest you to split this patch at least on 2 - the first one
+would introduce struct pxa3xx_nand_host, moved some fields, and do all
+the host<->info renamings. You can split this on several steps and move
+only several fields at a time.
+
+Then a separate patch would do some more functional changes. How does
+this sound?
 
 -- 
 Best Regards,
