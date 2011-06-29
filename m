@@ -1,23 +1,28 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbvJu-0007Ht-45
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 14:00:47 +0000
-Date: Wed, 29 Jun 2011 15:59:34 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/6] nand_wait : warn if the nand is busy on exit
-Message-ID: <20110629135934.GA18102@parrot.com>
-References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
-	<1309105616-3609-2-git-send-email-matthieu.castet@parrot.com>
-	<1309247836.23597.42.camel@sauron> <4E09ED56.2070704@parrot.com>
-	<1309287916.7411.9.camel@koala>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QbvYh-0007Sw-Sm
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 14:16:08 +0000
+Date: Wed, 29 Jun 2011 16:15:57 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+Message-ID: <20110629141557.GK1992@pengutronix.de>
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
+	<20110629100658.GE1992@pengutronix.de>
+	<20110629103337.GF1992@pengutronix.de>
+	<4E0B0296.6060902@freescale.com>
+	<20110629122942.GH1992@pengutronix.de>
+	<20110629140038.GB25931@S2100-06.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZG5hGh9V5E9QzVHS"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1309287916.7411.9.camel@koala>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu Castet <matthieu.castet@parrot.com>
+In-Reply-To: <20110629140038.GB25931@S2100-06.ap.freescale.net>
+Cc: dedekind1@gmail.com, thierry.nolf.barco@gmail.com,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +32,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 28, 2011 at 08:05:14PM +0100, Artem Bityutskiy wrote:
-> On Tue, 2011-06-28 at 17:03 +0200, Matthieu CASTET wrote:
-> > Artem Bityutskiy a écrit :
-> > > On Sun, 2011-06-26 at 18:26 +0200, Matthieu CASTET wrote:
-> > >> This patch allow to detect buggy driver/hardware with
-> > >> bad RnB (dev_ready) management.
-> > >> This check cost nothing and could help to detect bugs.
-> > >>
-> > >> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
-> > >> ---
-> > >>  drivers/mtd/nand/nand_base.c |    2 ++
-> > >>  1 files changed, 2 insertions(+), 0 deletions(-)
-> > >>
-> > >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > >> index a3c7fd3..095dfea 100644
-> > >> --- a/drivers/mtd/nand/nand_base.c
-> > >> +++ b/drivers/mtd/nand/nand_base.c
-> > >> @@ -885,6 +885,8 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
-> > >>  	led_trigger_event(nand_led_trigger, LED_OFF);
-> > >>  
-> > >>  	status = (int)chip->read_byte(mtd);
-> > >> +	/* This can happen if in case of timeout or buggy dev_ready */
-> > >> +	WARN_ON(!(status & NAND_STATUS_READY));
-> > >>  	return status;
-> > > 
-> > > This seem to completely miss the chip->dev_ready != NULL case, e.g.,
-> > > piece of code above is like this
-> > > 
-> > >                 while (time_before(jiffies, timeo)) {
-> > >                         if (chip->dev_ready) {
-> > >                                 if (chip->dev_ready(mtd))
-> > >                                         break;
-> > >                         } else {
-> > >                                 if (chip->read_byte(mtd) & NAND_STATUS_READY)
-> > >                                         break;
-> > >                         }
-> > >                         cond_resched();
-> > >                 }
-> > > 
-> > Sorry, I don't understand what you mean.
-> > 
-> > We don't care what's done in the loop (chip->dev_ready != NULL or, not). We only
-> > check when the loop exit, that READY bit is set in the status.
-> 
-> Well, the logic is suspicious.
-> 
-> 1. For NAND with chip->dev_ready != NULL, why NAND_STATUS_READY should
-> be set? We do not check for this in the loop.
-> 
-> 2. For NAND with chip->dev_ready != NULL, if NAND_STATUS_READY has to be
-> set at the end, why wouldn't we drop this chip_ready part completely? We
-> could just loop while NAND_STATUS_READY is not set.
-> 
-> Isn't this strange?
 
-Not really. There are 2 methods to wait for an erase/program command completion:
+--ZG5hGh9V5E9QzVHS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. Wait until nand RnB pin goes high (that's what chip->dev_ready usually does)
-2. Poll the device: send a status (0x70) command and read status byte in a loop
-   until bit NAND_STATUS_READY is set
+On Wed, Jun 29, 2011 at 10:00:39PM +0800, Shawn Guo wrote:
+> On Wed, Jun 29, 2011 at 02:29:42PM +0200, Wolfram Sang wrote:
+> >=20
+> > > > Still, the problem exists: When a second channel GPMI channel is
+> > > > requested, dmaengine will return -EBUSY, because the DMAIRQ is alre=
+ady
+> > > > taken.
+> > > >
+> > > Yes, we should change the DMA code, it is a DMA bug.
+> > > I ever submitted a patch about the issue:
+> > > http://patchwork.ozlabs.org/patch/87145/
+> >=20
+> > That approach was rejected because it would register the same handler
+> > n-times where one time would do. Your other approach puts too much
+> > mach-specific details into the driver IMO and probably won't scale very
+> > well. Maybe we should add something to the private dma_data (like flags
+> > indicating SHARED) and then do some refcounting?
+> >=20
+> I would suggest leave this gpmi specific quirk to gpmi driver to sort
+> out.  With the following mxs-dma change, it should work if gpmi driver
+> can pass the valid gpmi irq number for only one gpmi channel, and -1
+> for all others.
 
-In all cases, you should send a status command after completion, to check if
-the operation was successful. And if the operation completed, the status should
-have bit NAND_STATUS_READY set.
+=2E..which brings us right into the 'NO_IRQ is 0' discussion :)
 
-Method 1 is optimal, you can often use an interrupt to signal completion, and
-no cpu cycles are lost in a polling loop. But flaky hardware (bad pull-ups) or
-bad gpio configuration can make it unreliable.
+Other than that, [thinking loud] this will help if all irq-sharing
+channels are handled by the same driver. If not, we would just add
+IRQF_SHARED (hopefully this will never be needed). Yup, sounds
+reasonable to me. Will give it a second thought later, though.
 
-Method 2 is the safest, it always works, but it is less efficient.
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-Here, Matthieu wants to detect cases where method 1 is unreliable or a timeout
-occurs (e.g. somebody forgot to put a nand device on the board :).
-Both conditions are not expected on working hardware.
+--ZG5hGh9V5E9QzVHS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Another option (that I used on other systems) is to systematically perform
-method 1 first (if chip->dev_ready != NULL), _then_ method 2.
-If method 1 works as expected, then the polling loop in method 2 finishes
-immediately because nand status already has bit NAND_STATUS_READY set.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
---
-Best Regards,
+iEYEARECAAYFAk4LM50ACgkQD27XaX1/VRuKQACgqKzgSF+TqWQJ7lhR6w8+6+so
+gOgAnRmpZK9fRPPOtLzJyv2Zf6Tc8J9f
+=pzna
+-----END PGP SIGNATURE-----
 
-Ivan
+--ZG5hGh9V5E9QzVHS--
