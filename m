@@ -1,19 +1,20 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qboj1-000507-DZ
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 06:58:16 +0000
-Received: by pvg20 with SMTP id 20so684074pvg.36
+	id 1Qboml-00052t-Gp
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 07:02:08 +0000
+Received: by iyn15 with SMTP id 15so983274iyn.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Jun 2011 23:58:12 -0700 (PDT)
-Subject: Re: [PATCH 0/3] fixups for OOB ECC problems
+	Wed, 29 Jun 2011 00:02:05 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mtd: nand: ignore ECC errors for simple BBM scans
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 29 Jun 2011 09:59:04 +0300
-In-Reply-To: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
+Date: Wed, 29 Jun 2011 10:02:55 +0300
+In-Reply-To: <1309303740-9936-2-git-send-email-computersforpeace@gmail.com>
 References: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
+	<1309303740-9936-2-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309330748.23597.125.camel@sauron>
+Message-ID: <1309330980.23597.126.camel@sauron>
 Mime-Version: 1.0
 Cc: David Woodhouse <dwmw2@infradead.org>, Jim Quinlan <jim2101024@gmail.com>,
 	linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>
@@ -28,25 +29,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2011-06-28 at 16:28 -0700, Brian Norris wrote:
-> Hello,
+> Now that nand_do_readoob() may return -EUCLEAN or -EBADMSG on ECC errors,
+> we need to handle the return value specially in some cases.
 > 
-> Now that we have added the possibility that mtd->read_oob returns
-> -EUCLEAN or -EBADMSG for corrected bitflips and for uncorrectable errors,
-> respectively, there are more pieces of code that need to take this into
-> account. These patches should address some of these by ignoring bitflips
-> when bit accuracy is not needed or by ignoring corrected errors when
-> scrubbing would be unnecessary.
+> When scanning for simple bad block markers, reacting to an ECC error is
+> not very useful, as we assume that the relevant markers are still
+> non-0xFF for true bad blocks.
 > 
-> There are still other cases to address, for example, some flash-based BBT
-> code.
-> 
-> This applies on top of l2-mtd-2.6.git. Patch 3 is an amendment to commit
-> abf386c475beab813dc9b3366e592e00255e987a, ("mtd: nand: handle ECC errors
-> in OOB"), so it can be squashed in if you want. Let me know if you want
-> me to do this and do a resend.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_bbt.c |   13 ++++++++++---
+>  1 files changed, 10 insertions(+), 3 deletions(-)
 
-Do you test these things somehow? I'd just injected some code to a
-driver or nandsim which returns -EUCLEAN for OOB and check what fails.
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
