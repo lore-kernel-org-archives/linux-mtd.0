@@ -1,28 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QbuCa-0005yH-EH
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 12:49:09 +0000
-Date: Wed, 29 Jun 2011 14:49:02 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
-	controller driver
-Message-ID: <20110629124902.GI1992@pengutronix.de>
-References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
-	<1309335878-16678-2-git-send-email-b32955@freescale.com>
-	<20110629100658.GE1992@pengutronix.de>
-	<20110629103337.GF1992@pengutronix.de>
-	<4E0B0296.6060902@freescale.com>
-	<20110629122942.GH1992@pengutronix.de>
-	<20110629124214.GN21898@n2100.arm.linux.org.uk>
+Message-ID: <4E0B2427.9020202@atmel.com>
+Date: Wed, 29 Jun 2011 15:09:59 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PWfwoUCx3AFJRUBq"
-Content-Disposition: inline
-In-Reply-To: <20110629124214.GN21898@n2100.arm.linux.org.uk>
-Cc: dedekind1@gmail.com, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RFC PATCH] MTD: atmel_nand: optimize read/write buffer	functions
+References: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
+	<20110628111043.GH6588@pengutronix.de>
+	<20110628145937.GG21898@n2100.arm.linux.org.uk>
+In-Reply-To: <20110628145937.GG21898@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: hong.xu@atmel.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	=?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,51 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Le 28/06/2011 16:59, Russell King - ARM Linux :
+> On Tue, Jun 28, 2011 at 01:10:43PM +0200, Uwe Kleine-König wrote:
+>>> @@ -265,33 +234,53 @@ err_buf:
+>>>  static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
+>>>  {
+>>>  	struct nand_chip *chip = mtd->priv;
+>>> -	struct atmel_nand_host *host = chip->priv;
+>>> +	u32 align;
+>>> +	u8 *pbuf;
+>>>  
+>>>  	if (use_dma && len > mtd->oobsize)
+>>>  		/* only use DMA for bigger than oob size: better performances */
+>>>  		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
+>>>  			return;
+>>>  
+>>> -	if (host->board->bus_width_16)
+>>> -		atmel_read_buf16(mtd, buf, len);
+>>> -	else
+>>> -		atmel_read_buf8(mtd, buf, len);
+>>> +	/* if no DMA operation possible, use PIO */
+>>> +	pbuf = buf;
+>>> +	align = 0x03 & ((unsigned)pbuf);
+>>> +
+>>> +	if (align) {
+>>> +		u32 align_len = 4 - align;
+>>> +
+>>> +		/* non aligned buffer: re-align to next word boundary */
+>>> +		ioread8_rep(chip->IO_ADDR_R, pbuf, align_len);
+>>> +		pbuf += align_len;
+>>> +		len -= align_len;
+>>> +	}
+>>> +	memcpy((void *)pbuf, chip->IO_ADDR_R, len);
+>> I think you don't need to cast to (void *). I think you need to cast the
+>> 2nd parameter instead because sparse don't like you passing an void
+>> __iomem *.
+>> Is it correct to read from chip->IO_ADDR_R, don't you need
+>> chip->IO_ADDR_R + align_len? Taking this into account, does it really
+>> help to align pbuf?
+> 
+> I think you need to read Documentation/bus-virt-phys-mapping.txt,
+> particularly the part after "NOTE NOTE NOTE".
+> 
+> Dereferencing ioremap'd memory is not permitted.  That includes passing
+> it to memcpy.  Even with a cast.
 
---PWfwoUCx3AFJRUBq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So that means that I should use memcpy_fromio() even if the code if far
+less optimized.
 
-On Wed, Jun 29, 2011 at 01:42:14PM +0100, Russell King - ARM Linux wrote:
-> On Wed, Jun 29, 2011 at 02:29:42PM +0200, Wolfram Sang wrote:
-> >=20
-> > > > Still, the problem exists: When a second channel GPMI channel is
-> > > > requested, dmaengine will return -EBUSY, because the DMAIRQ is alre=
-ady
-> > > > taken.
-> > > >
-> > > Yes, we should change the DMA code, it is a DMA bug.
-> > > I ever submitted a patch about the issue:
-> > > http://patchwork.ozlabs.org/patch/87145/
-> >=20
-> > That approach was rejected because it would register the same handler
-> > n-times where one time would do. Your other approach puts too much
-> > mach-specific details into the driver IMO and probably won't scale very
-> > well. Maybe we should add something to the private dma_data (like flags
-> > indicating SHARED) and then do some refcounting?
->=20
-> Why not just request the interrupt once when the mxs-dma stuff probes,
-> rather than requesting it every time a channel is allocated?
+Shouldn't I re-implement some kind of IO copying function to deal with
+this IO memory so that I could take advantage of 8 words bursts?
 
-It is only the NAND DMA channels which share one dma-irq. All other
-channels have a seperate interrupt.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---PWfwoUCx3AFJRUBq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4LHz4ACgkQD27XaX1/VRvzhQCghIlFByP/19J627O2V48zpjew
-APIAoL9RNr6NawqhAt6qO2T6yXMzNTEv
-=P3yr
------END PGP SIGNATURE-----
-
---PWfwoUCx3AFJRUBq--
+Best regards,
+-- 
+Nicolas Ferre
