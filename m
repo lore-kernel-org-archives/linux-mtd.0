@@ -1,18 +1,23 @@
-Message-ID: <4E0AEE7C.8090100@freescale.com>
-Date: Wed, 29 Jun 2011 17:21:00 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qbrfk-0003od-Rd
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 10:07:06 +0000
+Date: Wed, 29 Jun 2011 12:06:58 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+Message-ID: <20110629100658.GE1992@pengutronix.de>
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH V4 2/3] ARM: mxs: add GPMI-NFC device for imx23
-References: <1309334082-9501-1-git-send-email-b32955@freescale.com>
-	<1309334082-9501-3-git-send-email-b32955@freescale.com>
-	<20110629080844.GK6588@pengutronix.de>
-In-Reply-To: <20110629080844.GK6588@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: s.hauer@pengutronix.de, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ffoCPvUAPMgSXi6H"
+Content-Disposition: inline
+In-Reply-To: <1309335878-16678-2-git-send-email-b32955@freescale.com>
+Cc: thierry.nolf.barco@gmail.com, LW@KARO-electronics.de,
 	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+	linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,237 +27,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi :
-> On Wed, Jun 29, 2011 at 03:54:41PM +0800, Huang Shijie wrote:
->> add the gpmi-nfc device for imx23.
->>
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
->> ---
->>   arch/arm/mach-mxs/clock-mx23.c                  |    1 +
->>   arch/arm/mach-mxs/devices-mx23.h                |    4 +
->>   arch/arm/mach-mxs/devices/Kconfig               |    3 +
->>   arch/arm/mach-mxs/devices/Makefile              |    1 +
->>   arch/arm/mach-mxs/devices/platform-gpmi-nfc.c   |   71 +++++++++++++++++++++++
->>   arch/arm/mach-mxs/include/mach/devices-common.h |   10 +++
->>   arch/arm/mach-mxs/mach-mx23evk.c                |   37 ++++++++++++
-> Can you split between arch and machine support please?
-> (I'd not split between imx28 and imx23, but that's up to you.)
->
-Ok , i will split it in the next version.
 
-Best Regards
-Huang Shijie
->>   7 files changed, 127 insertions(+), 0 deletions(-)
->>   create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
->>
->> diff --git a/arch/arm/mach-mxs/clock-mx23.c b/arch/arm/mach-mxs/clock-mx23.c
->> index 0163b6d..e190c53 100644
->> --- a/arch/arm/mach-mxs/clock-mx23.c
->> +++ b/arch/arm/mach-mxs/clock-mx23.c
->> @@ -456,6 +456,7 @@ static struct clk_lookup lookups[] = {
->>   	_REGISTER_CLOCK("mxs-pwm.3", NULL, pwm_clk)
->>   	_REGISTER_CLOCK("mxs-pwm.4", NULL, pwm_clk)
->>   	_REGISTER_CLOCK("imx23-fb", NULL, lcdif_clk)
->> +	_REGISTER_CLOCK("imx23-gpmi-nfc", NULL, gpmi_clk)
->>   };
->>
->>   static int clk_misc_init(void)
->> diff --git a/arch/arm/mach-mxs/devices-mx23.h b/arch/arm/mach-mxs/devices-mx23.h
->> index c6f345f..a9c495d 100644
->> --- a/arch/arm/mach-mxs/devices-mx23.h
->> +++ b/arch/arm/mach-mxs/devices-mx23.h
->> @@ -21,6 +21,10 @@ extern const struct mxs_auart_data mx23_auart_data[] __initconst;
->>   #define mx23_add_auart0()		mx23_add_auart(0)
->>   #define mx23_add_auart1()		mx23_add_auart(1)
->>
->> +extern const struct mxs_gpmi_nfc_data mx23_gpmi_nfc_data __initconst;
->> +#define mx23_add_gpmi_nfc(pdata)	\
->> +	mxs_add_gpmi_nfc(pdata,&mx23_gpmi_nfc_data)
->> +
->>   extern const struct mxs_mxs_mmc_data mx23_mxs_mmc_data[] __initconst;
->>   #define mx23_add_mxs_mmc(id, pdata) \
->>   	mxs_add_mxs_mmc(&mx23_mxs_mmc_data[id], pdata)
->> diff --git a/arch/arm/mach-mxs/devices/Kconfig b/arch/arm/mach-mxs/devices/Kconfig
->> index acf9eea..b42a14b 100644
->> --- a/arch/arm/mach-mxs/devices/Kconfig
->> +++ b/arch/arm/mach-mxs/devices/Kconfig
->> @@ -12,6 +12,9 @@ config MXS_HAVE_PLATFORM_FLEXCAN
->>   	select HAVE_CAN_FLEXCAN if CAN
->>   	bool
->>
->> +config MXS_HAVE_PLATFORM_GPMI_NFC
->> +	bool
->> +
->>   config MXS_HAVE_PLATFORM_MXS_I2C
->>   	bool
->>
->> diff --git a/arch/arm/mach-mxs/devices/Makefile b/arch/arm/mach-mxs/devices/Makefile
->> index 351915c..972abdc 100644
->> --- a/arch/arm/mach-mxs/devices/Makefile
->> +++ b/arch/arm/mach-mxs/devices/Makefile
->> @@ -3,6 +3,7 @@ obj-$(CONFIG_MXS_HAVE_PLATFORM_AUART) += platform-auart.o
->>   obj-y += platform-dma.o
->>   obj-$(CONFIG_MXS_HAVE_PLATFORM_FEC) += platform-fec.o
->>   obj-$(CONFIG_MXS_HAVE_PLATFORM_FLEXCAN) += platform-flexcan.o
->> +obj-$(CONFIG_MXS_HAVE_PLATFORM_GPMI_NFC) += platform-gpmi-nfc.o
->>   obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_I2C) += platform-mxs-i2c.o
->>   obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_MMC) += platform-mxs-mmc.o
->>   obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_PWM) += platform-mxs-pwm.o
->> diff --git a/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c b/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
->> new file mode 100644
->> index 0000000..5a68370
->> --- /dev/null
->> +++ b/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
->> @@ -0,0 +1,71 @@
->> +/*
->> + * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License along
->> + * with this program; if not, write to the Free Software Foundation, Inc.,
->> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> + */
->> +#include<asm/sizes.h>
->> +#include<mach/mx23.h>
->> +#include<mach/devices-common.h>
->> +
->> +#define RES_MEM(soc, _id, _s, _n)				\
->> +	{							\
->> +		.start = soc ##_## _id ## _BASE_ADDR,		\
->> +		.end   = soc ##_## _id ## _BASE_ADDR + (_s) - 1,\
->> +		.name  = (_n),					\
->> +		.flags = IORESOURCE_MEM,			\
->> +	}
->> +
->> +#define RES_IRQ(soc, _id, _n)			\
->> +	{					\
->> +		.start = soc ##_INT_## _id,	\
->> +		.end   = soc ##_INT_## _id,	\
->> +		.name  = (_n),			\
->> +		.flags = IORESOURCE_IRQ,	\
->> +	}
->> +
->> +#define RES_DMA(soc, _i_s, _i_e, _n)		\
->> +	{					\
->> +		.start = soc ##_## _i_s,	\
->> +		.end   = soc ##_## _i_e,	\
->> +		.name  = (_n),			\
->> +		.flags = IORESOURCE_DMA,	\
->> +	}
->> +
->> +#ifdef CONFIG_SOC_IMX23
->> +const struct mxs_gpmi_nfc_data mx23_gpmi_nfc_data __initconst = {
->> +	.devid = "imx23-gpmi-nfc",
->> +	.res = {
->> +		/* GPMI */
->> +		RES_MEM(MX23, GPMI, SZ_8K, GPMI_NFC_GPMI_REGS_ADDR_RES_NAME),
->> +		RES_IRQ(MX23, GPMI_ATTENTION, GPMI_NFC_GPMI_INTERRUPT_RES_NAME),
->> +		/* BCH */
->> +		RES_MEM(MX23, BCH, SZ_8K, GPMI_NFC_BCH_REGS_ADDR_RES_NAME),
->> +		RES_IRQ(MX23, BCH, GPMI_NFC_BCH_INTERRUPT_RES_NAME),
->> +		/* DMA */
->> +		RES_DMA(MX23, DMA_GPMI0, DMA_GPMI3,
->> +					GPMI_NFC_DMA_CHANNELS_RES_NAME),
->> +		RES_IRQ(MX23, GPMI_DMA, GPMI_NFC_DMA_INTERRUPT_RES_NAME),
->> +	},
->> +};
->> +#endif
->> +
->> +struct platform_device *__init
->> +mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
->> +		const struct mxs_gpmi_nfc_data *data)
->> +{
->> +	return mxs_add_platform_device_dmamask(data->devid, -1,
->> +				data->res, RES_SIZE,
->> +				pdata, sizeof(*pdata), DMA_BIT_MASK(32));
->> +}
->> diff --git a/arch/arm/mach-mxs/include/mach/devices-common.h b/arch/arm/mach-mxs/include/mach/devices-common.h
->> index 812d7a8..e032120 100644
->> --- a/arch/arm/mach-mxs/include/mach/devices-common.h
->> +++ b/arch/arm/mach-mxs/include/mach/devices-common.h
->> @@ -66,6 +66,16 @@ struct platform_device *__init mxs_add_flexcan(
->>   		const struct mxs_flexcan_data *data,
->>   		const struct flexcan_platform_data *pdata);
->>
->> +/* gpmi-nfc */
->> +#include<mach/gpmi-nfc.h>
->> +struct mxs_gpmi_nfc_data {
->> +	const char *devid;
->> +	const struct resource res[RES_SIZE];
->> +};
->> +struct platform_device *__init
->> +mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
->> +		const struct mxs_gpmi_nfc_data *data);
->> +
->>   /* i2c */
->>   struct mxs_mxs_i2c_data {
->>   	int id;
->> diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
->> index 3c2de33..772b373 100644
->> --- a/arch/arm/mach-mxs/mach-mx23evk.c
->> +++ b/arch/arm/mach-mxs/mach-mx23evk.c
->> @@ -107,6 +107,42 @@ static const iomux_cfg_t mx23evk_pads[] __initconst = {
->>   		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
->>   };
->>
->> +/* gpmi-nfc */
->> +#define MXS_PAD_GPMI_NFC	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
->> +static iomux_cfg_t mx23evk_gpmi_nfc_pads[] = {
->> +	MX23_PAD_GPMI_D00__GPMI_D00 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D01__GPMI_D01 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D02__GPMI_D02 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D03__GPMI_D03 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D04__GPMI_D04 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D05__GPMI_D05 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D06__GPMI_D06 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D07__GPMI_D07 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_WPN__GPMI_WPN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_RDY0__GPMI_RDY0 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_RDY1__GPMI_RDY1 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
->> +};
->> +
->> +static int mx23evk_gpmi_nfc_platform_init(void)
->> +{
->> +	return mxs_iomux_setup_multiple_pads(mx23evk_gpmi_nfc_pads,
->> +				ARRAY_SIZE(mx23evk_gpmi_nfc_pads));
->> +}
->> +
->> +static const
->> +struct gpmi_nfc_platform_data mx23evk_gpmi_nfc_data __initconst = {
->> +	.platform_init		= mx23evk_gpmi_nfc_platform_init,
->> +	.min_prop_delay_in_ns	= 5,
->> +	.max_prop_delay_in_ns	= 9,
->> +	.max_chip_count		= 1,
->> +};
->> +
->>   /* mxsfb (lcdif) */
->>   static struct fb_videomode mx23evk_video_modes[] = {
->>   	{
->> @@ -166,6 +202,7 @@ static void __init mx23evk_init(void)
->>   	else
->>   		gpio_set_value(MX23EVK_BL_ENABLE, 1);
->>
->> +	mx23_add_gpmi_nfc(&mx23evk_gpmi_nfc_data);
->>   	mx23_add_mxsfb(&mx23evk_mxsfb_pdata);
->>   }
->>
->> -- 
->> 1.7.0.4
->>
->>
->>
+--ffoCPvUAPMgSXi6H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Huang,
+
+On Wed, Jun 29, 2011 at 04:24:36PM +0800, Huang Shijie wrote:
+> These files contain the common code for the GPMI-NFC driver.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+
+Thanks for the update. Good news, the DMA problem is gone now.
+I am just running the mtd-stresstest-suite...
+
+> ---
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.c | 2484 ++++++++++++++++++++++++++++=
+++++++
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h |  495 +++++++
+>  2 files changed, 2979 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
+>=20
+> diff --git a/drivers/mtd/nand/gpmi-nfc/gpmi-nfc.c b/drivers/mtd/nand/gpmi=
+-nfc/gpmi-nfc.c
+> new file mode 100644
+> index 0000000..187b4a3
+> --- /dev/null
+> +++ b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc.c
+> @@ -0,0 +1,2484 @@
+> +/*
+> + * Freescale GPMI NFC NAND Flash Driver
+> + *
+> + * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
+> + * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License alo=
+ng
+> + * with this program; if not, write to the Free Software Foundation, Inc=
+=2E,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +#include "gpmi-nfc.h"
+
+Usually in the kernel, every file includes the stuff it needs for
+itself.
+
+> +
+> +/* add our owner bbt descriptor */
+> +static uint8_t scan_ff_pattern[] =3D { 0xff };
+> +static struct nand_bbt_descr gpmi_bbt_descr =3D {
+> +	.options	=3D 0,
+> +	.offs		=3D 0,
+> +	.len		=3D 1,
+> +	.pattern	=3D scan_ff_pattern
+> +};
+> +
+> +/* debug control */
+> +int gpmi_debug;
+> +module_param(gpmi_debug, int, S_IRUGO | S_IWUSR);
+> +MODULE_PARM_DESC(gpmi_debug, "print out the debug infomation.");
+> +
+> +/* enable the gpmi-nfc. */
+> +static bool enable_gpmi_nand;
+
+Hmm, disabled by default? I somehow have the impression that it was not
+exactly _this_ patch you tested ;) Should go, of course; probably debug
+cruft?
+
+> +static int __devinit acquire_interrupt(struct gpmi_nfc_data *this,
+> +			const char *resource_name,
+> +			irq_handler_t interrupt_handler, int *lno, int *hno)
+> +{
+> +	struct platform_device *pdev =3D this->pdev;
+> +	struct resource *r;
+> +	int err;
+> +
+> +	r =3D platform_get_resource_byname(pdev, IORESOURCE_IRQ, resource_name);
+> +	if (!r) {
+> +		pr_info("Can't get resource for %s\n", resource_name);
+> +		return -ENXIO;
+> +	}
+> +
+> +	BUG_ON(r->start !=3D r->end);
+> +	err =3D request_irq(r->start, interrupt_handler, 0, resource_name, this=
+);
+> +	if (err) {
+> +		pr_info("Can't own %s\n", resource_name);
+> +		return err;
+> +	}
+> +
+> +	*lno =3D r->start;
+> +	*hno =3D r->end;
+> +	return 0;
+> +}
+
+This will not work if max_chip_count > 1, because the irq is already
+taken. (Also, I am not convinced of the resource handling, but I need to
+delve into the code more, first.)
+
+Back to testing, thanks for the update,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--ffoCPvUAPMgSXi6H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4K+UEACgkQD27XaX1/VRs3ZQCgjJXLtT0a3Askl3Uya2XsG+zq
+Tz0An0oMAb+XIA0P4yRDgKu7s41G6IhH
+=IRhP
+-----END PGP SIGNATURE-----
+
+--ffoCPvUAPMgSXi6H--
