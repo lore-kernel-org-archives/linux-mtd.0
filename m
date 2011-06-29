@@ -1,21 +1,22 @@
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qbp63-0005OD-QB
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 07:22:05 +0000
+Received: by vws8 with SMTP id 8so879410vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Jun 2011 00:22:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1309331487.23597.131.camel@sauron>
-References: <1309246361.23597.30.camel@sauron>
-	<1309319494-17951-3-git-send-email-leiwen@marvell.com>
-	<1309331487.23597.131.camel@sauron>
-Date: Wed, 29 Jun 2011 15:16:29 +0800
-Message-ID: <BANLkTinSuSFYcsAnfyxgef8o30UcQ_T9ew@mail.gmail.com>
-Subject: Re: [PATCH 2/9] MTD: pxa3xx_nand: enable multiple chip select support
-From: Lei Wen <adrian.wenl@gmail.com>
-To: dedekind1@gmail.com
+Sender: kyungmin78@gmail.com
+In-Reply-To: <20110608101804.GA5527@july>
+References: <20110608101804.GA5527@july>
+Date: Wed, 29 Jun 2011 16:22:01 +0900
+Message-ID: <BANLkTi=MMEzE-neUzRqBYqvsGsup_s+VMw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
+From: Kyungmin Park <kmpark@infradead.org>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +28,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Artem,
 
-On Wed, Jun 29, 2011 at 3:11 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Tue, 2011-06-28 at 20:51 -0700, Lei Wen wrote:
->> Current pxa3xx_nand controller has two chip select which
->> both be workable. This patch enable this feature.
->>
->> Update platform driver to support this feature.
->>
->> Another notice should be taken that:
->> When you want to use this feature, you should not enable the
->> keep configuration feature, for two chip select could be
->> attached with different nand chip. The different page size
->> and timing requirement make the keep configuration impossible.
->>
->> Signed-off-by: Lei Wen <leiwen@marvell.com>
->> ---
->> =A0arch/arm/plat-pxa/include/plat/pxa3xx_nand.h | =A0 19 +-
->> =A0drivers/mtd/nand/pxa3xx_nand.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0493 +=
-++++++++++++++----------
->> =A02 files changed, 313 insertions(+), 199 deletions(-)
->
-> If someone can review this patch - good let's see how many Reviewed-by
-> tags we get. But I think it is not very reviewable because of the size.
->
-> AFAICK, what you do here is
->
-> 1. Introduce new structure struct pxa3xx_nand_host
-> 2. Move several fields from struct pxa3xx_nand_info to struct
-> pxa3xx_nand_host
->
-> And only this alone adds a lot of noise to the patch.
->
-> And also you have some real functional changes.
->
-> So I'd suggest you to split this patch at least on 2 - the first one
-> would introduce struct pxa3xx_nand_host, moved some fields, and do all
-> the host<->info renamings. You can split this on several steps and move
-> only several fields at a time.
->
-> Then a separate patch would do some more functional changes. How does
-> this sound?
->
+There's missing patch, can you add l2-mtd tree?
 
-I'm ok with this, patches to come.
+Thank you,
+Kyungmin Park
 
-Thanks,
-Lei
+On Wed, Jun 8, 2011 at 7:18 PM, Kyungmin Park <kmpark@infradead.org> wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
+>
+> Implement the write DMA feature. It can reduce the CPU usage when write.
+>
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> ---
+> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.=
+c
+> index 3306b5b..f24cb6f 100644
+> --- a/drivers/mtd/onenand/samsung.c
+> +++ b/drivers/mtd/onenand/samsung.c
+> @@ -712,6 +712,74 @@ normal:
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
+>
+> +static int s5pc110_write_bufferram(struct mtd_info *mtd, int area,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 const unsigned char *buffer, int offset, si=
+ze_t count)
+> +{
+> + =A0 =A0 =A0 struct onenand_chip *this =3D mtd->priv;
+> + =A0 =A0 =A0 struct device *dev =3D &onenand->pdev->dev;
+> + =A0 =A0 =A0 void __iomem *p;
+> + =A0 =A0 =A0 void *buf =3D (void *) buffer;
+> + =A0 =A0 =A0 dma_addr_t dma_src, dma_dst;
+> + =A0 =A0 =A0 int err, ofs, page_dma =3D 0;
+> +
+> + =A0 =A0 =A0 p =3D this->base + area;
+> + =A0 =A0 =A0 if (ONENAND_CURRENT_BUFFERRAM(this)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (area =3D=3D ONENAND_DATARAM)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 p +=3D this->writesize;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 p +=3D mtd->oobsize;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 if (count !=3D mtd->writesize || offset & 3 || (size_t) buf=
+ & 3)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto normal;
+> +
+> + =A0 =A0 =A0 /* Handle vmalloc address */
+> + =A0 =A0 =A0 if (buf >=3D high_memory) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct page *page;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (((size_t) buf & PAGE_MASK) !=3D
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ((size_t) (buf + count - 1) & PAGE_=
+MASK))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto normal;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 page =3D vmalloc_to_page(buf);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (unlikely(!page))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto normal;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Page offset */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ofs =3D ((size_t) buf & ~PAGE_MASK);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 page_dma =3D 1;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* DMA routine */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_src =3D dma_map_page(dev, page, ofs, co=
+unt, DMA_TO_DEVICE);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_dst =3D onenand->phys_base + (p - this-=
+>base);
+> + =A0 =A0 =A0 } else {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* DMA routine */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_src =3D dma_map_single(dev, buf, count,=
+ DMA_TO_DEVICE);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_dst =3D onenand->phys_base + (p - this-=
+>base);
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 if (dma_mapping_error(dev, dma_src)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dev, "Couldn't map a %d byte buffer=
+ for DMA\n", count);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto normal;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 err =3D s5pc110_dma_ops((void *) dma_dst, (void *) dma_src,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 count, S5PC110_DMA_DIR_WRIT=
+E);
+> +
+> + =A0 =A0 =A0 if (page_dma)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_unmap_page(dev, dma_src, count, DMA_TO_=
+DEVICE);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_unmap_single(dev, dma_src, count, DMA_T=
+O_DEVICE);
+> +
+> + =A0 =A0 =A0 if (!err)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> +
+> +normal:
+> + =A0 =A0 =A0 memcpy(p + offset, buffer, count);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> =A0static int s5pc110_chip_probe(struct mtd_info *mtd)
+> =A0{
+> =A0 =A0 =A0 =A0/* Now just return 0 */
+> @@ -844,6 +912,7 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0} else if (onenand->type =3D=3D TYPE_S5PC110) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Use generic onenand functions */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0this->read_bufferram =3D s5pc110_read_buff=
+erram;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 this->write_bufferram =3D s5pc110_write_buf=
+ferram;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0this->chip_probe =3D s5pc110_chip_probe;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
+> =A0 =A0 =A0 =A0} else {
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
