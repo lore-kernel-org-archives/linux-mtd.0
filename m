@@ -1,24 +1,22 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qboed-0004wr-FV
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 06:53:44 +0000
-Received: by pwi3 with SMTP id 3so753746pwi.36
+	id 1Qboj1-000507-DZ
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 06:58:16 +0000
+Received: by pvg20 with SMTP id 20so684074pvg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Jun 2011 23:53:40 -0700 (PDT)
-Subject: Re: [RFC PATCHv2] UBI: new module ubiblk: block layer on top of UBI
+	Tue, 28 Jun 2011 23:58:12 -0700 (PDT)
+Subject: Re: [PATCH 0/3] fixups for OOB ECC problems
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: david.wagner@free-electrons.com
-Date: Wed, 29 Jun 2011 09:54:31 +0300
-In-Reply-To: <1309274691-4898-1-git-send-email-david.wagner@free-electrons.com>
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
-	<1309274691-4898-1-git-send-email-david.wagner@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 29 Jun 2011 09:59:04 +0300
+In-Reply-To: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
+References: <1309303740-9936-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1309330476.23597.124.camel@sauron>
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309330748.23597.125.camel@sauron>
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org,
-	tim.bird@am.sony.com
+Cc: David Woodhouse <dwmw2@infradead.org>, Jim Quinlan <jim2101024@gmail.com>,
+	linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,15 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-06-28 at 17:24 +0200, david.wagner@free-electrons.com
-wrote:
-> + * Author: David Wagner
-> + * Some code taken from gluebi.c (Artem Bityutskiy (Битюцкий Артём),
-> + *                                Joern Engel)
-> + * Some code taken from mtd_blkdevs.c (David Woodhouse) 
+On Tue, 2011-06-28 at 16:28 -0700, Brian Norris wrote:
+> Hello,
+> 
+> Now that we have added the possibility that mtd->read_oob returns
+> -EUCLEAN or -EBADMSG for corrected bitflips and for uncorrectable errors,
+> respectively, there are more pieces of code that need to take this into
+> account. These patches should address some of these by ignoring bitflips
+> when bit accuracy is not needed or by ignoring corrected errors when
+> scrubbing would be unnecessary.
+> 
+> There are still other cases to address, for example, some flash-based BBT
+> code.
+> 
+> This applies on top of l2-mtd-2.6.git. Patch 3 is an amendment to commit
+> abf386c475beab813dc9b3366e592e00255e987a, ("mtd: nand: handle ECC errors
+> in OOB"), so it can be squashed in if you want. Let me know if you want
+> me to do this and do a resend.
 
-It is important to preserve Copyrights, because it has to do with legal
-stuff.
+Do you test these things somehow? I'd just injected some code to a
+driver or nandsim which returns -EUCLEAN for OOB and check what fails.
 
 -- 
 Best Regards,
