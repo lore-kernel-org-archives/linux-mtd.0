@@ -1,21 +1,24 @@
-Subject: Re: [PATCH V3 0/9] pxa3xx_nand: add two chip select support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Igor Grinberg <grinberg@compulab.co.il>
-Date: Wed, 29 Jun 2011 13:20:00 +0300
-In-Reply-To: <4E0AE9B0.7000908@compulab.co.il>
-References: <1309246361.23597.30.camel@sauron>
-	<1309319494-17951-1-git-send-email-leiwen@marvell.com>
-	<4E0AE9B0.7000908@compulab.co.il>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1309342805.23597.136.camel@sauron>
-Mime-Version: 1.0
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qbs5X-000466-OO
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 10:33:44 +0000
+Date: Wed, 29 Jun 2011 12:33:37 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+Message-ID: <20110629103337.GF1992@pengutronix.de>
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
+	<20110629100658.GE1992@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
+Content-Disposition: inline
+In-Reply-To: <20110629100658.GE1992@pengutronix.de>
+Cc: thierry.nolf.barco@gmail.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +28,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-29 at 12:00 +0300, Igor Grinberg wrote:
-> Hi Lei,
-> 
-> On 06/29/11 06:51, Lei Wen wrote:
-> 
-> > V2:
-> > Choose to at most keep original pxa3xx_nand_info structure to reduce
-> > patch size
-> >
-> > V3:
-> > Seperate original one patch into a patch set
-> >
-> > Lei Wen (9):
-> >   MTD: pxa3xx_nand: convert all printk into dev_*
-> >   MTD: pxa3xx_nand: enable multiple chip select support
-> >   ARM: aspenite: fix nand platform data
-> >   ARM: cm-x300: fix nand platform data
-> >   ARM: colibri-pxa3xx: fix nand platform data
-> >   ARM: littleton: fix nand platform data
-> >   ARM: mxm8x10: fix nand platform data
-> >   ARM: raumfeld: fix nand platform data
-> >   ARM: zylonite: fix nand platform data
-> 
-> While I agree with Artem, that reviewing patch sets are much more easier,
-> than a one single big patch, I think you should keep the
-> "fix nand platform data" changes all in one patch.
-> All of them do the same change, but for different boards.
 
-Yeah, I did not suggest to split a large patch to a number of
-micro-patches plus another large patch :-) My suggestion is to have a
-set of easily reviewable patches. If you do the same thing in many
-platform data structures, it is reviewable and can be in one patch.
+--i3lJ51RuaGWuFYNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Best Regards,
-Artem Bityutskiy
+> > +static int __devinit acquire_interrupt(struct gpmi_nfc_data *this,
+> > +			const char *resource_name,
+> > +			irq_handler_t interrupt_handler, int *lno, int *hno)
+> > +{
+> > +	struct platform_device *pdev =3D this->pdev;
+> > +	struct resource *r;
+> > +	int err;
+> > +
+> > +	r =3D platform_get_resource_byname(pdev, IORESOURCE_IRQ, resource_nam=
+e);
+> > +	if (!r) {
+> > +		pr_info("Can't get resource for %s\n", resource_name);
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	BUG_ON(r->start !=3D r->end);
+> > +	err =3D request_irq(r->start, interrupt_handler, 0, resource_name, th=
+is);
+> > +	if (err) {
+> > +		pr_info("Can't own %s\n", resource_name);
+> > +		return err;
+> > +	}
+> > +
+> > +	*lno =3D r->start;
+> > +	*hno =3D r->end;
+> > +	return 0;
+> > +}
+>=20
+> This will not work if max_chip_count > 1, because the irq is already
+> taken. (Also, I am not convinced of the resource handling, but I need to
+
+Doh, I wrote that below the wrong codepath. This is another irq here.
+Still, the problem exists: When a second channel GPMI channel is
+requested, dmaengine will return -EBUSY, because the DMAIRQ is already
+taken.
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--i3lJ51RuaGWuFYNw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4K/4EACgkQD27XaX1/VRvVIgCcC4H01buOCNQCnt2WsaUjfaoc
+BvIAn08CPoLOl4qB3fzcch0vrbcjJZPw
+=PaNq
+-----END PGP SIGNATURE-----
+
+--i3lJ51RuaGWuFYNw--
