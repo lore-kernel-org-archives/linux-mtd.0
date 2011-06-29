@@ -1,7 +1,7 @@
 Received: from dakia2.marvell.com ([65.219.4.35])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qbloa-0002CC-F1
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 03:51:56 +0000
+	id 1Qblob-0002Cz-A9
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2011 03:51:57 +0000
 From: Lei Wen <leiwen@marvell.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>,
 	Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>,
@@ -9,9 +9,9 @@ To: Artem Bityutskiy <dedekind1@gmail.com>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 7/9] ARM: mxm8x10: fix nand platform data
-Date: Tue, 28 Jun 2011 20:51:32 -0700
-Message-Id: <1309319494-17951-8-git-send-email-leiwen@marvell.com>
+Subject: [PATCH 8/9] ARM: raumfeld: fix nand platform data
+Date: Tue, 28 Jun 2011 20:51:33 -0700
+Message-Id: <1309319494-17951-9-git-send-email-leiwen@marvell.com>
 In-Reply-To: <1309246361.23597.30.camel@sauron>
 References: <1309246361.23597.30.camel@sauron>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,28 +28,24 @@ data need to be fixed accordingly.
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
 ---
- arch/arm/mach-pxa/mxm8x10.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/mach-pxa/raumfeld.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/mxm8x10.c b/arch/arm/mach-pxa/mxm8x10.c
-index b5a8fd3..90928d6 100644
---- a/arch/arm/mach-pxa/mxm8x10.c
-+++ b/arch/arm/mach-pxa/mxm8x10.c
-@@ -389,10 +389,11 @@ static struct mtd_partition mxm_8x10_nand_partitions[] = {
- };
- 
- static struct pxa3xx_nand_platform_data mxm_8x10_nand_info = {
--	.enable_arbiter = 1,
--	.keep_config = 1,
--	.parts = mxm_8x10_nand_partitions,
--	.nr_parts = ARRAY_SIZE(mxm_8x10_nand_partitions)
-+	.enable_arbiter	= 1,
-+	.keep_config	= 1,
+diff --git a/arch/arm/mach-pxa/raumfeld.c b/arch/arm/mach-pxa/raumfeld.c
+index d130f77..c7ec847 100644
+--- a/arch/arm/mach-pxa/raumfeld.c
++++ b/arch/arm/mach-pxa/raumfeld.c
+@@ -349,8 +349,9 @@ static struct mtd_partition raumfeld_nand_partitions[] = {
+ static struct pxa3xx_nand_platform_data raumfeld_nand_info = {
+ 	.enable_arbiter	= 1,
+ 	.keep_config	= 1,
+-	.parts		= raumfeld_nand_partitions,
+-	.nr_parts	= ARRAY_SIZE(raumfeld_nand_partitions),
 +	.num_cs		= 1,
-+	.parts[0]	= mxm_8x10_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(mxm_8x10_nand_partitions)
++	.parts[0]	= raumfeld_nand_partitions,
++	.nr_parts[0]	= ARRAY_SIZE(raumfeld_nand_partitions),
  };
  
- static void __init mxm_8x10_nand_init(void)
+ /**
 -- 
 1.7.0.4
