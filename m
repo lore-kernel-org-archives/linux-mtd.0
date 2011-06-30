@@ -1,23 +1,23 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcFMJ-00008F-1x
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 11:24:36 +0000
-Date: Thu, 30 Jun 2011 12:23:54 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
-Message-ID: <20110630112354.GW21898@n2100.arm.linux.org.uk>
-References: <20110608101804.GA5527@july> <1309420530.23597.153.camel@sauron>
-	<20110630091951.GQ21898@n2100.arm.linux.org.uk>
-	<1309430735.23597.165.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1309430735.23597.165.camel@sauron>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Kyungmin Park <kmpark@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+	id 1QcFhn-0000TY-IN
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 11:46:48 +0000
+Received: by iyn15 with SMTP id 15so2263679iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Jun 2011 04:46:41 -0700 (PDT)
+Subject: Re: [PATCH 5/6] nand_flash_detect_onfi propagate busw info
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Thu, 30 Jun 2011 14:47:33 +0300
+In-Reply-To: <1309105616-3609-5-git-send-email-matthieu.castet@parrot.com>
+References: <1309105616-3609-1-git-send-email-matthieu.castet@parrot.com>
+	<1309105616-3609-5-git-send-email-matthieu.castet@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309434458.23597.173.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 30, 2011 at 01:45:31PM +0300, Artem Bityutskiy wrote:
-> Hi,
+On Sun, 2011-06-26 at 18:26 +0200, Matthieu CASTET wrote:
+> there is a bug in nand_flash_detect_onfi, busw need to be passed
+> by pointer to return it.
 > 
-> On Thu, 2011-06-30 at 10:19 +0100, Russell King - ARM Linux wrote:
-> > Which is that this code is trying to work around the restriction in the
-> > DMA API that dma_map_single() can only take virtual addresses in the
-> > kernel direct mapped region.
-> 
-> OK.
-> 
-> > The key thing here is that with CPUs which lookup by virtual address,
-> > like ARMs, you _must_ handle the cache aliases associated with the mapping
-> > which you are accessing the memory via.
-> > 
-> > This means if you are accessing a DMA buffer at address X, and address X
-> > is cacheable, address X needs cache maintainence performed on it.  Address
-> > Y, which may correspond with the same memory as X through a different
-> > mapping is no good.  It has to be X.
-> 
-> Jut to make sure I understand the issue (I am not good at all in this
-> stuff, this is why I CCed the arm ML):
-> 
-> * if I vmalloc a buffer, I and up with physical memory which has 2
-> mappings - X which is the direct kernel mapping and Y, which is the
-> vmalloc mapping.
-> * The DMA API takes care only about direct mapping in terms of CPU cache
-> flushing and invalidating. The vmalloc mapping is not taken care of.
-> 
-> And this may cause memory corruptions.
-> 
-> Correct?
+> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
 
-Yes.
+Pushed this patch to the l2 tree. It did not apply cleanly, though,
+would be nice if your patches were based on l2-mtd-2.6.git.
 
-> > However, there is NO API for mapping DMA buffers from vmalloc space.
-> > What we do now have are a pair of functions which must be used _correctly_
-> > (iow, one before and one after) to ensure that virtual cached architectures
-> > can access the data correctly - and its documented at the bottom of
-> > cachetlb.txt.
-> 
-> OK, so you do not say it is fundamentally impossible to DMA vmalloc'ed
-> memory, it is just that no one bothered to invent an API for this.
-
-It is not impossible, and XFS has had exactly the same issues - but
-remember that XFS has to work with the block layer with drivers which
-have no idea that the memory they're writing/reading may be also mapped
-into vmalloc space.  The two functions at the bottom of cachetlb.txt were
-invented to allow XFS to do this.
-
-> > As this is something which keeps coming up in connection with MTD, it
-> > may be a good idea if MTD gave driver authors a helping hand with DMA
-> > setup/teardown so that the chances of driver authors getting this right
-> > is greater...
-> 
-> Yes, or the MTD community may push back all hacks and force someone to
-> invent the API...
-
-It's probably going to be better to have a MTD block API for DMA which
-provides a scatterlist to the MTD block driver, and which knows whether
-the memory is from vmalloc.  When it is, it takes care of the flushing
-via those two functions I referred to in cachetlb.txt.
-
-This keeps the magic out of the individual MTD block drivers, and stops
-them replicating the same mistakes time and time again - and also means
-that you won't have to teach everyone about this.
-
-It doesn't make sense for the DMA API to deal with vmalloc - MTD is
-one of the very few (the only?) subsystems which does this.
+-- 
+Best Regards,
+Artem Bityutskiy
