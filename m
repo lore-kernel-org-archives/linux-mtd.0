@@ -1,18 +1,21 @@
-Message-ID: <4E0C35DC.2040107@freescale.com>
-Date: Thu, 30 Jun 2011 16:37:48 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcDQ2-0006cA-5j
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 09:20:20 +0000
+Date: Thu, 30 Jun 2011 10:19:51 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
+Message-ID: <20110630091951.GQ21898@n2100.arm.linux.org.uk>
+References: <20110608101804.GA5527@july> <1309420530.23597.153.camel@sauron>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v5 2/3] ARM: mxs/mx23evk: add GPMI-NFC device
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-	<1309406028-2924-3-git-send-email-b32955@freescale.com>
-	<20110630075501.GE11559@pengutronix.de>
-In-Reply-To: <20110630075501.GE11559@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: s.hauer@pengutronix.de, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1309420530.23597.153.camel@sauron>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Kyungmin Park <kmpark@infradead.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
-> On Thu, Jun 30, 2011 at 11:53:47AM +0800, Huang Shijie wrote:
->> add the GPMI-NFC device for mx23evk borad.
-> s/borad/board/
->
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
->> ---
->>   arch/arm/mach-mxs/Kconfig        |    1 +
->>   arch/arm/mach-mxs/mach-mx23evk.c |   37 +++++++++++++++++++++++++++++++++++++
->>   2 files changed, 38 insertions(+), 0 deletions(-)
->>
->> diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
->> index 1d3985f..f55bcfe 100644
->> --- a/arch/arm/mach-mxs/Kconfig
->> +++ b/arch/arm/mach-mxs/Kconfig
->> @@ -32,6 +32,7 @@ config MACH_MX23EVK
->>   	select SOC_IMX23
->>   	select MXS_HAVE_AMBA_DUART
->>   	select MXS_HAVE_PLATFORM_AUART
->> +	select MXS_HAVE_PLATFORM_GPMI_NFC
->>   	select MXS_HAVE_PLATFORM_MXS_MMC
->>   	select MXS_HAVE_PLATFORM_MXSFB
->>   	help
->> diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
->> index 3c2de33..772b373 100644
->> --- a/arch/arm/mach-mxs/mach-mx23evk.c
->> +++ b/arch/arm/mach-mxs/mach-mx23evk.c
->> @@ -107,6 +107,42 @@ static const iomux_cfg_t mx23evk_pads[] __initconst = {
->>   		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
->>   };
->>
->> +/* gpmi-nfc */
->> +#define MXS_PAD_GPMI_NFC	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
-> Maybe put that into a more central place, as mach-mx28evk uses it, too?
-yes. The mach-mx28evk needs it too.
+On Thu, Jun 30, 2011 at 10:55:25AM +0300, Artem Bityutskiy wrote:
+> > +	/* Handle vmalloc address */
+> > +	if (buf >= high_memory) {
+> > +		struct page *page;
+> 
+> OK, Russell will yell at this, but we do DMA vmalloc'ed addresses for
 
-If I put it into the iomux.h, what's the name for it?
-      MXS_PAD_CTRL_12MA , or something else ?
+I most certainly will, because its broken.
 
-> OTOH the name sounds more generic than its use. Do you really need 12mA
-Yes, I need the 12mA for the Write protect pin, and other two pins.
+> > +
+> > +		if (((size_t) buf & PAGE_MASK) !=
+> > +		    ((size_t) (buf + count - 1) & PAGE_MASK))
+> 
+> Something is fishy with these size_t casts, could you revisit this piece
+> of code - and turn it to something simpler, if possible?
+> 
+> > +			goto normal;
+> > +
+> > +		page = vmalloc_to_page(buf);
+> > +		if (unlikely(!page))
+> > +			goto normal;
+> > +
+> > +		/* Page offset */
+> > +		ofs = ((size_t) buf & ~PAGE_MASK);
+> > +		page_dma = 1;
+> > +
+> > +		/* DMA routine */
+> > +		dma_src = dma_map_page(dev, page, ofs, count, DMA_TO_DEVICE);
 
+Which is that this code is trying to work around the restriction in the
+DMA API that dma_map_single() can only take virtual addresses in the
+kernel direct mapped region.
 
-Best Regards
-Huang Shijie
-> for the Write protect pin? If not, you could rename it to
-> MXS_PAD_GPMI_NFC_STROBE.
->
->> +static iomux_cfg_t mx23evk_gpmi_nfc_pads[] = {
->> +	MX23_PAD_GPMI_D00__GPMI_D00 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D01__GPMI_D01 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D02__GPMI_D02 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D03__GPMI_D03 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D04__GPMI_D04 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D05__GPMI_D05 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D06__GPMI_D06 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_D07__GPMI_D07 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_WPN__GPMI_WPN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI_NFC,
->> +	MX23_PAD_GPMI_RDY0__GPMI_RDY0 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_RDY1__GPMI_RDY1 | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
->> +	MX23_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
->> +};
-> Best regards
-> Uwe
->
+The key thing here is that with CPUs which lookup by virtual address,
+like ARMs, you _must_ handle the cache aliases associated with the mapping
+which you are accessing the memory via.
+
+This means if you are accessing a DMA buffer at address X, and address X
+is cacheable, address X needs cache maintainence performed on it.  Address
+Y, which may correspond with the same memory as X through a different
+mapping is no good.  It has to be X.
+
+However, there is NO API for mapping DMA buffers from vmalloc space.
+What we do now have are a pair of functions which must be used _correctly_
+(iow, one before and one after) to ensure that virtual cached architectures
+can access the data correctly - and its documented at the bottom of
+cachetlb.txt.
+
+As this is something which keeps coming up in connection with MTD, it
+may be a good idea if MTD gave driver authors a helping hand with DMA
+setup/teardown so that the chances of driver authors getting this right
+is greater...
