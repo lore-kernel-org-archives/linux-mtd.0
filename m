@@ -1,9 +1,8 @@
 From: Huang Shijie-B32955 <B32955@freescale.com>
 To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: reply: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
-	controller driver
-Date: Thu, 30 Jun 2011 15:21:21 +0000
-Message-ID: <14C4E31473AF7E4B98176CB73615181C19FB3C@039-SN1MPN1-006.039d.mgd.msft.net>
+Subject: reply: [PATCH v7 0/3]  add the GPMI controller driver for IMX23/IMX28
+Date: Thu, 30 Jun 2011 15:30:48 +0000
+Message-ID: <14C4E31473AF7E4B98176CB73615181C19FB66@039-SN1MPN1-006.039d.mgd.msft.net>
 Content-Language: zh-CN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -23,48 +22,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
 Hi Wolfram:=0A=
 =0A=
-> +static int mil_ecc_write_oob(struct mtd_info *mtd,=0A=
-> +                             struct nand_chip *nand, int page)=0A=
-> +{=0A=
-> +     struct gpmi_nfc_data *this =3D nand->priv;=0A=
-> +     struct device *dev =3D this->dev;=0A=
-> +     struct mil *mil =3D &this->mil;=0A=
-> +     uint8_t *block_mark;=0A=
-> +     int block_mark_column;=0A=
-> +     int status;=0A=
-> +     int error =3D 0;=0A=
-> +=0A=
-> +     /* Only marking a block bad is permitted to write the OOB. */=0A=
-> +     if (!mil->marking_a_bad_block) {=0A=
-> +             dev_emerg(dev, "This driver doesn't support writing the OOB=
-\n");=0A=
-> +             WARN_ON(1);=0A=
-> +             error =3D -EIO;=0A=
-> +             goto exit;=0A=
-> +     }=0A=
+Thanks for your hard work.=0A=
 =0A=
-Huh? Why is that? This will break JFFS2, for example.=0A=
+On Wed, Jun 29, 2011 at 04:24:35PM +0800, Huang Shijie wrote:=0A=
+> The general-purpose media interface(GPMI) controller is a flexible interf=
+ace=0A=
+> to up to several NAND flashs.=0A=
+>=0A=
+> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelera=
+tor.=0A=
+>=0A=
+> With the help of BCH, the GPMI controller can choose to do the hardware E=
+CC or=0A=
+> not.=0A=
+>=0A=
+> This driver is a _pure_ MTD NAND controller driver now.=0A=
 =0A=
------------------------------------------------------------------=0A=
-The GPMI-NFC driver will use the OOB(BCH will use the OOB for a special lay=
-out), so we forbid any others to use the OOB.=0A=
-But marking a block bad is permitted.=0A=
+It seems writing does not work for me. I use a MX28EVK, NAND is reported as=
+:=0A=
 =0A=
-If the JFFS2 use the OOB, we have to disable it=0A=
-We use UBIFS by default.=0A=
+[    1.670000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xdc (Micron MT=
+29F4G08ABADAWP)=0A=
 =0A=
-Thanks.=0A=
+With ubiformat or the mtd_stresstest-module, I get stuff like this:=0A=
+=0A=
+root@device:~ ubiformat /dev/mtd0=0A=
+ubiformat: mtd0 (nand), size 536870912 bytes (512.0 MiB), 4096 eraseblocks =
+of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes=0A=
+libscan: scanning eraseblock 4095 -- 100 % complete=0A=
+ubiformat: 4094 eraseblocks are supposedly empty=0A=
+ubiformat: 2 bad eraseblocks found, numbers: 1243, 3935=0A=
+ubiformat: formatting eraseblock 2 --  0 % complete=0A=
+[  172.430000] [ start_dma_without_bch_irq : 393 ] DMA timeout!!!=0A=
+[  173.430000] [ start_dma_with_bch_irq : 424 ] bch timeout!!!=0A=
+[  173.430000] [ mil_ecc_write_page : 1647 ] Error in ECC-based write: -110=
+=0A=
+[  173.440000] [ send_command : 305 ] step 1 error=0A=
+[  173.440000] [ mil_cmd_ctrl : 1369 ] Chip: 0, Error -1=0A=
+[  173.450000] [ send_command : 305 ] step 1 error=0A=
+[  173.450000] [ mil_cmd_ctrl : 1369 ] Chip: 0, Error -1=0A=
+[  173.460000] [ read_data : 386 ] step 1 error=0A=
+...=0A=
+=0A=
+Reading works though, mtd_readtest passes. Wild guess: something wrong=0A=
+with the safe timings, perhaps?=0A=
+---------------------------------------------------------------------------=
+---------------------------=0A=
+The log shows that it's a DMA failure.=0A=
+=0A=
+I will debug it when i am free.=0A=
 =0A=
 Best Regards=0A=
 Huang Shijie=0A=
 =0A=
 =0A=
+---------------------------------------------------------------------------=
+---------------------------=0A=
 =0A=
+Regards,=0A=
 =0A=
------------------------------------------------------------------=0A=
+   Wolfram=0A=
 =0A=
 --=0A=
 Pengutronix e.K.                           | Wolfram Sang                |=
