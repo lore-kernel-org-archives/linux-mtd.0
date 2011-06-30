@@ -1,16 +1,21 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <s.hauer@pengutronix.de>
-Subject: [PATCH v5 3/3] ARM: mxs/mx28evk: add GPMI-NFC device
-Date: Thu, 30 Jun 2011 11:53:48 +0800
-Message-ID: <1309406028-2924-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qc8yn-0000J4-1Q
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 04:35:53 +0000
+Received: by yxe42 with SMTP id 42so887258yxe.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Jun 2011 21:35:02 -0700 (PDT)
+Subject: [PATCH] mtd: tmio_nand: fix build error
+From: Axel Lin <axel.lin@gmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 30 Jun 2011 12:34:54 +0800
+Message-ID: <1309408494.10500.1.camel@phoenix>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,80 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add GPMI-NFC device for mx28evk board.
+Fix a mistake introduced by commit 33f4a3b
+"mtd: tmio_nand.c: use mtd_device_parse_register"
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+  CC [M]  drivers/mtd/nand/tmio_nand.o
+drivers/mtd/nand/tmio_nand.c:461:35: error: macro "mtd_device_register" passed 5 arguments, but takes just 3
+drivers/mtd/nand/tmio_nand.c: In function 'tmio_probe':
+drivers/mtd/nand/tmio_nand.c:459: error: 'mtd_device_register' undeclared (first use in this function)
+drivers/mtd/nand/tmio_nand.c:459: error: (Each undeclared identifier is reported only once
+drivers/mtd/nand/tmio_nand.c:459: error: for each function it appears in.)
+make[3]: *** [drivers/mtd/nand/tmio_nand.o] Error 1
+make[2]: *** [drivers/mtd/nand] Error 2
+make[1]: *** [drivers/mtd] Error 2
+make: *** [drivers] Error 2
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-mxs/Kconfig        |    1 +
- arch/arm/mach-mxs/mach-mx28evk.c |   37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/tmio_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
-index f55bcfe..a5b753a 100644
---- a/arch/arm/mach-mxs/Kconfig
-+++ b/arch/arm/mach-mxs/Kconfig
-@@ -47,6 +47,7 @@ config MACH_MX28EVK
- 	select MXS_HAVE_PLATFORM_AUART
- 	select MXS_HAVE_PLATFORM_FEC
- 	select MXS_HAVE_PLATFORM_FLEXCAN
-+	select MXS_HAVE_PLATFORM_GPMI_NFC
- 	select MXS_HAVE_PLATFORM_MXS_MMC
- 	select MXS_HAVE_PLATFORM_MXSFB
- 	select MXS_OCOTP
-diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
-index eaaf6ff..74d0868 100644
---- a/arch/arm/mach-mxs/mach-mx28evk.c
-+++ b/arch/arm/mach-mxs/mach-mx28evk.c
-@@ -314,6 +314,42 @@ static const struct flexcan_platform_data
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index d476857..beebd95 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -456,7 +456,7 @@ static int tmio_probe(struct platform_device *dev)
+ 		goto err_scan;
  	}
- };
- 
-+/* gpmi-nfc */
-+#define MXS_PAD_GPMI_NFC	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
-+static iomux_cfg_t mx28evk_gpmi_nfc_pads[] = {
-+	MX28_PAD_GPMI_D00__GPMI_D0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D01__GPMI_D1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D02__GPMI_D2 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D03__GPMI_D3 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D04__GPMI_D4 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D05__GPMI_D5 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D06__GPMI_D6 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D07__GPMI_D7 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY0__GPMI_READY0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY1__GPMI_READY1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI_NFC,
-+	MX28_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI_NFC,
-+	MX28_PAD_GPMI_RESETN__GPMI_RESETN | MXS_PAD_GPMI_NFC,
-+};
-+
-+static int mx28evk_gpmi_nfc_platform_init(void)
-+{
-+	return mxs_iomux_setup_multiple_pads(mx28evk_gpmi_nfc_pads,
-+				ARRAY_SIZE(mx28evk_gpmi_nfc_pads));
-+}
-+
-+static const struct gpmi_nfc_platform_data
-+mx28evk_gpmi_nfc_data __initconst = {
-+	.platform_init		= mx28evk_gpmi_nfc_platform_init,
-+	.min_prop_delay_in_ns	= 5,
-+	.max_prop_delay_in_ns	= 9,
-+	.max_chip_count		= 1,
-+};
-+
- /* mxsfb (lcdif) */
- static struct fb_videomode mx28evk_video_modes[] = {
- 	{
-@@ -390,6 +426,7 @@ static void __init mx28evk_init(void)
- 	else
- 		gpio_set_value(MX28EVK_BL_ENABLE, 1);
- 
-+	mx28_add_gpmi_nfc(&mx28evk_gpmi_nfc_data);
- 	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
- 
- 	/* power on mmc slot by writing 0 to the gpio */
+ 	/* Register the partitions */
+-	retval = mtd_device_register(mtd, NULL, 0,
++	retval = mtd_device_parse_register(mtd, NULL, 0,
+ 			data ? data->partition : NULL,
+ 			data ? data->num_partitions : 0);
+ 	if (!retval)
 -- 
-1.7.0.4
+1.7.4.1
