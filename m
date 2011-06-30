@@ -1,22 +1,18 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcCY8-0004Jk-Ui
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 08:24:38 +0000
-Received: by vxd3 with SMTP id 3so1822773vxd.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jun 2011 01:23:45 -0700 (PDT)
+Message-ID: <4E0C35DC.2040107@freescale.com>
+Date: Thu, 30 Jun 2011 16:37:48 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1309408494.10500.1.camel@phoenix>
-References: <1309408494.10500.1.camel@phoenix>
-Date: Thu, 30 Jun 2011 12:23:45 +0400
-Message-ID: <BANLkTikonD2fcbkBU2ESYm_XncBXNZc_hw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: tmio_nand: fix build error
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Axel Lin <axel.lin@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v5 2/3] ARM: mxs/mx23evk: add GPMI-NFC device
+References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
+	<1309406028-2924-3-git-send-email-b32955@freescale.com>
+	<20110630075501.GE11559@pengutronix.de>
+In-Reply-To: <20110630075501.GE11559@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: s.hauer@pengutronix.de, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/30/11, Axel Lin <axel.lin@gmail.com> wrote:
-> Fix a mistake introduced by commit 33f4a3b
-> "mtd: tmio_nand.c: use mtd_device_parse_register"
+Hi:
+> On Thu, Jun 30, 2011 at 11:53:47AM +0800, Huang Shijie wrote:
+>> add the GPMI-NFC device for mx23evk borad.
+> s/borad/board/
+>
+>> Signed-off-by: Huang Shijie<b32955@freescale.com>
+>> ---
+>>   arch/arm/mach-mxs/Kconfig        |    1 +
+>>   arch/arm/mach-mxs/mach-mx23evk.c |   37 +++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 38 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+>> index 1d3985f..f55bcfe 100644
+>> --- a/arch/arm/mach-mxs/Kconfig
+>> +++ b/arch/arm/mach-mxs/Kconfig
+>> @@ -32,6 +32,7 @@ config MACH_MX23EVK
+>>   	select SOC_IMX23
+>>   	select MXS_HAVE_AMBA_DUART
+>>   	select MXS_HAVE_PLATFORM_AUART
+>> +	select MXS_HAVE_PLATFORM_GPMI_NFC
+>>   	select MXS_HAVE_PLATFORM_MXS_MMC
+>>   	select MXS_HAVE_PLATFORM_MXSFB
+>>   	help
+>> diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
+>> index 3c2de33..772b373 100644
+>> --- a/arch/arm/mach-mxs/mach-mx23evk.c
+>> +++ b/arch/arm/mach-mxs/mach-mx23evk.c
+>> @@ -107,6 +107,42 @@ static const iomux_cfg_t mx23evk_pads[] __initconst = {
+>>   		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
+>>   };
+>>
+>> +/* gpmi-nfc */
+>> +#define MXS_PAD_GPMI_NFC	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
+> Maybe put that into a more central place, as mach-mx28evk uses it, too?
+yes. The mach-mx28evk needs it too.
 
-Already sumbited 27 June 2011. Strangely Artem remains silent.
+If I put it into the iomux.h, what's the name for it?
+      MXS_PAD_CTRL_12MA , or something else ?
 
->   CC [M]  drivers/mtd/nand/tmio_nand.o
-> drivers/mtd/nand/tmio_nand.c:461:35: error: macro "mtd_device_register"
-> passed 5 arguments, but takes just 3
-> drivers/mtd/nand/tmio_nand.c: In function 'tmio_probe':
-> drivers/mtd/nand/tmio_nand.c:459: error: 'mtd_device_register' undeclared
-> (first use in this function)
-> drivers/mtd/nand/tmio_nand.c:459: error: (Each undeclared identifier is
-> reported only once
-> drivers/mtd/nand/tmio_nand.c:459: error: for each function it appears in.)
-> make[3]: *** [drivers/mtd/nand/tmio_nand.o] Error 1
-> make[2]: *** [drivers/mtd/nand] Error 2
-> make[1]: *** [drivers/mtd] Error 2
-> make: *** [drivers] Error 2
+> OTOH the name sounds more generic than its use. Do you really need 12mA
+Yes, I need the 12mA for the Write protect pin, and other two pins.
 
--- 
-With best wishes
-Dmitry
+
+Best Regards
+Huang Shijie
+> for the Write protect pin? If not, you could rename it to
+> MXS_PAD_GPMI_NFC_STROBE.
+>
+>> +static iomux_cfg_t mx23evk_gpmi_nfc_pads[] = {
+>> +	MX23_PAD_GPMI_D00__GPMI_D00 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D01__GPMI_D01 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D02__GPMI_D02 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D03__GPMI_D03 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D04__GPMI_D04 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D05__GPMI_D05 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D06__GPMI_D06 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_D07__GPMI_D07 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_WPN__GPMI_WPN | MXS_PAD_GPMI_NFC,
+>> +	MX23_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI_NFC,
+>> +	MX23_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI_NFC,
+>> +	MX23_PAD_GPMI_RDY0__GPMI_RDY0 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_RDY1__GPMI_RDY1 | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
+>> +	MX23_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
+>> +};
+> Best regards
+> Uwe
+>
