@@ -1,19 +1,19 @@
-Message-ID: <19980.36638.134045.743619@ipc1.ka-ro>
-Date: Thu, 30 Jun 2011 16:58:38 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-In-Reply-To: <201106301555.19440.arnd@arndb.de>
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-	<1309406028-2924-2-git-send-email-b32955@freescale.com>
-	<201106301555.19440.arnd@arndb.de>
-Cc: s.hauer@pengutronix.de, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org
+From: Huang Shijie-B32955 <B32955@freescale.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: reply: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+Date: Thu, 30 Jun 2011 15:21:21 +0000
+Message-ID: <14C4E31473AF7E4B98176CB73615181C19FB3C@039-SN1MPN1-006.039d.mgd.msft.net>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
+	"LW@KARO-electronics.de" <LW@KARO-electronics.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Arnd Bergmann writes:
-> On Thursday 30 June 2011, Huang Shijie wrote:
-> > add GPMI-NFC support for imx23 and imx28.
-> > 
-> > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> 
-[...]
-> > +struct gpmi_nfc_platform_data {
-> > +	/* SoC hardware information. */
-> > +	int		(*platform_init)(void);
-> > +	void		(*platform_exit)(void);
-> > +
-> > +	/* NAND Flash information. */
-> > +	unsigned int	min_prop_delay_in_ns;
-> > +	unsigned int	max_prop_delay_in_ns;
-> > +	unsigned int	max_chip_count;
-> > +
-> > +	/* Medium information. */
-> > +	struct mtd_partition *partitions;
-> > +	unsigned	partition_count;
-> > +};
-> 
-> When adding new infrastructure, always keep in mind how you want it to look
-> after the device tree conversion. The partitions and min/max_* are easily covered
-> with that, but the init/exit function pointers are somewhat problematic.
-> 
-> Fortunately, you don't really require these functions for this driver. The _exit
-> function is completely unused, so just get rid of it.
-> 
-> The init function is used only to set up iomux, so the logical replacement is
-> a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
-> directly from the driver.
-> 
-NO! I strongly object that. mxs_iomux_setup_multiple_pads() is a
-platform specific function and has no business inside a device driver
-that should be platform agnostic.
-Consider the same controller being part of a different SoC that
-requires you to call mxs_iomux_v2_setup_multiple_pads() instead. You
-would then have to check for the SoC type inside the driver to find
-the right function to call which is quite obscene.
-
-I would rather live with the iomux statically configured in the
-platform init code than having direct calls into platform specific
-code from device drivers.
-
-
-Lothar Waßmann
--- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+=0A=
+Hi Wolfram:=0A=
+=0A=
+> +static int mil_ecc_write_oob(struct mtd_info *mtd,=0A=
+> +                             struct nand_chip *nand, int page)=0A=
+> +{=0A=
+> +     struct gpmi_nfc_data *this =3D nand->priv;=0A=
+> +     struct device *dev =3D this->dev;=0A=
+> +     struct mil *mil =3D &this->mil;=0A=
+> +     uint8_t *block_mark;=0A=
+> +     int block_mark_column;=0A=
+> +     int status;=0A=
+> +     int error =3D 0;=0A=
+> +=0A=
+> +     /* Only marking a block bad is permitted to write the OOB. */=0A=
+> +     if (!mil->marking_a_bad_block) {=0A=
+> +             dev_emerg(dev, "This driver doesn't support writing the OOB=
+\n");=0A=
+> +             WARN_ON(1);=0A=
+> +             error =3D -EIO;=0A=
+> +             goto exit;=0A=
+> +     }=0A=
+=0A=
+Huh? Why is that? This will break JFFS2, for example.=0A=
+=0A=
+-----------------------------------------------------------------=0A=
+The GPMI-NFC driver will use the OOB(BCH will use the OOB for a special lay=
+out), so we forbid any others to use the OOB.=0A=
+But marking a block bad is permitted.=0A=
+=0A=
+If the JFFS2 use the OOB, we have to disable it=0A=
+We use UBIFS by default.=0A=
+=0A=
+Thanks.=0A=
+=0A=
+Best Regards=0A=
+Huang Shijie=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+-----------------------------------------------------------------=0A=
+=0A=
+--=0A=
+Pengutronix e.K.                           | Wolfram Sang                |=
+=0A=
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |=
+=0A=
