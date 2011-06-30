@@ -1,18 +1,13 @@
-Message-ID: <4E0BD657.3070400@freescale.com>
-Date: Thu, 30 Jun 2011 09:50:15 +0800
 From: Huang Shijie <b32955@freescale.com>
+To: <s.hauer@pengutronix.de>
+Subject: [PATCH v5 0/3] add the GPMI-NFC support for imx23/imx28
+Date: Thu, 30 Jun 2011 11:53:45 +0800
+Message-ID: <1309406028-2924-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC	controller
-	driver
-References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
-	<1309335878-16678-2-git-send-email-b32955@freescale.com>
-	<20110629123803.GM21898@n2100.arm.linux.org.uk>
-In-Reply-To: <20110629123803.GM21898@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	linux-mtd@lists.infradead.org,
+Content-Type: text/plain
+Cc: w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+	Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
 	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,35 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Russell:
-> On Wed, Jun 29, 2011 at 04:24:36PM +0800, Huang Shijie wrote:
->> +	dma_addr_t destination_phys = ~0;
->> +
->> +	if (virt_addr_valid(destination))
->> +		destination_phys = dma_map_single(dev, destination,
->> +						length, DMA_FROM_DEVICE);
->> +
->> +	if (dma_mapping_error(dev, destination_phys)) {
-> This is buggy.  There is no guarantee that we'll keep using ~0 as the
-> value for dma_mapping_error().  Please don't rely on this, but instead
-> code this better to avoid having to play these games.
->
-thanks a lot. I will change it in the next version.
+The patch is based on branch "imx-for-3.1" of tree :
+      git://git.pengutronix.de/git/imx/linux-2.6.git
 
->> +static int send_page_prepare(struct gpmi_nfc_data *this,
->> +			const void *source, unsigned length,
->> +			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
->> +			const void **use_virt, dma_addr_t *use_phys)
->> +{
->> +	dma_addr_t source_phys = ~0;
->> +	struct device *dev = this->dev;
->> +
->> +	if (virt_addr_valid(source))
->> +		source_phys = dma_map_single(dev,
->> +				(void *)source, length, DMA_TO_DEVICE);
->> +
->> +	if (dma_mapping_error(dev, source_phys)) {
-> Ditto.
->
-Best Regards
-Huang Shijie
+v4 --> v5:
+	[0] split out the mach code and the machine code.
+
+v3 --> v4:
+	merge the GPMI-NFC device code to the new branch.
+
+Huang Shijie (3):
+  ARM: mxs: add GPMI-NFC support for imx23/imx28
+  ARM: mxs/mx23evk: add GPMI-NFC device
+  ARM: mxs/mx28evk: add GPMI-NFC device
+
+ arch/arm/mach-mxs/Kconfig                       |    2 +
+ arch/arm/mach-mxs/clock-mx23.c                  |    1 +
+ arch/arm/mach-mxs/clock-mx28.c                  |    1 +
+ arch/arm/mach-mxs/devices-mx23.h                |    4 +
+ arch/arm/mach-mxs/devices-mx28.h                |    4 +
+ arch/arm/mach-mxs/devices/Kconfig               |    3 +
+ arch/arm/mach-mxs/devices/Makefile              |    1 +
+ arch/arm/mach-mxs/devices/platform-gpmi-nfc.c   |   90 +++++++++++++++++++++++
+ arch/arm/mach-mxs/include/mach/devices-common.h |   10 +++
+ arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   71 ++++++++++++++++++
+ arch/arm/mach-mxs/mach-mx23evk.c                |   37 +++++++++
+ arch/arm/mach-mxs/mach-mx28evk.c                |   37 +++++++++
+ 12 files changed, 261 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
+ create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
