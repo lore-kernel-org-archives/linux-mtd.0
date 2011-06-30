@@ -1,24 +1,20 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcGYQ-0001Qa-0Y
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 12:41:11 +0000
-Received: by vxd3 with SMTP id 3so1965938vxd.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jun 2011 05:41:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1309435714.23597.181.camel@sauron>
-References: <1309408494.10500.1.camel@phoenix>
-	<BANLkTikonD2fcbkBU2ESYm_XncBXNZc_hw@mail.gmail.com>
-	<1309435714.23597.181.camel@sauron>
-Date: Thu, 30 Jun 2011 16:41:02 +0400
-Message-ID: <BANLkTik-pWfbC3J9LkB-jL9H8cnoLR=R-Q@mail.gmail.com>
-Subject: Re: [PATCH] mtd: tmio_nand: fix build error
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Axel Lin <axel.lin@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Date: Thu, 30 Jun 2011 16:38:33 +0300
+In-Reply-To: <20110630112354.GW21898@n2100.arm.linux.org.uk>
+References: <20110608101804.GA5527@july> <1309420530.23597.153.camel@sauron>
+	<20110630091951.GQ21898@n2100.arm.linux.org.uk>
+	<1309430735.23597.165.camel@sauron>
+	<20110630112354.GW21898@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309441118.23597.198.camel@sauron>
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Kyungmin Park <kmpark@infradead.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/30/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2011-06-30 at 12:23 +0400, Dmitry Eremin-Solenikov wrote:
->> On 6/30/11, Axel Lin <axel.lin@gmail.com> wrote:
->> > Fix a mistake introduced by commit 33f4a3b
->> > "mtd: tmio_nand.c: use mtd_device_parse_register"
->>
->> Already sumbited 27 June 2011. Strangely Artem remains silent.
->
-> I handle my mailbox in FIFO order (with exceptions) so I have not
-> reached your patch yet. Now I've merged it with one of your previous
-> patches to keep the kernel bisectable.
+On Thu, 2011-06-30 at 12:23 +0100, Russell King - ARM Linux wrote:
+> It's probably going to be better to have a MTD block API for DMA which
+> provides a scatterlist to the MTD block driver, and which knows whether
+> the memory is from vmalloc.  When it is, it takes care of the flushing
+> via those two functions I referred to in cachetlb.txt.
+> 
+> This keeps the magic out of the individual MTD block drivers, and stops
+> them replicating the same mistakes time and time again - and also means
+> that you won't have to teach everyone about this.
 
-Thanks and sorry if my comment offended you! It's just I see most of
-MLs/patches in threads, so I was a bit puzzled.
+Yeah, something like this. The MTD API is not very suitable for this and
+would need some rework to make sure we achieve 2 goals:
+
+1. No need to change current MTD API users
+2. Keep the vmalloced memory handling in one place and not replicate it
+   in each driver.
+
+Currently only OneNAND drivers do these hacks, so I guess Kyungmin will
+suffer most...
+
+> It doesn't make sense for the DMA API to deal with vmalloc - MTD is
+> one of the very few (the only?) subsystems which does this.
+
+OK, thank you!
 
 -- 
-With best wishes
-Dmitry
+Best Regards,
+Artem Bityutskiy
