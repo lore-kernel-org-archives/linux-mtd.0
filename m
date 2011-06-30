@@ -1,21 +1,23 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcDQ2-0006cA-5j
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 09:20:20 +0000
-Date: Thu, 30 Jun 2011 10:19:51 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
-Message-ID: <20110630091951.GQ21898@n2100.arm.linux.org.uk>
-References: <20110608101804.GA5527@july> <1309420530.23597.153.camel@sauron>
+	id 1QcETI-0007b1-OY
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 10:27:45 +0000
+Date: Thu, 30 Jun 2011 12:27:28 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+Message-ID: <20110630102728.GB1997@pengutronix.de>
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
 Content-Disposition: inline
-In-Reply-To: <1309420530.23597.153.camel@sauron>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Kyungmin Park <kmpark@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1309335878-16678-2-git-send-email-b32955@freescale.com>
+Cc: thierry.nolf.barco@gmail.com, LW@KARO-electronics.de,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 30, 2011 at 10:55:25AM +0300, Artem Bityutskiy wrote:
-> > +	/* Handle vmalloc address */
-> > +	if (buf >= high_memory) {
-> > +		struct page *page;
-> 
-> OK, Russell will yell at this, but we do DMA vmalloc'ed addresses for
 
-I most certainly will, because its broken.
+--nVMJ2NtxeReIH9PS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > +
-> > +		if (((size_t) buf & PAGE_MASK) !=
-> > +		    ((size_t) (buf + count - 1) & PAGE_MASK))
-> 
-> Something is fishy with these size_t casts, could you revisit this piece
-> of code - and turn it to something simpler, if possible?
-> 
-> > +			goto normal;
-> > +
-> > +		page = vmalloc_to_page(buf);
-> > +		if (unlikely(!page))
-> > +			goto normal;
-> > +
-> > +		/* Page offset */
-> > +		ofs = ((size_t) buf & ~PAGE_MASK);
-> > +		page_dma = 1;
-> > +
-> > +		/* DMA routine */
-> > +		dma_src = dma_map_page(dev, page, ofs, count, DMA_TO_DEVICE);
 
-Which is that this code is trying to work around the restriction in the
-DMA API that dma_map_single() can only take virtual addresses in the
-kernel direct mapped region.
+> +static int mil_ecc_write_oob(struct mtd_info *mtd,
+> +				struct nand_chip *nand, int page)
+> +{
+> +	struct gpmi_nfc_data *this =3D nand->priv;
+> +	struct device *dev =3D this->dev;
+> +	struct mil *mil	=3D &this->mil;
+> +	uint8_t *block_mark;
+> +	int block_mark_column;
+> +	int status;
+> +	int error =3D 0;
+> +
+> +	/* Only marking a block bad is permitted to write the OOB. */
+> +	if (!mil->marking_a_bad_block) {
+> +		dev_emerg(dev, "This driver doesn't support writing the OOB\n");
+> +		WARN_ON(1);
+> +		error =3D -EIO;
+> +		goto exit;
+> +	}
 
-The key thing here is that with CPUs which lookup by virtual address,
-like ARMs, you _must_ handle the cache aliases associated with the mapping
-which you are accessing the memory via.
+Huh? Why is that? This will break JFFS2, for example.
 
-This means if you are accessing a DMA buffer at address X, and address X
-is cacheable, address X needs cache maintainence performed on it.  Address
-Y, which may correspond with the same memory as X through a different
-mapping is no good.  It has to be X.
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-However, there is NO API for mapping DMA buffers from vmalloc space.
-What we do now have are a pair of functions which must be used _correctly_
-(iow, one before and one after) to ensure that virtual cached architectures
-can access the data correctly - and its documented at the bottom of
-cachetlb.txt.
+--nVMJ2NtxeReIH9PS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-As this is something which keeps coming up in connection with MTD, it
-may be a good idea if MTD gave driver authors a helping hand with DMA
-setup/teardown so that the chances of driver authors getting this right
-is greater...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4MT5AACgkQD27XaX1/VRsjAQCcDo8UEP9nzdpt3ifNAZngquBq
+0cYAni4rUrvluTcF3+4ry6YwsiJsHu3a
+=unt2
+-----END PGP SIGNATURE-----
+
+--nVMJ2NtxeReIH9PS--
