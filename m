@@ -1,23 +1,19 @@
-Received: from 15.98.mail-out.ovh.net ([87.98.175.33] helo=98.mail-out.ovh.net)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qc5wl-0008Fj-KK
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 01:21:36 +0000
-Received: from mail31.ha.ovh.net (b7.ovh.net [213.186.33.57])
-	by 98.mail-out.ovh.net (Postfix) with SMTP id BC2994B20D6
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jun 2011 03:21:10 +0200 (CEST)
-Date: Thu, 30 Jun 2011 03:06:28 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] MTD: atmel_nand: fix wrong use of 0 as NULL
-Message-ID: <20110630010628.GI17355@game.jcrosoft.org>
-References: <1309365676-19210-1-git-send-email-nicolas.ferre@atmel.com>
+Message-ID: <4E0BD657.3070400@freescale.com>
+Date: Thu, 30 Jun 2011 09:50:15 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1309365676-19210-1-git-send-email-nicolas.ferre@atmel.com>
-Cc: hong.xu@atmel.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC	controller
+	driver
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
+	<20110629123803.GM21898@n2100.arm.linux.org.uk>
+In-Reply-To: <20110629123803.GM21898@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,12 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18:41 Wed 29 Jun     , Nicolas Ferre wrote:
-> Fixing this error:
-> atmel_nand.c:718:20: warning: Using plain integer as NULL pointer
-> 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Hi Russell:
+> On Wed, Jun 29, 2011 at 04:24:36PM +0800, Huang Shijie wrote:
+>> +	dma_addr_t destination_phys = ~0;
+>> +
+>> +	if (virt_addr_valid(destination))
+>> +		destination_phys = dma_map_single(dev, destination,
+>> +						length, DMA_FROM_DEVICE);
+>> +
+>> +	if (dma_mapping_error(dev, destination_phys)) {
+> This is buggy.  There is no guarantee that we'll keep using ~0 as the
+> value for dma_mapping_error().  Please don't rely on this, but instead
+> code this better to avoid having to play these games.
+>
+thanks a lot. I will change it in the next version.
 
-Best Regards,
-J.
+>> +static int send_page_prepare(struct gpmi_nfc_data *this,
+>> +			const void *source, unsigned length,
+>> +			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
+>> +			const void **use_virt, dma_addr_t *use_phys)
+>> +{
+>> +	dma_addr_t source_phys = ~0;
+>> +	struct device *dev = this->dev;
+>> +
+>> +	if (virt_addr_valid(source))
+>> +		source_phys = dma_map_single(dev,
+>> +				(void *)source, length, DMA_TO_DEVICE);
+>> +
+>> +	if (dma_mapping_error(dev, source_phys)) {
+> Ditto.
+>
+Best Regards
+Huang Shijie
