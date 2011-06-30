@@ -1,26 +1,23 @@
-Date: Thu, 30 Jun 2011 13:28:56 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC controller
-	driver
-Message-ID: <20110630052855.GE25931@S2100-06.ap.freescale.net>
-References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
-	<1309335878-16678-2-git-send-email-b32955@freescale.com>
-	<20110629100658.GE1992@pengutronix.de>
-	<20110629103337.GF1992@pengutronix.de>
-	<4E0B0296.6060902@freescale.com>
-	<20110629122942.GH1992@pengutronix.de>
-	<20110629140038.GB25931@S2100-06.ap.freescale.net>
-	<20110629141557.GK1992@pengutronix.de>
-	<20110629143701.GC25931@S2100-06.ap.freescale.net>
-	<20110630044655.GA19841@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20110630044655.GA19841@pengutronix.de>
-Cc: dedekind1@gmail.com, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcBGn-0003Vj-QH
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 07:02:38 +0000
+Received: by iwn35 with SMTP id 35so2089352iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Jun 2011 00:02:26 -0700 (PDT)
+Subject: Re: [PATCH v2] mtdinfo: remove -m leftovers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 30 Jun 2011 10:03:13 +0300
+In-Reply-To: <1309363769-7904-1-git-send-email-computersforpeace@gmail.com>
+References: <1309327350.23597.96.camel@sauron>
+	<1309363769-7904-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309417402.23597.141.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 30, 2011 at 06:46:55AM +0200, Wolfram Sang wrote:
-> Hi Shawn,
+On Wed, 2011-06-29 at 09:09 -0700, Brian Norris wrote:
+> From: Artem Bityutskiy <dedekind1@gmail.com>
 > 
-> > > > I would suggest leave this gpmi specific quirk to gpmi driver to sort
-> > > > out.  With the following mxs-dma change, it should work if gpmi driver
-> > > > can pass the valid gpmi irq number for only one gpmi channel, and -1
-> > > > for all others.
-> > > 
-> > > ...which brings us right into the 'NO_IRQ is 0' discussion :)
-> > > 
-> > Though I do not know what it means exactly, number 0 is an valid IRQ
-> > on both mx23 and mx28 (see mx23.h and mx28.h).
+> Looks OK to me, except it seems you did everything but actually removing
+> the field in struct args :) So here's a quick v2 from me...
 > 
-> It could be remapped. It is a looong story. Start here if you are interested:
+> From: Artem Bityutskiy <dedekind1@gmail.com>
+> Date: Wed, 29 Jun 2011 08:56:39 +0300
+> Subject: [PATCH v2] mtdinfo: remove -m leftovers
 > 
-> http://lkml.org/lkml/2005/11/21/221
-> http://yarchive.net/comp/linux/no_irq.html
+> We have removed the -m option, but did not remove args.mtdn which represents
+> the -m parameters. Kill args.mtdn as well.
 > 
-> Currently, it's a can of worms. Hopefully, irq_desc might help somewhen.
-> 
-Thanks for the info.  It deserves a good study.  With your comment,
-I would use macro NO_IRQ than -1 for the mxs-dma change.
+> Signed-off-by: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-> > > Other than that, [thinking loud] this will help if all irq-sharing
-> > > channels are handled by the same driver. If not, we would just add
-> > > IRQF_SHARED (hopefully this will never be needed). Yup, sounds
-> > > reasonable to me. Will give it a second thought later, though.
-> > > 
-> > GPMI is the only mxs-dma user that gets irq-sharing.  So yes, all
-> > irq-sharing channels are handled by the same driver, gpmi-nfc :)
-> 
-> Currently, yes. But we have to make it future-proof.
-> 
-For the SoCs coming in future, some, e.g. mx6 series, is the same
-case, and some, like mx50, has separate irq for each gpmi channel,
-which is even better.  So we can survive for quite a long time.
+Pushed, thanks you!
 
 -- 
-Regards,
-Shawn
+Best Regards,
+Artem Bityutskiy
