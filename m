@@ -1,15 +1,22 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-To: <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] dmaengine: mxs-dma: skip request_irq for NO_IRQ
-Date: Thu, 30 Jun 2011 16:06:33 +0800
-Message-ID: <1309421193-7785-1-git-send-email-shawn.guo@linaro.org>
-In-Reply-To: <20110630052855.GE25931@S2100-06.ap.freescale.net>
-References: <20110630052855.GE25931@S2100-06.ap.freescale.net>
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
+	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcCY8-0004Jk-Ui
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 08:24:38 +0000
+Received: by vxd3 with SMTP id 3so1822773vxd.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Jun 2011 01:23:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Vinod Koul <vinod.koul@intel.com>, Huang Shijie <b32955@freescale.com>,
-	Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
-	Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1309408494.10500.1.camel@phoenix>
+References: <1309408494.10500.1.camel@phoenix>
+Date: Thu, 30 Jun 2011 12:23:45 +0400
+Message-ID: <BANLkTikonD2fcbkBU2ESYm_XncBXNZc_hw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: tmio_nand: fix build error
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: Axel Lin <axel.lin@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In general, the mxs-dma users get separate irq for each channel,
-but gpmi is special one which has only one irq shared by all gpmi
-channels.  It causes mxs_dma channel allocation function fail for
-all other gpmi channels except the first one calling into the
-function.
+On 6/30/11, Axel Lin <axel.lin@gmail.com> wrote:
+> Fix a mistake introduced by commit 33f4a3b
+> "mtd: tmio_nand.c: use mtd_device_parse_register"
 
-The patch gets request_irq call skipped for NO_IRQ case, and leaves
-this gpmi specific quirk to gpmi driver to sort out.  It will fix
-above problem if gpmi driver sets chan_irq as gpmi irq for only one
-channel and NO_IRQ for all the rest channels.
+Already sumbited 27 June 2011. Strangely Artem remains silent.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>
----
- drivers/dma/mxs-dma.c |   10 ++++++----
- 1 files changed, 6 insertions(+), 4 deletions(-)
+>   CC [M]  drivers/mtd/nand/tmio_nand.o
+> drivers/mtd/nand/tmio_nand.c:461:35: error: macro "mtd_device_register"
+> passed 5 arguments, but takes just 3
+> drivers/mtd/nand/tmio_nand.c: In function 'tmio_probe':
+> drivers/mtd/nand/tmio_nand.c:459: error: 'mtd_device_register' undeclared
+> (first use in this function)
+> drivers/mtd/nand/tmio_nand.c:459: error: (Each undeclared identifier is
+> reported only once
+> drivers/mtd/nand/tmio_nand.c:459: error: for each function it appears in.)
+> make[3]: *** [drivers/mtd/nand/tmio_nand.o] Error 1
+> make[2]: *** [drivers/mtd/nand] Error 2
+> make[1]: *** [drivers/mtd] Error 2
+> make: *** [drivers] Error 2
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 88aad4f..2870d91 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -327,10 +327,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 
- 	memset(mxs_chan->ccw, 0, PAGE_SIZE);
- 
--	ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
--				0, "mxs-dma", mxs_dma);
--	if (ret)
--		goto err_irq;
-+	if (mxs_chan->chan_irq != NO_IRQ) {
-+		ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
-+					0, "mxs-dma", mxs_dma);
-+		if (ret)
-+			goto err_irq;
-+	}
- 
- 	ret = clk_enable(mxs_dma->clk);
- 	if (ret)
 -- 
-1.7.4.1
+With best wishes
+Dmitry
