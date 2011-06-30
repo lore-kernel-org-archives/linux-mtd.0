@@ -1,22 +1,15 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcBXu-0003hV-Rp
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2011 07:20:19 +0000
-Received: by iwn35 with SMTP id 35so2100525iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jun 2011 00:20:17 -0700 (PDT)
 Subject: Re: [PATCH] mtd: OneNAND: samsung: Write DMA support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyungmin Park <kmpark@infradead.org>
-Date: Thu, 30 Jun 2011 10:21:09 +0300
-In-Reply-To: <BANLkTi=MMEzE-neUzRqBYqvsGsup_s+VMw@mail.gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>, linux-arm-kernel
+	<linux-arm-kernel@lists.infradead.org>
+Date: Thu, 30 Jun 2011 10:55:25 +0300
+In-Reply-To: <20110608101804.GA5527@july>
 References: <20110608101804.GA5527@july>
-	<BANLkTi=MMEzE-neUzRqBYqvsGsup_s+VMw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309418473.23597.143.camel@sauron>
+Message-ID: <1309420530.23597.153.camel@sauron>
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,17 +20,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-06-29 at 16:22 +0900, Kyungmin Park wrote:
-> Hi Artem,
+On Wed, 2011-06-08 at 19:18 +0900, Kyungmin Park wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
 > 
-> There's missing patch, can you add l2-mtd tree?
+> Implement the write DMA feature. It can reduce the CPU usage when write.
 > 
-Sorry, I missed this. I have few minor comments which will come shortly,
-and also I'd ask to re-send this patch with the arm mailing list in CC -
-you use DMA API which I am not very good at, and I'd like others to
-validate this.
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> ---
+> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+> index 3306b5b..f24cb6f 100644
+> --- a/drivers/mtd/onenand/samsung.c
+> +++ b/drivers/mtd/onenand/samsung.c
+> @@ -712,6 +712,74 @@ normal:
+>  	return 0;
+>  }
+>  
+> +static int s5pc110_write_bufferram(struct mtd_info *mtd, int area,
+> +		const unsigned char *buffer, int offset, size_t count)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	struct device *dev = &onenand->pdev->dev;
+> +	void __iomem *p;
+> +	void *buf = (void *) buffer;
 
-Thanks!
+No, this is bad - if buffer is marked as const then it should be
+constant, or remove the const modifier in the function declaration. And
+when you remove the const modifier you can kill the cast, because
+assigning to a void pointer does not require it. 
+
+> +	dma_addr_t dma_src, dma_dst;
+> +	int err, ofs, page_dma = 0;
+> +
+> +	p = this->base + area;
+> +	if (ONENAND_CURRENT_BUFFERRAM(this)) {
+> +		if (area == ONENAND_DATARAM)
+> +			p += this->writesize;
+> +		else
+> +			p += mtd->oobsize;
+> +	}
+> +
+> +	if (count != mtd->writesize || offset & 3 || (size_t) buf & 3)
+> +		goto normal;
+> +
+> +	/* Handle vmalloc address */
+> +	if (buf >= high_memory) {
+> +		struct page *page;
+
+OK, Russell will yell at this, but we do DMA vmalloc'ed addresses for
+many years in the OneNAND driver and it works, and there are products
+out there with this code (e.g., Nokia N900) and it works. But I'd like
+to understand better why exactly this is a no-no, and why this works in
+practice - were we lucky and how exactly ....
+
+> +
+> +		if (((size_t) buf & PAGE_MASK) !=
+> +		    ((size_t) (buf + count - 1) & PAGE_MASK))
+
+Something is fishy with these size_t casts, could you revisit this piece
+of code - and turn it to something simpler, if possible?
+
+> +			goto normal;
+> +
+> +		page = vmalloc_to_page(buf);
+> +		if (unlikely(!page))
+> +			goto normal;
+> +
+> +		/* Page offset */
+> +		ofs = ((size_t) buf & ~PAGE_MASK);
+> +		page_dma = 1;
+> +
+> +		/* DMA routine */
+> +		dma_src = dma_map_page(dev, page, ofs, count, DMA_TO_DEVICE);
+> +		dma_dst = onenand->phys_base + (p - this->base);
+> +	} else {
+> +		/* DMA routine */
+> +		dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
+> +		dma_dst = onenand->phys_base + (p - this->base);
+> +	}
+> +
+> +	if (dma_mapping_error(dev, dma_src)) {
+> +		dev_err(dev, "Couldn't map a %d byte buffer for DMA\n", count);
+> +		goto normal;
+> +	}
+> +
+> +	err = s5pc110_dma_ops((void *) dma_dst, (void *) dma_src,
+> +			count, S5PC110_DMA_DIR_WRITE);
+
+Why casting to void? Please, revise all casts you do.
+
+> +
+> +	if (page_dma)
+> +		dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
+> +	else
+> +		dma_unmap_single(dev, dma_src, count, DMA_TO_DEVICE);
+> +
+> +	if (!err)
+> +		return 0;
+> +
+> +normal:
+> +	memcpy(p + offset, buffer, count);
+
+p is iomem, and it cannot be involved in memcpy as Russell pointed
+recently in another e-mail, see Documentation/bus-virt-phys-mapping.txt
+
+Please, re-send this with the arm mailing list in CC.
 
 -- 
 Best Regards,
