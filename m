@@ -1,21 +1,27 @@
-Message-ID: <19981.25150.673498.516935@ipc1.ka-ro>
-Date: Fri, 1 Jul 2011 07:59:26 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcWpk-0002j1-EB
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 06:04:09 +0000
+Date: Fri, 1 Jul 2011 08:03:56 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
 To: Arnd Bergmann <arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-In-Reply-To: <201107010022.26597.arnd@arndb.de>
+Message-ID: <20110701060356.GA27039@pengutronix.de>
 References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
 	<201106301555.19440.arnd@arndb.de>
 	<19980.36638.134045.743619@ipc1.ka-ro>
 	<201107010022.26597.arnd@arndb.de>
-Cc: s.hauer@pengutronix.de, w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+In-Reply-To: <201107010022.26597.arnd@arndb.de>
+Cc: s.hauer@pengutronix.de, thierry.nolf.barco@gmail.com,
 	Huang Shijie <b32955@freescale.com>,
 	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
 	Linus Walleij <linus.walleij@linaro.org>,
-	linux-arm-kernel@lists.infradead.org
+	linux-arm-kernel@lists.infradead.org,
+	Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-Arnd Bergmann writes:
-> On Thursday 30 June 2011 16:58:38 Lothar Waßmann wrote:
-> > > 
-> > > When adding new infrastructure, always keep in mind how you want it to look
-> > > after the device tree conversion. The partitions and min/max_* are easily covered
-> > > with that, but the init/exit function pointers are somewhat problematic.
-> > > 
-> > > Fortunately, you don't really require these functions for this driver. The _exit
-> > > function is completely unused, so just get rid of it.
-> > > 
-> > > The init function is used only to set up iomux, so the logical replacement is
-> > > a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
-> > > directly from the driver.
-> > > 
-> > NO! I strongly object that. mxs_iomux_setup_multiple_pads() is a
-> > platform specific function and has no business inside a device driver
-> > that should be platform agnostic.
-> > Consider the same controller being part of a different SoC that
-> > requires you to call mxs_iomux_v2_setup_multiple_pads() instead. You
-> > would then have to check for the SoC type inside the driver to find
-> > the right function to call which is quite obscene.
-> 
-> Won't this problem just go away as soon as we get the mxs converted to the
-> generic pinmux subsystem that Linus Walleij is doing?
-> 
-> Obviously, you would not have to check the soc type really, you would have
-> to instead check for different versions of the gpmi, which you most likely
-> have to anyway because reusing the same hardware block in a new chip usually
-> comes with other changes as well. 
-> 
-The pin muxing is SoC specific, not GPMI specific. So the SoC version
-should be checked, not something else that may be loosely linked to
-it.
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Note how the driver already does this with code like
-> 
-> +	if (GPMI_IS_MX23(this) || GPMI_IS_MX28(this))
-> +		nfc = &gpmi_nfc_hal_mxs;
-> 
+Hi Arnd,
+
 > If you really want to call out obsceneties, how about the fact that this
 > driver comes with an 805 line patch to add a HAL for a single chip!
-> 
+>=20
 > Such abstractions should not be introduced as long as there is only
 > a single instance of the hardware.
-> 
-I had already commented on this in the first round of patches from
-Huang in March this year.
 
+If I understood correctly, most if not all upcoming i.MX will have the GPMI
+(mx50, mx6). Huang, do you already have a draft for the mx50-hal?
 
-Lothar Waßmann
--- 
-___________________________________________________________
+Regards,
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+   Wolfram
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk4NY0wACgkQD27XaX1/VRsuewCgm+mVMJPHU1M3+LdYYfYq1g31
+gnoAnjcFetcZCQh28oQiUZcmTl8iw1jZ
+=2JDc
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
