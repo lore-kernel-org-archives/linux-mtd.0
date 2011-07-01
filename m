@@ -1,27 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QcXSp-00033h-6F
-	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 06:44:32 +0000
-Date: Fri, 1 Jul 2011 08:44:25 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: reply: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for
-	imx23/imx28
-Message-ID: <20110701064425.GR11559@pengutronix.de>
-References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-	<201107010029.51965.arnd@arndb.de>
+Message-ID: <4E0D7CE9.2030209@freescale.com>
+Date: Fri, 1 Jul 2011 15:53:13 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201107010029.51965.arnd@arndb.de>
-Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"w.sang@pengutronix.de" <w.sang@pengutronix.de>,
-	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
-	Huang Shijie-B32955 <B32955@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
+References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
+	<201106301555.19440.arnd@arndb.de>
+	<19980.36638.134045.743619@ipc1.ka-ro>
+	<201107010022.26597.arnd@arndb.de>
+	<20110701060356.GA27039@pengutronix.de>
+In-Reply-To: <20110701060356.GA27039@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Arnd Bergmann <arnd@arndb.de>, s.hauer@pengutronix.de,
+	thierry.nolf.barco@gmail.com, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, Linus Walleij <linus.walleij@linaro.org>,
 	linux-arm-kernel@lists.infradead.org,
-	"LW@karo-electronics.de" <LW@karo-electronics.de>
+	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi:
+> Hi Arnd,
+>
+>> If you really want to call out obsceneties, how about the fact that this
+>> driver comes with an 805 line patch to add a HAL for a single chip!
+>>
+>> Such abstractions should not be introduced as long as there is only
+>> a single instance of the hardware.
+> If I understood correctly, most if not all upcoming i.MX will have the GPMI
+> (mx50, mx6). Huang, do you already have a draft for the mx50-hal?
+>
+I have finished the code for mx50's GPMI.
+And I am coding for the MX6's GPMI recently.
 
-On Fri, Jul 01, 2011 at 12:29:51AM +0200, Arnd Bergmann wrote:
-> On Thursday 30 June 2011 18:12:27 Huang Shijie-B32955 wrote:
-> > 
-> > I think gpmi-nfc is much better then gpmi-nand or gpmi-flash.
-> 
-> Then how do you want to name the near field communication drivers?
-I'm not aware that the i.MX23/28 has support for near field
-communication, still the i.MX28 Reference speaks about "GPMI NAND Mode".
-I couldn't find "NFC" in the document. So I vote for gpmi-nand, too.
-(IMHO gpmi-flash is too generic.)
+I need a separate mx50-hal (or mx60-hal) to make the code tidy.
+The MX50 and mx60 support ONFI NAND and TOGGLE nand(which mx23/mx28 do 
+not support),
+they need a long code to initialize the TIMING register. What's more, 
+the READ/WRITE functions
+are different from the mx23/mx28.
 
-Best regards
-Uwe
+Frankly speaking, I can merge the mxs-hal.c file to the gpmi-nfc.c, but 
+don't you think it too
+messy?
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+Best Regards
+Huang Shijie
+
+
+
+
+
+> Regards,
+>
+>     Wolfram
+>
