@@ -1,14 +1,23 @@
-Received: from mx1.zhaw.ch ([160.85.104.50])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QccFk-0004th-0E
-	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 11:51:20 +0000
-From: Tobias Klauser <tklauser@distanz.ch>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: plat-nand: Fixup kerneldoc for struct platform_nand_chip
-Date: Fri,  1 Jul 2011 13:51:15 +0200
-Message-Id: <1309521075-18106-1-git-send-email-tklauser@distanz.ch>
-Cc: Randy Dunlap <rdunlap@xenotime.net>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: reply: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for
+	imx23/imx28
+Date: Fri, 1 Jul 2011 16:52:48 +0200
+References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
+	<201107010029.51965.arnd@arndb.de> <4E0D8C04.6010409@freescale.com>
+In-Reply-To: <4E0D8C04.6010409@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201107011652.48869.arnd@arndb.de>
+Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
+	Huang Shijie <b32955@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+	"LW@karo-electronics.de" <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,27 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The set_parts and priv members of struct platform_nand_chip where
-removed in commit c36a6ef3845262ade529afb9f458738b1f196f83 but the
-kerneldoc wasn't updated.
+On Friday 01 July 2011, Huang Shijie wrote:
+> > On Thursday 30 June 2011 18:12:27 Huang Shijie-B32955 wrote:
+> >> I think gpmi-nfc is much better then gpmi-nand or gpmi-flash.
+> > Then how do you want to name the near field communication drivers?
+> >
+> what's meaning of "near field communication" ?
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- include/linux/mtd/nand.h |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+See http://en.wikipedia.org/wiki/Near_field_communication
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 38a2fb6..6060f49 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -605,8 +605,6 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-  * @options:		Option flags, e.g. 16bit buswidth
-  * @ecclayout:		ECC layout info structure
-  * @part_probe_types:	NULL-terminated array of probe types
-- * @set_parts:		platform specific function to set partitions
-- * @priv:		hardware controller specific settings
-  */
- struct platform_nand_chip {
- 	int nr_chips;
--- 
-1.7.5.4
+It's likely to be present in most future mobile phones. Think of it as
+a combination of bluetooth and RFID (oversimplified).
+
+	Arnd
