@@ -1,20 +1,27 @@
-Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
-	controller driver
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcWXu-0002Qd-6K
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 05:45:43 +0000
+Received: by iyn15 with SMTP id 15so3131842iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Jun 2011 22:45:37 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mtd/nand : don't free the global data
+	fsl_lbc_ctrl_dev->nand in fsl_elbc_chip_remove()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Fri, 01 Jul 2011 08:41:01 +0300
-In-Reply-To: <20110630170432.GA20948@pengutronix.de>
-References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
-	<1309335878-16678-2-git-send-email-b32955@freescale.com>
-	<20110630102728.GB1997@pengutronix.de>
-	<20110630170432.GA20948@pengutronix.de>
+To: Scott Wood <scottwood@freescale.com>
+Date: Fri, 01 Jul 2011 08:40:21 +0300
+In-Reply-To: <20110630112656.3257116a@schlenkerla.am.freescale.net>
+References: <1309225852-1664-1-git-send-email-b35362@freescale.com>
+	<1309328435.23597.104.camel@sauron>
+	<20110629114558.13975519@schlenkerla.am.freescale.net>
+	<1309434797.23597.178.camel@sauron>
+	<20110630112656.3257116a@schlenkerla.am.freescale.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1309498866.23597.201.camel@sauron>
+Message-ID: <1309498826.23597.200.camel@sauron>
 Mime-Version: 1.0
-Cc: thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Cc: linuxppc-dev@ozlabs.org, b35362@freescale.com, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,10 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-06-30 at 19:04 +0200, Wolfram Sang wrote:
-> Why can't you define a nand_ecclayout with no free space?
+On Thu, 2011-06-30 at 11:26 -0500, Scott Wood wrote:
+> If the NULL assignment is dropped, consider what happens if the
+> fsl_elbc_nand module is removed then reinserted.  On reinsertion, it
+> will
+> see a non-NULL fsl_lbc_ctrl_dev->nand, and will skip allocating a new
+> one.
+> Then you're referencing freed memory.
 
-Yes, this sounds like the right way to go.
+Oh, then this sounds like a separate bug. Removing the module should
+kill everything, and re-inserging the module should have zero
+dependencies on the previous states...
+
+Anyway, if you think the original patch is OK, I can put it to my tree.
 
 -- 
 Best Regards,
