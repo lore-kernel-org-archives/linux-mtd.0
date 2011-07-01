@@ -1,21 +1,27 @@
-Message-ID: <4E0D6D69.5090102@freescale.com>
-Date: Fri, 1 Jul 2011 14:47:05 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QcXSp-00033h-6F
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 06:44:32 +0000
+Date: Fri, 1 Jul 2011 08:44:25 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: reply: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for
+	imx23/imx28
+Message-ID: <20110701064425.GR11559@pengutronix.de>
+References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
+	<201107010029.51965.arnd@arndb.de>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC controller
-	driver
-References: <1309335878-16678-1-git-send-email-b32955@freescale.com>	
-	<1309335878-16678-2-git-send-email-b32955@freescale.com>	
-	<20110630102728.GB1997@pengutronix.de>	
-	<20110630170432.GA20948@pengutronix.de>
-	<1309498866.23597.201.camel@sauron>
-In-Reply-To: <1309498866.23597.201.camel@sauron>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: thierry.nolf.barco@gmail.com, linux-mtd@lists.infradead.org,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <201107010029.51965.arnd@arndb.de>
+Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
+	Huang Shijie-B32955 <B32955@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	linux-arm-kernel@lists.infradead.org,
+	"LW@karo-electronics.de" <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B407=E6=9C=8801=E6=97=A5 13:41, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> On Thu, 2011-06-30 at 19:04 +0200, Wolfram Sang wrote:
->> Why can't you define a nand_ecclayout with no free space?
-> Yes, this sounds like the right way to go.
->
-ok. I will read the code again, and try to use the nand_ecclayout.
+Hello,
 
-thanks
+On Fri, Jul 01, 2011 at 12:29:51AM +0200, Arnd Bergmann wrote:
+> On Thursday 30 June 2011 18:12:27 Huang Shijie-B32955 wrote:
+> > 
+> > I think gpmi-nfc is much better then gpmi-nand or gpmi-flash.
+> 
+> Then how do you want to name the near field communication drivers?
+I'm not aware that the i.MX23/28 has support for near field
+communication, still the i.MX28 Reference speaks about "GPMI NAND Mode".
+I couldn't find "NFC" in the document. So I vote for gpmi-nand, too.
+(IMHO gpmi-flash is too generic.)
 
-Best Regards
-Huang Shijie
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
