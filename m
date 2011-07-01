@@ -1,59 +1,35 @@
-From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Thu, 9 Jun 2011 15:08:59 +0300
-Subject: [PATCH] UBIFS: temporary: hack to check recovery
-Message-ID: <mailman.13.1307621700.24103.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Subject: Re: [PATCH v7 1/3] MTD : add the common code for GPMI-NFC
+	controller driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Fri, 01 Jul 2011 08:41:01 +0300
+In-Reply-To: <20110630170432.GA20948@pengutronix.de>
+References: <1309335878-16678-1-git-send-email-b32955@freescale.com>
+	<1309335878-16678-2-git-send-email-b32955@freescale.com>
+	<20110630102728.GB1997@pengutronix.de>
+	<20110630170432.GA20948@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309498866.23597.201.camel@sauron>
+Mime-Version: 1.0
+Cc: thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Reply-To: dedekind1@gmail.com
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We suspect that recovery cuts nodes sometimes. This is the hack which should
-catch such things. We hack ubifs_change_leb and scan the leb right after
-changing it - if we wrote corrupted data there, scan should fail.
+On Thu, 2011-06-30 at 19:04 +0200, Wolfram Sang wrote:
+> Why can't you define a nand_ecclayout with no free space?
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/io.c |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
-
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 9228950..9f7dbbf 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -153,6 +153,30 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
- 		ubifs_ro_mode(c, err);
- 		dbg_dump_stack();
- 	}
-+
-+	/* Temporary hack to catch incorrect recovery, if we have such */
-+	if (!err && (lnum < c->lpt_first || lnum > c->lpt_last)) {
-+		void *buf = vmalloc(c->leb_size);
-+		struct ubifs_scan_leb *sleb;
-+
-+		if (!buf)
-+			return 0;
-+
-+		sleb = ubifs_scan(c, lnum, 0, buf, 0);
-+		if (!IS_ERR(sleb)) {
-+			/* Scan succeeded */
-+			vfree(buf);
-+			return 0;
-+		}
-+
-+		ubifs_err("scanning after LEB %d change failed, error %d!", lnum, err);
-+		print_hex_dump(KERN_ERR, "", DUMP_PREFIX_OFFSET, 32, 1,
-+			       buf, c->leb_size, 1);
-+		dump_stack();
-+		vfree(buf);
-+		return -EINVAL;
-+	}
-+
- 	return err;
- }
- 
--- 
-1.7.2.3
-
-
+Yes, this sounds like the right way to go.
 
 -- 
 Best Regards,
-Artem Bityutskiy (?????????? ????????????????)
+Artem Bityutskiy
