@@ -1,21 +1,14 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-Date: Fri, 1 Jul 2011 11:25:51 +0200
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-	<20110701060356.GA27039@pengutronix.de>
-	<4E0D7CE9.2030209@freescale.com>
-In-Reply-To: <4E0D7CE9.2030209@freescale.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201107011125.51581.arnd@arndb.de>
-Cc: s.hauer@pengutronix.de, Wolfram Sang <w.sang@pengutronix.de>,
-	thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Lothar =?iso-8859-1?q?Wa=DFmann?= <LW@karo-electronics.de>
+Received: from mx1.zhaw.ch ([160.85.104.50])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QccFk-0004th-0E
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 11:51:20 +0000
+From: Tobias Klauser <tklauser@distanz.ch>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: plat-nand: Fixup kerneldoc for struct platform_nand_chip
+Date: Fri,  1 Jul 2011 13:51:15 +0200
+Message-Id: <1309521075-18106-1-git-send-email-tklauser@distanz.ch>
+Cc: Randy Dunlap <rdunlap@xenotime.net>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 01 July 2011 09:53:13 Huang Shijie wrote:
-> >> If you really want to call out obsceneties, how about the fact that this
-> >> driver comes with an 805 line patch to add a HAL for a single chip!
-> >>
-> >> Such abstractions should not be introduced as long as there is only
-> >> a single instance of the hardware.
-> > If I understood correctly, most if not all upcoming i.MX will have the GPMI
-> > (mx50, mx6). Huang, do you already have a draft for the mx50-hal?
-> >
-> I have finished the code for mx50's GPMI.
-> And I am coding for the MX6's GPMI recently.
+The set_parts and priv members of struct platform_nand_chip where
+removed in commit c36a6ef3845262ade529afb9f458738b1f196f83 but the
+kerneldoc wasn't updated.
 
-Ok.
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ include/linux/mtd/nand.h |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-> I need a separate mx50-hal (or mx60-hal) to make the code tidy.
-> The MX50 and mx60 support ONFI NAND and TOGGLE nand(which mx23/mx28 do 
-> not support),
-> they need a long code to initialize the TIMING register. What's more, 
-> the READ/WRITE functions
-> are different from the mx23/mx28.
-> 
-> Frankly speaking, I can merge the mxs-hal.c file to the gpmi-nfc.c, but 
-> don't you think it too
-> messy?
-
-If you already have the code for the other SoCs, it's fine to have an
-abstraction. From reading your patches that were specifically targetted
-at mxs, that was not clear.
-
-After a very brief look at the driver, my impression is that your layering
-is upside-down though:
-
-You have a "main" driver that registers to all devices and then pulls
-in hardware specific bits. What you should have instead is a "library"
-driver for the common code that provides all the common functionality
-as exported functions, and individual drivers for each SoC type that
-each register a platform_driver for one device id and use the functions
-from the common module.
-
-I don't know how hard it would be to retrofit that model, and I'm not
-asking you to do it, unless other people feel strongly about it.
-However, I think it would make your life easier when maintaining the
-driver in the future. There are multiple advantages to that:
-
-* You would not need a HAL. For your information, that term causes strong
-  negative associations with many Linux developers. To us, the kernel
-  drivers themselves are the hardware abstraction, you don't need another
-  one.
-
-* It's more easy to extend to multiple levels of libraries. E.g. you could
-  have one module for stuff that is common between i.MX5 and i.MX6 but
-  not i.MX3, and make the later drivers use both libraries.
-
-* It gets rid of the need for #ifdef in the common driver module.
-
-* It becomes very easy to override one function just for a specific
-  instance of the hardware, while everything else uses a common version
-  from the library.
-
-	Arnd
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 38a2fb6..6060f49 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -605,8 +605,6 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
+  * @options:		Option flags, e.g. 16bit buswidth
+  * @ecclayout:		ECC layout info structure
+  * @part_probe_types:	NULL-terminated array of probe types
+- * @set_parts:		platform specific function to set partitions
+- * @priv:		hardware controller specific settings
+  */
+ struct platform_nand_chip {
+ 	int nr_chips;
+-- 
+1.7.5.4
