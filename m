@@ -1,20 +1,13 @@
-Message-ID: <4E11B9F7.5080606@atmel.com>
-Date: Mon, 04 Jul 2011 15:02:47 +0200
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC PATCH] MTD: atmel_nand: optimize read/write buffer	functions
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	linux@arm.linux.org.uk
+Subject: [PATCH V2] MTD: atmel_nand: optimize read/write buffer functions
+Date: Mon,  4 Jul 2011 16:17:53 +0200
+Message-Id: <1309789073-14593-1-git-send-email-nicolas.ferre@atmel.com>
+In-Reply-To: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
 References: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
-	<20110628111043.GH6588@pengutronix.de>
-	<20110628145937.GG21898@n2100.arm.linux.org.uk>
-	<4E0B2427.9020202@atmel.com>
-	<20110629133124.GO21898@n2100.arm.linux.org.uk>
-In-Reply-To: <20110629133124.GO21898@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: hong.xu@atmel.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	=?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: hong.xu@atmel.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
+	linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +17,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 29/06/2011 15:31, Russell King - ARM Linux :
-> On Wed, Jun 29, 2011 at 03:09:59PM +0200, Nicolas Ferre wrote:
->> Le 28/06/2011 16:59, Russell King - ARM Linux :
->>> I think you need to read Documentation/bus-virt-phys-mapping.txt,
->>> particularly the part after "NOTE NOTE NOTE".
->>>
->>> Dereferencing ioremap'd memory is not permitted.  That includes passing
->>> it to memcpy.  Even with a cast.
->>
->> So that means that I should use memcpy_fromio() even if the code if far
->> less optimized.
->>
->> Shouldn't I re-implement some kind of IO copying function to deal with
->> this IO memory so that I could take advantage of 8 words bursts?
-> 
-> You could improve the IO memcpy/set etc implementations, which are
-> currently mostly unloved - I think that's a catch-22 which really needs
-> solving.  They're not efficient because no one has taken the time to use
-> them, and everyone's avoiding them because they're not very efficient.
-> So, as no one's using them no one's motivated to improve them.
+For PIO NAND access functions, we use the features of the SMC:
+- no need to take into account the NAND bus width: SMC will deal with this
+- use of an IO memcpy on the NAND chip-select space is able to generate
+  proper SMC behavior.
 
-Ok, so I use them in my following patch.
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+V2: use of memcpy_fromio/memcpy_toio for proper handling of memory types.
 
-And as a long-term exercise, I will try to have a look at those IO
-memcpy/set functions for ARM...
+ drivers/mtd/nand/atmel_nand.c |   45 +++-------------------------------------
+ 1 files changed, 4 insertions(+), 41 deletions(-)
 
-Thanks for you advices, best regards,
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index bbdf062..37b2f70 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -160,37 +160,6 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
+                 !!host->board->rdy_pin_active_low;
+ }
+ 
+-/*
+- * Minimal-overhead PIO for data access.
+- */
+-static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
+-{
+-	struct nand_chip	*nand_chip = mtd->priv;
+-
+-	__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
+-}
+-
+-static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
+-{
+-	struct nand_chip	*nand_chip = mtd->priv;
+-
+-	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
+-}
+-
+-static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
+-{
+-	struct nand_chip	*nand_chip = mtd->priv;
+-
+-	__raw_writesb(nand_chip->IO_ADDR_W, buf, len);
+-}
+-
+-static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
+-{
+-	struct nand_chip	*nand_chip = mtd->priv;
+-
+-	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
+-}
+-
+ static void dma_complete_func(void *completion)
+ {
+ 	complete(completion);
+@@ -265,33 +234,27 @@ err_buf:
+ static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+-	struct atmel_nand_host *host = chip->priv;
+ 
+ 	if (use_dma && len > mtd->oobsize)
+ 		/* only use DMA for bigger than oob size: better performances */
+ 		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
+ 			return;
+ 
+-	if (host->board->bus_width_16)
+-		atmel_read_buf16(mtd, buf, len);
+-	else
+-		atmel_read_buf8(mtd, buf, len);
++	/* if no DMA operation possible, use PIO */
++	memcpy_fromio(buf, chip->IO_ADDR_R, len);
+ }
+ 
+ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+-	struct atmel_nand_host *host = chip->priv;
+ 
+ 	if (use_dma && len > mtd->oobsize)
+ 		/* only use DMA for bigger than oob size: better performances */
+ 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
+ 			return;
+ 
+-	if (host->board->bus_width_16)
+-		atmel_write_buf16(mtd, buf, len);
+-	else
+-		atmel_write_buf8(mtd, buf, len);
++	/* if no DMA operation possible, use PIO */
++	memcpy_toio(chip->IO_ADDR_W, buf, len);
+ }
+ 
+ /*
 -- 
-Nicolas Ferre
+1.7.3
