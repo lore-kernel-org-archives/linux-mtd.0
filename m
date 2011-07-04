@@ -1,19 +1,21 @@
-Received: from dakia2.marvell.com ([65.219.4.35])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QdfPV-0004k3-Jt
-	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 09:25:55 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
-	Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
+MIME-Version: 1.0
+In-Reply-To: <1309342805.23597.136.camel@sauron>
+References: <1309246361.23597.30.camel@sauron>
+	<1309319494-17951-1-git-send-email-leiwen@marvell.com>
+	<4E0AE9B0.7000908@compulab.co.il>
+	<1309342805.23597.136.camel@sauron>
+Date: Mon, 4 Jul 2011 17:27:16 +0800
+Message-ID: <CALZhoSSHx_TB3UvAC6r86cPhY09+6sit5sK8OOJU8mqCg6YwAA@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] pxa3xx_nand: add two chip select support
+From: Lei Wen <adrian.wenl@gmail.com>
+To: dedekind1@gmail.com, Igor Grinberg <grinberg@compulab.co.il>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>, Lei Wen <leiwen@marvell.com>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 4/4] ARM: mmp/pxa: fix nand platform data
-Date: Mon,  4 Jul 2011 02:25:36 -0700
-Message-Id: <1309771536-10597-5-git-send-email-leiwen@marvell.com>
-In-Reply-To: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
-References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,135 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since two chip select is supported, the original defined nand platform
-data need to be fixed accordingly.
+Hi Artem & Igor,
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
----
- arch/arm/mach-mmp/aspenite.c       |    5 +++--
- arch/arm/mach-pxa/cm-x300.c        |    5 +++--
- arch/arm/mach-pxa/colibri-pxa3xx.c |    5 +++--
- arch/arm/mach-pxa/littleton.c      |    5 +++--
- arch/arm/mach-pxa/mxm8x10.c        |    9 +++++----
- arch/arm/mach-pxa/raumfeld.c       |    5 +++--
- arch/arm/mach-pxa/zylonite.c       |    5 +++--
- 7 files changed, 23 insertions(+), 16 deletions(-)
+On Wed, Jun 29, 2011 at 6:20 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Wed, 2011-06-29 at 12:00 +0300, Igor Grinberg wrote:
+>> Hi Lei,
+>>
+>> On 06/29/11 06:51, Lei Wen wrote:
+>>
+>> > V2:
+>> > Choose to at most keep original pxa3xx_nand_info structure to reduce
+>> > patch size
+>> >
+>> > V3:
+>> > Seperate original one patch into a patch set
+>> >
+>> > Lei Wen (9):
+>> > =A0 MTD: pxa3xx_nand: convert all printk into dev_*
+>> > =A0 MTD: pxa3xx_nand: enable multiple chip select support
+>> > =A0 ARM: aspenite: fix nand platform data
+>> > =A0 ARM: cm-x300: fix nand platform data
+>> > =A0 ARM: colibri-pxa3xx: fix nand platform data
+>> > =A0 ARM: littleton: fix nand platform data
+>> > =A0 ARM: mxm8x10: fix nand platform data
+>> > =A0 ARM: raumfeld: fix nand platform data
+>> > =A0 ARM: zylonite: fix nand platform data
+>>
+>> While I agree with Artem, that reviewing patch sets are much more easier=
+,
+>> than a one single big patch, I think you should keep the
+>> "fix nand platform data" changes all in one patch.
+>> All of them do the same change, but for different boards.
+>
+> Yeah, I did not suggest to split a large patch to a number of
+> micro-patches plus another large patch :-) My suggestion is to have a
+> set of easily reviewable patches. If you do the same thing in many
+> platform data structures, it is reviewable and can be in one patch.
+>
+V4 patch set has been pushed. Hope this time would be better. :)
 
-diff --git a/arch/arm/mach-mmp/aspenite.c b/arch/arm/mach-mmp/aspenite.c
-index 06b5fa8..c4996f3 100644
---- a/arch/arm/mach-mmp/aspenite.c
-+++ b/arch/arm/mach-mmp/aspenite.c
-@@ -167,8 +167,9 @@ static struct mtd_partition aspenite_nand_partitions[] = {
- 
- static struct pxa3xx_nand_platform_data aspenite_nand_info = {
- 	.enable_arbiter	= 1,
--	.parts		= aspenite_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(aspenite_nand_partitions),
-+	.num_cs = 1,
-+	.parts[0]	= aspenite_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(aspenite_nand_partitions),
- };
- 
- static struct i2c_board_info aspenite_i2c_info[] __initdata = {
-diff --git a/arch/arm/mach-pxa/cm-x300.c b/arch/arm/mach-pxa/cm-x300.c
-index b2248e7..969d252 100644
---- a/arch/arm/mach-pxa/cm-x300.c
-+++ b/arch/arm/mach-pxa/cm-x300.c
-@@ -423,8 +423,9 @@ static struct mtd_partition cm_x300_nand_partitions[] = {
- static struct pxa3xx_nand_platform_data cm_x300_nand_info = {
- 	.enable_arbiter	= 1,
- 	.keep_config	= 1,
--	.parts		= cm_x300_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(cm_x300_nand_partitions),
-+	.num_cs		= 1,
-+	.parts[0]	= cm_x300_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(cm_x300_nand_partitions),
- };
- 
- static void __init cm_x300_init_nand(void)
-diff --git a/arch/arm/mach-pxa/colibri-pxa3xx.c b/arch/arm/mach-pxa/colibri-pxa3xx.c
-index 3f9be41..2b8ca0d 100644
---- a/arch/arm/mach-pxa/colibri-pxa3xx.c
-+++ b/arch/arm/mach-pxa/colibri-pxa3xx.c
-@@ -139,8 +139,9 @@ static struct mtd_partition colibri_nand_partitions[] = {
- static struct pxa3xx_nand_platform_data colibri_nand_info = {
- 	.enable_arbiter	= 1,
- 	.keep_config	= 1,
--	.parts		= colibri_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(colibri_nand_partitions),
-+	.num_cs		= 1,
-+	.parts[0]	= colibri_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(colibri_nand_partitions),
- };
- 
- void __init colibri_pxa3xx_init_nand(void)
-diff --git a/arch/arm/mach-pxa/littleton.c b/arch/arm/mach-pxa/littleton.c
-index e5e326d..f6d1f9d 100644
---- a/arch/arm/mach-pxa/littleton.c
-+++ b/arch/arm/mach-pxa/littleton.c
-@@ -325,8 +325,9 @@ static struct mtd_partition littleton_nand_partitions[] = {
- 
- static struct pxa3xx_nand_platform_data littleton_nand_info = {
- 	.enable_arbiter	= 1,
--	.parts		= littleton_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(littleton_nand_partitions),
-+	.num_cs		= 1,
-+	.parts[0]	= littleton_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(littleton_nand_partitions),
- };
- 
- static void __init littleton_init_nand(void)
-diff --git a/arch/arm/mach-pxa/mxm8x10.c b/arch/arm/mach-pxa/mxm8x10.c
-index b5a8fd3..90928d6 100644
---- a/arch/arm/mach-pxa/mxm8x10.c
-+++ b/arch/arm/mach-pxa/mxm8x10.c
-@@ -389,10 +389,11 @@ static struct mtd_partition mxm_8x10_nand_partitions[] = {
- };
- 
- static struct pxa3xx_nand_platform_data mxm_8x10_nand_info = {
--	.enable_arbiter = 1,
--	.keep_config = 1,
--	.parts = mxm_8x10_nand_partitions,
--	.nr_parts = ARRAY_SIZE(mxm_8x10_nand_partitions)
-+	.enable_arbiter	= 1,
-+	.keep_config	= 1,
-+	.num_cs		= 1,
-+	.parts[0]	= mxm_8x10_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(mxm_8x10_nand_partitions)
- };
- 
- static void __init mxm_8x10_nand_init(void)
-diff --git a/arch/arm/mach-pxa/raumfeld.c b/arch/arm/mach-pxa/raumfeld.c
-index d130f77..c7ec847 100644
---- a/arch/arm/mach-pxa/raumfeld.c
-+++ b/arch/arm/mach-pxa/raumfeld.c
-@@ -349,8 +349,9 @@ static struct mtd_partition raumfeld_nand_partitions[] = {
- static struct pxa3xx_nand_platform_data raumfeld_nand_info = {
- 	.enable_arbiter	= 1,
- 	.keep_config	= 1,
--	.parts		= raumfeld_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(raumfeld_nand_partitions),
-+	.num_cs		= 1,
-+	.parts[0]	= raumfeld_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(raumfeld_nand_partitions),
- };
- 
- /**
-diff --git a/arch/arm/mach-pxa/zylonite.c b/arch/arm/mach-pxa/zylonite.c
-index 5821185..64fdac9 100644
---- a/arch/arm/mach-pxa/zylonite.c
-+++ b/arch/arm/mach-pxa/zylonite.c
-@@ -366,8 +366,9 @@ static struct mtd_partition zylonite_nand_partitions[] = {
- 
- static struct pxa3xx_nand_platform_data zylonite_nand_info = {
- 	.enable_arbiter	= 1,
--	.parts		= zylonite_nand_partitions,
--	.nr_parts	= ARRAY_SIZE(zylonite_nand_partitions),
-+	.num_cs		= 1,
-+	.parts[0]	= zylonite_nand_partitions,
-+	.nr_parts[0]	= ARRAY_SIZE(zylonite_nand_partitions),
- };
- 
- static void __init zylonite_init_nand(void)
--- 
-1.7.0.4
+Thanks,
+Lei
