@@ -1,15 +1,27 @@
-Received: from blu0-omc1-s1.blu0.hotmail.com ([65.55.116.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QdYlZ-000724-Rs
-	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 02:20:06 +0000
-Message-ID: <BLU119-W99FA11014ECEA1A6FB2B1C05C0@phx.gbl>
-From: =?utf-8?B?5p+P5Z2HIOiRiQ==?= <balado0318@hotmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [Help]Dedicated thread for each block partition?
-Date: Mon, 4 Jul 2011 02:20:03 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qdcc1-0000i4-JY
+	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 06:26:32 +0000
+Received: by iwn35 with SMTP id 35so5212837iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 03 Jul 2011 23:26:26 -0700 (PDT)
+Subject: Re: Preventing JFFS2 partial page writes?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Date: Mon, 04 Jul 2011 09:27:22 +0300
+In-Reply-To: <20110701204828.GA4531@parrot.com>
+References: <4DF789FC.1030305@gmail.com> <1308722655.18119.40.camel@sauron>
+	<4E020A36.6070708@gmail.com> <1308943581.13493.15.camel@koala>
+	<4E089441.3010809@gmail.com> <1309253646.23597.58.camel@sauron>
+	<1309253992.23597.62.camel@sauron> <20110701204828.GA4531@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1309760847.23597.209.camel@sauron>
+Mime-Version: 1.0
+Cc: Peter Barada <peter.barada@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Peter Barada <peter.barada@logicpd.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpIaSBhbGwsDQoNClNvcnJ5IGZvciBteSBwb29yIEVuZ2xpc2ggZmlyc3QuDQoNCkknbSBtaWdy
-YXRpbmcgbXkgTkFORCBjb250cm9sbGVyIGRyaXZlciBmcm9tIGtlcm5lbCAyLjYuMjggdG8gMi42
-LjM1Lg0KSQ0KZW5jb3VudGVyIHRoZSB3ZWlyZCBzaXR1YXRpb24gaW4gMi42LjM1IHRoYXQgdGhl
-IE5BTkQgY29udHJvbGxlciBkcml2ZXINCmNhbid0IGJlIHJlbW92ZWQgdmlhIHJtbW9kIGJlY2F1
-c2UgdGhlIGNvbHVtbiBvZiAidXNlZCBieSIgaW4gbHNtb2QNCmlzbid0IGVxdWFsIHRvIDAuDQpJ
-IGZpbmQgdGhlIG51bWJlciBvZiAidXNlZCBieSIgb2YgTkFORCBjb250cm9sbGVyIGRyaXZlciBp
-cyByZWxhdGl2ZSB0byB0aGUgcmVnaXN0ZXJlZCBwYXJ0aXRpb24gbnVtYmVyLg0KDQpGb3IgZXhh
-bXBsZSwNCsKgDQovdXNyICMgbHNtb2QNCk1vZHVsZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgU2l6ZcKgIFVzZWQgYnnCoMKgwqAgTm90IHRhaW50ZWQNCm5hbmTCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMzI0ODPCoCAwDQpuYW5kX2lkc8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgMzA5N8KgIDEgbmFuZA0KbmFuZF9lY2PCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAzNTEwwqAgMSBuYW5kDQptdGRibG9ja8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgMzA1NcKgIDANCm10ZF9ibGtkZXZzwqDCoMKgwqDCoMKgwqDCoMKgIDU2NTPCoCAxIG10
-ZGJsb2NrDQptdGTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNzQ2McKg
-IDMgbmFuZCxtdGRfYmxrZGV2cw0KDQpXaGVuIEkgaW5zZXJ0IG15IG1vZHVsZSBpbnRvIGtlcm5l
-bCwgdGhlIGxzbW9kIHNob3dzIGFzIHRoZSBmb2xsb3dpbmc6IChOb3RlOiBJIHJlZ2lzdGVyIDQg
-cGFydGl0aW9ucyBpbiBuYW5kY3RsIGRyaXZlci4pDQovdXNyICMgaW5zbW9kIG5hbmRjdGwua28N
-Ci91c3IgIyBsc21vZA0KTW9kdWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBT
-aXplwqAgVXNlZCBiecKgwqDCoCBOb3QgdGFpbnRlZA0KbmFuZGN0bMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDEyNjc3wqAgNA0KbmFuZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIDMyNDgzwqAgMSBuYW5kY3RsDQpuYW5kX2lkc8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAzMDk3wqAgMSBuYW5kDQpuYW5kX2VjY8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgMzUxMMKgIDEgbmFuZA0KbXRkYmxvY2vCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgMzA1NcKgIDQNCm10ZF9ibGtkZXZzwqDCoMKgwqDCoMKgwqDCoMKgwqAgNTY1M8KgIDEg
-bXRkYmxvY2sNCm10ZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAx
-NzQ2McKgIDggZnRuYW5kYzAyNHYxX25hbmQsbmFuZCxtdGRfYmxrZGV2cw0KL3VzciAjIHJtbW9k
-IG5hbmRjdGwua28NCnJtbW9kOiBjYW4ndCB1bmxvYWQgJ25hbmRjdGwnOiBSZXNvdXJjZSB0ZW1w
-b3JhcmlseSB1bmF2YWlsYWJsZQ0KDQpSZW1vdmUgdGhlIG5hbmRjdGwgbW9kdWxlIGlzbid0IGFs
-bG93ZWQgZHVlIHRvIHRoZSBub256ZXJvIHZhbHVlIG9mICd1c2VkIGJ5Jy4NCj09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoNClRyYWNpbmcN
-CnRoZSBNVEQgbGF5ZXIgYW5kIGZpbmQgdGhpcyBzdGF0ZW1lbnQNCiwiX19nZXRfbXRkX2Rldmlj
-ZShuZXctPm10ZCk7IiwgaW4gYWRkX210ZF9ibGt0cmFuc19kZXYgZnVuY3Rpb24gaW4NCjxrZXJu
-ZWwgc291cmNlPi9kcml2ZXIvbXRkL210ZF9ibGtkZXZzLmMNClRoaXMgZnVuY3Rpb24gd2lsbCBp
-bmNyZWFzZSB0aGUgcmVmZXJlbmNlIGNvdW50ZXIgb2YgbmFuZGN0bCBmb3IgZWFjaCBwYXJ0aXRp
-b24uDQoNCkRvZXMgYW55Ym9keSBrbm93IGhvdyBzaG91bGQgSSBkbyB0byByZW1vdmUgdGhlIG1v
-ZHVsZSB2aWEgcm1tb2QgaW4ga2VybmVsIDIuNi4zNT8/DQpBbnkgc3VnZ2VzdGlvbiBpcyB3ZWxj
-b21lLg0KIAkJIAkgICAJCSAg
+On Fri, 2011-07-01 at 22:48 +0200, Ivan Djelic wrote:
+> On Tue, Jun 28, 2011 at 10:39:47AM +0100, Artem Bityutskiy wrote:
+> > On Tue, 2011-06-28 at 12:34 +0300, Artem Bityutskiy wrote:
+> > > OK, thanks for explanation. I am not very good in this area as I do not
+> > > have much experience dealing with OOB, but here is what I thing.
+> > > 
+> > > 1. Linux MTD code was _not_ designed for "ECC'ed OOB".
+> > > 2. I do not really know what MTD_OOB_RAW is, and the comment in mtd.h
+> > >    is not very verbose.
+> > > 3. But in my opinion MTD_OOB_AUTO makes most sense and should be used
+> > >    everywhere except for some tricky cases when you want to test things
+> > >    by writing incorrect ECC, or you have an image with ECC and you want
+> > >    to flash it as is.
+> > > 4. In general, OOB should be considered as belonging to the driver, and
+> > >    modern software should not rely on OOB at all.
+> > > 5. So MTD_OOB_AUTO make free bytes in OOB look like a contiguous buffer
+> > >    which the _user_ can freely and _independently_ use.
+> > > 6. In your case only this assumption does not work and your ecclayout is
+> > >    incorrect because the OOB areas you expose are not independent.
+> > > 7. So in your case your ecclayout should be changed and you should
+> > >    expose only independent ECC bytes.
+> > 
+> > To put it differently, I current model does not distinguish (I think,
+> > correct me if I am wrong) between ECC'd OOB bytes and ECC'less OOB
+> > bytes. BTW, does your flash has the latter?
+> > 
+> > So MTD would need some work to make it distinguish between those 2 types
+> > of OOB bytes - probably additional info could be added to the ooblayout
+> > structure, and the interfaces could be improved. How exactly - dunno,
+> > I'd first need to figure out what MTD_OOB_RAW is - may be Brian or Ivan
+> > could comment.
+> 
+> I agree with the idea that OOB should be considered as belonging to the driver.
+> I think the problem should be solved as follows:
+> 
+> 1. Expose only unprotected (or "independent") bytes in your ecclayout. Those
+> bytes will be used by JFFS2 for its cleanmarker.
+> 
+> 2. Use YAFFS2 "inband-tags" option to prevent YAFFS2 from using oob for storing
+> metadata.
+> 
+> If for some reason you really cannot use inband-tags, then patch YAFFS2 and add
+> an option so that it can use MTD_OOB_PLACE instead of MTD_OOB_AUTO, and
+> store its metadata into a specified list of protected OOB bytes.
+> 
+> Rationale: you would have to configure YAFFS2 for this specific device anyway,
+> by using YAFFS_DISABLE_TAGS_ECC or tags_ecc_off in order to let nand on-die ecc
+> protect metadata.
+> 
+> I would rather not add new complexity in mtd ecclayout to solve your problem,
+> because it is a bit too specific (your client insists on not using UBIFS which
+> would be better suited for this generation of nand devices) and this new
+> interface would probably be short-lived (as discussed in
+> http://lists.infradead.org/pipermail/linux-mtd/2011-June/036549.html).
+> 
+> What do you think ?
+
+Yes, I agree, this sounds much saner than trying to teach MTD to
+distinguish between protected and unprotected areas. However, if Peter
+is able to come up with a really really nice patch-set which adds the
+functionality he needs in a nice way (good docs, good code separation,
+clean-up of the current stuff, good testing) - why not? But I think he'd
+need to do _a lot of_ work to achieve this.
+
+-- 
+Best Regards,
+Artem Bityutskiy
