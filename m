@@ -1,24 +1,15 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from blu0-omc1-s1.blu0.hotmail.com ([65.55.116.12])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qcki2-00068r-Fz
-	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2011 20:53:07 +0000
-Date: Fri, 1 Jul 2011 22:52:05 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Peter Barada <peter.barada@gmail.com>
-Subject: Re: Preventing JFFS2 partial page writes?
-Message-ID: <20110701205205.GA4600@parrot.com>
-References: <4DF789FC.1030305@gmail.com> <1308722655.18119.40.camel@sauron>
-	<4E020A36.6070708@gmail.com> <1308943581.13493.15.camel@koala>
-	<4E089441.3010809@gmail.com> <1309253646.23597.58.camel@sauron>
-	<4E0A23D3.8060303@gmail.com> <1309329223.23597.116.camel@sauron>
-	<4E0CBAE5.6050604@gmail.com>
+	id 1QdYlZ-000724-Rs
+	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 02:20:06 +0000
+Message-ID: <BLU119-W99FA11014ECEA1A6FB2B1C05C0@phx.gbl>
+From: =?utf-8?B?5p+P5Z2HIOiRiQ==?= <balado0318@hotmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [Help]Dedicated thread for each block partition?
+Date: Mon, 4 Jul 2011 02:20:03 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4E0CBAE5.6050604@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Peter Barada <peter.barada@logicpd.com>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 30, 2011 at 07:05:25PM +0100, Peter Barada wrote:
-(...)
-> >> Another issue this exposes is that JFFS2 reads/compares the cleanmarker
-> >> w/o any ECC in the marker data to verify its validity - if a bitflip in
-> >> an unECC'd cleanmarker is read back, then I think JFFS2 will fail to use
-> >> that block.
-> > No, I think what JFFS2 should do is just assume the eraseblock needs
-> > erasure and just erase it. The whole purpose of clean markers is to
-> > erase less. If it is corrupted - we just do an extra erase - not big
-> > deal.
-> How's the best way to do this?  That would make this whole problem just 
-> go away, and make MLC devices much more happy with JFFS2.
-
-I think Artem was just explaining that a single corrupted cleanmarker is no
-big deal, it just forces JFFS2 to perform an extra erase. That does not mean
-you can get rid of cleanmarkers, because systematically erasing a block before
-programming it would seriously degrade write performance.
-
---
-Best Regards,
-
-Ivan
+DQpIaSBhbGwsDQoNClNvcnJ5IGZvciBteSBwb29yIEVuZ2xpc2ggZmlyc3QuDQoNCkknbSBtaWdy
+YXRpbmcgbXkgTkFORCBjb250cm9sbGVyIGRyaXZlciBmcm9tIGtlcm5lbCAyLjYuMjggdG8gMi42
+LjM1Lg0KSQ0KZW5jb3VudGVyIHRoZSB3ZWlyZCBzaXR1YXRpb24gaW4gMi42LjM1IHRoYXQgdGhl
+IE5BTkQgY29udHJvbGxlciBkcml2ZXINCmNhbid0IGJlIHJlbW92ZWQgdmlhIHJtbW9kIGJlY2F1
+c2UgdGhlIGNvbHVtbiBvZiAidXNlZCBieSIgaW4gbHNtb2QNCmlzbid0IGVxdWFsIHRvIDAuDQpJ
+IGZpbmQgdGhlIG51bWJlciBvZiAidXNlZCBieSIgb2YgTkFORCBjb250cm9sbGVyIGRyaXZlciBp
+cyByZWxhdGl2ZSB0byB0aGUgcmVnaXN0ZXJlZCBwYXJ0aXRpb24gbnVtYmVyLg0KDQpGb3IgZXhh
+bXBsZSwNCsKgDQovdXNyICMgbHNtb2QNCk1vZHVsZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgU2l6ZcKgIFVzZWQgYnnCoMKgwqAgTm90IHRhaW50ZWQNCm5hbmTCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMzI0ODPCoCAwDQpuYW5kX2lkc8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgMzA5N8KgIDEgbmFuZA0KbmFuZF9lY2PCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAzNTEwwqAgMSBuYW5kDQptdGRibG9ja8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMzA1NcKgIDANCm10ZF9ibGtkZXZzwqDCoMKgwqDCoMKgwqDCoMKgIDU2NTPCoCAxIG10
+ZGJsb2NrDQptdGTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNzQ2McKg
+IDMgbmFuZCxtdGRfYmxrZGV2cw0KDQpXaGVuIEkgaW5zZXJ0IG15IG1vZHVsZSBpbnRvIGtlcm5l
+bCwgdGhlIGxzbW9kIHNob3dzIGFzIHRoZSBmb2xsb3dpbmc6IChOb3RlOiBJIHJlZ2lzdGVyIDQg
+cGFydGl0aW9ucyBpbiBuYW5kY3RsIGRyaXZlci4pDQovdXNyICMgaW5zbW9kIG5hbmRjdGwua28N
+Ci91c3IgIyBsc21vZA0KTW9kdWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBT
+aXplwqAgVXNlZCBiecKgwqDCoCBOb3QgdGFpbnRlZA0KbmFuZGN0bMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDEyNjc3wqAgNA0KbmFuZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIDMyNDgzwqAgMSBuYW5kY3RsDQpuYW5kX2lkc8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAzMDk3wqAgMSBuYW5kDQpuYW5kX2VjY8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgMzUxMMKgIDEgbmFuZA0KbXRkYmxvY2vCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMzA1NcKgIDQNCm10ZF9ibGtkZXZzwqDCoMKgwqDCoMKgwqDCoMKgwqAgNTY1M8KgIDEg
+bXRkYmxvY2sNCm10ZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAx
+NzQ2McKgIDggZnRuYW5kYzAyNHYxX25hbmQsbmFuZCxtdGRfYmxrZGV2cw0KL3VzciAjIHJtbW9k
+IG5hbmRjdGwua28NCnJtbW9kOiBjYW4ndCB1bmxvYWQgJ25hbmRjdGwnOiBSZXNvdXJjZSB0ZW1w
+b3JhcmlseSB1bmF2YWlsYWJsZQ0KDQpSZW1vdmUgdGhlIG5hbmRjdGwgbW9kdWxlIGlzbid0IGFs
+bG93ZWQgZHVlIHRvIHRoZSBub256ZXJvIHZhbHVlIG9mICd1c2VkIGJ5Jy4NCj09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoNClRyYWNpbmcN
+CnRoZSBNVEQgbGF5ZXIgYW5kIGZpbmQgdGhpcyBzdGF0ZW1lbnQNCiwiX19nZXRfbXRkX2Rldmlj
+ZShuZXctPm10ZCk7IiwgaW4gYWRkX210ZF9ibGt0cmFuc19kZXYgZnVuY3Rpb24gaW4NCjxrZXJu
+ZWwgc291cmNlPi9kcml2ZXIvbXRkL210ZF9ibGtkZXZzLmMNClRoaXMgZnVuY3Rpb24gd2lsbCBp
+bmNyZWFzZSB0aGUgcmVmZXJlbmNlIGNvdW50ZXIgb2YgbmFuZGN0bCBmb3IgZWFjaCBwYXJ0aXRp
+b24uDQoNCkRvZXMgYW55Ym9keSBrbm93IGhvdyBzaG91bGQgSSBkbyB0byByZW1vdmUgdGhlIG1v
+ZHVsZSB2aWEgcm1tb2QgaW4ga2VybmVsIDIuNi4zNT8/DQpBbnkgc3VnZ2VzdGlvbiBpcyB3ZWxj
+b21lLg0KIAkJIAkgICAJCSAg
