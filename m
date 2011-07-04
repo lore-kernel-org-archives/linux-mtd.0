@@ -1,17 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qdd6e-0001OH-FF
-	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 06:58:09 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mkfs.ubifs: fix a gcc warning
-Date: Mon,  4 Jul 2011 09:59:05 +0300
-Message-Id: <1309762745-20175-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1309762745-20175-1-git-send-email-dedekind1@gmail.com>
-References: <1309762745-20175-1-git-send-email-dedekind1@gmail.com>
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QddyR-00028G-4w
+	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 07:53:44 +0000
+Received: by vws8 with SMTP id 8so4342990vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 04 Jul 2011 00:53:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Mon, 4 Jul 2011 15:53:41 +0800
+Message-ID: <CAOS=UCWrc=Zk3usT=5yLect2kncniuBkDC8eenYj=Byt+7=p5g@mail.gmail.com>
+Subject: Cramfs: bad root offset issue
+From: Qi Zhang <qzhan2009@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch "fixes" the following gcc warning:
+Hello:
 
-mkfs.ubifs/mkfs.ubifs.c: In function ‘main’:
-mkfs.ubifs/ubifs.h:420:2: warning: ‘child_cnt’ may be used uninitialized in this function [-Wuninitialized]
-mkfs.ubifs/mkfs.ubifs.c:1735:6: note: ‘child_cnt’ was declared here
+   I'm usinig mkfs.cramfs to generate a simple filesystem
+   # mkdir test
+   # cd test
+   # touch a
+   # cd ..
+   # mkfs.cramfs test test.bin
 
-by initializing the ‘child_cnt’ to zero.
+   Then I burn it to a NAND flash partitions
+    The nand flash page size is 2k. and my platform is android 2.1
+with the kernel version 2.6.29 like.
+    During mount I got below information:
 
-Signed-off-by: Artem Bityutskiy <dedekind1@gmail.com>
----
- mkfs.ubifs/mkfs.ubifs.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+    cramfs: bad root offset 262276752
+    mount: mounting /dev/mtdblock4 on /mnt failed: Invalid argument
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index 79cc71d..dcdb722 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -1732,7 +1732,7 @@ static int write_index(void)
- 	struct idx_entry **idx_ptr, **p;
- 	struct ubifs_idx_node *idx;
- 	struct ubifs_branch *br;
--	int child_cnt, j, level, blnum, boffs, blen, blast_len, err;
-+	int child_cnt = 0, j, level, blnum, boffs, blen, blast_len, err;
- 
- 	dbg_msg(1, "leaf node count: %zd", idx_cnt);
- 
--- 
-1.7.5.4
+    Any one can help me? thanks!
+
+Regards
+Zhang Qi
