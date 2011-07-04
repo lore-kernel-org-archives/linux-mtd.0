@@ -1,13 +1,17 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux@arm.linux.org.uk
-Subject: [PATCH V2] MTD: atmel_nand: optimize read/write buffer functions
-Date: Mon,  4 Jul 2011 16:17:53 +0200
-Message-Id: <1309789073-14593-1-git-send-email-nicolas.ferre@atmel.com>
-In-Reply-To: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
-References: <1309261856-27402-1-git-send-email-nicolas.ferre@atmel.com>
-Cc: hong.xu@atmel.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
-	linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qdk0d-0002Ti-AY
+	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2011 14:20:24 +0000
+From: Julia Lawall <julia@diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] drivers/mtd/lpddr/lpddr_cmds.c: eliminate double free
+Date: Mon,  4 Jul 2011 16:20:17 +0200
+Message-Id: <1309789217-22947-1-git-send-email-julia@diku.dk>
+Cc: Joakim Tjernlund <joakim.tjernlund@transmode.se>,
+	Lucas De Marchi <lucas.demarchi@profusion.mobi>,
+	Stefani Seibold <stefani@seibold.net>,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Tadashi Abe <tabe@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,97 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For PIO NAND access functions, we use the features of the SMC:
-- no need to take into account the NAND bus width: SMC will deal with this
-- use of an IO memcpy on the NAND chip-select space is able to generate
-  proper SMC behavior.
+From: Julia Lawall <julia@diku.dk>
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+The only call to lpddr_cmdset is in the function defined in lpddr_probe
+drivers/mtd/lpddr/qinfo_probe.c.  If the result of calling lpddr_cmdset is
+NULL, this function frees lpddr.  So lpddr should not be freed in
+lpddr_cmdset.
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
 ---
-V2: use of memcpy_fromio/memcpy_toio for proper handling of memory types.
+ drivers/mtd/lpddr/lpddr_cmds.c |    1 -
+ 1 file changed, 1 deletion(-)
 
- drivers/mtd/nand/atmel_nand.c |   45 +++-------------------------------------
- 1 files changed, 4 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index bbdf062..37b2f70 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -160,37 +160,6 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
-                 !!host->board->rdy_pin_active_low;
- }
- 
--/*
-- * Minimal-overhead PIO for data access.
-- */
--static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
--{
--	struct nand_chip	*nand_chip = mtd->priv;
--
--	__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
--}
--
--static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
--{
--	struct nand_chip	*nand_chip = mtd->priv;
--
--	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
--}
--
--static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
--{
--	struct nand_chip	*nand_chip = mtd->priv;
--
--	__raw_writesb(nand_chip->IO_ADDR_W, buf, len);
--}
--
--static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
--{
--	struct nand_chip	*nand_chip = mtd->priv;
--
--	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
--}
--
- static void dma_complete_func(void *completion)
- {
- 	complete(completion);
-@@ -265,33 +234,27 @@ err_buf:
- static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
- {
- 	struct nand_chip *chip = mtd->priv;
--	struct atmel_nand_host *host = chip->priv;
- 
- 	if (use_dma && len > mtd->oobsize)
- 		/* only use DMA for bigger than oob size: better performances */
- 		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
- 			return;
- 
--	if (host->board->bus_width_16)
--		atmel_read_buf16(mtd, buf, len);
--	else
--		atmel_read_buf8(mtd, buf, len);
-+	/* if no DMA operation possible, use PIO */
-+	memcpy_fromio(buf, chip->IO_ADDR_R, len);
- }
- 
- static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
- {
- 	struct nand_chip *chip = mtd->priv;
--	struct atmel_nand_host *host = chip->priv;
- 
- 	if (use_dma && len > mtd->oobsize)
- 		/* only use DMA for bigger than oob size: better performances */
- 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
- 			return;
- 
--	if (host->board->bus_width_16)
--		atmel_write_buf16(mtd, buf, len);
--	else
--		atmel_write_buf8(mtd, buf, len);
-+	/* if no DMA operation possible, use PIO */
-+	memcpy_toio(chip->IO_ADDR_W, buf, len);
- }
- 
- /*
--- 
-1.7.3
+diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+index 65655dd..b7f265e 100644
+--- a/drivers/mtd/lpddr/lpddr_cmds.c
++++ b/drivers/mtd/lpddr/lpddr_cmds.c
+@@ -89,7 +89,6 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
+ 	shared = kmalloc(sizeof(struct flchip_shared) * lpddr->numchips,
+ 						GFP_KERNEL);
+ 	if (!shared) {
+-		kfree(lpddr);
+ 		kfree(mtd);
+ 		return NULL;
+ 	}
