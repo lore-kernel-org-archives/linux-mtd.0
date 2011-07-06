@@ -1,21 +1,22 @@
-Message-ID: <19988.21532.962024.591828@ipc1.ka-ro>
-Date: Wed, 6 Jul 2011 14:25:00 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: =?utf-8?B?TGFtYnJlY2h0IErDvHJnZW4=?= <J.Lambrecht@TELEVIC.com>
+To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Date: Wed, 6 Jul 2011 14:39:37 +0200
 Subject: Re: [PATCH] Add 'config IMX_NFC_V1_BISWAP' to swap the Bad block
 	Indicator, and use for imx27pdk nand support.
-In-Reply-To: <20110706120551.GU6069@pengutronix.de>
+Message-ID: <4E145789.8040801@televic.com>
 References: <1309872828-13942-1-git-send-email-J.Lambrecht@televic.com>
-	<20110706080942.GC26347@pengutronix.de>
-	<4E142B18.60407@televic.com> <20110706120551.GU6069@pengutronix.de>
+	<20110706080942.GC26347@pengutronix.de>	<4E142B18.60407@televic.com>
+	<19988.19315.787284.113228@ipc1.ka-ro>
+In-Reply-To: <19988.19315.787284.113228@ipc1.ka-ro>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: Estevam Fabio-R49496 <r49496@freescale.com>,
-	Lambrecht =?utf-8?Q?J=C3=BCrgen?= <J.Lambrecht@TELEVIC.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+	<linux-arm-kernel@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,127 +26,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sascha Hauer writes:
-> On Wed, Jul 06, 2011 at 11:30:00AM +0200, Lambrecht Jürgen wrote:
-> > On 07/06/2011 10:09 AM, Sascha Hauer wrote:
-> > > On Tue, Jul 05, 2011 at 03:33:48PM +0200, Jürgen Lambrecht wrote:
-> > > > - Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To 
-> > > fix a bug
-> > > >   in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and 
-> > > imx31.
-> > > >   Warning: The same solution needs to be applied to the boot loader 
-> > > and the
-> > > >   flash programmer.
-> > > > - Enable NAND support for the imx27pdk (3ds), and use BISWAP.
-> > > >
-> > > > Signed-off-by: Jürgen Lambrecht <J.Lambrecht@televic.com>
-> > > > ---
-> > > >  arch/arm/mach-imx/Kconfig         |   30 ++++++++++++++++++++++++++++--
-> > > >  arch/arm/mach-imx/mach-mx27_3ds.c |   14 ++++++++++++++
-> > > >  drivers/mtd/nand/mxc_nand.c       |   29 +++++++++++++++++++++++++++++
-> > > >  3 files changed, 71 insertions(+), 2 deletions(-)
-> > > >
-> > > [snip]
-> > >
-> > > > +
-> > > > +config IMX_NFC_V1_BISWAP
-> > > > +     bool "Make the MXC 2kB-page NAND driver swap the Bad Block 
-> > > Indicator"
-> > > > +     depends on MACH_MX27_3DS
-> > > > +     depends on MTD_NAND_MXC
-> > > > +     help
-> > > > +       Enable this if you want that the MXC NAND driver swaps the 
-> > > Bad Block
-> > > > +       Indicator (BBI) byte. The IMX NFC v1 (present in IMX27 and 
-> > > IMX31)
-> > > > +       contains a bug for 2kB-page flashes: the 2kB page is read out in
-> > > > +       4x512B chunks, so also the spare area is read out in 4
-> > > > +       chunks. Therefore the data area and the spare area becomes
-> > > > +       mixed. This causes a problem for the factory programmed BBI: it
-> > > > +       appears in the data area instead of the spare area, and is
-> > > > +       overwritten. This patch swaps that byte to the "real" spare
-> > > > +       area. WARNING: then also the bootloader and the flash 
-> > > programmer must
-> > > > +       be patched!!
-> > >
-> > > I don't like this approach. IMO some code should be run on a virgin
-> > > flash which is aware of this issue and creates a correct bad block
-> > > table. You run this once and forget about this afterwards and every
-> > > kernel/bootloader can run without patching. Otherwise if you accidently
-> > > or intentionally start an older (unpatched) kernel your Nand gets
-> > > corrupted.
-> > >
-> > I see 3 solutions: rely on the quality of the NAND flash driver (1), 
-> > patch the SW (2) or patch the HW (3).
-> > 
-> > 1. A normal NAND flash driver relies on the ECC to detect a 
-> > (potentially) bad block. But a factory bad block can have more bad bits 
-> > that the specified ECC bits.
-> >     Solution is to check after each write if the data was written 
-> > reliable: a write/read-back policy. (linux kernel option: Device Drivers 
-> > -> MTD support -> NAND Device Support -> Verify NAND page writes)
-> >     This will of course slow-down writing a lot.
-> > 2. The Freescale solution: patch the SW:
-> >        1. flash programmer
-> >        2. boot-loader NAND driver
-> >        3. OS NAND driver
-> > 3. For the HW patch, a special SW must be written that must be executed 
-> > before the board is programmed. That special SW must run in RAM and copy 
-> > the BBI byte to the "swapped" place, so that after swapping, the BBI is 
-> > at the good place. Then the SW must not be patched.
-> >     Risk: if this step is skipped, the factory BBI information is lost, 
-> > and if the SW has no write/read-back policy (solution 1), data will be 
-> > lost in some point in time.
-> > 
-> > Your solution is (3), but for the linux rootfs partition only, using the 
-> > BBT. Of course bootloader partitions and the linux kernel binary are not 
-> > written often, but I read (several times, and also been told) that even 
-> > when only reading a nand flash it can become bad!
-> > I still have to investigate this for how to solve this in the bootloader..
-> > 
-> > Because of the risk, and to have a fast solution, we went for solution (2).
-> > But if no one else is interested in this solution, I guess there is no 
-> > point trying to get it accepted.
-> > 
-> > > Also, my comment above applies here too. You added a 'depends on the
-> > > board I care of', but usually my kernels have all available boards
-> > > compiled in. So I can select this option and it will change the
-> > > behaviour of all boards I might run the kernel on, not only the
-> > > ones you depend on above.
-> > Ok, i should then find a better way to do it.
-> > But, the mxc_nand.c code contains this to protect it: 'if 
-> > ((mtd->writesize > 512) && nfc_is_v1())'.
-> 
-> This is the correct way to limit the fix to the correct versions of the
-> nand controller, but that's not what I tried to say. You might want
-> to use solution (2) for your board whereas I want to use solution (3)
-> for my boards. With the Kconfig approach it would not be possible for
-> us to use the same kernel binary.
-> 
-> > Am I correct that all nfc-v1's have that bug, so only imx27 and imx51?
-> > The application note we finally got from freescale only mentions "FSL 
-> > IMX NFC".
-> 
-> s/imx51/imx31/.
-> 
-> Yes, only imx27 and imx31 a affected by this bug.
-> 
-Are you sure? As mentioned in my other mail in this thread that's an
-inherent side effect of the way how the i.MX flash controllers handle
-the large page flash, not a bug of a certain silicon that could be
-fixed somehow.
-
-i.MX51, i.MX28 also have the same problem!
-
-
-Lothar Waßmann
--- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+T24gMDcvMDYvMjAxMSAwMTo0OCBQTSwgTG90aGFyIFdhw59tYW5uIHdyb3RlOg0KPg0KPiBIaSwN
+Cj4NCj4gTGFtYnJlY2h0IErDvHJnZW4gd3JpdGVzOg0KPiA+IE9uIDA3LzA2LzIwMTEgMTA6MDkg
+QU0sIFNhc2NoYSBIYXVlciB3cm90ZToNCj4gPiA+IE9uIFR1ZSwgSnVsIDA1LCAyMDExIGF0IDAz
+OjMzOjQ4UE0gKzAyMDAsIErDvHJnZW4gTGFtYnJlY2h0IHdyb3RlOg0KPiA+ID4gPiAtIFN3YXAg
+dGhlIEJJLWJ5dGUgb24gcG9zaXRpb24gMHg3RDAgd2l0aCBhIGRhdGEgYnl0ZSBhdCAweDgzNS4g
+IFRvDQo+ID4gPiBmaXggYSBidWcNCj4gPiA+ID4gICBpbiBGcmVlc2NhbGUgaW14IE5GQyB2MSBT
+b0MncyBmb3IgMksgcGFnZSBOQU5EIGZsYXNoZXM6IGlteDI3IGFuZA0KPiA+ID4gaW14MzEuDQo+
+ID4gPiA+ICAgV2FybmluZzogVGhlIHNhbWUgc29sdXRpb24gbmVlZHMgdG8gYmUgYXBwbGllZCB0
+byB0aGUgYm9vdCBsb2FkZXINCj4gPiA+IGFuZCB0aGUNCj4gPiA+ID4gICBmbGFzaCBwcm9ncmFt
+bWVyLg0KPiA+ID4gPiAtIEVuYWJsZSBOQU5EIHN1cHBvcnQgZm9yIHRoZSBpbXgyN3BkayAoM2Rz
+KSwgYW5kIHVzZSBCSVNXQVAuDQo+ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IErDvHJn
+ZW4gTGFtYnJlY2h0IDxKLkxhbWJyZWNodEB0ZWxldmljLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4g
+PiA+ICBhcmNoL2FybS9tYWNoLWlteC9LY29uZmlnICAgICAgICAgfCAgIDMwIA0KPiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0NCj4gPiA+ID4gIGFyY2gvYXJtL21hY2gtaW14L21hY2gt
+bXgyN18zZHMuYyB8ICAgMTQgKysrKysrKysrKysrKysNCj4gPiA+ID4gIGRyaXZlcnMvbXRkL25h
+bmQvbXhjX25hbmQuYyAgICAgICB8ICAgMjkgDQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrDQo+ID4gPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDcxIGluc2VydGlvbnMoKyksIDIgZGVsZXRp
+b25zKC0pDQo+ID4gPiA+DQo+ID4gPiBbc25pcF0NCj4gPiA+DQo+ID4gPiA+ICsNCj4gPiA+ID4g
+K2NvbmZpZyBJTVhfTkZDX1YxX0JJU1dBUA0KPiA+ID4gPiArICAgICBib29sICJNYWtlIHRoZSBN
+WEMgMmtCLXBhZ2UgTkFORCBkcml2ZXIgc3dhcCB0aGUgQmFkIEJsb2NrDQo+ID4gPiBJbmRpY2F0
+b3IiDQo+ID4gPiA+ICsgICAgIGRlcGVuZHMgb24gTUFDSF9NWDI3XzNEUw0KPiA+ID4gPiArICAg
+ICBkZXBlbmRzIG9uIE1URF9OQU5EX01YQw0KPiA+ID4gPiArICAgICBoZWxwDQo+ID4gPiA+ICsg
+ICAgICAgRW5hYmxlIHRoaXMgaWYgeW91IHdhbnQgdGhhdCB0aGUgTVhDIE5BTkQgZHJpdmVyIHN3
+YXBzIHRoZQ0KPiA+ID4gQmFkIEJsb2NrDQo+ID4gPiA+ICsgICAgICAgSW5kaWNhdG9yIChCQkkp
+IGJ5dGUuIFRoZSBJTVggTkZDIHYxIChwcmVzZW50IGluIElNWDI3IGFuZA0KPiA+ID4gSU1YMzEp
+DQo+ID4gPiA+ICsgICAgICAgY29udGFpbnMgYSBidWcgZm9yIDJrQi1wYWdlIGZsYXNoZXM6IHRo
+ZSAya0IgcGFnZSBpcyANCj4gcmVhZCBvdXQgaW4NCj4gPiA+ID4gKyAgICAgICA0eDUxMkIgY2h1
+bmtzLCBzbyBhbHNvIHRoZSBzcGFyZSBhcmVhIGlzIHJlYWQgb3V0IGluIDQNCj4gPiA+ID4gKyAg
+ICAgICBjaHVua3MuIFRoZXJlZm9yZSB0aGUgZGF0YSBhcmVhIGFuZCB0aGUgc3BhcmUgYXJlYSBi
+ZWNvbWVzDQo+ID4gPiA+ICsgICAgICAgbWl4ZWQuIFRoaXMgY2F1c2VzIGEgcHJvYmxlbSBmb3Ig
+dGhlIGZhY3RvcnkgcHJvZ3JhbW1lZCANCj4gQkJJOiBpdA0KPiA+ID4gPiArICAgICAgIGFwcGVh
+cnMgaW4gdGhlIGRhdGEgYXJlYSBpbnN0ZWFkIG9mIHRoZSBzcGFyZSBhcmVhLCBhbmQgaXMNCj4g
+PiA+ID4gKyAgICAgICBvdmVyd3JpdHRlbi4gVGhpcyBwYXRjaCBzd2FwcyB0aGF0IGJ5dGUgdG8g
+dGhlICJyZWFsIiBzcGFyZQ0KPiA+ID4gPiArICAgICAgIGFyZWEuIFdBUk5JTkc6IHRoZW4gYWxz
+byB0aGUgYm9vdGxvYWRlciBhbmQgdGhlIGZsYXNoDQo+ID4gPiBwcm9ncmFtbWVyIG11c3QNCj4g
+PiA+ID4gKyAgICAgICBiZSBwYXRjaGVkISENCj4gPiA+DQo+ID4gPiBJIGRvbid0IGxpa2UgdGhp
+cyBhcHByb2FjaC4gSU1PIHNvbWUgY29kZSBzaG91bGQgYmUgcnVuIG9uIGEgdmlyZ2luDQo+ID4g
+PiBmbGFzaCB3aGljaCBpcyBhd2FyZSBvZiB0aGlzIGlzc3VlIGFuZCBjcmVhdGVzIGEgY29ycmVj
+dCBiYWQgYmxvY2sNCj4gPiA+IHRhYmxlLiBZb3UgcnVuIHRoaXMgb25jZSBhbmQgZm9yZ2V0IGFi
+b3V0IHRoaXMgYWZ0ZXJ3YXJkcyBhbmQgZXZlcnkNCj4gPiA+IGtlcm5lbC9ib290bG9hZGVyIGNh
+biBydW4gd2l0aG91dCBwYXRjaGluZy4gT3RoZXJ3aXNlIGlmIHlvdSANCj4gYWNjaWRlbnRseQ0K
+PiA+ID4gb3IgaW50ZW50aW9uYWxseSBzdGFydCBhbiBvbGRlciAodW5wYXRjaGVkKSBrZXJuZWwg
+eW91ciBOYW5kIGdldHMNCj4gPiA+IGNvcnJ1cHRlZC4NCj4gPiA+DQo+ID4gSSBzZWUgMyBzb2x1
+dGlvbnM6IHJlbHkgb24gdGhlIHF1YWxpdHkgb2YgdGhlIE5BTkQgZmxhc2ggZHJpdmVyICgxKSwN
+Cj4gPiBwYXRjaCB0aGUgU1cgKDIpIG9yIHBhdGNoIHRoZSBIVyAoMykuDQo+ID4NCj4gPiAxLiBB
+IG5vcm1hbCBOQU5EIGZsYXNoIGRyaXZlciByZWxpZXMgb24gdGhlIEVDQyB0byBkZXRlY3QgYQ0K
+PiA+IChwb3RlbnRpYWxseSkgYmFkIGJsb2NrLiBCdXQgYSBmYWN0b3J5IGJhZCBibG9jayBjYW4g
+aGF2ZSBtb3JlIGJhZCBiaXRzDQo+ID4gdGhhdCB0aGUgc3BlY2lmaWVkIEVDQyBiaXRzLg0KPiA+
+ICAgICBTb2x1dGlvbiBpcyB0byBjaGVjayBhZnRlciBlYWNoIHdyaXRlIGlmIHRoZSBkYXRhIHdh
+cyB3cml0dGVuDQo+ID4gcmVsaWFibGU6IGEgd3JpdGUvcmVhZC1iYWNrIHBvbGljeS4gKGxpbnV4
+IGtlcm5lbCBvcHRpb246IERldmljZSBEcml2ZXJzDQo+ID4gLT4gTVREIHN1cHBvcnQgLT4gTkFO
+RCBEZXZpY2UgU3VwcG9ydCAtPiBWZXJpZnkgTkFORCBwYWdlIHdyaXRlcykNCj4gPiAgICAgVGhp
+cyB3aWxsIG9mIGNvdXJzZSBzbG93LWRvd24gd3JpdGluZyBhIGxvdC4NCj4gPiAyLiBUaGUgRnJl
+ZXNjYWxlIHNvbHV0aW9uOiBwYXRjaCB0aGUgU1c6DQo+ID4gICAgICAgIDEuIGZsYXNoIHByb2dy
+YW1tZXINCj4gPiAgICAgICAgMi4gYm9vdC1sb2FkZXIgTkFORCBkcml2ZXINCj4gPiAgICAgICAg
+My4gT1MgTkFORCBkcml2ZXINCj4gPiAzLiBGb3IgdGhlIEhXIHBhdGNoLCBhIHNwZWNpYWwgU1cg
+bXVzdCBiZSB3cml0dGVuIHRoYXQgbXVzdCBiZSBleGVjdXRlZA0KPiA+IGJlZm9yZSB0aGUgYm9h
+cmQgaXMgcHJvZ3JhbW1lZC4gVGhhdCBzcGVjaWFsIFNXIG11c3QgcnVuIGluIFJBTSBhbmQgY29w
+eQ0KPiA+IHRoZSBCQkkgYnl0ZSB0byB0aGUgInN3YXBwZWQiIHBsYWNlLCBzbyB0aGF0IGFmdGVy
+IHN3YXBwaW5nLCB0aGUgQkJJIGlzDQo+ID4gYXQgdGhlIGdvb2QgcGxhY2UuIFRoZW4gdGhlIFNX
+IG11c3Qgbm90IGJlIHBhdGNoZWQuDQo+ID4gICAgIFJpc2s6IGlmIHRoaXMgc3RlcCBpcyBza2lw
+cGVkLCB0aGUgZmFjdG9yeSBCQkkgaW5mb3JtYXRpb24gaXMgbG9zdCwNCj4gPiBhbmQgaWYgdGhl
+IFNXIGhhcyBubyB3cml0ZS9yZWFkLWJhY2sgcG9saWN5IChzb2x1dGlvbiAxKSwgZGF0YSB3aWxs
+IGJlDQo+ID4gbG9zdCBpbiBzb21lIHBvaW50IGluIHRpbWUuDQo+ID4NCj4gVGhhdCdzIG5vbnNl
+bnNlLiBZb3UgY2Fubm90IGNvcHkgYSBieXRlIGluc2lkZSBhIHBhZ2UgdGhhdCBpcyBub3QNCj4g
+cHJvZ3JhbW1hYmxlICh0aGF0J3Mgd2hhdCBCYWQgQmxvY2tzIGFyZSkuDQo+DQpObywgYSBGYWN0
+b3J5IEJhZCBCbG9jayBpcyBhIGJsb2NrIHRoYXQgd2hlbiB0ZXN0ZWQgdW5kZXIgd29yc3QtY2Fz
+ZSANCmNvbmRpdGlvbnMgaGFzIG1vcmUgZXJyb25lb3VzIGJpdHMgdGhhdCB0aGUgRUNDIGNvcnJl
+Y3RhYmxlIG9uZXMuIFNvIA0KYW55aG93IG9ubHkgdGhvc2UgYml0cyBjYW5ub3QgYmUgd3JpdHRl
+biwgYW5kIHVuZGVyIG5vcm1hbCBjb25kaXRpb25zIA0KKHJvb20gdGVtcGVyYXR1cmUuLikgaXQg
+aXMgYmVzdCBwb3NzaWJsZSB0aGF0IGFsbCBiaXRzIGFyZSBhZ2FpbiBvayAobXkgDQpNaWNyb24g
+ZGF0YXNoZWV0cyBldmVuIHdhcm5zIHRoYXQgeW91IHNob3VsZCBub3QgZXJhc2UgYSBGYWN0b3J5
+IEJhZCANCkJsb2NrLCBiZWNhdXNlIHRoZXJlIGlzIGEgcmlzayB0aGF0IGl0IHN1Y2NlZWRzLCBo
+ZW5jZSBhbHNvIGVyYXNpbmcgdGhlIA0KYmFkIGJsb2NrIG1hcmspLg0KDQpCdXQgaGF2aW5nIGlu
+dmVzdGlnYXRlZCB0aGUgbWF0dGVyIGZ1cnRoZXIgdGhhdCBpIGFscmVhZHkgaGFkIGRvbmUsIHlv
+dSANCmFyZSBpbmRlZWQgcmlnaHQgdGhhdCBteSAzZCBzb2x1dGlvbiBpcyBhIGJpdCB3cm9uZzog
+aXQgbWF5IG5vdCBiZSANCnBvc3NpYmxlIHRvIHdyaXRlIHRoYXQgInN3YXBwZWQiIHBsYWNlLiBC
+dXQgdGhlbiB0aGUgbmV4dCBwYWdlIG9mIHRoZSANCmJsb2NrIGNhbiBiZSB0YWtlbiwgYXMgdGhl
+cmUgYXJlIG1hbnkgcGFnZXMsIGFuZCBvbmx5IGEgZmV3IGJhZCBiaXRzLCANCnRoYXQgd2lsbCB3
+b3JrLg0KPg0KPiBZb3Ugb25seSBuZWVkIHRvIGNoZWNrIHRoZSBieXRlIGluIGEgd2VsbCBrbm93
+biBsb2NhdGlvbiBvbmNlIGFuZA0KPiBjcmVhdGUgYSBCQlQgaW4gZmxhc2ggdGhhdCBjYXJyaWVz
+IHRoZSBiYWQgYmxvY2sgaW5mb3JtYXRpb24uIEFmdGVyDQo+IHRoYXQgeW91IG5lZWQgbm90IGNo
+ZWNrIGZvciBhbnkgYmFkIGJsb2NrIG1hcmtlcnMgYW55IG1vcmUsIGJ1dCBzaW1wbHkNCj4gdXNl
+IHRoZSBCQlQuDQo+IFNpbmNlIHlvdSBuZWVkIHRvIHByb2dyYW0gdGhlIGJvb3Rsb2FkZXIgd2l0
+aCBzb21lIGV4dGVybmFsIHRvb2wNCj4gYW55d2F5LCB0aGF0IHRvb2wgaXMgdGhlIHJpZ2h0IGlu
+c3RhbmNlIHRvIGRvIHRoZSBiYWQgYmxvY2sgc2NhbiBhbmQNCj4gY3JlYXRlIHRoZSBCQlQuDQo+
+IFRoYXQncyB3aGF0IHdlIGF0IEthLVJvIGFyZSBkb2luZyBzaW5jZSB0aGUgZWFybHkgZGF5cyBv
+ZiB0aGUgaS5NWDI3DQo+IGZvciBhbGwgb3VyIGkuTVggYm9hcmRzLg0KPg0KU2VlbXMgaW5kZWVk
+IHRoZSBiZXN0IHNvbHV0aW9uLiAoYnV0IHdlIHRvb2sgYW5vdGhlciBzb2x1dGlvbiBiZWNhdXNl
+IG9mIA0KdGltZSwgYW5kIGJlaW5nIG5ldyB0byBsaW51eCkNCkJ1dCBhbSBJIHJpZ2h0IHRoYXQg
+dGhlIEJCVCBpcyBhIGZpbGUtc3lzdGVtIGRlcGVuZGVudCBtZXRhIGRhdGE/DQo+DQo+DQo+ID4g
+WW91ciBzb2x1dGlvbiBpcyAoMyksIGJ1dCBmb3IgdGhlIGxpbnV4IHJvb3RmcyBwYXJ0aXRpb24g
+b25seSwgdXNpbmcgdGhlDQo+ID4gQkJULiBPZiBjb3Vyc2UgYm9vdGxvYWRlciBwYXJ0aXRpb25z
+IGFuZCB0aGUgbGludXgga2VybmVsIGJpbmFyeSBhcmUgbm90DQo+ID4gd3JpdHRlbiBvZnRlbiwg
+YnV0IEkgcmVhZCAoc2V2ZXJhbCB0aW1lcywgYW5kIGFsc28gYmVlbiB0b2xkKSB0aGF0IGV2ZW4N
+Cj4gPiB3aGVuIG9ubHkgcmVhZGluZyBhIG5hbmQgZmxhc2ggaXQgY2FuIGJlY29tZSBiYWQhDQo+
+ID4gSSBzdGlsbCBoYXZlIHRvIGludmVzdGlnYXRlIHRoaXMgZm9yIGhvdyB0byBzb2x2ZSB0aGlz
+IGluIHRoZSANCj4gYm9vdGxvYWRlci4uDQo+ID4NCj4gWW91IGFyZSBtaXhpbmcgdXAgdHdvIGRp
+ZmZlcmVudCB0aGluZ3MuIFRoZSBCYWQgYmxvY2sgbWFya2VycyBpbg0KPiBjZXJ0YWluIGxvY2F0
+aW9ucyBpbiB0aGUgT09CIGFyZWEgbWFyayAnRmFjdG9yeSBiYWQgYmxvY2tzJw0KPiBpLmUuIGJs
+b2NrcyB0aGF0IGFyZSBhbHJlYWR5IGJhZCB3aGVuIHlvdSBhcHBseSBwb3dlciB0byB0aGUgZmxh
+c2ggZm9yDQo+IHRoZSBmaXJzdCB0aW1lLiBUaGUgbWFudWZhY3R1cmVyIGd1YXJhbnRlZXMgdGhh
+dCBpbml0aWFsIGJhZCBibG9ja3MNCj4gY2FuIGJlIGRldGVjdGVkIGJ5IGNoZWNraW5nIHRob3Nl
+IGxvY2F0aW9ucyBmb3IgYSBub24tRkYgdmFsdWUuDQo+IFRoZXJlIGlzIG5vIGd1YXJhbnRlZSB0
+aGF0IHlvdSBtYXkgYmUgYWJsZSB0byB3cml0ZSBhbnkgc3BlY2lmaWMgdmFsdWUNCj4gdG8gYSBj
+ZXJ0YWluIGJ5dGUgaW4gYSBibG9jayB0aGF0IGhhcyB0dXJuZWQgYmFkIGR1ZSB0byB3ZWFyb3V0
+IG9yDQo+IHdoYXRldmVyIGF0IGFueSBsYXRlciB0aW1lLiBUaHVzIGJhZCBibG9ja3MgdGhhdCBh
+cHBlYXIgZHVlIHRvIHdlYXJvdXQNCj4gc2hvdWxkIGJlIGtlcHQgdHJhY2sgb2YgaW4gdGhlIEJC
+VCwgbm90IGJ5IHdyaXRpbmcgYW55ICdiYWQgYmxvY2sNCj4gbWFya2VycycgdG8gdGhlIGRlZmVj
+dGl2ZSBibG9ja3MgdGhlbXNlbHZlcy4NCj4NClNhbWUgcmVtYXJrOiBub3QgY29tcGxldGVseSBy
+aWdodDogb25seSBzb21lIGJpdHMgYXJlIHdyb25nIChudW1iZXIgb2YgDQpFQ0MgYml0cyArMSwg
+YW5kIGFzIHlvdSBkbyBub3QgdG91Y2ggdGhlIGJsb2NrIGFueW1vcmUsIG5vIG1vcmUgYml0cyAN
+CndpbGwgZ2V0IGNvcnJ1cHRlZCkuDQpCdXQgaW5kZWVkIHRoZSBieXRlIG9mIHRoZSBiYWQtYmxv
+Y2stbWFya2VyIGxvY2F0aW9uIGluIHRoZSBmaXJzdCBwYWdlIA0KY291bGQgY29udGFpbiBlcnJv
+bmVvdXMgYml0cy4gQW5kIHRvIGNvbW1lbnQgb24gQXJ0ZW0gQml0eXV0c2tpeSdzIG1haWwsIA0K
+dGhlbiB0aGUgbmV4dCBwYWdlIG9mIHRoYXQgKGJhZCkgYmxvY2sgY2FuIGJlIHRyaWVkIChhbmQg
+c28gb24pLCBmaW5hbGx5IA0KaXQgd2lsbCB3b3JrLiBCdXQgdGhlbiBvZiBjb3Vyc2UgdGhlIGZs
+YXNoIGZpbGUgc3lzdGVtIG11c3QgYmUgZGVzaWduZWQgDQp0byBkbyB0aGF0Lg0KSG93ZXZlciwg
+SSBhZ3JlZSB0aGF0IGJhZCBibG9ja3Mgc2hvdWxkIGJlIGtlcHQgdHJhY2sgb2YgaW4gdGhlIEJC
+VC4NCj4NCj4NCj4gPiA+IEFsc28sIG15IGNvbW1lbnQgYWJvdmUgYXBwbGllcyBoZXJlIHRvby4g
+WW91IGFkZGVkIGEgJ2RlcGVuZHMgb24gdGhlDQo+ID4gPiBib2FyZCBJIGNhcmUgb2YnLCBidXQg
+dXN1YWxseSBteSBrZXJuZWxzIGhhdmUgYWxsIGF2YWlsYWJsZSBib2FyZHMNCj4gPiA+IGNvbXBp
+bGVkIGluLiBTbyBJIGNhbiBzZWxlY3QgdGhpcyBvcHRpb24gYW5kIGl0IHdpbGwgY2hhbmdlIHRo
+ZQ0KPiA+ID4gYmVoYXZpb3VyIG9mIGFsbCBib2FyZHMgSSBtaWdodCBydW4gdGhlIGtlcm5lbCBv
+biwgbm90IG9ubHkgdGhlDQo+ID4gPiBvbmVzIHlvdSBkZXBlbmQgb24gYWJvdmUuDQo+ID4gT2ss
+IGkgc2hvdWxkIHRoZW4gZmluZCBhIGJldHRlciB3YXkgdG8gZG8gaXQuDQo+ID4gQnV0LCB0aGUg
+bXhjX25hbmQuYyBjb2RlIGNvbnRhaW5zIHRoaXMgdG8gcHJvdGVjdCBpdDogJ2lmDQo+ID4gKCht
+dGQtPndyaXRlc2l6ZSA+IDUxMikgJiYgbmZjX2lzX3YxKCkpJy4NCj4gPiBBbSBJIGNvcnJlY3Qg
+dGhhdCBhbGwgbmZjLXYxJ3MgaGF2ZSB0aGF0IGJ1Zywgc28gb25seSBpbXgyNyBhbmQgaW14NTE/
+DQo+ID4gVGhlIGFwcGxpY2F0aW9uIG5vdGUgd2UgZmluYWxseSBnb3QgZnJvbSBmcmVlc2NhbGUg
+b25seSBtZW50aW9ucyAiRlNMDQo+ID4gSU1YIE5GQyIuDQo+ID4NCj4gSXQncyBub3QgZXhhY3Rs
+eSBhIGJ1ZyAod2hpY2ggd291bGQgYmUgcG9zc2libGUgdG8gZ2V0IGZpeGVkKSwgYnV0IGFuDQo+
+IGluaGVyZW50IGZlYXR1cmUgb2YgdGhlIGNvbnRyb2xsZXIgd2hpY2ggaGFuZGxlcyBOQU5EIGZs
+YXNoIHdpdGggYQ0KPiBwYWdlIHNpemUgbGFyZ2VyIHRoYW4gNTEyIGJ5dGUgbGlrZSBpdCBoYXMg
+biBwYWdlcyBvZiA1MTIgYnl0ZS4NCj4NCk9LLCBhICJoYXJkd2FyZSBidWciIHRoZW4gKGNhbiBi
+ZSBmaXhlZCB3aXRoIGEgcmUtd3JpdGUgb2YgdGhlIA0KVkhETC9WZXJpbG9nIGNvZGUgb2YgdGhl
+IE5GQywgZ2l2aW5nIHYyKS4gSXQgc2VlbXMgdG8gbWUgRnJlZXNjYWxlIHRyaWVkIA0KdG8gZW5o
+YW5jZSB0aGVpciA1MTJCLXBhZ2UgY29udHJvbGxlciB3aXRoIHRvIHBvc3NpYmlsaXR5IHRvIGFs
+c28gaGFuZGxlIA0KMmtCIHBhZ2VzLCBidXQgdGhleSBmb3Jnb3QgYWJvdXQgdGhlIEZhY3Rvcnkg
+QmFkIEJsb2NrIGJ5dGUgKG49NCBvbmx5KS4NClNvIHRvIHJlcGx5IHRvIHlvdXIgbmV4dCBtYWls
+OiBvbmx5IHRoZSBpbXgyNyBhbmQgaW14MzEgKHRoYW5rcyBzYXNjaGEsIA0KaXQgd2FzIGEgdHlw
+byB0byBtZW50aW9uIDUxKSBoYXZlIHRoZSBORkMgdjEsIEkgYmVsaWV2ZSBhbGwgdGhlIG90aGVy
+cyANCmhhdmUgTkZDIHYyLCB3aGljaCBhcmUgZml4ZWQuDQoNCktpbmQgcmVnYXJkcywNCkrDvHJn
+ZW4NCj4NCj4NCj4NCj4gTG90aGFyIFdhw59tYW5uDQo+IC0tDQo+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+DQo+IEthLVJvIGVs
+ZWN0cm9uaWNzIEdtYkggfCBQYXNjYWxzdHJhw59lIDIyIHwgRCAtIDUyMDc2IEFhY2hlbg0KPiBQ
+aG9uZTogKzQ5IDI0MDggMTQwMi0wIHwgRmF4OiArNDkgMjQwOCAxNDAyLTEwDQo+IEdlc2Now6Rm
+dHNmw7xocmVyOiBNYXR0aGlhcyBLYXVzc2VuDQo+IEhhbmRlbHNyZWdpc3RlcmVpbnRyYWc6IEFt
+dHNnZXJpY2h0IEFhY2hlbiwgSFJCIDQ5OTYNCj4NCj4gd3d3Lmthcm8tZWxlY3Ryb25pY3MuZGUg
+fCBpbmZvQGthcm8tZWxlY3Ryb25pY3MuZGUNCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4NCg0KDQotLSANCkrDvHJnZW4gTGFt
+YnJlY2h0DQpSJkQgQXNzb2NpYXRlDQpUZWw6ICszMiAoMCk1MSAzMDMwNDUgICAgRmF4OiArMzIg
+KDApNTEgMzEwNjcwDQpodHRwOi8vd3d3LnRlbGV2aWMtcmFpbC5jb20NClRlbGV2aWMgUmFpbCBO
+ViAtIExlbyBCZWthZXJ0bGFhbiAxIC0gODg3MCBJemVnZW0gLSBCZWxnaXVtDQpDb21wYW55IG51
+bWJlciAwODI1LjUzOS41ODEgLSBSUFIgS29ydHJpamsNCg==
