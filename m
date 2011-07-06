@@ -1,20 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QeO4A-0005ol-06
-	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2011 09:06:42 +0000
-Date: Wed, 6 Jul 2011 11:06:37 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: =?iso-8859-15?Q?J=FCrgen?= Lambrecht <juergen.lambrecht@gmail.com>
+From: =?iso-8859-15?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Wed, 6 Jul 2011 11:30:00 +0200
 Subject: Re: [PATCH] Add 'config IMX_NFC_V1_BISWAP' to swap the Bad block
 	Indicator, and use for imx27pdk nand support.
-Message-ID: <20110706090637.GA2117@pengutronix.de>
+Message-ID: <4E142B18.60407@televic.com>
 References: <1309872828-13942-1-git-send-email-J.Lambrecht@televic.com>
+	<20110706080942.GC26347@pengutronix.de>
+In-Reply-To: <20110706080942.GC26347@pengutronix.de>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
-In-Reply-To: <1309872828-13942-1-git-send-email-J.Lambrecht@televic.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Estevam Fabio-R49496 <r49496@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07/06/2011 10:09 AM, Sascha Hauer wrote:
+> On Tue, Jul 05, 2011 at 03:33:48PM +0200, J=FCrgen Lambrecht wrote:
+> > - Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To=20
+> fix a bug
+> >   in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and=20
+> imx31.
+> >   Warning: The same solution needs to be applied to the boot loader=20
+> and the
+> >   flash programmer.
+> > - Enable NAND support for the imx27pdk (3ds), and use BISWAP.
+> >
+> > Signed-off-by: J=FCrgen Lambrecht <J.Lambrecht@televic.com>
+> > ---
+> >  arch/arm/mach-imx/Kconfig         |   30 ++++++++++++++++++++++++++++-=
+-
+> >  arch/arm/mach-imx/mach-mx27_3ds.c |   14 ++++++++++++++
+> >  drivers/mtd/nand/mxc_nand.c       |   29 +++++++++++++++++++++++++++++
+> >  3 files changed, 71 insertions(+), 2 deletions(-)
+> >
+> [snip]
+>
+> > +
+> > +config IMX_NFC_V1_BISWAP
+> > +     bool "Make the MXC 2kB-page NAND driver swap the Bad Block=20
+> Indicator"
+> > +     depends on MACH_MX27_3DS
+> > +     depends on MTD_NAND_MXC
+> > +     help
+> > +       Enable this if you want that the MXC NAND driver swaps the=20
+> Bad Block
+> > +       Indicator (BBI) byte. The IMX NFC v1 (present in IMX27 and=20
+> IMX31)
+> > +       contains a bug for 2kB-page flashes: the 2kB page is read out i=
+n
+> > +       4x512B chunks, so also the spare area is read out in 4
+> > +       chunks. Therefore the data area and the spare area becomes
+> > +       mixed. This causes a problem for the factory programmed BBI: it
+> > +       appears in the data area instead of the spare area, and is
+> > +       overwritten. This patch swaps that byte to the "real" spare
+> > +       area. WARNING: then also the bootloader and the flash=20
+> programmer must
+> > +       be patched!!
+>
+> I don't like this approach. IMO some code should be run on a virgin
+> flash which is aware of this issue and creates a correct bad block
+> table. You run this once and forget about this afterwards and every
+> kernel/bootloader can run without patching. Otherwise if you accidently
+> or intentionally start an older (unpatched) kernel your Nand gets
+> corrupted.
+>
+I see 3 solutions: rely on the quality of the NAND flash driver (1),=20
+patch the SW (2) or patch the HW (3).
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1. A normal NAND flash driver relies on the ECC to detect a=20
+(potentially) bad block. But a factory bad block can have more bad bits=20
+that the specified ECC bits.
+    Solution is to check after each write if the data was written=20
+reliable: a write/read-back policy. (linux kernel option: Device Drivers=20
+-> MTD support -> NAND Device Support -> Verify NAND page writes)
+    This will of course slow-down writing a lot.
+2. The Freescale solution: patch the SW:
+       1. flash programmer
+       2. boot-loader NAND driver
+       3. OS NAND driver
+3. For the HW patch, a special SW must be written that must be executed=20
+before the board is programmed. That special SW must run in RAM and copy=20
+the BBI byte to the "swapped" place, so that after swapping, the BBI is=20
+at the good place. Then the SW must not be patched.
+    Risk: if this step is skipped, the factory BBI information is lost,=20
+and if the SW has no write/read-back policy (solution 1), data will be=20
+lost in some point in time.
+
+Your solution is (3), but for the linux rootfs partition only, using the=20
+BBT. Of course bootloader partitions and the linux kernel binary are not=20
+written often, but I read (several times, and also been told) that even=20
+when only reading a nand flash it can become bad!
+I still have to investigate this for how to solve this in the bootloader..
+
+Because of the risk, and to have a fast solution, we went for solution (2).
+But if no one else is interested in this solution, I guess there is no=20
+point trying to get it accepted.
+
+> Also, my comment above applies here too. You added a 'depends on the
+> board I care of', but usually my kernels have all available boards
+> compiled in. So I can select this option and it will change the
+> behaviour of all boards I might run the kernel on, not only the
+> ones you depend on above.
+Ok, i should then find a better way to do it.
+But, the mxc_nand.c code contains this to protect it: 'if=20
+((mtd->writesize > 512) && nfc_is_v1())'.
+Am I correct that all nfc-v1's have that bug, so only imx27 and imx51?
+The application note we finally got from freescale only mentions "FSL=20
+IMX NFC".
+
+regards,
+juergen
+>
+> Sascha
+>
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  =
+|
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-> +	temp1 =3D *((volatile unsigned short*)(host->main_area0 + 0x7D0));
-> +	temp2 =3D *((volatile unsigned short*)(host->main_area0 + 0x834));
-> +	new_temp1 =3D (temp1 & 0xFF00) | (temp2 >> 8);
-> +	temp2 =3D (temp2 & 0x00FF) | (temp1 << 8);
-> +	*((volatile unsigned short*)(host->main_area0 + 0x7D0)) =3D new_temp1;
-> +	*((volatile unsigned short*)(host->main_area0 + 0x834)) =3D temp2;
-
-Please use proper io-accessors and no magic values in V2.
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---OXfL5xGRrasGEqWY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4UJZ0ACgkQD27XaX1/VRvKYACgjuDdKz22hLeWau3GNQbuROtI
-xVUAnRrRZFDEg2JIzU+JFquAxbvxvEqa
-=CM8I
------END PGP SIGNATURE-----
-
---OXfL5xGRrasGEqWY--
+J=FCrgen Lambrecht
+R&D Associate
+Tel: +32 (0)51 303045 Fax: +32 (0)51 310670
+http://www.televic-rail.com
+Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
+Company number 0825.539.581 - RPR Kortrijk
