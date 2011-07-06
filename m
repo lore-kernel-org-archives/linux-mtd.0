@@ -1,19 +1,14 @@
-From: =?iso-8859-15?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Wed, 6 Jul 2011 11:30:00 +0200
-Subject: Re: [PATCH] Add 'config IMX_NFC_V1_BISWAP' to swap the Bad block
-	Indicator, and use for imx27pdk nand support.
-Message-ID: <4E142B18.60407@televic.com>
-References: <1309872828-13942-1-git-send-email-J.Lambrecht@televic.com>
-	<20110706080942.GC26347@pengutronix.de>
-In-Reply-To: <20110706080942.GC26347@pengutronix.de>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Estevam Fabio-R49496 <r49496@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QeORL-0006LN-Dv
+	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2011 09:30:41 +0000
+From: Anatolij Gustschin <agust@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBIFS: fix master node recovery
+Date: Wed,  6 Jul 2011 11:30:25 +0200
+Message-Id: <1309944626-30195-1-git-send-email-agust@denx.de>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>, Anatolij Gustschin <agust@denx.de>,
+	Detlev Zundel <dzu@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,125 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/06/2011 10:09 AM, Sascha Hauer wrote:
-> On Tue, Jul 05, 2011 at 03:33:48PM +0200, J=FCrgen Lambrecht wrote:
-> > - Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To=20
-> fix a bug
-> >   in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and=20
-> imx31.
-> >   Warning: The same solution needs to be applied to the boot loader=20
-> and the
-> >   flash programmer.
-> > - Enable NAND support for the imx27pdk (3ds), and use BISWAP.
-> >
-> > Signed-off-by: J=FCrgen Lambrecht <J.Lambrecht@televic.com>
-> > ---
-> >  arch/arm/mach-imx/Kconfig         |   30 ++++++++++++++++++++++++++++-=
--
-> >  arch/arm/mach-imx/mach-mx27_3ds.c |   14 ++++++++++++++
-> >  drivers/mtd/nand/mxc_nand.c       |   29 +++++++++++++++++++++++++++++
-> >  3 files changed, 71 insertions(+), 2 deletions(-)
-> >
-> [snip]
->
-> > +
-> > +config IMX_NFC_V1_BISWAP
-> > +     bool "Make the MXC 2kB-page NAND driver swap the Bad Block=20
-> Indicator"
-> > +     depends on MACH_MX27_3DS
-> > +     depends on MTD_NAND_MXC
-> > +     help
-> > +       Enable this if you want that the MXC NAND driver swaps the=20
-> Bad Block
-> > +       Indicator (BBI) byte. The IMX NFC v1 (present in IMX27 and=20
-> IMX31)
-> > +       contains a bug for 2kB-page flashes: the 2kB page is read out i=
-n
-> > +       4x512B chunks, so also the spare area is read out in 4
-> > +       chunks. Therefore the data area and the spare area becomes
-> > +       mixed. This causes a problem for the factory programmed BBI: it
-> > +       appears in the data area instead of the spare area, and is
-> > +       overwritten. This patch swaps that byte to the "real" spare
-> > +       area. WARNING: then also the bootloader and the flash=20
-> programmer must
-> > +       be patched!!
->
-> I don't like this approach. IMO some code should be run on a virgin
-> flash which is aware of this issue and creates a correct bad block
-> table. You run this once and forget about this afterwards and every
-> kernel/bootloader can run without patching. Otherwise if you accidently
-> or intentionally start an older (unpatched) kernel your Nand gets
-> corrupted.
->
-I see 3 solutions: rely on the quality of the NAND flash driver (1),=20
-patch the SW (2) or patch the HW (3).
+When the 1st LEB was unmapped and written but 2nd LEB not,
+the master node recovery doesn't succeed after power cut.
+We see following error when mounting UBIFS partition on NOR
+flash:
 
-1. A normal NAND flash driver relies on the ECC to detect a=20
-(potentially) bad block. But a factory bad block can have more bad bits=20
-that the specified ECC bits.
-    Solution is to check after each write if the data was written=20
-reliable: a write/read-back policy. (linux kernel option: Device Drivers=20
--> MTD support -> NAND Device Support -> Verify NAND page writes)
-    This will of course slow-down writing a lot.
-2. The Freescale solution: patch the SW:
-       1. flash programmer
-       2. boot-loader NAND driver
-       3. OS NAND driver
-3. For the HW patch, a special SW must be written that must be executed=20
-before the board is programmed. That special SW must run in RAM and copy=20
-the BBI byte to the "swapped" place, so that after swapping, the BBI is=20
-at the good place. Then the SW must not be patched.
-    Risk: if this step is skipped, the factory BBI information is lost,=20
-and if the SW has no write/read-back policy (solution 1), data will be=20
-lost in some point in time.
+UBIFS error (pid 1137): ubifs_recover_master_node: failed to recover master node
 
-Your solution is (3), but for the linux rootfs partition only, using the=20
-BBT. Of course bootloader partitions and the linux kernel binary are not=20
-written often, but I read (several times, and also been told) that even=20
-when only reading a nand flash it can become bad!
-I still have to investigate this for how to solve this in the bootloader..
+Additional 2nd master node offset check is needed to fix the
+problem. If the 2nd master node is at the end in the 2nd LEB,
+first master node is used for recovery.
 
-Because of the risk, and to have a fast solution, we went for solution (2).
-But if no one else is interested in this solution, I guess there is no=20
-point trying to get it accepted.
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+---
+ fs/ubifs/recovery.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-> Also, my comment above applies here too. You added a 'depends on the
-> board I care of', but usually my kernels have all available boards
-> compiled in. So I can select this option and it will change the
-> behaviour of all boards I might run the kernel on, not only the
-> ones you depend on above.
-Ok, i should then find a better way to do it.
-But, the mxc_nand.c code contains this to protect it: 'if=20
-((mtd->writesize > 512) && nfc_is_v1())'.
-Am I correct that all nfc-v1's have that bug, so only imx27 and imx51?
-The application note we finally got from freescale only mentions "FSL=20
-IMX NFC".
-
-regards,
-juergen
->
-> Sascha
->
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  =
-|
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
---=20
-J=FCrgen Lambrecht
-R&D Associate
-Tel: +32 (0)51 303045 Fax: +32 (0)51 310670
-http://www.televic-rail.com
-Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
-Company number 0825.539.581 - RPR Kortrijk
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 783d8e0..0e951f0 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -274,7 +274,9 @@ int ubifs_recover_master_node(struct ubifs_info *c)
+ 				if (cor1)
+ 					goto out_err;
+ 				mst = mst1;
+-			} else if (offs1 == 0 && offs2 + sz >= c->leb_size) {
++			} else if (offs1 == 0 &&
++				   (offs2 + sz >= c->leb_size ||
++				    (c->leb_size - offs2 - sz) < sz)) {
+ 				/* 1st LEB was unmapped and written, 2nd not */
+ 				if (cor1)
+ 					goto out_err;
+-- 
+1.7.1
