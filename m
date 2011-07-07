@@ -1,24 +1,16 @@
-MIME-Version: 1.0
-In-Reply-To: <4E157561.6060600@compulab.co.il>
-References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
-	<1309771536-10597-4-git-send-email-leiwen@marvell.com>
-	<4E1411BB.4010000@compulab.co.il>
-	<CALZhoSQgoMS7bSRx1V-tMX+aG4idF6Z-Xr3CorFSXwPMHvacXw@mail.gmail.com>
-	<4E157561.6060600@compulab.co.il>
-Date: Thu, 7 Jul 2011 17:06:39 +0800
-Message-ID: <CALZhoSRG5Lsx7twK9A4h0hnj0vsJiWFad_u+Z3kHQ-eH5_waCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Igor Grinberg <grinberg@compulab.co.il>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QelF5-0000SZ-2s
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 09:51:31 +0000
+From: Anatolij Gustschin <agust@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] UBIFS: fix master node recovery
+Date: Thu,  7 Jul 2011 11:51:18 +0200
+Message-Id: <1310032278-5102-1-git-send-email-agust@denx.de>
+In-Reply-To: <1309944626-30195-1-git-send-email-agust@denx.de>
+References: <1309944626-30195-1-git-send-email-agust@denx.de>
+Cc: Anatolij Gustschin <agust@denx.de>, Detlev Zundel <dzu@denx.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Igor,
+When the 1st LEB was unmapped and written but 2nd LEB not,
+the master node recovery doesn't succeed after power cut.
+We see following error when mounting UBIFS partition on NOR
+flash:
 
-On Thu, Jul 7, 2011 at 4:59 PM, Igor Grinberg <grinberg@compulab.co.il> wro=
-te:
-> On 07/07/11 09:26, Lei Wen wrote:
->
->> Hi Igor && Daniel,
->>
->> On Wed, Jul 6, 2011 at 3:41 PM, Igor Grinberg <grinberg@compulab.co.il> =
-wrote:
->>> On 07/04/11 12:25, Lei Wen wrote:
->>>
->>>> =A0#ifdef CONFIG_PM
->>>> @@ -1203,8 +1259,12 @@ static int pxa3xx_nand_resume(struct platform_d=
-evice *pdev)
->>>> =A0{
->>>> =A0 =A0 =A0 struct pxa3xx_nand_info *info =3D platform_get_drvdata(pde=
-v);
->>>>
->>>> - =A0 =A0 nand_writel(info, NDTR0CS0, info->host->ndtr0cs0);
->>>> - =A0 =A0 nand_writel(info, NDTR1CS0, info->host->ndtr1cs0);
->>>> + =A0 =A0 /*
->>>> + =A0 =A0 =A0* Directly set the chip select to a invalid value,
->>>> + =A0 =A0 =A0* then the driver would reset the timing according
->>>> + =A0 =A0 =A0* to current chip select at the beginning of cmdfunc
->>>> + =A0 =A0 =A0*/
->>>> + =A0 =A0 info->cs =3D 0xff;
->>> Thinking of this for the second (or third) time,
->>> If you have keep config enabled and have only one nand chip,
->>> this will brake the keep config...
->>>
->>> Daniel,
->>>
->>> have you tested the suspend/resume with this patch?
->>> (and keep_config on?)
->>>
->> Do you still have concern with this change?
->> If not, I would push the next round of patch set including merging
->> patch 3 and 4.
->
-> Though I can't test it right now, but yes it looks like it breaks
-> the keep_config after the resume (actually it disables the keep_config si=
-lently).
->
-> I think you need here some kind of check if keep_config is enabled.
-> keep_config is enabled means that only one chip select is used for NAND
-> and you don't need to reset the timings.
+UBIFS error (pid 1137): ubifs_recover_master_node: failed to recover master node
 
-It would not break anything.
-The value rewrite to timing register is the one that save in the
-pxa3xx_nand_detect_config.
-And it is the same behavior before this patch apply.
+Correct 2nd master node offset check is needed to fix the
+problem. If the 2nd master node is at the end in the 2nd LEB,
+first master node is used for recovery. When checking for this
+condition we should check whether the master node is exactly at
+the end of the LEB (without remaining empty space) or whether
+it is followed by an empty space less than the master node size.
 
-Best regards,
-Lei
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+---
+v2:
+  - drop incorrect check
+  - revise commit description
+
+ fs/ubifs/recovery.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 783d8e0..9d7e387 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -274,7 +274,8 @@ int ubifs_recover_master_node(struct ubifs_info *c)
+ 				if (cor1)
+ 					goto out_err;
+ 				mst = mst1;
+-			} else if (offs1 == 0 && offs2 + sz >= c->leb_size) {
++			} else if (offs1 == 0 &&
++				   (c->leb_size - offs2 - sz) < sz) {
+ 				/* 1st LEB was unmapped and written, 2nd not */
+ 				if (cor1)
+ 					goto out_err;
+-- 
+1.7.1
