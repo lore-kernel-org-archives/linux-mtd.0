@@ -1,18 +1,18 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QevVb-0004n8-ND
-	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 20:49:16 +0000
-Received: by iyn15 with SMTP id 15so1451520iyn.36
+	id 1QevVd-0004n8-VX
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 20:49:18 +0000
+Received: by mail-iy0-f177.google.com with SMTP id 15so1451520iyn.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Jul 2011 13:49:14 -0700 (PDT)
+	Thu, 07 Jul 2011 13:49:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1310071467-9017-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1310071467-9017-2-git-send-email-computersforpeace@gmail.com>
 References: <1310071467-9017-1-git-send-email-computersforpeace@gmail.com>
-	<1310071467-9017-3-git-send-email-computersforpeace@gmail.com>
+	<1310071467-9017-2-git-send-email-computersforpeace@gmail.com>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 7 Jul 2011 16:48:54 -0400
-Message-ID: <CAMjpGUe7Gu8KoCQer97M5W3N6LdrWm9BMZ7Nqg+PEjjTT1_amg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] Makefile: show nice message when checking version.h
+Date: Thu, 7 Jul 2011 16:48:57 -0400
+Message-ID: <CAMjpGUe-ZChKyOgyxhmAC75b_16exfRo0=t585wtqBC7fBqH4g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Makefile: fix "make clean" for cross-compile
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
