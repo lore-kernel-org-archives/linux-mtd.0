@@ -1,23 +1,21 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qei1g-0005E4-P2
-	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 06:25:29 +0000
-Received: by pvg20 with SMTP id 20so260364pvg.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Jul 2011 23:25:24 -0700 (PDT)
-Subject: Re: [PATCH] UBIFS: fix master node recovery
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anatolij Gustschin <agust@denx.de>
-Date: Thu, 07 Jul 2011 09:26:26 +0300
-In-Reply-To: <1309944626-30195-1-git-send-email-agust@denx.de>
-References: <1309944626-30195-1-git-send-email-agust@denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1310019990.3149.105.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <4E1411BB.4010000@compulab.co.il>
+References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
+	<1309771536-10597-4-git-send-email-leiwen@marvell.com>
+	<4E1411BB.4010000@compulab.co.il>
+Date: Thu, 7 Jul 2011 14:26:23 +0800
+Message-ID: <CALZhoSQgoMS7bSRx1V-tMX+aG4idF6Z-Xr3CorFSXwPMHvacXw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
+From: Lei Wen <adrian.wenl@gmail.com>
+To: Igor Grinberg <grinberg@compulab.co.il>, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-07-06 at 11:30 +0200, Anatolij Gustschin wrote:
-> When the 1st LEB was unmapped and written but 2nd LEB not,
-> the master node recovery doesn't succeed after power cut.
-> We see following error when mounting UBIFS partition on NOR
-> flash:
-> 
-> UBIFS error (pid 1137): ubifs_recover_master_node: failed to recover master node
-> 
-> Additional 2nd master node offset check is needed to fix the
-> problem. If the 2nd master node is at the end in the 2nd LEB,
-> first master node is used for recovery.
-> 
-> Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> ---
->  fs/ubifs/recovery.c |    4 +++-
->  1 files changed, 3 insertions(+), 1 deletions(-)
-> 
-> diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-> index 783d8e0..0e951f0 100644
-> --- a/fs/ubifs/recovery.c
-> +++ b/fs/ubifs/recovery.c
-> @@ -274,7 +274,9 @@ int ubifs_recover_master_node(struct ubifs_info *c)
->  				if (cor1)
->  					goto out_err;
->  				mst = mst1;
-> -			} else if (offs1 == 0 && offs2 + sz >= c->leb_size) {
-> +			} else if (offs1 == 0 &&
-> +				   (offs2 + sz >= c->leb_size ||
-> +				    (c->leb_size - offs2 - sz) < sz)) {
+Hi Igor && Daniel,
 
-Hmm, ok, so we have situation like this I guess:
+On Wed, Jul 6, 2011 at 3:41 PM, Igor Grinberg <grinberg@compulab.co.il> wro=
+te:
+> On 07/04/11 12:25, Lei Wen wrote:
+>
+>> =A0#ifdef CONFIG_PM
+>> @@ -1203,8 +1259,12 @@ static int pxa3xx_nand_resume(struct platform_dev=
+ice *pdev)
+>> =A0{
+>> =A0 =A0 =A0 struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev)=
+;
+>>
+>> - =A0 =A0 nand_writel(info, NDTR0CS0, info->host->ndtr0cs0);
+>> - =A0 =A0 nand_writel(info, NDTR1CS0, info->host->ndtr1cs0);
+>> + =A0 =A0 /*
+>> + =A0 =A0 =A0* Directly set the chip select to a invalid value,
+>> + =A0 =A0 =A0* then the driver would reset the timing according
+>> + =A0 =A0 =A0* to current chip select at the beginning of cmdfunc
+>> + =A0 =A0 =A0*/
+>> + =A0 =A0 info->cs =3D 0xff;
+>
+> Thinking of this for the second (or third) time,
+> If you have keep config enabled and have only one nand chip,
+> this will brake the keep config...
+>
+> Daniel,
+>
+> have you tested the suspend/resume with this patch?
+> (and keep_config on?)
+>
 
-First LEB:   |M_______|
-Second LEB:  |MMMMMMM_|
-              1234567      
+Do you still have concern with this change?
+If not, I would push the next round of patch set including merging
+patch 3 and 4.
 
-Where M - valid master node, _ - just free space.
-
-So offs1 is 0, and offs2 is the position where the 7th M _starts_.
-
-What we want to check is that there is no room for another master node
-in the second LEB. We have to take offs2, add sz, and make sure that LEB
-size minus that is less than sz, i.e., exactly what you have done.
-
-And  offs2 + sz >= c->leb_size seems to be completely incorrect and
-should be removed, AFAICS. Can you confirm that?
-
->  				/* 1st LEB was unmapped and written, 2nd not */
->  				if (cor1)
->  					goto out_err;
-
-
--- 
-Best Regards,
-Artem Bityutskiy
+Thanks,
+Lei
