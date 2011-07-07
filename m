@@ -1,21 +1,23 @@
-Message-ID: <4E159736.5030706@compulab.co.il>
-Date: Thu, 07 Jul 2011 14:23:34 +0300
-From: Igor Grinberg <grinberg@compulab.co.il>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: reply: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support
+	=?iso-8859-1?q?for=09imx23/imx28?=
+Date: Thu, 7 Jul 2011 17:57:23 +0200
+References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
+	<201107011109.27206.arnd@arndb.de> <4E1574A1.4050502@freescale.com>
+In-Reply-To: <4E1574A1.4050502@freescale.com>
 MIME-Version: 1.0
-To: Lei Wen <adrian.wenl@gmail.com>
-Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
-References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>	<1309771536-10597-4-git-send-email-leiwen@marvell.com>	<4E1411BB.4010000@compulab.co.il>	<CALZhoSQgoMS7bSRx1V-tMX+aG4idF6Z-Xr3CorFSXwPMHvacXw@mail.gmail.com>	<4E157561.6060600@compulab.co.il>
-	<CALZhoSRG5Lsx7twK9A4h0hnj0vsJiWFad_u+Z3kHQ-eH5_waCQ@mail.gmail.com>
-In-Reply-To: <CALZhoSRG5Lsx7twK9A4h0hnj0vsJiWFad_u+Z3kHQ-eH5_waCQ@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Message-Id: <201107071757.23405.arnd@arndb.de>
+Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	"LW@karo-electronics.de" <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/07/11 12:06, Lei Wen wrote:
+On Thursday 07 July 2011, Huang Shijie wrote:
+> > On Friday 01 July 2011 10:57:40 Huang Shijie wrote:
+> >>>> It's annoying, but it really saves some lines.
+> >>> It would save more lines if you introduce the macros globally and
+> >>> convert all existing resource definitions ;-)
+> >> The origin code did not use any macros.
+> >> Some one suggested me to use macros.
+> >> So i used the macros.
+> >>
+> >> Do i have to drop the macros?
+> > Can you find out who made the suggestion? Let's first reach consensus
+> > about how we want to do these things in the future.
+> http://www.spinics.net/lists/arm-kernel/msg121384.html
+> 
 
-> Hi Igor,
->
-> On Thu, Jul 7, 2011 at 4:59 PM, Igor Grinberg <grinberg@compulab.co.il> wrote:
->> On 07/07/11 09:26, Lei Wen wrote:
->>
->>> Hi Igor && Daniel,
->>>
->>> On Wed, Jul 6, 2011 at 3:41 PM, Igor Grinberg <grinberg@compulab.co.il> wrote:
->>>> On 07/04/11 12:25, Lei Wen wrote:
->>>>
->>>>>  #ifdef CONFIG_PM
->>>>> @@ -1203,8 +1259,12 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
->>>>>  {
->>>>>       struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
->>>>>
->>>>> -     nand_writel(info, NDTR0CS0, info->host->ndtr0cs0);
->>>>> -     nand_writel(info, NDTR1CS0, info->host->ndtr1cs0);
->>>>> +     /*
->>>>> +      * Directly set the chip select to a invalid value,
->>>>> +      * then the driver would reset the timing according
->>>>> +      * to current chip select at the beginning of cmdfunc
->>>>> +      */
->>>>> +     info->cs = 0xff;
->>>> Thinking of this for the second (or third) time,
->>>> If you have keep config enabled and have only one nand chip,
->>>> this will brake the keep config...
->>>>
->>>> Daniel,
->>>>
->>>> have you tested the suspend/resume with this patch?
->>>> (and keep_config on?)
->>>>
->>> Do you still have concern with this change?
->>> If not, I would push the next round of patch set including merging
->>> patch 3 and 4.
->> Though I can't test it right now, but yes it looks like it breaks
->> the keep_config after the resume (actually it disables the keep_config silently).
->>
->> I think you need here some kind of check if keep_config is enabled.
->> keep_config is enabled means that only one chip select is used for NAND
->> and you don't need to reset the timings.
-> It would not break anything.
-> The value rewrite to timing register is the one that save in the
-> pxa3xx_nand_detect_config.
-> And it is the same behavior before this patch apply.
+Ok, so Uwe made a rather generic comment that he'd prefer you to use
+macros for that part. I think your original code actually looks cleaner
+in this case, mostly because it doesn't obfuscate the identifiers
+and because the macro is specific to this file.
 
-Right. I've missed this. Thanks for the explanation.
+Uwe, do you think it's worthwhile introducing a global macro for
+everyone to use for defining resources? Clearly this is not an
+mxs specific problem, and I'd much rather have the same solution
+everywhere.
 
--- 
-Regards,
-Igor.
+I'm thinking that if we want to solve this, the macro should live
+in include/linux/ioport.h along with struct resource.
+
+	Arnd
