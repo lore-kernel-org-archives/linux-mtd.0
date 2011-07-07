@@ -1,31 +1,17 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QeYGB-0007Wr-Ny
-	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2011 19:59:48 +0000
-Received: by wyf23 with SMTP id 23so247346wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Jul 2011 12:59:43 -0700 (PDT)
+Date: Thu, 7 Jul 2011 08:15:31 +0800
+From: Shawn Guo <shawn.guo@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] dmaengine: mxs-dma: skip request_irq for NO_IRQ
+Message-ID: <20110707001530.GE4034@S2100-06.ap.freescale.net>
+References: <20110630052855.GE25931@S2100-06.ap.freescale.net>
+	<1309421193-7785-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CALT56yN_tY_YJQbC4POsaOc639dN_6yFo_90CGWR617kUjYnfQ@mail.gmail.com>
-References: <1307544227.31223.115.camel@localhost>
-	<1307557519-31269-1-git-send-email-computersforpeace@gmail.com>
-	<1307605456.7374.35.camel@localhost>
-	<BANLkTin5KLu8QknuM4ATHpLQP4Uq09tekA@mail.gmail.com>
-	<1307635412.7374.128.camel@localhost>
-	<BANLkTimh12AhqfE+Yx3Yi_m=NyUb34JoXA@mail.gmail.com>
-	<1308717655.18119.19.camel@sauron> <itsbm4$d29$1@dough.gmane.org>
-	<CAN8TOE_DOEUoqOnoX4D3KQz07C43ktJzSL+xuJgvCkDqrWAoPw@mail.gmail.com>
-	<CAN8TOE_ZTCeP2mObV0MtsdP4NQvtME-n4Q_BWTi9sR6uB3xVNQ@mail.gmail.com>
-	<CALT56yN_tY_YJQbC4POsaOc639dN_6yFo_90CGWR617kUjYnfQ@mail.gmail.com>
-Date: Wed, 6 Jul 2011 12:59:43 -0700
-Message-ID: <CAN8TOE_TYLstfwTVPsPx8tT13tb0F9beosW+LiniwYNfUEY8Tw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] mtd: nand: convert printk() to pr_*()
-From: Brian Norris <computersforpeace@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1309421193-7785-1-git-send-email-shawn.guo@linaro.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,12 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 6, 2011 at 12:47 PM, Dmitry Eremin-Solenikov
-<dbaryshkov@gmail.com> wrote:
-> And what if mtd->dev.parent is NULL?
+On Thu, Jun 30, 2011 at 04:06:33PM +0800, Shawn Guo wrote:
+> In general, the mxs-dma users get separate irq for each channel,
+> but gpmi is special one which has only one irq shared by all gpmi
+> channels.  It causes mxs_dma channel allocation function fail for
+> all other gpmi channels except the first one calling into the
+> function.
+> 
+> The patch gets request_irq call skipped for NO_IRQ case, and leaves
+> this gpmi specific quirk to gpmi driver to sort out.  It will fix
+> above problem if gpmi driver sets chan_irq as gpmi irq for only one
+> channel and NO_IRQ for all the rest channels.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> ---
 
-Then we're out of luck and simply return NULL.
+Hi Vinod,
 
-NULL shouldn't cause an error for debug messages, and if mtd_to_dev is
-used for something more serious, then you have a problem you must fix
-if mtd->dev.parent is NULL.
+Can you please take this patch?
+
+Regards,
+Shawn
+
+>  drivers/dma/mxs-dma.c |   10 ++++++----
+>  1 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> index 88aad4f..2870d91 100644
+> --- a/drivers/dma/mxs-dma.c
+> +++ b/drivers/dma/mxs-dma.c
+> @@ -327,10 +327,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+>  
+>  	memset(mxs_chan->ccw, 0, PAGE_SIZE);
+>  
+> -	ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
+> -				0, "mxs-dma", mxs_dma);
+> -	if (ret)
+> -		goto err_irq;
+> +	if (mxs_chan->chan_irq != NO_IRQ) {
+> +		ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
+> +					0, "mxs-dma", mxs_dma);
+> +		if (ret)
+> +			goto err_irq;
+> +	}
+>  
+>  	ret = clk_enable(mxs_dma->clk);
+>  	if (ret)
+> -- 
+> 1.7.4.1
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
