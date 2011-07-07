@@ -1,18 +1,20 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QevTN-0004dh-Ie
-	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 20:46:58 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 3/3] Makefile: show nice message when checking version.h
-Date: Thu, 7 Jul 2011 13:44:27 -0700
-Message-ID: <1310071467-9017-3-git-send-email-computersforpeace@gmail.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QevUn-0004gX-Hv
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 20:48:26 +0000
+Received: by iyn15 with SMTP id 15so1450857iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 07 Jul 2011 13:48:23 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <1310071467-9017-1-git-send-email-computersforpeace@gmail.com>
 References: <1310071467-9017-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 7 Jul 2011 16:48:03 -0400
+Message-ID: <CAMjpGUeynErQnLO17QUPDgMAvgQKzFqi424mo66z0AbRTKrsWw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] Makefile: fix "version.h" build for cross-compiling
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- Makefile |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+On Thu, Jul 7, 2011 at 16:44, Brian Norris wrote:
+> When using "make CROSS=mipsel-linux-", I get the following errors:
+>
+> /bin/sh: /home/norris/git/mtd-utils/mipsel-linux/include/version.h.tmp: No such file or directory
+> make: *** [/home/norris/git/mtd-utils/mipsel-linux/include/version.h.tmp] Error 1
+>
+> So instead of "building" our version.h within $(BUILDIR), we should
+> just build it in the main source directory, as it isn't architecture-
+> specific or anything. Hopefully that doesn't "break the rules" of our
+> cross-compilation setup...
 
-diff --git a/Makefile b/Makefile
-index 78f5f9f..27e8a01 100644
---- a/Makefile
-+++ b/Makefile
-@@ -71,6 +71,7 @@ cscope:
- 	cscope -bR
- 
- include/version.h: include/version.h.tmp
-+	$(call BECHO,CHK)
- 	$(Q)cmp -s $@ $@.tmp && rm -f $@.tmp || mv $@.tmp $@
- include/version.h.tmp:
- 	$(Q)echo '#define VERSION "$(VERSION)"' > $@
--- 
-1.7.0.4
+i dont think it's just a matter of "diff build dir for diff
+toolchains, so common version.h is ok".  it's a matter of "building
+out of tree should build out of tree".
+
+i think the fix to your problem is:
+ $(BUILDDIR)/include/version.h.tmp
++    $(Q)mkdir -p $(dir $@)
+       $(Q)echo '#define VERSION "$(VERSION)"' > $@
+-mike
