@@ -1,21 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <4E1411BB.4010000@compulab.co.il>
-References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
-	<1309771536-10597-4-git-send-email-leiwen@marvell.com>
-	<4E1411BB.4010000@compulab.co.il>
-Date: Thu, 7 Jul 2011 14:26:23 +0800
-Message-ID: <CALZhoSQgoMS7bSRx1V-tMX+aG4idF6Z-Xr3CorFSXwPMHvacXw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Igor Grinberg <grinberg@compulab.co.il>, Daniel Mack <zonque@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qei8c-0005Nw-8e
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 06:32:40 +0000
+Received: by pwi3 with SMTP id 3so581643pwi.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Jul 2011 23:32:35 -0700 (PDT)
+Subject: Re: Attaching ubifs on a NOR flash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Alex Levin <s.alex.levin@gmail.com>
+Date: Thu, 07 Jul 2011 09:33:38 +0300
+In-Reply-To: <CAALhOvBcocpY7igrzcsTyUPdPFZoJ+AkJ+X1LrWVBMjHs0CQLg@mail.gmail.com>
+References: <CAALhOvBcocpY7igrzcsTyUPdPFZoJ+AkJ+X1LrWVBMjHs0CQLg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1310020422.3149.107.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Igor && Daniel,
+On Wed, 2011-07-06 at 17:34 +0300, Alex Levin wrote:
+> Hi,
+> 
+> after ubiformatting the flash (NOR) and trying to attach ubi I get the
+> following error:
+> 
+> UBI: attaching mtd2 to ubi0
+> UBI: physical eraseblock size:   262144 bytes (256 KiB)
+> UBI: logical eraseblock size:    262016 bytes
+> UBI: smallest flash I/O unit:    1
+> UBI: VID header offset:          64 (aligned 64)
+> UBI: data offset:                128
+> UBI warning: ubi_scan: 2 PEBs are corrupted
+> corrupted PEBs are: 0 1
+This is the reason. Most probably you did not format it properly.
+Please, tell how exactly you formatted it, check dmesg, take a look here
+for some hints:
 
-On Wed, Jul 6, 2011 at 3:41 PM, Igor Grinberg <grinberg@compulab.co.il> wro=
-te:
-> On 07/04/11 12:25, Lei Wen wrote:
->
->> =A0#ifdef CONFIG_PM
->> @@ -1203,8 +1259,12 @@ static int pxa3xx_nand_resume(struct platform_dev=
-ice *pdev)
->> =A0{
->> =A0 =A0 =A0 struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev)=
-;
->>
->> - =A0 =A0 nand_writel(info, NDTR0CS0, info->host->ndtr0cs0);
->> - =A0 =A0 nand_writel(info, NDTR1CS0, info->host->ndtr1cs0);
->> + =A0 =A0 /*
->> + =A0 =A0 =A0* Directly set the chip select to a invalid value,
->> + =A0 =A0 =A0* then the driver would reset the timing according
->> + =A0 =A0 =A0* to current chip select at the beginning of cmdfunc
->> + =A0 =A0 =A0*/
->> + =A0 =A0 info->cs =3D 0xff;
->
-> Thinking of this for the second (or third) time,
-> If you have keep config enabled and have only one nand chip,
-> this will brake the keep config...
->
-> Daniel,
->
-> have you tested the suspend/resume with this patch?
-> (and keep_config on?)
->
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_how_send_bugreport
 
-Do you still have concern with this change?
-If not, I would push the next round of patch set including merging
-patch 3 and 4.
-
-Thanks,
-Lei
+-- 
+Best Regards,
+Artem Bityutskiy
