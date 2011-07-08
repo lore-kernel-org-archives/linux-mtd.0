@@ -1,12 +1,12 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qf86o-0001Uy-Mc
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 10:16:31 +0000
-Date: Fri, 8 Jul 2011 12:16:25 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
+Message-ID: <19990.56022.592145.982784@ipc1.ka-ro>
+Date: Fri, 8 Jul 2011 12:24:22 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-Message-ID: <20110708101625.GR29624@pengutronix.de>
+In-Reply-To: <20110708101625.GR29624@pengutronix.de>
 References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
 	<1309406028-2924-2-git-send-email-b32955@freescale.com>
 	<201106301555.19440.arnd@arndb.de>
@@ -14,15 +14,11 @@ References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
 	<4E16B47E.8090909@freescale.com>
 	<20110708090903.GQ29624@pengutronix.de>
 	<4E16CD6F.9050304@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4E16CD6F.9050304@freescale.com>
+	<20110708101625.GR29624@pengutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>, s.hauer@pengutronix.de,
 	w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
-	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	Shawn Guo <shawn.guo@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Huang,
-
-On Fri, Jul 08, 2011 at 05:27:11PM +0800, Huang Shijie wrote:
-> >>>>The init function is used only to set up iomux, so the logical replacement is
-> >>>>a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
-> >>>>directly from the driver.
-> >>>Why not put the iomux stuff into the per-machine table and get rid of
-> >>>the init callback, too?
-> >>The mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
-> >>So, it's better to initialize the pin when the driver(GPMI or MMC)
-> >>is enabled.
-> >What do you do to prevent userspace from trying to use both devices?
-> The board can not support the two devices at the same time.
-> So the user can only use one device with the board.
+Uwe Kleine-König writes:
+> Hello Huang,
 > 
-> >I guess you need to configure the hardware somehow to switch between the
-> >two using a jumper? Isn't it possible to detect the hardware setting and
-> >setup the muxer accordingly?
-> >
-> >IMHO an per-device init-callback is the wrong approach to solve a pin
-> >conflict.
-> Do you have any good solution about this?
-Put the pinmux corresponding to the one device that currently works in
-the pinmux list!?
+> On Fri, Jul 08, 2011 at 05:27:11PM +0800, Huang Shijie wrote:
+> > >>>>The init function is used only to set up iomux, so the logical replacement is
+> > >>>>a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
+> > >>>>directly from the driver.
+> > >>>Why not put the iomux stuff into the per-machine table and get rid of
+> > >>>the init callback, too?
+> > >>The mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
+> > >>So, it's better to initialize the pin when the driver(GPMI or MMC)
+> > >>is enabled.
+> > >What do you do to prevent userspace from trying to use both devices?
+> > The board can not support the two devices at the same time.
+> > So the user can only use one device with the board.
+> > 
+> > >I guess you need to configure the hardware somehow to switch between the
+> > >two using a jumper? Isn't it possible to detect the hardware setting and
+> > >setup the muxer accordingly?
+> > >
+> > >IMHO an per-device init-callback is the wrong approach to solve a pin
+> > >conflict.
+> > Do you have any good solution about this?
+> Put the pinmux corresponding to the one device that currently works in
+> the pinmux list!?
+> 
+#define 'that currently works'
 
-Best regards
-Uwe
+For a dedicated system that may not be a problem. But for development
+kits and modular systems that allow peripheral modules to be plugged
+in there is no 'one device that currently works'.
 
+
+Lothar Waßmann
 -- 
-Pengutronix e.K.                           | Uwe Kleine-K�nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
