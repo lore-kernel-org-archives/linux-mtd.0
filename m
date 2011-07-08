@@ -1,25 +1,15 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qf2aG-00027q-Qb
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 04:22:33 +0000
-Received: by vws8 with SMTP id 8so1489725vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Jul 2011 21:22:27 -0700 (PDT)
-Subject: Re: [PATCH 1/3] Makefile: fix "version.h" build for cross-compiling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 08 Jul 2011 06:57:40 +0300
-In-Reply-To: <CAMjpGUdvJ_kvH9ifM+1mPTtt9ZZUOyNn4RkygiFXT_BGAUui8w@mail.gmail.com>
-References: <1310071467-9017-1-git-send-email-computersforpeace@gmail.com>
-	<CAMjpGUeynErQnLO17QUPDgMAvgQKzFqi424mo66z0AbRTKrsWw@mail.gmail.com>
-	<CAN8TOE8LpRd+nMiwYFEAFG1gLmPuC8--FjkOxEbBS+iE7NnWTQ@mail.gmail.com>
-	<CAMjpGUdvJ_kvH9ifM+1mPTtt9ZZUOyNn4RkygiFXT_BGAUui8w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1310097465.32086.4.camel@sauron>
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+To: <s.hauer@pengutronix.de>
+Subject: [PATCH v6 2/4] ARM: mxs: add new a pad control
+Date: Fri, 8 Jul 2011 13:28:03 +0800
+Message-ID: <1310102885-4102-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1310102885-4102-1-git-send-email-b32955@freescale.com>
+References: <1310102885-4102-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: arnd@arndb.de, w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-07-07 at 17:12 -0400, Mike Frysinger wrote:
-> On Thu, Jul 7, 2011 at 17:09, Brian Norris wrote:
-> > On Thu, Jul 7, 2011 at 1:48 PM, Mike Frysinger wrote:
-> >> i dont think it's just a matter of "diff build dir for diff
-> >> toolchains, so common version.h is ok".  it's a matter of "building
-> >> out of tree should build out of tree".
-> >
-> > OK, but what is the point of in- vs. out-of-tree? So that we can have
-> > a readonly source directory where the mtd-utils code stays?
-> 
-> this one imo, but maybe Artem can speak to the origins (which predate
-> my contributions)
+add a new pad control which is used in some rare cases,
+such as gpmi-nand device.
 
-Sorry, I do not know about the origins, I came into MTD area when most
-of the things have been already implemented and worked.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/mach-mxs/include/mach/iomux.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
+diff --git a/arch/arm/mach-mxs/include/mach/iomux.h b/arch/arm/mach-mxs/include/mach/iomux.h
+index 7abdf58..1f31762 100644
+--- a/arch/arm/mach-mxs/include/mach/iomux.h
++++ b/arch/arm/mach-mxs/include/mach/iomux.h
+@@ -94,6 +94,9 @@ typedef u32 iomux_cfg_t;
+ /* generic pad control used in most cases */
+ #define MXS_PAD_CTRL	(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
+ 
++/* special pad control used in rare cases */
++#define MXS_PAD_CTRL_12MA	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
++
+ #define MXS_IOMUX_PAD(_bank, _pin, _muxsel, _ma, _vol, _pull)		\
+ 		(((iomux_cfg_t)(_bank) << MXS_PAD_BANK_SHIFT) |		\
+ 		((iomux_cfg_t)(_pin) << MXS_PAD_PIN_SHIFT) |		\
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.0.4
