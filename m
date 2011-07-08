@@ -1,24 +1,14 @@
-Message-ID: <19990.56022.592145.982784@ipc1.ka-ro>
-Date: Fri, 8 Jul 2011 12:24:22 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-In-Reply-To: <20110708101625.GR29624@pengutronix.de>
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-	<1309406028-2924-2-git-send-email-b32955@freescale.com>
-	<201106301555.19440.arnd@arndb.de>
-	<20110708073119.GP29624@pengutronix.de>
-	<4E16B47E.8090909@freescale.com>
-	<20110708090903.GQ29624@pengutronix.de>
-	<4E16CD6F.9050304@freescale.com>
-	<20110708101625.GR29624@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, s.hauer@pengutronix.de,
-	w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>, linux-arm-kernel@lists.infradead.org
+Received: from nm4.bullet.mail.sp2.yahoo.com ([98.139.91.74])
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QfArR-0005Rl-6Q
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 13:12:50 +0000
+Message-ID: <1310130765.68852.YahooMailRC@web114617.mail.gq1.yahoo.com>
+Date: Fri, 8 Jul 2011 06:12:45 -0700 (PDT)
+From: Reginald Perrin <reggyperrin@yahoo.com>
+Subject: UBIFS Corruption
+To: MTD Mailing List <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +18,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Uwe Kleine-König writes:
-> Hello Huang,
-> 
-> On Fri, Jul 08, 2011 at 05:27:11PM +0800, Huang Shijie wrote:
-> > >>>>The init function is used only to set up iomux, so the logical replacement is
-> > >>>>a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
-> > >>>>directly from the driver.
-> > >>>Why not put the iomux stuff into the per-machine table and get rid of
-> > >>>the init callback, too?
-> > >>The mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
-> > >>So, it's better to initialize the pin when the driver(GPMI or MMC)
-> > >>is enabled.
-> > >What do you do to prevent userspace from trying to use both devices?
-> > The board can not support the two devices at the same time.
-> > So the user can only use one device with the board.
-> > 
-> > >I guess you need to configure the hardware somehow to switch between the
-> > >two using a jumper? Isn't it possible to detect the hardware setting and
-> > >setup the muxer accordingly?
-> > >
-> > >IMHO an per-device init-callback is the wrong approach to solve a pin
-> > >conflict.
-> > Do you have any good solution about this?
-> Put the pinmux corresponding to the one device that currently works in
-> the pinmux list!?
-> 
-#define 'that currently works'
+Hi folks,
 
-For a dedicated system that may not be a problem. But for development
-kits and modular systems that allow peripheral modules to be plugged
-in there is no 'one device that currently works'.
+We're using ubifs in an embedded uclinux system (based on ADI Blackfin's BF524). 
+ Been working great for us for a while.  Kernel is 2.6.34.7 (uclinux).
+
+However, we just saw 2 corruptions within the past 48h that we can't explain. 
+ We've been doing the same basic operation (in terms of flashing/reading/writing 
+images) for quite some time, and have reflashed our units many times (over 
+thousands of different hardware units).
+
+Device #1 failure:
+* Device was running out of a partition mounted to /home (a 93MB partition from 
+a 128MB NAND device)
+* Our app was running normally and locked up (not sure why).  Our code may have 
+been updating a sqlite database located in that partition
+* When we power cycled, the partition had the corruption issue noted.
+
+Device #1 boot log:
+UBI device number 1, total 750 LEBs (96768000 bytes, 92.3 MiB), available 0 LEBs 
+(0 bytes), LEB size 129024 bytes (126.0 KiB) 
+[ 5.228000] UBIFS: recovery needed 
+[ 5.320000] UBIFS error (pid 363): ubifs_scanned_corruption: corruption at LEB 
+172:45056 
+[ 5.348000] UBIFS error (pid 363): ubifs_recover_leb: LEB 172 scanning failed 
+mount: mounting ubi1:home on /home failed: Structure needs cleaning 
+
+Device #2 failure:
+* Device was running normally.
+* We upgraded our application (which involved updating executables on that 
+partition)
+* After the successful upgrade, we powered the unit down and stored 
+* Days later, powered up the device and the above invalid CRC as noted
+
+Device #2 boot log:
+UBI device number 1, total 750 LEBs (96768000 bytes, 92.3 MiB), available 0 LEBs 
+(0 bytes), LEB size 129024 bytes (126.0 KiB) 
+[ 5.488000] UBIFS: recovery needed 
+[ 5.492000] UBIFS error (pid 365): check_lpt_crc: invalid crc in LPT node: crc 
+a0 calc 9013
+mount: mounting ubi1:home on /home failed: Invalid argument
 
 
-Lothar Waßmann
--- 
-___________________________________________________________
+So, what is concerning is the sheer randomness of these failures.  In neither 
+case were we doing anything new (vs. standard operations we have been performing 
+for over a year on many devices per day).  Additionally, there's no additional 
+logging available, because this *never* happens.  We have never needed (after we 
+got UBIFS working) to have the debug output enabled in the driver.  To make 
+matters worse, if you ask me to reproduce this, I don't know any way of doing 
+it.  We have automated tests that run continually, and they never see these 
+issues.
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+One corruption could be written off as a fluke, but 2 happening within 48h is 
+very unusual.  
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Can anybody give me any insight into this?  
+
+TIA
+RP
