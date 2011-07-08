@@ -1,25 +1,22 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QfGC8-00038x-23
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 18:54:33 +0000
-Received: by pvg20 with SMTP id 20so1647524pvg.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 Jul 2011 11:54:24 -0700 (PDT)
-Message-ID: <4E17524F.3020000@gmail.com>
-Date: Fri, 08 Jul 2011 11:54:07 -0700
-From: "Justin P. Mattock" <justinmattock@gmail.com>
+	id 1QfGOc-00048O-Du
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 19:07:27 +0000
+Date: Fri, 8 Jul 2011 21:07:22 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v6 1/4] ARM: mxs: add GPMI-NAND support for imx23/imx28
+Message-ID: <20110708190722.GA16490@pengutronix.de>
+References: <1310102885-4102-1-git-send-email-b32955@freescale.com>
+	<1310102885-4102-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [RFC 6/9]drivers:char:nvram.c Change the copyright info.
-References: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>
-	<1290838879-11038-7-git-send-email-justinmattock@gmail.com>
-	<alpine.LNX.2.00.1107081832490.11049@pobox.suse.cz>
-In-Reply-To: <alpine.LNX.2.00.1107081832490.11049@pobox.suse.cz>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-rdma@vger.kernel.org, linux-ide@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+In-Reply-To: <1310102885-4102-2-git-send-email-b32955@freescale.com>
+Cc: arnd@arndb.de, s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/08/2011 09:33 AM, Jiri Kosina wrote:
-> On Fri, 26 Nov 2010, Justin P. Mattock wrote:
->
->> Change the copyright info from Sun Microsystems to Oracle since Oracle now owns them.
->>
->> Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->>
->> ---
->>   drivers/char/nvram.c |    2 +-
->>   1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/char/nvram.c b/drivers/char/nvram.c
->> index 166f1e7..33e8faa 100644
->> --- a/drivers/char/nvram.c
->> +++ b/drivers/char/nvram.c
->> @@ -3,7 +3,7 @@
->>    *
->>    * Copyright (C) 1997 Roman Hodek<Roman.Hodek@informatik.uni-erlangen.de>
->>    * idea by and with help from Richard Jelinek<rj@suse.de>
->> - * Portions copyright (c) 2001,2002 Sun Microsystems (thockin@sun.com)
->> + * Portions copyright (c) 2001,2002 Oracle and/or its affiliates. (thockin@sun.com)
->>    *
->>    * This driver allows you to access the contents of the non-volatile memory in
->>    * the mc146818rtc.h real-time clock. This chip is built into all PCs and into
->
-> You can't just change other people/company copyright.
->
-> This will need Signoff from the original copyright holder at least.
->
 
-yeah I think somebody from oracle had already told me this the day I had 
-sent these out. from what I remember here is the original thread:
-https://lkml.org/lkml/2010/11/27/31
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-so somebody from oracle needs to claim this, and the rest of the kernel!
+Hi Huang,
 
+> diff --git a/arch/arm/mach-mxs/include/mach/gpmi-nand.h b/arch/arm/mach-m=
+xs/include/mach/gpmi-nand.h
+> new file mode 100644
+> index 0000000..f1cf565
+> --- /dev/null
+> +++ b/arch/arm/mach-mxs/include/mach/gpmi-nand.h
 
-Justin P. Mattock
+I am also mostly happy with it now :)
+
+Assuming the above file will be needed by mx50/mx6, too, would it make sens=
+e to
+put it to include/linux/mtd/gpmi-nand.h right from the beginning?
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk4XVWoACgkQD27XaX1/VRtlWQCgxlUMSYZqcqgzQQNrhI7UyniY
+RSsAoJZeW6wT82zxn0QORBJglkiGH+gv
+=bYGJ
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
