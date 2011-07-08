@@ -1,21 +1,20 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from dakia2.marvell.com ([65.219.4.35])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QewyY-0006Vq-7o
-	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2011 22:23:17 +0000
-Received: by yxj20 with SMTP id 20so681671yxj.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Jul 2011 15:23:08 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1310076977-13593-1-git-send-email-computersforpeace@gmail.com>
-References: <CAN8TOE_hS9BXyQZzh+MaUou3i_=nGK78Bx8FiiDWYg6Xe44=4A@mail.gmail.com>
-	<1310076977-13593-1-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 7 Jul 2011 18:22:48 -0400
-Message-ID: <CAMjpGUcvceLDPhtTtiu2S6dB2soH7u1c6g1U-g-k=8eEpycmww@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] Makefile: fix "version.h" build for cross-compiling
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+	id 1Qf1q6-00019n-VX
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 03:34:51 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	Yu Tang <ytang5@marvell.com>
+Subject: [PATCH V5 0/3] pxa3xx_nand: add two chip select support
+Date: Thu,  7 Jul 2011 20:34:41 -0700
+Message-Id: <1310096084-14646-1-git-send-email-leiwen@marvell.com>
+In-Reply-To: <1309771536-10597-1-git-send-email-leiwen@marvell.com>
+References: <1309771536-10597-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,5 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+V2:
+Choose to at most keep original pxa3xx_nand_info structure to reduce
+patch size
+
+V3:
+Seperate original one patch into a patch set
+
+V4:
+Further seperate patch into small pieces:
+Mainly change make in two patch, which seperate do
+the new structure definition and two chip select support add.
+
+V5:
+Merge platform change patch and two chip feature into one patch.
+Clean some format issue.
+
+Lei Wen (3):
+  MTD: pxa3xx_nand: convert all printk into dev_*
+  MTD: pxa3xx_nand: sperate each chip individual info
+  MTD: pxa3xx_nand: enable multiple chip select support
+
+ arch/arm/mach-mmp/aspenite.c                 |    5 +-
+ arch/arm/mach-pxa/cm-x300.c                  |    5 +-
+ arch/arm/mach-pxa/colibri-pxa3xx.c           |    5 +-
+ arch/arm/mach-pxa/littleton.c                |    5 +-
+ arch/arm/mach-pxa/mxm8x10.c                  |    9 +-
+ arch/arm/mach-pxa/raumfeld.c                 |    5 +-
+ arch/arm/mach-pxa/zylonite.c                 |    5 +-
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   20 ++-
+ drivers/mtd/nand/pxa3xx_nand.c               |  419 ++++++++++++++++----------
+ 9 files changed, 298 insertions(+), 180 deletions(-)
