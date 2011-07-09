@@ -1,22 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QfGOc-00048O-Du
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2011 19:07:27 +0000
-Date: Fri, 8 Jul 2011 21:07:22 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v6 1/4] ARM: mxs: add GPMI-NAND support for imx23/imx28
-Message-ID: <20110708190722.GA16490@pengutronix.de>
-References: <1310102885-4102-1-git-send-email-b32955@freescale.com>
-	<1310102885-4102-2-git-send-email-b32955@freescale.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QfS7O-0002bW-Qj
+	for linux-mtd@lists.infradead.org; Sat, 09 Jul 2011 07:38:28 +0000
+From: Mikael Starvik <mikael.starvik@axis.com>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse
+	<dwmw2@infradead.org>
+Date: Sat, 9 Jul 2011 09:37:52 +0200
+Subject: SV: [PATCH 4/5] CRIS: stop checking for MTD_CONCAT
+Message-ID: <4BEA3FF3CAA35E408EA55C7BE2E61D055C63955547@xmail3.se.axis.com>
+References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>,
+	<1294745619-7142-4-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1294745619-7142-4-git-send-email-dbaryshkov@gmail.com>
+Content-Language: sv-SE
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-In-Reply-To: <1310102885-4102-2-git-send-email-b32955@freescale.com>
-Cc: arnd@arndb.de, s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
+Cc: Stefan Roese <sr@denx.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	linux-cris-kernel <linux-cris-kernel@axis.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +28,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Agreed.
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mikael Starvik starvik@axis.com
 
-Hi Huang,
+________________________________________
+Fr=E5n: Dmitry Eremin-Solenikov [dbaryshkov@gmail.com]
+Skickat: den 11 januari 2011 12:33
+Till: David Woodhouse
+Kopia: Stefan Roese; linux-mtd@lists.infradead.org; linux-cris-kernel; Arte=
+m Bityutskiy
+=C4mne: [PATCH 4/5] CRIS: stop checking for MTD_CONCAT
 
-> diff --git a/arch/arm/mach-mxs/include/mach/gpmi-nand.h b/arch/arm/mach-m=
-xs/include/mach/gpmi-nand.h
-> new file mode 100644
-> index 0000000..f1cf565
-> --- /dev/null
-> +++ b/arch/arm/mach-mxs/include/mach/gpmi-nand.h
+As MTD_CONCAT support is becoming an integral part of MTD core,
+there is no need for it's special treatment. So stop checking for
+MTD_CONCAT availability.
 
-I am also mostly happy with it now :)
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Stefan Roese <sr@denx.de>
+Cc: linux-cris-kernel@axis.com
+---
+ arch/cris/Kconfig                         |    1 -
+ arch/cris/arch-v10/drivers/axisflashmap.c |    6 ------
+ arch/cris/arch-v32/drivers/Kconfig        |    1 -
+ arch/cris/arch-v32/drivers/axisflashmap.c |    6 ------
+ 4 files changed, 0 insertions(+), 14 deletions(-)
 
-Assuming the above file will be needed by mx50/mx6, too, would it make sens=
-e to
-put it to include/linux/mtd/gpmi-nand.h right from the beginning?
+diff --git a/arch/cris/Kconfig b/arch/cris/Kconfig
+index 613e628..e05bd2f 100644
+--- a/arch/cris/Kconfig
++++ b/arch/cris/Kconfig
+@@ -277,7 +277,6 @@ config ETRAX_AXISFLASHMAP
+        select MTD_CHAR
+        select MTD_BLOCK
+        select MTD_PARTITIONS
+-       select MTD_CONCAT
+        select MTD_COMPLEX_MAPPINGS
+        help
+          This option enables MTD mapping of flash devices.  Needed to use
+diff --git a/arch/cris/arch-v10/drivers/axisflashmap.c b/arch/cris/arch-v10=
+/drivers/axisflashmap.c
+index b207970..ed708e1 100644
+--- a/arch/cris/arch-v10/drivers/axisflashmap.c
++++ b/arch/cris/arch-v10/drivers/axisflashmap.c
+@@ -234,7 +234,6 @@ static struct mtd_info *flash_probe(void)
+        }
 
-Regards,
+        if (mtd_cse0 && mtd_cse1) {
+-#ifdef CONFIG_MTD_CONCAT
+                struct mtd_info *mtds[] =3D { mtd_cse0, mtd_cse1 };
 
-   Wolfram
+                /* Since the concatenation layer adds a small overhead we
+@@ -246,11 +245,6 @@ static struct mtd_info *flash_probe(void)
+                 */
+                mtd_cse =3D mtd_concat_create(mtds, ARRAY_SIZE(mtds),
+                                            "cse0+cse1");
+-#else
+-               printk(KERN_ERR "%s and %s: Cannot concatenate due to kerne=
+l "
+-                      "(mis)configuration!\n", map_cse0.name, map_cse1.nam=
+e);
+-               mtd_cse =3D NULL;
+-#endif
+                if (!mtd_cse) {
+                        printk(KERN_ERR "%s and %s: Concatenation failed!\n=
+",
+                               map_cse0.name, map_cse1.name);
+diff --git a/arch/cris/arch-v32/drivers/Kconfig b/arch/cris/arch-v32/driver=
+s/Kconfig
+index a2dd740..1633b12 100644
+--- a/arch/cris/arch-v32/drivers/Kconfig
++++ b/arch/cris/arch-v32/drivers/Kconfig
+@@ -406,7 +406,6 @@ config ETRAX_AXISFLASHMAP
+        select MTD_CHAR
+        select MTD_BLOCK
+        select MTD_PARTITIONS
+-       select MTD_CONCAT
+        select MTD_COMPLEX_MAPPINGS
+        help
+          This option enables MTD mapping of flash devices.  Needed to use
+diff --git a/arch/cris/arch-v32/drivers/axisflashmap.c b/arch/cris/arch-v32=
+/drivers/axisflashmap.c
+index 51e1e85..3d75125 100644
+--- a/arch/cris/arch-v32/drivers/axisflashmap.c
++++ b/arch/cris/arch-v32/drivers/axisflashmap.c
+@@ -275,7 +275,6 @@ static struct mtd_info *flash_probe(void)
+        }
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+        if (count > 1) {
+-#ifdef CONFIG_MTD_CONCAT
+                /* Since the concatenation layer adds a small overhead we
+                 * could try to figure out if the chips in cse0 and cse1 ar=
+e
+                 * identical and reprobe the whole cse0+cse1 window. But si=
+nce
+@@ -284,11 +283,6 @@ static struct mtd_info *flash_probe(void)
+                 * complicating the probing procedure.
+                 */
+                mtd_total =3D mtd_concat_create(mtds, count, "cse0+cse1");
+-#else
+-               printk(KERN_ERR "%s and %s: Cannot concatenate due to kerne=
+l "
+-                      "(mis)configuration!\n", map_cse0.name, map_cse1.nam=
+e);
+-               mtd_toal =3D NULL;
+-#endif
+                if (!mtd_total) {
+                        printk(KERN_ERR "%s and %s: Concatenation failed!\n=
+",
+                                map_cse0.name, map_cse1.name);
+--
+1.7.2.3
 
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk4XVWoACgkQD27XaX1/VRtlWQCgxlUMSYZqcqgzQQNrhI7UyniY
-RSsAoJZeW6wT82zxn0QORBJglkiGH+gv
-=bYGJ
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/=
