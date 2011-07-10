@@ -1,12 +1,23 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: dataflash: add device tree probe support
-Date: Sun, 10 Jul 2011 15:35:13 +0800
-Message-Id: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, patches@linaro.org,
-	devicetree-discuss@lists.ozlabs.org,
-	Grant Likely <grant.likely@secretlab.ca>, Shawn Guo <shawn.guo@linaro.org>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QfpI6-0002Dw-DB
+	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2011 08:23:03 +0000
+Received: by iwn35 with SMTP id 35so3353302iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 10 Jul 2011 01:23:00 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1310096775.32086.1.camel@sauron>
+References: <CAALhOvBcocpY7igrzcsTyUPdPFZoJ+AkJ+X1LrWVBMjHs0CQLg@mail.gmail.com>
+	<1310020422.3149.107.camel@sauron>
+	<CAALhOvC2nXqfFcx=-hgwCs5gJcACeyX7TmBSJq9MS11PtVsqQA@mail.gmail.com>
+	<1310096775.32086.1.camel@sauron>
+Date: Sun, 10 Jul 2011 11:14:45 +0300
+Message-ID: <CAALhOvC0tOoCcuxC2Z9FTOQgRj2tf_CduoUXGtBVMDUBZrz3vA@mail.gmail.com>
+Subject: Re: Attaching ubifs on a NOR flash
+From: Alex Levin <s.alex.levin@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,66 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It adds device tree probe support for mtd_dataflash driver.
+OK, I'll keep MTD mailing list in CC.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/devices/mtd_dataflash.c |   12 +++++++++++-
- 1 files changed, 11 insertions(+), 1 deletions(-)
+What is the build debugging message? the kernel build? (where do I
+enable it? I run a SoC - host or target?)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 8f6b02c..64d7242 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -24,6 +24,8 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- 
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- 
- /*
-  * DataFlash is a kind of SPI flash.  Most AT45 chips have two buffers in
-@@ -98,6 +100,11 @@ struct dataflash {
- 	struct mtd_info		mtd;
- };
- 
-+static const struct of_device_id dataflash_dt_ids[] = {
-+	{ .compatible = "atmel,dataflash", },
-+	{ /* sentinel */ }
-+};
-+
- /* ......................................................................... */
- 
- /*
-@@ -634,6 +641,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- {
- 	struct dataflash		*priv;
- 	struct mtd_info			*device;
-+	struct mtd_part_parser_data	ppdata;
- 	struct flash_platform_data	*pdata = spi->dev.platform_data;
- 	char				*otp_tag = "";
- 	int				err = 0;
-@@ -675,7 +683,8 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
- 
--	err = mtd_device_parse_register(device, NULL, 0,
-+	ppdata.of_node = spi->dev.of_node;
-+	err = mtd_device_parse_register(device, NULL, &ppdata,
- 			pdata ? pdata->parts : NULL,
- 			pdata ? pdata->nr_parts : 0);
- 
-@@ -926,6 +935,7 @@ static struct spi_driver dataflash_driver = {
- 		.name		= "mtd_dataflash",
- 		.bus		= &spi_bus_type,
- 		.owner		= THIS_MODULE,
-+		.of_match_table = dataflash_dt_ids,
- 	},
- 
- 	.probe		= dataflash_probe,
--- 
-1.7.4.1
+On Fri, Jul 8, 2011 at 6:46 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2011-07-07 at 17:59 +0300, Alex Levin wrote:
+>> Hi,
+>>
+>> here is the dmesg output and the way that I have formatted it:
+>
+> hmm, dunno, could you please enable the "build" debugging messages and
+> provide them. Also, please, keep the MTD mailing list in CC.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
