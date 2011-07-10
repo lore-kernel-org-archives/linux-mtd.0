@@ -1,24 +1,12 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QfS7O-0002bW-Qj
-	for linux-mtd@lists.infradead.org; Sat, 09 Jul 2011 07:38:28 +0000
-From: Mikael Starvik <mikael.starvik@axis.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse
-	<dwmw2@infradead.org>
-Date: Sat, 9 Jul 2011 09:37:52 +0200
-Subject: SV: [PATCH 4/5] CRIS: stop checking for MTD_CONCAT
-Message-ID: <4BEA3FF3CAA35E408EA55C7BE2E61D055C63955547@xmail3.se.axis.com>
-References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>,
-	<1294745619-7142-4-git-send-email-dbaryshkov@gmail.com>
-In-Reply-To: <1294745619-7142-4-git-send-email-dbaryshkov@gmail.com>
-Content-Language: sv-SE
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Stefan Roese <sr@denx.de>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	linux-cris-kernel <linux-cris-kernel@axis.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: dataflash: add device tree probe support
+Date: Sun, 10 Jul 2011 15:35:13 +0800
+Message-Id: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, patches@linaro.org,
+	devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>, Shawn Guo <shawn.guo@linaro.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,120 +16,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Agreed.
+It adds device tree probe support for mtd_dataflash driver.
 
-Signed-off-by: Mikael Starvik starvik@axis.com
-
-________________________________________
-Fr=E5n: Dmitry Eremin-Solenikov [dbaryshkov@gmail.com]
-Skickat: den 11 januari 2011 12:33
-Till: David Woodhouse
-Kopia: Stefan Roese; linux-mtd@lists.infradead.org; linux-cris-kernel; Arte=
-m Bityutskiy
-=C4mne: [PATCH 4/5] CRIS: stop checking for MTD_CONCAT
-
-As MTD_CONCAT support is becoming an integral part of MTD core,
-there is no need for it's special treatment. So stop checking for
-MTD_CONCAT availability.
-
-Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Stefan Roese <sr@denx.de>
-Cc: linux-cris-kernel@axis.com
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- arch/cris/Kconfig                         |    1 -
- arch/cris/arch-v10/drivers/axisflashmap.c |    6 ------
- arch/cris/arch-v32/drivers/Kconfig        |    1 -
- arch/cris/arch-v32/drivers/axisflashmap.c |    6 ------
- 4 files changed, 0 insertions(+), 14 deletions(-)
+ drivers/mtd/devices/mtd_dataflash.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
 
-diff --git a/arch/cris/Kconfig b/arch/cris/Kconfig
-index 613e628..e05bd2f 100644
---- a/arch/cris/Kconfig
-+++ b/arch/cris/Kconfig
-@@ -277,7 +277,6 @@ config ETRAX_AXISFLASHMAP
-        select MTD_CHAR
-        select MTD_BLOCK
-        select MTD_PARTITIONS
--       select MTD_CONCAT
-        select MTD_COMPLEX_MAPPINGS
-        help
-          This option enables MTD mapping of flash devices.  Needed to use
-diff --git a/arch/cris/arch-v10/drivers/axisflashmap.c b/arch/cris/arch-v10=
-/drivers/axisflashmap.c
-index b207970..ed708e1 100644
---- a/arch/cris/arch-v10/drivers/axisflashmap.c
-+++ b/arch/cris/arch-v10/drivers/axisflashmap.c
-@@ -234,7 +234,6 @@ static struct mtd_info *flash_probe(void)
-        }
-
-        if (mtd_cse0 && mtd_cse1) {
--#ifdef CONFIG_MTD_CONCAT
-                struct mtd_info *mtds[] =3D { mtd_cse0, mtd_cse1 };
-
-                /* Since the concatenation layer adds a small overhead we
-@@ -246,11 +245,6 @@ static struct mtd_info *flash_probe(void)
-                 */
-                mtd_cse =3D mtd_concat_create(mtds, ARRAY_SIZE(mtds),
-                                            "cse0+cse1");
--#else
--               printk(KERN_ERR "%s and %s: Cannot concatenate due to kerne=
-l "
--                      "(mis)configuration!\n", map_cse0.name, map_cse1.nam=
-e);
--               mtd_cse =3D NULL;
--#endif
-                if (!mtd_cse) {
-                        printk(KERN_ERR "%s and %s: Concatenation failed!\n=
-",
-                               map_cse0.name, map_cse1.name);
-diff --git a/arch/cris/arch-v32/drivers/Kconfig b/arch/cris/arch-v32/driver=
-s/Kconfig
-index a2dd740..1633b12 100644
---- a/arch/cris/arch-v32/drivers/Kconfig
-+++ b/arch/cris/arch-v32/drivers/Kconfig
-@@ -406,7 +406,6 @@ config ETRAX_AXISFLASHMAP
-        select MTD_CHAR
-        select MTD_BLOCK
-        select MTD_PARTITIONS
--       select MTD_CONCAT
-        select MTD_COMPLEX_MAPPINGS
-        help
-          This option enables MTD mapping of flash devices.  Needed to use
-diff --git a/arch/cris/arch-v32/drivers/axisflashmap.c b/arch/cris/arch-v32=
-/drivers/axisflashmap.c
-index 51e1e85..3d75125 100644
---- a/arch/cris/arch-v32/drivers/axisflashmap.c
-+++ b/arch/cris/arch-v32/drivers/axisflashmap.c
-@@ -275,7 +275,6 @@ static struct mtd_info *flash_probe(void)
-        }
-
-        if (count > 1) {
--#ifdef CONFIG_MTD_CONCAT
-                /* Since the concatenation layer adds a small overhead we
-                 * could try to figure out if the chips in cse0 and cse1 ar=
-e
-                 * identical and reprobe the whole cse0+cse1 window. But si=
-nce
-@@ -284,11 +283,6 @@ static struct mtd_info *flash_probe(void)
-                 * complicating the probing procedure.
-                 */
-                mtd_total =3D mtd_concat_create(mtds, count, "cse0+cse1");
--#else
--               printk(KERN_ERR "%s and %s: Cannot concatenate due to kerne=
-l "
--                      "(mis)configuration!\n", map_cse0.name, map_cse1.nam=
-e);
--               mtd_toal =3D NULL;
--#endif
-                if (!mtd_total) {
-                        printk(KERN_ERR "%s and %s: Concatenation failed!\n=
-",
-                                map_cse0.name, map_cse1.name);
---
-1.7.2.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/=
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 8f6b02c..64d7242 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -24,6 +24,8 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ 
++#include <linux/of.h>
++#include <linux/of_device.h>
+ 
+ /*
+  * DataFlash is a kind of SPI flash.  Most AT45 chips have two buffers in
+@@ -98,6 +100,11 @@ struct dataflash {
+ 	struct mtd_info		mtd;
+ };
+ 
++static const struct of_device_id dataflash_dt_ids[] = {
++	{ .compatible = "atmel,dataflash", },
++	{ /* sentinel */ }
++};
++
+ /* ......................................................................... */
+ 
+ /*
+@@ -634,6 +641,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+ {
+ 	struct dataflash		*priv;
+ 	struct mtd_info			*device;
++	struct mtd_part_parser_data	ppdata;
+ 	struct flash_platform_data	*pdata = spi->dev.platform_data;
+ 	char				*otp_tag = "";
+ 	int				err = 0;
+@@ -675,7 +683,8 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+ 			pagesize, otp_tag);
+ 	dev_set_drvdata(&spi->dev, priv);
+ 
+-	err = mtd_device_parse_register(device, NULL, 0,
++	ppdata.of_node = spi->dev.of_node;
++	err = mtd_device_parse_register(device, NULL, &ppdata,
+ 			pdata ? pdata->parts : NULL,
+ 			pdata ? pdata->nr_parts : 0);
+ 
+@@ -926,6 +935,7 @@ static struct spi_driver dataflash_driver = {
+ 		.name		= "mtd_dataflash",
+ 		.bus		= &spi_bus_type,
+ 		.owner		= THIS_MODULE,
++		.of_match_table = dataflash_dt_ids,
+ 	},
+ 
+ 	.probe		= dataflash_probe,
+-- 
+1.7.4.1
