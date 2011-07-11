@@ -1,18 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QgHen-0007Qe-35
-	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 14:40:22 +0000
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] new helper to define common struct resource constructs
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <201107072304.05626.arnd@arndb.de>
-References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-	<201107071757.23405.arnd@arndb.de>
-	<20110707204833.GL29624@pengutronix.de>
-	<201107072304.05626.arnd@arndb.de>
-Date: Mon, 11 Jul 2011 16:40:15 +0200
-Message-Id: <E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, linux-kernel@vger.kernel.org, thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, Lothar Waßmann <LW@karo-electronics.de>
+MIME-Version: 1.0
+In-Reply-To: <4E1411BB.4010000@compulab.co.il>
+References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
+	<1309771536-10597-4-git-send-email-leiwen@marvell.com>
+	<4E1411BB.4010000@compulab.co.il>
+Date: Mon, 11 Jul 2011 16:49:12 +0200
+Message-ID: <CACTFLAOmRMDH_6qo_WkndoWX-HPw9RTqbtsURDfw22sWEFS2wg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
+From: Daniel Mack <zonque@gmail.com>
+To: Igor Grinberg <grinberg@compulab.co.il>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-resource definitions that just define start, end and flags = IORESOURCE_MEM
-or IORESOURCE_IRQ (with start=end) are quite common. So introduce a shortcut
-for them. Also make available a macro to specify named resources of both
-types which are less common.
+On Wed, Jul 6, 2011 at 9:41 AM, Igor Grinberg <grinberg@compulab.co.il> wrote:
+> Daniel,
+>
+> have you tested the suspend/resume with this patch?
+> (and keep_config on?)
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+We did now test this with keep_config=1 and it seems that we indeed
+have a problem with suspend/resume after this patch. Affected machines
+show the following after wake up:
 
-On Thu, 7 Jul 2011 23:04:05 +0200, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thursday 07 July 2011 22:48:33 Uwe Kleine-König wrote:
-> > My thoughts on this is that it should better go to where struct resource
-> > is defined (<linux/ioports.h>, as Arndt suggested) but then probably a
-> > bit more generic as:
-> > 
-> >         #define RES_MEM_NAMED(_start, _end, _name)                      \
-> >                 {                                                       \
-> >                         .start = _start,                                \
-> >                         .end = _end,                                    \
-> >                         .name = _name,                                  \
-> >                         .flags = IORESOURCE_MEM,                        \
-> >                 }
-> >         #define RES_MEM(_start, _end)                                   \
-> >                 RES_MEM_NAMED(_start, _end, NULL)
-> > 
-> > (Maybe alternatively take a _size parameter instead of _end?)
-> > While this makes the repetition shorter, it's still there.
-> > 
-> 
-> This sounds reasonable, and I'd also prefer the size instead of end
-> argument here. If you prepare a patch to do this, I can ack it for you.
-Did that now. In reply to this mail I'll send a patch that converts
-arch/arm/plat-mxc/devices to these new helpers which saves ~200 lines.
 
-BTW, this bases on next-20110707. I will coordinate with Sascha and
-rebase the follow-up patch accordingly when this one got in.
+[ 1295.458958] PM: resume of devices complete after 296.228 msecs
+[ 1295.717773] Restarting tasks ...
+[ 1295.729639] UBI error: ubi_io_write: error -5 while writing 2048
+bytes to PEB 19:59392, written 0 bytes
+[ 1295.761672] done.
+[ 1295.772706] UBI warning: ubi_eba_write_leb: failed to write data to PEB 19
+[ 1295.782492] UBI: recover PEB 19, move data to PEB 405
+[ 1295.849084] mmc0: new SDIO card at address 0001
+[ 1295.978045] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1295.983153] UBI warning: ubi_io_read_vid_hdr: no VID header found
+at PEB 19, only 0xFF bytes
+[ 1296.015382] UBI: run torture test for PEB 405
+[ 1296.024375] UBI warning: ubi_ro_mode: switch to read-only mode
+[ 1296.032321] UBI error: do_sync_erase: read-only mode
+[ 1296.037296] UBI error: erase_worker: failed to erase PEB 405, error -30
+[ 1296.058363] UBIFS error (pid 1303): ubifs_wbuf_write_nolock: cannot
+write 424 bytes to LEB 317:55296, error -5
+[ 1296.080917] UBIFS error (pid 1092): ubifs_wbuf_write_nolock: cannot
+write 416 bytes to LEB 317:55296, error -30
+[ 1296.094470] UBIFS warning (pid 1303): ubifs_ro_mode: switched to
+read-only mode, error -5
+[ 1296.106183] UBIFS error (pid 1092): ubifs_create: cannot create
+regular file, error -30
+[ 1296.118007] UBI error: do_work: work failed with error code -30
+[ 1296.123915] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -30
+[ 1296.742934] libertas_sdio mmc0:0001:1: (unregistered net_device):
+00:19:88:11:db:67, fw 9.70.7p0, cap 0x00000303
+[ 1296.779845] libertas_sdio mmc0:0001:1: wlan0: Marvell WLAN 802.11 adapter
+[ 1296.847141] ADDRCONF(NETDEV_UP): wlan0: link is not ready
+[ 1298.041988] ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+[ 1300.957951] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1301.157810] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1301.357874] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1301.557924] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1301.563064] UBIFS error (pid 1260): ubifs_read_node: bad node type
+(255 but expected 1)
+[ 1301.573526] UBIFS error (pid 1260): ubifs_read_node: bad node at
+LEB 112:18808, LEB mapping status 1
+[ 1301.583586] UBIFS error (pid 1260): do_readpage: cannot read page 3
+of inode 10295, error -22
+[ 1301.787877] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1301.987891] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1302.187878] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1302.387878] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[ 1302.393866] UBIFS error (pid 1260): ubifs_read_node: bad node type
+(255 but expected 1)
+[ 1302.403452] UBIFS error (pid 1260): ubifs_read_node: bad node at
+LEB 112:18808, LEB mapping status 1
+[ 1302.413507] UBIFS error (pid 1260): do_readpage: cannot read page 3
+of inode 10295, error -22
 
-Best regards
-Uwe
 
- include/linux/ioport.h |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+The UBIFS is very likely toast after this.
 
-diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-index 63eb429..6d493a1 100644
---- a/include/linux/ioport.h
-+++ b/include/linux/ioport.h
-@@ -109,6 +109,26 @@ struct resource_list {
- /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
- #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
- 
-+
-+/* helpers to define resources */
-+#define DEFINE_RES_NAMED(_start, _size, _name, _flags)			\
-+	{								\
-+		.start = _start,					\
-+		.end = _start + _size - 1,				\
-+		.name = _name,						\
-+		.flags = _flags,					\
-+	}
-+
-+#define DEFINE_RES_MEM_NAMED(_start, _size, _name)			\
-+	DEFINE_RES_NAMED(_start, _size, _name, IORESOURCE_MEM)
-+#define DEFINE_RES_MEM(_start, _size)					\
-+	DEFINE_RES_MEM_NAMED(_start, _size, NULL)
-+
-+#define DEFINE_RES_IRQ_NAMED(_irq, _name)				\
-+	DEFINE_RES_NAMED(_irq, 1, _name, IORESOURCE_IRQ)
-+#define DEFINE_RES_IRQ(_irq)						\
-+	DEFINE_RES_IRQ_NAMED(_irq, NULL)
-+
- /* PC/ISA/whatever - the normal PC address spaces: IO and memory */
- extern struct resource ioport_resource;
- extern struct resource iomem_resource;
--- 
-1.7.5.4
+Lei, any ideas, can you reproduce this? To avoid further regressions
+of this driver, you really should have a system on which you can test
+suspend and resume after each commit.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+Thanks,
+Daniel
