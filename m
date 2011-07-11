@@ -1,16 +1,30 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <s.hauer@pengutronix.de>
-Subject: [PATCH v7 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
-Date: Mon, 11 Jul 2011 16:01:06 +0800
-Message-ID: <1310371266-10704-5-git-send-email-b32955@freescale.com>
-In-Reply-To: <1310371266-10704-1-git-send-email-b32955@freescale.com>
-References: <1310371266-10704-1-git-send-email-b32955@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QgBPY-0007kL-S4
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 08:00:14 +0000
+Date: Mon, 11 Jul 2011 10:00:03 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
+Message-ID: <20110711080003.GE13840@pengutronix.de>
+References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
+	<1309406028-2924-2-git-send-email-b32955@freescale.com>
+	<201106301555.19440.arnd@arndb.de>
+	<20110708073119.GP29624@pengutronix.de>
+	<4E16B47E.8090909@freescale.com>
+	<20110708090903.GQ29624@pengutronix.de>
+	<4E16CD6F.9050304@freescale.com>
+	<20110708101625.GR29624@pengutronix.de>
+	<19990.56022.592145.982784@ipc1.ka-ro>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: arnd@arndb.de, w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
-	LW@karo-electronics.de
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <19990.56022.592145.982784@ipc1.ka-ro>
+Cc: Arnd Bergmann <arnd@arndb.de>, s.hauer@pengutronix.de,
+	w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	Shawn Guo <shawn.guo@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +34,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add GPMI-NAND device for mx28evk board.
+On Fri, Jul 08, 2011 at 12:24:22PM +0200, Lothar Waßmann wrote:
+> Uwe Kleine-König writes:
+> > Hello Huang,
+> > 
+> > On Fri, Jul 08, 2011 at 05:27:11PM +0800, Huang Shijie wrote:
+> > > >>>>The init function is used only to set up iomux, so the logical replacement is
+> > > >>>>a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
+> > > >>>>directly from the driver.
+> > > >>>Why not put the iomux stuff into the per-machine table and get rid of
+> > > >>>the init callback, too?
+> > > >>The mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
+> > > >>So, it's better to initialize the pin when the driver(GPMI or MMC)
+> > > >>is enabled.
+> > > >What do you do to prevent userspace from trying to use both devices?
+> > > The board can not support the two devices at the same time.
+> > > So the user can only use one device with the board.
+> > > 
+> > > >I guess you need to configure the hardware somehow to switch between the
+> > > >two using a jumper? Isn't it possible to detect the hardware setting and
+> > > >setup the muxer accordingly?
+> > > >
+> > > >IMHO an per-device init-callback is the wrong approach to solve a pin
+> > > >conflict.
+> > > Do you have any good solution about this?
+> > Put the pinmux corresponding to the one device that currently works in
+> > the pinmux list!?
+> > 
+> #define 'that currently works'
+> 
+> For a dedicated system that may not be a problem. But for development
+> kits and modular systems that allow peripheral modules to be plugged
+> in there is no 'one device that currently works'.
+Yeah, I know that problem. Back when I worked for a company selling
+development boards I solved it with clks. Not pretty but more convenient
+than kernel parameters or #ifdefs.
+The upside of doing it with clks is that if $customer tries to use both
+conflicting devices you get an error message instead of breaking device1
+when device2 is opened/probed.
+IMHO this last scenario must not happen, so I strongly object to setup
+the pinmuxing in an .init callback.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- arch/arm/mach-mxs/Kconfig        |    1 +
- arch/arm/mach-mxs/mach-mx28evk.c |   36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 0 deletions(-)
+Best regards
+Uwe
 
-diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
-index ec337d0..f13e9c1 100644
---- a/arch/arm/mach-mxs/Kconfig
-+++ b/arch/arm/mach-mxs/Kconfig
-@@ -47,6 +47,7 @@ config MACH_MX28EVK
- 	select MXS_HAVE_PLATFORM_AUART
- 	select MXS_HAVE_PLATFORM_FEC
- 	select MXS_HAVE_PLATFORM_FLEXCAN
-+	select MXS_HAVE_PLATFORM_GPMI_NAND
- 	select MXS_HAVE_PLATFORM_MXS_MMC
- 	select MXS_HAVE_PLATFORM_MXSFB
- 	select MXS_OCOTP
-diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
-index eaaf6ff..d26bc22 100644
---- a/arch/arm/mach-mxs/mach-mx28evk.c
-+++ b/arch/arm/mach-mxs/mach-mx28evk.c
-@@ -314,6 +314,41 @@ static const struct flexcan_platform_data
- 	}
- };
- 
-+/* gpmi-nand */
-+static iomux_cfg_t mx28evk_gpmi_nand_pads[] = {
-+	MX28_PAD_GPMI_D00__GPMI_D0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D01__GPMI_D1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D02__GPMI_D2 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D03__GPMI_D3 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D04__GPMI_D4 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D05__GPMI_D5 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D06__GPMI_D6 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D07__GPMI_D7 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY0__GPMI_READY0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY1__GPMI_READY1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_CTRL_12MA,
-+	MX28_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_CTRL_12MA,
-+	MX28_PAD_GPMI_RESETN__GPMI_RESETN | MXS_PAD_CTRL_12MA,
-+};
-+
-+static int mx28evk_gpmi_nand_platform_init(void)
-+{
-+	return mxs_iomux_setup_multiple_pads(mx28evk_gpmi_nand_pads,
-+				ARRAY_SIZE(mx28evk_gpmi_nand_pads));
-+}
-+
-+static const struct gpmi_nand_platform_data
-+mx28evk_gpmi_nand_data __initconst = {
-+	.platform_init		= mx28evk_gpmi_nand_platform_init,
-+	.min_prop_delay_in_ns	= 5,
-+	.max_prop_delay_in_ns	= 9,
-+	.max_chip_count		= 1,
-+};
-+
- /* mxsfb (lcdif) */
- static struct fb_videomode mx28evk_video_modes[] = {
- 	{
-@@ -390,6 +425,7 @@ static void __init mx28evk_init(void)
- 	else
- 		gpio_set_value(MX28EVK_BL_ENABLE, 1);
- 
-+	mx28_add_gpmi_nand(&mx28evk_gpmi_nand_data);
- 	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
- 
- 	/* power on mmc slot by writing 0 to the gpio */
 -- 
-1.7.0.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
