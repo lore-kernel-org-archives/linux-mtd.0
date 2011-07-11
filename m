@@ -1,17 +1,24 @@
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QgIRf-0008QA-AO
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 15:30:54 +0000
+Received: by vws8 with SMTP id 8so3490609vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Jul 2011 08:30:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20110711110024.GB11153@pengutronix.de>
-References: <1310371266-10704-1-git-send-email-b32955@freescale.com>
-	<20110711110024.GB11153@pengutronix.de>
-Date: Mon, 11 Jul 2011 11:19:11 -0400
-Message-ID: <CAMiH66G4T3y=JydxFCaDwBZwHBvayy1i+Ys5Hd2+f-_u7bPoGQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/4] add the GPMI-NAND support for imx23/imx28
-From: Huang Shijie <shijie8@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAPBSBxqRywJjCfk_iuDLxn1HbuqPjJRJS=SkRQ3-Ge7SinbSBg@mail.gmail.com>
+References: <BANLkTikyKObukzVw+c10HyDz+Q=PH4jozA@mail.gmail.com>
+	<20110617163442.204348a0@schlenkerla.am.freescale.net>
+	<CAPBSBxqRywJjCfk_iuDLxn1HbuqPjJRJS=SkRQ3-Ge7SinbSBg@mail.gmail.com>
+Date: Mon, 11 Jul 2011 11:30:44 -0400
+Message-ID: <CAPBSBxoOkWTAr3ry6xU4kuNdyuff8WTr7X14y2g7QVx_TtXsMA@mail.gmail.com>
+Subject: Re: NAND BBT corruption on MPC83xx
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: Scott Wood <scottwood@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: arnd@arndb.de, s.hauer@pengutronix.de, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
+Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	rick22@wi.rr.com, Mike Hench <mhench@elutions.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
+On Tue, Jul 5, 2011 at 3:58 PM, Matthew L. Creech <mlcreech@gmail.com> wrot=
+e:
+>
+> Separately, I set up 2 test devices to run while I was away last week.
+> =A0One of them contained 2 patches:
+>
+> - Mike Hench's patch which eliminates this block of code in fsl_elbc_nand=
+.c
+> - Adam Thomson's patch
+> (http://lists.infradead.org/pipermail/linux-mtd/2011-June/036427.html)
+> which initializes oob_poi correctly
+>
+> Upon my return, the device with these patches saw no problems at all,
+> and had no additional bad blocks. =A0The device without these patches
+> had some 200+ blocks which had been newly marked as bad in the BBT
+> over the course of 10 days. =A0After rebooting, this latter device then
+> failed to boot, as shown here:
+>
+> http://mcreech.com/work/bbt-ecc-error4.txt
+>
+> I'm currently running another test to verify which of the two patches
+> actually fixed this problem (which might take a few days), but it
+> seems like removing that block of code in fsl_elbc_nand.c is a good
+> idea.
+>
 
-On Mon, Jul 11, 2011 at 7:00 AM, Wolfram Sang <w.sang@pengutronix.de> wrote=
-:
-> Hi,
->
-> On Mon, Jul 11, 2011 at 04:01:02PM +0800, Huang Shijie wrote:
->
->> The general-purpose media interface(GPMI) controller is a flexible inter=
-face
->> to up to several NAND flashs.
->>
->> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC acceler=
-ator.
->>
->> With the help of BCH, the GPMI controller can choose to do the hardware =
-ECC or
->> not.
->>
->> v6 --> v7:
->> =C2=A0 =C2=A0 =C2=A0 [0] rename RES_SIZE to GPMI_NAND_RES_SIZE.
->> =C2=A0 =C2=A0 =C2=A0 [1] move gpmi-nand.h to `include/linux/mtd/` direct=
-ory.
->> =C2=A0 =C2=A0 =C2=A0 [2] remove comment for new pad control.
->> =C2=A0 =C2=A0 =C2=A0 [3] others
->
-> Could you also post a driver which is adapted to all these changes?
-> The series looks good now; still I want to test it a little just to make
-> sure...
-ok.
+Just an update: my tests confirmed that the patch to fsl_elbc_nand.c
+(http://lists.infradead.org/pipermail/linux-mtd/2011-July/036893.html)
+seems to have fixed these BBT corruption problems.
 
-I will sent out the GPMI driver as soon as possible.
+I ran a torture test on 2 devices for several days: the one which had
+only that patch had no further issues, while the one which didn't have
+it (but did have the other oob_poi patch from Adam) experienced BBT
+corruption.
 
+Thanks everyone
 
-Best Regards
-Huang Shijie
-
->
-> Thanks,
->
-> =C2=A0 Wolfram
->
-> --
-> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
-> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
->
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.10 (GNU/Linux)
->
-> iEYEARECAAYFAk4a18gACgkQD27XaX1/VRsCUQCfeXzR64/uz3n97nbdrTGxH86+
-> 3lUAmweRWjZlouL+9cdGiuu8gz4CzNhH
-> =3DCQJw
-> -----END PGP SIGNATURE-----
->
->
+--=20
+Matthew L. Creech
