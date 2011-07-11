@@ -1,21 +1,18 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QgEE0-0001VC-9v
-	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 11:00:29 +0000
-Date: Mon, 11 Jul 2011 13:00:24 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v7 0/4] add the GPMI-NAND support for imx23/imx28
-Message-ID: <20110711110024.GB11153@pengutronix.de>
-References: <1310371266-10704-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XF85m9dhOBO43t/C"
-Content-Disposition: inline
-In-Reply-To: <1310371266-10704-1-git-send-email-b32955@freescale.com>
-Cc: arnd@arndb.de, s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
+	id 1QgHen-0007Qe-35
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 14:40:22 +0000
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] new helper to define common struct resource constructs
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <201107072304.05626.arnd@arndb.de>
+References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
+	<201107071757.23405.arnd@arndb.de>
+	<20110707204833.GL29624@pengutronix.de>
+	<201107072304.05626.arnd@arndb.de>
+Date: Mon, 11 Jul 2011 16:40:15 +0200
+Message-Id: <E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, linux-kernel@vger.kernel.org, thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, Lothar Waßmann <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +22,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+resource definitions that just define start, end and flags = IORESOURCE_MEM
+or IORESOURCE_IRQ (with start=end) are quite common. So introduce a shortcut
+for them. Also make available a macro to specify named resources of both
+types which are less common.
 
---XF85m9dhOBO43t/C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-Hi,
+On Thu, 7 Jul 2011 23:04:05 +0200, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Thursday 07 July 2011 22:48:33 Uwe Kleine-König wrote:
+> > My thoughts on this is that it should better go to where struct resource
+> > is defined (<linux/ioports.h>, as Arndt suggested) but then probably a
+> > bit more generic as:
+> > 
+> >         #define RES_MEM_NAMED(_start, _end, _name)                      \
+> >                 {                                                       \
+> >                         .start = _start,                                \
+> >                         .end = _end,                                    \
+> >                         .name = _name,                                  \
+> >                         .flags = IORESOURCE_MEM,                        \
+> >                 }
+> >         #define RES_MEM(_start, _end)                                   \
+> >                 RES_MEM_NAMED(_start, _end, NULL)
+> > 
+> > (Maybe alternatively take a _size parameter instead of _end?)
+> > While this makes the repetition shorter, it's still there.
+> > 
+> 
+> This sounds reasonable, and I'd also prefer the size instead of end
+> argument here. If you prepare a patch to do this, I can ack it for you.
+Did that now. In reply to this mail I'll send a patch that converts
+arch/arm/plat-mxc/devices to these new helpers which saves ~200 lines.
 
-On Mon, Jul 11, 2011 at 04:01:02PM +0800, Huang Shijie wrote:
+BTW, this bases on next-20110707. I will coordinate with Sascha and
+rebase the follow-up patch accordingly when this one got in.
 
-> The general-purpose media interface(GPMI) controller is a flexible interf=
-ace
-> to up to several NAND flashs.
->=20
-> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelera=
-tor.
->=20
-> With the help of BCH, the GPMI controller can choose to do the hardware E=
-CC or
-> not.
->=20
-> v6 --> v7:
-> 	[0] rename RES_SIZE to GPMI_NAND_RES_SIZE.
-> 	[1] move gpmi-nand.h to `include/linux/mtd/` directory.
-> 	[2] remove comment for new pad control.
-> 	[3] others
+Best regards
+Uwe
 
-Could you also post a driver which is adapted to all these changes?
-The series looks good now; still I want to test it a little just to make
-sure...
+ include/linux/ioport.h |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
 
-Thanks,
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 63eb429..6d493a1 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -109,6 +109,26 @@ struct resource_list {
+ /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+ #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+ 
++
++/* helpers to define resources */
++#define DEFINE_RES_NAMED(_start, _size, _name, _flags)			\
++	{								\
++		.start = _start,					\
++		.end = _start + _size - 1,				\
++		.name = _name,						\
++		.flags = _flags,					\
++	}
++
++#define DEFINE_RES_MEM_NAMED(_start, _size, _name)			\
++	DEFINE_RES_NAMED(_start, _size, _name, IORESOURCE_MEM)
++#define DEFINE_RES_MEM(_start, _size)					\
++	DEFINE_RES_MEM_NAMED(_start, _size, NULL)
++
++#define DEFINE_RES_IRQ_NAMED(_irq, _name)				\
++	DEFINE_RES_NAMED(_irq, 1, _name, IORESOURCE_IRQ)
++#define DEFINE_RES_IRQ(_irq)						\
++	DEFINE_RES_IRQ_NAMED(_irq, NULL)
++
+ /* PC/ISA/whatever - the normal PC address spaces: IO and memory */
+ extern struct resource ioport_resource;
+ extern struct resource iomem_resource;
+-- 
+1.7.5.4
 
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---XF85m9dhOBO43t/C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4a18gACgkQD27XaX1/VRsCUQCfeXzR64/uz3n97nbdrTGxH86+
-3lUAmweRWjZlouL+9cdGiuu8gz4CzNhH
-=CQJw
------END PGP SIGNATURE-----
-
---XF85m9dhOBO43t/C--
