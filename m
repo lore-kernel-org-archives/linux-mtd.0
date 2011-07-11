@@ -1,26 +1,21 @@
-Message-ID: <19994.46665.674302.352501@ipc1.ka-ro>
-Date: Mon, 11 Jul 2011 10:37:29 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add GPMI-NFC support for imx23/imx28
-In-Reply-To: <20110711080003.GE13840@pengutronix.de>
-References: <1309406028-2924-1-git-send-email-b32955@freescale.com>
-	<1309406028-2924-2-git-send-email-b32955@freescale.com>
-	<201106301555.19440.arnd@arndb.de>
-	<20110708073119.GP29624@pengutronix.de>
-	<4E16B47E.8090909@freescale.com>
-	<20110708090903.GQ29624@pengutronix.de>
-	<4E16CD6F.9050304@freescale.com>
-	<20110708101625.GR29624@pengutronix.de>
-	<19990.56022.592145.982784@ipc1.ka-ro>
-	<20110711080003.GE13840@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, s.hauer@pengutronix.de,
-	w.sang@pengutronix.de, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>, linux-arm-kernel@lists.infradead.org
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QgEE0-0001VC-9v
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2011 11:00:29 +0000
+Date: Mon, 11 Jul 2011 13:00:24 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v7 0/4] add the GPMI-NAND support for imx23/imx28
+Message-ID: <20110711110024.GB11153@pengutronix.de>
+References: <1310371266-10704-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XF85m9dhOBO43t/C"
+Content-Disposition: inline
+In-Reply-To: <1310371266-10704-1-git-send-email-b32955@freescale.com>
+Cc: arnd@arndb.de, s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Uwe Kleine-König writes:
-> On Fri, Jul 08, 2011 at 12:24:22PM +0200, Lothar Waßmann wrote:
-> > Uwe Kleine-König writes:
-> > > Hello Huang,
-> > > 
-> > > On Fri, Jul 08, 2011 at 05:27:11PM +0800, Huang Shijie wrote:
-> > > > >>>>The init function is used only to set up iomux, so the logical replacement is
-> > > > >>>>a pointer to the iomux data, and calling mxs_iomux_setup_multiple_pads
-> > > > >>>>directly from the driver.
-> > > > >>>Why not put the iomux stuff into the per-machine table and get rid of
-> > > > >>>the init callback, too?
-> > > > >>The mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
-> > > > >>So, it's better to initialize the pin when the driver(GPMI or MMC)
-> > > > >>is enabled.
-> > > > >What do you do to prevent userspace from trying to use both devices?
-> > > > The board can not support the two devices at the same time.
-> > > > So the user can only use one device with the board.
-> > > > 
-> > > > >I guess you need to configure the hardware somehow to switch between the
-> > > > >two using a jumper? Isn't it possible to detect the hardware setting and
-> > > > >setup the muxer accordingly?
-> > > > >
-> > > > >IMHO an per-device init-callback is the wrong approach to solve a pin
-> > > > >conflict.
-> > > > Do you have any good solution about this?
-> > > Put the pinmux corresponding to the one device that currently works in
-> > > the pinmux list!?
-> > > 
-> > #define 'that currently works'
-> > 
-> > For a dedicated system that may not be a problem. But for development
-> > kits and modular systems that allow peripheral modules to be plugged
-> > in there is no 'one device that currently works'.
-> Yeah, I know that problem. Back when I worked for a company selling
-> development boards I solved it with clks. Not pretty but more convenient
-> than kernel parameters or #ifdefs.
-> The upside of doing it with clks is that if $customer tries to use both
-> conflicting devices you get an error message instead of breaking device1
-> when device2 is opened/probed.
->
-This could be prevented by a reservation mechanism for the iomux like
-for GPIOs.
 
+--XF85m9dhOBO43t/C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Lothar Waßmann
--- 
-___________________________________________________________
+Hi,
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+On Mon, Jul 11, 2011 at 04:01:02PM +0800, Huang Shijie wrote:
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+> The general-purpose media interface(GPMI) controller is a flexible interf=
+ace
+> to up to several NAND flashs.
+>=20
+> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelera=
+tor.
+>=20
+> With the help of BCH, the GPMI controller can choose to do the hardware E=
+CC or
+> not.
+>=20
+> v6 --> v7:
+> 	[0] rename RES_SIZE to GPMI_NAND_RES_SIZE.
+> 	[1] move gpmi-nand.h to `include/linux/mtd/` directory.
+> 	[2] remove comment for new pad control.
+> 	[3] others
+
+Could you also post a driver which is adapted to all these changes?
+The series looks good now; still I want to test it a little just to make
+sure...
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--XF85m9dhOBO43t/C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4a18gACgkQD27XaX1/VRsCUQCfeXzR64/uz3n97nbdrTGxH86+
+3lUAmweRWjZlouL+9cdGiuu8gz4CzNhH
+=CQJw
+-----END PGP SIGNATURE-----
+
+--XF85m9dhOBO43t/C--
