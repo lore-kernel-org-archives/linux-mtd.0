@@ -1,24 +1,24 @@
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qghk8-0003qi-IH
+	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2011 18:31:41 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] new helper to define common struct resource constructs
+Date: Tue, 12 Jul 2011 20:31:15 +0200
+Message-Id: <1310495475-22469-1-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <ADE657CA350FB648AAC2C43247A983F001F383D6DAD4@AUSP01VMBX24.collaborationhost.net>
+References: <ADE657CA350FB648AAC2C43247A983F001F383D6DAD4@AUSP01VMBX24.collaborationhost.net>
 MIME-Version: 1.0
-In-Reply-To: <4E1C6EB7.80506@compulab.co.il>
-References: <1310096084-14646-1-git-send-email-leiwen@marvell.com>
-	<1310466535-15287-5-git-send-email-leiwen@marvell.com>
-	<CACTFLANDZN6gAorV1MYEFD3FnAnomPqLgx44pPUeUaxKjApG_Q@mail.gmail.com>
-	<CACTFLAPB0JE9FJc8jdbaoME_qmPbN1N-HyPVN7Kb5-op6Pa1EA@mail.gmail.com>
-	<4E1C6EB7.80506@compulab.co.il>
-Date: Tue, 12 Jul 2011 19:35:30 +0200
-Message-ID: <CACTFLAPgttSapjqmsnBvTtE-RwfcyYk8h1gz2sP-WGAp_uue-g@mail.gmail.com>
-Subject: Re: [PATCH V6 4/4] MTD: pxa3xx_nand: enhance suspend and resume
-	routine
-From: Daniel Mack <zonque@gmail.com>
-To: Igor Grinberg <grinberg@compulab.co.il>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>,
+	linux-kernel@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
+	thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org,
+	H Hartley Sweeten <hartleys@visionengravers.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 12, 2011 at 5:56 PM, Igor Grinberg <grinberg@compulab.co.il> wr=
-ote:
-> On 07/12/11 15:02, Daniel Mack wrote:
->
->> On Tue, Jul 12, 2011 at 1:39 PM, Daniel Mack <zonque@gmail.com> wrote:
->>> On Tue, Jul 12, 2011 at 12:28 PM, Lei Wen <leiwen@marvell.com> wrote:
->>>> This patch add protection on the suspend&resume path to prevent
->>>> some unexpected behavior, like interrupt occur at the very second
->>>> of resume back and it don't follow normal command path, which lead
->>>> to bug.
->>>>
->>>> Signed-off-by: Lei Wen <leiwen@marvell.com>
->>>> ---
->>>> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 28 +++++++++++++++++++++++++++=
+resource definitions that just define start, end and flags =
+IORESOURCE_MEM or IORESOURCE_IRQ (with start=end) are quite common. So
+introduce a shortcut for them. For completeness add macros for
+IORESOURCE_DMA and IORESOURCE_IO, too and also make available a set of
+macros to specify named resources of all types.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+changes since v1:
+- also add _IO and _DMA variants
+
+ include/linux/ioport.h |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 63eb429..f98124f 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -109,6 +109,36 @@ struct resource_list {
+ /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+ #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+ 
 +
->>>> =A01 files changed, 28 insertions(+), 0 deletions(-)
->>>>
->>> [...]
->>>
->>>> @@ -1267,6 +1283,18 @@ static int pxa3xx_nand_resume(struct platform_d=
-evice *pdev)
->>>> =A0 =A0 =A0 =A0info->cs =3D 0xff;
->>>> =A0 =A0 =A0 =A0clk_enable(info->clk);
->>>>
->>>> + =A0 =A0 =A0 /*
->>>> + =A0 =A0 =A0 =A0* As the spec, the NDSR would be updated to 0x1800 wh=
-en
->>>> + =A0 =A0 =A0 =A0* do the nand_clk disable/enable.
->>>> + =A0 =A0 =A0 =A0* To prevent it damage state machine of the driver, c=
-lear
->>>> + =A0 =A0 =A0 =A0* all status before resume
->>>> + =A0 =A0 =A0 =A0*/
->>>> + =A0 =A0 =A0 nand_writel(nand, NDSR, NDSR_MASK);
->>> This doesn't build:
->>>
->>> =A0CC =A0 =A0 =A0drivers/mtd/nand/pxa3xx_nand.o
->>> drivers/mtd/nand/pxa3xx_nand.c: In function 'pxa3xx_nand_resume':
->>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: 'nand' undeclared (first
->>> use in this function)
->>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: (Each undeclared
->>> identifier is reported only once
->>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: for each function it appear=
-s in.)
->>> drivers/mtd/nand/pxa3xx_nand.c:1294: error: 'mtd' undeclared (first
->>> use in this function)
->>> make[3]: *** [drivers/mtd/nand/pxa3xx_nand.o] Error 1
->>>
->>> I guess this was not even compile tested? Anyway, I did a trivial
->>> fix-up and will test.
->> Also, with this (fixed) patch applied, the system doesn't resume at
->> all. No messages, it simply doesn't come back.
->
-> I was skeptic about the clock being disabled in Lei's patch,
-> as I observed system hangs if that clock was disabled back then in 2.6.31=
-,
-> but wanted to give it a try, because things has changed since then.
->
-> Now I see, that Lei already sent v7 without clock toggling...
-
-Yes, we debugged this quickly via Jabber, and without the clock
-disable, things work fine for me again.
-
-Daniel
++/* helpers to define resources */
++#define DEFINE_RES_NAMED(_start, _size, _name, _flags)			\
++	{								\
++		.start = _start,					\
++		.end = _start + _size - 1,				\
++		.name = _name,						\
++		.flags = _flags,					\
++	}
++
++#define DEFINE_RES_IO_NAMED(_start, _size, _name)			\
++	DEFINE_RES_NAMED(_start, _size, _name, IORESOURCE_IO)
++#define DEFINE_RES_IO(_start, _size)					\
++	DEFINE_RES_IO_NAMED(_start, _size, NULL)
++
++#define DEFINE_RES_MEM_NAMED(_start, _size, _name)			\
++	DEFINE_RES_NAMED(_start, _size, _name, IORESOURCE_MEM)
++#define DEFINE_RES_MEM(_start, _size)					\
++	DEFINE_RES_MEM_NAMED(_start, _size, NULL)
++
++#define DEFINE_RES_IRQ_NAMED(_irq, _name)				\
++	DEFINE_RES_NAMED(_irq, 1, _name, IORESOURCE_IRQ)
++#define DEFINE_RES_IRQ(_irq)						\
++	DEFINE_RES_IRQ_NAMED(_irq, NULL)
++
++#define DEFINE_RES_DMA_NAMED(_dma, _name)				\
++	DEFINE_RES_NAMED(_dma, 1, _name, IORESOURCE_DMA)
++#define DEFINE_RES_DMA(_dma)						\
++	DEFINE_RES_DMA_NAMED(_dma, NULL)
++
+ /* PC/ISA/whatever - the normal PC address spaces: IO and memory */
+ extern struct resource ioport_resource;
+ extern struct resource iomem_resource;
+-- 
+1.7.5.4
