@@ -1,5 +1,5 @@
 MIME-Version: 1.0
-In-Reply-To: <CALZhoSQasw14-o6UEHYjUNFq-okXGiokciYhwCDjnnNiVie-LQ@mail.gmail.com>
+In-Reply-To: <4E1B4E21.1090507@compulab.co.il>
 References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
 	<1309771536-10597-4-git-send-email-leiwen@marvell.com>
 	<4E1411BB.4010000@compulab.co.il>
@@ -7,20 +7,16 @@ References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>
 	<4E1B3ECC.5080308@compulab.co.il>
 	<CACTFLAPMh+XMpOPPqkDTaEZppSkWxVxFMH3RALTmqOCNk8WAvw@mail.gmail.com>
 	<4E1B4E21.1090507@compulab.co.il>
-	<CALZhoSRPYtMtsDqY5rPKfx4ux72iCDPQm=3wmTMMt2_P3zWtKA@mail.gmail.com>
-	<CACTFLAOe_iL8W_+dAPrJEA=_npN9gmH38Xhz__nvy73BYCYBHw@mail.gmail.com>
-	<CALZhoSQasw14-o6UEHYjUNFq-okXGiokciYhwCDjnnNiVie-LQ@mail.gmail.com>
-Date: Tue, 12 Jul 2011 14:05:24 +0200
-Message-ID: <CACTFLANbbb4BO8Uvt9L050ambuzf9tYWPdPAj5ca2qkXJbpozw@mail.gmail.com>
+Date: Tue, 12 Jul 2011 14:48:24 +0200
+Message-ID: <CACTFLAPpy8v1O+_eDLiLLCD++7mFk0CKbjsFDB3VopjWd99OTg@mail.gmail.com>
 Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
 From: Daniel Mack <zonque@gmail.com>
-To: Lei Wen <adrian.wenl@gmail.com>
+To: Igor Grinberg <grinberg@compulab.co.il>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: Eric Miao <eric.y.miao@gmail.com>,
 	David Woodhouse <David.Woodhouse@intel.com>,
 	Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,40 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 12, 2011 at 12:29 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
-> Hi Daniel,
+On Mon, Jul 11, 2011 at 9:25 PM, Igor Grinberg <grinberg@compulab.co.il> wrote:
+> On 07/11/11 21:53, Daniel Mack wrote:
+>> At least not in our case. The first level bootloader is entered on
+>> resume just as it is on a POR event, with the exception that the D3S
+>> bit in the ASCR register is set in this case.
 >
-> On Tue, Jul 12, 2011 at 5:57 PM, Daniel Mack <zonque@gmail.com> wrote:
->> On Tue, Jul 12, 2011 at 11:40 AM, Lei Wen <adrian.wenl@gmail.com> wrote:
->>> I retest with suspend&resume on my board, each time that board would
->>> reset the timing in the
->>> begining of pxa3xx_cmdfunc as expected. So this should be ok as it is
->>> the same behavior
->>> with original code.
->>
->> Ok, just to be sure - as there have been quite some iterations fot
->> this now - can you send me a link to your most current version of this
->> patch again, please? Just to avoid confusion which version we're
->> talking about.
->>
->>
+> You say "first level boot loader is entered"... who is loading it and where from?
+> Indeed, it should happen as in POR case, but again, it resides on some non-volatile
+> storage, isn't it? What storage does it reside on?
+
+That is true. I was assuming that the first-stage loader remains in
+SRAM and is re-used later, but I think you're right, and it is loaded
+from NAND again after resume.
+
+>> We unconditionally
+>> initialize the static and dynamic memory controllers and then either
+>> jump to the routine that initializes the NAND controller, read the 2nd
+>> level loader and pass control to it. Or (in the resume case) we just
+>> jump to the address stored at the RAM address 0x80000000 (which has
+>> been set to cpu_resume previously) and thus enter the kernel again. No
+>> NAND operations in the game in this case, and this has always worked
+>> fine.
 >
-> Please refer to V6 patch set I just send out.
+> Except those to read the first stage boot loader... (if it resides on NAND).
+> Well, our case is working similarly and both the first stage bootloader (OBM)
+> and the second stage bootloader (U-Boot) reside on the NAND flash,
+> therefore BootROM has to reconfigure the NAND flash, so it can boot (resume).
 
-I did. With all 4 patches applied, the system doesn't wake up again,
-as I posted as reply to this particular patch. With only the first 3
-applied, we see the following messages after resume:
-
-[ 1297.173920] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-[ 1297.373887] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-[ 1297.379014] UBIFS error (pid 1245): ubifs_read_node: bad node type
-(255 but expected 2)
-[ 1297.388521] UBIFS error (pid 1245): ubifs_read_node: bad node at
-LEB 435:102784, LEB mapping status 1
-[ 1297.593895] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-[ 1297.793884] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-[ 1297.994294] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-
+Well, the load of the first NAND page (where the OBM resides) is out
+of control for our software, as the code in PXA's internal ROM mask
+takes care for this. We do not, however, re-initialize the NAND
+controller in the resume case, just as we don't restore any other
+pheripheral's registers. And this has worked fine all the time, and it
+still does if Lei's latest patch set is not applied.
 
 
 Daniel
