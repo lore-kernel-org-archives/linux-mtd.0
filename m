@@ -1,22 +1,19 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: "Uwe =?iso-8859-15?q?Kleine-K=F6nig?=" <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] new helper to define common struct resource constructs
-Date: Tue, 12 Jul 2011 15:29:17 +0200
-References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-	<201107072304.05626.arnd@arndb.de>
-	<E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
-In-Reply-To: <E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
-Message-Id: <201107121529.17611.arnd@arndb.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>,
-	linux-kernel@vger.kernel.org, thierry.nolf.barco@gmail.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Lothar =?iso-8859-15?q?Wa=DFmann?= <LW@karo-electronics.de>
+Received: from dakia2.marvell.com ([65.219.4.35])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qge3u-0007mG-SV
+	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2011 14:35:48 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Daniel Mack <zonque@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	Yu Tang <ytang5@marvell.com>
+Subject: [PATCH V7 0/4] pxa3xx_nand: add two chip select support
+Date: Tue, 12 Jul 2011 07:35:32 -0700
+Message-Id: <1310481336-13230-1-git-send-email-leiwen@marvell.com>
+In-Reply-To: <1310466535-15287-1-git-send-email-leiwen@marvell.com>
+References: <1310466535-15287-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 11 July 2011, Uwe Kleine-König wrote:
-> resource definitions that just define start, end and flags = IORESOURCE_MEM
-> or IORESOURCE_IRQ (with start=end) are quite common. So introduce a shortcut
-> for them. Also make available a macro to specify named resources of both
-> types which are less common.
-> 
-> Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+V2:
+Choose to at most keep original pxa3xx_nand_info structure to reduce
+patch size
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+V3:
+Seperate original one patch into a patch set
 
-What do others think, is this worthwhile?
-Should we also define macros for IORESOURCE_IO and IORESOURCE_DMA?
+V4:
+Further seperate patch into small pieces:
+Mainly change make in two patch, which seperate do
+the new structure definition and two chip select support add.
 
-	Arnd
+V5:
+Merge platform change patch and two chip feature into one patch.
+Clean some format issue.
+
+V6:
+Add suspend and resume enhancement as a part of this patch set.
+
+V7:
+Fix build bug
+Fix zylonite machine cannot resume back
+
+Lei Wen (4):
+  MTD: pxa3xx_nand: enhance suspend and resume routine
+  MTD: pxa3xx_nand: convert all printk into dev_*
+  MTD: pxa3xx_nand: sperate each chip individual info
+  MTD: pxa3xx_nand: enable multiple chip select support
+
+ arch/arm/mach-mmp/aspenite.c                 |    5 +-
+ arch/arm/mach-pxa/cm-x300.c                  |    5 +-
+ arch/arm/mach-pxa/colibri-pxa3xx.c           |    5 +-
+ arch/arm/mach-pxa/littleton.c                |    5 +-
+ arch/arm/mach-pxa/mxm8x10.c                  |    9 +-
+ arch/arm/mach-pxa/raumfeld.c                 |    5 +-
+ arch/arm/mach-pxa/zylonite.c                 |    5 +-
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   20 +-
+ drivers/mtd/nand/pxa3xx_nand.c               |  453 ++++++++++++++++----------
+ 9 files changed, 327 insertions(+), 185 deletions(-)
