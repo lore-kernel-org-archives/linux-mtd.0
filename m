@@ -1,31 +1,24 @@
-Received: from mail160.messagelabs.com ([216.82.253.99])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QggWp-00036j-T6
-	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2011 17:13:52 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: Arnd Bergmann <arnd@arndb.de>, =?iso-8859-15?Q?Uwe_Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Date: Tue, 12 Jul 2011 12:13:08 -0500
-Subject: RE: [PATCH] new helper to define common struct resource constructs
-Message-ID: <ADE657CA350FB648AAC2C43247A983F001F383D6DAD4@AUSP01VMBX24.collaborationhost.net>
-References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
-	<201107072304.05626.arnd@arndb.de>
-	<E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
-	<201107121529.17611.arnd@arndb.de>
-In-Reply-To: <201107121529.17611.arnd@arndb.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"thierry.nolf.barco@gmail.com" <thierry.nolf.barco@gmail.com>,
-	Huang Shijie <b32955@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	=?iso-8859-15?Q?Lothar_Wa=DFmann?= <LW@karo-electronics.de>
+In-Reply-To: <4E1C6EB7.80506@compulab.co.il>
+References: <1310096084-14646-1-git-send-email-leiwen@marvell.com>
+	<1310466535-15287-5-git-send-email-leiwen@marvell.com>
+	<CACTFLANDZN6gAorV1MYEFD3FnAnomPqLgx44pPUeUaxKjApG_Q@mail.gmail.com>
+	<CACTFLAPB0JE9FJc8jdbaoME_qmPbN1N-HyPVN7Kb5-op6Pa1EA@mail.gmail.com>
+	<4E1C6EB7.80506@compulab.co.il>
+Date: Tue, 12 Jul 2011 19:35:30 +0200
+Message-ID: <CACTFLAPgttSapjqmsnBvTtE-RwfcyYk8h1gz2sP-WGAp_uue-g@mail.gmail.com>
+Subject: Re: [PATCH V6 4/4] MTD: pxa3xx_nand: enhance suspend and resume
+	routine
+From: Daniel Mack <zonque@gmail.com>
+To: Igor Grinberg <grinberg@compulab.co.il>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,70 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, July 12, 2011 6:29 AM, Arnd Bergmann wrote:
-> On Monday 11 July 2011, Uwe Kleine-K=F6nig wrote:
->> resource definitions that just define start, end and flags =3D IORESOURC=
-E_MEM
->> or IORESOURCE_IRQ (with start=3Dend) are quite common. So introduce a sh=
-ortcut
->> for them. Also make available a macro to specify named resources of both
->> types which are less common.
->>=20
->> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Tue, Jul 12, 2011 at 5:56 PM, Igor Grinberg <grinberg@compulab.co.il> wr=
+ote:
+> On 07/12/11 15:02, Daniel Mack wrote:
 >
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> On Tue, Jul 12, 2011 at 1:39 PM, Daniel Mack <zonque@gmail.com> wrote:
+>>> On Tue, Jul 12, 2011 at 12:28 PM, Lei Wen <leiwen@marvell.com> wrote:
+>>>> This patch add protection on the suspend&resume path to prevent
+>>>> some unexpected behavior, like interrupt occur at the very second
+>>>> of resume back and it don't follow normal command path, which lead
+>>>> to bug.
+>>>>
+>>>> Signed-off-by: Lei Wen <leiwen@marvell.com>
+>>>> ---
+>>>> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 28 +++++++++++++++++++++++++++=
++
+>>>> =A01 files changed, 28 insertions(+), 0 deletions(-)
+>>>>
+>>> [...]
+>>>
+>>>> @@ -1267,6 +1283,18 @@ static int pxa3xx_nand_resume(struct platform_d=
+evice *pdev)
+>>>> =A0 =A0 =A0 =A0info->cs =3D 0xff;
+>>>> =A0 =A0 =A0 =A0clk_enable(info->clk);
+>>>>
+>>>> + =A0 =A0 =A0 /*
+>>>> + =A0 =A0 =A0 =A0* As the spec, the NDSR would be updated to 0x1800 wh=
+en
+>>>> + =A0 =A0 =A0 =A0* do the nand_clk disable/enable.
+>>>> + =A0 =A0 =A0 =A0* To prevent it damage state machine of the driver, c=
+lear
+>>>> + =A0 =A0 =A0 =A0* all status before resume
+>>>> + =A0 =A0 =A0 =A0*/
+>>>> + =A0 =A0 =A0 nand_writel(nand, NDSR, NDSR_MASK);
+>>> This doesn't build:
+>>>
+>>> =A0CC =A0 =A0 =A0drivers/mtd/nand/pxa3xx_nand.o
+>>> drivers/mtd/nand/pxa3xx_nand.c: In function 'pxa3xx_nand_resume':
+>>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: 'nand' undeclared (first
+>>> use in this function)
+>>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: (Each undeclared
+>>> identifier is reported only once
+>>> drivers/mtd/nand/pxa3xx_nand.c:1292: error: for each function it appear=
+s in.)
+>>> drivers/mtd/nand/pxa3xx_nand.c:1294: error: 'mtd' undeclared (first
+>>> use in this function)
+>>> make[3]: *** [drivers/mtd/nand/pxa3xx_nand.o] Error 1
+>>>
+>>> I guess this was not even compile tested? Anyway, I did a trivial
+>>> fix-up and will test.
+>> Also, with this (fixed) patch applied, the system doesn't resume at
+>> all. No messages, it simply doesn't come back.
 >
-> What do others think, is this worthwhile?
+> I was skeptic about the clock being disabled in Lei's patch,
+> as I observed system hangs if that clock was disabled back then in 2.6.31=
+,
+> but wanted to give it a try, because things has changed since then.
+>
+> Now I see, that Lei already sent v7 without clock toggling...
 
-Assuming I found the correct patch in the archives, +1 from me.  Not sure w=
-hat
-the correct sign-off should be, possibly:
+Yes, we debugged this quickly via Jabber, and without the clock
+disable, things work fine for me again.
 
-Reviewed-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-
-> Should we also define macros for IORESOURCE_IO and IORESOURCE_DMA?
-
-As a gross check, on linux-next I see:
-
-$ git grep IORESOURCE_MEM | wc -l
-3989
-$ git grep IORESOURCE_IRQ | wc -l
-2309
-$ git grep IORESOURCE_IO | wc -l
-687
-$ git grep IORESOURCE_DMA | wc -l
-521
-
-The *_MEM and *_IRQ macros are going to have the largest impact on reducing
-the lines of code.  But, for completeness it might be nice to have the *_IO
-and *_DMA ones also.
-
-If this patch is accepted there are a couple private macros in various plac=
-es
-that should probably be replaced or updated.
-
-For instance in mach-nomadik/board-nhk8815.c and mach-nomadik/cpu-8815.c th=
-ere
-are these:
-
-#define __MEM_4K_RESOURCE(x) \
-	.res =3D {.start =3D (x), .end =3D (x) + SZ_4K - 1, .flags =3D IORESOURCE_=
-MEM}
-
-And plat-omap/i2c.c has this:
-
-#define I2C_RESOURCE_BUILDER(base, irq)			\
-	{						\
-		.start	=3D (base),			\
-		.end	=3D (base) + OMAP_I2C_SIZE,	\
-		.flags	=3D IORESOURCE_MEM,		\
-	},						\
-	{						\
-		.start	=3D (irq),			\
-		.flags	=3D IORESOURCE_IRQ,		\
-	},
-
-I seem to recall seeing others but can't remember exactly where.
-
-Regards,
-Hartley=
+Daniel
