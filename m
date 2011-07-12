@@ -1,19 +1,18 @@
-Message-ID: <4E1B4E21.1090507@compulab.co.il>
-Date: Mon, 11 Jul 2011 22:25:21 +0300
-From: Igor Grinberg <grinberg@compulab.co.il>
+Received: from db3ehsobe005.messaging.microsoft.com ([213.199.154.143]
+	helo=DB3EHSOBE005.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QgVlz-0007qt-4q
+	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2011 05:44:44 +0000
+From: <b35362@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v2] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+Date: Tue, 12 Jul 2011 12:48:42 +0800
+Message-ID: <1310446122-18050-1-git-send-email-b35362@freescale.com>
 MIME-Version: 1.0
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 3/4] MTD: pxa3xx_nand: enable multiple chip select support
-References: <1309319494-17951-1-git-send-email-leiwen@marvell.com>	<1309771536-10597-4-git-send-email-leiwen@marvell.com>	<4E1411BB.4010000@compulab.co.il>	<CACTFLAOmRMDH_6qo_WkndoWX-HPw9RTqbtsURDfw22sWEFS2wg@mail.gmail.com>	<4E1B3ECC.5080308@compulab.co.il>
-	<CACTFLAPMh+XMpOPPqkDTaEZppSkWxVxFMH3RALTmqOCNk8WAvw@mail.gmail.com>
-In-Reply-To: <CACTFLAPMh+XMpOPPqkDTaEZppSkWxVxFMH3RALTmqOCNk8WAvw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: Liu Shuo <b35362@freescale.com>, linuxppc-dev@ozlabs.org,
+	Li Yang <leoli@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +22,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Liu Shuo <b35362@freescale.com>
 
+Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+to support the Nand flash chip whose page size is larger than 2K bytes,
+we divide a page into multi-2K pages for MTD layer driver. In that case,
+we force to set the page size to 2K bytes. We convert the page address of
+MTD layer driver to a real page address in flash chips and a column index
+in fsl_elbc driver. We can issue any column address by UA instruction of
+elbc controller.
 
-On 07/11/11 21:53, Daniel Mack wrote:
+Signed-off-by: Liu Shuo <b35362@freescale.com>
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |   66 ++++++++++++++++++++++++++++++-------
+ 1 files changed, 53 insertions(+), 13 deletions(-)
 
-> On Mon, Jul 11, 2011 at 8:19 PM, Igor Grinberg <grinberg@compulab.co.il> wrote:
->> On 07/11/11 17:49, Daniel Mack wrote:
->>> Lei, any ideas, can you reproduce this? To avoid further regressions
->>> of this driver, you really should have a system on which you can test
->>> suspend and resume after each commit.
->> I think the problem is that on PXA3xx resume from S2/S3 involves bootloader.
->> If I remember correctly, the BootROM reads the bootloader from the boot device
->> regardless of the reset cause (S2/S3 resume is kind a reset for PXA3xx).
-> At least not in our case. The first level bootloader is entered on
-> resume just as it is on a POR event, with the exception that the D3S
-> bit in the ASCR register is set in this case.
-
-You say "first level boot loader is entered"... who is loading it and where from?
-Indeed, it should happen as in POR case, but again, it resides on some non-volatile
-storage, isn't it? What storage does it reside on?
-
-> We unconditionally
-> initialize the static and dynamic memory controllers and then either
-> jump to the routine that initializes the NAND controller, read the 2nd
-> level loader and pass control to it. Or (in the resume case) we just
-> jump to the address stored at the RAM address 0x80000000 (which has
-> been set to cpu_resume previously) and thus enter the kernel again. No
-> NAND operations in the game in this case, and this has always worked
-> fine.
-
-Except those to read the first stage boot loader... (if it resides on NAND).
-Well, our case is working similarly and both the first stage bootloader (OBM)
-and the second stage bootloader (U-Boot) reside on the NAND flash,
-therefore BootROM has to reconfigure the NAND flash, so it can boot (resume).
-
-
->> Then the bootloader must decide what should be done according to the reset cause.
->> This means, that the BootROM already configures the NAND flash
->> (if it is the boot device) and pxa3xx_nand driver should just get on with it
->> and don't try to reconfigure?
-> I think the problem is just the opposite. The driver expects the setup
-> registers to retain their state over suspend, and doesn't write them
-> again, and this causes operations to fail after resume.
-
-Well, according to Lei, the driver writes back the configuration that is stored prior
-to suspend and that's why I agreed that it should work...
-
-http://www.spinics.net/lists/arm-kernel/msg131942.html
-
-
-
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index a212116..884a9f1 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -76,6 +76,13 @@ struct fsl_elbc_fcm_ctrl {
+ 	unsigned int oob;        /* Non zero if operating on OOB data     */
+ 	unsigned int counter;	 /* counter for the initializations	  */
+ 	char *oob_poi;           /* Place to write ECC after read back    */
++
++	/*
++	 * If writesize > 2048, these two members are used to calculate
++	 * the real page address and real column address.
++	 */
++	int subpage_shift;
++	int subpage_mask;
+ };
+ 
+ /* These map to the positions used by the FCM hardware ECC generator */
+@@ -164,18 +171,27 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
+ 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
+ 	int buf_num;
++	u32 real_ca = column;
+ 
+-	elbc_fcm_ctrl->page = page_addr;
++	if (priv->page_size && elbc_fcm_ctrl->subpage_shift) {
++		real_ca = (page_addr & elbc_fcm_ctrl->subpage_mask) * 2112;
++		page_addr >>= elbc_fcm_ctrl->subpage_shift;
++	}
+ 
+-	out_be32(&lbc->fbar,
+-	         page_addr >> (chip->phys_erase_shift - chip->page_shift));
++	elbc_fcm_ctrl->page = page_addr;
+ 
+ 	if (priv->page_size) {
++		real_ca += (oob ? 2048 : 0);
++		elbc_fcm_ctrl->use_mdr = 1;
++		elbc_fcm_ctrl->mdr = real_ca;
++
++		out_be32(&lbc->fbar, page_addr >> 6);
+ 		out_be32(&lbc->fpar,
+ 		         ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
+ 		         (oob ? FPAR_LP_MS : 0) | column);
+ 		buf_num = (page_addr & 1) << 2;
+ 	} else {
++		out_be32(&lbc->fbar, page_addr >> 5);
+ 		out_be32(&lbc->fpar,
+ 		         ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
+ 		         (oob ? FPAR_SP_MS : 0) | column);
+@@ -256,10 +272,11 @@ static void fsl_elbc_do_read(struct nand_chip *chip, int oob)
+ 	if (priv->page_size) {
+ 		out_be32(&lbc->fir,
+ 		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		         (FIR_OP_CA  << FIR_OP1_SHIFT) |
+-		         (FIR_OP_PA  << FIR_OP2_SHIFT) |
+-		         (FIR_OP_CM1 << FIR_OP3_SHIFT) |
+-		         (FIR_OP_RBW << FIR_OP4_SHIFT));
++		         (FIR_OP_UA  << FIR_OP1_SHIFT) |
++		         (FIR_OP_UA  << FIR_OP2_SHIFT) |
++		         (FIR_OP_PA  << FIR_OP3_SHIFT) |
++		         (FIR_OP_CM1 << FIR_OP4_SHIFT) |
++		         (FIR_OP_RBW << FIR_OP5_SHIFT));
+ 
+ 		out_be32(&lbc->fcr, (NAND_CMD_READ0 << FCR_CMD0_SHIFT) |
+ 		                    (NAND_CMD_READSTART << FCR_CMD1_SHIFT));
+@@ -399,12 +416,13 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		if (priv->page_size) {
+ 			out_be32(&lbc->fir,
+ 			         (FIR_OP_CM2 << FIR_OP0_SHIFT) |
+-			         (FIR_OP_CA  << FIR_OP1_SHIFT) |
+-			         (FIR_OP_PA  << FIR_OP2_SHIFT) |
+-			         (FIR_OP_WB  << FIR_OP3_SHIFT) |
+-			         (FIR_OP_CM3 << FIR_OP4_SHIFT) |
+-			         (FIR_OP_CW1 << FIR_OP5_SHIFT) |
+-			         (FIR_OP_RS  << FIR_OP6_SHIFT));
++			         (FIR_OP_UA  << FIR_OP1_SHIFT) |
++			         (FIR_OP_UA  << FIR_OP2_SHIFT) |
++			         (FIR_OP_PA  << FIR_OP3_SHIFT) |
++			         (FIR_OP_WB  << FIR_OP4_SHIFT) |
++			         (FIR_OP_CM3 << FIR_OP5_SHIFT) |
++			         (FIR_OP_CW1 << FIR_OP6_SHIFT) |
++			         (FIR_OP_RS  << FIR_OP7_SHIFT));
+ 		} else {
+ 			out_be32(&lbc->fir,
+ 			         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+@@ -453,6 +471,9 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 			full_page = 1;
+ 		}
+ 
++		if (priv->page_size)
++			elbc_fcm_ctrl->use_mdr = 1;
++
+ 		fsl_elbc_run_command(mtd);
+ 
+ 		/* Read back the page in order to fill in the ECC for the
+@@ -654,9 +675,28 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct fsl_elbc_mtd *priv = chip->priv;
+ 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
++	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
+ 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+ 	unsigned int al;
+ 
++	/*
++	 * Hack for supporting the flash chip whose writesize is
++	 * larger than 2K bytes.
++	 */
++	if (mtd->writesize > 2048) {
++		elbc_fcm_ctrl->subpage_shift = ffs(mtd->writesize >> 11) - 1;
++		elbc_fcm_ctrl->subpage_mask =
++			(1 << elbc_fcm_ctrl->subpage_shift) - 1;
++		/*
++		 * Rewrite mtd->writesize, mtd->oobsize, chip->page_shift
++		 * and chip->pagemask.
++		 */
++		mtd->writesize = 2048;
++		mtd->oobsize = 64;
++		chip->page_shift = ffs(mtd->writesize) - 1;
++		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
++	}
++
+ 	/* calculate FMR Address Length field */
+ 	al = 0;
+ 	if (chip->pagemask & 0xffff0000)
 -- 
-Regards,
-Igor.
+1.7.1
