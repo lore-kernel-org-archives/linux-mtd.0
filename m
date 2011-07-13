@@ -1,23 +1,22 @@
-Message-ID: <4E1DAD1E.4090706@ru.mvista.com>
-Date: Wed, 13 Jul 2011 18:35:10 +0400
-From: Sergei Shtylyov <sshtylyov@mvista.com>
-MIME-Version: 1.0
-To: Lei Wen <adrian.wenl@gmail.com>
-Subject: Re: [PATCH V7 2/4] MTD: pxa3xx_nand: convert all printk into dev_*
-References: <1310466535-15287-1-git-send-email-leiwen@marvell.com>	<1310481336-13230-3-git-send-email-leiwen@marvell.com>	<4E1D7A1E.1020802@mvista.com>
-	<CALZhoSShiGBPdZtxUK1c6+PPMJQWHM5G6Ucb6+H=Tb+aszCu5g@mail.gmail.com>
-In-Reply-To: <CALZhoSShiGBPdZtxUK1c6+PPMJQWHM5G6Ucb6+H=Tb+aszCu5g@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Date: Wed, 13 Jul 2011 14:18:49 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] new helper to define common struct resource constructs
+Message-Id: <20110713141849.b8cbf675.akpm@linux-foundation.org>
+In-Reply-To: <201107121529.17611.arnd@arndb.de>
+References: <14C4E31473AF7E4B98176CB73615181C19FBD3@039-SN1MPN1-006.039d.mgd.msft.net>
+	<201107072304.05626.arnd@arndb.de>
+	<E1QgHeh-0004k8-2m@octopus.hi.pengutronix.de>
+	<201107121529.17611.arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Sergei Shtylyov <sshtylyov@mvista.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>,
+	linux-kernel@vger.kernel.org, thierry.nolf.barco@gmail.com,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	=?ISO-8859-1?Q? Uwe_Kleine-K=F6nig ?= <u.kleine-koenig@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Tue, 12 Jul 2011 15:29:17 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Lei Wen wrote:
+> On Monday 11 July 2011, Uwe Kleine-K__nig wrote:
+> > resource definitions that just define start, end and flags = IORESOURCE_MEM
+> > or IORESOURCE_IRQ (with start=end) are quite common. So introduce a shortcut
+> > for them. Also make available a macro to specify named resources of both
+> > types which are less common.
+> > 
+> > Signed-off-by: Uwe Kleine-K____nig <u.kleine-koenig@pengutronix.de>
+> 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> What do others think, is this worthwhile?
+> Should we also define macros for IORESOURCE_IO and IORESOURCE_DMA?
+> 
 
->>> Signed-off-by: Lei Wen<leiwen@marvell.com>
->>> ---
->>>  drivers/mtd/nand/pxa3xx_nand.c |   27 ++++++++++++++++-----------
->>>  1 files changed, 16 insertions(+), 11 deletions(-)
->>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
->>> b/drivers/mtd/nand/pxa3xx_nand.c
->>> index 1efecf7..afe14bd 100644
->>> --- a/drivers/mtd/nand/pxa3xx_nand.c
->>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> [...]
->>> @@ -774,11 +774,15 @@ static int pxa3xx_nand_config_flash(struct
->>> pxa3xx_nand_info *info,
->>>        struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
->>>        uint32_t ndcr = 0x0; /* enable all interrupts */
->>>
->>> -       if (f->page_size != 2048 && f->page_size != 512)
->>> +       if (f->page_size != 2048 && f->page_size != 512) {
->>> +               dev_err(&pdev->dev, "Current only support 2048 and 512
->>> size\n");
->>>                return -EINVAL;
->>> +       }
->>>
->>> -       if (f->flash_width != 16 && f->flash_width != 8)
->>> +       if (f->flash_width != 16 && f->flash_width != 8) {
->>> +               dev_err(&pdev->dev, "Only support 8bit and 16 bit!\n");
+It would help if we could see some usage examples (ie: sample
+conversions), to get a better idea of the value of this.
 
->>   So this patch not only converts printk() to dev_*() calls, it also adds
->> some dev_err() calls? This should have been mentioned in the change long at
->> least...
-
-> What do you mean by "chang long"? Do you mean the cover letter or the
-> patch name?
-
-    I mean the patch description (which in this patch is missing).
-
-> Certainly it is a good suggest to show it in the change version list.
-
-    Don't quite understand what you mean here...
-
-> Best regards,
-> Lei
-
-WBR, Sergei
+Also, DEFINE_RES_NAMED() is going to need a bunch of argument
+parentheses to make it bulletproof.
