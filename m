@@ -1,18 +1,19 @@
-Message-ID: <4E1D791D.2060801@mvista.com>
-Date: Wed, 13 Jul 2011 14:53:17 +0400
-From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-To: Lei Wen <leiwen@marvell.com>
-Subject: Re: [PATCH V7 1/4] MTD: pxa3xx_nand: enhance suspend and resume
-	routine
+In-Reply-To: <4E1D7A1E.1020802@mvista.com>
 References: <1310466535-15287-1-git-send-email-leiwen@marvell.com>
-	<1310481336-13230-2-git-send-email-leiwen@marvell.com>
-In-Reply-To: <1310481336-13230-2-git-send-email-leiwen@marvell.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	<1310481336-13230-3-git-send-email-leiwen@marvell.com>
+	<4E1D7A1E.1020802@mvista.com>
+Date: Wed, 13 Jul 2011 20:41:53 +0800
+Message-ID: <CALZhoSShiGBPdZtxUK1c6+PPMJQWHM5G6Ucb6+H=Tb+aszCu5g@mail.gmail.com>
+Subject: Re: [PATCH V7 2/4] MTD: pxa3xx_nand: convert all printk into dev_*
+From: Lei Wen <adrian.wenl@gmail.com>
+To: Sergei Shtylyov <sshtylyov@mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: Eric Miao <eric.y.miao@gmail.com>,
 	David Woodhouse <David.Woodhouse@intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Yu Tang <ytang5@marvell.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Lei Wen <leiwen@marvell.com>, Yu Tang <ytang5@marvell.com>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
 	Igor Grinberg <grinberg@compulab.co.il>,
@@ -26,78 +27,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Hi Sergei,
 
-On 12-07-2011 18:35, Lei Wen wrote:
-
-> This patch add protection on the suspend&resume path to prevent
-> some unexpected behavior, like interrupt occur at the very second
-> of resume back and it don't follow normal command path, which lead
-> to bug.
-
-> Signed-off-by: Lei Wen<leiwen@marvell.com>
-> ---
->   drivers/mtd/nand/pxa3xx_nand.c |   17 ++++++++++++++++-
->   1 files changed, 16 insertions(+), 1 deletions(-)
-
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index b7db1b2..1efecf7 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1158,23 +1158,38 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->   static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
->   {
->   	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
-> +	struct mtd_info *mtd;
+On Wed, Jul 13, 2011 at 6:57 PM, Sergei Shtylyov <sshtylyov@mvista.com> wro=
+te:
+> Hello.
 >
->   	if (info->state) {
->   		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
->   		return -EAGAIN;
->   	}
+> On 12-07-2011 18:35, Lei Wen wrote:
 >
-> +	mtd = info->mtd;
-
-    Why not make this into an initializer?
-
-> +	mtd->suspend(mtd);
->   	return 0;
->   }
+>> Signed-off-by: Lei Wen<leiwen@marvell.com>
+>> ---
+>> =A0drivers/mtd/nand/pxa3xx_nand.c | =A0 27 ++++++++++++++++-----------
+>> =A01 files changed, 16 insertions(+), 11 deletions(-)
 >
->   static int pxa3xx_nand_resume(struct platform_device *pdev)
->   {
->   	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
-> +	struct mtd_info *mtd;
-> +
-> +	/* We don't want to handle interrupt without calling mtd routine */
-> +	disable_int(info, NDCR_INT_MASK);
+>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
+>> b/drivers/mtd/nand/pxa3xx_nand.c
+>> index 1efecf7..afe14bd 100644
+>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
 >
->   	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
->   	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
-> -	clk_enable(info->clk);
+> [...]
+>>
+>> @@ -774,11 +774,15 @@ static int pxa3xx_nand_config_flash(struct
+>> pxa3xx_nand_info *info,
+>> =A0 =A0 =A0 =A0struct pxa3xx_nand_platform_data *pdata =3D pdev->dev.pla=
+tform_data;
+>> =A0 =A0 =A0 =A0uint32_t ndcr =3D 0x0; /* enable all interrupts */
+>>
+>> - =A0 =A0 =A0 if (f->page_size !=3D 2048 && f->page_size !=3D 512)
+>> + =A0 =A0 =A0 if (f->page_size !=3D 2048 && f->page_size !=3D 512) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Current only support =
+2048 and 512
+>> size\n");
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EINVAL;
+>> + =A0 =A0 =A0 }
+>>
+>> - =A0 =A0 =A0 if (f->flash_width !=3D 16 && f->flash_width !=3D 8)
+>> + =A0 =A0 =A0 if (f->flash_width !=3D 16 && f->flash_width !=3D 8) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Only support 8bit and=
+ 16 bit!\n");
 >
-> +	/*
-> +	 * As the spec, the NDSR would be updated to 0x1800 when
+> =A0 So this patch not only converts printk() to dev_*() calls, it also ad=
+ds
+> some dev_err() calls? This should have been mentioned in the change long =
+at
+> least...
 
-    As the spec says?
+What do you mean by "chang long"? Do you mean the cover letter or the
+patch name?
+Certainly it is a good suggest to show it in the change version list.
 
-> +	 * do the nand_clk disable/enable.
+>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EINVAL;
+>> + =A0 =A0 =A0 }
+>>
+>> =A0 =A0 =A0 =A0/* calculate flash information */
+>> =A0 =A0 =A0 =A0info->cmdset =3D&default_cmdset;
+>> @@ -898,7 +902,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>> =A0 =A0 =A0 =A0if (!ret) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(mtd);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0info->mtd =3D NULL;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_INFO "There is no nand chip on=
+ cs 0!\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_info(&info->pdev->dev, "There is no na=
+nd chip on cs
+>> 0!\n");
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EINVAL;
+>> =A0 =A0 =A0 =A0}
+>> @@ -906,11 +910,12 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>> =A0 =A0 =A0 =A0chip->cmdfunc(mtd, NAND_CMD_READID, 0, 0);
+>> =A0 =A0 =A0 =A0id =3D *((uint16_t *)(info->data_buff));
+>> =A0 =A0 =A0 =A0if (id !=3D 0)
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_INFO "Detect a flash id %x\n",=
+ id);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_info(&info->pdev->dev, "Detect a flash=
+ id %x\n", id);
+>> =A0 =A0 =A0 =A0else {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(mtd);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0info->mtd =3D NULL;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_WARNING "Read out ID 0, potent=
+ial timing set
+>> wrong!!\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_warn(&info->pdev->dev, "Read out ID 0,=
+ "
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "potential=
+ timing set wrong!!\n");
+>
+> =A0 Don't break the string -- this prevents grepping for it.
 
-    Doing.
+Thanks, I would fix it.
 
-> +	 * To prevent it damage state machine of the driver, clear
-
-    From damaging?
-
-> +	 * all status before resume
-> +	 */
-> +	nand_writel(info, NDSR, NDSR_MASK);
-> +	mtd = info->mtd;
-
-    This one too could be an initializer...
-
-> +	mtd->resume(mtd);
->   	return 0;
->   }
->   #else
-
-WBR, Sergei
+Best regards,
+Lei
