@@ -1,21 +1,15 @@
-Message-ID: <19998.54360.684936.674009@ipc1.ka-ro>
-Date: Thu, 14 Jul 2011 13:34:48 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] new helper to define common struct resource constructs
-In-Reply-To: <1310631065-4271-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <20110713141849.b8cbf675.akpm@linux-foundation.org>
-	<1310631065-4271-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-kernel@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
-	thierry.nolf.barco@gmail.com, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org,
-	H Hartley Sweeten <hartleys@visionengravers.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel@lists.infradead.org
+From: Shawn Guo <shawn.guo@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: dataflash: add device tree probe support
+Date: Thu, 14 Jul 2011 23:52:37 +0800
+Message-Id: <1310658757-17018-1-git-send-email-shawn.guo@linaro.org>
+In-Reply-To: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
+References: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, patches@linaro.org,
+	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>, Shawn Guo <shawn.guo@linaro.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +19,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+It adds device tree probe support for mtd_dataflash driver.
 
-Uwe Kleine-König writes:
-> resource definitions that just define start, end and flags =
-> IORESOURCE_MEM or IORESOURCE_IRQ (with start=end) are quite common. So
-> introduce a shortcut for them. For completeness add macros for
-> IORESOURCE_DMA and IORESOURCE_IO, too and also make available a set of
-> macros to specify named resources of all types which are less common.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> changes since v2:
-> - add parentheses around macro parameter usages
-> 
-> changes since v1:                                                               
-> - also add _IO and _DMA variants                                                
-> 
->  include/linux/ioport.h |   30 ++++++++++++++++++++++++++++++
->  1 files changed, 30 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-> index 63eb429..9d57a71 100644
-> --- a/include/linux/ioport.h
-> +++ b/include/linux/ioport.h
-> @@ -109,6 +109,36 @@ struct resource_list {
->  /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
->  #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
->  
-> +
-> +/* helpers to define resources */
-> +#define DEFINE_RES_NAMED(_start, _size, _name, _flags)			\
-> +	{								\
-> +		.start = (_start),					\
-> +		.end = (_start) + (_size) - 1,				\
-> +		.name = (_name),					\
-> +		.flags = (_flags),					\
-> +	}
-> +
-> +#define DEFINE_RES_IO_NAMED(_start, _size, _name)			\
-> +	DEFINE_RES_NAMED((_start), (_size), (_name), IORESOURCE_IO)
->
-There is no need for parens around a macro argument when it is not
-part of an expression...
-This just looks silly.
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+Changes since v1:
+ * Add "atmel,at45xxx" into the match table
+ * Add binding document
 
+ .../devicetree/bindings/mtd/atmel-dataflash.txt    |   14 ++++++++++++++
+ drivers/mtd/devices/mtd_dataflash.c                |   13 ++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-dataflash.txt
 
-Lothar Waßmann
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-dataflash.txt b/Documentation/devicetree/bindings/mtd/atmel-dataflash.txt
+new file mode 100644
+index 0000000..3783962
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/atmel-dataflash.txt
+@@ -0,0 +1,14 @@
++* Atmel Data Flash
++
++Required properties:
++- compatible : "atmel,<model>", "atmel,<series>", "atmel,dataflash".
++
++Example:
++
++flash@1 {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "atmel,at45db321d", "atmel,at45xxx", "atmel,dataflash";
++	spi-max-frequency = <25000000>;
++	reg = <1>;
++};
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 8f6b02c..8e091b0 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -24,6 +24,8 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ 
++#include <linux/of.h>
++#include <linux/of_device.h>
+ 
+ /*
+  * DataFlash is a kind of SPI flash.  Most AT45 chips have two buffers in
+@@ -98,6 +100,12 @@ struct dataflash {
+ 	struct mtd_info		mtd;
+ };
+ 
++static const struct of_device_id dataflash_dt_ids[] = {
++	{ .compatible = "atmel,at45xxx", },
++	{ .compatible = "atmel,dataflash", },
++	{ /* sentinel */ }
++};
++
+ /* ......................................................................... */
+ 
+ /*
+@@ -634,6 +642,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+ {
+ 	struct dataflash		*priv;
+ 	struct mtd_info			*device;
++	struct mtd_part_parser_data	ppdata;
+ 	struct flash_platform_data	*pdata = spi->dev.platform_data;
+ 	char				*otp_tag = "";
+ 	int				err = 0;
+@@ -675,7 +684,8 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+ 			pagesize, otp_tag);
+ 	dev_set_drvdata(&spi->dev, priv);
+ 
+-	err = mtd_device_parse_register(device, NULL, 0,
++	ppdata.of_node = spi->dev.of_node;
++	err = mtd_device_parse_register(device, NULL, &ppdata,
+ 			pdata ? pdata->parts : NULL,
+ 			pdata ? pdata->nr_parts : 0);
+ 
+@@ -926,6 +936,7 @@ static struct spi_driver dataflash_driver = {
+ 		.name		= "mtd_dataflash",
+ 		.bus		= &spi_bus_type,
+ 		.owner		= THIS_MODULE,
++		.of_match_table = dataflash_dt_ids,
+ 	},
+ 
+ 	.probe		= dataflash_probe,
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+1.7.4.1
