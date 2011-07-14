@@ -1,18 +1,20 @@
-Received: from mail-fx0-f43.google.com ([209.85.161.43])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QhPqd-0001cf-C2
-	for linux-mtd@lists.infradead.org; Thu, 14 Jul 2011 17:37:16 +0000
-Received: by fxg17 with SMTP id 17so1118283fxg.16
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Jul 2011 10:37:08 -0700 (PDT)
+Date: Thu, 14 Jul 2011 21:52:02 +0400
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2] mtd: dataflash: add device tree probe support
+Message-ID: <20110714175013.GA17845@belfalas.ww600.siemens.net>
+References: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
+	<1310658757-17018-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-Sender: dsd.olpc@gmail.com
-Date: Thu, 14 Jul 2011 18:37:08 +0100
-Message-ID: <CAGq3pz4LHRkCqaJfqoMYe-=mn+s5CVZipab7bd8F3z+ou3xxVA@mail.gmail.com>
-Subject: MTD-related kobject badness during linux-next boot
-From: Daniel Drake <dsd@laptop.org>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1310658757-17018-1-git-send-email-shawn.guo@linaro.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, patches@linaro.org,
+	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, Jul 14, 2011 at 11:52:37PM +0800, Shawn Guo wrote:
+> It adds device tree probe support for mtd_dataflash driver.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> ---
+> Changes since v1:
+>  * Add "atmel,at45xxx" into the match table
+>  * Add binding document
 
-Booting linux-next 20110707 on OLPC XO-1 I get:
+I´m sorry for being unclean on this. Device family is just at45,
+so I´d suggest the following compatibility list:
+"atmel,at45d789000", "atmel,at45"
 
-[    0.965646] CAFE NAND 0000:00:0c.0: enabling device (0000 -> 0002)
-[    0.984187] NAND device: Manufacturer ID: 0xad, Chip ID: 0xdc
-(Hynix NAND 512MiB 3,3V 8-bit)
-[    1.001115] 2 NAND chips detected
-[    1.144358] Searching for RedBoot partition table in cafe_nand at offset 0x0
-[    1.162364] No RedBoot partition table detected in cafe_nand
-[    1.172947] kobject (cd8d40dc): tried to init an initialized
-object, something is seriously wrong.
-[    1.184111] Pid: 1, comm: swapper Not tainted 3.0.0-rc6-next-20110707+ #100
-[    1.198384] Call Trace:
-[    1.207741]  [<c05301a0>] ? kobject_init+0x24/0x6b
-[    1.212420]  [<c0578c49>] ? device_initialize+0x18/0x56
-[    1.227060]  [<c057960a>] ? device_register+0x8/0x10
-[    1.241052]  [<c059104a>] ? add_mtd_device+0x17a/0x1f1
-[    1.244949]  [<c0591128>] ? mtd_device_parse_register+0x67/0x7c
-[    1.259536]  [<c06c6522>] ? cafe_nand_probe+0x5c9/0x686
-[    1.263228]  [<c0546697>] ? pci_device_probe+0x52/0xb0
-[    1.276828]  [<c057ad8b>] ? driver_probe_device+0x8a/0x109
-[    1.290960]  [<c057ae4a>] ? __driver_attach+0x40/0x5b
-[    1.294236]  [<c057a370>] ? bus_for_each_dev+0x37/0x60
-[    1.307430] Switching to clocksource tsc
-[    1.316560]  [<c057ab33>] ? driver_attach+0x14/0x17
-[    1.329149]  [<c057ae0a>] ? driver_probe_device+0x109/0x109
-[    1.362236] Switched to NOHz mode on CPU #0
-[    1.390945]  [<c057a867>] ? bus_add_driver+0x88/0x1b1
-[    1.422422]  [<c0530945>] ? kset_find_obj_hinted+0x6f/0x94
-[    1.453723]  [<c07ef640>] ? start_kernel+0x293/0x293
-[    1.483790]  [<c0803af6>] ? nand_base_init+0x12/0x12
-[    1.513128]  [<c057b1ca>] ? driver_register+0x73/0xc6
-[    1.541936]  [<c0803af6>] ? nand_base_init+0x12/0x12
-[    1.570298]  [<c07ef640>] ? start_kernel+0x293/0x293
-[    1.598567]  [<c0803af6>] ? nand_base_init+0x12/0x12
-[    1.626318]  [<c0546ea3>] ? __pci_register_driver+0x2c/0x81
-[    1.654298]  [<c07ef640>] ? start_kernel+0x293/0x293
-[    1.680913]  [<c0803af6>] ? nand_base_init+0x12/0x12
-[    1.706828]  [<c0401065>] ? do_one_initcall+0x65/0x104
-[    1.733304]  [<c07ef640>] ? start_kernel+0x293/0x293
-[    1.758893]  [<c07ef6a5>] ? kernel_init+0x65/0xda
-[    1.783437]  [<c06cd9d6>] ? kernel_thread_helper+0x6/0xd
+You might want to add "atmel,dataflash" or "mtd,dataflash", but I see
+no point in that.
 
-I think this is a recent regression but I haven't been testing enough
-recent kernels to know exactly when it appeared.
-
-This seems to cause shutdown to fail as well, as device_shutdown()
-gets in an infinite loop trying to shut down mtd1.
-
-Any ideas?
-
-Thanks,
-Daniel
+-- 
+With best wishes
+Dmitry
