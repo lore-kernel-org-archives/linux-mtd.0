@@ -1,18 +1,19 @@
-Received: from nm1-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.202])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjHCx-0007q6-Qk
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2011 20:48:00 +0000
-References: <1310130765.68852.YahooMailRC@web114617.mail.gq1.yahoo.com>
-	<1310988807.20738.44.camel@sauron>
-Message-ID: <1311108475.12313.YahooMailRC@web114615.mail.gq1.yahoo.com>
-Date: Tue, 19 Jul 2011 13:47:55 -0700 (PDT)
-From: Reginald Perrin <reggyperrin@yahoo.com>
-Subject: Re: UBIFS Corruption
-To: dedekind1@gmail.com
-In-Reply-To: <1310988807.20738.44.camel@sauron>
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjIyr-0000uh-MD
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2011 22:41:34 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH 02/10] doc: nand: remove reference to
+ CONFIG_MTD_PARTITIONS
+Date: Tue, 19 Jul 2011 15:40:39 -0700
+Message-ID: <1311115247-20636-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1311115247-20636-1-git-send-email-computersforpeace@gmail.com>
+References: <1311115247-20636-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > 
-> > However, we just saw  2 corruptions within the past 48h that we can't 
->explain. 
->
-> >  We've  been doing the same basic operation (in terms of 
->flashing/reading/writing 
->
-> > images) for quite some time, and have reflashed our units many times  (over 
-> > thousands of different hardware units).
-> 
-> OK, did more  happen meanwhile?
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ doc/nand.xml |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-
-No, just these two so far
-
-> 
-> > Device #1 failure:
-> > * Device was running  out of a partition mounted to /home (a 93MB partition 
->from 
->
-> > a 128MB NAND  device)
-> > * Our app was running normally and locked up (not sure  why).  Our code may 
->have 
->
-> > been updating a sqlite database located  in that partition
-> > * When we power cycled, the partition had the  corruption issue noted.
-> 
-> Do you still have these devices? You need to  enable UBIFS recovery
-> debugging messages and send them to me, may be then I  can help.
-> 
-
-Excellent ideal.  Let me try enabling that in the kernel and updating just the 
-kernel to see what we can find.
-
-FWIW, I have downloaded a complete image of that corrupt partition.  Not sure if 
-that helps me yet, but worth mentioning.
-
-RP
+diff --git a/doc/nand.xml b/doc/nand.xml
+index b9ad4a7..7254af5 100644
+--- a/doc/nand.xml
++++ b/doc/nand.xml
+@@ -312,7 +312,6 @@ maintainer to include it</p>
+ if one of these settings is missing.</p>
+ 				
+ <p>CONFIG_MTD=y<br />
+-CONFIG_MTD_PARTITIONS=y<br />
+ CONFIG_MTD_CHAR=y<br />
+ CONFIG_MTD_BLOCK=y<br />
+ CONFIG_MTD_NAND=y<br />
+-- 
+1.7.0.4
