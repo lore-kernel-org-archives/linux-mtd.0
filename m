@@ -1,19 +1,16 @@
-Date: Tue, 19 Jul 2011 08:48:02 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Lothar =?utf-8?Q?Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-Message-ID: <20110719064802.GA5788@parrot.com>
-References: <20004.12663.29494.339601@ipc1.ka-ro>
-	<20110718145635.GA24419@parrot.com>
-	<20005.7506.283476.184839@ipc1.ka-ro>
+Message-ID: <4E252C51.8070900@freescale.com>
+Date: Tue, 19 Jul 2011 15:03:45 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20005.7506.283476.184839@ipc1.ka-ro>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Shawn Guo <shawn.guo@freescale.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
+References: <20004.12663.29494.339601@ipc1.ka-ro>	<20110718164354.GA3328@S2100-06.ap.freescale.net>	<4E24E804.10002@freescale.com>
+	<20005.7677.145955.789329@ipc1.ka-ro>
+In-Reply-To: <20005.7677.145955.789329@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 19, 2011 at 06:59:46AM +0100, Lothar Waßmann wrote:
-> I'm writing a JFFS2 image file that is padded with 0xff to eraseblock
-> size to flash (either from the bootloader or with the nandwrite
-> utility from Linux).
-> When mounting the filesystem everything is OK until the first file is
-> being written. A subsequent read of the affected flash page gives ECC
-> errors.
-> 
-> JFFS2 is giving out the first all-FF page in the last used block for
-> creating the new file. Since that block has a non-FF ECC pattern, the
-> ECC information is being corrupted on write.
+=E4=BA=8E 2011=E5=B9=B407=E6=9C=8819=E6=97=A5 14:02, Lothar Wa=C3=9Fmann =
+=E5=86=99=E9=81=93:
+> Hi,
+>
+> Huang Shijie writes:
+>> hi  Lothar:
+>>> On Mon, Jul 18, 2011 at 03:13:27PM +0200, Lothar Wa=C3=9Fmann wrote:
+>>>> Hi,
+>>>>
+>>>> with the gpmi-nfc driver for imx28 from Shawn Guo on a TX28 I
+>>> To be clear, the author of gpmi-nfc driver is Huang Shijie (Cc-ed).
+>>>
+>>> Regards,
+>>> Shawn
+>>>
+>>>> encountered some problems with jffs2 when overwriting pages that hav=
+e
+>>>> been written with 0xff (e.g. from padding from the file system image
+>>>> file).
+>> The GPMI driver now does not support the JFFS2 very well.
+>> The JFFS2 will write the OOB, while the BCH of GPMI will use the OOB t=
+oo.
+>>
+> I have applied a patch (from the Freescale BSPs) that prevents JFFS2
+> from using the OOB area. But this still doesn't help.
+>
+Could you show the log ?
 
-OK, thanks for the clarification. So the problem only happens on partially
-programmed blocks in the JFFS2 image, that end up fully programmed on the
-device because of the 0xff padding.
+>> So I have to disable the JFFS2 to use the OOB. I have not finish the
+>> code about it now.
+>>
+>> I recommend you use the UBIFS. But the latest version of GPMI driver
+>> meets a DMA bug.
+>> I am debugging the DMA bug now. and I will send it out when i fix it.
+>>
+> What sort of DMA bug?
+>
 
-I think the cleaner solution is to use a non-padded image and avoid programming
-pages with 0xff in the last used block; programming nand pages multiple times
-should be avoided if possible, as it is not supported on all (especially the
-most recent) devices.
+The DMA may time-out. :(
 
-BR,
+The DMA time-out may occur in two situations:
+[1] send a command DMA descriptor, see the nfc->send_command() function.
+[2] read the non-ecc data from nand, see the nfc->read_data() function.
 
---
-Ivan
+I don't know why. Maybe caused by the timing, or something else.
+
+Best Regards
+Huang Shijie
+
+> Lothar Wa=C3=9Fmann
