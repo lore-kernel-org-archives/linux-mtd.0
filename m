@@ -1,17 +1,19 @@
-Message-ID: <20005.7677.145955.789329@ipc1.ka-ro>
-Date: Tue, 19 Jul 2011 08:02:37 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Date: Tue, 19 Jul 2011 08:48:02 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Lothar =?utf-8?Q?Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-In-Reply-To: <4E24E804.10002@freescale.com>
+Message-ID: <20110719064802.GA5788@parrot.com>
 References: <20004.12663.29494.339601@ipc1.ka-ro>
-	<20110718164354.GA3328@S2100-06.ap.freescale.net>
-	<4E24E804.10002@freescale.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>
+	<20110718145635.GA24419@parrot.com>
+	<20005.7506.283476.184839@ipc1.ka-ro>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20005.7506.283476.184839@ipc1.ka-ro>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Shawn Guo <shawn.guo@freescale.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Huang Shijie writes:
-> hi  Lothar:
-> > On Mon, Jul 18, 2011 at 03:13:27PM +0200, Lothar Waßmann wrote:
-> >> Hi,
-> >>
-> >> with the gpmi-nfc driver for imx28 from Shawn Guo on a TX28 I
-> > To be clear, the author of gpmi-nfc driver is Huang Shijie (Cc-ed).
-> >
-> > Regards,
-> > Shawn
-> >
-> >> encountered some problems with jffs2 when overwriting pages that have
-> >> been written with 0xff (e.g. from padding from the file system image
-> >> file).
-> The GPMI driver now does not support the JFFS2 very well.
-> The JFFS2 will write the OOB, while the BCH of GPMI will use the OOB too.
->
-I have applied a patch (from the Freescale BSPs) that prevents JFFS2
-from using the OOB area. But this still doesn't help.
-
-> So I have to disable the JFFS2 to use the OOB. I have not finish the 
-> code about it now.
+On Tue, Jul 19, 2011 at 06:59:46AM +0100, Lothar Waßmann wrote:
+> I'm writing a JFFS2 image file that is padded with 0xff to eraseblock
+> size to flash (either from the bootloader or with the nandwrite
+> utility from Linux).
+> When mounting the filesystem everything is OK until the first file is
+> being written. A subsequent read of the affected flash page gives ECC
+> errors.
 > 
-> I recommend you use the UBIFS. But the latest version of GPMI driver 
-> meets a DMA bug.
-> I am debugging the DMA bug now. and I will send it out when i fix it.
-> 
-What sort of DMA bug?
+> JFFS2 is giving out the first all-FF page in the last used block for
+> creating the new file. Since that block has a non-FF ECC pattern, the
+> ECC information is being corrupted on write.
 
+OK, thanks for the clarification. So the problem only happens on partially
+programmed blocks in the JFFS2 image, that end up fully programmed on the
+device because of the 0xff padding.
 
-Lothar Waßmann
--- 
-___________________________________________________________
+I think the cleaner solution is to use a non-padded image and avoid programming
+pages with 0xff in the last used block; programming nand pages multiple times
+should be avoided if possible, as it is not supported on all (especially the
+most recent) devices.
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+BR,
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+--
+Ivan
