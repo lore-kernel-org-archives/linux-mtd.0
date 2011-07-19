@@ -9,12 +9,12 @@ To: "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
 	<akpm@linux-foundation.org>,
 	Jarod Wilson <jwilson@redhat.com>, "hpa@zytor.com" <hpa@zytor.com>,
 	"dzickus@redhat.com" <dzickus@redhat.com>
-Date: Tue, 19 Jul 2011 14:23:26 -0400
-Subject: [RFC][PATCH -mmotm 0/4] Improvement of pstore/kmsg_dump in
-	kexec/panic path
-Message-ID: <5C4C569E8A4B9B42A84A977CF070A35B2C199C64C2@USINDEVS01.corp.hds.com>
+Date: Tue, 19 Jul 2011 14:24:27 -0400
+Subject: [RFC][PATCH -mmotm 1/4] Add static function calls of pstore to
+	kexec path
+Message-ID: <5C4C569E8A4B9B42A84A977CF070A35B2C199C64C3@USINDEVS01.corp.hds.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Cc: "dle-develop@lists.sourceforge.net" <dle-develop@lists.sourceforge.net>,
@@ -30,61 +30,199 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-[Upstream status]
-   Discussion about kmsg_dump() in kdump path:=20
-    - Eric and Vivek are worried about reliability of existing kmsg_dump().
-    - Especially, Vivek would like to remove a RCU  function call chain in =
-kdump path
-=1B$B!!!!!!=1B(B which kernel modules can register their function calls fre=
-ely.=20
+This patch adds static function calls so that both pstore and APEI storage =
+backend can work reliably in kexec path.
 
-   Discussion about pstore in nmi_hander.
-    - Don Zickus found an issue of pstore in nmi_handler due to its mutex_l=
-ock.
-   =20
 
-[Build Status]
-  Built this patch on 3.0.0-rc6-mm1 in x86_64.
+ kernel/kexec.c
+   - Add pstore_kmsg_dump_in_interrupt(KMSG_DUMP_KEXEC) just after machine_=
+crash_shutdown() so that pstore can
+     work with one cpu.
 
-[Patch Description]
+ kernel/printk.c
+   - Introduce get_logbuf_nolock() so that pstore can get values of logbuf =
+without taking lock.
 
- For meeting Eric/Vivek's requirements and solving an issue of pstore in nm=
-i_hander due to mutex_lock,
- I propose following patches.
+ fs/pstore/platform.c
+   - Introduce pstore_kmsg_dump_in_interrupt() so that pstore/APEI storage =
+backend can output kernel messages without taking lock.
+   pstore_dump()
+   - Add error checks below because pstore_dump() is called from kmsg_dump(=
+KMSG_DUMP_KEXEC) directly.
+       - Skip if no driver is registered
+       - Skip if there is a driver calling pstore_register()/pstore_unregis=
+ter()
+   - Remove mutex_lock from kexec path
 
-  [RFC][PATCH -mmotm 1/4] Add static function calls of pstore to kexec path
+TODO:
+  APEI storage backend will work with this patch.
+  However, I don't have any access to servers capable of APEI storage backe=
+nd.
+  Please help to test my patch.
 
-        Some people who are not familiar with kexec may add function calls =
-getting=20
-        spin_lock/mutex_lock in kexec path. These function calls causes fai=
-lure of kexec.=20
-        So, I suggest replace a call chain with static function calls so th=
-at we can keep=20
-        reliability of kexec.
+ Signed-off-by: Seiji Aguchi <seiji.aguchi@hds.com>
 
-        APEI storage backend will work well in kexec path by applying this =
-patch.
+---
+ fs/pstore/platform.c      |   27 +++++++++++++++++++++++++--
+ include/linux/kmsg_dump.h |    1 +
+ include/linux/pstore.h    |    9 +++++++++
+ kernel/kexec.c            |    3 +++
+ kernel/printk.c           |   29 +++++++++++++++++++++++++++++
+ 5 files changed, 67 insertions(+), 2 deletions(-)
 
-        Summary of this patch:
-        - Call pstore_kmsg_dump_in_interrupt() directly in kexec path
-        - Remove mutex_lock in pstore_dump() of kexec path
-
-  [RFC][PATCH -mmotm 2/4] Remove mutex_lock from pstore in panic path
-
-        Pstore must not take mutex_lock in panic path as well as kexec path=
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index f2c3ff2..85e0a9c 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -74,7 +74,17 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 	else
+ 		why =3D "Unknown";
 =20
-        because panic() is called in interrupt context like nmi_handler.
-        APEI storage backend will work well in panic path with this patch.
-
-        Summary of this patch:
-        - Remove kmsg_dump(KMSG_DUMP_PANIC)
-        - Call pstore_kmsg_dump_in_interrupt() directly in panic path
-        - Remove mutex_lock in pstore_dump() of panic path
-
-  [RFC][PATCH -mmotm 3/4] pstore: mtdoops support
-
-        - Pstore can support mtdoops with this patch.
-
-  [RFC][PATCH -mmotm 4/4] pstore: ramoops support
-
-        - Pstore can support ramoops with this patch.
+-	mutex_lock(&psinfo->buf_mutex);
++	switch (reason) {
++	case KMSG_DUMP_KEXEC:
++		/* Skip if there is no driver or there is a driver calling
++		   pstore_register() */
++		if (!psinfo || !spin_trylock(&pstore_lock))
++			return;
++		break;
++	default:
++		mutex_lock(&psinfo->buf_mutex);
++	}
++
+ 	oopscount++;
+ 	while (total < kmsg_bytes) {
+ 		dst =3D psinfo->buf;
+@@ -103,7 +113,20 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 		l2 -=3D l2_cpy;
+ 		total +=3D l1_cpy + l2_cpy;
+ 	}
+-	mutex_unlock(&psinfo->buf_mutex);
++
++	if (reason !=3D KMSG_DUMP_KEXEC)
++		mutex_unlock(&psinfo->buf_mutex);
++}
++
++void pstore_kmsg_dump_in_interrupt(enum kmsg_dump_reason reason)
++{
++	const char *s1, *s2;
++	unsigned long l1, l2;
++
++	/* get logbuf values without spin_lock for avoiding dead lock */
++	get_logbuf_nolock(&s1, &l1, &s2, &l2);
++
++	pstore_dump(NULL, reason, s1, l1, s2, l2);
+ }
+=20
+ static struct kmsg_dumper pstore_dumper =3D {
+diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
+index fee6631..ee0c952 100644
+--- a/include/linux/kmsg_dump.h
++++ b/include/linux/kmsg_dump.h
+@@ -18,6 +18,7 @@
+ enum kmsg_dump_reason {
+ 	KMSG_DUMP_OOPS,
+ 	KMSG_DUMP_PANIC,
++	KMSG_DUMP_KEXEC,
+ 	KMSG_DUMP_RESTART,
+ 	KMSG_DUMP_HALT,
+ 	KMSG_DUMP_POWEROFF,
+diff --git a/include/linux/pstore.h b/include/linux/pstore.h
+index 2455ef2..5cf008d 100644
+--- a/include/linux/pstore.h
++++ b/include/linux/pstore.h
+@@ -22,6 +22,8 @@
+ #ifndef _LINUX_PSTORE_H
+ #define _LINUX_PSTORE_H
+=20
++#include<linux/kmsg_dump.h>
++
+ /* types */
+ enum pstore_type_id {
+ 	PSTORE_TYPE_DMESG	=3D 0,
+@@ -46,6 +48,9 @@ struct pstore_info {
+ #ifdef CONFIG_PSTORE
+ extern int pstore_register(struct pstore_info *);
+ extern int pstore_write(enum pstore_type_id type, char *buf, size_t size);
++extern void pstore_kmsg_dump_in_interrupt(enum kmsg_dump_reason reason);
++extern void get_logbuf_nolock(const char **s1, unsigned long *l1,
++			      const char **s2, unsigned long *l2);
+ #else
+ static inline int
+ pstore_register(struct pstore_info *psi)
+@@ -57,6 +62,10 @@ pstore_write(enum pstore_type_id type, char *buf, size_t=
+ size)
+ {
+ 	return -ENODEV;
+ }
++static inline void
++pstore_kmsg_dump_in_interrupt(enum kmsg_dump_reason reason)
++{
++}
+ #endif
+=20
+ #endif /*_LINUX_PSTORE_H*/
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index e24bc1b..8e2761a 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -33,6 +33,8 @@
+ #include <linux/vmalloc.h>
+ #include <linux/swap.h>
+ #include <linux/syscore_ops.h>
++#include <linux/kmsg_dump.h>
++#include <linux/pstore.h>
+=20
+ #include <asm/page.h>
+ #include <asm/uaccess.h>
+@@ -1081,6 +1083,7 @@ void crash_kexec(struct pt_regs *regs)
+ 			crash_setup_regs(&fixed_regs, regs);
+ 			crash_save_vmcoreinfo();
+ 			machine_crash_shutdown(&fixed_regs);
++			pstore_kmsg_dump_in_interrupt(KMSG_DUMP_KEXEC);
+ 			machine_kexec(kexec_crash_image);
+ 		}
+ 		mutex_unlock(&kexec_mutex);
+diff --git a/kernel/printk.c b/kernel/printk.c
+index 37dff34..966a7d9 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -1710,6 +1710,35 @@ int kmsg_dump_unregister(struct kmsg_dumper *dumper)
+ }
+ EXPORT_SYMBOL_GPL(kmsg_dump_unregister);
+=20
++
++void get_logbuf_nolock(const char **s1, unsigned long *l1, const char **s2=
+,
++		       unsigned long *l2)
++{
++	unsigned long end;
++	unsigned chars;
++
++	/* Theoretically, the log could move on after we do this, but
++	   there's not a lot we can do about that. The new messages
++	   will overwrite the start of what we dump. */
++	end =3D log_end & LOG_BUF_MASK;
++	chars =3D logged_chars;
++
++	if (chars > end) {
++		*s1 =3D log_buf + log_buf_len - chars + end;
++		*l1 =3D chars - end;
++
++		*s2 =3D log_buf;
++		*l2 =3D end;
++	} else {
++		*s1 =3D "";
++		*l1 =3D 0;
++
++		*s2 =3D log_buf + end - chars;
++		*l2 =3D chars;
++	}
++
++}
++
+ /**
+  * kmsg_dump - dump kernel log to kernel message dumpers.
+  * @reason: the reason (oops, panic etc) for dumping
+--=20
+1.7.1
