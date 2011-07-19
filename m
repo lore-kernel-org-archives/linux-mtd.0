@@ -1,25 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjAT5-000264-3a
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2011 13:36:19 +0000
-Date: Tue, 19 Jul 2011 15:36:02 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-Message-ID: <20110719133602.GJ1951@pengutronix.de>
-References: <20004.12663.29494.339601@ipc1.ka-ro>
-	<20110718164354.GA3328@S2100-06.ap.freescale.net>
-	<4E24E804.10002@freescale.com>
-	<20005.7677.145955.789329@ipc1.ka-ro>
-	<4E252C51.8070900@freescale.com>
-	<20005.21635.427202.49313@ipc1.ka-ro>
+	id 1QjAnO-0002OQ-SU
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2011 13:57:11 +0000
+Received: by pzk1 with SMTP id 1so5515562pzk.30
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2011 06:57:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sT9gWZPUZYhvPS56"
-Content-Disposition: inline
-In-Reply-To: <20005.21635.427202.49313@ipc1.ka-ro>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>, linux-arm-kernel@lists.infradead.org
+Date: Tue, 19 Jul 2011 15:57:06 +0200
+Message-ID: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
+Subject: Regression in handling of unsafe UBI shutdown
+From: Daniel Mack <zonque@gmail.com>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Adrian Hunter <adrian.hunter@nokia.com>,
+	Sven Neumann <s.neumann@raumfeld.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,58 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hey,
 
---sT9gWZPUZYhvPS56
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+we're facing a new behaviour with 3.0-rc7 kernels wrt UBI file systems
+that are not properly unmounted on shut down. The newest kernel we're
+using in production is 2.6.36.4, and this version doesn't show the
+effect.
+
+When our devices boot up, the bootloader (U-Boot) initializes its UBI
+code, reads in the uImage from the root partition and executes it.
+This worked very well in thousands of installations previously (with
+kernels up to version 2.6.36.4), and generally, it still does work
+well with the latest cutting edge when the kernel is shut down
+properly and unmounts the UBI partitions safely. However, if the power
+is removed out of a sudden from a running system, U-Boot now doesn't
+like the FS anymore upon the next boot:
 
 
-> > >> I am debugging the DMA bug now. and I will send it out when i fix it.
-> > >>
-> > > What sort of DMA bug?
-> > >
-> >=20
-> > The DMA may time-out. :(
-> >=20
-> > The DMA time-out may occur in two situations:
-> > [1] send a command DMA descriptor, see the nfc->send_command() function.
-> > [2] read the non-ecc data from nand, see the nfc->read_data() function.
-> >=20
-> > I don't know why. Maybe caused by the timing, or something else.
+Creating 1 MTD partitions on "nand0":
+0x00120000-0x08000000 : "mtd=3"
+UBI: attaching mtd1 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    126976 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: VID header offset:          2048 (aligned 2048)
+UBI: data offset:                4096
+UBI: attached mtd1 to ubi0
+UBI: MTD device name:            "mtd=3"
+UBI: MTD device size:            126 MiB
+UBI: number of good PEBs:        1014
+UBI: number of bad PEBs:         1
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     2
+UBI: available PEBs:             8
+UBI: total number of reserved PEBs: 1006
+UBI: number of PEBs reserved for bad PEB handling: 10
+UBI: max/mean erase counter: 4/3
+UBIFS: recovery needed
+Error reading superblock on volume 'ubi:RootFS'!
+UBIFS not mounted, use ubifs mount to mount volume first!
+Wrong Image Format for bootm command
+ERROR: can't get kernel image!
 
-I am confused. The send-command DMA timeout prevents any write for me.
-You guys surely would have noticed if you have been bitten as well. Does
-it depend on the NAND chip?
 
-> Maybe you are missing this patch:
-> http://lists.infradead.org/pipermail/linux-arm-kernel/2011-April/049105.h=
-tml
-> I sent it in April, but apparently it has not been integrated in
-> mainline or the pengutronix git.
+Hence my question is: were there any radical changes in the UBI/UBIFS
+code on the kernel side that make older code not like the new content
+anymore?
 
-Well, just resend them; might be worth trying Shawn's comment, too (if
-that reset is really needed). BTW they didn't help for my case :(
 
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---sT9gWZPUZYhvPS56
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4liEIACgkQD27XaX1/VRtdeQCgrjNW1ZIcB3y3GjPtqNV5/Rol
-zP4An1cydWBQzx8pN0nC0HxNttIXz3mw
-=G6e/
------END PGP SIGNATURE-----
-
---sT9gWZPUZYhvPS56--
+Thanks,
+Daniel
