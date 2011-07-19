@@ -1,31 +1,18 @@
-Date: Tue, 19 Jul 2011 20:40:36 +0100
-From: Matthew Garrett <mjg@redhat.com>
-To: Seiji Aguchi <seiji.aguchi@hds.com>
-Subject: Re: [RFC][PATCH -mmotm 1/4] Add static function calls of pstore to
-	kexec path
-Message-ID: <20110719194036.GA25558@srcf.ucam.org>
-References: <5C4C569E8A4B9B42A84A977CF070A35B2C199C64C3@USINDEVS01.corp.hds.com>
-	<20110719183506.GA23770@srcf.ucam.org>
-	<5C4C569E8A4B9B42A84A977CF070A35B2C199C64D6@USINDEVS01.corp.hds.com>
-	<20110719185213.GA24420@srcf.ucam.org>
-	<5C4C569E8A4B9B42A84A977CF070A35B2C199C64E5@USINDEVS01.corp.hds.com>
-	<20110719192754.GA25268@srcf.ucam.org>
+Received: from nm1-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.202])
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjHCx-0007q6-Qk
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2011 20:48:00 +0000
+References: <1310130765.68852.YahooMailRC@web114617.mail.gq1.yahoo.com>
+	<1310988807.20738.44.camel@sauron>
+Message-ID: <1311108475.12313.YahooMailRC@web114615.mail.gq1.yahoo.com>
+Date: Tue, 19 Jul 2011 13:47:55 -0700 (PDT)
+From: Reginald Perrin <reggyperrin@yahoo.com>
+Subject: Re: UBIFS Corruption
+To: dedekind1@gmail.com
+In-Reply-To: <1310988807.20738.44.camel@sauron>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20110719192754.GA25268@srcf.ucam.org>
-Cc: "dzickus@redhat.com" <dzickus@redhat.com>,
-	Satoru Moriya <satoru.moriya@hds.com>,
-	"dle-develop@lists.sourceforge.net" <dle-develop@lists.sourceforge.net>,
-	"tony.luck@intel.com" <tony.luck@intel.com>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-	Jarod Wilson <jwilson@redhat.com>, Americo Wang <xiyou.wangcong@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>, Vivek Goyal <vgoyal@redhat.com>
+Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 19, 2011 at 08:27:54PM +0100, Matthew Garrett wrote:
-> On Tue, Jul 19, 2011 at 03:14:22PM -0400, Seiji Aguchi wrote:
 > > 
-> > >And how does that handle the case where we're halfway through a pstore
-> > >access when the NMI arrives? ERST, at least, has a complex state
-> > >machine. You can't guarantee what starting one transaction without
-> > >completing one that was in process will do.
-> > 
-> > As for ERST, write access is protected by raw_spin_trylock_irqsave(&erst_lock).
-> > Are there anything I'm missing?
+> > However, we just saw  2 corruptions within the past 48h that we can't 
+>explain. 
+>
+> >  We've  been doing the same basic operation (in terms of 
+>flashing/reading/writing 
+>
+> > images) for quite some time, and have reflashed our units many times  (over 
+> > thousands of different hardware units).
 > 
-> If there's already locking involved, what benefit does removing the lock 
-> in the pstore code give? You'll just hang when you hit the erst code 
-> instead of the pstore code.
+> OK, did more  happen meanwhile?
 
-I'm sorry, you're right, this is a trylock so we won't hang in this 
-case. We should probably document that in the pstore documentation to 
-ensure that any future backends have the same behaviour.
 
--- 
-Matthew Garrett | mjg59@srcf.ucam.org
+No, just these two so far
+
+> 
+> > Device #1 failure:
+> > * Device was running  out of a partition mounted to /home (a 93MB partition 
+>from 
+>
+> > a 128MB NAND  device)
+> > * Our app was running normally and locked up (not sure  why).  Our code may 
+>have 
+>
+> > been updating a sqlite database located  in that partition
+> > * When we power cycled, the partition had the  corruption issue noted.
+> 
+> Do you still have these devices? You need to  enable UBIFS recovery
+> debugging messages and send them to me, may be then I  can help.
+> 
+
+Excellent ideal.  Let me try enabling that in the kernel and updating just the 
+kernel to see what we can find.
+
+FWIW, I have downloaded a complete image of that corrupt partition.  Not sure if 
+that helps me yet, but worth mentioning.
+
+RP
