@@ -1,22 +1,15 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjOtT-0004gu-8b
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 05:00:27 +0000
-Received: by iyn15 with SMTP id 15so5332443iyn.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2011 22:00:19 -0700 (PDT)
-Subject: Re: [PATCH] mtd/fsmc_nand: fix build error
+Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 20 Jul 2011 08:01:41 +0300
-In-Reply-To: <1310986539-458-1-git-send-email-linus.walleij@linaro.org>
-References: <1310986539-458-1-git-send-email-linus.walleij@linaro.org>
+To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Date: Wed, 20 Jul 2011 08:12:41 +0300
+In-Reply-To: <20004.12663.29494.339601@ipc1.ka-ro>
+References: <20004.12663.29494.339601@ipc1.ka-ro>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1311138106.20738.137.camel@sauron>
+Content-Transfer-Encoding: 8bit
+Message-ID: <1311138766.20738.142.camel@sauron>
 Mime-Version: 1.0
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
+	linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,25 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-07-18 at 12:55 +0200, Linus Walleij wrote:
-> Recent -next does not build due to malformed code, so just fix it.
+On Mon, 2011-07-18 at 15:13 +0200, Lothar Waßmann wrote:
+> Hi,
 > 
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> Dmitry can you check that I fixed this the right way?
-> ---
->  drivers/mtd/nand/fsmc_nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> with the gpmi-nfc driver for imx28 from Shawn Guo on a TX28 I
+> encountered some problems with jffs2 when overwriting pages that have
+> been written with 0xff (e.g. from padding from the file system image
+> file).
+> 
+> The problem is that the ECC info for an all-0xff block is not all-0xff
+> and thus a newly erased block is different from a block that has been
+> written with 0xff.
+> If such a block is being altered (jffs2 thinking it can simply
+> overwrite it without erasing first) the ECC information will be
+> corrupted and will produce ECC errors upon read.
+> 
+> The only remedy I can think of is to prevent empty pages from actually
+> being written to flash, but leaving them in the erased state instead.
+> 
+> Any comments?
 
-Thanks, instead of taking this patch I've folded it in Dmitry's
-"mtd: fsmc_nand.c: use mtd_device_parse_register" patch to make sure
-upstream is bisectable. I've added your name to the commit message.
+Hi,
 
-Pushed to l2-mtd-2.6.git, thanks!
+I think Ivan is right, the only issue is how you flash your images. This
+problem is not JFFS2-specific, you'd have it with UBIFS as well.
 
-FYI: my l2-mtd-2.6.git is visible in -next now, so you should see
-the fix there soon.
+For UBIFS users, I described this issue here:
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_flasher_algo
+
+You might find it useful, because this basically applies to JFFS2 as
+well, but for JFFS2 the problem can be solved by simply making sure your
+images are not padded to the eraseblock size and that your flasher does
+not do the padding.
+
+For "I cannot change my industrial flasher" case we nowadays have a
+solution in the UBIFS level:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_free_space_fixup
+
+Similar thing could be implemented for JFFS2, I guess, but not sure.
+
+HTH
 
 -- 
 Best Regards,
