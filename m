@@ -1,24 +1,18 @@
-Subject: Re: [PATCH v2] mtd: dataflash: add device tree probe support
+Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shawn Guo <shawn.guo@freescale.com>
-Date: Wed, 20 Jul 2011 08:17:45 +0300
-In-Reply-To: <20110720045547.GA5766@S2100-06.ap.freescale.net>
-References: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
-	<1310658757-17018-1-git-send-email-shawn.guo@linaro.org>
-	<20110715025407.GF2927@ponder.secretlab.ca>
-	<20110715044919.GB1840@S2100-06.ap.freescale.net>
-	<1311136844.20738.131.camel@sauron>
-	<20110720045547.GA5766@S2100-06.ap.freescale.net>
+To: Huang Shijie <b32955@freescale.com>
+Date: Wed, 20 Jul 2011 08:19:34 +0300
+In-Reply-To: <1311139000.20738.146.camel@sauron>
+References: <20004.12663.29494.339601@ipc1.ka-ro>
+	<20110718164354.GA3328@S2100-06.ap.freescale.net>
+	<4E24E804.10002@freescale.com> <1311139000.20738.146.camel@sauron>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1311139071.20738.147.camel@sauron>
+Message-ID: <1311139179.20738.149.camel@sauron>
 Mime-Version: 1.0
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, patches@linaro.org,
-	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	devicetree-discuss@lists.ozlabs.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Shawn Guo <shawn.guo@freescale.com>,
+	Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,30 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-07-20 at 12:55 +0800, Shawn Guo wrote:
-> On Wed, Jul 20, 2011 at 07:40:38AM +0300, Artem Bityutskiy wrote:
-> > On Fri, 2011-07-15 at 12:49 +0800, Shawn Guo wrote:
-> > > > > +static const struct of_device_id dataflash_dt_ids[] = {
-> > > > > +	{ .compatible = "atmel,at45xxx", },
-> > > > > +	{ .compatible = "atmel,dataflash", },
-> > > > > +	{ /* sentinel */ }
-> > > > > +};
-> > > > > +
-> > > > 
-> > > > This should be protected with a #ifdef CONFIG_OF/#else/#endif, and
-> > > > there should be a MODULE_DEVICE_TABLE().
-> > > > 
-> > > I personally hate #ifdef stuff.  But okay, I can do it since there
-> > > are people being concerned by this little waste of space.
-> > 
-> > I guess the question is - will it compile and work if CONFIG_OF is
-> > unset?
-> > 
-> Yes, it will compile, as 'struct of_device_id' is defined in
-> include/linux/mod_devicetable.h unconditionally.
+On Wed, 2011-07-20 at 08:16 +0300, Artem Bityutskiy wrote:
+> This is a different issue. You refer to the "GPMI-controlled flash has
+> no space in OOB for JFFS2". Lothar's issue is about "GPMI-controlled
+> flash does not allow writing 0xFFs and then writing something else",
+> which is very normal.
 
-And it will work correctly even though dataflash_dt_ids is not NULL, it
-will not confuse MTD layer?
+Huang, to be more precise, I think Lothar's issue is the same as
+described here:
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_flasher_algo
+
+Although the description is about UBI and UBIFS - this is applicable
+for JFFS2 as well.
 
 -- 
 Best Regards,
