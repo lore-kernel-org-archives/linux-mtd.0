@@ -1,27 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjSVS-0006tf-4I
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 08:51:55 +0000
-Date: Wed, 20 Jul 2011 10:51:42 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-Message-ID: <20110720085142.GA2377@pengutronix.de>
-References: <20004.12663.29494.339601@ipc1.ka-ro>
-	<20110718164354.GA3328@S2100-06.ap.freescale.net>
-	<4E24E804.10002@freescale.com>
-	<20005.7677.145955.789329@ipc1.ka-ro>
-	<4E252C51.8070900@freescale.com>
-	<20005.21635.427202.49313@ipc1.ka-ro>
-	<4E263AF2.60103@freescale.com>
+	id 1QjSvD-0007uH-0P
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 09:18:27 +0000
+Received: by pzk1 with SMTP id 1so30967pzk.30
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Jul 2011 02:18:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <4E263AF2.60103@freescale.com>
-Cc: linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+In-Reply-To: <1311139283.20738.150.camel@sauron>
+References: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
+	<1311139283.20738.150.camel@sauron>
+Date: Wed, 20 Jul 2011 11:18:18 +0200
+Message-ID: <CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
+Subject: Re: Regression in handling of unsafe UBI shutdown
+From: Daniel Mack <zonque@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,52 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Jul 20, 2011 at 7:21 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Tue, 2011-07-19 at 15:57 +0200, Daniel Mack wrote:
+>> UBIFS: recovery needed
+>> Error reading superblock on volume 'ubi:RootFS'!
+>> UBIFS not mounted, use ubifs mount to mount volume first!
+>> Wrong Image Format for bootm command
+>> ERROR: can't get kernel image!
+>>
+>>
+>> Hence my question is: were there any radical changes in the UBI/UBIFS
+>> code on the kernel side that make older code not like the new content
+>> anymore?
+>
+> Daniel, sorry, I have no time to look at this now, could you please try
+> to bisect the issue?
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's not really easy to bisect as the issue is not always fully
+reproducable, and also because the flash needs to be re-initialized
+after it happened.
+
+Also note that it's not the kernel itself that complains about the
+state of the file system in this case but U-Boot. If we boot a 3.0-rc7
+kernel in such a situation (via USB for example), the kernel will
+recover the FS and continue.
+
+I don't know how many people use the UBI code in U-Boot, and I don't
+know either whether it was a good idea to go this way in the first
+place, but we didn't want to waste much space on the NAND for a
+fixed-size partition just for the kernel, and have a hard limit for it
+in the future. And as I said, this approach has worked just fine in
+the past.
+
+So, let me re-phrase my question: is anyone aware of changes in the
+UBIFS code between 2.6.36 and 3.0 that might cause trouble to U-Boot's
+UBI code from 2009?
 
 
-> >>>>>I am debugging the DMA bug now. and I will send it out when i fix it.
-> >>>>>
-> >>>>What sort of DMA bug?
-> >>>>
-> >>>The DMA may time-out. :(
-> >>>
-> >>>The DMA time-out may occur in two situations:
-> >>>[1] send a command DMA descriptor, see the nfc->send_command() functio=
-n.
-> >>>[2] read the non-ecc data from nand, see the nfc->read_data() function.
-> >>>
-> >>>I don't know why. Maybe caused by the timing, or something else.
-> >I am confused. The send-command DMA timeout prevents any write for me.
-> >You guys surely would have noticed if you have been bitten as well. Does
-> >it depend on the NAND chip?
-> I think It does not depend on the NAND chip.
-> My test chip is Samsung K9G8G08U0M.
-> Sometimes, I can run a long time while there is no DMA timeout occurring;
-> Sometimes, the bug appears right away.
-
-For me, the bug always happens right away. So, if you need logs or debug
-output or can give me a pointer into some direction, I am glad to
-assist.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4mlx4ACgkQD27XaX1/VRsavQCbBlB1WQ8zdVEfYv7oF5NkNG6k
-y0UAnil8V+5dAnrNfJv1qGuf4pJc5WE6
-=HOum
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
+Thanks,
+Daniel
