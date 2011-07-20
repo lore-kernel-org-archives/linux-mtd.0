@@ -1,16 +1,17 @@
-Message-ID: <4E26794D.8040004@freescale.com>
-Date: Wed, 20 Jul 2011 14:44:29 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-References: <20004.12663.29494.339601@ipc1.ka-ro>
-	<20110718164354.GA3328@S2100-06.ap.freescale.net>
-In-Reply-To: <20110718164354.GA3328@S2100-06.ap.freescale.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	=?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
+Received: from mail.phytec.co.uk ([217.6.246.34] helo=root.phytec.de)
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjRCX-0006IL-Vc
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 07:28:18 +0000
+From: Jan Weitzel <j.weitzel@phytec.de>
+To: linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2] MTD: Nand: use MTD_NAND_OMAP2 for OMAP4
+Date: Wed, 20 Jul 2011 09:28:04 +0200
+Message-Id: <1311146884-22255-1-git-send-email-j.weitzel@phytec.de>
+In-Reply-To: <1311137590.20738.135.camel@sauron>
+References: <1311137590.20738.135.camel@sauron>
+Cc: Artem.Bityutskiy@nokia.com, vimalsingh@ti.com,
+	Jan Weitzel <j.weitzel@phytec.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lothar:
-> On Mon, Jul 18, 2011 at 03:13:27PM +0200, Lothar Wa=DFmann wrote:
->> Hi,
->>
->> with the gpmi-nfc driver for imx28 from Shawn Guo on a TX28 I
-> To be clear, the author of gpmi-nfc driver is Huang Shijie (Cc-ed).
->
-> Regards,
-> Shawn
->
->> encountered some problems with jffs2 when overwriting pages that have
->> been written with 0xff (e.g. from padding from the file system image
->> file).
->>
->> The problem is that the ECC info for an all-0xff block is not all-0xff
->> and thus a newly erased block is different from a block that has been
->> written with 0xff.
->> If such a block is being altered (jffs2 thinking it can simply
->> overwrite it without erasing first) the ECC information will be
->> corrupted and will produce ECC errors upon read.
->>
->> The only remedy I can think of is to prevent empty pages from actually
->> being written to flash, but leaving them in the erased state instead.
-Did you mean that:
-If the gpmi have to write a page which is full of 0xff,
-the gpmi driver should skip the writting, and leave the page in the=20
-erased state.
+use MTD_NAND_OMAP2 also for OMAP4 arch.
+testes wit omap4430
 
-Am I right?
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+---
+v2: add menuconfig description
 
-Huang Shijie
->> Any comments?
->>
->>
->> Lothar Wa=DFmann
->> --=20
->> ___________________________________________________________
->>
->> Ka-Ro electronics GmbH | Pascalstra=DFe 22 | D - 52076 Aachen
->> Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
->> Gesch=E4ftsf=FChrer: Matthias Kaussen
->> Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
->>
->> www.karo-electronics.de | info@karo-electronics.de
->> ___________________________________________________________
->>
+ drivers/mtd/nand/Kconfig |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 4c34252..2a7d305 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -116,10 +116,11 @@ config MTD_NAND_AMS_DELTA
+ 	  Support for NAND flash on Amstrad E3 (Delta).
+ 
+ config MTD_NAND_OMAP2
+-	tristate "NAND Flash device on OMAP2 and OMAP3"
+-	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3)
++	tristate "NAND Flash device on OMAP2, OMAP3 and OMAP4"
++	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3 || ARCH_OMAP4)
+ 	help
+-          Support for NAND flash on Texas Instruments OMAP2 and OMAP3 platforms.
++          Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
++	  platforms.
+ 
+ config MTD_NAND_IDS
+ 	tristate
+-- 
+1.7.0.4
