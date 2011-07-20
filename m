@@ -1,17 +1,19 @@
-Message-ID: <20006.36214.352337.659803@ipc1.ka-ro>
-Date: Wed, 20 Jul 2011 10:10:30 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Wed, 20 Jul 2011 11:35:43 +0300
 In-Reply-To: <4E26794D.8040004@freescale.com>
 References: <20004.12663.29494.339601@ipc1.ka-ro>
 	<20110718164354.GA3328@S2100-06.ap.freescale.net>
 	<4E26794D.8040004@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <1311150947.20738.167.camel@sauron>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>
+	Shawn Guo <shawn.guo@freescale.com>,
+	Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,9 +23,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Huang Shijie writes:
+On Wed, 2011-07-20 at 14:44 +0800, Huang Shijie wrote:
 > Hi Lothar:
 > > On Mon, Jul 18, 2011 at 03:13:27PM +0200, Lothar Waßmann wrote:
 > >> Hi,
@@ -53,19 +53,19 @@ Huang Shijie writes:
 > erased state.
 > 
 > Am I right?
-> 
-Exactly. But it seems others think this should be handled by userspace
-tools rather than in the kernel driver.
+
+Please, no! The driver should just write what it is asked to write. Your
+driver has a limitation - a NAND page can be written only _once_. If a
+piece of software writes a page twice (1st with all 0xFFs, then with
+something else) - this is a problem in _that piece of software_.
 
 
-Lothar Waßmann
+Additionally, all 0xFFs are just data, it needs ECC corrections in case
+of bit-flips just like any other data. Eve you decided to do that
+horrible "skip all 0xFFs" hack, you'd need to make sure bit-flips in
+"skipped" pages are still corrected. Indeed, there is not reason why a
+never written NAND page would not have bit-flips.
+
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Best Regards,
+Artem Bityutskiy
