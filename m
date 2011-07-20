@@ -1,21 +1,28 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qjf51-0002Rl-DN
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 22:17:24 +0000
-Received: by vws8 with SMTP id 8so635360vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jul 2011 15:17:19 -0700 (PDT)
+From: Seiji Aguchi <seiji.aguchi@hds.com>
+To: Vivek Goyal <vgoyal@redhat.com>
+Date: Wed, 20 Jul 2011 18:34:13 -0400
+Subject: RE: [RFC][PATCH -mmotm 0/4] Improvement of pstore/kmsg_dump in
+	kexec/panic path
+Message-ID: <5C4C569E8A4B9B42A84A977CF070A35B2C199C6AAD@USINDEVS01.corp.hds.com>
+References: <5C4C569E8A4B9B42A84A977CF070A35B2C199C64C2@USINDEVS01.corp.hds.com>
+	<20110719184759.GC7001@redhat.com>
+In-Reply-To: <20110719184759.GC7001@redhat.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAJcvjphp3Cjew0=P6LWQ05Hb6HWpPy3D2FOBd8J5KwVGQpwcwA@mail.gmail.com>
-References: <CAJcvjphp3Cjew0=P6LWQ05Hb6HWpPy3D2FOBd8J5KwVGQpwcwA@mail.gmail.com>
-Date: Wed, 20 Jul 2011 18:17:19 -0400
-Message-ID: <CAPBSBxqEzqkMV=1zJgmfsjO+OF2AQ3j+wpmhn1F+b_ZE6QYZug@mail.gmail.com>
-Subject: Re: UBIFS support for SLC and MLC
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: John <jtburch62@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "dzickus@redhat.com" <dzickus@redhat.com>,
+	Satoru Moriya <satoru.moriya@hds.com>,
+	"dle-develop@lists.sourceforge.net" <dle-develop@lists.sourceforge.net>,
+	"tony.luck@intel.com" <tony.luck@intel.com>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Eric W.
+	Biederman" <ebiederm@xmission.com>,
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	Jarod Wilson <jwilson@redhat.com>, Americo Wang <xiyou.wangcong@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Matthew Garrett <mjg@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 20, 2011 at 4:53 PM, John <jtburch62@gmail.com> wrote:
-> I'm exploring flash memory technology for a new product and am
-> confused about whether UBIFS fully supports SLC and MLC NAND. =A0When I
-> read the FAQ at
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc, it
-> states that one of the two aspects of MLC that are not supported is
-> "program disturb". =A0However, the document link referenced in the same
-> FAQ (http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc)
-> states that "program disturb" is common to both SLC and MLC - just at
-> different error rates.
->
-> 1. =A0How does UBIFS address the "program disturb" effect in SLC NAND?
->
-> 2. =A0Why doesn't the FAQs explanation for how UBIFS handles "read
-> disturb" apply to "program disturb"?
->
-
-I think the first "read disturb" that is discussed in the FAQ is a
-rather specific case: repeated READs of a page cause bit-flips on that
-same page.  The solution is simply to correct the block on-flash
-("scrub" it) whenever a bit-flip is detected.
-
-Then there's a more general "read disturb" case, which is called the
-"paired pages" problem in the FAQ: repeated READs of a page (A) cause
-bit-flips on some *other* page (B).  This is trickier to handle,
-because READs may be happening all the time on A, while B isn't
-accessed for a long time.  In that case, the bit-flips on B will have
-a chance to accumulate, potentially beyond the point at which we can
-repair them.  This case is basically the same as the "program disturb"
-case -- it will be handled just fine, but only as long as the pages in
-question are read periodically.
-
-Hence the need for the "flash crawler" mentioned in the FAQ, which
-puts an upper bound on the length of time any flash page will go
-without being read.  As far as I know (someone please correct me --
-and update the FAQ -- if this is wrong), UBIFS itself doesn't
-implement this crawling right now.  So depending on the strength of
-your ECC algorithm, propensity of your flash to experience bit-flips,
-and how often certain parts of the filesystem are accessed, you could
-potentially experience corruption if you've got a filesystem where
-certain parts are read/written often, and other parts sit idly for
-extended periods of time (probably months).
-
-It's worth noting that some of the problems noted from the UBIFS FAQ
-also apply to next-generation SLC.  For example, many new SLC chips
-already require at least 4-bit BCH correction (this used to only be
-the case for MLC).  Their eraseblock life-cycle has also steadily
-decreased (although this is offset by increasing capacities, since UBI
-does wear leveling).  And their tendency to experience problems such
-as read/program disturb has gone up compared to previous-gen SLC.
-
-So the FAQ is slightly out of date in this regard: you may have to
-take many of these issues into consideration regardless of whether you
-go with SLC or MLC.  Hope this helps.
-
---=20
-Matthew L. Creech
+SGkgVml2ZWssDQoNCj4gV2h5IGNhbid0IHdlIGxvZyBzb21ldGhpbmcgaW4gdXNlciBzcGFjZSB3
+aGVuIHVzZXIgaW5pdGlhdGVzIGEgcmVib290LA0KPiBXaHkgZG9lcyBrZXJuZWwgbmVlZCB0byBj
+YXB0dXJlIHRoYXQgaW5mbyBpbiBOVlJBTS4NCg0KIEFzIEkgZXhwbGFpbmVkIGluIGZvbGxvd2lu
+ZyB0aHJlYWQsIA0KIGN1c3RvbWVycyBzb21ldGltZXMgYXNrIHVzIHRvIGludmVzdGlnYXRlIHRo
+ZSByZWFzb24gd2h5IHN5c3RlbSByZWJvb3RzLg0KIA0KIGh0dHBzOi8vbGttbC5vcmcvbGttbC8y
+MDEwLzExLzE3LzI0OQ0KIA0KIFdlIGNhbiBzb2x2ZSBmb2xsb3dpbmcgc2NlbmFyaW8gYnkgbG9n
+Z2luZyBtZXNzYWdlcyBpbiBrZXJuZWwgc3BhY2UuDQoNCiAgLSBTeXNsb2dkIGlzIGtpbGxlZCBi
+eSBtaXN0YWtlLg0KICAgICh1c2VyIGtpbGxzIHN5c2xvZ2Qgd2l0aCBjb21tYW5kIG9yIG90aGVy
+IGFwcGxpY2F0aW9ucyBzZW5kIHNpZ25hbCkuDQogIC0gQW5kIHRoZW4sIHN5c3RlbSByZWJvb3Rz
+Lg0KDQogSWYgd2UgbG9nIG1lc3NhZ2VzIGluIHVzZXIgc3BhY2UsIHdlIGNhbid0IHNlZSBtZXNz
+YWdlcy4NCg0KU2VpamkNCg0KPi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogVml2
+ZWsgR295YWwgW21haWx0bzp2Z295YWxAcmVkaGF0LmNvbV0NCj5TZW50OiBUdWVzZGF5LCBKdWx5
+IDE5LCAyMDExIDI6NDggUE0NCj5UbzogU2VpamkgQWd1Y2hpDQo+Q2M6IGtleGVjQGxpc3RzLmlu
+ZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW10ZEBsaXN0
+cy5pbmZyYWRlYWQub3JnOyBFcmljIFcuIEJpZWRlcm1hbjsgS09TQUtJDQo+TW90b2hpcm87IEFt
+ZXJpY28gV2FuZzsgTWF0dGhldyBHYXJyZXR0OyB0b255Lmx1Y2tAaW50ZWwuY29tOyBBbmRyZXcg
+TW9ydG9uOyBKYXJvZCBXaWxzb247IGhwYUB6eXRvci5jb207DQo+ZHppY2t1c0ByZWRoYXQuY29t
+OyBkbGUtZGV2ZWxvcEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7IFNhdG9ydSBNb3JpeWENCj5TdWJq
+ZWN0OiBSZTogW1JGQ11bUEFUQ0ggLW1tb3RtIDAvNF0gSW1wcm92ZW1lbnQgb2YgcHN0b3JlL2tt
+c2dfZHVtcCBpbiBrZXhlYy9wYW5pYyBwYXRoDQo+DQo+T24gVHVlLCBKdWwgMTksIDIwMTEgYXQg
+MDI6MjM6MjZQTSAtMDQwMCwgU2VpamkgQWd1Y2hpIHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gW1Vw
+c3RyZWFtIHN0YXR1c10NCj4+ICAgIERpc2N1c3Npb24gYWJvdXQga21zZ19kdW1wKCkgaW4ga2R1
+bXAgcGF0aDoNCj4+ICAgICAtIEVyaWMgYW5kIFZpdmVrIGFyZSB3b3JyaWVkIGFib3V0IHJlbGlh
+YmlsaXR5IG9mIGV4aXN0aW5nIGttc2dfZHVtcCgpLg0KPj4gICAgIC0gRXNwZWNpYWxseSwgVml2
+ZWsgd291bGQgbGlrZSB0byByZW1vdmUgYSBSQ1UgIGZ1bmN0aW9uIGNhbGwgY2hhaW4gaW4ga2R1
+bXAgcGF0aA0KPj4g44CA44CA44CAIHdoaWNoIGtlcm5lbCBtb2R1bGVzIGNhbiByZWdpc3RlciB0
+aGVpciBmdW5jdGlvbiBjYWxscyBmcmVlbHkuDQo+Pg0KPj4gICAgRGlzY3Vzc2lvbiBhYm91dCBw
+c3RvcmUgaW4gbm1pX2hhbmRlci4NCj4+ICAgICAtIERvbiBaaWNrdXMgZm91bmQgYW4gaXNzdWUg
+b2YgcHN0b3JlIGluIG5taV9oYW5kbGVyIGR1ZSB0byBpdHMgbXV0ZXhfbG9jay4NCj4NCj5Zb3Ug
+ZGlkIG5vdCBhbnN3ZXIgbXkgcXVlc3Rpb25zIGluIHRoZSBsYXN0IHBvc3RpbmcgbWFpbCB0aHJl
+YWQgYW5kIGdvbmUNCj5haGVhZCB3aXRoIHRoZSBuZXcgcG9zdGluZy4gSG93IGFyZSB3ZSBzdXBw
+b3NlZCB0byBkaXNjdXNzIHNvbWV0aGluZy4gVGhpcw0KPmhhcyBiZWVuIGEgcHJvYmxlbSBvbiB0
+aGlzIG1haWwgdGhyZWFkIHNpbmNlIHRoZSBiZWdpbm5laW5nLiBUaGVyZSBpcw0KPmxpdHRsZSBv
+cGVuIGRpc2N1c3Npb24uDQo+DQo+U28gaWYgeW91IHdhbnQgdG8gbWFrZSBhbnkgcHJvZ3Jlc3Mg
+aW4gdGhpcyBkaXJlY3Rpb24sIHdoYXQgd2lsbCBoZWxwDQo+aXMgb3BlbiBkaXNjdXNzaW9uLg0K
+Pg0KPkxvY2tpbmcgaXMgZ29pbmcgdG8gYmUgYSBwcm9ibGVtLiBTbyBhdGxlYXN0IHdlIGNhbiBy
+ZW1vdmUga21zZ19kdW1wKCkNCj5pbmZyYXN0cnVjdHVyZSBmcm9tIHJlYm9vdCBwYXRoLiBXaHkg
+Y2FuJ3Qgd2UgbG9nIHNvbWV0aGluZyBpbiB1c2VyDQo+c3BhY2Ugd2hlbiB1c2VyIGluaXRpYXRl
+cyBhIHJlYm9vdCwgbGV0IGl0IGdldCBsb2dnZWQgaW4gL3Zhci9sb2cvbWVzc2FnZXMNCj5hbmQg
+dGhlbiB1bW91bnQgdGhlIGZpbGUgcm9vdCBhbmQgZ28gYWhlYWQgd2l0aCByZWJvb3QuIFdoeSBk
+b2VzIGtlcm5lbA0KPm5lZWQgdG8gY2FwdHVyZSB0aGF0IGluZm8gaW4gTlZSQU0uDQo+DQo+SWYg
+d2UgY2FuIGdldCByaWQgb2YgYWxsIHRoZSBsb2dnaW5nIHRoaW5nIG9uIHJlYm9vdCBwYXRoLCB0
+aGVuIGF0IGxlYXN0DQo+aXQgZG9lcyBub3QgbmVlZCB0byBiZSBsb2NrIHByb3RlY3RlZCB3aXRo
+IGNyYXNoIHBhdGguDQo+DQo+VGhhbmtzDQo+Vml2ZWsNCg==
