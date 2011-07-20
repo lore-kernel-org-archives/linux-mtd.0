@@ -1,23 +1,26 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjT7m-00082t-4e
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 09:31:30 +0000
-Received: by pvg20 with SMTP id 20so31940pvg.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jul 2011 02:31:20 -0700 (PDT)
+Received: from mail.elutions.com ([64.31.159.3])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjVDA-0002Th-00
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 11:45:08 +0000
+Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
+	v3.2r9) id h4qmd00171sf for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Jul 2011 06:24:13 -0400 (envelope-from
+	<prvs=1182c31cb7=mhench@elutions.com>)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
-References: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
-	<1311139283.20738.150.camel@sauron>
-	<CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
-Date: Wed, 20 Jul 2011 11:31:19 +0200
-Message-ID: <CACTFLAO0-2QDVxVD0_qFwtExaf3=UHDvZDtSVePEi4ca=DBfbw@mail.gmail.com>
-Subject: Re: Regression in handling of unsafe UBI shutdown
-From: Daniel Mack <zonque@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Regression in handling of unsafe UBI shutdown
+Date: Wed, 20 Jul 2011 07:45:04 -0400
+Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC026DADA5@tpamail.elutions.com>
+In-Reply-To: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
+From: "Mike Hench" <mhench@elutions.com>
+To: "Daniel Mack" <zonque@gmail.com>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Sven Neumann <s.neumann@raumfeld.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 20, 2011 at 11:18 AM, Daniel Mack <zonque@gmail.com> wrote:
-> Also note that it's not the kernel itself that complains about the
-> state of the file system in this case but U-Boot. If we boot a 3.0-rc7
-> kernel in such a situation (via USB for example), the kernel will
-> recover the FS and continue.
-
-And I forgot to mention that the mtd-toturetest didn't show any
-problems, so it's most likely not an issue with the block-device
-layer.
+> UBIFS: recovery needed
+> Error reading superblock on volume 'ubi:RootFS'!
+> UBIFS not mounted, use ubifs mount to mount volume first!
+> Wrong Image Format for bootm command
+> ERROR: can't get kernel image!
 
 
-Btw - Adrian Hunter's address <adrian.hunter@nokia.com> bounces - can
-anyone care to update the UBI record in MAINTAINERS with a new
-address? :)
+Be nice to know what error.
+FWIW:
+a) I do not see this. I have very limited experience with 3.0-rc7 though
+so maybe I should not say anything :-)
 
+b) sometimes UBIFS decides to do recovery in u-boot, sometimes not.
+it seems to depend on the type of content in the journal.
+Lots of deleted files seem to trigger u-boot to perform a recovery for
+instance.
+I was running out of memory In u-boot while replaying the journal
+at one point with an older kernel. This produced the same top level
+error.
+I run 12 megs now, with a 2gigabyte flash. I think that is overkill.
 
-Thanks,
-Daniel
+Work with u-boot with the 'bad' flash.
+There is debugging in there, but I forget how to turn it on.
+
+Mike Hench
