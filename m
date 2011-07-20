@@ -1,26 +1,25 @@
-Received: from mail.elutions.com ([64.31.159.3])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjVXb-0002nO-O9
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 12:06:16 +0000
-Received: from mail.elutions.com (127.0.0.1) by mail.elutions.com (MlfMTA
-	v3.2r9) id h4qos60171sm for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jul 2011 06:45:23 -0400 (envelope-from
-	<prvs=1182c31cb7=mhench@elutions.com>)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Regression in handling of unsafe UBI shutdown
-Date: Wed, 20 Jul 2011 08:06:14 -0400
-Message-ID: <F87D23B7E1F84E4AB52E4FA4A55F85DC026DADA7@tpamail.elutions.com>
-In-Reply-To: <CACTFLAOsEZksaUXrN9KVeXHnSxtY-h8XWiYDyn_OxTLxmeWjeg@mail.gmail.com>
-From: "Mike Hench" <mhench@elutions.com>
-To: "Daniel Mack" <zonque@gmail.com>
-Cc: Sven Neumann <s.neumann@raumfeld.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjVvX-000340-FB
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 12:31:00 +0000
+Received: by iwn35 with SMTP id 35so155263iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Jul 2011 05:30:53 -0700 (PDT)
+Subject: Re: Regression in handling of unsafe UBI shutdown
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Date: Wed, 20 Jul 2011 15:32:16 +0300
+In-Reply-To: <CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
+References: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
+	<1311139283.20738.150.camel@sauron>
+	<CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1311165141.20738.171.camel@sauron>
+Mime-Version: 1.0
+Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Are you an an ARM as well?
-We run powerpc.
+On Wed, 2011-07-20 at 11:18 +0200, Daniel Mack wrote:
+> On Wed, Jul 20, 2011 at 7:21 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Tue, 2011-07-19 at 15:57 +0200, Daniel Mack wrote:
+> >> UBIFS: recovery needed
+> >> Error reading superblock on volume 'ubi:RootFS'!
+> >> UBIFS not mounted, use ubifs mount to mount volume first!
+> >> Wrong Image Format for bootm command
+> >> ERROR: can't get kernel image!
+> >>
+> >>
+> >> Hence my question is: were there any radical changes in the UBI/UBIFS
+> >> code on the kernel side that make older code not like the new content
+> >> anymore?
+> >
+> > Daniel, sorry, I have no time to look at this now, could you please try
+> > to bisect the issue?
+> 
+> It's not really easy to bisect as the issue is not always fully
+> reproducable, and also because the flash needs to be re-initialized
+> after it happened.
+> 
+> Also note that it's not the kernel itself that complains about the
+> state of the file system in this case but U-Boot. If we boot a 3.0-rc7
+> kernel in such a situation (via USB for example), the kernel will
+> recover the FS and continue.
+> 
+> I don't know how many people use the UBI code in U-Boot, and I don't
+> know either whether it was a good idea to go this way in the first
+> place, but we didn't want to waste much space on the NAND for a
+> fixed-size partition just for the kernel, and have a hard limit for it
+> in the future. And as I said, this approach has worked just fine in
+> the past.
+> 
+> So, let me re-phrase my question: is anyone aware of changes in the
+> UBIFS code between 2.6.36 and 3.0 that might cause trouble to U-Boot's
+> UBI code from 2009?
 
-> Did you try to cut the power from your device in the middle of full
-> operation? If would help a lot if you could try this.
-My test is automated random power cycling while doing a complicated file
-copy/compare operation I use for abuse testing.
+I guess that would be an on-flash format change? I am not aware of such
+changes, and if there were such - this is a big issue which we wound
+need to fix.
 
-Oh, forgot to mention, we are using u-boot 2010-06, not that old,
-not new either.
-
-Mike.
+-- 
+Best Regards,
+Artem Bityutskiy
