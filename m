@@ -1,24 +1,27 @@
-Date: Wed, 20 Jul 2011 13:28:24 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] mtd: dataflash: add device tree probe support
-Message-ID: <20110720052824.GB5766@S2100-06.ap.freescale.net>
-References: <1310283313-32087-1-git-send-email-shawn.guo@linaro.org>
-	<1310658757-17018-1-git-send-email-shawn.guo@linaro.org>
-	<20110715025407.GF2927@ponder.secretlab.ca>
-	<20110715044919.GB1840@S2100-06.ap.freescale.net>
-	<1311136844.20738.131.camel@sauron>
-	<20110720045547.GA5766@S2100-06.ap.freescale.net>
-	<1311139071.20738.147.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1311139071.20738.147.camel@sauron>
-Cc: patches@linaro.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	devicetree-discuss@lists.ozlabs.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjPKi-0005DC-Gc
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 05:28:33 +0000
+Received: by iyn15 with SMTP id 15so5347045iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2011 22:28:30 -0700 (PDT)
+Subject: Re: [PATCH 1/3] Makefile: fix "version.h" build for cross-compiling
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 20 Jul 2011 08:29:52 +0300
+In-Reply-To: <CAN8TOE-RYs9xGzsLFDZQtFEw0jfwpJgWUBsQrP3Y7gCz=UpDYw@mail.gmail.com>
+References: <1310071467-9017-1-git-send-email-computersforpeace@gmail.com>
+	<CAMjpGUeynErQnLO17QUPDgMAvgQKzFqi424mo66z0AbRTKrsWw@mail.gmail.com>
+	<CAN8TOE8LpRd+nMiwYFEAFG1gLmPuC8--FjkOxEbBS+iE7NnWTQ@mail.gmail.com>
+	<CAMjpGUdvJ_kvH9ifM+1mPTtt9ZZUOyNn4RkygiFXT_BGAUui8w@mail.gmail.com>
+	<1310097465.32086.4.camel@sauron>
+	<CAN8TOE-RYs9xGzsLFDZQtFEw0jfwpJgWUBsQrP3Y7gCz=UpDYw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1311139796.20738.151.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 20, 2011 at 08:17:45AM +0300, Artem Bityutskiy wrote:
-> On Wed, 2011-07-20 at 12:55 +0800, Shawn Guo wrote:
-> > On Wed, Jul 20, 2011 at 07:40:38AM +0300, Artem Bityutskiy wrote:
-> > > On Fri, 2011-07-15 at 12:49 +0800, Shawn Guo wrote:
-> > > > > > +static const struct of_device_id dataflash_dt_ids[] = {
-> > > > > > +	{ .compatible = "atmel,at45xxx", },
-> > > > > > +	{ .compatible = "atmel,dataflash", },
-> > > > > > +	{ /* sentinel */ }
-> > > > > > +};
-> > > > > > +
-> > > > > 
-> > > > > This should be protected with a #ifdef CONFIG_OF/#else/#endif, and
-> > > > > there should be a MODULE_DEVICE_TABLE().
-> > > > > 
-> > > > I personally hate #ifdef stuff.  But okay, I can do it since there
-> > > > are people being concerned by this little waste of space.
-> > > 
-> > > I guess the question is - will it compile and work if CONFIG_OF is
-> > > unset?
-> > > 
-> > Yes, it will compile, as 'struct of_device_id' is defined in
-> > include/linux/mod_devicetable.h unconditionally.
-> 
-> And it will work correctly even though dataflash_dt_ids is not NULL, it
-> will not confuse MTD layer?
-> 
-I think for non-dt case, dataflash_dt_ids is not used anyway.  So yes,
-it will not confuse MTD layer, at least from my testing.
+On Tue, 2011-07-19 at 11:17 -0700, Brian Norris wrote:
+> May I get I push for these?
+
+Done, sorry and thanks for reminding!
 
 -- 
-Regards,
-Shawn
+Best Regards,
+Artem Bityutskiy
