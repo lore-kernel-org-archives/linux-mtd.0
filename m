@@ -1,20 +1,22 @@
-Subject: Re: [PATCH V8 0/4] pxa3xx_nand: add two chip select support
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QjOl8-0004Xo-21
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2011 04:51:47 +0000
+Received: by iwn35 with SMTP id 35so5276965iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2011 21:51:43 -0700 (PDT)
+Subject: Re: [PATCH] MTD: Nand: use MTD_NAND_OMAP2 for OMAP4
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lei Wen <leiwen@marvell.com>
-Date: Wed, 20 Jul 2011 07:51:47 +0300
-In-Reply-To: <1310701473-31632-1-git-send-email-leiwen@marvell.com>
-References: <1310481336-13230-1-git-send-email-leiwen@marvell.com>
-	<1310701473-31632-1-git-send-email-leiwen@marvell.com>
+To: Jan Weitzel <j.weitzel@phytec.de>
+Date: Wed, 20 Jul 2011 07:53:05 +0300
+In-Reply-To: <1310727174-8183-1-git-send-email-j.weitzel@phytec.de>
+References: <1310727174-8183-1-git-send-email-j.weitzel@phytec.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1311137512.20738.134.camel@sauron>
+Message-ID: <1311137590.20738.135.camel@sauron>
 Mime-Version: 1.0
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>, Yu Tang <ytang5@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
-	Igor Grinberg <grinberg@compulab.co.il>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: Artem.Bityutskiy@nokia.com, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, vimalsingh@ti.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,34 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-07-14 at 20:44 -0700, Lei Wen wrote:
-> V2:
-> Choose to at most keep original pxa3xx_nand_info structure to reduce
-> patch size
-> 
-> V3:
-> Seperate original one patch into a patch set
-> 
-> V4:
-> Further seperate patch into small pieces:
-> Mainly change make in two patch, which seperate do
-> the new structure definition and two chip select support add.
-> 
-> V5:
-> Merge platform change patch and two chip feature into one patch.
-> Clean some format issue.
-> 
-> V6:
-> Add suspend and resume enhancement as a part of this patch set.
-> 
-> V7:
-> Fix build bug
-> Fix zylonite machine cannot resume back
-> 
-> V8:
-> Fix typos and code style
+On Fri, 2011-07-15 at 12:52 +0200, Jan Weitzel wrote:
+>  config MTD_NAND_OMAP2
+>  	tristate "NAND Flash device on OMAP2 and OMAP3"
 
-Pushed the series to the l2-mtd-2.6.git, thanks.
+I guess you need to add OMAP4 to the string above as well.
+
+> -	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3)
+> +	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3 || ARCH_OMAP4)
+>  	help
+> -          Support for NAND flash on Texas Instruments OMAP2 and OMAP3 platforms.
+> +          Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
+> +	  platforms.
+
 
 -- 
 Best Regards,
