@@ -1,23 +1,24 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QjveG-0007pO-Dg
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2011 15:58:53 +0000
-Received: by vws8 with SMTP id 8so1235797vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Jul 2011 08:58:47 -0700 (PDT)
+	id 1Qjwll-0001H5-4H
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2011 17:10:49 +0000
+Date: Thu, 21 Jul 2011 18:10:20 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Varun Wadekar <vwadekar@nvidia.com>
+Subject: Re: [PATCH] mtd: s3c2410 nand: Remove uncessary null check
+Message-ID: <20110721171020.GE20310@n2100.arm.linux.org.uk>
+References: <1311230038-6111-1-git-send-email-jhbird.choi@samsung.com>
+	<4E27CD14.4090702@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJcvjpg5i0uxn=n+SHMpm7yXirWkbrsdOiQiTTFP+K+b2-C6UA@mail.gmail.com>
-References: <CAJcvjphp3Cjew0=P6LWQ05Hb6HWpPy3D2FOBd8J5KwVGQpwcwA@mail.gmail.com>
-	<CAPBSBxqEzqkMV=1zJgmfsjO+OF2AQ3j+wpmhn1F+b_ZE6QYZug@mail.gmail.com>
-	<CAJcvjpg5i0uxn=n+SHMpm7yXirWkbrsdOiQiTTFP+K+b2-C6UA@mail.gmail.com>
-Date: Thu, 21 Jul 2011 11:58:46 -0400
-Message-ID: <CAPBSBxrvbet8q0jJZh6waJOoSTW5CaVTXmyksdZAtCX5nRsZ5Q@mail.gmail.com>
-Subject: Re: UBIFS support for SLC and MLC
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: John <jtburch62@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4E27CD14.4090702@nvidia.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Kukjin Kim <kgene.kim@samsung.com>,
+	"jhbird.choi@samsung.com" <jhbird.choi@samsung.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 21, 2011 at 11:22 AM, John <jtburch62@gmail.com> wrote:
->
-> So, in summary, it sounds like UBIFS handles any SLC/MLC artifact that
-> results in bit-errors on the same page as is being read; but it does
-> not handle any SLC/MLC artifact that results in bit-errors on pages
-> other than the one being read. =A0Do you concur?
->
+On Thu, Jul 21, 2011 at 12:24:12PM +0530, Varun Wadekar wrote:
+> On Thursday 21 July 2011 12:03 PM, jhbird.choi@samsung.com wrote:
+> > From: Jonghwan Choi <jhbird.choi@samsung.com>
+> >
+> > clk_get() return a pointer to the struct clk or an ERR_PTR().
+> >
+> > Signed-off-by: Jonghwan Choi <jhbird.choi@samsung.com>
+> > ---
+> >  drivers/mtd/nand/s3c2410.c |    2 +-
+> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> > index 4405468..18ff2f5 100644
+> > --- a/drivers/mtd/nand/s3c2410.c
+> > +++ b/drivers/mtd/nand/s3c2410.c
+> > @@ -723,7 +723,7 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
+> >  
+> >  	/* free the common resources */
+> >  
+> > -	if (info->clk != NULL && !IS_ERR(info->clk)) {
+> > +	if (!IS_ERR(info->clk)) {
+> 
+> I think you should use IS_ERR_OR_NULL instead.
 
-Yes, I think that sums it up.  Technically I think UBI handles the bit
-errors and UBIFS is oblivious to them, but that's mostly an irrelevant
-distinction for a UBIFS user.
+No.  Jonghwan Choi's patch is correct.
 
-It seems like like we really ought to implement this sort of periodic
-"scrubbing" at the UBI level.  It fits right in with the other things
-UBI does, like wear leveling, which abstract away the details of flash
-management from upper layers like UBIFS.  And the "scrubbing
-threshold" (how often we need to scrub pages) is similar in many
-respects to the wear-leveling threshold, and may vary depending on the
-characteristics of the underlying flash device.
-
-At a glance, it looks like "nandsim" only simulates bit flips on the
-same page being programmed.  A good first step might be to modify it
-to simulate the more difficult read-disturb ("page pairing") case, so
-that we can simulate MLC-like devices better.
-
---=20
-Matthew L. Creech
+As per the patch description, the only error value which a driver can
+attribute any problem with is something which passes IS_ERR().  Everything
+else the driver must treat as a _valid_ struct clk - and the clk API
+implementation must accept non-IS_ERR() clk_get() values.
