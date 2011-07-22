@@ -1,25 +1,18 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QkDQS-0003QE-Ld
-	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2011 10:57:49 +0000
-Received: by pzk1 with SMTP id 1so3523082pzk.16
+	id 1QkFRR-0004PR-2Z
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2011 13:06:58 +0000
+Received: by qwi2 with SMTP id 2so1337606qwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jul 2011 03:57:44 -0700 (PDT)
-Subject: RE: Can major re-organization activities of the UBIfs be
-	"deliberately provoked"?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Date: Fri, 22 Jul 2011 13:59:01 +0300
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD32A7208F982@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD32A7208F97E@dekaexchange07.deka.local>
-	<1311323646.20707.18.camel@sauron>
-	<0A40042D85E7C84DB443060EC44B3FD32A7208F982@dekaexchange07.deka.local>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1311332345.20707.22.camel@sauron>
-Mime-Version: 1.0
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Fri, 22 Jul 2011 06:06:53 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 22 Jul 2011 08:06:53 -0500
+Message-ID: <CAHyXW60RcO4poP8VXkm5Q0+9ACui1i_og2kDis8RKs=pxKB18w@mail.gmail.com>
+Subject: RFC fsl_elbc_nand.c does not update mtd->ecc_stats
+From: Michael Hench <michaelhench@gmail.com>
+To: linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: MatthewLCreech@eaton.com, mhench@elutions.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-07-22 at 06:50 -0400, Atlant Schmidt wrote:
-> Artem:
-> 
->   Thanks! We've already tuned the Linux page cache
->   to be quite a lot less bursty (for example, by
->   decreasing the dirty_expire_centisecs from 3000
->   (30 seconds) to 500 (5 seconds); this substantially
->   removed the burstiness associated with the VFS
->   (and the associated pagecache flushing tasks).
-> 
->   Now, though, we assume we're up against garbage
->   collection in the UBIfs so we wonder if there's
->   a way to make *THAT* operation either:
-> 
->     1. Less bursty (perhaps by making it run more
->        often but have less work to do at each run),
->        or
-> 
->     2. Externally schedulable so we could cause it
->        to occur when we have idle CPU time and its
->        running won't affect the realtime behavior
->        of the rest of our system.
-> 
->   Can either of those things be done?
+when using the fsl_elbc_nand driver, mtd->ecc_stats does not appear to
+get updated
+UBI uses this to determine when to scrub blocks
+the patch below appears to fix this (draft 0)
+am I missing anything?
+does this look reasonable?
 
-Yes, I think both can be done. Someone just needs to do this :-)
 
--- 
-Best Regards,
-Artem Bityutskiy
+
+diff -purN orig/drivers/mtd/nand/fsl_elbc_nand.c
+linux-3.0-rc7/drivers/mtd/nand/fsl_elbc_nand.c
+--- orig/drivers/mtd/nand/fsl_elbc_nand.c	2011-07-22 07:02:37.908778052 -0500
++++ linux-3.0-rc7/drivers/mtd/nand/fsl_elbc_nand.c	2011-07-22
+06:56:09.655002047 -0500
+@@ -748,12 +748,43 @@ static int fsl_elbc_read_page(struct mtd
+ 			      uint8_t *buf,
+ 			      int page)
+ {
++	struct fsl_elbc_mtd *priv = chip->priv;
++	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
++	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
++	uint32_t lteccr;
++
+ 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
+ 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+
+ 	if (fsl_elbc_wait(mtd, chip) & NAND_STATUS_FAIL)
+ 		mtd->ecc_stats.failed++;
+
++	if(chip->ecc.mode != NAND_ECC_HW)
++		return(0);
++
++	/* get the hardware ECC results */
++	lteccr = in_be32(&lbc->lteccr);
++	if(lteccr & 0x000F000F) {
++		int i;
++
++		out_be32(&lbc->lteccr, -1); /* clear lteccr */
++		printk(KERN_ERR "ECC RESULT %x n=%d",
++			lteccr, mtd->ecc_stats.corrected);
++		/*
++		 * 4 bits, one for each 512 byte subpage
++		 * 12-15 (ppc order) are for successfully corrected
++		 * 28-31 are for failed
++		 * small page nand has 3 bits set to zero in each field
++		 */
++		for(i=0; i < 4; i++) {
++			if(lteccr & 0x10000)
++				mtd->ecc_stats.corrected++;
++			if(lteccr & 0x1)
++				mtd->ecc_stats.failed++;
++			lteccr >>= 1;
++		}
++	}
++
+ 	return 0;
+ }
