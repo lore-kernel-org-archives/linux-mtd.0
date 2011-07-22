@@ -1,18 +1,26 @@
-Date: Fri, 22 Jul 2011 13:57:32 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-Message-ID: <20110722055731.GI26837@S2100-06.ap.freescale.net>
-References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
-	<20110721215020.GA25344@pengutronix.de>
-	<4E28EEE1.2050008@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4E28EEE1.2050008@freescale.com>
-Cc: arnd@arndb.de, dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QkAbn-00016e-36
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2011 07:57:19 +0000
+Received: by iyn15 with SMTP id 15so2064004iyn.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Jul 2011 00:57:16 -0700 (PDT)
+Subject: Re: Regression in handling of unsafe UBI shutdown
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Date: Fri, 22 Jul 2011 10:58:31 +0300
+In-Reply-To: <CACTFLAO0-2QDVxVD0_qFwtExaf3=UHDvZDtSVePEi4ca=DBfbw@mail.gmail.com>
+References: <CACTFLANAFT=G4kFvHUqvLrt=MxgpJnJ-EeHY8zd49pZvsNRejw@mail.gmail.com>
+	<1311139283.20738.150.camel@sauron>
+	<CACTFLANrd0FO9GNJpvS+MxnQgLLtXpA-sai30oYN90cjEFOErA@mail.gmail.com>
+	<CACTFLAO0-2QDVxVD0_qFwtExaf3=UHDvZDtSVePEi4ca=DBfbw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1311321515.20707.5.camel@sauron>
+Mime-Version: 1.0
+Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 22, 2011 at 11:30:41AM +0800, Huang Shijie wrote:
-> Hi,
-> >> The general-purpose media interface(GPMI) controller is a flexible interface
-> >> to up to several NAND flashs.
-> > ...
-> >> To Walfram & Artem:
-> >>     About how to disable the JFFS2 to use the OOB:
-> >>     I read the code, and I still have no idea about how to use the ecclayout
-> >>     to do the job. Could you give me some hint? thanks.
-> > Have you checked mxc_nand.c for example? There is
-> >
-> > static struct nand_ecclayout nandv1_hw_eccoob_smallpage = {
-> >         .eccbytes = 5,
-> >         .eccpos = {6, 7, 8, 9, 10},
-> >         .oobfree = {{0, 5}, {12, 4}, }
-> > }
-> >
-> > defined as one layout. Now, you could define one where oobfree is empty and
-> > eccbytes as big as the oob-area.
-> >
-> thanks. I will check the code.
-> >> The driver depends on another GPMI-NAND device patch set, you can find them at :
-> >> 	[1] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037033.html
-> >> 	[2] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037031.html
-> >> 	[3] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037032.html
-> >> 	[4] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037034.html
-> >>
-> >> The driver also depends on another DMA patch by Shawn:
-> >> 	[0] http://lists.infradead.org/pipermail/linux-mtd/2011-June/036820.html
-> > This makes it difficult for testers/reviewers. Please try to get a git-branch
-> > from Freescale or Linaro.
-> >
-> Shawn will merge my patches to his Linaro branch.
-> 
+On Wed, 2011-07-20 at 11:31 +0200, Daniel Mack wrote:
+> Btw - Adrian Hunter's address <adrian.hunter@nokia.com> bounces - can
+> anyone care to update the UBI record in MAINTAINERS with a new
+> address? :)
 
-git://git.linaro.org/people/shawnguo/linux-2.6.git mxs-gpmi
-
-Shijie, please check and test it.  I only did a build test.
+Fixed in the ubifs tree, thanks.
 
 -- 
-Regards,
-Shawn
+Best Regards,
+Artem Bityutskiy
