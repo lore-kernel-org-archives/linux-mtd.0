@@ -1,14 +1,14 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd/m25p80: add device tree probe support
-Date: Mon, 25 Jul 2011 21:37:43 +0800
-Message-ID: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
+From: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+To: <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] OMAP3: NAND: Adding NAND support and specifying NAND
+	partitions.
+Date: Mon, 25 Jul 2011 19:10:53 +0530
+Message-ID: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>, patches@linaro.org,
-	devicetree-discuss@lists.ozlabs.org,
-	Grant Likely <grant.likely@secretlab.ca>, Shawn Guo <shawn.guo@linaro.org>,
-	linux-arm-kernel@lists.infradead.org
+Cc: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>, Sanjeev Premi <premi@ti.com>,
+	Vaibhav Hiremath <hvaibhav@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,73 +18,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It adds device tree probe support for m25p80 driver.
+This patch adds the NAND support on OMAP3EVM board and also allocates
+five partitions  on NAND.
+Referred to file: arch/arm/mach-omap2/board-omap3beagle.c
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+Signed-off-by: Sanjeev Premi <premi@ti.com>
+Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
 ---
- Documentation/devicetree/bindings/mtd/st-m25p.txt |   14 ++++++++++++++
- drivers/mtd/devices/m25p80.c                      |   12 ++++++++++++
- 2 files changed, 26 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/st-m25p.txt
+ arch/arm/mach-omap2/board-omap3evm.c |   40 ++++++++++++++++++++++++++++++++++
+ 1 files changed, 40 insertions(+), 0 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/st-m25p.txt b/Documentation/devicetree/bindings/mtd/st-m25p.txt
-new file mode 100644
-index 0000000..a8c0485
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/st-m25p.txt
-@@ -0,0 +1,14 @@
-+* STMicroelectronics SPI Flash
-+
-+Required properties:
-+- compatible : "st,<model>", "st,m25p".
-+
-+Examples:
-+
-+flash: m25p32@1 {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "st,m25p32", "st,m25p";
-+	spi-max-frequency = <20000000>;
-+	reg = <1>;
-+};
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index e6ba034..d9d4101 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -26,6 +26,7 @@
- #include <linux/slab.h>
- #include <linux/sched.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/of_device.h>
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index b4d4346..be45b63 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -30,6 +30,10 @@
+ #include <linux/usb/otg.h>
+ #include <linux/smsc911x.h>
  
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/mtd.h>
-@@ -767,6 +768,16 @@ static const struct spi_device_id m25p_ids[] = {
- };
- MODULE_DEVICE_TABLE(spi, m25p_ids);
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id m25p_dt_ids[] = {
-+	{ .compatible = "st,m25p", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, m25p_dt_ids);
-+#else
-+#define m25p_dt_ids NULL
-+#endif
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/nand.h>
 +
- static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
- {
- 	int			tmp;
-@@ -986,6 +997,7 @@ static struct spi_driver m25p80_driver = {
- 		.name	= "m25p80",
- 		.bus	= &spi_bus_type,
- 		.owner	= THIS_MODULE,
-+		.of_match_table = m25p_dt_ids,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
+ #include <linux/wl12xx.h>
+ #include <linux/regulator/fixed.h>
+ #include <linux/regulator/machine.h>
+@@ -46,6 +50,8 @@
+ #include <plat/mcspi.h>
+ #include <video/omapdss.h>
+ #include <video/omap-panel-generic-dpi.h>
++#include <plat/gpmc.h>
++#include <plat/nand.h>
+ 
+ #include "mux.h"
+ #include "sdram-micron-mt46h32m32lf-6.h"
+@@ -101,6 +107,37 @@ static void __init omap3_evm_get_revision(void)
+ 	}
+ }
+ 
++static struct mtd_partition omap3evm_nand_partitions[] = {
++	/* All the partition sizes are listed in terms of NAND block size */
++	{
++		.name		= "X-Loader",
++		.offset		= 0,
++		.size		= 4 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot",
++		.offset         = 0x80000
++		.size           = 15 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot Env",
++		.offset		= 0x260000
++		.size		= 1 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Kernel",
++		.offset		= 0x280000
++		.size		= 32 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "File System",
++		.offset		= 0x680000
++		.size		= MTDPART_SIZ_FULL,
++	},
++};
++
+ #if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
+ #include <plat/gpmc-smsc911x.h>
+ 
+@@ -696,6 +733,9 @@ static void __init omap3_evm_init(void)
+ 
+ 	omap_serial_init();
+ 
++	omap_nand_flash_init(NAND_BUSWIDTH_16, omap3evm_nand_partitions,
++			ARRAY_SIZE(omap3evm_nand_partitions));
++
+ 	/* OMAP3EVM uses ISP1504 phy and so register nop transceiver */
+ 	usb_nop_xceiv_register();
+ 
 -- 
-1.7.4.1
+1.6.2.4
