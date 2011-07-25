@@ -1,22 +1,18 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QlOg8-0002QB-BO
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2011 17:10:53 +0000
-Received: by wwf22 with SMTP id 22so3112470wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Jul 2011 10:10:46 -0700 (PDT)
+Sender: Grant Likely <glikely@secretlab.ca>
+Date: Mon, 25 Jul 2011 15:19:10 -0600
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
+Message-ID: <20110725211910.GG26735@ponder.secretlab.ca>
+References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <201107251148.51262.brian.foster@maxim-ic.com>
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-Date: Mon, 25 Jul 2011 10:10:46 -0700
-Message-ID: <CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-From: Brian Norris <computersforpeace@gmail.com>
-To: Brian Foster <brian.foster@maxim-ic.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Mike Frysinger <vapier@gentoo.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
+Cc: devicetree-discuss@lists.ozlabs.org,
+	Artem Bityutskiy <artem.bityutskiy@intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, patches@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 25, 2011 at 2:48 AM, Brian Foster <brian.foster@maxim-ic.com> w=
-rote:
-> Massive apologies if this is not the correct list or
-> not the correct way of reporting MTD-utils bugs.
-> My searches failed to find anything .... =A0;-\
+On Mon, Jul 25, 2011 at 09:37:43PM +0800, Shawn Guo wrote:
+> It adds device tree probe support for m25p80 driver.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
 
-This is exactly the right place! Sorry it was difficult to find.
-
-> MTD-utils 1.4.5, when `mtdinfo -a' tries to print the
-> eraseblock regions of NOR-Flash, it open(2)s the nil
-> pointer (NULL). =A0The problem seems to be in mtdinfo.c's
-> print_region_info(), which assumes there is always a MTD
-> /dev node name (args.node). =A0However, in the case of `-a',
-> args.node is always NULL. =A0Oops!
-
-I don't have a test case that can reproduce the bug, as I don't have
-devices with "region info", but I can see the problem fairly clearly.
-It seems that the basic issue we need to solve is how to find the
-correct file devfs/udev path for a device using only its mtd_info
-object (e.g., use its major/minor number?). Then we could fix this
-line in print_region_info() for cases where args.node =3D=3D NULL:
-        fd =3D open(args.node, O_RDONLY | O_CLOEXEC);
-
-Also, is "region_info" a potential candidate for exporting via sysfs?
-That would make this support easier to include in libmtd.
-
-Brian
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
+> ---
+>  Documentation/devicetree/bindings/mtd/st-m25p.txt |   14 ++++++++++++++
+>  drivers/mtd/devices/m25p80.c                      |   12 ++++++++++++
+>  2 files changed, 26 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/st-m25p.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/st-m25p.txt b/Documentation/devicetree/bindings/mtd/st-m25p.txt
+> new file mode 100644
+> index 0000000..a8c0485
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/st-m25p.txt
+> @@ -0,0 +1,14 @@
+> +* STMicroelectronics SPI Flash
+> +
+> +Required properties:
+> +- compatible : "st,<model>", "st,m25p".
+> +
+> +Examples:
+> +
+> +flash: m25p32@1 {
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	compatible = "st,m25p32", "st,m25p";
+> +	spi-max-frequency = <20000000>;
+> +	reg = <1>;
+> +};
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index e6ba034..d9d4101 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/sched.h>
+>  #include <linux/mod_devicetable.h>
+> +#include <linux/of_device.h>
+>  
+>  #include <linux/mtd/cfi.h>
+>  #include <linux/mtd/mtd.h>
+> @@ -767,6 +768,16 @@ static const struct spi_device_id m25p_ids[] = {
+>  };
+>  MODULE_DEVICE_TABLE(spi, m25p_ids);
+>  
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id m25p_dt_ids[] = {
+> +	{ .compatible = "st,m25p", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, m25p_dt_ids);
+> +#else
+> +#define m25p_dt_ids NULL
+> +#endif
+> +
+>  static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+>  {
+>  	int			tmp;
+> @@ -986,6 +997,7 @@ static struct spi_driver m25p80_driver = {
+>  		.name	= "m25p80",
+>  		.bus	= &spi_bus_type,
+>  		.owner	= THIS_MODULE,
+> +		.of_match_table = m25p_dt_ids,
+>  	},
+>  	.id_table	= m25p_ids,
+>  	.probe	= m25p_probe,
+> -- 
+> 1.7.4.1
+> 
+> 
