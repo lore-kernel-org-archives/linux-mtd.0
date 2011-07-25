@@ -1,26 +1,14 @@
-Received: from na3sys009aog102.obsmtp.com ([74.125.149.69])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QlL4h-0006JF-EA
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2011 13:20:00 +0000
-Received: by mail-ew0-f44.google.com with SMTP id 19so2751622ewy.31
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Jul 2011 06:19:55 -0700 (PDT)
-Date: Mon, 25 Jul 2011 16:19:53 +0300
-From: Felipe Balbi <balbi@ti.com>
-To: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] OMAP3: Beagle: NAND: Specifying partition offsets
-	directly.
-Message-ID: <20110725131953.GZ18062@legolas.emea.dhcp.ti.com>
-References: <1311599243-875-1-git-send-email-hrishikesh.b@ti.com>
-	<20110725131406.GY18062@legolas.emea.dhcp.ti.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd/m25p80: add device tree probe support
+Date: Mon, 25 Jul 2011 21:37:43 +0800
+Message-ID: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hOmQO3H5Qmmwdmk8"
-Content-Disposition: inline
-In-Reply-To: <20110725131406.GY18062@legolas.emea.dhcp.ti.com>
-Cc: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Reply-To: balbi@ti.com
+Content-Type: text/plain
+Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>, patches@linaro.org,
+	devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>, Shawn Guo <shawn.guo@linaro.org>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,94 +18,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+It adds device tree probe support for m25p80 driver.
 
---hOmQO3H5Qmmwdmk8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
+---
+ Documentation/devicetree/bindings/mtd/st-m25p.txt |   14 ++++++++++++++
+ drivers/mtd/devices/m25p80.c                      |   12 ++++++++++++
+ 2 files changed, 26 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/st-m25p.txt
 
-Hi again,
-
-On Mon, Jul 25, 2011 at 04:14:06PM +0300, Felipe Balbi wrote:
-> On Mon, Jul 25, 2011 at 06:37:23PM +0530, Hrishikesh Bhandiwad wrote:
-> > In the nand partition table specifying the offset addresses
-> > directly instead of using the macro MTDPART_OFS_APPEND to gain
-> > runtime efficiency while nand initialization.
-> > MTDPART_OFS_APPEND has the value (-1) ,if assigned to offset,
-> > a runtime calculation of actual offset happens each time nand is
-> > initialized [ Refer: drivers/mtd/mtdpart.c: allocate_partition()].
-> > To avoid this , specify actual offset.
-> >=20
-> > Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
->=20
-> did you measure any significant gains when doing this ? Also, why only
-> beagle ? why not all boards already ? Measurment data of how long it
-> takes for the runtime calculation of the offset to complete would be
-> nice to see.
-
-I was just looking at the code and the offset calculation will always be
-done regardless of you using the direct offset or the MTDPART_OFS_APEND.
-The only thing you avoid by setting it directly is a branch.
-
-See here:
-
-648 int add_mtd_partitions(struct mtd_info *master,
-649                        const struct mtd_partition *parts,
-650                        int nbparts)
-651 {
-652         struct mtd_part *slave;
-653         uint64_t cur_offset =3D 0;
-654         int i;
-655=20
-656         printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", n=
-bparts, master->name);
-657=20
-658         for (i =3D 0; i < nbparts; i++) {
-659                 slave =3D allocate_partition(master, parts + i, i, cur_=
-offset);
-660                 if (IS_ERR(slave))
-661                         return PTR_ERR(slave);
-662=20
-663                 mutex_lock(&mtd_partitions_mutex);
-664                 list_add(&slave->list, &mtd_partitions);
-665                 mutex_unlock(&mtd_partitions_mutex);
-666=20
-667                 add_mtd_device(&slave->mtd);
-668=20
-669                 cur_offset =3D slave->offset + slave->mtd.size;
-670         }
-671=20
-672         return 0;
-673 }
-
-regardless of you passing MTDPART_OFS_APEND or direct slave->offset,
-cur_ofsset will be calculated, and that thing looks really cheap to
-execute to me. The only thing you're avoid is:
-
-467         slave->offset =3D part->offset;
-468=20
-469         if (slave->offset =3D=3D MTDPART_OFS_APPEND)
-470                 slave->offset =3D cur_offset;
-
-the if at line 469. Am I missing something ??
-
---=20
-balbi
-
---hOmQO3H5Qmmwdmk8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOLW15AAoJEAv8Txj19kN1m6cH/3z3vDNbpIxSlwemjOVOgcGe
-f0mystAM/k3a7eOtPRyjCKy97R35PcdmjxqC2LEAytuf09OMeEnKLg3CKf6GlRMF
-8QfNcuW4ygYiyg/2EgLYZIX7Q9tpUd+tOjDpJjNcwmL2PUs1+/Na4FdbFQahq6rm
-lit9WL/Gvhhd3WT96zBTaSAVpwlgT+nydqHJ2o85HqkInXbYnsPBsR/rTuK60gwv
-mja4Rw3ZSeMomCVBrVPD44zNp9OqdOooJneFDmgCNd9rbuj6pDWkZvUjjGvMQAeN
-L3OqV+JyXz2Y1RYCzm2oJe9rqVt/39+bPNv1MThGDpSCAoLtAJvlDKyCZX09B4A=
-=BGYe
------END PGP SIGNATURE-----
-
---hOmQO3H5Qmmwdmk8--
+diff --git a/Documentation/devicetree/bindings/mtd/st-m25p.txt b/Documentation/devicetree/bindings/mtd/st-m25p.txt
+new file mode 100644
+index 0000000..a8c0485
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/st-m25p.txt
+@@ -0,0 +1,14 @@
++* STMicroelectronics SPI Flash
++
++Required properties:
++- compatible : "st,<model>", "st,m25p".
++
++Examples:
++
++flash: m25p32@1 {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "st,m25p32", "st,m25p";
++	spi-max-frequency = <20000000>;
++	reg = <1>;
++};
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index e6ba034..d9d4101 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -26,6 +26,7 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/of_device.h>
+ 
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/mtd.h>
+@@ -767,6 +768,16 @@ static const struct spi_device_id m25p_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, m25p_ids);
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id m25p_dt_ids[] = {
++	{ .compatible = "st,m25p", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, m25p_dt_ids);
++#else
++#define m25p_dt_ids NULL
++#endif
++
+ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+@@ -986,6 +997,7 @@ static struct spi_driver m25p80_driver = {
+ 		.name	= "m25p80",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
++		.of_match_table = m25p_dt_ids,
+ 	},
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+-- 
+1.7.4.1
