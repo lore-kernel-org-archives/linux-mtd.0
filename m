@@ -1,23 +1,25 @@
-Received: from na3sys009aog122.obsmtp.com ([74.125.149.147])
+Received: from na3sys009aog102.obsmtp.com ([74.125.149.69])
 	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QlKz6-000681-3Y
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2011 13:14:12 +0000
-Received: by eyg7 with SMTP id 7so4248767eyg.13
+	id 1QlL4h-0006JF-EA
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2011 13:20:00 +0000
+Received: by mail-ew0-f44.google.com with SMTP id 19so2751622ewy.31
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Jul 2011 06:14:08 -0700 (PDT)
-Date: Mon, 25 Jul 2011 16:14:06 +0300
+	Mon, 25 Jul 2011 06:19:55 -0700 (PDT)
+Date: Mon, 25 Jul 2011 16:19:53 +0300
 From: Felipe Balbi <balbi@ti.com>
-To: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+To: Felipe Balbi <balbi@ti.com>
 Subject: Re: [PATCH] OMAP3: Beagle: NAND: Specifying partition offsets
 	directly.
-Message-ID: <20110725131406.GY18062@legolas.emea.dhcp.ti.com>
+Message-ID: <20110725131953.GZ18062@legolas.emea.dhcp.ti.com>
 References: <1311599243-875-1-git-send-email-hrishikesh.b@ti.com>
+	<20110725131406.GY18062@legolas.emea.dhcp.ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="562f9N4fbIs+fPrJ"
+	protocol="application/pgp-signature"; boundary="hOmQO3H5Qmmwdmk8"
 Content-Disposition: inline
-In-Reply-To: <1311599243-875-1-git-send-email-hrishikesh.b@ti.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20110725131406.GY18062@legolas.emea.dhcp.ti.com>
+Cc: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 Reply-To: balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,44 +31,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---562f9N4fbIs+fPrJ
+--hOmQO3H5Qmmwdmk8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 25, 2011 at 06:37:23PM +0530, Hrishikesh Bhandiwad wrote:
-> In the nand partition table specifying the offset addresses
-> directly instead of using the macro MTDPART_OFS_APPEND to gain
-> runtime efficiency while nand initialization.
-> MTDPART_OFS_APPEND has the value (-1) ,if assigned to offset,
-> a runtime calculation of actual offset happens each time nand is
-> initialized [ Refer: drivers/mtd/mtdpart.c: allocate_partition()].
-> To avoid this , specify actual offset.
->=20
-> Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+Hi again,
 
-did you measure any significant gains when doing this ? Also, why only
-beagle ? why not all boards already ? Measurment data of how long it
-takes for the runtime calculation of the offset to complete would be
-nice to see.
+On Mon, Jul 25, 2011 at 04:14:06PM +0300, Felipe Balbi wrote:
+> On Mon, Jul 25, 2011 at 06:37:23PM +0530, Hrishikesh Bhandiwad wrote:
+> > In the nand partition table specifying the offset addresses
+> > directly instead of using the macro MTDPART_OFS_APPEND to gain
+> > runtime efficiency while nand initialization.
+> > MTDPART_OFS_APPEND has the value (-1) ,if assigned to offset,
+> > a runtime calculation of actual offset happens each time nand is
+> > initialized [ Refer: drivers/mtd/mtdpart.c: allocate_partition()].
+> > To avoid this , specify actual offset.
+> >=20
+> > Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+>=20
+> did you measure any significant gains when doing this ? Also, why only
+> beagle ? why not all boards already ? Measurment data of how long it
+> takes for the runtime calculation of the offset to complete would be
+> nice to see.
+
+I was just looking at the code and the offset calculation will always be
+done regardless of you using the direct offset or the MTDPART_OFS_APEND.
+The only thing you avoid by setting it directly is a branch.
+
+See here:
+
+648 int add_mtd_partitions(struct mtd_info *master,
+649                        const struct mtd_partition *parts,
+650                        int nbparts)
+651 {
+652         struct mtd_part *slave;
+653         uint64_t cur_offset =3D 0;
+654         int i;
+655=20
+656         printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", n=
+bparts, master->name);
+657=20
+658         for (i =3D 0; i < nbparts; i++) {
+659                 slave =3D allocate_partition(master, parts + i, i, cur_=
+offset);
+660                 if (IS_ERR(slave))
+661                         return PTR_ERR(slave);
+662=20
+663                 mutex_lock(&mtd_partitions_mutex);
+664                 list_add(&slave->list, &mtd_partitions);
+665                 mutex_unlock(&mtd_partitions_mutex);
+666=20
+667                 add_mtd_device(&slave->mtd);
+668=20
+669                 cur_offset =3D slave->offset + slave->mtd.size;
+670         }
+671=20
+672         return 0;
+673 }
+
+regardless of you passing MTDPART_OFS_APEND or direct slave->offset,
+cur_ofsset will be calculated, and that thing looks really cheap to
+execute to me. The only thing you're avoid is:
+
+467         slave->offset =3D part->offset;
+468=20
+469         if (slave->offset =3D=3D MTDPART_OFS_APPEND)
+470                 slave->offset =3D cur_offset;
+
+the if at line 469. Am I missing something ??
 
 --=20
 balbi
 
---562f9N4fbIs+fPrJ
+--hOmQO3H5Qmmwdmk8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAEBAgAGBQJOLWweAAoJEAv8Txj19kN1M18IAIxw7KsWqxQuM0SnccWthLCB
-hAUEe1rFSLdctC9rEkssdNoIhJOZfjUgxuJ9BYWuUxHxwstnZFJ6qiZ/LQAEuohc
-6PCxUsjriwuxIu8SrJ3aKDGNf6950TveupjshcanoQ1i2pEHYMJmu2xmqVAcrqiv
-1eGYG7arlcMzV1twoxIoxq0lNvTMBLdRDDx6QN1WWchm7BHkhbQlJp4aVnY8hMF7
-nHNdEO3GH1cMtTfBYhr21wiuCReDJwoYbj9XNbL8eY048Gr/1ghsgmXARcg7eFB8
-NB/F62fe0eqLn448LZiFqJFsKVTOVTcToVn9spBlGuZLXM8eHt0acpv+irRd4Sc=
-=iXpg
+iQEcBAEBAgAGBQJOLW15AAoJEAv8Txj19kN1m6cH/3z3vDNbpIxSlwemjOVOgcGe
+f0mystAM/k3a7eOtPRyjCKy97R35PcdmjxqC2LEAytuf09OMeEnKLg3CKf6GlRMF
+8QfNcuW4ygYiyg/2EgLYZIX7Q9tpUd+tOjDpJjNcwmL2PUs1+/Na4FdbFQahq6rm
+lit9WL/Gvhhd3WT96zBTaSAVpwlgT+nydqHJ2o85HqkInXbYnsPBsR/rTuK60gwv
+mja4Rw3ZSeMomCVBrVPD44zNp9OqdOooJneFDmgCNd9rbuj6pDWkZvUjjGvMQAeN
+L3OqV+JyXz2Y1RYCzm2oJe9rqVt/39+bPNv1MThGDpSCAoLtAJvlDKyCZX09B4A=
+=BGYe
 -----END PGP SIGNATURE-----
 
---562f9N4fbIs+fPrJ--
+--hOmQO3H5Qmmwdmk8--
