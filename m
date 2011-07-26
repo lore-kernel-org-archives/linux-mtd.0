@@ -1,18 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>
-References: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>
-Date: Tue, 26 Jul 2011 12:38:46 +0300
-Message-ID: <CANOLnOODuPKAmRfiokC_4UgwrxCcw5xY1a9vhMsWN0T2LzNzAQ@mail.gmail.com>
-Subject: Re: [PATCH] OMAP3: NAND: Adding NAND support and specifying NAND
+From: "Bhandiwad, Hrishikesh" <hrishikesh.b@ti.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Date: Tue, 26 Jul 2011 16:36:54 +0530
+Subject: RE: [PATCH] OMAP3: NAND: Adding NAND support and specifying NAND
 	partitions.
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <ADF30F4D7BDE934D9B632CE7D5C7ACA4047C4D08A08E@dbde03.ent.ti.com>
+References: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>,
+	<CANOLnOODuPKAmRfiokC_4UgwrxCcw5xY1a9vhMsWN0T2LzNzAQ@mail.gmail.com>
+In-Reply-To: <CANOLnOODuPKAmRfiokC_4UgwrxCcw5xY1a9vhMsWN0T2LzNzAQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vaibhav Hiremath <hvaibhav@ti.com>,
-	linux-mtd@lists.infradead.org, Sanjeev Premi <premi@ti.com>,
-	linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Hiremath, Vaibhav" <hvaibhav@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"Premi, Sanjeev" <premi@ti.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+My Replies inline.
+
+Thanks & Regards,
+Hrishikesh
+________________________________________
+From: Grazvydas Ignotas [notasas@gmail.com]
+Sent: Tuesday, July 26, 2011 3:08 PM
+To: Bhandiwad, Hrishikesh
+Cc: linux-omap@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux=
+-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; Hiremath, Vaibhav; =
+Premi, Sanjeev
+Subject: Re: [PATCH] OMAP3: NAND: Adding NAND support and specifying NAND p=
+artitions.
+
 On Mon, Jul 25, 2011 at 4:40 PM, Hrishikesh Bhandiwad
 <hrishikesh.b@ti.com> wrote:
 > This patch adds the NAND support on OMAP3EVM board and also allocates
-> five partitions =C2=A0on NAND.
+> five partitions  on NAND.
 > Referred to file: arch/arm/mach-omap2/board-omap3beagle.c
 >
 > Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
 > Signed-off-by: Sanjeev Premi <premi@ti.com>
 > Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
 > ---
-> =C2=A0arch/arm/mach-omap2/board-omap3evm.c | =C2=A0 40 ++++++++++++++++++=
-++++++++++++++++
-> =C2=A01 files changed, 40 insertions(+), 0 deletions(-)
+>  arch/arm/mach-omap2/board-omap3evm.c |   40 ++++++++++++++++++++++++++++=
+++++++
+>  1 files changed, 40 insertions(+), 0 deletions(-)
 >
 > diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/b=
 oard-omap3evm.c
@@ -42,8 +60,8 @@ oard-omap3evm.c
 > --- a/arch/arm/mach-omap2/board-omap3evm.c
 > +++ b/arch/arm/mach-omap2/board-omap3evm.c
 > @@ -30,6 +30,10 @@
-> =C2=A0#include <linux/usb/otg.h>
-> =C2=A0#include <linux/smsc911x.h>
+>  #include <linux/usb/otg.h>
+>  #include <linux/smsc911x.h>
 >
 > +#include <linux/mtd/mtd.h>
 
@@ -52,92 +70,78 @@ You don't need this include.
 > +#include <linux/mtd/partitions.h>
 > +#include <linux/mtd/nand.h>
 > +
-> =C2=A0#include <linux/wl12xx.h>
-> =C2=A0#include <linux/regulator/fixed.h>
-> =C2=A0#include <linux/regulator/machine.h>
+>  #include <linux/wl12xx.h>
+>  #include <linux/regulator/fixed.h>
+>  #include <linux/regulator/machine.h>
 > @@ -46,6 +50,8 @@
-> =C2=A0#include <plat/mcspi.h>
-> =C2=A0#include <video/omapdss.h>
-> =C2=A0#include <video/omap-panel-generic-dpi.h>
+>  #include <plat/mcspi.h>
+>  #include <video/omapdss.h>
+>  #include <video/omap-panel-generic-dpi.h>
 > +#include <plat/gpmc.h>
 > +#include <plat/nand.h>
 
 These 2 too.
 
 >
-> =C2=A0#include "mux.h"
-> =C2=A0#include "sdram-micron-mt46h32m32lf-6.h"
+>  #include "mux.h"
+>  #include "sdram-micron-mt46h32m32lf-6.h"
 > @@ -101,6 +107,37 @@ static void __init omap3_evm_get_revision(void)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
-> =C2=A0}
+>        }
+>  }
 >
 > +static struct mtd_partition omap3evm_nand_partitions[] =3D {
-> + =C2=A0 =C2=A0 =C2=A0 /* All the partition sizes are listed in terms of =
-NAND block size */
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D "X-Loader",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =3D 0,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D 4 * NAND_BLOCK_SIZE,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .mask_flags =C2=A0 =C2=
-=A0 =3D MTD_WRITEABLE, =C2=A0 =C2=A0 =C2=A0 =C2=A0/* force read-only */
-> + =C2=A0 =C2=A0 =C2=A0 },
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D "U-Boot",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =3D 0x80000
+> +       /* All the partition sizes are listed in terms of NAND block size=
+ */
+> +       {
+> +               .name           =3D "X-Loader",
+> +               .offset         =3D 0,
+> +               .size           =3D 4 * NAND_BLOCK_SIZE,
+> +               .mask_flags     =3D MTD_WRITEABLE,        /* force read-o=
+nly */
+> +       },
+> +       {
+> +               .name           =3D "U-Boot",
+> +               .offset         =3D 0x80000
 
 Missing comma. Have you at least tried compiling this?
+[Hrishikesh] Apologies. I maintain different git repositories .Had compiled=
+ and tested in other one , missed out the commas while making changes in th=
+is one.
+Will send out a patch with perfect changes in my next revision.
 
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D 15 * NAND_BLOCK_SIZE,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .mask_flags =C2=A0 =C2=
-=A0 =3D MTD_WRITEABLE, =C2=A0 =C2=A0 =C2=A0 =C2=A0/* force read-only */
-> + =C2=A0 =C2=A0 =C2=A0 },
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D "U-Boot Env",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =3D 0x260000
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D 1 * NAND_BLOCK_SIZE,
-> + =C2=A0 =C2=A0 =C2=A0 },
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D "Kernel",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =3D 0x280000
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D 32 * NAND_BLOCK_SIZE,
-> + =C2=A0 =C2=A0 =C2=A0 },
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D "File System",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =3D 0x680000
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =3D MTDPART_SIZ_FULL,
-> + =C2=A0 =C2=A0 =C2=A0 },
+> +               .size           =3D 15 * NAND_BLOCK_SIZE,
+> +               .mask_flags     =3D MTD_WRITEABLE,        /* force read-o=
+nly */
+> +       },
+> +       {
+> +               .name           =3D "U-Boot Env",
+> +               .offset         =3D 0x260000
+> +               .size           =3D 1 * NAND_BLOCK_SIZE,
+> +       },
+> +       {
+> +               .name           =3D "Kernel",
+> +               .offset         =3D 0x280000
+> +               .size           =3D 32 * NAND_BLOCK_SIZE,
+> +       },
+> +       {
+> +               .name           =3D "File System",
+> +               .offset         =3D 0x680000
+> +               .size           =3D MTDPART_SIZ_FULL,
+> +       },
 > +};
 > +
-> =C2=A0#if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
-> =C2=A0#include <plat/gpmc-smsc911x.h>
+>  #if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
+>  #include <plat/gpmc-smsc911x.h>
 >
 > @@ -696,6 +733,9 @@ static void __init omap3_evm_init(void)
 >
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0omap_serial_init();
+>        omap_serial_init();
 >
-> + =C2=A0 =C2=A0 =C2=A0 omap_nand_flash_init(NAND_BUSWIDTH_16, omap3evm_na=
-nd_partitions,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 ARRAY_SIZE(omap3evm_nand_partitions));
+> +       omap_nand_flash_init(NAND_BUSWIDTH_16, omap3evm_nand_partitions,
+> +                       ARRAY_SIZE(omap3evm_nand_partitions));
 > +
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* OMAP3EVM uses ISP1504 phy and so register n=
-op transceiver */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0usb_nop_xceiv_register();
+>        /* OMAP3EVM uses ISP1504 phy and so register nop transceiver */
+>        usb_nop_xceiv_register();
 >
 > --
 > 1.6.2.4
@@ -145,8 +149,8 @@ op transceiver */
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-omap" in
 > the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.html
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
 
---=20
-Gra=C5=BEvydas
+--
+Gra=9Evydas
