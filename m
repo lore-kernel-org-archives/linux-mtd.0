@@ -1,20 +1,21 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+	helo=TX2EHSOBE003.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qlnuq-0003EY-H9
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2011 20:07:45 +0000
-Received: by qyk7 with SMTP id 7so506253qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2011 13:07:42 -0700 (PDT)
+	id 1QlnxW-0003NO-QR
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2011 20:10:31 +0000
+Date: Tue, 26 Jul 2011 15:10:24 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: <MichaelHench@gmail.com>
+Subject: Re: [PATCH v3] mtd: eLBC NAND: update ecc_stats.corrected when
+	lteccr available
+Message-ID: <20110726151024.706ccda0@schlenkerla.am.freescale.net>
+In-Reply-To: <CAHyXW61rWcoE0Wcd9K7BsP3+VKzmQo=RPMM9+1DTw+QdF9MVew@mail.gmail.com>
+References: <CAHyXW61rWcoE0Wcd9K7BsP3+VKzmQo=RPMM9+1DTw+QdF9MVew@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 26 Jul 2011 15:07:42 -0500
-Message-ID: <CAHyXW61rWcoE0Wcd9K7BsP3+VKzmQo=RPMM9+1DTw+QdF9MVew@mail.gmail.com>
-Subject: [PATCH v3] mtd: eLBC NAND: update ecc_stats.corrected when lteccr
-	available
-From: Michael Hench <michaelhench@gmail.com>
-To: scottwood@freescale.com, linux-mtd@lists.infradead.org,
-	linuxppc-dev@ozlabs.org, mhench@elutions.com, mlcreech@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Reply-To: MichaelHench@gmail.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, mlcreech@gmail.com,
+	mhench@elutions.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-update ecc_stats.corrected if LTECCR register is available.
+On Tue, 26 Jul 2011 15:07:42 -0500
+Michael Hench <michaelhench@gmail.com> wrote:
 
-v2: kernel standard C formatting
+> update ecc_stats.corrected if LTECCR register is available.
+> 
+> v2: kernel standard C formatting
+> 
+> v3: kernel standard C formatting again, changed a comment to get under 80 chars
+> 
+> Signed-off-by: Michael Hench <MichaelHench@gmail.com>
 
-v3: kernel standard C formatting again, changed a comment to get under 80 chars
+Acked-by: Scott Wood <scottwood@freescale.com>
 
-Signed-off-by: Michael Hench <MichaelHench@gmail.com>
----
-diff -purN orig/drivers/mtd/nand/fsl_elbc_nand.c
-linux-3.0/drivers/mtd/nand/fsl_elbc_nand.c
---- orig/drivers/mtd/nand/fsl_elbc_nand.c	2011-07-25 14:50:56.838326055 -0500
-+++ linux-3.0/drivers/mtd/nand/fsl_elbc_nand.c	2011-07-25
-14:48:35.680940052 -0500
-@@ -256,6 +256,25 @@ static int fsl_elbc_run_command(struct m
- 		return -EIO;
- 	}
-
-+	if (chip->ecc.mode != NAND_ECC_HW)
-+		return 0;
-+
-+	if (elbc_fcm_ctrl->read_bytes == mtd->writesize + mtd->oobsize) {
-+		uint32_t lteccr = in_be32(&lbc->lteccr);
-+		/*
-+		 * if command was a full page read and the ELBC
-+		 * has the LTECCR register, then bits 12-15 (ppc order) of
-+		 * LTECCR indicates which 512 byte sub-pages had fixed errors.
-+		 * bits 28-31 are uncorrectable errors, marked elsewhere.
-+		 * for small page nand only 1 bit is used.
-+		 * if the ELBC doesn't have the lteccr register it reads 0
-+		 */
-+		if (lteccr & 0x000F000F)
-+			out_be32(&lbc->lteccr, 0x000F000F); /* clear lteccr */
-+		if (lteccr & 0x000F0000)
-+			mtd->ecc_stats.corrected++;
-+	}
-+
- 	return 0;
- }
-
---
+-Scott
