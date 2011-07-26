@@ -1,21 +1,18 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qlby5-0001rH-UT
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2011 07:22:18 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-Date: Tue, 26 Jul 2011 09:21:44 +0200
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
-In-Reply-To: <CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <201107260921.44512.brian.foster@maxim-ic.com>
-Cc: Mike Frysinger <vapier@gentoo.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>
+References: <1311601253-2933-1-git-send-email-hrishikesh.b@ti.com>
+Date: Tue, 26 Jul 2011 12:38:46 +0300
+Message-ID: <CANOLnOODuPKAmRfiokC_4UgwrxCcw5xY1a9vhMsWN0T2LzNzAQ@mail.gmail.com>
+Subject: Re: [PATCH] OMAP3: NAND: Adding NAND support and specifying NAND
+	partitions.
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Vaibhav Hiremath <hvaibhav@ti.com>,
+	linux-mtd@lists.infradead.org, Sanjeev Premi <premi@ti.com>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +22,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 25 July 2011 19:10:46 Brian Norris wrote:
-> On Mon, Jul 25, 2011 at 2:48 AM, Brian Foster <brian.foster@maxim-ic.com> wrote:
->[...]
-> This is exactly the right place! Sorry it was difficult to find.
+On Mon, Jul 25, 2011 at 4:40 PM, Hrishikesh Bhandiwad
+<hrishikesh.b@ti.com> wrote:
+> This patch adds the NAND support on OMAP3EVM board and also allocates
+> five partitions =C2=A0on NAND.
+> Referred to file: arch/arm/mach-omap2/board-omap3beagle.c
+>
+> Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+> Signed-off-by: Sanjeev Premi <premi@ti.com>
+> Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+> ---
+> =C2=A0arch/arm/mach-omap2/board-omap3evm.c | =C2=A0 40 ++++++++++++++++++=
+++++++++++++++++
+> =C2=A01 files changed, 40 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/b=
+oard-omap3evm.c
+> index b4d4346..be45b63 100644
+> --- a/arch/arm/mach-omap2/board-omap3evm.c
+> +++ b/arch/arm/mach-omap2/board-omap3evm.c
+> @@ -30,6 +30,10 @@
+> =C2=A0#include <linux/usb/otg.h>
+> =C2=A0#include <linux/smsc911x.h>
+>
+> +#include <linux/mtd/mtd.h>
 
- The list was easy to find; what I could not find was
- any indication of how/where bugs should be reported.
+You don't need this include.
 
-> > MTD-utils 1.4.5, when `mtdinfo -a' tries to print the
-> > eraseblock regions of NOR-Flash, it open(2)s the nil
-> > pointer (NULL).  [...]
-> 
-> I don't have a test case that can reproduce the bug, as I don't have
-> devices with "region info", but I can see the problem fairly clearly.
-> It seems that the basic issue we need to solve is how to find the
-> correct file devfs/udev path  [...]
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/mtd/nand.h>
+> +
+> =C2=A0#include <linux/wl12xx.h>
+> =C2=A0#include <linux/regulator/fixed.h>
+> =C2=A0#include <linux/regulator/machine.h>
+> @@ -46,6 +50,8 @@
+> =C2=A0#include <plat/mcspi.h>
+> =C2=A0#include <video/omapdss.h>
+> =C2=A0#include <video/omap-panel-generic-dpi.h>
+> +#include <plat/gpmc.h>
+> +#include <plat/nand.h>
 
- As an FYI, in our current embedded systems (plural),
- a static /dev is used (no udev, mdev, &tc).  Hence,
- udev (and I assume also, devfs) path may not work
- in such an environment?
+These 2 too.
 
-> Also, is "region_info" a potential candidate for exporting via sysfs?
-> That would make this support easier to include in libmtd.
+>
+> =C2=A0#include "mux.h"
+> =C2=A0#include "sdram-micron-mt46h32m32lf-6.h"
+> @@ -101,6 +107,37 @@ static void __init omap3_evm_get_revision(void)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> =C2=A0}
+>
+> +static struct mtd_partition omap3evm_nand_partitions[] =3D {
+> + =C2=A0 =C2=A0 =C2=A0 /* All the partition sizes are listed in terms of =
+NAND block size */
+> + =C2=A0 =C2=A0 =C2=A0 {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D "X-Loader",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =3D 0,
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D 4 * NAND_BLOCK_SIZE,
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .mask_flags =C2=A0 =C2=
+=A0 =3D MTD_WRITEABLE, =C2=A0 =C2=A0 =C2=A0 =C2=A0/* force read-only */
+> + =C2=A0 =C2=A0 =C2=A0 },
+> + =C2=A0 =C2=A0 =C2=A0 {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D "U-Boot",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =3D 0x80000
 
- I don't know if it is exportable or not, but I concur
- this seems like a possible/plausible solution.
+Missing comma. Have you at least tried compiling this?
 
-cheers!
-	-blf-
--- 
-Brian FOSTER
-Principal MTS, Software
-Maxim Integrated Products (Microcontroller BU), formerly Innova Card
-Web    : http://www.maxim-ic.com/
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D 15 * NAND_BLOCK_SIZE,
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .mask_flags =C2=A0 =C2=
+=A0 =3D MTD_WRITEABLE, =C2=A0 =C2=A0 =C2=A0 =C2=A0/* force read-only */
+> + =C2=A0 =C2=A0 =C2=A0 },
+> + =C2=A0 =C2=A0 =C2=A0 {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D "U-Boot Env",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =3D 0x260000
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D 1 * NAND_BLOCK_SIZE,
+> + =C2=A0 =C2=A0 =C2=A0 },
+> + =C2=A0 =C2=A0 =C2=A0 {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D "Kernel",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =3D 0x280000
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D 32 * NAND_BLOCK_SIZE,
+> + =C2=A0 =C2=A0 =C2=A0 },
+> + =C2=A0 =C2=A0 =C2=A0 {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D "File System",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .offset =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =3D 0x680000
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .size =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D MTDPART_SIZ_FULL,
+> + =C2=A0 =C2=A0 =C2=A0 },
+> +};
+> +
+> =C2=A0#if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
+> =C2=A0#include <plat/gpmc-smsc911x.h>
+>
+> @@ -696,6 +733,9 @@ static void __init omap3_evm_init(void)
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0omap_serial_init();
+>
+> + =C2=A0 =C2=A0 =C2=A0 omap_nand_flash_init(NAND_BUSWIDTH_16, omap3evm_na=
+nd_partitions,
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 ARRAY_SIZE(omap3evm_nand_partitions));
+> +
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* OMAP3EVM uses ISP1504 phy and so register n=
+op transceiver */
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0usb_nop_xceiv_register();
+>
+> --
+> 1.6.2.4
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.html
+>
+
+--=20
+Gra=C5=BEvydas
