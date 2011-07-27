@@ -1,15 +1,18 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qlvnv-00078N-JZ
-	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2011 04:33:09 +0000
-Received: by vws8 with SMTP id 8so1012462vws.36
+	id 1Qm4i7-0006yK-Bo
+	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2011 14:03:44 +0000
+Received: by wyf23 with SMTP id 23so1178784wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2011 21:33:02 -0700 (PDT)
-From: "Matthew L. Creech" <mlcreech@gmail.com>
+	Wed, 27 Jul 2011 07:03:40 -0700 (PDT)
+From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] nand: update out-of-date docs/FAQ, mention UBIFS
-Date: Wed, 27 Jul 2011 00:32:54 -0400
-Message-Id: <1311741176-8850-1-git-send-email-mlcreech@gmail.com>
+Subject: [PATCH] mtd: gpio-nand: add device tree bindings
+Date: Wed, 27 Jul 2011 15:03:30 +0100
+Message-Id: <1311775410-5158-1-git-send-email-jamie@jamieiles.com>
+Cc: Jamie Iles <jamie@jamieiles.com>, devicetree-discuss@lists.ozlabs.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,137 +22,258 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add device tree bindings so that the gpio-nand driver may be
+instantiated from the device tree.  This also allows the partitions
+to be specified in the device tree.
 
-Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- doc/nand.xml |   34 +++++++++++++++++++---------------
- faq/nand.xml |   11 +++++++----
- 2 files changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/doc/nand.xml b/doc/nand.xml
-index 7254af5..1d55685 100644
---- a/doc/nand.xml
-+++ b/doc/nand.xml
-@@ -124,30 +124,33 @@ want to a page. The consecutive writes to a page, before erasing it again, are
- restricted to 1-3 writes, depending on the manufacturers specifications. This applies 
- similar to the spare area. This makes it necessary for the filesystem to handle a writebuffer,
- which contains data, that is less than a page</p>
--<p>At the moment there are only a few filesystems, which support NAND</p>
-+<p>At the moment there are only a few filesystems which support NAND:</p>
- <ul>
- <li>JFFS2 and YAFFS for bare NAND Flash and SmartMediaCards </li>
- <li>NTFL for DiskOnChip devices </li>
- <li>TRUEFFS from M-Systems for DiskOnChip devices</li>
- <li>SmartMedia DOS-FAT as defined by the SSFDC Forum</li>
-+<li>UBIFS for bare NAND flash</li>
- </ul>
--<p>JFFS2 and NTFL are Open Source, while TRUEFFS is a proprietary solution. 
-+<p>JFFS2, NTFL, and UBIFS are Open Source, while TRUEFFS is a proprietary solution. 
- SmartMedia DOS-Fat is a specification from SSFDC forum. It is somewhat open under a 
- non disclosure agreement with Toshiba, who owns all rights on this specifications. NTFL is 
- designed for the usage of DiskOnChip devices. JFFS2 supports raw NAND chips and 
- SmartMediaCards at the moment. A JFFS2 support for DiskOnChip devices, based on the 
- NAND code, is planned. There are some other Open Source projects for NAND filesystem 
--support, but there's no other working solution than JFFS2 and YAFFS at the moment of this writing. 
-+support, but there's no other working solution than JFFS, YAFFS, and UBIFS at the moment of this writing.
- YAFFS is available from <a href="http://www.aleph1.co.uk/armlinux/projects/yaffs">YAFFS-Homepage</a>.
- YAFFS is faster than JFFS2 and consumes less RAM, JFFS2 provides on the fly file compression and
--decompression, which is very helpful for small FLASHs.</p>
-+decompression, which is very helpful for small FLASHs.  UBIFS provides compression similar to JFFS2, but
-+is usually a better choice for large NAND flash chips (see <a href="ubifs.html">here</a> for more 
-+information on UBIFS, including some notes about how it compares to JFFS2).</p>
- <p> There is currently no support for the wide spread SmartMedia DOS-FAT filesystem, 
-  mainly because it's not a reliable filesystem for industrial usage. It's ok for 
-  multimedia applications. The hardware support layer is designed to support an 
-  implementation of SmartMedia DOS-FAT. There are some efforts to implement it, but it's
-  in an early stage. There are a couple of SmartMedia Card adaptors for USB, PCMCIA, FireWire 
-  ... with Linux drivers available, which support the SmartMedia DOS-FAT. </p>
--<p>JFFS2 and YAFFS include bad block management, wear leveling, error correction and provide
-+<p>JFFS2, YAFFS, and UBIFS include bad block management, wear leveling, error correction and provide
- reliable filesystems for industrial use on top of NAND Flash.</p>
- </div>
+I have this working on our platform using the following DT section:
+
+	ebi {
+		compatible = "simple-bus";
+		#address-cells = <2>;
+		#size-cells = <1>;
+		ranges = <0 0 0x40000000 0x08000000
+			  1 0 0x48000000 0x08000000
+			  2 0 0x50000000 0x08000000
+			  3 0 0x58000000 0x08000000>;
+
+		nand: gpio-nand@2,0 {
+			compatible = "gpio-nand";
+			#address-cells = <0>;
+			#size-cells = <0>;
+			reg = <2 0x0000 0x1000
+			       0 0x2000 0x0004>;
+
+			gpios = <&banka 1 0	/* rdy */
+				 &banka 2 0 	/* nce */
+				 &banka 3 0 	/* ale */
+				 &banka 4 0 	/* cle */
+				 0		/* nwp */>;
+
+			boot@100000 {
+				label = "Boot";
+				reg = <0x100000 0x80000>;
+			};
+
+			...
+		};
+	};
+};
+
+but to provide synchronisation with regards to the bus reordering, we actually
+need to perform a read from the GPIO controller rather than the EBI, but I'm
+not sure how to express this in the DT when using ranges like this, so any
+suggestions would be welcome!
+
+Jamie
+
+ .../devicetree/bindings/mtd/gpio-nand.txt          |   43 +++++++++
+ drivers/mtd/nand/gpio.c                            |   91 ++++++++++++++++++--
+ 2 files changed, 126 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpio-nand.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-nand.txt
+new file mode 100644
+index 0000000..98cb152
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/gpio-nand.txt
+@@ -0,0 +1,43 @@
++GPIO assisted NAND flash
++
++Required properties:
++- compatible : "gpio-nand"
++- reg : should specify localbus chip select and size used for the chip.  For
++  ARM platforms where a dummy read is needed to provide synchronisation with
++  regards to bus reordering, an optional second resource describes the
++  location to read from.
++- #address-cells, #size-cells : Must be present if the device has sub-nodes
++  representing partitions.  In this case, both #address-cells and #size-cells
++  must be equal to 1.
++- gpios : specifies the gpio pins to control the NAND device.  nwp is an
++  optional gpio and may be set to 0 if not present.
++
++Optional properties:
++- bank-width : Width (in bytes) of the bank.  Equal to the device width times
++  the number of interleaved chips.
++- chip-delay : chip dependent delay for transferring data from array to
++  read registers (tR).
++
++Examples:
++
++gpio-nand@1,0 {
++	compatible = "gpio-nand";
++	reg = <1 0x0000 0x1000>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++	gpios = <&banka 1 0	/* rdy */
++		 &banka 2 0 	/* nce */
++		 &banka 3 0 	/* ale */
++		 &banka 4 0 	/* cle */
++		 0		/* nwp */>;
++
++	flash {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "...";
++
++		partition@0 {
++			...
++		};
++	};
++};
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 2c2060b..ee74593 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -27,6 +27,9 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/nand-gpio.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_gpio.h>
  
-@@ -255,22 +258,22 @@ pages this byte is reserved</td></tr>
+ struct gpiomtd {
+ 	void __iomem		*io_sync;
+@@ -221,14 +224,70 @@ static void __iomem *request_and_remap(struct resource *res, size_t size,
+ 	return ptr;
+ }
  
- <h3>Where can you get the code ?</h3>
- <div>
--<p>The latest changes to JFFS2 and the underlying NAND code are not in the 
--kernel code at the moment. The latest code is available from 
--<a href="../source.html">CVS and daily snapshots</a></p>
-+<p>NAND support is now present in the upstream kernel code, including JFFS2
-+and UBIFS. The latest code is also available from
-+<a href="../source.html">GIT and daily snapshots</a>.</p>
++static const struct of_device_id gpio_nand_id_table[] = {
++	{ .compatible = "gpio-nand" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
++
++static int gpio_nand_of_get_options(struct device *dev,
++				    struct gpio_nand_platdata *plat)
++{
++	u32 width;
++
++	if (!of_property_read_u32(dev->of_node, "bank-width", &width)) {
++		if (width == 2) {
++			plat->options |= NAND_BUSWIDTH_16;
++		} else if (width != 1) {
++			dev_err(dev, "invalid bank-width %u\n", width);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static void gpio_nand_of_get_gpio(struct device *dev,
++				  struct gpio_nand_platdata *plat)
++{
++	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
++	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
++	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
++	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
++	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
++}
++
++static void gpio_nand_of_get_chip_delay(struct device *dev,
++					struct gpio_nand_platdata *plat)
++{
++	u32 chip_delay;
++
++	if (!of_property_read_u32(dev->of_node, "chip-delay", &chip_delay))
++		plat->chip_delay = (int)chip_delay;
++}
++
++static int gpio_nand_of_get_config(struct device *dev,
++				   struct gpio_nand_platdata *plat)
++{
++	int ret = gpio_nand_of_get_options(dev, plat);
++
++	if (ret < 0)
++		return ret;
++
++	gpio_nand_of_get_gpio(dev, plat);
++	gpio_nand_of_get_chip_delay(dev, plat);
++
++	return 0;
++}
++
+ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ {
+ 	struct gpiomtd *gpiomtd;
+ 	struct nand_chip *this;
+ 	struct resource *res0, *res1;
+-	int ret;
++	int ret = 0;
  
--<p>There are four layers of software</p>
-+<p>If using JFFS2, there are four layers of software:</p>
- <ol>
- <li>JFFS2: filesystem driver</li>
- <li>MTD: Memory Technology Devices driver</li>
- <li>NAND: generic NAND driver </li>
- <li>Hardware specific driver </li>
- </ol>
--<p>the MTD driver just provides a mount point for JFFS2. The generic NAND 
-+<p>The MTD driver just provides a mount point for JFFS2. The generic NAND 
- driver provides all functions, which are necessary to identify, read, write 
- and erase NAND Flash. The hardware dependent functions are provided by 
- the hardware driver. They provide mainly the hardware access information and
--functions for the generic NAND driver. For YAFFS applies the same.</p>
-+functions for the generic NAND driver.  The same applies for YAFFS.</p>
- </div>
+-	if (!dev->dev.platform_data)
++	if (!dev->dev.of_node && !dev->dev.platform_data)
+ 		return -EINVAL;
  
- <h3>API Documentation</h3>
-@@ -324,13 +327,13 @@ CONFIG_JFFS2_FS_NAND=y</p>
- <hr size="2" />
- 		
- <h2>FAQ</h2>
--<p>Please see the NAND section in <a href="../faq/nand.html">MTD FAQ's</a></p>
-+<p>Please see the NAND section in <a href="../faq/nand.html">MTD FAQs</a></p>
+ 	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
+@@ -257,11 +316,17 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		}
+ 	}
  
- <hr size="2" />
- 		
- <h2>References:</h2>
- <h3>Open Source</h3>
--<p>JFFS2 and NTFL are located on this <a href="../index.html">website</a>.<br />
-+<p>JFFS2, NTFL, and UBIFS are located on this <a href="../index.html">website</a>.<br />
- YAFFS is located at <a href="http://www.aleph1.co.uk/armlinux/projects/yaffs">YAFFS-Homepage</a>.</p>
- <h3>Hardware</h3>
- <p><a href="http://www.toshiba.com/taec">Toshiba</a></p>
-@@ -343,8 +346,9 @@ YAFFS is located at <a href="http://www.aleph1.co.uk/armlinux/projects/yaffs">YA
- <h2>Maintainers</h2>
- <p>JFFS2 is maintained by David Woodhouse</p>
- <p>The generic NAND driver is maintained by Thomas Gleixner</p>
--<p>Please don't contact them direct. Ask your questions on the 
--<a href="../mail.html">mtd-mailing-list</a>.</p>
-+<p>UBIFS is maintained by Artem Bityutskiy</p>
-+<p>Please don't contact them directly. Ask your questions on the
-+<a href="../mail.html">linux-mtd mailinglist</a>.</p>
- <p>Any suggestions, improvements, bug-reports and bug-fixes are welcome</p>
- 		
- 	<INCLUDE file="../inc/footer.tmpl" />
-diff --git a/faq/nand.xml b/faq/nand.xml
-index 75acc72..9d9cd06 100644
---- a/faq/nand.xml
-+++ b/faq/nand.xml
-@@ -32,13 +32,16 @@ Not from a bare NAND chip. You need a glue logic around, which gives you memory
- access to the chip on boot-up, like the DiskOnChip devices do. This will be a
- quite complex CPLD. An alternative is to use a small e.g. 1MB NOR flash, which
- contains the boot code and maybe a compressed kernel image. Then you can use
--JFFS2 on NAND as your root file-system.
-+JFFS2 or UBIFS on NAND as your root file-system.
- </P>
+-	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
++	if (dev->dev.platform_data)
++		memcpy(&gpiomtd->plat, dev->dev.platform_data,
++		       sizeof(gpiomtd->plat));
++	else
++		ret = gpio_nand_of_get_config(&dev->dev, &gpiomtd->plat);
++	if (ret)
++		goto err_config;
  
- <P>
--Some newer chips make the first page available for reading after power up. This
--could be helpful for starting a small 256/512/2048 byte boot-code. At the time
--of this writing there is no tested implementation of this.
-+Some chips have internal circuitry which is capable of reading and booting from
-+the first page of NAND after power up. This allows you to boot a small
-+(e.g. 256/512/2048 byte) boot code, which can initialize SDRAM, then read and
-+execute a more complete bootloader from subsequent NAND blocks.  An example is
-+U-Boot, which can be built as a 2-stage "initial" and "secondary" bootloader
-+for use with NAND.
- </P>
+ 	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
+ 	if (ret)
+-		goto err_nce;
++		goto err_config;
+ 	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+ 		ret = gpio_request(gpiomtd->plat.gpio_nwp, "NAND NWP");
+@@ -312,12 +377,21 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		goto err_wp;
+ 	}
  
- <P>
+-	if (gpiomtd->plat.adjust_parts)
+-		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+-					   gpiomtd->mtd_info.size);
++	if (dev->dev.platform_data) {
++		if (gpiomtd->plat.adjust_parts)
++			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
++						   gpiomtd->mtd_info.size);
++	} else {
++		ret = of_mtd_parse_partitions(&dev->dev, dev->dev.of_node,
++					      &gpiomtd->plat.parts);
++		if (ret < 0)
++			goto err_wp;
+ 
++		gpiomtd->plat.num_parts = (unsigned int)ret;
++	}
+ 	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
+ 			    gpiomtd->plat.num_parts);
++
+ 	platform_set_drvdata(dev, gpiomtd);
+ 
+ 	return 0;
+@@ -335,7 +409,7 @@ err_ale:
+ 		gpio_free(gpiomtd->plat.gpio_nwp);
+ err_nwp:
+ 	gpio_free(gpiomtd->plat.gpio_nce);
+-err_nce:
++err_config:
+ 	iounmap(gpiomtd->io_sync);
+ 	if (res1)
+ 		release_mem_region(res1->start, resource_size(res1));
+@@ -352,6 +426,7 @@ static struct platform_driver gpio_nand_driver = {
+ 	.remove		= gpio_nand_remove,
+ 	.driver		= {
+ 		.name	= "gpio-nand",
++		.of_match_table = gpio_nand_id_table,
+ 	},
+ };
+ 
 -- 
 1.7.4.1
