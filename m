@@ -1,20 +1,20 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QmWoi-00082t-Ql
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2011 20:04:25 +0000
-Message-ID: <4E31C11A.8050105@free-electrons.com>
-Date: Thu, 28 Jul 2011 22:05:46 +0200
-From: David Wagner <david.wagner@free-electrons.com>
+Received: from server7.net1.3net.it ([151.1.155.7]
+	helo=hulk.mondoservermail.com)
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QmX1W-00089r-Q0
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2011 20:17:40 +0000
+Message-ID: <48E1BF31A3F771A83F74B24010BAE013@zhpl>
+From: =?gb2312?B?z9bU2rapubrG38+mx+nIy73az8q7qMDxxrejrMvNx6fUqrTzuuyw/KOh?=
+	<webmaster@99xsh.com>
+To: 
+Subject: =?gb2312?B?z9bU2rapubrG38+mx+nIy73az8q7qMDxxrejrMvNx6fUqrTzuuyw/A==?=
+	=?gb2312?B?o6E=?=
+Date: Fri, 29 Jul 2011 04:00:48 +0800
 MIME-Version: 1.0
-To: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: Flash filesystems benchmarks
-References: <4E3131AE.7010408@free-electrons.com>
-	<CAAfyv35zgDLpf6Hs0G0wESh0-BjoiWMH+4wA7+anSwR0rREtbA@mail.gmail.com>
-In-Reply-To: <CAAfyv35zgDLpf6Hs0G0wESh0-BjoiWMH+4wA7+anSwR0rREtbA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	tim.bird@am.sony.com, Linux Embedded <linux-embedded@vger.kernel.org>
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+Reply-To: 438970591@qq.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-	Hi,
-
-On 28/07/2011 21:14, Belisko Marek wrote:
-> Hi,
-> Great job ;). Maybe small README how to use scripts. I try to run
-> ./performance-test.py but got en error because test.cfg doesn't exist.
- > Shouldn't there be input argument for specific board something like:
- > [...]
-
-Thanks for the feedback. You're right, READMEs are missing ; they'll come.
-
-The current procedure, regarding the configuration file, is:
-  * write a configuration file (like those already provided as examples)
-  * cp it to test.cfg
-  * launch performance-test.py
-why the cp ? because it allows to tweak it without changing the original.
-But it would certainly be best to use a proper argument parsing 
-(argparse, like for gnuplotize_*.py and generate_graphs.py) and have an 
-optional configuration file.
-
-
-The material and documentation to reproduce the tests isn't fully 
-available yet but will be very soon.  I can already give you a link to 
-the debian root filesystem (to be exported through NFS) that was used ; 
-however I can't guarantee yet that it will work. 
-http://free-electrons.com/~david/pub/RFS-benchmarks.tar.lzma (1.1GB)
-
-
-David.
-
---
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+ICAgIM/W1Nq2qbm6xt/PpsfpyMu92s/Ku6jA8ca3o6yz/c/tytzTxbvdvNvN4qOs1NnLzdK7uPYx
+MDAw1Kq1xLTzuuyw/KOsyv3Bv9PQz96jrMvNzerOqta5o6yyu9KqtO25/cW2o6ENCg0KICAgILXj
+tMvBtL3TyKXQwsnQuqO52c34wezIocen1Kq087rssPyjuiAgICBodHRwOi8vYmxvZy5zaW5hLmNv
+bS5jbi9zL2Jsb2dfNjBjOWQ1MjkwMTAwczZxZS5odG1sDQoNCiAgICAgICAgICAgICAgICAgICAg
+ICCjqLTLuuyw/DIwMTHE6jjUwjPI1cewyrnTw9PQ0KejqQ0KDQrG38+mx+nIy73az8q7qMDxxre7
+8MjI1KS2qdbQo6zUvdTntqm5urzbuPHUvbHj0sujoQ0KDQrQwsnQuqPIq8fyMTgwuPa5+rzSw+K3
+0cvNu6jJz8PFo6y087K/t9a5+rzStbHM7MvNtO+jrLn6xNrX7r/sMdChyrHD4rfRy82076OhDQot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCtDCydC6o8/Ku6jA8ca3zfgNCg0K
