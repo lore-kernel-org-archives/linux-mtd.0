@@ -1,26 +1,18 @@
-Message-ID: <20018.43621.688990.319528@ipc1.ka-ro>
-Date: Fri, 29 Jul 2011 14:41:09 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Koen Beel <koen.beel.barco@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-In-Reply-To: <CAHMSPgM5W8=mE4sRDGMMfo39fvThBo_jrdG8hyhJNQ_ceV=_pA@mail.gmail.com>
-References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
-	<20110721215020.GA25344@pengutronix.de>
-	<4E28EEE1.2050008@freescale.com>
-	<20110722055731.GI26837@S2100-06.ap.freescale.net>
-	<4E292FCF.6010608@freescale.com>
-	<CAHMSPgMHrqWcJ=BThDLgQ=XyTBDCMvNS4SVjQWfk=Jf682TEig@mail.gmail.com>
-	<4E2F6F90.7030207@freescale.com>
-	<CAHMSPgPC4whyskfuFGeFd7WHx-=5htezWajm_rNi9Xa+03PV0A@mail.gmail.com>
-	<20018.24364.787244.956361@ipc1.ka-ro>
-	<CAHMSPgM5W8=mE4sRDGMMfo39fvThBo_jrdG8hyhJNQ_ceV=_pA@mail.gmail.com>
-Cc: arnd@arndb.de, dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, shijie8@gmail.com,
-	Shawn Guo <shawn.guo@freescale.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QmmPT-0002Bw-Gq
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2011 12:43:24 +0000
+From: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] OMAP3: NAND: Adding NAND support and specifying NAND
+	partitions.
+Date: Fri, 29 Jul 2011 18:13:16 +0530
+Message-ID: <1311943396-16710-1-git-send-email-hrishikesh.b@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>, Sanjeev Premi <premi@ti.com>,
+	Vaibhav Hiremath <hvaibhav@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This patch adds the NAND support on OMAP3EVM board and also allocates
+five partitions  on NAND.
+Referred to file: arch/arm/mach-omap2/board-omap3beagle.c
 
-Koen Beel writes:
-> Hi,
-> 
-> On Fri, Jul 29, 2011 at 9:20 AM, Lothar Waßmann <LW@karo-electronics.de> wrote:
-> > Hi,
-> >
-> > Koen Beel writes:
-> >> Hi,
-> >>
-> >> I have test on mx23evk board. Still see the same issues.
-> >>
-> >> On Wed, Jul 27, 2011 at 3:53 AM, Huang Shijie <b32955@freescale.com> wrote:
-> >> > Hi,
-> >> >
-> >> > Thanks for your test.
-> >> >
-> >> >> Hi,
-> >> >>
-> >> >> It's not really working for me.
-> >> >> I've applied all gpmi-nand driver patches and the dma driver patches.
-> >> >>
-> >> >> I have added following kernel parameters:
-> >> >> mtdparts=gpmi-nand:20m(boot),-(user) ubi.mtd=1 root=ubi0:rootfs0
-> >> >> rootfstype=ubifs gpmi_debug_init
-> >> >>
-> >> >> During boot I get already get DMA timeout:
-> >> >> [    2.560000] [ start_dma_without_bch_irq : 392 ] DMA timeout, last DMA
-> >> >> :1
-> >> >> [    3.560000] [ start_dma_with_bch_irq : 427 ] bch timeout!!!
-> >> >> ...
-> >> >> (see log file in attach line 89)
-> >>
-> >> I still see this DMA timeout when booting.
-> >> What kernel parameters do you use? I still use same as above.
-> >>
-> > Do you have an SD card in the system? I'm getting the same error when
-> > accessing an SD card. Without SD card I can use the flash without any
-> > errors.
-> 
-> No SD card in the system. At least not on my mx23evk board.
-> My real target hardware has a SDIO wifi chip.
-> 
-> Are you also testing on the mx23evk board? Really strange it is not
-> reproducible here then.
-> Anyone using mx23evk please give:
-> - revision number of board (I have tested on rev C1)
-> - kernel parameter used (see previous mail for mine)
-> 
-It's getting ever more strange. I only have problems with concurrent
-access to the flash and SD-card when I do file system based accessed
-to the SD card.
-A 'dd if=/dev/mmcblk0 of=/dev/null' while excessively using the flash
-works well, while mounting the SD card and doing an 'ls' produces
-immediate BCH DMA timeouts.
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+Signed-off-by: Sanjeev Premi <premi@ti.com>
+Signed-off-by: Hrishikesh Bhandiwad <hrishikesh.b@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3evm.c |   37 ++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
-Perhaps someone can make anything out of that.
-
-
-Lothar Waßmann
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index b4d4346..3ac96d4 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -30,6 +30,9 @@
+ #include <linux/usb/otg.h>
+ #include <linux/smsc911x.h>
+ 
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/nand.h>
++
+ #include <linux/wl12xx.h>
+ #include <linux/regulator/fixed.h>
+ #include <linux/regulator/machine.h>
+@@ -101,6 +104,37 @@ static void __init omap3_evm_get_revision(void)
+ 	}
+ }
+ 
++static struct mtd_partition omap3evm_nand_partitions[] = {
++	/* All the partition sizes are listed in terms of NAND block size */
++	{
++		.name		= "X-Loader",
++		.offset		= 0,
++		.size		= 4 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot",
++		.offset         = 0x80000,
++		.size           = 15 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot Env",
++		.offset		= 0x260000,
++		.size		= 1 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Kernel",
++		.offset		= 0x280000,
++		.size		= 32 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "File System",
++		.offset		= 0x680000,
++		.size		= MTDPART_SIZ_FULL,
++	},
++};
++
+ #if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
+ #include <plat/gpmc-smsc911x.h>
+ 
+@@ -696,6 +730,9 @@ static void __init omap3_evm_init(void)
+ 
+ 	omap_serial_init();
+ 
++	omap_nand_flash_init(NAND_BUSWIDTH_16, omap3evm_nand_partitions,
++			ARRAY_SIZE(omap3evm_nand_partitions));
++
+ 	/* OMAP3EVM uses ISP1504 phy and so register nop transceiver */
+ 	usb_nop_xceiv_register();
+ 
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+1.6.2.4
