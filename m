@@ -1,21 +1,23 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-Date: Sun, 31 Jul 2011 15:51:48 +0200
-References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
-	<20018.43621.688990.319528@ipc1.ka-ro>
-	<CAHMSPgPXnDVO630P9fnogQ0XvPSrwz0MYzXfXZLJoJNRf1gifA@mail.gmail.com>
-In-Reply-To: <CAHMSPgPXnDVO630P9fnogQ0XvPSrwz0MYzXfXZLJoJNRf1gifA@mail.gmail.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QnX06-0003fV-OL
+	for linux-mtd@lists.infradead.org; Sun, 31 Jul 2011 14:28:19 +0000
+Received: by wwf22 with SMTP id 22so3434572wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 31 Jul 2011 07:28:17 -0700 (PDT)
+Sender: Grant Likely <glikely@secretlab.ca>
+Date: Sat, 30 Jul 2011 21:19:31 -0600
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Jamie Iles <jamie@jamieiles.com>
+Subject: Re: [PATCHv2] mtd: gpio-nand: add device tree bindings
+Message-ID: <20110731031931.GE24334@ponder.secretlab.ca>
+References: <1311936391-20127-1-git-send-email-jamie@jamieiles.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201107311551.48223.marek.vasut@gmail.com>
-Cc: arnd@arndb.de, dedekind1@gmail.com, Koen Beel <koen.beel.barco@gmail.com>,
-	Wolfram Sang <w.sang@pengutronix.de>, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	Shawn Guo <shawn.guo@freescale.com>,
-	Lothar =?utf-8?q?Wa=C3=9Fmann?= <LW@karo-electronics.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1311936391-20127-1-git-send-email-jamie@jamieiles.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, devicetree-discuss@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,102 +27,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, July 29, 2011 05:00:48 PM Koen Beel wrote:
-> On Fri, Jul 29, 2011 at 2:41 PM, Lothar Wa=C3=9Fmann <LW@karo-electronics=
-=2Ede>=20
-wrote:
-> > Hi,
-> >=20
-> > Koen Beel writes:
-> >> Hi,
-> >>=20
-> >> On Fri, Jul 29, 2011 at 9:20 AM, Lothar Wa=C3=9Fmann <LW@karo-electron=
-ics.de>=20
-wrote:
-> >> > Hi,
-> >> >=20
-> >> > Koen Beel writes:
-> >> >> Hi,
-> >> >>=20
-> >> >> I have test on mx23evk board. Still see the same issues.
-> >> >>=20
-> >> >> On Wed, Jul 27, 2011 at 3:53 AM, Huang Shijie <b32955@freescale.com=
->=20
-wrote:
-> >> >> > Hi,
-> >> >> >=20
-> >> >> > Thanks for your test.
-> >> >> >=20
-> >> >> >> Hi,
-> >> >> >>=20
-> >> >> >> It's not really working for me.
-> >> >> >> I've applied all gpmi-nand driver patches and the dma driver
-> >> >> >> patches.
-> >> >> >>=20
-> >> >> >> I have added following kernel parameters:
-> >> >> >> mtdparts=3Dgpmi-nand:20m(boot),-(user) ubi.mtd=3D1 root=3Dubi0:r=
-ootfs0
-> >> >> >> rootfstype=3Dubifs gpmi_debug_init
-> >> >> >>=20
-> >> >> >> During boot I get already get DMA timeout:
-> >> >> >> [    2.560000] [ start_dma_without_bch_irq : 392 ] DMA timeout,
-> >> >> >> last DMA
-> >> >> >>=20
-> >> >> >> :1
-> >> >> >>=20
-> >> >> >> [    3.560000] [ start_dma_with_bch_irq : 427 ] bch timeout!!!
-> >> >> >> ...
-> >> >> >> (see log file in attach line 89)
-> >> >>=20
-> >> >> I still see this DMA timeout when booting.
-> >> >> What kernel parameters do you use? I still use same as above.
-> >> >=20
-> >> > Do you have an SD card in the system? I'm getting the same error when
-> >> > accessing an SD card. Without SD card I can use the flash without any
-> >> > errors.
-> >>=20
-> >> No SD card in the system. At least not on my mx23evk board.
-> >> My real target hardware has a SDIO wifi chip.
-> >>=20
-> >> Are you also testing on the mx23evk board? Really strange it is not
-> >> reproducible here then.
-> >> Anyone using mx23evk please give:
-> >> - revision number of board (I have tested on rev C1)
-> >> - kernel parameter used (see previous mail for mine)
-> >=20
-> > It's getting ever more strange. I only have problems with concurrent
-> > access to the flash and SD-card when I do file system based accessed
-> > to the SD card.
-> > A 'dd if=3D/dev/mmcblk0 of=3D/dev/null' while excessively using the fla=
-sh
-> > works well, while mounting the SD card and doing an 'ls' produces
-> > immediate BCH DMA timeouts.
-> >=20
-> > Perhaps someone can make anything out of that.
->=20
-> I have checked and the function dma_irq_callback is never called
-> during my tests. This means the DMA transfer does not even works once.
->=20
-> Also no clue here ...
+On Fri, Jul 29, 2011 at 11:46:31AM +0100, Jamie Iles wrote:
+> Add device tree bindings so that the gpio-nand driver may be
+> instantiated from the device tree.  This also allows the partitions
+> to be specified in the device tree.
+> 
+> v2:
+> 	- add CONFIG_OF guards for non-dt platforms
+> 	- compatible becomes gpio-control-nand
+> 	- clarify some binding details
+> 
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 
-Aren't you getting some undervolt on the powerrail for example ? btw the dr=
-iver=20
-looks a bit crappy to me, but let's believe it works ;-)
+Hey Jamie,
 
->=20
-> > Lothar Wa=C3=9Fmann
-> > --
-> > ___________________________________________________________
-> >=20
-> > Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-> > Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-> > Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-> > Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-> >=20
-> > www.karo-electronics.de | info@karo-electronics.de
-> > ___________________________________________________________
->=20
+Mostly looks good.  Comments below.  You can add my acked-by when you
+address them.
+
+[...]
+> +static int gpio_nand_of_get_config(struct device *dev,
+> +				   struct gpio_nand_platdata *plat)
+> +{
+> +	int ret = gpio_nand_of_get_options(dev, plat);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	gpio_nand_of_get_gpio(dev, plat);
+> +	gpio_nand_of_get_chip_delay(dev, plat);
+
+Personally, I would just open code it and not bother with the extra
+functions, but whatever you prefer.
+
+> +
+> +	return 0;
+> +}
+> +#else /* CONFIG_OF */
+> +#define gpio_nand_id_table NULL
+> +static inline int gpio_nand_of_get_config(struct device *dev,
+> +					  struct gpio_nand_platdata *plat)
+> +{
+> +	return -ENODEV;
+> +}
+> +#endif /* CONFIG_OF */
+> +
+>  static int __devinit gpio_nand_probe(struct platform_device *dev)
+>  {
+>  	struct gpiomtd *gpiomtd;
+>  	struct nand_chip *this;
+>  	struct resource *res0, *res1;
+> -	int ret;
+> +	int ret = 0;
+>  
+> -	if (!dev->dev.platform_data)
+> +	if (!dev->dev.of_node && !dev->dev.platform_data)
+>  		return -EINVAL;
+>  
+>  	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
+> @@ -257,11 +325,17 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+>  		}
+>  	}
+>  
+> -	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
+> +	if (dev->dev.platform_data)
+> +		memcpy(&gpiomtd->plat, dev->dev.platform_data,
+> +		       sizeof(gpiomtd->plat));
+> +	else
+> +		ret = gpio_nand_of_get_config(&dev->dev, &gpiomtd->plat);
+> +	if (ret)
+> +		goto err_config;
+>  
+>  	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
+>  	if (ret)
+> -		goto err_nce;
+> +		goto err_config;
+
+Nit: There's not much purpose it changing the label.
+
+>  	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+>  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+>  		ret = gpio_request(gpiomtd->plat.gpio_nwp, "NAND NWP");
+> @@ -312,12 +386,21 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+>  		goto err_wp;
+>  	}
+>  
+> -	if (gpiomtd->plat.adjust_parts)
+> -		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+> -					   gpiomtd->mtd_info.size);
+> +	if (dev->dev.platform_data) {
+> +		if (gpiomtd->plat.adjust_parts)
+> +			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+> +						   gpiomtd->mtd_info.size);
+> +	} else {
+> +		ret = of_mtd_parse_partitions(&dev->dev, dev->dev.of_node,
+> +					      &gpiomtd->plat.parts);
+> +		if (ret < 0)
+> +			goto err_wp;
+>  
+> +		gpiomtd->plat.num_parts = (unsigned int)ret;
+
+Is the casting necessary?  I don't think it is.
+
+> +	}
+>  	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
+>  			    gpiomtd->plat.num_parts);
+> +
+
+Nit: Unrelated whitespace change.
+
+>  	platform_set_drvdata(dev, gpiomtd);
+>  
+>  	return 0;
+> @@ -335,7 +418,7 @@ err_ale:
+>  		gpio_free(gpiomtd->plat.gpio_nwp);
+>  err_nwp:
+>  	gpio_free(gpiomtd->plat.gpio_nce);
+> -err_nce:
+> +err_config:
+>  	iounmap(gpiomtd->io_sync);
+>  	if (res1)
+>  		release_mem_region(res1->start, resource_size(res1));
+> @@ -352,6 +435,7 @@ static struct platform_driver gpio_nand_driver = {
+>  	.remove		= gpio_nand_remove,
+>  	.driver		= {
+>  		.name	= "gpio-nand",
+> +		.of_match_table = gpio_nand_id_table,
+>  	},
+>  };
+>  
+> -- 
+> 1.7.4.1
+> 
 > _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> devicetree-discuss mailing list
+> devicetree-discuss@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/devicetree-discuss
