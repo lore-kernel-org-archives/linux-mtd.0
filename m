@@ -1,18 +1,20 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qnt5D-0003vY-Nb
-	for linux-mtd@lists.infradead.org; Mon, 01 Aug 2011 14:03:05 +0000
-Received: by wyf23 with SMTP id 23so1615813wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 01 Aug 2011 07:02:59 -0700 (PDT)
-From: Jamie Iles <jamie@jamieiles.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCHv3] mtd: gpio-nand: add device tree bindings
-Date: Mon,  1 Aug 2011 15:02:54 +0100
-Message-Id: <1312207374-14760-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, devicetree-discuss@lists.ozlabs.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <201107311551.48223.marek.vasut@gmail.com>
+References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
+	<20018.43621.688990.319528@ipc1.ka-ro>
+	<CAHMSPgPXnDVO630P9fnogQ0XvPSrwz0MYzXfXZLJoJNRf1gifA@mail.gmail.com>
+	<201107311551.48223.marek.vasut@gmail.com>
+Date: Mon, 1 Aug 2011 17:14:07 +0200
+Message-ID: <CAHMSPgMK_zM17NXgsbrzs8Zw0VXtDoP12_1V7oeROSF=aBDuYg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
+From: Koen Beel <koen.beel.barco@gmail.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0ce0d02e1bafb804a97315b6
+Cc: arnd@arndb.de, dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	Shawn Guo <shawn.guo@freescale.com>, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	=?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,214 +24,205 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree bindings so that the gpio-nand driver may be
-instantiated from the device tree.  This also allows the partitions
-to be specified in the device tree.
+--000e0ce0d02e1bafb804a97315b6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-v3:
-	- remove redundant cast and a couple of whitespace/naming
-	  changes
-v2:
-	- add CONFIG_OF guards for non-dt platforms
-	- compatible becomes gpio-control-nand
-	- clarify some binding details
+Hi,
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
-Signed-off-by: Jamie Iles <jamie@jamieiles.com>
----
- .../devicetree/bindings/mtd/gpio-control-nand.txt  |   40 ++++++++
- drivers/mtd/nand/gpio.c                            |   95 ++++++++++++++++++--
- 2 files changed, 129 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+Don't think it's a hardware issue. After all it is working on the
+mx23evk using the Freescale BSP based on 2.6.35.3.
+Now I tested using this kernel command line:
+mtdparts=3Dgpmi-nand:20m(boot),-(user) gpmi_debug_init
+(So I removed the ubi rootfs stuff, see previous mails).
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-new file mode 100644
-index 0000000..2dc52de
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -0,0 +1,40 @@
-+GPIO assisted NAND flash
-+
-+The GPIO assisted NAND flash uses a memory mapped interface to
-+read/write the NAND commands and data and GPIO pins for the control
-+signals.
-+
-+Required properties:
-+- compatible : "gpio-control-nand"
-+- reg : should specify localbus chip select and size used for the chip.  For
-+  ARM platforms where a dummy read is needed to provide synchronisation with
-+  regards to bus reordering, an optional second resource describes the
-+  location to read from.
-+- #address-cells, #size-cells : Must be present if the device has sub-nodes
-+  representing partitions.  In this case, both #address-cells and #size-cells
-+  must be equal to 1.
-+- gpios : specifies the gpio pins to control the NAND device.  nwp is an
-+  optional gpio and may be set to 0 if not present.
-+
-+Optional properties:
-+- bank-width : Width (in bytes) of the device.
-+- chip-delay : chip dependent delay for transferring data from array to
-+  read registers (tR).
-+
-+Examples:
-+
-+gpio-nand@1,0 {
-+	compatible = "gpio-control-nand";
-+	reg = <1 0x0000 0x1000>;
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	gpios = <&banka 1 0	/* rdy */
-+		 &banka 2 0 	/* nce */
-+		 &banka 3 0 	/* ale */
-+		 &banka 4 0 	/* cle */
-+		 0		/* nwp */>;
-+
-+	partition@0 {
-+	...
-+	};
-+};
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 2c2060b..045426b 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -27,6 +27,9 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand-gpio.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_gpio.h>
- 
- struct gpiomtd {
- 	void __iomem		*io_sync;
-@@ -221,14 +224,79 @@ static void __iomem *request_and_remap(struct resource *res, size_t size,
- 	return ptr;
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id gpio_nand_id_table[] = {
-+	{ .compatible = "gpio-control-nand" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
-+
-+static int gpio_nand_of_get_options(struct device *dev,
-+				    struct gpio_nand_platdata *plat)
-+{
-+	u32 width;
-+
-+	if (!of_property_read_u32(dev->of_node, "bank-width", &width)) {
-+		if (width == 2) {
-+			plat->options |= NAND_BUSWIDTH_16;
-+		} else if (width != 1) {
-+			dev_err(dev, "invalid bank-width %u\n", width);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void gpio_nand_of_get_gpio(struct device *dev,
-+				  struct gpio_nand_platdata *plat)
-+{
-+	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
-+	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
-+	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
-+	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
-+	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
-+}
-+
-+static void gpio_nand_of_get_chip_delay(struct device *dev,
-+					struct gpio_nand_platdata *plat)
-+{
-+	u32 chip_delay;
-+
-+	if (!of_property_read_u32(dev->of_node, "chip-delay", &chip_delay))
-+		plat->chip_delay = (int)chip_delay;
-+}
-+
-+static int gpio_nand_of_get_config(struct device *dev,
-+				   struct gpio_nand_platdata *plat)
-+{
-+	int ret = gpio_nand_of_get_options(dev, plat);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	gpio_nand_of_get_gpio(dev, plat);
-+	gpio_nand_of_get_chip_delay(dev, plat);
-+
-+	return 0;
-+}
-+#else /* CONFIG_OF */
-+#define gpio_nand_id_table NULL
-+static inline int gpio_nand_of_get_config(struct device *dev,
-+					  struct gpio_nand_platdata *plat)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_OF */
-+
- static int __devinit gpio_nand_probe(struct platform_device *dev)
- {
- 	struct gpiomtd *gpiomtd;
- 	struct nand_chip *this;
- 	struct resource *res0, *res1;
--	int ret;
-+	int ret = 0;
- 
--	if (!dev->dev.platform_data)
-+	if (!dev->dev.of_node && !dev->dev.platform_data)
- 		return -EINVAL;
- 
- 	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
-@@ -257,7 +325,13 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		}
- 	}
- 
--	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
-+	if (dev->dev.platform_data)
-+		memcpy(&gpiomtd->plat, dev->dev.platform_data,
-+		       sizeof(gpiomtd->plat));
-+	else
-+		ret = gpio_nand_of_get_config(&dev->dev, &gpiomtd->plat);
-+	if (ret)
-+		goto err_nce;
- 
- 	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
- 	if (ret)
-@@ -312,10 +386,18 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		goto err_wp;
- 	}
- 
--	if (gpiomtd->plat.adjust_parts)
--		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
--					   gpiomtd->mtd_info.size);
-+	if (dev->dev.platform_data) {
-+		if (gpiomtd->plat.adjust_parts)
-+			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
-+						   gpiomtd->mtd_info.size);
-+	} else {
-+		ret = of_mtd_parse_partitions(&dev->dev, dev->dev.of_node,
-+					      &gpiomtd->plat.parts);
-+		if (ret < 0)
-+			goto err_wp;
- 
-+		gpiomtd->plat.num_parts = ret;
-+	}
- 	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
- 			    gpiomtd->plat.num_parts);
- 	platform_set_drvdata(dev, gpiomtd);
-@@ -352,6 +434,7 @@ static struct platform_driver gpio_nand_driver = {
- 	.remove		= gpio_nand_remove,
- 	.driver		= {
- 		.name	= "gpio-nand",
-+		.of_match_table = gpio_nand_id_table,
- 	},
- };
- 
--- 
-1.7.4.1
+Its booting fine now without complaining about dma timeouts.
+
+Have tried flash_eraseall /dev/mtd1. Now it's complaining and thinking
+all blocks are bad. So a "flash_erase: Skipping bad block at 1db00000"
+message for every erase block.
+Writing 1 to /sys/devices/platform/imx23-gpmi-nand/ignorebad, makes to
+go a little further giving 'only one' error but I doubt it's working
+at all. See attached log file.
+
+When the trying ubiformat /dev/mtd1 its stopping with a dma timeout.
+Every subsequent action (e.g. using ubiformat or flash_eraseall) using
+that dma channel is failing.
+I have put a printk in mxs-dma.c around line 387:
+
+    if (mxs_chan->status =3D=3D DMA_IN_PROGRESS && !append)
+    {
+        pr_err("dma already in progess!\n");
+        return NULL;
+    }
+
+I see that printk also in the log file in attach. Seems like the
+mxs-dma is failing at some point and for the rest of the time always
+keeps it's status at DMA_IN_PROGRESS
+
+Any input or feedback is welcome.
+
+Regards,
+Koen
+
+
+On Sun, Jul 31, 2011 at 3:51 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On Friday, July 29, 2011 05:00:48 PM Koen Beel wrote:
+>> On Fri, Jul 29, 2011 at 2:41 PM, Lothar Wa=C3=9Fmann <LW@karo-electronic=
+s.de>
+> wrote:
+>> > Hi,
+>> >
+>> > Koen Beel writes:
+>> >> Hi,
+>> >>
+>> >> On Fri, Jul 29, 2011 at 9:20 AM, Lothar Wa=C3=9Fmann <LW@karo-electro=
+nics.de>
+> wrote:
+>> >> > Hi,
+>> >> >
+>> >> > Koen Beel writes:
+>> >> >> Hi,
+>> >> >>
+>> >> >> I have test on mx23evk board. Still see the same issues.
+>> >> >>
+>> >> >> On Wed, Jul 27, 2011 at 3:53 AM, Huang Shijie <b32955@freescale.co=
+m>
+> wrote:
+>> >> >> > Hi,
+>> >> >> >
+>> >> >> > Thanks for your test.
+>> >> >> >
+>> >> >> >> Hi,
+>> >> >> >>
+>> >> >> >> It's not really working for me.
+>> >> >> >> I've applied all gpmi-nand driver patches and the dma driver
+>> >> >> >> patches.
+>> >> >> >>
+>> >> >> >> I have added following kernel parameters:
+>> >> >> >> mtdparts=3Dgpmi-nand:20m(boot),-(user) ubi.mtd=3D1 root=3Dubi0:=
+rootfs0
+>> >> >> >> rootfstype=3Dubifs gpmi_debug_init
+>> >> >> >>
+>> >> >> >> During boot I get already get DMA timeout:
+>> >> >> >> [ =C2=A0 =C2=A02.560000] [ start_dma_without_bch_irq : 392 ] DM=
+A timeout,
+>> >> >> >> last DMA
+>> >> >> >>
+>> >> >> >> :1
+>> >> >> >>
+>> >> >> >> [ =C2=A0 =C2=A03.560000] [ start_dma_with_bch_irq : 427 ] bch t=
+imeout!!!
+>> >> >> >> ...
+>> >> >> >> (see log file in attach line 89)
+>> >> >>
+>> >> >> I still see this DMA timeout when booting.
+>> >> >> What kernel parameters do you use? I still use same as above.
+>> >> >
+>> >> > Do you have an SD card in the system? I'm getting the same error wh=
+en
+>> >> > accessing an SD card. Without SD card I can use the flash without a=
+ny
+>> >> > errors.
+>> >>
+>> >> No SD card in the system. At least not on my mx23evk board.
+>> >> My real target hardware has a SDIO wifi chip.
+>> >>
+>> >> Are you also testing on the mx23evk board? Really strange it is not
+>> >> reproducible here then.
+>> >> Anyone using mx23evk please give:
+>> >> - revision number of board (I have tested on rev C1)
+>> >> - kernel parameter used (see previous mail for mine)
+>> >
+>> > It's getting ever more strange. I only have problems with concurrent
+>> > access to the flash and SD-card when I do file system based accessed
+>> > to the SD card.
+>> > A 'dd if=3D/dev/mmcblk0 of=3D/dev/null' while excessively using the fl=
+ash
+>> > works well, while mounting the SD card and doing an 'ls' produces
+>> > immediate BCH DMA timeouts.
+>> >
+>> > Perhaps someone can make anything out of that.
+>>
+>> I have checked and the function dma_irq_callback is never called
+>> during my tests. This means the DMA transfer does not even works once.
+>>
+>> Also no clue here ...
+>
+> Aren't you getting some undervolt on the powerrail for example ? btw the =
+driver
+> looks a bit crappy to me, but let's believe it works ;-)
+>
+>>
+>> > Lothar Wa=C3=9Fmann
+>> > --
+>> > ___________________________________________________________
+>> >
+>> > Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+>> > Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+>> > Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+>> > Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+>> >
+>> > www.karo-electronics.de | info@karo-electronics.de
+>> > ___________________________________________________________
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
+
+--000e0ce0d02e1bafb804a97315b6
+Content-Type: application/octet-stream; name=log1
+Content-Disposition: attachment; filename=log1
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gqtkgdo90
+
+IyBmbGFzaF9lcmFzZWFsbCAgL2Rldi9tdGQxCmZsYXNoX2VyYXNlYWxsIGhhcyBiZWVuIHJlcGxh
+Y2VkIGJ5IGBmbGFzaF9lcmFzZSA8bXRkZGV2PiAwIDBgOyBwbGVhc2UgdXNlIGl0CkVyYXNpbmcg
+NTEyIEtpYnl0ZSBAIDVjODAwMDAgLS0gIDIgJSBjb21wbGV0ZSBsaWJtdGQ6IGVycm9yITogTUVN
+RVJBU0U2NCBpb2N0bCBmYWlsZWQgZm9yIGVyYXNlYmxvY2sgMTg1IChtdGQxKQogICAgICAgIGVy
+cm9yIDUgKElucHV0L291dHB1dCBlcnJvcikKZmxhc2hfZXJhc2U6IGVycm9yITogL2Rldi9tdGQx
+OiBNVEQgRXJhc2UgZmFpbHVyZQogICAgICAgICAgICAgZXJyb3IgNSAoSW5wdXQvb3V0cHV0IGVy
+cm9yKQpFcmFzaW5nIDUxMiBLaWJ5dGUgQCBmZWI4MDAwMCAtLSAxMDAgJSBjb21wbGV0ZSAKIyB1
+Ymlmb3JtYXQgL2Rldi9tdGQxCnViaWZvcm1hdDogbXRkMSAobmFuZCksIHNpemUgNDI3Mzk5NTc3
+NiBieXRlcyAoNC4wIEdpQiksIDgxNTIgZXJhc2VibG9ja3Mgb2YgNTI0Mjg4IGJ5dGVzICg1MTIu
+MCBLaUIpLCBtaW4uIEkvTyBzaXplIDQwOTYgYnl0ZXMKbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2Vi
+bG9jayAwIC0tICAwICUgY29tcGxldGUgIFsgIDIyMi43MzAwMDBdIFsgc3RhcnRfZG1hX3dpdGhv
+dXRfYmNoX2lycSA6IDM5MiBdIERNQSB0aW1lb3V0LCBsYXN0IERNQSA6MQpbICAyMjMuNzMwMDAw
+XSBbIHN0YXJ0X2RtYV93aXRoX2JjaF9pcnEgOiA0MjcgXSBiY2ggdGltZW91dCEhIQpbICAyMjMu
+NzMwMDAwXSBbIG1pbF9lY2NfcmVhZF9wYWdlIDogMTA1NCBdIEVycm9yIGluIEVDQy1iYXNlZCBy
+ZWFkOiAtMTEwCmxpYm10ZDogZXJyb3IhOiBjYW5ub3QgcmVhZCA2NCBieXRlcyBmcm9tIG10ZDEg
+KGVyYXNlYmxvY2sgMCwgb2Zmc2V0IDApCiAgICAgICAgZXJyb3IgMTEwIChDb25uZWN0aW9uIHRp
+bWVkIG91dCkKdWJpZm9ybWF0OiBlcnJvciE6IGZhaWxlZCB0byBzY2FuIG10ZDEgKC9kZXYvbXRk
+MSkKIyAKIyAKIyB1Ymlmb3JtYXQgL2Rldi9tdGQxCnViaWZvcm1hdDogbXRkMSAobmFuZCksIFsg
+IDIyOS40OTAwMDBdIGRtYSBhbHJlYWR5IGluIHByb2dlc3MhCnNpemUgNDI3Mzk5NTc3NiBieXRl
+cyAoNC4wIEdpQiksWyAgMjI5LjUwMDAwMF0gWyBncG1pX3NlbmRfY29tbWFuZCA6IDc0OSBdIHN0
+ZXAgMSBlcnJvcgogODE1MiBlcmFzZWJsb2NrcyBvZiA1MjQyODggYnl0ZXMgKDUxMi4wIEtpQiks
+IG1pbi4gSS9PIHNpemUgNDA5NiBieXRlcwpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDAg
+LS0gIDAgJSBjb21wbGV0ZSAgWyAgMjI5LjUyMDAwMF0gWyBtaWxfY21kX2N0cmwgOiA4OTQgXSBD
+aGlwOiAwLCBFcnJvciAtMQpbICAyMjkuNTIwMDAwXSBkbWEgYWxyZWFkeSBpbiBwcm9nZXNzIQpb
+ICAyMjkuNTIwMDAwXSBbIGdwbWlfc2VuZF9jb21tYW5kIDogNzQ5IF0gc3RlcCAxIGVycm9yClsg
+IDIyOS41MzAwMDBdIFsgbWlsX2NtZF9jdHJsIDogODk0IF0gQ2hpcDogMCwgRXJyb3IgLTEKWyAg
+MjI5LjU0MDAwMF0gZG1hIGFscmVhZHkgaW4gcHJvZ2VzcyEKWyAgMjI5LjU0MDAwMF0gWyBncG1p
+X3JlYWRfcGFnZSA6IDkyNCBdIHN0ZXAgMSBlcnJvcgpbICAyMjkuNTQwMDAwXSBbIG1pbF9lY2Nf
+cmVhZF9wYWdlIDogMTA1NCBdIEVycm9yIGluIEVDQy1iYXNlZCByZWFkOiAtMQpsaWJtdGQ6IGVy
+cm9yITogY2Fubm90IHJlYWQgNjQgYnl0ZXMgZnJvbSBtdGQxIChlcmFzZWJsb2NrIDAsIG9mZnNl
+dCAwKQogICAgICAgIGVycm9yIDEgKE9wZXJhdGlvbiBub3QgcGVybWl0dGVkKQp1Ymlmb3JtYXQ6
+IGVycm9yITogZmFpbGVkIHRvIHNjYW4gbXRkMSAoL2Rldi9tdGQxKQojIAojIAojIHViaWZvcm1h
+dCAvZGV2L210ZDEKdWJpZm9ybWF0OiBtdGQxIChuYW5kKSwgWyAgMjM3LjM2MDAwMF0gZG1hIGFs
+cmVhZHkgaW4gcHJvZ2VzcyEKc2l6ZSA0MjczOTk1Nzc2IGJ5dGVzICg0LjAgR2lCKSxbICAyMzcu
+MzcwMDAwXSBbIGdwbWlfc2VuZF9jb21tYW5kIDogNzQ5IF0gc3RlcCAxIGVycm9yCiA4MTUyIGVy
+YXNlYmxvY2tzIG9mIDUyNDI4OCBieXRlcyAoNTEyLjAgS2lCKSwgbWluLiBJL08gc2l6ZSA0MDk2
+IGJ5dGVzCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMCAtLSAgMCAlIGNvbXBsZXRlICBb
+ICAyMzcuMzkwMDAwXSBbIG1pbF9jbWRfY3RybCA6IDg5NCBdIENoaXA6IDAsIEVycm9yIC0xClsg
+IDIzNy4zOTAwMDBdIGRtYSBhbHJlYWR5IGluIHByb2dlc3MhClsgIDIzNy40MDAwMDBdIFsgZ3Bt
+aV9zZW5kX2NvbW1hbmQgOiA3NDkgXSBzdGVwIDEgZXJyb3IKWyAgMjM3LjQwMDAwMF0gWyBtaWxf
+Y21kX2N0cmwgOiA4OTQgXSBDaGlwOiAwLCBFcnJvciAtMQpbICAyMzcuNDEwMDAwXSBkbWEgYWxy
+ZWFkeSBpbiBwcm9nZXNzIQpbICAyMzcuNDEwMDAwXSBbIGdwbWlfcmVhZF9wYWdlIDogOTI0IF0g
+c3RlcCAxIGVycm9yClsgIDIzNy40MjAwMDBdIFsgbWlsX2VjY19yZWFkX3BhZ2UgOiAxMDU0IF0g
+RXJyb3IgaW4gRUNDLWJhc2VkIHJlYWQ6IC0xCmxpYm10ZDogZXJyb3IhOiBjYW5ub3QgcmVhZCA2
+NCBieXRlcyBmcm9tIG10ZDEgKGVyYXNlYmxvY2sgMCwgb2Zmc2V0IDApCiAgICAgICAgZXJyb3Ig
+MSAoT3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWQpCnViaWZvcm1hdDogZXJyb3IhOiBmYWlsZWQgdG8g
+c2NhbiBtdGQxICgvZGV2L210ZDEpCgo=
+--000e0ce0d02e1bafb804a97315b6--
