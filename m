@@ -1,16 +1,18 @@
-Message-ID: <4E26AFF4.9000208@freescale.com>
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [i.MX28 GPMI] problem overwriting all-0xff data in NAND
-References: <20004.12663.29494.339601@ipc1.ka-ro>	<20110718164354.GA3328@S2100-06.ap.freescale.net>	<4E24E804.10002@freescale.com>	<20005.7677.145955.789329@ipc1.ka-ro>	<4E252C51.8070900@freescale.com>	<20005.21635.427202.49313@ipc1.ka-ro>	<4E263AF2.60103@freescale.com>
-	<20110720085142.GA2377@pengutronix.de>
-In-Reply-To: <20110720085142.GA2377@pengutronix.de>
-Content-Type: multipart/alternative;
-	boundary="------------010006070700050406010800"
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>,
-	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qnt5D-0003vY-Nb
+	for linux-mtd@lists.infradead.org; Mon, 01 Aug 2011 14:03:05 +0000
+Received: by wyf23 with SMTP id 23so1615813wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 01 Aug 2011 07:02:59 -0700 (PDT)
+From: Jamie Iles <jamie@jamieiles.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCHv3] mtd: gpio-nand: add device tree bindings
+Date: Mon,  1 Aug 2011 15:02:54 +0100
+Message-Id: <1312207374-14760-1-git-send-email-jamie@jamieiles.com>
+Cc: Jamie Iles <jamie@jamieiles.com>, devicetree-discuss@lists.ozlabs.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,130 +21,215 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Wed, 20 Jul 2011 10:34:26 -0000
 
---------------010006070700050406010800
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Add device tree bindings so that the gpio-nand driver may be
+instantiated from the device tree.  This also allows the partitions
+to be specified in the device tree.
 
-Hi,
->>>>>>> I am debugging the DMA bug now. and I will send it out when i fix it.
->>>>>>>
->>>>>> What sort of DMA bug?
->>>>>>
->>>>> The DMA may time-out. :(
->>>>>
->>>>> The DMA time-out may occur in two situations:
->>>>> [1] send a command DMA descriptor, see the nfc->send_command() function.
->>>>> [2] read the non-ecc data from nand, see the nfc->read_data() function.
->>>>>
->>>>> I don't know why. Maybe caused by the timing, or something else.
->>> I am confused. The send-command DMA timeout prevents any write for me.
->>> You guys surely would have noticed if you have been bitten as well. Does
->>> it depend on the NAND chip?
->> I think It does not depend on the NAND chip.
->> My test chip is Samsung K9G8G08U0M.
->> Sometimes, I can run a long time while there is no DMA timeout occurring;
->> Sometimes, the bug appears right away.
-> For me, the bug always happens right away. So, if you need logs or debug
-> output or can give me a pointer into some direction, I am glad to
-> assist.
->
-Thanks a lot. :)
+v3:
+	- remove redundant cast and a couple of whitespace/naming
+	  changes
+v2:
+	- add CONFIG_OF guards for non-dt platforms
+	- compatible becomes gpio-control-nand
+	- clarify some binding details
 
-I am trying to merge the two DMA descriptors into one in the send_command().
-The original bsp code used only one DMA descriptor.
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
+Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+---
+ .../devicetree/bindings/mtd/gpio-control-nand.txt  |   40 ++++++++
+ drivers/mtd/nand/gpio.c                            |   95 ++++++++++++++++++--
+ 2 files changed, 129 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
 
-
-
-Huang Shijie
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-
---------------010006070700050406010800
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-  </head>
-  <body text="#000000" bgcolor="#ffffff">
-    Hi,<br>
-    <blockquote cite="mid:20110720085142.GA2377@pengutronix.de"
-      type="cite">
-      <pre wrap="">
-</pre>
-      <blockquote type="cite">
-        <blockquote type="cite">
-          <blockquote type="cite">
-            <blockquote type="cite">
-              <blockquote type="cite">
-                <blockquote type="cite">
-                  <pre wrap="">I am debugging the DMA bug now. and I will send it out when i fix it.
-
-</pre>
-                </blockquote>
-                <pre wrap="">What sort of DMA bug?
-
-</pre>
-              </blockquote>
-              <pre wrap="">The DMA may time-out. :(
-
-The DMA time-out may occur in two situations:
-[1] send a command DMA descriptor, see the nfc-&gt;send_command() function.
-[2] read the non-ecc data from nand, see the nfc-&gt;read_data() function.
-
-I don't know why. Maybe caused by the timing, or something else.
-</pre>
-            </blockquote>
-          </blockquote>
-          <pre wrap="">I am confused. The send-command DMA timeout prevents any write for me.
-You guys surely would have noticed if you have been bitten as well. Does
-it depend on the NAND chip?
-</pre>
-        </blockquote>
-        <pre wrap="">I think It does not depend on the NAND chip.
-My test chip is Samsung K9G8G08U0M.
-Sometimes, I can run a long time while there is no DMA timeout occurring;
-Sometimes, the bug appears right away.
-</pre>
-      </blockquote>
-      <pre wrap="">
-For me, the bug always happens right away. So, if you need logs or debug
-output or can give me a pointer into some direction, I am glad to
-assist.
-
-</pre>
-    </blockquote>
-    Thanks a lot. :)<br>
-    <br>
-    I am trying to merge the two DMA descriptors into one in the
-    send_command().<br>
-    The original bsp code used only one DMA descriptor.<br>
-    <br>
-    <br>
-    <br>
-    Huang Shijie<br>
-    <blockquote cite="mid:20110720085142.GA2377@pengutronix.de"
-      type="cite">
-      <pre wrap=""></pre>
-      <pre wrap="">
-<fieldset class="mimeAttachmentHeader"></fieldset>
-_______________________________________________
-linux-arm-kernel mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:linux-arm-kernel@lists.infradead.org">linux-arm-kernel@lists.infradead.org</a>
-<a class="moz-txt-link-freetext" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------010006070700050406010800--
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+new file mode 100644
+index 0000000..2dc52de
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+@@ -0,0 +1,40 @@
++GPIO assisted NAND flash
++
++The GPIO assisted NAND flash uses a memory mapped interface to
++read/write the NAND commands and data and GPIO pins for the control
++signals.
++
++Required properties:
++- compatible : "gpio-control-nand"
++- reg : should specify localbus chip select and size used for the chip.  For
++  ARM platforms where a dummy read is needed to provide synchronisation with
++  regards to bus reordering, an optional second resource describes the
++  location to read from.
++- #address-cells, #size-cells : Must be present if the device has sub-nodes
++  representing partitions.  In this case, both #address-cells and #size-cells
++  must be equal to 1.
++- gpios : specifies the gpio pins to control the NAND device.  nwp is an
++  optional gpio and may be set to 0 if not present.
++
++Optional properties:
++- bank-width : Width (in bytes) of the device.
++- chip-delay : chip dependent delay for transferring data from array to
++  read registers (tR).
++
++Examples:
++
++gpio-nand@1,0 {
++	compatible = "gpio-control-nand";
++	reg = <1 0x0000 0x1000>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++	gpios = <&banka 1 0	/* rdy */
++		 &banka 2 0 	/* nce */
++		 &banka 3 0 	/* ale */
++		 &banka 4 0 	/* cle */
++		 0		/* nwp */>;
++
++	partition@0 {
++	...
++	};
++};
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 2c2060b..045426b 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -27,6 +27,9 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/nand-gpio.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_gpio.h>
+ 
+ struct gpiomtd {
+ 	void __iomem		*io_sync;
+@@ -221,14 +224,79 @@ static void __iomem *request_and_remap(struct resource *res, size_t size,
+ 	return ptr;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id gpio_nand_id_table[] = {
++	{ .compatible = "gpio-control-nand" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
++
++static int gpio_nand_of_get_options(struct device *dev,
++				    struct gpio_nand_platdata *plat)
++{
++	u32 width;
++
++	if (!of_property_read_u32(dev->of_node, "bank-width", &width)) {
++		if (width == 2) {
++			plat->options |= NAND_BUSWIDTH_16;
++		} else if (width != 1) {
++			dev_err(dev, "invalid bank-width %u\n", width);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static void gpio_nand_of_get_gpio(struct device *dev,
++				  struct gpio_nand_platdata *plat)
++{
++	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
++	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
++	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
++	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
++	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
++}
++
++static void gpio_nand_of_get_chip_delay(struct device *dev,
++					struct gpio_nand_platdata *plat)
++{
++	u32 chip_delay;
++
++	if (!of_property_read_u32(dev->of_node, "chip-delay", &chip_delay))
++		plat->chip_delay = (int)chip_delay;
++}
++
++static int gpio_nand_of_get_config(struct device *dev,
++				   struct gpio_nand_platdata *plat)
++{
++	int ret = gpio_nand_of_get_options(dev, plat);
++
++	if (ret < 0)
++		return ret;
++
++	gpio_nand_of_get_gpio(dev, plat);
++	gpio_nand_of_get_chip_delay(dev, plat);
++
++	return 0;
++}
++#else /* CONFIG_OF */
++#define gpio_nand_id_table NULL
++static inline int gpio_nand_of_get_config(struct device *dev,
++					  struct gpio_nand_platdata *plat)
++{
++	return -ENODEV;
++}
++#endif /* CONFIG_OF */
++
+ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ {
+ 	struct gpiomtd *gpiomtd;
+ 	struct nand_chip *this;
+ 	struct resource *res0, *res1;
+-	int ret;
++	int ret = 0;
+ 
+-	if (!dev->dev.platform_data)
++	if (!dev->dev.of_node && !dev->dev.platform_data)
+ 		return -EINVAL;
+ 
+ 	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
+@@ -257,7 +325,13 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		}
+ 	}
+ 
+-	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
++	if (dev->dev.platform_data)
++		memcpy(&gpiomtd->plat, dev->dev.platform_data,
++		       sizeof(gpiomtd->plat));
++	else
++		ret = gpio_nand_of_get_config(&dev->dev, &gpiomtd->plat);
++	if (ret)
++		goto err_nce;
+ 
+ 	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
+ 	if (ret)
+@@ -312,10 +386,18 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		goto err_wp;
+ 	}
+ 
+-	if (gpiomtd->plat.adjust_parts)
+-		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+-					   gpiomtd->mtd_info.size);
++	if (dev->dev.platform_data) {
++		if (gpiomtd->plat.adjust_parts)
++			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
++						   gpiomtd->mtd_info.size);
++	} else {
++		ret = of_mtd_parse_partitions(&dev->dev, dev->dev.of_node,
++					      &gpiomtd->plat.parts);
++		if (ret < 0)
++			goto err_wp;
+ 
++		gpiomtd->plat.num_parts = ret;
++	}
+ 	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
+ 			    gpiomtd->plat.num_parts);
+ 	platform_set_drvdata(dev, gpiomtd);
+@@ -352,6 +434,7 @@ static struct platform_driver gpio_nand_driver = {
+ 	.remove		= gpio_nand_remove,
+ 	.driver		= {
+ 		.name	= "gpio-nand",
++		.of_match_table = gpio_nand_id_table,
+ 	},
+ };
+ 
+-- 
+1.7.4.1
