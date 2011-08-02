@@ -1,24 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QoNq3-00029N-0B
-	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 22:53:28 +0000
-Received: by wyf23 with SMTP id 23so232806wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Aug 2011 15:53:21 -0700 (PDT)
-Date: Tue, 2 Aug 2011 23:53:16 +0100
-From: Jamie Iles <jamie@jamieiles.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: MTD-related kobject badness during linux-next boot
-Message-ID: <20110802225316.GF5063@pulham.picochip.com>
-References: <CAGq3pz4LHRkCqaJfqoMYe-=mn+s5CVZipab7bd8F3z+ou3xxVA@mail.gmail.com>
-	<CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QoOYd-0002y7-47
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 23:39:31 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH] mtd: cafe_nand: register master MTD at most once
+Date: Tue, 2 Aug 2011 16:38:30 -0700
+Message-ID: <1312328310-18003-1-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
-	Daniel Drake <dsd@laptop.org>, linux-kernel@vger.kernel.org
+References: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: dsd@laptop.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	linux-mtd@lists.infradead.org, Jamie Iles <jamie@jamieiles.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+This patch addresses a regression where a master MTD object might be
+registered twice if no partitions are found. The initial bug report can
+be seen here:
+    http://lists.infradead.org/pipermail/linux-mtd/2011-July/037086.html
 
-On Tue, Aug 02, 2011 at 10:40:29AM -0700, Brian Norris wrote:
-> Since Dmitry's change, it looks like cafe_nand will add the master
-> device, then parse and register its partitions, if found. However, if
-> partitions are NOT found, then mtd_device_parse_register() falls back
-> to adding the master device, which was already added. In
-> drivers/mtd/mtdcore.c, see:
-> 
->      int mtd_device_parse_register(struct mtd_info *mtd, const char **types,
->      ...
->      if (err > 0) {
->      ...
->      } else if (err == 0) {
->              err = add_mtd_device(mtd);
->      ...
-> 
-> 
-> So it looks like perhaps we can solve the problem by just killing the
-> "register the whole device first" and allow mtd_device_parse_register
-> to do it if there are no partitions. Any cafe_nand developers know if
-> this is a problem? i.e., is there a reason we need both the whole
-> device AND the partitions sent to add_mtd_device()? I'll send a full
-> patch with sign-off and description if there are no objections.
+The regression is caused by:
+    commit 0f7451bea72c64d3f0a47850328d52f0315e2ea6
+    "mtd: cafe_nand.c: use mtd_device_parse_register"
 
-I think that's the right thing to do.  There's actually a comment in 
-drivers/mtd/mtdpart.c saying:
+The aforementioned commit was intended to basically just refactor the
+codebase; however, it had unintentional side effects. The cafe_nand probe
+behavior over time is as follows.
 
-	/* NOTE:  we don't arrange MTDs as a tree; it'd be error-prone
-         * to have the same data be in two different partitions.
-         */
+Previous functionality (before commit 0f7451be):
+ A) register the master device with add_mtd_device()
+ B) if partitions are found, register them as well
 
-So I do think it should be the whole device *or* the partitions.  In any 
-case, your patch looks good to me.
+New functionality (at commit 0f7451be):
+ A) register the master device with add_mtd_device()
+ B) if partitions are found, register them as well
+ C) if partitions are not found, register the master device (again)
 
-Jamie
+Correct functionality (this patch):
+ (remove step A)
+ B) if partitions are found, register them
+ C) if partitions are not found, register the master device
+
+Thus, this fix means that we will never register both the master MTD and
+its partitions, as we did before commit 0f7451be. This is probably the
+expected behavior and should be a welcome change.
+
+Reported-by: Daniel Drake <dsd@laptop.org>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/cafe_nand.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 661e5dc..11a56df 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -797,9 +797,6 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
+ 
+ 	pci_set_drvdata(pdev, mtd);
+ 
+-	/* We register the whole device first, separate from the partitions */
+-	mtd_device_register(mtd, NULL, 0);
+-
+ 	mtd->name = "cafe_nand";
+ 	mtd_device_parse_register(mtd, part_probes, 0, NULL, 0);
+ 
+-- 
+1.7.0.4
