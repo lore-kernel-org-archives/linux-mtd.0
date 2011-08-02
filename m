@@ -1,28 +1,23 @@
-Date: Tue, 2 Aug 2011 15:16:08 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-Message-ID: <20110802071607.GA17297@freescale.com>
-References: <20110722055731.GI26837@S2100-06.ap.freescale.net>
-	<4E292FCF.6010608@freescale.com>
-	<CAHMSPgMHrqWcJ=BThDLgQ=XyTBDCMvNS4SVjQWfk=Jf682TEig@mail.gmail.com>
-	<4E2F6F90.7030207@freescale.com>
-	<CAHMSPgPC4whyskfuFGeFd7WHx-=5htezWajm_rNi9Xa+03PV0A@mail.gmail.com>
-	<20018.24364.787244.956361@ipc1.ka-ro>
-	<CAHMSPgM5W8=mE4sRDGMMfo39fvThBo_jrdG8hyhJNQ_ceV=_pA@mail.gmail.com>
-	<4E32823C.3060007@freescale.com>
-	<CAHMSPgMTf1UnMyvsSZM1in-FEAoWyS5VSdczsxfHgujGJ0DFtw@mail.gmail.com>
-	<4E37970C.4070903@freescale.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QoIxG-0007jp-LP
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 17:40:35 +0000
+Received: by wwf22 with SMTP id 22so3114wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 Aug 2011 10:40:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4E37970C.4070903@freescale.com>
-Cc: arnd@arndb.de, dedekind1@gmail.com, Koen Beel <koen.beel.barco@gmail.com>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
-	Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@karo-electronics.de>
+In-Reply-To: <CAGq3pz4LHRkCqaJfqoMYe-=mn+s5CVZipab7bd8F3z+ou3xxVA@mail.gmail.com>
+References: <CAGq3pz4LHRkCqaJfqoMYe-=mn+s5CVZipab7bd8F3z+ou3xxVA@mail.gmail.com>
+Date: Tue, 2 Aug 2011 10:40:29 -0700
+Message-ID: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
+Subject: Re: MTD-related kobject badness during linux-next boot
+From: Brian Norris <computersforpeace@gmail.com>
+To: Daniel Drake <dsd@laptop.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,63 +27,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 02, 2011 at 02:19:56PM +0800, Huang Shijie wrote:
-> Hi,
-> >On Fri, Jul 29, 2011 at 11:49 AM, Huang Shijie<b32955@freescale.com>  wrote:
-> >>于 2011年07月29日 15:40, Koen Beel 写道:
-> >>>Hi,
-> >>>
-> >>>On Fri, Jul 29, 2011 at 9:20 AM, Lothar Waßmann<LW@karo-electronics.de>
-> >>>  wrote:
-> >>>>Hi,
-> >>>>
-> >>>>Koen Beel writes:
-> >>>>>Hi,
-> >>>>>
-> >>>>>I have test on mx23evk board. Still see the same issues.
-> >>>>>
-> >>>>>On Wed, Jul 27, 2011 at 3:53 AM, Huang Shijie<b32955@freescale.com>
-> >>>>>  wrote:
-> >>>>>>Hi,
-> >>>>>>
-> >>>>>>Thanks for your test.
-> >>>>>>
-> >>>>>>>Hi,
-> >>>>>>>
-> >>>>>>>It's not really working for me.
-> >>>>>>>I've applied all gpmi-nand driver patches and the dma driver patches.
-> >>>>>>>
-> >>>>>>>I have added following kernel parameters:
-> >>>>>>>mtdparts=gpmi-nand:20m(boot),-(user) ubi.mtd=1 root=ubi0:rootfs0
-> >>>>>>>rootfstype=ubifs gpmi_debug_init
-> >>>>>>>
-> >>>>>>>During boot I get already get DMA timeout:
-> >>>>>>>[    2.560000] [ start_dma_without_bch_irq : 392 ] DMA timeout, last
-> >>>>>>>DMA
-> >>>>>>>:1
-> >>>>>>>[    3.560000] [ start_dma_with_bch_irq : 427 ] bch timeout!!!
-> >>>>>>>...
-> >>>>>>>(see log file in attach line 89)
-> >>>>>I still see this DMA timeout when booting.
-> >>>>>What kernel parameters do you use? I still use same as above.
-> >>>>>
-> >>>>Do you have an SD card in the system? I'm getting the same error when
-> >>>>accessing an SD card. Without SD card I can use the flash without any
-> >>>>errors.
-> >>>No SD card in the system. At least not on my mx23evk board.
-> >>>My real target hardware has a SDIO wifi chip.
-> >>Does it conflict with the GPMI?
-> >Well I don't know if it conflicts. From what Lothar says I assume
-> >there might be a conflict between gpmi and sdio.
-> Yes, the conflict between gpmi and other module(such as SD in MX6Q)
-> is THE prime reason
-> which caused the DMA timeout.
-> 
-> I am debuging the IMX6Q now, and meet the same problem.
-> 
-I do not follow on this.  SD on i.mx6q does not use apbh-dma at all.
-How will it conflict with gpmi regarding to dma timeout?
+Hi,
 
--- 
-Regards,
-Shawn
+I CC'd Dmitry and Jamie who did recent work on this area of MTD,
+regarding a subsystem-wide simplification of the routines for
+partitioning and registering devices. I don't personally develop with
+the cafe_nand driver, but I can try to help.
+
+On Thu, Jul 14, 2011 at 10:37 AM, Daniel Drake <dsd@laptop.org> wrote:
+> Booting linux-next 20110707 on OLPC XO-1 I get:
+> [ =A0 =A01.172947] kobject (cd8d40dc): tried to init an initialized
+> object, something is seriously wrong.
+> [ =A0 =A01.184111] Pid: 1, comm: swapper Not tainted 3.0.0-rc6-next-20110=
+707+ #100
+> [ =A0 =A01.198384] Call Trace:
+> [ =A0 =A01.207741] =A0[<c05301a0>] ? kobject_init+0x24/0x6b
+> [ =A0 =A01.212420] =A0[<c0578c49>] ? device_initialize+0x18/0x56
+> [ =A0 =A01.227060] =A0[<c057960a>] ? device_register+0x8/0x10
+> [ =A0 =A01.241052] =A0[<c059104a>] ? add_mtd_device+0x17a/0x1f1
+> [ =A0 =A01.244949] =A0[<c0591128>] ? mtd_device_parse_register+0x67/0x7c
+> [ =A0 =A01.259536] =A0[<c06c6522>] ? cafe_nand_probe+0x5c9/0x686
+...
+> Any ideas?
+
+Yeah, I think it has to do with Dmitry Eremin-Solenikov's recent
+changes in l2-mtd-2.6.git. Looks like the driver is trying calling
+add_mtd_device() on the master MTD twice. The problem commit is (for
+now):
+commit 0f7451bea72c64d3f0a47850328d52f0315e2ea6
+"mtd: cafe_nand.c: use mtd_device_parse_register"
+
+Have you tried linux 3.0, which does not have the patch series that
+messes with mtd partition parsing and registering?
+
+It looks like previously, cafe_nand would always add the master
+device, then it would parse and register its partitions, if found.
+
+Since Dmitry's change, it looks like cafe_nand will add the master
+device, then parse and register its partitions, if found. However, if
+partitions are NOT found, then mtd_device_parse_register() falls back
+to adding the master device, which was already added. In
+drivers/mtd/mtdcore.c, see:
+
+     int mtd_device_parse_register(struct mtd_info *mtd, const char **types=
+,
+     ...
+     if (err > 0) {
+     ...
+     } else if (err =3D=3D 0) {
+             err =3D add_mtd_device(mtd);
+     ...
+
+
+So it looks like perhaps we can solve the problem by just killing the
+"register the whole device first" and allow mtd_device_parse_register
+to do it if there are no partitions. Any cafe_nand developers know if
+this is a problem? i.e., is there a reason we need both the whole
+device AND the partitions sent to add_mtd_device()? I'll send a full
+patch with sign-off and description if there are no objections.
+
+Brian
+
+---
+ drivers/mtd/nand/cafe_nand.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index fb1425e..72d3f23 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -798,9 +798,6 @@ static int __devinit cafe_nand_probe(struct pci_dev *pd=
+ev,
+
+        pci_set_drvdata(pdev, mtd);
+
+-       /* We register the whole device first, separate from the partitions=
+ */
+-       mtd_device_register(mtd, NULL, 0);
+-
+        mtd->name =3D "cafe_nand";
+        mtd_device_parse_register(mtd, part_probes, 0, NULL, 0);
+
+--=20
+1.7.0.4
