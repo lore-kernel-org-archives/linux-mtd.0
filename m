@@ -1,20 +1,24 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QoKDq-0000dd-41
-	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 19:01:46 +0000
-Received: by wyf23 with SMTP id 23so62433wyf.36
+	id 1QoNq3-00029N-0B
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 22:53:28 +0000
+Received: by wyf23 with SMTP id 23so232806wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Aug 2011 12:01:44 -0700 (PDT)
+	Tue, 02 Aug 2011 15:53:21 -0700 (PDT)
+Date: Tue, 2 Aug 2011 23:53:16 +0100
+From: Jamie Iles <jamie@jamieiles.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: MTD-related kobject badness during linux-next boot
+Message-ID: <20110802225316.GF5063@pulham.picochip.com>
+References: <CAGq3pz4LHRkCqaJfqoMYe-=mn+s5CVZipab7bd8F3z+ou3xxVA@mail.gmail.com>
+	<CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 2 Aug 2011 12:01:43 -0700
-Message-ID: <CAN8TOE8VHm2jMkFonfi+4bvmP8ORVVdXA0vb3-X8+XCGfTuAaw@mail.gmail.com>
-Subject: 'nandwrite -o' on MLC NAND
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>, Matthew Creech <mlcreech@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
+	Daniel Drake <dsd@laptop.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Brian,
 
-For a while, I've been having problems with using `nandwrite -o' on
-MLC NAND flash. Nandwrite is never able to write the combined data+OOB
-properly and instead leaves the flash filled with junk. This is,
-apparently, because `nandwrite -o' writes to the flash twice, once for
-the page data and once for the OOB data. This is not allowed on MLC
-NAND, which allow only single writes.
+On Tue, Aug 02, 2011 at 10:40:29AM -0700, Brian Norris wrote:
+> Since Dmitry's change, it looks like cafe_nand will add the master
+> device, then parse and register its partitions, if found. However, if
+> partitions are NOT found, then mtd_device_parse_register() falls back
+> to adding the master device, which was already added. In
+> drivers/mtd/mtdcore.c, see:
+> 
+>      int mtd_device_parse_register(struct mtd_info *mtd, const char **types,
+>      ...
+>      if (err > 0) {
+>      ...
+>      } else if (err == 0) {
+>              err = add_mtd_device(mtd);
+>      ...
+> 
+> 
+> So it looks like perhaps we can solve the problem by just killing the
+> "register the whole device first" and allow mtd_device_parse_register
+> to do it if there are no partitions. Any cafe_nand developers know if
+> this is a problem? i.e., is there a reason we need both the whole
+> device AND the partitions sent to add_mtd_device()? I'll send a full
+> patch with sign-off and description if there are no objections.
 
-This is a problem with the user interface to the kernel as well as
-with nandwrite itself, since there is no interface that nandwrite can
-use to write data+OOB to flash in a single write. As I see it, we need
-to do three things:
+I think that's the right thing to do.  There's actually a comment in 
+drivers/mtd/mtdpart.c saying:
 
-1) Support a (new?) ioctl that handles writing data+oob in one go. I'm
-not sure if an existing interface can be extended or if this actually
-has to be a new one...
-2) Update nandwrite (i.e., update the libmtd routines in mtd-utils) to
-utilize the new interface when possible.
-3) Ensure that the raw/no-ECC options for nandwrite are operational
-with the new interface (i.e., `nandwrite -r')
+	/* NOTE:  we don't arrange MTDs as a tree; it'd be error-prone
+         * to have the same data be in two different partitions.
+         */
 
-Comments? Has this been tried before?
+So I do think it should be the whole device *or* the partitions.  In any 
+case, your patch looks good to me.
 
-BTW, I think some of the internal kernel interface is already there
-for writing data+OOB; there's just no external user interface.
-
-Thanks,
-Brian
+Jamie
