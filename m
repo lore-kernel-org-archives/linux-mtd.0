@@ -1,8 +1,8 @@
-Date: Tue, 2 Aug 2011 16:11:15 +0800
+Date: Tue, 2 Aug 2011 15:16:08 +0800
 From: Shawn Guo <shawn.guo@freescale.com>
 To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-Message-ID: <20110802081115.GC17297@freescale.com>
+Message-ID: <20110802071607.GA17297@freescale.com>
 References: <20110722055731.GI26837@S2100-06.ap.freescale.net>
 	<4E292FCF.6010608@freescale.com>
 	<CAHMSPgMHrqWcJ=BThDLgQ=XyTBDCMvNS4SVjQWfk=Jf682TEig@mail.gmail.com>
