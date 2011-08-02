@@ -1,5 +1,5 @@
 MIME-Version: 1.0
-In-Reply-To: <4E37AAF6.7020604@freescale.com>
+In-Reply-To: <4E37BA02.5030400@freescale.com>
 References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
 	<20018.43621.688990.319528@ipc1.ka-ro>
 	<CAHMSPgPXnDVO630P9fnogQ0XvPSrwz0MYzXfXZLJoJNRf1gifA@mail.gmail.com>
@@ -7,17 +7,18 @@ References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
 	<CAHMSPgMK_zM17NXgsbrzs8Zw0VXtDoP12_1V7oeROSF=aBDuYg@mail.gmail.com>
 	<4E379B28.7090902@freescale.com>
 	<CAHMSPgM4K5o_aGK31yyFcGK-hH4WBeqVkA5dZU=FvAiKGmHA9A@mail.gmail.com>
-	<4E37AAF6.7020604@freescale.com>
-Date: Tue, 2 Aug 2011 10:55:16 +0200
-Message-ID: <CAHMSPgN9+QdhCigSRj3ePybDTx6QajbjGVmUCakxpmtjkbQvdg@mail.gmail.com>
+	<4E37BA02.5030400@freescale.com>
+Date: Tue, 2 Aug 2011 11:29:57 +0200
+Message-ID: <CAHMSPgOBhZVgjXZTWWPtwBxrF4g1tFa2E5N+Yjs+ku-0BwKPVA@mail.gmail.com>
 Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
 From: Koen Beel <koen.beel.barco@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Content-Type: multipart/mixed; boundary=0016e6de17d319a7a104a981e83e
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: arnd@arndb.de, dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
 	Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, shijie8@gmail.com,
+	Shawn Guo <shawn.guo@freescale.com>,
 	=?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,17 +29,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0016e6de17d319a7a104a981e83e
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
 Hi,
 
-On Tue, Aug 2, 2011 at 9:44 AM, Huang Shijie <b32955@freescale.com> wrote:
-> Hi,
->>
->> Hi,
->>
+On Tue, Aug 2, 2011 at 10:49 AM, Huang Shijie <b32955@freescale.com> wrote:
+> Hi Koen:
+>
+> I tested the driver in mx23evk board, and I do not find the DMA-timeout
+> error.
+
+Strange.
+>
+> The following is my test environment:
+> [0] Hardware:
+> =C2=A0 =C2=A0 =C2=A0 MX23EVK PCB REV C
+
+I have the same hardware. But also on our own hardware (mx23, but
+different dram and different nand) it's failing with the same output
+as on the evk (see log file in previous mail).
+
+> [1] SW:
+> =C2=A0 =C2=A0kernel:git://git.linaro.org/people/shawnguo/linux-2.6.git mx=
+s-gpmi
+> =C2=A0 =C2=A0.config: my_config , you can find it in my previous email.
+> =C2=A0 =C2=A0cmdline: console=3DttyAMA0,115200 root=3D/dev/mmcblk0p1 rw r=
+ootwait
+> gpmi_debug_init mtdparts=3Dgpmi-nand:20m(boot),-(user)
+
+I use that git and your config file. Only thing i have changed to the
+config is to integrate the initramfs rootfs.
+Would it be possible for you to test using rootfs in initramfs? Now
+you are using the mmc card as rootfs which is on the dma engine and
+bus.
+
+
+>
+> [2] test shell script:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> echo 0x20 > /sys/module/gpmi_nand/parameters/gpmi_debug
+
+As said, don't have that gpmi_debug sysfs entry. Sure you don't have
+any other modification done which are not in that git branch?
+
+> flash_eraseall /dev/mtd1
+> ubiformat /dev/mtd1
+> flash_eraseall /dev/mtd1
+> ubiattach /dev/ubi_ctrl -m 1
+> ubimkvol /dev/ubi0 -N test -m
+> mount -t ubifs ubi0:test tmp
+> bonnie++ -d tmp -u 0 -s 2 -r 1
+> bonnie++ -d tmp -u 0 -s 2 -r 1
+> bonnie++ -d tmp -u 0 -s 2 -r 1
+> umount tmp
+> ubidetach /dev/ubi_ctrl -m 1
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> [3] conclusion
+> =C2=A0 It runs well in my mx23 board, and no DMA-TIMEOUT occur.
+> I think there is some conflict in your board.
+
+Don't know what conflict I would have with my board. I just use the
+board without anything (mmc, lcd, ...) attached to it.
+
+>
+> BTW:
+> =C2=A0 I split the MTD to 20M and (the rest size).
+So do I.
+
+> The flash_eraseall works well.
+> If i do not split the MTD, the flash_eraseall will not work.
+That's strange because I use flash_eraseall on my mtd1 which is 108 MB.
+I don't know how you boot but my uboot is in mtd0, so don't use that
+part to test
+
+> I guest overflow occurs in some place.
+>
+> Best Regards
+> Huang Shijie
+>
+>
 >> On Tue, Aug 2, 2011 at 8:37 AM, Huang Shijie<b32955@freescale.com> =C2=
 =A0wrote:
 >>>
@@ -80,40 +152,6 @@ On Tue, Aug 2, 2011 at 9:44 AM, Huang Shijie <b32955@freescale.com> wrote:
 >> I know but it solved an issue here. Now flash_eraseall seems to be
 >> working again without that ignorebad turned on (only finds one bad
 >> erase blcok).
->
-> Could you mail me your flash_eraseall?
-> Mine =C2=A0does not work.
-
-You want my flash_eraseall binary?
-
-I build all userspace, kernel, bootloader and toolchain using
-buildroot ( http://buildroot.uclibc.org/download.html ), which also
-includes all flash tools like flash_eraseall and ubiformat. In the
-buildroot menuconfig check the packages under 'Package Selection for
-the target > Hardware handling > mtd/jffs2 utilities'
-Buildroot will build everything needed to get a working system,
-including toolchain, uclibc, ... I really recommend that.
-
-Right now I use a kernel with the full rootfs as initramfs (standard
-option in buildroot). I just load the uImage (contains kernel and
-initramfs) using tftp in uboot. This way I'm not dependent on
-mmc/nfs/nand (no eth or mmc on my actual target and nand/ubi not yet
-working). Only downside is that I use some memory for it and I don't
-have any persistent storage on the rootfs right now.
-
-I have adapted buildroot a little to build the kernel out of tree.
-
-Anyway, if you want my flash_eraseall binary, see attachment.
-
-Regards,
-Koen
-
->
-> so I can test your flash_eraseall first.
->
-> Best Regards
-> Huang Shijie
->>
 >> Again: I suspect that the BSP used another way to mark bad blocks.
 >>
 >>>> go a little further giving 'only one' error but I doubt it's working
@@ -283,14 +321,8 @@ e.
 >
 >
 >
-
---0016e6de17d319a7a104a981e83e
-Content-Type: application/octet-stream; name=flash_eraseall
-Content-Disposition: attachment; filename=flash_eraseall
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gqulzknz1
-
-IyEvYmluL3NoCmVjaG8gIiR7MCMjKi99IGhhcyBiZWVuIHJlcGxhY2VkIGJ5IFxgZmxhc2hfZXJh
-c2UgPG10ZGRldj4gMCAwXGA7IHBsZWFzZSB1c2UgaXQiIDE+JjIKWyAkIyAtbmUgMCBdICYmIHNl
-dCAtLSAiJEAiIDAgMApleGVjIGZsYXNoX2VyYXNlICIkQCIK
---0016e6de17d319a7a104a981e83e--
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
