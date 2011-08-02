@@ -1,27 +1,22 @@
+Received: from na3sys009aog123.obsmtp.com ([74.125.149.149])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QoEcQ-0004K7-81
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 13:02:48 +0000
+Received: by mail-fx0-f44.google.com with SMTP id 6so6545373fxe.31
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 Aug 2011 06:02:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4E37D375.7000400@freescale.com>
-References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
-	<20018.43621.688990.319528@ipc1.ka-ro>
-	<CAHMSPgPXnDVO630P9fnogQ0XvPSrwz0MYzXfXZLJoJNRf1gifA@mail.gmail.com>
-	<201107311551.48223.marek.vasut@gmail.com>
-	<CAHMSPgMK_zM17NXgsbrzs8Zw0VXtDoP12_1V7oeROSF=aBDuYg@mail.gmail.com>
-	<4E379B28.7090902@freescale.com>
-	<CAHMSPgM4K5o_aGK31yyFcGK-hH4WBeqVkA5dZU=FvAiKGmHA9A@mail.gmail.com>
-	<4E37BA02.5030400@freescale.com>
-	<CAHMSPgOBhZVgjXZTWWPtwBxrF4g1tFa2E5N+Yjs+ku-0BwKPVA@mail.gmail.com>
-	<4E37D375.7000400@freescale.com>
-Date: Tue, 2 Aug 2011 14:32:17 +0200
-Message-ID: <CAHMSPgPnjKE49jn3HPjkztKroRrjRjLMyDWnkOb78KjecbQK3Q@mail.gmail.com>
-Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
-From: Koen Beel <koen.beel.barco@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1311241163-4576-1-git-send-email-sudhakar.raj@ti.com>
+References: <1311241163-4576-1-git-send-email-sudhakar.raj@ti.com>
+Date: Tue, 2 Aug 2011 09:02:39 -0400
+Message-ID: <CAPcSpELvskFmRxEyBcZVGOqW8nKthk-1AbLXG4c4pUs_XQ2xmA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: davinci: Add cpufreq support
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: arnd@arndb.de, dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
-	Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
-	Shawn Guo <shawn.guo@freescale.com>, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
-	=?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>
+Cc: dwmw2@infradead.org, davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,111 +26,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Sudhakar,
 
-On Tue, Aug 2, 2011 at 12:37 PM, Huang Shijie <b32955@freescale.com> wrote:
-> hi:
->>
->>> The following is my test environment:
->>> [0] Hardware:
->>> =C2=A0 =C2=A0 =C2=A0 MX23EVK PCB REV C
->>
->> I have the same hardware. But also on our own hardware (mx23, but
->> different dram and different nand) it's failing with the same output
->> as on the evk (see log file in previous mail).
->
-> I will check the schematic of mx23 tomorrow, and find what will cause
-> conflict with GPMI.
->>>
->>> [1] SW:
->>> =C2=A0 =C2=A0kernel:git://git.linaro.org/people/shawnguo/linux-2.6.git =
-mxs-gpmi
->>> =C2=A0 =C2=A0.config: my_config , you can find it in my previous email.
->>> =C2=A0 =C2=A0cmdline: console=3DttyAMA0,115200 root=3D/dev/mmcblk0p1 rw=
- rootwait
->>> gpmi_debug_init mtdparts=3Dgpmi-nand:20m(boot),-(user)
->>
->> I use that git and your config file. Only thing i have changed to the
->> config is to integrate the initramfs rootfs.
->> Would it be possible for you to test using rootfs in initramfs? Now
->
-> could you tell me how can i test the rootfs in initramfs?
-> I have no idea about how to test it.
+On Thu, Jul 21, 2011 at 5:39 AM, Rajashekhara, Sudhakar
+<sudhakar.raj@ti.com> wrote:
+> This patch adds cpufreq support for NAND driver. During cpufreq
+> transition, 'davinci_aemif_setup_timing()' function will be called
+> to reconfigure that AEMIF timings for the new frequency.
 
-Via the linux menuconfig:
-- Check the option "General setup > Initial RAM filesystem and RAM
-disk (initramfs/initrd) support"
-- Fill in "General setup > Initramfs source file(s)" (e.g. the path to
-a cpio archive of the rootfs, or just the directory containing the
-extracted rootfs).
+I can see that this will work fine for dacinci_nand -- and it is a
+welcomed feature also -- thank you for the effort to push this
+upstream.
 
->
->
->> you are using the mmc card as rootfs which is on the dma engine and
->> bus.
->>
->>
->>> [2] test shell script:
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> echo 0x20> =C2=A0/sys/module/gpmi_nand/parameters/gpmi_debug
->>
->> As said, don't have that gpmi_debug sysfs entry. Sure you don't have
->> any other modification done which are not in that git branch?
->
-> The sysfs entry does exit.
-> Please check carefully.
-> The code in gpmi-nand.c defines it.
+Seeing this support added directly to davinci_nand driver made me
+think -- now this driver has another reference to platform-specific
+functions in arch/arm/mach-davinci/aemif.c. Recently the c6x project
+pushed a fix to remove references to a platform specific include. Not
+that you are re-introducing this include but in a more general sense:
+perhaps the features/functions of the AEMIF _bus_ should be removed
+from the davinci_nand driver?
 
-Ok, I see the module_param entry at the beginning of gpmi-nand.c.
-Must have overlooked it as in previous mail you mentioned the path was
-/sys/devices/platform/imx23-gpmi-nand/gpmi_debug
-But no problem, it's working now.
+As for an in-tree driver example: how would support for cpufreq
+transitions be added to the UI-board's NOR device which is currently
+using "physmap-flash" driver?
 
+> Tested on TI DA850/OMAP-L138 EVM.
 >
+> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+> ---
+> =A0drivers/mtd/nand/davinci_nand.c | =A0 54 +++++++++++++++++++++++++++++=
+++++++++++
+> =A01 files changed, 54 insertions(+), 0 deletions(-)
 >
->>> flash_eraseall /dev/mtd1
->>> ubiformat /dev/mtd1
->>> flash_eraseall /dev/mtd1
->>> ubiattach /dev/ubi_ctrl -m 1
->>> ubimkvol /dev/ubi0 -N test -m
->>> mount -t ubifs ubi0:test tmp
->>> bonnie++ -d tmp -u 0 -s 2 -r 1
->>> bonnie++ -d tmp -u 0 -s 2 -r 1
->>> bonnie++ -d tmp -u 0 -s 2 -r 1
->>> umount tmp
->>> ubidetach /dev/ubi_ctrl -m 1
->>>
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> [3] conclusion
->>> =C2=A0 It runs well in my mx23 board, and no DMA-TIMEOUT occur.
->>> I think there is some conflict in your board.
->>
->> Don't know what conflict I would have with my board. I just use the
->> board without anything (mmc, lcd, ...) attached to it.
->>
->>> BTW:
->>> =C2=A0 I split the MTD to 20M and (the rest size).
->>
->> So do I.
->>
->>> The flash_eraseall works well.
->>> If i do not split the MTD, the flash_eraseall will not work.
->>
->> That's strange because I use flash_eraseall on my mtd1 which is 108 MB.
->> I don't know how you boot but my uboot is in mtd0, so don't use that
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_n=
+and.c
+> index 1f34951..7e764af 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -33,6 +33,7 @@
+> =A0#include <linux/mtd/nand.h>
+> =A0#include <linux/mtd/partitions.h>
+> =A0#include <linux/slab.h>
+> +#include <linux/cpufreq.h>
 >
-> I boot the kernel by the USB with sb_loader.
+> =A0#include <mach/nand.h>
+> =A0#include <mach/aemif.h>
+> @@ -74,6 +75,9 @@ struct davinci_nand_info {
+> =A0 =A0 =A0 =A0uint32_t =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0core_chipsel;
 >
-> Best Regards
-> Huang Shijie
+> =A0 =A0 =A0 =A0struct davinci_aemif_timing =A0 =A0 *timing;
+> +#ifdef CONFIG_CPU_FREQ
+> + =A0 =A0 =A0 struct notifier_block =A0 freq_transition;
+> +#endif
+> =A0};
 >
+> =A0static DEFINE_SPINLOCK(davinci_nand_lock);
+> @@ -519,6 +523,47 @@ static struct nand_ecclayout hwecc4_2048 __initconst=
+ =3D {
+> =A0 =A0 =A0 =A0},
+> =A0};
+>
+> +#ifdef CONFIG_CPU_FREQ
+> +static int nand_davinci_cpufreq_transition(struct notifier_block *nb,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned long val, void *data)
+> +{
+> + =A0 =A0 =A0 struct davinci_nand_info *info;
+> +
+> + =A0 =A0 =A0 info =3D container_of(nb, struct davinci_nand_info, freq_tr=
+ansition);
+> +
+> + =A0 =A0 =A0 if (val =3D=3D CPUFREQ_POSTCHANGE)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 davinci_aemif_setup_timing(info->timing, in=
+fo->base,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 info->core_=
+chipsel);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static inline int nand_davinci_cpufreq_register(struct davinci_nand_info=
+ *info)
+> +{
+> + =A0 =A0 =A0 info->freq_transition.notifier_call =3D nand_davinci_cpufre=
+q_transition;
+> +
+> + =A0 =A0 =A0 return cpufreq_register_notifier(&info->freq_transition,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPUFREQ_TRANSITION_NOTIFIER=
+);
+> +}
+> +
+> +static inline void nand_davinci_cpufreq_deregister(struct davinci_nand_i=
+nfo
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *info)
+> +{
+> + =A0 =A0 =A0 cpufreq_unregister_notifier(&info->freq_transition,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPUFREQ_TRANSITION_NOTIFIER=
+);
+> +}
+> +#else
+> +static inline int nand_davinci_cpufreq_register(struct davinci_nand_info=
+ *info)
+> +{
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static inline void nand_davinci_cpufreq_deregister(struct davinci_nand_i=
+nfo
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *info)
+> +{
+> +}
+> +#endif
+> +
+> =A0static int __init nand_davinci_probe(struct platform_device *pdev)
+> =A0{
+> =A0 =A0 =A0 =A0struct davinci_nand_pdata =A0 =A0 =A0 *pdata =3D pdev->dev=
+.platform_data;
+> @@ -782,12 +827,19 @@ syndrome_done:
+> =A0 =A0 =A0 =A0if (ret < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto err_scan;
+>
+> + =A0 =A0 =A0 ret =3D nand_davinci_cpufreq_register(info);
+> + =A0 =A0 =A0 if (ret) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "failed to register cpu=
+freq\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_cpu_freq_fail;
+> + =A0 =A0 =A0 }
+> +
+> =A0 =A0 =A0 =A0val =3D davinci_nand_readl(info, NRCSR_OFFSET);
+> =A0 =A0 =A0 =A0dev_info(&pdev->dev, "controller rev. %d.%d\n",
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 (val >> 8) & 0xff, val & 0xff);
+>
+> =A0 =A0 =A0 =A0return 0;
+>
+> +err_cpu_freq_fail:
+> =A0err_scan:
+> =A0err_timing:
+> =A0 =A0 =A0 =A0clk_disable(info->clk);
+> @@ -818,6 +870,8 @@ static int __exit nand_davinci_remove(struct platform=
+_device *pdev)
+> =A0 =A0 =A0 =A0struct davinci_nand_info *info =3D platform_get_drvdata(pd=
+ev);
+> =A0 =A0 =A0 =A0int status;
+>
+> + =A0 =A0 =A0 nand_davinci_cpufreq_deregister(info);
+> +
+> =A0 =A0 =A0 =A0status =3D mtd_device_unregister(&info->mtd);
+>
+> =A0 =A0 =A0 =A0spin_lock_irq(&davinci_nand_lock);
+> --
+> 1.7.1
 >
 > _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
 >
+
+
+
+--=20
+Best Regards,
+Ben Gardiner
+
+---
+Nanometrics Inc.
++1 (613) 592-6776 x239
+http://www.nanometrics.ca
