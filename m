@@ -1,21 +1,23 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QoOYd-0002y7-47
-	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2011 23:39:31 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH] mtd: cafe_nand: register master MTD at most once
-Date: Tue, 2 Aug 2011 16:38:30 -0700
-Message-ID: <1312328310-18003-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
-References: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+	helo=TX2EHSOBE004.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QoUkQ-0004Vx-1B
+	for linux-mtd@lists.infradead.org; Wed, 03 Aug 2011 06:16:06 +0000
+From: Li Yang-R58472 <r58472@freescale.com>
+To: Liu Shuo-B35362 <B35362@freescale.com>, "dwmw2@infradead.org"
+	<dwmw2@infradead.org>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH v2] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+Date: Wed, 3 Aug 2011 06:15:56 +0000
+Message-ID: <3F607A5180246847A760FD34122A1E051BC8DF@039-SN1MPN1-002.039d.mgd.msft.net>
+References: <1310446122-18050-1-git-send-email-b35362@freescale.com>
+In-Reply-To: <1310446122-18050-1-git-send-email-b35362@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: dsd@laptop.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	linux-mtd@lists.infradead.org, Jamie Iles <jamie@jamieiles.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch addresses a regression where a master MTD object might be
-registered twice if no partitions are found. The initial bug report can
-be seen here:
-    http://lists.infradead.org/pipermail/linux-mtd/2011-July/037086.html
+>-----Original Message-----
+>From: Liu Shuo-B35362
+>Sent: Tuesday, July 12, 2011 12:49 PM
+>To: dwmw2@infradead.org
+>Cc: linux-mtd@lists.infradead.org; linuxppc-dev@ozlabs.org; Liu Shuo-
+>B35362; Li Yang-R58472
+>Subject: [PATCH v2] mtd/nand : workaround for Freescale FCM to support
+>large-page Nand chip
+>
+>From: Liu Shuo <b35362@freescale.com>
+>
+>Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+>to support the Nand flash chip whose page size is larger than 2K bytes, we
+>divide a page into multi-2K pages for MTD layer driver. In that case, we
+>force to set the page size to 2K bytes. We convert the page address of MTD
+>layer driver to a real page address in flash chips and a column index in
+>fsl_elbc driver. We can issue any column address by UA instruction of elbc
+>controller.
+>
+>Signed-off-by: Liu Shuo <b35362@freescale.com>
+>Signed-off-by: Li Yang <leoli@freescale.com>
+>---
 
-The regression is caused by:
-    commit 0f7451bea72c64d3f0a47850328d52f0315e2ea6
-    "mtd: cafe_nand.c: use mtd_device_parse_register"
+Hi David and Artem,
 
-The aforementioned commit was intended to basically just refactor the
-codebase; however, it had unintentional side effects. The cafe_nand probe
-behavior over time is as follows.
+We have fixed the multi-line comment style problem.  Could you help to pick=
+ the patch?
 
-Previous functionality (before commit 0f7451be):
- A) register the master device with add_mtd_device()
- B) if partitions are found, register them as well
-
-New functionality (at commit 0f7451be):
- A) register the master device with add_mtd_device()
- B) if partitions are found, register them as well
- C) if partitions are not found, register the master device (again)
-
-Correct functionality (this patch):
- (remove step A)
- B) if partitions are found, register them
- C) if partitions are not found, register the master device
-
-Thus, this fix means that we will never register both the master MTD and
-its partitions, as we did before commit 0f7451be. This is probably the
-expected behavior and should be a welcome change.
-
-Reported-by: Daniel Drake <dsd@laptop.org>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/cafe_nand.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 661e5dc..11a56df 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -797,9 +797,6 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
- 
- 	pci_set_drvdata(pdev, mtd);
- 
--	/* We register the whole device first, separate from the partitions */
--	mtd_device_register(mtd, NULL, 0);
--
- 	mtd->name = "cafe_nand";
- 	mtd_device_parse_register(mtd, part_probes, 0, NULL, 0);
- 
--- 
-1.7.0.4
+- Leo
