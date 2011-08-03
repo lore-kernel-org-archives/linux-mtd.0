@@ -1,17 +1,32 @@
-Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
-	helo=ch1outboundpool.messaging.microsoft.com)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QoVH5-0004gG-LF
-	for linux-mtd@lists.infradead.org; Wed, 03 Aug 2011 06:49:53 +0000
-From: <b35362@freescale.com>
-To: <dwmw2@infradead.org>, <linuxppc-dev@linux.freescale.net>
-Subject: [PATCH] mtd-utils: fix corrupt cleanmarker with flash_erase -j command
-Date: Wed, 3 Aug 2011 13:50:38 +0800
-Message-ID: <1312350638-25566-1-git-send-email-b35362@freescale.com>
+	id 1QoYpE-00085V-Tl
+	for linux-mtd@lists.infradead.org; Wed, 03 Aug 2011 10:37:22 +0000
+Date: Wed, 3 Aug 2011 12:37:10 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Koen Beel <koen.beel.barco@gmail.com>
+Subject: Re: [PATCH v8 0/3] add the GPMI controller driver for IMX23/IMX28
+Message-ID: <20110803103710.GA1948@pengutronix.de>
+References: <1311230846-26437-1-git-send-email-b32955@freescale.com>
+	<20110721215020.GA25344@pengutronix.de>
+	<4E28EEE1.2050008@freescale.com>
+	<20110722055731.GI26837@S2100-06.ap.freescale.net>
+	<4E292FCF.6010608@freescale.com>
+	<CAHMSPgMHrqWcJ=BThDLgQ=XyTBDCMvNS4SVjQWfk=Jf682TEig@mail.gmail.com>
+	<4E2F6F90.7030207@freescale.com>
+	<CAHMSPgPC4whyskfuFGeFd7WHx-=5htezWajm_rNi9Xa+03PV0A@mail.gmail.com>
+	<20018.24364.787244.956361@ipc1.ka-ro>
+	<CAHMSPgM5W8=mE4sRDGMMfo39fvThBo_jrdG8hyhJNQ_ceV=_pA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Liu Shuo <b35362@freescale.com>, linuxppc-dev@ozlabs.org,
-	Li Yang <leoli@freescale.com>, linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+In-Reply-To: <CAHMSPgM5W8=mE4sRDGMMfo39fvThBo_jrdG8hyhJNQ_ceV=_pA@mail.gmail.com>
+Cc: arnd@arndb.de, dedekind1@gmail.com, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, shijie8@gmail.com,
+	Shawn Guo <shawn.guo@freescale.com>,
+	Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,101 +36,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Liu Shuo <b35362@freescale.com>
 
-Flash_erase -j should fill discrete freeoob areas with required bytes
-of JFFS2 cleanmarker in jffs2_check_nand_cleanmarker(). Not just fill
-the first freeoob area.
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Liu Shuo <b35362@freescale.com>
-Signed-off-by: Li Yang <leoli@freescale.com>
----
- flash_erase.c |   41 +++++++++++++++++++++++++++++++++++------
- 1 files changed, 35 insertions(+), 6 deletions(-)
+> > Do you have an SD card in the system? I'm getting the same error when
+> > accessing an SD card. Without SD card I can use the flash without any
+> > errors.
+>=20
+> No SD card in the system. At least not on my mx23evk board.
+> My real target hardware has a SDIO wifi chip.
 
-diff --git a/flash_erase.c b/flash_erase.c
-index fe2eaca..e6747fc 100644
---- a/flash_erase.c
-+++ b/flash_erase.c
-@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
- 	int isNAND;
- 	int error = 0;
- 	uint64_t offset = 0;
-+	void *oob_data = NULL;
- 
- 	/*
- 	 * Process user arguments
-@@ -197,15 +198,40 @@ int main(int argc, char *argv[])
- 			if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
- 				return sys_errmsg("%s: unable to get NAND oobinfo", mtd_device);
- 
-+			cleanmarker.totlen = cpu_to_je32(8);
- 			/* Check for autoplacement */
- 			if (oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
-+				struct nand_ecclayout_user ecclayout;
- 				/* Get the position of the free bytes */
--				if (!oobinfo.oobfree[0][1])
-+				if (ioctl(fd, ECCGETLAYOUT, &ecclayout) != 0)
-+					return sys_errmsg("%s: unable to get NAND ecclayout", mtd_device);
-+
-+				if (!ecclayout.oobavail)
- 					return errmsg(" Eeep. Autoplacement selected and no empty space in oob");
- 				clmpos = oobinfo.oobfree[0][0];
--				clmlen = oobinfo.oobfree[0][1];
--				if (clmlen > 8)
--					clmlen = 8;
-+				clmlen = MIN(ecclayout.oobavail, 8);
-+
-+				if (oobinfo.oobfree[0][1] < 8 && ecclayout.oobavail >= 8) {
-+					int i, left, n, last = 0;
-+					void *cm;
-+
-+					oob_data = malloc(mtd.oob_size);
-+					if (!oob_data)
-+						return -ENOMEM;
-+
-+					memset(oob_data, 0xff, mtd.oob_size);
-+					cm = &cleanmarker;
-+					for (i = 0, left = clmlen; left ; i++) {
-+						n = MIN(left, oobinfo.oobfree[i][1]);
-+						memcpy(oob_data + oobinfo.oobfree[i][0],
-+								cm, n);
-+						left -= n;
-+						cm   += n;
-+						last = oobinfo.oobfree[i][0] + n;
-+					}
-+
-+					clmlen = last - clmpos;
-+				}
- 			} else {
- 				/* Legacy mode */
- 				switch (mtd.oob_size) {
-@@ -223,7 +249,6 @@ int main(int argc, char *argv[])
- 						break;
- 				}
- 			}
--			cleanmarker.totlen = cpu_to_je32(8);
- 		}
- 		cleanmarker.hdr_crc = cpu_to_je32(mtd_crc32(0, &cleanmarker, sizeof(cleanmarker) - 4));
- 	}
-@@ -272,7 +297,8 @@ int main(int argc, char *argv[])
- 
- 		/* write cleanmarker */
- 		if (isNAND) {
--			if (mtd_write_oob(mtd_desc, &mtd, fd, offset + clmpos, clmlen, &cleanmarker) != 0) {
-+			void *data = oob_data ? oob_data + clmpos : &cleanmarker;
-+			if (mtd_write_oob(mtd_desc, &mtd, fd, offset + clmpos, clmlen, data) != 0) {
- 				sys_errmsg("%s: MTD writeoob failure", mtd_device);
- 				continue;
- 			}
-@@ -291,5 +317,8 @@ int main(int argc, char *argv[])
- 	show_progress(&mtd, offset, eb, eb_start, eb_cnt);
- 	bareverbose(!quiet, "\n");
- 
-+	if (oob_data)
-+		free(oob_data);
-+
- 	return 0;
- }
--- 
-1.7.1
+Removing the SD didn't help here as well. Koen, which bootloader do you
+use?
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk45JNYACgkQD27XaX1/VRt1hACdFt1CQltiTWSwcoaNXsmJqkS0
+ycQAn3oPqxZYK/wmtd5S9Gh5dj+5YM73
+=jJs2
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
