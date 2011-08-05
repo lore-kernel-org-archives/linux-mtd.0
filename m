@@ -1,20 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qp6no-0005u7-2E
-	for linux-mtd@lists.infradead.org; Thu, 04 Aug 2011 22:54:08 +0000
-Received: by wyh11 with SMTP id 11so68315wyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Aug 2011 15:54:02 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-From: Grant Likely <grant.likely@secretlab.ca>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Russell King <rmk+kernel@arm.linux.org.uk>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd/physmap: Fix set_vpp signature in physmap_configure
-Date: Thu,  4 Aug 2011 23:53:53 +0100
-Message-Id: <1312498433-17950-1-git-send-email-grant.likely@secretlab.ca>
-Cc: Grant Likely <grant.likely@secretlab.ca>
+Received: from antispam02.maxim-ic.com ([205.153.101.183])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QpEmd-00010o-22
+	for linux-mtd@lists.infradead.org; Fri, 05 Aug 2011 07:25:31 +0000
+From: Brian Foster <brian.foster@maxim-ic.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
+	Eraseblock Regions
+Date: Fri, 5 Aug 2011 09:24:15 +0200
+References: <201107251148.51262.brian.foster@maxim-ic.com>
+	<201107260921.44512.brian.foster@maxim-ic.com>
+	<CAN8TOE847yECw3zeh42tf=6mC73O33Lr7Lzwpi0FrT-rB9ZYmg@mail.gmail.com>
+In-Reply-To: <CAN8TOE847yECw3zeh42tf=6mC73O33Lr7Lzwpi0FrT-rB9ZYmg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <201108050924.15740.brian.foster@maxim-ic.com>
+Cc: Mike Frysinger <vapier@gentoo.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-physmap_configure() has the wrong signature for the set_vpp callback.
-struct physmap_flash_data expects it to accpet a platform_device
-pointer.
+On Thursday 04 August 2011 19:46:10 Brian Norris wrote:
+> On Tue, Jul 26, 2011 at 12:21 AM, Brian Foster <brian.foster@maxim-ic.com> wrote:
+> >  The list was easy to find; what I could not find was
+> >  any indication of how/where bugs should be reported.
+> 
+> Hmm, it seems like maybe the closest info is hidden away at:
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+> But much of this refers to UBIFS-specific stuff.  Perhaps the
+> site should be updated.
 
-However, I can't find any users of physmap_configure(), so maybe the
-hook should simply be removed.
+ Indeed.  I don't recall finding that (but as you say,
+ this is not a UBIFS issue per se).  May I suggest an
+ entry in the FAQ?
 
-Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
----
- drivers/mtd/maps/physmap.c  |    2 +-
- include/linux/mtd/physmap.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+>[ ... ] 
+> Anyway, since I don't have these types of flash [with region_info]
+> readily available, I don't even use these options :)  And apparently,
+> one of the biggest contributors for mtd-utils, Mike Frysinger,
+> doesn't use region_info either...
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index f64cee4..f2b9f5e 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -247,7 +247,7 @@ static struct platform_device physmap_flash = {
- };
- 
- void physmap_configure(unsigned long addr, unsigned long size,
--		int bankwidth, void (*set_vpp)(struct map_info *, int))
-+		int bankwidth, void (*set_vpp)(struct platform_device *, int))
- {
- 	physmap_flash_resource.start = addr;
- 	physmap_flash_resource.end = addr + size - 1;
-diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
-index e5f21d2..25ef3ed 100644
---- a/include/linux/mtd/physmap.h
-+++ b/include/linux/mtd/physmap.h
-@@ -36,7 +36,7 @@ struct physmap_flash_data {
-  * Board needs to specify the exact mapping during their setup time.
-  */
- void physmap_configure(unsigned long addr, unsigned long size,
--		int bankwidth, void (*set_vpp)(struct map_info *, int) );
-+		int bankwidth, void (*set_vpp)(struct platform_device *, int) );
- 
- /*
-  * Machines that wish to do flash partition may want to call this function in
+ I've no idea why all(? I think!) of our embedded systems
+ reference designs _do_ use such Flashes.  The designer's
+ on vacation now (this is August, and it is France, hence
+ just about everybody's on vacation .... !) or I'd ask if
+ there's any reason.
+
+cheers!
+	-blf-
 -- 
-1.7.4.1
+Brian FOSTER
+Principal MTS, Software
+Maxim Integrated Products (Microcontroller BU), formerly Innova Card
+Web    : http://www.maxim-ic.com/
