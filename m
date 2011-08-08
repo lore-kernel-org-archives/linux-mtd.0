@@ -1,12 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqVez-00018U-9L
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:38:50 +0000
+	id 1QqVf4-00018U-JY
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:38:55 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 8/9] faq: ubi(fs): small spelling, URL fixups
-Date: Mon, 8 Aug 2011 12:37:18 -0700
-Message-ID: <1312832239-21759-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 6/9] doc: update info on compiling mtd-utils
+Date: Mon, 8 Aug 2011 12:37:16 -0700
+Message-ID: <1312832239-21759-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 References: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,68 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We used `<a name=[URL]>' instead of `<a href=[URL]>' by accident.
+The recursive build system for mtd-utils was rewritten enough recently
+such that the description regarding builing ubi-utils by typing `make'
+from its subdirectory is now incorrect. Update the UBI docs to reflect
+this.
 
-Also, the file "faq/ubi.html" is located within the "faq" directory, so
-use a simpler relative link (i.e., don't use `../faq').
-
-Change "we have never find" to "we have never found".
-
-Change "refer this tread" to "refer to this thread".
-
-Change "UBIi" to "UBI", "you your" to "your".
+Also, I copied and edited some basic info from the UBI docs to include
+in the general description on compiling mtd-utils.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- faq/ubi.xml   |    4 ++--
- faq/ubifs.xml |    6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ doc/ubi.xml     |   11 ++++++-----
+ faq/general.xml |   21 ++++++++++++++++-----
+ 2 files changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/faq/ubi.xml b/faq/ubi.xml
-index e9e6625..03a3061 100644
---- a/faq/ubi.xml
-+++ b/faq/ubi.xml
-@@ -375,7 +375,7 @@ describes how UBI-aware flasher program has to work.</p>
+diff --git a/doc/ubi.xml b/doc/ubi.xml
+index d3f4516..98cb69c 100644
+--- a/doc/ubi.xml
++++ b/doc/ubi.xml
+@@ -213,15 +213,16 @@ git tree. Please, use this branch unless you are an UBI developer.</p>
  
- <p><b>Important!</b>: even if you do not care about erasecounters, do not use
- <code>nandwrite</code> for flashing UBI images containing UBIFS file-system to
--NAND flashes, read <a href="../faq/ubifs.html#L_why_ubiformat">here</a> for
-+NAND flashes, read <a href="ubifs.html#L_why_ubiformat">here</a> for
- more information.</p>
+ <h2><a name="L_usptools">User-space tools</a></h2>
+ 
+-<p>UBI user-space tools are available from the the following git repository:</p>
++<p>UBI user-space tools, as well as other MTD user-space tools, are available
++from the the following git repository:</p>
+ 
+ <code>git://git.infradead.org/mtd-utils.git</code>
+ 
+-<p>Please, clone it and compile. The easiest way to compile UBI tools is to go
+-straight to the <code>ubi-utils</code> sub-directory and type
+-<code>make</code>. <a href="../faq/general.html#L_compile_mtd">This</a> section
++<p>Please, clone it and compile using <code>make</code> from the root mtd-utils
++directory.  <a href="../faq/general.html#L_compile_mtd">This section</a>
+ provides information about how to compile the whole <code>mtd-utils</code>
+-repository tree.</p>
++repository tree. You should find the UBI tools under the <code>ubi-utils</code>
++sub-directory.</p>
+ 
+ <p>The repository contains the following UBI tools:</p>
+ <ul>
+diff --git a/faq/general.xml b/faq/general.xml
+index 0336a32..a4e82f3 100644
+--- a/faq/general.xml
++++ b/faq/general.xml
+@@ -256,11 +256,22 @@ unlock them.
+ <H2>How do I compile the mtd-utils tree?</H2>
+ </A>
+ 
+-<p>You have to install libraries the tools depend on. Please, find
+-the information about <code>mkfs.jffs2</code> dependencies
+-<a href="../faq/jffs2.html#L_mkfs_jffs2_comp">here</a> and the
+-the information about <code>mkfs.ubifs</code> dependencies
+-<a href="../faq/ubifs.html#L_mkfs_ubifs_comp">here</a>.</p>
++<P>
++The MTD and UBI user-space tools are available from the the following git
++repository:
++</P>
++
++<CODE>git://git.infradead.org/mtd-utils.git</CODE>
++
++<P>
++To compile, first you have to install libraries the tools depend on. You can
++find the information about <CODE>mkfs.jffs2</CODE> dependencies
++<A HREF="jffs2.html#L_mkfs_jffs2_comp">here</A> and the the information about
++<CODE>mkfs.ubifs</CODE> dependencies
++<A HREF="ubifs.html#L_mkfs_ubifs_comp">here</A>. Once you have these satisfied,
++you should be able to simply type <CODE>make</CODE> from the root mtd-utils
++directory.
++</P>
  
  
-@@ -567,7 +567,7 @@ any image, and check if you still have these errors.</p>
- <p>If you do not have errors when you mount empty flash, it is probably indeed
- related to how you flash the UBI/UBIFS images. One typical problem is related
- to ECC calculation algorithm - read
--<a name="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
-+<a href="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
- that you use <a href="../doc/ubifs.html#L_usptools">ubiformat</a>, or make sure
- either that your flashing program skips <code>0xFF</code> properly (see
- <a href="../doc/ubi.html#L_flasher_algo">here</a>) or that your UBIFS image
-diff --git a/faq/ubifs.xml b/faq/ubifs.xml
-index 2969bad..f5f5fae 100644
---- a/faq/ubifs.xml
-+++ b/faq/ubifs.xml
-@@ -717,8 +717,8 @@ provably want the file-system doing inode updates every time they are read.</p>
- 
- <p>Not, it does not, which means you cannot export UBIFS file-system via NFS.
- We did make an attempt to support NFS, but the support was not exactly correct
--so it was dropped, and we have never find time to come back to that. Please,
--refer <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this tread</a>
-+so it was dropped, and we have never found time to come back to that. Please,
-+refer to <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this thread</a>
- for some more details. The original patch can also be found there.</p>
- 
- 
-@@ -1482,7 +1482,7 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
- 	saw any errors/warnings, describe them and include all corresponding
- 	prints from tests / UBIFS / etc;</li>
- 
--	<li>provide UBIi and UBIFS configuration from you your
-+	<li>provide UBI and UBIFS configuration from your
- 	<code>.config</code> file, or just attach whole file;</li>
- 
- 	<li>describe your flash device, attach the "<code>mtdinfo -a</code>"
+ <INCLUDE file="../inc/footer.tmpl" />
 -- 
 1.7.0.4
