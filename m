@@ -1,12 +1,12 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqVek-00012B-Uj
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:38:35 +0000
+	id 1QqVez-00018U-9L
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:38:50 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 7/9] faq: ubi(fs): sending bug reports using `mtdinfo'
-Date: Mon, 8 Aug 2011 12:37:17 -0700
-Message-ID: <1312832239-21759-8-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 8/9] faq: ubi(fs): small spelling, URL fixups
+Date: Mon, 8 Aug 2011 12:37:18 -0700
+Message-ID: <1312832239-21759-9-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 References: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,45 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The `mtdinfo' utility (with the `-a' flag) is much more informative
-than `cat /proc/mtd', so encourage users to use it if possible when
-sending bug reports.
+We used `<a name=[URL]>' instead of `<a href=[URL]>' by accident.
+
+Also, the file "faq/ubi.html" is located within the "faq" directory, so
+use a simpler relative link (i.e., don't use `../faq').
+
+Change "we have never find" to "we have never found".
+
+Change "refer this tread" to "refer to this thread".
+
+Change "UBIi" to "UBI", "you your" to "your".
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
  faq/ubi.xml   |    4 ++--
- faq/ubifs.xml |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ faq/ubifs.xml |    6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/faq/ubi.xml b/faq/ubi.xml
-index 2d9ce6e..e9e6625 100644
+index e9e6625..03a3061 100644
 --- a/faq/ubi.xml
 +++ b/faq/ubi.xml
-@@ -874,8 +874,8 @@ quicker than the first method.</p>
- 	<li>provide UBI configuration from you your <code>.config</code>
- 	file, or just attach whole file;</li>
+@@ -375,7 +375,7 @@ describes how UBI-aware flasher program has to work.</p>
  
--	<li>describe your flash device, attach the
--	"<code>cat /proc/mtd</code>" output;</li>
-+	<li>describe your flash device, attach the "<code>mtdinfo -a</code>"
-+	output (or the less useful "<code>cat /proc/mtd</code>" output);</li>
+ <p><b>Important!</b>: even if you do not care about erasecounters, do not use
+ <code>nandwrite</code> for flashing UBI images containing UBIFS file-system to
+-NAND flashes, read <a href="../faq/ubifs.html#L_why_ubiformat">here</a> for
++NAND flashes, read <a href="ubifs.html#L_why_ubiformat">here</a> for
+ more information.</p>
  
- 	<li>specify which kernel version you are using; if your kernel is not
- 	the latest one, please, explicitly tell whether you updated UBI by
+ 
+@@ -567,7 +567,7 @@ any image, and check if you still have these errors.</p>
+ <p>If you do not have errors when you mount empty flash, it is probably indeed
+ related to how you flash the UBI/UBIFS images. One typical problem is related
+ to ECC calculation algorithm - read
+-<a name="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
++<a href="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
+ that you use <a href="../doc/ubifs.html#L_usptools">ubiformat</a>, or make sure
+ either that your flashing program skips <code>0xFF</code> properly (see
+ <a href="../doc/ubi.html#L_flasher_algo">here</a>) or that your UBIFS image
 diff --git a/faq/ubifs.xml b/faq/ubifs.xml
-index 14043f5..2969bad 100644
+index 2969bad..f5f5fae 100644
 --- a/faq/ubifs.xml
 +++ b/faq/ubifs.xml
-@@ -1485,8 +1485,8 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
- 	<li>provide UBIi and UBIFS configuration from you your
+@@ -717,8 +717,8 @@ provably want the file-system doing inode updates every time they are read.</p>
+ 
+ <p>Not, it does not, which means you cannot export UBIFS file-system via NFS.
+ We did make an attempt to support NFS, but the support was not exactly correct
+-so it was dropped, and we have never find time to come back to that. Please,
+-refer <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this tread</a>
++so it was dropped, and we have never found time to come back to that. Please,
++refer to <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this thread</a>
+ for some more details. The original patch can also be found there.</p>
+ 
+ 
+@@ -1482,7 +1482,7 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
+ 	saw any errors/warnings, describe them and include all corresponding
+ 	prints from tests / UBIFS / etc;</li>
+ 
+-	<li>provide UBIi and UBIFS configuration from you your
++	<li>provide UBI and UBIFS configuration from your
  	<code>.config</code> file, or just attach whole file;</li>
  
--	<li>describe your flash device, attach the
--	"<code>cat /proc/mtd</code>" output;</li>
-+	<li>describe your flash device, attach the "<code>mtdinfo -a</code>"
-+	output (or the less useful "<code>cat /proc/mtd</code>" output);</li>
- 
- 	<li>specify which kernel version you are using; if your kernel is not
- 	the latest one, please, explicitly tell whether you updated UBIFS by
+ 	<li>describe your flash device, attach the "<code>mtdinfo -a</code>"
 -- 
 1.7.0.4
