@@ -1,19 +1,22 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqUXo-00084J-LD
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 18:27:21 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH] mtd: plat_nand: fix `bbt_options' compile error
-Date: Mon, 8 Aug 2011 11:26:33 -0700
-Message-ID: <1312827993-19163-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QqUwY-00007W-D3
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 18:52:55 +0000
+Received: by wyh11 with SMTP id 11so298526wyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 08 Aug 2011 11:52:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, axel.lin@gmail.com,
-	avorontsov@ru.mvista.com, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <949288.456441312791072729.JavaMail.weblogic@epml15>
+References: <949288.456441312791072729.JavaMail.weblogic@epml15>
+Date: Mon, 8 Aug 2011 11:52:52 -0700
+Message-ID: <CAN8TOE8kvxPx5cZeza2thfPx=-XHL0GcU3zhvM7gp8L-xyD3sw@mail.gmail.com>
+Subject: Re: MTD & LogFS - Is LogFS dead?
+From: Brian Norris <computersforpeace@gmail.com>
+To: indraneel.m@samsung.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a bug in commit 86cb232d4e6b589be3daef8d570d1921c05be962
-("mtd: nand: consolidate redundant flash-based BBT flags"). The problem
-was reported by Axel Lin at:
+On Mon, Aug 8, 2011 at 1:11 AM, INDRANEEL MUKHERJEE
+<indraneel.m@samsung.com> wrote:
+> I'm trying to use LogFS with MTD. But I can't seem to find the format uti=
+l for LogFS. All the LogFS official links including
+> http://logfs.org/logfs/
+> http://logfs.org/cgi-bin/mailman/listinfo/logfs
+> http://lazybastard.org/~joern/logfs1.pdf
+> are down(been checking for some days now).
+>
+> Is no one maintaining LogFS anymore? Is it dead? Any pointers to the logf=
+s-utils?
 
-  http://lists.infradead.org/pipermail/linux-mtd/2011-August/037340.html
+Don't know too much about this myself, but I was able to track down
+some utils (via Wikipedia):
+http://logfs-tools.sourcearchive.com/
 
-In restructuring a few of the fields in `struct nand_chip' and similar, I
-overlooked my reference to a field in `struct platform_nand_chip' that
-didn't exist. He discovered the bug via an ARM build that I didn't test:
+It looks like development is not very active, but the developer, J=F6rn
+Engel has appeared on this mailing list recently.
 
-  make orion5x_defconfig
-  make
-
-    CC      arch/arm/mach-orion5x/ts78xx-setup.o
-  arch/arm/mach-orion5x/ts78xx-setup.c:278: error: unknown field 'bbt_options' specified in initializer
-  make[1]: *** [arch/arm/mach-orion5x/ts78xx-setup.o] Error 1
-  make: *** [arch/arm/mach-orion5x] Error 2
-
-The fix is simply to add the new `bbt_options' field to
-`platform_nand_chip' and to pass those options on to `nand_chip' during
-its initialization.
-
-I re-reviewed the rest of my previous commit and didn't find any other
-similar errors.
-
-Based on:
-
-  git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-
-Reported-by: Axel Lin <axel.lin@gmail.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/plat_nand.c |    1 +
- include/linux/mtd/nand.h     |    2 ++
- 2 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index e62468b..ea8e123 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -77,6 +77,7 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 	data->chip.read_buf = pdata->ctrl.read_buf;
- 	data->chip.chip_delay = pdata->chip.chip_delay;
- 	data->chip.options |= pdata->chip.options;
-+	data->chip.bbt_options |= pdata->chip.bbt_options;
- 
- 	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
- 	data->chip.ecc.layout = pdata->chip.ecclayout;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ebd806f..f4fdb1e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -604,6 +604,7 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-  * @partitions:		mtd partition list
-  * @chip_delay:		R/B delay value in us
-  * @options:		Option flags, e.g. 16bit buswidth
-+ * @bbt_options:	BBT option flags, e.g. NAND_BBT_USE_FLASH
-  * @ecclayout:		ECC layout info structure
-  * @part_probe_types:	NULL-terminated array of probe types
-  */
-@@ -615,6 +616,7 @@ struct platform_nand_chip {
- 	struct nand_ecclayout *ecclayout;
- 	int chip_delay;
- 	unsigned int options;
-+	unsigned int bbt_options;
- 	const char **part_probe_types;
- };
- 
--- 
-1.7.0.4
+Brian
