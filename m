@@ -1,7 +1,7 @@
 From: b32955@freescale.com (Huang Shijie)
 Date: Mon, 8 Aug 2011 18:39:11 +0800
 Subject: [PATCH] print_more_log
-Message-ID: <mailman.54.1312799635.20020.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.56.1312871860.20020.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -69,8 +69,8 @@ index 88aad4f..755cbfc 100644
 +		printk("APBH REG :%x : %.8X\n", 0x10 * i, stat1);
 +	}
 +	for (i = 0; i < 7; i++) {
-+		stat1 = readl(g_mxs_dma->base + 0x10 * i + 0x100);
-+		printk("APBH REG :%x : %.8X\n", 0x10 * i + 0x100, stat1);
++		stat1 = readl(g_mxs_dma->base + 0x10 * i + 0x400);
++		printk("APBH REG :%x : %.8X\n", 0x10 * i + 0x400, stat1);
 +	}
 +
 +	for (i = 0; i < idx; i++) {
@@ -113,4 +113,4 @@ index 1c2cbc5..3d6895b 100644
 1.7.0.4
 
 
---------------030105050108080108040309--
+--------------040304010008030902080407--
