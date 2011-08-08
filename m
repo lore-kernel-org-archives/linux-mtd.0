@@ -1,22 +1,16 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqLOn-00023L-Uk
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 08:41:26 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-Date: Mon, 8 Aug 2011 10:40:07 +0200
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAN8TOE--96V6ZruB8+VvAz2kqxqMq4nc4d5=6SGsUt0eu7og0g@mail.gmail.com>
-	<201108081010.42161.brian.foster@maxim-ic.com>
-In-Reply-To: <201108081010.42161.brian.foster@maxim-ic.com>
+Message-ID: <4E3FA88E.4070804@freescale.com>
+Date: Mon, 8 Aug 2011 17:12:46 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Message-ID: <201108081040.07775.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: GPMI-NAND Status?
+References: <20110805135133.GA26981@pengutronix.de>
+In-Reply-To: <20110805135133.GA26981@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Koen Beel <koen.beel.barco@gmail.com>, Shawn Guo <shawn.guo@linaro.org>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uZGF5IDA4IEF1Z3VzdCAyMDExIDEwOjEwOjQyIEJyaWFuIEZvc3RlciB3cm90ZToKPlsu
-Li5dICAgICAgICAgKEFuZCB5ZXMsIGNhc2Ug4oCYKDIp4oCZIHJlYWxseSBpcwo+ICBvbmx5IDRN
-aUIg4oCUIHRoYXQgY2hpcCBpcyBhbG1vc3QgdXNlbGVzcyBmb3IKPiAgdGhlIExpbnV4IHN5c3Rl
-bXMuLi4uIDstXCAgIFRoYXQgc3lzdGVtIGFsc28KPiAgaGFzIGEgMm5kIE5PUi1GbGFzaCAoMzJN
-aUIpLCBidXQgSSBkb24ndCBoYXZlCj4gIGF0LWhhbmQgdGhlIOKAmG10ZF9kZWJ1ZyBpbmZv4oCZ
-IGZvciBpdC4uLi4pCgogSGF2ZSBpdCBub3cgLi4uLgrilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIAKIyBtdGRfZGVidWcgaW5mbyAvZGV2L210ZDEgICAgIygzKSAybmQgRmxhc2ggb24gdGhl
-IDJuZCBzeXN0ZW0KbXRkLnR5cGUgPSBNVERfTk9SRkxBU0gKbXRkLmZsYWdzID0gTVREX1dSSVRF
-QUJMRSB8IE1URF9CSVRfV1JJVEVBQkxFIHwgTVREX1BPV0VSVVBfTE9DSwptdGQuc2l6ZSA9IDMz
-NDIzMzYwICgzMU0pCm10ZC5lcmFzZXNpemUgPSAxMzEwNzIgKDEyOEspCm10ZC53cml0ZXNpemUg
-PSAxCm10ZC5vb2JzaXplID0gMApyZWdpb25zID0gMgoKcmVnaW9uWzBdLm9mZnNldCA9IDB4MDAw
-MDAwMDAKcmVnaW9uWzBdLmVyYXNlc2l6ZSA9IDMyNzY4ICgzMkspCnJlZ2lvblswXS5udW1ibG9j
-a3MgPSA0CnJlZ2lvblswXS5yZWdpb25pbmRleCA9IDAKcmVnaW9uWzFdLm9mZnNldCA9IDB4MDAw
-MjAwMDAKcmVnaW9uWzFdLmVyYXNlc2l6ZSA9IDEzMTA3MiAoMTI4SykKcmVnaW9uWzFdLm51bWJs
-b2NrcyA9IDI1NQpyZWdpb25bMV0ucmVnaW9uaW5kZXggPSAxCuKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgAoKIFVwc2hvdCBpcyBJJ3ZlIGdvdCB0aHJlZSBkaWZmZXJlbnQgY2FzZXM6CiBD
-YXNlICgxKSBoYXMgb25lIHJlZ2lvbiwgY2FzZSAoMikgaGFzIHRocmVlIHJlZ2lvbnMsCiBhbmQg
-Y2FzZSAoMykgaGFzIHR3byByZWdpb25zLiAgQWxsIHRocmVlLCBhcyBwcmVkaWN0ZWQsCiBjYXVz
-ZSB0aGUg4oCYbXRkaW5mbyAtYeKAmSBvcGVuKDIpLU5VTEwgYnVnLiAgQW5kLCBBRkFJSywKIGFs
-bCB0aHJlZSBOT1IgY2hpcHMgdXNlIENGSS4gIFNvbWUgcXVpY2sgc2VhcmNoaW5nCiBzdWdnZXN0
-cyBDRkkgX3JlcXVpcmVzXyBhdCBsZWFzdCBvbmUgcmVnaW9uLgoKIEl0IGFsc28gYXBwZWFycyB0
-byBiZSB0aGUgY2FzZSBNVEQgcmVwb3J0cyBhIG5vbi0wCiBudW1iZXIgb2YgcmVnaW9ucyBvbmx5
-KD8pIGZvciBub3QtcGFydGl0aW9uZWQgRmxhc2hlczsKIHRoYXQgaXMsIHdoZW4g4oCYL2Rldi9t
-dGQ8Tj7igJkgaXMgdGhlIGVudGlyZSBjaGlwIChub3QgYQogcGFydGl0aW9uIG9mIGEgY2hpcCku
-ICBUaGlzIGlzIGJhc2VkIG9uIG9ic2VydmF0aW9uLAogbm90IGEgcmVhZGluZyBvZiB0aGUgY29k
-ZSBub3IgdGhlIGRvY3VtZW50YXRpb24sIHNvCiBjb3VsZCB2ZXJ5IGVhc2lseSBiZSB3cm9uZyEg
-IEJ1dCwgaWYgQ0ZJIGRvZXMgcmVxdWlyZQogYXQgbGVhc3Qgb25lIHJlZ2lvbiBhbmQgSSdtIG5v
-dCB0b28gYmFkbHkgd3JvbmcsIHRoaXMKIG1heSBleHBsYWluIHdoeSBvdGhlcnMgaGF2ZSBwcm9i
-bGVtcyByZXByb2R1Y2luZyB0aGUKIGlzc3VlOiAgVGhlIHRlc3RzIHVzZSBwYXJ0aXRpb25zLCBu
-b3Qgd2hvbGUtY2hpcHM/CgpjaGVlcnMhCgktYmxmLQotLSAKQnJpYW4gRk9TVEVSClByaW5jaXBh
-bCBNVFMsIFNvZnR3YXJlCk1heGltIEludGVncmF0ZWQgUHJvZHVjdHMgKE1pY3JvY29udHJvbGxl
-ciBCVSksIGZvcm1lcmx5IElubm92YSBDYXJkCldlYiAgICA6IGh0dHA6Ly93d3cubWF4aW0taWMu
-Y29tLwo=
+Hi Wolfram:
+>
+> ecclayout needs to be used to show that OOB is fully in use [1]
+> ===============================================================
+>
+> Needed to make it work for JFFS2 and to pass the mtd-testsuite. A driver only
+> working with UBIFS is surely not ready for mainline.
+>
+It seems just modifying the ecclayout of GPMI-NAND can not fix the problem.
+It should also change the code of JFFS2 and mtd.
+
+Some one ever posted a patch about this:
+http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+
+Best Regards
+Huang Shijie
