@@ -1,21 +1,22 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqLEP-0001xD-Ht
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 08:30:42 +0000
-Date: Mon, 8 Aug 2011 10:31:07 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110808083107.GN26160@logfs.org>
-References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
-	<20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
+Received: from antispam01.maxim-ic.com ([205.153.101.182])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QqLOn-00023L-Uk
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 08:41:26 +0000
+From: Brian Foster <brian.foster@maxim-ic.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
+	Eraseblock Regions
+Date: Mon, 8 Aug 2011 10:40:07 +0200
+References: <201107251148.51262.brian.foster@maxim-ic.com>
+	<CAN8TOE--96V6ZruB8+VvAz2kqxqMq4nc4d5=6SGsUt0eu7og0g@mail.gmail.com>
+	<201108081010.42161.brian.foster@maxim-ic.com>
+In-Reply-To: <201108081010.42161.brian.foster@maxim-ic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Message-ID: <201108081040.07775.brian.foster@maxim-ic.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 6 August 2011 19:39:42 +0530, srimugunthan dhandapani wrote:
-> 
-> Thanks. I tested your patch with nandsim and i was able to unmount
-> without any problems.
-
-Good.
-
-> I did some more tests on  logfs with nandsim. I ran into some crashes
-> when i used bonnie and tiobench.
->  Following are the steps i followed with bonnie. Also kernel messages
-> are below that.
-> 
->  1. sudo modprobe mtdblock
->  2. sudo modprobe nandsim
->  3. sudo modprobe zlib_deflate
->  4. sudo insmod logfs/logfs.ko
->  5. sudo flash_eraseall /dev/mtd0
->  6. sudo logfsprogs/mklogfs /dev/mtdblock0
->  7. sudo mount -t logfs /dev/mtdblock0 /mnt/flash_drive/
->  8. sudo chown srimugunthan /mnt/flash_drive/
->  9. bonnie -d /mnt/flash_drive/ -s 100 -r 50
-> 
->  kernel oops with bonnie
->  ( A different kind of crash happened with tiobench  command
-> ./tiobench.pl --dir /mnt/flash_drive/ --size 25 --threads 4)
-
-Not good.  So far I managed to see a (the?) tiobench bug once, but
-couldn't make it reproduceable.  Nor could I reproduce the bonnie bug.
-Once the bugs are reproduceable, even my feeble eyes can usually spot
-the cause sooner or later.  With a backtrace alone and no idea what
-internal state it depends on, life is much harder.
-
-Just in case this depends on device size or erase size, can you send
-me the mklogfs output?
-
->  do_invalidatepage+0x28/0x30
->  truncate_inode_page+0x92/0xb0
->  truncate_inode_pages_range+0x177/0x4f0
->  truncate_inode_pages+0x15/0x20
->  truncate_pagecache+0x4f/0x70
->  truncate_setsize+0x1f/0x30
->  vmtruncate+0x3e/0x60
->  logfs_truncate+0x263/0x2a0 [logfs]
->  logfs_evict_inode+0xdc/0x1d0 [logfs]
->  ?  do_raw_spin_unlock+0x5e/0xb0
->  evict+0xa9/0x1a0
->  iput+0xfd/0x200
->  dentry_iput+0x98/0xe0
->  dput+0x19e/0x2a0
->  fput+0x182/0x230
->  filp_close+0x66/0xa0
->  sys_close+0xb9/0x120
->  system_call_fastpath+0x16/0x1b
-
-We still had a struct logfs_block with some reserved bytes attached to
-the page when logfs called into vmtruncate.  I'll see whether that
-makes any sense at all.  At the very least, some more documentation
-would be in order.
-
-Jörn
-
--- 
-"[One] doesn't need to know [...] how to cause a headache in order
-to take an aspirin."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+T24gTW9uZGF5IDA4IEF1Z3VzdCAyMDExIDEwOjEwOjQyIEJyaWFuIEZvc3RlciB3cm90ZToKPlsu
+Li5dICAgICAgICAgKEFuZCB5ZXMsIGNhc2Ug4oCYKDIp4oCZIHJlYWxseSBpcwo+ICBvbmx5IDRN
+aUIg4oCUIHRoYXQgY2hpcCBpcyBhbG1vc3QgdXNlbGVzcyBmb3IKPiAgdGhlIExpbnV4IHN5c3Rl
+bXMuLi4uIDstXCAgIFRoYXQgc3lzdGVtIGFsc28KPiAgaGFzIGEgMm5kIE5PUi1GbGFzaCAoMzJN
+aUIpLCBidXQgSSBkb24ndCBoYXZlCj4gIGF0LWhhbmQgdGhlIOKAmG10ZF9kZWJ1ZyBpbmZv4oCZ
+IGZvciBpdC4uLi4pCgogSGF2ZSBpdCBub3cgLi4uLgrilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIAKIyBtdGRfZGVidWcgaW5mbyAvZGV2L210ZDEgICAgIygzKSAybmQgRmxhc2ggb24gdGhl
+IDJuZCBzeXN0ZW0KbXRkLnR5cGUgPSBNVERfTk9SRkxBU0gKbXRkLmZsYWdzID0gTVREX1dSSVRF
+QUJMRSB8IE1URF9CSVRfV1JJVEVBQkxFIHwgTVREX1BPV0VSVVBfTE9DSwptdGQuc2l6ZSA9IDMz
+NDIzMzYwICgzMU0pCm10ZC5lcmFzZXNpemUgPSAxMzEwNzIgKDEyOEspCm10ZC53cml0ZXNpemUg
+PSAxCm10ZC5vb2JzaXplID0gMApyZWdpb25zID0gMgoKcmVnaW9uWzBdLm9mZnNldCA9IDB4MDAw
+MDAwMDAKcmVnaW9uWzBdLmVyYXNlc2l6ZSA9IDMyNzY4ICgzMkspCnJlZ2lvblswXS5udW1ibG9j
+a3MgPSA0CnJlZ2lvblswXS5yZWdpb25pbmRleCA9IDAKcmVnaW9uWzFdLm9mZnNldCA9IDB4MDAw
+MjAwMDAKcmVnaW9uWzFdLmVyYXNlc2l6ZSA9IDEzMTA3MiAoMTI4SykKcmVnaW9uWzFdLm51bWJs
+b2NrcyA9IDI1NQpyZWdpb25bMV0ucmVnaW9uaW5kZXggPSAxCuKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgAoKIFVwc2hvdCBpcyBJJ3ZlIGdvdCB0aHJlZSBkaWZmZXJlbnQgY2FzZXM6CiBD
+YXNlICgxKSBoYXMgb25lIHJlZ2lvbiwgY2FzZSAoMikgaGFzIHRocmVlIHJlZ2lvbnMsCiBhbmQg
+Y2FzZSAoMykgaGFzIHR3byByZWdpb25zLiAgQWxsIHRocmVlLCBhcyBwcmVkaWN0ZWQsCiBjYXVz
+ZSB0aGUg4oCYbXRkaW5mbyAtYeKAmSBvcGVuKDIpLU5VTEwgYnVnLiAgQW5kLCBBRkFJSywKIGFs
+bCB0aHJlZSBOT1IgY2hpcHMgdXNlIENGSS4gIFNvbWUgcXVpY2sgc2VhcmNoaW5nCiBzdWdnZXN0
+cyBDRkkgX3JlcXVpcmVzXyBhdCBsZWFzdCBvbmUgcmVnaW9uLgoKIEl0IGFsc28gYXBwZWFycyB0
+byBiZSB0aGUgY2FzZSBNVEQgcmVwb3J0cyBhIG5vbi0wCiBudW1iZXIgb2YgcmVnaW9ucyBvbmx5
+KD8pIGZvciBub3QtcGFydGl0aW9uZWQgRmxhc2hlczsKIHRoYXQgaXMsIHdoZW4g4oCYL2Rldi9t
+dGQ8Tj7igJkgaXMgdGhlIGVudGlyZSBjaGlwIChub3QgYQogcGFydGl0aW9uIG9mIGEgY2hpcCku
+ICBUaGlzIGlzIGJhc2VkIG9uIG9ic2VydmF0aW9uLAogbm90IGEgcmVhZGluZyBvZiB0aGUgY29k
+ZSBub3IgdGhlIGRvY3VtZW50YXRpb24sIHNvCiBjb3VsZCB2ZXJ5IGVhc2lseSBiZSB3cm9uZyEg
+IEJ1dCwgaWYgQ0ZJIGRvZXMgcmVxdWlyZQogYXQgbGVhc3Qgb25lIHJlZ2lvbiBhbmQgSSdtIG5v
+dCB0b28gYmFkbHkgd3JvbmcsIHRoaXMKIG1heSBleHBsYWluIHdoeSBvdGhlcnMgaGF2ZSBwcm9i
+bGVtcyByZXByb2R1Y2luZyB0aGUKIGlzc3VlOiAgVGhlIHRlc3RzIHVzZSBwYXJ0aXRpb25zLCBu
+b3Qgd2hvbGUtY2hpcHM/CgpjaGVlcnMhCgktYmxmLQotLSAKQnJpYW4gRk9TVEVSClByaW5jaXBh
+bCBNVFMsIFNvZnR3YXJlCk1heGltIEludGVncmF0ZWQgUHJvZHVjdHMgKE1pY3JvY29udHJvbGxl
+ciBCVSksIGZvcm1lcmx5IElubm92YSBDYXJkCldlYiAgICA6IGh0dHA6Ly93d3cubWF4aW0taWMu
+Y29tLwo=
