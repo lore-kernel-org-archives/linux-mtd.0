@@ -1,12 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqVf4-00018U-JY
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:38:55 +0000
+	id 1QqVfL-0001D7-CT
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 19:39:13 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 6/9] doc: update info on compiling mtd-utils
-Date: Mon, 8 Aug 2011 12:37:16 -0700
-Message-ID: <1312832239-21759-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 9/9] faq: general: add bug reporting FAQ
+Date: Mon, 8 Aug 2011 12:37:19 -0700
+Message-ID: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 References: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,77 +23,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The recursive build system for mtd-utils was rewritten enough recently
-such that the description regarding builing ubi-utils by typing `make'
-from its subdirectory is now incorrect. Update the UBI docs to reflect
-this.
-
-Also, I copied and edited some basic info from the UBI docs to include
-in the general description on compiling mtd-utils.
+It's surprising to note that we do not have a general "how to send a bug
+report" FAQ. This patch provides a starting point and (most importantly)
+directs UBI/UBIFS users to the appropriate bug reporting information.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- doc/ubi.xml     |   11 ++++++-----
- faq/general.xml |   21 ++++++++++++++++-----
- 2 files changed, 22 insertions(+), 10 deletions(-)
+ faq/general.xml |   54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mail.xml        |    4 +++-
+ 2 files changed, 57 insertions(+), 1 deletions(-)
 
-diff --git a/doc/ubi.xml b/doc/ubi.xml
-index d3f4516..98cb69c 100644
---- a/doc/ubi.xml
-+++ b/doc/ubi.xml
-@@ -213,15 +213,16 @@ git tree. Please, use this branch unless you are an UBI developer.</p>
- 
- <h2><a name="L_usptools">User-space tools</a></h2>
- 
--<p>UBI user-space tools are available from the the following git repository:</p>
-+<p>UBI user-space tools, as well as other MTD user-space tools, are available
-+from the the following git repository:</p>
- 
- <code>git://git.infradead.org/mtd-utils.git</code>
- 
--<p>Please, clone it and compile. The easiest way to compile UBI tools is to go
--straight to the <code>ubi-utils</code> sub-directory and type
--<code>make</code>. <a href="../faq/general.html#L_compile_mtd">This</a> section
-+<p>Please, clone it and compile using <code>make</code> from the root mtd-utils
-+directory.  <a href="../faq/general.html#L_compile_mtd">This section</a>
- provides information about how to compile the whole <code>mtd-utils</code>
--repository tree.</p>
-+repository tree. You should find the UBI tools under the <code>ubi-utils</code>
-+sub-directory.</p>
- 
- <p>The repository contains the following UBI tools:</p>
- <ul>
 diff --git a/faq/general.xml b/faq/general.xml
-index 0336a32..a4e82f3 100644
+index a4e82f3..92469ab 100644
 --- a/faq/general.xml
 +++ b/faq/general.xml
-@@ -256,11 +256,22 @@ unlock them.
- <H2>How do I compile the mtd-utils tree?</H2>
- </A>
+@@ -20,6 +20,7 @@
+ 	<LI><A HREF="general.html#L_point">What are the point() and unpoint() functions used for?</A></LI>
+ 	<LI><A HREF="general.html#L_unlock">Why do I keep getting errors whenever I try to write to or erase my MTD device?</A></LI>
+ 	<LI><A HREF="general.html#L_compile_mtd">How do I compile the mtd-utils tree?</A></LI>
++	<LI><A HREF="general.html#L_bug_report">How do I report bugs?</A></LI>
+ </OL>
  
--<p>You have to install libraries the tools depend on. Please, find
--the information about <code>mkfs.jffs2</code> dependencies
--<a href="../faq/jffs2.html#L_mkfs_jffs2_comp">here</a> and the
--the information about <code>mkfs.ubifs</code> dependencies
--<a href="../faq/ubifs.html#L_mkfs_ubifs_comp">here</a>.</p>
+ 
+@@ -274,5 +275,58 @@ directory.
+ </P>
+ 
+ 
++
++<A NAME="L_bug_report">
++<H2>How do I report bugs?</H2>
++</A>
++
 +<P>
-+The MTD and UBI user-space tools are available from the the following git
-+repository:
++First, you need to figure out what you're reporting a bug against. This website
++(and its accompanying <A HREF="../mail.html">mailing list</A>) supports several
++related aspects of Linux, from the MTD kernel subsystem to its user-space
++utilities, including the generic MTD and NAND interface layers, several MTD
++hardware drivers, the UBI volume management system, several flash filesystems
++(e.g., JFFS2, UBIFS), and the user-space MTD utils. People on the mailing list
++will often support the YAFFS/YAFFS2 filesystems; however, YAFFS has its own
++dedicated <A HREF="http://www.yaffs.net/">website</A> and
++<A HREF="http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs">mailing
++list</A>, and its code is kept out of tree.
 +</P>
 +
-+<CODE>git://git.infradead.org/mtd-utils.git</CODE>
++<P>
++Now, bug reports for any of the above areas are more than welcome on the
++<A HREF="../mail.html">MTD mailing list</A>, provided you include sufficient
++information for reproducing and debugging your problem. This means:
++</P>
++
++<UL>
++	<LI>include all kernel 'oopses', stack traces, debug messages, or
++	relevant logs along with a clear description of the problem you're
++	having, what system(s) are affected, and anything else you think might
++	help understand your issue;</LI>
++
++	<LI>include information about flash parameters found from
++	"<CODE>mtdinfo -a</CODE>" (or the less useful info from
++	"<CODE>cat /proc/mtd</CODE>");</LI>
++
++	<LI>specify which kernel version you are using;</LI>
++
++	<LI>specify which mtd-utils version you are using, if applicable. In
++	past releases of mtd-utils, different tools had different versions, so
++	be sure to check the relevant tool (e.g., use "<CODE>nanddump
++	--version</CODE>); newer releases give the same version to most/all the
++	tools.</LI>
++</UL>
 +
 +<P>
-+To compile, first you have to install libraries the tools depend on. You can
-+find the information about <CODE>mkfs.jffs2</CODE> dependencies
-+<A HREF="jffs2.html#L_mkfs_jffs2_comp">here</A> and the the information about
-+<CODE>mkfs.ubifs</CODE> dependencies
-+<A HREF="ubifs.html#L_mkfs_ubifs_comp">here</A>. Once you have these satisfied,
-+you should be able to simply type <CODE>make</CODE> from the root mtd-utils
-+directory.
++You may also want to read one of the other related FAQs:
 +</P>
- 
- 
++
++<UL>
++	<LI><A HREF="ubifs.html#L_how_send_bugreport">How do I send an UBIFS bug report?</A></LI>
++	<LI><A HREF="ubi.html#L_how_send_bugreport">How do I send an UBI bug report?</A></LI>
++</UL>
++
++
  <INCLUDE file="../inc/footer.tmpl" />
+ </PAGE>
+diff --git a/mail.xml b/mail.xml
+index d79ac51..e3734f1 100644
+--- a/mail.xml
++++ b/mail.xml
+@@ -18,7 +18,9 @@
+ 	    <ul>
+ 		<li>my <a href="http://www.infradead.org/~dwmw2/email.html">notes on etiquette</a>.</li> 
+ 		<li>the section about <a href="source.html#kernelversions">kernel versions</a></li>
+-		<li>the <a href="faq/general.html">MTD-FAQ</a></li>
++		<li>the <a href="faq/general.html">MTD-FAQ</a>, especially the
++			<a href="faq/general.html#L_bug_report">bug reporting
++			FAQ</a>, if applicable</li>
+ 		<li>the available <a href="doc/general.html">documentation</a></li>
+ 		<li>the mailing list archives at <a href="http://lists.infradead.org/pipermail/linux-mtd/">
+ 			http://lists.infradead.org/pipermail/linux-mtd/</a></li>
 -- 
 1.7.0.4
