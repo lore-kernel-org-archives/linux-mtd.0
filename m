@@ -1,16 +1,17 @@
-Message-ID: <4E3FA88E.4070804@freescale.com>
-Date: Mon, 8 Aug 2011 17:12:46 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+	helo=ch1outboundpool.messaging.microsoft.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QqLwo-0003ZP-Ry
+	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 09:16:36 +0000
+From: <b35362@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd-utils: fix corrupt cleanmarker with flash_erase -j command
+Date: Mon, 8 Aug 2011 16:16:43 +0800
+Message-ID: <1312791403-13473-1-git-send-email-b35362@freescale.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: GPMI-NAND Status?
-References: <20110805135133.GA26981@pengutronix.de>
-In-Reply-To: <20110805135133.GA26981@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Koen Beel <koen.beel.barco@gmail.com>, Shawn Guo <shawn.guo@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Content-Type: text/plain
+Cc: Liu Shuo <b35362@freescale.com>, Artem.Bityutskiy@nokia.com,
+	Li Yang <leoli@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +21,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Wolfram:
->
-> ecclayout needs to be used to show that OOB is fully in use [1]
-> ===============================================================
->
-> Needed to make it work for JFFS2 and to pass the mtd-testsuite. A driver only
-> working with UBIFS is surely not ready for mainline.
->
-It seems just modifying the ecclayout of GPMI-NAND can not fix the problem.
-It should also change the code of JFFS2 and mtd.
+From: Liu Shuo <b35362@freescale.com>
 
-Some one ever posted a patch about this:
-http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+Flash_erase -j should fill discrete freeoob areas with required bytes
+of JFFS2 cleanmarker in jffs2_check_nand_cleanmarker(). Not just fill
+the first freeoob area.
 
-Best Regards
-Huang Shijie
+The below is the result without this workaround:
+
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00004000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00008000 is not formatted. It will be erased
+JFFS2: Erase block at 0x0000c000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00010000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00014000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00018000 is not formatted. It will be erased
+JFFS2: Erase block at 0x0001c000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00020000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00024000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00028000 is not formatted. It will be erased
+...
+
+Signed-off-by: Liu Shuo <b35362@freescale.com>
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ v2 : get length of availble freeoob bytes from oobinfo information,
+      not use the ioctl ECCGETLAYOUT which is being deprecated.
+
+ flash_erase.c |   46 +++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 39 insertions(+), 7 deletions(-)
+
+diff --git a/flash_erase.c b/flash_erase.c
+index fe2eaca..3e94495 100644
+--- a/flash_erase.c
++++ b/flash_erase.c
+@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
+ 	int isNAND;
+ 	int error = 0;
+ 	uint64_t offset = 0;
++	void *oob_data = NULL;
+ 
+ 	/*
+ 	 * Process user arguments
+@@ -197,15 +198,43 @@ int main(int argc, char *argv[])
+ 			if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
+ 				return sys_errmsg("%s: unable to get NAND oobinfo", mtd_device);
+ 
++			cleanmarker.totlen = cpu_to_je32(8);
+ 			/* Check for autoplacement */
+ 			if (oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
+-				/* Get the position of the free bytes */
+-				if (!oobinfo.oobfree[0][1])
++				struct nand_ecclayout_user ecclayout;
++				int i, oobavail;
++
++				for (i = 0, oobavail = 0; oobinfo.oobfree[i][1]; i++)
++					oobavail += oobinfo.oobfree[i][1];
++
++				if (!oobavail)
+ 					return errmsg(" Eeep. Autoplacement selected and no empty space in oob");
++
++				/* Get the position of the free bytes */
+ 				clmpos = oobinfo.oobfree[0][0];
+-				clmlen = oobinfo.oobfree[0][1];
+-				if (clmlen > 8)
+-					clmlen = 8;
++				clmlen = MIN(oobavail, 8);
++
++				if (oobinfo.oobfree[0][1] < 8 && oobavail >= 8) {
++					int left, n, last = 0;
++					void *cm;
++
++					oob_data = malloc(mtd.oob_size);
++					if (!oob_data)
++						return -ENOMEM;
++
++					memset(oob_data, 0xff, mtd.oob_size);
++					cm = &cleanmarker;
++					for (i = 0, left = clmlen; left ; i++) {
++						n = MIN(left, oobinfo.oobfree[i][1]);
++						memcpy(oob_data + oobinfo.oobfree[i][0],
++								cm, n);
++						left -= n;
++						cm   += n;
++						last = oobinfo.oobfree[i][0] + n;
++					}
++
++					clmlen = last - clmpos;
++				}
+ 			} else {
+ 				/* Legacy mode */
+ 				switch (mtd.oob_size) {
+@@ -223,7 +252,6 @@ int main(int argc, char *argv[])
+ 						break;
+ 				}
+ 			}
+-			cleanmarker.totlen = cpu_to_je32(8);
+ 		}
+ 		cleanmarker.hdr_crc = cpu_to_je32(mtd_crc32(0, &cleanmarker, sizeof(cleanmarker) - 4));
+ 	}
+@@ -272,7 +300,8 @@ int main(int argc, char *argv[])
+ 
+ 		/* write cleanmarker */
+ 		if (isNAND) {
+-			if (mtd_write_oob(mtd_desc, &mtd, fd, offset + clmpos, clmlen, &cleanmarker) != 0) {
++			void *data = oob_data ? oob_data + clmpos : &cleanmarker;
++			if (mtd_write_oob(mtd_desc, &mtd, fd, offset + clmpos, clmlen, data) != 0) {
+ 				sys_errmsg("%s: MTD writeoob failure", mtd_device);
+ 				continue;
+ 			}
+@@ -291,5 +320,8 @@ int main(int argc, char *argv[])
+ 	show_progress(&mtd, offset, eb, eb_start, eb_cnt);
+ 	bareverbose(!quiet, "\n");
+ 
++	if (oob_data)
++		free(oob_data);
++
+ 	return 0;
+ }
+-- 
+1.7.1
