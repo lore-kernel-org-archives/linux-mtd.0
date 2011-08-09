@@ -1,23 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qqis7-0002TS-JK
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 09:45:17 +0000
-Date: Tue, 9 Aug 2011 11:45:09 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Koen Beel <koen.beel.barco@gmail.com>
-Subject: Re: GPMI-NAND Status?
-Message-ID: <20110809094509.GC1923@pengutronix.de>
-References: <20110805135133.GA26981@pengutronix.de>
-	<4E3F8087.6070206@freescale.com>
-	<CAHMSPgMYP+5Hpa5sC-yt=1H-S=tEER8uNzj6uMSK403_DGYJ9Q@mail.gmail.com>
+Message-ID: <4E410EC5.8080600@freescale.com>
+Date: Tue, 9 Aug 2011 18:41:09 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="raC6veAxrt5nqIoY"
-Content-Disposition: inline
-In-Reply-To: <CAHMSPgMYP+5Hpa5sC-yt=1H-S=tEER8uNzj6uMSK403_DGYJ9Q@mail.gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: GPMI-NAND Status?
+References: <20110805135133.GA26981@pengutronix.de>
+	<4E3FA88E.4070804@freescale.com>
+	<20110809091906.GA1923@pengutronix.de>
+In-Reply-To: <20110809091906.GA1923@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Koen Beel <koen.beel.barco@gmail.com>, Shawn Guo <shawn.guo@linaro.org>,
 	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@karo-electronics.de>
+	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+> Hi,
+>
+>>> ecclayout needs to be used to show that OOB is fully in use [1]
+>>> ===============================================================
+>>>
+>>> Needed to make it work for JFFS2 and to pass the mtd-testsuite. A driver only
+>>> working with UBIFS is surely not ready for mainline.
+>>>
+>> It seems just modifying the ecclayout of GPMI-NAND can not fix the problem.
+>> It should also change the code of JFFS2 and mtd.
+>>
+>> Some one ever posted a patch about this:
+>> http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+> This mail is about MLC. That's another issue. For SLC, ecclayout should
+> work, no?
 
---raC6veAxrt5nqIoY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The matter is that the GPMI/BCH will use the OOB. Please see the page 1263
+in 16.2.2 of mx28's datasheet. It shows an NAND PAGE's layout.
 
+You may see that the OOB will be used for storing the DATA or ECC.
+There will be left some space even when i enable the BCH,  it seems the 
+left space can
+contains the jffs2's clean marker.  It needs to be confirmed. :)
 
-> Could also be useful to make sure we test on the same HW as much as
-> possible and are using the same source tree.
-> HW I have:
-> - mx23evk rev C1
-> - mx23evk rev B2
-> - own target hw using mx23 lqfp-128 chip and different type of ddr and na=
-nd.
+thanks
+Huang Shijie
 
-Actively used:
-
-FSL MX28EVK Rev. D
-Karo TX28-4020 with STK5
-
-Could get:
-
-two custom MX23 boards (though I don't think this will make a
-difference)
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---raC6veAxrt5nqIoY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5BAaUACgkQD27XaX1/VRs/BwCgnu7iIH40Mq35D2LGun6BHfXb
-AlkAoLv02g3KkPWGXZ8b2eSnIG5DDtpC
-=zXgC
------END PGP SIGNATURE-----
-
---raC6veAxrt5nqIoY--
+> Regards,
+>
+>     Wolfram
+>
