@@ -1,19 +1,20 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qqtzi-0001aa-5E
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 21:37:51 +0000
+	id 1QquP8-0003XB-St
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 22:04:07 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 5/5] mtdinfo: consolidate help as display_help()
-Date: Tue, 9 Aug 2011 14:36:46 -0700
-Message-ID: <1312925806-15929-6-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1312925806-15929-1-git-send-email-computersforpeace@gmail.com>
-References: <1312925806-15929-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 7/9] faq: ubi(fs): sending bug reports using
+ `mtdinfo'
+Date: Tue, 9 Aug 2011 15:03:54 -0700
+Message-ID: <1312927434-16708-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1312832239-21759-8-git-send-email-computersforpeace@gmail.com>
+References: <1312832239-21759-8-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Cc: brian.foster@maxim-ic.com, Brian Norris <computersforpeace@gmail.com>,
-	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,79 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The help message for mtdinfo is unnecessarily disjointed. It is split
-into three strings which reuse the PROGRAM_NAME string inefficiently and
-don't have a consistent style.
-
-This fixup should provide a cleaner look with aligned columns and
-easier-to-read source code.
+The `mtdinfo' utility (with the `-a' flag) is much more informative
+than `cat /proc/mtd', so encourage users to use it if possible when
+sending bug reports.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- ubi-utils/mtdinfo.c |   36 +++++++++++++++++++-----------------
- 1 files changed, 19 insertions(+), 17 deletions(-)
+v2: use &nbsp; within <code> tags to prevent linebreaks
 
-diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
-index 1c3a46f..9f25fd8 100644
---- a/ubi-utils/mtdinfo.c
-+++ b/ubi-utils/mtdinfo.c
-@@ -50,10 +50,16 @@ static struct args args = {
- 	.node = NULL,
- };
+ faq/ubi.xml   |    4 ++--
+ faq/ubifs.xml |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/faq/ubi.xml b/faq/ubi.xml
+index 2d9ce6e..9458e77 100644
+--- a/faq/ubi.xml
++++ b/faq/ubi.xml
+@@ -874,8 +874,8 @@ quicker than the first method.</p>
+ 	<li>provide UBI configuration from you your <code>.config</code>
+ 	file, or just attach whole file;</li>
  
--static const char doc[] = PROGRAM_NAME " version " VERSION
--			 " - a tool to print MTD information.";
--
--static const char optionsstr[] =
-+static void display_help(void)
-+{
-+	printf(
-+"%1$s version %2$s - a tool to print MTD information.\n"
-+"\n"
-+"Usage: %1$s <MTD node file path> [--map | -M] [--ubi-info | -u]\n"
-+"       %1$s --all [--ubi-info | -u]\n"
-+"       %1$s [--help | --version]\n"
-+"\n"
-+"Options:\n"
- "-u, --ubi-info                  print what would UBI layout be if it was put\n"
- "                                on this MTD device\n"
- "-M, --map                       print eraseblock map\n"
-@@ -61,17 +67,15 @@ static const char optionsstr[] =
- "                                Note: `--all' may give less info per device\n"
- "                                than, e.g., `mtdinfo /dev/mtdX'\n"
- "-h, --help                      print help message\n"
--"-V, --version                   print program version";
--
--static const char usage[] =
--"Usage: " PROGRAM_NAME " <MTD node file path> [--map | -M] [--ubi-info | -u]\n"
--"       " PROGRAM_NAME " --all [--ubi-info | -u]\n"
--"       " PROGRAM_NAME " [--help | --version]\n"
-+"-V, --version                   print program version\n"
- "\n"
--"Example 1: " PROGRAM_NAME " /dev/mtd0       print information MTD device /dev/mtd0\n"
--"Example 2: " PROGRAM_NAME " /dev/mtd0 -u    print information MTD device /dev/mtd0\n"
--"\t\t\t\t   and include UBI layout information\n"
--"Example 3: " PROGRAM_NAME " -a              print information about all MTD devices\n";
-+"Examples:\n"
-+"  %1$s /dev/mtd0             print information MTD device /dev/mtd0\n"
-+"  %1$s /dev/mtd0 -u          print information MTD device /dev/mtd0\n"
-+"\t\t\t\tand include UBI layout information\n"
-+"  %1$s -a                    print information about all MTD devices\n",
-+	PROGRAM_NAME, VERSION);
-+}
+-	<li>describe your flash device, attach the
+-	"<code>cat /proc/mtd</code>" output;</li>
++	<li>describe your flash device, attach the "<code>mtdinfo&amp;nbsp;-a</code>"
++	output (or the less useful "<code>cat&amp;nbsp;/proc/mtd</code>" output);</li>
  
- static const struct option long_options[] = {
- 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
-@@ -105,9 +109,7 @@ static int parse_opt(int argc, char * const argv[])
- 			break;
+ 	<li>specify which kernel version you are using; if your kernel is not
+ 	the latest one, please, explicitly tell whether you updated UBI by
+diff --git a/faq/ubifs.xml b/faq/ubifs.xml
+index 14043f5..dbfac0e 100644
+--- a/faq/ubifs.xml
++++ b/faq/ubifs.xml
+@@ -1485,8 +1485,8 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
+ 	<li>provide UBIi and UBIFS configuration from you your
+ 	<code>.config</code> file, or just attach whole file;</li>
  
- 		case 'h':
--			printf("%s\n\n", doc);
--			printf("%s\n\n", usage);
--			printf("%s\n", optionsstr);
-+			display_help();
- 			exit(EXIT_SUCCESS);
+-	<li>describe your flash device, attach the
+-	"<code>cat /proc/mtd</code>" output;</li>
++	<li>describe your flash device, attach the "<code>mtdinfo&amp;nbsp;-a</code>"
++	output (or the less useful "<code>cat&amp;nbsp;/proc/mtd</code>" output);</li>
  
- 		case 'V':
+ 	<li>specify which kernel version you are using; if your kernel is not
+ 	the latest one, please, explicitly tell whether you updated UBIFS by
 -- 
 1.7.0.4
