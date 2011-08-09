@@ -1,29 +1,18 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqZ6a-0006f3-1O
-	for linux-mtd@lists.infradead.org; Mon, 08 Aug 2011 23:19:33 +0000
-Received: by wwf10 with SMTP id 10so2516228wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 08 Aug 2011 16:19:12 -0700 (PDT)
+Message-ID: <4E40C18B.7040609@freescale.com>
+Date: Tue, 9 Aug 2011 13:11:39 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMjpGUcTPR=EVOtfju5_S4Zu_h-rmqnCii4R0j7yFX8JTD81uA@mail.gmail.com>
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
-	<201107260921.44512.brian.foster@maxim-ic.com>
-	<CAN8TOE847yECw3zeh42tf=6mC73O33Lr7Lzwpi0FrT-rB9ZYmg@mail.gmail.com>
-	<CAMjpGUc1a4NR5PWt3A5Y+jv6ihsWjUgH3iVUpNc0dsvkEzx6pw@mail.gmail.com>
-	<CAN8TOE--96V6ZruB8+VvAz2kqxqMq4nc4d5=6SGsUt0eu7og0g@mail.gmail.com>
-	<CAMjpGUcTPR=EVOtfju5_S4Zu_h-rmqnCii4R0j7yFX8JTD81uA@mail.gmail.com>
-Date: Mon, 8 Aug 2011 16:19:11 -0700
-Message-ID: <CAN8TOE9p1v=mDUawRrnVAwDO4zz9LmXkqdNynLPCSCnBRMr9pw@mail.gmail.com>
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Koen Beel <koen.beel.barco@gmail.com>
+Subject: Re: GPMI-NAND Status?
+References: <20110805135133.GA26981@pengutronix.de>	<4E3F8087.6070206@freescale.com>
+	<CAHMSPgMYP+5Hpa5sC-yt=1H-S=tEER8uNzj6uMSK403_DGYJ9Q@mail.gmail.com>
+In-Reply-To: <CAHMSPgMYP+5Hpa5sC-yt=1H-S=tEER8uNzj6uMSK403_DGYJ9Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Frank LI <B20596@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>,
+	linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	=?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +22,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 5, 2011 at 6:18 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Fri, Aug 5, 2011 at 17:09, Brian Norris wrote:
->> On Thu, Aug 4, 2011 at 3:41 PM, Mike Frysinger wrote:
->>> when extending mtdinfo, we decided to only support device paths which
->>> the user gave us. =A0hence the -m option going away. =A0libmtd itself h=
-as
->>> /dev/mtd# hardcoded (and imo, that's the only path we should support
->>> "automatically"), so if we're going to keep the all option, we'll want
->>> to continue with that (by using the func that libmtd provides rather
->>> than mtdinfo constructing the string itself).
->>
->> Hmm, where exactly in mtd-utils/libmtd is the /dev/mtd# hardcoded?
+Hi Koen:
+> Hi Wolfram,
 >
-> i was thinking of legacy_get_dev_info1()
+> Thanks for taking the initiative to summarize the current status.
+> Also thanks to Huang Shijie for all the work done so far.
+>
+>
+> On Mon, Aug 8, 2011 at 8:21 AM, Huang Shijie<b32955@freescale.com>  wrote:
+>> Hi Wolfram:
+>>> Hi,
+>>>
+>>> I am a bit uncertain how the state of the GPMI-NAND driver currently is,
+>>> so
+>>> I'll try to sum it up here. There is without doubt interest in getting the
+>>> driver into mainline from at least Huang, Shawn, Lothar, Koen and me, so I
+>>> wonder if we can join forces more effectively. First of all, I want to
+>>> thank
+>>> Huang Shijie for all his work so far which was already quite some effort;
+>>> this
+>>> sum-up is by no means meant as bashing, just trying to understand the
+>>> status
+>>> quo (Sidenote: I am more or less on holiday until Monday, so no time for
+>>> real
+>>> debugging myself. I write this mail so we hopefully gain a common
+>>> understanding. When I am back to full strength, I can then start working
+>>> on
+>>> what seems apropriate)
+>>>
+>>> Issues with the current driver I am aware of:
+>>>
+>>> DMA timeouts [1]
+>>> ================
+>>>
+>>> [    2.560000] [ start_dma_without_bch_irq : 392 ] DMA timeout, last DMA
+>>> :1
+>>> [    3.560000] [ start_dma_with_bch_irq : 427 ] bch timeout!!!
+>>>
+>>> Always reproducible by me when trying to format mtd0. Sometimes(always?)
+>>> seen
+>>> by Koen during boot (on read?). Never seen by Huang? It is currently
+>>> unclear if
+>> After I used a different .config, it never appears in my side.
+> flash_eraseall of mtd1 works for me.
+> ubi_format of mtd1 always gives the dma timeout
+> reading/writing of mtd0/1 always gives the dma timeout
+> I have seen dma timeout during boot if i try to enable ubi rootfs (so
+> that's the same issue as dma time during read/write).
+>
+> I don't use mtd0 for testing as this contains my uboot.
+>
+> I tested using Huang's .config and the Linaro git but still see
+> exactly the same issue.
+>
+>>> the bug is in the GPMI driver, or in the MXS-DMA driver. Still, I'd say
+>>> the
+>>> issue is a show-stopper. We can't put a driver into mainline which leads
+>>> to the
+>>> above failure. The fact that there is _some_ configuration which works for
+>>> someone does not help, it doesn't work for Koen and me at least. We need
+> On my target, the mxs-dma is working for sdio until the gpmi-nand
+> gives a timeout. After that the dma for sdio is *not fully* working
+> anymore.
+>
+>> Hi Koen, do you test my uImage?
+>> Does the timeout occur?
+> I was not able to test you uImage. It ended with a "Kernel panic - not
+> syncing: read error". See (off list) mail from last week.
+>
+>
+>>> reliable drivers in mainline, so the issue needs to be resolved,
+>>> regardless
+>>> where the bug resides.
+>> ok. I will debug it too.
+>>
+>>
+>> Please test the driver again when you back to office.
+>> Pay attention to your version of /arch/arm/configs/mxs_defconfig.
+>> Your mxs_defconfig may miss Shawn Guo's patches.
+>>
+>> thanks.
+>>
+>>
+>>> problem overwriting all-0xff data in NAND [2]
+>>> =============================================
+>>>
+>>> Although it occured only when writing JFFS2 images so far, this is a
+>>> generic
+>>> issue and needs to be fixed, right?
+>>>
+>> Artem said it should not change the driver, but the upper layer(jffs2).
+>>
+>> So I think i do not need to change the driver.
+>>> ecclayout needs to be used to show that OOB is fully in use [1]
+>>> ===============================================================
+>>>
+>>> Needed to make it work for JFFS2 and to pass the mtd-testsuite. A driver
+>>> only
+>>> working with UBIFS is surely not ready for mainline.
+>>>
+>> I programmed for mx6q in the recent days. I have no time to fix it. The mx6q
+>> can runs well now.
+>>
+>> So I will fix the issue in the following days.
+>>
+>>> Pecularities
+>>> ============
+>>>
+>>> There are a few issues which are odd. I don't know if some are mainly
+>>> intended
+>>> for debugging, yet they shouldn't be in a mainline driver. At least:
+>>>
+>>> * custom sysfs-entries
+>> My sysfs-entries is in the GPMI-NAND directory.
+>> Does be a mainline driver means I should not have any sysfs-entries?
+>> If it does, i can remove it.
+>>
+>>> * custom kernel command line parameters
+>> The kernel command line 'gpmi_nand' is to avoid the conflict with other
+>> modules such as
+>> SD.
+>>
+>> If it's be removed, I have to use different config to resolve the issue
+>> which is not better either. :(
+>>
+>>> * namespacing (some functions have no prefix, some have "mil_", some have
+>>> mx23)
+>>>    (I think 'mil' means 'mtd interface layer', but why is that needed?)
+>> The mil is used to make the gpmi_nand_data{} simple.
+>> Without it, the gpmi_nand_data{} will very big.
+>>
+>> The functions which have mx23 prefix are only used in mx23.
+>> The functions which have no prefix can used in both mx28 and mx23.
+>>
+>>> Complexity
+>>> ==========
+>>>
+>>> The driver is not easy to review. I wonder if it makes sense to use
+>>> incremental
+>>> patches for it? maybe making it a staging driver could be a solution for
+>>> that?
+>> Frankly speaking, the current driver is maybe the smallest version now.
+>>
+>> I even do not add the on-chip BBT feature now.
+>>> Huang, are you interested in accepting patches or do you prefer we just
+>>> point
+>>> at certain code and you then fix it? Starting with a simpler driver and
+>>> then
+>> Feel free to mail me the patch. it's welcome.
+>>
+>>
+>>> adding stuff might be another option if we can't chase all the bugs in the
+>>> current driver.
+>>>
+>>> That being said, I'd think fixing the DMA issue has prio #1 and maybe we
+>>> can
+>>> meet in IRC or something to work that out? Is there interest in that?
+>> What about gtalk?
+> Anything is good for me.
+> Could also be useful to make sure we test on the same HW as much as
+> possible and are using the same source tree.
+> HW I have:
+> - mx23evk rev C1
+> - mx23evk rev B2
+> - own target hw using mx23 lqfp-128 chip and different type of ddr and nand.
+>
+My test mx23 board is 169BGA package which is different from yours.
 
-I'm not sure we should be reaching back to legacy options for current
-support. Besides, I see in the feature-removal messages that were
-placed for the removal of the `-m' option to mtdinfo (commit
-74bef2b8693c7e4f78e1ef742933b7231e49c7ad to mtd-utils):
+Could you get the 169BGA package board?
 
-"We cannot assume that mtd device names follow the "/dev/mtd%d" pattern"
+I think the DMA timeout is caused by the different package type.
 
-It seems silly to reverse this just for the sake of some region_info stuff.
-
-> alternatively, we punt --all and just make users run `mtdinfo
-> /dev/mtd?`. =A0i'm fine with that too.
-
-I also feel like `--all' is too valuable to be killed just because of
-region_info.
-
-Instead, I'm a little more inclined to go for Brian Foster's
-suggestion (from another branch of this thread):
-
-"Alternatively, --all only prints what it can get,
-and --help warns there _may_ be additional data not
-printed by --all (and to use =91mtdinfo /dev/mtd<N>=92)."
-
-Only problem I see is that this provides a little bit of
-inconsistency, where `mtdinfo --all' isn't quite all the info. But
-with an addition help message as described by Mr. Foster, I don't
-think this would be much problem.
-
-I guess I'm leaning toward this suggestion partly because it is
-effectively the same as my proposed patch and partly because the other
-alternatives involve dropping support for features (either full udev
-support or the `--all' option).
-
-Brian
+Best Regards
+Huang Shijie
