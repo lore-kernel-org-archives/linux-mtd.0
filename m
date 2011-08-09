@@ -1,23 +1,19 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qqnkg-0001KX-C6
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 14:57:55 +0000
-Date: Tue, 9 Aug 2011 16:58:12 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110809145812.GR26160@logfs.org>
-References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
-	<20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-	<20110808083107.GN26160@logfs.org>
-	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 1Qqnyz-0001mB-Cv
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 15:12:42 +0000
+Received: by wwf10 with SMTP id 10so59199wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 09 Aug 2011 08:12:35 -0700 (PDT)
+From: Jamie Iles <jamie@jamieiles.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCHv4] mtd: gpio-nand: add device tree bindings
+Date: Tue,  9 Aug 2011 16:12:27 +0100
+Message-Id: <1312902747-21372-1-git-send-email-jamie@jamieiles.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>,
+	Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +23,290 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 August 2011 20:14:15 +0530, srimugunthan dhandapani wrote:
-> 
-> > Not good.  So far I managed to see a (the?) tiobench bug once, but
-> > couldn't make it reproduceable.  Nor could I reproduce the bonnie bug.
-> > Once the bugs are reproduceable, even my feeble eyes can usually spot
-> > the cause sooner or later.  With a backtrace alone and no idea what
-> > internal state it depends on, life is much harder.
-> >
-> 
-> I am sorry , i dont know what i am missing. I tried it 5 times. 4/5
-> trials, the bonnie test didnt complete. .Even when it completed once,
-> the logs show kernel bug.
+Add device tree bindings so that the gpio-nand driver may be
+instantiated from the device tree.  This also allows the partitions
+to be specified in the device tree.
 
-Ok, since I cannot reproduce this at all, can you try the patch below?
-While it may already fix the problem, I am more interested in the
-output.
+v4:
+	- get io sync address from gpio-control-nand,io-sync-reg
+	  property rather than a resource
+	- clarified a few details in the binding
+v3:
+	- remove redundant cast and a couple of whitespace/naming
+	  changes
+v2:
+	- add CONFIG_OF guards for non-dt platforms
+	- compatible becomes gpio-control-nand
+	- clarify some binding details
 
->  do_invalidatepage+0x28/0x30
->  truncate_inode_page+0x92/0xb0
->  truncate_inode_pages_range+0x177/0x4f0
->  truncate_inode_pages+0x15/0x20
->  truncate_pagecache+0x4f/0x70
->  truncate_setsize+0x1f/0x30
->  vmtruncate+0x3e/0x60
->  logfs_truncate+0x263/0x2a0 [logfs]
->  logfs_evict_inode+0xdc/0x190 [logfs]
->  ? do_raw_spin_unlock+0x5e/0xb0
->  evict+0xa9/0x1a0
->  iput+0xfd/0x200
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Scott Wood <scottwood@freescale.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+---
 
-Jörn
+Grant, I dropped your Acked-by as I thought the change to the io-sync
+stuff was significant enough for that.  
 
--- 
-A quarrel is quickly settled when deserted by one party; there is
-no battle unless there be two.
--- Seneca
+ .../devicetree/bindings/mtd/gpio-control-nand.txt  |   44 ++++++
+ drivers/mtd/nand/gpio.c                            |  139 ++++++++++++++++++-
+ 2 files changed, 175 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
 
-
-diff --git a/fs/logfs/file.c b/fs/logfs/file.c
-index f2c08bc..7afd9a7 100644
---- a/fs/logfs/file.c
-+++ b/fs/logfs/file.c
-@@ -168,8 +168,14 @@ static void logfs_invalidatepage(struct page *page, unsigned long offset)
- 		struct logfs_super *super = logfs_super(sb);
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+new file mode 100644
+index 0000000..8654294
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+@@ -0,0 +1,44 @@
++GPIO assisted NAND flash
++
++The GPIO assisted NAND flash uses a memory mapped interface to
++read/write the NAND commands and data and GPIO pins for the control
++signals.
++
++Required properties:
++- compatible : "gpio-control-nand"
++- reg : should specify localbus chip select and size used for the chip.  The
++  resource describes the data bus connected to the NAND flash and all accesses
++  are made in native endianness.
++- #address-cells, #size-cells : Must be present if the device has sub-nodes
++  representing partitions.
++- gpios : specifies the gpio pins to control the NAND device.  nwp is an
++  optional gpio and may be set to 0 if not present.
++
++Optional properties:
++- bank-width : Width (in bytes) of the device.  If not present, the width
++  defaults to 8 bits.
++- chip-delay : chip dependent delay for transferring data from array to
++  read registers (tR).  If not present then a default of 0 is used.
++- gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
++  location used to guard against bus reordering with regards to accesses to
++  the GPIO's and the NAND flash data bus.  If present, then after changing
++  GPIO state, this register will be read to ensure that the accesses have
++  completed.
++
++Examples:
++
++gpio-nand@1,0 {
++	compatible = "gpio-control-nand";
++	reg = <1 0x0000 0x2>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++	gpios = <&banka 1 0	/* rdy */
++		 &banka 2 0 	/* nce */
++		 &banka 3 0 	/* ale */
++		 &banka 4 0 	/* cle */
++		 0		/* nwp */>;
++
++	partition@0 {
++	...
++	};
++};
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 2c2060b..89b819b 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -27,6 +27,9 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/nand-gpio.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_gpio.h>
  
- 		super->s_dirty_bytes -= block->reserved_bytes;
--		block->ops->free_block(sb, block);
--		BUG_ON(bitmap_weight(block->alias_map, LOGFS_BLOCK_FACTOR));
-+		if (bitmap_weight(block->alias_map, LOGFS_BLOCK_FACTOR)) {
-+			printk(KERN_DEBUG"logfs_invalidatepage(%lx, %x, %llx)\n",
-+					page->mapping->host->i_ino,
-+					page->mapping->host->i_nlink,
-+					page->mapping->host->i_size);
-+			move_page_to_btree(page);
-+		} else
-+			block->ops->free_block(sb, block);
- 	} else
- 		move_page_to_btree(page);
- 	BUG_ON(PagePrivate(page) || page->private);
+ struct gpiomtd {
+ 	void __iomem		*io_sync;
+@@ -171,6 +174,99 @@ static int gpio_nand_devready(struct mtd_info *mtd)
+ 	return gpio_get_value(gpiomtd->plat.gpio_rdy);
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id gpio_nand_id_table[] = {
++	{ .compatible = "gpio-control-nand" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
++
++static int gpio_nand_of_get_options(struct device *dev,
++				    struct gpio_nand_platdata *plat)
++{
++	u32 width;
++
++	if (!of_property_read_u32(dev->of_node, "bank-width", &width)) {
++		if (width == 2) {
++			plat->options |= NAND_BUSWIDTH_16;
++		} else if (width != 1) {
++			dev_err(dev, "invalid bank-width %u\n", width);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static void gpio_nand_of_get_gpio(struct device *dev,
++				  struct gpio_nand_platdata *plat)
++{
++	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
++	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
++	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
++	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
++	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
++}
++
++static void gpio_nand_of_get_chip_delay(struct device *dev,
++					struct gpio_nand_platdata *plat)
++{
++	u32 chip_delay;
++
++	if (!of_property_read_u32(dev->of_node, "chip-delay", &chip_delay))
++		plat->chip_delay = (int)chip_delay;
++}
++
++static int gpio_nand_of_get_config(struct device *dev,
++				   struct gpio_nand_platdata *plat)
++{
++	int ret = gpio_nand_of_get_options(dev, plat);
++
++	if (ret < 0)
++		return ret;
++
++	gpio_nand_of_get_gpio(dev, plat);
++	gpio_nand_of_get_chip_delay(dev, plat);
++
++	return 0;
++}
++
++static struct resource *gpio_nand_of_get_io_sync(struct device *dev)
++{
++	struct resource *r = kzalloc(sizeof(*r), GFP_KERNEL);
++	u64 addr;
++
++	if (!r)
++		return NULL;
++
++	if (of_property_read_u64(dev->of_node,
++				 "gpio-control-nand,io-sync-reg", &addr))
++		goto out_free;
++
++	r->start = addr;
++	r->end = r->start + 0x3;
++	r->flags = IORESOURCE_MEM;
++
++	return r;
++
++out_free:
++	kfree(r);
++
++	return NULL;
++}
++#else /* CONFIG_OF */
++#define gpio_nand_id_table NULL
++static inline int gpio_nand_of_get_config(struct device *dev,
++					  struct gpio_nand_platdata *plat)
++{
++	return -ENODEV;
++}
++static inline struct resource *gpio_nand_of_get_io_sync(struct device *dev)
++{
++	return NULL;
++}
++#endif /* CONFIG_OF */
++
+ static int __devexit gpio_nand_remove(struct platform_device *dev)
+ {
+ 	struct gpiomtd *gpiomtd = platform_get_drvdata(dev);
+@@ -178,10 +274,15 @@ static int __devexit gpio_nand_remove(struct platform_device *dev)
+ 
+ 	nand_release(&gpiomtd->mtd_info);
+ 
+-	res = platform_get_resource(dev, IORESOURCE_MEM, 1);
++	if (!dev->dev.of_node)
++		res = platform_get_resource(dev, IORESOURCE_MEM, 1);
++	else
++		res = gpio_nand_of_get_io_sync(&dev->dev);
+ 	iounmap(gpiomtd->io_sync);
+ 	if (res)
+ 		release_mem_region(res->start, resource_size(res));
++	if (!dev->dev.of_node)
++		kfree(res);
+ 
+ 	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+ 	iounmap(gpiomtd->nand_chip.IO_ADDR_R);
+@@ -226,9 +327,9 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 	struct gpiomtd *gpiomtd;
+ 	struct nand_chip *this;
+ 	struct resource *res0, *res1;
+-	int ret;
++	int ret = 0;
+ 
+-	if (!dev->dev.platform_data)
++	if (!dev->dev.of_node && !dev->dev.platform_data)
+ 		return -EINVAL;
+ 
+ 	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
+@@ -248,7 +349,11 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		goto err_map;
+ 	}
+ 
+-	res1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
++	if (!dev->dev.of_node)
++		res1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
++	else
++		res1 = gpio_nand_of_get_io_sync(&dev->dev);
++
+ 	if (res1) {
+ 		gpiomtd->io_sync = request_and_remap(res1, 4, "NAND sync", &ret);
+ 		if (!gpiomtd->io_sync) {
+@@ -257,7 +362,16 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		}
+ 	}
+ 
+-	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
++	if (dev->dev.of_node)
++		kfree(res1);
++
++	if (dev->dev.platform_data)
++		memcpy(&gpiomtd->plat, dev->dev.platform_data,
++		       sizeof(gpiomtd->plat));
++	else
++		ret = gpio_nand_of_get_config(&dev->dev, &gpiomtd->plat);
++	if (ret)
++		goto err_nce;
+ 
+ 	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
+ 	if (ret)
+@@ -312,10 +426,18 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 		goto err_wp;
+ 	}
+ 
+-	if (gpiomtd->plat.adjust_parts)
+-		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+-					   gpiomtd->mtd_info.size);
++	if (dev->dev.platform_data) {
++		if (gpiomtd->plat.adjust_parts)
++			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
++						   gpiomtd->mtd_info.size);
++	} else {
++		ret = of_mtd_parse_partitions(&dev->dev, dev->dev.of_node,
++					      &gpiomtd->plat.parts);
++		if (ret < 0)
++			goto err_wp;
+ 
++		gpiomtd->plat.num_parts = ret;
++	}
+ 	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
+ 			    gpiomtd->plat.num_parts);
+ 	platform_set_drvdata(dev, gpiomtd);
+@@ -352,6 +474,7 @@ static struct platform_driver gpio_nand_driver = {
+ 	.remove		= gpio_nand_remove,
+ 	.driver		= {
+ 		.name	= "gpio-nand",
++		.of_match_table = gpio_nand_id_table,
+ 	},
+ };
+ 
+-- 
+1.7.4.1
