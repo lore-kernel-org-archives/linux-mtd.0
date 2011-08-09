@@ -1,20 +1,18 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QqhPY-0008Ui-VN
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 08:11:42 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 9/9] faq: general: add bug reporting FAQ
-Date: Tue, 9 Aug 2011 10:10:16 +0200
-References: <1312832239-21759-1-git-send-email-computersforpeace@gmail.com>
-	<1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
+Message-ID: <4E40ED4B.6030302@freescale.com>
+Date: Tue, 9 Aug 2011 16:18:19 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <201108091010.16868.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+To: Koen Beel <koen.beel.barco@gmail.com>
+Subject: Re: GPMI-NAND Status?
+References: <20110805135133.GA26981@pengutronix.de>	<4E3F8087.6070206@freescale.com>	<CAHMSPgMYP+5Hpa5sC-yt=1H-S=tEER8uNzj6uMSK403_DGYJ9Q@mail.gmail.com>	<4E3FBC75.7010703@freescale.com>	<CAHMSPgMdBmmNG41_QgGivSb+M1rG5nqJjtveyZueKHHJrA8vzA@mail.gmail.com>	<4E40D563.2090202@freescale.com>
+	<CAHMSPgPzVordYOn5wgp0OZLGbAqkSGKJxDre8bvRpTyAz85udw@mail.gmail.com>
+In-Reply-To: <CAHMSPgPzVordYOn5wgp0OZLGbAqkSGKJxDre8bvRpTyAz85udw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
+	Shawn Guo <shawn.guo@linaro.org>, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	=?UTF-8?B?TG90aA==?= =?UTF-8?B?YXIgV2HDn21hbm4=?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +22,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 08 August 2011 21:37:19 Brian Norris wrote:
-> It's surprising to note that we do not have a general "how to send a bug
-> report" FAQ. This patch provides a starting point and (most importantly)
-> directs UBI/UBIFS users to the appropriate bug reporting information.
->=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  faq/general.xml |   54 +++++++++++++++++++++++++++++++++++++++++++++++++=
-+++++
->  mail.xml        |    4 +++-
->  2 files changed, 57 insertions(+), 1 deletions(-)
->=20
-> diff --git a/faq/general.xml b/faq/general.xml
->[ ... ]
-> +<H2>How do I report bugs?</H2>
-> +</A>
-> +
-> +<P>
-> +First, you need to figure out what you're reporting a bug against. This =
-website
-> +(and its accompanying <A HREF=3D"../mail.html">mailing list</A>) support=
-s several
-> +related aspects of Linux, from the MTD kernel subsystem to its user-space
-> +utilities, including the generic MTD and NAND interface layers, several =
-MTD
-> +hardware drivers, the UBI volume management system, several flash filesy=
-stems
-> +(e.g., JFFS2, UBIFS), and the user-space MTD utils. People on the mailin=
-g list
-> +will often support the YAFFS/YAFFS2 filesystems; however, YAFFS has its =
-own
-> +dedicated <A HREF=3D"http://www.yaffs.net/">website</A> and
-> +<A HREF=3D"http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs"=
->mailing
-> +list</A>, and its code is kept out of tree.
+Hi Koen:
+thanks for your test.
+> Hi,
+>
+>
+>
+> On Tue, Aug 9, 2011 at 8:36 AM, Huang Shijie<b32955@freescale.com>  wrote:
+>> Hi Koen:
+>>> Hi,
+>>>
+>>> On Mon, Aug 8, 2011 at 12:37 PM, Huang Shijie<b32955@freescale.com>
+>>>   wrote:
+>>>> Hi,
+>>>>> On my target, the mxs-dma is working for sdio until the gpmi-nand
+>>>>> gives a timeout. After that the dma for sdio is *not fully* working
+>>>>> anymore.
+>>>>>
+>>>> We need more log in following aspects:
+>>>> [1] apbh-dma registers
+>>>> [2] clk registers
+>>>> [3] gpmi registers
+>>>>
+>>>> Please git-apply the patch in the attachment.
+>>>> It will print out more DMA information WHEN dma-timeout occur.
+>>> Don't get it. What exactly are you trying to dump?
+>>> This patch dumps CTRL0, CTRL1, CTRL2, DEVSEL but also some registers
+>>> of APBH channel0 which is reserved....
+>> sorry, I intended to print out the channel 4(NAND_DEVICE0).
+>>
+>> I want to know that:
+>>   When the dma timeout occurs, whether it caused by the GPMI or by the DMA
+>> itself.
+> Ok, I was a little confused about the addresses, but it seems like you
+> are using mx28 (and corresponding addresses). APBH dma for mx23 has
+> different address according to the datasheet.
+> So I adjusted the patch a little for mx23, see attachment.
+>
+you are right. My address was wrong.
+> Here is the log with some comments added on the dma.
+>
+> # ubiformat /dev/mtd1
+> ubiformat: mtd1 (nand), size 20971520 bytes (20.0 MiB), 40 eraseblocks
+> of 524288 bytes (512.0 KiB), min. I/O size 4096 bytes
+> libscan: scanning eraseblock 0 --  2 % complete  [   86.720000] [
+> start_dma_without_bch_irq : 393 ] DMA timeout, last DMA :1
+> [   86.720000] ------------------------DMA DUMP BEGIN ----------
+> [   86.730000] APBH REG :0 : 30000000   // ->  HW_APBH_CTRL0:
+> AHB_BURST8_EN, APB_BURST4_EN
+> [   86.730000] APBH REG :10 : 00FF0000   // ->  HW_APBH_CTRL1:
+> CHX_CMDCMPLT_IRQ_EN, no cmdcmplt_irq
+> [   86.740000] APBH REG :20 : 00000000   // ->  HW_APBH_CTRL2: no error_irq
+> [   86.740000] APBH REG :30 : 00000000   // ->  HW_APBH_DEVSEL: "N/A
+> for apbh bridge dma."
+> [   86.750000] APBH CH4 REG :200 : 418D7098 // executing last dma
+> command of command chain (see below)
+> [   86.750000] APBH CH4 REG :210 : 00000000 // no next command, ok
+> [   86.750000] APBH CH4 REG :220 : 000001C8 // HW_APBH_CH4_CMD:
+> COMMAND = NO DMA TRANSFER, IRQONCMPLT, WAIT4ENDCMD, SEMAPHORE,
+> HALTONTERMINATE
+> [   86.760000] APBH CH4 REG :230 : 00000000 // HW_APBH_CH4_BAR:
+> "Address of system memory buffer to be read or written over the AHB
+> bus." ->  strange value ...
+> [   86.760000] APBH CH4 REG :240 : 00010000 // HW_APBH_CH4_SEMA:
+> semaphore counter is 1
+> [   86.770000] APBH CH4 REG :250 : 03A00015 // HW_APBH_CH4_DEBUG1:
+> LOCK, NEXTCMDADDRVALID, RD_FIFO_EMPTY, WR_FIFO_EMPTY,  STATEMACHINE =
+> "WAIT_END = 0x15 When the Wait for Command End bit is set, the state
+> machine enters this state until the DMA device indicates that the
+> command is complete."
+> [   86.770000] APBH CH4 REG :260 : 00000000 // ->  HW_APBH_CH4_DEBUG2:
+> no apb of ahb bytes remaining for transfer
+> [   86.780000] [ 0 ] : ME : 418d7000, next : 418d704c, bits :
+> 00002304, bytes : 00000000, buf : 00000000
+> [   86.790000] [ 0 ] PIO[0] : 03800000
+> [   86.790000] [ 0 ] PIO[1] : 00000000
+> [   86.800000] [ 0 ] PIO[2] : 00000000
+> [   86.800000] [ 1 ] : ME : 418d704c, next : 418d7098, bits :
+> 00006304, bytes : 00000001, buf : 4181b000
+> [   86.810000] [ 1 ] PIO[0] : 018010da
+> [   86.810000] [ 1 ] PIO[1] : 00000000
+> [   86.820000] [ 1 ] PIO[2] : 000011ff
+> [   86.820000] [ 2 ] : ME : 418d7098, next : 00000000, bits :
+It hungs here.
 
- A pedantic point that perhaps doesn't matter, but....
- Not quite sure what is meant by =E2=80=9Ckept out of tree=E2=80=9D?
- Two interpertations I can think of:  YAFFS(2) is not
- in the UBI(FS) trees;  and/or  YAFFS(2) is not in the
- Linux kernel tree (albeit it is in the Android tree).
+> 000023c8, bytes : 00000000, buf : 00000000
+> [   86.830000] [ 2 ] PIO[0] : 038010da
+> [   86.840000] [ 2 ] PIO[1] : 00000000
+> [   86.840000] [ 2 ] PIO[2] : 00000000
+> [   86.840000] ------------------------DMA DUMP END ------------
+> [   86.850000] [ gpmi_show_regs : 076 ] -------------- Show GPMI
+> registers ----------
+> [   86.860000] [ gpmi_show_regs : 079 ] offset 0x000 : 0x238010da
+> [   86.870000] [ gpmi_show_regs : 079 ] offset 0x010 : 0x00000000
+> [   86.870000] [ gpmi_show_regs : 079 ] offset 0x020 : 0x000011ff
+> [   86.880000] [ gpmi_show_regs : 079 ] offset 0x030 : 0x000010da
+> [   86.890000] [ gpmi_show_regs : 079 ] offset 0x040 : 0x40f0c480
+> [   86.890000] [ gpmi_show_regs : 079 ] offset 0x050 : 0x40f09000
+> [   86.900000] [ gpmi_show_regs : 079 ] offset 0x060 : 0x0004000c
+> [   86.910000] [ gpmi_show_regs : 079 ] offset 0x070 : 0x00010203
+> [   86.910000] [ gpmi_show_regs : 079 ] offset 0x080 : 0x05000000
+> [   86.920000] [ gpmi_show_regs : 079 ] offset 0x090 : 0x09020101
+> [   86.920000] [ gpmi_show_regs : 079 ] offset 0x0a0 : 0x00000030
+> [   86.930000] [ gpmi_show_regs : 079 ] offset 0x0b0 : 0x80000010
+> [   86.940000] [ gpmi_show_regs : 079 ] offset 0x0c0 : 0x100000ba
+> [   86.940000] [ gpmi_show_regs : 079 ] offset 0x0d0 : 0x03000000
+> [   86.950000] [ gpmi_show_regs : 081 ] -------------- Show GPMI
+> registers end ----------
+> [   86.960000] Kernel panic - not syncing: -----------DMA
+> FAILED------------------
+Please post the functions-calling stack when the panic occurs.
+I also want to know where the code is running when the time-out occur.
 
-> +</P>
-> +
-> +<P>
-> +Now, bug reports for any of the above areas are more than welcome on the
+My gmail is shijie8@gmail.com
+We may talk more on the gtalk.
 
- =E2=80=9CAny=E2=80=9D?  Including YAFFS(2)?
+Best Regards
+Huang Shijie
 
- _Assuming_ YAFFS(2) wasn't meant to be included
- in the =E2=80=9Cany=E2=80=9D, then I suggest moving the above
- YAFFS(2) remarks  =E2=80=94 which are useful =E2=80=94  to later,
- perhaps after the other-FAQs list (below)?
- This resolves the pedantic confusion over =E2=80=9Cany=E2=80=9D,
- and also takes what is basically an aside out of
- the main flow of text / information.
-
-> +<A HREF=3D"../mail.html">MTD mailing list</A>, provided you include suff=
-icient
-> +information for reproducing and debugging your problem. This means:
-> +</P>
-> +
-> +<UL>
-> +	<LI>include all kernel 'oopses', stack traces, debug messages, or
-> +	relevant logs along with a clear description of the problem you're
-> +	having, what system(s) are affected, and anything else you think might
-> +	help understand your issue;</LI>
-> +
-> +	<LI>include information about flash parameters found from
-> +	"<CODE>mtdinfo -a</CODE>" (or the less useful info from
-> +	"<CODE>cat /proc/mtd</CODE>");</LI>
-
- I always suggest using =E2=80=98&nbsp;=E2=80=99 for spaces in
- inline  <code>=E2=8B=AF</code>  to prevent (what can be)
- horribly confusing inappropriate linebreaks.
-
- Thanks for addressing the how-to-report-bugs issue.
-cheers!
-	-blf-
-
->[ ... ]
-
-=2D-=20
-Brian FOSTER
-Principal MTS, Software
-Maxim Integrated Products (Microcontroller BU), formerly Innova Card
-Web    : http://www.maxim-ic.com/
+> Br,
+> Koen
+>
+>>
+>> Please try the new patch.
+>>
+>> Best Regards
+>> Huang Shijie
+>>> Then it prints some debug info on channel 1 (ssp1) and then alle
+>>> channel 2 register except the debug register (ssp2 = not used here).
+>>>
+>>> What info do you need?
+>>>
+>>> Br,
+>>> Koen
+>>>
+>>>> Best Regards
+>>>> Huang Shijie
+>>>>
+>>> _______________________________________________
+>>> linux-arm-kernel mailing list
+>>> linux-arm-kernel@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>
+>>
