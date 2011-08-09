@@ -1,24 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qqt8A-0008Uz-Il
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 20:42:31 +0000
-Date: Tue, 9 Aug 2011 22:42:23 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: GPMI-NAND Status?
-Message-ID: <20110809204223.GA5858@pengutronix.de>
-References: <20110805135133.GA26981@pengutronix.de>
-	<4E3F8087.6070206@freescale.com>
-	<20110809093546.GB1923@pengutronix.de>
-	<4E4111F3.5070409@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
-Content-Disposition: inline
-In-Reply-To: <4E4111F3.5070409@freescale.com>
-Cc: Koen Beel <koen.beel.barco@gmail.com>, Shawn Guo <shawn.guo@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Received: from na3sys009aog113.obsmtp.com ([74.125.149.209])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QqtMo-0000Sh-2T
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 20:57:39 +0000
+Received: by mail-vw0-f49.google.com with SMTP id 8so434131vws.8
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 09 Aug 2011 13:57:34 -0700 (PDT)
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] mtd_debug: report ecc layout
+Date: Tue,  9 Aug 2011 16:57:27 -0400
+Message-Id: <e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
+In-Reply-To: <cover.1312922073.git.bengardiner@nanometrics.ca>
+References: <cover.1312922073.git.bengardiner@nanometrics.ca>
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The mtd_debug 'info' command reports a great deal of useful information about
+the mtd device is it given for a query.
 
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the ECC size and OOB available to that list. The other entries in the
+ecclayout struct are arrays and are not as meaningful as eccsize and oobavail.
 
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
 
-> >>>Always reproducible by me when trying to format mtd0. Sometimes(always=
-?) seen
-> >>>by Koen during boot (on read?). Never seen by Huang? It is currently u=
-nclear if
-> >>After I used a different .config, it never appears in my side.
-> >So, you have a config which triggers this? That should be useful for
-> >debugging. What do you need to enable to see this?
-> >
-> My old config is made by myself. I think it was a wrong config,
+---
 
-Let's see what the bug is in the end, but I don't think a config could be
-"wrong" in a way to trigger such a bug. Even misconfiguration can be handled
-gracefully with code.
+I noticed that the struct nand_ecclayout_user and its corresponding ioctl
+has been marked deprecated; however, since this is a 'debug' utility and at
+least one person found it useful I thought it would be a good idea to propose
+these changes anyways.
+---
+ mtd_debug.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
-> it's not a DMA bug, I discuss with Koen, and make sure that the bug is
-> caused by the GPMI or BCH.
-
-Did you get any further during this day?
-
-> it's a different bug from  Aisheng Dong's bug.
-
-Okay, I had a look at this one today.
-
-> >>>* custom kernel command line parameters
-> >>The kernel command line 'gpmi_nand' is to avoid the conflict with
-> >>other modules such as
-> >>SD.
-> >>
-> >>If it's be removed, I have to use different config to resolve the
-> >>issue which is not better either. :(
-> >This is a board-specific issue, so you should handle this at
-> >board-level, not at driver level.
-> >
-> I wish to handle it at the board level.
->=20
-> But I have no idea how to solve the conflict between GPMI and SD.  :(
->=20
-> Could you give me some hint?
-
-For starters, you could move some kerel-parameter to the board-file and cre=
-ate the
-devices as needed depending on that:
-
-if (gpmi_nand)
-	mx28_add_gpmi_nand(&mx28evk_gpmi_nand_data);
-else
-	mx28_add_mxs_mmc(1, &mx28evk_mmc_pdata[1]);
-
-or something alike unless I miss something. This is probably not the best
-solution as well, but at least it keeps the driver free from the
-board-configuration.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk5Bm64ACgkQD27XaX1/VRsPWACgvSXS9dcoTJ3F8JUhWMO0uwUv
-uEUAoI04g4fBV+gvD/c9HcYMuTuyXt5+
-=s/Lm
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
+diff --git a/mtd_debug.c b/mtd_debug.c
+index b82dabe..ea2a119 100644
+--- a/mtd_debug.c
++++ b/mtd_debug.c
+@@ -74,6 +74,14 @@ static int getregions (int fd,struct region_info_user *regions,int *n)
+ 	return (0);
+ }
+ 
++/*
++ * ECCGETLAYOUT
++ */
++static int getecclayout (int fd, struct nand_ecclayout_user *ecclayout)
++{
++	return (ioctl (fd,ECCGETLAYOUT,ecclayout));
++}
++
+ int erase_flash (int fd,u_int32_t offset,u_int32_t bytes)
+ {
+ 	int err;
+@@ -237,6 +245,7 @@ int showinfo (int fd)
+ {
+ 	int i,err,n;
+ 	struct mtd_info_user mtd;
++	struct nand_ecclayout_user ecclayout;
+ 	static struct region_info_user region[1024];
+ 
+ 	err = getmeminfo (fd,&mtd);
+@@ -246,6 +255,13 @@ int showinfo (int fd)
+ 		return (1);
+ 	}
+ 
++	err = getecclayout (fd,&ecclayout);
++	if (err < 0)
++	{
++		perror ("ECCGETLAYOUT");
++		return (1);
++	}
++
+ 	err = getregions (fd,region,&n);
+ 	if (err < 0)
+ 	{
+@@ -330,6 +346,12 @@ int showinfo (int fd)
+ 	printf ("\nmtd.oobsize = ");
+ 	printsize (mtd.oobsize);
+ 
++	printf ("\necclayout.eccbytes = ");
++	printsize (ecclayout.eccbytes);
++
++	printf ("\necclayout.oobavail = ");
++	printsize (ecclayout.oobavail);
++
+ 	printf ("\n"
+ 			"regions = %d\n"
+ 			"\n",
+-- 
+1.7.3.5
