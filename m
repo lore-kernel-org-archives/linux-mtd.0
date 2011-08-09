@@ -1,18 +1,19 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QquQJ-0003aU-7S
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 22:05:20 +0000
+	id 1QquQk-0003cb-3E
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 22:05:47 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 8/9] faq: ubi(fs): small spelling, URL fixups
-Date: Tue, 9 Aug 2011 15:05:01 -0700
-Message-ID: <1312927501-16796-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1312832239-21759-9-git-send-email-computersforpeace@gmail.com>
-References: <1312832239-21759-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 9/9] faq: general: add bug reporting FAQ
+Date: Tue, 9 Aug 2011 15:05:31 -0700
+Message-ID: <1312927531-16853-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
+References: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: brian.foster@maxim-ic.com, Brian Norris <computersforpeace@gmail.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,81 +23,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We used `<a name=[URL]>' instead of `<a href=[URL]>' by accident.
-
-Also, the file "faq/ubi.html" is located within the "faq" directory, so
-use a simpler relative link (i.e., don't use `../faq').
-
-Change "we have never find" to "we have never found".
-
-Change "refer this tread" to "refer to this thread".
-
-Change "UBIi" to "UBI", "you your" to "your".
-
-Change "refer the" to "refer to the".
+It's surprising to note that we do not have a general "how to send a bug
+report" FAQ. This patch provides a starting point and (most importantly)
+directs UBI/UBIFS users to the appropriate bug reporting information.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v2: add "refer the" => "refer to the" fix
+v2: handle some of Brian Foster's suggestions regarding clarity, other
+    additions to FAQ entry
 
- faq/ubi.xml   |    4 ++--
- faq/ubifs.xml |    8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ faq/general.xml |   64 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mail.xml        |    4 ++-
+ 2 files changed, 67 insertions(+), 1 deletions(-)
 
-diff --git a/faq/ubi.xml b/faq/ubi.xml
-index 9458e77..1ee4327 100644
---- a/faq/ubi.xml
-+++ b/faq/ubi.xml
-@@ -375,7 +375,7 @@ describes how UBI-aware flasher program has to work.</p>
- 
- <p><b>Important!</b>: even if you do not care about erasecounters, do not use
- <code>nandwrite</code> for flashing UBI images containing UBIFS file-system to
--NAND flashes, read <a href="../faq/ubifs.html#L_why_ubiformat">here</a> for
-+NAND flashes, read <a href="ubifs.html#L_why_ubiformat">here</a> for
- more information.</p>
- 
- 
-@@ -567,7 +567,7 @@ any image, and check if you still have these errors.</p>
- <p>If you do not have errors when you mount empty flash, it is probably indeed
- related to how you flash the UBI/UBIFS images. One typical problem is related
- to ECC calculation algorithm - read
--<a name="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
-+<a href="ubifs.html#L_why_ubiformat">here</a> for more information. Make sure
- that you use <a href="../doc/ubifs.html#L_usptools">ubiformat</a>, or make sure
- either that your flashing program skips <code>0xFF</code> properly (see
- <a href="../doc/ubi.html#L_flasher_algo">here</a>) or that your UBIFS image
-diff --git a/faq/ubifs.xml b/faq/ubifs.xml
-index dbfac0e..b6b0b14 100644
---- a/faq/ubifs.xml
-+++ b/faq/ubifs.xml
-@@ -717,8 +717,8 @@ provably want the file-system doing inode updates every time they are read.</p>
- 
- <p>Not, it does not, which means you cannot export UBIFS file-system via NFS.
- We did make an attempt to support NFS, but the support was not exactly correct
--so it was dropped, and we have never find time to come back to that. Please,
--refer <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this tread</a>
-+so it was dropped, and we have never found time to come back to that. Please,
-+refer to <a href="http://marc.info/?l=linux-next&amp;m=121852228611051&amp;w=2">this thread</a>
- for some more details. The original patch can also be found there.</p>
+diff --git a/faq/general.xml b/faq/general.xml
+index a4e82f3..6b8e95f 100644
+--- a/faq/general.xml
++++ b/faq/general.xml
+@@ -20,6 +20,7 @@
+ 	<LI><A HREF="general.html#L_point">What are the point() and unpoint() functions used for?</A></LI>
+ 	<LI><A HREF="general.html#L_unlock">Why do I keep getting errors whenever I try to write to or erase my MTD device?</A></LI>
+ 	<LI><A HREF="general.html#L_compile_mtd">How do I compile the mtd-utils tree?</A></LI>
++	<LI><A HREF="general.html#L_bug_report">How do I report bugs?</A></LI>
+ </OL>
  
  
-@@ -1482,7 +1482,7 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
- 	saw any errors/warnings, describe them and include all corresponding
- 	prints from tests / UBIFS / etc;</li>
+@@ -274,5 +275,68 @@ directory.
+ </P>
  
--	<li>provide UBIi and UBIFS configuration from you your
-+	<li>provide UBI and UBIFS configuration from your
- 	<code>.config</code> file, or just attach whole file;</li>
  
- 	<li>describe your flash device, attach the "<code>mtdinfo&amp;nbsp;-a</code>"
-@@ -1501,7 +1501,7 @@ all checks: "<code>echo 127 > /sys/module/ubifs/parameters/debug_chks</code>".</
- private e-mails to UBIFS authors, always CC the mailing list!</p>
- 
- <p>Note, sometimes UBIFS bugs may appear to be UBI bugs. If you suspect
--there are UBI problems, please, also enable UBI debugging. Please, refer the
-+there are UBI problems, please, also enable UBI debugging. Please, refer to the
- <a href="ubi.html#L_how_debug">UBI debugging</a> section for more
- information.</p>
- 
++
++<A NAME="L_bug_report">
++<H2>How do I report bugs?</H2>
++</A>
++
++<P>
++First, you need to figure out what you're reporting a bug against. This website
++(and its accompanying <A HREF="../mail.html">mailing list</A>) supports several
++related aspects of Linux, from the MTD kernel subsystem to its user-space
++utilities, including the generic MTD and NAND interface layers, several MTD
++hardware drivers, the UBI volume management system, several flash filesystems
++(e.g., JFFS2, UBIFS), and the user-space MTD utils.
++</P>
++
++<P>
++Now, bug reports for any of the above areas are more than welcome on the
++<A HREF="../mail.html">MTD mailing list</A>, provided you include sufficient
++information for reproducing and debugging your problem. This means:
++</P>
++
++<UL>
++	<LI>include all kernel 'oopses', stack traces, debug messages, or
++	relevant logs along with a clear description of the problem you're
++	having, what system(s) are affected, and anything else you think might
++	help people understand your issue;</LI>
++
++	<LI>include information about flash parameters found from
++	"<CODE>mtdinfo&amp;nbsp;-a</CODE>" (or the less useful info from
++	"<CODE>cat&amp;nbsp;/proc/mtd</CODE>");</LI>
++
++	<LI>specify which kernel version you are using;</LI>
++
++	<LI>specify which mtd-utils version you are using, if applicable. In
++	past releases of mtd-utils, different tools had different versions, so
++	be sure to check the relevant tool (e.g., use
++	"<CODE>nanddump&amp;nbsp;--version</CODE>" when reporting bugs involving
++	the <CODE>nanddump</CODE> tool); newer releases give the same version to
++	most/all the tools.</LI>
++</UL>
++
++<P>
++Please, <b>do not</b> send private e-mails to MTD maintainers; always CC the
++mailing list!
++</P>
++
++<P>
++You may also want to read one of the other related FAQs:
++</P>
++
++<UL>
++	<LI><A HREF="ubifs.html#L_how_send_bugreport">How do I send an UBIFS bug report?</A></LI>
++	<LI><A HREF="ubi.html#L_how_send_bugreport">How do I send an UBI bug report?</A></LI>
++</UL>
++
++<P>
++The MTD community may help support the YAFFS/YAFFS2 filesystems; however, YAFFS
++has its own dedicated <A HREF="http://www.yaffs.net/">website</A> and
++<A HREF="http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs">mailing
++list</A>, and its code is not kept in the mainstream Linux kernel tree. Thus,
++any support you receive here will be limited, and you should contact YAFFS
++maintainers with real YAFFS bug reports.
++</P>
++
+ <INCLUDE file="../inc/footer.tmpl" />
+ </PAGE>
+diff --git a/mail.xml b/mail.xml
+index d79ac51..e3734f1 100644
+--- a/mail.xml
++++ b/mail.xml
+@@ -18,7 +18,9 @@
+ 	    <ul>
+ 		<li>my <a href="http://www.infradead.org/~dwmw2/email.html">notes on etiquette</a>.</li> 
+ 		<li>the section about <a href="source.html#kernelversions">kernel versions</a></li>
+-		<li>the <a href="faq/general.html">MTD-FAQ</a></li>
++		<li>the <a href="faq/general.html">MTD-FAQ</a>, especially the
++			<a href="faq/general.html#L_bug_report">bug reporting
++			FAQ</a>, if applicable</li>
+ 		<li>the available <a href="doc/general.html">documentation</a></li>
+ 		<li>the mailing list archives at <a href="http://lists.infradead.org/pipermail/linux-mtd/">
+ 			http://lists.infradead.org/pipermail/linux-mtd/</a></li>
 -- 
 1.7.0.4
