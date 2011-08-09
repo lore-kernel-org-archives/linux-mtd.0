@@ -1,19 +1,23 @@
-Message-ID: <20033.7109.224884.866396@ipc1.ka-ro>
-Date: Tue, 9 Aug 2011 13:36:37 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Mime-Version: 1.0
+Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qqnkg-0001KX-C6
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 14:57:55 +0000
+Date: Tue, 9 Aug 2011 16:58:12 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Subject: Re: logfs unmount bug
+Message-ID: <20110809145812.GR26160@logfs.org>
+References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
+	<20110805160325.GM26160@logfs.org>
+	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
+	<20110808083107.GN26160@logfs.org>
+	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: GPMI-NAND Status?
-In-Reply-To: <4E410EC5.8080600@freescale.com>
-References: <20110805135133.GA26981@pengutronix.de>
-	<4E3FA88E.4070804@freescale.com>
-	<20110809091906.GA1923@pengutronix.de>
-	<4E410EC5.8080600@freescale.com>
-Cc: Koen Beel <koen.beel.barco@gmail.com>, Shawn Guo <shawn.guo@linaro.org>,
-	linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Huang Shijie writes:
-> Hi,
-> > Hi,
+On Mon, 8 August 2011 20:14:15 +0530, srimugunthan dhandapani wrote:
+> 
+> > Not good.  So far I managed to see a (the?) tiobench bug once, but
+> > couldn't make it reproduceable.  Nor could I reproduce the bonnie bug.
+> > Once the bugs are reproduceable, even my feeble eyes can usually spot
+> > the cause sooner or later.  With a backtrace alone and no idea what
+> > internal state it depends on, life is much harder.
 > >
-> >>> ecclayout needs to be used to show that OOB is fully in use [1]
-> >>> ===============================================================
-> >>>
-> >>> Needed to make it work for JFFS2 and to pass the mtd-testsuite. A driver only
-> >>> working with UBIFS is surely not ready for mainline.
-> >>>
-> >> It seems just modifying the ecclayout of GPMI-NAND can not fix the problem.
-> >> It should also change the code of JFFS2 and mtd.
-> >>
-> >> Some one ever posted a patch about this:
-> >> http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
-> > This mail is about MLC. That's another issue. For SLC, ecclayout should
-> > work, no?
 > 
-> The matter is that the GPMI/BCH will use the OOB. Please see the page 1263
-> in 16.2.2 of mx28's datasheet. It shows an NAND PAGE's layout.
-> 
-> You may see that the OOB will be used for storing the DATA or ECC.
-> There will be left some space even when i enable the BCH,  it seems the 
-> left space can
-> contains the jffs2's clean marker.  It needs to be confirmed. :)
-> 
-It possibly could be written there, if the spare area had a separate
-ECC independent from the first data block. With the current ECC
-layout (combined ECC for spare area and first block), writing the
-clean marker would change the ECC for the first data block to non-FF
-so that writing the first block lateron would again result in ECC
-errors.
+> I am sorry , i dont know what i am missing. I tried it 5 times. 4/5
+> trials, the bonnie test didnt complete. .Even when it completed once,
+> the logs show kernel bug.
 
+Ok, since I cannot reproduce this at all, can you try the patch below?
+While it may already fix the problem, I am more interested in the
+output.
 
-Lothar Waßmann
+>  do_invalidatepage+0x28/0x30
+>  truncate_inode_page+0x92/0xb0
+>  truncate_inode_pages_range+0x177/0x4f0
+>  truncate_inode_pages+0x15/0x20
+>  truncate_pagecache+0x4f/0x70
+>  truncate_setsize+0x1f/0x30
+>  vmtruncate+0x3e/0x60
+>  logfs_truncate+0x263/0x2a0 [logfs]
+>  logfs_evict_inode+0xdc/0x190 [logfs]
+>  ? do_raw_spin_unlock+0x5e/0xb0
+>  evict+0xa9/0x1a0
+>  iput+0xfd/0x200
+
+Jörn
+
 -- 
-___________________________________________________________
+A quarrel is quickly settled when deserted by one party; there is
+no battle unless there be two.
+-- Seneca
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+diff --git a/fs/logfs/file.c b/fs/logfs/file.c
+index f2c08bc..7afd9a7 100644
+--- a/fs/logfs/file.c
++++ b/fs/logfs/file.c
+@@ -168,8 +168,14 @@ static void logfs_invalidatepage(struct page *page, unsigned long offset)
+ 		struct logfs_super *super = logfs_super(sb);
+ 
+ 		super->s_dirty_bytes -= block->reserved_bytes;
+-		block->ops->free_block(sb, block);
+-		BUG_ON(bitmap_weight(block->alias_map, LOGFS_BLOCK_FACTOR));
++		if (bitmap_weight(block->alias_map, LOGFS_BLOCK_FACTOR)) {
++			printk(KERN_DEBUG"logfs_invalidatepage(%lx, %x, %llx)\n",
++					page->mapping->host->i_ino,
++					page->mapping->host->i_nlink,
++					page->mapping->host->i_size);
++			move_page_to_btree(page);
++		} else
++			block->ops->free_block(sb, block);
+ 	} else
+ 		move_page_to_btree(page);
+ 	BUG_ON(PagePrivate(page) || page->private);
