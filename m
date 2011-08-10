@@ -1,22 +1,23 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
-	helo=AM1EHSOBE004.bigfish.com)
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvRKE-0002MI-NI
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:01:47 +0000
-Content-Type: text/plain; charset="utf-8"; format=flowed; delsp=yes
-To: Scott Wood <scottwood@freescale.com>, Chunhe Lan <Chunhe.Lan@freescale.com>
-Subject: Re: [PATCH] mtd/nand: Don't add disabled nand flash devices
-References: <1313486855-15233-1-git-send-email-Chunhe.Lan@freescale.com>
-	<4E4AE535.4070400@freescale.com>
-Date: Mon, 22 Aug 2011 18:04:35 +0800
+	id 1Qr4FE-0007wd-Uk
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 08:34:34 +0000
+Received: by wwj26 with SMTP id 26so3628442wwj.0
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Aug 2011 01:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From: Lan Chunhe <b25806@freescale.com>
-Message-ID: <op.v0l0xxanz91x4h@localhost.localdomain>
-In-Reply-To: <4E4AE535.4070400@freescale.com>
-Cc: dwmw2@infradead.org, kumar.gala@freescale.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	linuxppc-dev@ozlabs.org
+In-Reply-To: <201108100954.11266.brian.foster@maxim-ic.com>
+References: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
+	<1312927531-16853-1-git-send-email-computersforpeace@gmail.com>
+	<201108100954.11266.brian.foster@maxim-ic.com>
+Date: Wed, 10 Aug 2011 01:34:30 -0700
+Message-ID: <CAN8TOE-79EB=xguHc4LgXtRTDRM=x=vwmOdmOj2+o-iEr6hBYA@mail.gmail.com>
+Subject: Re: [PATCH 9/9] faq: general: add bug reporting FAQ
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Content-Type: multipart/alternative; boundary=0016e65aeffe89278f04aa228c3e
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 17 Aug 2011 05:46:29 +0800, Scott Wood <scottwood@freescale.com>=
-  =
+--0016e65aeffe89278f04aa228c3e
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
+On Wednesday, August 10, 2011, Brian Foster <brian.foster@maxim-ic.com>
 wrote:
-
-> On 08/16/2011 04:27 AM, Chunhe Lan wrote:
->> Nand flash nodes with the property status=3D"disabled" are not
->> usable and so avoid adding "disabled" nand flash devices with
->> the system.
->>
->> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
->> ---
->>  drivers/mtd/nand/fsl_elbc_nand.c |    5 ++++-
->>  1 files changed, 4 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c  =
-
->> b/drivers/mtd/nand/fsl_elbc_nand.c
->> index 33d8aad..8212c12 100644
->> --- a/drivers/mtd/nand/fsl_elbc_nand.c
->> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
->> @@ -1,6 +1,6 @@
->>  /* Freescale Enhanced Local Bus Controller NAND driver
->>   *
->> - * Copyright =C2=A9 2006-2007, 2010 Freescale Semiconductor
->> + * Copyright =C2=A9 2006-2007, 2010-2011 Freescale Semiconductor
->>   *
->>   * Authors: Nick Spence <nick.spence@freescale.com>,
->>   *          Scott Wood <scottwood@freescale.com>
->> @@ -849,6 +849,9 @@ static int __devinit fsl_elbc_nand_probe(struct  =
-
->> platform_device *pdev)
->>  	struct device *dev;
->>  	struct device_node *node =3D pdev->dev.of_node;
->>
->> +	if (!of_device_is_available(node))
->> +		return -ENODEV;
->> +
->>  	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
->>  		return -ENODEV;
->>  	lbc =3D fsl_lbc_ctrl_dev->regs;
+> On Wednesday 10 August 2011 00:05:31 Brian Norris wrote:
+>> +     "<CODE>cat&amp;nbsp;/proc/mtd</CODE>");</LI>
 >
-> Same comment as the other patch -- unavailable devices should already
-> not be getting probed.  Also, this subject line makes it sound like th=
-is
-> is a NAND subsystem change rather than a change in one specific driver=
-.
+>  =91&amp;nbsp;=92?  I assume that's because this appears to be
+>  XML which, I also assume, is translated(?) into (X)HTML ?
+>  (Just checking that that is intended/intentional.)
 
-    You are right.
-    The upper layers have prevented unavailable devices.
-    So, this patch is no need.
+Yeah, it's intentional. There's a Python script that converts the XML to
+XHTML in the mtd-www.git repository, and this is necessary.
 
-    Thanks.
+Brian
 
-    -Jack Lan
+--0016e65aeffe89278f04aa228c3e
+Content-Type: text/html; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-> -Scott
+On Wednesday, August 10, 2011, Brian Foster &lt;<a href=3D"mailto:brian.fos=
+ter@maxim-ic.com">brian.foster@maxim-ic.com</a>&gt; wrote:<br>&gt; On Wedne=
+sday 10 August 2011 00:05:31 Brian Norris wrote:<br>&gt;&gt; + =A0 =A0 &quo=
+t;&lt;CODE&gt;cat&amp;amp;nbsp;/proc/mtd&lt;/CODE&gt;&quot;);&lt;/LI&gt;<br=
+>
+&gt;<br>&gt; =A0=91&amp;amp;nbsp;=92? =A0I assume that&#39;s because this a=
+ppears to be<br>&gt; =A0XML which, I also assume, is translated(?) into (X)=
+HTML ?<br>&gt; =A0(Just checking that that is intended/intentional.)<br><br=
+>Yeah, it&#39;s intentional. There&#39;s a Python script that converts the =
+XML to XHTML in the mtd-www.git repository, and this is necessary.<br>
+<br>Brian
+
+--0016e65aeffe89278f04aa228c3e--
