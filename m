@@ -1,19 +1,15 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QquQk-0003cb-3E
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2011 22:05:47 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 9/9] faq: general: add bug reporting FAQ
-Date: Tue, 9 Aug 2011 15:05:31 -0700
-Message-ID: <1312927531-16853-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
-References: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: brian.foster@maxim-ic.com, Brian Norris <computersforpeace@gmail.com>,
-	linux-mtd@lists.infradead.org
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qr1Yg-0006IM-Cg
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 05:42:27 +0000
+From: Julia Lawall <julia@diku.dk>
+To: Jiandong Zheng <jdzheng@broadcom.com>
+Subject: [PATCH] drivers/mtd/nand/bcm_umi_nand.c: add missing kfree/ioremap
+Date: Wed, 10 Aug 2011 07:42:15 +0200
+Message-Id: <1312954935-14592-1-git-send-email-julia@diku.dk>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Scott Branden <sbranden@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,114 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's surprising to note that we do not have a general "how to send a bug
-report" FAQ. This patch provides a starting point and (most importantly)
-directs UBI/UBIFS users to the appropriate bug reporting information.
+From: Julia Lawall <julia@diku.dk>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+The error handling code under the #if should be the same as elsewhere in
+the function.
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
 ---
-v2: handle some of Brian Foster's suggestions regarding clarity, other
-    additions to FAQ entry
+ drivers/mtd/nand/bcm_umi_nand.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- faq/general.xml |   64 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- mail.xml        |    4 ++-
- 2 files changed, 67 insertions(+), 1 deletions(-)
-
-diff --git a/faq/general.xml b/faq/general.xml
-index a4e82f3..6b8e95f 100644
---- a/faq/general.xml
-+++ b/faq/general.xml
-@@ -20,6 +20,7 @@
- 	<LI><A HREF="general.html#L_point">What are the point() and unpoint() functions used for?</A></LI>
- 	<LI><A HREF="general.html#L_unlock">Why do I keep getting errors whenever I try to write to or erase my MTD device?</A></LI>
- 	<LI><A HREF="general.html#L_compile_mtd">How do I compile the mtd-utils tree?</A></LI>
-+	<LI><A HREF="general.html#L_bug_report">How do I report bugs?</A></LI>
- </OL>
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+index a8ae898..72e8ec2 100644
+--- a/drivers/mtd/nand/bcm_umi_nand.c
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -433,8 +433,11 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
  
+ #if USE_DMA
+ 	err = nand_dma_init();
+-	if (err != 0)
++	if (err != 0) {
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
+ 		return err;
++	}
+ #endif
  
-@@ -274,5 +275,68 @@ directory.
- </P>
- 
- 
-+
-+<A NAME="L_bug_report">
-+<H2>How do I report bugs?</H2>
-+</A>
-+
-+<P>
-+First, you need to figure out what you're reporting a bug against. This website
-+(and its accompanying <A HREF="../mail.html">mailing list</A>) supports several
-+related aspects of Linux, from the MTD kernel subsystem to its user-space
-+utilities, including the generic MTD and NAND interface layers, several MTD
-+hardware drivers, the UBI volume management system, several flash filesystems
-+(e.g., JFFS2, UBIFS), and the user-space MTD utils.
-+</P>
-+
-+<P>
-+Now, bug reports for any of the above areas are more than welcome on the
-+<A HREF="../mail.html">MTD mailing list</A>, provided you include sufficient
-+information for reproducing and debugging your problem. This means:
-+</P>
-+
-+<UL>
-+	<LI>include all kernel 'oopses', stack traces, debug messages, or
-+	relevant logs along with a clear description of the problem you're
-+	having, what system(s) are affected, and anything else you think might
-+	help people understand your issue;</LI>
-+
-+	<LI>include information about flash parameters found from
-+	"<CODE>mtdinfo&amp;nbsp;-a</CODE>" (or the less useful info from
-+	"<CODE>cat&amp;nbsp;/proc/mtd</CODE>");</LI>
-+
-+	<LI>specify which kernel version you are using;</LI>
-+
-+	<LI>specify which mtd-utils version you are using, if applicable. In
-+	past releases of mtd-utils, different tools had different versions, so
-+	be sure to check the relevant tool (e.g., use
-+	"<CODE>nanddump&amp;nbsp;--version</CODE>" when reporting bugs involving
-+	the <CODE>nanddump</CODE> tool); newer releases give the same version to
-+	most/all the tools.</LI>
-+</UL>
-+
-+<P>
-+Please, <b>do not</b> send private e-mails to MTD maintainers; always CC the
-+mailing list!
-+</P>
-+
-+<P>
-+You may also want to read one of the other related FAQs:
-+</P>
-+
-+<UL>
-+	<LI><A HREF="ubifs.html#L_how_send_bugreport">How do I send an UBIFS bug report?</A></LI>
-+	<LI><A HREF="ubi.html#L_how_send_bugreport">How do I send an UBI bug report?</A></LI>
-+</UL>
-+
-+<P>
-+The MTD community may help support the YAFFS/YAFFS2 filesystems; however, YAFFS
-+has its own dedicated <A HREF="http://www.yaffs.net/">website</A> and
-+<A HREF="http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs">mailing
-+list</A>, and its code is not kept in the mainstream Linux kernel tree. Thus,
-+any support you receive here will be limited, and you should contact YAFFS
-+maintainers with real YAFFS bug reports.
-+</P>
-+
- <INCLUDE file="../inc/footer.tmpl" />
- </PAGE>
-diff --git a/mail.xml b/mail.xml
-index d79ac51..e3734f1 100644
---- a/mail.xml
-+++ b/mail.xml
-@@ -18,7 +18,9 @@
- 	    <ul>
- 		<li>my <a href="http://www.infradead.org/~dwmw2/email.html">notes on etiquette</a>.</li> 
- 		<li>the section about <a href="source.html#kernelversions">kernel versions</a></li>
--		<li>the <a href="faq/general.html">MTD-FAQ</a></li>
-+		<li>the <a href="faq/general.html">MTD-FAQ</a>, especially the
-+			<a href="faq/general.html#L_bug_report">bug reporting
-+			FAQ</a>, if applicable</li>
- 		<li>the available <a href="doc/general.html">documentation</a></li>
- 		<li>the mailing list archives at <a href="http://lists.infradead.org/pipermail/linux-mtd/">
- 			http://lists.infradead.org/pipermail/linux-mtd/</a></li>
--- 
-1.7.0.4
+ 	/* Figure out the size of the device that we have.
