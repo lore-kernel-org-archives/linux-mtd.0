@@ -1,16 +1,25 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qr3vm-0007kI-8L
-	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 08:14:27 +0000
-From: Julia Lawall <julia@diku.dk>
-To: Jiandong Zheng <jdzheng@broadcom.com>
-Subject: [PATCH v3] drivers/mtd/nand/bcm_umi_nand.c: clean up error handling
-	code
-Date: Wed, 10 Aug 2011 10:14:14 +0200
-Message-Id: <1312964054-25266-1-git-send-email-julia@diku.dk>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Scott Branden <sbranden@broadcom.com>
+	id 1Qr6cH-0003xA-60
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 11:06:29 +0000
+Received: by wwf10 with SMTP id 10so677714wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Aug 2011 04:06:26 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20110809145812.GR26160@logfs.org>
+References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
+	<20110805160325.GM26160@logfs.org>
+	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
+	<20110808083107.GN26160@logfs.org>
+	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+	<20110809145812.GR26160@logfs.org>
+Date: Wed, 10 Aug 2011 16:36:26 +0530
+Message-ID: <CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
+Subject: Re: logfs unmount bug
+From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,106 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+Hi,
 
-Convert error handling code to use gotos.  At the same time, this adds
-calls to kfree and iounmap in a few cases where they were overlooked.
+>> I am sorry , i dont know what i am missing. I tried it 5 times. 4/5
+>> trials, the bonnie test didnt complete. .Even when it completed once,
+>> the logs show kernel bug.
+>
+> Ok, since I cannot reproduce this at all, can you try the patch below?
 
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/nand/bcm_umi_nand.c |   33 ++++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index a8ae898..46b58d6 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -374,16 +374,18 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
--	if (!r)
--		return -ENXIO;
-+	if (!r) {
-+		err = -ENXIO;
-+		goto out_free;
-+	}
- 
- 	/* map physical address */
- 	bcm_umi_io_base = ioremap(r->start, resource_size(r));
- 
- 	if (!bcm_umi_io_base) {
- 		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
--		kfree(board_mtd);
--		return -EIO;
-+		err = -EIO;
-+		goto out_free;
- 	}
- 
- 	/* Get pointer to private data */
-@@ -399,9 +401,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 	/* Initialize the NAND hardware.  */
- 	if (bcm_umi_nand_inithw() < 0) {
- 		printk(KERN_ERR "BCM UMI NAND chip could not be initialized\n");
--		iounmap(bcm_umi_io_base);
--		kfree(board_mtd);
--		return -EIO;
-+		err = -EIO;
-+		goto out_unmap;
- 	}
- 
- 	/* Set address of NAND IO lines */
-@@ -434,7 +435,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- #if USE_DMA
- 	err = nand_dma_init();
- 	if (err != 0)
--		return err;
-+		goto out_unmap;
- #endif
- 
- 	/* Figure out the size of the device that we have.
-@@ -445,9 +446,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 	err = nand_scan_ident(board_mtd, 1, NULL);
- 	if (err) {
- 		printk(KERN_ERR "nand_scan failed: %d\n", err);
--		iounmap(bcm_umi_io_base);
--		kfree(board_mtd);
--		return err;
-+		goto out_unmap;
- 	}
- 
- 	/* Now that we know the nand size, we can setup the ECC layout */
-@@ -466,7 +465,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 		{
- 			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
- 					 board_mtd->writesize);
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto out_unmap;
- 		}
- 	}
- 
-@@ -483,9 +483,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 	err = nand_scan_tail(board_mtd);
- 	if (err) {
- 		printk(KERN_ERR "nand_scan failed: %d\n", err);
--		iounmap(bcm_umi_io_base);
--		kfree(board_mtd);
--		return err;
-+		goto out_unmap;
- 	}
- 
- 	/* Register the partitions */
-@@ -494,6 +492,11 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 
- 	/* Return happy */
- 	return 0;
-+out_unmap:
-+	iounmap(bcm_umi_io_base);
-+out_free:
-+	kfree(board_mtd);
-+	return err;
- }
- 
- static int bcm_umi_nand_remove(struct platform_device *pdev)
+I was using a week-old kernel from git. That may be the problem,
+Can you tell the kernel version that you are using, in which bonnie test passes.
+I am right now trying on kernel 3.0 and i will test and let you know
+the results.
+thanks,
+mugunthan
