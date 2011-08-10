@@ -1,25 +1,21 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
+	helo=DB3EHSOBE006.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qr6cH-0003xA-60
-	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 11:06:29 +0000
-Received: by wwf10 with SMTP id 10so677714wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Aug 2011 04:06:26 -0700 (PDT)
+	id 1QrATQ-0007t1-Gy
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 15:13:37 +0000
+Message-ID: <4E42A017.7040608@freescale.com>
+Date: Wed, 10 Aug 2011 10:13:27 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20110809145812.GR26160@logfs.org>
-References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
-	<20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-	<20110808083107.GN26160@logfs.org>
-	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-	<20110809145812.GR26160@logfs.org>
-Date: Wed, 10 Aug 2011 16:36:26 +0530
-Message-ID: <CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
-Subject: Re: logfs unmount bug
-From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+To: Jamie Iles <jamie@jamieiles.com>
+Subject: Re: [PATCHv4] mtd: gpio-nand: add device tree bindings
+References: <1312902747-21372-1-git-send-email-jamie@jamieiles.com>
+In-Reply-To: <1312902747-21372-1-git-send-email-jamie@jamieiles.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+	David Woodhouse <dwmw2@infradead.org>, devicetree-discuss@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 08/09/2011 10:12 AM, Jamie Iles wrote:
+> +Optional properties:
+> +- bank-width : Width (in bytes) of the device.  If not present, the width
+> +  defaults to 8 bits.
 
->> I am sorry , i dont know what i am missing. I tried it 5 times. 4/5
->> trials, the bonnie test didnt complete. .Even when it completed once,
->> the logs show kernel bug.
->
-> Ok, since I cannot reproduce this at all, can you try the patch below?
+"in bytes" versus "defaults to 8 bits"...
 
-I was using a week-old kernel from git. That may be the problem,
-Can you tell the kernel version that you are using, in which bonnie test passes.
-I am right now trying on kernel 3.0 and i will test and let you know
-the results.
-thanks,
-mugunthan
+> +- chip-delay : chip dependent delay for transferring data from array to
+> +  read registers (tR).  If not present then a default of 0 is used.
+
+nand_set_defaults() will set this to 20 us if you pass in zero.
+
+> +- gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
+> +  location used to guard against bus reordering with regards to accesses to
+> +  the GPIO's and the NAND flash data bus.  If present, then after changing
+> +  GPIO state, this register will be read to ensure that the accesses have
+> +  completed.
+
+The driver does it before and after all cmd_ctrl byte writes, in
+addition to after changing the GPIO state.
+
+-Scott
