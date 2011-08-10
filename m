@@ -1,21 +1,20 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qr21M-0006an-88
-	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 06:12:05 +0000
-Date: Wed, 10 Aug 2011 08:11:56 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: Ryan Mallon <rmallon@gmail.com>
-Subject: Re: [PATCH] drivers/mtd/nand/bcm_umi_nand.c: add missing kfree/ioremap
-In-Reply-To: <4E421EC7.6090505@gmail.com>
-Message-ID: <Pine.LNX.4.64.1108100811170.22900@ask.diku.dk>
-References: <1312954935-14592-1-git-send-email-julia@diku.dk>
-	<4E421EC7.6090505@gmail.com>
+Received: from antispam02.maxim-ic.com ([205.153.101.183])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qr3cP-0007Pv-OT
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2011 07:54:26 +0000
+From: Brian Foster <brian.foster@maxim-ic.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 9/9] faq: general: add bug reporting FAQ
+Date: Wed, 10 Aug 2011 09:54:11 +0200
+References: <1312832239-21759-10-git-send-email-computersforpeace@gmail.com>
+	<1312927531-16853-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1312927531-16853-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Scott Branden <sbranden@broadcom.com>, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Jiandong Zheng <jdzheng@broadcom.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <201108100954.11266.brian.foster@maxim-ic.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 Aug 2011, Ryan Mallon wrote:
+On Wednesday 10 August 2011 00:05:31 Brian Norris wrote:
+> It's surprising to note that we do not have a general "how to send a bug
+> report" FAQ. This patch provides a starting point and (most importantly)
+> directs UBI/UBIFS users to the appropriate bug reporting information.
+>=20
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> v2: handle some of Brian Foster's suggestions regarding clarity, other
+>     additions to FAQ entry
+>=20
+>  faq/general.xml |   64 +++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  mail.xml        |    4 ++-
+>  2 files changed, 67 insertions(+), 1 deletions(-)
+>=20
+> diff --git a/faq/general.xml b/faq/general.xml
+>[...]=20
+> +	<LI>include information about flash parameters found from
+> +	"<CODE>mtdinfo&amp;nbsp;-a</CODE>" (or the less useful info from
+> +	"<CODE>cat&amp;nbsp;/proc/mtd</CODE>");</LI>
 
-> On 10/08/11 15:42, Julia Lawall wrote:
-> > From: Julia Lawall<julia@diku.dk>
-> >
-> > The error handling code under the #if should be the same as elsewhere in
-> > the function.
-> >
-> > Signed-off-by: Julia Lawall<julia@diku.dk>
-> >
-> > ---
-> >   drivers/mtd/nand/bcm_umi_nand.c |    5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/nand/bcm_umi_nand.c
-> > b/drivers/mtd/nand/bcm_umi_nand.c
-> > index a8ae898..72e8ec2 100644
-> > --- a/drivers/mtd/nand/bcm_umi_nand.c
-> > +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> > @@ -433,8 +433,11 @@ static int __devinit bcm_umi_nand_probe(struct
-> platform_device *pdev)
-> >
-> >   #if USE_DMA
-> >   	err = nand_dma_init();
-> > -	if (err != 0)
-> > +	if (err != 0) {
-> > +		iounmap(bcm_umi_io_base);
-> > +		kfree(board_mtd);
-> >   		return err;
-> > +	}
-> >   #endif
-> 
-> This probe function should possibly use goto exits on failure. It reduces a
-> bit of code duplication and helps prevent this type of error.
-
-OK, I didn't want to make such a major change for only one new case.  But 
-since there are three new cases, I will do that.
-
-julia
+ =E2=80=98&amp;nbsp;=E2=80=99?  I assume that's because this appears to be
+ XML which, I also assume, is translated(?) into (X)HTML ?
+ (Just checking that that is intended/intentional.)
+cheers!
+	-blf-
+=2D-=20
+Brian FOSTER
+Principal MTS, Software
+Maxim Integrated Products (Microcontroller BU), formerly Innova Card
+Web    : http://www.maxim-ic.com/
