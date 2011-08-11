@@ -1,22 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrMxp-0006t9-Qk
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 04:33:50 +0000
-Received: by mail-bw0-f49.google.com with SMTP id 17so847902bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Aug 2011 21:33:49 -0700 (PDT)
+Received: from sm-d311v.smileserver.ne.jp ([203.211.202.206])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QrN0e-00073z-3a
+	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 04:36:44 +0000
+Message-ID: <4E435C53.6080701@dsn.okisemi.com>
+Date: Thu, 11 Aug 2011 13:36:35 +0900
+From: Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>
 MIME-Version: 1.0
-In-Reply-To: <1312925806-15929-5-git-send-email-computersforpeace@gmail.com>
-References: <1312925806-15929-1-git-send-email-computersforpeace@gmail.com>
-	<1312925806-15929-5-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 11 Aug 2011 00:33:29 -0400
-Message-ID: <CAMjpGUfhw+g1oKMnV37Moj6jKFCqB3P1mo5xqbAxktCVNCBSsg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] mtdinfo: fixup "example usage" help section
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: brian.foster@maxim-ic.com, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: mtd/m25p80: Device search issue
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+Cc: "toshiharu-linux@dsn.okisemi.com" <toshiharu-linux@dsn.okisemi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,5 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+Hi,
+
+I have a question.
+We've faced issue when connecting SPI Flash memory "SST25VF016B" via
+SPI_TOPCLIFF_PCH, the Flash is not detected.
+The cause is that jedec_probe fails in m25p80.
+
+
+m25p80.c
+static const struct spi_device_id *__devinit jedec_probe(struct
+spi_device *spi)
+{
+
+...
+
+	jedec = id[0];
+	jedec = jedec << 8;
+	jedec |= id[1];
+	jedec = jedec << 8;
+	jedec |= id[2];
+
+...
+
+After the above calculation,
+jedec becomes "bf25".
+
+I think jedec must be "bf2541", right ?
+Let me know what's wrong?
+
+Thanks in advance.
+-- 
+tomoya
+OKI SEMICONDUCTOR CO., LTD.
