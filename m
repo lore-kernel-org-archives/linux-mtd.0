@@ -1,29 +1,22 @@
-Received: from imr-da06.mx.aol.com ([205.188.169.203])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrWe1-0000ec-9Y
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 14:54:02 +0000
-To: info@stamps.com, info@thelionsdenatlanta.com, info@thugmart.com,
-	info@wetinatl.com, invitations@glifeusa.ning.com,
-	invitations@thesecretgsociety.ning.com, invite@eventbrite.com,
-	irenebarrington@gmail.com, jeffandvickie@charter.net,
-	jenriqueherrera@gmail.com, jesseg653@comcast.net,
-	joehawkins777@yahoo.com, jonathan.weppler@hope.edu,
-	jonrswartout@hotmail.com, joshuaforkin@gmail.com,
-	jsharp134@comcast.net, Kamanaloa@yahoo.com, katanya.ingram@gmail.com,
-	klil2003@yahoo.com, kurtzdemers61760@yahoo.co.uk,
-	LIL_SHORTY21_2000@YAHOO.COM, LIL_SHORTY212000@YAHOO.COM,
-	linux-mtd@lists.infradead.org, mahoganytre@msn.com,
-	mahoganytre@tmail.com, mail@glifeusa.ning.com, mail@sizzlemiami.com,
-	mail@themensroomnj.ning.com, membership@m4m-usa.com,
-	messages@adam4adam.com, miamibeachbrutha@miamibeachbruthaz.com,
-	miashotbox00@yahoo.com, model100@hotmail.com, mrblackrain5@yahoo.com
+Received: from g6t0185.atlanta.hp.com ([15.193.32.62])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QrXEo-0001SM-GY
+	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 15:32:03 +0000
+Received: from G2W1953G.americas.hpqcorp.net (g2w1953g.austin.hp.com
+	[16.238.8.185]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by g6t0185.atlanta.hp.com (Postfix) with ESMTPS id 717E4240A2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 11 Aug 2011 15:31:59 +0000 (UTC)
+From: "Fryar, Jeff" <jeff.fryar@hp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 11 Aug 2011 16:30:33 +0100
+Subject: [BUG] mtd-utils: nandwrite: invalid erase after page write failure
+Message-ID: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6C6EB71A@GVW0547EXC.americas.hpqcorp.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: 
 MIME-Version: 1.0
-From: junedigga@aol.com
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Message-Id: <8CE264D8F79C1E9-2070-230FB@webmail-m057.sysops.aol.com>
-Date: Thu, 11 Aug 2011 10:53:26 -0400 (EDT)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,8 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-honestly I was sure I would be in debt forever nobody was much help to=20
-me there is nothing else like this out there.
-http://217.174.229.206/AnthonyEdwards17.html now I am recognized all=20
-over the place just thought id share the wealth
-Dont say I never help anyone!
+mtd-utils nandwrite.c: After a page write failure, the calculation
+of the block number to erase is incorrect.  The erase block size is=20
+being passed as the erase block number in the call to mtd_erase().
+
+Jeff Fryar <jeff.fryar@hp.com>
+
+
+--- mtd-utils-f1fe865/nandwrite.c.ORIG  2011-07-20 00:28:52.000000000 -0500
++++ mtd-utils-f1fe865/nandwrite.c       2011-08-11 09:19:12.000000000 -0500
+@@ -659,7 +659,7 @@
+                        fprintf(stderr, "Erasing failed write from %#08llx =
+to %#08llx\n",
+                                blockstart, blockstart + ebsize_aligned - 1=
+);
+                        for (i =3D blockstart; i < blockstart + ebsize_alig=
+ned; i +=3D mtd.eb_size) {
+-                               if (mtd_erase(mtd_desc, &mtd, fd, mtd.eb_si=
+ze)) {
++                               if (mtd_erase(mtd_desc, &mtd, fd, (i/mtd.eb=
+_size))) {
+                                        int errno_tmp =3D errno;
+                                        sys_errmsg("%s: MTD Erase failure",=
+ mtd_device);
+                                        if (errno_tmp !=3D EIO) {
