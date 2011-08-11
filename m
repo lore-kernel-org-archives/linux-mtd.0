@@ -1,21 +1,19 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrXMR-0001lu-CO
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 15:39:55 +0000
-Received: by bke17 with SMTP id 17so1257229bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Aug 2011 08:39:53 -0700 (PDT)
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QrXzI-0002F9-Vw
+	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 16:20:05 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
+Date: Thu, 11 Aug 2011 09:19:40 -0700
+Message-ID: <1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
+References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6C6EB71A@GVW0547EXC.americas.hpqcorp.net>
-References: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6C6EB71A@GVW0547EXC.americas.hpqcorp.net>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 11 Aug 2011 11:39:33 -0400
-Message-ID: <CAMjpGUc4SMSvU3mHjeZ6oq=2K8tvuYVcEOjpE9vPfYnL7DZByA@mail.gmail.com>
-Subject: Re: [BUG] mtd-utils: nandwrite: invalid erase after page write failure
-To: "Fryar, Jeff" <jeff.fryar@hp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: brian.foster@maxim-ic.com, Brian Norris <computersforpeace@gmail.com>,
+	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +23,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 11, 2011 at 11:30, Fryar, Jeff wrote:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (mtd_erase(mtd_desc, &mtd, fd, (i/mtd=
-.eb_size))) {
+The help message for mtdinfo is unnecessarily disjointed. It is split
+into three strings which reuse the PROGRAM_NAME string inefficiently and
+don't have a consistent style.
 
-we dont need to conserve whitespace.  please use spaces around "/" operator=
-s.
--mike
+This fixup should provide a cleaner look with aligned columns and
+easier-to-read source code.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+v3: indented help message properly
+
+ ubi-utils/mtdinfo.c |   52 ++++++++++++++++++++++++++------------------------
+ 1 files changed, 27 insertions(+), 25 deletions(-)
+
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index 1c3a46f..2d47bd7 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -50,28 +50,32 @@ static struct args args = {
+ 	.node = NULL,
+ };
+ 
+-static const char doc[] = PROGRAM_NAME " version " VERSION
+-			 " - a tool to print MTD information.";
+-
+-static const char optionsstr[] =
+-"-u, --ubi-info                  print what would UBI layout be if it was put\n"
+-"                                on this MTD device\n"
+-"-M, --map                       print eraseblock map\n"
+-"-a, --all                       print information about all MTD devices\n"
+-"                                Note: `--all' may give less info per device\n"
+-"                                than, e.g., `mtdinfo /dev/mtdX'\n"
+-"-h, --help                      print help message\n"
+-"-V, --version                   print program version";
+-
+-static const char usage[] =
+-"Usage: " PROGRAM_NAME " <MTD node file path> [--map | -M] [--ubi-info | -u]\n"
+-"       " PROGRAM_NAME " --all [--ubi-info | -u]\n"
+-"       " PROGRAM_NAME " [--help | --version]\n"
+-"\n"
+-"Example 1: " PROGRAM_NAME " /dev/mtd0       print information MTD device /dev/mtd0\n"
+-"Example 2: " PROGRAM_NAME " /dev/mtd0 -u    print information MTD device /dev/mtd0\n"
+-"\t\t\t\t   and include UBI layout information\n"
+-"Example 3: " PROGRAM_NAME " -a              print information about all MTD devices\n";
++static void display_help(void)
++{
++	printf(
++		"%1$s version %2$s - a tool to print MTD information.\n"
++		"\n"
++		"Usage: %1$s <MTD node file path> [--map | -M] [--ubi-info | -u]\n"
++		"       %1$s --all [--ubi-info | -u]\n"
++		"       %1$s [--help | --version]\n"
++		"\n"
++		"Options:\n"
++		"-u, --ubi-info                  print what would UBI layout be if it was put\n"
++		"                                on this MTD device\n"
++		"-M, --map                       print eraseblock map\n"
++		"-a, --all                       print information about all MTD devices\n"
++		"                                Note: `--all' may give less info per device\n"
++		"                                than, e.g., `mtdinfo /dev/mtdX'\n"
++		"-h, --help                      print help message\n"
++		"-V, --version                   print program version\n"
++		"\n"
++		"Examples:\n"
++		"  %1$s /dev/mtd0             print information MTD device /dev/mtd0\n"
++		"  %1$s /dev/mtd0 -u          print information MTD device /dev/mtd0\n"
++		"\t\t\t\tand include UBI layout information\n"
++		"  %1$s -a                    print information about all MTD devices\n",
++		PROGRAM_NAME, VERSION);
++}
+ 
+ static const struct option long_options[] = {
+ 	{ .name = "ubi-info",  .has_arg = 0, .flag = NULL, .val = 'u' },
+@@ -105,9 +109,7 @@ static int parse_opt(int argc, char * const argv[])
+ 			break;
+ 
+ 		case 'h':
+-			printf("%s\n\n", doc);
+-			printf("%s\n\n", usage);
+-			printf("%s\n", optionsstr);
++			display_help();
+ 			exit(EXIT_SUCCESS);
+ 
+ 		case 'V':
+-- 
+1.7.0.4
