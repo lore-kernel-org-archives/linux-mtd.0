@@ -1,18 +1,25 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qrtdg-0003Ky-1T
-	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 15:27:12 +0000
-Message-ID: <4E454645.7060802@parrot.com>
-Date: Fri, 12 Aug 2011 17:27:01 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qrujw-0004JG-W4
+	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 16:37:45 +0000
+Received: by wwf10 with SMTP id 10so2226065wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 12 Aug 2011 09:37:40 -0700 (PDT)
 MIME-Version: 1.0
-To: Nataraj S Narayan <nataraj@vaaraahi.com>
-Subject: Re: Ubifs issues on Samsung Nand versus Micron
-References: <4E458415.7040005@vaaraahi.com>
-In-Reply-To: <4E458415.7040005@vaaraahi.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <201108120906.20453.brian.foster@maxim-ic.com>
+References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
+	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
+	<201108120906.20453.brian.foster@maxim-ic.com>
+Date: Fri, 12 Aug 2011 09:37:40 -0700
+Message-ID: <CAN8TOE8QUdskvjJGStE9O3Tj2_aNBBthEb-EFV8DpYHK20YrWw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nataraj S Narayan a écrit :
-> Hi
-> 
-> Using Samsung Manufacturer ID: 0xec, Chip ID: 0xda (Samsung NAND 256MiB
-> 3,3V 8-bit), on at91sam9263 board, with Arm-linux.
-> 
-> Getting the following errors intermittently:-
-> 
-> 
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 129024 bytes
-> from PEB 517:2048, read 129024 bytes
-> usb 1-1: new full speed USB device number 2 using at91_ohci
-> UBIFS: recovery needed
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 106496 bytes
-> from PEB 782:2048, read 106496 bytes
-> UBIFS error (pid 1): ubifs_recover_leb: LEB 225 scanning failed
-> VFS: Cannot open root device "ubi0:root" or unknown-block(0,0)
-> ~
-> 
-> 
-> Same issue when on kernel 2.6.30 and also on "commit
-> d6c9836c1114242aa89ea228bb1c43c17752b76c" of  ubifs-2.6.
-> 
-> I don't have the said problem with Mircon Nand.
-> 
-> Please help to find a solution to this issue. Is it the nand driver
-> which is the culprit?
-> 
-Are you sure your timming are correct ?
+On Fri, Aug 12, 2011 at 12:06 AM, Brian Foster
+<brian.foster@maxim-ic.com> wrote:
+>> + =A0 =A0 =A0 =A0 =A0 =A0 "Examples:\n"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 " =A0%1$s /dev/mtd0 =A0 =A0 =A0 =A0 =A0 =A0 pr=
+int information MTD device /dev/mtd0\n"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 " =A0%1$s /dev/mtd0 -u =A0 =A0 =A0 =A0 =A0prin=
+t information MTD device /dev/mtd0\n"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 "\t\t\t\tand include UBI layout information\n"
+>
+> =A0Any reason this line, and only this line,
+> =A0uses tabs (\t) for formatting whilst every
+> =A0other line uses spaces? =A0(FWIW, I prefer
+> =A0spaces, but more importantly think there
+> =A0should be some consistency.)
 
-Try to see if you reproduce the problem with slower timming.
+Yes, sort of. It's used to be because we "don't know" the length of
+the "%1$s" strings (i.e., the PROGRAM_NAME macro, which here is just
+"mtdinfo"). I suppose we could either hardcode the spaces in or try to
+do some sort of "ARRAY_SIZE" trickery (as found in the Linux kernel)
+to find the length of PROGRAM_NAME. I'll see how the second option
+works (for a potential v4 patch?) unless someone objects.
 
+> =A0Yes, this is pedantic trivia! =A0;-)
 
-Matthieu
+Still a valid question...in fact, this was something I had meant to
+reconsider before sending this patch, but I forgot :)
+
+Brian
