@@ -1,22 +1,12 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrYrO-0003BX-Gg
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2011 17:15:59 +0000
-Received: by bke17 with SMTP id 17so1331821bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Aug 2011 10:15:55 -0700 (PDT)
+From: Jason Liu <jason.hui@linaro.org>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] mtd: mxc_nand: Add mx53 NFC driver support
+Date: Fri, 12 Aug 2011 15:07:59 +0800
+Message-ID: <1313132879-10531-1-git-send-email-jason.hui@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 11 Aug 2011 13:15:35 -0400
-Message-ID: <CAMjpGUcoMN4cYwurBgcPYWy7vUZHGRaO-n6dFkj8cCERhZMhUw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: brian.foster@maxim-ic.com, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, patches@linaro.org, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,5 +16,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+This has already been tested with Samsung NAND: K9LAG08U0M
+on MX53EVK board, ubi/ubifs has already been tested OK too.
+
+Signed-off-by: Jason Liu <jason.hui@linaro.org>
+---
+ drivers/mtd/nand/mxc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 90df34c..a3f1b50 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -41,7 +41,7 @@
+ 
+ #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
+ #define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
+-#define nfc_is_v3_2()		cpu_is_mx51()
++#define nfc_is_v3_2()		(cpu_is_mx51() || cpu_is_mx53())
+ #define nfc_is_v3()		nfc_is_v3_2()
+ 
+ /* Addresses for NFC registers */
+-- 
+1.7.4.1
