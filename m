@@ -1,21 +1,25 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrlpG-00024U-DF
-	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 07:06:39 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
-Date: Fri, 12 Aug 2011 09:06:20 +0200
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
+Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qro7n-0005cb-Qy
+	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 09:33:56 +0000
+Date: Fri, 12 Aug 2011 11:34:29 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Subject: Re: logfs unmount bug
+Message-ID: <20110812093429.GS26160@logfs.org>
+References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
+	<20110805160325.GM26160@logfs.org>
+	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
+	<20110808083107.GN26160@logfs.org>
+	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+	<20110809145812.GR26160@logfs.org>
+	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <201108120906.20453.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +29,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 11 August 2011 18:19:40 Brian Norris wrote:
-> The help message for mtdinfo is unnecessarily disjointed. It is split
-> into three strings which reuse the PROGRAM_NAME string inefficiently and
-> don't have a consistent style.
+On Wed, 10 August 2011 16:36:26 +0530, srimugunthan dhandapani wrote:
 > 
-> This fixup should provide a cleaner look with aligned columns and
-> easier-to-read source code.
+> > Ok, since I cannot reproduce this at all, can you try the patch below?
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> v3: indented help message properly
-> 
->  ubi-utils/mtdinfo.c |   52 ++++++++++++++++++++++++++------------------------
->  1 files changed, 27 insertions(+), 25 deletions(-)
-> 
-> diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
->[ ... ]
-> +static void display_help(void)
-> +{
-> +	printf(
-> +		"%1$s version %2$s - a tool to print MTD information.\n"
-> +		"\n"
-> +		"Usage: %1$s <MTD node file path> [--map | -M] [--ubi-info | -u]\n"
-> +		"       %1$s --all [--ubi-info | -u]\n"
-> +		"       %1$s [--help | --version]\n"
-> +		"\n"
-> +		"Options:\n"
-> +		"-u, --ubi-info                  print what would UBI layout be if it was put\n"
-> +		"                                on this MTD device\n"
-> +		"-M, --map                       print eraseblock map\n"
-> +		"-a, --all                       print information about all MTD devices\n"
-> +		"                                Note: `--all' may give less info per device\n"
-> +		"                                than, e.g., `mtdinfo /dev/mtdX'\n"
-> +		"-h, --help                      print help message\n"
-> +		"-V, --version                   print program version\n"
-> +		"\n"
-> +		"Examples:\n"
-> +		"  %1$s /dev/mtd0             print information MTD device /dev/mtd0\n"
-> +		"  %1$s /dev/mtd0 -u          print information MTD device /dev/mtd0\n"
-> +		"\t\t\t\tand include UBI layout information\n"
+> I was using a week-old kernel from git. That may be the problem,
+> Can you tell the kernel version that you are using, in which bonnie test passes.
+> I am right now trying on kernel 3.0 and i will test and let you know
+> the results.
 
- Any reason this line, and only this line,
- uses tabs (\t) for formatting whilst every
- other line uses spaces?  (FWIW, I prefer
- spaces, but more importantly think there
- should be some consistency.)
+I wouldn't suspect any code changes to cause the different behaviour.
+Kernel config and test machine (memsize, etc.) would be more likely
+candidates.  So if you could try the patch and send me the output,
+that would be useful.
 
- Yes, this is pedantic trivia!  ;-)
-cheers!
-	-blf-
+The problem is that two mutually exclusive reasons exist, why
+page->private is set.  Either the page is an indirect block and
+contains an alias (block->alias_map some bits set) or the page is a
+regular data page that is dirty and hasn't been written back yet
+(block->reserved_bytes > 0).  There should never be a case when both
+happen at the same time.  So what you are seeing is only the symptom
+of a bug happening some time before.
+
+Best candidate I have right now would be fixed by the patch below.
+But since I cannot reproduce the bug, that patch is just guesswork.
+
+Jörn
+
 -- 
-Brian FOSTER
-Principal MTS, Software
-Maxim Integrated Products (Microcontroller BU), formerly Innova Card
-Web    : http://www.maxim-ic.com/
+It is the mark of an educated mind to be able to entertain a thought
+without accepting it.
+-- Aristotle
+
+
+diff --git a/fs/logfs/readwrite.c b/fs/logfs/readwrite.c
+index 6c23507..3b12b4f 100644
+--- a/fs/logfs/readwrite.c
++++ b/fs/logfs/readwrite.c
+@@ -1538,6 +1538,7 @@ static int grow_inode(struct inode *inode, u64 bix, level_t level)
+ static int __logfs_write_buf(struct inode *inode, struct page *page, long flags)
+ {
+ 	struct logfs_super *super = logfs_super(inode->i_sb);
++	struct logfs_block *block = logfs_block(page);
+ 	pgoff_t index = page->index;
+ 	u64 bix;
+ 	level_t level;
+@@ -1547,8 +1548,10 @@ static int __logfs_write_buf(struct inode *inode, struct page *page, long flags)
+ 	inode->i_ctime = inode->i_mtime = CURRENT_TIME;
+ 
+ 	logfs_unpack_index(index, &bix, &level);
+-	if (logfs_block(page) && logfs_block(page)->reserved_bytes)
+-		super->s_dirty_bytes -= logfs_block(page)->reserved_bytes;
++	if (block && block->reserved_bytes) {
++		super->s_dirty_bytes -= block->reserved_bytes;
++		block->reserved_bytes = 0;
++	}
+ 
+ 	if (index < I0_BLOCKS)
+ 		return logfs_write_direct(inode, page, flags);
