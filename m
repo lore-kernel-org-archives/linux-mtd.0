@@ -1,25 +1,21 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QrzL6-0007Hh-Ar
-	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 21:32:25 +0000
-Message-ID: <4E459BDB.7020000@broadcom.com>
-Date: Fri, 12 Aug 2011 14:32:11 -0700
-From: "Jiandong Zheng" <jdzheng@broadcom.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qs0tV-0001mC-VU
+	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 23:12:02 +0000
+Received: by wyh11 with SMTP id 11so3046000wyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 12 Aug 2011 16:11:59 -0700 (PDT)
 MIME-Version: 1.0
-To: "Julia Lawall" <julia@diku.dk>
-Subject: Re: [PATCH v3] drivers/mtd/nand/bcm_umi_nand.c: clean up error
-	handling code
-References: <1312964054-25266-1-git-send-email-julia@diku.dk>
-In-Reply-To: <1312964054-25266-1-git-send-email-julia@diku.dk>
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Scott Branden <sbranden@broadcom.com>
+In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6050753@ex-mb1.corp.adtran.com>
+References: <F9C551623D2CBB4C9488801D14F864C6050753@ex-mb1.corp.adtran.com>
+Date: Fri, 12 Aug 2011 16:11:58 -0700
+Message-ID: <CAN8TOE-mQghX8tHkWQJgYWfbWPWmv3d9OemSxD04xTYeFgjagA@mail.gmail.com>
+Subject: Re: MT29F1G08ABADAWP Supported?
+From: Brian Norris <computersforpeace@gmail.com>
+To: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,110 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/10/2011 1:14 AM, Julia Lawall wrote:
-> From: Julia Lawall<julia@diku.dk>
+On Fri, Aug 12, 2011 at 12:56 PM, ANDY KENNEDY <ANDY.KENNEDY@adtran.com> wr=
+ote:
+> We have chosen to update from a very old NAND flash to MT29F1G08ABADAWP.
 >
-> Convert error handling code to use gotos.  At the same time, this adds
-> calls to kfree and iounmap in a few cases where they were overlooked.
+> This is a replacement part with internal ECC. =A0I remember someone askin=
+g
+> the list about whether this device is supported in the current kernel.
 >
-> Signed-off-by: Julia Lawall<julia@diku.dk>
->
-> ---
->   drivers/mtd/nand/bcm_umi_nand.c |   33 ++++++++++++++++++---------------
->   1 file changed, 18 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-> index a8ae898..46b58d6 100644
-> --- a/drivers/mtd/nand/bcm_umi_nand.c
-> +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> @@ -374,16 +374,18 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->
->   	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->
-> -	if (!r)
-> -		return -ENXIO;
-> +	if (!r) {
-> +		err = -ENXIO;
-> +		goto out_free;
-> +	}
->
->   	/* map physical address */
->   	bcm_umi_io_base = ioremap(r->start, resource_size(r));
->
->   	if (!bcm_umi_io_base) {
->   		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
-> -		kfree(board_mtd);
-> -		return -EIO;
-> +		err = -EIO;
-> +		goto out_free;
->   	}
->
->   	/* Get pointer to private data */
-> @@ -399,9 +401,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   	/* Initialize the NAND hardware.  */
->   	if (bcm_umi_nand_inithw()<  0) {
->   		printk(KERN_ERR "BCM UMI NAND chip could not be initialized\n");
-> -		iounmap(bcm_umi_io_base);
-> -		kfree(board_mtd);
-> -		return -EIO;
-> +		err = -EIO;
-> +		goto out_unmap;
->   	}
->
->   	/* Set address of NAND IO lines */
-> @@ -434,7 +435,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   #if USE_DMA
->   	err = nand_dma_init();
->   	if (err != 0)
-> -		return err;
-> +		goto out_unmap;
->   #endif
->
->   	/* Figure out the size of the device that we have.
-> @@ -445,9 +446,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   	err = nand_scan_ident(board_mtd, 1, NULL);
->   	if (err) {
->   		printk(KERN_ERR "nand_scan failed: %d\n", err);
-> -		iounmap(bcm_umi_io_base);
-> -		kfree(board_mtd);
-> -		return err;
-> +		goto out_unmap;
->   	}
->
->   	/* Now that we know the nand size, we can setup the ECC layout */
-> @@ -466,7 +465,8 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   		{
->   			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
->   					 board_mtd->writesize);
-> -			return -EINVAL;
-> +			err = -EINVAL;
-> +			goto out_unmap;
->   		}
->   	}
->
-> @@ -483,9 +483,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   	err = nand_scan_tail(board_mtd);
->   	if (err) {
->   		printk(KERN_ERR "nand_scan failed: %d\n", err);
-> -		iounmap(bcm_umi_io_base);
-> -		kfree(board_mtd);
-> -		return err;
-> +		goto out_unmap;
->   	}
->
->   	/* Register the partitions */
-> @@ -494,6 +492,11 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->
->   	/* Return happy */
->   	return 0;
-> +out_unmap:
-> +	iounmap(bcm_umi_io_base);
-> +out_free:
-> +	kfree(board_mtd);
-> +	return err;
->   }
->
->   static int bcm_umi_nand_remove(struct platform_device *pdev)
->
->
-Acked-by: Jiandong Zheng <jdzheng@broadcom.com>
+> Could someone help me refresh my memory and let me know whether this
+> device should work with the current mtd drivers?
+
+According to the data sheet, your driver would need to implement the
+following for its read commands:
+
+"When internal ECC is enabled, the READ STATUS (70h) command is
+required after the
+completion of the data transfer (tR_ECC) to determine whether an
+uncorrectable read
+error occured. (tR_ECC is the data transferred with internal ECC enabled.)"
+
+I doubt that most (any?) of the in-kernel drivers do this currently.
+But just in case, which driver are you using?
+
+Also, it looks like this chip can come with internal ECC enable or
+disabled, and this configuration is allegedly reflected in its chip ID
+string. Don't know if this is configurable, but if so, then you could
+disable internal ECC and use it with the current drivers.
+
+For reference, you can check out the NAND support table here:
+http://www.linux-mtd.infradead.org/nand-data/nanddata.html
+
+Some of the info is, admittedly, difficult to read for anybody but the
+author :) Perhaps I'll fix it up some and include information about
+internal ECC (since I overlooked that feature).
+
+BTW, I couldn't find whatever previous request you are referring to. I
+don't see MT29F1G08ABADAWP mentioned in the MTD archives.
+
+Brian
