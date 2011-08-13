@@ -1,21 +1,26 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qs0tV-0001mC-VU
-	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2011 23:12:02 +0000
-Received: by wyh11 with SMTP id 11so3046000wyh.36
+	id 1QsIft-0003ks-CL
+	for linux-mtd@lists.infradead.org; Sat, 13 Aug 2011 18:11:10 +0000
+Received: by bke17 with SMTP id 17so2732061bke.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Aug 2011 16:11:59 -0700 (PDT)
+	Sat, 13 Aug 2011 11:11:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <F9C551623D2CBB4C9488801D14F864C6050753@ex-mb1.corp.adtran.com>
-References: <F9C551623D2CBB4C9488801D14F864C6050753@ex-mb1.corp.adtran.com>
-Date: Fri, 12 Aug 2011 16:11:58 -0700
-Message-ID: <CAN8TOE-mQghX8tHkWQJgYWfbWPWmv3d9OemSxD04xTYeFgjagA@mail.gmail.com>
-Subject: Re: MT29F1G08ABADAWP Supported?
-From: Brian Norris <computersforpeace@gmail.com>
-To: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <CAN8TOE8QUdskvjJGStE9O3Tj2_aNBBthEb-EFV8DpYHK20YrWw@mail.gmail.com>
+References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
+	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
+	<201108120906.20453.brian.foster@maxim-ic.com>
+	<CAN8TOE8QUdskvjJGStE9O3Tj2_aNBBthEb-EFV8DpYHK20YrWw@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Sat, 13 Aug 2011 14:10:46 -0400
+Message-ID: <CAMjpGUdr2+_3U4TbN9L2MLWarzya3qHkTghqvbY8Yp+JPQN1Dg@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Brian Foster <brian.foster@maxim-ic.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +30,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 12, 2011 at 12:56 PM, ANDY KENNEDY <ANDY.KENNEDY@adtran.com> wr=
-ote:
-> We have chosen to update from a very old NAND flash to MT29F1G08ABADAWP.
+On Fri, Aug 12, 2011 at 12:37, Brian Norris wrote:
+> On Fri, Aug 12, 2011 at 12:06 AM, Brian Foster wrote:
+>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "Examples:\n"
+>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 " =C2=A0%1$s /dev/mtd0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 print information MTD device /dev/mt=
+d0\n"
+>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 " =C2=A0%1$s /dev/mtd0 -u =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0print information MTD device /dev/mtd0\n"
+>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "\t\t\t\tand include UBI la=
+yout information\n"
+>>
+>> =C2=A0Any reason this line, and only this line,
+>> =C2=A0uses tabs (\t) for formatting whilst every
+>> =C2=A0other line uses spaces? =C2=A0(FWIW, I prefer
+>> =C2=A0spaces, but more importantly think there
+>> =C2=A0should be some consistency.)
 >
-> This is a replacement part with internal ECC. =A0I remember someone askin=
-g
-> the list about whether this device is supported in the current kernel.
->
-> Could someone help me refresh my memory and let me know whether this
-> device should work with the current mtd drivers?
+> Yes, sort of. It's used to be because we "don't know" the length of
+> the "%1$s" strings (i.e., the PROGRAM_NAME macro, which here is just
+> "mtdinfo"). I suppose we could either hardcode the spaces in or try to
+> do some sort of "ARRAY_SIZE" trickery (as found in the Linux kernel)
+> to find the length of PROGRAM_NAME. I'll see how the second option
+> works (for a potential v4 patch?) unless someone objects.
 
-According to the data sheet, your driver would need to implement the
-following for its read commands:
+you could probably use %*s and then pass in "" as well as <some max
+spacing number - strlen(PROGRAM_NAME)>.
 
-"When internal ECC is enabled, the READ STATUS (70h) command is
-required after the
-completion of the data transfer (tR_ECC) to determine whether an
-uncorrectable read
-error occured. (tR_ECC is the data transferred with internal ECC enabled.)"
-
-I doubt that most (any?) of the in-kernel drivers do this currently.
-But just in case, which driver are you using?
-
-Also, it looks like this chip can come with internal ECC enable or
-disabled, and this configuration is allegedly reflected in its chip ID
-string. Don't know if this is configurable, but if so, then you could
-disable internal ECC and use it with the current drivers.
-
-For reference, you can check out the NAND support table here:
-http://www.linux-mtd.infradead.org/nand-data/nanddata.html
-
-Some of the info is, admittedly, difficult to read for anybody but the
-author :) Perhaps I'll fix it up some and include information about
-internal ECC (since I overlooked that feature).
-
-BTW, I couldn't find whatever previous request you are referring to. I
-don't see MT29F1G08ABADAWP mentioned in the MTD archives.
-
-Brian
+printf("%*s\n", 80 - strlen(PROGRAM_NAME), "");
+-mike
