@@ -1,21 +1,25 @@
-Message-ID: <20040.59254.170515.492518@ipc1.ka-ro>
-Date: Mon, 15 Aug 2011 11:31:34 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Ivan Djelic <ivan.djelic@parrot.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QsvkX-0008BR-Cr
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 11:54:34 +0000
+Received: by yxk8 with SMTP id 8so3261080yxk.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Aug 2011 04:54:25 -0700 (PDT)
+Subject: Re: [PATCH] UBI: new module ubiblk: block layer on top of UBI
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Wagner <david.wagner@free-electrons.com>
+Date: Mon, 15 Aug 2011 14:56:02 +0300
+In-Reply-To: <1311683250-7921-1-git-send-email-david.wagner@free-electrons.com>
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+	<1311683250-7921-1-git-send-email-david.wagner@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1313409368.2583.14.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: GPMI-NAND Status?
-In-Reply-To: <20110815082935.GA18364@parrot.com>
-References: <20110805135133.GA26981@pengutronix.de>
-	<20110814081139.GD17063@parrot.com>
-	<20040.45443.810005.525431@ipc1.ka-ro>
-	<20110815082935.GA18364@parrot.com>
-Cc: Koen Beel <koen.beel.barco@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
-	Huang Shijie <b32955@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org,
+	tim.bird@am.sony.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,81 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2011-07-26 at 14:27 +0200, David Wagner wrote:
+> Advantages of ubiblk over gluebi+mtdblock_ro:
+> 
+>  * Simpler architecture
+> 
+>  * The numbering of devices is much easier with ubiblk than with
+>    gluebi+mtdblock_ro. With gluebi+mtdblock_ro, you get one additional
+>    MTD device for each UBI volume, so the number of MTD devices grows
+>    quite a lot and is a bit difficult to understand. For example,
+>    mtdblock[0-4] might be your real MTD partitions, while mtdblock[5-9]
+>    might be your UBI volumes.
+>    It also means that if a new real MTD
+>    partition is added, the number of all the MTD devices exposing UBI
+>    volumes will be incremented by one, which is a bit
+>    confusing/annoying.
+>    As well, if you add an UBI volume, the mtdblock devices that are
+>    emulated on top of volumes that come after this new one will have
+>    their ID incremented.
+> 
+>  * The performance appears to be slightly better with ubiblk than
+>    gluebi+mtdblock_ro, according to our benchmarks (see
+>    http://elinux.org/Flash_Filesystem_Benchmarks_2.6.39)
 
-Ivan Djelic writes:
-> On Mon, Aug 15, 2011 at 06:41:23AM +0100, Lothar Waßmann wrote:
-> > Hi,
-> > 
-> > Ivan Djelic writes:
-> > > On Fri, Aug 05, 2011 at 02:51:33PM +0100, Wolfram Sang wrote:
-> > > (...)
-> > > > 
-> > > > problem overwriting all-0xff data in NAND [2]
-> > > > =============================================
-> > > > 
-> > > > Although it occured only when writing JFFS2 images so far, this is a generic
-> > > > issue and needs to be fixed, right?
-> > > > 
-> > > > 
-> > > (...)
-> > > > [2] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037104.html
-> > > 
-> > > As explained in the thread linked above, this issue should be fixed in your
-> > > flashing tool, _not_ in your driver. The nand device you are using does not
-> > > support programming pages multiple times in a row; pretending it does in the
-> > >
-> > It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
-> > problem is that the controller generates an ECC code that is non-FF
-> > for all-FF data, which JFFS2 cannot handle properly.
-> 
-> JFFS2 has nothing to do with it. JFFS2 does not assume it can program empty
-> pages and then reprogram them on a NAND flash device. You flashing method does.
-> 
-AFAICT JFFS2 checks the flash for areas that contain only FF and
-treats them like erased flash. At least it tries to overwrite such
-areas in flash without erasing it beforehand.
-I avoided the problem by creating JFFS2 images that are padded with
-oxff to page size only instead of eraseblock size.
+Hi, sounds good.
 
-> If your BCH controller allows it, you could XOR the computed ECC bytes with a
-> specific mask to make sure all-FF data have all-FF ecc. This is useful to allow
-> reading erased blocks with ecc correction enabled.
-> 
-> But even so, you cannot work around the fact that NAND devices are different
-> from NOR devices, in that they typically allow only a limited number of partial
-> page programming operations (4 in your K9F1G08U0B).
-> If you implemented the mask trick described above and used it to allow
-> multiple page programming, you still would not track the number of partial
-> program operations on a given page, and expose yourself to nasty bugs (when
-> exceeding the number of specified partial operations); i.e. it could work on
-> some devices for a few operations, but not reliably on all devices for any
-> number of empty page programmings.
-> 
-> So the only real possibility is to avoid programming (physically) a page when
-> its target contents are empty (all-FF); this is not implemented at the driver
-> level because:
-> - it is useless: none of the existing filesystems need this "feature"
-> - it would waste cpu cycles to check if target data is all-FF each time a page
-> is programmed
-> 
-> Therefore... it is simply a matter of avoiding empty page programming, which
-> only happens in your flasher. See also the flashing guidelines [1] as per Artem
-> suggestion.
-> 
-"Your flasher" is the standard mtd-utils mkfs.jffs2 to create an image
-file and the U-Boot commands 'nand erase/nand write' or
-the mtd-utils 'flash_eraseall/nandwrite' to write it to flash.
+However, what I think is wrong is to follow the MTD + mtdblock approach:
+mtdblock creates a block device for every MTD device - this is wasteful
+and confusing. Indeed, it is wasteful because we end up with potentially
+many unneeded block devices which are not used but consume resources.
+Confusing is because people get impression that /dev/mtdblock* are the
+right interfaces to access the MTD devices, which is wrong.
 
+You can say that gluebi is also doing something like that - yes, this is
+because gluebi is kind of temporary solution for software which cannot
+work with UBI. We wanted to keep it very simple.
 
-Lothar Waßmann
+My suggestion is to do something similar to UBI:
+
+* make ubiblk register its own character device (/dev/ubiblk_ctl,
+similar to /dev/ubi_ctl).
+* add a couple of ioclts to create / delete ubiblk devices (similar to
+UBI attach/detach)
+* add a couple of user-space tools to mtd-utils to create / delete
+ubiblk devices (similar to ubiattach / ubidetach).
+
+The other reason why I think this more complex approach is justified is
+that when / if you decide to add R/W support to ubiblk, you'd have
+troubles with the current approach (e.g., what if the UBI volume you are
+looking at is not ubiblk-formatted?)
+
+I think it should be rather easy to implement /dev/ubiblk_ctl.
+
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Best Regards,
+Artem Bityutskiy
