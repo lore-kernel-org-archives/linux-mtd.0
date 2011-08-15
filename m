@@ -1,26 +1,25 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qt0wX-0005qm-HM
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 17:27:18 +0000
-Received: by wwf10 with SMTP id 10so3678524wwf.18
+	id 1Qt19t-0006uy-Cy
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 17:41:06 +0000
+Received: by wwf10 with SMTP id 10so3686697wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Aug 2011 10:27:14 -0700 (PDT)
+	Mon, 15 Aug 2011 10:41:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMjpGUdr2+_3U4TbN9L2MLWarzya3qHkTghqvbY8Yp+JPQN1Dg@mail.gmail.com>
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
-	<201108120906.20453.brian.foster@maxim-ic.com>
-	<CAN8TOE8QUdskvjJGStE9O3Tj2_aNBBthEb-EFV8DpYHK20YrWw@mail.gmail.com>
-	<CAMjpGUdr2+_3U4TbN9L2MLWarzya3qHkTghqvbY8Yp+JPQN1Dg@mail.gmail.com>
-Date: Mon, 15 Aug 2011 10:27:13 -0700
-Message-ID: <CAN8TOE9EEtGQCHL3_2aspTstu12p5TxVB_t8ED6_UF+MUV4XXA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
+In-Reply-To: <1313422279.8691.9.camel@sauron>
+References: <CAN8TOE9mWEmS5YJqNrS9OrG=t+emeLcXNpKR1BiZ6VDJW7_c=A@mail.gmail.com>
+	<1312328310-18003-1-git-send-email-computersforpeace@gmail.com>
+	<1313422279.8691.9.camel@sauron>
+Date: Mon, 15 Aug 2011 10:41:03 -0700
+Message-ID: <CAN8TOE-di_=kg1CXsZ8iPKTXef4Z4Vfh7Z48+MJCPxz5j0aFNA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: cafe_nand: register master MTD at most once
 From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, dsd@laptop.org,
+	Jamie Iles <jamie@jamieiles.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 13, 2011 at 11:10 AM, Mike Frysinger <vapier.adi@gmail.com> wrote:
-> On Fri, Aug 12, 2011 at 12:37, Brian Norris wrote:
-...
->> "mtdinfo"). I suppose we could either hardcode the spaces in or try to
->> do some sort of "ARRAY_SIZE" trickery (as found in the Linux kernel)
->
-> you could probably use %*s and then pass in "" as well as <some max
-> spacing number - strlen(PROGRAM_NAME)>.
->
-> printf("%*s\n", 80 - strlen(PROGRAM_NAME), "");
+On Mon, Aug 15, 2011 at 8:31 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Thanks for the fix! For some reason David missed the last merge window
+> and did not merge the MTD stuff. So we still have a possibility to fix
+> the original commit, so I folded this into commit 0f7451bea.
 
-Yes, that's what I meant...of course "strlen" is better than writing
-your own ARRAY_SIZE() when you already have the full C library :)
+OK, good.
 
-But I'm not sure about the subtraction part. Perhaps just use the
-length as extra indentation...I'll send a patch to make it clear!
+Speaking of the folding, missing merge window, rebasing, etc., I think
+you now have a commit in l2-mtd-2.6.git that refers to a hash that
+doesn't exist in your tree anymore. For fear of continuing the trend
+of having archived messages referring to holes in history, I will
+simply list the name (not hash) of the commit whose description
+probably should be edited:
+
+"mtd: plat-nand: Fixup kerneldoc for struct platform_nand_chip"
 
 Brian
-
-"Someday, you might find yourself accidentally using printk() instead
-of printf() in your user-space code. When that day comes, you can say
-you are a true kernel hacker."
-        --Robert Love, Linux Kernel Development
