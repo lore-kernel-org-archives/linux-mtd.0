@@ -1,22 +1,21 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qsyxf-0003oR-EF
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 15:20:20 +0000
-Received: by yic13 with SMTP id 13so3417955yic.36
+	id 1Qsz0V-0003rI-98
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 15:23:15 +0000
+Received: by gyh20 with SMTP id 20so3428220gyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Aug 2011 08:20:18 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: davinci: Add cpufreq support
+	Mon, 15 Aug 2011 08:23:13 -0700 (PDT)
+Subject: Re: mtdchar, parallel erase with ioctl
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Date: Mon, 15 Aug 2011 18:21:57 +0300
-In-Reply-To: <1311241163-4576-1-git-send-email-sudhakar.raj@ti.com>
-References: <1311241163-4576-1-git-send-email-sudhakar.raj@ti.com>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Date: Mon, 15 Aug 2011 18:24:52 +0300
+In-Reply-To: <CAMjNe_fD8R39w8FScVHLK2q26uuEgd9vuG0e+aLKF7cea-fkeA@mail.gmail.com>
+References: <CAMjNe_fD8R39w8FScVHLK2q26uuEgd9vuG0e+aLKF7cea-fkeA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1313421722.8691.5.camel@sauron>
+Message-ID: <1313421896.8691.7.camel@sauron>
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,19 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-07-21 at 15:09 +0530, Rajashekhara, Sudhakar wrote:
-> This patch adds cpufreq support for NAND driver. During cpufreq
-> transition, 'davinci_aemif_setup_timing()' function will be called
-> to reconfigure that AEMIF timings for the new frequency.
-> 
-> Tested on TI DA850/OMAP-L138 EVM.
-> 
-> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
-> ---
->  drivers/mtd/nand/davinci_nand.c |   54 +++++++++++++++++++++++++++++++++++++++
->  1 files changed, 54 insertions(+), 0 deletions(-)
+On Tue, 2011-08-02 at 15:00 +0530, srimugunthan dhandapani wrote:
+> Hi all,
+> The mtdchar layer when it does erase using ioctl, it takes  a lock
+> mtd_mutex.So the erases can only be done sequentially one after
+> another. The hardware that i am working on has multiple banks and
+> supports parallel erase operations. I have modified mtd_unlocked_ioctl
+> function in mtdchar.c, to not take lock for erase commands(as shown
+> below). With that i am able to do parallel erases. Is this patch an
+> acceptable solution or what is the correct way to do this?
 
-Please, include re-send the patch with linux-omap in CC.
+No, mtd_mutex is needed e.g., because it makes sure that no-one removes
+the MTD device meanwhile. I do not see why exactly mtd_mutex prevents
+parallel erase.
 
 -- 
 Best Regards,
