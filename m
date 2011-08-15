@@ -1,18 +1,18 @@
-Date: Mon, 15 Aug 2011 14:54:42 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Lothar =?utf-8?Q?Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Message-ID: <20041.8446.744780.186928@ipc1.ka-ro>
+Date: Mon, 15 Aug 2011 15:37:02 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Subject: Re: GPMI-NAND Status?
-Message-ID: <20110815125442.GA18661@parrot.com>
+In-Reply-To: <20110815125442.GA18661@parrot.com>
 References: <20110805135133.GA26981@pengutronix.de>
 	<20110814081139.GD17063@parrot.com>
 	<20040.45443.810005.525431@ipc1.ka-ro>
 	<20110815082935.GA18364@parrot.com>
 	<20040.59254.170515.492518@ipc1.ka-ro>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20040.59254.170515.492518@ipc1.ka-ro>
+	<20110815125442.GA18661@parrot.com>
 Cc: Koen Beel <koen.beel.barco@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
 	Huang Shijie <b32955@freescale.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -27,37 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 15, 2011 at 10:31:34AM +0100, Lothar Waßmann wrote:
-> > > It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
-> > > problem is that the controller generates an ECC code that is non-FF
-> > > for all-FF data, which JFFS2 cannot handle properly.
-> > 
-> > JFFS2 has nothing to do with it. JFFS2 does not assume it can program empty
-> > pages and then reprogram them on a NAND flash device. You flashing method does.
-> > 
-> AFAICT JFFS2 checks the flash for areas that contain only FF and
-> treats them like erased flash. At least it tries to overwrite such
-> areas in flash without erasing it beforehand.
+Hi,
 
-Hmmm, again, JFFS2 simply "writes" to an erased block. You say "it tries to
-overwrite", but that's only because you programmed an empty page in the first
-place! And it cannot "erase such areas beforehand" (think of a partially
-programmed block with tailing empty pages).
+Ivan Djelic writes:
+> On Mon, Aug 15, 2011 at 10:31:34AM +0100, Lothar Waßmann wrote:
+> > > > It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
+> > > > problem is that the controller generates an ECC code that is non-FF
+> > > > for all-FF data, which JFFS2 cannot handle properly.
+> > > 
+> > > JFFS2 has nothing to do with it. JFFS2 does not assume it can program empty
+> > > pages and then reprogram them on a NAND flash device. You flashing method does.
+> > > 
+> > AFAICT JFFS2 checks the flash for areas that contain only FF and
+> > treats them like erased flash. At least it tries to overwrite such
+> > areas in flash without erasing it beforehand.
+> 
+> Hmmm, again, JFFS2 simply "writes" to an erased block. You say "it tries to
+> overwrite", but that's only because you programmed an empty page in the first
+>
+Which will happen most of the time (unless the image file size is near
+a multiple of the eraseblock size), if you create an jffs2 image with
+mkfs.jffs2 and the '-p' option.
 
-> I avoided the problem by creating JFFS2 images that are padded with
-> oxff to page size only instead of eraseblock size.
+Unfortunately the data written by U-Boot must be page aligned and
+mkfs.jffs2 cannot generate images that fulfill that constraint (unless
+you know the exact image file size beforehand and specify the
+rounded-up file size with the '-p' option).
 
-Good.
+> place! And it cannot "erase such areas beforehand" (think of a partially
+> programmed block with tailing empty pages).
+> 
+I know, that it cannot simply erase such blocks.
 
-> > Therefore... it is simply a matter of avoiding empty page programming, which
-> > only happens in your flasher. See also the flashing guidelines [1] as per Artem
-> > suggestion.
-> > 
-> "Your flasher" is the standard mtd-utils mkfs.jffs2 to create an image
-> file and the U-Boot commands 'nand erase/nand write' or
-> the mtd-utils 'flash_eraseall/nandwrite' to write it to flash.
+> > > Therefore... it is simply a matter of avoiding empty page programming, which
+> > > only happens in your flasher. See also the flashing guidelines [1] as per Artem
+> > > suggestion.
+> > > 
+> > "Your flasher" is the standard mtd-utils mkfs.jffs2 to create an image
+> > file and the U-Boot commands 'nand erase/nand write' or
+> > the mtd-utils 'flash_eraseall/nandwrite' to write it to flash.
+> 
+> OK, maybe you could submit a patch to fix this issue then ?
+> Thanks,
+> 
+I have no idea how and where it should be fixed.
+- at driver level, creating an all-FF ECC for all-FF data?
+- in the bootloader and mtd-utils preventing stretches of all-FF data
+  to be written?
+- in mkfs.jffs2, enabling it to generate images that are padded to
+  page size instead of eraseblock size?
 
-OK, maybe you could submit a patch to fix this issue then ?
-Thanks,
 
-Ivan
+Lothar Waßmann
+-- 
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
