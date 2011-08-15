@@ -1,22 +1,22 @@
-Received: from db3ehsobe004.messaging.microsoft.com ([213.199.154.142]
-	helo=DB3EHSOBE004.bigfish.com)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qszl0-0004qd-3I
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 16:11:18 +0000
-Message-ID: <4E494520.7050509@freescale.com>
-Date: Mon, 15 Aug 2011 11:11:12 -0500
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
-References: <1310446122-18050-1-git-send-email-b35362@freescale.com>
-	<1313423954.8691.17.camel@sauron>
-In-Reply-To: <1313423954.8691.17.camel@sauron>
+Subject: Re: GPMI-NAND Status?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Date: Mon, 15 Aug 2011 19:18:36 +0300
+In-Reply-To: <20040.45443.810005.525431@ipc1.ka-ro>
+References: <20110805135133.GA26981@pengutronix.de>
+	<20110814081139.GD17063@parrot.com>
+	<20040.45443.810005.525431@ipc1.ka-ro>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, Li Yang <leoli@freescale.com>, b35362@freescale.com,
-	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Content-Transfer-Encoding: 8bit
+Message-ID: <1313425121.8691.31.camel@sauron>
+Mime-Version: 1.0
+Cc: Koen Beel <koen.beel.barco@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+	Huang Shijie <b32955@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>, Shawn Guo <shawn.guo@linaro.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/15/2011 10:59 AM, Artem Bityutskiy wrote:
-> On Tue, 2011-07-12 at 12:48 +0800, b35362@freescale.com wrote:
->> +	/*
->> +	 * Hack for supporting the flash chip whose writesize is
->> +	 * larger than 2K bytes.
->> +	 */
->> +	if (mtd->writesize > 2048) {
->> +		elbc_fcm_ctrl->subpage_shift = ffs(mtd->writesize >> 11) - 1;
->> +		elbc_fcm_ctrl->subpage_mask =
->> +			(1 << elbc_fcm_ctrl->subpage_shift) - 1;
->> +		/*
->> +		 * Rewrite mtd->writesize, mtd->oobsize, chip->page_shift
->> +		 * and chip->pagemask.
->> +		 */
->> +		mtd->writesize = 2048;
->> +		mtd->oobsize = 64;
->> +		chip->page_shift = ffs(mtd->writesize) - 1;
->> +		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
->> +	}
-> 
-> So basically if the flash has 4KiB NAND pages, you are considering it as
-> a flash with 2KiB NAND pages. But surely this will work only if the
-> underlying flash has NOP 2 at least. Or even, if you consider that JFFS2
-> and YAFFS want to write to OOB, you need NOP 4 (2 ECC writes and 2
-> writes from YAFFS/JFFS2) ? So this won't work for NOP1 flashes?
+On Mon, 2011-08-15 at 07:41 +0200, Lothar Waßmann wrote:
+> > As explained in the thread linked above, this issue should be fixed in your
+> > flashing tool, _not_ in your driver. The nand device you are using does not
+> > support programming pages multiple times in a row; pretending it does in the
+> >
+> It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
+> problem is that the controller generates an ECC code that is non-FF
+> for all-FF data, which JFFS2 cannot handle properly.
 
-Right.  The set of chips that work with this controller is still larger
-with this than without this.
+I believe that it does not matter for the kernel community that your
+specific device can survive multiple writes. I certainly does matter for
+you, so if you want a quick fix - just change your kernel, but I would
+not recommend to do this.
 
-It looks like NOP1 tends to be MLC -- you probably wouldn't want to use
-MLC with this controller anyway as it only does 1-bit ECC.
+We (the community) care about the _general_ case - in general, only one
+write is allowed, period. Once the JFFS2 or/and the flashing tool is
+fixed - the problem will go away.
 
-> Isn't it an ugly hack?
+Let me put it this way - hacking the driver will just hide the issue
+deeper - we'll have this issue popped up again a bit later and because
+of hacks like that [1] it will be more confusing. Let's avoid this.
 
-Less ugly than some other approaches that were considered. :-)
+Also, someone pointed in that thread that if I write data to NAND - I
+want my data to be ECC-protected. Please, explain why my data should be
+unprotected if it happened to be just 2KiB of 0xFFs covering whole NAND
+page?
 
-But yes, it's a hack (even says so in the comment).  The other option is
-"it doesn't work".
+Ivan provided much better explanation, showing that even with NOP 4
+flashes there may be problems (e.g., 1 write of all 0xFFs + 4 writes
+from the user).
 
--Scott
+[1] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037181.html
+
+-- 
+Best Regards,
+Artem Bityutskiy
