@@ -1,33 +1,19 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QsoWW-0003uv-Ac
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 04:11:37 +0000
-Received: by bke17 with SMTP id 17so3302734bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 14 Aug 2011 21:11:31 -0700 (PDT)
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 15 Aug 2011 07:11:27 +0300
-In-Reply-To: <CAMjpGUcjhuc6MaH0y2vGdM5ru00BJEmVeBwMUebkbfoxDNY28g@mail.gmail.com>
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
-	<201107260921.44512.brian.foster@maxim-ic.com>
-	<CAN8TOE847yECw3zeh42tf=6mC73O33Lr7Lzwpi0FrT-rB9ZYmg@mail.gmail.com>
-	<CAMjpGUc1a4NR5PWt3A5Y+jv6ihsWjUgH3iVUpNc0dsvkEzx6pw@mail.gmail.com>
-	<CAN8TOE--96V6ZruB8+VvAz2kqxqMq4nc4d5=6SGsUt0eu7og0g@mail.gmail.com>
-	<CAMjpGUcTPR=EVOtfju5_S4Zu_h-rmqnCii4R0j7yFX8JTD81uA@mail.gmail.com>
-	<CAN8TOE9p1v=mDUawRrnVAwDO4zz9LmXkqdNynLPCSCnBRMr9pw@mail.gmail.com>
-	<CAMjpGUcjhuc6MaH0y2vGdM5ru00BJEmVeBwMUebkbfoxDNY28g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1313381489.2200.19.camel@koala>
+Message-ID: <20040.45443.810005.525431@ipc1.ka-ro>
+Date: Mon, 15 Aug 2011 07:41:23 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Ivan Djelic <ivan.djelic@parrot.com>
 Mime-Version: 1.0
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: GPMI-NAND Status?
+In-Reply-To: <20110814081139.GD17063@parrot.com>
+References: <20110805135133.GA26981@pengutronix.de>
+	<20110814081139.GD17063@parrot.com>
+Cc: Koen Beel <koen.beel.barco@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+	Huang Shijie <b32955@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,29 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-08-09 at 13:34 -0400, Mike Frysinger wrote:
-> On Mon, Aug 8, 2011 at 19:19, Brian Norris wrote:
-> > "Alternatively, --all only prints what it can get,
-> > and --help warns there _may_ be additional data not
-> > printed by --all (and to use ‘mtdinfo /dev/mtd<N>’)."
+Hi,
+
+Ivan Djelic writes:
+> On Fri, Aug 05, 2011 at 02:51:33PM +0100, Wolfram Sang wrote:
+> (...)
+> > 
+> > problem overwriting all-0xff data in NAND [2]
+> > =============================================
+> > 
+> > Although it occured only when writing JFFS2 images so far, this is a generic
+> > issue and needs to be fixed, right?
+> > 
+> > 
+> (...)
+> > [2] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037104.html
 > 
-> that's really the only other option of the three.
-> 1: add region_info to sysfs
-> 2: add a warning --all that it could be incomplete
-> 3: have --all use the legacy lookup func to get /dev/mtd#
+> As explained in the thread linked above, this issue should be fixed in your
+> flashing tool, _not_ in your driver. The nand device you are using does not
+> support programming pages multiple times in a row; pretending it does in the
+>
+It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
+problem is that the controller generates an ECC code that is non-FF
+for all-FF data, which JFFS2 cannot handle properly.
 
-How about: make a quick fix and release mtd-utils-1.4.6, then just kill
-the -a option. I'd vote for eliminating all the code which has to
-guess/assume/find the device node names - I think they always have to be
-passed by the user instead. We can do the elimination the usual way -
-first add the warning, then kill.
 
-This is also a good way to go because mtd stuff does not have enough
-people for excellent maintenance, and keeping it simpler should be
-helpful.
-
-Thoughts?
-
+Lothar Waßmann
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
