@@ -1,23 +1,21 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QszXg-0004Um-SY
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 15:57:34 +0000
-Received: by gyh20 with SMTP id 20so3451732gyh.36
+	id 1QszaK-0004bK-AY
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2011 16:00:17 +0000
+Received: by gxk2 with SMTP id 2so3460640gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Aug 2011 08:57:31 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
+	Mon, 15 Aug 2011 09:00:13 -0700 (PDT)
+Subject: Re: UBI FS on 2MiB eraseblock Hynix MLC NAND
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: b35362@freescale.com
-Date: Mon, 15 Aug 2011 18:59:09 +0300
-In-Reply-To: <1310446122-18050-1-git-send-email-b35362@freescale.com>
-References: <1310446122-18050-1-git-send-email-b35362@freescale.com>
+To: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
+Date: Mon, 15 Aug 2011 19:01:53 +0300
+In-Reply-To: <CAKa7sPRir5YTdPCYAHEYvPGA5GhfTuyv0Z9ynDUtEmy=YHA2XQ@mail.gmail.com>
+References: <CAKa7sPRir5YTdPCYAHEYvPGA5GhfTuyv0Z9ynDUtEmy=YHA2XQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1313423954.8691.17.camel@sauron>
+Message-ID: <1313424117.8691.19.camel@sauron>
 Mime-Version: 1.0
-Cc: scottwood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org,
-	Li Yang <leoli@freescale.com>, dwmw2@infradead.org,
+Cc: Yauhen Kharuzhy <yauhen.kharuzhy@promwad.com>,
 	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,31 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-07-12 at 12:48 +0800, b35362@freescale.com wrote:
-> +	/*
-> +	 * Hack for supporting the flash chip whose writesize is
-> +	 * larger than 2K bytes.
-> +	 */
-> +	if (mtd->writesize > 2048) {
-> +		elbc_fcm_ctrl->subpage_shift = ffs(mtd->writesize >> 11) - 1;
-> +		elbc_fcm_ctrl->subpage_mask =
-> +			(1 << elbc_fcm_ctrl->subpage_shift) - 1;
-> +		/*
-> +		 * Rewrite mtd->writesize, mtd->oobsize, chip->page_shift
-> +		 * and chip->pagemask.
-> +		 */
-> +		mtd->writesize = 2048;
-> +		mtd->oobsize = 64;
-> +		chip->page_shift = ffs(mtd->writesize) - 1;
-> +		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-> +	}
+On Thu, 2011-08-04 at 16:59 +0300, Viktar Palstsiuk wrote:
+> Hello,
+> 
+> While trying to use UBI FS on Hynix MLC NAND (2MiB eraseblock, 8k
+> pagesize) I faced with the problem that root mounts well only during
+> first boot after it was flashed.
+> On the second boot it reports that it failed to recover master node.
+> If some one has tested UBI FS on devices with large eraseblock?
 
-So basically if the flash has 4KiB NAND pages, you are considering it as
-a flash with 2KiB NAND pages. But surely this will work only if the
-underlying flash has NOP 2 at least. Or even, if you consider that JFFS2
-and YAFFS want to write to OOB, you need NOP 4 (2 ECC writes and 2
-writes from YAFFS/JFFS2) ? So this won't work for NOP1 flashes? Isn't it
-an ugly hack?
+Well, in theory it should work, but I've never heard about such huge
+eraseblock so probably you are the first trying it, and probably there
+is a bug.
+
+> NET: Registered protocol family 17
+> lib80211: common routines for IEEE802.11 drivers
+> rtc-mv rtc-mv: setting system clock to 2000-02-26 02:34:28 UTC (951532468)
+> UBIFS error (pid 1): ubifs_recover_master_node: failed to recover master node
+
+Could you please enable UBIFS debugging, reproduce the issue and send me
+all the kernel output - e.g., by typing dmesg or booting with the
+ignore_loglevel kernel option?
 
 -- 
 Best Regards,
