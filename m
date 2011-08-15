@@ -1,16 +1,19 @@
-Message-ID: <20040.45443.810005.525431@ipc1.ka-ro>
-Date: Mon, 15 Aug 2011 07:41:23 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: GPMI-NAND Status?
-In-Reply-To: <20110814081139.GD17063@parrot.com>
+From: Lin Tony-B19295 <B19295@freescale.com>
+To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>, Ivan Djelic
+	<ivan.djelic@parrot.com>
+Subject: RE: GPMI-NAND Status?
+Date: Mon, 15 Aug 2011 06:30:58 +0000
+Message-ID: <97D3A72708D04647A5AC84A04996E5B5194B56@039-SN1MPN1-002.039d.mgd.msft.net>
 References: <20110805135133.GA26981@pengutronix.de>
 	<20110814081139.GD17063@parrot.com>
+	<20040.45443.810005.525431@ipc1.ka-ro>
+In-Reply-To: <20040.45443.810005.525431@ipc1.ka-ro>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: Koen Beel <koen.beel.barco@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
-	Huang Shijie <b32955@freescale.com>,
+	Huang Shijie-B32955 <B32955@freescale.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org"
 	<linux-arm-kernel@lists.infradead.org>
@@ -23,39 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Ivan Djelic writes:
-> On Fri, Aug 05, 2011 at 02:51:33PM +0100, Wolfram Sang wrote:
-> (...)
-> > 
-> > problem overwriting all-0xff data in NAND [2]
-> > =============================================
-> > 
-> > Although it occured only when writing JFFS2 images so far, this is a generic
-> > issue and needs to be fixed, right?
-> > 
-> > 
-> (...)
-> > [2] http://lists.infradead.org/pipermail/linux-mtd/2011-July/037104.html
-> 
-> As explained in the thread linked above, this issue should be fixed in your
-> flashing tool, _not_ in your driver. The nand device you are using does not
-> support programming pages multiple times in a row; pretending it does in the
->
-It's not a problem of the device (Samsung K9F1G08U0B in my case)! The
-problem is that the controller generates an ECC code that is non-FF
-for all-FF data, which JFFS2 cannot handle properly.
-
-
-Lothar Waßmann
--- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBsaW51eC1hcm0ta2VybmVsLWJv
+dW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZyBbbWFpbHRvOmxpbnV4LWFybS0NCj4ga2VybmVsLWJv
+dW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxmIE9mIExvdGhhciBXYT9tYW5uDQo+
+IFNlbnQ6IE1vbmRheSwgQXVndXN0IDE1LCAyMDExIDE6NDEgUE0NCj4gVG86IEl2YW4gRGplbGlj
+DQo+IENjOiBLb2VuIEJlZWw7IFdvbGZyYW0gU2FuZzsgSHVhbmcgU2hpamllLUIzMjk1NTsgbGlu
+dXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBTaGF3biBHdW87IGxpbnV4LWFybS1rZXJu
+ZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogR1BNSS1OQU5EIFN0YXR1cz8N
+Cj4gDQo+IEhpLA0KPiANCj4gSXZhbiBEamVsaWMgd3JpdGVzOg0KPiA+IE9uIEZyaSwgQXVnIDA1
+LCAyMDExIGF0IDAyOjUxOjMzUE0gKzAxMDAsIFdvbGZyYW0gU2FuZyB3cm90ZToNCj4gPiAoLi4u
+KQ0KPiA+ID4NCj4gPiA+IHByb2JsZW0gb3ZlcndyaXRpbmcgYWxsLTB4ZmYgZGF0YSBpbiBOQU5E
+IFsyXQ0KPiA+ID4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+DQo+ID4gPg0KPiA+ID4gQWx0aG91Z2ggaXQgb2NjdXJlZCBvbmx5IHdoZW4gd3JpdGluZyBKRkZT
+MiBpbWFnZXMgc28gZmFyLCB0aGlzIGlzIGENCj4gPiA+IGdlbmVyaWMgaXNzdWUgYW5kIG5lZWRz
+IHRvIGJlIGZpeGVkLCByaWdodD8NCj4gPiA+DQo+ID4gPg0KPiA+ICguLi4pDQo+ID4gPiBbMl0N
+Cj4gPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAx
+MS1KdWx5LzAzNzEwNC5odG1sDQo+ID4NCj4gPiBBcyBleHBsYWluZWQgaW4gdGhlIHRocmVhZCBs
+aW5rZWQgYWJvdmUsIHRoaXMgaXNzdWUgc2hvdWxkIGJlIGZpeGVkIGluDQo+ID4geW91ciBmbGFz
+aGluZyB0b29sLCBfbm90XyBpbiB5b3VyIGRyaXZlci4gVGhlIG5hbmQgZGV2aWNlIHlvdSBhcmUN
+Cj4gPiB1c2luZyBkb2VzIG5vdCBzdXBwb3J0IHByb2dyYW1taW5nIHBhZ2VzIG11bHRpcGxlIHRp
+bWVzIGluIGEgcm93Ow0KPiA+IHByZXRlbmRpbmcgaXQgZG9lcyBpbiB0aGUNCj4gPg0KPiBJdCdz
+IG5vdCBhIHByb2JsZW0gb2YgdGhlIGRldmljZSAoU2Ftc3VuZyBLOUYxRzA4VTBCIGluIG15IGNh
+c2UpISBUaGUNCj4gcHJvYmxlbSBpcyB0aGF0IHRoZSBjb250cm9sbGVyIGdlbmVyYXRlcyBhbiBF
+Q0MgY29kZSB0aGF0IGlzIG5vbi1GRiBmb3INCj4gYWxsLUZGIGRhdGEsIHdoaWNoIEpGRlMyIGNh
+bm5vdCBoYW5kbGUgcHJvcGVybHkuDQo+IA0KQXMgSSBrbm93LCB0aGlzIGlzIEJDSCBhbGdvcml0
+aG0gbGltaXRhdGlvbiBmb3IgRUNDLihub24tRkYgRUNDIGNvZGUgZm9yIGFsbC1GRiBkYXRhKQ0K
+U28gdGhhdCBCQ0ggZW5naW5lIHdpbGwgaWdub3JlIHRoZSBFQ0MgZXJyb3Igd2hlbiBhbGwgZGF0
+YSBhcmUgMHhGRi4gVGhhdCdzIHRoZSBCQ0ggdXNhZ2UgZm9yIEVDQy4NClVuZGVyIHN1Y2ggY29u
+ZGl0aW9uLCBJIHRoaW5rIGl0J3MgdGhlIEpGRlMyIHRoYXQgc2hvdWxkIGhhbmRsZSBzdWNoIGNh
+c2UgaW5zdGVhZA0KT2YgQkNILiBTbyBmYXIgbW9yZSBhbmQgbW9yZSBTT0NzIGFyZSB1c2luZyBC
+Q0ggZm9yIE5BTkQgRUNDLCBKRkZTMiBjYW4ndCBlc2NhcGluZyBzdWNoIHByb2JsZW0gaWYNCk5v
+dCBjaGFuZ2VkLg0KDQo+IA0KPiBMb3RoYXIgV2HDn21hbm4NCj4gLS0NCj4gX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gDQo+IEth
+LVJvIGVsZWN0cm9uaWNzIEdtYkggfCBQYXNjYWxzdHJhw59lIDIyIHwgRCAtIDUyMDc2IEFhY2hl
+bg0KPiBQaG9uZTogKzQ5IDI0MDggMTQwMi0wIHwgRmF4OiArNDkgMjQwOCAxNDAyLTEwDQo+IEdl
+c2Now6RmdHNmw7xocmVyOiBNYXR0aGlhcyBLYXVzc2VuDQo+IEhhbmRlbHNyZWdpc3RlcmVpbnRy
+YWc6IEFtdHNnZXJpY2h0IEFhY2hlbiwgSFJCIDQ5OTYNCj4gDQo+IHd3dy5rYXJvLWVsZWN0cm9u
+aWNzLmRlIHwgaW5mb0BrYXJvLWVsZWN0cm9uaWNzLmRlDQo+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IA0KPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBsaW51eC1hcm0ta2VybmVs
+IG1haWxpbmcgbGlzdA0KPiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4g
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2Vy
+bmVsDQo=
