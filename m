@@ -1,34 +1,23 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtKQO-00055M-A9
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 14:15:25 +0000
-Received: by ywp17 with SMTP id 17so4021529ywp.36
+	id 1QtLCM-0006K7-VS
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 15:04:59 +0000
+Received: by vxj2 with SMTP id 2so5687189vxj.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Aug 2011 07:15:21 -0700 (PDT)
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
+	Tue, 16 Aug 2011 08:04:56 -0700 (PDT)
+Subject: Re: [PATCH] mtd-utils: fix corrupt cleanmarker with flash_erase -j
+	command
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 16 Aug 2011 17:17:00 +0300
-In-Reply-To: <CAN8TOE9NyKqOkfYC6h_44Wf+xs7ZtTjGS+YkLAhLV60FnKB2hQ@mail.gmail.com>
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAN8TOE8Uk09DPJ_OYXh4RjnKkXugEFLpZQ+hrA4Gw4oK2cQYOw@mail.gmail.com>
-	<201107260921.44512.brian.foster@maxim-ic.com>
-	<CAN8TOE847yECw3zeh42tf=6mC73O33Lr7Lzwpi0FrT-rB9ZYmg@mail.gmail.com>
-	<CAMjpGUc1a4NR5PWt3A5Y+jv6ihsWjUgH3iVUpNc0dsvkEzx6pw@mail.gmail.com>
-	<CAN8TOE--96V6ZruB8+VvAz2kqxqMq4nc4d5=6SGsUt0eu7og0g@mail.gmail.com>
-	<CAMjpGUcTPR=EVOtfju5_S4Zu_h-rmqnCii4R0j7yFX8JTD81uA@mail.gmail.com>
-	<CAN8TOE9p1v=mDUawRrnVAwDO4zz9LmXkqdNynLPCSCnBRMr9pw@mail.gmail.com>
-	<CAMjpGUcjhuc6MaH0y2vGdM5ru00BJEmVeBwMUebkbfoxDNY28g@mail.gmail.com>
-	<1313381489.2200.19.camel@koala>
-	<CAN8TOE9NyKqOkfYC6h_44Wf+xs7ZtTjGS+YkLAhLV60FnKB2hQ@mail.gmail.com>
+To: b35362@freescale.com
+Date: Tue, 16 Aug 2011 18:06:35 +0300
+In-Reply-To: <1312350638-25566-1-git-send-email-b35362@freescale.com>
+References: <1312350638-25566-1-git-send-email-b35362@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1313504225.21711.3.camel@sauron>
+Message-ID: <1313507201.2679.2.camel@sauron>
 Mime-Version: 1.0
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>
+Cc: linuxppc-dev@linux.freescale.net, Li Yang <leoli@freescale.com>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,19 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-08-15 at 16:13 -0700, Brian Norris wrote:
-> This way, we do not rely on guessing any paths; we simply use the
-> sysfs information that is exposed, among other purposes, for cases
-> cases like this, right? And then (as I stated on another message in
-> this thread) we could even support the "region info" on newer kernels,
-> if somebody ever does the work to export them. I think this solution
-> involves no extra work right now, does not remove valuable features,
-> does not make dirty assumptions about node names, and can take
-> advantage of new sysfs features in the future. The main downside I see
-> is the potential (documented) difference in information printed by
-> `mtdinfo --all' vs. `mtdinfo /dev/mtdX'.
+On Wed, 2011-08-03 at 13:50 +0800, b35362@freescale.com wrote:
+> From: Liu Shuo <b35362@freescale.com>
+> 
+> Flash_erase -j should fill discrete freeoob areas with required bytes
+> of JFFS2 cleanmarker in jffs2_check_nand_cleanmarker(). Not just fill
+> the first freeoob area.
+> 
+> Signed-off-by: Liu Shuo <b35362@freescale.com>
+> Signed-off-by: Li Yang <leoli@freescale.com>
 
-Yes, fair enough, just pushed your fix and cleanups, thanks!
+...
+
+>  	/*
+>  	 * Process user arguments
+> @@ -197,15 +198,40 @@ int main(int argc, char *argv[])
+>  			if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
+>  				return sys_errmsg("%s: unable to get NAND oobinfo", mtd_device);
+>  
+> +			cleanmarker.totlen = cpu_to_je32(8);
+>  			/* Check for autoplacement */
+>  			if (oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
+> +				struct nand_ecclayout_user ecclayout;
+>  				/* Get the position of the free bytes */
+> -				if (!oobinfo.oobfree[0][1])
+> +				if (ioctl(fd, ECCGETLAYOUT, &ecclayout) != 0)
+> +					return sys_errmsg("%s: unable to get NAND ecclayout", mtd_device);
+> +
+
+Hmm, shouldn't we instead make MTD_OOB_AUTO be available for userspace
+via an ioctl instead and make flash_eraseall use it instead?
 
 -- 
 Best Regards,
