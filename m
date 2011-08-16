@@ -1,27 +1,27 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtNFg-00080h-UP
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 17:16:33 +0000
-Date: Tue, 16 Aug 2011 19:17:07 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110816171707.GU26160@logfs.org>
-References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
-	<20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-	<20110808083107.GN26160@logfs.org>
-	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-	<20110809145812.GR26160@logfs.org>
-	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
-	<20110812093429.GS26160@logfs.org>
-	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
+	id 1QtNjr-0008GZ-1m
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 17:47:43 +0000
+Received: by wyh11 with SMTP id 11so114561wyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Aug 2011 10:47:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <201108160931.02543.brian.foster@maxim-ic.com>
+References: <201107251148.51262.brian.foster@maxim-ic.com>
+	<CAMjpGUcjhuc6MaH0y2vGdM5ru00BJEmVeBwMUebkbfoxDNY28g@mail.gmail.com>
+	<1313381489.2200.19.camel@koala>
+	<201108160931.02543.brian.foster@maxim-ic.com>
+Date: Tue, 16 Aug 2011 10:47:39 -0700
+Message-ID: <CAN8TOE9znFAB0qDmF-NHpqQSDt7nLzLLBn_9attxdh=WYKqN4g@mail.gmail.com>
+Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
+	Eraseblock Regions
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 August 2011 22:56:02 +0530, srimugunthan dhandapani wrote:
-> 
-> > I wouldn't suspect any code changes to cause the different behaviour.
-> > Kernel config and test machine (memsize, etc.) would be more likely
-> > candidates.  So if you could try the patch and send me the output,
-> > that would be useful.
-> 
-> I tried your patches and I also tried on official kernel release 3.0.1.
-> I have shared the bonnie output and logs in  the below link:
-> 
-> https://docs.google.com/leaf?id=0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwLWFlMmItNjlmZWIzMWFlNGUy&hl=en_US
+On Tue, Aug 16, 2011 at 12:31 AM, Brian Foster
+<brian.foster@maxim-ic.com> wrote:
+> =A0You should decide what =91-a=92 means: =A0=93all information=94
+> =A0or =93all devices=94. =A0If =93all information=94, then either a
+> =A0bunch of work needs to be done, or else =91-a=92 removed.
+>
+> =A0But if =93all devices=94 =A0=97 which happens to be both what
+> =A0I think it means and how I use it =97 =A0then it is very
+> =A0useful, at least in my situation where I'm bringing up
+> =A0a new SoC and board. =A0It's a nice summary of what I'm
+> =A0usually interested in; if it didn't exist, I'd =93have=94
+> =A0to script it. =A0And in either case, if and when I do
+> =A0need all the information about _a_ device, then I do
+> =A0=91mtdinfo /dev/mtd<N>=92.
 
-Are you sure you tried the first patch?  When I grep for
-"logfs_invalidatepage", I only find the oopses, not my debug output.
+I think we're going with "all devices" then, with less emphasis on
+100% completeness of information. For one, it reflects the current
+code, and the help message has stated this its purpose for a while:
 
-> I did all my tests with nandsim. Are there any problems using logfs
-> with nandsim?
+"-a, --all        print information about all MTD devices"
 
-Shouldn't be, unless nandsim is corrupting memory in a peculiar and
-reproduceable way on your system.
+Thanks for the contributions.
 
-Jörn
-
--- 
-Unless something dramatically changes, by 2015 we'll be largely
-wondering what all the fuss surrounding Linux was really about.
--- Rob Enderle
+Brian
