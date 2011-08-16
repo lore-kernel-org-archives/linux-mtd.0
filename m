@@ -1,27 +1,24 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtAq9-0004yd-8L
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 04:01:21 +0000
-Received: by bke17 with SMTP id 17so4114486bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Aug 2011 21:01:17 -0700 (PDT)
+	id 1QtBqN-0005Uk-FI
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 05:05:41 +0000
+From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Tue, 16 Aug 2011 10:35:19 +0530
+Subject: RE: [PATCH] mtd: nand: davinci: Add cpufreq support
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024E0F67B5@dbde02.ent.ti.com>
+References: <1311241163-4576-1-git-send-email-sudhakar.raj@ti.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593024DE782F8@dbde02.ent.ti.com>
+	<1313421612.8691.3.camel@sauron>
+In-Reply-To: <1313421612.8691.3.camel@sauron>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE9EEtGQCHL3_2aspTstu12p5TxVB_t8ED6_UF+MUV4XXA@mail.gmail.com>
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<1313079580-22144-1-git-send-email-computersforpeace@gmail.com>
-	<201108120906.20453.brian.foster@maxim-ic.com>
-	<CAN8TOE8QUdskvjJGStE9O3Tj2_aNBBthEb-EFV8DpYHK20YrWw@mail.gmail.com>
-	<CAMjpGUdr2+_3U4TbN9L2MLWarzya3qHkTghqvbY8Yp+JPQN1Dg@mail.gmail.com>
-	<CAN8TOE9EEtGQCHL3_2aspTstu12p5TxVB_t8ED6_UF+MUV4XXA@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 16 Aug 2011 00:00:57 -0400
-Message-ID: <CAMjpGUcNqGkbTQUX9Lq+B+gSN8TUySs=p_kxZE4TQn1amwk2ow@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 15, 2011 at 13:27, Brian Norris wrote:
-> On Sat, Aug 13, 2011 at 11:10 AM, Mike Frysinger wrote:
->> On Fri, Aug 12, 2011 at 12:37, Brian Norris wrote:
-> ...
->>> "mtdinfo"). I suppose we could either hardcode the spaces in or try to
->>> do some sort of "ARRAY_SIZE" trickery (as found in the Linux kernel)
->>
->> you could probably use %*s and then pass in "" as well as <some max
->> spacing number - strlen(PROGRAM_NAME)>.
->>
->> printf("%*s\n", 80 - strlen(PROGRAM_NAME), "");
->
-> Yes, that's what I meant...of course "strlen" is better than writing
-> your own ARRAY_SIZE() when you already have the full C library :)
-
-gcc optimizes strlen("constant") into a number
--mike
+SGksDQoNCk9uIE1vbiwgQXVnIDE1LCAyMDExIGF0IDIwOjUwOjA3LCBBcnRlbSBCaXR5dXRza2l5
+IHdyb3RlOg0KPiBPbiBUdWUsIDIwMTEtMDgtMDIgYXQgMTI6MDMgKzA1MzAsIFJhamFzaGVraGFy
+YSwgU3VkaGFrYXIgd3JvdGU6DQo+ID4gSGkgRGF2aWQsDQo+ID4gDQo+ID4gT24gVGh1LCBKdWwg
+MjEsIDIwMTEgYXQgMTU6MDk6MjMsIFJhamFzaGVraGFyYSwgU3VkaGFrYXIgd3JvdGU6DQo+ID4g
+PiBUaGlzIHBhdGNoIGFkZHMgY3B1ZnJlcSBzdXBwb3J0IGZvciBOQU5EIGRyaXZlci4gRHVyaW5n
+IGNwdWZyZXEgDQo+ID4gPiB0cmFuc2l0aW9uLCAnZGF2aW5jaV9hZW1pZl9zZXR1cF90aW1pbmco
+KScgZnVuY3Rpb24gd2lsbCBiZSBjYWxsZWQgDQo+ID4gPiB0byByZWNvbmZpZ3VyZSB0aGF0IEFF
+TUlGIHRpbWluZ3MgZm9yIHRoZSBuZXcgZnJlcXVlbmN5Lg0KPiA+ID4gDQo+ID4gPiBUZXN0ZWQg
+b24gVEkgREE4NTAvT01BUC1MMTM4IEVWTS4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1ieTog
+UmFqYXNoZWtoYXJhLCBTdWRoYWthciA8c3VkaGFrYXIucmFqQHRpLmNvbT4NCj4gPiANCj4gPiBJ
+IGhhdmUgbm90IHNlZW4gYW55IGNvbW1lbnRzIG9uIHRoaXMgcGF0Y2guIENhbiB5b3UgcHVsbCBp
+dCBpbiBpbnRvIHlvdXIgdHJlZT8NCj4gDQo+IFdvdWxkIGJlIG5pY2UgdG8gZ2V0IGEgVGVzdGVk
+LWJ5IG9yIEFja2VkLWJ5IGZyb20gc29tZW9uZS4NCj4gDQoNClRoZXJlIHdlcmUgZmV3IGNvbW1l
+bnRzIG9uIHRoaXMgcGF0Y2ggc2VyaWVzIGZyb20gQmVuIEdhcmRpbmVyLiBJIGFtIHdvcmtpbmcg
+b24gdGhlbS4NCldpbGwgcG9zdCBhbiB1cGRhdGVkIHBhdGNoIHNldCB0byB0aGUgbGlzdC4NCg0K
+VGhhbmtzLA0KU3VkaGFrYXINCg==
