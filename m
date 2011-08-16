@@ -1,26 +1,27 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from [85.183.114.52] (helo=Dublin.logfs.org)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtNBw-0007tW-5g
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 17:12:40 +0000
-Received: by wwf10 with SMTP id 10so91398wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Aug 2011 10:12:38 -0700 (PDT)
+	id 1QtNFg-00080h-UP
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 17:16:33 +0000
+Date: Tue, 16 Aug 2011 19:17:07 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Subject: Re: logfs unmount bug
+Message-ID: <20110816171707.GU26160@logfs.org>
+References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
+	<20110805160325.GM26160@logfs.org>
+	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
+	<20110808083107.GN26160@logfs.org>
+	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+	<20110809145812.GR26160@logfs.org>
+	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
+	<20110812093429.GS26160@logfs.org>
+	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <201108160918.15975.brian.foster@maxim-ic.com>
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<CAN8TOE9EEtGQCHL3_2aspTstu12p5TxVB_t8ED6_UF+MUV4XXA@mail.gmail.com>
-	<CAMjpGUcNqGkbTQUX9Lq+B+gSN8TUySs=p_kxZE4TQn1amwk2ow@mail.gmail.com>
-	<201108160918.15975.brian.foster@maxim-ic.com>
-Date: Tue, 16 Aug 2011 10:12:38 -0700
-Message-ID: <CAN8TOE9yGBts+8oZ-TZoSH8wRdRmctN5c6w3JQgUdbwmpRNJGw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
-From: Brian Norris <computersforpeace@gmail.com>
-To: Brian Foster <brian.foster@maxim-ic.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 16, 2011 at 12:18 AM, Brian Foster
-<brian.foster@maxim-ic.com> wrote:
-> On Tuesday 16 August 2011 06:00:57 Mike Frysinger wrote:
->> On Mon, Aug 15, 2011 at 13:27, Brian Norris wrote:
->> > Yes, that's what I meant...of course "strlen" is better than writing
->> > your own ARRAY_SIZE() when you already have the full C library :)
->>
->> gcc optimizes strlen("constant") into a number
+On Fri, 12 August 2011 22:56:02 +0530, srimugunthan dhandapani wrote:
+> 
+> > I wouldn't suspect any code changes to cause the different behaviour.
+> > Kernel config and test machine (memsize, etc.) would be more likely
+> > candidates.  So if you could try the patch and send me the output,
+> > that would be useful.
+> 
+> I tried your patches and I also tried on official kernel release 3.0.1.
+> I have shared the bonnie output and logs in  the below link:
+> 
+> https://docs.google.com/leaf?id=0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwLWFlMmItNjlmZWIzMWFlNGUy&hl=en_US
 
-I was referring to the fact that the kernel does not provide all
-standard C library functions, whereas user-space does. Even so, I
-overlooked the fact that the kernel has a "strlen" function
-(linux/kernel.h)
+Are you sure you tried the first patch?  When I grep for
+"logfs_invalidatepage", I only find the oopses, not my debug output.
 
-> =A0And =91ARRAY_SIZE(...)=92, in this case, is simply =91sizeof(...)=92
-> =A0(or, actually, =91sizeof(...)-1=92 to be equivalent to =91strlen=92).
->
-> =A0Albeit I won't worry about the case of =A0strlen > 80 =A0here,
-> =A0I am mildly curious what the output would be if that were
-> =A0indeed true...?
+> I did all my tests with nandsim. Are there any problems using logfs
+> with nandsim?
 
-Mike's example is a little different than my patch that was just
-included in mtd-utils. I don't think my version would have a problem
-with strlen > 80.
+Shouldn't be, unless nandsim is corrupting memory in a peculiar and
+reproduceable way on your system.
 
-> =A0The other thing I won't worry about is the assumption every
-> =A0output byte in PROGRAM_NAME is a printing glyph occupying
-> =A0exactly one cell. =A0That is true (in this case) ....
+Jörn
 
-Not sure how often anyone needs to worry about this one...really, this
-particular discussion is mostly an exercise in frivolity IMO, as I
-don't see us changing the PROGRAM_NAME for mtdinfo any time soon, and
-even if we did, it's not that hard to edit some whitespace.
-
-Brian
+-- 
+Unless something dramatically changes, by 2015 we'll be largely
+wondering what all the fuss surrounding Linux was really about.
+-- Rob Enderle
