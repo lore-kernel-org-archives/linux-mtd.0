@@ -1,16 +1,26 @@
-Received: from smtpfree.forptr.21cn.com ([59.36.102.42] helo=21cn.com)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtMvs-0007nA-Ss
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 16:56:06 +0000
-Message-ID: <19763023.92711313513692422.JavaMail.root@webmail5>
-Date: Wed, 17 Aug 2011 00:54:46 +0800 (CST)
-From: gc647gfmrb0 <wenyue062@21cn.com>
-To: 295831283@qq.com, joy1021@live.cn, 348927029@qq.com,
-	hy456_0@sohu.com, tmyxl@sina.com, t_x_d_di_diao@qq.com
-Subject: =?UTF-8?B?5qC35ZOB5r+A5YWJ5oqE5pWw?=
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QtNBw-0007tW-5g
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 17:12:40 +0000
+Received: by wwf10 with SMTP id 10so91398wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Aug 2011 10:12:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/related;
-	boundary="----=_Part_15366_25125234.1313513686895"
+In-Reply-To: <201108160918.15975.brian.foster@maxim-ic.com>
+References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
+	<CAN8TOE9EEtGQCHL3_2aspTstu12p5TxVB_t8ED6_UF+MUV4XXA@mail.gmail.com>
+	<CAMjpGUcNqGkbTQUX9Lq+B+gSN8TUySs=p_kxZE4TQn1amwk2ow@mail.gmail.com>
+	<201108160918.15975.brian.foster@maxim-ic.com>
+Date: Tue, 16 Aug 2011 10:12:38 -0700
+Message-ID: <CAN8TOE9yGBts+8oZ-TZoSH8wRdRmctN5c6w3JQgUdbwmpRNJGw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_15366_25125234.1313513686895
-Content-Type: text/html;charset=UTF-8
-Content-Transfer-Encoding: base64
+On Tue, Aug 16, 2011 at 12:18 AM, Brian Foster
+<brian.foster@maxim-ic.com> wrote:
+> On Tuesday 16 August 2011 06:00:57 Mike Frysinger wrote:
+>> On Mon, Aug 15, 2011 at 13:27, Brian Norris wrote:
+>> > Yes, that's what I meant...of course "strlen" is better than writing
+>> > your own ARRAY_SIZE() when you already have the full C library :)
+>>
+>> gcc optimizes strlen("constant") into a number
 
-DQrmnKzlsIHpgq7ku7bmmK/kuIDku73okKXplIDmgKfotKjnmoTpgq7ku7bvvIzlpoLmnInmiZPm
-ibDvvIzmlazor7fmtbfmtrXvvIENCg0K5oKo5aW977yaDQoNCumjnue/lOiuvuiuoeaYr+S4gOWu
-tuS4k+S4mueahOiuvuiuoeWFrOWPuOOAgg0KDQrkuJrliqHojIPlm7TvvJrlt6XkuJrkuqflk4Ho
-rr7orqEs6YCG5ZCR5bel56iLLOS6p+WTgeaKhOaVsCzmtYvnu5gs5omL5p2/5Yi25L2cLOS6p+WT
-geajgOa1iw0KDQrmoLflk4HjgIHmiYvmnb/jgIHmqKHlhbfnmoTmtYvnu5gNCg0KICAgICDmiJHl
-hazlj7jlvJXov5vlhYjov5vnmoTkuInnu7Tnsr7lr4bmioTmlbDvvIjmtYvph4/mnLrvvInjgILl
-j6/ku6Xlr7nmgqjnlJ/kuqfnmoTkuqflk4Hov5vooYzlvaLkvY3lhazlt67mo4DmtYvjgILlh4/l
-sJHmgqjph4fpm4bmlbDmja7nmoTml7bpl7TvvIzmnoHlpKfnmoTmj5Dpq5jkuobmlbDmja7nmoTn
-sr7noa7mgKfjgIINCg0K6YCC55So5LqO5rG96L2m6YWN5Lu277yM5a625bqt55So5ZOB77yM6YCa
-5L+h5Lqn5ZOB77yM55S16ISR5aSW6K6+77yM546p5YW377yM5qih5YW3562J44CCIA0KIA0KDQrp
-gIblkJHlt6XnqIsNCuS7peaKhOaVsOacuuWvueagt+WTgeOAgeaJi+adv+OAgeaooeWei+i/m+ih
-jOaJq+aPj++8jOe7k+WQiOmAhuWQkei9r+S7tu+8jOmHjeaehOaIkOS4iee7tOWunuS9k+OAguWP
-r+ebtOaOpeeUqOS6juaooeWFt+eahOiuvuiuoeS4juWItumAoOOAgiAgIA0KDQrkuqflk4HnmoTl
-pJbop4Lorr7orqEgDQrmiJHku6zlj6/moLnmja7lrqLmiLfnmoTopoHmsYLvvIznu4/ov4fmiJHk
-u6zorr7orqHlt6XnqIvluIjnmoTnsr7lv4Pnu5jliLbvvIzkuLrkvaDorr7orqHlh7rpgILlupTl
-uILlnLrpnIDmsYLnmoTkuqflk4HjgIIgDQoNCuaJi+adv+WItuS9nA0KIOWcqOS6p+WTgeeahOiu
-vuiuoeS4re+8jOacgOaDs+WBmueahOS4gOS7tuS6iyDkvr/mmK/mg7Pnn6XpgZPoh6rlt7Horr7o
-rqHnmoTkuJzopb/lgZrmiJDlrp7nianku4DkuYjmoLfjgIHlpJbop4Llkozoh6rlt7HnmoTorr7o
-rqHmgJ3mg7PmmK/lkKblkLvlkIjjgIHnu5PmnoTorr7orqHmmK/lkKblkIjnkIbnrYnnrYnjgIIN
-Cg0KICDmhL/miJHku6znmoTlt6XkvZzog73lpJ/ovoXliqnotLXkvIHkuJrnmoTlo67lpKfkuI7l
-j5HlsZXvvIENCg0KDQrjgIDjgIDjgIDjgIDjgIDjgIDjgIDjgIDjgIAgICAgICAgICAgICAgICAg
-44CA6aG66aKC5ZWG56W677yBDQoNCuiBlOezu+S6ujog5a6L5Lyg5YWJDQoNCiAg5omL5py6OiAx
-MzUtODQ5OS0yNDMxDQoNCg0K5Lyg55yfOiAgMDUxMi01NzY0Nzc0MA0KDQogIFFROiA1MTU4NzQ4
-NjkNCg0K6YKu566xOiBtYWlsQGtzZnhzai5jb20NCg0K5Zyw5Z2AOiDmsZ/oi4/nnIHmmIblsbHl
-uILljJfpl6jot68zODg45Y+35qih5YW36K6+5aSH5Yy6My0xOA0KDQrnvZHlnYA6IGh0dHA6Ly93
-d3cua3NmeHNqLmNvbQ0K
-------=_Part_15366_25125234.1313513686895--
+I was referring to the fact that the kernel does not provide all
+standard C library functions, whereas user-space does. Even so, I
+overlooked the fact that the kernel has a "strlen" function
+(linux/kernel.h)
+
+> =A0And =91ARRAY_SIZE(...)=92, in this case, is simply =91sizeof(...)=92
+> =A0(or, actually, =91sizeof(...)-1=92 to be equivalent to =91strlen=92).
+>
+> =A0Albeit I won't worry about the case of =A0strlen > 80 =A0here,
+> =A0I am mildly curious what the output would be if that were
+> =A0indeed true...?
+
+Mike's example is a little different than my patch that was just
+included in mtd-utils. I don't think my version would have a problem
+with strlen > 80.
+
+> =A0The other thing I won't worry about is the assumption every
+> =A0output byte in PROGRAM_NAME is a printing glyph occupying
+> =A0exactly one cell. =A0That is true (in this case) ....
+
+Not sure how often anyone needs to worry about this one...really, this
+particular discussion is mostly an exercise in frivolity IMO, as I
+don't see us changing the PROGRAM_NAME for mtdinfo any time soon, and
+even if we did, it's not that hard to edit some whitespace.
+
+Brian
