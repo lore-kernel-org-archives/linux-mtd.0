@@ -1,23 +1,23 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtE8t-0007Hf-5m
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 07:32:56 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [BUG] mtdinfo -a: Tries to open NULL pointer for NOR with
-	Eraseblock Regions
-Date: Tue, 16 Aug 2011 09:31:02 +0200
-References: <201107251148.51262.brian.foster@maxim-ic.com>
-	<CAMjpGUcjhuc6MaH0y2vGdM5ru00BJEmVeBwMUebkbfoxDNY28g@mail.gmail.com>
-	<1313381489.2200.19.camel@koala>
-In-Reply-To: <1313381489.2200.19.camel@koala>
+Received: from mail-iy0-f171.google.com ([209.85.210.171])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QtEOH-0007mo-Ew
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 07:48:50 +0000
+Received: by iyf13 with SMTP id 13so9251666iyf.16
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Aug 2011 00:48:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <201108160931.02543.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Mike Frysinger <vapier@gentoo.org>
+Sender: vipals@gmail.com
+In-Reply-To: <1313424117.8691.19.camel@sauron>
+References: <CAKa7sPRir5YTdPCYAHEYvPGA5GhfTuyv0Z9ynDUtEmy=YHA2XQ@mail.gmail.com>
+	<1313424117.8691.19.camel@sauron>
+From: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
+Date: Tue, 16 Aug 2011 10:48:05 +0300
+Message-ID: <CAKa7sPSB+p6Zxk8uM9famKsg_Bhdv7=LirUimaV+Jti2aRRPZA@mail.gmail.com>
+Subject: Re: UBI FS on 2MiB eraseblock Hynix MLC NAND
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Yauhen Kharuzhy <yauhen.kharuzhy@promwad.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +27,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 15 August 2011 06:11:27 Artem Bityutskiy wrote:
-> On Tue, 2011-08-09 at 13:34 -0400, Mike Frysinger wrote:
-> > On Mon, Aug 8, 2011 at 19:19, Brian Norris wrote:
-> > > "Alternatively, --all only prints what it can get,
-> > > and --help warns there _may_ be additional data not
-> > > printed by --all (and to use =E2=80=98mtdinfo /dev/mtd<N>=E2=80=99)."
-> >=20
-> > that's really the only other option of the three.
-> > 1: add region_info to sysfs
-> > 2: add a warning --all that it could be incomplete
-> > 3: have --all use the legacy lookup func to get /dev/mtd#
->=20
-> How about: make a quick fix and release mtd-utils-1.4.6, then just kill
-> the -a option.  [...]
+The problem was caused by behavior of H27UBG8T2ATR Hynix MLC NAND
+while UBI FS was trying to do page write operation. UBI FS was trying
+to write data to the first empty page assuming that 0xFF page is
+erased and writable. But this type of NAND returns error on page write
+operation even if it was entirely written with 0xFF before. As far as
+I'm using U-boot's 'nand write' to flash UBI image I've added skip if
+U-boot trying to write 0xFF-page.
 
- You should decide what =E2=80=98-a=E2=80=99 means:  =E2=80=9Call informati=
-on=E2=80=9D
- or =E2=80=9Call devices=E2=80=9D.  If =E2=80=9Call information=E2=80=9D, t=
-hen either a
- bunch of work needs to be done, or else =E2=80=98-a=E2=80=99 removed.
+--- drivers/mtd/nand/nand_base.c
++++ drivers/mtd/nand/nand_base.c	(working copy)
+@@ -1761,7 +1761,18 @@
+ 			   const uint8_t *buf, int page, int cached, int raw)
+ {
+ 	int status;
++	int i;
 
- But if =E2=80=9Call devices=E2=80=9D  =E2=80=94 which happens to be both w=
-hat
- I think it means and how I use it =E2=80=94  then it is very
- useful, at least in my situation where I'm bringing up
- a new SoC and board.  It's a nice summary of what I'm
- usually interested in; if it didn't exist, I'd =E2=80=9Chave=E2=80=9D
- to script it.  And in either case, if and when I do
- need all the information about _a_ device, then I do
- =E2=80=98mtdinfo /dev/mtd<N>=E2=80=99.
++	/* Skip empty page */
++	for (i = 0; i < mtd->writesize; i++)
++                if (buf[i] != 0xFF)
++                        break;
++	
++	if (i == mtd->writesize) {
++		printf ("nand_write_page: Skip 0xFF page\n");
++		return 0;
++	}
++	
+ 	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
 
-cheers!
-	-blf-
-=2D-=20
-Brian FOSTER
-Principal MTS, Software
+ 	if (unlikely(raw))
 
-Maxim Integrated Products (Microcontroller BU), formerly Innova Card
-ZI Ath=C3=A9lia IV - Le Forum, B=C3=A2t. A
-Quartier Roumagoua
-13600 La Ciotat - France
-Phone  : +33 (0)4 42 98 15 35
-=46ax    : +33 (0)4 42 08 33 19
-Email  : brian.foster@maxim-ic.com
-Web    : http://www.maxim-ic.com/
+So it works fine now.
+
+I also had to increase PEB size limit in mtd-utils to create UBI image.
+
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index dcdb722..307edff 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -390,7 +390,7 @@ static int validate_options(void)
+ 		return err_msg("LEB should be multiple of min. I/O units");
+ 	if (c->leb_size % 8)
+ 		return err_msg("LEB size has to be multiple of 8");
+-	if (c->leb_size > 1024*1024)
++	if (c->leb_size > 2*1024*1024)
+ 		return err_msg("too large LEB size %d", c->leb_size);
+ 	if (c->max_leb_cnt < UBIFS_MIN_LEB_CNT)
+ 		return err_msg("too low max. count of LEBs, minimum is %d",
+diff --git a/ubi-utils/ubinize.c b/ubi-utils/ubinize.c
+index 453494d..a71d067 100644
+--- a/ubi-utils/ubinize.c
++++ b/ubi-utils/ubinize.c
+@@ -253,7 +253,7 @@ static int parse_opt(int argc, char * const argv[])
+ 	if (args.peb_size < 0)
+ 		return errmsg("physical eraseblock size was not specified (use -h
+for help)");
+
+-	if (args.peb_size > 1024*1024)
++	if (args.peb_size > 2*1024*1024)
+ 		return errmsg("too high physical eraseblock size %d", args.peb_size);
+
+ 	if (args.min_io_size < 0)
+
+Best regards,
+Viktar Palstsiuk
+
+On Mon, Aug 15, 2011 at 7:01 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2011-08-04 at 16:59 +0300, Viktar Palstsiuk wrote:
+>> Hello,
+>>
+>> While trying to use UBI FS on Hynix MLC NAND (2MiB eraseblock, 8k
+>> pagesize) I faced with the problem that root mounts well only during
+>> first boot after it was flashed.
+>> On the second boot it reports that it failed to recover master node.
+>> If some one has tested UBI FS on devices with large eraseblock?
+>
+> Well, in theory it should work, but I've never heard about such huge
+> eraseblock so probably you are the first trying it, and probably there
+> is a bug.
+>
+>> NET: Registered protocol family 17
+>> lib80211: common routines for IEEE802.11 drivers
+>> rtc-mv rtc-mv: setting system clock to 2000-02-26 02:34:28 UTC (951532468)
+>> UBIFS error (pid 1): ubifs_recover_master_node: failed to recover master node
+>
+> Could you please enable UBIFS debugging, reproduce the issue and send me
+> all the kernel output - e.g., by typing dmesg or booting with the
+> ignore_loglevel kernel option?
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
