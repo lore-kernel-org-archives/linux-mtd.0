@@ -1,25 +1,18 @@
-Received: from mail-iy0-f171.google.com ([209.85.210.171])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+	helo=ch1outboundpool.messaging.microsoft.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtFLl-0000Mi-CR
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 08:50:18 +0000
-Received: by iyf13 with SMTP id 13so9350903iyf.16
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Aug 2011 01:50:15 -0700 (PDT)
+	id 1QtFrt-00011E-72
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2011 09:23:29 +0000
+From: Chunhe Lan <Chunhe.Lan@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd/physmap_of: Don't add disabled flash devices
+Date: Tue, 16 Aug 2011 17:25:50 +0800
+Message-ID: <1313486750-15211-1-git-send-email-Chunhe.Lan@freescale.com>
 MIME-Version: 1.0
-Sender: vipals@gmail.com
-In-Reply-To: <1313482105.5993.1.camel@sauron>
-References: <CAKa7sPRir5YTdPCYAHEYvPGA5GhfTuyv0Z9ynDUtEmy=YHA2XQ@mail.gmail.com>
-	<1313424117.8691.19.camel@sauron>
-	<CAKa7sPSB+p6Zxk8uM9famKsg_Bhdv7=LirUimaV+Jti2aRRPZA@mail.gmail.com>
-	<1313482105.5993.1.camel@sauron>
-From: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
-Date: Tue, 16 Aug 2011 11:49:35 +0300
-Message-ID: <CAKa7sPTi1e+J_G55f_km3mXBEMdyCB6AcTtnwYbxr9haQ1Y+gw@mail.gmail.com>
-Subject: Re: UBI FS on 2MiB eraseblock Hynix MLC NAND
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Yauhen Kharuzhy <yauhen.kharuzhy@promwad.com>,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: kumar.gala@freescale.com, linuxppc-dev@ozlabs.org, scottwood@freescale.com,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	Chunhe Lan <Chunhe.Lan@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,11 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 16, 2011 at 11:08 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> The alternative is to use the new UBIFS "fixup" feature, see
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_free_space_fixup
+Flash(cfi-flash, jedec-flash, and so on) nodes with the
+property status="disabled" are not usable and so avoid
+adding "disabled" flash devices with the system.
 
-Does UBIFS fixup works on 2.6.39.2 or should I switch to kernel version 3.0?
+Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
+---
+ drivers/mtd/maps/physmap_of.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Best regards,
-Viktar Palstsiuk
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index d251d1d..812e6dc 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -219,6 +219,9 @@ static int __devinit of_flash_probe(struct platform_device *dev)
+ 	struct mtd_info **mtd_list = NULL;
+ 	resource_size_t res_size;
+ 
++	if (!of_device_is_available(dp))
++		return -ENODEV;
++
+ 	match = of_match_device(of_flash_match, &dev->dev);
+ 	if (!match)
+ 		return -EINVAL;
+-- 
+1.5.6.5
