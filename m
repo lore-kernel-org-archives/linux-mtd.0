@@ -1,22 +1,24 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qtb5X-0000IX-BD
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 08:03:00 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
+Received: from mail-iy0-f171.google.com ([209.85.210.171])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QtbWC-0000aC-Ad
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 08:30:33 +0000
+Received: by iyf13 with SMTP id 13so1504713iyf.16
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Aug 2011 01:30:28 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 5/5] mtdinfo: consolidate help as display_help()
-Date: Wed, 17 Aug 2011 10:02:43 +0200
-References: <CAMjpGUdR-Z-mSN0oRgeVfWJ7jFjmvaKyKL3aMo-58-HZsmNidQ@mail.gmail.com>
-	<201108160918.15975.brian.foster@maxim-ic.com>
-	<CAN8TOE9yGBts+8oZ-TZoSH8wRdRmctN5c6w3JQgUdbwmpRNJGw@mail.gmail.com>
-In-Reply-To: <CAN8TOE9yGBts+8oZ-TZoSH8wRdRmctN5c6w3JQgUdbwmpRNJGw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Date: Wed, 17 Aug 2011 11:32:10 +0300
+In-Reply-To: <CAN8TOE-H9f9=DtamWPHTLbCJQBnGpeOJDtcXo18nkdC-d8WB7A@mail.gmail.com>
+References: <cover.1312922073.git.bengardiner@nanometrics.ca>
+	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
+	<CAN8TOE-H9f9=DtamWPHTLbCJQBnGpeOJDtcXo18nkdC-d8WB7A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <201108171002.43683.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <1313569934.20534.3.camel@sauron>
+Mime-Version: 1.0
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 16 August 2011 19:12:38 Brian Norris wrote:
-> On Tue, Aug 16, 2011 at 12:18 AM, Brian Foster <brian.foster@maxim-ic.com> wrote:
->[ ... ]
-> >  The other thing I won't worry about is the assumption every
-> >  output byte in PROGRAM_NAME is a printing glyph occupying
-> >  exactly one cell.  That is true (in this case) ....
+On Wed, 2011-08-10 at 10:07 -0700, Brian Norris wrote:
+> On Tue, Aug 9, 2011 at 1:57 PM, Ben Gardiner <bengardiner@nanometrics.ca> wrote:
+> > Add the ECC size and OOB available to that list. The other entries in the
+> > ecclayout struct are arrays and are not as meaningful as eccsize and oobavail.
+> > ---
+> > I noticed that the struct nand_ecclayout_user and its corresponding ioctl
+> > has been marked deprecated; however, since this is a 'debug' utility and at
+> > least one person found it useful I thought it would be a good idea to propose
+> > these changes anyways.
 > 
-> Not sure how often anyone needs to worry about this one...
+> While I agree with your rationale for ignoring the deprecation (it's
+> OK for a debug utility), users of this feature should be warned that
+> struct nand_ecclayout_user will not report all information if there
+> are more ECC entries than "MTD_MAX_ECCPOS_ENTRIES" (i.e., 64). It will
+> simply truncate ECC at 64. This may be a problem for large page flash
+> with large ECC regions. It's a similar story for "oobavail" as well.
+> 
+> And before the question is asked, I'm not sure how to implement my
+> suggestion that "users of this feature should be warned". Perhaps just
+> a comment in the code?
 
- In a previous job, this issue(in several variations) was real and live.
- So it's always in the back of my mind....   ;-)
+I guess we can do the following:
 
-> this particular discussion is mostly an exercise in frivolity
+1. make sure mtd-utils does not use the depricated ioctl
+2. release such mtd-utils
+3. change the kernel and add a warning printk there
+4. wait some time and kill the ioctl from the kernel.
 
- Agreed!
-
- Many thanks for your kind and patient help.
-cheers,
-	-blf-
 -- 
-Brian FOSTER
-Principal MTS, Software
-Maxim Integrated Products (Microcontroller BU), formerly Innova Card
-Web    : http://www.maxim-ic.com/
+Best Regards,
+Artem Bityutskiy
