@@ -1,25 +1,26 @@
-Received: from g5t0007.atlanta.hp.com ([15.192.0.44])
+Received: from mail-iy0-f171.google.com ([209.85.210.171])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtXzA-0004yF-0W
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 04:44:12 +0000
-Received: from G6W1798G.americas.hpqcorp.net (g6w1798g.atlanta.hp.com
-	[16.230.17.175]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by g5t0007.atlanta.hp.com (Postfix) with ESMTPS id 1F0D4149D7
+	id 1QtYAW-00057x-TX
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 04:55:57 +0000
+Received: by iyf13 with SMTP id 13so1157131iyf.16
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Aug 2011 04:44:09 +0000 (UTC)
-From: "Fryar, Jeff" <jeff.fryar@hp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 17 Aug 2011 05:42:31 +0100
-Subject: RE: [BUG] mtd-utils: nandwrite: invalid erase after page write failure
-Message-ID: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6D135FA4@GVW0547EXC.americas.hpqcorp.net>
-References: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6C6EB71A@GVW0547EXC.americas.hpqcorp.net>
-	<CAMjpGUc4SMSvU3mHjeZ6oq=2K8tvuYVcEOjpE9vPfYnL7DZByA@mail.gmail.com>
-In-Reply-To: <CAMjpGUc4SMSvU3mHjeZ6oq=2K8tvuYVcEOjpE9vPfYnL7DZByA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+	Tue, 16 Aug 2011 21:55:53 -0700 (PDT)
+Subject: Re: [PATCH] mtd: plat_nand: fix `bbt_options' compile error
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 17 Aug 2011 07:57:34 +0300
+In-Reply-To: <CAN8TOE_DUqzcwQnLQ8TEqoOX3D8Rn1ZxJuSpQbabPfDd83PQUA@mail.gmail.com>
+References: <1312827993-19163-1-git-send-email-computersforpeace@gmail.com>
+	<1313502412.21711.1.camel@sauron>
+	<CAN8TOE_DUqzcwQnLQ8TEqoOX3D8Rn1ZxJuSpQbabPfDd83PQUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1313557059.2679.6.camel@sauron>
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, axel.lin@gmail.com,
+	avorontsov@ru.mvista.com, linux-mtd@lists.infradead.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-U3VnZ2VzdGVkIGZpeCAobm93IHdpdGggbW9yZSB3aGl0ZXNwYWNlKSAgOikNCg0KSmVmZiBGcnlh
-ciA8amVmZi5mcnlhciBhdCBocC5jb20+DQoNCg0KLS0tIG10ZC11dGlscy1mMWZlODY1L25hbmR3
-cml0ZS5jLk9SSUcgIDIwMTEtMDctMjAgMDA6Mjg6NTIuMDAwMDAwMDAwIC0wNTAwDQorKysgbXRk
-LXV0aWxzLWYxZmU4NjUvbmFuZHdyaXRlLmMgICAgICAgMjAxMS0wOC0xMSAwOToxOToxMi4wMDAw
-MDAwMDAgLTA1MDANCkBAIC02NTksNyArNjU5LDcgQEANCiAgICAgICAgICAgICAgICAgICAgICAg
-IGZwcmludGYoc3RkZXJyLCAiRXJhc2luZyBmYWlsZWQgd3JpdGUgZnJvbSAlIzA4bGx4IHRvICUj
-MDhsbHhcbiIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJsb2Nrc3RhcnQsIGJs
-b2Nrc3RhcnQgKyBlYnNpemVfYWxpZ25lZCAtIDEpOw0KICAgICAgICAgICAgICAgICAgICAgICAg
-Zm9yIChpID0gYmxvY2tzdGFydDsgaSA8IGJsb2Nrc3RhcnQgKyBlYnNpemVfYWxpZ25lZDsgaSAr
-PSBtdGQuZWJfc2l6ZSkgew0KLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobXRk
-X2VyYXNlKG10ZF9kZXNjLCAmbXRkLCBmZCwgbXRkLmViX3NpemUpKSB7DQorICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGlmIChtdGRfZXJhc2UobXRkX2Rlc2MsICZtdGQsIGZkLCAoaSAv
-IG10ZC5lYl9zaXplKSkpIHsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBpbnQgZXJybm9fdG1wID0gZXJybm87DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgc3lzX2Vycm1zZygiJXM6IE1URCBFcmFzZSBmYWlsdXJlIiwgbXRkX2RldmljZSk7
-DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGVycm5vX3RtcCAh
-PSBFSU8pIHsNCg0K
+On Tue, 2011-08-16 at 15:15 -0700, Brian Norris wrote:
+> On Tue, Aug 16, 2011 at 6:46 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > Merged this fix with that commit in the l2-mtd-2.6.git tree, thanks!
+> 
+> I don't see any "merge." Perhaps an oversight on the push?
+
+Yes, fixed.
+
+-- 
+Best Regards,
+Artem Bityutskiy
