@@ -1,24 +1,22 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
+Received: from mail-iy0-f171.google.com ([209.85.210.171])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qtah1-0007KV-H0
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 07:37:40 +0000
-Received: by yic13 with SMTP id 13so602208yic.36
+	id 1Qtb4a-00008q-0a
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 08:02:00 +0000
+Received: by iyf13 with SMTP id 13so1458039iyf.16
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Aug 2011 00:37:36 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: fix corrupt cleanmarker with flash_erase -j
-	command
+	Wed, 17 Aug 2011 01:01:57 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: LiuShuo <b35362@freescale.com>
-Date: Wed, 17 Aug 2011 10:39:17 +0300
-In-Reply-To: <4E4B6F46.2050209@freescale.com>
-References: <1312350638-25566-1-git-send-email-b35362@freescale.com>
-	<1313507201.2679.2.camel@sauron> <4E4B6F46.2050209@freescale.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Date: Wed, 17 Aug 2011 11:03:39 +0300
+In-Reply-To: <e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
+References: <cover.1312922073.git.bengardiner@nanometrics.ca>
+	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1313566762.19563.3.camel@sauron>
+Message-ID: <1313568224.20534.1.camel@sauron>
 Mime-Version: 1.0
-Cc: linuxppc-dev@linux.freescale.net, Li Yang <leoli@freescale.com>,
-	dwmw2@infradead.org, linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,40 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-08-17 at 15:35 +0800, LiuShuo wrote:
-> I think We can add a new ioctl MEMSETOOBMODE for selecting a mode to 
-> access the OOB area.
+On Tue, 2011-08-09 at 16:57 -0400, Ben Gardiner wrote:
+> The mtd_debug 'info' command reports a great deal of useful information about
+> the mtd device is it given for a query.
 > 
-> Add new member into struct mtd_info:
+> Add the ECC size and OOB available to that list. The other entries in the
+> ecclayout struct are arrays and are not as meaningful as eccsize and oobavail.
 > 
-> struct mtd_info {
->      ......
+> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
 > 
->      enum {
->           MTD_OOB_PLACE,
->           MTD_OOB_AUTO,
->           MTD_OOB_RAW,
->      } oob_mode;
-> }
+> ---
 > 
-> In function mtd_do_writeoob() (in drivers/mtd/mtdchar.c) :
->      -  ops.mode = MTD_OOB_PLACE;
->      + ops.mode = mtd->oob_mode;
-> 
-> 
-> 
-> Could we do it like this ?
+> I noticed that the struct nand_ecclayout_user and its corresponding ioctl
+> has been marked deprecated; however, since this is a 'debug' utility and at
+> least one person found it useful I thought it would be a good idea to propose
+> these changes anyways.
 
-I think the OOB mode should not be a global MTD device state. Each
-ioctl invocation should just specify the mode.
-
-Brian's idea of having a completely new ioctl or a set of new ioctls for
-OOB which would copletely deprecate the old ones is a good idea. Let's
-wait for his patch.
-
-May be we should even start physically removing depricated ioctls by
-first adding a printk with a warning and then removing completely. But
-first mtdutils should be updated to not use them.
+I think we could just kill depricated ioctls as soon as we make
+mtd-utils stop using them. If you add this dependency - it will be more
+difficult to kill them.
 
 -- 
 Best Regards,
