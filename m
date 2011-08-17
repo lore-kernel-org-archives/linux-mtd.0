@@ -1,15 +1,19 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <w.sang@pengutronix.de>
-Subject: [PATCH v9 2/3] MTD : add helper functions library and header files
-	for GPMI NAND driver
-Date: Wed, 17 Aug 2011 19:50:27 +0800
-Message-ID: <1313581828-16625-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1313581828-16625-1-git-send-email-b32955@freescale.com>
-References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: shijie8@gmail.com, koen.beel.barco@gmail.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qtfwt-0004om-JQ
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 13:14:26 +0000
+From: david.wagner@free-electrons.com
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
+Date: Wed, 17 Aug 2011 15:17:21 +0200
+Message-Id: <1313587042-30846-1-git-send-email-david.wagner@free-electrons.com>
+In-Reply-To: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+Cc: linux-embedded <linux-embedded@vger.kernel.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	David Wagner <david.wagner@free-electrons.com>,
+	lkml <linux-kernel@vger.kernel.org>, Tim Bird <tim.bird@am.sony.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,31 +23,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-bch-regs.h : registers file for BCH module
-gpmi-regs.h: registers file for GPMI module
-gpmi-lib.c: helper functions library.
+From: David Wagner <david.wagner@free-electrons.com>
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+ubiblk is a read-only block layer on top of UBI.  It presents UBI volumes as
+read-only block devices (named ubiblk_X_Y, where X is the UBI device number
+and Y the Volume ID).
+
+It is used by putting a block filesystem image on a UBI volume, creating the
+corresponding ubiblk device and then mounting it.
+
+It uses the UBI API to register to UBI notifications and to read from the
+volumes.  It also creates a ubiblk_ctrl device node that simply receives ioctl
+from a userspace tool for creating/removing ubiblk devices.
+
+Some code is taken from mtd_blkdevs and gluebi.  Some code for the ioctl part is
+also inspired from ubi's core.
+
+Advantages of ubiblk over gluebi+mtdblock_ro:
+
+ * Simpler architecture
+
+ * The numbering of devices is much easier with ubiblk than with
+   gluebi+mtdblock_ro. With gluebi+mtdblock_ro, you get one additional MTD
+   device for each UBI volume, so the number of MTD devices grows quite a lot
+   and is a bit difficult to understand. For example, mtdblock[0-4] might be
+   your real MTD partitions, while mtdblock[5-9] might be your UBI volumes.
+   It also means that if a new real MTD partition is added, the number of all
+   the MTD devices exposing UBI volumes will be incremented by one, which is a
+   bit confusing/annoying.
+   As well, if you add an UBI volume, the mtdblock devices that are emulated on
+   top of volumes that come after this new one will have their ID incremented.
+
+ * ubiblk devices are created on a 'on-demand' basis, which avoids wasting
+   resources.
+
+ * The performance appears to be slightly better with ubiblk than
+   gluebi+mtdblock_ro, according to our benchmarks (see
+   http://elinux.org/Flash_Filesystem_Benchmarks_2.6.39)
+
+TODO:
+ * the modules keeps a table of the devices which length is the maximum number
+   of UBI volumes.  There should be a better solution (linked list or, as
+   Christoph Hellwig suggests, a radix tree (idr)).
+
+Signed-off-by: David Wagner <david.wagner@free-electrons.com>
 ---
- drivers/mtd/nand/gpmi-nand/bch-regs.h  |   88 +++
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  978 ++++++++++++++++++++++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-regs.h |  174 ++++++
- 3 files changed, 1240 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/nand/gpmi-nand/bch-regs.h
- create mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-lib.c
- create mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-regs.h
 
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+	Hi Artem,
+
+Here is the v3 of ubiblk implementing ioctls for on-demand creation/removal of
+ubiblk device ; is it what you were thinking of ?
+
+I also wrote a minimal (and ugly w.r.t argument parsing) tool in mtd-utils'
+git ; I'll send it as a reply to this email.
+
+known issue: attempts to create the same ubiblk device twice aren't catched and,
+obviously, make things go wrong (see TODO).
+
+Questions:
+==========
+I wasn't sure what magic ioctl number to use, so I settled to use the same one
+as a part of UBI: 'O', which was so far only used by UBI but on a higher range
+and leaving some room for UBI to add ioctls (for nw, it uses 'O'/0x00-0x06 and
+ubiblk uses 'O'/0x10-0x11).  Is it ok or should ubiblk use a different
+number/range ?
+
+
+updates from v3:
+===============
+ - Removed unused parameter "struct ubi_device_info" from ubiblk_create
+
+ - Synchronisation: forgot to release a mutex on the error path of ubiblk_create
+
+ - New header ubiblk-user.h, contains ioctl numbers ; patch
+   Documentation/ioctl/ioctl-numbers.txt (use the same magic as UBI but on
+   another range, leaving expansion margin for UBI)
+
+ - Add a ioctl handler and make it use the already-existing
+   ubiblk_{create,remove} functions (inspired from ubi/cdev.c).
+
+ - Register a miscdevice (inspired from ubi/build.c) that will only receive ioctls
+
+ - Notifications: don't receive a notifications for already-existing volumes
+   upon registration ; don't create a ubiblk device when a new UBI volume
+   appears
+
+ - Amend commit message and Kconfig according to these previous points
+
+ 
+TODO:
+=====
+ - Use a dynamic structure for storing the ubiblk_devs (linked list or idr ?)
+ - After this task is done, check that using ubiblkadd can't create an
+   already-existing ubiblk device (see warning/todo in the code)
+
+
+ Documentation/ioctl/ioctl-number.txt |    1 +
+ drivers/mtd/ubi/Kconfig              |   15 +
+ drivers/mtd/ubi/Makefile             |    1 +
+ drivers/mtd/ubi/ubiblk.c             |  653 ++++++++++++++++++++++++++++++++++
+ include/mtd/ubiblk-user.h            |   43 +++
+ 5 files changed, 713 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/ubi/ubiblk.c
+ create mode 100644 include/mtd/ubiblk-user.h
+
+diff --git a/Documentation/ioctl/ioctl-number.txt b/Documentation/ioctl/ioctl-number.txt
+index 3a46e36..240cf0f 100644
+--- a/Documentation/ioctl/ioctl-number.txt
++++ b/Documentation/ioctl/ioctl-number.txt
+@@ -150,6 +150,7 @@ Code  Seq#(hex)	Include File		Comments
+ 'M'	00-0F	drivers/video/fsl-diu-fb.h	conflict!
+ 'N'	00-1F	drivers/usb/scanner.h
+ 'O'     00-06   mtd/ubi-user.h		UBI
++'O'     10-11   mtd/ubiblk-user.h       ubiblk
+ 'P'	all	linux/soundcard.h	conflict!
+ 'P'	60-6F	sound/sscape_ioctl.h	conflict!
+ 'P'	00-0F	drivers/usb/class/usblp.c	conflict!
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 4dcc752..3eedf9a 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -60,4 +60,19 @@ config MTD_UBI_DEBUG
+ 	help
+ 	  This option enables UBI debugging.
+ 
++config MTD_UBI_UBIBLK
++	tristate "Read-only block transition layer on top of UBI"
++	help
++	   Read-only block interface on top of UBI.
++
++	   This option adds ubiblk, which creates a read-ony block device from
++	   UBI volumes.  It makes it possible to use block filesystems on top of
++	   UBI (and thus, on top of MTDs while avoiding bad blocks).
++
++	   ubiblk devices are created by sending appropriate ioctl to the
++	   ubiblk_ctrl device node.
++
++	   The devices are named ubiblkX_Y where X is the UBI number and Y is
++	   the Volume ID.
++
+ endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+index c9302a5..354b2df 100644
+--- a/drivers/mtd/ubi/Makefile
++++ b/drivers/mtd/ubi/Makefile
+@@ -5,3 +5,4 @@ ubi-y += misc.o
+ 
+ ubi-$(CONFIG_MTD_UBI_DEBUG) += debug.o
+ obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
++obj-$(CONFIG_MTD_UBI_UBIBLK) += ubiblk.o
+diff --git a/drivers/mtd/ubi/ubiblk.c b/drivers/mtd/ubi/ubiblk.c
 new file mode 100644
-index 0000000..cec1dfa
+index 0000000..20c0896
 --- /dev/null
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -0,0 +1,88 @@
++++ b/drivers/mtd/ubi/ubiblk.c
+@@ -0,0 +1,653 @@
 +/*
-+ * Freescale GPMI NAND Flash Driver
-+ *
-+ * Copyright 2008-2011 Freescale Semiconductor, Inc.
-+ * Copyright 2008 Embedded Alley Solutions, Inc.
++ * Copyright (c) Free Electrons, 2011
++ * Copyright (c) International Business Machines Corp., 2006
++ * Copyright © 2003-2010 David Woodhouse <dwmw2@infradead.org>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -52,1076 +190,656 @@ index 0000000..cec1dfa
 + *
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
 + *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write to the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Author: David Wagner
++ * Some code taken from gluebi.c (Artem Bityutskiy (Битюцкий Артём),
++ *                                Joern Engel)
++ * Some code taken from cdev.c (Artem Bityutskiy (Битюцкий Артём))
++ * Some code taken from mtd_blkdevs.c (David Woodhouse)
 + */
-+#ifndef __GPMI_NAND_BCH_REGS_H
-+#define __GPMI_NAND_BCH_REGS_H
 +
-+/*============================================================================*/
-+#define HW_BCH_CTRL				0x00000000
-+#define HW_BCH_CTRL_SET				0x00000004
-+#define HW_BCH_CTRL_CLR				0x00000008
-+#define HW_BCH_CTRL_TOG				0x0000000c
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/vmalloc.h>
++#include <linux/mtd/ubi.h>
++#include <linux/blkdev.h>
++#include <linux/miscdevice.h>
++#include <linux/kthread.h>
++#include <linux/mutex.h>
++#include <mtd/ubiblk-user.h>
++#include "ubi.h"
 +
-+#define BM_BCH_CTRL_COMPLETE_IRQ_EN		(1 << 8)
-+#define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
++#define BLK_SIZE 512
 +
-+/*============================================================================*/
-+#define HW_BCH_STATUS0				0x00000010
-+#define HW_BCH_MODE				0x00000020
-+#define HW_BCH_ENCODEPTR			0x00000030
-+#define HW_BCH_DATAPTR				0x00000040
-+#define HW_BCH_METAPTR				0x00000050
-+#define HW_BCH_LAYOUTSELECT			0x00000070
++#define UBIBLK_MAX_DEVS (UBI_MAX_DEVICES * UBI_MAX_VOLUMES)
 +
-+/*============================================================================*/
-+#define HW_BCH_FLASH0LAYOUT0			0x00000080
-+
-+#define BP_BCH_FLASH0LAYOUT0_NBLOCKS		24
-+#define BM_BCH_FLASH0LAYOUT0_NBLOCKS	(0xff << BP_BCH_FLASH0LAYOUT0_NBLOCKS)
-+#define BF_BCH_FLASH0LAYOUT0_NBLOCKS(v)		\
-+	(((v) << BP_BCH_FLASH0LAYOUT0_NBLOCKS) & BM_BCH_FLASH0LAYOUT0_NBLOCKS)
-+
-+#define BP_BCH_FLASH0LAYOUT0_META_SIZE		16
-+#define BM_BCH_FLASH0LAYOUT0_META_SIZE	(0xff << BP_BCH_FLASH0LAYOUT0_META_SIZE)
-+#define BF_BCH_FLASH0LAYOUT0_META_SIZE(v)	\
-+	(((v) << BP_BCH_FLASH0LAYOUT0_META_SIZE)\
-+					 & BM_BCH_FLASH0LAYOUT0_META_SIZE)
-+
-+#define BP_BCH_FLASH0LAYOUT0_ECC0		12
-+#define BM_BCH_FLASH0LAYOUT0_ECC0	(0xf << BP_BCH_FLASH0LAYOUT0_ECC0)
-+#define BF_BCH_FLASH0LAYOUT0_ECC0(v)		\
-+	(((v) << BP_BCH_FLASH0LAYOUT0_ECC0) & BM_BCH_FLASH0LAYOUT0_ECC0)
-+
-+#define BP_BCH_FLASH0LAYOUT0_DATA0_SIZE		0
-+#define BM_BCH_FLASH0LAYOUT0_DATA0_SIZE		\
-+			(0xfff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
-+#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v)	\
-+	(((v) << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)\
-+					 & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)
-+
-+/*============================================================================*/
-+#define HW_BCH_FLASH0LAYOUT1			0x00000090
-+
-+#define BP_BCH_FLASH0LAYOUT1_PAGE_SIZE		16
-+#define BM_BCH_FLASH0LAYOUT1_PAGE_SIZE		\
-+			(0xffff << BP_BCH_FLASH0LAYOUT1_PAGE_SIZE)
-+#define BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(v)	\
-+	(((v) << BP_BCH_FLASH0LAYOUT1_PAGE_SIZE) \
-+					 & BM_BCH_FLASH0LAYOUT1_PAGE_SIZE)
-+
-+#define BP_BCH_FLASH0LAYOUT1_ECCN		12
-+#define BM_BCH_FLASH0LAYOUT1_ECCN	(0xf << BP_BCH_FLASH0LAYOUT1_ECCN)
-+#define BF_BCH_FLASH0LAYOUT1_ECCN(v)		\
-+	(((v) << BP_BCH_FLASH0LAYOUT1_ECCN) & BM_BCH_FLASH0LAYOUT1_ECCN)
-+
-+#define BP_BCH_FLASH0LAYOUT1_DATAN_SIZE		0
-+#define BM_BCH_FLASH0LAYOUT1_DATAN_SIZE		\
-+			(0xfff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
-+#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v)	\
-+	(((v) << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE) \
-+					 & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)
-+#endif
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-new file mode 100644
-index 0000000..1368842
---- /dev/null
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -0,0 +1,978 @@
 +/*
-+ * Freescale GPMI NAND Flash Driver
-+ *
-+ * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2008 Embedded Alley Solutions, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write to the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * Structure representing a ubiblk device, proxying a UBI volume
 + */
-+#include "gpmi-nand.h"
-+#include "gpmi-regs.h"
-+#include "bch-regs.h"
++struct ubiblk_dev {
++	struct ubi_volume_desc *vol_desc;
++	struct ubi_volume_info *vol_info;
++	int ubi_num;
++	int vol_id;
 +
-+struct timing_threshod timing_default_threshold = {
-+	.max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
-+						BP_GPMI_TIMING0_DATA_SETUP),
-+	.internal_data_setup_in_ns   = 0,
-+	.max_sample_delay_factor     = (BM_GPMI_CTRL1_RDN_DELAY >>
-+						BP_GPMI_CTRL1_RDN_DELAY),
-+	.max_dll_clock_period_in_ns  = 32,
-+	.max_dll_delay_in_ns         = 16,
++	/* Block stuff */
++	struct gendisk *gd;
++	struct request_queue *rq;
++	struct task_struct *thread;
++
++	/* Protects the access to the UBI volume */
++	struct mutex lock;
++
++	/* Avoids concurrent accesses to the request queue */
++	spinlock_t queue_lock;
 +};
 +
-+int gpmi_init(struct gpmi_nand_data *this)
++/*
++ * Contains the pointers to all ubiblk_dev instances
++ * TODO: use a linked list
++ */
++static struct ubiblk_dev *ubiblk_devs[UBIBLK_MAX_DEVS];
++static struct mutex devtable_lock;
++
++static int ubiblk_major;
++static const struct block_device_operations ubiblk_ops;
++
++static struct ubiblk_dev *ubiblk_find_dev(struct ubi_volume_info *vol_info)
 +{
-+	struct resources *r = &this->resources;
-+	int ret;
-+
-+	ret = clk_enable(r->clock);
-+	if (ret)
-+		goto err_out;
-+	ret = mxs_reset_block(r->gpmi_regs);
-+	if (ret)
-+		goto err_out;
-+
-+	/* Choose NAND mode. */
-+	writel(BM_GPMI_CTRL1_GPMI_MODE, r->gpmi_regs + HW_GPMI_CTRL1_CLR);
-+
-+	/* Set the IRQ polarity. */
-+	writel(BM_GPMI_CTRL1_ATA_IRQRDY_POLARITY,
-+				r->gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	/* Disable Write-Protection. */
-+	writel(BM_GPMI_CTRL1_DEV_RESET, r->gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	/* Select BCH ECC. */
-+	writel(BM_GPMI_CTRL1_BCH_MODE, r->gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	clk_disable(r->clock);
-+	return 0;
-+err_out:
-+	return ret;
-+}
-+
-+/* This is very useful! */
-+void gpmi_show_regs(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	u32 reg;
 +	int i;
-+	int n;
++	struct ubiblk_dev *dev;
 +
-+	n = HW_GPMI_DEBUG / 0x10 + 1;
-+
-+	pr_info("-------------- Show GPMI registers ----------\n");
-+	for (i = 0; i <= n; i++) {
-+		reg = readl(r->gpmi_regs + i * 0x10);
-+		pr_info("offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
++	mutex_lock(&devtable_lock);
++	for (i = 0; i < UBIBLK_MAX_DEVS; i++) {
++		dev = ubiblk_devs[i];
++		if (dev && dev->ubi_num == vol_info->ubi_num &&
++		    dev->vol_id == vol_info->vol_id)
++			break;
 +	}
-+	pr_info("-------------- Show GPMI registers end ----------\n");
++	mutex_unlock(&devtable_lock);
++	if (i == UBIBLK_MAX_DEVS)
++		return NULL;
++	return dev;
 +}
 +
-+/* Configures the geometry for BCH.  */
-+int bch_set_geometry(struct gpmi_nand_data *this)
++/*
++ * Read a LEB and fill the request buffer with the requested sector
++ */
++static int do_ubiblk_request(struct request *req, struct ubiblk_dev *dev)
 +{
-+	struct resources *r = &this->resources;
-+	struct bch_geometry *bch_geo = &this->bch_geometry;
-+	unsigned int block_count;
-+	unsigned int block_size;
-+	unsigned int metadata_size;
-+	unsigned int ecc_strength;
-+	unsigned int page_size;
++	unsigned long start, len, read_bytes;
++	int offset;
++	int leb;
 +	int ret;
 +
-+	if (common_nfc_set_geometry(this))
-+		return !0;
++	start = blk_rq_pos(req) << 9;
++	len = blk_rq_cur_bytes(req);
++	read_bytes = 0;
 +
-+	block_count   = bch_geo->ecc_chunk_count - 1;
-+	block_size    = bch_geo->ecc_chunk_size_in_bytes;
-+	metadata_size = bch_geo->metadata_size_in_bytes;
-+	ecc_strength  = bch_geo->ecc_strength >> 1;
-+	page_size     = bch_geo->page_size_in_bytes;
++	/* We are always reading. No need to handle writing for now */
 +
-+	ret = clk_enable(r->clock);
-+	if (ret)
-+		goto err_out;
-+	ret = mxs_reset_block(r->bch_regs);
-+	if (ret)
-+		goto err_out;
++	leb = start / dev->vol_info->usable_leb_size;
++	offset = start % dev->vol_info->usable_leb_size;
 +
-+	/* Configure layout 0. */
-+	writel(BF_BCH_FLASH0LAYOUT0_NBLOCKS(block_count)
-+			| BF_BCH_FLASH0LAYOUT0_META_SIZE(metadata_size)
-+			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength)
-+			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size),
-+			r->bch_regs + HW_BCH_FLASH0LAYOUT0);
++	do {
++		if (offset + len > dev->vol_info->usable_leb_size)
++			len = dev->vol_info->usable_leb_size - offset;
 +
-+	writel(BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size)
-+			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength)
-+			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size),
-+			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
-+
-+	/* Set *all* chip selects to use layout 0. */
-+	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
-+
-+	/* Enable interrupts. */
-+	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
-+				r->bch_regs + HW_BCH_CTRL_SET);
-+
-+	clk_disable(r->clock);
-+	return 0;
-+err_out:
-+	return ret;
-+}
-+
-+/*
-+ * ns_to_cycles - Converts time in nanoseconds to cycles.
-+ *
-+ * @ntime:   The time, in nanoseconds.
-+ * @period:  The cycle period, in nanoseconds.
-+ * @min:     The minimum allowable number of cycles.
-+ */
-+static unsigned int ns_to_cycles(unsigned int time,
-+			unsigned int period, unsigned int min)
-+{
-+	unsigned int k;
-+
-+	/*
-+	 * Compute the minimum number of cycles that entirely contain the
-+	 * given time.
-+	 */
-+	k = (time + period - 1) / period;
-+	return max(k, min);
-+}
-+
-+/*
-+ * gpmi_compute_hardware_timing - Apply timing to current hardware conditions.
-+ *
-+ * @this:             Per-device data.
-+ * @hardware_timing:  A pointer to a hardware timing structure that will receive
-+ *                    the results of our calculations.
-+ */
-+static int gpmi_nfc_compute_hardware_timing(struct gpmi_nand_data *this,
-+					struct gpmi_nfc_hardware_timing *hw)
-+{
-+	struct gpmi_nand_platform_data *pdata = this->pdata;
-+	struct timing_threshod *nfc = &timing_default_threshold;
-+	struct nand_chip *nand = &this->mil.nand;
-+	struct nand_timing target = this->timing;
-+	bool improved_timing_is_available;
-+	unsigned long clock_frequency_in_hz;
-+	unsigned int clock_period_in_ns;
-+	bool dll_use_half_periods;
-+	unsigned int dll_delay_shift;
-+	unsigned int max_sample_delay_in_ns;
-+	unsigned int address_setup_in_cycles;
-+	unsigned int data_setup_in_ns;
-+	unsigned int data_setup_in_cycles;
-+	unsigned int data_hold_in_cycles;
-+	int ideal_sample_delay_in_ns;
-+	unsigned int sample_delay_factor;
-+	int tEYE;
-+	unsigned int min_prop_delay_in_ns = pdata->min_prop_delay_in_ns;
-+	unsigned int max_prop_delay_in_ns = pdata->max_prop_delay_in_ns;
-+
-+	/*
-+	 * If there are multiple chips, we need to relax the timings to allow
-+	 * for signal distortion due to higher capacitance.
-+	 */
-+	if (nand->numchips > 2) {
-+		target.data_setup_in_ns    += 10;
-+		target.data_hold_in_ns     += 10;
-+		target.address_setup_in_ns += 10;
-+	} else if (nand->numchips > 1) {
-+		target.data_setup_in_ns    += 5;
-+		target.data_hold_in_ns     += 5;
-+		target.address_setup_in_ns += 5;
-+	}
-+
-+	/* Check if improved timing information is available. */
-+	improved_timing_is_available =
-+		(target.tREA_in_ns  >= 0) &&
-+		(target.tRLOH_in_ns >= 0) &&
-+		(target.tRHOH_in_ns >= 0) ;
-+
-+	/* Inspect the clock. */
-+	clock_frequency_in_hz = nfc->clock_frequency_in_hz;
-+	clock_period_in_ns    = 1000000000 / clock_frequency_in_hz;
-+
-+	/*
-+	 * The NFC quantizes setup and hold parameters in terms of clock cycles.
-+	 * Here, we quantize the setup and hold timing parameters to the
-+	 * next-highest clock period to make sure we apply at least the
-+	 * specified times.
-+	 *
-+	 * For data setup and data hold, the hardware interprets a value of zero
-+	 * as the largest possible delay. This is not what's intended by a zero
-+	 * in the input parameter, so we impose a minimum of one cycle.
-+	 */
-+	data_setup_in_cycles    = ns_to_cycles(target.data_setup_in_ns,
-+							clock_period_in_ns, 1);
-+	data_hold_in_cycles     = ns_to_cycles(target.data_hold_in_ns,
-+							clock_period_in_ns, 1);
-+	address_setup_in_cycles = ns_to_cycles(target.address_setup_in_ns,
-+							clock_period_in_ns, 0);
-+
-+	/*
-+	 * The clock's period affects the sample delay in a number of ways:
-+	 *
-+	 * (1) The NFC HAL tells us the maximum clock period the sample delay
-+	 *     DLL can tolerate. If the clock period is greater than half that
-+	 *     maximum, we must configure the DLL to be driven by half periods.
-+	 *
-+	 * (2) We need to convert from an ideal sample delay, in ns, to a
-+	 *     "sample delay factor," which the NFC uses. This factor depends on
-+	 *     whether we're driving the DLL with full or half periods.
-+	 *     Paraphrasing the reference manual:
-+	 *
-+	 *         AD = SDF x 0.125 x RP
-+	 *
-+	 * where:
-+	 *
-+	 *     AD   is the applied delay, in ns.
-+	 *     SDF  is the sample delay factor, which is dimensionless.
-+	 *     RP   is the reference period, in ns, which is a full clock period
-+	 *          if the DLL is being driven by full periods, or half that if
-+	 *          the DLL is being driven by half periods.
-+	 *
-+	 * Let's re-arrange this in a way that's more useful to us:
-+	 *
-+	 *                        8
-+	 *         SDF  =  AD x ----
-+	 *                       RP
-+	 *
-+	 * The reference period is either the clock period or half that, so this
-+	 * is:
-+	 *
-+	 *                        8       AD x DDF
-+	 *         SDF  =  AD x -----  =  --------
-+	 *                      f x P        P
-+	 *
-+	 * where:
-+	 *
-+	 *       f  is 1 or 1/2, depending on how we're driving the DLL.
-+	 *       P  is the clock period.
-+	 *     DDF  is the DLL Delay Factor, a dimensionless value that
-+	 *          incorporates all the constants in the conversion.
-+	 *
-+	 * DDF will be either 8 or 16, both of which are powers of two. We can
-+	 * reduce the cost of this conversion by using bit shifts instead of
-+	 * multiplication or division. Thus:
-+	 *
-+	 *                 AD << DDS
-+	 *         SDF  =  ---------
-+	 *                     P
-+	 *
-+	 *     or
-+	 *
-+	 *         AD  =  (SDF >> DDS) x P
-+	 *
-+	 * where:
-+	 *
-+	 *     DDS  is the DLL Delay Shift, the logarithm to base 2 of the DDF.
-+	 */
-+	if (clock_period_in_ns > (nfc->max_dll_clock_period_in_ns >> 1)) {
-+		dll_use_half_periods = true;
-+		dll_delay_shift      = 3 + 1;
-+	} else {
-+		dll_use_half_periods = false;
-+		dll_delay_shift      = 3;
-+	}
-+
-+	/*
-+	 * Compute the maximum sample delay the NFC allows, under current
-+	 * conditions. If the clock is running too slowly, no sample delay is
-+	 * possible.
-+	 */
-+	if (clock_period_in_ns > nfc->max_dll_clock_period_in_ns)
-+		max_sample_delay_in_ns = 0;
-+	else {
-+		/*
-+		 * Compute the delay implied by the largest sample delay factor
-+		 * the NFC allows.
-+		 */
-+		max_sample_delay_in_ns =
-+			(nfc->max_sample_delay_factor * clock_period_in_ns) >>
-+								dll_delay_shift;
-+
-+		/*
-+		 * Check if the implied sample delay larger than the NFC
-+		 * actually allows.
-+		 */
-+		if (max_sample_delay_in_ns > nfc->max_dll_delay_in_ns)
-+			max_sample_delay_in_ns = nfc->max_dll_delay_in_ns;
-+	}
-+
-+	/*
-+	 * Check if improved timing information is available. If not, we have to
-+	 * use a less-sophisticated algorithm.
-+	 */
-+	if (!improved_timing_is_available) {
-+		/*
-+		 * Fold the read setup time required by the NFC into the ideal
-+		 * sample delay.
-+		 */
-+		ideal_sample_delay_in_ns = target.gpmi_sample_delay_in_ns +
-+						nfc->internal_data_setup_in_ns;
-+
-+		/*
-+		 * The ideal sample delay may be greater than the maximum
-+		 * allowed by the NFC. If so, we can trade off sample delay time
-+		 * for more data setup time.
-+		 *
-+		 * In each iteration of the following loop, we add a cycle to
-+		 * the data setup time and subtract a corresponding amount from
-+		 * the sample delay until we've satisified the constraints or
-+		 * can't do any better.
-+		 */
-+		while ((ideal_sample_delay_in_ns > max_sample_delay_in_ns) &&
-+			(data_setup_in_cycles < nfc->max_data_setup_cycles)) {
-+
-+			data_setup_in_cycles++;
-+			ideal_sample_delay_in_ns -= clock_period_in_ns;
-+
-+			if (ideal_sample_delay_in_ns < 0)
-+				ideal_sample_delay_in_ns = 0;
-+
++		if (unlikely(blk_rq_pos(req) + blk_rq_cur_sectors(req) >
++		    get_capacity(req->rq_disk))) {
++			pr_err("UBIBLK: attempting to read too far\n");
++			return -EIO;
 +		}
 +
-+		/*
-+		 * Compute the sample delay factor that corresponds most closely
-+		 * to the ideal sample delay. If the result is too large for the
-+		 * NFC, use the maximum value.
-+		 *
-+		 * Notice that we use the ns_to_cycles function to compute the
-+		 * sample delay factor. We do this because the form of the
-+		 * computation is the same as that for calculating cycles.
++		pr_debug("%s(%s) of sector %llu (LEB %d). offset=%d, len=%lu\n",
++			 __func__, rq_data_dir(req) ? "Write" : "Read",
++			 blk_rq_pos(req), leb, offset, len);
++
++		/* Read (len) bytes of LEB (leb) from (offset) and put the
++		 * result in the buffer given by the request.
++		 * If the request is overlapping on several lebs, (read_bytes)
++		 * will be > 0 and the data will be put in the buffer at
++		 * offset (read_bytes)
 +		 */
-+		sample_delay_factor =
-+			ns_to_cycles(
-+				ideal_sample_delay_in_ns << dll_delay_shift,
-+							clock_period_in_ns, 0);
++		ret = ubi_read(dev->vol_desc, leb, req->buffer + read_bytes,
++			       offset, len);
 +
-+		if (sample_delay_factor > nfc->max_sample_delay_factor)
-+			sample_delay_factor = nfc->max_sample_delay_factor;
++		if (ret) {
++			pr_err("ubi_read error\n");
++			return ret;
++		}
 +
-+		/* Skip to the part where we return our results. */
-+		goto return_results;
++		read_bytes += len;
++
++		len = blk_rq_cur_bytes(req) - read_bytes;
++		leb++;
++		offset = 0;
++	} while (read_bytes < blk_rq_cur_bytes(req));
++
++	pr_debug("ubi_read done.\n");
++
++	return 0;
++}
++
++static void ubi_ubiblk_request(struct request_queue *rq)
++{
++	struct ubiblk_dev *dev;
++	struct request *req = NULL;
++
++	dev = rq->queuedata;
++
++	if (!dev)
++		while ((req = blk_fetch_request(rq)) != NULL)
++			__blk_end_request_all(req, -ENODEV);
++	else
++		wake_up_process(dev->thread);
++}
++
++/*
++ * Open a UBI volume (get the volume descriptor)
++ */
++static int ubiblk_open(struct block_device *bdev, fmode_t mode)
++{
++	struct ubiblk_dev *dev = bdev->bd_disk->private_data;
++	pr_debug("%s() disk_name=%s, mode=%d\n", __func__,
++		 bdev->bd_disk->disk_name, mode);
++
++	dev->vol_desc = ubi_open_volume(dev->ubi_num, dev->vol_id,
++					UBI_READONLY);
++	if (!dev->vol_desc) {
++		pr_err("open_volume failed");
++		return -EINVAL;
 +	}
 +
-+	/*
-+	 * If control arrives here, we have more detailed timing information,
-+	 * so we can use a better algorithm.
-+	 */
++	dev->vol_info = kzalloc(sizeof(struct ubi_volume_info), GFP_KERNEL);
++	if (!dev->vol_info) {
++		ubi_close_volume(dev->vol_desc);
++		dev->vol_desc = NULL;
++		return -ENOMEM;
++	}
++	ubi_get_volume_info(dev->vol_desc, dev->vol_info);
 +
-+	/*
-+	 * Fold the read setup time required by the NFC into the maximum
-+	 * propagation delay.
-+	 */
-+	max_prop_delay_in_ns += nfc->internal_data_setup_in_ns;
++	return 0;
++}
 +
-+	/*
-+	 * Earlier, we computed the number of clock cycles required to satisfy
-+	 * the data setup time. Now, we need to know the actual nanoseconds.
-+	 */
-+	data_setup_in_ns = clock_period_in_ns * data_setup_in_cycles;
++/*
++ * Close a UBI volume (close the volume descriptor)
++ */
++static int ubiblk_release(struct gendisk *gd, fmode_t mode)
++{
++	struct ubiblk_dev *dev = gd->private_data;
++	pr_debug("%s() disk_name=%s, mode=%d\n", __func__, gd->disk_name, mode);
 +
-+	/*
-+	 * Compute tEYE, the width of the data eye when reading from the NAND
-+	 * Flash. The eye width is fundamentally determined by the data setup
-+	 * time, perturbed by propagation delays and some characteristics of the
-+	 * NAND Flash device.
-+	 *
-+	 * start of the eye = max_prop_delay + tREA
-+	 * end of the eye   = min_prop_delay + tRHOH + data_setup
-+	 */
-+	tEYE = (int)min_prop_delay_in_ns + (int)target.tRHOH_in_ns +
-+							(int)data_setup_in_ns;
-+
-+	tEYE -= (int)max_prop_delay_in_ns + (int)target.tREA_in_ns;
-+
-+	/*
-+	 * The eye must be open. If it's not, we can try to open it by
-+	 * increasing its main forcer, the data setup time.
-+	 *
-+	 * In each iteration of the following loop, we increase the data setup
-+	 * time by a single clock cycle. We do this until either the eye is
-+	 * open or we run into NFC limits.
-+	 */
-+	while ((tEYE <= 0) &&
-+			(data_setup_in_cycles < nfc->max_data_setup_cycles)) {
-+		/* Give a cycle to data setup. */
-+		data_setup_in_cycles++;
-+		/* Synchronize the data setup time with the cycles. */
-+		data_setup_in_ns += clock_period_in_ns;
-+		/* Adjust tEYE accordingly. */
-+		tEYE += clock_period_in_ns;
++	kfree(dev->vol_info);
++	dev->vol_info = NULL;
++	if (dev->vol_desc) {
++		ubi_close_volume(dev->vol_desc);
++		dev->vol_desc = NULL;
 +	}
 +
-+	/*
-+	 * When control arrives here, the eye is open. The ideal time to sample
-+	 * the data is in the center of the eye:
-+	 *
-+	 *     end of the eye + start of the eye
-+	 *     ---------------------------------  -  data_setup
-+	 *                    2
-+	 *
-+	 * After some algebra, this simplifies to the code immediately below.
-+	 */
-+	ideal_sample_delay_in_ns =
-+		((int)max_prop_delay_in_ns +
-+			(int)target.tREA_in_ns +
-+				(int)min_prop_delay_in_ns +
-+					(int)target.tRHOH_in_ns -
-+						(int)data_setup_in_ns) >> 1;
++	return 0;
++}
 +
-+	/*
-+	 * The following figure illustrates some aspects of a NAND Flash read:
-+	 *
-+	 *
-+	 *           __                   _____________________________________
-+	 * RDN         \_________________/
-+	 *
-+	 *                                         <---- tEYE ----->
-+	 *                                        /-----------------\
-+	 * Read Data ----------------------------<                   >---------
-+	 *                                        \-----------------/
-+	 *             ^                 ^                 ^              ^
-+	 *             |                 |                 |              |
-+	 *             |<--Data Setup -->|<--Delay Time -->|              |
-+	 *             |                 |                 |              |
-+	 *             |                 |                                |
-+	 *             |                 |<--   Quantized Delay Time   -->|
-+	 *             |                 |                                |
-+	 *
-+	 *
-+	 * We have some issues we must now address:
-+	 *
-+	 * (1) The *ideal* sample delay time must not be negative. If it is, we
-+	 *     jam it to zero.
-+	 *
-+	 * (2) The *ideal* sample delay time must not be greater than that
-+	 *     allowed by the NFC. If it is, we can increase the data setup
-+	 *     time, which will reduce the delay between the end of the data
-+	 *     setup and the center of the eye. It will also make the eye
-+	 *     larger, which might help with the next issue...
-+	 *
-+	 * (3) The *quantized* sample delay time must not fall either before the
-+	 *     eye opens or after it closes (the latter is the problem
-+	 *     illustrated in the above figure).
-+	 */
++/*
++ * Loop on the block request queue and wait for new requests ; run them with
++ * do_ubiblk_request()
++ *
++ * Mostly copied from mtd_blkdevs.c
++ */
++static int ubi_ubiblk_thread(void *arg)
++{
++	struct ubiblk_dev *dev = arg;
++	struct request_queue *rq = dev->rq;
++	struct request *req = NULL;
 +
-+	/* Jam a negative ideal sample delay to zero. */
-+	if (ideal_sample_delay_in_ns < 0)
-+		ideal_sample_delay_in_ns = 0;
++	spin_lock_irq(rq->queue_lock);
 +
-+	/*
-+	 * Extend the data setup as needed to reduce the ideal sample delay
-+	 * below the maximum permitted by the NFC.
-+	 */
-+	while ((ideal_sample_delay_in_ns > max_sample_delay_in_ns) &&
-+			(data_setup_in_cycles < nfc->max_data_setup_cycles)) {
++	while (!kthread_should_stop()) {
++		int res;
 +
-+		/* Give a cycle to data setup. */
-+		data_setup_in_cycles++;
-+		/* Synchronize the data setup time with the cycles. */
-+		data_setup_in_ns += clock_period_in_ns;
-+		/* Adjust tEYE accordingly. */
-+		tEYE += clock_period_in_ns;
++		if (!req && !(req = blk_fetch_request(rq))) {
++			set_current_state(TASK_INTERRUPTIBLE);
 +
-+		/*
-+		 * Decrease the ideal sample delay by one half cycle, to keep it
-+		 * in the middle of the eye.
-+		 */
-+		ideal_sample_delay_in_ns -= (clock_period_in_ns >> 1);
++			if (kthread_should_stop())
++				set_current_state(TASK_RUNNING);
 +
-+		/* Jam a negative ideal sample delay to zero. */
-+		if (ideal_sample_delay_in_ns < 0)
-+			ideal_sample_delay_in_ns = 0;
-+	}
-+
-+	/*
-+	 * Compute the sample delay factor that corresponds to the ideal sample
-+	 * delay. If the result is too large, then use the maximum allowed
-+	 * value.
-+	 *
-+	 * Notice that we use the ns_to_cycles function to compute the sample
-+	 * delay factor. We do this because the form of the computation is the
-+	 * same as that for calculating cycles.
-+	 */
-+	sample_delay_factor =
-+		ns_to_cycles(ideal_sample_delay_in_ns << dll_delay_shift,
-+							clock_period_in_ns, 0);
-+
-+	if (sample_delay_factor > nfc->max_sample_delay_factor)
-+		sample_delay_factor = nfc->max_sample_delay_factor;
-+
-+	/*
-+	 * These macros conveniently encapsulate a computation we'll use to
-+	 * continuously evaluate whether or not the data sample delay is inside
-+	 * the eye.
-+	 */
-+	#define IDEAL_DELAY  ((int) ideal_sample_delay_in_ns)
-+
-+	#define QUANTIZED_DELAY  \
-+		((int) ((sample_delay_factor * clock_period_in_ns) >> \
-+							dll_delay_shift))
-+
-+	#define DELAY_ERROR  (abs(QUANTIZED_DELAY - IDEAL_DELAY))
-+
-+	#define SAMPLE_IS_NOT_WITHIN_THE_EYE  (DELAY_ERROR > (tEYE >> 1))
-+
-+	/*
-+	 * While the quantized sample time falls outside the eye, reduce the
-+	 * sample delay or extend the data setup to move the sampling point back
-+	 * toward the eye. Do not allow the number of data setup cycles to
-+	 * exceed the maximum allowed by the NFC.
-+	 */
-+	while (SAMPLE_IS_NOT_WITHIN_THE_EYE &&
-+			(data_setup_in_cycles < nfc->max_data_setup_cycles)) {
-+		/*
-+		 * If control arrives here, the quantized sample delay falls
-+		 * outside the eye. Check if it's before the eye opens, or after
-+		 * the eye closes.
-+		 */
-+		if (QUANTIZED_DELAY > IDEAL_DELAY) {
-+			/*
-+			 * If control arrives here, the quantized sample delay
-+			 * falls after the eye closes. Decrease the quantized
-+			 * delay time and then go back to re-evaluate.
-+			 */
-+			if (sample_delay_factor != 0)
-+				sample_delay_factor--;
++			spin_unlock_irq(rq->queue_lock);
++			schedule();
++			spin_lock_irq(rq->queue_lock);
 +			continue;
 +		}
 +
-+		/*
-+		 * If control arrives here, the quantized sample delay falls
-+		 * before the eye opens. Shift the sample point by increasing
-+		 * data setup time. This will also make the eye larger.
-+		 */
++		spin_unlock_irq(rq->queue_lock);
 +
-+		/* Give a cycle to data setup. */
-+		data_setup_in_cycles++;
-+		/* Synchronize the data setup time with the cycles. */
-+		data_setup_in_ns += clock_period_in_ns;
-+		/* Adjust tEYE accordingly. */
-+		tEYE += clock_period_in_ns;
++		mutex_lock(&dev->lock);
++		res = do_ubiblk_request(req, dev);
++		pr_debug("return from request: %d\n", res);
++		mutex_unlock(&dev->lock);
 +
-+		/*
-+		 * Decrease the ideal sample delay by one half cycle, to keep it
-+		 * in the middle of the eye.
-+		 */
-+		ideal_sample_delay_in_ns -= (clock_period_in_ns >> 1);
++		spin_lock_irq(rq->queue_lock);
 +
-+		/* ...and one less period for the delay time. */
-+		ideal_sample_delay_in_ns -= clock_period_in_ns;
-+
-+		/* Jam a negative ideal sample delay to zero. */
-+		if (ideal_sample_delay_in_ns < 0)
-+			ideal_sample_delay_in_ns = 0;
-+
-+		/*
-+		 * We have a new ideal sample delay, so re-compute the quantized
-+		 * delay.
-+		 */
-+		sample_delay_factor =
-+			ns_to_cycles(
-+				ideal_sample_delay_in_ns << dll_delay_shift,
-+							clock_period_in_ns, 0);
-+
-+		if (sample_delay_factor > nfc->max_sample_delay_factor)
-+			sample_delay_factor = nfc->max_sample_delay_factor;
++		if (!__blk_end_request_cur(req, res))
++			req = NULL;
 +	}
 +
-+	/* Control arrives here when we're ready to return our results. */
-+return_results:
-+	hw->data_setup_in_cycles    = data_setup_in_cycles;
-+	hw->data_hold_in_cycles     = data_hold_in_cycles;
-+	hw->address_setup_in_cycles = address_setup_in_cycles;
-+	hw->use_half_periods        = dll_use_half_periods;
-+	hw->sample_delay_factor     = sample_delay_factor;
++	if (req)
++		__blk_end_request_all(req, -EIO);
 +
-+	/* Return success. */
++	spin_unlock_irq(rq->queue_lock);
++
 +	return 0;
 +}
 +
-+/* Begin the I/O */
-+void gpmi_begin(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	struct timing_threshod *nfc = &timing_default_threshold;
-+	unsigned char  *gpmi_regs = r->gpmi_regs;
-+	unsigned int   clock_period_in_ns;
-+	uint32_t       reg;
-+	unsigned int   dll_wait_time_in_us;
-+	struct gpmi_nfc_hardware_timing  hw;
-+	int ret;
-+
-+	/* Enable the clock. */
-+	ret = clk_enable(r->clock);
-+	if (ret) {
-+		pr_info("We failed in enable the clk\n");
-+		goto err_out;
-+	}
-+
-+	/* set ready/busy timeout */
-+	writel(0x500 << 16, gpmi_regs + HW_GPMI_TIMING1);
-+
-+	/* Get the timing information we need. */
-+	nfc->clock_frequency_in_hz = clk_get_rate(r->clock);
-+	clock_period_in_ns = 1000000000 / nfc->clock_frequency_in_hz;
-+
-+	gpmi_nfc_compute_hardware_timing(this, &hw);
-+
-+	/* Set up all the simple timing parameters. */
-+	reg = BF_GPMI_TIMING0_ADDRESS_SETUP(hw.address_setup_in_cycles) |
-+		BF_GPMI_TIMING0_DATA_HOLD(hw.data_hold_in_cycles)         |
-+		BF_GPMI_TIMING0_DATA_SETUP(hw.data_setup_in_cycles)       ;
-+
-+	writel(reg, gpmi_regs + HW_GPMI_TIMING0);
-+
-+	/*
-+	 * HEY - PAY ATTENTION!
-+	 *
-+	 * DLL_ENABLE must be set to zero when setting RDN_DELAY or HALF_PERIOD.
-+	 */
-+	writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_CLR);
-+
-+	/* Clear out the DLL control fields. */
-+	writel(BM_GPMI_CTRL1_RDN_DELAY,   gpmi_regs + HW_GPMI_CTRL1_CLR);
-+	writel(BM_GPMI_CTRL1_HALF_PERIOD, gpmi_regs + HW_GPMI_CTRL1_CLR);
-+
-+	/* If no sample delay is called for, return immediately. */
-+	if (!hw.sample_delay_factor)
-+		return;
-+
-+	/* Configure the HALF_PERIOD flag. */
-+	if (hw.use_half_periods)
-+		writel(BM_GPMI_CTRL1_HALF_PERIOD,
-+						gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	/* Set the delay factor. */
-+	writel(BF_GPMI_CTRL1_RDN_DELAY(hw.sample_delay_factor),
-+						gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	/* Enable the DLL. */
-+	writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_SET);
-+
-+	/*
-+	 * After we enable the GPMI DLL, we have to wait 64 clock cycles before
-+	 * we can use the GPMI.
-+	 *
-+	 * Calculate the amount of time we need to wait, in microseconds.
-+	 */
-+	dll_wait_time_in_us = (clock_period_in_ns * 64) / 1000;
-+
-+	if (!dll_wait_time_in_us)
-+		dll_wait_time_in_us = 1;
-+
-+	/* Wait for the DLL to settle. */
-+	udelay(dll_wait_time_in_us);
-+
-+err_out:
-+	return;
-+}
-+
-+void gpmi_end(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	clk_disable(r->clock);
-+}
-+
-+/* Clears a BCH interrupt. */
-+void gpmi_clear_bch(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	writel(BM_BCH_CTRL_COMPLETE_IRQ, r->bch_regs + HW_BCH_CTRL_CLR);
-+}
-+
-+/* Returns the Ready/Busy status of the given chip. */
-+int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
-+{
-+	struct resources *r = &this->resources;
-+	uint32_t mask;
-+	uint32_t reg;
-+
-+	if (GPMI_IS_MX23(this)) {
-+		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
-+		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
-+	} else if (GPMI_IS_MX28(this)) {
-+		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
-+		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
-+	} else
-+		BUG();
-+	return !!(reg & mask);
-+}
-+
-+static inline void set_dma_type(struct gpmi_nand_data *this,
-+					enum dma_ops_type type)
-+{
-+	this->last_dma_type = this->dma_type;
-+	this->dma_type = type;
-+}
-+
-+int gpmi_send_command(struct gpmi_nand_data *this)
-+{
-+	struct dma_chan *channel = get_dma_chan(this);
-+	struct mil *mil	= &this->mil;
-+	struct dma_async_tx_descriptor *desc;
-+	struct scatterlist *sgl;
-+	int chip = mil->current_chip;
-+	u32 pio[3];
-+
-+	/* [1] send out the PIO words */
-+	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__WRITE)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_CLE)
-+		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
-+		| BF_GPMI_CTRL0_XFER_COUNT(mil->command_length);
-+	pio[1] = pio[2] = 0;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					(struct scatterlist *)pio,
-+					ARRAY_SIZE(pio), DMA_NONE, 0);
-+	if (!desc) {
-+		pr_info("step 1 error\n");
-+		return -1;
-+	}
-+
-+	/* [2] send out the COMMAND + ADDRESS string stored in @buffer */
-+	sgl = &mil->cmd_sgl;
-+
-+	sg_init_one(sgl, mil->cmd_buffer, mil->command_length);
-+	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					sgl, 1, DMA_TO_DEVICE, 1);
-+	if (!desc) {
-+		pr_info("step 2 error\n");
-+		return -1;
-+	}
-+
-+	/* [3] submit the DMA */
-+	set_dma_type(this, DMA_FOR_COMMAND);
-+	return start_dma_without_bch_irq(this, desc);
-+}
-+
-+int gpmi_send_data(struct gpmi_nand_data *this)
-+{
-+	struct dma_async_tx_descriptor *desc;
-+	struct dma_chan *channel = get_dma_chan(this);
-+	struct mil *mil	= &this->mil;
-+	int chip = mil->current_chip;
-+	uint32_t command_mode;
-+	uint32_t address;
-+	u32 pio[2];
-+
-+	/* [1] PIO */
-+	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__WRITE;
-+	address      = BV_GPMI_CTRL0_ADDRESS__NAND_DATA;
-+
-+	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(command_mode)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(address)
-+		| BF_GPMI_CTRL0_XFER_COUNT(mil->upper_len);
-+	pio[1] = 0;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					(struct scatterlist *)pio,
-+					ARRAY_SIZE(pio), DMA_NONE, 0);
-+	if (!desc) {
-+		pr_info("step 1 error\n");
-+		return -1;
-+	}
-+
-+	/* [2] send DMA request */
-+	prepare_data_dma(this, DMA_TO_DEVICE);
-+	desc = channel->device->device_prep_slave_sg(channel, &mil->data_sgl,
-+						1, DMA_TO_DEVICE, 1);
-+	if (!desc) {
-+		pr_info("step 2 error\n");
-+		return -1;
-+	}
-+	/* [3] submit the DMA */
-+	set_dma_type(this, DMA_FOR_WRITE_DATA);
-+	return start_dma_without_bch_irq(this, desc);
-+}
-+
-+int gpmi_read_data(struct gpmi_nand_data *this)
-+{
-+	struct dma_async_tx_descriptor *desc;
-+	struct dma_chan *channel = get_dma_chan(this);
-+	struct mil *mil = &this->mil;
-+	int chip = mil->current_chip;
-+	u32 pio[2];
-+
-+	/* [1] : send PIO */
-+	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__READ)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
-+		| BF_GPMI_CTRL0_XFER_COUNT(mil->upper_len);
-+	pio[1] = 0;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					(struct scatterlist *)pio,
-+					ARRAY_SIZE(pio), DMA_NONE, 0);
-+	if (!desc) {
-+		pr_info("step 1 error\n");
-+		return -1;
-+	}
-+
-+	/* [2] : send DMA request */
-+	prepare_data_dma(this, DMA_FROM_DEVICE);
-+	desc = channel->device->device_prep_slave_sg(channel, &mil->data_sgl,
-+						1, DMA_FROM_DEVICE, 1);
-+	if (!desc) {
-+		pr_info("step 2 error\n");
-+		return -1;
-+	}
-+
-+	/* [3] : submit the DMA */
-+	set_dma_type(this, DMA_FOR_READ_DATA);
-+	return start_dma_without_bch_irq(this, desc);
-+}
-+
-+int gpmi_send_page(struct gpmi_nand_data *this,
-+			dma_addr_t payload, dma_addr_t auxiliary)
-+{
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	uint32_t command_mode;
-+	uint32_t address;
-+	uint32_t ecc_command;
-+	uint32_t buffer_mask;
-+	struct dma_async_tx_descriptor *desc;
-+	struct dma_chan *channel = get_dma_chan(this);
-+	struct mil *mil = &this->mil;
-+	int chip = mil->current_chip;
-+	u32 pio[6];
-+
-+	/* A DMA descriptor that does an ECC page read. */
-+	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__WRITE;
-+	address      = BV_GPMI_CTRL0_ADDRESS__NAND_DATA;
-+	ecc_command  = BV_GPMI_ECCCTRL_ECC_CMD__BCH_ENCODE;
-+	buffer_mask  = BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_PAGE |
-+				BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_AUXONLY;
-+
-+	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(command_mode)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(address)
-+		| BF_GPMI_CTRL0_XFER_COUNT(0);
-+	pio[1] = 0;
-+	pio[2] = BM_GPMI_ECCCTRL_ENABLE_ECC
-+		| BF_GPMI_ECCCTRL_ECC_CMD(ecc_command)
-+		| BF_GPMI_ECCCTRL_BUFFER_MASK(buffer_mask);
-+	pio[3] = geo->page_size_in_bytes;
-+	pio[4] = payload;
-+	pio[5] = auxiliary;
-+
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					(struct scatterlist *)pio,
-+					ARRAY_SIZE(pio), DMA_NONE, 0);
-+	if (!desc) {
-+		pr_info("step 2 error\n");
-+		return -1;
-+	}
-+	set_dma_type(this, DMA_FOR_WRITE_ECC_PAGE);
-+	return start_dma_with_bch_irq(this, desc);
-+}
-+
-+int gpmi_read_page(struct gpmi_nand_data *this,
-+				dma_addr_t payload, dma_addr_t auxiliary)
-+{
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	uint32_t command_mode;
-+	uint32_t address;
-+	uint32_t ecc_command;
-+	uint32_t buffer_mask;
-+	struct dma_async_tx_descriptor *desc;
-+	struct dma_chan *channel = get_dma_chan(this);
-+	struct mil *mil = &this->mil;
-+	int chip = mil->current_chip;
-+	u32 pio[6];
-+
-+	/* [1] Wait for the chip to report ready. */
-+	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__WAIT_FOR_READY;
-+	address      = BV_GPMI_CTRL0_ADDRESS__NAND_DATA;
-+
-+	pio[0] =  BF_GPMI_CTRL0_COMMAND_MODE(command_mode)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(address)
-+		| BF_GPMI_CTRL0_XFER_COUNT(0);
-+	pio[1] = 0;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+				(struct scatterlist *)pio, 2, DMA_NONE, 0);
-+	if (!desc) {
-+		pr_info("step 1 error\n");
-+		return -1;
-+	}
-+
-+	/* [2] Enable the BCH block and read. */
-+	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__READ;
-+	address      = BV_GPMI_CTRL0_ADDRESS__NAND_DATA;
-+	ecc_command  = BV_GPMI_ECCCTRL_ECC_CMD__BCH_DECODE;
-+	buffer_mask  = BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_PAGE
-+			| BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_AUXONLY;
-+
-+	pio[0] =  BF_GPMI_CTRL0_COMMAND_MODE(command_mode)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(address)
-+		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size_in_bytes);
-+
-+	pio[1] = 0;
-+	pio[2] =  BM_GPMI_ECCCTRL_ENABLE_ECC
-+		| BF_GPMI_ECCCTRL_ECC_CMD(ecc_command)
-+		| BF_GPMI_ECCCTRL_BUFFER_MASK(buffer_mask);
-+	pio[3] = geo->page_size_in_bytes;
-+	pio[4] = payload;
-+	pio[5] = auxiliary;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+					(struct scatterlist *)pio,
-+					ARRAY_SIZE(pio), DMA_NONE, 1);
-+	if (!desc) {
-+		pr_info("step 2 error\n");
-+		return -1;
-+	}
-+
-+	/* [3] Disable the BCH block */
-+	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__WAIT_FOR_READY;
-+	address      = BV_GPMI_CTRL0_ADDRESS__NAND_DATA;
-+
-+	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(command_mode)
-+		| BM_GPMI_CTRL0_WORD_LENGTH
-+		| BF_GPMI_CTRL0_CS(chip, this)
-+		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
-+		| BF_GPMI_CTRL0_ADDRESS(address)
-+		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size_in_bytes);
-+	pio[1] = 0;
-+	desc = channel->device->device_prep_slave_sg(channel,
-+				(struct scatterlist *)pio, 2, DMA_NONE, 1);
-+	if (!desc) {
-+		pr_info("step 3 error\n");
-+		return -1;
-+	}
-+
-+	/* [4] submit the DMA */
-+	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
-+	return start_dma_with_bch_irq(this, desc);
-+}
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-new file mode 100644
-index 0000000..c0381cd
---- /dev/null
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-@@ -0,0 +1,174 @@
 +/*
-+ * Freescale GPMI NAND Flash Driver
-+ *
-+ * Copyright 2008-2011 Freescale Semiconductor, Inc.
-+ * Copyright 2008 Embedded Alley Solutions, Inc.
++ * An UBI volume has been created ; create a corresponding ubiblk device:
++ * Initialize the locks, the structure, the block layer infos and start a
++ * thread.
++ */
++static int ubiblk_create(struct ubi_volume_info *vol_info)
++{
++	struct ubiblk_dev *dev;
++	struct gendisk *gd;
++	int i;
++	int ret = 0;
++
++	mutex_lock(&devtable_lock);
++#warning "TODO: Make sure the ubiblk device doesn't already exist (to be done after introducing the use of a dynamic structure for storing the ubiblk_devs)"
++	for (i = 0; i < UBIBLK_MAX_DEVS; i++)
++		if (!ubiblk_devs[i])
++			break;
++
++	if (i == UBIBLK_MAX_DEVS) {
++		/* Shouldn't happen: UBI can't make more volumes than that */
++		pr_err("no slot left for a new ubiblk device.\n");
++		mutex_unlock(&devtable_lock);
++		return -ENOMEM;
++	}
++
++	dev = kzalloc(sizeof(struct ubiblk_dev), GFP_KERNEL);
++	if (!dev) {
++		pr_err("UBIBLK: ENOMEM when trying to create a new"
++		       "ubiblk dev\n");
++		mutex_unlock(&devtable_lock);
++		return -ENOMEM;
++	}
++	ubiblk_devs[i] = dev;
++	mutex_unlock(&devtable_lock);
++
++	mutex_init(&dev->lock);
++	mutex_lock(&dev->lock);
++
++	dev->ubi_num = vol_info->ubi_num;
++	dev->vol_id = vol_info->vol_id;
++
++	dev->vol_desc = ubi_open_volume(dev->ubi_num, dev->vol_id,
++					UBI_READONLY);
++	if (IS_ERR(dev->vol_desc)) {
++		pr_err("open_volume failed\n");
++		ret = PTR_ERR(dev->vol_desc);
++		goto out_vol;
++	}
++
++	dev->vol_info = kzalloc(sizeof(struct ubi_volume_info), GFP_KERNEL);
++	if (!dev->vol_info) {
++		ret = -ENOMEM;
++		goto out_info;
++	}
++	ubi_get_volume_info(dev->vol_desc, dev->vol_info);
++
++	pr_info("Got volume %s: device %d/volume %d of size %d\n",
++		dev->vol_info->name, dev->ubi_num, dev->vol_id,
++		dev->vol_info->size);
++
++	/* Initialize the gendisk of this ubiblk device */
++	gd = alloc_disk(1);
++	if (!gd) {
++		pr_err("alloc_disk failed\n");
++		ret = -ENODEV;
++		goto out_disk;
++	}
++
++	gd->fops = &ubiblk_ops;
++	gd->major = ubiblk_major;
++	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
++	gd->private_data = dev;
++	sprintf(gd->disk_name, "ubiblk%d_%d", dev->ubi_num, dev->vol_id);
++	pr_debug("creating a gd '%s'\n", gd->disk_name);
++	set_capacity(gd,
++		     (dev->vol_info->size *
++		      dev->vol_info->usable_leb_size) >> 9);
++	set_disk_ro(gd, 1);
++	dev->gd = gd;
++
++	spin_lock_init(&dev->queue_lock);
++	dev->rq = blk_init_queue(ubi_ubiblk_request, &dev->queue_lock);
++	if (!dev->rq) {
++		pr_err("init_queue failed\n");
++		ret = -ENODEV;
++		goto out_queue;
++	}
++	dev->rq->queuedata = dev;
++	blk_queue_logical_block_size(dev->rq, BLK_SIZE);
++	dev->gd->queue = dev->rq;
++
++	/* Stolen from mtd_blkdevs.c */
++	/* Create processing thread
++	 *
++	 * The processing of the request has to be done in process context (it
++	 * might sleep) but blk_run_queue can't block ; so we need to separate
++	 * the event of a request being added to the queue (which triggers the
++	 * callback ubi_ubiblk_request - that is set with blk_init_queue())
++	 * and the processing of that request.
++	 *
++	 * Thus, the sole purpose of ubi_ubiblk_reuqest is to wake the kthread
++	 * up so that it will process the request queue
++	 */
++	dev->thread = kthread_run(ubi_ubiblk_thread, dev, "%s%d_%d",
++				  "kubiblk", dev->ubi_num, dev->vol_id);
++	if (IS_ERR(dev->thread)) {
++		ret = PTR_ERR(dev->thread);
++		goto out_thread;
++	}
++
++	add_disk(dev->gd);
++	kfree(dev->vol_info);
++	dev->vol_info = NULL;
++	ubi_close_volume(dev->vol_desc);
++	dev->vol_desc = NULL;
++	mutex_unlock(&dev->lock);
++
++	return 0;
++
++out_thread:
++	blk_cleanup_queue(dev->rq);
++out_queue:
++	put_disk(dev->gd);
++out_disk:
++	kfree(dev->vol_info);
++	dev->vol_info = NULL;
++out_info:
++	ubi_close_volume(dev->vol_desc);
++	dev->vol_desc = NULL;
++out_vol:
++	mutex_unlock(&dev->lock);
++
++	return ret;
++}
++
++/*
++ * A UBI has been removed ; destroy the corresponding ubiblk device
++ */
++static int ubiblk_remove(struct ubi_volume_info *vol_info)
++{
++	int i;
++	struct ubiblk_dev *dev;
++
++	mutex_lock(&devtable_lock);
++	for (i = 0; i < UBIBLK_MAX_DEVS; i++) {
++		dev = ubiblk_devs[i];
++		if (dev && dev->ubi_num == vol_info->ubi_num &&
++		    dev->vol_id == vol_info->vol_id)
++			break;
++	}
++	if (i == UBIBLK_MAX_DEVS) {
++		mutex_unlock(&devtable_lock);
++		pr_warn("Trying to remove %s, but it isn't handled by ubiblk\n",
++			vol_info->name);
++		return -ENODEV;
++	}
++
++	pr_info("ubiblk: Removing %s\n", vol_info->name);
++
++	if (dev->vol_desc) {
++		ubi_close_volume(dev->vol_desc);
++		dev->vol_desc = NULL;
++	}
++
++	del_gendisk(dev->gd);
++	blk_cleanup_queue(dev->rq);
++	kthread_stop(dev->thread);
++	put_disk(dev->gd);
++
++	kfree(dev->vol_info);
++
++	kfree(ubiblk_devs[i]);
++	ubiblk_devs[i] = NULL;
++
++	mutex_unlock(&devtable_lock);
++	return 0;
++}
++
++static int ubiblk_resized(struct ubi_volume_info *vol_info)
++{
++	struct ubiblk_dev *dev;
++
++	dev = ubiblk_find_dev(vol_info);
++	if (!dev) {
++		pr_warn("Trying to resize %s, which is unknown from ubiblk\n",
++			vol_info->name);
++		return -ENODEV;
++	}
++
++	mutex_lock(&dev->lock);
++	set_capacity(dev->gd,
++		     (vol_info->size * vol_info->usable_leb_size) >> 9);
++	mutex_unlock(&dev->lock);
++	pr_debug("Resized ubiblk%d_%d to %d LEBs\n", vol_info->ubi_num,
++		 vol_info->vol_id, vol_info->size);
++	return 0;
++}
++
++/*
++ * Dispatches the UBI notifications
++ * copied from gluebi.c
++ */
++static int ubiblk_notify(struct notifier_block *nb,
++			 unsigned long notification_type, void *ns_ptr)
++{
++	struct ubi_notification *nt = ns_ptr;
++
++	switch (notification_type) {
++	case UBI_VOLUME_ADDED:
++		break;
++	case UBI_VOLUME_REMOVED:
++		ubiblk_remove(&nt->vi);
++		break;
++	case UBI_VOLUME_RESIZED:
++		ubiblk_resized(&nt->vi);
++		break;
++	case UBI_VOLUME_UPDATED:
++		break;
++	case UBI_VOLUME_RENAMED:
++		break;
++	default:
++		break;
++	}
++	return NOTIFY_OK;
++}
++
++static const struct block_device_operations ubiblk_ops = {
++	.owner = THIS_MODULE,
++	.open = ubiblk_open,
++	.release = ubiblk_release,
++};
++
++static struct notifier_block ubiblk_notifier = {
++	.notifier_call = ubiblk_notify,
++};
++
++
++/*
++ * ioctl handling for managing/unmanaging a UBI volume
++ */
++
++static long ubiblk_ctrl_ioctl(struct file *file, unsigned int cmd,
++			      unsigned long arg)
++{
++	int err = 0;
++	void __user *argp = (void __user *)arg;
++
++	struct ubi_volume_desc *vol_desc;
++	struct ubi_volume_info vol_info;
++	struct ubiblk_ctrl_req req;
++
++	if (!capable(CAP_SYS_RESOURCE))
++		return -EPERM;
++
++	err = copy_from_user(&req, argp, sizeof(struct ubiblk_ctrl_req));
++	if (err)
++		return -EFAULT;
++
++	if (req.ubi_num < 0 || req.vol_id < 0)
++		return -EINVAL;
++
++	vol_desc = ubi_open_volume(req.ubi_num, req.vol_id, UBI_READONLY);
++	if (IS_ERR(vol_desc)) {
++		pr_err("Opening volume %d on device %d failed\n",
++		       req.vol_id, req.ubi_num);
++		return PTR_ERR(vol_desc);
++	}
++
++	ubi_get_volume_info(vol_desc, &vol_info);
++
++	switch (cmd) {
++	case UBIBLK_IOCADD:
++		pr_info("Creating a ubiblk device proxing ubi%d:%d\n",
++			req.ubi_num, req.vol_id);
++		ubiblk_create(&vol_info);
++		break;
++	case UBIBLK_IOCDEL:
++		pr_info("Removing ubiblk from ubi%d:%d\n",
++			req.ubi_num, req.vol_id);
++		ubiblk_remove(&vol_info);
++		break;
++
++	default:
++		err = -ENOTTY;
++		break;
++	}
++
++	return err;
++}
++
++#ifdef CONFIG_COMPAT
++static long ubiblk_ctrl_compat_ioctl(struct file *file, unsigned int cmd,
++				     unsigned long arg)
++{
++	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
++
++	return ubiblk_ctrl_ioctl(file, cmd, translated_arg);
++}
++#endif
++
++/* ubiblk control device (receives ioctls) */
++static const struct file_operations ubiblk_ctrl_ops = {
++	.owner = THIS_MODULE,
++	.unlocked_ioctl = ubiblk_ctrl_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl = ubiblk_ctrl_compat_ioctl,
++#endif
++	.llseek = no_llseek,
++};
++static struct miscdevice ubiblk_ctrl_dev = {
++	.minor = MISC_DYNAMIC_MINOR,
++	.name = "ubiblk_ctrl",
++	.fops = &ubiblk_ctrl_ops,
++};
++
++/*
++ * Initialize the module
++ * (Get a major number and register to UBI notifications)
++ */
++static int __init ubi_ubiblk_init(void)
++{
++	int ret = 0;
++
++	pr_info("UBIBLK starting\n");
++
++	ret = register_blkdev(0, "ubiblk");
++	if (ret <= 0) {
++		pr_err("UBIBLK: could not register_blkdev\n");
++		return -ENODEV;
++	}
++	ubiblk_major = ret;
++	pr_info("UBIBLK: device's major: %d\n", ubiblk_major);
++
++	mutex_init(&devtable_lock);
++
++	ret = misc_register(&ubiblk_ctrl_dev);
++	if (ret) {
++		pr_err("Cannot register ubiblk_ctrl\n");
++		goto out_unreg_blk;
++	}
++
++	ret = ubi_register_volume_notifier(&ubiblk_notifier, 1);
++	if (ret < 0)
++		goto out_unreg_ctrl;
++
++	return ret;
++
++out_unreg_ctrl:
++	misc_deregister(&ubiblk_ctrl_dev);
++out_unreg_blk:
++	unregister_blkdev(ubiblk_major, "ubiblk");
++
++	return ret;
++}
++
++/*
++ * End of life
++ * unregister the block device major, unregister from UBI notifications,
++ * stop the threads and free the memory.
++ */
++static void __exit ubi_ubiblk_exit(void)
++{
++	int i;
++
++	pr_info("UBIBLK: going to exit\n");
++
++	ubi_unregister_volume_notifier(&ubiblk_notifier);
++	misc_deregister(&ubiblk_ctrl_dev);
++
++	for (i = 0; i < UBIBLK_MAX_DEVS; i++) {
++		struct ubiblk_dev *dev = ubiblk_devs[i];
++		if (!dev)
++			continue;
++
++		if (dev->vol_desc)
++			ubi_close_volume(dev->vol_desc);
++
++		del_gendisk(dev->gd);
++		blk_cleanup_queue(dev->rq);
++		kthread_stop(dev->thread);
++		put_disk(dev->gd);
++
++		kfree(dev->vol_info);
++		kfree(ubiblk_devs[i]);
++	}
++
++	unregister_blkdev(ubiblk_major, "ubiblk");
++	pr_info("UBIBLK: The End\n");
++}
++
++module_init(ubi_ubiblk_init);
++module_exit(ubi_ubiblk_exit);
++MODULE_DESCRIPTION("Read-only block transition layer on top of UBI");
++MODULE_AUTHOR("David Wagner");
++MODULE_LICENSE("GPL");
+diff --git a/include/mtd/ubiblk-user.h b/include/mtd/ubiblk-user.h
+new file mode 100644
+index 0000000..fa0d007
+--- /dev/null
++++ b/include/mtd/ubiblk-user.h
+@@ -0,0 +1,43 @@
++/*
++ * Copyright © Free Electrons, 2011
++ * Copyright © International Business Machines Corp., 2006
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -1130,166 +848,37 @@ index 0000000..c0381cd
 + *
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
 + *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write to the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Author: David Wagner
++ * Some code taken from ubi-user.h
 + */
-+#ifndef __GPMI_NAND_GPMI_REGS_H
-+#define __GPMI_NAND_GPMI_REGS_H
 +
-+/*============================================================================*/
-+#define HW_GPMI_CTRL0					0x00000000
-+#define HW_GPMI_CTRL0_SET				0x00000004
-+#define HW_GPMI_CTRL0_CLR				0x00000008
-+#define HW_GPMI_CTRL0_TOG				0x0000000c
++#ifndef __UBIBLK_USER_H__
++#define __UBIBLK_USER_H__
 +
-+#define BP_GPMI_CTRL0_COMMAND_MODE			24
-+#define BM_GPMI_CTRL0_COMMAND_MODE	(3 << BP_GPMI_CTRL0_COMMAND_MODE)
-+#define BF_GPMI_CTRL0_COMMAND_MODE(v)	\
-+	(((v) << BP_GPMI_CTRL0_COMMAND_MODE) & BM_GPMI_CTRL0_COMMAND_MODE)
-+#define BV_GPMI_CTRL0_COMMAND_MODE__WRITE		0x0
-+#define BV_GPMI_CTRL0_COMMAND_MODE__READ		0x1
-+#define BV_GPMI_CTRL0_COMMAND_MODE__READ_AND_COMPARE	0x2
-+#define BV_GPMI_CTRL0_COMMAND_MODE__WAIT_FOR_READY	0x3
++#include <linux/types.h>
 +
-+#define BM_GPMI_CTRL0_WORD_LENGTH			(1 << 23)
-+#define BV_GPMI_CTRL0_WORD_LENGTH__16_BIT		0x0
-+#define BV_GPMI_CTRL0_WORD_LENGTH__8_BIT		0x1
++/* Structure to be passed to UBIBLK_IOCADD or IOCDEL ioctl */
++struct ubiblk_ctrl_req {
++	__s32 ubi_num;
++	__s32 vol_id;
++};
 +
-+/*
-+ *  Difference in LOCK_CS between imx23 and imx28 :
-+ *  This bit may impact the _POWER_ consumption. So some chips
-+ *  do not set it.
-+ */
-+#define MX23_BP_GPMI_CTRL0_LOCK_CS			22
-+#define MX28_BP_GPMI_CTRL0_LOCK_CS			27
-+#define LOCK_CS_ENABLE					0x1
-+#define BF_GPMI_CTRL0_LOCK_CS(v, x)			0x0
++/* ioctl commands of the UBI control character device */
 +
-+/* Difference in CS between imx23 and imx28 */
-+#define BP_GPMI_CTRL0_CS				20
-+#define MX23_BM_GPMI_CTRL0_CS		(3 << BP_GPMI_CTRL0_CS)
-+#define MX28_BM_GPMI_CTRL0_CS		(7 << BP_GPMI_CTRL0_CS)
-+#define BF_GPMI_CTRL0_CS(v, x)		(((v) << BP_GPMI_CTRL0_CS) & \
-+						(GPMI_IS_MX23((x)) \
-+						? MX23_BM_GPMI_CTRL0_CS	\
-+						: MX28_BM_GPMI_CTRL0_CS))
++#define UBIBLK_CTRL_IOC_MAGIC 'O'
 +
-+#define BP_GPMI_CTRL0_ADDRESS				17
-+#define BM_GPMI_CTRL0_ADDRESS		(3 << BP_GPMI_CTRL0_ADDRESS)
-+#define BF_GPMI_CTRL0_ADDRESS(v)	\
-+		(((v) << BP_GPMI_CTRL0_ADDRESS) & BM_GPMI_CTRL0_ADDRESS)
-+#define BV_GPMI_CTRL0_ADDRESS__NAND_DATA		0x0
-+#define BV_GPMI_CTRL0_ADDRESS__NAND_CLE			0x1
-+#define BV_GPMI_CTRL0_ADDRESS__NAND_ALE			0x2
++/* Create a ubiblk device from a UBI volume */
++#define UBIBLK_IOCADD _IOW(UBIBLK_CTRL_IOC_MAGIC, 0x10, struct ubiblk_ctrl_req)
++/* Delete a ubiblk device */
++#define UBIBLK_IOCDEL _IOW(UBIBLK_CTRL_IOC_MAGIC, 0x11, struct ubiblk_ctrl_req)
 +
-+#define BM_GPMI_CTRL0_ADDRESS_INCREMENT			(1 << 16)
-+#define BV_GPMI_CTRL0_ADDRESS_INCREMENT__DISABLED	0x0
-+#define BV_GPMI_CTRL0_ADDRESS_INCREMENT__ENABLED	0x1
-+
-+#define BP_GPMI_CTRL0_XFER_COUNT			0
-+#define BM_GPMI_CTRL0_XFER_COUNT	(0xffff << BP_GPMI_CTRL0_XFER_COUNT)
-+#define BF_GPMI_CTRL0_XFER_COUNT(v)	\
-+		(((v) << BP_GPMI_CTRL0_XFER_COUNT) & BM_GPMI_CTRL0_XFER_COUNT)
-+
-+/*============================================================================*/
-+#define HW_GPMI_COMPARE					0x00000010
-+/*============================================================================*/
-+#define HW_GPMI_ECCCTRL					0x00000020
-+#define HW_GPMI_ECCCTRL_SET				0x00000024
-+#define HW_GPMI_ECCCTRL_CLR				0x00000028
-+#define HW_GPMI_ECCCTRL_TOG				0x0000002c
-+
-+#define BP_GPMI_ECCCTRL_ECC_CMD				13
-+#define BM_GPMI_ECCCTRL_ECC_CMD		(3 << BP_GPMI_ECCCTRL_ECC_CMD)
-+#define BF_GPMI_ECCCTRL_ECC_CMD(v)	\
-+		(((v) << BP_GPMI_ECCCTRL_ECC_CMD) & BM_GPMI_ECCCTRL_ECC_CMD)
-+#define BV_GPMI_ECCCTRL_ECC_CMD__BCH_DECODE		0x0
-+#define BV_GPMI_ECCCTRL_ECC_CMD__BCH_ENCODE		0x1
-+
-+#define BM_GPMI_ECCCTRL_ENABLE_ECC			(1 << 12)
-+#define BV_GPMI_ECCCTRL_ENABLE_ECC__ENABLE		0x1
-+#define BV_GPMI_ECCCTRL_ENABLE_ECC__DISABLE		0x0
-+
-+#define BP_GPMI_ECCCTRL_BUFFER_MASK			0
-+#define BM_GPMI_ECCCTRL_BUFFER_MASK	(0x1ff << BP_GPMI_ECCCTRL_BUFFER_MASK)
-+#define BF_GPMI_ECCCTRL_BUFFER_MASK(v)	\
-+	(((v) << BP_GPMI_ECCCTRL_BUFFER_MASK) & BM_GPMI_ECCCTRL_BUFFER_MASK)
-+#define BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_AUXONLY	0x100
-+#define BV_GPMI_ECCCTRL_BUFFER_MASK__BCH_PAGE		0x1FF
-+
-+/*============================================================================*/
-+#define HW_GPMI_ECCCOUNT				0x00000030
-+#define HW_GPMI_PAYLOAD					0x00000040
-+#define HW_GPMI_AUXILIARY				0x00000050
-+/*============================================================================*/
-+#define HW_GPMI_CTRL1					0x00000060
-+#define HW_GPMI_CTRL1_SET				0x00000064
-+#define HW_GPMI_CTRL1_CLR				0x00000068
-+#define HW_GPMI_CTRL1_TOG				0x0000006c
-+
-+#define BM_GPMI_CTRL1_BCH_MODE				(1 << 18)
-+
-+#define BP_GPMI_CTRL1_DLL_ENABLE			17
-+#define BM_GPMI_CTRL1_DLL_ENABLE	(1 << BP_GPMI_CTRL1_DLL_ENABLE)
-+
-+#define BP_GPMI_CTRL1_HALF_PERIOD			16
-+#define BM_GPMI_CTRL1_HALF_PERIOD	(1 << BP_GPMI_CTRL1_HALF_PERIOD)
-+
-+#define BP_GPMI_CTRL1_RDN_DELAY				12
-+#define BM_GPMI_CTRL1_RDN_DELAY		(0xf << BP_GPMI_CTRL1_RDN_DELAY)
-+#define BF_GPMI_CTRL1_RDN_DELAY(v)	\
-+		(((v) << BP_GPMI_CTRL1_RDN_DELAY) & BM_GPMI_CTRL1_RDN_DELAY)
-+
-+#define BM_GPMI_CTRL1_DEV_RESET				(1 << 3)
-+#define BV_GPMI_CTRL1_DEV_RESET__ENABLED		0x0
-+#define BV_GPMI_CTRL1_DEV_RESET__DISABLED		0x1
-+
-+#define BM_GPMI_CTRL1_ATA_IRQRDY_POLARITY		(1 << 2)
-+#define BV_GPMI_CTRL1_ATA_IRQRDY_POLARITY__ACTIVELOW	0x0
-+#define BV_GPMI_CTRL1_ATA_IRQRDY_POLARITY__ACTIVEHIGH	0x1
-+
-+#define BM_GPMI_CTRL1_CAMERA_MODE			(1 << 1)
-+#define BV_GPMI_CTRL1_GPMI_MODE__NAND			0x0
-+#define BV_GPMI_CTRL1_GPMI_MODE__ATA			0x1
-+
-+#define BM_GPMI_CTRL1_GPMI_MODE				(1 << 0)
-+
-+/*============================================================================*/
-+#define HW_GPMI_TIMING0					0x00000070
-+
-+#define BP_GPMI_TIMING0_ADDRESS_SETUP			16
-+#define BM_GPMI_TIMING0_ADDRESS_SETUP	(0xff << BP_GPMI_TIMING0_ADDRESS_SETUP)
-+#define BF_GPMI_TIMING0_ADDRESS_SETUP(v)	\
-+	(((v) << BP_GPMI_TIMING0_ADDRESS_SETUP) & BM_GPMI_TIMING0_ADDRESS_SETUP)
-+
-+#define BP_GPMI_TIMING0_DATA_HOLD			8
-+#define BM_GPMI_TIMING0_DATA_HOLD	(0xff << BP_GPMI_TIMING0_DATA_HOLD)
-+#define BF_GPMI_TIMING0_DATA_HOLD(v)		\
-+	(((v) << BP_GPMI_TIMING0_DATA_HOLD) & BM_GPMI_TIMING0_DATA_HOLD)
-+
-+#define BP_GPMI_TIMING0_DATA_SETUP			0
-+#define BM_GPMI_TIMING0_DATA_SETUP	(0xff << BP_GPMI_TIMING0_DATA_SETUP)
-+#define BF_GPMI_TIMING0_DATA_SETUP(v)		\
-+	(((v) << BP_GPMI_TIMING0_DATA_SETUP) & BM_GPMI_TIMING0_DATA_SETUP)
-+
-+/*============================================================================*/
-+#define HW_GPMI_TIMING1					0x00000080
-+#define HW_GPMI_TIMING2					0x00000090
-+#define HW_GPMI_DATA					0x000000a0
-+/*============================ MX28 uses this to detect READY ================*/
-+#define HW_GPMI_STAT					0x000000b0
-+#define MX28_BP_GPMI_STAT_READY_BUSY			24
-+#define MX28_BM_GPMI_STAT_READY_BUSY	(0xff << MX28_BP_GPMI_STAT_READY_BUSY)
-+#define MX28_BF_GPMI_STAT_READY_BUSY(v)		\
-+	(((v) << MX28_BP_GPMI_STAT_READY_BUSY) & MX28_BM_GPMI_STAT_READY_BUSY)
-+/*============================ MX23 uses this to detect READY ================*/
-+#define HW_GPMI_DEBUG					0x000000c0
-+#define MX23_BP_GPMI_DEBUG_READY0			28
-+#define MX23_BM_GPMI_DEBUG_READY0	(1 << MX23_BP_GPMI_DEBUG_READY0)
 +#endif
 -- 
 1.7.0.4
