@@ -1,12 +1,12 @@
 Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QtpuC-0001FM-89
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 23:52:16 +0000
+	id 1QtpuH-0001FM-00
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 23:52:21 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [RFC 4/5] mtd: move mtd_oob_mode_t to shared kernel/user space
-Date: Wed, 17 Aug 2011 16:50:28 -0700
-Message-ID: <1313625029-19546-5-git-send-email-computersforpeace@gmail.com>
+Subject: [RFC 5/5] mtd: add MEMWRITEDATAOOB ioctl
+Date: Wed, 17 Aug 2011 16:50:29 -0700
+Message-ID: <1313625029-19546-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
 References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,65 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We will want to use the MTD_OOB_{PLACE,AUTO,RAW} modes in user-space
-applications through the introduction of new ioctls, so we should make
-this enum a shared type.
+Implement a new ioctl for writing both page data and OOB to flash at the
+same time.  This is especially useful for MLC NAND, which cannot be
+written twice (i.e., we cannot successfully write the page data and OOB
+in two separate operations).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/linux/mtd/mtd.h |   14 --------------
- include/mtd/mtd-abi.h   |   14 ++++++++++++++
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ drivers/mtd/mtdchar.c |   31 +++++++++++++++++++++++++++++++
+ include/mtd/mtd-abi.h |    9 +++++++++
+ 2 files changed, 40 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 46682ac..e089bce 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -68,20 +68,6 @@ struct mtd_erase_region_info {
- 	unsigned long *lockmap;		/* If keeping bitmap of locks */
- };
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index a0c404b..bef8462 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -749,6 +749,37 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		break;
+ 	}
  
--/*
-- * oob operation modes
-- *
-- * MTD_OOB_PLACE:	oob data are placed at the given offset
-- * MTD_OOB_AUTO:	oob data are automatically placed at the free areas
-- *			which are defined by the ecclayout
-- * MTD_OOB_RAW:		mode to read oob and data without doing ECC checking
-- */
--typedef enum {
--	MTD_OOB_PLACE,
--	MTD_OOB_AUTO,
--	MTD_OOB_RAW,
--} mtd_oob_mode_t;
--
- /**
-  * struct mtd_oob_ops - oob operation operands
-  * @mode:	operation mode
++	case MEMWRITEDATAOOB:
++	{
++		struct mtd_data_oob_buf buf;
++
++		if (copy_from_user(&buf, argp, sizeof(buf)) ||
++				!access_ok(VERIFY_READ, buf.usr_ptr, buf.len)) {
++			ret = -EFAULT;
++		} else if (!mtd->write_oob) {
++			ret = -EOPNOTSUPP;
++		} else {
++			struct mtd_oob_ops ops;
++
++			ops.mode = buf.mode;
++			ops.len = (size_t)buf.len;
++			ops.ooblen = (size_t)buf.ooblen;
++			ops.ooboffs = 0;
++
++			ops.datbuf = memdup_user(
++					(void __user *)(uintptr_t)buf.usr_ptr,
++					ops.len + ops.ooblen);
++			if (IS_ERR(ops.datbuf))
++				return PTR_ERR(ops.datbuf);
++
++			ops.oobbuf = ops.datbuf + ops.len;
++
++			ret = mtd->write_oob(mtd, (loff_t)buf.start, &ops);
++			kfree(ops.datbuf);
++		}
++		break;
++	}
++
+ 	case MEMLOCK:
+ 	{
+ 		struct erase_info_user einfo;
 diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 2f7d45b..f850d9a 100644
+index f850d9a..20df299 100644
 --- a/include/mtd/mtd-abi.h
 +++ b/include/mtd/mtd-abi.h
-@@ -45,6 +45,20 @@ struct mtd_oob_buf64 {
- 	__u64 usr_ptr;
- };
+@@ -59,6 +59,14 @@ typedef enum {
+ 	MTD_OOB_RAW,
+ } mtd_oob_mode_t;
  
-+/*
-+ * oob operation modes
-+ *
-+ * MTD_OOB_PLACE:       oob data are placed at the given offset
-+ * MTD_OOB_AUTO:        oob data are automatically placed at the free areas
-+ *                      which are defined by the ecclayout
-+ * MTD_OOB_RAW:         mode to read oob and data without doing ECC checking
-+ */
-+typedef enum {
-+	MTD_OOB_PLACE,
-+	MTD_OOB_AUTO,
-+	MTD_OOB_RAW,
-+} mtd_oob_mode_t;
++struct mtd_data_oob_buf {
++	__u64 start;
++	__u32 len;
++	__u32 ooblen;
++	__u64 usr_ptr;
++	mtd_oob_mode_t __user mode;
++};
 +
  #define MTD_ABSENT		0
  #define MTD_RAM			1
  #define MTD_ROM			2
+@@ -141,6 +149,7 @@ struct otp_info {
+ #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
+ #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+ #define MEMISLOCKED		_IOR('M', 23, struct erase_info_user)
++#define MEMWRITEDATAOOB		_IOWR('M', 24, struct mtd_data_oob_buf)
+ 
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
 -- 
 1.7.0.4
