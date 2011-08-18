@@ -1,19 +1,25 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qtpt0-0001B0-RR
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2011 23:51:03 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [RFC 0/5] fix data+OOB writes, add ioctl
-Date: Wed, 17 Aug 2011 16:50:24 -0700
-Message-ID: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QtrI6-0001Vc-8X
+	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2011 01:21:03 +0000
+Received: by wwf10 with SMTP id 10so1134957wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Aug 2011 18:20:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, linux-mtd@lists.infradead.org,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+In-Reply-To: <1313566762.19563.3.camel@sauron>
+References: <1312350638-25566-1-git-send-email-b35362@freescale.com>
+	<1313507201.2679.2.camel@sauron> <4E4B6F46.2050209@freescale.com>
+	<1313566762.19563.3.camel@sauron>
+Date: Wed, 17 Aug 2011 18:20:58 -0700
+Message-ID: <CAN8TOE9QEX6Yssy4HCONrawngmRRCgYbh5jNVpH1dREUsDfagg@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: fix corrupt cleanmarker with flash_erase -j
+	command
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: LiuShuo <b35362@freescale.com>, linuxppc-dev@linux.freescale.net,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Li Yang <leoli@freescale.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,99 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+On Wed, Aug 17, 2011 at 12:39 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> I think the OOB mode should not be a global MTD device state. Each
+> ioctl invocation should just specify the mode.
 
-Warning: This patch series is not a finished product yet; it is merely a
-"Request For Comments" on my goals, methods, etc. Please comment on
-this, and in the near future, there may be a full update to this series.
+I agree. This brings up some questions, though. See below.
 
-First off, these fixes are motivated by a number of things:
+> Brian's idea of having a completely new ioctl or a set of new ioctls for
+> OOB which would copletely deprecate the old ones is a good idea. Let's
+> wait for his patch.
 
-1) Broken "noecc" writes; `nandwrite -n -o' does not work on my
-   hardware, at least, without these patches
+I sent a patch series (RFC) to the MTD mailing list. You can see the
+cover description, which describes my proposed changes and asks some
+questions, at the following link, but for some reason the patches are
+being held up by the mailing list software - for now, you'll only
+receive them if you were CC'd directly:
+http://lists.infradead.org/pipermail/linux-mtd/2011-August/037522.html
+Follow that thread for more information.
 
-2) We cannot write twice to the same page on MLC NAND flash. Thus, the
-   current implementation for nandwrite, where we write OOB and page
-   data in two separate ioctl operations, will not work. We need a new
-   ioctl. See this thread:
+> May be we should even start physically removing depricated ioctls by
+> first adding a printk with a warning and then removing completely. But
+> first mtdutils should be updated to not use them.
 
-   http://lists.infradead.org/pipermail/linux-mtd/2011-August/037316.html
-
-3) It is beneficial to expose the mtd_oob_mode_t options to the
-   user-space, since we often want to use MTD_OOB_RAW, MTD_OOB_AUTO,
-   etc. on a per-operation basis. This naturally fits in with a new
-   ioctl that can handle different combinations of page data and OOB as
-   well as different OOB modes. See some discussion:
-
-   http://lists.infradead.org/pipermail/linux-mtd/2011-August/037511.html
-
-Now, there are certainly some things that this patch series does NOT yet
-do. I will list some now:
-
-4) Base the old ioctls (MEMWRITEOOB, MEMWRITEOOB64) on the new one
-   (MEMWRITEDATAOOB). In fact, the first two patches update support for
-   the old ioctls, whereas they could simply be "merged" with the new
-   one instead.
-
-5) Gracefully handle cases where mtd->write_oob doesn't exist. It simply
-   quits with -EOPNOTSUPP. I test all of this code on NAND flash only,
-   and the NAND subsystem always supplies this function. If there is a
-   need for this ioctl without OOB writes, then perhaps this can be
-   fixed.
-
-Other thoughts:
-
-Patch 3/5 is a weird one. I know code that the patch targets is wrong
-(since it's obviously assuming oobsize is a power of 2), but I'm not
-sure the *exact* intention of the wrong code - so it's hard to be sure
-that my fix is valid. Please look it over.
-
-The name "MEMWRITEDATAOOB" is totally up for debate. This was the best I
-could come up with at the moment.
-
-Perhaps something should be done about the MTDFILEMODE ioctl, since it
-seems to cause some confusing overlap, at least to me. I see two
-different RAW modes:
-
-* MTD_MODE_RAW, which belongs to the mode field in `struct
-  mtd_file_info'. It can be set by the ioctl MTDFILEMODE
-* MTD_OOB_RAW, which belongs to the mode field in `struct
-  mtd_oob_ops'. It is set indirectly by other operations.
-
-Does MTD_MODE_RAW imply MTD_OOB_RAW when OOB operations are involved?
-Does MTD_MODE_RAW imply that no ECC is applied to data?
-Is the MTD file mode persistent? If so, then it may conflict with a
-"per-operation" mode in our new MEMWRITEDATAOOB
-
-Maybe the "something" to be done would just be some better
-documentation. Or something more drastic if there's an actual conflict.
-
-Speaking of documentation, what is this supposed to mean (from struct
-nand_chip, in include/linux/mtd/nand.h)?
-
-	@oob_poi:            poison value buffer
-
-It seems like the oob_poi buffer is meant to be an intermediary buffer
-for storing the laid-out OOB data; it's used by the NAND subsystem,
-especially in mode MTD_OOB_AUTO, to layout data to be written. But this
-"documentation" means absolutely nothing to me. I'll edit that comment
-in nand.h and include it in my revised patch series if I'm on the right
-track.
-
-OK, that's a lot to read :) Let me know if you have questions, and I'll
-follow up with more info if there's something I left out.
+Yes, this sounds fine, although I'm not too familiar with the
+MTD_OOB_AUTO stuff, so I'm not sure how well it will replace all the
+uses of MEMGETOOBSEL. I don't actually see any users of ECCGETLAYOUT;
+I think I've asked about this ioctl before, but I can't seem to find
+any response...perhaps it can be killed with no work?
 
 Brian
-
-Brian Norris (5):
-  mtd: support MTD_MODE_RAW for writing OOB
-  mtd: support MTD_MODE_RAW for reading OOB
-  mtd: do not assume oobsize is power of 2
-  mtd: move mtd_oob_mode_t to shared kernel/user space
-  mtd: add MEMWRITEDATAOOB ioctl
-
- drivers/mtd/mtdchar.c        |   54 +++++++++++++++++++++++++++++++++--------
- drivers/mtd/nand/nand_base.c |   16 +++++++++++-
- include/linux/mtd/mtd.h      |   14 -----------
- include/mtd/mtd-abi.h        |   23 ++++++++++++++++++
- 4 files changed, 80 insertions(+), 27 deletions(-)
