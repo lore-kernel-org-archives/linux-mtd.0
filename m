@@ -1,22 +1,20 @@
-Received: from na3sys009aog126.obsmtp.com ([74.125.149.155])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qu39u-0006bg-4Q
-	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2011 14:01:23 +0000
-Received: by mail-vx0-f178.google.com with SMTP id 19so1879036vxi.9
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Aug 2011 07:01:16 -0700 (PDT)
+Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
+	helo=AM1EHSOBE005.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qu5P6-0007ix-23
+	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2011 16:25:13 +0000
+Message-ID: <4E4D3CE0.7020602@freescale.com>
+Date: Thu, 18 Aug 2011 11:25:04 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1313568224.20534.1.camel@sauron>
-References: <cover.1312922073.git.bengardiner@nanometrics.ca>
-	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
-	<1313568224.20534.1.camel@sauron>
-Date: Thu, 18 Aug 2011 10:01:16 -0400
-Message-ID: <CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+To: <b35362@freescale.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
+In-Reply-To: <1313634783-8855-1-git-send-email-b35362@freescale.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 17, 2011 at 4:03 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2011-08-09 at 16:57 -0400, Ben Gardiner wrote:
->> The mtd_debug 'info' command reports a great deal of useful information about
->> the mtd device is it given for a query.
->>
->> Add the ECC size and OOB available to that list. The other entries in the
->> ecclayout struct are arrays and are not as meaningful as eccsize and oobavail.
->>
->> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
->>
->> ---
->>
->> I noticed that the struct nand_ecclayout_user and its corresponding ioctl
->> has been marked deprecated; however, since this is a 'debug' utility and at
->> least one person found it useful I thought it would be a good idea to propose
->> these changes anyways.
->
-> I think we could just kill depricated ioctls as soon as we make
-> mtd-utils stop using them. If you add this dependency - it will be more
-> difficult to kill them.
+On 08/17/2011 09:33 PM, b35362@freescale.com wrote:
+> From: Liu Shuo <b35362@freescale.com>
+> 
+> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+> to support the Nand flash chip whose page size is larger than 2K bytes,
+> we divide a page into multi-2K pages for MTD layer driver. In that case,
+> we force to set the page size to 2K bytes. We convert the page address of
+> MTD layer driver to a real page address in flash chips and a column index
+> in fsl_elbc driver. We can issue any column address by UA instruction of
+> elbc controller.
+> 
+> NOTE: Due to there is a limitation of 'Number of Partial Program Cycles in
+> the Same Page (NOP)', the flash chip which is supported by this workaround 
+> have to meet below conditions.
+> 	1. page size is not greater than 4KB 
+> 	2.	1) if main area and spare area have independent NOPs:
+> 			  main  area NOP    :    >=3
+> 			  spare area NOP    :    >=2?
 
-Fair enough -- I'm happy to hear a definitive answer; thank you, Artem.
+How often are the NOPs split like this?
 
-In PATCH 3/3 I use the same ioctl to get the ECC size for the purposes
-of producing a BER estimate. What is the right way of getting the ECC
-size now that ECCGETLAYOUT is deprecated? Is this even something that
-should be from userspace at all?
+> 		2) if main area and spare area have a common NOP: 
+> 			  NOP               :    >=4
 
-Best Regards,
-Ben Gardiner
+This depends on how the flash is used.  If you treat it as a NOP1 flash
+(e.g. run ubifs rather than jffs2), then you need NOP2 for a 4K chip and
+NOP4 for an 8K chip.  OTOH, if you would be making full use of NOP4 on a
+real 2K chip, you'll need NOP8 for a 4K chip.
 
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+The NOP restrictions should be documented in the code itself, not just
+in the git changelog.  Maybe print it to the console when this hack is
+used, along with the NOP value read from the ID.  If it's less than 4
+for 4K or 8 for 8K, also print a message saying not to use jffs2 (does
+yaffs2 do similar things?).  If it's less than 2 for 4K or 4 for 8K, the
+probe should fail.
+
+-Scott
