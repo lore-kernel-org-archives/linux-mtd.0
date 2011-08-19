@@ -1,23 +1,24 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+	helo=ch1outboundpool.messaging.microsoft.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuTDb-0004Zt-4j
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:50:56 +0000
-From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Fri, 19 Aug 2011 13:50:51 -0400
-Subject: RE: ubi volume unmountable after power cut
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A723D86E9@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.local>
-	<1313755918.6607.56.camel@sauron>
-	<0A40042D85E7C84DB443060EC44B3FD32A723D86E7@dekaexchange07.deka.local>
-	<1313766997.6607.66.camel@sauron>
-In-Reply-To: <1313766997.6607.66.camel@sauron>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1QuTWU-0004kL-W7
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 18:10:27 +0000
+Message-ID: <4E4EA70B.9050203@freescale.com>
+Date: Fri, 19 Aug 2011 13:10:19 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>	<4E4D452C.7050805@parrot.com>
+	<4E4DD661.5080006@freescale.com> <4E4E2571.20409@parrot.com>
+In-Reply-To: <4E4E2571.20409@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	LiuShuo <b35362@freescale.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
-YWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMTksIDIw
-MTEgMTE6MTcNCj4gVG86IEVyaWMgTWlsbGJyYW5kdA0KPiBDYzogJ2xpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnJw0KPiBTdWJqZWN0OiBSRTogdWJpIHZvbHVtZSB1bm1vdW50YWJsZSBhZnRl
-ciBwb3dlciBjdXQNCj4NCj4gT24gRnJpLCAyMDExLTA4LTE5IGF0IDA5OjQyIC0wNDAwLCBFcmlj
-IE1pbGxicmFuZHQgd3JvdGU6DQo+ID4gPj4gUGxlYXNlLCBwcm9kdWNlIHRoZSBpc3N1ZSBhbmQg
-c2VuZCBhbGwgbWVzc2FnZXMsIG5vdCBvbmx5IGVycm9yDQo+ID4gPiBtZXNzYWdlcw0KPiA+ID4g
-d2hpY2ggeW91IHNlZSBvbiB5b3VyIGNvbnNvbGUuIEUuZywgc2VuZCBkbWVzZyBvdXRwdXQuIEl0
-IGlzDQo+IGRpZmZpY3VsdA0KPiA+ID4gdG8gc2F5IGFueXRoaW5nIHdpdGhvdXQgdGhlIGZ1bGwg
-bG9nIHdoaWNoIHNob3VsZCBjb250YWluIGZsYXNoDQo+IGR1bXAuDQo+ID4gPg0KPiA+IFRoZSBm
-dWxsIGRtZXNnIG91dHB1dCBjYW4gYmUgc2VlbiBoZXJlLCBodHRwOi8vcGFzdGViaW4uY29tL1Jn
-MUxjYzZVLg0KPg0KPiBXb3VsZCB5b3UgcGxlYXNlIGVuYWJsZSBhbHNvIHRoZSBhZGRpdGlvbmFs
-IFVCSUZTIHJlY292ZXJ5IG1lc3NhZ2VzPw0KPg0KSG9wZWZ1bGx5IHRoaXMgaGFzIHRoZSBhZGRp
-dGlvbmFsIG1lc3NhZ2VzIHRoYXQgeW91IGFyZSBsb29raW5nIGZvciwNCmh0dHA6Ly9wYXN0ZWJp
-bi5jb20vaW1oSlZQM00NCg0KRXJpYyBNaWxsYnJhbmR0DQoNClRoaXMgZS1tYWlsIGFuZCB0aGUg
-aW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBp
-bnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBl
-cnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGlu
-Zm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3Nh
-Z2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVk
-IHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMg
-Y29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZl
-ZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkg
-dGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91
-Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlz
-IGVtYWlsLg0K
+On 08/19/2011 03:57 AM, Matthieu CASTET wrote:
+> LiuShuo a =C3=A9crit :
+>> =E4=BA=8E 2011=E5=B9=B408=E6=9C=8819=E6=97=A5 01:00, Matthieu CASTET =E5=
+=86=99=E9=81=93:
+>>> b35362@freescale.com a =C3=A9crit :
+>>>> From: Liu Shuo<b35362@freescale.com>
+>>>>
+>>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In =
+order
+>>>> to support the Nand flash chip whose page size is larger than 2K byt=
+es,
+>>>> we divide a page into multi-2K pages for MTD layer driver. In that c=
+ase,
+>>>> we force to set the page size to 2K bytes. We convert the page addre=
+ss of
+>>>> MTD layer driver to a real page address in flash chips and a column =
+index
+>>>> in fsl_elbc driver. We can issue any column address by UA instructio=
+n of
+>>>> elbc controller.
+>>>>
+>>> Why do you need to do that ?
+>>>
+>>> When mtd send you a 4k page, why can't you write it by 2*2k pages wri=
+te ?
+>> 1. It's easy to implement.
+>> 2. We don't need to move the data in buffer more times, because we
+>> want to use the HW_ECC.
+>>
+>> In flash chip per Page:
+>> ----------------------------------------------------------------
+>> | first data | first oob | second data | second oob |
+>> ----------------------------------------------------------------
+> How the bad block marker are handled with this remapping ?
+
+It has to be migrated prior to first use (this needs to be documented,
+and ideally a U-Boot command provided do do this), or else special
+handling would be needed when building the BBT.  The only way around
+this would be to do ECC in software, and do the buffering needed to let
+MTD treat it as a 4K chip.
+
+-Scott
