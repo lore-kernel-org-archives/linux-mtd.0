@@ -1,21 +1,21 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from mail-iy0-f171.google.com ([209.85.210.171])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuPLL-0007nZ-Dt
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 13:42:40 +0000
-From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Fri, 19 Aug 2011 09:42:34 -0400
-Subject: RE: ubi volume unmountable after power cut
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A723D86E7@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.local>
-	<1313755918.6607.56.camel@sauron>
-In-Reply-To: <1313755918.6607.56.camel@sauron>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+	id 1QuPSn-000832-R9
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 13:50:22 +0000
+Received: by iyf13 with SMTP id 13so5753296iyf.16
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Aug 2011 06:50:20 -0700 (PDT)
+Subject: mtd-utils-1.4.6 is out
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Peter Korsgaard <jacmet@sunsite.dk>, linux-mtd
+	<linux-mtd@lists.infradead.org>
+Date: Fri, 19 Aug 2011 16:52:06 +0300
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1313761930.6607.64.camel@sauron>
+Mime-Version: 1.0
+Cc: Brian Norris <computersforpeace@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
-YWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMTksIDIw
-MTEgMDg6MTINCj4gVG86IEVyaWMgTWlsbGJyYW5kdA0KPiBDYzogJ2xpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnJw0KPiBTdWJqZWN0OiBSZTogdWJpIHZvbHVtZSB1bm1vdW50YWJsZSBhZnRl
-ciBwb3dlciBjdXQNCj4NCj4gT24gV2VkLCAyMDExLTA4LTEwIGF0IDE1OjQ2IC0wNDAwLCBFcmlj
-IE1pbGxicmFuZHQgd3JvdGU6DQo+ID4gQWxsLA0KPiA+DQo+ID4gT25lIG9mIG91ciBzeXN0ZW1z
-IGNhbWUgYmFjayAidW5ib290YWJsZSIgZnJvbSBvdXIgUUEgZGVwYXJ0bWVudC4NCj4gPiBXaGVu
-IEkgdG9vayBhIGxvb2sgYXQgdGhlIHN5c3RlbSBJIGZvdW5kIHRoYXQgdGhlIHJvb3Rmcywgd2hp
-Y2ggaXMgYQ0KPiA+IHViaS91YmlmcyBmaWxlc3lzdGVtLCBoYWQgYmVjb21lIGNvcnJ1cHQuICBN
-eSBRQSBkZXBhcnRtZW50IHN3ZWFycw0KPiA+IHRoYXQgdGhleSBwb3dlcmVkIG9mZiB0aGUgc3lz
-dGVtIGNvcnJlY3RseSwgYnV0IGV2ZW4gc28sIHNob3VsZG4ndA0KPiB1YmkNCj4gPiBiZSB0b2xl
-cmFudCBvZiBwb3dlciBjdXRzPyAgSSd2ZSBhdHRhY2hlZCBhbGwgdGhlIHJlbGV2YW50DQo+IGlu
-Zm9ybWF0aW9uDQo+ID4gYmVsb3cuDQo+ID4NCj4gPiAjIHVuYW1lIC1yDQo+ID4gMi42LjMzLjct
-cnQyOS1kZWthLWRlYnVnDQo+DQo+IEkgc3Ryb25nbHkgcmVjb21tZW5kIHlvdSB0byBwdWxsIGlu
-IGNoYW5nZXMgZnJvbSB0aGUgVUJJRlMgYmFjay1wb3J0DQo+IHRyZWVzLg0KPg0KSSBoYXZlIHNp
-bmNlIGFwcGxpZWQgdGhlIGJhY2stcG9ydHMgdG8gbXkga2VybmVsLCB1bmZvcnR1bmF0ZWx5IHRo
-ZQ0Kc3lzdGVtIGlzIHN0aWxsIHVuYWJsZSB0byBtb3VudCB0aGUgcGFydGl0aW9uLg0KDQoNCj4g
-PiBbICAxNDAuNDgyOTc0XSBVQkkgZXJyb3I6IHViaV9pb19yZWFkOiBlcnJvciAtNzQgd2hpbGUg
-cmVhZGluZyA1MTYwOTYNCj4gPiBieXRlcyBmcm9tIFBFQiAzODg5OjgxOTIsIHJlYWQgNTE2MDk2
-IGJ5dGVzDQo+ID4gWyAgMTQwLjQ5NDY1OF0gQ2FsbCBUcmFjZToNCj4gPiBbICAxNDAuNDk3NDA2
-XSBbY2Y4NmZhYzBdIFtjMDAwOTdiY10gc2hvd19zdGFjaysweDRjLzB4MTZjDQo+ID4gKHVucmVs
-aWFibGUpDQo+ID4gWyAgMTQwLjUwNDg4MV0gW2NmODZmYjAwXSBbYzAzMWYyOThdIHViaV9pb19y
-ZWFkKzB4MTcwLzB4MjhjDQo+ID4gWyAgMTQwLjUxMTE0MV0gW2NmODZmYjQwXSBbYzAzMWU0YThd
-IHViaV9lYmFfcmVhZF9sZWIrMHgxM2MvMHgzNmMNCj4gPiBbICAxNDAuNTE3OTYxXSBbY2Y4NmZi
-ODBdIFtjMDMxYzdiY10gdWJpX2xlYl9yZWFkKzB4MTIwLzB4MTcwDQo+ID4gWyAgMTQwLjUyNDMy
-OV0gW2NmODZmYmIwXSBbYzAxZWRkNjRdIHViaWZzX3N0YXJ0X3NjYW4rMHhiOC8weDFlOA0KPiA+
-IFsgIDE0MC41MzEwNTNdIFtjZjg2ZmJlMF0gW2MwMjA1ODIwXSB1Ymlmc19yZWNvdmVyX2xlYisw
-eDY4LzB4YTc4DQo+ID4gWyAgMTQwLjUzNzg3Nl0gW2NmODZmYzUwXSBbYzAxZWVhZDBdIHJlcGxh
-eV9idWRzKzB4YTgvMHhjZjQNCj4gPiBbICAxNDAuNTQ0MDUyXSBbY2Y4NmZjZjBdIFtjMDFmMDAx
-OF0NCj4gdWJpZnNfcmVwbGF5X2pvdXJuYWwrMHg4ZmMvMHgxMjg0DQo+ID4gWyAgMTQwLjU1MTMx
-NV0gW2NmODZmZDgwXSBbYzAxZTEyNjhdIHViaWZzX2ZpbGxfc3VwZXIrMHhmMjAvMHgxOTI4DQo+
-ID4gWyAgMTQwLjU1ODIyNV0gW2NmODZmZGUwXSBbYzAxZTI2MzhdIHViaWZzX2dldF9zYisweDEw
-NC8weDM4NA0KPiA+IFsgIDE0MC41NjQ3MDJdIFtjZjg2ZmU2MF0gW2MwMGM4ZDE4XSB2ZnNfa2Vy
-bl9tb3VudCsweDcwLzB4MTkwDQo+ID4gWyAgMTQwLjU3MTE0Ml0gW2NmODZmZTkwXSBbYzAwYzhl
-ODhdIGRvX2tlcm5fbW91bnQrMHg0MC8weDEwMA0KPiA+IFsgIDE0MC41Nzc1MDFdIFtjZjg2ZmVi
-MF0gW2MwMGUzMDMwXSBkb19tb3VudCsweDRkOC8weDgyOA0KPiA+IFsgIDE0MC41ODM0OTddIFtj
-Zjg2ZmYxMF0gW2MwMGUzNDEwXSBzeXNfbW91bnQrMHg5MC8weGQwDQo+ID4gWyAgMTQwLjU4OTM5
-OV0gW2NmODZmZjQwXSBbYzAwMTJmMmNdIHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4MzgNCj4gPiBb
-ICAxNDAuNTk1OTUwXSAtLS0gRXhjZXB0aW9uOiBjMDEgYXQgMHhmZGQ2NGM4DQo+ID4gWyAgMTQw
-LjU5NTk2NF0gICAgIExSID0gMHgxMDA2M2RkOA0KPiA+IFsgIDE0MC42MDYyMTVdIFVCSUZTIGVy
-cm9yIChwaWQgMzYxKTogdWJpZnNfcmVjb3Zlcl9sZWI6IGdhcmJhZ2UNCj4gPiBbICAxNDAuNjEy
-OTM5XSBVQklGUyBlcnJvciAocGlkIDM2MSk6IHViaWZzX3NjYW5uZWRfY29ycnVwdGlvbjoNCj4g
-PiBjb3JydXB0aW9uIGF0IExFQiAzMjExOjMzNTg3Mg0KPiA+IFsgIDE0MC42MjIzODVdIFVCSUZT
-IGVycm9yIChwaWQgMzYxKTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOiBmaXJzdA0KPiA+IDgx
-OTIgYnl0ZXMgZnJvbSBMRUIgMzIxMTozMzU4NzINCj4gPiBbICAxNDAuNjQ2NDkyXSBVQklGUyBl
-cnJvciAocGlkIDM2MSk6IHViaWZzX3JlY292ZXJfbGViOiBMRUIgMzIxMQ0KPiA+IHNjYW5uaW5n
-IGZhaWxlZA0KPg0KPiBQbGVhc2UsIHByb2R1Y2UgdGhlIGlzc3VlIGFuZCBzZW5kIGFsbCBtZXNz
-YWdlcywgbm90IG9ubHkgZXJyb3INCj4gbWVzc2FnZXMNCj4gd2hpY2ggeW91IHNlZSBvbiB5b3Vy
-IGNvbnNvbGUuIEUuZywgc2VuZCBkbWVzZyBvdXRwdXQuIEl0IGlzIGRpZmZpY3VsdA0KPiB0byBz
-YXkgYW55dGhpbmcgd2l0aG91dCB0aGUgZnVsbCBsb2cgd2hpY2ggc2hvdWxkIGNvbnRhaW4gZmxh
-c2ggZHVtcC4NCj4NClRoZSBmdWxsIGRtZXNnIG91dHB1dCBjYW4gYmUgc2VlbiBoZXJlLCBodHRw
-Oi8vcGFzdGViaW4uY29tL1JnMUxjYzZVLg0KDQpUaGFua3MNCkVyaWMgTWlsbGJyYW5kdA0KDQpU
-aGlzIGUtbWFpbCBhbmQgdGhlIGluZm9ybWF0aW9uLCBpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRz
-LCBpdCBjb250YWlucyBhcmUgaW50ZW5kZWQgdG8gYmUgYSBjb25maWRlbnRpYWwgY29tbXVuaWNh
-dGlvbiBvbmx5IHRvIHRoZSBwZXJzb24gb3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2Vk
-IGFuZCBtYXkgY29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQuIElmIHRoZSBy
-ZWFkZXIgb2YgdGhpcyBtZXNzYWdlIGlzIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3Ug
-YXJlIGhlcmVieSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24g
-b3IgY29weWluZyBvZiB0aGlzIGNvbW11bmljYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4g
-SWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBjb21tdW5pY2F0aW9uIGluIGVycm9yLCBwbGVhc2Ug
-aW1tZWRpYXRlbHkgbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlc3Ryb3kgdGhlIG9yaWdpbmFsIG1l
-c3NhZ2UuDQoNClRoYW5rIHlvdS4NCg0KUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBi
-ZWZvcmUgcHJpbnRpbmcgdGhpcyBlbWFpbC4NCg==
+Hi,
+
+I've just tagged and released mtd-utils-1.4.6 - it is identical to
+mtd-utils-1.4.5 except of 1 single patch from Brian Norris which fixes
+the mtdinfo utility:
+
+http://git.infradead.org/mtd-utils.git/commit/baafd8ace3301e9d2ba314a376bad008314b34ff
+
+IOW, this is just a bug-fix release.
+
+Thanks to Brians and Mike for reporting/fixing/reviewing the fix.
+
+The tarball should be available at the usual place.
+
+-- 
+Best Regards,
+Artem Bityutskiy
