@@ -1,15 +1,15 @@
-Received: from mail-pz0-f41.google.com ([209.85.210.41])
+Received: from mail-yi0-f49.google.com ([209.85.218.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuSZD-0003kH-CF
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:09:14 +0000
-Received: by pzk4 with SMTP id 4so7209951pzk.28
+	id 1QuSZH-0003lS-LS
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:09:18 +0000
+Received: by yic13 with SMTP id 13so2670104yic.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Aug 2011 10:09:09 -0700 (PDT)
+	Fri, 19 Aug 2011 10:09:14 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 08/10] nandwrite: cleanup "oobinfochanged" leftovers
-Date: Fri, 19 Aug 2011 10:07:54 -0700
-Message-Id: <1313773676-12879-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 10/10] nanddump: kill usages of MEMSETOOBSEL ioctl
+Date: Fri, 19 Aug 2011 10:07:56 -0700
+Message-Id: <1313773676-12879-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
 References: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
 Cc: Kevin Cernekee <cernekee@gmail.com>,
@@ -24,81 +24,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't really use oobinfochanged anymore, since all the calls to the
-MEMSETOOBSEL ioctls are gone. The remaining usage of it is superfluous
-now, as the only case where it is changed is under the "noecc" condition
-and the only case where it is tested is under the "!noecc" condition.
-
-We also no longer need the "restoreoob" label and can instead simply
-close everything done with the single remaining label, "closeall". Note
-that `close(-1)' is legal, although useless.
-
-Finally, we move `old_oobinfo' into the only block of code in which it's
-used now.
+The ioctl MEMSETOOBSEL hasn't existed for a long time. Using it as a
+backup to MTDFILEMODE is pointless, so just remove every time it is
+used.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nandwrite.c |   13 ++++---------
- 1 files changed, 4 insertions(+), 9 deletions(-)
+ nanddump.c |   43 +++----------------------------------------
+ 1 files changed, 3 insertions(+), 40 deletions(-)
 
-diff --git a/nandwrite.c b/nandwrite.c
-index a0f2596..078e2ff 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -225,8 +225,6 @@ int main(int argc, char * const argv[])
+diff --git a/nanddump.c b/nanddump.c
+index 0b931db..7a24c0d 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -34,10 +34,6 @@
+ #include "common.h"
+ #include <libmtd.h>
+ 
+-static struct nand_oobinfo none_oobinfo = {
+-	.useecc = MTD_NANDECC_OFF,
+-};
+-
+ static void display_help(void)
+ {
+ 	printf(
+@@ -309,11 +305,10 @@ int main(int argc, char * const argv[])
+ {
+ 	long long ofs, end_addr = 0;
+ 	long long blockstart = 1;
+-	int ret, i, fd, ofd = 0, bs, badblock = 0;
++	int i, fd, ofd = 0, bs, badblock = 0;
  	struct mtd_dev_info mtd;
- 	long long offs;
- 	int ret;
--	int oobinfochanged = 0;
+ 	char pretty_buf[PRETTY_BUF_LEN];
+-	int oobinfochanged = 0, firstblock = 1;
 -	struct nand_oobinfo old_oobinfo;
- 	bool failed = true;
- 	/* contains all the data read from the file so far for the current eraseblock */
- 	unsigned char *filebuf = NULL;
-@@ -277,9 +275,7 @@ int main(int argc, char * const argv[])
++	int firstblock = 1;
+ 	struct mtd_ecc_stats stat1, stat2;
+ 	bool eccstats = false;
+ 	unsigned char *readbuf = NULL, *oobbuf = NULL;
+@@ -341,26 +336,9 @@ int main(int argc, char * const argv[])
+ 	readbuf = xmalloc(sizeof(readbuf) * mtd.min_io_size);
  
  	if (noecc)  {
- 		ret = ioctl(fd, MTDFILEMODE, MTD_MODE_RAW);
+-		ret = ioctl(fd, MTDFILEMODE, MTD_MODE_RAW);
 -		if (ret == 0) {
 -			oobinfochanged = 2;
 -		} else {
-+		if (ret) {
- 			switch (errno) {
- 			case ENOTTY:
- 				errmsg_die("ioctl MTDFILEMODE is missing");
-@@ -300,7 +296,7 @@ int main(int argc, char * const argv[])
- 
- 	if (ifd == -1) {
- 		perror(img);
--		goto restoreoob;
-+		goto closeall;
+-			switch (errno) {
+-			case ENOTTY:
+-				if (ioctl(fd, MEMGETOOBSEL, &old_oobinfo) != 0) {
+-					perror("MEMGETOOBSEL");
+-					goto closeall;
+-				}
+-				if (ioctl(fd, MEMSETOOBSEL, &none_oobinfo) != 0) {
+-					perror("MEMSETOOBSEL");
+-					goto closeall;
+-				}
+-				oobinfochanged = 1;
+-				break;
+-			default:
++		if (ioctl(fd, MTDFILEMODE, MTD_MODE_RAW) != 0) {
+ 				perror("MTDFILEMODE");
+ 				goto closeall;
+-			}
+ 		}
+ 	} else {
+ 		/* check if we can read ecc stats */
+@@ -498,15 +476,6 @@ int main(int argc, char * const argv[])
+ 			write(ofd, oobbuf, mtd.oob_size);
  	}
  
- 	pagelen = mtd.min_io_size + ((writeoob) ? mtd.oob_size : 0);
-@@ -502,6 +498,7 @@ int main(int argc, char * const argv[])
- 			if (!noecc) {
- 				int i, start, len;
- 				int tags_pos = 0;
-+				struct nand_oobinfo old_oobinfo;
- 
- 				/* Read the current oob info */
- 				if (ioctl(fd, MEMGETOOBSEL, &old_oobinfo) != 0) {
-@@ -517,7 +514,7 @@ int main(int argc, char * const argv[])
- 				 * Modified to support out of order oobfree segments,
- 				 * such as the layout used by diskonchip.c
- 				 */
--				if (!oobinfochanged && (old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE)) {
-+				if (old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
- 					for (i = 0; old_oobinfo.oobfree[i][1]; i++) {
- 						/* Set the reserved bytes to 0xff */
- 						start = old_oobinfo.oobfree[i][0];
-@@ -592,8 +589,6 @@ int main(int argc, char * const argv[])
+-	/* reset oobinfo */
+-	if (oobinfochanged == 1) {
+-		if (ioctl(fd, MEMSETOOBSEL, &old_oobinfo) != 0) {
+-			perror("MEMSETOOBSEL");
+-			close(fd);
+-			close(ofd);
+-			return EXIT_FAILURE;
+-		}
+-	}
+ 	/* Close the output file and MTD device, free memory */
+ 	close(fd);
+ 	close(ofd);
+@@ -517,12 +486,6 @@ int main(int argc, char * const argv[])
+ 	return EXIT_SUCCESS;
  
  closeall:
- 	close(ifd);
--
--restoreoob:
- 	libmtd_close(mtd_desc);
- 	free(filebuf);
+-	/* The new mode change is per file descriptor ! */
+-	if (oobinfochanged == 1) {
+-		if (ioctl(fd, MEMSETOOBSEL, &old_oobinfo) != 0)  {
+-			perror("MEMSETOOBSEL");
+-		}
+-	}
+ 	close(fd);
+ 	close(ofd);
  	free(oobbuf);
 -- 
 1.7.6
