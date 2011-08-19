@@ -1,20 +1,23 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuSm1-0004KC-U2
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:22:26 +0000
-Received: by yic13 with SMTP id 13so2681364yic.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Aug 2011 10:22:24 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 06/10] nandwrite: kill more MEMSETOOBSEL
-Date: Fri, 19 Aug 2011 10:07:52 -0700
-Message-Id: <1313773676-12879-7-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
-References: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>,
-	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
+	id 1QuTDb-0004Zt-4j
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:50:56 +0000
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Fri, 19 Aug 2011 13:50:51 -0400
+Subject: RE: ubi volume unmountable after power cut
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A723D86E9@dekaexchange07.deka.local>
+References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.local>
+	<1313755918.6607.56.camel@sauron>
+	<0A40042D85E7C84DB443060EC44B3FD32A723D86E7@dekaexchange07.deka.local>
+	<1313766997.6607.66.camel@sauron>
+In-Reply-To: <1313766997.6607.66.camel@sauron>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- nandwrite.c |   26 +-------------------------
- 1 files changed, 1 insertions(+), 25 deletions(-)
-
-diff --git a/nandwrite.c b/nandwrite.c
-index 2700975..22e9b7f 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -44,10 +44,6 @@
- #include <libmtd.h>
- 
- // oob layouts to pass into the kernel as default
--static struct nand_oobinfo none_oobinfo = {
--	.useecc = MTD_NANDECC_OFF,
--};
--
- static struct nand_oobinfo jffs2_oobinfo = {
- 	.useecc = MTD_NANDECC_PLACE,
- 	.eccbytes = 6,
-@@ -318,18 +314,7 @@ int main(int argc, char * const argv[])
- 		} else {
- 			switch (errno) {
- 			case ENOTTY:
--				if (ioctl(fd, MEMGETOOBSEL, &old_oobinfo) != 0) {
--					perror("MEMGETOOBSEL");
--					close(fd);
--					exit(EXIT_FAILURE);
--				}
--				if (ioctl(fd, MEMSETOOBSEL, &none_oobinfo) != 0) {
--					perror("MEMSETOOBSEL");
--					close(fd);
--					exit(EXIT_FAILURE);
--				}
--				oobinfochanged = 1;
--				break;
-+				errmsg_die("ioctl MTDFILEMODE is missing");
- 			default:
- 				perror("MTDFILEMODE");
- 				close(fd);
-@@ -670,15 +655,6 @@ restoreoob:
- 	libmtd_close(mtd_desc);
- 	free(filebuf);
- 	free(oobbuf);
--
--	if (oobinfochanged == 1) {
--		if (ioctl(fd, MEMSETOOBSEL, &old_oobinfo) != 0) {
--			perror("MEMSETOOBSEL");
--			close(fd);
--			exit(EXIT_FAILURE);
--		}
--	}
--
- 	close(fd);
- 
- 	if (failed
--- 
-1.7.6
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
+YWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMTksIDIw
+MTEgMTE6MTcNCj4gVG86IEVyaWMgTWlsbGJyYW5kdA0KPiBDYzogJ2xpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnJw0KPiBTdWJqZWN0OiBSRTogdWJpIHZvbHVtZSB1bm1vdW50YWJsZSBhZnRl
+ciBwb3dlciBjdXQNCj4NCj4gT24gRnJpLCAyMDExLTA4LTE5IGF0IDA5OjQyIC0wNDAwLCBFcmlj
+IE1pbGxicmFuZHQgd3JvdGU6DQo+ID4gPj4gUGxlYXNlLCBwcm9kdWNlIHRoZSBpc3N1ZSBhbmQg
+c2VuZCBhbGwgbWVzc2FnZXMsIG5vdCBvbmx5IGVycm9yDQo+ID4gPiBtZXNzYWdlcw0KPiA+ID4g
+d2hpY2ggeW91IHNlZSBvbiB5b3VyIGNvbnNvbGUuIEUuZywgc2VuZCBkbWVzZyBvdXRwdXQuIEl0
+IGlzDQo+IGRpZmZpY3VsdA0KPiA+ID4gdG8gc2F5IGFueXRoaW5nIHdpdGhvdXQgdGhlIGZ1bGwg
+bG9nIHdoaWNoIHNob3VsZCBjb250YWluIGZsYXNoDQo+IGR1bXAuDQo+ID4gPg0KPiA+IFRoZSBm
+dWxsIGRtZXNnIG91dHB1dCBjYW4gYmUgc2VlbiBoZXJlLCBodHRwOi8vcGFzdGViaW4uY29tL1Jn
+MUxjYzZVLg0KPg0KPiBXb3VsZCB5b3UgcGxlYXNlIGVuYWJsZSBhbHNvIHRoZSBhZGRpdGlvbmFs
+IFVCSUZTIHJlY292ZXJ5IG1lc3NhZ2VzPw0KPg0KSG9wZWZ1bGx5IHRoaXMgaGFzIHRoZSBhZGRp
+dGlvbmFsIG1lc3NhZ2VzIHRoYXQgeW91IGFyZSBsb29raW5nIGZvciwNCmh0dHA6Ly9wYXN0ZWJp
+bi5jb20vaW1oSlZQM00NCg0KRXJpYyBNaWxsYnJhbmR0DQoNClRoaXMgZS1tYWlsIGFuZCB0aGUg
+aW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBp
+bnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBl
+cnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGlu
+Zm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3Nh
+Z2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVk
+IHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMg
+Y29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZl
+ZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkg
+dGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91
+Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlz
+IGVtYWlsLg0K
