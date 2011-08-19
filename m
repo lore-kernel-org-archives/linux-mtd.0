@@ -1,24 +1,25 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
-	helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuTWU-0004kL-W7
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 18:10:27 +0000
-Message-ID: <4E4EA70B.9050203@freescale.com>
-Date: Fri, 19 Aug 2011 13:10:19 -0500
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
-References: <1313634783-8855-1-git-send-email-b35362@freescale.com>	<4E4D452C.7050805@parrot.com>
-	<4E4DD661.5080006@freescale.com> <4E4E2571.20409@parrot.com>
-In-Reply-To: <4E4E2571.20409@parrot.com>
+	id 1QuTZ3-0004nx-1R
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 18:13:05 +0000
+Received: by bke17 with SMTP id 17so2982239bke.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Aug 2011 11:13:03 -0700 (PDT)
+Subject: Re: [BUG] mtd-utils: nandwrite: invalid erase after page write failure
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 19 Aug 2011 21:13:00 +0300
+In-Reply-To: <CAN8TOE-1eO-pihTwU6ZE=HZtXNwXg3-ft7qXipvm0Utj6RWBLQ@mail.gmail.com>
+References: <EBEBA6C3BD40EF4B8C0A5B8AD5A28F993B6C6EB71A@GVW0547EXC.americas.hpqcorp.net>
+	<1313773387.6607.83.camel@sauron>
+	<CAN8TOE-1eO-pihTwU6ZE=HZtXNwXg3-ft7qXipvm0Utj6RWBLQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	LiuShuo <b35362@freescale.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+Content-Transfer-Encoding: 8bit
+Message-ID: <1313777581.2146.3.camel@koala>
+Mime-Version: 1.0
+Cc: "Fryar, Jeff" <jeff.fryar@hp.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/19/2011 03:57 AM, Matthieu CASTET wrote:
-> LiuShuo a =C3=A9crit :
->> =E4=BA=8E 2011=E5=B9=B408=E6=9C=8819=E6=97=A5 01:00, Matthieu CASTET =E5=
-=86=99=E9=81=93:
->>> b35362@freescale.com a =C3=A9crit :
->>>> From: Liu Shuo<b35362@freescale.com>
->>>>
->>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In =
-order
->>>> to support the Nand flash chip whose page size is larger than 2K byt=
-es,
->>>> we divide a page into multi-2K pages for MTD layer driver. In that c=
-ase,
->>>> we force to set the page size to 2K bytes. We convert the page addre=
-ss of
->>>> MTD layer driver to a real page address in flash chips and a column =
-index
->>>> in fsl_elbc driver. We can issue any column address by UA instructio=
-n of
->>>> elbc controller.
->>>>
->>> Why do you need to do that ?
->>>
->>> When mtd send you a 4k page, why can't you write it by 2*2k pages wri=
-te ?
->> 1. It's easy to implement.
->> 2. We don't need to move the data in buffer more times, because we
->> want to use the HW_ECC.
->>
->> In flash chip per Page:
->> ----------------------------------------------------------------
->> | first data | first oob | second data | second oob |
->> ----------------------------------------------------------------
-> How the bad block marker are handled with this remapping ?
+On Fri, 2011-08-19 at 10:22 -0700, Brian Norris wrote:
+> On Fri, Aug 19, 2011 at 10:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Thu, 2011-08-11 at 16:30 +0100, Fryar, Jeff wrote:
+> >> mtd-utils nandwrite.c: After a page write failure, the calculation
+> >> of the block number to erase is incorrect.  The erase block size is
+> >> being passed as the erase block number in the call to mtd_erase().
+> >
+> > Looks like correct fix, thanks! Your patch is not very well formatted,
+> > but I've amended it and applied to mtd-utils, thanks!
+> 
+> Oops, my bad on the bug. I didn't ever get around to using this
+> feature when I updated nandwrite a while back. Thanks for catching it.
+> 
+> BTW, are you going to rebase or merge the v1.4.6 tag into the master
+> development branch? Just curious, since they forked when you did that
+> last tag (this never happens!), and I sent another series of mtd-utils
+> fixes...I assume I should still base off of master, right?
 
-It has to be migrated prior to first use (this needs to be documented,
-and ideally a U-Boot command provided do do this), or else special
-handling would be needed when building the BBT.  The only way around
-this would be to do ECC in software, and do the buffering needed to let
-MTD treat it as a 4K chip.
+Hi Brian,
 
--Scott
+as always, sorry for long delays, I have very little time for hobby
+projects. I guess I'll end up disappearing from mtd at some point, but
+will see, the plan is to still help MTD moving forward.
+
+Sure you have to base on the master branch. The tag was indeed a "fork"
+- I took tag v1.4.5 and put your patch on top. So v1.4.6 is not part of
+the master branch. I did so because I did not want to include whole
+bunch of changes which could add new regressions - I wanted to make just
+a "bugfix" release.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
