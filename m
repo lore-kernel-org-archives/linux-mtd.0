@@ -1,15 +1,15 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
+Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QuSZ0-0003dD-Bb
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:08:59 +0000
-Received: by mail-yi0-f49.google.com with SMTP id 13so2669541yic.36
+	id 1QuSZ2-0003fN-Iy
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2011 17:09:01 +0000
+Received: by mail-pz0-f41.google.com with SMTP id 4so7209431pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Aug 2011 10:08:58 -0700 (PDT)
+	Fri, 19 Aug 2011 10:09:00 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 03/10] mtd-utils: use __func__ instead of __FUNCTION__
-Date: Fri, 19 Aug 2011 10:07:49 -0700
-Message-Id: <1313773676-12879-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 04/10] nandwrite: remove C99 comment style
+Date: Fri, 19 Aug 2011 10:07:50 -0700
+Message-Id: <1313773676-12879-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
 References: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
 Cc: Kevin Cernekee <cernekee@gmail.com>,
@@ -24,119 +24,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-__func__ is more portable
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- mtd_debug.c              |   16 ++++++++--------
- tests/ubi-tests/common.c |   10 +++++-----
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ nandwrite.c |   24 +++++++++++++-----------
+ 1 files changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/mtd_debug.c b/mtd_debug.c
-index b98de50..2d307a9 100644
---- a/mtd_debug.c
-+++ b/mtd_debug.c
-@@ -123,10 +123,10 @@ int flash_to_file(int fd, u_int32_t offset, size_t len, const char *filename)
- retry:
- 	if ((buf = (u_int8_t *) malloc(size)) == NULL) {
- #define BUF_SIZE	(64 * 1024 * sizeof(u_int8_t))
--		fprintf(stderr, "%s: malloc(%#x)\n", __FUNCTION__, size);
-+		fprintf(stderr, "%s: malloc(%#x)\n", __func__, size);
- 		if (size != BUF_SIZE) {
- 			size = BUF_SIZE;
--			fprintf(stderr, "%s: trying buffer size %#x\n", __FUNCTION__, size);
-+			fprintf(stderr, "%s: trying buffer size %#x\n", __func__, size);
- 			goto retry;
- 		}
- 		perror("malloc()");
-@@ -137,13 +137,13 @@ retry:
- 			size = n;
- 		err = read(fd, buf, size);
- 		if (err < 0) {
--			fprintf(stderr, "%s: read, size %#x, n %#x\n", __FUNCTION__, size, n);
-+			fprintf(stderr, "%s: read, size %#x, n %#x\n", __func__, size, n);
- 			perror("read()");
- 			goto err2;
- 		}
- 		err = write(outfd, buf, size);
- 		if (err < 0) {
--			fprintf(stderr, "%s: write, size %#x, n %#x\n", __FUNCTION__, size, n);
-+			fprintf(stderr, "%s: write, size %#x, n %#x\n", __func__, size, n);
- 			perror("write()");
- 			goto err2;
- 		}
-@@ -187,10 +187,10 @@ int file_to_flash(int fd, u_int32_t offset, u_int32_t len, const char *filename)
- 	}
- retry:
- 	if ((buf = (u_int8_t *) malloc(size)) == NULL) {
--		fprintf(stderr, "%s: malloc(%#x) failed\n", __FUNCTION__, size);
-+		fprintf(stderr, "%s: malloc(%#x) failed\n", __func__, size);
- 		if (size != BUF_SIZE) {
- 			size = BUF_SIZE;
--			fprintf(stderr, "%s: trying buffer size %#x\n", __FUNCTION__, size);
-+			fprintf(stderr, "%s: trying buffer size %#x\n", __func__, size);
- 			goto retry;
- 		}
- 		perror("malloc()");
-@@ -201,7 +201,7 @@ retry:
- 		if (n <= size)
- 			size = n;
- 		if (fread(buf, size, 1, fp) != 1 || ferror(fp)) {
--			fprintf(stderr, "%s: fread, size %#x, n %#x\n", __FUNCTION__, size, n);
-+			fprintf(stderr, "%s: fread, size %#x, n %#x\n", __func__, size, n);
- 			perror("fread()");
- 			free(buf);
- 			fclose(fp);
-@@ -209,7 +209,7 @@ retry:
- 		}
- 		err = write(fd, buf, size);
- 		if (err < 0) {
--			fprintf(stderr, "%s: write, size %#x, n %#x\n", __FUNCTION__, size, n);
-+			fprintf(stderr, "%s: write, size %#x, n %#x\n", __func__, size, n);
- 			perror("write()");
- 			free(buf);
- 			fclose(fp);
-diff --git a/tests/ubi-tests/common.c b/tests/ubi-tests/common.c
-index 05cbecc..a64ea75 100644
---- a/tests/ubi-tests/common.c
-+++ b/tests/ubi-tests/common.c
-@@ -54,24 +54,24 @@ int __initial_check(const char *test, int argc, char * const argv[])
- 	 * check this.
- 	 */
- 	if (argc < 2) {
--		__errmsg(test, __FUNCTION__, __LINE__,
-+		__errmsg(test, __func__, __LINE__,
- 			 "UBI character device node is not specified");
- 		return -1;
+diff --git a/nandwrite.c b/nandwrite.c
+index 1700d61..f58bbfa 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -274,13 +274,13 @@ int main(int argc, char * const argv[])
+ 	int oobinfochanged = 0;
+ 	struct nand_oobinfo old_oobinfo;
+ 	bool failed = true;
+-	// contains all the data read from the file so far for the current eraseblock
++	/* contains all the data read from the file so far for the current eraseblock */
+ 	unsigned char *filebuf = NULL;
+ 	size_t filebuf_max = 0;
+ 	size_t filebuf_len = 0;
+-	// points to the current page inside filebuf
++	/* points to the current page inside filebuf */
+ 	unsigned char *writebuf = NULL;
+-	// points to the OOB for the current page in filebuf
++	/* points to the OOB for the current page in filebuf */
+ 	unsigned char *oobreadbuf = NULL;
+ 	unsigned char *oobbuf = NULL;
+ 	libmtd_t mtd_desc;
+@@ -429,14 +429,14 @@ int main(int argc, char * const argv[])
+ 	    lseek(ifd, 0, SEEK_SET);
  	}
  
- 	libubi = libubi_open();
- 	if (libubi == NULL) {
--		__failed(test, __FUNCTION__, __LINE__, "libubi_open");
-+		__failed(test, __func__, __LINE__, "libubi_open");
- 		return -1;
+-	// Check, if file is page-aligned
++	/* Check, if file is page-aligned */
+ 	if ((!pad) && ((imglen % pagelen) != 0)) {
+ 		fprintf(stderr, "Input file is not page-aligned. Use the padding "
+ 				 "option.\n");
+ 		goto closeall;
  	}
  
- 	if (ubi_get_dev_info(libubi, argv[1], &dev_info)) {
--		__failed(test, __FUNCTION__, __LINE__, "ubi_get_dev_info");
-+		__failed(test, __func__, __LINE__, "ubi_get_dev_info");
- 		goto close;
- 	}
+-	// Check, if length fits into device
++	/* Check, if length fits into device */
+ 	if (((imglen / pagelen) * mtd.min_io_size) > (mtd.size - mtdoffset)) {
+ 		fprintf(stderr, "Image %d bytes, NAND page %d bytes, OOB area %d"
+ 				" bytes, device size %lld bytes\n",
+@@ -479,8 +479,10 @@ int main(int argc, char * const argv[])
+ 			blockstart = mtdoffset & (~ebsize_aligned + 1);
+ 			offs = blockstart;
  
- 	if (dev_info.avail_lebs < MIN_AVAIL_EBS) {
--		__errmsg(test, __FUNCTION__, __LINE__,
-+		__errmsg(test, __func__, __LINE__,
- 			 "insufficient available eraseblocks %d on UBI "
- 			 "device, required %d",
- 			 dev_info.avail_lebs, MIN_AVAIL_EBS);
-@@ -79,7 +79,7 @@ int __initial_check(const char *test, int argc, char * const argv[])
- 	}
+-			// if writebuf == filebuf, we are rewinding so we must not
+-			// reset the buffer but just replay it
++			/*
++			 * if writebuf == filebuf, we are rewinding so we must
++			 * not reset the buffer but just replay it
++			 */
+ 			if (writebuf != filebuf) {
+ 				erase_buffer(filebuf, filebuf_len);
+ 				filebuf_len = 0;
+@@ -515,7 +517,7 @@ int main(int argc, char * const argv[])
  
- 	if (dev_info.vol_count != 0) {
--		__errmsg(test, __FUNCTION__, __LINE__,
-+		__errmsg(test, __func__, __LINE__,
- 			 "device %s is not empty", argv[1]);
- 		goto close;
- 	}
+ 		}
+ 
+-		// Read more data from the input if there isn't enough in the buffer
++		/* Read more data from the input if there isn't enough in the buffer */
+ 		if ((writebuf + mtd.min_io_size) > (filebuf + filebuf_len)) {
+ 			int readlen = mtd.min_io_size;
+ 
+@@ -524,7 +526,7 @@ int main(int argc, char * const argv[])
+ 
+ 			while (tinycnt < readlen) {
+ 				cnt = read(ifd, writebuf + tinycnt, readlen - tinycnt);
+-				if (cnt == 0) { // EOF
++				if (cnt == 0) { /* EOF */
+ 					break;
+ 				} else if (cnt < 0) {
+ 					perror("File I/O error on input");
+@@ -570,7 +572,7 @@ int main(int argc, char * const argv[])
+ 		if (writeoob) {
+ 			oobreadbuf = writebuf + mtd.min_io_size;
+ 
+-			// Read more data for the OOB from the input if there isn't enough in the buffer
++			/* Read more data for the OOB from the input if there isn't enough in the buffer */
+ 			if ((oobreadbuf + mtd.oob_size) > (filebuf + filebuf_len)) {
+ 				int readlen = mtd.oob_size;
+ 				int alreadyread = (filebuf + filebuf_len) - oobreadbuf;
+@@ -578,7 +580,7 @@ int main(int argc, char * const argv[])
+ 
+ 				while (tinycnt < readlen) {
+ 					cnt = read(ifd, oobreadbuf + tinycnt, readlen - tinycnt);
+-					if (cnt == 0) { // EOF
++					if (cnt == 0) { /* EOF */
+ 						break;
+ 					} else if (cnt < 0) {
+ 						perror("File I/O error on input");
 -- 
 1.7.6
