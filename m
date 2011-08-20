@@ -1,33 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QudwF-0007XC-2w
-	for linux-mtd@lists.infradead.org; Sat, 20 Aug 2011 05:17:43 +0000
-Received: by bke17 with SMTP id 17so3287292bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Aug 2011 22:17:39 -0700 (PDT)
-Subject: Re: UBI memory usage on large page nand
+Subject: Re: [PATCH v9 1/3] MTD : add the common code for GPMI-NAND
+	controller driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicholas <ciliwung36@gmail.com>
-Date: Sat, 20 Aug 2011 08:17:36 +0300
-In-Reply-To: <CA+DaZUmMu5bCVCx=Ekj1QA9jQGu8t80CecQj-tAw_CKtymHoXA@mail.gmail.com>
-References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-	<AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
-	<1301671910.2789.98.camel@localhost>
-	<BANLkTi=pZqEwWYy=7mYQ_p73cHQ4rA6Rbg@mail.gmail.com>
-	<1302873226.3220.43.camel@localhost>
-	<1302873423.3220.45.camel@localhost>
-	<BANLkTin=dfsO9N02oVZg=kU3ghfymbzJWA@mail.gmail.com>
-	<1303031774.2308.13.camel@koala>
-	<BANLkTi=We=H92+DHuJF7TPVUagePgqF48g@mail.gmail.com>
-	<1303115951.2815.35.camel@localhost>
-	<BANLkTim2aXQY5YzJkadHWT_NQ2XNupTHBA@mail.gmail.com>
-	<1303284633.2700.3.camel@localhost>
-	<CA+DaZUmMu5bCVCx=Ekj1QA9jQGu8t80CecQj-tAw_CKtymHoXA@mail.gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Sat, 20 Aug 2011 08:35:48 +0300
+In-Reply-To: <1313581828-16625-2-git-send-email-b32955@freescale.com>
+References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
+	<1313581828-16625-2-git-send-email-b32955@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1313817458.31216.4.camel@koala>
+Message-ID: <1313818550.31216.9.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, koen.beel.barco@gmail.com, shijie8@gmail.com,
+	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,22 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-08-17 at 14:35 +0800, Nicholas wrote:
-> Dear Artem,
-> 
-> 1. drivers/mtd/ubi/build.c
-> 
-> attach_by_scanning(struct ubi_device *ubi)
-> 
->         ubi->min_io_size = ubi->mtd->writesize;
->         ubi->hdrs_min_io_size = ubi->mtd->writesize >> ubi->mtd->subpage_sft;
-> +       ubi->max_write_size = ubi->mtd->writesize;
+1. You do not need to call parse_mtd_partitions() anymore - we re-worked
+the partitions registration in l2-mtd-2.6.git:
 
-Could you please send a normal kernel patch with a good commit message,
-e.g., produced with 'git format-patch'. Describe how you tested it as
-well.
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 
-There are many internet resources describing how to send good kernel
-patches.
 
-Thanks!
+> +static void show_bch_geometry(struct bch_geometry *geo)
+> +{
+> +	pr_info("---------------------------------------\n");
+> +	pr_info("	BCH Geometry\n");
+> +	pr_info("---------------------------------------\n");
+
+I think these "---" only consume memory in .data. This is the kernel and
+I think nice separators like this should be avoided.
+
+> +	pr_info("ECC Algorithm          : %s\n", geo->ecc_algorithm);
+> +	pr_info("ECC Strength           : %u\n", geo->ecc_strength);
+> +	pr_info("Page Size in Bytes     : %u\n", geo->page_size_in_bytes);
+> +	pr_info("Metadata Size in Bytes : %u\n", geo->metadata_size_in_bytes);
+> +	pr_info("ECC Chunk Size in Bytes: %u\n", geo->ecc_chunk_size_in_bytes);
+> +	pr_info("ECC Chunk Count        : %u\n", geo->ecc_chunk_count);
+> +	pr_info("Payload Size in Bytes  : %u\n", geo->payload_size_in_bytes);
+> +	pr_info("Auxiliary Size in Bytes: %u\n", geo->auxiliary_size_in_bytes);
+> +	pr_info("Auxiliary Status Offset: %u\n", geo->auxiliary_status_offset);
+> +	pr_info("Block Mark Byte Offset : %u\n", geo->block_mark_byte_offset);
+> +	pr_info("Block Mark Bit Offset  : %u\n", geo->block_mark_bit_offset);
+> +}
+
+Isn't it too much info for normal users? Should this be pr_debug()
+instead? There is another similar place in your code.
+
+Artem.
