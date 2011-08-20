@@ -1,27 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QucOy-0007GK-LH
-	for linux-mtd@lists.infradead.org; Sat, 20 Aug 2011 03:39:17 +0000
-Received: by bke17 with SMTP id 17so3256965bke.36
+	id 1Qucsx-0007P0-2Z
+	for linux-mtd@lists.infradead.org; Sat, 20 Aug 2011 04:10:15 +0000
+Received: by bke17 with SMTP id 17so3266742bke.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Aug 2011 20:39:14 -0700 (PDT)
-Subject: Re: [PATCHv4] mtd: gpio-nand: add device tree bindings
+	Fri, 19 Aug 2011 21:10:12 -0700 (PDT)
+Subject: Re: [PATCH] Increase PEB size limit to 2MiB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jamie Iles <jamie@jamieiles.com>
-Date: Sat, 20 Aug 2011 06:39:10 +0300
-In-Reply-To: <20110815152447.GI2636@pulham.picochip.com>
-References: <1312902747-21372-1-git-send-email-jamie@jamieiles.com>
-	<1313418543.2600.2.camel@sauron>
-	<20110815143816.GH2636@pulham.picochip.com>
-	<1313419536.2600.7.camel@sauron>
-	<20110815152447.GI2636@pulham.picochip.com>
+To: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
+Date: Sat, 20 Aug 2011 07:10:08 +0300
+In-Reply-To: <1313486854-7917-1-git-send-email-viktar.palstsiuk@promwad.com>
+References: <1313486854-7917-1-git-send-email-viktar.palstsiuk@promwad.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-ID: <1313811552.4475.10.camel@koala>
+Message-ID: <1313813410.4475.12.camel@koala>
 Mime-Version: 1.0
-Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
-	devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
-	Grant Likely <grant.likely@secretlab.ca>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,34 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-08-15 at 16:24 +0100, Jamie Iles wrote:
-> From: Jamie Iles <jamie@jamieiles.com>
-> Subject: [PATCH] mtd: gpio-nand: add device tree bindings
-> 
-> Add device tree bindings so that the gpio-nand driver may be
-> instantiated from the device tree.  This also allows the partitions
-> to be specified in the device tree.
-> 
-> v5:	- fold dt config helpers into a single gpio_nand_of_get_config()
-> v4:	- get io sync address from gpio-control-nand,io-sync-reg
-> 	  property rather than a resource
-> 	- clarified a few details in the binding
-> v3:	- remove redundant cast and a couple of whitespace/naming
-> 	  changes
-> v2:	- add CONFIG_OF guards for non-dt platforms
-> 	- compatible becomes gpio-control-nand
-> 	- clarify some binding details
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Cc: Scott Wood <scottwood@freescale.com>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+On Tue, 2011-08-16 at 12:27 +0300, Viktar Palstsiuk wrote:
+> ---
+>  include/mtd/ubi-media.h  |    3 +++
+>  mkfs.ubifs/mkfs.ubifs.c  |    2 +-
+>  mkfs.ubifs/ubifs-media.h |    3 +++
+>  ubi-utils/ubinize.c      |    2 +-
+>  4 files changed, 8 insertions(+), 2 deletions(-)
 
-Pushed this patch to l2-mtd-2.6.git, thanks.
+I've amended the patch and pushed.
 
-P.S. probably it should contain some reviewed-by tags? I can always add
-them, though, if needed.
+I moved the declarations to other header files because this limitation
+is not a fundamental UBIFS limitation, this is just a sanity check. So
+the macros should not live in '*-media.h' because they are not related
+to the media format.
+
+Thanks!
 
 -- 
 Best Regards,
