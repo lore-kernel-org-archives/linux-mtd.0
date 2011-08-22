@@ -1,22 +1,24 @@
-Received: from am1ehsobe001.messaging.microsoft.com ([213.199.154.204]
-	helo=AM1EHSOBE001.bigfish.com)
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvRIW-0002ET-0l
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:00:00 +0000
-Content-Type: text/plain; charset="utf-8"; format=flowed; delsp=yes
-To: Scott Wood <scottwood@freescale.com>, Chunhe Lan <Chunhe.Lan@freescale.com>
-Subject: Re: [PATCH] mtd/physmap_of: Don't add disabled flash devices
-References: <1313486750-15211-1-git-send-email-Chunhe.Lan@freescale.com>
-	<4E4AE4D8.1080903@freescale.com>
-Date: Mon, 22 Aug 2011 18:02:47 +0800
-MIME-Version: 1.0
+	id 1QvRJP-0002HH-FN
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:00:56 +0000
+Received: by gyh20 with SMTP id 20so4233900gyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Aug 2011 03:00:53 -0700 (PDT)
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 22 Aug 2011 13:02:40 +0300
+In-Reply-To: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-From: Lan Chunhe <b25806@freescale.com>
-Message-ID: <op.v0l0uxh9z91x4h@localhost.localdomain>
-In-Reply-To: <4E4AE4D8.1080903@freescale.com>
-Cc: dwmw2@infradead.org, kumar.gala@freescale.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	linuxppc-dev@ozlabs.org
+Message-ID: <1314007366.2644.101.camel@sauron>
+Mime-Version: 1.0
+Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+	b35362@freescale.com, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 17 Aug 2011 05:44:56 +0800, Scott Wood <scottwood@freescale.com>  
-wrote:
+Hi,
 
-> On 08/16/2011 04:25 AM, Chunhe Lan wrote:
->> Flash(cfi-flash, jedec-flash, and so on) nodes with the
->> property status="disabled" are not usable and so avoid
->> adding "disabled" flash devices with the system.
->>
->> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
->> ---
->>  drivers/mtd/maps/physmap_of.c |    3 +++
->>  1 files changed, 3 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/maps/physmap_of.c  
->> b/drivers/mtd/maps/physmap_of.c
->> index d251d1d..812e6dc 100644
->> --- a/drivers/mtd/maps/physmap_of.c
->> +++ b/drivers/mtd/maps/physmap_of.c
->> @@ -219,6 +219,9 @@ static int __devinit of_flash_probe(struct  
->> platform_device *dev)
->>  	struct mtd_info **mtd_list = NULL;
->>  	resource_size_t res_size;
->>
->> +	if (!of_device_is_available(dp))
->> +		return -ENODEV;
->> +
->>  	match = of_match_device(of_flash_match, &dev->dev);
->>  	if (!match)
->>  		return -EINVAL;
->
-> Are you actually seeing unavailable devices get probed?  I thought the
-> upper layers were supposed to prevent that.
+On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
+> First off, these fixes are motivated by a number of things:
+> 
+> 1) Broken "noecc" writes; `nandwrite -n -o' does not work on my
+>    hardware, at least, without these patches
 
-    You are right.
-    The upper layers have prevented unavailable devices.
-    So, this patch is no need.
+I think Ivan complained about this at some point - he said he has images
+with crafted ECC codes to test his BCH library, but he could not flash
+them properly. So yes, this is worth fixing.
 
-    Thanks.
+> Perhaps something should be done about the MTDFILEMODE ioctl, since it
+> seems to cause some confusing overlap, at least to me. I see two
+> different RAW modes:
+> 
+> * MTD_MODE_RAW, which belongs to the mode field in `struct
+>   mtd_file_info'. It can be set by the ioctl MTDFILEMODE
+> * MTD_OOB_RAW, which belongs to the mode field in `struct
+>   mtd_oob_ops'. It is set indirectly by other operations.
+> 
+> Does MTD_MODE_RAW imply MTD_OOB_RAW when OOB operations are involved?
 
-    -Jack Lan
+I would make sure these 2 set of macros have different prefixes.
+Probably re-naming the internal ones is easier, but I'd anyway re-named
+the external ones - indeed they are about access mode for a specific
+file descriptor, so I'd use the "MTD_FILE_MODE_" prefix. But not sure,
+you can invent something else. In any case, it is cleaner to have
+different prefixes for different name-spaces.
 
-> -Scott
- 
+> Does MTD_MODE_RAW imply that no ECC is applied to data?
+
+Not sure, but judging from how it is used - no.
+
+> Is the MTD file mode persistent?
+
+It is stored in the file descriptor (file->private_data), so the
+life-time of the mode is equivalent to the life-time for the file
+descriptor, AFAICS.
+
+>  If so, then it may conflict with a
+> "per-operation" mode in our new MEMWRITEDATAOOB
+
+Good point. Frankly, I find this stateful model with modes horrible. But
+we have what we have. I guess we will need to carefully document which
+ioctl's are affected by the MTD mode, and which are not (in the header
+file which we expose to the user-space).
+
+I think MEMWRITEDATAOOB should ignore the mode.
+
+My quick look at the code suggests me that the RAW/NORMAL file modes is
+about read/write operations - in normal mode we read/write from/to only
+the main area, in raw mode we consider the main area and OOB as one
+continuous region and read/write from/to this region.
+
+And MEMWRITEDATAOOB is about accession only OOB, so the modes should not
+affect it.
+
+> Maybe the "something" to be done would just be some better
+> documentation. Or something more drastic if there's an actual conflict.
+
+To me it looks like (a) re-naming and (be) some more comments in the
+header files is enough.
+
+> Speaking of documentation, what is this supposed to mean (from struct
+> nand_chip, in include/linux/mtd/nand.h)?
+
+Sorry, do not know off the top of my head.
+
+-- 
+Best Regards,
+Artem Bityutskiy
