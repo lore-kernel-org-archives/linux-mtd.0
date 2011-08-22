@@ -1,29 +1,26 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvXw0-0002sw-BD
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 17:05:12 +0000
-Message-ID: <4E528C45.5060704@parrot.com>
-Date: Mon, 22 Aug 2011 19:05:09 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QvanA-0004qS-LH
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 20:08:17 +0000
+Received: by wwf10 with SMTP id 10so4015149wwf.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Aug 2011 13:08:10 -0700 (PDT)
 MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
-References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
-	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
-	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
-	<1314010719.2644.114.camel@sauron>
-	<20110822152530.GA16794@parrot.com>
-	<4E527E0F.1010500@freescale.com> <4E528036.5070801@parrot.com>
-	<4E52819C.8080204@freescale.com>
-In-Reply-To: <4E52819C.8080204@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, LiuShuo <b35362@freescale.com>,
-	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ivan Djelic <ivan.djelic@parrot.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>
+In-Reply-To: <1314002153.2644.69.camel@sauron>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
+	<1314002153.2644.69.camel@sauron>
+Date: Mon, 22 Aug 2011 13:08:09 -0700
+Message-ID: <CAN8TOE8Ze5kZO9NnX5NsCArTWEX+JbTZf7=3SgO=PpzhjiGG9w@mail.gmail.com>
+Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+	b35362@freescale.com, Jim Quinlan <jim2101024@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scott Wood a écrit :
-> On 08/22/2011 11:13 AM, Matthieu CASTET wrote:
->> Scott Wood a écrit :
->>> To eliminate it we'd need to do an extra data transfer without reissuing
->>> the command, which Shuo was unable to get to work.
->>>
->> That's weird because our controller seems quite flexible [1].
->>
->> Something like that should work ?
->>
->>             out_be32(&lbc->fir,
->>                      (FIR_OP_CM2 << FIR_OP0_SHIFT) |
->>                      (FIR_OP_CA  << FIR_OP1_SHIFT) |
->>                      (FIR_OP_PA  << FIR_OP2_SHIFT) |
->>                      (FIR_OP_WB  << FIR_OP3_SHIFT));
->> refill FCM buffer with next 2k data
->>
->>             out_be32(&lbc->fir,
->>                      (FIR_OP_WB  << FIR_OP3_SHIFT) |
->>                      (FIR_OP_CM3 << FIR_OP4_SHIFT) |
->>                      (FIR_OP_CW1 << FIR_OP5_SHIFT) |
->>                      (FIR_OP_RS  << FIR_OP6_SHIFT));
-> 
-> Something like that is what I originally suggested, but Shuo said it
-> didn't work (even in theory, it requires a CE-don't-care NAND chip,
-> since bus atomicity is broken).
-Are there 4K chip that are not CE-don't-care ?
+I forgot to CC a contributor on this (and the complementary patch for
+"read OOB")
 
-Also I think it depends how the bus are connected  (shared with other device)
-and the controller.
+Cc: Jim Quinlan <jim2101024@gmail.com>
 
-Matthieu
+On Mon, Aug 22, 2011 at 1:35 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
+>> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
+>
+> I guess this patch deserves to be non-RFC? Should it be pushed to
+> l2-mtd-2.6.git? Should it even have "Cc: stable@kernel.org [kernel
+> version +] ?
+
+I'm not actually sure where this stands (RFC vs. patch) since I really
+wanted some outside opinion on the methods used here. I have a feeling
+that some of this is only working on my hardware. For instance,
+somehow (I'm really not sure how!) `nandwrite -n -o' is working in
+nandsim without my fix. Perhaps this is due to a different set of
+nand_ecc_ctrl functions (soft ECC vs. HW ECC).
+
+With this patch applied, however, I get some strange kernel oopses
+with nandsim. I've identified at least one issue, I think, but I
+haven't completely resolved this discrepancy between nandsim and my
+driver. See sample commands:
+
+# insmod nandsim.ko
+# nandwrite /dev/mtdX <data.bin> -n -o
+
+So for this "fix" (and its coming updates), I would appreciate some
+outside testing on other systems, especially before we send this to
+stable or even before including it upstream at all.
+
+And any comments on the current status of noecc and MTD_OOB_RAW from
+others would be highly valuable to me; a bit of system information and
+a "working" or "not working since commit [XXX]" would be a start. In
+the meantime, I'm trying to get a hold of a wider variety of test
+systems for myself for these kind of issues...
+
+>> - =A0 =A0 ops.mode =3D MTD_OOB_PLACE;
+>> + =A0 =A0 ops.mode =3D (mfi->mode =3D=3D MTD_MODE_RAW) ? MTD_OOB_RAW : M=
+TD_OOB_PLACE;
+>
+> Would be really great to document things while you are in it - e.g.,
+> putting a little note in include/linux/mtd/mtd.h that MTD_OOB_PLACE is
+> the default mode. And of course documenting the modes in this file a bit
+> more would be also great. I encourage you to store the wisdom you gain
+> in the comments :-)
+
+I'll see what I can do. Probably a task for after the dust settles on
+some of the changes I'm working on.
+
+Brian
