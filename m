@@ -1,28 +1,24 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvSBX-0003iK-8L
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:56:52 +0000
-Received: by gwb1 with SMTP id 1so3658539gwb.36
+	id 1QvSDQ-0003me-Nc
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:58:49 +0000
+Received: by yxk8 with SMTP id 8so4185978yxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 03:56:47 -0700 (PDT)
-Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
+	Mon, 22 Aug 2011 03:58:47 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Date: Mon, 22 Aug 2011 13:58:33 +0300
-In-Reply-To: <4E4EA70B.9050203@freescale.com>
-References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
-	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
-	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Date: Mon, 22 Aug 2011 14:00:35 +0300
+In-Reply-To: <CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
+References: <cover.1312922073.git.bengardiner@nanometrics.ca>
+	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
+	<1313568224.20534.1.camel@sauron>
+	<CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1314010719.2644.114.camel@sauron>
+Content-Transfer-Encoding: 7bit
+Message-ID: <1314010839.2644.116.camel@sauron>
 Mime-Version: 1.0
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	LiuShuo <b35362@freescale.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,43 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-08-19 at 13:10 -0500, Scott Wood wrote:
-> On 08/19/2011 03:57 AM, Matthieu CASTET wrote:
-> > LiuShuo a écrit :
-> >> 于 2011年08月19日 01:00, Matthieu CASTET 写道:
-> >>> b35362@freescale.com a écrit :
-> >>>> From: Liu Shuo<b35362@freescale.com>
-> >>>>
-> >>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
-> >>>> to support the Nand flash chip whose page size is larger than 2K bytes,
-> >>>> we divide a page into multi-2K pages for MTD layer driver. In that case,
-> >>>> we force to set the page size to 2K bytes. We convert the page address of
-> >>>> MTD layer driver to a real page address in flash chips and a column index
-> >>>> in fsl_elbc driver. We can issue any column address by UA instruction of
-> >>>> elbc controller.
-> >>>>
-> >>> Why do you need to do that ?
-> >>>
-> >>> When mtd send you a 4k page, why can't you write it by 2*2k pages write ?
-> >> 1. It's easy to implement.
-> >> 2. We don't need to move the data in buffer more times, because we
-> >> want to use the HW_ECC.
-> >>
-> >> In flash chip per Page:
-> >> ----------------------------------------------------------------
-> >> | first data | first oob | second data | second oob |
-> >> ----------------------------------------------------------------
-> > How the bad block marker are handled with this remapping ?
+On Thu, 2011-08-18 at 10:01 -0400, Ben Gardiner wrote:
+> Fair enough -- I'm happy to hear a definitive answer; thank you, Artem.
 > 
-> It has to be migrated prior to first use (this needs to be documented,
-> and ideally a U-Boot command provided do do this), or else special
-> handling would be needed when building the BBT.  The only way around
-> this would be to do ECC in software, and do the buffering needed to let
-> MTD treat it as a 4K chip.
+> In PATCH 3/3 I use the same ioctl to get the ECC size for the purposes
+> of producing a BER estimate. What is the right way of getting the ECC
+> size now that ECCGETLAYOUT is deprecated? Is this even something that
+> should be from userspace at all?
 
-It really feels like a special hack which would better not go to
-mainline - am I the only one with such feeling? If yes, probably I am
-wrong...
+I do not know. I think we need to expose it via sysfs. I think that in
+general sysfs is better that "informational" ioctls.
 
 -- 
 Best Regards,
