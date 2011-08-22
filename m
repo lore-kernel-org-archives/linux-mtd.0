@@ -1,27 +1,27 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvVfi-0000SZ-03
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 14:40:14 +0000
-From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Mon, 22 Aug 2011 10:40:12 -0400
-Subject: RE: ubi volume unmountable after power cut
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A723D86ED@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.local>
-	<1313755918.6607.56.camel@sauron>
-	<0A40042D85E7C84DB443060EC44B3FD32A723D86E7@dekaexchange07.deka.local>
-	<1313766997.6607.66.camel@sauron>
-	<0A40042D85E7C84DB443060EC44B3FD32A723D86E9@dekaexchange07.deka.local>
-	<1314020635.2644.121.camel@sauron>
-	<0A40042D85E7C84DB443060EC44B3FD32A723D86EB@dekaexchange07.deka.local>
-	<1314023711.2644.124.camel@sauron>
-In-Reply-To: <1314023711.2644.124.camel@sauron>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QvWPH-0001jw-Cw
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 15:27:20 +0000
+Date: Mon, 22 Aug 2011 17:25:30 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Scott Wood <scottwood@freescale.com>, LiuShuo <b35362@freescale.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+Message-ID: <20110822152530.GA16794@parrot.com>
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
+	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
+	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
+	<1314010719.2644.114.camel@sauron>
 MIME-Version: 1.0
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1314010719.2644.114.camel@sauron>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LiuShuo <b35362@freescale.com>,
+	Matthieu Castet <matthieu.castet@parrot.com>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +31,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
-YWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBBdWd1c3QgMjIsIDIw
-MTEgMTA6MzUNCj4gVG86IEVyaWMgTWlsbGJyYW5kdA0KPiBDYzogJ2xpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnJw0KPiBTdWJqZWN0OiBSRTogdWJpIHZvbHVtZSB1bm1vdW50YWJsZSBhZnRl
-ciBwb3dlciBjdXQNCj4NCg0KPiA+ID4gWWVhaCwgc29ycnksIG5vIGlkZWEuIElzIHRoaXMgcmVw
-cm9kdWNpYmxlIG9uIG90aGVyIGRldmljZXM/DQo+ID4gPg0KPiA+IFdlIGhhdmUgb25seSBzZWVu
-IHRoaXMgb25lIG9jY3VycmVuY2UsIGhvcGVmdWxseSB0aGlzIHdpbGwgYmUgYSByYXJlDQo+IGVy
-cm9yLg0KPg0KPiBBbHRob3VnaCB5b3Ugc2FpZCB0aGF0IHB1bGxpbmcgdGhlIGJhY2twb3J0IHRy
-ZWUgZGlkIG5vdCBoZWxwLCBJIHRoaW5rDQo+IGl0IHN0aWxsIHNob3VsZCBiZSBkb25lIGJlY2F1
-c2UgaXQgbWF5IGhlbHAgdG8gX3ByZXZlbnRfIHRoaXMNCj4gaGFwcGVuaW5nLA0KPiBldmVuIHRo
-b3VnaCBpdCBkaWQgbm90IGhlbHAgX3JlY292ZXJpbmdfIGZyb20gdGhhdCBjb3JydXB0aW9uLiBU
-aGUNCj4gcmVhc29uIHdoeSBJIGVtcGhhc2l6ZSB0aGlzIGlzIGJlY2F1c2UgdGhlcmUgd2VyZSBh
-IGxvdCBvZiBwb3dlci1jdXQNCj4gdG9sZXJhbmNlIGZpeGVzIHRoZXJlLg0KPg0KPiBCdXQgb2Yg
-Y291cnNlLCB0aGVyZSBpcyBhIHJpc2sgdG8gZ2V0IG5ldyBidWcgd2l0aCB0aGUgdXBkYXRlcywg
-YXMNCj4gYWx3YXlzLg0KPg0KSSdsbCBiZSBzdXJlIHRvIHB1bGwgdGhvc2UgY2hhbmdlcyBpbnRv
-IG91ciBuZXh0IHJlbGVhc2UuICBUaGFua3MgZm9yDQptYWludGFpbmluZyB0aGUgYmFja3BvcnRz
-IHRyZWVzIQ0KDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUgaW5mb3JtYXRpb24sIGluY2x1ZGluZyBh
-bnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBpbnRlbmRlZCB0byBiZSBhIGNvbmZpZGVu
-dGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBlcnNvbiBvciBlbnRpdHkgdG8gd2hvbSBp
-dCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmls
-ZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3NhZ2UgaXMgbm90IHRoZSBpbnRlbmRlZCBy
-ZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc3NlbWluYXRpb24s
-IGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3Rs
-eSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmljYXRpb24gaW4g
-ZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVzdHJveSB0
-aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhl
-IGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGVtYWlsLg0K
+On Mon, Aug 22, 2011 at 11:58:33AM +0100, Artem Bityutskiy wrote:
+> On Fri, 2011-08-19 at 13:10 -0500, Scott Wood wrote:
+> > On 08/19/2011 03:57 AM, Matthieu CASTET wrote:
+> > > LiuShuo a écrit :
+> > >> ??? 2011???08???19??? 01:00, Matthieu CASTET ??????:
+> > >>> b35362@freescale.com a écrit :
+> > >>>> From: Liu Shuo<b35362@freescale.com>
+> > >>>>
+> > >>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+> > >>>> to support the Nand flash chip whose page size is larger than 2K bytes,
+> > >>>> we divide a page into multi-2K pages for MTD layer driver. In that case,
+> > >>>> we force to set the page size to 2K bytes. We convert the page address of
+> > >>>> MTD layer driver to a real page address in flash chips and a column index
+> > >>>> in fsl_elbc driver. We can issue any column address by UA instruction of
+> > >>>> elbc controller.
+> > >>>>
+> > >>> Why do you need to do that ?
+> > >>>
+> > >>> When mtd send you a 4k page, why can't you write it by 2*2k pages write ?
+> > >> 1. It's easy to implement.
+> > >> 2. We don't need to move the data in buffer more times, because we
+> > >> want to use the HW_ECC.
+> > >>
+> > >> In flash chip per Page:
+> > >> ----------------------------------------------------------------
+> > >> | first data | first oob | second data | second oob |
+> > >> ----------------------------------------------------------------
+> > > How the bad block marker are handled with this remapping ?
+> > 
+> > It has to be migrated prior to first use (this needs to be documented,
+> > and ideally a U-Boot command provided do do this), or else special
+> > handling would be needed when building the BBT.  The only way around
+> > this would be to do ECC in software, and do the buffering needed to let
+> > MTD treat it as a 4K chip.
+
+Did you take into account the fact that because MTD thinks this a 2K chip,
+you will have to wait twice for the nand busy read time (typically 25 us) per
+each 4K read. In other words, to read 4 kBytes you will do:
+
+1. send read0 (00), send address, send read1 (30)
+2. wait tRB
+3. transfer 2 kBytes
+4. send read0 (00), send address, send read1 (30)
+5. wait tRB
+6. transfer 2 kBytes
+
+Same problem for writes (but rather 100 us instead of 25 us).
+
+How does that compare with hw ecc gain in terms of performance ?
+
+--
+Best Regards,
+
+Ivan
