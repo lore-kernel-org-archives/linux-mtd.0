@@ -1,15 +1,13 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvVZ4-0000It-1K
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 14:33:22 +0000
-Received: by gwb1 with SMTP id 1so3834197gwb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 07:33:19 -0700 (PDT)
+	id 1QvVfi-0000SZ-03
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 14:40:14 +0000
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Mon, 22 Aug 2011 10:40:12 -0400
 Subject: RE: ubi volume unmountable after power cut
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Date: Mon, 22 Aug 2011 17:35:07 +0300
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD32A723D86EB@dekaexchange07.deka.local>
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A723D86ED@dekaexchange07.deka.local>
 References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.local>
 	<1313755918.6607.56.camel@sauron>
 	<0A40042D85E7C84DB443060EC44B3FD32A723D86E7@dekaexchange07.deka.local>
@@ -17,12 +15,13 @@ References: <0A40042D85E7C84DB443060EC44B3FD32A723D86B0@dekaexchange07.deka.loca
 	<0A40042D85E7C84DB443060EC44B3FD32A723D86E9@dekaexchange07.deka.local>
 	<1314020635.2644.121.camel@sauron>
 	<0A40042D85E7C84DB443060EC44B3FD32A723D86EB@dekaexchange07.deka.local>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1314023711.2644.124.camel@sauron>
-Mime-Version: 1.0
+	<1314023711.2644.124.camel@sauron>
+In-Reply-To: <1314023711.2644.124.camel@sauron>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-08-22 at 10:28 -0400, Eric Millbrandt wrote:
-> > -----Original Message-----
-> > From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
-> > Sent: Monday, August 22, 2011 09:44
-> > To: Eric Millbrandt
-> > Cc: 'linux-mtd@lists.infradead.org'
-> > Subject: RE: ubi volume unmountable after power cut
-> >
-> 
-> > Yeah, sorry, no idea. Is this reproducible on other devices?
-> >
-> We have only seen this one occurrence, hopefully this will be a rare error.
-
-Although you said that pulling the backport tree did not help, I think
-it still should be done because it may help to _prevent_ this happening,
-even though it did not help _recovering_ from that corruption. The
-reason why I emphasize this is because there were a lot of power-cut
-tolerance fixes there.
-
-But of course, there is a risk to get new bug with the updates, as
-always.
-
--- 
-Best Regards,
-Artem Bityutskiy
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
+YWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBBdWd1c3QgMjIsIDIw
+MTEgMTA6MzUNCj4gVG86IEVyaWMgTWlsbGJyYW5kdA0KPiBDYzogJ2xpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnJw0KPiBTdWJqZWN0OiBSRTogdWJpIHZvbHVtZSB1bm1vdW50YWJsZSBhZnRl
+ciBwb3dlciBjdXQNCj4NCg0KPiA+ID4gWWVhaCwgc29ycnksIG5vIGlkZWEuIElzIHRoaXMgcmVw
+cm9kdWNpYmxlIG9uIG90aGVyIGRldmljZXM/DQo+ID4gPg0KPiA+IFdlIGhhdmUgb25seSBzZWVu
+IHRoaXMgb25lIG9jY3VycmVuY2UsIGhvcGVmdWxseSB0aGlzIHdpbGwgYmUgYSByYXJlDQo+IGVy
+cm9yLg0KPg0KPiBBbHRob3VnaCB5b3Ugc2FpZCB0aGF0IHB1bGxpbmcgdGhlIGJhY2twb3J0IHRy
+ZWUgZGlkIG5vdCBoZWxwLCBJIHRoaW5rDQo+IGl0IHN0aWxsIHNob3VsZCBiZSBkb25lIGJlY2F1
+c2UgaXQgbWF5IGhlbHAgdG8gX3ByZXZlbnRfIHRoaXMNCj4gaGFwcGVuaW5nLA0KPiBldmVuIHRo
+b3VnaCBpdCBkaWQgbm90IGhlbHAgX3JlY292ZXJpbmdfIGZyb20gdGhhdCBjb3JydXB0aW9uLiBU
+aGUNCj4gcmVhc29uIHdoeSBJIGVtcGhhc2l6ZSB0aGlzIGlzIGJlY2F1c2UgdGhlcmUgd2VyZSBh
+IGxvdCBvZiBwb3dlci1jdXQNCj4gdG9sZXJhbmNlIGZpeGVzIHRoZXJlLg0KPg0KPiBCdXQgb2Yg
+Y291cnNlLCB0aGVyZSBpcyBhIHJpc2sgdG8gZ2V0IG5ldyBidWcgd2l0aCB0aGUgdXBkYXRlcywg
+YXMNCj4gYWx3YXlzLg0KPg0KSSdsbCBiZSBzdXJlIHRvIHB1bGwgdGhvc2UgY2hhbmdlcyBpbnRv
+IG91ciBuZXh0IHJlbGVhc2UuICBUaGFua3MgZm9yDQptYWludGFpbmluZyB0aGUgYmFja3BvcnRz
+IHRyZWVzIQ0KDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUgaW5mb3JtYXRpb24sIGluY2x1ZGluZyBh
+bnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBpbnRlbmRlZCB0byBiZSBhIGNvbmZpZGVu
+dGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBlcnNvbiBvciBlbnRpdHkgdG8gd2hvbSBp
+dCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmls
+ZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3NhZ2UgaXMgbm90IHRoZSBpbnRlbmRlZCBy
+ZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc3NlbWluYXRpb24s
+IGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3Rs
+eSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmljYXRpb24gaW4g
+ZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVzdHJveSB0
+aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhl
+IGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGVtYWlsLg0K
