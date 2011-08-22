@@ -1,24 +1,19 @@
-Received: from na3sys009aog122.obsmtp.com ([74.125.149.147])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvUH2-00060j-MV
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 13:10:41 +0000
-Received: by vxj2 with SMTP id 2so5055261vxj.8
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 06:10:29 -0700 (PDT)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 1/3] MTD : add the common code for GPMI-NAND controller
+	driver
+Date: Mon, 22 Aug 2011 15:11:16 +0200
+References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
+	<1313994423.2644.3.camel@sauron> <4E51FAED.7030403@freescale.com>
+In-Reply-To: <4E51FAED.7030403@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1313482105.5993.1.camel@sauron>
-References: <CAKa7sPRir5YTdPCYAHEYvPGA5GhfTuyv0Z9ynDUtEmy=YHA2XQ@mail.gmail.com>
-	<1313424117.8691.19.camel@sauron>
-	<CAKa7sPSB+p6Zxk8uM9famKsg_Bhdv7=LirUimaV+Jti2aRRPZA@mail.gmail.com>
-	<1313482105.5993.1.camel@sauron>
-Date: Mon, 22 Aug 2011 09:10:28 -0400
-Message-ID: <CAPcSpEJNCFYZ=4wjhpEcR_Fm0wrByg2HcmKKKWhbu9-j6N_sJw@mail.gmail.com>
-Subject: Re: UBI FS on 2MiB eraseblock Hynix MLC NAND
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>, dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Yauhen Kharuzhy <yauhen.kharuzhy@promwad.com>,
-	linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201108221511.16251.marek.vasut@gmail.com>
+Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, w.sang@pengutronix.de,
+	Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Viktar, Artem,
+On Monday, August 22, 2011 08:45:01 AM Huang Shijie wrote:
+> Hi Artem:
+> > On Mon, 2011-08-22 at 12:34 +0800, Huang Shijie wrote:
+> >>>> +	pr_info("ECC Algorithm          : %s\n", geo->ecc_algorithm);
+> >>>> +	pr_info("ECC Strength           : %u\n", geo->ecc_strength);
+> >>>> +	pr_info("Page Size in Bytes     : %u\n", geo->page_size_in_bytes);
+> >>>> +	pr_info("Metadata Size in Bytes : %u\n",
+> >>>> geo->metadata_size_in_bytes); +	pr_info("ECC Chunk Size in Bytes:
+> >>>> %u\n", geo->ecc_chunk_size_in_bytes); +	pr_info("ECC Chunk Count     
+> >>>>   : %u\n", geo->ecc_chunk_count); +	pr_info("Payload Size in Bytes  :
+> >>>> %u\n", geo->payload_size_in_bytes); +	pr_info("Auxiliary Size in
+> >>>> Bytes: %u\n", geo->auxiliary_size_in_bytes); +	pr_info("Auxiliary
+> >>>> Status Offset: %u\n", geo->auxiliary_status_offset); +	pr_info("Block
+> >>>> Mark Byte Offset : %u\n", geo->block_mark_byte_offset);
+> >>>> +	pr_info("Block Mark Bit Offset  : %u\n",
+> >>>> geo->block_mark_bit_offset); +}
+> >>> 
+> >>> Isn't it too much info for normal users? Should this be pr_debug()
+> >> 
+> >> the log is only printed out when the bug occurs.
+> >> so it's not for normal users.
+> >> 
+> >>> instead? There is another similar place in your code.
+> >> 
+> >> ok, I will change to pr_debug().
+> > 
+> > I did not read the driver code carefully, so did not realize this is
+> > printed only in case of a bug - I thought this is printed on every boot
+> > up. For the bug case it may be OK to use pr_info as well, so I take back
+> > by comment about using pr_debug(), apologies.
+> 
+> thank you all the same :)
 
-On Tue, Aug 16, 2011 at 4:08 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2011-08-16 at 10:48 +0300, Viktar Palstsiuk wrote:
->> [...]
-> This solution is not acceptable as we are currently discussing in the
-> "GPMI-NAND Status" thread in this mailing list.
->
-> Instead, you should just change u-boot, and I believe someone has done
-> this recently - ask the u-boot mailing list. I think that was Ben -
-> CCed.
+If this is printed only in case of bug, I agree with Artem.
 
-Yep. That was me (with some critical help from others of course).
+Sorry Huang, cheers!
 
-The problem to which you (Viktar) are refferring is certainly not
-limited to hynix, 2mib or mlc. I agree with Artem's assessment: use
-the new 'nand write.trimffs'  command in u-boot or use the fixup flag
-in your ubi images.
-
-Best Regards,
-Ben Gardiner
-
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+> 
+> Huang Shijie
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
