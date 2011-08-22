@@ -1,25 +1,19 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvSDQ-0003me-Nc
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:58:49 +0000
-Received: by yxk8 with SMTP id 8so4185978yxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 03:58:47 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Date: Mon, 22 Aug 2011 14:00:35 +0300
-In-Reply-To: <CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
-References: <cover.1312922073.git.bengardiner@nanometrics.ca>
-	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
-	<1313568224.20534.1.camel@sauron>
-	<CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+From: Marek Vasut <marek.vasut@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v9 2/3] MTD : add helper functions library and header
+	files for GPMI NAND driver
+Date: Mon, 22 Aug 2011 13:20:55 +0200
+References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
+	<201108201346.21647.marek.vasut@gmail.com>
+	<4E51E33C.8090800@freescale.com>
+In-Reply-To: <4E51E33C.8090800@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1314010839.2644.116.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-Id: <201108221320.55929.marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, koen.beel.barco@gmail.com, shijie8@gmail.com,
+	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-08-18 at 10:01 -0400, Ben Gardiner wrote:
-> Fair enough -- I'm happy to hear a definitive answer; thank you, Artem.
+On Monday, August 22, 2011 07:03:56 AM Huang Shijie wrote:
+> Hi,
 > 
-> In PATCH 3/3 I use the same ioctl to get the ECC size for the purposes
-> of producing a BER estimate. What is the right way of getting the ECC
-> size now that ECCGETLAYOUT is deprecated? Is this even something that
-> should be from userspace at all?
+> > On Wednesday, August 17, 2011 01:50:27 PM Huang Shijie wrote:
+> >> bch-regs.h : registers file for BCH module
+> >> gpmi-regs.h: registers file for GPMI module
+> >> gpmi-lib.c: helper functions library.
+> >> 
+> >> Signed-off-by: Huang Shijie<b32955@freescale.com>
+> >> ---
 
-I do not know. I think we need to expose it via sysfs. I think that in
-general sysfs is better that "informational" ioctls.
+[...]
 
--- 
-Best Regards,
-Artem Bityutskiy
+> >> +err_out:
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +/* This is very useful! */
+> > 
+> > Really? Cool, what for ?
+> > btw. this should really be enclosed in some #ifdef debug or whatnot.
+> 
+> Yes, it shows the register contents when DMA timeout occurs.
+> this routine is called only when error occurs.
+> 
+Hi,
+
+I'd expect exactly this explanation to be in the comment ;-)
+
+Cheers
