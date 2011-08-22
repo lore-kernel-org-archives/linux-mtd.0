@@ -1,19 +1,24 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 1/3] MTD : add the common code for GPMI-NAND controller
-	driver
-Date: Mon, 22 Aug 2011 15:11:16 +0200
-References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
-	<1313994423.2644.3.camel@sauron> <4E51FAED.7030403@freescale.com>
-In-Reply-To: <4E51FAED.7030403@freescale.com>
+Received: from na3sys009aog123.obsmtp.com ([74.125.149.149])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QvUHw-00068b-Uy
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 13:11:38 +0000
+Received: by mail-vx0-f176.google.com with SMTP id 17so6127595vxh.21
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Aug 2011 06:11:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201108221511.16251.marek.vasut@gmail.com>
-Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, w.sang@pengutronix.de,
-	Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com
+In-Reply-To: <1314010839.2644.116.camel@sauron>
+References: <cover.1312922073.git.bengardiner@nanometrics.ca>
+	<e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
+	<1313568224.20534.1.camel@sauron>
+	<CAPcSpE+EhmRXn3Wv7TMAy7n_keTHoJQZHGhrQbKzAHpz5HsCkQ@mail.gmail.com>
+	<1314010839.2644.116.camel@sauron>
+Date: Mon, 22 Aug 2011 09:11:32 -0400
+Message-ID: <CAPcSpEJE24eYuvcZSoCeobGxTxWXh5UhWsRanmCJZ+ZPBGM5=A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd_debug: report ecc layout
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, August 22, 2011 08:45:01 AM Huang Shijie wrote:
-> Hi Artem:
-> > On Mon, 2011-08-22 at 12:34 +0800, Huang Shijie wrote:
-> >>>> +	pr_info("ECC Algorithm          : %s\n", geo->ecc_algorithm);
-> >>>> +	pr_info("ECC Strength           : %u\n", geo->ecc_strength);
-> >>>> +	pr_info("Page Size in Bytes     : %u\n", geo->page_size_in_bytes);
-> >>>> +	pr_info("Metadata Size in Bytes : %u\n",
-> >>>> geo->metadata_size_in_bytes); +	pr_info("ECC Chunk Size in Bytes:
-> >>>> %u\n", geo->ecc_chunk_size_in_bytes); +	pr_info("ECC Chunk Count     
-> >>>>   : %u\n", geo->ecc_chunk_count); +	pr_info("Payload Size in Bytes  :
-> >>>> %u\n", geo->payload_size_in_bytes); +	pr_info("Auxiliary Size in
-> >>>> Bytes: %u\n", geo->auxiliary_size_in_bytes); +	pr_info("Auxiliary
-> >>>> Status Offset: %u\n", geo->auxiliary_status_offset); +	pr_info("Block
-> >>>> Mark Byte Offset : %u\n", geo->block_mark_byte_offset);
-> >>>> +	pr_info("Block Mark Bit Offset  : %u\n",
-> >>>> geo->block_mark_bit_offset); +}
-> >>> 
-> >>> Isn't it too much info for normal users? Should this be pr_debug()
-> >> 
-> >> the log is only printed out when the bug occurs.
-> >> so it's not for normal users.
-> >> 
-> >>> instead? There is another similar place in your code.
-> >> 
-> >> ok, I will change to pr_debug().
-> > 
-> > I did not read the driver code carefully, so did not realize this is
-> > printed only in case of a bug - I thought this is printed on every boot
-> > up. For the bug case it may be OK to use pr_info as well, so I take back
-> > by comment about using pr_debug(), apologies.
-> 
-> thank you all the same :)
+On Mon, Aug 22, 2011 at 7:00 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2011-08-18 at 10:01 -0400, Ben Gardiner wrote:
+>> Fair enough -- I'm happy to hear a definitive answer; thank you, Artem.
+>>
+>> In PATCH 3/3 I use the same ioctl to get the ECC size for the purposes
+>> of producing a BER estimate. What is the right way of getting the ECC
+>> size now that ECCGETLAYOUT is deprecated? Is this even something that
+>> should be from userspace at all?
+>
+> I do not know. I think we need to expose it via sysfs. I think that in
+> general sysfs is better that "informational" ioctls.
 
-If this is printed only in case of bug, I agree with Artem.
+Ok -- I've heard that said before and for what it's worth I agree --
+sysfs is better.
 
-Sorry Huang, cheers!
+However, I'm seeing that there is no available sysfs mechanism at
+present. I'm sorry but I can't take on the time to introduce one
+although I agree it is best and I would like to be able to.
 
-> 
-> Huang Shijie
-> 
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Please drop patches 1/3 and 3/3 from consideration. Patch 2/3 'print
+number of bits corrected during test' is still useful and applicable
+to mtd-utils -- IMHO.
+
+Best Regards,
+Ben Gardiner
+
+---
+Nanometrics Inc.
+http://www.nanometrics.ca
