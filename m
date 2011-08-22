@@ -1,21 +1,22 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qvaza-00052X-Fk
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 20:21:07 +0000
-Received: by wyh11 with SMTP id 11so4610954wyh.36
+	id 1QvcH5-0005W2-VH
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 21:43:16 +0000
+Received: by wyh11 with SMTP id 11so4662276wyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 13:21:03 -0700 (PDT)
+	Mon, 22 Aug 2011 14:43:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1314002821.2644.77.camel@sauron>
+In-Reply-To: <1314003028.2644.80.camel@sauron>
 References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1313625029-19546-4-git-send-email-computersforpeace@gmail.com>
-	<1314002821.2644.77.camel@sauron>
-Date: Mon, 22 Aug 2011 13:21:03 -0700
-Message-ID: <CAN8TOE9v62BAUY6bmoSLij1pgK8Sgc+mh1pdY17eVwN=cqcJFg@mail.gmail.com>
-Subject: Re: [RFC 3/5] mtd: do not assume oobsize is power of 2
+	<1313625029-19546-5-git-send-email-computersforpeace@gmail.com>
+	<1314003028.2644.80.camel@sauron>
+Date: Mon, 22 Aug 2011 14:43:12 -0700
+Message-ID: <CAN8TOE97XijzxpdjF4MHMzGhoAYw7VaLaYSD-HEP-UYUUCf13w@mail.gmail.com>
+Subject: Re: [RFC 4/5] mtd: move mtd_oob_mode_t to shared kernel/user space
 From: Brian Norris <computersforpeace@gmail.com>
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
 	b35362@freescale.com, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
@@ -28,21 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 22, 2011 at 1:46 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Mon, Aug 22, 2011 at 1:50 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
 > On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
-> Once you double checked that you caught all the places which assume
-> power-of-2 and do things like "x & (mtd->oobsize - 1", and once you
-> confirmed that you did some basic test by running few nandwrite commands
-> which involve OOB operations, I think this patch can go in
-> independently.
+>> +typedef enum {
+>> + =A0 =A0 MTD_OOB_PLACE,
+>> + =A0 =A0 MTD_OOB_AUTO,
+>> + =A0 =A0 MTD_OOB_RAW,
+>> +} mtd_oob_mode_t;
+>
+> Could we get rid of this typedef and use anonymous enum instead:
+>
+> enum {
+> =A0 =A0 =A0 =A0A,
+> =A0 =A0 =A0 =A0B,
+> };
+>
+> Indeed, we do not need it, and we do not want to pollute the user-space
+> namespaces unnecessarily.
 
-I'll do a little more combing through the code and perform some
-independent tests for this patch, then either resend an amended patch
-or comment back here.
+Well, we do *use* the typedef in a few kernel structs, and we will use
+it in user space as well. So we may run into issues with 32-bit vs.
+64-bit integers if we just stick with an int-based type, right?
 
-> IOW, this does need to be RFC, IMO.
+Also, I'm pondering the question: do we need to worry about the
+underlying numbering for such an enum? I believe there it is
+theoretically possible for different compilers to choose a different
+numbering scheme, potentially making user-compiled software
+incompatible with the internal kernel binary. Perhaps to be safe we
+could just do:
 
-I agree. I think I lumped it in with the others because I discovered
-it as a byproduct of my work on the other patches in this series.
+enum {
+     MTD_OOB_PLACE =3D 0,
+     MTD_OOB_AUTO =3D 1,
+     MTD_OOB_RAW =3D 2,
+};
+
+Or instead, maybe we should just switch to a __u32 type and some #defines..=
+.
+
+Sorry if this is a lot of thinking out loud here :)
 
 Brian
