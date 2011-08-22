@@ -1,30 +1,18 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvFQM-00065F-F1
-	for linux-mtd@lists.infradead.org; Sun, 21 Aug 2011 21:19:19 +0000
-Received: by wyh11 with SMTP id 11so3844795wyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 21 Aug 2011 14:19:15 -0700 (PDT)
+Message-ID: <4E51DC57.8060608@freescale.com>
+Date: Mon, 22 Aug 2011 12:34:31 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20110816171707.GU26160@logfs.org>
-References: <CAMjNe_d9WVnKS_4416Kj21YgVEh3d6W4Wa6qWZObex+=LG4J6w@mail.gmail.com>
-	<20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-	<20110808083107.GN26160@logfs.org>
-	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-	<20110809145812.GR26160@logfs.org>
-	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
-	<20110812093429.GS26160@logfs.org>
-	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
-	<20110816171707.GU26160@logfs.org>
-Date: Mon, 22 Aug 2011 02:49:14 +0530
-Message-ID: <CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
-Subject: Re: logfs unmount bug
-From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH v9 1/3] MTD : add the common code for GPMI-NAND controller
+	driver
+References: <1313581828-16625-1-git-send-email-b32955@freescale.com>	
+	<1313581828-16625-2-git-send-email-b32955@freescale.com>
+	<1313818550.31216.9.camel@koala>
+In-Reply-To: <1313818550.31216.9.camel@koala>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, koen.beel.barco@gmail.com, shijie8@gmail.com,
+	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,25 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
->> I tried your patches and I also tried on official kernel release 3.0.1.
->> I have shared the bonnie output and logs in =A0the below link:
->>
->> https://docs.google.com/leaf?id=3D0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwL=
-WFlMmItNjlmZWIzMWFlNGUy&hl=3Den_US
+Hi,
+> 1. You do not need to call parse_mtd_partitions() anymore - we re-worked
+> the partitions registration in l2-mtd-2.6.git:
+>
+> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+>
+thanks.
+>> +static void show_bch_geometry(struct bch_geometry *geo)
+>> +{
+>> +	pr_info("---------------------------------------\n");
+>> +	pr_info("	BCH Geometry\n");
+>> +	pr_info("---------------------------------------\n");
+> I think these "---" only consume memory in .data. This is the kernel and
+> I think nice separators like this should be avoided.
+>
+ok. got it.
+>> +	pr_info("ECC Algorithm          : %s\n", geo->ecc_algorithm);
+>> +	pr_info("ECC Strength           : %u\n", geo->ecc_strength);
+>> +	pr_info("Page Size in Bytes     : %u\n", geo->page_size_in_bytes);
+>> +	pr_info("Metadata Size in Bytes : %u\n", geo->metadata_size_in_bytes);
+>> +	pr_info("ECC Chunk Size in Bytes: %u\n", geo->ecc_chunk_size_in_bytes);
+>> +	pr_info("ECC Chunk Count        : %u\n", geo->ecc_chunk_count);
+>> +	pr_info("Payload Size in Bytes  : %u\n", geo->payload_size_in_bytes);
+>> +	pr_info("Auxiliary Size in Bytes: %u\n", geo->auxiliary_size_in_bytes);
+>> +	pr_info("Auxiliary Status Offset: %u\n", geo->auxiliary_status_offset);
+>> +	pr_info("Block Mark Byte Offset : %u\n", geo->block_mark_byte_offset);
+>> +	pr_info("Block Mark Bit Offset  : %u\n", geo->block_mark_bit_offset);
+>> +}
+> Isn't it too much info for normal users? Should this be pr_debug()
+the log is only printed out when the bug occurs.
+so it's not for normal users.
+> instead? There is another similar place in your code.
+>
+ok, I will change to pr_debug().
 
-In the shared collection,the files corresponding to first patch are
-2_bonnie_out.txt (the patch used and the bonnie output),
-2_patch1_first50mb_log.txt (head of the log,first 50MB)
-,2_patch1_last50mb_log.txt(tail of the log, last 50MB)
-
-Other files correspond to other kernel versions i tried
-
-> Are you sure you tried the first patch? =A0When I grep for
-> "logfs_invalidatepage", I only find the oopses, not my debug output.
-
-I had a printk("PATCH1") that gets printed in the log.
-I dont know why your "logfs_invalidatepage" debug print does not appear.
-
-Thanks,
-Mugunthan
+thanks
+Huang Shijie
+> Artem.
+>
+>
