@@ -1,24 +1,22 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+	helo=AM1EHSOBE004.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvRJP-0002HH-FN
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:00:56 +0000
-Received: by gyh20 with SMTP id 20so4233900gyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 03:00:53 -0700 (PDT)
-Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 22 Aug 2011 13:02:40 +0300
-In-Reply-To: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1314007366.2644.101.camel@sauron>
-Mime-Version: 1.0
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
-Reply-To: dedekind1@gmail.com
+	id 1QvRKE-0002MI-NI
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2011 10:01:47 +0000
+Content-Type: text/plain; charset="utf-8"; format=flowed; delsp=yes
+To: Scott Wood <scottwood@freescale.com>, Chunhe Lan <Chunhe.Lan@freescale.com>
+Subject: Re: [PATCH] mtd/nand: Don't add disabled nand flash devices
+References: <1313486855-15233-1-git-send-email-Chunhe.Lan@freescale.com>
+	<4E4AE535.4070400@freescale.com>
+Date: Mon, 22 Aug 2011 18:04:35 +0800
+MIME-Version: 1.0
+Content-Transfer-Encoding: Quoted-Printable
+From: Lan Chunhe <b25806@freescale.com>
+Message-ID: <op.v0l0xxanz91x4h@localhost.localdomain>
+In-Reply-To: <4E4AE535.4070400@freescale.com>
+Cc: dwmw2@infradead.org, kumar.gala@freescale.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,75 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 17 Aug 2011 05:46:29 +0800, Scott Wood <scottwood@freescale.com>=
+  =
 
-On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
-> First off, these fixes are motivated by a number of things:
-> 
-> 1) Broken "noecc" writes; `nandwrite -n -o' does not work on my
->    hardware, at least, without these patches
+wrote:
 
-I think Ivan complained about this at some point - he said he has images
-with crafted ECC codes to test his BCH library, but he could not flash
-them properly. So yes, this is worth fixing.
+> On 08/16/2011 04:27 AM, Chunhe Lan wrote:
+>> Nand flash nodes with the property status=3D"disabled" are not
+>> usable and so avoid adding "disabled" nand flash devices with
+>> the system.
+>>
+>> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
+>> ---
+>>  drivers/mtd/nand/fsl_elbc_nand.c |    5 ++++-
+>>  1 files changed, 4 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c  =
 
-> Perhaps something should be done about the MTDFILEMODE ioctl, since it
-> seems to cause some confusing overlap, at least to me. I see two
-> different RAW modes:
-> 
-> * MTD_MODE_RAW, which belongs to the mode field in `struct
->   mtd_file_info'. It can be set by the ioctl MTDFILEMODE
-> * MTD_OOB_RAW, which belongs to the mode field in `struct
->   mtd_oob_ops'. It is set indirectly by other operations.
-> 
-> Does MTD_MODE_RAW imply MTD_OOB_RAW when OOB operations are involved?
+>> b/drivers/mtd/nand/fsl_elbc_nand.c
+>> index 33d8aad..8212c12 100644
+>> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+>> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+>> @@ -1,6 +1,6 @@
+>>  /* Freescale Enhanced Local Bus Controller NAND driver
+>>   *
+>> - * Copyright =C2=A9 2006-2007, 2010 Freescale Semiconductor
+>> + * Copyright =C2=A9 2006-2007, 2010-2011 Freescale Semiconductor
+>>   *
+>>   * Authors: Nick Spence <nick.spence@freescale.com>,
+>>   *          Scott Wood <scottwood@freescale.com>
+>> @@ -849,6 +849,9 @@ static int __devinit fsl_elbc_nand_probe(struct  =
 
-I would make sure these 2 set of macros have different prefixes.
-Probably re-naming the internal ones is easier, but I'd anyway re-named
-the external ones - indeed they are about access mode for a specific
-file descriptor, so I'd use the "MTD_FILE_MODE_" prefix. But not sure,
-you can invent something else. In any case, it is cleaner to have
-different prefixes for different name-spaces.
+>> platform_device *pdev)
+>>  	struct device *dev;
+>>  	struct device_node *node =3D pdev->dev.of_node;
+>>
+>> +	if (!of_device_is_available(node))
+>> +		return -ENODEV;
+>> +
+>>  	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
+>>  		return -ENODEV;
+>>  	lbc =3D fsl_lbc_ctrl_dev->regs;
+>
+> Same comment as the other patch -- unavailable devices should already
+> not be getting probed.  Also, this subject line makes it sound like th=
+is
+> is a NAND subsystem change rather than a change in one specific driver=
+.
 
-> Does MTD_MODE_RAW imply that no ECC is applied to data?
+    You are right.
+    The upper layers have prevented unavailable devices.
+    So, this patch is no need.
 
-Not sure, but judging from how it is used - no.
+    Thanks.
 
-> Is the MTD file mode persistent?
+    -Jack Lan
 
-It is stored in the file descriptor (file->private_data), so the
-life-time of the mode is equivalent to the life-time for the file
-descriptor, AFAICS.
-
->  If so, then it may conflict with a
-> "per-operation" mode in our new MEMWRITEDATAOOB
-
-Good point. Frankly, I find this stateful model with modes horrible. But
-we have what we have. I guess we will need to carefully document which
-ioctl's are affected by the MTD mode, and which are not (in the header
-file which we expose to the user-space).
-
-I think MEMWRITEDATAOOB should ignore the mode.
-
-My quick look at the code suggests me that the RAW/NORMAL file modes is
-about read/write operations - in normal mode we read/write from/to only
-the main area, in raw mode we consider the main area and OOB as one
-continuous region and read/write from/to this region.
-
-And MEMWRITEDATAOOB is about accession only OOB, so the modes should not
-affect it.
-
-> Maybe the "something" to be done would just be some better
-> documentation. Or something more drastic if there's an actual conflict.
-
-To me it looks like (a) re-naming and (be) some more comments in the
-header files is enough.
-
-> Speaking of documentation, what is this supposed to mean (from struct
-> nand_chip, in include/linux/mtd/nand.h)?
-
-Sorry, do not know off the top of my head.
-
--- 
-Best Regards,
-Artem Bityutskiy
+> -Scott
