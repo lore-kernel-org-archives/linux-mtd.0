@@ -1,25 +1,26 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvjXT-0001qu-Nr
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 05:28:41 +0000
-Received: by gxk2 with SMTP id 2so5077286gxk.36
+	id 1Qvk1C-000235-7T
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 05:59:23 +0000
+Received: by ywp17 with SMTP id 17so5023749ywp.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 22:28:36 -0700 (PDT)
-Subject: Re: [RFC 4/5] mtd: move mtd_oob_mode_t to shared kernel/user space
+	Mon, 22 Aug 2011 22:59:19 -0700 (PDT)
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 23 Aug 2011 08:30:23 +0300
-In-Reply-To: <CAN8TOE97XijzxpdjF4MHMzGhoAYw7VaLaYSD-HEP-UYUUCf13w@mail.gmail.com>
+Date: Tue, 23 Aug 2011 09:01:05 +0300
+In-Reply-To: <CAN8TOE8c7ZoaHs+q76TWALNFZgtrjvNYAsqXphwd7HFUjY5KBw@mail.gmail.com>
 References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1313625029-19546-5-git-send-email-computersforpeace@gmail.com>
-	<1314003028.2644.80.camel@sauron>
-	<CAN8TOE97XijzxpdjF4MHMzGhoAYw7VaLaYSD-HEP-UYUUCf13w@mail.gmail.com>
+	<1314007366.2644.101.camel@sauron>
+	<CAN8TOE8c7ZoaHs+q76TWALNFZgtrjvNYAsqXphwd7HFUjY5KBw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1314077429.2645.31.camel@sauron>
+Message-ID: <1314079272.2645.52.camel@sauron>
 Mime-Version: 1.0
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, linux-mtd@lists.infradead.org,
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
+	linux-mtd@lists.infradead.org, Ivan Djelic <ivan.djelic@parrot.com>,
 	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,95 +32,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-08-22 at 14:43 -0700, Brian Norris wrote:
-> On Mon, Aug 22, 2011 at 1:50 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Mon, 2011-08-22 at 16:42 -0700, Brian Norris wrote:
+> On Mon, Aug 22, 2011 at 3:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
 > > On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
-> >> +typedef enum {
-> >> +     MTD_OOB_PLACE,
-> >> +     MTD_OOB_AUTO,
-> >> +     MTD_OOB_RAW,
-> >> +} mtd_oob_mode_t;
+> >> Does MTD_MODE_RAW imply MTD_OOB_RAW when OOB operations are involved?
 > >
-> > Could we get rid of this typedef and use anonymous enum instead:
-> >
-> > enum {
-> >        A,
-> >        B,
-> > };
-> >
-> > Indeed, we do not need it, and we do not want to pollute the user-space
-> > namespaces unnecessarily.
+> > I would make sure these 2 set of macros have different prefixes.
+> > Probably re-naming the internal ones is easier, but I'd anyway re-named
+> > the external ones - indeed they are about access mode for a specific
+> > file descriptor, so I'd use the "MTD_FILE_MODE_" prefix.
 > 
-> Well, we do *use* the typedef in a few kernel structs, and we will use
-> it in user space as well. So we may run into issues with 32-bit vs.
-> 64-bit integers if we just stick with an int-based type, right?
-
-I just find typedefs unreadable. Every time you see it - you need to
-look at the definition, find it, distract. And C does not do any type
-checking anway, so typedefs for enums really make little sense. If you
-really do not want to use int, let's use 'enum blah' type, which is at
-least readable - when you see it - you know it is just an integer, and
-you do not have to find the definition.
-
-Anonymous enums is my preference. They are just like macro definition,
-but with assumed type, and potentially debugger-friendly.
-
-So, to conclude:
-
-1. typedefs for enums make no sense a all - C does not do any strict
-type-checking anyway, and typedefs only make reading code more
-difficult.
-
-2. using 'enum blah' is more sensible - it does not hurt readability too
-much at least.
-
-3. IMHO, and I even dare to say that many kernel gurus would agree, if
-we are talking about a simple enum with just few constants inside -
-anonymous enum is the best - the code is simpler and more readable.
-
-It is not that difficult to remove in-kernel usage of typedefs, I think.
-VS user-space - the only user we care about - mtd-utils - has its own
-copy of the headers, and if we update the header files there, we can
-amend mtd-utils.
-
-32/64 problems - what do you mean? enumeration = 'int' which is always
-32 bits in all architectures Linux supports.
-
-References:
-1. C99 standard, section 6.4.4.3: enumeration = int
-2. C99 section 6.2.5, marker 20: about enum = just definition of a
-constant and _not_ a typed form.
-
-So, I'd be happy with 3, can live with 2, and dislike 1 very much :-)
-
-> Also, I'm pondering the question: do we need to worry about the
-> underlying numbering for such an enum? I believe there it is
-> theoretically possible for different compilers to choose a different
-> numbering scheme, potentially making user-compiled software
-> incompatible with the internal kernel binary. Perhaps to be safe we
-> could just do:
+> To be sure, are you categorizing the internal/external modes as follows?
 > 
-> enum {
->      MTD_OOB_PLACE = 0,
->      MTD_OOB_AUTO = 1,
->      MTD_OOB_RAW = 2,
-> };
+> External = MTD_MODE_NORMAL, MTD_MODE_RAW, etc.
+> Internal = MTD_OOB_PLACE, MTD_OOB_AUTO, MTD_OOB_RAW
 
-I cannot refer to a section in a standard, but I am sure unitialized
-tags will start with 0 reliably. But yes, it is much less error-prone to
-initialize the tags explicitly, because it makes it a bit more difficult
-to make a stupid mistake by adding a new constant and change values of
-other constants.
+Yes :-)
 
-> Or instead, maybe we should just switch to a __u32 type and some #defines...
+> Because my proposal here is to move those Internal ones to becoming a
+> new set of External modes for the purpose of the new MEMWRITEDATAOOB.
 
-Anonymous enum is almost that, you can just treat it as int32_t.
+Right, I was talking about what is in mainline at the moment.
 
-> Sorry if this is a lot of thinking out loud here :)
+> Finding good names for them makes more sense now than after they
+> become External. But as you say, renaming the *current* External modes
+> could help clarify things as well.
 
-Yeah, least significant topics usually cause most discussions - I was
-told recently by a colleague that this is called "bike shedding". Notice
-how much I wrote comparing to more important posts of yours :-)
+I think you can re-name any of them nicely - we can always amend
+mtd-utils.
+
+> 
+> >> Does MTD_MODE_RAW imply that no ECC is applied to data?
+> >
+> > Not sure, but judging from how it is used - no.
+> 
+> I see at least one instance of code that seems to assume the answer is
+> "yes"; see the "noecc" code in nandwrite.c. Where do you find evidence
+> that says "no"?
+
+You are right, this looks like "no ECC" actually.
+
+Well, my cscopes find only 2 places where this symbol is used in the
+kernel:
+
+   2    220  drivers/mtd/mtdchar.c <<mtd_read>>
+             case MTD_MODE_RAW:
+   3    316  drivers/mtd/mtdchar.c <<mtd_write>>
+             case MTD_MODE_RAW:
+
+So this is only about reading/writing and nothing else.
+
+Then, let's look at one of them, say 3:
+
+drivers/mtd/mtdchar.c: ret = mtd->write_oob(mtd, *ppos, &ops);
+
+Then find out in nand_base.c that this maps to 'nand_write_oob()',
+which, in-turn calls then 'nand_do_write_ops()', and which then calls,
+_I guess_:
+
+               ret = chip->write_page(mtd, chip, wbuf, page, cached,
+                                       (ops->mode == MTD_OOB_RAW));
+
+which then calls:
+
+chip->ecc.write_page_raw(mtd, chip, buf);
+
+which seems to be the "no ECC" write function.
+
+But I guess MEMWRITEDATAOOB should anyway "override" the "global" mode.
+
+> > I think MEMWRITEDATAOOB should ignore the mode.
+> 
+> Sure. May be easier said than done though. It looks like there are too
+> many entry points into the MTD layer, with different ioctls plus the
+> standard read/write controls. I'll see what I can do about keeping
+> this under control.
+
+Yeah, it is a mess, I agree :-(
+
+> It looks like going forward, we should agree on something like the
+> following, although the names still may change:
+> 
+> 1) the generic term "raw" mode means that we are writing or reading
+> data exactly as-is to/from the flash, without error correction applied
+> to it.
+
+Right.
+
+> 2) MTD_OOB_RAW means means that we read or write in raw mode. This can
+> be directly user-controlled from the new MEMWRITEDATAOOB ioctl.
+
+OK
+
+> 3) MTD_MODE_RAW is used only with the MTDFILEMODE ioctl, and it *only*
+> affects error correction for read() and write() calls to the
+> corresponding file descriptor. Its sole purpose is to enable
+> MTD_OOB_RAW during standard read/write operations (no OOB
+> interaction).
+
+OK
+
+> Unfortunately, item 3 showcases our naming inconsistency, since
+> MTD_OOB_RAW is actually utilized for a non-OOB operation. Perhaps this
+> should be considered for renaming?
+
+Probably the "OOB" part should go away? Give the "per-file" modes some
+other name which suggests that these are old-fashioned and then use
+MTD_RW_MODE_ or even just MTD_MODE_ for the "internal" constants?
+
+> Speaking of renaming, I'm not so sure about the name I gave this
+> ioctl; which of the following makes the most sense for naming the new
+> ioctl? Speak soon or forever hold your peace.
+> 1) MEMWRITEDATAOOB
+> 2) MEMWRITE
+> 3) MEMWRITEOPS
+> 4) ...something else?
+
+1 or 2 seems OK to me, but I do not have a strong opinion here.
 
 -- 
 Best Regards,
