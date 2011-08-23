@@ -1,28 +1,25 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvisI-0001QG-1b
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 04:46:07 +0000
-Received: by gyh20 with SMTP id 20so5054166gyh.36
+	id 1QvjUO-0001nq-1O
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 05:25:28 +0000
+Received: by ywp17 with SMTP id 17so5010457ywp.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 21:46:03 -0700 (PDT)
-Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 23 Aug 2011 07:47:49 +0300
-In-Reply-To: <CAN8TOE8Ze5kZO9NnX5NsCArTWEX+JbTZf7=3SgO=PpzhjiGG9w@mail.gmail.com>
+	Mon, 22 Aug 2011 22:25:24 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
 References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
 	<1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
-	<1314002153.2644.69.camel@sauron>
-	<CAN8TOE8Ze5kZO9NnX5NsCArTWEX+JbTZf7=3SgO=PpzhjiGG9w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1314074876.2645.7.camel@sauron>
-Mime-Version: 1.0
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, Jim Quinlan <jim2101024@gmail.com>,
+Date: Tue, 23 Aug 2011 13:25:24 +0800
+Message-ID: <CAB4PhKeGy9k2KwMiPcvT_WwcJAvL2Ugh-mgg7su62MOLYCXetw@mail.gmail.com>
+Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
+From: Jason Liu <liu.h.jason@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
 	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
 	Matthew Creech <mlcreech@gmail.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-08-22 at 13:08 -0700, Brian Norris wrote:
-> I forgot to CC a contributor on this (and the complementary patch for
-> "read OOB")
-> 
-> Cc: Jim Quinlan <jim2101024@gmail.com>
-> 
-> On Mon, Aug 22, 2011 at 1:35 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
-> >> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
-> >
-> > I guess this patch deserves to be non-RFC? Should it be pushed to
-> > l2-mtd-2.6.git? Should it even have "Cc: stable@kernel.org [kernel
-> > version +] ?
-> 
-> I'm not actually sure where this stands (RFC vs. patch) since I really
-> wanted some outside opinion on the methods used here. I have a feeling
-> that some of this is only working on my hardware. For instance,
-> somehow (I'm really not sure how!) `nandwrite -n -o' is working in
-> nandsim without my fix. Perhaps this is due to a different set of
-> nand_ecc_ctrl functions (soft ECC vs. HW ECC).
+Hi, Brian,
 
-May be one of the reasons is that nandsim just _copies_ data to the
-internal RAM buffer, instead of doing binary "&", so you can re-write in
-some cases, but not sure.
+2011/8/18 Brian Norris <computersforpeace@gmail.com>:
+> mtd_do_write_oob does not pass information about whether to write in RAW
+> mode to the lower layers (e.g., NAND). We should pass MTD_OOB_RAW or
+> MTD_OOB_PLACE based on the MTD file mode.
+>
+> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
 
-> With this patch applied, however, I get some strange kernel oopses
-> with nandsim. I've identified at least one issue, I think, but I
-> haven't completely resolved this discrepancy between nandsim and my
-> driver. See sample commands:
-> 
-> # insmod nandsim.ko
-> # nandwrite /dev/mtdX <data.bin> -n -o
-> 
-> So for this "fix" (and its coming updates), I would appreciate some
-> outside testing on other systems, especially before we send this to
-> stable or even before including it upstream at all.
-> 
-> And any comments on the current status of noecc and MTD_OOB_RAW from
-> others would be highly valuable to me; a bit of system information and
-> a "working" or "not working since commit [XXX]" would be a start. In
-> the meantime, I'm trying to get a hold of a wider variety of test
-> systems for myself for these kind of issues...
+It's worthy here stating clear what the issue you meet and how it fix.
 
-Yes, would be great to have more people to test. I always encourage
-people to look at patches _before_ they get in and break their systems,
-not afterwards. But even if nobody cares, we can merge your stuff after
-you gave it some more testing - absence of caring people should not stop
-the progress in MTD :-) 
-
--- 
-Best Regards,
-Artem Bityutskiy
+Jason
