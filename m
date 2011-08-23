@@ -1,26 +1,30 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvknC-0002vf-Os
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 06:48:59 +0000
-Date: Tue, 23 Aug 2011 08:48:54 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
-In-Reply-To: <1314015423.2644.118.camel@sauron>
-Message-ID: <Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1314007366.2644.101.camel@sauron> <20110822120417.GA13515@parrot.com>
-	<1314015423.2644.118.camel@sauron>
+	id 1Qvm7h-00041g-LB
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 08:14:14 +0000
+Message-ID: <4E53614E.2070103@parrot.com>
+Date: Tue, 23 Aug 2011 10:14:06 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	"b35362@freescale.com" <b35362@freescale.com>,
-	=?utf-8?B?UmljYXJkIFdhbmRlcmzDtmY=?= <ricardw@axis.com>,
+To: LiuShuo <b35362@freescale.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
+	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
+	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
+	<1314010719.2644.114.camel@sauron>
+	<20110822152530.GA16794@parrot.com>
+	<4E527E0F.1010500@freescale.com> <4E528036.5070801@parrot.com>
+	<4E52819C.8080204@freescale.com> <4E5319E8.50903@freescale.com>
+In-Reply-To: <4E5319E8.50903@freescale.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Li Yang-R58472 <r58472@freescale.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ivan Djelic <ivan.djelic@parrot.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+	Scott Wood <scottwood@freescale.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,46 +34,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Mon, 22 Aug 2011, Artem Bityutskiy wrote:
-
-> On Mon, 2011-08-22 at 14:04 +0200, Ivan Djelic wrote:
->> On Mon, Aug 22, 2011 at 11:02:40AM +0100, Artem Bityutskiy wrote:
->>> Hi,
->>>
->>> On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
->>>> First off, these fixes are motivated by a number of things:
+LiuShuo a écrit :
+> 于 2011年08月23日 00:19, Scott Wood 写道:
+>> On 08/22/2011 11:13 AM, Matthieu CASTET wrote:
+>>> Scott Wood a écrit :
+>>>> To eliminate it we'd need to do an extra data transfer without reissuing
+>>>> the command, which Shuo was unable to get to work.
 >>>>
->>>> 1) Broken "noecc" writes; `nandwrite -n -o' does not work on my
->>>>    hardware, at least, without these patches
+>>> That's weird because our controller seems quite flexible [1].
 >>>
->>> I think Ivan complained about this at some point - he said he has image=
-s
->>> with crafted ECC codes to test his BCH library, but he could not flash
->>> them properly. So yes, this is worth fixing.
+>>> Something like that should work ?
+>>>
+>>>              out_be32(&lbc->fir,
+>>>                       (FIR_OP_CM2<<  FIR_OP0_SHIFT) |
+>>>                       (FIR_OP_CA<<  FIR_OP1_SHIFT) |
+>>>                       (FIR_OP_PA<<  FIR_OP2_SHIFT) |
+>>>                       (FIR_OP_WB<<  FIR_OP3_SHIFT));
+>>> refill FCM buffer with next 2k data
+>>>
+>>>              out_be32(&lbc->fir,
+>>>                       (FIR_OP_WB<<  FIR_OP3_SHIFT) |
+>>>                       (FIR_OP_CM3<<  FIR_OP4_SHIFT) |
+>>>                       (FIR_OP_CW1<<  FIR_OP5_SHIFT) |
+>>>                       (FIR_OP_RS<<  FIR_OP6_SHIFT));
+>> Something like that is what I originally suggested, but Shuo said it
+>> didn't work (even in theory, it requires a CE-don't-care NAND chip,
+>> since bus atomicity is broken).
 >>
->> Actually it was Ricard Wanderlof, but indeed he was testing the BCH libr=
-ary
->> (http://lists.infradead.org/pipermail/linux-mtd/2011-March/034516.html).
->> It would be nice if he could ack the fix ?
+>> Shuo, what specifically did you try, and what did you see happen?
+>>
+>> -Scott
+> First, if we want to read 4K data with once command issuing, we can't 
+> use HW_ECC.
+Yes, but as ivan said doesn't the cost of 2 read isn't bigger than software ecc ?
 
-(Hi guys, just got back, been away for a while over the summer).
+> Even if we use SW_ECC, we always get lots of weird '0xFF's between 1st 
+> 2k and 2nd 2k data.
+Did you understand where those 0xff comes (what's the size of them. Doesn't the
+controller try to insert spare aera ?)
 
-This particular issue was fixed in a patch by Peter Wippich on June 6th:
+Could you detail the sequence you used ?
 
-http://lists.infradead.org/pipermail/linux-mtd/2011-June/036016.html
-
-(I subsequently tested the patch and found it to fix the problem:=20
-http://lists.infradead.org/pipermail/linux-mtd/2011-June/036085.html).
-
-I could test patch 1 of this set to see if it accomplishes the same thing,=
-=20
-but initially to me it seems that the issue has already been fixed, albeit=
-=20
-perhaps not pushed yet?
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Matthieu
