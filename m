@@ -1,25 +1,26 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvuiE-0000Cv-1f
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 17:24:30 +0000
-Received: by wyh11 with SMTP id 11so324221wyh.36
+	id 1Qvx6c-0002uo-13
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 19:57:50 +0000
+Received: by wwf10 with SMTP id 10so342984wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2011 10:24:27 -0700 (PDT)
+	Tue, 23 Aug 2011 12:57:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1314077429.2645.31.camel@sauron>
+In-Reply-To: <CAB4PhKeGy9k2KwMiPcvT_WwcJAvL2Ugh-mgg7su62MOLYCXetw@mail.gmail.com>
 References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1313625029-19546-5-git-send-email-computersforpeace@gmail.com>
-	<1314003028.2644.80.camel@sauron>
-	<CAN8TOE97XijzxpdjF4MHMzGhoAYw7VaLaYSD-HEP-UYUUCf13w@mail.gmail.com>
-	<1314077429.2645.31.camel@sauron>
-Date: Tue, 23 Aug 2011 10:24:27 -0700
-Message-ID: <CAN8TOE91_cbfV4VXz3Z738D1tXEujq=2GKKc+6TO9SnL25iKUg@mail.gmail.com>
-Subject: Re: [RFC 4/5] mtd: move mtd_oob_mode_t to shared kernel/user space
+	<1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
+	<CAB4PhKeGy9k2KwMiPcvT_WwcJAvL2Ugh-mgg7su62MOLYCXetw@mail.gmail.com>
+Date: Tue, 23 Aug 2011 12:57:47 -0700
+Message-ID: <CAN8TOE8u+AGq9uEzOmngv-_UZ0BiHB4M2sJVEXzs2fgyTcYGYg@mail.gmail.com>
+Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: Jason Liu <liu.h.jason@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, linux-mtd@lists.infradead.org,
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
+	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,39 +31,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 22, 2011 at 10:30 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> 32/64 problems - what do you mean? enumeration = 'int' which is always
-> 32 bits in all architectures Linux supports.
-
-Oops, got things mixed up here (ints and pointers). Thanks for the
-correction. My worry was unfounded...
-
-> 3. IMHO, and I even dare to say that many kernel gurus would agree, if
-> we are talking about a simple enum with just few constants inside -
-> anonymous enum is the best - the code is simpler and more readable.
-...
-> So, I'd be happy with 3, can live with 2, and dislike 1 very much :-)
-
-3 sounds perfect, now that I've been straightened out.
-
-> I cannot refer to a section in a standard, but I am sure unitialized
-> tags will start with 0 reliably. But yes, it is much less error-prone to
-> initialize the tags explicitly, because it makes it a bit more difficult
-> to make a stupid mistake by adding a new constant and change values of
-> other constants.
-
-It's also useful if we have to kill an old option at some point. I'll
-probably include initializers.
-
->> Sorry if this is a lot of thinking out loud here :)
+On Mon, Aug 22, 2011 at 10:25 PM, Jason Liu <liu.h.jason@gmail.com> wrote:
+> 2011/8/18 Brian Norris <computersforpeace@gmail.com>:
+>> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
 >
-> Yeah, least significant topics usually cause most discussions - I was
-> told recently by a colleague that this is called "bike shedding". Notice
-> how much I wrote comparing to more important posts of yours :-)
+> It's worthy here stating clear what the issue you meet and how it fix.
 
-I actually learned/recalled a few things here; I had pieces of the
-puzzle but not the whole picture. And the "bike shed" is an important
-addition to my vocabulary.
+The issue is simply that `nandwrite -n -o' does not work on my system;
+`nandwrite -n' can write page data to my flash without applying ECC,
+but when I use the `-o' option, ECC is applied (incorrectly), contrary
+to the `--noecc' option.
+
+I found that this is the case because my hardware computes and writes
+ECC data to flash upon either OOB write or page write. Thus, to
+support a proper "no ECC" write, my driver must know when we're
+performing a raw OOB write vs. a normal ECC OOB write. However, MTD
+does not pass any raw mode information to the write_oob functions.
+This patch addresses the problems by:
+1) Passing MTD_OOB_RAW down to lower layers, instead of just
+defaulting to MTD_OOB_PLACE
+2) Handling MTD_OOB_RAW within the NAND layer's `nand_do_write_oob'
+
+Is this a better description? I'll include this description for v2.
+
+Note that I have yet to update the appropriate `nand_write_page_raw'
+function to properly handle an OOB-only write. I've fixed my own
+driver, but there's an issue in the nand_base version. Will include in
+v2.
 
 Thanks,
 Brian
