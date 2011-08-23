@@ -1,24 +1,26 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvkUb-0002jQ-TZ
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 06:29:47 +0000
-Received: by gwb1 with SMTP id 1so4490869gwb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 23:29:43 -0700 (PDT)
-Subject: Re: [PATCH 10/10] nanddump: kill usages of MEMSETOOBSEL ioctl
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 23 Aug 2011 09:31:32 +0300
-In-Reply-To: <1313773676-12879-11-git-send-email-computersforpeace@gmail.com>
-References: <1313773676-12879-1-git-send-email-computersforpeace@gmail.com>
-	<1313773676-12879-11-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1314081097.2645.65.camel@sauron>
-Mime-Version: 1.0
-Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from anubis.se.axis.com ([195.60.68.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QvknC-0002vf-Os
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 06:48:59 +0000
+Date: Tue, 23 Aug 2011 08:48:54 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
+In-Reply-To: <1314015423.2644.118.camel@sauron>
+Message-ID: <Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1314007366.2644.101.camel@sauron> <20110822120417.GA13515@parrot.com>
+	<1314015423.2644.118.camel@sauron>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+	"b35362@freescale.com" <b35362@freescale.com>,
+	=?utf-8?B?UmljYXJkIFdhbmRlcmzDtmY=?= <ricardw@axis.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-08-19 at 10:07 -0700, Brian Norris wrote:
-> The ioctl MEMSETOOBSEL hasn't existed for a long time. Using it as a
-> backup to MTDFILEMODE is pointless, so just remove every time it is
-> used.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Should we kill the macro definition from the kernel as well?
+On Mon, 22 Aug 2011, Artem Bityutskiy wrote:
 
--- 
-Best Regards,
-Artem Bityutskiy
+> On Mon, 2011-08-22 at 14:04 +0200, Ivan Djelic wrote:
+>> On Mon, Aug 22, 2011 at 11:02:40AM +0100, Artem Bityutskiy wrote:
+>>> Hi,
+>>>
+>>> On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
+>>>> First off, these fixes are motivated by a number of things:
+>>>>
+>>>> 1) Broken "noecc" writes; `nandwrite -n -o' does not work on my
+>>>>    hardware, at least, without these patches
+>>>
+>>> I think Ivan complained about this at some point - he said he has image=
+s
+>>> with crafted ECC codes to test his BCH library, but he could not flash
+>>> them properly. So yes, this is worth fixing.
+>>
+>> Actually it was Ricard Wanderlof, but indeed he was testing the BCH libr=
+ary
+>> (http://lists.infradead.org/pipermail/linux-mtd/2011-March/034516.html).
+>> It would be nice if he could ack the fix ?
+
+(Hi guys, just got back, been away for a while over the summer).
+
+This particular issue was fixed in a patch by Peter Wippich on June 6th:
+
+http://lists.infradead.org/pipermail/linux-mtd/2011-June/036016.html
+
+(I subsequently tested the patch and found it to fix the problem:=20
+http://lists.infradead.org/pipermail/linux-mtd/2011-June/036085.html).
+
+I could test patch 1 of this set to see if it accomplishes the same thing,=
+=20
+but initially to me it seems that the issue has already been fixed, albeit=
+=20
+perhaps not pushed yet?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
