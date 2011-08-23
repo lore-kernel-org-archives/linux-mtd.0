@@ -1,32 +1,28 @@
-Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
-	helo=AM1EHSOBE005.bigfish.com)
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QvhHO-0000s6-37
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 03:03:54 +0000
-Message-ID: <4E5319E8.50903@freescale.com>
-Date: Tue, 23 Aug 2011 11:09:28 +0800
-From: LiuShuo <b35362@freescale.com>
-MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
-	large-page Nand chip
-References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
-	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
-	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
-	<1314010719.2644.114.camel@sauron>
-	<20110822152530.GA16794@parrot.com>
-	<4E527E0F.1010500@freescale.com> <4E528036.5070801@parrot.com>
-	<4E52819C.8080204@freescale.com>
-In-Reply-To: <4E52819C.8080204@freescale.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Li Yang-R58472 <r58472@freescale.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ivan Djelic <ivan.djelic@parrot.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>
+	id 1QvisI-0001QG-1b
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 04:46:07 +0000
+Received: by gyh20 with SMTP id 20so5054166gyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Aug 2011 21:46:03 -0700 (PDT)
+Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 23 Aug 2011 07:47:49 +0300
+In-Reply-To: <CAN8TOE8Ze5kZO9NnX5NsCArTWEX+JbTZf7=3SgO=PpzhjiGG9w@mail.gmail.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
+	<1314002153.2644.69.camel@sauron>
+	<CAN8TOE8Ze5kZO9NnX5NsCArTWEX+JbTZf7=3SgO=PpzhjiGG9w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1314074876.2645.7.camel@sauron>
+Mime-Version: 1.0
+Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+	b35362@freescale.com, Jim Quinlan <jim2101024@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Matthew Creech <mlcreech@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,49 +32,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B408=E6=9C=8823=E6=97=A5 00:19, Scott Wood =E5=86=99=
-=E9=81=93:
-> On 08/22/2011 11:13 AM, Matthieu CASTET wrote:
->> Scott Wood a =C3=A9crit :
->>> To eliminate it we'd need to do an extra data transfer without reissu=
-ing
->>> the command, which Shuo was unable to get to work.
->>>
->> That's weird because our controller seems quite flexible [1].
->>
->> Something like that should work ?
->>
->>              out_be32(&lbc->fir,
->>                       (FIR_OP_CM2<<  FIR_OP0_SHIFT) |
->>                       (FIR_OP_CA<<  FIR_OP1_SHIFT) |
->>                       (FIR_OP_PA<<  FIR_OP2_SHIFT) |
->>                       (FIR_OP_WB<<  FIR_OP3_SHIFT));
->> refill FCM buffer with next 2k data
->>
->>              out_be32(&lbc->fir,
->>                       (FIR_OP_WB<<  FIR_OP3_SHIFT) |
->>                       (FIR_OP_CM3<<  FIR_OP4_SHIFT) |
->>                       (FIR_OP_CW1<<  FIR_OP5_SHIFT) |
->>                       (FIR_OP_RS<<  FIR_OP6_SHIFT));
-> Something like that is what I originally suggested, but Shuo said it
-> didn't work (even in theory, it requires a CE-don't-care NAND chip,
-> since bus atomicity is broken).
->
-> Shuo, what specifically did you try, and what did you see happen?
->
-> -Scott
-First, if we want to read 4K data with once command issuing, we can't=20
-use HW_ECC.
-Even if we use SW_ECC, we always get lots of weird '0xFF's between 1st=20
-2k and 2nd 2k data.
-They will cover the data in the head of 2nd 2K.
-  -----------------------------------------------------------------------=
---------------
-| xxxxxx ... 1st 2k xxxxxxx ... | ff ff ff ... ff xxxxxx 2nd 2k xxxxxxx |
-  -----------------------------------------------------------------------=
---------------
+On Mon, 2011-08-22 at 13:08 -0700, Brian Norris wrote:
+> I forgot to CC a contributor on this (and the complementary patch for
+> "read OOB")
+> 
+> Cc: Jim Quinlan <jim2101024@gmail.com>
+> 
+> On Mon, Aug 22, 2011 at 1:35 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
+> >> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
+> >
+> > I guess this patch deserves to be non-RFC? Should it be pushed to
+> > l2-mtd-2.6.git? Should it even have "Cc: stable@kernel.org [kernel
+> > version +] ?
+> 
+> I'm not actually sure where this stands (RFC vs. patch) since I really
+> wanted some outside opinion on the methods used here. I have a feeling
+> that some of this is only working on my hardware. For instance,
+> somehow (I'm really not sure how!) `nandwrite -n -o' is working in
+> nandsim without my fix. Perhaps this is due to a different set of
+> nand_ecc_ctrl functions (soft ECC vs. HW ECC).
 
-It is worse to write 4k data with once command issuing. It can't write=20
-the 2nd data correctly.
+May be one of the reasons is that nandsim just _copies_ data to the
+internal RAM buffer, instead of doing binary "&", so you can re-write in
+some cases, but not sure.
 
--Liu Shuo
+> With this patch applied, however, I get some strange kernel oopses
+> with nandsim. I've identified at least one issue, I think, but I
+> haven't completely resolved this discrepancy between nandsim and my
+> driver. See sample commands:
+> 
+> # insmod nandsim.ko
+> # nandwrite /dev/mtdX <data.bin> -n -o
+> 
+> So for this "fix" (and its coming updates), I would appreciate some
+> outside testing on other systems, especially before we send this to
+> stable or even before including it upstream at all.
+> 
+> And any comments on the current status of noecc and MTD_OOB_RAW from
+> others would be highly valuable to me; a bit of system information and
+> a "working" or "not working since commit [XXX]" would be a start. In
+> the meantime, I'm trying to get a hold of a wider variety of test
+> systems for myself for these kind of issues...
+
+Yes, would be great to have more people to test. I always encourage
+people to look at patches _before_ they get in and break their systems,
+not afterwards. But even if nobody cares, we can merge your stuff after
+you gave it some more testing - absence of caring people should not stop
+the progress in MTD :-) 
+
+-- 
+Best Regards,
+Artem Bityutskiy
