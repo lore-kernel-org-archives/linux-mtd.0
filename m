@@ -1,25 +1,32 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
+	helo=AM1EHSOBE005.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QveTL-0007nb-73
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 00:04:03 +0000
-Received: by wyh11 with SMTP id 11so4737075wyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2011 17:04:01 -0700 (PDT)
+	id 1QvhHO-0000s6-37
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 03:03:54 +0000
+Message-ID: <4E5319E8.50903@freescale.com>
+Date: Tue, 23 Aug 2011 11:09:28 +0800
+From: LiuShuo <b35362@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1314003384.2644.85.camel@sauron>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1313625029-19546-6-git-send-email-computersforpeace@gmail.com>
-	<1314003384.2644.85.camel@sauron>
-Date: Mon, 22 Aug 2011 17:04:00 -0700
-Message-ID: <CAN8TOE9kZa5g9baQ63ojUYK7uqrwA9GEf_6oYz1S-kacZRq+5Q@mail.gmail.com>
-Subject: Re: [RFC 5/5] mtd: add MEMWRITEDATAOOB ioctl
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>
+	<4E4D452C.7050805@parrot.com> <4E4DD661.5080006@freescale.com>
+	<4E4E2571.20409@parrot.com> <4E4EA70B.9050203@freescale.com>
+	<1314010719.2644.114.camel@sauron>
+	<20110822152530.GA16794@parrot.com>
+	<4E527E0F.1010500@freescale.com> <4E528036.5070801@parrot.com>
+	<4E52819C.8080204@freescale.com>
+In-Reply-To: <4E52819C.8080204@freescale.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-	b35362@freescale.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+Cc: Li Yang-R58472 <r58472@freescale.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +36,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 22, 2011 at 1:56 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Wed, 2011-08-17 at 16:50 -0700, Brian Norris wrote:
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ops.datbuf =3D memdup_user(
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 (void __user *)(uintptr_t)buf.usr_ptr,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 ops.len + ops.ooblen);
+=E4=BA=8E 2011=E5=B9=B408=E6=9C=8823=E6=97=A5 00:19, Scott Wood =E5=86=99=
+=E9=81=93:
+> On 08/22/2011 11:13 AM, Matthieu CASTET wrote:
+>> Scott Wood a =C3=A9crit :
+>>> To eliminate it we'd need to do an extra data transfer without reissu=
+ing
+>>> the command, which Shuo was unable to get to work.
+>>>
+>> That's weird because our controller seems quite flexible [1].
+>>
+>> Something like that should work ?
+>>
+>>              out_be32(&lbc->fir,
+>>                       (FIR_OP_CM2<<  FIR_OP0_SHIFT) |
+>>                       (FIR_OP_CA<<  FIR_OP1_SHIFT) |
+>>                       (FIR_OP_PA<<  FIR_OP2_SHIFT) |
+>>                       (FIR_OP_WB<<  FIR_OP3_SHIFT));
+>> refill FCM buffer with next 2k data
+>>
+>>              out_be32(&lbc->fir,
+>>                       (FIR_OP_WB<<  FIR_OP3_SHIFT) |
+>>                       (FIR_OP_CM3<<  FIR_OP4_SHIFT) |
+>>                       (FIR_OP_CW1<<  FIR_OP5_SHIFT) |
+>>                       (FIR_OP_RS<<  FIR_OP6_SHIFT));
+> Something like that is what I originally suggested, but Shuo said it
+> didn't work (even in theory, it requires a CE-don't-care NAND chip,
+> since bus atomicity is broken).
 >
-> I'd introduced a local variable for buf.usr_ptr and made the formatting
-> nicer.
-
-Sure. Will incorporate into v2.
-
->> +struct mtd_data_oob_buf {
+> Shuo, what specifically did you try, and what did you see happen?
 >
-> Let's add some reserved space for future improvements - I think it is
-> always a good idea to do for ioctls:
->
-> + __u8 padding[8]
+> -Scott
+First, if we want to read 4K data with once command issuing, we can't=20
+use HW_ECC.
+Even if we use SW_ECC, we always get lots of weird '0xFF's between 1st=20
+2k and 2nd 2k data.
+They will cover the data in the head of 2nd 2K.
+  -----------------------------------------------------------------------=
+--------------
+| xxxxxx ... 1st 2k xxxxxxx ... | ff ff ff ... ff xxxxxx 2nd 2k xxxxxxx |
+  -----------------------------------------------------------------------=
+--------------
 
-OK. Will consider for v2.
+It is worse to write 4k data with once command issuing. It can't write=20
+the 2nd data correctly.
 
->> +#define MEMWRITEDATAOOB =A0 =A0 =A0 =A0 =A0 =A0 =A0_IOWR('M', 24, struc=
-t mtd_data_oob_buf)
->
-> Would be greate to add a short comment about what this ioctl does. Of
-> course you can optionally do this for all of them, but at least for the
-> new one it does not hurt to have.
-
-Sure, will do. I'll probably add at least a few comments in the header
-for all the relevant ioctls we've been discussing, but that'll wait
-until we've finished the code.
-
-BTW, I'm considering splitting the usr_ptr into separate buffers for
-data and oob. This will probably be a little easier for the user
-interface as well as for internal kernel operations. Anyway, the
-resulting struct is looking more and more like the existing `struct
-mtd_oob_ops' (this is kind of by design); is it still a good idea to
-keep the user-facing struct independent of the internal mtd_oob_ops
-struct? I'm thinking it would leave some flexibility for the future.
-
-Brian
+-Liu Shuo
