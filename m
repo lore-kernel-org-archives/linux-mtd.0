@@ -1,19 +1,25 @@
-Message-ID: <4E53830C.9080808@freescale.com>
-Date: Tue, 23 Aug 2011 18:38:04 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+	helo=TX2EHSOBE007.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QvtaR-000629-9J
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 16:12:23 +0000
+Message-ID: <4E53D15D.2050807@freescale.com>
+Date: Tue, 23 Aug 2011 11:12:13 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-To: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH v9 1/3] MTD : add the common code for GPMI-NAND controller
-	driver
-References: <1313581828-16625-1-git-send-email-b32955@freescale.com>
-	<201108221509.49721.marek.vasut@gmail.com>
-	<4E53807B.10100@freescale.com>
-	<201108231234.16258.marek.vasut@gmail.com>
-In-Reply-To: <201108231234.16258.marek.vasut@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: shijie8@gmail.com, koen.beel.barco@gmail.com, linux-mtd@lists.infradead.org,
-	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH v3] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+References: <1313634783-8855-1-git-send-email-b35362@freescale.com>	<4E4D3CE0.7020602@freescale.com>
+	<4E5366AF.7040108@freescale.com> <4E537AC4.6000301@parrot.com>
+In-Reply-To: <4E537AC4.6000301@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	LiuShuo <b35362@freescale.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Li Yang-R58472 <r58472@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> On Tuesday, August 23, 2011 12:27:07 PM Huang Shijie wrote:
->> Hi,
->>
->>>>>> +}
->>>>>> +
->>>>>> +int common_nfc_set_geometry(struct gpmi_nand_data *this)
->>>>>> +{
->>>>>> +	struct bch_geometry *geo =&this->bch_geometry;
->>>>>> +	struct mtd_info *mtd =&this->mil.mtd;
->>>>>> +	unsigned int metadata_size;
->>>>>> +	unsigned int status_size;
->>>>>> +	unsigned int chunk_data_size_in_bits;
->>>>>> +	unsigned int chunk_ecc_size_in_bits;
->>>>>> +	unsigned int chunk_total_size_in_bits;
->>>>>> +	unsigned int block_mark_chunk_number;
->>>>>> +	unsigned int block_mark_chunk_bit_offset;
->>>>>> +	unsigned int block_mark_bit_offset;
->>>>>> +	int gf_len = 13;/* use GP13 by default */
->>>>>> +
->>>>>> +	/* We only support BCH now. */
->>>>>> +	geo->ecc_algorithm = "BCH";
->>>>>> +
->>>>>> +	/*
->>>>>> +	 * We always choose a metadata size of 10. Don't try to make sense
->>>>>> of +	 * it -- this is really only for historical compatibility.
->>>>>> +	 */
->>>>> Historical compat or you mean "the chip was designed this way, see
->>>>> datasheet section x.y.z"? ;-)
->>>> Just for historical compatibility.
->>>> it's better to keep it as now, there is no need to change it.
->>> I'm just trying to make sense of it ... from the docs, it seems like a
->>> chip design thing. So this is compat with STMP37xx and 36xx ? Or even
->>> something older and more obscure ?
->> The size of metadata can be changed, though it's set to 10 bytes now.
->>
->> But it can't be too large, because we have to save enough space for BCH.
-> I saw the algo in the MX28 manual. Then just sum this up in the comment and it's
-> good :)
->
-ok, thanks :)
+On 08/23/2011 05:02 AM, Matthieu CASTET wrote:
+> LiuShuo a =C3=A9crit :
+>> We can't read the NOP from the ID on any chip. Some chips don't
+>> give this infomation.(e.g. Micron MT29F4G08BAC)
 
-Huang Shijie
-> Thanks!
->
-> Cheers
->>
->> thanks
->> Huang Shijie
+Are there any 4K+ chips (especially ones with insufficient NOP) that
+don't have the info?
+
+This chip is 2K and NOP8.
+
+Is there an easy way (without needing to have every datasheet for every
+chip ever made) to determine at runtime which chips supply this informati=
+on?
+
+> Doesn't the micron chip provide it with onfi info ?
+
+This chip doesn't appear to be ONFI.
+
+-Scott
