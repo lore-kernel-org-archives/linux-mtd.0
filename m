@@ -1,21 +1,24 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwDCA-0004M0-Kl
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 13:08:39 +0000
-Received: by gxk2 with SMTP id 2so1025270gxk.36
+	id 1QwDKc-0005vq-6T
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 13:17:23 +0000
+Received: by gwb1 with SMTP id 1so1037343gwb.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Aug 2011 06:08:31 -0700 (PDT)
-Subject: Re: [PATCH 1/5] mtd: do not assume oobsize is power of 2
+	Wed, 24 Aug 2011 06:17:19 -0700 (PDT)
+Subject: Re: [PATCH 3/5] mtd: remove MEMSETOOBSEL macro definition
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 24 Aug 2011 16:10:18 +0300
-In-Reply-To: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Wed, 24 Aug 2011 16:19:05 +0300
+In-Reply-To: <Pine.LNX.4.64.1108241427380.13510@lnxricardw.se.axis.com>
 References: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
+	<1314145056-5233-3-git-send-email-computersforpeace@gmail.com>
+	<Pine.LNX.4.64.1108241427380.13510@lnxricardw.se.axis.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1314191425.9480.274.camel@sauron>
+Message-ID: <1314191951.9480.277.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,28 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-08-23 at 17:17 -0700, Brian Norris wrote:
-> Previous generations of MTDs all used OOB sizes that were powers of 2,
-> (e.g., 64, 128). However, newer generations of flash, especially NAND,
-> use irregular OOB sizes that are not powers of 2 (e.g., 218, 224, 448).
-> This means we cannot use masks like "mtd->oobsize - 1" to assume that we
-> will get a proper bitmask for OOB operations.
+On Wed, 2011-08-24 at 14:28 +0200, Ricard Wanderlof wrote:
+> On Wed, 24 Aug 2011, Brian Norris wrote:
 > 
-> These masks are really only intended to hide the "page" portion of the
-> offset, leaving any OOB offset intact, so a masking with the writesize
-> (which *is* always a power of 2) is valid and makes more sense.
+> > MEMSETOOBSEL is completely unused and useless. Remove the definition.
+> >
+> > Note: it's probably best not to use this ioctl number in the future for
+> > MTD, since that may cause conflicts between old kernels and new user
+> > software (or new kernels and old user software). This shouldn't be much
+> > problem.
 > 
-> This has been tested for read/write of NAND devices (nanddump/nandwrite)
-> using nandsim and actual NAND flash.
-> 
-> Cc: stable@kernel.org [2.6.30+]
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Perhaps this should be noted as a comment in the code, rather than just 
+> removing the line. Such information tends to get forgotten sooner or later 
+> otherwise.
 
-I removed -stable Cc, because this is not a bug-fix, and I feel this is
-a bit risky for -stable. And pushed, thanks.
+Yeah, I've amended the patch and added a comment:
 
-Pushed also all the other patches, and amended the MEMOOBSEL removal
-patch.
++/*
++ * Note, the following ioctl existed in the past and was removed:
++ * #define MEMSETOOBSEL           _IOW('M', 9, struct nand_oobinfo)
++ * Try to avoid adding a new ioctl with the same ioctl number.
++ */
 
 -- 
 Best Regards,
