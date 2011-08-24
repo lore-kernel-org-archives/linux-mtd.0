@@ -1,15 +1,15 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qw1AP-00082j-UB
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 00:18:02 +0000
-Received: by gyh20 with SMTP id 20so646448gyh.36
+	id 1Qw1AQ-00082k-7D
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 00:18:03 +0000
+Received: by pzk4 with SMTP id 4so421553pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2011 17:17:59 -0700 (PDT)
+	Tue, 23 Aug 2011 17:18:00 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 3/5] mtd: remove MEMSETOOBSEL macro definition
-Date: Tue, 23 Aug 2011 17:17:34 -0700
-Message-Id: <1314145056-5233-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 4/5] mtd: nand: fix spelling error (date => data)
+Date: Tue, 23 Aug 2011 17:17:35 -0700
+Message-Id: <1314145056-5233-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
 References: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
@@ -22,30 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MEMSETOOBSEL is completely unused and useless. Remove the definition.
-
-Note: it's probably best not to use this ioctl number in the future for
-MTD, since that may cause conflicts between old kernels and new user
-software (or new kernels and old user software). This shouldn't be much
-problem.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/mtd/mtd-abi.h |    2 +-
+ include/linux/mtd/nand.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 2f7d45b..f0e8027 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -112,7 +112,7 @@ struct otp_info {
- #define MEMUNLOCK		_IOW('M', 6, struct erase_info_user)
- #define MEMGETREGIONCOUNT	_IOR('M', 7, int)
- #define MEMGETREGIONINFO	_IOWR('M', 8, struct region_info_user)
--#define MEMSETOOBSEL		_IOW('M', 9, struct nand_oobinfo)
-+
- #define MEMGETOOBSEL		_IOR('M', 10, struct nand_oobinfo)
- #define MEMGETBADBLOCK		_IOW('M', 11, __kernel_loff_t)
- #define MEMSETBADBLOCK		_IOW('M', 12, __kernel_loff_t)
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 6d56968..85fef68 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -465,7 +465,7 @@ struct nand_buffers {
+  * @controller:		[REPLACEABLE] a pointer to a hardware controller
+  *			structure which is shared among multiple independent
+  *			devices.
+- * @priv:		[OPTIONAL] pointer to private chip date
++ * @priv:		[OPTIONAL] pointer to private chip data
+  * @errstat:		[OPTIONAL] hardware specific function to perform
+  *			additional error status checks (determine if errors are
+  *			correctable).
 -- 
 1.7.5.4
