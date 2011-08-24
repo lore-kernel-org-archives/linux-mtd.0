@@ -1,15 +1,15 @@
-Received: from mail-pz0-f41.google.com ([209.85.210.41])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwKl9-0000An-2K
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 21:13:16 +0000
-Received: by mail-pz0-f41.google.com with SMTP id 4so1999386pzk.28
+	id 1QwKlD-0000EP-OF
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 21:13:21 +0000
+Received: by yxk8 with SMTP id 8so1453051yxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Aug 2011 14:13:14 -0700 (PDT)
+	Wed, 24 Aug 2011 14:13:17 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/2] mtd: support writing OOB without ECC
-Date: Wed, 24 Aug 2011 14:12:23 -0700
-Message-Id: <1314220344-10986-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: support reading OOB without ECC
+Date: Wed, 24 Aug 2011 14:12:24 -0700
+Message-Id: <1314220344-10986-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314220344-10986-1-git-send-email-computersforpeace@gmail.com>
 References: <1314220344-10986-1-git-send-email-computersforpeace@gmail.com>
 Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
@@ -26,49 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes issues with `nandwrite -n -o' and the MEMWRITEOOB[64] ioctls
-on hardware that writes ECC when writing OOB. The problem arises as
-follows: `nandwrite -n' can write page data to flash without applying
-ECC, but when used with the `-o' option, ECC is applied (incorrectly),
-contrary to the `--noecc' option.
+This fixes issues with `nanddump -n' and the MEMREADOOB[64] ioctls on
+hardware that performs error correction when reading only OOB data. A
+driver for such hardware needs to know when we're doing a RAW vs. a
+normal write, but mtd_do_read_oob does not pass such information to the
+lower layers (e.g., NAND). We should pass MTD_OOB_RAW or MTD_OOB_PLACE
+based on the MTD file mode.
 
-I found that this is the case because my hardware computes and writes
-ECC data to flash upon either OOB write or page write. Thus, to support
-a proper "no ECC" write, my driver must know when we're performing a raw
-OOB write vs. a normal ECC OOB write. However, MTD does not pass any raw
-mode information to the write_oob functions.  This patch addresses the
-problems by:
+For now, most drivers can get away with just setting:
 
-1) Passing MTD_OOB_RAW down to lower layers, instead of just defaulting
-   to MTD_OOB_PLACE
-2) Handling MTD_OOB_RAW within the NAND layer's `nand_do_write_oob'
-3) Adding a new (replaceable) function pointer in struct ecc_ctrl; this
-   function should support writing OOB without ECC data. Current
-   hardware often can use the same OOB write function when writing
-   either with or without ECC
+  chip->ecc.read_oob_raw = chip->ecc.read_oob
+
+This is done by default; but for systems that behave as described above,
+you must supply your own replacement function.
 
 This was tested with nandsim as well as on actual SLC NAND.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/mtdchar.c        |    3 ++-
- drivers/mtd/nand/nand_base.c |   11 ++++++++++-
+ drivers/mtd/mtdchar.c        |   14 ++++++++------
+ drivers/mtd/nand/nand_base.c |    7 ++++++-
  include/linux/mtd/nand.h     |    3 +++
- 3 files changed, 15 insertions(+), 2 deletions(-)
+ 3 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index b206254..bcb7f05 100644
+index bcb7f05..d0eaef6 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -391,6 +391,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
- 	uint64_t start, uint32_t length, void __user *ptr,
- 	uint32_t __user *retp)
+@@ -435,9 +435,11 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
+ 	return ret;
+ }
+ 
+-static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+-	uint32_t length, void __user *ptr, uint32_t __user *retp)
++static int mtd_do_readoob(struct file *file, struct mtd_info *mtd,
++	uint64_t start, uint32_t length, void __user *ptr,
++	uint32_t __user *retp)
  {
 +	struct mtd_file_info *mfi = file->private_data;
  	struct mtd_oob_ops ops;
- 	uint32_t retlen;
  	int ret = 0;
-@@ -412,7 +413,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
+ 
+@@ -455,7 +457,7 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
  	ops.ooblen = length;
  	ops.ooboffs = start & (mtd->writesize - 1);
  	ops.datbuf = NULL;
@@ -77,53 +76,76 @@ index b206254..bcb7f05 100644
  
  	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
  		return -EINVAL;
+@@ -716,7 +718,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
+-			ret = mtd_do_readoob(mtd, buf.start, buf.length,
++			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
+ 				buf.ptr, &buf_user->start);
+ 		break;
+ 	}
+@@ -743,7 +745,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
+-			ret = mtd_do_readoob(mtd, buf.start, buf.length,
++			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
+ 				(void __user *)(uintptr_t)buf.usr_ptr,
+ 				&buf_user->length);
+ 		break;
+@@ -1029,7 +1031,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
+-			ret = mtd_do_readoob(mtd, buf.start,
++			ret = mtd_do_readoob(file, mtd, buf.start,
+ 				buf.length, compat_ptr(buf.ptr),
+ 				&buf_user->start);
+ 		break;
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d2ee68a..2ab8aa3 100644
+index 2ab8aa3..66b0eff 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2401,7 +2401,12 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		chip->pagebuf = -1;
+@@ -1787,7 +1787,10 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	page = realpage & chip->pagemask;
  
- 	nand_fill_oob(mtd, ops->oobbuf, ops->ooblen, ops);
--	status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
-+
-+	if (ops->mode == MTD_OOB_RAW) {
-+		status = chip->ecc.write_oob_raw(mtd, chip, page & chip->pagemask);
-+	} else {
-+		status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
-+	}
+ 	while (1) {
+-		sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
++		if (ops->mode == MTD_OOB_RAW)
++			sndcmd = chip->ecc.read_oob_raw(mtd, chip, page, sndcmd);
++		else
++			sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
  
- 	if (status)
- 		return status;
-@@ -3377,6 +3382,10 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		BUG();
+ 		len = min(len, readlen);
+ 		buf = nand_transfer_oob(chip, buf, ops, len);
+@@ -3383,6 +3386,8 @@ int nand_scan_tail(struct mtd_info *mtd)
  	}
  
-+	/* For many systems, the standard OOB write also works for raw */
-+	if (!chip->ecc.write_oob_raw)
-+		chip->ecc.write_oob_raw = chip->ecc.write_oob;
-+
- 	/*
- 	 * The number of bytes available for a client to place data into
- 	 * the out of band area.
+ 	/* For many systems, the standard OOB write also works for raw */
++	if (!chip->ecc.read_oob_raw)
++		chip->ecc.read_oob_raw = chip->ecc.read_oob;
+ 	if (!chip->ecc.write_oob_raw)
+ 		chip->ecc.write_oob_raw = chip->ecc.write_oob;
+ 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 85fef68..5f3fdd9 100644
+index 5f3fdd9..17964c9 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -340,6 +340,7 @@ struct nand_hw_control {
-  * @read_subpage:	function to read parts of the page covered by ECC.
+@@ -341,6 +341,7 @@ struct nand_hw_control {
   * @write_page:	function to write a page according to the ECC generator
   *		requirements.
-+ * @write_oob_raw:	function to write chip OOB data without ECC
+  * @write_oob_raw:	function to write chip OOB data without ECC
++ * @read_oob_raw:	function to read chip OOB data without ECC
   * @read_oob:	function to read chip OOB data
   * @write_oob:	function to write chip OOB data
   */
-@@ -368,6 +369,8 @@ struct nand_ecc_ctrl {
- 			uint32_t offs, uint32_t len, uint8_t *buf);
- 	void (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -371,6 +372,8 @@ struct nand_ecc_ctrl {
  			const uint8_t *buf);
-+	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int page);
+ 	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int page);
++	int (*read_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
++			int page, int sndcmd);
  	int (*read_oob)(struct mtd_info *mtd, struct nand_chip *chip, int page,
  			int sndcmd);
  	int (*write_oob)(struct mtd_info *mtd, struct nand_chip *chip,
