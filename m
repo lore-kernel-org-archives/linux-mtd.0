@@ -1,25 +1,17 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwDKc-0005vq-6T
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 13:17:23 +0000
-Received: by gwb1 with SMTP id 1so1037343gwb.36
+	id 1QwDWO-0007Gk-6Y
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 13:29:32 +0000
+Received: by fxd20 with SMTP id 20so1221054fxd.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Aug 2011 06:17:19 -0700 (PDT)
-Subject: Re: [PATCH 3/5] mtd: remove MEMSETOOBSEL macro definition
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Wed, 24 Aug 2011 16:19:05 +0300
-In-Reply-To: <Pine.LNX.4.64.1108241427380.13510@lnxricardw.se.axis.com>
-References: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
-	<1314145056-5233-3-git-send-email-computersforpeace@gmail.com>
-	<Pine.LNX.4.64.1108241427380.13510@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1314191951.9480.277.camel@sauron>
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Wed, 24 Aug 2011 06:29:30 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 24 Aug 2011 15:29:30 +0200
+Message-ID: <CAHRBi55AcPqscA3P1h54yvz1s_EyV=FweJTC-ze6Lg0Wht-kWw@mail.gmail.com>
+Subject: sector erase frequency
+From: Ryan Raasch <ryan.raasch@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-08-24 at 14:28 +0200, Ricard Wanderlof wrote:
-> On Wed, 24 Aug 2011, Brian Norris wrote:
-> 
-> > MEMSETOOBSEL is completely unused and useless. Remove the definition.
-> >
-> > Note: it's probably best not to use this ioctl number in the future for
-> > MTD, since that may cause conflicts between old kernels and new user
-> > software (or new kernels and old user software). This shouldn't be much
-> > problem.
-> 
-> Perhaps this should be noted as a comment in the code, rather than just 
-> removing the line. Such information tends to get forgotten sooner or later 
-> otherwise.
+Hello,
 
-Yeah, I've amended the patch and added a comment:
+I am trying to "measure" or get an idea how often a particular
+writable partition (NOR flash, JFFS2) is being erased. This device needs to run
+a while, so we need to have some idea how often this
+partition's sectors are erased (16 MB partition, 128 KB size sector).
 
-+/*
-+ * Note, the following ioctl existed in the past and was removed:
-+ * #define MEMSETOOBSEL           _IOW('M', 9, struct nand_oobinfo)
-+ * Try to avoid adding a new ioctl with the same ioctl number.
-+ */
+My first thought is to hack the mtd devices (cmd set 001)
+ and have some type of counter for each sector.
+The largest size of the partition for this would be 16 MB. But
+i haven't quite figured out how to get a mtd partition pointer within
+the mtdchar ioctl. There is only an offset.
 
--- 
-Best Regards,
-Artem Bityutskiy
+Are there any ideas on how best to tackle this? This is purely for
+testing/sanity issues, not to be used in releases.
+
+Thanks,
+Ryan
