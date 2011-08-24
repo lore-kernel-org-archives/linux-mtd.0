@@ -1,27 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qvx6c-0002uo-13
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2011 19:57:50 +0000
-Received: by wwf10 with SMTP id 10so342984wwf.18
+	id 1Qw1AL-00082K-CZ
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 00:17:58 +0000
+Received: by yxk8 with SMTP id 8so643642yxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2011 12:57:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAB4PhKeGy9k2KwMiPcvT_WwcJAvL2Ugh-mgg7su62MOLYCXetw@mail.gmail.com>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1313625029-19546-2-git-send-email-computersforpeace@gmail.com>
-	<CAB4PhKeGy9k2KwMiPcvT_WwcJAvL2Ugh-mgg7su62MOLYCXetw@mail.gmail.com>
-Date: Tue, 23 Aug 2011 12:57:47 -0700
-Message-ID: <CAN8TOE8u+AGq9uEzOmngv-_UZ0BiHB4M2sJVEXzs2fgyTcYGYg@mail.gmail.com>
-Subject: Re: [RFC 1/5] mtd: support MTD_MODE_RAW for writing OOB
+	Tue, 23 Aug 2011 17:17:55 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jason Liu <liu.h.jason@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
-	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 1/5] mtd: do not assume oobsize is power of 2
+Date: Tue, 23 Aug 2011 17:17:32 -0700
+Message-Id: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +20,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 22, 2011 at 10:25 PM, Jason Liu <liu.h.jason@gmail.com> wrote:
-> 2011/8/18 Brian Norris <computersforpeace@gmail.com>:
->> This fixes issues with `nandwrite -n' and the MEMWRITEOOB[64] ioctls.
->
-> It's worthy here stating clear what the issue you meet and how it fix.
+Previous generations of MTDs all used OOB sizes that were powers of 2,
+(e.g., 64, 128). However, newer generations of flash, especially NAND,
+use irregular OOB sizes that are not powers of 2 (e.g., 218, 224, 448).
+This means we cannot use masks like "mtd->oobsize - 1" to assume that we
+will get a proper bitmask for OOB operations.
 
-The issue is simply that `nandwrite -n -o' does not work on my system;
-`nandwrite -n' can write page data to my flash without applying ECC,
-but when I use the `-o' option, ECC is applied (incorrectly), contrary
-to the `--noecc' option.
+These masks are really only intended to hide the "page" portion of the
+offset, leaving any OOB offset intact, so a masking with the writesize
+(which *is* always a power of 2) is valid and makes more sense.
 
-I found that this is the case because my hardware computes and writes
-ECC data to flash upon either OOB write or page write. Thus, to
-support a proper "no ECC" write, my driver must know when we're
-performing a raw OOB write vs. a normal ECC OOB write. However, MTD
-does not pass any raw mode information to the write_oob functions.
-This patch addresses the problems by:
-1) Passing MTD_OOB_RAW down to lower layers, instead of just
-defaulting to MTD_OOB_PLACE
-2) Handling MTD_OOB_RAW within the NAND layer's `nand_do_write_oob'
+This has been tested for read/write of NAND devices (nanddump/nandwrite)
+using nandsim and actual NAND flash.
 
-Is this a better description? I'll include this description for v2.
+Cc: stable@kernel.org [2.6.30+]
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Changes since v1 as "RFC": instead of dropping the mask, we use
+    writesize instead.
 
-Note that I have yet to update the appropriate `nand_write_page_raw'
-function to properly handle an OOB-only write. I've fixed my own
-driver, but there's an issue in the nand_base version. Will include in
-v2.
+Stable: this error actually appeared way back in 2.6.17, but it was
+    cut-and-pasted in the 2.6.30-rcX cycle, so it won't apply cleanly.
+    Anyway, I don't think we don't maintain -stable that far back.
 
-Thanks,
-Brian
+ drivers/mtd/mtdchar.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index a75d555..b206254 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -410,7 +410,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
+ 		return ret;
+ 
+ 	ops.ooblen = length;
+-	ops.ooboffs = start & (mtd->oobsize - 1);
++	ops.ooboffs = start & (mtd->writesize - 1);
+ 	ops.datbuf = NULL;
+ 	ops.mode = MTD_OOB_PLACE;
+ 
+@@ -421,7 +421,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
+ 	if (IS_ERR(ops.oobbuf))
+ 		return PTR_ERR(ops.oobbuf);
+ 
+-	start &= ~((uint64_t)mtd->oobsize - 1);
++	start &= ~((uint64_t)mtd->writesize - 1);
+ 	ret = mtd->write_oob(mtd, start, &ops);
+ 
+ 	if (ops.oobretlen > 0xFFFFFFFFU)
+@@ -452,7 +452,7 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+ 		return ret;
+ 
+ 	ops.ooblen = length;
+-	ops.ooboffs = start & (mtd->oobsize - 1);
++	ops.ooboffs = start & (mtd->writesize - 1);
+ 	ops.datbuf = NULL;
+ 	ops.mode = MTD_OOB_PLACE;
+ 
+@@ -463,7 +463,7 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+ 	if (!ops.oobbuf)
+ 		return -ENOMEM;
+ 
+-	start &= ~((uint64_t)mtd->oobsize - 1);
++	start &= ~((uint64_t)mtd->writesize - 1);
+ 	ret = mtd->read_oob(mtd, start, &ops);
+ 
+ 	if (put_user(ops.oobretlen, retp))
+-- 
+1.7.5.4
