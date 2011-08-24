@@ -1,16 +1,32 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwGVU-0003Uj-BK
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 16:40:49 +0000
-From: David Wagner <david.wagner@free-electrons.com>
-To: David Wagner <david.wagner@free-electrons.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH] Tools for controling ubiblk
-Date: Wed, 24 Aug 2011 18:43:59 +0200
-Message-Id: <1314204239-7782-1-git-send-email-david.wagner@free-electrons.com>
-Cc: David Wagner <david.wagner@free-electrons.com>,
-	linux-embedded <linux-embedded@vger.kernel.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QwHm4-0005ox-Rz
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 18:02:02 +0000
+Received: by wyh11 with SMTP id 11so1322056wyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Aug 2011 11:01:58 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1314007366.2644.101.camel@sauron>
+	<20110822120417.GA13515@parrot.com>
+	<1314015423.2644.118.camel@sauron>
+	<Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
+	<CAN8TOE-jYm3pRa3utwnqYRB=DonxboW7PfFq-CqdqG+_OzCh9A@mail.gmail.com>
+	<Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
+Date: Wed, 24 Aug 2011 11:01:58 -0700
+Message-ID: <CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>,
+	"b35362@freescale.com" <b35362@freescale.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,254 +36,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubiblk_ctrl sends an appropriate ioctl to ubiblk control node.
+On Wed, Aug 24, 2011 at 8:36 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+...
+> I had a problem
+> in that in the mtdchar.c I have it looks like this:
 
-ubiblkadd and ubiblkdel are wrapper around ubiblk_ctrl.
-The syntax is:
-	ubiblk{add,del} x y
-where x is the UBI device number and y the volume ID.
+Did you mean nand_base.c?
 
-Signed-off-by: David Wagner <david.wagner@free-electrons.com>
----
+> whereas your patch looks like it was made against a version which lacks the
+> memsets. First I thought it was because I was running an older kernel
+> (2.6.35), but I looked at HEAD of the linux-2.6 and mtd-2.6 trees at
+> git.infradead.org, and it's the same there. So I'm not sure exactly which
+> version your patch was made against. Perhaps it's obvious to someone but not
+> me right now.
 
-	Hi
+My patches were based on l2-mtd-2.6.git, actually. David Woodhouse
+rarely pulls patches into his mtd-2.6 tree, so I have moved to working
+with Artem's l2-mtd-2.6 tree, where all the MTD work that's waiting
+for upstream sits (some stuff's been there since May). This is not
+obvious, and usually when it matters, I try to mention it in the patch
+summaries.
 
-This tool is intended to add and remove ubiblk devices on top of specified UBI
-volumes.
+Artem: is there any official change in policy on patch submission? I
+see documentation that says to base off mtd-2.6.git, but I've been
+using l2-mtd-2.6 to help you avoid merge conflicts:
+http://www.linux-mtd.infradead.org/source.html
 
-ubiblk is a new module proposal (WIP) ; full description can be found at
-https://lkml.org/lkml/2011/8/24/244
+Anyway, I believe the relevant patch dependency (from l2-mtd-2.6.git) is:
 
+   commit a8ee364bbf14861d5d0af39c4da06c30441895fb
+   Author: THOMSON, Adam (Adam) <adam.thomson@alcatel-lucent.com>
+   mtd: nand_base: always initialise oob_poi before writing OOB data
 
-changes since v1:
-~~~~~~~~~~~~~~~~~
- - update ubiblk-user.h from the latest version of ubiblk (PATCHv4) and copy it
-   from <linux sources>/usr/include/mtd/ubi/
+> Nevertheless, after applying the patch, as you suspected, using 'nandwrite
+> -o -n' fails, in this case the application hangs after outputting
+>
+> Writing data to block 0
 
- - more foolproof and correct stupid mistakes
+I guessed you would be more likely to get a segmentation fault on a
+NULL pointer, but I may be wrong.
 
-	Regards,
-	David.
+> Now, this may all be nonsense as as I mentioned I'm not sure that I've had
+> the right version to start with. The memsets bug me, as they would explain
+> the all-ff's stuff, but I don't really feel like just experimenting.
 
+Right, that's fair enough. I still think this patch is not 100% ready,
+anyway. Thanks for the help though!
 
-PS: I had troubles integrating it in buildroot: they use the 1.4.6 version or
-mtd-utils (latest to date of writing) but 1.4.6 doesn't contain the build system
-rework.  However, the fix is trivial and when the next mtd-utils version gets
-released, that won't be a problem anymore.
+If you're still up for trying, you can try applying Adam Thomson's
+patch, then my RFC, then the inlined amendment I sent. With your
+feedback, I will
 
+I need to figure out structurally how to handle the differences
+between hardware that uses the standard functions (and works fine
+without my patch) and hardware like mine that needs more information
+passed to it. Perhaps there needs to be a replaceable
+`chip->ecc.write_oob_raw' function? Or at least some modifications to
+the other "replaceable" raw functions.
 
- Makefile                  |    6 ++-
- include/mtd/ubiblk-user.h |   46 +++++++++++++++++++
- ubi-utils/ubiblk_ctrl.c   |  106 +++++++++++++++++++++++++++++++++++++++++++++
- ubi-utils/ubiblkadd       |    2 +
- ubi-utils/ubiblkdel       |    2 +
- 5 files changed, 161 insertions(+), 1 deletions(-)
- create mode 100644 include/mtd/ubiblk-user.h
- create mode 100644 ubi-utils/ubiblk_ctrl.c
- create mode 100755 ubi-utils/ubiblkadd
- create mode 100755 ubi-utils/ubiblkdel
-
-diff --git a/Makefile b/Makefile
-index 5a0044b..e7856d2 100644
---- a/Makefile
-+++ b/Makefile
-@@ -27,12 +27,16 @@ MTD_BINS = \
- 	sumtool #jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol \
-+	ubiblk_ctrl
-+UBI_SCRIPTS = \
-+	ubiblkadd ubiblkdel
- 
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
- BINS += $(addprefix ubi-utils/,$(UBI_BINS))
- SCRIPTS = flash_eraseall
-+SCRIPTS += $(addprefix ubi-utils/,$(UBI_SCRIPTS))
- 
- TARGETS = $(BINS)
- TARGETS += lib/libmtd.a
-diff --git a/include/mtd/ubiblk-user.h b/include/mtd/ubiblk-user.h
-new file mode 100644
-index 0000000..229d2da
---- /dev/null
-+++ b/include/mtd/ubiblk-user.h
-@@ -0,0 +1,46 @@
-+/*
-+ * Copyright © Free Electrons, 2011
-+ * Copyright © International Business Machines Corp., 2006
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+ *
-+ * Author: David Wagner
-+ * Some code taken from ubi-user.h
-+ */
-+
-+#ifndef __UBIBLK_USER_H__
-+#define __UBIBLK_USER_H__
-+
-+#include <linux/types.h>
-+
-+/**
-+ * ubiblk_ctrl_req - additional ioctl data structure
-+ * @ubi_num: UBI device number
-+ * @vol_id: UBI volume identifier
-+ */
-+struct ubiblk_ctrl_req {
-+	__s32 ubi_num;
-+	__s32 vol_id;
-+} __packed;
-+
-+/* ioctl commands of the UBI control character device */
-+#define UBIBLK_CTRL_IOC_MAGIC 'O'
-+
-+/* Create a ubiblk device from a UBI volume */
-+#define UBIBLK_IOCADD _IOW(UBIBLK_CTRL_IOC_MAGIC, 0x10, struct ubiblk_ctrl_req)
-+/* Delete a ubiblk device */
-+#define UBIBLK_IOCDEL _IOW(UBIBLK_CTRL_IOC_MAGIC, 0x11, struct ubiblk_ctrl_req)
-+
-+#endif
-diff --git a/ubi-utils/ubiblk_ctrl.c b/ubi-utils/ubiblk_ctrl.c
-new file mode 100644
-index 0000000..7b309aa
---- /dev/null
-+++ b/ubi-utils/ubiblk_ctrl.c
-@@ -0,0 +1,106 @@
-+/*
-+ * Copyright (c) Free Electrons, 2011
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ * Author: David Wagner
-+ */
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <libgen.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/ioctl.h>
-+#include <mtd/ubiblk-user.h>
-+
-+#define PROGRAM_NAME "ubiblk_ctrl"
-+#include <common.h>
-+
-+#define CONTROL_NODE "/dev/ubiblk_ctrl"
-+
-+void usage(char *exec_path)
-+{
-+	fprintf(stderr, "%s <-a|-d> <-u UBI_DEVICE_NUMBER> <-v VOLUME_ID>\n",
-+			basename(exec_path));
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int ubi_num = -1, vol_id = -1;
-+	int fd;
-+	struct ubiblk_ctrl_req req;
-+	int ret, err = 0;
-+	int command = 0;
-+
-+	int option;
-+
-+	while ((option = getopt(argc, argv, "adu:v:")) != -1) {
-+		switch (option) {
-+		case 'a':
-+			command = UBIBLK_IOCADD;
-+			break;
-+		case 'd':
-+			command = UBIBLK_IOCDEL;
-+			break;
-+		case 'u':
-+			ubi_num = simple_strtol(optarg, &err);
-+			if (err) {
-+				usage(argv[0]);
-+				return EXIT_FAILURE;
-+			}
-+			break;
-+		case 'v':
-+			vol_id = simple_strtol(optarg, &err);
-+			if (err) {
-+				usage(argv[0]);
-+				return EXIT_FAILURE;
-+			}
-+			break;
-+		}
-+	}
-+
-+	if (command != UBIBLK_IOCDEL && command != UBIBLK_IOCADD) {
-+		usage(argv[0]);
-+		return EXIT_FAILURE;
-+	}
-+	if (vol_id == -1 || vol_id == -1) {
-+		usage(argv[0]);
-+		return EXIT_FAILURE;
-+	}
-+
-+	req.ubi_num = ubi_num;
-+	req.vol_id = vol_id;
-+
-+	fd = open(CONTROL_NODE, O_RDONLY);
-+	if (fd == -1) {
-+		fprintf(stderr, "Error while opening the control node: %s\n",
-+				strerror(errno));
-+		return EXIT_FAILURE;
-+	}
-+
-+	ret = ioctl(fd, command, &req);
-+	if (ret == -1) {
-+		fprintf(stderr, "Error while ioctl: %s\n", strerror(errno));
-+		close(fd);
-+		return EXIT_FAILURE;
-+	}
-+	close(fd);
-+	return EXIT_SUCCESS;
-+}
-diff --git a/ubi-utils/ubiblkadd b/ubi-utils/ubiblkadd
-new file mode 100755
-index 0000000..92f9992
---- /dev/null
-+++ b/ubi-utils/ubiblkadd
-@@ -0,0 +1,2 @@
-+#! /bin/sh
-+ubiblk_ctrl -a -u $1 -v $2
-diff --git a/ubi-utils/ubiblkdel b/ubi-utils/ubiblkdel
-new file mode 100755
-index 0000000..4c7660d
---- /dev/null
-+++ b/ubi-utils/ubiblkdel
-@@ -0,0 +1,2 @@
-+#! /bin/sh
-+ubiblk_ctrl -d -u $1 -v $2
--- 
-1.7.0.4
+Brian
