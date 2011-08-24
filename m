@@ -1,20 +1,22 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwCZR-0003WD-9e
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 12:28:38 +0000
-Date: Wed, 24 Aug 2011 14:28:31 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QwDCA-0004M0-Kl
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2011 13:08:39 +0000
+Received: by gxk2 with SMTP id 2so1025270gxk.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Aug 2011 06:08:31 -0700 (PDT)
+Subject: Re: [PATCH 1/5] mtd: do not assume oobsize is power of 2
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/5] mtd: remove MEMSETOOBSEL macro definition
-In-Reply-To: <1314145056-5233-3-git-send-email-computersforpeace@gmail.com>
-Message-ID: <Pine.LNX.4.64.1108241427380.13510@lnxricardw.se.axis.com>
+Date: Wed, 24 Aug 2011 16:10:18 +0300
+In-Reply-To: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
 References: <1314145056-5233-1-git-send-email-computersforpeace@gmail.com>
-	<1314145056-5233-3-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1314191425.9480.274.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Wed, 24 Aug 2011, Brian Norris wrote:
-
-> MEMSETOOBSEL is completely unused and useless. Remove the definition.
->
-> Note: it's probably best not to use this ioctl number in the future for
-> MTD, since that may cause conflicts between old kernels and new user
-> software (or new kernels and old user software). This shouldn't be much
-> problem.
-
-Perhaps this should be noted as a comment in the code, rather than just=20
-removing the line. Such information tends to get forgotten sooner or later=
-=20
-otherwise.
-
->
+On Tue, 2011-08-23 at 17:17 -0700, Brian Norris wrote:
+> Previous generations of MTDs all used OOB sizes that were powers of 2,
+> (e.g., 64, 128). However, newer generations of flash, especially NAND,
+> use irregular OOB sizes that are not powers of 2 (e.g., 218, 224, 448).
+> This means we cannot use masks like "mtd->oobsize - 1" to assume that we
+> will get a proper bitmask for OOB operations.
+> 
+> These masks are really only intended to hide the "page" portion of the
+> offset, leaving any OOB offset intact, so a masking with the writesize
+> (which *is* always a power of 2) is valid and makes more sense.
+> 
+> This has been tested for read/write of NAND devices (nanddump/nandwrite)
+> using nandsim and actual NAND flash.
+> 
+> Cc: stable@kernel.org [2.6.30+]
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> include/mtd/mtd-abi.h |    2 +-
-> 1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-> index 2f7d45b..f0e8027 100644
-> --- a/include/mtd/mtd-abi.h
-> +++ b/include/mtd/mtd-abi.h
-> @@ -112,7 +112,7 @@ struct otp_info {
-> #define MEMUNLOCK=09=09_IOW('M', 6, struct erase_info_user)
-> #define MEMGETREGIONCOUNT=09_IOR('M', 7, int)
-> #define MEMGETREGIONINFO=09_IOWR('M', 8, struct region_info_user)
-> -#define MEMSETOOBSEL=09=09_IOW('M', 9, struct nand_oobinfo)
-> +
-> #define MEMGETOOBSEL=09=09_IOR('M', 10, struct nand_oobinfo)
-> #define MEMGETBADBLOCK=09=09_IOW('M', 11, __kernel_loff_t)
-> #define MEMSETBADBLOCK=09=09_IOW('M', 12, __kernel_loff_t)
-> --=20
-> 1.7.5.4
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I removed -stable Cc, because this is not a bug-fix, and I feel this is
+a bit risky for -stable. And pushed, thanks.
+
+Pushed also all the other patches, and amended the MEMOOBSEL removal
+patch.
+
+-- 
+Best Regards,
+Artem Bityutskiy
