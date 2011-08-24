@@ -1,16 +1,12 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH v10 3/3] MTD : add GPMI-NAND driver in the config and Makefile
-Date: Wed, 24 Aug 2011 15:33:24 +0800
-Message-ID: <1314171204-25458-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1314171204-25458-1-git-send-email-b32955@freescale.com>
-References: <1314171204-25458-1-git-send-email-b32955@freescale.com>
+From: Jason Liu <jason.hui@linaro.org>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] mtd: check parts pointer before using it
+Date: Wed, 24 Aug 2011 18:53:01 +0800
+Message-ID: <1314183181-4197-1-git-send-email-jason.hui@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: koen.beel.barco@gmail.com, w.sang@pengutronix.de,
-	Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, patches@linaro.org, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,59 +16,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add the GPMI-NAND driver in the relevant Kconfig and Makefile in the MTD.
+The code has the check for parts but it called after kmemdup,
+kmemdup(parts, sizeof(*parts) * nr_parts,...)
+if (!parts)
+	return -ENOMEM
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+In fact, we need check parts before safely using it.
+
+Signed-off-by: Jason Liu <jason.hui@linaro.org>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
+
 ---
- drivers/mtd/nand/Kconfig            |   13 +++++++++++++
- drivers/mtd/nand/Makefile           |    1 +
- drivers/mtd/nand/gpmi-nand/Makefile |    3 +++
- 3 files changed, 17 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/nand/gpmi-nand/Makefile
+This patch is based on git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+---
+ drivers/mtd/mtdcore.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 7ec5b49..42b7b86 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -417,6 +417,19 @@ config MTD_NAND_NANDSIM
- 	  The simulator may simulate various NAND flash chips for the
- 	  MTD nand layer.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 09bdbac..ce59ff5 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -465,12 +465,10 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char **types,
+ 	struct mtd_partition *real_parts;
  
-+config MTD_NAND_GPMI_NAND
-+        bool "GPMI NAND Flash Controller driver"
-+        depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28)
-+	select MTD_PARTITIONS
-+	select MTD_CMDLINE_PARTS
-+        help
-+	 Enables NAND Flash support for IMX23 or IMX28.
-+	 The GPMI controller is very powerful, with the help of BCH
-+	 module, it can do the hardware ECC. The GPMI supports several
-+	 NAND flashs at the same time. The GPMI may conflicts with other
-+	 block, such as SD card. So pay attention to it when you enable
-+	 the GPMI.
-+
- config MTD_NAND_PLATFORM
- 	tristate "Support for generic platform NAND driver"
- 	help
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index c9334e9..618f4ba 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -48,5 +48,6 @@ obj-$(CONFIG_MTD_NAND_BCM_UMI)		+= bcm_umi_nand.o nand_bcm_umi.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
- obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+ 	err = parse_mtd_partitions(mtd, types, &real_parts, parser_data);
+-	if (err <= 0 && nr_parts) {
++	if (err <= 0 && nr_parts && !parts) {
+ 		real_parts = kmemdup(parts, sizeof(*parts) * nr_parts,
+ 				     GFP_KERNEL);
+ 		err = nr_parts;
+-		if (!parts)
+-			err = -ENOMEM;
+ 	}
  
- nand-objs := nand_base.o nand_bbt.o
-diff --git a/drivers/mtd/nand/gpmi-nand/Makefile b/drivers/mtd/nand/gpmi-nand/Makefile
-new file mode 100644
-index 0000000..3a46248
---- /dev/null
-+++ b/drivers/mtd/nand/gpmi-nand/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_MTD_NAND_GPMI_NAND) += gpmi_nand.o
-+gpmi_nand-objs += gpmi-nand.o
-+gpmi_nand-objs += gpmi-lib.o
+ 	if (err > 0) {
 -- 
-1.7.0.4
+1.7.4.1
