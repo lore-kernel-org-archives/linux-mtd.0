@@ -1,24 +1,36 @@
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qwbc6-0005A8-6R
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 15:13:03 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: dedekind1@gmail.com
-Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
-Date: Thu, 25 Aug 2011 17:12:40 +0200
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
-	<201108241823.20904.arnd@arndb.de>
-	<1314256010.18988.18.camel@sauron>
-In-Reply-To: <1314256010.18988.18.camel@sauron>
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qwe83-0007jC-27
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 17:54:12 +0000
+Received: by wwj26 with SMTP id 26so5767097wwj.0
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 25 Aug 2011 10:54:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201108251712.40894.arnd@arndb.de>
-Cc: linux-embedded <linux-embedded@vger.kernel.org>,
-	david.wagner@free-electrons.com, lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1314007366.2644.101.camel@sauron>
+	<20110822120417.GA13515@parrot.com>
+	<1314015423.2644.118.camel@sauron>
+	<Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
+	<CAN8TOE-jYm3pRa3utwnqYRB=DonxboW7PfFq-CqdqG+_OzCh9A@mail.gmail.com>
+	<Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
+	<CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
+	<Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
+Date: Thu, 25 Aug 2011 10:54:04 -0700
+Message-ID: <CAN8TOE9BHPmVPi929VvNZMFEiuyLH4RbYstwxR2E8VEBeHXL9A@mail.gmail.com>
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>,
+	"b35362@freescale.com" <b35362@freescale.com>,
+	=?ISO-8859-1?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +40,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 25 August 2011, Artem Bityutskiy wrote:
-> On Wed, 2011-08-24 at 18:23 +0200, Arnd Bergmann wrote:
-> > That should  be fine, yes. I would probably put them into the same
-> > header file though if they are in the same number space even
-> > when you use them on distinct devices.
-> > 
-> > It does feel a little clumsy to have yet another character device
-> > to manage the block devices though. What do you think about one
-> > of these alternative approaches:
-> > 
-> > * When the ubi block device driver gets loaded, create one block
-> >   device per volume and let the user deal with permissions for
-> >   the devices instead of having to first create them as well.
-> 
-> I think this wasteful. Why should I have block devices which I do not
-> need? If I have 4 UBI volumes, and need only one ubiblk, why should I
-> waste my resources for 3 more of them (e.g., I do not want to waste
-> memory for struct inode for each sysfs entry which these useless block
-> devices will add). Also, will this mean 3 more block devices registered?
-> 
-> I think it is much uglier to have 3 "dummy" block devices and confuse
-> users than have one nice control character device. For the sake of not
-> having a separate control chardev?
+Hi Ricard,
 
-The cost of a block device node in the kernel is rather low. Nowadays,
-sysfs does not even permanently use inodes for entries, it has a much
-more compact internal representation IIRC.
+On Thu, Aug 25, 2011 at 2:33 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+> On Wed, 24 Aug 2011, Brian Norris wrote:
+>> On Wed, Aug 24, 2011 at 8:36 AM, Ricard Wanderlof <ricard.wanderlof@axis=
+.com> wrote:
+>> Anyway, I believe the relevant patch dependency (from l2-mtd-2.6.git) is=
+:
+>>
+>> =A0commit a8ee364bbf14861d5d0af39c4da06c30441895fb
+>> =A0Author: THOMSON, Adam (Adam) <adam.thomson@alcatel-lucent.com>
+>> =A0mtd: nand_base: always initialise oob_poi before writing OOB data
+>
+> That seems right.
 
-The main advantage of this approach is not having to set up the 
-block device at all, it would just be there, which e.g. makes it
-possible to put a root file system on it or do something else without
-requiring a user space tool to issue an ioctl.
+BTW, that patch seems a bit broken to me; I sent a fixup for it:
+http://lists.infradead.org/pipermail/linux-mtd/2011-August/037698.html
 
-Evidently you can do everything you need even with that user space
-tool, but IMHO the complexity of doing that is way bigger than
-just creating the block devices right away.
+>> I guessed you would be more likely to get a segmentation fault on a
+>> NULL pointer, but I may be wrong.
+>
+> Something seems to hang at a lower level, because the system becomes
+> unresponsive at this point (I can telnet in, but trying to access the fla=
+sh
+> with ls for instance causes the shell to hang).
 
-> > * Use the existing UBI control device for the block devices as
-> >   well and just add two more ioctls to create the devices.
-> >   You can add a logical bus_type for this so that the ubi block
-> >   driver gets automatically loaded matched with the device when
-> >   one is created using the control device.
-> 
-> This sounds  better IMHO, but I am still not sure that adding another
-> dummy bus and exposing it in sysfs and more complexity in the ubiblk
-> code is more elegant and less wasteful than just creating a separate
-> chardev...
+I think that I had a little bit of the wrong approach. I was doing
+some ill advised hacking to the existing write functions. I spun off
+my first two patches here as a different series (I believe I CC'd
+you); I used a different approach that should make as little impact on
+currently working hardware as possible:
+http://lists.infradead.org/pipermail/linux-mtd/2011-August/037695.html
 
-It's not a dummy bus, in this approach it would be a the bus that gets
-used by all ubiblk devices, which is a very common concept by itself.
-It's more like the classic understanding of a 'device class' that Greg
-wants to see get replaced by bus_types in the kernel.
+> (something seems missing here ...
 
-	Arnd
+Acknowledged :)
+
+> I applied the patches as you mentioned, which brought success. Dumping a
+> partition with nanddump, then writing it back with nandwrite -o -n result=
+s
+> in the correct data being written both to the main and oob areas.
+
+Great!
+
+> (Without your inlinend patch, the nandwrite application still hangs after
+> Writing to data block 0).
+
+Not quite sure what the hanging is all about - may be related to my
+improper use of CMD_SEQIN, then a nand wait function being called
+later? - but that's why I've changed my approach.
+
+> So the conclusion would be that this combination of patches does not brea=
+k
+> Peter Wippich's patch.
+
+Thanks a lot for the testing. I think that my first approach still may
+easily have unintended consequences, though. I welcome any testing on
+my new patch series, and any more systems with broken "noecc" should
+be handled through that thread.
+
+Brian
