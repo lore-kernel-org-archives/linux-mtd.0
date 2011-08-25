@@ -1,20 +1,24 @@
-Received: from ns.mm-sol.com ([213.240.235.226] helo=extserv.mm-sol.com)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qwa07-0002zA-H1
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 13:29:44 +0000
-From: Stanimir Varbanov <svarbanov@mm-sol.com>
-To: spi-devel-general@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH/RFC 2/2] mtd: m25p80: Call a platform power method in the
-	driver
-Date: Thu, 25 Aug 2011 16:29:12 +0300
-Message-Id: <b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
-In-Reply-To: <cover.1314278151.git.svarbanov@mm-sol.com>
-References: <cover.1314278151.git.svarbanov@mm-sol.com>
-In-Reply-To: <cover.1314278151.git.svarbanov@mm-sol.com>
-References: <cover.1314278151.git.svarbanov@mm-sol.com>
-Cc: grant.likely@secretlab.ca, Stanimir Varbanov <svarbanov@mm-sol.com>,
-	artem.bityutskiy@intel.com, dwmw2@infradead.org
+Received: from moutng.kundenserver.de ([212.227.17.9])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qwbc6-0005A8-6R
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 15:13:03 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
+Date: Thu, 25 Aug 2011 17:12:40 +0200
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+	<201108241823.20904.arnd@arndb.de>
+	<1314256010.18988.18.camel@sauron>
+In-Reply-To: <1314256010.18988.18.camel@sauron>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201108251712.40894.arnd@arndb.de>
+Cc: linux-embedded <linux-embedded@vger.kernel.org>,
+	david.wagner@free-electrons.com, lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On some devices the flash chip could be powered off when m25p driver
-is probed. To avoid erroneous detection the power of the chip must be
-turn on, add a power function in m25p_probe to switch on the power by
-platform data. The power will be turned off at the probe end.
+On Thursday 25 August 2011, Artem Bityutskiy wrote:
+> On Wed, 2011-08-24 at 18:23 +0200, Arnd Bergmann wrote:
+> > That should  be fine, yes. I would probably put them into the same
+> > header file though if they are in the same number space even
+> > when you use them on distinct devices.
+> > 
+> > It does feel a little clumsy to have yet another character device
+> > to manage the block devices though. What do you think about one
+> > of these alternative approaches:
+> > 
+> > * When the ubi block device driver gets loaded, create one block
+> >   device per volume and let the user deal with permissions for
+> >   the devices instead of having to first create them as well.
+> 
+> I think this wasteful. Why should I have block devices which I do not
+> need? If I have 4 UBI volumes, and need only one ubiblk, why should I
+> waste my resources for 3 more of them (e.g., I do not want to waste
+> memory for struct inode for each sysfs entry which these useless block
+> devices will add). Also, will this mean 3 more block devices registered?
+> 
+> I think it is much uglier to have 3 "dummy" block devices and confuse
+> users than have one nice control character device. For the sake of not
+> having a separate control chardev?
 
-Also implement a get/put_device callbacks to power on/off the flash
-chip.
+The cost of a block device node in the kernel is rather low. Nowadays,
+sysfs does not even permanently use inodes for entries, it has a much
+more compact internal representation IIRC.
 
-Signed-off-by: Stanimir Varbanov <svarbanov@mm-sol.com>
----
- drivers/mtd/devices/m25p80.c |   41 +++++++++++++++++++++++++++++++++++++----
- 1 files changed, 37 insertions(+), 4 deletions(-)
+The main advantage of this approach is not having to set up the 
+block device at all, it would just be there, which e.g. makes it
+possible to put a root file system on it or do something else without
+requiring a user space tool to issue an ioctl.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index e6ba034..6ab5896 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -806,6 +806,27 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
- 	return ERR_PTR(-ENODEV);
- }
- 
-+static void m25p_power(struct flash_platform_data *pdata, int on)
-+{
-+	if (pdata && pdata->power)
-+		pdata->power(on);
-+}
-+
-+static int m25p_get_device(struct mtd_info *mtd)
-+{
-+	struct flash_platform_data *pdata = mtd->dev.parent->platform_data;
-+
-+	m25p_power(pdata, 1);
-+
-+	return 0;
-+}
-+
-+static void m25p_put_device(struct mtd_info *mtd)
-+{
-+	struct flash_platform_data *pdata = mtd->dev.parent->platform_data;
-+
-+	m25p_power(pdata, 0);
-+}
- 
- /*
-  * board specific setup should have ensured the SPI clock used here
-@@ -820,6 +841,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	struct flash_info		*info;
- 	unsigned			i;
- 	struct mtd_part_parser_data	ppdata;
-+	int				ret;
- 
- 	/* Platform data helps sort out which chip type we have, as
- 	 * well as how this board partitions it.  If we don't have
-@@ -845,12 +867,16 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 
- 	info = (void *)id->driver_data;
- 
-+	/* power on device while probing */
-+	m25p_power(data, 1);
-+
- 	if (info->jedec_id) {
- 		const struct spi_device_id *jid;
- 
- 		jid = jedec_probe(spi);
- 		if (IS_ERR(jid)) {
--			return PTR_ERR(jid);
-+			ret = PTR_ERR(jid);
-+			goto out;
- 		} else if (jid != id) {
- 			/*
- 			 * JEDEC knows better, so overwrite platform ID. We
-@@ -867,12 +893,15 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	}
- 
- 	flash = kzalloc(sizeof *flash, GFP_KERNEL);
--	if (!flash)
--		return -ENOMEM;
-+	if (!flash) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 	flash->command = kmalloc(MAX_CMD_SIZE + FAST_READ_DUMMY_BYTE, GFP_KERNEL);
- 	if (!flash->command) {
- 		kfree(flash);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto out;
- 	}
- 
- 	flash->spi = spi;
-@@ -902,6 +931,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	flash->mtd.size = info->sector_size * info->n_sectors;
- 	flash->mtd.erase = m25p80_erase;
- 	flash->mtd.read = m25p80_read;
-+	flash->mtd.get_device = m25p_get_device;
-+	flash->mtd.put_device = m25p_put_device;
- 
- 	/* sst flash chips use AAI word program */
- 	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_SST)
-@@ -956,6 +987,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 				flash->mtd.eraseregions[i].erasesize / 1024,
- 				flash->mtd.eraseregions[i].numblocks);
- 
-+out:
-+	m25p_power(data, 0);
- 
- 	/* partitions should match sector boundaries; and it may be good to
- 	 * use readonly partitions for writeprotected sectors (BP2..BP0).
--- 
-1.7.4.1
+Evidently you can do everything you need even with that user space
+tool, but IMHO the complexity of doing that is way bigger than
+just creating the block devices right away.
+
+> > * Use the existing UBI control device for the block devices as
+> >   well and just add two more ioctls to create the devices.
+> >   You can add a logical bus_type for this so that the ubi block
+> >   driver gets automatically loaded matched with the device when
+> >   one is created using the control device.
+> 
+> This sounds  better IMHO, but I am still not sure that adding another
+> dummy bus and exposing it in sysfs and more complexity in the ubiblk
+> code is more elegant and less wasteful than just creating a separate
+> chardev...
+
+It's not a dummy bus, in this approach it would be a the bus that gets
+used by all ubiblk devices, which is a very common concept by itself.
+It's more like the classic understanding of a 'device class' that Greg
+wants to see get replaced by bus_types in the kernel.
+
+	Arnd
