@@ -1,18 +1,31 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwVH3-00067b-6O
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 08:26:53 +0000
-Received: by gyh20 with SMTP id 20so1843132gyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Aug 2011 01:26:49 -0700 (PDT)
+Received: from anubis.se.axis.com ([195.60.68.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QwWJG-00079j-3k
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 09:33:16 +0000
+Date: Thu, 25 Aug 2011 11:33:10 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
+In-Reply-To: <CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
+References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
+	<1314007366.2644.101.camel@sauron> <20110822120417.GA13515@parrot.com>
+	<1314015423.2644.118.camel@sauron>
+	<Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
+	<CAN8TOE-jYm3pRa3utwnqYRB=DonxboW7PfFq-CqdqG+_OzCh9A@mail.gmail.com>
+	<Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
+	<CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
 MIME-Version: 1.0
-Date: Thu, 25 Aug 2011 10:26:49 +0200
-Message-ID: <CAMjE+nUOxOm4bBWKp1xAcVDjP-Pepd_GuJ=DcQ4jUcsohn-K=g@mail.gmail.com>
-Subject: mtd-utils: ubiformat: writing images on flash with badblocks.
-From: Anton Olofsson <anol.martinsson@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Kevin Cernekee <cernekee@gmail.com>,
+	"b35362@freescale.com" <b35362@freescale.com>,
+	=?iso-8859-1?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ivan Djelic <ivan.djelic@parrot.com>,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +35,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
 
-We encountered some problems with ubiformat
-and writing ubi-images onto flash with badblocks.
+On Wed, 24 Aug 2011, Brian Norris wrote:
 
-If a badblock was encountered during write ubiformat would
-skip writing that =93file-block=94 altogether, and this would eventually
-result in EOF while trying to read the image file.
+> On Wed, Aug 24, 2011 at 8:36 AM, Ricard Wanderlof
+> <ricard.wanderlof@axis.com> wrote:
+> ...
+>> I had a problem
+>> in that in the mtdchar.c I have it looks like this:
+>
+> Did you mean nand_base.c?
 
-The quick fix was to rewind the filedescriptor for the next pass.
+Yes, sorry about that.
 
-Im not sure if others have encountered this problem
-or even if this is the correct way to handle this situation.
+>> whereas your patch looks like it was made against a version which lacks =
+the
+>> memsets. First I thought it was because I was running an older kernel
+>> ...
+> My patches were based on l2-mtd-2.6.git, actually. David Woodhouse
+> rarely pulls patches into his mtd-2.6 tree, so I have moved to working
+> with Artem's l2-mtd-2.6 tree, where all the MTD work that's waiting
+> for upstream sits (some stuff's been there since May). This is not
+> obvious, and usually when it matters, I try to mention it in the patch
+> summaries.
 
-Here is the change made though:
+I guess I should have thought of it but never thought to look there.
 
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -546,6 +546,11 @@ static int flash_image(libmtd_t libmtd, const
-struct mtd_dev_info *mtd,
-                                if (mark_bad(mtd, si, eb))
-                                        goto out_close;
-                        }
-+                       /*rewind fd so next read_all(...) reads correct blo=
-ck*/
-+                       if (lseek(fd, -mtd->eb_size, SEEK_CUR) =3D=3D -1) {
-+                               sys_errmsg("unable to rewind file");
-+                               goto out_close;
-+                       }
-                        continue;
-                }
-                if (++written_ebs >=3D img_ebs)
+> Anyway, I believe the relevant patch dependency (from l2-mtd-2.6.git) is:
+>
+>   commit a8ee364bbf14861d5d0af39c4da06c30441895fb
+>   Author: THOMSON, Adam (Adam) <adam.thomson@alcatel-lucent.com>
+>   mtd: nand_base: always initialise oob_poi before writing OOB data
+
+That seems right.
+
+>> Nevertheless, after applying the patch, as you suspected, using 'nandwri=
+te
+>> -o -n' fails, in this case the application hangs after outputting
+>>
+>> Writing data to block 0
+>
+> I guessed you would be more likely to get a segmentation fault on a
+> NULL pointer, but I may be wrong.
+
+Something seems to hang at a lower level, because the system becomes=20
+unresponsive at this point (I can telnet in, but trying to access the=20
+flash with ls for instance causes the shell to hang).
+
+> If you're still up for trying, you can try applying Adam Thomson's
+> patch, then my RFC, then the inlined amendment I sent. With your
+> feedback, I will
+
+(something seems missing here ... nevertheless)
+
+I applied the patches as you mentioned, which brought success. Dumping a=20
+partition with nanddump, then writing it back with nandwrite -o -n results=
+=20
+in the correct data being written both to the main and oob areas.
+
+(Without your inlinend patch, the nandwrite application still hangs after=
+=20
+Writing to data block 0).
+
+So the conclusion would be that this combination of patches does not break=
+=20
+Peter Wippich's patch.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
