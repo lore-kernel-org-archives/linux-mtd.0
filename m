@@ -1,20 +1,19 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwXeB-0008H5-06
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 10:58:55 +0000
-Received: by gwb1 with SMTP id 1so1935976gwb.36
+	id 1QwXgU-0008KP-Cu
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 11:01:19 +0000
+Received: by yxk8 with SMTP id 8so1917584yxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Aug 2011 03:58:52 -0700 (PDT)
-Subject: Re: [PATCH 2/3] nandtest: print number of bits corrected during test
+	Thu, 25 Aug 2011 04:01:16 -0700 (PDT)
+Subject: Re: UBIFS: mount based on UUID?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Date: Thu, 25 Aug 2011 14:00:45 +0300
-In-Reply-To: <f46b9092828dde57ea4bb4ce661c4f15ff2e0888.1312922073.git.bengardiner@nanometrics.ca>
-References: <e51a260aa56112648b5413c66d4036e489ae09f7.1312922073.git.bengardiner@nanometrics.ca>
-	<f46b9092828dde57ea4bb4ce661c4f15ff2e0888.1312922073.git.bengardiner@nanometrics.ca>
+To: Wolfgang Denk <wd@denx.de>
+Date: Thu, 25 Aug 2011 14:03:08 +0300
+In-Reply-To: <20101026055332.B14FD152451@gemini.denx.de>
+References: <20101026055332.B14FD152451@gemini.denx.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1314270049.18988.35.camel@sauron>
+Message-ID: <1314270192.18988.38.camel@sauron>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -27,18 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-08-09 at 16:57 -0400, Ben Gardiner wrote:
-> The nandtest program monitors the corrected ecc stat to determine if an
-> ECC correction has taken place during the last write-read. If so, it
-> prints "ECC corrected".
+On Tue, 2010-10-26 at 07:53 +0200, Wolfgang Denk wrote:
+> Hi,
 > 
-> The mtd subsytem will store the number of bits corrected in the corrected
-> ecc stat so update the nandtest output to print also the number of bits
-> corrected when performing the test.
+> is there any way to mount UBIFS based on the UUID like we can do for
+> "normal" file systems, i. e. by using "UUID=..." instead of a device
+> name in /etc/fstab ?
 > 
-> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+> I see there is a UUID in the file system's super block, but I can't
+> see it is exposed to any sort of regular user interface.
+> 
+> Am I missing something?
 
-Pushed this patch to mtd-utils, thanks!
+I said that I may look at this, and this mail is still in my todo box.
+But unfortunately, I've realized that I am unable to do many things I
+wanted to. In the past, MTD/UBIFS was very related to my regular work,
+but now my work has no relation with MTD/UBIFS, so I do not have much
+own time for it. Thus, I am dropping many of my TODO items.
+
+Just wanted to let you know.
 
 -- 
 Best Regards,
