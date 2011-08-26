@@ -1,32 +1,17 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QwvjA-00068O-Oa
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2011 12:41:43 +0000
-Date: Fri, 26 Aug 2011 14:41:35 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
-In-Reply-To: <CAN8TOE9BHPmVPi929VvNZMFEiuyLH4RbYstwxR2E8VEBeHXL9A@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1108261436450.13510@lnxricardw.se.axis.com>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1314007366.2644.101.camel@sauron> <20110822120417.GA13515@parrot.com>
-	<1314015423.2644.118.camel@sauron>
-	<Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
-	<CAN8TOE-jYm3pRa3utwnqYRB=DonxboW7PfFq-CqdqG+_OzCh9A@mail.gmail.com>
-	<Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
-	<CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
-	<Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
-	<CAN8TOE9BHPmVPi929VvNZMFEiuyLH4RbYstwxR2E8VEBeHXL9A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Kevin Cernekee <cernekee@gmail.com>,
-	"b35362@freescale.com" <b35362@freescale.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ivan Djelic <ivan.djelic@parrot.com>,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+In-Reply-To: <4E57118E.90100@freescale.com>
+References: <1314171204-25458-1-git-send-email-b32955@freescale.com>
+	<1314272091.18988.53.camel@sauron> <4E57118E.90100@freescale.com>
+Date: Fri, 26 Aug 2011 15:34:47 +0200
+Message-ID: <CAHMSPgPPCujzifQ8jRa7vn+9eFb=O4otCEbzC3n+pNh=kryC=w@mail.gmail.com>
+Subject: Re: [PATCH v10 0/3] add the GPMI controller driver for IMX23/IMX28
+From: Koen Beel <koen.beel.barco@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,45 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Tested-by: Koen Beel <koen.beel@barco.com>
 
-On Thu, 25 Aug 2011, Brian Norris wrote:
-
->>> =A0Author: THOMSON, Adam (Adam) <adam.thomson@alcatel-lucent.com>
->>> =A0mtd: nand_base: always initialise oob_poi before writing OOB data
+On Fri, Aug 26, 2011 at 5:22 AM, Huang Shijie <b32955@freescale.com> wrote:
+> Hi Artem:
 >>
->> That seems right.
+>> On Wed, 2011-08-24 at 15:33 +0800, Huang Shijie wrote:
+>>>
+>>> The patch set is based on Artem's tree:
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0http://git.infradead.org/users/dedekind/l2-m=
+td-2.6.git
+>>>
+>>> The general-purpose media interface(GPMI) controller is a flexible
+>>> interface
+>>> to up to several NAND flashs.
+>>>
+>>> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC
+>>> accelerator.
+>>>
+>>> With the help of BCH, the GPMI controller can choose to do the hardware
+>>> ECC or
+>>> not.
+>>>
+>>> This driver is a _pure_ MTD NAND controller driver now.
+>>
+>> I've pushed these patches to my l2-mtd-2.6.git tree. I assume they are
+>> independent of the other patches of yours: "[PATCH v8 0/4] add the
+>> GPMI-NAND support for imx23/imx28".
+>>
+> thanks very much :)
 >
-> BTW, that patch seems a bit broken to me; I sent a fixup for it:=20
-> http://lists.infradead.org/pipermail/linux-mtd/2011-August/037698.html
-
-Thanks, I did see it but it failed to register. I've applied it to my tree=
-=20
-now.
-
-> I think that I had a little bit of the wrong approach. I was doing
-> some ill advised hacking to the existing write functions. I spun off
-> my first two patches here as a different series (I believe I CC'd
-> you); I used a different approach that should make as little impact on
-> currently working hardware as possible:
-> http://lists.infradead.org/pipermail/linux-mtd/2011-August/037695.html
+> Huang Shijie
+>>
+>> I did not really review the driver carefully, but the code looks neat at
+>> the first glance. My tree is in linux-next, so you should see your
+>> driver there.
+>>
+>> Also, if someone gives it more review, and you send a new version, I can
+>> always pick it up.
+>>
+>> Thanks.
+>>
 >
-> Thanks a lot for the testing. I think that my first approach still may=20
-> easily have unintended consequences, though. I welcome any testing on my=
-=20
-> new patch series, and any more systems with broken "noecc" should be=20
-> handled through that thread.
-
-I applied the two patches in the above mentioned patch series to my tree=20
-(after applying Peter's patch, Adam's, and your amendment to it).=20
-Conclusion: nandwrite -o -n still works for me, i.e. the patch doesn't=20
-break it.
-
-One little caveat, the tree I'm using is 2.6.35 based. The patches don't=20
-apply cleanly, but it just takes a little effort. So I think the results=20
-are relevant, just wanted to mention it.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
