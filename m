@@ -1,36 +1,17 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qwe83-0007jC-27
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2011 17:54:12 +0000
-Received: by wwj26 with SMTP id 26so5767097wwj.0
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Aug 2011 10:54:06 -0700 (PDT)
+Message-ID: <4E57118E.90100@freescale.com>
+Date: Fri, 26 Aug 2011 11:22:54 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
-References: <1313625029-19546-1-git-send-email-computersforpeace@gmail.com>
-	<1314007366.2644.101.camel@sauron>
-	<20110822120417.GA13515@parrot.com>
-	<1314015423.2644.118.camel@sauron>
-	<Pine.LNX.4.64.1108230843510.13510@lnxricardw.se.axis.com>
-	<CAN8TOE-jYm3pRa3utwnqYRB=DonxboW7PfFq-CqdqG+_OzCh9A@mail.gmail.com>
-	<Pine.LNX.4.64.1108241709350.13510@lnxricardw.se.axis.com>
-	<CAN8TOE_Vom8KHoWwEp2tmka64LLyPdPjnaZEFJTipL+7gkdfUw@mail.gmail.com>
-	<Pine.LNX.4.64.1108251118390.13510@lnxricardw.se.axis.com>
-Date: Thu, 25 Aug 2011 10:54:04 -0700
-Message-ID: <CAN8TOE9BHPmVPi929VvNZMFEiuyLH4RbYstwxR2E8VEBeHXL9A@mail.gmail.com>
-Subject: Re: [RFC 0/5] fix data+OOB writes, add ioctl
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Kevin Cernekee <cernekee@gmail.com>,
-	"b35362@freescale.com" <b35362@freescale.com>,
-	=?ISO-8859-1?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ivan Djelic <ivan.djelic@parrot.com>,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH v10 0/3] add the GPMI controller driver for IMX23/IMX28
+References: <1314171204-25458-1-git-send-email-b32955@freescale.com>
+	<1314272091.18988.53.camel@sauron>
+In-Reply-To: <1314272091.18988.53.camel@sauron>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: koen.beel.barco@gmail.com, w.sang@pengutronix.de,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com,
+	s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,65 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ricard,
-
-On Thu, Aug 25, 2011 at 2:33 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
-> On Wed, 24 Aug 2011, Brian Norris wrote:
->> On Wed, Aug 24, 2011 at 8:36 AM, Ricard Wanderlof <ricard.wanderlof@axis=
-.com> wrote:
->> Anyway, I believe the relevant patch dependency (from l2-mtd-2.6.git) is=
-:
+Hi Artem:
+> On Wed, 2011-08-24 at 15:33 +0800, Huang Shijie wrote:
+>> The patch set is based on Artem's tree:
+>> 	http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 >>
->> =A0commit a8ee364bbf14861d5d0af39c4da06c30441895fb
->> =A0Author: THOMSON, Adam (Adam) <adam.thomson@alcatel-lucent.com>
->> =A0mtd: nand_base: always initialise oob_poi before writing OOB data
+>> The general-purpose media interface(GPMI) controller is a flexible interface
+>> to up to several NAND flashs.
+>>
+>> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
+>>
+>> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
+>> not.
+>>
+>> This driver is a _pure_ MTD NAND controller driver now.
+> I've pushed these patches to my l2-mtd-2.6.git tree. I assume they are
+> independent of the other patches of yours: "[PATCH v8 0/4] add the
+> GPMI-NAND support for imx23/imx28".
 >
-> That seems right.
+thanks very much :)
 
-BTW, that patch seems a bit broken to me; I sent a fixup for it:
-http://lists.infradead.org/pipermail/linux-mtd/2011-August/037698.html
-
->> I guessed you would be more likely to get a segmentation fault on a
->> NULL pointer, but I may be wrong.
+Huang Shijie
+> I did not really review the driver carefully, but the code looks neat at
+> the first glance. My tree is in linux-next, so you should see your
+> driver there.
 >
-> Something seems to hang at a lower level, because the system becomes
-> unresponsive at this point (I can telnet in, but trying to access the fla=
-sh
-> with ls for instance causes the shell to hang).
-
-I think that I had a little bit of the wrong approach. I was doing
-some ill advised hacking to the existing write functions. I spun off
-my first two patches here as a different series (I believe I CC'd
-you); I used a different approach that should make as little impact on
-currently working hardware as possible:
-http://lists.infradead.org/pipermail/linux-mtd/2011-August/037695.html
-
-> (something seems missing here ...
-
-Acknowledged :)
-
-> I applied the patches as you mentioned, which brought success. Dumping a
-> partition with nanddump, then writing it back with nandwrite -o -n result=
-s
-> in the correct data being written both to the main and oob areas.
-
-Great!
-
-> (Without your inlinend patch, the nandwrite application still hangs after
-> Writing to data block 0).
-
-Not quite sure what the hanging is all about - may be related to my
-improper use of CMD_SEQIN, then a nand wait function being called
-later? - but that's why I've changed my approach.
-
-> So the conclusion would be that this combination of patches does not brea=
-k
-> Peter Wippich's patch.
-
-Thanks a lot for the testing. I think that my first approach still may
-easily have unintended consequences, though. I welcome any testing on
-my new patch series, and any more systems with broken "noecc" should
-be handled through that thread.
-
-Brian
+> Also, if someone gives it more review, and you send a new version, I can
+> always pick it up.
+>
+> Thanks.
+>
