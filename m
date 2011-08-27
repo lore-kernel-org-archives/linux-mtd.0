@@ -1,28 +1,19 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qx2OK-0005mC-U3
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2011 19:48:37 +0000
-Date: Fri, 26 Aug 2011 21:49:10 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110826194910.GE22411@logfs.org>
-References: <20110805160325.GM26160@logfs.org>
-	<CAMjNe_c0qZ+opwHtO3AhD60v1p8-gpDLVykJoKo8oD4zNGk9kA@mail.gmail.com>
-	<20110808083107.GN26160@logfs.org>
-	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
-	<20110809145812.GR26160@logfs.org>
-	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
-	<20110812093429.GS26160@logfs.org>
-	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
-	<20110816171707.GU26160@logfs.org>
-	<CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <201108261715.54073.marek.vasut@gmail.com>
+References: <1314171204-25458-1-git-send-email-b32955@freescale.com>
+	<1314272091.18988.53.camel@sauron>
+	<201108261715.54073.marek.vasut@gmail.com>
+Date: Fri, 26 Aug 2011 21:03:46 -0400
+Message-ID: <CAMiH66Fq7zAEffX0k1bQ57X5_gX2pRqkcE3YirvRgZvnDcjW2w@mail.gmail.com>
+Subject: Re: [PATCH v10 0/3] add the GPMI controller driver for IMX23/IMX28
+From: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, w.sang@pengutronix.de,
+	Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, s.hauer@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 August 2011 02:49:14 +0530, srimugunthan dhandapani wrote:
-> 
-> I had a printk("PATCH1") that gets printed in the log.
-> I dont know why your "logfs_invalidatepage" debug print does not appear.
+Hi Marek:
 
-Are you sure you have my patch applied?
+On Fri, Aug 26, 2011 at 11:15 AM, Marek Vasut <marek.vasut@gmail.com> wrote=
+:
+> On Thursday, August 25, 2011 01:34:46 PM Artem Bityutskiy wrote:
+>> On Wed, 2011-08-24 at 15:33 +0800, Huang Shijie wrote:
+>> > The patch set is based on Artem's tree:
+>> > =C2=A0 =C2=A0 http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+>> >
+>> > The general-purpose media interface(GPMI) controller is a flexible
+>> > interface to up to several NAND flashs.
+>> >
+>> > The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC
+>> > accelerator.
+>> >
+>> > With the help of BCH, the GPMI controller can choose to do the hardwar=
+e
+>> > ECC or not.
+>> >
+>> > This driver is a _pure_ MTD NAND controller driver now.
+>>
+>> I've pushed these patches to my l2-mtd-2.6.git tree. I assume they are
+>> independent of the other patches of yours: "[PATCH v8 0/4] add the
+>> GPMI-NAND support for imx23/imx28".
+>>
+>> I did not really review the driver carefully, but the code looks neat at
+>> the first glance. My tree is in linux-next, so you should see your
+>> driver there.
+>>
+>> Also, if someone gives it more review, and you send a new version, I can
+>> always pick it up.
+>
+> Yea, add my Acked-by's to that version ;-)
+Thanks for your comments. :)
 
-Jörn
+I will send out the new version next week.
 
--- 
-Anything that can go wrong, will.
--- Finagle's Law
+Best Regards
+Huang Shijie
+
+>
+> Cheers
+>>
+>> Thanks.
+>
