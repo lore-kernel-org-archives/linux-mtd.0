@@ -1,16 +1,21 @@
-Message-ID: <4E587B94.7090003@einfochips.com>
-Date: Sat, 27 Aug 2011 10:37:32 +0530
-From: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
+Received: from tango.tkos.co.il ([62.219.50.35])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QxXpt-0008J6-3t
+	for linux-mtd@lists.infradead.org; Sun, 28 Aug 2011 05:23:10 +0000
+Date: Sun, 28 Aug 2011 08:22:15 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Stanimir Varbanov <svarbanov@mm-sol.com>
+Subject: Re: [PATCH/RFC 2/2] mtd: m25p80: Call a platform power method in the
+	driver
+Message-ID: <20110828052215.GA7033@sapphire.tkos.co.il>
+References: <cover.1314278151.git.svarbanov@mm-sol.com>
+	<b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: Replace DEBUG with MTD_DBG
-References: <CAMPhdO_qVn8JaX6orfnHHXjmi8pTQFb1SzMe2RQM9xMdTvimaQ@mail.gmail.com>	<1314335775-3384-2-git-send-email-tanmay.upadhyay@einfochips.com>
-	<CAN8TOE9ACmLyZFkPp9FJ4j59hSeHtLmUqYv39z3NW70M16muGQ@mail.gmail.com>
-In-Reply-To: <CAN8TOE9ACmLyZFkPp9FJ4j59hSeHtLmUqYv39z3NW70M16muGQ@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: jason.chagas@marvell.com, eric.y.miao@gmail.com, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
+Cc: spi-devel-general@lists.sourceforge.net, artem.bityutskiy@intel.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Stanimir,
 
+On Thu, Aug 25, 2011 at 04:29:12PM +0300, Stanimir Varbanov wrote:
+> On some devices the flash chip could be powered off when m25p driver
+> is probed. To avoid erroneous detection the power of the chip must be
+> turn on, add a power function in m25p_probe to switch on the power by
+> platform data. The power will be turned off at the probe end.
 
-On Friday 26 August 2011 09:40 PM, Brian Norris wrote:
-> On Thu, Aug 25, 2011 at 10:16 PM, Tanmay Upadhyay
-> <tanmay.upadhyay@einfochips.com>  wrote:
->> Defining macro 'DEBUG' for debug prints conflicts with other
->> subsystem where defining 'DEBUG' means enable debug code including
->> debug prints and others. So, replaced DEBUG with MTD_DBG for MTD
-> DEBUG was killed from MTD recently in the subsystem tree for MTD,
-> l2-mtd-2.6.git:
-> git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
->
-> The fix *should* be merged in the next merge window, so this patch is
-> unnecessary.
->
-> Brian
->
+[snip]
 
-Thanks for the information. Glad to see pr_debug replacing DEBUG. :)
+> +	/* power on device while probing */
+> +	m25p_power(data, 1);
 
-Regards,
-Tanmay
+[snip]
+
+> +out:
+> +	m25p_power(data, 0);
+
+Shouldn't you power off in m25p_remove() as well?
+
+baruch
+
+-- 
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
