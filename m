@@ -1,21 +1,20 @@
-Received: from tango.tkos.co.il ([62.219.50.35])
+Received: from [213.240.235.226] (helo=extserv.mm-sol.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QxXpt-0008J6-3t
-	for linux-mtd@lists.infradead.org; Sun, 28 Aug 2011 05:23:10 +0000
-Date: Sun, 28 Aug 2011 08:22:15 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: Stanimir Varbanov <svarbanov@mm-sol.com>
-Subject: Re: [PATCH/RFC 2/2] mtd: m25p80: Call a platform power method in the
-	driver
-Message-ID: <20110828052215.GA7033@sapphire.tkos.co.il>
-References: <cover.1314278151.git.svarbanov@mm-sol.com>
-	<b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
+	id 1QxccG-0000uj-HE
+	for linux-mtd@lists.infradead.org; Sun, 28 Aug 2011 10:29:25 +0000
+Message-ID: <4E5A1879.2000508@mm-sol.com>
+Date: Sun, 28 Aug 2011 13:29:13 +0300
+From: Stanimir Varbanov <svarbanov@mm-sol.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
-Cc: spi-devel-general@lists.sourceforge.net, artem.bityutskiy@intel.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH/RFC 2/2] mtd: m25p80: Call a platform power method in
+	the	driver
+References: <cover.1314278151.git.svarbanov@mm-sol.com>	<b7d4ea5c5ca058568f4d561914fa8becfa9324e1.1314278151.git.svarbanov@mm-sol.com>
+	<20110828052215.GA7033@sapphire.tkos.co.il>
+In-Reply-To: <20110828052215.GA7033@sapphire.tkos.co.il>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stanimir,
+Hi, Baruch
 
-On Thu, Aug 25, 2011 at 04:29:12PM +0300, Stanimir Varbanov wrote:
-> On some devices the flash chip could be powered off when m25p driver
-> is probed. To avoid erroneous detection the power of the chip must be
-> turn on, add a power function in m25p_probe to switch on the power by
-> platform data. The power will be turned off at the probe end.
+Thanks for the comments !
 
-[snip]
+Baruch Siach wrote:
+> Hi Stanimir,
+> 
+> On Thu, Aug 25, 2011 at 04:29:12PM +0300, Stanimir Varbanov wrote:
+>> On some devices the flash chip could be powered off when m25p driver
+>> is probed. To avoid erroneous detection the power of the chip must be
+>> turn on, add a power function in m25p_probe to switch on the power by
+>> platform data. The power will be turned off at the probe end.
+> 
+> [snip]
+> 
+>> +	/* power on device while probing */
+>> +	m25p_power(data, 1);
+> 
+> [snip]
+> 
+>> +out:
+>> +	m25p_power(data, 0);
+> 
+> Shouldn't you power off in m25p_remove() as well?
+> 
 
-> +	/* power on device while probing */
-> +	m25p_power(data, 1);
+IMO, no, because m25p_power(off) is called from m25p_put_device(). Then 
+m25p_put_device() is called from mtdchar::mtd_close(). m25p_remove must
+fail if user didn't close mtdchar /dev/mtdX device.
 
-[snip]
+The motivation to use power on/off in m25p_probe is because the flash 
+chip might be not powered when driver probe is called. The chip is powered
+on on the probe begging and powered off after JEDEC probe pass.
 
-> +out:
-> +	m25p_power(data, 0);
+> baruch
+> 
 
-Shouldn't you power off in m25p_remove() as well?
-
-baruch
-
--- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+regards,
+Stan
