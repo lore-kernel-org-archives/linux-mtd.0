@@ -1,28 +1,17 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qylb2-0000A8-J7
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 14:16:53 +0000
-Date: Wed, 31 Aug 2011 16:17:31 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110831141731.GA29862@logfs.org>
-References: <20110812093429.GS26160@logfs.org>
-	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
-	<20110816171707.GU26160@logfs.org>
-	<CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
-	<20110826194910.GE22411@logfs.org>
-	<CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
-	<20110831055854.GA12713@logfs.org>
-	<CAMjNe_d2pOC9+2nSy2PA=2aigF95vZv3_A-jPyWyTXteW3mqFw@mail.gmail.com>
-	<20110831074902.GA26382@logfs.org>
-	<CAMjNe_csYHWCRFXt6sW1FpMaS_RFGLM6z1ML6_-3xb-5x7DZtg@mail.gmail.com>
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QyqyD-0006TG-C6
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:01:10 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH 00/10] nandwrite: cleanup, support ioctl(MEMWRITE)
+Date: Wed, 31 Aug 2011 13:00:29 -0700
+Message-ID: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_csYHWCRFXt6sW1FpMaS_RFGLM6z1ML6_-3xb-5x7DZtg@mail.gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: b35362@freescale.com, Brian Norris <computersforpeace@gmail.com>,
+	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 August 2011 18:19:30 +0530, srimugunthan dhandapani wrote:
-> On Wed, Aug 31, 2011 at 1:19 PM, Jörn Engel <joern@logfs.org> wrote:
-> 
-> > Can you set LOGFS_DEBUG to 0, both to cut down the noise and in the
-> > hope that the log output doesn't get corrupted like this again?
-> 
-> It doesn't crash, so nothing much is printed in kern.log if LOGFS_DEBUG=0.
+This patch series cleans up old features in nandwrite and supports new
+features with ioctl(MEMWRITE).
 
-Ok.  So for those of us who are a bit slow (me), you say that you
-cannot reproduce the bug with LOGFS_DEBUG=0.  In order to reproduce
-it, you have to set LOGFS_DEBUG=LOGFS_DEBUG_ALL or some such.  Is that
-right?
+Byproducts of this include:
+(1) kill --raw
+(2) re-implement --autoplace
+(3) support OOB writes for MLC NAND (only write once per page)
 
-> I produced the log with LOGFS_DEBUG=0xDFF, (without LOGFS_DEBUG_ALIASES)
-> Its a 60MB log file "kern_LOGFS_DEBUG=0xDFF.log" shared in the following link:
-> 
-> https://docs.google.com/leaf?id=0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwLWFlMmItNjlmZWIzMWFlNGUy&hl=en_US
+(1) is done because it's difficult to really tell the reason for --raw
+in the first place. Thus, in restructuring mtd_write and nandwrite, I
+cannot support it. I don't think anyone will miss it.
+(2) is done just because we can. Previously, support for the autoplace
+OOB layout was spotty, depended on the obsolete ioctl(MEMGETOOBSEL), and
+utilized user-space code to imitate an internal kernel interface. Old
+code can be supported with little impact by pushing it to a "legacy"
+function and supporting autoplacement primarily by way of the new
+ioctl(MEMWRITE).
+(3) was kind of the end goal for introducing ioctl(MEMWRITE). We needed
+a user interface that could write data+OOB in a single operation.
 
-LOGFS_DEBUG=0xDFF is equivalent to LOGFS_DEBUG=LOGFS_DEBUG_ALL - the
-unset bits aren't used anyway.  Which leaves me utterly confused.
-Were you unable to reproduce, but you sent me the log anyway?
+Brian
 
-Jörn
+Brian Norris (10):
+  nandwrite: trivial variable move
+  mtd-utils: update mtd-abi.h
+  nandwrite: consolidate buffer usage
+  libmtd: modify `mtd_write' to cover OOB writes
+  libmtd: support MEMWRITE ioctl
+  nandwrite: merge `mtd_write_oob' and `mtd_write' calls
+  mtdutils: move OOB auto-layout into libmtd's mtd_write
+  nandwrite: kill `--raw' option
+  nandwrite: re-implement `--autoplace' option
+  nandwrite: use common.h "errmsg" functions
+
+ include/libmtd.h      |   15 ++++--
+ include/mtd/mtd-abi.h |  122 ++++++++++++++++++++++++++++++++++++------
+ lib/libmtd.c          |   86 ++++++++++++++++++++++++++----
+ nanddump.c            |    2 +-
+ nandwrite.c           |  143 +++++++++++++++++--------------------------------
+ ubi-utils/ubiformat.c |    6 ++-
+ 6 files changed, 245 insertions(+), 129 deletions(-)
 
 -- 
-The grand essentials of happiness are: something to do, something to
-love, and something to hope for.
--- Allan K. Chalmers
+1.7.5.4
