@@ -1,21 +1,28 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QyZwb-00059D-TC
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 01:50:23 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 12/12] mtd: nand: free allocated memory
-Date: Tue, 30 Aug 2011 18:45:47 -0700
-Message-ID: <1314755147-17756-13-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
-References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
+Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QydoX-0007u7-JU
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 05:58:18 +0000
+Date: Wed, 31 Aug 2011 07:58:54 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Subject: Re: logfs unmount bug
+Message-ID: <20110831055854.GA12713@logfs.org>
+References: <20110808083107.GN26160@logfs.org>
+	<CAMjNe_c3J6UNi5LGmraD+CcbP9yGOOzepy=JFVy3wYx15hs55w@mail.gmail.com>
+	<20110809145812.GR26160@logfs.org>
+	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
+	<20110812093429.GS26160@logfs.org>
+	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
+	<20110816171707.GU26160@logfs.org>
+	<CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
+	<20110826194910.GE22411@logfs.org>
+	<CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
-	linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a problem from:
+On Mon, 29 August 2011 15:37:09 +0530, srimugunthan dhandapani wrote:
+> 
+> > Are you sure you have my patch applied?
+> >
+> 
+> To clarify on the bugs I reported
+> 1. bonnie test( bonnie  -s 20 -r 10) does not complete . It gets stuck
+> at "Creating  files in sequential order ..."
+> (tested with nandsim, kernel 3.0.1. and 2.6.38.8; consistently
+> reproducible on 2 machines.)
+> The free command show that, while the bonnie test was run for half an
+> hour, free space changed from 2982340 KB to 2550156 KB.
 
-  commit f2f4772692cf3f31eb73d46337c7f10bd031bc26
-  mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
+The only trouble is that no amount of bonnie output helps me to nail
+this one down.  What I need is the kernel output - more specificly the
+output of the debug patch I sent you.  Lacking that, there is nothing
+I can do.  Can you ensure you have my patch applied, rerun the rest
+case and send me the kernel results?
 
-In reverting pieces of another commit, I accidentally removed a line
-that shold have stayed. We should free up the memory we allocated upon
-releasing our device.
+Alternatively we can spend our time figuring out the differences
+between your and my setup.  You could run a different kernel with
+different patches applied, have a different .config or a different
+machine - probably all three.  But my gut feeling is that it shouldn't
+be too hard to fix the bug, provided you are able to run test patches
+and return the results to me.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-This should probably just be squashed in with the buggy commit (it
-hasn't been brought upstream yet...)
+Jörn
 
- drivers/mtd/nand/nand_base.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index de2d1c4..c9767b5 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3533,6 +3533,11 @@ void nand_release(struct mtd_info *mtd)
- 	kfree(chip->bbt);
- 	if (!(chip->options & NAND_OWN_BUFFERS))
- 		kfree(chip->buffers);
-+
-+	/* Free bad block descriptor memory */
-+	if (chip->badblock_pattern && chip->badblock_pattern->options
-+			& NAND_BBT_DYNAMICSTRUCT)
-+		kfree(chip->badblock_pattern);
- }
- EXPORT_SYMBOL_GPL(nand_release);
- 
 -- 
-1.7.5.4
+Sometimes, asking the right question is already the answer.
+-- Unknown
