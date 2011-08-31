@@ -1,12 +1,12 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qyr2R-0006mD-Hm
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:05:32 +0000
+	id 1Qyr2i-0006pV-D7
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:05:49 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 09/10] nandwrite: re-implement `--autoplace' option
-Date: Wed, 31 Aug 2011 13:00:38 -0700
-Message-ID: <1314820839-7107-10-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 10/10] nandwrite: use common.h "errmsg" functions
+Date: Wed, 31 Aug 2011 13:00:39 -0700
+Message-ID: <1314820839-7107-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 References: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,103 +23,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The restructuring of mtd_write() has allowed us to use `--autoplace'
-somewhat successfully; it is supported by the new ioctl(MEMWRITE) as
-well as some legacy code utilizing the deprecated ioctl(MEMGETOOBSEL).
+Convert several forms of exit(), perror(), etc. to use common.h helper
+functions.
+
+Also, move one of our parameter checks inside the process_options()
+function for consistency.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nandwrite.c |   22 ++++++++++++++++++++--
- 1 files changed, 20 insertions(+), 2 deletions(-)
+ nandwrite.c |   44 ++++++++++++++++----------------------------
+ 1 files changed, 16 insertions(+), 28 deletions(-)
 
 diff --git a/nandwrite.c b/nandwrite.c
-index 45782c7..ca72f16 100644
+index ca72f16..a42f7c9 100644
 --- a/nandwrite.c
 +++ b/nandwrite.c
-@@ -49,6 +49,7 @@ static void display_help(void)
- "Usage: nandwrite [OPTION] MTD_DEVICE [INPUTFILE|-]\n"
- "Writes to the specified MTD device.\n"
- "\n"
-+"  -a, --autoplace         Use auto OOB layout\n"
- "  -m, --markbad           Mark blocks bad if write fails\n"
- "  -n, --noecc             Write without ecc\n"
- "  -N, --noskipbad         Write without bad block skipping\n"
-@@ -88,6 +89,7 @@ static bool		writeoob = false;
- static bool		onlyoob = false;
- static bool		markbad = false;
- static bool		noecc = false;
-+static bool		autoplace = false;
- static bool		noskipbad = false;
- static bool		pad = false;
- static int		blockalign = 1; /* default to using actual block size */
-@@ -98,7 +100,7 @@ static void process_options(int argc, char * const argv[])
+@@ -182,6 +182,9 @@ static void process_options(int argc, char * const argv[])
+ 	if (autoplace && noecc)
+ 		errmsg_die("Autoplacement and no-ECC are mutually exclusive");
  
- 	for (;;) {
- 		int option_index = 0;
--		static const char *short_options = "b:mnNoOpqs:";
-+		static const char *short_options = "b:mnNoOpqs:a";
- 		static const struct option long_options[] = {
- 			{"help", no_argument, 0, 0},
- 			{"version", no_argument, 0, 0},
-@@ -111,6 +113,7 @@ static void process_options(int argc, char * const argv[])
- 			{"pad", no_argument, 0, 'p'},
- 			{"quiet", no_argument, 0, 'q'},
- 			{"start", required_argument, 0, 's'},
-+			{"autoplace", no_argument, 0, 'a'},
- 			{0, 0, 0, 0},
- 		};
- 
-@@ -159,6 +162,9 @@ static void process_options(int argc, char * const argv[])
- 			case 'b':
- 				blockalign = atoi(optarg);
- 				break;
-+			case 'a':
-+				autoplace = true;
-+				break;
- 			case '?':
- 				error++;
- 				break;
-@@ -173,6 +179,9 @@ static void process_options(int argc, char * const argv[])
- 		errmsg_die("Can't specify negative blockalign with option -b:"
- 				" %d", blockalign);
- 
-+	if (autoplace && noecc)
-+		errmsg_die("Autoplacement and no-ECC are mutually exclusive");
++	if (!onlyoob && (pad && writeoob))
++		errmsg_die("Can't pad when oob data is present");
 +
  	argc -= optind;
  	argv += optind;
  
-@@ -229,6 +238,7 @@ int main(int argc, char * const argv[])
- 	unsigned char *oobbuf = NULL;
- 	libmtd_t mtd_desc;
- 	int ebsize_aligned;
-+	uint8_t write_mode;
+@@ -242,23 +245,16 @@ int main(int argc, char * const argv[])
  
  	process_options(argc, argv);
  
-@@ -265,6 +275,14 @@ int main(int argc, char * const argv[])
- 		exit(EXIT_FAILURE);
+-	if (!onlyoob && (pad && writeoob)) {
+-		fprintf(stderr, "Can't pad when oob data is present.\n");
+-		exit(EXIT_FAILURE);
+-	}
+-
+ 	/* Open the device */
+-	if ((fd = open(mtd_device, O_RDWR)) == -1) {
+-		perror(mtd_device);
+-		exit(EXIT_FAILURE);
+-	}
++	if ((fd = open(mtd_device, O_RDWR)) == -1)
++		sys_errmsg_die("%s", mtd_device);
+ 
+ 	mtd_desc = libmtd_open();
+ 	if (!mtd_desc)
+-		return errmsg("can't initialize libmtd");
++		errmsg_die("can't initialize libmtd");
+ 	/* Fill in MTD device capability structure */
+ 	if (mtd_get_dev_info(mtd_desc, mtd_device, &mtd) < 0)
+-		return errmsg("mtd_get_dev_info failed");
++		errmsg_die("mtd_get_dev_info failed");
+ 
+ 	/*
+ 	 * Pretend erasesize is specified number of blocks - to match jffs2
+@@ -267,13 +263,10 @@ int main(int argc, char * const argv[])
+ 	 */
+ 	ebsize_aligned = mtd.eb_size * blockalign;
+ 
+-	if (mtdoffset & (mtd.min_io_size - 1)) {
+-		fprintf(stderr, "The start address is not page-aligned !\n"
+-				"The pagesize of this NAND Flash is 0x%x.\n",
+-				mtd.min_io_size);
+-		close(fd);
+-		exit(EXIT_FAILURE);
+-	}
++	if (mtdoffset & (mtd.min_io_size - 1))
++		errmsg_die("The start address is not page-aligned !\n"
++			   "The pagesize of this NAND Flash is 0x%x.\n",
++			   mtd.min_io_size);
+ 
+ 	/* Select OOB write mode */
+ 	if (noecc)
+@@ -290,9 +283,7 @@ int main(int argc, char * const argv[])
+ 			case ENOTTY:
+ 				errmsg_die("ioctl MTDFILEMODE is missing");
+ 			default:
+-				perror("MTDFILEMODE");
+-				close(fd);
+-				exit(EXIT_FAILURE);
++				sys_errmsg_die("MTDFILEMODE");
+ 			}
+ 		}
+ 	}
+@@ -341,7 +332,7 @@ int main(int argc, char * const argv[])
+ 		fprintf(stderr, "Image %d bytes, NAND page %d bytes, OOB area %d"
+ 				" bytes, device size %lld bytes\n",
+ 				imglen, pagelen, mtd.oob_size, mtd.size);
+-		perror("Input file does not fit into device");
++		sys_errmsg("Input file does not fit into device");
+ 		goto closeall;
  	}
  
-+	/* Select OOB write mode */
-+	if (noecc)
-+		write_mode = MTD_OPS_RAW;
-+	else if (autoplace)
-+		write_mode = MTD_OPS_AUTO_OOB;
-+	else
-+		write_mode = MTD_OPS_PLACE_OOB;
-+
- 	if (noecc)  {
- 		ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
- 		if (ret) {
-@@ -492,7 +510,7 @@ int main(int argc, char * const argv[])
- 				onlyoob ? 0 : mtd.min_io_size,
- 				writeoob ? oobbuf : NULL,
- 				writeoob ? mtd.oob_size : 0,
--				noecc ? MTD_OPS_RAW : MTD_OPS_PLACE_OOB);
-+				write_mode);
- 		if (ret) {
- 			int i;
- 			if (errno != EIO) {
+@@ -557,12 +548,9 @@ closeall:
+ 	free(filebuf);
+ 	close(fd);
+ 
+-	if (failed
+-		|| ((ifd != STDIN_FILENO) && (imglen > 0))
+-		|| (writebuf < (filebuf + filebuf_len))) {
+-		perror("Data was only partially written due to error\n");
+-		exit(EXIT_FAILURE);
+-	}
++	if (failed || ((ifd != STDIN_FILENO) && (imglen > 0))
++		   || (writebuf < (filebuf + filebuf_len)))
++		sys_errmsg_die("Data was only partially written due to error");
+ 
+ 	/* Return happy */
+ 	return EXIT_SUCCESS;
 -- 
 1.7.5.4
