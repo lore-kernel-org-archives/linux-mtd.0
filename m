@@ -1,12 +1,12 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+Received: from mail-yi0-f49.google.com ([209.85.218.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QyfX2-0000s9-MK
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 07:48:21 +0000
-Date: Wed, 31 Aug 2011 09:49:02 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Subject: Re: logfs unmount bug
-Message-ID: <20110831074902.GA26382@logfs.org>
+	id 1QykEX-0004I9-AG
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 12:49:34 +0000
+Received: by yic13 with SMTP id 13so566621yic.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 31 Aug 2011 05:49:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20110831074902.GA26382@logfs.org>
 References: <20110809145812.GR26160@logfs.org>
 	<CAMjNe_f_364ir1iNgFFgh71GP-T_6vroMHFC1R7eazkhcR8c2g@mail.gmail.com>
 	<20110812093429.GS26160@logfs.org>
@@ -17,11 +17,14 @@ References: <20110809145812.GR26160@logfs.org>
 	<CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
 	<20110831055854.GA12713@logfs.org>
 	<CAMjNe_d2pOC9+2nSy2PA=2aigF95vZv3_A-jPyWyTXteW3mqFw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjNe_d2pOC9+2nSy2PA=2aigF95vZv3_A-jPyWyTXteW3mqFw@mail.gmail.com>
+	<20110831074902.GA26382@logfs.org>
+Date: Wed, 31 Aug 2011 18:19:30 +0530
+Message-ID: <CAMjNe_csYHWCRFXt6sW1FpMaS_RFGLM6z1ML6_-3xb-5x7DZtg@mail.gmail.com>
+Subject: Re: logfs unmount bug
+From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,53 +35,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 August 2011 12:52:54 +0530, srimugunthan dhandapani wrote:
-> On Wed, Aug 31, 2011 at 11:28 AM, Jörn Engel <joern@logfs.org> wrote:
-> 
-> > I can do.  Can you ensure you have my patch applied, rerun the rest
-> > case and send me the kernel results?
-> 
-> I applied your patch1  and the bonnie output is the same(stuck at
-> "Creating  files in sequential order ..."). The kernel is from your
-> git directory(http://git.kernel.org/?p=linux/kernel/git/joern/logfs.git;a=summary)
-> I am pretty sure i applied the patch. The git diff output is below[1]
-> 
->  The kernel log is at
->  https://docs.google.com/leaf?id=0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwLWFlMmItNjlmZWIzMWFlNGUy&hl=en_US
+On Wed, Aug 31, 2011 at 1:19 PM, J=F6rn Engel <joern@logfs.org> wrote:
 
-600M.  And starting at line 34285 or about 0% in, the output mutates
-to something like the below.  Not very useful. :(
 
-Aug 31 12:28:06 mll kernel: [  991.561293] logfs_write_obj_alia 8,, 83,(3f(320(#2 #s #es sesaseiaslialilialilialialialialialialialialialialialialialilialialialilialialialililialialialilialialialilililialialialialialilialialiallialilialialialiaali_alj_abjo_ws_fsgfogflo lo] l4] 7581586156.561.591.9 9  [  >[7>[<7
-Aug 31 12:28:06 mll kernel: <7
-Aug 31 12:28:07 mll kernel: last message repeated 4 times
-Aug 31 12:28:06 mll kernel: <
-Aug 31 12:28:06 mll kernel: <7
-Aug 31 12:28:06 mll kernel: <7
-Aug 31 12:28:06 mll kernel: <
-Aug 31 12:28:06 mll kernel: <
-Aug 31 12:28:06 mll kernel: <7
-Aug 31 12:28:06 mll kernel: <7
-Aug 31 12:28:06 mll kernel: <
+> Can you set LOGFS_DEBUG to 0, both to cut down the noise and in the
+> hope that the log output doesn't get corrupted like this again?
 
-Can you set LOGFS_DEBUG to 0, both to cut down the noise and in the
-hope that the log output doesn't get corrupted like this again?
+It doesn't crash, so nothing much is printed in kern.log if LOGFS_DEBUG=3D0=
+.
+I produced the log with LOGFS_DEBUG=3D0xDFF, (without LOGFS_DEBUG_ALIASES)
+Its a 60MB log file "kern_LOGFS_DEBUG=3D0xDFF.log" shared in the following =
+link:
 
-> While i still have your attention, i would like to point out at max
-> writepage size restriction in logfs. Currently logfs has a max
-> writepage size as 4K. Currently, large page nand flashes and MLC nand
-> come in  8K page sizes. As the usecase for logfs is large nand
-> flashes(mostly with parallel and DMA write capabilities),  it may be
-> essential to remove the 4K write page size restriction.
-> I was only able to change the logfs-tools for >4K writepage size. If
-> you send a patch, that makes logfs useable for writepagesize >4K, i
-> can try on real hardware, instead of nandsim and give you the results
-> :-)
+https://docs.google.com/leaf?id=3D0BycgLWCW61phNjY0ZDg4ZjUtYzAyMy00YTgwLWFl=
+MmItNjlmZWIzMWFlNGUy&hl=3Den_US
 
-That sure sounds useful.  I'll have a look...
-
-Jörn
-
--- 
-"Security vulnerabilities are here to stay."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+Thanks,
+mugunthan
