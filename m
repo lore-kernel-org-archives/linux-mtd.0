@@ -1,18 +1,22 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QyZuK-00057M-96
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 01:48:01 +0000
+	id 1QyZuu-00059D-Gq
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 01:48:37 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 00/12] mtd: various "no ECC" and MLC NAND work
-Date: Tue, 30 Aug 2011 18:45:35 -0700
-Message-ID: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 01/12] mtd: nand: initialize chip->oob_poi before write
+Date: Tue, 30 Aug 2011 18:45:36 -0700
+Message-ID: <1314755147-17756-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
+References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
 	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
-	linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+	linux-mtd@lists.infradead.org,
+	Adam Thomson <adam.thomson@alcatel-lucent.com>,
+	Brian Norris <computersforpeace@gmail.com>,
 	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,77 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+For raw (i.e., w/o ECC) page writes (i.e., w/o OOB), we may not have
+initialized and filled the chip->oob_poi buffer. This can end up writing
+junk to the flash if we're not careful. Say, for example, we use
+`nandwrite -n' (without OOB). Then nand_do_write_ops calls
+chip->write_page, which writes OOB data with some previous, junk data.
 
-This patch series includes edited versions of several patches and RFCs -
-some changed some not - as well as new material and documentation. To
-avoid confusion, I will not include any version numbers yet (i.e.,
-everything is "v1"), and any updates from here on out can be v2, v3,
-etc. if necessary. I will try to include any important changes in the
-comments though.
+This fixes a bug with this commit (from l2-mtd-2.6.git):
 
-The key additions in this patch series are:
+  commit a8ee364bbf14861d5d0af39c4da06c30441895fb
+  mtd: nand_base: always initialise oob_poi before writing OOB data
 
-(1) add replaceable `{read,write}_oob_raw()' functions to
-    `struct nand_chip'
-(2) add a new ioctl(MEMWRITE)
-(3) improve documentation
+That commit removed the memset from under a conditional for:
 
-Patches for category (1) help improve support for reading/writing flash
-without ECC on systems that calculate ECC on OOB operations. Category
-(2) allows us to write data+OOB in a single operation; this solves
-problems with MLC NAND, which can only be written once per page. And
-category (3) was sorely needed for old and new functionality alike :)
+  if (likely(!oob))
 
-Generally, these fixes have been tested by using various combinations of
-nandwrite on nandsim, SLC NAND flash, and MLC NAND flash. In order to
-utilize the new ioctl, I had to make some custom edits. I should have a
-few patches soon to support this new stuff.
+and moved it (indirectly) to the `nand_fill_oob()' function, which was
+under:
 
-Note: the first and last patches are bugfixes to patches that are still
-queued in l2-mtd-2.6.git. They probably should be squashed into the
-relevant patches.
+  if (unlikely(oob))
 
-Brian
+Though the "likely" and "unlikely" can be confusing, these are not the
+same conditions :)
 
-Brian Norris (12):
-  mtd: nand: initialize chip->oob_poi before write
-  mtd: support writing OOB without ECC
-  mtd: support reading OOB without ECC
-  mtd: move mtd_oob_mode_t to shared kernel/user space
-  mtd: rename MTD_OOB_* to MTD_OPS_*
-  mtd: rename MTD_MODE_* to MTD_FILE_MODE_*
-  mtd: add MEMWRITE ioctl
-  mtd: nand: document nand_chip.oob_poi
-  mtd: document ABI
-  mtd: nand: kill member `ops' of `struct nand_chip'
-  mtd: kill old field for `struct mtd_info_user'
-  mtd: nand: free allocated memory
+And if the buggy commit is going stable, this should go stable (or just
+amend it) as well.
 
- drivers/mtd/devices/doc2000.c          |    4 +-
- drivers/mtd/devices/doc2001.c          |    4 +-
- drivers/mtd/devices/doc2001plus.c      |    4 +-
- drivers/mtd/inftlcore.c                |    6 +-
- drivers/mtd/mtdchar.c                  |  115 ++++++++++++++++++++++++--------
- drivers/mtd/mtdpart.c                  |    2 +-
- drivers/mtd/mtdswap.c                  |    6 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- drivers/mtd/nand/nand_base.c           |  107 ++++++++++++++++++-----------
- drivers/mtd/nand/nand_bbt.c            |    8 +-
- drivers/mtd/nand/sm_common.c           |    2 +-
- drivers/mtd/nftlcore.c                 |    6 +-
- drivers/mtd/onenand/onenand_base.c     |   42 ++++++------
- drivers/mtd/onenand/onenand_bbt.c      |    2 +-
- drivers/mtd/sm_ftl.c                   |    4 +-
- drivers/mtd/ssfdc.c                    |    2 +-
- drivers/mtd/tests/mtd_oobtest.c        |   24 +++---
- drivers/mtd/tests/mtd_readtest.c       |    2 +-
- drivers/staging/spectra/lld_mtd.c      |    6 +-
- fs/jffs2/wbuf.c                        |    6 +-
- include/linux/mtd/mtd.h                |   18 +-----
- include/linux/mtd/nand.h               |   12 ++-
- include/mtd/mtd-abi.h                  |  115 +++++++++++++++++++++++++++-----
- 23 files changed, 329 insertions(+), 170 deletions(-)
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Adam Thomson <adam.thomson@alcatel-lucent.com>
+---
+If the buggy commit is going into -stable, this should go -stable as
+well (or just amend the original).
 
+ drivers/mtd/nand/nand_base.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d2ee68a..273e6a5 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2227,6 +2227,9 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 			size_t len = min(oobwritelen, oobmaxlen);
+ 			oob = nand_fill_oob(mtd, oob, len, ops);
+ 			oobwritelen -= len;
++		} else {
++			/* We still need to erase leftover OOB data */
++			memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 		}
+ 
+ 		ret = chip->write_page(mtd, chip, wbuf, page, cached,
 -- 
 1.7.5.4
