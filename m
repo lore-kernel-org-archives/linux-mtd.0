@@ -1,12 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qyqze-0006aS-0j
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:02:39 +0000
+	id 1Qyr07-0006ga-J6
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:03:08 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 05/10] libmtd: support MEMWRITE ioctl
-Date: Wed, 31 Aug 2011 13:00:34 -0700
-Message-ID: <1314820839-7107-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 06/10] nandwrite: merge `mtd_write_oob' and `mtd_write' calls
+Date: Wed, 31 Aug 2011 13:00:35 -0700
+Message-ID: <1314820839-7107-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 References: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,73 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-`mtd_write()' now will first attempt to use MEMWRITE. Then, if that
-doesn't exist, it will attempt to fall back to old methods for writing
-OOB and/or page data.
+Now that `mtd_write' can write to both OOB and data regions, we need to
+perform our `mtd_write' call only once.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- lib/libmtd.c |   39 +++++++++++++++++++++++++++++++--------
- 1 files changed, 31 insertions(+), 8 deletions(-)
+ nandwrite.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 746ea69..d47b307 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -1077,6 +1077,7 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
- {
- 	int ret;
- 	off_t seek;
-+	struct mtd_write_req ops;
+diff --git a/nandwrite.c b/nandwrite.c
+index 33a3b8f..a78b0b6 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -534,17 +534,17 @@ int main(int argc, char * const argv[])
+ 			} else {
+ 				memcpy(oobbuf, oobreadbuf, mtd.oob_size);
+ 			}
+-			/* Write OOB data first, as ecc will be placed in there */
+-			if (mtd_write_oob(mtd_desc, &mtd, fd, mtdoffset,
+-						mtd.oob_size, oobbuf)) {
+-				sys_errmsg("%s: MTD writeoob failure", mtd_device);
+-				goto closeall;
+-			}
+ 		}
  
- 	ret = mtd_valid_erase_block(mtd, eb);
- 	if (ret)
-@@ -1101,16 +1102,38 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
- 		return -1;
- 	}
- 
--	/* Seek to the beginning of the eraseblock */
-+	/* Calculate seek address */
- 	seek = (off_t)eb * mtd->eb_size + offs;
--	if (lseek(fd, seek, SEEK_SET) != seek)
--		return sys_errmsg("cannot seek mtd%d to offset %llu",
--				  mtd->mtd_num, (unsigned long long)seek);
- 
--	ret = write(fd, data, len);
--	if (ret != len)
--		return sys_errmsg("cannot write %d bytes to mtd%d (eraseblock %d, offset %d)",
--				  len, mtd->mtd_num, eb, offs);
-+	ops.start = seek;
-+	ops.len = len;
-+	ops.ooblen = ooblen;
-+	ops.usr_data = (uint64_t)(unsigned long)data;
-+	ops.usr_oob = (uint64_t)(unsigned long)oob;
-+	ops.mode = mode;
-+
-+	ret = ioctl(fd, MEMWRITE, &ops);
-+	if (ret == 0)
-+		return 0;
-+	else if (errno != ENOTTY)
-+		return mtd_ioctl_error(mtd, eb, "MEMWRITE");
-+
-+	/* Fall back to old methods if necessary */
-+	if (oob) {
-+		if (mtd_write_oob(desc, mtd, fd, seek, ooblen, oob) < 0)
-+			return sys_errmsg("cannot write to OOB");
-+	}
-+	if (data) {
-+		/* Seek to the beginning of the eraseblock */
-+		if (lseek(fd, seek, SEEK_SET) != seek)
-+			return sys_errmsg("cannot seek mtd%d to offset %llu",
-+					mtd->mtd_num, (unsigned long long)seek);
-+		ret = write(fd, data, len);
-+		if (ret != len)
-+			return sys_errmsg("cannot write %d bytes to mtd%d "
-+					  "(eraseblock %d, offset %d)",
-+					  len, mtd->mtd_num, eb, offs);
-+	}
- 
- 	return 0;
- }
+-		/* Write out the Page data */
+-		if (!onlyoob && mtd_write(mtd_desc, &mtd, fd, mtdoffset / mtd.eb_size, mtdoffset % mtd.eb_size,
+-					writebuf, mtd.min_io_size, NULL, 0, 0)) {
++		/* Write out data */
++		ret = mtd_write(mtd_desc, &mtd, fd, mtdoffset / mtd.eb_size,
++				mtdoffset % mtd.eb_size,
++				onlyoob ? NULL : writebuf,
++				onlyoob ? 0 : mtd.min_io_size,
++				writeoob ? oobbuf : NULL,
++				writeoob ? mtd.oob_size : 0,
++				noecc ? MTD_OPS_RAW : MTD_OPS_PLACE_OOB);
++		if (ret) {
+ 			int i;
+ 			if (errno != EIO) {
+ 				sys_errmsg("%s: MTD write failure", mtd_device);
 -- 
 1.7.5.4
