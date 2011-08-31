@@ -1,12 +1,12 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qyr2D-0006mD-1C
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:05:17 +0000
+	id 1Qyr2R-0006mD-Hm
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:05:32 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 08/10] nandwrite: kill `--raw' option
-Date: Wed, 31 Aug 2011 13:00:37 -0700
-Message-ID: <1314820839-7107-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 09/10] nandwrite: re-implement `--autoplace' option
+Date: Wed, 31 Aug 2011 13:00:38 -0700
+Message-ID: <1314820839-7107-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 References: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,67 +23,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The `--raw' option has lost all usefulness as it overlapped with several
-other OOB modes. I cannot even figure out what it was actually intended
-to do, but I'm sure its functionality fits somewhere in the
-MTD_OPS_{AUTO_OOB,PLACE_OOB,RAW} options, which are mostly implemented
-in libmtd's mtd_write().
-
-I don't think users need a warning for this one, unless someone can tell
-me what it actually was supposed to have done in the first place.
+The restructuring of mtd_write() has allowed us to use `--autoplace'
+somewhat successfully; it is supported by the new ioctl(MEMWRITE) as
+well as some legacy code utilizing the deprecated ioctl(MEMGETOOBSEL).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nandwrite.c |    9 +--------
- 1 files changed, 1 insertions(+), 8 deletions(-)
+ nandwrite.c |   22 ++++++++++++++++++++--
+ 1 files changed, 20 insertions(+), 2 deletions(-)
 
 diff --git a/nandwrite.c b/nandwrite.c
-index 920863f..45782c7 100644
+index 45782c7..ca72f16 100644
 --- a/nandwrite.c
 +++ b/nandwrite.c
-@@ -54,7 +54,6 @@ static void display_help(void)
+@@ -49,6 +49,7 @@ static void display_help(void)
+ "Usage: nandwrite [OPTION] MTD_DEVICE [INPUTFILE|-]\n"
+ "Writes to the specified MTD device.\n"
+ "\n"
++"  -a, --autoplace         Use auto OOB layout\n"
+ "  -m, --markbad           Mark blocks bad if write fails\n"
+ "  -n, --noecc             Write without ecc\n"
  "  -N, --noskipbad         Write without bad block skipping\n"
- "  -o, --oob               Image contains oob data\n"
- "  -O, --onlyoob           Image contains oob data and only write the oob part\n"
--"  -r, --raw               Image contains the raw oob data dumped by nanddump\n"
- "  -s addr, --start=addr   Set start address (default is 0)\n"
- "  -p, --pad               Pad to page size\n"
- "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
-@@ -86,7 +85,6 @@ static const char	*mtd_device, *img;
- static long long	mtdoffset = 0;
- static bool		quiet = false;
- static bool		writeoob = false;
--static bool		rawoob = false;
+@@ -88,6 +89,7 @@ static bool		writeoob = false;
  static bool		onlyoob = false;
  static bool		markbad = false;
  static bool		noecc = false;
-@@ -100,7 +98,7 @@ static void process_options(int argc, char * const argv[])
++static bool		autoplace = false;
+ static bool		noskipbad = false;
+ static bool		pad = false;
+ static int		blockalign = 1; /* default to using actual block size */
+@@ -98,7 +100,7 @@ static void process_options(int argc, char * const argv[])
  
  	for (;;) {
  		int option_index = 0;
--		static const char *short_options = "b:mnNoOpqrs:";
-+		static const char *short_options = "b:mnNoOpqs:";
+-		static const char *short_options = "b:mnNoOpqs:";
++		static const char *short_options = "b:mnNoOpqs:a";
  		static const struct option long_options[] = {
  			{"help", no_argument, 0, 0},
  			{"version", no_argument, 0, 0},
-@@ -112,7 +110,6 @@ static void process_options(int argc, char * const argv[])
- 			{"onlyoob", no_argument, 0, 'O'},
+@@ -111,6 +113,7 @@ static void process_options(int argc, char * const argv[])
  			{"pad", no_argument, 0, 'p'},
  			{"quiet", no_argument, 0, 'q'},
--			{"raw", no_argument, 0, 'r'},
  			{"start", required_argument, 0, 's'},
++			{"autoplace", no_argument, 0, 'a'},
  			{0, 0, 0, 0},
  		};
-@@ -156,10 +153,6 @@ static void process_options(int argc, char * const argv[])
- 			case 'p':
- 				pad = true;
+ 
+@@ -159,6 +162,9 @@ static void process_options(int argc, char * const argv[])
+ 			case 'b':
+ 				blockalign = atoi(optarg);
  				break;
--			case 'r':
--				rawoob = true;
--				writeoob = true;
--				break;
- 			case 's':
- 				mtdoffset = simple_strtoll(optarg, &error);
++			case 'a':
++				autoplace = true;
++				break;
+ 			case '?':
+ 				error++;
  				break;
+@@ -173,6 +179,9 @@ static void process_options(int argc, char * const argv[])
+ 		errmsg_die("Can't specify negative blockalign with option -b:"
+ 				" %d", blockalign);
+ 
++	if (autoplace && noecc)
++		errmsg_die("Autoplacement and no-ECC are mutually exclusive");
++
+ 	argc -= optind;
+ 	argv += optind;
+ 
+@@ -229,6 +238,7 @@ int main(int argc, char * const argv[])
+ 	unsigned char *oobbuf = NULL;
+ 	libmtd_t mtd_desc;
+ 	int ebsize_aligned;
++	uint8_t write_mode;
+ 
+ 	process_options(argc, argv);
+ 
+@@ -265,6 +275,14 @@ int main(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	/* Select OOB write mode */
++	if (noecc)
++		write_mode = MTD_OPS_RAW;
++	else if (autoplace)
++		write_mode = MTD_OPS_AUTO_OOB;
++	else
++		write_mode = MTD_OPS_PLACE_OOB;
++
+ 	if (noecc)  {
+ 		ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
+ 		if (ret) {
+@@ -492,7 +510,7 @@ int main(int argc, char * const argv[])
+ 				onlyoob ? 0 : mtd.min_io_size,
+ 				writeoob ? oobbuf : NULL,
+ 				writeoob ? mtd.oob_size : 0,
+-				noecc ? MTD_OPS_RAW : MTD_OPS_PLACE_OOB);
++				write_mode);
+ 		if (ret) {
+ 			int i;
+ 			if (errno != EIO) {
 -- 
 1.7.5.4
