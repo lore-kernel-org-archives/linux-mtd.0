@@ -1,12 +1,12 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qyqzb-0006Xz-DU
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:02:36 +0000
+	id 1Qyqze-0006aS-0j
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 20:02:39 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 04/10] libmtd: modify `mtd_write' to cover OOB writes
-Date: Wed, 31 Aug 2011 13:00:33 -0700
-Message-ID: <1314820839-7107-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 05/10] libmtd: support MEMWRITE ioctl
+Date: Wed, 31 Aug 2011 13:00:34 -0700
+Message-ID: <1314820839-7107-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 References: <1314820839-7107-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -23,127 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To support the MEMWRITE ioctl, we will need a different sort of libmtd
-interface for writing to flash. We will expand mtd_write to include more
-functionality; for now, we just change the function definition and
-description as we begin to add the actual functionality.
+`mtd_write()' now will first attempt to use MEMWRITE. Then, if that
+doesn't exist, it will attempt to fall back to old methods for writing
+OOB and/or page data.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/libmtd.h      |   15 +++++++++++----
- lib/libmtd.c          |   10 ++++++----
- nandwrite.c           |    4 ++--
- ubi-utils/ubiformat.c |    6 ++++--
- 4 files changed, 23 insertions(+), 12 deletions(-)
+ lib/libmtd.c |   39 +++++++++++++++++++++++++++++++--------
+ 1 files changed, 31 insertions(+), 8 deletions(-)
 
-diff --git a/include/libmtd.h b/include/libmtd.h
-index 9efccbc..07c304a 100644
---- a/include/libmtd.h
-+++ b/include/libmtd.h
-@@ -255,19 +255,26 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 
- /**
-  * mtd_write - write data to an MTD device.
-+ * @desc: MTD library descriptor
-  * @mtd: MTD device description object
-  * @fd: MTD device node file descriptor
-  * @eb: eraseblock to write to
-  * @offs: offset withing the eraseblock to write to
-- * @buf: buffer to write
-- * @len: how many bytes to write
-+ * @data: data buffer to write
-+ * @len: how many data bytes to write
-+ * @oob: OOB buffer to write
-+ * @ooblen: how many OOB bytes to write
-+ * @mode: write mode (e.g., %MTD_OOB_PLACE, %MTD_OOB_RAW)
-  *
-  * This function writes @len bytes of data to eraseblock @eb and offset @offs
-  * of the MTD device defined by @mtd. Returns %0 in case of success and %-1 in
-  * case of failure.
-+ *
-+ * Can only write to a single page at a time if writing to OOB.
-  */
--int mtd_write(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
--	      void *buf, int len);
-+int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
-+	      int offs, void *data, int len, void *oob, int ooblen,
-+	      uint8_t mode);
- 
- /**
-  * mtd_read_oob - read out-of-band area.
 diff --git a/lib/libmtd.c b/lib/libmtd.c
-index c34874e..746ea69 100644
+index 746ea69..d47b307 100644
 --- a/lib/libmtd.c
 +++ b/lib/libmtd.c
-@@ -970,7 +970,8 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 
- 		/* Write a pattern and check it */
- 		memset(buf, patterns[i], mtd->eb_size);
--		err = mtd_write(mtd, fd, eb, 0, buf, mtd->eb_size);
-+		err = mtd_write(desc, mtd, fd, eb, 0, buf, mtd->eb_size, NULL,
-+				0, 0);
- 		if (err)
- 			goto out;
- 
-@@ -1070,8 +1071,9 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 	return 0;
- }
- 
--int mtd_write(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
--	      void *buf, int len)
-+int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
-+	      int offs, void *data, int len, void *oob, int ooblen,
-+	      uint8_t mode)
+@@ -1077,6 +1077,7 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
  {
  	int ret;
  	off_t seek;
-@@ -1105,7 +1107,7 @@ int mtd_write(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 		return sys_errmsg("cannot seek mtd%d to offset %llu",
- 				  mtd->mtd_num, (unsigned long long)seek);
++	struct mtd_write_req ops;
  
--	ret = write(fd, buf, len);
-+	ret = write(fd, data, len);
- 	if (ret != len)
- 		return sys_errmsg("cannot write %d bytes to mtd%d (eraseblock %d, offset %d)",
- 				  len, mtd->mtd_num, eb, offs);
-diff --git a/nandwrite.c b/nandwrite.c
-index 3eea6e2..33a3b8f 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -543,8 +543,8 @@ int main(int argc, char * const argv[])
- 		}
+ 	ret = mtd_valid_erase_block(mtd, eb);
+ 	if (ret)
+@@ -1101,16 +1102,38 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
+ 		return -1;
+ 	}
  
- 		/* Write out the Page data */
--		if (!onlyoob && mtd_write(&mtd, fd, mtdoffset / mtd.eb_size, mtdoffset % mtd.eb_size,
--					writebuf, mtd.min_io_size)) {
-+		if (!onlyoob && mtd_write(mtd_desc, &mtd, fd, mtdoffset / mtd.eb_size, mtdoffset % mtd.eb_size,
-+					writebuf, mtd.min_io_size, NULL, 0, 0)) {
- 			int i;
- 			if (errno != EIO) {
- 				sys_errmsg("%s: MTD write failure", mtd_device);
-diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-index bfa1730..ed2b8d0 100644
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -534,7 +534,8 @@ static int flash_image(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+-	/* Seek to the beginning of the eraseblock */
++	/* Calculate seek address */
+ 	seek = (off_t)eb * mtd->eb_size + offs;
+-	if (lseek(fd, seek, SEEK_SET) != seek)
+-		return sys_errmsg("cannot seek mtd%d to offset %llu",
+-				  mtd->mtd_num, (unsigned long long)seek);
  
- 		new_len = drop_ffs(mtd, buf, mtd->eb_size);
+-	ret = write(fd, data, len);
+-	if (ret != len)
+-		return sys_errmsg("cannot write %d bytes to mtd%d (eraseblock %d, offset %d)",
+-				  len, mtd->mtd_num, eb, offs);
++	ops.start = seek;
++	ops.len = len;
++	ops.ooblen = ooblen;
++	ops.usr_data = (uint64_t)(unsigned long)data;
++	ops.usr_oob = (uint64_t)(unsigned long)oob;
++	ops.mode = mode;
++
++	ret = ioctl(fd, MEMWRITE, &ops);
++	if (ret == 0)
++		return 0;
++	else if (errno != ENOTTY)
++		return mtd_ioctl_error(mtd, eb, "MEMWRITE");
++
++	/* Fall back to old methods if necessary */
++	if (oob) {
++		if (mtd_write_oob(desc, mtd, fd, seek, ooblen, oob) < 0)
++			return sys_errmsg("cannot write to OOB");
++	}
++	if (data) {
++		/* Seek to the beginning of the eraseblock */
++		if (lseek(fd, seek, SEEK_SET) != seek)
++			return sys_errmsg("cannot seek mtd%d to offset %llu",
++					mtd->mtd_num, (unsigned long long)seek);
++		ret = write(fd, data, len);
++		if (ret != len)
++			return sys_errmsg("cannot write %d bytes to mtd%d "
++					  "(eraseblock %d, offset %d)",
++					  len, mtd->mtd_num, eb, offs);
++	}
  
--		err = mtd_write(mtd, args.node_fd, eb, 0, buf, new_len);
-+		err = mtd_write(libmtd, mtd, args.node_fd, eb, 0, buf, new_len,
-+				NULL, 0, 0);
- 		if (err) {
- 			sys_errmsg("cannot write eraseblock %d", eb);
- 
-@@ -637,7 +638,8 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
- 			fflush(stdout);
- 		}
- 
--		err = mtd_write(mtd, args.node_fd, eb, 0, hdr, write_size);
-+		err = mtd_write(libmtd, mtd, args.node_fd, eb, 0, hdr,
-+				write_size, NULL, 0, 0);
- 		if (err) {
- 			if (!args.quiet && !args.verbose)
- 				printf("\n");
+ 	return 0;
+ }
 -- 
 1.7.5.4
