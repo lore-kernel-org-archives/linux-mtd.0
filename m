@@ -1,12 +1,13 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QyZvT-00059D-Dv
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 01:49:12 +0000
+	id 1QyZvd-00059D-FV
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2011 01:49:22 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 03/12] mtd: support reading OOB without ECC
-Date: Tue, 30 Aug 2011 18:45:38 -0700
-Message-ID: <1314755147-17756-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 04/12] mtd: move mtd_oob_mode_t to shared kernel/user
+ space
+Date: Tue, 30 Aug 2011 18:45:39 -0700
+Message-ID: <1314755147-17756-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
 References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -14,8 +15,7 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
 	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
-	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
-	Brian Norris <computersforpeace@gmail.com>,
+	linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
 	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,129 +26,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes issues with `nanddump -n' and the MEMREADOOB[64] ioctls on
-hardware that performs error correction when reading only OOB data. A
-driver for such hardware needs to know when we're doing a RAW vs. a
-normal write, but mtd_do_read_oob does not pass such information to the
-lower layers (e.g., NAND). We should pass MTD_OOB_RAW or MTD_OOB_PLACE
-based on the MTD file mode.
+We will want to use the MTD_OOB_{PLACE,AUTO,RAW} modes in user-space
+applications through the introduction of new ioctls, so we should make
+this enum a shared type.
 
-For now, most drivers can get away with just setting:
-
-  chip->ecc.read_oob_raw = chip->ecc.read_oob
-
-This is done by default; but for systems that behave as described above,
-you must supply your own replacement function.
-
-This was tested with nandsim as well as on actual SLC NAND.
+This enum is now anonymous and will be used in 8-bit fields (__u8 or
+uint8_t).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Jim Quinlan <jim2101024@gmail.com>
 ---
- drivers/mtd/mtdchar.c        |   14 ++++++++------
- drivers/mtd/nand/nand_base.c |    7 ++++++-
- include/linux/mtd/nand.h     |    3 +++
- 3 files changed, 17 insertions(+), 7 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |    4 ++--
+ include/linux/mtd/mtd.h            |   16 +---------------
+ include/mtd/mtd-abi.h              |   15 +++++++++++++++
+ 3 files changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index bcb7f05..d0eaef6 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -435,9 +435,11 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
- 	return ret;
- }
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index de98791..9edc8b1 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1351,7 +1351,7 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 	struct mtd_ecc_stats stats;
+ 	int read = 0, thislen, column, oobsize;
+ 	size_t len = ops->ooblen;
+-	mtd_oob_mode_t mode = ops->mode;
++	uint8_t mode = ops->mode;
+ 	u_char *buf = ops->oobbuf;
+ 	int ret = 0, readcmd;
  
--static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
--	uint32_t length, void __user *ptr, uint32_t __user *retp)
-+static int mtd_do_readoob(struct file *file, struct mtd_info *mtd,
-+	uint64_t start, uint32_t length, void __user *ptr,
-+	uint32_t __user *retp)
- {
-+	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_oob_ops ops;
- 	int ret = 0;
+@@ -2074,7 +2074,7 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ 	u_char *oobbuf;
+ 	size_t len = ops->ooblen;
+ 	const u_char *buf = ops->oobbuf;
+-	mtd_oob_mode_t mode = ops->mode;
++	uint8_t mode = ops->mode;
  
-@@ -455,7 +457,7 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
- 	ops.ooblen = length;
- 	ops.ooboffs = start & (mtd->writesize - 1);
- 	ops.datbuf = NULL;
--	ops.mode = MTD_OOB_PLACE;
-+	ops.mode = (mfi->mode == MTD_MODE_RAW) ? MTD_OOB_RAW : MTD_OOB_PLACE;
+ 	to += ops->ooboffs;
  
- 	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
- 		return -EINVAL;
-@@ -716,7 +718,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(mtd, buf.start, buf.length,
-+			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
- 				buf.ptr, &buf_user->start);
- 		break;
- 	}
-@@ -743,7 +745,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(mtd, buf.start, buf.length,
-+			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
- 				(void __user *)(uintptr_t)buf.usr_ptr,
- 				&buf_user->length);
- 		break;
-@@ -1029,7 +1031,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(mtd, buf.start,
-+			ret = mtd_do_readoob(file, mtd, buf.start,
- 				buf.length, compat_ptr(buf.ptr),
- 				&buf_user->start);
- 		break;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ded1e5a..12732a0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1787,7 +1787,10 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	page = realpage & chip->pagemask;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index ff7bae0..3b2c678 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -68,20 +68,6 @@ struct mtd_erase_region_info {
+ 	unsigned long *lockmap;		/* If keeping bitmap of locks */
+ };
  
- 	while (1) {
--		sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
-+		if (ops->mode == MTD_OOB_RAW)
-+			sndcmd = chip->ecc.read_oob_raw(mtd, chip, page, sndcmd);
-+		else
-+			sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
- 
- 		len = min(len, readlen);
- 		buf = nand_transfer_oob(chip, buf, ops, len);
-@@ -3385,6 +3388,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	}
- 
- 	/* For many systems, the standard OOB write also works for raw */
-+	if (!chip->ecc.read_oob_raw)
-+		chip->ecc.read_oob_raw = chip->ecc.read_oob;
- 	if (!chip->ecc.write_oob_raw)
- 		chip->ecc.write_oob_raw = chip->ecc.write_oob;
- 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 5f3fdd9..17964c9 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -341,6 +341,7 @@ struct nand_hw_control {
-  * @write_page:	function to write a page according to the ECC generator
-  *		requirements.
-  * @write_oob_raw:	function to write chip OOB data without ECC
-+ * @read_oob_raw:	function to read chip OOB data without ECC
-  * @read_oob:	function to read chip OOB data
-  * @write_oob:	function to write chip OOB data
+-/*
+- * oob operation modes
+- *
+- * MTD_OOB_PLACE:	oob data are placed at the given offset
+- * MTD_OOB_AUTO:	oob data are automatically placed at the free areas
+- *			which are defined by the ecclayout
+- * MTD_OOB_RAW:		mode to read oob and data without doing ECC checking
+- */
+-typedef enum {
+-	MTD_OOB_PLACE,
+-	MTD_OOB_AUTO,
+-	MTD_OOB_RAW,
+-} mtd_oob_mode_t;
+-
+ /**
+  * struct mtd_oob_ops - oob operation operands
+  * @mode:	operation mode
+@@ -102,7 +88,7 @@ typedef enum {
+  * OOB area.
   */
-@@ -371,6 +372,8 @@ struct nand_ecc_ctrl {
- 			const uint8_t *buf);
- 	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
- 			int page);
-+	int (*read_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int page, int sndcmd);
- 	int (*read_oob)(struct mtd_info *mtd, struct nand_chip *chip, int page,
- 			int sndcmd);
- 	int (*write_oob)(struct mtd_info *mtd, struct nand_chip *chip,
+ struct mtd_oob_ops {
+-	mtd_oob_mode_t	mode;
++	uint8_t		mode;
+ 	size_t		len;
+ 	size_t		retlen;
+ 	size_t		ooblen;
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 3bdda5c..af42c7a 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -45,6 +45,21 @@ struct mtd_oob_buf64 {
+ 	__u64 usr_ptr;
+ };
+ 
++/*
++ * oob operation modes
++ *
++ * MTD_OOB_PLACE:       oob data are placed at the given offset (default)
++ * MTD_OOB_AUTO:        oob data are automatically placed at the free areas
++ *                      which are defined by the internal ecclayout
++ * MTD_OOB_RAW:         mode to read or write oob and data without doing ECC
++ *			checking
++ */
++enum {
++	MTD_OOB_PLACE = 0,
++	MTD_OOB_AUTO = 1,
++	MTD_OOB_RAW = 2,
++};
++
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
 -- 
 1.7.5.4
