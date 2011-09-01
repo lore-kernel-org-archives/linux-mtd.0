@@ -1,12 +1,28 @@
-Date: Thu, 1 Sep 2011 18:09:12 +0200 (CEST)
-From: usalotterie.gewinner2011@arcor.de
-To: info@usalotto.org
-Message-ID: <505462081.235382.1314893352991.JavaMail.ngmail@webmail17.arcor-online.net>
-Subject: =?ISO-8859-1?Q?GLUCKWUNSCHE_[_IHRE_E-mail_HAT_GEWONNEN_{REF_NR_?=
-	=?ISO-8859-1?Q?,_575061725_}_]_!!(Warning:_Endg=FCltige_Anmeldung)?=
+Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QzEtI-0004Es-1e
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2011 21:33:41 +0000
+Date: Thu, 1 Sep 2011 23:34:20 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+Subject: Re: logfs unmount bug
+Message-ID: <20110901213420.GA30947@logfs.org>
+References: <20110816171707.GU26160@logfs.org>
+	<CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
+	<20110826194910.GE22411@logfs.org>
+	<CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
+	<20110831055854.GA12713@logfs.org>
+	<CAMjNe_d2pOC9+2nSy2PA=2aigF95vZv3_A-jPyWyTXteW3mqFw@mail.gmail.com>
+	<20110831074902.GA26382@logfs.org>
+	<CAMjNe_csYHWCRFXt6sW1FpMaS_RFGLM6z1ML6_-3xb-5x7DZtg@mail.gmail.com>
+	<20110831141731.GA29862@logfs.org>
+	<CAMjNe_d0-vz==Hjqzyu6taJHyHiPff8EH+=qadrOv_87LO8F2g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMjNe_d0-vz==Hjqzyu6taJHyHiPff8EH+=qadrOv_87LO8F2g@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,118 +32,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UNITED STATES OF AMERICA LOTTO INC.
-ADRESSE: OSTWESTLANDSTRASSE 1325
-STADT: SILBERNER FRUHLING
-STATE/PROVINCE: MARYLAND
-POSTCODE: 20110
-LAND: USA
-INC.
+On Thu, 1 September 2011 11:38:39 +0530, srimugunthan dhandapani wrote:
+> 
+> Its frustrating when you ask me to take a new set of logs without
+> reading my previous mails.
+> To repeat, iam not able to reproduce the third bug. I think the first
+> two bugs should be reproducible at your end.
 
-********************************************************
-REF NR.:364758679
-STAPEL NR.:6485769789/646
-********************************************************
+Well, so far I have basically ignored your second and third bug.  As
+long as the first is unresolved, I don't want to add yet more
+confusion to what we already have.
 
-LOTTO GEWINNER
-BETR.: ENDGULTIGE NOTIFIKATION
-GLUCKWUNSCHE!
+> I thought that you were asking me to take the logs because you are not
+> able to reproduce them too.
 
-United states Lottery Inc hiermit teilt Ihnen die Ergebnisse vom
-E-Mail-Adresse Stimmzettellotterie internationale Programm mit. Die
-endg=FCltigen Z=FCge wurden auf dem 30/08/2011 gehalten. Ihr E-Mailkonto
-ist als ein Gewinner f=FCr den Geldpreis vom $850,000.00 USD
-(Acht hundertf=FCnfzigtausend Vereinigte Staten Dollars) gew=E4hlt worden.
-Dies Ergebnisist jetzt zu Ihnen heute am 01/09/2011 freigegeben und
-Ihre E-Mail-Adresse, die in der Einer Kategorie befestigt wird,hat
-$850,000.00 (Acht hundertf=FCnfzigtausend Vereinigte Staaten Dollars) gewon=
-nen.
+I wanted to ask you to take the test patch, run it, see the debug
+output in the kernel log and send it to me.  "Take the logs" may have
+been what I said, but if I did that would have been too ambiguous.  A
+single line of output from the debug printk would have been enough, or
+maybe a pagefull.  Certainly not megabytes worth.
 
-Alle E-Mail-Adressen wurden automatisch durch ein
-Computer Stimmzettel System Ausgew=E4hlt, in den Ihre E-Mail-Adresse als
-einer der DREI gl=FCcklichen Gewinner ausgew=E4hlt wurde. Alle E-mail
-Adressen wurde von den Europa Einwohner und InternetBenutzer
-Databanken aus das ganze Europa ausgew=E4hlt.Ihre Gl=FCckszahl
-lautet:-2476654 .und Bonusballzahl .8Sie werden geraten, Ihre
-siegreichen Informationen vertraulich {SEHR GEHEIM} zu behalten, bis
-Ihre Anspr=FCche und Ihr Geld bearbeitet worden sind, das zu Ihnen
-=FCberweisen werden wird.
+> Out of curiosity, are you able to run bonnie successfully with logfs+nandsim?
 
-Dies ist Teil von unseremSicherheitsprotokoll,um Doppelbeanspruchen
-und ungerechtfertigten Missbrauch von diesem Programm durch Schwindel
-zu vermeiden.Sie m=FCssen Ihr Gewinn nicht sp=E4ter als am 03/10/ 2011
-beanspruchtwerden. Nach diesem Datum, wird alle unbeanspruchten
-Fonds zu unseremZentraleb=FCro (als nicht beansprucht) zur=FCckgekehrt
-werden. Bitte merken Sie, um unn=F6tige Versp=E4tungen und Komplikationen
-zuvermeiden,erinnern Sie sich immer an Ihre REF NR.:575061725 inallen
-von Ihren Korrespondenz mit uns zu zitieren. Wir Drucken Sie daher,Wie
-Sie Ihre Forderung Preis zu gewinnen.
+Yes and no.  I think I have to apologize for using block2mtd so far.
+There shouldn't be a big difference between one mtd driver and another
+wrt. logfs behaviour.  Famous last words.
 
-Sie m=FCssen sich an die Bank zahlen direkt =FCber ihre Bank-Daten ein.=20
+The problem with nandsim + logfs is the default segment size.  16k is
+not enough to fit an entire journal commit into.  You can try this
+yourself by using "mklogfs -s14 /dev/mtd0" or "mklogfs -s15 /dev/mtd0"
+in your test scripts.  The first should run into the infinite loop you
+experienced, while the second should work.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-NATIONAL WESTMINSTER BANK PLC
-BUNDESREPUBLIK DEUTSCHLAND ZAHLUNGSZENTRUM
-ANSPRECHSPERSON: DR. PETER COX
-#38 CORPORATION STREET, ROTHERHAM,=20
-S60 1NH; LONDON, UK
-E-Mail: natwestbnkplclondon-fundremittance@superpost.com
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-F=FCr die Verarbeitung und Best=E4tigung von Ihrem Gewinn,f=FCllen Siesofor=
-t die
-unten Form und reichen Sie es zu Ihrer auszahlende Bank:=20
-National Westminster Bank Plc London, UK, beider
-Bundesrepublik Deutschland Zahlungszentrum durch E-mail
-ein: natwestbnkplclondon-fundremittance@superpost.com
+I'm not entirely sure what to do about this.  The easiest and probably
+most robust solution is to check for segment size at mount time and
+fail for anything <32k.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-{UNITED STATES LOTTO GEWINNER ANMELDEFORMULAR FUER ZAHLUNG}.
-*************************************************************
-VORNAME...............
-GEBURTSDATUM .............
-NACHNAME...............
-GESCHLECHT................
-ADRESSE..............
-NATIONALITAET.............
-BERUF............
-TELEFONNUMMER ............
-FAXNUMMER..............
-BETRAG GEWONNEN ............
-************************
-REF NR, 575061725
-************************
-STAPEL NR: KB8701/LPRC
-************************
-GENEHMIGT FUER ZAHLUNG
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Gl=FCckw=FCnsche vom Personal des united states Lotto Programm, w=E4hrend w=
-ir
-hoffen, dass Sie Teil von Ihrem Gewinn benutzen werden, sich anunserem
-Ende von Jahr united states Mega Lotto zu beteiligen, wo Sie eine
-Chancehaben werden,$50,000,000.00 USD {F=FCnfzig Millionen Dollars} zu
-gewinnen.F=FCr united states Lotto Programm, PROFESSOR DR. SARAH
-McCULLOUGH,CHEFIN, AUSLANDANGELEGENHEIT ABTEILUNG. N.B. BEANTWORTEN
-SIE NICHT ZU DIESER EMAIL,SONDERN WENDEN SIE SICH ANDER BUNDESREPUBLIK
-DEUTSCHLAND ZAHLUNGSZENTRUM DURCH E-MAIL MIT IHRENDATEN!
-******************************
-NOTIZ
-******************************
-Registereintragung:
-Amtsgericht Hamburg BDW 9283
-Vorsitzender des Aufsichtsrats:
-Dipl.-Ing. Dr.-Ing. E.h.
-Sven
-IngelmannVorstand:
-Thomas Wilde
-(Vorsitzender)
-Jochen Budde
+Oh, and you might want to add the patch below.
 
-Copyright=A9 2011 Usa Lotto. Alle Rechte vorbehalten. Gesch=E4ftsbedingunge=
-n
-Hilfe Hinweis: Auf diesen Seiten sammeln wir pers=F6nliche Informationen. F=
-=FCr
-weitere Details lesen Sie bitte unsere Hinweise zum Datenschutz
+Jörn
+
+-- 
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+-- Theodore Roosevelt, Kansas City Star, 1918
+
+[PATCH] logfs: add mtd_write_sb
+
+Fairly obvious, given the benefit of hindsight. :(
+
+Signed-off-by: Joern Engel <joern@logfs.org>
+---
+ fs/logfs/dev_mtd.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/fs/logfs/dev_mtd.c b/fs/logfs/dev_mtd.c
+index 5ca422c..50a3c8c 100644
+--- a/fs/logfs/dev_mtd.c
++++ b/fs/logfs/dev_mtd.c
+@@ -228,6 +228,15 @@ static void mtd_writeseg(struct super_block *sb, u64 ofs, size_t len)
+ 	__mtd_writeseg(sb, ofs, ofs >> PAGE_SHIFT, len >> PAGE_SHIFT);
+ }
+ 
++static int mtd_write_sb(struct super_block *sb, struct page *page)
++{
++	struct mtd_info *mtd = logfs_super(sb)->s_mtd;
++
++	if (mtd->sync)
++		mtd->sync(mtd);
++	return 0;
++}
++
+ static void mtd_put_device(struct logfs_super *s)
+ {
+ 	put_mtd_device(s->s_mtd);
+@@ -255,6 +264,7 @@ out:
+ static const struct logfs_device_ops mtd_devops = {
+ 	.find_first_sb	= mtd_find_first_sb,
+ 	.find_last_sb	= mtd_find_last_sb,
++	.write_sb	= mtd_write_sb,
+ 	.readpage	= mtd_readpage,
+ 	.writeseg	= mtd_writeseg,
+ 	.erase		= mtd_erase,
+-- 
+1.7.2.3
