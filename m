@@ -1,32 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qz3rS-0007Bq-QZ
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2011 09:47:03 +0000
-Received: by wwf10 with SMTP id 10so1178047wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 01 Sep 2011 02:47:00 -0700 (PDT)
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1Qz6jv-0001d3-Q9
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2011 12:51:28 +0000
+Message-ID: <4E5F80B0.9060908@free-electrons.com>
+Date: Thu, 01 Sep 2011 14:55:12 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMjNe_d0-vz==Hjqzyu6taJHyHiPff8EH+=qadrOv_87LO8F2g@mail.gmail.com>
-References: <20110812093429.GS26160@logfs.org>
-	<CAMjNe_eCqe1kVH-GLb6uo1gVCkH2r49w2Xdws6=jFMOaQRU=mw@mail.gmail.com>
-	<20110816171707.GU26160@logfs.org>
-	<CAMjNe_f9RT0qmO5EeUxhA80ruB+uz7Ng7jCVZriaUcgmk_H1HQ@mail.gmail.com>
-	<20110826194910.GE22411@logfs.org>
-	<CAMjNe_euj5t9+Jph0Uy-j7+SRMe1oSzihGCaiuQ1Dcd7dz6cuw@mail.gmail.com>
-	<20110831055854.GA12713@logfs.org>
-	<CAMjNe_d2pOC9+2nSy2PA=2aigF95vZv3_A-jPyWyTXteW3mqFw@mail.gmail.com>
-	<20110831074902.GA26382@logfs.org>
-	<CAMjNe_csYHWCRFXt6sW1FpMaS_RFGLM6z1ML6_-3xb-5x7DZtg@mail.gmail.com>
-	<20110831141731.GA29862@logfs.org>
-	<CAMjNe_d0-vz==Hjqzyu6taJHyHiPff8EH+=qadrOv_87LO8F2g@mail.gmail.com>
-Date: Thu, 1 Sep 2011 15:16:59 +0530
-Message-ID: <CAMjNe_eH+5Mi2p5BwRvD8Zg=Jr5j8=u6QbShH=FMcCNYQy9rkw@mail.gmail.com>
-Subject: Re: logfs unmount bug
-From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>	<201108241823.20904.arnd@arndb.de>	<1314256010.18988.18.camel@sauron>
+	<201108251712.40894.arnd@arndb.de>
+In-Reply-To: <201108251712.40894.arnd@arndb.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: linux-embedded <linux-embedded@vger.kernel.org>, dedekind1@gmail.com,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,36 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> =A0" On Mon, Aug 29, 2011 at 3:37 PM, srimugunthan dhandapani
-> <srimugunthan.dhandapani@gmail.com> wrote:
->
->> To clarify on the bugs I reported
->> 1. bonnie test( bonnie =A0-s 20 -r 10) does not complete . It gets stuck
->> at "Creating =A0files in sequential order ..."
->> (tested with nandsim, kernel 3.0.1. and 2.6.38.8; consistently
->> reproducible on 2 machines.)
->> The free command show that, while the bonnie test was run for half an
->> hour, free space changed from 2982340 KB to 2550156 KB.
+On 08/25/2011 05:12 PM, Arnd Bergmann wrote:
+> The cost of a block device node in the kernel is rather low. Nowadays,
+> sysfs does not even permanently use inodes for entries, it has a much
+> more compact internal representation IIRC.
+> 
+> The main advantage of this approach is not having to set up the 
+> block device at all, it would just be there, which e.g. makes it
+> possible to put a root file system on it or do something else without
+> requiring a user space tool to issue an ioctl.
 
-In as far a i can infer, this bug happens because it is stuck in the
-infinite loop at logfs_write_anchor() in journal.c
+Before patch v3, every existing and new UBI volumes were "proxyfied" by
+ubiblk and it was, indeed, one of our goal to be able to have a rootfs
+on it.  Patch v3 hinders that goal but it could still be achievable by
+adding a module parameter that would explicitly create a ubiblk device
+for a UBI volume at boot time.
 
+I for one am fine with both solutions (keep the ioctl + add a kernel
+parameter and throwing the ioctl away and go back "automatically create
+a ubiblk for each UBI volume").  However, I agree that it doesn't make
+sense to create a ubiblk device on top of UBI volumes containing, for
+instance, a ubifs.
 
-again:
-	super->s_no_je =3D 0;
-	for_each_area(i) {
-		if (!super->s_area[i]->a_is_open)
-			continue;
-		super->s_sum_index =3D i;
-		err =3D logfs_write_je(sb, logfs_write_area);
-		if (err)
-			goto again;
-	}
-	err =3D logfs_write_obj_aliases(sb);
-	if (err)
-		goto again;
-	=09
-It is stuck in the goto again loop.
+	Best Regards,
+	David.
 
-thanks
+-- 
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
