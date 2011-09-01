@@ -1,22 +1,12 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1Qz6jv-0001d3-Q9
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2011 12:51:28 +0000
-Message-ID: <4E5F80B0.9060908@free-electrons.com>
-Date: Thu, 01 Sep 2011 14:55:12 +0200
-From: David Wagner <david.wagner@free-electrons.com>
+Date: Thu, 1 Sep 2011 18:09:12 +0200 (CEST)
+From: usalotterie.gewinner2011@arcor.de
+To: info@usalotto.org
+Message-ID: <505462081.235382.1314893352991.JavaMail.ngmail@webmail17.arcor-online.net>
+Subject: =?ISO-8859-1?Q?GLUCKWUNSCHE_[_IHRE_E-mail_HAT_GEWONNEN_{REF_NR_?=
+	=?ISO-8859-1?Q?,_575061725_}_]_!!(Warning:_Endg=FCltige_Anmeldung)?=
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>	<201108241823.20904.arnd@arndb.de>	<1314256010.18988.18.camel@sauron>
-	<201108251712.40894.arnd@arndb.de>
-In-Reply-To: <201108251712.40894.arnd@arndb.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-embedded <linux-embedded@vger.kernel.org>, dedekind1@gmail.com,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +16,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/25/2011 05:12 PM, Arnd Bergmann wrote:
-> The cost of a block device node in the kernel is rather low. Nowadays,
-> sysfs does not even permanently use inodes for entries, it has a much
-> more compact internal representation IIRC.
-> 
-> The main advantage of this approach is not having to set up the 
-> block device at all, it would just be there, which e.g. makes it
-> possible to put a root file system on it or do something else without
-> requiring a user space tool to issue an ioctl.
+UNITED STATES OF AMERICA LOTTO INC.
+ADRESSE: OSTWESTLANDSTRASSE 1325
+STADT: SILBERNER FRUHLING
+STATE/PROVINCE: MARYLAND
+POSTCODE: 20110
+LAND: USA
+INC.
 
-Before patch v3, every existing and new UBI volumes were "proxyfied" by
-ubiblk and it was, indeed, one of our goal to be able to have a rootfs
-on it.  Patch v3 hinders that goal but it could still be achievable by
-adding a module parameter that would explicitly create a ubiblk device
-for a UBI volume at boot time.
+********************************************************
+REF NR.:364758679
+STAPEL NR.:6485769789/646
+********************************************************
 
-I for one am fine with both solutions (keep the ioctl + add a kernel
-parameter and throwing the ioctl away and go back "automatically create
-a ubiblk for each UBI volume").  However, I agree that it doesn't make
-sense to create a ubiblk device on top of UBI volumes containing, for
-instance, a ubifs.
+LOTTO GEWINNER
+BETR.: ENDGULTIGE NOTIFIKATION
+GLUCKWUNSCHE!
 
-	Best Regards,
-	David.
+United states Lottery Inc hiermit teilt Ihnen die Ergebnisse vom
+E-Mail-Adresse Stimmzettellotterie internationale Programm mit. Die
+endg=FCltigen Z=FCge wurden auf dem 30/08/2011 gehalten. Ihr E-Mailkonto
+ist als ein Gewinner f=FCr den Geldpreis vom $850,000.00 USD
+(Acht hundertf=FCnfzigtausend Vereinigte Staten Dollars) gew=E4hlt worden.
+Dies Ergebnisist jetzt zu Ihnen heute am 01/09/2011 freigegeben und
+Ihre E-Mail-Adresse, die in der Einer Kategorie befestigt wird,hat
+$850,000.00 (Acht hundertf=FCnfzigtausend Vereinigte Staaten Dollars) gewon=
+nen.
 
--- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Alle E-Mail-Adressen wurden automatisch durch ein
+Computer Stimmzettel System Ausgew=E4hlt, in den Ihre E-Mail-Adresse als
+einer der DREI gl=FCcklichen Gewinner ausgew=E4hlt wurde. Alle E-mail
+Adressen wurde von den Europa Einwohner und InternetBenutzer
+Databanken aus das ganze Europa ausgew=E4hlt.Ihre Gl=FCckszahl
+lautet:-2476654 .und Bonusballzahl .8Sie werden geraten, Ihre
+siegreichen Informationen vertraulich {SEHR GEHEIM} zu behalten, bis
+Ihre Anspr=FCche und Ihr Geld bearbeitet worden sind, das zu Ihnen
+=FCberweisen werden wird.
+
+Dies ist Teil von unseremSicherheitsprotokoll,um Doppelbeanspruchen
+und ungerechtfertigten Missbrauch von diesem Programm durch Schwindel
+zu vermeiden.Sie m=FCssen Ihr Gewinn nicht sp=E4ter als am 03/10/ 2011
+beanspruchtwerden. Nach diesem Datum, wird alle unbeanspruchten
+Fonds zu unseremZentraleb=FCro (als nicht beansprucht) zur=FCckgekehrt
+werden. Bitte merken Sie, um unn=F6tige Versp=E4tungen und Komplikationen
+zuvermeiden,erinnern Sie sich immer an Ihre REF NR.:575061725 inallen
+von Ihren Korrespondenz mit uns zu zitieren. Wir Drucken Sie daher,Wie
+Sie Ihre Forderung Preis zu gewinnen.
+
+Sie m=FCssen sich an die Bank zahlen direkt =FCber ihre Bank-Daten ein.=20
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+NATIONAL WESTMINSTER BANK PLC
+BUNDESREPUBLIK DEUTSCHLAND ZAHLUNGSZENTRUM
+ANSPRECHSPERSON: DR. PETER COX
+#38 CORPORATION STREET, ROTHERHAM,=20
+S60 1NH; LONDON, UK
+E-Mail: natwestbnkplclondon-fundremittance@superpost.com
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+F=FCr die Verarbeitung und Best=E4tigung von Ihrem Gewinn,f=FCllen Siesofor=
+t die
+unten Form und reichen Sie es zu Ihrer auszahlende Bank:=20
+National Westminster Bank Plc London, UK, beider
+Bundesrepublik Deutschland Zahlungszentrum durch E-mail
+ein: natwestbnkplclondon-fundremittance@superpost.com
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+{UNITED STATES LOTTO GEWINNER ANMELDEFORMULAR FUER ZAHLUNG}.
+*************************************************************
+VORNAME...............
+GEBURTSDATUM .............
+NACHNAME...............
+GESCHLECHT................
+ADRESSE..............
+NATIONALITAET.............
+BERUF............
+TELEFONNUMMER ............
+FAXNUMMER..............
+BETRAG GEWONNEN ............
+************************
+REF NR, 575061725
+************************
+STAPEL NR: KB8701/LPRC
+************************
+GENEHMIGT FUER ZAHLUNG
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Gl=FCckw=FCnsche vom Personal des united states Lotto Programm, w=E4hrend w=
+ir
+hoffen, dass Sie Teil von Ihrem Gewinn benutzen werden, sich anunserem
+Ende von Jahr united states Mega Lotto zu beteiligen, wo Sie eine
+Chancehaben werden,$50,000,000.00 USD {F=FCnfzig Millionen Dollars} zu
+gewinnen.F=FCr united states Lotto Programm, PROFESSOR DR. SARAH
+McCULLOUGH,CHEFIN, AUSLANDANGELEGENHEIT ABTEILUNG. N.B. BEANTWORTEN
+SIE NICHT ZU DIESER EMAIL,SONDERN WENDEN SIE SICH ANDER BUNDESREPUBLIK
+DEUTSCHLAND ZAHLUNGSZENTRUM DURCH E-MAIL MIT IHRENDATEN!
+******************************
+NOTIZ
+******************************
+Registereintragung:
+Amtsgericht Hamburg BDW 9283
+Vorsitzender des Aufsichtsrats:
+Dipl.-Ing. Dr.-Ing. E.h.
+Sven
+IngelmannVorstand:
+Thomas Wilde
+(Vorsitzender)
+Jochen Budde
+
+Copyright=A9 2011 Usa Lotto. Alle Rechte vorbehalten. Gesch=E4ftsbedingunge=
+n
+Hilfe Hinweis: Auf diesen Seiten sammeln wir pers=F6nliche Informationen. F=
+=FCr
+weitere Details lesen Sie bitte unsere Hinweise zum Datenschutz
