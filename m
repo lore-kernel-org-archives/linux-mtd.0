@@ -1,28 +1,19 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R0nMd-0001zv-1W
-	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 04:34:23 +0000
-Received: by iacb35 with SMTP id b35so8497132iac.36
+	id 1R0nOX-00022P-89
+	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 04:36:22 +0000
+Received: by yxk8 with SMTP id 8so2787459yxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Sep 2011 21:34:21 -0700 (PDT)
-Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 06 Sep 2011 07:29:51 +0300
-In-Reply-To: <1315282208.19067.24.camel@sauron>
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
-	<201108241823.20904.arnd@arndb.de> <1314256010.18988.18.camel@sauron>
-	<201108251712.40894.arnd@arndb.de> <1315280704.19067.14.camel@sauron>
-	<1315282208.19067.24.camel@sauron>
-Content-Type: text/plain; charset="UTF-8"
+	Mon, 05 Sep 2011 21:36:19 -0700 (PDT)
+Message-ID: <4E65A33F.5030405@gmail.com>
+Date: Tue, 06 Sep 2011 16:36:15 +1200
+From: CJ <cjpostor@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: UBIFS + device issue
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315283397.19067.37.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-embedded <linux-embedded@vger.kernel.org>,
-	david.wagner@free-electrons.com, lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-09-06 at 07:10 +0300, Artem Bityutskiy wrote:
-> On Tue, 2011-09-06 at 06:44 +0300, Artem Bityutskiy wrote:
-> > > It's not a dummy bus, in this approach it would be a the bus that gets
-> > > used by all ubiblk devices, which is a very common concept by itself.
-> > > It's more like the classic understanding of a 'device class' that Greg
-> > > wants to see get replaced by bus_types in the kernel.
-> > 
-> > Yes, this sounds OK. Although UBI already has notifiers, so we could
-> > just add 2 more events.
-> 
-> Hmm, with notifications the error handling becomes a problem - we want
-> the ioctls for creating/removing the block device to be synchronous,
-> and, should an error occur, we want to return the error code to the
-> user-space. So the existing notifications mechanism does not work well.
+Hi,
 
-... but we can change it a little and have error codes handling, this is
-just UB implementation issues.
+I am having a problem with Nand and UBIFS. My hardware is similar to the 
+OMAP3 BeagleBoard.
+My system, kernel, uboot work perfectly when running from the SD card 
+using EXT4, when I transfer the system files onto NAND using UBIFS there 
+are unusual problems.
 
--- 
-Best Regards,
-Artem Bityutskiy
+When booting everything appears to work and all modules appear to load 
+correctly, however device /dev/media0 is not created and does not work 
+when manually created. This is tied to a camera module and works fine 
+when using the SD card and EXT4.
+The rest of the system seems to work fine - however the camera does not 
+work because the /dev/media0 device is required.
+As mentioned above .. this works fine with everything exactly the same 
+when boot from SD card using EXT4.
+
+Has any body seen a problem like this in the past?
+Really appreciate your help, I am lost as to what might be causing this 
+issue.
+
+Cheers,
+CJ
