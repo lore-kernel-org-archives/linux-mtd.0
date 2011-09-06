@@ -1,25 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R0wSf-0000XD-W0
-	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 14:17:15 +0000
-Date: Tue, 6 Sep 2011 16:17:08 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v11 1/3] MTD : add the common code for GPMI-NAND
-	controller driver
-Message-ID: <20110906141708.GJ2610@pengutronix.de>
-References: <1314616381-11615-1-git-send-email-b32955@freescale.com>
-	<1314616381-11615-2-git-send-email-b32955@freescale.com>
-	<20110905151752.GA10987@pengutronix.de>
-	<4E65F69D.5010808@freescale.com>
+	id 1R14UV-0005mf-GI
+	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 22:51:40 +0000
+Received: by yxk8 with SMTP id 8so3522137yxk.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 06 Sep 2011 15:51:38 -0700 (PDT)
+Message-ID: <4E66A3F3.2020604@gmail.com>
+Date: Wed, 07 Sep 2011 10:51:31 +1200
+From: CJ <cjpostor@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="apbmkPN6Hu/1dI3g"
-Content-Disposition: inline
-In-Reply-To: <4E65F69D.5010808@freescale.com>
-Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org
+To: vignesh rajendran <vickylinuxer@gmail.com>
+Subject: Re: UBIFS + device issue
+References: <4E65A33F.5030405@gmail.com>
+	<CALoDM-HP2Q6zhnGkMCFWp7DfBy+EjTq0Y3aR2Yo_z+8a-FGSCA@mail.gmail.com>
+In-Reply-To: <CALoDM-HP2Q6zhnGkMCFWp7DfBy+EjTq0Y3aR2Yo_z+8a-FGSCA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07/09/11 00:21, vignesh rajendran wrote:
+> Hi
+>
+> I am not getting your problem..Your camera device is not 
+> detecting..right..? What kernel version you are using...?
+>
+> �and check /dev/video0 is there..
+>
+>
+> Regards
+>
+> Vignesh Rajendran
+>
+>
+>
+>
+Hi Vignesh,
 
---apbmkPN6Hu/1dI3g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We are using the latest stable kernel 3.0.4
+The camera is being detected.. we have video0 the hardware modules are 
+all loading. The only thing not being setup is /dev/media0
 
+The weird thing is that it works when running from SD card with EXT4, 
+but not from NAND with UBIFS. There may be another variable that is 
+changing - but it is not software or kernel.
 
-> Should i wait for your test result, and send out the new version v12?
-> or I send out the new version first, and then you test it again?
+Has anyone observed anything like this before?
 
-I'd suggest you send V12 and I will test it when NAND is on my list
-again. I need to bring up this board first before I can do further
-testing.
-
-Thanks,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---apbmkPN6Hu/1dI3g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5mK2MACgkQD27XaX1/VRv3SQCff452k8r0Hp+tKfSYFnHkxqJj
-78YAoKXggcoarxKUXGdl/RHtSDLvbmA5
-=dWVh
------END PGP SIGNATURE-----
-
---apbmkPN6Hu/1dI3g--
+Cheers,
+CJ
