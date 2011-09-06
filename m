@@ -1,28 +1,14 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R0ni7-000295-TV
-	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 04:56:36 +0000
-Received: by iacb35 with SMTP id b35so8517796iac.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Sep 2011 21:56:35 -0700 (PDT)
-Subject: Re: [PATCH] document ubiblk's usage of the same ioctl magic as a
-	part of UBI
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Wagner <david.wagner@free-electrons.com>
-Date: Tue, 06 Sep 2011 07:58:50 +0300
-In-Reply-To: <1314202916-6982-1-git-send-email-david.wagner@free-electrons.com>
-References: <1314202540-5562-1-git-send-email-david.wagner@free-electrons.com>
-	<1314202916-6982-1-git-send-email-david.wagner@free-electrons.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1315285135.19067.59.camel@sauron>
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-embedded <linux-embedded@vger.kernel.org>,
-	Tim Bird <tim.bird@am.sony.com>
-Reply-To: dedekind1@gmail.com
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and map_rom
+Date: Tue, 6 Sep 2011 08:53:43 +0200
+Message-ID: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>,
+	Linus Walleij <linus.walleij@stericsson.com>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +18,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-08-24 at 18:21 +0200, David Wagner wrote:
-> ---
->  include/mtd/ubi-user.h |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-> index 3c41097..7c8bfe3 100644
-> --- a/include/mtd/ubi-user.h
-> +++ b/include/mtd/ubi-user.h
-> @@ -188,6 +188,7 @@
->  /* Set an UBI volume property */
->  #define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
->  			       struct ubi_set_vol_prop_req)
-> +/* If you add ioctls here, please note that ubiblk uses 'O'/0x10-0x11 */
->  
->  /* Maximum MTD device name length supported by UBI */
->  #define MAX_UBI_MTD_NAME_LEN 127
+From: Linus Walleij <linus.walleij@linaro.org>
 
-Let's postpone this patch and the user-space tool until ubiblk is ready
-for inclusion. I sent you some comments - the main one is the block
-device reference counting and making sure that the underlying UBI volume
-does not disappear when you use it.
+This exposes the PB1176 ROM if you compile in the MTD physmap
+mapping and also the map_rom chiptype.
 
+Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+---
+ arch/arm/mach-realview/include/mach/board-pb1176.h |    1 +
+ arch/arm/mach-realview/realview_pb1176.c           |   45 ++++++++++++++++----
+ 2 files changed, 38 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-realview/include/mach/board-pb1176.h b/arch/arm/mach-realview/include/mach/board-pb1176.h
+index 002ab5d..2a15fef 100644
+--- a/arch/arm/mach-realview/include/mach/board-pb1176.h
++++ b/arch/arm/mach-realview/include/mach/board-pb1176.h
+@@ -70,6 +70,7 @@
+ 
+ #define REALVIEW_DC1176_GIC_CPU_BASE		0x10120000 /* GIC CPU interface, on devchip */
+ #define REALVIEW_DC1176_GIC_DIST_BASE		0x10121000 /* GIC distributor, on devchip */
++#define REALVIEW_DC1176_ROM_BASE		0x10200000 /* 16KiB NRAM preudo-ROM, on devchip */
+ #define REALVIEW_PB1176_GIC_CPU_BASE		0x10040000 /* GIC CPU interface, on FPGA */
+ #define REALVIEW_PB1176_GIC_DIST_BASE		0x10041000 /* GIC distributor, on FPGA */
+ #define REALVIEW_PB1176_L220_BASE		0x10110000 /* L220 registers */
+diff --git a/arch/arm/mach-realview/realview_pb1176.c b/arch/arm/mach-realview/realview_pb1176.c
+index ad5671a..dfbaeca 100644
+--- a/arch/arm/mach-realview/realview_pb1176.c
++++ b/arch/arm/mach-realview/realview_pb1176.c
+@@ -26,6 +26,8 @@
+ #include <linux/amba/pl061.h>
+ #include <linux/amba/mmci.h>
+ #include <linux/amba/pl022.h>
++#include <linux/mtd/physmap.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/io.h>
+ 
+ #include <mach/hardware.h>
+@@ -204,22 +206,48 @@ static struct amba_device *amba_devs[] __initdata = {
+  * RealView PB1176 platform devices
+  */
+ static struct resource realview_pb1176_flash_resources[] = {
+-	[0] = {
++	{
+ 		.start		= REALVIEW_PB1176_FLASH_BASE,
+ 		.end		= REALVIEW_PB1176_FLASH_BASE + REALVIEW_PB1176_FLASH_SIZE - 1,
+ 		.flags		= IORESOURCE_MEM,
+ 	},
+-	[1] = {
++#ifdef CONFIG_REALVIEW_PB1176_SECURE_FLASH
++	{
+ 		.start		= REALVIEW_PB1176_SEC_FLASH_BASE,
+ 		.end		= REALVIEW_PB1176_SEC_FLASH_BASE + REALVIEW_PB1176_SEC_FLASH_SIZE - 1,
+ 		.flags		= IORESOURCE_MEM,
+ 	},
+-};
+-#ifdef CONFIG_REALVIEW_PB1176_SECURE_FLASH
+-#define PB1176_FLASH_BLOCKS	2
+-#else
+-#define PB1176_FLASH_BLOCKS	1
+ #endif
++};
++
++static struct physmap_flash_data pb1176_rom_pdata = {
++	.probe_type	= "map_rom",
++	.width		= 4,
++	.nr_parts	= 0,
++};
++
++static struct resource pb1176_rom_resources[] = {
++	/*
++	 * This exposes the PB1176 DevChip ROM as an MTD ROM mapping.
++	 * The reference manual states that this is actually a pseudo-ROM
++	 * programmed in NVRAM.
++	 */
++	{
++		.start		= REALVIEW_DC1176_ROM_BASE,
++		.end		= REALVIEW_DC1176_ROM_BASE + SZ_16K - 1,
++		.flags		= IORESOURCE_MEM,
++	}
++};
++
++static struct platform_device pb1176_rom_device = {
++	.name		= "physmap-flash",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(pb1176_rom_resources),
++	.resource	= pb1176_rom_resources,
++	.dev = {
++		.platform_data = &pb1176_rom_pdata,
++	},
++};
+ 
+ static struct resource realview_pb1176_smsc911x_resources[] = {
+ 	[0] = {
+@@ -338,7 +366,8 @@ static void __init realview_pb1176_init(void)
+ #endif
+ 
+ 	realview_flash_register(realview_pb1176_flash_resources,
+-				PB1176_FLASH_BLOCKS);
++				ARRAY_SIZE(realview_pb1176_flash_resources));
++	platform_device_register(&pb1176_rom_device);
+ 	realview_eth_register(NULL, realview_pb1176_smsc911x_resources);
+ 	platform_device_register(&realview_i2c_device);
+ 	realview_usb_register(realview_pb1176_isp1761_resources);
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.3.2
