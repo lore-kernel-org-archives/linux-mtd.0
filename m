@@ -1,13 +1,18 @@
-From: Linus Walleij <linus.walleij@stericsson.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and map_rom
-Date: Tue, 6 Sep 2011 08:53:43 +0200
-Message-ID: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
+Message-ID: <4E65F69D.5010808@freescale.com>
+Date: Tue, 6 Sep 2011 18:31:57 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>,
-	Linus Walleij <linus.walleij@stericsson.com>,
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v11 1/3] MTD : add the common code for GPMI-NAND controller
+	driver
+References: <1314616381-11615-1-git-send-email-b32955@freescale.com>
+	<1314616381-11615-2-git-send-email-b32955@freescale.com>
+	<20110905151752.GA10987@pengutronix.de>
+In-Reply-To: <20110905151752.GA10987@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com,
 	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -18,107 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Linus Walleij <linus.walleij@linaro.org>
+Hi Wolfram:
+> On Mon, Aug 29, 2011 at 07:12:59PM +0800, Huang Shijie wrote:
+>> These files contain the common code for the GPMI-NAND driver.
+>>
+>> Signed-off-by: Huang Shijie <b32955@freescale.com>
+>> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+>> Tested-by: Koen Beel <koen.beel@barco.com>
+> ...
+>
+>> +static int __devinit
+>> +acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
+>> +{
+>> +	struct platform_device *pdev = this->pdev;
+>> +	struct resources *res = &this->resources;
+>> +	struct resource *r;
+>> +	void *p;
+>> +
+>> +	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
+>> +	if (!r) {
+>> +		pr_err("Can't get resource for %s\n", res_name);
+>> +		return -ENXIO;
+>> +	}
+>> +
+>> +	p = ioremap(r->start, resource_size(r));
+>> +	if (!p) {
+>> +		pr_err("Can't remap %s\n", res_name);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	if (res_name == GPMI_NAND_GPMI_REGS_ADDR_RES_NAME)
+>> +		res->gpmi_regs = p;
+>> +	else if (res_name == GPMI_NAND_BCH_REGS_ADDR_RES_NAME)
+>> +		res->bch_regs = p;
+> Am I the only one getting warnings here?
+>
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'acquire_register_block':
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:345:15: warning: comparison with string literal results in unspecified behavior
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:347:20: warning: comparison with string literal results in unspecified behavior
+>
+> Really worth fixing IMHO...
+>
+>> +	else
+>> +		BUG();
+> dev_err + ENODEV?
+>
+> Might be worth checking the other BUG()-occurences as well if they really need
+> to halt the kernel.
+>
+Should i wait for your test result, and send out the new version v12?
+or I send out the new version first, and then you test it again?
 
-This exposes the PB1176 ROM if you compile in the MTD physmap
-mapping and also the map_rom chiptype.
 
-Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
----
- arch/arm/mach-realview/include/mach/board-pb1176.h |    1 +
- arch/arm/mach-realview/realview_pb1176.c           |   45 ++++++++++++++++----
- 2 files changed, 38 insertions(+), 8 deletions(-)
+thanks
 
-diff --git a/arch/arm/mach-realview/include/mach/board-pb1176.h b/arch/arm/mach-realview/include/mach/board-pb1176.h
-index 002ab5d..2a15fef 100644
---- a/arch/arm/mach-realview/include/mach/board-pb1176.h
-+++ b/arch/arm/mach-realview/include/mach/board-pb1176.h
-@@ -70,6 +70,7 @@
- 
- #define REALVIEW_DC1176_GIC_CPU_BASE		0x10120000 /* GIC CPU interface, on devchip */
- #define REALVIEW_DC1176_GIC_DIST_BASE		0x10121000 /* GIC distributor, on devchip */
-+#define REALVIEW_DC1176_ROM_BASE		0x10200000 /* 16KiB NRAM preudo-ROM, on devchip */
- #define REALVIEW_PB1176_GIC_CPU_BASE		0x10040000 /* GIC CPU interface, on FPGA */
- #define REALVIEW_PB1176_GIC_DIST_BASE		0x10041000 /* GIC distributor, on FPGA */
- #define REALVIEW_PB1176_L220_BASE		0x10110000 /* L220 registers */
-diff --git a/arch/arm/mach-realview/realview_pb1176.c b/arch/arm/mach-realview/realview_pb1176.c
-index ad5671a..dfbaeca 100644
---- a/arch/arm/mach-realview/realview_pb1176.c
-+++ b/arch/arm/mach-realview/realview_pb1176.c
-@@ -26,6 +26,8 @@
- #include <linux/amba/pl061.h>
- #include <linux/amba/mmci.h>
- #include <linux/amba/pl022.h>
-+#include <linux/mtd/physmap.h>
-+#include <linux/mtd/partitions.h>
- #include <linux/io.h>
- 
- #include <mach/hardware.h>
-@@ -204,22 +206,48 @@ static struct amba_device *amba_devs[] __initdata = {
-  * RealView PB1176 platform devices
-  */
- static struct resource realview_pb1176_flash_resources[] = {
--	[0] = {
-+	{
- 		.start		= REALVIEW_PB1176_FLASH_BASE,
- 		.end		= REALVIEW_PB1176_FLASH_BASE + REALVIEW_PB1176_FLASH_SIZE - 1,
- 		.flags		= IORESOURCE_MEM,
- 	},
--	[1] = {
-+#ifdef CONFIG_REALVIEW_PB1176_SECURE_FLASH
-+	{
- 		.start		= REALVIEW_PB1176_SEC_FLASH_BASE,
- 		.end		= REALVIEW_PB1176_SEC_FLASH_BASE + REALVIEW_PB1176_SEC_FLASH_SIZE - 1,
- 		.flags		= IORESOURCE_MEM,
- 	},
--};
--#ifdef CONFIG_REALVIEW_PB1176_SECURE_FLASH
--#define PB1176_FLASH_BLOCKS	2
--#else
--#define PB1176_FLASH_BLOCKS	1
- #endif
-+};
-+
-+static struct physmap_flash_data pb1176_rom_pdata = {
-+	.probe_type	= "map_rom",
-+	.width		= 4,
-+	.nr_parts	= 0,
-+};
-+
-+static struct resource pb1176_rom_resources[] = {
-+	/*
-+	 * This exposes the PB1176 DevChip ROM as an MTD ROM mapping.
-+	 * The reference manual states that this is actually a pseudo-ROM
-+	 * programmed in NVRAM.
-+	 */
-+	{
-+		.start		= REALVIEW_DC1176_ROM_BASE,
-+		.end		= REALVIEW_DC1176_ROM_BASE + SZ_16K - 1,
-+		.flags		= IORESOURCE_MEM,
-+	}
-+};
-+
-+static struct platform_device pb1176_rom_device = {
-+	.name		= "physmap-flash",
-+	.id		= -1,
-+	.num_resources	= ARRAY_SIZE(pb1176_rom_resources),
-+	.resource	= pb1176_rom_resources,
-+	.dev = {
-+		.platform_data = &pb1176_rom_pdata,
-+	},
-+};
- 
- static struct resource realview_pb1176_smsc911x_resources[] = {
- 	[0] = {
-@@ -338,7 +366,8 @@ static void __init realview_pb1176_init(void)
- #endif
- 
- 	realview_flash_register(realview_pb1176_flash_resources,
--				PB1176_FLASH_BLOCKS);
-+				ARRAY_SIZE(realview_pb1176_flash_resources));
-+	platform_device_register(&pb1176_rom_device);
- 	realview_eth_register(NULL, realview_pb1176_smsc911x_resources);
- 	platform_device_register(&realview_i2c_device);
- 	realview_usb_register(realview_pb1176_isp1761_resources);
--- 
-1.7.3.2
+Huang Shijie
+> Regards,
+>
+>    Wolfram
+>
