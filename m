@@ -1,14 +1,27 @@
-From: Linus Walleij <linus.walleij@stericsson.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: drop Integrator flash map Kconfig
-Date: Wed, 7 Sep 2011 09:50:29 +0200
-Message-ID: <1315381829-21548-1-git-send-email-linus.walleij@stericsson.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Marc Zyngier <marc.zyngier@arm.com>,
-	Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>,
-	linux-arm-kernel@lists.infradead.org
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R1G9w-0007aq-Na
+	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 11:19:13 +0000
+Received: by wyh11 with SMTP id 11so6348508wyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Sep 2011 04:19:11 -0700 (PDT)
+From: Yong Zhang <yong.zhang0@gmail.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 44/62] mtd: irq: Remove IRQF_DISABLED
+Date: Wed,  7 Sep 2011 16:10:41 +0800
+Message-Id: <1315383059-3673-45-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Baruch Siach <baruch@tkos.co.il>, Eric Miao <eric.y.miao@gmail.com>,
+	Samuel Ortiz <sameo@linux.intel.com>,
+	John Ogness <john.ogness@linutronix.de>, Lei Wen <leiwen@marvell.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	linux-mtd@lists.infradead.org, Andres Salomon <dilinger@queued.net>,
+	Jamie Iles <jamie@jamieiles.com>, tglx@linutronix.de,
+	David Woodhouse <dwmw2@infradead.org>, mingo@elte.hu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +31,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Linus Walleij <linus.walleij@linaro.org>
+This flag is a NOOP and can be removed now.
 
-The integrator flash has been deleted, even from the Makefile.
-Drop the Kconfig entry as well.
-
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
 ---
- drivers/mtd/maps/Kconfig |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/mxc_nand.c    |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c |    3 +--
+ drivers/mtd/nand/tmio_nand.c   |    2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index c0c328c..c3d02d4 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -339,10 +339,6 @@ config MTD_SOLUTIONENGINE
- 	  This enables access to the flash chips on the Hitachi SolutionEngine and
- 	  similar boards. Say 'Y' if you are building a kernel for such a board.
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 90df34c..5a1831b 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1196,7 +1196,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	else
+ 		host->irq_control(host, 0);
  
--config MTD_ARM_INTEGRATOR
--	tristate "CFI Flash device mapped on ARM Integrator/P720T"
--	depends on ARM && MTD_CFI
--
- config MTD_CDB89712
- 	tristate "Cirrus CDB89712 evaluation board mappings"
- 	depends on MTD_CFI && ARCH_CDB89712
+-	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
++	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+ 	if (err)
+ 		goto eirq;
+ 
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1fb3b3a..6f6f6fa 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1061,8 +1061,7 @@ struct pxa3xx_nand_info *alloc_nand_resource(struct platform_device *pdev)
+ 	/* initialize all interrupts to be disabled */
+ 	disable_int(info, NDSR_MASK);
+ 
+-	ret = request_irq(irq, pxa3xx_nand_irq, IRQF_DISABLED,
+-			  pdev->name, info);
++	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to request IRQ\n");
+ 		goto fail_free_buf;
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 11e8371..a3bb5e0 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -446,7 +446,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->chip_delay = 15;
+ 
+ 	retval = request_irq(irq, &tmio_irq,
+-				IRQF_DISABLED, dev_name(&dev->dev), tmio);
++				0, dev_name(&dev->dev), tmio);
+ 	if (retval) {
+ 		dev_err(&dev->dev, "request_irq error %d\n", retval);
+ 		goto err_irq;
 -- 
-1.7.3.2
+1.7.4.1
