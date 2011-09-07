@@ -1,12 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1OZB-0001gT-2Q
-	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:17:50 +0000
+	id 1R1OZN-0001dX-0G
+	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:18:02 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 07/14] mtd: nand: begin restructuring check_create
-Date: Wed, 7 Sep 2011 13:13:34 -0700
-Message-ID: <1315426421-16243-8-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 09/14] mtd: nand: report ECC errors properly when reading BBT
+Date: Wed, 7 Sep 2011 13:13:36 -0700
+Message-ID: <1315426421-16243-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -26,75 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We will begin restructuring the code for check_create so that we can
-make some important changes. For now, we should just begin to get rid of
-some goto statements to make things cleaner. This is the first step of a
-few, which are separated to make them easier to follow.
+Instead of just printing a warning when encountering ECC errors, we
+should return a proper error status and print a more informative
+warning. Later, we will handle these error messages in the upper layers
+of the BBT scan.
 
-This step should just be a code refactor.
+Note that this patch makes our check for ECC error codes a little bit
+more restrictive, leaving all unrecognized errors to the generic "else"
+clause. This shouldn't cause problems and could even be a benefit.
 
+This code is based on some findings reported by Matthieu Castet.
+
+Reported-by: Matthieu CASTET <matthieu.castet@parrot.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_bbt.c |   24 +++++-------------------
- 1 files changed, 5 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/nand_bbt.c |   17 ++++++++++++-----
+ 1 files changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index cba4c44..6b5b2c0 100644
+index 9d4f889..37df614 100644
 --- a/drivers/mtd/nand/nand_bbt.c
 +++ b/drivers/mtd/nand/nand_bbt.c
-@@ -898,30 +898,19 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 			if (td->pages[i] == -1 && md->pages[i] == -1) {
- 				writeops = 0x03;
- 				goto create;
--			}
--
--			if (td->pages[i] == -1) {
-+			} else if (td->pages[i] == -1) {
- 				rd = md;
- 				td->version[i] = md->version[i];
- 				writeops = 0x01;
--				goto writecheck;
--			}
--
--			if (md->pages[i] == -1) {
-+			} else if (md->pages[i] == -1) {
- 				rd = td;
- 				md->version[i] = td->version[i];
- 				writeops = 0x02;
--				goto writecheck;
--			}
--
--			if (td->version[i] == md->version[i]) {
-+			} else if (td->version[i] == md->version[i]) {
- 				rd = td;
- 				if (!(td->options & NAND_BBT_VERSION))
- 					rd2 = md;
--				goto writecheck;
--			}
--
--			if (((int8_t)(td->version[i] - md->version[i])) > 0) {
-+			} else if (((int8_t)(td->version[i] - md->version[i])) > 0) {
- 				rd = td;
- 				md->version[i] = td->version[i];
- 				writeops = 0x02;
-@@ -930,17 +919,14 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 				td->version[i] = md->version[i];
- 				writeops = 0x01;
- 			}
--
--			goto writecheck;
--
- 		} else {
- 			if (td->pages[i] == -1) {
- 				writeops = 0x01;
- 				goto create;
- 			}
- 			rd = td;
--			goto writecheck;
+@@ -178,7 +178,7 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
+ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 		struct nand_bbt_descr *td, int offs)
+ {
+-	int res, i, j, act = 0;
++	int res, ret = 0, i, j, act = 0;
+ 	struct nand_chip *this = mtd->priv;
+ 	size_t retlen, len, totlen;
+ 	loff_t from;
+@@ -204,11 +204,18 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
  		}
-+		goto writecheck;
- 	create:
- 		/* Create the bad block table by scanning the device? */
- 		if (!(td->options & NAND_BBT_CREATE))
+ 		res = mtd->read(mtd, from, len, &retlen, buf);
+ 		if (res < 0) {
+-			if (retlen != len) {
+-				pr_info("nand_bbt: error reading bad block table\n");
++			if (is_uncorrected_ecc_error(res)) {
++				pr_info("nand_bbt: ECC error in BBT at "
++					"0x%012llx\n", from & ~mtd->writesize);
++				return res;
++			} else if (is_corrected_ecc_error(res)) {
++				pr_info("nand_bbt: corrected error in BBT at "
++					"0x%012llx\n", from & ~mtd->writesize);
++				ret = res;
++			} else {
++				pr_info("nand_bbt: error reading BBT\n");
+ 				return res;
+ 			}
+-			pr_warn("nand_bbt: ECC error while reading bad block table\n");
+ 		}
+ 
+ 		/* Analyse data */
+@@ -242,7 +249,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 		totlen -= len;
+ 		from += len;
+ 	}
+-	return 0;
++	return ret;
+ }
+ 
+ /**
 -- 
 1.7.5.4
