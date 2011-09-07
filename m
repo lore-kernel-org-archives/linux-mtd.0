@@ -1,12 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1OZz-0001gT-0J
-	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:18:39 +0000
+	id 1R1OaE-0001gT-A7
+	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:18:55 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 10/14] mtd: nand: scrub BBT on ECC errors
-Date: Wed, 7 Sep 2011 13:13:37 -0700
-Message-ID: <1315426421-16243-11-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 11/14] mtd: nand: wait to set BBT version
+Date: Wed, 7 Sep 2011 13:13:38 -0700
+Message-ID: <1315426421-16243-12-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -26,79 +26,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that `read_bbt()' returns ECC error codes properly, we handle those
-codes when checking the integrity of our flash-based BBT.
+Because there are so many cases of checking, writing, and re-writing of
+the bad block table(s), we might as well wait until the we've settled on
+a valid, clean copy of the table. This also prevents us from falsely
+incrementing the table version. For example, we may have the following:
 
-The modifications can be described by this new policy:
+  Primary table, with version 0x02
+  Mirror table, with version 0x01
+  Primary table has uncorrectable ECC errors
 
-*) On any uncorrected ECC error, we invalidate the corresponding table
-   and retry our version-checking integrity logic.
-*) On corrected ECC errors, we mark both tables for re-writing to flash
-   (a.k.a. scrubbing).
+If we don't have this fix applied, then we will:
 
-Current integrity checks (i.e., comparing version numbers, etc.) should
-take care of all the cases that result in rescanning the device for bad
-blocks or falling back to the BBT as found in the mirror descriptor.
+  Choose to read the primary table (higher version)
+  Set mirror table version to 0x02
+  Read back primary table
+  Invalidate table because of ECC errors
+  Retry readback operation with mirror table, now version 0x02
+  Mirrored table reads cleanly
+  Writeback BBT to primary table location (with "version 0x02")
+
+However, the mirrored table shouldn't have a new version number.
+Instead, we actually want:
+
+  Choose to read the primary table (higher version)
+  Read back primary table
+  Invalidate table because of ECC errors
+  Retry readback with mirror table (version 0x01)
+  Mirrored table reads cleanly
+  Set both tables to version 0x01
+  Writeback BBT to primary table location (version 0x01)
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_bbt.c |   29 ++++++++++++++++++++++++-----
- 1 files changed, 24 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/nand_bbt.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 37df614..cc24119 100644
+index cc24119..2009fbb 100644
 --- a/drivers/mtd/nand/nand_bbt.c
 +++ b/drivers/mtd/nand/nand_bbt.c
-@@ -882,7 +882,7 @@ static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *b
-  */
- static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *bd)
- {
--	int i, chips, writeops, create, chipsel, res;
-+	int i, chips, writeops, create, chipsel, res, res2;
- 	struct nand_chip *this = mtd->priv;
- 	struct nand_bbt_descr *td = this->bbt_td;
- 	struct nand_bbt_descr *md = this->bbt_md;
-@@ -899,6 +899,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 		create = 0;
- 		rd = NULL;
- 		rd2 = NULL;
-+		res = res2 = 0;
- 		/* Per chip or per device? */
- 		chipsel = (td->options & NAND_BBT_PERCHIP) ? i : -1;
- 		/* Mirrored table available? */
-@@ -951,11 +952,29 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 		}
+@@ -909,11 +909,9 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 				writeops = 0x03;
+ 			} else if (td->pages[i] == -1) {
+ 				rd = md;
+-				td->version[i] = md->version[i];
+ 				writeops = 0x01;
+ 			} else if (md->pages[i] == -1) {
+ 				rd = td;
+-				md->version[i] = td->version[i];
+ 				writeops = 0x02;
+ 			} else if (td->version[i] == md->version[i]) {
+ 				rd = td;
+@@ -921,11 +919,9 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 					rd2 = md;
+ 			} else if (((int8_t)(td->version[i] - md->version[i])) > 0) {
+ 				rd = td;
+-				md->version[i] = td->version[i];
+ 				writeops = 0x02;
+ 			} else {
+ 				rd = md;
+-				td->version[i] = md->version[i];
+ 				writeops = 0x01;
+ 			}
+ 		} else {
+@@ -957,6 +953,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 			if (is_uncorrected_ecc_error(res)) {
+ 				/* Mark table as invalid */
+ 				rd->pages[i] = -1;
++				rd->version[i] = 0;
+ 				i--;
+ 				continue;
+ 			}
+@@ -967,6 +964,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 			if (is_uncorrected_ecc_error(res2)) {
+ 				/* Mark table as invalid */
+ 				rd2->pages[i] = -1;
++				rd2->version[i] = 0;
+ 				i--;
+ 				continue;
+ 			}
+@@ -976,6 +974,12 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 		if (is_corrected_ecc_error(res) || is_corrected_ecc_error(res2))
+ 			writeops = 0x03;
  
- 		/* Read back first? */
--		if (rd)
--			read_abs_bbt(mtd, buf, rd, chipsel);
-+		if (rd) {
-+			res = read_abs_bbt(mtd, buf, rd, chipsel);
-+			if (is_uncorrected_ecc_error(res)) {
-+				/* Mark table as invalid */
-+				rd->pages[i] = -1;
-+				i--;
-+				continue;
-+			}
-+		}
- 		/* If they weren't versioned, read both */
--		if (rd2)
--			read_abs_bbt(mtd, buf, rd2, chipsel);
-+		if (rd2) {
-+			res2 = read_abs_bbt(mtd, buf, rd2, chipsel);
-+			if (is_uncorrected_ecc_error(res2)) {
-+				/* Mark table as invalid */
-+				rd2->pages[i] = -1;
-+				i--;
-+				continue;
-+			}
++		/* Update version numbers before writing */
++		if (md) {
++			td->version[i] = max(td->version[i], md->version[i]);
++			md->version[i] = td->version[i];
 +		}
 +
-+		/* Scrub the flash table(s)? */
-+		if (is_corrected_ecc_error(res) || is_corrected_ecc_error(res2))
-+			writeops = 0x03;
- 
  		/* Write the bad block table to the device? */
  		if ((writeops & 0x01) && (td->options & NAND_BBT_WRITE)) {
+ 			res = write_bbt(mtd, buf, td, md, chipsel);
 -- 
 1.7.5.4
