@@ -1,23 +1,19 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R14UV-0005mf-GI
-	for linux-mtd@lists.infradead.org; Tue, 06 Sep 2011 22:51:40 +0000
-Received: by yxk8 with SMTP id 8so3522137yxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Sep 2011 15:51:38 -0700 (PDT)
-Message-ID: <4E66A3F3.2020604@gmail.com>
-Date: Wed, 07 Sep 2011 10:51:31 +1200
-From: CJ <cjpostor@gmail.com>
+Message-ID: <4E672823.4080003@arm.com>
+Date: Wed, 07 Sep 2011 09:15:31 +0100
+From: Marc Zyngier <marc.zyngier@arm.com>
 MIME-Version: 1.0
-To: vignesh rajendran <vickylinuxer@gmail.com>
-Subject: Re: UBIFS + device issue
-References: <4E65A33F.5030405@gmail.com>
-	<CALoDM-HP2Q6zhnGkMCFWp7DfBy+EjTq0Y3aR2Yo_z+8a-FGSCA@mail.gmail.com>
-In-Reply-To: <CALoDM-HP2Q6zhnGkMCFWp7DfBy+EjTq0Y3aR2Yo_z+8a-FGSCA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Linus Walleij <linus.walleij@stericsson.com>
+Subject: Re: [PATCH] mtd: drop Integrator flash map Kconfig
+References: <1315381829-21548-1-git-send-email-linus.walleij@stericsson.com>
+In-Reply-To: <1315381829-21548-1-git-send-email-linus.walleij@stericsson.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/09/11 00:21, vignesh rajendran wrote:
-> Hi
->
-> I am not getting your problem..Your camera device is not 
-> detecting..right..? What kernel version you are using...?
->
-> �and check /dev/video0 is there..
->
->
-> Regards
->
-> Vignesh Rajendran
->
->
->
->
-Hi Vignesh,
+On 07/09/11 08:50, Linus Walleij wrote:
+> From: Linus Walleij <linus.walleij@linaro.org>
+> 
+> The integrator flash has been deleted, even from the Makefile.
+> Drop the Kconfig entry as well.
+> 
+> Cc: Marc Zyngier <marc.zyngier@arm.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-We are using the latest stable kernel 3.0.4
-The camera is being detected.. we have video0 the hardware modules are 
-all loading. The only thing not being setup is /dev/media0
+I wonder how I managed to drop that hunk. Oh well...
+Thanks for noticing this!
 
-The weird thing is that it works when running from SD card with EXT4, 
-but not from NAND with UBIFS. There may be another variable that is 
-changing - but it is not software or kernel.
-
-Has anyone observed anything like this before?
-
-Cheers,
-CJ
+Acked-by: Marc Zyngier <marc.zyngier@arm.com>
+-- 
+Jazz is not dead. It just smells funny...
