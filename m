@@ -1,12 +1,12 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1OWt-0001Pp-90
-	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:15:27 +0000
+	id 1R1OX4-0001Pp-5E
+	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2011 20:15:38 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH 02/14] mtd: nand: do not ignore all ECC errors
-Date: Wed, 7 Sep 2011 13:13:29 -0700
-Message-ID: <1315426421-16243-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 03/14] mtd: define `is_ecc_error()' macros
+Date: Wed, 7 Sep 2011 13:13:30 -0700
+Message-ID: <1315426421-16243-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -26,50 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are a few reasons not to ignore ECC errors here.
-
-First, mtd->read_oob is being called in raw mode, so there should be no
-error correction in the first place.
-
-Second, if we change this such that there *is* error correction in this
-function, then we will want to pass the error message upward.
-
-In fact, the code I introduced to "ignore ECC errors" would have been
-better if it had just placed this test down in `scan_block_full()' in
-the first place. We would like to ignore ECC errors when we are simply
-checking for bad block markers (e.g., factory marked), but we may not
-want to ignore ECC errors when scanning OOB for a flash-based BBT
-pattern (in `scan_read_raw()'; note that the return codes from
-`scan_read_raw()' are not actually handled yet).
+These macros can be used instead of including -EUCLEAN and -EBADMSG all
+over the place. They should help make code a little bit more readable.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_bbt.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ include/linux/mtd/mtd.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index cbf9b69..fcfaf06 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -313,8 +313,7 @@ static int scan_read_raw_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index ead70ed..1dd74f4 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -348,4 +348,9 @@ void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size);
  
- 		res = mtd->read_oob(mtd, offs, &ops);
+ void mtd_erase_callback(struct erase_info *instr);
  
--		/* Ignore ECC errors when checking for BBM */
--		if (res && res != -EUCLEAN && res != -EBADMSG)
-+		if (res)
- 			return res;
- 
- 		buf += mtd->oobsize + mtd->writesize;
-@@ -400,7 +399,8 @@ static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
- 	int ret, j;
- 
- 	ret = scan_read_raw_oob(mtd, buf, offs, readlen);
--	if (ret)
-+	/* Ignore ECC errors when checking for BBM */
-+	if (ret && ret != -EUCLEAN && ret != -EBADMSG)
- 		return ret;
- 
- 	for (j = 0; j < len; j++, buf += scanlen) {
++#define is_corrected_ecc_error(error) (error == -EUCLEAN)
++#define is_uncorrected_ecc_error(error) (error == -EBADMSG)
++#define is_ecc_error(error) ((is_corrected_ecc_error(error) || \
++			      is_uncorrected_ecc_error(error)))
++
+ #endif /* __MTD_MTD_H__ */
 -- 
 1.7.5.4
