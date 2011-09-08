@@ -1,20 +1,18 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1cbi-0003eV-NV
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 11:17:23 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'Stelling Carsten' <Carsten.Stelling@goerlitz.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 8 Sep 2011 07:18:31 -0400
-Subject: RE: Security enhancement for UBIFS with secure erase feature
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32FD0A8986E@dekaexchange07.deka.local>
-References: <02855DE82B1CA94A9115CCD637A1325643CBFDDD88@goemail-server.goerlitz.int>
-In-Reply-To: <02855DE82B1CA94A9115CCD637A1325643CBFDDD88@goemail-server.goerlitz.int>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1R1eGB-00056D-Cj
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 13:03:16 +0000
+From: "Saxena, Parth" <parth.saxena@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] ti816x: add support for nand on ti8168 evm
+Date: Thu, 8 Sep 2011 18:33:02 +0530
+Message-ID: <1315486982-30109-1-git-send-email-parth.saxena@ti.com>
+In-Reply-To: <parth.saxena@ti.com>
+References: <parth.saxena@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain
+Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>, "Saxena,
+	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +22,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Carsten:
+Add partition table for NAND device on TI8168 EVM
+and initialise the NAND module.
 
-  Unfortunately, the data sheets for many Flash parts
-  specifically prohibit re-writing a page, even if
-  you're driving the bits towards more zeroes. I
-  think you'll find this is especially true for MLC
-  devices.
+Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
+Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
+---
 
-                                 Atlant
+This patch is tested on top of linux-omap/master and
+Hemant's patches submitted recently.
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
-.infradead.org] On Behalf Of Stelling Carsten
-Sent: Monday, September 05, 2011 12:01
-To: linux-mtd@lists.infradead.org
-Subject: Security enhancement for UBIFS with secure erase feature
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg53457.html
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg54296.html
 
-Hi everybody,
+ arch/arm/mach-omap2/board-ti8168evm.c |   39 +++++++++++++++++++++++++++++++++
+ 1 files changed, 39 insertions(+), 0 deletions(-)
 
-When building security relevant (embedded) applications, personal privacy
-is of major importance.
-
-Therefore it would be nice to have a configuration option to invalidate the
-content of a deleted file in UBIFS. This feature shall allow an application=
- to
-ensure that, when a file is deleted, its contents are fully erased from the=
- flash.
-I.e. that each time a block is marked for erase, this block is written all =
-zeros.
-Writing zeros without erasing an entire page should be possible by design.
-
-Giving such an option on a file by file basis (ioctl) would be optimal, bec=
-ause
-wiping out the content of a deleted file is time and resource consuming and
-not acceptable for all kinds of applications using UBIFS.
-
-Are there any plans for such a security enhancement in UBIFS?
-
-Regards
-
-Carsten
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
- Click https://www.mailcontrol.com/sr/FcTd+AJENrvTndxI!oX7UsdpzMR7Bo2KZ8LAR=
-fqDk+yP+UC7hxpimCzUyXYqwgiFbrCRFdjEt0Ad5rLFZ!o!pA=3D=3D  to report this ema=
-il as spam.
-
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+diff --git a/arch/arm/mach-omap2/board-ti8168evm.c b/arch/arm/mach-omap2/board-ti8168evm.c
+index e516a04..87953bb 100644
+--- a/arch/arm/mach-omap2/board-ti8168evm.c
++++ b/arch/arm/mach-omap2/board-ti8168evm.c
+@@ -14,6 +14,7 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/mtd/nand.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/mach-types.h>
+@@ -23,6 +24,42 @@
+ #include <plat/irqs.h>
+ #include <plat/board.h>
+ #include <plat/common.h>
++#include <plat/gpmc.h>
++#include <plat/nand.h>
++
++#include "board-flash.h"
++
++#define NAND_BLOCK_SIZE		SZ_128K
++
++static struct mtd_partition ti816x_nand_partitions[] = {
++/* All the partition sizes are listed in terms of NAND block size */
++	{
++		.name		= "U-Boot",
++		.offset		= 0,			/* Offset = 0x0 */
++		.size		= 18 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot Env",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x240000 */
++		.size		= 2 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Kernel",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
++		.size		= 34 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "File System",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x6C0000 */
++		.size		= 1601 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Reserved",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0xCEE0000 */
++		.size		= MTDPART_SIZ_FULL,
++	},
++};
+ 
+ static struct omap_board_config_kernel ti8168_evm_config[] __initdata = {
+ };
+@@ -35,6 +72,8 @@ static void __init ti8168_init_early(void)
+ 
+ static void __init ti8168_evm_init(void)
+ {
++	board_nand_init(ti816x_nand_partitions,
++		ARRAY_SIZE(ti816x_nand_partitions), 0, NAND_BUSWIDTH_16);
+ 	omap_serial_init();
+ 	omap_board_config = ti8168_evm_config;
+ 	omap_board_config_size = ARRAY_SIZE(ti8168_evm_config);
+-- 
+1.6.2.4
