@@ -1,21 +1,24 @@
-Received: from mout02.rz-online.net ([212.7.160.42])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1fha-0006bx-VF
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 14:35:39 +0000
-Received: from goemail-server.goerlitz.int (gw2.wuppertal.de [217.146.148.194]
-	(may be forged)) (authenticated bits=0)
-	by mout02.rz-online.net (8.14.0/8.12.10) with ESMTP id p88EZUsw021834
-	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Sep 2011 16:35:34 +0200
-From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 8 Sep 2011 16:35:29 +0200
-Subject: Security enhancement for UBIFS with secure erase feature
-Message-ID: <02855DE82B1CA94A9115CCD637A1325643CD9EC4A3@goemail-server.goerlitz.int>
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from moutng.kundenserver.de ([212.227.17.9])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R1gUW-0007Rm-01
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 15:26:12 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
+Date: Thu, 8 Sep 2011 17:26:00 +0200
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+	<1315280704.19067.14.camel@sauron>
+	<1315282208.19067.24.camel@sauron>
+In-Reply-To: <1315282208.19067.24.camel@sauron>
 MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201109081726.00769.arnd@arndb.de>
+Cc: linux-embedded <linux-embedded@vger.kernel.org>,
+	david.wagner@free-electrons.com, lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-< Are there any plans for such a security enhancement in UBIFS?
+On Tuesday 06 September 2011, Artem Bityutskiy wrote:
+> Not sure about the bus approach - David, could you take a look at it
+> please? If we can handle errors there - then we could indeed re-use the
+> UBI control device. We could even re-use the ioctl data structures for
+> UBI volumes creation/removal - we have plenty of space there reserved
+> for future extensions.
 
-Hello Atlant,
+I would generally recommend using new ioctl commands. ioctl numbers
+are cheap, but complexity in data structures is not, because every
+user who wants to deal with the data structures has to understand
+them. Also, changing the ABI is always tricky since you have to
+provide backward and forwards compatibility with existing kernels
+and with existing user space.
 
-you're right. Writing zeroes is not applicable to all kinds of flash techno=
-logy.
-
-Are there any plans to support privacy in UBIFS?
-
-In my opinion privacy should be guaranteed by the file system, so that any
-application can rely on its security features.
-
-There're other solutions, e.g. to encrypt the content of each file with a u=
-nique
-key stored in the metadata area of that particular file. Although this solu=
-tion
-needs to secure erase the key associated with the deleted file too.
-I see, that might be a real dilemma.
-
-Are there any suggestions?
-
-Regards,
-
-Carsten
+	Arnd
