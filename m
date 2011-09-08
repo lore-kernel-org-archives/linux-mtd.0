@@ -1,18 +1,24 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1eGB-00056D-Cj
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 13:03:16 +0000
-From: "Saxena, Parth" <parth.saxena@ti.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] ti816x: add support for nand on ti8168 evm
-Date: Thu, 8 Sep 2011 18:33:02 +0530
-Message-ID: <1315486982-30109-1-git-send-email-parth.saxena@ti.com>
-In-Reply-To: <parth.saxena@ti.com>
-References: <parth.saxena@ti.com>
+	id 1R1ebu-0005Kp-OV
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 13:25:43 +0000
+Received: by yxi11 with SMTP id 11so644326yxi.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 08 Sep 2011 06:25:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>, "Saxena,
-	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org
+In-Reply-To: <20110907191741.GO32018@logfs.org>
+References: <CAMjNe_fdRw=5-MjOii8aGfEvejPo-dR6Rpf1=JQf_gMJ3U9jfQ@mail.gmail.com>
+	<20110907065621.GL32018@logfs.org>
+	<CAMjNe_fd8S08SG45kOASDkUFPMuT0WoOHZ1cGnTqk5pKj7DxgA@mail.gmail.com>
+	<20110907191741.GO32018@logfs.org>
+Date: Thu, 8 Sep 2011 18:55:40 +0530
+Message-ID: <CAMjNe_fpTTTrvrVnVQgw2VZsnt-Mv26i6Cu_0iysQS-vwsb3WA@mail.gmail.com>
+Subject: Re: logfs: max 4K writepage size
+From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add partition table for NAND device on TI8168 EVM
-and initialise the NAND module.
+On Thu, Sep 8, 2011 at 12:47 AM, J=F6rn Engel <joern@logfs.org> wrote:
 
-Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
-Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
----
+> You can use mtd0 instead of /dev/mtd0, similar to jffs2.
 
-This patch is tested on top of linux-omap/master and
-Hemant's patches submitted recently.
+With logfs, I am a bit confused about when ultimately the data is
+written to the flash and in what units it is written as.
+The mtd_write() function in dev_mtd.c does writes in units of 4096 bytes.
+With Nand flash writepagesize >4K, using "mklogfs mtd0 & mount mtd0" ,
+won't logfs  pass non-flashpage aligned writes to the nand flash
+driver?.
 
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg53457.html
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg54296.html
-
- arch/arm/mach-omap2/board-ti8168evm.c |   39 +++++++++++++++++++++++++++++++++
- 1 files changed, 39 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-omap2/board-ti8168evm.c b/arch/arm/mach-omap2/board-ti8168evm.c
-index e516a04..87953bb 100644
---- a/arch/arm/mach-omap2/board-ti8168evm.c
-+++ b/arch/arm/mach-omap2/board-ti8168evm.c
-@@ -14,6 +14,7 @@
-  */
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/mtd/nand.h>
- 
- #include <mach/hardware.h>
- #include <asm/mach-types.h>
-@@ -23,6 +24,42 @@
- #include <plat/irqs.h>
- #include <plat/board.h>
- #include <plat/common.h>
-+#include <plat/gpmc.h>
-+#include <plat/nand.h>
-+
-+#include "board-flash.h"
-+
-+#define NAND_BLOCK_SIZE		SZ_128K
-+
-+static struct mtd_partition ti816x_nand_partitions[] = {
-+/* All the partition sizes are listed in terms of NAND block size */
-+	{
-+		.name		= "U-Boot",
-+		.offset		= 0,			/* Offset = 0x0 */
-+		.size		= 18 * NAND_BLOCK_SIZE,
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "U-Boot Env",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x240000 */
-+		.size		= 2 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "Kernel",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
-+		.size		= 34 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "File System",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x6C0000 */
-+		.size		= 1601 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "Reserved",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0xCEE0000 */
-+		.size		= MTDPART_SIZ_FULL,
-+	},
-+};
- 
- static struct omap_board_config_kernel ti8168_evm_config[] __initdata = {
- };
-@@ -35,6 +72,8 @@ static void __init ti8168_init_early(void)
- 
- static void __init ti8168_evm_init(void)
- {
-+	board_nand_init(ti816x_nand_partitions,
-+		ARRAY_SIZE(ti816x_nand_partitions), 0, NAND_BUSWIDTH_16);
- 	omap_serial_init();
- 	omap_board_config = ti8168_evm_config;
- 	omap_board_config_size = ARRAY_SIZE(ti8168_evm_config);
--- 
-1.6.2.4
+thanks,
+mugunthan
