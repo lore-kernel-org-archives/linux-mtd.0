@@ -1,24 +1,21 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mout02.rz-online.net ([212.7.160.42])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1ebu-0005Kp-OV
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 13:25:43 +0000
-Received: by yxi11 with SMTP id 11so644326yxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Sep 2011 06:25:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20110907191741.GO32018@logfs.org>
-References: <CAMjNe_fdRw=5-MjOii8aGfEvejPo-dR6Rpf1=JQf_gMJ3U9jfQ@mail.gmail.com>
-	<20110907065621.GL32018@logfs.org>
-	<CAMjNe_fd8S08SG45kOASDkUFPMuT0WoOHZ1cGnTqk5pKj7DxgA@mail.gmail.com>
-	<20110907191741.GO32018@logfs.org>
-Date: Thu, 8 Sep 2011 18:55:40 +0530
-Message-ID: <CAMjNe_fpTTTrvrVnVQgw2VZsnt-Mv26i6Cu_0iysQS-vwsb3WA@mail.gmail.com>
-Subject: Re: logfs: max 4K writepage size
-From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1R1fha-0006bx-VF
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2011 14:35:39 +0000
+Received: from goemail-server.goerlitz.int (gw2.wuppertal.de [217.146.148.194]
+	(may be forged)) (authenticated bits=0)
+	by mout02.rz-online.net (8.14.0/8.12.10) with ESMTP id p88EZUsw021834
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Sep 2011 16:35:34 +0200
+From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 8 Sep 2011 16:35:29 +0200
+Subject: Security enhancement for UBIFS with secure erase feature
+Message-ID: <02855DE82B1CA94A9115CCD637A1325643CD9EC4A3@goemail-server.goerlitz.int>
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 8, 2011 at 12:47 AM, J=F6rn Engel <joern@logfs.org> wrote:
+< Are there any plans for such a security enhancement in UBIFS?
 
-> You can use mtd0 instead of /dev/mtd0, similar to jffs2.
+Hello Atlant,
 
-With logfs, I am a bit confused about when ultimately the data is
-written to the flash and in what units it is written as.
-The mtd_write() function in dev_mtd.c does writes in units of 4096 bytes.
-With Nand flash writepagesize >4K, using "mklogfs mtd0 & mount mtd0" ,
-won't logfs  pass non-flashpage aligned writes to the nand flash
-driver?.
+you're right. Writing zeroes is not applicable to all kinds of flash techno=
+logy.
 
-thanks,
-mugunthan
+Are there any plans to support privacy in UBIFS?
+
+In my opinion privacy should be guaranteed by the file system, so that any
+application can rely on its security features.
+
+There're other solutions, e.g. to encrypt the content of each file with a u=
+nique
+key stored in the metadata area of that particular file. Although this solu=
+tion
+needs to secure erase the key associated with the deleted file too.
+I see, that might be a real dilemma.
+
+Are there any suggestions?
+
+Regards,
+
+Carsten
