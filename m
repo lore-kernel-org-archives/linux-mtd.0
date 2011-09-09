@@ -1,27 +1,21 @@
-Received: from mail-yi0-f49.google.com ([209.85.218.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R22xJ-0003oa-5A
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 15:25:26 +0000
-Received: by yic13 with SMTP id 13so1019648yic.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 09 Sep 2011 08:25:22 -0700 (PDT)
-Subject: Re: [PATCHv3] UBI: new module ubiblk: block layer on top of UBI
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 09 Sep 2011 18:27:43 +0300
-In-Reply-To: <201109091625.13253.arnd@arndb.de>
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
-	<201109081726.00769.arnd@arndb.de> <1315569206.7905.41.camel@sauron>
-	<201109091625.13253.arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R24Qr-0005RD-5j
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 17:00:02 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v2 07/12] mtd: add MEMWRITE ioctl
+Date: Fri, 9 Sep 2011 09:59:03 -0700
+Message-ID: <1315587543-15598-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1314755147-17756-8-git-send-email-computersforpeace@gmail.com>
+References: <1314755147-17756-8-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315582069.7905.82.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-embedded <linux-embedded@vger.kernel.org>,
-	david.wagner@free-electrons.com, lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
+	linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
 	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,65 +25,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-09-09 at 16:25 +0200, Arnd Bergmann wrote:
-> On Friday 09 September 2011, Artem Bityutskiy wrote:
-> > On Thu, 2011-09-08 at 17:26 +0200, Arnd Bergmann wrote:
-> > > On Tuesday 06 September 2011, Artem Bityutskiy wrote:
-> > > > Not sure about the bus approach - David, could you take a look at it
-> > > > please? If we can handle errors there - then we could indeed re-use the
-> > > > UBI control device. We could even re-use the ioctl data structures for
-> > > > UBI volumes creation/removal - we have plenty of space there reserved
-> > > > for future extensions.
-> > > 
-> > > I would generally recommend using new ioctl commands. ioctl numbers
-> > > are cheap, but complexity in data structures is not, because every
-> > > user who wants to deal with the data structures has to understand
-> > > them. Also, changing the ABI is always tricky since you have to
-> > > provide backward and forwards compatibility with existing kernels
-> > > and with existing user space.
-> > 
-> > Hmm, what do we do if ubiblk module is not loaded, and UBI would have
-> > to return an error (because the block device cannot be created), how
-> > will UBI know that ubiblk is not there? Any direct call to ubiblk from
-> > UBI would be a direct dependency and would require ubiblk to be always
-> > loaded, which is bad.
-> 
-> No, the idea of this approach is that the main ubi driver creates
-> a device, which can always succeed. It's just that there won't
-> be a block device node created, because that is part of what
-> the ubiblk driver does.
-> 
-> Compare this to how scsi works:
-> 
-> A scsi host driver scans the host controller and adds scsi devices
-> internal to the kernel, each of them have a specific type (disk,
-> tape, ...). If the scsi disk driver is loaded, it will create
-> a blockdev for each disk device. It doesn't matter in which order
-> the drivers are loaded though.
-> 
-> In case of ubiblk, it's similar, except that there is no way for
-> the ubi layer to know if some partition should be a block device or
-> not, so it relies on user space to tell it.
+Implement a new ioctl for writing both page data and OOB to flash at the
+same time. This ioctl is intended to be a generic interface that can
+replace other ioctls (MEMWRITEOOB and MEMWRITEOOB64) and cover the
+functionality of several other old ones, e.g., MEMWRITE can:
 
-There is another difference, though. Disk types are persistent. UBI
-volumes types are not necessarily persistent:
+* write autoplaced OOB instead of using ECCGETLAYOUT (deprecated) and
+  working around the reserved areas
+* write raw (no ECC) OOB instead of using MTDFILEMODE to set the
+  per-file-descriptor MTD_FILE_MODE_RAW
+* write raw (no ECC) data instead of using MTDFILEMODE
+  (MTD_FILE_MODE_RAW) and using standard character device "write"
 
-I may create a "just UBI volume", flash something there, may-be re-size,
-do other things.
+This ioctl is especially useful for MLC NAND, which cannot be written
+twice (i.e., we cannot successfully write the page data and OOB in two
+separate operations). Instead, MEMWRITE can write both in a single
+operation.
 
-Then I want to "turn" it into a "ubiblk" volume without destroying it.
-So I call the corresponding ioctl. And my requirements are:
+Note that this ioctl is not affected by the MTD file mode (i.e.,
+MTD_FILE_MODE_RAW vs. MTD_FILE_MODE_NORMAL), since it receives its write
+mode as an input parameter.
 
-1) if ubiblk is not loaded, I want to get -ENODEV or something
-2) if ubiblk fails, I want to get -ESOMETHING as well.
-3) I want to be blocked while ubiblk is creating the block device.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+RFC -> PATCH "v1": * the ioctl is now named MEMWRITE instead of
+                     MEMWRITEDATAOOB for simplicity and to emphasize its
+                     generic, multi-purpose functionality.
+                   * ioctl functionality was moved inside its own
+                     function to help with readability.
+                   * padding was added to the renamed
+                     `struct mtd_write_req'
+                   * user buffers were split into separate OOB and data
+                     buffers
+                   * other small fixes?
 
-Similarly, I may want to ask ubiblk to "release" the volume and turn it
-to "just a volume" again.
+v1 -> v2:          Change __u32 to __u64 for future-proof compatability;
+                   Is this a sane enough idea?
 
-So I am not sure the analogy is very close, but thanks a lot for
-providing it - it makes things clearer.
+ drivers/mtd/mtdchar.c |   56 +++++++++++++++++++++++++++++++++++++++++++++++++
+ include/mtd/mtd-abi.h |   11 +++++++++
+ 2 files changed, 67 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 4004f2b..1547e2a 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -566,6 +566,55 @@ static int mtd_blkpg_ioctl(struct mtd_info *mtd,
+ 	}
+ }
+ 
++static int mtd_write_ioctl(struct mtd_info *mtd,
++		struct mtd_write_req __user *argp)
++{
++	struct mtd_write_req req;
++	struct mtd_oob_ops ops;
++	void __user *usr_data, *usr_oob;
++	int ret;
++
++	if (copy_from_user(&req, argp, sizeof(req)) ||
++			!access_ok(VERIFY_READ, req.usr_data, req.len) ||
++			!access_ok(VERIFY_READ, req.usr_oob, req.ooblen))
++		return -EFAULT;
++	if (!mtd->write_oob)
++		return -EOPNOTSUPP;
++
++	ops.mode = req.mode;
++	ops.len = (size_t)req.len;
++	ops.ooblen = (size_t)req.ooblen;
++	ops.ooboffs = 0;
++
++	usr_data = (void __user *)(uintptr_t)req.usr_data;
++	usr_oob = (void __user *)(uintptr_t)req.usr_oob;
++
++	if (req.usr_data) {
++		ops.datbuf = memdup_user(usr_data, ops.len);
++		if (IS_ERR(ops.datbuf))
++			return PTR_ERR(ops.datbuf);
++	} else {
++		ops.datbuf = NULL;
++	}
++
++	if (req.usr_oob) {
++		ops.oobbuf = memdup_user(usr_oob, ops.ooblen);
++		if (IS_ERR(ops.oobbuf)) {
++			kfree(ops.datbuf);
++			return PTR_ERR(ops.oobbuf);
++		}
++	} else {
++		ops.oobbuf = NULL;
++	}
++
++	ret = mtd->write_oob(mtd, (loff_t)req.start, &ops);
++
++	kfree(ops.datbuf);
++	kfree(ops.oobbuf);
++
++	return ret;
++}
++
+ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ {
+ 	struct mtd_file_info *mfi = file->private_data;
+@@ -753,6 +802,13 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		break;
+ 	}
+ 
++	case MEMWRITE:
++	{
++		ret = mtd_write_ioctl(mtd,
++		      (struct mtd_write_req __user *)arg);
++		break;
++	}
++
+ 	case MEMLOCK:
+ 	{
+ 		struct erase_info_user einfo;
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 1885aa9..1a16046 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -60,6 +60,16 @@ enum {
+ 	MTD_OPS_RAW = 2,
+ };
+ 
++struct mtd_write_req {
++	__u64 start;
++	__u64 len;
++	__u64 ooblen;
++	__u64 usr_data;
++	__u64 usr_oob;
++	__u8 mode;
++	__u8 padding[7];
++};
++
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+@@ -147,6 +157,7 @@ struct otp_info {
+ #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
+ #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+ #define MEMISLOCKED		_IOR('M', 23, struct erase_info_user)
++#define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
+ 
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.5.4
