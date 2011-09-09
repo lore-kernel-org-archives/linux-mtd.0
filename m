@@ -1,23 +1,24 @@
 Received: from lo.gmane.org ([80.91.229.12])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R1xsK-0007WK-Fu
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 09:59:58 +0000
+	id 1R1xsX-0007YZ-IG
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 10:00:11 +0000
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1R1xsF-0007MV-Qa
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 11:59:51 +0200
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1R1xsW-0007Ug-BT
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2011 12:00:08 +0200
 Received: from 89-97-203-114.ip19.fastwebnet.it ([89.97.203.114])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2011 11:59:51 +0200
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2011 12:00:08 +0200
 Received: from marco_cantu_ranzani by 89-97-203-114.ip19.fastwebnet.it with
 	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2011 11:59:51 +0200
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2011 12:00:08 +0200
 To: linux-mtd@lists.infradead.org
 From: marco <marco_cantu_ranzani@libero.it>
-Subject: Re: can't mount ubifs after resizing with ubirsvol
-Date: Fri, 9 Sep 2011 09:59:38 +0000 (UTC)
-Message-ID: <loom.20110909T115925-970@post.gmane.org>
-References: <CAMwGMjxX4q2oYt-KDwoq87WP77Phbd+xEdUyL-VkaLLvYCeqfA@mail.gmail.com>
+Subject: Re: ubiattach problem
+Date: Fri, 9 Sep 2011 09:53:57 +0000 (UTC)
+Message-ID: <loom.20110909T115341-832@post.gmane.org>
+References: <1246888221.17871.5.camel@tlvorens3lnx>
+	<1246889142.20721.293.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -30,113 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jon Ringle <jon <at> ringle.org> writes:
+Artem Bityutskiy <dedekind <at> infradead.org> writes:
 
 > 
-> Hi,
+> On Mon, 2009-07-06 at 16:50 +0300, Oren wrote:
+> > HI,
+> > 
+> > I am trying to attached a ubi image to an MTD nand device.
+> > I am using kerenl version 2.6.27.18.
+> > using latest MTD-UTILS + ubi_utils.
+> > 
+> > For some reosone i get UBI error while trying to attache..
+> > DO i miss someting?
+> > 
+> > 
+> > dev:    size   erasesize  name
+> > mtd0: 01000000 00020000 "NAND-block1"
+> > mtd1: 01e00000 00020000 "jffs2"
+> > mtd2: 05200000 00020000 "NAND-block2"
+> > ./ubinfo
+> > UBI version:                    1
+> > Count of UBI devices:           0
+> > UBI control device major/minor: 10:63
+> > ubiformat /dev/mtd0 -s 2048 -f ubi_ncomp.img
+> > ubiformat: mtd0 (nand), size 16777216 bytes (16.0 MiB), 128 eraseblocks
+> > of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> > libscan: scanning eraseblock 127 -- 100 % complete  
+> > ubiformat: 128 eraseblocks are supposedly empty
+> > ubiformat: flashing eraseblock 16 -- 100 % complete  
+> > ubiformat: formatting eraseblock 127 -- 100 % complete
+> > ubiattach /dev/ubi_ctrl -m 0  
+> > [42949485.550000] UBI error: ubi_read_volume_table: the layout volume
+> > was not found
+> > [42949485.560000] UBI error: ubi_attach_mtd_dev: failed to attach by
+> > scanning, error -22
+> > ubiattach: error!: cannot attach mtd0
+> >            error 22 (Invalid argument)
 > 
-> I have a ubi0 with a static squashfs part and a ubifs part. Sometimes
-> I have to update the squashfs with an image that is bigger than the
-> currently allocated space for the squashfs part. My plan was to use
-> ubirsvol to reduce the size of the ubifs part, then use ubirsvol in
-> increase the size of the squashfs part so that it is big enough for
-> ubiupdatevol to accept the new image in the squashfs part.
+> Looks strange. Does dmesg has anything interesting when you enable
+> UBI debugging?
+> (http://www.linux-mtd.infradead.org/doc/ubi.html#L_how_send_bugreport)
 > 
-> But when I try to mount ubifs after resizing, it complains with:
-> (initramfs)[/]# mount -t ubifs ubi0:ubifs /mnt
-> [ 1838.350000] UBIFS error (pid 621): validate_sb: bad LEB count: 866
-> in superblock, 800 on UBI volume, 19 minimum required
-> [ 1838.360000] UBIFS error (pid 621): validate_sb: bad superblock, error 1
-> mount: mounting ubi0:ubifs on /mnt failed: Invalid argument
-> 
-> Is what I want to do possible?
-> 
-> I am using mtd-utils-1.4.6. Here is more detail.
-> 
-> (initramfs)[/]# uname -a
-> Linux isc3-initramfs 2.6.33.17 #10 Sat Sep 3 17:56:12 EDT 2011 armv6l GNU/Linux
-> (initramfs)[/]# ubiattach -p /dev/mtd3
-> [ 1744.100000] UBI: attaching mtd3 to ubi0
-> [ 1744.100000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> [ 1744.110000] UBI: logical eraseblock size:    129024 bytes
-> [ 1744.120000] UBI: smallest flash I/O unit:    2048
-> [ 1744.120000] UBI: sub-page size:              512
-> [ 1744.130000] UBI: VID header offset:          512 (aligned 512)
-> [ 1744.130000] UBI: data offset:                2048
-> [ 1744.350000] UBI: attached mtd3 to ubi0
-> [ 1744.360000] UBI: MTD device name:            "ubi"
-> [ 1744.360000] UBI: MTD device size:            119 MiB
-> [ 1744.370000] UBI: number of good PEBs:        957
-> [ 1744.370000] UBI: number of bad PEBs:         0
-> [ 1744.380000] UBI: max. allowed volumes:       128
-> [ 1744.380000] UBI: wear-leveling threshold:    4096
-> [ 1744.380000] UBI: number of internal volumes: 1
-> [ 1744.390000] UBI: number of user volumes:     2
-> [ 1744.390000] UBI: available PEBs:             0
-> [ 1744.400000] UBI: total number of reserved PEBs: 957
-> [ 1744.400000] UBI: number of PEBs reserved for bad PEB handling: 9
-> [ 1744.410000] UBI: max/mean erase counter: 79/11
-> [ 1744.410000] UBI: image sequence number: 0
-> [ 1744.420000] UBI: background thread "ubi_bgt0d" started, PID 614
-> UBI device number 0, total 957 LEBs (123475968 bytes, 117.8 MiB),
-> available 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
-> (initramfs)[/]# ubinfo -a
-> UBI version:                    1
-> Count of UBI devices:           1
-> UBI control device major/minor: 10:60
-> Present UBI devices:            ubi0
-> 
-> ubi0
-> Volumes count:                           2
-> Logical eraseblock size:                 129024 bytes, 126.0 KiB
-> Total amount of logical eraseblocks:     957 (123475968 bytes, 117.8 MiB)
-> Amount of available logical eraseblocks: 0 (0 bytes)
-> Maximum count of volumes                 128
-> Count of bad physical eraseblocks:       0
-> Count of reserved physical eraseblocks:  9
-> Current maximum erase counter value:     79
-> Minimum input/output unit size:          2048 bytes
-> Character device major/minor:            253:0
-> Present volumes:                         0, 1
-> 
-> Volume ID:   0 (on ubi0)
-> Type:        dynamic
-> Alignment:   1
-> Size:        78 LEBs (10063872 bytes, 9.6 MiB)
-> State:       OK
-> Name:        squashfs
-> Character device major/minor: 253:1
-> -----------------------------------
-> Volume ID:   1 (on ubi0)
-> Type:        dynamic
-> Alignment:   1
-> Size:        866 LEBs (111734784 bytes, 106.6 MiB)
-> State:       OK
-> Name:        ubifs
-> Character device major/minor: 253:2
-> (initramfs)[/]# mount -t ubifs ubi0:ubifs /mnt
-> [ 1798.380000] UBIFS: mounted UBI device 0, volume 1, name "ubifs"
-> [ 1798.390000] UBIFS: file system size:   110444544 bytes (107856 KiB,
-> 105 MiB, 856 LEBs)
-> [ 1798.400000] UBIFS: journal size:       5548032 bytes (5418 KiB, 5
-> MiB, 43 LEBs)
-> [ 1798.400000] UBIFS: media format:       w4/r0 (latest is w4/r0)
-> [ 1798.410000] UBIFS: default compressor: lzo
-> [ 1798.410000] UBIFS: reserved for root:  4952683 bytes (4836 KiB)
-> (initramfs)[/]# umount /mnt
-> [ 1804.060000] UBIFS: un-mount UBI device 0, volume 1
-> (initramfs)[/]# ubirsvol /dev/ubi0 -N ubifs -S 800
-> (initramfs)[/]# mount -t ubifs ubi0:ubifs /mnt
-> [ 1838.350000] UBIFS error (pid 621): validate_sb: bad LEB count: 866
-> in superblock, 800 on UBI volume, 19 minimum required
-> [ 1838.360000] UBIFS error (pid 621): validate_sb: bad superblock, error 1
-> mount: mounting ubi0:ubifs on /mnt failed: Invalid argument
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+
 
 NAND device: Manufacturer ID: 0xec, Chip ID: 0xd3 (Samsung NAND 1GiB 3,3V 8-bit)
 Bad block table not found for chip 0
