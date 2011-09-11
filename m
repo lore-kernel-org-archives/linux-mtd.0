@@ -1,26 +1,18 @@
-Received: from mail-pz0-f41.google.com ([209.85.210.41])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2kXz-0007R1-VG
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 13:58:12 +0000
-Received: by pzk4 with SMTP id 4so6694185pzk.28
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 06:58:09 -0700 (PDT)
-Subject: Re: [PATCH 06/14] mtd: nand: fix style
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 11 Sep 2011 17:00:36 +0300
-In-Reply-To: <1315426421-16243-7-git-send-email-computersforpeace@gmail.com>
-References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
-	<1315426421-16243-7-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1315749641.18731.69.camel@sauron>
-Mime-Version: 1.0
-Cc: Kevin Cernekee <cernekee@gmail.com>,
-	Matthieu Castet <matthieu.castet@parrot.com>,
-	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <1315747783.18731.59.camel@sauron>
+References: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
+	<1315747783.18731.59.camel@sauron>
+Date: Sun, 11 Sep 2011 23:12:52 +0200
+Message-ID: <CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
+Subject: Re: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and
+	map_rom
+From: Linus Walleij <linus.walleij@linaro.org>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Linus Walleij <linus.walleij@stericsson.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
+	Russell King <rmk@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-09-07 at 13:13 -0700, Brian Norris wrote:
-> Remove some extra spaces
-> Consistently use '0x' prefix for bitfield-like constants
-> Spelling: "aplies" -> "applies"
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Sun, Sep 11, 2011 at 3:29 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Tue, 2011-09-06 at 08:53 +0200, Linus Walleij wrote:
+>> From: Linus Walleij <linus.walleij@linaro.org>
+>>
+>> This exposes the PB1176 ROM if you compile in the MTD physmap
+>> mapping and also the map_rom chiptype.
+>>
+>> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+>
+> I think this should go in via the corresponding arm subtree.
 
-Pushed this one to my tree as well, thanks!
+Sure, but I think we need some nod from the MTD people that this is the
+right way to present a ROM, so is that an Acked-by?
 
--- 
-Best Regards,
-Artem Bityutskiy
+Yours,
+Linus Walleij
