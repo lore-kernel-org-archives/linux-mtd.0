@@ -1,20 +1,20 @@
-Received: from mail-gw0-f48.google.com ([74.125.83.48])
+Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2jAT-0006E9-G6
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:29:50 +0000
-Received: by gwj22 with SMTP id 22so2849386gwj.21
+	id 1R2jDY-0006IT-8R
+	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:33:00 +0000
+Received: by pzk4 with SMTP id 4so6596841pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 05:29:48 -0700 (PDT)
-Subject: Re: [PATCH 09/12] mtd: document ABI
+	Sun, 11 Sep 2011 05:32:58 -0700 (PDT)
+Subject: Re: [PATCH 10/12] mtd: nand: kill member `ops' of `struct nand_chip'
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 11 Sep 2011 15:32:14 +0300
-In-Reply-To: <1314755147-17756-10-git-send-email-computersforpeace@gmail.com>
+Date: Sun, 11 Sep 2011 15:35:24 +0300
+In-Reply-To: <1314755147-17756-11-git-send-email-computersforpeace@gmail.com>
 References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
-	<1314755147-17756-10-git-send-email-computersforpeace@gmail.com>
+	<1314755147-17756-11-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315744338.18731.40.camel@sauron>
+Message-ID: <1315744529.18731.42.camel@sauron>
 Mime-Version: 1.0
 Cc: b35362@freescale.com, Ricard Wanderlof <ricard.wanderlof@axis.com>,
 	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
@@ -30,17 +30,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2011-08-30 at 18:45 -0700, Brian Norris wrote:
-> We're missing a lot of important documentation in include/mtd/mtd-abi.h:
-> 
-> * add a simple description of each ioctl (feel free to expand!)
-> * give full explanations of recently added and modified operations
-> * explain the usage of "RAW" that appear in different modes and types of
->   operations
-> * fix some comment style along the way
+> The nand_chip.ops field is a struct that is passed around globally with
+> no particular reason. Every time it is used, it could just as easily be
+> replaced with a local struct that is updated on each operation. So make
+> it local.
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Great piece of work, pushed, thanks a lot!
+Looks like a good clean-up, thanks, pushed to my tree.
 
 -- 
 Best Regards,
