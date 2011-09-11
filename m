@@ -1,20 +1,20 @@
 Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2kW2-0007J1-7m
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 13:56:11 +0000
-Received: by mail-pz0-f41.google.com with SMTP id 4so6691249pzk.28
+	id 1R2kXz-0007R1-VG
+	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 13:58:12 +0000
+Received: by pzk4 with SMTP id 4so6694185pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 06:56:09 -0700 (PDT)
-Subject: Re: [PATCH 05/14] mtd: nand: remove unnecessary variable
+	Sun, 11 Sep 2011 06:58:09 -0700 (PDT)
+Subject: Re: [PATCH 06/14] mtd: nand: fix style
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 11 Sep 2011 16:58:35 +0300
-In-Reply-To: <1315426421-16243-6-git-send-email-computersforpeace@gmail.com>
+Date: Sun, 11 Sep 2011 17:00:36 +0300
+In-Reply-To: <1315426421-16243-7-git-send-email-computersforpeace@gmail.com>
 References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
-	<1315426421-16243-6-git-send-email-computersforpeace@gmail.com>
+	<1315426421-16243-7-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315749520.18731.68.camel@sauron>
+Message-ID: <1315749641.18731.69.camel@sauron>
 Mime-Version: 1.0
 Cc: Kevin Cernekee <cernekee@gmail.com>,
 	Matthieu Castet <matthieu.castet@parrot.com>,
@@ -31,11 +31,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, 2011-09-07 at 13:13 -0700, Brian Norris wrote:
-> `writeops' is unnecessary in the function `nand_update_bbt()'
+> Remove some extra spaces
+> Consistently use '0x' prefix for bitfield-like constants
+> Spelling: "aplies" -> "applies"
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Pushed to my tree, thanks!
+Pushed this one to my tree as well, thanks!
 
 -- 
 Best Regards,
