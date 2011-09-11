@@ -1,21 +1,26 @@
 Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2ht4-0005Bx-7r
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 11:07:46 +0000
-Received: by pzk4 with SMTP id 4so6500784pzk.28
+	id 1R2iE6-0005KM-Vz
+	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 11:29:31 +0000
+Received: by pzk4 with SMTP id 4so6524978pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 04:07:44 -0700 (PDT)
-Subject: Re: [PATCH] UBIFS: fix the dark space calculation
+	Sun, 11 Sep 2011 04:29:28 -0700 (PDT)
+Subject: Re: [PATCH 01/12] mtd: nand: initialize chip->oob_poi before write
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
-Date: Sun, 11 Sep 2011 14:10:10 +0300
-In-Reply-To: <CAMjNe_fj+FQSV9fX-sjh3hdW-CTNaqwmnS+36if6NcvLtpxOKw@mail.gmail.com>
-References: <CAMjNe_fj+FQSV9fX-sjh3hdW-CTNaqwmnS+36if6NcvLtpxOKw@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Sun, 11 Sep 2011 14:31:53 +0300
+In-Reply-To: <1314755147-17756-2-git-send-email-computersforpeace@gmail.com>
+References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
+	<1314755147-17756-2-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315739414.18731.14.camel@sauron>
+Message-ID: <1315740719.18731.17.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
+	linux-mtd@lists.infradead.org,
+	Adam Thomson <adam.thomson@alcatel-lucent.com>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,14 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-08-26 at 16:08 +0530, srimugunthan dhandapani wrote:
-> hi,
-> The dark space calculation should be 64 bit type-casted ,when
-> assigning to tmp64( similar to how total_free is calculated).
-> Overflow will occur for very large flashes.
+On Tue, 2011-08-30 at 18:45 -0700, Brian Norris wrote:
+> And if the buggy commit is going stable, this should go stable (or just
+> amend it) as well.
 
-The patch did not apply to the latest UBIFS, but I have amended it.
-Pushed to ubifs-2.6.git, thanks!
+Amended Adam's patch, thanks.
 
 -- 
 Best Regards,
