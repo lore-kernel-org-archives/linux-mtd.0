@@ -1,23 +1,25 @@
 Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2iox-0005tu-SE
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:07:36 +0000
-Received: by pzk4 with SMTP id 4so6568418pzk.28
+	id 1R2irc-0005xX-AD
+	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:10:20 +0000
+Received: by pzk4 with SMTP id 4so6571473pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 05:07:34 -0700 (PDT)
-Subject: Re: [PATCH 05/12] mtd: rename MTD_OOB_* to MTD_OPS_*
+	Sun, 11 Sep 2011 05:10:18 -0700 (PDT)
+Subject: Re: [PATCH 03/12] mtd: support reading OOB without ECC
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 11 Sep 2011 15:10:00 +0300
-In-Reply-To: <1314755147-17756-6-git-send-email-computersforpeace@gmail.com>
+Date: Sun, 11 Sep 2011 15:12:44 +0300
+In-Reply-To: <1315741622.18731.22.camel@sauron>
 References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
-	<1314755147-17756-6-git-send-email-computersforpeace@gmail.com>
+	<1314755147-17756-4-git-send-email-computersforpeace@gmail.com>
+	<1315741622.18731.22.camel@sauron>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315743005.18731.36.camel@sauron>
+Message-ID: <1315743169.18731.37.camel@sauron>
 Mime-Version: 1.0
-Cc: b35362@freescale.com, Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Kevin Cernekee <cernekee@gmail.com>, b35362@freescale.com,
+	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,15 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-08-30 at 18:45 -0700, Brian Norris wrote:
-> These modes are not necessarily for OOB only. Particularly, MTD_OOB_RAW
-> affected operations on in-band page data as well. To clarify these
-> options and to emphasize that their effect is applied per-operation, we
-> change the primary prefix to MTD_OPS_.
+On Sun, 2011-09-11 at 14:46 +0300, Artem Bityutskiy wrote:
+> On Tue, 2011-08-30 at 18:45 -0700, Brian Norris wrote:
+> > -static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+> > -	uint32_t length, void __user *ptr, uint32_t __user *retp)
+> > +static int mtd_do_readoob(struct file *file, struct mtd_info *mtd,
+> > +	uint64_t start, uint32_t length, void __user *ptr,
+> > +	uint32_t __user *retp)
+> >  {
+> > +	struct mtd_file_info *mfi = file->private_data;
+> >  	struct mtd_oob_ops ops;
+> >  	int ret = 0;
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Why do you pass struct file pointer to this function instead of just
+> passing the MTD_MODE constant directly? What if the caller does not have
+> any 'struct file' at all (e.g., at some point someone would want to make
+> an JFFS2 or YAFFS2 optimization and use this function). Do I miss
+> something?
+> 
+> If there is not strong reason for passing 'file', could we pass 'int
+> mode' instead?
 
-This patch depends on the other ones, so I have to wait for v2, sorry.
+Although after looking a bit closer, I think it is fine, sorry. Pushed
+to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
