@@ -1,20 +1,20 @@
 Received: from mail-pz0-f41.google.com ([209.85.210.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R2imW-0005p6-Ek
-	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:05:05 +0000
-Received: by pzk4 with SMTP id 4so6565435pzk.28
+	id 1R2iox-0005tu-SE
+	for linux-mtd@lists.infradead.org; Sun, 11 Sep 2011 12:07:36 +0000
+Received: by pzk4 with SMTP id 4so6568418pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Sep 2011 05:05:02 -0700 (PDT)
-Subject: Re: [PATCH 12/12] mtd: nand: free allocated memory
+	Sun, 11 Sep 2011 05:07:34 -0700 (PDT)
+Subject: Re: [PATCH 05/12] mtd: rename MTD_OOB_* to MTD_OPS_*
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 11 Sep 2011 15:07:27 +0300
-In-Reply-To: <1314755147-17756-13-git-send-email-computersforpeace@gmail.com>
+Date: Sun, 11 Sep 2011 15:10:00 +0300
+In-Reply-To: <1314755147-17756-6-git-send-email-computersforpeace@gmail.com>
 References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
-	<1314755147-17756-13-git-send-email-computersforpeace@gmail.com>
+	<1314755147-17756-6-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1315742853.18731.34.camel@sauron>
+Message-ID: <1315743005.18731.36.camel@sauron>
 Mime-Version: 1.0
 Cc: b35362@freescale.com, Ricard Wanderlof <ricard.wanderlof@axis.com>,
 	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
@@ -30,12 +30,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2011-08-30 at 18:45 -0700, Brian Norris wrote:
-> This fixes a problem from:
+> These modes are not necessarily for OOB only. Particularly, MTD_OOB_RAW
+> affected operations on in-band page data as well. To clarify these
+> options and to emphasize that their effect is applied per-operation, we
+> change the primary prefix to MTD_OPS_.
 > 
->   commit f2f4772692cf3f31eb73d46337c7f10bd031bc26
->   mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Amended that commit, thanks!
+This patch depends on the other ones, so I have to wait for v2, sorry.
 
 -- 
 Best Regards,
