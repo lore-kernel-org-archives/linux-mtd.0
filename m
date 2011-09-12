@@ -1,18 +1,18 @@
 MIME-Version: 1.0
-In-Reply-To: <1315747783.18731.59.camel@sauron>
-References: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
-	<1315747783.18731.59.camel@sauron>
-Date: Sun, 11 Sep 2011 23:12:52 +0200
-Message-ID: <CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
-Subject: Re: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and
-	map_rom
-From: Linus Walleij <linus.walleij@linaro.org>
+In-Reply-To: <1315737121.18731.3.camel@sauron>
+References: <1315450031-6371-1-git-send-email-b32955@freescale.com>
+	<1315737121.18731.3.camel@sauron>
+Date: Mon, 12 Sep 2011 00:34:12 -0400
+Message-ID: <CAMiH66FTWMmvFV8FpDur5sJw8_TBAH=E_CnH-8S4_CYw9L+ckQ@mail.gmail.com>
+Subject: Re: [PATCH v12 0/3] add the GPMI controller driver for IMX23/IMX28
+From: Huang Shijie <shijie8@gmail.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Linus Walleij <linus.walleij@stericsson.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
-	Russell King <rmk@arm.linux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: marek.vasut@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
+	Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, koen.beel.barco@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 11, 2011 at 3:29 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2011-09-06 at 08:53 +0200, Linus Walleij wrote:
->> From: Linus Walleij <linus.walleij@linaro.org>
->>
->> This exposes the PB1176 ROM if you compile in the MTD physmap
->> mapping and also the map_rom chiptype.
->>
->> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+Hi Artem:
+
+Thanks a  lot :)
+
+Best Regards
+Huang Shijie
+
+On Sun, Sep 11, 2011 at 6:31 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Thu, 2011-09-08 at 10:47 +0800, Huang Shijie wrote:
+>> The patch set is based on Artem's tree:
+>> =C2=A0 =C2=A0 =C2=A0 http://git.infradead.org/users/dedekind/l2-mtd-2.6.=
+git
 >
-> I think this should go in via the corresponding arm subtree.
-
-Sure, but I think we need some nod from the MTD people that this is the
-right way to present a ROM, so is that an Acked-by?
-
-Yours,
-Linus Walleij
+> Dropped v10 and taken this version to l2-mtd-2.6.git, thanks!
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
