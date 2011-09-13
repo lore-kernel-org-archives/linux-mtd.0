@@ -1,18 +1,25 @@
-Received: from na3sys009aog119.obsmtp.com ([74.125.149.246])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R3Ymu-00073v-QG
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2011 19:36:57 +0000
-Received: by gxk22 with SMTP id 22so1125373gxk.30
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R3bUJ-0000yZ-7L
+	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2011 22:29:55 +0000
+Received: by wwp14 with SMTP id 14so894765wwp.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Sep 2011 12:36:50 -0700 (PDT)
-From: Kevin Paul Herbert <kevin.herbert@meraki.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Subject: Request for comments: UBI PEBs as a multiple of erase size
-Date: Tue, 13 Sep 2011 12:36:47 -0700
-Message-Id: <40BCDFDF-F9C8-46C5-99F8-E56050E8B32C@meraki.net>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0 (Apple Message framework v1244.3)
+	Tue, 13 Sep 2011 15:29:50 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1315744119.18731.38.camel@sauron>
+References: <1314755147-17756-1-git-send-email-computersforpeace@gmail.com>
+	<1314755147-17756-5-git-send-email-computersforpeace@gmail.com>
+	<1315742234.18731.32.camel@sauron>
+	<1315744119.18731.38.camel@sauron>
+Date: Tue, 13 Sep 2011 18:29:50 -0400
+Message-ID: <CAN8TOE8e_ahVOWPgesbSaWzj+V1UYS3NPoyttRYExKi0vskMVw@mail.gmail.com>
+Subject: Re: [PATCH 04/12] mtd: move mtd_oob_mode_t to shared kernel/user space
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: b35362@freescale.com, Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I came across a situation where I wanted to be able to use the same =
-pre-built (with UBI) image on two different FLASH devices, one of which =
-having a larger erase size than the other. I actually did not notice =
-that the device I was using had a different erase size, which caused UBI =
-to quietly corrupt my FLASH.
+On Sun, Sep 11, 2011 at 8:28 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sun, 2011-09-11 at 14:57 +0300, Artem Bityutskiy wrote:
+>> It is good to use __u8 in ioctls for this field.
+>>
+>> But for internal usage there is no need to make it uint8_t, just use
+>> 'int' instead. All modern CPUs will anyway reserve 32 bits for this.
+>>
+>> And unnecessary usage of the 8-bits restriction only imposes more
+>> unnecessary limitations to the compiler/CPU. Using 'int' is instead
+>> making CPU/compiler use the native integer type.
 
-I have a patch to UBI (kernel and ubinize) to store the size of a PEB in =
-the EC header, reject attaching if the PEB size is not equal to or an =
-integer multiple of the erase size, and treat multiple erase blocks as a =
-"cluster" for I/O operations.
+Thanks, good suggestion. I think I considered this issue but not very
+thoroughly. My only reason for uint8_t here was just to prevent the
+temptation to use all 32 bits of the field. But there's no way we'd
+use 32 bits for a enumerated mode, i.e., we'd need to have more than
+256 modes to run into this issue... I think we'd be having other more
+important issues if we get there :)
 
-I looked through a few months of archives to see if this is a common =
-problem, and I don't see this as being discussed. Is there interest in =
-me publishing this patch for inclusion in the kernel. The only downside =
-I can see of my change is that it adds an additional 32 bit quantity to =
-struct ubi_ec_hdr, reducing the available free header byets from 35 to =
-31. For backwards compatibility, if this field is zero, I treat it as =
-PEB size =3D=3D erase size.
+> I've actually amended your patch and used 'unsigned int mode' instead,
+> and pushed to my three. Please, complain and send new versions if you do
+> not like that.
 
-It seems to me that having the PEB size in the header, regardless of =
-supporting multiple erase blocks as a single PEB, is a useful =
-consistency check.
+No complaint.
 
-Comments please?
-
-Thanks,
-Kevin Paul Herbert
-Meraki, Inc.
+Brian
