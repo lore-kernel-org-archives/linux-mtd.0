@@ -1,20 +1,22 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R3oA3-0000hv-LF
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2011 12:01:52 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'Kevin Paul Herbert' <kevin.herbert@meraki.net>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 14 Sep 2011 08:01:47 -0400
-Subject: RE: Request for comments: UBI PEBs as a multiple of erase size
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD33001C1D6BE@dekaexchange07.deka.local>
-References: <40BCDFDF-F9C8-46C5-99F8-E56050E8B32C@meraki.net>
-In-Reply-To: <40BCDFDF-F9C8-46C5-99F8-E56050E8B32C@meraki.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+In-Reply-To: <AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
+References: <1301474413-28821-1-git-send-email-b32955@freescale.com>
+	<1301474413-28821-4-git-send-email-b32955@freescale.com>
+	<201103301046.04357.ffainelli@freebox.fr>
+	<4D92F277.7060607@freescale.com>
+	<1301566248.2828.40.camel@localhost>
+	<AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
+Date: Wed, 14 Sep 2011 11:44:12 -0400
+Message-ID: <CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
+Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	Florian Fainelli <ffainelli@freebox.fr>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +26,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kevin:
+Hi,
 
-  I would support this change.
+I see nothing has happened with this thread recently. It doesn't
+deserve to die though.
 
-  Today, do we allow "mixed" NAND Flash device with the
-  possibility of multiple Erase Block sizes? It seems to
-  me that your patch, fully-fleshed-out, would allow this
-  and that also seems like a good thing.
+On Thu, Mar 31, 2011 at 10:17 AM, Huang Shijie <shijie8@gmail.com> wrote:
+> 2011/3/31 Artem Bityutskiy <dedekind1@gmail.com>:
+>>> > If you have new chips to support in the future, you should add them i=
+n
+>>> > drivers/mtd/nand/nand_ids.c and not keep this file.
+>>> >
+>>> The data structure =A0nand_flash_dev{} does not contain enough informat=
+ion.
+>>> So I want to the nand_device_info{} to replace it in future.
+>>
+>> Just add this information, if it is of generic nature (like SLC/MLC
+>> flag, required ECC strength, etc).
 
-                                Atlant
+Are SLC/MLC and ECC strength necessary to track? I don't see a good
+benefit to cost ratio of trying to detect ECC strength especially,
+since the levels specified in data sheets vary without much pattern
+and nobody provides a way for decoding this from ID; do you really
+want to have to make separate chip entries for every single chip that
+comes around?
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
-.infradead.org] On Behalf Of Kevin Paul Herbert
-Sent: Tuesday, September 13, 2011 15:37
-To: linux-mtd@lists.infradead.org
-Subject: Request for comments: UBI PEBs as a multiple of erase size
+>>> > I still do not understand why this would be needed, is it because the=
+ generic
+>>> > code does not provide enough informations for your driver?
+>>> >
+>>> yes.
+>>>
+>>> IMHO, the generic code is somehow trapped in a wrong way. :(
 
-I came across a situation where I wanted to be able to use the same pre-bui=
-lt (with UBI) image on two different FLASH devices, one of which having a l=
-arger erase size than the other. I actually did not notice that the device =
-I was using had a different erase size, which caused UBI to quietly corrupt=
- my FLASH.
+I may agree, but can you be more specific on the trap?
 
-I have a patch to UBI (kernel and ubinize) to store the size of a PEB in th=
-e EC header, reject attaching if the PEB size is not equal to or an integer=
- multiple of the erase size, and treat multiple erase blocks as a "cluster"=
- for I/O operations.
+>>> Paring the id bytes is not sufficient to get all the information you
+>>> need which is faced by me.
 
-I looked through a few months of archives to see if this is a common proble=
-m, and I don't see this as being discussed. Is there interest in me publish=
-ing this patch for inclusion in the kernel. The only downside I can see of =
-my change is that it adds an additional 32 bit quantity to struct ubi_ec_hd=
-r, reducing the available free header byets from 35 to 31. For backwards co=
-mpatibility, if this field is zero, I treat it as PEB size =3D=3D erase siz=
-e.
+What's an alternative to "paring the id bytes"?
 
-It seems to me that having the PEB size in the header, regardless of suppor=
-ting multiple erase blocks as a single PEB, is a useful consistency check.
+>>> What's more, I think the paring code is ugly, see the nand_get_flash_ty=
+pe().
+>>
+>> You are welcome to fix this. There is _a lot_ of ugly code in MTD
+>> because no one loves it. Give it some love :-)
 
-Comments please?
+While I agree that a lot of this is ugly, it is mostly a matter of
+necessity. NAND manufacturers do not have a standard (ONFI doesn't
+really count, since there's basically 1 manufacturer using it), and so
+the most "generic" code is to have different code paths for different
+manufacturers (often with exceptions to each rule, since even a single
+manufacturer changes its standards arbitrarily). Then you find
+manufacturers like Toshiba that recently don't have any (published)
+pattern at all for detecting OOB size generically.
 
-Thanks,
-Kevin Paul Herbert
-Meraki, Inc.
+Thus, it seems to me like we will need some form of the approach
+provided by Huang. As I've found, there are some things that just
+can't be decoded from the ID these days, so our ID table will need to
+be able to track:
+* full ID string (not just the 2nd byte "Device ID")
+* relevant bad block scanning options
 
+FWIW, we already implement an exception table in our own driver that
+includes the above 2 items, for chips that can't be handled with the
+table/detection structure as-is. We don't particularly need SLC/MLC
+but I don't object to recording it if we can determine it reliably,
+and while ECC level could be useful, it is difficult to discover
+generically, as I mentioned above.
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>> Why not create a new database which contains all the necessary
+>>> information for a nand, and can be easy
+>>> find by the id bytes as the keyword?
+>>
+>> You can create this database by extending/improving/cleaning up the
+>> existing code base with a nice series of patches.
+>>
+> ok. I will try to fix the generic code before my driver is submitted.
 
+What happened to this statement? I see that your driver was submitted,
+but no efforts were made for chip detection cleanup. Were you
+satisfied with the current detection?
 
- Click https://www.mailcontrol.com/sr/1VFWYhVYdxnTndxI!oX7Ulvwl1GqFAPrK44Jb=
-cO+1AA0rpc5OYymogGZMwDw3dul6eIk5VgOkcDieLvRJKIvyA=3D=3D  to report this ema=
-il as spam.
+While we're on the subject, I'll direct your attention to this NAND
+data table that I've worked on. It should provide a decent summary of
+most of the data sheets I have sorted through. It should also show you
+that certain things are going to be very hard to detect (e.g., ECC
+level). It should also show that while some chips are not supported by
+standard code (e.g., weird bad block scanning features that haven't
+been supported, non-standard OOB sizes with no given pattern in the
+datasheets), the vast majority of the chips I've come across should be
+detected properly:
 
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
+http://linux-mtd.infradead.org/nand-data/nanddata.html
 
-Thank you.
+And of course, please contribute to
+git://git.infradead.org/mtd-www.git if you have additions or edits for
+the table. It's not perfect, but it can help for sorting through
+different chips.
 
-Please consider the environment before printing this email.
+Brian
