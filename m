@@ -1,21 +1,19 @@
-Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R4TVy-00041h-IM
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2011 08:11:16 +0000
-Message-ID: <4E730494.7030509@st.com>
-Date: Fri, 16 Sep 2011 09:11:00 +0100
-From: Angus CLARK <angus.clark@st.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
-References: <1301474413-28821-1-git-send-email-b32955@freescale.com>	<1301474413-28821-4-git-send-email-b32955@freescale.com>	<201103301046.04357.ffainelli@freebox.fr>	<4D92F277.7060607@freescale.com>	<1301566248.2828.40.camel@localhost>	<AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
-	<CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
-In-Reply-To: <CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Huang Shijie <shijie8@gmail.com>
+Message-ID: <20083.21122.830407.146310@ipc1.ka-ro>
+Date: Fri, 16 Sep 2011 15:43:30 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v12 0/3] add the GPMI controller driver for IMX23/IMX28
+In-Reply-To: <4E71CDB2.4000205@freescale.com>
+References: <1315450031-6371-1-git-send-email-b32955@freescale.com>
+	<20081.44941.12535.496764@ipc1.ka-ro>
+	<4E71CDB2.4000205@freescale.com>
+Cc: dedekind1@gmail.com, koen.beel.barco@gmail.com, w.sang@pengutronix.de,
+	marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+	shijie8@gmail.com, s.hauer@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +23,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian, Huang,
+Hi,
 
-Sorry for the long email, but this topic also interests me.
+Huang Shijie writes:
+> Hi,
+> > Hi,
+> >
+> > Huang Shijie writes:
+> >> The patch set is based on Artem's tree:
+> >> 	http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+> >>
+> >> The general-purpose media interface(GPMI) controller is a flexible interface
+> >> to up to several NAND flashs.
+> >>
+> >> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
+> >>
+> >> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
+> >> not.
+> >>
+> >> This driver is a _pure_ MTD NAND controller driver now.
+> >>
+> >>
+> >> The driver depends on another GPMI-NAND device patch set, you can find them at :
+> >> 	[1] http://marc.info/?l=linux-arm-kernel&m=131416901319573&w=2
+> >> 	[2] http://marc.info/?l=linux-arm-kernel&m=131416912319668&w=2
+> >> 	[3] http://marc.info/?l=linux-arm-kernel&m=131416891119504&w=2
+> >> 	[4] http://marc.info/?l=linux-arm-kernel&m=131416896219539&w=2
+> >>
+> >> Test environment:
+> >> 	Using imx23 and imx28 boards for test.
+> >>
+> >> 	imx23 :
+> >> 	console=ttyAMA0,115200 mtdparts=gpmi-nfc:20m(boot),-(user)
+> >> 	Tested by USB boot and NAND boot.
+> >>
+> >>          imx28 :
+> >> 	#console=ttyAMA0,115200 root=/dev/mmcblk0p3 rw rootwait
+> >> 	Tested by SD card boot mode.
+> >>
+> > How did you perform your tests?
+> >
+> > I tried this driver on our TX28 board with the result that with
+> > concurrent access of the SD card and the NAND flash, I still get the
+> > dreaded DMA timeouts within seconds:
+> > DMA timeout, last DMA :1
+> > GPMI regs:
+> >              HW_GPMI_CTRL0[000]=21800001
+> >            HW_GPMI_COMPARE[010]=00000000
+> >            HW_GPMI_ECCCTRL[020]=00000000
+> >           HW_GPMI_ECCCOUNT[030]=00000840
+> >            HW_GPMI_PAYLOAD[040]=46578000
+> >          HW_GPMI_AUXILIARY[050]=46578800
+> >              HW_GPMI_CTRL1[060]=0004000c
+> >            HW_GPMI_TIMING0[070]=00010203
+> >            HW_GPMI_TIMING1[080]=05000000
+> >            HW_GPMI_TIMING2[090]=09020101
+> >               HW_GPMI_STAT[0b0]=0d000003
+> >              HW_GPMI_DEBUG[0c0]=01000000
+> > BCH regs:
+> >                HW_BCH_CTRL[000]=00000100
+> >             HW_BCH_STATUS0[010]=00000010
+> >                HW_BCH_MODE[020]=00000000
+> >           HW_BCH_ENCODEPTR[030]=00000000
+> >             HW_BCH_DATAPTR[040]=00000000
+> >             HW_BCH_METAPTR[050]=00000000
+> >        HW_BCH_LAYOUTSELECT[070]=00000000
+> >       HW_BCH_FLASH0LAYOUT0[080]=030a4200
+> >       HW_BCH_FLASH0LAYOUT1[090]=08404200
+> >              HW_BCH_DEBUG0[100]=00000000
+> > DMA regs:
+> >             HW_APBHX_CTRL0[000]=30000000
+> >             HW_APBHX_CTRL1[010]=ffff0000
+> >             HW_APBHX_CTRL2[020]=00000000
+> >      HW_APBHX_CHANNEL_CTRL[030]=00000000
+> >      HW_APBHX_CHn_CURCMDAR(0)[100]=46e1c000
+> >      HW_APBHX_CHn_NXTCMDAR(0)[110]=46e1c04c
+> >           HW_APBHX_CHn_CMD(0)[120]=000001c8
+> >           HW_APBHX_CHn_BAR(0)[130]=00000000
+> >          HW_APBHX_CHn_SEMA(0)[140]=00000000
+> >        HW_APBHX_CHn_DEBUG1(0)[150]=00a0001e
+> >        HW_APBHX_CHn_DEBUG2(0)[160]=00000000
+> >      HW_APBHX_CHn_CURCMDAR(4)[2c0]=4652c098
+> >      HW_APBHX_CHn_NXTCMDAR(4)[2d0]=4652c0e4
+> >           HW_APBHX_CHn_CMD(4)[2e0]=000001c9
+> >           HW_APBHX_CHn_BAR(4)[2f0]=46553241
+> >          HW_APBHX_CHn_SEMA(4)[300]=00010000
+> >        HW_APBHX_CHn_DEBUG1(4)[310]=27a00015
+> >        HW_APBHX_CHn_DEBUG2(4)[320]=00000000
+> > BCH Geometry :
+> > GF length              : 13
+> > ECC Strength           : 8
+> > Page Size in Bytes     : 2112
+> > Metadata Size in Bytes : 10
+> > ECC Chunk Size in Bytes: 512
+> > ECC Chunk Count        : 4
+> > Payload Size in Bytes  : 2048
+> > Auxiliary Size in Bytes: 16
+> > Auxiliary Status Offset: 12
+> > Block Mark Byte Offset : 1999
+> > Block Mark Bit Offset  : 0
+> >
+> > I'm doing a:
+> > dd if=/dev/mtd0>  /dev/null&  dd if=/dev/mmcblk0>  /dev/null
+> > Sometimes the 'dd' accessing the SD card will stall indefinitely.
+> > Also copying data from SD card to flash will produce the error, though
+> > less likely.
+> >
+> it reproduces in my side too.
+> > This looks like the problem arises in the DMA driver when multiple
+> anyway, I will debug it.
+> 
+> but i will on vacation next week.
+> 
+> I am not sure I can fix it tomorrow.
+> 
+I now found, that selecting 'CONFIG_PREEMPT_NONE' in the kernel config
+dramatically decreases the chance of hitting this problem.
 
-On 09/14/2011 04:44 PM, Brian Norris wrote:
-> I see nothing has happened with this thread recently. It doesn't
-> deserve to die though.
+I've checked the mxs-dma and gpmi-nand drivers, but could not find
+anything fishy wrt preemption.
 
-Having played around with the nand_ids.c and nand_get_flash_type(), I
-also think the approach is in need of a bit of an overhaul.  The code is
-getting increasingly difficult to follow, given the growing number of
-non-standard decoding exceptions.
 
-My first attempt was rather similar to Huang's -- using a static table
-of READIDs and extended device properties.  However, this also gets
-rather complicated, and again needs to handle special cases.  For
-example, early revisions of a NAND device often include 'don't care'
-bytes in the READID, or even just shorter READIDs.  We could add a
-"matching-mask" to the table, and enforce some ordering to the binding
-process (e.g. bind against the first match in the table, or perhaps the
-most-specific match in the table?), but the semantics of the
-table-ordering is difficult to enforce, especially when new devices are
-added later.  Using a static table also has other disadvantages, such as
-size and the need to continually update as new devices emerge (my list
-is now over 300 devices!).
+Lothar Waßmann
+-- 
+___________________________________________________________
 
-I ended up refactoring the nand_get_flash_type() code, according to 3
-basic schemes:
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-	'ID 2' : extract properties from nand_flash_ids[].  For 2-byte IDs, or
-where device ID gives a non-zero page-size (particularly SP devices).
-
-	'Extended ID': decode properties from ID string where possible, falling
-back to nand_flash_ids[].  For 3/4/5-byte IDs.
-
- 	'ID 6'       : decode properties from ID string where possible,
-falling back to nand_flash_ids[].  For 6-byte IDs.
-
-The refactoring was primarily aimed at simplifying the way in which
-decoding exceptions could be accommodated.
-
-I have tested the code on the all the devices found in Brian's most
-excellent table:
-> http://linux-mtd.infradead.org/nand-data/nanddata.html
-
-with the following exceptions:
-	- ONFI-only devices: decode not possible using READID
-	- Multi-CS devices: probe must be repeated on each CS
-	- Toshiba devices: difficultly in acquiring the datasheets and the full
-READID.
-
-I have also added a few more devices and columns to the table (#CS,
-#LUNs, #RBn) which I hope to submit shortly.
-
-I was working on a non-standard NAND driver at the time, which made
-little use of nand_base.c, and on an older 2.6.32 tree.  However, if
-there is sufficient interest, I am happy at having a go at updating
-nand_get_flash_type() on mtd-2.6.
-
-Let me know if you think this might be useful.  Perhaps posting the
-standalone test code I used on nanddata.html (actually a csv version of
-the table!) would be a good start?
-
-Cheers,
-
-Angus
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
