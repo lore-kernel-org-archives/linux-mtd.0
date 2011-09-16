@@ -1,20 +1,21 @@
-Message-ID: <20082.65481.262062.390598@ipc1.ka-ro>
-Date: Fri, 16 Sep 2011 09:50:33 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: gianluca <gianlucarenzi@eurekelettronica.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v12 0/3] add the GPMI controller driver for IMX23/IMX28
-In-Reply-To: <4E7218A0.2020309@eurekelettronica.it>
-References: <1315450031-6371-1-git-send-email-b32955@freescale.com>
-	<20081.44941.12535.496764@ipc1.ka-ro>
-	<4E71CDB2.4000205@freescale.com>
-	<4E7218A0.2020309@eurekelettronica.it>
-Cc: marek.vasut@gmail.com, koen.beel.barco@gmail.com, dedekind1@gmail.com,
-	w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R4TVy-00041h-IM
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2011 08:11:16 +0000
+Message-ID: <4E730494.7030509@st.com>
+Date: Fri, 16 Sep 2011 09:11:00 +0100
+From: Angus CLARK <angus.clark@st.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
+References: <1301474413-28821-1-git-send-email-b32955@freescale.com>	<1301474413-28821-4-git-send-email-b32955@freescale.com>	<201103301046.04357.ffainelli@freebox.fr>	<4D92F277.7060607@freescale.com>	<1301566248.2828.40.camel@localhost>	<AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
+	<CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
+In-Reply-To: <CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Brian, Huang,
 
-gianluca writes:
-> Sorry for intrusion in this discussion, but:
-> 
-> Huang Shijie wrote:
-> >> channels are being used concurrently. The GPMI driver will bail out
-> >> with the timeout error while the MMC driver obviously has no timeout
-> >> check for this situation.
-> >>
-> >> I can mostly rule out HW problems, because the same board works
-> >> perfectly well with WindowsCE (tested with a copy operation between
-> >> flash and SD card).
-> >>
-> >>
-> >> Lothar Waßmann
-> 
-> @Lothar: Probably WinCE with a copy operation between flash and SD is 
-> not reliable as synchronous as opposed dd command in the previous mail.
-> 
-I know that a copy operation on WinCE is not an adequate test. That's
-why I wrote 'I can _mostly_ rule out...'.
+Sorry for the long email, but this topic also interests me.
 
-I'll try to do more agressive tests with WinCE to verify whether the
-hardware is actually not to blame.
+On 09/14/2011 04:44 PM, Brian Norris wrote:
+> I see nothing has happened with this thread recently. It doesn't
+> deserve to die though.
 
+Having played around with the nand_ids.c and nand_get_flash_type(), I
+also think the approach is in need of a bit of an overhaul.  The code is
+getting increasingly difficult to follow, given the growing number of
+non-standard decoding exceptions.
 
-Lothar Waßmann
--- 
-___________________________________________________________
+My first attempt was rather similar to Huang's -- using a static table
+of READIDs and extended device properties.  However, this also gets
+rather complicated, and again needs to handle special cases.  For
+example, early revisions of a NAND device often include 'don't care'
+bytes in the READID, or even just shorter READIDs.  We could add a
+"matching-mask" to the table, and enforce some ordering to the binding
+process (e.g. bind against the first match in the table, or perhaps the
+most-specific match in the table?), but the semantics of the
+table-ordering is difficult to enforce, especially when new devices are
+added later.  Using a static table also has other disadvantages, such as
+size and the need to continually update as new devices emerge (my list
+is now over 300 devices!).
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+I ended up refactoring the nand_get_flash_type() code, according to 3
+basic schemes:
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+	'ID 2' : extract properties from nand_flash_ids[].  For 2-byte IDs, or
+where device ID gives a non-zero page-size (particularly SP devices).
+
+	'Extended ID': decode properties from ID string where possible, falling
+back to nand_flash_ids[].  For 3/4/5-byte IDs.
+
+ 	'ID 6'       : decode properties from ID string where possible,
+falling back to nand_flash_ids[].  For 6-byte IDs.
+
+The refactoring was primarily aimed at simplifying the way in which
+decoding exceptions could be accommodated.
+
+I have tested the code on the all the devices found in Brian's most
+excellent table:
+> http://linux-mtd.infradead.org/nand-data/nanddata.html
+
+with the following exceptions:
+	- ONFI-only devices: decode not possible using READID
+	- Multi-CS devices: probe must be repeated on each CS
+	- Toshiba devices: difficultly in acquiring the datasheets and the full
+READID.
+
+I have also added a few more devices and columns to the table (#CS,
+#LUNs, #RBn) which I hope to submit shortly.
+
+I was working on a non-standard NAND driver at the time, which made
+little use of nand_base.c, and on an older 2.6.32 tree.  However, if
+there is sufficient interest, I am happy at having a go at updating
+nand_get_flash_type() on mtd-2.6.
+
+Let me know if you think this might be useful.  Perhaps posting the
+standalone test code I used on nanddata.html (actually a csv version of
+the table!) would be a good start?
+
+Cheers,
+
+Angus
