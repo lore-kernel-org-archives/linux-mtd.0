@@ -1,25 +1,16 @@
-Received: from mail-gw0-f48.google.com ([74.125.83.48])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R4Nel-0006W6-L8
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2011 01:55:56 +0000
-Received: by gwj22 with SMTP id 22so3290913gwj.21
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Sep 2011 18:55:52 -0700 (PDT)
-Message-ID: <4E72ACA3.4030903@gmail.com>
-Date: Fri, 16 Sep 2011 13:55:47 +1200
-From: CJ <cjpostor@gmail.com>
+Message-ID: <4E72B441.2010202@freescale.com>
+Date: Fri, 16 Sep 2011 10:28:17 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: vignesh rajendran <vickylinuxer@gmail.com>
-Subject: Re: UBIFS + device issue
-References: <4E65A33F.5030405@gmail.com>
-	<CALoDM-HP2Q6zhnGkMCFWp7DfBy+EjTq0Y3aR2Yo_z+8a-FGSCA@mail.gmail.com>
-	<4E66A3F3.2020604@gmail.com>
-	<CALoDM-FO_EDBo96vkN1VfK=6cse-9bUbC7yz7eeuhAHpcEx0tA@mail.gmail.com>
-In-Reply-To: <CALoDM-FO_EDBo96vkN1VfK=6cse-9bUbC7yz7eeuhAHpcEx0tA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v8 0/4] add the GPMI-NAND support for imx23/imx28
+References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1314169643-23425-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +20,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/09/11 18:40, vignesh rajendran wrote:
-> Hi CJ
->
-> �� Check tour udev is working or not...
->
->
-> Regards
->
-> Vignesh Rajendran
-Hi,
+Hi Sascha:
+Is this patch set ok now?
 
-Just a quick update.
-I tried the same system/kernel etc with JFFS2 and it worked fine.
-So it does seem to be a UBIFS issue.
-
-Cheers,
-CJ
+thanks
+Huang Shijie
+> The patch set is based on tag v3.1-rc2 of linus's tree.
+> and it can be git-am to Artem's tree:
+> 	http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+>
+> The general-purpose media interface(GPMI) controller is a flexible interface
+> to up to several NAND flashs.
+>
+> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
+>
+> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
+> not.
+>
+> v7 --> v8:
+> 	[0] add header file to fix compiling error.
+>
+> v6 --> v7:
+> 	[0] rename RES_SIZE to GPMI_NAND_RES_SIZE.
+> 	[1] move gpmi-nand.h to `include/linux/mtd/` directory.
+> 	[2] remove comment for new pad control.
+> 	[3] others
+>
+> v5 --> v6:
+> 	[0] rename `gpmi-nfc` to `gpmi-nand`.
+> 	[1] remove ->exit() in structure gpmi_nand_platform_data{}.
+> 	[2] drop the macros for the resource's definition of gpmi-nand.
+> 	[3] add a new pad control `MXS_PAD_CTRL_12MA`. 
+> 	[4] others.
+>
+> v4 --> v5:
+> 	[0] split out the mach code and the machine code.
+>
+> v3 --> v4:
+> 	merge the GPMI-NFC device code to the new branch.
+>
+> Huang Shijie (4):
+>   ARM: mxs: add GPMI-NAND support for imx23/imx28
+>   ARM: mxs: add new a pad control
+>   ARM: mxs/mx23evk: add GPMI-NAND device
+>   ARM: mxs/mx28evk: add GPMI-NAND device
+>
+>  arch/arm/mach-mxs/Kconfig                       |    2 +
+>  arch/arm/mach-mxs/clock-mx23.c                  |    1 +
+>  arch/arm/mach-mxs/clock-mx28.c                  |    1 +
+>  arch/arm/mach-mxs/devices-mx23.h                |    4 +
+>  arch/arm/mach-mxs/devices-mx28.h                |    4 +
+>  arch/arm/mach-mxs/devices/Kconfig               |    3 +
+>  arch/arm/mach-mxs/devices/Makefile              |    1 +
+>  arch/arm/mach-mxs/devices/platform-gpmi-nand.c  |  109 +++++++++++++++++++++++
+>  arch/arm/mach-mxs/include/mach/devices-common.h |   10 ++
+>  arch/arm/mach-mxs/include/mach/iomux.h          |    1 +
+>  arch/arm/mach-mxs/mach-mx23evk.c                |   36 ++++++++
+>  arch/arm/mach-mxs/mach-mx28evk.c                |   36 ++++++++
+>  include/linux/mtd/gpmi-nand.h                   |   68 ++++++++++++++
+>  13 files changed, 276 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi-nand.c
+>  create mode 100644 include/linux/mtd/gpmi-nand.h
+>
