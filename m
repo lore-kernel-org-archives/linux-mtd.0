@@ -1,21 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R4RfP-0008Ax-VM
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2011 06:12:53 +0000
-From: Juergen Beisert <jbe@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: How to distinguish MLC and SLC NANDs?
-Date: Fri, 16 Sep 2011 08:12:58 +0200
-References: <201109151333.48684.jbe@pengutronix.de>
-	<CAN8TOE9YctZ8hO7UTM9k7f8SBaWPzyBHyEgtK96Su5MRCrMjPA@mail.gmail.com>
-In-Reply-To: <CAN8TOE9YctZ8hO7UTM9k7f8SBaWPzyBHyEgtK96Su5MRCrMjPA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201109160812.58260.jbe@pengutronix.de>
-Cc: Brian Norris <computersforpeace@gmail.com>
+Message-ID: <20082.65481.262062.390598@ipc1.ka-ro>
+Date: Fri, 16 Sep 2011 09:50:33 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: gianluca <gianlucarenzi@eurekelettronica.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v12 0/3] add the GPMI controller driver for IMX23/IMX28
+In-Reply-To: <4E7218A0.2020309@eurekelettronica.it>
+References: <1315450031-6371-1-git-send-email-b32955@freescale.com>
+	<20081.44941.12535.496764@ipc1.ka-ro>
+	<4E71CDB2.4000205@freescale.com>
+	<4E7218A0.2020309@eurekelettronica.it>
+Cc: marek.vasut@gmail.com, koen.beel.barco@gmail.com, dedekind1@gmail.com,
+	w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com,
+	s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi,
 
-Brian Norris wrote:
-> On Thu, Sep 15, 2011 at 7:33 AM, Juergen Beisert <jbe@pengutronix.de> wrote:
-> > Is there a unique pattern for MLC
-> > or SLC in the mtd structure available after calling nand_scan_ident() to
-> > select what correction sum type should be used for the attached NAND?
->
-> Actually, there isn't anything available in struct mtd_info. This
-> belongs in struct nand_chip, actually, since it's a NAND-specific
-> feature. In fact, there is some data available there. As you can see
-> in nand_get_flash_type() in nand_base.c, we fill in the
-> `chip->cellinfo' field, then later use a mask on it like this:
->
-> chip->cellinfo & NAND_CI_CELLTYPE_MSK
->
-> According to the data sheets for *most* NAND parts, this is a safe way
-> of determining SLC vs. MLC (non-zero => MLC; zero => SLC), and we use
-> it for certain detection code paths.
+gianluca writes:
+> Sorry for intrusion in this discussion, but:
+> 
+> Huang Shijie wrote:
+> >> channels are being used concurrently. The GPMI driver will bail out
+> >> with the timeout error while the MMC driver obviously has no timeout
+> >> check for this situation.
+> >>
+> >> I can mostly rule out HW problems, because the same board works
+> >> perfectly well with WindowsCE (tested with a copy operation between
+> >> flash and SD card).
+> >>
+> >>
+> >> Lothar Waßmann
+> 
+> @Lothar: Probably WinCE with a copy operation between flash and SD is 
+> not reliable as synchronous as opposed dd command in the previous mail.
+> 
+I know that a copy operation on WinCE is not an adequate test. That's
+why I wrote 'I can _mostly_ rule out...'.
 
-Hmm, *most* means this information is not reliable? Would it be better to give 
-the driver a hint what kind of NAND it should expect via the platform_data?
+I'll try to do more agressive tests with WinCE to verify whether the
+hardware is actually not to blame.
 
-> Note that if the chip uses ONFI, you supply your own ID table, or the chip
-> uses some of the older ID codes, nand_base.c won't set chip->cellinfo for
-> you; but it will default to SLC I think, which is the correct option for old
-> parts. 
 
-BTW: Is there a known disadvantage or incompatibility if I protect the data of 
-an SLC with the more stronger ECC sums intended for MLCs (beside the effect 
-the OOB area is more filled than required)?
-
-> But it's up to you to determine your own reliance on this method. I
-> don't know of any users who rely on `chip->cellinfo &
-> NAND_CI_CELLTYPE_MSK' for this type of information.
-
-I was in the hope of a perfect world and the MTD framework detects the NAND 
-type reliable ;-). Now I tend more to use user's info from the platform_data.
-
-Thanks for your answer.
-
-Juergen
-
+Lothar Waßmann
 -- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | http://www.pengutronix.de/  |
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
