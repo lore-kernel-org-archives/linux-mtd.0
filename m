@@ -1,14 +1,36 @@
-From: postmaster@elta.co.il (postmaster at elta.co.il)
-Date: Thu, 15 Sep 2011 12:16:01 +0300
-Subject: Executable File Violation
-Message-ID: <mailman.136.1316079570.20020.linux-mtd@lists.infradead.org>
+From: bpringle@sympatico.ca (Bill Pringlemeir)
+Date: Fri, 16 Sep 2011 16:29:41 -0400
+Subject: [PATCH] Fix romfs when using an NAND flash MTD.
+Message-ID: <mailman.140.1316206132.20020.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-An email was sent from linux-mtd at lists.infradead.org to market at elta.co.il that contained the following files: 
+The code '-EUCLEAN' is returned when an NAND mtd has used ECC to
+correct data.  This is fine for the reader of the RomFs and their
+data is correct.
+---
+ fs/romfs/storage.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-attachment.zip
+diff --git a/fs/romfs/storage.c b/fs/romfs/storage.c
+index 71e2b4d..4105d1c 100644
+--- a/fs/romfs/storage.c
++++ b/fs/romfs/storage.c
+@@ -19,8 +19,10 @@
+ #endif
+ 
+ #ifdef CONFIG_ROMFS_ON_MTD
+-#define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
+-
++#define ROMFS_MTD_READ(sb, ...)                                        \
++    ({ int res;                                                        \
++        res = ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__)) == -EUCLEAN ? \
++            0 : res; })                                                         
+ /*
+  * read data from an romfs image on an MTD device
+  */
+-- 
+1.7.0.4
 
-One of these files is an executable file.  Our company policy prohibits the sending of executable files via email.  The message was not delivered.
 
-You can contact ELTA's help desk to release the file.
+--=-=-=--
