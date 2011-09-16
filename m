@@ -1,16 +1,21 @@
-Message-ID: <4E72B441.2010202@freescale.com>
-Date: Fri, 16 Sep 2011 10:28:17 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R4RfP-0008Ax-VM
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2011 06:12:53 +0000
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: How to distinguish MLC and SLC NANDs?
+Date: Fri, 16 Sep 2011 08:12:58 +0200
+References: <201109151333.48684.jbe@pengutronix.de>
+	<CAN8TOE9YctZ8hO7UTM9k7f8SBaWPzyBHyEgtK96Su5MRCrMjPA@mail.gmail.com>
+In-Reply-To: <CAN8TOE9YctZ8hO7UTM9k7f8SBaWPzyBHyEgtK96Su5MRCrMjPA@mail.gmail.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v8 0/4] add the GPMI-NAND support for imx23/imx28
-References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1314169643-23425-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-	dedekind1@gmail.com
+Content-Disposition: inline
+Message-Id: <201109160812.58260.jbe@pengutronix.de>
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha:
-Is this patch set ok now?
+Hi Brian,
 
-thanks
-Huang Shijie
-> The patch set is based on tag v3.1-rc2 of linus's tree.
-> and it can be git-am to Artem's tree:
-> 	http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+Brian Norris wrote:
+> On Thu, Sep 15, 2011 at 7:33 AM, Juergen Beisert <jbe@pengutronix.de> wrote:
+> > Is there a unique pattern for MLC
+> > or SLC in the mtd structure available after calling nand_scan_ident() to
+> > select what correction sum type should be used for the attached NAND?
 >
-> The general-purpose media interface(GPMI) controller is a flexible interface
-> to up to several NAND flashs.
+> Actually, there isn't anything available in struct mtd_info. This
+> belongs in struct nand_chip, actually, since it's a NAND-specific
+> feature. In fact, there is some data available there. As you can see
+> in nand_get_flash_type() in nand_base.c, we fill in the
+> `chip->cellinfo' field, then later use a mask on it like this:
 >
-> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
+> chip->cellinfo & NAND_CI_CELLTYPE_MSK
 >
-> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
-> not.
->
-> v7 --> v8:
-> 	[0] add header file to fix compiling error.
->
-> v6 --> v7:
-> 	[0] rename RES_SIZE to GPMI_NAND_RES_SIZE.
-> 	[1] move gpmi-nand.h to `include/linux/mtd/` directory.
-> 	[2] remove comment for new pad control.
-> 	[3] others
->
-> v5 --> v6:
-> 	[0] rename `gpmi-nfc` to `gpmi-nand`.
-> 	[1] remove ->exit() in structure gpmi_nand_platform_data{}.
-> 	[2] drop the macros for the resource's definition of gpmi-nand.
-> 	[3] add a new pad control `MXS_PAD_CTRL_12MA`. 
-> 	[4] others.
->
-> v4 --> v5:
-> 	[0] split out the mach code and the machine code.
->
-> v3 --> v4:
-> 	merge the GPMI-NFC device code to the new branch.
->
-> Huang Shijie (4):
->   ARM: mxs: add GPMI-NAND support for imx23/imx28
->   ARM: mxs: add new a pad control
->   ARM: mxs/mx23evk: add GPMI-NAND device
->   ARM: mxs/mx28evk: add GPMI-NAND device
->
->  arch/arm/mach-mxs/Kconfig                       |    2 +
->  arch/arm/mach-mxs/clock-mx23.c                  |    1 +
->  arch/arm/mach-mxs/clock-mx28.c                  |    1 +
->  arch/arm/mach-mxs/devices-mx23.h                |    4 +
->  arch/arm/mach-mxs/devices-mx28.h                |    4 +
->  arch/arm/mach-mxs/devices/Kconfig               |    3 +
->  arch/arm/mach-mxs/devices/Makefile              |    1 +
->  arch/arm/mach-mxs/devices/platform-gpmi-nand.c  |  109 +++++++++++++++++++++++
->  arch/arm/mach-mxs/include/mach/devices-common.h |   10 ++
->  arch/arm/mach-mxs/include/mach/iomux.h          |    1 +
->  arch/arm/mach-mxs/mach-mx23evk.c                |   36 ++++++++
->  arch/arm/mach-mxs/mach-mx28evk.c                |   36 ++++++++
->  include/linux/mtd/gpmi-nand.h                   |   68 ++++++++++++++
->  13 files changed, 276 insertions(+), 0 deletions(-)
->  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi-nand.c
->  create mode 100644 include/linux/mtd/gpmi-nand.h
->
+> According to the data sheets for *most* NAND parts, this is a safe way
+> of determining SLC vs. MLC (non-zero => MLC; zero => SLC), and we use
+> it for certain detection code paths.
+
+Hmm, *most* means this information is not reliable? Would it be better to give 
+the driver a hint what kind of NAND it should expect via the platform_data?
+
+> Note that if the chip uses ONFI, you supply your own ID table, or the chip
+> uses some of the older ID codes, nand_base.c won't set chip->cellinfo for
+> you; but it will default to SLC I think, which is the correct option for old
+> parts. 
+
+BTW: Is there a known disadvantage or incompatibility if I protect the data of 
+an SLC with the more stronger ECC sums intended for MLCs (beside the effect 
+the OOB area is more filled than required)?
+
+> But it's up to you to determine your own reliance on this method. I
+> don't know of any users who rely on `chip->cellinfo &
+> NAND_CI_CELLTYPE_MSK' for this type of information.
+
+I was in the hope of a perfect world and the MTD framework detects the NAND 
+type reliable ;-). Now I tend more to use user's info from the platform_data.
+
+Thanks for your answer.
+
+Juergen
+
+-- 
+Pengutronix e.K.                              | Juergen Beisert             |
+Linux Solutions for Science and Industry      | http://www.pengutronix.de/  |
