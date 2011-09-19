@@ -1,22 +1,17 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5jAr-0002wY-28
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 19:06:37 +0000
-Received: by wyh11 with SMTP id 11so7115206wyh.22
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 19 Sep 2011 12:06:35 -0700 (PDT)
+Received: from blu0-omc1-s6.blu0.hotmail.com ([65.55.116.17])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5kKj-0003yT-NB
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 20:20:54 +0000
+Message-ID: <BLU0-SMTP67284C899E8D810036835EB80B0@phx.gbl>
+From: Bill Pringlemeir <bpringle@sympatico.ca>
+To: dedekind1@gmail.com
+Subject: Re: RomFS MTD and NAND Flash with ECC (EUCLEAN).
+References: <BLU0-SMTP394611D4685CA5AE953006B8060@phx.gbl>
+	<1316408751.24366.55.camel@sauron>
+Date: Mon, 19 Sep 2011 16:19:11 -0400
 MIME-Version: 1.0
-In-Reply-To: <201109160812.58260.jbe@pengutronix.de>
-References: <201109151333.48684.jbe@pengutronix.de>
-	<CAN8TOE9YctZ8hO7UTM9k7f8SBaWPzyBHyEgtK96Su5MRCrMjPA@mail.gmail.com>
-	<201109160812.58260.jbe@pengutronix.de>
-Date: Mon, 19 Sep 2011 12:06:35 -0700
-Message-ID: <CAN8TOE8ujmPH9LjNyH=_C81T9FHzxjUQzV-W8kcedMY+noSrNA@mail.gmail.com>
-Subject: Re: How to distinguish MLC and SLC NANDs?
-From: Brian Norris <computersforpeace@gmail.com>
-To: Juergen Beisert <jbe@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Atlant Schmidt <aschmidt@dekaresearch.com>
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 15, 2011 at 11:12 PM, Juergen Beisert <jbe@pengutronix.de> wrote:
-> Brian Norris wrote:
->> chip->cellinfo & NAND_CI_CELLTYPE_MSK
->>
->> According to the data sheets for *most* NAND parts, this is a safe way
->> of determining SLC vs. MLC (non-zero => MLC; zero => SLC), and we use
->> it for certain detection code paths.
->
-> Hmm, *most* means this information is not reliable?
+On 19 Sep 2011, dedekind1@gmail.com wrote:
 
-*most* means a few things here:
+On Fri, 2011-09-16 at 16:46 -0400, Bill Pringlemeir wrote:
+>>  #ifdef CONFIG_ROMFS_ON_MTD
+>> -#define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
+>> -
+>> +#define ROMFS_MTD_READ(sb, ...)                                        \
+>> +    ({ int res;                                                        \
+>> +        res = ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__)) == -EUCLEAN ? \
+>> +            0 : res; })                                                         
 
-1) this mechanism is only used for a small portion of our detection
-code and doesn't have a wide variety of test coverage, I don't think.
-If this code were incorrect, most users of this code would at most get
-a slightly different bad block scanning pattern; this kind of issue
-isn't always real easy to notice. Also, there are some Samsung MLC
-that rely on this info for their code path.
-2) this mask is defined in many NAND data sheets so that it is safe to
-use on any chips that I have seen. Some don't specify everything but
-still tend to follow this pattern.
-3) NAND does not have a real standard for decoding ID bytes, although
-there are a couple of patterns that have become de-facto standards
-(with various exceptions, of course; none noticed on this particular
-issue)
+> I do not think this is the most elegant way to handle this, but yes,
+> EUCLEAN is used nowadays to report about bit-flips, which are actually
+> not an error, more like an info that this eraseblock needs some
+> attention.
 
-> Would it be better to give the driver a hint what kind of NAND it should expect via the platform_data?
+Good.  Neither do I.  Sometimes code is better at describing a problem.
 
-Your prior knowledge of the NAND chip would probably be more reliable.
+> I am not sure MTD is the right subsystem for this patch, could you try
+> to send it to fs-devel / Al Viro instead?
 
-> I was in the hope of a perfect world and the MTD framework detects the NAND
-> type reliable ;-). Now I tend more to use user's info from the platform_data.
+I kind of thought it was not a good patch.  I will try to rework it.
+Now, I am sure of 'EUCLEAN's meaning.  I also observe that my romfs
+works fine with a NAND flash if the BLOCK device is used.
 
-Unfortunately, there is little perfection in NAND standards.
+Currently the romfs code is making a decision based on...
 
-Brian
+   int romfs_dev_read(struct super_block *sb, unsigned long pos,
+   ...
+       if (sb->s_mtd)
+          return romfs_mtd_read(sb, pos, buf, buflen);
+
+The NAND flash will not map directly to a CPU memory space like a NOR
+flash.  I *think* the main benefit of this MTD is for the non-MMU in
+directly mapping files?  What is the benefit of using the MTD versus the
+block device for NAND flash?  [I think that is not a fs-devel
+question...].
+
+Can we look at sb->s_mtd->type for 'MTD_NANDFLASH' (etc) and bind a vptr
+in romfs_get_sb(), so that 'romfs_dev_*()' would actually be function
+pointers.  Then NAND and NOR mtd's could both have a RomFS on the same
+system.  Err that only makes sense if I can get an answer to the last
+question.
+
+Also, it is not the place of RomFs to be writing flash.  However, if
+there is an EUCLEAN return code, is it worth a printk?
+
+tia,
+Bill Pringlemeir.
+
+-- 
+It is reasoning and faith that bind truth .  - Rod Ryker...
+
+-- 
+A mind  that is stretched  to a new  idea never returns to  its original
+dimension - Anonymous
