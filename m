@@ -1,16 +1,21 @@
-Received: from relay4.ptmail.sapo.pt ([212.55.154.24] helo=sapo.pt)
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5eGv-0004Dk-7k
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 13:52:35 +0000
-Message-ID: <20110919145214.19341ml5c346kgzy@mail.sapo.pt>
-Date: Mon, 19 Sep 2011 14:52:14 +0100
-From: dhlm83@sapo.pt
-To: linux-mtd@lists.infradead.org
-Subject: flash_erase ERROR!
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; DelSp="Yes"; format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Received: from mo1.mail-out.ovh.net ([178.32.228.1])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5emw-0005NL-UL
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 14:25:42 +0000
+Received: from mail179.ha.ovh.net (b9.ovh.net [213.186.33.59])
+	by mo1.mail-out.ovh.net (Postfix) with SMTP id 9165C1014FDA
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Sep 2011 16:26:27 +0200 (CEST)
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 07/11] at92/nand: use gpio_is_valid to check the gpio
+Date: Mon, 19 Sep 2011 16:03:18 +0200
+Message-Id: <1316441002-27381-2-git-send-email-plagnioj@jcrosoft.com>
+In-Reply-To: <1316436695-19194-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1316436695-19194-1-git-send-email-plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
+	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,64 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
-This is my first post.
+Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+Hi,
 
-I am using uClinux (kernel 2.4.34.5-uc0 , dist: 20110603)
-I build a image to board NetBurner MOD5272.
+	I'd like to apply this patch via AT91 with the whole gpio patch series
 
-I have de following flash memory map:
-      ......
-      Creating 6 MTD partitions on "Physically mapped flash Netburner MOD527=
-2":
-      0x00000000-0x00004000 : "boot monitor (16K)"
-      0x00004000-0x00006000 : "monitor params (8K)"
-      0x00006000-0x00008000 : "user params (8K)"
-      0x00008000-0x00010000 : "application code 1 (32K)"
-      0x00010000-0x001a0000 : "application code 2 (1600K)"
-      0x001a0000-0x00200000 : "flash fs (384K)"
-      ......
+Best Regards,
+J.
+ drivers/mtd/nand/atmel_nand.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-As can be seen, I have one partition with 384k (6 sectors of 64kiB) in =20
-/dev/mtd5 with corresponding block device /dev/mtdblock4
-That partition is mounted in /mnt directory in jffs2 type, and used to =20
-save some configuration files.
-      ......
-      #!/bin/sh
-      echo "Mounting /mnt (jffs2)"
-      mount -t jffs2 /dev/mtdblock5 /mnt
-      ......
-
-For some unknown reason the file system come corrupted, afther some =20
-system reboot.
-And afther this, always it try mount  /mnt get many:
-      jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at =20
-0xXXXXXXXX: 0xXXXX instead
-
-
-I read in this link =20
-(http://forums.freescale.com/t5/Other-Microcontrollers/JFFS2-complaining-jff=
-s2-scan-eraseblock-Magic-bitmask-0x1985-not/td-p/40002), to solve this i hav=
-e to format the =20
-partition.
-The problem is: The flash_eraseall and flash_erase dont work.
-      ......
-      # flash_eraseall -j /dev/mtd5 0 0
-      /bin/flash_eraseall has been replaced by `flash_erase <mtddev> 0 =20
-0`; please use it
-      Access Error Exception 12: Error on data read
-      SIGSEGV
-      ......
-
-      ......
-      # flash_erase -j -u -N /dev/mtd5 0 0
-      libmtd: error!: MEMGETBADBLOCK ioctl failed
-              error 25 (Inappropriate ioctl for device)
-      flash_erase: error!: mtd_get_dev_info failed
-      .....
-
-Has anyone had this problem?
-Someone may give clues to solve the problem?
-
-Thanks.
-Domingos Goncalves.
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 55da20c..e20ac1f 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -113,7 +113,7 @@ static int cpu_has_dma(void)
+  */
+ static void atmel_nand_enable(struct atmel_nand_host *host)
+ {
+-	if (host->board->enable_pin)
++	if (gpio_is_valid(host->board->enable_pin))
+ 		gpio_set_value(host->board->enable_pin, 0);
+ }
+ 
+@@ -122,7 +122,7 @@ static void atmel_nand_enable(struct atmel_nand_host *host)
+  */
+ static void atmel_nand_disable(struct atmel_nand_host *host)
+ {
+-	if (host->board->enable_pin)
++	if (gpio_is_valid(host->board->enable_pin))
+ 		gpio_set_value(host->board->enable_pin, 1);
+ }
+ 
+@@ -535,7 +535,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	nand_chip->IO_ADDR_W = host->io_base;
+ 	nand_chip->cmd_ctrl = atmel_nand_cmd_ctrl;
+ 
+-	if (host->board->rdy_pin)
++	if (gpio_is_valid(host->board->rdy_pin))
+ 		nand_chip->dev_ready = atmel_nand_device_ready;
+ 
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+@@ -573,7 +573,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, host);
+ 	atmel_nand_enable(host);
+ 
+-	if (host->board->det_pin) {
++	if (gpio_is_valid(host->board->det_pin)) {
+ 		if (gpio_get_value(host->board->det_pin)) {
+ 			printk(KERN_INFO "No SmartMedia card inserted.\n");
+ 			res = -ENXIO;
+-- 
+1.7.5.4
