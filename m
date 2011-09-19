@@ -1,16 +1,16 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5dpY-0003UC-MX
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 13:24:17 +0000
-From: "Saxena, Parth" <parth.saxena@ti.com>
-To: <linux-omap@vger.kernel.org>
-Subject: [PATCH] ti816x: add support for nand on ti8168 evm
-Date: Mon, 19 Sep 2011 18:54:08 +0530
-Message-ID: <1316438648-25760-1-git-send-email-parth.saxena@ti.com>
+Received: from relay4.ptmail.sapo.pt ([212.55.154.24] helo=sapo.pt)
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5eGv-0004Dk-7k
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 13:52:35 +0000
+Message-ID: <20110919145214.19341ml5c346kgzy@mail.sapo.pt>
+Date: Mon, 19 Sep 2011 14:52:14 +0100
+From: dhlm83@sapo.pt
+To: linux-mtd@lists.infradead.org
+Subject: flash_erase ERROR!
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: tony@atomide.com, "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
-	"Saxena, Parth" <parth.saxena@ti.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-15; DelSp="Yes"; format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add partition table for NAND device on TI8168 EVM
-and initialise the NAND module.
+Hello.
+This is my first post.
 
-Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
-Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
----
+I am using uClinux (kernel 2.4.34.5-uc0 , dist: 20110603)
+I build a image to board NetBurner MOD5272.
 
-This patch is tested on top of linux-omap/master and
-Hemant's patches submitted recently.
+I have de following flash memory map:
+      ......
+      Creating 6 MTD partitions on "Physically mapped flash Netburner MOD527=
+2":
+      0x00000000-0x00004000 : "boot monitor (16K)"
+      0x00004000-0x00006000 : "monitor params (8K)"
+      0x00006000-0x00008000 : "user params (8K)"
+      0x00008000-0x00010000 : "application code 1 (32K)"
+      0x00010000-0x001a0000 : "application code 2 (1600K)"
+      0x001a0000-0x00200000 : "flash fs (384K)"
+      ......
 
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg53457.html
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg54296.html
+As can be seen, I have one partition with 384k (6 sectors of 64kiB) in =20
+/dev/mtd5 with corresponding block device /dev/mtdblock4
+That partition is mounted in /mnt directory in jffs2 type, and used to =20
+save some configuration files.
+      ......
+      #!/bin/sh
+      echo "Mounting /mnt (jffs2)"
+      mount -t jffs2 /dev/mtdblock5 /mnt
+      ......
 
- arch/arm/mach-omap2/board-ti8168evm.c |   39 +++++++++++++++++++++++++++++++++
- 1 files changed, 39 insertions(+), 0 deletions(-)
+For some unknown reason the file system come corrupted, afther some =20
+system reboot.
+And afther this, always it try mount  /mnt get many:
+      jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at =20
+0xXXXXXXXX: 0xXXXX instead
 
-diff --git a/arch/arm/mach-omap2/board-ti8168evm.c b/arch/arm/mach-omap2/board-ti8168evm.c
-index e516a04..87953bb 100644
---- a/arch/arm/mach-omap2/board-ti8168evm.c
-+++ b/arch/arm/mach-omap2/board-ti8168evm.c
-@@ -14,6 +14,7 @@
-  */
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/mtd/nand.h>
- 
- #include <mach/hardware.h>
- #include <asm/mach-types.h>
-@@ -23,6 +24,42 @@
- #include <plat/irqs.h>
- #include <plat/board.h>
- #include <plat/common.h>
-+#include <plat/gpmc.h>
-+#include <plat/nand.h>
-+
-+#include "board-flash.h"
-+
-+#define NAND_BLOCK_SIZE		SZ_128K
-+
-+static struct mtd_partition ti816x_nand_partitions[] = {
-+/* All the partition sizes are listed in terms of NAND block size */
-+	{
-+		.name		= "U-Boot",
-+		.offset		= 0,			/* Offset = 0x0 */
-+		.size		= 18 * NAND_BLOCK_SIZE,
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "U-Boot Env",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x240000 */
-+		.size		= 2 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "Kernel",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
-+		.size		= 34 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "File System",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x6C0000 */
-+		.size		= 1601 * NAND_BLOCK_SIZE,
-+	},
-+	{
-+		.name		= "Reserved",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0xCEE0000 */
-+		.size		= MTDPART_SIZ_FULL,
-+	},
-+};
- 
- static struct omap_board_config_kernel ti8168_evm_config[] __initdata = {
- };
-@@ -35,6 +72,8 @@ static void __init ti8168_init_early(void)
- 
- static void __init ti8168_evm_init(void)
- {
-+	board_nand_init(ti816x_nand_partitions,
-+		ARRAY_SIZE(ti816x_nand_partitions), 0, NAND_BUSWIDTH_16);
- 	omap_serial_init();
- 	omap_board_config = ti8168_evm_config;
- 	omap_board_config_size = ARRAY_SIZE(ti8168_evm_config);
--- 
-1.6.2.4
+
+I read in this link =20
+(http://forums.freescale.com/t5/Other-Microcontrollers/JFFS2-complaining-jff=
+s2-scan-eraseblock-Magic-bitmask-0x1985-not/td-p/40002), to solve this i hav=
+e to format the =20
+partition.
+The problem is: The flash_eraseall and flash_erase dont work.
+      ......
+      # flash_eraseall -j /dev/mtd5 0 0
+      /bin/flash_eraseall has been replaced by `flash_erase <mtddev> 0 =20
+0`; please use it
+      Access Error Exception 12: Error on data read
+      SIGSEGV
+      ......
+
+      ......
+      # flash_erase -j -u -N /dev/mtd5 0 0
+      libmtd: error!: MEMGETBADBLOCK ioctl failed
+              error 25 (Inappropriate ioctl for device)
+      flash_erase: error!: mtd_get_dev_info failed
+      .....
+
+Has anyone had this problem?
+Someone may give clues to solve the problem?
+
+Thanks.
+Domingos Goncalves.
