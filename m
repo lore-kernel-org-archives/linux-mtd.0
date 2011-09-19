@@ -1,27 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5cy4-0000PM-CI
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 12:29:01 +0000
-Received: by wyh11 with SMTP id 11so6679979wyh.22
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 19 Sep 2011 05:28:57 -0700 (PDT)
-Subject: RE: [PATCH] ti816x: add support for nand on ti8168 evm
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Saxena, Parth" <parth.saxena@ti.com>
-Date: Mon, 19 Sep 2011 15:31:35 +0300
-In-Reply-To: <19F8576C6E063C45BE387C64729E739404EC3121B9@dbde02.ent.ti.com>
-References: <parth.saxena@ti.com>
-	<1315486982-30109-1-git-send-email-parth.saxena@ti.com>
-	<1316408187.24366.52.camel@sauron>
-	<19F8576C6E063C45BE387C64729E739404EC3121B9@dbde02.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1316435503.24366.61.camel@sauron>
-Mime-Version: 1.0
-Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1R5dpY-0003UC-MX
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 13:24:17 +0000
+From: "Saxena, Parth" <parth.saxena@ti.com>
+To: <linux-omap@vger.kernel.org>
+Subject: [PATCH] ti816x: add support for nand on ti8168 evm
+Date: Mon, 19 Sep 2011 18:54:08 +0530
+Message-ID: <1316438648-25760-1-git-send-email-parth.saxena@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: tony@atomide.com, "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
+	"Saxena, Parth" <parth.saxena@ti.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-09-19 at 17:04 +0530, Saxena, Parth wrote:
-> Artem,
-> I will re-post this patch to linux-omap list and Tony. Can I add your name in the 'Acked-by' section?
+Add partition table for NAND device on TI8168 EVM
+and initialise the NAND module.
 
-No, I did not review this patch.
+Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
+Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
+---
 
+This patch is tested on top of linux-omap/master and
+Hemant's patches submitted recently.
 
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg53457.html
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg54296.html
+
+ arch/arm/mach-omap2/board-ti8168evm.c |   39 +++++++++++++++++++++++++++++++++
+ 1 files changed, 39 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-ti8168evm.c b/arch/arm/mach-omap2/board-ti8168evm.c
+index e516a04..87953bb 100644
+--- a/arch/arm/mach-omap2/board-ti8168evm.c
++++ b/arch/arm/mach-omap2/board-ti8168evm.c
+@@ -14,6 +14,7 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/mtd/nand.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/mach-types.h>
+@@ -23,6 +24,42 @@
+ #include <plat/irqs.h>
+ #include <plat/board.h>
+ #include <plat/common.h>
++#include <plat/gpmc.h>
++#include <plat/nand.h>
++
++#include "board-flash.h"
++
++#define NAND_BLOCK_SIZE		SZ_128K
++
++static struct mtd_partition ti816x_nand_partitions[] = {
++/* All the partition sizes are listed in terms of NAND block size */
++	{
++		.name		= "U-Boot",
++		.offset		= 0,			/* Offset = 0x0 */
++		.size		= 18 * NAND_BLOCK_SIZE,
++		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
++	},
++	{
++		.name		= "U-Boot Env",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x240000 */
++		.size		= 2 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Kernel",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
++		.size		= 34 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "File System",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x6C0000 */
++		.size		= 1601 * NAND_BLOCK_SIZE,
++	},
++	{
++		.name		= "Reserved",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0xCEE0000 */
++		.size		= MTDPART_SIZ_FULL,
++	},
++};
+ 
+ static struct omap_board_config_kernel ti8168_evm_config[] __initdata = {
+ };
+@@ -35,6 +72,8 @@ static void __init ti8168_init_early(void)
+ 
+ static void __init ti8168_evm_init(void)
+ {
++	board_nand_init(ti816x_nand_partitions,
++		ARRAY_SIZE(ti816x_nand_partitions), 0, NAND_BUSWIDTH_16);
+ 	omap_serial_init();
+ 	omap_board_config = ti8168_evm_config;
+ 	omap_board_config_size = ARRAY_SIZE(ti8168_evm_config);
 -- 
-Best Regards,
-Artem Bityutskiy
+1.6.2.4
