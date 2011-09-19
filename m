@@ -1,20 +1,26 @@
-Subject: Re: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and
-	map_rom
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5VCW-000632-Rb
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 04:11:25 +0000
+Received: by fxg7 with SMTP id 7so4337019fxg.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 18 Sep 2011 21:11:23 -0700 (PDT)
+Subject: Re: [PATCH 03/14] mtd: define `is_ecc_error()' macros
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 19 Sep 2011 07:11:14 +0300
-In-Reply-To: <CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
-References: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
-	<1315747783.18731.59.camel@sauron>
-	<CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 19 Sep 2011 07:14:01 +0300
+In-Reply-To: <1315749440.18731.65.camel@sauron>
+References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
+	<1315426421-16243-4-git-send-email-computersforpeace@gmail.com>
+	<1315749440.18731.65.camel@sauron>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1316405483.24366.15.camel@sauron>
+Message-ID: <1316405649.24366.17.camel@sauron>
 Mime-Version: 1.0
-Cc: Linus Walleij <linus.walleij@stericsson.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
-	Russell King <rmk@arm.linux.org.uk>
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Matthieu Castet <matthieu.castet@parrot.com>,
+	Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Matthew Creech <mlcreech@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,22 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-09-11 at 23:12 +0200, Linus Walleij wrote:
-> On Sun, Sep 11, 2011 at 3:29 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Tue, 2011-09-06 at 08:53 +0200, Linus Walleij wrote:
-> >> From: Linus Walleij <linus.walleij@linaro.org>
-> >>
-> >> This exposes the PB1176 ROM if you compile in the MTD physmap
-> >> mapping and also the map_rom chiptype.
-> >>
-> >> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
-> >
-> > I think this should go in via the corresponding arm subtree.
+On Sun, 2011-09-11 at 16:57 +0300, Artem Bityutskiy wrote:
+> > +#define is_corrected_ecc_error(error) (error == -EUCLEAN)
 > 
-> Sure, but I think we need some nod from the MTD people that this is the
-> right way to present a ROM, so is that an Acked-by?
+> This is not really an error...
+> 
+> > +#define is_uncorrected_ecc_error(error) (error == -EBADMSG)
+> > +#define is_ecc_error(error) ((is_corrected_ecc_error(error) || \
+> > +			      is_uncorrected_ecc_error(error)))
+> 
+> Could we please have static inline functions instead of macros?
+> 
+> I think it is nicer to have mtd_ prefixes, how about these names
+> instead:
+> 
+> mtd_is_bitflip()
+> mtd_is_eccerr()
+> mtd_is_bitflip_or_eccerr()
 
-Acked-by: Artem Bityutskiy <artem.bityutskiy@intel.com>
+Brian, I was actually waiting for v2 of the patches: 3/14, and
+9/14-14/14.
 
 -- 
 Best Regards,
