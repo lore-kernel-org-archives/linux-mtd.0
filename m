@@ -1,15 +1,21 @@
-Date: Sun, 18 Sep 2011 09:37:48 -0300
-To: undisclosed-recipients:;
-From: =?iso-8859-1?Q?Online_Tema=AE_UK?=
-	<googleuk.anniversarydraws@shqiptar.eu>
-Subject: Alert from the Google UK Office**** Confirm your E-mail usage
-	immediately***
-Message-ID: <926d2312594b44812281036b57131de6@120.140.143.14>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="iso-8859-1"
-Reply-To: =?iso-8859-1?Q?Online_Tema=AE_UK?=
-	<googleuk.anniversarydraws@shqiptar.eu>
+Subject: Re: [PATCH v4] mach-realview: expose PB1176 ROM using physmap and
+	map_rom
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 19 Sep 2011 07:11:14 +0300
+In-Reply-To: <CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
+References: <1315292023-4125-1-git-send-email-linus.walleij@stericsson.com>
+	<1315747783.18731.59.camel@sauron>
+	<CACRpkdb7Qp527PqGT_kT5DF48ajvYgAMazw-sKyeT6hMegrXzQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1316405483.24366.15.camel@sauron>
+Mime-Version: 1.0
+Cc: Linus Walleij <linus.walleij@stericsson.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
+	Russell King <rmk@arm.linux.org.uk>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 2011-09-11 at 23:12 +0200, Linus Walleij wrote:
+> On Sun, Sep 11, 2011 at 3:29 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Tue, 2011-09-06 at 08:53 +0200, Linus Walleij wrote:
+> >> From: Linus Walleij <linus.walleij@linaro.org>
+> >>
+> >> This exposes the PB1176 ROM if you compile in the MTD physmap
+> >> mapping and also the map_rom chiptype.
+> >>
+> >> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+> >
+> > I think this should go in via the corresponding arm subtree.
+> 
+> Sure, but I think we need some nod from the MTD people that this is the
+> right way to present a ROM, so is that an Acked-by?
 
---
-We urgently wish to inform you again that your e-mail w o n £850,000 UK P o
-u n d s {with L u c k y # :12-12-23-35-40-41(12) & T i c k e t # :008 695
-757 336 64} in our on-going Google UK 12th Anniversary Online P r o m o.
+Acked-by: Artem Bityutskiy <artem.bityutskiy@intel.com>
 
-As indicated in your play coupon,Your w i n n i n g details falls under our
-ASIA Zone Disbursement booklet where your claim shall be processed.
-
-Kindly confirm this email is 'still in use' by sending your N a m e & C o u
-n t r y to get full details.
-
-Email: googleuk.anniversarydraws@shqiptar.eu
-For Inquiry : +44 70 24 09 99 1 6
-
-Congrats!!!
-Ms. marlene.
-®2011 Giveaway Online Announcer
-
-
-
-
-
-
-
---
-AVISO LEGAL:
-"Esta mensagem corporativa é destinada somente a quem ela é dirigida e pode conter informação confidencial e legalmente protegida. Caso você não seja o destinatário, fica notificado de que é ilegal examiná-la, utilizá-la, divulgá-la, copiá-la ou distribuí-la no todo ou em partes. Se a recebeu por engano, pedimos que a retorne, apagando-a dos seus registros. Fica desprovida de validade a mensagem emitida por quem não detenha poderes de representação".
-
-DISCLAIMER:
-"This corporate message is intended solely for the addressees and is confidential. It may contain information that is privileged or otherwise protected from disclosure. If you have received this transmission in error, please delete it and immediately notify the sender. Any use not in accord with its purpose, any dissemination or disclosure, either whole or partial, is prohibited unless formal approval is granted".
+-- 
+Best Regards,
+Artem Bityutskiy
