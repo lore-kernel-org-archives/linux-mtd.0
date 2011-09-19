@@ -1,16 +1,15 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga09.intel.com ([134.134.136.24])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5bhB-0001Je-Ft
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 11:07:30 +0000
+	id 1R5bz1-0001jS-W0
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 11:25:57 +0000
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Artem Bityutskiy <artem.bityutskiy@intel.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH] tests: checkfs: remove unused code
-Date: Mon, 19 Sep 2011 14:06:44 +0300
-Message-Id: <19648e848664f51bece3ebdf41d768f69b0b6fd2.1316430185.git.andriy.shevchenko@linux.intel.com>
-In-Reply-To: <ee354ceda32594afd6ba928722dbf659aaeac57c.1316430192.git.andriy.shevchenko@linux.intel.com>
-References: <ee354ceda32594afd6ba928722dbf659aaeac57c.1316430192.git.andriy.shevchenko@linux.intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 1/7] jffs2reader: update the header inclusion block
+Date: Mon, 19 Sep 2011 14:25:18 +0300
+Message-Id: <d94e72a2ae7292c5c890b1ad61f04bfdb983250c.1316431431.git.andriy.shevchenko@linux.intel.com>
+Cc: Alexey Dokuchaev <danfe@nsu.ru>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are two variables which are not used anymore. Thos patch removes useless
-lines and suppresses gcc warnings.
-
+Signed-off-by: Alexey Dokuchaev <danfe@nsu.ru>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- tests/checkfs/checkfs.c |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+ jffs2reader.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tests/checkfs/checkfs.c b/tests/checkfs/checkfs.c
-index 0e67626..3e4a6e2 100644
---- a/tests/checkfs/checkfs.c
-+++ b/tests/checkfs/checkfs.c
-@@ -566,22 +566,16 @@ int main(int argc, char **argv){
-     char filename[30];
-     short filenameCounter = 0;
-     unsigned short counter;
--    unsigned short numberFiles;
--    char error = FALSE;
-     short errorCnt = 0;
-     time_t timep;
-     char * time_string;
-     unsigned int seed;
+diff --git a/jffs2reader.c b/jffs2reader.c
+index d5a3d95..11f841d 100644
+--- a/jffs2reader.c
++++ b/jffs2reader.c
+@@ -64,7 +64,6 @@ BUGS:
  
--
--    numberFiles = MAX_NUM_FILES;
--
-     if(argc >= 1)
-     {
-         processCmdLine(argc, argv);
-     }
+ #define PROGRAM_NAME "jffs2reader"
  
--
-     /*
-       First open MAX_NUM_FILES and make sure that the checksum is ok.
-       Also make an intry into the logfile.
-@@ -629,7 +623,6 @@ int main(int argc, char **argv){
-             fclose(logfp);
-             (void)sync();
+-#include <errno.h>
+ #include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -74,9 +73,10 @@ BUGS:
+ #include <time.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/param.h>
+ #include <dirent.h>
+-#include <linux/jffs2.h>
++#include <zlib.h>
++
++#include "mtd/jffs2-user.h"
+ #include "common.h"
  
--            error = TRUE;
-             errorCnt++;
- 
-             if(errorCnt > MaxErrAllowed){
+ #define SCRATCH_SIZE (5*1024*1024)
 -- 
 1.7.5.4
