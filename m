@@ -1,17 +1,23 @@
-Received: from blu0-omc1-s6.blu0.hotmail.com ([65.55.116.17])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5kKj-0003yT-NB
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2011 20:20:54 +0000
-Message-ID: <BLU0-SMTP67284C899E8D810036835EB80B0@phx.gbl>
-From: Bill Pringlemeir <bpringle@sympatico.ca>
-To: dedekind1@gmail.com
-Subject: Re: RomFS MTD and NAND Flash with ECC (EUCLEAN).
-References: <BLU0-SMTP394611D4685CA5AE953006B8060@phx.gbl>
-	<1316408751.24366.55.camel@sauron>
-Date: Mon, 19 Sep 2011 16:19:11 -0400
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mtd@lists.infradead.org
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5u3m-00082G-LB
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 06:44:03 +0000
+Received: by wwp14 with SMTP id 14so179454wwp.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Sep 2011 23:44:00 -0700 (PDT)
+Subject: Re: [PATCH V3] mtd: Add DiskOnChip G3 support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 20 Sep 2011 09:46:37 +0300
+In-Reply-To: <1316454213-22559-1-git-send-email-robert.jarzmik@free.fr>
+References: <1316454213-22559-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1316501205.4849.36.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19 Sep 2011, dedekind1@gmail.com wrote:
+I really feel unsure about merging this driver because no one reviewed
+it. On the surface it does look neat, though. Could you please CC lkml
+on next submission?
 
-On Fri, 2011-09-16 at 16:46 -0400, Bill Pringlemeir wrote:
->>  #ifdef CONFIG_ROMFS_ON_MTD
->> -#define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
->> -
->> +#define ROMFS_MTD_READ(sb, ...)                                        \
->> +    ({ int res;                                                        \
->> +        res = ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__)) == -EUCLEAN ? \
->> +            0 : res; })                                                         
+On Mon, 2011-09-19 at 19:43 +0200, Robert Jarzmik wrote:
+> +static void doc_delay(struct docg3 *docg3, int nbNOPs)
+> +{
+> +	int i;
+> +
+> +	doc_dbg("NOP x %d\n", nbNOPs);
+> +	for (i = 0; i < nbNOPs; i++)
+> +		doc_writeb(0, DoC_NOP);
+> +}
 
-> I do not think this is the most elegant way to handle this, but yes,
-> EUCLEAN is used nowadays to report about bit-flips, which are actually
-> not an error, more like an info that this eraseblock needs some
-> attention.
+Why you implement dalaying this way, instead of using udelay/mdelay?
 
-Good.  Neither do I.  Sometimes code is better at describing a problem.
+> +static int doc_wait_ready(struct docg3 *docg3)
+> +{
+> +	int maxWaitCycles = 100;
+> +
+> +	do {
+> +		doc_delay(docg3, 4);
+> +	} while (!doc_is_ready(docg3) && maxWaitCycles--);
+> +	doc_delay(docg3, 2);
+> +	if (maxWaitCycles > 0)
+> +		return 0;
+> +	else
+> +		return -EIO;
+> +}
 
-> I am not sure MTD is the right subsystem for this patch, could you try
-> to send it to fs-devel / Al Viro instead?
+There are things like cpu_relax() which are used in busy-loops - did you
+look at those?
 
-I kind of thought it was not a good patch.  I will try to rework it.
-Now, I am sure of 'EUCLEAN's meaning.  I also observe that my romfs
-works fine with a NAND flash if the BLOCK device is used.
 
-Currently the romfs code is making a decision based on...
+> +/*
+> + * Debug sysfs entries
+> + */
+> +#ifdef CONFIG_DEBUG_FS
 
-   int romfs_dev_read(struct super_block *sb, unsigned long pos,
-   ...
-       if (sb->s_mtd)
-          return romfs_mtd_read(sb, pos, buf, buflen);
+You do not need to use CONFIG_DEBUG_FS - debugfs makes all calls to be
+noop if it is not present.
 
-The NAND flash will not map directly to a CPU memory space like a NOR
-flash.  I *think* the main benefit of this MTD is for the non-MMU in
-directly mapping files?  What is the benefit of using the MTD versus the
-block device for NAND flash?  [I think that is not a fs-devel
-question...].
+Either remove all macros or use DEBUG
 
-Can we look at sb->s_mtd->type for 'MTD_NANDFLASH' (etc) and bind a vptr
-in romfs_get_sb(), so that 'romfs_dev_*()' would actually be function
-pointers.  Then NAND and NOR mtd's could both have a RomFS on the same
-system.  Err that only makes sense if I can get an answer to the last
-question.
+> +#define DEBUGFS_RO_ATTR(name, show_fct) \
+> +	static int name##_open(struct inode *inode, struct file *file) \
+> +	{ return single_open(file, show_fct, inode->i_private); }      \
+> +	static const struct file_operations name##_fops = { \
+> +		.owner = THIS_MODULE, \
+> +		.open = name##_open, \
+> +		.llseek = seq_lseek, \
+> +		.read = seq_read, \
+> +		.release = single_release \
+> +	};
 
-Also, it is not the place of RomFs to be writing flash.  However, if
-there is an EUCLEAN return code, is it worth a printk?
-
-tia,
-Bill Pringlemeir.
+Hmm, looks like something which should be generic, not DoC-specific.
 
 -- 
-It is reasoning and faith that bind truth .  - Rod Ryker...
-
--- 
-A mind  that is stretched  to a new  idea never returns to  its original
-dimension - Anonymous
+Best Regards,
+Artem Bityutskiy
