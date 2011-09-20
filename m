@@ -1,16 +1,22 @@
-Received: from a.relay.invitel.net ([62.77.203.3])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5vDf-0000SG-4k
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 07:58:19 +0000
-Date: Tue, 20 Sep 2011 09:58:08 +0200
-From: Heiko Schocher <hs@denx.de>
-Subject: mtd-util, flash_erase: MEMGETOOBSEL on davinci based board fail
-To: linux-mtd@lists.infradead.org
-Message-id: <4E784790.4010601@denx.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-15
-Content-transfer-encoding: 7BIT
-Reply-To: hs@denx.de
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R5vLM-0000ez-AX
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 08:06:16 +0000
+Received: by wwp14 with SMTP id 14so239476wwp.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Sep 2011 01:06:14 -0700 (PDT)
+Subject: Re: mtd-util, flash_erase: MEMGETOOBSEL on davinci based board fail
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: hs@denx.de
+Date: Tue, 20 Sep 2011 11:08:55 +0300
+In-Reply-To: <4E784790.4010601@denx.de>
+References: <4E784790.4010601@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1316506142.4849.48.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Tue, 2011-09-20 at 09:58 +0200, Heiko Schocher wrote:
+> Hello,
+> 
+> I tried to use mtd-util:flash_erase on a davinci am1808 based board,
+> and get the following error:
+> 
+> flash_erase -j /dev/mtd5 0 0
+> flash_erase: error!: /dev/mtd5: unable to get NAND oobinfo
+>               error 22 (Invalid argument)
 
-I tried to use mtd-util:flash_erase on a davinci am1808 based board,
-and get the following error:
+What is your kernel version?
 
-flash_erase -j /dev/mtd5 0 0
-flash_erase: error!: /dev/mtd5: unable to get NAND oobinfo
-              error 22 (Invalid argument)
-
-The problem is here:
-
-drivers/mtd/mtdchar.c line 786:
-
-                if (mtd->ecclayout->eccbytes > ARRAY_SIZE(oi.eccpos))
-                        return -EINVAL;
-
-On such a plattform we have:
-
-mtd->ecclayout->eccbytes = 40
-ARRAY_SIZE(oi.eccpos) = 32
-
-following patch solves the issue:
-
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index a86364a..5dc6ed1 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -136,7 +136,7 @@ struct nand_oobinfo {
-        __u32 useecc;
-        __u32 eccbytes;
-        __u32 oobfree[8][2];
--       __u32 eccpos[32];
-+       __u32 eccpos[40];
- };
-
- struct nand_oobfree {
-
-Now the questions:
-
-a) is this fix Ok? (Has it i chance to go in mainline?)
-b) in include/mtd/mtd-abi.h I found this comment:
-
-/*
- * Obsolete legacy interface. Keep it in order not to break userspace
- * interfaces
- */
-struct nand_oobinfo {
-
-so this Interface should not be used ... which Interface should be
-used instead?
-
-Thanks!
-
-bye,
-Heiko
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Best Regards,
+Artem Bityutskiy
