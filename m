@@ -1,13 +1,13 @@
 Received: from b.relay.invitel.net ([62.77.203.4])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R5znO-0005RN-BS
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 12:51:31 +0000
-Date: Tue, 20 Sep 2011 14:51:19 +0200
+	id 1R60M8-0005wU-FI
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 13:27:25 +0000
+Date: Tue, 20 Sep 2011 15:27:18 +0200
 From: Heiko Schocher <hs@denx.de>
 Subject: Re: mtd-util, flash_erase: MEMGETOOBSEL on davinci based board fail
 In-reply-to: <1316522722.4849.54.camel@sauron>
 To: dedekind1@gmail.com
-Message-id: <4E788C47.6040108@denx.de>
+Message-id: <4E7894B6.4000304@denx.de>
 MIME-version: 1.0
 Content-type: text/plain; charset=UTF-8
 Content-transfer-encoding: 7BIT
@@ -34,10 +34,20 @@ Artem Bityutskiy wrote:
 > Sorry, this is the right link:
 > http://git.infradead.org/mtd-utils.git
 
-Thanks! Actually I was writing an EMail, that I could not found the
-brian branch ;-)
+with this tree and the brian branch I get:
 
-I try it ...
+root@armv5te:/home/hs/bmk/mtd-utils# ./flash_erase -j /dev/mtd7 0 0
+flash_erase: error!: /dev/mtd7: unable to get NAND oobinfo
+             error 22 (Invalid argument)
+root@armv5te:/home/hs/bmk/mtd-utils#
+
+:-(
+
+As I see in mtd-util:flash_erase.c line 197:
+
+if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
+              ^^^^^^^^^^^^
+              this is the "old" style ... which fails ...
 
 bye,
 Heiko
