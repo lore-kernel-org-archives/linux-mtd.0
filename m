@@ -1,23 +1,22 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R6KMg-0007Xd-U7
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 10:49:19 +0000
-Received: by gyg13 with SMTP id 13so1199593gyg.36
+	id 1R6Mnx-0005jG-GM
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 13:25:38 +0000
+Received: by wyi11 with SMTP id 11so230482wyi.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 21 Sep 2011 03:49:17 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201109211209.55411.ffainelli@freebox.fr>
-References: <CAFDOyVAi_++e_sBpeJyL5Dy2GwP+y=BV25dJ4_9GpCo532tdnA@mail.gmail.com>
-	<201109211126.09072.ffainelli@freebox.fr>
-	<CAFDOyVAjcnNQ==b53NYk2NSV0Ku47Tx5epan8j94QgccG_i6pg@mail.gmail.com>
-	<201109211209.55411.ffainelli@freebox.fr>
-Date: Wed, 21 Sep 2011 12:49:17 +0200
-Message-ID: <CAFDOyVCsjJdKiaj=70MtJ8nyOe0vbFjB0jw4vi-gKZpnLiWb+w@mail.gmail.com>
+	Wed, 21 Sep 2011 06:25:34 -0700 (PDT)
 Subject: Re: mount options for jffs2
-From: Folkert van Heusden <folkert.van.heusden@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-Content-Type: text/plain; charset=ISO-8859-1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Folkert van Heusden <folkert.van.heusden@gmail.com>
+Date: Wed, 21 Sep 2011 16:28:14 +0300
+In-Reply-To: <CAFDOyVAi_++e_sBpeJyL5Dy2GwP+y=BV25dJ4_9GpCo532tdnA@mail.gmail.com>
+References: <CAFDOyVAi_++e_sBpeJyL5Dy2GwP+y=BV25dJ4_9GpCo532tdnA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1316611702.4849.91.camel@sauron>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,11 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> And do you know which mount-options are supported?
->
-> Depends on which filesystems you have enabled, as well as which filesystem-
-> specific mount options are supported. Busybox is agnostic about this and tries
-> to honor the mount options you provide it with, which does not mean it will
-> succeed.
+On Wed, 2011-09-21 at 11:19 +0200, Folkert van Heusden wrote:
+> Hi,
+> 
+> While hunting a database (SQLite) corruption issue (on jffs2) I
+> noticed that mount not only accepts barier=1 and data=journal but
+> test123 and test456 as well.
+> So I was wondering what mount options are supported for jffs2? I use
+> linux kernel version 2.6.19.
 
-I meant for jffs2 (I was redirected to this list for jffs2 talk).
+I think jffs2 does not support any non-standard mount options - they are
+ignored.
+
+-- 
+Best Regards,
+Artem Bityutskiy
