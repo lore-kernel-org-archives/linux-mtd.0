@@ -1,27 +1,24 @@
-Received: from mail-wy0-f172.google.com ([74.125.82.172])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R6BnW-0000PN-B7
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 01:40:27 +0000
-Received: by wyg24 with SMTP id 24so1705911wyg.17
+	id 1R6FwW-0002hq-DS
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 06:06:01 +0000
+Received: by fxg7 with SMTP id 7so1652880fxg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Sep 2011 18:40:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1316503194.4849.39.camel@sauron>
-References: <1315426421-16243-1-git-send-email-computersforpeace@gmail.com>
-	<1315426421-16243-4-git-send-email-computersforpeace@gmail.com>
-	<1315749440.18731.65.camel@sauron>
-	<1316405649.24366.17.camel@sauron>
-	<CAN8TOE_RsH28su8ET2MA9MWydniP9J223w=qqPSxV3R78=q2fg@mail.gmail.com>
-	<1316503194.4849.39.camel@sauron>
-Date: Tue, 20 Sep 2011 18:40:24 -0700
-Message-ID: <CAN8TOE9AZTqSBpWevibnPFXh_pBKw3MR_OgCR+SaUcySmoyKAw@mail.gmail.com>
-Subject: Re: [PATCH 03/14] mtd: define `is_ecc_error()' macros
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
-	linux-mtd@lists.infradead.org, Matthew Creech <mlcreech@gmail.com>,
-	Matthieu Castet <matthieu.castet@parrot.com>
+	Tue, 20 Sep 2011 23:05:57 -0700 (PDT)
+Subject: Re: [PATCH V3] mtd: Add DiskOnChip G3 support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Wed, 21 Sep 2011 09:08:07 +0300
+In-Reply-To: <87fwjrjk10.fsf@free.fr>
+References: <1316454213-22559-1-git-send-email-robert.jarzmik@free.fr>
+	<1316501205.4849.36.camel@sauron> <87fwjrjk10.fsf@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1316585325.4849.73.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 20, 2011 at 12:19 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> I'll either repost with a better naming scheme or update my patches
->> with the suggested names.
->
-> OK, let's do this sooner than later please, to make sure I have all your
-> work in my tree, which is safer (consider the situation when dwmw2 picks
-> what I have now and upstreams before we put everything in).
+On Tue, 2011-09-20 at 17:44 +0200, Robert Jarzmik wrote:
+> Artem Bityutskiy <dedekind1@gmail.com> writes:
+> 
+> > I really feel unsure about merging this driver because no one reviewed
+> > it. On the surface it does look neat, though. Could you please CC lkml
+> > on next submission?
+> OK, when we have covered your comments, I'll report a V4 to lkml as well.
+> 
+> > On Mon, 2011-09-19 at 19:43 +0200, Robert Jarzmik wrote:
+> >> +static void doc_delay(struct docg3 *docg3, int nbNOPs)
+> >> +{
+> >> +	int i;
+> >> +
+> >> +	doc_dbg("NOP x %d\n", nbNOPs);
+> >> +	for (i = 0; i < nbNOPs; i++)
+> >> +		doc_writeb(0, DoC_NOP);
+> >> +}
+> >
+> > Why you implement dalaying this way, instead of using udelay/mdelay?
+> That's from observation, as I have no specification available.
+> 
+> From my understanding, the clock applied to the chip can be variable, but the
+> memory bus writes ensure the necessary time, as the NOP write takes as much time
+> as the DOCG3 decides it to last.
 
-OK, I sent the necessary v2 patches. I just went with your names for
-lack of a better idea.
+OK, would be nice to have this kind of comment in that function.
 
-I didn't send v2 of patches 13/14 and 14/14, since there was no
-dependency. Let me know if I need to resend anything else.
+> >> +	};
+> >
+> > Hmm, looks like something which should be generic, not DoC-specific.
+> True, but it's not available yet.
+> And as it's not available, and I don't think debugfs will accept such a patch, I
+> think I'll leave it here. And if you wish, I'll fill in a separate patch to
+> debugfs, and *if* it's merged, I'll remove that part then.
 
-Brian
+Fine with me.
+
+-- 
+Best Regards,
+Artem Bityutskiy
