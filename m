@@ -1,19 +1,28 @@
-Received: from bobafett.staff.proxad.net ([213.228.1.121])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R6J4e-0005ay-5F
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 09:26:36 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: mount options for jffs2
-Date: Wed, 21 Sep 2011 11:26:09 +0200
-References: <CAFDOyVAi_++e_sBpeJyL5Dy2GwP+y=BV25dJ4_9GpCo532tdnA@mail.gmail.com>
-In-Reply-To: <CAFDOyVAi_++e_sBpeJyL5Dy2GwP+y=BV25dJ4_9GpCo532tdnA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201109211126.09072.ffainelli@freebox.fr>
-Cc: Folkert van Heusden <folkert.van.heusden@gmail.com>
+Received: from mail-wy0-f172.google.com ([74.125.82.172])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R6JCE-00060u-69
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 09:34:27 +0000
+Received: by wyg24 with SMTP id 24so2172349wyg.17
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Sep 2011 02:34:25 -0700 (PDT)
+From: Yong Zhang <yong.zhang0@gmail.com>
+To: linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 38/57] mtd: irq: Remove IRQF_DISABLED
+Date: Wed, 21 Sep 2011 17:28:39 +0800
+Message-Id: <1316597339-29861-39-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+Cc: Baruch Siach <baruch@tkos.co.il>,
+	Artem Bityutskiy <artem.bityutskiy@intel.com>,
+	Eric Miao <eric.y.miao@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>,
+	Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	yong.zhang0@gmail.com, linux-mtd@lists.infradead.org,
+	Andres Salomon <dilinger@queued.net>, tglx@linutronix.de,
+	Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +32,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
-On Wednesday 21 September 2011 11:19:18 Folkert van Heusden wrote:
-> Hi,
-> 
-> While hunting a database (SQLite) corruption issue (on jffs2) I
-> noticed that mount not only accepts barier=1 and data=journal but
-> test123 and test456 as well.
+So now this flag is a NOOP and can be removed.
 
-This could rather be a bug in busybox (assuming you use it), which does not 
-verify the various mount options provided. For instance, one also do the 
-following: mount -o remount,rz / without getting an error from busybox's 
-mount.
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c    |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c |    3 +--
+ drivers/mtd/nand/tmio_nand.c   |    2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-> So I was wondering what mount options are supported for jffs2? I use
-> linux kernel version 2.6.19.
-> Also: anyone got experience with sqlite on jffs2? If so: how did you
-> solve these nasty corruptions?
-> 
-> 
-> Folkert.
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 4d4c677..b03eb16 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1191,7 +1191,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	else
+ 		host->irq_control(host, 0);
+ 
+-	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
++	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+ 	if (err)
+ 		goto eirq;
+ 
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 9eb7f87..fabba5c 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1132,8 +1132,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	/* initialize all interrupts to be disabled */
+ 	disable_int(info, NDSR_MASK);
+ 
+-	ret = request_irq(irq, pxa3xx_nand_irq, IRQF_DISABLED,
+-			  pdev->name, info);
++	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to request IRQ\n");
+ 		goto fail_free_buf;
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index beebd95..6e5d6ff 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -441,7 +441,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->chip_delay = 15;
+ 
+ 	retval = request_irq(irq, &tmio_irq,
+-				IRQF_DISABLED, dev_name(&dev->dev), tmio);
++				0, dev_name(&dev->dev), tmio);
+ 	if (retval) {
+ 		dev_err(&dev->dev, "request_irq error %d\n", retval);
+ 		goto err_irq;
+-- 
+1.7.4.1
