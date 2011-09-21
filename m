@@ -1,23 +1,21 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R67b4-0005Xj-Ju
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2011 21:11:19 +0000
-Received: by eyd9 with SMTP id 9so633625eyd.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Sep 2011 14:11:16 -0700 (PDT)
+Received: from mms3.broadcom.com ([216.31.210.19])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R6Bgz-00006R-BB
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2011 01:33:42 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Artem Bityutskiy" <dedekind1@gmail.com>
+Subject: [PATCH v2 03/14] mtd: define `mtd_is_*()' functions
+Date: Tue, 20 Sep 2011 18:30:51 -0700
+Message-ID: <1316568651-21414-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1316503194.4849.39.camel@sauron>
+References: <1316503194.4849.39.camel@sauron>
 MIME-Version: 1.0
-In-Reply-To: <44e5a23d776bc650f9b605911f09deb438506c05.1316431431.git.andriy.shevchenko@linux.intel.com>
-References: <d94e72a2ae7292c5c890b1ad61f04bfdb983250c.1316431431.git.andriy.shevchenko@linux.intel.com>
-	<44e5a23d776bc650f9b605911f09deb438506c05.1316431431.git.andriy.shevchenko@linux.intel.com>
-Date: Tue, 20 Sep 2011 14:11:16 -0700
-Message-ID: <CAN8TOE_geqFbG1UhJa2fhb38=R3uXkqDC6DHbX_r=TvBkbO7bw@mail.gmail.com>
-Subject: Re: [PATCH 2/7] jffs2reader: eliminate compiler errors
-From: Brian Norris <computersforpeace@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Alexey Dokuchaev <danfe@nsu.ru>,
-	Artem Bityutskiy <artem.bityutskiy@intel.com>,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Matthieu Castet <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 19, 2011 at 4:25 AM, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> -#define DIRENT_INO(dirent) ((dirent)!=NULL?(dirent)->ino:0)
-> -#define DIRENT_PINO(dirent) ((dirent)!=NULL?(dirent)->pino:0)
-> +#define DIRENT_INO(dirent) ((dirent)!=NULL?je32_to_cpu((dirent)->ino):0)
-> +#define DIRENT_PINO(dirent) ((dirent)!=NULL?je32_to_cpu((dirent)->pino):0)
+These functions can be used instead of referencing -EUCLEAN and -EBADMSG
+all over the place. They should help make code a little bit more
+readable.
 
-Can you include proper spacing around the '!=', '?', and ':'
-operators? It's easier to read.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+v2: use static inline functions, change names to `mtd_is_*' prefix,
+    don't call bitflips "errors"
 
-Otherwise, I don't know the specifics on JFSS2-endianness, but the
-motivation looks good...
+ include/linux/mtd/mtd.h |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-Brian
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 37d0827..4bce1eb 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -348,4 +348,16 @@ void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size);
+ 
+ void mtd_erase_callback(struct erase_info *instr);
+ 
++static inline int mtd_is_bitflip(int err) {
++	return err == -EUCLEAN;
++}
++
++static inline int mtd_is_eccerr(int err) {
++	return err == -EBADMSG;
++}
++
++static inline int mtd_is_bitflip_or_eccerr(int err) {
++	return mtd_is_bitflip(err) || mtd_is_eccerr(err);
++}
++
+ #endif /* __MTD_MTD_H__ */
+-- 
+1.7.5.4
