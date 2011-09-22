@@ -1,28 +1,20 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R6fDg-0004kx-TS
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2011 09:05:25 +0000
-Received: by wyi11 with SMTP id 11so1304285wyi.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Sep 2011 02:05:23 -0700 (PDT)
-From: Yong Zhang <yong.zhang0@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org
-Subject: [PATCH 38/55] mtd: irq: Remove IRQF_DISABLED
-Date: Thu, 22 Sep 2011 16:59:05 +0800
-Message-Id: <1316681962-8217-39-git-send-email-yong.zhang0@gmail.com>
-In-Reply-To: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-References: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-Cc: Baruch Siach <baruch@tkos.co.il>,
-	Artem Bityutskiy <artem.bityutskiy@intel.com>,
-	Eric Miao <eric.y.miao@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>,
-	Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	yong.zhang0@gmail.com, linux-mtd@lists.infradead.org,
-	Andres Salomon <dilinger@queued.net>, tglx@linutronix.de,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from relay6.ptmail.sapo.pt ([212.55.154.26] helo=sapo.pt)
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R6gJI-00060L-7d
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2011 10:15:17 +0000
+Message-ID: <20110922111511.15615t65c0et2ban@mail.sapo.pt>
+Date: Thu, 22 Sep 2011 11:15:11 +0100
+From: dhlm83@sapo.pt
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: flash_erase ERROR!
+References: <20110919145214.19341ml5c346kgzy@mail.sapo.pt>
+	<CAN8TOE8GcH_BDK4=SaEM6vFO-bfWn5fcJhc0QOTUKJQe13jXeg@mail.gmail.com>
+In-Reply-To: <CAN8TOE8GcH_BDK4=SaEM6vFO-bfWn5fcJhc0QOTUKJQe13jXeg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15; DelSp="Yes"; format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,61 +24,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
-We run all interrupt handlers with interrupts disabled
-and we even check and yell when an interrupt handler
-returns with interrupts enabled (see commit [b738a50a:
-genirq: Warn when handler enables interrupts]).
+Hello.
+Thanks for repply, and help is welcome.
 
-So now this flag is a NOOP and can be removed.
+Citando Brian Norris <xxxx@gmail.com>:
 
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
-Acked-by: Wolfram Sang <w.sang@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c    |    2 +-
- drivers/mtd/nand/pxa3xx_nand.c |    3 +--
- drivers/mtd/nand/tmio_nand.c   |    2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+> On Mon, Sep 19, 2011 at 6:52 AM,  <xxxx@sapo.pt> wrote:
+>> Hello.
+>> This is my first post.
+>>
+>> I am using uClinux (kernel 2.4.34.5-uc0 , dist: 20110603)
+>> I build a image to board NetBurner MOD5272.
+>
+> That's a very old (and dare I say unsupported?) kernel. There may be
+> some things we can do to help, but generally, MTD developers don't
+> support that old of code.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 4d4c677..b03eb16 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1191,7 +1191,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	else
- 		host->irq_control(host, 0);
- 
--	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
-+	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
- 	if (err)
- 		goto eirq;
- 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 9eb7f87..fabba5c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1132,8 +1132,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	/* initialize all interrupts to be disabled */
- 	disable_int(info, NDSR_MASK);
- 
--	ret = request_irq(irq, pxa3xx_nand_irq, IRQF_DISABLED,
--			  pdev->name, info);
-+	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to request IRQ\n");
- 		goto fail_free_buf;
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index beebd95..6e5d6ff 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -441,7 +441,7 @@ static int tmio_probe(struct platform_device *dev)
- 	nand_chip->chip_delay = 15;
- 
- 	retval = request_irq(irq, &tmio_irq,
--				IRQF_DISABLED, dev_name(&dev->dev), tmio);
-+				0, dev_name(&dev->dev), tmio);
- 	if (retval) {
- 		dev_err(&dev->dev, "request_irq error %d\n", retval);
- 		goto err_irq;
--- 
-1.7.4.1
+I am forced to use this kernel (2.4.x) by limitation of my target =20
+board, especially the only 2MB of flash.
+I build successfully a 2.6.x image, but without my applications was =20
+already near the limit of memory.
+
+>> The problem is: The flash_eraseall and flash_erase dont work.
+>> =A0 =A0 ......
+>> =A0 =A0 # flash_eraseall -j /dev/mtd5 0 0
+>> =A0 =A0 /bin/flash_eraseall has been replaced by `flash_erase <mtddev> 0 =
+0`;
+>> please use it
+>> =A0 =A0 Access Error Exception 12: Error on data read
+>> =A0 =A0 SIGSEGV
+>> =A0 =A0 ......
+>>
+>> =A0 =A0 ......
+>> =A0 =A0 # flash_erase -j -u -N /dev/mtd5 0 0
+>> =A0 =A0 libmtd: error!: MEMGETBADBLOCK ioctl failed
+>> =A0 =A0 =A0 =A0 =A0 =A0 error 25 (Inappropriate ioctl for device)
+>> =A0 =A0 flash_erase: error!: mtd_get_dev_info failed
+>> =A0 =A0 .....
+>
+> What version of mtd-utils do you have? If it's old, then "flash_erase"
+> may not give a version # (try `flash_erase --version'). You could also
+> check other utilities, like:
+>
+> nanddump --version
+> nandwrite --version
+
+The mtd-utils version is: in file mtd-utils.spec
+      .....
+      Version: 1.0
+      Release: 1
+      .....
+
+  The flash_erase version:
+      .....
+      # flash_erase --version
+      flash_erase version 2
+      .....
+
+I dont have nanddump and nandwrite utilities. My flash is NOR type =20
+(am29lv160db).
+But in source files:
+      nanddump.c: "$Revision: 1.29 $"
+      nandwrite.c: "$Revision: 1.32 $"
+
+>> Has anyone had this problem?
+>> Someone may give clues to solve the problem?
+>
+> I'm guessing it's just that your kernel is really old. From the looks
+> of it, your flash_eraseall is pretty recent. Just a quick check of
+> some old kernel 2.4 code seems to tell me that MEMGETBADBLOCK didn't
+> even exist in your kernel, so obviously the current mtd-utils will be
+> incompatible.
+>
+> Brian
+
+I think the mtd-utils version is the same to kernel 2.4.x and 2.6.x in =20
+my distro source.
+This can not generate some compatibility issues?
+
+In the past, mtd-utils have the utilities erase and erase_all. I think =20
+that utilities work with my kernel, is that possible?
+You know what version of mtd-utils are available (erase and erase_all)?
+I can try this version.
+
+Best Regards.
+Domingos Goncalves
