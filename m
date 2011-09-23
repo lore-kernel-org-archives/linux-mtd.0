@@ -1,15 +1,16 @@
-Received: from mx09.lb01.inode.at ([62.99.145.9] helo=mx.inode.at)
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R74KP-00062N-KR
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2011 11:54:02 +0000
-From: Michael Thalmeier <michael.thalmeier@hale.at>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mxc_nand: preset_v1_v2: unlock all NAND flash blocks
-Date: Fri, 23 Sep 2011 13:53:44 +0200
-Message-Id: <1316778824-12518-1-git-send-email-michael.thalmeier@hale.at>
-MIME-Version: 1.0
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+	id 1R77nh-0002Ol-7W
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2011 15:36:30 +0000
+Received: by eyd9 with SMTP id 9so2821727eyd.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 23 Sep 2011 08:36:26 -0700 (PDT)
+From: Mikhail Kshevetskiy <mikhail.kshevetskiy@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd/devices/m25p80: add support for at25df321a spi data flash
+Date: Fri, 23 Sep 2011 19:36:18 +0400
+Message-Id: <1316792178-5592-1-git-send-email-mikhail.kshevetskiy@gmail.com>
+Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wolfram Stering <wolfram.stering@hale.at>
-
-For NFC v1, the unlock end block address was 0x4000, which would only
-unlock the first 32 blocks of the NAND flash.  Change that value to
-0xffff to unlock all available blocks, as is done for NFC v21 as well.
-
-Signed-off-by: Michael Thalmeier <michael.thalmeier@hale.at>
+Signed-off-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@gmail.com>
 ---
- drivers/mtd/nand/mxc_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 90df34c..5b40786 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -849,7 +849,7 @@ static void preset_v1_v2(struct mtd_info *mtd)
- 		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR3);
- 	} else if (nfc_is_v1()) {
- 		writew(0x0, NFC_V1_UNLOCKSTART_BLKADDR);
--		writew(0x4000, NFC_V1_UNLOCKEND_BLKADDR);
-+		writew(0xffff, NFC_V1_UNLOCKEND_BLKADDR);
- 	} else
- 		BUG();
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 35180e4..12cfce7 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -661,6 +661,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
  
+ 	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
++	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
+ 
+ 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
 -- 
-1.7.6.2
-
-
-
---
-Scanned by MailScanner.
+1.7.5.4
