@@ -1,19 +1,24 @@
-Message-ID: <4E802CDA.4080808@freescale.com>
-Date: Mon, 26 Sep 2011 15:42:18 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R87JY-0003Xo-GQ
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2011 09:17:29 +0000
+Date: Mon, 26 Sep 2011 11:17:22 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: David Wagner <david.wagner@free-electrons.com>
+Subject: Re: [PATCHv6] UBI: new module ubiblk: block layer on top of UBI
+In-Reply-To: <1316678312-8913-1-git-send-email-david.wagner@free-electrons.com>
+Message-ID: <Pine.LNX.4.64.1109261103590.12195@lnxricardw.se.axis.com>
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+	<1316678312-8913-1-git-send-email-david.wagner@free-electrons.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH v12 0/3] add the GPMI controller driver for IMX23/IMX28
-References: <1315450031-6371-1-git-send-email-b32955@freescale.com>	<20081.44941.12535.496764@ipc1.ka-ro>	<4E71B741.7010907@freescale.com>
-	<20081.49563.934890.760378@ipc1.ka-ro>
-In-Reply-To: <20081.49563.934890.760378@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Frank LI <B20596@freescale.com>, dedekind1@gmail.com,
-	koen.beel.barco@gmail.com, w.sang@pengutronix.de,
-	marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
-	shijie8@gmail.com, s.hauer@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-embedded <linux-embedded@vger.kernel.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,117 +28,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lothar,
-> Hi,
->
-> Huang Shijie writes:
->> Hi,
->>    add more CC.
->>> Hi,
->>>
->>> Huang Shijie writes:
->>>> The patch set is based on Artem's tree:
->>>> 	http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
->>>>
->>>> The general-purpose media interface(GPMI) controller is a flexible i=
-nterface
->>>> to up to several NAND flashs.
->>>>
->>>> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC acc=
-elerator.
->>>>
->>>> With the help of BCH, the GPMI controller can choose to do the hardw=
-are ECC or
->>>> not.
->>>>
->>>> This driver is a _pure_ MTD NAND controller driver now.
->>>>
->>>>
->>>> The driver depends on another GPMI-NAND device patch set, you can fi=
-nd them at :
->>>> 	[1] http://marc.info/?l=3Dlinux-arm-kernel&m=3D131416901319573&w=3D=
-2
->>>> 	[2] http://marc.info/?l=3Dlinux-arm-kernel&m=3D131416912319668&w=3D=
-2
->>>> 	[3] http://marc.info/?l=3Dlinux-arm-kernel&m=3D131416891119504&w=3D=
-2
->>>> 	[4] http://marc.info/?l=3Dlinux-arm-kernel&m=3D131416896219539&w=3D=
-2
->>>>
->>>> Test environment:
->>>> 	Using imx23 and imx28 boards for test.
->>>>
->>>> 	imx23 :
->>>> 	console=3DttyAMA0,115200 mtdparts=3Dgpmi-nfc:20m(boot),-(user)
->>>> 	Tested by USB boot and NAND boot.
->>>>
->>>>           imx28 :
->>>> 	#console=3DttyAMA0,115200 root=3D/dev/mmcblk0p3 rw rootwait
->>>> 	Tested by SD card boot mode.
->>>>
->>> How did you perform your tests?
->>>
->>> I tried this driver on our TX28 board with the result that with
->> The nand conflicats with SD card1. You will get the DMA timeout if you
->> use it.
->> Do you use sd card0 or sd card1?
->>
-> I'm using the SSP0 port.
->
->> BTW:I tested the gpmi driver with SD card0. It works fine.
->>
-> What exactly did you do in your test?
-> Can you try the concurrent 'dd' commands that I used?
-I tested the following :
-   #dd if=3D/dev/mmcblk0 > /dev/null
 
-[943147.630000] mmcblk0: error -110 transferring data, sector 3972320, nr=
- 256, cmd response 0x900, card status 0x80b00
-[943147.640000] mmcblk0: retrying using single block read
-[943158.250000] mmcblk0: error -110 transferring data, sector 3972480, nr=
- 96, cmd response 0x900, card status 0x0
-[943158.260000] end_request: I/O error, dev mmcblk0, sector 3972480
-[943168.780000] mmcblk0: r/w command failed, status =3D 0x80900
-[943168.790000] end_request: I/O error, dev mmcblk0, sector 3972481
-[943168.790000] Buffer I/O error on device mmcblk0, logical block 496560
-[943168.790000] end_request: I/O error, dev mmcblk0, sector 3972488
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496561
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972496
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496562
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972504
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496563
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972512
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496564
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972520
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496565
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972528
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496566
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972536
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496567
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972544
-[943168.810000] Buffer I/O error on device mmcblk0, logical block 496568
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972552
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972560
-[943168.810000] end_request: I/O error, dev mmcblk0, sector 3972568
-[943179.450000] mmcblk0: error -110 transferring data, sector 3972480, nr=
- 8, cmd response 0x900, card status 0x80b00
-[943179.460000] mmcblk0: retrying using single block read
-[943189.990000] mmcblk0: error -110 transferring data, sector 3972480, nr=
- 8, cmd response 0x900, card status 0x0
-[943190.000000] end_request: I/O error, dev mmcblk0, sector 3972480
-[943200.530000] mmcblk0: r/w command failed, status =3D 0x80900
-[943200.530000] end_request: I/O error, dev mmcblk0, sector 3972481
-[943200.530000] quiet_error: 3 callbacks suppressed
-[943200.530000] Buffer I/O error on device mmcblk0, logical block 496560
-dd: /dev/mmcblk0: Input/output error
-root@freescale ~$
--------------------------------------------------------------------------=
-------------------------
+On Thu, 22 Sep 2011, David Wagner wrote:
 
-It seems only test the SD card also can reproduce the same DMA bug.
+> ubiblk is a read-only block layer on top of UBI.  It presents UBI volumes=
+ as
+> ...
 
-Best Regards
-Huang Shijie
+I decided to try this out, as I've been looking for a flexible=20
+block-device-on-ubi scheme for using a cramfs or squashfs root file system=
+=20
+over UBI without having to resort to gluebi (which in its current=20
+implementation is too inflexible for my needs).
 
->
-> Lothar Wa=C3=9Fmann
+This can't be considered a complete test, as I basically just booted the=20
+system a couple of times, using a cramfs file system residing in an UBI=20
+volume. I compiled ubiblk built in to the kernel, not as a module;=20
+furthermore, I'm running 2.6.35 for various reasons, so had to backport=20
+kstrtoul from 2.6.39 in order to get it to build.
+
+But for what it's worth, it does confirm that it in fact works to set up a=
+=20
+ubiblk device at boot time for the root filesystem.
+
+There doesn't seem to be a userspace application for attaching/detaching=20
+ubiblk devices. I hacked together something based on ubinfo, I could post=
+=20
+it, but perhaps something more thorough is forthcoming?
+
+A couple of comments below:
+
+> +/**
+> + * ubiblk_ctrl_ioctl - ioctl handling for proxying/unproxying a UBI volu=
+me
+> + *
+> + * @file: the file on which the ioctl was invoked (usunsed)
+                                                     ^^^^^^^ typo: unused
+> + * @cmd: the ioctl type
+> + * @arg: additional command informations
+> + */
+> +static long ubiblk_ctrl_ioctl(struct file *file, unsigned int cmd,
+> +                             unsigned long arg)
+
+
+> +/**
+> + * ubiblk_parse_volume_param - parse the "volume" module parameter
+> + *
+> + * @ubi_num: where to store the UBI device number
+> + * @vol_id: where to store the volume ID
+> + */
+> +static int __init ubiblk_parse_volume_param(int *ubi_num, int *vol_id)
+> +{
+> +       char *tokens[2] =3D {NULL, NULL};
+> +       char buf[VOL_PARAM_MAXLEN];
+> +       char *pbuf =3D buf;
+> +       int len =3D strlen(buf);
+                            ^^^  this needs to be volume, not buf.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
