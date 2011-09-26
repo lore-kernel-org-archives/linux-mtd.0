@@ -1,23 +1,27 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R8AlL-00007G-Mo
-	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2011 12:58:25 +0000
-Message-ID: <4E807713.5060401@free-electrons.com>
-Date: Mon, 26 Sep 2011 14:58:59 +0200
-From: David Wagner <david.wagner@free-electrons.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCHv6] UBI: new module ubiblk: block layer on top of UBI
-References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>	
-	<1316678312-8913-1-git-send-email-david.wagner@free-electrons.com>
-	<1316775538.19921.19.camel@sauron>
-In-Reply-To: <1316775538.19921.19.camel@sauron>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R8B3b-0000ef-Lo
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2011 13:17:17 +0000
+Received: by eyd9 with SMTP id 9so4276307eyd.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 26 Sep 2011 06:17:13 -0700 (PDT)
+Subject: Re: [PATCHv7] UBI: new module ubiblk: block layer on top of UBI
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Wagner <david.wagner@free-electrons.com>
+Date: Mon, 26 Sep 2011 16:20:04 +0300
+In-Reply-To: <1317040680-6199-1-git-send-email-david.wagner@free-electrons.com>
+References: <1308922482-14967-1-git-send-email-david.wagner@free-electrons.com>
+	<1317040680-6199-1-git-send-email-david.wagner@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-embedded <linux-embedded@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, lkml <linux-kernel@vger.kernel.org>,
+Message-ID: <1317043212.9442.8.camel@sauron>
+Mime-Version: 1.0
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, Arnd Bergmann <arnd@arndb.de>,
+	linux-embedded <linux-embedded@vger.kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>, Tim Bird <tim.bird@am.sony.com>,
 	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2011-09-26 at 14:38 +0200, David Wagner wrote:
+> 	* "volume" parameter: pass the volume name instead of the volume ID
 
-On 09/23/2011 12:58 PM, Artem Bityutskiy wrote:
-[...]
-> 2. Please, could you explain what prevents the following crash/issue:
-> 
-> modprobe ubiblk volumes=0:0
-> mkfs.ext3 /dev/ubiblk0
-> mount -t ext3 /dev/ubiblk0 /mnt/fs
-> rmmod ubiblk
-> 
-> Not that I think this is a problem, I just do not realize what would
-> prevent ubiblk from being unloaded when it is mounted. Did you test this
-> scenario?
+Sorry if I was not clear, but it should accept both name and number.
+Take a look at UBI - it first checks if the string is a number, if yes -
+tries to open by number, if this fails, tries to treat this as a name
+and open by name.
 
-I forgot to address this in the v7, so:
+And AFAICS, you did not change the documentation for the "volume" module
+parameter.
 
-The kernel has an internal refcounter for each module.  It increases
-with each module that uses it and for each open device owned by it.
-
-In the case of ubiblk, we have:
-static const struct block_device_operations ubiblk_ops = {
-        .owner = THIS_MODULE,
-        .open = ubiblk_open,
-        .release = ubiblk_release,
-};
-
-The "owner" field makes ubiblk devices owned by ubiblk, so each open
-device increases the refcounting and if the user tries to rmmod ubiblk
-when there are still open ubiblk devices, it will get an EBUSY error.
-
-
-	Regards,
-	David.
 
 -- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy
