@@ -1,24 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1R8XCS-0002XC-Fc
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2011 12:55:53 +0000
-Received: by wyi11 with SMTP id 11so6789689wyi.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Sep 2011 05:55:49 -0700 (PDT)
-Subject: Re: [PATCH V5] mtd: Add DiskOnChip G3 support
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from moutng.kundenserver.de ([212.227.17.8])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1R8Xse-0003li-RC
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2011 13:39:30 +0000
+From: Arnd Bergmann <arnd@arndb.de>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 27 Sep 2011 15:58:37 +0300
-In-Reply-To: <1316805250-11105-1-git-send-email-robert.jarzmik@free.fr>
-References: <1316702729.4849.114.camel@sauron>
-	<1316805250-11105-1-git-send-email-robert.jarzmik@free.fr>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH V4] mtd: Add DiskOnChip G3 support
+Date: Tue, 27 Sep 2011 15:39:21 +0200
+References: <1316633266-21312-1-git-send-email-robert.jarzmik@free.fr>
+	<1316702729.4849.114.camel@sauron> <87mxdwiicc.fsf@free.fr>
+In-Reply-To: <87mxdwiicc.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1317128326.6207.30.camel@sauron>
-Mime-Version: 1.0
+Message-Id: <201109271539.21533.arnd@arndb.de>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+	linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-09-23 at 21:14 +0200, Robert Jarzmik wrote:
-> Add support for DiskOnChip G3 chips. The support is quite
-> limited yet :
->  - no flash writes/erases are implemented
->  - ECC fixes are not implemented
->  - powerdown is not implemented
->  - IPL handling is not yet done
-> 
-> On the brighter side, the chip reading does work.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+On Thursday 22 September 2011, Robert Jarzmik wrote:
+> >> +#define doc_flashSequence(seq)                                              \
+> >> +do {                                                                        \
+> >> +    doc_dbg("doc_flashSequence: %02x " #seq "\n", DoC_Seq_##seq);   \
+> >> +    doc_writeb(DoC_Seq_##seq, DoC_FlashSequence);                   \
+> >> +} while (0)
+> >> +
+> ...zip...
+> >
+> > Could you please turn these macros into 'static inline' function - this
+> > is one of the modern patterns of kernel programming - we try to use
+> > functions for better type checking.
+>
+> No sorry, that I cannot. If you look closely, the ##seq is not something you can
+> convert with an inline function, neither the #seq.
 
-Sparse complains:
+Better not obfuscate the code like that then ;-)
 
-[dedekind@sauron l2-mtd-2.6 (master)]$ make C=1
-  CHK     include/linux/version.h
-  CHK     include/generated/utsrelease.h
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  CHECK   drivers/mtd/devices/docg3.c
-drivers/mtd/devices/docg3.h:217:21: error: dubious one-bit signed bitfield
+Really, passing the entire register name into an inline function is much
+preferred over string concatenation, because it lets you grep for where
+certain definitions are used. You can also convert them to ALL_CAPS
+identifiers instead of cAmeLCAsE.
 
-And indeed:
+Finally, don't use the __raw_readb() style functions but instead use
+the regular readb() style, which is the correct one to use in device
+drivers.
 
-        int device_id:4;
-        int if_cfg:1;
-
-should be unsigned int bit-fields, not signed.
-
--- 
-Best Regards,
-Artem Bityutskiy
+	Arnd
