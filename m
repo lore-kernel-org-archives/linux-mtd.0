@@ -1,21 +1,21 @@
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1R8tWQ-0001qU-8G
-	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2011 12:45:59 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH V4] mtd: Add DiskOnChip G3 support
-Date: Wed, 28 Sep 2011 14:45:47 +0200
-References: <1316633266-21312-1-git-send-email-robert.jarzmik@free.fr>
-	<201109271539.21533.arnd@arndb.de> <878vp96fhl.fsf@free.fr>
-In-Reply-To: <878vp96fhl.fsf@free.fr>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1R96ai-0002kF-0x
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2011 02:43:17 +0000
+Received: by wyi11 with SMTP id 11so882940wyi.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Sep 2011 19:43:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201109281445.47715.arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, dedekind1@gmail.com
+In-Reply-To: <891190.21758.qm@web30201.mail.mud.yahoo.com>
+References: <891190.21758.qm@web30201.mail.mud.yahoo.com>
+Date: Wed, 28 Sep 2011 22:43:11 -0400
+Message-ID: <CAPBSBxrMsY6wH=LCzHaDie-MJQ1Bnqxj+fipH5OUSXKaXKW7Og@mail.gmail.com>
+Subject: Re: U-Boot: using nand write to flash an ubi image, ubi part fails
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: Lars Michael <lh_post@yahoo.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: u-boot@lists.denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 27 September 2011, Robert Jarzmik wrote:
-> >
-> > Really, passing the entire register name into an inline function is much
-> > preferred over string concatenation, because it lets you grep for where
-> > certain definitions are used.
-> Right. But how do handle the "#seq" then ?
-> 
-> The whole point here is to write humanly readable debug messages. A message of
-> the like "doc_flashsequence: 48 SET_PLANE1" is much better than
-> "doc_flashsequence: 48", don't you think ?
-> 
-> If we consider to loose that debugging messages, it's way easier to drop the "do
-> .. while(0)" sequences, and just keep the register write.
-> 
-> Now if you're convinced removing the "SET_PLANE1" debugging message is less
-> important that ability to grep the full register name, why not, but from a
-> maintenance point of view I would prefer letting the "macroness" in.
+On Wed, Jun 1, 2011 at 3:57 AM, Lars Michael <lh_post@yahoo.com> wrote:
+> Hello,
+>
+> Using mkfs.ubifs and ubinize I have created an image with 5 volumes. In L=
+inux I could flash it using "ubiformat /dev/mtd1 -f /root/ubi.img" and atta=
+ch it using "ubiattach /dev/ubi_ctrl -m 1". It worked.
+>
+> In production I would prefer to write the image from U-Boot. So in U-Boot=
+ I used "nand erase" then "nand write" to flash the image. Then I want to a=
+ttach by "ubi part" command - but this fails: "UBI error: ubi_init: UBI err=
+or: cannot initialize UBI, error -17"
+>
 
-I generally recommend removing debug messages like this entirely from
-production code. If you need them on production systems, that is an indication
-that the code quality is not good enough. Enabling the debug output like
-this also creates a lot of almost identical strings, which you don't need
-if you turn it into an extern function that does
+Basically, this isn't a valid combination: "nand write" doesn't know
+anything about UBI, and a UBIFS image isn't suitable for flashing
+directly to NAND - it expects to sit on top of UBI.
 
-	static const char docseq[] = {
-		[DOC_SEQ_RESET]		 = "reset",
-		[DOC_SEQ_PAGE_SIZE_532]	 = "page_size_532",
-	};
-	dev_dbg(dev, "doc_flashSequence: %02x %s\n", docseq[seq]);
+There are 2 ways to get it working:
 
-with exactly the same output.
+1. Don't use "nand write".  If U-Boot is built with UBI support, you
+can use "ubi write" to write a UBI image to flash.  I _think_ you can
+use this to overwrite an existing volume with a new image, preserving
+ECs (haven't tried it myself).  It certainly works fine to write a new
+image to blank flash.
 
-Or you could turn the entire tracing into trace events and do the parsing
-in user space, which seems appropriate if you frequently need to trace
-these.
+2. Use the "ubinize" tool to create an image suitable for writing
+directly to NAND.  This takes a UBIFS image and "wraps" it to turn it
+into a UBI image, which you can then use with "nand write".
 
-	Arnd
+I've used both these methods to write UBIFS images to flash within
+U-Boot, and the 2nd method also works with industrial NAND
+programmers.
+
+Hope this helps
+
+--=20
+Matthew L. Creech
