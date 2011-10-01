@@ -1,15 +1,20 @@
-Received: from mail05.home.net.pl ([62.129.252.15])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RA0yC-00022H-M9
-	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2011 14:55:17 +0000
-Message-ID: <4E8729C8.1050305@data.pl>
-Date: Sat, 01 Oct 2011 16:55:04 +0200
-From: -= KuK =- <kuk@data.pl>
+Received: from moutng.kundenserver.de ([212.227.17.8])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RA15d-00025Y-AH
+	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2011 15:02:58 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH V4] mtd: Add DiskOnChip G3 support
+Date: Sat, 01 Oct 2011 17:02:10 +0200
+Message-ID: <2027446.JdsYbAItg0@wuerfel>
+In-Reply-To: <87y5x4hpkz.fsf@free.fr>
+References: <1316633266-21312-1-git-send-email-robert.jarzmik@free.fr>
+	<201109281445.47715.arnd@arndb.de> <87y5x4hpkz.fsf@free.fr>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Problem with JFFS2 mount
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Saturday 01 October 2011 14:19:08 Robert Jarzmik wrote:
+> Arnd Bergmann <arnd@arndb.de> writes:
+> 
+> > I generally recommend removing debug messages like this entirely from
+> > production code. If you need them on production systems, that is an indication
+> > that the code quality is not good enough.
+> Perhaps.
+> But when you create a driver without any specification, and you release it to
+> the communauty, there will be unmet behaviours. So, when someone will ask me
+> "why in my board XXX my docg3 can't read data ?" how can I improve the driver
+> without any traces ?
 
-I have problem with creating image file from mounted jffs2 file system.
+In my experience, the kind of debugging data you need for analysing a problem
+on someone else's system is not just a trace of the commands you send to
+a device but more complicated to get, so you are dependent on a clueful
+bug reporter anyway.
 
-I have 1:1 dump from 1GB NAND which is UBI format.
-But it contains JFFS part also.
-This part can be downloaded from my server.
-www.pouchx.com/PRV/HDS/K9G8G08U0M_Samsung_1GB_NAND_Config.ini_block_JFFS.rar
+If you have successfully debugged a remote problem just by looking at a dump,
+then you should certainly leave the code in there.
 
-Archive contains two files. One is original JFFS copy, second is same 
-file but I deleted ECC blocks.
+> > Or you could turn the entire tracing into trace events and do the parsing
+> > in user space, which seems appropriate if you frequently need to trace
+> > these.
+> This looks much much better. I'll have a peek into that, as only (io_address,
+> read/write, width, value) could be dumped, and userland application could
+> translate it into sequence/nop/flashcontrol ... etc ...
 
-I mount jffs image (noECC) with this script:
+Right, that was the idea.
 
-$ sudo apt-get install mtd-tools
-$ sudo modprobe -v mtd
-$ sudo modprobe -v jffs2
-$ sudo modprobe -v mtdram total_size=8192 erase_size=256
-$ sudo modprobe -v mtdchar
-$ sudo modprobe -v mtdblock
-$ sudo dd if=/HDS/Config.img of=/dev/mtd0
-$ sudo mount -t jffs2 /dev/mtdblock0 /HDS/JFFS
-
-After that I can see all 3 files that are in jffs image:
-can_unique_id
-Config.ini
-MAC
-
-I make no changes to these files.
-
-That I want to make new image from mounted device.
-
-I use this command:
-$ sudo mkfs.jffs2 -r /HDS/JFFS -o /HDS/newimage.jffs2 -e 256 -l
-
-Output file is only 696bytes.
-www.pouchx.com/PRV/HDS/newconfig2.zip
-
-Can anyone help me with this.
-How can I get same image as original one?
-
-In the future I want to edit Config.ini but now I just want to test that 
-I will be able to create correct and working image.
-
-Jakub
+	Arnd
