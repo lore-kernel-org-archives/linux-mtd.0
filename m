@@ -1,36 +1,32 @@
-From: bpringle@sympatico.ca (Bill Pringlemeir)
-Date: Fri, 16 Sep 2011 16:29:41 -0400
-Subject: [PATCH] Fix romfs when using an NAND flash MTD.
-Message-ID: <mailman.140.1316206132.20020.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
-
-The code '-EUCLEAN' is returned when an NAND mtd has used ECC to
-correct data.  This is fine for the reader of the RomFs and their
-data is correct.
----
- fs/romfs/storage.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/romfs/storage.c b/fs/romfs/storage.c
-index 71e2b4d..4105d1c 100644
---- a/fs/romfs/storage.c
-+++ b/fs/romfs/storage.c
-@@ -19,8 +19,10 @@
- #endif
- 
- #ifdef CONFIG_ROMFS_ON_MTD
--#define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
--
-+#define ROMFS_MTD_READ(sb, ...)                                        \
-+    ({ int res;                                                        \
-+        res = ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__)) == -EUCLEAN ? \
-+            0 : res; })                                                         
- /*
-  * read data from an romfs image on an MTD device
-  */
--- 
-1.7.0.4
+From: "Miss. Angela Koffi" <angelkofiangel@kimo.com>
+To: angelkofiangel@kimo.com
+Subject: Negotiating for Investment Partners
+Date: Sat, 1 Oct 2011 07:39:44 -0200
+Message-Id: <20111001093902.M91992@kimo.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+Reply-To: angelkofiangel@kimo.com
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-=-=--
+
+In good faith,
+
+I have a substantial capital honorably inherited from my late father amounting 
+to the $12, 500.000.00 (USD) which I have decided to invest in any lucrative 
+business in your country while I continue my education there.
+
+Should this be of any interest to you, kindly respond because I will be left 
+with no choice in seeking elsewhere if I did not hear from you this week.
+
+Your urgent response needed.
+
+Miss. Angela Koffi
