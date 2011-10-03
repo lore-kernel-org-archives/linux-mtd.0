@@ -1,22 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+	helo=ch1outboundpool.messaging.microsoft.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RAo5u-00066k-2J
-	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 19:22:31 +0000
-Received: by wyi11 with SMTP id 11so4527471wyi.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Oct 2011 12:22:26 -0700 (PDT)
+	id 1RApGK-0006cu-1F
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 20:37:21 +0000
+Message-ID: <4E8A1CD7.8080908@freescale.com>
+Date: Mon, 3 Oct 2011 15:36:39 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <201110031135.19340.ffainelli@freebox.fr>
-References: <CD1B567EF015FE41B29FF476B8600DDD26BBF25958@vsrv-mail01.newtechgroup.local>
-	<201110031135.19340.ffainelli@freebox.fr>
-Date: Mon, 3 Oct 2011 12:22:26 -0700
-Message-ID: <CAN8TOE-UVAcN5MOhbrW-iayuAfPV1OyKrVYogVE7gQh3Hyvrhw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: restore useage of ONFI reported bus width
-From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, "Hitz, Christian" <christian.hitz@aizo.com>
+To: Lars Michael <lh_post@yahoo.com>
+Subject: Re: [U-Boot] U-Boot: using nand write to flash an ubi image, ubi
+	part fails
+References: <1317354248.25348.YahooMailClassic@web160616.mail.bf1.yahoo.com>
+In-Reply-To: <1317354248.25348.YahooMailClassic@web160616.mail.bf1.yahoo.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: u-boot@lists.denx.de, linux-mtd@lists.infradead.org,
+	"Matthew L. Creech" <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 3, 2011 at 2:35 AM, Florian Fainelli <ffainelli@freebox.fr> wro=
-te:
-> On Monday 03 October 2011 08:57:59 Hitz, Christian wrote:
->> This patch changes the nand_flash_detect_onfi() function to pass
->> the NAND bus width it discovered via ONFI back to the caller.
->>
->> Signed-off-by: Christian Hitz <christian.hitz@aizo.com>
->
-> Acked-by: Florian Fainelli <ffainelli@freebox.fr>
->
->> ---
->> =A0drivers/mtd/nand/nand_base.c | =A0 =A08 ++++----
->> =A01 files changed, 4 insertions(+), 4 deletions(-)
->
-> I though Brian had already submitted a fix for this.
+On 09/29/2011 10:44 PM, Lars Michael wrote:
+> --- On Thu, 29/9/11, Matthew L. Creech <mlcreech@gmail.com> wrote:
+>> 2. Use the "ubinize" tool to create an image suitable for
+>> writing
+>> directly to NAND.  This takes a UBIFS image and
+>> "wraps" it to turn it
+>> into a UBI image, which you can then use with "nand
+>> write".
+> 
+> This is what I am doing (or plan to do). But to get it to work, I need
+> the space fixup feature for the nand write in U-Boot. I got that feature in Linux, so in Linux it works. Unfortunately it is not easy to patch 
+> that one in my 2009.08 U-Boot.
 
-No, it was Matthieu CASTET (I Acked). It's already queued for the next
-release; you can find it in l2-mtd-2.6.git:
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+Try using a current U-Boot, and use "nand write.trimffs".
 
-Thanks for the submission though!
-
-Brian
+-Scott
