@@ -1,18 +1,20 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RAeGc-00027t-3w
-	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 08:52:54 +0000
-Received: by wyi11 with SMTP id 11so3723059wyi.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Oct 2011 01:52:49 -0700 (PDT)
-Message-ID: <4E8977DF.1030808@gmail.com>
-Date: Mon, 03 Oct 2011 10:52:47 +0200
-From: angelo <angelo70@gmail.com>
+Received: from bobafett.staff.proxad.net ([213.228.1.121])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RAewB-00032u-KH
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 09:35:52 +0000
+From: Florian Fainelli <ffainelli@freebox.fr>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: restore useage of ONFI reported bus width
+Date: Mon, 3 Oct 2011 11:35:19 +0200
+References: <CD1B567EF015FE41B29FF476B8600DDD26BBF25958@vsrv-mail01.newtechgroup.local>
+In-Reply-To: <CD1B567EF015FE41B29FF476B8600DDD26BBF25958@vsrv-mail01.newtechgroup.local>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: erase block < 8KiB
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201110031135.19340.ffainelli@freebox.fr>
+Cc: Brian Norris <computersforpeace@gmail.com>, "Hitz,
+	Christian" <christian.hitz@aizo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Monday 03 October 2011 08:57:59 Hitz, Christian wrote:
+> This patch changes the nand_flash_detect_onfi() function to pass
+> the NAND bus width it discovered via ONFI back to the caller.
+> 
+> Signed-off-by: Christian Hitz <christian.hitz@aizo.com>
 
-i read several mail about this limitation.
+Acked-by: Florian Fainelli <ffainelli@freebox.fr>
 
-http://lists.infradead.org/pipermail/linux-mtd/2011-February/033851.html
-http://lists.infradead.org/pipermail/linux-mtd/2011-June/036498.html
+> ---
+>  drivers/mtd/nand/nand_base.c |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
 
+I though Brian had already submitted a fix for this.
 
-I have a 4 KiB erase-size, common of some SST nor flash'es like mine 
-(SST 39VF3201B).
-
- From all the posts i read here in the list, there seems not to be any 
-solution guaranteed.
-
-The tricky change to mkfs.jffs2 don't work for me. It seems to work for 
-small files, but i still get error messages copying a 600KB file in the 
-partition.
-If it's true that the minimal jffs2 block is 4KB + some bytes, of course 
-the patch to mkfs.jffs2 can't work.
-
-Some one suggested the "virtual erase block" solution. I would like to 
-try to implement it, if i have the time.
-
-In any case, for the common users, is there maybe another flash file 
-system that can work with 4KiB erase size ?
-
-Many thanks,
-Regards
-
-Angelo Dureghello
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index a46e9bb..6dae9a0 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2829,7 +2829,7 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t
+> len) * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0
+> otherwise */
+>  static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip
+> *chip, -					int busw)
+> +					int *busw)
+>  {
+>  	struct nand_onfi_params *p = &chip->onfi_params;
+>  	int i;
+> @@ -2884,9 +2884,9 @@ static int nand_flash_detect_onfi(struct mtd_info
+> *mtd, struct nand_chip *chip, mtd->erasesize =
+> le32_to_cpu(p->pages_per_block) * mtd->writesize; mtd->oobsize =
+> le16_to_cpu(p->spare_bytes_per_page);
+>  	chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) *
+> mtd->erasesize; -	busw = 0;
+> +	*busw = 0;
+>  	if (le16_to_cpu(p->features) & 1)
+> -		busw = NAND_BUSWIDTH_16;
+> +		*busw = NAND_BUSWIDTH_16;
+> 
+>  	chip->options &= ~NAND_CHIPOPTIONS_MSK;
+>  	chip->options |= (NAND_NO_READRDY |
+> @@ -2952,7 +2952,7 @@ static struct nand_flash_dev
+> *nand_get_flash_type(struct mtd_info *mtd, chip->onfi_version = 0;
+>  	if (!type->name || !type->pagesize) {
+>  		/* Check is chip is ONFI compliant */
+> -		ret = nand_flash_detect_onfi(mtd, chip, busw);
+> +		ret = nand_flash_detect_onfi(mtd, chip, &busw);
+>  		if (ret)
+>  			goto ident_done;
+>  	}
