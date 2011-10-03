@@ -1,16 +1,18 @@
-Received: from mail.newtechgroup.ch ([62.12.175.51] helo=newtechgroup.ch)
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RAcTe-0000Nd-No
-	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 06:58:15 +0000
-From: "Hitz, Christian" <christian.hitz@aizo.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 3 Oct 2011 08:57:59 +0200
-Subject: [PATCH] mtd: nand: restore useage of ONFI reported bus width
-Message-ID: <CD1B567EF015FE41B29FF476B8600DDD26BBF25958@vsrv-mail01.newtechgroup.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1RAeGc-00027t-3w
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 08:52:54 +0000
+Received: by wyi11 with SMTP id 11so3723059wyi.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 Oct 2011 01:52:49 -0700 (PDT)
+Message-ID: <4E8977DF.1030808@gmail.com>
+Date: Mon, 03 Oct 2011 10:52:47 +0200
+From: angelo <angelo70@gmail.com>
 MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: erase block < 8KiB
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch changes the nand_flash_detect_onfi() function to pass
-the NAND bus width it discovered via ONFI back to the caller.
+Hi all,
 
-Signed-off-by: Christian Hitz <christian.hitz@aizo.com>
----
- drivers/mtd/nand/nand_base.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+i read several mail about this limitation.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a46e9bb..6dae9a0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2829,7 +2829,7 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t le=
-n)
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwi=
-se
-  */
- static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *=
-chip,
--					int busw)
-+					int *busw)
- {
- 	struct nand_onfi_params *p =3D &chip->onfi_params;
- 	int i;
-@@ -2884,9 +2884,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mt=
-d, struct nand_chip *chip,
- 	mtd->erasesize =3D le32_to_cpu(p->pages_per_block) * mtd->writesize;
- 	mtd->oobsize =3D le16_to_cpu(p->spare_bytes_per_page);
- 	chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) * mtd->erases=
-ize;
--	busw =3D 0;
-+	*busw =3D 0;
- 	if (le16_to_cpu(p->features) & 1)
--		busw =3D NAND_BUSWIDTH_16;
-+		*busw =3D NAND_BUSWIDTH_16;
-=20
- 	chip->options &=3D ~NAND_CHIPOPTIONS_MSK;
- 	chip->options |=3D (NAND_NO_READRDY |
-@@ -2952,7 +2952,7 @@ static struct nand_flash_dev *nand_get_flash_type(str=
-uct mtd_info *mtd,
- 	chip->onfi_version =3D 0;
- 	if (!type->name || !type->pagesize) {
- 		/* Check is chip is ONFI compliant */
--		ret =3D nand_flash_detect_onfi(mtd, chip, busw);
-+		ret =3D nand_flash_detect_onfi(mtd, chip, &busw);
- 		if (ret)
- 			goto ident_done;
- 	}
---=20
-1.7.4.1
+http://lists.infradead.org/pipermail/linux-mtd/2011-February/033851.html
+http://lists.infradead.org/pipermail/linux-mtd/2011-June/036498.html
+
+
+I have a 4 KiB erase-size, common of some SST nor flash'es like mine 
+(SST 39VF3201B).
+
+ From all the posts i read here in the list, there seems not to be any 
+solution guaranteed.
+
+The tricky change to mkfs.jffs2 don't work for me. It seems to work for 
+small files, but i still get error messages copying a 600KB file in the 
+partition.
+If it's true that the minimal jffs2 block is 4KB + some bytes, of course 
+the patch to mkfs.jffs2 can't work.
+
+Some one suggested the "virtual erase block" solution. I would like to 
+try to implement it, if i have the time.
+
+In any case, for the common users, is there maybe another flash file 
+system that can work with 4KiB erase size ?
+
+Many thanks,
+Regards
+
+Angelo Dureghello
