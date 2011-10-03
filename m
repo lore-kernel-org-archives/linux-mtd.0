@@ -1,16 +1,22 @@
-Received: from exchange1.tylerisd.org ([66.76.66.163]
-	helo=ExchangeHub.tisd.local)
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RAjY6-00086Y-Mv
-	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 14:31:22 +0000
-From: "Little, Linda" <Linda.Little@tylerisd.org>
-Date: Mon, 3 Oct 2011 09:24:56 -0500
-Subject: Mailbox Quota Exceeded
-Message-ID: <8F7ECA5B6B8DC94DA080694951B1453D092DE0940F@ExchangeMailbox.tisd.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 1RAo5u-00066k-2J
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2011 19:22:31 +0000
+Received: by wyi11 with SMTP id 11so4527471wyi.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 Oct 2011 12:22:26 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <201110031135.19340.ffainelli@freebox.fr>
+References: <CD1B567EF015FE41B29FF476B8600DDD26BBF25958@vsrv-mail01.newtechgroup.local>
+	<201110031135.19340.ffainelli@freebox.fr>
+Date: Mon, 3 Oct 2011 12:22:26 -0700
+Message-ID: <CAN8TOE-UVAcN5MOhbrW-iayuAfPV1OyKrVYogVE7gQh3Hyvrhw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: restore useage of ONFI reported bus width
+From: Brian Norris <computersforpeace@gmail.com>
+To: Florian Fainelli <ffainelli@freebox.fr>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, "Hitz, Christian" <christian.hitz@aizo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Your web mail quota has exceeded the set quota which is 3GB. you are curren=
-tly running on 3.9 GB. To re-activate and increase your web mail quota plea=
-se click the link below.
+On Mon, Oct 3, 2011 at 2:35 AM, Florian Fainelli <ffainelli@freebox.fr> wro=
+te:
+> On Monday 03 October 2011 08:57:59 Hitz, Christian wrote:
+>> This patch changes the nand_flash_detect_onfi() function to pass
+>> the NAND bus width it discovered via ONFI back to the caller.
+>>
+>> Signed-off-by: Christian Hitz <christian.hitz@aizo.com>
+>
+> Acked-by: Florian Fainelli <ffainelli@freebox.fr>
+>
+>> ---
+>> =A0drivers/mtd/nand/nand_base.c | =A0 =A08 ++++----
+>> =A01 files changed, 4 insertions(+), 4 deletions(-)
+>
+> I though Brian had already submitted a fix for this.
 
-CLICK HERE<http://outlookupgraded.ucoz.com/web1.htm>
+No, it was Matthieu CASTET (I Acked). It's already queued for the next
+release; you can find it in l2-mtd-2.6.git:
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 
-Failure to do so may result in the cancellation of your web mail account.
-Thanks, and sorry for the inconvenience
-Local-host.
+Thanks for the submission though!
 
-
-
-________________________________
-It is the policy of Tyler Independent School District not to discriminate o=
-n the basis of race, color, national origin, gender, handicap, or age in it=
-s employment practices as required by Title VI of the Civil Rights Act of 1=
-964, as amended; Title IX of the Education Amendments of 1972; the Age Disc=
-rimination Act of 1975, as amended; and Section 504 of the Rehabilitation A=
-ct of 1973, as amended.
+Brian
