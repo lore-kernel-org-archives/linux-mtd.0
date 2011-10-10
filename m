@@ -1,19 +1,21 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDMLV-0007ut-Ow
-	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 20:21:12 +0000
-Message-ID: <4E93538A.8010408@newsguy.com>
-Date: Mon, 10 Oct 2011 13:20:26 -0700
+	id 1RDN02-00088r-8V
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 21:03:03 +0000
+Message-ID: <4E935D5D.4050504@newsguy.com>
+Date: Mon, 10 Oct 2011 14:02:21 -0700
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Marek Vasut <marek.vasut@gmail.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
 Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
-References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
-	<201110101751.19010.marek.vasut@gmail.com>
-In-Reply-To: <201110101751.19010.marek.vasut@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-6
+References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>	<201110101751.19010.marek.vasut@gmail.com>
+	<20111010181210.GA23655@parrot.com>
+In-Reply-To: <20111010181210.GA23655@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+	"robert.jarzmik@free.fr" <robert.jarzmik@free.fr>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,570 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/10/2011 08:51 AM, Marek Vasut wrote:
+On 10/10/2011 11:12 AM, Ivan Djelic wrote:
 >
-> Hi Mike,
+> Hello Mike,
+
+Hi Ivan.  Boy, I wish I had dropped you a line sooner!
+
+> I had a quick look at how you handle BCH ecc correction. If I understood
+> correctly:
+> - hw generates a 56-bit polynomial remainder (56 = 14*4, m=14, t=4)
+
+Well, m=14 and t=4, yes.  But honestly, I'm not sure what the hardware
+generates, except that it is the same size as the syndrome, given m and t.
+
+> - hw-generated polynomial terms are mapped to bits in a way not compatible with
+> the BCH library
+
+Well yes, the bit order is backwards.  But again, I'mnot sure what the hardware
+gives me.  The key to my success was having a look at some other code that does
+the same thing (but using static remainder tables, and preserving the reversed
+bit order throughout the whole decoding).  Then I got a basic understanding of
+the mechanics of the steps, and for the driver I re-wrote (using generated
+remainder tables and reversing the bit order along the way) the first two steps
+of the decoding (up to the syndrome calculation), then let your code handle the
+rest (error locator polynomial and root-finding).
+
+If you can enlighted me, I'd be grateful!  From what I've been able to
+understand from the textbook, it looks to me that the processing normally done
+on the entire code polynomial - as described in the text - is done only on the
+56 bit hw ecc.  In my simplistic interpretation, it seems that the 56 bits are
+some kind of distillation of the entire code vector.  The steps are all the same.
+
+> Still, I do not understand why you go to great lengths computing syndromes in
+> your code, using a mix of generated remainder tables and Galois field tables.
 >
-> so the time to rip you to shreds in the mailing list has come <evil laughter> 
-> ...
+> Why don't you just reformat the hw-generated polynomial (cheap, only 56 bits
+> to shuffle) and let the BCH library do the whole computation ?
 
-I'm used to it :-)  I've been shredded plenty of times in my life.
+Could you elaborate?  What are the 56 bits that the hardware gives me?  It's not
+the syndrome, right?  (BTW, I did verify that the results are correct).
 
-> [...]
+>>> +
+>>> +     /* undo last step in BCH alg; currently this is a mystery to me */
+> Maybe I can help here :)
+> This last step exists because the BCH library represents nand data as a large
+> polynomial with high order terms first (this is consistent with several hw
+> generators). If N is the total bit length of array data[], then byte data[0]
+> will contain polynomial terms X^(N-1) (in bit 7), X^(N-2), ... X^(N-8) (in bit
+> 0). Byte data[1] will contain X^(N-9) (bit 7) ... X^(N-16) (bit 0) and so on.
 >
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 4c34252..726ce63 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -319,6 +319,14 @@ config MTD_NAND_DISKONCHIP_BBTWRITE
->>  	  load time (assuming you build diskonchip as a module) with the module
->>  	  parameter "inftl_bbt_write=1".
->>
->> +config MTD_NAND_DOCG4
->> +	tristate "Support for NAND DOCG4"
->> +	depends on EXPERIMENTAL && ARCH_PXA
-> It's not PXA specific driver I guess ?
-
-
-Yeah, I wondered about this too.  Technically, the device is not arm or xscale
-specific (and its endianess is configurable), but AFAIK all phones / PDAs  that
-use it *are* xscale pxa27x (though I only did a cursory investigation).  And
-M-Sys "datasheet" references the xscale as an example of a processor that it
-easily integrates with.  So they may have designed it specifically for the
-xscale.  In light of that, I was going to put the header under
-arch/arm/mach-pxa.  Then I noticed the header file include/linux/mtd/sharpsl.h. 
-That flash device seems to be in a similiar situation; in fact, the config
-option for it has ARCH_PXA as a dependency!  Also, it looked like all the
-headers under mach-pxa were for integrated peripherals, not separate devices. 
-So I figured include/linux/mtd was where it belonged.
-
->> +	select BCH
->> +	help
->> +	  Support for diskonchip G4 nand flash, found in several smartphones,
->> +	  such as the Palm Treo680 and HTC Prophet.
->> +
->>  config MTD_NAND_SHARPSL
->>  	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
->>  	depends on ARCH_PXA
-> [...]
+> Thus, term X^i is located in byte data[(N-1-i)/8], in bit position
+> 7-(N-1-i)%8. The last step:
 >
->> +static struct nand_ecclayout docg4_oobinfo = {
->> +	.eccbytes = 8,
->> +	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14},
->> +	.oobfree = {{0, 7}, {15, 1} }
->> +};
->> +
->> +/* next two functions copied from nand_base.c verbatem... */
-> Why ?
-
-The short answer: because the functions are not exported, and I skipped the call
-to the function that sets the methods to the defaults.  The loooong answer:
-Integrating the driver with mtd was awkward, because the flash has the glue
-logic around it that doesn't comport to the usual nand device operation.  One of
-the things I had to do was skip the call to nand_scan().  That function was
-split at some point in the past into two exported functions: nand_scan_ident()
-and nand_scan_tail(), and I only call nand_scan_tail().  The reason is that
-nand_scan_ident() expects to query the chip (in a standard way) for an ID
-number, and use that to look up its parameters in a table of known devices
-(nand_ids.c).  Originally I used a hack to trick the nand code into thinking it
-was reading the ID in the normal way, gave it a fictitious value, and patched
-the table with a fictitious entry.  It was so ugly, I looked for an
-alternative.  What I do now is I skip the first half (nand_scan_ident()) that
-does the querying.  Unfortunately, nand_scan_ident() also sets the default
-methods (another question is why it is done there).  But as it turned out, I
-need to replace almost all the defaults anyway, the exceptions being the two
-trivial functions I duplicated.  There's a comment in the code to that effect.
-
->> +static void docg4_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
->> +{
->> +	int i;
->> +	struct nand_chip *chip = mtd->priv;
->> +	u16 *p = (u16 *) buf;
->> +	len >>= 1;
->> +
->> +	for (i = 0; i < len; i++)
->> +		p[i] = readw(chip->IO_ADDR_R);
->> +}
->> +
->> +static void docg4_write_buf16(struct mtd_info *mtd, const uint8_t *buf,
->> int len) +{
->> +	int i;
->> +	struct nand_chip *chip = mtd->priv;
->> +	u16 *p = (u16 *) buf;
->> +	len >>= 1;
->> +
->> +	for (i = 0; i < len; i++)
->> +		writew(p[i], chip->IO_ADDR_W);
->> +}
-> Defaults are no good ?
-
-See above
-
->> +
->> +
->> +static int docg4_wait(struct mtd_info *mtd, struct nand_chip *nand)
->> +{
->> +	uint16_t flash_status;
->> +	struct docg4_priv *doc = nand->priv;
->> +	void __iomem *docptr = doc->virtadr;
-> Why not make a doc_read() and doc_write() inline function to handle this ?
+>    errloc[i] = (errloc[i] & ~7)|(7-(errloc[i] & 7));
 >
-> doc_write(docg4_priv, val, reg); ?
-> doc_read(docg4, reg); ?
+> was added just so that users can correct bit errors with byte access:
 >
-> You can even handle the register offset by doing this ...
-
-Doing what now?  docg4_wait() polls a status register, and is actually a method
-defined in struct nand_chip.  It's not used after every register access.
-
-> [...]
+>    data[errloc[i]/8] ^= 1 << (errloc[i] & 7);
 >
->> +
->> +static unsigned int docg4_ecc_mod_phi(uint8_t *ecc_buf, uint16_t
->> *mod_table) +{
->> +	/*
->> +	 * Divide the 56-bit ecc polynomial in ecc_buf by the 14-bit
->> +	 * polynomial represented by mod_table, and return remainder.
->> +	 *
->> +	 * A good reference for this algorithm is the section on cyclic
->> +	 * redundancy in the book "Numerical Recipes in C".
->> +	 *
->> +	 * N.B. The bit order of hw-generated bytes has the LS bit representing
->> +	 * the highest order term.  However, byte ordering has most significant
->> +	 * byte in ecc_buf[0].
->> +	 */
->> +
->> +	int i = ecc_buf[0];	        /* initial table index */
->> +	unsigned int b = mod_table[i];  /* first iteration */
->> +
->> +	i = (b & 0xff) ^ ecc_buf[1];
->> +	b = (b>>8) ^ mod_table[i];
-> I guess this has checkpatch issues ? ./scripts/checkpatch.pl <patch> ... or 
-> checkpatch -f file
-
-No.  I ran it through checkpatch.pl and it gives no errors.  Thought I mentioned
-that in the note above the patch.  It does give a warning for Kconfig, asking me
-to add an explanatory paragraph.  Not sure why the warning; the description is
-there.  Not verbose enough?  It was only a warning, so I let it go.
-
-> Please fix all issues.
+> instead of (the slightly more complicated):
 >
->> +	i = (b & 0xff) ^ ecc_buf[2];
->> +	b = (b>>8) ^ mod_table[i];
->> +	i = (b & 0xff) ^ ecc_buf[3];
->> +	b = (b>>8) ^ mod_table[i];
->> +	i = (b & 0xff) ^ ecc_buf[4];
->> +	b = (b>>8) ^ mod_table[i];
->> +
->> +	/* last two bytes tricky because divisor width is not multiple of 8 */
->> +	b = b ^ (ecc_buf[6]<<8) ^ ecc_buf[5];
->> +	i = (b<<6) & 0xc0;
->> +	b = (b>>2) ^ mod_table[i];
->> +
->> +	return b;
->> +}
->> +
->> +static unsigned int docg4_eval_poly(struct docg4_priv *doc, unsigned int
->> poly, +				    unsigned int log_gf_elem)
->> +{
->> +	/*
->> +	 * Evaluate poly(alpha ^ log_gf_elem).  Poly is in the bit order used by
->> +	 * the ecc hardware (least significant bit is highest order
->> +	 * coefficient), but the result is in the opposite bit ordering (that
->> +	 * used by the bch alg).  We borrow the bch alg's power table.
->> +	 */
->> +	unsigned int pow, result = 0;
->> +
->> +	for (pow = 0; pow < log_gf_elem * 14; pow += log_gf_elem) {
->> +		if (poly & 0x2000)
-> Why the magic constant ?
-
-It's part of the algorithm.  I'm testing bit 13, the LS coefficient of the
-polynomial.
-
-
->> +			result ^= doc->bch->a_pow_tab[pow];
->> +		poly <<= 1;
->> +	}
->> +	return result;
->> +}
->> +
->> +static unsigned int docg4_square_poly(struct docg4_priv *doc, unsigned int
->> poly) +{
->> +	/* square the polynomial; e.g., passing alpha^3 returns alpha^6 */
->> +
->> +	const unsigned int logtimes2 = doc->bch->a_log_tab[poly] * 2;
->> +
->> +	if (logtimes2 >= doc->bch->n)    /* modulo check */
->> +		return doc->bch->a_pow_tab[logtimes2 - doc->bch->n];
->> +	else
->> +		return doc->bch->a_pow_tab[logtimes2];
->> +}
->> +
->> +static int docg4_find_errbits(struct docg4_priv *doc, unsigned int
->> errorpos[]) +{
->> +	/*
->> +	 * Given the 56 hardware-generated ecc bits, determine the locations of
->> +	 * the erroneous bits in the page data (and first 8 oob bytes).
->> +	 *
->> +	 * The BCH syndrome is calculated from the ecc, and the syndrome is
->> +	 * passed to the kernel's BCH library, which does the rest.
->> +	 *
->> +	 * For i in 1..7, each syndrome value S_i is calculated by dividing the
->> +	 * ecc polynomial by phi_i (the minimal polynomial of the Galois field
->> +	 * element alpha ^ i) and taking the remainder, which is then evaluated
->> +	 * with alpha ^ i.
->> +	 *
->> +	 * The classic text on this is "Error Control Coding" by Lin and
->> +	 * Costello (though I'd like to think there are better ones).
->> +	 */
->> +
->> +	int retval, i;
->> +	unsigned int b1, b3, b5, b7; /* remainders */
->> +	unsigned int s[7];       /* syndromes S_1 .. S_7 (S_8 not needed) */
->> +
->> +	/* b_i = ecc_polynomial modulo phi_i */
->> +	b1 = docg4_ecc_mod_phi(doc->ecc_buf, doc->phi_mod_tables);
->> +	b3 = docg4_ecc_mod_phi(doc->ecc_buf, doc->phi_mod_tables + 256);
->> +	b5 = docg4_ecc_mod_phi(doc->ecc_buf, doc->phi_mod_tables + 512);
->> +	b7 = docg4_ecc_mod_phi(doc->ecc_buf, doc->phi_mod_tables + 768);
->> +
->> +	/* evaluate remainders with corresponding Galois field elements */
->> +	s[0] = docg4_eval_poly(doc, b1, 1);  /* S_1 = b_1(alpha) */
->> +	s[2] = docg4_eval_poly(doc, b3, 3);  /* S_3 = b_3(alpha ^ 3) */
->> +	s[4] = docg4_eval_poly(doc, b5, 5);  /* S_5 = b_5(alpha ^ 5) */
->> +	s[6] = docg4_eval_poly(doc, b7, 7);  /* S_7 = b_7(alpha ^ 7) */
->> +
->> +	/* S_2, S_4, S_6 obtained by exploiting S_2i = S_i ^ 2 */
->> +	s[1] = docg4_square_poly(doc, s[0]); /* S_2 = S_1 ^ 2 */
->> +	s[3] = docg4_square_poly(doc, s[1]); /* S_4 = S_2 ^ 2 */
->> +	s[5] = docg4_square_poly(doc, s[2]); /* S_6 = S_3 ^ 2 */
->> +
->> +	/* pass syndrome to BCH algorithm */
->> +	retval = decode_bch(doc->bch, NULL, DOCG4_DATA_LEN,
->> +			    NULL, NULL, s, errorpos);
->> +	if (retval == -EBADMSG)	   /* more than 4 errors */
->> +		return 5;
->> +
->> +	/* undo last step in BCH alg; currently this is a mystery to me */
-> Make these sentences (starting with capital letter, ending with dot) ... please 
-> fix globally.
-
-Ok.
-
->> +	for (i = 0; i < retval; i++)
->> +		errorpos[i] = (errorpos[i] & ~7)|(7-(errorpos[i] & 7));
->> +
->> +	return retval;
->> +}
->> +
->> +
->> +static int docg4_correct_data(struct mtd_info *mtd, uint8_t *buf, int
->> page) +{
->> +	struct nand_chip *nand = mtd->priv;
->> +	struct docg4_priv *doc = nand->priv;
->> +	void __iomem *docptr = doc->virtadr;
->> +	uint16_t edc_err;
->> +	int i, numerrs, errpos[5];
->> +
->> +	/* hardware quirk: read twice */
->> +	edc_err = readw(docptr + DOCG4_ECC_CONTROL_1);
->> +	edc_err = readw(docptr + DOCG4_ECC_CONTROL_1);
->> +
->> +	if (unlikely(debug))
->> +		printk(KERN_DEBUG "docg4_correct_data: "
->> +		       "status = 0x%02x\n", edc_err);
->> +
->> +	if (!(edc_err & 0x80)) { /* no error bits */
->> +		writew(0, docptr + DOCG4_END_OF_DATA);
->> +		return 0;
->> +	}
-> No magic numbers please ... please fix globally.
-
-Isn't a return value of zero universally recognized in C code as success?  What
-do I use?  Don't see an EOK or ENOERROR in errno.h.
-
-
->> +
->> +	/* data contains error(s); read the 7 hw-generated ecc bytes */
->> +	docg4_read_hw_ecc(docptr, doc->ecc_buf);
->> +
->> +	/* check if ecc bytes are those of a blank page */
->> +	if (!memcmp(doc->ecc_buf, blank_read_hwecc, 7)) {
->> +		doc->page_erased = true;
->> +		writew(0, docptr + DOCG4_END_OF_DATA);
->> +		return 0;	/* blank page; ecc error normal */
->> +	}
->> +
->> +	doc->page_erased = false;
->> +
->> +	numerrs = docg4_find_errbits(doc, errpos);
->> +	if (numerrs > 4) {
->> +		printk(KERN_WARNING "docg4: "
->> +		       "uncorrectable errors at offset %08x\n", page * 0x200);
->> +		writew(0, docptr + DOCG4_END_OF_DATA);
->> +		return -1;
->> +	}
->> +
->> +	/* fix the errors */
->> +	for (i = 0; i < numerrs; i++)
->> +		change_bit(errpos[i], (unsigned long *)buf);
->> +
->> +	printk(KERN_NOTICE "docg4: %d errors corrected at offset %08x\n",
->> +	       numerrs, page * 0x200);
->> +
->> +	writew(0, docptr + DOCG4_END_OF_DATA);
->> +	return numerrs;
->> +}
->> +
->> +
-> Single newline is ok, please fix globally.
-
-OK.  Boy, you're even tougher than checkpatch.pl.
-
-
->> +static uint8_t docg4_read_byte(struct mtd_info *mtd)
->> +{
->> +	/*
->> +	 * As currently written, the nand code gets chip status by calling
->> +	 * cmdfunc() (set to docg4_command()) with the NAND_CMD_STATUS command,
->> +	 * then calling read_byte.  This device does not work like standard nand
->> +	 * chips, so as a work-around hack, set a flag when the command is
->> +	 * received, so that we know to serve up the status here.
->> +	 */
->> +	struct nand_chip *nand = mtd->priv;
->> +	struct docg4_priv *doc = nand->priv;
->> +
->> +	if (unlikely(debug))
->> +		printk(KERN_DEBUG "docg4_read_byte\n");
->> +
->> +	if (doc->status_query == true) {
->> +		doc->status_query = false;
->> +
->> +		/* TODO: return a saved status? read a register? */
->> +		return NAND_STATUS_WP; /* why is this inverse logic?? */
->> +	}
->> +
->> +	printk(KERN_WARNING "docg4: unexpectd call to read_byte()\n");
->> +
->> +	return 0;
->> +}
->> +
->> +static void docg4_select_chip(struct mtd_info *mtd, int chip)
->> +{
->> +#if 0
->> +	/* TODO: necessary? if so, don't just write 0! */
->> +	struct nand_chip *nand = mtd->priv;
->> +	struct docg4_priv *doc = nand->priv;
->> +	void __iomem *docptr = doc->virtadr;
->> +	writew(0, docptr + DOCG4_DEV_ID_SELECT);
->> +	writew(0x50, docptr + DOCG4_CONTROL_STATUS);
->> +#endif
-> Drop dead code.
-
-Plan to.  As I mentioned, it's still a little rough around the edges.
-
->> +	if (unlikely(debug))
->> +		printk(KERN_DEBUG "docg4_select_chip\n");
->> +
->> +}
->> +
->> +static void docg4_write_addr(struct docg4_priv *doc, unsigned int
->> docg4_addr) +{
->> +	void __iomem *docptr = doc->virtadr;
->> +
->> +	writeb(docg4_addr & 0xff, docptr + DOCG4_ADDRESS);
->> +	docg4_addr >>= 8;
->> +	writeb(docg4_addr & 0xff, docptr + DOCG4_ADDRESS);
->> +	docg4_addr >>= 8;
->> +	writeb(docg4_addr & 0xff, docptr + DOCG4_ADDRESS);
->> +	docg4_addr >>= 8;
->> +	writeb(docg4_addr & 0xff, docptr + DOCG4_ADDRESS);
-> Make this a loop ?
-
-Sacrifice clarity and simplicity for the sake of eliminating four lines?
-
->> +}
->> +
->> +static int docg4_read_progstatus(struct docg4_priv *doc)
->> +{
->> +	/* This apparently checks the status of programming.
->> +	 * Called after an erasure, and after page data is written.
->> +	 */
->> +	void __iomem *docptr = doc->virtadr;
->> +
->> +	/* status is read from I/O reg */
->> +	uint16_t status1 = readw(docptr + DOCG4_IO);
->> +	uint16_t status2 = readw(docptr + DOCG4_IO);
->> +	uint16_t status3 = readw(docptr + DOCG4_MYSTERY_REG);
->> +
->> +	/* TODO: better way to determine failure?
->> +	   Does CONTROL_STATUS (poll_1038) indicate failure after this?
->> +	   If so, can read it from docg4_command(NAND_CMD_STATUS) ? */
-> Fix comment, checkpatch will warn about this, please fix globally.
-
-Funny, it didn't.  But I agree; I would have expected it to.
-
->> +	if (status1 != 0x51 || status2 != 0xe0 || status3 != 0xe0) {
-> Remove magic values, please fix globally.
-
-All I know is that those values mean success.  But OK, I'll call them GOOD_1,
-GOOD_2, ...
-
->> +		doc->status = NAND_STATUS_FAIL;
->> +		printk(KERN_WARNING "docg4_read_progstatus failed: "
->> +		       "%02x, %02x, %02x\n", status1, status2, status3);
->> +		return -EIO;
->> +	}
->> +	return 0;
->> +}
->> +
->> +static int docg4_pageprog(struct mtd_info *mtd)
->> +{
->> +	struct nand_chip *nand = mtd->priv;
->> +	struct docg4_priv *doc = nand->priv;
->> +	void __iomem *docptr = doc->virtadr;
->> +	int retval = 0;
->> +
->> +	if (unlikely(debug))
->> +		printk("docg4_pageprog\n");
->> +
->> +	writew(0x1e, docptr + DOCG4_SEQUENCE);
->> +	writew(0x10, docptr + DOCG4_COMMAND);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	docg4_wait(mtd, nand);
->> +
->> +	writew(0x29, docptr + DOCG4_SEQUENCE);
->> +	writew(0x70, docptr + DOCG4_COMMAND);
->> +	writew(0x8004, docptr + DOCG4_ECC_CONTROL_0);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +
->> +	retval = docg4_read_progstatus(doc);
->> +
->> +	writew(0, docptr + DOCG4_END_OF_DATA);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	docg4_wait(mtd, nand);
->> +	writew(0, docptr + DOCG4_NOP);
->> +
->> +	return retval;
->> +}
->> +
->> +static void docg4_read_page_prologue(struct mtd_info *mtd,
->> +				     unsigned int docg4_addr)
->> +{
->> +	struct nand_chip *nand = mtd->priv;
->> +	struct docg4_priv *doc = nand->priv;
->> +	void __iomem *docptr = doc->virtadr;
->> +
->> +	if (unlikely(debug))
->> +		printk(KERN_DEBUG "docg4_read_page_prologue: %x\n", docg4_addr);
->> +
->> +	writew(0x50, docptr + DOCG4_CONTROL_STATUS);
->> +	writew(0x00, docptr + DOCG4_SEQUENCE);
->> +	writew(0xff, docptr + DOCG4_COMMAND);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	docg4_wait(mtd, nand);
->> +
->> +#if 0
->> +	/* TODO: sometimes written here by TrueFFS library */
->> +	writew(0x3f, docptr + DOCG4_SEQUENCE);
->> +	writew(0xa4, docptr + DOCG4_COMMAND);
->> +	writew(0, docptr + DOCG4_NOP);
->> +#endif
-> Dead code, magic values.
+>    data[errloc[i]/8] ^= 1 << (7-(errloc[i] & 7));
 >
->> +
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0x03, docptr + DOCG4_SEQUENCE);
->> +	writew(0x00, docptr + DOCG4_COMMAND);
->> +	writew(0, docptr + DOCG4_NOP);
->> +
->> +	docg4_write_addr(doc, docg4_addr);
->> +
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0x30, docptr + DOCG4_COMMAND);
->> +	writew(0, docptr + DOCG4_NOP);
->> +	writew(0, docptr + DOCG4_NOP);
->> +
->> +	docg4_wait(mtd, nand);
->> +}
->> +
-> [...]
+> And that's all there is to it, really.
 >
->> +
->> +static void __init docg4_build_mod_tables(uint16_t *tables)
->> +{
->> +	/*
->> +	 * Build tables for fast modulo division of the hardware-generated 56
->> +	 * bit ecc polynomial by the minimal polynomials of the Galois field
->> +	 * elements alpha, alpha^3, alpha^5, alpha^7.
->> +	 *
->> +	 * A good reference for this algorithm is the section on cyclic
->> +	 * redundancy in the book "Numerical Recipes in C".
->> +	 *
->> +	 * N.B. The bit ordering of the table entries has the LS bit
->> +	 * representing the highest order coefficient, consistent with the
->> +	 * ordering used by the hardware ecc generator.
->> +	 */
->> +
->> +	/* minimal polynomials, with highest order term (LS bit) removed */
->> +	const uint16_t phi_1 = 0x3088;
->> +	const uint16_t phi_3 = 0x39a0;
->> +	const uint16_t phi_5 = 0x36d8;
->> +	const uint16_t phi_7 = 0x23f2;
->> +
->> +	/* one table of 256 elements for each minimal polynomial */
->> +	uint16_t *const phi_1_tab = tables;
->> +	uint16_t *const phi_3_tab = tables + 256;
->> +	uint16_t *const phi_5_tab = tables + 512;
->> +	uint16_t *const phi_7_tab = tables + 768;
->> +
->> +	int i, j;
-> Don't define variables in the middle of code.
-
-Well, it's still compliant with the original  ANSI C.  But OK, I'll move them up.
-
->  Also, why the casts below
-
-OK, I'll declare 'uint16_t i'
-
->  ? Also, 
-> can't this be static data ?
-
-Four tables, each  with 256 uint16_t entries?  Is that done in kernel code?
-
->> +	for (i = 0; i < 256; i++) {
->> +		phi_1_tab[i] = (uint16_t)i;
->> +		phi_3_tab[i] = (uint16_t)i;
->> +		phi_5_tab[i] = (uint16_t)i;
->> +		phi_7_tab[i] = (uint16_t)i;
->> +		for (j = 0; j < 8; j++) {
->> +			if (phi_1_tab[i] & 0x01)
->> +				phi_1_tab[i] = (phi_1_tab[i] >> 1) ^ phi_1;
->> +			else
->> +				phi_1_tab[i] >>= 1;
->> +			if (phi_3_tab[i] & 0x01)
->> +				phi_3_tab[i] = (phi_3_tab[i] >> 1) ^ phi_3;
->> +			else
->> +				phi_3_tab[i] >>= 1;
->> +			if (phi_5_tab[i] & 0x01)
->> +				phi_5_tab[i] = (phi_5_tab[i] >> 1) ^ phi_5;
->> +			else
->> +				phi_5_tab[i] >>= 1;
->> +			if (phi_7_tab[i] & 0x01)
->> +				phi_7_tab[i] = (phi_7_tab[i] >> 1) ^ phi_7;
->> +			else
->> +				phi_7_tab[i] >>= 1;
->> +		}
->> +	}
->> +}
->> +
-> Cheers
+> Looking at your code, it seems that your hw generator represents nand data[] as
+> a 32-bit words array with high order terms in lower bits (assuming your machine
+> is little-endian):
 >
+> data[0] = X^(N-32) (bit 31) ... X^(N-1) (bit 0),
+> data[1] = X^(N-64) (bit 31) ... X^(N-33) (bit 0)
 >
+> .. and so on. In your case you don't need the modulo mirroring step.
+
+Thanks much, Ivan!  I'll need some time to digest that.  All I knew was that the
+last three bits were screwy, and by chance discovered that undoing that last
+step generted the correct result.
+
+Thanks again,
+Mike
