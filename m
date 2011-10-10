@@ -1,16 +1,16 @@
-Received: from mga02.intel.com ([134.134.136.20])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDBQN-0002On-S7
-	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 08:41:28 +0000
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Artem Bityutskiy <artem.bityutskiy@intel.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH resend] tests: checkfs: remove unused code
-Date: Mon, 10 Oct 2011 11:40:43 +0300
-Message-Id: <61071344f543384c616680ba182ec98a02279210.1318235878.git.andriy.shevchenko@linux.intel.com>
-In-Reply-To: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
-References: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RDCAZ-0002ln-Vf
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 09:29:12 +0000
+Date: Mon, 10 Oct 2011 12:28:57 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [smatch stuff] mtd/ubi/gluebi: signedness warnings
+Message-ID: <20111010092857.GA16165@elgon.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are two variables which are not used anymore. Thos patch removes useless
-lines and suppresses gcc warnings.
+Smatch complains about some to the checks in gluebi.c
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- tests/checkfs/checkfs.c |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+drivers/mtd/ubi/gluebi.c +177 gluebi_read(6) warn: unsigned 'len' is never less than zero.
+drivers/mtd/ubi/gluebi.c +221 gluebi_write(6) warn: unsigned 'len' is never less than zero.
+drivers/mtd/ubi/gluebi.c +270 gluebi_erase(7) warn: unsigned 'instr->len' is never less than zero.
 
-diff --git a/tests/checkfs/checkfs.c b/tests/checkfs/checkfs.c
-index 0e67626..3e4a6e2 100644
---- a/tests/checkfs/checkfs.c
-+++ b/tests/checkfs/checkfs.c
-@@ -566,22 +566,16 @@ int main(int argc, char **argv){
-     char filename[30];
-     short filenameCounter = 0;
-     unsigned short counter;
--    unsigned short numberFiles;
--    char error = FALSE;
-     short errorCnt = 0;
-     time_t timep;
-     char * time_string;
-     unsigned int seed;
- 
--
--    numberFiles = MAX_NUM_FILES;
--
-     if(argc >= 1)
-     {
-         processCmdLine(argc, argv);
-     }
- 
--
-     /*
-       First open MAX_NUM_FILES and make sure that the checksum is ok.
-       Also make an intry into the logfile.
-@@ -629,7 +623,6 @@ int main(int argc, char **argv){
-             fclose(logfp);
-             (void)sync();
- 
--            error = TRUE;
-             errorCnt++;
- 
-             if(errorCnt > MaxErrAllowed){
--- 
-1.7.6.3
+I think probably these checks can just be removed?  Can these things
+wrap if we passed a huge value for instr->len?
+
+   270          if (instr->len < 0 || instr->addr + instr->len > mtd->size)
+   271                  return -EINVAL;
+
+I don't know enough about how these are called to say.
+
+regards,
+dan carpenter
