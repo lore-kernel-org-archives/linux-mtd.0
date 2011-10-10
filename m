@@ -1,19 +1,15 @@
-Received: from aa011-1msr.fastwebnet.it ([62.101.93.131])
+Received: from mga14.intel.com ([143.182.124.37])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RCTYa-0006SW-SG
-	for linux-mtd@lists.infradead.org; Sat, 08 Oct 2011 09:51:03 +0000
-Subject: Re: cfi_cmdset_0002.c SST39VF3201B issue
-From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-To: angelo <angelo70@gmail.com>
-In-Reply-To: <4E8DB0A1.5080202@gmail.com>
-References: <4E8D9F14.4090108@gmail.com> <1317905313.4526.9.camel@AURIO02>
-	<4E8DB0A1.5080202@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 08 Oct 2011 11:50:49 +0200
-Message-ID: <1318067449.1586.2.camel@AURIO02>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1RDBQC-0002Ni-OD
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 08:41:17 +0000
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Artem Bityutskiy <artem.bityutskiy@intel.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH resend] mkfs_jffs2: fix typo for word unknown
+Date: Mon, 10 Oct 2011 11:40:42 +0300
+Message-Id: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
+Cc: Alexey Dokuchaev <danfe@nsu.ru>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,141 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Angelo,
-I have worked with 2.6.38 and I have used 0x50 command and modification
-into mkfs.jffs2 utility in order to accomplish a 4k fs sector size.
-It is working and I think that in a not so huge memory support a 4k
-sector allows a better management rather than 64k sector.
+Signed-off-by: Alexey Dokuchaev <danfe@nsu.ru>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ compr.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Regards
-
-
-Il giorno gio, 06/10/2011 alle 15.44 +0200, angelo ha scritto:
-> Hi Giovanni,
-> 
-> i can be wrong, but i think this is a bug of the cfi command set, and
-> should be fixed in the best way from the maintainer.
-> This because mtd->regions[x].erasesize is set to 4KiB but everytime an
-> mtd->erase is requested, a block of 64KB is erased.
-> 
-> Unfortunately, creating "virtual" 32 or 64KB" erasesizes to allows
-> jffs2 to work is not convenient and also quite long job.
-> 
-> I will try the simplest patch for now (using native 64Kblocks as many
-> other nor flash) and will post back shortly if the fix work, almost
-> for jffs2.
-> 
-> Regards,
-> angelo
-> 
-> 
-> 
-> 
-> On 06/10/2011 14:48, Fabio Giovagnini wrote: 
-> > I would try to keep the 4kBi blocks. 
-> > 
-> > 
-> > regards
-> > 
-> > 
-> > 
-> > Il giorno gio, 06/10/2011 alle 14.29 +0200, angelo ha scritto:
-> >   
-> > > Dear all,
-> > > 
-> > > like me some other users had issues with this chip and jffs2.
-> > > 
-> > >  From time to time users asks why they get errors trying to use jffs2 
-> > > with this chip.
-> > > 
-> > > This chip, from the datasheet, allows to erase 4KB "sectors" or 64KB 
-> > > "blocks", replying to cfi queries with a "setcor" erase size and a 
-> > > "block" erase size.
-> > > 
-> > > I can be wrong of course, but this is what i figured out:
-> > > 
-> > > 
-> > > 1) fixup decision
-> > > 
-> > > Someone of you decided to fix up this SST39VF3201 in this way:
-> > > 
-> > > static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
-> > > {
-> > >      struct map_info *map = mtd->priv;
-> > >      struct cfi_private *cfi = map->fldrv_priv;
-> > > 
-> > >      /*
-> > >       * These flashes report two seperate eraseblock regions based on the
-> > >       * sector_erase-size and block_erase-size, although they both 
-> > > operate on the
-> > >       * same memory. This is not allowed according to CFI, so we just 
-> > > pick the
-> > >       * sector_erase-size.
-> > >       */
-> > >      cfi->cfiq->NumEraseRegions = 1;
-> > > }
-> > > 
-> > > Of course, in this way, deciding 0x1000 (sector-size) is the one to use, 
-> > > jffs2 cannot be used safely, since
-> > > minimal data block is 4Kb + some hdr bytes. Wasn't better fixup to 
-> > > "block" size (64K) ?
-> > > 
-> > > 
-> > > 2) after fixup decision, when jffs2 asks to erase a block to 
-> > > cfi_cmdset_0002.c, cfi driver seems to erase wrongly a 64K block.
-> > > This is what happen in detail:
-> > >     jffs erase.c, to erase a block does:  mtd->erase(), with a len  
-> > > mtd->erasesize (4KB).
-> > >     mtd->erase() is calls cfi_amdstd_erase_varsize ...
-> > >       finally, do_erase_oneblock is called, where:
-> > > 
-> > > cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-> > > cfi->device_type, NULL);
-> > > cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-> > > cfi->device_type, NULL);
-> > > cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-> > > cfi->device_type, NULL);
-> > > cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-> > > cfi->device_type, NULL);
-> > > cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-> > > cfi->device_type, NULL);
-> > > map_write(map, CMD(0x30), adr);
-> > > 
-> > > but this chip uses 0x30 cmd to erase a 64 KB block, and 0x50 to erase a 
-> > > sector.
-> > > 
-> > > Please let me know if i am in the right direction, so i can think about 
-> > > a patch that allows
-> > > jffs2 to be used with native hw 64KB block erasesize.
-> > > 
-> > > Regards
-> > > Angelo Dureghello
-> > > 
-> > > 
-> > > 
-> > > ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > >     
-> 
-> 
-> -- 
->  .:.:.SYSAM.:.:.
-> 
->   di Angelo Dureghello
->     via San Nazario 149
->       34151, Trieste, Italy
->     ++39 340 7631990
->   www.sysam.it
-> 
-> 
-
+diff --git a/compr.c b/compr.c
+index 2d3a56b..cb4432e 100644
+--- a/compr.c
++++ b/compr.c
+@@ -320,7 +320,7 @@ uint16_t jffs2_compress( unsigned char *data_in, unsigned char **cpage_out,
+ 			}
+ 			break;
+ 		default:
+-			fprintf(stderr,"mkfs.jffs2: unknow compression mode.\n");
++			fprintf(stderr,"mkfs.jffs2: unknown compression mode.\n");
+ 	}
+ out:
+ 	if (ret == JFFS2_COMPR_NONE) {
+@@ -416,7 +416,7 @@ char *jffs2_stats(void)
+ 			act_buf += sprintf(act_buf, "favourlzo");
+ 			break;
+ 		default:
+-			act_buf += sprintf(act_buf,"unkown");
++			act_buf += sprintf(act_buf, "unknown");
+ 			break;
+ 	}
+ 	act_buf += sprintf(act_buf,"\nCompressors:\n");
 -- 
-Fabio Giovagnini
-
-Aurion s.r.l.
-P.iva 00885711200
-cell. +39.335.8350919
-Tel. +39.051.594.78.24
-Fax. +39 051.082.14.49
-skype: aurion.giovagnini
+1.7.6.3
