@@ -1,15 +1,16 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga02.intel.com ([134.134.136.20])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDBQC-0002Ni-OD
-	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 08:41:17 +0000
+	id 1RDBQN-0002On-S7
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2011 08:41:28 +0000
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Artem Bityutskiy <artem.bityutskiy@intel.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH resend] mkfs_jffs2: fix typo for word unknown
-Date: Mon, 10 Oct 2011 11:40:42 +0300
-Message-Id: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
-Cc: Alexey Dokuchaev <danfe@nsu.ru>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH resend] tests: checkfs: remove unused code
+Date: Mon, 10 Oct 2011 11:40:43 +0300
+Message-Id: <61071344f543384c616680ba182ec98a02279210.1318235878.git.andriy.shevchenko@linux.intel.com>
+In-Reply-To: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
+References: <a2202ab2af2fb20aead5d5956bd46dc030082eef.1318235873.git.andriy.shevchenko@linux.intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Alexey Dokuchaev <danfe@nsu.ru>
+There are two variables which are not used anymore. Thos patch removes useless
+lines and suppresses gcc warnings.
+
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- compr.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ tests/checkfs/checkfs.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
 
-diff --git a/compr.c b/compr.c
-index 2d3a56b..cb4432e 100644
---- a/compr.c
-+++ b/compr.c
-@@ -320,7 +320,7 @@ uint16_t jffs2_compress( unsigned char *data_in, unsigned char **cpage_out,
- 			}
- 			break;
- 		default:
--			fprintf(stderr,"mkfs.jffs2: unknow compression mode.\n");
-+			fprintf(stderr,"mkfs.jffs2: unknown compression mode.\n");
- 	}
- out:
- 	if (ret == JFFS2_COMPR_NONE) {
-@@ -416,7 +416,7 @@ char *jffs2_stats(void)
- 			act_buf += sprintf(act_buf, "favourlzo");
- 			break;
- 		default:
--			act_buf += sprintf(act_buf,"unkown");
-+			act_buf += sprintf(act_buf, "unknown");
- 			break;
- 	}
- 	act_buf += sprintf(act_buf,"\nCompressors:\n");
+diff --git a/tests/checkfs/checkfs.c b/tests/checkfs/checkfs.c
+index 0e67626..3e4a6e2 100644
+--- a/tests/checkfs/checkfs.c
++++ b/tests/checkfs/checkfs.c
+@@ -566,22 +566,16 @@ int main(int argc, char **argv){
+     char filename[30];
+     short filenameCounter = 0;
+     unsigned short counter;
+-    unsigned short numberFiles;
+-    char error = FALSE;
+     short errorCnt = 0;
+     time_t timep;
+     char * time_string;
+     unsigned int seed;
+ 
+-
+-    numberFiles = MAX_NUM_FILES;
+-
+     if(argc >= 1)
+     {
+         processCmdLine(argc, argv);
+     }
+ 
+-
+     /*
+       First open MAX_NUM_FILES and make sure that the checksum is ok.
+       Also make an intry into the logfile.
+@@ -629,7 +623,6 @@ int main(int argc, char **argv){
+             fclose(logfp);
+             (void)sync();
+ 
+-            error = TRUE;
+             errorCnt++;
+ 
+             if(errorCnt > MaxErrAllowed){
 -- 
 1.7.6.3
