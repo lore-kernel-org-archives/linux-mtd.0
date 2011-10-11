@@ -1,14 +1,18 @@
-Received: from data.pl ([212.85.96.58] helo=v000058.home.net.pl)
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDgd4-0005Wq-DU
-	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2011 18:00:40 +0000
-Message-ID: <4E948437.2010807@data.pl>
-Date: Tue, 11 Oct 2011 20:00:23 +0200
-From: -= KuK =- <kuk@data.pl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Two same name files in JFFS2 image? Is it possible?
-Content-Type: multipart/mixed; boundary="------------060404050805020902090205"
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RDhRP-0006Bv-Tn
+	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2011 18:52:42 +0000
+Received: by vws15 with SMTP id 15so7816443vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 11 Oct 2011 11:52:37 -0700 (PDT)
+From: Subodh Nijsure <subodh.nijsure@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] Add security.selinux XATTR support for the UBIFS. Also
+	fix couple of bugs in UBIFS extended attribute storage.
+Date: Tue, 11 Oct 2011 11:52:22 -0700
+Message-Id: <1318359142-26759-1-git-send-email-subodh.nijsure@gmail.com>
+Cc: Subodh Nijsure <snijsure@grid-net.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,128 +22,362 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060404050805020902090205
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Subodh Nijsure <snijsure@grid-net.com>
 
-Hi,
+TESTING: Tested on MX25, MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
+         With these change we are able to label UBIFS filesystem with security.selinux
+         and run system with selinux enabled.
 
-I have JFFS2 image ( NAND Samsung K9G8G08U0M) copy made with Wellon 
-VP-990 programmer.
-(attached to this email)
+Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+---
+ fs/ubifs/dir.c     |   50 +++++++++++++++++++++++++++
+ fs/ubifs/file.c    |    6 +++
+ fs/ubifs/journal.c |   11 ++++--
+ fs/ubifs/super.c   |    1 +
+ fs/ubifs/ubifs.h   |    6 +++
+ fs/ubifs/xattr.c   |   97 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 6 files changed, 158 insertions(+), 13 deletions(-)
 
-When I examine this image with jffs2dump, I can see:
-
-root@pouchx-Presario-2100:~# jffs2dump -c -v /HDS/ConfigHDS7full_noECC.img
-
-          Inode      node at 0x00000000, totlen 0x00000044, #ino      2, 
-version     1, isize        0, csize        0, dsize        0, 
-offset        0
-          Dirent     node at 0x00000044, totlen 0x0000002b, #pino     1, 
-version     1, #ino         2, nsize        3, name MAC
-          Inode      node at 0x00000070, totlen 0x00000056, #ino      2, 
-version     2, isize       18, csize       18, dsize       18, 
-offset        0
-          Padding    node at 0x000000c8, totlen 0x00000738
-
-          Inode      node at 0x00000800, totlen 0x00000044, #ino      3, 
-version     1, isize        0, csize        0, dsize        0, 
-offset        0
-          Dirent     node at 0x00000844, totlen 0x00000034, #pino     1, 
-version     2, #ino         3, nsize       12, name lcd_contrast
-          Inode      node at 0x00000878, totlen 0x00000048, #ino      3, 
-version     2, isize        4, csize        4, dsize        4, 
-offset        0
-          Padding    node at 0x000008c0, totlen 0x00000740
-
-          Inode      node at 0x00001000, totlen 0x00000044, #ino      4, 
-version     1, isize        0, csize        0, dsize        0, 
-offset        0
-          Dirent     node at 0x00001044, totlen 0x00000032, #pino     1, 
-version     3, #ino         4, nsize       10, name Config.ini
-          Inode      node at 0x00001078, totlen 0x0000016e, #ino      4, 
-version     2, isize      474, csize      298, dsize      474, 
-offset        0
-          Padding    node at 0x000011e8, totlen 0x00000618
-
-          Dirent     node at 0x00001800, totlen 0x0000002b, #pino     1, 
-version     4, #ino         0, nsize        3, name MAC
-          Inode      node at 0x0000182c, totlen 0x00000044, #ino      5, 
-version     1, isize        0, csize        0, dsize        0, 
-offset        0
-          Dirent     node at 0x00001870, totlen 0x0000002b, #pino     1, 
-version     5, #ino         5, nsize        3, name MAC
-          Inode      node at 0x0000189c, totlen 0x00000056, #ino      5, 
-version     2, isize       18, csize       18, dsize       18, 
-offset        0
-          Padding    node at 0x000018f4, totlen 0x0000070c
-
-          Inode      node at 0x00002000, totlen 0x00000044, #ino      6, 
-version     1, isize        0, csize        0, dsize        0, 
-offset        0
-          Dirent     node at 0x00002044, totlen 0x00000035, #pino     1, 
-version     6, #ino         6, nsize       13, name can_unique_id
-          Inode      node at 0x0000207c, totlen 0x0000004c, #ino      6, 
-version     2, isize        8, csize        8, dsize        8, 
-offset        0
-          Padding    node at 0x000020c8, totlen 0x00000738
-
-Empty space: 0, dirty space: 0
-
-
-Is it possible that image contains two files with name "MAC"?
-
-How to mount not to lose one "MAC" file?
-
-PS. Im Linux beginner. Please help :)
-
-Jakub Jozwiak
-
---------------060404050805020902090205
-Content-Type: application/octet-stream;
- name="HDS-7_Config_JFFS2image.rar"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="HDS-7_Config_JFFS2image.rar"
-
-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
---------------060404050805020902090205--
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 6834920..ef98495 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -253,6 +253,52 @@ out:
+ 	return ERR_PTR(err);
+ }
+ 
++static void ubifs_init_security(struct dentry *dentry, struct inode *inode,
++		struct inode *dir)
++{
++	int err;
++	char *name;
++	void *value = NULL;
++	size_t len = 0;
++	struct ubifs_inode *dir_ui = ubifs_inode(dir);
++	const struct qstr *qname = &dentry->d_name;
++
++	mutex_lock(&dir_ui->ui_mutex);
++	mutex_lock(&dentry->d_inode->i_mutex);
++	err = security_inode_init_security(inode, dir, qname, &name, &value,
++		&len);
++	if (err) {
++		if (err == -EOPNOTSUPP)
++			return;
++		ubifs_err("unable to retrieve security context, error %d", err);
++		mutex_unlock(&dentry->d_inode->i_mutex);
++		mutex_unlock(&dir_ui->ui_mutex);
++		return;
++	}
++
++	if (strncmp(name, "selinux", strlen("selinux")) == 0) {
++		kfree(name);
++		name = kstrdup("security.selinux", GFP_NOFS);
++		if (!name) {
++			ubifs_err("unable to set security context %.*s error",
++				dentry->d_name.len, dentry->d_name.name);
++			kfree(value);
++			mutex_unlock(&dentry->d_inode->i_mutex);
++			mutex_unlock(&dir_ui->ui_mutex);
++			return;
++		}
++	}
++
++	err = ubifs_setxattr(dentry, name, value, len, 0);
++	if (err)
++		ubifs_err("unable to set security context name %.*s error %d",
++			dentry->d_name.len, dentry->d_name.name, err);
++	kfree(name);
++	kfree(value);
++	mutex_unlock(&dentry->d_inode->i_mutex);
++	mutex_unlock(&dir_ui->ui_mutex);
++}
++
+ static int ubifs_create(struct inode *dir, struct dentry *dentry, int mode,
+ 			struct nameidata *nd)
+ {
+@@ -293,6 +339,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, int mode,
+ 	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
++	ubifs_init_security(dentry, inode, dir);
+ 	return 0;
+ 
+ out_cancel:
+@@ -754,6 +801,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
+ 
+ 	ubifs_release_budget(c, &req);
+ 	d_instantiate(dentry, inode);
++	ubifs_init_security(dentry, inode, dir);
+ 	return 0;
+ 
+ out_cancel:
+@@ -831,6 +879,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+ 	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
++	ubifs_init_security(dentry, inode, dir);
+ 	return 0;
+ 
+ out_cancel:
+@@ -907,6 +956,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
++	ubifs_init_security(dentry, inode, dir);
+ 	return 0;
+ 
+ out_cancel:
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index f9c234b..ba33491 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1575,6 +1575,12 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.follow_link = ubifs_follow_link,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
++#ifdef CONFIG_UBIFS_FS_XATTR
++	.setxattr    = ubifs_symlink_setxattr,
++	.getxattr    = ubifs_symlink_getxattr,
++	.listxattr   = ubifs_listxattr,
++	.removexattr = ubifs_removexattr,
++#endif
+ };
+ 
+ const struct file_operations ubifs_file_operations = {
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index cef0460..5e1ebdb 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -553,7 +553,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 
+ 	dbg_jnl("ino %lu, dent '%.*s', data len %d in dir ino %lu",
+ 		inode->i_ino, nm->len, nm->name, ui->data_len, dir->i_ino);
+-	ubifs_assert(dir_ui->data_len == 0);
++	if (!xent)
++		ubifs_assert(dir_ui->data_len == 0);
+ 	ubifs_assert(mutex_is_locked(&dir_ui->ui_mutex));
+ 
+ 	dlen = UBIFS_DENT_NODE_SZ + nm->len + 1;
+@@ -572,7 +573,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 
+ 	aligned_dlen = ALIGN(dlen, 8);
+ 	aligned_ilen = ALIGN(ilen, 8);
+-	len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
++	/* Make sure to account for dir_ui+data_len in length calculation
++	 * in case there is extended attribute.
++	*/
++	len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ
++		+ dir_ui->data_len;
+ 	dent = kmalloc(len, GFP_NOFS);
+ 	if (!dent)
+ 		return -ENOMEM;
+@@ -643,7 +648,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	 */
+ 	ino_key_init(c, &ino_key, inode->i_ino);
+ 	ino_offs = dent_offs + aligned_dlen;
+-	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, ilen);
++	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, ilen+dir_ui->data_len);
+ 	if (err)
+ 		goto out_ro;
+ 
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b281212..025e5d0 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2062,6 +2062,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (c->max_inode_sz > MAX_LFS_FILESIZE)
+ 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
+ 	sb->s_op = &ubifs_super_operations;
++	sb->s_xattr = ubifs_xattr_handlers;
+ 
+ 	mutex_lock(&c->umount_mutex);
+ 	err = mount_ubifs(c);
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 27f2255..1e00ec5 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -36,6 +36,7 @@
+ #include <linux/mtd/ubi.h>
+ #include <linux/pagemap.h>
+ #include <linux/backing-dev.h>
++#include <linux/security.h>
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
+@@ -1457,6 +1458,7 @@ extern spinlock_t ubifs_infos_lock;
+ extern atomic_long_t ubifs_clean_zn_cnt;
+ extern struct kmem_cache *ubifs_inode_slab;
+ extern const struct super_operations ubifs_super_operations;
++extern const struct xattr_handler *ubifs_xattr_handlers[];
+ extern const struct address_space_operations ubifs_file_address_operations;
+ extern const struct file_operations ubifs_file_operations;
+ extern const struct inode_operations ubifs_file_inode_operations;
+@@ -1741,8 +1743,12 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
+ /* xattr.c */
+ int ubifs_setxattr(struct dentry *dentry, const char *name,
+ 		   const void *value, size_t size, int flags);
++int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
++		   const void *value, size_t size, int flags);
+ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
+ 		       size_t size);
++ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
++		       void *buf, size_t size);
+ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
+ int ubifs_removexattr(struct dentry *dentry, const char *name);
+ 
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 16f19f5..cfacab9 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -211,11 +211,11 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+ 	}
+ 	memcpy(ui->data, value, size);
+ 	inode->i_size = ui->ui_size = size;
+-	ui->data_len = size;
+ 
+ 	mutex_lock(&host_ui->ui_mutex);
+ 	host->i_ctime = ubifs_current_time(host);
+ 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
++	ui->data_len = size;
+ 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
+ 
+ 	/*
+@@ -295,18 +295,16 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-int ubifs_setxattr(struct dentry *dentry, const char *name,
++static int __ubifs_setxattr(struct inode *host, const char *name,
+ 		   const void *value, size_t size, int flags)
+ {
+-	struct inode *inode, *host = dentry->d_inode;
++	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+ 	struct qstr nm = { .name = name, .len = strlen(name) };
+ 	struct ubifs_dent_node *xent;
+ 	union ubifs_key key;
+ 	int err, type;
+ 
+-	dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
+-		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
+ 	ubifs_assert(mutex_is_locked(&host->i_mutex));
+ 
+ 	if (size > UBIFS_MAX_INO_DATA)
+@@ -358,10 +356,29 @@ out_free:
+ 	return err;
+ }
+ 
+-ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
++int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
++		   const void *value, size_t size, int flags)
++{
++	struct inode *host = dentry->d_inode;
++	dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
++		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
++	return __ubifs_setxattr(host, name, value, size, flags);
++}
++
++int ubifs_setxattr(struct dentry *dentry, const char *name,
++		   const void *value, size_t size, int flags)
++{
++	struct inode *host = dentry->d_inode;
++	dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
++		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
++	return __ubifs_setxattr(host, name, value, size, flags);
++}
++
++static
++ssize_t __ubifs_getxattr(struct inode *host, const char *name, void *buf,
+ 		       size_t size)
+ {
+-	struct inode *inode, *host = dentry->d_inode;
++	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+ 	struct qstr nm = { .name = name, .len = strlen(name) };
+ 	struct ubifs_inode *ui;
+@@ -369,9 +386,6 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
+ 	union ubifs_key key;
+ 	int err;
+ 
+-	dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
+-		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
+-
+ 	err = check_namespace(&nm);
+ 	if (err < 0)
+ 		return err;
+@@ -418,6 +432,25 @@ out_unlock:
+ 	return err;
+ }
+ 
++ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
++		void *buf, size_t size)
++{
++	struct inode *host = dentry->d_inode;
++	dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
++		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
++	return __ubifs_getxattr(host, name, buf, size);
++}
++
++ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
++		       size_t size)
++{
++	struct inode *host = dentry->d_inode;
++	dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
++		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
++	return __ubifs_getxattr(host, name, buf, size);
++}
++
++
+ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ {
+ 	union ubifs_key key;
+@@ -570,3 +603,47 @@ out_free:
+ 	kfree(xent);
+ 	return err;
+ }
++
++size_t
++ubifs_security_listxattr(struct dentry *d, char *list, size_t list_size,
++		const char *name, size_t name_len, int flags)
++{
++	const int prefix_len = XATTR_SECURITY_PREFIX_LEN;
++	const size_t total_len = prefix_len + name_len + 1;
++	if (list && total_len <= list_size) {
++		memcpy(list, XATTR_SECURITY_PREFIX, prefix_len);
++		memcpy(list+prefix_len, name, name_len);
++		list[prefix_len + name_len] = '\0';
++	}
++	return total_len;
++}
++
++
++int ubifs_security_getxattr(struct dentry *d, const char *name,
++		void *buffer, size_t size, int flags)
++{
++	if (strcmp(name, "") == 0)
++		return -EINVAL;
++	return __ubifs_getxattr(d->d_inode, XATTR_NAME_SELINUX, buffer, size);
++}
++
++int ubifs_security_setxattr(struct dentry *d, const char *name,
++	const void *value, size_t size, int flags, int handler_flags)
++{
++	if (strcmp(name, "") == 0)
++		return -EINVAL;
++	return __ubifs_setxattr(d->d_inode, XATTR_NAME_SELINUX, value,
++			size, flags);
++}
++
++struct xattr_handler ubifs_xattr_security_handler = {
++	.prefix = XATTR_SECURITY_PREFIX,
++	.list   = ubifs_security_listxattr,
++	.get    = ubifs_security_getxattr,
++	.set    = ubifs_security_setxattr,
++};
++
++const struct xattr_handler *ubifs_xattr_handlers[] = {
++	&ubifs_xattr_security_handler,
++	NULL
++};
+-- 
+1.7.4.1
