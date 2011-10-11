@@ -1,17 +1,20 @@
-Received: from na3sys009aog118.obsmtp.com ([74.125.149.244])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDYua-000589-Uq
-	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2011 09:46:13 +0000
-Received: by mail-bw0-f45.google.com with SMTP id zv15so9577621bkb.4
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Oct 2011 02:46:09 -0700 (PDT)
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RDacg-0007Aw-Pv
+	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2011 11:35:52 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Daniel Drake' <dsd@laptop.org>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Date: Tue, 11 Oct 2011 07:35:45 -0400
+Subject: RE: ubi vol_size and lots of bad blocks
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD33001C1D733@dekaexchange07.deka.local>
+References: <CAMLZHHSW9daPS9RsMyBnhTfzUQLC0+e9_-=xqiWE4T6upbcaiQ@mail.gmail.com>
+In-Reply-To: <CAMLZHHSW9daPS9RsMyBnhTfzUQLC0+e9_-=xqiWE4T6upbcaiQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Tue, 11 Oct 2011 11:46:08 +0200
-Message-ID: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
-Subject: Make phram work with kernel cmdline args when built-in
-From: "Fache, Herve" <h-fache@ti.com>
-To: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=00151758a66ee9753d04af02c694
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,110 +24,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---00151758a66ee9753d04af02c694
-Content-Type: multipart/alternative; boundary=00151758a66ee9753504af02c692
+Daniel:
 
---00151758a66ee9753504af02c692
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> The one bit I don't understand is what happens if another block goes
+> bad later. If the autoresize functionality has modified reserved_pebs
+> to represent the exact number of good blocks on the disk (i.e.
+> reserved_pebs=3D=3Dgood_PEBs), next time a block goes bad the same
+> reserved_pebs>good_PEBs boot failure would be hit again. But I am
+> probably missing something.
 
-Hi guys,
+  Be careful here -- the last time I looked, blocks that go
+  bad *ARE NOT* actually permanently marked as bad; they may
+  no longer be used during the current boot, but the next time
+  you reboot, they're eligible for attempted-but-often-failing
+  use once again.
 
-Please find attached a patch that make it possible to use phram built-in
-with a kernel command line argument.
-This is basically the same patch that was applied in 2006 by Villa Herva to
-block2mtd, which saves the argument for later, when kmalloc is available.
-This allows us to put kernel and rootfs into physical RAM and boot without
-any further copy, hence very fast.
+  That is, once you've initialized the UBIfs, the number of
+  bad PEBs never grows, no matter how many times it the software
+  discovers that (say) PEB #1234 being just atrociously bad.
 
-Best regards,
-Herv=C3=A9
---=20
-Texas Instruments France SA, 821 Avenue Jack Kilby, 06270 Villeneuve Loubet=
-.
-036 420 040 R.C.S Antibes. Capital de EUR 753.920
+  And again, this may have changed but was definitely true the
+  last time I tested this (although I'd love to be told otherwise).
 
---00151758a66ee9753504af02c692
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+                                  Atlant
 
-Hi guys,<br><br>Please find attached a patch that make it possible to use p=
-hram built-in with a kernel command line argument.<br>This is basically the=
- same patch that was applied in 2006 by Villa Herva to block2mtd, which sav=
-es the argument for later, when kmalloc is available.<br>
-This allows us to put kernel and rootfs into physical RAM and boot without =
-any further copy, hence very fast.<br><br>Best regards,<br clear=3D"all">He=
-rv=C3=A9<br>-- <br><span style=3D"font-family:arial,sans-serif;font-size:11=
-px;border-collapse:collapse;color:rgb(166, 166, 166)">Texas Instruments Fra=
-nce SA, 821 Avenue Jack Kilby, 06270 Villeneuve Loubet. 036 420 040 R.C.S A=
-ntibes. Capital de EUR 753.920</span><br>
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Daniel Drake
+Sent: Monday, October 10, 2011 08:09
+To: linux-mtd@lists.infradead.org
+Subject: ubi vol_size and lots of bad blocks
+
+Hi,
+
+We're still working on getting ubifs shipped on OLPC XO-1.
+
+One outstanding issue we have is that on some laptops, when switching
+from jffs2 to ubifs, the laptop simply does not boot (root fs mounting
+difficulties).
+
+One case of this is when there are a large number of bad blocks on the
+disk, during boot we get:
+[   76.855427] UBI error: vtbl_check: too large reserved_pebs 7850,
+good PEBs 7765
+[   76.867878] UBI error: vtbl_check: volume table check failed:
+record 0, error 9
+
+With so many bad blocks, this is likely a problematic nand or a
+corrupt BBT. However, jffs2 worked in this situation, and (with many
+of our laptops in remote places) it would be nice for us to figure out
+how to make ubifs handle it as well.
 
 
---00151758a66ee9753504af02c692--
+There are other cases of this error in the archive, and people have
+generally solved it by using a smaller vol_size in the ubinize config.
+Am I right in saying that reserved_pebs is computed from the vol_size
+specified in the ubinize config?
 
---00151758a66ee9753d04af02c694
-Content-Type: application/octet-stream;
-	name="0001-phram-make-kernel-boot-command-line-arguments-work.patch"
-Content-Disposition: attachment;
-	filename="0001-phram-make-kernel-boot-command-line-arguments-work.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gtmpavg20
+I guess "good PEBs" is calculated from the amount of non-bad blocks
+found during the boot process.
 
-RnJvbSA3MWYwMTFmYTMyNmM0OTQ2MjliOWQyZmQ0ZjlmZGFkOGRkMjE1ZDZkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/SGVydj1DMz1BOT0yMEZhY2hlPz0gPGgtZmFj
-aGVAdGkuY29tPgpEYXRlOiBUdWUsIDQgT2N0IDIwMTEgMTg6MzU6NDYgKzAyMDAKU3ViamVjdDog
-W1BBVENIXSBwaHJhbTogbWFrZSBrZXJuZWwgYm9vdCBjb21tYW5kIGxpbmUgYXJndW1lbnRzIHdv
-cmsKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVU
-Ri04CkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IDhiaXQKClRoaXMgcGF0Y2ggaXMgYmFzZWQg
-b24gVmlsbGUgSGVydmEncyBzaW1pbGFyIHBhdGNoIHRvIGJsb2NrMm10ZC4KClRyeWluZyB0byBw
-YXNzIGtlcm5lbCBjb21tYW5kIGxpbmUgYXJndW1lbnRzIGF0IGJvb3QtdGltZSBkaWQgbm90IHdv
-cmssIGFzCnBocmFtX3NldHVwKCkgd2FzIGNhbGxlZCBzbyBlYXJseSB0aGF0IGttYWxsb2MoKSB3
-YXMgbm90IGZ1bmN0aW9uYWwuCgpUaGlzIHBhdGNoIG9ubHkgc2F2ZXMgdGhlIG9wdGlvbiBzdHJp
-bmcgYXQgdGhlIGVhcmx5IGJvb3Qgc3RhZ2UsIGFuZCBwYXJzZXMKaXQgbGF0ZXIgd2hlbiBpbml0
-X3BocmFtKCkgaXMgY2FsbGVkLgoKV2l0aCB0aGlzIHBhdGNoLCBJIGNhbiBib290IHdpdGggYSBz
-dGF0aWNhbGx5LWNvbXBpbGVkIHBocmFtLCBhbmQgbW91bnQgYQpleHQyIHJvb3QgZnMgZnJvbSBw
-aHlzaWNhbCBSQU0sIHdpdGhvdXQgdGhlIG5lZWQgZm9yIGEgaW5pdHJkLgoKU2lnbmVkLW9mZi1i
-eTogSGVydsOpIEZhY2hlIDxoLWZhY2hlQHRpLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9kZXZpY2Vz
-L3BocmFtLmMgfCAgIDQ0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyst
-LQogMSBmaWxlcyBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYyBiL2RyaXZlcnMvbXRkL2Rldmlj
-ZXMvcGhyYW0uYwppbmRleCAyMzQyM2JkLi42YjgzOWYwIDEwMDY0NAotLS0gYS9kcml2ZXJzL210
-ZC9kZXZpY2VzL3BocmFtLmMKKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9waHJhbS5jCkBAIC0z
-Myw2ICszMywxMCBAQCBzdHJ1Y3QgcGhyYW1fbXRkX2xpc3QgewogCiBzdGF0aWMgTElTVF9IRUFE
-KHBocmFtX2xpc3QpOwogCisjaWZuZGVmIE1PRFVMRQorc3RhdGljIGludCBwaHJhbV9pbml0X2Nh
-bGxlZDsKK3N0YXRpYyBfX2luaXRkYXRhIGNoYXIgcGhyYW1fcGFyYW1saW5lWzY0KzEyKzEyXTsK
-KyNlbmRpZgogCiBzdGF0aWMgaW50IHBocmFtX2VyYXNlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBz
-dHJ1Y3QgZXJhc2VfaW5mbyAqaW5zdHIpCiB7CkBAIC0xMzQsNyArMTM4LDcgQEAgc3RhdGljIGlu
-dCByZWdpc3Rlcl9kZXZpY2UoY2hhciAqbmFtZSwgdW5zaWduZWQgbG9uZyBzdGFydCwgdW5zaWdu
-ZWQgbG9uZyBsZW4pCiAJcmV0ID0gLUVJTzsKIAluZXctPm10ZC5wcml2ID0gaW9yZW1hcChzdGFy
-dCwgbGVuKTsKIAlpZiAoIW5ldy0+bXRkLnByaXYpIHsKLQkJcHJfZXJyKCJpb3JlbWFwIGZhaWxl
-ZFxuIik7CisJCXByX2VycigiaW9yZW1hcCBmYWlsZWQgZm9yICVsZEAweCVseFxuIiwgbGVuLCBz
-dGFydCk7CiAJCWdvdG8gb3V0MTsKIAl9CiAKQEAgLTIzMyw3ICsyMzcsNyBAQCBzdGF0aWMgaW5s
-aW5lIHZvaWQga2lsbF9maW5hbF9uZXdsaW5lKGNoYXIgKnN0cikKIAlyZXR1cm4gMTsJCVwKIH0g
-d2hpbGUgKDApCiAKLXN0YXRpYyBpbnQgcGhyYW1fc2V0dXAoY29uc3QgY2hhciAqdmFsLCBzdHJ1
-Y3Qga2VybmVsX3BhcmFtICprcCkKK3N0YXRpYyBpbnQgcGhyYW1fc2V0dXBfbGF0ZShjb25zdCBj
-aGFyICp2YWwpCiB7CiAJY2hhciBidWZbNjQrMTIrMTJdLCAqc3RyID0gYnVmOwogCWNoYXIgKnRv
-a2VuWzNdOwpAQCAtMjgyLDEzICsyODYsNDcgQEAgc3RhdGljIGludCBwaHJhbV9zZXR1cChjb25z
-dCBjaGFyICp2YWwsIHN0cnVjdCBrZXJuZWxfcGFyYW0gKmtwKQogCXJldHVybiByZXQ7CiB9CiAK
-K3N0YXRpYyBpbnQgcGhyYW1fc2V0dXAoY29uc3QgY2hhciAqdmFsLCBzdHJ1Y3Qga2VybmVsX3Bh
-cmFtICprcCkKK3sKKyNpZmRlZiBNT0RVTEUKKwlyZXR1cm4gcGhyYW1fc2V0dXBfbGF0ZSh2YWwp
-OworI2Vsc2UKKwkvKiBJZiBtb3JlIHBhcmFtZXRlcnMgYXJlIGxhdGVyIHBhc3NlZCBpbiB2aWEK
-KwkgICAvc3lzL21vZHVsZS9waHJhbS9wYXJhbWV0ZXJzL3BocmFtCisJICAgYW5kIGluaXRfcGhy
-YW0oKSBoYXMgYWxyZWFkeSBiZWVuIGNhbGxlZCwKKwkgICB3ZSBjYW4gcGFyc2UgdGhlIGFyZ3Vt
-ZW50IGRpcmVjdGx5LiAqLworCisJaWYgKHBocmFtX2luaXRfY2FsbGVkKQorCQlyZXR1cm4gcGhy
-YW1fc2V0dXBfbGF0ZSh2YWwpOworCisJLyogRHVyaW5nIGVhcmx5IGJvb3Qgc3RhZ2UsIHdlIG9u
-bHkgc2F2ZSB0aGUgcGFyYW1ldGVycworCSAgIGhlcmUuIFdlIG11c3QgcGFyc2UgdGhlbSBsYXRl
-cjogaWYgdGhlIHBhcmFtIHBhc3NlZAorCSAgIGZyb20ga2VybmVsIGJvb3QgY29tbWFuZCBsaW5l
-LCBwaHJhbV9zZXR1cCgpIGlzCisJICAgY2FsbGVkIHNvIGVhcmx5IHRoYXQgaXQgaXMgbm90IHBv
-c3NpYmxlIHRvIHJlc29sdmUKKwkgICB0aGUgZGV2aWNlIChrbWFsbG9jKCkgZmFpbHMpLiBEZWZl
-ciB0aGF0IHdvcmsgdG8KKwkgICBwaHJhbV9zZXR1cF9sYXRlKCksIGNhbGxlZCBieSBpbml0X3Bo
-cmFtKCkuICovCisKKwlzdHJsY3B5KHBocmFtX3BhcmFtbGluZSwgdmFsLCBzaXplb2YocGhyYW1f
-cGFyYW1saW5lKSk7CisKKwlyZXR1cm4gMDsKKyNlbmRpZgorfQorCiBtb2R1bGVfcGFyYW1fY2Fs
-bChwaHJhbSwgcGhyYW1fc2V0dXAsIE5VTEwsIE5VTEwsIDAwMCk7CiBNT0RVTEVfUEFSTV9ERVND
-KHBocmFtLCAiTWVtb3J5IHJlZ2lvbiB0byBtYXAuIFwicGhyYW09PG5hbWU+LDxzdGFydD4sPGxl
-bmd0aD5cIiIpOwogCiAKIHN0YXRpYyBpbnQgX19pbml0IGluaXRfcGhyYW0odm9pZCkKIHsKLQly
-ZXR1cm4gMDsKKwlpbnQgcmV0ID0gMDsKKworI2lmbmRlZiBNT0RVTEUKKwlpZiAoc3RybGVuKHBo
-cmFtX3BhcmFtbGluZSkpCisJCXJldCA9IHBocmFtX3NldHVwX2xhdGUocGhyYW1fcGFyYW1saW5l
-KTsKKwlwaHJhbV9pbml0X2NhbGxlZCA9IDE7CisjZW5kaWYKKworCXJldHVybiByZXQ7CiB9CiAK
-IHN0YXRpYyB2b2lkIF9fZXhpdCBjbGVhbnVwX3BocmFtKHZvaWQpCi0tIAoxLjcuMC40Cgo=
---00151758a66ee9753d04af02c694--
+This suggests that using vol_size is unsafe for installations such as
+ours, where while we do know the NAND size in advance, we also want to
+support an unknown, high number of bad blocks which will vary
+throughout the field.
+
+I found a note in the UBI FAQ where it says vol_size can be excluded
+and it will be computed to be the size of the input image, and then
+the autoresize flag can be used to expand the partition later.
+Excluding vol_size in this way indeed solves the problem and the
+problematic laptop now boots.
+
+So, am I right in saying that for an installation such as OLPC, where
+resilience to strange NAND conditions involving high numbers of bad
+blocks is desired, it is advisable to *not* specify vol_size in
+ubinize.cfg?
+
+(If so I'll send in a FAQ update for the website.)
+
+The one bit I don't understand is what happens if another block goes
+bad later. If the autoresize functionality has modified reserved_pebs
+to represent the exact number of good blocks on the disk (i.e.
+reserved_pebs=3D=3Dgood_PEBs), next time a block goes bad the same
+reserved_pebs>good_PEBs boot failure would be hit again. But I am
+probably missing something.
+
+cheers,
+Daniel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+ Click https://www.mailcontrol.com/sr/JXot!iSixtzTndxI!oX7UpJAdpTSMUBqW1!uL=
+9x+cJDFU9F9FklsxoR4wEgrZ2pSIEZflx!5bMpTHufDF4Ashw=3D=3D  to report this ema=
+il as spam.
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
