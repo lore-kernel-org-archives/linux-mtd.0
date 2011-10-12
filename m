@@ -1,19 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RDlT0-0000P5-0S
-	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2011 23:10:37 +0000
-Received: by wwp14 with SMTP id 14so107023wwp.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Oct 2011 16:10:29 -0700 (PDT)
-From: Jamie Iles <jamie@jamieiles.com>
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RDvRg-00056i-NK
+	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2011 09:49:53 +0000
+Message-ID: <4E9562B9.3000907@st.com>
+Date: Wed, 12 Oct 2011 10:49:45 +0100
+From: Angus CLARK <angus.clark@st.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv6] mtd: gpio-nand: add device tree bindings
-Date: Wed, 12 Oct 2011 00:10:18 +0100
-Message-Id: <1318374618-26573-1-git-send-email-jamie@jamieiles.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, devicetree-discuss@lists.ozlabs.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/8] mtd: nand: remove NAND_BBT_SCANBYTE1AND6 option
+References: <mailman.2004.1310142982.20023.linux-mtd@lists.infradead.org>
+In-Reply-To: <mailman.2004.1310142982.20023.linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: ivan.djelic@parrot.com, Brian Norris <computersforpeace@gmail.com>,
+	matthieu.castet@parrot.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,241 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree bindings so that the gpio-nand driver may be
-instantiated from the device tree.  This also allows the partitions
-to be specified in the device tree.
+Hi Brian,
 
-v6:	- convert to mtd_device_parse_register()
-v5:	- fold dt config helpers into a single gpio_nand_of_get_config()
-v4:	- get io sync address from gpio-control-nand,io-sync-reg
-	  property rather than a resource
-	- clarified a few details in the binding
-v3:	- remove redundant cast and a couple of whitespace/naming
-	  changes
-v2:	- add CONFIG_OF guards for non-dt platforms
-	- compatible becomes gpio-control-nand
-	- clarify some binding details
+On Tue, 31 May 2011 16:31:20 -0700, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> This patch reverts most of:
+>     commit 58373ff0afff4cc8ac40608872995f4d87eb72ec
+>     mtd: nand: more BB Detection refactoring and dynamic scan options
+> 
+> According to the discussion at:
+>     http://lists.infradead.org/pipermail/linux-mtd/2011-May/035696.html
+> the NAND_BBT_SCANBYTE1AND6 flag, although technically valid, can break
+> some existing ECC layouts that use the 6th byte in the OOB for ECC data.
+> Furthermore, we apparently do not need to scan both bytes 1 and 6 in
+> the OOB region of the devices under consideration; instead, we only need
+> to scan one or the other.
+> 
+> Thus, the NAND_BBT_SCANBYTE1AND6 flag is at best unnecessary and at
+> worst a regression.
+> 
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Scott Wood <scottwood@freescale.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Signed-off-by: Jamie Iles <jamie@jamieiles.com>
+Sorry to bring this up again, but I just thought you might be interested
+in the following clarification I received from Micron (who now own the
+ST/Numonyx NAND portfolio):
+
+---
+"In the factory, we mark bad blocks by programming (in the spare area of
+the first page of the block) SPARE[0] = 00h and SPARE[5] = 00h.  On x16
+devices we program SPARE[0] = 0000h.
+
+Due to the fact that the block is bad, it may be impossible to program
+some of the bits.  The most reliable test for a bad block is therefore:
+
+x8 device: (SPARE[0] != FFh) OR (SPARE[5] != FFh)
+x16 device: (SPARE[0] != FFFFh)
+
+Having said that, it is very unlikely that all 8 bits of a location will
+be stuck at '1', so if you just want to test SPARE[0] OR SPARE[5], that
+should be reliable enough for most applications."
 ---
 
-This is pretty much a repost of v5, but updated to use
-mtd_device_parse_register().  This has a dependency on the 64-bit device tree
-property reading helper that has now been merged into Grant's tree.
+So, I believe this confirms your original interpretation of the
+ST/Numonyx datasheets and that the NAND_BBT_SCANBYTE1AND6 is valid.  The
+question still remains what to do with this information, in view of the
+potential clash with existing ECC layouts (including the default S/W ECC
+layout).  A couple of options you proposed previously:
 
- .../devicetree/bindings/mtd/gpio-control-nand.txt  |   44 +++++++++
- drivers/mtd/nand/gpio.c                            |   94 ++++++++++++++++++--
- 2 files changed, 131 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+1) Retain the NAND_BBT_SCANBYTE1AND6 flag, and add some code to mask out
+the flag if necessary based on the ECC layout (possibly in
+nand_scan_tail()?).
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-new file mode 100644
-index 0000000..719f4dc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -0,0 +1,44 @@
-+GPIO assisted NAND flash
-+
-+The GPIO assisted NAND flash uses a memory mapped interface to
-+read/write the NAND commands and data and GPIO pins for the control
-+signals.
-+
-+Required properties:
-+- compatible : "gpio-control-nand"
-+- reg : should specify localbus chip select and size used for the chip.  The
-+  resource describes the data bus connected to the NAND flash and all accesses
-+  are made in native endianness.
-+- #address-cells, #size-cells : Must be present if the device has sub-nodes
-+  representing partitions.
-+- gpios : specifies the gpio pins to control the NAND device.  nwp is an
-+  optional gpio and may be set to 0 if not present.
-+
-+Optional properties:
-+- bank-width : Width (in bytes) of the device.  If not present, the width
-+  defaults to 1 byte.
-+- chip-delay : chip dependent delay for transferring data from array to
-+  read registers (tR).  If not present then a default of 20us is used.
-+- gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
-+  location used to guard against bus reordering with regards to accesses to
-+  the GPIO's and the NAND flash data bus.  If present, then after changing
-+  GPIO state and before and after command byte writes, this register will be
-+  read to ensure that the GPIO accesses have completed.
-+
-+Examples:
-+
-+gpio-nand@1,0 {
-+	compatible = "gpio-control-nand";
-+	reg = <1 0x0000 0x2>;
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	gpios = <&banka 1 0	/* rdy */
-+		 &banka 2 0 	/* nce */
-+		 &banka 3 0 	/* ale */
-+		 &banka 4 0 	/* cle */
-+		 0		/* nwp */>;
-+
-+	partition@0 {
-+	...
-+	};
-+};
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 2c2060b..e12968f 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -27,6 +27,9 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand-gpio.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_gpio.h>
- 
- struct gpiomtd {
- 	void __iomem		*io_sync;
-@@ -171,6 +174,74 @@ static int gpio_nand_devready(struct mtd_info *mtd)
- 	return gpio_get_value(gpiomtd->plat.gpio_rdy);
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id gpio_nand_id_table[] = {
-+	{ .compatible = "gpio-control-nand" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
-+
-+static int gpio_nand_get_config(const struct device *dev,
-+				struct gpio_nand_platdata *plat)
-+{
-+	u32 val;
-+
-+	if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
-+		if (val == 2) {
-+			plat->options |= NAND_BUSWIDTH_16;
-+		} else if (val != 1) {
-+			dev_err(dev, "invalid bank-width %u\n", val);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
-+	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
-+	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
-+	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
-+	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
-+
-+	if (!of_property_read_u32(dev->of_node, "chip-delay", &val))
-+		plat->chip_delay = val;
-+
-+	return 0;
-+}
-+
-+static struct resource *gpio_nand_get_io_sync(struct platform_device *pdev)
-+{
-+	struct resource *r = devm_kzalloc(&pdev->dev, sizeof(*r), GFP_KERNEL);
-+	u64 addr;
-+
-+	if (!r || of_property_read_u64(pdev->dev.of_node,
-+				       "gpio-control-nand,io-sync-reg", &addr))
-+		return NULL;
-+
-+	r->start = addr;
-+	r->end = r->start + 0x3;
-+	r->flags = IORESOURCE_MEM;
-+
-+	return r;
-+}
-+#else /* CONFIG_OF */
-+
-+#define gpio_nand_id_table NULL
-+
-+static inline int gpio_nand_get_config(const struct device *dev,
-+				       struct gpio_nand_platdata *plat)
-+{
-+	if (dev->platform_data)
-+		memcpy(plat, dev->platform_data, sizeof(*plat));
-+
-+	return 0;
-+}
-+
-+static inline struct resource *
-+gpio_nand_get_io_sync(struct platform_device *pdev)
-+{
-+	return platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+}
-+#endif /* CONFIG_OF */
-+
- static int __devexit gpio_nand_remove(struct platform_device *dev)
- {
- 	struct gpiomtd *gpiomtd = platform_get_drvdata(dev);
-@@ -178,7 +249,7 @@ static int __devexit gpio_nand_remove(struct platform_device *dev)
- 
- 	nand_release(&gpiomtd->mtd_info);
- 
--	res = platform_get_resource(dev, IORESOURCE_MEM, 1);
-+	res = gpio_nand_get_io_sync(dev);
- 	iounmap(gpiomtd->io_sync);
- 	if (res)
- 		release_mem_region(res->start, resource_size(res));
-@@ -226,9 +297,10 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 	struct gpiomtd *gpiomtd;
- 	struct nand_chip *this;
- 	struct resource *res0, *res1;
--	int ret;
-+	struct mtd_part_parser_data ppdata;
-+	int ret = 0;
- 
--	if (!dev->dev.platform_data)
-+	if (!dev->dev.of_node && !dev->dev.platform_data)
- 		return -EINVAL;
- 
- 	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
-@@ -248,7 +320,7 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		goto err_map;
- 	}
- 
--	res1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
-+	res1 = gpio_nand_get_io_sync(dev);
- 	if (res1) {
- 		gpiomtd->io_sync = request_and_remap(res1, 4, "NAND sync", &ret);
- 		if (!gpiomtd->io_sync) {
-@@ -257,7 +329,9 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		}
- 	}
- 
--	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
-+	ret = gpio_nand_get_config(&dev->dev, &gpiomtd->plat);
-+	if (ret)
-+		goto err_nce;
- 
- 	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
- 	if (ret)
-@@ -316,8 +390,13 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
- 					   gpiomtd->mtd_info.size);
- 
--	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
--			    gpiomtd->plat.num_parts);
-+	memset(&ppdata, 0, sizeof(ppdata));
-+	ppdata.of_node = dev->dev.of_node;
-+	ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL, &ppdata,
-+					gpiomtd->plat.parts,
-+					gpiomtd->plat.num_parts);
-+	if (ret < 0)
-+		goto err_wp;
- 	platform_set_drvdata(dev, gpiomtd);
- 
- 	return 0;
-@@ -352,6 +431,7 @@ static struct platform_driver gpio_nand_driver = {
- 	.remove		= gpio_nand_remove,
- 	.driver		= {
- 		.name	= "gpio-nand",
-+		.of_match_table = gpio_nand_id_table,
- 	},
- };
- 
--- 
-1.7.4.1
+2) Revert the flag, as done in this patch, and accept the very small
+possibility of missing some factory-marked bad-blocks.
+
+My preference would be 1), since it is technically correct, and would
+allow drivers to make use of the information if possible, while avoiding
+regressions associated with ECC layout clashes.
+
+I appreciate the patch for 2) has already made it to l2-mtd2.6 so it may
+be too late anyway...
+
+Cheers,
+
+Angus
