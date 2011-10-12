@@ -1,19 +1,23 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RE1yC-0002nQ-0C
-	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2011 16:47:53 +0000
-Date: Wed, 12 Oct 2011 18:48:37 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: "Fache, Herve" <h-fache@ti.com>
-Subject: Re: Make phram work with kernel cmdline args when built-in
-Message-ID: <20111012164837.GA13691@logfs.org>
-References: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RE3se-0004sU-L3
+	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2011 18:50:17 +0000
+Date: Wed, 12 Oct 2011 20:49:03 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
+Message-ID: <20111012184903.GA9535@parrot.com>
+References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
+	<201110101751.19010.marek.vasut@gmail.com>
+	<20111010181210.GA23655@parrot.com> <4E935D5D.4050504@newsguy.com>
+	<20111011115034.GA28920@parrot.com> <4E949642.9020209@newsguy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>
+In-Reply-To: <4E949642.9020209@newsguy.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+	"robert.jarzmik@free.fr" <robert.jarzmik@free.fr>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +27,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 October 2011 11:46:08 +0200, Fache, Herve wrote:
+On Tue, Oct 11, 2011 at 08:17:22PM +0100, Mike Dunn wrote:
+> On 10/11/2011 04:50 AM, Ivan Djelic wrote:
+> >
+> > After a more careful examination, I believe your hardware gives you
+> > recv_ecc^calc_ecc
 > 
-> Please find attached a patch that make it possible to use phram built-in
-> with a kernel command line argument.
-> This is basically the same patch that was applied in 2006 by Villa Herva to
-> block2mtd, which saves the argument for later, when kmalloc is available.
-> This allows us to put kernel and rootfs into physical RAM and boot without
-> any further copy, hence very fast.
+> It might be a little more complicated.
 
-Looks good in principle.
+Well, thanks to your ecc samples I have the answer now; the hardware does
+provide recv_ecc^calc_ecc, with a little twist: a parity code in inserted into
+data before performing BCH remainder computations.
+Here is a more precise description:
 
-> This patch is based on Ville Herva's similar patch to block2mtd.
-> 
-> Trying to pass kernel command line arguments at boot-time did not work, as
-> phram_setup() was called so early that kmalloc() was not functional.
-> 
-> This patch only saves the option string at the early boot stage, and parses
-> it later when init_phram() is called.
-> 
-> With this patch, I can boot with a statically-compiled phram, and mount a
-> ext2 root fs from physical RAM, without the need for a initrd.
-> 
-> Signed-off-by: Hervé Fache <h-fache@ti.com>
-> ---
->  drivers/mtd/devices/phram.c |   44 ++++++++++++++++++++++++++++++++++++++++--
->  1 files changed, 41 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-> index 23423bd..6b839f0 100644
-> --- a/drivers/mtd/devices/phram.c
-> +++ b/drivers/mtd/devices/phram.c
-> @@ -33,6 +33,10 @@ struct phram_mtd_list {
->  
->  static LIST_HEAD(phram_list);
->  
-> +#ifndef MODULE
-> +static int phram_init_called;
-> +static __initdata char phram_paramline[64+12+12];
-> +#endif
+writing algorithm:
+-----------------
+1. 512 bytes of data are sent to HW generator
+2. 7 bytes of user data (oob[0] to oob[6]) are sent to HW generator
+3. A Hamming (?) parity byte is generated (from oob[0]...oob[6]?) and sent to
+   HW generator
+4. The BCH engine completes its polynomial remainder computation on the above
+   520 bytes
 
-What I slightly dislike about this patch is the tiny differences
-between Ville Herva's and this one.  In block2mtd those same lines are
-added in a different place.  While I don't care much where to put
-them, I see some value in having duplicated code stand out as
-duplicated code and not have subtle variations all over the place.  So
-my preference would be to either change this patch or alternatively
-move the code in block2mtd as well.
+Note that the HW generator reads and writes bytes in reversed bit order.
 
->  static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
->  {
-> @@ -134,7 +138,7 @@ static int register_device(char *name, unsigned long start, unsigned long len)
->  	ret = -EIO;
->  	new->mtd.priv = ioremap(start, len);
->  	if (!new->mtd.priv) {
-> -		pr_err("ioremap failed\n");
-> +		pr_err("ioremap failed for %ld@0x%lx\n", len, start);
->  		goto out1;
->  	}
->  
-> @@ -233,7 +237,7 @@ static inline void kill_final_newline(char *str)
->  	return 1;		\
->  } while (0)
->  
-> -static int phram_setup(const char *val, struct kernel_param *kp)
-> +static int phram_setup_late(const char *val)
->  {
->  	char buf[64+12+12], *str = buf;
->  	char *token[3];
+I don't really know how the parity byte in step 3 is generated, or what its
+purpose is; it may be there to allow oob reading without performing a full BCH
+decode, but the code seems too small to me to protect anything in a useful way.
+The nice thing is, we don't really need this code to perform BCH decoding.
 
-Same here.  phram_setup_late may be a better name, but it is
-inconsistent with block2mtd_setup2.
+Here is an updated version of my function emulating hw ecc:
 
-So while I have no preference for either of the two variants, I would
-like to keep the two drivers as similar as possible.  Apart from that
-minor thing, nice work!
+static const uint8_t reverse8[256] = {
+/* http://graphics.stanford.edu/~seander/bithacks.html#BitReverseTable */
+#   define R2(n) n,     n + 2*64,     n + 1*64,     n + 3*64
+#   define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
+#   define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
+    R6(0), R6(2), R6(1), R6(3)
+};
 
-Jörn
+static void emulate_docg4_hw(struct bch_control *bch, uint8_t *buf,
+                             uint8_t *ecc_flash, uint8_t hamming)
+{
+        int i;
+	uint8_t data[DOCG4_DATA_LEN];
+        uint8_t ecc_buf[8] = {0};
 
--- 
-I don't understand it. Nobody does.
--- Richard P. Feynman
+	for (i = 0; i < DOCG4_DATA_LEN-1; i++)
+	    data[i] = reverse8[buf[i]];
+	data[DOCG4_DATA_LEN-1] = reverse8[hamming];
+
+        encode_bch(bch, data, DOCG4_DATA_LEN, ecc_buf);
+
+        printk("emulated ecc_buf = ");
+        for (i = 0; i < 7; i++) {
+                ecc_buf[i] = reverse8[ecc_buf[i]] ^ ecc_flash[i];
+                printk("%02x", ecc_buf[i]);
+        }
+}
+
+If you pass ecc_flash[]={0,0,0,0,0,0,0} to this function, and the proper parity
+code corresponding to your data, you should get the same ecc bytes as what your
+hardware generates on a write operation.
+Note the new parameter 'hamming', required to perform BCH encoding.
+Using this function on your samples:
+
+- a page (520 bytes) filled with 0x00, except the first byte set to 0x01
+  with hamming=0x01, emulate_docg4_hw() outputs the correct d47899c27e7c7f code
+
+- a page (520 bytes) filled with 0xff, except the first byte set to 0x55
+  with hamming=0x31, emulate_docg4_hw() outputs the correct 70f363ce4b969a code
+
+In both cases, Hamming codes were found by brute force searching. Again, those
+codes are not needed to perform decoding.
+
+In my previous message, I provided a simplified docg4_correct_data() function
+with the following piece of code:
+
+        /* ----------------------- MODIFIED PART ------------------------- */
+        /* reformat ecc */
+        for (i = 0; i < 7; i++)
+                doc->ecc_buf[i] = reverse8[doc->ecc_buf[i]];
+
+        /* decode data and find errors */
+        numerrs = decode_bch(doc->bch, NULL, DOCG4_DATA_LEN, NULL,
+                             doc->ecc_buf, NULL, errorpos);
+        if (numerrs == -EBADMSG) {
+                printk(KERN_WARNING "docg4: "
+                       "uncorrectable errors at offset %08x\n", page * 0x200);
+                writew(0, docptr + DOCG4_END_OF_DATA);
+                return -1;
+        }
+
+        /* fix the errors */
+        for (i = 0; i < numerrs; i++) {
+                errorpos[i] = (errorpos[i] & ~7)|(7-(errorpos[i] & 7));
+                change_bit(errpos[i], (unsigned long *)buf);
+        }
+        /* -------------------------------------------------------------- */
+
+I simulated bitflips on your data samples and verified that the code above
+generates the same syndrome (and by consequence the same errorpos[] array) as
+your function docg4_find_errbits().
+Could you try this in your driver and tell me if it matches your errorpos[]
+results ?
+
+Thanks,
+--
+Ivan
