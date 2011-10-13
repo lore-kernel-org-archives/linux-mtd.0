@@ -1,23 +1,24 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp.newsguy.com ([74.209.136.69])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RE98G-000814-B6
-	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2011 00:26:45 +0000
-Received: by bkbc12 with SMTP id c12so951432bkb.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Oct 2011 17:26:40 -0700 (PDT)
-From: Marek Vasut <marek.vasut@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
-Date: Thu, 13 Oct 2011 02:26:38 +0200
-References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
-	<8762jtlx19.fsf@free.fr>
-In-Reply-To: <8762jtlx19.fsf@free.fr>
+	id 1RE9xL-0008UA-OC
+	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2011 01:19:32 +0000
+Message-ID: <4E963C77.70400@newsguy.com>
+Date: Wed, 12 Oct 2011 18:18:47 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-6"
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
+References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
+	<201110101751.19010.marek.vasut@gmail.com>
+	<20111010181210.GA23655@parrot.com> <4E935D5D.4050504@newsguy.com>
+	<20111011115034.GA28920@parrot.com> <4E949642.9020209@newsguy.com>
+	<20111012184903.GA9535@parrot.com>
+In-Reply-To: <20111012184903.GA9535@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <201110130226.38567.marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+	"robert.jarzmik@free.fr" <robert.jarzmik@free.fr>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, October 12, 2011 11:28:34 PM Robert Jarzmik wrote:
-> Mike Dunn <mikedunn@newsguy.com> writes:
-> > This is a driver for the diskonchip G4 in my Palm Treo680.  I've tested
-> > it fairly well; it passes the nandtest utility, and I've been able to
-> > create a ubifs using it.
-> 
-> Hi Mike,
-> 
-Hi Robert,
-
-> I had a look at your driver, to see how close it was to the docg3 I
-> submitted before and if we could share some code.
-> 
-> My feeling is that the 2 chips are a bit different, and that the deserve
-> each a separate driver, until one can manage them both (if that ever is
-> possible). The discrepencies I noticed are :
->  - docg4 doesn't need to write to an "address register" before reading some
->  random register (ie. between io+0x1000 and io+0x1800), docg3 needs it
-
-This can be done on both ...
-
->  - docg4 adressing is larger (4 bytes against 3 in docg3)
-
-if (drvdata->version == 4) {} ?
-
->  - docg4 adressing is different (the calculation 0x108 * page_number),
-> while docg3 is more straight forward (0x100 * page)
-
-See above ... you can determine if it's G3 or G4 by version register iirc ?
-
->  - in docg4 driver, I didn't see the "2 pages per block notion". I think
-> it's there, but I couldn't find it
->  - some read/write sequences are different, with different registers, and
-> with additionnal reads in your case (ie. the MYSTERY register for
-> example).
-
-This can be done on G3 too?
-
-> 
-> The good part is that I think we share the same registers, although you
-> seem to have more of them. And I think the BCH algorithm is the same, and
-> I'm really interested in the outcome of your work with Ivan.
-> 
-> Therefore, I'll help review your driver as much as I can, so that you can
-> merge it in mainline.
+On 10/12/2011 11:49 AM, Ivan Djelic wrote:
 >
+> Well, thanks to your ecc samples I have the answer now; the hardware does
+> provide recv_ecc^calc_ecc, with a little twist: a parity code in inserted into
+> data before performing BCH remainder computations.
 
-Definitelly looking forward to this too. I can try on PalmT5 if you like, it 
-SHOULD have a G3. You can also prep me a testing patch on top of this one which 
-would add support for G3 and I can test that too.
+Yup, you nailed it!
 
-Cheers
+> I don't really know how the parity byte in step 3 is generated, or what its
+> purpose is; it may be there to allow oob reading without performing a full BCH
+> decode, but the code seems too small to me to protect anything in a useful way.
+> The nice thing is, we don't really need this code to perform BCH decoding.
+
+Yes, it's a hw-generated hamming code, and it's supposed to cover the 7 oob
+bytes preceding it.  Yes, for reading oob only.  One of my TODOs is to check the
+hamming code when reading oob only.  So I did know about that and was including
+it in my tests.  What escaped me is the fact that all the page data needed to be
+bit-reversed in order to get the same ecc from your code as was written in oob. 
+And prior to that, the fact that the hw generates calc_ecc ^ recvd_ecc, until
+you pointed that out.
+
+> Could you try this in your driver and tell me if it matches your errorpos[]
+> results ?
+
+Done.  I left the original code in the driver when I added the new code, and
+added some additional lines to verify identical results.  All's well.
+
+Thanks again for all the help.  Nice to know what's going on, and not duplicate
+your bch code needlessly.  Thanks also for the pointers to the table-based bit
+reversal alg.
+
+Mike
