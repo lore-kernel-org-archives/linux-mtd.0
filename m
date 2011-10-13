@@ -1,25 +1,16 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RENaw-000663-28
-	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2011 15:53:18 +0000
-Message-ID: <4E970942.60608@newsguy.com>
-Date: Thu, 13 Oct 2011 08:52:34 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from mailserver.dimolanka.com ([222.165.133.59])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1REOhg-0007gk-7Y
+	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2011 17:04:21 +0000
+From: Gayan Hettiarachchi <Gayan.Hettiarachchi@dimolanka.com>
+Date: Thu, 13 Oct 2011 22:35:45 +0530
+Subject: My yahoo mail hacked!!
+Message-ID: <F08E1AA708B225419CFB4EF62E8EC709768572BF0B@exchange>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
-References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
-	<201110101751.19010.marek.vasut@gmail.com>
-	<20111010181210.GA23655@parrot.com> <4E935D5D.4050504@newsguy.com>
-	<20111011115034.GA28920@parrot.com> <4E949642.9020209@newsguy.com>
-	<20111012184903.GA9535@parrot.com> <871uuhl6mq.fsf@free.fr>
-	<20111013083704.GA12110@parrot.com>
-In-Reply-To: <20111013083704.GA12110@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marek.vasut@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/13/2011 01:37 AM, Ivan Djelic wrote:
->
-> I'm still a little puzzled as to how this Hamming code works.
-> If it was meant to correct 1 bitflip in 7 bytes + 1 parity byte, then it
-> should be at least 12 bits long.
-> If the idea is to simply detect a single bitflip, then 6 bits are enough.
-> Maybe the probability of having 2 bitflips in 7 oob bytes is low enough to
-> allow reading oob using this simple check ?
+Dear All,
 
-Hmm.  They claim 1 bit correction, 2 detection.
+Someone hacked my yahoo mail - gprabodha@yahoo.com . Please neglect mails r=
+eceived from that mail address. (Even I can't access my mails now).
+
+Sorry for the inconvenience caused.
+
+Thank you.
+
+Best Regards,
+
+Gayan Prabodha Hettiarachchi
+(Tel : +94-77-3660966)
+
+Please Consider Your Environmental Responsibility, Before Printing This Doc=
+ument
+
+*******************************************************************
+Disclaimer
+This email transmission is confidential and intended solely for the person =
+or organization to whom it is addressed. If you are not the intended recipi=
+ent, you must not copy, distribute or disseminate the information, or take =
+any action in reliance of it. Any views expressed in this message are those=
+ of the individual sender, except where the sender specifically states them=
+ to be the views of any organization or employer. If you have received this=
+ message in error, do not open any attachment but please notify the sender =
+(above) deleting this message from your system. Please rely on your own vir=
+us check no responsibility is taken by the sender for any damage arising ou=
+t of any bug or virus infection.
+
+*******************************************************************
