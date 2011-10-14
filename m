@@ -1,23 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from db3ehsobe005.messaging.microsoft.com ([213.199.154.143]
+	helo=DB3EHSOBE005.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REdZI-00015N-Cu
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:56:41 +0000
-Received: by wwg9 with SMTP id 9so552792wwg.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 01:56:38 -0700 (PDT)
-Subject: Re: [PATCH] mtd: rename the redboot module to RedBoot
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Andres Salomon <dilinger@queued.net>
-Date: Fri, 14 Oct 2011 11:56:07 +0300
-In-Reply-To: <20111003222346.5ac48654@queued.net>
-References: <20111003222346.5ac48654@queued.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1318582575.12351.74.camel@sauron>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+	id 1REdbz-000195-Bl
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:59:28 +0000
+From: Shaohui Xie <Shaohui.Xie@freescale.com>
+To: <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH] mtd: m25p80: don't probe device which has status of 'disabled'
+Date: Fri, 14 Oct 2011 15:49:00 +0800
+Message-ID: <1318578540-12872-1-git-send-email-Shaohui.Xie@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, galak@kernel.crashing.org,
+	Shaohui Xie <Shaohui.Xie@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-10-03 at 22:23 -0700, Andres Salomon wrote:
-> parse_mtd_partitions takes a list of partition types; if the driver
-> isn't loaded, it attempts to load it, and then it grabs the partition
-> parser.  For redboot, the module name is "redboot.ko", while the parser
-> name is "RedBoot".  Since modprobe is case-sensitive, attempting to
-> modprobe "RedBoot" will never work.  I suspect the embedded systems that
-> make use of redboot just always manually loaded redboot prior to loading
-> their specific nand chip drivers (or statically compiled it in).
-> 
-> Alternatives include renaming the parser to "redboot", changing
-> parse_mtd_partitions to accept pairs of strings, or changing modprobe
-> to be case-insensitive.  Renaming the module seems like the easy,
-> obvious solution. :)
-> 
-> Signed-off-by: Andres Salomon <dilinger@queued.net>
-> ---
->  drivers/mtd/Makefile  |    2 +-
->  drivers/mtd/RedBoot.c |  315 +++++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/redboot.c |  315 -------------------------------------------------
->  3 files changed, 316 insertions(+), 316 deletions(-)
->  create mode 100644 drivers/mtd/RedBoot.c
->  delete mode 100644 drivers/mtd/redboot.c
+On some platforms such as P3060QDS, has multiple spi flashes, but they are
+not available at same time, so if their status is 'disabled', which is set
+by u-boot, will not be probed.
 
-Could you please use MODULE_ALIAS(RedBoot) instead?
+Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
+---
+Disabled nodes should automatically not be probed. But I found this is only
+true for spi node, for the flash nodes which embedded in spi node, still got
+probed even it has a status of 'disabled'.
 
+ drivers/mtd/devices/m25p80.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 4e20c4d..30d61d5 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -30,6 +30,7 @@
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of_platform.h>
+ 
+ #include <linux/spi/spi.h>
+ #include <linux/spi/flash.h>
+@@ -829,6 +830,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	struct mtd_partition		*parts = NULL;
+ 	int				nr_parts = 0;
+ 
++#ifdef CONFIG_MTD_OF_PARTS
++	if (!of_device_is_available(spi->dev.of_node))
++		return -ENODEV;
++#endif
++
+ 	/* Platform data helps sort out which chip type we have, as
+ 	 * well as how this board partitions it.  If we don't have
+ 	 * a chip ID, try the JEDEC id commands; they'll work for most
 -- 
-Best Regards,
-Artem Bityutskiy
+1.6.4
