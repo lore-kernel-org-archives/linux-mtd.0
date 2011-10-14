@@ -1,16 +1,24 @@
-Received: from smtpfree.forptr.21cn.com ([59.36.102.43] helo=21cn.com)
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1REYY3-00067b-4u
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 03:35:06 +0000
-Message-ID: <23852479.42561318563233081.JavaMail.root@webmail5>
-Date: Fri, 14 Oct 2011 11:33:27 +0800 (CST)
-From: o8wxiwn8yt <hong562903728972@21cn.com>
-To: megan.liang@sgs.com, NoneIC16454@sina.com, gengyunw@hotmail.com,
-	tzhqq@163.com, xieshimould@163.com, tz6839153@163.com
-Subject: =?UTF-8?B?5qC35ZOBM2TmioTmlbA=?=
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	boundary="----=_Part_6056_12862425.1318563207706"
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1REd1L-0000OQ-M0
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:21:36 +0000
+Received: by wwg9 with SMTP id 9so522351wwg.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2011 01:21:31 -0700 (PDT)
+Subject: Re: [PATCH] mtd/nand : workaround for Freescale FCM to support
+	large-page Nand chip
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: b35362@freescale.com
+Date: Fri, 14 Oct 2011 11:20:57 +0300
+In-Reply-To: <1317013806-23640-1-git-send-email-b35362@freescale.com>
+References: <1317013806-23640-1-git-send-email-b35362@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1318580465.12351.63.camel@sauron>
+Mime-Version: 1.0
+Cc: Artem.Bityutskiy@nokia.com, Li Yang <leoli@freescale.com>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +28,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_6056_12862425.1318563207706
-Content-Type: text/html;charset=UTF-8
-Content-Transfer-Encoding: base64
+On Mon, 2011-09-26 at 13:10 +0800, b35362@freescale.com wrote:
+> From: Liu Shuo <b35362@freescale.com>
+> 
+> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+> to support the Nand flash chip whose page size is larger than 2K bytes,
+> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and save
+> them to a large buffer.
+> 
+> Signed-off-by: Liu Shuo <b35362@freescale.com>
+> Signed-off-by: Li Yang <leoli@freescale.com>
 
-DQrmnKzlsIHpgq7ku7bmmK/kuIDku73okKXplIDmgKfotKjnmoTpgq7ku7bvvIzlpoLmnInmiZPm
-ibDvvIzmlazor7fmtbfmtrXvvIENCg0K5oKo5aW977yaDQoNCumjnue/lOiuvuiuoeaYr+S4gOWu
-tuS4k+S4mueahOiuvuiuoeWFrOWPuOOAgg0KDQrkuJrliqHojIPlm7TvvJrlt6XkuJrkuqflk4Ho
-rr7orqEs6YCG5ZCR5bel56iLLOS6p+WTgeaKhOaVsCzmtYvnu5gs5omL5p2/5Yi25L2cLOS6p+WT
-geajgOa1iw0KDQrmoLflk4HjgIHmiYvmnb/jgIHmqKHlhbfnmoTmtYvnu5gNCg0KICAgICDmiJHl
-hazlj7jlvJXov5vlhYjov5vnmoTkuInnu7Tnsr7lr4bmioTmlbDvvIjmtYvph4/mnLrvvInjgILl
-j6/ku6Xlr7nmgqjnlJ/kuqfnmoTkuqflk4Hov5vooYzlvaLkvY3lhazlt67mo4DmtYvjgILlh4/l
-sJHmgqjph4fpm4bmlbDmja7nmoTml7bpl7TvvIzmnoHlpKfnmoTmj5Dpq5jkuobmlbDmja7nmoTn
-sr7noa7mgKfjgIINCg0K6YCC55So5LqO5rG96L2m6YWN5Lu277yM5a625bqt55So5ZOB77yM6YCa
-5L+h5Lqn5ZOB77yM55S16ISR5aSW6K6+77yM546p5YW377yM5qih5YW3562J44CCIA0KIA0KDQrp
-gIblkJHlt6XnqIsNCuS7peaKhOaVsOacuuWvueagt+WTgeOAgeaJi+adv+OAgeaooeWei+i/m+ih
-jOaJq+aPj++8jOe7k+WQiOmAhuWQkei9r+S7tu+8jOmHjeaehOaIkOS4iee7tOWunuS9k+OAguWP
-r+ebtOaOpeeUqOS6juaooeWFt+eahOiuvuiuoeS4juWItumAoOOAgiAgIA0KDQrkuqflk4HnmoTl
-pJbop4Lorr7orqEgDQrmiJHku6zlj6/moLnmja7lrqLmiLfnmoTopoHmsYLvvIznu4/ov4fmiJHk
-u6zorr7orqHlt6XnqIvluIjnmoTnsr7lv4Pnu5jliLbvvIzkuLrkvaDorr7orqHlh7rpgILlupTl
-uILlnLrpnIDmsYLnmoTkuqflk4HjgIIgDQoNCuaJi+adv+WItuS9nA0KIOWcqOS6p+WTgeeahOiu
-vuiuoeS4re+8jOacgOaDs+WBmueahOS4gOS7tuS6iyDkvr/mmK/mg7Pnn6XpgZPoh6rlt7Horr7o
-rqHnmoTkuJzopb/lgZrmiJDlrp7nianku4DkuYjmoLfjgIHlpJbop4Llkozoh6rlt7HnmoTorr7o
-rqHmgJ3mg7PmmK/lkKblkLvlkIjjgIHnu5PmnoTorr7orqHmmK/lkKblkIjnkIbnrYnnrYnjgIIN
-Cg0KICDmhL/miJHku6znmoTlt6XkvZzog73lpJ/ovoXliqnotLXkvIHkuJrnmoTlo67lpKfkuI7l
-j5HlsZXvvIENCg0KDQrjgIDjgIDjgIDjgIDjgIDjgIDjgIDjgIDjgIAgICAgICAgICAgICAgICAg
-44CA6aG66aKC5ZWG56W677yBDQoNCuiBlOezu+S6ujog5a6L5Lyg5YWJDQoNCiAg5omL5py6OiAx
-MzUtODQ5OS0yNDMxDQoNCg0K5Lyg55yfOiAgMDUxMi01NzY0Nzc0MA0KDQogIFFROiA1MTU4NzQ4
-NjkNCg0K6YKu566xOiBtYWlsQGtzZnhzai5jb20NCg0K5Zyw5Z2AOiDmsZ/oi4/nnIHmmIblsbHl
-uILljJfpl6jot68zODg45Y+35qih5YW36K6+5aSH5Yy6My0xOA0KDQrnvZHlnYA6IGh0dHA6Ly93
-d3cua3NmeHNqLmNvbQ0K
-------=_Part_6056_12862425.1318563207706--
+Please, make checkpatch.pl happy:
+
+dedekind@otc-wbsnb-06:~/git/l2-mtd-2.6$ checkpatch.pl ~/sauron/tmp/liu.mbox 
+ERROR: code indent should use tabs where possible
+#272: FILE: drivers/mtd/nand/fsl_elbc_nand.c:482:
++^I^I^I         (FIR_OP_CM2 << FIR_OP0_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#273: FILE: drivers/mtd/nand/fsl_elbc_nand.c:483:
++^I^I^I         (FIR_OP_CA  << FIR_OP1_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#274: FILE: drivers/mtd/nand/fsl_elbc_nand.c:484:
++^I^I^I         (FIR_OP_PA  << FIR_OP2_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#275: FILE: drivers/mtd/nand/fsl_elbc_nand.c:485:
++^I^I^I         (FIR_OP_WB  << FIR_OP3_SHIFT));$
+
+ERROR: code indent should use tabs where possible
+#295: FILE: drivers/mtd/nand/fsl_elbc_nand.c:554:
++^I^I^I                (FIR_OP_WB  << FIR_OP1_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#296: FILE: drivers/mtd/nand/fsl_elbc_nand.c:555:
++^I^I^I                (FIR_OP_CM3 << FIR_OP2_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#297: FILE: drivers/mtd/nand/fsl_elbc_nand.c:556:
++^I^I^I                (FIR_OP_CW1 << FIR_OP3_SHIFT) |$
+
+ERROR: code indent should use tabs where possible
+#298: FILE: drivers/mtd/nand/fsl_elbc_nand.c:557:
++^I^I^I                (FIR_OP_RS  << FIR_OP4_SHIFT));$
+
+total: 8 errors, 0 warnings, 295 lines checked
+
+NOTE: whitespace errors detected, you may wish to use scripts/cleanpatch or
+      scripts/cleanfile
+
+/home/dedekind/sauron/tmp/liu.mbox has style problems, please review.
+
+If any of these errors are false positives, please report
+them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+
+
+Also, please, send a patch which can be applied to my l2-mtd-2.6 tree,
+this one is not applicable:
+
+Applying: mtd: workaround for Freescale FCM to support large-page Nand chip
+error: patch failed: drivers/mtd/nand/fsl_elbc_nand.c:76
+error: drivers/mtd/nand/fsl_elbc_nand.c: patch does not apply
+Patch failed at 0001 mtd: workaround for Freescale FCM to support large-page Nand chip
+When you have resolved this problem run "git am --resolved".
+If you would prefer to skip this patch, instead run "git am --skip".
+To restore the original branch and stop patching run "git am --abort".
+dedekind@otc-wbsnb-06:~/git/l2-mtd-2.6$ patch -p1 < .git/re
+rebase-apply/ refs/         
+dedekind@otc-wbsnb-06:~/git/l2-mtd-2.6$ patch -p1 < .git/rebase-apply/patch 
+patching file drivers/mtd/nand/fsl_elbc_nand.c
+Hunk #1 FAILED at 76.
+Hunk #2 succeeded at 150 (offset -1 lines).
+Hunk #3 succeeded at 204 (offset -1 lines).
+Hunk #4 succeeded at 223 (offset -1 lines).
+Hunk #5 succeeded at 341 (offset 18 lines).
+Hunk #6 succeeded at 370 (offset 18 lines).
+Hunk #7 succeeded at 399 (offset 18 lines).
+Hunk #8 succeeded at 491 (offset 18 lines).
+Hunk #9 FAILED at 537.
+Hunk #10 succeeded at 620 (offset -5 lines).
+Hunk #11 succeeded at 673 (offset -5 lines).
+Hunk #12 succeeded at 714 (offset -5 lines).
+Hunk #13 succeeded at 752 (offset -5 lines).
+Hunk #14 succeeded at 803 (offset -5 lines).
+Hunk #15 succeeded at 824 (offset -5 lines).
+Hunk #16 succeeded at 996 (offset -9 lines).
+2 out of 16 hunks FAILED -- saving rejects to file drivers/mtd/nand/fsl_elbc_nand.c.rej
+dedekind@otc-wbsnb-06:~/git/l2-mtd-2.6$ 
+
+-- 
+Best Regards,
+Artem Bityutskiy
