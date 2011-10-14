@@ -1,24 +1,23 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REihx-00064T-1x
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 14:25:57 +0000
-Received: by wwf10 with SMTP id 10so1739492wwf.0
+	id 1REilu-00067P-4b
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 14:30:02 +0000
+Received: by wyi11 with SMTP id 11so3787017wyi.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 07:25:52 -0700 (PDT)
-Subject: Re: [PATCHv6] mtd: gpio-nand: add device tree bindings
+	Fri, 14 Oct 2011 07:30:00 -0700 (PDT)
+Subject: Re: [PATCH 1/1]  Add security.selinux XATTR support for the UBIFS.
+	Also fix couple of bugs in UBIFS extended attribute storage.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jamie Iles <jamie@jamieiles.com>
-Date: Fri, 14 Oct 2011 17:25:21 +0300
-In-Reply-To: <20111014142149.GA25079@totoro>
-References: <1318374618-26573-1-git-send-email-jamie@jamieiles.com>
-	<1318600108.12351.130.camel@sauron> <20111014142149.GA25079@totoro>
+To: Subodh Nijsure <subodh.nijsure@gmail.com>
+Date: Fri, 14 Oct 2011 17:29:30 +0300
+In-Reply-To: <1318359142-26759-1-git-send-email-subodh.nijsure@gmail.com>
+References: <1318359142-26759-1-git-send-email-subodh.nijsure@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1318602329.12351.143.camel@sauron>
+Message-ID: <1318602578.12351.146.camel@sauron>
 Mime-Version: 1.0
-Cc: Grant Likely <grant.likely@secretlab.ca>,
-	Scott Wood <scottwood@freescale.com>, devicetree-discuss@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
+	Subodh Nijsure <snijsure@grid-net.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,17 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-10-14 at 15:21 +0100, Jamie Iles wrote:
-> > the top of my head, it is logical when things go like this: I have a
-> > kernel with working platform data, but I can change that dynamically by
-> > feeding it a device tree configuration. Hmm?
+On Tue, 2011-10-11 at 11:52 -0700, Subodh Nijsure wrote:
+> From: Subodh Nijsure <snijsure@grid-net.com>
 > 
-> I think in general platform data and device tree should be mutually 
-> exclusive.
+> TESTING: Tested on MX25, MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
+>          With these change we are able to label UBIFS filesystem with security.selinux
+>          and run system with selinux enabled.
+> 
+> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
 
-OK, but would you please confirm this by pointing to some docs or
-discussions, or may be people from devicetree-discuss@lists.ozlabs.org
-could confirm that?
+Did not have time to actually review your code, but would you please
+amend it a little and make it be of the same style as UBIFS code. I'll
+take a deeper look later.
+ 
+> +static void ubifs_init_security(struct dentry *dentry, struct inode *inode,
+> +		struct inode *dir)
+See how we align the second line with tabs and then few spaces if
+needed. Change globally please.
+
+> +{
+> +	int err;
+> +	char *name;
+> +	void *value = NULL;
+> +	size_t len = 0;
+> +	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+> +	const struct qstr *qname = &dentry->d_name;
+> +
+> +	mutex_lock(&dir_ui->ui_mutex);
+> +	mutex_lock(&dentry->d_inode->i_mutex);
+> +	err = security_inode_init_security(inode, dir, qname, &name, &value,
+> +		&len);
+ditto.
+
+> +	if (err) {
+> +		if (err == -EOPNOTSUPP)
+> +			return;
+> +		ubifs_err("unable to retrieve security context, error %d", err);
+> +		mutex_unlock(&dentry->d_inode->i_mutex);
+> +		mutex_unlock(&dir_ui->ui_mutex);
+> +		return;
+> +	}
+> +
+> +	if (strncmp(name, "selinux", strlen("selinux")) == 0) {
+> +		kfree(name);
+> +		name = kstrdup("security.selinux", GFP_NOFS);
+> +		if (!name) {
+> +			ubifs_err("unable to set security context %.*s error",
+> +				dentry->d_name.len, dentry->d_name.name);
+Ditto.
+
+And many other dittos for the same kind of thing.
+
+Could you try the integck as well and check that it passes?
 
 -- 
 Best Regards,
