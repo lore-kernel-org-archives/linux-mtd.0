@@ -1,25 +1,24 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REjW0-0006xV-RF
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 15:17:41 +0000
-Date: Fri, 14 Oct 2011 17:18:34 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: "Fache, Herve" <h-fache@ti.com>
-Subject: Re: Make phram work with kernel cmdline args when built-in
-Message-ID: <20111014151834.GB32633@logfs.org>
-References: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
-	<20111012164837.GA13691@logfs.org>
-	<CA+Xn3W18bwZWzdjmRzEDUCqe3bVHnmW-7bJ_wvaoXpJxO1KmjQ@mail.gmail.com>
-	<1318597412.12351.124.camel@sauron>
-	<CA+Xn3W2P_+xdwwrvcBKREZmsj2O6=GOfyaywW-N2HhGwo0WzVg@mail.gmail.com>
-	<20111014143816.GA32633@logfs.org>
-	<CA+Xn3W0dDEYMm7TZiB-0R41Qtb1C7EaBJM9px==kWzaepMnz2g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Xn3W0dDEYMm7TZiB-0R41Qtb1C7EaBJM9px==kWzaepMnz2g@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Received: from na3sys009aog119.obsmtp.com ([74.125.149.246])
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1REnLb-00034M-Te
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 19:23:13 +0000
+Received: by mail-pz0-f44.google.com with SMTP id 4so2065455pzk.3
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2011 12:23:08 -0700 (PDT)
+Subject: Re: [PATCH] ubi: Add support for UBI PEB sizes that are a multiple of
+	the erase size
+Mime-Version: 1.0 (Apple Message framework v1251.1)
+Content-Type: text/plain; charset=us-ascii
+From: Kevin Paul Herbert <kevin.herbert@meraki.net>
+In-Reply-To: <1318601716.12351.137.camel@sauron>
+Date: Fri, 14 Oct 2011 12:23:02 -0700
+Content-Transfer-Encoding: 7bit
+Message-Id: <690F2BC3-036A-4E7B-8146-69F31DC2D8C1@meraki.net>
+References: <20111014011436.2E298A1DDB@snowflake>
+	<1318601716.12351.137.camel@sauron>
+To: dedekind1@gmail.com
+Cc: Kevin Paul Herbert <kevin.herbert@meraki.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,16 +28,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 October 2011 16:48:45 +0200, Fache, Herve wrote:
+Doing it in MTD is a great suggestion. I'll see what I can come up with.
+
+Kevin
+
+On Oct 14, 2011, at 7:15 AM, Artem Bityutskiy wrote:
+
+> On Thu, 2011-10-13 at 18:14 -0700, Kevin Paul Herbert wrote:
+>> Add support for UBI PEB sizes that are a multiple of the erase size.
+>> This allows for portability between UBI volumes on FLASH devices,
+>> as long as a common multiple of the erase size is used on all FLASH
+>> devices.
+>> 
+>> In order to implement this feature, a new field was added to the
+>> erase block header, which must be initialized by the ubinize tool.
+>> This new peb_size field in the ubi_ec_hdr was previously initialized
+>> as zero, so existing PEBs with this field containing zero are assumed
+>> to be using a PEB which is equal to the erase size. At attach time,
+>> the first erase block without errors is scanned for, looking for a
+>> PEB size field. If this field is non-zero, it is required to be a
+>> multiple of the erase size, and all subsequent PEBs are required to
+>> have the same value.
+>> 
+>> PEBs are required to be aligned on boundaries that are a multiple
+>> of the PEB size. This means that in the case of a bad block in NAND,
+>> rather than skipping to the next block, one must skip to the next
+>> properly aligned block. All checks for bad blocks now consider
+>> any bad block in the cluster to make the entire cluster bad.
+>> Otherwise, it would be impossible to determine boundaries when
+>> a block became bad.
+>> 
+>> Signed-off-by: Kevin Paul Herbert <kph@meraki.net>
 > 
-> Looks like it's just a matter of properly using 'phram_init_called'.
-> Shall I submit a new version of the patch that does that?
-
-Since my brain cannot quite translate that into code yet: yes please.
-
-Jörn
-
--- 
-Unless something dramatically changes, by 2015 we'll be largely
-wondering what all the fuss surrounding Linux was really about.
--- Rob Enderle
+> Sorry, but why you decided to do this in UBI instead of trying to do
+> this in MTD level? I think it would require a bit more work mainly
+> because of strange MTD interface, which would need to be changed, but
+> that would mean that JFFS2 and other users would benefit.
+> 
+> I really did not think hard about this, but off the top of my head it
+> looks like you need:
+> 
+> 1. Add new MTD interface and introduce stuff like:
+> 
+> mtd_read()
+> mtd_write()
+> mtd_mark_bad()
+> etc
+> 
+> which will just call mtd->read(), etc.
+> 
+> 2. Add a new interface: mtd_concat_eraseblocks(2) or you name it, I can
+> use this function to tell MTD that I want it to make erasblocks to be
+> double size.
+> 
+> 3. Modify mtd_read() etc to handle double erasblock sizes.
+> 
+> Wouldn't this be cleaner?
+> 
+> -- 
+> Best Regards,
+> Artem Bityutskiy
+> 
