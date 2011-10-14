@@ -1,23 +1,26 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REhQ7-0004su-W6
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 13:03:28 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Fri, 14 Oct 2011 09:03:24 -0400
-Subject: RE: ubi vol_size and lots of bad blocks
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD33001C1D742@dekaexchange07.deka.local>
-References: <CAMLZHHSW9daPS9RsMyBnhTfzUQLC0+e9_-=xqiWE4T6upbcaiQ@mail.gmail.com>
-	<0A40042D85E7C84DB443060EC44B3FD33001C1D733@dekaexchange07.deka.local>
-	<1318597112.12351.123.camel@sauron>
-In-Reply-To: <1318597112.12351.123.camel@sauron>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	'Daniel Drake' <dsd@laptop.org>
+	id 1REhQb-0004v1-5V
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 13:03:57 +0000
+Received: by wyi11 with SMTP id 11so3675180wyi.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2011 06:03:55 -0700 (PDT)
+Subject: Re: Make phram work with kernel cmdline args when built-in
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Fache, Herve" <h-fache@ti.com>
+Date: Fri, 14 Oct 2011 16:03:24 +0300
+In-Reply-To: <CA+Xn3W18bwZWzdjmRzEDUCqe3bVHnmW-7bJ_wvaoXpJxO1KmjQ@mail.gmail.com>
+References: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
+	<20111012164837.GA13691@logfs.org>
+	<CA+Xn3W18bwZWzdjmRzEDUCqe3bVHnmW-7bJ_wvaoXpJxO1KmjQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <1318597412.12351.124.camel@sauron>
+Mime-Version: 1.0
+Cc: Joern Engel <joern@lazybastard.org>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW06DQoNCiAgSW50ZXJlc3RpbmchIEknbGwgYXNrIG91ciBzdWJqZWN0LW1hdHRlciBleHBl
-cnQ7DQogIGl0IHdvdWxkIGJlIGdyZWF0IGlmIHRoaXMgd2VyZSByZXNvbHZlZC4NCg0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICBBdGxhbnQNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-CkZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0bzpkZWRla2luZDFAZ21haWwuY29tXQ0KU2Vu
-dDogRnJpZGF5LCBPY3RvYmVyIDE0LCAyMDExIDA4OjU4DQpUbzogQXRsYW50IFNjaG1pZHQNCkNj
-OiAnRGFuaWVsIERyYWtlJzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6
-IFJFOiB1Ymkgdm9sX3NpemUgYW5kIGxvdHMgb2YgYmFkIGJsb2Nrcw0KDQpPbiBUdWUsIDIwMTEt
-MTAtMTEgYXQgMDc6MzUgLTA0MDAsIEF0bGFudCBTY2htaWR0IHdyb3RlOg0KPg0KPiAgIEJlIGNh
-cmVmdWwgaGVyZSAtLSB0aGUgbGFzdCB0aW1lIEkgbG9va2VkLCBibG9ja3MgdGhhdCBnbw0KPiAg
-IGJhZCAqQVJFIE5PVCogYWN0dWFsbHkgcGVybWFuZW50bHkgbWFya2VkIGFzIGJhZDsgdGhleSBt
-YXkNCj4gICBubyBsb25nZXIgYmUgdXNlZCBkdXJpbmcgdGhlIGN1cnJlbnQgYm9vdCwgYnV0IHRo
-ZSBuZXh0IHRpbWUNCj4gICB5b3UgcmVib290LCB0aGV5J3JlIGVsaWdpYmxlIGZvciBhdHRlbXB0
-ZWQtYnV0LW9mdGVuLWZhaWxpbmcNCj4gICB1c2Ugb25jZSBhZ2Fpbi4NCg0KSWYgdGhpcyBoYXBw
-ZW5lZCB0byB5b3UsIHRoaXMgbXVzdCBiZSBiZWNhdXNlIG9mIGEgYnVnIGluIHlvdXIgTVREDQpk
-cml2ZXIuIFVCSSBkaW1wbHkgY2FsbHMgTVREIG1hcmtfYmFkKCkgZnVuY3Rpb24gdG8gbWFyayBi
-bG9ja3MgYmFkLg0KDQotLQ0KQmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KDQoNCg0K
-IENsaWNrIGh0dHBzOi8vd3d3Lm1haWxjb250cm9sLmNvbS9zci9mdWU2S3FhRyE1clRuZHhJIW9Y
-N1VzN1FsbyF0OUlIdCFEa25rditxOWJlcmd4bUc2M25SY3RHWXNmSWhYYkZLMTZFRXF3enZhVysy
-ZU42RmNYakhnZz09ICB0byByZXBvcnQgdGhpcyBlbWFpbCBhcyBzcGFtLg0KDQpUaGlzIGUtbWFp
-bCBhbmQgdGhlIGluZm9ybWF0aW9uLCBpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzLCBpdCBjb250
-YWlucyBhcmUgaW50ZW5kZWQgdG8gYmUgYSBjb25maWRlbnRpYWwgY29tbXVuaWNhdGlvbiBvbmx5
-IHRvIHRoZSBwZXJzb24gb3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2VkIGFuZCBtYXkg
-Y29udGFpbiBpbmZvcm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQuIElmIHRoZSByZWFkZXIgb2Yg
-dGhpcyBtZXNzYWdlIGlzIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVi
-eSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWlu
-ZyBvZiB0aGlzIGNvbW11bmljYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGhh
-dmUgcmVjZWl2ZWQgdGhpcyBjb21tdW5pY2F0aW9uIGluIGVycm9yLCBwbGVhc2UgaW1tZWRpYXRl
-bHkgbm90aWZ5IHRoZSBzZW5kZXIgYW5kIGRlc3Ryb3kgdGhlIG9yaWdpbmFsIG1lc3NhZ2UuDQoN
-ClRoYW5rIHlvdS4NCg0KUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJp
-bnRpbmcgdGhpcyBlbWFpbC4NCg==
+On Thu, 2011-10-13 at 15:30 +0200, Fache, Herve wrote:
+> Hi again Jörn,
+> 
+> Please find attached a revised version of the patch.
+
+Please, send patches inline. Also, try to make sure you do not
+have many of these #ifdef MODULE sections.
+
+-- 
+Best Regards,
+Artem Bityutskiy
