@@ -1,22 +1,23 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REdgy-0001FU-FN
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 09:04:36 +0000
-Received: by wwg9 with SMTP id 9so560127wwg.18
+	id 1REdm7-0001Nv-DN
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 09:09:55 +0000
+Received: by wwf10 with SMTP id 10so1360427wwf.0
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 02:04:34 -0700 (PDT)
-Subject: Re: [PATCH V6] mtd: Add DiskOnChip G3 support
+	Fri, 14 Oct 2011 02:09:53 -0700 (PDT)
+Subject: Re: cfi_cmdset_0002.c SST39VF3201B issue
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Fri, 14 Oct 2011 12:04:03 +0300
-In-Reply-To: <1317820954-24902-1-git-send-email-robert.jarzmik@free.fr>
-References: <1317820954-24902-1-git-send-email-robert.jarzmik@free.fr>
+To: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+Date: Fri, 14 Oct 2011 12:09:21 +0300
+In-Reply-To: <1318067449.1586.2.camel@AURIO02>
+References: <4E8D9F14.4090108@gmail.com> <1317905313.4526.9.camel@AURIO02>
+	<4E8DB0A1.5080202@gmail.com> <1318067449.1586.2.camel@AURIO02>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1318583051.12351.75.camel@sauron>
+Message-ID: <1318583368.12351.77.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, arnd@arndb.de
+Cc: angelo <angelo70@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,19 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-10-05 at 15:22 +0200, Robert Jarzmik wrote:
-> Add support for DiskOnChip G3 chips. The support is quite
-> limited yet :
->  - no flash writes/erases are implemented
->  - ECC fixes are not implemented
->  - powerdown is not implemented
->  - IPL handling is not yet done
-> 
-> On the brighter side, the chip reading does work.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+On Sat, 2011-10-08 at 11:50 +0200, Fabio Giovagnini wrote:
+> Hi Angelo,
+> I have worked with 2.6.38 and I have used 0x50 command and modification
+> into mkfs.jffs2 utility in order to accomplish a 4k fs sector size.
+> It is working and I think that in a not so huge memory support a 4k
+> sector allows a better management rather than 64k sector.
 
-Pushed to l2-mtd-2.6.git, thanks!
+4KiB is too small for JFFS2. If it works for you, it is only because you
+are lucky or you did not stress it well enough. Also, small eraseblocks
+just make JFFS2 much slower than it could be.
 
 -- 
 Best Regards,
