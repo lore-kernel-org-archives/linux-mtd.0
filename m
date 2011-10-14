@@ -1,17 +1,23 @@
-Received: from db3ehsobe005.messaging.microsoft.com ([213.199.154.143]
-	helo=DB3EHSOBE005.bigfish.com)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REdbz-000195-Bl
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:59:28 +0000
-From: Shaohui Xie <Shaohui.Xie@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH] mtd: m25p80: don't probe device which has status of 'disabled'
-Date: Fri, 14 Oct 2011 15:49:00 +0800
-Message-ID: <1318578540-12872-1-git-send-email-Shaohui.Xie@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, galak@kernel.crashing.org,
-	Shaohui Xie <Shaohui.Xie@freescale.com>
+	id 1REdgy-0001FU-FN
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 09:04:36 +0000
+Received: by wwg9 with SMTP id 9so560127wwg.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2011 02:04:34 -0700 (PDT)
+Subject: Re: [PATCH V6] mtd: Add DiskOnChip G3 support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Fri, 14 Oct 2011 12:04:03 +0300
+In-Reply-To: <1317820954-24902-1-git-send-email-robert.jarzmik@free.fr>
+References: <1317820954-24902-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1318583051.12351.75.camel@sauron>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, arnd@arndb.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On some platforms such as P3060QDS, has multiple spi flashes, but they are
-not available at same time, so if their status is 'disabled', which is set
-by u-boot, will not be probed.
+On Wed, 2011-10-05 at 15:22 +0200, Robert Jarzmik wrote:
+> Add support for DiskOnChip G3 chips. The support is quite
+> limited yet :
+>  - no flash writes/erases are implemented
+>  - ECC fixes are not implemented
+>  - powerdown is not implemented
+>  - IPL handling is not yet done
+> 
+> On the brighter side, the chip reading does work.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
----
-Disabled nodes should automatically not be probed. But I found this is only
-true for spi node, for the flash nodes which embedded in spi node, still got
-probed even it has a status of 'disabled'.
+Pushed to l2-mtd-2.6.git, thanks!
 
- drivers/mtd/devices/m25p80.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4e20c4d..30d61d5 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -30,6 +30,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of_platform.h>
- 
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-@@ -829,6 +830,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	struct mtd_partition		*parts = NULL;
- 	int				nr_parts = 0;
- 
-+#ifdef CONFIG_MTD_OF_PARTS
-+	if (!of_device_is_available(spi->dev.of_node))
-+		return -ENODEV;
-+#endif
-+
- 	/* Platform data helps sort out which chip type we have, as
- 	 * well as how this board partitions it.  If we don't have
- 	 * a chip ID, try the JEDEC id commands; they'll work for most
 -- 
-1.6.4
+Best Regards,
+Artem Bityutskiy
