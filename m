@@ -1,23 +1,26 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REit8-0006EW-Fp
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 14:37:31 +0000
-Date: Fri, 14 Oct 2011 16:38:16 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: "Fache, Herve" <h-fache@ti.com>
-Subject: Re: Make phram work with kernel cmdline args when built-in
-Message-ID: <20111014143816.GA32633@logfs.org>
-References: <CA+Xn3W3-JCqMKjiXi2cLCGm_bHtRx8RPsc9P5BoOS6YmbGZmHw@mail.gmail.com>
-	<20111012164837.GA13691@logfs.org>
-	<CA+Xn3W18bwZWzdjmRzEDUCqe3bVHnmW-7bJ_wvaoXpJxO1KmjQ@mail.gmail.com>
-	<1318597412.12351.124.camel@sauron>
-	<CA+Xn3W2P_+xdwwrvcBKREZmsj2O6=GOfyaywW-N2HhGwo0WzVg@mail.gmail.com>
+	id 1REiz9-0006KM-Ta
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 14:43:44 +0000
+Received: by wwg9 with SMTP id 9so867125wwg.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2011 07:43:40 -0700 (PDT)
+Date: Fri, 14 Oct 2011 15:43:37 +0100
+From: Jamie Iles <jamie@jamieiles.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCHv6] mtd: gpio-nand: add device tree bindings
+Message-ID: <20111014144337.GB25079@totoro>
+References: <1318374618-26573-1-git-send-email-jamie@jamieiles.com>
+	<1318600108.12351.130.camel@sauron> <20111014142149.GA25079@totoro>
+	<1318602329.12351.143.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Xn3W2P_+xdwwrvcBKREZmsj2O6=GOfyaywW-N2HhGwo0WzVg@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <1318602329.12351.143.camel@sauron>
+Cc: devicetree-discuss@lists.ozlabs.org,
+	Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+	Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 October 2011 15:42:09 +0200, Fache, Herve wrote:
-> 2011/10/14 Artem Bityutskiy <dedekind1@gmail.com>
+On Fri, Oct 14, 2011 at 05:25:21PM +0300, Artem Bityutskiy wrote:
+> On Fri, 2011-10-14 at 15:21 +0100, Jamie Iles wrote:
+> > > the top of my head, it is logical when things go like this: I have a
+> > > kernel with working platform data, but I can change that dynamically by
+> > > feeding it a device tree configuration. Hmm?
+> > 
+> > I think in general platform data and device tree should be mutually 
+> > exclusive.
 > 
-> > Please, send patches inline. Also, try to make sure you do not
-> > have many of these #ifdef MODULE sections.
-> 
-> Also, I have tried to make my patch look like the other patch to block2mtd,
-> as asked by Jörn, which explains the number of #ifdef MODULE sections...
+> OK, but would you please confirm this by pointing to some docs or
+> discussions, or may be people from devicetree-discuss@lists.ozlabs.org
+> could confirm that?
 
-If there were a way to get rid of the #ifdefs, I would certainly be in
-favor of that.  While I am happy with the functional improvements, I
-would be even happier if the code looked less scarred.
+I found https://lwn.net/Articles/449058/ from Grant that I think covers 
+it, but that's the best I could find written down!
 
-I wonder how everyone else does it.  Those two driver surely can't be
-the only ones that depend on module parameters for initialization.
-
-Jörn
-
--- 
-Fools ignore complexity.  Pragmatists suffer it.
-Some can avoid it.  Geniuses remove it.
--- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
+Jamie
