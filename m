@@ -1,23 +1,21 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REdH0-0000g1-4K
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:37:46 +0000
-Received: by wwg9 with SMTP id 9so537552wwg.18
+	id 1REdLG-0000pT-Kd
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:42:11 +0000
+Received: by wwf10 with SMTP id 10so1328608wwf.0
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 01:37:44 -0700 (PDT)
-Subject: Re: [PATCH] mtd: m25p80: add EON flash EN25Q32B into spi flash id
-	table
+	Fri, 14 Oct 2011 01:42:08 -0700 (PDT)
+Subject: Re: Problem with JFFS2 mount
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shaohui Xie <Shaohui.Xie@freescale.com>
-Date: Fri, 14 Oct 2011 11:37:14 +0300
-In-Reply-To: <1317366518-11403-1-git-send-email-Shaohui.Xie@freescale.com>
-References: <1317366518-11403-1-git-send-email-Shaohui.Xie@freescale.com>
+To: -= KuK =- <kuk@data.pl>
+Date: Fri, 14 Oct 2011 11:41:39 +0300
+In-Reply-To: <4E8729C8.1050305@data.pl>
+References: <4E8729C8.1050305@data.pl>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1318581441.12351.65.camel@sauron>
+Message-ID: <1318581705.12351.69.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Kumar Gala <galak@kernel.crashing.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,14 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-09-30 at 15:08 +0800, Shaohui Xie wrote:
-> Add support for EON spi flash EN25Q32B, which is not listed in id table,
-> need to add it in the id table to support the EON flash.
+On Sat, 2011-10-01 at 16:55 +0200, -= KuK =- wrote:
+> Hi,
 > 
-> Signed-off-by: Shaohui Xie <Shaohui.Xie@freescale.com>
-> Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
+> I have problem with creating image file from mounted jffs2 file system.
+> 
+> I have 1:1 dump from 1GB NAND which is UBI format.
+> But it contains JFFS part also.
+> This part can be downloaded from my server.
+> www.pouchx.com/PRV/HDS/K9G8G08U0M_Samsung_1GB_NAND_Config.ini_block_JFFS.rar
+> 
+> Archive contains two files. One is original JFFS copy, second is same 
+> file but I deleted ECC blocks.
+> 
+> I mount jffs image (noECC) with this script:
+> 
+> $ sudo apt-get install mtd-tools
+> $ sudo modprobe -v mtd
+> $ sudo modprobe -v jffs2
+> $ sudo modprobe -v mtdram total_size=8192 erase_size=256
+> $ sudo modprobe -v mtdchar
+> $ sudo modprobe -v mtdblock
+> $ sudo dd if=/HDS/Config.img of=/dev/mtd0
+> $ sudo mount -t jffs2 /dev/mtdblock0 /HDS/JFFS
 
-Pushed to l2-mtd-2.6.git, thanks!
+Try using nandwrite and nanddump instead - you will find them in
+mtd-utils. And you do not need mtdblock to mount JFFS2 - I think mount
+-t jffs2 mtd0 /HDS/JFFS will work fine.
 
 -- 
 Best Regards,
