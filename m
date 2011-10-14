@@ -1,19 +1,19 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REdTy-00011a-0M
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:51:11 +0000
-Received: by wyi11 with SMTP id 11so3416400wyi.36
+	id 1REdZI-00015N-Cu
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2011 08:56:41 +0000
+Received: by wwg9 with SMTP id 9so552792wwg.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 01:51:08 -0700 (PDT)
-Subject: Re: [PATCH] jffs2: allow disabling of compression schemes at runtime
+	Fri, 14 Oct 2011 01:56:38 -0700 (PDT)
+Subject: Re: [PATCH] mtd: rename the redboot module to RedBoot
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Andres Salomon <dilinger@queued.net>
-Date: Fri, 14 Oct 2011 11:50:37 +0300
-In-Reply-To: <20111003191624.7efd3dce@queued.net>
-References: <20111003191624.7efd3dce@queued.net>
+Date: Fri, 14 Oct 2011 11:56:07 +0300
+In-Reply-To: <20111003222346.5ac48654@queued.net>
+References: <20111003222346.5ac48654@queued.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1318582244.12351.73.camel@sauron>
+Message-ID: <1318582575.12351.74.camel@sauron>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
 	linux-kernel@vger.kernel.org
@@ -27,38 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-10-03 at 19:16 -0700, Andres Salomon wrote:
-> Currently jffs2 has compile-time constants (and .config options)
-> regarding whether or not the various compression/decompression
-> drivers are built in and enabled.  This is fine for embedded
-> systems, but it clashes with distribution kernels.  Distro kernels
-> tend to turn on everything; this causes OpenFirmware to fall
-> over, as it only supports ZLIB decompression.  Booting a kernel
-> that has LZO compression enabled, writing to the boot partition,
-> and then rebooting causes OFW to fail to read the kernel from
-> the filesystem.  This is because LZO compression has priority
-> when writing new data to jffs2, if LZO is enabled.
+On Mon, 2011-10-03 at 22:23 -0700, Andres Salomon wrote:
+> parse_mtd_partitions takes a list of partition types; if the driver
+> isn't loaded, it attempts to load it, and then it grabs the partition
+> parser.  For redboot, the module name is "redboot.ko", while the parser
+> name is "RedBoot".  Since modprobe is case-sensitive, attempting to
+> modprobe "RedBoot" will never work.  I suspect the embedded systems that
+> make use of redboot just always manually loaded redboot prior to loading
+> their specific nand chip drivers (or statically compiled it in).
 > 
-> To get around that, this patch adds jffs2 module params for each
-> compressor type that isn't decompression-only.  That means I can run
-> a kernel that has support for LZO and ZLIB decompression (allowing
-> me to read LZO data off of the root partition), while  disabling
-> LZO compression writes (jffs2.disable_lzo=1) so that the boot
-> partition stays compatible with OFW.
+> Alternatives include renaming the parser to "redboot", changing
+> parse_mtd_partitions to accept pairs of strings, or changing modprobe
+> to be case-insensitive.  Renaming the module seems like the easy,
+> obvious solution. :)
 > 
 > Signed-off-by: Andres Salomon <dilinger@queued.net>
+> ---
+>  drivers/mtd/Makefile  |    2 +-
+>  drivers/mtd/RedBoot.c |  315 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/redboot.c |  315 -------------------------------------------------
+>  3 files changed, 316 insertions(+), 316 deletions(-)
+>  create mode 100644 drivers/mtd/RedBoot.c
+>  delete mode 100644 drivers/mtd/redboot.c
 
-You should use mount options instead. Invent nice mount options to
-configure compression strategy of JFFS2.
-
-Or you can simply implement the same option as UBIFS has: compr=xxx.
-
-See Documentation/filesystems/ubifs.txt
-
-With this option you set the default compressor which is use when
-writing, and on reading all decompression are supported, seems like
-exactly what you want. You can also look how it is implemented in UBIFS
-for reference.
+Could you please use MODULE_ALIAS(RedBoot) instead?
 
 -- 
 Best Regards,
