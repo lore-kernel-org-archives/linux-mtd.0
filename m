@@ -1,25 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REwUq-0007dD-V1
-	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2011 05:09:21 +0000
-Received: by eye3 with SMTP id 3so2134153eye.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 22:09:18 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20111015030415.GA8274@ponder.secretlab.ca>
-References: <1318374618-26573-1-git-send-email-jamie@jamieiles.com>
-	<1318600108.12351.130.camel@sauron> <20111014142149.GA25079@totoro>
-	<20111015030415.GA8274@ponder.secretlab.ca>
-Date: Sat, 15 Oct 2011 06:09:18 +0100
-Message-ID: <CACb=_tTV31Xq==DsKi0p86SmgOgXL__v4OuxR5bMZKyh=sGE-Q@mail.gmail.com>
-Subject: Re: [PATCHv6] mtd: gpio-nand: add device tree bindings
-From: Jamie Iles <jamie@jamieiles.com>
-To: Grant Likely <grant.likely@secretlab.ca>,
+Received: from lunge.queued.net ([173.255.254.236])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RFAFI-0004Hh-O0
+	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2011 19:50:13 +0000
+Date: Sat, 15 Oct 2011 12:50:06 -0700
+From: Andres Salomon <dilinger@queued.net>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 1/2] jffs2: implement mount option parsing and compression
+	overriding
+Message-ID: <20111015125006.685efc30@queued.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
-	devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,59 +22,206 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 October 2011 04:04, Grant Likely <grant.likely@secretlab.ca> wrote:
-> On Fri, Oct 14, 2011 at 03:21:49PM +0100, Jamie Iles wrote:
->> Hi Artem,
->>
->> On Fri, Oct 14, 2011 at 04:48:20PM +0300, Artem Bityutskiy wrote:
->> > On Wed, 2011-10-12 at 00:10 +0100, Jamie Iles wrote:
->> > > +#ifdef CONFIG_OF
->> > > +static const struct of_device_id gpio_nand_id_table[] =3D {
->> > > + { .compatible =3D "gpio-control-nand" },
->> > > + {}
->> > > +};
->> > > +MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
->> > ...
->> > > +#else /* CONFIG_OF */
->> > ...
->> > > +#endif /* CONFIG_OF */
->> >
->> > I wonder, why it is either OF of platform data? What if I want my kern=
-el
->> > to fall-back to platform data if device tree data is absent? What is t=
-he
->> > general policy? Sorry, I am not very well aware of the DT stuff. But o=
-ff
->>
->> I think the general policy is that for device tree everything should be
->> in the device tree. =A0There is a mechanism for device tree platforms to
->> pass platform data too, but I believe this is more as a tool for
->> migrating existing platforms to device tree.
->>
->> Also, the device tree binding should be well documented - if the device
->> is present in the tree it should have all of the required properties.
->> If the device isn't there at all then it won't get registered.
->>
->> > the top of my head, it is logical when things go like this: I have a
->> > kernel with working platform data, but I can change that dynamically b=
-y
->> > feeding it a device tree configuration. Hmm?
->>
->> I think in general platform data and device tree should be mutually
->> exclusive.
->
-> No, Artem is correct. =A0It is *not* okay to break platform_data support
-> simply by turning on CONFIG_OF. =A0The driver must be able to support
-> both, and to choose its data source at runtime.
->
-> Essentially, turning on CONFIG_OF adds the ability to boot with a
-> device tree while still being able to boot on legacy platforms.
+Currently jffs2 has compile-time constants (and .config options)
+controlling whether or not the various compression/decompression
+drivers are built in and enabled.  This is fine for embedded
+systems, but it clashes with distribution kernels.  Distro kernels
+tend to turn on everything; this causes OpenFirmware to fall
+over, as it understands ZLIB-compressed inodes.  Booting a kernel
+that has LZO compression enabled, writing to the boot partition,
+and then rebooting causes OFW to fail to read the kernel from
+the filesystem.  This is because LZO compression has priority
+when writing new data to jffs2, if LZO is enabled.
 
-Gah!  Double fail.  I completely misunderstood Artem's question and my
-own code.  I did have this ability in previous versions but somehow
-managed to kill it in v5 against my best intentions.
+This patch adds mount option parsing, and a single supported
+option ("compr=none").  This adds the flexibility of being
+able to specify which compressor overrides on a per-superblock
+basis.  For now, we can simply disable compression;
+additional flexibility coming soon.
 
-Artem, Grant, thanks for spotting this and steering me in the right directi=
-on!
+Signed-off-by: Andres Salomon <dilinger@queued.net>
+---
+ fs/jffs2/compr.c       |    9 ++++-
+ fs/jffs2/fs.c          |    2 +-
+ fs/jffs2/jffs2_fs_sb.h |    6 ++++
+ fs/jffs2/os-linux.h    |    2 +-
+ fs/jffs2/super.c       |   75 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 90 insertions(+), 4 deletions(-)
 
-Jamie
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index de42470..97bc74d 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -76,13 +76,18 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 			uint32_t *datalen, uint32_t *cdatalen)
+ {
+ 	int ret = JFFS2_COMPR_NONE;
+-	int compr_ret;
++	int mode, compr_ret;
+ 	struct jffs2_compressor *this, *best=NULL;
+ 	unsigned char *output_buf = NULL, *tmp_buf;
+ 	uint32_t orig_slen, orig_dlen;
+ 	uint32_t best_slen=0, best_dlen=0;
+ 
+-	switch (jffs2_compression_mode) {
++	if (c->mount_opts.override_compr)
++		mode = c->mount_opts.compr;
++	else
++		mode = jffs2_compression_mode;
++
++	switch (mode) {
+ 	case JFFS2_COMPR_MODE_NONE:
+ 		break;
+ 	case JFFS2_COMPR_MODE_PRIORITY:
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index bbcb975..5d54b4e 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -379,7 +379,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
+ 	jffs2_do_setattr(inode, &iattr);
+ }
+ 
+-int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
++int jffs2_do_remount_fs(struct super_block *sb, int *flags, char *data)
+ {
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+ 
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 0bc6a6c..55a0c1d 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -29,6 +29,11 @@
+ 
+ struct jffs2_inodirty;
+ 
++struct jffs2_mount_opts {
++	bool override_compr;
++	unsigned int compr;
++};
++
+ /* A struct for the overall file system control.  Pointers to
+    jffs2_sb_info structs are named `c' in the source code.
+    Nee jffs_control
+@@ -126,6 +131,7 @@ struct jffs2_sb_info {
+ #endif
+ 
+ 	struct jffs2_summary *summary;		/* Summary information */
++	struct jffs2_mount_opts mount_opts;
+ 
+ #ifdef CONFIG_JFFS2_FS_XATTR
+ #define XATTRINDEX_HASHSIZE	(57)
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 6c1755c..ab65ee3 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -176,7 +176,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags);
+ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode,
+ 			       struct jffs2_raw_inode *ri);
+ int jffs2_statfs (struct dentry *, struct kstatfs *);
+-int jffs2_remount_fs (struct super_block *, int *, char *);
++int jffs2_do_remount_fs(struct super_block *, int *, char *);
+ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent);
+ void jffs2_gc_release_inode(struct jffs2_sb_info *c,
+ 			    struct jffs2_inode_info *f);
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 853b8e3..bf40d3e 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -17,6 +17,7 @@
+ #include <linux/fs.h>
+ #include <linux/err.h>
+ #include <linux/mount.h>
++#include <linux/parser.h>
+ #include <linux/jffs2.h>
+ #include <linux/pagemap.h>
+ #include <linux/mtd/super.h>
+@@ -133,6 +134,73 @@ static const struct export_operations jffs2_export_ops = {
+ 	.fh_to_parent = jffs2_fh_to_parent,
+ };
+ 
++/*
++ * JFFS2 mount options.
++ *
++ * Opt_override_compr: override default compressor
++ * Opt_err: just end of array marker
++ */
++enum {
++	Opt_override_compr,
++	Opt_err,
++};
++
++static const match_table_t tokens = {
++	{Opt_override_compr, "compr=%s"},
++	{Opt_err, NULL},
++};
++
++static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
++{
++	substring_t args[MAX_OPT_ARGS];
++	char *p, *name;
++
++	if (!data)
++		return 0;
++
++	while ((p = strsep(&data, ","))) {
++		int token;
++
++		if (!*p)
++			continue;
++
++		token = match_token(p, tokens, args);
++		switch (token) {
++		case Opt_override_compr:
++			name = match_strdup(&args[0]);
++
++			if (!name)
++				return -ENOMEM;
++			if (!strcmp(name, "none")) {
++				c->mount_opts.compr = JFFS2_COMPR_MODE_NONE;
++				c->mount_opts.override_compr = true;
++			}
++			kfree(name);
++			break;
++		default:
++			printk(KERN_ERR "JFFS2 Error: unrecognized mount option '%s' or missing value\n",
++					p);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static int jffs2_remount_fs(struct super_block *sb, int *flags, char *data)
++{
++	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
++	int err;
++
++	err = jffs2_parse_options(c, data);
++	if (err) {
++		printk(KERN_ERR "JFFS2 error: invalid or unknown mount option\n");
++		return -EINVAL;
++	}
++
++	return jffs2_do_remount_fs(sb, flags, data);
++}
++
+ static const struct super_operations jffs2_super_operations =
+ {
+ 	.alloc_inode =	jffs2_alloc_inode,
+@@ -166,6 +234,13 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ 	c->os_priv = sb;
+ 	sb->s_fs_info = c;
+ 
++	ret = jffs2_parse_options(c, data);
++	if (ret) {
++		printk(KERN_ERR "JFFS2 error: invalid or unknown mount option\n");
++		kfree(c);
++		return -EINVAL;
++	}
++
+ 	/* Initialize JFFS2 superblock locks, the further initialization will
+ 	 * be done later */
+ 	mutex_init(&c->alloc_sem);
+-- 
+1.7.2.5
