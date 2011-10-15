@@ -1,25 +1,18 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1REuXw-0007CA-Ty
-	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2011 03:04:25 +0000
-Received: by pzk33 with SMTP id 33so2820033pzk.2
+	id 1REud1-0007Ez-3E
+	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2011 03:09:39 +0000
+Received: by iarr31 with SMTP id r31so3959844iar.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Oct 2011 20:04:17 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Fri, 14 Oct 2011 21:04:15 -0600
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Jamie Iles <jamie@jamieiles.com>
-Subject: Re: [PATCHv6] mtd: gpio-nand: add device tree bindings
-Message-ID: <20111015030415.GA8274@ponder.secretlab.ca>
-References: <1318374618-26573-1-git-send-email-jamie@jamieiles.com>
-	<1318600108.12351.130.camel@sauron> <20111014142149.GA25079@totoro>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20111014142149.GA25079@totoro>
-Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
-	devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	Fri, 14 Oct 2011 20:09:36 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: initialize ops.mode
+Date: Fri, 14 Oct 2011 20:09:33 -0700
+Message-Id: <1318648173-17775-1-git-send-email-computersforpeace@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 14, 2011 at 03:21:49PM +0100, Jamie Iles wrote:
-> Hi Artem,
-> 
-> On Fri, Oct 14, 2011 at 04:48:20PM +0300, Artem Bityutskiy wrote:
-> > On Wed, 2011-10-12 at 00:10 +0100, Jamie Iles wrote:
-> > > +#ifdef CONFIG_OF
-> > > +static const struct of_device_id gpio_nand_id_table[] = {
-> > > +	{ .compatible = "gpio-control-nand" },
-> > > +	{}
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, gpio_nand_id_table);
-> > ...
-> > > +#else /* CONFIG_OF */
-> > ...
-> > > +#endif /* CONFIG_OF */
-> > 
-> > I wonder, why it is either OF of platform data? What if I want my kernel
-> > to fall-back to platform data if device tree data is absent? What is the
-> > general policy? Sorry, I am not very well aware of the DT stuff. But off
-> 
-> I think the general policy is that for device tree everything should be 
-> in the device tree.  There is a mechanism for device tree platforms to 
-> pass platform data too, but I believe this is more as a tool for 
-> migrating existing platforms to device tree.
-> 
-> Also, the device tree binding should be well documented - if the device 
-> is present in the tree it should have all of the required properties.  
-> If the device isn't there at all then it won't get registered.
-> 
-> > the top of my head, it is logical when things go like this: I have a
-> > kernel with working platform data, but I can change that dynamically by
-> > feeding it a device tree configuration. Hmm?
-> 
-> I think in general platform data and device tree should be mutually 
-> exclusive.
+Our `ops' information was converted to a local variable recently, and
+apparently, old code relied on the fact that the global version was
+often left in a valid mode. We can't make this assumption on local
+structs, and we shouldn't be relying on a previous state anyway.
 
-No, Artem is correct.  It is *not* okay to break platform_data support
-simply by turning on CONFIG_OF.  The driver must be able to support
-both, and to choose its data source at runtime.
+Instead, we initialize mode to 0 for don't-care situations (i.e., the
+operation does not use OOB anyway) and MTD_OPS_PLACE_OOB when we want to
+place OOB data.
 
-Essentially, turning on CONFIG_OF adds the ability to boot with a
-device tree while still being able to boot on legacy platforms.
+This fixes a bug with nand_default_block_markbad(), where we catch on
+the BUG() call in nand_fill_oob():
 
-g.
+Kernel bug detected[#1]:
+...
+Call Trace:
+[<80307350>] nand_fill_oob.clone.5+0xa4/0x15c
+[<803075d8>] nand_do_write_oob+0x1d0/0x260
+[<803077c4>] nand_default_block_markbad+0x15c/0x1a8
+[<802e8c2c>] part_block_markbad+0x80/0x98
+[<802ebc74>] mtd_ioctl+0x6d8/0xbd0
+[<802ec1a4>] mtd_unlocked_ioctl+0x38/0x5c
+[<800d9c60>] do_vfs_ioctl+0xa4/0x6e4
+[<800da2e4>] sys_ioctl+0x44/0xa0
+[<8001381c>] stack_done+0x20/0x40
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 51653d9..3ed9c5e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -420,6 +420,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		ops.datbuf = NULL;
+ 		ops.oobbuf = buf;
+ 		ops.ooboffs = chip->badblockpos & ~0x01;
++		ops.mode = MTD_OPS_PLACE_OOB;
+ 		do {
+ 			ret = nand_do_write_oob(mtd, ofs, &ops);
+ 
+@@ -1596,6 +1597,7 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ops.len = len;
+ 	ops.datbuf = buf;
+ 	ops.oobbuf = NULL;
++	ops.mode = 0;
+ 
+ 	ret = nand_do_read_ops(mtd, from, &ops);
+ 
+@@ -2306,6 +2308,7 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
+ 	ops.oobbuf = NULL;
++	ops.mode = 0;
+ 
+ 	ret = nand_do_write_ops(mtd, to, &ops);
+ 
+@@ -2341,6 +2344,7 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
+ 	ops.oobbuf = NULL;
++	ops.mode = 0;
+ 
+ 	ret = nand_do_write_ops(mtd, to, &ops);
+ 
+-- 
+1.7.5.4
