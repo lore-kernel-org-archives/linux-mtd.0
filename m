@@ -1,24 +1,25 @@
-Received: from mga01.intel.com ([192.55.52.88])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RFRAl-0001Pm-V2
-	for linux-mtd@lists.infradead.org; Sun, 16 Oct 2011 13:54:41 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: "snijsure@grid-net.com" <snijsure@grid-net.com>
-Subject: Re: [PATCH  resend v2] Add security.selinux XATTR support for the
-	UBIFS. Also fix couple of bugs in UBIFS extended attribute storage
-Date: Sun, 16 Oct 2011 13:54:36 +0000
-Message-ID: <1318773259.7278.3.camel@sauron>
-References: <1318629018.26165.37.camel@subodh-desktop>
-In-Reply-To: <1318629018.26165.37.camel@subodh-desktop>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D92616CB6D40B04CA34055298AB525F7@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RFRJL-0001Wg-NX
+	for linux-mtd@lists.infradead.org; Sun, 16 Oct 2011 14:03:32 +0000
+Received: by wyg8 with SMTP id 8so740410wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 16 Oct 2011 07:03:28 -0700 (PDT)
+Subject: Re: [PATCH 1/2] jffs2: implement mount option parsing and
+	compression overriding
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Andres Salomon <dilinger@queued.net>
+Date: Sun, 16 Oct 2011 17:03:00 +0300
+In-Reply-To: <20111015125006.685efc30@queued.net>
+References: <20111015125006.685efc30@queued.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1318773789.7278.7.camel@sauron>
+Mime-Version: 1.0
 Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	mtd <linux-mtd@lists.infradead.org>, "Hunter,
-	Adrian" <adrian.hunter@intel.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,99 +29,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-W0NDaW5nIGZzLWRldmVsIG1haWxpbmcgbGlzdCwgcGxlYXNlLCBrZWVwIGl0IGluIENDXQ0KW1Bs
-ZWFzZSwgQ0MgZnMtZGV2ZWwgd2hlbiB5b3Ugc3VibWl0IHRoZSBuZXh0IHZlcnNpb25dDQoNCkdv
-b2Qgam9iIGluIGdlbmVyYWwsIHRoYW5rcyBhIGxvdC4gQnV0IEkgdGhpbmsgeW91IG5lZWQgdG8g
-d29yayBvbiB0aGlzDQpwYXRjaCBzb21lIG1vcmUuDQoNCkkgcmVtZW1iZXIgbG9uZyB0aW1lIGFn
-byB5b3Ugc2FpZCB5b3UgZm91bmQgYSBidWcgaW4gVUJJRlMgeGF0dHINCmhhbmRsaW5nIC0gY291
-bGQgeW91IHBsZWFzZSBzdWJtaXQgaXQgYXMgYSBzZXBhcmF0ZSBwYXRjaD8NCg0KRmlyc3QsIGZl
-dyBuaXRwaWNrczoNCg0KT24gRnJpLCAyMDExLTEwLTE0IGF0IDE0OjUwIC0wNzAwLCBTdWJvZGgg
-Tmlqc3VyZSB3cm90ZToNCj4gT25seSBjaGFuZ2Ugc2luY2UgdGhlIHByZXZpb3VzIHBhdGNoIGlz
-IHNvdXJjZSBjb2RlIGZvcm1hdCBjaGFuZ2VzLg0KDQoxLiBXaHkgeW91IHJlbW92ZWQgdGhlIHRl
-eHQgYWJvdXQgaG93IHlvdSB0ZXN0ZWQgdGhpcyB3aXRoIHNlbGludXg/DQogICBUaGF0IHRleHQg
-d2FzIGluY2x1ZGVkIHdoZW4geW91IHN1Ym1pdHRlZCB0aGUgcGF0Y2ggZmlyc3QgdGltZS4NCjIu
-IEJ1dCBwbGVhc2UsIGRvIG5vdCBwdXQgdGhhdCBiaWcgc2hlbGwgc2NyaXB0cyB0byBjb21taXQg
-bWVzc2FnZSA6LSkNCjMuIFBsZWFzZSwgY2xlYW4tdXAgdGhlIHN1YmplY3QgLSBpdCBzaG91bGQg
-YmUgc2hvcnRlci4NCjQuIFBsZWFzZSwgYWRkICJVQklGUzoiIHByZWZpeCB0byB0aGUgc3ViamVj
-dC4NCg0KDQo+IG1rZGlyIC1wIC90bXAvZmxhc2gwDQo+IG1vdW50IC10IHViaWZzIHViaTA6cm9v
-dC0wIC90bXAvZmxhc2gwDQo+IGludGVnY2sgLXAgL3RtcC9mbGFzaDAvDQoNCjUuIFBsZWFzZSwg
-cmVtb3ZlIHRoaXMgc2NyaXB0LCBpdCBpcyBlbm91Z2ggdG8gc2F5IHRoYXQgaW50ZWdjayB3YXMN
-CiAgIGhhcHB5Lg0KDQo2LiBUaGFua3MgZm9yIGFsaWduaW5nIHRoZSBzdHlsZSB3aXRoIHRoZSBv
-cmlnaW5hbCBVQklGUyBzdHlsZS4gSG93ZXZlciwNCiAgIHRoaXMgaXMgbm90IGV4YWN0bHkgaXQu
-IFlvdSBzaG91bGQgeW91IHRhYnMgZm9yIGluZGVudHMsIGFuZCBhdCB0aGUNCiAgIGVuZCB1c2Ug
-ZmV3IHNwYWNlcyB0byBmaW5lLXR1bmUgdGhlIGFsaWdubWVudC4gWW91IHNob3VsZCBuZXZlciBw
-dXQNCiAgIG1vcmUgdGhhbiA3IHNwYWNlcywgYmVjYXVzZSA4IHNwYWNlcyBpcyBhbHJlYWR5IG9u
-ZSB0YWIuDQoNCiAgIE9yIHRvIHB1dCBpdCBkaWZmZXJlbnRseSwgcnVuIGNoZWNrcGF0Y2gucGwg
-YW5kIHlvdSB3aWxsIHNlZSBlcnJvciAtDQogICBwbGVhc2UsIGZpeCB0aGVtLg0KDQo+IGRpZmYg
-LS1naXQgYS9mcy91Ymlmcy9kaXIuYyBiL2ZzL3ViaWZzL2Rpci5jDQo+IGluZGV4IDY4MzQ5MjAu
-LmI3NDRjZDggMTAwNjQ0DQo+IC0tLSBhL2ZzL3ViaWZzL2Rpci5jDQo+ICsrKyBiL2ZzL3ViaWZz
-L2Rpci5jDQo+IEBAIC0yNTMsNiArMjUzLDUyIEBAIG91dDoNCj4gIAlyZXR1cm4gRVJSX1BUUihl
-cnIpOw0KPiAgfQ0KPiAgDQo+ICtzdGF0aWMgdm9pZCB1Ymlmc19pbml0X3NlY3VyaXR5KHN0cnVj
-dCBkZW50cnkgKmRlbnRyeSwgc3RydWN0IGlub2RlDQo+ICppbm9kZSwNCj4gKwkJCQlzdHJ1Y3Qg
-aW5vZGUgKmRpcikNCg0KQ291bGQgeW91IHBsZWFzZSBzZW5kIGEgcGF0Y2ggd2hpY2ggaXMgbm90
-IGxpbmUtd3JhcHBlZD8gVHJ5ICdnaXQNCnNlbmQtbWFpbCcuIFRyeSB0byBzYXZlIHRoaXMgcGF0
-Y2ggYW5kIGFwcGx5IGl0IC0geW91IHdpbGwgc2VlIHdoeSBJDQpjb21wbGFpbjogaXQgd29uJ3Qg
-YXBwbHkuIEluIGdlbmVyYWwsIHlvdSBzaG91bGQgc2VuZCBwYXRjaGVzIHdoaWNoDQpvdGhlcnMg
-Y2FuIHNhdmUgYW5kIGp1c3QgYXBwbHkgd2l0aCAnZ2l0IGFtJy4NCg0KPiArew0KPiArCWludCBl
-cnI7DQo+ICsJY2hhciAqbmFtZTsNCj4gKwl2b2lkICp2YWx1ZSA9IE5VTEw7DQo+ICsJc2l6ZV90
-IGxlbiA9IDA7DQo+ICsJc3RydWN0IHViaWZzX2lub2RlICpkaXJfdWkgPSB1Ymlmc19pbm9kZShk
-aXIpOw0KPiArCWNvbnN0IHN0cnVjdCBxc3RyICpxbmFtZSA9ICZkZW50cnktPmRfbmFtZTsNCj4g
-Kw0KPiArCW11dGV4X2xvY2soJmRpcl91aS0+dWlfbXV0ZXgpOw0KPiArCW11dGV4X2xvY2soJmRl
-bnRyeS0+ZF9pbm9kZS0+aV9tdXRleCk7DQo+ICsJZXJyID0gc2VjdXJpdHlfaW5vZGVfaW5pdF9z
-ZWN1cml0eShpbm9kZSwgZGlyLCBxbmFtZSwgJm5hbWUsICZ2YWx1ZSwNCj4gKwkJJmxlbik7DQoN
-ClBsZWFzZSwgYWxpZ24gbGVuIHRvIHRoZSAiaW5vZGUiIHVzaW5nIGZpcnN0IHRhYnMgdGhlbiBm
-ZXcgc3BhY2VzLCB0byBiZSBvZg0KdGhlIHNhbWUgc3R5bGUgYXMgdGhlIHJlc3Qgb2YgdGhlIGNv
-ZGUuDQoNCj4gKwlpZiAoZXJyKSB7DQo+ICsJCWlmIChlcnIgPT0gLUVPUE5PVFNVUFApDQo+ICsN
-CgkJCXJldHVybjsNCkkgYmVsaWV2ZSB5b3UgbWVhbnQ6DQoNCmlmIChlcnIgPT0gLUVPUE5PVFNV
-UFApDQoJdWJpZnNfZXJyKCJ1bmFibGUgdG8gcmV0cmlldmUgc2VjdXJpdHkgY29udGV4dCwgZXJy
-b3IgJWQiLCBlcnIpOw0KDQpPciB5b3UgcmVhbGx5IG1lYW50IHRvIHJldHVybiB3aXRob3V0IHVu
-bG9ja2luZyB0aGUgbXV0ZXhlcz8NCg0KPiArCQl1Ymlmc19lcnIoInVuYWJsZSB0byByZXRyaWV2
-ZSBzZWN1cml0eSBjb250ZXh0LCBlcnJvciAlZCIsIGVycik7DQo+ICsJCW11dGV4X3VubG9jaygm
-ZGVudHJ5LT5kX2lub2RlLT5pX211dGV4KTsNCj4gKwkJbXV0ZXhfdW5sb2NrKCZkaXJfdWktPnVp
-X211dGV4KTsNCj4gKwkJcmV0dXJuOw0KDQpSZW1vdmUgMyBhYm92ZSBsaW5lcyBhbmQgcHV0Og0K
-DQoJCWdvdG8gb3V0X3VubG9jazsNCg0KaW5zdGVhZC4NCg0KPiArCX0NCj4gKw0KPiArCWlmIChz
-dHJuY21wKG5hbWUsICJzZWxpbnV4Iiwgc3RybGVuKCJzZWxpbnV4IikpID09IDApIHsNCj4gKwkJ
-a2ZyZWUobmFtZSk7DQo+ICsJCW5hbWUgPSBrc3RyZHVwKCJzZWN1cml0eS5zZWxpbnV4IiwgR0ZQ
-X05PRlMpOw0KDQpTb3JyeSwgbm8sIHlvdSBzaG91bGQgbm90IHJlLWFsbG9jYXRlIHRoaXMsIHRo
-aXMgaXMgbm90IGEgY2xlYW4gYXBwcm9hY2guDQpQbGVhc2UsIHRha2UgYSBsb29rIGF0IGV4dDQg
-YW5kIHRyeSB0byBtb2RlbCBhZnRlciB0aGVpciBjb2RlLiBXZWxsLA0KdGhleSBwcm9iYWJseSBk
-byBtb3JlIHRoYW4geW91IG5lZWQsIHNvIGRvIG5vdCBjb3B5IGV2ZXJ5dGhpbmcgYmxpbmRseQ0K
-b2YgY291cnNlLg0KDQpJbiB0aGVvcnksIHRoaXMgY29kZSBzaG91bGQgYmUgdGhlIHNhbWUgZm9y
-IGFueSBMU00gLSB3aGV0aGVyIGl0IGlzDQpzZWxpbnV4IG9yIHNtYWNrLiBZb3UgcmVhbGx5IHNo
-b3VsZCBub3QgaGF2ZSAnc3RyY21wKG5hbWUsICJzZWxpbnV4IiknDQp0aGluZ3MuDQoNCkFsc28s
-IEkgc3Ryb25nbHkgc3VzcGVjdCB0aGF0IGV4dDQgZG9lcyBub3Qgc3RvcmUgdGhlICdzZWN1cml0
-eS4nIHBhcnQNCm9uIHRoZSBtZWRpYSAtIGJ1dCBJIGRpZCBub3QgY2hlY2sgdGhpcyBmb3Igc3Vy
-ZSBhbmQgbGVhdmUgdGhpcyBhY3Rpdml0eQ0KdG8geW91IDotKSBJZiBpdCBkb2VzIG5vdCwgd2Ug
-YWxzbyBzaG91bGQgbm90IGRvIHRoaXMuDQoNCj4gKwkJaWYgKCFuYW1lKSB7DQo+ICsJCQl1Ymlm
-c19lcnIoInVuYWJsZSB0byBzZXQgc2VjdXJpdHkgY29udGV4dCAlLipzIGVycm9yIiwNCj4gKwkJ
-CQkgIGRlbnRyeS0+ZF9uYW1lLmxlbiwgZGVudHJ5LT5kX25hbWUubmFtZSk7DQo+ICsJCQlrZnJl
-ZSh2YWx1ZSk7DQo+ICsJCQltdXRleF91bmxvY2soJmRlbnRyeS0+ZF9pbm9kZS0+aV9tdXRleCk7
-DQo+ICsJCQltdXRleF91bmxvY2soJmRpcl91aS0+dWlfbXV0ZXgpOw0KPiArCQkJcmV0dXJuOw0K
-PiArCQl9DQo+ICsJfQ0KDQpTbywgdGFraW5nIGludG8gYWNjb3VudCB3aGF0IEkgc2FpZCBhYm92
-ZSwgSSB0aGluayB3aG9sZSB0aGlzIGJsb2NrIHNob3VsZA0KZGllLg0KDQpXZWxsLCBJIHBlcnNv
-bmFsbHkgZG8gbm90IGhhdmUgb2JqZWN0aW9ucyBpZiB5b3UgZG8gbm90IHRlc3Qgc21hY2suDQpP
-ZiBjb3Vyc2UgaXQgd291bGQgYmUgZ3JlYXQgaWYgeW91IGRpZCwgYnV0IEkgYW0gZmluZSBpZiB5
-b3UgcHV0DQpzb21ldGhpbmcgbGlrZSB0aGlzIGhlcmUgYW5kIGxlYXZlIHRoZSBzbWFjayBleGVy
-Y2lzZSBmb3Igc29tZW9uZQ0Kd2hvIHVzZXMgaXQ6DQoNCi8qIFdlIHRlc3RlZCBvbmx5IFNFbGlu
-dXgsIHNvcnJ5ICovDQppZiAoc3RyY21wKG5hbWUsIFhBVFRSX1NFTElOVVhfU1VGRklYKQ0KCWdv
-dG8gb3V0X2ZyZWU7DQoNCg0KPiArCWVyciA9IHViaWZzX3NldHhhdHRyKGRlbnRyeSwgbmFtZSwg
-dmFsdWUsIGxlbiwgMCk7DQo+ICsJaWYgKGVycikNCj4gKwkJdWJpZnNfZXJyKCJ1bmFibGUgdG8g
-c2V0IHNlY3VyaXR5IGNvbnRleHQgbmFtZSAlLipzIGVycm9yICVkIiwNCj4gKwkJCSAgZGVudHJ5
-LT5kX25hbWUubGVuLCBkZW50cnktPmRfbmFtZS5uYW1lLCBlcnIpOw0KDQpTbywgcHJvYmFibHkg
-eW91IG5lZWQgdG8gcGFzcyB0aGUgWEFUVFJfU0VDVVJJVFlfUFJFRklYIGludG8gdGhpcyBmdW5j
-dGlvbg0KYW5kIGxldCBpdCBkZWFsIHdpdGggdGhlIG5hbWUuIFByb2JhYmx5IHlvdSBjYW4gYWRk
-IG9uZSBtb3JlIHBhcmFtZXRlciB0bw0KdGhpcyBmdW5jdGlvbiwgc2F5LCAicHJlZml4Ii4gIEZv
-ciBub24tc2VjdXJpdHkgY2FzZXMgaXQgd291bGQgYmUgTlVMTCwNCm90aGVyd2lzZSAtIFhBVFRS
-X1NFQ1VSSVRZX1BSRUZJWC4NCg0KUGxlYXNlLCBtYWtlIHRoYXQgdG8gYmUgYSBfc2VwYXJhdGVf
-IHBhdGNoLg0KDQo+ICsJa2ZyZWUobmFtZSk7DQpvdXRfZnJlZToNCj4gKwlrZnJlZSh2YWx1ZSk7
-DQpvdXRfdW5sb2NrOg0KPiArCW11dGV4X3VubG9jaygmZGVudHJ5LT5kX2lub2RlLT5pX211dGV4
-KTsNCj4gKwltdXRleF91bmxvY2soJmRpcl91aS0+dWlfbXV0ZXgpOw0KPiArfQ0KDQoNCi0tIA0K
-QmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIEZpbmxh
-bmQgT3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgxIEhlbHNpbmtpIApCdXNpbmVz
-cyBJZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVkIGluIEhlbHNpbmtpIAoKVGhp
-cyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgbWF0
-ZXJpYWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBBbnkg
-cmV2aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4g
-SWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhl
-IHNlbmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
+Hi,
+
+please, cc the fs-devel mailing list when you sumbit v2.
+
+On Sat, 2011-10-15 at 12:50 -0700, Andres Salomon wrote:
+> Currently jffs2 has compile-time constants (and .config options)
+> controlling whether or not the various compression/decompression
+> drivers are built in and enabled.  This is fine for embedded
+> systems, but it clashes with distribution kernels.  Distro kernels
+> tend to turn on everything; this causes OpenFirmware to fall
+> over, as it understands ZLIB-compressed inodes.  Booting a kernel
+> that has LZO compression enabled, writing to the boot partition,
+> and then rebooting causes OFW to fail to read the kernel from
+> the filesystem.  This is because LZO compression has priority
+> when writing new data to jffs2, if LZO is enabled.
+> 
+> This patch adds mount option parsing, and a single supported
+> option ("compr=none").  This adds the flexibility of being
+> able to specify which compressor overrides on a per-superblock
+> basis.  For now, we can simply disable compression;
+> additional flexibility coming soon.
+> 
+> Signed-off-by: Andres Salomon <dilinger@queued.net>
+
+You forgot to implement .show_options method of
+'struct super_operations' - it is needed to make sure 'compr=none'
+is shown when you do 'cat /proc/mounts'.
+
+
+> +	err = jffs2_parse_options(c, data);
+> +	if (err) {
+> +		printk(KERN_ERR "JFFS2 error: invalid or unknown mount option\n");
+
+'jffs2_parse_options()' prints the error message, do not duplicate it
+please.
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	return jffs2_do_remount_fs(sb, flags, data);
+> +}
+> +
+>  static const struct super_operations jffs2_super_operations =
+>  {
+>  	.alloc_inode =	jffs2_alloc_inode,
+> @@ -166,6 +234,13 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+>  	c->os_priv = sb;
+>  	sb->s_fs_info = c;
+>  
+> +	ret = jffs2_parse_options(c, data);
+> +	if (ret) {
+> +		printk(KERN_ERR "JFFS2 error: invalid or unknown mount option\n");
+
+Ditto - kill this printk please.
+
+
+-- 
+Best Regards,
+Artem Bityutskiy
