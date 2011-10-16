@@ -1,23 +1,18 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from fw.wantstofly.org ([80.101.37.227] helo=mail.wantstofly.org)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RFRmy-00021H-MO
-	for linux-mtd@lists.infradead.org; Sun, 16 Oct 2011 14:34:09 +0000
-Received: from [192.168.12.102] (137.sub-166-250-6.myvzw.com [166.250.6.137])
-	by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id p9GEY4BO098058
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 16 Oct 2011 07:34:06 -0700 (PDT)
-	(envelope-from mikedunn@newsguy.com)
-Message-ID: <4E9AEB36.7000806@newsguy.com>
-Date: Sun, 16 Oct 2011 07:33:26 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+	id 1RFZkn-0000I9-Iz
+	for linux-mtd@lists.infradead.org; Sun, 16 Oct 2011 23:04:26 +0000
+Date: Mon, 17 Oct 2011 01:04:18 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Kevin Paul Herbert <kevin.herbert@meraki.net>
+Subject: Re: Re: [PATCH] mtd m25p80: add support for Macronix MX25L12805D
+Message-ID: <20111016230418.GF18227@wantstofly.org>
+References: <63A7EBF6-2A5D-4607-AA5C-CC8F3ED0C29B@meraki.net>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: nand_base.c:nand_get_flash_type() test results
-References: <4E95B1B4.7040603@st.com>
-In-Reply-To: <4E95B1B4.7040603@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63A7EBF6-2A5D-4607-AA5C-CC8F3ED0C29B@meraki.net>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/12/2011 08:26 AM, Angus CLARK wrote:
-> Hi All,
->
-> While attempting to add support for some of the more recent NAND devices, I
-> ended up refactoring nand_get_flash_type() code.  The refactoring was primarily
-> aimed at simplifying the way in which the growing number 'READID' decoding
-> exceptions could be accommodated.
->
+On Sat, Oct 15, 2011 at 05:32:42PM -0700, Kevin Paul Herbert wrote:
 
-I am currently grappling with this issue with my driver for the diskonchip G4,
-which is an MLC nand under the hood, but has a proprietary controller around it
-which doesn't interact as a "typical" NAND device.  Specific to this topic, it
-doesn't respond to NAND_READID commands.  My solution was to skip the call to
-nand_scan_ident(), which calls nand_get_flash_type().  Instead, I do all the
-initializations done by nand_get_flash_type() within my driver. 
+> Is there a reason that you did not include SECT_4K for the MX25L12805D?
+> The chips that I have support it, and its in the data sheet. Was this
+> an oversight or is there a problem with some chips?
 
-Any thoughts or suggestions appreciated.
-
-Thanks,
-Mike
+An oversight.  If SECT_4K works for you (I don't have hardware to test
+with anymore), go ahead and submit a patch.
