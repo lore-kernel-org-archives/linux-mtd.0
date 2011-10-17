@@ -1,18 +1,38 @@
-Received: from lunge.queued.net ([173.255.254.236])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RFbnZ-00013u-Tp
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 01:15:27 +0000
-Date: Sun, 16 Oct 2011 18:15:23 -0700
-From: Andres Salomon <dilinger@queued.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 2/2] jffs2: add compr=lzo and compr=zlib options
-Message-ID: <20111016181523.5c3a7234@queued.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from as-mail-p6.techem.de ([195.242.190.4])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RFivx-0003bw-4B
+	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 08:52:34 +0000
+Received: from AS-MAIL-P6.techem.de ([10.41.224.23])
+	by localhost (as-mail-p3.techem.de [10.41.224.25]) (amavisd-new,
+	port 10024)
+	with ESMTP id 21959-06 for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2011 10:54:47 +0200 (CEST)
+Received: from mx-crypt-p2.techem.de (mx-crypt-p2.techem.de [10.41.224.9])
+	by AS-MAIL-P6.techem.de (Postfix) with ESMTP id 258B44E
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2011 10:52:30 +0200 (CEST)
+Received: from mx-crypt-p2.techem.de (localhost [127.0.0.1])
+	by mx-crypt-p2.techem.de (Postfix) with ESMTP id F03A0EC40A8
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
+Received: from AS-MAIL-P8.techem.de (as-mail-p8.techem.de [10.50.224.25])
+	by mx-crypt-p2.techem.de (Postfix) with ESMTP id CF669EC402D
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
+Received: from mx-be-2.eu.techem.corp (unknown [10.155.224.72])
+	by AS-MAIL-P8.techem.de (Postfix) with ESMTP id D5C265B8
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Understanding page size in jffs2- and kernel-source
+Date: Mon, 17 Oct 2011 10:52:29 +0200
+Message-ID: <CC01CB1DD69AA74C86C6E8D4EAF42403081C7203@mx-be-2.eu.techem.corp>
+From: "Freise, Bjoern-Achim" <bjoern-achim.freise@techem.de>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,234 +42,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-..to allow forcing of either compression scheme.  This will override
-compiled-in defaults.  jffs2_compress is reworked a bit, as the lzo/zlib
-override shares lots of code w/ the PRIORITY mode.
+Hello,
+=20
+we are using Kernel 2.6.28 with mtd-utils 1.0.1 on an ARM at91sam9260 =
+with a NAND flash with 512 byte pages an 16k erase size. And now I'm =
+trying to understand a few things:
+=20
+1) In the kernel source it has PAGE_SIZE and PAGE_CACHE_SIZE with 4096. =
+These defines are used in the jffs2 implementation. Is that correct when =
+using 512 byte pages in a NAND device?
+=20
+2) In our build-environment our image is created with "mkfs.jffs2 .... =
+--page-size=3D512.... ". I guess this doesn't match with the above?
+=20
+3) What should I use for a good performance (page_size and/or with/out =
+compression) when using a large (~ 16MB) sqlite-file?
+=20
+I'm really unsure with these things.
+=20
+Regards,
+Bj=F6rn Freise
 
-v2: update show_options accordingly.
 
-Signed-off-by: Andres Salomon <dilinger@queued.net>
----
- fs/jffs2/compr.c |  119 ++++++++++++++++++++++++++++++++++++++----------------
- fs/jffs2/compr.h |    2 +
- fs/jffs2/super.c |   26 +++++++++++-
- 3 files changed, 110 insertions(+), 37 deletions(-)
+Energiesparen mit adapterm. Mehr Infos unter http://www.techem.de/adapterm
+__________________________________________
 
-diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-index 97bc74d..5b6c9d1 100644
---- a/fs/jffs2/compr.c
-+++ b/fs/jffs2/compr.c
-@@ -53,6 +53,78 @@ static int jffs2_is_best_compression(struct jffs2_compressor *this,
- 	return 0;
- }
- 
-+/*
-+ * jffs2_selected_compress:
-+ * @compr: Explicit compression type to use (ie, JFFS2_COMPR_ZLIB).
-+ *	If 0, just take the first available compression mode.
-+ * @data_in: Pointer to uncompressed data
-+ * @cpage_out: Pointer to returned pointer to buffer for compressed data
-+ * @datalen: On entry, holds the amount of data available for compression.
-+ *	On exit, expected to hold the amount of data actually compressed.
-+ * @cdatalen: On entry, holds the amount of space available for compressed
-+ *	data. On exit, expected to hold the actual size of the compressed
-+ *	data.
-+ *
-+ * Returns: the compression type used.  Zero is used to show that the data
-+ * could not be compressed; probably because we couldn't find the requested
-+ * compression mode.
-+ */
-+static int jffs2_selected_compress(u8 compr, unsigned char *data_in,
-+		unsigned char **cpage_out, u32 *datalen, u32 *cdatalen)
-+{
-+	struct jffs2_compressor *this;
-+	int err, ret = JFFS2_COMPR_NONE;
-+	uint32_t orig_slen, orig_dlen;
-+	char *output_buf;
-+
-+	output_buf = kmalloc(*cdatalen, GFP_KERNEL);
-+	if (!output_buf) {
-+		printk(KERN_WARNING "JFFS2: No memory for compressor allocation. Compression failed.\n");
-+		return ret;
-+	}
-+	orig_slen = *datalen;
-+	orig_dlen = *cdatalen;
-+	spin_lock(&jffs2_compressor_list_lock);
-+	list_for_each_entry(this, &jffs2_compressor_list, list) {
-+		/* Skip decompress-only and disabled modules */
-+		if (!this->compress || this->disabled)
-+			continue;
-+
-+		/* Skip if not the desired compression type */
-+		if (compr && (compr != this->compr))
-+			continue;
-+
-+		/*
-+		 * Either compression type was unspecified, or we found our
-+		 * compressor; either way, we're good to go.
-+		 */
-+		this->usecount++;
-+		spin_unlock(&jffs2_compressor_list_lock);
-+
-+		*datalen  = orig_slen;
-+		*cdatalen = orig_dlen;
-+		err = this->compress(data_in, output_buf, datalen, cdatalen);
-+
-+		spin_lock(&jffs2_compressor_list_lock);
-+		this->usecount--;
-+		if (!err) {
-+			/* Success */
-+			ret = this->compr;
-+			this->stat_compr_blocks++;
-+			this->stat_compr_orig_size += *datalen;
-+			this->stat_compr_new_size += *cdatalen;
-+			break;
-+		}
-+	}
-+	spin_unlock(&jffs2_compressor_list_lock);
-+	if (ret == JFFS2_COMPR_NONE)
-+		kfree(output_buf);
-+	else
-+		*cpage_out = output_buf;
-+
-+	return ret;
-+}
-+
- /* jffs2_compress:
-  * @data_in: Pointer to uncompressed data
-  * @cpage_out: Pointer to returned pointer to buffer for compressed data
-@@ -91,37 +163,8 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 	case JFFS2_COMPR_MODE_NONE:
- 		break;
- 	case JFFS2_COMPR_MODE_PRIORITY:
--		output_buf = kmalloc(*cdatalen,GFP_KERNEL);
--		if (!output_buf) {
--			printk(KERN_WARNING "JFFS2: No memory for compressor allocation. Compression failed.\n");
--			goto out;
--		}
--		orig_slen = *datalen;
--		orig_dlen = *cdatalen;
--		spin_lock(&jffs2_compressor_list_lock);
--		list_for_each_entry(this, &jffs2_compressor_list, list) {
--			/* Skip decompress-only backwards-compatibility and disabled modules */
--			if ((!this->compress)||(this->disabled))
--				continue;
--
--			this->usecount++;
--			spin_unlock(&jffs2_compressor_list_lock);
--			*datalen  = orig_slen;
--			*cdatalen = orig_dlen;
--			compr_ret = this->compress(data_in, output_buf, datalen, cdatalen);
--			spin_lock(&jffs2_compressor_list_lock);
--			this->usecount--;
--			if (!compr_ret) {
--				ret = this->compr;
--				this->stat_compr_blocks++;
--				this->stat_compr_orig_size += *datalen;
--				this->stat_compr_new_size  += *cdatalen;
--				break;
--			}
--		}
--		spin_unlock(&jffs2_compressor_list_lock);
--		if (ret == JFFS2_COMPR_NONE)
--			kfree(output_buf);
-+		ret = jffs2_selected_compress(0, data_in, cpage_out, datalen,
-+				cdatalen);
- 		break;
- 	case JFFS2_COMPR_MODE_SIZE:
- 	case JFFS2_COMPR_MODE_FAVOURLZO:
-@@ -179,22 +222,28 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 			best->stat_compr_orig_size += best_slen;
- 			best->stat_compr_new_size  += best_dlen;
- 			ret = best->compr;
-+			*cpage_out = output_buf;
- 		}
- 		spin_unlock(&jffs2_compressor_list_lock);
- 		break;
-+	case JFFS2_COMPR_MODE_FORCELZO:
-+		ret = jffs2_selected_compress(JFFS2_COMPR_LZO, data_in,
-+				cpage_out, datalen, cdatalen);
-+		break;
-+	case JFFS2_COMPR_MODE_FORCEZLIB:
-+		ret = jffs2_selected_compress(JFFS2_COMPR_ZLIB, data_in,
-+				cpage_out, datalen, cdatalen);
-+		break;
- 	default:
- 		printk(KERN_ERR "JFFS2: unknown compression mode.\n");
- 	}
-- out:
-+
- 	if (ret == JFFS2_COMPR_NONE) {
- 		*cpage_out = data_in;
- 		*datalen = *cdatalen;
- 		none_stat_compr_blocks++;
- 		none_stat_compr_size += *datalen;
- 	}
--	else {
--		*cpage_out = output_buf;
--	}
- 	return ret;
- }
- 
-diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
-index 13bb759..5e91d57 100644
---- a/fs/jffs2/compr.h
-+++ b/fs/jffs2/compr.h
-@@ -40,6 +40,8 @@
- #define JFFS2_COMPR_MODE_PRIORITY   1
- #define JFFS2_COMPR_MODE_SIZE       2
- #define JFFS2_COMPR_MODE_FAVOURLZO  3
-+#define JFFS2_COMPR_MODE_FORCELZO   4
-+#define JFFS2_COMPR_MODE_FORCEZLIB  5
- 
- #define FAVOUR_LZO_PERCENT 80
- 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 40f6e63..e7e9744 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -82,6 +82,14 @@ static const char *jffs2_compr_name(unsigned int compr)
- 	switch (compr) {
- 	case JFFS2_COMPR_MODE_NONE:
- 		return "none";
-+#ifdef CONFIG_JFFS2_LZO
-+	case JFFS2_COMPR_MODE_FORCELZO:
-+		return "lzo";
-+#endif
-+#ifdef CONFIG_JFFS2_ZLIB
-+	case JFFS2_COMPR_MODE_FORCEZLIB:
-+		return "zlib";
-+#endif
- 	default:
- 		/* should never happen; programmer error */
- 		WARN_ON(1);
-@@ -195,11 +203,25 @@ static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
- 
- 			if (!name)
- 				return -ENOMEM;
--			if (!strcmp(name, "none")) {
-+			if (!strcmp(name, "none"))
- 				c->mount_opts.compr = JFFS2_COMPR_MODE_NONE;
--				c->mount_opts.override_compr = true;
-+#ifdef CONFIG_JFFS2_LZO
-+			else if (!strcmp(name, "lzo"))
-+				c->mount_opts.compr = JFFS2_COMPR_MODE_FORCELZO;
-+#endif
-+#ifdef CONFIG_JFFS2_ZLIB
-+			else if (!strcmp(name, "zlib"))
-+				c->mount_opts.compr =
-+						JFFS2_COMPR_MODE_FORCEZLIB;
-+#endif
-+			else {
-+				printk(KERN_ERR "JFFS2 Error: unknown compressor \"%s\"",
-+						name);
-+				kfree(name);
-+				return -EINVAL;
- 			}
- 			kfree(name);
-+			c->mount_opts.override_compr = true;
- 			break;
- 		default:
- 			printk(KERN_ERR "JFFS2 Error: unrecognized mount option '%s' or missing value\n",
--- 
-1.7.2.5
+Techem Energy Services GmbH
+Sitz der Gesellschaft: Eschborn
+Amtsgericht Frankfurt am Main: HRB 74732
+Geschaeftsfuehrung: Hans-Lothar Schaefer (Vors.), Steffen Baetjer, Dr. Rolf Weber
+Aufsichtsrat: Hilko Schomerus (Vors.)
+
+This e-mail and any attachment thereto contains confidental and/or privileged information. If you are not the intended recipient or have received this e-mail in error, please notify the sender immediately and delete this e-mail and any attachment thereto from your system. Any unauthorized retention, copying, transmission, distribution, disclosure or use of the content of this e-mail and/or any attachment thereto is prohibited. Techem is not liable for any omission or error in this e-mail and/or any attachment thereto which may arise as a result of the e-mail-transmission or for damages resulting from any unauthorized change of the content of this e-mail and/or any attachment thereto.
+
+Thank You
+Techem Energy Services GmbH
+
+
+Der Inhalt dieser E-Mail und ihrer Anhaenge ist vertraulich und kann rechtlich geschuetzte Informationen enthalten. Falls Sie nicht der richtige Adressat sind oder diese E-Mail irrtuemlich erhalten haben, informieren Sie bitte umgehend den Absender und vernichten Sie diese E-Mail und ihre Anhaenge. Jegliche Offenlegung, Vervielfaeltigung, Weitergabe oder Nutzung des Inhalts dieser Email oder ihrer Anhaenge ist untersagt. Techem haftet nicht fuer Unvollstaendigkeiten und Fehler in dieser E-Mail und /oder ihren Anhaengen, die als Folge der Uebersendung auftreten, oder  fuer Schaeden, die infolge unerlaubter Aenderungen des Inhalts dieser E-Mail und/oder ihrer Anhaenge entstehen.
+
+Vielen Dank
+Techem Energy Services GmbH
