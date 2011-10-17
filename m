@@ -1,22 +1,18 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RFtku-0007GM-GF
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 20:25:53 +0000
-Received: by bkbc12 with SMTP id c12so8668484bkb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 13:25:49 -0700 (PDT)
-Subject: Re: UBIFS recovery fails
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Kuhn <cheeef@swissonline.ch>
-In-Reply-To: <4E9C2DAC.7090109@swissonline.ch>
-References: <4E9C2DAC.7090109@swissonline.ch>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 17 Oct 2011 23:17:48 +0300
-Message-ID: <1318882668.2172.10.camel@koala>
-Mime-Version: 1.0
+Received: from mail.grid-net.com ([97.65.115.2])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RFuuK-0008Hb-Kz
+	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 21:39:41 +0000
+Message-ID: <4E9CA094.4090002@grid-net.com>
+Date: Mon, 17 Oct 2011 14:39:32 -0700
+From: Steve Iribarne <siribarne@grid-net.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: Need to recover from corruption
+References: <4E975135.9090702@grid-net.com> <1318765406.2935.7.camel@sauron>
+In-Reply-To: <1318765406.2935.7.camel@sauron>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +22,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-10-17 at 15:29 +0200, Daniel Kuhn wrote:
-> Hi,
-> 
-> I have a problem with a device which uses UBI + UBIFS on a 32GB NAND 
-> Flash (16*2GB). The
-> filesystem worked without problems for a couple of months but now I get 
-> an error if I try to mount the volume.
-> Attaching the UBI-Device works fine as you can see in the following 
-> messages:
+On 10/16/2011 04:43 AM, Artem Bityutskiy wrote:
+> On Thu, 2011-10-13 at 13:59 -0700, Steve Iribarne wrote:
+>> I work on a system where we need to be as 100% uptime as possible.  The
+>> other day we had an issue here where one of our applications was
+>> crashing while a write to one of the partitions was happening.
+>>
+>> I then turned on UBIFS debugging in u-boot and I have a bunch of info
+>> but I have no idea what is going on.
+> Well, judging from the log UBIFS went nuts for some reason (negative
+> free space). I've never seen this before.
+>
+> Could you please write some more information about your system, flash,
+> kernel version, etc. Please, follow these instructions:
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
 
-This issue looks like one of the MLC-specific ones. Unfortunately,
-no one really invested time into making UBIFS support MLC very well.
-It needs some more work. It also have some issues related to unstable
-bits in modern SLC.
+I'm working on getting this info for you now.
+>> Here is the output after (at the u-boot) prompt I do:
+>>
+>> ubi part nand0,1
+>> ubifsmount boot-info
+> So this problem happens all the time when you boot? Or how reproducible
+> is it?
+>
 
-In short - if you want to use UBIFS on MLC - you should not have unclean
-reboots. If you want to make UBIFS 100% uclean-reboot save on MLC - you
-need to work on it some more.
+I have one board in this state now.  Once I get into this state it stays 
+there until I re-"ubinize" it.
 
-We (the original authors) developed and tested it on very robust SLC
-NAND.
+So I'm leaving this one board in this state to see if I can recover it.
+> If this problem is reproducible, make a dump of your flash to save it
+> for further investigations.
+>
+Will do.
 
-Unfortunately, I do not work with MTD for few years already and have
-no spare time to make it MLC-robust. My last attempt was this spring -
-I started making integck test (in mtd-utils) support emulated power
-cuts. The idea was to improve UBIFS power-cut emulation infrastructure
-and make it emulating unstable bits, and then test and fix all issues.
-But then I realized that I simply will not have time to finish it,
-so left the work half-done.
+The way in which our QA makes it happen (and this is very hard to 
+reproduce)..
 
-If someone wants to see UBIFS 100% or near 100% power-cut safe on
-MLC or one of shitty modern SLCs - he needs to invest men-hours.
-I can help by suggesting and reviewing. Although the funny thing is
-that eMMCs die and lose data in case of power cuts very often :-)
+The volume that is corrupt is "boot-info".
 
-> UBI: wear-leveling threshold:    4096
-Are you sure it is good for MLC? What is your eraseblock life-cycle?
+In Linux, the user deleted a file in boot-info and does a reboot 
+straight away.
 
-> Is there a way to recover the data on the device?
+I think it has to do when the system actually reboots.
 
-If you just have precious data which you need - I think:
-1. Make a dump of the flash.
-2. Verify that on another device you can flash it and reproduce this
-issue.
-3. Just hack the function in kernel that fails to return 0 instead
-of error for that case, and I think you will be able to mount your
-flash and copy your data.
+We have reproduced this problem also when we had a hang in the kernel 
+(which stopped the scheduler) and then our watchdog kicked in.  I'm 
+guess some of the app guys were writing to the flash in the /home/conf 
+volume.
 
-But if you want this to never happen again - you need to prepare
-for a several months project (providing you have a good kernel
-engineer).
+This only happened twice in all our testing.
 
-HTH :-)
+But I'll be much more verbose in the bug.
+
+-stv
+
+-- 
+
+This e-mail and any of its attachments may contain proprietary
+information, which is privileged, confidential or subject to copyright
+belonging to Grid Net, Inc. This e-mail is intended solely for the use
+of the individual or entity to which it is addressed. If you are not the
+intended recipient, you are hereby notified that any dissemination,
+distribution, copying or action taken in relation to the contents of
+this e-mail is strictly prohibited and may be unlawful. If you have
+received this e-mail in error, please notify the sender immediately and
+permanently delete.
