@@ -1,38 +1,25 @@
-Received: from as-mail-p6.techem.de ([195.242.190.4])
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RFivx-0003bw-4B
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 08:52:34 +0000
-Received: from AS-MAIL-P6.techem.de ([10.41.224.23])
-	by localhost (as-mail-p3.techem.de [10.41.224.25]) (amavisd-new,
-	port 10024)
-	with ESMTP id 21959-06 for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 10:54:47 +0200 (CEST)
-Received: from mx-crypt-p2.techem.de (mx-crypt-p2.techem.de [10.41.224.9])
-	by AS-MAIL-P6.techem.de (Postfix) with ESMTP id 258B44E
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 10:52:30 +0200 (CEST)
-Received: from mx-crypt-p2.techem.de (localhost [127.0.0.1])
-	by mx-crypt-p2.techem.de (Postfix) with ESMTP id F03A0EC40A8
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
-Received: from AS-MAIL-P8.techem.de (as-mail-p8.techem.de [10.50.224.25])
-	by mx-crypt-p2.techem.de (Postfix) with ESMTP id CF669EC402D
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
-Received: from mx-be-2.eu.techem.corp (unknown [10.155.224.72])
-	by AS-MAIL-P8.techem.de (Postfix) with ESMTP id D5C265B8
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2011 10:52:29 +0200 (CEST)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1RFlUe-0006Sr-Ce
+	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2011 11:36:33 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: Atlant Schmidt <aschmidt@dekaresearch.com>, "'dedekind1@gmail.com'"
+	<dedekind1@gmail.com>
+Date: Mon, 17 Oct 2011 07:36:28 -0400
+Subject: RE: ubi vol_size and lots of bad blocks
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD33001C1D745@dekaexchange07.deka.local>
+References: <CAMLZHHSW9daPS9RsMyBnhTfzUQLC0+e9_-=xqiWE4T6upbcaiQ@mail.gmail.com>
+	<0A40042D85E7C84DB443060EC44B3FD33001C1D733@dekaexchange07.deka.local>
+	<1318597112.12351.123.camel@sauron>
+	<0A40042D85E7C84DB443060EC44B3FD33001C1D742@dekaexchange07.deka.local>
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD33001C1D742@dekaexchange07.deka.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: Understanding page size in jffs2- and kernel-source
-Date: Mon, 17 Oct 2011 10:52:29 +0200
-Message-ID: <CC01CB1DD69AA74C86C6E8D4EAF42403081C7203@mx-be-2.eu.techem.corp>
-From: "Freise, Bjoern-Achim" <bjoern-achim.freise@techem.de>
-To: <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	'Daniel Drake' <dsd@laptop.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,44 +29,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-=20
-we are using Kernel 2.6.28 with mtd-utils 1.0.1 on an ARM at91sam9260 =
-with a NAND flash with 512 byte pages an 16k erase size. And now I'm =
-trying to understand a few things:
-=20
-1) In the kernel source it has PAGE_SIZE and PAGE_CACHE_SIZE with 4096. =
-These defines are used in the jffs2 implementation. Is that correct when =
-using 512 byte pages in a NAND device?
-=20
-2) In our build-environment our image is created with "mkfs.jffs2 .... =
---page-size=3D512.... ". I guess this doesn't match with the above?
-=20
-3) What should I use for a good performance (page_size and/or with/out =
-compression) when using a large (~ 16MB) sqlite-file?
-=20
-I'm really unsure with these things.
-=20
-Regards,
-Bj=F6rn Freise
+Artem:
+
+  Thanks for the prompt -- our subject-matter expert
+  says that yes, this was a bug that has now been
+  corrected!
+                         Atlant
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Atlant Schmidt
+Sent: Friday, October 14, 2011 09:03
+To: 'dedekind1@gmail.com'
+Cc: linux-mtd@lists.infradead.org; 'Daniel Drake'
+Subject: RE: ubi vol_size and lots of bad blocks
+
+Artem:
+
+  Interesting! I'll ask our subject-matter expert;
+  it would be great if this were resolved.
+
+                          Atlant
+
+-----Original Message-----
+From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+Sent: Friday, October 14, 2011 08:58
+To: Atlant Schmidt
+Cc: 'Daniel Drake'; linux-mtd@lists.infradead.org
+Subject: RE: ubi vol_size and lots of bad blocks
+
+On Tue, 2011-10-11 at 07:35 -0400, Atlant Schmidt wrote:
+>
+>   Be careful here -- the last time I looked, blocks that go
+>   bad *ARE NOT* actually permanently marked as bad; they may
+>   no longer be used during the current boot, but the next time
+>   you reboot, they're eligible for attempted-but-often-failing
+>   use once again.
+
+If this happened to you, this must be because of a bug in your MTD
+driver. UBI dimply calls MTD mark_bad() function to mark blocks bad.
+
+--
+Best Regards,
+Artem Bityutskiy
 
 
-Energiesparen mit adapterm. Mehr Infos unter http://www.techem.de/adapterm
-__________________________________________
 
-Techem Energy Services GmbH
-Sitz der Gesellschaft: Eschborn
-Amtsgericht Frankfurt am Main: HRB 74732
-Geschaeftsfuehrung: Hans-Lothar Schaefer (Vors.), Steffen Baetjer, Dr. Rolf Weber
-Aufsichtsrat: Hilko Schomerus (Vors.)
+ Click https://www.mailcontrol.com/sr/fue6KqaG!5rTndxI!oX7Us7Qlo!t9IHt!Dknk=
+v+q9bergxmG63nRctGYsfIhXbFK16EEqwzvaW+2eN6FcXjHgg=3D=3D  to report this ema=
+il as spam.
 
-This e-mail and any attachment thereto contains confidental and/or privileged information. If you are not the intended recipient or have received this e-mail in error, please notify the sender immediately and delete this e-mail and any attachment thereto from your system. Any unauthorized retention, copying, transmission, distribution, disclosure or use of the content of this e-mail and/or any attachment thereto is prohibited. Techem is not liable for any omission or error in this e-mail and/or any attachment thereto which may arise as a result of the e-mail-transmission or for damages resulting from any unauthorized change of the content of this e-mail and/or any attachment thereto.
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
 
-Thank You
-Techem Energy Services GmbH
+Thank you.
 
+Please consider the environment before printing this email.
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Der Inhalt dieser E-Mail und ihrer Anhaenge ist vertraulich und kann rechtlich geschuetzte Informationen enthalten. Falls Sie nicht der richtige Adressat sind oder diese E-Mail irrtuemlich erhalten haben, informieren Sie bitte umgehend den Absender und vernichten Sie diese E-Mail und ihre Anhaenge. Jegliche Offenlegung, Vervielfaeltigung, Weitergabe oder Nutzung des Inhalts dieser Email oder ihrer Anhaenge ist untersagt. Techem haftet nicht fuer Unvollstaendigkeiten und Fehler in dieser E-Mail und /oder ihren Anhaengen, die als Folge der Uebersendung auftreten, oder  fuer Schaeden, die infolge unerlaubter Aenderungen des Inhalts dieser E-Mail und/oder ihrer Anhaenge entstehen.
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
 
-Vielen Dank
-Techem Energy Services GmbH
+Thank you.
+
+Please consider the environment before printing this email.
