@@ -1,22 +1,21 @@
-Received: from mailserver2.vizimax.com ([216.208.233.162])
+Received: from fep15.mx.upcmail.net ([62.179.121.35])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGBJK-0003HF-Kl
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 15:10:35 +0000
-Content-class: urn:content-classes:message
+	id 1RGBc8-0004Dz-9o
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 15:30:01 +0000
+Received: from edge01.upcmail.net ([192.168.13.236]) by viefep15-int.chello.at
+	(InterMail vM.8.01.02.02 201-2260-120-106-20100312) with ESMTP
+	id <20111018152952.ZEDK1538.viefep15-int.chello.at@edge01.upcmail.net>
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2011 17:29:52 +0200
+Message-ID: <4E9D9B6A.6010902@swissonline.ch>
+Date: Tue, 18 Oct 2011 17:29:46 +0200
+From: Daniel Kuhn <cheeef@swissonline.ch>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: UBIFS recovery fails
-Date: Tue, 18 Oct 2011 11:10:32 -0400
-Message-ID: <225442585F89274EA3A62F88671ECBAC0D33C8EB@prod-svr-1.intranet.str.ca>
-In-Reply-To: <20111018145413.GA8576@parrot.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS recovery fails
 References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
-	<225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-	<20111018145413.GA8576@parrot.com>
-From: =?utf-8?B?SmVhbi1Tw6liYXN0aWVuIEdhZ25vbg==?= <jsgagnon@vizimax.com>
-To: "Ivan Djelic" <ivan.djelic@parrot.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1318882668.2172.10.camel@koala>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhlIHNpdHVhdGlvbiB5b3UgZGVzY3JpYmVkIHNob3VsZCBiZSBhbHJlYWR5IGhhbmRsZWQgY29y
-cmVjdGx5IGJ5IFVCSUZTLCBpZiB0aGUgbmFuZCBkcml2ZXIgaXMgY29ycmVjdGx5IHJlcG9ydGlu
-ZyBwYWdlcyB3aXRoIGJpdGZsaXBzIHdpdGggdGhlIC1FVU5DTEVBTi4gIEluIHRoaXMgY2FzZSwg
-VUJJIHdpbGwgbW92ZSB0aGUgUEVCIHRvIGEgbmV3IG9uZSBhcyBzb29uIGFzIHBvc3NpYmxlIHRv
-IGF2b2lkIHRoaXMgcHJvYmxlbS4NCg0KTXkgY29tbWVudCB3YXMgcmVhbGx5IGFib3V0IHRoZSBv
-cmlnaW5hbCBlcnJvciBwb3N0ZWQgYnkgRGFuaWVsIEt1aG4gOg0KDQo+PlVCSUZTOiByZWNvdmVy
-eSBuZWVkZWQNCj4+VUJJRlMgZXJyb3IgKHBpZCA2MTEpOiB1Ymlmc19yZWNvdmVyX2xlYjogY29y
-cnVwdCBlbXB0eSBzcGFjZSBMRUIgMzU1MDoxODg0MTYsIGNvcnJ1cHRpb24gc3RhcnRzIGF0ID4+
-NjQzNjIgVUJJRlMgZXJyb3IgKHBpZCA2MTEpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNv
-cnJ1cHRpb24gYXQgTEVCDQo+PjM1NTA6MjUyNzc4DQo+PlVCSUZTIGVycm9yIChwaWQgNjExKTog
-dWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOiBmaXJzdCAxMTc0IGJ5dGVzIGZyb20gTEVCIDM1NTA6
-DQo+PjI1Mjc3OA0KPj4wMDAwMDAwMDogZmZmZmZmYmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZm
-ZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZiBmICA+Pi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uDQo+PjAwMDAwMDIwOiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZm
-ZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmIGYgID4+Li4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCi4uLg0KDQpJbiB0aGlzIGNhc2UsIGl0IHNlZW1z
-IHRoYXQgYSBiaXRmbGlwIGhhcyBvY2N1ciBvbiBhIGJsYW5rIHBhZ2UsIG9yIG1heWJlIHRoZSBw
-YWdlIHdhcyBwYXJ0aWFsbHkgcHJvZ3JhbW1lZCAocmVhbGx5IHBhcnRpYWxseSkuDQoNCg0KDQot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpPbiBUdWUsIE9jdCAxOCwgMjAxMSBhdCAw
-MTo0NzoyNlBNICswMTAwLCBKZWFuLVPDqWJhc3RpZW4gR2Fnbm9uIHdyb3RlOg0KPiBIaSwgDQo+
-IEFjdHVhbGx5LCBJIHRoaW5rIHRoZSBlbXB0eSBzcGFjZSBjb3JydXB0aW9uIGlzIHRoZSBvbmx5
-IHRoaW5nIHRvIGFkZHJlc3MgaW4gdGhpcyANCj4gU3BlY2lmaWMgcHJvYmxlbSwgc2luY2UgYW55
-IG90aGVyIGVycm9yIGNhdXNlIGJ5IHVuc3RhYmxlIGJpdHMgb24gdmFsaWQgZGF0YSBzaG91bGQg
-YmUgDQo+IGNvcnJlY3RlZCBieSB0aGUgcGFyaXRpZXMgaW4gdGhlIGZsYXNoIGRyaXZlci4NCg0K
-SGkgSmVhbi1Tw6liYXN0aWVuLA0KDQpJZiB5b3UgY3V0IHBvd2VyIGR1cmluZyBhIHBhZ2UgcHJv
-Z3JhbW1pbmcgb3BlcmF0aW9uLCB5b3UgY2FuIGVhc2lseSBnZXQgbW9yZQ0KdW5zdGFibGUgYml0
-cyB0aGFuIHdoYXQgdGhlIG1hbnVmYWN0dXJlci1zcGVjaWZpZWQgZWNjIHN1cHBvcnRzIChmb3Ig
-aW5zdGFuY2UsDQozIHVuc3RhYmxlIGJpdHMgb24gYSAxYml0LWVjYyBkZXZpY2UpLiBXZSBleHBl
-cmllbmNlZCB0aGlzIG9uIHNldmVyYWwgZGlmZmVyZW50DQpkZXZpY2VzLg0KSGF2aW5nIGEgbG90
-IG9mIGJpdGZsaXBzIChtb3JlIHRoYW4gd2hhdCBlY2Mgc3VwcG9ydHMpIGlzIG5vdCB0aGUgcHJv
-YmxlbSBoZXJlOg0KdGhlIHBhZ2Ugd2FzIGluZGVlZCBwYXJ0aWFsbHkgcHJvZ3JhbW1lZCwgaXQg
-Y29udGFpbnMgZ2FyYmFnZSBhbmQgaXRzIGNvbnRlbnRzDQpzaG91bGQgYmUgZGlzY2FyZGVkLg0K
-DQpUaGUgcmVhbCBwcm9ibGVtIGFwcGVhcnMgd2hlbiB0aG9zZSBmYXVsdHkgYml0cyBhcmUgdW5z
-dGFibGU6IGR1cmluZyB0aGUgZmlyc3QNCmZldyByZWFkIGF0dGVtcHRzLCB0aGUgcGFnZSBtYXkg
-YmUgc3VjY2Vzc2Z1bGx5IHJlYWQgKHBvc3NpYmx5IHdpdGggZWNjDQpjb3JyZWN0aW9ucyk7IGFu
-ZCB0aGVuLCBhIGJpdCBsYXRlciwgdGhlIHBhZ2UgYmVjb21lcyB1bnJlYWRhYmxlIGJlY2F1c2Ug
-b2YgdG9vDQptYW55IGZhdWx0eSBiaXRzLg0KDQpUaGVyZWZvcmUsIHNvZnR3YXJlIHVzaW5nIE1U
-RCAoVUJJLCBVQklGUykgY2Fubm90IGp1c3QgcmVseSBvbiBiZWluZyBhYmxlIHRvDQpyZWFkIGEg
-cGFnZSBhdCBzb21lIHBvaW50IHRvIGRlY2lkZSB0aGF0IHRoaXMgcGFnZSByZWxpYWJseSBzdG9y
-ZXMgZGF0YS4NCkl0IHNob3VsZCBhbHNvIGJlIGFibGUgdG8gdHJhY2UgcG93ZXIgZmFpbHVyZXMs
-IGFuZCB0cmVhdCB0aGUgTkFORCBhcmVhIGJlaW5nDQptb2RpZmllZCAocHJvZ3JhbW1lZCBvciBl
-cmFzZWQpIGR1cmluZyB0aGUgcG93ZXIgY3V0IGFzIHBvdGVudGlhbGx5IHVuc3RhYmxlLg0KDQpI
-VEgsDQotLSANCkl2YW4NCg==
+Thanks for the immediate responses.
+
+> If you just have precious data which you need - I think:
+> 1. Make a dump of the flash.
+> 2. Verify that on another device you can flash it and reproduce this
+> issue.
+> 3. Just hack the function in kernel that fails to return 0 instead
+> of error for that case, and I think you will be able to mount your
+> flash and copy your data.
+
+Luckily I could restore the data on the volume (a single file) after 
+some tests with
+various code changes. Finally I succeeded by uncommenting the journal 
+replay function call in the file "super.c". Changing return codes to 
+zero in several other places lead to new errors in other code parts.
+
+> This issue looks like one of the MLC-specific ones. Unfortunately,
+> no one really invested time into making UBIFS support MLC very well.
+> It needs some more work. It also have some issues related to unstable
+> bits in modern SLC.
+>
+The NAND Flash I'm using is a Samsung SLC NAND K9WBG08U1M. So this isn't 
+MLC-specific.
+It seems strange to me that a whole data block gets empty during 
+operation or as a result of a power failure. The device on which this 
+error occured is a prototype on which I run various tests during 
+development and the original bad block markers from the manufacturer 
+were overwritten by low level tests with an embedded FPGA-Softcore CPU. 
+So maybe the failed LEB 3550 was originally a bad eraseblock but I can't 
+tell for sure.
+
+Any further ideas to improve the UBIFS data security is really appreciated.
+
+Thanks,
+Daniel Kuhn
