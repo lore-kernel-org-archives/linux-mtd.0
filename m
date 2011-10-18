@@ -1,19 +1,19 @@
-Received: from mailserver2.vizimax.com ([216.208.233.162])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RG94p-0008MT-Kf
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 12:47:28 +0000
-Content-class: urn:content-classes:message
+Received: from smtp.newsguy.com ([74.209.136.69])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RGAJX-00021S-0p
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 14:06:43 +0000
+Message-ID: <4E9D87C7.9070502@newsguy.com>
+Date: Tue, 18 Oct 2011 07:05:59 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBIFS recovery fails
-Date: Tue, 18 Oct 2011 08:47:26 -0400
-Message-ID: <225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-In-Reply-To: <1318882668.2172.10.camel@koala>
-References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
-From: =?iso-8859-1?Q?Jean-S=E9bastien_Gagnon?= <jsgagnon@vizimax.com>
-To: <linux-mtd@lists.infradead.org>
+To: Angus CLARK <angus.clark@st.com>
+Subject: Re: nand_base.c:nand_get_flash_type() test results
+References: <4E95B1B4.7040603@st.com> <4E9AEB36.7000806@newsguy.com>
+	<4E9D3196.9070104@st.com>
+In-Reply-To: <4E9D3196.9070104@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=20
-Actually, I think the empty space corruption is the only thing to =
-address in this=20
-Specific problem, since any other error cause by unstable bits on valid =
-data should be=20
-corrected by the parities in the flash driver.
+Hi Angus.  Thanks for taking a look and commenting.
 
-This problem could be addressed by the NAND driver reading the pages and =
-correcting=20
-empty ones, or by correcting UBIFS to address this problem.
-
-
-J-S Gagnon
-
->
-> On Mon, 2011-10-17 at 15:29 +0200, Daniel Kuhn wrote:
->> Hi,
->>=20
->> I have a problem with a device which uses UBI + UBIFS on a 32GB NAND=20
->> Flash (16*2GB). The
->> filesystem worked without problems for a couple of months but now I =
-get=20
->> an error if I try to mount the volume.
->> Attaching the UBI-Device works fine as you can see in the following=20
->> messages:
->
-> This issue looks like one of the MLC-specific ones. Unfortunately,
-> no one really invested time into making UBIFS support MLC very well.
-> It needs some more work. It also have some issues related to unstable
-> bits in modern SLC.
->
-> In short - if you want to use UBIFS on MLC - you should not have =
-unclean
-> reboots. If you want to make UBIFS 100% uclean-reboot save on MLC - =
-you
-> need to work on it some more.
->
-> We (the original authors) developed and tested it on very robust SLC
-> NAND.
->=20
-> Unfortunately, I do not work with MTD for few years already and have
-> no spare time to make it MLC-robust. My last attempt was this spring -
-> I started making integck test (in mtd-utils) support emulated power
-> cuts. The idea was to improve UBIFS power-cut emulation infrastructure
-> and make it emulating unstable bits, and then test and fix all issues.
-> But then I realized that I simply will not have time to finish it,
-> so left the work half-done.
->
-> If someone wants to see UBIFS 100% or near 100% power-cut safe on
-> MLC or one of shitty modern SLCs - he needs to invest men-hours.
-> I can help by suggesting and reviewing. Although the funny thing is
-> that eMMCs die and lose data in case of power cuts very often :-)
->
->> UBI: wear-leveling threshold:    4096
-> Are you sure it is good for MLC? What is your eraseblock life-cycle?
->
->> Is there a way to recover the data on the device?
->
-> If you just have precious data which you need - I think:
-> 1. Make a dump of the flash.
-> 2. Verify that on another device you can flash it and reproduce this
-> issue.
-> 3. Just hack the function in kernel that fails to return 0 instead
-> of error for that case, and I think you will be able to mount your
-> flash and copy your data.
->
-> But if you want this to never happen again - you need to prepare
-> for a several months project (providing you have a good kernel
-> engineer).
->
-> HTH :-)
+On 10/18/2011 12:58 AM, Angus CLARK wrote:
+> On 10/16/2011 03:33 PM, Mike Dunn wrote:
+>> I am currently grappling with this issue with my driver for the diskonchip G4,
+>> which is an MLC nand under the hood, but has a proprietary controller around it
+>> which doesn't interact as a "typical" NAND device.  Specific to this topic, it
+>> doesn't respond to NAND_READID commands.  My solution was to skip the call to
+>> nand_scan_ident(), which calls nand_get_flash_type().  Instead, I do all the
+>> initializations done by nand_get_flash_type() within my driver. 
+>>
+>> Any thoughts or suggestions appreciated.
+>>
+> I am not familiar with the diskonchip technology but I had a quick look through
+> the patch you posted a few days ago.  What you have done regarding
+> nand_scan_ident() is probably the most sensible solution here - I believe it was
+> this kind of use-case that led to nand_scan() being split into nand_scan_ident()
+> and nand_scan_tail().
 
 
+My guess as well.  The only problem is that, oddly, nand_scan_ident() calls
+nand_set_defaults().  So by skipping the cal to nand_scan_ident(), the various
+defaut nand methods are not set.  Fortunately, I need to override most of them
+anyway, but I did need to duplicate a couple trivial ones in my driver, since
+they're not exported from nand_base.c
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+> An alternative approach would be to fake support for NAND_CMD_READID, similar to
+> what you have done for NAND_CMD_STATUS, with subsequent calls to
+> chip->read_byte() returning the 'DOCG4_IDREG' sequence {0x04, 0x00, 0xfb, 0xff}.
+>  In the same way ONFI devices are handled, you could then add a special case in
+> nand_get_flash_type(), say nand_flash_detect_docg4(), jumping to 'ident_done' if
+> successful.
+
+
+I did it this way originally.  But this method requires serving up an arbitrary
+unused ID and patching nand_ids.c with a new entry for the arbitrary ID
+containing the docg4 parameters.  It was so ugly, I went with the alternate method.
+
+
+> To be honest, in this case, I don't think there is much to be gained by adding
+> 'nand_flash_detect_docg4()' to the generic code.  It would just return some
+> hard-coded parameters to serve a single device and driver; you may as well put
+> them in the driver itself, as you have done.  On the other hand, if you extend
+> it to also handle the other diskonchip varients, that might be more interesting.
+
+
+Thaks for the suggestion.  Something to keep in mind; Robert Jarzmik is working
+on a driver for the diskonchip G3 (which may also support the P3).
+
+
+Thanks again,
+Mike
