@@ -1,22 +1,18 @@
-Received: from na3sys009aog123.obsmtp.com ([74.125.149.149])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RG4gK-00041d-47
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 08:05:57 +0000
-Received: by qyk34 with SMTP id 34so1803857qyk.3
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Oct 2011 01:05:48 -0700 (PDT)
+Received: from ra.se.axis.com ([195.60.68.13])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RG4mF-000493-Pm
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 08:12:00 +0000
+Date: Tue, 18 Oct 2011 10:11:54 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS recovery fails
+In-Reply-To: <1318882668.2172.10.camel@koala>
+Message-ID: <Pine.LNX.4.64.1110181007100.30940@lnxricardw.se.axis.com>
+References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
 MIME-Version: 1.0
-In-Reply-To: <20111018003215.GB31782@logfs.org>
-References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<20111018003215.GB31782@logfs.org>
-Date: Tue, 18 Oct 2011 10:05:48 +0200
-Message-ID: <CA+Xn3W0un4Fwn8471iBQx0s9x88pxc9CcKFk9UBeNJSkVxhDeg@mail.gmail.com>
-Subject: Re: [PATCH] phram: make kernel boot command line arguments work
-From: "Fache, Herve" <h-fache@ti.com>
-To: =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: joern@lazybastard.org, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi J=C3=B6rn,
 
-On Tue, Oct 18, 2011 at 02:32, J=C3=B6rn Engel <joern@logfs.org> wrote:
-> I like it.
-Thanks :-)
+On Mon, 17 Oct 2011, Artem Bityutskiy wrote:
 
-> And Herv=C3=A9, can I motivate you to remove the #ifdef MODULE parts from=
- block2mtd as well?
-Will do, no problem.
+> [...] Unfortunately, no one really invested time into making UBIFS=20
+> support MLC very well. It needs some more work. It also have some issues=
+=20
+> related to unstable bits in modern SLC.
+>
+> In short - if you want to use UBIFS on MLC - you should not have unclean
+> reboots. If you want to make UBIFS 100% uclean-reboot save on MLC - you
+> need to work on it some more.
+>
+> We (the original authors) developed and tested it on very robust SLC
+> NAND.
 
-Herv=C3=A9
---
-Texas Instruments France SA, 821 Avenue Jack Kilby, 06270 Villeneuve
-Loubet. 036 420 040 R.C.S Antibes. Capital de EUR 753.920
+Do you have any specifics on what the issues are with MLC ?
+
+Since UBI implements bit scrubbing and eraseblock torture on questionable=
+=20
+blocks it would seem that a lot of the work has been done in order to=20
+handle unstable bits. Is there some issue which is related specifically to=
+=20
+bit flips happening while the system is powered off?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
