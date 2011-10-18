@@ -1,20 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mailserver2.vizimax.com ([216.208.233.162])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGB3g-0002uL-Ed
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 14:54:25 +0000
-Date: Tue, 18 Oct 2011 16:54:13 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: =?utf-8?Q?Jean-S=C3=A9bastien?= Gagnon <jsgagnon@vizimax.com>
-Subject: Re: UBIFS recovery fails
-Message-ID: <20111018145413.GA8576@parrot.com>
+	id 1RGBJK-0003HF-Kl
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 15:10:35 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: UBIFS recovery fails
+Date: Tue, 18 Oct 2011 11:10:32 -0400
+Message-ID: <225442585F89274EA3A62F88671ECBAC0D33C8EB@prod-svr-1.intranet.str.ca>
+In-Reply-To: <20111018145413.GA8576@parrot.com>
 References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
 	<225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	<20111018145413.GA8576@parrot.com>
+From: =?utf-8?B?SmVhbi1Tw6liYXN0aWVuIEdhZ25vbg==?= <jsgagnon@vizimax.com>
+To: "Ivan Djelic" <ivan.djelic@parrot.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 18, 2011 at 01:47:26PM +0100, Jean-Sébastien Gagnon wrote:
-> Hi, 
-> Actually, I think the empty space corruption is the only thing to address in this 
-> Specific problem, since any other error cause by unstable bits on valid data should be 
-> corrected by the parities in the flash driver.
-
-Hi Jean-Sébastien,
-
-If you cut power during a page programming operation, you can easily get more
-unstable bits than what the manufacturer-specified ecc supports (for instance,
-3 unstable bits on a 1bit-ecc device). We experienced this on several different
-devices.
-Having a lot of bitflips (more than what ecc supports) is not the problem here:
-the page was indeed partially programmed, it contains garbage and its contents
-should be discarded.
-
-The real problem appears when those faulty bits are unstable: during the first
-few read attempts, the page may be successfully read (possibly with ecc
-corrections); and then, a bit later, the page becomes unreadable because of too
-many faulty bits.
-
-Therefore, software using MTD (UBI, UBIFS) cannot just rely on being able to
-read a page at some point to decide that this page reliably stores data.
-It should also be able to trace power failures, and treat the NAND area being
-modified (programmed or erased) during the power cut as potentially unstable.
-
-HTH,
--- 
-Ivan
+VGhlIHNpdHVhdGlvbiB5b3UgZGVzY3JpYmVkIHNob3VsZCBiZSBhbHJlYWR5IGhhbmRsZWQgY29y
+cmVjdGx5IGJ5IFVCSUZTLCBpZiB0aGUgbmFuZCBkcml2ZXIgaXMgY29ycmVjdGx5IHJlcG9ydGlu
+ZyBwYWdlcyB3aXRoIGJpdGZsaXBzIHdpdGggdGhlIC1FVU5DTEVBTi4gIEluIHRoaXMgY2FzZSwg
+VUJJIHdpbGwgbW92ZSB0aGUgUEVCIHRvIGEgbmV3IG9uZSBhcyBzb29uIGFzIHBvc3NpYmxlIHRv
+IGF2b2lkIHRoaXMgcHJvYmxlbS4NCg0KTXkgY29tbWVudCB3YXMgcmVhbGx5IGFib3V0IHRoZSBv
+cmlnaW5hbCBlcnJvciBwb3N0ZWQgYnkgRGFuaWVsIEt1aG4gOg0KDQo+PlVCSUZTOiByZWNvdmVy
+eSBuZWVkZWQNCj4+VUJJRlMgZXJyb3IgKHBpZCA2MTEpOiB1Ymlmc19yZWNvdmVyX2xlYjogY29y
+cnVwdCBlbXB0eSBzcGFjZSBMRUIgMzU1MDoxODg0MTYsIGNvcnJ1cHRpb24gc3RhcnRzIGF0ID4+
+NjQzNjIgVUJJRlMgZXJyb3IgKHBpZCA2MTEpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNv
+cnJ1cHRpb24gYXQgTEVCDQo+PjM1NTA6MjUyNzc4DQo+PlVCSUZTIGVycm9yIChwaWQgNjExKTog
+dWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOiBmaXJzdCAxMTc0IGJ5dGVzIGZyb20gTEVCIDM1NTA6
+DQo+PjI1Mjc3OA0KPj4wMDAwMDAwMDogZmZmZmZmYmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZm
+ZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZiBmICA+Pi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uDQo+PjAwMDAwMDIwOiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZm
+ZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmIGYgID4+Li4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCi4uLg0KDQpJbiB0aGlzIGNhc2UsIGl0IHNlZW1z
+IHRoYXQgYSBiaXRmbGlwIGhhcyBvY2N1ciBvbiBhIGJsYW5rIHBhZ2UsIG9yIG1heWJlIHRoZSBw
+YWdlIHdhcyBwYXJ0aWFsbHkgcHJvZ3JhbW1lZCAocmVhbGx5IHBhcnRpYWxseSkuDQoNCg0KDQot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpPbiBUdWUsIE9jdCAxOCwgMjAxMSBhdCAw
+MTo0NzoyNlBNICswMTAwLCBKZWFuLVPDqWJhc3RpZW4gR2Fnbm9uIHdyb3RlOg0KPiBIaSwgDQo+
+IEFjdHVhbGx5LCBJIHRoaW5rIHRoZSBlbXB0eSBzcGFjZSBjb3JydXB0aW9uIGlzIHRoZSBvbmx5
+IHRoaW5nIHRvIGFkZHJlc3MgaW4gdGhpcyANCj4gU3BlY2lmaWMgcHJvYmxlbSwgc2luY2UgYW55
+IG90aGVyIGVycm9yIGNhdXNlIGJ5IHVuc3RhYmxlIGJpdHMgb24gdmFsaWQgZGF0YSBzaG91bGQg
+YmUgDQo+IGNvcnJlY3RlZCBieSB0aGUgcGFyaXRpZXMgaW4gdGhlIGZsYXNoIGRyaXZlci4NCg0K
+SGkgSmVhbi1Tw6liYXN0aWVuLA0KDQpJZiB5b3UgY3V0IHBvd2VyIGR1cmluZyBhIHBhZ2UgcHJv
+Z3JhbW1pbmcgb3BlcmF0aW9uLCB5b3UgY2FuIGVhc2lseSBnZXQgbW9yZQ0KdW5zdGFibGUgYml0
+cyB0aGFuIHdoYXQgdGhlIG1hbnVmYWN0dXJlci1zcGVjaWZpZWQgZWNjIHN1cHBvcnRzIChmb3Ig
+aW5zdGFuY2UsDQozIHVuc3RhYmxlIGJpdHMgb24gYSAxYml0LWVjYyBkZXZpY2UpLiBXZSBleHBl
+cmllbmNlZCB0aGlzIG9uIHNldmVyYWwgZGlmZmVyZW50DQpkZXZpY2VzLg0KSGF2aW5nIGEgbG90
+IG9mIGJpdGZsaXBzIChtb3JlIHRoYW4gd2hhdCBlY2Mgc3VwcG9ydHMpIGlzIG5vdCB0aGUgcHJv
+YmxlbSBoZXJlOg0KdGhlIHBhZ2Ugd2FzIGluZGVlZCBwYXJ0aWFsbHkgcHJvZ3JhbW1lZCwgaXQg
+Y29udGFpbnMgZ2FyYmFnZSBhbmQgaXRzIGNvbnRlbnRzDQpzaG91bGQgYmUgZGlzY2FyZGVkLg0K
+DQpUaGUgcmVhbCBwcm9ibGVtIGFwcGVhcnMgd2hlbiB0aG9zZSBmYXVsdHkgYml0cyBhcmUgdW5z
+dGFibGU6IGR1cmluZyB0aGUgZmlyc3QNCmZldyByZWFkIGF0dGVtcHRzLCB0aGUgcGFnZSBtYXkg
+YmUgc3VjY2Vzc2Z1bGx5IHJlYWQgKHBvc3NpYmx5IHdpdGggZWNjDQpjb3JyZWN0aW9ucyk7IGFu
+ZCB0aGVuLCBhIGJpdCBsYXRlciwgdGhlIHBhZ2UgYmVjb21lcyB1bnJlYWRhYmxlIGJlY2F1c2Ug
+b2YgdG9vDQptYW55IGZhdWx0eSBiaXRzLg0KDQpUaGVyZWZvcmUsIHNvZnR3YXJlIHVzaW5nIE1U
+RCAoVUJJLCBVQklGUykgY2Fubm90IGp1c3QgcmVseSBvbiBiZWluZyBhYmxlIHRvDQpyZWFkIGEg
+cGFnZSBhdCBzb21lIHBvaW50IHRvIGRlY2lkZSB0aGF0IHRoaXMgcGFnZSByZWxpYWJseSBzdG9y
+ZXMgZGF0YS4NCkl0IHNob3VsZCBhbHNvIGJlIGFibGUgdG8gdHJhY2UgcG93ZXIgZmFpbHVyZXMs
+IGFuZCB0cmVhdCB0aGUgTkFORCBhcmVhIGJlaW5nDQptb2RpZmllZCAocHJvZ3JhbW1lZCBvciBl
+cmFzZWQpIGR1cmluZyB0aGUgcG93ZXIgY3V0IGFzIHBvdGVudGlhbGx5IHVuc3RhYmxlLg0KDQpI
+VEgsDQotLSANCkl2YW4NCg==
