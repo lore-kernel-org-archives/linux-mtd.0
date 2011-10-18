@@ -1,18 +1,19 @@
-Received: from ra.se.axis.com ([195.60.68.13])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RG4mF-000493-Pm
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 08:12:00 +0000
-Date: Tue, 18 Oct 2011 10:11:54 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+	id 1RG53j-0004QM-Dr
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 08:30:03 +0000
+Date: Tue, 18 Oct 2011 10:29:55 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: UBIFS recovery fails
-In-Reply-To: <1318882668.2172.10.camel@koala>
-Message-ID: <Pine.LNX.4.64.1110181007100.30940@lnxricardw.se.axis.com>
+Message-ID: <20111018082955.GB5997@parrot.com>
 References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1318882668.2172.10.camel@koala>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Daniel Kuhn <cheeef@swissonline.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Oct 17, 2011 at 09:17:48PM +0100, Artem Bityutskiy wrote:
+> 
+> If someone wants to see UBIFS 100% or near 100% power-cut safe on
+> MLC or one of shitty modern SLCs - he needs to invest men-hours.
+> I can help by suggesting and reviewing. Although the funny thing is
+> that eMMCs die and lose data in case of power cuts very often :-)
 
-On Mon, 17 Oct 2011, Artem Bityutskiy wrote:
+Hi Artem,
 
-> [...] Unfortunately, no one really invested time into making UBIFS=20
-> support MLC very well. It needs some more work. It also have some issues=
-=20
-> related to unstable bits in modern SLC.
->
-> In short - if you want to use UBIFS on MLC - you should not have unclean
-> reboots. If you want to make UBIFS 100% uclean-reboot save on MLC - you
-> need to work on it some more.
->
-> We (the original authors) developed and tested it on very robust SLC
-> NAND.
+That's interesting... Do you have more details or any data on those eMMC
+power-cut failures ?
 
-Do you have any specifics on what the issues are with MLC ?
+I plan to be working soon (December) on UBIFS robustness issues with unstable
+modern SLCs; besides using nandsim to simulate SLC (and maybe MLC) issues,
+I also have real hardware with a power-cutting framework ready for testing.
 
-Since UBI implements bit scrubbing and eraseblock torture on questionable=
-=20
-blocks it would seem that a lot of the work has been done in order to=20
-handle unstable bits. Is there some issue which is related specifically to=
-=20
-bit flips happening while the system is powered off?
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Best Regards,
+--
+Ivan
