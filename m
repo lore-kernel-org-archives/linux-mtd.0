@@ -1,24 +1,17 @@
-Received: from mailserver2.vizimax.com ([216.208.233.162])
+Received: from websmtp.sohu.com ([61.135.132.204])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGCAn-0006Ow-E8
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2011 16:05:50 +0000
-Content-class: urn:content-classes:message
+	id 1RGK5J-0004tp-8D
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2011 00:32:45 +0000
+To: "tzhqq" <tzhqq@163.com>, "xieshimould" <xieshimould@163.com>,
+	"tz6839153" <tz6839153@163.com>
+Message-ID: <1318984313.5e4e3154d37d477fb49984bb3b8b63af.pwegigcrlt@chinaren.com>
+Subject: =?utf-8?b?5r+A5YWJ5oqE5pWw5pyN5Yqh?=
+Date: Wed, 19 Oct 2011 00:31:53 GMT
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
+From: pwegigcrlt@chinaren.com
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: base64
-Subject: RE: UBIFS recovery fails
-Date: Tue, 18 Oct 2011 12:05:48 -0400
-Message-ID: <225442585F89274EA3A62F88671ECBAC0D33C8F2@prod-svr-1.intranet.str.ca>
-In-Reply-To: <20111018153236.GA10466@parrot.com>
-References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
-	<225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-	<20111018145413.GA8576@parrot.com>
-	<225442585F89274EA3A62F88671ECBAC0D33C8EB@prod-svr-1.intranet.str.ca>
-	<20111018153236.GA10466@parrot.com>
-From: =?utf-8?B?SmVhbi1Tw6liYXN0aWVuIEdhZ25vbg==?= <jsgagnon@vizimax.com>
-To: "Ivan Djelic" <ivan.djelic@parrot.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+PiBUaGUgc2l0dWF0aW9uIHlvdSBkZXNjcmliZWQgc2hvdWxkIGJlIGFscmVhZHkgaGFuZGxl
-ZCBjb3JyZWN0bHkgYnkgVUJJRlMsIGlmIHRoZSBuYW5kIGRyaXZlciBpcyBjb3JyZWN0bHkgcmVw
-b3J0aW5nIHBhZ2VzIHdpdGggYml0ZmxpcHMgd2l0aCB0aGUgLUVVTkNMRUFOLiAgSW4gdGhpcyBj
-YXNlLCBVQkkgd2lsbCBtb3ZlIHRoZSBQRUIgdG8gYSBuZXcgb25lIGFzIHNvb24gYXMgcG9zc2li
-bGUgdG8gYXZvaWQgdGhpcyBwcm9ibGVtLg0KDQo+IFRoaXMgd291bGQgYmUgdHJ1ZSwgaWYgeW91
-IGNvdWxkIGFzc3VtZSB0aGF0IGEgcGFnZSByZWFkaW5nIGZhaWx1cmUgYWx3YXlzDQo+IG9jY3Vy
-cyBhZnRlciBhIHByZXZpb3VzIHJlYWQgb24gdGhlIHNhbWUgcGFnZSByZXBvcnRzIGFuIGVjYyBj
-b3JyZWN0aW9uLg0KPiBCdXQgdGhpcyBpcyBub3QgdGhlIGNhc2U6IHdlIGhhZCBzZXZlcmFsIHVu
-c3RhYmxlIHBhZ2VzIGdvaW5nIGZyb20gMCBiaXRmbGlwcw0KPiAocGVyZmVjdCByZWFkKSB0byAy
-IGJpdGZsaXBzIChmYWlsZWQgcmVhZCkuIE5vIHdheSB0byBkZXRlY3QgYW55IGZhaWx1cmUsIG5v
-DQo+IHdheSB0byBzY3J1YiBkYXRhIGJlZm9yZSBpdCdzIHRvbyBsYXRlLg0KPiBBbmQgdGhlIGFu
-c3dlciBmcm9tIHRoZSBtYW51ZmFjdHVyZXIgd2FzOiB5b3Ugc2hvdWxkIG5vdCB1c2UgYW55IHBh
-cnRpYWxseQ0KPiBwcm9ncmFtbWVkL2VyYXNlZCBwYWdlcyBhbnl3YXksIHRob3NlIHNob3VsZCBi
-ZSBjbGVhbmVkIHVwIGFmdGVyIHJlY292ZXJpbmcNCj4gZnJvbSBhIHBvd2VyIGZhaWx1cmUuDQoN
-ClRoaXMgc2hvdWxkIG5vdCBhcHBlbmQgaWYgeW91IHVzZSByZWNvbW1lbmRlZCBFQ0MgYml0cyBj
-b3VudCBkZWZpbmVkIGJ5IHRoZSBOQU5EIHBhcnQuIA0KQ2FuIHlvdSB2ZXJpZnkgdGhhdCwgYmVj
-YXVzZSAxIGJpdCBFQ0MgZm9yIGVhY2ggNTEyIGJ5dGUgaXMgb25seSByZWNvbW1lbmRlZCBieSBv
-bGRlciANClNMQyBmbGFzaCB3aGljaCBhcmUgcHJldHR5IHN0YWJsZS4gIE5ld2VyIE5BTkQgbmVl
-ZCBtb3JlIEVDQyBiaXRzLCB3aGljaCBjYW4gYmUgDQphZGRyZXNzZWQgYnkgdXNpbmcgQkNIIHBh
-cml0aWVzLg0KDQotLS0NCkotUw0KDQo=
+6aOe57+U6K6+6K6h5piv5LiA5a625LiT5Lia55qE6K6+6K6h5YWs5Y+444CCDQoNCiANCg0K5Lia
+5Yqh6IyD5Zu077ya5bel5Lia5Lqn5ZOB6K6+6K6hLOmAhuWQkeW3peeoiyzkuqflk4HmioTmlbAs
+5rWL57uYLOaJi+adv+WItuS9nCzkuqflk4Hmo4DmtYsNCg0KIA0KDQrkuqflk4HnmoTlpJbop4Lo
+rr7orqEgDQoNCiAgICDjgIDmiJHku6zlj6/moLnmja7lrqLmiLfnmoTopoHmsYLvvIznu4/ov4fm
+iJHku6zorr7orqHlt6XnqIvluIjnmoTnsr7lv4Pnu5jliLbvvIzkuLrkvaDorr7orqHlh7rpgILl
+upTluILlnLrpnIDmsYLnmoTkuqflk4HjgIIgDQoNCiANCg0K5omL5p2/5Yi25L2cDQoNCiAgICDj
+gIDlnKjkuqflk4HnmoTorr7orqHkuK3vvIzmnIDmg7PlgZrnmoTkuIDku7bkuosg5L6/5piv5oOz
+55+l6YGT6Ieq5bex6K6+6K6h55qE5Lic6KW/5YGa5oiQ5a6e54mp5LuA5LmI5qC344CB5aSW6KeC
+5ZKM6Ieq5bex55qE6K6+6K6h5oCd5oOz5piv5ZCm5ZC75ZCI44CB57uT5p6E6K6+6K6h5piv5ZCm
+5ZCI55CG562J562J77yfDQoNCiANCg0K5qC35ZOB44CB5omL5p2/44CB5qih5YW355qE5rWL57uY
+DQoNCiAgICDjgIDmiJHlhazlj7jlvJXov5vlhYjov5vnmoTkuInnu7Tnsr7lr4bmioTmlbDvvIjm
+tYvph4/mnLrvvInjgILlj6/ku6Xlr7nmgqjnlJ/kuqfnmoTkuqflk4Hov5vooYzlvaLkvY3lhazl
+t67mo4DmtYvjgILlh4/lsJHmgqjph4fpm4bmlbDmja7nmoTml7bpl7TvvIzmnoHlpKfnmoTmj5Dp
+q5jkuobmlbDmja7nmoTnsr7noa7mgKfjgIINCg0K6YCC55So5LqO5rG96L2m6YWN5Lu277yM5a62
+5bqt55So5ZOB77yM6YCa5L+h5Lqn5ZOB77yM55S16ISR5aSW6K6+77yM546p5YW377yM5qih5YW3
+562J44CCIA0KDQogICAgIA0KDQrpgIblkJHlt6XnqIsNCg0KICAgIOOAgOS7peaKhOaVsOacuuWv
+ueagt+WTgeOAgeaJi+adv+OAgeaooeWei+i/m+ihjOaJq+aPj++8jOe7k+WQiOmAhuWQkei9r+S7
+tu+8jOmHjeaehOaIkOS4iee7tOWunuS9k+OAguWPr+ebtOaOpeeUqOS6juaooeWFt+eahOiuvuiu
+oeS4juWItumAoOOAgiAgICAgIA0KDQogDQoNCiAgICDmhL/miJHku6znmoTlt6XkvZzog73lpJ/o
+voXliqnotLXkvIHkuJrnmoTlo67lpKfkuI7lj5HlsZXvvIENCg0KIA0KDQogDQoNCiANCg0K44CA
+44CA44CA44CA44CA44CA44CA44CA44CAICAgICAgICAgICAgICAgIOOAgOmhuumiguWVhueluu+8
+gQ0KDQrogZTns7vkuro6IOWui+S8oOWFiQ0KDQogIOaJi+acujogMTM1LTg0OTktMjQzMQ0KDQog
+DQoNCuS8oOecnzogIDA1MTItNTc2NDc3NDANCg0KICBRUTogNTE1ODc0ODY5DQoNCumCrueusTog
+bWFpbEBrc2Z4c2ouY29tDQoNCiANCg0K5Zyw5Z2AOiDmsZ/oi4/nnIHmmIblsbHluILljJfpl6jo
+t68zODg45Y+35qih5YW36K6+5aSH5Yy6My0xOA0KDQrnvZHlnYA6IGh0dHA6Ly93d3cua3NmeHNq
+LmNvbQ0K
