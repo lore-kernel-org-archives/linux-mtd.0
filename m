@@ -1,23 +1,24 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGvZj-0007wr-Lw
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:34:36 +0000
-Received: by wwj40 with SMTP id 40so2975522wwj.18
+	id 1RGvaQ-0007yt-Le
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:35:19 +0000
+Received: by eye3 with SMTP id 3so3643039eye.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Oct 2011 09:34:34 -0700 (PDT)
-Subject: Re: [PATCH] phram: make kernel boot command line arguments work
+	Thu, 20 Oct 2011 09:35:16 -0700 (PDT)
+Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Date: Thu, 20 Oct 2011 19:34:14 +0300
-In-Reply-To: <20111018003215.GB31782@logfs.org>
-References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<20111018003215.GB31782@logfs.org>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Thu, 20 Oct 2011 19:31:04 +0300
+In-Reply-To: <4E9CA204.8000904@newsguy.com>
+References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
+	<8762jtlx19.fsf@free.fr> <4E9CA204.8000904@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-fPK+xqP+UyRvyAL/SVWO"
-Message-ID: <1319128461.20953.17.camel@sauron>
+	boundary="=-phDBzV0Hq4+2CLuYKnA9"
+Message-ID: <1319128271.20953.14.camel@sauron>
 Mime-Version: 1.0
-Cc: joern@lazybastard.org, linux-mtd@lists.infradead.org, h-fache@ti.com
+Cc: marek.vasut@gmail.com, Robert Jarzmik <robert.jarzmik@free.fr>,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,25 +30,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-fPK+xqP+UyRvyAL/SVWO
+--=-phDBzV0Hq4+2CLuYKnA9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2011-10-18 at 02:32 +0200, J=C3=B6rn Engel wrote:
-> Dedekind, can I leave it to you to merge this?
+On Mon, 2011-10-17 at 14:45 -0700, Mike Dunn wrote:
+> Not sure.  I'm currently not too knowlegeable on timers, and I'm not usin=
+g this
+> config option in my kernel.  Will look into this.  Meantime, suggestions,
+> pointers to reference docs, etc greatly appreciated!
 
-I am too stupid comparing to Dedekind :-) The nickname is actually
-because I liked his theorems back at University days, so my nick name is
-after him :-)
+Jiffies do work fine in NO_HZ.
 
-But sure, as soon as I get a nice patch, I'll merge it to my l2 tree,
-just like I do for every nice MTD patch :-)
+>=20
+>=20
+> > Why not use a loop of mdelay() or msleep() or doc_nops() bellow ?
+> > I would prefer doc nops, as the time of these is controlled by the chip=
+ itself,
+> > and thus less dependant on the CPU frequency.
+>=20
+>=20
+> I'm not simply delaying, I'm polling register 0x1038 (I'm calling it
+> DOCG4_CONTROL_STATUS).  The diskonchip P3 uses this same register in exac=
+tly the
+> same way, so it's likely the G3 does as well.  With regard to the diskonc=
+hip nop
+> register, I was careful to preserve the same number of reads of that regi=
+ster in
+> the same places as was observed during reverse engineering, to prevent
+> timing-related failures.
+
+But use cpu_relax() in the polling loop.
+
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-fPK+xqP+UyRvyAL/SVWO
+--=-phDBzV0Hq4+2CLuYKnA9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,13 +75,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOoE2GAAoJEJtuLFy+q7fe4QQH/ik6g5fmO9khg+CeL3wfkmLW
-iwX9DKupsvuc1wYyfAyUhr8urJjBZ7LbFa10Y/fAtMvekK15WZT589LtGayHFFSj
-uxlWOqcQiAs2hMn/r1b/qwDd3UVgjT9g4FyjcR48wA2Yxh8bRODp+Mk/q+pzguKe
-6GSnic6w89WPrmGIkkobWgEbGsLz+ouYm5GB99sZICtHWhShWBBGb9NI5EBoaz4Y
-Pi6+s8jrM/yHFeBgCJt6CUPkVYN0JR7la3NMcWMLeUZxO0/9BtgWJHwtWntSHdrB
-KctMWVr/3fd0lc5DvImseiW/gbTVVLetbUAL3ovMNv9e5PyKCT6Gw9G2OvJwCjs=
-=FO2q
+iQEcBAABAgAGBQJOoEzIAAoJEJtuLFy+q7feZx8IAKQIK/wOebCRyk3VqfpIssml
+FAsCAyqFMjGB+SIdgE7MzLImlhv2Ye4Q5YCEsnx90vkf8Cvq/IZUgDRPofgGJuic
+vAHPuIQM+upmYBNRZ+IGt6OQS/35G3hESjfh/2Wl2z/GA9Wr7Y4gKU+VCdrG4mjh
+3jtR+Q+De1F+lYL9hT78e3YccychFQXE4Hbm158P5o34SmFtDuEnxJt+29A9dMhn
+QKEcofT576hs1SBUNtQ47Cs1GP2zbwNZu5C5nkuNLb5X4vJB9j+udGeIvaJEzvIf
+HR7T+n7QWPzYGmb7QM2sJwvpVsy81YI+07SiAM3bDCh8mJ0+PYILn/echfxnPFY=
+=JPmZ
 -----END PGP SIGNATURE-----
 
---=-fPK+xqP+UyRvyAL/SVWO--
+--=-phDBzV0Hq4+2CLuYKnA9--
