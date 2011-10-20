@@ -1,22 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGvO2-0007Ud-HS
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:22:31 +0000
-Received: by wyg8 with SMTP id 8so3753359wyg.36
+	id 1RGvPi-0007YC-3B
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:24:14 +0000
+Received: by wwj40 with SMTP id 40so2963703wwj.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Oct 2011 09:22:29 -0700 (PDT)
-Subject: Re: [PATCH] phram: make kernel boot command line arguments work
+	Thu, 20 Oct 2011 09:24:12 -0700 (PDT)
+Subject: Re: Need to recover from corruption
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: h-fache@ti.com
-Date: Thu, 20 Oct 2011 19:16:53 +0300
-In-Reply-To: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
+To: Steve Iribarne <siribarne@grid-net.com>
+Date: Thu, 20 Oct 2011 19:23:53 +0300
+In-Reply-To: <4E9CA094.4090002@grid-net.com>
+References: <4E975135.9090702@grid-net.com> <1318765406.2935.7.camel@sauron>
+	<4E9CA094.4090002@grid-net.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-ldMT+GMk10d5Jt5r8ZKc"
-Message-ID: <1319127421.20953.5.camel@sauron>
+	boundary="=-6BBCeVLMMeKjtLoKCP5v"
+Message-ID: <1319127839.20953.10.camel@sauron>
 Mime-Version: 1.0
-Cc: joern@lazybastard.org, joern@logfs.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,36 +29,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ldMT+GMk10d5Jt5r8ZKc
+--=-6BBCeVLMMeKjtLoKCP5v
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2011-10-17 at 17:40 +0200, h-fache@ti.com wrote:
-> From: Herv=C3=A9 Fache <h-fache@ti.com>
+On Mon, 2011-10-17 at 14:39 -0700, Steve Iribarne wrote:
+> On 10/16/2011 04:43 AM, Artem Bityutskiy wrote:
+> > On Thu, 2011-10-13 at 13:59 -0700, Steve Iribarne wrote:
+> >> I work on a system where we need to be as 100% uptime as possible.  Th=
+e
+> >> other day we had an issue here where one of our applications was
+> >> crashing while a write to one of the partitions was happening.
+> >>
+> >> I then turned on UBIFS debugging in u-boot and I have a bunch of info
+> >> but I have no idea what is going on.
+> > Well, judging from the log UBIFS went nuts for some reason (negative
+> > free space). I've never seen this before.
+> >
+> > Could you please write some more information about your system, flash,
+> > kernel version, etc. Please, follow these instructions:
+> > http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
 >=20
-> This patch is based on Ville Herva's similar patch to block2mtd.
->=20
-> Trying to pass kernel command line arguments at boot-time did not work, a=
-s
-> phram_setup() was called so early that kmalloc() was not functional.
->=20
-> This patch only saves the option string at the early boot stage, and pars=
-es
-> it later when init_phram() is called. This is determined by the fact that
-> init was called, or not.
->=20
-> With this patch, I can boot with a statically-compiled phram, and mount a
-> ext2 root fs from physical RAM, without the need for a initrd.
->=20
-> Signed-off-by: Herv=C3=A9 Fache <h-fache@ti.com>
+> I'm working on getting this info for you now.
 
-Could you please make checkpatch.pl happy?
+Could you please also verify your flash with the mtd tests. The symptoms
+do not look like you have driver-level issues, but this is a good idea
+to do anyway. You can find the tests in the kernel and some info at the
+MTD web page.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ldMT+GMk10d5Jt5r8ZKc
+--=-6BBCeVLMMeKjtLoKCP5v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -65,13 +69,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOoEl1AAoJEJtuLFy+q7fed5YIAI0XgAY4kh3vJe+IdULlpbem
-ADHXOVlJlrT9shumuWOJzaR5Wpbwpvlvpknpq+2JtzOD7ldqJHeNLaFVVZ3fnesZ
-7+518+zBltqdP64wE5+1GgqFrC0cS5AjwX3KAqXX258k5oo7BlgXvPqdVF/qA2w/
-9n1oLqEcijrIj89gIDWjva9MGyUaBln8ed/vH2uORhSDhF33Uaoxn9Gs2oTiYujX
-ExTSIa8Oh24zAiBzC4IzZnCYXzJ+evirV7k+MZMv+w5ew4TlgxxBDgik5bBLASWq
-oIsBjeg2+x69K1YH7CEhZSxw0E4qCDIwdH5yiajDgEzhb0I6Pmbn+qTv8SRvcDw=
-=h8b5
+iQEcBAABAgAGBQJOoEsZAAoJEJtuLFy+q7fe9/QH/iSqTTIU+5fWNkob5zZu8V9W
+depxuCYY44XXprRJqiIzu09DBp/H2HSvhYBpDSOg3ZIvTwKATxIZexSXevAdPYL8
+oX0ASOVp2PSSmV3J0Yu8UX8rOtcF9KWRSfxhxf8KEzFHlThTzvGv1H7/OG9IRtCM
+HpeCAwp0yP+ZYiXspz41+i/zYRI45yvxG3HAAU4zfg4p1w/g8oAJiQ7D5MNU+CvY
+E+1nb5BOlDinWMhi4J5tniPAQGPS7Rk5t4dw1U59405lUZGUagDB/juWRfDPvbwm
+lBEBy9sIo3B/Gehf3OOf8aCd7kAVfC3nHX0CxjBlP2dnKHmqixpTbP8a4DfJur0=
+=Ag5b
 -----END PGP SIGNATURE-----
 
---=-ldMT+GMk10d5Jt5r8ZKc--
+--=-6BBCeVLMMeKjtLoKCP5v--
