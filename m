@@ -1,24 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGvaQ-0007yt-Le
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:35:19 +0000
-Received: by eye3 with SMTP id 3so3643039eye.36
+	id 1RGvbk-000827-Da
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:36:41 +0000
+Received: by wwe32 with SMTP id 32so6771832wwe.0
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Oct 2011 09:35:16 -0700 (PDT)
-Subject: Re: [PATCH] Add driver for M-sys / Sandisk diskonchip G4 nand flash
+	Thu, 20 Oct 2011 09:36:37 -0700 (PDT)
+Subject: Re: UBIFS recovery fails
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Thu, 20 Oct 2011 19:31:04 +0300
-In-Reply-To: <4E9CA204.8000904@newsguy.com>
-References: <1318258091-12670-1-git-send-email-mikedunn@newsguy.com>
-	<8762jtlx19.fsf@free.fr> <4E9CA204.8000904@newsguy.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Thu, 20 Oct 2011 19:36:19 +0300
+In-Reply-To: <Pine.LNX.4.64.1110181007100.30940@lnxricardw.se.axis.com>
+References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
+	<Pine.LNX.4.64.1110181007100.30940@lnxricardw.se.axis.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-phDBzV0Hq4+2CLuYKnA9"
-Message-ID: <1319128271.20953.14.camel@sauron>
+	boundary="=-SrscFB/gt30AUebab3+R"
+Message-ID: <1319128586.20953.19.camel@sauron>
 Mime-Version: 1.0
-Cc: marek.vasut@gmail.com, Robert Jarzmik <robert.jarzmik@free.fr>,
-	linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,44 +29,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-phDBzV0Hq4+2CLuYKnA9
+--=-SrscFB/gt30AUebab3+R
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2011-10-17 at 14:45 -0700, Mike Dunn wrote:
-> Not sure.  I'm currently not too knowlegeable on timers, and I'm not usin=
-g this
-> config option in my kernel.  Will look into this.  Meantime, suggestions,
-> pointers to reference docs, etc greatly appreciated!
-
-Jiffies do work fine in NO_HZ.
-
+On Tue, 2011-10-18 at 10:11 +0200, Ricard Wanderlof wrote:
+> On Mon, 17 Oct 2011, Artem Bityutskiy wrote:
 >=20
+> > [...] Unfortunately, no one really invested time into making UBIFS=20
+> > support MLC very well. It needs some more work. It also have some issue=
+s=20
+> > related to unstable bits in modern SLC.
+> >
+> > In short - if you want to use UBIFS on MLC - you should not have unclea=
+n
+> > reboots. If you want to make UBIFS 100% uclean-reboot save on MLC - you
+> > need to work on it some more.
+> >
+> > We (the original authors) developed and tested it on very robust SLC
+> > NAND.
 >=20
-> > Why not use a loop of mdelay() or msleep() or doc_nops() bellow ?
-> > I would prefer doc nops, as the time of these is controlled by the chip=
- itself,
-> > and thus less dependant on the CPU frequency.
->=20
->=20
-> I'm not simply delaying, I'm polling register 0x1038 (I'm calling it
-> DOCG4_CONTROL_STATUS).  The diskonchip P3 uses this same register in exac=
-tly the
-> same way, so it's likely the G3 does as well.  With regard to the diskonc=
-hip nop
-> register, I was careful to preserve the same number of reads of that regi=
-ster in
-> the same places as was observed during reverse engineering, to prevent
-> timing-related failures.
+> Do you have any specifics on what the issues are with MLC ?
 
-But use cpu_relax() in the polling loop.
+Yeah, described at the web site, please send patches if you have
+something to add!
 
+> Since UBI implements bit scrubbing and eraseblock torture on questionable=
+=20
+> blocks it would seem that a lot of the work has been done in order to=20
+> handle unstable bits. Is there some issue which is related specifically t=
+o=20
+> bit flips happening while the system is powered off?
+
+The definition of unstable bits in MTD community is probably not what
+you though of. I've added the docs at the web site as well :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-phDBzV0Hq4+2CLuYKnA9
+--=-SrscFB/gt30AUebab3+R
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -75,13 +76,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOoEzIAAoJEJtuLFy+q7feZx8IAKQIK/wOebCRyk3VqfpIssml
-FAsCAyqFMjGB+SIdgE7MzLImlhv2Ye4Q5YCEsnx90vkf8Cvq/IZUgDRPofgGJuic
-vAHPuIQM+upmYBNRZ+IGt6OQS/35G3hESjfh/2Wl2z/GA9Wr7Y4gKU+VCdrG4mjh
-3jtR+Q+De1F+lYL9hT78e3YccychFQXE4Hbm158P5o34SmFtDuEnxJt+29A9dMhn
-QKEcofT576hs1SBUNtQ47Cs1GP2zbwNZu5C5nkuNLb5X4vJB9j+udGeIvaJEzvIf
-HR7T+n7QWPzYGmb7QM2sJwvpVsy81YI+07SiAM3bDCh8mJ0+PYILn/echfxnPFY=
-=JPmZ
+iQEcBAABAgAGBQJOoE4DAAoJEJtuLFy+q7feheIIAI6H69xXETWYMot2d/gWrc6c
+F/0yFYzhkkfDFoVG74m7355tPXWZgzD5zjCrGK0q6ozZDcg2A74JhTEFTWnHgiyQ
+noEsLRiGPjkswTaRTc3X8bKwa6hANLyuY/yqH7g3z8pPPkZGavrcIsvE8Cd4HNn1
+kt4OIvFMcnkL8IBILfZdrDzekZnEAO4vNSfXMU1VIPsrLFOKuL6Xfy8L3uj+859F
+2nR/0Mwp4s48fC/dRpOg7N58eg3s0U79rSVoMhUsO4wPAKvOOMQVIAjNXHgfNs43
+XRUcfsIf8N9fRRcyeActBfDCDAoP01mIAgrnflpDPD2ghbFGKybfs4I5O/MpUS4=
+=KpfF
 -----END PGP SIGNATURE-----
 
---=-phDBzV0Hq4+2CLuYKnA9--
+--=-SrscFB/gt30AUebab3+R--
