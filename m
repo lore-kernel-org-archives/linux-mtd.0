@@ -1,23 +1,23 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGvPi-0007YC-3B
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:24:14 +0000
-Received: by wwj40 with SMTP id 40so2963703wwj.18
+	id 1RGvZj-0007wr-Lw
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 16:34:36 +0000
+Received: by wwj40 with SMTP id 40so2975522wwj.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Oct 2011 09:24:12 -0700 (PDT)
-Subject: Re: Need to recover from corruption
+	Thu, 20 Oct 2011 09:34:34 -0700 (PDT)
+Subject: Re: [PATCH] phram: make kernel boot command line arguments work
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Steve Iribarne <siribarne@grid-net.com>
-Date: Thu, 20 Oct 2011 19:23:53 +0300
-In-Reply-To: <4E9CA094.4090002@grid-net.com>
-References: <4E975135.9090702@grid-net.com> <1318765406.2935.7.camel@sauron>
-	<4E9CA094.4090002@grid-net.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Date: Thu, 20 Oct 2011 19:34:14 +0300
+In-Reply-To: <20111018003215.GB31782@logfs.org>
+References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
+	<20111018003215.GB31782@logfs.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-6BBCeVLMMeKjtLoKCP5v"
-Message-ID: <1319127839.20953.10.camel@sauron>
+	boundary="=-fPK+xqP+UyRvyAL/SVWO"
+Message-ID: <1319128461.20953.17.camel@sauron>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: joern@lazybastard.org, linux-mtd@lists.infradead.org, h-fache@ti.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,39 +29,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-6BBCeVLMMeKjtLoKCP5v
+--=-fPK+xqP+UyRvyAL/SVWO
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2011-10-17 at 14:39 -0700, Steve Iribarne wrote:
-> On 10/16/2011 04:43 AM, Artem Bityutskiy wrote:
-> > On Thu, 2011-10-13 at 13:59 -0700, Steve Iribarne wrote:
-> >> I work on a system where we need to be as 100% uptime as possible.  Th=
-e
-> >> other day we had an issue here where one of our applications was
-> >> crashing while a write to one of the partitions was happening.
-> >>
-> >> I then turned on UBIFS debugging in u-boot and I have a bunch of info
-> >> but I have no idea what is going on.
-> > Well, judging from the log UBIFS went nuts for some reason (negative
-> > free space). I've never seen this before.
-> >
-> > Could you please write some more information about your system, flash,
-> > kernel version, etc. Please, follow these instructions:
-> > http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
->=20
-> I'm working on getting this info for you now.
+On Tue, 2011-10-18 at 02:32 +0200, J=C3=B6rn Engel wrote:
+> Dedekind, can I leave it to you to merge this?
 
-Could you please also verify your flash with the mtd tests. The symptoms
-do not look like you have driver-level issues, but this is a good idea
-to do anyway. You can find the tests in the kernel and some info at the
-MTD web page.
+I am too stupid comparing to Dedekind :-) The nickname is actually
+because I liked his theorems back at University days, so my nick name is
+after him :-)
+
+But sure, as soon as I get a nice patch, I'll merge it to my l2 tree,
+just like I do for every nice MTD patch :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-6BBCeVLMMeKjtLoKCP5v
+--=-fPK+xqP+UyRvyAL/SVWO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -69,13 +55,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOoEsZAAoJEJtuLFy+q7fe9/QH/iSqTTIU+5fWNkob5zZu8V9W
-depxuCYY44XXprRJqiIzu09DBp/H2HSvhYBpDSOg3ZIvTwKATxIZexSXevAdPYL8
-oX0ASOVp2PSSmV3J0Yu8UX8rOtcF9KWRSfxhxf8KEzFHlThTzvGv1H7/OG9IRtCM
-HpeCAwp0yP+ZYiXspz41+i/zYRI45yvxG3HAAU4zfg4p1w/g8oAJiQ7D5MNU+CvY
-E+1nb5BOlDinWMhi4J5tniPAQGPS7Rk5t4dw1U59405lUZGUagDB/juWRfDPvbwm
-lBEBy9sIo3B/Gehf3OOf8aCd7kAVfC3nHX0CxjBlP2dnKHmqixpTbP8a4DfJur0=
-=Ag5b
+iQEcBAABAgAGBQJOoE2GAAoJEJtuLFy+q7fe4QQH/ik6g5fmO9khg+CeL3wfkmLW
+iwX9DKupsvuc1wYyfAyUhr8urJjBZ7LbFa10Y/fAtMvekK15WZT589LtGayHFFSj
+uxlWOqcQiAs2hMn/r1b/qwDd3UVgjT9g4FyjcR48wA2Yxh8bRODp+Mk/q+pzguKe
+6GSnic6w89WPrmGIkkobWgEbGsLz+ouYm5GB99sZICtHWhShWBBGb9NI5EBoaz4Y
+Pi6+s8jrM/yHFeBgCJt6CUPkVYN0JR7la3NMcWMLeUZxO0/9BtgWJHwtWntSHdrB
+KctMWVr/3fd0lc5DvImseiW/gbTVVLetbUAL3ovMNv9e5PyKCT6Gw9G2OvJwCjs=
+=FO2q
 -----END PGP SIGNATURE-----
 
---=-6BBCeVLMMeKjtLoKCP5v--
+--=-fPK+xqP+UyRvyAL/SVWO--
