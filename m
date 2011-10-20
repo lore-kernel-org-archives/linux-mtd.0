@@ -1,25 +1,24 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RGtO6-0005Rm-V8
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 14:14:27 +0000
-Received: by wwj40 with SMTP id 40so2822188wwj.18
+	id 1RGuzp-0006vH-9G
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2011 15:57:30 +0000
+Received: by wyg8 with SMTP id 8so3718505wyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Oct 2011 07:14:24 -0700 (PDT)
-Subject: Re: UBIFS recovery fails
+	Thu, 20 Oct 2011 08:57:26 -0700 (PDT)
+Subject: Re: ubi vol_size and lots of bad blocks
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>, Daniel Kuhn <cheeef@swissonline.ch>
-Date: Thu, 20 Oct 2011 17:14:04 +0300
-In-Reply-To: <20111018145413.GA8576@parrot.com>
-References: <4E9C2DAC.7090109@swissonline.ch> <1318882668.2172.10.camel@koala>
-	<225442585F89274EA3A62F88671ECBAC0D33C8E2@prod-svr-1.intranet.str.ca>
-	<20111018145413.GA8576@parrot.com>
+To: Daniel Drake <dsd@laptop.org>
+Date: Thu, 20 Oct 2011 18:57:07 +0300
+In-Reply-To: <CAMLZHHSSWkjy7LiFG-g5vZ==2H+yPFB_M-yUem1K5UJMKo2tmw@mail.gmail.com>
+References: <CAMLZHHSW9daPS9RsMyBnhTfzUQLC0+e9_-=xqiWE4T6upbcaiQ@mail.gmail.com>
+	<1318590949.12351.116.camel@sauron>
+	<CAMLZHHSSWkjy7LiFG-g5vZ==2H+yPFB_M-yUem1K5UJMKo2tmw@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-YIKh6SNqoylK+v0OJMok"
-Message-ID: <1319120052.11028.18.camel@sauron>
+	boundary="=-w7/NdzX7UD/ucn193WI+"
+Message-ID: <1319126234.11028.28.camel@sauron>
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?ISO-8859-1?Q?Jean-S=E9bastien?= Gagnon <jsgagnon@vizimax.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,32 +30,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YIKh6SNqoylK+v0OJMok
+--=-w7/NdzX7UD/ucn193WI+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, 2011-10-17 at 14:35 +0100, Daniel Drake wrote:
+> Hi Artem,
+>=20
+> Thanks for the detailed response - I'll be sure to send another
+> documentation patch once we've got to the bottom of everything.
+>=20
+> On Fri, Oct 14, 2011 at 12:15 PM, Artem Bityutskiy <dedekind1@gmail.com> =
+wrote:
+> >> I found a note in the UBI FAQ where it says vol_size can be excluded
+> >> and it will be computed to be the size of the input image, and then
+> >> the autoresize flag can be used to expand the partition later.
+> >> Excluding vol_size in this way indeed solves the problem and the
+> >> problematic laptop now boots.
+> >
+> > Well, you probably need some free space as well. Just come up with
+> > some minimum number, say 300MiB and use this number for volume size in
+> > ubinize, and use autoresize flag.
+>=20
+> Regarding free space, is it really necessary?
 
-I have just updated UBI/UBIFS docs. I was writing quickly because I do
-not have much time, so _please_, review and send me corrections
-(preferably patches against mtd-www:
-http://git.infradead.org/mtd-www.git).
+Well, I though that if OLPC requires some free space to boot, it could
+be necessary.
 
-Review these:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_powercut
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_ubifs_mlc
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
+>  My understanding is that
+> the autoresize functionality will resize the volume *before* it gets
+> mounted for the first time, so it should be fine to not leave any free
+> space at image creation time. When it gets mounted for the first time,
+> it will be freshly resized and have free space available.
 
-Thank you!
+Yes. I was just thinking about a situation when you have so many bad
+blocks, that it will be resized and there will be too few space. In that
+case the device won't boot with weird and unexpected symptoms. I thought
+that if you reserve min. free space, then it won't boot with predictable
+symptoms - UBI will print a message like "not enough eraseblocks" or
+something like that.
 
-P.S. you may want to press "refresh" button to force your browser to
-re-download the web pages.
+> As for "some minimum number", I guess it goes without saying that
+> whatever number is chosen, it must be bigger than the amount of data
+> that is going to be written into the image.
+
+Frankly, do not remember, depends on ubinize implemenation. Most
+probably yes, if you put smaller number, ubinize will throw an error
+back.
+
+>  Our image building tool
+> will be used by different customers who will apply simple
+> customisations (e.g. with GNOME, with wikipedia) so the range of image
+> sizes varies. We need to do it based on some kind of calculation that
+> considers the size of the initial data to be written to the flash. If
+> we can do it with no free space initially, we can let ubinize do that
+> for us, with autoresize enabled (this was my trail of thought).
+
+Yeah, you can forget about the free space stuff.
+
+> > Autorisize will not occupy the PEBs reserved for bad block handling.
+>=20
+> OK, thanks for clarifying.
+> One final question... What happens when the PEBs reserved for bad
+> block handling run out?
+
+Very good question. In this case you will get an error and UBI will
+switch to R/O mode.
+
+UBI guarantees that there is a PEB for each LEB. If you run out of good
+PEBs, then a write to the LEB may fail.
+
+To recover from this error you could re-flash the device. The run-time
+recovery would require deleting or shrinking one of the UBI volumes.
+
+So you need to carefully select the amount of PEBs reserver for bad
+blocks handling. For Nokia phones like N900 1% was just fine. The have
+Samsung OneNAND flash, 256MiB in size, 128KiB PEBs.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YIKh6SNqoylK+v0OJMok
+--=-w7/NdzX7UD/ucn193WI+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,13 +119,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOoCysAAoJEJtuLFy+q7fefYkH/RX4rW03G5rxlGKg5EbjcITJ
-m+PaUOces0I6uTTHElQLs4+xEdcOAjeBJPXbZMLiPx8ALCOCVxOAm2Wy1N+WbbFm
-zn/WC5ARm4/J5PkYUQ8XVdaSLSwCI+jNzWm0PeLsfCQhBieVfK+ExTeMWLMYCl6R
-ABmh98I2w8QbhQMJMzx8baPWxZehpvi3F3hZHbyt4/ArWreF3yUkunYPQ4YW7zfG
-igjMFnlG+aFYwH1tIBWrVzJKuBTHRxBs8DlWSt4toK6jIOZgWGxSia+v1SFgYl3u
-ulq6Mz69xtE3wCflBBlBMtVcMxMX7i3xgSuceM/U6BuSNzJP12CyLJbyWZcdEuY=
-=G9bZ
+iQEcBAABAgAGBQJOoETTAAoJEJtuLFy+q7fee6EH/1Avdz9mlCBjdnP+sZg5UWeg
+2Nt/Bh3/+QusUDb2nvfUcZ8jlXF8v/8b91NMgqW+sUU3hE7J0yfJEYw/OuqExb5W
+xpCiQrLNIbFQysBic5nP1zGUxvdkNb5Up2E44cXBOeEpgdrR96aBSsOB6XoZzR0J
+YmYY7EoK6AsfZcreecTaaqwCzEDuqOTtvc+nGt6NKHFC8ljzULQGkEEnO6zHRvRZ
+23IL/9F9ta4sTXZnxIubQk0IO++bSCT+ojE87vZe9vw60YkyEvg6sHgPiidHGl8L
+Eeq2tmXnq6lzUy4f7inwKpNTeyTpjqvuQH3TLKqbqEvJcm98t5ihYzxqU24UFmQ=
+=oZOr
 -----END PGP SIGNATURE-----
 
---=-YIKh6SNqoylK+v0OJMok--
+--=-w7/NdzX7UD/ucn193WI+--
