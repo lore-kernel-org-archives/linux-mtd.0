@@ -1,16 +1,16 @@
-Received: from na3sys009aog118.obsmtp.com ([74.125.149.244])
+Received: from na3sys009aog116.obsmtp.com ([74.125.149.240])
 	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RHAnE-0008Up-3o
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 08:49:33 +0000
-Received: by mail-qy0-f175.google.com with SMTP id 35so356718qyk.6
+	id 1RHAos-000069-3D
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 08:51:14 +0000
+Received: by mail-qy0-f182.google.com with SMTP id 14so3441168qyg.20
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Oct 2011 01:49:29 -0700 (PDT)
+	Fri, 21 Oct 2011 01:51:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1319127627.20953.8.camel@sauron>
+In-Reply-To: <1319127421.20953.5.camel@sauron>
 References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<1319127627.20953.8.camel@sauron>
-Date: Fri, 21 Oct 2011 10:49:29 +0200
-Message-ID: <CA+Xn3W3huOu_zu7MzSr0W1wpo7mD_ek8eOYNstkMnb9wm3-JZw@mail.gmail.com>
+	<1319127421.20953.5.camel@sauron>
+Date: Fri, 21 Oct 2011 10:51:11 +0200
+Message-ID: <CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
 Subject: Re: [PATCH] phram: make kernel boot command line arguments work
 From: "Fache, Herve" <h-fache@ti.com>
 To: dedekind1@gmail.com
@@ -26,34 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Hi again,
 
-On Thu, Oct 20, 2011 at 18:20, Artem Bityutskiy <dedekind1@gmail.com> wrote=
+On Thu, Oct 20, 2011 at 18:16, Artem Bityutskiy <dedekind1@gmail.com> wrote=
 :
->
-> On Mon, 2011-10-17 at 17:40 +0200, h-fache@ti.com wrote:
->
-> > -static int phram_setup(const char *val, struct kernel_param *kp)
-> > +static int phram_init_called;
-> > +static __initdata char phram_paramline[64+12+12];
->
-> snip..
-> > +static int phram_setup(const char *val, struct kernel_param *kp)
-> > +{
->
-> snip..
->
-> > + =C2=A0 =C2=A0 strlcpy(phram_paramline, val, sizeof(phram_paramline));
->
-> Accessing __initdata from non __init function. Please check that your
-> patch does not introduce a new section mismatch. There is even a kernel
-> config option to debug these issues.
+> Could you please make checkpatch.pl happy?
 
-I enabled DEBUG_SECTION_MISMATCH but I don't get errors. Also, this
-part of the code will never be reached once init has run. If you think
-that it's a risk, then I can remove the __initdata keyword.
+Would you mind posting the errors/warnings you get? I did run
+checkpatch.pl before submitting and got none...
 
 Herv=C3=A9
---
+--=20
 Texas Instruments France SA, 821 Avenue Jack Kilby, 06270 Villeneuve
 Loubet. 036 420 040 R.C.S Antibes. Capital de EUR 753.920
