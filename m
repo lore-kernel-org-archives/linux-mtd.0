@@ -1,22 +1,20 @@
-Received: from na3sys009aog116.obsmtp.com ([74.125.149.240])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RHAos-000069-3D
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 08:51:14 +0000
-Received: by mail-qy0-f182.google.com with SMTP id 14so3441168qyg.20
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Oct 2011 01:51:11 -0700 (PDT)
+Received: from mail.kernelconcepts.de ([212.60.202.196])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RHG8A-00037N-Jm
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 14:31:31 +0000
+Received: from [192.168.2.163] by mail.kernelconcepts.de with esmtpsa
+	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.72)
+	(envelope-from <daniel.wagener@kernelconcepts.de>)
+	id 1RHGU8-0001n4-Q1
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 16:54:12 +0200
+Message-ID: <4EA1823D.3040708@kernelconcepts.de>
+Date: Fri, 21 Oct 2011 16:31:25 +0200
+From: Daniel Wagener <daniel.wagener@kernelconcepts.de>
 MIME-Version: 1.0
-In-Reply-To: <1319127421.20953.5.camel@sauron>
-References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<1319127421.20953.5.camel@sauron>
-Date: Fri, 21 Oct 2011 10:51:11 +0200
-Message-ID: <CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
-Subject: Re: [PATCH] phram: make kernel boot command line arguments work
-From: "Fache, Herve" <h-fache@ti.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: joern@lazybastard.org, joern@logfs.org, linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: Subject: UBIFS and small dynamic files
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again,
+Ahoi,
 
-On Thu, Oct 20, 2011 at 18:16, Artem Bityutskiy <dedekind1@gmail.com> wrote=
-:
-> Could you please make checkpatch.pl happy?
+we are having trouble with the side effects of the UBIFS write buffer 
+described in http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writebuffer
+We have certain config files that are quite small and get rewritten very 
+frequently by their applications.
+Matchbox-panels' ~/.matchbox/mbdock.session is a fine example as it gets 
+emptied on a power cut or hard reset resulting in an empty and therefore 
+useless panel on the next start.
 
-Would you mind posting the errors/warnings you get? I did run
-checkpatch.pl before submitting and got none...
+The document above mentions the '-o sync' option which disables the 
+write buffer on a partition, but this is not an option for us because we 
+do not want to reduce the write performance. And there is also the issue 
+of a synchronously mounted UBIFS that can make things even worse in case 
+of power cuts.
 
-Herv=C3=A9
---=20
-Texas Instruments France SA, 821 Avenue Jack Kilby, 06270 Villeneuve
-Loubet. 036 420 040 R.C.S Antibes. Capital de EUR 753.920
+
+
+Has there been any further development to these issues since 2008?
