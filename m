@@ -1,26 +1,19 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RHLMT-00060K-Tj
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2011 20:06:38 +0000
-Received: by ywe9 with SMTP id 9so4884555ywe.36
+	id 1RHYZX-0000si-5Y
+	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2011 10:12:59 +0000
+Received: by iagz35 with SMTP id z35so6453928iag.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Oct 2011 13:06:34 -0700 (PDT)
-Subject: RE: ubifs not working with 3.1 kernel and MT29F2G08ABAEAWP NAND Flash.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Kumar, Goutam" <goutam.kumar@ti.com>
-Date: Fri, 21 Oct 2011 23:06:08 +0300
-In-Reply-To: <0680EC522D0CC943BC586913CF3768C00590504990@dbde02.ent.ti.com>
-References: <0680EC522D0CC943BC586913CF3768C0059050481E@dbde02.ent.ti.com>
-	<4E9EEBDC.5000002@st.com> <20111019154913.GA18674@parrot.com>
-	<0680EC522D0CC943BC586913CF3768C00590504990@dbde02.ent.ti.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-3ECcoUOQF6/dgAVuS0cY"
-Message-ID: <1319227591.10043.0.camel@golum>
-Mime-Version: 1.0
-Cc: Angus CLARK <angus.clark@st.com>, Ivan Djelic <ivan.djelic@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Sat, 22 Oct 2011 03:12:58 -0700 (PDT)
+From: Yong Zhang <yong.zhang0@gmail.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 34/49] mtd: irq: Remove IRQF_DISABLED
+Date: Sat, 22 Oct 2011 17:56:46 +0800
+Message-Id: <1319277421-9203-35-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
---=-3ECcoUOQF6/dgAVuS0cY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+So now this flag is a NOOP and can be removed.
 
-On Thu, 2011-10-20 at 12:17 +0530, Kumar, Goutam wrote:
-> Hi Ivan,
->=20
-> Thanks for the input. Can you share the patches, which I can apply and te=
-st.
->=20
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c    |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c |    3 +--
+ drivers/mtd/nand/tmio_nand.c   |    2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-Even when you have all the patches, please, do not forget to validate
-your flash using the mtd tests.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-3ECcoUOQF6/dgAVuS0cY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAABAgAGBQJOodCwAAoJEJtuLFy+q7fewIMIAKFC3Wfkp308ObchlczAPdVX
-NEL9fuyg9LqkiwV8NNv9iWgurqYgAZOqYxFRhDjh3FFGY0o+uE6//b3ydIDA3GeC
-al2pkyFZiqijGmTcBwQxRZMszpOWZDCvyshJt3fbn3ses2BoRN2Ita/dUwIlq6HB
-gcu1qWpSYNe8GUOMvqY+x41Cr3tK+mu+p9dZSBREnoVebumOAY4eO1Oee7Yhk18C
-I+YnF2TTAH4tWE1owh2aeNIgSyX1+Ps9ihx95qz5w+j5NT34htTXC+QTX+yfhypI
-cdoC9HKAtBDZ+gaHiWQW5vpYERttUwsmejoMjFW8SqriwTc5NGfdyCvFq/DrqGc=
-=fjpo
------END PGP SIGNATURE-----
-
---=-3ECcoUOQF6/dgAVuS0cY--
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 74a43b8..730ff6b 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1191,7 +1191,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	else
+ 		host->irq_control(host, 0);
+ 
+-	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
++	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+ 	if (err)
+ 		goto eirq;
+ 
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 9eb7f87..fabba5c 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1132,8 +1132,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	/* initialize all interrupts to be disabled */
+ 	disable_int(info, NDSR_MASK);
+ 
+-	ret = request_irq(irq, pxa3xx_nand_irq, IRQF_DISABLED,
+-			  pdev->name, info);
++	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to request IRQ\n");
+ 		goto fail_free_buf;
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index beebd95..6e5d6ff 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -441,7 +441,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->chip_delay = 15;
+ 
+ 	retval = request_irq(irq, &tmio_irq,
+-				IRQF_DISABLED, dev_name(&dev->dev), tmio);
++				0, dev_name(&dev->dev), tmio);
+ 	if (retval) {
+ 		dev_err(&dev->dev, "request_irq error %d\n", retval);
+ 		goto err_irq;
+-- 
+1.7.1
