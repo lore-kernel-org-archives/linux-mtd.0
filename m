@@ -1,23 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RIQaN-0005fU-Lr
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2011 19:53:29 +0000
-Date: Mon, 24 Oct 2011 21:53:13 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Roland Kletzing <devzero@web.de>
+	id 1RIRhO-0006Ap-Bn
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2011 21:04:46 +0000
+Received: by wyg8 with SMTP id 8so8181635wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Oct 2011 14:04:41 -0700 (PDT)
 Subject: Re: [BUG] Re: mtd_stresstest module bricked my dockstar
-Message-ID: <20111024195313.GA6326@pengutronix.de>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>, Roland Kletzing <devzero@web.de>
+Date: Tue, 25 Oct 2011 00:04:15 +0300
+In-Reply-To: <20111024195313.GA6326@pengutronix.de>
 References: <69501156.1798237.1319395066798.JavaMail.fmail@mwmweb003>
 	<20111024055705.GA4020@1wt.eu>
 	<B10F15EA8AB74E698DC0D94563A30BE7@samsungnetbook>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-In-Reply-To: <B10F15EA8AB74E698DC0D94563A30BE7@samsungnetbook>
-Cc: Artem.Bityutskiy@nokia.com, adrian.hunter@intel.com,
-	linux-mtd@lists.infradead.org, Willy Tarreau <w@1wt.eu>,
-	linux-kernel@vger.kernel.org
+	<20111024195313.GA6326@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+	protocol="application/pgp-signature";
+	boundary="=-Mt6x6GP4VKd/k7yBkYj5"
+Message-ID: <1319490276.12314.9.camel@golum>
+Mime-Version: 1.0
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	adrian.hunter@intel.com, Willy Tarreau <w@1wt.eu>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,153 +32,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-Mt6x6GP4VKd/k7yBkYj5
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 24, 2011 at 09:32:42PM +0200, Roland Kletzing wrote:
+> > Anyway - what would people think if linux had a kernel module  which wi=
+pes
+> > /dev/sda1 when loaded ? :)
 
-CCing the mtd-list...
+Yeah, the tests are destructive and they start erasing and torturing
+your MTD device without preserving your data.
 
-> Hello,
->=20
-> cc`ing correct email of Adrian Hunter and i found that
-> mtd_torturetest (and the
-> other modules) have the same issue and there is another author i
-> could find the
-> email for.
->=20
-> >If you can't restore it with JTAG, it means the hardware is really dead.
-> >JTAG is used when you blank the flash, and is supposed to work. I don't
-> >know what the module does, but I fail to see how to could wear the flash
-> >that fast. At worst it could have wiped it, or the flash was already bad.
->=20
-> Yes, i think accidentally insmodding  "mtd_stresstest" has just
-> wiped it, not killed.
-> The problem is, that it is important stuff for booting and you can`t
-> pull it out and
-> re-write externally, like a disk. Sorry, i that was probably not
-> clearly stated.
->=20
-> Anyway - what would people think if linux had a kernel module  which wipes
-> /dev/sda1 when loaded ? :)
->=20
-> >I got one Iomega Iconnect with a faulty flash that I got replaced for a
-> >good one, so it's more likely the case here.
->=20
-> Yes, i could give debricking with JTAG a try. But what about the
-> cost for the JTAG
-> and the work to be spent with it? I could buy another Dockstar for that..=
-=2E..
->=20
-> >I agree with you. I remember the very old ISA NE2000 driver who used to
-> >scan various addresses to find a NIC, causing some of them to reconfigure
-> >their address to *none* and definitely stop responding on the bus to any
-> >reconfiguration request. That was pretty annoying too. After killing a
-> >few, I stopped using Linux on a machine with such a NIC for a long time!
->=20
-> Oh, that could be an explanation why i had 2 broken NE2000 NICs in
-> the nineties.. ;)
->=20
-> >You should keep it and retry the JTAG adapter. You just need a boot load=
-er
-> >so if you manage to find a usable memory location that you can select by
-> >soldering two pins together, you could manage to store it and bood from
-> >another device.
->=20
-> I`m sure debricking with JTAG is possible and it would be an
-> interesting task.
-> Maybe i like to spend some money and time with this one day. For now
-> i don`t.
->=20
-> In the meantime i`d rather being interested in what can be done to add mo=
-re
-> safety to the mtd tests.
->=20
-> By writing these lines and looking into the source, i started
-> getting curious -  i
-> see there is dev param with that module(s), but i did not pass a
-> device number,
-> nor did i pass anything to it.
->=20
-> in
->=20
-> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux.git;a=3Dblob;f=
-=3Ddrivers/mtd/tests/mtd_stresstest.c;h=3D63920476b57a24c7e61563303eb3abb77=
-3b73fdf;hb=3D7163cea15f7b362795b858e7c130cd617aecc0aa
->=20
-> i see:
->=20
-> static int dev;   <-!
-> module_param(dev, int, S_IRUGO);
-> MODULE_PARM_DESC(dev, "MTD device number to use");
->=20
-> static int count =3D 10000;
-> module_param(count, int, S_IRUGO);
-> MODULE_PARM_DESC(count, "Number of operations to do (default is 10000)");
->=20
-> and then
->=20
-> static int __init mtd_stresstest_init(void)
-> {
-> 	int err;
-> 	int i, op;
-> 	uint64_t tmp;
->=20
-> 	printk(KERN_INFO "\n");
-> 	printk(KERN_INFO "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D\n");
-> 	printk(PRINT_PREF "MTD device: %d\n", dev);
->=20
-> 	mtd =3D get_mtd_device(NULL, dev);
-> 	if (IS_ERR(mtd)) {
-> 		err =3D PTR_ERR(mtd);
-> 		printk(PRINT_PREF "error: cannot get MTD device\n");
-> 		return err;
-> 	}
->=20
->=20
->=20
-> My kernel log showed:
->=20
-> mtd_stresstest: MTD device: 0
-> mtd_stresstest: MTD device size 1048576 etc...
->=20
-> So, apparenly the module accidentally picked mtd0 instead of exiting
-> cleanly (as
-> i did not pass a device number)
->=20
-> I`m not a programmer, but doesn`t look that like an "unitialized
-> variable" issue ?
->=20
-> If yes, then i would call my Dockstar "victim of a bug".
+And the bad thing is - if you do not pass any parameter, they will
+torture your mtd0.
 
-No, that's okay. Check http://en.wikipedia.org/wiki/.bss
+I am sorry that you bricked your device and I hope you will be able to
+resurrect it. This was an oversight. The tests were written for
+validating new drivers and making sure they are robust. So we always
+assumed people run them on a development HW, not on a production HW.
+That was a false implicit assumption.
 
-I wonder though, if it makes sense to initialize it with -EINVAL or somethi=
-ng,
-so a user is forced to use the dev-module parameter?
-
-Regards,
-
-   Wolfram
+Yes, we should use -1 as the default value, and print a scary warning
+message when the module is inserted without a parameter. We should
+probably also put word "destructive" or something like this to the
+module description.
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy
 
---mYCpIKhGyMATD0i+
+--=-Mt6x6GP4VKd/k7yBkYj5
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iEYEARECAAYFAk6lwikACgkQD27XaX1/VRsesACaAyoGsChHwmsCA22KPaF/fWGf
-1CYAn3VmB16sfVSGsUk54ZNzvgU7C0Hp
-=FkRp
+iQEcBAABAgAGBQJOpdLPAAoJEJtuLFy+q7fenwkIAJr+sLsgJcJCbNdqagPJTJsY
+pU/6ZnKO3MGsypdvrpmHrVXkMxPieubQJm+jq/VIT8kbDeUAvd9wVRZf4DZi4EHO
+a6xKhyGYfPDiZoWsh0QnQYKaloOWqsenCI5DlqGMsTb5/fU/8EEMgrgkEsBBdhHo
+kF4LJgrHxwvWsqeWobf37FmbwgO74ssiHc9GPNFU1aOu5GjRaGyaAqKWJ06CEm9U
+walMr3/cSlhWZCMY5b94+fIwr8gdJ6DIoGSShsG8HxzRj2/w9deG/nJrVQKOL7d1
+DB+oqiqebhQFFBaoFhWAtKgS+H6zvs8i+dU6q6aQNDMNtbUjERuDCYxse2NL7s4=
+=Bo34
 -----END PGP SIGNATURE-----
 
---mYCpIKhGyMATD0i+--
+--=-Mt6x6GP4VKd/k7yBkYj5--
