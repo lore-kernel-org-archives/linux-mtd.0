@@ -1,23 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from smtp-out1.tiscali.nl ([195.241.79.176])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RIboe-0002TA-OL
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 07:52:57 +0000
-Received: by wwf27 with SMTP id 27so195111wwf.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Oct 2011 00:52:55 -0700 (PDT)
-Subject: Re: Subject: UBIFS and small dynamic files
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Wagener <daniel.wagener@kernelconcepts.de>
-Date: Tue, 25 Oct 2011 10:52:43 +0300
-In-Reply-To: <4EA1823D.3040708@kernelconcepts.de>
-References: <4EA1823D.3040708@kernelconcepts.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-c25dxPiahprT5q9rC/Ux"
-Message-ID: <1319529170.14178.10.camel@golum>
+	id 1RIcs2-00041b-UN
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 09:00:33 +0000
+Subject: [PATCH] mtd: clean up usage of MTD_DOCPROBE_ADDRESS
+From: Paul Bolle <pebolle@tiscali.nl>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 25 Oct 2011 11:00:07 +0200
+Message-ID: <1319533207.2409.68.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Depending on whether MTD_DOCPROBE_ADVANCED is set or not,
+MTD_DOCPROBE_ADDRESS will default to either 0x0000 or 0. That should
+lead to (basically) identical code in docprobe.c. The current two
+defaults should be merged.
 
---=-c25dxPiahprT5q9rC/Ux
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+And, while we're at it, if MTD_DOCPROBE is set MTD_DOCPROBE_ADDRESS will
+always be set. (MTD_DOCPROBE_ADDRESS depends on MTD_DOCPROBE and it has
+a default value.) So the check whether CONFIG_MTD_DOCPROBE_ADDRESS is
+defined is unnecessary and should be dropped.
 
-On Fri, 2011-10-21 at 16:31 +0200, Daniel Wagener wrote:
-> Ahoi,
->=20
-> we are having trouble with the side effects of the UBIFS write buffer=20
-> described in http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writebuf=
-fer
-> We have certain config files that are quite small and get rewritten very=
-=20
-> frequently by their applications.
-> Matchbox-panels' ~/.matchbox/mbdock.session is a fine example as it gets=
-=20
-> emptied on a power cut or hard reset resulting in an empty and therefore=
-=20
-> useless panel on the next start.
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Tested only by running "make menuconfig" with different values and by
+looking at the preprocessor's output (ie, running "make -C /[...] M=$PWD
+EXTRA_CFLAGS=-E docprobe.ko").
 
-Well, all the docs about the synchronization are at the web site. There
-is also a description with links of what other FSes do:
-http://linux-mtd.infradead.org/doc/ubifs.html#L_sync_exceptions
+ drivers/mtd/devices/Kconfig    |    3 +--
+ drivers/mtd/devices/docprobe.c |    5 -----
+ 2 files changed, 1 insertions(+), 7 deletions(-)
 
->=20
-> The document above mentions the '-o sync' option which disables the=20
-> write buffer on a partition, but this is not an option for us because we=
-=20
-> do not want to reduce the write performance. And there is also the issue=
-=20
-> of a synchronously mounted UBIFS that can make things even worse in case=
-=20
-> of power cuts.
-
-You can do fsync(), or you can set the "S" flag to the file and make it
-always be synchronous (see man chattr).
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-c25dxPiahprT5q9rC/Ux
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAABAgAGBQJOpmrLAAoJEJtuLFy+q7fe+RAIAMDLSJvqPLS6T1TINY0xniUg
-dJhettelRJW5lTDupeFxgDJKuGdRyr0NVYHF1+YBPuqrTQpbXhjrU9OJpFyO0A3Z
-WxlgcOdaOoW/loNEgr3C0XVq34DWcL8NFwb0jD+UoPa59WTUsuNZe8L7l+HbAUgK
-FQris91THyH3yGlofFUQVNMuQozDuXEPUDBoigxGQMntxt74iN8wZy3z/8K3lAUZ
-LXYZNcBCJ2QUSs2Qm2q2OHZ4rxyU81qcHVtfYaIpuXHehdtS+AcU66QYsYcP9/Zl
-VCrK/5GT1GxLfzLBzBGnjlLtiBHwt8CMZq4B1p93SGrzLnZlZifC//ipfmwTegA=
-=EUtx
------END PGP SIGNATURE-----
-
---=-c25dxPiahprT5q9rC/Ux--
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 35081ce..4fdc2fe 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -268,8 +268,7 @@ config MTD_DOCPROBE_ADVANCED
+ config MTD_DOCPROBE_ADDRESS
+ 	hex "Physical address of DiskOnChip" if MTD_DOCPROBE_ADVANCED
+ 	depends on MTD_DOCPROBE
+-	default "0x0000" if MTD_DOCPROBE_ADVANCED
+-	default "0" if !MTD_DOCPROBE_ADVANCED
++	default "0x0"
+ 	---help---
+ 	  By default, the probe for DiskOnChip devices will look for a
+ 	  DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
+diff --git a/drivers/mtd/devices/docprobe.c b/drivers/mtd/devices/docprobe.c
+index d374603..45116bb 100644
+--- a/drivers/mtd/devices/docprobe.c
++++ b/drivers/mtd/devices/docprobe.c
+@@ -50,11 +50,6 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/doc2000.h>
+ 
+-/* Where to look for the devices? */
+-#ifndef CONFIG_MTD_DOCPROBE_ADDRESS
+-#define CONFIG_MTD_DOCPROBE_ADDRESS 0
+-#endif
+-
+ 
+ static unsigned long doc_config_location = CONFIG_MTD_DOCPROBE_ADDRESS;
+ module_param(doc_config_location, ulong, 0);
+-- 
+1.7.4.4
