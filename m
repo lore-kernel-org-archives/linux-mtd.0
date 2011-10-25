@@ -1,24 +1,24 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RIbVp-00020n-Uz
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 07:33:31 +0000
-Received: by wwf27 with SMTP id 27so180014wwf.18
+	id 1RIbZv-00024y-4v
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 07:37:44 +0000
+Received: by wyg8 with SMTP id 8so214199wyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Oct 2011 00:33:28 -0700 (PDT)
+	Tue, 25 Oct 2011 00:37:40 -0700 (PDT)
 Subject: Re: [PATCH] phram: make kernel boot command line arguments work
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: "Fache, Herve" <h-fache@ti.com>
-Date: Tue, 25 Oct 2011 10:32:56 +0300
-In-Reply-To: <CA+Xn3W3huOu_zu7MzSr0W1wpo7mD_ek8eOYNstkMnb9wm3-JZw@mail.gmail.com>
+Date: Tue, 25 Oct 2011 10:37:31 +0300
+In-Reply-To: <CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
 References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<1319127627.20953.8.camel@sauron>
-	<CA+Xn3W3huOu_zu7MzSr0W1wpo7mD_ek8eOYNstkMnb9wm3-JZw@mail.gmail.com>
+	<1319127421.20953.5.camel@sauron>
+	<CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-G/0nBOJe8AraGyyypgqL"
-Message-ID: <1319528005.14178.2.camel@golum>
+	boundary="=-9uTN4/kG2CN60zCjBNi2"
+Message-ID: <1319528259.14178.3.camel@golum>
 Mime-Version: 1.0
-Cc: joern@lazybastard.org, joern@logfs.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, joern@logfs.org, joern@lazybastard.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,27 +30,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-G/0nBOJe8AraGyyypgqL
+--=-9uTN4/kG2CN60zCjBNi2
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2011-10-21 at 10:49 +0200, Fache, Herve wrote:
-> > Accessing __initdata from non __init function. Please check that your
-> > patch does not introduce a new section mismatch. There is even a kernel
-> > config option to debug these issues.
+On Fri, 2011-10-21 at 10:51 +0200, Fache, Herve wrote:
+> Hi again,
 >=20
-> I enabled DEBUG_SECTION_MISMATCH but I don't get errors. Also, this
-> part of the code will never be reached once init has run. If you think
-> that it's a risk, then I can remove the __initdata keyword.
+> On Thu, Oct 20, 2011 at 18:16, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> > Could you please make checkpatch.pl happy?
+>=20
+> Would you mind posting the errors/warnings you get? I did run
+> checkpatch.pl before submitting and got none...
 
-Did you test this for the case when it is compiled into the kernel as
-well, not only as kernel module?
+Yeah, I thought checkpatch.pl would blame you for improper comments
+style. The standard way to write comments is described in
+Documentation/CodingStyle.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-G/0nBOJe8AraGyyypgqL
+--=-9uTN4/kG2CN60zCjBNi2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,13 +60,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOpmYoAAoJEJtuLFy+q7fe1DsH/iAYcLzhOBtP54aczjIOdOLo
-M9Csj15zrVz45DcjVPZ6JQ05nmNUJb38yGN5f2jB8c/WUefU6dPnlgWpIJKURe+5
-0wwWhzFu6sVjHvHkRo+WAyMyNrvGH7squH6W915IGw9QBQZY34XbZqCPEPu52f/a
-8V6FIbAlXnZ1+p43Oi8r44enBrAXxT+bkbPYAVPWHyQR0XeD0Pevy8RXf/m+X+7Y
-JBbRhJ4F9Hgh88OgA1UG7UoM/cSnpf/hakDoCVOrequZMFC97hb8uYSrLmWE04wK
-9jfZkBak3rxA25Sfyt8ahOU9MPPIWPVdyV3Vf8tdPc1hJ9CxQGTVdQ1AUaoAmzg=
-=dIoF
+iQEcBAABAgAGBQJOpmc7AAoJEJtuLFy+q7feMk0H/RrBFzLwuFfFnqLqNlzHrPem
+NpettZpznBR5crbjF+GYWLqUSLk6HTRYx9lxoYO91YuOI++HEzrDrgSA09KswKAt
+z8B1pUYahPthOsCYjzIMYqwvLj0qcACGK4gJLG/lL1t9cA+6TMU2LTu3vBSuz1mT
+X+nZ2IeexwZ58OBqFDxL63v2eRs2bYcjeeVYnt8EUqwVcP0KI9Sb74H/oBRjr9gv
+Qb2UT0ImlDLptI6AuCrmtlSzx+HE62CLvhQI9vxOi30MeyFKBfWSBewmOzVO7I+P
+wH5bipwuuOmMrImp9bWpzAv+S/8lBsGo3lg4lHBDsFxP7Uy9k4HVv/FT0Of7Fxo=
+=T1Qa
 -----END PGP SIGNATURE-----
 
---=-G/0nBOJe8AraGyyypgqL--
+--=-9uTN4/kG2CN60zCjBNi2--
