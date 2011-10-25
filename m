@@ -1,24 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RIbZv-00024y-4v
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 07:37:44 +0000
-Received: by wyg8 with SMTP id 8so214199wyg.36
+	id 1RIboe-0002TA-OL
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2011 07:52:57 +0000
+Received: by wwf27 with SMTP id 27so195111wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Oct 2011 00:37:40 -0700 (PDT)
-Subject: Re: [PATCH] phram: make kernel boot command line arguments work
+	Tue, 25 Oct 2011 00:52:55 -0700 (PDT)
+Subject: Re: Subject: UBIFS and small dynamic files
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Fache, Herve" <h-fache@ti.com>
-Date: Tue, 25 Oct 2011 10:37:31 +0300
-In-Reply-To: <CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
-References: <1318866038-11781-1-git-send-email-h-fache@ti.com>
-	<1319127421.20953.5.camel@sauron>
-	<CA+Xn3W3iUxumMqBELbah_uScMza-jAwMFuXewWdnJOs2sPkZow@mail.gmail.com>
+To: Daniel Wagener <daniel.wagener@kernelconcepts.de>
+Date: Tue, 25 Oct 2011 10:52:43 +0300
+In-Reply-To: <4EA1823D.3040708@kernelconcepts.de>
+References: <4EA1823D.3040708@kernelconcepts.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-9uTN4/kG2CN60zCjBNi2"
-Message-ID: <1319528259.14178.3.camel@golum>
+	boundary="=-c25dxPiahprT5q9rC/Ux"
+Message-ID: <1319529170.14178.10.camel@golum>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, joern@logfs.org, joern@lazybastard.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,29 +28,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-9uTN4/kG2CN60zCjBNi2
+--=-c25dxPiahprT5q9rC/Ux
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2011-10-21 at 10:51 +0200, Fache, Herve wrote:
-> Hi again,
+On Fri, 2011-10-21 at 16:31 +0200, Daniel Wagener wrote:
+> Ahoi,
 >=20
-> On Thu, Oct 20, 2011 at 18:16, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> > Could you please make checkpatch.pl happy?
->=20
-> Would you mind posting the errors/warnings you get? I did run
-> checkpatch.pl before submitting and got none...
+> we are having trouble with the side effects of the UBIFS write buffer=20
+> described in http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writebuf=
+fer
+> We have certain config files that are quite small and get rewritten very=
+=20
+> frequently by their applications.
+> Matchbox-panels' ~/.matchbox/mbdock.session is a fine example as it gets=
+=20
+> emptied on a power cut or hard reset resulting in an empty and therefore=
+=20
+> useless panel on the next start.
 
-Yeah, I thought checkpatch.pl would blame you for improper comments
-style. The standard way to write comments is described in
-Documentation/CodingStyle.
+Well, all the docs about the synchronization are at the web site. There
+is also a description with links of what other FSes do:
+http://linux-mtd.infradead.org/doc/ubifs.html#L_sync_exceptions
+
+>=20
+> The document above mentions the '-o sync' option which disables the=20
+> write buffer on a partition, but this is not an option for us because we=
+=20
+> do not want to reduce the write performance. And there is also the issue=
+=20
+> of a synchronously mounted UBIFS that can make things even worse in case=
+=20
+> of power cuts.
+
+You can do fsync(), or you can set the "S" flag to the file and make it
+always be synchronous (see man chattr).
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-9uTN4/kG2CN60zCjBNi2
+--=-c25dxPiahprT5q9rC/Ux
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,13 +76,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJOpmc7AAoJEJtuLFy+q7feMk0H/RrBFzLwuFfFnqLqNlzHrPem
-NpettZpznBR5crbjF+GYWLqUSLk6HTRYx9lxoYO91YuOI++HEzrDrgSA09KswKAt
-z8B1pUYahPthOsCYjzIMYqwvLj0qcACGK4gJLG/lL1t9cA+6TMU2LTu3vBSuz1mT
-X+nZ2IeexwZ58OBqFDxL63v2eRs2bYcjeeVYnt8EUqwVcP0KI9Sb74H/oBRjr9gv
-Qb2UT0ImlDLptI6AuCrmtlSzx+HE62CLvhQI9vxOi30MeyFKBfWSBewmOzVO7I+P
-wH5bipwuuOmMrImp9bWpzAv+S/8lBsGo3lg4lHBDsFxP7Uy9k4HVv/FT0Of7Fxo=
-=T1Qa
+iQEcBAABAgAGBQJOpmrLAAoJEJtuLFy+q7fe+RAIAMDLSJvqPLS6T1TINY0xniUg
+dJhettelRJW5lTDupeFxgDJKuGdRyr0NVYHF1+YBPuqrTQpbXhjrU9OJpFyO0A3Z
+WxlgcOdaOoW/loNEgr3C0XVq34DWcL8NFwb0jD+UoPa59WTUsuNZe8L7l+HbAUgK
+FQris91THyH3yGlofFUQVNMuQozDuXEPUDBoigxGQMntxt74iN8wZy3z/8K3lAUZ
+LXYZNcBCJ2QUSs2Qm2q2OHZ4rxyU81qcHVtfYaIpuXHehdtS+AcU66QYsYcP9/Zl
+VCrK/5GT1GxLfzLBzBGnjlLtiBHwt8CMZq4B1p93SGrzLnZlZifC//ipfmwTegA=
+=EUtx
 -----END PGP SIGNATURE-----
 
---=-9uTN4/kG2CN60zCjBNi2--
+--=-c25dxPiahprT5q9rC/Ux--
