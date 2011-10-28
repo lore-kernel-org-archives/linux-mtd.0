@@ -1,20 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RJhlx-0002d5-0c
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 08:26:42 +0000
-Received: by faaf16 with SMTP id f16so4570549faa.36
+	id 1RJixl-0003ES-0V
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 09:42:57 +0000
+Received: by ywm19 with SMTP id 19so3967137ywm.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Oct 2011 01:26:38 -0700 (PDT)
+	Fri, 28 Oct 2011 02:42:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEq8YR_pw4LO_1wvUELXR9Q7e11NA6xU0_082hYJ=oyZd5+=8g@mail.gmail.com>
-References: <CAEq8YR8Vq1mDxOovREb5CBH-PfoWAP4_p-54W4icZ8bvip90Eg@mail.gmail.com>
-	<CAEq8YR_pw4LO_1wvUELXR9Q7e11NA6xU0_082hYJ=oyZd5+=8g@mail.gmail.com>
-From: Robert Orzanna <orschiro@googlemail.com>
-Date: Fri, 28 Oct 2011 21:25:57 +1300
-Message-ID: <CAEq8YR8wu5xL_nL8==m3gin+R50QsZiQPbuEM=gR98XeXCEn0g@mail.gmail.com>
-Subject: Re: Access to a xd memory card
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+From: Javier Martinez Canillas <martinez.javier@gmail.com>
+Date: Fri, 28 Oct 2011 11:42:33 +0200
+Message-ID: <CAAwP0s059H3BGhYbYLux2gR6ZNb+sFDue676OM2Evz5cA2q6DA@mail.gmail.com>
+Subject: [RFC] Change ECC algorithm from userspace
+To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here is what mtdinfo gives me.
+Hello,
 
-[/home/robert]$ mtdinfo
-Count of MTD devices:           1
-Present MTD devices:            mtd0
-Sysfs interface supported:      yes
+We've a custom board using an ARM OMAP DM3730 whose ROM boot loader
+only supports 1-bit ECC correction using Hamming algorithm.
 
-[/home/robert]$ sudo mount /dev/mtd0 /mnt
-mount: /dev/mtd0 is not a block device
+So, in order to be able to boot from the NAND, we have to configure
+the GPMC (OMAP's memory controller that interfaces with NAND devices)
+to use 1-bit HW ECC and write the loader binary to the first NAND
+sector. That way the ROM boot will take this sector as valid and load
+the loader binary to RAM.
 
-[/home/robert]$ sudo mount /dev/mtd0ro /mnt
-mount: /dev/mtd0ro is not a block device
+The problem is that the SLC NAND device that we are using has a
+minimum required ECC of 4-bit correction per each 512 bytes.
 
-Considering the block device problem, may this be solved by specifing
-a file system for the card?
+I want to be able to use 1-bit ECC for the first partition where I
+save the loader binary and has to be accessed by the ROM boot but use
+a 4-bit ECC for my rootfs partition.
 
-If so, what file system does a xD card use?
+Does anyone have this same issue?
 
-Sorry for almost spamming you with my issue but I really would like to
-get behind it why it is working under Ubuntu but not under Archlinux.
+What is the best approach to store data in a NAND device using
+different ECC techniques?
 
-Regards
+I've think of two approaches:
 
-2011/10/28 Robert Orzanna <orschiro@googlemail.com>:
-> No ideas?
->
-> I have to add that the mounting of xd cards is done without any issues
-> on Ubuntu and distributions based on it.
->
-> Although I could not figure out how it is done I want to understand
-> how it is done manually.
->
-> Should not mtd-utils be the solution then?
->
-> Regards
->
-> 2011/10/26 Robert Orzanna <orschiro@googlemail.com>:
->> Hello,
->>
->> I wonder if mtd is the right approach to mount my xd memory card.
->> Before I installed mtd-utils I had two corresponding files in /dev
->> called mtd0 and mtd0ro. However, I was not able to mount them as they
->> are no block devices. Now after installing mtd-utils those two files
->> do not always exist anymore and I do not have any idea how to process
->> further.
->>
->> I should mention that I use an Archlinux 64 bit with kernel 3.0.6-2
->> and mtd-utils 1.4.6.
->>
->> Output of lspci -v.
->>
->> 0d:00.3 System peripheral: Ricoh Co Ltd xD-Picture Card Controller (rev 12)
->> Subsystem: Lenovo Device 210d
->> Flags: bus master, medium devsel, latency 64, IRQ 17
->> Memory at febfe800 (32-bit, non-prefetchable) [size=256]
->> Capabilities: <access denied>
->> Kernel driver in use: r852
->> Kernel modules: r852
->>
->> If you need more information, just let me know and I will provide them.
->>
->> Thank you for your advice.
->>
->> Regards,
->>
->> Robert
->>
->
+1- Adding an ioctl to mtdchar (something like ECCSETBITS) to change
+the ECC technique used.
+2- Use a platform data field to notify the omap2 nand driver that the
+ROM boot only supports 1-bit ECC. So it can use a 1-bit ECC to write
+and read the first 4 sectors but a 4-bit ECC for the rest.
+
+Of course both approaches can only be used if the none of the nand
+memory partitions are mounted.
+
+Thank you and best regards,
+
+--=20
+Javier Mart=C3=ADnez Canillas
+(+34) 682 39 81 69
+Barcelona, Spain
