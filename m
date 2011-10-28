@@ -1,22 +1,23 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RJmz9-0006WA-BM
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 14:00:41 +0000
-Received: by wwf27 with SMTP id 27so3944026wwf.18
+	id 1RJn1k-0006ZV-6I
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 14:03:20 +0000
+Received: by eye3 with SMTP id 3so4136647eye.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Oct 2011 07:00:35 -0700 (PDT)
-Subject: Re: doc: add a few explanations on NAND errors and fix typos
+	Fri, 28 Oct 2011 07:03:18 -0700 (PDT)
+Subject: RE: Subject: UBIFS and small dynamic files
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Date: Fri, 28 Oct 2011 17:00:33 +0300
-In-Reply-To: <863be8772d7f0a57713d1ff7d9614942c3e1f0e0.1319127029.git.ivan.djelic@parrot.com>
-References: <863be8772d7f0a57713d1ff7d9614942c3e1f0e0.1319127029.git.ivan.djelic@parrot.com>
+To: Jon Povey <Jon.Povey@racelogic.co.uk>
+Date: Fri, 28 Oct 2011 17:03:16 +0300
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0BF2402CFE@Cloud.RL.local>
+References: <70E876B0EA86DD4BAF101844BC814DFE0BF2402CFE@Cloud.RL.local>
 Content-Type: multipart/signed; micalg="pgp-sha1";
 	protocol="application/pgp-signature";
-	boundary="=-DxlmjrRu7O5RJC1Wky/N"
-Message-ID: <1319810440.31184.181.camel@sauron>
+	boundary="=-+/JBXgxuKE9jUig59sao"
+Message-ID: <1319810603.31184.184.camel@sauron>
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Daniel Wagener <daniel.wagener@kernelconcepts.de>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,24 +29,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-DxlmjrRu7O5RJC1Wky/N
+--=-+/JBXgxuKE9jUig59sao
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2011-10-20 at 18:19 +0200, Ivan Djelic wrote:
-> Hi Artem,
+On Mon, 2011-10-24 at 04:21 +0100, Jon Povey wrote:
+> You need to rewrite files with safe POSIX semantics.
+> It is not crash-safe to rewrite the target file directly (but many
+> apps are naive and do this in an unsafe way)
 >=20
-> Your UBI/UBIFS doc update looks fine to me, here's a patch with a few typ=
-o
-> fixes and some additional info.
+> The right way to do it is write a new file on the same filesystem,
+> fsync() it, then rename it over the target. The rename is atomic
+> so after a crash you either get the old file or the new one.
+>=20
+> I had a quick google for the authoritative sequence but I couldn't
+> find and can't remember it exactly. I think it might involve an fsync
+> on the directory handle too if you want to be sure the new file has
+> arrived on flash. This avoids syncing the entire filesystem
+> or mounting it -o sync.
 
-Pushed, thanks you!
+You can set per-file "sync" attribute as well.
+
+Someone can also implement something similar as ext4 has in UBIFS: we
+can sync when the last reference to the file descriptor is dropped. I
+also described this in the MTD web site.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-DxlmjrRu7O5RJC1Wky/N
+--=-+/JBXgxuKE9jUig59sao
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJOqrWBAAoJECmIfjd9wqK0Mn8P/2KwwpFo4a3t50THg6B/E5/y
-GXW9Lpt2rGsD+DsRTmd9pvLXtKj0QOO0vfP/Y6YWh2+8YXTcbzw1fn5x6OzLyBVK
-3cYrFGdZ5llqSeCT7Ga7Qu3eGFHxaOq/qZdj5D3fI7nsfgl2JOvBdBDcqo+/mcjU
-3W1gVEW4MSe7OFlQW+mw5bWEzGdplysiBYqNRBv9JENPqHRraJ/8lku8ep/VbVYe
-EGYv/T26sfPeRtLZucicoMYzQf6Xena2s7xS/6ji42BIe2gwYqxUHoxMWEJ8h2uU
-rJbU3HuJhTtC7F0Am5kwdb4y/6XGUjiv8UUPVZcbMfUjHrqioXHw/aD+IWs/H5oN
-2vIJRWIWmp1XZLhq/vD2ZNsMHMLy9ZRAKiNeDWIlqpmltI6N7jE+0CVw0pPeFhe3
-iUOaJ00BD2La14tftc0p/i870MfYOznNJU/mTanlq4uT77tuyooxtTC3M846M5B2
-83ubwkJfRW2jufoAWfMNcukB39N0WQgQhzvSoRikzyYcPtsLSi9veq3LtYBxOnt2
-YdFe9jnKqZMOrcK/PpMgxTSfsOAknE15zr8zMOQNRQFTLSbwzX3f4tPavh2Srn/E
-22MGkIQntb2GGWU/LUVmsuPMYhOpuuJGI9Xq4R7pCS+hNGMMedbV5v9XKmGz+mcs
-nt2wHXw3kHej8I4P6arO
-=tFft
+iQIcBAABAgAGBQJOqrYkAAoJECmIfjd9wqK0JnMP/1RLjYxxmmkNClnZRR4OpUnR
+6oQ1DGAphDidJ2RUC/HZkmjN+/hvun6rzCsXJusfEsYJKXn/H3U7l9OIaGJfiPgf
+v7ZThobz9YTIEUuaPQmT+8rk4/KMdQ1Tqb7T8tbwapa5T4MSUhkdmRADyeBe1LPG
+Cr9JN065Lvip8VE+lJxBWpGOGVo022jIs6Zw/88GTs+djS85ufw8S6YXu6H4dC17
+oUg1eVO8PC1F9Z2u32RQFy9unm822PlR7xkOq6RBFvc/ZvWHrw6Td81Ku8Ux9sLe
+exNO9pXIcnUd7KIXGSdYIaaNdSWAUwZxh7l3APfHq/Q16zTZsUbf4nK9QpnnboNA
+0way7h7xcZGepkklj9NLxe9dhm41J6GhVEzLSimAVjyhhu2CWqpfAaODIcRxpBSO
+9SY1jLSGvZp0db+aDjab71/7KEU4vFRIgetUG29kLs1Erb8zZqE86dJ6ebLXTRdb
+ISZQ2k5t2l40Aom46CXICRcJ+vopkzr+1nhvA43fuxxDxQUnbFksBNC+k4Wri390
+RV7FtM78Pc9IF86Qd/U9U88CFUNjPuHhOHqngYtC2zOYG2BMqTWM7T8ENn4Z4E1V
+3d7oKB6Bd9vS1/TpBo7AdGZ3xYmmyEnD0pkUMt5oDsCINUqKiiPUCtYLvYTvU/Ky
++6m9l/zwSgnoMvx87v7/
+=x+Ov
 -----END PGP SIGNATURE-----
 
---=-DxlmjrRu7O5RJC1Wky/N--
+--=-+/JBXgxuKE9jUig59sao--
