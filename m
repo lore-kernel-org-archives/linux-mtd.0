@@ -1,28 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RJnMs-00072t-Ra
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 14:25:12 +0000
-Received: by wyg8 with SMTP id 8so4904446wyg.36
+	id 1RJqL4-0006dl-11
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 17:35:33 +0000
+Received: by wwf27 with SMTP id 27so4159867wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Oct 2011 07:25:08 -0700 (PDT)
-Subject: RE: ubifs not working with 3.1 kernel and MT29F2G08ABAEAWP NAND Flash.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Kumar, Goutam" <goutam.kumar@ti.com>
-Date: Fri, 28 Oct 2011 17:21:50 +0300
-In-Reply-To: <0680EC522D0CC943BC586913CF3768C00590504FCD@dbde02.ent.ti.com>
-References: <0680EC522D0CC943BC586913CF3768C0059050481E@dbde02.ent.ti.com>
-	<4E9EEBDC.5000002@st.com> <20111019154913.GA18674@parrot.com>
-	<0680EC522D0CC943BC586913CF3768C00590504990@dbde02.ent.ti.com>
-	<1319227591.10043.0.camel@golum>
-	<0680EC522D0CC943BC586913CF3768C00590504FCD@dbde02.ent.ti.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-abYbWq84N6pI6KOzRxaL"
-Message-ID: <1319811718.31184.188.camel@sauron>
-Mime-Version: 1.0
-Cc: Angus CLARK <angus.clark@st.com>, Ivan Djelic <ivan.djelic@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Fri, 28 Oct 2011 10:35:22 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAEq8YR8wu5xL_nL8==m3gin+R50QsZiQPbuEM=gR98XeXCEn0g@mail.gmail.com>
+References: <CAEq8YR8Vq1mDxOovREb5CBH-PfoWAP4_p-54W4icZ8bvip90Eg@mail.gmail.com>
+	<CAEq8YR_pw4LO_1wvUELXR9Q7e11NA6xU0_082hYJ=oyZd5+=8g@mail.gmail.com>
+	<CAEq8YR8wu5xL_nL8==m3gin+R50QsZiQPbuEM=gR98XeXCEn0g@mail.gmail.com>
+Date: Fri, 28 Oct 2011 10:35:22 -0700
+Message-ID: <CAN8TOE-1+0F=80jYpMQC5+V70BMpqnUZxTZ72tQ9_fy3K2F=-w@mail.gmail.com>
+Subject: Re: Access to a xd memory card
+From: Brian Norris <computersforpeace@gmail.com>
+To: Robert Orzanna <orschiro@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,44 +27,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---=-abYbWq84N6pI6KOzRxaL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I don't know much about xD, but I can try and point you in the right
+general direction, since you're so insistent.
 
-On Mon, 2011-10-24 at 10:32 +0530, Kumar, Goutam wrote:
-> Hi Ivan,
->=20
-> Are you referring MTD Tests as NAND Write and Read back test?
+On Fri, Oct 28, 2011 at 1:25 AM, Robert Orzanna <orschiro@googlemail.com> w=
+rote:
+> Here is what mtdinfo gives me.
+>
+> [/home/robert]$ mtdinfo
+> Count of MTD devices: =A0 =A0 =A0 =A0 =A0 1
+> Present MTD devices: =A0 =A0 =A0 =A0 =A0 =A0mtd0
+> Sysfs interface supported: =A0 =A0 =A0yes
+>
+> [/home/robert]$ sudo mount /dev/mtd0 /mnt
+> mount: /dev/mtd0 is not a block device
 
-It does not hurt to run all tests:
-http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
+You rarely will mount /dev/mtd0 directly, as Memory Technology Devices
+are much different beasts than block devices. You could use a NAND
+filesystem like JFFS2 or, in the case of xD, you probably want one of
+the xD/SmartMedia Flash Translation Layers (FTLs) - see below. You can
+also read a little bit about using SSFDC with DOS-FAT on top (common
+for multimedia, which may be what you're looking for?) under
+"Filesystems supporting NAND" at:
+http://www.linux-mtd.infradead.org/doc/nand.html
 
---=20
-Best Regards,
-Artem Bityutskiy
+> Considering the block device problem, may this be solved by specifing
+> a file system for the card?
 
---=-abYbWq84N6pI6KOzRxaL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Yes and no. You can read linux-mtd documentation on how to use JFFS2
+or YAFFS, perhaps, but this would not be compatible with most consumer
+devices that use xD.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+> If so, what file system does a xD card use?
 
-iQIcBAABAgAGBQJOqrp+AAoJECmIfjd9wqK0UMEP/iPQdixJplWnb3BPimJdHTnC
-gSKEwmLxZfyWLvGt4qtwrO02pjMQbxBNJDHDtMRxpdn2yAfN5K8pp+i5FTJFHP2m
-RJT59OQ3oXGYAVmTS58bObtVtwQ/qkYqotuFAEZxhZD1XK9QqLaid6EVrwI0Mx2I
-w3YyVTyqQQy7Xg+0t6rao2YkaR+Aa+4bzsukLG63j/snpEAhZJZMqmhCeDv/nOgf
-0xz5YJKePggugGK3XStvkVCnu6JSmluMV/+YkrOJDx1Ekp7vyr12E0ivV/8eYgjj
-2hKMTk/nKMO4sJqM++mwL+W9oIMLg55+LBOsDyAQ3Gk0TI46L/vdKwI3LEj2NFmO
-qc+G85yL7uJTRqtCzvbNNmpS/pPgzypvfHMjCoBlfb6PaPVXzOyK1n9glxo/sfqk
-S/U3k2R7OLGgZ+RZkfJW0Nw4LEEBoOucktUEPiFxSDJoQBQp4WSyO45FsDMnMhAL
-dRdZjNxvlg2SrszRjvEYSS3bkoJ6ZZ5TUk5fzaF9qJrH/iLi7sxcyaf8sFWeWnJ2
-JtA/S0/n2CXQRch616dnGHEhHowEgn6aRX+GQpXxWoJZkq4PQ3QpLFhUqQOdgfBD
-JOLgvUb3fH9oxMOPo9b7SRd5h6ik8TZrxBiBx9qXWgeQsQiq1lXPN/vfJfUQPeTu
-luzsKO99rlbyBdbUX8sZ
-=pzi6
------END PGP SIGNATURE-----
+I believe FAT with a software FTL (note my inexperience)
 
---=-abYbWq84N6pI6KOzRxaL--
+> Sorry for almost spamming you with my issue but I really would like to
+> get behind it why it is working under Ubuntu but not under Archlinux.
+
+Ubuntu must have some different kernel configuration options. I see
+that my Ubuntu has CONFIG_SSFDC set as a module. If you read the
+kernel config menus (make menuconfig) you'd find MTD stuff under
+"Device Drivers > Memory Technology Device (MTD) support". You'll find
+the "NAND SSFDC (SmartMedia) read-only" Flash Translation Layer as
+well as the experimental "SmartMedia/xD new translation layer" there.
+You can also read a little bit of info under the description for the
+"Ricoh xD card reader" under "Device Drivers > Memory Technology
+Devices > NAND support".
+
+In the end, I'm guessing you will use SSFDC with a "modprobe ssfdc",
+then see what new block device shows up (again, I'm guessing a bit
+here...)
+
+>> Should not mtd-utils be the solution then?
+
+mtd-utils is not used for mounting. Among other things, it can erase,
+read, and write the bare flash memory (/dev/mtd0), although that is
+probably not what you want. These tools would often be destructive to
+your original xD data, although you could use them to write a new
+filesystem to your flash (e.g., JFFS2, YAFFS).
+
+Brian
