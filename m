@@ -1,14 +1,14 @@
 Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RJqba-0006y5-LZ
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 17:52:35 +0000
+	id 1RJqbf-0006zQ-1o
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 17:52:40 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: dwmw2@infradead.org,
 	dedekind1@gmail.com,
 	mikedunn@newsguy.com
-Subject: [PATCH 02/13] mtd/docg3: fix tracing of IO in writeb
-Date: Fri, 28 Oct 2011 19:51:21 +0200
-Message-Id: <1319824292-11085-3-git-send-email-robert.jarzmik@free.fr>
+Subject: [PATCH 03/13] mtd/docg3: fix protection areas reading
+Date: Fri, 28 Oct 2011 19:51:22 +0200
+Message-Id: <1319824292-11085-4-git-send-email-robert.jarzmik@free.fr>
 In-Reply-To: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
 References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
@@ -22,26 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Writeb was incorrectly traced as a 16 bits write, instead of
-a 8 bits write. Fix it by tracing the correct width.
+The protection areas boundaries were on 16bit registers, not
+8bit. This is consistent with block numbers, which can
+extend up to 4096 on bigger chips (and is 2048 on the
+docg3).
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/devices/docg3.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/devices/docg3.c |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 6f5233d..8942a75 100644
+index 8942a75..5834e6e 100644
 --- a/drivers/mtd/devices/docg3.c
 +++ b/drivers/mtd/devices/docg3.c
-@@ -82,7 +82,7 @@ static inline u16 doc_readw(struct docg3 *docg3, u16 reg)
- static inline void doc_writeb(struct docg3 *docg3, u8 val, u16 reg)
+@@ -852,13 +852,15 @@ static int dbg_protection_show(struct seq_file *s, void *p)
  {
- 	writeb(val, docg3->base + reg);
--	trace_docg3_io(1, 16, reg, val);
-+	trace_docg3_io(1, 8, reg, val);
- }
+ 	struct docg3 *docg3 = (struct docg3 *)s->private;
+ 	int pos = 0;
+-	int protect = doc_register_readb(docg3, DOC_PROTECTION);
+-	int dps0 = doc_register_readb(docg3, DOC_DPS0_STATUS);
+-	int dps0_low = doc_register_readb(docg3, DOC_DPS0_ADDRLOW);
+-	int dps0_high = doc_register_readb(docg3, DOC_DPS0_ADDRHIGH);
+-	int dps1 = doc_register_readb(docg3, DOC_DPS1_STATUS);
+-	int dps1_low = doc_register_readb(docg3, DOC_DPS1_ADDRLOW);
+-	int dps1_high = doc_register_readb(docg3, DOC_DPS1_ADDRHIGH);
++	int protect, dps0, dps0_low, dps0_high, dps1, dps1_low, dps1_high;
++
++	protect = doc_register_readb(docg3, DOC_PROTECTION);
++	dps0 = doc_register_readb(docg3, DOC_DPS0_STATUS);
++	dps0_low = doc_register_readw(docg3, DOC_DPS0_ADDRLOW);
++	dps0_high = doc_register_readw(docg3, DOC_DPS0_ADDRHIGH);
++	dps1 = doc_register_readb(docg3, DOC_DPS1_STATUS);
++	dps1_low = doc_register_readw(docg3, DOC_DPS1_ADDRLOW);
++	dps1_high = doc_register_readw(docg3, DOC_DPS1_ADDRHIGH);
  
- static inline void doc_writew(struct docg3 *docg3, u16 val, u16 reg)
+ 	pos += seq_printf(s, "Protection = 0x%02x (",
+ 			 protect);
 -- 
 1.7.5.4
