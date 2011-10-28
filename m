@@ -1,26 +1,23 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RJl7E-0005Gl-En
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 12:00:53 +0000
-Received: by ggnk3 with SMTP id k3so4061096ggn.36
+	id 1RJmz9-0006WA-BM
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2011 14:00:41 +0000
+Received: by wwf27 with SMTP id 27so3944026wwf.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Oct 2011 05:00:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4EAA973F.8060104@parrot.com>
-References: <CAAwP0s059H3BGhYbYLux2gR6ZNb+sFDue676OM2Evz5cA2q6DA@mail.gmail.com>
-	<4EAA845B.1020009@parrot.com>
-	<CAAwP0s32AJCm_AjxubDSu8ikzhXeRWUqqsPrBmygUHPkRvtv8g@mail.gmail.com>
-	<4EAA973F.8060104@parrot.com>
-From: Javier Martinez Canillas <martinez.javier@gmail.com>
-Date: Fri, 28 Oct 2011 14:00:30 +0200
-Message-ID: <CAAwP0s0EG1cNZbDYwPe6ezD+r+1nQVJ4gd8+hCFjtyEAPVJLvA@mail.gmail.com>
-Subject: Re: [RFC] Change ECC algorithm from userspace
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	Fri, 28 Oct 2011 07:00:35 -0700 (PDT)
+Subject: Re: doc: add a few explanations on NAND errors and fix typos
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Date: Fri, 28 Oct 2011 17:00:33 +0300
+In-Reply-To: <863be8772d7f0a57713d1ff7d9614942c3e1f0e0.1319127029.git.ivan.djelic@parrot.com>
+References: <863be8772d7f0a57713d1ff7d9614942c3e1f0e0.1319127029.git.ivan.djelic@parrot.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+	protocol="application/pgp-signature";
+	boundary="=-DxlmjrRu7O5RJC1Wky/N"
+Message-ID: <1319810440.31184.181.camel@sauron>
+Mime-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,49 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 28, 2011 at 1:51 PM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
-> Javier Martinez Canillas a =C3=A9crit :
->> On Fri, Oct 28, 2011 at 12:30 PM, Matthieu CASTET
->> <matthieu.castet@parrot.com> wrote:
->>> PS : note that some OMAP ROM support a better protection than Hamming (=
-but the
->>> details are not public AFAIK)
->>>
->>> From OMAP34xx Multimedia Device, Silicon Revision 3.1.x, public version=
- :
->>>
->>> Pages can contain errors caused by memory alteration. To correct these =
-errors,
->>> the ROM code uses ECC,
->>> based on Hamming codes for SLC NAND and BCH (Bose, Ray-Chaudhuri, Hocqu=
-enghem)
->>> code for
->>> multilevel cell (MLC) devices. The computed ECC is compared to ECC stor=
-ed in the
->>> spare area of the
->>> corresponding page. If there are uncorrectable errors, the ROM code ret=
-urns with
->>> FAIL.
->>>
->>
->> Yes I've read that on the DM3730 TRM but as far as I understand only
->> applies to MLC devices, but ours is SLC.
->>
-> It also works on SLC devices. We are using it on micron slc that need 4 b=
-its ECC.
->
 
-That is a great thing to know, I didn't get that from the
-documentation (DM3730 TRM).
+--=-DxlmjrRu7O5RJC1Wky/N
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-And this ECC scheme that is supported for SLC devices it is also BCH?
-Or the ROM boot uses a different algorithm to calculate the codes to
-be stored on the oob?
+On Thu, 2011-10-20 at 18:19 +0200, Ivan Djelic wrote:
+> Hi Artem,
+>=20
+> Your UBI/UBIFS doc update looks fine to me, here's a patch with a few typ=
+o
+> fixes and some additional info.
 
-Thank and best regards,
+Pushed, thanks you!
 
 --=20
-Javier Mart=C3=ADnez Canillas
-(+34) 682 39 81 69
-Barcelona, Spain
+Best Regards,
+Artem Bityutskiy
+
+--=-DxlmjrRu7O5RJC1Wky/N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJOqrWBAAoJECmIfjd9wqK0Mn8P/2KwwpFo4a3t50THg6B/E5/y
+GXW9Lpt2rGsD+DsRTmd9pvLXtKj0QOO0vfP/Y6YWh2+8YXTcbzw1fn5x6OzLyBVK
+3cYrFGdZ5llqSeCT7Ga7Qu3eGFHxaOq/qZdj5D3fI7nsfgl2JOvBdBDcqo+/mcjU
+3W1gVEW4MSe7OFlQW+mw5bWEzGdplysiBYqNRBv9JENPqHRraJ/8lku8ep/VbVYe
+EGYv/T26sfPeRtLZucicoMYzQf6Xena2s7xS/6ji42BIe2gwYqxUHoxMWEJ8h2uU
+rJbU3HuJhTtC7F0Am5kwdb4y/6XGUjiv8UUPVZcbMfUjHrqioXHw/aD+IWs/H5oN
+2vIJRWIWmp1XZLhq/vD2ZNsMHMLy9ZRAKiNeDWIlqpmltI6N7jE+0CVw0pPeFhe3
+iUOaJ00BD2La14tftc0p/i870MfYOznNJU/mTanlq4uT77tuyooxtTC3M846M5B2
+83ubwkJfRW2jufoAWfMNcukB39N0WQgQhzvSoRikzyYcPtsLSi9veq3LtYBxOnt2
+YdFe9jnKqZMOrcK/PpMgxTSfsOAknE15zr8zMOQNRQFTLSbwzX3f4tPavh2Srn/E
+22MGkIQntb2GGWU/LUVmsuPMYhOpuuJGI9Xq4R7pCS+hNGMMedbV5v9XKmGz+mcs
+nt2wHXw3kHej8I4P6arO
+=tFft
+-----END PGP SIGNATURE-----
+
+--=-DxlmjrRu7O5RJC1Wky/N--
