@@ -1,24 +1,21 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKFct-00086i-9z
-	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2011 20:35:39 +0000
-Received: by bke11 with SMTP id 11so2685436bke.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Oct 2011 13:35:33 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: tests: don't use mtd0 as a default
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Sat, 29 Oct 2011 23:35:28 +0300
-In-Reply-To: <20111029202809.GA26851@pengutronix.de>
+	id 1RKFho-0008AR-Ev
+	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2011 20:40:41 +0000
+Date: Sat, 29 Oct 2011 22:40:37 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: mark tests EXPERIMENTAL
+Message-ID: <20111029204037.GB26851@pengutronix.de>
 References: <1319533791-32605-1-git-send-email-w.sang@pengutronix.de>
-	<1319919909.2126.15.camel@koala>
-	<20111029202809.GA26851@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1319920531.2126.21.camel@koala>
-Mime-Version: 1.0
+	<1319533791-32605-2-git-send-email-w.sang@pengutronix.de>
+	<1319920207.2126.19.camel@koala>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
+Content-Disposition: inline
+In-Reply-To: <1319920207.2126.19.camel@koala>
 Cc: Roland Kletzing <devzero@web.de>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2011-10-29 at 22:28 +0200, Wolfram Sang wrote:
-> On Sat, Oct 29, 2011 at 11:25:07PM +0300, Artem Bityutskiy wrote:
-> > On Tue, 2011-10-25 at 11:09 +0200, Wolfram Sang wrote:
-> > > mtd tests may erase the mtd device, so force the user to specify which
-> > > mtd device to test by using the module parameter. Disable the default
-> > > (using mtd0) since this may destroy a vital part of the flash if the
-> > > module is inserted accidently or carelessly.
-> > > 
-> > > Reported-by: Roland Kletzing <devzero@web.de>
-> > > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> > 
-> > Note, I've pushed this patch to l2-mtd-2.6.git, thanks!
-> 
-> Ah, I am just about to test V2 of this patch :)
 
-I thought we need to have a fix faster so decided to push your patch as
-it is, and then add some printks on top of that.
+--bCsyhTFzCvuiizWE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> You didn't like PATCH 2/2?
+> > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> > index 4be8373..81d9b92 100644
+> > --- a/drivers/mtd/Kconfig
+> > +++ b/drivers/mtd/Kconfig
+> > @@ -27,12 +27,15 @@ config MTD_DEBUG_VERBOSE
+> > =20
+> >  config MTD_TESTS
+> >  	tristate "MTD tests support"
+> > -	depends on m
+> > +	depends on m && EXPERIMENTAL
+>=20
+> I am OK with this close, but I am not sure about the EXPERIMENTAL. I
+> though this is used for the code which is considered to be "not ready"
+> for real use, while the tests work well.
 
-Just replied - I am not sure about the EXPERIMENTAL dependency you add.
+Well, yeah, it is not perfect, but the closest I could come up with
+(EXPERT is a lot worse). My reasoning went a bit in the direction of
+"you usually need the tests for experimental drivers".
 
-Artem.
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--bCsyhTFzCvuiizWE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk6sZMUACgkQD27XaX1/VRtpcQCgobTK0/gZ/zl2xqR2uJR3Ko6g
+SoAAnRNVuC+lkpyu4cC3NJbkcfuUZ+oy
+=QGDz
+-----END PGP SIGNATURE-----
+
+--bCsyhTFzCvuiizWE--
