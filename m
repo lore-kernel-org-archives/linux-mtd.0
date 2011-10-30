@@ -1,21 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.newsguy.com ([74.209.136.69])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKc8C-00062P-IV
-	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 20:37:25 +0000
-Date: Sun, 30 Oct 2011 21:37:19 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH V2 2/2] mtd: tests: annotate as DANGEROUS in Kconfig
-Message-ID: <20111030203719.GA20162@pengutronix.de>
-References: <1319977792.2126.30.camel@koala>
-	<1319992129-13588-1-git-send-email-w.sang@pengutronix.de>
-	<1320006895.2126.61.camel@koala>
+	id 1RKdAu-0006Qf-Sd
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 21:44:17 +0000
+Message-ID: <4EADC4F5.2050201@newsguy.com>
+Date: Sun, 30 Oct 2011 14:43:17 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
-Content-Disposition: inline
-In-Reply-To: <1320006895.2126.61.camel@koala>
-Cc: linux-mtd@lists.infradead.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 00/13]  DocG3 fixes and write support
+References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>	<201110300241.39534.marek.vasut@gmail.com>
+	<87bosy6eab.fsf@free.fr>
+In-Reply-To: <87bosy6eab.fsf@free.fr>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi guys,
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 30, 2011 at 10:34:53PM +0200, Artem Bityutskiy wrote:
-> On Sun, 2011-10-30 at 17:28 +0100, Wolfram Sang wrote:
-> > +	  WARNING: Some of the tests will ERASE THE CONTENT of mtd devices!
-> > +	  Do not use these tests unless you are sure you really need to.
->=20
-> Thanks, I've pushed this patch but amended the above text a bit:
-> +         WARNING: some of the tests will ERASE entire MTD device which t=
-hey
-> +         test. Do not use these tests unless you really know what you do.
+On 10/30/2011 02:04 AM, Robert Jarzmik wrote:
+> Marek Vasut <marek.vasut@gmail.com> writes:
+>
+>> Hi,
+>>
+>> can you sum up the situation about the another (docg4) driver for us not 
+>> watching this too tightly? Was there any improvement/progress/... ?
+> The review is underway, my comments should be dealt with, and a V2 of the patch
+> should be sent. It's not in my hands.
 
-OK, thanks! Seems we now finally have it :)
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+I've been busy working on this, and should post a patch within the next few
+days.  Progress has been very good.  I still want to run the mtd tests in the
+kernel before posting the patch (except the torture test - I'm not ready to
+sacrifice my development Treo), but it continues to pass the nandtest userspace
+utility (part of mtd-utils) flawlessly, and a ubifs still appears to be working
+well.  The code is now in a much cleaner state.
 
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+> The global view we have with Mike is that chips are different, and each one
+> deserves its own driver. Several registers are common, and the docg3.h could
+> become common.
+>
 
-iEYEARECAAYFAk6ttX8ACgkQD27XaX1/VRtxaQCggvlmOuwg5bC4ZfuYLAZjnynl
-vmUAnRyeF23bka0BbvZHdWrJmQWISScS
-=SsP4
------END PGP SIGNATURE-----
+Actually, I'm open on this.  My opinion is that they should share a header file
+for sure, because the register set largely overlaps.  To that end, my upcoming
+patch will adopt Robert's register #defines, with just a few additional ones
+that are G4 specific.
 
---opJtzjQTFsWo+cga--
+On the broader question of combined or separate drivers... a combined driver is
+certainly doable.  Each device would have to use its own set of low-level
+functions, but I think there's merit in combining them because it would provide
+a consistent interface with the mtd nand infrastructure code, which is rather
+messy.  But before that discussion can take place, the more fundamental question
+of whether or not the drivers should use the nand interface needs to be
+resolved.  I used the nand interface when I started on the G4 driver, because it
+*is* a nand device, and the legacy diskonchip.c driver was updated not long ago
+from a stand-alone driver to the nand interface.  I'm not knowledgeable enough
+of the mtd subsystem to argue for or against the nand interface, but the end
+result (once I invested the time slogging through nand_base.c) is fairly clean,
+with just a couple minor hacks to get around the fact that it doesnt have a
+"standard" nand controller.
+
+Hopefully some mtd experts can share an opinion on this.
+
+Thanks,
+Mike
