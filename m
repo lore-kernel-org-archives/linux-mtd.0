@@ -1,24 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKIzA-0000SZ-Ni
-	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 00:10:50 +0000
-Date: Sun, 30 Oct 2011 02:10:00 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 12/13] mtd/docg3: add ECC correction code
-Message-ID: <20111030000959.GA12624@parrot.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RKJT4-0000eG-UE
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 00:41:43 +0000
+Received: by faaf16 with SMTP id f16so6261895faa.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 29 Oct 2011 17:41:41 -0700 (PDT)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 00/13]  DocG3 fixes and write support
+Date: Sun, 30 Oct 2011 02:41:39 +0200
 References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
-	<1319824292-11085-13-git-send-email-robert.jarzmik@free.fr>
-	<20111029085248.GA12046@parrot.com> <8739ebbvow.fsf@free.fr>
+In-Reply-To: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8739ebbvow.fsf@free.fr>
-Cc: "mikedunn@newsguy.com" <mikedunn@newsguy.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201110300241.39534.marek.vasut@gmail.com>
+Cc: dwmw2@infradead.org, mikedunn@newsguy.com,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,85 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 29, 2011 at 05:37:35PM +0100, Robert Jarzmik wrote:
-> >> +static struct bch_control *docg3_bch;
-> >
-> > Why not putting this into your struct docg3, instead of adding a global var ?
-> Because I have multiple floors (ie. 4 floors for example), which are split into
-> 4 different devices. If I put that in docg3 structures (ie. the 4 allocated
-> structures, each for one floor), I'd either have to :
->  - allocate 4 different bch "engines"
->  - or count docg3 releases and release the bch at the last kfree(docg3), which
->  makes me have another global variable.
-
-OK, got it; using a struct to hold all your common vars (docg3_floors,
-docg3_bch, ...) and hook that to your platform data instead of docg3_floors
-would still be a bit cleaner I think, but no big deal.
-
-> What I'm a bit afraid of is my poor understanding of the hardware ECC engine. I
-> know that the write part is correct (ie. ECC calculation), but I'm a bit
-> confused by the read part.
+> This patchset is aimed at :
+>  - fixing 4 glitches in the driver
+>  - add several new functions
 > 
-> What wories me is that the hardware ECC got back while reading (ie. what I
-> called calc_ecc) is always 00:00:00:00:00:00:00 when I read data (because I
-> don't have bitflips on my flash). This looks to me more a "syndrom" than a
-> "calc_ecc".
+> The added functions are :
+>  - add block erase capability
+>  - add write page capability
+>  - add powerdown and powerup
+>  - add multiple floor support
+>  - add ECC support
+> 
+> The ECC part should especially be reviewed by Ivan and Mike,
+> as this is their work (patch "add ECC correction code").
+> 
+> Happy review.
+> 
+> --
+> Robert
+> 
+> Robert Jarzmik (13):
+>   mtd/docg3: fix debug log verbosity
+>   mtd/docg3: fix tracing of IO in writeb
+>   mtd/docg3: fix protection areas reading
+>   mtd/docg3: fix BCH registers
+>   mtd/docg3: add multiple floor support
+>   mtd/docg3: add OOB layout to mtdinfo
+>   mtd/docg3: add registers for erasing and writing
+>   mtd/docg3: add OOB buffer to device structure
+>   mtd/docg3: add write functions
+>   mtd/docg3: add erase functions
+>   mtd/docg3: map erase and write functions
+>   mtd/docg3: add ECC correction code
+>   mtd/docg3: add suspend and resume
+> 
+>  drivers/mtd/devices/Kconfig |    1 +
+>  drivers/mtd/devices/docg3.c |  933
+> +++++++++++++++++++++++++++++++++++++------ drivers/mtd/devices/docg3.h | 
+>  42 ++-
+>  3 files changed, 860 insertions(+), 116 deletions(-)
 
-OK, I'll try to clarify that. The hardware ECC engine divides a huge polynomial
-(520*8 = 4160 bits) by a generator polynomial and computes a 56-bit remainder.
-So this remainder (let's call it R) depends only on 520 input data bytes.
+Hi,
 
-- during a write operation: input data is what you write to the controller,
-you get R from the ecc engine and this is what you write to oob[8..14].
+can you sum up the situation about the another (docg4) driver for us not 
+watching this too tightly? Was there any improvement/progress/... ?
 
-- during a read operation: the ecc engine computes R on 520 input bytes read
-from flash (this is calc_ecc), and also reads oob[8..14] (this is recv_ecc,
-previously programmed during the write operation).
-Then the ecc engine computes calc_ecc^recv_ecc, and this is what you get from
-the ecc registers. And as long as there is no bitflip, its all 00s (because
-calc_ecc=recv_ecc).
-
-> To be sure, I could write a page of 512 bytes + 16 bytes, where the BCH would be
-> forced (and incorrect), to check what the hardware generator gives me back. I'd
-> like you to help me, ie:
->  - tell me what to write to the first 512 bytes (only 0, all 0 but one byte to
->  1, other ...)
->  - I think I'll write 8 bytes to 0x01 for the first 8 OOB bytes (Hamming false
->  but I won't care)
->  - tell me what to write to the 7 BCH ECC
-
-OK, this is really simple:
-
-1. Prepare a buffer of 520 bytes of data, containing pseudo-random bytes or
-any pattern you like. Let's call this buffer 'ref_buf'.
-
-2. Program 'ref_buf' to a nand page; you will write ecc bytes to oob during
-that operation; let's call those ecc bytes 'ref_ecc'.
-
-3. Now, you are ready to perform corruption tests:
-
- 3.1 Make a copy of 'ref_buf' in which you flip 1, 2, 3 or 4 bits selected
-     at random.
-
- 3.2 Program this corrupt buffer, _but_ write 'ref_ecc' to oob instead of hw
-     generated ecc bytes.
-
- 3.3 Read page back: you should get exactly 'ref_buf', and the errorpos[]
-     array of corrected bits should match your flip bits.
-
-After step 3.2, your flash is exactly in the same state as if it had produced
-the bitflips itself.
-
-Repeat steps 3.1 to 3.3 on a large enough set of random vectors to convince
-yourself that your code works (be careful not to wear out your device,
-though :-). You should also try a few 5-bit corruptions and see failures, just
-to verify that your corruptions have some effect.
-
-In theory, testing the BCH algorithm like you did should be enough, but real
-hardware tests are helpful to verify that the entire system behaves as
-expected.
-
-Hope that helps,
-BR,
---
-Ivan
+Cheers
