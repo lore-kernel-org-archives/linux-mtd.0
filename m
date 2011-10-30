@@ -1,22 +1,16 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKV4B-000370-A2
-	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 13:04:48 +0000
-Received: by bkat2 with SMTP id t2so147997bka.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Oct 2011 06:04:45 -0700 (PDT)
-Subject: Re: [PATCH 1/2] Integrated Flash Controller support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: b35362@freescale.com
-Date: Sun, 30 Oct 2011 15:04:41 +0200
-In-Reply-To: <1319780403-8680-1-git-send-email-b35362@freescale.com>
-References: <1319780403-8680-1-git-send-email-b35362@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1319979883.2126.48.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1RKYFq-0004Od-Vd
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 16:29:03 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH V2 2/2] mtd: tests: annotate as DANGEROUS in Kconfig
+Date: Sun, 30 Oct 2011 17:28:49 +0100
+Message-Id: <1319992129-13588-1-git-send-email-w.sang@pengutronix.de>
+In-Reply-To: <1319977792.2126.30.camel@koala>
+References: <1319977792.2126.30.camel@koala>
+Cc: Wolfram Sang <w.sang@pengutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Probably some PPC mailing list should be CCed? Could you please CC at
-least LKML?
+The tests may erase mtd devices, so annotate them as suggested per
+coding style and add a paragraph to the help text as well.
 
-On Fri, 2011-10-28 at 13:40 +0800, b35362@freescale.com wrote:
-> +config FSL_IFC
-> +        bool "Freescale Integrated Flash Controller support"
-> +        depends on FSL_SOC
-> +        help
-> +          Enables reporting of errors from the Freescale integrated
-> +          flash controller.  Also contains some common code used by
-> +          drivers for specific ifc controller peripherals.
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+---
 
-Why this cannot be a module?
+Thanks to Artem for letting me know of this coding style suggestion.
 
+ drivers/mtd/Kconfig |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-> +/*
-> + * IFC Controller NAND Machine registers
-> + */
-> +struct fsl_ifc_nand {
-> +	__be32 ncfgr;
-> +	u32 res1[0x4];
-> +	__be32 nand_fcr0;
-> +	__be32 nand_fcr1;
-> +	u32 res2[0x8];
-> +	__be32 row0;
-> +	u32 res3;
-> +	__be32 col0;
-> +	u32 res4;
-> +	__be32 row1;
-> +	u32 res5;
-> +	__be32 col1;
-> +	u32 res6;
-> +	__be32 row2;
-> +	u32 res7;
-> +	__be32 col2;
-> +	u32 res8;
-> +	__be32 row3;
-> +	u32 res9;
-> +	__be32 col3;
-> +	u32 res10[0x24];
-
-I do not know the HW, but I wonder why some fields are __be32 and some
-are u32? What is the logic behind that?
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 4be8373..cb1821b 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -26,13 +26,16 @@ config MTD_DEBUG_VERBOSE
+ 	  Determines the verbosity level of the MTD debugging messages.
+ 
+ config MTD_TESTS
+-	tristate "MTD tests support"
++	tristate "MTD tests support (DANGEROUS)"
+ 	depends on m
+ 	help
+ 	  This option includes various MTD tests into compilation. The tests
+ 	  should normally be compiled as kernel modules. The modules perform
+ 	  various checks and verifications when loaded.
+ 
++	  WARNING: Some of the tests will ERASE THE CONTENT of mtd devices!
++	  Do not use these tests unless you are sure you really need to.
++
+ config MTD_REDBOOT_PARTS
+ 	tristate "RedBoot partition table parsing"
+ 	---help---
+-- 
+1.7.6.3
