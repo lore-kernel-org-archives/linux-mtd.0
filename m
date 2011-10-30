@@ -1,23 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKJT4-0000eG-UE
-	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 00:41:43 +0000
-Received: by faaf16 with SMTP id f16so6261895faa.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Oct 2011 17:41:41 -0700 (PDT)
-From: Marek Vasut <marek.vasut@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from smtp1-g21.free.fr ([212.27.42.1])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RKRK7-0001Zg-2S
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 09:05:00 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Marek Vasut <marek.vasut@gmail.com>
 Subject: Re: [PATCH 00/13]  DocG3 fixes and write support
-Date: Sun, 30 Oct 2011 02:41:39 +0200
 References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
+	<201110300241.39534.marek.vasut@gmail.com>
+Date: Sun, 30 Oct 2011 10:04:44 +0100
+In-Reply-To: <201110300241.39534.marek.vasut@gmail.com> (Marek Vasut's message
+	of "Sun, 30 Oct 2011 02:41:39 +0200")
+Message-ID: <87bosy6eab.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201110300241.39534.marek.vasut@gmail.com>
-Cc: dwmw2@infradead.org, mikedunn@newsguy.com,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
+Content-Type: text/plain
+Cc: dwmw2@infradead.org, mikedunn@newsguy.com, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,49 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> This patchset is aimed at :
->  - fixing 4 glitches in the driver
->  - add several new functions
-> 
-> The added functions are :
->  - add block erase capability
->  - add write page capability
->  - add powerdown and powerup
->  - add multiple floor support
->  - add ECC support
-> 
-> The ECC part should especially be reviewed by Ivan and Mike,
-> as this is their work (patch "add ECC correction code").
-> 
-> Happy review.
-> 
-> --
-> Robert
-> 
-> Robert Jarzmik (13):
->   mtd/docg3: fix debug log verbosity
->   mtd/docg3: fix tracing of IO in writeb
->   mtd/docg3: fix protection areas reading
->   mtd/docg3: fix BCH registers
->   mtd/docg3: add multiple floor support
->   mtd/docg3: add OOB layout to mtdinfo
->   mtd/docg3: add registers for erasing and writing
->   mtd/docg3: add OOB buffer to device structure
->   mtd/docg3: add write functions
->   mtd/docg3: add erase functions
->   mtd/docg3: map erase and write functions
->   mtd/docg3: add ECC correction code
->   mtd/docg3: add suspend and resume
-> 
->  drivers/mtd/devices/Kconfig |    1 +
->  drivers/mtd/devices/docg3.c |  933
-> +++++++++++++++++++++++++++++++++++++------ drivers/mtd/devices/docg3.h | 
->  42 ++-
->  3 files changed, 860 insertions(+), 116 deletions(-)
+Marek Vasut <marek.vasut@gmail.com> writes:
 
-Hi,
+> Hi,
+>
+> can you sum up the situation about the another (docg4) driver for us not 
+> watching this too tightly? Was there any improvement/progress/... ?
+The review is underway, my comments should be dealt with, and a V2 of the patch
+should be sent. It's not in my hands.
 
-can you sum up the situation about the another (docg4) driver for us not 
-watching this too tightly? Was there any improvement/progress/... ?
+The global view we have with Mike is that chips are different, and each one
+deserves its own driver. Several registers are common, and the docg3.h could
+become common.
 
-Cheers
+Cheers.
+
+--
+Robert
