@@ -1,23 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKUrW-0002yd-HS
-	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 12:51:43 +0000
-Received: by bkat2 with SMTP id t2so141304bka.36
+	id 1RKV4B-000370-A2
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 13:04:48 +0000
+Received: by bkat2 with SMTP id t2so147997bka.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Oct 2011 05:51:40 -0700 (PDT)
-Subject: Re: Security enhancement for UBIFS with secure erase feature
+	Sun, 30 Oct 2011 06:04:45 -0700 (PDT)
+Subject: Re: [PATCH 1/2] Integrated Flash Controller support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <reardonj@inf.ethz.ch>
-Date: Sun, 30 Oct 2011 14:51:36 +0200
-In-Reply-To: <loom.20111027T111843-772@post.gmane.org>
-References: <02855DE82B1CA94A9115CCD637A1325643CD9EC4A3@goemail-server.goerlitz.int>
-	<1315747360.18731.57.camel@sauron>
-	<loom.20111027T111843-772@post.gmane.org>
+To: b35362@freescale.com
+Date: Sun, 30 Oct 2011 15:04:41 +0200
+In-Reply-To: <1319780403-8680-1-git-send-email-b35362@freescale.com>
+References: <1319780403-8680-1-git-send-email-b35362@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1319979098.2126.45.camel@koala>
+Message-ID: <1319979883.2126.48.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,27 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joel,
+Probably some PPC mailing list should be CCed? Could you please CC at
+least LKML?
 
-On Thu, 2011-10-27 at 09:33 +0000, Joel Reardon wrote:
-> So coincidentally I've been working on a secure deletion patch for UBIFS. (I'm a
-> grad student researching secure deletion here in Zurich.) I'm mostly finished
-> implementing it and the results are really good. It works by encrypting each
-> data node individually with a different key, storing the keys in a (logically)
-> fixed area, and then periodically atomically updating the key blocks to purge
-> the old
-> unwanted keys.
+On Fri, 2011-10-28 at 13:40 +0800, b35362@freescale.com wrote:
+> +config FSL_IFC
+> +        bool "Freescale Integrated Flash Controller support"
+> +        depends on FSL_SOC
+> +        help
+> +          Enables reporting of errors from the Freescale integrated
+> +          flash controller.  Also contains some common code used by
+> +          drivers for specific ifc controller peripherals.
 
-Sounds like a clever solution! It is curious to see how you made sure
-that all this is power-cut safe.
+Why this cannot be a module?
 
-> I have a couple questions to ask the main developer, mostly about orphans for
-> which I found the documentation not quite clear. I'm quite keen to get
-> this integrated into UBIFS, however this will be the first time I've
-> contributed to the kernel so in this regard I'm unsure of the best practices
-> and so forth.
 
-Well, ask questions, send patches. This sounds very interesting.
-However, I do not know if anyone will use this, hopefully yes!
+> +/*
+> + * IFC Controller NAND Machine registers
+> + */
+> +struct fsl_ifc_nand {
+> +	__be32 ncfgr;
+> +	u32 res1[0x4];
+> +	__be32 nand_fcr0;
+> +	__be32 nand_fcr1;
+> +	u32 res2[0x8];
+> +	__be32 row0;
+> +	u32 res3;
+> +	__be32 col0;
+> +	u32 res4;
+> +	__be32 row1;
+> +	u32 res5;
+> +	__be32 col1;
+> +	u32 res6;
+> +	__be32 row2;
+> +	u32 res7;
+> +	__be32 col2;
+> +	u32 res8;
+> +	__be32 row3;
+> +	u32 res9;
+> +	__be32 col3;
+> +	u32 res10[0x24];
 
-Artem.
+I do not know the HW, but I wonder why some fields are __be32 and some
+are u32? What is the logic behind that?
