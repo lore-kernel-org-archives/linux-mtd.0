@@ -1,16 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKH8F-0008S9-MJ
-	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2011 22:12:05 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH V3 1/2] mtd: tests: don't use mtd0 as a default
-Date: Sun, 30 Oct 2011 00:11:53 +0200
-Message-Id: <1319926313-22738-1-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1319922741.2126.24.camel@koala>
-References: <1319922741.2126.24.camel@koala>
-Cc: Wolfram Sang <w.sang@pengutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RKIzA-0000SZ-Ni
+	for linux-mtd@lists.infradead.org; Sun, 30 Oct 2011 00:10:50 +0000
+Date: Sun, 30 Oct 2011 02:10:00 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 12/13] mtd/docg3: add ECC correction code
+Message-ID: <20111030000959.GA12624@parrot.com>
+References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
+	<1319824292-11085-13-git-send-email-robert.jarzmik@free.fr>
+	<20111029085248.GA12046@parrot.com> <8739ebbvow.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8739ebbvow.fsf@free.fr>
+Cc: "mikedunn@newsguy.com" <mikedunn@newsguy.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,214 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd tests may erase the mtd device, so force the user to specify which
-mtd device to test by using the module parameter. Disable the default
-(using mtd0) since this may destroy a vital part of the flash if the
-module is inserted accidently or carelessly.
+On Sat, Oct 29, 2011 at 05:37:35PM +0100, Robert Jarzmik wrote:
+> >> +static struct bch_control *docg3_bch;
+> >
+> > Why not putting this into your struct docg3, instead of adding a global var ?
+> Because I have multiple floors (ie. 4 floors for example), which are split into
+> 4 different devices. If I put that in docg3 structures (ie. the 4 allocated
+> structures, each for one floor), I'd either have to :
+>  - allocate 4 different bch "engines"
+>  - or count docg3 releases and release the bch at the last kfree(docg3), which
+>  makes me have another global variable.
 
-Reported-by: Roland Kletzing <devzero@web.de>
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
----
-Like this?
+OK, got it; using a struct to hold all your common vars (docg3_floors,
+docg3_bch, ...) and hook that to your platform data instead of docg3_floors
+would still be a bit cleaner I think, but no big deal.
 
-changes since v2: use KERN_CRIT and update message accordingly
+> What I'm a bit afraid of is my poor understanding of the hardware ECC engine. I
+> know that the write part is correct (ie. ECC calculation), but I'm a bit
+> confused by the read part.
+> 
+> What wories me is that the hardware ECC got back while reading (ie. what I
+> called calc_ecc) is always 00:00:00:00:00:00:00 when I read data (because I
+> don't have bitflips on my flash). This looks to me more a "syndrom" than a
+> "calc_ecc".
 
- drivers/mtd/tests/mtd_oobtest.c     |    9 ++++++++-
- drivers/mtd/tests/mtd_pagetest.c    |    9 ++++++++-
- drivers/mtd/tests/mtd_readtest.c    |    8 +++++++-
- drivers/mtd/tests/mtd_speedtest.c   |    9 ++++++++-
- drivers/mtd/tests/mtd_stresstest.c  |    9 ++++++++-
- drivers/mtd/tests/mtd_subpagetest.c |    9 ++++++++-
- drivers/mtd/tests/mtd_torturetest.c |    9 ++++++++-
- 7 files changed, 55 insertions(+), 7 deletions(-)
+OK, I'll try to clarify that. The hardware ECC engine divides a huge polynomial
+(520*8 = 4160 bits) by a generator polynomial and computes a 56-bit remainder.
+So this remainder (let's call it R) depends only on 520 input data bytes.
 
-diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
-index dec92ae..7a861c3 100644
---- a/drivers/mtd/tests/mtd_oobtest.c
-+++ b/drivers/mtd/tests/mtd_oobtest.c
-@@ -30,7 +30,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_oobtest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -366,6 +366,13 @@ static int __init mtd_oobtest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
-diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
-index 00b937e..2e4d183 100644
---- a/drivers/mtd/tests/mtd_pagetest.c
-+++ b/drivers/mtd/tests/mtd_pagetest.c
-@@ -30,7 +30,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_pagetest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -504,6 +504,13 @@ static int __init mtd_pagetest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
-diff --git a/drivers/mtd/tests/mtd_readtest.c b/drivers/mtd/tests/mtd_readtest.c
-index afe71aa..ce7ba4d 100644
---- a/drivers/mtd/tests/mtd_readtest.c
-+++ b/drivers/mtd/tests/mtd_readtest.c
-@@ -29,7 +29,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_readtest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -169,6 +169,12 @@ static int __init mtd_readtest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
-diff --git a/drivers/mtd/tests/mtd_speedtest.c b/drivers/mtd/tests/mtd_speedtest.c
-index 627d4e2..612c87e 100644
---- a/drivers/mtd/tests/mtd_speedtest.c
-+++ b/drivers/mtd/tests/mtd_speedtest.c
-@@ -29,7 +29,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_speedtest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -361,6 +361,13 @@ static int __init mtd_speedtest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	if (count)
- 		printk(PRINT_PREF "MTD device: %d    count: %d\n", dev, count);
- 	else
-diff --git a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
-index 531625f..d48a39c 100644
---- a/drivers/mtd/tests/mtd_stresstest.c
-+++ b/drivers/mtd/tests/mtd_stresstest.c
-@@ -30,7 +30,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_stresstest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -250,6 +250,13 @@ static int __init mtd_stresstest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
-diff --git a/drivers/mtd/tests/mtd_subpagetest.c b/drivers/mtd/tests/mtd_subpagetest.c
-index 334eae5..f43b909 100644
---- a/drivers/mtd/tests/mtd_subpagetest.c
-+++ b/drivers/mtd/tests/mtd_subpagetest.c
-@@ -29,7 +29,7 @@
- 
- #define PRINT_PREF KERN_INFO "mtd_subpagetest: "
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -379,6 +379,13 @@ static int __init mtd_subpagetest_init(void)
- 
- 	printk(KERN_INFO "\n");
- 	printk(KERN_INFO "=================================================\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
-diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
-index 5c6c3d2..65debad 100644
---- a/drivers/mtd/tests/mtd_torturetest.c
-+++ b/drivers/mtd/tests/mtd_torturetest.c
-@@ -46,7 +46,7 @@ static int pgcnt;
- module_param(pgcnt, int, S_IRUGO);
- MODULE_PARM_DESC(pgcnt, "number of pages per eraseblock to torture (0 => all)");
- 
--static int dev;
-+static int dev = -EINVAL;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
- 
-@@ -213,6 +213,13 @@ static int __init tort_init(void)
- 	printk(KERN_INFO "=================================================\n");
- 	printk(PRINT_PREF "Warning: this program is trying to wear out your "
- 	       "flash, stop it if this is not wanted.\n");
-+
-+	if (dev < 0) {
-+		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
-+		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
-+		return -EINVAL;
-+	}
-+
- 	printk(PRINT_PREF "MTD device: %d\n", dev);
- 	printk(PRINT_PREF "torture %d eraseblocks (%d-%d) of mtd%d\n",
- 	       ebcnt, eb, eb + ebcnt - 1, dev);
--- 
-1.7.6.3
+- during a write operation: input data is what you write to the controller,
+you get R from the ecc engine and this is what you write to oob[8..14].
+
+- during a read operation: the ecc engine computes R on 520 input bytes read
+from flash (this is calc_ecc), and also reads oob[8..14] (this is recv_ecc,
+previously programmed during the write operation).
+Then the ecc engine computes calc_ecc^recv_ecc, and this is what you get from
+the ecc registers. And as long as there is no bitflip, its all 00s (because
+calc_ecc=recv_ecc).
+
+> To be sure, I could write a page of 512 bytes + 16 bytes, where the BCH would be
+> forced (and incorrect), to check what the hardware generator gives me back. I'd
+> like you to help me, ie:
+>  - tell me what to write to the first 512 bytes (only 0, all 0 but one byte to
+>  1, other ...)
+>  - I think I'll write 8 bytes to 0x01 for the first 8 OOB bytes (Hamming false
+>  but I won't care)
+>  - tell me what to write to the 7 BCH ECC
+
+OK, this is really simple:
+
+1. Prepare a buffer of 520 bytes of data, containing pseudo-random bytes or
+any pattern you like. Let's call this buffer 'ref_buf'.
+
+2. Program 'ref_buf' to a nand page; you will write ecc bytes to oob during
+that operation; let's call those ecc bytes 'ref_ecc'.
+
+3. Now, you are ready to perform corruption tests:
+
+ 3.1 Make a copy of 'ref_buf' in which you flip 1, 2, 3 or 4 bits selected
+     at random.
+
+ 3.2 Program this corrupt buffer, _but_ write 'ref_ecc' to oob instead of hw
+     generated ecc bytes.
+
+ 3.3 Read page back: you should get exactly 'ref_buf', and the errorpos[]
+     array of corrected bits should match your flip bits.
+
+After step 3.2, your flash is exactly in the same state as if it had produced
+the bitflips itself.
+
+Repeat steps 3.1 to 3.3 on a large enough set of random vectors to convince
+yourself that your code works (be careful not to wear out your device,
+though :-). You should also try a few 5-bit corruptions and see failures, just
+to verify that your corruptions have some effect.
+
+In theory, testing the BCH algorithm like you did should be enough, but real
+hardware tests are helpful to verify that the entire system behaves as
+expected.
+
+Hope that helps,
+BR,
+--
+Ivan
