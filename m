@@ -1,24 +1,19 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKvjQ-000693-3U
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 17:33:08 +0000
-Received: from [192.168.12.102] (133.sub-166-250-2.myvzw.com [166.250.2.133])
-	by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id p9VHX4ZP098923
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Oct 2011 10:33:05 -0700 (PDT)
-	(envelope-from mikedunn@newsguy.com)
-Message-ID: <4EAEDBA3.6050005@newsguy.com>
-Date: Mon, 31 Oct 2011 10:32:19 -0700
+	id 1RKvjY-0006AU-J9
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 17:33:17 +0000
+Message-ID: <4EAEDBAC.6090505@newsguy.com>
+Date: Mon, 31 Oct 2011 10:32:28 -0700
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 05/13] mtd/docg3: add multiple floor support
-References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>
-	<1319824292-11085-6-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1319824292-11085-6-git-send-email-robert.jarzmik@free.fr>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 12/13] mtd/docg3: add ECC correction code
+References: <1319824292-11085-1-git-send-email-robert.jarzmik@free.fr>	<1319824292-11085-13-git-send-email-robert.jarzmik@free.fr>	<4EAE9FB6.6090200@newsguy.com>
+	<87vcr586a0.fsf@free.fr>
+In-Reply-To: <87vcr586a0.fsf@free.fr>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/28/2011 10:51 AM, Robert Jarzmik wrote:
-> Add support for multiple floors, ie. cascaded docg3
-> chips. There might be 4 docg3 chips cascaded, sharing the
-> same address space, and providing up to 4 times the storage
-> capacity of a unique chip.
+On 10/31/2011 09:39 AM, Robert Jarzmik wrote:
+> Mike Dunn <mikedunn@newsguy.com> writes:
 >
-> Each floor will be seen as an independant mtd device.
+>> Another explanatory comment here...
+>>     /* undo last step in BCH alg (modulo mirroring not needed) */
+> Is that the same as the function comment about bit reversing (the modulo
+> mirroring part) ? If so, the function comment might not be clear enough. If not,
+> could you explain a bit further please ?
+>
 >
 
-Do we know of any products that contain multiple doc devices in a cascaded
-configuration? 
+
+No, the "modulo mirroring" is not the same as the bit reversal.  See Ivan's
+explanation here:
+
+http://lists.infradead.org/pipermail/linux-mtd/2011-October/038060.html
+
+Obviously the comment doesn't give much technical detail, but it points anyone
+puzzled by the step in the right direction.  I don't like cryptic steps that
+give no explanation whatsoever.  Just MHO.
 
 Thanks,
 Mike
