@@ -1,21 +1,22 @@
-Received: from ra.se.axis.com ([195.60.68.13])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKmqq-0000P5-Ug
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 08:04:14 +0000
-Date: Mon, 31 Oct 2011 09:04:06 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Subject: RE: [RFC] Change ECC algorithm from userspace
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0BF244FAD1@Cloud.RL.local>
-Message-ID: <Pine.LNX.4.64.1110310856560.30940@lnxricardw.se.axis.com>
-References: <70E876B0EA86DD4BAF101844BC814DFE0BF244FAD1@Cloud.RL.local>
+	id 1RKnll-0000lJ-Nw
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 09:03:02 +0000
+From: Florian Fainelli <ffainelli@freebox.fr>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [RFC] Change ECC algorithm from userspace
+Date: Mon, 31 Oct 2011 10:02:35 +0100
+Message-ID: <5769554.XO3QpDQ76H@flexo>
+In-Reply-To: <4EAA845B.1020009@parrot.com>
+References: <CAAwP0s059H3BGhYbYLux2gR6ZNb+sFDue676OM2Evz5cA2q6DA@mail.gmail.com>
+	<4EAA845B.1020009@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>,
-	Javier Martinez Canillas <martinez.javier@gmail.com>,
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
 	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	Enric Balletbo i Serra <eballetbo@iseebcn.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +26,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Fri, 28 Oct 2011, Jon Povey wrote:
+On Friday 28 October 2011 12:30:51 Matthieu CASTET wrote:
+> Hi,
+>=20
+> Javier Martinez Canillas a =E9crit :
+> > Hello,
+> >=20
+> > I want to be able to use 1-bit ECC for the first partition where I
+> > save the loader binary and has to be accessed by the ROM boot but u=
+se
+> > a 4-bit ECC for my rootfs partition.
+> >=20
+> > Does anyone have this same issue?
+>=20
+> We use raw programming and compute the ecc in software.
 
-> linux-mtd-bounces@lists.infradead.org wrote:
->> I want to be able to use 1-bit ECC for the first partition where I
->> save the loader binary and has to be accessed by the ROM boot but use
->> a 4-bit ECC for my rootfs partition.
->>
->> Does anyone have this same issue?
->
-> DM355 and DM365 has similar issues as the RBL expects a different OOB/ECC
-> layout to Linux.
+We are doing something similar here as well. Our bootloader also requir=
+es the=20
+data to be layed out differently (data + ecc interleaved inside a page =
++ oob).
 
-Slightly off-topic, but in the 355/365 (etc) case it's possible to modify=
-=20
-the Linux driver so it uses the RBL ECC layout. For us, it seemed the=20
-easiest thing to do, as having different ECC layouts in different parts
-of the flash proved to be a pain. If you need different ECC algorithms in
-different parts of the flash this wouldn't work of course.
+>=20
+> > What is the best approach to store data in a NAND device using
+> > different ECC techniques?
+> >=20
+> > I've think of two approaches:
+> >=20
+> > 1- Adding an ioctl to mtdchar (something like ECCSETBITS) to change=
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> > the ECC technique used.
+>=20
+> But this won't work if there is concurrent acess to mtd. One program =
+may
+> want 1 bit ecc other want 4 bits ecc.
+>=20
+> > 2- Use a platform data field to notify the omap2 nand driver that t=
+he
+> > ROM boot only supports 1-bit ECC. So it can use a 1-bit ECC to writ=
+e
+> > and read the first 4 sectors but a 4-bit ECC for the rest.
+>=20
+> This may be better.
+
+Would not it better to add infrastructure for allowing per-partition EC=
+C=20
+scheme? This should allow the kernel to also be able to properly handle=
+ the=20
+bootloader partitions (bad-block scanning ...).
+
+>=20
+> Matthieu
+>=20
+> PS : note that some OMAP ROM support a better protection than Hamming=
+ (but
+> the details are not public AFAIK)
+>=20
+> From OMAP34xx Multimedia Device, Silicon Revision 3.1.x, public versi=
+on :
+>=20
+> Pages can contain errors caused by memory alteration. To correct thes=
+e
+> errors, the ROM code uses ECC,
+> based on Hamming codes for SLC NAND and BCH (Bose, Ray-Chaudhuri,
+> Hocquenghem) code for
+> multilevel cell (MLC) devices. The computed ECC is compared to ECC st=
+ored in
+> the spare area of the
+> corresponding page. If there are uncorrectable errors, the ROM code r=
+eturns
+> with FAIL.
+--
+Florian
