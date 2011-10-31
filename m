@@ -1,22 +1,21 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1RKnll-0000lJ-Nw
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 09:03:02 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Change ECC algorithm from userspace
-Date: Mon, 31 Oct 2011 10:02:35 +0100
-Message-ID: <5769554.XO3QpDQ76H@flexo>
-In-Reply-To: <4EAA845B.1020009@parrot.com>
-References: <CAAwP0s059H3BGhYbYLux2gR6ZNb+sFDue676OM2Evz5cA2q6DA@mail.gmail.com>
-	<4EAA845B.1020009@parrot.com>
+Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
+	helo=AM1EHSOBE002.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1RKpRq-0001ev-OZ
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2011 10:50:39 +0000
+From: <b35362@freescale.com>
+To: <dwmw2@infradead.org>, <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] mtd/nand : set Nand flash page address to FBAR and FPAR
+	correctly
+Date: Mon, 31 Oct 2011 17:38:20 +0800
+Message-ID: <1320053901-23801-2-git-send-email-b35362@freescale.com>
+In-Reply-To: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	Enric Balletbo i Serra <eballetbo@iseebcn.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain
+Cc: r58472@freescale.com, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, scottwood@freescale.com,
+	akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Liu Shuo <b35362@freescale.com>
 
-On Friday 28 October 2011 12:30:51 Matthieu CASTET wrote:
-> Hi,
->=20
-> Javier Martinez Canillas a =E9crit :
-> > Hello,
-> >=20
-> > I want to be able to use 1-bit ECC for the first partition where I
-> > save the loader binary and has to be accessed by the ROM boot but u=
-se
-> > a 4-bit ECC for my rootfs partition.
-> >=20
-> > Does anyone have this same issue?
->=20
-> We use raw programming and compute the ecc in software.
+If we use the Nand flash chip whose number of pages in a block is greater
+than 64(for large page), we must treat the low bit of FBAR as being the
+high bit of the page address due to the limitation of FCM, it simply uses
+the low 6-bits (for large page) of the combined block/page address as the
+FPAR component, rather than considering the actual block size.
 
-We are doing something similar here as well. Our bootloader also requir=
-es the=20
-data to be layed out differently (data + ecc interleaved inside a page =
-+ oob).
+Signed-off-by: Liu Shuo <b35362@freescale.com>
+Signed-off-by: Jerry Huang <Chang-Ming.Huang@freescale.com>
+Signed-off-by: Tang Yuantian <b29983@freescale.com>
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
 
->=20
-> > What is the best approach to store data in a NAND device using
-> > different ECC techniques?
-> >=20
-> > I've think of two approaches:
-> >=20
-> > 1- Adding an ioctl to mtdchar (something like ECCSETBITS) to change=
-
-> > the ECC technique used.
->=20
-> But this won't work if there is concurrent acess to mtd. One program =
-may
-> want 1 bit ecc other want 4 bits ecc.
->=20
-> > 2- Use a platform data field to notify the omap2 nand driver that t=
-he
-> > ROM boot only supports 1-bit ECC. So it can use a 1-bit ECC to writ=
-e
-> > and read the first 4 sectors but a 4-bit ECC for the rest.
->=20
-> This may be better.
-
-Would not it better to add infrastructure for allowing per-partition EC=
-C=20
-scheme? This should allow the kernel to also be able to properly handle=
- the=20
-bootloader partitions (bad-block scanning ...).
-
->=20
-> Matthieu
->=20
-> PS : note that some OMAP ROM support a better protection than Hamming=
- (but
-> the details are not public AFAIK)
->=20
-> From OMAP34xx Multimedia Device, Silicon Revision 3.1.x, public versi=
-on :
->=20
-> Pages can contain errors caused by memory alteration. To correct thes=
-e
-> errors, the ROM code uses ECC,
-> based on Hamming codes for SLC NAND and BCH (Bose, Ray-Chaudhuri,
-> Hocquenghem) code for
-> multilevel cell (MLC) devices. The computed ECC is compared to ECC st=
-ored in
-> the spare area of the
-> corresponding page. If there are uncorrectable errors, the ROM code r=
-eturns
-> with FAIL.
---
-Florian
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 33d8aad..681d8c5 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -167,15 +167,22 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
+ 
+ 	elbc_fcm_ctrl->page = page_addr;
+ 
+-	out_be32(&lbc->fbar,
+-	         page_addr >> (chip->phys_erase_shift - chip->page_shift));
+-
+ 	if (priv->page_size) {
++		/*
++		 * large page size chip : FPAR[PI] save the lowest 6 bits,
++		 *                        FBAR[BLK] save the other bits.
++		 */
++		out_be32(&lbc->fbar, page_addr >> 6);
+ 		out_be32(&lbc->fpar,
+ 		         ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
+ 		         (oob ? FPAR_LP_MS : 0) | column);
+ 		buf_num = (page_addr & 1) << 2;
+ 	} else {
++		/*
++		 * small page size chip : FPAR[PI] save the lowest 5 bits,
++		 *                        FBAR[BLK] save the other bits.
++		 */
++		out_be32(&lbc->fbar, page_addr >> 5);
+ 		out_be32(&lbc->fpar,
+ 		         ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
+ 		         (oob ? FPAR_SP_MS : 0) | column);
+-- 
+1.7.1
