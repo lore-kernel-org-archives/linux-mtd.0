@@ -1,20 +1,25 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1RLhWs-0004bV-RG
-	for linux-mtd@lists.infradead.org; Wed, 02 Nov 2011 20:35:23 +0000
-Received: by qyk10 with SMTP id 10so624339qyk.15
+Received: from fmmailgate04.web.de ([217.72.192.242])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1RLj24-00060E-9Y
+	for linux-mtd@lists.infradead.org; Wed, 02 Nov 2011 22:11:41 +0000
+Received: from moweb002.kundenserver.de (moweb002.kundenserver.de
+	[172.19.20.108])
+	by fmmailgate04.web.de (Postfix) with ESMTP id A02856E928E1
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Nov 2011 13:35:21 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 3/3] mtd: nand: scan 1st and 2nd page for Macronix SLC
-Date: Wed,  2 Nov 2011 13:34:44 -0700
-Message-Id: <1320266084-18131-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1320266084-18131-1-git-send-email-computersforpeace@gmail.com>
-References: <1320266084-18131-1-git-send-email-computersforpeace@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>,
-	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+	Wed,  2 Nov 2011 23:11:36 +0100 (CET)
+Message-ID: <BBE4319165B44B99893CBAFCC78A34BF@samsungnetbook>
+From: "Roland Kletzing" <devzero@web.de>
+To: <dedekind1@gmail.com>,
+	"Wolfram Sang" <w.sang@pengutronix.de>
+References: <1319533791-32605-1-git-send-email-w.sang@pengutronix.de>
+	<1319919909.2126.15.camel@koala>
+In-Reply-To: <1319919909.2126.15.camel@koala>
+Subject: Re: [PATCH 1/2] mtd: tests: don't use mtd0 as a default
+Date: Wed, 2 Nov 2011 23:11:37 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_base.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+Thanks for all your efforts !
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 3ed9c5e..35b4565 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3132,8 +3132,8 @@ ident_done:
- 	 * Bad block marker is stored in the last page of each block
- 	 * on Samsung and Hynix MLC devices; stored in first two pages
- 	 * of each block on Micron devices with 2KiB pages and on
--	 * SLC Samsung, Hynix, Toshiba and AMD/Spansion. All others scan
--	 * only the first page.
-+	 * SLC Samsung, Hynix, Toshiba, AMD/Spansion, and Macronix.
-+	 * All others scan only the first page.
- 	 */
- 	if ((chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
- 			(*maf_id == NAND_MFR_SAMSUNG ||
-@@ -3143,7 +3143,8 @@ ident_done:
- 				(*maf_id == NAND_MFR_SAMSUNG ||
- 				 *maf_id == NAND_MFR_HYNIX ||
- 				 *maf_id == NAND_MFR_TOSHIBA ||
--				 *maf_id == NAND_MFR_AMD)) ||
-+				 *maf_id == NAND_MFR_AMD ||
-+				 *maf_id == NAND_MFR_MACRONIX)) ||
- 			(mtd->writesize == 2048 &&
- 			 *maf_id == NAND_MFR_MICRON))
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
--- 
-1.7.5.4
+--------------------------------------------------
+From: "Artem Bityutskiy" <dedekind1@gmail.com>
+Sent: Saturday, October 29, 2011 9:25 PM
+To: "Wolfram Sang" <w.sang@pengutronix.de>
+Cc: <linux-mtd@lists.infradead.org>; "Roland Kletzing" <devzero@web.de>
+Subject: Re: [PATCH 1/2] mtd: tests: don't use mtd0 as a default
+
+> On Tue, 2011-10-25 at 11:09 +0200, Wolfram Sang wrote:
+>> mtd tests may erase the mtd device, so force the user to specify which
+>> mtd device to test by using the module parameter. Disable the default
+>> (using mtd0) since this may destroy a vital part of the flash if the
+>> module is inserted accidently or carelessly.
+>> 
+>> Reported-by: Roland Kletzing <devzero@web.de>
+>> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> 
+> Note, I've pushed this patch to l2-mtd-2.6.git, thanks!
+> 
+> Artem.
+> 
