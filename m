@@ -1,20 +1,18 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RN3f6-0004io-0K
- for linux-mtd@lists.infradead.org; Sun, 06 Nov 2011 14:25:28 +0000
-Received: from [192.168.12.102] (111.sub-166-250-1.myvzw.com [166.250.1.111])
- by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id pA6EPJbI051146
- (version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Sun, 6 Nov 2011 06:25:21 -0800 (PST)
- (envelope-from mikedunn@newsguy.com)
-Message-ID: <4EB6A6A8.7010703@newsguy.com>
-Date: Sun, 06 Nov 2011 07:24:24 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RN6dY-0002LS-SN
+ for linux-mtd@lists.infradead.org; Sun, 06 Nov 2011 17:36:06 +0000
+Date: Sun, 6 Nov 2011 18:35:28 +0100
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: ubi on MLC nand flash
+Message-ID: <20111106173528.GA25467@parrot.com>
+References: <4EB6A6A8.7010703@newsguy.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: ubi on MLC nand flash
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4EB6A6A8.7010703@newsguy.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+On Sun, Nov 06, 2011 at 03:24:24PM +0000, Mike Dunn wrote:
+> Hi everyone,
+> 
+> I recently started to do serious testing of UBI on the diskonchip G4 MLC nand
+> driver I'm finishing up.  I started with the io_basic ubi test in mtd-utils. 
+> What I find is that, after a few minutes, enough PEBs are marked as bad to
+> exhaust the reserve PEB pool, UBI switches to r/o mode, and the test fails.  The
+> reason is that - on this device at least - bit flips seem to be persistent;
+> i.e., you will get e.g. 1 bit flip every time you read a certain page. 
+> Consequently, when the bit flip occurs and the PEB gets scrubbed, the torture
+> test fails because the bit flip reoccurs, and the PEB is marked bad.
 
-I recently started to do serious testing of UBI on the diskonchip G4 MLC nand
-driver I'm finishing up.  I started with the io_basic ubi test in mtd-utils. 
-What I find is that, after a few minutes, enough PEBs are marked as bad to
-exhaust the reserve PEB pool, UBI switches to r/o mode, and the test fails.  The
-reason is that - on this device at least - bit flips seem to be persistent;
-i.e., you will get e.g. 1 bit flip every time you read a certain page. 
-Consequently, when the bit flip occurs and the PEB gets scrubbed, the torture
-test fails because the bit flip reoccurs, and the PEB is marked bad.
+Hi Mike,
+I had the same results on recent (34 nm) SLC devices.
+ 
+> I expected that eventually I might have to dig into the "program disturb",
+> "read-disturb" or "paired pages" MLC issues, but the problem seems more
+> fundamental.  My general impression is that UBI is too unforgiving for this
+> device.  The ecc can correct up to 4 bit flips, so 1 bit flip seems to not be a
+> big deal.  I'm new to UBI so this is not a critique or a proposal, I'm just
+> hoping some experts can offer some advice or opinions.  The obvious remedy is to
+> set a higher threshold for marking a PEB as bad, say 2 or 3 bit flips.
 
-I expected that eventually I might have to dig into the "program disturb",
-"read-disturb" or "paired pages" MLC issues, but the problem seems more
-fundamental.  My general impression is that UBI is too unforgiving for this
-device.  The ecc can correct up to 4 bit flips, so 1 bit flip seems to not be a
-big deal.  I'm new to UBI so this is not a critique or a proposal, I'm just
-hoping some experts can offer some advice or opinions.  The obvious remedy is to
-set a higher threshold for marking a PEB as bad, say 2 or 3 bit flips.
+I discussed the matter with a nand manufacturer a while ago; the information I
+could get (for SLC devices, not MLC) can be summarized as follows:
 
-Thanks,
-Mike
+1. A block should be marked bad if a number of bitflips greater than what ecc
+is able to correct has been detected after erase/program; or if the operation
+failed with a status error
+
+2. If the maximum number of correctable bitflips is reached during a read
+operation, data should be relocated to another block, without marking the block
+as bad
+
+I could not get definitive information about the handling of persistent
+bitflips, apart from the fact that they are expected and should not cause a
+block to be marked as bad (as long as the ecc capability is not exceeded).
+Most nand datasheets I had in my hands are also vague on the subject; they lack
+a precise error handling strategy description for multi-bitflip devices.
+
+Point 2 above seems reasonable as long as bitflips are reversible (i.e.
+cancelled by an erase operation); but what if the maximum number of correctable
+errors is reached during a read, those errors being caused by persistent
+bitflips ? Should the block be considered bad (IMHO it should be scrubbed then
+marked bad), or should data be simply relocated ?
+When I asked the latter question to a nand manufacturer, his recommendation
+was (quoting):
+"(...) not to mark the block bad (because the error is correctable), and
+to keep a copy of critical data in another location as backup" (!).
+
+I suggest the following strategy:
+
+Upon reading, when errors are detected (and corrected by ecc):
+ - if (nb of errors <  ecc capability (*)) then no scrubbing, do nothing
+ - if (nb of errors == ecc capability (*)) then
+    - scrub block, then torture it and compute nb of persistent bitflips
+    - if (nb of persistent errors <  ecc capability (*)) then block is OK
+    - if (nb of persistent errors == ecc capability (*)) then mark block as bad
+      [because a single additional bitflip (e.g. a read disturb) would cause
+      data loss]
+
+(*) In order to improve reliability, thresholds can be used instead of max ecc
+capability.
+
+I'm interested to hear opinions from mtd users/nand experts on the subject; I
+know that at least a few of us had to implement ecc thresholds recently. And
+UBI/mtd should be modified to support this (IIRC Artem was pushing in that
+direction a while ago).
+
+BR,
+--
+Ivan
