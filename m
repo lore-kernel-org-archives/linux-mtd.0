@@ -1,16 +1,10 @@
-Message-ID: <4EB7C30E.8020502@gmail.com>
-Date: Mon, 07 Nov 2011 12:37:50 +0100
 From: Daniel Mack <zonque@gmail.com>
-MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: Missing patches for pxa3xx_nand
-References: <4EB7C084.4060706@gmail.com>
-In-Reply-To: <4EB7C084.4060706@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Lei Wen <leiwen@marvell.com>, Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- David Woodhouse <David.Woodhouse@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 0/4] Re-sending pxa3xx nand controller patches
+Date: Mon,  7 Nov 2011 16:43:27 +0100
+Message-Id: <1320680611-29448-1-git-send-email-zonque@gmail.com>
+Cc: leiwen@marvell.com, s.neumann@raumfeld.com, David.Woodhouse@intel.com,
+ linux-arm-kernel@lists.infradead.org, Daniel Mack <zonque@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,18 +14,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/07/2011 12:27 PM, Daniel Mack wrote:
-> In June, there have been important patches submitted for the pxa3xx_nand
-> driver after it was broken by Lei's rework series. These patches were
-> discussed in June, and they are present in
->
->     git://git.infradead.org/mtd-2.6.git linux-fallback
+These four patches have been discussed in June this year and at least
+two of them are mandatory for the pxa3xx driver to operate. I'm not 
+aware of any reason why they didn't make it to any repository, but
+most probably they were just forgotten.
 
-Sorry, I was confused. They are also missing in this git, so they've 
-never been merged at all.
+Axel Lin (2):
+  mtd: pxa3xx_nand: fix a memory leak
+  mtd: pxa3xx_nand: remove unused variable 'mtd'
 
-I'll try to collect what's missing and re-submit.
+Daniel Mack (1):
+  mtd: pxa3xx_nand: Fix blank page ECC mismatch
 
+Lei Wen (1):
+  mtd: pxa3xx_nand: fix nand detection issue
 
+ drivers/mtd/nand/pxa3xx_nand.c |   18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
 
-Daniel
+-- 
+1.7.6.4
