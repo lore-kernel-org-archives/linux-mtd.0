@@ -1,23 +1,22 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RO6vu-0005nE-S2
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2011 12:07:12 +0000
-Received: from [192.168.12.102] (156.sub-166-250-3.myvzw.com [166.250.3.156])
- by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id pA9C741j039311
- (version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Wed, 9 Nov 2011 04:07:05 -0800 (PST)
- (envelope-from mikedunn@newsguy.com)
-Message-ID: <4EBA7AC3.4080205@newsguy.com>
-Date: Wed, 09 Nov 2011 05:06:11 -0800
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RO73N-0008M6-7s
+ for linux-mtd@lists.infradead.org; Wed, 09 Nov 2011 12:14:53 +0000
+Message-ID: <4EBA7C90.3050709@newsguy.com>
+Date: Wed, 09 Nov 2011 05:13:52 -0800
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/3] Add the snappy-c compressor to lib
-References: <1319978255.2126.33.camel@koala> <1319978545.2126.37.camel@koala>
- <4EBA5F7C.6000506@parrot.com>
-In-Reply-To: <4EBA5F7C.6000506@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: dedekind1@gmail.com
+Subject: Re: ubi on MLC nand flash
+References: <4EB6A6A8.7010703@newsguy.com>		
+ <20111106173528.GA25467@parrot.com> <4EB6EDDE.7020603@newsguy.com>	
+ <1320788720.17770.43.camel@koala> <4EB9EDB7.7000600@newsguy.com>
+ <1320828272.24797.26.camel@sauron.fi.intel.com>
+In-Reply-To: <1320828272.24797.26.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/09/2011 03:09 AM, Matthieu CASTET wrote:
->> On Sun, 2011-10-30 at 14:37 +0200, Artem Bityutskiy wrote:
->>> This is a C port of the google snappy compressor. It has roughly
->>> comparable compression to LZO, but is significantly faster on many file
->>> types. For example it beats all other compressors on already
->>> compressed data.
->> Sounds cool, thanks Andi! Is any UBIFS user interested to try this out?
->> I think this stuff needs some real users to make it go into mainline
->> smoothly.
->>
-> I could be interresting to have benchmarks on arm (or other system where UBIFS
-> is used).
+On 11/09/2011 12:44 AM, Artem Bityutskiy wrote:
 >
-> snappy use lot's of unaligned access.
-> They need to be emulated on pre-armv6 core.
+> Sounds good, send nice incremental patches :-)
+>
 
 
-I'm currently testing ubifs on armv5 (xscale).  If you'd like me to collect some
-benchmark data, I'd be glad to help if you can provide a little guidance.
+Which git tree should I use?
 
 Thanks,
 Mike
