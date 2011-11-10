@@ -1,14 +1,14 @@
 Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ROPeb-0000Wa-35
- for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 08:06:34 +0000
+ id 1ROPef-0000XX-Ah
+ for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 08:06:38 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: dwmw2@infradead.org,
 	dedekind1@gmail.com,
 	mikedunn@newsguy.com
-Subject: [PATCH v2 07/16] mtd/docg3: add OOB layout to mtdinfo
-Date: Thu, 10 Nov 2011 09:05:33 +0100
-Message-Id: <1320912342-30147-8-git-send-email-robert.jarzmik@free.fr>
+Subject: [PATCH v2 08/16] mtd/docg3: add registers for erasing and writing
+Date: Thu, 10 Nov 2011 09:05:34 +0100
+Message-Id: <1320912342-30147-9-git-send-email-robert.jarzmik@free.fr>
 In-Reply-To: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
 References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
@@ -22,49 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add OOB layout description for docg3, so that userspace can
-use this information to setup the data for write_oob().
+Add the required registers and commands to erase and write
+flash pages / blocks.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
 ---
-Since V1: added ECC oobavail field for OOB auto placement
----
- drivers/mtd/devices/docg3.c |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+ drivers/mtd/devices/docg3.h |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 6eca7f6..27c4fea 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -63,6 +63,20 @@
-  *
+diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
+index 75df3a1..e9967ab 100644
+--- a/drivers/mtd/devices/docg3.h
++++ b/drivers/mtd/devices/docg3.h
+@@ -130,6 +130,8 @@
+ #define DOC_SEQ_SET_PLANE1		0x0e
+ #define DOC_SEQ_SET_PLANE2		0x10
+ #define DOC_SEQ_PAGE_SETUP		0x1d
++#define DOC_SEQ_ERASE			0x27
++#define DOC_SEQ_PLANES_STATUS		0x31
+ 
+ /*
+  * Flash commands
+@@ -144,7 +146,10 @@
+ #define DOC_CMD_PROG_BLOCK_ADDR		0x60
+ #define DOC_CMD_PROG_CYCLE1		0x80
+ #define DOC_CMD_PROG_CYCLE2		0x10
++#define DOC_CMD_PROG_CYCLE3		0x11
+ #define DOC_CMD_ERASECYCLE2		0xd0
++#define DOC_CMD_READ_STATUS		0x70
++#define DOC_CMD_PLANES_STATUS		0x71
+ 
+ #define DOC_CMD_RELIABLE_MODE		0x22
+ #define DOC_CMD_FAST_MODE		0xa2
+@@ -186,7 +191,7 @@
   */
+ #define DOC_ECCCONF1_BCH_SYNDROM_ERR	0x80
+ #define DOC_ECCCONF1_UNKOWN1		0x40
+-#define DOC_ECCCONF1_UNKOWN2		0x20
++#define DOC_ECCCONF1_PAGE_IS_WRITTEN	0x20
+ #define DOC_ECCCONF1_UNKOWN3		0x10
+ #define DOC_ECCCONF1_HAMMING_BITS_MASK	0x0f
  
-+/**
-+ * struct docg3_oobinfo - DiskOnChip G3 OOB layout
-+ * @eccbytes: 8 bytes are used (1 for Hamming ECC, 7 for BCH ECC)
-+ * @eccpos: ecc positions (byte 7 is Hamming ECC, byte 8-14 are BCH ECC)
-+ * @oobfree: free pageinfo bytes (byte 0 until byte 6, byte 15
-+ * @oobavail: 8 available bytes remaining after ECC toll
+@@ -224,6 +229,13 @@
+ #define DOC_READADDR_ONE_BYTE		0x4000
+ #define DOC_READADDR_ADDR_MASK		0x1fff
+ 
++/*
++ * Status of erase and write operation
 + */
-+static struct nand_ecclayout docg3_oobinfo = {
-+	.eccbytes = 8,
-+	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14},
-+	.oobfree = {{0, 7}, {15, 1} },
-+	.oobavail = 8,
-+};
++#define DOC_PLANES_STATUS_FAIL		0x01
++#define DOC_PLANES_STATUS_PLANE0_KO	0x02
++#define DOC_PLANES_STATUS_PLANE1_KO	0x04
 +
- static inline u8 doc_readb(struct docg3 *docg3, u16 reg)
- {
- 	u8 val = readb(docg3->base + reg);
-@@ -973,6 +987,7 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->write_oob = NULL;
- 	mtd->sync = NULL;
- 	mtd->block_isbad = doc_block_isbad;
-+	mtd->ecclayout = &docg3_oobinfo;
- }
- 
  /**
+  * struct docg3 - DiskOnChip driver private data
+  * @dev: the device currently under control
 -- 
 1.7.5.4
