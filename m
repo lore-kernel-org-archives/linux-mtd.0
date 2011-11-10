@@ -1,18 +1,18 @@
-Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+Received: from [2a01:4f8:120:8448::d00d] (helo=mail.skyhub.de)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ROPfD-0000is-JS
- for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 08:07:14 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: dwmw2@infradead.org,
-	dedekind1@gmail.com,
-	mikedunn@newsguy.com
-Subject: [PATCH v2 16/16] mtd/docg3: add protection areas sysfs access
-Date: Thu, 10 Nov 2011 09:05:42 +0100
-Message-Id: <1320912342-30147-17-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
-References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1ROQLa-0003GH-Cr
+ for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 08:50:59 +0000
+Date: Thu, 10 Nov 2011 09:41:44 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: werner <w.landgraf@ru.ru>
+Subject: Re: 3.1 problem:  crash during boot
+Message-ID: <20111110084144.GA1960@x1.osrc.amd.com>
+References: <web-642904662@zbackend1.aha.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <web-642904662@zbackend1.aha.ru>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,193 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As each docg3 chip has 2 protection areas (DPS0 and DPS1),
-and because theses areas can prevent user access to the chip
-data, add for each floor the sysfs entries which insert the
-protection key into the right DPS.
+On Wed, Nov 09, 2011 at 08:44:30PM -0400, werner wrote:
+> A neihgbour's computer crashs with 3.1 , see below hand-copied from
+> the screen.   More details are in the enclosed file.
+> 
+>
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- drivers/mtd/devices/docg3.c |  121 +++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/docg3.h |   13 +++++
- 2 files changed, 134 insertions(+), 0 deletions(-)
+Hmm, this looks incomplete and is missing the oops header which says
+exactly what happens.
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 35df377..d7df311 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1513,6 +1513,123 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return ret;
- }
- 
-+static struct docg3 *sysfs_dev2docg3(struct device *dev,
-+				     struct device_attribute *attr)
-+{
-+	int floor;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct mtd_info **docg3_floors = platform_get_drvdata(pdev);
-+
-+	floor = attr->attr.name[1] - '0';
-+	if (floor < 0 || floor >= DOC_MAX_NBFLOORS)
-+		return NULL;
-+	else
-+		return docg3_floors[floor]->priv;
-+}
-+
-+static ssize_t dps0_is_key_locked(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int dps0;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	dps0 = doc_register_readb(docg3, DOC_DPS0_STATUS);
-+	doc_set_device_id(docg3, 0);
-+
-+	return sprintf(buf, "%d\n", !(dps0 & DOC_DPS_KEY_OK));
-+}
-+
-+static ssize_t dps1_is_key_locked(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int dps1;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	dps1 = doc_register_readb(docg3, DOC_DPS1_STATUS);
-+	doc_set_device_id(docg3, 0);
-+
-+	return sprintf(buf, "%d\n", !(dps1 & DOC_DPS_KEY_OK));
-+}
-+
-+static ssize_t dps0_insert_key(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int i;
-+
-+	if (count != DOC_LAYOUT_DPS_KEY_LENGTH)
-+		return -EINVAL;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	for (i = 0; i < DOC_LAYOUT_DPS_KEY_LENGTH; i++)
-+		doc_writeb(docg3, buf[i], DOC_DPS0_KEY);
-+	doc_set_device_id(docg3, 0);
-+	return count;
-+}
-+
-+static ssize_t dps1_insert_key(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int i;
-+
-+	if (count != DOC_LAYOUT_DPS_KEY_LENGTH)
-+		return -EINVAL;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	for (i = 0; i < DOC_LAYOUT_DPS_KEY_LENGTH; i++)
-+		doc_writeb(docg3, buf[i], DOC_DPS1_KEY);
-+	doc_set_device_id(docg3, 0);
-+	return count;
-+}
-+
-+#define FLOOR_SYSFS(id) { \
-+	__ATTR(f##id##_dps0_is_keylocked, S_IRUGO, dps0_is_key_locked, NULL), \
-+	__ATTR(f##id##_dps1_is_keylocked, S_IRUGO, dps1_is_key_locked, NULL), \
-+	__ATTR(f##id##_dps0_protection_key, S_IWUGO, NULL, dps0_insert_key), \
-+	__ATTR(f##id##_dps1_protection_key, S_IWUGO, NULL, dps1_insert_key), \
-+}
-+
-+static struct device_attribute doc_sys_attrs[DOC_MAX_NBFLOORS][4] = {
-+	FLOOR_SYSFS(0), FLOOR_SYSFS(1), FLOOR_SYSFS(2), FLOOR_SYSFS(3)
-+};
-+
-+static int doc_register_sysfs(struct platform_device *pdev,
-+			      struct mtd_info **floors)
-+{
-+	int ret = 0, floor, i = 0;
-+	struct device *dev = &pdev->dev;
-+
-+	for (floor = 0; !ret && floor < DOC_MAX_NBFLOORS && floors[floor];
-+	     floor++)
-+		for (i = 0; !ret && i < 4; i++)
-+			ret = device_create_file(dev, &doc_sys_attrs[floor][i]);
-+	if (!ret)
-+		return 0;
-+	do {
-+		while (--i >= 0)
-+			device_remove_file(dev, &doc_sys_attrs[floor][i]);
-+		i = 4;
-+	} while (--floor >= 0);
-+	return ret;
-+}
-+
-+static void doc_unregister_sysfs(struct platform_device *pdev,
-+				 struct mtd_info **floors)
-+{
-+	struct device *dev = &pdev->dev;
-+	int floor, i;
-+
-+	for (floor = 0; floor < DOC_MAX_NBFLOORS && floors[floor];
-+	     floor++)
-+		for (i = 0; i < 4; i++)
-+			device_remove_file(dev, &doc_sys_attrs[floor][i]);
-+}
-+
- /*
-  * Debug sysfs entries
-  */
-@@ -1927,6 +2044,9 @@ static int __init docg3_probe(struct platform_device *pdev)
- 			found++;
- 	}
- 
-+	ret = doc_register_sysfs(pdev, docg3_floors);
-+	if (ret)
-+		goto err_probe;
- 	if (!found)
- 		goto notfound;
- 
-@@ -1963,6 +2083,7 @@ static int __exit docg3_release(struct platform_device *pdev)
- 	void __iomem *base = docg3->base;
- 	int floor;
- 
-+	doc_unregister_sysfs(pdev, docg3_floors);
- 	doc_dbg_unregister(docg3);
- 	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
- 		if (docg3_floors[floor])
-diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
-index 07182f9..a349915 100644
---- a/drivers/mtd/devices/docg3.h
-+++ b/drivers/mtd/devices/docg3.h
-@@ -118,6 +118,8 @@
- #define DOC_BCH_SYNDROM(idx)		(0x1048 + (idx << 0))
- 
- #define DOC_PROTECTION			0x1056
-+#define DOC_DPS0_KEY			0x105c
-+#define DOC_DPS1_KEY			0x105e
- #define DOC_DPS0_ADDRLOW		0x1060
- #define DOC_DPS0_ADDRHIGH		0x1062
- #define DOC_DPS1_ADDRLOW		0x1064
-@@ -252,6 +254,17 @@
- #define DOC_PLANES_STATUS_PLANE0_KO	0x02
- #define DOC_PLANES_STATUS_PLANE1_KO	0x04
- 
-+/*
-+ * DPS key management
-+ *
-+ * Each floor of docg3 has 2 protection areas: DPS0 and DPS1. These areas span
-+ * across block boundaries, and define whether these blocks can be read or
-+ * written.
-+ * The definition is dynamically stored in page 0 of blocks (2,3) for DPS0, and
-+ * page 0 of blocks (4,5) for DPS1.
-+ */
-+#define DOC_LAYOUT_DPS_KEY_LENGTH	8
-+
- /**
-  * struct docg3 - DiskOnChip driver private data
-  * @dev: the device currently under control
+Judging by the call stack below, it could be MTD maps something behind
+CONFIG_MTD_ICHXROM, i.e. ichxrom_init_one() and below.
+
+Adding MTD ML in case they've seen something similar already.
+
+> c ...
+> 1618067 genprobe_ident_chips+0x83/0x261
+> 1f36808  ?_raw_write_unlock_irqrestore+0x6/0x1c
+> 1589dfc  ? strnlen+0x3/0x1f
+> 1b183c0   mtd_d0_chip_probe+0x17/0xa7
+> 108bc8e  ? ftrace_test_stop_func+0x12/0x14
+> 1b03aae  cfi_probe+0x12/0x14
+> 1b03a84  do_map_probe+0x4a/0x62
+> 1f3807d  ? trace+0x13/0x1b
+> 1f09321  ichxrom_init_one+0x391/0x503
+> 24fe1fg ? parse_early_options+0x25/0x25
+> 254d98a   init_ichxrom+0x34/0x34
+> 1001174   do_one_initall+0x8c/0x142
+> 24fe1f9  ? parse_early_options+0x25/0x25
+> 107f0d8  ? irq_to_desc+0x8/0x21
+> 254d956  ? init_esb2rom+0x96/0x96
+> 24fe1f9  ?  parse_early_options+0x25/0x25
+> 24fc(or e)285  kernel_init+0x8c/0x120
+> 1f38046 kernel_thread_helper+0x6/0x19
+
+HTH.
+
 -- 
-1.7.5.4
+Regards/Gruss,
+   Boris
