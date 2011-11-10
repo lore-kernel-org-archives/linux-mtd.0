@@ -1,19 +1,19 @@
-Received: from websmtp.sohu.com ([61.135.132.204])
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ROcOp-0005f8-Ge
- for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 21:43:09 +0000
-To: "ln113" <ln113@gooyee.net>, "longfiy" <longfiy@163.com>,
- "lm4337936" <lm4337936@163.com>, "luchengkeji" <luchengkeji@qq.com>,
- "doctorzhao" <doctorzhao@medcc.com.cn>,
- "dongdpsioc" <dongdpsioc@hotmail.com>, "479617266" <479617266@qq.com>
-Message-ID: <1320960147.ac4993f52ac74d57b29b676bd7fb2328.songlarwrx@sohu.com>
-Subject: =?utf-8?b?5Y2w5Yi36LSo6YeP5Zyo57q/5qOA5rWL57O757uf?=
-Date: Thu, 10 Nov 2011 21:22:27 GMT
+ id 1ROclO-0007Dv-Pf
+ for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 22:06:28 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH v3] mtd: nand: Add driver for M-sys / Sandisk diskonchip G4
+References: <1320441908-9684-1-git-send-email-mikedunn@newsguy.com>
+ <87lirnkbap.fsf@free.fr> <4EBC504C.5000008@newsguy.com>
+Date: Thu, 10 Nov 2011 23:06:12 +0100
+In-Reply-To: <4EBC504C.5000008@newsguy.com> (Mike Dunn's message of "Thu, 10
+ Nov 2011 14:29:32 -0800")
+Message-ID: <87hb2bk4yz.fsf@free.fr>
 MIME-Version: 1.0
-From: songlarwrx@sohu.com
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-6YCC55So6IyD5Zu0DQoNCg0K6aG555uu5ZCN56ewDQog5Y+C5pWw6IyD5Zu0DQogDQrpgILnlKjl
-jbDliLfmnLoNCiDljbflh7nmnLrjgIHog7bljbDmnLrjgIHmn5TljbDmnLrjgIHljbDnoIHmnLrj
-gIHmo4Dlk4HmnLrjgIHlpI3ljbfmnLrjgIHliIbliIfmnLrnrYnjgIINCiANCumAgueUqOWNsOWI
-t+WTgQ0KIOaZrumAmueZveWNoee6uOOAgemTtuWNoee6uOOAgemHkeWNoee6uOOAgemVreWwhOWN
-oee6uOOAgeWhkeaWmeiWhOiGnOOAgemAj+aYjuWNiumAj+aYjuadkOaWmeetieOAgg0KIA0K5Y+v
-5qOA57y66Zm3DQog6Imy5beu44CB5aKo54K544CB5ryP5Y2w44CB6aOe6Jmr44CB5rGh5Z6i44CB
-5YiA5Lid44CB5ouJ5aKo44CB5aWX5Y2w5YGP5beu562J5bi46KeB5Y2w5Yi357y66Zm344CCDQog
-DQrnvLrpmbflpITnkIbmlrnlvI8NCiDmiZPmoIfjgIHllrfloqjnrYnmlrnlvI/lj6/pgIkNCiAN
-Cg0K6IuP5bee54ix6ZSQ6YKm5pm66IO956eR5oqA5pyJ6ZmQ5YWs5Y+4DQrogZTns7vkurrvvJrl
-rovlhYjnlJ8NCuaJiyoq5py677yaMTM1IDg0OTkgMjQzMQ0K55S1Kiror53vvJowNTEyLTg5OTkg
-NjEzNQ0KICAgICAgICA0MDAgIDA5NjkgIDkxOA0K5LygKirnnJ/vvJowNTEyLTUwMTIgNjAxMg0K
-6YKuKirku7bvvJphaXJ1YmFuZyBAMTYzLmNvbQ0KUSAqKiBROiAgMTY4IDU2MyA2NjANCuiLj+W3
-nuaYhuWxseW4gueroOWfuui3rzE4OeWPtzHluaINCip3d3cuYWlydWJhbmcuY29tKg0K
+Mike Dunn <mikedunn@newsguy.com> writes:
+
+> Hi Robert, thanks for taking a look and commenting.
+>
+> On 11/10/2011 11:49 AM, Robert Jarzmik wrote:
+>>> +	doc_nop(docptr);
+>>> +	doc_nop(docptr);
+>>> +	doc_nop(docptr);
+>>> +	doc_nop(docptr);
+>>> +	doc_nop(docptr);
+>> Wouldn't that be better doc_nop(docptr, 5) ?
+>
+>
+> No.  If it's a function that loops, you're inserting too much delay due to loop
+> overhead (unless the compiler unrolls it, but you don't know that) and you may
+> as well use some generic delay function and not bother with the nop register at
+> all.  I wanted to use the precise delay observed in the TrueFFS code to (1)
+> avoid too much delay for the sake of performance, (2) in case the timing is
+> critical and too much delay would cause problems, or (3) "nop" really isn't what
+> it says (i.e. no operation).  If there were a C preprocessor directive
+> equivalent to the assembly .rept directive, I would use it.
+As you wish, but :
+ (a) The nops are here to add a minimum delay
+ (b) The performance would not be an issue, and yes, the compiler could unroll
+ the loop as the number is a compile time constant
+ (c) nop operation is a delay, that's actually how I understand it
+ (d) it does work well on docg3
+ (e) and you can do as you wish, it's your driver :)
+
+> No actually ecc.write_oob - which this function defines - is a nand interface
+> function.  I never observed oob-only writes while reverse engineering (read
+> oob-only  yes, but not write).  Can you write oob-only on the G3?  Even if it
+> were possible, the nand_write utility wants to write the oob *before* the page
+> data.  This hack allows that utility to work.  Maybe the comment should say "oob
+> can't be written before the page data".
+Yes, I can write OOB only, page only, or both.
+
+And I have the same problem with nandwrite.
+Now consider you have 2 nandwrites working in parallel :
+   nandwrite1         nandwrite2
+   write_oob(OOB1)
+                      write_oob(OOB2)
+   write_page(page1) ------------------------> OOB1 was overrun
+                      write_page(page2)
+
+That really really bothers me. It's not about your code, I think you have no
+choice. My concern is rather about nandwrite utility. My point is that it could
+have better used write_oob(page1, OOB1).
+And in that respect, I think there's something broken in it.
+
+>> If it's the same as on docg3, each bit is a marker for one block, and the
+>> following formula could apply:
+>>           is_good = bbt[block >> 3] & (1 << (block & 0x7));
+>
+>
+> Thanks.  Do any of your devices have bad blocks marked in this table?  Do you
+> know how to modify the table?
+No, mine G3 has no such blocks.
+And I feel we can't modify them. After all, they are in the OTP area. My guess
+is that they are set up at chip creation as initial bad blocks (ie. factory bad
+blocks).
+I think there is a difference between bad block (factory bad blocks) and worn
+out blocks (after erases, having more bitflips that ECC can fix).
+
+Cheers.
+
+-- 
+Robert
