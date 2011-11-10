@@ -1,18 +1,18 @@
-Received: from [2a01:4f8:120:8448::d00d] (helo=mail.skyhub.de)
+Received: from smtp1-g21.free.fr ([212.27.42.1])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ROQLa-0003GH-Cr
- for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 08:50:59 +0000
-Date: Thu, 10 Nov 2011 09:41:44 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: werner <w.landgraf@ru.ru>
-Subject: Re: 3.1 problem:  crash during boot
-Message-ID: <20111110084144.GA1960@x1.osrc.amd.com>
-References: <web-642904662@zbackend1.aha.ru>
+ id 1ROadB-00023f-J5
+ for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 19:49:50 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH v3] mtd: nand: Add driver for M-sys / Sandisk diskonchip G4
+References: <1320441908-9684-1-git-send-email-mikedunn@newsguy.com>
+Date: Thu, 10 Nov 2011 20:49:34 +0100
+In-Reply-To: <1320441908-9684-1-git-send-email-mikedunn@newsguy.com> (Mike
+ Dunn's message of "Fri, 4 Nov 2011 14:25:08 -0700")
+Message-ID: <87lirnkbap.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <web-642904662@zbackend1.aha.ru>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 09, 2011 at 08:44:30PM -0400, werner wrote:
-> A neihgbour's computer crashs with 3.1 , see below hand-copied from
-> the screen.   More details are in the enclosed file.
-> 
->
+Mike Dunn <mikedunn@newsguy.com> writes:
 
-Hmm, this looks incomplete and is missing the oops header which says
-exactly what happens.
+> This is a nand driver for the diskonchip G4 in my Palm Treo680.  It's been
+> fairly well tested; it passes the nandtest utility in mtd-utils, and also the
+> kernel tests mtd_pagetest and mtd_readtest.  Common mtd-utils work as well
+> (nanddump, nandwrite, flash_erase, ...).  A ubifs was created on it and seems
+> to be working well, though more stress testing is needed.
+Hi Mike,
 
-Judging by the call stack below, it could be MTD maps something behind
-CONFIG_MTD_ICHXROM, i.e. ichxrom_init_one() and below.
+> +static void docg4_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+> +{
+> +	int i;
+> +	struct nand_chip *nand = mtd->priv;
+> +	uint16_t *p = (uint16_t *) buf;
+> +	len >>= 1;
+Is it granted that len is an even number ? Or did you mean here docg4_read_buf16
+as a function name (on the same naming as the writing one below) ?
 
-Adding MTD ML in case they've seen something similar already.
+...zip...
 
-> c ...
-> 1618067 genprobe_ident_chips+0x83/0x261
-> 1f36808  ?_raw_write_unlock_irqrestore+0x6/0x1c
-> 1589dfc  ? strnlen+0x3/0x1f
-> 1b183c0   mtd_d0_chip_probe+0x17/0xa7
-> 108bc8e  ? ftrace_test_stop_func+0x12/0x14
-> 1b03aae  cfi_probe+0x12/0x14
-> 1b03a84  do_map_probe+0x4a/0x62
-> 1f3807d  ? trace+0x13/0x1b
-> 1f09321  ichxrom_init_one+0x391/0x503
-> 24fe1fg ? parse_early_options+0x25/0x25
-> 254d98a   init_ichxrom+0x34/0x34
-> 1001174   do_one_initall+0x8c/0x142
-> 24fe1f9  ? parse_early_options+0x25/0x25
-> 107f0d8  ? irq_to_desc+0x8/0x21
-> 254d956  ? init_esb2rom+0x96/0x96
-> 24fe1f9  ?  parse_early_options+0x25/0x25
-> 24fc(or e)285  kernel_init+0x8c/0x120
-> 1f38046 kernel_thread_helper+0x6/0x19
+> +	writew(DOCG4_SEQ_PAGEPROG, docptr + DOC_FLASHSEQUENCE);
+> +	writew(DOC_CMD_PROG_CYCLE2, docptr + DOC_FLASHCOMMAND);
+> +	doc_nop(docptr);
+> +	doc_nop(docptr);
+> +	docg4_wait(mtd, nand);
+> +	writew(DOCG4_SEQ_FLUSH, docptr + DOC_FLASHSEQUENCE);
+> +	writew(DOC_CMD_READ_STATUS, docptr + DOC_FLASHCOMMAND);
+> +	writew(DOC_ECCCONF0_READ_MODE | 4, docptr + DOC_ECCCONF0);
+> +	doc_nop(docptr);
+> +	doc_nop(docptr);
+> +	doc_nop(docptr);
+> +	doc_nop(docptr);
+> +	doc_nop(docptr);
+Wouldn't that be better doc_nop(docptr, 5) ?
 
-HTH.
+...zip...
+
+> +static int docg4_write_oob(struct mtd_info *mtd, struct nand_chip *nand,
+> +			   int page)
+> +{
+> +	/*
+> +	 * This is not really supported, because MLC nand must write oob bytes
+> +	 * at the same time as page data.
+
+I don't think that's true. The docg3 is an MLC, with NAND memory, and page data
+can be written, and the in a subsequent write oob data can be written.
+I think it's more the NAND kernel interface which drives that (and maybe NAND
+interface specification, I don't know).
+
+> +static int __init read_factory_bbt(struct mtd_info *mtd)
+> +{
+> +	/*
+> +	 * The device contains a factory bad block table on page 4, but the
+> +	 * table is not updated by this driver.  Instead, this function is
+> +	 * called during initialization to read it and update the memory-based
+> +	 * bbt accordingly.
+> +	 */
+> +
+> +	/* TODO: figure out how to interpret the table; mine is all ff's */
+If it's the same as on docg3, each bit is a marker for one block, and the
+following formula could apply:
+          is_good = bbt[block >> 3] & (1 << (block & 0x7));
+
+> +	retval = mtd_device_register(mtd, NULL, 0);
+> +	if (retval)
+> +		goto fail;
+> +
+> +	if (pdata->nr_partitions > 0) {
+> +		int i;
+> +		for (i = 0; i < pdata->nr_partitions; i++)
+> +			pdata->partitions[i].ecclayout = &docg4_oobinfo;
+> +		retval = mtd_device_register(mtd, pdata->partitions,
+> +					     pdata->nr_partitions);
+> +	}
+Why not use mtd_device_parse_register(), which will handle handle partitions and
+device registration at the same time ?
+
+Cheers.
 
 -- 
-Regards/Gruss,
-   Boris
+Robert
