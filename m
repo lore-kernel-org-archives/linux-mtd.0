@@ -1,19 +1,16 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ROclO-0007Dv-Pf
- for linux-mtd@lists.infradead.org; Thu, 10 Nov 2011 22:06:28 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH v3] mtd: nand: Add driver for M-sys / Sandisk diskonchip G4
-References: <1320441908-9684-1-git-send-email-mikedunn@newsguy.com>
- <87lirnkbap.fsf@free.fr> <4EBC504C.5000008@newsguy.com>
-Date: Thu, 10 Nov 2011 23:06:12 +0100
-In-Reply-To: <4EBC504C.5000008@newsguy.com> (Mike Dunn's message of "Thu, 10
- Nov 2011 14:29:32 -0800")
-Message-ID: <87hb2bk4yz.fsf@free.fr>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ROfMI-0000on-Bv
+ for linux-mtd@lists.infradead.org; Fri, 11 Nov 2011 00:52:44 +0000
+Received: by wyi11 with SMTP id 11so2588135wyi.36
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Nov 2011 16:52:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Date: Thu, 10 Nov 2011 16:52:37 -0800
+Message-ID: <CAN8TOE9FPF-drb2d8cTAvxsK3M_ZdLTaaq7hn-CgEraiWVXAcA@mail.gmail.com>
+Subject: bad block markers + ONFI
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +20,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Dunn <mikedunn@newsguy.com> writes:
+Hello,
 
-> Hi Robert, thanks for taking a look and commenting.
->
-> On 11/10/2011 11:49 AM, Robert Jarzmik wrote:
->>> +	doc_nop(docptr);
->>> +	doc_nop(docptr);
->>> +	doc_nop(docptr);
->>> +	doc_nop(docptr);
->>> +	doc_nop(docptr);
->> Wouldn't that be better doc_nop(docptr, 5) ?
->
->
-> No.  If it's a function that loops, you're inserting too much delay due to loop
-> overhead (unless the compiler unrolls it, but you don't know that) and you may
-> as well use some generic delay function and not bother with the nop register at
-> all.  I wanted to use the precise delay observed in the TrueFFS code to (1)
-> avoid too much delay for the sake of performance, (2) in case the timing is
-> critical and too much delay would cause problems, or (3) "nop" really isn't what
-> it says (i.e. no operation).  If there were a C preprocessor directive
-> equivalent to the assembly .rept directive, I would use it.
-As you wish, but :
- (a) The nops are here to add a minimum delay
- (b) The performance would not be an issue, and yes, the compiler could unroll
- the loop as the number is a compile time constant
- (c) nop operation is a delay, that's actually how I understand it
- (d) it does work well on docg3
- (e) and you can do as you wish, it's your driver :)
+I've wondered for a while what the MTD community expects from ONFI
+NAND with respect to bad block markers and bad block scanning. I'll
+try to enumerate some observations, followed by some recommendations
+and rationale. Please comment, and maybe I'll code one of these
+options shortly. I'd like to settle the high level points first
+though.
 
-> No actually ecc.write_oob - which this function defines - is a nand interface
-> function.  I never observed oob-only writes while reverse engineering (read
-> oob-only  yes, but not write).  Can you write oob-only on the G3?  Even if it
-> were possible, the nand_write utility wants to write the oob *before* the page
-> data.  This hack allows that utility to work.  Maybe the comment should say "oob
-> can't be written before the page data".
-Yes, I can write OOB only, page only, or both.
+Observations:
 
-And I have the same problem with nandwrite.
-Now consider you have 2 nandwrites working in parallel :
-   nandwrite1         nandwrite2
-   write_oob(OOB1)
-                      write_oob(OOB2)
-   write_page(page1) ------------------------> OOB1 was overrun
-                      write_page(page2)
+(A) ONFI spec says the host should scan the 1st OOB byte of the 1st
+and last pages of each block. See reference [1] for exact text.
+(B) There are some ONFI parts whose data sheets do not list bad block
+scanning specifications. Presumably these are inheriting the ONFI
+definition as stated in (A).
+(C) There are many ONFI parts whose data sheets list their own bad
+block scanning specifications that do not match (A) exactly. See
+reference [3] for examples.
 
-That really really bothers me. It's not about your code, I think you have no
-choice. My concern is rather about nandwrite utility. My point is that it could
-have better used write_oob(page1, OOB1).
-And in that respect, I think there's something broken in it.
+Currently, we don't follow (A) for NAND that reports ONFI
+compatibility. In fact, we do not even have a flag that gives the
+option for scanning 1st and last pages of a device (this can be
+overcome pretty easily). Instead, after ONFI detection, nand_base
+proceeds to its regular BBM code. This causes different manufacturers'
+chips to be scanned according to their non-ONFI rules.
 
->> If it's the same as on docg3, each bit is a marker for one block, and the
->> following formula could apply:
->>           is_good = bbt[block >> 3] & (1 << (block & 0x7));
->
->
-> Thanks.  Do any of your devices have bad blocks marked in this table?  Do you
-> know how to modify the table?
-No, mine G3 has no such blocks.
-And I feel we can't modify them. After all, they are in the OTP area. My guess
-is that they are set up at chip creation as initial bad blocks (ie. factory bad
-blocks).
-I think there is a difference between bad block (factory bad blocks) and worn
-out blocks (after erases, having more bitflips that ECC can fix).
+Now, I was considering trying to implement (A) more strictly, so that
+if the chip reports ONFI compatibility, we scan 1st and last pages.
+This would help define the otherwise ambiguous behavior for parts from
+(B), which might otherwise default to the rules already in
+nand_base.c. On the other hand, this would also modify the current
+"established" behavior as well as violate the contradicting
+definitions (as in (C)).
 
-Cheers.
+So I came up with a few options:
+(a) Implement (A) for all ONFI-capable NAND
+(b) Implement a flag for (A) without enforcing it for all ONFI NAND
+(allow driver to specify, perhaps?)
+(c) Make no change
 
--- 
-Robert
+We can rationalize (a) by the ONFI standard and claim that it makes
+little breakage, since:
+* all of the exceptions (in reference [3]) allow at least the 1st
+page, 1st OOB byte scans. Last page is not a big addition
+* the "1st and 2nd page" scans are only intended for when it wasn't
+possible to scan the first page
+* the "1st or 6th byte" scans can be safely treated with 1st-byte-only
+scans (discussed in another thread recently)
+
+Rationale for (b) is to totally prevent breakage while allowing
+deterministic behavior for drivers that want to use the exact ONFI
+specification.
+
+Rationale for (c) is laziness or "selective effort" (whichever you
+prefer). It seems that there are very few chips that actually follow
+ONFI's BBM guidelines properly, so it may not really be worth it to
+try to implement them and deal with the breakage. However, this leaves
+no deterministic solution for chips that fall under (B).
+
+FWIW, the motivating example for these questions (point (B): Hynix
+H27U4G8F2DTR-BC) defaults to scanning the last page of each block in
+the current nand_base.c. This may not be significantly different than
+1st and last page.
+
+Comments are appreciated. If you've read this far, you probably have
+something to say :)
+
+Brian
+
+[1] ONFI 1.0 specification, section 3.2.2
+A defective block is indicated by a byte value equal to 00h for 8-bit
+access or a word value equal to 0000h for 16-bit access being present
+at the first byte/word location in the defect area of either the first
+page or last page of the block. The host shall check the first
+byte/word of the defect area of both the first and last past page of
+each block to verify the block is valid prior to any erase or program
+operations on that block.
+
+[2] Example of (B): Hynix H27U4G8F2DTR-BC
+
+[3] http://www.linux-mtd.infradead.org/nand-data/nanddata.html
+There are a range of data sheets that say to scan:
+1st and 2nd page (1st byte in OOB)
+1st page (1st byte in OOB)
+1st page (1st or 6th byte in OOB)
