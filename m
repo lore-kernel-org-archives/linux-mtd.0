@@ -1,22 +1,29 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RPfEB-0007DY-ER
- for linux-mtd@lists.infradead.org; Sun, 13 Nov 2011 18:56:28 +0000
-Message-ID: <4EC020A2.9070003@newsguy.com>
-Date: Sun, 13 Nov 2011 11:55:14 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RPgeo-0000Gz-VO
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2011 20:28:03 +0000
+Received: by bkat2 with SMTP id t2so7482381bka.36
+ for <linux-mtd@lists.infradead.org>; Sun, 13 Nov 2011 12:28:00 -0800 (PST)
 Subject: Re: [PATCH v2 07/16] mtd/docg3: add OOB layout to mtdinfo
-References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>	<1320912342-30147-8-git-send-email-robert.jarzmik@free.fr>	<4EBECB89.2020102@newsguy.com>
- <87vcqoiavr.fsf@free.fr>	<1321188825.2273.4.camel@koala>	<1321189398.2021.5.camel@shinybook.infradead.org>	<1321191352.2273.14.camel@koala>
- <87ehxchta0.fsf@free.fr>
-In-Reply-To: <87ehxchta0.fsf@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Sun, 13 Nov 2011 22:27:50 +0200
+In-Reply-To: <4EC020A2.9070003@newsguy.com>
+References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
+ <1320912342-30147-8-git-send-email-robert.jarzmik@free.fr>
+ <4EBECB89.2020102@newsguy.com> <87vcqoiavr.fsf@free.fr>
+ <1321188825.2273.4.camel@koala>
+ <1321189398.2021.5.camel@shinybook.infradead.org>
+ <1321191352.2273.14.camel@koala> <87ehxchta0.fsf@free.fr>
+ <4EC020A2.9070003@newsguy.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Ivan Djelic <ivan.djelic@parrot.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+Message-ID: <1321216077.26585.11.camel@koala>
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +33,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/13/2011 08:38 AM, Robert Jarzmik wrote:
->
-> And while we're discussing MTD API, I'd like to add another thing I was thinking
-> of, from a conversation Mike and Ivan had.
->
-> They discussed how UBIFS is "intolerant" to bitflips, and marks a block as
-> "unusable" if one bitflip occured, even if the ECC can fix much more.
->
-> What I was thinking is that the MTD oob information which exposes how many ECC
-> are available should expose as well how many bitflips can be fixed (for example
-> 4 bitflips can be fixed, 5 bitflips can be detected). 
+On Sun, 2011-11-13 at 11:55 -0800, Mike Dunn wrote:
+> An objection might be that mtd should not be setting policy.  It's also a fairly
+> sizeable modification.  The alternative would be to implement a mechanism to
+> return the corrected error count to the higher layer (e.g., ubi) for each read
+> operation.  This would be even more work, requiring modifications to mtd and ubi.
 
+Yeah, probably just returning the ECC correction count is cleaner
+design. Probably we can add another argument to the mtd read function
+and if the return code is -EUCLEAN (correctable bit-flips happened), it
+would contain the highest ECC correction count encountered while reading
+this region of the flash. So the SW which does not care, will not
+require any changes.
 
-You're referring to struct nand_ecclayout?  I wouldn't think that would be the
-appropriate place; it just describes the layout, not operational details.
+I am not sure if you'll need to mtd interfaces from mtd->func(...) to
+mtd_func(mtd, ...) for this or not, though.
 
-
-> Then, the read_oob()
-> function could return back 0 if read was successful, -Exxxx on error, or a
-> positive number N if N bitflips were fixed.
-> With this information, upper level could decide from (read_oob() return and
-> ecc.fixable_bitflips) if a block should be marked as unusable (worn out) or not.
-
-
-Something along these lines was suggested by Artem a few days ago:
-
-http://lists.infradead.org/pipermail/linux-mtd/2011-November/038376.html
-
-I'm looking into implementing this.  Currently the drivers return -EUCLEAN from
-read() and read_oob() if *any* bit error corrections were made, and this is the
-information used by ubi to determine whether to scrub, and also whether to mark
-a block as "bad" after running the PEB torture test.  To summarize Artem's
-suggestion in my own words... The drivers expose the ecc strength to the mtd
-subsystem (as Robert also suggests).  Mtd assigns a "scrublevel" to the device,
-settable by the user through sysfs, with ecc strength as the default.  Read
-operations no longer go directly to the driver (as they currently do for
-unpartitioned devices) but are handled in mtd.  The driver returns the corrected
-error count to mtd, which makes the determination of whether to return -EUCLEAN
-or 0, based on the number of corrected errors and the scrublevel.
-
-An objection might be that mtd should not be setting policy.  It's also a fairly
-sizeable modification.  The alternative would be to implement a mechanism to
-return the corrected error count to the higher layer (e.g., ubi) for each read
-operation.  This would be even more work, requiring modifications to mtd and ubi.
-
-I'd like to work to resolve this either way, as ubi and ubifs are the killer
-apps for these new drivers.
-
-Thanks,
-Mike
+Artem.
