@@ -1,17 +1,16 @@
 Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RPXPK-0003Ka-Rc
- for linux-mtd@lists.infradead.org; Sun, 13 Nov 2011 10:35:28 +0000
+ id 1RPXVd-00048w-T1
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2011 10:41:58 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH v2 13/16] mtd/docg3: add ECC correction code
+Subject: Re: [PATCH v2 00/16] DocG3 fixes and write support
 References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
- <1320912342-30147-14-git-send-email-robert.jarzmik@free.fr>
- <4EBECDCB.306@newsguy.com>
-Date: Sun, 13 Nov 2011 11:35:17 +0100
-In-Reply-To: <4EBECDCB.306@newsguy.com> (Mike Dunn's message of "Sat, 12 Nov
- 2011 11:49:31 -0800")
-Message-ID: <87mxc0ia3e.fsf@free.fr>
+ <4EBED0B8.1030307@newsguy.com>
+Date: Sun, 13 Nov 2011 11:41:49 +0100
+In-Reply-To: <4EBED0B8.1030307@newsguy.com> (Mike Dunn's message of "Sat, 12
+ Nov 2011 12:02:00 -0800")
+Message-ID: <87ipmoi9si.fsf@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
@@ -27,74 +26,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Mike Dunn <mikedunn@newsguy.com> writes:
 
-> On 11/10/2011 12:05 AM, Robert Jarzmik wrote:
->>  
->> +if MTD_DOCG3
->> +config BCH_CONST_M
->> +	default 14
->> +config BCH_CONST_T
->> +	default 4
->> +endif
->
->
-> It might be better to let the user set this in the kernel config.  Doing it here
-> precludes the use of the algorithm by any other module that needs to use it with
-> different parameters.
-You're right.
-I'll shift that to mioa701 board code, where I'm sure no other BCH is necessary.
+> How did you figure out these operating modes and the protected part stuff?  From
+> reverse-engineering a disassembled binary?  I'm impressed.  You don't get that
+> level of detail from just monitoring cpu accesses to the device during normal
+> operation.
+Retro-engineering and the nandwrite tests.
+You see nandtest did not work. I could see why, and made some additionnal
+tests. The result was that writting to page 0 and page 1 gave back the AND of
+these both pages.
 
->> +static int doc_ecc_bch_fix_data(struct docg3 *docg3, void *buf, u8 *hwecc)
-> Nit: function name in comment is inconsistent with its actual name.
-Good catch. Will fix.
->> +	for (i = 0; i < numerrs; i++)
->> +		if (errorpos[i] < DOC_ECC_BCH_COVERED_BYTES*8)
->> +			/* error is located in data, correct it */
->> +			change_bit(errorpos[i], buf);
->> +out:
->> +	doc_dbg("doc_ecc_bch_fix_data: flipped %d bits\n", numerrs);
->> +	return numerrs;
->> +}
->
->
-> Where do you check for reads of a blank page?
-On stack frame above. Look at doc_read_oob():
-		if ((block0 >= DOC_LAYOUT_BLOCK_FIRST_DATA) &&
-		    (eccconf1 & DOC_ECCCONF1_BCH_SYNDROM_ERR) &&
-		    (eccconf1 & DOC_ECCCONF1_PAGE_IS_WRITTEN) &&
-                                \---> this is the key
-		    (ops->mode != MTD_OPS_RAW) &&
-		    (nbdata == DOC_LAYOUT_PAGE_SIZE)) {
-			ret = doc_ecc_bch_fix_data(docg3, buf, hwecc);
+And from there, I checked what was the difference between DOCG3 IPL and SPL, and
+landed on the "mode" register.
 
-Here you see that I'll make the error correction only if the page was written
-before. If it's blank, I continue reading without attempting ECC correction.
+> BTW, I'm coming around to your thinking that the nand interface is not
+> appropriate for these chips.  Even though they are nand, the lack of any
+> standard nand interface means the nand base does not do much for you except
+> obfuscate.  Memory based bbt maintenance is handled in nand base, maybe a couple
+> other minor things.  I hope I change my mind; otherwise I'll have to rework the
+> G4 driver :-(
+I don't know for G4, but I'm more convinced for G3 as well, as NAND interface
+provides some state machine in the chip (where the last seek occured, ...).
 
-> Not specifically related to this patch, but... are you sure you want to
-> initialize the ecc on every read?  I'm sure it's not necessary; you can just
-> leave it on; maybe turn it off if doing raw reads.  I know this is the case for
-> both the P3 and G4 when running under PalmOS / TrueFFS library.  I notice that
-> this function has delays and polls the status register in between calls to
-> cpu_relax(), so the performance hit is probably not insignificant, especiallu
-> when done for every 512 byte page.
-Well, that's some info.
-And yes, it adds some latency.
-Now for the necessity, I'm not fully convinced. I know that the ECC register is
-set up differently for reads and writes (that's the
-DOC_ECCCONF0_READ_MODE). When doc_read_oob() is called, I don't know if the
-previous action was a read or a write ...
+> I still strongly suspect that the G3 is very similiar to the P3 in my Treo
+> 650.  At some point down the road I'll test it out on the P3.  Device capacity
+> might be the only difference between the two devices.  If so, the G3 driver
+> might even work on the P3 right out of the box.
+And if not right out of the box, I'll bet on :
+ - adding a DOC_CHIPID_P3 ...
+ - and if the chip is bigger, amend doc_setup_addr_sector(0 and
+ doc_setup_writeaddr_sector() to input another byte of address (ie. add a line
+ with doc_flash_address(docg3, (sector >> 24) & 0xff).
 
-What I could do to improve performance would be to store in the docg3 private
-data if last action was a read or a write, and perform the doc_*_page_ecc_init()
-only if action changes. What do you think ?
+Cheers.
 
-> Another nit (also not specifically related to this patch): bad name for this
-> function.  The ecc being read is not the BCH syndrome, as we now know.  This is
-> a pet peeve of mine; M-sys abused that word by misapplying it to the byts read
-> from the ecc hw, which confused the hell out of me as I tried to understand what
-> the hw was generating.
-Yes, I'll change the name to hw_ecc or something like that.
-
-Thanks for the review.
-
--- 
+--
 Robert
