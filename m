@@ -1,17 +1,19 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RPIr4-0004Oa-Dj
- for linux-mtd@lists.infradead.org; Sat, 12 Nov 2011 19:03:07 +0000
-Message-ID: <4EBED0B8.1030307@newsguy.com>
-Date: Sat, 12 Nov 2011 12:02:00 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v2 00/16] DocG3 fixes and write support
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RPX8t-0002eP-Ng
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2011 10:18:29 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH v2 07/16] mtd/docg3: add OOB layout to mtdinfo
 References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ <1320912342-30147-8-git-send-email-robert.jarzmik@free.fr>
+ <4EBECB89.2020102@newsguy.com>
+Date: Sun, 13 Nov 2011 11:18:16 +0100
+In-Reply-To: <4EBECB89.2020102@newsguy.com> (Mike Dunn's message of "Sat, 12
+ Nov 2011 11:39:53 -0800")
+Message-ID: <87vcqoiavr.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,46 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/10/2011 12:05 AM, Robert Jarzmik wrote:
-> nandtest/nanddump/nandwrite testing has been
-> done, with and without bitflipped data.
+Mike Dunn <mikedunn@newsguy.com> writes:
 
+> On 11/10/2011 12:05 AM, Robert Jarzmik wrote:
+>> +static struct nand_ecclayout docg3_oobinfo = {
+>> +	.eccbytes = 8,
+>> +	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14},
+>> +	.oobfree = {{0, 7}, {15, 1} },
+>> +	.oobavail = 8,
+>> +};
+>> +
 
-Yay!
+I took a different approach.  I check an internal docg3 register to see if the
+page was written. Or I could had have checked the Hamming code, as I don't think
+it can be 0xff whatever the pagesize 7 bytes values.
 
+The reason behind is that the Hamming code is Ham(64, 57), ie. Ham(2^6,
+2^6-6-1). The means the 6 bits are enough to cover all codewords possibilities,
+and 0xff is not one of them.
 
-> Moreover, 3 new patches have been added:
->  - fix reading oob+data without correction
->    This was triggered by the bitflipped pages tests, and
->    fixes cases where we want to read corrupted data.
->  - add docg3 modes support
->    This actually fixes the read part, as we now read in
->    "normal" mode by default rather than in "reliable"
->    mode. This is mandatory for nandtest to work, because of
->    the "even/odd pages logical AND".
->  - add protection support
->    This is an evolution to be able to access the whole chip
->    in protected chips, as they are in smartphones.
+So unless a bitflip in Hamming code, 0xff in it means blank page. And I think
+the ECC engine is even smarter, with the ECCCONF1_PAGE_IS_WRITTEN.
 
+>
+> Just FYI, per Ivan's suggestion, I changed this to use the last oob byte as a
+> "page programmed" flag for the purpose of detecting bit flips when reading a
+> blank page.  Maybe something to keep in mind.  You can have a look at the latest
+> G4 driver patch to see exactly how I use it.
+I personally think this should be provided by the MTD API. A function
+is_page_blank(ofs) could tell if the page was written or not. Now if the
+function is NULL, the upper layer (UBIFS, ...) could decide _by itself_ to
+assign a free OOB byte to that meaning. But IMHO it's not the drivers duty to
+take these decisions to restrict the OOB, let it be done at an upper level.
 
-How did you figure out these operating modes and the protected part stuff?  From
-reverse-engineering a disassembled binary?  I'm impressed.  You don't get that
-level of detail from just monitoring cpu accesses to the device during normal
-operation.
+Cheers.
 
-BTW, I'm coming around to your thinking that the nand interface is not
-appropriate for these chips.  Even though they are nand, the lack of any
-standard nand interface means the nand base does not do much for you except
-obfuscate.  Memory based bbt maintenance is handled in nand base, maybe a couple
-other minor things.  I hope I change my mind; otherwise I'll have to rework the
-G4 driver :-(
-
-This would also eliminate my main argument for combining G3/G4 drivers: to keep
-the nand interface code consistent.  That and more device differences seen in
-your latest patches argue against combining.  I still strongly suspect that the
-G3 is very similiar to the P3 in my Treo 650.  At some point down the road I'll
-test it out on the P3.  Device capacity might be the only difference between the
-two devices.  If so, the G3 driver might even work on the P3 right out of the box.
-
-Thanks,
-Mike
+-- 
+Robert
