@@ -1,21 +1,27 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RPl8B-0005NW-EL
- for linux-mtd@lists.infradead.org; Mon, 14 Nov 2011 01:14:40 +0000
-Message-ID: <4EC0794B.3010604@newsguy.com>
-Date: Sun, 13 Nov 2011 18:13:31 -0800
+ id 1RQ02h-0002Vk-M6
+ for linux-mtd@lists.infradead.org; Mon, 14 Nov 2011 17:10:01 +0000
+Message-ID: <4EC1592D.4060304@newsguy.com>
+Date: Mon, 14 Nov 2011 10:08:45 -0800
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v2 13/16] mtd/docg3: add ECC correction code
+To: dedekind1@gmail.com
+Subject: Proposed change to mtd read functions (Was Re: [PATCH v2 07/16]
+ mtd/docg3: add OOB layout to mtdinfo)
 References: <1320912342-30147-1-git-send-email-robert.jarzmik@free.fr>
- <1320912342-30147-14-git-send-email-robert.jarzmik@free.fr>
- <4EBECDCB.306@newsguy.com> <87mxc0ia3e.fsf@free.fr>
-In-Reply-To: <87mxc0ia3e.fsf@free.fr>
+ <1320912342-30147-8-git-send-email-robert.jarzmik@free.fr>
+ <4EBECB89.2020102@newsguy.com> <87vcqoiavr.fsf@free.fr>
+ <1321188825.2273.4.camel@koala>
+ <1321189398.2021.5.camel@shinybook.infradead.org>
+ <1321191352.2273.14.camel@koala> <87ehxchta0.fsf@free.fr>
+ <4EC020A2.9070003@newsguy.com> <1321216077.26585.11.camel@koala>
+In-Reply-To: <1321216077.26585.11.camel@koala>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ivan Djelic <ivan.djelic@parrot.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/13/2011 02:35 AM, Robert Jarzmik wrote:
-> Mike Dunn <mikedunn@newsguy.com> writes:
+On 11/13/2011 12:27 PM, Artem Bityutskiy wrote:
+> On Sun, 2011-11-13 at 11:55 -0800, Mike Dunn wrote:
+>> An objection might be that mtd should not be setting policy.  It's also a fairly
+>> sizeable modification.  The alternative would be to implement a mechanism to
+>> return the corrected error count to the higher layer (e.g., ubi) for each read
+>> operation.  This would be even more work, requiring modifications to mtd and ubi.
+> Yeah, probably just returning the ECC correction count is cleaner
+> design. Probably we can add another argument to the mtd read function
+> and if the return code is -EUCLEAN (correctable bit-flips happened), it
+> would contain the highest ECC correction count encountered while reading
+> this region of the flash.
+
+
+This would be better than the cumulative error count over the entire block,
+because the highest count on any one page is more significant, I think.
+
+
+>  So the SW which does not care, will not
+> require any changes.
 >
->>
->> Where do you check for reads of a blank page?
-> On stack frame above. Look at doc_read_oob():
-> 		if ((block0 >= DOC_LAYOUT_BLOCK_FIRST_DATA) &&
-> 		    (eccconf1 & DOC_ECCCONF1_BCH_SYNDROM_ERR) &&
-> 		    (eccconf1 & DOC_ECCCONF1_PAGE_IS_WRITTEN) &&
->                                 \---> this is the key
-> 		    (ops->mode != MTD_OPS_RAW) &&
-> 		    (nbdata == DOC_LAYOUT_PAGE_SIZE)) {
-> 			ret = doc_ecc_bch_fix_data(docg3, buf, hwecc);
->
-> Here you see that I'll make the error correction only if the page was written
-> before. If it's blank, I continue reading without attempting ECC correction.
+> I am not sure if you'll need to mtd interfaces from mtd->func(...) to
+> mtd_func(mtd, ...) for this or not, though.
 
 
-G4 probably has this capability too.  If so, I'll be improving my blank page
-detection.  I *really* have to go through your driver in its entirety to see
-what other insights you have.  Currently getting pulled in multiple directions.
+I don't (yet) see why I would need to. 
 
+Just adding the argument to mtd->read(), mtd->read_oob(),  would be a simple
+change, but large in scope, affecting all users of the mtd interface.  Any
+advice on how to proceed?  Should it be one big patchset, with individual
+patches for changes to mtd, nand, one_nand, mtdchar, each driver, ... ?  If it
+is not all merged at once, the build will be broken for the unpatched
+components.  Or is that acceptable, and the patches can be submitted piecemeal,
+starting with, say, mtd, nand, nandsim, mtdram, mtdchar?  Or should we
+temporarily create a branch from l2-mtd until we're satisfiled that this is all
+stable?
 
->> Not specifically related to this patch, but... are you sure you want to
->> initialize the ecc on every read?  I'm sure it's not necessary; you can just
->> leave it on; maybe turn it off if doing raw reads.  I know this is the case for
->> both the P3 and G4 when running under PalmOS / TrueFFS library.  I notice that
->> this function has delays and polls the status register in between calls to
->> cpu_relax(), so the performance hit is probably not insignificant, especiallu
->> when done for every 512 byte page.
-> Well, that's some info.
-> And yes, it adds some latency.
-> Now for the necessity, I'm not fully convinced. I know that the ECC register is
-> set up differently for reads and writes (that's the
-> DOC_ECCCONF0_READ_MODE). When doc_read_oob() is called, I don't know if the
-> previous action was a read or a write ...
->
-> What I could do to improve performance would be to store in the docg3 private
-> data if last action was a read or a write, and perform the doc_*_page_ecc_init()
-> only if action changes. What do you think ?
->
-
-
-Never mind.  Sorry.  I was thinking DOC_ECCCONF1, which I write to during
-initialization to (I believe) enable ecc.  Anyway, you have a better handle on
-the internals of the chip than I do.  I'm still looking forward to comparing
-your code to my old P3 test code (which mostly just parrots what I observed
-during operation).  Until then I'll keep my opinions on register sequences, etc,
-to myself!'
-
-Good job!
-
+Thanks,
 Mike
+
+> Artem.
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>
