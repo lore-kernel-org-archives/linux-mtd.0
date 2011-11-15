@@ -1,21 +1,17 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
  helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RQGUT-0006zB-Ib
- for linux-mtd@lists.infradead.org; Tue, 15 Nov 2011 10:43:47 +0000
+ id 1RQGUW-0006zp-2F
+ for linux-mtd@lists.infradead.org; Tue, 15 Nov 2011 10:43:49 +0000
 From: <b35362@freescale.com>
 To: <dwmw2@infradead.org>, <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH v3 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-Date: Tue, 15 Nov 2011 17:29:15 +0800
-Message-ID: <1321349355-1639-3-git-send-email-b35362@freescale.com>
-In-Reply-To: <1321349355-1639-2-git-send-email-b35362@freescale.com>
-References: <1321349355-1639-1-git-send-email-b35362@freescale.com>
- <1321349355-1639-2-git-send-email-b35362@freescale.com>
+Subject: [PATCH 1/3] mtd/nand: fix coding style issue in
+ drivers/mtd/nand/fsl_elbc.c
+Date: Tue, 15 Nov 2011 17:29:13 +0800
+Message-ID: <1321349355-1639-1-git-send-email-b35362@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Liu Shuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
- Liu Shuo <Shuo.Liu@freescale.com>, Shengzhou Liu <Shengzhou.Liu@freescale.com>,
  linux-mtd@lists.infradead.org, scottwood@freescale.com,
  akpm@linux-foundation.org, leoli@freescale.com, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,376 +25,421 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Liu Shuo <b35362@freescale.com>
 
-Freescale FCM controller has a 2K size limitation of buffer RAM. In order
-to support the Nand flash chip whose page size is larger than 2K bytes,
-we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and save
-them to a large buffer.
+fix whitespaces,tabs coding style issue and use #include <linux/io.h> instead of <asm/io.h>
+in drivers/mtd/nand/fsl_elbc.c.
 
-Signed-off-by: Liu Shuo <Shuo.Liu@freescale.com>
-Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+Signed-off-by: Liu Shuo <b35362@freescale.com>
 Signed-off-by: Li Yang <leoli@freescale.com>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |  216 +++++++++++++++++++++++++++++++++++---
- 1 files changed, 199 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c |  194 +++++++++++++++++++-------------------
+ 1 files changed, 97 insertions(+), 97 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index c2c231b..415f87e 100644
+index eedd8ee..1bfcdef 100644
 --- a/drivers/mtd/nand/fsl_elbc_nand.c
 +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -55,7 +55,9 @@ struct fsl_elbc_mtd {
- 	struct device *dev;
- 	int bank;               /* Chip select bank number           */
- 	u8 __iomem *vbase;      /* Chip select base virtual address  */
--	int page_size;          /* NAND page size (0=512, 1=2048)    */
-+	int page_size;          /* NAND page size (0=512, 1=2048, 2=4096...),
-+				 * the mutiple of 2048.
-+				 */
- 	unsigned int fmr;       /* FCM Flash Mode Register value     */
- };
+@@ -38,7 +38,7 @@
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/partitions.h>
  
-@@ -75,6 +77,8 @@ struct fsl_elbc_fcm_ctrl {
- 	unsigned int use_mdr;    /* Non zero if the MDR is to be set      */
- 	unsigned int oob;        /* Non zero if operating on OOB data     */
- 	unsigned int counter;	 /* counter for the initializations	  */
-+
-+	char *buffer;            /* just be used when pagesize > 2048     */
- };
+-#include <asm/io.h>
++#include <linux/io.h>
+ #include <asm/fsl_lbc.h>
  
- /* These map to the positions used by the FCM hardware ECC generator */
-@@ -150,6 +154,42 @@ static struct nand_bbt_descr bbt_mirror_descr = {
- };
+ #define MAX_BANKS 8
+@@ -167,17 +167,17 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
+ 	elbc_fcm_ctrl->page = page_addr;
  
- /*=================================*/
-+static void io_to_buffer(struct mtd_info *mtd, int subpage, int oob)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct fsl_elbc_mtd *priv = chip->priv;
-+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = priv->ctrl->nand;
-+	void *src, *dst;
-+	int len = (oob ? 64 : 2048);
-+
-+	if (oob)
-+		dst = elbc_fcm_ctrl->buffer + mtd->writesize + subpage * 64;
-+	else
-+		dst = elbc_fcm_ctrl->buffer + subpage * 2048;
-+
-+	src = elbc_fcm_ctrl->addr + (oob ? 2048 : 0);
-+	memcpy_fromio(dst, src, len);
-+}
-+
-+static void buffer_to_io(struct mtd_info *mtd, int subpage, int oob)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct fsl_elbc_mtd *priv = chip->priv;
-+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = priv->ctrl->nand;
-+	void *src, *dst;
-+	int len = (oob ? 64 : 2048);
-+
-+	if (oob)
-+		src = elbc_fcm_ctrl->buffer + mtd->writesize + subpage * 64;
-+	else
-+		src = elbc_fcm_ctrl->buffer + subpage * 2048;
-+
-+	dst = elbc_fcm_ctrl->addr + (oob ? 2048 : 0);
-+	memcpy_toio(dst, src, len);
-+
-+	/* See the in_8() in fsl_elbc_write_buf() */
-+	in_8(elbc_fcm_ctrl->addr);
-+}
+ 	out_be32(&lbc->fbar,
+-	         page_addr >> (chip->phys_erase_shift - chip->page_shift));
++		 page_addr >> (chip->phys_erase_shift - chip->page_shift));
  
- /*
-  * Set up the FCM hardware block and page address fields, and the fcm
-@@ -193,7 +233,7 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
+ 	if (priv->page_size) {
+ 		out_be32(&lbc->fpar,
+-		         ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
+-		         (oob ? FPAR_LP_MS : 0) | column);
++			 ((page_addr << FPAR_LP_PI_SHIFT) & FPAR_LP_PI) |
++			 (oob ? FPAR_LP_MS : 0) | column);
+ 		buf_num = (page_addr & 1) << 2;
+ 	} else {
+ 		out_be32(&lbc->fpar,
+-		         ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
+-		         (oob ? FPAR_SP_MS : 0) | column);
++			 ((page_addr << FPAR_SP_PI_SHIFT) & FPAR_SP_PI) |
++			 (oob ? FPAR_SP_MS : 0) | column);
+ 		buf_num = page_addr & 7;
+ 	}
  
- 	/* for OOB data point to the second half of the buffer */
- 	if (oob)
--		elbc_fcm_ctrl->index += priv->page_size ? 2048 : 512;
-+		elbc_fcm_ctrl->index += mtd->writesize;
+@@ -190,10 +190,10 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
  
  	dev_vdbg(priv->dev, "set_addr: bank=%d, "
  			    "elbc_fcm_ctrl->addr=0x%p (0x%p), "
-@@ -311,6 +351,7 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
-+	int i;
+-	                    "index %x, pes %d ps %d\n",
++			    "index %x, pes %d ps %d\n",
+ 		 buf_num, elbc_fcm_ctrl->addr, priv->vbase,
+ 		 elbc_fcm_ctrl->index,
+-	         chip->phys_erase_shift, chip->page_shift);
++		 chip->phys_erase_shift, chip->page_shift);
+ }
  
- 	elbc_fcm_ctrl->use_mdr = 0;
+ /*
+@@ -213,13 +213,13 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
+ 		out_be32(&lbc->mdr, elbc_fcm_ctrl->mdr);
  
-@@ -339,21 +380,63 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	dev_vdbg(priv->dev,
+-	         "fsl_elbc_run_command: fmr=%08x fir=%08x fcr=%08x\n",
+-	         in_be32(&lbc->fmr), in_be32(&lbc->fir), in_be32(&lbc->fcr));
++		 "fsl_elbc_run_command: fmr=%08x fir=%08x fcr=%08x\n",
++		 in_be32(&lbc->fmr), in_be32(&lbc->fir), in_be32(&lbc->fcr));
+ 	dev_vdbg(priv->dev,
+-	         "fsl_elbc_run_command: fbar=%08x fpar=%08x "
+-	         "fbcr=%08x bank=%d\n",
+-	         in_be32(&lbc->fbar), in_be32(&lbc->fpar),
+-	         in_be32(&lbc->fbcr), priv->bank);
++		 "fsl_elbc_run_command: fbar=%08x fpar=%08x "
++		 "fbcr=%08x bank=%d\n",
++		 in_be32(&lbc->fbar), in_be32(&lbc->fpar),
++		 in_be32(&lbc->fbcr), priv->bank);
  
- 		fsl_elbc_do_read(chip, 0);
- 		fsl_elbc_run_command(mtd);
--		return;
+ 	ctrl->irq_status = 0;
+ 	/* execute special operation */
+@@ -227,7 +227,7 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
  
-+		if (priv->page_size <= 1)
-+			return;
-+
-+		/* Continue to read the rest bytes if writesize > 2048 */
-+		io_to_buffer(mtd, 0, 0);
-+		io_to_buffer(mtd, 0, 1);
-+
-+		out_be32(&lbc->fir, FIR_OP_RB << FIR_OP1_SHIFT);
-+
-+		for (i = 1; i < priv->page_size; i++) {
-+			/*
-+			 * Maybe there are some reasons of FCM hardware timming,
-+			 * we must insert a FIR_OP_NOP(0x00) before FIR_OP_RB.
-+			 */
-+			fsl_elbc_run_command(mtd);
-+			io_to_buffer(mtd, i, 0);
-+			io_to_buffer(mtd, i, 1);
-+		}
-+
-+		return;
+ 	/* wait for FCM complete flag or timeout */
+ 	wait_event_timeout(ctrl->irq_wait, ctrl->irq_status,
+-	                   FCM_TIMEOUT_MSECS * HZ/1000);
++			   FCM_TIMEOUT_MSECS * HZ/1000);
+ 	elbc_fcm_ctrl->status = ctrl->irq_status;
+ 	/* store mdr value in case it was needed */
+ 	if (elbc_fcm_ctrl->use_mdr)
+@@ -237,8 +237,8 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
+ 
+ 	if (elbc_fcm_ctrl->status != LTESR_CC) {
+ 		dev_info(priv->dev,
+-		         "command failed: fir %x fcr %x status %x mdr %x\n",
+-		         in_be32(&lbc->fir), in_be32(&lbc->fcr),
++			 "command failed: fir %x fcr %x status %x mdr %x\n",
++			 in_be32(&lbc->fir), in_be32(&lbc->fcr),
+ 			 elbc_fcm_ctrl->status, elbc_fcm_ctrl->mdr);
+ 		return -EIO;
+ 	}
+@@ -273,20 +273,20 @@ static void fsl_elbc_do_read(struct nand_chip *chip, int oob)
+ 
+ 	if (priv->page_size) {
+ 		out_be32(&lbc->fir,
+-		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		         (FIR_OP_CA  << FIR_OP1_SHIFT) |
+-		         (FIR_OP_PA  << FIR_OP2_SHIFT) |
+-		         (FIR_OP_CM1 << FIR_OP3_SHIFT) |
+-		         (FIR_OP_RBW << FIR_OP4_SHIFT));
++			 (FIR_OP_CM0 << FIR_OP0_SHIFT) |
++			 (FIR_OP_CA  << FIR_OP1_SHIFT) |
++			 (FIR_OP_PA  << FIR_OP2_SHIFT) |
++			 (FIR_OP_CM1 << FIR_OP3_SHIFT) |
++			 (FIR_OP_RBW << FIR_OP4_SHIFT));
+ 
+ 		out_be32(&lbc->fcr, (NAND_CMD_READ0 << FCR_CMD0_SHIFT) |
+-		                    (NAND_CMD_READSTART << FCR_CMD1_SHIFT));
++				    (NAND_CMD_READSTART << FCR_CMD1_SHIFT));
+ 	} else {
+ 		out_be32(&lbc->fir,
+-		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		         (FIR_OP_CA  << FIR_OP1_SHIFT) |
+-		         (FIR_OP_PA  << FIR_OP2_SHIFT) |
+-		         (FIR_OP_RBW << FIR_OP3_SHIFT));
++			 (FIR_OP_CM0 << FIR_OP0_SHIFT) |
++			 (FIR_OP_CA  << FIR_OP1_SHIFT) |
++			 (FIR_OP_PA  << FIR_OP2_SHIFT) |
++			 (FIR_OP_RBW << FIR_OP3_SHIFT));
+ 
+ 		if (oob)
+ 			out_be32(&lbc->fcr, NAND_CMD_READOOB << FCR_CMD0_SHIFT);
+@@ -297,7 +297,7 @@ static void fsl_elbc_do_read(struct nand_chip *chip, int oob)
+ 
+ /* cmdfunc send commands to the FCM */
+ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+-                             int column, int page_addr)
++				int column, int page_addr)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct fsl_elbc_mtd *priv = chip->priv;
+@@ -320,8 +320,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	/* fall-through */
+ 	case NAND_CMD_READ0:
+ 		dev_dbg(priv->dev,
+-		        "fsl_elbc_cmdfunc: NAND_CMD_READ0, page_addr:"
+-		        " 0x%x, column: 0x%x.\n", page_addr, column);
++			"fsl_elbc_cmdfunc: NAND_CMD_READ0, page_addr:"
++			" 0x%x, column: 0x%x.\n", page_addr, column);
+ 
+ 
+ 		out_be32(&lbc->fbcr, 0); /* read entire page to enable ECC */
+@@ -337,7 +337,7 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
  	/* READOOB reads only the OOB because no ECC is performed. */
  	case NAND_CMD_READOOB:
  		dev_vdbg(priv->dev,
- 			 "fsl_elbc_cmdfunc: NAND_CMD_READOOB, page_addr:"
+-		         "fsl_elbc_cmdfunc: NAND_CMD_READOOB, page_addr:"
++			 "fsl_elbc_cmdfunc: NAND_CMD_READOOB, page_addr:"
  			 " 0x%x, column: 0x%x.\n", page_addr, column);
  
--		out_be32(&lbc->fbcr, mtd->oobsize - column);
--		set_addr(mtd, column, page_addr, 1);
-+		if (priv->page_size <= 1) {
-+			out_be32(&lbc->fbcr, mtd->oobsize - column);
-+			set_addr(mtd, column, page_addr, 1);
-+		} else {
-+			out_be32(&lbc->fbcr, 64);
-+			set_addr(mtd, 0, page_addr, 1);
-+			elbc_fcm_ctrl->index += column;
-+		}
+ 		out_be32(&lbc->fbcr, mtd->oobsize - column);
+@@ -354,8 +354,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD_READID.\n");
  
- 		elbc_fcm_ctrl->read_bytes = mtd->writesize + mtd->oobsize;
- 
- 		fsl_elbc_do_read(chip, 1);
- 		fsl_elbc_run_command(mtd);
-+
-+		if (priv->page_size <= 1)
-+			return;
-+
-+		if (column < 64)
-+			io_to_buffer(mtd, 0, 1);
-+
-+		out_be32(&lbc->fbcr, 2112);
-+		out_be32(&lbc->fir, FIR_OP_RB << FIR_OP1_SHIFT);
-+		out_be32(&lbc->fpar, in_be32(&lbc->fpar) & ~FPAR_LP_MS);
-+
-+		for (i = 1; i < priv->page_size; i++) {
-+			fsl_elbc_run_command(mtd);
-+			if (column < (64 * (i + 1)))
-+				io_to_buffer(mtd, i, 1);
-+		}
-+
+ 		out_be32(&lbc->fir, (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		                    (FIR_OP_UA  << FIR_OP1_SHIFT) |
+-		                    (FIR_OP_RBW << FIR_OP2_SHIFT));
++				    (FIR_OP_UA  << FIR_OP1_SHIFT) |
++				    (FIR_OP_RBW << FIR_OP2_SHIFT));
+ 		out_be32(&lbc->fcr, NAND_CMD_READID << FCR_CMD0_SHIFT);
+ 		/* nand_get_flash_type() reads 8 bytes of entire ID string */
+ 		out_be32(&lbc->fbcr, 8);
+@@ -370,8 +370,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	/* ERASE1 stores the block and page address */
+ 	case NAND_CMD_ERASE1:
+ 		dev_vdbg(priv->dev,
+-		         "fsl_elbc_cmdfunc: NAND_CMD_ERASE1, "
+-		         "page_addr: 0x%x.\n", page_addr);
++			 "fsl_elbc_cmdfunc: NAND_CMD_ERASE1, "
++			 "page_addr: 0x%x.\n", page_addr);
+ 		set_addr(mtd, 0, page_addr, 0);
  		return;
  
- 	/* READID must read all 5 possible bytes while CEB is active */
-@@ -421,7 +504,14 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		      (NAND_CMD_SEQIN    << FCR_CMD2_SHIFT) |
- 		      (NAND_CMD_PAGEPROG << FCR_CMD3_SHIFT);
+@@ -380,16 +380,16 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD_ERASE2.\n");
  
--		if (priv->page_size) {
-+		if (priv->page_size > 1) {
-+			/* writesize > 2048 */
-+			out_be32(&lbc->fir,
+ 		out_be32(&lbc->fir,
+-		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		         (FIR_OP_PA  << FIR_OP1_SHIFT) |
+-		         (FIR_OP_CM2 << FIR_OP2_SHIFT) |
+-		         (FIR_OP_CW1 << FIR_OP3_SHIFT) |
+-		         (FIR_OP_RS  << FIR_OP4_SHIFT));
++			 (FIR_OP_CM0 << FIR_OP0_SHIFT) |
++			 (FIR_OP_PA  << FIR_OP1_SHIFT) |
++			 (FIR_OP_CM2 << FIR_OP2_SHIFT) |
++			 (FIR_OP_CW1 << FIR_OP3_SHIFT) |
++			 (FIR_OP_RS  << FIR_OP4_SHIFT));
+ 
+ 		out_be32(&lbc->fcr,
+-		         (NAND_CMD_ERASE1 << FCR_CMD0_SHIFT) |
+-		         (NAND_CMD_STATUS << FCR_CMD1_SHIFT) |
+-		         (NAND_CMD_ERASE2 << FCR_CMD2_SHIFT));
++			 (NAND_CMD_ERASE1 << FCR_CMD0_SHIFT) |
++			 (NAND_CMD_STATUS << FCR_CMD1_SHIFT) |
++			 (NAND_CMD_ERASE2 << FCR_CMD2_SHIFT));
+ 
+ 		out_be32(&lbc->fbcr, 0);
+ 		elbc_fcm_ctrl->read_bytes = 0;
+@@ -403,8 +403,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		__be32 fcr;
+ 		dev_vdbg(priv->dev,
+ 			 "fsl_elbc_cmdfunc: NAND_CMD_SEQIN/PAGE_PROG, "
+-		         "page_addr: 0x%x, column: 0x%x.\n",
+-		         page_addr, column);
++			 "page_addr: 0x%x, column: 0x%x.\n",
++			 page_addr, column);
+ 
+ 		elbc_fcm_ctrl->column = column;
+ 		elbc_fcm_ctrl->oob = 0;
+@@ -416,23 +416,23 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 
+ 		if (priv->page_size) {
+ 			out_be32(&lbc->fir,
+-			         (FIR_OP_CM2 << FIR_OP0_SHIFT) |
+-			         (FIR_OP_CA  << FIR_OP1_SHIFT) |
+-			         (FIR_OP_PA  << FIR_OP2_SHIFT) |
+-			         (FIR_OP_WB  << FIR_OP3_SHIFT) |
+-			         (FIR_OP_CM3 << FIR_OP4_SHIFT) |
+-			         (FIR_OP_CW1 << FIR_OP5_SHIFT) |
+-			         (FIR_OP_RS  << FIR_OP6_SHIFT));
 +				 (FIR_OP_CM2 << FIR_OP0_SHIFT) |
 +				 (FIR_OP_CA  << FIR_OP1_SHIFT) |
 +				 (FIR_OP_PA  << FIR_OP2_SHIFT) |
-+				 (FIR_OP_WB  << FIR_OP3_SHIFT));
-+		} else if (priv->page_size) {
++				 (FIR_OP_WB  << FIR_OP3_SHIFT) |
++				 (FIR_OP_CM3 << FIR_OP4_SHIFT) |
++				 (FIR_OP_CW1 << FIR_OP5_SHIFT) |
++				 (FIR_OP_RS  << FIR_OP6_SHIFT));
+ 		} else {
  			out_be32(&lbc->fir,
- 				 (FIR_OP_CM2 << FIR_OP0_SHIFT) |
- 				 (FIR_OP_CA  << FIR_OP1_SHIFT) |
-@@ -454,27 +544,76 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		}
+-			         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-			         (FIR_OP_CM2 << FIR_OP1_SHIFT) |
+-			         (FIR_OP_CA  << FIR_OP2_SHIFT) |
+-			         (FIR_OP_PA  << FIR_OP3_SHIFT) |
+-			         (FIR_OP_WB  << FIR_OP4_SHIFT) |
+-			         (FIR_OP_CM3 << FIR_OP5_SHIFT) |
+-			         (FIR_OP_CW1 << FIR_OP6_SHIFT) |
+-			         (FIR_OP_RS  << FIR_OP7_SHIFT));
++				 (FIR_OP_CM0 << FIR_OP0_SHIFT) |
++				 (FIR_OP_CM2 << FIR_OP1_SHIFT) |
++				 (FIR_OP_CA  << FIR_OP2_SHIFT) |
++				 (FIR_OP_PA  << FIR_OP3_SHIFT) |
++				 (FIR_OP_WB  << FIR_OP4_SHIFT) |
++				 (FIR_OP_CM3 << FIR_OP5_SHIFT) |
++				 (FIR_OP_CW1 << FIR_OP6_SHIFT) |
++				 (FIR_OP_RS  << FIR_OP7_SHIFT));
  
- 		out_be32(&lbc->fcr, fcr);
--		set_addr(mtd, column, page_addr, elbc_fcm_ctrl->oob);
-+		if (column >= mtd->writesize && priv->page_size > 1) {
-+			/* write oob && writesize > 2048 */
-+			set_addr(mtd, 0, page_addr, 0);
-+			elbc_fcm_ctrl->index = column;
-+		} else {
-+			set_addr(mtd, column, page_addr, elbc_fcm_ctrl->oob);
-+		}
-+
- 		return;
- 	}
- 
+ 			if (column >= mtd->writesize) {
+ 				/* OOB area --> READOOB */
+@@ -454,7 +454,7 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
  	/* PAGEPROG reuses all of the setup from SEQIN and adds the length */
  	case NAND_CMD_PAGEPROG: {
-+		int len;
  		dev_vdbg(priv->dev,
- 			 "fsl_elbc_cmdfunc: NAND_CMD_PAGEPROG "
+-		         "fsl_elbc_cmdfunc: NAND_CMD_PAGEPROG "
++			 "fsl_elbc_cmdfunc: NAND_CMD_PAGEPROG "
  			 "writing %d bytes.\n", elbc_fcm_ctrl->index);
--
+ 
  		/* if the write did not start at 0 or is not a full page
- 		 * then set the exact length, otherwise use a full page
- 		 * write so the HW generates the ECC.
- 		 */
--		if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column != 0 ||
-+		if (elbc_fcm_ctrl->column >= mtd->writesize) {
-+			/* write oob */
-+			if (priv->page_size > 1) {
-+				/* when pagesize of chip is greater than 2048,
-+				 * we have to write full page to write spare
-+				 * region, so we fill '0xff' to main region
-+				 * and some bytes of spare region which we
-+				 * don't want to rewrite.
-+				 * (write '1' won't change the original value)
-+				 */
-+				memset(elbc_fcm_ctrl->buffer, 0xff,
-+						elbc_fcm_ctrl->column);
-+				len = 2112;
-+			} else
-+				len = mtd->writesize + mtd->oobsize -
-+					elbc_fcm_ctrl->column;
-+			out_be32(&lbc->fbcr, len);
-+		} else if (elbc_fcm_ctrl->column != 0 ||
- 		    elbc_fcm_ctrl->index != mtd->writesize + mtd->oobsize)
- 			out_be32(&lbc->fbcr, elbc_fcm_ctrl->index);
- 		else
- 			out_be32(&lbc->fbcr, 0);
+@@ -475,8 +475,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	/* Note - it does not wait for the ready line */
+ 	case NAND_CMD_STATUS:
+ 		out_be32(&lbc->fir,
+-		         (FIR_OP_CM0 << FIR_OP0_SHIFT) |
+-		         (FIR_OP_RBW << FIR_OP1_SHIFT));
++			 (FIR_OP_CM0 << FIR_OP0_SHIFT) |
++			 (FIR_OP_RBW << FIR_OP1_SHIFT));
+ 		out_be32(&lbc->fcr, NAND_CMD_STATUS << FCR_CMD0_SHIFT);
+ 		out_be32(&lbc->fbcr, 1);
+ 		set_addr(mtd, 0, 0, 0);
+@@ -500,8 +500,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
  
-+		if (priv->page_size > 1) {
-+			buffer_to_io(mtd, 0, 0);
-+			buffer_to_io(mtd, 0, 1);
-+		}
-+
- 		fsl_elbc_run_command(mtd);
-+
-+		if (priv->page_size <= 1)
-+			return;
-+
-+		out_be32(&lbc->fir, FIR_OP_WB << FIR_OP1_SHIFT);
-+		for (i = 1; i < priv->page_size; i++) {
-+			elbc_fcm_ctrl->use_mdr = 1;
-+			/* For the last subpage */
-+			if (i == priv->page_size - 1)
-+				out_be32(&lbc->fir,
-+					(FIR_OP_WB  << FIR_OP1_SHIFT) |
-+					(FIR_OP_CM3 << FIR_OP2_SHIFT) |
-+					(FIR_OP_CW1 << FIR_OP3_SHIFT) |
-+					(FIR_OP_RS  << FIR_OP4_SHIFT));
-+
-+			buffer_to_io(mtd, i, 0);
-+			buffer_to_io(mtd, i, 1);
-+			fsl_elbc_run_command(mtd);
-+		}
-+
- 		return;
+ 	default:
+ 		dev_err(priv->dev,
+-		        "fsl_elbc_cmdfunc: error, unsupported command 0x%x.\n",
+-		        command);
++			"fsl_elbc_cmdfunc: error, unsupported command 0x%x.\n",
++			command);
  	}
+ }
  
-@@ -543,7 +682,14 @@ static void fsl_elbc_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+@@ -530,8 +530,8 @@ static void fsl_elbc_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+ 
+ 	if ((unsigned int)len > bufsize - elbc_fcm_ctrl->index) {
+ 		dev_err(priv->dev,
+-		        "write_buf beyond end of buffer "
+-		        "(%d requested, %u available)\n",
++			"write_buf beyond end of buffer "
++			"(%d requested, %u available)\n",
+ 			len, bufsize - elbc_fcm_ctrl->index);
  		len = bufsize - elbc_fcm_ctrl->index;
  	}
- 
--	memcpy_toio(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index], buf, len);
-+	if (mtd->writesize > 2048)
-+		memcpy(&elbc_fcm_ctrl->buffer[elbc_fcm_ctrl->index],
-+				buf, len);
-+	else {
-+		memcpy_toio(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index],
-+				buf, len);
-+	}
-+
- 	/*
- 	 * This is workaround for the weird elbc hangs during nand write,
- 	 * Scott Wood says: "...perhaps difference in how long it takes a
-@@ -589,7 +735,12 @@ static void fsl_elbc_read_buf(struct mtd_info *mtd, u8 *buf, int len)
- 
- 	avail = min((unsigned int)len,
- 			elbc_fcm_ctrl->read_bytes - elbc_fcm_ctrl->index);
--	memcpy_fromio(buf, &elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index], avail);
-+	if (mtd->writesize > 2048)
-+		memcpy(buf, &elbc_fcm_ctrl->buffer[elbc_fcm_ctrl->index],
-+				avail);
-+	else
-+		memcpy_fromio(buf, &elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index],
-+				avail);
- 	elbc_fcm_ctrl->index += avail;
+@@ -587,9 +587,9 @@ static void fsl_elbc_read_buf(struct mtd_info *mtd, u8 *buf, int len)
  
  	if (len > avail)
-@@ -625,10 +776,16 @@ static int fsl_elbc_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
- 		return -EINVAL;
- 	}
+ 		dev_err(priv->dev,
+-		        "read_buf beyond end of buffer "
+-		        "(%d requested, %d available)\n",
+-		        len, avail);
++			"read_buf beyond end of buffer "
++			"(%d requested, %d available)\n",
++			len, avail);
+ }
  
--	for (i = 0; i < len; i++)
--		if (in_8(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index + i])
--				!= buf[i])
--			break;
-+	if (mtd->writesize > 2048)
-+		for (i = 0; i < len; i++)
-+			if (elbc_fcm_ctrl->buffer[elbc_fcm_ctrl->index + i]
-+					!= buf[i])
-+				break;
-+	else
-+		for (i = 0; i < len; i++)
-+			if (in_8(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index + i])
-+					!= buf[i])
-+				break;
+ /*
+@@ -661,44 +661,44 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
  
- 	elbc_fcm_ctrl->index += len;
- 	return i == len && elbc_fcm_ctrl->status == LTESR_CC ? 0 : -EIO;
-@@ -657,6 +814,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 	struct fsl_elbc_mtd *priv = chip->priv;
- 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
-+	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
- 	unsigned int al;
+ 	/* add to ECCM mode set in fsl_elbc_init */
+ 	priv->fmr |= (12 << FMR_CWTO_SHIFT) |  /* Timeout > 12 ms */
+-	             (al << FMR_AL_SHIFT);
++		     (al << FMR_AL_SHIFT);
  
- 	/* calculate FMR Address Length field */
-@@ -707,12 +865,17 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->numchips = %d\n",
+-	        chip->numchips);
++		chip->numchips);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->chipsize = %lld\n",
+-	        chip->chipsize);
++		chip->chipsize);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->pagemask = %8x\n",
+-	        chip->pagemask);
++		chip->pagemask);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->chip_delay = %d\n",
+-	        chip->chip_delay);
++		chip->chip_delay);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->badblockpos = %d\n",
+-	        chip->badblockpos);
++		chip->badblockpos);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->chip_shift = %d\n",
+-	        chip->chip_shift);
++		chip->chip_shift);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->page_shift = %d\n",
+-	        chip->page_shift);
++		chip->page_shift);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->phys_erase_shift = %d\n",
+-	        chip->phys_erase_shift);
++		chip->phys_erase_shift);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecclayout = %p\n",
+-	        chip->ecclayout);
++		chip->ecclayout);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.mode = %d\n",
+-	        chip->ecc.mode);
++		chip->ecc.mode);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.steps = %d\n",
+-	        chip->ecc.steps);
++		chip->ecc.steps);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.bytes = %d\n",
+-	        chip->ecc.bytes);
++		chip->ecc.bytes);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.total = %d\n",
+-	        chip->ecc.total);
++		chip->ecc.total);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.layout = %p\n",
+-	        chip->ecc.layout);
++		chip->ecc.layout);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: mtd->flags = %08x\n", mtd->flags);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: mtd->size = %lld\n", mtd->size);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: mtd->erasesize = %d\n",
+-	        mtd->erasesize);
++		mtd->erasesize);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: mtd->writesize = %d\n",
+-	        mtd->writesize);
++		mtd->writesize);
  	dev_dbg(priv->dev, "fsl_elbc_init: mtd->oobsize = %d\n",
- 		mtd->oobsize);
+-	        mtd->oobsize);
++		mtd->oobsize);
  
-+	kfree(elbc_fcm_ctrl->buffer);
-+	elbc_fcm_ctrl->buffer = NULL;
-+
  	/* adjust Option Register and ECC to match Flash page size */
  	if (mtd->writesize == 512) {
- 		priv->page_size = 0;
- 		clrbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
--	} else if (mtd->writesize == 2048) {
--		priv->page_size = 1;
-+	} else if (mtd->writesize >= 2048) {
-+		/* page_size = writesize / 2048 */
-+		priv->page_size = mtd->writesize >> 11;
-+
- 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
- 		/* adjust ecc setup if needed */
- 		if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
-@@ -723,6 +886,14 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 					   &fsl_elbc_oob_lp_eccm0;
+@@ -712,14 +712,14 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 		    BR_DECC_CHK_GEN) {
+ 			chip->ecc.size = 512;
+ 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+-			                   &fsl_elbc_oob_lp_eccm1 :
+-			                   &fsl_elbc_oob_lp_eccm0;
++					   &fsl_elbc_oob_lp_eccm1 :
++					   &fsl_elbc_oob_lp_eccm0;
  			chip->badblock_pattern = &largepage_memorybased;
  		}
-+
-+		/* re-malloc if pagesize > 2048*/
-+		if (mtd->writesize > 2048) {
-+			elbc_fcm_ctrl->buffer = kmalloc(mtd->writesize +
-+						    mtd->oobsize, GFP_KERNEL);
-+			if (!elbc_fcm_ctrl->buffer)
-+				return -ENOMEM;
-+		}
  	} else {
  		dev_err(priv->dev,
- 			"fsl_elbc_init: page size %d is not supported\n",
-@@ -886,6 +1057,17 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 			goto err;
- 		}
- 		elbc_fcm_ctrl->counter++;
-+		/*
-+		 * Freescale FCM controller has a 2K size limitation of buffer
-+		 * RAM, so elbc_fcm_ctrl->buffer have to be used if writesize
-+		 * of chip is greater than 2048.
-+		 * We malloc a large enough buffer at this point, because we
-+		 * don't know writesize before calling nand_scan(). We will
-+		 * re-malloc later if needed.
-+		 */
-+		elbc_fcm_ctrl->buffer = kmalloc(4096 * 6, GFP_KERNEL);
-+		if (!elbc_fcm_ctrl->buffer)
-+			return -ENOMEM;
+-		        "fsl_elbc_init: page size %d is not supported\n",
+-		        mtd->writesize);
++			"fsl_elbc_init: page size %d is not supported\n",
++			mtd->writesize);
+ 		return -1;
+ 	}
  
- 		spin_lock_init(&elbc_fcm_ctrl->controller.lock);
- 		init_waitqueue_head(&elbc_fcm_ctrl->controller.wq);
+@@ -727,9 +727,9 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ }
+ 
+ static int fsl_elbc_read_page(struct mtd_info *mtd,
+-                              struct nand_chip *chip,
+-			      uint8_t *buf,
+-			      int page)
++				struct nand_chip *chip,
++				uint8_t *buf,
++				int page)
+ {
+ 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
+ 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+@@ -744,8 +744,8 @@ static int fsl_elbc_read_page(struct mtd_info *mtd,
+  * waitfunc.
+  */
+ static void fsl_elbc_write_page(struct mtd_info *mtd,
+-                                struct nand_chip *chip,
+-                                const uint8_t *buf)
++				 struct nand_chip *chip,
++				 const uint8_t *buf)
+ {
+ 	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
+ 	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
 -- 
 1.7.1
