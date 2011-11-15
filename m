@@ -1,21 +1,12 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RQFPJ-0000hg-LW
- for linux-mtd@lists.infradead.org; Tue, 15 Nov 2011 09:34:22 +0000
-Received: by wwe32 with SMTP id 32so3326161wwe.18
- for <linux-mtd@lists.infradead.org>; Tue, 15 Nov 2011 01:34:19 -0800 (PST)
-Date: Tue, 15 Nov 2011 09:34:16 +0000
-From: Jamie Iles <jamie@jamieiles.com>
-To: Kassey Lee <kassey1216@gmail.com>
-Subject: Re: non-pci version driver for denali NAND flash controller
-Message-ID: <20111115093416.GA5954@totoro>
-References: <CAKwPUox5fkNn-goKN=aAsJMa4KKLgr28MGWXNjG107SsDzeL-Q@mail.gmail.com>
+From: Shubhrajyoti D <shubhrajyoti@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MTD: nand: Making  MTD_NAND_OMAP2 depend on ARCH_OMAP2PLUS
+Date: Tue, 15 Nov 2011 15:52:36 +0530
+Message-ID: <1321352556-7080-1-git-send-email-shubhrajyoti@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwPUox5fkNn-goKN=aAsJMa4KKLgr28MGWXNjG107SsDzeL-Q@mail.gmail.com>
-Cc: jamie@jamieiles.com, linux-mtd@lists.infradead.org,
- david.woodhouse@intel.com, yingang.li@intel.com, chuanxiao.dong@intel.com
+Content-Type: text/plain
+Cc: linux-omap@vger.kernel.org, Shubhrajyoti D <shubhrajyoti@ti.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +16,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kassey,
+Making  MTD_NAND_OMAP2 depend on ARCH_OMAP2PLUS instead of
+oring with ARCH2/3/4.
 
-On Tue, Nov 15, 2011 at 03:30:07PM +0800, Kassey Lee wrote:
-> hi, David, Jamie:
-> 
->      I found there is a PCI-VERSION denali NAND flash controller
-> drivers/mtd/nand/denali.c.
->      is there any activities to add the support for NON-PCI version on ARM SoC ?
->      If no, I would like to add the NON-PCI version driver for Denali
-> to have a try , which way is preferred and accepted by you?
-> 
->     1) add  CONFIG_PCI  in denali.c
->     2) add a denali_pci.c to separate the common code.
+Reported-by: Russell King <linux@arm.linux.org.uk>
+Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
+---
+ drivers/mtd/nand/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-I did attempt this a while back and have some patches in 
-git://github.com/jamieiles/linux-2.6-ji.git (pc30xx branch) but David 
-suggested that supporting device tree only 
-(http://article.gmane.org/gmane.linux.drivers.mtd/35101) would be a 
-better option and that makes sense to me.
-
-Jamie
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index cce7b70..b68dd5e 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -110,7 +110,7 @@ config MTD_NAND_AMS_DELTA
+ 
+ config MTD_NAND_OMAP2
+ 	tristate "NAND Flash device on OMAP2, OMAP3 and OMAP4"
+-	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3 || ARCH_OMAP4)
++	depends on ARCH_OMAP2PLUS
+ 	help
+           Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
+ 	  platforms.
+-- 
+1.7.1
