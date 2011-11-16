@@ -1,16 +1,17 @@
-Message-ID: <4EC347E3.9080806@ti.com>
-Date: Wed, 16 Nov 2011 10:49:31 +0530
-From: Shubhrajyoti <shubhrajyoti@ti.com>
+Received: from imr-ma03.mx.aol.com ([64.12.206.41])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RQYO6-00080X-Rh
+ for linux-mtd@lists.infradead.org; Wed, 16 Nov 2011 05:50:28 +0000
+To: linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
+ majordomo@vger.kernel.org, netfilter@vger.kernel.org,
+ oprofile-list@lists.sourceforge.net, patthurston@kgoradio.com
+Content-Transfer-Encoding: quoted-printable
+Subject: Fwd: 
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] MTD: nand: Making MTD_NAND_OMAP2 depend on ARCH_OMAP2PLUS
-References: <1321352556-7080-1-git-send-email-shubhrajyoti@ti.com>
- <20111115175220.GA11274@n2100.arm.linux.org.uk>
-In-Reply-To: <20111115175220.GA11274@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+From: jobhunts02@aol.com
+Content-Type: text/plain; charset="us-ascii"
+Message-Id: <8CE723ABD7B3EA5-2990-A608E@webmail-m137.sysops.aol.com>
+Date: Wed, 16 Nov 2011 00:50:11 -0500 (EST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +21,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 15 November 2011 11:22 PM, Russell King - ARM Linux wrote:
-> On Tue, Nov 15, 2011 at 03:52:36PM +0530, Shubhrajyoti D wrote:
->> Making  MTD_NAND_OMAP2 depend on ARCH_OMAP2PLUS instead of
->> oring with ARCH2/3/4.
->>
->> Reported-by: Russell King <linux@arm.linux.org.uk>
-> Thanks, but please make this rmk+kernel@arm.linux.org.uk.
-yes , will correct it.
->> Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
->> ---
->>  drivers/mtd/nand/Kconfig |    2 +-
->>  1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index cce7b70..b68dd5e 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -110,7 +110,7 @@ config MTD_NAND_AMS_DELTA
->>  
->>  config MTD_NAND_OMAP2
->>  	tristate "NAND Flash device on OMAP2, OMAP3 and OMAP4"
->> -	depends on ARM && (ARCH_OMAP2 || ARCH_OMAP3 || ARCH_OMAP4)
->> +	depends on ARCH_OMAP2PLUS
->>  	help
->>            Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
->>  	  platforms.
->> -- 
->> 1.7.1
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+http://nitwarangal.net/best2012.php?id=3D24&top=3D22&page=3D34
