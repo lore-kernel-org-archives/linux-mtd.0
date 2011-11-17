@@ -1,17 +1,17 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RQuiX-0000SR-1U
- for linux-mtd@lists.infradead.org; Thu, 17 Nov 2011 05:40:57 +0000
-Received: by bkat2 with SMTP id t2so1970880bka.36
- for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2011 21:40:52 -0800 (PST)
+ id 1RQujh-0000UD-OZ
+ for linux-mtd@lists.infradead.org; Thu, 17 Nov 2011 05:42:10 +0000
+Received: by bkat2 with SMTP id t2so1972030bka.36
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2011 21:42:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1321473837-27891-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1321473837-27891-3-git-send-email-computersforpeace@gmail.com>
 References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
- <1321473837-27891-2-git-send-email-computersforpeace@gmail.com>
+ <1321473837-27891-3-git-send-email-computersforpeace@gmail.com>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 17 Nov 2011 00:40:31 -0500
-Message-ID: <CAMjpGUcPZKyfYj3YVMQMbREkO7mbm90XRuDYewNzrnS4fvCoTw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd-utils: add jffs2reader to .gitignore
+Date: Thu, 17 Nov 2011 00:41:46 -0500
+Message-ID: <CAMjpGUe4S_61Yy3dy_1tR9FafD9Xd8JU7bo-cDTRejnqKuY04A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtdinfo: provide info when used without arguments
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
