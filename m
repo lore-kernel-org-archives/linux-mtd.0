@@ -1,13 +1,13 @@
 Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RRmSA-0007E5-AG
- for linux-mtd@lists.infradead.org; Sat, 19 Nov 2011 15:03:40 +0000
+ id 1RRmSE-0007FX-EB
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2011 15:03:44 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: dwmw2@infradead.org,
 	dedekind1@gmail.com
-Subject: [PATCH v3 05/16] mtd/docg3: fix reading oob+data without correction
-Date: Sat, 19 Nov 2011 16:02:47 +0100
-Message-Id: <1321714978-24543-6-git-send-email-robert.jarzmik@free.fr>
+Subject: [PATCH v3 06/16] mtd/docg3: add multiple floor support
+Date: Sat, 19 Nov 2011 16:02:48 +0100
+Message-Id: <1321714978-24543-7-git-send-email-robert.jarzmik@free.fr>
 In-Reply-To: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
 References: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
@@ -21,301 +21,276 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix the docg3 reads to be able to cope with all possible
-data buffer / oob buffer / file mode combinations from
-docg3_read_oob().
-This especially ensures that raw reads do not use ECC
-corrections, and AUTOOOB and PLACEOOB do use ECC
-correction.
+Add support for multiple floors, ie. cascaded docg3
+chips. There might be 4 docg3 chips cascaded, sharing the
+same address space, and providing up to 4 times the storage
+capacity of a unique chip.
 
-The approach is to empty docg3_read() and make it a wrapper
-to docg3_read_oob(). As docg3_read_oob() handles all the
-funny cases (no data buffer but oob buffer, data buffer but
-no oob buffer, ...), docg3_read() is just a special use of
-docg3_read_oob().
+Each floor will be seen as an independant mtd device.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/devices/docg3.c |  194 +++++++++++++++++++++----------------------
- 1 files changed, 95 insertions(+), 99 deletions(-)
+ drivers/mtd/devices/docg3.c |  181 +++++++++++++++++++++++++++++-------------
+ drivers/mtd/devices/docg3.h |    1 +
+ 2 files changed, 126 insertions(+), 56 deletions(-)
 
 diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 5834e6e..1c2f54d 100644
+index 1c2f54d..6eca7f6 100644
 --- a/drivers/mtd/devices/docg3.c
 +++ b/drivers/mtd/devices/docg3.c
-@@ -196,8 +196,8 @@ static int doc_reset_seq(struct docg3 *docg3)
- /**
-  * doc_read_data_area - Read data from data area
-  * @docg3: the device
-- * @buf: the buffer to fill in
-- * @len: the lenght to read
-+ * @buf: the buffer to fill in (might be NULL is dummy reads)
-+ * @len: the length to read
-  * @first: first time read, DOC_READADDRESS should be set
-  *
-  * Reads bytes from flash data. Handles the single byte / even bytes reads.
-@@ -218,8 +218,10 @@ static void doc_read_data_area(struct docg3 *docg3, void *buf, int len,
- 	dst16 = buf;
- 	for (i = 0; i < len4; i += 2) {
- 		data16 = doc_readw(docg3, DOC_IOSPACE_DATA);
--		*dst16 = data16;
--		dst16++;
-+		if (dst16) {
-+			*dst16 = data16;
-+			dst16++;
-+		}
- 	}
+@@ -948,7 +948,8 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
  
- 	if (cdr) {
-@@ -229,8 +231,10 @@ static void doc_read_data_area(struct docg3 *docg3, void *buf, int len,
- 		dst8 = (u8 *)dst16;
- 		for (i = 0; i < cdr; i++) {
- 			data8 = doc_readb(docg3, DOC_IOSPACE_DATA);
--			*dst8 = data8;
--			dst8++;
-+			if (dst8) {
-+				*dst8 = data8;
-+				dst8++;
-+			}
- 		}
+ 	switch (chip_id) {
+ 	case DOC_CHIPID_G3:
+-		mtd->name = "DiskOnChip G3";
++		mtd->name = kasprintf(GFP_KERNEL, "DiskOnChip G3 floor %d",
++				      docg3->device_id);
+ 		docg3->max_block = 2047;
+ 		break;
  	}
- }
-@@ -542,96 +546,109 @@ static void calc_block_sector(loff_t from, int *block0, int *block1, int *page,
+@@ -975,22 +976,24 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
  }
  
  /**
-- * doc_read - Read bytes from flash
-+ * doc_read_oob - Read out of band bytes from flash
-  * @mtd: the device
-  * @from: the offset from first block and first page, in bytes, aligned on page
-  *        size
-- * @len: the number of bytes to read (must be a multiple of 4)
-- * @retlen: the number of bytes actually read
-- * @buf: the filled in buffer
-+ * @ops: the mtd oob structure
+- * doc_probe - Probe the IO space for a DiskOnChip G3 chip
+- * @pdev: platform device
++ * doc_probe_device - Check if a device is available
++ * @base: the io space where the device is probed
++ * @floor: the floor of the probed device
++ * @dev: the device
   *
-- * Reads flash memory pages. This function does not read the OOB chunk, but only
-- * the page data.
-+ * Reads flash memory OOB area of pages.
+- * Probes for a G3 chip at the specified IO space in the platform data
+- * ressources.
++ * Checks whether a device at the specified IO range, and floor is available.
   *
-  * Returns 0 if read successfull, of -EIO, -EINVAL if an error occured
+- * Returns 0 on success, -ENOMEM, -ENXIO on error
++ * Returns a mtd_info struct if there is a device, ENODEV if none found, ENOMEM
++ * if a memory allocation failed. If floor 0 is checked, a reset of the ASIC is
++ * launched.
   */
--static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
--	     size_t *retlen, u_char *buf)
-+static int doc_read_oob(struct mtd_info *mtd, loff_t from,
-+			struct mtd_oob_ops *ops)
+-static int __init docg3_probe(struct platform_device *pdev)
++static struct mtd_info *doc_probe_device(void __iomem *base, int floor,
++					 struct device *dev)
  {
- 	struct docg3 *docg3 = mtd->priv;
--	int block0, block1, page, readlen, ret, ofs = 0;
--	int syn[DOC_ECC_BCH_SIZE], eccconf1;
--	u8 oob[DOC_LAYOUT_OOB_SIZE];
-+	int block0, block1, page, ret, ofs = 0;
-+	u8 *oobbuf = ops->oobbuf;
-+	u8 *buf = ops->datbuf;
-+	size_t len, ooblen, nbdata, nboob;
-+	u8 calc_ecc[DOC_ECC_BCH_SIZE], eccconf1;
-+
-+	if (buf)
-+		len = ops->len;
-+	else
-+		len = 0;
-+	if (oobbuf)
-+		ooblen = ops->ooblen;
-+	else
-+		ooblen = 0;
-+
-+	if (oobbuf && ops->mode == MTD_OPS_PLACE_OOB)
-+		oobbuf += ops->ooboffs;
-+
-+	doc_dbg("doc_read_oob(from=%lld, mode=%d, data=(%p:%zu), oob=(%p:%zu))\n",
-+		from, ops->mode, buf, len, oobbuf, ooblen);
-+	if ((len % DOC_LAYOUT_PAGE_SIZE) || (ooblen % DOC_LAYOUT_OOB_SIZE) ||
-+	    (from % DOC_LAYOUT_PAGE_SIZE))
-+		return -EINVAL;
+-	struct device *dev = &pdev->dev;
+-	struct docg3 *docg3;
+-	struct mtd_info *mtd;
+-	struct resource *ress;
+ 	int ret, bbt_nbpages;
+ 	u16 chip_id, chip_id_inv;
++	struct docg3 *docg3;
++	struct mtd_info *mtd;
  
- 	ret = -EINVAL;
--	doc_dbg("doc_read(from=%lld, len=%zu, buf=%p)\n", from, len, buf);
--	if (from % DOC_LAYOUT_PAGE_SIZE)
--		goto err;
--	if (len % 4)
--		goto err;
--	calc_block_sector(from, &block0, &block1, &page, &ofs);
-+	calc_block_sector(from + len, &block0, &block1, &page, &ofs);
- 	if (block1 > docg3->max_block)
- 		goto err;
+ 	ret = -ENOMEM;
+ 	docg3 = kzalloc(sizeof(struct docg3), GFP_KERNEL);
+@@ -1000,69 +1003,132 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 	if (!mtd)
+ 		goto nomem2;
+ 	mtd->priv = docg3;
++	bbt_nbpages = DIV_ROUND_UP(docg3->max_block + 1,
++				   8 * DOC_LAYOUT_PAGE_SIZE);
++	docg3->bbt = kzalloc(bbt_nbpages * DOC_LAYOUT_PAGE_SIZE, GFP_KERNEL);
++	if (!docg3->bbt)
++		goto nomem3;
  
--	*retlen = 0;
-+	ops->oobretlen = 0;
-+	ops->retlen = 0;
- 	ret = 0;
--	readlen = min_t(size_t, len, (size_t)DOC_LAYOUT_PAGE_SIZE);
--	while (!ret && len > 0) {
--		readlen = min_t(size_t, len, (size_t)DOC_LAYOUT_PAGE_SIZE);
-+	while (!ret && (len > 0 || ooblen > 0)) {
-+		calc_block_sector(from, &block0, &block1, &page, &ofs);
-+		nbdata = min_t(size_t, len, (size_t)DOC_LAYOUT_PAGE_SIZE);
-+		nboob = min_t(size_t, ooblen, (size_t)DOC_LAYOUT_OOB_SIZE);
- 		ret = doc_read_page_prepare(docg3, block0, block1, page, ofs);
- 		if (ret < 0)
- 			goto err;
- 		ret = doc_read_page_ecc_init(docg3, DOC_ECC_BCH_COVERED_BYTES);
- 		if (ret < 0)
- 			goto err_in_read;
--		ret = doc_read_page_getbytes(docg3, readlen, buf, 1);
--		if (ret < readlen)
-+		ret = doc_read_page_getbytes(docg3, nbdata, buf, 1);
-+		if (ret < nbdata)
- 			goto err_in_read;
--		ret = doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE,
--					     oob, 0);
--		if (ret < DOC_LAYOUT_OOB_SIZE)
-+		doc_read_page_getbytes(docg3, DOC_LAYOUT_PAGE_SIZE - nbdata,
-+				       NULL, 0);
-+		ret = doc_read_page_getbytes(docg3, nboob, oobbuf, 0);
-+		if (ret < nboob)
- 			goto err_in_read;
-+		doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE - nboob,
-+				       NULL, 0);
- 
--		*retlen += readlen;
--		buf += readlen;
--		len -= readlen;
--
--		ofs ^= DOC_LAYOUT_PAGE_OOB_SIZE;
--		if (ofs == 0)
--			page += 2;
--		if (page > DOC_ADDR_PAGE_MASK) {
--			page = 0;
--			block0 += 2;
--			block1 += 2;
--		}
--
--		/*
--		 * There should be a BCH bitstream fixing algorithm here ...
--		 * By now, a page read failure is triggered by BCH error
--		 */
--		doc_get_hw_bch_syndroms(docg3, syn);
-+		doc_get_hw_bch_syndroms(docg3, calc_ecc);
- 		eccconf1 = doc_register_readb(docg3, DOC_ECCCONF1);
- 
--		doc_dbg("OOB - INFO: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
--			 oob[0], oob[1], oob[2], oob[3], oob[4],
--			 oob[5], oob[6]);
--		doc_dbg("OOB - HAMMING: %02x\n", oob[7]);
--		doc_dbg("OOB - BCH_ECC: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
--			 oob[8], oob[9], oob[10], oob[11], oob[12],
--			 oob[13], oob[14]);
--		doc_dbg("OOB - UNUSED: %02x\n", oob[15]);
-+		if (nboob >= DOC_LAYOUT_OOB_SIZE) {
-+			doc_dbg("OOB - INFO: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
-+				oobbuf[0], oobbuf[1], oobbuf[2], oobbuf[3],
-+				oobbuf[4], oobbuf[5], oobbuf[6]);
-+			doc_dbg("OOB - HAMMING: %02x\n", oobbuf[7]);
-+			doc_dbg("OOB - BCH_ECC: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
-+				oobbuf[8], oobbuf[9], oobbuf[10], oobbuf[11],
-+				oobbuf[12], oobbuf[13], oobbuf[14]);
-+			doc_dbg("OOB - UNUSED: %02x\n", oobbuf[15]);
-+		}
- 		doc_dbg("ECC checks: ECCConf1=%x\n", eccconf1);
--		doc_dbg("ECC BCH syndrom: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
--			syn[0], syn[1], syn[2], syn[3], syn[4], syn[5], syn[6]);
-+		doc_dbg("ECC CALC_ECC: %02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
-+			calc_ecc[0], calc_ecc[1], calc_ecc[2],
-+			calc_ecc[3], calc_ecc[4], calc_ecc[5],
-+			calc_ecc[6]);
- 
- 		ret = -EBADMSG;
- 		if (block0 >= DOC_LAYOUT_BLOCK_FIRST_DATA) {
--			if (eccconf1 & DOC_ECCCONF1_BCH_SYNDROM_ERR)
-+			if ((eccconf1 & DOC_ECCCONF1_BCH_SYNDROM_ERR) &&
-+			    (eccconf1 & DOC_ECCCONF1_PAGE_IS_WRITTEN))
- 				goto err_in_read;
- 			if (is_prot_seq_error(docg3))
- 				goto err_in_read;
- 		}
-+
- 		doc_read_page_finish(docg3);
-+		ops->retlen += nbdata;
-+		ops->oobretlen += nboob;
-+		buf += nbdata;
-+		oobbuf += nboob;
-+		len -= nbdata;
-+		ooblen -= nboob;
-+		from += DOC_LAYOUT_PAGE_SIZE;
- 	}
- 
- 	return 0;
-@@ -642,54 +659,33 @@ err:
- }
- 
- /**
-- * doc_read_oob - Read out of band bytes from flash
-+ * doc_read - Read bytes from flash
-  * @mtd: the device
-  * @from: the offset from first block and first page, in bytes, aligned on page
-  *        size
-- * @ops: the mtd oob structure
-+ * @len: the number of bytes to read (must be a multiple of 4)
-+ * @retlen: the number of bytes actually read
-+ * @buf: the filled in buffer
-  *
-- * Reads flash memory OOB area of pages.
-+ * Reads flash memory pages. This function does not read the OOB chunk, but only
-+ * the page data.
-  *
-  * Returns 0 if read successfull, of -EIO, -EINVAL if an error occured
-  */
--static int doc_read_oob(struct mtd_info *mtd, loff_t from,
--			struct mtd_oob_ops *ops)
-+static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
-+	     size_t *retlen, u_char *buf)
- {
--	struct docg3 *docg3 = mtd->priv;
--	int block0, block1, page, ofs, ret;
--	u8 *buf = ops->oobbuf;
--	size_t len = ops->ooblen;
-+	struct mtd_oob_ops ops;
-+	size_t ret;
- 
--	doc_dbg("doc_read_oob(from=%lld, buf=%p, len=%zu)\n", from, buf, len);
--	if (len != DOC_LAYOUT_OOB_SIZE)
--		return -EINVAL;
-+	memset(&ops, 0, sizeof(ops));
-+	ops.datbuf = buf;
-+	ops.len = len;
-+	ops.mode = MTD_OPS_AUTO_OOB;
- 
--	switch (ops->mode) {
--	case MTD_OPS_PLACE_OOB:
--		buf += ops->ooboffs;
--		break;
--	default:
--		break;
+-	ret = -ENXIO;
+-	ress = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!ress) {
+-		dev_err(dev, "No I/O memory resource defined\n");
+-		goto noress;
 -	}
+-	docg3->base = ioremap(ress->start, DOC_IOSPACE_SIZE);
 -
--	calc_block_sector(from, &block0, &block1, &page, &ofs);
--	if (block1 > docg3->max_block)
--		return -EINVAL;
+-	docg3->dev = &pdev->dev;
+-	docg3->device_id = 0;
++	docg3->dev = dev;
++	docg3->device_id = floor;
++	docg3->base = base;
+ 	doc_set_device_id(docg3, docg3->device_id);
+-	doc_set_asic_mode(docg3, DOC_ASICMODE_RESET);
++	if (!floor)
++		doc_set_asic_mode(docg3, DOC_ASICMODE_RESET);
+ 	doc_set_asic_mode(docg3, DOC_ASICMODE_NORMAL);
+ 
+ 	chip_id = doc_register_readw(docg3, DOC_CHIPID);
+ 	chip_id_inv = doc_register_readw(docg3, DOC_CHIPID_INV);
+ 
+-	ret = -ENODEV;
++	ret = 0;
+ 	if (chip_id != (u16)(~chip_id_inv)) {
+-		doc_info("No device found at IO addr %p\n",
+-			 (void *)ress->start);
+-		goto nochipfound;
++		goto nomem3;
+ 	}
+ 
+ 	switch (chip_id) {
+ 	case DOC_CHIPID_G3:
+-		doc_info("Found a G3 DiskOnChip at addr %p\n",
+-			 (void *)ress->start);
++		doc_info("Found a G3 DiskOnChip at addr %p, floor %d\n",
++			 base, floor);
+ 		break;
+ 	default:
+ 		doc_err("Chip id %04x is not a DiskOnChip G3 chip\n", chip_id);
+-		goto nochipfound;
++		goto nomem3;
+ 	}
+ 
+ 	doc_set_driver_info(chip_id, mtd);
+-	platform_set_drvdata(pdev, mtd);
+ 
+-	ret = -ENOMEM;
+-	bbt_nbpages = DIV_ROUND_UP(docg3->max_block + 1,
+-				   8 * DOC_LAYOUT_PAGE_SIZE);
+-	docg3->bbt = kzalloc(bbt_nbpages * DOC_LAYOUT_PAGE_SIZE, GFP_KERNEL);
+-	if (!docg3->bbt)
+-		goto nochipfound;
+ 	doc_reload_bbt(docg3);
++	return mtd;
+ 
+-	ret = mtd_device_parse_register(mtd, part_probes,
+-					NULL, NULL, 0);
+-	if (ret)
+-		goto register_error;
 -
--	ret = doc_read_page_prepare(docg3, block0, block1, page,
--				    ofs + DOC_LAYOUT_PAGE_SIZE);
--	if (!ret)
--		ret = doc_read_page_ecc_init(docg3, DOC_LAYOUT_OOB_SIZE);
--	if (!ret)
--		ret = doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE,
--					     buf, 1);
--	doc_read_page_finish(docg3);
+-	doc_dbg_register(docg3);
+-	return 0;
 -
--	if (ret > 0)
--		ops->oobretlen = ret;
--	else
--		ops->oobretlen = 0;
--	return (ret > 0) ? 0 : ret;
-+	ret = doc_read_oob(mtd, from, &ops);
-+	*retlen = ops.retlen;
-+	return ret;
+-register_error:
+-	kfree(docg3->bbt);
+-nochipfound:
+-	iounmap(docg3->base);
+-noress:
++nomem3:
+ 	kfree(mtd);
+ nomem2:
+ 	kfree(docg3);
+ nomem1:
++	return ERR_PTR(ret);
++}
++
++/**
++ * doc_release_device - Release a docg3 floor
++ * @mtd: the device
++ */
++static void doc_release_device(struct mtd_info *mtd)
++{
++	struct docg3 *docg3 = mtd->priv;
++
++	mtd_device_unregister(mtd);
++	kfree(docg3->bbt);
++	kfree(docg3);
++	kfree(mtd->name);
++	kfree(mtd);
++}
++
++/**
++ * doc_probe - Probe the IO space for a DiskOnChip G3 chip
++ * @pdev: platform device
++ *
++ * Probes for a G3 chip at the specified IO space in the platform data
++ * ressources. The floor 0 must be available.
++ *
++ * Returns 0 on success, -ENOMEM, -ENXIO on error
++ */
++static int __init docg3_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct mtd_info *mtd;
++	struct resource *ress;
++	void __iomem *base;
++	int ret, floor, found = 0;
++	struct mtd_info **docg3_floors;
++
++	ret = -ENXIO;
++	ress = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!ress) {
++		dev_err(dev, "No I/O memory resource defined\n");
++		goto noress;
++	}
++	base = ioremap(ress->start, DOC_IOSPACE_SIZE);
++
++	ret = -ENOMEM;
++	docg3_floors = kzalloc(sizeof(*docg3_floors) * DOC_MAX_NBFLOORS,
++			       GFP_KERNEL);
++	if (!docg3_floors)
++		goto nomem;
++
++	ret = 0;
++	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++) {
++		mtd = doc_probe_device(base, floor, dev);
++		if (floor == 0 && !mtd)
++			goto notfound;
++		if (!IS_ERR_OR_NULL(mtd))
++			ret = mtd_device_parse_register(mtd, part_probes,
++							NULL, NULL, 0);
++		else
++			ret = PTR_ERR(mtd);
++		docg3_floors[floor] = mtd;
++		if (ret)
++			goto err_probe;
++		if (mtd)
++			found++;
++	}
++
++	if (!found)
++		goto notfound;
++
++	platform_set_drvdata(pdev, docg3_floors);
++	doc_dbg_register(docg3_floors[0]->priv);
++	return 0;
++
++notfound:
++	ret = -ENODEV;
++	dev_info(dev, "No supported DiskOnChip found\n");
++err_probe:
++	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
++		if (docg3_floors[floor])
++			doc_release_device(docg3_floors[floor]);
++nomem:
++	iounmap(base);
++noress:
+ 	return ret;
  }
  
- static int doc_reload_bbt(struct docg3 *docg3)
+@@ -1074,15 +1140,18 @@ nomem1:
+  */
+ static int __exit docg3_release(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct docg3 *docg3 = mtd->priv;
++	struct mtd_info **docg3_floors = platform_get_drvdata(pdev);
++	struct docg3 *docg3 = docg3_floors[0]->priv;
++	void __iomem *base = docg3->base;
++	int floor;
+ 
+ 	doc_dbg_unregister(docg3);
+-	mtd_device_unregister(mtd);
+-	iounmap(docg3->base);
+-	kfree(docg3->bbt);
+-	kfree(docg3);
+-	kfree(mtd);
++	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
++		if (docg3_floors[floor])
++			doc_release_device(docg3_floors[floor]);
++
++	kfree(docg3_floors);
++	iounmap(base);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
+index 62af5aa..75df3a1 100644
+--- a/drivers/mtd/devices/docg3.h
++++ b/drivers/mtd/devices/docg3.h
+@@ -80,6 +80,7 @@
+ 
+ #define DOC_CHIPID_G3			0x200
+ #define DOC_ERASE_MARK			0xaa
++#define DOC_MAX_NBFLOORS		4
+ /*
+  * Flash registers
+  */
 -- 
 1.7.5.4
