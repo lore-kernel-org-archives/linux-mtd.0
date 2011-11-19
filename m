@@ -1,17 +1,26 @@
-Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RRmSt-0007VG-Oo
- for linux-mtd@lists.infradead.org; Sat, 19 Nov 2011 15:04:25 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: dwmw2@infradead.org,
-	dedekind1@gmail.com
-Subject: [PATCH v3 16/16] mtd/docg3: add protection areas sysfs access
-Date: Sat, 19 Nov 2011 16:02:58 +0100
-Message-Id: <1321714978-24543-17-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
-References: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RRrpN-0008Vw-Cq
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2011 20:47:58 +0000
+Received: by bkat2 with SMTP id t2so6395281bka.36
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Nov 2011 12:47:54 -0800 (PST)
+Subject: Re: [PATCH 0/2] small mtd-utils fixes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Sat, 19 Nov 2011 22:47:46 +0200
+In-Reply-To: <CAN8TOE8Gd97SXK1ACCtatJ97Q8ESZQJNH5mVU0Ej2ruOL0dZRQ@mail.gmail.com>
+References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
+ <1321568352.2272.33.camel@koala>
+ <CAN8TOE8uSW5rHbs8VeTFTNcqNwZGwUZpPJpfOgxtUsGL1PTJZg@mail.gmail.com>
+ <1321653636.2141.0.camel@koala> <87k46xrqyr.fsf@macbook.be.48ers.dk>
+ <CAN8TOE8Gd97SXK1ACCtatJ97Q8ESZQJNH5mVU0Ej2ruOL0dZRQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1321735668.2167.2.camel@koala>
+Mime-Version: 1.0
+Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Mike Frysinger <vapier.adi@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,193 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As each docg3 chip has 2 protection areas (DPS0 and DPS1),
-and because theses areas can prevent user access to the chip
-data, add for each floor the sysfs entries which insert the
-protection key into the right DPS.
+On Fri, 2011-11-18 at 15:37 -0800, Brian Norris wrote:
+> On Fri, Nov 18, 2011 at 2:44 PM, Peter Korsgaard <jacmet@sunsite.dk> wrote:
+> > Thanks, I've updated the package in buildroot. One minor nit, you forgot
+> > to update the version in the Makefile.
+> 
+> I was just about to comment on the Makefile version as well; I forgot
+> about that...any chance we can fix this on the official release? It's
+> kind of important that I can tell which version my users are using,
+> now that we've fixed a lot of annoying bugs/"features". If not, I may
+> just modify it in my own releases.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- drivers/mtd/devices/docg3.c |  121 +++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/docg3.h |   13 +++++
- 2 files changed, 134 insertions(+), 0 deletions(-)
+My apologies. I've released 1.4.8 and changed the Makefile this time.
+Uploaded the tarball as well.
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 35df377..d7df311 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1513,6 +1513,123 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return ret;
- }
- 
-+static struct docg3 *sysfs_dev2docg3(struct device *dev,
-+				     struct device_attribute *attr)
-+{
-+	int floor;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct mtd_info **docg3_floors = platform_get_drvdata(pdev);
-+
-+	floor = attr->attr.name[1] - '0';
-+	if (floor < 0 || floor >= DOC_MAX_NBFLOORS)
-+		return NULL;
-+	else
-+		return docg3_floors[floor]->priv;
-+}
-+
-+static ssize_t dps0_is_key_locked(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int dps0;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	dps0 = doc_register_readb(docg3, DOC_DPS0_STATUS);
-+	doc_set_device_id(docg3, 0);
-+
-+	return sprintf(buf, "%d\n", !(dps0 & DOC_DPS_KEY_OK));
-+}
-+
-+static ssize_t dps1_is_key_locked(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int dps1;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	dps1 = doc_register_readb(docg3, DOC_DPS1_STATUS);
-+	doc_set_device_id(docg3, 0);
-+
-+	return sprintf(buf, "%d\n", !(dps1 & DOC_DPS_KEY_OK));
-+}
-+
-+static ssize_t dps0_insert_key(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int i;
-+
-+	if (count != DOC_LAYOUT_DPS_KEY_LENGTH)
-+		return -EINVAL;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	for (i = 0; i < DOC_LAYOUT_DPS_KEY_LENGTH; i++)
-+		doc_writeb(docg3, buf[i], DOC_DPS0_KEY);
-+	doc_set_device_id(docg3, 0);
-+	return count;
-+}
-+
-+static ssize_t dps1_insert_key(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct docg3 *docg3 = sysfs_dev2docg3(dev, attr);
-+	int i;
-+
-+	if (count != DOC_LAYOUT_DPS_KEY_LENGTH)
-+		return -EINVAL;
-+
-+	doc_set_device_id(docg3, docg3->device_id);
-+	for (i = 0; i < DOC_LAYOUT_DPS_KEY_LENGTH; i++)
-+		doc_writeb(docg3, buf[i], DOC_DPS1_KEY);
-+	doc_set_device_id(docg3, 0);
-+	return count;
-+}
-+
-+#define FLOOR_SYSFS(id) { \
-+	__ATTR(f##id##_dps0_is_keylocked, S_IRUGO, dps0_is_key_locked, NULL), \
-+	__ATTR(f##id##_dps1_is_keylocked, S_IRUGO, dps1_is_key_locked, NULL), \
-+	__ATTR(f##id##_dps0_protection_key, S_IWUGO, NULL, dps0_insert_key), \
-+	__ATTR(f##id##_dps1_protection_key, S_IWUGO, NULL, dps1_insert_key), \
-+}
-+
-+static struct device_attribute doc_sys_attrs[DOC_MAX_NBFLOORS][4] = {
-+	FLOOR_SYSFS(0), FLOOR_SYSFS(1), FLOOR_SYSFS(2), FLOOR_SYSFS(3)
-+};
-+
-+static int doc_register_sysfs(struct platform_device *pdev,
-+			      struct mtd_info **floors)
-+{
-+	int ret = 0, floor, i = 0;
-+	struct device *dev = &pdev->dev;
-+
-+	for (floor = 0; !ret && floor < DOC_MAX_NBFLOORS && floors[floor];
-+	     floor++)
-+		for (i = 0; !ret && i < 4; i++)
-+			ret = device_create_file(dev, &doc_sys_attrs[floor][i]);
-+	if (!ret)
-+		return 0;
-+	do {
-+		while (--i >= 0)
-+			device_remove_file(dev, &doc_sys_attrs[floor][i]);
-+		i = 4;
-+	} while (--floor >= 0);
-+	return ret;
-+}
-+
-+static void doc_unregister_sysfs(struct platform_device *pdev,
-+				 struct mtd_info **floors)
-+{
-+	struct device *dev = &pdev->dev;
-+	int floor, i;
-+
-+	for (floor = 0; floor < DOC_MAX_NBFLOORS && floors[floor];
-+	     floor++)
-+		for (i = 0; i < 4; i++)
-+			device_remove_file(dev, &doc_sys_attrs[floor][i]);
-+}
-+
- /*
-  * Debug sysfs entries
-  */
-@@ -1927,6 +2044,9 @@ static int __init docg3_probe(struct platform_device *pdev)
- 			found++;
- 	}
- 
-+	ret = doc_register_sysfs(pdev, docg3_floors);
-+	if (ret)
-+		goto err_probe;
- 	if (!found)
- 		goto notfound;
- 
-@@ -1963,6 +2083,7 @@ static int __exit docg3_release(struct platform_device *pdev)
- 	void __iomem *base = docg3->base;
- 	int floor;
- 
-+	doc_unregister_sysfs(pdev, docg3_floors);
- 	doc_dbg_unregister(docg3);
- 	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
- 		if (docg3_floors[floor])
-diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
-index 07182f9..a349915 100644
---- a/drivers/mtd/devices/docg3.h
-+++ b/drivers/mtd/devices/docg3.h
-@@ -118,6 +118,8 @@
- #define DOC_BCH_SYNDROM(idx)		(0x1048 + (idx << 0))
- 
- #define DOC_PROTECTION			0x1056
-+#define DOC_DPS0_KEY			0x105c
-+#define DOC_DPS1_KEY			0x105e
- #define DOC_DPS0_ADDRLOW		0x1060
- #define DOC_DPS0_ADDRHIGH		0x1062
- #define DOC_DPS1_ADDRLOW		0x1064
-@@ -252,6 +254,17 @@
- #define DOC_PLANES_STATUS_PLANE0_KO	0x02
- #define DOC_PLANES_STATUS_PLANE1_KO	0x04
- 
-+/*
-+ * DPS key management
-+ *
-+ * Each floor of docg3 has 2 protection areas: DPS0 and DPS1. These areas span
-+ * across block boundaries, and define whether these blocks can be read or
-+ * written.
-+ * The definition is dynamically stored in page 0 of blocks (2,3) for DPS0, and
-+ * page 0 of blocks (4,5) for DPS1.
-+ */
-+#define DOC_LAYOUT_DPS_KEY_LENGTH	8
-+
- /**
-  * struct docg3 - DiskOnChip driver private data
-  * @dev: the device currently under control
--- 
-1.7.5.4
+Artem.
