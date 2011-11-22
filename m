@@ -1,27 +1,21 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RSxXG-0005JT-AJ
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 21:05:47 +0000
-Received: by ywa12 with SMTP id 12so758321ywa.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 13:05:45 -0800 (PST)
-Subject: Re: [PATCH 2/3] mtd/nand : set Nand flash page address to FBAR and
- FPAR correctly
+ id 1RSxu1-0006us-Cr
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 21:29:18 +0000
+Received: by yenr8 with SMTP id r8so826241yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 13:29:16 -0800 (PST)
+Subject: Re: [PATCH v3 00/16] DocG3 fixes and write support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: LiuShuo <b35362@freescale.com>
-Date: Tue, 22 Nov 2011 23:05:38 +0200
-In-Reply-To: <4EC5BE16.9080205@freescale.com>
-References: <1321349355-1639-1-git-send-email-b35362@freescale.com>
- <1321349355-1639-2-git-send-email-b35362@freescale.com>
- <1321568016.2272.29.camel@koala> <4EC5BE16.9080205@freescale.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 22 Nov 2011 23:29:08 +0200
+In-Reply-To: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
+References: <1321714978-24543-1-git-send-email-robert.jarzmik@free.fr>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1321995943.2222.3.camel@koala>
+Content-Transfer-Encoding: 8bit
+Message-ID: <1321997351.2222.14.camel@koala>
 Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Tang Yuantian <b29983@freescale.com>,
- linux-mtd@lists.infradead.org, Jerry Huang <Chang-Ming.Huang@freescale.com>,
- scottwood@freescale.com, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,23 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-11-18 at 10:08 +0800, LiuShuo wrote:
-> Ok and I want to add another patch before 3/3.
+On Sat, 2011-11-19 at 16:02 +0100, Robert Jarzmik wrote:
+> Hi Artem and David,
 > 
-> -LiuShuo
-> > On Tue, 2011-11-15 at 17:29 +0800, b35362@freescale.com wrote:
-> >> From: Liu Shuo<b35362@freescale.com>
-> >>
-> >> If we use the Nand flash chip whose number of pages in a block is greater
-> >> than 64(for large page), we must treat the low bit of FBAR as being the
-> >> high bit of the page address due to the limitation of FCM, it simply uses
-> >> the low 6-bits (for large page) of the combined block/page address as the
-> >> FPAR component, rather than considering the actual block size.
-> > Looks like this patch depends on the previous white-space clean-up patch
-> > - could you please refactor it (and 3/3 too) and resend?
-> Ok and I am going to add another new patch before 3/3.
+> This patchset has been in review for several weeks. All
+> pending comments have been handled. I'd like to have it in
+> for the next merge window. Do I need to do anything else to
+> have it integrated (grouping patches to have lesser kernel
+> history impact, ...) ?
 
-Sure, send 3/3 as well because this one depends on the cleanup patch, so
-cannot be applied independently.
+Hi, pushed to l2-mtd-2.6.git, thanks!
 
-Artem.
+1. The reviewers did not give you any "Reviewed-by:" ?
+
+2. This series has one checkpatch.pl complaint in patch 15, which looks
+fair:
+
+ERROR: do not initialise statics to 0 or NULL
+#74: FILE: drivers/mtd/devices/docg3.c:64:
++static unsigned int reliable_mode = 0;
+
+total: 1 errors, 0 warnings, 206 lines checked
+
+/home/dedekind/tmp/j15.mbox has style problems, please review.
+
+3. When I compile with gcc-4.6 for x68_64 I see the following
+compilation warnings:
+
+  CC [M]  drivers/mtd/devices/docg3.o
+drivers/mtd/devices/docg3.c: In function ‘doc_read_oob’:
+drivers/mtd/devices/docg3.c:630:3: warning: passing argument 2 of ‘doc_get_hw_bch_syndroms’ from incompatible pointer type [enabled by default]
+drivers/mtd/devices/docg3.c:513:13: note: expected ‘int *’ but argument is of type ‘u8 *’
+drivers/mtd/devices/docg3.c: At top level:
+drivers/mtd/devices/docg3.c:762:12: warning: ‘doc_get_erase_count’ defined but not used [-Wunused-function]
+
+4. sparse gives the following warning:
+
+  CHECK   drivers/mtd/devices/docg3.c
+drivers/mtd/devices/docg3.c:630:48: warning: incorrect type in argument 2 (different type sizes)
+drivers/mtd/devices/docg3.c:630:48:    expected int *syns
+drivers/mtd/devices/docg3.c:630:48:    got unsigned char *<noident>
+
+Could you please look at 2, 3, and 4? I did not look whether they are
+fair or not. Please, do not re-send the series again, I think it is OK
+if you send incremental fixes instead. Or if you at some point re-send
+v4, you can incorporate the warnings fixes, but please, do not send 16
+patches again only because of this :-)
+
+Thanks!
