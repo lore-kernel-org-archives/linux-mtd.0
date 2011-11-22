@@ -1,19 +1,24 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RSm9n-0006Wb-Ce
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 08:56:48 +0000
-Received: by pzk34 with SMTP id 34so15842793pzk.2
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 00:56:45 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20111122043904.GA22504@thor.bakeyournoodle.com>
-References: <20111122043904.GA22504@thor.bakeyournoodle.com>
-Date: Tue, 22 Nov 2011 12:56:43 +0400
-Message-ID: <CALT56yMTWOS=-3MUrLLFY--e1NcONX-aruDYPoJapppMx3Vf4Q@mail.gmail.com>
-Subject: Re: [PATCH] mtd: ndfc: fix typo in structure dereference
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Tony Breeds <tony@bakeyournoodle.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+ id 1RSnzx-0006g2-4K
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 10:54:49 +0000
+Received: by ghbf1 with SMTP id f1so13809ghb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 02:54:43 -0800 (PST)
+Subject: Re: [PATCH] UBIFS: Use kmemdup rather than duplicating its
+ implementation
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Thomas Meyer <thomas@m3y3r.de>
+Date: Tue, 22 Nov 2011 12:55:18 +0200
+In-Reply-To: <1321570852.1624.312.camel@localhost.localdomain>
+References: <1321570852.1624.312.camel@localhost.localdomain>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-rRlB0AxtFrp01fem53H+"
+Message-ID: <1321959323.24797.150.camel@sauron.fi.intel.com>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/22/11, Tony Breeds <tony@bakeyournoodle.com> wrote:
-> In commit 9d7948c50055e74b693ce9e99a709b2e5bbc1942 (mtd: ndfc: use
-> ofpart through generic parsing) we dereference a non pointer type
-> causing the following compiler error:
-> drivers/mtd/nand/ndfc.c: In function 'ndfc_chip_init':
-> drivers/mtd/nand/ndfc.c:191: error: invalid type argument of '->' (have
-> 'struct mtd_part_parser_data')
->
-> Fix that.
->
-> Signed-off-by: Tony Breeds <tony@bakeyournoodle.com>
 
-Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+--=-rRlB0AxtFrp01fem53H+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sometimes I wander about this serie. I tried to test most
-of the combinations, I could test at that momemt. The patches
-were split in simple chunks to simplify review and testing. They
-waited in linux-next for 2 or 3 releases. And I still see problems
-with those patches.
+On Fri, 2011-11-18 at 00:00 +0100, Thomas Meyer wrote:
+> The semantic patch that makes this change is available
+> in scripts/coccinelle/api/memdup.cocci.
+>=20
+> Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 
+Pushed to the UBIFS git tree, thank you!
 
-> ---
->  drivers/mtd/nand/ndfc.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-> index ee17139..f8aacf4 100644
-> --- a/drivers/mtd/nand/ndfc.c
-> +++ b/drivers/mtd/nand/ndfc.c
-> @@ -188,7 +188,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
->  	if (!flash_np)
->  		return -ENODEV;
->
-> -	ppdata->of_node = flash_np;
-> +	ppdata.of_node = flash_np;
->  	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
->  			dev_name(&ndfc->ofdev->dev), flash_np->name);
->  	if (!ndfc->mtd.name) {
-> --
-> 1.7.6.4
->
-> Yours Tony
->
+--=20
+Best Regards,
+Artem Bityutskiy
 
+--=-rRlB0AxtFrp01fem53H+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
--- 
-With best wishes
-Dmitry
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJOy3+WAAoJECmIfjd9wqK0kfUQAKN45LnYb9g/+DkiUMncar8w
+F/qwKeIb82hxo/vafhuptm709TqdksRdUIPllbMp1X4g5euvneAigo1e1OTcq67j
+Cu89lmJZ5UvSleKuouCxBbo/sgrboTir7q8kRkEGmBsuQyqTW6I4tievGGlQsRJU
+djDcmXaQvcjV/uzQPS9J51ZWo4Z8msnF4oM9ziRfnu5Ch6uBM7u+o24UKdxzf4dD
+4XMSQnQE+4erS/Ebwbr9MNr/pIAp1Qa+RtuTOfoNt26ID8urIEI5OZBZOaU9pDFU
+yLBS3zEU39OtnwS9rCU5SL7MKNURMskxzAO8L41OFA2hCbXtK6LBmt2uIGHahhFK
+FUn5Ks41H/6z8F3UfBimxo+tBz8sYkTsqQzxO8F0uZOT3WJfZV7sVdWLA6oPxHdt
+f7KolL9x1PGareMgduGWD5CKczdbhIUuyQcohd4Z7b0vyichaTcvDAiM64vnNd5k
+Ph7pef8w3WRXqFnLL6CK4tGgBRipixrftKj71gYFMwBoLiFM9eyF03/R5L4pg1Ew
+2KnnY6Xy4FPKWKXsn+7hElMbHPENcT7K6Qsi7hpEc95ke8KFgbRDZ/qXJg6ITHtg
+6jrUWjkGffanrYgFGH/EoXLlXgeEyGEqfwRRlb+aOf65c1LcX3mNf614onRAf9Js
+dTKhWIPQyMsjP7wUdOZP
+=L0G/
+-----END PGP SIGNATURE-----
+
+--=-rRlB0AxtFrp01fem53H+--
