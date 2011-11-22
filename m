@@ -1,22 +1,21 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RSy6i-0008Bc-OH
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 21:42:25 +0000
-Received: by ywa12 with SMTP id 12so799055ywa.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 13:42:23 -0800 (PST)
-Subject: Re: [PATCH] mtd: ndfc: fix typo in structure dereference
+ id 1RSy80-0008NI-3S
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 21:43:44 +0000
+Received: by ghbf1 with SMTP id f1so799924ghb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 13:43:43 -0800 (PST)
+Subject: Re: [PATCH 1/2] MTD: NAND: ndfc: fix compilation error
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Breeds <tony@bakeyournoodle.com>, David Woodhouse
- <dwmw2@infradead.org>
-Date: Tue, 22 Nov 2011 23:42:14 +0200
-In-Reply-To: <20111122043904.GA22504@thor.bakeyournoodle.com>
-References: <20111122043904.GA22504@thor.bakeyournoodle.com>
+To: Tanmay Inamdar <tinamdar@apm.com>
+Date: Tue, 22 Nov 2011 23:43:38 +0200
+In-Reply-To: <1321942850-20012-1-git-send-email-tinamdar@apm.com>
+References: <1321942850-20012-1-git-send-email-tinamdar@apm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1321998141.2222.21.camel@koala>
+Message-ID: <1321998220.2222.22.camel@koala>
 Mime-Version: 1.0
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,19 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-11-22 at 15:39 +1100, Tony Breeds wrote:
-> In commit 9d7948c50055e74b693ce9e99a709b2e5bbc1942 (mtd: ndfc: use
-> ofpart through generic parsing) we dereference a non pointer type
-> causing the following compiler error:
-> drivers/mtd/nand/ndfc.c: In function 'ndfc_chip_init':
-> drivers/mtd/nand/ndfc.c:191: error: invalid type argument of '->' (have 'struct mtd_part_parser_data')
-> 
-> Fix that.
-> 
-> Signed-off-by: Tony Breeds <tony@bakeyournoodle.com>
+On Tue, 2011-11-22 at 11:50 +0530, Tanmay Inamdar wrote:
+> This patch fixes compilation error in ndfc flash driver
+> ---
+>  drivers/mtd/nand/ndfc.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 
-Pushed to l2-mtd-2.6.git, thanks.
-
-This has to be sent to Linus this release cycle.
+Tony Breeds <tony@bakeyournoodle.com> sent a fix for this a bit earlier.
 
 Artem.
