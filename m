@@ -1,17 +1,19 @@
-Received: from imr-db03.mx.aol.com ([205.188.91.97])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RSkkH-00071o-3J
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 07:26:22 +0000
-To: linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
- majordomo@vger.kernel.org, netfilter@vger.kernel.org,
- oprofile-list@lists.sourceforge.net, patthurston@kgoradio.com
-Content-Transfer-Encoding: quoted-printable
-Subject: Fwd: 
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RSm9n-0006Wb-Ce
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2011 08:56:48 +0000
+Received: by pzk34 with SMTP id 34so15842793pzk.2
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2011 00:56:45 -0800 (PST)
 MIME-Version: 1.0
-From: jobhunts02@aol.com
-Content-Type: text/plain; charset="us-ascii"
-Message-Id: <8CE76FF25C8F01B-1B80-1449FC@webmail-d147.sysops.aol.com>
-Date: Tue, 22 Nov 2011 02:26:12 -0500 (EST)
+In-Reply-To: <20111122043904.GA22504@thor.bakeyournoodle.com>
+References: <20111122043904.GA22504@thor.bakeyournoodle.com>
+Date: Tue, 22 Nov 2011 12:56:43 +0400
+Message-ID: <CALT56yMTWOS=-3MUrLLFY--e1NcONX-aruDYPoJapppMx3Vf4Q@mail.gmail.com>
+Subject: Re: [PATCH] mtd: ndfc: fix typo in structure dereference
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: Tony Breeds <tony@bakeyournoodle.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,4 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-http://6500a.com/best2012.php?id=3D97&top=3D18&page=3D11
+On 11/22/11, Tony Breeds <tony@bakeyournoodle.com> wrote:
+> In commit 9d7948c50055e74b693ce9e99a709b2e5bbc1942 (mtd: ndfc: use
+> ofpart through generic parsing) we dereference a non pointer type
+> causing the following compiler error:
+> drivers/mtd/nand/ndfc.c: In function 'ndfc_chip_init':
+> drivers/mtd/nand/ndfc.c:191: error: invalid type argument of '->' (have
+> 'struct mtd_part_parser_data')
+>
+> Fix that.
+>
+> Signed-off-by: Tony Breeds <tony@bakeyournoodle.com>
+
+Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+
+Sometimes I wander about this serie. I tried to test most
+of the combinations, I could test at that momemt. The patches
+were split in simple chunks to simplify review and testing. They
+waited in linux-next for 2 or 3 releases. And I still see problems
+with those patches.
+
+
+> ---
+>  drivers/mtd/nand/ndfc.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+> index ee17139..f8aacf4 100644
+> --- a/drivers/mtd/nand/ndfc.c
+> +++ b/drivers/mtd/nand/ndfc.c
+> @@ -188,7 +188,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+>  	if (!flash_np)
+>  		return -ENODEV;
+>
+> -	ppdata->of_node = flash_np;
+> +	ppdata.of_node = flash_np;
+>  	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
+>  			dev_name(&ndfc->ofdev->dev), flash_np->name);
+>  	if (!ndfc->mtd.name) {
+> --
+> 1.7.6.4
+>
+> Yours Tony
+>
+
+
+-- 
+With best wishes
+Dmitry
