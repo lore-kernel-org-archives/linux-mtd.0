@@ -1,14 +1,15 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTEGI-0000c7-MW
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 14:57:24 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: gpmi: add missing include 'module.h'
-Date: Wed, 23 Nov 2011 15:57:06 +0100
-Message-Id: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
-Cc: Huang Shijie <b32955@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from nm38-vm5.bullet.mail.ne1.yahoo.com ([98.138.229.149])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTEPE-0000ed-Uw
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 15:06:39 +0000
+Message-ID: <052D441DB130555B9315830D431FB180@jmot>
+From: "ykdpcikg" <songmaousqh@yahoo.cn>
+To: <rsvp-archive@lists.ietf.org>
+Subject: =?utf-8?B?YmnotYQl5paZ?=
+Date: Wed, 23 Nov 2011 23:06:38 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_0547_019A377D.1A4607F0"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +19,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes:
+------=_NextPart_000_0547_019A377D.1A4607F0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0FC5_019A377D.1A4607F0"
 
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'gpmi_nfc_init':
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: error: 'THIS_MODULE' undeclared (first use in this function)
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: note: each undeclared identifier is reported only once for each function it appears in
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:15: error: expected declaration specifiers or '...' before string constant
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: data definition has no type or storage class
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: type defaults to 'int' in declaration of 'MODULE_AUTHOR'
+------=_NextPart_001_0FC5_019A377D.1A4607F0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-and some more...
+DQrku6PlvIDlkITlnLDlm73nqI4v5Zyw56iO5ZCE56eN5Y+R56WoDQrogZTns7vnlLXor506MTM1
+LTM4MS00OTQyNw0KUSBR77yaMjM4OTY2MjczMiAgDQoNCiAgIHlrZHBjaWtnDQogICAyMDExLTEx
+LTIzDQo=
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+------=_NextPart_001_0FC5_019A377D.1A4607F0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 071b634..493ec2f 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -21,9 +21,9 @@
- #include <linux/clk.h>
- #include <linux/slab.h>
- #include <linux/interrupt.h>
-+#include <linux/module.h>
- #include <linux/mtd/gpmi-nand.h>
- #include <linux/mtd/partitions.h>
--
- #include "gpmi-nand.h"
- 
- /* add our owner bbt descriptor */
--- 
-1.7.7.1
+PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgVHJhbnNpdGlvbmFs
+Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXRyYW5zaXRpb25h
+bC5kdGQiPg0KPGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPg0KDQo8
+aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1s
+OyBjaGFyc2V0PXV0Zi04IiAvPg0KPC9oZWFkPg0KDQo8Ym9keT4NCg0KPHA+DQrku6PlvIDlkITl
+nLDlm73nqI4v5Zyw56iO5ZCE56eN5Y+R56WoDQrogZTns7vnlLXor506MTM1LTM4MS00OTQyNw0K
+USBR77yaMjM4OTY2MjczMiAgDQo8L3A+DQo8cD4gICB5a2RwY2lrZzxiciAvPg0KICAgMjAxMS0x
+MS0yMw0KPC9wPg0KDQo8L2JvZHk+DQoNCjwvaHRtbD4NCg==
+
+------=_NextPart_001_0FC5_019A377D.1A4607F0--
+
+------=_NextPart_000_0547_019A377D.1A4607F0
+Content-Type: image/gif;
+	name=ad.gif
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename=ad.gif
+
+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
+
+
+------=_NextPart_000_0547_019A377D.1A4607F0--
