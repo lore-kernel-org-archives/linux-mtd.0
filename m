@@ -1,23 +1,23 @@
-Received: from mailserver2.vizimax.com ([216.208.233.162])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RTGo6-000322-KY
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 17:40:27 +0000
-Content-class: urn:content-classes:message
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTGyn-00019A-MX
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 17:51:30 +0000
+Received: by faar25 with SMTP id r25so2497154faa.36
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2011 09:51:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] mtd/nand: Add NAND chip ID to support Micron 4k pagesize
- NAND chip
-Date: Wed, 23 Nov 2011 12:40:21 -0500
-Message-ID: <225442585F89274EA3A62F88671ECBAC0D60B8ED@prod-svr-1.intranet.str.ca>
-In-Reply-To: <CAN8TOE-kgmNy+t0ZBW8c8Goj2HGwBVMHU2c55NUGDJYwWn3PMw@mail.gmail.com>
+In-Reply-To: <225442585F89274EA3A62F88671ECBAC0D60B8ED@prod-svr-1.intranet.str.ca>
 References: <1322017153-6783-1-git-send-email-Shengzhou.Liu@freescale.com>
  <CAN8TOE-kgmNy+t0ZBW8c8Goj2HGwBVMHU2c55NUGDJYwWn3PMw@mail.gmail.com>
-From: =?iso-8859-1?Q?Jean-S=E9bastien_Gagnon?= <jsgagnon@vizimax.com>
-To: "Brian Norris" <computersforpeace@gmail.com>,
- "Shengzhou Liu" <Shengzhou.Liu@freescale.com>
-Cc: linux-mtd@lists.infradead.org
+ <225442585F89274EA3A62F88671ECBAC0D60B8ED@prod-svr-1.intranet.str.ca>
+Date: Wed, 23 Nov 2011 09:51:26 -0800
+Message-ID: <CAN8TOE9Uzekgw0QcsqceUgwn=AXs8rqDWtZe5ZEUpeg+CK9Ptg@mail.gmail.com>
+Subject: Re: [PATCH] mtd/nand: Add NAND chip ID to support Micron 4k pagesize
+ NAND chip
+From: Brian Norris <computersforpeace@gmail.com>
+To: =?ISO-8859-1?Q?Jean=2DS=E9bastien_Gagnon?= <jsgagnon@vizimax.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Shengzhou Liu <Shengzhou.Liu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If we really want to add a line for the Micron MT29F8G08ABABA,=20
-The line should be like this, since we cannot detect the layout:
-
-+	{"NAND 1GiB 3,3V 8-bit",	0x38, 4096, 1024, 0x80000, LP_OPTIONS | =
-NAND_NO_SUBPAGE_WRITE},
-
-But like Brian said, ONFI should be used, otherwise, any newer device =
-with the same ID (0x38) will
-Probably be detected with wrong settings.
-
-Also note that this device must be used with at least 4 ECC bits/512 =
-bytes.
-
-J-S
-
->=20
-> Hi,
+2011/11/23 Jean-S=E9bastien Gagnon <jsgagnon@vizimax.com>:
+> If we really want to add a line for the Micron MT29F8G08ABABA,
+> The line should be like this, since we cannot detect the layout:
 >
-> On Tue, Nov 22, 2011 at 6:59 PM, Shengzhou Liu
-> <Shengzhou.Liu@freescale.com> wrote:
-> > Add NAND chip ID 0x38 in ids table to support Micron 4k large-page =
-NAND chip.
->
-> Do you have an example part number for which this patch is necessary?
-> I see that Micron MT29F8G08ABABA, for instance, has this ID, but
-> listing its ID in nand_ids.c is useless because there is no ID
-> decoding pattern for the rest of its ID string. AFAIK, all 0x38 chips
-> are ONFI-only and should not be included in nand_ids.c.
->
-> Brian
+> + =A0 =A0 =A0 {"NAND 1GiB 3,3V 8-bit", =A0 =A0 =A0 =A00x38, 4096, 1024, 0=
+x80000, LP_OPTIONS | NAND_NO_SUBPAGE_WRITE},
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+This would give the wrong OOB-size, though, since this hard-coding
+mechanism assumes that:
+    mtd->oobsize =3D mtd->writesize / 32;
+Thus, we get oobsize =3D 128 instead of oobsize =3D 224.
+
+> But like Brian said, ONFI should be used, otherwise, any newer device wit=
+h the same ID (0x38) will
+> Probably be detected with wrong settings.
+
+None exist that I know of for now but valid point.
+
+Brian
