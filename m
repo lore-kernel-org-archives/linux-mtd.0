@@ -1,14 +1,14 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RT9HD-0006wo-6w
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 09:37:59 +0000
-Received: by ywa12 with SMTP id 12so1365250ywa.36
- for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2011 01:37:58 -0800 (PST)
+ id 1RT9IW-00075o-0T
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 09:39:20 +0000
+Received: by iapp10 with SMTP id p10so1579540iap.36
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2011 01:39:19 -0800 (PST)
 Subject: Re: [PATCH 0/2] small mtd-utils fixes
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier.adi@gmail.com>
-Date: Wed, 23 Nov 2011 11:38:38 +0200
-In-Reply-To: <CAMjpGUdsdppTEOuPdWTGGU=ztbyvoF4_=TiZ1RqQ4W1_wFhbkQ@mail.gmail.com>
+Date: Wed, 23 Nov 2011 11:39:59 +0200
+In-Reply-To: <CAMjpGUcWACPcv+FosRdUcNYy4a9QxW0-v+F1hoDA1Opirc-1ZA@mail.gmail.com>
 References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
  <1321568352.2272.33.camel@koala>
  <CAN8TOE8uSW5rHbs8VeTFTNcqNwZGwUZpPJpfOgxtUsGL1PTJZg@mail.gmail.com>
@@ -19,11 +19,11 @@ References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
  <1321743864.2167.6.camel@koala>
  <1321790131.15493.85.camel@shinybook.infradead.org>
  <1321794503.2170.3.camel@koala>
- <CAMjpGUdsdppTEOuPdWTGGU=ztbyvoF4_=TiZ1RqQ4W1_wFhbkQ@mail.gmail.com>
+ <CAMjpGUcWACPcv+FosRdUcNYy4a9QxW0-v+F1hoDA1Opirc-1ZA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-0phEGU0evioO3UeSUC5u"
-Message-ID: <1322041124.24797.269.camel@sauron.fi.intel.com>
+ boundary="=-sEATa/9+mcRTONBV4Mlm"
+Message-ID: <1322041204.24797.270.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
 Cc: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
@@ -39,87 +39,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-0phEGU0evioO3UeSUC5u
+--=-sEATa/9+mcRTONBV4Mlm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, updated the script as you suggested. Did not do the "outdir should
-be optional" part because it is not needed now - we can do this later if
-we want.
+On Tue, 2011-11-22 at 17:21 -0500, Mike Frysinger wrote:
+> On Sun, Nov 20, 2011 at 08:08, Artem Bityutskiy wrote:
+> > [ $# -eq 2 ] || fatal "Insufficient or too many argumetns"
+>=20
+> typo: arguments
 
-#!/bin/sh -uef
+Oh, yes, will also fix.
 
-# A small helper script to release mtd-utils. Takes the new version
-# as a parameter.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-fatal() {
-	printf "Error: %s\n" "$1" >&2
-	exit 1
-}
-
-usage() {
-	cat <<EOF
-Usage: ${0##*/} <new_ver> <outdir>
-
-<new_ver>  - mtd utils version to create in X.Y.Z format
-<outdir>   - the output directory where to store the tarball with the
-             gpg signature
-EOF
-	exit 0
-}
-
-[ $# -eq 0 ] && usage
-[ $# -eq 2 ] || fatal "Insufficient or too many argumetns"
-
-new_ver=3D"$1"; shift
-outdir=3D"$1"; shift
-
-release_name=3D"mtd-utils-$new_ver"
-tag_name=3D"v$new_ver"
-
-# Make sure the input is sane and the makefile contains sensible version
-echo "$new_ver" | egrep -q -x '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' ||
-	fatal "please, provide new version in X.Y.Z format"
-
-egrep -q -x 'VERSION =3D [[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' Makefile=
- ||
-	fatal "Makefile does not contain \"Version =3D X.Y.Z\" line"
-
-# Make sure the git index is up-to-date
-[ -z "$(git status --porcelain)" ] || fatal "Git index is not up-to-date"
-
-# Make sure the tag does not exist
-[ -z "$(git tag -l "$tag_name")" ] || fatal "Tag $tag_name already exists"
-
-# Change the version in the Makefile
-sed -i -e "s/^VERSION =3D [[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+/VERSI=
-ON =3D $new_ver/" Makefile
-
-# And commit the change
-git commit -s -m "Release $release_name" Makefile
-
-# Create new signed tag
-echo "Signing tag $tag_name"
-git tag -m "$release_name" -s "$tag_name"
-
-# Prepare signed tarball
-git archive --format=3Dtar --prefix=3D"$release_name/" "$tag_name" | \
-	bzip2 > "$outdir/$release_name.tar.bz2"
-echo "Signing the tarball"
-gpg -o "$outdir/$release_name.tar.bz2.asc" --detach-sign -a "$outdir/$relea=
-se_name.tar.bz2"
-
-cat <<EOF
-Created $outdir/$release_name.tar.bz2
-Please, verify, then push the tag and upload the tarball and the signature
-You can use these commands:
-git push origin $tag_name
-scp $outdir/$release_name.tar.bz2 $outdir/$release_name.tar.bz2.asc casper.=
-infradead.org:/var/ftp/pub/mtd-utils
-EOF
-
-
---=-0phEGU0evioO3UeSUC5u
+--=-sEATa/9+mcRTONBV4Mlm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -127,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJOzL8eAAoJECmIfjd9wqK0tHMP/RAmY4v5NNMR11G2qyaSHPDC
-LRy6aT97gwuXF2B01MOwc4YBiyr9gwx2Jrka8Z1WUDrrGCkY1NgQgU3egXpnWWiO
-K2J0zEN5kVe3z6IDDzmsLyRyB8hGpQY4fc8XWbnvuHVFMnsq7WD58u3zeX6+b8ad
-hPlWhRZ6UghoFysuZxGROY+MoRRcEalMHYAMkJaQ8tXE4/HbWu1VzQMRBKCT1pS+
-1KOGIK4SfWdb5e9fKLuao5SpTf4gGmi5rR/fxvU/34jhs4x7r+PWGYV7ypq1bmM7
-KjFXjcYr+K9y4cwiQbQnawwaWiVBqmROqUyEo7gK1Ntjy9JOBM3XKpSnqZAznpiP
-NUq7fA7cSVRpWFkv4GMtOM3Jaga1NIr4MbtN7P7serP+Uji14lRQ5pQJ4e3VpRwO
-q8avr2mihiAy1OD0B56Wf8UQbcNT+HzkLYEdCR/bGY/VkfbarI7JBTdSa0/uxxCo
-0tLpSxGhM5RWntwKcREXLr0Osl1xZzQLVVm6oNDexUyFXSAyOHp9bhUQYpuJTcjN
-fumdo9phNVQWzMqLTzr6GVO7BvE9l3dcouqR29up34NeMuKflXOVyhENNKgqoFVs
-a2yTwyFESAgCQQWfgx3rwTnf5UxSo386miQaEJxDkyg73KEpIUpKLjF9DHmvu6zb
-Eyb5cUqabA4vA7YQKdbD
-=T00b
+iQIcBAABAgAGBQJOzL9vAAoJECmIfjd9wqK0TSMP/35W93rxRpgYj4qrvu5S0Eav
+r75ksch/uLBzVUA5i5MsZvQ3v15qleaCp3oc+X8X7BCj+zG86i82dgt3ESzJoHyp
+1r57L9fMv7FXCQuQ92jczkI6yt9jhbZhKpAxJp2wuuq1LfD+CXxrJBWprt0IaMyT
+yKGuj9FKc0D3mKIrqiLtfLVaNQsiCIm7OFiPz2WHquz9zO2TV7cgdzQlM/eUbkhL
+dVBtfsZd4FQsJfMAOKaZrKm5rgVj43C0ms6cD9rGVNdAH3gIK5juzihDGlDkHVsu
+8uHwM8FUXIoKLx1DPsCW1ynVI1wxDI+O1uDfTlv9F+893n7bbSQWksAwa+z4lfCw
+6/bukFnaMQIAjqkxDlJ+N55L6ZI7erYV8gTKXaxAkkl3E2GgKOrkkJ6vM18TwLi9
+dZ2wK4GXAVwIBhANnk9xlHRgeIqxqwUqUBU/0e6Ia4wGAFGhL50dJ3Wkki9RDwJP
+xweQXLDlsataQ6mQn7NZSu/aD7vzjE9wPvulw9NqeFB/KSBHeYylRNVFJ5c0Itbx
+r1ZO77e4uyMzd8IO+wdVIwOQNOCHAhOpQP2m14HZLtBRKIJzb04mIA5rKmYQnMXw
+9sjCOjMtAvq7YtUIXkB6rx5h+nHV06X16lc7J/4Exk4g9nqZY8duOlROElnyiIqt
+fpHBwJm9dTilyAYOgHnM
+=wdG5
 -----END PGP SIGNATURE-----
 
---=-0phEGU0evioO3UeSUC5u--
+--=-sEATa/9+mcRTONBV4Mlm--
