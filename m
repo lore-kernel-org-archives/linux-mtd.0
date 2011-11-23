@@ -1,26 +1,16 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTBf6-0001y1-Ku
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 12:10:50 +0000
-Message-ID: <4ECCE393.2030600@freescale.com>
-Date: Wed, 23 Nov 2011 20:14:11 +0800
-From: LiuShuo <b35362@freescale.com>
+Received: from nm35.bullet.mail.ne1.yahoo.com ([98.138.229.28])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTCGu-0004fN-Tc
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2011 12:49:53 +0000
+Message-ID: <1322052589.58154.YahooMailNeo@web121503.mail.ne1.yahoo.com>
+Date: Wed, 23 Nov 2011 04:49:49 -0800 (PST)
+From: Karsten Jeppesen <arm9263@yahoo.com>
+Subject: Corrupted UBIFS, bad CRC
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH v3 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1321349355-1639-1-git-send-email-b35362@freescale.com>
- <1321349355-1639-2-git-send-email-b35362@freescale.com>
- <1321349355-1639-3-git-send-email-b35362@freescale.com>
- <4ECC368C.3010801@freescale.com>
-In-Reply-To: <4ECC368C.3010801@freescale.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Liu Shuo <Shuo.Liu@freescale.com>,
- Shengzhou Liu <Shengzhou.Liu@freescale.com>, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, leoli@freescale.com, dwmw2@infradead.org
+Reply-To: Karsten Jeppesen <arm9263@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,214 +20,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B411=E6=9C=8823=E6=97=A5 07:55, Scott Wood =E5=86=99=
-=E9=81=93:
-> On 11/15/2011 03:29 AM, b35362@freescale.com wrote:
->> From: Liu Shuo<b35362@freescale.com>
->>
->> Freescale FCM controller has a 2K size limitation of buffer RAM. In or=
-der
->> to support the Nand flash chip whose page size is larger than 2K bytes=
-,
->> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and sa=
-ve
->> them to a large buffer.
->>
->> Signed-off-by: Liu Shuo<Shuo.Liu@freescale.com>
->> Signed-off-by: Shengzhou Liu<Shengzhou.Liu@freescale.com>
->> Signed-off-by: Li Yang<leoli@freescale.com>
->> ---
->>   drivers/mtd/nand/fsl_elbc_nand.c |  216 ++++++++++++++++++++++++++++=
-+++++++---
->>   1 files changed, 199 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_e=
-lbc_nand.c
->> index c2c231b..415f87e 100644
->> --- a/drivers/mtd/nand/fsl_elbc_nand.c
->> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
->> @@ -55,7 +55,9 @@ struct fsl_elbc_mtd {
->>   	struct device *dev;
->>   	int bank;               /* Chip select bank number           */
->>   	u8 __iomem *vbase;      /* Chip select base virtual address  */
->> -	int page_size;          /* NAND page size (0=3D512, 1=3D2048)    */
->> +	int page_size;          /* NAND page size (0=3D512, 1=3D2048, 2=3D40=
-96...),
->> +				 * the mutiple of 2048.
->> +				 */
-> That "..." isn't very descriptive.  What happens with 8192-byte pages?
-> Is it 3 or 4?
->
-> Please just get rid of this and use mtd->writesize.
->
->> +		for (i =3D 1; i<  priv->page_size; i++) {
->> +			/*
->> +			 * Maybe there are some reasons of FCM hardware timming,
->> +			 * we must insert a FIR_OP_NOP(0x00) before FIR_OP_RB.
->> +			 */
-> s/timming/timing/
->
->>   	/* PAGEPROG reuses all of the setup from SEQIN and adds the length =
-*/
->>   	case NAND_CMD_PAGEPROG: {
->> +		int len;
->>   		dev_vdbg(priv->dev,
->>   			 "fsl_elbc_cmdfunc: NAND_CMD_PAGEPROG "
->>   			 "writing %d bytes.\n", elbc_fcm_ctrl->index);
->> -
->>   		/* if the write did not start at 0 or is not a full page
->>   		 * then set the exact length, otherwise use a full page
->>   		 * write so the HW generates the ECC.
->>   		 */
->> -		if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column !=3D 0 ||
->> +		if (elbc_fcm_ctrl->column>=3D mtd->writesize) {
->> +			/* write oob */
->> +			if (priv->page_size>  1) {
->> +				/* when pagesize of chip is greater than 2048,
->> +				 * we have to write full page to write spare
->> +				 * region, so we fill '0xff' to main region
->> +				 * and some bytes of spare region which we
->> +				 * don't want to rewrite.
->> +				 * (write '1' won't change the original value)
->> +				 */
->> +				memset(elbc_fcm_ctrl->buffer, 0xff,
->> +						elbc_fcm_ctrl->column);
-> I don't like relying on this -- can we use RNDIN instead to do a
-> discontiguous write?
->
-I have no better way to implement it now.
-Some chips have 'NOP' limitation, so I don't use the FIR_OP_UA to do a=20
-oob write.
->> +				len =3D 2112;
-> len =3D min(elbc_fcm_ctrl->index, 2112);
-when do a oob write (writesize > 2048), elbc_fcm_ctrl->index is greater=20
-writesize
-(is 4096 at least).
->> +			} else
->> +				len =3D mtd->writesize + mtd->oobsize -
->> +					elbc_fcm_ctrl->column;
->> +			out_be32(&lbc->fbcr, len);
-> len =3D elbc_fcm_ctrl->index - elbc_fcm_ctrl->column;
->
-> Use braces on both sides of the if/else if it's needed on one side.
->> +		} else if (elbc_fcm_ctrl->column !=3D 0 ||
->>   		    elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize)
->>   			out_be32(&lbc->fbcr, elbc_fcm_ctrl->index);
-> This should have set fbcr to index - column as well (after adjusting --
-> though really it's not a supported use case.  We should only be seeing
-> column !=3D 0 for oob.
->
-I have make a independent to fix this issue.
-(In fact,documentation says FCM will stop automatically after
-reading the last byte of spare region)
->> @@ -625,10 +776,16 @@ static int fsl_elbc_verify_buf(struct mtd_info *=
-mtd, const u_char *buf, int len)
->>   		return -EINVAL;
->>   	}
->>
->> -	for (i =3D 0; i<  len; i++)
->> -		if (in_8(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index + i])
->> -				!=3D buf[i])
->> -			break;
->> +	if (mtd->writesize>  2048)
->> +		for (i =3D 0; i<  len; i++)
->> +			if (elbc_fcm_ctrl->buffer[elbc_fcm_ctrl->index + i]
->> +					!=3D buf[i])
->> +				break;
->> +	else
->> +		for (i =3D 0; i<  len; i++)
->> +			if (in_8(&elbc_fcm_ctrl->addr[elbc_fcm_ctrl->index + i])
->> +					!=3D buf[i])
->> +				break;
-> Please use braces around multiline if/for bodies, even if they're
-> technically a single statement -- especially when you've got a dangling
-> else.
->
->>   	elbc_fcm_ctrl->index +=3D len;
->>   	return i =3D=3D len&&  elbc_fcm_ctrl->status =3D=3D LTESR_CC ? 0 : =
--EIO;
->> @@ -657,6 +814,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info=
- *mtd)
->>   	struct fsl_elbc_mtd *priv =3D chip->priv;
->>   	struct fsl_lbc_ctrl *ctrl =3D priv->ctrl;
->>   	struct fsl_lbc_regs __iomem *lbc =3D ctrl->regs;
->> +	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl =3D ctrl->nand;
->>   	unsigned int al;
->>
->>   	/* calculate FMR Address Length field */
->> @@ -707,12 +865,17 @@ static int fsl_elbc_chip_init_tail(struct mtd_in=
-fo *mtd)
->>   	dev_dbg(priv->dev, "fsl_elbc_init: mtd->oobsize =3D %d\n",
->>   		mtd->oobsize);
->>
->> +	kfree(elbc_fcm_ctrl->buffer);
->> +	elbc_fcm_ctrl->buffer =3D NULL;
->> +
->>   	/* adjust Option Register and ECC to match Flash page size */
->>   	if (mtd->writesize =3D=3D 512) {
->>   		priv->page_size =3D 0;
->>   		clrbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
->> -	} else if (mtd->writesize =3D=3D 2048) {
->> -		priv->page_size =3D 1;
->> +	} else if (mtd->writesize>=3D 2048) {
->> +		/* page_size =3D writesize / 2048 */
->> +		priv->page_size =3D mtd->writesize>>  11;
-> Why not just write priv->page_size =3D mtd->writesize / 2048 in the cod=
-e
-> rather than the comment (it compiles to the same code)?  Other than
-> because you were requested to remove priv->page_size, that is. :-)
->
->>   		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
->>   		/* adjust ecc setup if needed */
->>   		if ((in_be32(&lbc->bank[priv->bank].br)&  BR_DECC) =3D=3D
->> @@ -723,6 +886,14 @@ static int fsl_elbc_chip_init_tail(struct mtd_inf=
-o *mtd)
->>   					&fsl_elbc_oob_lp_eccm0;
->>   			chip->badblock_pattern =3D&largepage_memorybased;
->>   		}
->> +
->> +		/* re-malloc if pagesize>  2048*/
->> +		if (mtd->writesize>  2048) {
->> +			elbc_fcm_ctrl->buffer =3D kmalloc(mtd->writesize +
->> +						    mtd->oobsize, GFP_KERNEL);
->> +			if (!elbc_fcm_ctrl->buffer)
->> +				return -ENOMEM;
->> +		}
->>   	} else {
->>   		dev_err(priv->dev,
->>   			"fsl_elbc_init: page size %d is not supported\n",
-> buffer is a controller-wide resource, but you're setting it based on th=
-e
-> most-recently-probed NAND chip.  It should be large enough to
-> accommodate the largest page size in use on any connected chip.  Even i=
-f
-> all chips in the system have the same page size, you're introducing a
-> race if a previously-probed chip is already in use (the controller lock
-> is not held here).
->
-> Just allocate a buffer large enough for a 16K page size in the main ini=
-t
-> function, and print an error in the tail if you encounter a larger page
-> size.
->
->> @@ -886,6 +1057,17 @@ static int __devinit fsl_elbc_nand_probe(struct =
-platform_device *pdev)
->>   			goto err;
->>   		}
->>   		elbc_fcm_ctrl->counter++;
->> +		/*
->> +		 * Freescale FCM controller has a 2K size limitation of buffer
->> +		 * RAM, so elbc_fcm_ctrl->buffer have to be used if writesize
->> +		 * of chip is greater than 2048.
->> +		 * We malloc a large enough buffer at this point, because we
->> +		 * don't know writesize before calling nand_scan(). We will
->> +		 * re-malloc later if needed.
->> +		 */
->> +		elbc_fcm_ctrl->buffer =3D kmalloc(4096 * 6, GFP_KERNEL);
->> +		if (!elbc_fcm_ctrl->buffer)
->> +			return -ENOMEM;
-> Clean up properly if you fail to allocate the buffer.  This includes
-> freeing elbc_fcm_ctrl, setting fsl_lbc_ctrl_dev->nand to NULL, and
-> releasing fsl_elbc_nand_mutex.
-> -Scott
-- LiuShuo
+Hi Artem,=0A=0AFirst: I love the UBIFS. It performs really really well.=0A=
+=0AAmongst many well functioning targets (ARM 9263 based) this sucker had t=
+he nerves to act up:=0A=0A=0A=0AUncompressing Linux........... done, bootin=
+g the kernel.=0A[=A0=A0=A0 1.570000] UBIFS error (pid 1): ubifs_check_node:=
+ bad CRC: calculated 0x7d62d42c, read 0x1173c109=0A[=A0=A0=A0 1.580000] UBI=
+FS error (pid 1): ubifs_check_node: bad node at LEB 84:50696=0A[=A0=A0=A0 1=
+.580000] UBIFS error (pid 1): ubifs_read_node: expected node type 9=0A[=A0=
+=A0=A0 1.590000] Kernel panic - not syncing: VFS: Unable to mount root fs o=
+n unknown-block(0,0)=0A=0A=0A=0AI am running a kernel 2.6.32.8 with most pa=
+tches applied. Especially the recovery.c patch and the mtd (8 byte write bu=
+ffer patch) applied. The target that showed this error does not have these =
+patches applied.=0A=0AEven so... I copied the FLASH content to a target wit=
+h these patches and tried again in order to see if these patches would allo=
+w the kernel to rectify the problem. No cigar.=0AOf course I ran with debug=
+ enabled so here are the output (but even better I hope - here is the flash=
+ image for download: http://download.gnist.skov.com/corrupt_ubifs.img )=0A=
+=0A----=0A[=A0=A0=A0 1.570000] atmel_usart.3: ttyS3 at MMIO 0xfff94000 (irq=
+ =3D 9) is a ATMEL_SERIAL=0A[=A0=A0=A0 1.630000] brd: module loaded=0A[=A0=
+=A0=A0 1.660000] loop: module loaded=0A[=A0=A0=A0 1.670000] physmap platfor=
+m flash device: 04000000 at 10000000=0A[=A0=A0=A0 1.680000] Number of erase=
+ regions: 1=0A[=A0=A0=A0 1.680000] Warning:=A0 Overriding MaxBufWriteSize f=
+rom 2^6 to 2^3=0A[=A0=A0=A0 1.690000] Primary Vendor Command Set: 0002 (AMD=
+/Fujitsu Standard)=0A[=A0=A0=A0 1.690000] Primary Algorithm Table at 0040=
+=0A[=A0=A0=A0 1.700000] Alternative Vendor Command Set: 0000 (None)=0A[=A0=
+=A0=A0 1.700000] No Alternate Algorithm Table=0A[=A0=A0=A0 1.710000] Vcc Mi=
+nimum:=A0 2.7 V=0A[=A0=A0=A0 1.710000] Vcc Maximum:=A0 3.6 V=0A[=A0=A0=A0 1=
+.710000] No Vpp line=0A[=A0=A0=A0 1.720000] Typical byte/word write timeout=
+: 64 =C2=C2=B5s=0A[=A0=A0=A0 1.720000] Maximum byte/word write timeout: 512=
+ =C2=C2=B5s=0A[=A0=A0=A0 1.730000] Typical full buffer write timeout: 64 =
+=C2=C2=B5s=0A[=A0=A0=A0 1.730000] Maximum full buffer write timeout: 2048 =
+=C2=C2=B5s=0A[=A0=A0=A0 1.740000] Typical block erase timeout: 512 ms=0A[=
+=A0=A0=A0 1.740000] Maximum block erase timeout: 4096 ms=0A[=A0=A0=A0 1.750=
+000] Typical chip erase timeout: 131072 ms=0A[=A0=A0=A0 1.750000] Maximum c=
+hip erase timeout: 524288 ms=0A[=A0=A0=A0 1.760000] Device size: 0x2000000 =
+bytes (32 MiB)=0A[=A0=A0=A0 1.760000] Flash Device Interface description: 0=
+x0002=0A[=A0=A0=A0 1.770000]=A0=A0 - supports x8 and x16 via BYTE# with asy=
+nchronous interface=0A[=A0=A0=A0 1.770000] Max. bytes in buffer write: 0x8=
+=0A[=A0=A0=A0 1.780000] Number of Erase Block Regions: 1=0A[=A0=A0=A0 1.780=
+000]=A0=A0 Erase Region #0: BlockSize 0x20000 bytes, 256 blocks=0A[=A0=A0=
+=A0 1.790000] physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank=0A=
+[=A0=A0=A0 1.790000]=A0 Amd/Fujitsu Extended Query Table at 0x0040=0A[=A0=
+=A0=A0 1.800000] physmap-flash.0: CFI does not contain boot bank location. =
+Assuming top.=0A[=A0=A0=A0 1.810000] number of CFI chips: 1=0A[=A0=A0=A0 1.=
+810000] cfi_cmdset_0002: Disabling erase-suspend-program due to code broken=
+ness.=0A[=A0=A0=A0 1.820000] 5 cmdlinepart partitions found on MTD device p=
+hysmap-flash.0=0A=0A----=0A# skovsetup mountflash=0A[=A0 165.940000] UBI: a=
+ttaching mtd4 to ubi0=0A[=A0 165.950000] UBI: physical eraseblock size:=A0=
+=A0 131072 bytes (128 KiB)=0A[=A0 165.950000] UBI: logical eraseblock size:=
+=A0=A0=A0 130944 bytes=0A[=A0 165.960000] UBI: smallest flash I/O unit:=A0=
+=A0=A0 1=0A[=A0 165.960000] UBI: VID header offset:=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 64 (aligned 64)=0A[=A0 165.970000] UBI: data offset:=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 128=0A[=A0 166.040000] UBI: attached mtd4 to ub=
+i0=0A[=A0 166.060000] UBI: MTD device name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 "User"=0A[=A0 166.060000] UBI: MTD device size:=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 28 MiB=0A[=A0 166.120000] UBI: number of good PEBs:=A0=A0=A0=A0=
+=A0=A0=A0 230=0A[=A0 166.120000] UBI: number of bad PEBs:=A0=A0=A0=A0=A0=A0=
+=A0=A0 0=0A[=A0 166.120000] UBI: max. allowed volumes:=A0=A0=A0=A0=A0=A0 12=
+8=0A[=A0 166.150000] UBI: wear-leveling threshold:=A0=A0=A0 4096=0A[=A0 166=
+.150000] UBI: number of internal volumes: 1=0A[=A0 166.150000] UBI: number =
+of user volumes:=A0=A0=A0=A0 1=0A[=A0 166.170000] UBI: available PEBs:=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=0A[=A0 166.170000] UBI: total number of=
+ reserved PEBs: 230=0A[=A0 166.190000] UBI: number of PEBs reserved for bad=
+ PEB handling: 0=0A[=A0 166.230000] UBI: max/mean erase counter: 2/0=0A[=A0=
+ 166.230000] UBI: image sequence number: 1748877991=0A[=A0 166.260000] UBI:=
+ background thread "ubi_bgt0d" started, PID 2170=0AUBI device number 0, tot=
+al 230 LEBs (30117120 bytes, 28.7 MiB), available 0 LEBs (0 bytes), LEB siz=
+e 130944 bytes (127.9 KiB)=0A[=A0 166.520000] UBIFS: recovery needed=0A[=A0=
+ 166.680000] UBIFS error (pid 2177): ubifs_check_node: bad CRC: calculated =
+0x7d62d42c, read 0x1173c109=0A[=A0 166.690000] UBIFS error (pid 2177): ubif=
+s_check_node: bad node at LEB 84:50696=0A[=A0 166.700000] UBIFS error (pid =
+2177): ubifs_read_node: expected node type 9=0Amount: mounting ubi0:rootfs =
+on /skov/mnt/rootfs failed: Structure needs cleaning=0A#=0A---=0A=0ASo the =
+question is if UBI can made to recover this situation???=0A=0A=0ASincerely,=
+=0A=0ADr. Karsten Jeppesen,=0ASKOV AS
