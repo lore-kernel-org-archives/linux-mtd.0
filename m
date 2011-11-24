@@ -1,31 +1,19 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTW53-0006oZ-53
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 09:58:57 +0000
-Message-ID: <4ECE162D.7080408@freescale.com>
-Date: Thu, 24 Nov 2011 18:02:21 +0800
-From: LiuShuo <b35362@freescale.com>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTWNd-0007GL-M6
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 10:18:11 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] mtd/docg3: fix error handling in docg3_probe()
+References: <20111124072117.GC14122@elgon.mountain>
+Date: Thu, 24 Nov 2011 11:17:56 +0100
+In-Reply-To: <20111124072117.GC14122@elgon.mountain> (Dan Carpenter's message
+ of "Thu, 24 Nov 2011 10:21:18 +0300")
+Message-ID: <87pqghygbv.fsf@free.fr>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322095306-13156-1-git-send-email-b35362@freescale.com>	
- <1322095306-13156-3-git-send-email-b35362@freescale.com>	
- <1322120515.24797.296.camel@sauron.fi.intel.com>	
- <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
- <1322122592.24797.299.camel@sauron.fi.intel.com>
-In-Reply-To: <1322122592.24797.299.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
- Li Yang-R58472 <r58472@freescale.com>,
- Wood Scott-B07421 <B07421@freescale.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,38 +23,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B411=E6=9C=8824=E6=97=A5 16:16, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> On Thu, 2011-11-24 at 07:49 +0000, Li Yang-R58472 wrote:
->>> Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to s=
-upport
->>> large-page Nand chip
->>>
->>> On Thu, 2011-11-24 at 08:41 +0800, b35362@freescale.com wrote:
->>>> +               /*
->>>> +                * Freescale FCM controller has a 2K size limitation=
- of buffer
->>>> +                * RAM, so elbc_fcm_ctrl->buffer have to be used if =
-writesize
->>>> +                * of chip is greater than 2048.
->>>> +                * We malloc a large enough buffer (maximum page siz=
-e is
->>> 16K).
->>>> +                */
->>>> +               elbc_fcm_ctrl->buffer =3D kmalloc(1024 * 16 + 1024,
->>> GFP_KERNEL);
->>>
->>> Are there NANDs with 16KiB page size?
->> We are not sure, but are there possibility that chip with 16K page wil=
-l appear?  Or maybe we can add a MACRO for the maximum page size?
-> I do not know, but I know that allocating 32KiB of contiguous physical
-> RAM may cause unneeded memory pressure and even fail if the memory is
-> too fragmented. So I would not go for this unless this is necessary.
-What is your suggestion ? 8k is enough ?
-> Did you try to look how the NAND base interface could be changed to
-> avoid re-allocation altogether, BTW?
-This buffer is a controller-wide resource( as Scott said), I only=20
-allocate buffer one time in this version.
-It should be a large enough buffer for all chips.
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
--Liu Shuo
+> There was a kfree(docg3_floors); missing from the error handling
+> here.  Also we set docg3_floors[floor] = mtd; when mtd was an ERR_PTR
+> and then we call doc_release_device() on it.
+Hi Dan,
+
+The missing kfree was dealt with by a later patch amending the probe path :
+"mtd/docg3: add ECC correction code" submited in [1]. Your patch is in conflict
+with this later one.
+The doc_release_device() is an excellent catch. I wonder how you found it.
+
+> diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+> index 27c4fea..bfc1ea1 100644
+> --- a/drivers/mtd/devices/docg3.c
+> +++ b/drivers/mtd/devices/docg3.c
+> @@ -1110,21 +1110,24 @@ static int __init docg3_probe(struct platform_device *pdev)
+>  	if (!docg3_floors)
+>  		goto nomem;
+>  
+> -	ret = 0;
+>  	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++) {
+>  		mtd = doc_probe_device(base, floor, dev);
+> -		if (floor == 0 && !mtd)
+> -			goto notfound;
+> -		if (!IS_ERR_OR_NULL(mtd))
+> -			ret = mtd_device_parse_register(mtd, part_probes,
+> -							NULL, NULL, 0);
+> -		else
+> +		if (IS_ERR(mtd)) {
+>  			ret = PTR_ERR(mtd);
+> +			goto err_probe;
+> +		}
+> +		if (!mtd) {
+> +			if (floor == 0)
+> +				goto notfound;
+> +			else
+> +				continue;
+> +		}
+>  		docg3_floors[floor] = mtd;
+> +		ret = mtd_device_parse_register(mtd, part_probes, NULL, NULL,
+> +						0);
+>  		if (ret)
+>  			goto err_probe;
+> -		if (mtd)
+> -			found++;
+> +		found++;
+>  	}
+Okay, this looks better that the original code.
+
+>  
+>  	if (!found)
+> @@ -1138,9 +1141,11 @@ notfound:
+>  	ret = -ENODEV;
+>  	dev_info(dev, "No supported DiskOnChip found\n");
+>  err_probe:
+> -	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
+> +	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++) {
+>  		if (docg3_floors[floor])
+>  			doc_release_device(docg3_floors[floor]);
+> +	}
+> +	kfree(docg3_floors);
+This is in conflict. Could you drop that hunk and wait for the other patch to go
+upstream ? Or alternatively use the whole serie in [2] as your base ?
+I think some patches of the serie didn't make it in the tree you're
+using.
+
+Could you have a look at the tree with the whole serie, and rebase your patch on
+top of it ?
+
+
+Cheers.
+
+-- 
+Robert
+
+[1]: http://lists.infradead.org/pipermail/linux-mtd/2011-November/038496.html
+[2]: http://lists.infradead.org/pipermail/linux-mtd/2011-November/038483.html
