@@ -1,19 +1,17 @@
-Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
- helo=DB3EHSOBE006.bigfish.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTPZM-0007PG-LD
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 03:01:49 +0000
-Message-ID: <4ECDB398.4030508@freescale.com>
-Date: Thu, 24 Nov 2011 11:01:44 +0800
+Message-ID: <4ECDB5C5.3010903@freescale.com>
+Date: Thu, 24 Nov 2011 11:11:01 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
-References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
-Content-Type: text/plain; charset="GB2312"
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
+References: <1301474413-28821-1-git-send-email-b32955@freescale.com>	<1301474413-28821-4-git-send-email-b32955@freescale.com>	<201103301046.04357.ffainelli@freebox.fr>	<4D92F277.7060607@freescale.com>	<1301566248.2828.40.camel@localhost>	<AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
+ <CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
+In-Reply-To: <CAN8TOE9-iEPyWXLsxddeofazgrCWDWKgrx6eBkr7vdKErfgeCA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, Florian Fainelli <ffainelli@freebox.fr>,
+ Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +21,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Wolfram:
+Hi Brian:
+> Hi,
+>
+> I see nothing has happened with this thread recently. It doesn't
+> deserve to die though.
+>
+> On Thu, Mar 31, 2011 at 10:17 AM, Huang Shijie<shijie8@gmail.com>  wrote:
+>> 2011/3/31 Artem Bityutskiy<dedekind1@gmail.com>:
+>>>>> If you have new chips to support in the future, you should add them in
+>>>>> drivers/mtd/nand/nand_ids.c and not keep this file.
+>>>>>
+>>>> The data structure  nand_flash_dev{} does not contain enough information.
+>>>> So I want to the nand_device_info{} to replace it in future.
+>>> Just add this information, if it is of generic nature (like SLC/MLC
+>>> flag, required ECC strength, etc).
+> Are SLC/MLC and ECC strength necessary to track? I don't see a good
+We do not necessary  to track it.  For normal nand, I can compute it 
+myself ,
+just as the current driver does; for ONFI nand ,we should parse it out 
+from the Parameter Page.
+It need an extra patch to do this.
+> benefit to cost ratio of trying to detect ECC strength especially,
+> since the levels specified in data sheets vary without much pattern
+> and nobody provides a way for decoding this from ID; do you really
+> want to have to make separate chip entries for every single chip that
+> comes around?
+>
+>>>>> I still do not understand why this would be needed, is it because the generic
+>>>>> code does not provide enough informations for your driver?
+>>>>>
+>>>> yes.
+>>>>
+>>>> IMHO, the generic code is somehow trapped in a wrong way. :(
+> I may agree, but can you be more specific on the trap?
+>
+>>>> Paring the id bytes is not sufficient to get all the information you
+>>>> need which is faced by me.
+> What's an alternative to "paring the id bytes"?
+>
+>>>> What's more, I think the paring code is ugly, see the nand_get_flash_type().
+>>> You are welcome to fix this. There is _a lot_ of ugly code in MTD
+>>> because no one loves it. Give it some love :-)
+> While I agree that a lot of this is ugly, it is mostly a matter of
+> necessity. NAND manufacturers do not have a standard (ONFI doesn't
+> really count, since there's basically 1 manufacturer using it), and so
+> the most "generic" code is to have different code paths for different
+> manufacturers (often with exceptions to each rule, since even a single
+> manufacturer changes its standards arbitrarily). Then you find
+> manufacturers like Toshiba that recently don't have any (published)
+> pattern at all for detecting OOB size generically.
+bad news.  I do not have such chip yet, If i have , i will test it, and 
+change the current MTD code.
+> Thus, it seems to me like we will need some form of the approach
+> provided by Huang. As I've found, there are some things that just
+> can't be decoded from the ID these days, so our ID table will need to
+> be able to track:
+> * full ID string (not just the 2nd byte "Device ID")
+> * relevant bad block scanning options
+>
+> FWIW, we already implement an exception table in our own driver that
+> includes the above 2 items, for chips that can't be handled with the
+> table/detection structure as-is. We don't particularly need SLC/MLC
+> but I don't object to recording it if we can determine it reliably,
+> and while ECC level could be useful, it is difficult to discover
+> generically, as I mentioned above.
+>
+I do not use the SLC/MLC info now.
+>>>> Why not create a new database which contains all the necessary
+>>>> information for a nand, and can be easy
+>>>> find by the id bytes as the keyword?
+>>> You can create this database by extending/improving/cleaning up the
+>>> existing code base with a nice series of patches.
+>>>
+>> ok. I will try to fix the generic code before my driver is submitted.
+> What happened to this statement? I see that your driver was submitted,
+> but no efforts were made for chip detection cleanup. Were you
+> satisfied with the current detection?
+When i am free, I will change the current code. But i am a little busy 
+now :(
 
-The ARCH part of the GPMI is not merged into mainline now.
-I do not know why it can not be accepted. :(
 
-How did compile the GPMI driver in such situation?
 
 Best Regards
 Huang Shijie
-> Fixes:
+> While we're on the subject, I'll direct your attention to this NAND
+> data table that I've worked on. It should provide a decent summary of
+> most of the data sheets I have sorted through. It should also show you
+> that certain things are going to be very hard to detect (e.g., ECC
+> level). It should also show that while some chips are not supported by
+> standard code (e.g., weird bad block scanning features that haven't
+> been supported, non-standard OOB sizes with no given pattern in the
+> datasheets), the vast majority of the chips I've come across should be
+> detected properly:
 >
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'gpmi_nfc_init':
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: error: 'THIS_MODULE' undeclared (first use in this function)
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: note: each undeclared identifier is reported only once for each function it appears in
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:15: error: expected declaration specifiers or '...' before string constant
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: data definition has no type or storage class
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: type defaults to 'int' in declaration of 'MODULE_AUTHOR'
+> http://linux-mtd.infradead.org/nand-data/nanddata.html
 >
-> and some more...
+> And of course, please contribute to
+> git://git.infradead.org/mtd-www.git if you have additions or edits for
+> the table. It's not perfect, but it can help for sorting through
+> different chips.
 >
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> Brian
 >
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 071b634..493ec2f 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -21,9 +21,9 @@
->  #include <linux/clk.h>
->  #include <linux/slab.h>
->  #include <linux/interrupt.h>
-> +#include <linux/module.h>
->  #include <linux/mtd/gpmi-nand.h>
->  #include <linux/mtd/partitions.h>
-> -
->  #include "gpmi-nand.h"
->  
->  /* add our owner bbt descriptor */
