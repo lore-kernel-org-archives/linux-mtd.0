@@ -1,22 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTgrO-0004a1-GE
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 21:29:35 +0000
-Received: by fabs1 with SMTP id s1so1003655fab.36
- for <linux-mtd@lists.infradead.org>; Thu, 24 Nov 2011 13:29:32 -0800 (PST)
-Subject: Re: [patch] mtd/docg3: fix error handling in docg3_probe()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Thu, 24 Nov 2011 23:29:24 +0200
-In-Reply-To: <878vn5xml5.fsf@free.fr>
-References: <20111124072117.GC14122@elgon.mountain> <87pqghygbv.fsf@free.fr>
- <20111124103147.GF3195@mwanda> <878vn5xml5.fsf@free.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1322170169.2216.5.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Dan Carpenter <dan.carpenter@oracle.com>
-Reply-To: dedekind1@gmail.com
+Received: from relay1.ptmail.sapo.pt ([212.55.154.21] helo=sapo.pt)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTh0r-0005Ji-6t
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 21:39:22 +0000
+Message-ID: <20111124213912.29983l3cd4vtfmo0@mail.sapo.pt>
+Date: Thu, 24 Nov 2011 21:39:12 +0000
+From: dhlm83@sapo.pt
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: flash_erase ERROR!
+References: <20110922111511.15615t65c0et2ban@mail.sapo.pt>
+ <1319044961-26745-1-git-send-email-computersforpeace@gmail.com>
+ <CAN8TOE9Fr_Gh=fK3+Je1Dv87chX2-cxqDPfvLgez-j7Z41uGyw@mail.gmail.com>
+In-Reply-To: <CAN8TOE9Fr_Gh=fK3+Je1Dv87chX2-cxqDPfvLgez-j7Z41uGyw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15; DelSp="Yes"; format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-11-24 at 22:00 +0100, Robert Jarzmik wrote:
-> > I'm on linux-next.  They're all going to hit linux next soon right?
-> Euh, I don't know, it's Artem decision there, as he's taking my patches.
 
-Sorry, I've just noticed that I actually pushed out only some of your
-patches. Fixed now - pushed the whole series and added Reviewed-by.
-Please, check. There are a couple of sparse/gcc-4.6 warnings still there
-when I apply whole series:
+Citando Brian Norris <computersforpeace@gmail.com>:
 
-  CHECK   drivers/mtd/devices/docg3.c
-drivers/mtd/devices/docg3.c:577:20: warning: dubious: !x | y
-  CC [M]  drivers/mtd/devices/docg3.o
-drivers/mtd/devices/docg3.c: In function ‘doc_write_page_ecc_init’:
-drivers/mtd/devices/docg3.c:577:6: warning: suggest parentheses around operand of ‘!’ or change ‘|’ to ‘||’ or ‘!’ to ‘~’ [-Wparentheses]
-drivers/mtd/devices/docg3.c: At top level:
-drivers/mtd/devices/docg3.c:1050:12: warning: ‘doc_get_erase_count’ defined but not used [-Wunused-function]
-  CHK     include/linux/version.h
+> Hello Domingos,
+>
+> On Wed, Oct 19, 2011 at 10:22 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> P.S. It looks like your problem is pretty simple to fix. Try this patch
+>> out, and perhaps it can be integrated into mtd-utils to provide a small
+>> breath of support for 2.4.x in the "legacy" section of libmtd :)
+>
+> Did you get to try out my patch? If it was useful, then we might add
+> it to the legacy support in mtd-utils; otherwise, I'll be dropping it
+> from my own consideration soon.
+>
+> Brian
 
-Artem.
+Hello.
+
+Sorry, but a dont try your PATCH.
+
+Thanks.
