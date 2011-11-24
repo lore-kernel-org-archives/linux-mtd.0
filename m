@@ -1,20 +1,31 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTVeT-0005br-7O
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 09:31:29 +0000
-Date: Thu, 24 Nov 2011 12:31:20 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: walter harms <wharms@bfs.de>
-Subject: Re: [patch] mtd/docg3: fix error handling in docg3_probe()
-Message-ID: <20111124093119.GH3258@mwanda>
-References: <20111124072117.GC14122@elgon.mountain> <4ECE083D.4030707@bfs.de>
+ id 1RTW53-0006oZ-53
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 09:58:57 +0000
+Message-ID: <4ECE162D.7080408@freescale.com>
+Date: Thu, 24 Nov 2011 18:02:21 +0800
+From: LiuShuo <b35362@freescale.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="bpVaumkpfGNUagdU"
-Content-Disposition: inline
-In-Reply-To: <4ECE083D.4030707@bfs.de>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, kernel-janitors@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322095306-13156-1-git-send-email-b35362@freescale.com>	
+ <1322095306-13156-3-git-send-email-b35362@freescale.com>	
+ <1322120515.24797.296.camel@sauron.fi.intel.com>	
+ <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
+ <1322122592.24797.299.camel@sauron.fi.intel.com>
+In-Reply-To: <1322122592.24797.299.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+ Li Yang-R58472 <r58472@freescale.com>,
+ Wood Scott-B07421 <B07421@freescale.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +35,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+=E4=BA=8E 2011=E5=B9=B411=E6=9C=8824=E6=97=A5 16:16, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Thu, 2011-11-24 at 07:49 +0000, Li Yang-R58472 wrote:
+>>> Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to s=
+upport
+>>> large-page Nand chip
+>>>
+>>> On Thu, 2011-11-24 at 08:41 +0800, b35362@freescale.com wrote:
+>>>> +               /*
+>>>> +                * Freescale FCM controller has a 2K size limitation=
+ of buffer
+>>>> +                * RAM, so elbc_fcm_ctrl->buffer have to be used if =
+writesize
+>>>> +                * of chip is greater than 2048.
+>>>> +                * We malloc a large enough buffer (maximum page siz=
+e is
+>>> 16K).
+>>>> +                */
+>>>> +               elbc_fcm_ctrl->buffer =3D kmalloc(1024 * 16 + 1024,
+>>> GFP_KERNEL);
+>>>
+>>> Are there NANDs with 16KiB page size?
+>> We are not sure, but are there possibility that chip with 16K page wil=
+l appear?  Or maybe we can add a MACRO for the maximum page size?
+> I do not know, but I know that allocating 32KiB of contiguous physical
+> RAM may cause unneeded memory pressure and even fail if the memory is
+> too fragmented. So I would not go for this unless this is necessary.
+What is your suggestion ? 8k is enough ?
+> Did you try to look how the NAND base interface could be changed to
+> avoid re-allocation altogether, BTW?
+This buffer is a controller-wide resource( as Scott said), I only=20
+allocate buffer one time in this version.
+It should be a large enough buffer for all chips.
 
---bpVaumkpfGNUagdU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 24, 2011 at 10:02:53AM +0100, walter harms wrote:
-> 	the code nicely shows that docg3_floors[floor] will be foobar if mtd=3D=
-=3DNULL and floor > 0
-> 	I guess that can cause problems with the "doc_release_device(docg3_floor=
-s[floor]);"
-> =09
-> 	perhaps a "docg3_floors[floor] =3D NULL;" can help here ?
->=20
-
-It's allocated with kzalloc() so it already is.
-
-regards,
-dan carpenter
-
---bpVaumkpfGNUagdU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJOzg7nAAoJEOnZkXI/YHqRhxEQAKM0rCjCY4nS93Y+ah4mrIiN
-30P/6mJP/b9yiO/QrdNhHCdTVTCPRvWp0BF+aucNncljDwSDd4S6snbflKNVz62A
-1tdaGlGRIg7OxRwMotuzU+xJwGkD5x4zYHJnZhWZ5CudJDrt3cp0y1gZNKZmZRZB
-FSHySrr8/r0CYNCDG/QliRpBuo8CPKUbHJTGIGhRalb5h95DYBnH6Ir07t//1JSL
-KIGZGaUTITNTn/uzp7NcCtQxomR3b0Lm8Nzco8NNyG9NmXp1Fn9QcLU9Q6MDwI6u
-jg0lcg9iRVJ3tk8eykubohBudlykGSquB15Sk20bY1oHb8QNsO9q1kwY+pAVuHkm
-mHAdBt9WEf2NAR0t/GMsx51FtanmvDCQi+LgpLA8zF4/Qk4E/D+KQGfarUYGRuIp
-5vF/iYCvl4xBRXWdAoW242slYbrbVloBHR8YcPCxY3ObtyKBvrxrUoJNR/OpmYo+
-WIyanyFNmJbL+qws1tln/Owben3rJpjlwa8R70mInLkyxgd+ZCcNY6GKp9nzkN+C
-6rIgqxrEuZeNj4KF1pZb7mofgHtjAyhvFO9jWJwTbJNXPrfxhxVIOoASrXw2Mfbb
-DaPJJykgH5CjN5MfNPosZkbNpqXrDR6XPov+AR5sDp/89oXFX2RUubnLDlPZ5PKl
-Ph2SZKmVwXO4MDjLQbMb
-=Pjt3
------END PGP SIGNATURE-----
-
---bpVaumkpfGNUagdU--
+-Liu Shuo
