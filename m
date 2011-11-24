@@ -1,27 +1,30 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
+ helo=VA3EHSOBE010.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTTvg-0003XL-Tm
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 07:41:09 +0000
-Received: by iapp10 with SMTP id p10so3051748iap.36
- for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2011 23:41:08 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ id 1RTU3P-0004Uh-7B
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 07:49:07 +0000
+From: Li Yang-R58472 <r58472@freescale.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Liu Shuo-B35362
+ <B35362@freescale.com>
+Subject: RE: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
  large-page Nand chip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: b35362@freescale.com
-Date: Thu, 24 Nov 2011 09:41:48 +0200
-In-Reply-To: <1322095306-13156-3-git-send-email-b35362@freescale.com>
+Date: Thu, 24 Nov 2011 07:49:03 +0000
+Message-ID: <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
 References: <1322095306-13156-1-git-send-email-b35362@freescale.com>
  <1322095306-13156-3-git-send-email-b35362@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-GYr90kBodyQcuCaED/XK"
-Message-ID: <1322120515.24797.296.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- scottwood@freescale.com, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+ <1322120515.24797.296.camel@sauron.fi.intel.com>
+In-Reply-To: <1322120515.24797.296.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+ Wood Scott-B07421 <B07421@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,51 +34,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-GYr90kBodyQcuCaED/XK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2011-11-24 at 08:41 +0800, b35362@freescale.com wrote:
-> +               /*
-> +                * Freescale FCM controller has a 2K size limitation of b=
-uffer
-> +                * RAM, so elbc_fcm_ctrl->buffer have to be used if write=
-size
-> +                * of chip is greater than 2048.
-> +                * We malloc a large enough buffer (maximum page size is =
-16K).
-> +                */
-> +               elbc_fcm_ctrl->buffer =3D kmalloc(1024 * 16 + 1024, GFP_K=
-ERNEL);=20
-
-Are there NANDs with 16KiB page size?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-GYr90kBodyQcuCaED/XK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJOzfU8AAoJECmIfjd9wqK0yYkP/RaJ/NQr9rgNt0MbLMDIASMs
-itvVY8Uw99utfOLx3Sgjf95IbLWW+Fiz2lDiTg5jM8YQ/Lse2PHK7yctisJjpDNC
-+7OL07HUOvlp4tCDlfV+Y0e80KetPKEkmDWsV8cpJTaCkii5pBx/NALGqLxhLVCp
-BZFoZOaBdg52rWnf6/K+0j1PI1rY7F6wRtm5cR2+pV1nsQdnZa8tKn23CkK5ygLr
-jGLN++iWQW/xdLvfIC0MIrf6527PNobXpmhjSQrLX8eqeZoW+RDH75b9A54d9J6W
-JFBfzMghp7LS6Id1/DoJEooekj1SgZhzyPYHB8UNfl6Uh3JaOO4ADwDdI4aiUj96
-XN/QdS4ofjabwCd7YOGDkeu3mhD3833eXeNwbGyP6+5WRzkPYy2E+3bQMgQJ6E/0
-4IMprwZ8OUNvtIiwwn0VJwu09S7+UTOClg7LxDZblMMp6KDA/Led1jHivjuSKmU/
-U56f4avrqnmtcinzniv7xgx5zj4b+efWYytl7eEq4KfxxhYB6wQUE68qGmTMyxkK
-xSl8WgKZq6xQ8L6e3oYFAiLWHzq6WtTThM/PUE95RlV/FjHu1Zejwp10dGj3c4xU
-iwSHA+WaXnRgiQ+Bxxou+QxZYDGI/uF/W/9yXiGXNxoH7EWRZDGx9TAkmbLO5bBV
-ESRzrhcLbM1yLepsJ4q7
-=OOLJ
------END PGP SIGNATURE-----
-
---=-GYr90kBodyQcuCaED/XK--
+PiBTdWJqZWN0OiBSZTogW1BBVENIIDMvM10gbXRkL25hbmQgOiB3b3JrYXJvdW5kIGZvciBGcmVl
+c2NhbGUgRkNNIHRvIHN1cHBvcnQNCj4gbGFyZ2UtcGFnZSBOYW5kIGNoaXANCj4gDQo+IE9uIFRo
+dSwgMjAxMS0xMS0yNCBhdCAwODo0MSArMDgwMCwgYjM1MzYyQGZyZWVzY2FsZS5jb20gd3JvdGU6
+DQo+ID4gKyAgICAgICAgICAgICAgIC8qDQo+ID4gKyAgICAgICAgICAgICAgICAqIEZyZWVzY2Fs
+ZSBGQ00gY29udHJvbGxlciBoYXMgYSAySyBzaXplIGxpbWl0YXRpb24gb2YgYnVmZmVyDQo+ID4g
+KyAgICAgICAgICAgICAgICAqIFJBTSwgc28gZWxiY19mY21fY3RybC0+YnVmZmVyIGhhdmUgdG8g
+YmUgdXNlZCBpZiB3cml0ZXNpemUNCj4gPiArICAgICAgICAgICAgICAgICogb2YgY2hpcCBpcyBn
+cmVhdGVyIHRoYW4gMjA0OC4NCj4gPiArICAgICAgICAgICAgICAgICogV2UgbWFsbG9jIGEgbGFy
+Z2UgZW5vdWdoIGJ1ZmZlciAobWF4aW11bSBwYWdlIHNpemUgaXMNCj4gMTZLKS4NCj4gPiArICAg
+ICAgICAgICAgICAgICovDQo+ID4gKyAgICAgICAgICAgICAgIGVsYmNfZmNtX2N0cmwtPmJ1ZmZl
+ciA9IGttYWxsb2MoMTAyNCAqIDE2ICsgMTAyNCwNCj4gR0ZQX0tFUk5FTCk7DQo+IA0KPiBBcmUg
+dGhlcmUgTkFORHMgd2l0aCAxNktpQiBwYWdlIHNpemU/DQoNCldlIGFyZSBub3Qgc3VyZSwgYnV0
+IGFyZSB0aGVyZSBwb3NzaWJpbGl0eSB0aGF0IGNoaXAgd2l0aCAxNksgcGFnZSB3aWxsIGFwcGVh
+cj8gIE9yIG1heWJlIHdlIGNhbiBhZGQgYSBNQUNSTyBmb3IgdGhlIG1heGltdW0gcGFnZSBzaXpl
+Pw0KDQotIExlbw0K
