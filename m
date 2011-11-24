@@ -1,20 +1,33 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTU88-0004p6-7u
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 07:54:00 +0000
-Date: Thu, 24 Nov 2011 08:53:54 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
-Message-ID: <20111124075354.GB8439@pengutronix.de>
-References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
- <4ECDB398.4030508@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
-Content-Disposition: inline
-In-Reply-To: <4ECDB398.4030508@freescale.com>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTUTB-0006km-Nq
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 08:15:46 +0000
+Received: by iapp10 with SMTP id p10so3086129iap.36
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Nov 2011 00:15:44 -0800 (PST)
+Subject: RE: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Li Yang-R58472 <r58472@freescale.com>
+Date: Thu, 24 Nov 2011 10:16:25 +0200
+In-Reply-To: <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
+References: <1322095306-13156-1-git-send-email-b35362@freescale.com>
+ <1322095306-13156-3-git-send-email-b35362@freescale.com>
+ <1322120515.24797.296.camel@sauron.fi.intel.com>
+ <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-fjMxwjwmtk5cQh7hPUAn"
+Message-ID: <1322122592.24797.299.camel@sauron.fi.intel.com>
+Mime-Version: 1.0
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Liu Shuo-B35362 <B35362@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +38,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---i0/AhcQY5QxfSsSZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-fjMxwjwmtk5cQh7hPUAn
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Thu, 2011-11-24 at 07:49 +0000, Li Yang-R58472 wrote:
+> > Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to sup=
+port
+> > large-page Nand chip
+> >=20
+> > On Thu, 2011-11-24 at 08:41 +0800, b35362@freescale.com wrote:
+> > > +               /*
+> > > +                * Freescale FCM controller has a 2K size limitation =
+of buffer
+> > > +                * RAM, so elbc_fcm_ctrl->buffer have to be used if w=
+ritesize
+> > > +                * of chip is greater than 2048.
+> > > +                * We malloc a large enough buffer (maximum page size=
+ is
+> > 16K).
+> > > +                */
+> > > +               elbc_fcm_ctrl->buffer =3D kmalloc(1024 * 16 + 1024,
+> > GFP_KERNEL);
+> >=20
+> > Are there NANDs with 16KiB page size?
+>=20
+> We are not sure, but are there possibility that chip with 16K page will a=
+ppear?  Or maybe we can add a MACRO for the maximum page size?
 
-> The ARCH part of the GPMI is not merged into mainline now.
-> I do not know why it can not be accepted. :(
+I do not know, but I know that allocating 32KiB of contiguous physical
+RAM may cause unneeded memory pressure and even fail if the memory is
+too fragmented. So I would not go for this unless this is necessary.
 
-Just resend it; this is quite normal, we are all too busy :/
-
-> How did compile the GPMI driver in such situation?
-
-I applied the arch-party manually.
+Did you try to look how the NAND base interface could be changed to
+avoid re-allocation altogether, BTW?
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy
 
---i0/AhcQY5QxfSsSZ
+--=-fjMxwjwmtk5cQh7hPUAn
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iEYEARECAAYFAk7N+BIACgkQD27XaX1/VRtuMACgtPRar6UR6IScuvNKT4uLXjWJ
-M2AAoMO10W4F1JSgE1Clxr3STefVeimG
-=DSXs
+iQIcBAABAgAGBQJOzf1ZAAoJECmIfjd9wqK01F8P/2iydA04dZPfl+fGg4twydxA
+ihpnMilQKxfZ843PnFhqkmdW0f+1zOi0HxWJM6bvOvCNFZEODLNkPixTw0gmi1Y9
+eiixLspe/icyKrbfyNDkYgtHX3uxQcJGLWLtvPj/72BZqA2Kf07Ls/kc9yvZJEIY
+l7hwjXRlzb5rNjhcZjxaaxgOupIEkP93rhyyG8nX2n1Dq7o6+XFZH9eDi4R4FLps
+or6Ls3/tnBAlPQzuyYTEVyfY+fLI8VufsXbjKSo7wP5PklZY/Ig+PoA0J5muKVhG
+SH3M8z6TOzKMtRyRkgT4j2OJYc8z2XdpYvbRfNhkRXAZaTHIL2qEY6grI6qucVMM
+KbM5Zc5Ag/aZgTCju38BUUYncmLTRTdBRVOWcs+bu1lS/Eo1zYMG037BnDnIPeDv
+1Q/4D67vfhFl7fFcFn1AL9X6Y816ncYehcjHberCe5GEwQ4eV99WrzIze+XMbSDG
+x+2K53zg0+qOCVtl+Hhuxu97d5Da2Nfdflk4b79lQt1JW5oOqDv/xr7XRmrO42C/
+g2C0znwiSAgBEu6M5vL63K6bnILDkpLsMdCTJqUTasFYma2yBvqRgP4/NAJYWhBB
+Kn72QYV6oKKE2NtvSZ22cPSu9kBsWuqlMIvZaRhWFI6Q1MURfnfkZ5QxUiU+NYk/
+RGFz1FL15Z2QrLbpsgGl
+=2uYC
 -----END PGP SIGNATURE-----
 
---i0/AhcQY5QxfSsSZ--
+--=-fjMxwjwmtk5cQh7hPUAn--
