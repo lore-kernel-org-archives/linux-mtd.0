@@ -1,35 +1,25 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTX8T-0004Gs-B0
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 11:06:33 +0000
-Received: by ggki1 with SMTP id i1so2824371ggk.36
- for <linux-mtd@lists.infradead.org>; Thu, 24 Nov 2011 03:06:32 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: LiuShuo <b35362@freescale.com>
-Date: Thu, 24 Nov 2011 13:07:13 +0200
-In-Reply-To: <4ECE162D.7080408@freescale.com>
-References: <1322095306-13156-1-git-send-email-b35362@freescale.com>
- <1322095306-13156-3-git-send-email-b35362@freescale.com>
- <1322120515.24797.296.camel@sauron.fi.intel.com>
- <3F607A5180246847A760FD34122A1E052DC61F@039-SN1MPN1-003.039d.mgd.msft.net>
- <1322122592.24797.299.camel@sauron.fi.intel.com>
- <4ECE162D.7080408@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-QMGEMjzdNHkByEM8QSYD"
-Message-ID: <1322132839.24797.301.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
- Li Yang-R58472 <r58472@freescale.com>,
- Wood Scott-B07421 <B07421@freescale.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Reply-To: dedekind1@gmail.com
+Received: from gate.crashing.org ([63.228.1.57])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RTaEO-0007l0-Ad
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 14:24:53 +0000
+Subject: Re: [PATCH v2] Integrated Flash Controller support
+Mime-Version: 1.0 (Apple Message framework v1251.1)
+Content-Type: text/plain; charset=us-ascii
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
+Date: Thu, 24 Nov 2011 08:24:33 -0600
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
+References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+ <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Artem.Bityutskiy@nokia.com, Li Yang-R58472 <r58472@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
+ "b35362@freescale.com>" <b35362@freescale.com>,
+ "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,69 +30,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QMGEMjzdNHkByEM8QSYD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Nov 22, 2011, at 9:41 PM, Kumar Gala wrote:
 
-On Thu, 2011-11-24 at 18:02 +0800, LiuShuo wrote:
-> =E4=BA=8E 2011=E5=B9=B411=E6=9C=8824=E6=97=A5 16:16, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> > On Thu, 2011-11-24 at 07:49 +0000, Li Yang-R58472 wrote:
-> >>> Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to s=
-upport
-> >>> large-page Nand chip
-> >>>
-> >>> On Thu, 2011-11-24 at 08:41 +0800, b35362@freescale.com wrote:
-> >>>> +               /*
-> >>>> +                * Freescale FCM controller has a 2K size limitation=
- of buffer
-> >>>> +                * RAM, so elbc_fcm_ctrl->buffer have to be used if =
-writesize
-> >>>> +                * of chip is greater than 2048.
-> >>>> +                * We malloc a large enough buffer (maximum page siz=
-e is
-> >>> 16K).
-> >>>> +                */
-> >>>> +               elbc_fcm_ctrl->buffer =3D kmalloc(1024 * 16 + 1024,
-> >>> GFP_KERNEL);
-> >>>
-> >>> Are there NANDs with 16KiB page size?
-> >> We are not sure, but are there possibility that chip with 16K page wil=
-l appear?  Or maybe we can add a MACRO for the maximum page size?
-> > I do not know, but I know that allocating 32KiB of contiguous physical
-> > RAM may cause unneeded memory pressure and even fail if the memory is
-> > too fragmented. So I would not go for this unless this is necessary.
-> What is your suggestion ? 8k is enough ?
+>=20
+> On Oct 31, 2011, at 4:38 AM, <b35362@freescale.com> =
+<b35362@freescale.com> wrote:
+>=20
+>> From: Liu Shuo <b35362@freescale.com>
+>>=20
+>> Integrated Flash Controller supports various flashes like NOR, NAND
+>> and other devices using NOR, NAND and GPCM Machine available on it.
+>> IFC supports four chip selects.
+>>=20
+>> Signed-off-by: Dipen Dudhat <Dipen.Dudhat@freescale.com>
+>> Signed-off-by: Scott Wood <scottwood@freescale.com>
+>> Signed-off-by: Li Yang <leoli@freescale.com>
+>> Signed-off-by: Liu Shuo <b35362@freescale.com>
+>> ---
+>> arch/powerpc/Kconfig               |    4 +
+>> arch/powerpc/include/asm/fsl_ifc.h |  834 =
+++++++++++++++++++++++++++++++++++++
+>> arch/powerpc/sysdev/Makefile       |    1 +
+>> arch/powerpc/sysdev/fsl_ifc.c      |  322 ++++++++++++++
+>> 4 files changed, 1161 insertions(+), 0 deletions(-)
+>> create mode 100644 arch/powerpc/include/asm/fsl_ifc.h
+>> create mode 100644 arch/powerpc/sysdev/fsl_ifc.c
+>=20
+> Guys,
+>=20
+> How are we handling this patchset since it touches drivers/mtd/nand?
 
-Up to you, I do not have suggestions, just expressed a concern. I'd keep
-the buffer smaller if possible. By the time 16KiB pages appear, your HW
-may retire already :-)
+Artem,
 
---=20
-Best Regards,
-Artem Bityutskiy
+thoughts?
 
---=-QMGEMjzdNHkByEM8QSYD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJOziVhAAoJECmIfjd9wqK0dUUQAJXvsAdOTgo3ewdN8MExeQ6q
-P6E8WMMcX+8RgPCAbnQjeGPYvKCdNq3bG0bWANrxBjOk5DoTePz+4C1DriIVFT3X
-WjL64fULmfDRAk/4yNx/J1+J8X3fEdI4GwSWnWeOCzZpm+9SWJaePj/2e5RpAbET
-AYRX22G/2Eh8kd89Vje3KYOtTBdaNgnQiOss1Tudr6qRaDrJENXlixSnqjnaInB/
-zEIDKc/tzgra/suVC8vIFhaoikYHycL0MSa59sXHU8hGcDz6j5iCjbiJC0jgMb7V
-4FOg4CxmpD9RonX2qydUQzfJXTHAC04zfOpkbv62Gc0fCYpcfhoqfrTaulL0+Rx+
-mlMqob7Dz2v24yul7muE9AL+WcwVTAf6Anx/RwIPGGN6I9NipfeCLQhs0BkUE8U/
-OylPpQ98BB5hmXzksSsG6PA7DGlF0xkUEZn5qCCDrFPUy5vhWeVS6suat6lyqG6Z
-WbNxUtBrExvlNh/5fWV3av0oz53wt+MQlqw4mJEopQTS0An+Dvw+Zc5y2dizl41M
-sJy1k5KE6g/F6zijsnzJLxRThOXsrl0AtviiZx7jirrbTW2US0Vw5L6goDxFbBUf
-1LmuslsdbMA2IqGiig52MGjGzoo7bks23Z+XwwyhagwleEHvSvo/2h5n4SJUWhN7
-eymrbGr9JfHjj5cM45Hs
-=+v3x
------END PGP SIGNATURE-----
-
---=-QMGEMjzdNHkByEM8QSYD--
+- k=
