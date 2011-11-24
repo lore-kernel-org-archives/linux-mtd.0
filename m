@@ -1,17 +1,38 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RTTcy-0000cA-SU
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 07:21:49 +0000
-Date: Thu, 24 Nov 2011 10:21:18 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd/docg3: fix error handling in docg3_probe()
-Message-ID: <20111124072117.GC14122@elgon.mountain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
+ id 1RTThD-0001Oe-DF
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2011 07:26:12 +0000
+Received: by iapp10 with SMTP id p10so3037662iap.36
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2011 23:26:09 -0800 (PST)
+Subject: Re: [PATCH 0/2] small mtd-utils fixes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 24 Nov 2011 09:26:48 +0200
+In-Reply-To: <CAMjpGUfkc7JftBx5uMBDy7YAn2z4yCh6eVYibEZ9pQayphFcsQ@mail.gmail.com>
+References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
+ <1321568352.2272.33.camel@koala>
+ <CAN8TOE8uSW5rHbs8VeTFTNcqNwZGwUZpPJpfOgxtUsGL1PTJZg@mail.gmail.com>
+ <1321653636.2141.0.camel@koala> <87k46xrqyr.fsf@macbook.be.48ers.dk>
+ <CAN8TOE8Gd97SXK1ACCtatJ97Q8ESZQJNH5mVU0Ej2ruOL0dZRQ@mail.gmail.com>
+ <1321735668.2167.2.camel@koala>
+ <CAMjpGUfB0OoP_TvQ+eVEwx6_nmJ0p4jrCyu4ceTQBHGeRvUm-Q@mail.gmail.com>
+ <1321743864.2167.6.camel@koala>
+ <1321790131.15493.85.camel@shinybook.infradead.org>
+ <1321794503.2170.3.camel@koala>
+ <CAMjpGUdsdppTEOuPdWTGGU=ztbyvoF4_=TiZ1RqQ4W1_wFhbkQ@mail.gmail.com>
+ <1321997940.2222.19.camel@koala>
+ <CAMjpGUdxGfo7dfSNhzQUHg3QGkKW7rQewiFhDjGyJ0TjjQkdkA@mail.gmail.com>
+ <1322034324.24797.230.camel@sauron.fi.intel.com>
+ <CAMjpGUfkc7JftBx5uMBDy7YAn2z4yCh6eVYibEZ9pQayphFcsQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-32enh1yB79Bq44B1+JwD"
+Message-ID: <1322119614.24797.294.camel@sauron.fi.intel.com>
+Mime-Version: 1.0
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Kevin Cernekee <cernekee@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,62 +42,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There was a kfree(docg3_floors); missing from the error handling
-here.  Also we set docg3_floors[floor] = mtd; when mtd was an ERR_PTR
-and then we call doc_release_device() on it.
 
-I reworked it a bit, so hopefully the code is more clear now.
+--=-32enh1yB79Bq44B1+JwD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, 2011-11-23 at 20:45 -0500, Mike Frysinger wrote:
+> sure, but we're not taking about options here, we're talking about
+> required arguments:
+> ./make-release.sh <version> [output_dir]
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 27c4fea..bfc1ea1 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1110,21 +1110,24 @@ static int __init docg3_probe(struct platform_device *pdev)
- 	if (!docg3_floors)
- 		goto nomem;
- 
--	ret = 0;
- 	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++) {
- 		mtd = doc_probe_device(base, floor, dev);
--		if (floor == 0 && !mtd)
--			goto notfound;
--		if (!IS_ERR_OR_NULL(mtd))
--			ret = mtd_device_parse_register(mtd, part_probes,
--							NULL, NULL, 0);
--		else
-+		if (IS_ERR(mtd)) {
- 			ret = PTR_ERR(mtd);
-+			goto err_probe;
-+		}
-+		if (!mtd) {
-+			if (floor == 0)
-+				goto notfound;
-+			else
-+				continue;
-+		}
- 		docg3_floors[floor] = mtd;
-+		ret = mtd_device_parse_register(mtd, part_probes, NULL, NULL,
-+						0);
- 		if (ret)
- 			goto err_probe;
--		if (mtd)
--			found++;
-+		found++;
- 	}
- 
- 	if (!found)
-@@ -1138,9 +1141,11 @@ notfound:
- 	ret = -ENODEV;
- 	dev_info(dev, "No supported DiskOnChip found\n");
- err_probe:
--	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
-+	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++) {
- 		if (docg3_floors[floor])
- 			doc_release_device(docg3_floors[floor]);
-+	}
-+	kfree(docg3_floors);
- nomem:
- 	iounmap(base);
- noress:
+Yes, but my point was that this way is not very normal and not
+"standard" for Unix, at least by my perception of "standard".
+
+> if we were to make it into:
+> ./make-release.sh [-o output_dir] <version>
+>=20
+> then i'd understand the `getopt` desire
+
+This is something standard - options are optional and go first, then
+mandatory stuff without options.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-32enh1yB79Bq44B1+JwD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJOzfG4AAoJECmIfjd9wqK0kiIP/jL8bV5e/+zAK348lKAnWvoB
+2cjGMw2BD5ydRCVJI+SbzmISt1wX5jmm/f2rsz99Yp6egWu753kebecnohR0Amfs
+unmOy4h49eEAYVCxP8ViPryChJhV111OLQn6ZhkyFmzDSiwRs+XglplQi8Dlvogl
+XkEtgeIebNRxL5nMMpojnnxU1TkMKUr1fxW0U71hqALnSS+P832CtRcDSMK+wrKC
+yvlaqf3Pp68iBzpM/aCJ3Avh3Av6eo2kZqV1e0kIUD8jBwRvQxOMeqYTdI+o3h0G
+Cb5a7B34eQMRrAuaby6/REKln2IIaPfubDYeESIDKBm1QLMUNdj9sDGQoIVacmJF
+O1PV8wJPk4ar/k16yczIiCmJG0X8iObXzEOpkB3CVNjboqUFoyCATEMRBSGowxP2
+0RSqzMzFEKKFKkDgwmGD/pWXq2bQpExPZdLqkpcpq3oOQAs6OpxVGGmd9WGkDmaH
+I3HhnhDDizBQZcpHjfoJBEj6/HvQrzcbulnMrFhWRgvwogvZrZRUJafK/xHJ1Yp5
+phPPsKljMpTx52tLzUf8w+NyxRsdeBnBd2+pxi5nJtwerE5h9B32olRGd6O45cLG
+XuaewWb4tqB2vWBEzkNU/ImrJ5llmqUIj94zeAanw0oOWOKcIeAg3miRuub5tz3+
++GNfoQDDcgs7yttChGA2
+=BQNo
+-----END PGP SIGNATURE-----
+
+--=-32enh1yB79Bq44B1+JwD--
