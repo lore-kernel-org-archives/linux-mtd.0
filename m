@@ -1,31 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-pz0-f73.google.com ([209.85.210.73])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RUr40-0007KU-QE
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 02:35:27 +0000
-Received: by bkat2 with SMTP id t2so8917338bka.36
- for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2011 18:35:21 -0800 (PST)
+ id 1RUvuh-00056E-JX
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 07:46:09 +0000
+Received: by pzk37 with SMTP id 37so858449pzk.0
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2011 23:46:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1322397903.2799.5.camel@phoenix>
-References: <1322397903.2799.5.camel@phoenix>
-From: Wan ZongShun <mcuos.com@gmail.com>
-Date: Mon, 28 Nov 2011 10:34:59 +0800
-Message-ID: <CAKT61h_oUPRo=Ea_t=w=+VLBeEkAiC9CSPKADebYfEJZ0QUE4A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: convert drivers/mtd/* to use module_platform_driver()
-To: Axel Lin <axel.lin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Sukumar Ghorai <s-ghorai@ti.com>, linux-kernel@vger.kernel.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Vimal Singh <vimal.newwork@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Jiandong Zheng <jdzheng@broadcom.com>, Andres Salomon <dilinger@queued.net>,
- Olof Johansson <olof@lixom.net>, Jamie Iles <jamie@jamieiles.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Manuel Lauss <manuel.lauss@googlemail.com>
+Message-ID: <bcaec531503decf81804b2c6b16b@google.com>
+Date: Mon, 28 Nov 2011 07:46:05 +0000
+Subject: =?GB2312?B?YWRtaW4gaGPT68T6ubLP7cHL1dXGrA==?=
+From: admin hc <printingcenter@126.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=bcaec531503dedb73f04b2c6b12a
+Reply-To: admin hc <printingcenter@126.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,899 +21,351 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2011/11/27 Axel Lin <axel.lin@gmail.com>:
-> This patch converts the drivers in drivers/mtd/* to use the
-> module_platform_driver() macro which makes the code smaller and a bit
-> simpler.
->
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Jiandong Zheng <jdzheng@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: Wan ZongShun <mcuos.com@gmail.com>
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Cc: Jamie Iles <jamie@jamieiles.com>
-> Cc: Olof Johansson <olof@lixom.net>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-> Cc: Vimal Singh <vimal.newwork@gmail.com>
-> Cc: Andres Salomon <dilinger@queued.net>
-> Cc: Sukumar Ghorai <s-ghorai@ti.com>
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> =C2=A0drivers/mtd/maps/bcm963xx-flash.c =C2=A0 | =C2=A0 13 +------------
-> =C2=A0drivers/mtd/maps/bfin-async-flash.c | =C2=A0 12 +-----------
-> =C2=A0drivers/mtd/maps/gpio-addr-flash.c =C2=A0| =C2=A0 12 +-----------
-> =C2=A0drivers/mtd/maps/ixp2000.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=
-=A0 12 +-----------
-> =C2=A0drivers/mtd/maps/ixp4xx.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=
-=A0 14 +-------------
-> =C2=A0drivers/mtd/maps/latch-addr-flash.c | =C2=A0 12 +-----------
-> =C2=A0drivers/mtd/maps/physmap_of.c =C2=A0 =C2=A0 =C2=A0 | =C2=A0 13 +---=
----------
-> =C2=A0drivers/mtd/maps/pxa2xx-flash.c =C2=A0 =C2=A0 | =C2=A0 13 +--------=
-----
-> =C2=A0drivers/mtd/maps/rbtx4939-flash.c =C2=A0 | =C2=A0 13 +------------
-> =C2=A0drivers/mtd/maps/sa1100-flash.c =C2=A0 =C2=A0 | =C2=A0 13 +--------=
-----
-> =C2=A0drivers/mtd/maps/sun_uflash.c =C2=A0 =C2=A0 =C2=A0 | =C2=A0 13 +---=
----------
-> =C2=A0drivers/mtd/nand/ams-delta.c =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 12=
- +-----------
-> =C2=A0drivers/mtd/nand/au1550nd.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 12=
- +-----------
-> =C2=A0drivers/mtd/nand/bcm_umi_nand.c =C2=A0 =C2=A0 | =C2=A0 13 +--------=
-----
-> =C2=A0drivers/mtd/nand/fsl_elbc_nand.c =C2=A0 =C2=A0| =C2=A0 13 +--------=
-----
-> =C2=A0drivers/mtd/nand/fsl_upm.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=
-=A0 12 +-----------
-> =C2=A0drivers/mtd/nand/jz4740_nand.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 12 +---=
---------
-> =C2=A0drivers/mtd/nand/mpc5121_nfc.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 14 +---=
-----------
-> =C2=A0drivers/mtd/nand/ndfc.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |=
- =C2=A0 13 +------------
-> =C2=A0drivers/mtd/nand/nomadik_nand.c =C2=A0 =C2=A0 | =C2=A0 14 +--------=
------
-> =C2=A0drivers/mtd/nand/nuc900_nand.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 13 +---=
----------
-> =C2=A0drivers/mtd/nand/omap2.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|=
- =C2=A0 15 +--------------
-> =C2=A0drivers/mtd/nand/pasemi_nand.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 12 +---=
---------
-> =C2=A0drivers/mtd/nand/plat_nand.c =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 13=
- +------------
-> =C2=A0drivers/mtd/nand/pxa3xx_nand.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 12 +---=
---------
-> =C2=A0drivers/mtd/nand/sharpsl.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=
-=A0 12 +-----------
-> =C2=A0drivers/mtd/nand/socrates_nand.c =C2=A0 =C2=A0| =C2=A0 13 +--------=
-----
-> =C2=A0drivers/mtd/nand/tmio_nand.c =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 13=
- +------------
-> =C2=A0drivers/mtd/onenand/generic.c =C2=A0 =C2=A0 =C2=A0 | =C2=A0 16 ++--=
-------------
-> =C2=A0drivers/mtd/onenand/samsung.c =C2=A0 =C2=A0 =C2=A0 | =C2=A0 13 +---=
----------
-> =C2=A030 files changed, 31 insertions(+), 356 deletions(-)
->
-> diff --git a/drivers/mtd/maps/bcm963xx-flash.c b/drivers/mtd/maps/bcm963x=
-x-flash.c
-> index 736ca10..56927f5 100644
-> --- a/drivers/mtd/maps/bcm963xx-flash.c
-> +++ b/drivers/mtd/maps/bcm963xx-flash.c
-> @@ -257,18 +257,7 @@ static struct platform_driver bcm63xx_mtd_dev =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init bcm963xx_mtd_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&bcm63xx_mtd_dev);
-> -}
-> -
-> -static void __exit bcm963xx_mtd_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&bcm63xx_mtd_dev);
-> -}
-> -
-> -module_init(bcm963xx_mtd_init);
-> -module_exit(bcm963xx_mtd_exit);
-> +module_platform_driver(bcm63xx_mtd_dev);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_DESCRIPTION("Broadcom BCM63xx MTD driver for CFE and RedBoot=
-");
-> diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-=
-async-flash.c
-> index 6d6b2b5..650126c 100644
-> --- a/drivers/mtd/maps/bfin-async-flash.c
-> +++ b/drivers/mtd/maps/bfin-async-flash.c
-> @@ -190,17 +190,7 @@ static struct platform_driver bfin_flash_driver =3D =
-{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init bfin_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&bfin_flash_driver=
-);
-> -}
-> -module_init(bfin_flash_init);
-> -
-> -static void __exit bfin_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&bfin_flash_driver);
-> -}
-> -module_exit(bfin_flash_exit);
-> +module_platform_driver(bfin_flash_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_DESCRIPTION("MTD map driver for Blackfins with flash/etherne=
-t on same async bank");
-> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-a=
-ddr-flash.c
-> index 1ec66f0..33cce89 100644
-> --- a/drivers/mtd/maps/gpio-addr-flash.c
-> +++ b/drivers/mtd/maps/gpio-addr-flash.c
-> @@ -279,17 +279,7 @@ static struct platform_driver gpio_flash_driver =3D =
-{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init gpio_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&gpio_flash_driver=
-);
-> -}
-> -module_init(gpio_flash_init);
-> -
-> -static void __exit gpio_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&gpio_flash_driver);
-> -}
-> -module_exit(gpio_flash_exit);
-> +module_platform_driver(gpio_flash_driver);
->
-> =C2=A0MODULE_AUTHOR("Mike Frysinger <vapier@gentoo.org>");
-> =C2=A0MODULE_DESCRIPTION("MTD map driver for flashes addressed physically=
- and with gpios");
-> diff --git a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
-> index 437fcd2..fc7d4d0 100644
-> --- a/drivers/mtd/maps/ixp2000.c
-> +++ b/drivers/mtd/maps/ixp2000.c
-> @@ -246,18 +246,8 @@ static struct platform_driver ixp2000_flash_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init ixp2000_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&ixp2000_flash_dri=
-ver);
-> -}
-> -
-> -static void __exit ixp2000_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&ixp2000_flash_driver);
-> -}
-> +module_platform_driver(ixp2000_flash_driver);
->
-> -module_init(ixp2000_flash_init);
-> -module_exit(ixp2000_flash_exit);
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net>");
-> =C2=A0MODULE_ALIAS("platform:IXP2000-Flash");
-> diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-> index 3040901..8b54101 100644
-> --- a/drivers/mtd/maps/ixp4xx.c
-> +++ b/drivers/mtd/maps/ixp4xx.c
-> @@ -270,19 +270,7 @@ static struct platform_driver ixp4xx_flash_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init ixp4xx_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&ixp4xx_flash_driv=
-er);
-> -}
-> -
-> -static void __exit ixp4xx_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&ixp4xx_flash_driver);
-> -}
-> -
-> -
-> -module_init(ixp4xx_flash_init);
-> -module_exit(ixp4xx_flash_exit);
-> +module_platform_driver(ixp4xx_flash_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_DESCRIPTION("MTD map driver for Intel IXP4xx systems");
-> diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch=
--addr-flash.c
-> index 119baa7..8fed58e 100644
-> --- a/drivers/mtd/maps/latch-addr-flash.c
-> +++ b/drivers/mtd/maps/latch-addr-flash.c
-> @@ -223,17 +223,7 @@ static struct platform_driver latch_addr_flash_drive=
-r =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init latch_addr_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&latch_addr_flash_=
-driver);
-> -}
-> -module_init(latch_addr_flash_init);
-> -
-> -static void __exit latch_addr_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&latch_addr_flash_drive=
-r);
-> -}
-> -module_exit(latch_addr_flash_exit);
-> +module_platform_driver(latch_addr_flash_driver);
->
-> =C2=A0MODULE_AUTHOR("David Griego <dgriego@mvista.com>");
-> =C2=A0MODULE_DESCRIPTION("MTD map driver for flashes addressed physically=
- with upper "
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
-c
-> index 7d65f9d..2e6fb68 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -338,18 +338,7 @@ static struct platform_driver of_flash_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D of_fla=
-sh_remove,
-> =C2=A0};
->
-> -static int __init of_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&of_flash_driver);
-> -}
-> -
-> -static void __exit of_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&of_flash_driver);
-> -}
-> -
-> -module_init(of_flash_init);
-> -module_exit(of_flash_exit);
-> +module_platform_driver(of_flash_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Vitaly Wool <vwool@ru.mvista.com>");
-> diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-fl=
-ash.c
-> index 2a25b67..274e399 100644
-> --- a/drivers/mtd/maps/pxa2xx-flash.c
-> +++ b/drivers/mtd/maps/pxa2xx-flash.c
-> @@ -142,18 +142,7 @@ static struct platform_driver pxa2xx_flash_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.shutdown =C2=A0 =C2=A0 =C2=A0 =3D pxa2xx_flas=
-h_shutdown,
-> =C2=A0};
->
-> -static int __init init_pxa2xx_flash(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&pxa2xx_flash_driv=
-er);
-> -}
-> -
-> -static void __exit cleanup_pxa2xx_flash(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&pxa2xx_flash_driver);
-> -}
-> -
-> -module_init(init_pxa2xx_flash);
-> -module_exit(cleanup_pxa2xx_flash);
-> +module_platform_driver(pxa2xx_flash_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Nicolas Pitre <nico@fluxnic.net>");
-> diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx493=
-9-flash.c
-> index 0237f19..bb7d204 100644
-> --- a/drivers/mtd/maps/rbtx4939-flash.c
-> +++ b/drivers/mtd/maps/rbtx4939-flash.c
-> @@ -137,18 +137,7 @@ static struct platform_driver rbtx4939_flash_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init rbtx4939_flash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&rbtx4939_flash_dr=
-iver);
-> -}
-> -
-> -static void __exit rbtx4939_flash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&rbtx4939_flash_driver)=
-;
-> -}
-> -
-> -module_init(rbtx4939_flash_init);
-> -module_exit(rbtx4939_flash_exit);
-> +module_platform_driver(rbtx4939_flash_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_DESCRIPTION("RBTX4939 MTD map driver");
-> diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-fl=
-ash.c
-> index fa9c0a9..ac3a290 100644
-> --- a/drivers/mtd/maps/sa1100-flash.c
-> +++ b/drivers/mtd/maps/sa1100-flash.c
-> @@ -394,18 +394,7 @@ static struct platform_driver sa1100_mtd_driver =3D =
-{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init sa1100_mtd_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&sa1100_mtd_driver=
-);
-> -}
-> -
-> -static void __exit sa1100_mtd_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&sa1100_mtd_driver);
-> -}
-> -
-> -module_init(sa1100_mtd_init);
-> -module_exit(sa1100_mtd_exit);
-> +module_platform_driver(sa1100_mtd_driver);
->
-> =C2=A0MODULE_AUTHOR("Nicolas Pitre");
-> =C2=A0MODULE_DESCRIPTION("SA1100 CFI map driver");
-> diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.=
-c
-> index 2d66234..175e537 100644
-> --- a/drivers/mtd/maps/sun_uflash.c
-> +++ b/drivers/mtd/maps/sun_uflash.c
-> @@ -158,15 +158,4 @@ static struct platform_driver uflash_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(uflash_remove),
-> =C2=A0};
->
-> -static int __init uflash_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&uflash_driver);
-> -}
-> -
-> -static void __exit uflash_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&uflash_driver);
-> -}
-> -
-> -module_init(uflash_init);
-> -module_exit(uflash_exit);
-> +module_platform_driver(uflash_driver);
-> diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-> index 9e6b498..3197e97 100644
-> --- a/drivers/mtd/nand/ams-delta.c
-> +++ b/drivers/mtd/nand/ams-delta.c
-> @@ -280,17 +280,7 @@ static struct platform_driver ams_delta_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init ams_delta_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&ams_delta_nand_dr=
-iver);
-> -}
-> -module_init(ams_delta_nand_init);
-> -
-> -static void __exit ams_delta_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&ams_delta_nand_driver)=
-;
-> -}
-> -module_exit(ams_delta_nand_exit);
-> +module_platform_driver(ams_delta_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Jonathan McDowell <noodles@earth.li>");
-> diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-> index 77fb4e6..73abbc3 100644
-> --- a/drivers/mtd/nand/au1550nd.c
-> +++ b/drivers/mtd/nand/au1550nd.c
-> @@ -560,17 +560,7 @@ static struct platform_driver au1550nd_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(au1550nd_remove),
-> =C2=A0};
->
-> -static int __init au1550nd_load(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&au1550nd_driver);
-> -};
-> -
-> -static void __exit au1550nd_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&au1550nd_driver);
-> -};
-> -module_init(au1550nd_load);
-> -module_exit(au1550nd_exit);
-> +module_platform_driver(au1550nd_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Embedded Edge, LLC");
-> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_n=
-and.c
-> index 46b58d6..50387fd 100644
-> --- a/drivers/mtd/nand/bcm_umi_nand.c
-> +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> @@ -546,18 +546,7 @@ static struct platform_driver nand_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.resume =3D bcm_umi_nand_resume,
-> =C2=A0};
->
-> -static int __init nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&nand_driver);
-> -}
-> -
-> -static void __exit nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&nand_driver);
-> -}
-> -
-> -module_init(nand_init);
-> -module_exit(nand_exit);
-> +module_platform_driver(nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Broadcom");
-> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc=
-_nand.c
-> index eedd8ee..f2f6e87 100644
-> --- a/drivers/mtd/nand/fsl_elbc_nand.c
-> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-> @@ -971,18 +971,7 @@ static struct platform_driver fsl_elbc_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =3D fsl_elbc_nand_remove,
-> =C2=A0};
->
-> -static int __init fsl_elbc_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&fsl_elbc_nand_dri=
-ver);
-> -}
-> -
-> -static void __exit fsl_elbc_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&fsl_elbc_nand_driver);
-> -}
-> -
-> -module_init(fsl_elbc_nand_init);
-> -module_exit(fsl_elbc_nand_exit);
-> +module_platform_driver(fsl_elbc_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Freescale");
-> diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-> index b4f3cc9..45df542 100644
-> --- a/drivers/mtd/nand/fsl_upm.c
-> +++ b/drivers/mtd/nand/fsl_upm.c
-> @@ -353,17 +353,7 @@ static struct platform_driver of_fun_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(fun_remove),
-> =C2=A0};
->
-> -static int __init fun_module_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&of_fun_driver);
-> -}
-> -module_init(fun_module_init);
-> -
-> -static void __exit fun_module_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&of_fun_driver);
-> -}
-> -module_exit(fun_module_exit);
-> +module_platform_driver(of_fun_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Anton Vorontsov <avorontsov@ru.mvista.com>");
-> diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nan=
-d.c
-> index e266407..ac3b9f2 100644
-> --- a/drivers/mtd/nand/jz4740_nand.c
-> +++ b/drivers/mtd/nand/jz4740_nand.c
-> @@ -423,17 +423,7 @@ static struct platform_driver jz_nand_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init jz_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&jz_nand_driver);
-> -}
-> -module_init(jz_nand_init);
-> -
-> -static void __exit jz_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&jz_nand_driver);
-> -}
-> -module_exit(jz_nand_exit);
-> +module_platform_driver(jz_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-> diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nf=
-c.c
-> index 5ede647..c240cf1 100644
-> --- a/drivers/mtd/nand/mpc5121_nfc.c
-> +++ b/drivers/mtd/nand/mpc5121_nfc.c
-> @@ -879,19 +879,7 @@ static struct platform_driver mpc5121_nfc_driver =3D=
- {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init mpc5121_nfc_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&mpc5121_nfc_drive=
-r);
-> -}
-> -
-> -module_init(mpc5121_nfc_init);
-> -
-> -static void __exit mpc5121_nfc_cleanup(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&mpc5121_nfc_driver);
-> -}
-> -
-> -module_exit(mpc5121_nfc_cleanup);
-> +module_platform_driver(mpc5121_nfc_driver);
->
-> =C2=A0MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-> =C2=A0MODULE_DESCRIPTION("MPC5121 NAND MTD driver");
-> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-> index f8aacf4..ec68854 100644
-> --- a/drivers/mtd/nand/ndfc.c
-> +++ b/drivers/mtd/nand/ndfc.c
-> @@ -294,18 +294,7 @@ static struct platform_driver ndfc_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =3D __devexit_p(ndfc_remove),
-> =C2=A0};
->
-> -static int __init ndfc_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&ndfc_driver);
-> -}
-> -
-> -static void __exit ndfc_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&ndfc_driver);
-> -}
-> -
-> -module_init(ndfc_nand_init);
-> -module_exit(ndfc_nand_exit);
-> +module_platform_driver(ndfc_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Thomas Gleixner <tglx@linutronix.de>");
-> diff --git a/drivers/mtd/nand/nomadik_nand.c b/drivers/mtd/nand/nomadik_n=
-and.c
-> index b463ecf..673dc6c 100644
-> --- a/drivers/mtd/nand/nomadik_nand.c
-> +++ b/drivers/mtd/nand/nomadik_nand.c
-> @@ -228,19 +228,7 @@ static struct platform_driver nomadik_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init nand_nomadik_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 pr_info("Nomadik NAND driver\n");
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&nomadik_nand_driv=
-er);
-> -}
-> -
-> -static void __exit nand_nomadik_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&nomadik_nand_driver);
-> -}
-> -
-> -module_init(nand_nomadik_init);
-> -module_exit(nand_nomadik_exit);
-> +module_platform_driver(nomadik_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("ST Microelectronics (sachin.verma@st.com)");
-> diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nan=
-d.c
-> index fa8faed..8febe46 100644
-> --- a/drivers/mtd/nand/nuc900_nand.c
-> +++ b/drivers/mtd/nand/nuc900_nand.c
-> @@ -364,18 +364,7 @@ static struct platform_driver nuc900_nand_driver =3D=
- {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init nuc900_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&nuc900_nand_drive=
-r);
-> -}
-> -
-> -static void __exit nuc900_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&nuc900_nand_driver);
-> -}
-> -
-> -module_init(nuc900_nand_init);
-> -module_exit(nuc900_nand_exit);
-> +module_platform_driver(nuc900_nand_driver);
->
-> =C2=A0MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
-> =C2=A0MODULE_DESCRIPTION("w90p910/NUC9xx nand driver!");
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index f745f00..b3a883e 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1145,20 +1145,7 @@ static struct platform_driver omap_nand_driver =3D=
- {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init omap_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 pr_info("%s driver initializing\n", DRIVER_NAME);
-> -
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&omap_nand_driver)=
-;
-> -}
-> -
-> -static void __exit omap_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&omap_nand_driver);
-> -}
-> -
-> -module_init(omap_nand_init);
-> -module_exit(omap_nand_exit);
-> +module_platform_driver(omap_nand_driver);
->
-> =C2=A0MODULE_ALIAS("platform:" DRIVER_NAME);
-> =C2=A0MODULE_LICENSE("GPL");
-> diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nan=
-d.c
-> index a97264e..974dbf8 100644
-> --- a/drivers/mtd/nand/pasemi_nand.c
-> +++ b/drivers/mtd/nand/pasemi_nand.c
-> @@ -230,17 +230,7 @@ static struct platform_driver pasemi_nand_driver =3D
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D pasemi=
-_nand_remove,
-> =C2=A0};
->
-> -static int __init pasemi_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&pasemi_nand_drive=
-r);
-> -}
-> -module_init(pasemi_nand_init);
-> -
-> -static void __exit pasemi_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&pasemi_nand_driver);
-> -}
-> -module_exit(pasemi_nand_exit);
-> +module_platform_driver(pasemi_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Egor Martovetsky <egor@pasemi.com>");
-> diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-> index ea8e123..7f2da69 100644
-> --- a/drivers/mtd/nand/plat_nand.c
-> +++ b/drivers/mtd/nand/plat_nand.c
-> @@ -148,18 +148,7 @@ static struct platform_driver plat_nand_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
-> =C2=A0};
->
-> -static int __init plat_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&plat_nand_driver)=
-;
-> -}
-> -
-> -static void __exit plat_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&plat_nand_driver);
-> -}
-> -
-> -module_init(plat_nand_init);
-> -module_exit(plat_nand_exit);
-> +module_platform_driver(plat_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Vitaly Wool");
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index 9eb7f87..90d6016 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1311,17 +1311,7 @@ static struct platform_driver pxa3xx_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.resume =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D pxa3xx=
-_nand_resume,
-> =C2=A0};
->
-> -static int __init pxa3xx_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&pxa3xx_nand_drive=
-r);
-> -}
-> -module_init(pxa3xx_nand_init);
-> -
-> -static void __exit pxa3xx_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&pxa3xx_nand_driver);
-> -}
-> -module_exit(pxa3xx_nand_exit);
-> +module_platform_driver(pxa3xx_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_DESCRIPTION("PXA3xx NAND controller driver");
-> diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-> index 619d2a5..b175c0f 100644
-> --- a/drivers/mtd/nand/sharpsl.c
-> +++ b/drivers/mtd/nand/sharpsl.c
-> @@ -230,17 +230,7 @@ static struct platform_driver sharpsl_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(sharpsl_nand_remove),
-> =C2=A0};
->
-> -static int __init sharpsl_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&sharpsl_nand_driv=
-er);
-> -}
-> -module_init(sharpsl_nand_init);
-> -
-> -static void __exit sharpsl_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&sharpsl_nand_driver);
-> -}
-> -module_exit(sharpsl_nand_exit);
-> +module_platform_driver(sharpsl_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Richard Purdie <rpurdie@rpsys.net>");
-> diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates=
-_nand.c
-> index 0fb24f9..e02b08b 100644
-> --- a/drivers/mtd/nand/socrates_nand.c
-> +++ b/drivers/mtd/nand/socrates_nand.c
-> @@ -273,18 +273,7 @@ static struct platform_driver socrates_nand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(socrates_nand_remove),
-> =C2=A0};
->
-> -static int __init socrates_nand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&socrates_nand_dri=
-ver);
-> -}
-> -
-> -static void __exit socrates_nand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&socrates_nand_driver);
-> -}
-> -
-> -module_init(socrates_nand_init);
-> -module_exit(socrates_nand_exit);
-> +module_platform_driver(socrates_nand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Ilya Yanok");
-> diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-> index beebd95..6caa0cd 100644
-> --- a/drivers/mtd/nand/tmio_nand.c
-> +++ b/drivers/mtd/nand/tmio_nand.c
-> @@ -533,18 +533,7 @@ static struct platform_driver tmio_driver =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.resume =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D tmio_r=
-esume,
-> =C2=A0};
->
-> -static int __init tmio_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&tmio_driver);
-> -}
-> -
-> -static void __exit tmio_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&tmio_driver);
-> -}
-> -
-> -module_init(tmio_init);
-> -module_exit(tmio_exit);
-> +module_platform_driver(tmio_driver);
->
-> =C2=A0MODULE_LICENSE("GPL v2");
-> =C2=A0MODULE_AUTHOR("Ian Molton, Dirk Opfer, Chris Humbert, Dmitry Barysh=
-kov");
-> diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.=
-c
-> index 7813095..0ccd5bf 100644
-> --- a/drivers/mtd/onenand/generic.c
-> +++ b/drivers/mtd/onenand/generic.c
-> @@ -115,21 +115,9 @@ static struct platform_driver generic_onenand_driver=
- =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(generic_onenand_remove),
-> =C2=A0};
->
-> -MODULE_ALIAS("platform:" DRIVER_NAME);
-> -
-> -static int __init generic_onenand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&generic_onenand_d=
-river);
-> -}
-> -
-> -static void __exit generic_onenand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&generic_onenand_driver=
-);
-> -}
-> -
-> -module_init(generic_onenand_init);
-> -module_exit(generic_onenand_exit);
-> +module_platform_driver(generic_onenand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");
-> =C2=A0MODULE_DESCRIPTION("Glue layer for OneNAND flash on generic boards"=
-);
-> +MODULE_ALIAS("platform:" DRIVER_NAME);
-> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.=
-c
-> index 5474547..fa1ee43 100644
-> --- a/drivers/mtd/onenand/samsung.c
-> +++ b/drivers/mtd/onenand/samsung.c
-> @@ -1133,18 +1133,7 @@ static struct platform_driver s3c_onenand_driver =
-=3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(s3c_onenand_remove),
-> =C2=A0};
->
-> -static int __init s3c_onenand_init(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&s3c_onenand_drive=
-r);
-> -}
-> -
-> -static void __exit s3c_onenand_exit(void)
-> -{
-> - =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&s3c_onenand_driver);
-> -}
-> -
-> -module_init(s3c_onenand_init);
-> -module_exit(s3c_onenand_exit);
-> +module_platform_driver(s3c_onenand_driver);
->
-> =C2=A0MODULE_LICENSE("GPL");
-> =C2=A0MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");
+--bcaec531503dedb73f04b2c6b12a
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
 
-Acked-by: Wan ZongShun <mcuos.com@gmail.com>
+Dear Friends,
 
-Thanks!
+Thank you for stealing time to read my email.
 
-> --
-> 1.7.5.4
->
->
->
->
+My name is Yuliya H&C Printing Center. I got your information from the  
+internet. I think you maybe need our services. I am writing to you hoping  
+that we can be business partners in the near future.
 
+We are a professional company with the slogan that solidarity,  
+high-efficiency, customer-first? It is our quality goods, good services and  
+quite competitive price that help us gain good reputation. Some of our good  
+long-term clients even contract with us for 5 or 10 years.
 
+Our products include picture albums, magazines, catalogues, labels and  
+stickers, hang tags, packaging boxes, booklets, flyers, playing cards,  
+calendars, etc. And our price is much more competitive.
 
---=20
-Wan ZongShun.
-www.mcuos.com
+Is there any thing interest you? If you have any printing work on hand,  
+please do not hesitate to contact us by admin@hcurmate.com . Please rest  
+assured, we have the abilities to give you better services.
+
+Sincerely,
+
+Yuliya
+admin@hcurmate.com
+
+--bcaec531503dedb73f04b2c6b12a
+Content-Type: image/jpeg; name="Printing.jpg"
+Content-Disposition: attachment; filename="Printing.jpg"
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsK
+CwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQU
+FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACEAccDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD8vz9w
+jPYc/wDfVLJnfIAO5P65pAcp9R/8VT2XLqTyCooAaeQ3TG0n/P5UpwTgADP6cEUZJUnr8h/rTh/r
+B9T2+lAEaACNjj+H+q09uZG46gg49qZ92Loc+v5f4U77zKRnPOPyNADUHzgdMggflRjKoOMk4/QU
+q5BXsQM8/TNKQQ6A8c9T+FACD7pPv/8AE00Lhj9cfzo4EPuT09uKefvN67x+eT/jQAhI3seDgf4/
+40DkRgY54/l/9emNwpPqP6mnA7mXp94fh/nFADj/AK0fXrTX4jwB/Djg9OadjJyOvB/HHWmv047L
+nNAEj8u/rz/6Dg01Rkg+if40MwO4jgEt/LFAGd44xtx/49xQASYzgjgv/UU3ICnPXr/n9ae3zMPc
+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
+--bcaec531503dedb73f04b2c6b12a--
