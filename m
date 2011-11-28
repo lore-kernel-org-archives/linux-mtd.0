@@ -1,21 +1,14 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RV1dm-0001GK-Sx
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 13:53:06 +0000
-Date: Mon, 28 Nov 2011 16:53:13 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [patch v2] mtd/docg3: dereferencing an ERR_PTR() in docg3_probe()
-Message-ID: <20111128134947.GK21128@mwanda>
-References: <20111124072117.GC14122@elgon.mountain> <87pqghygbv.fsf@free.fr>
- <20111124103147.GF3195@mwanda> <87r50vi20u.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="I4VOKWutKNZEOIPu"
-Content-Disposition: inline
-In-Reply-To: <87r50vi20u.fsf@free.fr>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mail.tricorecenter.de ([217.6.246.34] helo=root.phytec.de)
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RV25E-0002oj-0E
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 14:21:28 +0000
+From: Jan Weitzel <j.weitzel@phytec.de>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] mtd/nand: modify NAND_CHIPOPTIONS_MSK
+Date: Mon, 28 Nov 2011 15:20:40 +0100
+Message-Id: <1322490040-27161-1-git-send-email-j.weitzel@phytec.de>
+Cc: dedekind@infradead.org, Jan Weitzel <j.weitzel@phytec.de>,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Trying to set NAND_NO_SUBPAGE_WRITE from platform fail, because
+nand_flash_detect_onfi options from struct nand_flash_dev overwrite the flag.
 
---I4VOKWutKNZEOIPu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Removing NAND_NO_SUBPAGE_WRITE from NAND_CHIPOPTIONS_MSK fix this,
+but setting it via struct nand_flash_dev table is not longer supported.
 
-If doc_probe_device() returned an ERR_PTR, then we accidentally saved
-that to docg3_floors[floor] =3D mtd; which gets derefenced in the error
-handling when we call doc_release_device().
-
-I've reworked the error handling to take care of that and hopefully
-make it a little simpler.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
 ---
-v2: Version 1 conflicted with another patch in stream.
+ include/linux/mtd/nand.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index d7df311..f7490a014 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -2027,21 +2027,24 @@ static int __init docg3_probe(struct platform_devic=
-e *pdev)
- 	if (!docg3_bch)
- 		goto nomem2;
-=20
--	ret =3D 0;
- 	for (floor =3D 0; floor < DOC_MAX_NBFLOORS; floor++) {
- 		mtd =3D doc_probe_device(base, floor, dev);
--		if (floor =3D=3D 0 && !mtd)
--			goto notfound;
--		if (!IS_ERR_OR_NULL(mtd))
--			ret =3D mtd_device_parse_register(mtd, part_probes,
--							NULL, NULL, 0);
--		else
-+		if (IS_ERR(mtd)) {
- 			ret =3D PTR_ERR(mtd);
-+			goto err_probe;
-+		}
-+		if (!mtd) {
-+			if (floor =3D=3D 0)
-+				goto notfound;
-+			else
-+				continue;
-+		}
- 		docg3_floors[floor] =3D mtd;
-+		ret =3D mtd_device_parse_register(mtd, part_probes, NULL, NULL,
-+						0);
- 		if (ret)
- 			goto err_probe;
--		if (mtd)
--			found++;
-+		found++;
- 	}
-=20
- 	ret =3D doc_register_sysfs(pdev, docg3_floors);
-
---I4VOKWutKNZEOIPu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJO05JIAAoJEOnZkXI/YHqRFtMP/RTI1AgISLf/Q6JvZMMPJq7A
-qWaS/gjQlERylrVZ4HYGgP4207fSBc5wHTjMUV6wY71X/4ceyKWiXcEmkE6RxJGe
-mqyMlYvKH3LtMDVK2GBDSxGaDrQjHrKHLXdsqMiyD2nxOLxNu/kObz7kucEXAWM9
-qtZLNfYng1ReVHsJSLkC+bdkHv/DJ2kQZ3J7nMHjpScpjn5+ju0thbDUyD6cbp4f
-M5AnH+2yjr3bwuAVxqZ7dxYMZb15v//lfXA6tVHTb7I/0NwqWMdptNtMSQxDpT5/
-pdAdlDI4AiMFYX7GtNo2Jyssm5fzmo3qbx7XJfvKnk7q3j2cZQeaRZX7JEJRW5S/
-qoYARkfiOOaK9F0VI4n/HDaIRwWKfF6eNo1BFU47Z50q7b+KwAEq3wzFvFiKuLKd
-rXIYbFitTa62CLovMsc0Kxsrx36FIRb1aMF8Ho6IJelxO/lfxDoG/cKw/ppRBlZK
-4/cLx1OgdeshiGhLDFRKZ8wLBk7oPmYqQJqdYbuSikeQCi4/jryKip5VaryqELvo
-DozFR1yKQMGJE+96RQweVtx7A4i4h8TKHRhoEksyS6uQqcDBofmGk9eBFJSHlBTM
-d/o/s5zbT0r/H2wQxBgJndJfTouO+NDemx3R93Scc84Mn/0iIUD3BW+kOgOIcgPc
-M10TzJvVKj4CX7Oahc/2
-=OzXn
------END PGP SIGNATURE-----
-
---I4VOKWutKNZEOIPu--
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 904131b..babef5b 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -216,7 +216,8 @@ typedef enum {
+ 					&& (chip->page_shift > 9))
+ 
+ /* Mask to zero out the chip options, which come from the id table */
+-#define NAND_CHIPOPTIONS_MSK	(0x0000ffff & ~NAND_NO_AUTOINCR)
++#define NAND_CHIPOPTIONS_MSK \
++	(0x0000ffff & ~NAND_NO_AUTOINCR & ~NAND_NO_SUBPAGE_WRITE)
+ 
+ /* Non chip related options */
+ /* This option skips the bbt scan during initialization. */
+-- 
+1.7.0.4
