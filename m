@@ -1,14 +1,29 @@
-Received: from mail.tricorecenter.de ([217.6.246.34] helo=root.phytec.de)
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RV25E-0002oj-0E
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 14:21:28 +0000
-From: Jan Weitzel <j.weitzel@phytec.de>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC] mtd/nand: modify NAND_CHIPOPTIONS_MSK
-Date: Mon, 28 Nov 2011 15:20:40 +0100
-Message-Id: <1322490040-27161-1-git-send-email-j.weitzel@phytec.de>
-Cc: dedekind@infradead.org, Jan Weitzel <j.weitzel@phytec.de>,
- tglx@linutronix.de
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RV4sm-0005GD-1c
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 17:20:44 +0000
+Message-ID: <4ED3C2E2.9040601@freescale.com>
+Date: Mon, 28 Nov 2011 11:20:34 -0600
+From: Scott Wood <scottwood@freescale.com>
+MIME-Version: 1.0
+To: Li Yang-R58472 <r58472@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322095306-13156-1-git-send-email-b35362@freescale.com>
+ <1322095306-13156-3-git-send-email-b35362@freescale.com>
+ <3F607A5180246847A760FD34122A1E052DC4CD@039-SN1MPN1-003.039d.mgd.msft.net>
+In-Reply-To: <3F607A5180246847A760FD34122A1E052DC4CD@039-SN1MPN1-003.039d.mgd.msft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Liu Shuo-B35362 <B35362@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Trying to set NAND_NO_SUBPAGE_WRITE from platform fail, because
-nand_flash_detect_onfi options from struct nand_flash_dev overwrite the flag.
+On 11/24/2011 01:37 AM, Li Yang-R58472 wrote:
+>> +static void io_to_buffer(struct mtd_info *mtd, int subpage, int oob)
+>> +{
+>> +	struct nand_chip *chip = mtd->priv;
+>> +	struct fsl_elbc_mtd *priv = chip->priv;
+>> +	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = priv->ctrl->nand;
+>> +	void *src, *dst;
+>> +	int len = (oob ? 64 : 2048);
+>> +
+>> +	if (oob)
+>> +		dst = elbc_fcm_ctrl->buffer + mtd->writesize + subpage * 64;
+>> +	else
+>> +		dst = elbc_fcm_ctrl->buffer + subpage * 2048;
+>> +
+>> +	src = elbc_fcm_ctrl->addr + (oob ? 2048 : 0);
+>> +	memcpy_fromio(dst, src, len);
+> 
+> Might be safer to use _memcpy_fromio()
 
-Removing NAND_NO_SUBPAGE_WRITE from NAND_CHIPOPTIONS_MSK fix this,
-but setting it via struct nand_flash_dev table is not longer supported.
+How so?
 
-Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
----
- include/linux/mtd/nand.h |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+memcpy_fromio() is the public interface that will end up calling
+_memcpy_fromio() on powerpc.
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 904131b..babef5b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -216,7 +216,8 @@ typedef enum {
- 					&& (chip->page_shift > 9))
- 
- /* Mask to zero out the chip options, which come from the id table */
--#define NAND_CHIPOPTIONS_MSK	(0x0000ffff & ~NAND_NO_AUTOINCR)
-+#define NAND_CHIPOPTIONS_MSK \
-+	(0x0000ffff & ~NAND_NO_AUTOINCR & ~NAND_NO_SUBPAGE_WRITE)
- 
- /* Non chip related options */
- /* This option skips the bbt scan during initialization. */
--- 
-1.7.0.4
+-Scott
