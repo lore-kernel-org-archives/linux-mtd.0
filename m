@@ -1,17 +1,17 @@
-Received: from mail-pz0-f73.google.com ([209.85.210.73])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RUvuh-00056E-JX
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 07:46:09 +0000
-Received: by pzk37 with SMTP id 37so858449pzk.0
- for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2011 23:46:05 -0800 (PST)
+Received: from nm20-vm4.bullet.mail.ne1.yahoo.com ([98.138.91.180])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RUymm-0001OM-7Y
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2011 10:50:09 +0000
+Message-ID: <1322477406.67671.YahooMailNeo@web121512.mail.ne1.yahoo.com>
+Date: Mon, 28 Nov 2011 02:50:06 -0800 (PST)
+From: Karsten Jeppesen <arm9263@yahoo.com>
+Subject: [UBI] Unable to recover corrupted filesystem, debug included,
+ link included
+To: ubifs <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Message-ID: <bcaec531503decf81804b2c6b16b@google.com>
-Date: Mon, 28 Nov 2011 07:46:05 +0000
-Subject: =?GB2312?B?YWRtaW4gaGPT68T6ubLP7cHL1dXGrA==?=
-From: admin hc <printingcenter@126.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=bcaec531503dedb73f04b2c6b12a
-Reply-To: admin hc <printingcenter@126.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Karsten Jeppesen <arm9263@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,351 +21,288 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---bcaec531503dedb73f04b2c6b12a
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
-
-Dear Friends,
-
-Thank you for stealing time to read my email.
-
-My name is Yuliya H&C Printing Center. I got your information from the  
-internet. I think you maybe need our services. I am writing to you hoping  
-that we can be business partners in the near future.
-
-We are a professional company with the slogan that solidarity,  
-high-efficiency, customer-first? It is our quality goods, good services and  
-quite competitive price that help us gain good reputation. Some of our good  
-long-term clients even contract with us for 5 or 10 years.
-
-Our products include picture albums, magazines, catalogues, labels and  
-stickers, hang tags, packaging boxes, booklets, flyers, playing cards,  
-calendars, etc. And our price is much more competitive.
-
-Is there any thing interest you? If you have any printing work on hand,  
-please do not hesitate to contact us by admin@hcurmate.com . Please rest  
-assured, we have the abilities to give you better services.
-
-Sincerely,
-
-Yuliya
-admin@hcurmate.com
-
---bcaec531503dedb73f04b2c6b12a
-Content-Type: image/jpeg; name="Printing.jpg"
-Content-Disposition: attachment; filename="Printing.jpg"
-Content-Transfer-Encoding: base64
-
-/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsK
-CwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQU
-FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACEAccDASIA
-AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
-AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
-ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
-p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
-AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
-BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
-U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
-uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD8vz9w
-jPYc/wDfVLJnfIAO5P65pAcp9R/8VT2XLqTyCooAaeQ3TG0n/P5UpwTgADP6cEUZJUnr8h/rTh/r
-B9T2+lAEaACNjj+H+q09uZG46gg49qZ92Loc+v5f4U77zKRnPOPyNADUHzgdMggflRjKoOMk4/QU
-q5BXsQM8/TNKQQ6A8c9T+FACD7pPv/8AE00Lhj9cfzo4EPuT09uKefvN67x+eT/jQAhI3seDgf4/
-40DkRgY54/l/9emNwpPqP6mnA7mXp94fh/nFADj/AK0fXrTX4jwB/Djg9OadjJyOvB/HHWmv047L
-nNAEj8u/rz/6Dg01Rkg+if40MwO4jgEt/LFAGd44xtx/49xQASYzgjgv/UU3ICnPXr/n9ae3zMPc
-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
---bcaec531503dedb73f04b2c6b12a--
+Hi Guys,=0A=0ASince I didn't get any response last time, I assume the reaso=
+n to be lack of debugging.=0AAs the subject says: I have 3 units out of som=
+e hundreds showing this problem and to me that is of course a major issue.=
+=0A=0AArchitecture is ARM9(263), kernel: 2.6.32.8 patched including the rec=
+over.c patch which I hoped would solve this issue. It didn't.=0AAn image of=
+ the root partition is available at http://download.gnist.skov.com/corrupt_=
+ubifs.img=0A=0AThere are 2 sources of debug: Main console and dmesg.=0A=0AM=
+ain console:=0A[=A0=A0 67.710000] UBI: attaching mtd4 to ubi0=0A[=A0=A0 67.=
+710000] UBI: physical eraseblock size:=A0=A0 131072 bytes (128 KiB)=0A[=A0=
+=A0 67.720000] UBI: logical eraseblock size:=A0=A0=A0 130944 bytes=0A[=A0=
+=A0 67.720000] UBI: smallest flash I/O unit:=A0=A0=A0 1=0A[=A0=A0 67.730000=
+] UBI: VID header offset:=A0=A0=A0=A0=A0=A0=A0=A0=A0 64 (aligned 64)=0A[=A0=
+=A0 67.740000] UBI: data offset:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 128=0A[=A0=A0 67.800000] UBI: attached mtd4 to ubi0=0A[=A0=A0 67.800000=
+] UBI: MTD device name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "User"=0A[=A0=A0 6=
+7.800000] UBI: MTD device size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 28 MiB=0A[=
+=A0=A0 67.820000] UBI: number of good PEBs:=A0=A0=A0=A0=A0=A0=A0 230=0A[=A0=
+=A0 67.820000] UBI: number of bad PEBs:=A0=A0=A0=A0=A0=A0=A0=A0 0=0A[=A0=A0=
+ 67.820000] UBI: max. allowed volumes:=A0=A0=A0=A0=A0=A0 128=0A[=A0=A0 67.8=
+40000] UBI: wear-leveling threshold:=A0=A0=A0 4096=0A[=A0=A0 67.840000] UBI=
+: number of internal volumes: 1=0A[=A0=A0 67.870000] UBI: number of user vo=
+lumes:=A0=A0=A0=A0 1=0A[=A0=A0 67.900000] UBI: available PEBs:=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 0=0A[=A0=A0 67.900000] UBI: total number of reserv=
+ed PEBs: 230=0A[=A0=A0 67.900000] UBI: number of PEBs reserved for bad PEB =
+handling: 0=0A[=A0=A0 67.930000] UBI: max/mean erase counter: 2/0=0A[=A0=A0=
+ 67.930000] UBI: image sequence number: 1748877991=0A[=A0=A0 67.930000] UBI=
+: background thread "ubi_bgt0d" started, PID 2412=0AUBI device number 0, to=
+tal 230 LEBs (30117120 bytes, 28.7 MiB), available 0 LEBs (0 bytes), LEB si=
+ze 130944 bytes (127.9 KiB)=0A[=A0=A0 68.370000] UBIFS: recovery needed=0A[=
+=A0=A0 68.380000] UBIFS error (pid 2418): ubifs_check_node: bad CRC: calcul=
+ated 0x7d62d42c, read 0x1173c109=0A[=A0=A0 68.390000] UBIFS error (pid 2418=
+): ubifs_check_node: bad node at LEB 84:50696=0A[=A0=A0 68.400000] [<c0030e=
+74>] (unwind_backtrace+0x0/0xdc) from [<c02ee22c>] (dump_stack+0x18/0x1c)=
+=0A[=A0=A0 68.410000] [<c02ee22c>] (dump_stack+0x18/0x1c) from [<c01566c4>]=
+ (ubifs_check_node+0x2b4/0x2fc)=0A[=A0=A0 68.410000] [<c01566c4>] (ubifs_ch=
+eck_node+0x2b4/0x2fc) from [<c015698c>] (ubifs_read_node+0x280/0x384)=0A[=
+=A0=A0 68.420000] [<c015698c>] (ubifs_read_node+0x280/0x384) from [<c017c99=
+c>] (ubifs_load_znode+0xc8/0x788)=0A[=A0=A0 68.430000] [<c017c99c>] (ubifs_=
+load_znode+0xc8/0x788) from [<c017f80c>] (dbg_walk_index+0x80/0x294)=0A[=A0=
+=A0 68.440000] [<c017f80c>] (dbg_walk_index+0x80/0x294) from [<c017fa64>] (=
+dbg_check_idx_size+0x44/0xdc)=0A[=A0=A0 68.450000] [<c017fa64>] (dbg_check_=
+idx_size+0x44/0xdc) from [<c0152808>] (ubifs_fill_super+0xd04/0x1e50)=0A[=
+=A0=A0 68.460000] [<c0152808>] (ubifs_fill_super+0xd04/0x1e50) from [<c0153=
+c30>] (ubifs_get_sb+0x2dc/0x350)=0A[=A0=A0 68.470000] [<c0153c30>] (ubifs_g=
+et_sb+0x2dc/0x350) from [<c00c8328>] (vfs_kern_mount+0x58/0xe8)=0A[=A0=A0 6=
+8.480000] [<c00c8328>] (vfs_kern_mount+0x58/0xe8) from [<c00c8414>] (do_ker=
+n_mount+0x3c/0xe0)=0A[=A0=A0 68.490000] [<c00c8414>] (do_kern_mount+0x3c/0x=
+e0) from [<c00e1a10>] (do_mount+0x720/0x78c)=0A[=A0=A0 68.500000] [<c00e1a1=
+0>] (do_mount+0x720/0x78c) from [<c00e1b08>] (sys_mount+0x8c/0xcc)=0A[=A0=
+=A0 68.510000] [<c00e1b08>] (sys_mount+0x8c/0xcc) from [<c002af40>] (ret_fa=
+st_syscall+0x0/0x28)=0A[=A0=A0 68.520000] UBIFS error (pid 2418): ubifs_rea=
+d_node: expected node type 9=0A[=A0=A0 68.520000] UBIFS error (pid 2418): d=
+bg_check_idx_size: error -117 while walking the index=0A=0A=0Admesg output:=
+=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:68608=
+ (62336 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a=
+_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubif=
+s_scan: look at LEB 2:69120 (61824 bytes left)=0A[=A0=A0 68.360000] UBIFS D=
+BG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000]=
+ UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:69632 (61312 bytes left)=
+=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:70144 (60800 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:70656 (60288 bytes left)=0A[=A0=A0 68.360000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:71168 (59776 bytes=
+ left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:71680 (59264 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:72192 (58752 bytes left)=0A[=A0=A0 68.3=
+60000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:72704 (58240=
+ bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: =
+scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan:=
+ look at LEB 2:73216 (57728 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid=
+ 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan: look at LEB 2:73728 (57216 bytes left)=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master nod=
+e=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:7424=
+0 (56704 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_=
+a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubi=
+fs_scan: look at LEB 2:74752 (56192 bytes left)=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000=
+] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:75264 (55680 bytes left)=
+=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:75776 (55168 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:76288 (54656 bytes left)=0A[=A0=A0 68.360000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:76800 (54144 bytes=
+ left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:77312 (53632 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:77824 (53120 bytes left)=0A[=A0=A0 68.3=
+60000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:78336 (52608=
+ bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: =
+scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan:=
+ look at LEB 2:78848 (52096 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid=
+ 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan: look at LEB 2:79360 (51584 bytes left)=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master nod=
+e=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:7987=
+2 (51072 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_=
+a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubi=
+fs_scan: look at LEB 2:80384 (50560 bytes left)=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000=
+] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:80896 (50048 bytes left)=
+=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:81408 (49536 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:81920 (49024 bytes left)=0A[=A0=A0 68.360000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:82432 (48512 bytes=
+ left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:82944 (48000 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:83456 (47488 bytes left)=0A[=A0=A0 68.3=
+60000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:83968 (46976=
+ bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: =
+scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan:=
+ look at LEB 2:84480 (46464 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid=
+ 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan: look at LEB 2:84992 (45952 bytes left)=0A[=A0=
+=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master nod=
+e=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:8550=
+4 (45440 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_=
+a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubi=
+fs_scan: look at LEB 2:86016 (44928 bytes left)=0A[=A0=A0 68.360000] UBIFS =
+DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.360000=
+] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:86528 (44416 bytes left)=
+=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:87040 (43904 bytes left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.360000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:87552 (43392 bytes left)=0A[=A0=A0 68.360000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.360000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:88064 (42880 bytes=
+ left)=0A[=A0=A0 68.360000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:88576 (42368 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:89088 (41856 bytes left)=0A[=A0=A0 68.3=
+70000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=
+=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:89600 (41344=
+ bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: =
+scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan:=
+ look at LEB 2:90112 (40832 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid=
+ 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS =
+DBG (pid 2418): ubifs_scan: look at LEB 2:90624 (40320 bytes left)=0A[=A0=
+=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master nod=
+e=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:9113=
+6 (39808 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_=
+a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubi=
+fs_scan: look at LEB 2:91648 (39296 bytes left)=0A[=A0=A0 68.370000] UBIFS =
+DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000=
+] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:92160 (38784 bytes left)=
+=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:92672 (38272 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:93184 (37760 bytes left)=0A[=A0=A0 68.370000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:93696 (37248 bytes=
+ left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:94208 (36736 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:94720 (36224 bytes left)=0A[=A0=A0 68.3=
+70000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=
+=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:95232 (35712=
+ bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: =
+scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan:=
+ look at LEB 2:95744 (35200 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid=
+ 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS =
+DBG (pid 2418): ubifs_scan: look at LEB 2:96256 (34688 bytes left)=0A[=A0=
+=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master nod=
+e=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:9676=
+8 (34176 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_=
+a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubi=
+fs_scan: look at LEB 2:97280 (33664 bytes left)=0A[=A0=A0 68.370000] UBIFS =
+DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000=
+] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:97792 (33152 bytes left)=
+=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning mas=
+ter node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB=
+ 2:98304 (32640 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubif=
+s_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 241=
+8): ubifs_scan: look at LEB 2:98816 (32128 bytes left)=0A[=A0=A0 68.370000]=
+ UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68=
+.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:99328 (31616 bytes=
+ left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanni=
+ng master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look =
+at LEB 2:99840 (31104 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418)=
+: ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (p=
+id 2418): ubifs_scan: look at LEB 2:100352 (30592 bytes left)=0A[=A0=A0 68.=
+370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master node=0A[=
+=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:100864 (3=
+0080 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_no=
+de: scanning master node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_s=
+can: look at LEB 2:101376 (29568 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG=
+ (pid 2418): ubifs_scan_a_node: scanning master node=0A[=A0=A0 68.370000] U=
+BIFS DBG (pid 2418): ubifs_scan: look at LEB 2:101888 (29056 bytes left)=0A=
+[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan_a_node: scanning master=
+ node=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_scan: look at LEB 2:=
+102400 (28544 bytes left)=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_=
+scan_a_node: hit empty space=0A[=A0=A0 68.370000] UBIFS DBG (pid 2418): ubi=
+fs_end_scan: stop scanning LEB 2 at offset 102400=0A[=A0=A0 68.370000] UBIF=
+S DBG (pid 2418): ubifs_read_node: LEB 84:58672, indexing node, length 188=
+=0A[=A0=A0 68.370000] UBIFS: recovery needed=0A[=A0=A0 68.370000] UBIFS DBG=
+ (pid 2418): ubifs_recover_inl_heads: checking index head at 84:58864=0A[=
+=A0=A0 68.370000] UBIFS DBG (pid 2418): ubifs_recover_inl_heads: checking L=
+PT head at 6:13792=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: =
+space_bits 14=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: lpt_l=
+num_bits 2=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: lpt_offs=
+_bits 17=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: lpt_spc_bi=
+ts 17=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: pcnt_bits 6=
+=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: lnum_bits 8=0A[=A0=
+=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: pnode_sz 17=0A[=A0=A0 68.=
+380000] UBIFS DBG (pid 2418): lpt_init_rd: nnode_sz 12=0A[=A0=A0 68.380000]=
+ UBIFS DBG (pid 2418): lpt_init_rd: ltab_sz 11=0A[=A0=A0 68.380000] UBIFS D=
+BG (pid 2418): lpt_init_rd: lsave_sz 259=0A[=A0=A0 68.380000] UBIFS DBG (pi=
+d 2418): lpt_init_rd: lsave_cnt 256=0A[=A0=A0 68.380000] UBIFS DBG (pid 241=
+8): lpt_init_rd: lpt_hght 3=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_=
+init_rd: big_lpt 0=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_rd: =
+LPT root is at 6:13777=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_init_=
+rd: LPT head is at 6:13792=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): lpt_i=
+nit_rd: LPT ltab is at 6:13696=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): u=
+bifs_read_node: LEB 84:58672, indexing node, length 188=0A[=A0=A0 68.380000=
+] UBIFS DBG (pid 2418): read_znode: LEB 84:58672, level 4, 8 branch=0A[=A0=
+=A0 68.380000] UBIFS DBG (pid 2418): ubifs_read_node: LEB 84:52280, indexin=
+g node, length 108=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): read_znode: L=
+EB 84:52280, level 3, 4 branch=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): u=
+bifs_read_node: LEB 84:51800, indexing node, length 128=0A[=A0=A0 68.380000=
+] UBIFS DBG (pid 2418): read_znode: LEB 84:51800, level 2, 5 branch=0A[=A0=
+=A0 68.380000] UBIFS DBG (pid 2418): ubifs_read_node: LEB 84:51112, indexin=
+g node, length 108=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): read_znode: L=
+EB 84:51112, level 1, 4 branch=0A[=A0=A0 68.380000] UBIFS DBG (pid 2418): u=
+bifs_read_node: LEB 84:50696, indexing node, length 148=0A[=A0=A0 68.380000=
+] UBIFS error (pid 2418): ubifs_check_node: bad CRC: calculated 0x7d62d42c,=
+ read 0x1173c109=0A[=A0=A0 68.390000] UBIFS error (pid 2418): ubifs_check_n=
+ode: bad node at LEB 84:50696=0A[=A0=A0 68.400000]=A0 magic=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0 0x6101831=0A[=A0=A0 68.400000]=A0 crc=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 0x1173c109=0A[=A0=A0 68.400000]=A0 node_type=A0=A0=A0=A0=A0 9 (in=
+dexing node)=0A[=A0=A0 68.400000]=A0 group_type=A0=A0=A0=A0 0 (no node grou=
+p)=0A[=A0=A0 68.400000]=A0 sqnum=A0=A0=A0=A0=A0=A0=A0=A0=A0 29080=0A[=A0=A0=
+ 68.400000]=A0 len=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 148=0A[=A0=A0 68.400000=
+]=A0 child_cnt=A0=A0=A0=A0=A0 6=0A[=A0=A0 68.400000]=A0 level=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0=0A[=A0=A0 68.400000]=A0 Branches:=0A[=A0=A0 68.400000]=A0=
+ 0: LEB 95:49264 len 160 key (1, inode)=0A[=A0=A0 68.400000]=A0 1: LEB 13:3=
+4792 len 60 key (1, direntry, 0x23605a)=0A[=A0=A0 68.400000]=A0 2: LEB 12:9=
+1760 len 60 key (1, direntry, 0x23ee05)=0A[=A0=A0 68.400000]=A0 3: LEB 10:9=
+36 len 60 key (1, direntry, 0x24a603)=0A[=A0=A0 68.400000]=A0 4: LEB 12:960=
+48 len 60 key (1, direntry, 0x2697fa)=0A[=A0=A0 68.400000]=A0 5: LEB 13:340=
+16 len 60 key (1, direntry, 0x271d65)=0A[=A0=A0 68.400000] [<c0030e74>] (un=
+wind_backtrace+0x0/0xdc) from [<c02ee22c>] (dump_stack+0x18/0x1c)=0A[=A0=A0=
+ 68.410000] [<c02ee22c>] (dump_stack+0x18/0x1c) from [<c01566c4>] (ubifs_ch=
+eck_node+0x2b4/0x2fc)=0A[=A0=A0 68.410000] [<c01566c4>] (ubifs_check_node+0=
+x2b4/0x2fc) from [<c015698c>] (ubifs_read_node+0x280/0x384)=0A[=A0=A0 68.42=
+0000] [<c015698c>] (ubifs_read_node+0x280/0x384) from [<c017c99c>] (ubifs_l=
+oad_znode+0xc8/0x788)=0A[=A0=A0 68.430000] [<c017c99c>] (ubifs_load_znode+0=
+xc8/0x788) from [<c017f80c>] (dbg_walk_index+0x80/0x294)=0A[=A0=A0 68.44000=
+0] [<c017f80c>] (dbg_walk_index+0x80/0x294) from [<c017fa64>] (dbg_check_id=
+x_size+0x44/0xdc)=0A[=A0=A0 68.450000] [<c017fa64>] (dbg_check_idx_size+0x4=
+4/0xdc) from [<c0152808>] (ubifs_fill_super+0xd04/0x1e50)=0A[=A0=A0 68.4600=
+00] [<c0152808>] (ubifs_fill_super+0xd04/0x1e50) from [<c0153c30>] (ubifs_g=
+et_sb+0x2dc/0x350)=0A[=A0=A0 68.470000] [<c0153c30>] (ubifs_get_sb+0x2dc/0x=
+350) from [<c00c8328>] (vfs_kern_mount+0x58/0xe8)=0A[=A0=A0 68.480000] [<c0=
+0c8328>] (vfs_kern_mount+0x58/0xe8) from [<c00c8414>] (do_kern_mount+0x3c/0=
+xe0)=0A[=A0=A0 68.490000] [<c00c8414>] (do_kern_mount+0x3c/0xe0) from [<c00=
+e1a10>] (do_mount+0x720/0x78c)=0A[=A0=A0 68.500000] [<c00e1a10>] (do_mount+=
+0x720/0x78c) from [<c00e1b08>] (sys_mount+0x8c/0xcc)=0A[=A0=A0 68.510000] [=
+<c00e1b08>] (sys_mount+0x8c/0xcc) from [<c002af40>] (ret_fast_syscall+0x0/0=
+x28)=0A[=A0=A0 68.520000] UBIFS error (pid 2418): ubifs_read_node: expected=
+ node type 9=0A[=A0=A0 68.520000] UBIFS error (pid 2418): dbg_check_idx_siz=
+e: error -117 while walking the index=0A[=A0=A0 68.530000] UBIFS DBG (pid 2=
+421): ubifs_bg_thread: background thread "ubifs_bgt0_0" stops=0A[SKOV]\$=0A=
+=A0=0AI hope this will enable you to device a solution, if one exists.=0A=
+=0ASincerely,=0AKarsten Jeppesen=0A=0A=0A=0A=0A=A0=A0=A0=A0=A0 =0A=0AI hope=
+ this will enable you =0A
