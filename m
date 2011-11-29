@@ -1,23 +1,28 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RVVMM-0001h9-2h
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 21:37:06 +0000
-Received: by lagu2 with SMTP id u2so1433323lag.36
- for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2011 13:36:59 -0800 (PST)
+ id 1RVVQG-0001t1-C2
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 21:41:08 +0000
+Received: by lagu2 with SMTP id u2so1435289lag.36
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2011 13:41:02 -0800 (PST)
 Subject: Re: [PATCH v2] Integrated Flash Controller support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: b35362@freescale.com
-Date: Tue, 29 Nov 2011 23:36:52 +0200
-In-Reply-To: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+To: Kumar Gala <galak@kernel.crashing.org>
+Date: Tue, 29 Nov 2011 23:40:57 +0200
+In-Reply-To: <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
 References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+ <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
+ <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1322602615.2150.7.camel@koala>
+Message-ID: <1322602860.2150.10.camel@koala>
 Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, r58472@freescale.com,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, scottwood@freescale.com,
- akpm@linux-foundation.org, dwmw2@infradead.org
+Cc: Artem.Bityutskiy@nokia.com, Li Yang-R58472 <r58472@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
+ "b35362@freescale.com>" <b35362@freescale.com>,
+ "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,74 +33,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-10-31 at 17:38 +0800, b35362@freescale.com wrote:
-> +/*
-> + * fsl_ifc_ctrl_probe
-> + *
-> + * called by device layer when it finds a device matching
-> + * one our driver can handled. This code allocates all of
-> + * the resources needed for the controller only.  The
-> + * resources for the NAND banks themselves are allocated
-> + * in the chip probe function.
-> +*/
-> +static int __devinit fsl_ifc_ctrl_probe(struct platform_device *dev)
-> +{
-> +	int ret = 0;
-> +
-> +
+On Thu, 2011-11-24 at 08:24 -0600, Kumar Gala wrote:
+> On Nov 22, 2011, at 9:41 PM, Kumar Gala wrote:
+> 
+> > 
+> > On Oct 31, 2011, at 4:38 AM, <b35362@freescale.com> <b35362@freescale.com> wrote:
+> > 
+> >> From: Liu Shuo <b35362@freescale.com>
+> >> 
+> >> Integrated Flash Controller supports various flashes like NOR, NAND
+> >> and other devices using NOR, NAND and GPCM Machine available on it.
+> >> IFC supports four chip selects.
+> >> 
+> >> Signed-off-by: Dipen Dudhat <Dipen.Dudhat@freescale.com>
+> >> Signed-off-by: Scott Wood <scottwood@freescale.com>
+> >> Signed-off-by: Li Yang <leoli@freescale.com>
+> >> Signed-off-by: Liu Shuo <b35362@freescale.com>
+> >> ---
+> >> arch/powerpc/Kconfig               |    4 +
+> >> arch/powerpc/include/asm/fsl_ifc.h |  834 ++++++++++++++++++++++++++++++++++++
+> >> arch/powerpc/sysdev/Makefile       |    1 +
+> >> arch/powerpc/sysdev/fsl_ifc.c      |  322 ++++++++++++++
+> >> 4 files changed, 1161 insertions(+), 0 deletions(-)
+> >> create mode 100644 arch/powerpc/include/asm/fsl_ifc.h
+> >> create mode 100644 arch/powerpc/sysdev/fsl_ifc.c
+> > 
+> > Guys,
+> > 
+> > How are we handling this patchset since it touches drivers/mtd/nand?
 
-... snip ...
+I do not see it touching MTD from the diffstat above. I am a little bit
+confused why a flash controller is added to
+arch/powerpc/sysdev/fsl_ifc.c ?
 
-I am concerned about the error path in this function
-
-> +	init_waitqueue_head(&fsl_ifc_ctrl_dev->nand_wait);
-> +
-> +	ret = request_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_irq, IRQF_SHARED,
-> +			  "fsl-ifc", fsl_ifc_ctrl_dev);
-> +	if (ret != 0) {
-> +		dev_err(&dev->dev, "failed to install irq (%d)\n",
-> +			fsl_ifc_ctrl_dev->irq);
-> +		goto err;
-> +	}
-
-irq_dispose_mapping() on error path?
-
-> +
-> +	ret = request_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_nand_irq, 0,
-> +			  "fsl-ifc-nand", fsl_ifc_ctrl_dev);
-> +	if (ret != 0) {
-> +		dev_err(&dev->dev, "failed to install irq (%d)\n",
-> +			fsl_ifc_ctrl_dev->nand_irq);
-> +		goto err;
-
-free_irq() on error path?
-> +	}
-> +
-> +	return 0;
-> +
-> +err:
-> +	return ret;
-> +}
-
-
-> +static __init int fsl_ifc_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = platform_driver_register(&fsl_ifc_ctrl_driver);
-> +	if (ret)
-> +		printk(KERN_ERR "fsl-ifc: Failed to register platform"
-> +				"driver\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static void __exit fsl_ifc_exit(void)
-> +{
-> +	platform_driver_unregister(&fsl_ifc_ctrl_driver);
-> +}
-> +
-> +module_init(fsl_ifc_init);
-> +module_exit(fsl_ifc_exit);
-
-How about using module_platform_driver() instead?
+Artem.
