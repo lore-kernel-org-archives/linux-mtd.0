@@ -1,28 +1,21 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=TX2EHSOBE007.bigfish.com)
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RVVXH-0002Cv-3m
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 21:48:23 +0000
-Message-ID: <4ED5531C.6030104@freescale.com>
-Date: Tue, 29 Nov 2011 15:48:12 -0600
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] Integrated Flash Controller support
-References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
- <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
- <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
- <1322602860.2150.10.camel@koala>
-In-Reply-To: <1322602860.2150.10.camel@koala>
+ id 1RVVhg-0002sp-9k
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 21:59:08 +0000
+Received: by lagu2 with SMTP id u2so1443111lag.36
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2011 13:59:02 -0800 (PST)
+Subject: Re: Corrupted UBIFS, bad CRC
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Karsten Jeppesen <arm9263@yahoo.com>
+Date: Tue, 29 Nov 2011 23:58:58 +0200
+In-Reply-To: <1322052589.58154.YahooMailNeo@web121503.mail.ne1.yahoo.com>
+References: <1322052589.58154.YahooMailNeo@web121503.mail.ne1.yahoo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, Li Yang-R58472 <r58472@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
- "b35362@freescale.com>" <b35362@freescale.com>,
- Kumar Gala <galak@kernel.crashing.org>,
- "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
+Message-ID: <1322603940.2150.18.camel@koala>
+Mime-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/29/2011 03:40 PM, Artem Bityutskiy wrote:
-> On Thu, 2011-11-24 at 08:24 -0600, Kumar Gala wrote:
->> On Nov 22, 2011, at 9:41 PM, Kumar Gala wrote:
->>
->>>
->>> On Oct 31, 2011, at 4:38 AM, <b35362@freescale.com> <b35362@freescale.com> wrote:
->>>
->>>> From: Liu Shuo <b35362@freescale.com>
->>>>
->>>> Integrated Flash Controller supports various flashes like NOR, NAND
->>>> and other devices using NOR, NAND and GPCM Machine available on it.
->>>> IFC supports four chip selects.
->>>>
->>>> Signed-off-by: Dipen Dudhat <Dipen.Dudhat@freescale.com>
->>>> Signed-off-by: Scott Wood <scottwood@freescale.com>
->>>> Signed-off-by: Li Yang <leoli@freescale.com>
->>>> Signed-off-by: Liu Shuo <b35362@freescale.com>
->>>> ---
->>>> arch/powerpc/Kconfig               |    4 +
->>>> arch/powerpc/include/asm/fsl_ifc.h |  834 ++++++++++++++++++++++++++++++++++++
->>>> arch/powerpc/sysdev/Makefile       |    1 +
->>>> arch/powerpc/sysdev/fsl_ifc.c      |  322 ++++++++++++++
->>>> 4 files changed, 1161 insertions(+), 0 deletions(-)
->>>> create mode 100644 arch/powerpc/include/asm/fsl_ifc.h
->>>> create mode 100644 arch/powerpc/sysdev/fsl_ifc.c
->>>
->>> Guys,
->>>
->>> How are we handling this patchset since it touches drivers/mtd/nand?
+Hi,
+
+On Wed, 2011-11-23 at 04:49 -0800, Karsten Jeppesen wrote:
+> Uncompressing Linux........... done, booting the kernel.
+> [    1.570000] UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0x7d62d42c, read 0x1173c109
+> [    1.580000] UBIFS error (pid 1): ubifs_check_node: bad node at LEB 84:50696
+> [    1.580000] UBIFS error (pid 1): ubifs_read_node: expected node type 9
+> [    1.590000] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+
+Well, difficult to say - you have a node with bad CRC. There may be
+different reasons. Did you try to validate your flash with mtd tests?
+
+Here are some hints:
+http://linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
+
+> I am running a kernel 2.6.32.8 with most patches applied. Especially
+> the recovery.c patch and the mtd (8 byte write buffer patch) applied.
+> The target that showed this error does not have these patches applied.
 > 
-> I do not see it touching MTD from the diffstat above. I am a little bit
-> confused why a flash controller is added to
-> arch/powerpc/sysdev/fsl_ifc.c ?
+> Even so... I copied the FLASH content to a target with these patches
+> and tried again in order to see if these patches would allow the
+> kernel to rectify the problem. No cigar.
+> Of course I ran with debug enabled so here are the output (but even
+> better I hope - here is the flash image for download:
+> http://download.gnist.skov.com/corrupt_ubifs.img )
 
-It's really a bus controller, with NOR, NAND, and general-purpose modes
-settable per chipselect.  The actual NAND driver goes in
-drivers/mtd/nand, and is apparently in a separate patch (probably due to
-separate maintenance domains).
+I've downloaed this image and could mount it when I use mtdram:
 
-It's the same situation as arch/powerpc/sysdev/fsl_lbc.c versus
-drivers/mtd/nand/fsl_elbc_nand.c and drivers/mtd/nand/fsl_upm.c.
+$ sudo modprobe mtdram erase_size=128 total_size=60000
+$ sudo dd if=~/tmp/corrupt_ubifs.img of=/dev/mtd0
+$ sudo modprobe ubi mtd=0
 
--Scott
+[dedekind@koala l2-mtd-2.6 (master)]$ sudo modprobe mtdram
+erase_size=128 total_size=29440
+[dedekind@koala l2-mtd-2.6 (master)]$ sudo dd if=~/tmp/corrupt_ubifs.img
+of=/dev/mtd0
+58880+0 records in
+58880+0 records out
+30146560 bytes (30 MB) copied, 0.0739408 s, 408 MB/s
+[dedekind@koala l2-mtd-2.6 (master)]$ sudo modprobe ubi mtd=0
+
+[ 5920.203998] UBI: attaching mtd0 to ubi0
+[ 5920.204016] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[ 5920.204019] UBI: logical eraseblock size:    130944 bytes
+[ 5920.204022] UBI: smallest flash I/O unit:    1
+[ 5920.204028] UBI: VID header offset:          64 (aligned 64)
+[ 5920.204034] UBI: data offset:                128
+[ 5920.204330] UBI: max. sequence number:       325
+[ 5920.204799] UBI: attached mtd0 to ubi0
+[ 5920.204801] UBI: MTD device name:            "mtdram test device"
+[ 5920.204804] UBI: MTD device size:            28 MiB
+[ 5920.204805] UBI: number of good PEBs:        230
+[ 5920.204807] UBI: number of bad PEBs:         0
+[ 5920.204809] UBI: number of corrupted PEBs:   0
+[ 5920.204810] UBI: max. allowed volumes:       128
+[ 5920.204812] UBI: wear-leveling threshold:    4096
+[ 5920.204814] UBI: number of internal volumes: 1
+[ 5920.204815] UBI: number of user volumes:     1
+[ 5920.204817] UBI: available PEBs:             0
+[ 5920.204819] UBI: total number of reserved PEBs: 230
+[ 5920.204820] UBI: number of PEBs reserved for bad PEB handling: 0
+[ 5920.204822] UBI: max/mean erase counter: 2/0
+[ 5920.204824] UBI: image sequence number:  1748877991
+[ 5920.204832] UBI: background thread "ubi_bgt0d" started, PID 4759
+
+
+I was using my fedora kernel. Did you try to pull the ubifs-v2.6.32
+back-port tree? 
+
+http://linux-mtd.infradead.org/doc/ubifs.html#L_source
+
+Artem.
