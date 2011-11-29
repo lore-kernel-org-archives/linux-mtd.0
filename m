@@ -1,15 +1,33 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RVOlU-0004Rg-CM
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 14:34:33 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: tests: stresstest: bail out if device has not enough
- eraseblocks
-Date: Tue, 29 Nov 2011 15:34:08 +0100
-Message-Id: <1322577248-20759-1-git-send-email-w.sang@pengutronix.de>
-Cc: Wolfram Sang <w.sang@pengutronix.de>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mms1.broadcom.com ([216.31.210.17])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RVThn-0005ny-U5
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 19:51:05 +0000
+Message-ID: <4ED53793.80209@broadcom.com>
+Date: Tue, 29 Nov 2011 11:50:43 -0800
+From: "Jiandong Zheng" <jdzheng@broadcom.com>
+MIME-Version: 1.0
+To: "Axel Lin" <axel.lin@gmail.com>
+Subject: Re: [PATCH] mtd: convert drivers/mtd/* to use module_platform_driver()
+References: <1322397903.2799.5.camel@phoenix>
+In-Reply-To: <1322397903.2799.5.camel@phoenix>
+Content-Type: text/plain;
+ charset=utf-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Sukumar Ghorai <s-ghorai@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Vimal Singh <vimal.newwork@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Andres Salomon <dilinger@queued.net>, Olof Johansson <olof@lixom.net>,
+ Jamie Iles <jamie@jamieiles.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Manuel Lauss <manuel.lauss@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +37,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-stresstest needs at least two eraseblocks. Bail out gracefully if that
-condition is not met. Fixes the following 'division by zero' OOPS:
+On 11/27/2011 4:45 AM, Axel Lin wrote:
+> This patch converts the drivers in drivers/mtd/* to use the
+> module_platform_driver() macro which makes the code smaller and a bit
+> simpler.
+>
+> Cc: David Woodhouse<dwmw2@infradead.org>
+> Cc: Jiandong Zheng<jdzheng@broadcom.com>
+> Cc: Scott Branden<sbranden@broadcom.com>
+> Cc: Wan ZongShun<mcuos.com@gmail.com>
+> Cc: Dmitry Eremin-Solenikov<dbaryshkov@gmail.com>
+> Cc: Jamie Iles<jamie@jamieiles.com>
+> Cc: Olof Johansson<olof@lixom.net>
+> Cc: Kyungmin Park<kyungmin.park@samsung.com>
+> Cc: Haojian Zhuang<haojian.zhuang@gmail.com>
+> Cc: Artem Bityutskiy<Artem.Bityutskiy@nokia.com>
+> Cc: Ralf Baechle<ralf@linux-mips.org>
+> Cc: Brian Norris<computersforpeace@gmail.com>
+> Cc: Lars-Peter Clausen<lars@metafoo.de>
+> Cc: Manuel Lauss<manuel.lauss@googlemail.com>
+> Cc: Vimal Singh<vimal.newwork@gmail.com>
+> Cc: Andres Salomon<dilinger@queued.net>
+> Cc: Sukumar Ghorai<s-ghorai@ti.com>
+> Signed-off-by: Axel Lin<axel.lin@gmail.com>
+> ---
 
-[  619.100000] mtd_stresstest: MTD device size 131072, eraseblock size 131072, page size 2048, count of eraseblocks 1, pages per eraseblock 64, OOB size 64
-[  619.120000] mtd_stresstest: scanning for bad eraseblocks
-[  619.120000] mtd_stresstest: scanned 1 eraseblocks, 0 are bad
-[  619.130000] mtd_stresstest: doing operations
-[  619.130000] mtd_stresstest: 0 operations done
-[  619.140000] Division by zero in kernel.
-...
+>   drivers/mtd/nand/bcm_umi_nand.c     |   13 +------------
 
-caused by
+> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+> index 46b58d6..50387fd 100644
+> --- a/drivers/mtd/nand/bcm_umi_nand.c
+> +++ b/drivers/mtd/nand/bcm_umi_nand.c
+> @@ -546,18 +546,7 @@ static struct platform_driver nand_driver = {
+>          .resume = bcm_umi_nand_resume,
+>   };
+>
+> -static int __init nand_init(void)
+> -{
+> -       return platform_driver_register(&nand_driver);
+> -}
+> -
+> -static void __exit nand_exit(void)
+> -{
+> -       platform_driver_unregister(&nand_driver);
+> -}
+> -
+> -module_init(nand_init);
+> -module_exit(nand_exit);
+> +module_platform_driver(nand_driver);
+>
+>   MODULE_LICENSE("GPL");
+>   MODULE_AUTHOR("Broadcom");
 
-        /* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
-        eb %= (ebcnt - 1);
-
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
----
- drivers/mtd/tests/mtd_stresstest.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
-index 52ffd91..811642f 100644
---- a/drivers/mtd/tests/mtd_stresstest.c
-+++ b/drivers/mtd/tests/mtd_stresstest.c
-@@ -284,6 +284,12 @@ static int __init mtd_stresstest_init(void)
- 	       (unsigned long long)mtd->size, mtd->erasesize,
- 	       pgsize, ebcnt, pgcnt, mtd->oobsize);
- 
-+	if (ebcnt < 2) {
-+		printk(PRINT_PREF "error: need at least 2 eraseblocks\n");
-+		err = -ENOSPC;
-+		goto out_put_mtd;
-+	}
-+
- 	/* Read or write up 2 eraseblocks at a time */
- 	bufsize = mtd->erasesize * 2;
- 
-@@ -322,6 +328,7 @@ out:
- 	kfree(bbt);
- 	vfree(writebuf);
- 	vfree(readbuf);
-+out_put_mtd:
- 	put_mtd_device(mtd);
- 	if (err)
- 		printk(PRINT_PREF "error %d occurred\n", err);
--- 
-1.7.7.3
+Acked-by: Jiandong Zheng <jdzheng@broadcom.com>
