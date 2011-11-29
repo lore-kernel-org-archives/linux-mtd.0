@@ -1,21 +1,15 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RVVy1-0004qm-AF
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 22:15:57 +0000
-Received: by lagu2 with SMTP id u2so1451142lag.36
- for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2011 14:15:55 -0800 (PST)
-Subject: Re: [UBI] Missing scrub when there is a bit-flip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bhavesh Parekh <bparekh@nvidia.com>
-Date: Wed, 30 Nov 2011 00:15:46 +0200
-In-Reply-To: <6F5E0EB93579CE4A99BFB2D6A9D015057D9CA89078@BGMAIL01.nvidia.com>
-References: <6F5E0EB93579CE4A99BFB2D6A9D015057D9CA89078@BGMAIL01.nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1322604953.2150.24.camel@koala>
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RVVz8-0004xq-QI
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 22:17:07 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: linux-doc@vger.kernel.org,
+	dedekind1@gmail.com
+Subject: [PATCH] Documentation: add sysfs entries for mtd docg3 chips
+Date: Tue, 29 Nov 2011 23:16:35 +0100
+Message-Id: <1322604995-7419-1-git-send-email-robert.jarzmik@free.fr>
+Cc: greg@kroah.com, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +19,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, good catch!
+Add documentation for MSystems disk-on-chip docg3 chips
+sysfs entries, which enable and disable protection areas,
+giving or disabling access to the chip's memory.
 
-On Wed, 2011-11-23 at 18:58 +0530, Bhavesh Parekh wrote:
-... snip ...
-> When we used leb_write_lock instead of leb_write_trylock() then we are
-> seeing matching erase-call for the bit-flips.
-> 
-> So, we are currently thinking 2 possible approaches to fix this:
-> 1. Use leb_write_lock instead of leb_write_trylock(), but
-> leb_write_trylock was used to avoid contention. Will adding back will
-> have side-effect ?
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ .../ABI/testing/sysfs-devices-platform-docg3       |   34 ++++++++++++++++++++
+ 1 files changed, 34 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-platform-docg3
 
-Yeah, there is a big comment which explains that this can cause a
-dead-lock, so you cannot use leb_write_lock().
-
-> 2. Add the leb again in the scrubbing list for scrubbing. There is
-> already code for the same in the implementation, (in out_not_moved
-> case where scrubbed=1 if condition),  but since we have set protect=1
-> we won't go in this condition.   We are thinking to return two
-> different error code from the eba_copy_leb base for two different
-> cases in the function (one where volume is removed and another is
-> contention).  And only in case of contention set scrubbing=1 and call
-> goto out_not_moved which will add this LEB for scrubbing again.
-
-Yes, this sounds reasonable, introduce a separate return code, like
-MOVE_RETRY. Please go ahead and send a patch.
-
-Thanks!
+diff --git a/Documentation/ABI/testing/sysfs-devices-platform-docg3 b/Documentation/ABI/testing/sysfs-devices-platform-docg3
+new file mode 100644
+index 0000000..8aa3671
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-devices-platform-docg3
+@@ -0,0 +1,34 @@
++What:		/sys/devices/platform/docg3/f[0-3]_dps[01]_is_keylocked
++Date:		November 2011
++KernelVersion:	3.3
++Contact:	Robert Jarzmik <robert.jarzmik@free.fr>
++Description:
++		Show whether the floor (0 to 4), protection area (0 or 1) is
++		keylocked. Each docg3 chip (or floor) has 2 protection areas,
++		which can cover any part of it, block aligned, called DPS.
++		The protection has information embedded whether it blocks reads,
++		writes or both.
++		The result is:
++		0 -> the DPS is not keylocked
++		1 -> the DPS is keylocked
++Users:		None identified so far.
++
++What:		/sys/devices/platform/docg3/f[0-3]_dps[01]_protection_key
++Date:		November 2011
++KernelVersion:	3.3
++Contact:	Robert Jarzmik <robert.jarzmik@free.fr>
++Description:
++		Enter the protection key for the floor (0 to 4), protection area
++		(0 or 1). Each docg3 chip (or floor) has 2 protection areas,
++		which can cover any part of it, block aligned, called DPS.
++		The protection has information embedded whether it blocks reads,
++		writes or both.
++		The protection key is a string of 8 bytes (value 0-255).
++		Entering the correct value toggle the lock, and can be observed
++		through f[0-3]_dps[01]_is_keylocked.
++		Possible values are:
++			- 8 bytes
++		Typical values are:
++			- "00000000"
++			- "12345678"
++Users:		None identified so far.
+-- 
+1.7.5.4
