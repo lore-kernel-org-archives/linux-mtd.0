@@ -1,15 +1,21 @@
-Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RVVz8-0004xq-QI
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 22:17:07 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: linux-doc@vger.kernel.org,
-	dedekind1@gmail.com
-Subject: [PATCH] Documentation: add sysfs entries for mtd docg3 chips
-Date: Tue, 29 Nov 2011 23:16:35 +0100
-Message-Id: <1322604995-7419-1-git-send-email-robert.jarzmik@free.fr>
-Cc: greg@kroah.com, Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-mtd@lists.infradead.org
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RVW9h-0006Bt-BY
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2011 22:28:01 +0000
+Received: by lagu2 with SMTP id u2so1456573lag.36
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2011 14:27:59 -0800 (PST)
+Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Wed, 30 Nov 2011 00:20:00 +0200
+In-Reply-To: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1322605202.2150.26.camel@koala>
+Mime-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add documentation for MSystems disk-on-chip docg3 chips
-sysfs entries, which enable and disable protection areas,
-giving or disabling access to the chip's memory.
+On Wed, 2011-11-23 at 15:57 +0100, Wolfram Sang wrote:
+> Fixes:
+> 
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'gpmi_nfc_init':
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: error: 'THIS_MODULE' undeclared (first use in this function)
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: note: each undeclared identifier is reported only once for each function it appears in
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:15: error: expected declaration specifiers or '...' before string constant
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: data definition has no type or storage class
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: type defaults to 'int' in declaration of 'MODULE_AUTHOR'
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- .../ABI/testing/sysfs-devices-platform-docg3       |   34 ++++++++++++++++++++
- 1 files changed, 34 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-platform-docg3
+Pushed to l2-mtd-2.6.git, thanks!
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-platform-docg3 b/Documentation/ABI/testing/sysfs-devices-platform-docg3
-new file mode 100644
-index 0000000..8aa3671
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-platform-docg3
-@@ -0,0 +1,34 @@
-+What:		/sys/devices/platform/docg3/f[0-3]_dps[01]_is_keylocked
-+Date:		November 2011
-+KernelVersion:	3.3
-+Contact:	Robert Jarzmik <robert.jarzmik@free.fr>
-+Description:
-+		Show whether the floor (0 to 4), protection area (0 or 1) is
-+		keylocked. Each docg3 chip (or floor) has 2 protection areas,
-+		which can cover any part of it, block aligned, called DPS.
-+		The protection has information embedded whether it blocks reads,
-+		writes or both.
-+		The result is:
-+		0 -> the DPS is not keylocked
-+		1 -> the DPS is keylocked
-+Users:		None identified so far.
-+
-+What:		/sys/devices/platform/docg3/f[0-3]_dps[01]_protection_key
-+Date:		November 2011
-+KernelVersion:	3.3
-+Contact:	Robert Jarzmik <robert.jarzmik@free.fr>
-+Description:
-+		Enter the protection key for the floor (0 to 4), protection area
-+		(0 or 1). Each docg3 chip (or floor) has 2 protection areas,
-+		which can cover any part of it, block aligned, called DPS.
-+		The protection has information embedded whether it blocks reads,
-+		writes or both.
-+		The protection key is a string of 8 bytes (value 0-255).
-+		Entering the correct value toggle the lock, and can be observed
-+		through f[0-3]_dps[01]_is_keylocked.
-+		Possible values are:
-+			- 8 bytes
-+		Typical values are:
-+			- "00000000"
-+			- "12345678"
-+Users:		None identified so far.
--- 
-1.7.5.4
+Artem.
