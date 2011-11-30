@@ -1,23 +1,19 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RVjLD-00025y-J7
- for linux-mtd@lists.infradead.org; Wed, 30 Nov 2011 12:32:49 +0000
-Received: by ywp18 with SMTP id 18so643669ywp.36
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2011 04:32:43 -0800 (PST)
-Subject: Re: [PATCH] [MTD:UBI] Missing scrub when there is a bit-flip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bhavesh Parekh <bparekh@nvidia.com>
-Date: Wed, 30 Nov 2011 14:33:38 +0200
-In-Reply-To: <1322655222-28348-2-git-send-email-bparekh@nvidia.com>
-References: <1322655222-28348-1-git-send-email-bparekh@nvidia.com>
- <1322655222-28348-2-git-send-email-bparekh@nvidia.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-+xo5Rl+aCFUJ6xqG5btC"
-Message-ID: <1322656423.24797.428.camel@sauron.fi.intel.com>
+Received: from mail.free-electrons.com ([88.190.12.23])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RVnby-0006V9-Fl
+ for linux-mtd@lists.infradead.org; Wed, 30 Nov 2011 17:06:23 +0000
+Date: Wed, 30 Nov 2011 18:06:08 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH 0/5] MTD: modify mtd api to return bitflip info on read
+ operations
+Message-ID: <20111130180608.1a8c687d@skate>
+In-Reply-To: <4ED66140.8020008@newsguy.com>
+References: <4ED66140.8020008@newsguy.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
---=-+xo5Rl+aCFUJ6xqG5btC
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Le Wed, 30 Nov 2011 09:00:48 -0800,
+Mike Dunn <mikedunn@newsguy.com> a =C3=A9crit :
 
-On Wed, 2011-11-30 at 17:43 +0530, Bhavesh Parekh wrote:
-> Under some cases, when scrubbing the PEB if we didnot get the lock on
-> the PEB it fails to scrub. Add that PEB again to the scrub list
+> Thanks Thomas.  For some reason this post never made it to my inbox.  Pas=
+ted from the list archive...
+
+Huh, strange. Let's see if this one reaches your Inbox.
+
+> > Making this change in patch 1 will break the build if someone bisects
+> > kernel changes between patch 1 and your other patches.
 >=20
-> Signed-off-by: Bhavesh Parekh <bparekh@nvidia.com>
+> Then I guess it should be a single patch.  As a general rule, should indi=
+vidual patches=20
+> not be interdependent?
 
-I think we need to send it to -stable as well. Could you please confirm
-that you verified that this patch solves the issue you reported - I ask
-this to make double sure we are sending a good patch to the stable tree.
+My understanding is that the kernel should be buildable at any given
+point, so that things such as "git bisect" can easily be used. So, it's
+not so much a "interdependence" question but rather a "buildability"
+question.
 
-Thanks!
+Basically, you have to ensure that the kernel still builds when patch 1
+is enabled, when patches 1+2 are enabled, when patches 1+2+3 are
+enabled, etc.
 
+> Well, then it wouldn't be a generic mtd read operation, and higher layers=
+ would have to be=20
+> aware of the type of device and call the appropriate read function.
+> Fewer drivers would need to be patched, but patches to infrastructure cod=
+e would be complicated=20
+> and make the resulting code ugly, I think.
+
+True that having some drivers implementing the standard ->read()
+method and some others implementing the extended ->readext() method
+would be ugly.
+
+> I'm not a flash expert, but I think that the greatest number of bitflips =
+on any one page=20
+> is a sufficient diagnostic of the integrity of an eraseblock.  One bad pa=
+ge will make the=20
+> entire eraseblock unusable, so I'm not sure it's useful to report bitflip=
+s for specific pages. =20
+
+Ok, understood, that makes sense to me (but I'm not a flash expert
+either).
+
+Regards,
+
+Thomas
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-+xo5Rl+aCFUJ6xqG5btC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJO1iKiAAoJECmIfjd9wqK03sYP/AtIWKTNhietqeX+BfjHk/CJ
-8o89RatSDhItY5t51dVyEqW6TXT4WkhCvs7aaxl+4Xj0EFiK9DusUKYMWPhsjNlO
-Fe/FdAuP0qP9FmXn+kwAmLdmPcKjBrsWo6nJ5LbEKkvY/XlTGiXR3TwTZpM6I/Ee
-+8ObS/EgY1+9u1KnMkWYT5ehpMV1Oo5TmvlbUJirwGkWXmePcwmzdGcA/evbyeNp
-YK+zj4h7t3thw+FbN5g9RRcf5EgjHIzfku7HCLucggR4X1Ufa9AgY+gnaBXtLZkd
-clcdNnMUOh/scu5vtHZBqpDsM71xAJdZrPfPYvSL6qtLCKw1Xu3olKnSD5Q72Y/H
-BDAqxdnmM4FabyhDDqdt+GQzR5Xv52etp1K9oF1jrvHAOsX/vBqDSa48fgXkvitf
-JPKMXnfql1JdA7BHYiKif499yr8oVYDNbES9BLWg23Fc9gm9FWmFrVqrKUO43TCL
-oePDRU2AdTvmSPRb/V53yqdmdAMFI9KqSVl97oiMiaJFNRQti9oY0osIvFV1jd4k
-OIRM6uU193lP/R2fQ0N1Qi1uXvcdbAUku5akrranx25I/NfiOxdOFbVZxvHmCFGk
-WirLE9vbGoc1Qg4Y0NPz8B+zF3eG2DY83uZNEzysfp3X+IZm7ZGK2MkHqO+MT/2y
-9oNkGyU9OgH3gJOj1vUn
-=ESrh
------END PGP SIGNATURE-----
-
---=-+xo5Rl+aCFUJ6xqG5btC--
+Thomas Petazzoni, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
