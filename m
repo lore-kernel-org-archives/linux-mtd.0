@@ -1,30 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RW1u8-0000PG-OW
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2011 08:22:05 +0000
-Received: by yenq4 with SMTP id q4so1744415yen.36
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2011 00:22:03 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1322727444.2332.12.camel@koala>
-References: <1322397903.2799.5.camel@phoenix> <1322727444.2332.12.camel@koala>
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Date: Thu, 1 Dec 2011 09:21:22 +0100
-Message-ID: <CAOLZvyHmW7joMRbj7OPzmgWVdLr2U0p1P17FdroVmS6skecpAg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: convert drivers/mtd/* to use module_platform_driver()
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Sukumar Ghorai <s-ghorai@ti.com>, linux-kernel@vger.kernel.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Vimal Singh <vimal.newwork@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Jiandong Zheng <jdzheng@broadcom.com>, Andres Salomon <dilinger@queued.net>,
- Olof Johansson <olof@lixom.net>, Jamie Iles <jamie@jamieiles.com>,
- Axel Lin <axel.lin@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Received: from mail.visioncatalog.de ([217.6.246.34] helo=root.phytec.de)
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RW1v6-0003ZV-3g
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2011 08:23:05 +0000
+Subject: Re: [PATCH] nandtest: seed random generator properly
+From: Jan Weitzel <J.Weitzel@phytec.de>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <CAN8TOE-zTCY-SRrVpsFExu32yq_3j7FJGgVUBN3CEt_E_qzS8Q@mail.gmail.com>
+References: <CAN8TOE-rh_yh_0hi+unXe3Q5zV9tdBW6rhomRG-h3za5A4ROrg@mail.gmail.com>
+ <1322503912-8221-1-git-send-email-computersforpeace@gmail.com>
+ <OF4FD25221.65A13349-ONC1257957.002904C2-C1257957.00293DF7@phytec.de>
+ <CAN8TOE-zTCY-SRrVpsFExu32yq_3j7FJGgVUBN3CEt_E_qzS8Q@mail.gmail.com>
+Date: Thu, 01 Dec 2011 09:23:01 +0100
+Message-ID: <1322727781.4543.31.camel@lws-weitzel>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: J.Weitzel@phytec.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,18 +26,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 1, 2011 at 9:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sun, 2011-11-27 at 20:45 +0800, Axel Lin wrote:
->> This patch converts the drivers in drivers/mtd/* to use the
->> module_platform_driver() macro which makes the code smaller and a bit
->> simpler.
->
-> Pushed to l2-mtd-2.6.git, thanks. However, I got rejects in the
-> drivers/mtd/nand/au1550nd.c file, so this part was ignored. Please, take
-> a look at this and send an incremental change. Thanks!
+Am Mittwoch, den 30.11.2011, 10:24 -0800 schrieb Brian Norris:
+> On Mon, Nov 28, 2011 at 11:30 PM, Jan Weitzel <J.Weitzel@phytec.de> wrote:
+> > Brian Norris <computersforpeace@gmail.com> schrieb am 28.11.2011 19:11:52:
+> >> +   if (seed < 0)
+> >> +      seed = time(NULL);
+> >> +   srand(seed);
+> >
+> > So you loose all negative seeds.
+> 
+> Well, srand() technically takes unsigned ints, so all seeds are
+> technically positive. But that just means we're parsing and storing
+> seeds wrong (not a big deal, really).
+> 
+> > What is about
+> >
+> > int seed = time(NULL);
+> > ...
+> > case 's'
+> >        seed = atol(optarg);
+> > ...
+> > }
+> > srand(seed);
+> 
+> Not sure if I understand the question perfectly (clarify if I'm
+> wrong). My patch was intended to:
+> (1) use the user-supplied seed (--seed=X) if supplied
+> (2) use a random seed (based on time()) if the seed is left
+> uninitialized (i.e., -1)
+> 
+> Anyway, I see a problem with my method. How about the following patch,
+> which saves the time first, then overwrites it with the supplied seed
+> if provided.
+Acked-by: Jan Weitzel <j.weitzel@phytec.de>
 
-Axel's patch is against a bigger change to au1550nd.c (which introduced the
-platform driver in the first place) available in linux-next.
+Maybe you need to rebase it, because my former patch just got pushed.
 
-Thanks,
-        Manuel
+> From 4df0643c4819f5de5db54b855406852da0dc6bf1 Mon Sep 17 00:00:00 2001
+> From: Brian Norris <computersforpeace@gmail.com>
+> Date: Mon, 28 Nov 2011 10:03:30 -0800
+> Subject: [PATCH] nandtest: seed random generator properly
+> 
+> This patch fixes two problems in nandtest:
+> 
+> * if a seed is provided it is actually not used. First call is
+>   "seed = rand()" killing the given seed.
+>   Credit: Jan Weitzel <j.weitzel@phytec.de>
+> 
+> * if a seed is not provided, we use the default rand() values, which
+>   produces the same sequence of values every run.r
+> 
+> To solve these problems, we seed the random number generator with either
+> the time() or the supplied seed.
+> 
+> Cc: Jan Weitzel <j.weitzel@phytec.de>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  nandtest.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/nandtest.c b/nandtest.c
+> index dc28d09..7811be2 100644
+> --- a/nandtest.c
+> +++ b/nandtest.c
+> @@ -140,6 +140,8 @@ int main(int argc, char **argv)
+>         uint32_t offset = 0;
+>         uint32_t length = -1;
+> 
+> +       seed = time(NULL);
+> +
+>         for (;;) {
+>                 static const char *short_options="hkl:mo:p:s:";
+>                 static const struct option long_options[] = {
+> @@ -243,6 +245,8 @@ int main(int argc, char **argv)
+>         printf("Bad blocks     : %d\n", oldstats.badblocks);
+>         printf("BBT blocks     : %d\n", oldstats.bbtblocks);
+> 
+> +       srand(seed);
+> +
+>         for (pass = 0; pass < nr_passes; pass++) {
+>                 loff_t test_ofs;
+> 
