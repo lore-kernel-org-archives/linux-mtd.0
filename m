@@ -1,15 +1,22 @@
-Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RWYLb-0005fn-TI
- for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 19:00:43 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: dedekind1@gmail.com
-Subject: [PATCH v3] mtd/docg3: fixes and cleanups
-Date: Fri,  2 Dec 2011 20:00:12 +0100
-Message-Id: <1322852412-15193-1-git-send-email-robert.jarzmik@free.fr>
-In-Reply-To: <1322726702.2332.9.camel@koala>
-References: <1322726702.2332.9.camel@koala>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RWZ4b-00021g-45
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 19:47:05 +0000
+Received: by fabs1 with SMTP id s1so445036fab.36
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2011 11:47:03 -0800 (PST)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
+Date: Fri, 2 Dec 2011 20:47:01 +0100
+References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+In-Reply-To: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201112022047.01444.marek.vasut@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,138 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch takes into account checkpatch, sparse and ECC
-comments.
+> Fixes:
+> 
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'gpmi_nfc_init':
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: error: 'THIS_MODULE'
+> undeclared (first use in this function)
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: note: each undeclared
+> identifier is reported only once for each function it appears in
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:15: error: expected declaration
+> specifiers or '...' before string constant
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: data definition
+> has no type or storage class
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: type defaults to
+> 'int' in declaration of 'MODULE_AUTHOR'
+> 
+> and some more...
+> 
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c index 071b634..493ec2f 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -21,9 +21,9 @@
+>  #include <linux/clk.h>
+>  #include <linux/slab.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/module.h>
+>  #include <linux/mtd/gpmi-nand.h>
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+This one is missing too, but I suspect that's the stuff discussed in the 
+subsequent emails? When do you plan to get this merged? (or what do I need to 
+apply by hand ... patch name or message ID is ok).
 
----
-Since V1: Stephen Rothwell comment
-Since V2: rebased on
-git://git.infradead.org/users/dedekind/l2-mtd-2.6.git,
-commit id cb6ef775e498d24e3686a37108f1cea4bebed896
----
- drivers/mtd/devices/docg3.c |   26 +++++++++++++-------------
- drivers/mtd/devices/docg3.h |    3 ++-
- 2 files changed, 15 insertions(+), 14 deletions(-)
+Thanks
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index f7490a014..2a32072 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -61,7 +61,7 @@
-  *
-  */
- 
--static unsigned int reliable_mode = 0;
-+static unsigned int reliable_mode;
- module_param(reliable_mode, uint, 0);
- MODULE_PARM_DESC(reliable_mode, "Set the docg3 mode (0=normal MLC, 1=fast, "
- 		 "2=reliable) : MLC normal operations are in normal mode");
-@@ -546,7 +546,7 @@ out:
-  * @len: the number of bytes covered by the ECC (BCH covered)
-  *
-  * The function does initialize the hardware ECC engine to compute the Hamming
-- * ECC (on 1 byte) and the BCH Syndroms (on 7 bytes).
-+ * ECC (on 1 byte) and the BCH hardware ECC (on 7 bytes).
-  *
-  * Return 0 if succeeded, -EIO on error
-  */
-@@ -567,13 +567,13 @@ static int doc_read_page_ecc_init(struct docg3 *docg3, int len)
-  * @len: the number of bytes covered by the ECC (BCH covered)
-  *
-  * The function does initialize the hardware ECC engine to compute the Hamming
-- * ECC (on 1 byte) and the BCH Syndroms (on 7 bytes).
-+ * ECC (on 1 byte) and the BCH hardware ECC (on 7 bytes).
-  *
-  * Return 0 if succeeded, -EIO on error
-  */
- static int doc_write_page_ecc_init(struct docg3 *docg3, int len)
- {
--	doc_writew(docg3, !DOC_ECCCONF0_READ_MODE
-+	doc_writew(docg3, DOC_ECCCONF0_WRITE_MODE
- 		   | DOC_ECCCONF0_BCH_ENABLE | DOC_ECCCONF0_HAMMING_ENABLE
- 		   | (len & DOC_ECCCONF0_DATA_BYTES_MASK),
- 		   DOC_ECCCONF0);
-@@ -614,7 +614,7 @@ static void doc_hamming_ecc_init(struct docg3 *docg3, int nb_bytes)
- }
- 
- /**
-- * doc_correct_data - Fix if need be read data from flash
-+ * doc_ecc_bch_fix_data - Fix if need be read data from flash
-  * @docg3: the device
-  * @buf: the buffer of read data (512 + 7 + 1 bytes)
-  * @hwecc: the hardware calculated ECC.
-@@ -761,16 +761,16 @@ static void doc_write_page_putbytes(struct docg3 *docg3, int len,
- }
- 
- /**
-- * doc_get_hw_bch_syndroms - Get hardware calculated BCH syndroms
-+ * doc_get_bch_hw_ecc - Get hardware calculated BCH ECC
-  * @docg3: the device
-- * @syns:  the array of 7 integers where the syndroms will be stored
-+ * @hwecc:  the array of 7 integers where the hardware ecc will be stored
-  */
--static void doc_get_hw_bch_syndroms(struct docg3 *docg3, u8 *syns)
-+static void doc_get_bch_hw_ecc(struct docg3 *docg3, u8 *hwecc)
- {
- 	int i;
- 
- 	for (i = 0; i < DOC_ECC_BCH_SIZE; i++)
--		syns[i] = doc_register_readb(docg3, DOC_BCH_SYNDROM(i));
-+		hwecc[i] = doc_register_readb(docg3, DOC_BCH_HW_ECC(i));
- }
- 
- /**
-@@ -904,7 +904,7 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 		doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE - nboob,
- 				       NULL, 0);
- 
--		doc_get_hw_bch_syndroms(docg3, hwecc);
-+		doc_get_bch_hw_ecc(docg3, hwecc);
- 		eccconf1 = doc_register_readb(docg3, DOC_ECCCONF1);
- 
- 		if (nboob >= DOC_LAYOUT_OOB_SIZE) {
-@@ -1248,7 +1248,7 @@ static int doc_write_page(struct docg3 *docg3, loff_t to, const u_char *buf,
- 			  const u_char *oob, int autoecc)
- {
- 	int block0, block1, page, ret, ofs = 0;
--	u8 syn[DOC_ECC_BCH_SIZE], hamming;
-+	u8 hwecc[DOC_ECC_BCH_SIZE], hamming;
- 
- 	doc_dbg("doc_write_page(to=%lld)\n", to);
- 	calc_block_sector(to, &block0, &block1, &page, &ofs, docg3->reliable);
-@@ -1278,8 +1278,8 @@ static int doc_write_page(struct docg3 *docg3, loff_t to, const u_char *buf,
- 					&hamming);
- 		doc_delay(docg3, 2);
- 
--		doc_get_hw_bch_syndroms(docg3, syn);
--		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_BCH_SZ, syn);
-+		doc_get_bch_hw_ecc(docg3, hwecc);
-+		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_BCH_SZ, hwecc);
- 		doc_delay(docg3, 2);
- 
- 		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_UNUSED_SZ, oob);
-diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
-index a349915..db0da43 100644
---- a/drivers/mtd/devices/docg3.h
-+++ b/drivers/mtd/devices/docg3.h
-@@ -115,7 +115,7 @@
- #define DOC_ECCCONF1			0x1042
- #define DOC_ECCPRESET			0x1044
- #define DOC_HAMMINGPARITY		0x1046
--#define DOC_BCH_SYNDROM(idx)		(0x1048 + (idx << 0))
-+#define DOC_BCH_HW_ECC(idx)		(0x1048 + idx)
- 
- #define DOC_PROTECTION			0x1056
- #define DOC_DPS0_KEY			0x105c
-@@ -193,6 +193,7 @@
- /*
-  * Flash register : DOC_ECCCONF0
-  */
-+#define DOC_ECCCONF0_WRITE_MODE		0x0000
- #define DOC_ECCCONF0_READ_MODE		0x8000
- #define DOC_ECCCONF0_AUTO_ECC_ENABLE	0x4000
- #define DOC_ECCCONF0_HAMMING_ENABLE	0x1000
--- 
-1.7.5.4
+M
