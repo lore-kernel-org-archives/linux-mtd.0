@@ -1,14 +1,24 @@
-Received: from mail.frogne.dk ([195.97.164.18])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RWUfX-0003YD-ED
- for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 15:04:57 +0000
-Message-Id: <4ED8F1600200008E00014323@mail.frogne.dk>
-Date: Fri, 02 Dec 2011 15:40:16 +0100
-From: "=?ISO-8859-15?Q?Anders=20M=F8rk-Pedersen?=" <amp@frogne.dk>
-To: <linux-mtd@lists.infradead.org>
-Subject: pxa2xx-flash.c
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=__Part5D72C640.0__="
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RWWuX-0006lM-C5
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 17:28:34 +0000
+Received: by wgbdt11 with SMTP id dt11so1015663wgb.18
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2011 09:28:30 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CANOLnOOE3a0BP0TcLnRAmq5YAiHLZTpkbriDh9WtkkBT7TotFA@mail.gmail.com>
+References: <CAN8TOE9=ux=suwcQMwJY1XUhp_mnD_DL613ffF1-HTL1OVB2PQ@mail.gmail.com>
+ <1322557213-23565-1-git-send-email-j.weitzel@phytec.de>
+ <1322728943.2332.13.camel@koala>
+ <CANOLnOOE3a0BP0TcLnRAmq5YAiHLZTpkbriDh9WtkkBT7TotFA@mail.gmail.com>
+Date: Fri, 2 Dec 2011 09:28:30 -0800
+Message-ID: <CAN8TOE-YkQvm76ZXxh-CBF05y6BoHY+FM95-TtJdAiP0knhZtg@mail.gmail.com>
+Subject: Re: [PATCH] mdt nand: omap2+ use platform options
+From: Brian Norris <computersforpeace@gmail.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dedekind1@gmail.com, dedekind@infradead.org,
+ Jan Weitzel <j.weitzel@phytec.de>, linux-mtd@lists.infradead.org,
+ tglx@linutronix.de, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,53 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a MIME message. If you are reading this text, you may want to 
-consider changing to a mail reader or gateway that understands how to 
-properly handle MIME multipart messages.
+On Fri, Dec 2, 2011 at 2:20 AM, Grazvydas Ignotas <notasas@gmail.com> wrote:
+> On Thu, Dec 1, 2011 at 10:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> On Tue, 2011-11-29 at 10:00 +0100, Jan Weitzel wrote:
+>>> Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+>>
+>> Pushed to l2-mtd-2.6.git, thank you!
+>
+> This breaks build here, did you really test it, Jan?
+>
+> drivers/mtd/nand/omap2.c: In function 'omap_nand_probe':
+> drivers/mtd/nand/omap2.c:1078: error: 'struct omap_nand_platform_data'
+> has no member named 'options'
 
---=__Part5D72C640.0__=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+This is exactly what I was asking already. I don't see 'options' in
+'struct omap_nand_platform_data' in
+'arch/arm/plat-omap/include/plat/nand.h', even in linux-next.
 
-Hi,
-
-I've noticed a problem with a patch for the pxa2xx-flash.c map, which has =
-been committed to the nextline kernel (currently 3.2-rc3)
-
-The problem is that hardcoded mtd partitions are no longer probed - and =
-that breaks a lot of board support modules.
-
-The patch is described as=20
-"mtd: pxa2xx-flash.c: use mtd_device_parse_register"
-
-and can be seen here: http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/=
-linux.git;a=3Dcommit;h=3D6fcdc92fce81eadcee262a7a66bf3207314fab87
-
-I have created a small patch to address this.
-
-Best regards
-Anders Mork-Pedersen <amp@frogne.dk>
-Finn Frogne A/S
-
-
---=__Part5D72C640.0__=
-Content-Type: text/plain; name="pxa2xx-flash-hardcoded_partitions.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="pxa2xx-flash-hardcoded_partitions.patch"
-
-diff -Nur linux-3.2-rc3/drivers/mtd/maps//pxa2xx-flash.c linux-3.2-rc3_patc=
-hed/drivers/mtd/maps//pxa2xx-flash.c=0A--- linux-3.2-rc3/drivers/mtd/maps//=
-pxa2xx-flash.c	2011-11-24 05:20:28.000000000 +0100=0A+++ linux-3.2-rc3_pat=
-ched/drivers/mtd/maps//pxa2xx-flash.c	2011-12-02 12:50:38.000000000 =
-+0100=0A@@ -54,6 +54,7 @@=0A 	struct flash_platform_data *flash =3D =
-pdev->dev.platform_data;=0A 	struct pxa2xx_flash_info *info;=0A 	=
-struct resource *res;=0A+	struct mtd_part_parser_data	ppdata;=0A =
-=0A 	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);=0A 	if =
-(!res)=0A@@ -98,7 +99,10 @@=0A 	}=0A 	info->mtd->owner =3D THIS_MODULE;=
-=0A =0A-	mtd_device_parse_register(info->mtd, probes, 0, NULL, =
-0);=0A+	ppdata.of_node =3D pdev->dev.of_node;=0A+	mtd_device_parse_re=
-gister(info->mtd, probes, &ppdata,=0A+			flash ? flash->part=
-s : NULL,=0A+			flash ? flash->nr_parts : 0);=0A =0A 	=
-platform_set_drvdata(pdev, info);=0A 	return 0;=0A
---=__Part5D72C640.0__=--
+Brian
