@@ -1,19 +1,15 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RWYIr-0005Hf-FP
- for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 18:57:46 +0000
+ id 1RWYLb-0005fn-TI
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2011 19:00:43 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: dedekind1@gmail.com
-Subject: Re: [PATCH v2] mtd/docg3: fixes and cleanups
-References: <1322604577-12309-1-git-send-email-robert.jarzmik@free.fr>
- <1322726702.2332.9.camel@koala>
-Date: Fri, 02 Dec 2011 19:57:34 +0100
-In-Reply-To: <1322726702.2332.9.camel@koala> (Artem Bityutskiy's message of
- "Thu, 01 Dec 2011 10:05:00 +0200")
-Message-ID: <87pqg67qe9.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH v3] mtd/docg3: fixes and cleanups
+Date: Fri,  2 Dec 2011 20:00:12 +0100
+Message-Id: <1322852412-15193-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1322726702.2332.9.camel@koala>
+References: <1322726702.2332.9.camel@koala>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +19,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> writes:
+This patch takes into account checkpatch, sparse and ECC
+comments.
 
-> On Tue, 2011-11-29 at 23:09 +0100, Robert Jarzmik wrote:
->> This patch takes into account checkpatch, sparse and ECC
->> comments.
->> 
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->
-> Could you please send a patch which cleanly applies to l2-mtd-2.6.git -
-> this does not. This one does not apply both before and after Dan's
-> patch.
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Yes, of course. I don't know what happened there.
-The v3 in a next mail (which is what v2 should have been).
+---
+Since V1: Stephen Rothwell comment
+Since V2: rebased on
+git://git.infradead.org/users/dedekind/l2-mtd-2.6.git,
+commit id cb6ef775e498d24e3686a37108f1cea4bebed896
+---
+ drivers/mtd/devices/docg3.c |   26 +++++++++++++-------------
+ drivers/mtd/devices/docg3.h |    3 ++-
+ 2 files changed, 15 insertions(+), 14 deletions(-)
 
-Cheers.
-
---
-Robert
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index f7490a014..2a32072 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -61,7 +61,7 @@
+  *
+  */
+ 
+-static unsigned int reliable_mode = 0;
++static unsigned int reliable_mode;
+ module_param(reliable_mode, uint, 0);
+ MODULE_PARM_DESC(reliable_mode, "Set the docg3 mode (0=normal MLC, 1=fast, "
+ 		 "2=reliable) : MLC normal operations are in normal mode");
+@@ -546,7 +546,7 @@ out:
+  * @len: the number of bytes covered by the ECC (BCH covered)
+  *
+  * The function does initialize the hardware ECC engine to compute the Hamming
+- * ECC (on 1 byte) and the BCH Syndroms (on 7 bytes).
++ * ECC (on 1 byte) and the BCH hardware ECC (on 7 bytes).
+  *
+  * Return 0 if succeeded, -EIO on error
+  */
+@@ -567,13 +567,13 @@ static int doc_read_page_ecc_init(struct docg3 *docg3, int len)
+  * @len: the number of bytes covered by the ECC (BCH covered)
+  *
+  * The function does initialize the hardware ECC engine to compute the Hamming
+- * ECC (on 1 byte) and the BCH Syndroms (on 7 bytes).
++ * ECC (on 1 byte) and the BCH hardware ECC (on 7 bytes).
+  *
+  * Return 0 if succeeded, -EIO on error
+  */
+ static int doc_write_page_ecc_init(struct docg3 *docg3, int len)
+ {
+-	doc_writew(docg3, !DOC_ECCCONF0_READ_MODE
++	doc_writew(docg3, DOC_ECCCONF0_WRITE_MODE
+ 		   | DOC_ECCCONF0_BCH_ENABLE | DOC_ECCCONF0_HAMMING_ENABLE
+ 		   | (len & DOC_ECCCONF0_DATA_BYTES_MASK),
+ 		   DOC_ECCCONF0);
+@@ -614,7 +614,7 @@ static void doc_hamming_ecc_init(struct docg3 *docg3, int nb_bytes)
+ }
+ 
+ /**
+- * doc_correct_data - Fix if need be read data from flash
++ * doc_ecc_bch_fix_data - Fix if need be read data from flash
+  * @docg3: the device
+  * @buf: the buffer of read data (512 + 7 + 1 bytes)
+  * @hwecc: the hardware calculated ECC.
+@@ -761,16 +761,16 @@ static void doc_write_page_putbytes(struct docg3 *docg3, int len,
+ }
+ 
+ /**
+- * doc_get_hw_bch_syndroms - Get hardware calculated BCH syndroms
++ * doc_get_bch_hw_ecc - Get hardware calculated BCH ECC
+  * @docg3: the device
+- * @syns:  the array of 7 integers where the syndroms will be stored
++ * @hwecc:  the array of 7 integers where the hardware ecc will be stored
+  */
+-static void doc_get_hw_bch_syndroms(struct docg3 *docg3, u8 *syns)
++static void doc_get_bch_hw_ecc(struct docg3 *docg3, u8 *hwecc)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < DOC_ECC_BCH_SIZE; i++)
+-		syns[i] = doc_register_readb(docg3, DOC_BCH_SYNDROM(i));
++		hwecc[i] = doc_register_readb(docg3, DOC_BCH_HW_ECC(i));
+ }
+ 
+ /**
+@@ -904,7 +904,7 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 		doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE - nboob,
+ 				       NULL, 0);
+ 
+-		doc_get_hw_bch_syndroms(docg3, hwecc);
++		doc_get_bch_hw_ecc(docg3, hwecc);
+ 		eccconf1 = doc_register_readb(docg3, DOC_ECCCONF1);
+ 
+ 		if (nboob >= DOC_LAYOUT_OOB_SIZE) {
+@@ -1248,7 +1248,7 @@ static int doc_write_page(struct docg3 *docg3, loff_t to, const u_char *buf,
+ 			  const u_char *oob, int autoecc)
+ {
+ 	int block0, block1, page, ret, ofs = 0;
+-	u8 syn[DOC_ECC_BCH_SIZE], hamming;
++	u8 hwecc[DOC_ECC_BCH_SIZE], hamming;
+ 
+ 	doc_dbg("doc_write_page(to=%lld)\n", to);
+ 	calc_block_sector(to, &block0, &block1, &page, &ofs, docg3->reliable);
+@@ -1278,8 +1278,8 @@ static int doc_write_page(struct docg3 *docg3, loff_t to, const u_char *buf,
+ 					&hamming);
+ 		doc_delay(docg3, 2);
+ 
+-		doc_get_hw_bch_syndroms(docg3, syn);
+-		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_BCH_SZ, syn);
++		doc_get_bch_hw_ecc(docg3, hwecc);
++		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_BCH_SZ, hwecc);
+ 		doc_delay(docg3, 2);
+ 
+ 		doc_write_page_putbytes(docg3, DOC_LAYOUT_OOB_UNUSED_SZ, oob);
+diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
+index a349915..db0da43 100644
+--- a/drivers/mtd/devices/docg3.h
++++ b/drivers/mtd/devices/docg3.h
+@@ -115,7 +115,7 @@
+ #define DOC_ECCCONF1			0x1042
+ #define DOC_ECCPRESET			0x1044
+ #define DOC_HAMMINGPARITY		0x1046
+-#define DOC_BCH_SYNDROM(idx)		(0x1048 + (idx << 0))
++#define DOC_BCH_HW_ECC(idx)		(0x1048 + idx)
+ 
+ #define DOC_PROTECTION			0x1056
+ #define DOC_DPS0_KEY			0x105c
+@@ -193,6 +193,7 @@
+ /*
+  * Flash register : DOC_ECCCONF0
+  */
++#define DOC_ECCCONF0_WRITE_MODE		0x0000
+ #define DOC_ECCCONF0_READ_MODE		0x8000
+ #define DOC_ECCCONF0_AUTO_ECC_ENABLE	0x4000
+ #define DOC_ECCCONF0_HAMMING_ENABLE	0x1000
+-- 
+1.7.5.4
