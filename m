@@ -1,33 +1,23 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXCos-00038Q-RY
- for linux-mtd@lists.infradead.org; Sun, 04 Dec 2011 14:13:31 +0000
-Received: by iaby26 with SMTP id y26so9417iab.36
- for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2011 06:13:30 -0800 (PST)
-Subject: Re: [PATCH] mtd: convert drivers/mtd/* to use module_platform_driver()
+ id 1RXCpr-0003Dq-Ig
+ for linux-mtd@lists.infradead.org; Sun, 04 Dec 2011 14:14:32 +0000
+Received: by iaby26 with SMTP id y26so10486iab.36
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2011 06:14:31 -0800 (PST)
+Subject: Re: [PATCH] MTD: nand: Convert au1550nd to use
+ module_platform_driver()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Date: Sun, 04 Dec 2011 16:14:27 +0200
-In-Reply-To: <CAOLZvyHmW7joMRbj7OPzmgWVdLr2U0p1P17FdroVmS6skecpAg@mail.gmail.com>
-References: <1322397903.2799.5.camel@phoenix> <1322727444.2332.12.camel@koala>
- <CAOLZvyHmW7joMRbj7OPzmgWVdLr2U0p1P17FdroVmS6skecpAg@mail.gmail.com>
+To: Axel Lin <axel.lin@gmail.com>
+Date: Sun, 04 Dec 2011 16:15:32 +0200
+In-Reply-To: <1322748247.31743.1.camel@phoenix>
+References: <1322748247.31743.1.camel@phoenix>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-KnGhNHB4AIcYJbqAvyXr"
-Message-ID: <1323008077.9400.58.camel@sauron.fi.intel.com>
+ boundary="=-inji+l5rPcf7ZbYZlN52"
+Message-ID: <1323008139.9400.59.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Sukumar Ghorai <s-ghorai@ti.com>, linux-kernel@vger.kernel.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Vimal Singh <vimal.newwork@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Jiandong Zheng <jdzheng@broadcom.com>, Andres Salomon <dilinger@queued.net>,
- Olof Johansson <olof@lixom.net>, Jamie Iles <jamie@jamieiles.com>,
- Axel Lin <axel.lin@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mips@linux-mips.org, Manuel Lauss <manuel.lauss@googlemail.com>,
+ linux-mtd@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,34 +29,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-KnGhNHB4AIcYJbqAvyXr
+--=-inji+l5rPcf7ZbYZlN52
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2011-12-01 at 09:21 +0100, Manuel Lauss wrote:
-> On Thu, Dec 1, 2011 at 9:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
-> > On Sun, 2011-11-27 at 20:45 +0800, Axel Lin wrote:
-> >> This patch converts the drivers in drivers/mtd/* to use the
-> >> module_platform_driver() macro which makes the code smaller and a bit
-> >> simpler.
-> >
-> > Pushed to l2-mtd-2.6.git, thanks. However, I got rejects in the
-> > drivers/mtd/nand/au1550nd.c file, so this part was ignored. Please, tak=
-e
-> > a look at this and send an incremental change. Thanks!
->=20
-> Axel's patch is against a bigger change to au1550nd.c (which introduced t=
-he
-> platform driver in the first place) available in linux-next.
+On Thu, 2011-12-01 at 22:04 +0800, Axel Lin wrote:
+> Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+> Hi Ralf,
+> This patch converts au1550nd to use module_platform_driver().
+> You have committed a5bd32fd "MTD: nand: make au1550nd.c a platform_driver=
+".
+> Currently this patch can only apply to either your tree or linux-next.
+> Could you help to take it.
+> ( committed a5bd32fd does not exist in l2-mtd-2.6.git,
+> so Artem cannot apply it.)
 
-Then au1550nd.c bits should go in via the MIPS tree as well.
+Yes, please, merge the au1550nd.c piece via Ralf, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-KnGhNHB4AIcYJbqAvyXr
+--=-inji+l5rPcf7ZbYZlN52
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -74,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO24BDAAoJECmIfjd9wqK0lT8P/3Q+/McGZOQYgXP6IO2uKQ9K
-rTaXE+XaV7rExRoYsLc01je1ys/5blMOA00o7Cofy5VzIIzjEneCdY1m70nU94fr
-zpaoCaoaNr5JvvE841HHRb0raIqCfdxofr4XJujNUmIqw+2RGh4tLcECqiYQQ3aH
-EjMY/6l9qvVMxR6zV6vhTDsChkbv/va5Sp7IP+OXUrnrGQG96k/qBoBmD1RG5N0n
-5Vyo5LFT0qka2gs97mMUAPJkNdZhkXxgDvC/tjUwFryOrL7s5xY42AtVu6upifZM
-gmdzI2u1N+TImaUtbxG4fd6MQrrvl3KXLFedvRBLctO59cjZpIyZkeF9gEzIZQKg
-R2abkcVrJKU3jKAKooc2ofz7g2fDCO/NxEccJVjGcmNABCG/Kbarb2tx1RB9w8jW
-eaYJQs3G4C0fMYHG3rI6vyxKB1bIQ3P4D6tLDpjFPrRYXChnpQZZzhdyXtWXvLJh
-xJC1mLGSbilf14b4FK3bi5WGx//REALgAej5nsjaRqtG8Ml1Nkhl3Z8yz79NZNXc
-UbddWCw2p5oTV2A91SPdjyWVFUf4i4DJbmPfy9kiGhfDsF2pjTKvqf3l2+jcErYG
-LHHb+wZ05b60peQV3YpObRXA8kxUkJd1qwrEfQGo1eUiOT1BvaCC0J8YeG+4qOGM
-1sbL89inflm2XvNMD1fM
-=u2f9
+iQIcBAABAgAGBQJO24CEAAoJECmIfjd9wqK0e7wQAMJWcelDQxxBzqU/aQa/lnZ2
+U3QUnVGStwLCL3ADXSPCqQ2P3a2mdPZdljcjYntg4GtDlq6k84a3O9qz6sigw+ts
+WgXZ/E2RUy6vqvoPOtSJHL1jbqI8pF5+4hcOErbGeidssNVpG4RAyvfRxocD86dt
+B9L2rQFBqFGyzdVc13F/hxtsGpk8ROx0UlsMO4ymrAnyNqSv4nyeT/UNEd+tUvje
+ZpZhPl5RTTOx+R5gq2U4RGM9Dm7GEGKldBTMH84TJGC2abx/xmQ35e4WWT5uoqrA
+y6gWBgz2AvNILyvouW5Fsuh2cVTgxrVFueYBR4rMNNlHSU7uDWdMJCDYIj2aZmL4
+prrAWmtlYDOuMLZoz9DOM/3JpjppURHxkjKf48xQt/M4eEoJCUgUVoD0WIkPrGOg
+e+lTfwefyEgrDBP8BbGbplPBJOzeEgCXeO+WhTpnsOCYjbVw5Zv2oqZwG8Lw8CpI
+vjCG7nmQhyoTMD9wKRLNPjyZsIFREh90aeGl9qMqYdRQnzZGQShmo9chh+3K1st5
+MYWqCZAFenUVTaSg5bhGqH7uZqEaQCQYmMkfoc+l7TdUxTz9aBTtjwUnXnOcIxoA
+8oVAENtvSXAjRdu4JoF1vq2QyQ+PpIjiBlwfM+hBvIcVrwKaM9mNG68FAj2ZsObs
+mt+t/7SFmpfdpKsEqhP0
+=/ziI
 -----END PGP SIGNATURE-----
 
---=-KnGhNHB4AIcYJbqAvyXr--
+--=-inji+l5rPcf7ZbYZlN52--
