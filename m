@@ -1,23 +1,21 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXdjh-0006lR-Jg
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 18:57:58 +0000
-Message-ID: <4EDD142B.6090303@newsguy.com>
-Date: Mon, 05 Dec 2011 10:57:47 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1RXeGV-0003Fi-E1
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 19:31:52 +0000
+Message-ID: <4EDD1C22.9080801@freescale.com>
+Date: Mon, 5 Dec 2011 13:31:46 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-To: Peter Horton <phorton@bitbox.co.uk>
-Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
- operations
-References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>		
- <4EDB3295.6040201@bitbox.co.uk> <4EDB7B1D.60603@newsguy.com>	
- <1323009827.9400.75.camel@sauron.fi.intel.com>	
- <4EDB89E9.6070306@newsguy.com> <1323065234.2316.2.camel@koala>
- <4EDCF840.7050107@newsguy.com> <4EDCFAAC.90709@bitbox.co.uk>
-In-Reply-To: <4EDCFAAC.90709@bitbox.co.uk>
-Content-Type: text/plain; charset=UTF-8
+To: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+Subject: Re: [PATCH 1/2] mtd/nand: fixup for fmr initialization of Freescale
+ NAND controller
+References: <1323082493-22617-1-git-send-email-Shengzhou.Liu@freescale.com>
+In-Reply-To: <1323082493-22617-1-git-send-email-Shengzhou.Liu@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, kumar.gala@freescale.com,
+ linuxppc-dev@lists.ozlabs.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/05/2011 09:09 AM, Peter Horton wrote:
-> On 05/12/2011 16:58, Mike Dunn wrote:
->> On 12/04/2011 10:07 PM, Artem Bityutskiy wrote:
->>> On Sun, 2011-12-04 at 06:55 -0800, Mike Dunn wrote:
->>>> So you're thinking that the driver would supply both ecc_strength and
->>>> "scrublevel" (or maybe bb_threshold)?  Would these go into struct mtd_info?
->>> Probably yes. After all, UBI has no idea about what kind of flash is
->>> that and what kind of ECC it uses and what bit-flip level needs
->>> scrubbing. So I think this kind of information should come from the
->>> driver or from the user via mtd sysfs files. What do you think?
->>
->>
->> I'm not a flash expert, but that sounds reasonable, especially if the scrublevel
->> parameter is optional, with UBI using ecc_strength as the default value.  As for
->> how to pass the parameter, sysfs might be a good idea for scrublevel, allowing
->> it to be tunable without having to modify the driver if experience show that the
->> driver author's original assumptions about how a block degrades were incorrect.
->>
->
-> Surely the check for "do we need to scrub ?" should be done lower down
-> otherwise all users of the mtd NAND interface (UBI / JFFS2 etc) are going to
-> have to re-implement those sysfs files and the corresponding checks.
+On 12/05/2011 04:54 AM, Shengzhou Liu wrote:
+> There was a bug for fmr initialization, which lead to  fmr was always 0x100
+> in fsl_elbc_chip_init() and caused FCM command timeout before calling
+> fsl_elbc_chip_init_tail().
+> 
+> Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+> ---
+>  drivers/mtd/nand/fsl_elbc_nand.c |    8 +++-----
+>  1 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+> index eedd8ee..742bf73 100644
+> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> @@ -659,9 +659,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+>  	if (chip->pagemask & 0xff000000)
+>  		al++;
+>  
+> -	/* add to ECCM mode set in fsl_elbc_init */
+> -	priv->fmr |= (12 << FMR_CWTO_SHIFT) |  /* Timeout > 12 ms */
+> -	             (al << FMR_AL_SHIFT);
+> +	priv->fmr |= al << FMR_AL_SHIFT;
+>  
+>  	dev_dbg(priv->dev, "fsl_elbc_init: nand->numchips = %d\n",
+>  	        chip->numchips);
+> @@ -764,8 +762,8 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+>  	priv->mtd.priv = chip;
+>  	priv->mtd.owner = THIS_MODULE;
+>  
+> -	/* Set the ECCM according to the settings in bootloader.*/
+> -	priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM;
+> +	/* Set fmr according to the settings in bootloader.*/
+> +	priv->fmr = in_be32(&lbc->fmr);
+>  
+>  	/* fill in nand_chip structure */
+>  	/* set up function call table */
 
+We shouldn't be relying on the bootloader to provide a sane value here
+-- the bootloader may not have used/initialized NAND at all.
 
-Well, anything higher up that wants to avail itself of this api change will need
-some rework regardless.  Currently the only info passed up from the driver is
-that at least one bitflip occurred somewhere during the read.  The plan is to
-eventually make some changes to UBI so that the decision to scrub is made more
-intelligently.
+It's sort of OK for ECCM, since unless you're trying to match an
+externally programmed flash, or the bootloader uses the flash, all we
+really care about is that the value stay consistent.  The timeout, OTOH,
+must not be set too low or things won't work.
 
-Also, in addition to being too restricting, hard-coding the decision whether to
-scrub into the driver would be tantamount to the driver setting policy, I think.
+We should just set a value that we believe to be high enough for all uses.
 
-Thanks,
-Mike
+-Scott
