@@ -1,14 +1,14 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXaAA-0006rG-Nt
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 15:09:03 +0000
-Received: by eaac10 with SMTP id c10so5209124eaa.36
- for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2011 07:09:00 -0800 (PST)
+ id 1RXaAC-0006rY-Ax
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 15:09:05 +0000
+Received: by bkcje16 with SMTP id je16so4360282bkc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2011 07:09:02 -0800 (PST)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/7] MTD: MAPS: bcm963xx-flash: remove superfluous semicolons
-Date: Mon,  5 Dec 2011 16:08:06 +0100
-Message-Id: <1323097691-16414-3-git-send-email-jonas.gorski@gmail.com>
+Subject: [PATCH 3/7] MTD: MAPS: bcm963xx-flash: clean up printk usage
+Date: Mon,  5 Dec 2011 16:08:07 +0100
+Message-Id: <1323097691-16414-4-git-send-email-jonas.gorski@gmail.com>
 In-Reply-To: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
 References: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
@@ -23,54 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Replace raw printk's with their pr_XXX equivalent and unify broken up
+strings so they become grepable.
+
+Also replace the PFX definition with a pr_fmt().
+
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/mtd/maps/bcm963xx-flash.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/maps/bcm963xx-flash.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/maps/bcm963xx-flash.c b/drivers/mtd/maps/bcm963xx-flash.c
-index b908d92..58cbaf2 100644
+index 58cbaf2..ce2ca2a 100644
 --- a/drivers/mtd/maps/bcm963xx-flash.c
 +++ b/drivers/mtd/maps/bcm963xx-flash.c
-@@ -93,18 +93,18 @@ static int parse_cfe_partitions(struct mtd_info *master,
- 	if (rootfslen > 0) {
- 		nrparts++;
- 		namelen += 6;
--	};
-+	}
- 	if (kernellen > 0) {
- 		nrparts++;
- 		namelen += 6;
--	};
-+	}
+@@ -18,6 +18,8 @@
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  */
  
- 	/* Ask kernel for more memory */
- 	parts = kzalloc(sizeof(*parts) * nrparts + 10 * nrparts, GFP_KERNEL);
- 	if (!parts) {
- 		vfree(buf);
- 		return -ENOMEM;
--	};
-+	}
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+@@ -33,8 +35,6 @@
+ #define BCM63XX_BUSWIDTH	2		/* Buswidth */
+ #define BCM63XX_EXTENDED_SIZE	0xBFC00000	/* Extended flash address */
  
- 	/* Start building partition list */
- 	parts[curpart].name = "CFE";
-@@ -117,7 +117,7 @@ static int parse_cfe_partitions(struct mtd_info *master,
- 		parts[curpart].offset = kerneladdr;
- 		parts[curpart].size = kernellen;
- 		curpart++;
--	};
-+	}
+-#define PFX KBUILD_MODNAME ": "
+-
+ static struct mtd_partition *parsed_parts;
  
- 	if (rootfslen > 0) {
- 		parts[curpart].name = "rootfs";
-@@ -126,7 +126,7 @@ static int parse_cfe_partitions(struct mtd_info *master,
- 		if (sparelen > 0)
- 			parts[curpart].size += sparelen;
- 		curpart++;
--	};
-+	}
+ static struct mtd_info *bcm963xx_mtd_info;
+@@ -79,8 +79,8 @@ static int parse_cfe_partitions(struct mtd_info *master,
+ 	tagversion = &(buf->tag_version[0]);
+ 	boardid = &(buf->board_id[0]);
  
- 	parts[curpart].name = "nvram";
- 	parts[curpart].offset = master->size - master->erasesize;
+-	printk(KERN_INFO PFX "CFE boot tag found with version %s "
+-				"and board type %s\n", tagversion, boardid);
++	pr_info("CFE boot tag found with version %s and board type %s\n",
++		tagversion, boardid);
+ 
+ 	kerneladdr = kerneladdr - BCM63XX_EXTENDED_SIZE;
+ 	rootfsaddr = kerneladdr + kernellen;
+@@ -139,13 +139,13 @@ static int parse_cfe_partitions(struct mtd_info *master,
+ 	parts[curpart].size = master->size - parts[0].size - parts[3].size;
+ 
+ 	for (i = 0; i < nrparts; i++)
+-		printk(KERN_INFO PFX "Partition %d is %s offset %lx and "
+-					"length %lx\n", i, parts[i].name,
+-					(long unsigned int)(parts[i].offset),
+-					(long unsigned int)(parts[i].size));
++		pr_info("Partition %d is %s offset %lx and length %lx\n", i,
++			parts[i].name, (long unsigned int)(parts[i].offset),
++			(long unsigned int)(parts[i].size));
++
++	pr_info("Spare partition is offset %x and length %x\n",	spareaddr,
++		sparelen);
+ 
+-	printk(KERN_INFO PFX "Spare partition is offset %x and length %x\n",
+-							spareaddr, sparelen);
+ 	*pparts = parts;
+ 	vfree(buf);
+ 
 -- 
 1.7.2.5
