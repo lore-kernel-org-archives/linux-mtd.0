@@ -1,25 +1,34 @@
-Received: from db3ehsobe003.messaging.microsoft.com ([213.199.154.141]
- helo=DB3EHSOBE003.bigfish.com)
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXeUj-0003zO-4o
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 19:46:33 +0000
-Message-ID: <4EDD1F90.300@freescale.com>
-Date: Mon, 5 Dec 2011 13:46:24 -0600
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <1323067628.2316.29.camel@koala>
-In-Reply-To: <1323067628.2316.29.camel@koala>
-Content-Type: text/plain; charset="ISO-8859-1"
+ id 1RXftx-0001Ni-0z
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 21:16:43 +0000
+Received: by laah2 with SMTP id h2so216867laa.36
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2011 13:16:37 -0800 (PST)
+Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
+ operations
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Mon, 05 Dec 2011 23:16:34 +0200
+In-Reply-To: <4EDD09E1.8070207@newsguy.com>
+References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>
+ <1323066236.2316.16.camel@koala> <4EDD09E1.8070207@newsguy.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
- linuxppc-dev@lists.ozlabs.org
+Message-ID: <1323119796.2173.3.camel@koala>
+Mime-Version: 1.0
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Manuel Lauss <manuel.lauss@googlemail.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, Jiandong Zheng <jdzheng@broadcom.com>,
+ Andres Salomon <dilinger@queued.net>, Olof Johansson <olof@lixom.net>,
+ Jamie Iles <jamie@jamieiles.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Vimal Singh <vimal.newwork@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +38,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/05/2011 12:47 AM, Artem Bityutskiy wrote:
-> On Sun, 2011-12-04 at 12:31 +0800, shuo.liu@freescale.com wrote:
->> +		/*
->> +		 * Freescale FCM controller has a 2K size limitation of buffer
->> +		 * RAM, so elbc_fcm_ctrl->buffer have to be used if writesize
->> +		 * of chip is greater than 2048.
->> +		 * We malloc a large enough buffer (maximum page size is 16K).
->> +		 */
->> +		elbc_fcm_ctrl->buffer = kmalloc(1024 * 16 + 1024, GFP_KERNEL);
->> +		if (!elbc_fcm_ctrl->buffer) {
->> +			dev_err(dev, "failed to allocate memory\n");
->> +			mutex_unlock(&fsl_elbc_nand_mutex);
->> +			ret = -ENOMEM;
->> +			goto err;
->> +		}
+On Mon, 2011-12-05 at 10:13 -0800, Mike Dunn wrote:
+> OK.  But you may still be underestimating the quantity of code that warrants
+> review.  Since we're going back to multiple patches anyway, how about four patches:
 > 
-> Sorry for returning to this again and agian - I do not have time to dig
-> suggest you the right solutions on the one hand, you do not provide me a
-> good answer on the other hand (or I forgot?).
-> 
-> 16KiB pages do not even exist I believe.
+> 1. api change to mtd.h (a few lines just to put the rest in context)
+> 2. nand, onenand
+> 3. mtd infrastructructure: mtdblock, mtdchar, mtdpart, mtdconcat, ...
+> 4. rote changes
 
-Googling turns up some hints of it, but nothing concrete such as a
-datasheet.  We can assume 8K max for now and adjust it later, as the
-need becomes clear.
+But you need to maintain bisectability. The kernel has to be compilable
+and working between all these steps. The only way to do this is to add 2
+new interfaces without removing the old ones, the do all the changes in
+N stpes, then remove old interfaces. When I start thinking about that,
+it looks too much, so I am not sure.
 
-> And you kmalloc 33KiB or RAM
-
-17KiB, or 9KiB if we forget about 16K-page NAND.
-
-> although in most cases you need only 5KiB. I think this is wrong -
-> what is the very strong reason of wasting RAM you have?
-> 
-> Why you cannot allocate exactly the required amount of RAM after
-> 'nand_scan_ident()' finishes and you know the page size?
-
-Because this is a controller resource, shared by multiple NAND chips
-that may be different page sizes (even if not, it's adding another point
-of synchronization required between initialization of different chips).
- I don't think it's worth the gymnastics to save a few KiB.
-
--Scott
+Artem.
