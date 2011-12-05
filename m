@@ -1,24 +1,23 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXSNn-00017d-KW
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 06:50:36 +0000
-Received: by laai10 with SMTP id i10so1302111laa.36
- for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2011 22:50:33 -0800 (PST)
-Subject: Re: [PATCH 1/3] mtd/nand : use elbc_fcm_ctrl->oob to set FPAR_MS
- bit of FPAR
+ id 1RXSOX-0001CT-HV
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 06:51:21 +0000
+Received: by laai10 with SMTP id i10so1302266laa.36
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2011 22:51:20 -0800 (PST)
+Subject: RE: [PATCH] [MTD:UBI] Missing scrub when there is a bit-flip
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: shuo.liu@freescale.com
-Date: Mon, 05 Dec 2011 08:50:29 +0200
-In-Reply-To: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+To: Bhavesh Parekh <bparekh@nvidia.com>
+Date: Mon, 05 Dec 2011 08:51:17 +0200
+In-Reply-To: <6F5E0EB93579CE4A99BFB2D6A9D015057D9CA89A59@BGMAIL01.nvidia.com>
+References: <1322655222-28348-1-git-send-email-bparekh@nvidia.com>
+ <1322655222-28348-2-git-send-email-bparekh@nvidia.com>
+ <1323007803.9400.56.camel@sauron.fi.intel.com>
+ <6F5E0EB93579CE4A99BFB2D6A9D015057D9CA89A59@BGMAIL01.nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1323067832.2316.31.camel@koala>
+Message-ID: <1323067879.2316.32.camel@koala>
 Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- scottwood@freescale.com, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,16 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-12-04 at 12:31 +0800, shuo.liu@freescale.com wrote:
-> From: Liu Shuo <b35362@freescale.com>
+On Mon, 2011-12-05 at 11:29 +0530, Bhavesh Parekh wrote:
+> Artem,
 > 
-> On both of large-page chip and small-page chip, we always should use
-> 'elbc_fcm_ctrl->oob' to set the FPAR_LP_MS/FPAR_SP_MS bit of FPAR, don't
-> use a overflowed 'column' to set it.
-> 
-> Signed-off-by: Liu Shuo <b35362@freescale.com>
-> Signed-off-by: Li Yang <leoli@freescale.com>
+> Currently we have K36 setup with most of the critical ubi fixes in it. Verified that this patch fixes the mentioned issue.
+> Also we have K39 tree and I am planning to verify the this issue in that tree as well after porting the change and fixes from the ubi tree.
 
-Pushed patches 1 and 2 to l2-mtd-2.6.git, thanks!
+Thanks. I've added CC to stable in the commit message.
 
 Artem.
