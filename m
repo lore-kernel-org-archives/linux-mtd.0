@@ -1,24 +1,15 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXh91-0007fI-J6
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2011 22:36:20 +0000
-Received: by bkcje16 with SMTP id je16so5048187bkc.36
- for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2011 14:36:16 -0800 (PST)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Subject: Re: [PATCH 0/7] MTD: MAPS: remove bcm963xx-flash
-Date: Mon, 5 Dec 2011 23:36:07 +0100
-References: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
-In-Reply-To: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
+Received: from nm20-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.218])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RXrIM-0004dU-Gt
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2011 09:26:39 +0000
+Message-ID: <3D5E240B3031C2FCFE849F4C29B55FBD@altdrcl>
+From: "fdmquq" <emmittaiddjrhl@yahoo.cn>
+To: <linux-mm-bugs-bounce@nl.linux.org>
+Subject: =?utf-8?B?6ZW/5pyf5pyJ5pWI?=
+Date: Tue, 6 Dec 2011 17:26:11 +0800
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201112052336.07901.florian@openwrt.org>
-Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Ralf Baechle <ralf@linux-mips.org>
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_0A82_01FD4A79.1B158250"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +19,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Jonas,
+------=_NextPart_000_0A82_01FD4A79.1B158250
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0F77_01FD4A79.1B158250"
 
-Le lundi 05 d=E9cembre 2011 16:08:04, Jonas Gorski a =E9crit :
-> While trying to improve the bcm963xx CFE partition parsing, I noticed
-> that it could be completely replaced by the generic physmap flash
-> driver using a custom parser.
->=20
-> The following patch set tries to accomplish that.
->=20
-> The first few patches clean take care of some minor code style issues
-> first to prevent checkpatch from complaining when moving code around.
->=20
-> After that I move the CFE partition parsing into a parser and make
-> bcm963xx-flash use it to make sure I don't create a non working version.
->=20
-> Finally I'll allow physmap_flash_data to take partition parser names for
-> overriding the default parsers list (the OF version already allows that),
-> let BCM63XX use it, and remove the bcm963xx-flash driver as it is now
-> completely replaced by physmap + CFE parser.
->=20
-> While most patches are limited to the MTD tree, patch 6/7 touches MIPS,
-> so it could go in either tree. But since the MTD tree already has some
-> modifications for bcm963xx-flash, I think it's better to let it go
-> through the MTD tree, to reduce the (potential for) conflicts.
+------=_NextPart_001_0F77_01FD4A79.1B158250
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-=46or the whole series, feel free to add my:
+DQogICBmZG1xdXENCiAgIDIwMTEtMTItNg0K
 
-Acked-by: Florian Fainelli <florian@openwrt.org>
+------=_NextPart_001_0F77_01FD4A79.1B158250
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-thanks!
+PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgVHJhbnNpdGlvbmFs
+Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXRyYW5zaXRpb25h
+bC5kdGQiPg0KPGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPg0KDQo8
+aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1s
+OyBjaGFyc2V0PXV0Zi04IiAvPg0KPC9oZWFkPg0KDQo8Ym9keT4NCg0KPHA+ICAgZmRtcXVxPGJy
+IC8+DQogICAyMDExLTEyLTYNCjwvcD4NCg0KPC9ib2R5Pg0KDQo8L2h0bWw+DQo=
 
->=20
-> Regards
-> Jonas
->=20
-> P.S: This patchset is based on l2-mtd-2.6.git, which seems to be the
-> "correct" tree now (the website says mtd-2.6.git, but it doesn't look
-> like the correct one, having no commits).
->=20
-> Jonas Gorski (7):
->   MTD: MAPS: bcm963xx-flash: fix word order for spare partition
->   MTD: MAPS: bcm963xx-flash: remove superfluous semicolons
->   MTD: MAPS: bcm963xx-flash: clean up printk usage
->   MTD: MAPS: bcm963xx-flash: make CFE partition parsing an mtd parser
->   MTD: MAPS: physmap: allow partition parsers for physmap_flash_data
->   MIPS: BCM63XX: use the new bcm63xxpart parser
->   MTD: MAPS: remove the now unused bcm963xx-flash
->=20
->  arch/mips/bcm63xx/boards/board_bcm963xx.c |    3 +
->  drivers/mtd/Kconfig                       |    8 +
->  drivers/mtd/Makefile                      |    1 +
->  drivers/mtd/bcm63xxpart.c                 |  189 ++++++++++++++++++++
->  drivers/mtd/maps/Kconfig                  |    1 +
->  drivers/mtd/maps/bcm963xx-flash.c         |  265
-> ----------------------------- drivers/mtd/maps/physmap.c                |=
-=20
->   5 +-
->  include/linux/mtd/physmap.h               |    1 +
->  8 files changed, 207 insertions(+), 266 deletions(-)
->  create mode 100644 drivers/mtd/bcm63xxpart.c
->  delete mode 100644 drivers/mtd/maps/bcm963xx-flash.c
+------=_NextPart_001_0F77_01FD4A79.1B158250--
 
-=2D-=20
-=46lorian
+------=_NextPart_000_0A82_01FD4A79.1B158250
+Content-Type: image/gif;
+	name=ezch.gif
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename=ezch.gif
+
+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
+Dv7gEB7hEj7hFF7hFo4QAQEAOw==
+
+
+------=_NextPart_000_0A82_01FD4A79.1B158250--
