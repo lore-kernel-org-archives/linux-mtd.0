@@ -1,19 +1,26 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXrKB-0004hY-KZ
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2011 09:28:32 +0000
-From: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH 2/2 v2] mtd/nand: Add ONFI support for FSL NAND controller
-Date: Tue, 6 Dec 2011 16:54:15 +0800
-Message-ID: <1323161655-19050-2-git-send-email-Shengzhou.Liu@freescale.com>
-In-Reply-To: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
-References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, dwmw2@infradead.org, kumar.gala@freescale.com,
- linux-mtd@lists.infradead.org, Shengzhou Liu <Shengzhou.Liu@freescale.com>
+ id 1RXtWX-0001qg-9b
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2011 11:49:26 +0000
+Received: by laah2 with SMTP id h2so500658laa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2011 03:49:23 -0800 (PST)
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: shuo.liu@freescale.com
+Date: Tue, 06 Dec 2011 13:49:15 +0200
+In-Reply-To: <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1323172160.2163.2.camel@koala>
+Mime-Version: 1.0
+Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ scottwood@freescale.com, akpm@linux-foundation.org, leoli@freescale.com,
+ dwmw2@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-- fix NAND_CMD_READID command for ONFI detect.
-- add NAND_CMD_PARAM command to read the ONFI parameter page.
+On Sun, 2011-12-04 at 12:31 +0800, shuo.liu@freescale.com wrote:
+> From: Liu Shuo <shuo.liu@freescale.com>
+> 
+> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
+> to support the Nand flash chip whose page size is larger than 2K bytes,
+> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and save
+> them to a large buffer.
+> 
+> Signed-off-by: Liu Shuo <shuo.liu@freescale.com>
 
-Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
----
-v2: no changes
+This patch does not apply on top of my l2-mtd-2.6.git tree. Could you
+please send a patch that applies cleanly?
 
- drivers/mtd/nand/fsl_elbc_nand.c |   19 ++++++++++++-------
- 1 files changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 4f405a0..b4db407 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -349,19 +349,24 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		fsl_elbc_run_command(mtd);
- 		return;
- 
--	/* READID must read all 5 possible bytes while CEB is active */
- 	case NAND_CMD_READID:
--		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD_READID.\n");
-+	case NAND_CMD_PARAM:
-+		dev_vdbg(priv->dev, "fsl_elbc_cmdfunc: NAND_CMD %x\n", command);
- 
- 		out_be32(&lbc->fir, (FIR_OP_CM0 << FIR_OP0_SHIFT) |
- 		                    (FIR_OP_UA  << FIR_OP1_SHIFT) |
- 		                    (FIR_OP_RBW << FIR_OP2_SHIFT));
--		out_be32(&lbc->fcr, NAND_CMD_READID << FCR_CMD0_SHIFT);
--		/* nand_get_flash_type() reads 8 bytes of entire ID string */
--		out_be32(&lbc->fbcr, 8);
--		elbc_fcm_ctrl->read_bytes = 8;
-+		out_be32(&lbc->fcr, command << FCR_CMD0_SHIFT);
-+		/* reads 8 bytes of entire ID string */
-+		if (NAND_CMD_READID == command) {
-+			out_be32(&lbc->fbcr, 8);
-+			elbc_fcm_ctrl->read_bytes = 8;
-+		} else {
-+			out_be32(&lbc->fbcr, 256);
-+			elbc_fcm_ctrl->read_bytes = 256;
-+		}
- 		elbc_fcm_ctrl->use_mdr = 1;
--		elbc_fcm_ctrl->mdr = 0;
-+		elbc_fcm_ctrl->mdr = column;
- 
- 		set_addr(mtd, 0, 0, 0);
- 		fsl_elbc_run_command(mtd);
--- 
-1.6.4
+Thanks!
