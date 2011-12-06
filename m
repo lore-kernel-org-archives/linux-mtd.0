@@ -1,21 +1,19 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RXtnm-0004jy-Av
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2011 12:07:15 +0000
-Received: by laah2 with SMTP id h2so509879laa.36
- for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2011 04:07:12 -0800 (PST)
-Subject: Re: pxa2xx-flash.c
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anders =?ISO-8859-1?Q?M=F8rk-Pedersen?= <amp@frogne.dk>
-Date: Tue, 06 Dec 2011 14:07:10 +0200
-In-Reply-To: <4EDC7B590200008E00014334@mail.frogne.dk>
-References: <4EDC7B590200008E00014334@mail.frogne.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1323173231.2163.6.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RXtoL-00053a-ET
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2011 12:07:50 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6B06811A
+ for <linux-mtd@lists.infradead.org>; Tue,  6 Dec 2011 12:07:47 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1C3502483
+ for <linux-mtd@lists.infradead.org>; Tue,  6 Dec 2011 12:07:47 +0000 (GMT)
+From: Angus CLARK <angus.clark@st.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH (mtd-www) 01/13] nand-data: update TC58DVM72A1TG00 BBM info
+Date: Tue,  6 Dec 2011 12:07:37 +0000
+Message-Id: <1323173269-19931-1-git-send-email-angus.clark@st.com>
+Cc: Angus Clark <angus.clark@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-12-05 at 08:05 +0100, Anders Mørk-Pedersen wrote:
-> I have done as you instructed and created a patch for "git am" and
-> attached it to this mail.
-> 
-> I've also sent a copy to: Dmitry Eremin-Solenikov
-> <dbaryshkov@gmail.com>
+Update Toshiba TC58DVM72A1TG00 bad block marker information to "1st page (6th
+byte in OOB = non FFh)", as described in datasheet, and confirmed with Toshiba
+engineers.
 
-Hi, I've just noticed that I already have this patch in my tree
-which fixes your problem:
+Signed-off-by: Angus Clark <angus.clark@st.com>
+---
+ nand-data/nanddata.csv |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-commit 84c692b1f408be52eb0f8ad2ce130b7800130a0c
-Author: Jonathan Cameron <jic23@cam.ac.uk>
-Date:   Fri Nov 11 17:06:20 2011 +0000
-
-    mtd: pxa2xx-flash.c: It used to fall back to provided table.
-    
-    Make this work again.
-    
-    Signed-off-by: Jonathan Cameron <jic23@cam.ac.uk>
-    Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@intel.com>
-
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index 411a17d..2a25b67 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -98,7 +98,7 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
-        }
-        info->mtd->owner = THIS_MODULE;
- 
--       mtd_device_parse_register(info->mtd, probes, 0, NULL, 0);
-+       mtd_device_parse_register(info->mtd, probes, 0, flash->parts, flash->nr_parts);
- 
-        platform_set_drvdata(pdev, info);
-        return 0;
-
-Artem.
+diff --git a/nand-data/nanddata.csv b/nand-data/nanddata.csv
+index 09876ab..92bee24 100644
+--- a/nand-data/nanddata.csv
++++ b/nand-data/nanddata.csv
+@@ -1,7 +1,7 @@
+ "Manufacturer","Part #","Man. ID","ID Code","Full ID","MB","Page","OOB","Block","Bus","ONFI Ver.","Bad Block Location","Scan Page 2","Scan last page","Scan (last-2)th page","Scan byte 1","Scan byte 6","ECC Req.","Bits per cell","ID Length","Detection Method","Full Support","ONFI-Capable","All but Size","Correct Size","Correct Page","Correct OOB","Correct Block","Correct Busw","Correct BBM","Notes"
+ "Toshiba","TC58128AFT","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","All OOB bytes",TRUE,TRUE,FALSE,TRUE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"For BBM, OOB is written non-FFh (only check 1st page, 1st byte?)"
+ "Samsung","K9F1G08U0B","0xEC","0xF1","0xECF1009540",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-"Toshiba","TC58DVM72A1TG00","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","All OOB bytes",TRUE,TRUE,FALSE,TRUE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"For BBM, OOB is written non-FFh (only check 1st page, 1st byte?)"
++"Toshiba","TC58DVM72A1TG00","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Samsung","K9F5608D0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Samsung","K9F5608Q0C","0xEC","0x35","0xEC35",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Samsung","K9F5608U0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-- 
+1.5.3.3
