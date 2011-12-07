@@ -1,25 +1,25 @@
-Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
- helo=DB3EHSOBE006.bigfish.com)
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=TX2EHSOBE005.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RY80I-0005iJ-BC
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 03:17:07 +0000
-From: Liu Shengzhou-B36685 <B36685@freescale.com>
-To: Wood Scott-B07421 <B07421@freescale.com>
-Subject: RE: [PATCH 2/2 v2] mtd/nand: Add ONFI support for FSL NAND controller
-Date: Wed, 7 Dec 2011 03:16:53 +0000
-Message-ID: <3F453DDFF675A64A89321A1F352810216B074A@039-SN1MPN1-005.039d.mgd.msft.net>
-References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
- <1323161655-19050-2-git-send-email-Shengzhou.Liu@freescale.com>
- <4EDE4E1D.4030408@freescale.com>
-In-Reply-To: <4EDE4E1D.4030408@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1RY8XZ-0006rT-Gb
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 03:51:30 +0000
+Message-ID: <4EDEE3AC.7060000@freescale.com>
+Date: Wed, 7 Dec 2011 11:55:24 +0800
+From: LiuShuo <b35362@freescale.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gala Kumar-B11780 <B11780@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+ <4EDEAEB9.6020703@freescale.com>
+In-Reply-To: <4EDEAEB9.6020703@freescale.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
+ linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +29,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdvb2QgU2NvdHQtQjA3NDIx
-DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMDcsIDIwMTEgMToxNyBBTQ0KPiBUbzogTGl1
-IFNoZW5nemhvdS1CMzY2ODUNCj4gQ2M6IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnOyBs
-aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsgR2Fs
-YSBLdW1hci1CMTE3ODANCj4gU3ViamVjdDogUmU6IFtQQVRDSCAyLzIgdjJdIG10ZC9uYW5kOiBB
-ZGQgT05GSSBzdXBwb3J0IGZvciBGU0wgTkFORA0KPiBjb250cm9sbGVyDQo+IA0KPiBPbiAxMi8w
-Ni8yMDExIDAyOjU0IEFNLCBTaGVuZ3pob3UgTGl1IHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiBiL2RyaXZlcnMvbXRkL25hbmQvZnNs
-X2VsYmNfbmFuZC5jDQo+ID4gaW5kZXggNGY0MDVhMC4uYjRkYjQwNyAxMDA2NDQNCj4gPiAtLS0g
-YS9kcml2ZXJzL210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+ID4gQEAgLTM0OSwxOSArMzQ5LDI0IEBAIHN0YXRpYyB2
-b2lkIGZzbF9lbGJjX2NtZGZ1bmMoc3RydWN0IG10ZF9pbmZvICptdGQsDQo+IHVuc2lnbmVkIGlu
-dCBjb21tYW5kLA0KPiA+ICAJCWZzbF9lbGJjX3J1bl9jb21tYW5kKG10ZCk7DQo+ID4gIAkJcmV0
-dXJuOw0KPiA+DQo+ID4gLQkvKiBSRUFESUQgbXVzdCByZWFkIGFsbCA1IHBvc3NpYmxlIGJ5dGVz
-IHdoaWxlIENFQiBpcyBhY3RpdmUgKi8NCj4gPiAgCWNhc2UgTkFORF9DTURfUkVBRElEOg0KPiA+
-IC0JCWRldl92ZGJnKHByaXYtPmRldiwgImZzbF9lbGJjX2NtZGZ1bmM6IE5BTkRfQ01EX1JFQURJ
-RC5cbiIpOw0KPiA+ICsJY2FzZSBOQU5EX0NNRF9QQVJBTToNCj4gPiArCQlkZXZfdmRiZyhwcml2
-LT5kZXYsICJmc2xfZWxiY19jbWRmdW5jOiBOQU5EX0NNRCAleFxuIiwNCj4gY29tbWFuZCk7DQo+
-ID4NCj4gPiAgCQlvdXRfYmUzMigmbGJjLT5maXIsIChGSVJfT1BfQ00wIDw8IEZJUl9PUDBfU0hJ
-RlQpIHwNCj4gPiAgCQkgICAgICAgICAgICAgICAgICAgIChGSVJfT1BfVUEgIDw8IEZJUl9PUDFf
-U0hJRlQpIHwNCj4gPiAgCQkgICAgICAgICAgICAgICAgICAgIChGSVJfT1BfUkJXIDw8IEZJUl9P
-UDJfU0hJRlQpKTsNCj4gPiAtCQlvdXRfYmUzMigmbGJjLT5mY3IsIE5BTkRfQ01EX1JFQURJRCA8
-PCBGQ1JfQ01EMF9TSElGVCk7DQo+ID4gLQkJLyogbmFuZF9nZXRfZmxhc2hfdHlwZSgpIHJlYWRz
-IDggYnl0ZXMgb2YgZW50aXJlIElEIHN0cmluZyAqLw0KPiA+IC0JCW91dF9iZTMyKCZsYmMtPmZi
-Y3IsIDgpOw0KPiA+IC0JCWVsYmNfZmNtX2N0cmwtPnJlYWRfYnl0ZXMgPSA4Ow0KPiA+ICsJCW91
-dF9iZTMyKCZsYmMtPmZjciwgY29tbWFuZCA8PCBGQ1JfQ01EMF9TSElGVCk7DQo+ID4gKwkJLyog
-cmVhZHMgOCBieXRlcyBvZiBlbnRpcmUgSUQgc3RyaW5nICovDQo+ID4gKwkJaWYgKE5BTkRfQ01E
-X1JFQURJRCA9PSBjb21tYW5kKSB7DQo+IA0KPiBpZiAoY29tbWFuZCA9PSBOQU5EX0NNRF9SRUFE
-SUQpIHsNCj4gDQo+ID4gKwkJCW91dF9iZTMyKCZsYmMtPmZiY3IsIDgpOw0KPiA+ICsJCQllbGJj
-X2ZjbV9jdHJsLT5yZWFkX2J5dGVzID0gODsNCj4gPiArCQl9IGVsc2Ugew0KPiA+ICsJCQlvdXRf
-YmUzMigmbGJjLT5mYmNyLCAyNTYpOw0KPiA+ICsJCQllbGJjX2ZjbV9jdHJsLT5yZWFkX2J5dGVz
-ID0gMjU2Ow0KPiA+ICsJCX0NCj4gDQo+IEFueSBoYXJtIGluIGFsd2F5cyB1c2luZyAyNTY/DQo+
-IA0KPiAtU2NvdHQNCltTaGVuZ3pob3VdIEZvciBOQU5EX0NNRF9SRUFESUQgY29tbWFuZCwgdGhl
-IHRvdGFsIGJ5dGVzIG9mIGVudGlyZSBJRCBzdHJpbmcgYXJlIDgsIHRoZXJlIGFyZSBub3QgMjU2
-IGJ5dGVzIHNvIG1hbnksIGl0J3MgdW5uZWNlc3NhcnkgYW5kIGxvb2tzIG5vdCBzbyB3ZWxsIGxv
-Z2ljYWxseSB0byBhbHdheXMgdXNpbmcgMjU2LCB0aG91Z2ggaXQgd29ya3MuDQoNCg0K
+=E4=BA=8E 2011=E5=B9=B412=E6=9C=8807=E6=97=A5 08:09, Scott Wood =E5=86=99=
+=E9=81=93:
+> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
+>> From: Liu Shuo<shuo.liu@freescale.com>
+>>
+>> Freescale FCM controller has a 2K size limitation of buffer RAM. In or=
+der
+>> to support the Nand flash chip whose page size is larger than 2K bytes=
+,
+>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and sa=
+ve
+>> them to a large buffer.
+>>
+>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
+>> ---
+>> v3:
+>>      -remove page_size of struct fsl_elbc_mtd.
+>>      -do a oob write by NAND_CMD_RNDIN.
+>>
+>>   drivers/mtd/nand/fsl_elbc_nand.c |  243 ++++++++++++++++++++++++++++=
+++++++----
+>>   1 files changed, 218 insertions(+), 25 deletions(-)
+> What is the plan for bad block marker migration?
+This patch has been ported to uboot now, I think we can make a special=20
+uboot image for bad
+block marker migration when first use the chip.
+
+>> @@ -473,13 +568,72 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mt=
+d, unsigned int command,
+>>   		 * write so the HW generates the ECC.
+>>   		 */
+>>   		if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column !=3D 0 ||
+>> -		    elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize)
+>> -			out_be32(&lbc->fbcr,
+>> -				elbc_fcm_ctrl->index - elbc_fcm_ctrl->column);
+>> -		else
+>> +		    elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize) {
+>> +			if (elbc_fcm_ctrl->oob&&  mtd->writesize>  2048) {
+>> +				out_be32(&lbc->fbcr, 64);
+>> +			} else {
+>> +				out_be32(&lbc->fbcr, elbc_fcm_ctrl->index
+>> +						- elbc_fcm_ctrl->column);
+>> +			}
+> We need to limit ourselves to the regions that have actually been
+> written to in the buffer.  fbcr needs to be set separately for first an=
+d
+> last subpages, with intermediate subpages having 0, 64, or 2112 as
+> appropriate.  Subpages that are entirely before column or entirely afte=
+r
+> column + index should be skipped.
+
+I have considered this case, but I don't think it is useful.
+     1.There isn't a 'length' parameter in driver interface, although we=20
+can get it from 'index - column'.
+     2.To see nand_do_write_oob() in nand_base.c, it fill '0xff' to=20
+entire oob area first and write the user data by nand_fill_oob(), then=20
+call ecc.write_oob (default is nand_write_oob_std()). 'column' is=20
+mtd->writesize and 'length' of write_buf() is mtd->oobsize. So I don't=20
+think we need to deal with it there.
+
+>> +		} else {
+>> +			out_be32(&lbc->fir, FIR_OP_WB<<  FIR_OP1_SHIFT);
+>> +			for (i =3D 1; i<  n; i++) {
+>> +				if (i =3D=3D n - 1) {
+>> +					elbc_fcm_ctrl->use_mdr =3D 1;
+>> +					out_be32(&lbc->fir,
+>> +						(FIR_OP_WB<<  FIR_OP1_SHIFT) |
+>> +						(FIR_OP_CM3<<  FIR_OP2_SHIFT) |
+>> +						(FIR_OP_CW1<<  FIR_OP3_SHIFT) |
+>> +						(FIR_OP_RS<<  FIR_OP4_SHIFT));
+> Please explicitly show the (FIR_OP_NOP<<  FIR_OP0_SHIFT) compenent.
+>
+>> +	} else if (mtd->writesize>=3D 2048&&  mtd->writesize<=3D 16 * 1024) =
+{
+>> +
+>>   		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+> Don't insert a blank line here.
+>
+Ok.
+
+-LiuShuo
+> -Scott
