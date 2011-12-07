@@ -1,25 +1,40 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=TX2EHSOBE007.bigfish.com)
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYB1Y-0002DC-8q
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 06:30:38 +0000
-From: Liu Shengzhou-B36685 <B36685@freescale.com>
-To: Wood Scott-B07421 <B07421@freescale.com>
-Subject: RE: [PATCH 1/2 v2] mtd/nand: fixup for fmr initialization of
- Freescale NAND controller
-Date: Wed, 7 Dec 2011 06:30:21 +0000
-Message-ID: <3F453DDFF675A64A89321A1F352810216B0787@039-SN1MPN1-005.039d.mgd.msft.net>
-References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
- <4EDE4DEC.7010308@freescale.com>
-In-Reply-To: <4EDE4DEC.7010308@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gala Kumar-B11780 <B11780@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ id 1RYBew-0003OF-OF
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 07:11:19 +0000
+Received: by yenl2 with SMTP id l2so217149yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2011 23:11:14 -0800 (PST)
+Message-ID: <1323241927.2219.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/2] small mtd-utils fixes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 07 Dec 2011 09:12:07 +0200
+In-Reply-To: <CAMjpGUfCKSLk78t8ULgcm0wGH_2pU6CXwP_UY=iSaC7kTUgpMg@mail.gmail.com>
+References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
+ <1321568352.2272.33.camel@koala>
+ <CAN8TOE8uSW5rHbs8VeTFTNcqNwZGwUZpPJpfOgxtUsGL1PTJZg@mail.gmail.com>
+ <1321653636.2141.0.camel@koala> <87k46xrqyr.fsf@macbook.be.48ers.dk>
+ <CAN8TOE8Gd97SXK1ACCtatJ97Q8ESZQJNH5mVU0Ej2ruOL0dZRQ@mail.gmail.com>
+ <1321735668.2167.2.camel@koala>
+ <CAMjpGUfB0OoP_TvQ+eVEwx6_nmJ0p4jrCyu4ceTQBHGeRvUm-Q@mail.gmail.com>
+ <1321743864.2167.6.camel@koala>
+ <1321790131.15493.85.camel@shinybook.infradead.org>
+ <1321794503.2170.3.camel@koala>
+ <CAMjpGUdsdppTEOuPdWTGGU=ztbyvoF4_=TiZ1RqQ4W1_wFhbkQ@mail.gmail.com>
+ <1321997940.2222.19.camel@koala>
+ <CAMjpGUdxGfo7dfSNhzQUHg3QGkKW7rQewiFhDjGyJ0TjjQkdkA@mail.gmail.com>
+ <1322034324.24797.230.camel@sauron.fi.intel.com>
+ <CAMjpGUfkc7JftBx5uMBDy7YAn2z4yCh6eVYibEZ9pQayphFcsQ@mail.gmail.com>
+ <1322119614.24797.294.camel@sauron.fi.intel.com>
+ <CAMjpGUfCKSLk78t8ULgcm0wGH_2pU6CXwP_UY=iSaC7kTUgpMg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-UfWZyGp0N/3vJZYfUWlY"
+Mime-Version: 1.0
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Kevin Cernekee <cernekee@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +44,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdvb2QgU2NvdHQtQjA3NDIx
-DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMDcsIDIwMTEgMToxNiBBTQ0KPiBUbzogTGl1
-IFNoZW5nemhvdS1CMzY2ODUNCj4gQ2M6IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnOyBs
-aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsgR2Fs
-YSBLdW1hci1CMTE3ODANCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzIgdjJdIG10ZC9uYW5kOiBm
-aXh1cCBmb3IgZm1yIGluaXRpYWxpemF0aW9uIG9mDQo+IEZyZWVzY2FsZSBOQU5EIGNvbnRyb2xs
-ZXINCj4gDQo+IE9uIDEyLzA2LzIwMTEgMDI6NTQgQU0sIFNoZW5nemhvdSBMaXUgd3JvdGU6DQo+
-ID4gVGhlcmUgd2FzIGEgYnVnIGZvciBmbXIgaW5pdGlhbGl6YXRpb24sIHdoaWNoIGxlYWQgdG8g
-IGZtciB3YXMgYWx3YXlzDQo+ID4gMHgxMDAgaW4gZnNsX2VsYmNfY2hpcF9pbml0KCkgYW5kIGNh
-dXNlZCBGQ00gY29tbWFuZCB0aW1lb3V0IGJlZm9yZQ0KPiA+IGNhbGxpbmcgZnNsX2VsYmNfY2hp
-cF9pbml0X3RhaWwoKSwgbm93IHdlIGluaXRpYWxpemUgQ1dUTyB0byBtYXhpbXVtDQo+ID4gdGlt
-ZW91dCB2YWx1ZSBhbmQgbm90IHJlbHlpbmcgb24gdGhlIHNldHRpbmcgb2YgYm9vdGxvYWRlci4N
-Cj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNoZW5nemhvdSBMaXUgPFNoZW5nemhvdS5MaXVAZnJl
-ZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogbWFrZSBmbXIgbm90IHJlbHlpbmcgb24gdGhl
-IHNldHRpbmcgb2YgYm9vdGxvYWRlci4NCj4gPg0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL2ZzbF9l
-bGJjX25hbmQuYyB8ICAgMTAgKysrKystLS0tLQ0KPiA+ICAxIGZpbGVzIGNoYW5nZWQsIDUgaW5z
-ZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiA+IGIvZHJpdmVycy9tdGQvbmFuZC9mc2xfZWxi
-Y19uYW5kLmMNCj4gPiBpbmRleCBlZWRkOGVlLi40ZjQwNWEwIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFu
-ZC9mc2xfZWxiY19uYW5kLmMNCj4gPiBAQCAtNjU5LDkgKzY1OSw3IEBAIHN0YXRpYyBpbnQgZnNs
-X2VsYmNfY2hpcF9pbml0X3RhaWwoc3RydWN0IG10ZF9pbmZvDQo+ICptdGQpDQo+ID4gIAlpZiAo
-Y2hpcC0+cGFnZW1hc2sgJiAweGZmMDAwMDAwKQ0KPiA+ICAJCWFsKys7DQo+ID4NCj4gPiAtCS8q
-IGFkZCB0byBFQ0NNIG1vZGUgc2V0IGluIGZzbF9lbGJjX2luaXQgKi8NCj4gPiAtCXByaXYtPmZt
-ciB8PSAoMTIgPDwgRk1SX0NXVE9fU0hJRlQpIHwgIC8qIFRpbWVvdXQgPiAxMiBtcyAqLw0KPiA+
-IC0JICAgICAgICAgICAgIChhbCA8PCBGTVJfQUxfU0hJRlQpOw0KPiA+ICsJcHJpdi0+Zm1yIHw9
-IGFsIDw8IEZNUl9BTF9TSElGVDsNCj4gPg0KPiA+ICAJZGV2X2RiZyhwcml2LT5kZXYsICJmc2xf
-ZWxiY19pbml0OiBuYW5kLT5udW1jaGlwcyA9ICVkXG4iLA0KPiA+ICAJICAgICAgICBjaGlwLT5u
-dW1jaGlwcyk7DQo+ID4gQEAgLTc2NCw4ICs3NjIsMTAgQEAgc3RhdGljIGludCBmc2xfZWxiY19j
-aGlwX2luaXQoc3RydWN0IGZzbF9lbGJjX210ZA0KPiAqcHJpdikNCj4gPiAgCXByaXYtPm10ZC5w
-cml2ID0gY2hpcDsNCj4gPiAgCXByaXYtPm10ZC5vd25lciA9IFRISVNfTU9EVUxFOw0KPiA+DQo+
-ID4gLQkvKiBTZXQgdGhlIEVDQ00gYWNjb3JkaW5nIHRvIHRoZSBzZXR0aW5ncyBpbiBib290bG9h
-ZGVyLiovDQo+ID4gLQlwcml2LT5mbXIgPSBpbl9iZTMyKCZsYmMtPmZtcikgJiBGTVJfRUNDTTsN
-Cj4gPiArCS8qIHNldCB0aW1lb3V0IHRvIG1heGltdW0gKi8NCj4gPiArCXByaXYtPmZtciA9IDE1
-IDw8IEZNUl9DV1RPX1NISUZUOw0KPiA+ICsJaWYgKGluX2JlMzIoJmxiYy0+YmFua1twcml2LT5i
-YW5rXS5vcikgJiBPUl9GQ01fUEdTKQ0KPiA+ICsJCXByaXYtPmZtciB8PSBGTVJfRUNDTTsNCj4g
-DQo+IFBsZWFzZSBkbyBub3QgY2hhbmdlIHRoZSB3YXkgRUNDTSBpcyBoYW5kbGVkLiAgV2UgcHJv
-YmFibHkgc2hvdWxkIGhhdmUNCj4gZG9uZSBpdCB0aGlzIHdheSBmcm9tIHRoZSBzdGFydCwgYnV0
-IGF0IHRoaXMgcG9pbnQgaXQgYnJlYWtzDQo+IGNvbXBhdGliaWxpdHkgaWYgeW91IGhhdmUgYSBs
-YXJnZSBwYWdlIGZsYXNoIGFuZCB0aGUgZmlybXdhcmUgZGlkbid0DQo+IHRvdWNoIE5BTkQuDQo+
-IA0KPiAtU2NvdHQNCltTaGVuZ3pob3VdIFRoaXMgcGF0Y2ggZG9lc24ndCBjaGFuZ2UgdGhlIHdh
-eSBFQ0NNIGlzIGhhbmRsZWQsIGl0J3Mgc3RpbGwgc2FtZSBhcyBiZWZvcmUsIGp1c3QgbWFrZSBz
-dXJlIENXVE8gdGltZW91dCBpcyBzZXQgdG8gbWF4aW11bS4gIA0K
+
+--=-UfWZyGp0N/3vJZYfUWlY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, 2011-12-04 at 19:28 -0500, Mike Frysinger wrote:
+> i think it should be the way i suggested, but i won't fight over it
+> too much ... i'm not the one making releases after all.
+
+I've added the script to the mtd-utils.git repo. Thanks for review. I
+nevertheless did not change that parameter thing - we can do it when /
+if we actually need this.
+
+Artem.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-UfWZyGp0N/3vJZYfUWlY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJO3xHHAAoJECmIfjd9wqK0LNkQAIo/qgOV+vi3btYKphTspJ/M
+dnHhoQ4JIN7v4OqGoudov5m1j65DP1Gr6VDN8g/8Bff7Hvk9/aMaE+ObEvb+Uydb
+i6VebY+5DIyM0UQQ3gn6egOc45X6mLeH2ZH2YcKRF+YYiTiWeq+5MMI5pGMzRmny
+oEN0DfIEcq0GoDXpztbJ1F02R1LRaAe2fTRwRixCAJDZR0F61tDlDOmYitjtnbfc
+mE9OIQ+BlbcjFzPkU0z15/CAffNYklJ8JWjV28RRDb2pOgdmEcJMVES2qTU/fZUY
+72CJCQBMPvnN+IYIcgmGGp0gk+f3eMcOm7NUd4lPI7uZ7yrwsLCK6CBvQgeDlZA2
+aOtyBgOu1oGYxFmfpYLh77Qc2pxJ80OMAQZ1LHF1r24srpV5PdfaNJ7+axFDs8x7
+JSQZRpPxjSkK5SFjcecur7Ox3icpDVuecZNuDwnxKnZhoTHuJOOHut1Bb0WzLdtr
+XPfX//NiiFGIsHsayzYCsiyXD3wySPhzVDbnXvVjLJa9Z+XwkJ3W7H8plbQ7xQVw
+HKvlVSNogv2yjdhzKQs04rkbL4UFUz+/B8W24vll3rIrLwdCvPHRt7pErUR2G/H7
+EOVbX+syZzo5zn95QEJFgtA0+IDjnMXVIqUk1ZepU33v9K1C2fKl59nypGWHoa75
+jMxBCk2/66uHBXgbXRXW
+=hOI9
+-----END PGP SIGNATURE-----
+
+--=-UfWZyGp0N/3vJZYfUWlY--
