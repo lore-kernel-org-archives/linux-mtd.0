@@ -1,40 +1,27 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYBew-0003OF-OF
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 07:11:19 +0000
-Received: by yenl2 with SMTP id l2so217149yen.36
- for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2011 23:11:14 -0800 (PST)
-Message-ID: <1323241927.2219.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/2] small mtd-utils fixes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Date: Wed, 07 Dec 2011 09:12:07 +0200
-In-Reply-To: <CAMjpGUfCKSLk78t8ULgcm0wGH_2pU6CXwP_UY=iSaC7kTUgpMg@mail.gmail.com>
-References: <1321473837-27891-1-git-send-email-computersforpeace@gmail.com>
- <1321568352.2272.33.camel@koala>
- <CAN8TOE8uSW5rHbs8VeTFTNcqNwZGwUZpPJpfOgxtUsGL1PTJZg@mail.gmail.com>
- <1321653636.2141.0.camel@koala> <87k46xrqyr.fsf@macbook.be.48ers.dk>
- <CAN8TOE8Gd97SXK1ACCtatJ97Q8ESZQJNH5mVU0Ej2ruOL0dZRQ@mail.gmail.com>
- <1321735668.2167.2.camel@koala>
- <CAMjpGUfB0OoP_TvQ+eVEwx6_nmJ0p4jrCyu4ceTQBHGeRvUm-Q@mail.gmail.com>
- <1321743864.2167.6.camel@koala>
- <1321790131.15493.85.camel@shinybook.infradead.org>
- <1321794503.2170.3.camel@koala>
- <CAMjpGUdsdppTEOuPdWTGGU=ztbyvoF4_=TiZ1RqQ4W1_wFhbkQ@mail.gmail.com>
- <1321997940.2222.19.camel@koala>
- <CAMjpGUdxGfo7dfSNhzQUHg3QGkKW7rQewiFhDjGyJ0TjjQkdkA@mail.gmail.com>
- <1322034324.24797.230.camel@sauron.fi.intel.com>
- <CAMjpGUfkc7JftBx5uMBDy7YAn2z4yCh6eVYibEZ9pQayphFcsQ@mail.gmail.com>
- <1322119614.24797.294.camel@sauron.fi.intel.com>
- <CAMjpGUfCKSLk78t8ULgcm0wGH_2pU6CXwP_UY=iSaC7kTUgpMg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-UfWZyGp0N/3vJZYfUWlY"
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Kevin Cernekee <cernekee@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RYCRt-000475-Ny
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 08:01:54 +0000
+Date: Wed, 7 Dec 2011 09:01:40 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
+ operations
+In-Reply-To: <4EDECC7A.1080202@newsguy.com>
+Message-ID: <Pine.LNX.4.64.1112070848340.32119@lnxricardw.se.axis.com>
+References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>
+ <4EDB3295.6040201@bitbox.co.uk> <4EDB7B1D.60603@newsguy.com>
+ <1323009827.9400.75.camel@sauron.fi.intel.com> <4EDB89E9.6070306@newsguy.com>
+ <1323065234.2316.2.camel@koala> <4EDCF840.7050107@newsguy.com>
+ <4EDCFAAC.90709@bitbox.co.uk> <4EDD142B.6090303@newsguy.com>
+ <87hb1de5b6.fsf@free.fr> <4EDECC7A.1080202@newsguy.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Peter Horton <phorton@bitbox.co.uk>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,45 +32,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-UfWZyGp0N/3vJZYfUWlY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, 7 Dec 2011, Mike Dunn wrote:
 
-On Sun, 2011-12-04 at 19:28 -0500, Mike Frysinger wrote:
-> i think it should be the way i suggested, but i won't fight over it
-> too much ... i'm not the one making releases after all.
+> For UBI, the direction of the discussion was that the driver would=20
+> indicate the ecc strength of the device (via a new element in struct=20
+> mtd_info), and this would be the default UBI scrublevel.  A non-zero=20
+> sysfs parameter would override the default.
 
-I've added the script to the mtd-utils.git repo. Thanks for review. I
-nevertheless did not change that parameter thing - we can do it when /
-if we actually need this.
 
-Artem.
+>
+> BTW, it is currently possible (and easy) to do what Peter suggests; i.e.,=
+ to
+> avoid any UBI rework and make the decision to scrub in the driver.  All t=
+he
+> driver has to do is not return -EUCLEAN unless it thinks the block should=
+ be
+> scrubbed.  Of course this would be a lie if there were in fact corrected
+> bitflips.  For drivers using the mtd nand interface, the lie would be in =
+the ecc
+> stats, since the nand infrastructure code returns -EUCLEAN (or 0) based o=
+n
+> that.  This is what we willl have to do in the diskonchip drivers in orde=
+r to
+> get ubi/ubifs to work on them if we don't change the mtd api (and afterwa=
+rds
+> make the changes to ubi).
 
+The idea of using -EUCLEAN to indicate that the lower levels think it's=20
+time for scrubbing appeals to me. One reason is that an upper layer such=20
+as UBI should not really be concerned with details such as ECC strength=20
+and number of flipped bits, it seems to me that such things should be left=
+=20
+to a lower level. Also, one could imagine different variants of flash=20
+technology requiring different consideration to bit flips and other=20
+phenomena which again should not be something that for instance UBI needs=
+=20
+to know about. It makes sense for mtd to have a sweeping knowledge of the=
+=20
+general types of errors that can occur so that part of the decision can be=
+=20
+made there.
+
+That said, the level at which the lowest level reports -EUCLEAN could be=20
+something that is configurable from user space (sysfs), so that it's=20
+userspace that sets the actual policy and no one else.
+
+So, something like this:
+- The driver reports number of bit flips and current ECC strength etc to
+   the mtd layer.
+- Based on some userspace knob, the mtd framework reports -EUCLEAN if
+   scrubbing is needed.
+- Upper layers perform scrubbing if they want to (i.e. UBI) or not (i.e.
+   JFFS2).
+
+I don't really see this as lying, more of a redefinition of what -EUCLEAN=
+=20
+really means. The current behavior was invented when single-bit errors=20
+could be correct and nothing else, and furthermore such bitflips were=20
+rare; now that multiple-bit errors are commonplace it's time to put more=20
+detail into what -EUCLEAN implies.  It's not really breaking anything old=
+=20
+either, if sane defaults are used.
+
+/Ricard
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-UfWZyGp0N/3vJZYfUWlY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJO3xHHAAoJECmIfjd9wqK0LNkQAIo/qgOV+vi3btYKphTspJ/M
-dnHhoQ4JIN7v4OqGoudov5m1j65DP1Gr6VDN8g/8Bff7Hvk9/aMaE+ObEvb+Uydb
-i6VebY+5DIyM0UQQ3gn6egOc45X6mLeH2ZH2YcKRF+YYiTiWeq+5MMI5pGMzRmny
-oEN0DfIEcq0GoDXpztbJ1F02R1LRaAe2fTRwRixCAJDZR0F61tDlDOmYitjtnbfc
-mE9OIQ+BlbcjFzPkU0z15/CAffNYklJ8JWjV28RRDb2pOgdmEcJMVES2qTU/fZUY
-72CJCQBMPvnN+IYIcgmGGp0gk+f3eMcOm7NUd4lPI7uZ7yrwsLCK6CBvQgeDlZA2
-aOtyBgOu1oGYxFmfpYLh77Qc2pxJ80OMAQZ1LHF1r24srpV5PdfaNJ7+axFDs8x7
-JSQZRpPxjSkK5SFjcecur7Ox3icpDVuecZNuDwnxKnZhoTHuJOOHut1Bb0WzLdtr
-XPfX//NiiFGIsHsayzYCsiyXD3wySPhzVDbnXvVjLJa9Z+XwkJ3W7H8plbQ7xQVw
-HKvlVSNogv2yjdhzKQs04rkbL4UFUz+/B8W24vll3rIrLwdCvPHRt7pErUR2G/H7
-EOVbX+syZzo5zn95QEJFgtA0+IDjnMXVIqUk1ZepU33v9K1C2fKl59nypGWHoa75
-jMxBCk2/66uHBXgbXRXW
-=hOI9
------END PGP SIGNATURE-----
-
---=-UfWZyGp0N/3vJZYfUWlY--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
