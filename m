@@ -1,16 +1,25 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
+ helo=AM1EHSOBE002.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYMjj-0001hN-So
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 19:01:00 +0000
-Received: by iaby26 with SMTP id y26so1509042iab.36
- for <linux-mtd@lists.infradead.org>; Wed, 07 Dec 2011 11:00:57 -0800 (PST)
+ id 1RYMuC-0002o8-1R
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 19:11:49 +0000
+Message-ID: <4EDFBA6D.9080500@freescale.com>
+Date: Wed, 7 Dec 2011 13:11:41 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Date: Wed, 7 Dec 2011 21:00:57 +0200
-Message-ID: <CAK-xBPKEwVN743EV1HC3BaKQ3PUsF6rCwiF4Pq4WP8_3c9m_Sw@mail.gmail.com>
-Subject: A question about ubiformat and and some flash utils.
-From: yoav feldman <yoavfeld@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: LiuShuo <b35362@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+ <4EDEAEB9.6020703@freescale.com> <4EDEE3AC.7060000@freescale.com>
+In-Reply-To: <4EDEE3AC.7060000@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
+ linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +29,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On 12/06/2011 09:55 PM, LiuShuo wrote:
+> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8807=E6=97=A5 08:09, Scott Wood =E5=86=99=
+=E9=81=93:
+>> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
+>>> From: Liu Shuo<shuo.liu@freescale.com>
+>>>
+>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In
+>>> order
+>>> to support the Nand flash chip whose page size is larger than 2K byte=
+s,
+>>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and s=
+ave
+>>> them to a large buffer.
+>>>
+>>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
+>>> ---
+>>> v3:
+>>>      -remove page_size of struct fsl_elbc_mtd.
+>>>      -do a oob write by NAND_CMD_RNDIN.
+>>>
+>>>   drivers/mtd/nand/fsl_elbc_nand.c |  243
+>>> ++++++++++++++++++++++++++++++++++----
+>>>   1 files changed, 218 insertions(+), 25 deletions(-)
+>> What is the plan for bad block marker migration?
+> This patch has been ported to uboot now, I think we can make a special
+> uboot image for bad
+> block marker migration when first use the chip.
 
-i just picked up in google a messaging about flashing ubi images.
-i have also problem with the erase speed,  and i wonder if u can
-answer about some qustion that i have.
-i found there this peregraph:
+It should not be a special image, and there should be some way to mark
+that the migration has happened.  Even if we do the migration in U-Boot,
+Linux could check for the marker and if absent, disallow access and tell
+the user to run the migration tool.
 
-"OK. But did you consider to pre-create the image with ubinize and
-mkfs.ubifs tools and just flash the raw image in production? This is the
-fastest possible way."
+>>> @@ -473,13 +568,72 @@ static void fsl_elbc_cmdfunc(struct mtd_info
+>>> *mtd, unsigned int command,
+>>>            * write so the HW generates the ECC.
+>>>            */
+>>>           if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column !=3D 0 ||
+>>> -            elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize)
+>>> -            out_be32(&lbc->fbcr,
+>>> -                elbc_fcm_ctrl->index - elbc_fcm_ctrl->column);
+>>> -        else
+>>> +            elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize)=
+ {
+>>> +            if (elbc_fcm_ctrl->oob&&  mtd->writesize>  2048) {
+>>> +                out_be32(&lbc->fbcr, 64);
+>>> +            } else {
+>>> +                out_be32(&lbc->fbcr, elbc_fcm_ctrl->index
+>>> +                        - elbc_fcm_ctrl->column);
+>>> +            }
+>> We need to limit ourselves to the regions that have actually been
+>> written to in the buffer.  fbcr needs to be set separately for first a=
+nd
+>> last subpages, with intermediate subpages having 0, 64, or 2112 as
+>> appropriate.  Subpages that are entirely before column or entirely aft=
+er
+>> column + index should be skipped.
+>=20
+> I have considered this case, but I don't think it is useful.
+>     1.There isn't a 'length' parameter in driver interface, although we
+> can get it from 'index - column'.
 
-This is the method that i'm trying to use, but things going too slow:
-1. ubiformat is taking too much time (about 5-10 min).
-2. for burning linux kernel image, i'm using flash_eraseall and
-flashcp. the flash_eraseall also takes long time.
+Right.  column is start, and index is end + 1.  We have the bounds of
+what has been written.
 
-Do you know what can i to decrease the erase time?
-its important for me to erase the whole flash when i'm updating the software.
-Thanks alot!
+>     2.To see nand_do_write_oob() in nand_base.c, it fill '0xff' to
+> entire oob area first and write the user data by nand_fill_oob(), then
+> call ecc.write_oob (default is nand_write_oob_std()).
 
-Yoav Feldman.
+Do we really want to assume that that's what it will always do?
+
+And if we do want to make such assumptions, we could rip out all usage
+of index/column here, and just handle "oob" and "full page" cases.
+
+-Scott
