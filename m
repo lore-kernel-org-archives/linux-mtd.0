@@ -1,24 +1,25 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
+ helo=DB3EHSOBE006.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RY73u-0005Ec-Dl
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 02:16:47 +0000
-Message-ID: <4EDECC7A.1080202@newsguy.com>
-Date: Tue, 06 Dec 2011 18:16:26 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1RY80I-0005iJ-BC
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 03:17:07 +0000
+From: Liu Shengzhou-B36685 <B36685@freescale.com>
+To: Wood Scott-B07421 <B07421@freescale.com>
+Subject: RE: [PATCH 2/2 v2] mtd/nand: Add ONFI support for FSL NAND controller
+Date: Wed, 7 Dec 2011 03:16:53 +0000
+Message-ID: <3F453DDFF675A64A89321A1F352810216B074A@039-SN1MPN1-005.039d.mgd.msft.net>
+References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
+ <1323161655-19050-2-git-send-email-Shengzhou.Liu@freescale.com>
+ <4EDE4E1D.4030408@freescale.com>
+In-Reply-To: <4EDE4E1D.4030408@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
- operations
-References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>	<4EDB3295.6040201@bitbox.co.uk>
- <4EDB7B1D.60603@newsguy.com>	<1323009827.9400.75.camel@sauron.fi.intel.com>	<4EDB89E9.6070306@newsguy.com>
- <1323065234.2316.2.camel@koala>	<4EDCF840.7050107@newsguy.com>
- <4EDCFAAC.90709@bitbox.co.uk>	<4EDD142B.6090303@newsguy.com>
- <87hb1de5b6.fsf@free.fr>
-In-Reply-To: <87hb1de5b6.fsf@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Peter Horton <phorton@bitbox.co.uk>, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gala Kumar-B11780 <B11780@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/06/2011 01:52 PM, Robert Jarzmik wrote:
-> Mike Dunn <mikedunn@newsguy.com> writes:
->> On 12/05/2011 09:09 AM, Peter Horton wrote:
->>> Surely the check for "do we need to scrub ?" should be done lower down
->>> otherwise all users of the mtd NAND interface (UBI / JFFS2 etc) are going to
->>> have to re-implement those sysfs files and the corresponding checks.
->> Well, anything higher up that wants to avail itself of this api change will need
->> some rework regardless.  Currently the only info passed up from the driver is
->> that at least one bitflip occurred somewhere during the read.  The plan is to
->> eventually make some changes to UBI so that the decision to scrub is made more
->> intelligently.
-> I'd like to second Mike's proposition here.
->
-> Policy should not be put into drivers code whenever possible. The question "do
-> we need to scrub" is to be answered in upper layers IMHO. Moreover, upper layer
-> would then have the choice to trigger scrubbing on their own policy. This policy
-> could rely on the information provided by the driver :
->  - how much bitflips the ECC can fix
->
-> Even better, but I don't know how, the policy should be a userspace matter and
-> not a kernel one, as I was told many times before :)
->
-> Therefore, a upperlayer which strives at very high security level could scrub at
-> 1 bitflip even if the ECC can fix 8. A "normal" upperlayer could go up to 8
-> before scrubbing.
-
-
-Yes, this flexibility is good, and why policy should not be set from below. 
-Good point.  I just mentioned the "don't set policy" doctrine because I blindly
-follow dogma :)
-
-
-> Now for the "re-implement sysfs and checks", that's true. What could be done is
-> in a first time, copycat the current behaviour, ie. UBI scrubs if nb_bitflips >
-> 0, and the same for JFFS I suppose.
-> Then in a second pass, add sysfs values for the trigger (whether in upperlayers
-> or MTD). This needs a consensus from the list.
-
-
-For UBI, the direction of the discussion was that the driver would indicate the
-ecc strength of the device (via a new element in struct mtd_info), and this
-would be the default UBI scrublevel.  A non-zero sysfs parameter would override
-the default.
-
-BTW, it is currently possible (and easy) to do what Peter suggests; i.e., to
-avoid any UBI rework and make the decision to scrub in the driver.  All the
-driver has to do is not return -EUCLEAN unless it thinks the block should be
-scrubbed.  Of course this would be a lie if there were in fact corrected
-bitflips.  For drivers using the mtd nand interface, the lie would be in the ecc
-stats, since the nand infrastructure code returns -EUCLEAN (or 0) based on
-that.  This is what we willl have to do in the diskonchip drivers in order to
-get ubi/ubifs to work on them if we don't change the mtd api (and afterwards
-make the changes to ubi).
-
-Thanks,
-Mike
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdvb2QgU2NvdHQtQjA3NDIx
+DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMDcsIDIwMTEgMToxNyBBTQ0KPiBUbzogTGl1
+IFNoZW5nemhvdS1CMzY2ODUNCj4gQ2M6IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnOyBs
+aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsgR2Fs
+YSBLdW1hci1CMTE3ODANCj4gU3ViamVjdDogUmU6IFtQQVRDSCAyLzIgdjJdIG10ZC9uYW5kOiBB
+ZGQgT05GSSBzdXBwb3J0IGZvciBGU0wgTkFORA0KPiBjb250cm9sbGVyDQo+IA0KPiBPbiAxMi8w
+Ni8yMDExIDAyOjU0IEFNLCBTaGVuZ3pob3UgTGl1IHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiBiL2RyaXZlcnMvbXRkL25hbmQvZnNs
+X2VsYmNfbmFuZC5jDQo+ID4gaW5kZXggNGY0MDVhMC4uYjRkYjQwNyAxMDA2NDQNCj4gPiAtLS0g
+YS9kcml2ZXJzL210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRk
+L25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+ID4gQEAgLTM0OSwxOSArMzQ5LDI0IEBAIHN0YXRpYyB2
+b2lkIGZzbF9lbGJjX2NtZGZ1bmMoc3RydWN0IG10ZF9pbmZvICptdGQsDQo+IHVuc2lnbmVkIGlu
+dCBjb21tYW5kLA0KPiA+ICAJCWZzbF9lbGJjX3J1bl9jb21tYW5kKG10ZCk7DQo+ID4gIAkJcmV0
+dXJuOw0KPiA+DQo+ID4gLQkvKiBSRUFESUQgbXVzdCByZWFkIGFsbCA1IHBvc3NpYmxlIGJ5dGVz
+IHdoaWxlIENFQiBpcyBhY3RpdmUgKi8NCj4gPiAgCWNhc2UgTkFORF9DTURfUkVBRElEOg0KPiA+
+IC0JCWRldl92ZGJnKHByaXYtPmRldiwgImZzbF9lbGJjX2NtZGZ1bmM6IE5BTkRfQ01EX1JFQURJ
+RC5cbiIpOw0KPiA+ICsJY2FzZSBOQU5EX0NNRF9QQVJBTToNCj4gPiArCQlkZXZfdmRiZyhwcml2
+LT5kZXYsICJmc2xfZWxiY19jbWRmdW5jOiBOQU5EX0NNRCAleFxuIiwNCj4gY29tbWFuZCk7DQo+
+ID4NCj4gPiAgCQlvdXRfYmUzMigmbGJjLT5maXIsIChGSVJfT1BfQ00wIDw8IEZJUl9PUDBfU0hJ
+RlQpIHwNCj4gPiAgCQkgICAgICAgICAgICAgICAgICAgIChGSVJfT1BfVUEgIDw8IEZJUl9PUDFf
+U0hJRlQpIHwNCj4gPiAgCQkgICAgICAgICAgICAgICAgICAgIChGSVJfT1BfUkJXIDw8IEZJUl9P
+UDJfU0hJRlQpKTsNCj4gPiAtCQlvdXRfYmUzMigmbGJjLT5mY3IsIE5BTkRfQ01EX1JFQURJRCA8
+PCBGQ1JfQ01EMF9TSElGVCk7DQo+ID4gLQkJLyogbmFuZF9nZXRfZmxhc2hfdHlwZSgpIHJlYWRz
+IDggYnl0ZXMgb2YgZW50aXJlIElEIHN0cmluZyAqLw0KPiA+IC0JCW91dF9iZTMyKCZsYmMtPmZi
+Y3IsIDgpOw0KPiA+IC0JCWVsYmNfZmNtX2N0cmwtPnJlYWRfYnl0ZXMgPSA4Ow0KPiA+ICsJCW91
+dF9iZTMyKCZsYmMtPmZjciwgY29tbWFuZCA8PCBGQ1JfQ01EMF9TSElGVCk7DQo+ID4gKwkJLyog
+cmVhZHMgOCBieXRlcyBvZiBlbnRpcmUgSUQgc3RyaW5nICovDQo+ID4gKwkJaWYgKE5BTkRfQ01E
+X1JFQURJRCA9PSBjb21tYW5kKSB7DQo+IA0KPiBpZiAoY29tbWFuZCA9PSBOQU5EX0NNRF9SRUFE
+SUQpIHsNCj4gDQo+ID4gKwkJCW91dF9iZTMyKCZsYmMtPmZiY3IsIDgpOw0KPiA+ICsJCQllbGJj
+X2ZjbV9jdHJsLT5yZWFkX2J5dGVzID0gODsNCj4gPiArCQl9IGVsc2Ugew0KPiA+ICsJCQlvdXRf
+YmUzMigmbGJjLT5mYmNyLCAyNTYpOw0KPiA+ICsJCQllbGJjX2ZjbV9jdHJsLT5yZWFkX2J5dGVz
+ID0gMjU2Ow0KPiA+ICsJCX0NCj4gDQo+IEFueSBoYXJtIGluIGFsd2F5cyB1c2luZyAyNTY/DQo+
+IA0KPiAtU2NvdHQNCltTaGVuZ3pob3VdIEZvciBOQU5EX0NNRF9SRUFESUQgY29tbWFuZCwgdGhl
+IHRvdGFsIGJ5dGVzIG9mIGVudGlyZSBJRCBzdHJpbmcgYXJlIDgsIHRoZXJlIGFyZSBub3QgMjU2
+IGJ5dGVzIHNvIG1hbnksIGl0J3MgdW5uZWNlc3NhcnkgYW5kIGxvb2tzIG5vdCBzbyB3ZWxsIGxv
+Z2ljYWxseSB0byBhbHdheXMgdXNpbmcgMjU2LCB0aG91Z2ggaXQgd29ya3MuDQoNCg0K
