@@ -1,21 +1,25 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=TX2EHSOBE007.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYAJi-00088y-Od
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 05:45:19 +0000
-Received: by wgbdt12 with SMTP id dt12so1085945wgb.0
- for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2011 21:45:16 -0800 (PST)
+ id 1RYB1Y-0002DC-8q
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 06:30:38 +0000
+From: Liu Shengzhou-B36685 <B36685@freescale.com>
+To: Wood Scott-B07421 <B07421@freescale.com>
+Subject: RE: [PATCH 1/2 v2] mtd/nand: fixup for fmr initialization of
+ Freescale NAND controller
+Date: Wed, 7 Dec 2011 06:30:21 +0000
+Message-ID: <3F453DDFF675A64A89321A1F352810216B0787@039-SN1MPN1-005.039d.mgd.msft.net>
+References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
+ <4EDE4DEC.7010308@freescale.com>
+In-Reply-To: <4EDE4DEC.7010308@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
-References: <1323097691-16414-1-git-send-email-jonas.gorski@gmail.com>
-Date: Tue, 6 Dec 2011 21:45:16 -0800
-Message-ID: <CAN8TOE9kPGr5pvLKEuNykYO_ydp7ZRQvCJuu8BFyHM0-_AvoRw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] MTD: MAPS: remove bcm963xx-flash
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
- David Woodhouse <dwmw2@infradead.org>, Florian Fainelli <florian@openwrt.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gala Kumar-B11780 <B11780@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 5, 2011 at 7:08 AM, Jonas Gorski <jonas.gorski@gmail.com> wrote:
-> P.S: This patchset is based on l2-mtd-2.6.git, which seems to be the
-> "correct" tree now (the website says mtd-2.6.git, but it doesn't look
-> like the correct one, having no commits).
-
-Hi Jonas,
-
-I see that you are nowhere near the first one to have at least a
-little bit of trouble with the mtd-2.6.git vs. l2-mtd-2.6.git
-question.
-
-Artem or David,
-
-Is it sensible to change the website documentation to reflect the fact
-that most MTD development is tracked in Artem's l2 repository
-primarily? I can send a patch against mtd-www.git sometime to update
-this.
-
-Brian
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdvb2QgU2NvdHQtQjA3NDIx
+DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMDcsIDIwMTEgMToxNiBBTQ0KPiBUbzogTGl1
+IFNoZW5nemhvdS1CMzY2ODUNCj4gQ2M6IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnOyBs
+aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsgR2Fs
+YSBLdW1hci1CMTE3ODANCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzIgdjJdIG10ZC9uYW5kOiBm
+aXh1cCBmb3IgZm1yIGluaXRpYWxpemF0aW9uIG9mDQo+IEZyZWVzY2FsZSBOQU5EIGNvbnRyb2xs
+ZXINCj4gDQo+IE9uIDEyLzA2LzIwMTEgMDI6NTQgQU0sIFNoZW5nemhvdSBMaXUgd3JvdGU6DQo+
+ID4gVGhlcmUgd2FzIGEgYnVnIGZvciBmbXIgaW5pdGlhbGl6YXRpb24sIHdoaWNoIGxlYWQgdG8g
+IGZtciB3YXMgYWx3YXlzDQo+ID4gMHgxMDAgaW4gZnNsX2VsYmNfY2hpcF9pbml0KCkgYW5kIGNh
+dXNlZCBGQ00gY29tbWFuZCB0aW1lb3V0IGJlZm9yZQ0KPiA+IGNhbGxpbmcgZnNsX2VsYmNfY2hp
+cF9pbml0X3RhaWwoKSwgbm93IHdlIGluaXRpYWxpemUgQ1dUTyB0byBtYXhpbXVtDQo+ID4gdGlt
+ZW91dCB2YWx1ZSBhbmQgbm90IHJlbHlpbmcgb24gdGhlIHNldHRpbmcgb2YgYm9vdGxvYWRlci4N
+Cj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNoZW5nemhvdSBMaXUgPFNoZW5nemhvdS5MaXVAZnJl
+ZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogbWFrZSBmbXIgbm90IHJlbHlpbmcgb24gdGhl
+IHNldHRpbmcgb2YgYm9vdGxvYWRlci4NCj4gPg0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL2ZzbF9l
+bGJjX25hbmQuYyB8ICAgMTAgKysrKystLS0tLQ0KPiA+ICAxIGZpbGVzIGNoYW5nZWQsIDUgaW5z
+ZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYw0KPiA+IGIvZHJpdmVycy9tdGQvbmFuZC9mc2xfZWxi
+Y19uYW5kLmMNCj4gPiBpbmRleCBlZWRkOGVlLi40ZjQwNWEwIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
+aXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFu
+ZC9mc2xfZWxiY19uYW5kLmMNCj4gPiBAQCAtNjU5LDkgKzY1OSw3IEBAIHN0YXRpYyBpbnQgZnNs
+X2VsYmNfY2hpcF9pbml0X3RhaWwoc3RydWN0IG10ZF9pbmZvDQo+ICptdGQpDQo+ID4gIAlpZiAo
+Y2hpcC0+cGFnZW1hc2sgJiAweGZmMDAwMDAwKQ0KPiA+ICAJCWFsKys7DQo+ID4NCj4gPiAtCS8q
+IGFkZCB0byBFQ0NNIG1vZGUgc2V0IGluIGZzbF9lbGJjX2luaXQgKi8NCj4gPiAtCXByaXYtPmZt
+ciB8PSAoMTIgPDwgRk1SX0NXVE9fU0hJRlQpIHwgIC8qIFRpbWVvdXQgPiAxMiBtcyAqLw0KPiA+
+IC0JICAgICAgICAgICAgIChhbCA8PCBGTVJfQUxfU0hJRlQpOw0KPiA+ICsJcHJpdi0+Zm1yIHw9
+IGFsIDw8IEZNUl9BTF9TSElGVDsNCj4gPg0KPiA+ICAJZGV2X2RiZyhwcml2LT5kZXYsICJmc2xf
+ZWxiY19pbml0OiBuYW5kLT5udW1jaGlwcyA9ICVkXG4iLA0KPiA+ICAJICAgICAgICBjaGlwLT5u
+dW1jaGlwcyk7DQo+ID4gQEAgLTc2NCw4ICs3NjIsMTAgQEAgc3RhdGljIGludCBmc2xfZWxiY19j
+aGlwX2luaXQoc3RydWN0IGZzbF9lbGJjX210ZA0KPiAqcHJpdikNCj4gPiAgCXByaXYtPm10ZC5w
+cml2ID0gY2hpcDsNCj4gPiAgCXByaXYtPm10ZC5vd25lciA9IFRISVNfTU9EVUxFOw0KPiA+DQo+
+ID4gLQkvKiBTZXQgdGhlIEVDQ00gYWNjb3JkaW5nIHRvIHRoZSBzZXR0aW5ncyBpbiBib290bG9h
+ZGVyLiovDQo+ID4gLQlwcml2LT5mbXIgPSBpbl9iZTMyKCZsYmMtPmZtcikgJiBGTVJfRUNDTTsN
+Cj4gPiArCS8qIHNldCB0aW1lb3V0IHRvIG1heGltdW0gKi8NCj4gPiArCXByaXYtPmZtciA9IDE1
+IDw8IEZNUl9DV1RPX1NISUZUOw0KPiA+ICsJaWYgKGluX2JlMzIoJmxiYy0+YmFua1twcml2LT5i
+YW5rXS5vcikgJiBPUl9GQ01fUEdTKQ0KPiA+ICsJCXByaXYtPmZtciB8PSBGTVJfRUNDTTsNCj4g
+DQo+IFBsZWFzZSBkbyBub3QgY2hhbmdlIHRoZSB3YXkgRUNDTSBpcyBoYW5kbGVkLiAgV2UgcHJv
+YmFibHkgc2hvdWxkIGhhdmUNCj4gZG9uZSBpdCB0aGlzIHdheSBmcm9tIHRoZSBzdGFydCwgYnV0
+IGF0IHRoaXMgcG9pbnQgaXQgYnJlYWtzDQo+IGNvbXBhdGliaWxpdHkgaWYgeW91IGhhdmUgYSBs
+YXJnZSBwYWdlIGZsYXNoIGFuZCB0aGUgZmlybXdhcmUgZGlkbid0DQo+IHRvdWNoIE5BTkQuDQo+
+IA0KPiAtU2NvdHQNCltTaGVuZ3pob3VdIFRoaXMgcGF0Y2ggZG9lc24ndCBjaGFuZ2UgdGhlIHdh
+eSBFQ0NNIGlzIGhhbmRsZWQsIGl0J3Mgc3RpbGwgc2FtZSBhcyBiZWZvcmUsIGp1c3QgbWFrZSBz
+dXJlIENXVE8gdGltZW91dCBpcyBzZXQgdG8gbWF4aW11bS4gIA0K
