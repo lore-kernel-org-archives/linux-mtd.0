@@ -1,27 +1,20 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYNie-0007Ig-1I
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 20:03:56 +0000
-Received: by bkcje16 with SMTP id je16so1103678bkc.36
- for <linux-mtd@lists.infradead.org>; Wed, 07 Dec 2011 12:03:54 -0800 (PST)
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RYONB-0002PY-RW
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2011 20:45:54 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v3] mtd/docg3: fixes and cleanups
+References: <1322726702.2332.9.camel@koala>
+ <1322852412-15193-1-git-send-email-robert.jarzmik@free.fr>
+ <1323066682.2316.18.camel@koala>
+Date: Wed, 07 Dec 2011 21:45:29 +0100
+In-Reply-To: <1323066682.2316.18.camel@koala> (Artem Bityutskiy's message of
+ "Mon, 05 Dec 2011 08:31:19 +0200")
+Message-ID: <87k468cdqu.fsf@free.fr>
 MIME-Version: 1.0
-In-Reply-To: <1323173269-19931-9-git-send-email-angus.clark@st.com>
-References: <1323173269-19931-1-git-send-email-angus.clark@st.com>
- <1323173269-19931-2-git-send-email-angus.clark@st.com>
- <1323173269-19931-3-git-send-email-angus.clark@st.com>
- <1323173269-19931-4-git-send-email-angus.clark@st.com>
- <1323173269-19931-5-git-send-email-angus.clark@st.com>
- <1323173269-19931-6-git-send-email-angus.clark@st.com>
- <1323173269-19931-7-git-send-email-angus.clark@st.com>
- <1323173269-19931-8-git-send-email-angus.clark@st.com>
- <1323173269-19931-9-git-send-email-angus.clark@st.com>
-Date: Wed, 7 Dec 2011 12:03:54 -0800
-Message-ID: <CAN8TOE-cWdjcR-LZmGf_ypFnXNm0D1mn_6VU_7C9rkSnRigvxg@mail.gmail.com>
-Subject: Re: [PATCH (mtd-www) 09/13] nand-data: Update BBM info for Toshiba
- TC58DVG02A5
-From: Brian Norris <computersforpeace@gmail.com>
-To: Angus CLARK <angus.clark@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,8 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 6, 2011 at 4:07 AM, Angus CLARK <angus.clark@st.com> wrote:
-> Update BBM info for Toshiba TC58DVG02A5, according to datasheet and confirmed by
-> a Toshiba engineer.
+Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+> Pushed to l2-mtd-2.6.git, thanks. But I still see this warning when
+> I compile on x86_64:
+>
+> drivers/mtd/devices/docg3.c:1050:12: warning: =E2=80=98doc_get_erase_coun=
+t=E2=80=99 defined
+> but not used [-Wunused-function]
+Yes, I know. As I have said previously to Stephen, this one will take a lit=
+tle
+bit more time to fix.
+
+I'm working on it, and as soon as I have something, I'll submit.
+
+Cheers.
+
+--=20
+Robert
