@@ -1,23 +1,28 @@
-Received: from
- 1.c.d.e.d.2.1.2.0.7.4.b.1.c.8.0.0.0.0.0.a.e.3.0.0.b.8.0.1.0.0.2.ip6.arpa
- ([2001:8b0:3ea:0:8c1:b470:212d:edc1] helo=linux-mips.org)
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYbTu-0008Cs-JS
- for linux-mtd@lists.infradead.org; Thu, 08 Dec 2011 10:45:39 +0000
-Date: Thu, 8 Dec 2011 10:45:23 +0000
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] MTD: nand: Convert au1550nd to use
- module_platform_driver()
-Message-ID: <20111208104522.GA21777@linux-mips.org>
-References: <1322748247.31743.1.camel@phoenix>
- <1323008139.9400.59.camel@sauron.fi.intel.com>
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RYiGq-0004Qy-31
+ for linux-mtd@lists.infradead.org; Thu, 08 Dec 2011 18:00:36 +0000
+Message-ID: <4EE0FB3C.6050608@freescale.com>
+Date: Thu, 8 Dec 2011 12:00:28 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1323008139.9400.59.camel@sauron.fi.intel.com>
-Cc: linux-mips@linux-mips.org, Axel Lin <axel.lin@gmail.com>,
- linux-mtd@lists.infradead.org, Manuel Lauss <manuel.lauss@googlemail.com>
+To: Liu Shengzhou-B36685 <B36685@freescale.com>
+Subject: Re: [PATCH 1/2 v2] mtd/nand: fixup for fmr initialization of Freescale
+ NAND controller
+References: <1323161655-19050-1-git-send-email-Shengzhou.Liu@freescale.com>
+ <4EDE4DEC.7010308@freescale.com>
+ <3F453DDFF675A64A89321A1F352810216B0787@039-SN1MPN1-005.039d.mgd.msft.net>
+ <4EDF9F9C.7050702@freescale.com>
+ <3F453DDFF675A64A89321A1F352810216B089C@039-SN1MPN1-005.039d.mgd.msft.net>
+In-Reply-To: <3F453DDFF675A64A89321A1F352810216B089C@039-SN1MPN1-005.039d.mgd.msft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ Gala Kumar-B11780 <B11780@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +32,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 04, 2011 at 04:15:32PM +0200, Artem Bityutskiy wrote:
-
-> > Hi Ralf,
-> > This patch converts au1550nd to use module_platform_driver().
-> > You have committed a5bd32fd "MTD: nand: make au1550nd.c a platform_driver".
-> > Currently this patch can only apply to either your tree or linux-next.
-> > Could you help to take it.
-> > ( committed a5bd32fd does not exist in l2-mtd-2.6.git,
-> > so Artem cannot apply it.)
+On 12/07/2011 09:36 PM, Liu Shengzhou-B36685 wrote:
 > 
-> Yes, please, merge the au1550nd.c piece via Ralf, thanks!
+> 
+>> -----Original Message-----
+>> From: Wood Scott-B07421
+>> Sent: Thursday, December 08, 2011 1:17 AM
+>> To: Liu Shengzhou-B36685
+>> Cc: Wood Scott-B07421; linuxppc-dev@lists.ozlabs.org; linux-
+>> mtd@lists.infradead.org; dwmw2@infradead.org; Gala Kumar-B11780
+>> Subject: Re: [PATCH 1/2 v2] mtd/nand: fixup for fmr initialization of
+>> Freescale NAND controller
+>>
+>> On 12/07/2011 12:30 AM, Liu Shengzhou-B36685 wrote:
+>>> [Shengzhou] This patch doesn't change the way ECCM is handled, it's
+>> still same as before, just make sure CWTO timeout is set to maximum.
+>>
+>> It does change it.  It used to use the existing value in FMR, and now it
+>> sets it based on ORn[PGS].
+>>
+>> -Scott
+> 
+> [Shengzhou]
+>   In u-boot:
+> 	#ifdef CONFIG_FSL_ELBC_FMR
+>            priv->fmr = CONFIG_FSL_ELBC_FMR;
+> 	#else
+> 	     priv->fmr = (15 << FMR_CWTO_SHIFT) | (2 << FMR_AL_SHIFT);
+> 	     or = in_be32(&elbc_ctrl->regs->bank[priv->bank].or);
+> 	     if (or & OR_FCM_PGS)
+>     		       priv->fmr |= FMR_ECCM;
+> 	#endif
+> 
+> In kernel: It used to be " priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM
+> ", so fmr was always 0x100(or 0,depend on ORn[PGS]), CWTO was
+> 0(timeout was minimum).   In this patch, for not relying on
+> bootloader, fmr is initialized as what u-boot does, except
+> FMR_AL_SHIFT is handled in fsl_elbc_chip_init_tail and without
+> definition of CONFIG_FSL_ELBC_FMR.
+> 
+>   So, it doesn't change it.
 
-No point in adding code to change it again first commit so I've folded
-this patch into "MTD: nand: make au1550nd.c a platform_driver".
+You're assuming that the above U-Boot code is always run.  This depends
+on whether the NAND driver is enabled in U-Boot.
 
-Thanks folks!
+In the future, though, it might also depend on whether a NAND command is
+actually run in U-Boot -- this makes the setting of FMR
+non-deterministic between boots, which is worse than a one-time breakage
+of an unusual setup (driver not enabled in U-Boot at all).
 
-  Ralf
+So it is a change, but I now think it's a change we should make.  The
+changelog should mention that this is happening, though.
+
+> Do we still need CONFIG_FSL_ELBC_FMR in kernel? 
+
+We do not want such a compile-time constant in the kernel.  Use ORn[PGS]
+as the patch currently does.
+
+-Scott
