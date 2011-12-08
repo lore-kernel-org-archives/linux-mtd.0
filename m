@@ -1,26 +1,23 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYbPM-0003NX-JF
- for linux-mtd@lists.infradead.org; Thu, 08 Dec 2011 10:40:58 +0000
-Message-ID: <4EE09526.5040705@freescale.com>
-Date: Thu, 8 Dec 2011 18:44:54 +0800
-From: LiuShuo <b35362@freescale.com>
+Received: from
+ 1.c.d.e.d.2.1.2.0.7.4.b.1.c.8.0.0.0.0.0.a.e.3.0.0.b.8.0.1.0.0.2.ip6.arpa
+ ([2001:8b0:3ea:0:8c1:b470:212d:edc1] helo=linux-mips.org)
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RYbTu-0008Cs-JS
+ for linux-mtd@lists.infradead.org; Thu, 08 Dec 2011 10:45:39 +0000
+Date: Thu, 8 Dec 2011 10:45:23 +0000
+From: Ralf Baechle <ralf@linux-mips.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] MTD: nand: Convert au1550nd to use
+ module_platform_driver()
+Message-ID: <20111208104522.GA21777@linux-mips.org>
+References: <1322748247.31743.1.camel@phoenix>
+ <1323008139.9400.59.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <4EDEE3AC.7060000@freescale.com>
- <4EDFBA6D.9080500@freescale.com>
-In-Reply-To: <4EDFBA6D.9080500@freescale.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1323008139.9400.59.camel@sauron.fi.intel.com>
+Cc: linux-mips@linux-mips.org, Axel Lin <axel.lin@gmail.com>,
+ linux-mtd@lists.infradead.org, Manuel Lauss <manuel.lauss@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,94 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B412=E6=9C=8808=E6=97=A5 03:11, Scott Wood =E5=86=99=
-=E9=81=93:
-> On 12/06/2011 09:55 PM, LiuShuo wrote:
->> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8807=E6=97=A5 08:09, Scott Wood =E5=86=
-=99=E9=81=93:
->>> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
->>>> From: Liu Shuo<shuo.liu@freescale.com>
->>>>
->>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In
->>>> order
->>>> to support the Nand flash chip whose page size is larger than 2K byt=
-es,
->>>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and =
-save
->>>> them to a large buffer.
->>>>
->>>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
->>>> ---
->>>> v3:
->>>>       -remove page_size of struct fsl_elbc_mtd.
->>>>       -do a oob write by NAND_CMD_RNDIN.
->>>>
->>>>    drivers/mtd/nand/fsl_elbc_nand.c |  243
->>>> ++++++++++++++++++++++++++++++++++----
->>>>    1 files changed, 218 insertions(+), 25 deletions(-)
->>> What is the plan for bad block marker migration?
->> This patch has been ported to uboot now, I think we can make a special
->> uboot image for bad
->> block marker migration when first use the chip.
-> It should not be a special image, and there should be some way to mark
-> that the migration has happened.  Even if we do the migration in U-Boot=
-,
-> Linux could check for the marker and if absent, disallow access and tel=
-l
-> the user to run the migration tool.
->
->>>> @@ -473,13 +568,72 @@ static void fsl_elbc_cmdfunc(struct mtd_info
->>>> *mtd, unsigned int command,
->>>>             * write so the HW generates the ECC.
->>>>             */
->>>>            if (elbc_fcm_ctrl->oob || elbc_fcm_ctrl->column !=3D 0 ||
->>>> -            elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize=
-)
->>>> -            out_be32(&lbc->fbcr,
->>>> -                elbc_fcm_ctrl->index - elbc_fcm_ctrl->column);
->>>> -        else
->>>> +            elbc_fcm_ctrl->index !=3D mtd->writesize + mtd->oobsize=
-) {
->>>> +            if (elbc_fcm_ctrl->oob&&   mtd->writesize>   2048) {
->>>> +                out_be32(&lbc->fbcr, 64);
->>>> +            } else {
->>>> +                out_be32(&lbc->fbcr, elbc_fcm_ctrl->index
->>>> +                        - elbc_fcm_ctrl->column);
->>>> +            }
->>> We need to limit ourselves to the regions that have actually been
->>> written to in the buffer.  fbcr needs to be set separately for first =
-and
->>> last subpages, with intermediate subpages having 0, 64, or 2112 as
->>> appropriate.  Subpages that are entirely before column or entirely af=
-ter
->>> column + index should be skipped.
->> I have considered this case, but I don't think it is useful.
->>      1.There isn't a 'length' parameter in driver interface, although =
-we
->> can get it from 'index - column'.
-> Right.  column is start, and index is end + 1.  We have the bounds of
-> what has been written.
->
->>      2.To see nand_do_write_oob() in nand_base.c, it fill '0xff' to
->> entire oob area first and write the user data by nand_fill_oob(), then
->> call ecc.write_oob (default is nand_write_oob_std()).
-> Do we really want to assume that that's what it will always do?
->
-> And if we do want to make such assumptions, we could rip out all usage
-> of index/column here, and just handle "oob" and "full page" cases.
-The function nand_do_write_ops() in nandbase.c is a Nand internal interfa=
-ce.
-It always is called when application write to nand flash. (e.g. dd)
-In this function, partial page write is dealt with by filling '0xff' to=20
-buffer before data copy.
-(nand_do_write_oob() is similar)
-So I don't think we need to do it in our controller driver again, it=20
-should be a job of upper layer.
+On Sun, Dec 04, 2011 at 04:15:32PM +0200, Artem Bityutskiy wrote:
 
+> > Hi Ralf,
+> > This patch converts au1550nd to use module_platform_driver().
+> > You have committed a5bd32fd "MTD: nand: make au1550nd.c a platform_driver".
+> > Currently this patch can only apply to either your tree or linux-next.
+> > Could you help to take it.
+> > ( committed a5bd32fd does not exist in l2-mtd-2.6.git,
+> > so Artem cannot apply it.)
+> 
+> Yes, please, merge the au1550nd.c piece via Ralf, thanks!
 
-I found that 'column' for NAND_CMD_SEQIN is always 0 or writesize except=20
-for oob write with
-  NAND_ECC_HW_SYNDROME, but it's not useful case for our controller.
+No point in adding code to change it again first commit so I've folded
+this patch into "MTD: nand: make au1550nd.c a platform_driver".
 
--LiuShuo
-> -Scott
+Thanks folks!
+
+  Ralf
