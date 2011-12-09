@@ -1,22 +1,24 @@
-Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
+Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYymQ-0002YA-55
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 11:38:18 +0000
-Message-ID: <4EE1F329.2000303@st.com>
-Date: Fri, 09 Dec 2011 11:38:17 +0000
+ id 1RYyt5-0002nG-Is
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 11:45:12 +0000
+Message-ID: <4EE1F4C6.5000104@st.com>
+Date: Fri, 09 Dec 2011 11:45:10 +0000
 From: Angus CLARK <angus.clark@st.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH (mtd-www) 06/13] nand-data: fix name for Samsung
- "K9XDG08U5D"
+Subject: Re: [PATCH (mtd-www) 08/13] nand-data: fix ID Length for Hynix
+ "HY27US{08, 16}12(1/2)B" devices
 References: <1323173269-19931-1-git-send-email-angus.clark@st.com>
  <1323173269-19931-2-git-send-email-angus.clark@st.com>
  <1323173269-19931-3-git-send-email-angus.clark@st.com>
  <1323173269-19931-4-git-send-email-angus.clark@st.com>
  <1323173269-19931-5-git-send-email-angus.clark@st.com>
  <1323173269-19931-6-git-send-email-angus.clark@st.com>
- <CAN8TOE8vJfTzxT2Mz4=r45w==rg2dOneGvYTNZNi_tEZD6CrPw@mail.gmail.com>
-In-Reply-To: <CAN8TOE8vJfTzxT2Mz4=r45w==rg2dOneGvYTNZNi_tEZD6CrPw@mail.gmail.com>
+ <1323173269-19931-7-git-send-email-angus.clark@st.com>
+ <1323173269-19931-8-git-send-email-angus.clark@st.com>
+ <CAN8TOE9j=R=Wcr7VWR5hjM+i2RmB-THak+s7eDGqTvdr5SZWxQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE9j=R=Wcr7VWR5hjM+i2RmB-THak+s7eDGqTvdr5SZWxQ@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -31,38 +33,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On 12/07/2011 07:38 PM, Brian Norris wrote:
+On 12/07/2011 07:52 PM, Brian Norris wrote:
 > On Tue, Dec 6, 2011 at 4:07 AM, Angus CLARK <angus.clark@st.com> wrote:
->> Change Samsung "K9XDG08U5D" to "K9MDG08U5D".
+>> Fix ID Length for Hynix "HY27US{08,16}12(1/2)B" devices, from '4' to '2',
+>> according to datasheet I have, and READID listed in the table.
 > 
-> According to my data sheet, all the following are available:
+> My typo again. Thanks for the catch.
 > 
-> K9LBG08U0D
-> K9HCG08U1D
-> K9MDG08U5D
-> K9PDGZ8U5D
-> K9PDG08U5D
+>> -"Hynix","HY27US1612(1/2)B","0xAD","0x56","0xAD56",64,512,16,"16 KB","x16","N/A","1st or 2nd page (3rd word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,4,"ID Table",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"This is the ONLY x16 chip that uses byte 6 (""word 3"") for BBM"
+>> +"Hynix","HY27US1612(1/2)B","0xAD","0x56","0xAD56",64,512,16,"16 KB","x16","N/A","1st or 2nd page (3rd word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,2,"ID Table",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"This is the ONLY x16 chip that uses byte 6 ('word 3') for BBM"
 > 
-> While they use "K9XDG08U5D" to cover the last 3 chips with the same ID
-> under the "Read ID" section, with `X' as a wildcard character. So it
-> should match K9MDG08U5D, K9PDG08U5D, and K9PDGZ8U5D.
+> Note that you're changing the note from:
 > 
+> This is the ONLY x16 chip that uses byte 6 ("word 3") for BBM
+> 
+> to
+> 
+> This is the ONLY x16 chip that uses byte 6 ('word 3') for BBM
+> 
+> I don't mind. Just FYI.
 
-Ah, that makes sense, or at least for the K9MDG08U5D and K9PDG08U5D devices.  I
-can't find much information relating to K9PDGZ8U5D - the part number decoder I
-have suggests this would be 'SSD' technology (rather than x8 or x16).  Can you
-shed any light on this?
+Yes, sorry, I should have mentioned that in the log.  The change was to
+accommodate my simple CSV parser (part of the test framework, still to be
+submitted) which couldn't handle the double quotes.  The change is actually:
 
-I see the datasheet uses capital 'X' as the wildcard, but perhaps lower-case 'x'
-(or '-' as you have suggested in other replies) would be less confusing.
-
-Also, although the K9MDG08U5D and K9PDG08U5D devices are equivalent with respect
-to the current columns in the table, one of the later patches I submitted added
-the "I/O interface" column: this is "Single" for the K9MDG08U5D device and
-"Dual" for the K9PDG08U5D device.
-
-Would you object to us keeping this patch as is, and I will add K9PDG08U5D as a
-separate device, with "Dual" I/O?
+"This is the ONLY x16 chip that uses byte 6 (""word 3"") for BBM"
+to
+"This is the ONLY x16 chip that uses byte 6 ('word 3') for BBM"
 
 Cheers,
 
