@@ -1,17 +1,22 @@
-Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RYyFF-0008JM-BG
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 11:04:02 +0000
-Message-ID: <4EE1EB20.4070001@st.com>
-Date: Fri, 09 Dec 2011 11:04:00 +0000
+ id 1RYymQ-0002YA-55
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 11:38:18 +0000
+Message-ID: <4EE1F329.2000303@st.com>
+Date: Fri, 09 Dec 2011 11:38:17 +0000
 From: Angus CLARK <angus.clark@st.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH (mtd-www) 05/13] nand-data: remove incorrect/duplicate
- Numonyx NAND01G devices
-References: <1323173269-19931-1-git-send-email-angus.clark@st.com>	<1323173269-19931-2-git-send-email-angus.clark@st.com>	<1323173269-19931-3-git-send-email-angus.clark@st.com>	<1323173269-19931-4-git-send-email-angus.clark@st.com>	<1323173269-19931-5-git-send-email-angus.clark@st.com>
- <CAN8TOE-+7OVNiexKkP1yXYm6z5wx7dyOh0FhCkLzov8M=suVDQ@mail.gmail.com>
-In-Reply-To: <CAN8TOE-+7OVNiexKkP1yXYm6z5wx7dyOh0FhCkLzov8M=suVDQ@mail.gmail.com>
+Subject: Re: [PATCH (mtd-www) 06/13] nand-data: fix name for Samsung
+ "K9XDG08U5D"
+References: <1323173269-19931-1-git-send-email-angus.clark@st.com>
+ <1323173269-19931-2-git-send-email-angus.clark@st.com>
+ <1323173269-19931-3-git-send-email-angus.clark@st.com>
+ <1323173269-19931-4-git-send-email-angus.clark@st.com>
+ <1323173269-19931-5-git-send-email-angus.clark@st.com>
+ <1323173269-19931-6-git-send-email-angus.clark@st.com>
+ <CAN8TOE8vJfTzxT2Mz4=r45w==rg2dOneGvYTNZNi_tEZD6CrPw@mail.gmail.com>
+In-Reply-To: <CAN8TOE8vJfTzxT2Mz4=r45w==rg2dOneGvYTNZNi_tEZD6CrPw@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,55 +31,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On 12/07/2011 07:28 PM, Brian Norris wrote:
+On 12/07/2011 07:38 PM, Brian Norris wrote:
 > On Tue, Dec 6, 2011 at 4:07 AM, Angus CLARK <angus.clark@st.com> wrote:
->> The table includes two entries for each of the following Numonyx devices:
->> NAND01GR3B2B, NAND01GW3B2B, NAND01GR4B2B, NAND01GW4B2B.  This patch removes the
->> second set since it disagrees with the datasheets I have with regards to ONFI
->> V1.0 support and the READID data.
+>> Change Samsung "K9XDG08U5D" to "K9MDG08U5D".
 > 
-> This one's strange. I have 2 different data sheets for this part (both
-> Numonyx) and I have a sample NAND that's labeled "ST Micro
-> NAND01GW3B2C." The sample has ID 0x20F1001D, matching the row for
-> NAND01GW3B2B which you are deleting. The chip *is* ONFI-capable, and
-> yields a manufacturer/part string of "ST Micro NAND01GW3B2CN6."
+> According to my data sheet, all the following are available:
+> 
+> K9LBG08U0D
+> K9HCG08U1D
+> K9MDG08U5D
+> K9PDGZ8U5D
+> K9PDG08U5D
+> 
+> While they use "K9XDG08U5D" to cover the last 3 chips with the same ID
+> under the "Read ID" section, with `X' as a wildcard character. So it
+> should match K9MDG08U5D, K9PDG08U5D, and K9PDGZ8U5D.
 > 
 
-Yes, the "Rev C" version, NAND01GW3B2C, does support ONFI, and returns a READID
-of 0x20F1001D. (Although interestingly, on my sample, it returns the "ONFI"
-signature but not the parameter page - I will investigate further!).
+Ah, that makes sense, or at least for the K9MDG08U5D and K9PDG08U5D devices.  I
+can't find much information relating to K9PDGZ8U5D - the part number decoder I
+have suggests this would be 'SSD' technology (rather than x8 or x16).  Can you
+shed any light on this?
 
-I do not have an equivalent "Rev B" sample (ie NAND01GW3B2B), but all the
-information I have suggests the "Rev B" family of devices does not support ONFI,
-and the READID matches the "first" set of entries in the datasheet.
+I see the datasheet uses capital 'X' as the wildcard, but perhaps lower-case 'x'
+(or '-' as you have suggested in other replies) would be less confusing.
 
-Perhaps this is a "Rev C" vs "Rev B" issue, in which case, I would suggest
-applying the patch and maybe adding the "Rev C" versions to the table.  What do
-you think?
+Also, although the K9MDG08U5D and K9PDG08U5D devices are equivalent with respect
+to the current columns in the table, one of the later patches I submitted added
+the "I/O interface" column: this is "Single" for the K9MDG08U5D device and
+"Dual" for the K9PDG08U5D device.
+
+Would you object to us keeping this patch as is, and I will add K9PDG08U5D as a
+separate device, with "Dual" I/O?
 
 Cheers,
 
 Angus
-
-> So I'm not sure what to say. These data sheets are old enough I can't
-> find a public, updated version of the data sheet - only
-> company-internal copies of varying age - and everything is complicated
-> because ST Micro was bought by Numonyx, who rebranded some chips.
-> 
-> Unless you have a better suggestion, I might add a note instead of
-> deleting. Something like:
-> 
-> "ST/Numonyx chips may come with varying ID, ONFI capability"
-> 
-> Brian
-> 
-
--- 
--------------------------------------
-Angus Clark
-ST Microelectronics (R&D) Ltd.
-1000 Aztec West, Bristol, BS32 4SQ
-email: angus.clark@st.com
-tel: +44 (0) 1454 462389
-st-tina: 065 2389
--------------------------------------
