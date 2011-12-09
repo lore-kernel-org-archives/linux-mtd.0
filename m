@@ -1,23 +1,15 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=TX2EHSOBE001.bigfish.com)
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RZ649-0005X4-TX
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 19:25:06 +0000
-Message-ID: <4EE2608B.4000103@freescale.com>
-Date: Fri, 9 Dec 2011 13:24:59 -0600
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: <shuo.liu@freescale.com>
-Subject: Re: [PATCH 2/2 v4] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1323423775-26951-1-git-send-email-shuo.liu@freescale.com>
- <1323423775-26951-2-git-send-email-shuo.liu@freescale.com>
-In-Reply-To: <1323423775-26951-2-git-send-email-shuo.liu@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, leoli@freescale.com, dwmw2@infradead.org
+ id 1RZ6OW-0006Ul-6j
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2011 19:46:08 +0000
+Received: by iaby26 with SMTP id y26so5563343iab.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Dec 2011 11:46:06 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] libmtd: allow write operations when MEMWRITE is not supported
+Date: Fri,  9 Dec 2011 11:45:14 -0800
+Message-Id: <1323459914-25294-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/09/2011 03:42 AM, shuo.liu@freescale.com wrote:
-> From: Liu Shuo <shuo.liu@freescale.com>
-> 
-> Freescale FCM controller has a 2K size limitation of buffer RAM. In order
-> to support the Nand flash chip whose page size is larger than 2K bytes,
-> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and save
-> them to a large buffer.
-> 
-> Signed-off-by: Liu Shuo <shuo.liu@freescale.com>
-> Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-> Signed-off-by: Li Yang <leoli@freescale.com>
-> ---
-> v4 : allocate (8+1)k buffer for large page chip.
-> 
->  drivers/mtd/nand/fsl_elbc_nand.c |  246 ++++++++++++++++++++++++++++++++++----
->  1 files changed, 221 insertions(+), 25 deletions(-)
+MEMWRITE is a recently introduced write interface for MTD; however, it
+is, for now, only supported on NAND flash. mtd-utils should fall back to
+old write methods when either ENOTTY or EOPNOTSUPP are returned.
 
-Again, I think we need to sort out the bad block migration first -- at
-least how we're going to mark the chip as having been migrated, so the
-driver can check for it.
+This is a showstopper when, for instance, using ubiformat on NOR, which
+don't have a mtd->write_oob interface (and thus don't support MEMWRITE):
 
--Scott
+  ubiformat: formatting eraseblock 2 --  1 % complete  libmtd: error!: MEMWRITE ioctl failed for eraseblock 2 (mtd3)
+          error 122 (Operation not supported)
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ lib/libmtd.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 1b16de5..9b247ae 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -1151,7 +1151,7 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
+ 	ret = ioctl(fd, MEMWRITE, &ops);
+ 	if (ret == 0)
+ 		return 0;
+-	else if (errno != ENOTTY)
++	else if (errno != ENOTTY && errno != EOPNOTSUPP)
+ 		return mtd_ioctl_error(mtd, eb, "MEMWRITE");
+ 
+ 	/* Fall back to old methods if necessary */
+-- 
+1.7.5.4
