@@ -1,27 +1,21 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RaDHn-00073b-Dd
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2011 21:19:48 +0000
-Received: by lahc1 with SMTP id c1so688309lah.36
- for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2011 13:19:45 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
+ id 1RaDOd-0007nV-CU
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2011 21:26:52 +0000
+Received: by lahc1 with SMTP id c1so691158lah.36
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2011 13:26:49 -0800 (PST)
+Subject: Re: [PATCH] libmtd: allow write operations when MEMWRITE is not
+ supported
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Date: Mon, 12 Dec 2011 23:19:37 +0200
-In-Reply-To: <4EE66EFE.1050608@freescale.com>
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 12 Dec 2011 23:26:43 +0200
+In-Reply-To: <1323459914-25294-1-git-send-email-computersforpeace@gmail.com>
+References: <1323459914-25294-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1323724784.2297.20.camel@koala>
+Message-ID: <1323725206.2297.24.camel@koala>
 Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,14 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
-> NAND chips come from the factory with bad blocks marked at a certain
-> offset into each page.  This offset is normally in the OOB area, but
-> since we change the layout from "4k data, 128 byte oob" to "2k data, 64
-> byte oob, 2k data, 64 byte oob" the marker is no longer in the oob.  On
-> first use we need to migrate the markers so that they are still in the oob.
+On Fri, 2011-12-09 at 11:45 -0800, Brian Norris wrote:
+> MEMWRITE is a recently introduced write interface for MTD; however, it
+> is, for now, only supported on NAND flash. mtd-utils should fall back to
+> old write methods when either ENOTTY or EOPNOTSUPP are returned.
+> 
+> This is a showstopper when, for instance, using ubiformat on NOR, which
+> don't have a mtd->write_oob interface (and thus don't support MEMWRITE):
+> 
+>   ubiformat: formatting eraseblock 2 --  1 % complete  libmtd: error!: MEMWRITE ioctl failed for eraseblock 2 (mtd3)
+>           error 122 (Operation not supported)
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Ah, I see, thanks. Are you planning to implement in-kernel migration or
-use a user-space tool?
+I guess this require an urgent mtd-utils release.
 
-Artem.
+Also, why you say 'for now', does even make-sense to implement this for
+NOR?
+
+I've also just pushed this patch, does it look OK to you?
+
+>From a4699233f927738db633687a2276a9f3e127d799 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+Date: Mon, 12 Dec 2011 23:24:59 +0200
+Subject: [PATCH] mtd: document that MEMWRITE ioctl is NAND-specific
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+---
+ include/mtd/mtd-abi.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 1a7e1d2..36eace0 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -198,7 +198,8 @@ struct otp_info {
+ #define MEMISLOCKED		_IOR('M', 23, struct erase_info_user)
+ /*
+  * Most generic write interface; can write in-band and/or out-of-band in various
+- * modes (see "struct mtd_write_req")
++ * modes (see "struct mtd_write_req"). This ioctl is not supported for flashes
++ * without OOB, e.g., NOR flash.
+  */
+ #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
+ 
+-- 
+1.7.6.4
