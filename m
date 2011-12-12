@@ -1,22 +1,18 @@
-Date: Sun, 11 Dec 2011 21:00:22 -0800
-From: Jonathan McDowell <noodles@earth.li>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH 00/10] ARM: OMAP1: ams-delta: replace custom I/O with GPIO
-Message-ID: <20111212050022.GI16333@earth.li>
-References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+ helo=VA3EHSOBE005.bigfish.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ra2vk-0005rK-Qh
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2011 10:16:21 +0000
+From: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+To: <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH 1/2] mtd/nand: fixup for fmr initialization of Freescale NAND
+ controller
+Date: Mon, 12 Dec 2011 17:40:52 +0800
+Message-ID: <1323682853-10750-1-git-send-email-Shengzhou.Liu@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Cc: linux-fbdev@vger.kernel.org,
- Mark Brown <broonie@opensource.wolfsonmicro.com>,
- Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Grant Likely <grant.likely@secretlab.ca>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-arm-kernel@lists.infradead.org,
- linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, dwmw2@infradead.org, kumar.gala@freescale.com,
+ linux-mtd@lists.infradead.org, Shengzhou Liu <Shengzhou.Liu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 11, 2011 at 09:11:58PM +0100, Janusz Krzysztofik wrote:
-> The Amstrad Delta board has two extra output ports used for driving
-> input lines of different on-board devices. Those ports are now
-> controlled with custom functions, provided by the board arch code and
-> used by several device drivers.
-> 
-> The idea behind the series is to replace those custom I/O functions
-> with gpiolib API. This way, existing drivers can be made less platform
-> dependent, and some of them perhaps even superseded with generic GPIO
-> based drivers after the board platform device descriptions are
-> converted. Moreover, should a new driver for the on-board Smart Card
-> controller ever be created, it could be designed as a generic GPIO
-> based driver, not a custom one.
+There was a bug for fmr initialization, which lead to  fmr was always 0x100
+in fsl_elbc_chip_init() and caused FCM command timeout before calling
+fsl_elbc_chip_init_tail(), now we initialize CWTO to maximum timeout value
+and not relying on the setting of bootloader.
 
-Nice work; moving ams-delta over to gpiolib has been on my todo list for
-a while (albeit quite low down).
+Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+---
+v3: add more descriptions.
+v2: make fmr not relying on the setting of bootloader.
 
-J.
+ drivers/mtd/nand/fsl_elbc_nand.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index eedd8ee..4f405a0 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -659,9 +659,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	if (chip->pagemask & 0xff000000)
+ 		al++;
+ 
+-	/* add to ECCM mode set in fsl_elbc_init */
+-	priv->fmr |= (12 << FMR_CWTO_SHIFT) |  /* Timeout > 12 ms */
+-	             (al << FMR_AL_SHIFT);
++	priv->fmr |= al << FMR_AL_SHIFT;
+ 
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->numchips = %d\n",
+ 	        chip->numchips);
+@@ -764,8 +762,10 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	priv->mtd.priv = chip;
+ 	priv->mtd.owner = THIS_MODULE;
+ 
+-	/* Set the ECCM according to the settings in bootloader.*/
+-	priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM;
++	/* set timeout to maximum */
++	priv->fmr = 15 << FMR_CWTO_SHIFT;
++	if (in_be32(&lbc->bank[priv->bank].or) & OR_FCM_PGS)
++		priv->fmr |= FMR_ECCM;
+ 
+ 	/* fill in nand_chip structure */
+ 	/* set up function call table */
 -- 
-I just Fedexed my soul to hell. I'm *real* clever.
+1.6.4
