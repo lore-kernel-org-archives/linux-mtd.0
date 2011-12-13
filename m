@@ -1,31 +1,23 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RaYpF-0004jW-V1
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2011 20:19:46 +0000
-Received: by lahc1 with SMTP id c1so40757lah.36
- for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2011 12:19:42 -0800 (PST)
-Subject: Re: UBIFS Corruption
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Reginald Perrin <reggyperrin@yahoo.com>
-Date: Tue, 13 Dec 2011 22:19:39 +0200
-In-Reply-To: <1323793537.97386.YahooMailNeo@web114612.mail.gq1.yahoo.com>
-References: <1310130765.68852.YahooMailRC@web114617.mail.gq1.yahoo.com>
- <1310988807.20738.44.camel@sauron>
- <1311707851.83484.YahooMailRC@web114602.mail.gq1.yahoo.com>
- <1313411391.2583.22.camel@sauron>
- <1322510657.7380.YahooMailNeo@web114602.mail.gq1.yahoo.com>
- <1323278383.39855.YahooMailNeo@web114617.mail.gq1.yahoo.com>
- <1323380555.2074.3.camel@koala>
- <1323700170.52922.YahooMailNeo@web114608.mail.gq1.yahoo.com>
- <1323707647.27436.8.camel@sauron.fi.intel.com>
- <1323709988.3066.YahooMailNeo@web114618.mail.gq1.yahoo.com>
- <1323793537.97386.YahooMailNeo@web114612.mail.gq1.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1RaadL-0007Yu-K9
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2011 22:15:36 +0000
+Received: by eekc1 with SMTP id c1so186443eek.36
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2011 14:15:33 -0800 (PST)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
+Date: Tue, 13 Dec 2011 23:15:30 +0100
+References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+ <201112022047.01444.marek.vasut@gmail.com>
+In-Reply-To: <201112022047.01444.marek.vasut@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1323807580.2207.1.camel@koala>
-Mime-Version: 1.0
-Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Message-Id: <201112132315.30532.marek.vasut@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,32 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-12-13 at 08:25 -0800, Reginald Perrin wrote:
+> > Fixes:
+> > 
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'gpmi_nfc_init':
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: error: 'THIS_MODULE'
+> > undeclared (first use in this function)
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1475:16: note: each undeclared
+> > identifier is reported only once for each function it appears in
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:15: error: expected
+> > declaration specifiers or '...' before string constant
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: data definition
+> > has no type or storage class
+> > drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1617:1: warning: type defaults to
+> > 'int' in declaration of 'MODULE_AUTHOR'
+> > 
+> > and some more...
+> > 
+> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> > ---
+> > 
+> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c index 071b634..493ec2f 100644
+> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > @@ -21,9 +21,9 @@
+> > 
+> >  #include <linux/clk.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/interrupt.h>
+> > 
+> > +#include <linux/module.h>
+> > 
+> >  #include <linux/mtd/gpmi-nand.h>
 > 
-> > echo 4 > /sys/module/ubifs/parameters/debug_tsts
-> > 
-> > Mount: http://pastebin.com/rh5vz4xB
-> > 
-> > echo 2052 > /sys/module/ubifs/parameters/debug_tsts
-> > 
-> > Mount and scan:  http://pastebin.com/C87dYK1g
-> > 
-> > However, I don't see a huge difference.  Did I do that right?
-> > 
-> > Thanks, RP
-> > 
+> This one is missing too, but I suspect that's the stuff discussed in the
+> subsequent emails? When do you plan to get this merged? (or what do I need
+> to apply by hand ... patch name or message ID is ok).
 > 
-> Artem,
+> Thanks
 > 
-> We're the pastebin's helpful?  Not sure I saw a response on this.
+> M
 
-I did respond - I wrote "dmesg" - I meant that you have to run 'dmesg'
-to produce full output. These pastebins do not contain all theuseful
-information because it was not printed to your console. So:
+BUMP
 
-echo >
-mount
-dmesg
-->> to pastebin.
+any updates?
+Thanks
 
-Artem.
+M
