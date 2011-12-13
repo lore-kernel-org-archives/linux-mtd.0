@@ -1,15 +1,26 @@
-Received: from static-213-115-50-13.sme.bredbandsbolaget.se ([213.115.50.13]
- helo=fw-y.tutus.se)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RaNBN-0008FI-3W
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2011 07:53:50 +0000
-Subject: [PATCH] UBIFS: Kernel oops on a read only mounted file system
-From: Daniel Fahlgren <fahlgren@tutus.se>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-rDdzgSAu3kZn7YPXKR8D"
-Date: Tue, 13 Dec 2011 08:53:10 +0100
-Message-ID: <1323762790.27828.30.camel@fahlgren-laptop>
-Mime-Version: 1.0
+Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RaTI1-0003Cu-DY
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2011 14:25:06 +0000
+Message-ID: <4EE7602F.30508@st.com>
+Date: Tue, 13 Dec 2011 14:24:47 +0000
+From: Angus CLARK <angus.clark@st.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH (mtd-www) 05/13] nand-data: remove incorrect/duplicate
+ Numonyx NAND01G devices
+References: <1323173269-19931-1-git-send-email-angus.clark@st.com>
+ <1323173269-19931-2-git-send-email-angus.clark@st.com>
+ <1323173269-19931-3-git-send-email-angus.clark@st.com>
+ <1323173269-19931-4-git-send-email-angus.clark@st.com>
+ <1323173269-19931-5-git-send-email-angus.clark@st.com>
+ <CAN8TOE-+7OVNiexKkP1yXYm6z5wx7dyOh0FhCkLzov8M=suVDQ@mail.gmail.com>
+ <4EE1EB20.4070001@st.com>
+ <CAN8TOE-Mxy1G0LjuqRfO-w1tdESuaDrJ5w=3o68r9C=YfgZ=gg@mail.gmail.com>
+In-Reply-To: <CAN8TOE-Mxy1G0LjuqRfO-w1tdESuaDrJ5w=3o68r9C=YfgZ=gg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,65 +30,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian,
 
---=-rDdzgSAu3kZn7YPXKR8D
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+On 12/09/2011 09:14 PM, Brian Norris wrote:
+> On Fri, Dec 9, 2011 at 3:04 AM, Angus CLARK <angus.clark@st.com> wrote:
+>> On 12/07/2011 07:28 PM, Brian Norris wrote:
+>>> On Tue, Dec 6, 2011 at 4:07 AM, Angus CLARK <angus.clark@st.com> wrote:
+>>>> The table includes two entries for each of the following Numonyx devices:
+>>>> NAND01GR3B2B, NAND01GW3B2B, NAND01GR4B2B, NAND01GW4B2B.  This patch removes the
+>>>> second set since it disagrees with the datasheets I have with regards to ONFI
+>>>> V1.0 support and the READID data.
+>>>
+>>> This one's strange. I have 2 different data sheets for this part (both
+>>> Numonyx) and I have a sample NAND that's labeled "ST Micro
+>>> NAND01GW3B2C." The sample has ID 0x20F1001D, matching the row for
+>>> NAND01GW3B2B which you are deleting. The chip *is* ONFI-capable, and
+>>> yields a manufacturer/part string of "ST Micro NAND01GW3B2CN6."
+>>>
+>>
+>> Yes, the "Rev C" version, NAND01GW3B2C, does support ONFI, and returns a READID
+>> of 0x20F1001D. (Although interestingly, on my sample, it returns the "ONFI"
+>> signature but not the parameter page - I will investigate further!).
+> 
+> My chip (branded ST) is rev. C and it returns the signature and
+> parameter page properly.
+> 
+>> I do not have an equivalent "Rev B" sample (ie NAND01GW3B2B), but all the
+>> information I have suggests the "Rev B" family of devices does not support ONFI,
+>> and the READID matches the "first" set of entries in the datasheet.
+>>
+>> Perhaps this is a "Rev C" vs "Rev B" issue, in which case, I would suggest
+>> applying the patch and maybe adding the "Rev C" versions to the table.  What do
+>> you think?
+> 
+> I don't think that's quite right. I'll explain:
+> 
+> (1) I have two datasheets for this part, with *different* revision
+> histories (they don't even have the same origin date)
+> (2) The first sheet includes Rev. B and Rev. C information, supposedly
 
-Hi,
+Would you be able to email a copy of the datasheet that covers both NAND01GW3B2B
+and NAND01GW3B2C devices?  I have several datasheets for each separately, but
+none that covers both.
 
-I have a system where the kernel is getting an oops a couple of seconds
-after it has booted. It can also be provoked to happen earlier if I run
-the command sync. The only ubifs file system on the machine is a read
-only mounted root partition. The call trace is:
+> (3) The second sheet includes Rev. C only
+> (4) The entries you deleted were from the second sheet and probably
+> should have been labeled Rev. C, not Rev. B - the datasheet was
+> inconsistent.
 
-Call Trace:
-[c7a57d50] [c00d3aa4] make_reservation+0xa0/0x434 (unreliable)
-[c7a57db0] [c00d44c4] ubifs_jnl_write_inode+0x7c/0x248
-[c7a57df0] [c00db898] ubifs_write_inode+0xd4/0x11c
-[c7a57e10] [c009a1c8] __writeback_single_inode+0x424/0x42c
-[c7a57e60] [c009a950] generic_sync_sb_inodes+0x444/0x56c
-[c7a57ea0] [c009ab44] sync_inodes_sb+0xcc/0xe8
-[c7a57ef0] [c009ac08] __sync_inodes+0xa8/0x12c
-[c7a57f10] [c009aca8] sync_inodes+0x1c/0x50
-[c7a57f20] [c009eae0] do_sync+0x24/0x84
-[c7a57f30] [c009eb54] sys_sync+0x14/0x28
-[c7a57f40] [c0010b10] ret_from_syscall+0x0/0x38
---- Exception: c01 at 0x10061d78
+Yes, that makes sense, and is what I was meant when I suggested it was a "Rev C"
+vs "Rev B" issue.  I believe the data corresponds to NAND01GW3B2C rather than
+NAND01GW3B2B.  My patch deleted this entry, since a correct NAND01GW3B2B already
+existed, and I then suggested adding a correct entry for NAND01GW3B2C.  Perhaps
+we just update the patch to rename the incorrect NAND01GW3B2B entry with
+NAND01GW3B2C?
 
-Neither the kernel nor the ubifs system is the latest, but the code in
-ubifs_write_inode hasn't changed since 2008-something.
+> (5) My sample part (ST NAND01GW3B2C) returns proper ONFI signature and
+> parameter page
+> (6) My sample part (ST NAND01GW3B2C) reads an actual ID that matches
+> the string from the NAND01GW3B2B that you are deleting (this is a
+> mixup/typo; see comment (4))
+> 
+> I'm not sure how to reconcile the histories from (1). Perhaps my 1st
+> sheet represents *only* Rev. B and the second sheet represents *only*
+> Rev. C?
 
-Looking at the list there is another similar report[1] but that isn't in
-the same place. Attached is a patch that fixes the problem for me. To be
-honest is my local version slightly different and is checking for
-inode->i_sb->s_flags & MS_RDONLY and not c->ro_mount. I'm not sure if it
-is in the correct place regarding locks, or if the check should be in
-ubifs_jnl_write instead.
+That would be my guess, but anything is possible when it comes to NAND datasheets!
 
-Best regards,
-Daniel Fahlgren
+> 
+> If my statements aren't clear enough, I'll send a sample patch that
+> would 'reconcile' things a bit.
+> 
+> BTW, what's the ID string from your sample?
+> 
 
-1: http://lists.infradead.org/pipermail/linux-mtd/2011-April/034884.html
+My sample returns a READID of 0x20f1001d.  It returns the 'ONFI' signature from
+READID to 0x20, but I still fail to get anything back from NAND_CMD_PARAM.  I
+suspect it is a bug in my driver somewhere, but I haven't had a chance to look
+into it further yet.
 
---=-rDdzgSAu3kZn7YPXKR8D
-Content-Disposition: attachment; filename="ubifs_patch.txt"
-Content-Type: text/plain; name="ubifs_patch.txt"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+> Any thoughts on the ST vs. Numonyx naming? Are they entirely
+> interchangeable names for these chips, where you may find similar/same
+> parts with different manufacturers slapped on? (seeing as I have an ST
+> part that matches a Numonyx data sheet)
+> 
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 20403dc..be472d1 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -301,6 +301,9 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
- 	if (is_bad_inode(inode))
- 		return 0;
- 
-+	if (c->ro_mount)
-+		return 0;
-+
- 	mutex_lock(&ui->ui_mutex);
- 	/*
- 	 * Due to races between write-back forced by budgeting
+Yes, when Numonyx was spun-out from ST, the datasheets were re-branded but the
+actual chip packages still used the ST logo, and the ST JEDEC ID (and ST fabs I
+believe).  Numonyx has now been brought by Micron, and it seems Micron are only
+offering "Numonyx" parts that do not clash with its own portfolio.
 
---=-rDdzgSAu3kZn7YPXKR8D--
+Cheers,
+
+Angus
