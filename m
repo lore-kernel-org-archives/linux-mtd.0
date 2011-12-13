@@ -1,14 +1,27 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>
-Subject: [PATCH 4/4] mtd: gpmi-nand: move to dma_transfer_direction
-Date: Tue, 13 Dec 2011 23:48:06 +0800
-Message-Id: <1323791286-29574-5-git-send-email-shawn.guo@linaro.org>
-In-Reply-To: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Received: from nm5.bullet.mail.sp2.yahoo.com ([98.139.91.75])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RaVBf-0002Uy-Aw
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2011 16:26:40 +0000
+References: <1310130765.68852.YahooMailRC@web114617.mail.gq1.yahoo.com>
+ <1310988807.20738.44.camel@sauron>
+ <1311707851.83484.YahooMailRC@web114602.mail.gq1.yahoo.com>
+ <1313411391.2583.22.camel@sauron>
+ <1322510657.7380.YahooMailNeo@web114602.mail.gq1.yahoo.com>
+ <1323278383.39855.YahooMailNeo@web114617.mail.gq1.yahoo.com>
+ <1323380555.2074.3.camel@koala>
+ <1323700170.52922.YahooMailNeo@web114608.mail.gq1.yahoo.com>
+ <1323707647.27436.8.camel@sauron.fi.intel.com>
+ <1323709988.3066.YahooMailNeo@web114618.mail.gq1.yahoo.com>
+Message-ID: <1323793537.97386.YahooMailNeo@web114612.mail.gq1.yahoo.com>
+Date: Tue, 13 Dec 2011 08:25:37 -0800 (PST)
+From: Reginald Perrin <reggyperrin@yahoo.com>
+Subject: Re: UBIFS Corruption
+To: MTD Mailing List <linux-mtd@lists.infradead.org>
+In-Reply-To: <1323709988.3066.YahooMailNeo@web114618.mail.gq1.yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Reginald Perrin <reggyperrin@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,108 +31,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes usage of dma direction to adopt dma_transfer_direction.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   22 ++++++++++++----------
- 1 files changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index de4db76..c4c4d6d 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -827,7 +827,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	pio[1] = pio[2] = 0;
- 	desc = channel->device->device_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_NONE, 0);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
- 		pr_err("step 1 error\n");
- 		return -1;
-@@ -839,7 +839,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	sg_init_one(sgl, this->cmd_buffer, this->command_length);
- 	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
- 	desc = channel->device->device_prep_slave_sg(channel,
--					sgl, 1, DMA_TO_DEVICE, 1);
-+					sgl, 1, DMA_MEM_TO_DEV, 1);
- 	if (!desc) {
- 		pr_err("step 2 error\n");
- 		return -1;
-@@ -872,7 +872,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	pio[1] = 0;
- 	desc = channel->device->device_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_NONE, 0);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
- 		pr_err("step 1 error\n");
- 		return -1;
-@@ -881,7 +881,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	/* [2] send DMA request */
- 	prepare_data_dma(this, DMA_TO_DEVICE);
- 	desc = channel->device->device_prep_slave_sg(channel, &this->data_sgl,
--						1, DMA_TO_DEVICE, 1);
-+						1, DMA_MEM_TO_DEV, 1);
- 	if (!desc) {
- 		pr_err("step 2 error\n");
- 		return -1;
-@@ -908,7 +908,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 	pio[1] = 0;
- 	desc = channel->device->device_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_NONE, 0);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
- 		pr_err("step 1 error\n");
- 		return -1;
-@@ -917,7 +917,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 	/* [2] : send DMA request */
- 	prepare_data_dma(this, DMA_FROM_DEVICE);
- 	desc = channel->device->device_prep_slave_sg(channel, &this->data_sgl,
--						1, DMA_FROM_DEVICE, 1);
-+						1, DMA_DEV_TO_MEM, 1);
- 	if (!desc) {
- 		pr_err("step 2 error\n");
- 		return -1;
-@@ -964,7 +964,7 @@ int gpmi_send_page(struct gpmi_nand_data *this,
- 
- 	desc = channel->device->device_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_NONE, 0);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
- 		pr_err("step 2 error\n");
- 		return -1;
-@@ -998,7 +998,8 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 		| BF_GPMI_CTRL0_XFER_COUNT(0);
- 	pio[1] = 0;
- 	desc = channel->device->device_prep_slave_sg(channel,
--				(struct scatterlist *)pio, 2, DMA_NONE, 0);
-+				(struct scatterlist *)pio, 2,
-+				DMA_TRANS_NONE, 0);
- 	if (!desc) {
- 		pr_err("step 1 error\n");
- 		return -1;
-@@ -1027,7 +1028,7 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 	pio[5] = auxiliary;
- 	desc = channel->device->device_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_NONE, 1);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE, 1);
- 	if (!desc) {
- 		pr_err("step 2 error\n");
- 		return -1;
-@@ -1045,7 +1046,8 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size);
- 	pio[1] = 0;
- 	desc = channel->device->device_prep_slave_sg(channel,
--				(struct scatterlist *)pio, 2, DMA_NONE, 1);
-+				(struct scatterlist *)pio, 2,
-+				DMA_TRANS_NONE, 1);
- 	if (!desc) {
- 		pr_err("step 3 error\n");
- 		return -1;
--- 
-1.7.4.1
+=0A=0A> echo 4 > /sys/module/ubifs/parameters/debug_tsts=0A> =0A> Mount:=A0=
+http://pastebin.com/rh5vz4xB=0A> =0A> echo 2052 > /sys/module/ubifs/paramet=
+ers/debug_tsts=0A> =0A> Mount and scan: =A0http://pastebin.com/C87dYK1g=0A>=
+ =0A> However, I don't see a huge difference. =A0Did I do that right?=0A> =
+=0A> Thanks, RP=0A> =0A=0AArtem,=0A=0AWe're the pastebin's helpful? =A0Not =
+sure I saw a response on this.=0A=0AThanks, RP
