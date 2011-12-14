@@ -1,19 +1,32 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RalAB-0003Gd-Sg
- for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 09:30:12 +0000
-Message-ID: <4EE86C95.4050101@parrot.com>
-Date: Wed, 14 Dec 2011 10:29:57 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rammd-0005cH-Gc
+ for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 11:14:00 +0000
+From: Li Yang-R58472 <r58472@freescale.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Kumar Gala
+ <galak@kernel.crashing.org>
+Subject: RE: [PATCH v2] Integrated Flash Controller support
+Date: Wed, 14 Dec 2011 11:13:53 +0000
+Message-ID: <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+ <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
+ <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
+ <1322602860.2150.10.camel@koala> <4ED5531C.6030104@freescale.com>
+ <EFF451D9-552A-4820-90D3-BF3156D5B25F@kernel.crashing.org>
+ <1322643080.24797.413.camel@sauron.fi.intel.com>
+In-Reply-To: <1322643080.24797.413.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: "katsuki.uwatoko@toshiba.co.jp" <katsuki.uwatoko@toshiba.co.jp>
-Subject: Re: [PATCH] [MTD] NAND : SFTL (Simple Flash Transration Layer)
-References: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
-In-Reply-To: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
+ Liu Shuo-B35362 <B35362@freescale.com>,
+ "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +36,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-katsuki.uwatoko@toshiba.co.jp a écrit :
-> This is a new Flash Translation Layer for NAND Flash on mtd.
-> 
-> mtd: SFTL (Simple Flash Translation Layer)
-> 
-> Introduction
-> ------------
-> 
-> SFTL is a flash translation layer for NAND Flash on mtd_blkdevs
-> interface.  This is mainly-useful for read-oriented use (ex. a storage
-> for a boot image) because this provides simple wear-leveling and
-> scrubbing. The features are:
-> 
->  * sftl provides wear-leveling (not static wear-leveling) and scrubbing.
->  * sftl has one erase block size cache.
->  * sftl uses 6 bytes in OOB for a logical address, status, version.
->  * the erase block scan at init is fast.
->  * a unit of read/write from/to MTD is an erase block.
-> 
-What's the advantage over ubi and/or mtd over ubi.
-
-
-Matthieu
+Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFp
+bHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+U2VudDogV2VkbmVzZGF5LCBOb3ZlbWJlciAzMCwg
+MjAxMSA0OjUxIFBNDQo+VG86IEt1bWFyIEdhbGENCj5DYzogV29vZCBTY290dC1CMDc0MjE7IExp
+IFlhbmctUjU4NDcyOyBMaXUgU2h1by1CMzUzNjI7IGxpbnV4LQ0KPmtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmcgS2VybmVsOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQW5kcmV3DQo+TW9y
+dG9uOyBEYXZpZCBXb29kaG91c2U7IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnIGxpc3QN
+Cj5TdWJqZWN0OiBSZTogW1BBVENIIHYyXSBJbnRlZ3JhdGVkIEZsYXNoIENvbnRyb2xsZXIgc3Vw
+cG9ydA0KPg0KPk9uIFR1ZSwgMjAxMS0xMS0yOSBhdCAxOTo0NyAtMDYwMCwgS3VtYXIgR2FsYSB3
+cm90ZToNCj4+IEFzIFNjb3R0IHNhaWQsIEkgd2FzIG1vcmUgYXNraW5nIGFib3V0IHRoZSAybmQg
+cGF0Y2ggaW4gdGhlIHNlcXVlbmNlDQo+PiB3aGljaCBkaWQgdG91Y2ggTVRELiAgU2luY2UgdGhh
+dCBvbmUgaXMgZGVwZW5kZW50IG9uIHRoaXMgcGF0Y2gsDQo+PiB3b25kZXJpbmcgaG93IHdlIHdh
+bnRlZCB0byBoYW5kbGUgdGhlbS4NCj4NCj5JIGRvIG5vdCBoYXZlIHRpbWUgdG8gcmV2aWV3IGl0
+LCBidXQgaXQgbG9va3MgT0ssIHNvIEknZCBzdWdnZXN0IHRvDQo+bWVyZ2UgaXQgdmllIHRoZSBz
+YW1lIHRyZWUgYXMgdGhlIHJlc3Qgb2YgdGhlIHBhdGNoZXMuDQoNCkhpIEFydGVtLA0KDQpTbyB3
+aGF0IGlzIHlvdXIgc3VnZ2VzdGlvbiBvbiB0aGlzIHBhdGNoPyAgQ2FuIHdlIHJlZ2FyZCB5b3Vy
+IHByZXZpb3VzIGVtYWlsIGFzIGFuIEFDSyBhbmQgbWVyZ2UgaXQgdGhyb3VnaCB0aGUgcG93ZXJw
+YyB0cmVlPyAgT3IgZG8geW91IHByZWZlciB0byBtZXJnZSB0aGVtIHRocm91Z2ggdGhlIE1URCB0
+cmVlIHdpdGggS3VtYXIncyBBQ0sgaW5zdGVhZD8NCg0KLSBMZW8NCg==
