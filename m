@@ -1,18 +1,25 @@
-Message-ID: <4EE8080F.4090700@freescale.com>
-Date: Wed, 14 Dec 2011 10:21:03 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from db3ehsobe003.messaging.microsoft.com ([213.199.154.141]
+ helo=DB3EHSOBE003.bigfish.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RafeL-0002fb-5I
+ for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 03:36:57 +0000
+Message-ID: <4EE81ADD.6090104@freescale.com>
+Date: Wed, 14 Dec 2011 11:41:17 +0800
+From: LiuShuo <b35362@freescale.com>
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 3/4] mtd: fix compile error for gpmi-nand
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
- <1323791286-29574-4-git-send-email-shawn.guo@linaro.org>
-In-Reply-To: <1323791286-29574-4-git-send-email-shawn.guo@linaro.org>
-Content-Type: text/plain; charset="GB2312"
+To: <dedekind1@gmail.com>, Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>	
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>	
+ <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
+In-Reply-To: <1323724195.2297.11.camel@koala>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>,
- Vinod Koul <vinod.koul@intel.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Chris Ball <cjb@laptop.org>, linux-arm-kernel@lists.infradead.org
+Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
+ linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,128 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2011=C4=EA12=D4=C213=C8=D5 23:48, Shawn Guo =D0=B4=B5=C0:
-> From: Huang Shijie <b32955@freescale.com>
->
-> The driver gpmi-nand should compile at least.  This patch adds the
-> missing gpmi-nand.h to fix the compile error below.
->
->   CC      drivers/mtd/nand/gpmi-nand/gpmi-nand.o
->   CC      drivers/mtd/nand/gpmi-nand/gpmi-lib.o
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:25:33: fatal error: linux/mtd/gp=
-mi-nand.h: No such file or directory
-> drivers/mtd/nand/gpmi-nand/gpmi-lib.c:21:33: fatal error: linux/mtd/gpm=
-i-nand.h: No such file or directory
->
-> This header is grabbed from patch below, which has not been postponed
-> for merging.
->
->   [PATCH v8 1/4] ARM: mxs: add GPMI-NAND support for imx23/imx28
->   http://permalink.gmane.org/gmane.linux.drivers.mtd/37338
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  include/linux/mtd/gpmi-nand.h |   68 +++++++++++++++++++++++++++++++++=
-++++++++
->  1 files changed, 68 insertions(+), 0 deletions(-)
->  create mode 100644 include/linux/mtd/gpmi-nand.h
->
-> diff --git a/include/linux/mtd/gpmi-nand.h b/include/linux/mtd/gpmi-nan=
-d.h
-> new file mode 100644
-> index 0000000..69b6dbf
-> --- /dev/null
-> +++ b/include/linux/mtd/gpmi-nand.h
-> @@ -0,0 +1,68 @@
-> +/*
-> + * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserve=
-d.
-> + *
-> + * This program is free software; you can redistribute it and/or modif=
-y
-> + * it under the terms of the GNU General Public License as published b=
-y
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License a=
-long
-> + * with this program; if not, write to the Free Software Foundation, I=
-nc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +#ifndef __MACH_MXS_GPMI_NAND_H__
-> +#define __MACH_MXS_GPMI_NAND_H__
-> +
-> +/* The size of the resources is fixed. */
-> +#define GPMI_NAND_RES_SIZE	6
-> +
-> +/* Resource names for the GPMI NAND driver. */
-> +#define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "GPMI NAND GPMI Registers"
-> +#define GPMI_NAND_GPMI_INTERRUPT_RES_NAME  "GPMI NAND GPMI Interrupt"
-> +#define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "GPMI NAND BCH Registers"
-> +#define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "GPMI NAND BCH Interrupt"
-> +#define GPMI_NAND_DMA_CHANNELS_RES_NAME    "GPMI NAND DMA Channels"
-> +#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "GPMI NAND DMA Interrupt"
-> +
-> +/**
-> + * struct gpmi_nand_platform_data - GPMI NAND driver platform data.
-> + *
-> + * This structure communicates platform-specific information to the GP=
-MI NAND
-> + * driver that can't be expressed as resources.
-> + *
-> + * @platform_init:           A pointer to a function the driver will c=
-all to
-> + *                           initialize the platform (e.g., set up the=
- pin mux).
-> + * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals=
- to and
-> + *                           from the NAND Flash device, in nanosecond=
-s.
-> + * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals=
- to and
-> + *                           from the NAND Flash device, in nanosecond=
-s.
-> + * @max_chip_count:          The maximum number of chips for which the=
- driver
-> + *                           should configure the hardware. This value=
- most
-> + *                           likely reflects the number of pins that a=
-re
-> + *                           connected to a NAND Flash device. If this=
- is
-> + *                           greater than the SoC hardware can support=
-, the
-> + *                           driver will print a message and fail to i=
-nitialize.
-> + * @partitions:              An optional pointer to an array of partit=
-ion
-> + *                           descriptions.
-> + * @partition_count:         The number of elements in the partitions =
-array.
-> + */
-> +struct gpmi_nand_platform_data {
-> +	/* SoC hardware information. */
-> +	int		(*platform_init)(void);
-> +
-> +	/* NAND Flash information. */
-> +	unsigned int	min_prop_delay_in_ns;
-> +	unsigned int	max_prop_delay_in_ns;
-> +	unsigned int	max_chip_count;
-> +
-> +	/* Medium information. */
-> +	struct		mtd_partition *partitions;
-> +	unsigned	partition_count;
-> +};
-> +#endif
-thanks a lot.
+=E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:09, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Tue, 2011-12-06 at 18:09 -0600, Scott Wood wrote:
+>> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
+>>> From: Liu Shuo<shuo.liu@freescale.com>
+>>>
+>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In o=
+rder
+>>> to support the Nand flash chip whose page size is larger than 2K byte=
+s,
+>>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and s=
+ave
+>>> them to a large buffer.
+>>>
+>>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
+>>> ---
+>>> v3:
+>>>      -remove page_size of struct fsl_elbc_mtd.
+>>>      -do a oob write by NAND_CMD_RNDIN.
+>>>
+>>>   drivers/mtd/nand/fsl_elbc_nand.c |  243 +++++++++++++++++++++++++++=
++++++++----
+>>>   1 files changed, 218 insertions(+), 25 deletions(-)
+>> What is the plan for bad block marker migration.
+I think we can use a special bbt pattern to indicate whether migration=20
+has been done.
+(we needn't to define another marker)
 
-Huang Shijie
+Do the migration our chip->scan_bbt as follow :
+
+/*
+  * this pattern indicate that the bad block information has been migrate=
+d,
+  * if this isn't found, we do the migration.
+  */
+static u8 migrated_bbt_pattern[] =3D {'M', 'b', 'b', 't', '0' };
+
+static int fsl_elbc_bbt(struct mtd_info *mtd)
+{
+         if (!check_migrated_bbt_pattern())
+             bad_block_info_migtrate();
+
+          nand_default_bbt(mtd); /* default function in nand_bbt.c */
+}
+
+- LiuShuo
