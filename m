@@ -1,24 +1,26 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
+ helo=AM1EHSOBE002.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RavjD-00032U-DJ
- for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 20:47:04 +0000
-Received: by eekc1 with SMTP id c1so1399873eek.36
- for <linux-mtd@lists.infradead.org>; Wed, 14 Dec 2011 12:46:59 -0800 (PST)
+ id 1RavpQ-0003bA-7x
+ for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 20:53:28 +0000
+Message-ID: <4EE90CC0.8040807@freescale.com>
+Date: Wed, 14 Dec 2011 14:53:20 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20111213094805.04c4b8c9@pixies.home.jungo.com>
-References: <1323292100-19280-1-git-send-email-computersforpeace@gmail.com>
- <1323723000.2297.4.camel@koala>
- <CAN8TOE9C9VEi7htM=-jypt29y23Ex3CCnYBOW3+OkTs1Zcra1A@mail.gmail.com>
- <20111213094805.04c4b8c9@pixies.home.jungo.com>
-Date: Wed, 14 Dec 2011 12:46:59 -0800
-Message-ID: <CAN8TOE_i=c3ysugu+_swbzi0B4abCYT0LJtLzJhQ8r_KMG8yRQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: write bad block marker even with BBT
-From: Brian Norris <computersforpeace@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Kevin Cernekee <cernekee@gmail.com>, Jim Quinlan <jim2101024@gmail.com>,
- linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>,
- dedekind1@gmail.com
+To: LiuShuo <b35362@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>	
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>	
+ <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
+ <4EE81ADD.6090104@freescale.com>
+In-Reply-To: <4EE81ADD.6090104@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, leoli@freescale.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +30,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 12, 2011 at 11:48 PM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> What about the following scheme for 'nand_default_block_markbad' in case
-> NAND_BBT_WRITE_BBM is on:
->
-> 1. Invalidate exising on-flash BBT
-> 2. Update the BI marker on the OOB
-> 3. Update the on-flash BBT
+On 12/13/2011 09:41 PM, LiuShuo wrote:
+> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:09, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+>> On Tue, 2011-12-06 at 18:09 -0600, Scott Wood wrote:
+>>> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
+>>>> From: Liu Shuo<shuo.liu@freescale.com>
+>>>>
+>>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In
+>>>> order
+>>>> to support the Nand flash chip whose page size is larger than 2K byt=
+es,
+>>>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and
+>>>> save
+>>>> them to a large buffer.
+>>>>
+>>>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
+>>>> ---
+>>>> v3:
+>>>>      -remove page_size of struct fsl_elbc_mtd.
+>>>>      -do a oob write by NAND_CMD_RNDIN.
+>>>>
+>>>>   drivers/mtd/nand/fsl_elbc_nand.c |  243
+>>>> ++++++++++++++++++++++++++++++++++----
+>>>>   1 files changed, 218 insertions(+), 25 deletions(-)
+>>> What is the plan for bad block marker migration.
+> I think we can use a special bbt pattern to indicate whether migration
+> has been done.
+> (we needn't to define another marker)
+>=20
+> Do the migration our chip->scan_bbt as follow :
+>=20
+> /*
+>  * this pattern indicate that the bad block information has been migrat=
+ed,
+>  * if this isn't found, we do the migration.
+>  */
+> static u8 migrated_bbt_pattern[] =3D {'M', 'b', 'b', 't', '0' };
+>=20
+> static int fsl_elbc_bbt(struct mtd_info *mtd)
+> {
+>         if (!check_migrated_bbt_pattern())
+>             bad_block_info_migtrate();
+>=20
+>          nand_default_bbt(mtd); /* default function in nand_bbt.c */
+> }
 
-Generally looks OK, but it complicates things unnecessarily IMO...
+Hmm.  This is OK as long as the bad block table never gets erased (which
+could happen if a user wants it reconstructed, such as if buggy software
+makes a mess of it on a developer's board).  If it gets erased, we'll
+end up migrating again -- and the place that factory bad block markers
+would have been in is now data, so all blocks that have been written to
+will show up as bad unless they happen to have 0xff at the right place.
 
-> I guess this is a bigger change than the patch suggested, since
-> 'nand_bbt.c' should expose interface for invalidating the BBT.
+How about a marker that is compatible with the bbt, so the same block
+can be used in production (where scrubbing the bbt should never happen),
+but that does not have to imply that the block is a bbt (so a developer
+that might want to erase the bbt can set the mark elsewhere, preferably
+just before the bbt)?
 
-Yes, and I don't want to rewrite nand_bbt just to expose an interface
-simply for an esoteric power cut case.
+Or have two versions of the marker, one that is also a bbt marker and
+one that is not.
 
-> Also, need to examine if this scheme fits a scenario where there are
-> both main and mirror BBTs.
+When scanning the bbt, the driver would look for one of these markers
+from the end of the chip backward.  If not found, it concludes the chip
+is unmigrated.  In U-Boot, this would trigger a migration (or a message
+to run a migration command).  In Linux (and U-Boot if migration is a
+separate command that has not been run) an unmigrated flash could be
+read-only, with the possible exception of raw accesses if needed to
+support an external migration tool.
 
-This is one of the problems. We would need to invalidate both BBTs in
-step 1, making our attempts at mirroring pointless. In fact, in some
-power cut cases, we could be left in a worse condition than if we
-didn't try to compensate for power cuts, since we just killed our
-backup table.
-
-Brian
+-Scott
