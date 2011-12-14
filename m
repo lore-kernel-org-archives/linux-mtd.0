@@ -1,32 +1,28 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
  helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rammd-0005cH-Gc
- for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 11:14:00 +0000
-From: Li Yang-R58472 <r58472@freescale.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Kumar Gala
- <galak@kernel.crashing.org>
-Subject: RE: [PATCH v2] Integrated Flash Controller support
-Date: Wed, 14 Dec 2011 11:13:53 +0000
-Message-ID: <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
-References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
- <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
- <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
- <1322602860.2150.10.camel@koala> <4ED5531C.6030104@freescale.com>
- <EFF451D9-552A-4820-90D3-BF3156D5B25F@kernel.crashing.org>
- <1322643080.24797.413.camel@sauron.fi.intel.com>
-In-Reply-To: <1322643080.24797.413.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1RavEV-0001oj-7J
+ for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 20:15:21 +0000
+Message-ID: <4EE903CE.1010903@freescale.com>
+Date: Wed, 14 Dec 2011 14:15:10 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
- Liu Shuo-B35362 <B35362@freescale.com>,
- "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
+To: LiuShuo <b35362@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+ <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
+ <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
+ <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
+ <4EE8612C.9050104@freescale.com>
+In-Reply-To: <4EE8612C.9050104@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, leoli@freescale.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,21 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFp
-bHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+U2VudDogV2VkbmVzZGF5LCBOb3ZlbWJlciAzMCwg
-MjAxMSA0OjUxIFBNDQo+VG86IEt1bWFyIEdhbGENCj5DYzogV29vZCBTY290dC1CMDc0MjE7IExp
-IFlhbmctUjU4NDcyOyBMaXUgU2h1by1CMzUzNjI7IGxpbnV4LQ0KPmtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmcgS2VybmVsOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQW5kcmV3DQo+TW9y
-dG9uOyBEYXZpZCBXb29kaG91c2U7IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnIGxpc3QN
-Cj5TdWJqZWN0OiBSZTogW1BBVENIIHYyXSBJbnRlZ3JhdGVkIEZsYXNoIENvbnRyb2xsZXIgc3Vw
-cG9ydA0KPg0KPk9uIFR1ZSwgMjAxMS0xMS0yOSBhdCAxOTo0NyAtMDYwMCwgS3VtYXIgR2FsYSB3
-cm90ZToNCj4+IEFzIFNjb3R0IHNhaWQsIEkgd2FzIG1vcmUgYXNraW5nIGFib3V0IHRoZSAybmQg
-cGF0Y2ggaW4gdGhlIHNlcXVlbmNlDQo+PiB3aGljaCBkaWQgdG91Y2ggTVRELiAgU2luY2UgdGhh
-dCBvbmUgaXMgZGVwZW5kZW50IG9uIHRoaXMgcGF0Y2gsDQo+PiB3b25kZXJpbmcgaG93IHdlIHdh
-bnRlZCB0byBoYW5kbGUgdGhlbS4NCj4NCj5JIGRvIG5vdCBoYXZlIHRpbWUgdG8gcmV2aWV3IGl0
-LCBidXQgaXQgbG9va3MgT0ssIHNvIEknZCBzdWdnZXN0IHRvDQo+bWVyZ2UgaXQgdmllIHRoZSBz
-YW1lIHRyZWUgYXMgdGhlIHJlc3Qgb2YgdGhlIHBhdGNoZXMuDQoNCkhpIEFydGVtLA0KDQpTbyB3
-aGF0IGlzIHlvdXIgc3VnZ2VzdGlvbiBvbiB0aGlzIHBhdGNoPyAgQ2FuIHdlIHJlZ2FyZCB5b3Vy
-IHByZXZpb3VzIGVtYWlsIGFzIGFuIEFDSyBhbmQgbWVyZ2UgaXQgdGhyb3VnaCB0aGUgcG93ZXJw
-YyB0cmVlPyAgT3IgZG8geW91IHByZWZlciB0byBtZXJnZSB0aGVtIHRocm91Z2ggdGhlIE1URCB0
-cmVlIHdpdGggS3VtYXIncyBBQ0sgaW5zdGVhZD8NCg0KLSBMZW8NCg==
+On 12/14/2011 02:41 AM, LiuShuo wrote:
+> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 10:46, LiuShuo =E5=86=99=E9=
+=81=93:
+>> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:30, Scott Wood =E5=86=
+=99=E9=81=93:
+>>> On 12/12/2011 03:19 PM, Artem Bityutskiy wrote:
+>>>> On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
+>>>>> NAND chips come from the factory with bad blocks marked at a certai=
+n
+>>>>> offset into each page.  This offset is normally in the OOB area, bu=
+t
+>>>>> since we change the layout from "4k data, 128 byte oob" to "2k
+>>>>> data, 64
+>>>>> byte oob, 2k data, 64 byte oob" the marker is no longer in the
+>>>>> oob.  On
+>>>>> first use we need to migrate the markers so that they are still in
+>>>>> the oob.
+>>>> Ah, I see, thanks. Are you planning to implement in-kernel migration=
+ or
+>>>> use a user-space tool?
+>>> That's the kind of answer I was hoping to get from Shuo. :-)
+>> OK, I try to do this. Wait for a couple of days.
+>>
+>> -LiuShuo
+> I found it's too complex to do the migration in Linux driver.
+>=20
+> Maybe we can add a uboot command (e.g. nand bbmigrate) to do it, once i=
+s
+> enough.
+
+Any reason not to do it automatically on the first U-Boot bad block
+scan, if the flash isn't marked as already migrated?
+
+Further discussion on the details of how to do it in U-Boot should move
+to the U-Boot list.
+
+> And let user ensure it been completed before linux use the Nand flash c=
+hip.
+
+I don't want to trust the user here.  It's too easy to skip it, and
+things will appear to work, but have subtle problems.
+
+> Even if we don't do the migration, the bad block also can be marked as =
+bad
+> by wearing. So, do we really need to take much time to implement it ?
+> (code looks too complex.)
+
+It is not acceptable to ignore factory bad block markers just because
+some methods of using the flash may eventually detect an error (possibly
+after data is lost -- no guarantee that the badness is ECC-correctable)
+and mark the block bad again.
+
+If you don't feel up to the task, I can look at it, but won't have time
+until January.
+
+-Scott
