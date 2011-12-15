@@ -1,26 +1,16 @@
-Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
- helo=AM1EHSOBE002.bigfish.com)
+Received: from ozlabs.org ([2402:b800:7003:1:1::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RavpQ-0003bA-7x
- for linux-mtd@lists.infradead.org; Wed, 14 Dec 2011 20:53:28 +0000
-Message-ID: <4EE90CC0.8040807@freescale.com>
-Date: Wed, 14 Dec 2011 14:53:20 -0600
-From: Scott Wood <scottwood@freescale.com>
+ id 1Rb1v6-0002VV-09
+ for linux-mtd@lists.infradead.org; Thu, 15 Dec 2011 03:23:45 +0000
+From: Rusty Russell <rusty@rustcorp.com.au>
+To: lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 5/15] sm_ftl: fix module parameter.
+Date: Thu, 15 Dec 2011 13:35:49 +1030
+Message-ID: <87y5uesfea.fsf@rustcorp.com.au>
 MIME-Version: 1.0
-To: LiuShuo <b35362@freescale.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>	
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>	
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE81ADD.6090104@freescale.com>
-In-Reply-To: <4EE81ADD.6090104@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, leoli@freescale.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/13/2011 09:41 PM, LiuShuo wrote:
-> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:09, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
->> On Tue, 2011-12-06 at 18:09 -0600, Scott Wood wrote:
->>> On 12/03/2011 10:31 PM, shuo.liu@freescale.com wrote:
->>>> From: Liu Shuo<shuo.liu@freescale.com>
->>>>
->>>> Freescale FCM controller has a 2K size limitation of buffer RAM. In
->>>> order
->>>> to support the Nand flash chip whose page size is larger than 2K byt=
-es,
->>>> we read/write 2k data repeatedly by issuing FIR_OP_RB/FIR_OP_WB and
->>>> save
->>>> them to a large buffer.
->>>>
->>>> Signed-off-by: Liu Shuo<shuo.liu@freescale.com>
->>>> ---
->>>> v3:
->>>>      -remove page_size of struct fsl_elbc_mtd.
->>>>      -do a oob write by NAND_CMD_RNDIN.
->>>>
->>>>   drivers/mtd/nand/fsl_elbc_nand.c |  243
->>>> ++++++++++++++++++++++++++++++++++----
->>>>   1 files changed, 218 insertions(+), 25 deletions(-)
->>> What is the plan for bad block marker migration.
-> I think we can use a special bbt pattern to indicate whether migration
-> has been done.
-> (we needn't to define another marker)
->=20
-> Do the migration our chip->scan_bbt as follow :
->=20
-> /*
->  * this pattern indicate that the bad block information has been migrat=
-ed,
->  * if this isn't found, we do the migration.
->  */
-> static u8 migrated_bbt_pattern[] =3D {'M', 'b', 'b', 't', '0' };
->=20
-> static int fsl_elbc_bbt(struct mtd_info *mtd)
-> {
->         if (!check_migrated_bbt_pattern())
->             bad_block_info_migtrate();
->=20
->          nand_default_bbt(mtd); /* default function in nand_bbt.c */
-> }
+You didn't mean this to be a bool.
 
-Hmm.  This is OK as long as the bad block table never gets erased (which
-could happen if a user wants it reconstructed, such as if buggy software
-makes a mess of it on a developer's board).  If it gets erased, we'll
-end up migrating again -- and the place that factory bad block markers
-would have been in is now data, so all blocks that have been written to
-will show up as bad unless they happen to have 0xff at the right place.
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+---
+ drivers/mtd/sm_ftl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How about a marker that is compatible with the bbt, so the same block
-can be used in production (where scrubbing the bbt should never happen),
-but that does not have to imply that the block is a bbt (so a developer
-that might want to erase the bbt can set the mark elsewhere, preferably
-just before the bbt)?
-
-Or have two versions of the marker, one that is also a bbt marker and
-one that is not.
-
-When scanning the bbt, the driver would look for one of these markers
-from the end of the chip backward.  If not found, it concludes the chip
-is unmigrated.  In U-Boot, this would trigger a migration (or a message
-to run a migration command).  In Linux (and U-Boot if migration is a
-separate command that has not been run) an unmigrated flash could be
-read-only, with the possible exception of raw accesses if needed to
-support an external migration tool.
-
--Scott
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -25,7 +25,7 @@
+ struct workqueue_struct *cache_flush_workqueue;
+ 
+ static int cache_timeout = 1000;
+-module_param(cache_timeout, bool, S_IRUGO);
++module_param(cache_timeout, int, S_IRUGO);
+ MODULE_PARM_DESC(cache_timeout,
+ 	"Timeout (in ms) for cache flush (1000 ms default");
+ 
