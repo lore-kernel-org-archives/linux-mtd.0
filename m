@@ -1,30 +1,21 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from imx12.toshiba.co.jp ([61.202.160.132])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rb3Pk-0005di-9w
- for linux-mtd@lists.infradead.org; Thu, 15 Dec 2011 04:59:29 +0000
-Received: by eekc13 with SMTP id c13so311305eek.36
- for <linux-mtd@lists.infradead.org>; Wed, 14 Dec 2011 20:59:24 -0800 (PST)
-MIME-Version: 1.0
-Sender: pku.leo@gmail.com
-In-Reply-To: <4EE903CE.1010903@freescale.com>
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
- <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
-Date: Thu, 15 Dec 2011 12:59:24 +0800
-Message-ID: <CADRPPNRRXTWzBEvY=vhe9+v0b8Ntq8KNoaXFN8pQZGmMc-dJYw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-From: Li Yang <leoli@freescale.com>
-To: Scott Wood <scottwood@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1Rb9eS-00075y-0B
+ for linux-mtd@lists.infradead.org; Thu, 15 Dec 2011 11:39:08 +0000
+From: <katsuki.uwatoko@toshiba.co.jp>
+To: <matthieu.castet@parrot.com>
+Subject: Re: [PATCH] [MTD] NAND : SFTL (Simple Flash Transration Layer)
+Date: Thu, 15 Dec 2011 11:38:55 +0000
+Message-ID: <5ECCBB1E1F657Akatsuki.uwatoko@toshiba.co.jp>
+References: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
+ <4EE86C95.4050101@parrot.com>
+In-Reply-To: <4EE86C95.4050101@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <0576569F45158741BA4D274B9B12F162@toshiba.local>
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com,
- linuxppc-dev@lists.ozlabs.org, LiuShuo <b35362@freescale.com>,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org, dwmw2@infradead.org
+MIME-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,53 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 15, 2011 at 4:15 AM, Scott Wood <scottwood@freescale.com> wrote=
+> From:     Matthieu CASTET <matthieu.castet@parrot.com>
+> Date:     Wed, 14 Dec 2011 10:29:57 +0100
 :
-> On 12/14/2011 02:41 AM, LiuShuo wrote:
->> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 10:46, LiuShuo =E5=86=99=
-=E9=81=93:
->>> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:30, Scott Wood =E5=86=
-=99=E9=81=93:
->>>> On 12/12/2011 03:19 PM, Artem Bityutskiy wrote:
->>>>> On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
->>>>>> NAND chips come from the factory with bad blocks marked at a certain
->>>>>> offset into each page. =C2=A0This offset is normally in the OOB area=
-, but
->>>>>> since we change the layout from "4k data, 128 byte oob" to "2k
->>>>>> data, 64
->>>>>> byte oob, 2k data, 64 byte oob" the marker is no longer in the
->>>>>> oob. =C2=A0On
->>>>>> first use we need to migrate the markers so that they are still in
->>>>>> the oob.
->>>>> Ah, I see, thanks. Are you planning to implement in-kernel migration =
-or
->>>>> use a user-space tool?
->>>> That's the kind of answer I was hoping to get from Shuo. :-)
->>> OK, I try to do this. Wait for a couple of days.
->>>
->>> -LiuShuo
->> I found it's too complex to do the migration in Linux driver.
->>
->> Maybe we can add a uboot command (e.g. nand bbmigrate) to do it, once is
->> enough.
->
-> Any reason not to do it automatically on the first U-Boot bad block
-> scan, if the flash isn't marked as already migrated?
->
-> Further discussion on the details of how to do it in U-Boot should move
-> to the U-Boot list.
+> > SFTL is a flash translation layer for NAND Flash on mtd_blkdevs
+> > interface.  This is mainly-useful for read-oriented use (ex. a storage
+> > for a boot image) because this provides simple wear-leveling and
+> > scrubbing. The features are:
+> >=20
+> >  * sftl provides wear-leveling (not static wear-leveling) and scrubbing=
+.
+> >  * sftl has one erase block size cache.
+> >  * sftl uses 6 bytes in OOB for a logical address, status, version.
+> >  * the erase block scan at init is fast.
+> >  * a unit of read/write from/to MTD is an erase block.
+> >=20
+> What's the advantage over ubi and/or mtd over ubi.
 
-The limitation of the proposed bad block marker migration is that you
-need to make sure the migration is done and only done once.  If it is
-done more than once, the factory bad block marker is totally messed
-up.  It requires a complex mechanism to automatically guarantee the
-migration is only done once, and it still won't be 100% safe.
+Time of the scan at init is faster, because this reads oob of a page=20
+in each erase block normally.=20
 
-I would suggest we use a much easier compromise that we form the BBT
-base on the factory bad block marker on first use of the flash, and
-after that the factory bad block marker is dropped.  We just relies on
-the BBT for information about bad blocks.  Although by doing so we
-can't regenerate the BBT again,  as there is mirror for the BBT I
-don't think we have too much risk.
+The flash space overhead is smaller, because this does not have headers=20
+which UBI has. As you know, UBI uses 1 or 2 pages for the headers per=20
+one erase block in addition to bad block management. In the case of=20
+smallpage (512B) NAND and 16KB erase block w/o subpage write support,=20
+the overhead of UBI is approximately 6%. The overhead of sftl is only=20
+for bad block management.
 
-- Leo
+So I think this is suitable for a boot image including a compressed=20
+rootfs (ex. squashfs and cramfs) or a compressed kernel.
+
+Regards,
+--=20
+UWATOKO Katsuki=
