@@ -1,28 +1,36 @@
-Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RbNhz-0002x1-3b
- for linux-mtd@lists.infradead.org; Fri, 16 Dec 2011 02:39:40 +0000
-Message-ID: <4EEAB076.30000@freescale.com>
-Date: Fri, 16 Dec 2011 10:44:06 +0800
-From: LiuShuo <b35362@freescale.com>
-MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>, <dedekind1@gmail.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
- <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
-In-Reply-To: <4EE903CE.1010903@freescale.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+ id 1RbUiD-0000ok-TG
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2011 10:08:22 +0000
+Received: by ghrr15 with SMTP id r15so308222ghr.36
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2011 02:08:19 -0800 (PST)
+Message-ID: <1324030184.15774.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
+ operations
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Fri, 16 Dec 2011 12:09:44 +0200
+In-Reply-To: <4EE90B28.7030708@newsguy.com>
+References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>
+ <4EDB3295.6040201@bitbox.co.uk> <4EDB7B1D.60603@newsguy.com>
+ <1323009827.9400.75.camel@sauron.fi.intel.com>
+ <4EDB89E9.6070306@newsguy.com> <1323065234.2316.2.camel@koala>
+ <4EDCF840.7050107@newsguy.com> <4EDCFAAC.90709@bitbox.co.uk>
+ <4EDD142B.6090303@newsguy.com> <87hb1de5b6.fsf@free.fr>
+ <4EDECC7A.1080202@newsguy.com>
+ <Pine.LNX.4.64.1112070848340.32119@lnxricardw.se.axis.com>
+ <4EDFB142.6050208@newsguy.com>
+ <1323694138.24509.21.camel@sauron.fi.intel.com>
+ <4EE90B28.7030708@newsguy.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-YEv3GBcXPBzdWyVc0mpo"
+Mime-Version: 1.0
+Cc: Peter Horton <phorton@bitbox.co.uk>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,69 +40,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2011=E5=B9=B412=E6=9C=8815=E6=97=A5 04:15, Scott Wood =E5=86=99=
-=E9=81=93:
-> On 12/14/2011 02:41 AM, LiuShuo wrote:
->> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 10:46, LiuShuo =E5=86=99=
-=E9=81=93:
->>> =E4=BA=8E 2011=E5=B9=B412=E6=9C=8813=E6=97=A5 05:30, Scott Wood =E5=86=
-=99=E9=81=93:
->>>> On 12/12/2011 03:19 PM, Artem Bityutskiy wrote:
->>>>> On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
->>>>>> NAND chips come from the factory with bad blocks marked at a certa=
-in
->>>>>> offset into each page.  This offset is normally in the OOB area, b=
-ut
->>>>>> since we change the layout from "4k data, 128 byte oob" to "2k
->>>>>> data, 64
->>>>>> byte oob, 2k data, 64 byte oob" the marker is no longer in the
->>>>>> oob.  On
->>>>>> first use we need to migrate the markers so that they are still in
->>>>>> the oob.
->>>>> Ah, I see, thanks. Are you planning to implement in-kernel migratio=
-n or
->>>>> use a user-space tool?
->>>> That's the kind of answer I was hoping to get from Shuo. :-)
->>> OK, I try to do this. Wait for a couple of days.
->>>
->>> -LiuShuo
->> I found it's too complex to do the migration in Linux driver.
->>
->> Maybe we can add a uboot command (e.g. nand bbmigrate) to do it, once =
-is
->> enough.
-> Any reason not to do it automatically on the first U-Boot bad block
-> scan, if the flash isn't marked as already migrated?
->
-> Further discussion on the details of how to do it in U-Boot should move
-> to the U-Boot list.
->
->> And let user ensure it been completed before linux use the Nand flash =
-chip.
-> I don't want to trust the user here.  It's too easy to skip it, and
-> things will appear to work, but have subtle problems.
->
->> Even if we don't do the migration, the bad block also can be marked as=
- bad
->> by wearing. So, do we really need to take much time to implement it ?
->> (code looks too complex.)
-> It is not acceptable to ignore factory bad block markers just because
-> some methods of using the flash may eventually detect an error (possibl=
-y
-> after data is lost -- no guarantee that the badness is ECC-correctable)
-> and mark the block bad again.
->
-> If you don't feel up to the task, I can look at it, but won't have time
-> until January.
-hi Scott,
-It's really hard to me and I have much other works to do now. Thanks for=20
-your help.
 
-hi Artem,
-Could this patch be applied now and we make a independent patch for  bad=20
-block information
-migration later?
+--=-YEv3GBcXPBzdWyVc0mpo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--LiuShuo
+On Wed, 2011-12-14 at 12:46 -0800, Mike Dunn wrote:
+> Here's a proposed patch set:
+>=20
+> 1. mtd api changed so that read() and read_oob() return bitflip info (LAR=
+GE,
+> essentially the previous patch)
+> 2. Unpartitioned devices go through the partitioning code (small patch)
+> 3. Add ecc_strength to struct mtd_info, backport to drivers (moderate pat=
+ch)
+> 4. Implement functionality to intelligently decide whether to return -EUC=
+LEAN or
+> 0; add sysfs controls (moderate patch)
 
-> -Scott
+Sounds good. Send patches :) You could already have done step 1 at
+least :-) Remember, you have less and less time to get into 3.3, let's
+make sure at least the big step 1 gets there and gets tested.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-YEv3GBcXPBzdWyVc0mpo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJO6xjoAAoJECmIfjd9wqK05C0QALnSN0fYxvJs7reMYqglUiBs
+p3KuY/Vd1gpH0RIwlvWUAaC0OrdKW+vTjxp1V5gq0dAcRCuBsG//42BIJRqJ5oTY
+f1pBmgoCe2fhWZVv0wBXRtdhUVLjVDmsVrFyMzGxj1MF0fAol+je3AFm4ccshazr
+lgekZuwqy6FMqjoZXxULzAM+kojQTLohP9VBFG2fZOa7Re8so723LfVC33YNfwd9
+p7QADcnZ5h0OcyuvqWpmjx2vz8AK96M08vOaYcvjyiwgPFLZECQItm2kTXkfq36G
+jNNXbD2EkuG9SJSXpat1pO+Viwf8KMYECd0MyrAwiLdAPBiE8XWIPNYOZlSYeYBo
+T9yXpuUx02FD3fSLrWBaDnCC00dsclVlysc6pGV3+WLXWoqhwWmZlMQ6fD5EK5KP
+s/W8CShxyf1W7UnaPGxSR/mQkgOGJxuZS5o6wlWh/0qA4QodvEzStc9BLfEO3Yg0
+cGjVG7GOZD/DPiD2dQy494qzLjaCNZxvNdGvvI2G+GZu4t1eyMGwbuywN5ySETK6
+JP5t0GKVGgETejQdJuZUBFxRk1YnLw0DplktW5PXUqolVN3kllmb0XtYAXAQVMVn
+RHHP5r5rH3ygibgrvz/vIFmAqK8LR9coo4SfaL8i2KeRFKT/yzPDxCLoD/jgea9b
+tpBhBB+GZYVIYcYb1iSx
+=H3Az
+-----END PGP SIGNATURE-----
+
+--=-YEv3GBcXPBzdWyVc0mpo--
