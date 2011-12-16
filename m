@@ -1,36 +1,22 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RbUiD-0000ok-TG
- for linux-mtd@lists.infradead.org; Fri, 16 Dec 2011 10:08:22 +0000
-Received: by ghrr15 with SMTP id r15so308222ghr.36
- for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2011 02:08:19 -0800 (PST)
-Message-ID: <1324030184.15774.11.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] MTD: modify mtd api to return bitflip info on read
- operations
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Fri, 16 Dec 2011 12:09:44 +0200
-In-Reply-To: <4EE90B28.7030708@newsguy.com>
-References: <1322943640-11728-1-git-send-email-mikedunn@newsguy.com>
- <4EDB3295.6040201@bitbox.co.uk> <4EDB7B1D.60603@newsguy.com>
- <1323009827.9400.75.camel@sauron.fi.intel.com>
- <4EDB89E9.6070306@newsguy.com> <1323065234.2316.2.camel@koala>
- <4EDCF840.7050107@newsguy.com> <4EDCFAAC.90709@bitbox.co.uk>
- <4EDD142B.6090303@newsguy.com> <87hb1de5b6.fsf@free.fr>
- <4EDECC7A.1080202@newsguy.com>
- <Pine.LNX.4.64.1112070848340.32119@lnxricardw.se.axis.com>
- <4EDFB142.6050208@newsguy.com>
- <1323694138.24509.21.camel@sauron.fi.intel.com>
- <4EE90B28.7030708@newsguy.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-YEv3GBcXPBzdWyVc0mpo"
-Mime-Version: 1.0
-Cc: Peter Horton <phorton@bitbox.co.uk>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1RbXNl-00083j-56
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2011 12:59:26 +0000
+Received: by vcbf11 with SMTP id f11so1932696vcb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2011 04:59:23 -0800 (PST)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <4E98021F.1060200@gmail.com>
+References: <4E8977DF.1030808@gmail.com> <1318581933.12351.70.camel@sauron>
+ <4E97F7C2.1050803@gmail.com> <1318583721.12351.80.camel@sauron>
+ <4E98021F.1060200@gmail.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Fri, 16 Dec 2011 13:59:02 +0100
+Message-ID: <CAJpamw6N7BcK09L8KxVC_yW3JWaxwsDXeg9xs_Hovn=oCZyZNw@mail.gmail.com>
+Subject: Re: erase block < 8KiB
+To: angelo <angelo70@gmail.com>
+Content-Type: multipart/mixed; boundary=14dae9cdc0cf841bab04b4352bf0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,53 +26,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--14dae9cdc0cf841bab04b4352bf0
+Content-Type: text/plain; charset=UTF-8
 
---=-YEv3GBcXPBzdWyVc0mpo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+2011/10/14 angelo <angelo70@gmail.com>:
+> Hi Artem,
+> i already managed my issue, this flash and jffs2 works perfect with a 64KB
+> sector. There should be in the archive my patch posted.
+>
+> CFI driver actually do an operation called "fixup". It detect this flash,
+> and know that this flash has 2 sector sizes, 4KB and 64KB.
+> The fixup chose the 4KB as erasesize, so excluding the jffs2 usage.
+>
+> The patch to mkfs.jffs2 tool to allow the usage of 4KB erasesize works, but
+> is not safe.
+> If 4KB was not allowed, there was a reason.
+>
+> So i also tried to use some other FS, like logfs or UBIFS. But i couldn't
+> easily port all the tools needed since i am in a "Coldfire" architecture and
+> using uClinux for coldfire.
+> So i decided to patch the erasesize to 64KB.
 
-On Wed, 2011-12-14 at 12:46 -0800, Mike Dunn wrote:
-> Here's a proposed patch set:
->=20
-> 1. mtd api changed so that read() and read_oob() return bitflip info (LAR=
-GE,
-> essentially the previous patch)
-> 2. Unpartitioned devices go through the partitioning code (small patch)
-> 3. Add ecc_strength to struct mtd_info, backport to drivers (moderate pat=
-ch)
-> 4. Implement functionality to intelligently decide whether to return -EUC=
-LEAN or
-> 0; add sysfs controls (moderate patch)
+Hi Angelo.
 
-Sounds good. Send patches :) You could already have done step 1 at
-least :-) Remember, you have less and less time to get into 3.3, let's
-make sure at least the big step 1 gets there and gets tested.
+Could you please test the attached patch, which uses block erase size/command ?
 
---=20
-Best Regards,
-Artem Bityutskiy
+-- 
+Guillaume LECERF
+OpenBricks developer - www.openbricks.org
 
---=-YEv3GBcXPBzdWyVc0mpo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+--14dae9cdc0cf841bab04b4352bf0
+Content-Type: text/x-patch; charset=US-ASCII; name="sst-use-block-erase.patch"
+Content-Disposition: attachment; filename="sst-use-block-erase.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gw97db0t0
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJO6xjoAAoJECmIfjd9wqK05C0QALnSN0fYxvJs7reMYqglUiBs
-p3KuY/Vd1gpH0RIwlvWUAaC0OrdKW+vTjxp1V5gq0dAcRCuBsG//42BIJRqJ5oTY
-f1pBmgoCe2fhWZVv0wBXRtdhUVLjVDmsVrFyMzGxj1MF0fAol+je3AFm4ccshazr
-lgekZuwqy6FMqjoZXxULzAM+kojQTLohP9VBFG2fZOa7Re8so723LfVC33YNfwd9
-p7QADcnZ5h0OcyuvqWpmjx2vz8AK96M08vOaYcvjyiwgPFLZECQItm2kTXkfq36G
-jNNXbD2EkuG9SJSXpat1pO+Viwf8KMYECd0MyrAwiLdAPBiE8XWIPNYOZlSYeYBo
-T9yXpuUx02FD3fSLrWBaDnCC00dsclVlysc6pGV3+WLXWoqhwWmZlMQ6fD5EK5KP
-s/W8CShxyf1W7UnaPGxSR/mQkgOGJxuZS5o6wlWh/0qA4QodvEzStc9BLfEO3Yg0
-cGjVG7GOZD/DPiD2dQy494qzLjaCNZxvNdGvvI2G+GZu4t1eyMGwbuywN5ySETK6
-JP5t0GKVGgETejQdJuZUBFxRk1YnLw0DplktW5PXUqolVN3kllmb0XtYAXAQVMVn
-RHHP5r5rH3ygibgrvz/vIFmAqK8LR9coo4SfaL8i2KeRFKT/yzPDxCLoD/jgea9b
-tpBhBB+GZYVIYcYb1iSx
-=H3Az
------END PGP SIGNATURE-----
-
---=-YEv3GBcXPBzdWyVc0mpo--
+VXNlIGJsb2NrIGluc3RlYWQgb2Ygc2VjdG9yIGVyYXNlIGZvciBzb21lIFNTVCBjaGlwcwoKRnJv
+bTogR3VpbGxhdW1lIExFQ0VSRiA8Z2xlY2VyZkBnbWFpbC5jb20+CgpVc2UgYmxvY2sgZXJhc2Ug
+c2l6ZSBhbmQgYmxvY2sgZXJhc2UgY29tbWFuZCBmb3IgU1NUIGNoaXBzLCBtYWtpbmcgSkZGUyBo
+YXBweQp3aXRoIGEgNjRLaUIgc2VjdG9yIHNpemUgaW5zdGVhZCBvZiA0LzggS2lCCgpTaWduZWQt
+b2ZmLWJ5OiBHdWlsbGF1bWUgTEVDRVJGIDxnbGVjZXJmQGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJz
+L210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYyB8ICAgMzggKysrKysrKysrKysrKystLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMjMgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAy
+LmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwppbmRleCA4ZDcwODk1Li45
+YTY1YWE3IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwor
+KysgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwpAQCAtMjYxLDEwICsyNjEs
+MTQgQEAgc3RhdGljIHZvaWQgZml4dXBfb2xkX3NzdF9lcmFzZXJlZ2lvbihzdHJ1Y3QgbXRkX2lu
+Zm8gKm10ZCkKIAogCS8qCiAJICogVGhlc2UgZmxhc2hlcyByZXBvcnQgdHdvIHNlcGFyYXRlIGVy
+YXNlYmxvY2sgcmVnaW9ucyBiYXNlZCBvbiB0aGUKLQkgKiBzZWN0b3JfZXJhc2Utc2l6ZSBhbmQg
+YmxvY2tfZXJhc2Utc2l6ZSwgYWx0aG91Z2ggdGhleSBib3RoIG9wZXJhdGUgb24gdGhlCi0JICog
+c2FtZSBtZW1vcnkuIFRoaXMgaXMgbm90IGFsbG93ZWQgYWNjb3JkaW5nIHRvIENGSSwgc28gd2Ug
+anVzdCBwaWNrIHRoZQotCSAqIHNlY3Rvcl9lcmFzZS1zaXplLgorCSAqIHNlY3Rvcl9lcmFzZS1z
+aXplIGFuZCBibG9ja19lcmFzZS1zaXplLCBhbHRob3VnaCB0aGV5IGJvdGggb3BlcmF0ZSBvbgor
+CSAqIHRoZSBzYW1lIG1lbW9yeS4KKwkgKiBUaGlzIGlzIG5vdCBhbGxvd2VkIGFjY29yZGluZyB0
+byBDRkksIHNvIHdlIHNob3VsZCBwaWNrIHRoZQorCSAqIHNlY3Rvcl9lcmFzZS1zaXplICg0S2lC
+KS4gQnV0IHRoZSBzZWN0b3JfZXJhc2Utc2l6ZSBpcyBub3QgYWRhcHRlZCB0bworCSAqIEpGRlMy
+IGZvciB3aG9tIDQgS2lCIGlzIHRvbyBzbWFsbC4KKwkgKiBTbyBqdXN0IHBpY2sgdGhlIGJsb2Nr
+X2VyYXNlLXNpemUgKDY0S2lCKS4KIAkgKi8KKwljZmktPmNmaXEtPkVyYXNlUmVnaW9uSW5mb1sw
+XSA9IGNmaS0+Y2ZpcS0+RXJhc2VSZWdpb25JbmZvWzFdOwogCWNmaS0+Y2ZpcS0+TnVtRXJhc2VS
+ZWdpb25zID0gMTsKIH0KIApAQCAtMjc3LDYgKzI4MSw5IEBAIHN0YXRpYyB2b2lkIGZpeHVwX3Nz
+dDM5dmYoc3RydWN0IG10ZF9pbmZvICptdGQpCiAKIAljZmktPmFkZHJfdW5sb2NrMSA9IDB4NTU1
+NTsKIAljZmktPmFkZHJfdW5sb2NrMiA9IDB4MkFBQTsKKworCS8qIHVzZSBibG9ja19lcmFzZV9j
+bWQgKDB4NTApICovCisJY2ZpLT5zZWN0b3JfZXJhc2VfY21kID0gQ01EKDB4NTApOwogfQogCiBz
+dGF0aWMgdm9pZCBmaXh1cF9zc3QzOXZmX3Jldl9iKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQpAQCAt
+Mjg5LDIyICsyOTYsNyBAQCBzdGF0aWMgdm9pZCBmaXh1cF9zc3QzOXZmX3Jldl9iKHN0cnVjdCBt
+dGRfaW5mbyAqbXRkKQogCWNmaS0+YWRkcl91bmxvY2sxID0gMHg1NTU7CiAJY2ZpLT5hZGRyX3Vu
+bG9jazIgPSAweDJBQTsKIAotCWNmaS0+c2VjdG9yX2VyYXNlX2NtZCA9IENNRCgweDUwKTsKLX0K
+LQotc3RhdGljIHZvaWQgZml4dXBfc3N0Mzh2ZjY0MHhfc2VjdG9yc2l6ZShzdHJ1Y3QgbXRkX2lu
+Zm8gKm10ZCkKLXsKLQlzdHJ1Y3QgbWFwX2luZm8gKm1hcCA9IG10ZC0+cHJpdjsKLQlzdHJ1Y3Qg
+Y2ZpX3ByaXZhdGUgKmNmaSA9IG1hcC0+ZmxkcnZfcHJpdjsKLQotCWZpeHVwX3NzdDM5dmZfcmV2
+X2IobXRkKTsKLQotCS8qCi0JICogQ0ZJIHJlcG9ydHMgMTAyNCBzZWN0b3JzICgweDAzZmYrMSkg
+b2YgNjRLQnl0ZXMgKDB4MDEwMCoyNTYpIHdoZXJlCi0JICogaXQgc2hvdWxkIHJlcG9ydCBhIHNp
+emUgb2YgOEtCeXRlcyAoMHgwMDIwKjI1NikuCi0JICovCi0JY2ZpLT5jZmlxLT5FcmFzZVJlZ2lv
+bkluZm9bMF0gPSAweDAwMjAwM2ZmOwotCXByX3dhcm5pbmcoIiVzOiBCYWQgMzhWRjY0MHggQ0ZJ
+IGRhdGE7IGFkanVzdGluZyBzZWN0b3Igc2l6ZSBmcm9tIDY0IHRvIDhLaUJcbiIsIG10ZC0+bmFt
+ZSk7CisJLyogc2VjdG9yX2VyYXNlX2NtZCBpcyBhbHJlYWR5IGVxdWFscyB0byBibG9ja19lcmFz
+ZV9jbWQgKDB4MzApICovCiB9CiAKIHN0YXRpYyB2b2lkIGZpeHVwX3MyOWdsMDY0bl9zZWN0b3Jz
+KHN0cnVjdCBtdGRfaW5mbyAqbXRkKQpAQCAtMzU5LDEwICszNTEsMTAgQEAgc3RhdGljIHN0cnVj
+dCBjZmlfZml4dXAgY2ZpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyBDRklfTUZSX0FNRCwgMHgxMzAx
+LCBmaXh1cF9zMjlnbDA2NG5fc2VjdG9ycyB9LAogCXsgQ0ZJX01GUl9BTUQsIDB4MWEwMCwgZml4
+dXBfczI5Z2wwMzJuX3NlY3RvcnMgfSwKIAl7IENGSV9NRlJfQU1ELCAweDFhMDEsIGZpeHVwX3My
+OWdsMDMybl9zZWN0b3JzIH0sCi0JeyBDRklfTUZSX1NTVCwgMHg1MzZhLCBmaXh1cF9zc3QzOHZm
+NjQweF9zZWN0b3JzaXplIH0sIC8qIFNTVDM4VkY2NDAyICovCi0JeyBDRklfTUZSX1NTVCwgMHg1
+MzZiLCBmaXh1cF9zc3QzOHZmNjQweF9zZWN0b3JzaXplIH0sIC8qIFNTVDM4VkY2NDAxICovCi0J
+eyBDRklfTUZSX1NTVCwgMHg1MzZjLCBmaXh1cF9zc3QzOHZmNjQweF9zZWN0b3JzaXplIH0sIC8q
+IFNTVDM4VkY2NDA0ICovCi0JeyBDRklfTUZSX1NTVCwgMHg1MzZkLCBmaXh1cF9zc3QzOHZmNjQw
+eF9zZWN0b3JzaXplIH0sIC8qIFNTVDM4VkY2NDAzICovCisJeyBDRklfTUZSX1NTVCwgMHg1MzZh
+LCBmaXh1cF9zc3QzOXZmX3Jldl9iIH0sIC8qIFNTVDM4VkY2NDAyICovCisJeyBDRklfTUZSX1NT
+VCwgMHg1MzZiLCBmaXh1cF9zc3QzOXZmX3Jldl9iIH0sIC8qIFNTVDM4VkY2NDAxICovCisJeyBD
+RklfTUZSX1NTVCwgMHg1MzZjLCBmaXh1cF9zc3QzOXZmX3Jldl9iIH0sIC8qIFNTVDM4VkY2NDA0
+ICovCisJeyBDRklfTUZSX1NTVCwgMHg1MzZkLCBmaXh1cF9zc3QzOXZmX3Jldl9iIH0sIC8qIFNT
+VDM4VkY2NDAzICovCiAjaWYgIUZPUkNFX1dPUkRfV1JJVEUKIAl7IENGSV9NRlJfQU5ZLCBDRklf
+SURfQU5ZLCBmaXh1cF91c2Vfd3JpdGVfYnVmZmVycyB9LAogI2VuZGlmCg==
+--14dae9cdc0cf841bab04b4352bf0--
