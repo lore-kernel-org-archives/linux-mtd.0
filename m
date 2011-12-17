@@ -1,21 +1,33 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RbwrP-0001Yx-78
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 16:11:44 +0000
-Received: by iadk27 with SMTP id k27so5621226iad.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 08:11:41 -0800 (PST)
-Message-ID: <1324138390.4240.69.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] NAND : SFTL (Simple Flash Transration Layer)
+ id 1RbxI3-0001uf-Jo
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 16:39:16 +0000
+Received: by iadk27 with SMTP id k27so5656065iad.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 08:39:13 -0800 (PST)
+Message-ID: <1324140039.4240.79.camel@sauron.fi.intel.com>
+Subject: RE: [PATCH v2] Integrated Flash Controller support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: katsuki.uwatoko@toshiba.co.jp
-Date: Sat, 17 Dec 2011 18:13:10 +0200
-In-Reply-To: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
-References: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
+To: Li Yang-R58472 <r58472@freescale.com>
+Date: Sat, 17 Dec 2011 18:40:39 +0200
+In-Reply-To: <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
+ <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
+ <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
+ <1322602860.2150.10.camel@koala> <4ED5531C.6030104@freescale.com>
+ <EFF451D9-552A-4820-90D3-BF3156D5B25F@kernel.crashing.org>
+ <1322643080.24797.413.camel@sauron.fi.intel.com>
+ <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-C1wZCqCghE96AV3cX9Bp"
+ boundary="=-TKiVDr+89xRzipLIeYF+"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
+ Liu Shuo-B35362 <B35362@freescale.com>, Kumar Gala <galak@kernel.crashing.org>,
+ "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,74 +39,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-C1wZCqCghE96AV3cX9Bp
+--=-TKiVDr+89xRzipLIeYF+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2011-12-14 at 07:03 +0000, katsuki.uwatoko@toshiba.co.jp wrote:
-> This is a new Flash Translation Layer for NAND Flash on mtd.
+On Wed, 2011-12-14 at 11:13 +0000, Li Yang-R58472 wrote:
+> >-----Original Message-----
+> >From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+> >Sent: Wednesday, November 30, 2011 4:51 PM
+> >To: Kumar Gala
+> >Cc: Wood Scott-B07421; Li Yang-R58472; Liu Shuo-B35362; linux-
+> >kernel@vger.kernel.org Kernel; linux-mtd@lists.infradead.org; Andrew
+> >Morton; David Woodhouse; linuxppc-dev@lists.ozlabs.org list
+> >Subject: Re: [PATCH v2] Integrated Flash Controller support
+> >
+> >On Tue, 2011-11-29 at 19:47 -0600, Kumar Gala wrote:
+> >> As Scott said, I was more asking about the 2nd patch in the
+> sequence
+> >> which did touch MTD.  Since that one is dependent on this patch,
+> >> wondering how we wanted to handle them.
+> >
+> >I do not have time to review it, but it looks OK, so I'd suggest to
+> >merge it vie the same tree as the rest of the patches.
 >=20
-> mtd: SFTL (Simple Flash Translation Layer)
+> Hi Artem,
 >=20
-> Introduction
-> ------------
->=20
-> SFTL is a flash translation layer for NAND Flash on mtd_blkdevs
-> interface.  This is mainly-useful for read-oriented use (ex. a storage
-> for a boot image) because this provides simple wear-leveling and
-> scrubbing. The features are:
->=20
->  * sftl provides wear-leveling (not static wear-leveling) and scrubbing.
->  * sftl has one erase block size cache.
->  * sftl uses 6 bytes in OOB for a logical address, status, version.
+> So what is your suggestion on this patch?  Can we regard your previous
+> email as an ACK and merge it through the powerpc tree?  Or do you
+> prefer to merge them through the MTD tree with Kumar's ACK instead?
 
-This is really bad idea nowadays, because modern flashes tend to use
-whole OOB for bad block handling. Or they may disallow writing to OOB
-because they cannot handle a write to OOB after a write to the page.
-
-On top of this, modern flashes are so crappy that they have bit-flips
-all the time, and need strong ECCs (like 8-bit or more). But the OOB
-area is not covered by ECC, so your data in OOB will constantly become
-corrupted.
-
-I really suggest to re-design this.
-
->  * the erase block scan at init is fast.
->  * a unit of read/write from/to MTD is an erase block.
->=20
-> Module parameters
-> -----------------
->=20
->   mtd=3D		MTD devices to attach.
-> 		Parameter format: mtd=3D<num>
-> 		Multiple mtd parameters may be specified.
->=20
->   rb=3D		percents of reserved eraseblocks for bad blocks.
-> 		This parameter must be from 1 to 90. The default is 2.
-> 		The number of reserved blocks must be more than 5.
-
-Could you please present your work in more details. Could you please
-describe:
-
-1. Which problems this solves.
-2. What are the practical use-cases.
-3. What are alternative existing solutions, why they are not good enough
-   and why this solution is better.
-4. Explain why it is not possible to teach UBI to solve these tasks.
-   E.g., introduce a special "simplified" UBI mode with 1-1 mapping / no
-   erase counters / whatever. In other words, provide good grounds for
-   adding a separate module.
-
-Your really need to spend some time and prepare your strategy for
-selling this to upstream.
-
-Thanks!
+I am fine if it is merged via PPC tree. I do not have bandwith to look
+at it closely, so I cannot ack it, although I also do not have reasons
+to nack it :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-C1wZCqCghE96AV3cX9Bp
+--=-TKiVDr+89xRzipLIeYF+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -102,19 +84,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO7L+WAAoJECmIfjd9wqK0GCAQAJwlViY79YGqjOk02NJKDYB+
-PGgjpILHsf/hl5UZedCYKaNyQ1ILHdibPWI6ZWeZer7QHILgsseNF1+FEnoL4Eq4
-huTf0qQ+n5oIkYVB6elldSQzrjQhXOgg2KQ3TheV7Jb3mem3SEIp3c8fKuN2El2L
-DfCc15NBEcj385/Ca5i2N6K6pm0r4s4nFGwQsL5+8xpwNZeLc6MrXfPQupdKY+qj
-TDz8VSLVDINtPaw7lqAjbwX+xH1Wz8D+Ty1Okp1LVRh9vWYbGvl8esyjoQsS7F1D
-tiaocfrqBsOWGysb2hM+sYfs0lr2lffp5v6aAVOQ055c5nXmtvsaSSx/5C4ht1o1
-T1mor9e0AlO1OeB2kk8DfB4nh+iK+LiGw+jb3jK5k/8MGbLJkglXb8bUXOaZkPiR
-mpFPknJzKoqo7AkPLcXeRmIGo3tyaOI9q4YfwpclB1yu2tNYtfbV/FHzC/KaA/BV
-/Hk2sZiifRuBByquK2T7G59bbuuPZ/xrKnmhvUysvOuvvtmPwdc2ZAt21pZ1uQSl
-VonJesmyoSi/5D/0+EQw8I35nmTWARnhuU2QJsXUoyvDSJsE5ZzhvZBXnYuLp3jy
-0EEB2fz0wqqqh1p9Epb0OYEoEqHZ5yQ3eTXDJD93d6chd+mn9nwERzr3mz+H9MxH
-lZSLKQ/zPjk7VRqbbj7A
-=obs2
+iQIcBAABAgAGBQJO7MYHAAoJECmIfjd9wqK0TVsP/159t9dLDdXVM5hX8sUQhHCS
+JN/1GvYyMC0gAvbR/4nPrHViJUv4bFpjlxWH99ktXlyLiPhriMhmkLLW0QFcASzM
+O+ZpHTgc8Z9cBa4w5Z9CmRLgZMqIO+6bOWQDCffPSqB7yLoD6Oj7ydRq53yOdKks
+098m++7kWsaBPVIrQ90ilFl6hRRkr64CJ8WARTy4IftUWfOX9Q+OaWUHv5UJpLGl
+BBioc/CuYgly3uN5gF0/dODrlbEBN6HJ7iLioOssdxBfqCNY6LDF8iPmaxDrqarw
+I22IQVFKjogB77YOGrqRfOGmqVJUTXjqhsudo8B+2fN2wSdFsFTcwmqpODTzpJu5
+p7VWKje0SnhASmqZOgkYsnUntOCz8KaeEPWrWv1MTaU4ltJr3Ts6magZ653V2tHV
+9Mej5HH2FSAQVVgQSjCr/HssJjYkY1m2UDbDihDjvCijeBqA08eCpHml4ctWaxrV
+gspck0KN39rLVeusPLQtdYp6QnFSgMRuaaVjkvEnGdooctX80aSReBe14rsX4Mzp
+EqEQBP6Y5LbOQJNjkwprLRfVi9ofoVNDkb0VDjC5khqteAzyYcKOCbsuRLfO5CO4
+ekoIWG9q7o6UMw0DxvDiL3zTXS/fFGvGfOJTQyutzaHl5zsZF9oMyIfMHcrCfiuv
+ePiUYJHy5ovIrRf9g+/9
+=FXqb
 -----END PGP SIGNATURE-----
 
---=-C1wZCqCghE96AV3cX9Bp--
+--=-TKiVDr+89xRzipLIeYF+--
