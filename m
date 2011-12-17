@@ -1,20 +1,18 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rc1tP-0002eX-SE
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 21:34:08 +0000
-Received: by lahc1 with SMTP id c1so2848567lah.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 13:34:05 -0800 (PST)
-Subject: Re: [PATCH 2/5] MTD: bcm63xxpart: make sure CFE and NVRAM
- partitions are at least 64K
+ id 1Rc1zi-0002pA-K7
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 21:40:39 +0000
+Received: by lahc1 with SMTP id c1so2850097lah.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 13:40:36 -0800 (PST)
+Subject: Re: [PATCH 0/5] MTD: bcm63xxpart: improve robustness
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Sat, 17 Dec 2011 23:33:58 +0200
-In-Reply-To: <1324126698-9919-3-git-send-email-jonas.gorski@gmail.com>
+Date: Sat, 17 Dec 2011 23:40:30 +0200
+In-Reply-To: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
 References: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
- <1324126698-9919-3-git-send-email-jonas.gorski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1324157643.2240.2.camel@koala>
+Message-ID: <1324158035.2240.5.camel@koala>
 Mime-Version: 1.0
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
  linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
@@ -30,15 +28,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Sat, 2011-12-17 at 13:58 +0100, Jonas Gorski wrote:
-> The CFE and NVRAM are always at least 64K big, so make sure their
-> partitions are never smaller than this in case the flash has smaller
-> erase sectors.
+> This patchset aims at improving the robustness of the CFE detection and
+> image tag validation and parsing.
 > 
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> The image tag parsing improvement is especially useful when booting a
+> ramdisk image through tftp, since there is no guarantee that the image
+> on the flash is valid at this point.
+> 
+> As usual this patchset should got through the MTD tree and is based on
+> the l2-mtd-2.6 git.
 
-Not that I have any knowledge about BCM platform, but still, I think
-it is good idea to explain why these partitions have to be at least
-64KiB. Could you please do this, just for the sake of having good
-commit messages?
+Looks good except of the "explain 64KiB" nit-pick. Pushing to
+l2-mtd-2.6.git, but I'll take the improved version of patch 2.
 
 Artem.
