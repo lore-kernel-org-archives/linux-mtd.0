@@ -1,15 +1,14 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rbtqp-0008JX-V6
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 12:58:56 +0000
-Received: by eekc13 with SMTP id c13so2862499eek.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 04:58:54 -0800 (PST)
+ id 1Rbtqq-0008Ie-Cu
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 12:58:57 +0000
+Received: by mail-ey0-f177.google.com with SMTP id k12so3598635eaa.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 04:58:56 -0800 (PST)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/5] MTD: bcm63xxpart: don't assume NVRAM is always the fourth
- partition
-Date: Sat, 17 Dec 2011 13:58:16 +0100
-Message-Id: <1324126698-9919-4-git-send-email-jonas.gorski@gmail.com>
+Subject: [PATCH 4/5] MIPS: BCM63XX: bcm963xx_tag.h: make crc fields integers
+Date: Sat, 17 Dec 2011 13:58:17 +0100
+Message-Id: <1324126698-9919-5-git-send-email-jonas.gorski@gmail.com>
 In-Reply-To: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
 References: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
@@ -23,28 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of referencing the sizes of fixed partitions, use the
-precomputed CFE/NVRAM lengths.
+All CRC32 fields are 32 bit integers, so define them as such to prevent
+unnecessary casts if we want to use them.
 
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/mtd/bcm63xxpart.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index 23f6201..3becb4d 100644
---- a/drivers/mtd/bcm63xxpart.c
-+++ b/drivers/mtd/bcm63xxpart.c
-@@ -165,8 +165,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	/* Global partition "linux" to make easy firmware upgrade */
- 	curpart++;
- 	parts[curpart].name = "linux";
--	parts[curpart].offset = parts[0].size;
--	parts[curpart].size = master->size - parts[0].size - parts[3].size;
-+	parts[curpart].offset = cfelen;
-+	parts[curpart].size = master->size - cfelen - nvramlen;
+I decided for __u32 against u32 so that user space applications can still
+use the header (like image creation utilities).
+
+ arch/mips/include/asm/mach-bcm63xx/bcm963xx_tag.h |   11 +++++------
+ 1 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm963xx_tag.h b/arch/mips/include/asm/mach-bcm63xx/bcm963xx_tag.h
+index ed72e6a..1e6b587 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm963xx_tag.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm963xx_tag.h
+@@ -16,7 +16,6 @@
+ #define TAGINFO1_LEN		30	/* Length of vendor information field1 in tag */
+ #define FLASHLAYOUTVER_LEN	4	/* Length of Flash Layout Version String tag */
+ #define TAGINFO2_LEN		16	/* Length of vendor information field2 in tag */
+-#define CRC_LEN			4	/* Length of CRC in bytes */
+ #define ALTTAGINFO_LEN		54	/* Alternate length for vendor information; Pirelli */
  
- 	for (i = 0; i < nrparts; i++)
- 		pr_info("Partition %d is %s offset %lx and length %lx\n", i,
+ #define NUM_PIRELLI		2
+@@ -77,19 +76,19 @@ struct bcm_tag {
+ 	/* 192-195: Version flash layout */
+ 	char flash_layout_ver[FLASHLAYOUTVER_LEN];
+ 	/* 196-199: kernel+rootfs CRC32 */
+-	char fskernel_crc[CRC_LEN];
++	__u32 fskernel_crc;
+ 	/* 200-215: Unused except on Alice Gate where is is information */
+ 	char information2[TAGINFO2_LEN];
+ 	/* 216-219: CRC32 of image less imagetag (kernel for Alice Gate) */
+-	char image_crc[CRC_LEN];
++	__u32 image_crc;
+ 	/* 220-223: CRC32 of rootfs partition */
+-	char rootfs_crc[CRC_LEN];
++	__u32 rootfs_crc;
+ 	/* 224-227: CRC32 of kernel partition */
+-	char kernel_crc[CRC_LEN];
++	__u32 kernel_crc;
+ 	/* 228-235: Unused at present */
+ 	char reserved1[8];
+ 	/* 236-239: CRC32 of header excluding last 20 bytes */
+-	char header_crc[CRC_LEN];
++	__u32 header_crc;
+ 	/* 240-255: Unused at present */
+ 	char reserved2[16];
+ };
 -- 
 1.7.2.5
