@@ -1,15 +1,15 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rbtqo-0008JC-Jn
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 12:58:55 +0000
-Received: by eaak12 with SMTP id k12so3598665eaa.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 04:58:53 -0800 (PST)
+ id 1Rbtqp-0008JX-V6
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 12:58:56 +0000
+Received: by eekc13 with SMTP id c13so2862499eek.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 04:58:54 -0800 (PST)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/5] MTD: bcm63xxpart: make sure CFE and NVRAM partitions are
- at least 64K
-Date: Sat, 17 Dec 2011 13:58:15 +0100
-Message-Id: <1324126698-9919-3-git-send-email-jonas.gorski@gmail.com>
+Subject: [PATCH 3/5] MTD: bcm63xxpart: don't assume NVRAM is always the fourth
+ partition
+Date: Sat, 17 Dec 2011 13:58:16 +0100
+Message-Id: <1324126698-9919-4-git-send-email-jonas.gorski@gmail.com>
 In-Reply-To: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
 References: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
@@ -23,88 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The CFE and NVRAM are always at least 64K big, so make sure their
-partitions are never smaller than this in case the flash has smaller
-erase sectors.
+Instead of referencing the sizes of fixed partitions, use the
+precomputed CFE/NVRAM lengths.
 
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/mtd/bcm63xxpart.c |   22 +++++++++++++++-------
- 1 files changed, 15 insertions(+), 7 deletions(-)
+ drivers/mtd/bcm63xxpart.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index 9933b34..23f6201 100644
+index 23f6201..3becb4d 100644
 --- a/drivers/mtd/bcm63xxpart.c
 +++ b/drivers/mtd/bcm63xxpart.c
-@@ -36,6 +36,9 @@
- 
- #define BCM63XX_EXTENDED_SIZE	0xBFC00000	/* Extended flash address */
- 
-+#define BCM63XX_MIN_CFE_SIZE	0x10000		/* always at least 64K */
-+#define BCM63XX_MIN_NVRAM_SIZE	0x10000		/* always at least 64K */
-+
- #define BCM63XX_CFE_MAGIC_OFFSET 0x4e0
- 
- static int bcm63xx_detect_cfe(struct mtd_info *master)
-@@ -74,6 +77,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	size_t retlen;
- 	unsigned int rootfsaddr, kerneladdr, spareaddr;
- 	unsigned int rootfslen, kernellen, sparelen, totallen;
-+	unsigned int cfelen, nvramlen;
- 	int namelen = 0;
- 	int i;
- 	char *boardid;
-@@ -82,14 +86,18 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	if (bcm63xx_detect_cfe(master))
- 		return -EINVAL;
- 
-+	cfelen = max_t(uint32_t, master->erasesize, BCM63XX_MIN_CFE_SIZE);
-+	nvramlen = max_t(uint32_t, master->erasesize, BCM63XX_MIN_NVRAM_SIZE);
-+
- 	/* Allocate memory for buffer */
- 	buf = vmalloc(sizeof(struct bcm_tag));
- 	if (!buf)
- 		return -ENOMEM;
- 
- 	/* Get the tag */
--	ret = master->read(master, master->erasesize, sizeof(struct bcm_tag),
--							&retlen, (void *)buf);
-+	ret = master->read(master, cfelen, sizeof(struct bcm_tag), &retlen,
-+			   (void *)buf);
-+
- 	if (retlen != sizeof(struct bcm_tag)) {
- 		vfree(buf);
- 		return -EIO;
-@@ -106,8 +114,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 
- 	kerneladdr = kerneladdr - BCM63XX_EXTENDED_SIZE;
- 	rootfsaddr = kerneladdr + kernellen;
--	spareaddr = roundup(totallen, master->erasesize) + master->erasesize;
--	sparelen = master->size - spareaddr - master->erasesize;
-+	spareaddr = roundup(totallen, master->erasesize) + cfelen;
-+	sparelen = master->size - spareaddr - nvramlen;
- 	rootfslen = spareaddr - rootfsaddr;
- 
- 	/* Determine number of partitions */
-@@ -131,7 +139,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	/* Start building partition list */
- 	parts[curpart].name = "CFE";
- 	parts[curpart].offset = 0;
--	parts[curpart].size = master->erasesize;
-+	parts[curpart].size = cfelen;
- 	curpart++;
- 
- 	if (kernellen > 0) {
-@@ -151,8 +159,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	}
- 
- 	parts[curpart].name = "nvram";
--	parts[curpart].offset = master->size - master->erasesize;
--	parts[curpart].size = master->erasesize;
-+	parts[curpart].offset = master->size - nvramlen;
-+	parts[curpart].size = nvramlen;
- 
+@@ -165,8 +165,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
  	/* Global partition "linux" to make easy firmware upgrade */
  	curpart++;
+ 	parts[curpart].name = "linux";
+-	parts[curpart].offset = parts[0].size;
+-	parts[curpart].size = master->size - parts[0].size - parts[3].size;
++	parts[curpart].offset = cfelen;
++	parts[curpart].size = master->size - cfelen - nvramlen;
+ 
+ 	for (i = 0; i < nrparts; i++)
+ 		pr_info("Partition %d is %s offset %lx and length %lx\n", i,
 -- 
 1.7.2.5
