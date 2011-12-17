@@ -1,29 +1,25 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RbvKp-0005FK-35
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 14:33:59 +0000
-Received: by iadk27 with SMTP id k27so5497269iad.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 06:33:57 -0800 (PST)
-Message-ID: <1324132520.4240.26.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
+ id 1RbvTo-0005iX-Bq
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 14:43:16 +0000
+Received: by iadk27 with SMTP id k27so5509187iad.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 06:43:15 -0800 (PST)
+Message-ID: <1324133082.4240.29.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] libmtd: allow write operations when MEMWRITE is not
+ supported
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Date: Sat, 17 Dec 2011 16:35:20 +0200
-In-Reply-To: <4EE6725C.3050706@freescale.com>
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>, Peter Korsgaard
+ <jacmet@sunsite.dk>
+Date: Sat, 17 Dec 2011 16:44:42 +0200
+In-Reply-To: <CAN8TOE9-4j0pC5Vocu4v9toczvKAyKnRtZ6AE3fjt7Fk8PaZ=g@mail.gmail.com>
+References: <1323459914-25294-1-git-send-email-computersforpeace@gmail.com>
+ <1323725206.2297.24.camel@koala>
+ <CAN8TOE9-4j0pC5Vocu4v9toczvKAyKnRtZ6AE3fjt7Fk8PaZ=g@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Q08dyElqo8J5Em+DwD+s"
+ boundary="=-0Q9AGfTet4PO5WDEVqF4"
 Mime-Version: 1.0
-Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
- dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,48 +31,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Q08dyElqo8J5Em+DwD+s
+--=-0Q9AGfTet4PO5WDEVqF4
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2011-12-12 at 15:30 -0600, Scott Wood wrote:
-> On 12/12/2011 03:19 PM, Artem Bityutskiy wrote:
-> > On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
-> >> NAND chips come from the factory with bad blocks marked at a certain
-> >> offset into each page.  This offset is normally in the OOB area, but
-> >> since we change the layout from "4k data, 128 byte oob" to "2k data, 6=
-4
-> >> byte oob, 2k data, 64 byte oob" the marker is no longer in the oob.  O=
-n
-> >> first use we need to migrate the markers so that they are still in the=
- oob.
-> >=20
-> > Ah, I see, thanks. Are you planning to implement in-kernel migration or
-> > use a user-space tool?
->=20
-> That's the kind of answer I was hoping to get from Shuo. :-)
->=20
-> Most likely is a firmware-based tool, but I'd like there to be some way
-> for the tool to mark that this has happened, so that the Linux driver
-> can refuse to do non-raw accesses to a chip that isn't marked as having
-> been migrated (or at least yell loudly in the log).
->=20
-> Speaking of raw accesses, these are currently broken in the eLBC
-> driver... we need some way for the generic layer to tell us what kind of
-> access it is before the transaction starts, not once it wants to read
-> out the buffer (unless we add more hacks to delay the start of a read
-> transaction until first buffer access...).  We'd be better off with a
-> high-level "read page/write page" function that does the whole thing
-> (not just buffer access, but command issuance as well).
+On Mon, 2011-12-12 at 13:40 -0800, Brian Norris wrote:
+> On Mon, Dec 12, 2011 at 1:26 PM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+> > On Fri, 2011-12-09 at 11:45 -0800, Brian Norris wrote:
+> >> MEMWRITE is a recently introduced write interface for MTD; however, it
+> >> is, for now, only supported on NAND flash. mtd-utils should fall back =
+to
+> >> old write methods when either ENOTTY or EOPNOTSUPP are returned.
+> >>
+> >> This is a showstopper when, for instance, using ubiformat on NOR, whic=
+h
+> >> don't have a mtd->write_oob interface (and thus don't support MEMWRITE=
+):
+> >>
+> >>   ubiformat: formatting eraseblock 2 --  1 % complete  libmtd: error!:=
+ MEMWRITE ioctl failed for eraseblock 2 (mtd3)
+> >>           error 122 (Operation not supported)
+> >>
+> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >
+> > I guess this require an urgent mtd-utils release.
 
-It looks like currently you can re-define chip->read_page, so I guess
-you should rework MTD and make chip->write_page re-definable?
+OK, I've cut mtd-utils-1.4.9 bug-fix release, this time with my
+new script, so I hope nothing is forgotten.
+
+Peter, please, update - this release fixes a bad bug which breaks NOR
+erase operation in not-yet-released 3.2 kernel.
+
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Q08dyElqo8J5Em+DwD+s
+--=-0Q9AGfTet4PO5WDEVqF4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -84,19 +76,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO7KipAAoJECmIfjd9wqK0c8QP/2msdz4o9q6aDoJkYKeSF0aA
-MAHGcA4Ae/sUyDEteuK01hdMD6V8RXb7HXahCkdv1sXhyNPwIb2BcL7elWCJ8DXw
-AfRSBVOwUcAtdy5jcWjmrWMHm4rhrcBH0tsIIgpmC5MsQNr64cr8bozeg+IL8mcZ
-toecUcPtzQOVC0FzVbE0tgJe7ZYy6/CUz/XsMzhoX0P9WBKeWg+mBWt9IqadYIqV
-jIODOEJ11E9rmp3B46bfWzwLuytXNaZpNUezQmO2zZtliEDW6yZGDU3bjANtECmr
-DBrgjo9ApTWJ8ERwvr7T53CO/edF/HjXEh+H0ha36M5Vwt10HSU3y1fsR7FXtWVL
-fLsXKQlZdLcRejvzkbaPM92O2DOovp4E/5xMw/u6xWKqpjjV6UPQftauP/5jlDoY
-SbtjEsC/1VzeRhwLWHTmEJGu/Odz83Fv292LlT1l37n0/ZkrROw9+PpnqcgcdoeM
-bWljBqWO9wv3vCQDwt/elykF5ojPqWPukrtEzK8VadHDqmLtLWp9whlUz5Kvj5NK
-mHzMwjPQHz0c+qd0TeUOTE9B+C1sVAq8xKGvI9nnr/wT7sbIdmWK2Sj8Ya9OEAI1
-+0s3zvoDI6fS7dZLJKug8F0ETyhh4qkJag1fAVcYDRqTamAGT1La3VP0kUV8Ymb6
-1vzhQVPJkej0jGWFS8g1
-=q3oJ
+iQIcBAABAgAGBQJO7KraAAoJECmIfjd9wqK0bdsQAK+qx2elMxTOqLbr8dAF8F7X
+vCATEbkyQc8pHwG7jDhKys2x0bp5gt73Anc2wwuuWDoNOGcdnCLYbAKhQDiidFjN
+STzsWKRnYvFg5/9zSFpDDNYzYIl2msAV269OZDur0EWw0ZDoxIIK5BD8yw8ESTuX
+vYAsd1PfmycdkNs2c/ifelPo6Auyzateu1HJ0DGneT46AJz2HjXiAqeUO+hj32LO
+rqDpd91tGCQwjr7FCCBRo0i6y8+zqYoOCNg4tlB4gqSVW6uxxWna6Y2seaXtwUhy
+Rb1LtFb3G7/Tk9O3OSloJdKIEELrkoiuAT6bOu5jkTV1FHuS4Djs2sCwmHb5c+hw
+VsxPlETLOmhJWET41XTZtwnuAmd982HRy3/a343k2fYSmSqyBE7wVs5BXhF8Qt1n
+Q2XaAz1BHuRUjxL1gBUm0EYla5+84reoeVuerci9Nn7VAmznDpkNmVPxqZmN73T9
+5YIuPl8+4Lby3LSTlGoQdICOKu0hxNiHXg03tf9Hcv5aedeIHYuFOUvwdRtiZbU8
+Gqy4gKvEXkBuqRSCsdyuW/3/k9dtSJz8W0ib+NfgMw2K0PLk0i5PoZghE1Y1PkM5
+KjDfbOTudvWtoD1LZQji+Mw4oPhSDbKIi2qIU2dx/L7/+cjXGsp54TnYePwLhk+k
+zlcPGxCiV21s3Wlf6zml
+=FG+s
 -----END PGP SIGNATURE-----
 
---=-Q08dyElqo8J5Em+DwD+s--
+--=-0Q9AGfTet4PO5WDEVqF4--
