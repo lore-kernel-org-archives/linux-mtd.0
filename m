@@ -1,33 +1,23 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RbxI3-0001uf-Jo
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 16:39:16 +0000
-Received: by iadk27 with SMTP id k27so5656065iad.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 08:39:13 -0800 (PST)
-Message-ID: <1324140039.4240.79.camel@sauron.fi.intel.com>
-Subject: RE: [PATCH v2] Integrated Flash Controller support
+ id 1RbxLf-0002Td-FW
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 16:43:00 +0000
+Received: by iadk27 with SMTP id k27so5660790iad.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 08:42:58 -0800 (PST)
+Message-ID: <1324140266.4240.81.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 5/15] sm_ftl: fix module parameter.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Li Yang-R58472 <r58472@freescale.com>
-Date: Sat, 17 Dec 2011 18:40:39 +0200
-In-Reply-To: <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
-References: <1320053901-23801-1-git-send-email-b35362@freescale.com>
- <CCF7C6DB-437C-4140-894F-2F497AD610DC@kernel.crashing.org>
- <8EDB3DC6-63E5-4D5C-BB52-15F32B85C5DD@kernel.crashing.org>
- <1322602860.2150.10.camel@koala> <4ED5531C.6030104@freescale.com>
- <EFF451D9-552A-4820-90D3-BF3156D5B25F@kernel.crashing.org>
- <1322643080.24797.413.camel@sauron.fi.intel.com>
- <94F013E7935FF44C83EBE7784D62AD3F056964B0@039-SN2MPN1-023.039d.mgd.msft.net>
+To: Rusty Russell <rusty@rustcorp.com.au>
+Date: Sat, 17 Dec 2011 18:44:26 +0200
+In-Reply-To: <87y5uesfea.fsf@rustcorp.com.au>
+References: <87y5uesfea.fsf@rustcorp.com.au>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-TKiVDr+89xRzipLIeYF+"
+ boundary="=-4oYHUPoVB8uAA5yxpqo6"
 Mime-Version: 1.0
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
- Liu Shuo-B35362 <B35362@freescale.com>, Kumar Gala <galak@kernel.crashing.org>,
- "linux-kernel@vger.kernel.org Kernel" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,44 +29,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-TKiVDr+89xRzipLIeYF+
+--=-4oYHUPoVB8uAA5yxpqo6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2011-12-14 at 11:13 +0000, Li Yang-R58472 wrote:
-> >-----Original Message-----
-> >From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
-> >Sent: Wednesday, November 30, 2011 4:51 PM
-> >To: Kumar Gala
-> >Cc: Wood Scott-B07421; Li Yang-R58472; Liu Shuo-B35362; linux-
-> >kernel@vger.kernel.org Kernel; linux-mtd@lists.infradead.org; Andrew
-> >Morton; David Woodhouse; linuxppc-dev@lists.ozlabs.org list
-> >Subject: Re: [PATCH v2] Integrated Flash Controller support
-> >
-> >On Tue, 2011-11-29 at 19:47 -0600, Kumar Gala wrote:
-> >> As Scott said, I was more asking about the 2nd patch in the
-> sequence
-> >> which did touch MTD.  Since that one is dependent on this patch,
-> >> wondering how we wanted to handle them.
-> >
-> >I do not have time to review it, but it looks OK, so I'd suggest to
-> >merge it vie the same tree as the rest of the patches.
+On Thu, 2011-12-15 at 13:35 +1030, Rusty Russell wrote:
+> You didn't mean this to be a bool.
 >=20
-> Hi Artem,
->=20
-> So what is your suggestion on this patch?  Can we regard your previous
-> email as an ACK and merge it through the powerpc tree?  Or do you
-> prefer to merge them through the MTD tree with Kumar's ACK instead?
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
 
-I am fine if it is merged via PPC tree. I do not have bandwith to look
-at it closely, so I cannot ack it, although I also do not have reasons
-to nack it :-)
+Pushed to l2-mtd-2.6.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-TKiVDr+89xRzipLIeYF+
+--=-4oYHUPoVB8uAA5yxpqo6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -84,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO7MYHAAoJECmIfjd9wqK0TVsP/159t9dLDdXVM5hX8sUQhHCS
-JN/1GvYyMC0gAvbR/4nPrHViJUv4bFpjlxWH99ktXlyLiPhriMhmkLLW0QFcASzM
-O+ZpHTgc8Z9cBa4w5Z9CmRLgZMqIO+6bOWQDCffPSqB7yLoD6Oj7ydRq53yOdKks
-098m++7kWsaBPVIrQ90ilFl6hRRkr64CJ8WARTy4IftUWfOX9Q+OaWUHv5UJpLGl
-BBioc/CuYgly3uN5gF0/dODrlbEBN6HJ7iLioOssdxBfqCNY6LDF8iPmaxDrqarw
-I22IQVFKjogB77YOGrqRfOGmqVJUTXjqhsudo8B+2fN2wSdFsFTcwmqpODTzpJu5
-p7VWKje0SnhASmqZOgkYsnUntOCz8KaeEPWrWv1MTaU4ltJr3Ts6magZ653V2tHV
-9Mej5HH2FSAQVVgQSjCr/HssJjYkY1m2UDbDihDjvCijeBqA08eCpHml4ctWaxrV
-gspck0KN39rLVeusPLQtdYp6QnFSgMRuaaVjkvEnGdooctX80aSReBe14rsX4Mzp
-EqEQBP6Y5LbOQJNjkwprLRfVi9ofoVNDkb0VDjC5khqteAzyYcKOCbsuRLfO5CO4
-ekoIWG9q7o6UMw0DxvDiL3zTXS/fFGvGfOJTQyutzaHl5zsZF9oMyIfMHcrCfiuv
-ePiUYJHy5ovIrRf9g+/9
-=FXqb
+iQIcBAABAgAGBQJO7MbrAAoJECmIfjd9wqK0ij8P/07DGU/5C3HJABBfGTvVN4qZ
+2YOY+m+DbItx7fpTZZciWR8xkPcbmTPu1hdGybDFsLjPQfqUlbeLDt+75f1GzsHu
+9XbvmimBHb3Euy1qIyRuHYTWx/kplJRrDEhnl1pqovHSZmtyBDnnQH9zaKCCSsLf
+ofxAd7K3wvEoKqJ/rbz0gL4T/9q5n75Ves8xL+0VrIVTsFH7xhbkqFDXatwr2mlv
+1r/9oUxedBxyTtjlRErIbPC6fR2XIRIb8c3WFXLk0KS3EpeWwRWttob7/X9xQhFV
+46Y7Y3W3gvi9MFF5FZepBHwBThy9fW4xqxGxdJEQHHZMHUIgd9V6ML67tPOQvnDA
+aH6qBjfyRv99MDrI4SFjktfAD2D+9T6TgDt82DM+qvCQ4ejT5ew+Zu+2RidCqyWp
+yINY+hmE0kOYVbUYzbtmgbCadD91p8B1WnHqCcGWwAOUrHwbHPzqIhGWL8tMs4ko
+q+GU0xY/hExGc+N2xRinusTsCOkwjanb5X9FkWSM47f9O19c14Y7iuVDr5Mva0Qr
+rawflWw2uf3x0oksebBB6yIZrbLJTeTXVnRk3RuDbbzkyHZM0MmvSWCmVJBxdxp9
+QFRiSNcRDLT7Ittg5zIvCqo29x9lZ/GabRa8SjBI1nyoGdXprVg//i+dr7dwNWgJ
+bLBq3T+JbmOc+2KzPL3r
+=9SCf
 -----END PGP SIGNATURE-----
 
---=-TKiVDr+89xRzipLIeYF+--
+--=-4oYHUPoVB8uAA5yxpqo6--
