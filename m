@@ -1,20 +1,20 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rbu5W-0001o8-Ba
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 13:14:07 +0000
-Received: by vcbf11 with SMTP id f11so3031259vcb.36
- for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 05:14:04 -0800 (PST)
+ id 1RbuIz-00023J-Ps
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 13:28:02 +0000
+Received: by wgbdt11 with SMTP id dt11so5647247wgb.18
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 05:27:59 -0800 (PST)
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1324126698-9919-3-git-send-email-jonas.gorski@gmail.com>
+In-Reply-To: <CAJpamw5qTXwMC_HQXN+ehjxDDQ6GXT_-Kcfu8E7P5F2CnLqsZA@mail.gmail.com>
 References: <1324126698-9919-1-git-send-email-jonas.gorski@gmail.com>
  <1324126698-9919-3-git-send-email-jonas.gorski@gmail.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 17 Dec 2011 14:13:42 +0100
-Message-ID: <CAJpamw5qTXwMC_HQXN+ehjxDDQ6GXT_-Kcfu8E7P5F2CnLqsZA@mail.gmail.com>
+ <CAJpamw5qTXwMC_HQXN+ehjxDDQ6GXT_-Kcfu8E7P5F2CnLqsZA@mail.gmail.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Sat, 17 Dec 2011 14:27:38 +0100
+Message-ID: <CAOiHx=km1TEy0r1zpk+iSiqHMfqR2qPmtJQA5RsuGKG09e60tQ@mail.gmail.com>
 Subject: Re: [PATCH 2/5] MTD: bcm63xxpart: make sure CFE and NVRAM partitions
  are at least 64K
-To: Jonas Gorski <jonas.gorski@gmail.com>
+To: Guillaume LECERF <glecerf@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <Artem.Bityutskiy@intel.com>,
@@ -29,18 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jonas,
+Hi Guillaume,
 
-2011/12/17 Jonas Gorski <jonas.gorski@gmail.com>:
-> - =C2=A0 =C2=A0 =C2=A0 spareaddr =3D roundup(totallen, master->erasesize)=
- + master->erasesize;
-> - =C2=A0 =C2=A0 =C2=A0 sparelen =3D master->size - spareaddr - master->er=
-asesize;
-> + =C2=A0 =C2=A0 =C2=A0 spareaddr =3D roundup(totallen, master->erasesize)=
- + cfelen;
+On 17 December 2011 14:13, Guillaume LECERF <glecerf@gmail.com> wrote:
+> Hi Jonas,
+>
+> 2011/12/17 Jonas Gorski <jonas.gorski@gmail.com>:
+>> - =C2=A0 =C2=A0 =C2=A0 spareaddr =3D roundup(totallen, master->erasesize=
+) + master->erasesize;
+>> - =C2=A0 =C2=A0 =C2=A0 sparelen =3D master->size - spareaddr - master->e=
+rasesize;
+>> + =C2=A0 =C2=A0 =C2=A0 spareaddr =3D roundup(totallen, master->erasesize=
+) + cfelen;
+>
+> spareaddr =3D roundup(totallen, cfelen) + cfelen ?
 
-spareaddr =3D roundup(totallen, cfelen) + cfelen ?
+The intention is to align the spareaddr to the next eraseblock (cfelen
+can be bigger than the erasesize). Maybe writing it as
 
---=20
-Guillaume LECERF
-OpenBricks developer - www.openbricks.org
+ =C2=A0 =C2=A0 =C2=A0 spareaddr =3D roundup(cfelen + totallen, master->eras=
+esize);
+
+would be cleaner.
+
+
+Jonas
