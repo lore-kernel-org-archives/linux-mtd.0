@@ -1,20 +1,24 @@
-Received: from ocean.emcraft.com ([213.221.7.182])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rc2ht-0001Yc-PH
- for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 22:26:18 +0000
-Message-ID: <4EED171F.2080904@emcraft.com>
-Date: Sun, 18 Dec 2011 02:26:39 +0400
-From: Ilya Yanok <yanok@emcraft.com>
-MIME-Version: 1.0
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rc3Xa-0003pa-0S
+ for linux-mtd@lists.infradead.org; Sat, 17 Dec 2011 23:19:42 +0000
+Received: by eekc13 with SMTP id c13so3137011eek.36
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Dec 2011 15:19:39 -0800 (PST)
+From: Marek Vasut <marek.vasut@gmail.com>
 To: dedekind1@gmail.com
-Subject: Re: [PATCH] plat_ram: call mtd_device_register only if partition
- data exists
-References: <1323733076-6301-1-git-send-email-yanok@emcraft.com>
- <1324135902.4240.46.camel@sauron.fi.intel.com>
-In-Reply-To: <1324135902.4240.46.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] mtd: gpmi: add missing include 'module.h'
+Date: Sun, 18 Dec 2011 00:19:38 +0100
+References: <1322060226-5208-1-git-send-email-w.sang@pengutronix.de>
+ <201112132315.30532.marek.vasut@gmail.com>
+ <1324137298.4240.55.camel@sauron.fi.intel.com>
+In-Reply-To: <1324137298.4240.55.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <201112180019.38281.marek.vasut@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Wolfram Sang <w.sang@pengutronix.de>, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-On 17.12.2011 19:31, Artem Bityutskiy wrote:
->> mtd_device_parse_register() registers the device as a whole if no
->> partition data is passed so there is no reason to call
->> mtd_device_register() after that.
->>
->> Signed-off-by: Ilya Yanok <yanok@emcraft.com>
+> On Tue, 2011-12-13 at 23:15 +0100, Marek Vasut wrote:
+> > BUMP
 > 
-> This seems to be a bug-fix, right? What happens without this patch?
+> Ping David Woodhouse, it is his turn not send this to Linus.
 
-Right.
+Adding him to Cc
 
-> We end up with 2 MTD equivalent MTD devices?
-
-Yes (only second one shown in /proc/mtd) and a warning for kobject:
-
-kobject (cf2c10e0): tried to init an initialized object, something is
-seriously wrong.
-
-Regards, Ilya.
+M
