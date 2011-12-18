@@ -1,24 +1,22 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RcFDI-0003Yt-Cj
- for linux-mtd@lists.infradead.org; Sun, 18 Dec 2011 11:47:32 +0000
-Received: by iadk27 with SMTP id k27so6677672iad.36
- for <linux-mtd@lists.infradead.org>; Sun, 18 Dec 2011 03:47:32 -0800 (PST)
-Message-ID: <1324208942.17534.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] plat_ram: call mtd_device_register only if partition
- data exists
+ id 1RcFJC-0003xx-2R
+ for linux-mtd@lists.infradead.org; Sun, 18 Dec 2011 11:53:38 +0000
+Received: by iadk27 with SMTP id k27so6683187iad.36
+ for <linux-mtd@lists.infradead.org>; Sun, 18 Dec 2011 03:53:37 -0800 (PST)
+Message-ID: <1324209306.17534.2.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: gpio-nand: add device tree bindings
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ilya Yanok <yanok@emcraft.com>
-Date: Sun, 18 Dec 2011 13:49:02 +0200
-In-Reply-To: <4EED171F.2080904@emcraft.com>
-References: <1323733076-6301-1-git-send-email-yanok@emcraft.com>
- <1324135902.4240.46.camel@sauron.fi.intel.com>
- <4EED171F.2080904@emcraft.com>
+To: Jamie Iles <jamie@jamieiles.com>
+Date: Sun, 18 Dec 2011 13:55:06 +0200
+In-Reply-To: <1324202449-13820-1-git-send-email-jamie@jamieiles.com>
+References: <1324202449-13820-1-git-send-email-jamie@jamieiles.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-VstWNN/oTMe0pAp1Nynq"
+ boundary="=-mH3MYJMSrNyUx+te0FPq"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@secretlab.ca>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,39 +28,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-VstWNN/oTMe0pAp1Nynq
+--=-mH3MYJMSrNyUx+te0FPq
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2011-12-18 at 02:26 +0400, Ilya Yanok wrote:
-> Hi Artem,
+On Sun, 2011-12-18 at 10:00 +0000, Jamie Iles wrote:
+> Add device tree bindings so that the gpio-nand driver may be
+> instantiated from the device tree.  This also allows the partitions
+> to be specified in the device tree.
 >=20
-> On 17.12.2011 19:31, Artem Bityutskiy wrote:
-> >> mtd_device_parse_register() registers the device as a whole if no
-> >> partition data is passed so there is no reason to call
-> >> mtd_device_register() after that.
-> >>
-> >> Signed-off-by: Ilya Yanok <yanok@emcraft.com>
-> >=20
-> > This seems to be a bug-fix, right? What happens without this patch?
+> v7:	- restore runtime device tree/non device tree detection
+> v6:	- convert to mtd_device_parse_register()
+> v5:	- fold dt config helpers into a single gpio_nand_of_get_config()
+> v4:	- get io sync address from gpio-control-nand,io-sync-reg
+> 	  property rather than a resource
+> 	- clarified a few details in the binding
+> v3:	- remove redundant cast and a couple of whitespace/naming
+> 	  changes
+> v2:	- add CONFIG_OF guards for non-dt platforms
+> 	- compatible becomes gpio-control-nand
+> 	- clarify some binding details
 >=20
-> Right.
->=20
-> > We end up with 2 MTD equivalent MTD devices?
->=20
-> Yes (only second one shown in /proc/mtd) and a warning for kobject:
->=20
-> kobject (cf2c10e0): tried to init an initialized object, something is
-> seriously wrong.
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Scott Wood <scottwood@freescale.com>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 
-OK, then I'll ping David Woodhouse to merge this before 3.2 release.
-Taken to l2-mtd-2.6.git so far, thanks!
+Looks ok to me, but would be great to have some ack from a Device tree
+guy.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-VstWNN/oTMe0pAp1Nynq
+--=-mH3MYJMSrNyUx+te0FPq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -70,19 +70,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO7dMuAAoJECmIfjd9wqK08AgP/0uVn3fbkKXrsAZq4ZuJdjHk
-8vk2J3Hkn92CmaHB8YAUxyZPCajHIklOaFfsd74m1q8+0sbMN/9JMFUNyMqzg3jf
-FXeSXg4uCI0aAFbgXY5O8kPyuZNZxIJWJjm66gKziYOHVS5N1deb1tcqyXZ3A5fq
-qVAjk4rz2bATXC6qL1tbnDV+SgmyUuWMrZtkY6HcpTA3hFFyAIfaraHR2UqElKpg
-FFmZ+gNMs2nDXDX85Zw+HxZzyREMZ16QCNrYK6zk5m5tko2L1dy28NKmc5KlB+BA
-XhAbF7wiWrl4wmy2wHdDkfRZlFIcMRa7w/yxVYJPOg+5QGnnkJLuRvE0mRscVCqq
-SJJzto840XuuSCVHE2eAXlPwglcTIzWpeTYhuW/TSMT/nmmmU3Jm+yOO+/9/9ABG
-v+k0MVjnK2GpS6NCCzlhAfLLRfd+YFT3NxqTImjDMP94142krTNSsFLVJRwObJyA
-ub+n1C5bfNxqQD+FKwobjzOGsQotlkuU4F8R7ZB+lbA60QfeR8qXteFmCPxzV5Pi
-MYJqM12BEbj866tR1wiFARfcq4Tq/qcbzZZsJbQJ4Lggno8oKGSQl3v+wfxcDt0y
-3hgWAHsqUHSRwvNXqx+u/QNBtsFHmQvAZ6N1aGr0ZUO76GYaTSfZQi4q30L4ujB0
-8nzHB6Ksa87gtNCkNaTH
-=572K
+iQIcBAABAgAGBQJO7dSaAAoJECmIfjd9wqK05H8QAKUSIEgVV6SkSnDrXn/5xFb7
+32cEv4/Y/mkFFg+6RioUCoDekphAWWTaNIfD7ptT6TKCeEo21mj7q5N2/qM0/w5t
+4yWHvjyqLqlnDzVRzBExISoimA6ykisaFsqv1K7xiZ6rjt3/VQ3ZBkuK+dnrShOz
+JGj7VuwICa0qkpC6RtKqGYKbX74hIeQ8blH0nNlGhB7N3kSFiLLeFurpT+FqYVWA
+KO4UBjwpIVEfCpmeennJPaXvtlPaPzfz/JvbJXkQG3LMl00nmSgj2urOGTjkNod/
+YTBlufxXZaqtdzlB5kIYparER0MfME7ihpcEJ7Yyt+fQURla0KYlfL9NRIda7kPh
+IqRm1brIdyqs2LYfiOs4VD0/TDaAYvn1my8TrpVbIKll6iTjaX+tJj2BjAUCrHp5
+QYB7e81eTEha24EAyBiz3Sb0CpcyhXk8ZmpLU3jjq1VJeBCmIjN5BclBoBWygzAY
+oJPZt1Dl4LplBDjkpI4gZ+kuJZ0xukZ5yB1TenWtLyzG4l/fn8m3ocpkZzaL69DD
+N6LLu7aXkNbzYbUrH1XRSmkbbtQ2leK52D3EH9kB/HNn9ITbUmY6RsdKAw7Klmtc
+ia95fwwTq9lIzvy4nvjkuQp80p2XKDfmP0UAYB4ZPmgQsjh9RkK3GjuVwSmRKWag
+YrWawNctwKSjHnJySYsH
+=cSws
 -----END PGP SIGNATURE-----
 
---=-VstWNN/oTMe0pAp1Nynq--
+--=-mH3MYJMSrNyUx+te0FPq--
