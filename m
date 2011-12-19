@@ -1,30 +1,28 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
+ helo=DB3EHSOBE006.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RcgNP-00027j-71
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2011 16:47:48 +0000
-Message-ID: <4EEF6AAA.3030806@freescale.com>
-Date: Mon, 19 Dec 2011 10:47:38 -0600
+ id 1Rci6V-0002Rz-D1
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2011 18:38:28 +0000
+Message-ID: <4EEF849B.7030804@freescale.com>
+Date: Mon, 19 Dec 2011 12:38:19 -0600
 From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-To: Li Yang <leoli@freescale.com>
+To: <dedekind1@gmail.com>
 Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
  large-page Nand chip
 References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
  <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
  <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
  <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
- <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
- <4EEAB076.30000@freescale.com> <4EEB8704.8030201@freescale.com>
- <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
-In-Reply-To: <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
+ <4EE6725C.3050706@freescale.com>
+ <1324132520.4240.26.camel@sauron.fi.intel.com>
+In-Reply-To: <1324132520.4240.26.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com, dwmw2@infradead.org,
- LiuShuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
- shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
+Cc: Artem.Bityutskiy@nokia.com, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, shuo.liu@freescale.com,
+ linux-mtd@lists.infradead.org, akpm@linux-foundation.org, leoli@freescale.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,70 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/19/2011 05:05 AM, Li Yang wrote:
-> On Sat, Dec 17, 2011 at 1:59 AM, Scott Wood <scottwood@freescale.com> wrote:
->> On 12/15/2011 08:44 PM, LiuShuo wrote:
->>> hi Artem,
->>> Could this patch be applied now and we make a independent patch for  bad
->>> block information
->>> migration later?
+On 12/17/2011 08:35 AM, Artem Bityutskiy wrote:
+> On Mon, 2011-12-12 at 15:30 -0600, Scott Wood wrote:
+>> On 12/12/2011 03:19 PM, Artem Bityutskiy wrote:
+>>> On Mon, 2011-12-12 at 15:15 -0600, Scott Wood wrote:
+>>>> NAND chips come from the factory with bad blocks marked at a certain
+>>>> offset into each page.  This offset is normally in the OOB area, but
+>>>> since we change the layout from "4k data, 128 byte oob" to "2k data, 64
+>>>> byte oob, 2k data, 64 byte oob" the marker is no longer in the oob.  On
+>>>> first use we need to migrate the markers so that they are still in the oob.
+>>>
+>>> Ah, I see, thanks. Are you planning to implement in-kernel migration or
+>>> use a user-space tool?
 >>
->> This patch is not safe to use without migration.
+>> That's the kind of answer I was hoping to get from Shuo. :-)
+>>
+>> Most likely is a firmware-based tool, but I'd like there to be some way
+>> for the tool to mark that this has happened, so that the Linux driver
+>> can refuse to do non-raw accesses to a chip that isn't marked as having
+>> been migrated (or at least yell loudly in the log).
+>>
+>> Speaking of raw accesses, these are currently broken in the eLBC
+>> driver... we need some way for the generic layer to tell us what kind of
+>> access it is before the transaction starts, not once it wants to read
+>> out the buffer (unless we add more hacks to delay the start of a read
+>> transaction until first buffer access...).  We'd be better off with a
+>> high-level "read page/write page" function that does the whole thing
+>> (not just buffer access, but command issuance as well).
 > 
-> Hi Scott,
-> 
-> We agree it's not entirely safe without migrating the bad block flag.
-> But let's consider two sides of the situation.
-> 
-> Firstly, it's only unsafe when there is a need to re-built the Bad
-> Block Table from scratch(old BBT broken).
+> It looks like currently you can re-define chip->read_page, so I guess
+> you should rework MTD and make chip->write_page re-definable?
 
-No, it's unsafe in the presence of bad blocks.
-
-The BBT erasure issue relates to how me mark the flash as migrated, not
-whether we migrate in the first place.
-
->  But currently there is no
-> easy way to do that(re-build BBT on demand),
-
-You scrub the blocks with U-Boot.  It's not supposed to be *easy*, it's
-a developer recovery mechanism.
-
-> Secondly, even if the previous said problem happens(BBT broken).  We
-> can still recover all the data if we overrule the bad block flag.
-
-How so?  The bad block markers -- including ones legitimately written to
-the BBT after the fact -- are used for block skipping with certain types
-of writes.  Without the knowledge of which blocks were marked bad, how
-do we know which blocks were skipped?
-
-> Only the card is not so good to be used again,
-
-That's a pretty crappy thing to happen every time you hit a bug during
-development.
-
-But again, that's irrelevant to whether this patch should be applied
-as-is, because we currently don't have any bad block migration at all.
-
-> however, it can be used
-> if we take the risk of losing data from errors that ECC can't
-> notice(low possibility too).
-
-Can you quantify "low possibility" here?
-
-Note that any block that *was* marked bad will have a multi-bit error
-from the marker itself, since it will be embedded in the main data area.
-
-> Finally, I don't think this is a blocker issue but a better to have enhancement.
-
-No, it is not an enhancement.  Processing bad block markers correctly is
-a fundamental requirement.  And if anyone *does* start using it right
-away, then we'll have to deal with their complaints if we start checking
-for a migration marker later.
-
-Why is it so critical that it be merged now, and not in a few weeks (or
-next merge window) when I have a chance to do the migration code
-(assuming nobody else does it first) and add a suitable check for the
-migration marker in the Linux driver?
+Unless something has changed very recently, there is no chip->read_page
+or chip->write_page.  There is chip->ecc.read_page and
+chip->ecc.write_page, but they are too low-level.  What we'd need to
+replace is a portion of nand_do_read_ops()/nand_do_write_ops().
 
 -Scott
