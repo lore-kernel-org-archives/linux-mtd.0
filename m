@@ -1,23 +1,30 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rcbuq-00025L-RX
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2011 12:02:01 +0000
-Received: by wera10 with SMTP id a10so1619239wer.36
- for <linux-mtd@lists.infradead.org>; Mon, 19 Dec 2011 04:01:58 -0800 (PST)
+ id 1RcgNP-00027j-71
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2011 16:47:48 +0000
+Message-ID: <4EEF6AAA.3030806@freescale.com>
+Date: Mon, 19 Dec 2011 10:47:38 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1324292192.32675.6.camel@sauron.fi.intel.com>
-References: <1324208821.17534.0.camel@sauron.fi.intel.com>
- <1324290964-14096-1-git-send-email-jonas.gorski@gmail.com>
- <1324292192.32675.6.camel@sauron.fi.intel.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 19 Dec 2011 13:01:37 +0100
-Message-ID: <CAOiHx=kV8ovXQc2TTdxigMuVbSwj3GwsGs8K+vxMd_VepD3hSg@mail.gmail.com>
-Subject: Re: [PATCH V2 2/5] MTD: bcm63xxpart: make sure CFE and NVRAM
- partitions are at least 64K
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Florian Fainelli <florian@openwrt.org>
+To: Li Yang <leoli@freescale.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+ <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
+ <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
+ <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
+ <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
+ <4EEAB076.30000@freescale.com> <4EEB8704.8030201@freescale.com>
+ <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
+In-Reply-To: <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com, dwmw2@infradead.org,
+ LiuShuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
+ shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +34,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19 December 2011 11:56, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2011-12-19 at 11:36 +0100, Jonas Gorski wrote:
->> The CFE boot loader on BCM63XX platforms assumes itself and the NVRAM
->> partition to be 64 KiB (or erase block sized, if larger).
->> Ensure this assumption is also met when creating the partitions to
->> prevent accidential erasure of CFE or NVRAM.
+On 12/19/2011 05:05 AM, Li Yang wrote:
+> On Sat, Dec 17, 2011 at 1:59 AM, Scott Wood <scottwood@freescale.com> wrote:
+>> On 12/15/2011 08:44 PM, LiuShuo wrote:
+>>> hi Artem,
+>>> Could this patch be applied now and we make a independent patch for  bad
+>>> block information
+>>> migration later?
 >>
->> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->
-> If someone creates a partition smaller than 64 KiB, then why it is
-> better to silently make it 64 KiB (and thus doing not what the user
-> asked to do and possibly confusing him), rather than returning an error
-> or just printing a warning?
+>> This patch is not safe to use without migration.
+> 
+> Hi Scott,
+> 
+> We agree it's not entirely safe without migrating the bad block flag.
+> But let's consider two sides of the situation.
+> 
+> Firstly, it's only unsafe when there is a need to re-built the Bad
+> Block Table from scratch(old BBT broken).
 
-This adjustment to 64 KiB is only done for the CFE and NVRAM
-partitions, not for the rootfs or kernel partitions. The CFE and NVRAM
-lengths/offsets are defined in the CFE boot loader at build time and
-fixed, so to change them you would need to build and flash your own
-CFE (and the sources are not public, so you also need to be a Broadcom
-customer). I have yet to see a device where this was done, so this is
-currently just a theoretical possibility.
+No, it's unsafe in the presence of bad blocks.
 
-Also you can't create/modify partitions arbitrarily as there is no
-partition table, just a fixed image header format (which the CFE
-parses on boot). So the only two partitions changeable from the
-outside are the kernel and rootfs partitions, which are defined in the
-image tag, which always resides at the beginning of the first erase
-block after the CFE. Changing the CFE length would result in a changed
-offset of the image tag, leading to a "wrong" image tag being read (or
-in case after patch 5, a warning that the image tag is likely corrupt,
-and no rootfs/kernel partitions created).
+The BBT erasure issue relates to how me mark the flash as migrated, not
+whether we migrate in the first place.
 
-Of course everything is done under the assumption the boot loader is
-CFE (there are a few devices with RedBoot out there), but the parser
-already bails out if no CFE is detected.
+>  But currently there is no
+> easy way to do that(re-build BBT on demand),
 
-Hope that clears things up.
+You scrub the blocks with U-Boot.  It's not supposed to be *easy*, it's
+a developer recovery mechanism.
 
-Jonas
+> Secondly, even if the previous said problem happens(BBT broken).  We
+> can still recover all the data if we overrule the bad block flag.
+
+How so?  The bad block markers -- including ones legitimately written to
+the BBT after the fact -- are used for block skipping with certain types
+of writes.  Without the knowledge of which blocks were marked bad, how
+do we know which blocks were skipped?
+
+> Only the card is not so good to be used again,
+
+That's a pretty crappy thing to happen every time you hit a bug during
+development.
+
+But again, that's irrelevant to whether this patch should be applied
+as-is, because we currently don't have any bad block migration at all.
+
+> however, it can be used
+> if we take the risk of losing data from errors that ECC can't
+> notice(low possibility too).
+
+Can you quantify "low possibility" here?
+
+Note that any block that *was* marked bad will have a multi-bit error
+from the marker itself, since it will be embedded in the main data area.
+
+> Finally, I don't think this is a blocker issue but a better to have enhancement.
+
+No, it is not an enhancement.  Processing bad block markers correctly is
+a fundamental requirement.  And if anyone *does* start using it right
+away, then we'll have to deal with their complaints if we start checking
+for a migration marker later.
+
+Why is it so critical that it be merged now, and not in a few weeks (or
+next merge window) when I have a chance to do the migration code
+(assuming nobody else does it first) and add a suitable check for the
+migration marker in the Linux driver?
+
+-Scott
