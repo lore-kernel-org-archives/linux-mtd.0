@@ -1,33 +1,18 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rcvgi-0000ru-FO
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 09:08:45 +0000
-Received: by eekc13 with SMTP id c13so5236878eek.36
- for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2011 01:08:42 -0800 (PST)
-MIME-Version: 1.0
-Sender: pku.leo@gmail.com
-In-Reply-To: <4EEF6AAA.3030806@freescale.com>
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
- <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
- <4EEAB076.30000@freescale.com> <4EEB8704.8030201@freescale.com>
- <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
- <4EEF6AAA.3030806@freescale.com>
-Date: Tue, 20 Dec 2011 17:08:42 +0800
-Message-ID: <CADRPPNQtuuh5yR1WVNccoFhnQZnMenaFkFnHmFKWicSBoj35JQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-From: Li Yang <leoli@freescale.com>
-To: Scott Wood <scottwood@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com, dwmw2@infradead.org,
- LiuShuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
- shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 0/4] Fix the left DMA_NONE from dma_transfer_direction
+ migration
+From: Vinod Koul <vinod.koul@intel.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+In-Reply-To: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
+References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 20 Dec 2011 14:54:04 +0530
+Message-ID: <1324373044.1641.10096.camel@vkoul-udesk3>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, Chris Ball <cjb@laptop.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,141 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 20, 2011 at 12:47 AM, Scott Wood <scottwood@freescale.com> wrot=
-e:
-> On 12/19/2011 05:05 AM, Li Yang wrote:
->> On Sat, Dec 17, 2011 at 1:59 AM, Scott Wood <scottwood@freescale.com> wr=
-ote:
->>> On 12/15/2011 08:44 PM, LiuShuo wrote:
->>>> hi Artem,
->>>> Could this patch be applied now and we make a independent patch for =
-=C2=A0bad
->>>> block information
->>>> migration later?
->>>
->>> This patch is not safe to use without migration.
->>
->> Hi Scott,
->>
->> We agree it's not entirely safe without migrating the bad block flag.
->> But let's consider two sides of the situation.
->>
->> Firstly, it's only unsafe when there is a need to re-built the Bad
->> Block Table from scratch(old BBT broken).
->
-> No, it's unsafe in the presence of bad blocks.
->
+On Tue, 2011-12-13 at 23:48 +0800, Shawn Guo wrote:
+> I have been working on -rc recently, and have not noticed the failure
+> until I ran next tree today.  The mxs-mmc driver is broken on next
+> tree because the DMA_NONE was left over from the dma_transfer_direction
+> migration for mxs-dma and its client drivers.
+> 
+For DMA transfer, the NONE direction makes no sense?
 
-Instead of migrating the factory bad block markers I proposed to
-modify the code of building BBT to make it different for 4K page, so
-that the default BBT can correctly covers the factory bad blocks.  It
-is the easiest way with nearly no harm to the functionality.
+In your conetext, what are you trying to achieve?
 
-If you look at nand_default_block_markbad() in current implementation
-of Linux MTD.  If we have set NAND_BBT_USE_FLASH option, which we did,
-the bad block information in only updated in BBT not the oob area of
-the first two pages of the bad block.  That means we are currently
-only relies on the BBT for bad blocks.  If the BBT is created, the
-factory bad block markers can be ignored, IMO.
 
-> The BBT erasure issue relates to how me mark the flash as migrated, not
-> whether we migrate in the first place.
-
-It is connected to whether we do the migration at all.  I mentioned in
-earlier mail that if we are doing the migration, we need to make sure
-the migration only happens once.  And it need to be done before the
-flash is used for the first time and before BBT is created.  If we
-can't guarantee these condition, we are marking good blocks as bad by
-doing the migration.  Even worse than doing nothing.
-
->
->> =C2=A0But currently there is no
->> easy way to do that(re-build BBT on demand),
->
-> You scrub the blocks with U-Boot. =C2=A0It's not supposed to be *easy*, i=
-t's
-> a developer recovery mechanism.
-
-Scrub clears the factory bad block markers also.  It is the same
-result after scrub whether or not we migrated the factory bad block
-markers.
-
->
->> Secondly, even if the previous said problem happens(BBT broken). =C2=A0W=
-e
->> can still recover all the data if we overrule the bad block flag.
->
-> How so? =C2=A0The bad block markers -- including ones legitimately writte=
-n to
-> the BBT after the fact -- are used for block skipping with certain types
-> of writes. =C2=A0Without the knowledge of which blocks were marked bad, h=
-ow
-> do we know which blocks were skipped?
-
-This is not supposed to be *easy*.  We might get more information in
-the file system level.  Or we check the content of the blocks.
-
->
->> Only the card is not so good to be used again,
->
-> That's a pretty crappy thing to happen every time you hit a bug during
-> development.
->
-> But again, that's irrelevant to whether this patch should be applied
-> as-is, because we currently don't have any bad block migration at all.
->
->> however, it can be used
->> if we take the risk of losing data from errors that ECC can't
->> notice(low possibility too).
->
-> Can you quantify "low possibility" here?
->
-> Note that any block that *was* marked bad will have a multi-bit error
-> from the marker itself, since it will be embedded in the main data area.
-
-I found the definition of bad block from one NAND chip manual: Bad
-Blocks are blocks that contain one or more invalid bits whose
-reliability is not guaranteed.
-
-There is no mentioning that the bad block has to have multi-bit error.
- Although the factory bad blocks might have worse error than wear-off
-bad blocks, it's not what I can tell.
-
->
->> Finally, I don't think this is a blocker issue but a better to have enha=
-ncement.
->
-> No, it is not an enhancement. =C2=A0Processing bad block markers correctl=
-y is
-> a fundamental requirement. =C2=A0And if anyone *does* start using it righ=
-t
-> away, then we'll have to deal with their complaints if we start checking
-> for a migration marker later.
-
-I agree in some extend.  I suggested to have the code of creating
-correct BBT for 4k page on first use, but not doing the migration.
-Given the code we have right now.   We don't take more risk than
-before, and take no functionality lose.
-
->
-> Why is it so critical that it be merged now, and not in a few weeks (or
-> next merge window) when I have a chance to do the migration code
-> (assuming nobody else does it first) and add a suitable check for the
-> migration marker in the Linux driver?
-
-A few weeks might be ok.  But I feared that the merge can be further
-delayed and might finally goes no where.  And as I argued above, I'm
-not sure if migrating is necessary in the first place.
-
-In general.  We are not trying to get unqualified code merged.  But I
-also don't agree we need to perfect all things before any of the code
-can be merged.  My understanding is that even if certain code is not
-complete in feature or have certain drawbacks, if the current chunk
-provided some useful features and the drawbacks are acceptable, we
-should merge them and add more enhancements incrementally in the
-future.  Some people don't have the luck to work on one thing for a
-long time, and can't possibly finish all the enhancements in one go.
-It's beneficial to merge part of the whole picture if it is acceptable
-rather than wait for an uncertain time for all to be finished.
-
-- Leo
+-- 
+~Vinod
