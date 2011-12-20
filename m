@@ -1,26 +1,43 @@
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
- helo=TX2EHSOBE003.bigfish.com)
+Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RctNZ-00013b-4H
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 06:40:49 +0000
-From: Liu Shengzhou-B36685 <B36685@freescale.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH 1/2] mtd/nand: fixup for fmr initialization of Freescale
- NAND controller
-Date: Tue, 20 Dec 2011 06:40:43 +0000
-Message-ID: <3F453DDFF675A64A89321A1F352810216C9D5C@039-SN1MPN1-005.039d.mgd.msft.net>
-References: <1323682853-10750-1-git-send-email-Shengzhou.Liu@freescale.com>
- <1324133097.4240.32.camel@sauron.fi.intel.com>
-In-Reply-To: <1324133097.4240.32.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1RcvOk-0008AU-Un
+ for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 08:50:13 +0000
+Message-ID: <4EF04C33.7060805@linutronix.de>
+Date: Tue, 20 Dec 2011 09:49:55 +0100
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 MIME-Version: 1.0
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
- Gala Kumar-B11780 <B11780@freescale.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: nand: write bad block marker even with BBT
+References: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, Baruch Siach <baruch@tkos.co.il>,
+ Dan Carpenter <error27@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Barry Song <barry.song@analog.com>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Sukumar Ghorai <s-ghorai@ti.com>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>, Peter Wippich <pewi@gw-instruments.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>,
+ Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +47,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFydGVtIEJpdHl1dHNraXkg
-W21haWx0bzpkZWRla2luZDFAZ21haWwuY29tXQ0KPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIg
-MTcsIDIwMTEgMTA6NDUgUE0NCj4gVG86IExpdSBTaGVuZ3pob3UtQjM2Njg1DQo+IENjOiBsaW51
-eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZzsgV29vZCBTY290dC1CMDc0MjE7DQo+IGR3bXcyQGlu
-ZnJhZGVhZC5vcmc7IEdhbGEgS3VtYXItQjExNzgwOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFk
-Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvMl0gbXRkL25hbmQ6IGZpeHVwIGZvciBmbXIg
-aW5pdGlhbGl6YXRpb24gb2YNCj4gRnJlZXNjYWxlIE5BTkQgY29udHJvbGxlcg0KPiANCj4gT24g
-TW9uLCAyMDExLTEyLTEyIGF0IDE3OjQwICswODAwLCBTaGVuZ3pob3UgTGl1IHdyb3RlOg0KPiA+
-IFRoZXJlIHdhcyBhIGJ1ZyBmb3IgZm1yIGluaXRpYWxpemF0aW9uLCB3aGljaCBsZWFkIHRvICBm
-bXIgd2FzIGFsd2F5cw0KPiA+IDB4MTAwIGluIGZzbF9lbGJjX2NoaXBfaW5pdCgpIGFuZCBjYXVz
-ZWQgRkNNIGNvbW1hbmQgdGltZW91dCBiZWZvcmUNCj4gPiBjYWxsaW5nIGZzbF9lbGJjX2NoaXBf
-aW5pdF90YWlsKCksIG5vdyB3ZSBpbml0aWFsaXplIENXVE8gdG8gbWF4aW11bQ0KPiA+IHRpbWVv
-dXQgdmFsdWUgYW5kIG5vdCByZWx5aW5nIG9uIHRoZSBzZXR0aW5nIG9mIGJvb3Rsb2FkZXIuDQo+
-ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTaGVuZ3pob3UgTGl1IDxTaGVuZ3pob3UuTGl1QGZyZWVz
-Y2FsZS5jb20+DQo+IA0KPiBQdXNoZWQgYm90aCB0byBsMi1tdGQtMi42LmdpdCwgdGhhbmtzIQ0K
-PiANCj4gLS0NCj4gQmVzdCBSZWdhcmRzLA0KPiBBcnRlbSBCaXR5dXRza2l5DQoNCkkgbm90ZWQg
-aXQgaGFkIGJlZW4gYXBwbGllZCBpbiBsaW51eC1uZXh0LmdpdCB0cmVlLg0KRG9lcyBpdCBzdGls
-bCBuZWVkIHRvIGwyLW10ZC0yLjYuZ2l0PyANClRoYW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KU2hl
-bmd6aG91IExpdQ0K
+On 12/19/2011 11:03 PM, Brian Norris wrote:
+> Currently, the flash-based BBT implementation writes bad block data only
+> to its flash-based table and not to the OOB marker area. Then, as new
+> bad blocks are marked over time, the OOB markers become out of date and
+> the flash-based table becomes the only source of current bad block
+> information. This can be a problem when:
+>
+>   * bootloader cannot read the flash-based BBT format
+>   * BBT is corrupted and the flash must be rescanned for bad
+>     blocks; we want to remember bad blocks that were marked from Linux
+>
+> In an attempt to keep the bad block markers in sync with the flash-based
+> BBT, this patch changes the default so that we write bad block markers
+> to the proper OOB area on each block in addition to flash-based BBT.
+>
+> Theoretically, the bad block table and the OOB markers can still get out
+> of sync if the system experiences a power cut between writing the BBT to
+> flash and writing the OOB marker to a newly-marked bad block. However,
+> this is a relatively unlikely event, as new bad blocks shouldn't appear
+> frequently.
+>
+
+The marker and BBT may get out of sync. You should use either the one 
+_or_ the other but not both. Why use both anyway? I use BBT because I
+have no room left in OOB or updating a single area in OOB is too
+complicated / hardly possible.
+In the former case, reading that area again and interpreting it as
+something as it was once is a bad thing.
+
+Why is the BBT corrupted? You have two tables. If one is broken you
+have still the other. If you lose one block which was about to be
+marked bad you find soon enough.
+
+Sebastian
