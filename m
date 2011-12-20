@@ -1,43 +1,33 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RcvOk-0008AU-Un
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 08:50:13 +0000
-Message-ID: <4EF04C33.7060805@linutronix.de>
-Date: Tue, 20 Dec 2011 09:49:55 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+ id 1Rcvgi-0000ru-FO
+ for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 09:08:45 +0000
+Received: by eekc13 with SMTP id c13so5236878eek.36
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2011 01:08:42 -0800 (PST)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: write bad block marker even with BBT
-References: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, Baruch Siach <baruch@tkos.co.il>,
- Dan Carpenter <error27@gmail.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- Barry Song <barry.song@analog.com>, Gabor Juhos <juhosg@openwrt.org>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Sukumar Ghorai <s-ghorai@ti.com>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>,
- Florian Fainelli <florian@openwrt.org>, Peter Wippich <pewi@gw-instruments.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>,
- Adrian Hunter <adrian.hunter@nokia.com>
+Sender: pku.leo@gmail.com
+In-Reply-To: <4EEF6AAA.3030806@freescale.com>
+References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
+ <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
+ <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
+ <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
+ <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
+ <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
+ <4EEAB076.30000@freescale.com> <4EEB8704.8030201@freescale.com>
+ <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
+ <4EEF6AAA.3030806@freescale.com>
+Date: Tue, 20 Dec 2011 17:08:42 +0800
+Message-ID: <CADRPPNQtuuh5yR1WVNccoFhnQZnMenaFkFnHmFKWicSBoj35JQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
+ large-page Nand chip
+From: Li Yang <leoli@freescale.com>
+To: Scott Wood <scottwood@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com, dwmw2@infradead.org,
+ LiuShuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
+ shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,37 +37,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/19/2011 11:03 PM, Brian Norris wrote:
-> Currently, the flash-based BBT implementation writes bad block data only
-> to its flash-based table and not to the OOB marker area. Then, as new
-> bad blocks are marked over time, the OOB markers become out of date and
-> the flash-based table becomes the only source of current bad block
-> information. This can be a problem when:
+On Tue, Dec 20, 2011 at 12:47 AM, Scott Wood <scottwood@freescale.com> wrot=
+e:
+> On 12/19/2011 05:05 AM, Li Yang wrote:
+>> On Sat, Dec 17, 2011 at 1:59 AM, Scott Wood <scottwood@freescale.com> wr=
+ote:
+>>> On 12/15/2011 08:44 PM, LiuShuo wrote:
+>>>> hi Artem,
+>>>> Could this patch be applied now and we make a independent patch for =
+=C2=A0bad
+>>>> block information
+>>>> migration later?
+>>>
+>>> This patch is not safe to use without migration.
+>>
+>> Hi Scott,
+>>
+>> We agree it's not entirely safe without migrating the bad block flag.
+>> But let's consider two sides of the situation.
+>>
+>> Firstly, it's only unsafe when there is a need to re-built the Bad
+>> Block Table from scratch(old BBT broken).
 >
->   * bootloader cannot read the flash-based BBT format
->   * BBT is corrupted and the flash must be rescanned for bad
->     blocks; we want to remember bad blocks that were marked from Linux
->
-> In an attempt to keep the bad block markers in sync with the flash-based
-> BBT, this patch changes the default so that we write bad block markers
-> to the proper OOB area on each block in addition to flash-based BBT.
->
-> Theoretically, the bad block table and the OOB markers can still get out
-> of sync if the system experiences a power cut between writing the BBT to
-> flash and writing the OOB marker to a newly-marked bad block. However,
-> this is a relatively unlikely event, as new bad blocks shouldn't appear
-> frequently.
+> No, it's unsafe in the presence of bad blocks.
 >
 
-The marker and BBT may get out of sync. You should use either the one 
-_or_ the other but not both. Why use both anyway? I use BBT because I
-have no room left in OOB or updating a single area in OOB is too
-complicated / hardly possible.
-In the former case, reading that area again and interpreting it as
-something as it was once is a bad thing.
+Instead of migrating the factory bad block markers I proposed to
+modify the code of building BBT to make it different for 4K page, so
+that the default BBT can correctly covers the factory bad blocks.  It
+is the easiest way with nearly no harm to the functionality.
 
-Why is the BBT corrupted? You have two tables. If one is broken you
-have still the other. If you lose one block which was about to be
-marked bad you find soon enough.
+If you look at nand_default_block_markbad() in current implementation
+of Linux MTD.  If we have set NAND_BBT_USE_FLASH option, which we did,
+the bad block information in only updated in BBT not the oob area of
+the first two pages of the bad block.  That means we are currently
+only relies on the BBT for bad blocks.  If the BBT is created, the
+factory bad block markers can be ignored, IMO.
 
-Sebastian
+> The BBT erasure issue relates to how me mark the flash as migrated, not
+> whether we migrate in the first place.
+
+It is connected to whether we do the migration at all.  I mentioned in
+earlier mail that if we are doing the migration, we need to make sure
+the migration only happens once.  And it need to be done before the
+flash is used for the first time and before BBT is created.  If we
+can't guarantee these condition, we are marking good blocks as bad by
+doing the migration.  Even worse than doing nothing.
+
+>
+>> =C2=A0But currently there is no
+>> easy way to do that(re-build BBT on demand),
+>
+> You scrub the blocks with U-Boot. =C2=A0It's not supposed to be *easy*, i=
+t's
+> a developer recovery mechanism.
+
+Scrub clears the factory bad block markers also.  It is the same
+result after scrub whether or not we migrated the factory bad block
+markers.
+
+>
+>> Secondly, even if the previous said problem happens(BBT broken). =C2=A0W=
+e
+>> can still recover all the data if we overrule the bad block flag.
+>
+> How so? =C2=A0The bad block markers -- including ones legitimately writte=
+n to
+> the BBT after the fact -- are used for block skipping with certain types
+> of writes. =C2=A0Without the knowledge of which blocks were marked bad, h=
+ow
+> do we know which blocks were skipped?
+
+This is not supposed to be *easy*.  We might get more information in
+the file system level.  Or we check the content of the blocks.
+
+>
+>> Only the card is not so good to be used again,
+>
+> That's a pretty crappy thing to happen every time you hit a bug during
+> development.
+>
+> But again, that's irrelevant to whether this patch should be applied
+> as-is, because we currently don't have any bad block migration at all.
+>
+>> however, it can be used
+>> if we take the risk of losing data from errors that ECC can't
+>> notice(low possibility too).
+>
+> Can you quantify "low possibility" here?
+>
+> Note that any block that *was* marked bad will have a multi-bit error
+> from the marker itself, since it will be embedded in the main data area.
+
+I found the definition of bad block from one NAND chip manual: Bad
+Blocks are blocks that contain one or more invalid bits whose
+reliability is not guaranteed.
+
+There is no mentioning that the bad block has to have multi-bit error.
+ Although the factory bad blocks might have worse error than wear-off
+bad blocks, it's not what I can tell.
+
+>
+>> Finally, I don't think this is a blocker issue but a better to have enha=
+ncement.
+>
+> No, it is not an enhancement. =C2=A0Processing bad block markers correctl=
+y is
+> a fundamental requirement. =C2=A0And if anyone *does* start using it righ=
+t
+> away, then we'll have to deal with their complaints if we start checking
+> for a migration marker later.
+
+I agree in some extend.  I suggested to have the code of creating
+correct BBT for 4k page on first use, but not doing the migration.
+Given the code we have right now.   We don't take more risk than
+before, and take no functionality lose.
+
+>
+> Why is it so critical that it be merged now, and not in a few weeks (or
+> next merge window) when I have a chance to do the migration code
+> (assuming nobody else does it first) and add a suitable check for the
+> migration marker in the Linux driver?
+
+A few weeks might be ok.  But I feared that the merge can be further
+delayed and might finally goes no where.  And as I argued above, I'm
+not sure if migrating is necessary in the first place.
+
+In general.  We are not trying to get unqualified code merged.  But I
+also don't agree we need to perfect all things before any of the code
+can be merged.  My understanding is that even if certain code is not
+complete in feature or have certain drawbacks, if the current chunk
+provided some useful features and the drawbacks are acceptable, we
+should merge them and add more enhancements incrementally in the
+future.  Some people don't have the luck to work on one thing for a
+long time, and can't possibly finish all the enhancements in one go.
+It's beneficial to merge part of the whole picture if it is acceptable
+rather than wait for an uncertain time for all to be finished.
+
+- Leo
