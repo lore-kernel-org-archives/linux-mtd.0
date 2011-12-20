@@ -1,32 +1,48 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rd5fg-00052n-KU
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 19:48:21 +0000
-Message-ID: <4EF0E67B.5080002@freescale.com>
-Date: Tue, 20 Dec 2011 13:48:11 -0600
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: Li Yang <leoli@freescale.com>
-Subject: Re: [PATCH 3/3] mtd/nand : workaround for Freescale FCM to support
- large-page Nand chip
-References: <1322973098-2528-1-git-send-email-shuo.liu@freescale.com>
- <1322973098-2528-3-git-send-email-shuo.liu@freescale.com>
- <4EDEAEB9.6020703@freescale.com> <1323724195.2297.11.camel@koala>
- <4EE66EFE.1050608@freescale.com> <1323724784.2297.20.camel@koala>
- <4EE6725C.3050706@freescale.com> <4EE6BC9B.4000602@freescale.com>
- <4EE8612C.9050104@freescale.com> <4EE903CE.1010903@freescale.com>
- <4EEAB076.30000@freescale.com> <4EEB8704.8030201@freescale.com>
- <CADRPPNT-akj5KBQKdRaFrA2XpLU6-xtuRduzDYEWjv_dzVmTAA@mail.gmail.com>
- <4EEF6AAA.3030806@freescale.com>
- <CADRPPNQtuuh5yR1WVNccoFhnQZnMenaFkFnHmFKWicSBoj35JQ@mail.gmail.com>
-In-Reply-To: <CADRPPNQtuuh5yR1WVNccoFhnQZnMenaFkFnHmFKWicSBoj35JQ@mail.gmail.com>
+ id 1Rd6dV-0000xn-77
+ for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 20:50:09 +0000
+Received: by lahc1 with SMTP id c1so5027622lah.36
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2011 12:50:04 -0800 (PST)
+Subject: Re: [PATCH v2] mtd: nand: write bad block marker even with BBT
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 20 Dec 2011 22:49:54 +0200
+In-Reply-To: <CAN8TOE_2yuqPnUwA6KWJ7Vqr=dEqevGP5A1nbqYSbJGB_hgSEQ@mail.gmail.com>
+References: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
+ <4EF04C33.7060805@linutronix.de>
+ <CAN8TOE_2yuqPnUwA6KWJ7Vqr=dEqevGP5A1nbqYSbJGB_hgSEQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linuxppc-dev@lists.ozlabs.org,
- LiuShuo <b35362@freescale.com>, linux-kernel@vger.kernel.org,
- shuo.liu@freescale.com, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, dwmw2@infradead.org
+Message-ID: <1324414200.2611.1.camel@koala>
+Mime-Version: 1.0
+Cc: Baruch Siach <baruch@tkos.co.il>, Dan Carpenter <error27@gmail.com>,
+ Barry Song <21cnbao@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Adrian Hunter <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>, Peter Wippich <pewi@gw-instruments.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,132 +52,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/20/2011 03:08 AM, Li Yang wrote:
-> On Tue, Dec 20, 2011 at 12:47 AM, Scott Wood <scottwood@freescale.com> wrote:
->> On 12/19/2011 05:05 AM, Li Yang wrote:
->>> On Sat, Dec 17, 2011 at 1:59 AM, Scott Wood <scottwood@freescale.com> wrote:
->>>> On 12/15/2011 08:44 PM, LiuShuo wrote:
->>>>> hi Artem,
->>>>> Could this patch be applied now and we make a independent patch for  bad
->>>>> block information
->>>>> migration later?
->>>>
->>>> This patch is not safe to use without migration.
->>>
->>> Hi Scott,
->>>
->>> We agree it's not entirely safe without migrating the bad block flag.
->>> But let's consider two sides of the situation.
->>>
->>> Firstly, it's only unsafe when there is a need to re-built the Bad
->>> Block Table from scratch(old BBT broken).
->>
->> No, it's unsafe in the presence of bad blocks.
->>
+On Tue, 2011-12-20 at 10:17 -0800, Brian Norris wrote:
+> > I use BBT because I
+> > have no room left in OOB or updating a single area in OOB is too
+> > complicated / hardly possible.
+> > In the former case, reading that area again and interpreting it as
+> > something as it was once is a bad thing.
 > 
-> Instead of migrating the factory bad block markers I proposed to
-> modify the code of building BBT to make it different for 4K page, so
-> that the default BBT can correctly covers the factory bad blocks.  It
-> is the easiest way with nearly no harm to the functionality.
+> Well, then that is one case where you want an option to avoid writing
+> to markers back to OOB. We may need an option flag to enforce the old
+> behavior. 
 
-Even if we were to agree to that (I disagree with "nearly no harm"),
-this patch doesn't implement that.  As is, this patch simply ignores the
-issue.
+I guess there should be some way of detecting this case (no space in
+OOB) and just not writing.
 
-Note that besides possibly tossing away bad block information during
-development, the BBT-only approach will not work for booting from NAND,
-as we don't use the BBT in that case (need to keep the code minimal to
-fit the 4k boot block).  Yes, this ignores blocks that were marked bad
-by software, but that's usually OK since that part of the chip isn't
-managed by a software layer such as jffs2 that will mark blocks as bad.
-
->> The BBT erasure issue relates to how me mark the flash as migrated, not
->> whether we migrate in the first place.
-> 
-> It is connected to whether we do the migration at all.  I mentioned in
-> earlier mail that if we are doing the migration, we need to make sure
-> the migration only happens once.  And it need to be done before the
-> flash is used for the first time and before BBT is created.  If we
-> can't guarantee these condition, we are marking good blocks as bad by
-> doing the migration.  Even worse than doing nothing.
-
-You also can't do the special BBT scan once the flash has been written
-to with normal data.  This patch does not implement the special BBT scan.
-
->>>  But currently there is no
->>> easy way to do that(re-build BBT on demand),
->>
->> You scrub the blocks with U-Boot.  It's not supposed to be *easy*, it's
->> a developer recovery mechanism.
-> 
-> Scrub clears the factory bad block markers also.  
-
-Only if you scrub bad blocks.  I was talking about scrubbing the BBT
-specifically, not the entire chip.
-
->>> Secondly, even if the previous said problem happens(BBT broken).  We
->>> can still recover all the data if we overrule the bad block flag.
->>
->> How so?  The bad block markers -- including ones legitimately written to
->> the BBT after the fact -- are used for block skipping with certain types
->> of writes.  Without the knowledge of which blocks were marked bad, how
->> do we know which blocks were skipped?
-> 
-> This is not supposed to be *easy*.  We might get more information in
-> the file system level.  Or we check the content of the blocks.
-
-If you need to take special, non-automatic steps to recover the data,
-that counts as data loss.
-
->>> however, it can be used
->>> if we take the risk of losing data from errors that ECC can't
->>> notice(low possibility too).
->>
->> Can you quantify "low possibility" here?
->>
->> Note that any block that *was* marked bad will have a multi-bit error
->> from the marker itself, since it will be embedded in the main data area.
-> 
-> I found the definition of bad block from one NAND chip manual: Bad
-> Blocks are blocks that contain one or more invalid bits whose
-> reliability is not guaranteed.
-> 
-> There is no mentioning that the bad block has to have multi-bit error.
-
-"It's not guaranteed to fail" is rather different from "low possibility
-of failure".
-
->  Although the factory bad blocks might have worse error than wear-off
-> bad blocks, it's not what I can tell.
-
-Why would they have such a mechanism to mark blocks bad, if it's not needed?
-
->> Why is it so critical that it be merged now, and not in a few weeks (or
->> next merge window) when I have a chance to do the migration code
->> (assuming nobody else does it first) and add a suitable check for the
->> migration marker in the Linux driver?
-> 
-> A few weeks might be ok.  But I feared that the merge can be further
-> delayed and might finally goes no where.
-
-And I fear that the bad block handling will be forgotten about if enough
-gets merged for this to sort-of work.
-
-> And as I argued above, I'm not sure if migrating is necessary in the first place.
-> 
-> In general.  We are not trying to get unqualified code merged.  But I
-> also don't agree we need to perfect all things before any of the code
-> can be merged.
-
-I'm not asking for it to be perfect -- this just seems like a difficult
-thing to fix once people start using the feature (similar to getting a
-userspace API merged, we want to get it right first), and I'm not
-comfortable with the risks of people using it without bad block handling.
-
-> My understanding is that even if certain code is not
-> complete in feature or have certain drawbacks, if the current chunk
-> provided some useful features and the drawbacks are acceptable,
-
-Whether "the drawbacks are acceptable" is the issue.
-
--Scott
+Artem.
