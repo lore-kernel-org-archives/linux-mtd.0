@@ -1,12 +1,15 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rd4fW-0001G3-Bz
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 18:44:06 +0000
+ id 1Rd4g7-0001Lk-Dn
+ for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 18:44:44 +0000
 From: Mike Dunn <mikedunn@newsguy.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/2] always use partition wrappers; drivers return bitflips
-Date: Tue, 20 Dec 2011 10:42:14 -0800
-Message-Id: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>
+Subject: [PATCH 1/2] MTD: pass driver methods through partition wrappers on
+ unpartitioned devices
+Date: Tue, 20 Dec 2011 10:42:15 -0800
+Message-Id: <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
+In-Reply-To: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>
+References: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>
 To: linux-mtd@lists.infradead.org
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lars-Peter Clausen <lars@metafoo.de>, Mike Dunn <mikedunn@newsguy.com>,
@@ -31,53 +34,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Ensure driver methods always go through the wrapper functions in the
+partitioning code by creating a single "partition" on otherwise unpartitioned
+devices.
 
-These two patches accomplish the goal of returning bitflip info from the drivers
-to mtd without requiring the huge patch that results from changing the prototype
-of the read() method.
+Tested with nandsim, onenand_sim, and the diskonchip g4 nand driver (currently
+out-of-tree).
 
-The first patch ensures that driver methods always go through the wrappers in
-the partitioning code by creating a "partition" that spans the entire device on
-otherwise unpartitioned devices.
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ drivers/mtd/mtdcore.c |   17 ++++++++++++++---
+ drivers/mtd/mtdpart.c |   10 +++++++---
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-Now that the methods always pass through the mtd code via the partitioning
-wrappers, the second patch tweaks the meaning of the return code from the
-driver's read() and read_oob() methods.  Where previously, in the absence of a
-hard error, the driver returned either -EUCLEAN (one or more bitflips were
-corrected) or 0 (no bitflips), the driver now returns, absent an error, the
-maximum number of bitflips corrected on any single page.  The original set of
-possible values (and their meanings) returned from mtd to the higher layer
-remains unchanged for now.
-
-This bifurcation of the driver <-> mtd and mtd <-> higher layer is admitedly a
-little kludgy and potentially confusing for driver writers, but has the
-advantage of touching few files.  With two exceptions, all drivers for devices
-with ecc capability go through the nand or onenand interfaces, limiting the
-changes to the nand and onenand infrastructure code.  Absent an error, devices
-without ecc already return 0 always, so they comply with the modified api by
-default.
-
-If this flies, I'll follow up with patches to implement the change in the
-meaning of -EUCLEAN returned from mtd that was previously discussed. Otherwise,
-I can resubmit the large patch with the change to the read() prototype in lieu
-of patch 2/2.
-
-Thanks,
-Mike
-
-Mike Dunn (2):
-  MTD: pass driver methods through partition wrappers on unpartitioned
-    devices
-  MTD: read(), read_oob() driver methods return num bitflips
-
- drivers/mtd/devices/docg3.c        |    5 +++-
- drivers/mtd/mtdcore.c              |   17 ++++++++++++--
- drivers/mtd/mtdpart.c              |   39 +++++++++++++++++++++++++++--------
- drivers/mtd/nand/alauda.c          |    4 +-
- drivers/mtd/nand/nand_base.c       |   10 +++++++-
- drivers/mtd/onenand/onenand_base.c |    6 +++-
- 6 files changed, 62 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b01993e..4ac1962 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -477,10 +477,21 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char **types,
+ 	if (err > 0) {
+ 		err = add_mtd_partitions(mtd, real_parts, err);
+ 		kfree(real_parts);
++
+ 	} else if (err == 0) {
+-		err = add_mtd_device(mtd);
+-		if (err == 1)
+-			err = -ENODEV;
++		/*
++		 * For unpartitioned devices, create a single "partition" that
++		 * spans the entire device, so that driver methods go through
++		 * partition wrappers in all cases.
++		 */
++		struct mtd_partition single_part = {
++			.name = (char *)mtd->name,
++			.offset = 0,
++			.size = mtd->size,
++			.mask_flags = 0,
++			.ecclayout = mtd->ecclayout,
++		};
++		err = add_mtd_partitions(mtd, &single_part, 1);
+ 	}
+ 
+ 	return err;
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index a0bd2de..81975a5 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -665,9 +665,11 @@ int add_mtd_partitions(struct mtd_info *master,
+ {
+ 	struct mtd_part *slave;
+ 	uint64_t cur_offset = 0;
+-	int i;
++	int i, ret;
+ 
+-	printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
++	if (nbparts > 1)
++		printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n",
++		       nbparts, master->name);
+ 
+ 	for (i = 0; i < nbparts; i++) {
+ 		slave = allocate_partition(master, parts + i, i, cur_offset);
+@@ -678,7 +680,9 @@ int add_mtd_partitions(struct mtd_info *master,
+ 		list_add(&slave->list, &mtd_partitions);
+ 		mutex_unlock(&mtd_partitions_mutex);
+ 
+-		add_mtd_device(&slave->mtd);
++		ret = add_mtd_device(&slave->mtd);
++		if (ret == 1)
++			return -ENODEV;
+ 
+ 		cur_offset = slave->offset + slave->mtd.size;
+ 	}
 -- 
 1.7.3.4
