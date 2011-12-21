@@ -1,20 +1,22 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 5/7] MTD: NAND: ams-delta: use GPIO instead of custom
- I/O
-Date: Wed, 21 Dec 2011 20:45:34 +0100
-References: <cover.1324331816.git.jkrzyszt@tis.icnet.pl>
- <ebab42f6ddd313afb38b71880ac7865e4e0ceab4.1324331816.git.jkrzyszt@tis.icnet.pl>
- <20111221191211.GE24444@atomide.com>
-In-Reply-To: <20111221191211.GE24444@atomide.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RdT99-0004qA-JL
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2011 20:52:20 +0000
+Received: by lahc1 with SMTP id c1so6026256lah.36
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Dec 2011 12:52:14 -0800 (PST)
+Subject: Re: [PATCH] mtd: gpio-nand: add device tree bindings
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jamie Iles <jamie@jamieiles.com>
+Date: Wed, 21 Dec 2011 22:52:08 +0200
+In-Reply-To: <1324202449-13820-1-git-send-email-jamie@jamieiles.com>
+References: <1324202449-13820-1-git-send-email-jamie@jamieiles.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201112212045.34850.jkrzyszt@tis.icnet.pl>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Message-ID: <1324500731.2110.0.camel@koala>
+Mime-Version: 1.0
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@secretlab.ca>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 21 of December 2011 at 20:12:12, Tony Lindgren wrote:
-> * Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [111219 14:41]:
-> > Don't use Amstrad Delta custom I/O functions for controlling the device,
-> > use GPIO API instead.
-> > 
-> > While being at it, add missing gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB).
-> > 
-> > Depends on patch 2/7 "ARM: OMAP1: ams-delta: convert latches to
-> > basic_mmio_gpio"
-> > 
-> > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Tony Lindgren <tony@atomide.com>
+On Sun, 2011-12-18 at 10:00 +0000, Jamie Iles wrote:
+> Add device tree bindings so that the gpio-nand driver may be
+> instantiated from the device tree.  This also allows the partitions
+> to be specified in the device tree.
 > 
-> Artem, care to ack this one?
+> v7:	- restore runtime device tree/non device tree detection
+> v6:	- convert to mtd_device_parse_register()
+> v5:	- fold dt config helpers into a single gpio_nand_of_get_config()
+> v4:	- get io sync address from gpio-control-nand,io-sync-reg
+> 	  property rather than a resource
+> 	- clarified a few details in the binding
+> v3:	- remove redundant cast and a couple of whitespace/naming
+> 	  changes
+> v2:	- add CONFIG_OF guards for non-dt platforms
+> 	- compatible becomes gpio-control-nand
+> 	- clarify some binding details
+> 
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Scott Wood <scottwood@freescale.com>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 
-
-BTW, following the get_maintainer.pl script suggestions, I tried to 
-include Artem in the Cc: list, but that script provided me with an 
-invalid Artem's email address at nokia.com, and I gave up once my email 
-gateway refused to accept that message. Now I've verified that several 
-half or more year old commits signed by Artem were the sources of that 
-apparently outdated information. Looks like the get_maintainer.pl script 
-needs improvement, or should be used with care by people who don't 
-follow all email address changes ;).
-
-Thanks,
-Janusz
+Pushed to l2-mtd-2.6.git, thanks!
