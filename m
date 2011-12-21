@@ -1,23 +1,18 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RdTB7-0004wH-GJ
- for linux-mtd@lists.infradead.org; Wed, 21 Dec 2011 20:54:22 +0000
-Received: by lahc1 with SMTP id c1so6027607lah.36
- for <linux-mtd@lists.infradead.org>; Wed, 21 Dec 2011 12:54:20 -0800 (PST)
-Subject: Re: [PATCH V2 2/5] MTD: bcm63xxpart: make sure CFE and NVRAM
- partitions are at least 64K
+Subject: Re: [PATCH v2 5/7] MTD: NAND: ams-delta: use GPIO instead of custom
+ I/O
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Wed, 21 Dec 2011 22:54:13 +0200
-In-Reply-To: <1324290964-14096-1-git-send-email-jonas.gorski@gmail.com>
-References: <1324208821.17534.0.camel@sauron.fi.intel.com>
- <1324290964-14096-1-git-send-email-jonas.gorski@gmail.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Date: Wed, 21 Dec 2011 22:56:50 +0200
+In-Reply-To: <ebab42f6ddd313afb38b71880ac7865e4e0ceab4.1324331816.git.jkrzyszt@tis.icnet.pl>
+References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+ <ebab42f6ddd313afb38b71880ac7865e4e0ceab4.1324331816.git.jkrzyszt@tis.icnet.pl>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1324500858.2110.1.camel@koala>
+Message-ID: <1324501012.2110.2.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Florian Fainelli <florian@openwrt.org>
+Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,12 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-12-19 at 11:36 +0100, Jonas Gorski wrote:
-> The CFE boot loader on BCM63XX platforms assumes itself and the NVRAM
-> partition to be 64 KiB (or erase block sized, if larger).
-> Ensure this assumption is also met when creating the partitions to
-> prevent accidential erasure of CFE or NVRAM.
+On Tue, 2011-12-20 at 00:08 +0100, Janusz Krzysztofik wrote:
+> Don't use Amstrad Delta custom I/O functions for controlling the device,
+> use GPIO API instead.
 > 
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> While being at it, add missing gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB).
+> 
+> Depends on patch 2/7 "ARM: OMAP1: ams-delta: convert latches to
+> basic_mmio_gpio"
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Tony Lindgren <tony@atomide.com>
 
-Updated, thanks!
+Looks good, thanks!
+
+Reviewed-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
