@@ -1,19 +1,14 @@
-Subject: Re: [PATCH v2 5/7] MTD: NAND: ams-delta: use GPIO instead of custom
- I/O
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Date: Wed, 21 Dec 2011 22:56:50 +0200
-In-Reply-To: <ebab42f6ddd313afb38b71880ac7865e4e0ceab4.1324331816.git.jkrzyszt@tis.icnet.pl>
-References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <ebab42f6ddd313afb38b71880ac7865e4e0ceab4.1324331816.git.jkrzyszt@tis.icnet.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1324501012.2110.2.camel@koala>
-Mime-Version: 1.0
-Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RdUEE-0004Ww-B4
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2011 22:01:39 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: fix typo in comment
+Date: Wed, 21 Dec 2011 23:01:20 +0100
+Message-Id: <1324504880-13312-1-git-send-email-w.sang@pengutronix.de>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-12-20 at 00:08 +0100, Janusz Krzysztofik wrote:
-> Don't use Amstrad Delta custom I/O functions for controlling the device,
-> use GPIO API instead.
-> 
-> While being at it, add missing gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB).
-> 
-> Depends on patch 2/7 "ARM: OMAP1: ams-delta: convert latches to
-> basic_mmio_gpio"
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Tony Lindgren <tony@atomide.com>
+Funny one :) "Heck" fits somehow, too, but I am sure it was meant to be "Check".
 
-Looks good, thanks!
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Reviewed-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3ed9c5e..376472b 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2588,7 +2588,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 	instr->state = MTD_ERASING;
+ 
+ 	while (len) {
+-		/* Heck if we have a bad block, we do not erase bad blocks! */
++		/* Check if we have a bad block, we do not erase bad blocks! */
+ 		if (nand_block_checkbad(mtd, ((loff_t) page) <<
+ 					chip->page_shift, 0, allowbbt)) {
+ 			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+-- 
+1.7.2.5
