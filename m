@@ -1,48 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rd6dV-0000xn-77
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2011 20:50:09 +0000
-Received: by lahc1 with SMTP id c1so5027622lah.36
- for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2011 12:50:04 -0800 (PST)
-Subject: Re: [PATCH v2] mtd: nand: write bad block marker even with BBT
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 20 Dec 2011 22:49:54 +0200
-In-Reply-To: <CAN8TOE_2yuqPnUwA6KWJ7Vqr=dEqevGP5A1nbqYSbJGB_hgSEQ@mail.gmail.com>
-References: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
- <4EF04C33.7060805@linutronix.de>
- <CAN8TOE_2yuqPnUwA6KWJ7Vqr=dEqevGP5A1nbqYSbJGB_hgSEQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Fix the left DMA_NONE from dma_transfer_direction
+ migration
+From: Vinod Koul <vinod.koul@intel.com>
+To: Shawn Guo <shawn.guo@freescale.com>
+In-Reply-To: <20111220125401.GA5129@S2101-09.ap.freescale.net>
+References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
+ <1324373044.1641.10096.camel@vkoul-udesk3>
+ <20111220125401.GA5129@S2101-09.ap.freescale.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1324414200.2611.1.camel@koala>
+Date: Wed, 21 Dec 2011 09:37:04 +0530
+Message-ID: <1324440424.1641.10104.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Cc: Baruch Siach <baruch@tkos.co.il>, Dan Carpenter <error27@gmail.com>,
- Barry Song <21cnbao@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- Adrian Hunter <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>,
- Florian Fainelli <florian@openwrt.org>, Peter Wippich <pewi@gw-instruments.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Chris Ball <cjb@laptop.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,18 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-12-20 at 10:17 -0800, Brian Norris wrote:
-> > I use BBT because I
-> > have no room left in OOB or updating a single area in OOB is too
-> > complicated / hardly possible.
-> > In the former case, reading that area again and interpreting it as
-> > something as it was once is a bad thing.
+On Tue, 2011-12-20 at 20:54 +0800, Shawn Guo wrote:
+> On Tue, Dec 20, 2011 at 02:54:04PM +0530, Vinod Koul wrote:
+> > On Tue, 2011-12-13 at 23:48 +0800, Shawn Guo wrote:
+> > > I have been working on -rc recently, and have not noticed the failure
+> > > until I ran next tree today.  The mxs-mmc driver is broken on next
+> > > tree because the DMA_NONE was left over from the dma_transfer_direction
+> > > migration for mxs-dma and its client drivers.
+> > > 
+> > For DMA transfer, the NONE direction makes no sense?
+> > 
+> > In your conetext, what are you trying to achieve?
+> > 
+> The mxs-dma controller has a feature to program peripheral registers
+> with given values (mxs-dma PIO mode).  This is designed to pipeline
+> the operations.  For example, we can put mxs-mmc controller register
+> values into scatter list as one element together with actual data.
+> Triggering the mxs-dma, the dma will program the values into mxs-mmc
+> controller register to set up and enable mxs-mmc, and then dma
+> continue transfer data from/to mxs-mmc.  All these get done in one
+> dmaengine_submit().
 > 
-> Well, then that is one case where you want an option to avoid writing
-> to markers back to OOB. We may need an option flag to enforce the old
-> behavior. 
+> And DMA_NONE was used to let mxs-dma know this is a PIO operation.
+Sorry am little lost here. Why would DMA driver bother with a PIO mode,
+that is something only peripheral driver would know about, mmc in your
+case.
 
-I guess there should be some way of detecting this case (no space in
-OOB) and just not writing.
+So what you are saying is the your dma has the capability to program the
+peripheral registers in case of PIO mode, but why wouldn't the
+peripheral driver do that instead? 
 
-Artem.
+-- 
+~Vinod
