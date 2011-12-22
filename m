@@ -1,18 +1,19 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rds4V-0001ic-GY
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 23:29:12 +0000
-Message-ID: <4EF3BD20.9010408@newsguy.com>
-Date: Thu, 22 Dec 2011 15:28:32 -0800
+ id 1Rds4e-0001jM-KF
+ for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 23:29:20 +0000
+Message-ID: <4EF3BD2A.5020409@newsguy.com>
+Date: Thu, 22 Dec 2011 15:28:42 -0800
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
 Subject: Re: [PATCH 1/2] MTD: pass driver methods through partition wrappers
  on unpartitioned devices
 References: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>	
- <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
+ <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>	
  <1324559149.10300.93.camel@sauron.fi.intel.com>
-In-Reply-To: <1324559149.10300.93.camel@sauron.fi.intel.com>
+ <1324577032.1165.15.camel@sauron.fi.intel.com>
+In-Reply-To: <1324577032.1165.15.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -36,30 +37,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/22/2011 05:05 AM, Artem Bityutskiy wrote:
-> On Tue, 2011-12-20 at 10:42 -0800, Mike Dunn wrote:
->> +		/*
->> +		 * For unpartitioned devices, create a single "partition" that
->> +		 * spans the entire device, so that driver methods go through
->> +		 * partition wrappers in all cases.
->> +		 */
->> +		struct mtd_partition single_part = {
->> +			.name = (char *)mtd->name,
->> +			.offset = 0,
->> +			.size = mtd->size,
->> +			.mask_flags = 0,
->> +			.ecclayout = mtd->ecclayout,
->> +		};
->> +		err = add_mtd_partitions(mtd, &single_part, 1);
->>  	}
-> There is a problem with this approach :-(
+On 12/22/2011 10:03 AM, Artem Bityutskiy wrote:
+> On Thu, 2011-12-22 at 15:05 +0200, Artem Bityutskiy wrote:
+>> 1. Rework whole MTD interface from ->read()/->write()/etc (pointers to
+>> functions) to mtd_read(mtd, ...)/mtd_write(mtd, ...)/etc.
+> I will send a patch-set for this change tomorrow.
 >
-> Look at the 'mtd_blkpg_ioctl()' function which is used to re-partition
-> MTD device from user-space. It is a bit strange, but we use block device
-> for re-partition in order to not invent new ioctls.
+>> 2. In the new functions you may do the stuff you do at patch 2.
+> Then you will be able to do this change easily.
+>
 
 
-Sorry, missed that too.  So many perils...
 
-Thanks,
+OK, thank you Artem.  I'll watch for it and follow up with a reworked patch 2.
+
 Mike
