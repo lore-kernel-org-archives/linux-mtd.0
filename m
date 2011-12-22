@@ -1,21 +1,35 @@
-Received: from imx12.toshiba.co.jp ([61.202.160.132])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rdg2O-0000Ve-PF
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 10:38:15 +0000
-From: <katsuki.uwatoko@toshiba.co.jp>
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] [MTD] NAND : SFTL (Simple Flash Transration Layer)
-Date: Thu, 22 Dec 2011 10:38:02 +0000
-Message-ID: <C4CCC095C74FEDkatsuki.uwatoko@toshiba.co.jp>
-References: <4CCCBA2E6B78F3katsuki.uwatoko@toshiba.co.jp>
- <1324138390.4240.69.camel@sauron.fi.intel.com>
-In-Reply-To: <1324138390.4240.69.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <6D48BB76E49DA84FB64C063CB6136AFC@toshiba.local>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+ id 1RdhpP-0000mf-0b
+ for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 12:32:55 +0000
+Received: by iadk27 with SMTP id k27so14382937iad.36
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2011 04:32:51 -0800 (PST)
+Message-ID: <1324557264.10300.86.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] MTD: pass driver methods through partition wrappers
+ on unpartitioned devices
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Thu, 22 Dec 2011 14:34:24 +0200
+In-Reply-To: <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
+References: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>
+ <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Kml8BDteg9gKCqpYjF8s"
+Mime-Version: 1.0
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Manuel Lauss <manuel.lauss@googlemail.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, Jiandong Zheng <jdzheng@broadcom.com>,
+ Andres Salomon <dilinger@queued.net>, Olof Johansson <olof@lixom.net>,
+ Jamie Iles <jamie@jamieiles.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Vimal Singh <vimal.newwork@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,96 +39,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-Thank you for the information and the advice. I will re-design it.
+--=-Kml8BDteg9gKCqpYjF8s
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > SFTL is a flash translation layer for NAND Flash on mtd_blkdevs
-> > interface.  This is mainly-useful for read-oriented use (ex. a storage
-> > for a boot image) because this provides simple wear-leveling and
-> > scrubbing. The features are:
-> >=20
-> >  * sftl provides wear-leveling (not static wear-leveling) and scrubbing=
-.
-> >  * sftl has one erase block size cache.
-> >  * sftl uses 6 bytes in OOB for a logical address, status, version.
+On Tue, 2011-12-20 at 10:42 -0800, Mike Dunn wrote:
+> Ensure driver methods always go through the wrapper functions in the
+> partitioning code by creating a single "partition" on otherwise unpartiti=
+oned
+> devices.
 >=20
-> This is really bad idea nowadays, because modern flashes tend to use
-> whole OOB for bad block handling. Or they may disallow writing to OOB
-> because they cannot handle a write to OOB after a write to the page.
+> Tested with nandsim, onenand_sim, and the diskonchip g4 nand driver (curr=
+ently
+> out-of-tree).
 >=20
-> On top of this, modern flashes are so crappy that they have bit-flips
-> all the time, and need strong ECCs (like 8-bit or more). But the OOB
-> area is not covered by ECC, so your data in OOB will constantly become
-> corrupted.
->
-> I really suggest to re-design this.
+> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 
-I understood it and agree with that. I have to move the data of an erase
-block to data area from OOB.  But I think that even nowadays,=20
-there are not a few NANDs which has ECC data on OOB to be trusted.
+Looks good to me in general. Does it change anything from the user-space
+POW (API/ABI)?
 
-> Could you please present your work in more details. Could you please
-> describe:
+One thing to be aware of: some drivers do like this:
 
-I would like to explain about your questions/comments. =20
-If I misunderstood something, please let me know.
+drivers/mtd/maps/plat-ram.c:
 
-We would like to use a block device on NAND as a storage for boot image.=20
-It includes compressed filesystem image and/or Linux Kernel.=20
-And the most important purpose of this driver is making the boot fast.=20
+        /* check to see if there are any available partitions, or wether
+         * to add this device whole */
 
-> 1. Which problems this solves.
+        err =3D mtd_device_parse_register(info->mtd, pdata->probes, 0,
+                        pdata->partitions, pdata->nr_partitions);
+        if (!err)
+                dev_info(&pdev->dev, "registered mtd device\n");
 
-Compared mtdblock+gluebi+ubi,
+        if (pdata->nr_partitions) {
+                /* add the whole device. */
+                err =3D mtd_device_register(info->mtd, NULL, 0);
+                if (err) {
+                        dev_err(&pdev->dev,
+                                "failed to register the entire device\n");
+                }
+        }
 
-1st, currently time of the sftl initial time (insmod time) is faster=20
-than ubi. The time is so important for us because a boot time depends=20
-on this.
-=20
-The following is the result of insmod time on our target board.
-(The NAND read performance of our target board may not be good.)
+Could you please:
+1. Try to find drivers like this and kill the redundant mtd_device_register=
+()
+   call.
+2. There is no guarantee you will find all. So you could add a check in
+   mtd_device_parse_register() which would print a warning if the device is
+   added for the second time and return. So the code would work and people
+   would be able to notice the warning and fix up the driver.
 
-NAND : 256MB SLC, Large Size Page (2KB), Erase Block Size 128KB
-       w/o subpage write=20
-MTD Partition Size : 16MB, 32MB, 256MB
+> -		add_mtd_device(&slave->mtd);
+> +		ret =3D add_mtd_device(&slave->mtd);
+> +		if (ret =3D=3D 1)
+> +			return -ENODEV;
 
-	sftl	ubi
-------------------------
-32MB	 30msec	 160msec	 =09
-64MB	 40msec	 290msec
-256MB	150msec 1070msec
-------------------------
+Is this an unrelated change? Would you separate it out?
 
-2nd, as I wrote already, the flash overhead is smaller than ubi.
-
-> 2. What are the practical use-cases.
-
-A boot image including compressed read-only filesystem (squashfs) is=20
-stored in a MTD partition of NAND Flash.=20
-All of the image is read to memory at system booting from NAND and=20
-it on memory is mounted at boot. Or it in NAND flash directly is=20
-mounted.
-
-This means that it is normally read-only except update and the time
-of reading from NAND affects boot time.
-
-> 3. What are alternative existing solutions, why they are not good enough
->    and why this solution is better.
-> 4. Explain why it is not possible to teach UBI to solve these tasks.
->    E.g., introduce a special "simplified" UBI mode with 1-1 mapping / no
->    erase counters / whatever. In other words, provide good grounds for
->    adding a separate module.
-
-I heard that currently the optimization of UBI scan time is in progress.
-It might be enough but currently I do not know how much fast it is.
-I should investigate details of it.=20
-
-I think sftl would be close to sm_ftl in Linux MTD. But this driver=20
-depends on the specification of SMART media like small page size NAND,=20
-the size of logical address is 2 bytes (ZONE addressing) and so on.
-So I think we should not modify this driver.
-
-Thank you,
 --=20
-UWATOKO Katsuki=
+Best Regards,
+Artem Bityutskiy
+
+--=-Kml8BDteg9gKCqpYjF8s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJO8yPQAAoJECmIfjd9wqK0M90P/iJWAyFctkLSeBNPyMdkg4zt
+Lq9vdLlbot6JRGOgs3kNGLfQiUPzMPwYJIcYXyzSj/nS5+HtIwZWRRs0qhIQaMRh
+q3Qi6YlkAf0XJ3/LhU7MMsj1RxpLLj1oDGegMYfWhnflmYovhzOo+iksSdDLY14M
+kKH3t1uHyrmBstWgA1MbomYHJrHCLfANQOUM2KLFkvEkVRKQOxp3+AojWAfxtiPC
+NPufbG3iN97XM4gACCYynRbJhoXZkZH7QrqJciVPtyEvRorwFksa1QwNjzDAzAJX
+kbBSV3cOBBgwqNfLluTcF2fxxlkcFjN4AGmuvI9YAVxQmr1jCjxj7K8mNutIv79L
+AHyX/Z9dy5z3xbFqmC++NKy1hC6MP/OKs2FGGC6Dj0xOmP3DDRr9qigHljE23XDG
+5ofhTDpO7lEKnkB8/NMW1kR7EDEpF8Nt+S1CeLVjb/e1vWk9UbB6TNzABghJt63j
+SXiwH+0XXXXU2K/HiQCkV1fec+L6G1ZA0J4RL3epyDSjdulV77vuAfqAFomnojAF
+n7LITE+kQzE/KTzoC8s1YYHoLTTYpEkFhen9NNfnd89huGejLRhZnv6dVALjmEjK
+LDBYEwVATRrPlUrAXi+q0tVJjwpOhVPQcmrO2M1NniCfq+FPUQ7jg7j04NtgwKwA
+mikRfK1B8Y2Q1j8ngqaM
+=b5YE
+-----END PGP SIGNATURE-----
+
+--=-Kml8BDteg9gKCqpYjF8s--
