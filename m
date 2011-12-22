@@ -1,21 +1,21 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RdhpP-0000mf-0b
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 12:32:55 +0000
-Received: by iadk27 with SMTP id k27so14382937iad.36
- for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2011 04:32:51 -0800 (PST)
-Message-ID: <1324557264.10300.86.camel@sauron.fi.intel.com>
+ id 1RdiJk-0002SY-06
+ for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 13:04:16 +0000
+Received: by ggnp4 with SMTP id p4so7760222ggn.36
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2011 05:04:15 -0800 (PST)
+Message-ID: <1324559149.10300.93.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 1/2] MTD: pass driver methods through partition wrappers
  on unpartitioned devices
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Dunn <mikedunn@newsguy.com>
-Date: Thu, 22 Dec 2011 14:34:24 +0200
+Date: Thu, 22 Dec 2011 15:05:49 +0200
 In-Reply-To: <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
 References: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>
  <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Kml8BDteg9gKCqpYjF8s"
+ boundary="=-Q/sskNQlPH72XMCTg0xV"
 Mime-Version: 1.0
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
@@ -40,67 +40,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Kml8BDteg9gKCqpYjF8s
+--=-Q/sskNQlPH72XMCTg0xV
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Tue, 2011-12-20 at 10:42 -0800, Mike Dunn wrote:
-> Ensure driver methods always go through the wrapper functions in the
-> partitioning code by creating a single "partition" on otherwise unpartiti=
-oned
-> devices.
->=20
-> Tested with nandsim, onenand_sim, and the diskonchip g4 nand driver (curr=
-ently
-> out-of-tree).
->=20
-> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> +		/*
+> +		 * For unpartitioned devices, create a single "partition" that
+> +		 * spans the entire device, so that driver methods go through
+> +		 * partition wrappers in all cases.
+> +		 */
+> +		struct mtd_partition single_part =3D {
+> +			.name =3D (char *)mtd->name,
+> +			.offset =3D 0,
+> +			.size =3D mtd->size,
+> +			.mask_flags =3D 0,
+> +			.ecclayout =3D mtd->ecclayout,
+> +		};
+> +		err =3D add_mtd_partitions(mtd, &single_part, 1);
+>  	}
 
-Looks good to me in general. Does it change anything from the user-space
-POW (API/ABI)?
+There is a problem with this approach :-(
 
-One thing to be aware of: some drivers do like this:
+Look at the 'mtd_blkpg_ioctl()' function which is used to re-partition
+MTD device from user-space. It is a bit strange, but we use block device
+for re-partition in order to not invent new ioctls.
 
-drivers/mtd/maps/plat-ram.c:
+This function has this code:
 
-        /* check to see if there are any available partitions, or wether
-         * to add this device whole */
+                /* Only master mtd device must be used to add partitions */
+                if (mtd_is_partition(mtd))
+                        return -EINVAL;
 
-        err =3D mtd_device_parse_register(info->mtd, pdata->probes, 0,
-                        pdata->partitions, pdata->nr_partitions);
-        if (!err)
-                dev_info(&pdev->dev, "registered mtd device\n");
+and your patch  will brake re-partitioning.
 
-        if (pdata->nr_partitions) {
-                /* add the whole device. */
-                err =3D mtd_device_register(info->mtd, NULL, 0);
-                if (err) {
-                        dev_err(&pdev->dev,
-                                "failed to register the entire device\n");
-                }
-        }
+So I guess we should go back to your first patch where you just change
+the ->read() / ->read_oob() interface.
 
-Could you please:
-1. Try to find drivers like this and kill the redundant mtd_device_register=
-()
-   call.
-2. There is no guarantee you will find all. So you could add a check in
-   mtd_device_parse_register() which would print a warning if the device is
-   added for the second time and return. So the code would work and people
-   would be able to notice the warning and fix up the driver.
+Or:
 
-> -		add_mtd_device(&slave->mtd);
-> +		ret =3D add_mtd_device(&slave->mtd);
-> +		if (ret =3D=3D 1)
-> +			return -ENODEV;
+1. Rework whole MTD interface from ->read()/->write()/etc (pointers to
+functions) to mtd_read(mtd, ...)/mtd_write(mtd, ...)/etc.
 
-Is this an unrelated change? Would you separate it out?
+2. In the new functions you may do the stuff you do at patch 2.
+
+For me the second approach is more plausible.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Kml8BDteg9gKCqpYjF8s
+--=-Q/sskNQlPH72XMCTg0xV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -108,19 +98,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJO8yPQAAoJECmIfjd9wqK0M90P/iJWAyFctkLSeBNPyMdkg4zt
-Lq9vdLlbot6JRGOgs3kNGLfQiUPzMPwYJIcYXyzSj/nS5+HtIwZWRRs0qhIQaMRh
-q3Qi6YlkAf0XJ3/LhU7MMsj1RxpLLj1oDGegMYfWhnflmYovhzOo+iksSdDLY14M
-kKH3t1uHyrmBstWgA1MbomYHJrHCLfANQOUM2KLFkvEkVRKQOxp3+AojWAfxtiPC
-NPufbG3iN97XM4gACCYynRbJhoXZkZH7QrqJciVPtyEvRorwFksa1QwNjzDAzAJX
-kbBSV3cOBBgwqNfLluTcF2fxxlkcFjN4AGmuvI9YAVxQmr1jCjxj7K8mNutIv79L
-AHyX/Z9dy5z3xbFqmC++NKy1hC6MP/OKs2FGGC6Dj0xOmP3DDRr9qigHljE23XDG
-5ofhTDpO7lEKnkB8/NMW1kR7EDEpF8Nt+S1CeLVjb/e1vWk9UbB6TNzABghJt63j
-SXiwH+0XXXXU2K/HiQCkV1fec+L6G1ZA0J4RL3epyDSjdulV77vuAfqAFomnojAF
-n7LITE+kQzE/KTzoC8s1YYHoLTTYpEkFhen9NNfnd89huGejLRhZnv6dVALjmEjK
-LDBYEwVATRrPlUrAXi+q0tVJjwpOhVPQcmrO2M1NniCfq+FPUQ7jg7j04NtgwKwA
-mikRfK1B8Y2Q1j8ngqaM
-=b5YE
+iQIcBAABAgAGBQJO8ystAAoJECmIfjd9wqK0xKQQAK2tTPDdJ1Sro/PVSia//5/v
+8M/oqsHRufpL010NcmRAsKsyUhocWlKm2VzF+SnutAn2ZS2miidEeFKyKMhkSot4
+FuTK1vbUtj1BBYtG60K/36QJgNeTT/NvlRv/3Q8Od+x+FQLixsZVJNgVGT/ztZzV
+B9Nbytn4a7CHP062SJcuWp3r5HKkMi/Y94v01pfFu7x6l1GzWhzzCcLRymXvLR0X
+0y2qFTDYMgJ9DSD2uKnUb7o/U0Gt9rv8gQ717Njt1ONl6AUWST75AE2WV1f1JmNN
+K97JtPGgDLu8BYeRaxtb0gZDPvp7iC2MYrQVFno/XwUm69qhYqQDFmg86Dkmso5l
+tfBUarjBglI19pzyUPZ9J8zc69aDkkreQ/IMVT//bsFuN10izzwC3IF8/8vHI+uW
+PRGIYCvSrZ3JU+yQwXeaaZSXBrgLMBQwuKX8fiVNDMgYakS+npiV8R/ZfVFP28R+
+9NmNjjitx37h6pmDWRWGvfdknjKD/rCe3yrwGwH4XCr5LoXbZ2Kc0ZP6qEY7bnG5
+oK51MgrFlwVkhuyXM6dEyib78sL0X2HLbSbSXM6EDZFkByHLgggkCtkTRJaHaTK2
+YBOU+EbsrUTepEh5E5RrW+xUF5bwiF4dU7rKEVsKcMKNTKKaZbgEnu6GFkkBY27D
+8GQ/YbxJ2YaKh36zkX2V
+=ngQV
 -----END PGP SIGNATURE-----
 
---=-Kml8BDteg9gKCqpYjF8s--
+--=-Q/sskNQlPH72XMCTg0xV--
