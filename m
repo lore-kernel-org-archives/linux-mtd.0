@@ -1,18 +1,13 @@
-Subject: Re: [PATCH 0/4] Fix the left DMA_NONE from dma_transfer_direction
- migration
-From: Vinod Koul <vinod.koul@intel.com>
-To: Shawn Guo <shawn.guo@linaro.org>
-In-Reply-To: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Dec 2011 21:33:49 +0530
-Message-ID: <1324656229.1633.12.camel@vkoul-udesk3>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Chris Ball <cjb@laptop.org>,
- linux-arm-kernel@lists.infradead.org
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Re9Ym-0005Bz-LE
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:09:37 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 00/28] introduce wrappers for mtd interfaces
+Date: Fri, 23 Dec 2011 20:10:52 +0200
+Message-Id: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +17,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-12-13 at 23:48 +0800, Shawn Guo wrote:
-> I have been working on -rc recently, and have not noticed the failure
-> until I ran next tree today.  The mxs-mmc driver is broken on next
-> tree because the DMA_NONE was left over from the dma_transfer_direction
-> migration for mxs-dma and its client drivers.
-> 
-> This seires is trying to fix it up.
-Applied, Thanks
+Hi,
 
-> 
-> Huang Shijie (1):
->       mtd: fix compile error for gpmi-nand
-> 
-> Shawn Guo (3):
->       dmaengine: add DMA_TRANS_NONE to dma_transfer_direction
->       mmc: mxs-mmc: fix the dma_transfer_direction migration
->       mtd: gpmi-nand: move to dma_transfer_direction
-> 
->  drivers/dma/mxs-dma.c                 |    2 +-
->  drivers/mmc/host/mxs-mmc.c            |    3 +
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   22 ++++++-----
->  include/linux/dmaengine.h             |    1 +
->  include/linux/mtd/gpmi-nand.h         |   68 +++++++++++++++++++++++++++++++++
->  5 files changed, 85 insertions(+), 11 deletions(-)
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+this patch-series introduce a bunch of wrappers for mtd interfaces, e.g.:
+* mtd_read() for mtd->read()
+* mtd_write() for mtd->write()
+* mtd_is_locked() form mtd->is_locked()
 
+and so forth for all interfaces found in 'struct mtd_info'.
 
--- 
-~Vinod
+The motivation is to help Mike Dunn to improve MTD bit-flips handling. He
+needs to distinguish between 1,2,3, etc bit-flips. Currently MTD just returns
+-EUCLEAN on any amount of bit-flips, which is too coarse for modern NANDs.
+E.g., for modern NANDs we do not want UBI to scrub on 1 bit-flip because in
+this case it will scrub all the time and will wear the flash out quickly.
+
+So Mike wants to add a new parameter to mtdcore which either the driver
+can set or the user can set/override via sysfs: the scrub level - this is
+the bit-flip level which is considered dangerous and at which the eraseblock
+have to be scrubbed. This depends on the flash HW and ECC, primarily, as well
+as on user's reliability requirements.
+
+Anyway wants to return -EUCLEAN only if the bit-flip level is higher or
+equivalent to the scrub level. To implement this, he needs to have a place
+common for all drivers to inject his code to. Currently it is impossible
+because MTD users call directly the driver's functions. With these wrappers
+it will become possible.
+
+Additionally, the wrappers will give a possibility to implement input
+parameters checking once in the wrapper and to avoid duplicating this in
+many places.
+
+This patch-set only substitutes 'mtd->func()' with 'mtd_func()', I used spatch
+to do this. But we'd need to do some more work:
+ 1 Find places like
+	if (mtd->block_isbad)
+		mtd_block_isbad(...)
+   and nicify them (possibly move the "if" check to the wrapper)
+ 2 Rename all the function pointers in 'struct mtd_info' in order to
+   make sure every driver has switched to the wrappers.
+ 3 Move the common input parameters checking to the wrappers
+
+However, these are independent tasks which can be done a bit later, and
+I am planning to do this. But I'd like to merge this patch-set during
+this merge window. If we have them already upstream by the time we start
+doing item 3, it will be way easier to handle build breakages and to do
+the interface change smoothly.
+
+Artem.
