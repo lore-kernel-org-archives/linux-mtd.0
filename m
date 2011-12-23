@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Re9ZY-0005Er-FS
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:10:25 +0000
+ id 1Re9Za-0005Er-00
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:10:27 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/28] mtd: mtdchar: rename functions
-Date: Fri, 23 Dec 2011 20:10:54 +0200
-Message-Id: <1324663880-22477-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/28] mtd: introduce mtd_erase interface
+Date: Fri, 23 Dec 2011 20:10:55 +0200
+Message-Id: <1324663880-22477-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -22,292 +22,373 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-We are going to re-work the MTD interface and change 'mtd->write()' to
-'mtd_write()', 'mtd->read()' to 'mtd_read()' and so forth for all functions
-in the 'struct mtd_info' structure.
+This patch is part of a patch-set which changes the MTD interface
+from 'mtd->func()' form to 'mtd_func()' form. We need this because
+we want to add common code to to all drivers in the mtd core level,
+which is impossible with the current interface when MTD clients
+call driver functions like 'read()' or 'write()' directly.
 
-However, mtdchar.c has its own 'mtd_read()', 'mtd_write()', etc functions
-which collide with our changes. This patch renames these functions
-to 'mtdchar_read()', 'mtdchar_write()', etc.
+At this point we just introduce a new inline wrapper function, but
+later some of them are expected to gain more code. E.g., the input
+parameters check should be moved to the wrappers rather than be
+duplicated at many drivers.
 
-Additionally, to make the 'mtdchar.c' file look consistent, rename
-similarly all the other functions starting with 'mtd_'.
+This particular patch introduced the 'mtd_erase()' interface. The
+following patches add all the other interfaces one by one.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c |   76 +++++++++++++++++++++++++------------------------
- 1 files changed, 39 insertions(+), 37 deletions(-)
+ drivers/mtd/ftl.c                   |    2 +-
+ drivers/mtd/inftlmount.c            |    4 ++--
+ drivers/mtd/mtdblock.c              |    2 +-
+ drivers/mtd/mtdchar.c               |    2 +-
+ drivers/mtd/mtdconcat.c             |    2 +-
+ drivers/mtd/mtdoops.c               |    2 +-
+ drivers/mtd/mtdpart.c               |    2 +-
+ drivers/mtd/mtdswap.c               |    2 +-
+ drivers/mtd/nftlmount.c             |    2 +-
+ drivers/mtd/rfd_ftl.c               |    2 +-
+ drivers/mtd/sm_ftl.c                |    2 +-
+ drivers/mtd/tests/mtd_oobtest.c     |    2 +-
+ drivers/mtd/tests/mtd_pagetest.c    |    2 +-
+ drivers/mtd/tests/mtd_speedtest.c   |    4 ++--
+ drivers/mtd/tests/mtd_stresstest.c  |    2 +-
+ drivers/mtd/tests/mtd_subpagetest.c |    2 +-
+ drivers/mtd/tests/mtd_torturetest.c |    2 +-
+ drivers/mtd/ubi/io.c                |    2 +-
+ drivers/staging/spectra/lld_mtd.c   |    2 +-
+ fs/jffs2/erase.c                    |    2 +-
+ fs/logfs/dev_mtd.c                  |    2 +-
+ include/linux/mtd/mtd.h             |   19 ++++++++++++++-----
+ 22 files changed, 37 insertions(+), 28 deletions(-)
 
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index c7382bb..a982889 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -355,7 +355,7 @@ static int erase_xfer(partition_t *part,
+     erase->len = 1 << part->header.EraseUnitSize;
+     erase->priv = (u_long)part;
+ 
+-    ret = part->mbd.mtd->erase(part->mbd.mtd, erase);
++    ret = mtd_erase(part->mbd.mtd, erase);
+ 
+     if (!ret)
+ 	    xfer->EraseCount++;
+diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index 2ff601f..0d946f1 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -220,7 +220,7 @@ static int find_boot_record(struct INFTLrecord *inftl)
+ 				 */
+ 				instr->addr = ip->Reserved0 * inftl->EraseSize;
+ 				instr->len = inftl->EraseSize;
+-				mtd->erase(mtd, instr);
++				mtd_erase(mtd, instr);
+ 			}
+ 			if ((ip->lastUnit - ip->firstUnit + 1) < ip->virtualUnits) {
+ 				printk(KERN_WARNING "INFTL: Media Header "
+@@ -393,7 +393,7 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+ 	   mark only the failed block in the bbt. */
+ 	for (physblock = 0; physblock < inftl->EraseSize;
+ 	     physblock += instr->len, instr->addr += instr->len) {
+-		mtd->erase(inftl->mbd.mtd, instr);
++		mtd_erase(inftl->mbd.mtd, instr);
+ 
+ 		if (instr->state == MTD_ERASE_FAILED) {
+ 			printk(KERN_WARNING "INFTL: error while formatting block %d\n",
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 7c1dc90..9b01cb0 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -85,7 +85,7 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+ 	set_current_state(TASK_INTERRUPTIBLE);
+ 	add_wait_queue(&wait_q, &wait);
+ 
+-	ret = mtd->erase(mtd, &erase);
++	ret = mtd_erase(mtd, &erase);
+ 	if (ret) {
+ 		set_current_state(TASK_RUNNING);
+ 		remove_wait_queue(&wait_q, &wait);
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index e7dc732..00423cc 100644
+index 00423cc..41d64ff 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -51,7 +51,7 @@ struct mtd_file_info {
- 	enum mtd_file_modes mode;
+@@ -731,7 +731,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 			  wq_head is no longer there when the
+ 			  callback routine tries to wake us up.
+ 			*/
+-			ret = mtd->erase(mtd, erase);
++			ret = mtd_erase(mtd, erase);
+ 			if (!ret) {
+ 				set_current_state(TASK_UNINTERRUPTIBLE);
+ 				add_wait_queue(&waitq, &wait);
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 6df4d4d..76123bd 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -379,7 +379,7 @@ static int concat_dev_erase(struct mtd_info *mtd, struct erase_info *erase)
+ 	 * FIXME: Allow INTERRUPTIBLE. Which means
+ 	 * not having the wait_queue head on the stack.
+ 	 */
+-	err = mtd->erase(mtd, erase);
++	err = mtd_erase(mtd, erase);
+ 	if (!err) {
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		add_wait_queue(&waitq, &wait);
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index f3cdce9..9b2d863 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -112,7 +112,7 @@ static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
+ 	set_current_state(TASK_INTERRUPTIBLE);
+ 	add_wait_queue(&wait_q, &wait);
+ 
+-	ret = mtd->erase(mtd, &erase);
++	ret = mtd_erase(mtd, &erase);
+ 	if (ret) {
+ 		set_current_state(TASK_RUNNING);
+ 		remove_wait_queue(&wait_q, &wait);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index a0bd2de..d318fee 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -257,7 +257,7 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	if (instr->addr >= mtd->size)
+ 		return -EINVAL;
+ 	instr->addr += part->offset;
+-	ret = part->master->erase(part->master, instr);
++	ret = mtd_erase(part->master, instr);
+ 	if (ret) {
+ 		if (instr->fail_addr != MTD_FAIL_ADDR_UNKNOWN)
+ 			instr->fail_addr -= part->offset;
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index bd9590c..4e12875 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -567,7 +567,7 @@ retry:
+ 	erase.len	= mtd->erasesize;
+ 	erase.priv	= (u_long)&wq;
+ 
+-	ret = mtd->erase(mtd, &erase);
++	ret = mtd_erase(mtd, &erase);
+ 	if (ret) {
+ 		if (retries++ < MTDSWAP_ERASE_RETRIES) {
+ 			dev_warn(d->dev,
+diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+index ac40925..9164a56 100644
+--- a/drivers/mtd/nftlmount.c
++++ b/drivers/mtd/nftlmount.c
+@@ -326,7 +326,7 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
+ 	instr->mtd = nftl->mbd.mtd;
+ 	instr->addr = block * nftl->EraseSize;
+ 	instr->len = nftl->EraseSize;
+-	mtd->erase(mtd, instr);
++	mtd_erase(mtd, instr);
+ 
+ 	if (instr->state == MTD_ERASE_FAILED) {
+ 		printk("Error while formatting block %d\n", block);
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index 73ae217..39de872 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -342,7 +342,7 @@ static int erase_block(struct partition *part, int block)
+ 	part->blocks[block].state = BLOCK_ERASING;
+ 	part->blocks[block].free_sectors = 0;
+ 
+-	rc = part->mbd.mtd->erase(part->mbd.mtd, erase);
++	rc = mtd_erase(part->mbd.mtd, erase);
+ 
+ 	if (rc) {
+ 		printk(KERN_ERR PREFIX "erase of region %llx,%llx on '%s' "
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index 1c9f307..2f1acb1 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -479,7 +479,7 @@ static int sm_erase_block(struct sm_ftl *ftl, int zone_num, uint16_t block,
+ 		return -EIO;
+ 	}
+ 
+-	if (mtd->erase(mtd, &erase)) {
++	if (mtd_erase(mtd, &erase)) {
+ 		sm_printk("erase of block %d in zone %d failed",
+ 							block, zone_num);
+ 		goto error;
+diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
+index 933f7e5..7d52854 100644
+--- a/drivers/mtd/tests/mtd_oobtest.c
++++ b/drivers/mtd/tests/mtd_oobtest.c
+@@ -78,7 +78,7 @@ static int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
+index afafb69..271819f 100644
+--- a/drivers/mtd/tests/mtd_pagetest.c
++++ b/drivers/mtd/tests/mtd_pagetest.c
+@@ -77,7 +77,7 @@ static int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+diff --git a/drivers/mtd/tests/mtd_speedtest.c b/drivers/mtd/tests/mtd_speedtest.c
+index 493b367..f67a65e 100644
+--- a/drivers/mtd/tests/mtd_speedtest.c
++++ b/drivers/mtd/tests/mtd_speedtest.c
+@@ -79,7 +79,7 @@ static int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+@@ -105,7 +105,7 @@ static int multiblock_erase(int ebnum, int blocks)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize * blocks;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d, blocks %d\n",
+ 		       err, ebnum, blocks);
+diff --git a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
+index 811642f..a204a9f 100644
+--- a/drivers/mtd/tests/mtd_stresstest.c
++++ b/drivers/mtd/tests/mtd_stresstest.c
+@@ -112,7 +112,7 @@ static int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (unlikely(err)) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+diff --git a/drivers/mtd/tests/mtd_subpagetest.c b/drivers/mtd/tests/mtd_subpagetest.c
+index 1a05bfa..16d0c05 100644
+--- a/drivers/mtd/tests/mtd_subpagetest.c
++++ b/drivers/mtd/tests/mtd_subpagetest.c
+@@ -80,7 +80,7 @@ static int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
+index 03ab649..102c79b 100644
+--- a/drivers/mtd/tests/mtd_torturetest.c
++++ b/drivers/mtd/tests/mtd_torturetest.c
+@@ -105,7 +105,7 @@ static inline int erase_eraseblock(int ebnum)
+ 	ei.addr = addr;
+ 	ei.len  = mtd->erasesize;
+ 
+-	err = mtd->erase(mtd, &ei);
++	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+ 		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index f20b6f2..b6c8959 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -361,7 +361,7 @@ retry:
+ 	ei.callback = erase_callback;
+ 	ei.priv     = (unsigned long)&wq;
+ 
+-	err = ubi->mtd->erase(ubi->mtd, &ei);
++	err = mtd_erase(ubi->mtd, &ei);
+ 	if (err) {
+ 		if (retries++ < UBI_IO_RETRIES) {
+ 			dbg_io("error %d while erasing PEB %d, retry",
+diff --git a/drivers/staging/spectra/lld_mtd.c b/drivers/staging/spectra/lld_mtd.c
+index a9c309a..d638faf 100644
+--- a/drivers/staging/spectra/lld_mtd.c
++++ b/drivers/staging/spectra/lld_mtd.c
+@@ -188,7 +188,7 @@ u16 mtd_Erase_Block(u32 block_add)
+ 	erase.len = spectra_mtd->erasesize;
+ 	erase.priv = (unsigned long)&comp;
+ 
+-	ret = spectra_mtd->erase(spectra_mtd, &erase);
++	ret = mtd_erase(spectra_mtd, &erase);
+ 	if (!ret) {
+ 		wait_for_completion(&comp);
+ 		if (erase.state != MTD_ERASE_DONE)
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index e513f19..540e8ec 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -74,7 +74,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
+ 	((struct erase_priv_struct *)instr->priv)->jeb = jeb;
+ 	((struct erase_priv_struct *)instr->priv)->c = c;
+ 
+-	ret = c->mtd->erase(c->mtd, instr);
++	ret = mtd_erase(c->mtd, instr);
+ 	if (!ret)
+ 		return;
+ 
+diff --git a/fs/logfs/dev_mtd.c b/fs/logfs/dev_mtd.c
+index eb423eb..0463628 100644
+--- a/fs/logfs/dev_mtd.c
++++ b/fs/logfs/dev_mtd.c
+@@ -105,7 +105,7 @@ static int logfs_mtd_erase(struct super_block *sb, loff_t ofs, size_t len,
+ 	ei.len = len;
+ 	ei.callback = logfs_erase_callback;
+ 	ei.priv = (long)&complete;
+-	ret = mtd->erase(mtd, &ei);
++	ret = mtd_erase(mtd, &ei);
+ 	if (ret)
+ 		return -EIO;
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 9f5b312..201bad5 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -171,11 +171,8 @@ struct mtd_info {
+ 	struct mtd_erase_region_info *eraseregions;
+ 
+ 	/*
+-	 * Erase is an asynchronous operation.  Device drivers are supposed
+-	 * to call instr->callback() whenever the operation completes, even
+-	 * if it completes with a failure.
+-	 * Callers are supposed to pass a callback function and wait for it
+-	 * to be called before writing to the block.
++	 * Do not call via these pointers, use corresponding mtd_*()
++	 * wrappers instead.
+ 	 */
+ 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
+ 
+@@ -274,6 +271,18 @@ struct mtd_info {
+ 	void (*put_device) (struct mtd_info *mtd);
  };
  
--static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
-+static loff_t mtdchar_lseek(struct file *file, loff_t offset, int orig)
++/*
++ * Erase is an asynchronous operation.  Device drivers are supposed
++ * to call instr->callback() whenever the operation completes, even
++ * if it completes with a failure.
++ * Callers are supposed to pass a callback function and wait for it
++ * to be called before writing to the block.
++ */
++static inline int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	return mtd->erase(mtd, instr);
++}
++
+ static inline struct mtd_info *dev_to_mtd(struct device *dev)
  {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -77,7 +77,7 @@ static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
- 
- 
- 
--static int mtd_open(struct inode *inode, struct file *file)
-+static int mtdchar_open(struct inode *inode, struct file *file)
- {
- 	int minor = iminor(inode);
- 	int devnum = minor >> 1;
-@@ -142,11 +142,11 @@ static int mtd_open(struct inode *inode, struct file *file)
- out:
- 	mutex_unlock(&mtd_mutex);
- 	return ret;
--} /* mtd_open */
-+} /* mtdchar_open */
- 
- /*====================================================================*/
- 
--static int mtd_close(struct inode *inode, struct file *file)
-+static int mtdchar_close(struct inode *inode, struct file *file)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -164,7 +164,7 @@ static int mtd_close(struct inode *inode, struct file *file)
- 	kfree(mfi);
- 
- 	return 0;
--} /* mtd_close */
-+} /* mtdchar_close */
- 
- /* Back in June 2001, dwmw2 wrote:
-  *
-@@ -184,7 +184,8 @@ static int mtd_close(struct inode *inode, struct file *file)
-  * alignment requirements are not met in the NAND subdriver.
-  */
- 
--static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t *ppos)
-+static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
-+			loff_t *ppos)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -265,9 +266,10 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
- 
- 	kfree(kbuf);
- 	return total_retlen;
--} /* mtd_read */
-+} /* mtdchar_read */
- 
--static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count,loff_t *ppos)
-+static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t count,
-+			loff_t *ppos)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -345,7 +347,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 
- 	kfree(kbuf);
- 	return total_retlen;
--} /* mtd_write */
-+} /* mtdchar_write */
- 
- /*======================================================================
- 
-@@ -387,7 +389,7 @@ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
- # define otp_select_filemode(f,m)	-EOPNOTSUPP
- #endif
- 
--static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
-+static int mtdchar_writeoob(struct file *file, struct mtd_info *mtd,
- 	uint64_t start, uint32_t length, void __user *ptr,
- 	uint32_t __user *retp)
- {
-@@ -436,7 +438,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
- 	return ret;
- }
- 
--static int mtd_do_readoob(struct file *file, struct mtd_info *mtd,
-+static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
- 	uint64_t start, uint32_t length, void __user *ptr,
- 	uint32_t __user *retp)
- {
-@@ -530,7 +532,7 @@ static int shrink_ecclayout(const struct nand_ecclayout *from,
- 	return 0;
- }
- 
--static int mtd_blkpg_ioctl(struct mtd_info *mtd,
-+static int mtdchar_blkpg_ioctl(struct mtd_info *mtd,
- 			   struct blkpg_ioctl_arg __user *arg)
- {
- 	struct blkpg_ioctl_arg a;
-@@ -566,7 +568,7 @@ static int mtd_blkpg_ioctl(struct mtd_info *mtd,
- 	}
- }
- 
--static int mtd_write_ioctl(struct mtd_info *mtd,
-+static int mtdchar_write_ioctl(struct mtd_info *mtd,
- 		struct mtd_write_req __user *argp)
- {
- 	struct mtd_write_req req;
-@@ -615,7 +617,7 @@ static int mtd_write_ioctl(struct mtd_info *mtd,
- 	return ret;
- }
- 
--static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
-+static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -755,7 +757,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_writeoob(file, mtd, buf.start, buf.length,
- 				buf.ptr, &buf_user->length);
- 		break;
- 	}
-@@ -769,7 +771,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_readoob(file, mtd, buf.start, buf.length,
- 				buf.ptr, &buf_user->start);
- 		break;
- 	}
-@@ -782,7 +784,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_writeoob(file, mtd, buf.start, buf.length,
- 				(void __user *)(uintptr_t)buf.usr_ptr,
- 				&buf_user->length);
- 		break;
-@@ -796,7 +798,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_readoob(file, mtd, buf.start, buf.length,
- 				(void __user *)(uintptr_t)buf.usr_ptr,
- 				&buf_user->length);
- 		break;
-@@ -804,7 +806,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- 	case MEMWRITE:
- 	{
--		ret = mtd_write_ioctl(mtd,
-+		ret = mtdchar_write_ioctl(mtd,
- 		      (struct mtd_write_req __user *)arg);
- 		break;
- 	}
-@@ -1014,7 +1016,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- 	case BLKPG:
- 	{
--		ret = mtd_blkpg_ioctl(mtd,
-+		ret = mtdchar_blkpg_ioctl(mtd,
- 		      (struct blkpg_ioctl_arg __user *)arg);
- 		break;
- 	}
-@@ -1033,12 +1035,12 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 	return ret;
- } /* memory_ioctl */
- 
--static long mtd_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
-+static long mtdchar_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
- {
- 	int ret;
- 
- 	mutex_lock(&mtd_mutex);
--	ret = mtd_ioctl(file, cmd, arg);
-+	ret = mtdchar_ioctl(file, cmd, arg);
- 	mutex_unlock(&mtd_mutex);
- 
- 	return ret;
-@@ -1055,7 +1057,7 @@ struct mtd_oob_buf32 {
- #define MEMWRITEOOB32		_IOWR('M', 3, struct mtd_oob_buf32)
- #define MEMREADOOB32		_IOWR('M', 4, struct mtd_oob_buf32)
- 
--static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
-+static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- 	unsigned long arg)
- {
- 	struct mtd_file_info *mfi = file->private_data;
-@@ -1074,7 +1076,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start,
-+			ret = mtdchar_writeoob(file, mtd, buf.start,
- 				buf.length, compat_ptr(buf.ptr),
- 				&buf_user->length);
- 		break;
-@@ -1089,13 +1091,13 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start,
-+			ret = mtdchar_readoob(file, mtd, buf.start,
- 				buf.length, compat_ptr(buf.ptr),
- 				&buf_user->start);
- 		break;
- 	}
- 	default:
--		ret = mtd_ioctl(file, cmd, (unsigned long)argp);
-+		ret = mtdchar_ioctl(file, cmd, (unsigned long)argp);
- 	}
- 
- 	mutex_unlock(&mtd_mutex);
-@@ -1111,7 +1113,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
-  *   mappings)
-  */
- #ifndef CONFIG_MMU
--static unsigned long mtd_get_unmapped_area(struct file *file,
-+static unsigned long mtdchar_get_unmapped_area(struct file *file,
- 					   unsigned long addr,
- 					   unsigned long len,
- 					   unsigned long pgoff,
-@@ -1144,7 +1146,7 @@ static unsigned long mtd_get_unmapped_area(struct file *file,
- /*
-  * set up a mapping for shared memory segments
-  */
--static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
-+static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- {
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
-@@ -1185,18 +1187,18 @@ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
- 
- static const struct file_operations mtd_fops = {
- 	.owner		= THIS_MODULE,
--	.llseek		= mtd_lseek,
--	.read		= mtd_read,
--	.write		= mtd_write,
--	.unlocked_ioctl	= mtd_unlocked_ioctl,
-+	.llseek		= mtdchar_lseek,
-+	.read		= mtdchar_read,
-+	.write		= mtdchar_write,
-+	.unlocked_ioctl	= mtdchar_unlocked_ioctl,
- #ifdef CONFIG_COMPAT
--	.compat_ioctl	= mtd_compat_ioctl,
-+	.compat_ioctl	= mtdchar_compat_ioctl,
- #endif
--	.open		= mtd_open,
--	.release	= mtd_close,
--	.mmap		= mtd_mmap,
-+	.open		= mtdchar_open,
-+	.release	= mtdchar_close,
-+	.mmap		= mtdchar_mmap,
- #ifndef CONFIG_MMU
--	.get_unmapped_area = mtd_get_unmapped_area,
-+	.get_unmapped_area = mtdchar_get_unmapped_area,
- #endif
- };
- 
+ 	return dev ? dev_get_drvdata(dev) : NULL;
 -- 
 1.7.7.3
