@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Re9aG-0005VB-D3
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:11:12 +0000
+ id 1Re9aI-0005S9-3a
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:11:13 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 27/28] mtd: introduce mtd_get_device interface
-Date: Fri, 23 Dec 2011 20:11:19 +0200
-Message-Id: <1324663880-22477-28-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 28/28] mtd: introduce mtd_put_device interface
+Date: Fri, 23 Dec 2011 20:11:20 +0200
+Message-Id: <1324663880-22477-29-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,49 +25,96 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
  drivers/mtd/mtdcore.c   |    2 +-
- include/linux/mtd/mtd.h |    7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ fs/logfs/super.c        |    6 +++---
+ include/linux/mtd/mtd.h |   18 ++++++++++++------
+ 3 files changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 376fbfd..fbecbe8 100644
+index fbecbe8..8395b61 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -614,7 +614,7 @@ int __get_mtd_device(struct mtd_info *mtd)
- 		return -ENODEV;
+@@ -677,7 +677,7 @@ void __put_mtd_device(struct mtd_info *mtd)
+ 	BUG_ON(mtd->usecount < 0);
  
- 	if (mtd->get_device) {
--		err = mtd->get_device(mtd);
-+		err = mtd_get_device(mtd);
+ 	if (mtd->put_device)
+-		mtd->put_device(mtd);
++		mtd_put_device(mtd);
  
- 		if (err) {
- 			module_put(mtd->owner);
+ 	module_put(mtd->owner);
+ }
+diff --git a/fs/logfs/super.c b/fs/logfs/super.c
+index e795c234..2234d29 100644
+--- a/fs/logfs/super.c
++++ b/fs/logfs/super.c
+@@ -503,7 +503,7 @@ static void logfs_kill_sb(struct super_block *sb)
+ 	logfs_cleanup_rw(sb);
+ 	if (super->s_erase_page)
+ 		__free_page(super->s_erase_page);
+-	super->s_devops->put_device(super);
++	mtd_put_device(super);
+ 	logfs_mempool_destroy(super->s_btree_pool);
+ 	logfs_mempool_destroy(super->s_alias_pool);
+ 	kfree(super);
+@@ -522,14 +522,14 @@ static struct dentry *logfs_get_sb_device(struct logfs_super *super,
+ 	err = -EINVAL;
+ 	sb = sget(type, logfs_sb_test, logfs_sb_set, super);
+ 	if (IS_ERR(sb)) {
+-		super->s_devops->put_device(super);
++		mtd_put_device(super);
+ 		kfree(super);
+ 		return ERR_CAST(sb);
+ 	}
+ 
+ 	if (sb->s_root) {
+ 		/* Device is already in use */
+-		super->s_devops->put_device(super);
++		mtd_put_device(super);
+ 		kfree(super);
+ 		return dget(sb->s_root);
+ 	}
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 64aa54f..0e696b7 100644
+index 0e696b7..e8c4409 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -214,6 +214,7 @@ struct mtd_info {
- 	int (*block_markbad) (struct mtd_info *mtd, loff_t ofs);
+@@ -215,6 +215,7 @@ struct mtd_info {
  	int (*suspend) (struct mtd_info *mtd);
  	void (*resume) (struct mtd_info *mtd);
-+	int (*get_device) (struct mtd_info *mtd);
+ 	int (*get_device) (struct mtd_info *mtd);
++	void (*put_device) (struct mtd_info *mtd);
  
  	/* Backing device capabilities for this device
  	 * - provides mmap capabilities
-@@ -237,7 +238,6 @@ struct mtd_info {
- 	 * its own reference counting. The below functions are only for driver.
- 	 * The driver may register its callbacks. These callbacks are not
- 	 * supposed to be called by MTD users */
--	int (*get_device) (struct mtd_info *mtd);
- 	void (*put_device) (struct mtd_info *mtd);
+@@ -233,12 +234,6 @@ struct mtd_info {
+ 	struct module *owner;
+ 	struct device dev;
+ 	int usecount;
+-
+-	/* If the driver is something smart, like UBI, it may need to maintain
+-	 * its own reference counting. The below functions are only for driver.
+-	 * The driver may register its callbacks. These callbacks are not
+-	 * supposed to be called by MTD users */
+-	void (*put_device) (struct mtd_info *mtd);
  };
  
-@@ -414,6 +414,11 @@ static inline int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ /*
+@@ -414,11 +409,22 @@ static inline int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
  	return mtd->block_markbad(mtd, ofs);
  }
  
-+static inline int mtd_get_device(struct mtd_info *mtd)
++/*
++ * If the driver is something smart, like UBI, it may need to maintain its own
++ * reference counting. The below functions are only for driver. The driver may
++ * register its callbacks. These callbacks are not supposed to be called by MTD
++ * users.
++ */
+ static inline int mtd_get_device(struct mtd_info *mtd)
+ {
+ 	return mtd->get_device(mtd);
+ }
+ 
++static inline void mtd_put_device(struct mtd_info *mtd)
 +{
-+	return mtd->get_device(mtd);
++	return mtd->put_device(mtd);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
