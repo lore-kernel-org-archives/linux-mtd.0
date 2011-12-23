@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Re9a2-0005HI-5u
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:10:54 +0000
+ id 1Re9a2-0005IH-Mf
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:10:56 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 15/28] mtd: introduce mtd_read_user_prot_reg interface
-Date: Fri, 23 Dec 2011 20:11:07 +0200
-Message-Id: <1324663880-22477-16-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 17/28] mtd: introduce mtd_lock_user_prot_reg interface
+Date: Fri, 23 Dec 2011 20:11:09 +0200
+Message-Id: <1324663880-22477-18-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -24,68 +24,66 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    3 ++-
- drivers/mtd/mtdpart.c   |    3 +--
- include/linux/mtd/mtd.h |   10 +++++++++-
- 3 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/mtd/mtdchar.c   |    2 +-
+ drivers/mtd/mtdpart.c   |    2 +-
+ include/linux/mtd/mtd.h |   10 ++++++++--
+ 3 files changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 80c342c..4941e58 100644
+index a29d6421..41be99c 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -217,7 +217,8 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
- 						     &retlen, kbuf);
- 			break;
- 		case MTD_FILE_MODE_OTP_USER:
--			ret = mtd->read_user_prot_reg(mtd, *ppos, len, &retlen, kbuf);
-+			ret = mtd_read_user_prot_reg(mtd, *ppos, len,
-+						     &retlen, kbuf);
- 			break;
- 		case MTD_FILE_MODE_RAW:
- 		{
+@@ -960,7 +960,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 			return -EFAULT;
+ 		if (!mtd->lock_user_prot_reg)
+ 			return -EOPNOTSUPP;
+-		ret = mtd->lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
++		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+ 		break;
+ 	}
+ #endif
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index bf1ab56..f018373 100644
+index 1e7b8d1..0bb16d6 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -152,8 +152,7 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
+@@ -229,7 +229,7 @@ static int part_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 		size_t len)
  {
  	struct mtd_part *part = PART(mtd);
--	return part->master->read_user_prot_reg(part->master, from,
--					len, retlen, buf);
-+	return mtd_read_user_prot_reg(part->master, from, len, retlen, buf);
+-	return part->master->lock_user_prot_reg(part->master, from, len);
++	return mtd_lock_user_prot_reg(part->master, from, len);
  }
  
- static int part_get_user_prot_info(struct mtd_info *mtd,
+ static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index ff0a3a1..855fb7f 100644
+index 5549607..b58e5e8 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -198,13 +198,14 @@ struct mtd_info {
+@@ -202,14 +202,14 @@ struct mtd_info {
  				   size_t len, size_t *retlen, u_char *buf);
- 	int (*get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
- 				   size_t len);
-+	int (*read_user_prot_reg) (struct mtd_info *mtd, loff_t from,
-+				   size_t len, size_t *retlen, u_char *buf);
+ 	int (*write_user_prot_reg) (struct mtd_info *mtd, loff_t to, size_t len,
+ 				    size_t *retlen, u_char *buf);
++	int (*lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
++				   size_t len);
  
  	/* Backing device capabilities for this device
  	 * - provides mmap capabilities
  	 */
  	struct backing_dev_info *backing_dev_info;
  
--	int (*read_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
- 	int (*write_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
- 	int (*lock_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len);
- 
-@@ -353,6 +354,13 @@ static inline int mtd_get_user_prot_info(struct mtd_info *mtd,
- 	return mtd->get_user_prot_info(mtd, buf, len);
+-	int (*lock_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len);
+-
+ 	/* kvec-based read/write methods.
+ 	   NB: The 'count' parameter is the number of _vectors_, each of
+ 	   which contains an (ofs, len) tuple.
+@@ -369,6 +369,12 @@ static inline int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to,
+ 	return mtd->write_user_prot_reg(mtd, to, len, retlen, buf);
  }
  
-+static inline int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
-+					 size_t len, size_t *retlen,
-+					 u_char *buf)
++static inline int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
++					 size_t len)
 +{
-+	return mtd->read_user_prot_reg(mtd, from, len, retlen, buf);
++	return mtd->lock_user_prot_reg(mtd, from, len);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
