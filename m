@@ -1,33 +1,49 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rds4e-0001jM-KF
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2011 23:29:20 +0000
-Message-ID: <4EF3BD2A.5020409@newsguy.com>
-Date: Thu, 22 Dec 2011 15:28:42 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/2] MTD: pass driver methods through partition wrappers
- on unpartitioned devices
-References: <1324406536-18250-1-git-send-email-mikedunn@newsguy.com>	
- <1324406536-18250-2-git-send-email-mikedunn@newsguy.com>	
- <1324559149.10300.93.camel@sauron.fi.intel.com>
- <1324577032.1165.15.camel@sauron.fi.intel.com>
-In-Reply-To: <1324577032.1165.15.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1Re0Ga-0006TB-Jl
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 08:14:13 +0000
+Received: by eekc13 with SMTP id c13so8625095eek.36
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Dec 2011 00:14:10 -0800 (PST)
+Date: Fri, 23 Dec 2011 10:13:53 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: nand: write bad block marker even with BBT
+Message-ID: <20111223101353.40264827@pixies.home.jungo.com>
+In-Reply-To: <CAN8TOE-+DYYhzAJfcAb3z+qO6OwcScKTGTqREMO0BH5aXYZeVg@mail.gmail.com>
+References: <1324332231-30884-1-git-send-email-computersforpeace@gmail.com>
+ <4EF04C33.7060805@linutronix.de>
+ <CAN8TOE_2yuqPnUwA6KWJ7Vqr=dEqevGP5A1nbqYSbJGB_hgSEQ@mail.gmail.com>
+ <1324414200.2611.1.camel@koala>
+ <CAN8TOE-+DYYhzAJfcAb3z+qO6OwcScKTGTqREMO0BH5aXYZeVg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Scott Branden <sbranden@broadcom.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+Cc: Baruch Siach <baruch@tkos.co.il>, Dan Carpenter <error27@gmail.com>,
+ Barry Song <21cnbao@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Adrian Hunter <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
- Manuel Lauss <manuel.lauss@googlemail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, Jiandong Zheng <jdzheng@broadcom.com>,
- Andres Salomon <dilinger@queued.net>, Olof Johansson <olof@lixom.net>,
- Jamie Iles <jamie@jamieiles.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Vimal Singh <vimal.newwork@gmail.com>
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>, dedekind1@gmail.com,
+ Peter Wippich <pewi@gw-instruments.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,18 +53,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/22/2011 10:03 AM, Artem Bityutskiy wrote:
-> On Thu, 2011-12-22 at 15:05 +0200, Artem Bityutskiy wrote:
->> 1. Rework whole MTD interface from ->read()/->write()/etc (pointers to
->> functions) to mtd_read(mtd, ...)/mtd_write(mtd, ...)/etc.
-> I will send a patch-set for this change tomorrow.
->
->> 2. In the new functions you may do the stuff you do at patch 2.
-> Then you will be able to do this change easily.
->
+On Wed, 21 Dec 2011 17:15:29 -0800 Brian Norris <computersforpeace@gmail.com> wrote:
+> Another question: I noticed that when writing bad block markers to
+> OOB, we simply overwrite without erasing first. This is a problem on
+> MLC, which aren't designed to be written twice; they usually can write
+> some of the bits to 0, but not all of them. Is it reasonable to change
+> nand_default_block_markbad() to always have it erase the block before
+> writing?
 
+Not an MLC expert, but could it be that for these MLC chips,
+NAND_BBT_USE_FLASH is usually set, hence the complexities invloved in
+re-programming the OOB are simply avoided?
 
-
-OK, thank you Artem.  I'll watch for it and follow up with a reworked patch 2.
-
-Mike
+If so, it stregthens your NAND_BBT_WRITE_BBM/NAND_NO_WRITE_OOB approach,
+which goes hand-in-hand with Sebastian's scenario where there's no room
+in the OOB.
