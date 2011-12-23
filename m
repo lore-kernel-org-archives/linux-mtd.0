@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Re9a8-0005Ho-4L
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:11:01 +0000
+ id 1Re9a9-0005S9-Cz
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:11:03 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 22/28] mtd: introduce mtd_is_locked interface
-Date: Fri, 23 Dec 2011 20:11:14 +0200
-Message-Id: <1324663880-22477-23-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 23/28] mtd: introduce mtd_suspend interface
+Date: Fri, 23 Dec 2011 20:11:15 +0200
+Message-Id: <1324663880-22477-24-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -24,64 +24,162 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    2 +-
- drivers/mtd/mtdpart.c   |    2 +-
- include/linux/mtd/mtd.h |    8 ++++++--
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/physmap.c        |    2 +-
+ drivers/mtd/maps/pxa2xx-flash.c   |    2 +-
+ drivers/mtd/maps/rbtx4939-flash.c |    2 +-
+ drivers/mtd/maps/sa1100-flash.c   |    2 +-
+ drivers/mtd/mtdconcat.c           |    2 +-
+ drivers/mtd/mtdcore.c             |    2 +-
+ drivers/mtd/mtdpart.c             |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c    |    2 +-
+ drivers/mtd/nand/tmio_nand.c      |    2 +-
+ include/linux/mtd/mtd.h           |    7 ++++++-
+ 10 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 516aee6..46b6a8b 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -852,7 +852,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (!mtd->is_locked)
- 			ret = -EOPNOTSUPP;
- 		else
--			ret = mtd->is_locked(mtd, einfo.start, einfo.length);
-+			ret = mtd_is_locked(mtd, einfo.start, einfo.length);
- 		break;
- 	}
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 1f749d58..b7f0cd1 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -191,7 +191,7 @@ static void physmap_flash_shutdown(struct platform_device *dev)
  
+ 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+ 		if (info->mtd[i]->suspend && info->mtd[i]->resume)
+-			if (info->mtd[i]->suspend(info->mtd[i]) == 0)
++			if (mtd_suspend(info->mtd[i]) == 0)
+ 				info->mtd[i]->resume(info->mtd[i]);
+ }
+ #else
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index 274e399..9cb4273 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -125,7 +125,7 @@ static void pxa2xx_flash_shutdown(struct platform_device *dev)
+ {
+ 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
+ 
+-	if (info && info->mtd->suspend(info->mtd) == 0)
++	if (info && mtd_suspend(info->mtd) == 0)
+ 		info->mtd->resume(info->mtd);
+ }
+ #else
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index bb7d204..5856aa2 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -120,7 +120,7 @@ static void rbtx4939_flash_shutdown(struct platform_device *dev)
+ 	struct rbtx4939_flash_info *info = platform_get_drvdata(dev);
+ 
+ 	if (info->mtd->suspend && info->mtd->resume)
+-		if (info->mtd->suspend(info->mtd) == 0)
++		if (mtd_suspend(info->mtd) == 0)
+ 			info->mtd->resume(info->mtd);
+ }
+ #else
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index ac3a290..20944f0 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -377,7 +377,7 @@ static int __exit sa1100_mtd_remove(struct platform_device *pdev)
+ static void sa1100_mtd_shutdown(struct platform_device *dev)
+ {
+ 	struct sa_info *info = platform_get_drvdata(dev);
+-	if (info && info->mtd->suspend(info->mtd) == 0)
++	if (info && mtd_suspend(info->mtd) == 0)
+ 		info->mtd->resume(info->mtd);
+ }
+ #else
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 272ebc0..36bb1c9 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -631,7 +631,7 @@ static int concat_suspend(struct mtd_info *mtd)
+ 
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+-		if ((rc = subdev->suspend(subdev)) < 0)
++		if ((rc = mtd_suspend(subdev)) < 0)
+ 			return rc;
+ 	}
+ 	return rc;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4a21557..0db455d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -119,7 +119,7 @@ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+ 	struct mtd_info *mtd = dev_to_mtd(dev);
+ 
+ 	if (mtd && mtd->suspend)
+-		return mtd->suspend(mtd);
++		return mtd_suspend(mtd);
+ 	else
+ 		return 0;
+ }
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index d65af37..ad487fc 100644
+index ad487fc..c5e556a 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -295,7 +295,7 @@ static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+@@ -307,7 +307,7 @@ static void part_sync(struct mtd_info *mtd)
+ static int part_suspend(struct mtd_info *mtd)
+ {
  	struct mtd_part *part = PART(mtd);
- 	if ((len + ofs) > mtd->size)
- 		return -EINVAL;
--	return part->master->is_locked(part->master, ofs + part->offset, len);
-+	return mtd_is_locked(part->master, ofs + part->offset, len);
+-	return part->master->suspend(part->master);
++	return mtd_suspend(part->master);
  }
  
- static void part_sync(struct mtd_info *mtd)
+ static void part_resume(struct mtd_info *mtd)
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 90d6016..7a028cf 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1258,7 +1258,7 @@ static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
+ 
+ 	for (cs = 0; cs < pdata->num_cs; cs++) {
+ 		mtd = info->host[cs]->mtd;
+-		mtd->suspend(mtd);
++		mtd_suspend(mtd);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 6caa0cd..5d0c7fb 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -499,7 +499,7 @@ static int tmio_suspend(struct platform_device *dev, pm_message_t state)
+ 	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 
+ 	if (cell->suspend)
+-		cell->suspend(dev);
++		mtd_suspend(dev);
+ 
+ 	tmio_hw_stop(dev, platform_get_drvdata(dev));
+ 	return 0;
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index f30c358..8b99019 100644
+index 8b99019..8e01bad 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -209,14 +209,13 @@ struct mtd_info {
- 	void (*sync) (struct mtd_info *mtd);
+@@ -210,6 +210,7 @@ struct mtd_info {
  	int (*lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
  	int (*unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
++	int (*suspend) (struct mtd_info *mtd);
  
  	/* Backing device capabilities for this device
  	 * - provides mmap capabilities
- 	 */
+@@ -217,7 +218,6 @@ struct mtd_info {
  	struct backing_dev_info *backing_dev_info;
  
--	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
--
  	/* Power Management functions */
- 	int (*suspend) (struct mtd_info *mtd);
+-	int (*suspend) (struct mtd_info *mtd);
  	void (*resume) (struct mtd_info *mtd);
-@@ -394,6 +393,11 @@ static inline int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return mtd->unlock(mtd, ofs, len);
+ 
+ 	/* Bad block management functions */
+@@ -398,6 +398,11 @@ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	return mtd->is_locked(mtd, ofs, len);
  }
  
-+static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++static inline int mtd_suspend(struct mtd_info *mtd)
 +{
-+	return mtd->is_locked(mtd, ofs, len);
++	return mtd->suspend(mtd);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
