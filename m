@@ -1,18 +1,22 @@
-Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RepPl-000873-D5
- for linux-mtd@lists.infradead.org; Sun, 25 Dec 2011 14:51:05 +0000
-Message-ID: <4EF7383C.6010003@newsguy.com>
-Date: Sun, 25 Dec 2011 06:50:36 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RetAi-0008JK-5a
+ for linux-mtd@lists.infradead.org; Sun, 25 Dec 2011 18:51:48 +0000
+Received: by lahc1 with SMTP id c1so8621008lah.36
+ for <linux-mtd@lists.infradead.org>; Sun, 25 Dec 2011 10:51:42 -0800 (PST)
 Subject: Re: [PATCH 00/28] introduce wrappers for mtd interfaces
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Sun, 25 Dec 2011 20:51:40 +0200
+In-Reply-To: <4EF7383C.6010003@newsguy.com>
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ <4EF7383C.6010003@newsguy.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+Message-ID: <1324839101.2054.2.camel@koala>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/23/2011 10:10 AM, Artem Bityutskiy wrote:
-> Hi,
->
-> this patch-series introduce a bunch of wrappers for mtd interfaces, e.g.:
-> * mtd_read() for mtd->read()
-> * mtd_write() for mtd->write()
-> * mtd_is_locked() form mtd->is_locked()
->
-> and so forth for all interfaces found in 'struct mtd_info'.
->
-> The motivation is to help Mike Dunn to improve MTD bit-flips handling.
+On Sun, 2011-12-25 at 06:50 -0800, Mike Dunn wrote:
+> And a merry Christmas to you too, Artem :)
 
+Thanks, merry Christmas.
 
-And a merry Christmas to you too, Artem :)
+> I guess the plan is to eventually move the wrappers out of the header file and
+> no longer declare them inline?
 
-Thanks much.  I'll follow up with my patches as soon as my head clears from the
-egg nog.
-
-
-> This patch-set only substitutes 'mtd->func()' with 'mtd_func()', I used spatch
-> to do this. But we'd need to do some more work:
->  1 Find places like
-> 	if (mtd->block_isbad)
-> 		mtd_block_isbad(...)
->    and nicify them (possibly move the "if" check to the wrapper)
->  2 Rename all the function pointers in 'struct mtd_info' in order to
->    make sure every driver has switched to the wrappers.
->  3 Move the common input parameters checking to the wrappers
-
-
-I guess the plan is to eventually move the wrappers out of the header file and
-no longer declare them inline?
-
-Thanks again,
-Mike
+Those which contain some code - sure.
