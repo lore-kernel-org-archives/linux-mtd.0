@@ -1,16 +1,18 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Re9aA-0005Ho-RM
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2011 18:11:04 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 24/28] mtd: introduce mtd_resume interface
-Date: Fri, 23 Dec 2011 20:11:16 +0200
-Message-Id: <1324663880-22477-25-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
+Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RepPl-000873-D5
+ for linux-mtd@lists.infradead.org; Sun, 25 Dec 2011 14:51:05 +0000
+Message-ID: <4EF7383C.6010003@newsguy.com>
+Date: Sun, 25 Dec 2011 06:50:36 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/28] introduce wrappers for mtd interfaces
 References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Mike Dunn <mikedunn@newsguy.com>
+In-Reply-To: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,171 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On 12/23/2011 10:10 AM, Artem Bityutskiy wrote:
+> Hi,
+>
+> this patch-series introduce a bunch of wrappers for mtd interfaces, e.g.:
+> * mtd_read() for mtd->read()
+> * mtd_write() for mtd->write()
+> * mtd_is_locked() form mtd->is_locked()
+>
+> and so forth for all interfaces found in 'struct mtd_info'.
+>
+> The motivation is to help Mike Dunn to improve MTD bit-flips handling.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/maps/physmap.c        |    2 +-
- drivers/mtd/maps/pxa2xx-flash.c   |    2 +-
- drivers/mtd/maps/rbtx4939-flash.c |    2 +-
- drivers/mtd/maps/sa1100-flash.c   |    2 +-
- drivers/mtd/mtdconcat.c           |    2 +-
- drivers/mtd/mtdcore.c             |    2 +-
- drivers/mtd/mtdpart.c             |    2 +-
- drivers/mtd/nand/pxa3xx_nand.c    |    2 +-
- drivers/mtd/nand/tmio_nand.c      |    2 +-
- include/linux/mtd/mtd.h           |    9 ++++++---
- 10 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index b7f0cd1..d94cc62 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -192,7 +192,7 @@ static void physmap_flash_shutdown(struct platform_device *dev)
- 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
- 		if (info->mtd[i]->suspend && info->mtd[i]->resume)
- 			if (mtd_suspend(info->mtd[i]) == 0)
--				info->mtd[i]->resume(info->mtd[i]);
-+				mtd_resume(info->mtd[i]);
- }
- #else
- #define physmap_flash_shutdown NULL
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index 9cb4273..436d121 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -126,7 +126,7 @@ static void pxa2xx_flash_shutdown(struct platform_device *dev)
- 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
- 
- 	if (info && mtd_suspend(info->mtd) == 0)
--		info->mtd->resume(info->mtd);
-+		mtd_resume(info->mtd);
- }
- #else
- #define pxa2xx_flash_shutdown NULL
-diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
-index 5856aa2..7176283 100644
---- a/drivers/mtd/maps/rbtx4939-flash.c
-+++ b/drivers/mtd/maps/rbtx4939-flash.c
-@@ -121,7 +121,7 @@ static void rbtx4939_flash_shutdown(struct platform_device *dev)
- 
- 	if (info->mtd->suspend && info->mtd->resume)
- 		if (mtd_suspend(info->mtd) == 0)
--			info->mtd->resume(info->mtd);
-+			mtd_resume(info->mtd);
- }
- #else
- #define rbtx4939_flash_shutdown NULL
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index 20944f0..5028219 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -378,7 +378,7 @@ static void sa1100_mtd_shutdown(struct platform_device *dev)
- {
- 	struct sa_info *info = platform_get_drvdata(dev);
- 	if (info && mtd_suspend(info->mtd) == 0)
--		info->mtd->resume(info->mtd);
-+		mtd_resume(info->mtd);
- }
- #else
- #define sa1100_mtd_shutdown NULL
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 36bb1c9..4b7f825 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -644,7 +644,7 @@ static void concat_resume(struct mtd_info *mtd)
- 
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
--		subdev->resume(subdev);
-+		mtd_resume(subdev);
- 	}
- }
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0db455d..376fbfd 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -129,7 +129,7 @@ static int mtd_cls_resume(struct device *dev)
- 	struct mtd_info *mtd = dev_to_mtd(dev);
- 	
- 	if (mtd && mtd->resume)
--		mtd->resume(mtd);
-+		mtd_resume(mtd);
- 	return 0;
- }
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index c5e556a..8610750 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -313,7 +313,7 @@ static int part_suspend(struct mtd_info *mtd)
- static void part_resume(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = PART(mtd);
--	part->master->resume(part->master);
-+	mtd_resume(part->master);
- }
- 
- static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 7a028cf..8544d6b 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1291,7 +1291,7 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
- 	nand_writel(info, NDSR, NDSR_MASK);
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
- 		mtd = info->host[cs]->mtd;
--		mtd->resume(mtd);
-+		mtd_resume(mtd);
- 	}
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index 5d0c7fb..a031c3f 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -515,7 +515,7 @@ static int tmio_resume(struct platform_device *dev)
- 	tmio_hw_init(dev, platform_get_drvdata(dev));
- 
- 	if (cell->resume)
--		cell->resume(dev);
-+		mtd_resume(dev);
- 
- 	return 0;
- }
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 8e01bad..d6b4aa1 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -211,15 +211,13 @@ struct mtd_info {
- 	int (*unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 	int (*suspend) (struct mtd_info *mtd);
-+	void (*resume) (struct mtd_info *mtd);
- 
- 	/* Backing device capabilities for this device
- 	 * - provides mmap capabilities
- 	 */
- 	struct backing_dev_info *backing_dev_info;
- 
--	/* Power Management functions */
--	void (*resume) (struct mtd_info *mtd);
--
- 	/* Bad block management functions */
- 	int (*block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*block_markbad) (struct mtd_info *mtd, loff_t ofs);
-@@ -403,6 +401,11 @@ static inline int mtd_suspend(struct mtd_info *mtd)
- 	return mtd->suspend(mtd);
- }
- 
-+static inline void mtd_resume(struct mtd_info *mtd)
-+{
-+	mtd->resume(mtd);
-+}
-+
- static inline struct mtd_info *dev_to_mtd(struct device *dev)
- {
- 	return dev ? dev_get_drvdata(dev) : NULL;
--- 
-1.7.7.3
+And a merry Christmas to you too, Artem :)
+
+Thanks much.  I'll follow up with my patches as soon as my head clears from the
+egg nog.
+
+
+> This patch-set only substitutes 'mtd->func()' with 'mtd_func()', I used spatch
+> to do this. But we'd need to do some more work:
+>  1 Find places like
+> 	if (mtd->block_isbad)
+> 		mtd_block_isbad(...)
+>    and nicify them (possibly move the "if" check to the wrapper)
+>  2 Rename all the function pointers in 'struct mtd_info' in order to
+>    make sure every driver has switched to the wrappers.
+>  3 Move the common input parameters checking to the wrappers
+
+
+I guess the plan is to eventually move the wrappers out of the header file and
+no longer declare them inline?
+
+Thanks again,
+Mike
