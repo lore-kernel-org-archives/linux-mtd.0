@@ -1,12 +1,15 @@
-Date: Mon, 26 Dec 2011 16:32:10 +0800 (MYT)
-From: Webmail Administrator <hasim@water.gov.my>
-Subject: Dear Account User.
-Message-ID: <ca379cd9-a83c-4856-8b7d-898f0f3dbbec@vm-zimbra>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-To: undisclosed-recipients:;
-Reply-To: Webmail Administrator <web_upgrade@shqiptar.eu>
+Received: from mgw2.diku.dk ([130.225.96.92])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RfEV2-0001Kj-BH
+ for linux-mtd@lists.infradead.org; Mon, 26 Dec 2011 17:38:14 +0000
+From: Julia Lawall <julia@diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/2] drivers/mtd/maps/lantiq-flash.c: drop iounmap for devm_
+ allocated data
+Date: Mon, 26 Dec 2011 18:38:01 +0100
+Message-Id: <1324921081-13161-2-git-send-email-julia@diku.dk>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,24 +19,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Julia Lawall <julia@diku.dk>
 
+Data allocated with devm_ioremap or devm_ioremap_nocache should not be
+freed using iounmap, because doing so causes a dangling pointer, and a
+subsequent double free.
 
-mailbox has exceeded the storage limit which is 20GB as set by your adminis=
-trator,you are currently running on 20.9GB,you may not be able to send or r=
-eceive new mail until you re-validate your mailbox.To re-validate your mail=
-box please Fill up the bellow infomatiom to enable us protect your e-mail a=
-ccount.
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
 
-E-mail id...................
-Password...........................
-Re-Enter Password.................
-Date Of Birth.......................
-Sex...................................
+// <smpl>
+@r@
+expression x;
+@@
+(
+ x = devm_ioremap(...)
+|
+ x = devm_ioremap_nocache(...)
+)
 
-Warning!!! All Webmail. Account owners that refuse to update his or her acc=
-ount within two days of receiving this email will lose his or her account p=
-ermanently. AGB =C2=A9 upc cablecom GmbH 2011. We apologize for any inconve=
-nience this may have cause you. Thank you for using Webmail
+@@
+expression r.x;
+@@
+* iounmap(x)
+// </smpl>
 
-System Administrator.
-Customer Care Unit.
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ drivers/mtd/maps/lantiq-flash.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 4f10e27..7b889de 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -159,7 +159,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	if (!ltq_mtd->mtd) {
+ 		dev_err(&pdev->dev, "probing failed\n");
+ 		err = -ENXIO;
+-		goto err_unmap;
++		goto err_free;
+ 	}
+ 
+ 	ltq_mtd->mtd->owner = THIS_MODULE;
+@@ -179,8 +179,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 
+ err_destroy:
+ 	map_destroy(ltq_mtd->mtd);
+-err_unmap:
+-	iounmap(ltq_mtd->map->virt);
+ err_free:
+ 	kfree(ltq_mtd->map);
+ err_out:
+@@ -198,8 +196,6 @@ ltq_mtd_remove(struct platform_device *pdev)
+ 			mtd_device_unregister(ltq_mtd->mtd);
+ 			map_destroy(ltq_mtd->mtd);
+ 		}
+-		if (ltq_mtd->map->virt)
+-			iounmap(ltq_mtd->map->virt);
+ 		kfree(ltq_mtd->map);
+ 		kfree(ltq_mtd);
+ 	}
