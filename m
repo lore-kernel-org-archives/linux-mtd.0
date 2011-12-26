@@ -1,22 +1,12 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RetAi-0008JK-5a
- for linux-mtd@lists.infradead.org; Sun, 25 Dec 2011 18:51:48 +0000
-Received: by lahc1 with SMTP id c1so8621008lah.36
- for <linux-mtd@lists.infradead.org>; Sun, 25 Dec 2011 10:51:42 -0800 (PST)
-Subject: Re: [PATCH 00/28] introduce wrappers for mtd interfaces
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Sun, 25 Dec 2011 20:51:40 +0200
-In-Reply-To: <4EF7383C.6010003@newsguy.com>
-References: <1324663880-22477-1-git-send-email-dedekind1@gmail.com>
- <4EF7383C.6010003@newsguy.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1324839101.2054.2.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Date: Mon, 26 Dec 2011 16:32:10 +0800 (MYT)
+From: Webmail Administrator <hasim@water.gov.my>
+Subject: Dear Account User.
+Message-ID: <ca379cd9-a83c-4856-8b7d-898f0f3dbbec@vm-zimbra>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+To: undisclosed-recipients:;
+Reply-To: Webmail Administrator <web_upgrade@shqiptar.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +16,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-12-25 at 06:50 -0800, Mike Dunn wrote:
-> And a merry Christmas to you too, Artem :)
 
-Thanks, merry Christmas.
 
-> I guess the plan is to eventually move the wrappers out of the header file and
-> no longer declare them inline?
+mailbox has exceeded the storage limit which is 20GB as set by your adminis=
+trator,you are currently running on 20.9GB,you may not be able to send or r=
+eceive new mail until you re-validate your mailbox.To re-validate your mail=
+box please Fill up the bellow infomatiom to enable us protect your e-mail a=
+ccount.
 
-Those which contain some code - sure.
+E-mail id...................
+Password...........................
+Re-Enter Password.................
+Date Of Birth.......................
+Sex...................................
+
+Warning!!! All Webmail. Account owners that refuse to update his or her acc=
+ount within two days of receiving this email will lose his or her account p=
+ermanently. AGB =C2=A9 upc cablecom GmbH 2011. We apologize for any inconve=
+nience this may have cause you. Thank you for using Webmail
+
+System Administrator.
+Customer Care Unit.
