@@ -1,21 +1,13 @@
-Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RfYIA-0008DF-NL
- for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 14:46:15 +0000
-Date: Tue, 27 Dec 2011 15:46:10 +0100 (CET)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 6/6] drivers/mtd/nand/txx9ndfmc.c: use
- devm_request_and_ioremap
-In-Reply-To: <1324997145.1165.88.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.02.1112271545480.1838@localhost6.localdomain6>
-References: <1324994491-21828-1-git-send-email-julia@diku.dk>
- <1324994491-21828-7-git-send-email-julia@diku.dk>
- <1324997145.1165.88.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RfZXN-0001G1-Dh
+ for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 16:06:02 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: lpddr: drop unnecessary zeroing
+Date: Tue, 27 Dec 2011 18:07:36 +0200
+Message-Id: <1325002056-6479-1-git-send-email-dedekind1@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +17,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Dec 2011, Artem Bityutskiy wrote:
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-> On Tue, 2011-12-27 at 15:01 +0100, Julia Lawall wrote:
->> From: Julia Lawall <julia@diku.dk>
->>
->> Reimplement a call to devm_request_mem_region followed by a call to ioremap
->> or ioremap_nocache by a call to devm_request_and_ioremap.
->>
->> The semantic patch that makes this transformation is as follows:
->> (http://coccinelle.lip6.fr/)
->>
->> // <smpl>
->> @nm@
->> expression myname;
->> identifier i;
->> @@
->>
->> struct platform_driver i = { .driver = { .name = myname } };
->>
->> @@
->> expression dev,res,size;
->> expression nm.myname;
->> @@
->>
->> -if (!devm_request_mem_region(dev, res->start, size,
->> -                              \(res->name\|dev_name(dev)\|myname\))) {
->> -   ...
->> -   return ...;
->> -}
->> ... when != res->start
->> (
->> -devm_ioremap(dev,res->start,size)
->> +devm_request_and_ioremap(dev,res)
->> |
->> -devm_ioremap_nocache(dev,res->start,size)
->> +devm_request_and_ioremap(dev,res)
->> )
->> ... when any
->>     when != res->start
->> // </smpl>
->>
->> Signed-off-by: Julia Lawall <julia@diku.dk>
->
-> Pushed to l2-mtd-2.6.git, thanks!
->
-> I think this semantic patch is also useful and deserves to be added to
-> scripts/coccinelle. In general, it would be great if you sumbitted
-> useful spatches there for inclusion.
+We allocate the "mtd" structure using kzalloc which means we do not have
+to initialize unused MTD function pointers to NULL, since it is safe to
+assume in Linux that NULL contains all zeroes.
 
-OK, I will add this one as well.
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/lpddr/lpddr_cmds.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
 
-julia
+diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+index 1dca31d..536bbce 100644
+--- a/drivers/mtd/lpddr/lpddr_cmds.c
++++ b/drivers/mtd/lpddr/lpddr_cmds.c
+@@ -70,19 +70,12 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
+ 	mtd->erase = lpddr_erase;
+ 	mtd->write = lpddr_write_buffers;
+ 	mtd->writev = lpddr_writev;
+-	mtd->read_oob = NULL;
+-	mtd->write_oob = NULL;
+-	mtd->sync = NULL;
+ 	mtd->lock = lpddr_lock;
+ 	mtd->unlock = lpddr_unlock;
+-	mtd->suspend = NULL;
+-	mtd->resume = NULL;
+ 	if (map_is_linear(map)) {
+ 		mtd->point = lpddr_point;
+ 		mtd->unpoint = lpddr_unpoint;
+ 	}
+-	mtd->block_isbad = NULL;
+-	mtd->block_markbad = NULL;
+ 	mtd->size = 1 << lpddr->qinfo->DevSizeShift;
+ 	mtd->erasesize = 1 << lpddr->qinfo->UniformBlockSizeShift;
+ 	mtd->writesize = 1 << lpddr->qinfo->BufSizeShift;
+-- 
+1.7.7.3
