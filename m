@@ -1,21 +1,16 @@
-Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rfdbk-000529-6N
- for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 20:26:48 +0000
-Message-ID: <4EFA29E4.1020803@newsguy.com>
-Date: Tue, 27 Dec 2011 12:26:12 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] MTD: drivers return bitlip info to mtd on read
-References: <1324928293-17905-1-git-send-email-mikedunn@newsguy.com>
- <1324974817.1165.51.camel@sauron.fi.intel.com>
-In-Reply-To: <1324974817.1165.51.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Scott Branden <sbranden@broadcom.com>, Joern Engel <joern@logfs.org>,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
- Jiandong Zheng <jdzheng@broadcom.com>, Robert Jarzmik <robert.jarzmik@free.fr>
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rfe4B-0007N7-A7
+ for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 20:56:11 +0000
+Received: by qadc14 with SMTP id c14so7310049qad.15
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Dec 2011 12:56:07 -0800 (PST)
+From: Xi Wang <xi.wang@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Lucas De Marchi <lucas.demarchi@profusion.mobi>
+Subject: [PATCH] pmc551: fix signedness bug in init_pmc551()
+Date: Tue, 27 Dec 2011 15:54:16 -0500
+Message-Id: <1325019256-5171-1-git-send-email-xi.wang@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Xi Wang <xi.wang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/27/2011 12:33 AM, Artem Bityutskiy wrote:
-> On Mon, 2011-12-26 at 11:38 -0800, Mike Dunn wrote:
->> This patch changes the meaning of the value returned by the read() and
->> read_oob() mtd driver methods.  Previously, absent a hard error, these functions
->> returned either -EUCLEAN (one or more bitflips were corrected) or 0 (no
->> bitflips).  Drivers now return, absent a hard error, the maximum number of
->> bitflips that were corrected on any one page.  
->>
->> This change is made possible by the fact that all calls to the driver methods
->> now go through mtd wrapper functions.  The values returned by those wrapper
->> functions have not changed, nor have their meaning.  Only the values returned to
->> the mtd wrappers by the driver have changed.
->>
->> Tested with nandsim and onenand_sim.  The two drivers that were modified were
->> compile-tested only.
->>
->> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
-> Hi, I am not sure using the return code is a good way for this.
+Since "length" is a u32, the error handling below didn't work when
+fixup_pmc551() returns -ENODEV.
 
+	if ((length = fixup_pmc551(PCI_Device)) <= 0)
 
-OK.  It was a little kludgey, but had the advantage of touching very few drivers
-and leaving the existing function prototypes unchanged.
+This patch changes fixup_pmc551() by separating the error handling
+and the size.
 
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+---
+ drivers/mtd/devices/pmc551.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
-> But please, proceed with working on your issues - this patch is not
-> going to hit 3.2 anyway - I think it is the 3.3 material. Linus promised
-> 3.2 release this week, then we have the merge window, and then it is
-> time for further patches in this area.
->
-> I will do the other changes which I described in my cover letter. I
-> will also make a patch which adds a bitflips parameter to read/read_oob
-> and then you will implement 
->
-> But please, just make something which works for you for now and go on
-> with other DoC issues you have. Meantime I'll prepare the MTD basis
-> for you.
->
-> I think I'll first do the 3 items I described in my series. Then I'll
-> add "bitflips" parameter to read/read_oob() functions, but won't
-> implement or ever check it. After this you'll add your code.
->
-> How does this sound to you?
-
-
-Sure, you're the boss.  I appreciate your attention on this.  If you like, I'd
-be happy to submit a patch that adds the max_bitflips argument to  read() and
-read_oob() after you finish the cleanup and consolidation made possible by the
-wrappers.  I've already done this work.  Your choice; let me know.
-
-Thanks again,
-Mike
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index ecff765..17b3536 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -359,7 +359,7 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
+  * mechanism
+  * returns the size of the memory region found.
+  */
+-static u32 fixup_pmc551(struct pci_dev *dev)
++static int fixup_pmc551(struct pci_dev *dev, u32 *lenp)
+ {
+ #ifdef CONFIG_MTD_PMC551_BUGFIX
+ 	u32 dram_data;
+@@ -638,7 +638,8 @@ static u32 fixup_pmc551(struct pci_dev *dev)
+ 		(bcmd & 0x1) ? "software" : "hardware",
+ 		(bcmd & 0x20) ? "" : "un", (bcmd & 0x40) ? "" : "un");
+ #endif
+-	return size;
++	*lenp = size;
++	return 0;
+ }
+ 
+ /*
+@@ -713,7 +714,7 @@ static int __init init_pmc551(void)
+ 		 * with the oldproc.c driver in
+ 		 * some kernels (2.2.*)
+ 		 */
+-		if ((length = fixup_pmc551(PCI_Device)) <= 0) {
++		if (fixup_pmc551(PCI_Device, &length) < 0 || !length) {
+ 			printk(KERN_NOTICE "pmc551: Cannot init SDRAM\n");
+ 			break;
+ 		}
+-- 
+1.7.5.4
