@@ -1,13 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RfZXN-0001G1-Dh
- for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 16:06:02 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: lpddr: drop unnecessary zeroing
-Date: Tue, 27 Dec 2011 18:07:36 +0200
-Message-Id: <1325002056-6479-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rfdbk-000529-6N
+ for linux-mtd@lists.infradead.org; Tue, 27 Dec 2011 20:26:48 +0000
+Message-ID: <4EFA29E4.1020803@newsguy.com>
+Date: Tue, 27 Dec 2011 12:26:12 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] MTD: drivers return bitlip info to mtd on read
+References: <1324928293-17905-1-git-send-email-mikedunn@newsguy.com>
+ <1324974817.1165.51.camel@sauron.fi.intel.com>
+In-Reply-To: <1324974817.1165.51.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Scott Branden <sbranden@broadcom.com>, Joern Engel <joern@logfs.org>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Jiandong Zheng <jdzheng@broadcom.com>, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On 12/27/2011 12:33 AM, Artem Bityutskiy wrote:
+> On Mon, 2011-12-26 at 11:38 -0800, Mike Dunn wrote:
+>> This patch changes the meaning of the value returned by the read() and
+>> read_oob() mtd driver methods.  Previously, absent a hard error, these functions
+>> returned either -EUCLEAN (one or more bitflips were corrected) or 0 (no
+>> bitflips).  Drivers now return, absent a hard error, the maximum number of
+>> bitflips that were corrected on any one page.  
+>>
+>> This change is made possible by the fact that all calls to the driver methods
+>> now go through mtd wrapper functions.  The values returned by those wrapper
+>> functions have not changed, nor have their meaning.  Only the values returned to
+>> the mtd wrappers by the driver have changed.
+>>
+>> Tested with nandsim and onenand_sim.  The two drivers that were modified were
+>> compile-tested only.
+>>
+>> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> Hi, I am not sure using the return code is a good way for this.
 
-We allocate the "mtd" structure using kzalloc which means we do not have
-to initialize unused MTD function pointers to NULL, since it is safe to
-assume in Linux that NULL contains all zeroes.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/lpddr/lpddr_cmds.c |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+OK.  It was a little kludgey, but had the advantage of touching very few drivers
+and leaving the existing function prototypes unchanged.
 
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 1dca31d..536bbce 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -70,19 +70,12 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
- 	mtd->erase = lpddr_erase;
- 	mtd->write = lpddr_write_buffers;
- 	mtd->writev = lpddr_writev;
--	mtd->read_oob = NULL;
--	mtd->write_oob = NULL;
--	mtd->sync = NULL;
- 	mtd->lock = lpddr_lock;
- 	mtd->unlock = lpddr_unlock;
--	mtd->suspend = NULL;
--	mtd->resume = NULL;
- 	if (map_is_linear(map)) {
- 		mtd->point = lpddr_point;
- 		mtd->unpoint = lpddr_unpoint;
- 	}
--	mtd->block_isbad = NULL;
--	mtd->block_markbad = NULL;
- 	mtd->size = 1 << lpddr->qinfo->DevSizeShift;
- 	mtd->erasesize = 1 << lpddr->qinfo->UniformBlockSizeShift;
- 	mtd->writesize = 1 << lpddr->qinfo->BufSizeShift;
--- 
-1.7.7.3
+
+> But please, proceed with working on your issues - this patch is not
+> going to hit 3.2 anyway - I think it is the 3.3 material. Linus promised
+> 3.2 release this week, then we have the merge window, and then it is
+> time for further patches in this area.
+>
+> I will do the other changes which I described in my cover letter. I
+> will also make a patch which adds a bitflips parameter to read/read_oob
+> and then you will implement 
+>
+> But please, just make something which works for you for now and go on
+> with other DoC issues you have. Meantime I'll prepare the MTD basis
+> for you.
+>
+> I think I'll first do the 3 items I described in my series. Then I'll
+> add "bitflips" parameter to read/read_oob() functions, but won't
+> implement or ever check it. After this you'll add your code.
+>
+> How does this sound to you?
+
+
+Sure, you're the boss.  I appreciate your attention on this.  If you like, I'd
+be happy to submit a patch that adds the max_bitflips argument to  read() and
+read_oob() after you finish the cleanup and consolidation made possible by the
+wrappers.  I've already done this work.  Your choice; let me know.
+
+Thanks again,
+Mike
