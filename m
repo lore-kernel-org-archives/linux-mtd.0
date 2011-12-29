@@ -1,15 +1,19 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgCF4-0004Rf-0F
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:25:42 +0000
+ id 1RgCF3-0004RA-1d
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:25:43 +0000
 From: dedekind1@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 02/27] mtd: mtdchar: rename functions
-Date: Thu, 29 Dec 2011 11:27:06 +0200
-Message-Id: <1325150851-2805-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 01/27] logfs: rename functions starting with mtd_
+Date: Thu, 29 Dec 2011 11:27:05 +0200
+Message-Id: <1325150851-2805-2-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 References: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?J=C3=B6rn=20Engel?= <joern@logfs.org>,
+ Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,288 +29,205 @@ We are going to re-work the MTD interface and change 'mtd->write()' to
 'mtd_write()', 'mtd->read()' to 'mtd_read()' and so forth for all functions
 in the 'struct mtd_info' structure.
 
-However, mtdchar.c has its own 'mtd_read()', 'mtd_write()', etc functions
-which collide with our changes. This patch renames these functions
-to 'mtdchar_read()', 'mtdchar_write()', etc.
+However, logfs has its own 'mtd_read()', 'mtd_write()', etc functions
+which collide with our changes. This patch renames these logfs functions
+to 'logfs_mtd_read()', 'logfs_mtd_write()', etc.
 
-Additionally, to make the 'mtdchar.c' file look consistent, rename
+Additionally, to make the 'fs/logfs/dev_mtd.c' file look consistent, rename
 similarly all the other functions starting with 'mtd_'.
 
+Cc: Jörn Engel <joern@logfs.org>
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c |   76 +++++++++++++++++++++++++------------------------
- 1 files changed, 39 insertions(+), 37 deletions(-)
+ fs/logfs/dev_mtd.c |   61 +++++++++++++++++++++++++++------------------------
+ 1 files changed, 32 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index e7dc732..00423cc 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -51,7 +51,7 @@ struct mtd_file_info {
- 	enum mtd_file_modes mode;
- };
+diff --git a/fs/logfs/dev_mtd.c b/fs/logfs/dev_mtd.c
+index 339e17e..eb423eb 100644
+--- a/fs/logfs/dev_mtd.c
++++ b/fs/logfs/dev_mtd.c
+@@ -13,7 +13,8 @@
  
--static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
-+static loff_t mtdchar_lseek(struct file *file, loff_t offset, int orig)
+ #define PAGE_OFS(ofs) ((ofs) & (PAGE_SIZE-1))
+ 
+-static int mtd_read(struct super_block *sb, loff_t ofs, size_t len, void *buf)
++static int logfs_mtd_read(struct super_block *sb, loff_t ofs, size_t len,
++			void *buf)
  {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -77,7 +77,7 @@ static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
- 
- 
- 
--static int mtd_open(struct inode *inode, struct file *file)
-+static int mtdchar_open(struct inode *inode, struct file *file)
- {
- 	int minor = iminor(inode);
- 	int devnum = minor >> 1;
-@@ -142,11 +142,11 @@ static int mtd_open(struct inode *inode, struct file *file)
- out:
- 	mutex_unlock(&mtd_mutex);
- 	return ret;
--} /* mtd_open */
-+} /* mtdchar_open */
- 
- /*====================================================================*/
- 
--static int mtd_close(struct inode *inode, struct file *file)
-+static int mtdchar_close(struct inode *inode, struct file *file)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -164,7 +164,7 @@ static int mtd_close(struct inode *inode, struct file *file)
- 	kfree(mfi);
- 
- 	return 0;
--} /* mtd_close */
-+} /* mtdchar_close */
- 
- /* Back in June 2001, dwmw2 wrote:
-  *
-@@ -184,7 +184,8 @@ static int mtd_close(struct inode *inode, struct file *file)
-  * alignment requirements are not met in the NAND subdriver.
-  */
- 
--static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t *ppos)
-+static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
-+			loff_t *ppos)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -265,9 +266,10 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
- 
- 	kfree(kbuf);
- 	return total_retlen;
--} /* mtd_read */
-+} /* mtdchar_read */
- 
--static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count,loff_t *ppos)
-+static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t count,
-+			loff_t *ppos)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -345,7 +347,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 
- 	kfree(kbuf);
- 	return total_retlen;
--} /* mtd_write */
-+} /* mtdchar_write */
- 
- /*======================================================================
- 
-@@ -387,7 +389,7 @@ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
- # define otp_select_filemode(f,m)	-EOPNOTSUPP
- #endif
- 
--static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
-+static int mtdchar_writeoob(struct file *file, struct mtd_info *mtd,
- 	uint64_t start, uint32_t length, void __user *ptr,
- 	uint32_t __user *retp)
- {
-@@ -436,7 +438,7 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
- 	return ret;
- }
- 
--static int mtd_do_readoob(struct file *file, struct mtd_info *mtd,
-+static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
- 	uint64_t start, uint32_t length, void __user *ptr,
- 	uint32_t __user *retp)
- {
-@@ -530,7 +532,7 @@ static int shrink_ecclayout(const struct nand_ecclayout *from,
+ 	struct mtd_info *mtd = logfs_super(sb)->s_mtd;
+ 	size_t retlen;
+@@ -31,7 +32,8 @@ static int mtd_read(struct super_block *sb, loff_t ofs, size_t len, void *buf)
  	return 0;
  }
  
--static int mtd_blkpg_ioctl(struct mtd_info *mtd,
-+static int mtdchar_blkpg_ioctl(struct mtd_info *mtd,
- 			   struct blkpg_ioctl_arg __user *arg)
+-static int mtd_write(struct super_block *sb, loff_t ofs, size_t len, void *buf)
++static int loffs_mtd_write(struct super_block *sb, loff_t ofs, size_t len,
++			void *buf)
  {
- 	struct blkpg_ioctl_arg a;
-@@ -566,7 +568,7 @@ static int mtd_blkpg_ioctl(struct mtd_info *mtd,
- 	}
+ 	struct logfs_super *super = logfs_super(sb);
+ 	struct mtd_info *mtd = super->s_mtd;
+@@ -60,14 +62,15 @@ static int mtd_write(struct super_block *sb, loff_t ofs, size_t len, void *buf)
+  * asynchronous properties.  So just to prevent the first implementor of such
+  * a thing from breaking logfs in 2350, we do the usual pointless dance to
+  * declare a completion variable and wait for completion before returning
+- * from mtd_erase().  What an exercise in futility!
++ * from logfs_mtd_erase().  What an exercise in futility!
+  */
+ static void logfs_erase_callback(struct erase_info *ei)
+ {
+ 	complete((struct completion *)ei->priv);
  }
  
--static int mtd_write_ioctl(struct mtd_info *mtd,
-+static int mtdchar_write_ioctl(struct mtd_info *mtd,
- 		struct mtd_write_req __user *argp)
+-static int mtd_erase_mapping(struct super_block *sb, loff_t ofs, size_t len)
++static int logfs_mtd_erase_mapping(struct super_block *sb, loff_t ofs,
++				size_t len)
  {
- 	struct mtd_write_req req;
-@@ -615,7 +617,7 @@ static int mtd_write_ioctl(struct mtd_info *mtd,
- 	return ret;
+ 	struct logfs_super *super = logfs_super(sb);
+ 	struct address_space *mapping = super->s_mapping_inode->i_mapping;
+@@ -84,7 +87,7 @@ static int mtd_erase_mapping(struct super_block *sb, loff_t ofs, size_t len)
+ 	return 0;
  }
  
--static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
-+static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+-static int mtd_erase(struct super_block *sb, loff_t ofs, size_t len,
++static int logfs_mtd_erase(struct super_block *sb, loff_t ofs, size_t len,
+ 		int ensure_write)
  {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -755,7 +757,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_writeoob(file, mtd, buf.start, buf.length,
- 				buf.ptr, &buf_user->length);
- 		break;
- 	}
-@@ -769,7 +771,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_readoob(file, mtd, buf.start, buf.length,
- 				buf.ptr, &buf_user->start);
- 		break;
- 	}
-@@ -782,7 +784,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_writeoob(file, mtd, buf.start, buf.length,
- 				(void __user *)(uintptr_t)buf.usr_ptr,
- 				&buf_user->length);
- 		break;
-@@ -796,7 +798,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start, buf.length,
-+			ret = mtdchar_readoob(file, mtd, buf.start, buf.length,
- 				(void __user *)(uintptr_t)buf.usr_ptr,
- 				&buf_user->length);
- 		break;
-@@ -804,7 +806,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	struct mtd_info *mtd = logfs_super(sb)->s_mtd;
+@@ -109,10 +112,10 @@ static int mtd_erase(struct super_block *sb, loff_t ofs, size_t len,
+ 	wait_for_completion(&complete);
+ 	if (ei.state != MTD_ERASE_DONE)
+ 		return -EIO;
+-	return mtd_erase_mapping(sb, ofs, len);
++	return logfs_mtd_erase_mapping(sb, ofs, len);
+ }
  
- 	case MEMWRITE:
- 	{
--		ret = mtd_write_ioctl(mtd,
-+		ret = mtdchar_write_ioctl(mtd,
- 		      (struct mtd_write_req __user *)arg);
- 		break;
- 	}
-@@ -1014,7 +1016,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- 	case BLKPG:
- 	{
--		ret = mtd_blkpg_ioctl(mtd,
-+		ret = mtdchar_blkpg_ioctl(mtd,
- 		      (struct blkpg_ioctl_arg __user *)arg);
- 		break;
- 	}
-@@ -1033,12 +1035,12 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 	return ret;
- } /* memory_ioctl */
- 
--static long mtd_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
-+static long mtdchar_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
+-static void mtd_sync(struct super_block *sb)
++static void logfs_mtd_sync(struct super_block *sb)
  {
- 	int ret;
+ 	struct mtd_info *mtd = logfs_super(sb)->s_mtd;
  
- 	mutex_lock(&mtd_mutex);
--	ret = mtd_ioctl(file, cmd, arg);
-+	ret = mtdchar_ioctl(file, cmd, arg);
- 	mutex_unlock(&mtd_mutex);
+@@ -120,12 +123,12 @@ static void mtd_sync(struct super_block *sb)
+ 		mtd->sync(mtd);
+ }
  
- 	return ret;
-@@ -1055,7 +1057,7 @@ struct mtd_oob_buf32 {
- #define MEMWRITEOOB32		_IOWR('M', 3, struct mtd_oob_buf32)
- #define MEMREADOOB32		_IOWR('M', 4, struct mtd_oob_buf32)
- 
--static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
-+static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- 	unsigned long arg)
+-static int mtd_readpage(void *_sb, struct page *page)
++static int logfs_mtd_readpage(void *_sb, struct page *page)
  {
- 	struct mtd_file_info *mfi = file->private_data;
-@@ -1074,7 +1076,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_writeoob(file, mtd, buf.start,
-+			ret = mtdchar_writeoob(file, mtd, buf.start,
- 				buf.length, compat_ptr(buf.ptr),
- 				&buf_user->length);
- 		break;
-@@ -1089,13 +1091,13 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
- 		else
--			ret = mtd_do_readoob(file, mtd, buf.start,
-+			ret = mtdchar_readoob(file, mtd, buf.start,
- 				buf.length, compat_ptr(buf.ptr),
- 				&buf_user->start);
- 		break;
- 	}
- 	default:
--		ret = mtd_ioctl(file, cmd, (unsigned long)argp);
-+		ret = mtdchar_ioctl(file, cmd, (unsigned long)argp);
- 	}
+ 	struct super_block *sb = _sb;
+ 	int err;
  
- 	mutex_unlock(&mtd_mutex);
-@@ -1111,7 +1113,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
-  *   mappings)
-  */
- #ifndef CONFIG_MMU
--static unsigned long mtd_get_unmapped_area(struct file *file,
-+static unsigned long mtdchar_get_unmapped_area(struct file *file,
- 					   unsigned long addr,
- 					   unsigned long len,
- 					   unsigned long pgoff,
-@@ -1144,7 +1146,7 @@ static unsigned long mtd_get_unmapped_area(struct file *file,
- /*
-  * set up a mapping for shared memory segments
-  */
--static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
-+static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
+-	err = mtd_read(sb, page->index << PAGE_SHIFT, PAGE_SIZE,
++	err = logfs_mtd_read(sb, page->index << PAGE_SHIFT, PAGE_SIZE,
+ 			page_address(page));
+ 	if (err == -EUCLEAN || err == -EBADMSG) {
+ 		/* -EBADMSG happens regularly on power failures */
+@@ -143,11 +146,11 @@ static int mtd_readpage(void *_sb, struct page *page)
+ 	return err;
+ }
+ 
+-static struct page *mtd_find_first_sb(struct super_block *sb, u64 *ofs)
++static struct page *logfs_mtd_find_first_sb(struct super_block *sb, u64 *ofs)
  {
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
-@@ -1185,18 +1187,18 @@ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
+ 	struct logfs_super *super = logfs_super(sb);
+ 	struct address_space *mapping = super->s_mapping_inode->i_mapping;
+-	filler_t *filler = mtd_readpage;
++	filler_t *filler = logfs_mtd_readpage;
+ 	struct mtd_info *mtd = super->s_mtd;
  
- static const struct file_operations mtd_fops = {
- 	.owner		= THIS_MODULE,
--	.llseek		= mtd_lseek,
--	.read		= mtd_read,
--	.write		= mtd_write,
--	.unlocked_ioctl	= mtd_unlocked_ioctl,
-+	.llseek		= mtdchar_lseek,
-+	.read		= mtdchar_read,
-+	.write		= mtdchar_write,
-+	.unlocked_ioctl	= mtdchar_unlocked_ioctl,
- #ifdef CONFIG_COMPAT
--	.compat_ioctl	= mtd_compat_ioctl,
-+	.compat_ioctl	= mtdchar_compat_ioctl,
- #endif
--	.open		= mtd_open,
--	.release	= mtd_close,
--	.mmap		= mtd_mmap,
-+	.open		= mtdchar_open,
-+	.release	= mtdchar_close,
-+	.mmap		= mtdchar_mmap,
- #ifndef CONFIG_MMU
--	.get_unmapped_area = mtd_get_unmapped_area,
-+	.get_unmapped_area = mtdchar_get_unmapped_area,
- #endif
+ 	if (!mtd->block_isbad)
+@@ -163,11 +166,11 @@ static struct page *mtd_find_first_sb(struct super_block *sb, u64 *ofs)
+ 	return read_cache_page(mapping, *ofs >> PAGE_SHIFT, filler, sb);
+ }
+ 
+-static struct page *mtd_find_last_sb(struct super_block *sb, u64 *ofs)
++static struct page *logfs_mtd_find_last_sb(struct super_block *sb, u64 *ofs)
+ {
+ 	struct logfs_super *super = logfs_super(sb);
+ 	struct address_space *mapping = super->s_mapping_inode->i_mapping;
+-	filler_t *filler = mtd_readpage;
++	filler_t *filler = logfs_mtd_readpage;
+ 	struct mtd_info *mtd = super->s_mtd;
+ 
+ 	if (!mtd->block_isbad)
+@@ -184,7 +187,7 @@ static struct page *mtd_find_last_sb(struct super_block *sb, u64 *ofs)
+ 	return read_cache_page(mapping, *ofs >> PAGE_SHIFT, filler, sb);
+ }
+ 
+-static int __mtd_writeseg(struct super_block *sb, u64 ofs, pgoff_t index,
++static int __logfs_mtd_writeseg(struct super_block *sb, u64 ofs, pgoff_t index,
+ 		size_t nr_pages)
+ {
+ 	struct logfs_super *super = logfs_super(sb);
+@@ -196,8 +199,8 @@ static int __mtd_writeseg(struct super_block *sb, u64 ofs, pgoff_t index,
+ 		page = find_lock_page(mapping, index + i);
+ 		BUG_ON(!page);
+ 
+-		err = mtd_write(sb, page->index << PAGE_SHIFT, PAGE_SIZE,
+-				page_address(page));
++		err = loffs_mtd_write(sb, page->index << PAGE_SHIFT, PAGE_SIZE,
++					page_address(page));
+ 		unlock_page(page);
+ 		page_cache_release(page);
+ 		if (err)
+@@ -206,7 +209,7 @@ static int __mtd_writeseg(struct super_block *sb, u64 ofs, pgoff_t index,
+ 	return 0;
+ }
+ 
+-static void mtd_writeseg(struct super_block *sb, u64 ofs, size_t len)
++static void logfs_mtd_writeseg(struct super_block *sb, u64 ofs, size_t len)
+ {
+ 	struct logfs_super *super = logfs_super(sb);
+ 	int head;
+@@ -227,15 +230,15 @@ static void mtd_writeseg(struct super_block *sb, u64 ofs, size_t len)
+ 		len += head;
+ 	}
+ 	len = PAGE_ALIGN(len);
+-	__mtd_writeseg(sb, ofs, ofs >> PAGE_SHIFT, len >> PAGE_SHIFT);
++	__logfs_mtd_writeseg(sb, ofs, ofs >> PAGE_SHIFT, len >> PAGE_SHIFT);
+ }
+ 
+-static void mtd_put_device(struct logfs_super *s)
++static void logfs_mtd_put_device(struct logfs_super *s)
+ {
+ 	put_mtd_device(s->s_mtd);
+ }
+ 
+-static int mtd_can_write_buf(struct super_block *sb, u64 ofs)
++static int logfs_mtd_can_write_buf(struct super_block *sb, u64 ofs)
+ {
+ 	struct logfs_super *super = logfs_super(sb);
+ 	void *buf;
+@@ -244,7 +247,7 @@ static int mtd_can_write_buf(struct super_block *sb, u64 ofs)
+ 	buf = kmalloc(super->s_writesize, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+-	err = mtd_read(sb, ofs, super->s_writesize, buf);
++	err = logfs_mtd_read(sb, ofs, super->s_writesize, buf);
+ 	if (err)
+ 		goto out;
+ 	if (memchr_inv(buf, 0xff, super->s_writesize))
+@@ -255,14 +258,14 @@ out:
+ }
+ 
+ static const struct logfs_device_ops mtd_devops = {
+-	.find_first_sb	= mtd_find_first_sb,
+-	.find_last_sb	= mtd_find_last_sb,
+-	.readpage	= mtd_readpage,
+-	.writeseg	= mtd_writeseg,
+-	.erase		= mtd_erase,
+-	.can_write_buf	= mtd_can_write_buf,
+-	.sync		= mtd_sync,
+-	.put_device	= mtd_put_device,
++	.find_first_sb	= logfs_mtd_find_first_sb,
++	.find_last_sb	= logfs_mtd_find_last_sb,
++	.readpage	= logfs_mtd_readpage,
++	.writeseg	= logfs_mtd_writeseg,
++	.erase		= logfs_mtd_erase,
++	.can_write_buf	= logfs_mtd_can_write_buf,
++	.sync		= logfs_mtd_sync,
++	.put_device	= logfs_mtd_put_device,
  };
  
+ int logfs_get_sb_mtd(struct logfs_super *s, int mtdnr)
 -- 
 1.7.7.4
