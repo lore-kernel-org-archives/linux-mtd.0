@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgCFQ-0004RG-JF
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:26:07 +0000
+ id 1RgCFS-0004Rf-MG
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:26:08 +0000
 From: dedekind1@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 13/27] mtd: introduce mtd_read_fact_prot_reg interface
-Date: Thu, 29 Dec 2011 11:27:17 +0200
-Message-Id: <1325150851-2805-14-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 14/27] mtd: introduce mtd_get_user_prot_info interface
+Date: Thu, 29 Dec 2011 11:27:18 +0200
+Message-Id: <1325150851-2805-15-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 References: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>
@@ -23,68 +23,66 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    3 ++-
- drivers/mtd/mtdpart.c   |    3 +--
+ drivers/mtd/mtdchar.c   |    2 +-
+ drivers/mtd/mtdpart.c   |    2 +-
  include/linux/mtd/mtd.h |   10 +++++++++-
- 3 files changed, 12 insertions(+), 4 deletions(-)
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 34deb3b..d35e12f 100644
+index d35e12f..80c342c 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -213,7 +213,8 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
- 
- 		switch (mfi->mode) {
- 		case MTD_FILE_MODE_OTP_FACTORY:
--			ret = mtd->read_fact_prot_reg(mtd, *ppos, len, &retlen, kbuf);
-+			ret = mtd_read_fact_prot_reg(mtd, *ppos, len,
-+						     &retlen, kbuf);
+@@ -930,7 +930,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
  			break;
  		case MTD_FILE_MODE_OTP_USER:
- 			ret = mtd->read_user_prot_reg(mtd, *ppos, len, &retlen, kbuf);
+ 			if (mtd->get_user_prot_info)
+-				ret = mtd->get_user_prot_info(mtd, buf, 4096);
++				ret = mtd_get_user_prot_info(mtd, buf, 4096);
+ 			break;
+ 		default:
+ 			break;
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6bed8bb..4f2c913 100644
+index 4f2c913..bf1ab56 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -167,8 +167,7 @@ static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
+@@ -160,7 +160,7 @@ static int part_get_user_prot_info(struct mtd_info *mtd,
+ 		struct otp_info *buf, size_t len)
  {
  	struct mtd_part *part = PART(mtd);
--	return part->master->read_fact_prot_reg(part->master, from,
--					len, retlen, buf);
-+	return mtd_read_fact_prot_reg(part->master, from, len, retlen, buf);
+-	return part->master->get_user_prot_info(part->master, buf, len);
++	return mtd_get_user_prot_info(part->master, buf, len);
  }
  
- static int part_get_fact_prot_info(struct mtd_info *mtd, struct otp_info *buf,
+ static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 9a7a7f2..d77a7f8 100644
+index d77a7f8..ff0a3a1 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -194,13 +194,14 @@ struct mtd_info {
- 			  struct mtd_oob_ops *ops);
- 	int (*get_fact_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
+@@ -196,13 +196,14 @@ struct mtd_info {
  				   size_t len);
-+	int (*read_fact_prot_reg) (struct mtd_info *mtd, loff_t from,
-+				   size_t len, size_t *retlen, u_char *buf);
+ 	int (*read_fact_prot_reg) (struct mtd_info *mtd, loff_t from,
+ 				   size_t len, size_t *retlen, u_char *buf);
++	int (*get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
++				   size_t len);
  
  	/* Backing device capabilities for this device
  	 * - provides mmap capabilities
  	 */
  	struct backing_dev_info *backing_dev_info;
  
--	int (*read_fact_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
- 	int (*get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf, size_t len);
+-	int (*get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf, size_t len);
  	int (*read_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
  	int (*write_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
-@@ -337,6 +338,13 @@ static inline int mtd_get_fact_prot_info(struct mtd_info *mtd,
- 	return mtd->get_fact_prot_info(mtd, buf, len);
+ 	int (*lock_user_prot_reg) (struct mtd_info *mtd, loff_t from, size_t len);
+@@ -345,6 +346,13 @@ static inline int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
+ 	return mtd->read_fact_prot_reg(mtd, from, len, retlen, buf);
  }
  
-+static inline int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
-+					 size_t len, size_t *retlen,
-+					 u_char *buf)
++static inline int mtd_get_user_prot_info(struct mtd_info *mtd,
++					 struct otp_info *buf,
++					 size_t len)
 +{
-+	return mtd->read_fact_prot_reg(mtd, from, len, retlen, buf);
++	return mtd->get_user_prot_info(mtd, buf, len);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
