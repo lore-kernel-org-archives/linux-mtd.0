@@ -1,12 +1,13 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgIAk-0007xI-QS
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 15:45:40 +0000
+ id 1RgIY4-0000g5-Et
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 16:09:45 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] mtd: always initialize retlen to zero
-Date: Thu, 29 Dec 2011 17:47:32 +0200
-Message-Id: <1325173653-6788-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH] mtd: kill dev_to_mtd helper
+Date: Thu, 29 Dec 2011 18:11:32 +0200
+Message-Id: <1325175092-7900-1-git-send-email-dedekind1@gmail.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,88 +19,143 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Make sure that the retlen is set to 0 in case of error. This harmonizes
-drivers - some set it to 0 in some error cases and do not write anything
-in other error cases. Now we can do this consistently for all drivers.
+... since it is not needed because the generic 'dev_get_drvdata()' can be
+used instead.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- include/linux/mtd/mtd.h |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ drivers/mtd/mtdcore.c   |   25 +++++++++++++------------
+ include/linux/mtd/mtd.h |    5 -----
+ 2 files changed, 13 insertions(+), 17 deletions(-)
 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 376fbfd..8bea2d0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -107,7 +107,8 @@ static LIST_HEAD(mtd_notifiers);
+  */
+ static void mtd_release(struct device *dev)
+ {
+-	dev_t index = MTD_DEVT(dev_to_mtd(dev)->index);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	dev_t index = MTD_DEVT(mtd->index);
+ 
+ 	/* remove /dev/mtdXro node if needed */
+ 	if (index)
+@@ -116,7 +117,7 @@ static void mtd_release(struct device *dev)
+ 
+ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	if (mtd && mtd->suspend)
+ 		return mtd_suspend(mtd);
+@@ -126,7 +127,7 @@ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+ 
+ static int mtd_cls_resume(struct device *dev)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	
+ 	if (mtd && mtd->resume)
+ 		mtd_resume(mtd);
+@@ -136,7 +137,7 @@ static int mtd_cls_resume(struct device *dev)
+ static ssize_t mtd_type_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	char *type;
+ 
+ 	switch (mtd->type) {
+@@ -172,7 +173,7 @@ static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
+ static ssize_t mtd_flags_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
+ 
+@@ -182,7 +183,7 @@ static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
+ static ssize_t mtd_size_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%llu\n",
+ 		(unsigned long long)mtd->size);
+@@ -193,7 +194,7 @@ static DEVICE_ATTR(size, S_IRUGO, mtd_size_show, NULL);
+ static ssize_t mtd_erasesize_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
+ 
+@@ -203,7 +204,7 @@ static DEVICE_ATTR(erasesize, S_IRUGO, mtd_erasesize_show, NULL);
+ static ssize_t mtd_writesize_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
+ 
+@@ -213,7 +214,7 @@ static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
+ static ssize_t mtd_subpagesize_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	unsigned int subpagesize = mtd->writesize >> mtd->subpage_sft;
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%u\n", subpagesize);
+@@ -224,7 +225,7 @@ static DEVICE_ATTR(subpagesize, S_IRUGO, mtd_subpagesize_show, NULL);
+ static ssize_t mtd_oobsize_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
+ 
+@@ -234,7 +235,7 @@ static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
+ static ssize_t mtd_numeraseregions_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
+ 
+@@ -245,7 +246,7 @@ static DEVICE_ATTR(numeraseregions, S_IRUGO, mtd_numeraseregions_show,
+ static ssize_t mtd_name_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+-	struct mtd_info *mtd = dev_to_mtd(dev);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
+ 
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 8ae37e9..a09077a 100644
+index a09077a..cb33cc1 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -258,6 +258,7 @@ static inline int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- static inline int mtd_point(struct mtd_info *mtd, loff_t from, size_t len,
- 			    size_t *retlen, void **virt, resource_size_t *phys)
- {
-+	*retlen = 0;
- 	return mtd->point(mtd, from, len, retlen, virt, phys);
+@@ -422,11 +422,6 @@ static inline int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	return mtd->block_markbad(mtd, ofs);
  }
  
-@@ -289,6 +290,7 @@ static inline int mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- static inline int mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- 			    size_t *retlen, const u_char *buf)
+-static inline struct mtd_info *dev_to_mtd(struct device *dev)
+-{
+-	return dev ? dev_get_drvdata(dev) : NULL;
+-}
+-
+ static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
  {
-+	*retlen = 0;
- 	return mtd->write(mtd, to, len, retlen, buf);
- }
- 
-@@ -302,18 +304,21 @@ static inline int mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- static inline int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 				  size_t *retlen, const u_char *buf)
- {
-+	*retlen = 0;
- 	return mtd->panic_write(mtd, to, len, retlen, buf);
- }
- 
- static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
- 			       struct mtd_oob_ops *ops)
- {
-+	ops->retlen = ops->oobretlen = 0;
- 	return mtd->read_oob(mtd, from, ops);
- }
- 
- static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 				struct mtd_oob_ops *ops)
- {
-+	ops->retlen = ops->oobretlen = 0;
- 	return mtd->write_oob(mtd, to, ops);
- }
- 
-@@ -332,6 +337,7 @@ static inline int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- 					 size_t len, size_t *retlen,
- 					 u_char *buf)
- {
-+	*retlen = 0;
- 	return mtd->read_fact_prot_reg(mtd, from, len, retlen, buf);
- }
- 
-@@ -346,6 +352,7 @@ static inline int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 					 size_t len, size_t *retlen,
- 					 u_char *buf)
- {
-+	*retlen = 0;
- 	return mtd->read_user_prot_reg(mtd, from, len, retlen, buf);
- }
- 
-@@ -353,6 +360,7 @@ static inline int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to,
- 					  size_t len, size_t *retlen,
- 					  u_char *buf)
- {
-+	*retlen = 0;
- 	return mtd->write_user_prot_reg(mtd, to, len, retlen, buf);
- }
- 
-@@ -369,6 +377,7 @@ static inline int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
- static inline int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 			     unsigned long count, loff_t to, size_t *retlen)
- {
-+	*retlen = 0;
- 	return mtd->writev(mtd, vecs, count, to, retlen);
- }
- 
+ 	if (mtd->erasesize_shift)
 -- 
 1.7.7.3
