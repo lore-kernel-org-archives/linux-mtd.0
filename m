@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgCFV-0004RA-8S
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:26:13 +0000
+ id 1RgCFZ-0004RG-MX
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:26:15 +0000
 From: dedekind1@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 18/27] mtd: introduce mtd_writev interface
-Date: Thu, 29 Dec 2011 11:27:22 +0200
-Message-Id: <1325150851-2805-19-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 22/27] mtd: introduce mtd_is_locked interface
+Date: Thu, 29 Dec 2011 11:27:26 +0200
+Message-Id: <1325150851-2805-23-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 References: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>
@@ -23,93 +23,64 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdconcat.c |    5 +++--
- drivers/mtd/mtdpart.c   |    4 ++--
- fs/jffs2/writev.c       |    2 +-
- include/linux/mtd/mtd.h |   18 ++++++++++++------
- 4 files changed, 18 insertions(+), 11 deletions(-)
+ drivers/mtd/mtdchar.c   |    2 +-
+ drivers/mtd/mtdpart.c   |    2 +-
+ include/linux/mtd/mtd.h |    8 ++++++--
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 3d9c1ff..6fdae19 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -227,8 +227,9 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 		if (!(subdev->flags & MTD_WRITEABLE))
- 			err = -EROFS;
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 516aee6..46b6a8b 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -852,7 +852,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (!mtd->is_locked)
+ 			ret = -EOPNOTSUPP;
  		else
--			err = subdev->writev(subdev, &vecs_copy[entry_low],
--				entry_high - entry_low + 1, to, &retsize);
-+			err = mtd_writev(subdev, &vecs_copy[entry_low],
-+					 entry_high - entry_low + 1, to,
-+					 &retsize);
+-			ret = mtd->is_locked(mtd, einfo.start, einfo.length);
++			ret = mtd_is_locked(mtd, einfo.start, einfo.length);
+ 		break;
+ 	}
  
- 		vecs_copy[entry_high].iov_len = old_iov_len - size;
- 		vecs_copy[entry_high].iov_base += size;
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 0bb16d6..c0bfa88 100644
+index d65af37..ad487fc 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -238,8 +238,8 @@ static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
+@@ -295,7 +295,7 @@ static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
  	struct mtd_part *part = PART(mtd);
- 	if (!(mtd->flags & MTD_WRITEABLE))
- 		return -EROFS;
--	return part->master->writev(part->master, vecs, count,
--					to + part->offset, retlen);
-+	return mtd_writev(part->master, vecs, count, to + part->offset,
-+			  retlen);
+ 	if ((len + ofs) > mtd->size)
+ 		return -EINVAL;
+-	return part->master->is_locked(part->master, ofs + part->offset, len);
++	return mtd_is_locked(part->master, ofs + part->offset, len);
  }
  
- static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
-diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
-index b05710f..d0ef068 100644
---- a/fs/jffs2/writev.c
-+++ b/fs/jffs2/writev.c
-@@ -52,7 +52,7 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
- 	}
- 
- 	if (c->mtd->writev)
--		return c->mtd->writev(c->mtd, vecs, count, to, retlen);
-+		return mtd_writev(c->mtd, vecs, count, to, retlen);
- 	else {
- 		return mtd_fake_writev(c->mtd, vecs, count, to, retlen);
- 	}
+ static void part_sync(struct mtd_info *mtd)
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index b58e5e8..4129cb5 100644
+index f30c358..8b99019 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -204,18 +204,14 @@ struct mtd_info {
- 				    size_t *retlen, u_char *buf);
- 	int (*lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
- 				   size_t len);
-+	int (*writev) (struct mtd_info *mtd, const struct kvec *vecs,
-+			unsigned long count, loff_t to, size_t *retlen);
+@@ -209,14 +209,13 @@ struct mtd_info {
+ 	void (*sync) (struct mtd_info *mtd);
+ 	int (*lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 	int (*unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
++	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
  
  	/* Backing device capabilities for this device
  	 * - provides mmap capabilities
  	 */
  	struct backing_dev_info *backing_dev_info;
  
--	/* kvec-based read/write methods.
--	   NB: The 'count' parameter is the number of _vectors_, each of
--	   which contains an (ofs, len) tuple.
--	*/
--	int (*writev) (struct mtd_info *mtd, const struct kvec *vecs, unsigned long count, loff_t to, size_t *retlen);
+-	int (*is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
 -
- 	/* Sync */
- 	void (*sync) (struct mtd_info *mtd);
- 
-@@ -375,6 +371,16 @@ static inline int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 	return mtd->lock_user_prot_reg(mtd, from, len);
+ 	/* Power Management functions */
+ 	int (*suspend) (struct mtd_info *mtd);
+ 	void (*resume) (struct mtd_info *mtd);
+@@ -394,6 +393,11 @@ static inline int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	return mtd->unlock(mtd, ofs, len);
  }
  
-+/*
-+ * kvec-based read/write method. NB: The 'count' parameter is the number of
-+ * _vectors_, each of which contains an (ofs, len) tuple.
-+ */
-+static inline int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
-+			     unsigned long count, loff_t to, size_t *retlen)
++static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
 +{
-+	return mtd->writev(mtd, vecs, count, to, retlen);
++	return mtd->is_locked(mtd, ofs, len);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
