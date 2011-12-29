@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgCF9-0004RA-0D
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:25:49 +0000
+ id 1RgCFC-0004RA-2r
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 09:25:52 +0000
 From: dedekind1@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 06/27] mtd: introduce mtd_get_unmapped_area interface
-Date: Thu, 29 Dec 2011 11:27:10 +0200
-Message-Id: <1325150851-2805-7-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 09/27] mtd: introduce mtd_panic_write interface
+Date: Thu, 29 Dec 2011 11:27:13 +0200
+Message-Id: <1325150851-2805-10-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 References: <1325150851-2805-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>
@@ -23,99 +23,86 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    2 +-
- drivers/mtd/mtdconcat.c |    4 ++--
- drivers/mtd/mtdpart.c   |    3 +--
- fs/romfs/mmap-nommu.c   |    2 +-
- include/linux/mtd/mtd.h |   18 +++++++++++++-----
- 5 files changed, 18 insertions(+), 11 deletions(-)
+ drivers/mtd/mtdoops.c   |    4 ++--
+ drivers/mtd/mtdpart.c   |    4 ++--
+ include/linux/mtd/mtd.h |   25 +++++++++++++++----------
+ 3 files changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 41d64ff..c51f04a 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1135,7 +1135,7 @@ static unsigned long mtdchar_get_unmapped_area(struct file *file,
- 		if (offset > mtd->size - len)
- 			return (unsigned long) -EINVAL;
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 9c9d586..7be2018 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -222,8 +222,8 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+ 	hdr[1] = MTDOOPS_KERNMSG_MAGIC;
  
--		return mtd->get_unmapped_area(mtd, len, offset, flags);
-+		return mtd_get_unmapped_area(mtd, len, offset, flags);
- 	}
- 
- 	/* can't map directly */
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 76123bd..b3895cf 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -726,8 +726,8 @@ static unsigned long concat_get_unmapped_area(struct mtd_info *mtd,
- 			return (unsigned long) -EINVAL;
- 
- 		if (subdev->get_unmapped_area)
--			return subdev->get_unmapped_area(subdev, len, offset,
--							 flags);
-+			return mtd_get_unmapped_area(subdev, len, offset,
-+						     flags);
- 
- 		break;
- 	}
+ 	if (panic)
+-		ret = mtd->panic_write(mtd, cxt->nextpage * record_size,
+-					record_size, &retlen, cxt->oops_buf);
++		ret = mtd_panic_write(mtd, cxt->nextpage * record_size,
++				      record_size, &retlen, cxt->oops_buf);
+ 	else
+ 		ret = mtd_write(mtd, cxt->nextpage * record_size,
+ 				record_size, &retlen, cxt->oops_buf);
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index b09624a..55a9cb5 100644
+index 96574a0..9ed58f7 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -108,8 +108,7 @@ static unsigned long part_get_unmapped_area(struct mtd_info *mtd,
- 	struct mtd_part *part = PART(mtd);
- 
- 	offset += part->offset;
--	return part->master->get_unmapped_area(part->master, len, offset,
--					       flags);
-+	return mtd_get_unmapped_area(part->master, len, offset, flags);
+@@ -201,8 +201,8 @@ static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		len = 0;
+ 	else if (to + len > mtd->size)
+ 		len = mtd->size - to;
+-	return part->master->panic_write(part->master, to + part->offset,
+-				    len, retlen, buf);
++	return mtd_panic_write(part->master, to + part->offset, len, retlen,
++			       buf);
  }
  
- static int part_read_oob(struct mtd_info *mtd, loff_t from,
-diff --git a/fs/romfs/mmap-nommu.c b/fs/romfs/mmap-nommu.c
-index eed9942..d5168e8 100644
---- a/fs/romfs/mmap-nommu.c
-+++ b/fs/romfs/mmap-nommu.c
-@@ -53,7 +53,7 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
- 		if (offset > mtd->size - len)
- 			return (unsigned long) -EINVAL;
- 
--		return mtd->get_unmapped_area(mtd, len, offset, flags);
-+		return mtd_get_unmapped_area(mtd, len, offset, flags);
- 	}
- 
- cant_map_directly:
+ static int part_write_oob(struct mtd_info *mtd, loff_t to,
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a7d22b7..f38e827 100644
+index 1da7f4a..2fb83cd3 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -178,11 +178,6 @@ struct mtd_info {
- 	int (*point) (struct mtd_info *mtd, loff_t from, size_t len,
- 		      size_t *retlen, void **virt, resource_size_t *phys);
- 	void (*unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
+@@ -186,6 +186,8 @@ struct mtd_info {
+ 		     size_t *retlen, u_char *buf);
+ 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len,
+ 		      size_t *retlen, const u_char *buf);
++	int (*panic_write) (struct mtd_info *mtd, loff_t to, size_t len,
++			    size_t *retlen, const u_char *buf);
+ 
+ 	/* Backing device capabilities for this device
+ 	 * - provides mmap capabilities
+@@ -193,16 +195,6 @@ struct mtd_info {
+ 	struct backing_dev_info *backing_dev_info;
+ 
+ 
 -
--	/* Allow NOMMU mmap() to directly map the device (if not NULL)
--	 * - return the address to which the offset maps
--	 * - return -ENOSYS to indicate refusal to do the mapping
--	 */
- 	unsigned long (*get_unmapped_area) (struct mtd_info *mtd,
- 					    unsigned long len,
- 					    unsigned long offset,
-@@ -293,6 +288,19 @@ static inline void mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
- 	return mtd->unpoint(mtd, from, len);
+-	/* In blackbox flight recorder like scenarios we want to make successful
+-	   writes in interrupt context. panic_write() is only intended to be
+-	   called when its known the kernel is about to panic and we need the
+-	   write to succeed. Since the kernel is not going to be running for much
+-	   longer, this function can break locks and delay to ensure the write
+-	   succeeds (but not sleep). */
+-
+-	int (*panic_write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
+-
+ 	int (*read_oob) (struct mtd_info *mtd, loff_t from,
+ 			 struct mtd_oob_ops *ops);
+ 	int (*write_oob) (struct mtd_info *mtd, loff_t to,
+@@ -315,6 +307,19 @@ static inline int mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return mtd->write(mtd, to, len, retlen, buf);
  }
  
 +/*
-+ * Allow NOMMU mmap() to directly map the device (if not NULL)
-+ * - return the address to which the offset maps
-+ * - return -ENOSYS to indicate refusal to do the mapping
++ * In blackbox flight recorder like scenarios we want to make successful writes
++ * in interrupt context. panic_write() is only intended to be called when its
++ * known the kernel is about to panic and we need the write to succeed. Since
++ * the kernel is not going to be running for much longer, this function can
++ * break locks and delay to ensure the write succeeds (but not sleep).
 + */
-+static inline unsigned long mtd_get_unmapped_area(struct mtd_info *mtd,
-+						  unsigned long len,
-+						  unsigned long offset,
-+						  unsigned long flags)
++static inline int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
++				  size_t *retlen, const u_char *buf)
 +{
-+	return mtd->get_unmapped_area(mtd, len, offset, flags);
++	return mtd->panic_write(mtd, to, len, retlen, buf);
 +}
 +
  static inline struct mtd_info *dev_to_mtd(struct device *dev)
