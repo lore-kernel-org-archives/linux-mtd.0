@@ -1,14 +1,12 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RgeRM-0006Mj-JD
+ id 1RgeRM-0006Mi-JB
  for linux-mtd@lists.infradead.org; Fri, 30 Dec 2011 15:32:17 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] jffs: remove custom mtd_fake_writev function
-Date: Fri, 30 Dec 2011 17:34:12 +0200
-Message-Id: <1325259254-21208-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1325259254-21208-1-git-send-email-dedekind1@gmail.com>
-References: <1325259254-21208-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 1/4] mtd: remove unused default_mtd_readv prototype
+Date: Fri, 30 Dec 2011 17:34:11 +0200
+Message-Id: <1325259254-21208-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +18,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Instead, use 'default_mtd_writev()' function which MTD provides.
-
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- fs/jffs2/writev.c |   27 +--------------------------
- 1 files changed, 1 insertions(+), 26 deletions(-)
+ include/linux/mtd/mtd.h |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
-index d0ef068..8d70407 100644
---- a/fs/jffs2/writev.c
-+++ b/fs/jffs2/writev.c
-@@ -13,31 +13,6 @@
- #include <linux/mtd/mtd.h>
- #include "nodelist.h"
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 3ee9e1b..770982d 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -512,9 +512,6 @@ extern int unregister_mtd_user (struct mtd_notifier *old);
+ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 		       unsigned long count, loff_t to, size_t *retlen);
  
--/* This ought to be in core MTD code. All registered MTD devices
--   without writev should have this put in place. Bug the MTD
--   maintainer */
--static inline int mtd_fake_writev(struct mtd_info *mtd, const struct kvec *vecs,
--				  unsigned long count, loff_t to, size_t *retlen)
--{
--	unsigned long i;
--	size_t totlen = 0, thislen;
--	int ret = 0;
+-int default_mtd_readv(struct mtd_info *mtd, struct kvec *vecs,
+-		      unsigned long count, loff_t from, size_t *retlen);
 -
--	for (i=0; i<count; i++) {
--		if (!vecs[i].iov_len)
--			continue;
--		ret = mtd_write(mtd, to, vecs[i].iov_len, &thislen,
--				vecs[i].iov_base);
--		totlen += thislen;
--		if (ret || thislen != vecs[i].iov_len)
--			break;
--		to += vecs[i].iov_len;
--	}
--	if (retlen)
--		*retlen = totlen;
--	return ret;
--}
--
- int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
- 			      unsigned long count, loff_t to, size_t *retlen)
- {
-@@ -54,7 +29,7 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
- 	if (c->mtd->writev)
- 		return mtd_writev(c->mtd, vecs, count, to, retlen);
- 	else {
--		return mtd_fake_writev(c->mtd, vecs, count, to, retlen);
-+		return default_mtd_writev(c->mtd, vecs, count, to, retlen);
- 	}
- }
+ void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size);
  
+ void mtd_erase_callback(struct erase_info *instr);
 -- 
 1.7.7.3
