@@ -1,14 +1,20 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <Artem.Bityutskiy@intel.com>
-Subject: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is not MX23
-Date: Fri, 30 Dec 2011 16:27:26 +0800
-Message-ID: <1325233646-3343-1-git-send-email-b32955@freescale.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RgYLN-0007my-Ea
+ for linux-mtd@lists.infradead.org; Fri, 30 Dec 2011 09:01:42 +0000
+Received: by eaai13 with SMTP id i13so8446961eaa.36
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Dec 2011 01:01:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: baruch@tkos.co.il, Huang Shijie <b32955@freescale.com>,
- koen.beel.barco@gmail.com, w.sang@pengutronix.de, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1325175092-7900-1-git-send-email-dedekind1@gmail.com>
+References: <1325175092-7900-1-git-send-email-dedekind1@gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 30 Dec 2011 04:01:17 -0500
+Message-ID: <CAMjpGUfhsgbowuP-bykWoycnPZkuOrv5SqD_-gPukHOn6XE8ug@mail.gmail.com>
+Subject: Re: [PATCH] mtd: kill dev_to_mtd helper
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,54 +24,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In MX28, if we do not reset the BCH module. The BCH module may
-becomes unstable when the board reboots for several thousands times.
-This bug has been catched in customer's production.
-
-The patch adds some comments, and fixes it now.
-
-Also change gpmi_reset_block() to static.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index de4db76..1573e99 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -69,7 +69,8 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
-  *  [1] enable the module.
-  *  [2] reset the module.
-  *
-- * In most of the cases, it's ok. But there is a hardware bug in the BCH block.
-+ * In most of the cases, it's ok.
-+ * But in MX23, there is a hardware bug in the BCH block.
-  * If you try to soft reset the BCH block, it becomes unusable until
-  * the next hard reset. This case occurs in the NAND boot mode. When the board
-  * boots by NAND, the ROM of the chip will initialize the BCH blocks itself.
-@@ -78,8 +79,10 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
-  *
-  * To avoid this bug, just add a new parameter `just_enable` for
-  * the mxs_reset_block(), and rewrite it here.
-+ *
-+ * The bug has been fixed in the following chips, such as MX28.
-  */
--int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
-+static int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
- {
- 	int ret;
- 	int timeout = 0x400;
-@@ -206,7 +209,8 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto err_out;
- 
--	ret = gpmi_reset_block(r->bch_regs, true);
-+	/* The bug only exits in mx23, the following chips fix it. */
-+	ret = gpmi_reset_block(r->bch_regs, GPMI_IS_MX23(this));
- 	if (ret)
- 		goto err_out;
- 
--- 
-1.7.0.4
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
