@@ -1,14 +1,12 @@
 From: Huang Shijie <b32955@freescale.com>
 To: <Artem.Bityutskiy@intel.com>
-Subject: [PATCH] MTD/GPMI bugfix : reset the BCH module when it is not MX23
-Date: Fri, 30 Dec 2011 11:28:10 +0800
-Message-ID: <1325215690-22209-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH] MTD/GPMI : select more modules for GPMI by default
+Date: Fri, 30 Dec 2011 12:45:37 +0800
+Message-ID: <1325220337-23165-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, koen.beel.barco@gmail.com,
- w.sang@pengutronix.de, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
- LW@KARO-electronics.de
+Cc: shijie8@gmail.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,57 +16,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In MX28, if we do not reset the BCH module. The BCH module may
-becomes unstable when the board reboots for several thousands times.
-This bug has been catched in customer's production.
-
-The patch adds some comments, and fixes it now.
-
-Also change gpmi_reset_block() to static.
+The gpmi-nand driver needs the mxs-dma driver. So select the
+MXS_DMA by default. So does the MTD_CHAR.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   13 ++++++++++---
- 1 files changed, 10 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/Kconfig |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index de4db76..f54063d 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -69,7 +69,8 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
-  *  [1] enable the module.
-  *  [2] reset the module.
-  *
-- * In most of the cases, it's ok. But there is a hardware bug in the BCH block.
-+ * In most of the cases, it's ok.
-+ * But in MX23, there is a hardware bug in the BCH block.
-  * If you try to soft reset the BCH block, it becomes unusable until
-  * the next hard reset. This case occurs in the NAND boot mode. When the board
-  * boots by NAND, the ROM of the chip will initialize the BCH blocks itself.
-@@ -78,8 +79,10 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
-  *
-  * To avoid this bug, just add a new parameter `just_enable` for
-  * the mxs_reset_block(), and rewrite it here.
-+ *
-+ * The bug has been fixed in the following chips, such as MX28.
-  */
--int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
-+static int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
- {
- 	int ret;
- 	int timeout = 0x400;
-@@ -206,7 +209,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto err_out;
- 
--	ret = gpmi_reset_block(r->bch_regs, true);
-+	/* The bug only exits in mx23, the following chips fix it. */
-+	if (GPMI_IS_MX23(this))
-+		ret = gpmi_reset_block(r->bch_regs, true);
-+	else
-+		ret = gpmi_reset_block(r->bch_regs, false);
- 	if (ret)
- 		goto err_out;
- 
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 07c4774..1b14a3a 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -420,6 +420,8 @@ config MTD_NAND_NANDSIM
+ config MTD_NAND_GPMI_NAND
+         bool "GPMI NAND Flash Controller driver"
+         depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28)
++	select MXS_DMA
++	select MTD_CHAR
+ 	select MTD_PARTITIONS
+ 	select MTD_CMDLINE_PARTS
+         help
 -- 
 1.7.0.4
