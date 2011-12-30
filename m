@@ -1,18 +1,22 @@
-From: Marek Vasut <marek.vasut@gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RgdaJ-0002CI-3u
+ for linux-mtd@lists.infradead.org; Fri, 30 Dec 2011 14:37:28 +0000
+Date: Fri, 30 Dec 2011 15:36:58 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
 To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is not
  MX23
-Date: Fri, 30 Dec 2011 15:01:07 +0100
+Message-ID: <20111230143658.GA9141@pengutronix.de>
 References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1325233646-3343-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201112301501.07351.marek.vasut@gmail.com>
-Cc: baruch@tkos.co.il, koen.beel.barco@gmail.com, w.sang@pengutronix.de,
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
+Content-Disposition: inline
+In-Reply-To: <1325233646-3343-1-git-send-email-b32955@freescale.com>
+Cc: baruch@tkos.co.il, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
  linux-mtd@lists.infradead.org, Artem.Bityutskiy@intel.com, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+
+--AqsLC8rIMeq19msA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 30, 2011 at 04:27:26PM +0800, Huang Shijie wrote:
 > In MX28, if we do not reset the BCH module. The BCH module may
 > becomes unstable when the board reboots for several thousands times.
-> This bug has been catched in customer's production.
-> 
-> The patch adds some comments, and fixes it now.
-> 
-> Also change gpmi_reset_block() to static.
-> 
+
+Do you have more details when and why this happens? What happens on MX23 th=
+en?
+
 > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   10 +++++++---
->  1 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c index de4db76..1573e99 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -69,7 +69,8 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
->   *  [1] enable the module.
->   *  [2] reset the module.
->   *
-> - * In most of the cases, it's ok. But there is a hardware bug in the BCH
-> block. + * In most of the cases, it's ok.
-> + * But in MX23, there is a hardware bug in the BCH block.
->   * If you try to soft reset the BCH block, it becomes unusable until
->   * the next hard reset. This case occurs in the NAND boot mode. When the
-> board * boots by NAND, the ROM of the chip will initialize the BCH blocks
-> itself. @@ -78,8 +79,10 @@ static int clear_poll_bit(void __iomem *addr,
-> u32 mask) *
->   * To avoid this bug, just add a new parameter `just_enable` for
->   * the mxs_reset_block(), and rewrite it here.
-> + *
-> + * The bug has been fixed in the following chips, such as MX28.
->   */
-> -int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
-> +static int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
->  {
->  	int ret;
->  	int timeout = 0x400;
-> @@ -206,7 +209,8 @@ int bch_set_geometry(struct gpmi_nand_data *this)
->  	if (ret)
->  		goto err_out;
-> 
-> -	ret = gpmi_reset_block(r->bch_regs, true);
-> +	/* The bug only exits in mx23, the following chips fix it. */
-> +	ret = gpmi_reset_block(r->bch_regs, GPMI_IS_MX23(this));
->  	if (ret)
->  		goto err_out;
 
-Looks sane, though I can't test right now.
+Is this Bug 2847 from the errata? Should be mentioned in the commit message=
+ and
+comments of the patch if so.
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--AqsLC8rIMeq19msA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk79zIoACgkQD27XaX1/VRu/KgCfaX8z9JCjvQzNYJhRY5LGDjpR
+aywAmgIgXeabO8wq+IqgIR3EpFc48Tq5
+=FWLs
+-----END PGP SIGNATURE-----
+
+--AqsLC8rIMeq19msA--
