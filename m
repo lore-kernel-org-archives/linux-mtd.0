@@ -1,22 +1,14 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RgNgX-0005A6-18
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2011 21:38:50 +0000
-Received: by wibhq15 with SMTP id hq15so8013932wib.36
- for <linux-mtd@lists.infradead.org>; Thu, 29 Dec 2011 13:38:47 -0800 (PST)
-Subject: Re: [PATCH 1/2] mtd: docprobe: use kzalloc instead
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Date: Thu, 29 Dec 2011 23:38:45 +0200
-In-Reply-To: <20111229223105.34c7163a@skate>
-References: <1325173626-6739-1-git-send-email-dedekind1@gmail.com>
- <20111229223105.34c7163a@skate>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <1325194726.2078.2.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+To: <Artem.Bityutskiy@intel.com>
+Subject: [PATCH] MTD/GPMI bugfix : reset the BCH module when it is not MX23
+Date: Fri, 30 Dec 2011 11:28:10 +0800
+Message-ID: <1325215690-22209-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, koen.beel.barco@gmail.com,
+ w.sang@pengutronix.de, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
+ LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +18,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-12-29 at 22:31 +0100, Thomas Petazzoni wrote:
-> Le Thu, 29 Dec 2011 17:47:05 +0200,
-> Artem Bityutskiy <dedekind1@gmail.com> a écrit :
-> 
-> > +		mtd = kzmalloc(sizeof(struct DiskOnChip) + sizeof(struct mtd_info), GFP_KERNEL);
-> 
-> I guess you mean kzalloc() and not kzmalloc().
+In MX28, if we do not reset the BCH module. The BCH module may
+becomes unstable when the board reboots for several thousands times.
+This bug has been catched in customer's production.
 
-Yes, I have actually had fixed that but then sent the bogus patcy
-version, thanks!
+The patch adds some comments, and fixes it now.
 
-Artem.
+Also change gpmi_reset_block() to static.
+
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index de4db76..f54063d 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -69,7 +69,8 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
+  *  [1] enable the module.
+  *  [2] reset the module.
+  *
+- * In most of the cases, it's ok. But there is a hardware bug in the BCH block.
++ * In most of the cases, it's ok.
++ * But in MX23, there is a hardware bug in the BCH block.
+  * If you try to soft reset the BCH block, it becomes unusable until
+  * the next hard reset. This case occurs in the NAND boot mode. When the board
+  * boots by NAND, the ROM of the chip will initialize the BCH blocks itself.
+@@ -78,8 +79,10 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
+  *
+  * To avoid this bug, just add a new parameter `just_enable` for
+  * the mxs_reset_block(), and rewrite it here.
++ *
++ * The bug has been fixed in the following chips, such as MX28.
+  */
+-int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
++static int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
+ {
+ 	int ret;
+ 	int timeout = 0x400;
+@@ -206,7 +209,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
+ 
+-	ret = gpmi_reset_block(r->bch_regs, true);
++	/* The bug only exits in mx23, the following chips fix it. */
++	if (GPMI_IS_MX23(this))
++		ret = gpmi_reset_block(r->bch_regs, true);
++	else
++		ret = gpmi_reset_block(r->bch_regs, false);
+ 	if (ret)
+ 		goto err_out;
+ 
+-- 
+1.7.0.4
