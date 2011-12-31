@@ -1,18 +1,13 @@
-Message-ID: <4EFE7236.10609@freescale.com>
-Date: Sat, 31 Dec 2011 10:23:50 +0800
 From: Huang Shijie <b32955@freescale.com>
+To: <Artem.Bityutskiy@intel.com>
+Subject: [PATCH v3] MTD/GPMI bugfix : reset the BCH module when it is not MX23
+Date: Sat, 31 Dec 2011 10:44:57 +0800
+Message-ID: <1325299497-11060-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is
- not MX23
-References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
- <20111230143658.GA9141@pengutronix.de>
-In-Reply-To: <20111230143658.GA9141@pengutronix.de>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: baruch@tkos.co.il, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, Artem.Bityutskiy@intel.com, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, koen.beel.barco@gmail.com,
+ w.sang@pengutronix.de, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ shijie8@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +17,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> On Fri, Dec 30, 2011 at 04:27:26PM +0800, Huang Shijie wrote:
->> In MX28, if we do not reset the BCH module. The BCH module may
->> becomes unstable when the board reboots for several thousands times.
-> Do you have more details when and why this happens? What happens on MX23 then?
-In one customer's 3G router which uses the MX28:
-[0] NAND boot mode, mount the UBIFS in the NAND partition.
-[1] We used the gpmi_reset_block(r->bch_regs, true) to init the BCH module.
-[2] The board will automatically reboot again after it booted by NAND
-boot mode.
-[3] After reboot more then thousands times(cost nearly one day), the BCH
-mode became UNSTABLE,
-the data read out was not right, so the system could not mount the UBIFS.
+In MX28, if we do not reset the BCH module. The BCH module may
+becomes unstable when the board reboots for several thousands times.
+This bug has been catched in customer's production.
 
-After we use gpmi_reset_block(r->bch_regs, false) to init the BCH
-module, the bug never happens.
+The patch adds some comments, and fixes it now.
 
+Also change gpmi_reset_block() to static.
 
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
-The gpmi_reset_block() was coded to avoid the NAND boot bug in MX23. So
-MX23 does not have the bug.
->> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> Is this Bug 2847 from the errata? Should be mentioned in the commit message and
-Yes, this is the bug 2847 from the mx23's errata.
-
-I will add some comments to it.
-
-Best Regards
-Huang Shijie
-> comments of the patch if so.
->
-> Regards,
->
->    Wolfram
->
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index de4db76..d774aaa 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -69,7 +69,8 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
+  *  [1] enable the module.
+  *  [2] reset the module.
+  *
+- * In most of the cases, it's ok. But there is a hardware bug in the BCH block.
++ * In most of the cases, it's ok.
++ * But in MX23, there is a hardware bug in the BCH block(see 2847 from errata).
+  * If you try to soft reset the BCH block, it becomes unusable until
+  * the next hard reset. This case occurs in the NAND boot mode. When the board
+  * boots by NAND, the ROM of the chip will initialize the BCH blocks itself.
+@@ -78,8 +79,12 @@ static int clear_poll_bit(void __iomem *addr, u32 mask)
+  *
+  * To avoid this bug, just add a new parameter `just_enable` for
+  * the mxs_reset_block(), and rewrite it here.
++ *
++ * The bug has been fixed in the following chips, such as MX28.
++ * But in MX28, if you do NOT reset the BCH module, the BCH module may also
++ * becomes unstable too. So reset the BCH module if it's not MX23.
+  */
+-int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
++static int gpmi_reset_block(void __iomem *reset_addr, bool just_enable)
+ {
+ 	int ret;
+ 	int timeout = 0x400;
+@@ -206,7 +211,8 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
+ 
+-	ret = gpmi_reset_block(r->bch_regs, true);
++	/* see comments for gpmi_reset_block(). */
++	ret = gpmi_reset_block(r->bch_regs, GPMI_IS_MX23(this));
+ 	if (ret)
+ 		goto err_out;
+ 
+-- 
+1.7.0.4
