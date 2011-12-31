@@ -1,12 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rgfi1-0007Jb-8i
- for linux-mtd@lists.infradead.org; Fri, 30 Dec 2011 16:53:34 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: map.h: fix arm cross-build failure
-Date: Fri, 30 Dec 2011 18:55:29 +0200
-Message-Id: <1325264129-28752-1-git-send-email-dedekind1@gmail.com>
+Message-ID: <4EFE7236.10609@freescale.com>
+Date: Sat, 31 Dec 2011 10:23:50 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is
+ not MX23
+References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
+ <20111230143658.GA9141@pengutronix.de>
+In-Reply-To: <20111230143658.GA9141@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: baruch@tkos.co.il, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, Artem.Bityutskiy@intel.com, shijie8@gmail.com,
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,32 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Hi,
+> On Fri, Dec 30, 2011 at 04:27:26PM +0800, Huang Shijie wrote:
+>> In MX28, if we do not reset the BCH module. The BCH module may
+>> becomes unstable when the board reboots for several thousands times.
+> Do you have more details when and why this happens? What happens on MX23 then?
+In one customer's 3G router which uses the MX28:
+[0] NAND boot mode, mount the UBIFS in the NAND partition.
+[1] We used the gpmi_reset_block(r->bch_regs, true) to init the BCH module.
+[2] The board will automatically reboot again after it booted by NAND
+boot mode.
+[3] After reboot more then thousands times(cost nearly one day), the BCH
+mode became UNSTABLE,
+the data read out was not right, so the system could not mount the UBIFS.
 
-This patch fixes the following build failure:
-In file included from include/linux/mtd/qinfo.h:4:0,
-                 from include/linux/mtd/pfow.h:7,
-                 from drivers/mtd/lpddr/lpddr_cmds.c:27:
-include/linux/mtd/map.h: In function 'inline_map_read':
-include/linux/mtd/map.h:409:3: error: implicit declaration of function 'BUILD_BUG_ON' [-Werror=implicit-function-declaration]
+After we use gpmi_reset_block(r->bch_regs, false) to init the BCH
+module, the bug never happens.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- include/linux/mtd/map.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 1132410..94e924e 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -26,7 +26,7 @@
- #include <linux/list.h>
- #include <linux/string.h>
- #include <linux/bug.h>
--
-+#include <linux/kernel.h>
- 
- #include <asm/unaligned.h>
- #include <asm/system.h>
--- 
-1.7.7.3
+
+The gpmi_reset_block() was coded to avoid the NAND boot bug in MX23. So
+MX23 does not have the bug.
+>> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Is this Bug 2847 from the errata? Should be mentioned in the commit message and
+Yes, this is the bug 2847 from the mx23's errata.
+
+I will add some comments to it.
+
+Best Regards
+Huang Shijie
+> comments of the patch if so.
+>
+> Regards,
+>
+>    Wolfram
+>
