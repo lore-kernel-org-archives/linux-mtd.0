@@ -1,16 +1,23 @@
-MIME-Version: 1.0
-In-Reply-To: <20111231154338.GA27544@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RhTyc-00005W-JJ
+ for linux-mtd@lists.infradead.org; Sun, 01 Jan 2012 22:34:04 +0000
+Date: Sun, 1 Jan 2012 23:33:35 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is not
+ MX23
+Message-ID: <20120101223335.GA3756@pengutronix.de>
 References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
  <20111230143658.GA9141@pengutronix.de>
  <4EFE7236.10609@freescale.com>
  <20111231154338.GA27544@pengutronix.de>
-Date: Sun, 1 Jan 2012 10:23:54 -0500
-Message-ID: <CAMiH66HsFn4+6-whEC6G-qSPda3+3pBzd50i7iHh9Pg9TXHTXw@mail.gmail.com>
-Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is not
- MX23
-From: Huang Shijie <shijie8@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+ <CAMiH66HsFn4+6-whEC6G-qSPda3+3pBzd50i7iHh9Pg9TXHTXw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
+Content-Disposition: inline
+In-Reply-To: <CAMiH66HsFn4+6-whEC6G-qSPda3+3pBzd50i7iHh9Pg9TXHTXw@mail.gmail.com>
 Cc: baruch@tkos.co.il, marek.vasut@gmail.com, koen.beel.barco@gmail.com,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  Artem.Bityutskiy@intel.com, linux-arm-kernel@lists.infradead.org,
@@ -24,53 +31,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 31, 2011 at 10:43 AM, Wolfram Sang <w.sang@pengutronix.de> wrote:
-> Hi,
->
-> On Sat, Dec 31, 2011 at 10:23:50AM +0800, Huang Shijie wrote:
->
->> > On Fri, Dec 30, 2011 at 04:27:26PM +0800, Huang Shijie wrote:
->> >> In MX28, if we do not reset the BCH module. The BCH module may
->> >> becomes unstable when the board reboots for several thousands times.
->> > Do you have more details when and why this happens? What happens on MX23 then?
->> In one customer's 3G router which uses the MX28:
->> [0] NAND boot mode, mount the UBIFS in the NAND partition.
->> [1] We used the gpmi_reset_block(r->bch_regs, true) to init the BCH module.
->> [2] The board will automatically reboot again after it booted by NAND
->> boot mode.
->> [3] After reboot more then thousands times(cost nearly one day), the BCH
->> mode became UNSTABLE,
->> the data read out was not right, so the system could not mount the UBIFS.
->>
->> After we use gpmi_reset_block(r->bch_regs, false) to init the BCH
->> module, the bug never happens.
->
-> Yes, I undestood that. I was curious _why_ this happens, for example, because
-> of a bug in the rom-code or such. This would then lead to the question if this
 
-This happens because we do NOT follow the right init procedure. The IC
-guy told me.
-If the BCH was not initialized correctly, it can not guarantees the
-data is right.
-This is why the mx28 failed.
+--jI8keyz6grp/JLjh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-> can be fixed by some other means. Because currently it looks like this to me:
-> If you would do the above scenario of booting 10000 times on a MX23, then BCH
-> could enter the same unstable state (can it?). Since we cannot reset BCH due to
+> This happens because we do NOT follow the right init procedure. The IC
+> guy told me.
+> If the BCH was not initialized correctly, it can not guarantees the
+> data is right.
+> This is why the mx28 failed.
+=2E..
+> For mx23, it should not reset the BCH, this is the right init
+> procedure for mx23.
 
-For mx23, it should not reset the BCH, this is the right init
-procedure for mx23.
-But I did not ever boot 10000 times on mx23. I am not sure if it can
-fail or not.
+Okay, this was the information I was looking for. So, the MX23 cannot be re=
+set
+due to bug #2847. But it also does not NEED to be reset, which is unlike the
+MX28 which needs the reset. Correct? Before that, it was only clear that MX=
+23
+cannot be reset. It was not clear (at least to me) if it still could then r=
+un
+into the same problems as the MX28 after 10000+x boot cycles. That would be=
+ a
+really bad situation: being in need of the reset which we can't do due to 2=
+847.
 
+> But I did not ever boot 10000 times on mx23. I am not sure if it can
+> fail or not.
 
+Hmm, can't your IC guy tell you? I was hoping he knows if the same problem =
+which
+happens on the MX28 can also happen on the MX23? I don't want to make your =
+life
+unnecessarily hard, but I'd really like to know if I need to warn customers
+when using MX23 and NAND (and if so, we have to update the comment in the c=
+ode).
 
-> bug 2847, we have a serious problem, because NAND won't work until the next
-> power-cycle? I am curious if my assumptions are true and we have a serious
-> problem on the MX23.
-You can test it if you have time. :)
+> > bug 2847, we have a serious problem, because NAND won't work until the =
+next
+> > power-cycle? I am curious if my assumptions are true and we have a seri=
+ous
+> > problem on the MX23.
+> You can test it if you have time. :)
 
-Happy new year.
+Testing is guessing in this case, the problem could arise after <n+1> cycle=
+s if
+I tested <n>. Actually knowing the situation would be more helpful, I'd thi=
+nk.
+If this is not possible to find out, we'd need to add this as a comment, to=
+o,
+so people experiencing problems have a pointer which can save them *a lot o=
+f*
+time.
 
-Huang Shijie
+Kind regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--jI8keyz6grp/JLjh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk8A3z8ACgkQD27XaX1/VRsiTQCgqPYhJLU03P2AslZ1sRlJvzbK
+fWwAn0ZULlivPoVtRSSPgRIEYNEUQqk6
+=Hbn/
+-----END PGP SIGNATURE-----
+
+--jI8keyz6grp/JLjh--
