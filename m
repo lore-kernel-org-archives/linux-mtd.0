@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgqm-0003RB-60
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:48 +0000
+ id 1Rhgqn-0003Qp-8Z
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:50 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/17] mtd: mtdoops: do not use mtd->panic_write directly
-Date: Mon,  2 Jan 2012 14:20:35 +0200
-Message-Id: <1325506847-23470-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 06/17] mtd: do not use mtd->read_oob directly
+Date: Mon,  2 Jan 2012 14:20:36 +0200
+Message-Id: <1325506847-23470-7-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,64 +20,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Instead of checking if 'mtd->panic_write' is defined, call 'mtd_panic_write()'
-and check the error code - '-EOPNOTSUPP' will be returned if the function is
-not defined.
+Instead of checking whether 'mtd->read_oob' is defined, just call
+'mtd_read_oob()' and handle the '-EOPNOTSUPP' error which will be returned
+if the function is undefined.
+
+Additionally, make 'mtd_write_oob()' return '-EOPNOTSUPP' if the function
+is undefined.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdoops.c   |   17 ++++++++---------
- include/linux/mtd/mtd.h |    2 ++
- 2 files changed, 10 insertions(+), 9 deletions(-)
+ drivers/mtd/mtdchar.c   |    9 ++-------
+ include/linux/mtd/mtd.h |    4 ++++
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 69532a3..c8540b8 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -221,10 +221,14 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 	hdr[0] = cxt->nextcount;
- 	hdr[1] = MTDOOPS_KERNMSG_MAGIC;
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 55f0961..287ff0d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -452,13 +452,8 @@ static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
+ 	if (length > 4096)
+ 		return -EINVAL;
  
--	if (panic)
-+	if (panic) {
- 		ret = mtd_panic_write(mtd, cxt->nextpage * record_size,
- 				      record_size, &retlen, cxt->oops_buf);
+-	if (!mtd->read_oob)
+-		ret = -EOPNOTSUPP;
 -	else
-+		if (ret == -EOPNOTSUPP) {
-+			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
-+			return;
-+		}
-+	} else
- 		ret = mtd_write(mtd, cxt->nextpage * record_size,
- 				record_size, &retlen, cxt->oops_buf);
+-		ret = access_ok(VERIFY_WRITE, ptr,
+-				length) ? 0 : -EFAULT;
+-	if (ret)
+-		return ret;
++	if (!access_ok(VERIFY_WRITE, ptr, length))
++		return -EFAULT;
  
-@@ -330,13 +334,8 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- 	memcpy(dst + l1_cpy, s2 + s2_start, l2_cpy);
- 
- 	/* Panics must be written immediately */
--	if (reason != KMSG_DUMP_OOPS) {
--		if (!cxt->mtd->panic_write)
--			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
--		else
--			mtdoops_write(cxt, 1);
--		return;
--	}
-+	if (reason != KMSG_DUMP_OOPS)
-+		mtdoops_write(cxt, 1);
- 
- 	/* For other cases, schedule work to write it "nicely" */
- 	schedule_work(&cxt->work_write);
+ 	ops.ooblen = length;
+ 	ops.ooboffs = start & (mtd->writesize - 1);
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 2c2a922..b729640 100644
+index b729640..721a63f 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -311,6 +311,8 @@ static inline int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 				  size_t *retlen, const u_char *buf)
+@@ -320,6 +320,8 @@ static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
+ 			       struct mtd_oob_ops *ops)
  {
- 	*retlen = 0;
-+	if (!mtd->panic_write)
+ 	ops->retlen = ops->oobretlen = 0;
++	if (!mtd->read_oob)
 +		return -EOPNOTSUPP;
- 	return mtd->panic_write(mtd, to, len, retlen, buf);
+ 	return mtd->read_oob(mtd, from, ops);
+ }
+ 
+@@ -327,6 +329,8 @@ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+ 				struct mtd_oob_ops *ops)
+ {
+ 	ops->retlen = ops->oobretlen = 0;
++	if (!mtd->write_oob)
++		return -EOPNOTSUPP;
+ 	return mtd->write_oob(mtd, to, ops);
  }
  
 -- 
