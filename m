@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgqu-0003TG-2Z
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:58 +0000
+ id 1Rhgqv-0003Sw-6Z
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:59 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 12/17] mtd: do not use mtd->sync directly
-Date: Mon,  2 Jan 2012 14:20:42 +0200
-Message-Id: <1325506847-23470-13-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 13/17] mtd: do not use mtd->lock, unlock and is_locked directly
+Date: Mon,  2 Jan 2012 14:20:43 +0200
+Message-Id: <1325506847-23470-14-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,160 +20,151 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-This patch teaches 'mtd_sync()' to do nothing when the MTD driver does
-not have the '->sync()' method, which allows us to remove all direct
-'mtd->sync' accesses.
+Instead, call the corresponding MTD API function which will return
+'-EOPNOTSUPP' if the operation is not supported.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ftl.c       |    3 +--
- drivers/mtd/mtdblock.c  |    7 ++-----
- drivers/mtd/mtdchar.c   |    2 +-
- drivers/mtd/mtdswap.c   |    3 +--
- drivers/mtd/rfd_ftl.c   |    3 +--
- drivers/mtd/ubi/kapi.c  |    4 +---
- fs/jffs2/super.c        |    4 +---
- fs/logfs/dev_mtd.c      |    3 +--
- include/linux/mtd/mtd.h |    3 ++-
- 9 files changed, 11 insertions(+), 21 deletions(-)
+ drivers/mtd/maps/scb2_flash.c |    3 +--
+ drivers/mtd/mtdchar.c         |   15 +++------------
+ drivers/mtd/mtdconcat.c       |   18 ++++++------------
+ drivers/mtd/mtdcore.c         |    6 +++---
+ include/linux/mtd/mtd.h       |    6 ++++++
+ 5 files changed, 19 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
-index c9c9029..19d6372 100644
---- a/drivers/mtd/ftl.c
-+++ b/drivers/mtd/ftl.c
-@@ -650,8 +650,7 @@ static int reclaim_block(partition_t *part)
- 	    if (queued) {
- 		pr_debug("ftl_cs: waiting for transfer "
- 		      "unit to be prepared...\n");
--		if (part->mbd.mtd->sync)
--			mtd_sync(part->mbd.mtd);
-+		mtd_sync(part->mbd.mtd);
- 	    } else {
- 		static int ne = 0;
- 		if (++ne < 5)
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index 496e1a6..af65912 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -322,8 +322,7 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+diff --git a/drivers/mtd/maps/scb2_flash.c b/drivers/mtd/maps/scb2_flash.c
+index 01af347..934a72c 100644
+--- a/drivers/mtd/maps/scb2_flash.c
++++ b/drivers/mtd/maps/scb2_flash.c
+@@ -204,8 +204,7 @@ scb2_flash_remove(struct pci_dev *dev)
+ 		return;
  
- 	if (!--mtdblk->count) {
- 		/* It was the last usage. Free the cache */
--		if (mbd->mtd->sync)
--			mtd_sync(mbd->mtd);
-+		mtd_sync(mbd->mtd);
- 		vfree(mtdblk->cache_data);
- 	}
+ 	/* disable flash writes */
+-	if (scb2_mtd->lock)
+-		mtd_lock(scb2_mtd, 0, scb2_mtd->size);
++	mtd_lock(scb2_mtd, 0, scb2_mtd->size);
  
-@@ -341,9 +340,7 @@ static int mtdblock_flush(struct mtd_blktrans_dev *dev)
- 	mutex_lock(&mtdblk->cache_mutex);
- 	write_cached_data(mtdblk);
- 	mutex_unlock(&mtdblk->cache_mutex);
--
--	if (dev->mtd->sync)
--		mtd_sync(dev->mtd);
-+	mtd_sync(dev->mtd);
- 	return 0;
- }
- 
+ 	mtd_device_unregister(scb2_mtd);
+ 	map_destroy(scb2_mtd);
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 2020a16..23a5110 100644
+index 23a5110..92da621 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -154,7 +154,7 @@ static int mtdchar_close(struct inode *inode, struct file *file)
- 	pr_debug("MTD_close\n");
+@@ -814,10 +814,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
+ 			return -EFAULT;
  
- 	/* Only sync if opened RW */
--	if ((file->f_mode & FMODE_WRITE) && mtd->sync)
-+	if ((file->f_mode & FMODE_WRITE))
- 		mtd_sync(mtd);
+-		if (!mtd->lock)
+-			ret = -EOPNOTSUPP;
+-		else
+-			ret = mtd_lock(mtd, einfo.start, einfo.length);
++		ret = mtd_lock(mtd, einfo.start, einfo.length);
+ 		break;
+ 	}
  
- 	iput(mfi->ino);
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 4441c08..fe4426c 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -1047,8 +1047,7 @@ static int mtdswap_flush(struct mtd_blktrans_dev *dev)
- {
- 	struct mtdswap_dev *d = MTDSWAP_MBD_TO_MTDSWAP(dev);
+@@ -828,10 +825,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
+ 			return -EFAULT;
  
--	if (d->mtd->sync)
--		mtd_sync(d->mtd);
-+	mtd_sync(d->mtd);
- 	return 0;
- }
+-		if (!mtd->unlock)
+-			ret = -EOPNOTSUPP;
+-		else
+-			ret = mtd_unlock(mtd, einfo.start, einfo.length);
++		ret = mtd_unlock(mtd, einfo.start, einfo.length);
+ 		break;
+ 	}
  
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index 5426d42..233b946 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -448,8 +448,7 @@ static int reclaim_block(struct partition *part, u_long *old_sector)
- 	int rc;
+@@ -842,10 +836,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
+ 			return -EFAULT;
  
- 	/* we have a race if sync doesn't exist */
--	if (part->mbd.mtd->sync)
--		mtd_sync(part->mbd.mtd);
-+	mtd_sync(part->mbd.mtd);
+-		if (!mtd->is_locked)
+-			ret = -EOPNOTSUPP;
+-		else
+-			ret = mtd_is_locked(mtd, einfo.start, einfo.length);
++		ret = mtd_is_locked(mtd, einfo.start, einfo.length);
+ 		break;
+ 	}
  
- 	score = 0x7fffffff; /* MAX_INT */
- 	best_block = -1;
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 9f265cc..9fdb353 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -714,9 +714,7 @@ int ubi_sync(int ubi_num)
- 	if (!ubi)
- 		return -ENODEV;
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 9119f76..aaafb5e 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -555,12 +555,9 @@ static int concat_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		else
+ 			size = len;
  
--	if (ubi->mtd->sync)
--		mtd_sync(ubi->mtd);
--
-+	mtd_sync(ubi->mtd);
- 	ubi_put_device(ubi);
- 	return 0;
- }
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index e78bf3c..5863a36 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -336,9 +336,7 @@ static void jffs2_put_super (struct super_block *sb)
- 	jffs2_flash_cleanup(c);
- 	kfree(c->inocache_list);
- 	jffs2_clear_xattr_subsystem(c);
--	if (c->mtd->sync)
--		mtd_sync(c->mtd);
--
-+	mtd_sync(c->mtd);
- 	D1(printk(KERN_DEBUG "jffs2_put_super returning\n"));
- }
+-		if (subdev->lock) {
+-			err = mtd_lock(subdev, ofs, size);
+-			if (err)
+-				break;
+-		} else
+-			err = -EOPNOTSUPP;
++		err = mtd_lock(subdev, ofs, size);
++		if (err)
++			break;
  
-diff --git a/fs/logfs/dev_mtd.c b/fs/logfs/dev_mtd.c
-index 136c736..3f465882 100644
---- a/fs/logfs/dev_mtd.c
-+++ b/fs/logfs/dev_mtd.c
-@@ -119,8 +119,7 @@ static void logfs_mtd_sync(struct super_block *sb)
- {
- 	struct mtd_info *mtd = logfs_super(sb)->s_mtd;
+ 		len -= size;
+ 		if (len == 0)
+@@ -595,12 +592,9 @@ static int concat_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		else
+ 			size = len;
  
--	if (mtd->sync)
--		mtd_sync(mtd);
-+	mtd_sync(mtd);
- }
+-		if (subdev->unlock) {
+-			err = mtd_unlock(subdev, ofs, size);
+-			if (err)
+-				break;
+-		} else
+-			err = -EOPNOTSUPP;
++		err = mtd_unlock(subdev, ofs, size);
++		if (err)
++			break;
  
- static int logfs_mtd_readpage(void *_sb, struct page *page)
+ 		len -= size;
+ 		if (len == 0)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 4d0f3e5..66494ee 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -339,9 +339,9 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
+ 
+ 	/* Some chips always power up locked. Unlock them now */
+-	if ((mtd->flags & MTD_WRITEABLE)
+-	    && (mtd->flags & MTD_POWERUP_LOCK) && mtd->unlock) {
+-		if (mtd_unlock(mtd, 0, mtd->size))
++	if ((mtd->flags & MTD_WRITEABLE) && (mtd->flags & MTD_POWERUP_LOCK)) {
++		error = mtd_unlock(mtd, 0, mtd->size);
++		if (error && error != -EOPNOTSUPP)
+ 			printk(KERN_WARNING
+ 			       "%s: unlock failed, writes may not work\n",
+ 			       mtd->name);
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a58ecf4..305f12b 100644
+index 305f12b..6c91ba5 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -399,7 +399,8 @@ int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 
- static inline void mtd_sync(struct mtd_info *mtd)
+@@ -406,16 +406,22 @@ static inline void mtd_sync(struct mtd_info *mtd)
+ /* Chip-supported device locking */
+ static inline int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
  {
--	mtd->sync(mtd);
-+	if (mtd->sync)
-+		mtd->sync(mtd);
++	if (!mtd->lock)
++		return -EOPNOTSUPP;
+ 	return mtd->lock(mtd, ofs, len);
  }
  
- /* Chip-supported device locking */
+ static inline int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
++	if (!mtd->unlock)
++		return -EOPNOTSUPP;
+ 	return mtd->unlock(mtd, ofs, len);
+ }
+ 
+ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
++	if (!mtd->is_locked)
++		return -EOPNOTSUPP;
+ 	return mtd->is_locked(mtd, ofs, len);
+ }
+ 
 -- 
 1.7.7.3
