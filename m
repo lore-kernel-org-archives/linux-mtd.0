@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgqv-0003Sw-6Z
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:59 +0000
+ id 1Rhgqw-0003V8-It
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:19:00 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/17] mtd: do not use mtd->lock, unlock and is_locked directly
-Date: Mon,  2 Jan 2012 14:20:43 +0200
-Message-Id: <1325506847-23470-14-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 14/17] mtd: do not use mtd->suspend and mtd->resume directly
+Date: Mon,  2 Jan 2012 14:20:44 +0200
+Message-Id: <1325506847-23470-15-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,151 +20,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Instead, call the corresponding MTD API function which will return
-'-EOPNOTSUPP' if the operation is not supported.
+Just call the 'mtd_suspend()' and 'mtd_resume()' - they will do nothing
+if the operation is not defined.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/maps/scb2_flash.c |    3 +--
- drivers/mtd/mtdchar.c         |   15 +++------------
- drivers/mtd/mtdconcat.c       |   18 ++++++------------
- drivers/mtd/mtdcore.c         |    6 +++---
- include/linux/mtd/mtd.h       |    6 ++++++
- 5 files changed, 19 insertions(+), 29 deletions(-)
+ drivers/mtd/maps/physmap.c        |    5 ++---
+ drivers/mtd/maps/rbtx4939-flash.c |    5 ++---
+ drivers/mtd/mtdcore.c             |    5 +----
+ include/linux/mtd/mtd.h           |    5 ++++-
+ 4 files changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/maps/scb2_flash.c b/drivers/mtd/maps/scb2_flash.c
-index 01af347..934a72c 100644
---- a/drivers/mtd/maps/scb2_flash.c
-+++ b/drivers/mtd/maps/scb2_flash.c
-@@ -204,8 +204,7 @@ scb2_flash_remove(struct pci_dev *dev)
- 		return;
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index d94cc62..abc5626 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -190,9 +190,8 @@ static void physmap_flash_shutdown(struct platform_device *dev)
+ 	int i;
  
- 	/* disable flash writes */
--	if (scb2_mtd->lock)
--		mtd_lock(scb2_mtd, 0, scb2_mtd->size);
-+	mtd_lock(scb2_mtd, 0, scb2_mtd->size);
+ 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+-		if (info->mtd[i]->suspend && info->mtd[i]->resume)
+-			if (mtd_suspend(info->mtd[i]) == 0)
+-				mtd_resume(info->mtd[i]);
++		if (mtd_suspend(info->mtd[i]) == 0)
++			mtd_resume(info->mtd[i]);
+ }
+ #else
+ #define physmap_flash_shutdown NULL
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index 7176283..3da63fc 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -119,9 +119,8 @@ static void rbtx4939_flash_shutdown(struct platform_device *dev)
+ {
+ 	struct rbtx4939_flash_info *info = platform_get_drvdata(dev);
  
- 	mtd_device_unregister(scb2_mtd);
- 	map_destroy(scb2_mtd);
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 23a5110..92da621 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -814,10 +814,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
- 			return -EFAULT;
- 
--		if (!mtd->lock)
--			ret = -EOPNOTSUPP;
--		else
--			ret = mtd_lock(mtd, einfo.start, einfo.length);
-+		ret = mtd_lock(mtd, einfo.start, einfo.length);
- 		break;
- 	}
- 
-@@ -828,10 +825,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
- 			return -EFAULT;
- 
--		if (!mtd->unlock)
--			ret = -EOPNOTSUPP;
--		else
--			ret = mtd_unlock(mtd, einfo.start, einfo.length);
-+		ret = mtd_unlock(mtd, einfo.start, einfo.length);
- 		break;
- 	}
- 
-@@ -842,10 +836,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		if (copy_from_user(&einfo, argp, sizeof(einfo)))
- 			return -EFAULT;
- 
--		if (!mtd->is_locked)
--			ret = -EOPNOTSUPP;
--		else
--			ret = mtd_is_locked(mtd, einfo.start, einfo.length);
-+		ret = mtd_is_locked(mtd, einfo.start, einfo.length);
- 		break;
- 	}
- 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 9119f76..aaafb5e 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -555,12 +555,9 @@ static int concat_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		else
- 			size = len;
- 
--		if (subdev->lock) {
--			err = mtd_lock(subdev, ofs, size);
--			if (err)
--				break;
--		} else
--			err = -EOPNOTSUPP;
-+		err = mtd_lock(subdev, ofs, size);
-+		if (err)
-+			break;
- 
- 		len -= size;
- 		if (len == 0)
-@@ -595,12 +592,9 @@ static int concat_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		else
- 			size = len;
- 
--		if (subdev->unlock) {
--			err = mtd_unlock(subdev, ofs, size);
--			if (err)
--				break;
--		} else
--			err = -EOPNOTSUPP;
-+		err = mtd_unlock(subdev, ofs, size);
-+		if (err)
-+			break;
- 
- 		len -= size;
- 		if (len == 0)
+-	if (info->mtd->suspend && info->mtd->resume)
+-		if (mtd_suspend(info->mtd) == 0)
+-			mtd_resume(info->mtd);
++	if (mtd_suspend(info->mtd) == 0)
++		mtd_resume(info->mtd);
+ }
+ #else
+ #define rbtx4939_flash_shutdown NULL
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 4d0f3e5..66494ee 100644
+index 66494ee..6ae9ca0 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -339,9 +339,9 @@ int add_mtd_device(struct mtd_info *mtd)
- 	mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
+@@ -119,10 +119,7 @@ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
  
- 	/* Some chips always power up locked. Unlock them now */
--	if ((mtd->flags & MTD_WRITEABLE)
--	    && (mtd->flags & MTD_POWERUP_LOCK) && mtd->unlock) {
--		if (mtd_unlock(mtd, 0, mtd->size))
-+	if ((mtd->flags & MTD_WRITEABLE) && (mtd->flags & MTD_POWERUP_LOCK)) {
-+		error = mtd_unlock(mtd, 0, mtd->size);
-+		if (error && error != -EOPNOTSUPP)
- 			printk(KERN_WARNING
- 			       "%s: unlock failed, writes may not work\n",
- 			       mtd->name);
+-	if (mtd && mtd->suspend)
+-		return mtd_suspend(mtd);
+-	else
+-		return 0;
++	return mtd_suspend(mtd);
+ }
+ 
+ static int mtd_cls_resume(struct device *dev)
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 305f12b..6c91ba5 100644
+index 6c91ba5..0893707 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -406,16 +406,22 @@ static inline void mtd_sync(struct mtd_info *mtd)
- /* Chip-supported device locking */
- static inline int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+@@ -427,12 +427,15 @@ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ static inline int mtd_suspend(struct mtd_info *mtd)
  {
-+	if (!mtd->lock)
++	if (!mtd->suspend)
 +		return -EOPNOTSUPP;
- 	return mtd->lock(mtd, ofs, len);
+ 	return mtd->suspend(mtd);
  }
  
- static inline int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ static inline void mtd_resume(struct mtd_info *mtd)
  {
-+	if (!mtd->unlock)
-+		return -EOPNOTSUPP;
- 	return mtd->unlock(mtd, ofs, len);
+-	mtd->resume(mtd);
++	if (mtd->resume)
++		mtd->resume(mtd);
  }
  
- static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
-+	if (!mtd->is_locked)
-+		return -EOPNOTSUPP;
- 	return mtd->is_locked(mtd, ofs, len);
- }
- 
+ static inline int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
 -- 
 1.7.7.3
