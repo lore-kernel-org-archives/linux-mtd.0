@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgqn-0003Qp-8Z
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:50 +0000
+ id 1Rhgqo-0003RB-DL
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:51 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/17] mtd: do not use mtd->read_oob directly
-Date: Mon,  2 Jan 2012 14:20:36 +0200
-Message-Id: <1325506847-23470-7-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 07/17] mtd: do not use mtd->get_*_prot_info directly
+Date: Mon,  2 Jan 2012 14:20:37 +0200
+Message-Id: <1325506847-23470-8-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,59 +20,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Instead of checking whether 'mtd->read_oob' is defined, just call
-'mtd_read_oob()' and handle the '-EOPNOTSUPP' error which will be returned
-if the function is undefined.
-
-Additionally, make 'mtd_write_oob()' return '-EOPNOTSUPP' if the function
-is undefined.
+Instead, call 'mtd_get_*_prot_info()' and check for '-EOPNOTSUPP'. While
+on it, fix the return code from '-EOPNOTSUPP' to '-EINVAL' for the case
+when the mode parameter is invalid.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    9 ++-------
+ drivers/mtd/mtdchar.c   |    8 +++-----
  include/linux/mtd/mtd.h |    4 ++++
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 55f0961..287ff0d 100644
+index 287ff0d..49340dc 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -452,13 +452,8 @@ static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
- 	if (length > 4096)
- 		return -EINVAL;
- 
--	if (!mtd->read_oob)
+@@ -919,17 +919,15 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		struct otp_info *buf = kmalloc(4096, GFP_KERNEL);
+ 		if (!buf)
+ 			return -ENOMEM;
 -		ret = -EOPNOTSUPP;
--	else
--		ret = access_ok(VERIFY_WRITE, ptr,
--				length) ? 0 : -EFAULT;
--	if (ret)
--		return ret;
-+	if (!access_ok(VERIFY_WRITE, ptr, length))
-+		return -EFAULT;
- 
- 	ops.ooblen = length;
- 	ops.ooboffs = start & (mtd->writesize - 1);
+ 		switch (mfi->mode) {
+ 		case MTD_FILE_MODE_OTP_FACTORY:
+-			if (mtd->get_fact_prot_info)
+-				ret = mtd_get_fact_prot_info(mtd, buf, 4096);
++			ret = mtd_get_fact_prot_info(mtd, buf, 4096);
+ 			break;
+ 		case MTD_FILE_MODE_OTP_USER:
+-			if (mtd->get_user_prot_info)
+-				ret = mtd_get_user_prot_info(mtd, buf, 4096);
++			ret = mtd_get_user_prot_info(mtd, buf, 4096);
+ 			break;
+ 		default:
++			ret = -EINVAL;
+ 			break;
+ 		}
+ 		if (ret >= 0) {
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index b729640..721a63f 100644
+index 721a63f..7122efd 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -320,6 +320,8 @@ static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
- 			       struct mtd_oob_ops *ops)
+@@ -342,6 +342,8 @@ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+ static inline int mtd_get_fact_prot_info(struct mtd_info *mtd,
+ 					 struct otp_info *buf, size_t len)
  {
- 	ops->retlen = ops->oobretlen = 0;
-+	if (!mtd->read_oob)
++	if (!mtd->get_fact_prot_info)
 +		return -EOPNOTSUPP;
- 	return mtd->read_oob(mtd, from, ops);
+ 	return mtd->get_fact_prot_info(mtd, buf, len);
  }
  
-@@ -327,6 +329,8 @@ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 				struct mtd_oob_ops *ops)
+@@ -357,6 +359,8 @@ static inline int mtd_get_user_prot_info(struct mtd_info *mtd,
+ 					 struct otp_info *buf,
+ 					 size_t len)
  {
- 	ops->retlen = ops->oobretlen = 0;
-+	if (!mtd->write_oob)
++	if (!mtd->get_user_prot_info)
 +		return -EOPNOTSUPP;
- 	return mtd->write_oob(mtd, to, ops);
+ 	return mtd->get_user_prot_info(mtd, buf, len);
  }
  
 -- 
