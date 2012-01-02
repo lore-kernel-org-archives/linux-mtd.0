@@ -1,14 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgr0-0003WL-7d
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:19:03 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 17/17] mtd: do not use mtd->block_markbad directly
-Date: Mon,  2 Jan 2012 14:20:47 +0200
-Message-Id: <1325506847-23470-18-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
-References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RhnNW-0006Kt-N0
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 19:17:03 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Mon, 2 Jan 2012 14:11:33 -0500
+Subject: I need help analyzing a failed UBIfs
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD33254FA3C54@dekaexchange07.deka.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,102 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Folks:
 
-Instead, use the new 'mtd_can_have_bb()', or just rely on 'mtd_block_markbad()'
-return code, which will be -EOPNOTSUPP if bad blocks are not supported.
+  I've been asked to analyze a 2GB NAND flash that contains
+  a single volume UBIfs file system that has developed an
+  uncorrectable ECC error in one PEB (which is apparently
+  in use storing a LEB).
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/mtdchar.c   |    5 +----
- drivers/mtd/mtdconcat.c |    2 +-
- drivers/mtd/mtdoops.c   |    2 +-
- drivers/mtd/mtdswap.c   |    2 +-
- fs/jffs2/wbuf.c         |    3 ---
- include/linux/mtd/mtd.h |    2 ++
- 6 files changed, 6 insertions(+), 10 deletions(-)
+  The one thing I'd really like to determine is:
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 64efcbf..50c6a1e 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -877,10 +877,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- 		if (copy_from_user(&offs, argp, sizeof(loff_t)))
- 			return -EFAULT;
--		if (!mtd->block_markbad)
--			ret = -EOPNOTSUPP;
--		else
--			return mtd_block_markbad(mtd, offs);
-+		return mtd_block_markbad(mtd, offs);
- 		break;
- 	}
- 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index fbf3cb1..1ed5103 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -673,7 +673,7 @@ static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	struct mtd_concat *concat = CONCAT(mtd);
- 	int i, err = -EINVAL;
- 
--	if (!concat->subdev[0]->block_markbad)
-+	if (!mtd_can_have_bb(concat->subdev[0]))
- 		return 0;
- 
- 	if (ofs > mtd->size)
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index a4c8f67..db8e827 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -199,7 +199,7 @@ badblock:
- 		return;
- 	}
- 
--	if (mtd->block_markbad && ret == -EIO) {
-+	if (mtd_can_have_bb(mtd) && ret == -EIO) {
- 		ret = mtd_block_markbad(mtd, cxt->nextpage * record_size);
- 		if (ret < 0) {
- 			printk(KERN_ERR "mtdoops: block_markbad failed, aborting\n");
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 3fc8cb2..c92f0f6 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -274,7 +274,7 @@ static int mtdswap_handle_badblock(struct mtdswap_dev *d, struct swap_eb *eb)
- 	eb->root = NULL;
- 
- 	/* badblocks not supported */
--	if (!d->mtd->block_markbad)
-+	if (!mtd_can_have_bb(d->mtd))
- 		return 1;
- 
- 	offset = mtdswap_eb_offset(d, eb);
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index fd96b75..30e8f47 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -1130,9 +1130,6 @@ int jffs2_write_nand_badblock(struct jffs2_sb_info *c, struct jffs2_eraseblock *
- 	if( ++jeb->bad_count < MAX_ERASE_FAILURES)
- 		return 0;
- 
--	if (!c->mtd->block_markbad)
--		return 1; // What else can we do?
--
- 	printk(KERN_WARNING "JFFS2: marking eraseblock at %08x\n as bad", bad_offset);
- 	ret = mtd_block_markbad(c->mtd, bad_offset);
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 7e35755..1a81fde 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -447,6 +447,8 @@ static inline int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
- 
- static inline int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
-+	if (!mtd->block_markbad)
-+		return -EOPNOTSUPP;
- 	return mtd->block_markbad(mtd, ofs);
- }
- 
--- 
-1.7.7.3
+    o Is the failed LEB part of the UBIfs "Wandering
+      Journal" or is it storing actual, fully-committed
+      parts of the data volume such as iNodes, directories,
+      or file data extents?*
+
+  Looking at a data dump of the volume (from the MTD
+  level), is there an easy way to determine this?
+  For example, "All the Journal LEBs are listed in
+  a table at..."**
+
+                          Atlant
+
+
+ * I'm assuming that LEBs are either fully-allocated to
+   the Wandering Journal or fully-available to the "data
+   volume"; if this assumption is incorrect, I'm sure
+   someone will correct me!
+
+** I have a Perl script that I wrote that helps me automate
+   this and could easily extend my script to do more analysis
+   if I knew what I was looking for.
+
+
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
