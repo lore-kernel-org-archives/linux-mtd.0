@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgqo-0003RB-DL
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:51 +0000
+ id 1Rhgqp-0003Sw-PS
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:52 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/17] mtd: do not use mtd->get_*_prot_info directly
-Date: Mon,  2 Jan 2012 14:20:37 +0200
-Message-Id: <1325506847-23470-8-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/17] mtd: do not use mtd->read_*_prot_reg directly
+Date: Mon,  2 Jan 2012 14:20:38 +0200
+Message-Id: <1325506847-23470-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,61 +20,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Instead, call 'mtd_get_*_prot_info()' and check for '-EOPNOTSUPP'. While
-on it, fix the return code from '-EOPNOTSUPP' to '-EINVAL' for the case
-when the mode parameter is invalid.
+Instead, call 'mtd_read_*_prot_info()' and check for -EOPNOTSUPP.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/mtdchar.c   |    8 +++-----
+ drivers/mtd/mtdchar.c   |   18 ++++++++++--------
  include/linux/mtd/mtd.h |    4 ++++
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 287ff0d..49340dc 100644
+index 49340dc..4e8e5fb 100644
 --- a/drivers/mtd/mtdchar.c
 +++ b/drivers/mtd/mtdchar.c
-@@ -919,17 +919,15 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		struct otp_info *buf = kmalloc(4096, GFP_KERNEL);
- 		if (!buf)
- 			return -ENOMEM;
--		ret = -EOPNOTSUPP;
- 		switch (mfi->mode) {
- 		case MTD_FILE_MODE_OTP_FACTORY:
--			if (mtd->get_fact_prot_info)
--				ret = mtd_get_fact_prot_info(mtd, buf, 4096);
-+			ret = mtd_get_fact_prot_info(mtd, buf, 4096);
- 			break;
- 		case MTD_FILE_MODE_OTP_USER:
--			if (mtd->get_user_prot_info)
--				ret = mtd_get_user_prot_info(mtd, buf, 4096);
-+			ret = mtd_get_user_prot_info(mtd, buf, 4096);
- 			break;
- 		default:
-+			ret = -EINVAL;
- 			break;
- 		}
- 		if (ret >= 0) {
+@@ -366,20 +366,22 @@ static void mtdchar_erase_callback (struct erase_info *instr)
+ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
+ {
+ 	struct mtd_info *mtd = mfi->mtd;
++	size_t retlen;
+ 	int ret = 0;
+ 
++	/*
++	 * Make a fake call to mtd_read_fact_prot_reg() to check if OTP
++	 * operations are supported.
++	 */
++	if (mtd_read_fact_prot_reg(mtd, -1, -1, &retlen, NULL) == -EOPNOTSUPP)
++		return -EOPNOTSUPP;
++
+ 	switch (mode) {
+ 	case MTD_OTP_FACTORY:
+-		if (!mtd->read_fact_prot_reg)
+-			ret = -EOPNOTSUPP;
+-		else
+-			mfi->mode = MTD_FILE_MODE_OTP_FACTORY;
++		mfi->mode = MTD_FILE_MODE_OTP_FACTORY;
+ 		break;
+ 	case MTD_OTP_USER:
+-		if (!mtd->read_fact_prot_reg)
+-			ret = -EOPNOTSUPP;
+-		else
+-			mfi->mode = MTD_FILE_MODE_OTP_USER;
++		mfi->mode = MTD_FILE_MODE_OTP_USER;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 721a63f..7122efd 100644
+index 7122efd..e488cf9 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -342,6 +342,8 @@ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- static inline int mtd_get_fact_prot_info(struct mtd_info *mtd,
- 					 struct otp_info *buf, size_t len)
+@@ -352,6 +352,8 @@ static inline int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
+ 					 u_char *buf)
  {
-+	if (!mtd->get_fact_prot_info)
+ 	*retlen = 0;
++	if (!mtd->read_fact_prot_reg)
 +		return -EOPNOTSUPP;
- 	return mtd->get_fact_prot_info(mtd, buf, len);
+ 	return mtd->read_fact_prot_reg(mtd, from, len, retlen, buf);
  }
  
-@@ -357,6 +359,8 @@ static inline int mtd_get_user_prot_info(struct mtd_info *mtd,
- 					 struct otp_info *buf,
- 					 size_t len)
+@@ -369,6 +371,8 @@ static inline int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 					 u_char *buf)
  {
-+	if (!mtd->get_user_prot_info)
+ 	*retlen = 0;
++	if (!mtd->read_user_prot_reg)
 +		return -EOPNOTSUPP;
- 	return mtd->get_user_prot_info(mtd, buf, len);
+ 	return mtd->read_user_prot_reg(mtd, from, len, retlen, buf);
  }
  
 -- 
