@@ -1,15 +1,14 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rhgql-0003Qp-31
+ id 1Rhgqm-0003RB-60
  for linux-mtd@lists.infradead.org; Mon, 02 Jan 2012 12:18:48 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/17] romfs: do not use mtd->get_unmapped_area directly
-Date: Mon,  2 Jan 2012 14:20:34 +0200
-Message-Id: <1325506847-23470-5-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 05/17] mtd: mtdoops: do not use mtd->panic_write directly
+Date: Mon,  2 Jan 2012 14:20:35 +0200
+Message-Id: <1325506847-23470-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
 References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +20,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Remove direct usage of mtd->get_unmapped_area. Instead, just call
-'mtd_get_unmapped_area()' which will return -EOPNOTSUPP if the function
-is not implemented, and then test for this code.
+Instead of checking if 'mtd->panic_write' is defined, call 'mtd_panic_write()'
+and check the error code - '-EOPNOTSUPP' will be returned if the function is
+not defined.
 
-We also translate -EOPNOTSUPP to -ENOSYS because this return code is
-probably part of the kernel ABI which we do not want to break.
-
-Cc: linux-fsdevel@vger.kernel.org
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- fs/romfs/mmap-nommu.c |   28 +++++++++++++---------------
- 1 files changed, 13 insertions(+), 15 deletions(-)
+ drivers/mtd/mtdoops.c   |   17 ++++++++---------
+ include/linux/mtd/mtd.h |    2 ++
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/fs/romfs/mmap-nommu.c b/fs/romfs/mmap-nommu.c
-index d5168e8..e1a7779 100644
---- a/fs/romfs/mmap-nommu.c
-+++ b/fs/romfs/mmap-nommu.c
-@@ -28,9 +28,10 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
- 	struct inode *inode = file->f_mapping->host;
- 	struct mtd_info *mtd = inode->i_sb->s_mtd;
- 	unsigned long isize, offset, maxpages, lpages;
-+	int ret;
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 69532a3..c8540b8 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -221,10 +221,14 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+ 	hdr[0] = cxt->nextcount;
+ 	hdr[1] = MTDOOPS_KERNMSG_MAGIC;
  
- 	if (!mtd)
--		goto cant_map_directly;
-+		return (unsigned long) -ENOSYS;
+-	if (panic)
++	if (panic) {
+ 		ret = mtd_panic_write(mtd, cxt->nextpage * record_size,
+ 				      record_size, &retlen, cxt->oops_buf);
+-	else
++		if (ret == -EOPNOTSUPP) {
++			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
++			return;
++		}
++	} else
+ 		ret = mtd_write(mtd, cxt->nextpage * record_size,
+ 				record_size, &retlen, cxt->oops_buf);
  
- 	/* the mapping mustn't extend beyond the EOF */
- 	lpages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
-@@ -41,23 +42,20 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
- 	if ((pgoff >= maxpages) || (maxpages - pgoff < lpages))
- 		return (unsigned long) -EINVAL;
+@@ -330,13 +334,8 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+ 	memcpy(dst + l1_cpy, s2 + s2_start, l2_cpy);
  
--	/* we need to call down to the MTD layer to do the actual mapping */
--	if (mtd->get_unmapped_area) {
--		if (addr != 0)
--			return (unsigned long) -EINVAL;
--
--		if (len > mtd->size || pgoff >= (mtd->size >> PAGE_SHIFT))
--			return (unsigned long) -EINVAL;
-+	if (addr != 0)
-+		return (unsigned long) -EINVAL;
- 
--		offset += ROMFS_I(inode)->i_dataoffset;
--		if (offset > mtd->size - len)
--			return (unsigned long) -EINVAL;
-+	if (len > mtd->size || pgoff >= (mtd->size >> PAGE_SHIFT))
-+		return (unsigned long) -EINVAL;
- 
--		return mtd_get_unmapped_area(mtd, len, offset, flags);
+ 	/* Panics must be written immediately */
+-	if (reason != KMSG_DUMP_OOPS) {
+-		if (!cxt->mtd->panic_write)
+-			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
+-		else
+-			mtdoops_write(cxt, 1);
+-		return;
 -	}
-+	offset += ROMFS_I(inode)->i_dataoffset;
-+	if (offset > mtd->size - len)
-+		return (unsigned long) -EINVAL;
++	if (reason != KMSG_DUMP_OOPS)
++		mtdoops_write(cxt, 1);
  
--cant_map_directly:
--	return (unsigned long) -ENOSYS;
-+	ret = mtd_get_unmapped_area(mtd, len, offset, flags);
-+	if (ret == -EOPNOTSUPP)
-+		ret = -ENOSYS;
-+	return (unsigned long) ret;
+ 	/* For other cases, schedule work to write it "nicely" */
+ 	schedule_work(&cxt->work_write);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 2c2a922..b729640 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -311,6 +311,8 @@ static inline int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 				  size_t *retlen, const u_char *buf)
+ {
+ 	*retlen = 0;
++	if (!mtd->panic_write)
++		return -EOPNOTSUPP;
+ 	return mtd->panic_write(mtd, to, len, retlen, buf);
  }
  
- /*
 -- 
 1.7.7.3
