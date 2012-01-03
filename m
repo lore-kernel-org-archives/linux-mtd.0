@@ -1,29 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ri2HE-0003ur-NO
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2012 11:11:33 +0000
-Date: Tue, 3 Jan 2012 12:11:14 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is
- not MX23
-Message-ID: <20120103111114.GA9083@pengutronix.de>
-References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
- <20111230143658.GA9141@pengutronix.de>
- <4EFE7236.10609@freescale.com>
- <20111231154338.GA27544@pengutronix.de>
- <CAMiH66HsFn4+6-whEC6G-qSPda3+3pBzd50i7iHh9Pg9TXHTXw@mail.gmail.com>
- <20120101223335.GA3756@pengutronix.de>
- <CAMiH66Fwh-su6ucLDMM7hhCjH7MJPeavt1u4O=_jWn5w=DyfKA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
-Content-Disposition: inline
-In-Reply-To: <CAMiH66Fwh-su6ucLDMM7hhCjH7MJPeavt1u4O=_jWn5w=DyfKA@mail.gmail.com>
-Cc: baruch@tkos.co.il, marek.vasut@gmail.com, koen.beel.barco@gmail.com,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Artem.Bityutskiy@intel.com, linux-arm-kernel@lists.infradead.org,
- LW@karo-electronics.de
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ri4pr-0004CD-TO
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2012 13:55:28 +0000
+Message-ID: <1325599040.8917.23.camel@sauron.fi.intel.com>
+Subject: re: mtd: introduce mtd_put_device interface
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Tue, 03 Jan 2012 15:57:20 +0200
+In-Reply-To: <20120103134752.GB3557@mwanda>
+References: <20120103134752.GB3557@mwanda>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-UBVqwDsNH2fwKg90LHgA"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@logfs.org>,
+ linux-mtd@lists.infradead.org, Prasad Joshi <prasadjoshi.linux@gmail.com>,
+ logfs@logfs.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,60 +27,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-UBVqwDsNH2fwKg90LHgA
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Huang,
+On Tue, 2012-01-03 at 16:47 +0300, Dan Carpenter wrote:
+> This patch is in linux-next.  The parts of this patch that touch
+> logfs are completely bogus and need to be reverted.  Eggnog...
+>=20
+> fs/logfs/super.c:507:2: warning: passing argument 1 of =E2=80=98mtd_put_d=
+evice=E2=80=99 from incompatible pointer type [enabled by default]
+> fs/logfs/super.c:526:3: warning: passing argument 1 of =E2=80=98mtd_put_d=
+evice=E2=80=99 from incompatible pointer type [enabled by default]
+> fs/logfs/super.c:533:3: warning: passing argument 1 of =E2=80=98mtd_put_d=
+evice=E2=80=99 from incompatible pointer type [enabled by default]
 
-> I will do the MX23 test, when i am free. It really costs lot of time :(
-
-My point is like this: I wondered if you really found out _why_ the MX28
-has this problem, e.g. "There is a case where the rom code does <x>, and
-when the NAND then does <y> the BCH goes to state <z> which requires a
-soft reset of the ip-core." If you had been at that point, it should be
-quite easy to check if this can happen on MX23, too, I think.
-
-If you don't know the cause of the problem in that detail because the
-problem is hardly reproducable, well, that can happen, too. I fully
-understand that. I don't want to enforce the time-consuming test on you
-(would be interesting, though), but then at least the comments need
-proper updates, so people are informed. From my understanding of the
-situation, it could look like this:
-
-=3D=3D=3D
-
-Due to Errata #2847 of the MX23, the BCH cannot be soft reset on this
-chip, otherwise it will lock up. So we skip resetting BCH on the MX23.
-On the other hand, the MX28 needs the reset, because one case has been
-seen where the BCH produced ECC errors constantly after 10000
-consecutive reboots. The latter case has not been seen on the MX23 yet,
-still we don't if it could happen there as well.
-
-=3D=3D=3D
-
-What do you think?
-
-Thanks,
-
-   Wolfram
+Yes, this was in the previous linux-next and should be fixed in the
+current linux-next.
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy
 
---EVF5PPMfhYS0aIcm
+--=-UBVqwDsNH2fwKg90LHgA
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iEYEARECAAYFAk8C4lIACgkQD27XaX1/VRvo7QCfd+GF8jRVOXLGxu5EW1IyfHYu
-SksAnjblbKtEOt4Zy+ldiaRAVC8N7fFn
-=Y7AX
+iQIcBAABAgAGBQJPAwlAAAoJECmIfjd9wqK0dKEQAIvv44tE0VXCsiXXnLwRMLiC
+q3AXZt21XASbi6iLfKzTaPrft6i+DLjlGEtAT0hXVtVJIzcbL/Qeg4YX9XsDYrkw
+M+pV2XIhsIu20VBfilchl5pqg52sHgGCk61pMjWh6Ki+zt7r0XrSRHcpeJWk6Pc+
+uLRIjXfwocz4lUAApSzfl6glqIlCtPV32mCtY+ZfTXklc9QkND8JMiT5u159gW3D
+CkXV/ihBxkxppEA09n/IuXevHHcbCkz2GG3BMLoPH0UtgbxwkiNiq+uT6C0o3COU
+k8AYZZAx/9YfgEK7YGGmzPwgOjRB3eMdcac50JVm/2+chgIFvSD057nc789gjdQV
+hj+z6EJEdoCx+z/DfTzGWGOxIPkuuU6/OtYZmxgJ/cv0RmqaT9u4dbN+h5lCwGTH
+ud7ZTyVIw1WPu1qNj7mPA1nKTHTvokMvAptf1T2J/M4fAjUN951rOO6gCd/DhhPv
+2UegU7NEwTCztLNBTvBY0Ejjo03ehFCzw5NjO1gRYvlAKBYvYMYWQk2vljzRK6QB
+lMSt8Sp3azk9tfSLFkxWFJrOvCW5sovmqcuRjiPiqrtCKlnPj5+ANWM+CALOUMT0
+Fkj0IlPtjAfOUoETDOxrpuFFMLM0Ei42AVXUI5jWyNXi1TztQ/HCGcAc+MvSsw9C
+Qmlxzd1YAK7mJKOx1e6t
+=8xna
 -----END PGP SIGNATURE-----
 
---EVF5PPMfhYS0aIcm--
+--=-UBVqwDsNH2fwKg90LHgA--
