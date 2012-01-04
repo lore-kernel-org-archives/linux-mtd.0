@@ -1,24 +1,20 @@
-Message-ID: <4F03BCE1.80006@freescale.com>
-Date: Wed, 4 Jan 2012 10:43:45 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RiGvK-0003p1-So
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 02:49:56 +0000
+Message-ID: <4F03BE34.6020003@newsguy.com>
+Date: Tue, 03 Jan 2012 18:49:24 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v2] MTD/GPMI bugfix : reset the BCH module when it is
- not MX23
-References: <1325233646-3343-1-git-send-email-b32955@freescale.com>
- <20111230143658.GA9141@pengutronix.de> <4EFE7236.10609@freescale.com>
- <20111231154338.GA27544@pengutronix.de>
- <CAMiH66HsFn4+6-whEC6G-qSPda3+3pBzd50i7iHh9Pg9TXHTXw@mail.gmail.com>
- <20120101223335.GA3756@pengutronix.de>
- <CAMiH66Fwh-su6ucLDMM7hhCjH7MJPeavt1u4O=_jWn5w=DyfKA@mail.gmail.com>
- <20120103111114.GA9083@pengutronix.de>
-In-Reply-To: <20120103111114.GA9083@pengutronix.de>
-Content-Type: text/plain; charset="GB2312"
+To: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
+ device
+References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
+ <201201040150.39285.marek.vasut@gmail.com>
+In-Reply-To: <201201040150.39285.marek.vasut@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: baruch@tkos.co.il, koen.beel.barco@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, Artem.Bityutskiy@intel.com,
- Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org,
- LW@karo-electronics.de
+Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
-> Due to Errata #2847 of the MX23, the BCH cannot be soft reset on this
-> chip, otherwise it will lock up. So we skip resetting BCH on the MX23.
-> On the other hand, the MX28 needs the reset, because one case has been
-> seen where the BCH produced ECC errors constantly after 10000
-> consecutive reboots. The latter case has not been seen on the MX23 yet,
-> still we don't if it could happen there as well.
+On 01/03/2012 04:50 PM, Marek Vasut wrote:
+>> This patch adds a driver for the M-Sys / Sandisk diskonchip G4 nand flash
+>> found in various smartphones and PDAs, among them the Palm Treo680, HTC
+>> Prophet and Wizard, Toshiba Portege G900, Asus P526, and O2 XDA Zinc.  It
+>> was tested on the Treo 680, but should work generically.
+>>
+>> Since v3, this patch adds power management functions, a scan of the factory
+>> bad block table during initialization, several fixes, and more extensive
+>> testing. Also, the platform data header file, which only contained
+>> partitioning information, was removed.  Command-line partitioning can be
+>> used, at least until an mtd parser is written for the saftl format with
+>> which these chips are shipped.
+> Hey, please run it through ./scripts/checkpatch.pl, it'll likely reveal a few 
+> mistakes. Thanks for the code.
 >
-> ===
+> M
 >
-> What do you think?
->
-ok, thanks. I will add this comment to the patch.
 
-Huang Shijie
+
+I did.  0 errors, 0 warnings.
+
+Thanks,
+Mike
