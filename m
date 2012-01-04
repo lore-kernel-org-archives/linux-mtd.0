@@ -1,21 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RiTHN-0001At-5f
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 16:01:29 +0000
-Received: by iadk27 with SMTP id k27so36322800iad.36
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2012 08:01:27 -0800 (PST)
-Message-ID: <1325693012.8917.76.camel@sauron.fi.intel.com>
-Subject: Re: I need help analyzing a failed UBIfs
+ id 1RiTTQ-0001P9-Ax
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 16:13:56 +0000
+Received: by iadk27 with SMTP id k27so36339596iad.36
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2012 08:13:55 -0800 (PST)
+Message-ID: <1325693760.8917.87.camel@sauron.fi.intel.com>
+Subject: Re: ubifs panic with 2.6.39 stable
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Date: Wed, 04 Jan 2012 18:03:32 +0200
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD33254FA3C54@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD33254FA3C54@dekaexchange07.deka.local>
+To: Brad Parker <brad@heeltoe.com>
+Date: Wed, 04 Jan 2012 18:16:00 +0200
+In-Reply-To: <20120102131455.9a4f1a4b2a45238f732670fb1ee2460e.0d3c9ab8df.wbe@email16.secureserver.net>
+References: <20120102131455.9a4f1a4b2a45238f732670fb1ee2460e.0d3c9ab8df.wbe@email16.secureserver.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zH30RUjoNlAhS/fBGvth"
+ boundary="=-oxCpNRS+8hwudoYTsHQk"
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,58 +27,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zH30RUjoNlAhS/fBGvth
+--=-oxCpNRS+8hwudoYTsHQk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, 2012-01-02 at 13:14 -0700, Brad Parker wrote:
+> Running and older 2.6.31 kernel with UBIFS I saw a panic which appears
+> to be during recovery
+> of a bad block. The root fs (which is UBIFS) won't mount and the kernel
+> panics.
+>=20
+> I upgraded the kernel 2.6.39-stable, hoping that would fix the problem,
+> as I noticed a lot of
+> recovery fixes had gone in.  It still panics; it appears the recovery
+> fails.
+>=20
+> The board is essentially an Olimex SAM9-L9260, with Samsung NAND.
+>=20
+> Below are the interesting parts of the log (and the panic).  I'm curious
+> if this looks familiar
+> and if there might be fixes post 2.5.39...  thanks for any insight.
 
-On Mon, 2012-01-02 at 14:11 -0500, Atlant Schmidt wrote:
->     o Is the failed LEB part of the UBIfs "Wandering
->       Journal" or is it storing actual, fully-committed
->       parts of the data volume such as iNodes, directories,
->       or file data extents?*
+You have a corrupted node on the media. In general, UBIFS cleans-up the
+file-system automatically if the corruption is caused by a power-cut.
+But when it is caused by something else, it refuses to mount.
 
-To get the list of uncommitted journal LEBs you have to analyze the Log
-which is stored at the beginning of the volume and has a fixed address.
+In your case UBIFS thinks it is not a power cut. What you need to do is
+to figure out why this happened. One of the possible reasons is unstable
+bits - this problem is not resolved in UBIFS and no one is working on
+this AFAIK. But this depends on your NAND. E.g., in older NANDs we did
+not notice this. Also, modern SLCs have some properties of MLCs, which
+may cause issues.
 
->   Looking at a data dump of the volume (from the MTD
->   level), is there an easy way to determine this?
->   For example, "All the Journal LEBs are listed in
->   a table at..."**
+Basically, here you can find a list of things which may cause this:
 
-I think in case of error UBIFS prints a lot of information, if debugging
-is enabled. It uses KERN_DEBUG level, though, which causes a lot of
-confusion because people do not realize that they have a lot of info, it
-is just not in their console and they have to type 'dmesg'. A patch
-which changes this would be welcome.
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_ubifs_mlc
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
 
-Anyway, the info you want can be printed there as well.
+> VFP support v0.3: not present
+> UBIFS: recovery needed
+> UBI error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes
+> from PEB 2970:4096, read 126976 bytes
+> UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0xf510fb95,
+> read 0x4f0a3196
 
->  * I'm assuming that LEBs are either fully-allocated to
->    the Wandering Journal or fully-available to the "data
->    volume"; if this assumption is incorrect, I'm sure
->    someone will correct me!
+When UBIFS debugging is enabled, it prints much more information. But it
+uses KERN_DEBUG level, so you do not see it. I think I have to change it
+to KERN_ERR, because so many people are confused. I wrote about this
+many times, documented in the web site (may be in not the most readable
+form, though), but people keep sending partial logs - just what they get
+in their serial console. Not, I do not blame you, just thinking
+aloud :-)
 
-When new data arrives, the Journal subsystem allocates space. If there
-is half-filled committed LEB, it may be allocated and its empty space
-may be used.
+Anyway, try to type dmesg or boot with ignore_loglevel to make sure
+_all_ kernel messages go to your serial console. If you dig the MTD
+web-site, you'll find more info, e.g., by starting here:
 
-Why half-filled committed LEBs may appear? E.g., if you unmount or do a
-sync, we commit everything, including partially filled LEBs.
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
 
-> ** I have a Perl script that I wrote that helps me automate
->    this and could easily extend my script to do more analysis
->    if I knew what I was looking for.
+Please, send the full log - may be I'll spot something useful.
 
-If it is a general purpose scripts, making it a part of the mtd-utils
-could be a good idea.
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zH30RUjoNlAhS/fBGvth
+--=-oxCpNRS+8hwudoYTsHQk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -86,19 +101,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPBHhUAAoJECmIfjd9wqK0O+AP/0s3i1RFSbcnzsxkutn7EJRP
-xiobwa4NNgVY4swyBBbjD0lncu1YNArSn/sr3ssOP8zq6rd8VGKn2su3iYjxeV1T
-JlBhqcb0WtHkZMZWFS+97tJT2TEoAdlC/cN1B950ldEQPhpWrsJ02AIlAVVeDVPS
-/7R1GzCQpw9nVk/7IOxubZGX0AU7vb3xfmfxZFNEW5wBhaSNVlHYBtc18hce6lg3
-RjeykJGP7+bcsjS1eWmthuGsgJDVZnX4kISoHfnLHvrhubxg5hzm575qoj0qnghr
-omjXI/J1+gVAI6as++PP2czEzo+0l9UWMv/Nf4m4vF1mewBoPPDWCOzAJgLWF1fT
-OI3TWbH3qsTnkXgiLWT23b/WyUdMHPnxqMxZ9tsZA1jWFazsBt88Bp/itWXBv1bW
-apQKRTOMS48OrmDUf5SnBPIb6n+/5De09EVvkTXOZDcR1odjLugej8DCRKoR3HKg
-VWm5ntL8RbXufcWqTEhS6lp8jSiHYfzB3JyebHaYHEGZna2FHCfTus/Jp6jKWIPK
-oexKgG74gygA0MfAyTWx2yh+is1dual0wd1Per1gKvwhZRpmu79ieTruxs3ncC7V
-5OLEPJGQbyyCVEvZr2BHPh19wVGy7p6miZV+G2AThL/UTTg6fGEI64gnO1c9brUu
-naMzcxM3PKLodcjlsyn4
-=jFea
+iQIcBAABAgAGBQJPBHtAAAoJECmIfjd9wqK0ZgcP/iPRW0ItZdU4g7tzZqrKGLsk
+nMFmN7ygbKEq6VfHZD9gh/kqTORIesc1aihqu0jQ11VGAXCIa/FMcKckztVXSLs7
+LmlzGcB4q0hHPn0ZPCT3Nr29eocPE5Quz8DZbIJ80pLmVoAfNgtbebB/X/HYI++c
+nTDcE43nY5Ri2LTQum+eTUtrLRJlbl6w+oDbP+zZTICsRI5TMs4AUYq44l3Ij7DJ
+AkTXr0sHWzAjn78WKGieQ88CIGB+XVlVEZch03pQKSb4VDfofD1qwQKgroSseTHc
+szG7Y9UjqiZ+Miemm62LQfwq91rLZ3x1ojCgAJbwfZQgMtjVxnUUJokTo5J4hD12
+ed50EptwQeBj/VOEdwLQkBY7PE7fG5qnPECl4VEYylWeFTTt4mbJM0IjUzXKZaik
+FkLgS/fYkuZLIiR1+VGwWF24ugl6tGOaBzQ6uupfSVi7IcfV/Ys4xZ8CK6CgiTW/
+0zknEQM2m89+cMAhv5tx+n3QYbntqxshkjh9L91H7ytemOp+jLe5X0emRu8/pCck
+BgbfhcCCM4zRpplXVvTmlXW7xPVsPPUTWFLxmt48dOuldU9X5hUqiBFVEonk1m4b
+MFr53HCh49HRm5/cwKvQk9VOPwJOJeEah/W23o8KZrdtSFHylVA+QT7YTyNCEMr/
+YLo79uMZkBS4i9yDFUPy
+=tfaX
 -----END PGP SIGNATURE-----
 
---=-zH30RUjoNlAhS/fBGvth--
+--=-oxCpNRS+8hwudoYTsHQk--
