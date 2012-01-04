@@ -1,19 +1,15 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=VA3EHSOBE005.bigfish.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RiJqm-0004jg-11
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 05:57:24 +0000
-Message-ID: <4F03EA83.9030503@freescale.com>
-Date: Wed, 4 Jan 2012 13:58:27 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from smtpauth11.prod.mesa1.secureserver.net ([64.202.165.33])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RiPC2-0005W7-SI
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 11:39:44 +0000
+Message-ID: <4F043A7C.1060504@heeltoe.com>
+Date: Wed, 04 Jan 2012 06:39:40 -0500
+From: Brad Parker <brad@heeltoe.com>
 MIME-Version: 1.0
-To: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: GPMI-NAND: Wrong ECC size in driver
-References: <201201040148.32847.marek.vasut@gmail.com>
-In-Reply-To: <201201040148.32847.marek.vasut@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: ubifs panic with 2.6.39 stable - followup
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +19,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek:
-> Hi,
->
-> the gpmi-nand.c driver apparently has misconfigured ecc.size field:
->
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c:
-> ---------->8 ----------
-> 1493         chip->ecc.mode          = NAND_ECC_HW;
-> 1494         chip->ecc.size          = 1;
-> 1495         chip->ecc.layout        =&gpmi_hw_ecclayout;
-> ---------- 8<  ----------
->
-> This boils down to misconfigured mtd->subpage_sft in:
->
-> drivers/mtd/nand/nand_base.c:
-> ---------->8 ----------
-> 3434         /* Allow subpage writes up to ecc.steps. Not possible for MLC flash
-> */
-> 3435         if (!(chip->options&  NAND_NO_SUBPAGE_WRITE)&&
-> 3436             !(chip->cellinfo&  NAND_CI_CELLTYPE_MSK)) {
-> 3437                 switch (chip->ecc.steps) {
-> 3438                 case 2:
-> 3439                         mtd->subpage_sft = 1;
-> 3440                         break;
-> 3441                 case 4:
-> 3442                 case 8:
-> 3443                 case 16:
-> 3444                         mtd->subpage_sft = 2;
-> 3445                         break;
-> 3446                 }
-> 3447         }
-> 3448         chip->subpagesize = mtd->writesize>>  mtd->subpage_sft;
-> ---------- 8<  ----------
->
-> The mtd->subpage_sft is accidentally 0 by default. Therefore, the subpage size
-> is mtd->writesize>>  0. Therefore the subpage size reported to UBI formating
-> tools is the size of whole page, which works. Now, if I correct the problem by
-> setting ecc.size properly to 512 bytes, I get into trouble with UBI:
->
-> 1) UBI formating tools are reported the driver CAN DO subpage writes
-> 2) UBI formating tools are reported the subpage size is 512 bytes
->
-The gpmi driver does not support the subpage read/write.
-I will be happy if the driver works only by setting the 
-NAND_NO_SUBPAGE_WRITE, without setting the ecc.size.
+[sorry for the duplicate post; I tried to post a followup with just
+  the url to the pastebin log but for some reason  it got stuck
+  waiting for the moderator]
 
-Best Regards
-Huang Shijie
-> and this happens even though the NAND_NO_SUBPAGE_WRITE option is set by the
-> driver. This is because:
->
-> drivers/mtd/nand/nand_base.c:
-> ---------->8 ----------
-> 3072         /* Get chip options, preserve non chip based options */
-> 3073         chip->options&= ~NAND_CHIPOPTIONS_MSK;
-> 3074         chip->options |= type->options&  NAND_CHIPOPTIONS_MSK;
-> ---------- 8<  ----------
->
-> which effectively masks that bit away. So, how are we going to fix it?
->
-> Cheers!
->
-> Marek
->
+Running and older 2.6.31 kernel with UBIFS I see a panic which appears
+to be during recovery of a bad block. The root fs (which is UBIFS)
+won't mount and the kernel panics.
+
+I upgraded the kernel 2.6.39-stable, hoping that would fix the problem,
+as I noticed a lot of recovery fixes had gone in.  It still panics;
+it appears the recovery fails.
+
+I rebooted with "ignore_loglevel" and the output is here:
+
+     http://pastebin.com/ETJjP4uw
+
+The board is essentially an Olimex SAM9-L9260, with Samsung NAND.
+
+I'm curious if this looks familiar and if it might be fixed post 2.5.39
+
+thanks for any insight.
+
+-brad
+
+UBIFS: recovery needed
+UBI error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes 
+from PEB 2970:4096, read 126976 bytes
+UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0xf510fb95, 
+read 0x4f0a3196
+UBIFS error (pid 1): ubifs_check_node: bad node at LEB 3589:45128
+         magic          0x6101831
+         crc            0x4f0a3196
+         node_type      0 (inode node)
+         group_type     2 (last of node group)
+         sqnum          69874250
+         len            160
+         key            (23417, inode)
+         creat_sqnum    230076
+         size           608
+         nlink          2
+         atime          1306744746.0
+         mtime          1316662493.0
+         ctime          1316662493.0
+         uid            0
+         gid            0
+         mode           16832
+         flags          0x1
+         xattr_cnt      2147483648
+         xattr_size     0
+         xattr_names    0
+         compr_type     0x0
+         data len       0
+...
+UBIFS error (pid 1): ubifs_recover_leb: bad node
+UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 3589:45128
+UBIFS error (pid 1): ubifs_scanned_corruption: first 8192 bytes from LEB 
+3589:45128
+...
+UBIFS error (pid 1): ubifs_recover_leb: LEB 3589 scanning failed
