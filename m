@@ -1,22 +1,23 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RiRfi-00070r-KV
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 14:18:31 +0000
-Received: from comm.systec-electronic.de (95-91-85-164-dynip.superkabel.de
- [95.91.85.164])
- by webbox1416.server-home.net (Postfix) with ESMTPA id E684127A619
- for <linux-mtd@lists.infradead.org>; Wed,  4 Jan 2012 15:21:54 +0100 (CET)
-Received: from ws-stein.localnet (unknown [192.168.10.38])
- by comm.systec-electronic.de (Postfix) with ESMTP id C94BC97C068
- for <linux-mtd@lists.infradead.org>; Wed,  4 Jan 2012 15:18:21 +0100 (CET)
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: linux-mtd@lists.infradead.org
-Subject: delayed close on mtdblock
-Date: Wed, 04 Jan 2012 15:18:21 +0100
-Message-ID: <14259449.DIx1JTusJU@ws-stein>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RiRyp-00087G-Oj
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 14:38:16 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Reginald Perrin' <reggyperrin@yahoo.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Date: Wed, 4 Jan 2012 09:38:13 -0500
+Subject: RE: I need help analyzing a failed UBIfs (resolved)
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD33254FA3C5A@dekaexchange07.deka.local>
+References: <0A40042D85E7C84DB443060EC44B3FD33254FA3C54@dekaexchange07.deka.local>
+ <0A40042D85E7C84DB443060EC44B3FD33254FA3C58@dekaexchange07.deka.local>
+ <0A40042D85E7C84DB443060EC44B3FD33254FA3C59@dekaexchange07.deka.local>
+ <1325684686.59071.YahooMailNeo@web114608.mail.gq1.yahoo.com>
+In-Reply-To: <1325684686.59071.YahooMailNeo@web114608.mail.gq1.yahoo.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Reginald:
 
-I observed an somewhat interesting situation regarding mtdblock. I have a NOR-
-Flash with several mtd partitions. One holds the configuration from the 
-bootloader and another one contains UBI/UBIFS.
-During bootup I attach UBI and mount UBIFS, no problems so far. To read the 
-bootloader coniguration I open the corresponding mtdblock with O_RDONLY, do an 
-lseek, read and close it afterwards, nothing special. But I noticed the 
-close() call take >1s which seems to far big, as there is nothing to be 
-written into this mtdblock device.
-I digged into the kernel and get to mtdblock_release(). I can see that 
-write_cached_data does nothing as the cache is clean. But mbd->mtd->sync 
-(cfi_amdstd_sync in my case) takes a while because the chip state is currently 
-FL_ERASING. The retry loop is taken several times before exiting the function.
-If I don't mount UBIFS there is no such delay. I'm wondering if there is 
-actually a need to sync the chip if the cache is clean. Can someone explain 
-this to me?
+> Would you be willing to share your analysis script?
 
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
+  I would; I'll investigate with my superiors whether
+  they would be willing to have me share it.
 
-SYS TEC electronic GmbH
-August-Bebel-Str. 29
-D-07973 Greiz
+                        Atlant
 
-Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
-eMail:    Alexander.Stein@systec-electronic.com
-Internet: http://www.systec-electronic.com
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Reginald Perrin
+Sent: Wednesday, January 04, 2012 08:45
+To: linux-mtd@lists.infradead.org
+Subject: Re: I need help analyzing a failed UBIfs (resolved)
 
-Managing Director: Dipl.-Phys. Siegmar Schmidt
-Commercial registry: Amtsgericht Jena, HRB 205563
+----- Original Message -----
+
+> From: Atlant Schmidt <aschmidt@dekaresearch.com>
+> To: Atlant Schmidt <aschmidt@dekaresearch.com>; "linux-mtd@lists.infradea=
+d.org" <linux-mtd@lists.infradead.org>
+> Cc:
+> Sent: Wednesday, January 4, 2012 8:03 AM
+> Subject: RE: I need help analyzing a failed UBIfs (resolved)
+>
+> All:
+>
+>   (Self-answered question)
+>
+>   Based on the debug stack trace below, I conclude
+>   that my failed block *IS* composed of buds in
+>   the Wandering Journal.
+>
+>   Any dissent?
+>
+>                                     Atlant
+
+
+Would you be willing to share your analysis script?
+
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
