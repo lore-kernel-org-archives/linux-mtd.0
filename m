@@ -1,20 +1,22 @@
-Received: from nm15-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.208])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RiR97-0001bq-IO
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 13:44:50 +0000
-References: <0A40042D85E7C84DB443060EC44B3FD33254FA3C54@dekaexchange07.deka.local>
- <0A40042D85E7C84DB443060EC44B3FD33254FA3C58@dekaexchange07.deka.local>
- <0A40042D85E7C84DB443060EC44B3FD33254FA3C59@dekaexchange07.deka.local>
-Message-ID: <1325684686.59071.YahooMailNeo@web114608.mail.gq1.yahoo.com>
-Date: Wed, 4 Jan 2012 05:44:46 -0800 (PST)
-From: Reginald Perrin <reggyperrin@yahoo.com>
-Subject: Re: I need help analyzing a failed UBIfs (resolved)
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD33254FA3C59@dekaexchange07.deka.local>
+Received: from webbox1416.server-home.net ([77.236.96.61])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RiRfi-00070r-KV
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 14:18:31 +0000
+Received: from comm.systec-electronic.de (95-91-85-164-dynip.superkabel.de
+ [95.91.85.164])
+ by webbox1416.server-home.net (Postfix) with ESMTPA id E684127A619
+ for <linux-mtd@lists.infradead.org>; Wed,  4 Jan 2012 15:21:54 +0100 (CET)
+Received: from ws-stein.localnet (unknown [192.168.10.38])
+ by comm.systec-electronic.de (Postfix) with ESMTP id C94BC97C068
+ for <linux-mtd@lists.infradead.org>; Wed,  4 Jan 2012 15:18:21 +0100 (CET)
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: linux-mtd@lists.infradead.org
+Subject: delayed close on mtdblock
+Date: Wed, 04 Jan 2012 15:18:21 +0100
+Message-ID: <14259449.DIx1JTusJU@ws-stein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Reginald Perrin <reggyperrin@yahoo.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------ Original Message -----=0A=0A> From: Atlant Schmidt <aschmidt@dekarese=
-arch.com>=0A> To: Atlant Schmidt <aschmidt@dekaresearch.com>; "linux-mtd@li=
-sts.infradead.org" <linux-mtd@lists.infradead.org>=0A> Cc: =0A> Sent: Wedne=
-sday, January 4, 2012 8:03 AM=0A> Subject: RE: I need help analyzing a fail=
-ed UBIfs (resolved)=0A> =0A> All:=0A> =0A> =A0 (Self-answered question)=0A>=
- =0A> =A0 Based on the debug stack trace below, I conclude=0A> =A0 that my =
-failed block *IS* composed of buds in=0A> =A0 the Wandering Journal.=0A> =
-=0A> =A0 Any dissent?=0A> =0A> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 Atlant=0A=0A=0AWould you be willing to share yo=
-ur analysis script?
+Hello,
+
+I observed an somewhat interesting situation regarding mtdblock. I have a NOR-
+Flash with several mtd partitions. One holds the configuration from the 
+bootloader and another one contains UBI/UBIFS.
+During bootup I attach UBI and mount UBIFS, no problems so far. To read the 
+bootloader coniguration I open the corresponding mtdblock with O_RDONLY, do an 
+lseek, read and close it afterwards, nothing special. But I noticed the 
+close() call take >1s which seems to far big, as there is nothing to be 
+written into this mtdblock device.
+I digged into the kernel and get to mtdblock_release(). I can see that 
+write_cached_data does nothing as the cache is clean. But mbd->mtd->sync 
+(cfi_amdstd_sync in my case) takes a while because the chip state is currently 
+FL_ERASING. The retry loop is taken several times before exiting the function.
+If I don't mount UBIFS there is no such delay. I'm wondering if there is 
+actually a need to sync the chip if the cache is clean. Can someone explain 
+this to me?
+
+Best regards,
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+
+SYS TEC electronic GmbH
+August-Bebel-Str. 29
+D-07973 Greiz
+
+Tel: +49-3661-6279-0, Fax: +49-3661-6279-99
+eMail:    Alexander.Stein@systec-electronic.com
+Internet: http://www.systec-electronic.com
+
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Jena, HRB 205563
