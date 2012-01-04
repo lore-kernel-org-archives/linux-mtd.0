@@ -1,19 +1,19 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RiTtH-0002Vl-Vo
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 16:40:40 +0000
-Received: by iadk27 with SMTP id k27so36379691iad.36
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2012 08:40:38 -0800 (PST)
-Message-ID: <1325695363.8917.102.camel@sauron.fi.intel.com>
+ id 1RiU4d-0002sL-5a
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2012 16:52:23 +0000
+Received: by ghrr15 with SMTP id r15so7829778ghr.36
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2012 08:52:21 -0800 (PST)
+Message-ID: <1325696066.8917.108.camel@sauron.fi.intel.com>
 Subject: Re: ubifs panic with 2.6.39 stable - followup
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brad Parker <brad@heeltoe.com>
-Date: Wed, 04 Jan 2012 18:42:43 +0200
+Date: Wed, 04 Jan 2012 18:54:26 +0200
 In-Reply-To: <4F043A7C.1060504@heeltoe.com>
 References: <4F043A7C.1060504@heeltoe.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HNCLQvwxuZ+EV2Jvsa5K"
+ boundary="=-jutsfD2T8FfqJ3WD0Xh5"
 Mime-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
@@ -27,7 +27,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HNCLQvwxuZ+EV2Jvsa5K
+--=-jutsfD2T8FfqJ3WD0Xh5
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -53,34 +53,39 @@ On Wed, 2012-01-04 at 06:39 -0500, Brad Parker wrote:
 > I'm curious if this looks familiar and if it might be fixed post 2.5.39
 >=20
 > thanks for any insight.
+>=20
+> -brad
+>=20
+> UBIFS: recovery needed
+> UBI error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes=
+=20
+> from PEB 2970:4096, read 126976 bytes
+> UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0xf510fb95,=
+=20
+> read 0x4f0a3196
 
-Would you please also enable scanning, mount, and recovery debugging
-messages and provide the log?=20
+So there is a corrupted inode node, and UBIFS believes it has been
+corrupted not because of a power cut. I do not know why it is corrupted,
+but if you use MLC then this may be related to the paired pages problem.
 
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
+Anyway, there is another issue I see from the dump. Even if you somehow
+make the node good again, UBIFS will still fail saying something like
+"corrupt empty space". Look at line 292 in your pastebin:
 
-But in newer kernels this has been turned into dynamic debug, see
-Documentation/dynamic-debug-howto.txt
+ffffffff ffffffff ffffffff ffffffff ffffffff ffdfffff ffffffff ffffffff
 
-(Gosh, I have to update the web site!)
+See that little "d"? It means that the empty space has a bit-flip. The
+question is why? Unstable bit I guess? Does your NAND driver / HW
+provides ECC protection for empty pages?
 
-In older kernels you can do this via the configuration menu, in newer
-kernel this has been turned into Documentation/dynamic-debug-howto.txt
-
-To use them at boot time, use ddebug_query=3D...
-
-You need to use 3 format string to show "UBIFS DBG mnt" and the like.
-
-I think, but did not verify, you need to add kernel boot 3 parameters:
-
-ddebug_query=3D"format UBIFS DBG rcvry" ddebug_query=3D"format UBIFS DBG
-mnt" ddebug_query=3D"format UBIFS DBG scan"
+Anyway, currently UBIFS cannot handle these situation. Someone needs to
+do this - I can assist by reviewing and advising.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-HNCLQvwxuZ+EV2Jvsa5K
+--=-jutsfD2T8FfqJ3WD0Xh5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -88,19 +93,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPBIGDAAoJECmIfjd9wqK0f44P/0mMIqEVZaqdcHEiPRsM8hiX
-i+kRDztzFZCvuxTLBmkR1b/Krn1Xiip1tqoaRVNnmA+5En/hj6qR7XpYqH91Zhsp
-Ahas7iwoComzQX59Wic7GwFFDHBAwionycxBHPRwr1AMcXp0E0UIdMKVF16349qR
-1aS/bL59TlDE6NeArj4xDcXKWnPUC7T1F04PEBcE1AylaaoCELmrAPatCwvRjcgM
-OgEz2GG6/25IwbUKlCgwbpGre0KFB8QX0y1iQbyQIC3Yb0TJDr2QU9vsqBCGHRQD
-a7E8xfHE1J6TEZcHZCpkCwpcKhKb9kVstbg9QIkR88IrGD4KiCjEYNnumMCBnlC0
-gngPcSmWV6pWdfcjDNDwHF7uOz/TseBIPAgcNV3N7RznVbZYMq3n6I3mpsxAmXSd
-YOTKkEsssxrEPmYdaqkJ1BSvHmEoVbuUzwtCNeJBMMkOUnuWQl6d+LPOMaXamcaY
-bUMW3AtboqNqSm/6oDQ8Fd6EPJhrEkzjo3VcUf5mhXbMVbiwxA0AjwBoLpZnc40j
-avWrnC68wTn0CX1xhKq019TrKDGxhIIAxlge3JTXivKOty6Y67/FIZgyiyCrXqwN
-GAQZLwTbZV9lv4Yd825Smsr/tz9OIC91YydnxqMhMINmzD06iOPMy121VuOHt+M4
-XjW+oFS1L6p1x1IjAv9K
-=rS5a
+iQIcBAABAgAGBQJPBIRCAAoJECmIfjd9wqK0OAMP/1EAoGon0O15kuG/Asxx87Tm
+O3e3Ia7YaCH4VWQ4I+jhjucKrtugKCYoymDMH2qijpVIRUqfICnniU4ijmpJk7O6
+Eaza0cjfKSUCVmPyjjHMoY1G1LIFA/zgeAb7LI68efEC/kQ7/MAXgkK3yQqfSvef
+7u0QE6ywLHO0fzqbrG8cia66ykD+NgbtNk8Psg7g7lpJY4RvygmuaNmZO2UwZ4oV
+0rgNRlgtqjhD4ALy5+Fx6gpd3PqO1PoOlJR5bRKsrPsWNUQaJWRavEPE1Ga4aHHx
+r9LBGTf7H6NSjPMyR8/0gYgAdRZ6W81wiHmC8pCgxHwfUb9jQEEiADdnmEkb4Pmi
+phPIStLWtCJjeAbvxa5x+/QVv+RtB0gdHlFk2ibHn5W3QP5Jx5m7LzbfIvJnLio9
+V+a/N0jvLiaeQ+7QTGS4SdlXxBNPNf80D+6oWjd15UWyqlrY2GyHFKmciT7Ep1rK
+zQwBUtmT9dWdB6diK1S55vwwP0lf6BcytVj8LW3i1QoxbSCkrDE8omOLnH9n4601
+vvlBMKUnUpzNKbSpT3VlRqaZHVSR9D1gJWyPwnMUAIiOMhxCzBrsy4kagjfxkFC6
+X1aBi0YNf32lDkBkgF0D4U0LeEQHv7/jlnxweAIZ2Jg/b8MCNZ7AV5CEq8I5HyYx
+JByXKzaP8Fi0QVasvHEA
+=uByk
 -----END PGP SIGNATURE-----
 
---=-HNCLQvwxuZ+EV2Jvsa5K--
+--=-jutsfD2T8FfqJ3WD0Xh5--
