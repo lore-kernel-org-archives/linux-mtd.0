@@ -1,18 +1,21 @@
-Received: from eu1sys200aog101.obsmtp.com ([207.126.144.111])
+Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RipxH-0006iU-SN
- for linux-mtd@lists.infradead.org; Thu, 05 Jan 2012 16:14:17 +0000
+ id 1RipxP-0006jj-LP
+ for linux-mtd@lists.infradead.org; Thu, 05 Jan 2012 16:14:24 +0000
 Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 26A5A88
- for <linux-mtd@lists.infradead.org>; Thu,  5 Jan 2012 16:14:04 +0000 (GMT)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 84894BC
+ for <linux-mtd@lists.infradead.org>; Thu,  5 Jan 2012 16:14:17 +0000 (GMT)
 Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
- by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CDB9A18E1
- for <linux-mtd@lists.infradead.org>; Thu,  5 Jan 2012 16:14:04 +0000 (GMT)
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5698C2133
+ for <linux-mtd@lists.infradead.org>; Thu,  5 Jan 2012 16:14:17 +0000 (GMT)
 From: Angus CLARK <angus.clark@st.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH (mtd-www) 1/7] nand-data: updates to S30ML-P devices
-Date: Thu,  5 Jan 2012 16:13:54 +0000
-Message-Id: <1325780040-19809-1-git-send-email-angus.clark@st.com>
+Subject: [PATCH (mtd-www) 2/7] nand-data: rename duplicate Numonyx NAND01G
+ devices as 'Rev C'
+Date: Thu,  5 Jan 2012 16:13:55 +0000
+Message-Id: <1325780040-19809-2-git-send-email-angus.clark@st.com>
+In-Reply-To: <1325780040-19809-1-git-send-email-angus.clark@st.com>
+References: <1325780040-19809-1-git-send-email-angus.clark@st.com>
 Cc: Angus Clark <angus.clark@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,39 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Updates to Spansion S30ML-P devices:
-	- expand names to differentiate between x8 and x16 devices
-	- fix ID 5th byte: 0x01 to 0x10 (checked with datasheet; seems regression
-          introduced as part of commit 165cfaa9cdb1054bbafa98f24f179c6aa101fbe6
-          "nand-data: remove asterisks")
+The table includes two entries for each of the following Numonyx devices:
+NAND01GR3B2B, NAND01GW3B2B, NAND01GR4B2B, NAND01GW4B2B.  After further analysis,
+it seems that the data for the second set of entries actaully coresponds to the
+'Rev C' version of the devices, rather than 'Rev B' as suggested by the names.
+This patch renames the second set of entries with the 'Rev C' names.
 
 Signed-off-by: Angus Clark <angus.clark@st.com>
 ---
- nand-data/nanddata.csv |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+ nand-data/nanddata.csv |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/nand-data/nanddata.csv b/nand-data/nanddata.csv
-index c103399..6929691 100644
+index 6929691..5bde226 100644
 --- a/nand-data/nanddata.csv
 +++ b/nand-data/nanddata.csv
-@@ -65,12 +65,12 @@
- "Samsung","K9GAG08U0D","0xEC","0xD5","0xECD594293441",2048,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
- "Samsung","K9LBG08U1D","0xEC","0xD5","0xECD594293441",4096,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 2 K9GAG08U0D"
- "Samsung","K9HCG08U5D","0xEC","0xD5","0xECD594293441",8192,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 4 K9GAG08U0D"
--"Spansion","S30ML512P","0x01","0x76","0x0176010101",64,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML512P","0x01","0x56","0x0156010101",64,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML256P","0x01","0x75","0x0175010101",32,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML256P","0x01","0x55","0x0155010101",32,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML128P","0x01","0x73","0x0173010101",16,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML128P","0x01","0x53","0x0153030101",16,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x04"
-+"Spansion","S30ML512P30xFIx0","0x01","0x76","0x0176010110",64,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML512P50xFIx1","0x01","0x56","0x0156010110",64,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML256P30xFIx0","0x01","0x75","0x0175010110",32,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML256P50xFIx1","0x01","0x55","0x0155010110",32,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML128P30xFIx0","0x01","0x73","0x0173010110",16,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML128P50xFIx1","0x01","0x53","0x0153030110",16,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x04"
- "Samsung","K9K8G08U0A","0xEC","0xD3","0xECD3519558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
- "Samsung","K9WAG08U1A","0xEC","0xD3","0xECD3519558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
- "Samsung","K9NBG08U5A","0xEC","0xD3","0xECD3519558",4096,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
+@@ -121,10 +121,10 @@
+ "Numonyx","NAND02GW3B2C","0x20","0xDA","0x20DA801D",256,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Numonyx","NAND02GR4B2C","0x20","0xBA","0x20BA8055",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Numonyx","NAND02GW4B2C","0x20","0xCA","0x20CA805D",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-"Numonyx","NAND01GR3B2B","0x20","0xA1","0x20A10015",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-"Numonyx","NAND01GW3B2B","0x20","0xF1","0x20F1001D",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-"Numonyx","NAND01GR4B2B","0x20","0xB1","0x20B10055",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+-"Numonyx","NAND01GW4B2B","0x20","0xC1","0x20C1005D",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
++"Numonyx","NAND01GR3B2C","0x20","0xA1","0x20A10015",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
++"Numonyx","NAND01GW3B2C","0x20","0xF1","0x20F1001D",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
++"Numonyx","NAND01GR4B2C","0x20","0xB1","0x20B10055",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
++"Numonyx","NAND01GW4B2C","0x20","0xC1","0x20C1005D",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Hynix","HY27UF082G2A","0xAD","0xDA","0xADDA801D00",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Hynix","HY27UF162G2A","0xAD","0xCA","0xADCA805D00",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
+ "Samsung","K9G8G08B0A","0xEC","0xD3","0xECD314A564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
 -- 
 1.5.3.3
