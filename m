@@ -1,16 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RjQwf-0000eg-LF
- for linux-mtd@lists.infradead.org; Sat, 07 Jan 2012 07:44:07 +0000
-Received: by yenl2 with SMTP id l2so991016yen.36
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2012 23:44:01 -0800 (PST)
-MIME-Version: 1.0
-Date: Sat, 7 Jan 2012 15:43:59 +0800
-Message-ID: <CAF_LYHTve6Ne4T4PRdxoKGa9xvhYqh0=m6+=tjOKcBpEwAj2qg@mail.gmail.com>
-Subject: I want to recommend a good website to you
-From: mike zenon <mail4mz@gmail.com>
-To: undisclosed-recipients:;
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from 15.mo3.mail-out.ovh.net ([87.98.150.177]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RjTwN-0005uO-Im
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2012 10:56:00 +0000
+Received: from mail412.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id DE9C61008719
+ for <linux-mtd@lists.infradead.org>; Sat,  7 Jan 2012 11:57:10 +0100 (CET)
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 2/3] mtd/atmel_nand: add on_flash_bbt to enable the use of On
+ Flash BBT
+Date: Sat,  7 Jan 2012 11:49:29 +0100
+Message-Id: <1325933370-17475-2-git-send-email-plagnioj@jcrosoft.com>
+In-Reply-To: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,15 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hey,
-have a nice day.
-I want to recommend a good website to you,
- they sell all kinds of electronic products such as laptop,
-handset,lcd tv,playstation,camera,bicycles.
-Now they are holding a promoting sale action to meet Christmas day coming,
-they offer competitive price, this promotion will last a month. It is
-a good chance,
-I hope you can hold of it if you need buy some items. By the way ,
+from the board
 
-the website is: www.wobuyok1.com
-best regards
+Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/atmel_nand.c |    2 +-
+ include/linux/atmel_nand.h    |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index c267113..d7ff628 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -525,7 +525,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (on_flash_bbt) {
++	if (host->board->on_flash_bbt || on_flash_bbt) {
+ 		printk(KERN_INFO "atmel_nand: Use On Flash BBT\n");
+ 		nand_chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 	}
+diff --git a/include/linux/atmel_nand.h b/include/linux/atmel_nand.h
+index f6d4193..57b651b 100644
+--- a/include/linux/atmel_nand.h
++++ b/include/linux/atmel_nand.h
+@@ -19,6 +19,7 @@ struct atmel_nand_data {
+ 	u8		cle;			/* address line number connected to CLE */
+ 	u8		bus_width_16;		/* buswidth is 16 bit */
+ 	u8		ecc_mode;		/* ecc mode */
++	u8		on_flash_bbt;		/* bbt on flash */
+ 	struct mtd_partition *parts;
+ 	unsigned int	num_parts;
+ };
+-- 
+1.7.7
