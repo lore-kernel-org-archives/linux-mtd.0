@@ -1,13 +1,20 @@
-Received: from ovro.ovro.caltech.edu ([192.100.16.2])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RjGew-0008Ps-E2
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2012 20:45:08 +0000
-From: "Ira W. Snyder" <iws@ovro.caltech.edu>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] cfi: AMD/Fujitsu compatibles: add panic write support
-Date: Fri,  6 Jan 2012 11:29:19 -0800
-Message-Id: <1325878159-32306-1-git-send-email-iws@ovro.caltech.edu>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RjMbd-0005Ru-I5
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2012 03:06:06 +0000
+Received: by wera10 with SMTP id a10so2151215wer.36
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2012 19:06:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1325780040-19809-1-git-send-email-angus.clark@st.com>
+References: <1325780040-19809-1-git-send-email-angus.clark@st.com>
+Date: Fri, 6 Jan 2012 19:06:01 -0800
+Message-ID: <CAN8TOE-7jA_+6hZCvzXR7=MrjuhrUq3LTZBqd5O-9Gy_iiL6Cw@mail.gmail.com>
+Subject: Re: [PATCH (mtd-www) 1/7] nand-data: updates to S30ML-P devices
+From: Brian Norris <computersforpeace@gmail.com>
+To: Angus CLARK <angus.clark@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,294 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allows the mtdoops driver to work on flash chips using the
-AMD/Fujitsu compatible command set.
+On Thu, Jan 5, 2012 at 8:13 AM, Angus CLARK <angus.clark@st.com> wrote:
+> Updates to Spansion S30ML-P devices:
+> =A0 =A0 =A0 =A0- expand names to differentiate between x8 and x16 devices
+> =A0 =A0 =A0 =A0- fix ID 5th byte: 0x01 to 0x10 (checked with datasheet; s=
+eems regression
+> =A0 =A0 =A0 =A0 =A0introduced as part of commit 165cfaa9cdb1054bbafa98f24=
+f179c6aa101fbe6
+> =A0 =A0 =A0 =A0 =A0"nand-data: remove asterisks")
+>
+> Signed-off-by: Angus Clark <angus.clark@st.com>
 
-As the code comments note, the locks used throughout the normal code
-paths in the driver are ignored, so that the chance of writing out the
-kernel's last messages are maximized.
+Thanks for the follow-up. It should make it a little easier to review
+the later ones (that I didn't get around to yet).
 
-Signed-off-by: Ira W. Snyder <iws@ovro.caltech.edu>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
-
-This was tested with a Spansion S29GL512P flash chip. It is identified by
-the kernel with the following output in the kernel log:
-Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x000001 Chip ID 0x002301
-
-Rick, I have CC'd you on this email since I thought you might be
-interested. While I was attempting to search for others who had written a
-panic_write() for this chip, I came across your email to the linux-mtd
-mailing list in April 2011.
-
- drivers/mtd/chips/cfi_cmdset_0002.c |  240 +++++++++++++++++++++++++++++++++++
- 1 files changed, 240 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 8d70895..e2d94bb 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -59,6 +59,9 @@ static void cfi_amdstd_resume (struct mtd_info *);
- static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
- static int cfi_amdstd_secsi_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- 
-+static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
-+				  size_t *retlen, const u_char *buf);
-+
- static void cfi_amdstd_destroy(struct mtd_info *);
- 
- struct mtd_info *cfi_cmdset_0002(struct map_info *, int);
-@@ -443,6 +446,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	pr_debug("MTD %s(): write buffer size %d\n", __func__,
- 			mtd->writebufsize);
- 
-+	mtd->panic_write = cfi_amdstd_panic_write;
- 	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
- 
- 	if (cfi->cfi_mode==CFI_MODE_CFI){
-@@ -1562,6 +1566,242 @@ static int cfi_amdstd_write_buffers(struct mtd_info *mtd, loff_t to, size_t len,
- 	return 0;
- }
- 
-+/*
-+ * Wait for the flash chip to become ready to write data
-+ *
-+ * This is only called during the panic_write() path. When panic_write()
-+ * is called, the kernel is in the process of a panic, and will soon be
-+ * dead. Therefore we don't take any locks, and attempt to get access
-+ * to the chip as soon as possible.
-+ */
-+static int cfi_amdstd_panic_wait(struct map_info *map, struct flchip *chip,
-+				 unsigned long adr)
-+{
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int retries = 10;
-+	int i;
-+
-+	/*
-+	 * If the driver thinks the chip is idle, and no toggle bits
-+	 * are changing, then the chip is actually idle for sure.
-+	 */
-+	if (chip->state == FL_READY && chip_ready(map, adr))
-+		return 0;
-+
-+	/*
-+	 * Try several times to reset the chip and then wait for it
-+	 * to become idle. The upper limit of a few milliseconds of
-+	 * delay isn't a big problem: the kernel is dying anyway. It
-+	 * is more important to save the messages.
-+	 */
-+	while (retries > 0) {
-+		const unsigned long timeo = (HZ / 1000) + 1;
-+
-+		/* send the reset command */
-+		map_write(map, CMD(0xF0), chip->start);
-+
-+		/* wait for the chip to become ready */
-+		for (i = 0; i < jiffies_to_usecs(timeo); i++) {
-+			if (chip_ready(map, adr))
-+				return 0;
-+
-+			udelay(1);
-+		}
-+	}
-+
-+	/* the chip never became ready */
-+	return -EBUSY;
-+}
-+
-+/*
-+ * Write out one word of data to a single flash chip during a kernel panic
-+ *
-+ * This is only called during the panic_write() path. When panic_write()
-+ * is called, the kernel is in the process of a panic, and will soon be
-+ * dead. Therefore we don't take any locks, and attempt to get access
-+ * to the chip as soon as possible.
-+ *
-+ * The implementation of this routine is intentionally similar to
-+ * do_write_oneword(), in order to ease code maintenance.
-+ */
-+static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
-+				  unsigned long adr, map_word datum)
-+{
-+	const unsigned long uWriteTimeout = (HZ / 1000) + 1;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int retry_cnt = 0;
-+	map_word oldd;
-+	int ret = 0;
-+	int i;
-+
-+	adr += chip->start;
-+
-+	ret = cfi_amdstd_panic_wait(map, chip, adr);
-+	if (ret)
-+		return ret;
-+
-+	pr_debug("MTD %s(): PANIC WRITE 0x%.8lx(0x%.8lx)\n",
-+			__func__, adr, datum.x[0]);
-+
-+	/*
-+	 * Check for a NOP for the case when the datum to write is already
-+	 * present - it saves time and works around buggy chips that corrupt
-+	 * data at other locations when 0xff is written to a location that
-+	 * already contains 0xff.
-+	 */
-+	oldd = map_read(map, adr);
-+	if (map_word_equal(map, oldd, datum)) {
-+		pr_debug("MTD %s(): NOP\n", __func__);
-+		goto op_done;
-+	}
-+
-+	ENABLE_VPP(map);
-+
-+retry:
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-+	map_write(map, datum, adr);
-+
-+	for (i = 0; i < jiffies_to_usecs(uWriteTimeout); i++) {
-+		if (chip_ready(map, adr))
-+			break;
-+
-+		udelay(1);
-+	}
-+
-+	if (!chip_good(map, adr, datum)) {
-+		/* reset on all failures. */
-+		map_write(map, CMD(0xF0), chip->start);
-+		/* FIXME - should have reset delay before continuing */
-+
-+		if (++retry_cnt <= MAX_WORD_RETRIES)
-+			goto retry;
-+
-+		ret = -EIO;
-+	}
-+
-+op_done:
-+	DISABLE_VPP(map);
-+	return ret;
-+}
-+
-+/*
-+ * Write out some data during a kernel panic
-+ *
-+ * This is used by the mtdoops driver to save the dying messages from a
-+ * kernel which has panic'd.
-+ *
-+ * This routine ignores all of the locking used throughout the rest of the
-+ * driver, in order to ensure that the data gets written out no matter what
-+ * state this driver (and the flash chip itself) was in when the kernel crashed.
-+ *
-+ * The implementation of this routine is intentionally similar to
-+ * cfi_amdstd_write_words(), in order to ease code maintenance.
-+ */
-+static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
-+				  size_t *retlen, const u_char *buf)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	unsigned long ofs, chipstart;
-+	int ret = 0;
-+	int chipnum;
-+
-+	*retlen = 0;
-+	if (!len)
-+		return 0;
-+
-+	chipnum = to >> cfi->chipshift;
-+	ofs = to - (chipnum << cfi->chipshift);
-+	chipstart = cfi->chips[chipnum].start;
-+
-+	/* If it's not bus aligned, do the first byte write */
-+	if (ofs & (map_bankwidth(map) - 1)) {
-+		unsigned long bus_ofs = ofs & ~(map_bankwidth(map) - 1);
-+		int i = ofs - bus_ofs;
-+		int n = 0;
-+		map_word tmp_buf;
-+
-+		ret = cfi_amdstd_panic_wait(map, &cfi->chips[chipnum], bus_ofs);
-+		if (ret)
-+			return ret;
-+
-+		/* Load 'tmp_buf' with old contents of flash */
-+		tmp_buf = map_read(map, bus_ofs + chipstart);
-+
-+		/* Number of bytes to copy from buffer */
-+		n = min_t(int, len, map_bankwidth(map) - i);
-+
-+		tmp_buf = map_word_load_partial(map, tmp_buf, buf, i, n);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+					     bus_ofs, tmp_buf);
-+		if (ret)
-+			return ret;
-+
-+		ofs += n;
-+		buf += n;
-+		(*retlen) += n;
-+		len -= n;
-+
-+		if (ofs >> cfi->chipshift) {
-+			chipnum++;
-+			ofs = 0;
-+			if (chipnum == cfi->numchips)
-+				return 0;
-+		}
-+	}
-+
-+	/* We are now aligned, write as much as possible */
-+	while (len >= map_bankwidth(map)) {
-+		map_word datum;
-+
-+		datum = map_word_load(map, buf);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+					     ofs, datum);
-+		if (ret)
-+			return ret;
-+
-+		ofs += map_bankwidth(map);
-+		buf += map_bankwidth(map);
-+		(*retlen) += map_bankwidth(map);
-+		len -= map_bankwidth(map);
-+
-+		if (ofs >> cfi->chipshift) {
-+			chipnum++;
-+			ofs = 0;
-+			if (chipnum == cfi->numchips)
-+				return 0;
-+
-+			chipstart = cfi->chips[chipnum].start;
-+		}
-+	}
-+
-+	/* Write the trailing bytes if any */
-+	if (len & (map_bankwidth(map) - 1)) {
-+		map_word tmp_buf;
-+
-+		ret = cfi_amdstd_panic_wait(map, &cfi->chips[chipnum], ofs);
-+		if (ret)
-+			return ret;
-+
-+		tmp_buf = map_read(map, ofs + chipstart);
-+
-+		tmp_buf = map_word_load_partial(map, tmp_buf, buf, 0, len);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+					     ofs, tmp_buf);
-+		if (ret)
-+			return ret;
-+
-+		(*retlen) += len;
-+	}
-+
-+	return 0;
-+}
-+
- 
- /*
-  * Handle devices with one erase region, that only implement
--- 
-1.7.3.4
+Acked-by: Brian Norris <computersforpeace@gmail.com>
