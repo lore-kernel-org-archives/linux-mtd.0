@@ -1,15 +1,17 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RjMbd-0005Ru-I5
- for linux-mtd@lists.infradead.org; Sat, 07 Jan 2012 03:06:06 +0000
-Received: by wera10 with SMTP id a10so2151215wer.36
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2012 19:06:01 -0800 (PST)
+ id 1RjMkC-0005fb-Ut
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2012 03:14:57 +0000
+Received: by wgbdt13 with SMTP id dt13so18452wgb.18
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2012 19:14:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1325780040-19809-1-git-send-email-angus.clark@st.com>
+In-Reply-To: <1325780040-19809-2-git-send-email-angus.clark@st.com>
 References: <1325780040-19809-1-git-send-email-angus.clark@st.com>
-Date: Fri, 6 Jan 2012 19:06:01 -0800
-Message-ID: <CAN8TOE-7jA_+6hZCvzXR7=MrjuhrUq3LTZBqd5O-9Gy_iiL6Cw@mail.gmail.com>
-Subject: Re: [PATCH (mtd-www) 1/7] nand-data: updates to S30ML-P devices
+ <1325780040-19809-2-git-send-email-angus.clark@st.com>
+Date: Fri, 6 Jan 2012 19:14:55 -0800
+Message-ID: <CAN8TOE8L0qtVVe7Bpn=hGrJdSAqB4C+WGAfNW70bEL_2p0jKmA@mail.gmail.com>
+Subject: Re: [PATCH (mtd-www) 2/7] nand-data: rename duplicate Numonyx NAND01G
+ devices as 'Rev C'
 From: Brian Norris <computersforpeace@gmail.com>
 To: Angus CLARK <angus.clark@st.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -25,17 +27,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, Jan 5, 2012 at 8:13 AM, Angus CLARK <angus.clark@st.com> wrote:
-> Updates to Spansion S30ML-P devices:
-> =A0 =A0 =A0 =A0- expand names to differentiate between x8 and x16 devices
-> =A0 =A0 =A0 =A0- fix ID 5th byte: 0x01 to 0x10 (checked with datasheet; s=
-eems regression
-> =A0 =A0 =A0 =A0 =A0introduced as part of commit 165cfaa9cdb1054bbafa98f24=
-f179c6aa101fbe6
-> =A0 =A0 =A0 =A0 =A0"nand-data: remove asterisks")
->
-> Signed-off-by: Angus Clark <angus.clark@st.com>
+> The table includes two entries for each of the following Numonyx devices:
+> NAND01GR3B2B, NAND01GW3B2B, NAND01GR4B2B, NAND01GW4B2B. =A0After further =
+analysis,
+> it seems that the data for the second set of entries actaully coresponds =
+to the
+> 'Rev C' version of the devices, rather than 'Rev B' as suggested by the n=
+ames.
+> This patch renames the second set of entries with the 'Rev C' names.
 
-Thanks for the follow-up. It should make it a little easier to review
-the later ones (that I didn't get around to yet).
+Thanks for working through the mistakes (typos in datasheets and/or
+typos by me). This looks good.
 
 Acked-by: Brian Norris <computersforpeace@gmail.com>
