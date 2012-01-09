@@ -1,14 +1,15 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkLlu-0004Da-S3
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:24:47 +0000
-Received: by iadk27 with SMTP id k27so8400220iad.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:24:46 -0800 (PST)
+ id 1RkLmD-0004G9-Es
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:25:06 +0000
+Received: by ggnp4 with SMTP id p4so1889968ggn.36
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:25:04 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 1/6] mtd: nand: add NAND_NO_WRITE_OOB option
-Date: Mon,  9 Jan 2012 12:23:27 -0800
-Message-Id: <1326140612-26323-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 2/6] mtd: nand: write bad block marker by default even with
+ BBT
+Date: Mon,  9 Jan 2012 12:23:28 -0800
+Message-Id: <1326140612-26323-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
@@ -46,74 +47,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some systems cannot use the OOB area for storing any information, not
-even bad block markers (for instance, if ECC uses entire spare area).
-Thus, we implement an option to prevent ever writing to OOB. This will
-be useful for determining whether to record bad blocks by writing to the
-flash-based BBT, the bad block's OOB region, or both.
+Currently, the flash-based BBT implementation writes bad block data only
+to its flash-based table and not to the OOB marker area. Then, as new
+bad blocks are marked over time, the OOB markers become out of date and
+the flash-based table becomes the only source of current bad block
+information. This can be a problem when, for example:
+
+ * bootloader cannot read the flash-based BBT format
+ * BBT is corrupted and the flash must be rescanned for bad
+   blocks; we want to remember bad blocks that were marked from Linux
+
+In an attempt to keep the bad block markers in sync with the flash-based
+BBT, this patch changes the default so that we write bad block markers
+to the proper OOB area on each block in addition to flash-based BBT.
+
+Theoretically, the bad block table and the OOB markers can still get out
+of sync if the system experiences a power cut between writing the BBT to
+flash and writing the OOB marker to a newly-marked bad block. However,
+this is a relatively unlikely event, as new bad blocks shouldn't appear
+frequently.
+
+Note that this is a change from the previous default flash-based BBT
+behavior. To restore old behavior (and to generally prevent writing to
+OOB area), use the NAND_NO_WRITE_OOB options (in combination with
+NAND_BBT_USE_FLASH and NAND_BBT_NO_OOB).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    8 ++++++--
- include/linux/mtd/nand.h     |    6 ++++++
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 35b4565..b9dbf0c 100644
+index b9dbf0c..ead2a12 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2187,6 +2187,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 	int ret, subpage;
- 
- 	ops->retlen = 0;
-+	ops->oobretlen = 0;
- 	if (!writelen)
- 		return 0;
- 
-@@ -2238,7 +2239,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 			wbuf = chip->buffers->databuf;
- 		}
- 
--		if (unlikely(oob)) {
-+		if (unlikely(oob) && !(chip->options & NAND_NO_WRITE_OOB)) {
- 			size_t len = min(oobwritelen, oobmaxlen);
- 			oob = nand_fill_oob(mtd, oob, len, ops);
- 			oobwritelen -= len;
-@@ -2270,7 +2271,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 	}
- 
- 	ops->retlen = ops->len - writelen;
--	if (unlikely(oob))
-+	if (unlikely(oob) && !(chip->options & NAND_NO_WRITE_OOB))
- 		ops->oobretlen = ops->ooblen;
- 	return ret;
- }
-@@ -2372,6 +2373,9 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 	pr_debug("%s: to = 0x%08x, len = %i\n",
- 			 __func__, (unsigned int)to, (int)ops->ooblen);
- 
-+	if (chip->options & NAND_NO_WRITE_OOB)
-+		return 0;
+@@ -392,7 +392,10 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 	uint8_t buf[2] = { 0, 0 };
+-	int block, ret, i = 0;
++	int block, ret = 0, i = 0;
 +
- 	if (ops->mode == MTD_OPS_AUTO_OOB)
- 		len = chip->ecc.layout->oobavail;
- 	else
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 63b5a8b..3547205 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -228,6 +228,12 @@ typedef enum {
- #define NAND_OWN_BUFFERS	0x00020000
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00040000
-+/*
-+ * Do not write to OOB. Useful, e.g., when ECC takes up entire OOB. Should be
-+ * used with flash-based BBT, since the bad block markers will no longer be
-+ * reliable.
-+ */
-+#define NAND_NO_WRITE_OOB	0x00080000
++	BUG_ON((chip->options & NAND_NO_WRITE_OOB) &&
++			!(chip->bbt_options & NAND_BBT_USE_FLASH));
  
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
+ 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+ 		ofs += mtd->erasesize - mtd->writesize;
+@@ -405,7 +408,9 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	/* Do we have a flash based bad block table? */
+ 	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+ 		ret = nand_update_bbt(mtd, ofs);
+-	else {
++
++	/* Write bad block marker to OOB */
++	if (!(chip->options & NAND_NO_WRITE_OOB)) {
+ 		struct mtd_oob_ops ops;
+ 
+ 		nand_get_device(chip, mtd, FL_WRITING);
 -- 
 1.7.5.4
