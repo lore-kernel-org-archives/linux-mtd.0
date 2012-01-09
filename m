@@ -1,22 +1,22 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkMS3-0006Dz-Vt
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 21:08:20 +0000
-Received: by eekc13 with SMTP id c13so2801977eek.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 13:08:18 -0800 (PST)
-Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
- device
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Mon, 09 Jan 2012 23:08:16 +0200
-In-Reply-To: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
-References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1RkMtC-0007Bm-OA
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 21:36:23 +0000
+Received: by iadk27 with SMTP id k27so8498953iad.36
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 13:36:20 -0800 (PST)
+Subject: Re: [PATCH] pmc551: fix signedness bug in init_pmc551()
+Mime-Version: 1.0 (Apple Message framework v1084)
+Content-Type: text/plain; charset=us-ascii
+From: Xi Wang <xi.wang@gmail.com>
+In-Reply-To: <1326143161.4463.2.camel@koala>
+Date: Mon, 9 Jan 2012 16:36:16 -0500
 Content-Transfer-Encoding: 7bit
-Message-ID: <1326143297.4463.5.camel@koala>
-Mime-Version: 1.0
-Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-Id: <92F55019-7C72-4024-A377-3583230E47DA@gmail.com>
+References: <1325019256-5171-1-git-send-email-xi.wang@gmail.com>
+ <1326143161.4463.2.camel@koala>
+To: dedekind1@gmail.com
+Cc: Lucas De Marchi <lucas.demarchi@profusion.mobi>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-01-03 at 16:05 -0800, Mike Dunn wrote:
-> This patch adds a driver for the M-Sys / Sandisk diskonchip G4 nand flash found
-> in various smartphones and PDAs, among them the Palm Treo680, HTC Prophet and
-> Wizard, Toshiba Portege G900, Asus P526, and O2 XDA Zinc.  It was tested on the
-> Treo 680, but should work generically.
-> 
-> Since v3, this patch adds power management functions, a scan of the factory bad
-> block table during initialization, several fixes, and more extensive testing.
-> Also, the platform data header file, which only contained partitioning
-> information, was removed.  Command-line partitioning can be used, at least until
-> an mtd parser is written for the saftl format with which these chips are
-> shipped.
-> 
-> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+On Jan 9, 2012, at 4:05 PM, Artem Bityutskiy wrote:
+> You can just change the type to int without introducing a separate
+> argument. I think the length cannot be too large anyway. E.g., because
+> it is compared to "asize" which is int.
 
-Hopefully this gets some review, Reobert, may be? You have been in the
-same boat lately (delays because of lack of review).
+That would work too.  Will do a v2.  Thanks.
 
-This is 3.4 material anyway, so I am waiting when 3.3 merge window
-closes - then I will be able to take this to the l2 tree.
-
-Thanks!
-
-Artem.
+- xi
