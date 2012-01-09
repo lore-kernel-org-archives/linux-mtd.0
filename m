@@ -1,17 +1,24 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=TX2EHSOBE002.bigfish.com)
+Received: from mail-tul01m020-f177.google.com ([209.85.214.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkEHC-0003gP-Ep
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 12:24:38 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2][v2] mtd/nand: Fix IFC driver to support 2K NAND page
-Date: Mon, 9 Jan 2012 17:54:26 +0530
-Message-ID: <1326111866-13120-1-git-send-email-prabhakar@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, Poonam Aggrwal <poonam.aggrwal@freescale.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>
+ id 1RkGrY-0007Av-GH
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 15:10:20 +0000
+Received: by obcwn1 with SMTP id wn1so5598375obc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 07:10:15 -0800 (PST)
+Message-ID: <1326121948.6755.102.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [RFC] ubi: Make vid_hdr non-static
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <rw@linutronix.de>
+Date: Mon, 09 Jan 2012 17:12:28 +0200
+In-Reply-To: <1324569962.1165.6.camel@sauron.fi.intel.com>
+References: <1324566777-1918-1-git-send-email-rw@linutronix.de>
+ <1324569962.1165.6.camel@sauron.fi.intel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-o4AqsCzDwAfBaLZWIMw8"
+Mime-Version: 1.0
+Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +28,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1) OOB area should be updated irrespective of NAND page size. Earlier it was
-updated only for 512byte NAND page.
 
-2) During OOB update fbcr should be equal to OOB size.
+--=-o4AqsCzDwAfBaLZWIMw8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
----
- git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git (branch next)
+On Thu, 2011-12-22 at 18:06 +0200, Artem Bityutskiy wrote:
+> On Thu, 2011-12-22 at 16:12 +0100, Richard Weinberger wrote:
+> > There is no reason to have vid_hdr static.
+> >=20
+> > Signed-off-by: Richard Weinberger <rw@linutronix.de>
+> > ---
+> >  drivers/mtd/ubi/vtbl.c |    2 +-
+> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+> > index 9ad18da..890754c 100644
+> > --- a/drivers/mtd/ubi/vtbl.c
+> > +++ b/drivers/mtd/ubi/vtbl.c
+> > @@ -306,7 +306,7 @@ static int create_vtbl(struct ubi_device *ubi, stru=
+ct ubi_scan_info *si,
+> >  		       int copy, void *vtbl)
+> >  {
+> >  	int err, tries =3D 0;
+> > -	static struct ubi_vid_hdr *vid_hdr;
+> > +	struct ubi_vid_hdr *vid_hdr;
+> >  	struct ubi_scan_leb *new_seb;
+>=20
+> Hmm, this shouldn't be [RFC] - this a bugfix, I'll merge it, thanks!
 
- This patch is created on top of IFC driver patch (already floated in mailing
- list). Please find their link:
- http://patchwork.ozlabs.org/patch/133315/
- http://patchwork.ozlabs.org/patch/133316/
+Pushed to ubifs-2.6 git tree with "Cc: stable@kernel.org", thanks!
 
- Tested on P1010RDB
+--=20
+Best Regards,
+Artem Bityutskiy
 
-  Changes for v2: Incorporated Scott's comments
- 	- Added missed NAND_CMD_READOOB
-	- Updated function as per Scott's advice
+--=-o4AqsCzDwAfBaLZWIMw8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
- drivers/mtd/nand/fsl_ifc_nand.c |   21 +++++++++------------
- 1 files changed, 9 insertions(+), 12 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index c0529ea..52bd706d 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -440,22 +440,19 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 			out_be32(&ifc->ifc_nand.nand_fir1,
- 				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT));
- 
--			if (column >= mtd->writesize) {
--				/* OOB area --> READOOB */
--				column -= mtd->writesize;
--				nand_fcr0 |= NAND_CMD_READOOB <<
--						IFC_NAND_FCR0_CMD0_SHIFT;
--				ifc_nand_ctrl->oob = 1;
--			} else if (column < 256)
--				/* First 256 bytes --> READ0 */
-+			if (column >= mtd->writesize)
- 				nand_fcr0 |=
--				NAND_CMD_READ0 << IFC_NAND_FCR0_CMD0_SHIFT;
-+				NAND_CMD_READOOB << IFC_NAND_FCR0_CMD0_SHIFT;
- 			else
--				/* Second 256 bytes --> READ1 */
- 				nand_fcr0 |=
--				NAND_CMD_READ1 << IFC_NAND_FCR0_CMD0_SHIFT;
-+				NAND_CMD_READ0 << IFC_NAND_FCR0_CMD0_SHIFT;
- 		}
- 
-+		if (column >= mtd->writesize) {
-+			/* OOB area --> READOOB */
-+			column -= mtd->writesize;
-+			ifc_nand_ctrl->oob = 1;
-+		}
- 		out_be32(&ifc->ifc_nand.nand_fcr0, nand_fcr0);
- 		set_addr(mtd, column, page_addr, ifc_nand_ctrl->oob);
- 		return;
-@@ -466,7 +463,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		int full_page;
- 		if (ifc_nand_ctrl->oob) {
- 			out_be32(&ifc->ifc_nand.nand_fbcr,
--					ifc_nand_ctrl->index);
-+				ifc_nand_ctrl->index - ifc_nand_ctrl->column);
- 			full_page = 0;
- 		} else {
- 			out_be32(&ifc->ifc_nand.nand_fbcr, 0);
--- 
-1.7.5.4
+iQIcBAABAgAGBQJPCwPcAAoJECmIfjd9wqK0L1YP/jTE0HUA62ZMe8T/+N04X3Wu
+VfkYj3wZ+lUpx2P4KvWKWxwIID4UH4PrSnoElc1V2pSEJ2rhOA/7xuUDOELmbvnP
+pnjLHX0mucMoD6dmKOgqWBRfJIv/oVPIjH3X92pS4Xvi+eXL8qPFXb87Ol64N7zv
+CdN/pHlOz/QVK7oa0IqGxNg8Op0D0K6/lTSv5JQbAqJfFLaUsWSGR59c8bC1IvkU
+Mcjgzb7j34hgSgkndB0c4elxVj0XcXTxNZ+dRCUzAd76VlzwdzMnzt9z0PfcxYpR
+gKA+PZcIFB7/H6sF3+ByWv+KHC1stfjvd1Hy0V9zyn+j2B/3TqJNKl1ESvhmSSFc
+TRx90LPi+sGb47HoNWnCqsxwY36zs2qKqUPlY9HsSfa1t5vSsONweBe6ikQf3i3o
+0dSpz+ukhWSbQXKE5HShHXn3o7kLe9vZuRBywbD3NsmZujl5y8evCJeVBKegj4qV
+Xq8UX5ZFVhNmNwQq7k8n4lJJXJIHb64mBgVhujc/TbbRdmO4L0kIOz2ZzzBu1svT
+lKfEutX8RqWMIWs3oxTctJw6XQMMxVqMLH/ajS0MkicjpsO1invXZ9focGLyGyvP
+saNeUHmDzO6/A8SH2QZKyTJ2BBqMQ6RdNjGIF1OJUxgE1O4g/05fo3WoH01vXsDp
+6hiLZru7z87TJdDkzBiT
+=m435
+-----END PGP SIGNATURE-----
+
+--=-o4AqsCzDwAfBaLZWIMw8--
