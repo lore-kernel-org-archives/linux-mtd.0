@@ -1,15 +1,14 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkLmn-0004Da-Pe
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:25:42 +0000
+ id 1RkLn7-0004Da-AI
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:26:01 +0000
 Received: by mail-iy0-f177.google.com with SMTP id k27so8400220iad.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:25:41 -0800 (PST)
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:26:01 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 5/6] mtd: nand: differentiate 1- vs. 2-byte writes when
- marking bad blocks
-Date: Mon,  9 Jan 2012 12:23:31 -0800
-Message-Id: <1326140612-26323-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 6/6] mtd: nand: correct comment on nand_chip badblockbits
+Date: Mon,  9 Jan 2012 12:23:32 -0800
+Message-Id: <1326140612-26323-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -23,45 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It seems that we have developed a bad-block-marking "feature" out of
-pure laziness:
-
-  "We write two bytes per location, so we dont have to mess with 16 bit
-  access."
-
-It's relatively simple to write a 1 byte at a time on x8 devices and 2
-bytes at a time on x16 devices, so let's do it.
+The description for badblockbits is incorrect. I think someone just made
+up a false description on the spot to satisfy some kerneldoc warning.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   12 ++++++++----
- 1 files changed, 8 insertions(+), 4 deletions(-)
+ include/linux/mtd/nand.h |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8319242..030ffd3 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -434,13 +434,17 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		/*
- 		 * Write to first two pages if necessary. If we write to more
- 		 * than one location, the first error encountered quits the
--		 * procedure. We write two bytes per location, so we dont have
--		 * to mess with 16 bit access.
-+		 * procedure.
- 		 */
--		ops.len = ops.ooblen = 2;
- 		ops.datbuf = NULL;
- 		ops.oobbuf = buf;
--		ops.ooboffs = chip->badblockpos & ~0x01;
-+		ops.ooboffs = chip->badblockpos;
-+		if (chip->options & NAND_BUSWIDTH_16) {
-+			ops.ooboffs &= ~0x01;
-+			ops.len = ops.ooblen = 2;
-+		} else {
-+			ops.len = ops.ooblen = 1;
-+		}
- 		ops.mode = MTD_OPS_PLACE_OOB;
- 		do {
- 			ret = nand_do_write_oob(mtd, ofs, &ops);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3547205..a7d8f2e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -454,8 +454,9 @@ struct nand_buffers {
+  *			will be copied to the appropriate nand_bbt_descr's.
+  * @badblockpos:	[INTERN] position of the bad block marker in the oob
+  *			area.
+- * @badblockbits:	[INTERN] number of bits to left-shift the bad block
+- *			number
++ * @badblockbits:	[INTERN] minimum number of set bits in a good block's
++ *			bad block marker position; i.e., BBM == 11110111b is
++ *			not bad when badblockbits == 7
+  * @cellinfo:		[INTERN] MLC/multichip data from chip ident
+  * @numchips:		[INTERN] number of physical chips
+  * @chipsize:		[INTERN] the size of one chip for multichip arrays
 -- 
 1.7.5.4
