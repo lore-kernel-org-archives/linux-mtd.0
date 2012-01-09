@@ -1,24 +1,19 @@
-Received: from mail-tul01m020-f177.google.com ([209.85.214.177])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkGrY-0007Av-GH
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 15:10:20 +0000
-Received: by obcwn1 with SMTP id wn1so5598375obc.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 07:10:15 -0800 (PST)
-Message-ID: <1326121948.6755.102.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [RFC] ubi: Make vid_hdr non-static
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <rw@linutronix.de>
-Date: Mon, 09 Jan 2012 17:12:28 +0200
-In-Reply-To: <1324569962.1165.6.camel@sauron.fi.intel.com>
-References: <1324566777-1918-1-git-send-email-rw@linutronix.de>
- <1324569962.1165.6.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-o4AqsCzDwAfBaLZWIMw8"
-Mime-Version: 1.0
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+ id 1RkHxv-0001Dk-6b
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 16:20:59 +0000
+Received: by vbbfs19 with SMTP id fs19so3708105vbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 08:20:53 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 9 Jan 2012 16:20:53 +0000
+Message-ID: <CAGaKrsmCb6jHZ+oYjQiV8kU63-DQMpzwTG4pR-Jf_aTE1K2=NQ@mail.gmail.com>
+Subject: [PATCH] libmtd: Variable name same as function name causing compile
+ to fail (Android)
+From: Thomas Cannon <mail@thomascannon.net>
+To: Thomas Cannon <mail@thomascannon.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +23,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+When compiling mtd-utils against Android's bionic libc using the
+supplied cross compiler environment it errors:
 
---=-o4AqsCzDwAfBaLZWIMw8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+lib/libmtd.c: In function 'dev_node2num':
+lib/libmtd.c:444: error: called object 'major' is not a function
+lib/libmtd.c:445: error: called object 'minor' is not a function
+lib/libmtd.c: In function 'mtd_probe_node':
+lib/libmtd.c:1384: error: called object 'major' is not a function
+lib/libmtd.c:1385: error: called object 'minor' is not a function
 
-On Thu, 2011-12-22 at 18:06 +0200, Artem Bityutskiy wrote:
-> On Thu, 2011-12-22 at 16:12 +0100, Richard Weinberger wrote:
-> > There is no reason to have vid_hdr static.
-> >=20
-> > Signed-off-by: Richard Weinberger <rw@linutronix.de>
-> > ---
-> >  drivers/mtd/ubi/vtbl.c |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-> > index 9ad18da..890754c 100644
-> > --- a/drivers/mtd/ubi/vtbl.c
-> > +++ b/drivers/mtd/ubi/vtbl.c
-> > @@ -306,7 +306,7 @@ static int create_vtbl(struct ubi_device *ubi, stru=
-ct ubi_scan_info *si,
-> >  		       int copy, void *vtbl)
-> >  {
-> >  	int err, tries =3D 0;
-> > -	static struct ubi_vid_hdr *vid_hdr;
-> > +	struct ubi_vid_hdr *vid_hdr;
-> >  	struct ubi_scan_leb *new_seb;
->=20
-> Hmm, this shouldn't be [RFC] - this a bugfix, I'll merge it, thanks!
+This patch updates the variable names for "major" and "minor" in two
+places. It then compiles cleanly.
 
-Pushed to ubifs-2.6 git tree with "Cc: stable@kernel.org", thanks!
+Tested against mtd-utils 1.4.9
+Applied with=A0patch -p1 -i libmtd.patch
 
---=20
-Best Regards,
-Artem Bityutskiy
+Signed-off-by: Thomas Cannon <mail at thomascannon.net>
+Cc: linux-mtd at lists.infradead.org
+---
 
---=-o4AqsCzDwAfBaLZWIMw8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+diff -crB a/lib/libmtd.c b/lib/libmtd.c
+*** a/lib/libmtd.c	2012-01-09 14:38:56.000000000 +0000
+--- b/lib/libmtd.c	2012-01-09 20:57:34.363506783 +0000
+***************
+*** 429,435 ****
+  static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_nu=
+m)
+  {
+  	struct stat st;
+! 	int i, major, minor;
+  	struct mtd_info info;
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+  	if (stat(node, &st))
+--- 429,435 ----
+  static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_nu=
+m)
+  {
+  	struct stat st;
+! 	int i, majorx, minorx;
+  	struct mtd_info info;
 
-iQIcBAABAgAGBQJPCwPcAAoJECmIfjd9wqK0L1YP/jTE0HUA62ZMe8T/+N04X3Wu
-VfkYj3wZ+lUpx2P4KvWKWxwIID4UH4PrSnoElc1V2pSEJ2rhOA/7xuUDOELmbvnP
-pnjLHX0mucMoD6dmKOgqWBRfJIv/oVPIjH3X92pS4Xvi+eXL8qPFXb87Ol64N7zv
-CdN/pHlOz/QVK7oa0IqGxNg8Op0D0K6/lTSv5JQbAqJfFLaUsWSGR59c8bC1IvkU
-Mcjgzb7j34hgSgkndB0c4elxVj0XcXTxNZ+dRCUzAd76VlzwdzMnzt9z0PfcxYpR
-gKA+PZcIFB7/H6sF3+ByWv+KHC1stfjvd1Hy0V9zyn+j2B/3TqJNKl1ESvhmSSFc
-TRx90LPi+sGb47HoNWnCqsxwY36zs2qKqUPlY9HsSfa1t5vSsONweBe6ikQf3i3o
-0dSpz+ukhWSbQXKE5HShHXn3o7kLe9vZuRBywbD3NsmZujl5y8evCJeVBKegj4qV
-Xq8UX5ZFVhNmNwQq7k8n4lJJXJIHb64mBgVhujc/TbbRdmO4L0kIOz2ZzzBu1svT
-lKfEutX8RqWMIWs3oxTctJw6XQMMxVqMLH/ajS0MkicjpsO1invXZ9focGLyGyvP
-saNeUHmDzO6/A8SH2QZKyTJ2BBqMQ6RdNjGIF1OJUxgE1O4g/05fo3WoH01vXsDp
-6hiLZru7z87TJdDkzBiT
-=m435
------END PGP SIGNATURE-----
+  	if (stat(node, &st))
+***************
+*** 441,448 ****
+  		return -1;
+  	}
 
---=-o4AqsCzDwAfBaLZWIMw8--
+! 	major =3D major(st.st_rdev);
+! 	minor =3D minor(st.st_rdev);
+
+  	if (mtd_get_info((libmtd_t *)lib, &info))
+  		return -1;
+--- 441,448 ----
+  		return -1;
+  	}
+
+! 	majorx =3D major(st.st_rdev);
+! 	minorx =3D minor(st.st_rdev);
+
+  	if (mtd_get_info((libmtd_t *)lib, &info))
+  		return -1;
+***************
+*** 459,465 ****
+  			return -1;
+  		}
+
+! 		if (major1 =3D=3D major && minor1 =3D=3D minor) {
+  			errno =3D 0;
+  			*mtd_num =3D i;
+  			return 0;
+--- 459,465 ----
+  			return -1;
+  		}
+
+! 		if (major1 =3D=3D majorx && minor1 =3D=3D minorx) {
+  			errno =3D 0;
+  			*mtd_num =3D i;
+  			return 0;
+***************
+*** 1369,1375 ****
+  {
+  	struct stat st;
+  	struct mtd_info info;
+! 	int i, major, minor;
+  	struct libmtd *lib =3D (struct libmtd *)desc;
+
+  	if (stat(node, &st))
+--- 1369,1375 ----
+  {
+  	struct stat st;
+  	struct mtd_info info;
+! 	int i, majorx, minorx;
+  	struct libmtd *lib =3D (struct libmtd *)desc;
+
+  	if (stat(node, &st))
+***************
+*** 1381,1388 ****
+  		return -1;
+  	}
+
+! 	major =3D major(st.st_rdev);
+! 	minor =3D minor(st.st_rdev);
+
+  	if (mtd_get_info((libmtd_t *)lib, &info))
+  		return -1;
+--- 1381,1388 ----
+  		return -1;
+  	}
+
+! 	majorx =3D major(st.st_rdev);
+! 	minorx =3D minor(st.st_rdev);
+
+  	if (mtd_get_info((libmtd_t *)lib, &info))
+  		return -1;
+***************
+*** 1402,1408 ****
+  			return -1;
+  		}
+
+! 		if (major1 =3D=3D major && minor1 =3D=3D minor)
+  			return 1;
+  	}
+
+--- 1402,1408 ----
+  			return -1;
+  		}
+
+! 		if (major1 =3D=3D majorx && minor1 =3D=3D minorx)
+  			return 1;
+  	}
