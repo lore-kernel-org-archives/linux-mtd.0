@@ -1,18 +1,18 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkHxv-0001Dk-6b
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 16:20:59 +0000
-Received: by vbbfs19 with SMTP id fs19so3708105vbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 08:20:53 -0800 (PST)
+ id 1RkJ8t-0005Dr-OW
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 17:36:23 +0000
+Received: by wgbdt13 with SMTP id dt13so1317763wgb.18
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 09:36:16 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 9 Jan 2012 16:20:53 +0000
-Message-ID: <CAGaKrsmCb6jHZ+oYjQiV8kU63-DQMpzwTG4pR-Jf_aTE1K2=NQ@mail.gmail.com>
-Subject: [PATCH] libmtd: Variable name same as function name causing compile
- to fail (Android)
-From: Thomas Cannon <mail@thomascannon.net>
-To: Thomas Cannon <mail@thomascannon.net>
+In-Reply-To: <CA+0Dg4q8+6Z+UAr6ni0v_GA70Phhaug-s=PCZyYLjHV1Sk-Qww@mail.gmail.com>
+References: <CA+0Dg4q8+6Z+UAr6ni0v_GA70Phhaug-s=PCZyYLjHV1Sk-Qww@mail.gmail.com>
+Date: Mon, 9 Jan 2012 09:36:14 -0800
+Message-ID: <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
+Subject: Re: No oob scheme defined for oobsize 218
+From: Brian Norris <computersforpeace@gmail.com>
+To: Joo Aun Saw <jasaw@dius.com.au>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,133 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When compiling mtd-utils against Android's bionic libc using the
-supplied cross compiler environment it errors:
+On Sun, Jan 8, 2012 at 10:34 PM, Joo Aun Saw <jasaw@dius.com.au> wrote:
+> I'm getting this error and hope someone can help me.
+>
+> ONFI flash detected
+> ONFI param page 0 valid
+> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xd3 (Micron MT29F8G08AAA)
+> No oob scheme defined for oobsize 218
+>
+> Do I need to define struct nand_ecclayout nand_oob_218? or can I use
+> the nand_oob_128 ecc layout?
+> I'm running Linux version 3.0.4.
 
-lib/libmtd.c: In function 'dev_node2num':
-lib/libmtd.c:444: error: called object 'major' is not a function
-lib/libmtd.c:445: error: called object 'minor' is not a function
-lib/libmtd.c: In function 'mtd_probe_node':
-lib/libmtd.c:1384: error: called object 'major' is not a function
-lib/libmtd.c:1385: error: called object 'minor' is not a function
+This may depend on what hardware/driver, what type of ECC you're
+using, and what filesystem you're using on top of your MTD. It's
+possible you can get by with just using a "smaller" ECC layout,
+especially if you're not using the OOB area for filesystem data (e.g.,
+UBI(FS), which doesn't use OOB). You just won't have as much "free"
+OOB area (again, doesn't matter much for UBI(FS)) and your ECC layout
+might not reflect the actual positioning of your ECC data.
 
-This patch updates the variable names for "major" and "minor" in two
-places. It then compiles cleanly.
-
-Tested against mtd-utils 1.4.9
-Applied with=A0patch -p1 -i libmtd.patch
-
-Signed-off-by: Thomas Cannon <mail at thomascannon.net>
-Cc: linux-mtd at lists.infradead.org
----
-
-diff -crB a/lib/libmtd.c b/lib/libmtd.c
-*** a/lib/libmtd.c	2012-01-09 14:38:56.000000000 +0000
---- b/lib/libmtd.c	2012-01-09 20:57:34.363506783 +0000
-***************
-*** 429,435 ****
-  static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_nu=
-m)
-  {
-  	struct stat st;
-! 	int i, major, minor;
-  	struct mtd_info info;
-
-  	if (stat(node, &st))
---- 429,435 ----
-  static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_nu=
-m)
-  {
-  	struct stat st;
-! 	int i, majorx, minorx;
-  	struct mtd_info info;
-
-  	if (stat(node, &st))
-***************
-*** 441,448 ****
-  		return -1;
-  	}
-
-! 	major =3D major(st.st_rdev);
-! 	minor =3D minor(st.st_rdev);
-
-  	if (mtd_get_info((libmtd_t *)lib, &info))
-  		return -1;
---- 441,448 ----
-  		return -1;
-  	}
-
-! 	majorx =3D major(st.st_rdev);
-! 	minorx =3D minor(st.st_rdev);
-
-  	if (mtd_get_info((libmtd_t *)lib, &info))
-  		return -1;
-***************
-*** 459,465 ****
-  			return -1;
-  		}
-
-! 		if (major1 =3D=3D major && minor1 =3D=3D minor) {
-  			errno =3D 0;
-  			*mtd_num =3D i;
-  			return 0;
---- 459,465 ----
-  			return -1;
-  		}
-
-! 		if (major1 =3D=3D majorx && minor1 =3D=3D minorx) {
-  			errno =3D 0;
-  			*mtd_num =3D i;
-  			return 0;
-***************
-*** 1369,1375 ****
-  {
-  	struct stat st;
-  	struct mtd_info info;
-! 	int i, major, minor;
-  	struct libmtd *lib =3D (struct libmtd *)desc;
-
-  	if (stat(node, &st))
---- 1369,1375 ----
-  {
-  	struct stat st;
-  	struct mtd_info info;
-! 	int i, majorx, minorx;
-  	struct libmtd *lib =3D (struct libmtd *)desc;
-
-  	if (stat(node, &st))
-***************
-*** 1381,1388 ****
-  		return -1;
-  	}
-
-! 	major =3D major(st.st_rdev);
-! 	minor =3D minor(st.st_rdev);
-
-  	if (mtd_get_info((libmtd_t *)lib, &info))
-  		return -1;
---- 1381,1388 ----
-  		return -1;
-  	}
-
-! 	majorx =3D major(st.st_rdev);
-! 	minorx =3D minor(st.st_rdev);
-
-  	if (mtd_get_info((libmtd_t *)lib, &info))
-  		return -1;
-***************
-*** 1402,1408 ****
-  			return -1;
-  		}
-
-! 		if (major1 =3D=3D major && minor1 =3D=3D minor)
-  			return 1;
-  	}
-
---- 1402,1408 ----
-  			return -1;
-  		}
-
-! 		if (major1 =3D=3D majorx && minor1 =3D=3D minorx)
-  			return 1;
-  	}
+Brian
