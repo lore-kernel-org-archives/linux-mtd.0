@@ -1,15 +1,14 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkLmD-0004G9-Es
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:25:06 +0000
-Received: by ggnp4 with SMTP id p4so1889968ggn.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:25:04 -0800 (PST)
+ id 1RkLmO-0004Da-3x
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 20:25:16 +0000
+Received: by mail-iy0-f177.google.com with SMTP id k27so8400220iad.36
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 12:25:16 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 2/6] mtd: nand: write bad block marker by default even with
- BBT
-Date: Mon,  9 Jan 2012 12:23:28 -0800
-Message-Id: <1326140612-26323-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 3/6] mtd: nand: erase block before marking bad
+Date: Mon,  9 Jan 2012 12:23:29 -0800
+Message-Id: <1326140612-26323-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
 Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
@@ -47,62 +46,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the flash-based BBT implementation writes bad block data only
-to its flash-based table and not to the OOB marker area. Then, as new
-bad blocks are marked over time, the OOB markers become out of date and
-the flash-based table becomes the only source of current bad block
-information. This can be a problem when, for example:
+Many NAND flash systems (especially those with MLC NAND) cannot be
+reliably written twice in a row. For instance, when marking a bad block,
+the block may already have data written to it, and so we should attempt
+to erase the block before writing a bad block marker to its OOB region.
 
- * bootloader cannot read the flash-based BBT format
- * BBT is corrupted and the flash must be rescanned for bad
-   blocks; we want to remember bad blocks that were marked from Linux
+We can ignore erase failures, since the block may be bad such that it
+cannot be erased properly; we still attempt to write zeros to its spare
+area.
 
-In an attempt to keep the bad block markers in sync with the flash-based
-BBT, this patch changes the default so that we write bad block markers
-to the proper OOB area on each block in addition to flash-based BBT.
-
-Theoretically, the bad block table and the OOB markers can still get out
-of sync if the system experiences a power cut between writing the BBT to
-flash and writing the OOB marker to a newly-marked bad block. However,
-this is a relatively unlikely event, as new bad blocks shouldn't appear
-frequently.
-
-Note that this is a change from the previous default flash-based BBT
-behavior. To restore old behavior (and to generally prevent writing to
-OOB area), use the NAND_NO_WRITE_OOB options (in combination with
-NAND_BBT_USE_FLASH and NAND_BBT_NO_OOB).
+Note that the erase must be performed before the BBT is updated, since
+otherwise, nand_erase_nand() would not allow us to erase our "bad
+block."
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b9dbf0c..ead2a12 100644
+index ead2a12..d5dbe0a 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -392,7 +392,10 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
- 	uint8_t buf[2] = { 0, 0 };
--	int block, ret, i = 0;
-+	int block, ret = 0, i = 0;
-+
-+	BUG_ON((chip->options & NAND_NO_WRITE_OOB) &&
-+			!(chip->bbt_options & NAND_BBT_USE_FLASH));
+@@ -397,6 +397,16 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	BUG_ON((chip->options & NAND_NO_WRITE_OOB) &&
+ 			!(chip->bbt_options & NAND_BBT_USE_FLASH));
  
++	/* Erase before writing to OOB and before BBT is updated */
++	if (!(chip->options & NAND_NO_WRITE_OOB)) {
++		struct erase_info einfo;
++		memset(&einfo, 0, sizeof(einfo));
++		einfo.mtd = mtd;
++		einfo.addr = ofs;
++		einfo.len = 1 << chip->phys_erase_shift;
++		nand_erase_nand(mtd, &einfo, 0);
++	}
++
  	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
  		ofs += mtd->erasesize - mtd->writesize;
-@@ -405,7 +408,9 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	/* Do we have a flash based bad block table? */
- 	if (chip->bbt_options & NAND_BBT_USE_FLASH)
- 		ret = nand_update_bbt(mtd, ofs);
--	else {
-+
-+	/* Write bad block marker to OOB */
-+	if (!(chip->options & NAND_NO_WRITE_OOB)) {
- 		struct mtd_oob_ops ops;
  
- 		nand_get_device(chip, mtd, FL_WRITING);
 -- 
 1.7.5.4
