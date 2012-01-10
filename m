@@ -1,21 +1,19 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkNEf-00086r-Cz
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2012 21:58:33 +0000
-Received: by iadk27 with SMTP id k27so8529370iad.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 13:58:32 -0800 (PST)
-Message-ID: <4F0B6301.3020405@gmail.com>
-Date: Mon, 09 Jan 2012 16:58:25 -0500
-From: Xi Wang <xi.wang@gmail.com>
+Received: from na3sys009aog118.obsmtp.com ([74.125.149.244])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RkPNl-0001Ay-I6
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 00:16:06 +0000
+Received: by mail-vx0-f171.google.com with SMTP id fl11so5389946vcb.16
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 16:16:03 -0800 (PST)
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Lucas De Marchi <lucas.demarchi@profusion.mobi>
-Subject: Re: [PATCH] pmc551: fix signedness bug in init_pmc551()
-References: <1325019256-5171-1-git-send-email-xi.wang@gmail.com>
-In-Reply-To: <1325019256-5171-1-git-send-email-xi.wang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
+References: <CA+0Dg4q8+6Z+UAr6ni0v_GA70Phhaug-s=PCZyYLjHV1Sk-Qww@mail.gmail.com>
+ <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
+Date: Tue, 10 Jan 2012 11:16:03 +1100
+Message-ID: <CA+0Dg4rZVcW2jJP6EbXsh+OAvCB3vPA_az8bz2hGrEmeOrnm6A@mail.gmail.com>
+Subject: Re: No oob scheme defined for oobsize 218
+From: Joo Aun Saw <jasaw@dius.com.au>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,41 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since "length" is a u32, the error handling below didn't work when
-fixup_pmc551() returns -ENODEV.
+I'm running UBI(FS) on top of it, so I don't need the OOB area. In
+this case, what's the best way to work around this problem? Should I
+use a smaller ECC layout or disable ECC?
 
-	if ((length = fixup_pmc551(PCI_Device)) <= 0)
+How is the ECC layout defined, as in what decides how big the
+eccbytes, eccpos, oobfree should be?
 
-This patch changes both the type of "length" and the return type of
-fixup_pmc551() to int.
 
-Suggested-by: Artem Bityutskiy <dedekind1@gmail.com>
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
----
- drivers/mtd/devices/pmc551.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index ecff765..cfccf65 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -359,7 +359,7 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
-  * mechanism
-  * returns the size of the memory region found.
-  */
--static u32 fixup_pmc551(struct pci_dev *dev)
-+static int fixup_pmc551(struct pci_dev *dev)
- {
- #ifdef CONFIG_MTD_PMC551_BUGFIX
- 	u32 dram_data;
-@@ -669,7 +669,7 @@ static int __init init_pmc551(void)
- 	struct mypriv *priv;
- 	int found = 0;
- 	struct mtd_info *mtd;
--	u32 length = 0;
-+	int length = 0;
- 
- 	if (msize) {
- 		msize = (1 << (ffs(msize) - 1)) << 20;
--- 
-1.7.5.4
+
+On Tue, Jan 10, 2012 at 4:36 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Sun, Jan 8, 2012 at 10:34 PM, Joo Aun Saw <jasaw@dius.com.au> wrote:
+>> I'm getting this error and hope someone can help me.
+>>
+>> ONFI flash detected
+>> ONFI param page 0 valid
+>> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xd3 (Micron MT29F8G08AAA)
+>> No oob scheme defined for oobsize 218
+>>
+>> Do I need to define struct nand_ecclayout nand_oob_218? or can I use
+>> the nand_oob_128 ecc layout?
+>> I'm running Linux version 3.0.4.
+>
+> This may depend on what hardware/driver, what type of ECC you're
+> using, and what filesystem you're using on top of your MTD. It's
+> possible you can get by with just using a "smaller" ECC layout,
+> especially if you're not using the OOB area for filesystem data (e.g.,
+> UBI(FS), which doesn't use OOB). You just won't have as much "free"
+> OOB area (again, doesn't matter much for UBI(FS)) and your ECC layout
+> might not reflect the actual positioning of your ECC data.
+>
+> Brian
