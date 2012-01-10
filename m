@@ -1,14 +1,12 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rkf78-0005Rm-I6
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 17:03:59 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] ubi: Use UBI_LAYOUT_VOLUME_{TYPE, ALIGN}
-Date: Tue, 10 Jan 2012 17:57:03 +0100
-Message-Id: <1326214623-15938-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rkfm9-0008U5-JL
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 17:46:23 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] UBIFS: fix debugging messages
+Date: Tue, 10 Jan 2012 19:48:41 +0200
+Message-Id: <1326217722-20707-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +16,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBI_LAYOUT_VOLUME_TYPE and UBI_LAYOUT_VOLUME_ALIGN are currently
-defined but not used.
-Use them at least once. 8-)
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Patch 56e46742e846e4de167dde0e1e1071ace1c882a5 broke UBIFS debugging messages:
+before that commit when UBIFS debugging was enabled, users saw few useful
+debugging messages after mount. However, that patch turned 'dbg_msg()' into
+'pr_debug()', so to enable the debugging messages users have to enable them
+first via /sys/kernel/debug/dynamic_debug/control, which is very impractical.
+
+This commit makes 'dbg_msg()' to use 'printk()' instead of 'pr_debug()', just
+as it was before the breakage.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: stable@kernel.org [3.0+]
 ---
- drivers/mtd/ubi/vtbl.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/debug.h |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 9ad18da..93cb2f1 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -322,7 +322,7 @@ retry:
- 		goto out_free;
- 	}
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index 8d9c468..d36fe4e 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -190,7 +190,13 @@ extern spinlock_t dbg_lock;
+ } while (0)
  
--	vid_hdr->vol_type = UBI_VID_DYNAMIC;
-+	vid_hdr->vol_type = UBI_LAYOUT_VOLUME_TYPE;
- 	vid_hdr->vol_id = cpu_to_be32(UBI_LAYOUT_VOLUME_ID);
- 	vid_hdr->compat = UBI_LAYOUT_VOLUME_COMPAT;
- 	vid_hdr->data_size = vid_hdr->used_ebs =
-@@ -632,7 +632,7 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
- 		return -ENOMEM;
- 
- 	vol->reserved_pebs = UBI_LAYOUT_VOLUME_EBS;
--	vol->alignment = 1;
-+	vol->alignment = UBI_LAYOUT_VOLUME_ALIGN;
- 	vol->vol_type = UBI_DYNAMIC_VOLUME;
- 	vol->name_len = sizeof(UBI_LAYOUT_VOLUME_NAME) - 1;
- 	memcpy(vol->name, UBI_LAYOUT_VOLUME_NAME, vol->name_len + 1);
+ /* Just a debugging messages not related to any specific UBIFS subsystem */
+-#define dbg_msg(fmt, ...)   ubifs_dbg_msg("msg", fmt, ##__VA_ARGS__)
++#define dbg_msg(fmt, ...) do {                                                \
++	spin_lock(&dbg_lock);                                                 \
++	printk(KERN_DEBUG "UBIFS DBG (pid %d): %s: " fmt "\n", current->pid,  \
++	       __func__, ##__VA_ARGS__);                                      \
++	spin_unlock(&dbg_lock);                                               \
++} while (0)
++
+ /* General messages */
+ #define dbg_gen(fmt, ...)   ubifs_dbg_msg("gen", fmt, ##__VA_ARGS__)
+ /* Additional journal messages */
 -- 
-1.7.7.3
+1.7.6.5
