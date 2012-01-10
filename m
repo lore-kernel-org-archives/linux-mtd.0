@@ -1,27 +1,24 @@
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rkb5a-0003gq-FA
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 12:46:07 +0000
-Received: from mfilter11-d.gandi.net (mfilter11-d.gandi.net [217.70.178.131])
- by relay4-d.mail.gandi.net (Postfix) with ESMTP id 9D13117213D
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 13:45:54 +0100 (CET)
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
- by mfilter11-d.gandi.net (mfilter11-d.gandi.net [10.0.15.180]) (amavisd-new,
- port 10024)
- with ESMTP id dEASbGC95qjo for <linux-mtd@lists.infradead.org>;
- Tue, 10 Jan 2012 13:45:53 +0100 (CET)
-Received: from [192.168.1.60] (LSt-Amand-152-31-13-96.w193-253.abo.wanadoo.fr
- [193.253.216.96]) (Authenticated sender: a.gambier@ftemaximal.fr)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id D48E01720CD
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 13:45:52 +0100 (CET)
-Message-ID: <4F0C3339.6070909@ftemaximal.fr>
-Date: Tue, 10 Jan 2012 13:46:49 +0100
-From: Alexandre Gambier <a.gambier@ftemaximal.fr>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rkboy-0006Fe-Lg
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 13:33:01 +0000
+Received: by iakk12 with SMTP id k12so1094550iak.36
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 05:32:56 -0800 (PST)
+Message-ID: <1326202513.8847.20.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 02/17] mtd: do use mtd->point directly
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 10 Jan 2012 15:35:13 +0200
+In-Reply-To: <CAN8TOE9bgyf3Lvwh7CN--2c0qBrcRqnRRNJp6MWQQ9Y1Ddk2Cg@mail.gmail.com>
+References: <1325506847-23470-1-git-send-email-dedekind1@gmail.com>
+ <1325506847-23470-3-git-send-email-dedekind1@gmail.com>
+ <CAN8TOE9bgyf3Lvwh7CN--2c0qBrcRqnRRNJp6MWQQ9Y1Ddk2Cg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-iSvc35sTs+MwWRD6q6fG"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,59 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi everyone,
 
-I use UBI volume and UBIFS on top of a NAND device with an embedded 
-video meter.
-Everything works fine except that when a UBI volume is mounted the 
-following warning is outputted :
-"UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB 
-handling, reserved 0, need 20"
+--=-iSvc35sTs+MwWRD6q6fG
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I create the UBI volume using the autosize options.
-Does anyone have an idea about what is it and what can I do to fix this 
-and make sure my UBI volumes work fine.
+On Thu, 2012-01-05 at 15:03 -0800, Brian Norris wrote:
+> > +++ b/fs/jffs2/erase.c
+> > @@ -336,12 +336,11 @@ static int jffs2_block_check_erase(struct jffs2_s=
+b_info *c, struct jffs2_erasebl
+> >        uint32_t ofs;
+> >        size_t retlen;
+> >        int ret =3D -EIO;
+>=20
+> I think this initialization (ret =3D -EIO) was unnecessary in the first
+> place and certainly is unnecessary now. Remove it?
 
-Best regards,
-Alex
+Fair enough. I've pushed this patch to my tree:
 
-Here is the whole log:
+=46rom 162ab608ee94e01dc740c6cb55939f45aa184d44 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Tue, 10 Jan 2012 15:32:29 +0200
+Subject: [PATCH] jffs2: do not initialize variable unnecessarily
 
-UBI: attaching mtd7 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB 
-handling, reserved 0, need 20
-UBI: attached mtd7 to ubi0
-UBI: MTD device name:            "UserData"
-UBI: MTD device size:            256 MiB
-UBI: number of good PEBs:        2036
-UBI: number of bad PEBs:         12
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 2036
-UBI: number of PEBs reserved for bad PEB handling: 0
-UBI: max/mean erase counter: 2/1
-UBI: image sequence number: 0
-UBI: background thread "ubi_bgt0d" started, PID 1207
-UBI volume:  ubi0
-Volume name: userdata
-UBIFS: mounted UBI device 0, volume 1, name "userdata"
-UBIFS: file system size:   260757504 bytes (254646 KiB, 248 MiB, 2021 LEBs)
-UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
-UBIFS: media format:       w4/r0 (latest is w4/r0)
-UBIFS: default compressor: zlib
-UBIFS: reserved for root:  0 bytes (0 KiB)
+Remove unnecessary initializer for a local variable.
 
--- 
-Best regards.
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ fs/jffs2/erase.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Alexandre Gambier
-Fte Maximal France SAS
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index a01cdad..eafb8d3 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -335,7 +335,7 @@ static int jffs2_block_check_erase(struct jffs2_sb_info=
+ *c, struct jffs2_erasebl
+ 	void *ebuf;
+ 	uint32_t ofs;
+ 	size_t retlen;
+-	int ret =3D -EIO;
++	int ret;
+ 	unsigned long *wordebuf;
+=20
+ 	ret =3D mtd_point(c->mtd, jeb->offset, c->sector_size, &retlen,
+--=20
+1.7.7.5
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-iSvc35sTs+MwWRD6q6fG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJPDD6RAAoJECmIfjd9wqK0610QAJmIk2Il2ynA4+l9/G4KHpvM
+e+w7cd+gOyY4zb3yuDr0iJMkEj58o3BZDwfp/vIZQHUOwy85YXfDAS722WFKG5N4
+9qNzIfnQ7KaxxGymMhmuB8I4uj51qXIKslQo1AcO+pahGhTuwKPzJPS7h4/crRBm
+FfKa6IPmHFGZoreVD2lP55pYrchbOwBj3SXifRcspDOZi7SVfIbPsnyDw6OgeIsl
+2K2qMkRBVpoQvC1mRPhxCezhab0O1wyV+CQbEIgtwhM/ikAf4uWdOFTv6skpqXE5
+zzJ5alNEPqWI9VIivpw2UAt4H3wGG3bBEnQVdtONbVUok0cF303o1XaGixG6QnJa
+XUjIWyuDq3HxJxB7f3ojUI86ZDLG9U9K+j3lv7LBD/PlBY466UuSdbJwECyrVor1
+v+t+F3Hx14IOowwvls4rtidciXU9RsBJcwJSHOgrtBmL1EHMpePVgnrqBrxXdM9W
++1JINtXYFv33JmIDewKBnAjf1C3VG18hEdNyuSB/06QoP/b1AiM8yo9FWQR9pzvp
+0yn1focfUGmqN4TNkCKqJ8PhHdk8Sr/KElNtsjWRN3lckfXO6moMsIzTpvi37sbh
+w1ywYK/H7bt10fCD6PLC5wR2fbduDj4K1qkTnScXj9Y2A9cFXN+RCplCJAYXLzhq
+x46Wbk+1fBaJ4h7WLtxL
+=y1gL
+-----END PGP SIGNATURE-----
+
+--=-iSvc35sTs+MwWRD6q6fG--
