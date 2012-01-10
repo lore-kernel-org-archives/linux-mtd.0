@@ -1,20 +1,21 @@
-Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]
- helo=VA3EHSOBE008.bigfish.com)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkQF0-0003XI-6D
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 01:11:06 +0000
-Message-ID: <4F0B901C.6020100@freescale.com>
-Date: Mon, 9 Jan 2012 19:10:52 -0600
-From: Scott Wood <scottwood@freescale.com>
+ id 1RkUDm-0000nb-6p
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 05:26:07 +0000
+Received: by wgbdt13 with SMTP id dt13so1705897wgb.18
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 21:26:02 -0800 (PST)
 MIME-Version: 1.0
-To: Prabhakar Kushwaha <prabhakar@freescale.com>
-Subject: Re: [PATCH 2/2][v2] mtd/nand: Fix IFC driver to support 2K NAND page
-References: <1326111866-13120-1-git-send-email-prabhakar@freescale.com>
-In-Reply-To: <1326111866-13120-1-git-send-email-prabhakar@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- Poonam Aggrwal <poonam.aggrwal@freescale.com>
+In-Reply-To: <CA+0Dg4rZVcW2jJP6EbXsh+OAvCB3vPA_az8bz2hGrEmeOrnm6A@mail.gmail.com>
+References: <CA+0Dg4q8+6Z+UAr6ni0v_GA70Phhaug-s=PCZyYLjHV1Sk-Qww@mail.gmail.com>
+ <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
+ <CA+0Dg4rZVcW2jJP6EbXsh+OAvCB3vPA_az8bz2hGrEmeOrnm6A@mail.gmail.com>
+Date: Mon, 9 Jan 2012 21:26:00 -0800
+Message-ID: <CAN8TOE8+_CE67aM8D_3mCZpLbBdsvpOWTyvX+5UP6LY9ewX-YQ@mail.gmail.com>
+Subject: Re: No oob scheme defined for oobsize 218
+From: Brian Norris <computersforpeace@gmail.com>
+To: Joo Aun Saw <jasaw@dius.com.au>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/09/2012 06:24 AM, Prabhakar Kushwaha wrote:
-> 1) OOB area should be updated irrespective of NAND page size. Earlier it was
-> updated only for 512byte NAND page.
-> 
-> 2) During OOB update fbcr should be equal to OOB size.
-> 
-> Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
-> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
-> ---
->  git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git (branch next)
-> 
->  This patch is created on top of IFC driver patch (already floated in mailing
->  list). Please find their link:
->  http://patchwork.ozlabs.org/patch/133315/
->  http://patchwork.ozlabs.org/patch/133316/
+Hi,
 
-Looks good.
+Please reply below any quotations and only repeat what is necessary,
+according to the etiquette notes #4 and #6 on:
+http://www.infradead.org/~dwmw2/email.html
 
--Scott
+On Mon, Jan 9, 2012 at 4:16 PM, Joo Aun Saw <jasaw@dius.com.au> wrote:
+> I'm running UBI(FS) on top of it, so I don't need the OOB area. In
+> this case, what's the best way to work around this problem? Should I
+> use a smaller ECC layout or disable ECC?
+
+Do not disable ECC, but a smaller ECC layout probably will work OK.
+It's not perfect, but I don't know of any common UBIFS-related
+features that would make use of the layout anyway.
+
+> How is the ECC layout defined, as in what decides how big the
+> eccbytes, eccpos, oobfree should be?
+
+This is why I mentioned that your answer depends on "hardware/driver
+and what type of ECC you're
+using". Either mention your specs or try studying the defaults in
+nand_base.c and maybe the definition in include/linux/mtd/mtd.h.
+Layout structs basically should describe what offsets within the OOB
+are used by ECC (in eccpos), how much OOB is used by ECC (eccbytes),
+and the position and length of OOB segments that are unused by ECC and
+bad block markers (oobfree struct).
+
+Brian
