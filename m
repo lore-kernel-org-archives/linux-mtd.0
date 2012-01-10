@@ -1,20 +1,20 @@
-Received: from na3sys009aog118.obsmtp.com ([74.125.149.244])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RkPNl-0001Ay-I6
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 00:16:06 +0000
-Received: by mail-vx0-f171.google.com with SMTP id fl11so5389946vcb.16
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2012 16:16:03 -0800 (PST)
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=TX2EHSOBE005.bigfish.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RkQC1-0003Pg-OI
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 01:08:03 +0000
+Message-ID: <4F0B8F6B.5070305@freescale.com>
+Date: Mon, 9 Jan 2012 19:07:55 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
-References: <CA+0Dg4q8+6Z+UAr6ni0v_GA70Phhaug-s=PCZyYLjHV1Sk-Qww@mail.gmail.com>
- <CAN8TOE_5KGaxOtgYn2hSAfaccF9_-fxjzgiSy4d_0HArwZ=wew@mail.gmail.com>
-Date: Tue, 10 Jan 2012 11:16:03 +1100
-Message-ID: <CA+0Dg4rZVcW2jJP6EbXsh+OAvCB3vPA_az8bz2hGrEmeOrnm6A@mail.gmail.com>
-Subject: Re: No oob scheme defined for oobsize 218
-From: Joo Aun Saw <jasaw@dius.com.au>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Subject: Re: [PATCH 1/2][v2] mtd/nand:Fix wrong address read in is_blank()
+References: <1326111847-13085-1-git-send-email-prabhakar@freescale.com>
+In-Reply-To: <1326111847-13085-1-git-send-email-prabhakar@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ Poonam Aggrwal <poonam.aggrwal@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm running UBI(FS) on top of it, so I don't need the OOB area. In
-this case, what's the best way to work around this problem? Should I
-use a smaller ECC layout or disable ECC?
+On 01/09/2012 06:24 AM, Prabhakar Kushwaha wrote:
+> @@ -215,12 +215,15 @@ static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
+>  static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
+>  			  u32 *eccstat, unsigned int bufnum)
+>  {
+> +	struct nand_chip *chip = mtd->priv;
+> +	int bufperpage = mtd->writesize / chip->ecc.size;
+> +	int eccbuf_num = bufnum + (bufnum / bufperpage) * bufperpage;
 
-How is the ECC layout defined, as in what decides how big the
-eccbytes, eccpos, oobfree should be?
+This is unnecessarily complicated (and introduces two more, dependent,
+runtime divisions).  I don't think there are any changes required in
+this function.  You're awkwardly compensating for the fact that the
+caller hasn't been updated for the new definition of bufnum.
 
+bufperpage used in fsl_ifc_run_command should be doubled to account for
+the OOB buffers.  We should probably rename it from "buf" to something
+else (chunk? subpage?) to avoid confusion with bufnum_mask, which refers
+to page-sized buffers.
 
+>  	u32 reg = eccstat[bufnum / 4];
+>  	int errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
+>  
+>  	if (errors == 15) { /* uncorrectable */
+>  		/* Blank pages fail hw ECC checks */
+> -		if (is_blank(mtd, bufnum))
+> +		if (is_blank(mtd, eccbuf_num))
+>  			return 1;
+>  
+>  		/*
+> @@ -273,7 +276,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+>  		dev_err(priv->dev, "NAND Flash Write Protect Error\n");
+>  
+>  	if (nctrl->eccread) {
+> -		int bufperpage = mtd->writesize / 512;
+> +		int bufperpage = mtd->writesize / chip->ecc.size;
+>  		int bufnum = (nctrl->page & priv->bufnum_mask) * bufperpage;
+>  		int bufnum_end = bufnum + bufperpage - 1;
+>  
 
+Again, please calculate bufperpage (chunksperpage? subsperpage? perbuf?)
+at driver init, as is done with bufnum_mask.
 
-On Tue, Jan 10, 2012 at 4:36 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Sun, Jan 8, 2012 at 10:34 PM, Joo Aun Saw <jasaw@dius.com.au> wrote:
->> I'm getting this error and hope someone can help me.
->>
->> ONFI flash detected
->> ONFI param page 0 valid
->> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xd3 (Micron MT29F8G08AAA)
->> No oob scheme defined for oobsize 218
->>
->> Do I need to define struct nand_ecclayout nand_oob_218? or can I use
->> the nand_oob_128 ecc layout?
->> I'm running Linux version 3.0.4.
->
-> This may depend on what hardware/driver, what type of ECC you're
-> using, and what filesystem you're using on top of your MTD. It's
-> possible you can get by with just using a "smaller" ECC layout,
-> especially if you're not using the OOB area for filesystem data (e.g.,
-> UBI(FS), which doesn't use OOB). You just won't have as much "free"
-> OOB area (again, doesn't matter much for UBI(FS)) and your ECC layout
-> might not reflect the actual positioning of your ECC data.
->
-> Brian
+-Scott
