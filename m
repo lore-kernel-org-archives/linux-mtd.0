@@ -1,18 +1,42 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkY2P-0007r1-VU
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 09:30:39 +0000
-In-Reply-To: <4352830.ZIZxnlTurK@ws-stein>
-References: <14259449.DIx1JTusJU@ws-stein>
- <1326185675.8847.16.camel@sauron.fi.intel.com> <4352830.ZIZxnlTurK@ws-stein>
-Subject: Re: delayed close on mtdblock
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Message-ID: <OF701A2FD1.3F59A71C-ONC1257981.0033F75E-C1257981.00343AEE@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 10 Jan 2012 10:30:29 +0100
+Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RkYFh-000073-E9
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 09:44:23 +0000
+Message-ID: <4F0C086A.5070608@linutronix.de>
+Date: Tue, 10 Jan 2012 10:44:10 +0100
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 0/6] NAND BBM + BBT updates
+References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +46,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> On Tuesday 10 January 2012 10:54:35 Artem Bityutskiy wrote:
-> > On Wed, 2012-01-04 at 15:18 +0100, Alexander Stein wrote:
-> > > Hello,
-> > >
-> > > I observed an somewhat interesting situation regarding mtdblock. I have
-> > > a NOR- Flash with several mtd partitions. One holds the configuration
-> > > from the bootloader and another one contains UBI/UBIFS.
-> > > During bootup I attach UBI and mount UBIFS, no problems so far. To read
-> > > the bootloader coniguration I open the corresponding mtdblock with
-> > > O_RDONLY, do an lseek, read and close it afterwards, nothing special.
-> > > But I noticed the close() call take >1s which seems to far big, as
-> > > there is nothing to be written into this mtdblock device.
-> > > I digged into the kernel and get to mtdblock_release(). I can see that
-> > > write_cached_data does nothing as the cache is clean. But mbd->mtd->sync
-> > > (cfi_amdstd_sync in my case) takes a while because the chip state is
-> > > currently FL_ERASING. The retry loop is taken several times before
-> > > exiting the function. If I don't mount UBIFS there is no such delay.
-> > > I'm wondering if there is actually a need to sync the chip if the cache
-> > > is clean. Can someone explain this to me?
-> >
-> > Most probably this is because NOR flash erase is very slow. You probably
-> > do writes to the UBIFS partition, which initiates many erase operations.
-> > When you close the mtdblock device - it syncs the flash chip which
-> > blocks until the pending erase operations initiated by UBIFS finish
-> > (because these are 2 partitions on the same chip).
-> >
-> > I think the quick fix for you would be to avoid calling mtd->sync() in
-> > mtdblock if the device is R/O - makes no sense anyway.
->
-> I had somethng like this in mind, but was unsure about possible side effects.
->
-> > Care to submit a
-> > patch?
->
-> I would gladly submit a patch, but I don't know where to get the R/O status.
-> There is no struct file in this function like in the mtdchar case as Joakim
-> wrote.
+On 01/09/2012 09:23 PM, Brian Norris wrote:
+> This patch series is an update to a previous patch (that has split into
+> a few patches) with a few additional patches at the end. The important
+> segments of this series involve the default steps for marking new bad
+> blocks when using a flash-based BBT. The new default behavior will write
+> to the BBT as well as attempting to write a BBM to the OOB area of the
+> bad block. See the patch descriptions for details.
 
-hmm, I GUESSING you have to add file mode to struct mtd_blktrans_dev and
-update mode in blktrans_open() so you can use it later on.
+Why do we update BBT and OOB and have the date in two places? One
+Argument was that the boot loader may not have support for BBT and uses
+OOB instead. If so, why not update the boot loader and make sure both
+users (OS and boot loader) use the same data?
+Any other other arguments why updating OOB is a good idea?
 
- Jocke
+> The first patch, regarding NAND_NO_WRITE_OOB, is a first attempt at
+So now the old-default behavior requires a flag. If I remember
+correctly the OLPC used a different BBT layout and OOB was used for
+some other purpose. I remember that we had a controller which wrote ECC
+into OOB on its own and the driver could not write into OOB in ECC
+mode. But then I don't known if this was simply not implemented in the
+driver. So never mind.
 
->
-> Best regards,
-> Alexander
+> satisfying Sebastian's concerns that some systems utilize the entire OOB
+> area for ECC, and so we need an option to prevent writing markers to
+> OOB. My attempt to prevent other OOB writes may be misguided,
+> incomplete, flawed in some other way, or some combination of the three.
+> Please provide constructive criticism.
+
+and I am still not convinced that it is a good idea to provide one
+information in two places. It seems to be redundant. If there are other
+people supporting this, I am not in your way.
+
+Sebastian
