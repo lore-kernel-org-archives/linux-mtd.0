@@ -1,16 +1,22 @@
-Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rkjnm-0001D2-3h
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 22:04:18 +0000
+Received: by eaai13 with SMTP id i13so28414eaa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 14:04:16 -0800 (PST)
+Subject: Re: [PATCH] cfi: AMD/Fujitsu compatibles: add panic write support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Date: Tue, 10 Jan 2012 23:56:54 +0200
-In-Reply-To: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
-References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+To: Florian Fainelli <ffainelli@freebox.fr>
+Date: Wed, 11 Jan 2012 00:04:14 +0200
+In-Reply-To: <4F0C124F.7040807@freebox.fr>
+References: <1325878159-32306-1-git-send-email-iws@ovro.caltech.edu>
+ <4F0C124F.7040807@freebox.fr>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1326232616.2335.11.camel@koala>
+Message-ID: <1326233055.2335.13.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-arm-kernel@lists.infradead.org,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ "Ira W. Snyder" <iws@ovro.caltech.edu>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,34 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2012-01-07 at 11:49 +0100, Jean-Christophe PLAGNIOL-VILLARD
-wrote:
-> +#ifndef __ATMEL_NAND_H__
-> +#define __ATMEL_NAND_H__
-> +
-> +#include <linux/mtd/nand.h>
-> +
-> + /* NAND / SmartMedia */
-> +struct atmel_nand_data {
-> +	int		enable_pin;		/* chip enable */
-> +	int		det_pin;		/* card detect */
-> +	int		rdy_pin;		/* ready/busy */
-> +	u8		rdy_pin_active_low;	/* rdy_pin value is inverted */
-> +	u8		ale;			/* address line number connected to ALE */
-> +	u8		cle;			/* address line number connected to CLE */
-> +	u8		bus_width_16;		/* buswidth is 16 bit */
-> +	u8		ecc_mode;		/* ecc mode */
-> +	struct mtd_partition *parts;
-> +	unsigned int	num_parts;
-> +};
-> +
-> +#endif /* __ATMEL_NAND_H__ */
+On Tue, 2012-01-10 at 11:26 +0100, Florian Fainelli wrote:
+> Hello,
+> 
+> On 01/06/12 20:29, Ira W. Snyder wrote:
+> > This allows the mtdoops driver to work on flash chips using the
+> > AMD/Fujitsu compatible command set.
+> >
+> > As the code comments note, the locks used throughout the normal code
+> > paths in the driver are ignored, so that the chance of writing out the
+> > kernel's last messages are maximized.
+> 
+> This patch made me looking at the panic code, but should not this be 
+> made conditionnal to the enabling/disabling of the MTD oops driver?
 
-The "include/linux" directory, I think, should generally contain only
-those headers which define some "userspace-kernel" or "kernel subsystem"
-API. This file defines Atmel NAND driver's, so it should not be placed
-there.
-
-I am not sure "include/linux" is the best place for this header - is it?
+What do you mean? Conceptually, the driver is a low-level entity and it
+provides I/O mechanisms, and it should have no idea who will use them -
+be that is mtdoops or anything else.
 
 Artem.
