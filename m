@@ -1,19 +1,18 @@
-Received: from eu1sys200aog106.obsmtp.com ([207.126.144.121])
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkasH-0002ac-O7
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 12:32:36 +0000
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 74AF7F7
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 12:32:18 +0000 (GMT)
-Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
- by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C3DA52A97
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 12:32:17 +0000 (GMT)
+ id 1RkaxR-0003GV-OB
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 12:37:43 +0000
+Message-ID: <4F0C3115.1060800@st.com>
+Date: Tue, 10 Jan 2012 12:37:41 +0000
 From: Angus CLARK <angus.clark@st.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH (mtd-www) 1/3] nand-data: add columns to the table
-Date: Tue, 10 Jan 2012 12:32:19 +0000
-Message-Id: <1326198741-12566-1-git-send-email-angus.clark@st.com>
-Cc: Angus Clark <angus.clark@st.com>
+MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH (mtd-www) 1/3] nand-data: add columns to the table
+References: <1326198741-12566-1-git-send-email-angus.clark@st.com>
+In-Reply-To: <1326198741-12566-1-git-send-email-angus.clark@st.com>
+Content-Type: multipart/mixed; boundary="------------070400060804000806090809"
+Cc: Angus CLARK <angus.clark@st.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,479 +22,478 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the following columns to the table:
-        - "Scan Page 1"
-        - "No. CS"
-        - "No. LUNs"
-        - "No. R/B#"
-        - "I/0 I/F"
-        - "Base Part"
+This is a multi-part message in MIME format.
+--------------070400060804000806090809
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Angus Clark <angus.clark@st.com>
----
- nand-data/nanddata.csv |  456 ++++++++++++++++++++++++------------------------
- 1 files changed, 228 insertions(+), 228 deletions(-)
+On 01/10/2012 12:32 PM, Angus CLARK wrote:
+> Add the following columns to the table:
+>         - "Scan Page 1"
+>         - "No. CS"
+>         - "No. LUNs"
+>         - "No. R/B#"
+>         - "I/0 I/F"
+>         - "Base Part"
+> 
+> Signed-off-by: Angus Clark <angus.clark@st.com>
 
-diff --git a/nand-data/nanddata.csv b/nand-data/nanddata.csv
-index 4b3da69..01fd5dd 100644
---- a/nand-data/nanddata.csv
-+++ b/nand-data/nanddata.csv
-@@ -1,228 +1,228 @@
--"Manufacturer","Part #","Man. ID","ID Code","Full ID","MB","Page","OOB","Block","Bus","ONFI Ver.","Bad Block Location","Scan Page 2","Scan last page","Scan (last-2)th page","Scan byte 1","Scan byte 6","ECC Req.","Bits per cell","ID Length","Detection Method","Full Support","ONFI-Capable","All but Size","Correct Size","Correct Page","Correct OOB","Correct Block","Correct Busw","Correct BBM","Notes"
--"Toshiba","TC58128AFT","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","All OOB bytes",TRUE,TRUE,FALSE,TRUE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"For BBM, OOB is written non-FFh (only check 1st page, 1st byte?)"
--"Samsung","K9F1G08U0B","0xEC","0xF1","0xECF1009540",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Toshiba","TC58DVM72A1TG00","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5608D0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5608Q0C","0xEC","0x35","0xEC35",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5608U0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5616D0C","0xEC","0x55","0xEC55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5616Q0C","0xEC","0x45","0xEC45",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F5616U0C","0xEC","0x55","0xEC55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F4G08U0A","0xEC","0xDC","0xECDC109554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9K8G08U1A","0xEC","0xDC","0xECDC109554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 2 K9F4G08U0A"
--"Samsung","K9F4G08U0M","0xEC","0xDC","0xECDC109554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9K8G08U1M","0xEC","0xDC","0xECDC109554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND128W3A","0x20","0x73","0x2073",16,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND256R3A","0x20","0x35","0x2035",32,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND256W3A","0x20","0x75","0x2075",32,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND256R4A","0x20","0x45","0x2045",32,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND256W4A","0x20","0x55","0x2055",32,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND512R3A","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND512W3A","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND512R4A","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND512W4A","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND01GR3A","0x20","0x39","0x2039",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND01GW3A","0x20","0x79","0x2079",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND01GR4A","0x20","0x49","0x2049",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND01GW4A","0x20","0x59","0x2059",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND512R3A2C","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
--"ST","NAND512W3A2C","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
--"ST","NAND512R4A2C","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
--"ST","NAND512W4A2C","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
--"Numonyx","NAND512R3A2D","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND512W3A2D","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND512R4A2D","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND512W4A2D","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND01GR3A2C","0x20","0x78","0x2078",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND01GW3A2C","0x20","0x79","0x2079",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND01GR4A2C","0x20","0x72","0x2072",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Numonyx","NAND01GW4A2C","0x20","0x74","0x2074",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"further cycles ignored"
--"Hynix","HY27UF081G2M","0xAD","0xF1","0xADF1XX15",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27UF161G2M","0xAD","0xC1","0xADC1XX55",128,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27SF081G2M","0xAD","0xA1","0xADA1XX15",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27SF161G2M","0xAD","0xAD","0xADADXX55",128,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F2G08AAC","0x2C","0xDA","0x2CDAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F2G08ABC","0x2C","0xAA","0x2CAAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F2G16AAC","0x2C","0xCA","0x2CCAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F2G16ABC","0x2C","0xBA","0x2CBAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F4G08BAC","0x2C","0xDC","0x2CDCXX15",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F8G08FAC","0x2C","0xDC","0x2CDCXX15",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode; made of two 4Gb sections"
--"Micron","MT29F2G08AAB","0x2C","0xDA","0x2CDAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F2G16AAB","0x2C","0xCA","0x2CCAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F4G08BAB","0x2C","0xDC","0x2CDCXX15",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F4G16BAB","0x2C","0xCC","0x2CCCXX55",512,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F8G08FAB","0x2C","0xDC","0x2CDCXX15",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9F1208R0B","0xEC","0x36","0xEC36A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9F1208B0B","0xEC","0x76","0xEC76A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9F1208U0B","0xEC","0x76","0xEC76A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9F2G08U0M","0xEC","0xDA","0xECDA8015",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9K4G08U1M","0xEC","0xDA","0xECDA8015",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F2G08B0B","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"only differ by voltage"
--"Samsung","K9F2G08U0B","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"only differ by voltage"
--"Samsung","K9F2G08R0A","0xEC","0xAA","0xECAA001544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F2G08U0A","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9GAG08B0D","0xEC","0xD5","0xECD594293441",2048,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9GAG08U0D","0xEC","0xD5","0xECD594293441",2048,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9LBG08U1D","0xEC","0xD5","0xECD594293441",4096,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 2 K9GAG08U0D"
--"Samsung","K9HCG08U5D","0xEC","0xD5","0xECD594293441",8192,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 4 K9GAG08U0D"
--"Spansion","S30ML512P30xFIx0","0x01","0x76","0x0176010110",64,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML512P50xFIx1","0x01","0x56","0x0156010110",64,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML256P30xFIx0","0x01","0x75","0x0175010110",32,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML256P50xFIx1","0x01","0x55","0x0155010110",32,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML128P30xFIx0","0x01","0x73","0x0173010110",16,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
--"Spansion","S30ML128P50xFIx1","0x01","0x53","0x0153030110",16,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x04"
--"Samsung","K9K8G08U0A","0xEC","0xD3","0xECD3519558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9WAG08U1A","0xEC","0xD3","0xECD3519558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9NBG08U5A","0xEC","0xD3","0xECD3519558",4096,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Samsung","K9F8G08B0M","0xEC","0xD3","0xECD310A664",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9F8G08U0M","0xEC","0xD3","0xECD310A664",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9KAG08U1M","0xEC","0xD3","0xECD310A664",2048,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"contains 2 K9F8G08U0M"
--"Numonyx","NAND04GR3B2D","0x20","0xAC","0x20AC101554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GR3B4C","0x20","0xAC","0x20AC101554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode; contains two NAND04GR3B2D"
--"Numonyx","NAND04GW3B2D","0x20","0xDC","0x20DC109554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GW3B4C","0x20","0xDC","0x20DC109554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode; contains two NAND04GW3B2D"
--"Numonyx","NAND04GR4B2D","0x20","0xBC","0x20BC105554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND04GW4B2D","0x20","0xCC","0x20CC10D554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GR3B2C","0x20","0xA3","0x20A3511558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GW3B2C","0x20","0xD3","0x20D3519558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GR4B2C","0x20","0xB3","0x20B3515558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Numonyx","NAND08GW4B2C","0x20","0xC3","0x20C351D558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"embedded 1/528 bit ECC; remains in Read ID mode"
--"Micron","MT29F4G08AAA","0x2C","0xDC","0x2CDC909554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Micron","MT29F8G08BAA","0x2C","0xD3","0x2CD3D19558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Micron","MT29F8G08DAA","0x2C","0xDC","0x2CDC909554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"contains 2 MT29F4G08AAA"
--"Micron","MT29F16G08FAA","0x2C","0xD3","0x2CD3D19558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"contains 2 MT29F8G08BAA"
--"Micron","MT29F16G08MAA","0x2C","0xD5","0x2CD5943E74",2048,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,
--"Micron","MT29F32G08QAA","0x2C","0xD5","0x2CD5943E74",4096,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,
--"Micron","MT29F64G08TAA","0x2C","0xD7","0x2CD7D53E78",8192,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,
--"Micron","MT29F16G08CBABA","0x2C","0x48","0x2C48044685",2048,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,,FALSE,,TRUE,TRUE,"returns 0x00 after first 5 read ID bytes"
--"Micron","MT29F16G08CBABB","0x2C","0x48","0x2C48044685",2048,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,,FALSE,,TRUE,TRUE,"returns 0x00 after first 5 read ID bytes"
--"Micron","MT29F8G08MAA","0x2C","0xD3","0x2CD394A564",1024,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F16G08QAA","0x2C","0xD3","0x2CD394A564",2048,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Micron","MT29F32G08TAA","0x2C","0xD5","0x2CD5D5A568",4096,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"ST","NAND04GR3B2D","0x20","0xAC","0x20AC101554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GR3B4C","0x20","0xAC","0x20AC101554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND04GW3B2D","0x20","0xDC","0x20DC109554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GW3B4C","0x20","0xDC","0x20DC109554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND04GR4B2D","0x20","0xBC","0x20BC105554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND04GW4B2D","0x20","0xCC","0x20CC10D554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GR3B2C","0x20","0xA3","0x20A3511558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GW3B2C","0x20","0xD3","0x20D3519558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GR4B2C","0x20","0xB3","0x20B3515558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"ST","NAND08GW4B2C","0x20","0xC3","0x20C351D558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND02GR3B2D","0x20","0xAA","0x20AA101544",256,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Numonyx","NAND02GW3B2D","0x20","0xDA","0x20DA109544",256,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Numonyx","NAND02GR4B2D","0x20","0xBA","0x20BA105544",256,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Numonyx","NAND02GW4B2D","0x20","0xCA","0x20CA10D544",256,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Numonyx","NAND01GR3B2B","0x20","0xA1","0x20A18015",128,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GW3B2B","0x20","0xF1","0x20F1801D",128,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GR4B2B","0x20","0xB1","0x20B18055",128,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GW4B2B","0x20","0xC1","0x20C1805D",128,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND02GR3B2C","0x20","0xAA","0x20AA8015",256,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND02GW3B2C","0x20","0xDA","0x20DA801D",256,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND02GR4B2C","0x20","0xBA","0x20BA8055",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND02GW4B2C","0x20","0xCA","0x20CA805D",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GR3B2C","0x20","0xA1","0x20A10015",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GW3B2C","0x20","0xF1","0x20F1001D",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GR4B2C","0x20","0xB1","0x20B10055",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND01GW4B2C","0x20","0xC1","0x20C1005D",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27UF082G2A","0xAD","0xDA","0xADDA801D00",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27UF162G2A","0xAD","0xCA","0xADCA805D00",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9G8G08B0A","0xEC","0xD3","0xECD314A564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9G8G08U0A","0xEC","0xD3","0xECD314A564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9LAG08U1A","0xEC","0xD3","0xECD314A564",2048,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9LBG08U0D","0xEC","0xD7","0xECD7D5293841",4096,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9HCG08U1D","0xEC","0xD7","0xECD7D5293841",8192,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9XDG08U5D","0xEC","0xD7","0xECD7D5293841",16384,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Numonyx","NAND08GW3F2B","0x20","0xD3","0x20D390152441",1024,4096,224,"256 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,TRUE,"1-bit/512-byte",1,6,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9K8G08U0B","0xEC","0xDC","0xECDC519558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9WAG08U1B","0xEC","0xDC","0xECDC519558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Micron","MT29F16G08ABABA","0x2C","0x48","0x2C48002689",2048,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F16G08ABCBB","0x2C","0x48","0x2C48002689",2048,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F32G08AFABA","0x2C","0x48","0x2C48002689",4096,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F32G08AECBB","0x2C","0x48","0x2C48002689",4096,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F64G08AJABA","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F64G08AKABA","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F64G08AKCBB","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F64G08AMABA","0x2C","0x48","0x2C48002689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F64G08AMCBB","0x2C","0x48","0x2C48002689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F128G08AUABA","0x2C","0x68","0x2C6801A689",16384,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F128G08AUCBB","0x2C","0x68","0x2C6801A689",16384,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Read ID produces 00h after byte 5"
--"Micron","MT29F32G08CBACA","0x2C","0x68","0x2C68044AA9",4096,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F64G08CEACA","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F64G08CECCB","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F64G08CFACA","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F128G08CXACA","0x2C","0x68","0x2C68044AA9",16384,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F64G08CBAAA","0x2C","0x88","0x2C88044BA9",8192,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F64G08CBCAB","0x2C","0x88","0x2C88044BA9",8192,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F128G08CEAAA","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F128G08CFAAA","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F128G08CECAB","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F256G08CJAAA","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F256G08CKAAA","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F256G08CKCAB","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F256G08CMAAA","0x2C","0x88","0x2C88044BA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F256G08CMCAB","0x2C","0x88","0x2C88044BA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F512G08CUAAA","0x2C","0xA8","0x2CA805CBA9",65536,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Micron","MT29F512G08CUCAB","0x2C","0xA8","0x2CA805CBA9",65536,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,
--"Samsung","K9LBG08U0M","0xEC","0xD7","0xECD755B678",4096,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9HCG08U1M","0xEC","0xD7","0xECD755B678",8192,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 2 K9LBG08U0M"
--"Samsung","K9MDG08U5M","0xEC","0xD7","0xECD755B678",16384,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 4 K9LBG08U0M"
--"Toshiba","TC58TxG4S2FBAxx","0x98","0xD5","0x98D5...",2048,8192,576,"512 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/1096-byte",1,6,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table"
--"Toshiba","TH58TxG7S2FBAxx","0x98","0xD7","0x98D7...",16384,8192,576,"512 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/1096-byte",1,6,"Extended ID decode",FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table"
--"Hynix","HY27UF082G2B","0xAD","0xDA","0xADDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27UF162G2B","0xAD","0xCA","0xADCA10D544",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27US081G1M","0xAD","0x79","0xAD79A500",128,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"4-bit/528-byte",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27US161G1M","0xAD","0x74","0xAD74A500",128,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27US08561A","0xAD","0x75","0xAD75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27US16561A","0xAD","0x55","0xAD55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27SS08561A","0xAD","0x35","0xAD35",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27SS16561A","0xAD","0x45","0xAD45",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"remains in Read ID mode"
--"Hynix","HY27US0812(1/2)B","0xAD","0x76","0xAD76",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Hynix","HY27US1612(1/2)B","0xAD","0x56","0xAD56",64,512,16,"16 KB","x16","N/A","1st or 2nd page (3rd word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,2,"ID Table",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"This is the ONLY x16 chip that uses byte 6 ('word 3') for BBM"
--"Samsung","K9F1G08U0D","0xEC","0xF1","0xECF1001540",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9G8G08B0M","0xEC","0xD3","0xECD3142564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9G8G08U0M","0xEC","0xD3","0xECD3142564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
--"Samsung","K9LAG08U1M","0xEC","0xD3","0xECD3142564",2048,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,"Contains 2 K9G8G08U0M"
--"Samsung","K9GBG08U0M","0xEC","0xD7","0xECD794725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Samsung","K9LCG08U1M","0xEC","0xD7","0xECD794725442",8192,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Samsung","K9HDG08U5M","0xEC","0xD7","0xECD794725442",16384,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Toshiba","TC58DVG02A5","0x98","0x79","0x9879",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",FALSE,FALSE,FALSE,FALSE,TRUE,"TBD/512-byte","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,,"Preliminary sheet"
--"Toshiba","TC58DVG3S0E","0x98","0xD3","0x98D3...",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table; Preliminary sheet"
--"Toshiba","TC58NVG0S3E","0x98","0xD1","0x98D1...",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table"
--"Toshiba","TC58NVG1S3E","0x98","0xDA","0x98DA...",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table"
--"Toshiba","TC58NVG2S3E","0x98","0xDC","0x98DC...",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,"Datasheet doesn't list full ID, only shows ID decoder table"
--"Hynix","H27UAG8T2M","0xAD","0xD5","0xADD514B644",2048,4096,128,"512 KB","x8","N/A","Last or (last-2)th page (1st byte in OOB = non FFh)",FALSE,TRUE,TRUE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,
--"Samsung","K9GAG08U0E","0xEC","0xD5","0xECD584725042",2048,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Samsung","K9LBG08U0E","0xEC","0xD7","0xECD7C5725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Samsung","K9HCG08U1E","0xEC","0xD7","0xECD7C5725442",8192,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,"Weird 1st AND last page scan?"
--"Micron","MT29F8G08ABABA","0x2C","0x38","0x2C38002685",1024,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F8G08ABCBB","0x2C","0x38","0x2C38002685",1024,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F32G08CBABA","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F32G08CBABB","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F32G08CBCBB","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F64G08CEABA","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F64G08CFABA","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F64G08CECBB","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F64G08CFABB","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F128G08CJABA","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F128G08CKABA","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F128G08CJABB","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F128G08CKCBB","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F256G08CUABA","0x2C","0x88","0x2C8805C689",32768,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F256G08CUCBB","0x2C","0x88","0x2C8805C689",32768,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,
--"Micron","MT29F2G08ABBEA","0x2C","0xAA","0x2CAA901506",256,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F2G16ABBEA","0x2C","0xBA","0x2CBA905506",256,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F2G08ABAEA","0x2C","0xDA","0x2CDA909506",256,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F2G16ABAEA","0x2C","0xCA","0x2CCA90D506",256,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F4G08ABADA","0x2C","0xDC","0x2CDC909556",512,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F4G16ABADA","0x2C","0xCC","0x2CCC90D556",512,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F4G08ABBDA","0x2C","0xAC","0x2CAC901556",512,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F4G16ABBDA","0x2C","0xBC","0x2CBC905556",512,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F8G08ADBDA","0x2C","0xA3","0x2CA3D1155A",1024,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F8G16ADBDA","0x2C","0xB3","0x2CB3D1555A",1024,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F8G08ADADA","0x2C","0xD3","0x2CD3D1955A",1024,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F8G16ADADA","0x2C","0xC3","0x2CC3D1D55A",1024,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F1G08ABADA","0x2C","0xF1","0x2CF1809502",128,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F1G08ABBDA","0x2C","0xA1","0x2CA1801502",128,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Micron","MT29F1G16ABBDA","0x2C","0xB1","0x2CB1805502",128,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,"Only exception: scan 1st page vs. scan 1st and 2nd page"
--"Samsung","K9F2G08U0C","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
-+"Manufacturer","Part #","Man. ID","ID Code","Full ID","MB","Page","OOB","Block","Bus","ONFI Ver.","Bad Block Location","Scan Page 1","Scan Page 2","Scan last page","Scan (last-2)th page","Scan byte 1","Scan byte 6","ECC Req.","Bits per cell","ID Length","Detection Method","Full Support","ONFI-Capable","All but Size","Correct Size","Correct Page","Correct OOB","Correct Block","Correct Busw","Correct BBM","No. CS","No. LUNs","No. R/B#","I/F","Base Part","Notes"
-+"Toshiba","TC58128AFT","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","All OOB bytes",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"For BBM, OOB is written non-FFh (only check 1st page, 1st byte?)"
-+"Samsung","K9F1G08U0B","0xEC","0xF1","0xECF1009540",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Toshiba","TC58DVM72A1TG00","0x98","0x73","0x9873",16,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"?","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5608D0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5608Q0C","0xEC","0x35","0xEC35",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5608U0C","0xEC","0x75","0xEC75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5616D0C","0xEC","0x55","0xEC55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5616Q0C","0xEC","0x45","0xEC45",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F5616U0C","0xEC","0x55","0xEC55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F4G08U0A","0xEC","0xDC","0xECDC109554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9K8G08U1A","0xEC","0xDC","0xECDC109554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9F4G08U0A","Contains 2 K9F4G08U0A"
-+"Samsung","K9F4G08U0M","0xEC","0xDC","0xECDC109554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9K8G08U1M","0xEC","0xDC","0xECDC109554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9F4G08U0M",
-+"ST","NAND128W3A","0x20","0x73","0x2073",16,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND256R3A","0x20","0x35","0x2035",32,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND256W3A","0x20","0x75","0x2075",32,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND256R4A","0x20","0x45","0x2045",32,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND256W4A","0x20","0x55","0x2055",32,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND512R3A","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND512W3A","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND512R4A","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND512W4A","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND01GR3A","0x20","0x39","0x2039",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND01GW3A","0x20","0x79","0x2079",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND01GR4A","0x20","0x49","0x2049",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND01GW4A","0x20","0x59","0x2059",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND512R3A2C","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
-+"ST","NAND512W3A2C","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
-+"ST","NAND512R4A2C","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
-+"ST","NAND512W4A2C","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Similar part, different manufacturer (Numonyx NAND512-A2D); further cycles ignored"
-+"Numonyx","NAND512R3A2D","0x20","0x36","0x2036",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND512W3A2D","0x20","0x76","0x2076",64,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND512R4A2D","0x20","0x46","0x2046",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND512W4A2D","0x20","0x56","0x2056",64,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND01GR3A2C","0x20","0x78","0x2078",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND01GW3A2C","0x20","0x79","0x2079",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND01GR4A2C","0x20","0x72","0x2072",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Numonyx","NAND01GW4A2C","0x20","0x74","0x2074",128,512,16,"16 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (2-bit detect)",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"further cycles ignored"
-+"Hynix","HY27UF081G2M","0xAD","0xF1","0xADF1XX15",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27UF161G2M","0xAD","0xC1","0xADC1XX55",128,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27SF081G2M","0xAD","0xA1","0xADA1XX15",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27SF161G2M","0xAD","0xAD","0xADADXX55",128,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F2G08AAC","0x2C","0xDA","0x2CDAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F2G08ABC","0x2C","0xAA","0x2CAAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F2G16AAC","0x2C","0xCA","0x2CCAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F2G16ABC","0x2C","0xBA","0x2CBAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F4G08BAC","0x2C","0xDC","0x2CDCXX15",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","MT29F2G08AAC","remains in Read ID mode"
-+"Micron","MT29F8G08FAC","0x2C","0xDC","0x2CDCXX15",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (or 528-byte)","1?",4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,4,2,"Single","MT29F2G08AAC","remains in Read ID mode; made of two 4Gb sections"
-+"Micron","MT29F2G08AAB","0x2C","0xDA","0x2CDAXX15",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F2G16AAB","0x2C","0xCA","0x2CCAXX55",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F4G08BAB","0x2C","0xDC","0x2CDCXX15",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","MT29F2G08AAB","remains in Read ID mode"
-+"Micron","MT29F4G16BAB","0x2C","0xCC","0x2CCCXX55",512,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","MT29F2G16AAB","remains in Read ID mode"
-+"Micron","MT29F8G08FAB","0x2C","0xDC","0x2CDCXX15",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"?","1?",4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,4,2,"Single","MT29F2G08AAB","remains in Read ID mode"
-+"Samsung","K9F1208R0B","0xEC","0x36","0xEC36A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Samsung","K9F1208B0B","0xEC","0x76","0xEC76A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Samsung","K9F1208U0B","0xEC","0x76","0xEC76A5C0",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"? (1-bit correct, 2-bit detect)",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Samsung","K9F2G08U0M","0xEC","0xDA","0xECDA8015",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9K4G08U1M","0xEC","0xDA","0xECDA8015",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"? (1-bit correct, 2-bit detect)",1,4,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9F2G08U0M",
-+"Samsung","K9F2G08B0B","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"only differ by voltage"
-+"Samsung","K9F2G08U0B","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"only differ by voltage"
-+"Samsung","K9F2G08R0A","0xEC","0xAA","0xECAA001544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F2G08U0A","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9GAG08B0D","0xEC","0xD5","0xECD594293441",2048,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9GAG08U0D","0xEC","0xD5","0xECD594293441",2048,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9LBG08U1D","0xEC","0xD5","0xECD594293441",4096,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9GAG08U0D","Contains 2 K9GAG08U0D"
-+"Samsung","K9HCG08U5D","0xEC","0xD5","0xECD594293441",8192,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,4,4,4,"Dual","K9GAG08U0D","Contains 4 K9GAG08U0D"
-+"Spansion","S30ML512P30xFIx0","0x01","0x76","0x0176010110",64,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML512P50xFIx1","0x01","0x56","0x0156010110",64,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML256P30xFIx0","0x01","0x75","0x0175010110",32,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML256P50xFIx1","0x01","0x55","0x0155010110",32,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML128P30xFIx0","0x01","0x73","0x0173010110",16,512,16,"512 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x00"
-+"Spansion","S30ML128P50xFIx1","0x01","0x53","0x0153030110",16,512,16,"512 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte (correction)","ORNAND",5,"ID Table (ORNAND blocksize)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"Each model has x8/x16 bus versions, 2%/0% bad blocks; 2% => ID byte 3 = 0x04"
-+"Samsung","K9K8G08U0A","0xEC","0xD3","0xECD3519558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Samsung","K9WAG08U1A","0xEC","0xD3","0xECD3519558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9K8G08U0A","remains in Read ID mode"
-+"Samsung","K9NBG08U5A","0xEC","0xD3","0xECD3519558",4096,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,4,4,4,"Single","K9K8G08U0A","remains in Read ID mode"
-+"Samsung","K9F8G08B0M","0xEC","0xD3","0xECD310A664",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9F8G08U0M","0xEC","0xD3","0xECD310A664",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9KAG08U1M","0xEC","0xD3","0xECD310A664",2048,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9F8G08U0M","contains 2 K9F8G08U0M"
-+"Numonyx","NAND04GR3B2D","0x20","0xAC","0x20AC101554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GR3B4C","0x20","0xAC","0x20AC101554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","NAND04GR3B2D","embedded 1/528 bit ECC; remains in Read ID mode; contains two NAND04GR3B2D"
-+"Numonyx","NAND04GW3B2D","0x20","0xDC","0x20DC109554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GW3B4C","0x20","0xDC","0x20DC109554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","NAND04GW3B2D","embedded 1/528 bit ECC; remains in Read ID mode; contains two NAND04GW3B2D"
-+"Numonyx","NAND04GR4B2D","0x20","0xBC","0x20BC105554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND04GW4B2D","0x20","0xCC","0x20CC10D554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GR3B2C","0x20","0xA3","0x20A3511558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GR3B2D","embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GW3B2C","0x20","0xD3","0x20D3519558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GW3B2D","embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GR4B2C","0x20","0xB3","0x20B3515558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GR4B2D","embedded 1/528 bit ECC; remains in Read ID mode"
-+"Numonyx","NAND08GW4B2C","0x20","0xC3","0x20C351D558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GW4B2D","embedded 1/528 bit ECC; remains in Read ID mode"
-+"Micron","MT29F4G08AAA","0x2C","0xDC","0x2CDC909554",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F8G08BAA","0x2C","0xD3","0x2CD3D19558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","MT29F4G08AAA",
-+"Micron","MT29F8G08DAA","0x2C","0xDC","0x2CDC909554",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Single","MT29F4G08AAA","contains 2 MT29F4G08AAA"
-+"Micron","MT29F16G08FAA","0x2C","0xD3","0x2CD3D19558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,4,2,"Single","MT29F4G08AAA","contains 2 MT29F8G08BAA"
-+"Micron","MT29F16G08MAA","0x2C","0xD5","0x2CD5943E74",2048,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F32G08QAA","0x2C","0xD5","0x2CD5943E74",4096,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,2,2,2,"Single","MT29F16G08MAA",
-+"Micron","MT29F64G08TAA","0x2C","0xD7","0x2CD7D53E78",8192,4096,218,"512 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"8-bit/539-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,2,4,2,"Single","MT29F16G08MAA",
-+"Micron","MT29F16G08CBABA","0x2C","0x48","0x2C48044685",2048,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,,FALSE,,TRUE,TRUE,1,1,1,"Single",,"returns 0x00 after first 5 read ID bytes"
-+"Micron","MT29F16G08CBABB","0x2C","0x48","0x2C48044685",2048,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,,FALSE,,TRUE,TRUE,1,1,1,"Single",,"returns 0x00 after first 5 read ID bytes"
-+"Micron","MT29F8G08MAA","0x2C","0xD3","0x2CD394A564",1024,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Micron","MT29F16G08QAA","0x2C","0xD3","0x2CD394A564",2048,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Single","MT29F8G08MAA","remains in Read ID mode"
-+"Micron","MT29F32G08TAA","0x2C","0xD5","0x2CD5D5A568",4096,2048,64,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,4,2,"Single","MT29F8G08MAA","remains in Read ID mode"
-+"ST","NAND04GR3B2D","0x20","0xAC","0x20AC101554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND08GR3B4C","0x20","0xAC","0x20AC101554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","NAND04GR3B2D",
-+"ST","NAND04GW3B2D","0x20","0xDC","0x20DC109554",512,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND08GW3B4C","0x20","0xDC","0x20DC109554",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","NAND04GW3B2D",
-+"ST","NAND04GR4B2D","0x20","0xBC","0x20BC105554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND04GW4B2D","0x20","0xCC","0x20CC10D554",512,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"ST","NAND08GR3B2C","0x20","0xA3","0x20A3511558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GR3B2D",
-+"ST","NAND08GW3B2C","0x20","0xD3","0x20D3519558",1024,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GW3B2D",
-+"ST","NAND08GR4B2C","0x20","0xB3","0x20B3515558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GR4B2D",
-+"ST","NAND08GW4B2C","0x20","0xC3","0x20C351D558",1024,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,2,1,"Single","NAND04GW4B2D",
-+"Numonyx","NAND02GR3B2D","0x20","0xAA","0x20AA101544",256,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Numonyx","NAND02GW3B2D","0x20","0xDA","0x20DA109544",256,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Numonyx","NAND02GR4B2D","0x20","0xBA","0x20BA105544",256,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Numonyx","NAND02GW4B2D","0x20","0xCA","0x20CA10D544",256,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,5,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Numonyx","NAND01GR3B2B","0x20","0xA1","0x20A18015",128,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GW3B2B","0x20","0xF1","0x20F1801D",128,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GR4B2B","0x20","0xB1","0x20B18055",128,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GW4B2B","0x20","0xC1","0x20C1805D",128,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND02GR3B2C","0x20","0xAA","0x20AA8015",256,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND02GW3B2C","0x20","0xDA","0x20DA801D",256,2048,64,"128 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND02GR4B2C","0x20","0xBA","0x20BA8055",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND02GW4B2C","0x20","0xCA","0x20CA805D",256,2048,64,"128 KB","x16","N/A","1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GR3B2C","0x20","0xA1","0x20A10015",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GW3B2C","0x20","0xF1","0x20F1001D",128,2048,64,"128 KB","x8",1.0,"1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GR4B2C","0x20","0xB1","0x20B10055",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Numonyx","NAND01GW4B2C","0x20","0xC1","0x20C1005D",128,2048,64,"128 KB","x16",1.0,"1st page (1st word in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"22-bit/2048-bits",1,4,"Extended ID decode",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27UF082G2A","0xAD","0xDA","0xADDA801D00",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27UF162G2A","0xAD","0xCA","0xADCA805D00",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9G8G08B0A","0xEC","0xD3","0xECD314A564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9G8G08U0A","0xEC","0xD3","0xECD314A564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9LAG08U1A","0xEC","0xD3","0xECD314A564",2048,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9G8G08U0A",
-+"Samsung","K9LBG08U0D","0xEC","0xD7","0xECD7D5293841",4096,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9HCG08U1D","0xEC","0xD7","0xECD7D5293841",8192,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9LBG08U0D",
-+"Samsung","K9XDG08U5D","0xEC","0xD7","0xECD7D5293841",16384,4096,218,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"8-bit/512-byte (correction)",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,4,4,4,"Single","K9LBG08U0D",
-+"Numonyx","NAND08GW3F2B","0x20","0xD3","0x20D390152441",1024,4096,224,"256 KB","x8","N/A","1st page (1st or 6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,"1-bit/512-byte",1,6,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9K8G08U0B","0xEC","0xDC","0xECDC519558",1024,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9WAG08U1B","0xEC","0xDC","0xECDC519558",2048,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9K8G08U0B",
-+"Micron","MT29F16G08ABABA","0x2C","0x48","0x2C48002689",2048,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,"Read ID produces 00h after byte 5"
-+"Micron","MT29F16G08ABCBB","0x2C","0x48","0x2C48002689",2048,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,"Read ID produces 00h after byte 5"
-+"Micron","MT29F32G08AFABA","0x2C","0x48","0x2C48002689",4096,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Single","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F32G08AECBB","0x2C","0x48","0x2C48002689",4096,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F64G08AJABA","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Single","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F64G08AKABA","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F64G08AKCBB","0x2C","0x68","0x2C6801A689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F64G08AMABA","0x2C","0x48","0x2C48002689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,4,4,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F64G08AMCBB","0x2C","0x48","0x2C48002689",8192,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,4,4,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F128G08AUABA","0x2C","0x68","0x2C6801A689",16384,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,8,4,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F128G08AUCBB","0x2C","0x68","0x2C6801A689",16384,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,8,4,"Dual","MT29F16G08AB","Read ID produces 00h after byte 5"
-+"Micron","MT29F32G08CBACA","0x2C","0x68","0x2C68044AA9",4096,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F64G08CEACA","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Dual","MT29F32G08CBACA",
-+"Micron","MT29F64G08CECCB","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Dual","MT29F32G08CBACA",
-+"Micron","MT29F64G08CFACA","0x2C","0x68","0x2C68044AA9",8192,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Single","MT29F32G08CBACA",
-+"Micron","MT29F128G08CXACA","0x2C","0x68","0x2C68044AA9",16384,4096,224,"1024 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,4,4,2,"Dual","MT29F32G08CBACA",
-+"Micron","MT29F64G08CBAAA","0x2C","0x88","0x2C88044BA9",8192,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F64G08CBCAB","0x2C","0x88","0x2C88044BA9",8192,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F128G08CEAAA","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Dual","MT29F64G08CB",
-+"Micron","MT29F128G08CFAAA","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Single","MT29F64G08CB",
-+"Micron","MT29F128G08CECAB","0x2C","0x88","0x2C88044BA9",16384,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,2,2,"Dual","MT29F64G08CB",
-+"Micron","MT29F256G08CJAAA","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,4,2,"Single","MT29F64G08CB",
-+"Micron","MT29F256G08CKAAA","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,4,2,"Dual","MT29F64G08CB",
-+"Micron","MT29F256G08CKCAB","0x2C","0xA8","0x2CA805CBA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,2,4,2,"Dual","MT29F64G08CB",
-+"Micron","MT29F256G08CMAAA","0x2C","0x88","0x2C88044BA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,4,4,4,"Dual","MT29F64G08CB",
-+"Micron","MT29F256G08CMCAB","0x2C","0x88","0x2C88044BA9",32768,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,4,4,4,"Dual","MT29F64G08CB",
-+"Micron","MT29F512G08CUAAA","0x2C","0xA8","0x2CA805CBA9",65536,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,4,8,4,"Dual","MT29F64G08CB",
-+"Micron","MT29F512G08CUCAB","0x2C","0xA8","0x2CA805CBA9",65536,8192,448,"2048 KB","x8",2.2,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"24-bit/1080-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,4,8,4,"Dual","MT29F64G08CB",
-+"Samsung","K9LBG08U0M","0xEC","0xD7","0xECD755B678",4096,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9HCG08U1M","0xEC","0xD7","0xECD755B678",8192,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Single","K9LBG08U0M","Contains 2 K9LBG08U0M"
-+"Samsung","K9MDG08U5M","0xEC","0xD7","0xECD755B678",16384,4096,128,"512 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,4,4,4,"Single","K9LBG08U0M","Contains 4 K9LBG08U0M"
-+"Toshiba","TC58TxG4S2FBAxx","0x98","0xD5","0x98D5...",2048,8192,576,"512 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/1096-byte",1,6,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Toshiba","TH58TxG7S2FBAxx","0x98","0xD7","0x98D7...",16384,8192,576,"512 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/1096-byte",1,6,"Extended ID decode",FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Hynix","HY27UF082G2B","0xAD","0xDA","0xADDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27UF162G2B","0xAD","0xCA","0xADCA10D544",256,2048,64,"128 KB","x16","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27US081G1M","0xAD","0x79","0xAD79A500",128,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"4-bit/528-byte",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27US161G1M","0xAD","0x74","0xAD74A500",128,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,4,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27US08561A","0xAD","0x75","0xAD75",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27US16561A","0xAD","0x55","0xAD55",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27SS08561A","0xAD","0x35","0xAD35",32,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27SS16561A","0xAD","0x45","0xAD45",32,512,16,"16 KB","x16","N/A","1st or 2nd page (1st word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,"remains in Read ID mode"
-+"Hynix","HY27US0812(1/2)B","0xAD","0x76","0xAD76",64,512,16,"16 KB","x8","N/A","1st or 2nd page (6th byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Hynix","HY27US1612(1/2)B","0xAD","0x56","0xAD56",64,512,16,"16 KB","x16","N/A","1st or 2nd page (3rd word in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,"1-bit/528-byte",1,2,"ID Table",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"This is the ONLY x16 chip that uses byte 6 ('word 3') for BBM"
-+"Samsung","K9F1G08U0D","0xEC","0xF1","0xECF1001540",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9G8G08B0M","0xEC","0xD3","0xECD3142564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9G8G08U0M","0xEC","0xD3","0xECD3142564",1024,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
-+"Samsung","K9LAG08U1M","0xEC","0xD3","0xECD3142564",2048,2048,64,"256 KB","x8","N/A","Last page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,"4-bit/512-byte",2,5,"Extended ID decode",FALSE,FALSE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,2,2,2,"Dual","K9G8G08U0M","Contains 2 K9G8G08U0M"
-+"Samsung","K9GBG08U0M","0xEC","0xD7","0xECD794725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Weird 1st AND last page scan?"
-+"Samsung","K9LCG08U1M","0xEC","0xD7","0xECD794725442",8192,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,2,2,2,"Dual","K9GBG08U0M","Weird 1st AND last page scan?"
-+"Samsung","K9HDG08U5M","0xEC","0xD7","0xECD794725442",16384,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1024-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,4,4,4,"Dual","K9GBG08U0M","Weird 1st AND last page scan?"
-+"Toshiba","TC58DVG02A5","0x98","0x79","0x9879",128,512,16,"16 KB","x8","N/A","1st page (6th byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,"TBD/512-byte","1?",2,"ID Table",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,,1,1,1,"Single",,"Preliminary sheet"
-+"Toshiba","TC58DVG3S0E","0x98","0xD3","0x98D3...",1024,4096,128,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"TBD/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table; Preliminary sheet"
-+"Toshiba","TC58NVG0S3E","0x98","0xD1","0x98D1...",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Toshiba","TC58NVG1S3E","0x98","0xDA","0x98DA...",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Toshiba","TC58NVG2S3E","0x98","0xDC","0x98DC...",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Hynix","H27UAG8T2M","0xAD","0xD5","0xADD514B644",2048,4096,128,"512 KB","x8","N/A","Last or (last-2)th page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,
-+"Samsung","K9GAG08U0E","0xEC","0xD5","0xECD584725042",2048,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Weird 1st AND last page scan?"
-+"Samsung","K9LBG08U0E","0xEC","0xD7","0xECD7C5725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single","K9GAG08U0E","Weird 1st AND last page scan?"
-+"Samsung","K9HCG08U1E","0xEC","0xD7","0xECD7C5725442",8192,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,2,4,2,"Single","K9GAG08U0E","Weird 1st AND last page scan?"
-+"Micron","MT29F8G08ABABA","0x2C","0x38","0x2C38002685",1024,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F8G08ABCBB","0x2C","0x38","0x2C38002685",1024,4096,224,"512 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/540-byte",1,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F32G08CBABA","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F32G08CBABB","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F32G08CBCBB","0x2C","0x68","0x2C68044689",4096,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,1,1,1,"Single",,
-+"Micron","MT29F64G08CEABA","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Dual","MT29F32G08CBABB",
-+"Micron","MT29F64G08CFABA","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Single","MT29F32G08CBABA",
-+"Micron","MT29F64G08CECBB","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Dual","MT29F32G08CBCBB",
-+"Micron","MT29F64G08CFABB","0x2C","0x68","0x2C68044689",8192,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,2,2,"Single","MT29F32G08CBABB",
-+"Micron","MT29F128G08CJABA","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Single","MT29F32G08CBABA",
-+"Micron","MT29F128G08CKABA","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Dual","MT29F32G08CBABA",
-+"Micron","MT29F128G08CJABB","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Single","MT29F32G08CBABB",
-+"Micron","MT29F128G08CKCBB","0x2C","0x88","0x2C8805C689",16384,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,2,4,2,"Dual","MT29F32G08CBABB",
-+"Micron","MT29F256G08CUABA","0x2C","0x88","0x2C8805C689",32768,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,8,4,"Dual","MT29F32G08CBABA",
-+"Micron","MT29F256G08CUCBB","0x2C","0x88","0x2C8805C689",32768,4096,224,"1024 KB","x8",2.1,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"12-bit/540-byte",2,5,"ONFI",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,4,8,4,"Dual","MT29F32G08CBCBB",
-+"Micron","MT29F2G08ABBEA","0x2C","0xAA","0x2CAA901506",256,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F2G16ABBEA","0x2C","0xBA","0x2CBA905506",256,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F2G08ABAEA","0x2C","0xDA","0x2CDA909506",256,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F2G16ABAEA","0x2C","0xCA","0x2CCA90D506",256,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F4G08ABADA","0x2C","0xDC","0x2CDC909556",512,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F4G16ABADA","0x2C","0xCC","0x2CCC90D556",512,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F4G08ABBDA","0x2C","0xAC","0x2CAC901556",512,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F4G16ABBDA","0x2C","0xBC","0x2CBC905556",512,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F8G08ADBDA","0x2C","0xA3","0x2CA3D1155A",1024,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F8G16ADBDA","0x2C","0xB3","0x2CB3D1555A",1024,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F8G08ADADA","0x2C","0xD3","0x2CD3D1955A",1024,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F8G16ADADA","0x2C","0xC3","0x2CC3D1D55A",1024,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F1G08ABADA","0x2C","0xF1","0x2CF1809502",128,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F1G08ABBDA","0x2C","0xA1","0x2CA1801502",128,2048,64,"128 KB","x8",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Micron","MT29F1G16ABBDA","0x2C","0xB1","0x2CB1805502",128,2048,64,"128 KB","x16",1.0,"1st page (1st byte in OOB = non FFh)",TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,"4-bit/528-byte",1,5,"ONFI",TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Only exception: scan 1st page vs. scan 1st and 2nd page"
-+"Samsung","K9F2G08U0C","0xEC","0xDA","0xECDA109544",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/528-byte",1,5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,1,1,1,"Single",,
--- 
-1.5.3.3
+I have attached an OpenOffice version (.ods) of the patched CSV file, with the
+added columns highlighted in red.  This should make it easier to see what
+information has been added.  Also, by deleting the red columns, saving as CSV,
+then diff'ing with the previous version, it is possible to check no other
+changes have been introduced inadvertently.
+
+Cheers,
+
+Angus
+
+
+--------------070400060804000806090809
+Content-Type: application/vnd.oasis.opendocument.spreadsheet;
+ name="nanddata.new_cols.ods"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="nanddata.new_cols.ods"
+
+UEsDBBQAAAAAAGdWKkCFbDmKLgAAAC4AAAAIAAAAbWltZXR5cGVhcHBsaWNhdGlvbi92bmQu
+b2FzaXMub3BlbmRvY3VtZW50LnNwcmVhZHNoZWV0UEsDBBQACAAIAGdWKkAAAAAAAAAAAAAA
+AAALAAAAY29udGVudC54bWztnW1X21iaaL/fX6GVWdMrtVYBkizZcqqravkFSDqB6klIp/uj
+Y4vgW2BzbVGB+fVXkkkiAsGWOY/8HHlPz/TEYI6PH52Xvc/r33+/vjh3/opn8/F08uszb9d9
+5sST4XQ0nnz69dn7k4Od6Nnvv/2fv09PT8fD+MVoOry6iCfJznA6SdL/76R/PZm/WPz212dX
+s8mL6WA+nr+YDC7i+Ytk+GJ6GU++/NWL4rtf5J+1+Mk8uTlf+c/zNxf/Oomvk1X/OHvvnb8d
+fFz9k/M3F/96NBt8XvWPs/emQS3++el01T++np/vnE7TqF9cDpLxd7m4Ph9P/vz12VmSXL7Y
+2/v8+fPu58budPZpz2u323v5b79mePj1fZdXs/P8XaPhXnweZx823/N2vb0v772Ik8Gq+cve
+W8zS5OriYzxbOTSDZHDvqV7O4nn6lvTrZgVztYSKf3OnfP31aeXS9denH4R5eDaYrVzO8jff
+LSqN0epFpTEq/u3FIDn7wfON9o7SX+b/dfTmW7maXaz6Wdl774RqOBtfrvw1F+8u/v10Ov2a
+1ewPFpU9z67vusHe4nXh3Z8fffvn2TiJZ4W3Dx99+3BwPvwa8enFQ0FL3+ftpe/Yif/KivzX
+SpQFYv6DP/D3Fr/++ub56IdJ//vozbvhWXwx+Pbm8fI374wn82QwySJz2zzeaZN/+9IALwI+
+3/v6g9O0Id45HQzjnVE8PJ//9vdFRfr6Y2fxOnuIvz57M05rZV47nHeDSfp10tL+5a0X4/Ob
+X5/9bXA5nf/y3fsWP3zm3Ek6e//Op3gSz8bpM5l/Hs/nd95xOU6Gaan9azAbZ83ms73Hs9aP
+/+/gX1ePZ6vwnlWydDNP4otledr7URxvfz64SqZp/RsPd/J0vgY4/+8732A49b5+2G228w4j
+bU7Ory4mz778ZfGHO5eztBjPknE8d06nLz7O4sGfOx/jtLClCWYf/SXF27d/Ho+ypsDdbXtR
+ezzJv0AhP49lzq8qc95u2PZLZq5RXeTCdssvl7mgusw1gygol7mwusfqt/2wXOaaFT5WPygZ
+uVZ1mQuaXlQuc1GFmQvckrW1XWGFaLYb5TLnudXlrhFGZXNXYR/RanglH6xXWSfR2G14Ta9k
+7irsJdqNdska61XYTbRLtsNehb2E2yrbEHuVdRPebuA2y9bYCvuJqNks+2Qr7CiiVlly8irr
+Kbw0do2S5c6vsKeIwrLlzq+yp/BKNsV+ZR2Fv+sFZW3Cr6yjSJu78rmrsKOI/LBklfUr6yrS
+3JXtY/0KhaLddMuGrsKeot0qC+1+hT1F2CzLdn6FTtFy3ZLlrlFhTxF6jbK5q6ynSPmp1S75
+ZBuVdRXhbtDwWyVzV6FTRCXHT2Y/GlCcTT9/l7P0J8VsLX6V/fAsHn86S7JP9xZP7vEsX83j
+nellMr4YnO8U/zyZXcVlMv6DZ75exptRVRlPBg9H/MsPLwbzJJ7tXA4+xTtfhq1PB1fnyXff
+qvCNFnOGo/H88nxwc5uf29SyuY3x5NPOxXSUpnQ+20k+3s/qYibtxcfp9DweTHbu5/m43X72
+/duyVB76w0dqQvyjRiQ+P//ym8vBLJv7zV989/1v35HN5N35/bGX+tPeY5/7o+Zhtc/9Gvf4
+OvmuYqbVbzr79dl/nZ666f+UaBTiH7UJTwxF/qAEsvsjnnx6dgvzI/fnQW5/8XE6uvk2PXWZ
+1tDR/CyOk9/+vij6+X/fVoNFyu+yX6fFbfGz4mfm9W/x48vZeJLW39PB+Tx+Vpjtml1k0Zpd
+FDJ0Oh1ezb+89faXl5fnNzujeD7+NLmtX4tf793J1m2L/kBO8smc27q7CFQezwcjuHqavkCa
+DYE0A4E0Q4E0mwJptgTSjATSbAukmY2dm090eU3Kep8SCUpUI295Pcr6qhIJSlQiT6IWeRLV
+yJOoR55ERfIkapIvUZN8kT5JpDZJPH1foqvzJaqpL1FNfZFqKhJTkbov0p5KfPvljVS5nsRf
+3kCVS9B0eo3ljV3JBFdBhlIJrt3IzaafH0gxG5r57sPT9L4u3RucX8U7yc1l+s55korMp+zN
+2crjy9+OBpOr08EwuZrFs7/v3f4w/cd3Sa2X+D8Hs8T5L+PJpnnedV71jaf7qu/0Ujcznu7B
+Vfo+gfwedQWe2Cfz3/+PP8xntHs+Hf5pPtWruflvf3zwyvlXPNs1n9vByMnj4LyZDvPlscY/
+4t1wMHGyQuF4gmn7MmmfD+aJcylRovPkn2fp7/g/JWeCH/LxJhGLfZ5203ja+72e8zb+fwLl
+fZzMnct45mR/INH6v4knn5Iz4yn34yQe5qvXj+LkbDqS6WDeXV1eTmeJSPu10xtcZn9kPPFO
++raPV4nzbvy/5hPvTWezNPCyiYv0mF8Sl+g5v6Qt04N+Tf1q/lku8e6R8bSPp7tO751Ism/e
+H5vHiizht3td83T9au9AgFTmsZPZgEAYkvjx4N75UapPq/mUv6ZPnUznZ+OPA+Pf86QXRp4f
+dQ5OjCftXrcjgURbDZGcGkj29Hw6SJ7d+c2vz7zmt8/xng5FD35G6PnfPiR9YcU3+f4heE3n
+tfle6dp8ETze64jwStop5+hcsk2/38rkM/sPfOjtGomvv/uyZuL2+eZrNr41DG/f76+TkcV6
+jNtBqvnOLL6MB0k8+vXZ16Gpu1kNNpdVAxn5Mm//BZg7b97VN2orlOPfzTcLT0/ywdas0GKa
+HyZIne8k+4MNlcrtqR4tRdVjSVYfbpMf7mkLxd/8EE36qmTJ/H4CYtXhg+ksU6qf855tPHey
+hYBJPHEm08nOwcGZ83w6Ob9xhmfx8E/Hux1S+zn/V9YN/v6TAH6vO53xbnAxv5p8Mv4wXrcP
+vEM3eu+aJx/3er8nkOiB+RKZ5fTAc912GLhC6OpHhSrlP50JH+5S3KDwMdkrmc9pBt8+pRmY
+73H9aItJPGt+0nbLn4zy9sh5/qU9csaTvCH7NWu/nLT9erx90s7p+jtMk+hrCkTURE1FTFap
+Tjsfx8le6Pk7WR0Sat1N4tLDAyyF4RXjIdq/TqFoFI+c1BpG8bD0SgFKJtqgUhuWN/B7VXO8
+5DB6/19HLb/jnRy6T6dYxtIZS2csfX2CX6B7MzmrI7r/sEENIGbGrRm31lP4AVAAtLKB5LDp
+Rn1XYsxXZCC5Zd6ks5waSPbBst0oNLwNISqEPevAnndGj2uKoFZ0W+pwQEHUVmFh53k+ausM
+F8tif3b8/OUoX25estzqGcMFnAFnwBlwfhic/8cecG7IgLOBZAFnwBlwtqOzB5wBZ8BZTaUG
+nAFnK8H5vT3gzIgz4Aw4A86AM+AMOGuoS4pqCuAMOFcIzl7ToqUaoQw4G0gWcFYIzgI5rWyn
+3+fpbAQ5s9NPT9RUxASIB+JVF1AgHojfAMRbtGwkkIF4A8kC8UA8EG9Jbw/EW8tIQDwQr7qA
+AvFA/AYg3qIlLIzEA/FAPBAPxNv5+IB4IL7mBRSIB+IrhvggP0LbPJcIQXxfRjf6Pc9th+HT
+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
+LnhtbFBLBQYAAAAADwAPAO4DAACwWAAAAAA=
+--------------070400060804000806090809--
