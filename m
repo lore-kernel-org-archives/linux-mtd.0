@@ -1,14 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RkfmA-0008UQ-63
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 17:46:24 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] UBI: fix debugging messages
-Date: Tue, 10 Jan 2012 19:48:42 +0200
-Message-Id: <1326217722-20707-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1326217722-20707-1-git-send-email-dedekind1@gmail.com>
-References: <1326217722-20707-1-git-send-email-dedekind1@gmail.com>
+ id 1Rkfnc-0000Vh-PZ
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 17:47:54 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
+ device
+References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
+ <1326143297.4463.5.camel@koala>
+Date: Tue, 10 Jan 2012 18:47:40 +0100
+In-Reply-To: <1326143297.4463.5.camel@koala> (Artem Bityutskiy's message of
+ "Mon, 09 Jan 2012 23:08:16 +0200")
+Message-ID: <87ipkj8n5v.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-Patch ab50ff684707031ed4bad2fdd313208ae392e5bb broke UBI debugging messages:
-before that commit when UBI debugging was enabled, users saw few useful
-debugging messages after attaching an MTD device. However, that patch turned
-'dbg_msg()' into 'pr_debug()', so to enable the debugging messages users have
-to enable them first via /sys/kernel/debug/dynamic_debug/control, which is
-very impractical.
+> On Tue, 2012-01-03 at 16:05 -0800, Mike Dunn wrote:
+>> This patch adds a driver for the M-Sys / Sandisk diskonchip G4 nand flash found
+>> in various smartphones and PDAs, among them the Palm Treo680, HTC Prophet and
+>> Wizard, Toshiba Portege G900, Asus P526, and O2 XDA Zinc.  It was tested on the
+>> Treo 680, but should work generically.
+>> 
+>> Since v3, this patch adds power management functions, a scan of the factory bad
+>> block table during initialization, several fixes, and more extensive testing.
+>> Also, the platform data header file, which only contained partitioning
+>> information, was removed.  Command-line partitioning can be used, at least until
+>> an mtd parser is written for the saftl format with which these chips are
+>> shipped.
+>> 
+>> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+>
+> Hopefully this gets some review, Reobert, may be? You have been in the
+> same boat lately (delays because of lack of review).
+Yes, I will review.
+Somewhere during this week, Sunday if my work overwhelms me.
 
-This commit makes 'dbg_msg()' to use 'printk()' instead of 'pr_debug()', just
-as it was before the breakage.
+Cheers.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: stable@kernel.org [3.0+]
----
- drivers/mtd/ubi/debug.h |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 64fbb00..ead2cd1 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -43,7 +43,10 @@
- 	pr_debug("UBI DBG " type ": " fmt "\n", ##__VA_ARGS__)
- 
- /* Just a debugging messages not related to any specific UBI subsystem */
--#define dbg_msg(fmt, ...) ubi_dbg_msg("msg", fmt, ##__VA_ARGS__)
-+#define dbg_msg(fmt, ...)                                    \
-+	printk(KERN_DEBUG "UBI DBG (pid %d): %s: " fmt "\n", \
-+	       current->pid, __func__, ##__VA_ARGS__)
-+
- /* General debugging messages */
- #define dbg_gen(fmt, ...) ubi_dbg_msg("gen", fmt, ##__VA_ARGS__)
- /* Messages from the eraseblock association sub-system */
 -- 
-1.7.6.5
+Robert
