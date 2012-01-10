@@ -1,20 +1,16 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RkjAC-0008EU-BQ
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 21:23:25 +0000
-Received: by eekc4 with SMTP id c4so9182eek.36
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 13:23:20 -0800 (PST)
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
+Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexandre Gambier <a.gambier@ftemaximal.fr>
-Date: Tue, 10 Jan 2012 23:23:18 +0200
-In-Reply-To: <4F0C3339.6070909@ftemaximal.fr>
-References: <4F0C3339.6070909@ftemaximal.fr>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Date: Tue, 10 Jan 2012 23:56:54 +0200
+In-Reply-To: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1326230599.2335.4.camel@koala>
+Message-ID: <1326232616.2335.11.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-01-10 at 13:46 +0100, Alexandre Gambier wrote:
-> hi everyone,
-> 
-> I use UBI volume and UBIFS on top of a NAND device with an embedded 
-> video meter.
-> Everything works fine except that when a UBI volume is mounted the 
-> following warning is outputted :
-> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB 
-> handling, reserved 0, need 20"
+On Sat, 2012-01-07 at 11:49 +0100, Jean-Christophe PLAGNIOL-VILLARD
+wrote:
+> +#ifndef __ATMEL_NAND_H__
+> +#define __ATMEL_NAND_H__
+> +
+> +#include <linux/mtd/nand.h>
+> +
+> + /* NAND / SmartMedia */
+> +struct atmel_nand_data {
+> +	int		enable_pin;		/* chip enable */
+> +	int		det_pin;		/* card detect */
+> +	int		rdy_pin;		/* ready/busy */
+> +	u8		rdy_pin_active_low;	/* rdy_pin value is inverted */
+> +	u8		ale;			/* address line number connected to ALE */
+> +	u8		cle;			/* address line number connected to CLE */
+> +	u8		bus_width_16;		/* buswidth is 16 bit */
+> +	u8		ecc_mode;		/* ecc mode */
+> +	struct mtd_partition *parts;
+> +	unsigned int	num_parts;
+> +};
+> +
+> +#endif /* __ATMEL_NAND_H__ */
 
-Looks like the pool of reserved PEBs is fully used. Fo how long have you
-been using this flash?
+The "include/linux" directory, I think, should generally contain only
+those headers which define some "userspace-kernel" or "kernel subsystem"
+API. This file defines Atmel NAND driver's, so it should not be placed
+there.
 
-> UBI: attaching mtd7 to ubi0
-
-When I see things like mtd7 - I get worried. Do you have 7 partitions on
-one chip? Even on old good and reliable chips this was not very good
-idea, let alone modern NANDs with all these unstable bits, "radiation"
-effects, low eraseblock max. erase count, etc...
-
-BTW, be aware of this problem:
-
-http://linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
-
-
-which has not been solved - we need a brave knight who'd spend time
-working on this issue.
+I am not sure "include/linux" is the best place for this header - is it?
 
 Artem.
