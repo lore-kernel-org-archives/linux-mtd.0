@@ -1,15 +1,14 @@
-Date: Wed, 11 Jan 2012 12:54:04 +0100
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
-Message-ID: <20120111115404.GA15221@samfundet.no>
-References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+Received: from smail.campusnet.dtu.dk ([130.225.95.220])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rl0Y2-0000Qh-BU
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2012 15:57:11 +0000
+Message-ID: <.41.190.3.250.1326296397.squirrel@smail.campusnet.dtu.dk>
+Date: Wed, 11 Jan 2012 16:39:57 +0100 (W. Europe Standard Time)
+Subject: Your Mail Box Expires 24Hours
+From: "WEBMASTER HELP DESK" <seele@student.dtu.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
-Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Around Sat 07 Jan 2012 11:49:28 +0100 or thereabout, Jean-Christophe PLAGNIOL-VILLARD wrote:
 
-Hello,
 
-> so we can now choose for the board the ecc mode (ecc soft, soft bch, no ecc
-> and hardware)
-> 
-> set ecc mode in the boards to soft as currently in the driver
-> 
-> move platform data to a common header
-> include/linux/atmel_nand.h
-> 
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-> Cc: linux-mtd@lists.infradead.org
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Helpdesk requires you to upgrade webmail by Clicking
 
-> ---
-> Hi David,
-> 
-> 	If you don't
-> 	I'll apply this via ARM tree
+https://docs.google.com/spreadsheet/viewform?formkey=dHZtRjVBbk5fX1RyRlNBcHJMSmRsWmc6MQ
 
-Sounds fine by me.
+This Message is From Heldesk. Due to our latest IP Security upgrades we
+have reason to believe that your webmail account was accessed by a third
+party.
 
-<snipp AT91 changes>
+Protecting the security of your webmail account is our primary concern, we
+have limited access to sensitive webmail account features.Failure to
+revalidate,
 
->  arch/avr32/boards/atngw100/setup.c          |    1 +
->  arch/avr32/boards/atstk1000/atstk1002.c     |    1 +
->  arch/avr32/mach-at32ap/include/mach/board.h |   13 +------------
+your e-mail will be blocked in 24 hours.
 
-These AVR32 changes seems sane, thanks for the update.
-
-<snipp diff>
-
--- 
-mvh
-Hans-Christian Egtvedt
+Thank you for your cooperation.
+Help Desk
