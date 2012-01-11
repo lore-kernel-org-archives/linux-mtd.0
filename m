@@ -1,18 +1,24 @@
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RktFu-0001IX-JR
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2012 08:09:59 +0000
-Message-ID: <4F0D4405.2060800@ftemaximal.fr>
-Date: Wed, 11 Jan 2012 09:10:45 +0100
-From: Alexandre Gambier <a.gambier@ftemaximal.fr>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rkvet-00063k-JT
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2012 10:43:57 +0000
+Date: Wed, 11 Jan 2012 11:43:39 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v4] MTD/GPMI bugfix : reset the BCH module when it is
+ not MX23
+Message-ID: <20120111104339.GB2605@pengutronix.de>
+References: <1325647126-4281-1-git-send-email-b32955@freescale.com>
+ <1326185340.8847.11.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
-References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
-In-Reply-To: <1326230599.2335.4.camel@koala>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
+Content-Disposition: inline
+In-Reply-To: <1326185340.8847.11.camel@sauron.fi.intel.com>
+Cc: baruch@tkos.co.il, marek.vasut@gmail.com, koen.beel.barco@gmail.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
+ LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> hi everyone,
->>
->> I use UBI volume and UBIFS on top of a NAND device with an embedded
->> video meter.
->> Everything works fine except that when a UBI volume is mounted the
->> following warning is outputted :
->> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
->> handling, reserved 0, need 20"
-> Looks like the pool of reserved PEBs is fully used. Fo how long have you
-> been using this flash?
-This is a brand new flash...I've been using it for 2 months.
 
->
->> UBI: attaching mtd7 to ubi0
-> When I see things like mtd7 - I get worried. Do you have 7 partitions on
-> one chip? Even on old good and reliable chips this was not very good
-> idea, let alone modern NANDs with all these unstable bits, "radiation"
-> effects, low eraseblock max. erase count, etc...
-Here is my partition table
-   mtd0 -> UBoot -> 1 MiB
-   mtd1 -> UBootSettings -> 128 KiB
-   mtd2 -> SafeKernel -> 4 MiB => The linux kernel loaded in safe mode 
-to restore the main rootfs and perform maintenance.
-   mtd3 -> AppKernel -> 4 MiB => The linux kernel loaded in normal mode 
-when running the application.
-   mtd4 -> SafeFS => 64 MiB => The safe mode file-system.
-   mtd5 -> AppFS => 128 MiB => The main application file-system.
-   mtd6 -> Reserved => 54.875 MiB => Reserved during the development 
-stage, will be used in stable version.
-   mtd7 -> UserData => 256 MiB => User's data partition to store records 
-and log files (that will never be erased or formatted).
+--xgyAXRrhYN0wYx8y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> BTW, be aware of this problem:
->
-> http://linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
-thanks..The user's data partition will be the only one mounted in r/w 
-mode...files in it are not crucial.
+On Tue, Jan 10, 2012 at 10:49:00AM +0200, Artem Bityutskiy wrote:
+> On Wed, 2012-01-04 at 11:18 +0800, Huang Shijie wrote:
+> > In MX28, if we do not reset the BCH module. The BCH module may
+> > becomes unstable when the board reboots for several thousands times.
+> > This bug has been catched in customer's production.
+> >=20
+> > The patch adds some comments(some from Wolfram Sang), and fixes it now.
+> >=20
+> > Also change gpmi_reset_block() to static.
+> >=20
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > Acked-by: Marek Vasut <marek.vasut@gmail.com>
+>=20
+> Pushed to l2-mtd-2.6.git, thanks!
 
-> which has not been solved - we need a brave knight who'd spend time
-> working on this issue.
-A little bit to complicated for me otherwise I would love to help the 
-MTD project.
+I somehow missed this patch, if it's not too late, you can add my
 
-Alex
+Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--xgyAXRrhYN0wYx8y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8NZ9sACgkQD27XaX1/VRvwoQCaAxMR607dS9GoITGTL0JesGKn
+XF8AoMSMyQD+flj2a3RGQO97Cg2w06Oh
+=d5nb
+-----END PGP SIGNATURE-----
+
+--xgyAXRrhYN0wYx8y--
