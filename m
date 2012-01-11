@@ -1,24 +1,18 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rkk53-00029o-Tz
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2012 22:22:10 +0000
-Received: by eekc4 with SMTP id c4so33599eek.36
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2012 14:22:08 -0800 (PST)
-Subject: Re: [PATCH] cfi: AMD/Fujitsu compatibles: add panic write support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-Date: Wed, 11 Jan 2012 00:22:06 +0200
-In-Reply-To: <4F0CB86C.10006@freebox.fr>
-References: <1325878159-32306-1-git-send-email-iws@ovro.caltech.edu>
- <4F0C124F.7040807@freebox.fr> <1326233055.2335.13.camel@koala>
- <4F0CB86C.10006@freebox.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1326234127.2335.19.camel@koala>
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- "Ira W. Snyder" <iws@ovro.caltech.edu>
-Reply-To: dedekind1@gmail.com
+Date: Wed, 11 Jan 2012 00:49:28 +0000
+From: Jamie Iles <jamie@jamieiles.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
+Message-ID: <20120111004928.GE3226@page>
+References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+ <1326232616.2335.11.camel@koala>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1326232616.2335.11.camel@koala>
+Cc: linux-mtd@lists.infradead.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-arm-kernel@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-01-10 at 23:15 +0100, Florian Fainelli wrote:
+On Tue, Jan 10, 2012 at 11:56:54PM +0200, Artem Bityutskiy wrote:
+> On Sat, 2012-01-07 at 11:49 +0100, Jean-Christophe PLAGNIOL-VILLARD
+> wrote:
+> > +#ifndef __ATMEL_NAND_H__
+> > +#define __ATMEL_NAND_H__
+> > +
+> > +#include <linux/mtd/nand.h>
+> > +
+> > + /* NAND / SmartMedia */
+> > +struct atmel_nand_data {
+> > +	int		enable_pin;		/* chip enable */
+> > +	int		det_pin;		/* card detect */
+> > +	int		rdy_pin;		/* ready/busy */
+> > +	u8		rdy_pin_active_low;	/* rdy_pin value is inverted */
+> > +	u8		ale;			/* address line number connected to ALE */
+> > +	u8		cle;			/* address line number connected to CLE */
+> > +	u8		bus_width_16;		/* buswidth is 16 bit */
+> > +	u8		ecc_mode;		/* ecc mode */
+> > +	struct mtd_partition *parts;
+> > +	unsigned int	num_parts;
+> > +};
+> > +
+> > +#endif /* __ATMEL_NAND_H__ */
 > 
-> My concern is about not adding more code which is barely used. I
-> don't 
-> question the mtdoops driver, it definitively is useful. 
+> The "include/linux" directory, I think, should generally contain only
+> those headers which define some "userspace-kernel" or "kernel subsystem"
+> API. This file defines Atmel NAND driver's, so it should not be placed
+> there.
+> 
+> I am not sure "include/linux" is the best place for this header - is it?
 
-I'd actually question "substential" - a tiny piece in generic parts
-and few functions in drivers does not look substantial.
+If this is platform data, which it looks like to me then 
+include/linux/platform_data would be a great home for it.
 
-Artem.
+Jamie
