@@ -1,22 +1,15 @@
-Message-ID: <1326281127.24577.10.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4] MTD/GPMI bugfix : reset the BCH module when it is
- not MX23
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Wed, 11 Jan 2012 13:25:27 +0200
-In-Reply-To: <20120111104339.GB2605@pengutronix.de>
-References: <1325647126-4281-1-git-send-email-b32955@freescale.com>
- <1326185340.8847.11.camel@sauron.fi.intel.com>
- <20120111104339.GB2605@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-QwWEOuiIn4urkT5R/bIu"
-Mime-Version: 1.0
-Cc: baruch@tkos.co.il, marek.vasut@gmail.com, koen.beel.barco@gmail.com,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
- LW@KARO-electronics.de
-Reply-To: dedekind1@gmail.com
+Date: Wed, 11 Jan 2012 12:54:04 +0100
+From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
+Message-ID: <20120111115404.GA15221@samfundet.no>
+References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
+Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +19,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Around Sat 07 Jan 2012 11:49:28 +0100 or thereabout, Jean-Christophe PLAGNIOL-VILLARD wrote:
 
---=-QwWEOuiIn4urkT5R/bIu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Wed, 2012-01-11 at 11:43 +0100, Wolfram Sang wrote:
-> > Pushed to l2-mtd-2.6.git, thanks!
->=20
-> I somehow missed this patch, if it's not too late, you can add my
->=20
-> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+> so we can now choose for the board the ecc mode (ecc soft, soft bch, no ecc
+> and hardware)
+> 
+> set ecc mode in the boards to soft as currently in the driver
+> 
+> move platform data to a common header
+> include/linux/atmel_nand.h
+> 
+> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+> Cc: linux-mtd@lists.infradead.org
 
-Sorry, it is upstream already.
+Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
 
---=20
-Best Regards,
-Artem Bityutskiy
+> ---
+> Hi David,
+> 
+> 	If you don't
+> 	I'll apply this via ARM tree
 
---=-QwWEOuiIn4urkT5R/bIu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Sounds fine by me.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+<snipp AT91 changes>
 
-iQIcBAABAgAGBQJPDXGnAAoJECmIfjd9wqK0nCIP/jiA6hLVROpPMm0Mjze9X/Nb
-3KQYzBeIn4cJFiOWDzlaHXF5YG1gEp9z8Z5y9WeO0oEU53Px2k50kjqP1xQfhOOG
-OZ6lkgpqWYGC/eu5Tu8EUdQPFuWMzfIIb/iP5u2nMgBLgVp2tctFBSmygFyokSMI
-LV2BSdPIbJDx8amhTFygxKsVRoUqj91L/2LESgz1BYosQTSbaSxTHq5RYVcK6v8+
-AsM7z8EAC90I4OkRaOeQDw19mMLwiljc07r07W9Emp0fqq7SVS370yXW454BNvno
-gvWqLzsGjBQnkakYuJF8Y6VqM3bP/JqaekpAbLd4ZQNj0AXVfY4mOK/RXV3TwlGx
-4XhHAs2eqTjOzzofnODbhGlfjedmWic6H3ar07HpZECjShS8P9fRreA9iUWFkPSf
-ee1Bdj1V1Hee8rnqNUt0PCwq5HiZ+QsLkfRY50yXN6LShVB6hMjalCXJ80H/S27e
-vbWTq2IxzJTJfnaQsJ2fHnq7Zp5Y4Gtse5A6pJHK8wzsoLo5PsaeA0v7mxQjY2Me
-iTi3q1SL6fAgBvePfxDipqQ9Nx/MNbrvdYobNankcviW9RPt2XSpSMUUB4tqelsV
-6gmdxgoJCKME4ehOSpFCM+i2GHtQ7beSLZCWlk8HYXlZO8UVPVftKo/hDKEKqdM1
-gcF1DsxOH11MJ0G2B51S
-=3oRe
------END PGP SIGNATURE-----
+>  arch/avr32/boards/atngw100/setup.c          |    1 +
+>  arch/avr32/boards/atstk1000/atstk1002.c     |    1 +
+>  arch/avr32/mach-at32ap/include/mach/board.h |   13 +------------
 
---=-QwWEOuiIn4urkT5R/bIu--
+These AVR32 changes seems sane, thanks for the update.
+
+<snipp diff>
+
+-- 
+mvh
+Hans-Christian Egtvedt
