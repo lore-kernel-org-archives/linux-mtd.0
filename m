@@ -1,24 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rkvet-00063k-JT
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2012 10:43:57 +0000
-Date: Wed, 11 Jan 2012 11:43:39 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <1326281127.24577.10.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH v4] MTD/GPMI bugfix : reset the BCH module when it is
  not MX23
-Message-ID: <20120111104339.GB2605@pengutronix.de>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Wed, 11 Jan 2012 13:25:27 +0200
+In-Reply-To: <20120111104339.GB2605@pengutronix.de>
 References: <1325647126-4281-1-git-send-email-b32955@freescale.com>
  <1326185340.8847.11.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-Content-Disposition: inline
-In-Reply-To: <1326185340.8847.11.camel@sauron.fi.intel.com>
+ <20120111104339.GB2605@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-QwWEOuiIn4urkT5R/bIu"
+Mime-Version: 1.0
 Cc: baruch@tkos.co.il, marek.vasut@gmail.com, koen.beel.barco@gmail.com,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  shijie8@gmail.com, linux-arm-kernel@lists.infradead.org,
  LW@KARO-electronics.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +27,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-QwWEOuiIn4urkT5R/bIu
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 10, 2012 at 10:49:00AM +0200, Artem Bityutskiy wrote:
-> On Wed, 2012-01-04 at 11:18 +0800, Huang Shijie wrote:
-> > In MX28, if we do not reset the BCH module. The BCH module may
-> > becomes unstable when the board reboots for several thousands times.
-> > This bug has been catched in customer's production.
-> >=20
-> > The patch adds some comments(some from Wolfram Sang), and fixes it now.
-> >=20
-> > Also change gpmi_reset_block() to static.
-> >=20
-> > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> > Acked-by: Marek Vasut <marek.vasut@gmail.com>
+On Wed, 2012-01-11 at 11:43 +0100, Wolfram Sang wrote:
+> > Pushed to l2-mtd-2.6.git, thanks!
 >=20
-> Pushed to l2-mtd-2.6.git, thanks!
+> I somehow missed this patch, if it's not too late, you can add my
+>=20
+> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
 
-I somehow missed this patch, if it's not too late, you can add my
-
-Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+Sorry, it is upstream already.
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy
 
---xgyAXRrhYN0wYx8y
+--=-QwWEOuiIn4urkT5R/bIu
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iEYEARECAAYFAk8NZ9sACgkQD27XaX1/VRvwoQCaAxMR607dS9GoITGTL0JesGKn
-XF8AoMSMyQD+flj2a3RGQO97Cg2w06Oh
-=d5nb
+iQIcBAABAgAGBQJPDXGnAAoJECmIfjd9wqK0nCIP/jiA6hLVROpPMm0Mjze9X/Nb
+3KQYzBeIn4cJFiOWDzlaHXF5YG1gEp9z8Z5y9WeO0oEU53Px2k50kjqP1xQfhOOG
+OZ6lkgpqWYGC/eu5Tu8EUdQPFuWMzfIIb/iP5u2nMgBLgVp2tctFBSmygFyokSMI
+LV2BSdPIbJDx8amhTFygxKsVRoUqj91L/2LESgz1BYosQTSbaSxTHq5RYVcK6v8+
+AsM7z8EAC90I4OkRaOeQDw19mMLwiljc07r07W9Emp0fqq7SVS370yXW454BNvno
+gvWqLzsGjBQnkakYuJF8Y6VqM3bP/JqaekpAbLd4ZQNj0AXVfY4mOK/RXV3TwlGx
+4XhHAs2eqTjOzzofnODbhGlfjedmWic6H3ar07HpZECjShS8P9fRreA9iUWFkPSf
+ee1Bdj1V1Hee8rnqNUt0PCwq5HiZ+QsLkfRY50yXN6LShVB6hMjalCXJ80H/S27e
+vbWTq2IxzJTJfnaQsJ2fHnq7Zp5Y4Gtse5A6pJHK8wzsoLo5PsaeA0v7mxQjY2Me
+iTi3q1SL6fAgBvePfxDipqQ9Nx/MNbrvdYobNankcviW9RPt2XSpSMUUB4tqelsV
+6gmdxgoJCKME4ehOSpFCM+i2GHtQ7beSLZCWlk8HYXlZO8UVPVftKo/hDKEKqdM1
+gcF1DsxOH11MJ0G2B51S
+=3oRe
 -----END PGP SIGNATURE-----
 
---xgyAXRrhYN0wYx8y--
+--=-QwWEOuiIn4urkT5R/bIu--
