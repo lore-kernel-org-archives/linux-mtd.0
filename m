@@ -1,18 +1,18 @@
-Date: Wed, 11 Jan 2012 00:49:28 +0000
-From: Jamie Iles <jamie@jamieiles.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/3] ATMEL: fix nand ecc support
-Message-ID: <20120111004928.GE3226@page>
-References: <1325933370-17475-1-git-send-email-plagnioj@jcrosoft.com>
- <1326232616.2335.11.camel@koala>
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RktFu-0001IX-JR
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2012 08:09:59 +0000
+Message-ID: <4F0D4405.2060800@ftemaximal.fr>
+Date: Wed, 11 Jan 2012 09:10:45 +0100
+From: Alexandre Gambier <a.gambier@ftemaximal.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1326232616.2335.11.camel@koala>
-Cc: linux-mtd@lists.infradead.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>
+To: dedekind1@gmail.com
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
+References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
+In-Reply-To: <1326230599.2335.4.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 10, 2012 at 11:56:54PM +0200, Artem Bityutskiy wrote:
-> On Sat, 2012-01-07 at 11:49 +0100, Jean-Christophe PLAGNIOL-VILLARD
-> wrote:
-> > +#ifndef __ATMEL_NAND_H__
-> > +#define __ATMEL_NAND_H__
-> > +
-> > +#include <linux/mtd/nand.h>
-> > +
-> > + /* NAND / SmartMedia */
-> > +struct atmel_nand_data {
-> > +	int		enable_pin;		/* chip enable */
-> > +	int		det_pin;		/* card detect */
-> > +	int		rdy_pin;		/* ready/busy */
-> > +	u8		rdy_pin_active_low;	/* rdy_pin value is inverted */
-> > +	u8		ale;			/* address line number connected to ALE */
-> > +	u8		cle;			/* address line number connected to CLE */
-> > +	u8		bus_width_16;		/* buswidth is 16 bit */
-> > +	u8		ecc_mode;		/* ecc mode */
-> > +	struct mtd_partition *parts;
-> > +	unsigned int	num_parts;
-> > +};
-> > +
-> > +#endif /* __ATMEL_NAND_H__ */
-> 
-> The "include/linux" directory, I think, should generally contain only
-> those headers which define some "userspace-kernel" or "kernel subsystem"
-> API. This file defines Atmel NAND driver's, so it should not be placed
-> there.
-> 
-> I am not sure "include/linux" is the best place for this header - is it?
+>> hi everyone,
+>>
+>> I use UBI volume and UBIFS on top of a NAND device with an embedded
+>> video meter.
+>> Everything works fine except that when a UBI volume is mounted the
+>> following warning is outputted :
+>> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
+>> handling, reserved 0, need 20"
+> Looks like the pool of reserved PEBs is fully used. Fo how long have you
+> been using this flash?
+This is a brand new flash...I've been using it for 2 months.
 
-If this is platform data, which it looks like to me then 
-include/linux/platform_data would be a great home for it.
+>
+>> UBI: attaching mtd7 to ubi0
+> When I see things like mtd7 - I get worried. Do you have 7 partitions on
+> one chip? Even on old good and reliable chips this was not very good
+> idea, let alone modern NANDs with all these unstable bits, "radiation"
+> effects, low eraseblock max. erase count, etc...
+Here is my partition table
+   mtd0 -> UBoot -> 1 MiB
+   mtd1 -> UBootSettings -> 128 KiB
+   mtd2 -> SafeKernel -> 4 MiB => The linux kernel loaded in safe mode 
+to restore the main rootfs and perform maintenance.
+   mtd3 -> AppKernel -> 4 MiB => The linux kernel loaded in normal mode 
+when running the application.
+   mtd4 -> SafeFS => 64 MiB => The safe mode file-system.
+   mtd5 -> AppFS => 128 MiB => The main application file-system.
+   mtd6 -> Reserved => 54.875 MiB => Reserved during the development 
+stage, will be used in stable version.
+   mtd7 -> UserData => 256 MiB => User's data partition to store records 
+and log files (that will never be erased or formatted).
 
-Jamie
+> BTW, be aware of this problem:
+>
+> http://linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
+thanks..The user's data partition will be the only one mounted in r/w 
+mode...files in it are not crucial.
+
+> which has not been solved - we need a brave knight who'd spend time
+> working on this issue.
+A little bit to complicated for me otherwise I would love to help the 
+MTD project.
+
+Alex
