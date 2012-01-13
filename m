@@ -1,24 +1,19 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RljRs-000161-03
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 15:53:48 +0000
-Received: by iakl21 with SMTP id l21so5214403iak.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 07:53:45 -0800 (PST)
+ id 1RljRt-00012k-Rf
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 15:53:50 +0000
+Received: by mail-gx0-f177.google.com with SMTP id l1so1983965ggn.36
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 07:53:49 -0800 (PST)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH 3/7] bitops: introduce list_for_each_clear_bit
-Date: Sat, 14 Jan 2012 00:53:20 +0900
-Message-Id: <1326470004-10096-4-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH 4/7] mtd: use for_each_clear_bit
+Date: Sat, 14 Jan 2012 00:53:21 +0900
+Message-Id: <1326470004-10096-5-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1326470004-10096-1-git-send-email-akinobu.mita@gmail.com>
 References: <1326470004-10096-1-git-send-email-akinobu.mita@gmail.com>
-Cc: linux-s390@vger.kernel.org, linux-usb@vger.kernel.org,
- Robert Richter <robert.richter@amd.com>, x86@kernel.org,
- Heiko Carstens <heiko.carstens@de.ibm.com>,
- Akinobu Mita <akinobu.mita@gmail.com>, Ingo Molnar <mingo@redhat.com>,
- linux-mtd@lists.infradead.org, "H. Peter Anvin" <hpa@zytor.com>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com,
- Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce list_for_each_clear_bit() and list_for_each_clear_bit_from().
-They are similar to for_each_set_bit() and list_for_each_set_bit_from(),
-but they iterate over all the cleared bits in a memory region.
+Use for_each_clear_bit() to iterate over all the cleared bit in a
+memory region.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Robert Richter <robert.richter@amd.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: linux390@de.ibm.com
-Cc: linux-s390@vger.kernel.org
-Cc: linux-usb@vger.kernel.org
 ---
- include/linux/bitops.h |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 15ad702..c8a0d65 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -32,6 +32,17 @@ extern unsigned long __sw_hweight64(__u64 w);
- 	     (bit) < (size);					\
- 	     (bit) = find_next_bit((addr), (size), (bit) + 1))
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index e1e122f..9bcd1f4 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2526,12 +2526,10 @@ static void cfi_intelext_restore_locks(struct mtd_info *mtd)
+ 		if (!region->lockmap)
+ 			continue;
  
-+#define for_each_clear_bit(bit, addr, size) \
-+	for ((bit) = find_first_zero_bit((addr), (size));	\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-+
-+/* same as for_each_clear_bit() but use bit as value to start with */
-+#define for_each_clear_bit_from(bit, addr, size) \
-+	for ((bit) = find_next_zero_bit((addr), (size), (bit));	\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-+
- static __inline__ int get_bitmask_order(unsigned int count)
- {
- 	int order;
+-		for (block = 0; block < region->numblocks; block++) {
++		for_each_clear_bit(block, region->lockmap, region->numblocks) {
+ 			len = region->erasesize;
+ 			adr = region->offset + block * len;
+-
+-			if (!test_bit(block, region->lockmap))
+-				cfi_intelext_unlock(mtd, adr, len);
++			cfi_intelext_unlock(mtd, adr, len);
+ 		}
+ 	}
+ }
 -- 
 1.7.4.4
