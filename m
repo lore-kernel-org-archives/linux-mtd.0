@@ -1,20 +1,20 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RlppT-00035X-HD
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 22:42:36 +0000
-Received: by eeke50 with SMTP id e50so401961eek.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 14:42:33 -0800 (PST)
-Subject: Re: [PATCH v3 3/6] mtd: nand: erase block before marking bad
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Sat, 14 Jan 2012 00:42:30 +0200
-In-Reply-To: <1326140612-26323-4-git-send-email-computersforpeace@gmail.com>
+ id 1RlqDG-00059v-52
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 23:07:10 +0000
+Received: by wgbdt13 with SMTP id dt13so2671896wgb.18
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 15:07:07 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1326494553.2258.38.camel@koala>
 References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
  <1326140612-26323-4-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1326494553.2258.38.camel@koala>
-Mime-Version: 1.0
+ <1326494553.2258.38.camel@koala>
+Date: Fri, 13 Jan 2012 15:07:04 -0800
+Message-ID: <CAN8TOE9Eb_4+tzdogmpLrmh=Sd3c9Qmu_htotZKALGuatRE+Lw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] mtd: nand: erase block before marking bad
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
@@ -41,7 +41,6 @@ Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
  Guillaume LECERF <glecerf@gmail.com>,
  Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,23 +50,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-01-09 at 12:23 -0800, Brian Norris wrote:
-> Many NAND flash systems (especially those with MLC NAND) cannot be
-> reliably written twice in a row. For instance, when marking a bad block,
-> the block may already have data written to it, and so we should attempt
-> to erase the block before writing a bad block marker to its OOB region.
-> 
-> We can ignore erase failures, since the block may be bad such that it
-> cannot be erased properly; we still attempt to write zeros to its spare
-> area.
-> 
-> Note that the erase must be performed before the BBT is updated, since
-> otherwise, nand_erase_nand() would not allow us to erase our "bad
-> block."
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Fri, Jan 13, 2012 at 2:42 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> This looks like an independent patch to me, is that right? If yes, you
+> can send it separately.
 
-This looks like an independent patch to me, is that right? If yes, you
-can send it separately.
+It's mostly independent, but its exact code placement will be
+dependent on the previous two patches. If you'd prefer, I'll resubmit
+this separately. Then, assuming it's applied, I'll fix and resend the
+controversial stuff (BBT + OOB) as a separate series, on top of it.
 
-Artem.
+Brian
