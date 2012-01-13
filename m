@@ -1,18 +1,21 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from fw2.prolan.hu ([193.68.50.107])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rldu4-0002Te-JQ
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 09:58:33 +0000
-Message-ID: <4F10003D.2010809@parrot.com>
-Date: Fri, 13 Jan 2012 10:58:21 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+ id 1RlfCx-0000EN-7o
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 11:22:09 +0000
+Received: from fw2.prolan.hu (localhost.localdomain [127.0.0.1])
+ by localhost (Postfix) with ESMTP id B86CF26C152
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 12:22:04 +0100 (CET)
+Received: from saturn2.intranet.prolan.hu (webmail.prolan.hu [193.91.83.237])
+ by fw2.prolan.hu (Postfix) with ESMTP id AF13F26C146
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 12:22:04 +0100 (CET)
+Message-ID: <4F1013DC.8040902@prolan.hu>
+Date: Fri, 13 Jan 2012 12:22:04 +0100
+From: Peter Rusko <rusko.peter@prolan.hu>
 MIME-Version: 1.0
-To: Gabriel Matni <gabriel.matni@gmail.com>
-Subject: Re: ubifs mount fails due to corrupt empty space
-References: <CALuiOdd6vgDogxf9+RFWhb-uUoDLji2CawB3Gvisg2iW4C7PiA@mail.gmail.com>
-In-Reply-To: <CALuiOdd6vgDogxf9+RFWhb-uUoDLji2CawB3Gvisg2iW4C7PiA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: <linux-mtd@lists.infradead.org>
+Subject: linux/mtd/gpmi-nand.h: No such file or directory
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gabriel Matni a �crit :
-> Hello list,
-> 
-> Using kernel 3.2, ubifs failed to mount a fs properly due to a corrupt
-> empty space encoutered while replaying the journal. Please notice the
-> bitflip occurring in the supposedly empty space shown in the log below.
-> The storage medium is an SLC NAND flash.
-> 
-> The stack dump shown below shows that replay_log_leb() was behind the
-> call to ubifs_scan(), and could not deal with the -EUCLEAN error
-> returned. ubifs_scan() returned this error because it detected the
-> corrupt empty space.
-> 
-> The fs was unmounted cleanly, resulting in no need for fs recovery to
-> happen during the mount (need_recovery=0). Therefore the recovery of the
-> log_leb in question couldn't be performed, causing the mount to abort.
-> This problem was also seen in the following thread:
-> http://lists.infradead.org/pipermail/linux-mtd/2009-March/024953.html
-> <http://lists..infradead.org/pipermail/linux-mtd/2009-March/024953.html> with
-> a NOR flash
->  
-> I applied the attached patch and the fs was successfully mounted giving
-> the fs a second life.
-> 
-> My main questions are:
-> 1) What should be the expected behavior of ubifs in this case?
-> 2) Is there a systematic way to recover from a situation like that?
-ubifs expect empty space to be protected by ecc. But if empty page ecc is not
-ff, this need hack in the nand driver.
+Hi all,
 
+I can't compile the gpmi-nand module. Currently I'm using the
+pengutronix/imx repository, but I've tried the master branch in
+mtd-2.6-git and got the same results:
 
+   CC      drivers/mtd/nand/gpmi-nand/gpmi-nand.o
+drivers/mtd/nand/gpmi-nand/gpmi-nand.c:24:33: fatal error:
+linux/mtd/gpmi-nand.h: No such file or directory
+compilation terminated.
 
-Matthieu
+Where can I find that header?
+
+-- 
+Ruskó Péter
+Fejlesztőmérnök
+
+Prolan Zrt. / Prolan Co.
+Hungary 2011 Budakalász, Szentendrei út 1-3.
+Tel./Phone: +36 20 954 3118
+Fax: +36 26 540 420
+E-mail: rusko.peter@prolan.hu
+Web: www.prolan.hu
+Timezone:CET
