@@ -1,34 +1,18 @@
-Received: from lnx500.hrz.tu-darmstadt.de ([130.83.156.225])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rld5u-0002tn-UU
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 09:06:44 +0000
-Received: from iss1.vlsi.informatik.tu-darmstadt.de
- (iss1.vlsi.informatik.tu-darmstadt.de [130.83.164.1])
- by lnx500.hrz.tu-darmstadt.de (8.14.4/8.14.4/HRZ/PMX) with ESMTP id
- q0D96YvJ024509
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 10:06:34 +0100
- (envelope-from tim01@iss.tu-darmstadt.de)
-Received: from localhost (localhost [127.0.0.1])
- by iss1.vlsi.informatik.tu-darmstadt.de (Postfix) with ESMTP id 9A02FF4F6
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 10:06:34 +0100 (CET)
-Received: from iss1.vlsi.informatik.tu-darmstadt.de ([127.0.0.1])
- by localhost (iss1.vlsi.informatik.tu-darmstadt.de [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id ViG7B-r8PyJF for <linux-mtd@lists.infradead.org>;
- Fri, 13 Jan 2012 10:06:34 +0100 (CET)
-Received: from lvxen-nx.vlsi (iss5.vlsi.informatik.tu-darmstadt.de
- [130.83.164.5])
- by iss1.vlsi.informatik.tu-darmstadt.de (Postfix) with ESMTP id 86C6D3417
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 10:06:34 +0100 (CET)
-From: Tim Sander <tim01@iss.tu-darmstadt.de>
-To: linux-mtd@lists.infradead.org
-Subject: ubiformat & linux 3.0.14-rt
-Date: Fri, 13 Jan 2012 10:06:33 +0100
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rldu4-0002Te-JQ
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 09:58:33 +0000
+Message-ID: <4F10003D.2010809@parrot.com>
+Date: Fri, 13 Jan 2012 10:58:21 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201201131006.33998.tim01@iss.tu-darmstadt.de>
+To: Gabriel Matni <gabriel.matni@gmail.com>
+Subject: Re: ubifs mount fails due to corrupt empty space
+References: <CALuiOdd6vgDogxf9+RFWhb-uUoDLji2CawB3Gvisg2iW4C7PiA@mail.gmail.com>
+In-Reply-To: <CALuiOdd6vgDogxf9+RFWhb-uUoDLji2CawB3Gvisg2iW4C7PiA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,26 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Gabriel Matni a écrit :
+> Hello list,
+> 
+> Using kernel 3.2, ubifs failed to mount a fs properly due to a corrupt
+> empty space encoutered while replaying the journal. Please notice the
+> bitflip occurring in the supposedly empty space shown in the log below.
+> The storage medium is an SLC NAND flash.
+> 
+> The stack dump shown below shows that replay_log_leb() was behind the
+> call to ubifs_scan(), and could not deal with the -EUCLEAN error
+> returned. ubifs_scan() returned this error because it detected the
+> corrupt empty space.
+> 
+> The fs was unmounted cleanly, resulting in no need for fs recovery to
+> happen during the mount (need_recovery=0). Therefore the recovery of the
+> log_leb in question couldn't be performed, causing the mount to abort.
+> This problem was also seen in the following thread:
+> http://lists.infradead.org/pipermail/linux-mtd/2009-March/024953.html
+> <http://lists..infradead.org/pipermail/linux-mtd/2009-March/024953.html> with
+> a NOR flash
+>  
+> I applied the attached patch and the fs was successfully mounted giving
+> the fs a second life.
+> 
+> My main questions are:
+> 1) What should be the expected behavior of ubifs in this case?
+> 2) Is there a systematic way to recover from a situation like that?
+ubifs expect empty space to be protected by ecc. But if empty page ecc is not
+ff, this need hack in the nand driver.
 
-We are currently using the UBIFS with a preemt rt patched kernel + some local 
-platform adaptions. After a firmware update of the root filesystem with 
-ubiformat we see the following message on the next reboot:
-sched: RT throttling activated
 
-This message is only seen after firmware update so i suspect that the reason 
-for this message lies within the ubifs/ubi layer. With the RT enabled kernel 
-all interrupt run as realtime tasks. This means that if an interrupt takes too 
-much cpu for some time this is noticed by the scheduler and it throttles the 
-realtime tasks to 95% of available cpu time. 
 
-This happens with or without of ubifs master for 3.0 applied from
-git://git.infradead.org/~dedekind/ubifs-v3.0.git
-
-So is there some condition which causes UBI(FS) to take more time in an 
-interrupt routine if the filesystem has been updated? If yes wouldn't it be 
-possible to move this work into:
-ubifs_bgt0_0
-
-Best regards
-Tim
+Matthieu
