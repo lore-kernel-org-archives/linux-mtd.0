@@ -1,21 +1,15 @@
-Received: from fw2.prolan.hu ([193.68.50.107])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RlfCx-0000EN-7o
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 11:22:09 +0000
-Received: from fw2.prolan.hu (localhost.localdomain [127.0.0.1])
- by localhost (Postfix) with ESMTP id B86CF26C152
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 12:22:04 +0100 (CET)
-Received: from saturn2.intranet.prolan.hu (webmail.prolan.hu [193.91.83.237])
- by fw2.prolan.hu (Postfix) with ESMTP id AF13F26C146
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 12:22:04 +0100 (CET)
-Message-ID: <4F1013DC.8040902@prolan.hu>
-Date: Fri, 13 Jan 2012 12:22:04 +0100
-From: Peter Rusko <rusko.peter@prolan.hu>
-MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: linux/mtd/gpmi-nand.h: No such file or directory
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RlhnQ-00078i-2G
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 14:08:00 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [PATCH] UBI: Handle empty string in verify_mkvol_req()
+Date: Fri, 13 Jan 2012 15:07:40 +0100
+Message-Id: <1326463660-17852-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Currently it's possible to create a volume without a name.
+E.g:
+ubimkvol -n 32 -s 2MiB -t static /dev/ubi0 -N ""
 
-I can't compile the gpmi-nand module. Currently I'm using the
-pengutronix/imx repository, but I've tried the master branch in
-mtd-2.6-git and got the same results:
+After that vtbl_check() will always fail because it does not permit
+empty strings.
 
-   CC      drivers/mtd/nand/gpmi-nand/gpmi-nand.o
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:24:33: fatal error:
-linux/mtd/gpmi-nand.h: No such file or directory
-compilation terminated.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/cdev.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Where can I find that header?
-
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 3320a50..ad76592 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -632,6 +632,9 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
+ 	if (req->alignment != 1 && n)
+ 		goto bad;
+ 
++	if (!req->name[0] || !req->name_len)
++		goto bad;
++
+ 	if (req->name_len > UBI_VOL_NAME_MAX) {
+ 		err = -ENAMETOOLONG;
+ 		goto bad;
 -- 
-Ruskó Péter
-Fejlesztőmérnök
-
-Prolan Zrt. / Prolan Co.
-Hungary 2011 Budakalász, Szentendrei út 1-3.
-Tel./Phone: +36 20 954 3118
-Fax: +36 26 540 420
-E-mail: rusko.peter@prolan.hu
-Web: www.prolan.hu
-Timezone:CET
+1.7.7.3
