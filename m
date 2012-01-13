@@ -1,21 +1,47 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rlp9s-0000A6-Hv
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 21:59:37 +0000
-Received: by eeke50 with SMTP id e50so392050eek.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 13:59:34 -0800 (PST)
-Subject: Re: [PATCH] libmtd: Variable name same as function name causing
- compile to fail (Android)
+ id 1RlpM9-0000qX-Ds
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2012 22:12:18 +0000
+Received: by eaaa13 with SMTP id a13so388157eaa.36
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 14:12:15 -0800 (PST)
+Subject: Re: [PATCH v3 0/6] NAND BBM + BBT updates
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Cannon <mail@thomascannon.net>
-Date: Fri, 13 Jan 2012 23:59:32 +0200
-In-Reply-To: <CAGaKrsmCb6jHZ+oYjQiV8kU63-DQMpzwTG4pR-Jf_aTE1K2=NQ@mail.gmail.com>
-References: <CAGaKrsmCb6jHZ+oYjQiV8kU63-DQMpzwTG4pR-Jf_aTE1K2=NQ@mail.gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Sat, 14 Jan 2012 00:12:11 +0200
+In-Reply-To: <20120112095845.3c9928d1@pixies.home.jungo.com>
+References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
+ <4F0C086A.5070608@linutronix.de> <1326320928.2338.37.camel@koala>
+ <20120112095845.3c9928d1@pixies.home.jungo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1326491973.2258.1.camel@koala>
+Message-ID: <1326492734.2258.13.camel@koala>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,24 +52,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-01-09 at 16:20 +0000, Thomas Cannon wrote:
-> When compiling mtd-utils against Android's bionic libc using the
-> supplied cross compiler environment it errors:
+On Thu, 2012-01-12 at 09:58 +0200, Shmulik Ladkani wrote:
+> On Thu, 12 Jan 2012 00:28:45 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > In my view, OOB BB markers is the primary, reliable, and simple
+> > mechanism. And BBT is just an additional optimization to speed up system
+> > startup.
+> > 
+> > So in general I support Brian's efforts
 > 
-> lib/libmtd.c: In function 'dev_node2num':
-> lib/libmtd.c:444: error: called object 'major' is not a function
-> lib/libmtd.c:445: error: called object 'minor' is not a function
-> lib/libmtd.c: In function 'mtd_probe_node':
-> lib/libmtd.c:1384: error: called object 'major' is not a function
-> lib/libmtd.c:1385: error: called object 'minor' is not a function
+> I'm in favor of this approach as well.
+> However IMO it should (1) be 'bbt_options' configurable;
+
+Why does it have to be configurable? Do you have some example in mind?
+
+>  (2) should
+> properly address OOB vs BBT out-of-sync issues.
+
+This is reasonable.
+
 > 
-> This patch updates the variable names for "major" and "minor" in two
-> places. It then compiles cleanly.
+> > Indeed, when we mark a block as bad?
+> > 
+> > 1. When we get erase error. Well, if SW erases a block, it does not care
+> > of the contents. This means that if after the reboot SW will re-try
+> > erasing it. And if the block is bad, and previously the erasure failed,
+> > it will fail again, and SW will mark it as bad again.
+> > 
+> > 2. When we get a write error. The SW recovers useful data from the
+> > eraseblock, then tries to mark it bad. Well, UBI will first try to
+> > torture it, but this is a not essential detail. Anyway, if we get a
+> > power cut - the situation is the same - SW will try to erase this block
+> > and write to it, will get errors again and will mark it as bad.
+> 
+> So your new scheme for 'nand_default_block_markbad' is as follows:
+>   (1) mark BBM in OOB
+>   (2) update on-flash BBT.
+> Where existing scheme (for NAND_BBT_USE_FLASH devices) is:
+>   update on-flash BBT.
+> 
+> And hence, if power-cut occurs between (1) and (2) in the new scheme,
+> it is equivalent to a power-cut that occurred just an instant prior
+> actually performing the BBT update in the old scheme.
+> 
+> Meaning: the system, being NAND_BBT_USE_FLASH based, will simply won't
+> be aware of the bad block (although already OOB marked).
+> Is that right?
 
-I've tweaked the patch a bit and picked different names: mjr and mnr
-instead of strange majorx and minorx. I've also re-named major1 and
-minor1 variables for consistency.
+Yes. And the idea is that it will discover it when starting doing I/O on
+this eraseblock. Indeed, if it found out that it is bad before the power
+cut (it exhibited I/O errors), it should discover it again by getting
+I/O errors.
 
-Pushed to mtd-utils.git, thanks!
+> > I guess we also need to read oob before writing it when we are marking a
+> > block as bad - just in case it is already marked as bad in OOB.
+> 
+> I assume you mean using 'chip->block_bad' within the new implementation
+> of 'nand_default_block_markbad' prior executing (1). Is that right?
+
+Probably yes.
+
+> 
+> > Comments? If this does not make sense - I have a good excuse - it is
+> > late and I am very sleepy :-)
+> 
+> I guess it's reasonable :)
+> 
+> The only argument I have is that this scheme, although working,
+> contradicts your view of "OOB BB markers being the primary mechanism".
+> That's because 'nand_block_checkbad' prefers the info from the BBT
+> (for NAND_BBT_USE_FLASH devices).
+
+My point is that in case of a power cut between (1) and (2) the upper
+layers will detect the bad block again and mark it as bad again, both in
+OOB and BBT. So OOB and BBT will be in sync.
+
+The other approach would be to have an additional bit per eraseblock in
+the in-ram BBT for lazy checking. And actually compare the OOB bad block
+marker with the BBT on the first erase or write operation, and bring OOB
+and BBM in sync.
 
 Artem.
