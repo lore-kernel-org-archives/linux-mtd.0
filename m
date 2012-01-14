@@ -1,23 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rm5Pw-0005hf-4c
- for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 15:21:16 +0000
-Received: by iakl21 with SMTP id l21so7070876iak.36
- for <linux-mtd@lists.infradead.org>; Sat, 14 Jan 2012 07:21:15 -0800 (PST)
-Message-ID: <1326554573.14299.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/15] drivers/mtd/onenand/samsung.c: add missing iounmap
+ id 1Rm5bZ-00061z-5Y
+ for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 15:33:19 +0000
+Received: by iakl21 with SMTP id l21so7087229iak.36
+ for <linux-mtd@lists.infradead.org>; Sat, 14 Jan 2012 07:33:15 -0800 (PST)
+Message-ID: <1326555295.14299.5.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3] MTD: ST SPEAr: Add SMI driver for serial NOR flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sat, 14 Jan 2012 17:22:53 +0200
-In-Reply-To: <1326362117-29371-3-git-send-email-Julia.Lawall@lip6.fr>
-References: <1326362117-29371-3-git-send-email-Julia.Lawall@lip6.fr>
+To: Stefan Roese <sr@denx.de>
+Date: Sat, 14 Jan 2012 17:34:55 +0200
+In-Reply-To: <1326375537-29656-1-git-send-email-sr@denx.de>
+References: <1326375537-29656-1-git-send-email-sr@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-T9C2Iw53NBO31oPSPIx5"
+ boundary="=-mckr/x/0k7ivhVAdKdyR"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Kyungmin Park <kyungmin.park@samsung.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,18 +27,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-T9C2Iw53NBO31oPSPIx5
+--=-mckr/x/0k7ivhVAdKdyR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-01-12 at 10:55 +0100, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
+On Thu, 2012-01-12 at 14:38 +0100, Stefan Roese wrote:
+> From: Shiraz Hashim <shiraz.hashim@st.com>
 >=20
-> Add missing iounmap in error handling code, in a case where the function
-> already preforms iounmap on some other execution path.
+> SPEAr platforms (spear3xx/spear6xx/spear13xx) provide SMI (Serial Memory
+> Interface) controller to access serial NOR flash. SMI provides a simple
+> interface for SPI/serial NOR flashes and has certain inbuilt commands
+> and features to support these flashes easily. It also makes it possible
+> to map an address range in order to directly access (read/write) the SNOR
+> over address bus. This patch intends to provide serial nor driver support
+> for spear platforms which are accessed through SMI.
 >=20
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
+> Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -48,7 +53,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-T9C2Iw53NBO31oPSPIx5
+--=-mckr/x/0k7ivhVAdKdyR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPEZ3NAAoJECmIfjd9wqK0WDAQAM+B9KNeDj1a8+yUPuSTcm54
-zLKKSwk6IoIHjVLEY+phkQTyhsnmCF8aZEo7wFwJ1x1TITILx474DpG7xOhj+VS2
-aE0Kkjuzmgx5pimqdIORo61EL101Ym8lBB73G9KPtyqX8wqMcvAwAd7/Q1bumqXv
-8BoufXR7sI0V37uQPZii39kiz8/2ZDP69fI2M3syOymZcBT2/FFG5/Dcyoxn1Mw3
-krz6U2P/SF6rjYXcbXXnO+VLjQkM4P0y3r9j3AJdeX6D6OnpUeYW+aBJnUFMEBuv
-wh63uB0ZZnKEMon2WbIRpPqitUFOibbQZ/g2Gc+8AxvmO+YaX3M8ZKjwtinQG3Dm
-SFMTNM28ZBWnvmZjMehnMs7rIjJ1E7ufdvLg1glcIyY8iCpZN13tlCZtMyLoJMzD
-WivgI/DlZxRodVFM8uIHcmTlqEDOD1eSHiPf1uKrWuIFZgbDR5jO1x3/l8jjvMyg
-sU1MnZ0VcXORNi8zRA01Shcy0lOD+PhPcHSHPNbQrSkMDLsqDOIX/FaFki7UbC8Z
-DvnhIRv4KCC73iL6cy87ZuJwe7SHyQ1uPyzQX6PxHYyoLJMhh08QuSZCEyY+pi33
-NKg3gojsh+JxQLgH5hdtytdvKPOzcWn3q+MPZfpQEqpSWke7tQlIK+LjUf8FD1WW
-rYNiphyBakDc89Wz+8yb
-=uOYz
+iQIcBAABAgAGBQJPEaCfAAoJECmIfjd9wqK0UxcP/23J1KU/+VVO4Uwbf3nYsANu
+DiWl/q/83OdzqM5IelEMrrhO/bEVBP3OuUt9m8KC6aU0s0ddIr80BRqjsGf/UFTM
+6O8DDBvjlw83apS1gpoGKQqAVmzNLoaUfWyjmPO6FqMJ5TqO2O4mM4QlON2vWSJQ
+WZv+XVy4oQ74GKE/TimZ9MNscmOeLGu+OuFnzrtp1eLwd6WeuaSY3EBoQt+kfb55
+997kIya8h0s/3azcEyPmQXUGTIzy/gp3HnHZrOYX67T6FXHA0SpcEc5aB1fkHJDE
+/w6ur0ilDLPLOgeIyBjnqjmm8YcFbDG+DkfLKuPbtkNYSs7gbVCY4jAvTLCdjqD1
+uV9yV8OuOkVYxFcWJvlr/rIWX4Wx2zaFaHW1AiiNd7XJexjVkf6lgm+fDwR0HV3i
+U8u172o4g5PKT95wdthu3pt73Ptm8U3z7pUgYW70jwvq0053QypxG3o34XF0UoMr
+29OgNFEPOW+QPuwLa4IrSoadLXd7koofM2bdUE4lXdzu5kiL4iCcNU+D9LgjRMEd
+7oPXCut5LH7hNf+uGUQH3TTt+VDethugnZ5sr0pPHiS6Wnb0vRxmt7lC+36MuZmL
+WYvKZxuvXjqArNSJgFtXIYj4NuziUGpDE7mNRvQdb7GpWG0sIaElMR6+2lLXprcI
+AdbpxRmLjUlel3D8snS8
+=YJ5S
 -----END PGP SIGNATURE-----
 
---=-T9C2Iw53NBO31oPSPIx5--
+--=-mckr/x/0k7ivhVAdKdyR--
