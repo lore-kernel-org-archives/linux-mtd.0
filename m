@@ -1,23 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rm5I7-0004lr-Si
- for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 15:13:12 +0000
-Received: by iakl21 with SMTP id l21so7061531iak.36
- for <linux-mtd@lists.infradead.org>; Sat, 14 Jan 2012 07:13:11 -0800 (PST)
-Message-ID: <1326554080.14299.2.camel@sauron.fi.intel.com>
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexandre Gambier <a.gambier@ftemaximal.fr>
-Date: Sat, 14 Jan 2012 17:14:40 +0200
-In-Reply-To: <4F0D4405.2060800@ftemaximal.fr>
-References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
- <4F0D4405.2060800@ftemaximal.fr>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rm5M6-0005Ar-BR
+ for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 15:17:19 +0000
+Message-ID: <1326554330.14299.3.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] drivers: mtd: mtdcore: Fix build warning when
+ CONFIG_MTD_CHAR is not defined
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Fabio Estevam <festevam@gmail.com>
+Date: Sat, 14 Jan 2012 17:18:50 +0200
+In-Reply-To: <1326338704-30199-1-git-send-email-festevam@gmail.com>
+References: <1326338704-30199-1-git-send-email-festevam@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-plAXKZ9XBc1MQqFP61dC"
+ boundary="=-boVanI+ctRmhohNUVTbD"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +27,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-plAXKZ9XBc1MQqFP61dC
+--=-boVanI+ctRmhohNUVTbD
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-01-11 at 09:10 +0100, Alexandre Gambier wrote:
-> >> hi everyone,
-> >>
-> >> I use UBI volume and UBIFS on top of a NAND device with an embedded
-> >> video meter.
-> >> Everything works fine except that when a UBI volume is mounted the
-> >> following warning is outputted :
-> >> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PE=
-B
-> >> handling, reserved 0, need 20"
-> > Looks like the pool of reserved PEBs is fully used. Fo how long have yo=
-u
-> > been using this flash?
-> This is a brand new flash...I've been using it for 2 months.
+On Thu, 2012-01-12 at 01:25 -0200, Fabio Estevam wrote:
+> Fix the following build warning:
+>=20
+> drivers/mtd/mtdcore.c: In function =E2=80=98mtd_release=E2=80=99:
+> drivers/mtd/mtdcore.c:110: warning: unused variable =E2=80=98mtd=E2=80=99
+>=20
+> This happens when neither CONFIG_MTD_CHAR nor CONFIG_MTD_CHAR_MODULE are =
+defined.
+>=20
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-OK, in this case this is most probably because you specified too large
-sizes in your ubinize.cfg. So that your volumes take all eraseblocks.
-Try to make some volumes smaller.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-plAXKZ9XBc1MQqFP61dC
+--=-boVanI+ctRmhohNUVTbD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPEZvgAAoJECmIfjd9wqK0puAQALJdEBZclohfxcKbJ5LmwAUn
-dzBFrOnOcsvINk6tjvjTcbRhOTxSkirDVwaM9dz7IqZr1a4EgdXZZqrUcDv0PafF
-+YRGVninePofYWCZDu+Xew1JIULY6FW3CoSDV3UFgsecq3634SWh9ZQpvFauiQXs
-o0ChHhCA4+u8UcbYA4p3FodTJY0yAu+ivC408ljwAGFjXG9/knS0Nh+GtGdaxVwn
-482IyS4gv8rKwM0Z9ixLwiNIAoLE4OgMPOQAQw/h/b8CDG2OGVW1pK+/fYajUJt4
-uixOo4anSWO3uyJAm56apLKK/Uvo8+vGdu4DiHxNWgnWFciWBjaMrAnte1YbQ7IM
-TPSZLt630bGc+Qy53Ukf35npdz7y4qx2h77HVNQquNtyP6vYATP/iDnJ21I4bso3
-jnqYk1wu1fMe+aoeVJSxqI/Tk55EDrA9FLX7xTIBoak9E5PbdN2ldqaS+VVqDykZ
-T9cmBadbDxZPPSlJ7dxFXWDrWdpZ35kEB3zl+dondRKVuMzAvg22zGy+6Qui/2iV
-gz0bnymTXOhownmWLECLNcN4+y9UjjvuqKweKtlyfRS5OOqCaZ3vQvrfWpHYyAlK
-V/gtvEmQ1zvLGqT795K5Oq7TsNb0B0DNIV4I7KvoXers8totnZN+ZQ00DiD7sbeE
-I+ywRPknbhFDMrJyB9S+
-=+59k
+iQIcBAABAgAGBQJPEZzaAAoJECmIfjd9wqK07nwP/3uZxtpf5HyGF+E2jvRz2Dhd
+7Xr8MGa5nVYuJU1pC6UaoSYSQ2wQFqS1HONtgTMZQOSFWv4L3LmbfU3XobDXjVpg
+IzHJFpZ2aa7LFo/JyZEF3wgw6ffU3rZTOEjVMVYMydXUKZWfFpqkNBn0aZIDgLK8
+IP3LNp+8vDddt8UaNPuTr+beEutNgFB3stbJNjUzDd2I4Oppsm6hxzhYV8Km97qm
++FxgkpJ2bFCr2YLA+rvqnVafIk5VDhGx2llsbxyu0qEv8jqbfZfRJA/xiyrag+y5
+Quf0U1tv30Oi+t1q0E3VP2tHTEZ6LWuBlKvB701fFSGTzSCGePUCwK4aD71bW8MY
+7adKINWcEqnW0G0CCcHfzVV4aENydUhqR1Fwqx05SkOi1p9LvSmPjQ4XFEMtJgyh
+iP+JlQHRIQNXxHLGT2eC6Ynw3IP84PnUqYUJx7leqtHO334vqYyqA2MhWi+FckSb
+gO7F6dlyNhQv+mCv9rnPldRg73lDdIJpwPTiZ6+avwhSsBY/U36Ge1hb31waVdbY
+4rjabMj6RK8piMarW+No1IwxLnyMO9P46FQvDlFwQC/tbXlm8UlIHGRiUma4eHDp
+Dw+ptURsIGL0lP5UnmYLIWzNjLYtNw71BBTBacDPvZpJZ9FTIDe6YT5TiYgR7BJU
+V9/qP+hx7Rbm8D7lCfQo
+=jz5h
 -----END PGP SIGNATURE-----
 
---=-plAXKZ9XBc1MQqFP61dC--
+--=-boVanI+ctRmhohNUVTbD--
