@@ -1,23 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rm4zH-0003dc-Ha
- for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 14:53:44 +0000
-Received: by iakl21 with SMTP id l21so7034827iak.36
- for <linux-mtd@lists.infradead.org>; Sat, 14 Jan 2012 06:53:41 -0800 (PST)
-Message-ID: <1326552921.19039.75.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] Only call mtd->sync() method in mtdblock_release
- if opened for write.
+ id 1Rm52K-0003n6-5s
+ for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 14:56:52 +0000
+Received: by iakl21 with SMTP id l21so7039395iak.36
+ for <linux-mtd@lists.infradead.org>; Sat, 14 Jan 2012 06:56:51 -0800 (PST)
+Message-ID: <1326553111.19039.76.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH (mtd-www) 1/3] nand-data: add columns to the table
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Date: Sat, 14 Jan 2012 16:55:21 +0200
-In-Reply-To: <1326198418-8996-1-git-send-email-alexander.stein@systec-electronic.com>
-References: <1326198418-8996-1-git-send-email-alexander.stein@systec-electronic.com>
+To: Angus CLARK <angus.clark@st.com>
+Date: Sat, 14 Jan 2012 16:58:31 +0200
+In-Reply-To: <1326198741-12566-1-git-send-email-angus.clark@st.com>
+References: <1326198741-12566-1-git-send-email-angus.clark@st.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-7ncJJ15SlBNDCpcFzHkn"
+ boundary="=-EZOpDCIomtbOp4w4NqhS"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,93 +27,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-7ncJJ15SlBNDCpcFzHkn
+--=-EZOpDCIomtbOp4w4NqhS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-01-10 at 13:26 +0100, Alexander Stein wrote:
-> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+On Tue, 2012-01-10 at 12:32 +0000, Angus CLARK wrote:
+> Add the following columns to the table:
+>         - "Scan Page 1"
+>         - "No. CS"
+>         - "No. LUNs"
+>         - "No. R/B#"
+>         - "I/0 I/F"
+>         - "Base Part"
+>=20
+> Signed-off-by: Angus Clark <angus.clark@st.com>
 
-Added commit message, amended the patch, and pushed to l2-mtd.git,
-thanks!
-
-
-=46rom 961aa500ce7592a4ac917b7b56a15d1998722acf Mon Sep 17 00:00:00 2001
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Date: Tue, 10 Jan 2012 13:26:58 +0100
-Subject: [PATCH] mtd: mtdblock: call mtd_sync() only if opened for write
-
-Because it is useless to call it if the device is opened in R/O mode, and a=
-lso
-harmful: on CFI NOR flash it may block for long time waiting for erase
-operations to complete is another partition with a R/W file-system on this
-chip.
-
-Artem Bityutskiy: write commit message, amend the patch to match the latest
-tree (we use mtd_sync(), not mtd->sync() nowadays).
-
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/mtd_blkdevs.c    |    1 +
- drivers/mtd/mtdblock.c       |    8 ++++++--
- include/linux/mtd/blktrans.h |    1 +
- 3 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 424ca5f..f1f0671 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -233,6 +233,7 @@ static int blktrans_open(struct block_device *bdev, fmo=
-de_t mode)
- 	ret =3D __get_mtd_device(dev->mtd);
- 	if (ret)
- 		goto error_release;
-+	dev->file_mode =3D mode;
-=20
- unlock:
- 	dev->open++;
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index af65912..6c6d807 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -321,8 +321,12 @@ static int mtdblock_release(struct mtd_blktrans_dev *m=
-bd)
- 	mutex_unlock(&mtdblk->cache_mutex);
-=20
- 	if (!--mtdblk->count) {
--		/* It was the last usage. Free the cache */
--		mtd_sync(mbd->mtd);
-+		/*
-+		 * It was the last usage. Free the cache, but only sync if
-+		 * opened for writing.
-+		 */
-+		if (mbd->file_mode & FMODE_WRITE)
-+			mtd_sync(mbd->mtd);
- 		vfree(mtdblk->cache_data);
- 	}
-=20
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index 1bbd9f2..ed270bd 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -47,6 +47,7 @@ struct mtd_blktrans_dev {
- 	struct request_queue *rq;
- 	spinlock_t queue_lock;
- 	void *priv;
-+	fmode_t file_mode;
- };
-=20
- struct mtd_blktrans_ops {
---=20
-1.7.7.5
-
+Pushed patches 1 and 2 to mtd-www.git, thank you!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-7ncJJ15SlBNDCpcFzHkn
+--=-EZOpDCIomtbOp4w4NqhS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -123,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPEZdZAAoJECmIfjd9wqK0HKAQAKFNBOcE8zxfrw0h50azrCgl
-DZtK1MrfMDzb7dpLADbX+a3k3qqwv9A4dDucD/JE0J4BvXgdmdotx8VTmPoMHyR7
-2diB4U6PN6IFlVpxdhbI8TAYXXA047/xtKGFaDTX4AEil+HxTTceH0zhSzMRE9o6
-QXB6f1qsc0CA4ESTUaHjXRzLW7za7ygTafhtDTpuQooNyiDHWmSSWbu6FE6cymXL
-AetdUD18UIWsrsmeasjilm4NlzyfQF5IMM2h6aNTJiN1xdFP6224ooUoeGHou/co
-JU5l5eE9APb5DFAT9S5LG9u0Vc7ZkOkELXqlgGwshksIdMcK4wf1HkPe4XcnWVIt
-9DPRyfNtEQiZy1+H2+EGiECJa6eWUEXUCySd8tA9tViNJWvnOPhntw2k1O7cQZ5E
-mVBvpjwJHVS1aLb20dY4ZX50SeoTrgKE7ce7gJ/tPXwERJ1lAvVmo5H3AG/XgfJY
-02G1lePQi513vNPwKynUyvdGsgiPl0n99PH/dhQUldnvbg/mctmdUHWMjsf2zM3W
-6VFeJNn9kLN2AGMqRcipcPzCBCLH+xyMi/bnsOmi1/D83Q2s0XYiIfsbq1NY2VA7
-rF8x25XTjrFAaa/HYqSDrfhmSpPz5xOOSRtrot77sy62dH7hLnGs9ZkxkGzH9qPv
-6otRBmUTHoyt0Ar5MnjK
-=kOcV
+iQIcBAABAgAGBQJPEZgXAAoJECmIfjd9wqK0LvoQAJ2rIImKnySN3BXFRTlVuPx6
+r1fp9HszC4cfgvTOQQTSu1+Xl3RuN9FSFIKQv0mcnSaUzH/V4Te1ofyAN76ZSMi5
+e0geaesbcXOW8D58+SMc+te1Q/7m4dyc0Z2J2mauhwnPVg9c3I21cLdceePcUrzR
+iL1KsUfYmEfcMKugkyzHnRM7q8mj0BxEvZ5GJqElK6I8v9NvPuwqXxrqToXVJLkH
+8oap2S31/fP7R6NXfmSSyws/H/2l80xpd3///0Jt1+A00WR/N6hNPHj16y3Uz2DY
+H0ZKERoSFeXCb8rowvRoSS41GOJp2qDx2o/hnZXldWonYPNRYXH3ymY/E5grtfqi
+qBMabURw3hlX1Js1HX+3IsNJeJxEqB9dsvNtEMPrGKrmJzz4olBkI3tOiRDuF+49
+jle8ahfzo59kix7y3ZMFTD0EZ3Zp8XW7z+GjP12T/xJCTAWDMapfAtasTUqwwCCY
+JC26emjE5WiSN4gxZoUF4AURBpscAmjnnBFs1x3C+pzKInu679brVygYRNN94FOR
+VB2cGamVPEULy67N7U0B7XrJzt5rIfxivdeSgoy8mMxGFWMqIRTihQ0QwstsoAi6
+hofg/HLMjdBRBWZ3i9XHcr95qMtgJ5p7tYfFwX6Rm2IO1adF2uL8Zhbwyu63FAsn
+TwXZA+uUXvbfpZFn12Ho
+=uYB6
 -----END PGP SIGNATURE-----
 
---=-7ncJJ15SlBNDCpcFzHkn--
+--=-EZOpDCIomtbOp4w4NqhS--
