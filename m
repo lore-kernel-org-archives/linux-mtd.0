@@ -1,14 +1,15 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rlt6B-00023b-Oc
- for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 02:12:04 +0000
+ id 1Rlt6L-00023b-O7
+ for linux-mtd@lists.infradead.org; Sat, 14 Jan 2012 02:12:14 +0000
 Received: by mail-iy0-f177.google.com with SMTP id l21so6125714iak.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 18:12:03 -0800 (PST)
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2012 18:12:13 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/4] mtd: nand: fix SCAN2NDPAGE check for BBM
-Date: Fri, 13 Jan 2012 18:11:48 -0800
-Message-Id: <1326507110-10893-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/4] mtd: nand: differentiate 1- vs. 2-byte writes when
+ marking bad blocks
+Date: Fri, 13 Jan 2012 18:11:49 -0800
+Message-Id: <1326507110-10893-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1326507110-10893-1-git-send-email-computersforpeace@gmail.com>
 References: <1326507110-10893-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -22,73 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_block_bad() doesn't check the correct pages when
-NAND_BBT_SCAN2NDPAGE is enabled. It should scan both the OOB region of
-both the 1st and 2nd page of each block.
+It seems that we have developed a bad-block-marking "feature" out of
+pure laziness:
+
+  "We write two bytes per location, so we dont have to mess with 16 bit
+  access."
+
+It's relatively simple to write a 1 byte at a time on x8 devices and 2
+bytes at a time on x16 devices, so let's do it.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   40 +++++++++++++++++++++++-----------------
- 1 files changed, 23 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/nand_base.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f0e768f..c1ec4fb 100644
+index c1ec4fb..ecc3f52 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -338,7 +338,7 @@ static int nand_verify_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
-  */
- static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- {
--	int page, chipnr, res = 0;
-+	int page, chipnr, res = 0, i = 0;
- 	struct nand_chip *chip = mtd->priv;
- 	u16 bad;
- 
-@@ -356,23 +356,29 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 		chip->select_chip(mtd, chipnr);
- 	}
- 
--	if (chip->options & NAND_BUSWIDTH_16) {
--		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos & 0xFE,
--			      page);
--		bad = cpu_to_le16(chip->read_word(mtd));
--		if (chip->badblockpos & 0x1)
--			bad >>= 8;
--		else
--			bad &= 0xFF;
--	} else {
--		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos, page);
--		bad = chip->read_byte(mtd);
--	}
-+	do {
+@@ -427,13 +427,17 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		/*
+ 		 * Write to first two pages if necessary. If we write to more
+ 		 * than one location, the first error encountered quits the
+-		 * procedure. We write two bytes per location, so we dont have
+-		 * to mess with 16 bit access.
++		 * procedure.
+ 		 */
+-		ops.len = ops.ooblen = 2;
+ 		ops.datbuf = NULL;
+ 		ops.oobbuf = buf;
+-		ops.ooboffs = chip->badblockpos & ~0x01;
++		ops.ooboffs = chip->badblockpos;
 +		if (chip->options & NAND_BUSWIDTH_16) {
-+			chip->cmdfunc(mtd, NAND_CMD_READOOB,
-+					chip->badblockpos & 0xFE, page);
-+			bad = cpu_to_le16(chip->read_word(mtd));
-+			if (chip->badblockpos & 0x1)
-+				bad >>= 8;
-+			else
-+				bad &= 0xFF;
++			ops.ooboffs &= ~0x01;
++			ops.len = ops.ooblen = 2;
 +		} else {
-+			chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos,
-+					page);
-+			bad = chip->read_byte(mtd);
++			ops.len = ops.ooblen = 1;
 +		}
- 
--	if (likely(chip->badblockbits == 8))
--		res = bad != 0xFF;
--	else
--		res = hweight8(bad) < chip->badblockbits;
-+		if (likely(chip->badblockbits == 8))
-+			res = bad != 0xFF;
-+		else
-+			res = hweight8(bad) < chip->badblockbits;
-+		ofs += mtd->writesize;
-+		page = (int)(ofs >> chip->page_shift) & chip->pagemask;
-+		i++;
-+	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
- 
- 	if (getchip)
- 		nand_release_device(mtd);
+ 		ops.mode = MTD_OPS_PLACE_OOB;
+ 		do {
+ 			ret = nand_do_write_oob(mtd, ofs, &ops);
 -- 
 1.7.5.4
