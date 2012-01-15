@@ -1,22 +1,19 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RmPtS-0002T9-W3
- for linux-mtd@lists.infradead.org; Sun, 15 Jan 2012 13:13:08 +0000
-Received: by eekb15 with SMTP id b15so65553eek.36
- for <linux-mtd@lists.infradead.org>; Sun, 15 Jan 2012 05:13:05 -0800 (PST)
-Subject: Re: [PATCH] UBI: Handle empty string in verify_mkvol_req()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Sun, 15 Jan 2012 15:13:00 +0200
-In-Reply-To: <1326463660-17852-1-git-send-email-richard@nod.at>
-References: <1326463660-17852-1-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
+Received: from ogre.sisk.pl ([217.79.144.158])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RmQJa-0000dh-R2
+ for linux-mtd@lists.infradead.org; Sun, 15 Jan 2012 13:40:07 +0000
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+To: Linux PM list <linux-pm@vger.kernel.org>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH] PM / MTD: Fix regressions related to mtd_suspend()
+Date: Sun, 15 Jan 2012 14:43:30 +0100
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1326633184.2201.9.camel@koala>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Message-Id: <201201151443.30897.rjw@sisk.pl>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-01-13 at 15:07 +0100, Richard Weinberger wrote:
-> Currently it's possible to create a volume without a name.
-> E.g:
-> ubimkvol -n 32 -s 2MiB -t static /dev/ubi0 -N ""
-> 
-> After that vtbl_check() will always fail because it does not permit
-> empty strings.
-> 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+From: Rafael J. Wysocki <rjw@sisk.pl>
 
-Well-spotted, thank you! I'll send it to Linus soon, as well as the
-other patch of yours.
+Commit 3fe4bae88460869a8e553397cd9057a4ee7ca341 (mtd: introduce
+mtd_suspend interface) introduced the mtd_suspend() routine
+which didn't check whether or not mtd and mtd->suspend were
+both valid pointers.  Later commit 079c985e7a6f4ce60f931cebfdd5ee3c3
+(mtd: do not use mtd->suspend and mtd->resume directly) added the
+check for mtd->suspend, but still it failed to check mtd.  Moreover,
+it caused mtd_suspend() to return an error code for NULL
+mtd->suspend, which makes system suspend fail on one of my test
+systems on every attempt and which is a regression from v3.2.
 
-Artem.
+Fix mtd_suspend() by making it check if mtd is not NULL and
+return 0 if mtd or mtd->suspend is NULL, which shouldn't prevent
+the system from suspending.
+
+Signed-off-by: Rafael J. Wysocki <rjw@sisk.pl>
+---
+ include/linux/mtd/mtd.h |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+Index: linux/include/linux/mtd/mtd.h
+===================================================================
+--- linux.orig/include/linux/mtd/mtd.h
++++ linux/include/linux/mtd/mtd.h
+@@ -427,9 +427,7 @@ static inline int mtd_is_locked(struct m
+ 
+ static inline int mtd_suspend(struct mtd_info *mtd)
+ {
+-	if (!mtd->suspend)
+-		return -EOPNOTSUPP;
+-	return mtd->suspend(mtd);
++	return mtd && mtd->suspend ? mtd->suspend(mtd) : 0;
+ }
+ 
+ static inline void mtd_resume(struct mtd_info *mtd)
