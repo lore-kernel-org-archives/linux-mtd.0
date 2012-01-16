@@ -1,19 +1,20 @@
-Received: from nm8-vm2.bullet.mail.ne1.yahoo.com ([98.138.90.156])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rmhlv-0004w1-2z
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 08:18:32 +0000
-References: <1326376049.44121.YahooMailNeo@web121502.mail.ne1.yahoo.com>
- <1326630286.2201.3.camel@koala>
-Message-ID: <1326701907.78896.YahooMailNeo@web121503.mail.ne1.yahoo.com>
-Date: Mon, 16 Jan 2012 00:18:27 -0800 (PST)
-From: Karsten Jeppesen <arm9263@yahoo.com>
-Subject: Re: Corrupted UBIFS, bad CRC
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-In-Reply-To: <1326630286.2201.3.camel@koala>
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RmiDF-0006C9-8D
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 08:46:46 +0000
+Message-ID: <4F13E424.7070104@ftemaximal.fr>
+Date: Mon, 16 Jan 2012 09:47:32 +0100
+From: Alexandre Gambier <a.gambier@ftemaximal.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: ubifs <linux-mtd@lists.infradead.org>
-Reply-To: Karsten Jeppesen <arm9263@yahoo.com>
+To: dedekind1@gmail.com
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
+References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
+ <4F0D4405.2060800@ftemaximal.fr>
+ <1326554080.14299.2.camel@sauron.fi.intel.com>
+In-Reply-To: <1326554080.14299.2.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-Of course I can. Anything I can do to help.
+On 01/14/2012 04:14 PM, Artem Bityutskiy wrote:
+> On Wed, 2012-01-11 at 09:10 +0100, Alexandre Gambier wrote:
+>>>> hi everyone,
+>>>>
+>>>> I use UBI volume and UBIFS on top of a NAND device with an embedded
+>>>> video meter.
+>>>> Everything works fine except that when a UBI volume is mounted the
+>>>> following warning is outputted :
+>>>> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
+>>>> handling, reserved 0, need 20"
+>>> Looks like the pool of reserved PEBs is fully used. Fo how long have you
+>>> been using this flash?
+>> This is a brand new flash...I've been using it for 2 months.
+> OK, in this case this is most probably because you specified too large
+> sizes in your ubinize.cfg. So that your volumes take all eraseblocks.
+> Try to make some volumes smaller.
 
-I put it on one of my outside servers and I put as well the /dev/mtd4 as the ubi0_0 you asked for:
-
-<http://download.gnist.skov.com/corrupt_mtd4_20120116.img>
-and
-<http://download.gnist.skov.com/ubi0_0_20120116.img>
-
-Have a nice one,
-
-Karsten
-
-
-
------ Original Message -----
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Karsten Jeppesen <arm9263@yahoo.com>
-Cc: ubifs <linux-mtd@lists.infradead.org>
-Sent: Sunday, January 15, 2012 1:24 PM
-Subject: Re: Corrupted UBIFS, bad CRC
-
-On Thu, 2012-01-12 at 05:47 -0800, Karsten Jeppesen wrote:
-> Hi Guys,
-
-Can you make a dump of your UBI volume and share it with me?
-
-dd if=/dev/ubi0_0 of=ubi.img
-
-and share ubi.img with me?
+For example, for my 128MiB partition I specified 120MiB which is 7% 
+smaller than the total size.
+What size would you specify for a 128MiB partition ?
+thanks for your help.
