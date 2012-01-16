@@ -1,23 +1,23 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-tul01m020-f177.google.com ([209.85.214.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RmkW8-0004vO-JH
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 11:14:25 +0000
-Received: by iakl21 with SMTP id l21so10221186iak.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 03:14:23 -0800 (PST)
-Message-ID: <1326712567.14299.49.camel@sauron.fi.intel.com>
-Subject: Re: ubifs mount fails due to corrupt empty space
+ id 1RmkZr-0005Cz-FF
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 11:18:16 +0000
+Received: by obcuz6 with SMTP id uz6so1589546obc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 03:18:14 -0800 (PST)
+Message-ID: <1326712798.14299.53.camel@sauron.fi.intel.com>
+Subject: Re: ubiformat & linux 3.0.14-rt
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Mon, 16 Jan 2012 13:16:07 +0200
-In-Reply-To: <4F10003D.2010809@parrot.com>
-References: <CALuiOdd6vgDogxf9+RFWhb-uUoDLji2CawB3Gvisg2iW4C7PiA@mail.gmail.com>
- <4F10003D.2010809@parrot.com>
+To: Tim Sander <tim01@iss.tu-darmstadt.de>
+Date: Mon, 16 Jan 2012 13:19:58 +0200
+In-Reply-To: <201201161143.23934.tim01@iss.tu-darmstadt.de>
+References: <201201131006.33998.tim01@iss.tu-darmstadt.de>
+ <1326468894.19039.45.camel@sauron.fi.intel.com>
+ <201201161143.23934.tim01@iss.tu-darmstadt.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3MyDH1/b0I1sMwrD5w1h"
+ boundary="=-c3GvooQ5+3QIF3kPGCKr"
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gabriel Matni <gabriel.matni@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,27 +29,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3MyDH1/b0I1sMwrD5w1h
+--=-c3GvooQ5+3QIF3kPGCKr
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-01-13 at 10:58 +0100, Matthieu CASTET wrote:
-> > My main questions are:
-> > 1) What should be the expected behavior of ubifs in this case?
-> > 2) Is there a systematic way to recover from a situation like that?
-> ubifs expect empty space to be protected by ecc. But if empty page ecc is=
- not
-> ff, this need hack in the nand driver.
+On Mon, 2012-01-16 at 11:43 +0100, Tim Sander wrote:
+> > http://git.infradead.org/ubifs-2.6.git/commit/1f5d78dc4823a85f112aaa2d0=
+f176
+> > 24f8c2a6c52
+> > http://git.infradead.org/ubifs-2.6.git/commit/d34315da9146253351146140e=
+a4b
+> > 277193ee5e5f
+> Do you think it is worthwhile checking the ubifs 3.0 backport with the ab=
+ove=20
+> two cherry-picked?
 
-I guess one could also teach UBI/UBIFS to do this. I do not have time,
-but if someone with clue had it - I could help by suggesting and
-reviewing.
+I've pushed them to the ubifs-v3.0 back-port tree as well. But I think
+they are useless - sorry, I was confused.
+
+Also, if you say this happens when you run ubiformat - this is something
+about your flash driver. Do you use NOR or NAND? Can you detect which
+interrupt takes too much time? If the theory is that this is your flash
+driver interrupt - can you verify it by injecting some instrumentation
+to the interrupt handler?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3MyDH1/b0I1sMwrD5w1h
+--=-c3GvooQ5+3QIF3kPGCKr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +65,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPFAb3AAoJECmIfjd9wqK0/WAP/2YcjpBd4xoJhYxGUORHCRTb
-pP2vyK8/FA/39zUoBEtDRBA0+7FgM2YIL0HzFZUsMOFfwW6KKfU0pq++DkmsWlHV
-/pLWvgNPoj52h2W+CHFNQjaaNM7g5civ5mNz/iiQrV8I5i1Zorq//1EKvt2exxlz
-oljakBJB8lpYERrLTlRqrFxNsdO9NfeeZkjflx4OJRoqj5RHXrCjviSKKWaP+KRl
-lf50h4kKGrndkKmS/G2SFL/ocgEXBBsG2hMiQ7VSWCagEeZ6JYPetWCWeYFrGRPm
-zH6FsahHP+wbCIKGR8K+IK7uXd2AqSplOIIsQlarU9nR6gKoXG2MD7EMrqIXAPeJ
-pF+ls5AtOd4c26G53Xa3kUbI6yQEjYSZGb3nE6FIOi9bxLLmE5yzNteLOzoPOvAy
-9meUrbFgPOzyMqYBT5Vk4LoGBvuCnNeCF6MVf+TRUsQ4HpjFYKe0uvef2uZKMlrU
-t+CZNQgWFPbpWXQ/o0Bcdji57auQjiPGd6HVSwbz74gde237YmKG4Nrbq+BQAG+k
-TrHOtDKuUgONsLmY0glXnLT2QpiYKVALDvvnkhh3haF1pmiRrYYHIPKFoF1tiM8S
-Tbh5zOP9CXXfAlRqI8XWYx2Dwbje4WBzLv4B25zF02WnQrzDKW03Hat30MkX7EWp
-Ps4DJasP6h/dbqMNH8FA
-=3kob
+iQIcBAABAgAGBQJPFAfeAAoJECmIfjd9wqK0egYQAJUkxpGFx1CoWXcrjgeQewWo
+3o0o9EcMR5U6X2K3aAEUgMwKVh4uH07K4mnkNrTBJSU01B1nXXRB4GJPfEJLP1jX
+1wJXDQXAOAnm4ZIVQqiIJYZr2267op7zRKjQXXEmypOaIt2JhNTFM0AOZCp2620f
+YZ880AKP2q9T2Ucl30Z2cKjYgxw0CU6Fs9VcNcZ6pQehxGaygwTzDTBc00wcy8CD
+pr/U9bI+92lW6ZybGufJNefPUhAjGRpFzjTqPUzrPDSvVO66gcfaUNjWDPwDWjNx
+xP3u4lxsDNLqTpu7EPMKxUiHHwayFpw39tv/lJrHSpEiPEeplbEsHcVCBkjWS68e
+5BWiPkTrM9q2yIaCwEywxQVacvvePfMb+bvyX6oF6SVhNL3B+1iRbcP2Q0eRaQaP
+zSjs1FPnARdQdWOOwCcXUzZUUBCXFTB6j4p4q+io6yS5DpxmAzbXm79e9dl6by82
+i9awU8PBnHAQ7j2e7zJyPfzpXwT2SkBb5fbINHfvNQ5skJ0VLooNT5NmPdzlBY1h
+hRIiXQcg5gxPVarsbyc1TonFwHnSGG6zWOyXItXV82JPHcqjAOVrrVlTUKtTNV3k
+6w9xUR0mDvxYHPob7RBL1qD2WYJfvkyBYsJw/3aqQMa5BibO4J5HhdeXg4TXQS3b
+N/RiKNh2rr3K4Plic/hH
+=UkBJ
 -----END PGP SIGNATURE-----
 
---=-3MyDH1/b0I1sMwrD5w1h--
+--=-c3GvooQ5+3QIF3kPGCKr--
