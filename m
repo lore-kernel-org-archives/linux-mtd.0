@@ -1,26 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rmkqj-0006kp-CI
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 11:35:43 +0000
-Received: by iakl21 with SMTP id l21so10250325iak.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 03:35:37 -0800 (PST)
-Message-ID: <1326713840.14299.61.camel@sauron.fi.intel.com>
-Subject: Re: linux/mtd/gpmi-nand.h: No such file or directory
+ id 1RmlJd-00011B-Nv
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 12:05:34 +0000
+Received: by iakl21 with SMTP id l21so10290962iak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 04:05:32 -0800 (PST)
+Message-ID: <1326715636.14299.66.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/4] mtd: nand: erase block before marking bad
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Mon, 16 Jan 2012 13:37:20 +0200
-In-Reply-To: <4F140B58.5080401@freescale.com>
-References: <4F1013DC.8040902@prolan.hu>
- <1326712888.14299.55.camel@sauron.fi.intel.com>
- <4F14097D.9060601@freescale.com>
- <1326713359.14299.59.camel@sauron.fi.intel.com>
- <4F140B58.5080401@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 16 Jan 2012 14:07:16 +0200
+In-Reply-To: <1326507110-10893-1-git-send-email-computersforpeace@gmail.com>
+References: <1326507110-10893-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-W+xI9tWClH0Mvtq8xV95"
+ boundary="=-hcNL0QtSN7ZwRcUkW8Vx"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Peter Rusko <rusko.peter@prolan.hu>,
- Shawn Guo <shawn.guo@freescale.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,26 +27,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-W+xI9tWClH0Mvtq8xV95
+--=-hcNL0QtSN7ZwRcUkW8Vx
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-01-16 at 19:34 +0800, Huang Shijie wrote:
-> Hi,
-> >> Shawn has added it to his git tree to fix the compiling error.
-> > This issue is upstream for long time, when are you planning to submit
-> > this patch? Can you send it now and I'll ask David to merge it - there
-> to Shawn:
->     When does your git tree been merged? Should I sent a patch to fix it?
+On Fri, 2012-01-13 at 18:11 -0800, Brian Norris wrote:
+> Many NAND flash systems (especially those with MLC NAND) cannot be
+> reliably written twice in a row. For instance, when marking a bad block,
+> the block may already have data written to it, and so we should attempt
+> to erase the block before writing a bad block marker to its OOB region.
+>=20
+> We can ignore erase failures, since the block may be bad such that it
+> cannot be erased properly; we still attempt to write zeros to its spare
+> area.
+>=20
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Not mine - David's. I do not know when exactly, but I suppose withing
-several days. Just send the fix out when you have it (and tested).
+All four look good, pushed to l2-mtd.git, thanks.
+
+What are your plans WRT marking blocks as bad both in the OOB and the
+table?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-W+xI9tWClH0Mvtq8xV95
+--=-hcNL0QtSN7ZwRcUkW8Vx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -59,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPFAvwAAoJECmIfjd9wqK0zWUQAI61bzWr8nX3cJSMqwBwdvTA
-038FYFqQYhvCbK3rf1PCQc46fObrAketya5xaZaX/fXfRcnM9yeTa5Dl2NViKxhE
-GQeiue6oIo+ylBaAgbEcAYkgj/SUZ0+lk2pnYT+ctLLjBhZF4MhjTDj0ippfZIp/
-mT4v6JpnmTZ7jMvnAfM6FOUVfyYLpzYZs8kO9f1Oe1oqOKLaKsTPrV1BcVuJAibQ
-BZo1jIjNzflBaPDB7gAT97Szow4uVNpancEMZOaMlpqJUf83wYv03MLSz7lHWaNp
-GLZ8aISUiVjEoj2uNcpeZsyzS0m5RgtWkfjmPjpTrB7HieJq0SdYajW0zogx8w/B
-UBkVphcm0ytm15kz7rfPdH3TxikunW4QYbLA8hYjkfIkpIDFr5/D8PjD6d/NFtfK
-dE4rK89FtjEj87Q0gqIeFMakS8jF+TU+bZFpubvHwTGNMbiPBYQehYR26dNinDJa
-anTvKu1FVouAK7nexGMWN2qClJZiajS3KiDgrn3jiFEc5xWZiGpzGpjYzjsMRjD8
-pMwgiMO1bHCRrI+qvLr2enljf9L3ksJ8KPatkSR/nGM8oXE97ep/ZJTmd0dqcMAD
-cT7xleT7XlqOJLMyxMZw7YAjjDrzIIYFYuLerK01ilIX46FK3XN+Q5Vxzp3HoE89
-+j9vVHEl3Bte03Uvox3c
-=Ad7p
+iQIcBAABAgAGBQJPFBL0AAoJECmIfjd9wqK0fQMQAMyymvaBnswy6N7f1VWGBz8l
+c/ru+X47NFS4DEqF6tRf0EbxT5bKgMhHfnbAumljymbqDl6//EMD3sVIYsvuwNEf
+/kIbG9fLlF4tcarIRDJknlv51OkokVpKhWcotDkn6B9M3YJmAE9nmndZueKnnUMG
+DRzTjihkaMgJmbXMjbb1IGn6qVqwGDAnSOW27xLwpFVTsIk4kB+4WuKMZNROp0Cq
+ShYm+lNOpXO8yt1G1rYBjEZ+//OIx1MSka0jqNtXOdmttE0LWJJ+Sb3CGhV76/wm
+7gmeOI0JDhbO+1dKjjSSvp4P4ERhwoB/kTD0vZSI8c5bc48ohFY8cSelW2CKD2S8
+G14LLcOmuPcILlnqXmIt6Inj/Ai2URF2GT9JQH+IWRHm5eFEmTLetq3cpyqABBNe
+b31qnIUcGRxjpEF1wnQQpD0wF6vCoU8ylxh9nfjJGE3EXREMlaepSr5d8orpdiJ3
+pwn8jAVe7rRRi1u4N5Br7iIw2EnlPUsuDcdcwBgjnTdtBdtO0a6ysWR17dzn5/Oo
+H+4UkOBam3gQzXUHY59S8vSrbJ2q4JHj0b7rnDB6xAgKYkAGLWNMiJIBVA8iRodi
+tuO1tiQXyaL8id07smAfQWCpIOEGaPjIwTBkni4ziSt46as/wmqYyzGcl74rqdYr
+c/aPiRTSENeJE39g2vY+
+=Zz/Z
 -----END PGP SIGNATURE-----
 
---=-W+xI9tWClH0Mvtq8xV95--
+--=-hcNL0QtSN7ZwRcUkW8Vx--
