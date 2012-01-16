@@ -1,24 +1,25 @@
-Received: from mail-tul01m020-f177.google.com ([209.85.214.177])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RmlaM-0002m9-1y
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 12:22:50 +0000
-Received: by obcuz6 with SMTP id uz6so1692082obc.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 04:22:48 -0800 (PST)
-Message-ID: <1326716672.14299.70.camel@sauron.fi.intel.com>
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
+ id 1Rmlb5-0002qi-1Q
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 12:23:35 +0000
+Received: by iakl21 with SMTP id l21so10316001iak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 04:23:33 -0800 (PST)
+Message-ID: <1326716717.14299.71.camel@sauron.fi.intel.com>
+Subject: Re: linux/mtd/gpmi-nand.h: No such file or directory
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexandre Gambier <a.gambier@ftemaximal.fr>
-Date: Mon, 16 Jan 2012 14:24:32 +0200
-In-Reply-To: <4F13E424.7070104@ftemaximal.fr>
-References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
- <4F0D4405.2060800@ftemaximal.fr>
- <1326554080.14299.2.camel@sauron.fi.intel.com>
- <4F13E424.7070104@ftemaximal.fr>
+To: Shawn Guo <shawn.guo@freescale.com>
+Date: Mon, 16 Jan 2012 14:25:17 +0200
+In-Reply-To: <20120116123245.GA19835@S2100-06.ap.freescale.net>
+References: <4F1013DC.8040902@prolan.hu>
+ <1326712888.14299.55.camel@sauron.fi.intel.com>
+ <4F14097D.9060601@freescale.com>
+ <20120116123245.GA19835@S2100-06.ap.freescale.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-oyrpbiiZAv0ycvfBgBDp"
+ boundary="=-9sJnxNsCEKHYQU4qVJK3"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Huang Shijie <b32955@freescale.com>,
+ Peter Rusko <rusko.peter@prolan.hu>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,50 +31,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-oyrpbiiZAv0ycvfBgBDp
+--=-9sJnxNsCEKHYQU4qVJK3
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-01-16 at 09:47 +0100, Alexandre Gambier wrote:
-> On 01/14/2012 04:14 PM, Artem Bityutskiy wrote:
-> > On Wed, 2012-01-11 at 09:10 +0100, Alexandre Gambier wrote:
-> >>>> hi everyone,
-> >>>>
-> >>>> I use UBI volume and UBIFS on top of a NAND device with an embedded
-> >>>> video meter.
-> >>>> Everything works fine except that when a UBI volume is mounted the
-> >>>> following warning is outputted :
-> >>>> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad =
-PEB
-> >>>> handling, reserved 0, need 20"
-> >>> Looks like the pool of reserved PEBs is fully used. Fo how long have =
-you
-> >>> been using this flash?
-> >> This is a brand new flash...I've been using it for 2 months.
-> > OK, in this case this is most probably because you specified too large
-> > sizes in your ubinize.cfg. So that your volumes take all eraseblocks.
-> > Try to make some volumes smaller.
->=20
-> For example, for my 128MiB partition I specified 120MiB which is 7%=20
-> smaller than the total size.
+On Mon, 2012-01-16 at 20:32 +0800, Shawn Guo wrote:
+> No, it's not on my tree.  I folded the patch that fixes this error in
+> the series[1] of mxs-dma dma_transfer_direction migration as patch #3.
+> The series has been picked up by Vinod.  I suppose Vinod should send
+> the series to Linus for 3.3, but I have not seen them on Linus' tree.
+> Vinod?
 
-You should be able to find the UBI overhead formulas on the MTD web
-site. Try to specify less than that and see. You should leave enough
-PEBs reserved for bad eraseblocks handling - it is 1% by default.
-
-> What size would you specify for a 128MiB partition ?
-> thanks for your help.
-
-I do not have time to calculate and I do not remember. But the easiest
-is to use something small enough and put the auto-resize flag - it will
-then make it to be the maximum size. E.g., use 100MiB, boot and see to
-how much it resized.
+Well, since this is a build fix, I suggest to merge it right away.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-oyrpbiiZAv0ycvfBgBDp
+--=-9sJnxNsCEKHYQU4qVJK3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -81,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPFBcAAAoJECmIfjd9wqK0mkUQALCVbGXblMCEwX7RWcARRBrS
-n4EIFV4soVUVd4IQUCrcCZ+VXwIHGfTZzaUW3ZW3j2SDpR+RU3vcIDzijgkB0w00
-zcKeYQpjCbPtj4G91TBzydQw3loIsyhuPhki8BULRhmrIHUe266WOh6fYymH7Awg
-QVBrpH8VZ3D7D7WosiEPJFwQu7vyW/qQOqsjGLmiuuBtXvKSO6E4Y1FqMx7+htIk
-EmhwacBXp8E8i563pJUwOQNIA1PfOb8Pdk7Jjj7TkpphKE/Bf2+hKftRKkX2sxCF
-uD7Rb6yc6AHPzQBjkv5clo9L9qdtBN729v6KblFanQqchciPVC2BU62MwfBCxBuA
-I5CNV8QHZ9LqNZhMf6JIWwn68wVVMShFLe+ApF8V+dyp88YUG4K1NLCO71wL7qnP
-9zUgDodJFcrXg8+q1ODrJ4nFNcscB9TpsnlDJ2JKc5dqy0ZVQb8ZB2uWSmOsMndJ
-Mq6W+M7WENV/H5ONHKFEZfUvnQb0PSg3DxBOYf3AGYlhwnd3c8fSOEWkK+lGvySg
-HN0Xw5q8yk1ZRb5JyrNFC8ReBW9LU2+NbF7VdJ5kPKz+Aux+QAhFg/IW2J8wSM32
-N/EWGYR5HIUfeHpFVT+mOjNQBxanMe9yXXMKTYr4KGS4q5HUxtTyIFGOODQw6cZ8
-AlpCgJoauuCSTwfK5BvA
-=lrf1
+iQIcBAABAgAGBQJPFBctAAoJECmIfjd9wqK0zhQQAJm4BEZ8XsTUo0MVSNqm/VFq
+g3JY32eOMpIuY8mFTDn4cGIBoB7L8o7mklOVnZ8uIKY+FKwYfSCxjeRuMv4cvPv2
+2uUdyNIhFrCsygV7WFgEzO1DSO4MRBKEYxF1PzNf9AunqHeUfLLyihJIGfRMlOkM
+dfiqnlwEY504gbskaRr4CeZyju1pYXcFUWlZoCSCcMwG5oGKZIW9Dj3EhjF/qDCq
+b7Ix8laDrByFQztwNQXR6GOeWljjHmmF0irLd17y28csP/U1nUT7VEekcW1PwL+6
+KNwomKvul094R2cCzL4/BVBsj1qZnEcqBUITXumayh43mE4R+RQqrV3af20UM8yB
+OM+7sdXyx+9NLa0EC1kPWjzrj+K86qx75PHBx9P+sqx8ZfHcNLrukUKvKEcY/IoU
+4fXABHuJeEpWjK178g4hmws4mENOwU5cY2IVC2LeJczuX9pYadry6KCCYYqRHHfs
+gnmwALKfTvh5xhFUbiHdyVfjDi+WUeZhud95YRjogR1r5WrRidf0BThv1uPZBRiH
+4mk1qGnOXYOmvjV1cO4ZHXSO4r5Zwxm31++m3sWUFxvCiWaKBydDVsV7k4GMA7iW
+7jcFexmLPRVAKYlX2imqKFL9KV8Stp0SVJkMg6IV2DGoLIAuYYIGJiHlnkE3YZze
+6iWdA7lt+uh0gg/Wn4UY
+=+8Ti
 -----END PGP SIGNATURE-----
 
---=-oyrpbiiZAv0ycvfBgBDp--
+--=-9sJnxNsCEKHYQU4qVJK3--
