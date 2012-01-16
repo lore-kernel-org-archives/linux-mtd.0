@@ -1,16 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RmsQ3-0005Dc-Na
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 19:40:40 +0000
-Received: by iakl21 with SMTP id l21so10941102iak.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 11:40:35 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: nand: fixup "mtd: nand: erase block before marking bad"
-Date: Mon, 16 Jan 2012 11:40:45 -0800
-Message-Id: <1326742845-22788-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from ogre.sisk.pl ([217.79.144.158])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RmtbV-0001PD-4Q
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 20:56:34 +0000
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] PM / MTD: Fix regressions related to mtd_suspend()
+Date: Mon, 16 Jan 2012 21:59:47 +0100
+References: <201201151443.30897.rjw@sisk.pl> <201201160018.02305.rjw@sisk.pl>
+ <1326705441.14299.10.camel@sauron.fi.intel.com>
+In-Reply-To: <1326705441.14299.10.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201201162159.47331.rjw@sisk.pl>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Linux PM list <linux-pm@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following commit had an incorrect solution:
+On Monday, January 16, 2012, Artem Bityutskiy wrote:
+> Thanks Rafael!
+> 
+> I've pushed this patch to l2-mtd-2.6.git (David, would you please merge
+> it upstream?).
+> 
+> Rafael, should I add some tags with your name like Tested-by or
+> Acked-by?
 
-   mtd: nand: erase block before marking bad
-   commit ece080820c9dddf467b6da08a8bfbab66615a03b
+Traditionally, the "Reported-and-tested-by" tag is used for such things,
+so you can do that too ...
 
-When trying to erase a block before writing to its OOB marker, we erase
-after we mark the memory BBT. This causes an error like this:
+Thanks,
+Rafael
 
-   nand_erase_nand: attempt to erase a bad block at page 0x00000000
 
-This patch is a fixup that moves the erase code block to the correct
-location.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_base.c |   19 +++++++++++--------
- 1 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ecc3f52..c6603d4 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -400,6 +400,17 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	uint8_t buf[2] = { 0, 0 };
- 	int block, ret, i = 0;
- 
-+	if (!(chip->bbt_options & NAND_BBT_USE_FLASH)) {
-+		struct erase_info einfo;
-+
-+		/* Attempt erase before marking OOB */
-+		memset(&einfo, 0, sizeof(einfo));
-+		einfo.mtd = mtd;
-+		einfo.addr = ofs;
-+		einfo.len = 1 << chip->phys_erase_shift;
-+		nand_erase_nand(mtd, &einfo, 0);
-+	}
-+
- 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
- 		ofs += mtd->erasesize - mtd->writesize;
- 
-@@ -413,14 +424,6 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		ret = nand_update_bbt(mtd, ofs);
- 	else {
- 		struct mtd_oob_ops ops;
--		struct erase_info einfo;
--
--		/* Attempt erase before marking OOB */
--		memset(&einfo, 0, sizeof(einfo));
--		einfo.mtd = mtd;
--		einfo.addr = ofs;
--		einfo.len = 1 << chip->phys_erase_shift;
--		nand_erase_nand(mtd, &einfo, 0);
- 
- 		nand_get_device(chip, mtd, FL_WRITING);
- 
--- 
-1.7.5.4
+> From d0eb0d769923d562781fcf43fdc6fa28e3823756 Mon Sep 17 00:00:00 2001
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Date: Mon, 16 Jan 2012 11:07:16 +0200
+> Subject: [PATCH] mtd: fix MTD suspend
+> 
+> Commits 3fe4bae88460869a8e553397cd9057a4ee7ca341 and
+> 079c985e7a6f4ce60f931cebfdd5ee3c3 broke MTD suspend in 2 ways:
+> 
+> 1. When the '->suspend' method is not present, we return -EOPNOTSUPP, but
+>    the callers of 'mtd_suspend()' expects 0 instead.
+> 2. Checking of the 'mtd' parameter against NULL has been incorrectly removed
+>    in 'mtd_cls_suspend()'.
+> 
+> This patch fixes the breakages. This has been found, analyzed, reported
+> and tested by Rafael J. Wysocki <rjw@sisk.pl>.
+> 
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> ---
+>  drivers/mtd/mtdcore.c   |    2 +-
+>  include/linux/mtd/mtd.h |    4 +---
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b265188..de96865 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -119,7 +119,7 @@ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+>  {
+>         struct mtd_info *mtd = dev_get_drvdata(dev);
+>  
+> -       return mtd_suspend(mtd);
+> +       return mtd ? mtd_suspend(mtd) : 0;
+>  }
+>  
+>  static int mtd_cls_resume(struct device *dev)
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 1a81fde..d8c7aad 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -427,9 +427,7 @@ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  
+>  static inline int mtd_suspend(struct mtd_info *mtd)
+>  {
+> -       if (!mtd->suspend)
+> -               return -EOPNOTSUPP;
+> -       return mtd->suspend(mtd);
+> +       return mtd->suspend ? mtd->suspend(mtd) : 0;
+>  }
+>  
+>  static inline void mtd_resume(struct mtd_info *mtd)
+> 
