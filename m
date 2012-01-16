@@ -1,48 +1,16 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RmsL9-0004SV-2j
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 19:35:37 +0000
-Received: by wgbdr12 with SMTP id dr12so1857532wgb.0
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 11:35:32 -0800 (PST)
-Date: Mon, 16 Jan 2012 21:35:14 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v3 0/6] NAND BBM + BBT updates
-Message-ID: <20120116213514.6264f88b@pixies.home.jungo.com>
-In-Reply-To: <1326492734.2258.13.camel@koala>
-References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
- <4F0C086A.5070608@linutronix.de> <1326320928.2338.37.camel@koala>
- <20120112095845.3c9928d1@pixies.home.jungo.com>
- <1326492734.2258.13.camel@koala>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>,
- Florian Fainelli <florian@openwrt.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Wolfram Sang <w.sang@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>
+ id 1RmsQ3-0005Dc-Na
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 19:40:40 +0000
+Received: by iakl21 with SMTP id l21so10941102iak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 11:40:35 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: fixup "mtd: nand: erase block before marking bad"
+Date: Mon, 16 Jan 2012 11:40:45 -0800
+Message-Id: <1326742845-22788-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,31 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 14 Jan 2012 00:12:11 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2012-01-12 at 09:58 +0200, Shmulik Ladkani wrote:
-> > On Thu, 12 Jan 2012 00:28:45 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > > In my view, OOB BB markers is the primary, reliable, and simple
-> > > mechanism. And BBT is just an additional optimization to speed up system
-> > > startup.
-> > > 
-> > > So in general I support Brian's efforts
-> > 
-> > I'm in favor of this approach as well.
-> > However IMO it should (1) be 'bbt_options' configurable;
-> 
-> Why does it have to be configurable? Do you have some example in mind?
-> 
+The following commit had an incorrect solution:
 
-Can't tell if it's a good enough reason, but it looks like some are
-happy with existing behavior (do not expect on-flash BBT reliability
-issues, or pleased with current handling of it, and have no
-bootloader/kernel OOB-vs-BBT configuration clashes), and as such, they
-are simply not interested of this change.
-Must it be enforced?
+   mtd: nand: erase block before marking bad
+   commit ece080820c9dddf467b6da08a8bfbab66615a03b
 
-Also, the change introduces some fine nuances (the OOB BBM test needed
-within chip->block_markbad, or alternatively, lazy sync code).
-Wouldn't it be better to have them scoped using a config?
+When trying to erase a block before writing to its OOB marker, we erase
+after we mark the memory BBT. This causes an error like this:
 
-Regards
-Shmulik
+   nand_erase_nand: attempt to erase a bad block at page 0x00000000
+
+This patch is a fixup that moves the erase code block to the correct
+location.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |   19 +++++++++++--------
+ 1 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ecc3f52..c6603d4 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -400,6 +400,17 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	uint8_t buf[2] = { 0, 0 };
+ 	int block, ret, i = 0;
+ 
++	if (!(chip->bbt_options & NAND_BBT_USE_FLASH)) {
++		struct erase_info einfo;
++
++		/* Attempt erase before marking OOB */
++		memset(&einfo, 0, sizeof(einfo));
++		einfo.mtd = mtd;
++		einfo.addr = ofs;
++		einfo.len = 1 << chip->phys_erase_shift;
++		nand_erase_nand(mtd, &einfo, 0);
++	}
++
+ 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+ 		ofs += mtd->erasesize - mtd->writesize;
+ 
+@@ -413,14 +424,6 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		ret = nand_update_bbt(mtd, ofs);
+ 	else {
+ 		struct mtd_oob_ops ops;
+-		struct erase_info einfo;
+-
+-		/* Attempt erase before marking OOB */
+-		memset(&einfo, 0, sizeof(einfo));
+-		einfo.mtd = mtd;
+-		einfo.addr = ofs;
+-		einfo.len = 1 << chip->phys_erase_shift;
+-		nand_erase_nand(mtd, &einfo, 0);
+ 
+ 		nand_get_device(chip, mtd, FL_WRITING);
+ 
+-- 
+1.7.5.4
