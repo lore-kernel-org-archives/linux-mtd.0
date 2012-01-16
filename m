@@ -1,21 +1,20 @@
-Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rms0h-00028r-Fe
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 19:14:28 +0000
-Message-ID: <4F1476F2.7040800@newsguy.com>
-Date: Mon, 16 Jan 2012 11:13:54 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rms4L-0003It-PO
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 19:18:14 +0000
+Received: by wibhq15 with SMTP id hq15so2905985wib.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2012 11:18:09 -0800 (PST)
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
- device
-References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
- <1326183912.8847.10.camel@sauron.fi.intel.com> <4F0E567F.8020405@newsguy.com>
- <87y5t9xm0r.fsf@free.fr>
-In-Reply-To: <87y5t9xm0r.fsf@free.fr>
+In-Reply-To: <1326715636.14299.66.camel@sauron.fi.intel.com>
+References: <1326507110-10893-1-git-send-email-computersforpeace@gmail.com>
+ <1326715636.14299.66.camel@sauron.fi.intel.com>
+Date: Mon, 16 Jan 2012 11:18:09 -0800
+Message-ID: <CAN8TOE92_AgqnDf4OOd46eSwux9_SHMMn-S1WK1DY720wtrr9g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: erase block before marking bad
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/15/2012 03:06 AM, Robert Jarzmik wrote:
-> I looked through. It looks good to me.
-
-
-Thanks again Robert.
-
-
-> I have one warning remaining (on top of Linus tree):
-> drivers/mtd/nand/docg4.c: In function '__check_ignore_badblocks':
-> drivers/mtd/nand/docg4.c:52: warning: return from incompatible pointer type
-
-
-Ha! This is the result of a patch to moduleparam.h that just went in on Friday
-(commit 72db395ffadb1d33233fd123c2bf87ba0198c6c1)
-
-According to Rusty Russell, this will soon become a hard error.
-
-
+On Mon, Jan 16, 2012 at 4:07 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-01-13 at 18:11 -0800, Brian Norris wrote:
+>> Many NAND flash systems (especially those with MLC NAND) cannot be
+>> reliably written twice in a row. For instance, when marking a bad block,
+>> the block may already have data written to it, and so we should attempt
+>> to erase the block before writing a bad block marker to its OOB region.
 >
-> My feeling is that the driver is good to be sent upstream, with my:
-> Reviewed-by: Robert Jarzmik <robert.jarzmik@free.fr>
->
-> If anything comes up, it can be fixed later, and I think we should go forward.
+> All four look good, pushed to l2-mtd.git, thanks.
 
+Sorry, but actually this "erase block before marking bad" patch is
+incorrect. I didn't test this particular revision, and so I forgot
+that the erase fails because the block is already marked as bad:
 
-I'd like to resubmit the patch to fix the warning.  Alternatively, I can follow
-up with a separate patch once this one is pushed if the maintainers prefer.
+  nand_erase_nand: attempt to erase a bad block at page 0x...
 
-Thanks,
-Mike
+I'll send a fixup patch on top of l2-mtd-2.6.
+
+> What are your plans WRT marking blocks as bad both in the OOB and the
+> table?
+
+I don't have a 100% definite plan, but I've been trying to track the
+comments/suggestions in the other thread. I'll reply to that thread so
+we have the right reply-chain and CC list for discussion.
+
+Brian
