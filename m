@@ -1,20 +1,24 @@
-Received: from lnx503.hrz.tu-darmstadt.de ([130.83.156.232])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rmo2J-0003wL-Rf
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 14:59:53 +0000
-From: Tim Sander <tim01@iss.tu-darmstadt.de>
-To: linux-mtd@lists.infradead.org, dedekind1@gmail.com
-Subject: Re: ubiformat & linux 3.0.14-rt
-Date: Mon, 16 Jan 2012 15:59:43 +0100
-References: <201201131006.33998.tim01@iss.tu-darmstadt.de>
- <201201161359.49629.tim01@iss.tu-darmstadt.de>
- <1326719043.14299.88.camel@sauron.fi.intel.com>
-In-Reply-To: <1326719043.14299.88.camel@sauron.fi.intel.com>
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rmp8t-0004UF-IK
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2012 16:10:47 +0000
+Message-ID: <4F144C38.60507@ftemaximal.fr>
+Date: Mon, 16 Jan 2012 17:11:36 +0100
+From: Alexandre Gambier <a.gambier@ftemaximal.fr>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+To: dedekind1@gmail.com
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB handling
+References: <4F0C3339.6070909@ftemaximal.fr> <1326230599.2335.4.camel@koala>
+ <4F0D4405.2060800@ftemaximal.fr>
+ <1326554080.14299.2.camel@sauron.fi.intel.com>
+ <4F13E424.7070104@ftemaximal.fr>
+ <1326716672.14299.70.camel@sauron.fi.intel.com>
+ <4F141802.5080904@ftemaximal.fr>
+ <1326717092.14299.74.camel@sauron.fi.intel.com>
+In-Reply-To: <1326717092.14299.74.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201201161559.44592.tim01@iss.tu-darmstadt.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem
-Am Montag, 16. Januar 2012 schrieb Artem Bityutskiy:
-> On Mon, 2012-01-16 at 13:59 +0100, Tim Sander wrote:
-> > Am Montag, 16. Januar 2012 schrieb Artem Bityutskiy:
-> > > On Mon, 2012-01-16 at 11:43 +0100, Tim Sander wrote:
-> > > > > http://git.infradead.org/ubifs-2.6.git/commit/1f5d78dc4823a85f112aa
-> > > > > a2d0 f176 24f8c2a6c52
-> > > > > http://git.infradead.org/ubifs-2.6.git/commit/d34315da9146253351146
-> > > > > 140e a4b 277193ee5e5f
-> > > > 
-> > > > Do you think it is worthwhile checking the ubifs 3.0 backport with
-> > > > the above two cherry-picked?
-> > > 
-> > > I've pushed them to the ubifs-v3.0 back-port tree as well. But I think
-> > > they are useless - sorry, I was confused.
-> > 
-> > Ok i was wondering that logging was causing this cind of behavoir...
-> > 
-> > > Also, if you say this happens when you run ubiformat - this is
-> > > something about your flash driver. Do you use NOR or NAND? Can you
-> > > detect which interrupt takes too much time? If the theory is that this
-> > > is your flash driver interrupt - can you verify it by injecting some
-> > > instrumentation to the interrupt handler?
-> > 
-> > This is a arm i.mx35 (pcm43) platform using the nor and nand driver. The
-> > mxc_nand driver is loaded later which seems to be around the same time
-> > this message:
-> > "sched: RT throttling activated" comes up and the ubi on the nand gets
-> > attached. I will see what if i can dig s.t. up with the instrumentation
-> > and will report back.
-> 
-> My theory is that this is related to the NOR driver then. UBI does not
-> use interrups. UBIFS uses hrtimer so it does have some code which may
-> run in interrupt context, but all it does - it wakes up a thread and
-> finishes.
-The pcm-043 platform uses the "physmap-flash" nor driver. I have not found 
-any related interrupt handler? So probably the problem is more sublte. For 
-example that the ubi background daemon is working and the timings are different 
-after a firmware update which triggers this interrupt. Initially i thought this 
-is closely related to the loading of the mxc_nand driver, attaching the ubi 
-and mounting the ubifs filesystem since this message is output at roughly the 
-same time. But it is only the nor flash which has been updated with ubiformat 
-and not the nand flash when this error occurs.
 
-So is there some work to be done, after mounting a ubiformat updated image?
+On 01/16/2012 01:31 PM, Artem Bityutskiy wrote:
+>>> You should be able to find the UBI overhead formulas on the MTD web
+>>> site. Try to specify less than that and see. You should leave enough
+>>> PEBs reserved for bad eraseblocks handling - it is 1% by default.
+I found the formulas and my specified size was 2 MiB too big.
+Now it's fixed.
+thanks for your help.
 
 Best regards
-Tim
+alex
