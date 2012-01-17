@@ -1,49 +1,44 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rn4Mq-0004ei-1G
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2012 08:26:08 +0000
-Received: by iaek3 with SMTP id k3so880641iae.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2012 00:26:07 -0800 (PST)
-Message-ID: <1326788862.28708.2.camel@sauron.fi.intel.com>
+Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rn6E3-0005Y6-Dz
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2012 10:25:12 +0000
+Message-ID: <4F154BF6.6020608@st.com>
+Date: Tue, 17 Jan 2012 10:22:46 +0000
+From: Angus CLARK <angus.clark@st.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
 Subject: Re: [PATCH v3 0/6] NAND BBM + BBT updates
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Woodhouse, David" <david.woodhouse@intel.com>
-Date: Tue, 17 Jan 2012 10:27:42 +0200
-In-Reply-To: <1326788619.28708.0.camel@sauron.fi.intel.com>
 References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
  <4F0C086A.5070608@linutronix.de> <1326320928.2338.37.camel@koala>
- <4F0EA32E.20500@linutronix.de> <1326494218.2258.36.camel@koala>
- <1326747569.11686.31.camel@shinybook.infradead.org>
- <1326788619.28708.0.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-KWTKPgJzDSF+mUH9KBfX"
-Mime-Version: 1.0
-Cc: Dan Carpenter <error27@gmail.com>, Barry Song <21cnbao@gmail.com>,
+In-Reply-To: <1326320928.2338.37.camel@koala>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, "Hunter,
- Adrian" <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jonas Gorski <jonas.gorski@gmail.com>, Jamie Iles <jamie@jamieiles.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Adrian Hunter <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
  Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
  Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
  Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
  Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
  Florian Fainelli <florian@openwrt.org>, Peter Wippich <pewi@gw-instruments.de>,
  Matthieu CASTET <matthieu.castet@parrot.com>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>, "Dong,
- Chuanxiao" <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
  Guillaume LECERF <glecerf@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -53,50 +48,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 01/11/2012 10:28 PM, Artem Bityutskiy wrote:
+> In my view, OOB BB markers is the primary, reliable, and simple
+> mechanism. And BBT is just an additional optimization to speed up system
+> startup.
 
---=-KWTKPgJzDSF+mUH9KBfX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This seems to be contrary to the advice given by the various NAND manufacturers
+(with a quite unusual show of consensus!)  Once a block has been deemed to have
+gone bad, one cannot rely on *any* operations being successful, and that
+includes writing a bad block marker to the OOB area.  The recommended approach
+has for some time been to use a Flash-resident bad block table, with an initial
+scan for the manufacturer-programmed bad-block markers.
 
-[Sorry, did not finish the e-mail :-)]
+(Indeed, this issue was raised recently in a meeting with one of the major NAND
+manufacturers, and the design enginner was horrified at the thought of relying
+on the OOB for tracking worn blocks.)
 
-On Tue, 2012-01-17 at 10:23 +0200, Artem Bityutskiy wrote:
-> Well, I am 100% not sure of course. But think that because marking blocks=
- as bad using OOB is
-> the standard way, and vendors know about this, and they know that flash
-> bad blocks become bad, they will probably make try to make this
-> mechanism work for the users. But even if this is not true for a
-> specific chip, then the users should have BBT, and it will be used. But
-> I do not believe that=20
+The use of OOB BB markers certainly has some benefits (as already mentioned in
+previous posts), and I like the idea of being able to use OOB markers in
+conjunction with BBTs.  However, IMHO, I believe the BBT should be regarded as
+the primary source of information, especially when considering inconsistencies
+between the OOB markers and the BBTs.
 
-that current MTD BBT is reliable enough for modern flashes. For such
-a hypothetical chip ti would have to be carefully assessed.
+> 1. When we get erase error. Well, if SW erases a block, it does not care
+> of the contents. This means that if after the reboot SW will re-try
+> erasing it. And if the block is bad, and previously the erasure failed,
+> it will fail again, and SW will mark it as bad again.
+> 
 
---=20
-Best Regards,
-Artem Bityutskiy
+This raises another point.  It is entirely possible that an erase operation will
+succeed on a block where it previously failed.  However, that does not mean to
+say the block has now become good.  On first erase failure, the block should be
+considered bad and steps taken to ensure the block is not used.
 
---=-KWTKPgJzDSF+mUH9KBfX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+In other words, we cannot rely on erase failures as a way of recovering bad
+block status, although I accept in some circumstances, it is probably the best
+we can do!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Cheers,
 
-iQIcBAABAgAGBQJPFTD+AAoJECmIfjd9wqK0l+kQAKUh471LFAvZjBdBq50tkEh7
-J43Ks1UEjoDYRlC/lbYeLxd20MQukrg8vPz0GCLa7tRnXqTuut+b6ly71jhbuU3W
-+CMOOU6LyLQrkGB9udPnCWj694/mwgoLvqro58K8AzrzaRcseelC04DiyCTAE4ZD
-Wx2id/4WD0aoWtIO7j5QoJAZRptmjWlmIWhjEkvQfC++UoHTCqzisxpzLd+7arDk
-Xn9ATem0gmXnGlDcoOiWF55LIwvZpwEHVy2Ctk8/9ZJQ1DWHlVHivJES8v4txTCg
-6O5+0k88yoH6wNpbmtwpu+DSvH8MSpQ04RzifrYF8CmjJzJBAkB9tT0vE4hHrwIF
-/NQUei2fBvNSD2NNq/YurJDT6q5Nkwz2tOgJCkoHE/YSGBZdwJPu6dL/rmPsE4lP
-QEln7RhWC9X/bnfbQZCPNabyF8bypPXM+AXZpCU8HaVtO7AawjmUifKg5TUHt83R
-8Lk+NNCNFNUJD1AGKDbywHDFuaIJ6k1o7hgOnGyMmfFuhWksXQkbcxSMdcOVJnO0
-MFLY8Vuh5Q40zW3L1dRc0SG0Y2ADRflgr2TXw2fcOsZAv3Yi22rdbhRwx8IA3gkv
-wBginCbUzxH6rDpaAn+aH4qxZUl0V/LIvYY6ULg4kO25Hb70CxdYj+DncdaQAa5N
-dzpc36y8ughTrRD5ddDY
-=6MSB
------END PGP SIGNATURE-----
-
---=-KWTKPgJzDSF+mUH9KBfX--
+Angus
