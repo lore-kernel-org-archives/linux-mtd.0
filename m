@@ -1,26 +1,47 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RnYa8-0005Gz-1J
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 16:41:52 +0000
-Received: by ggnl1 with SMTP id l1so4582422ggn.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2012 08:41:50 -0800 (PST)
-Message-ID: <1326905018.28477.44.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
- device
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Wed, 18 Jan 2012 18:43:38 +0200
-In-Reply-To: <4F1476F2.7040800@newsguy.com>
-References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
- <1326183912.8847.10.camel@sauron.fi.intel.com>
- <4F0E567F.8020405@newsguy.com> <87y5t9xm0r.fsf@free.fr>
- <4F1476F2.7040800@newsguy.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-y1yFiKE/Cz/OXEm9kqZR"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>
-Reply-To: dedekind1@gmail.com
+ id 1Rndcn-0008Ol-2Z
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 22:04:57 +0000
+Received: by wgbdq13 with SMTP id dq13so2362258wgb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2012 14:04:52 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4F154BF6.6020608@st.com>
+References: <1326140612-26323-1-git-send-email-computersforpeace@gmail.com>
+ <4F0C086A.5070608@linutronix.de> <1326320928.2338.37.camel@koala>
+ <4F154BF6.6020608@st.com>
+Date: Wed, 18 Jan 2012 14:04:50 -0800
+Message-ID: <CAN8TOE9W2txK+tcnuFBKB3ZTp99Fx385=8zxq9N5cbthVJCwoA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] NAND BBM + BBT updates
+From: Brian Norris <computersforpeace@gmail.com>
+To: Angus CLARK <angus.clark@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Dan Carpenter <error27@gmail.com>, Barry Song <21cnbao@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Adrian Hunter <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>, dedekind1@gmail.com,
+ Peter Wippich <pewi@gw-instruments.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +51,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Jan 17, 2012 at 2:22 AM, Angus CLARK <angus.clark@st.com> wrote:
+> (Indeed, this issue was raised recently in a meeting with one of the majo=
+r NAND
+> manufacturers, and the design enginner was horrified at the thought of re=
+lying
+> on the OOB for tracking worn blocks.)
 
---=-y1yFiKE/Cz/OXEm9kqZR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+That's interesting. I never had this impression, but perhaps the topic
+just never came up.
 
-On Mon, 2012-01-16 at 11:13 -0800, Mike Dunn wrote:
-> I'd like to resubmit the patch to fix the warning.  Alternatively, I can =
-follow
-> up with a separate patch once this one is pushed if the maintainers prefe=
-r.
+> The use of OOB BB markers certainly has some benefits (as already mention=
+ed in
+> previous posts), and I like the idea of being able to use OOB markers in
+> conjunction with BBTs. =A0However, IMHO, I believe the BBT should be rega=
+rded as
+> the primary source of information, especially when considering inconsiste=
+ncies
+> between the OOB markers and the BBTs.
 
-Please, submit an incremental patch and I'll squash it it in, thanks.
+It looks like the facts are leaning toward flash-based BBT being the
+preferable source of info, at least. But due to some practical
+concerns (over reliability of BBT, resistance to corruption, and
+non-Linux interaction with flash), I feel like we can't say 100% that
+BBT is the primary source of bad block info. Now, if we can mitigate
+the reliability/corruption issues, that leaves non-Linux (e.g.,
+bootloader) interaction with flash.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Anyway, the important question is: how does this impact the current
+solution I am developing? IMO, this seems primarily a matter of
+perspective, which would drive future development but does not
+fundamentally alter my proposed patch(es). The choice of "primary
+source" may affect the order in which we update them and the handling
+of power cuts, but otherwise, we want the same result regardless of
+the "primary."
 
---=-y1yFiKE/Cz/OXEm9kqZR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Another note regarding the primary source: if the BBT is sufficiently
+corrupted (according to ECC), we fall back to the OOB markers. That
+doesn't make the flash-based BBT the 100% primary source, but I think
+it makes sense. This feature was pulled into the 3.2 release, BTW.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+> On 01/11/2012 10:28 PM, Artem Bityutskiy wrote:
+>> 1. When we get erase error. Well, if SW erases a block, it does not care
+>> of the contents. This means that if after the reboot SW will re-try
+>> erasing it. And if the block is bad, and previously the erasure failed,
+>> it will fail again, and SW will mark it as bad again.
+...
+> In other words, we cannot rely on erase failures as a way of recovering b=
+ad
+> block status, although I accept in some circumstances, it is probably the=
+ best
+> we can do!
 
-iQIcBAABAgAGBQJPFva6AAoJECmIfjd9wqK0HykQAJjvyGFd6VS6iLTVRjVH8ysN
-WVu0dCORTZBEzBtriAa8yXneIuCtkP+Wwm7X2oJl00PkbZeakU63K3ZgMV+kMSsn
-xisNLlkvatmYe68Lnf/5kJybRF5Ka2iB7AoGs1U+oX/XqomJQRX5Rn3MgfuYuxh+
-AHcljJ0X1F7ODbpD/Fmhku+zjWDfcXVcrjnwxuG+Wg27+58fk+rbvVBEhs142oqi
-6ju0K6GBucFIMDT4pC2OzDmgoK3KpWDkz7D8D+AxM7UNGLJCkzmhqMhw+WQRSiAa
-aqIgC8595Lkm0tjAyCo/4i4JSgcGxQh4eTT6/1SCjan7Uao8HZ6yuIZi+9CpA7bP
-dRtoRP07b3br9hyv2UKbpHrDj6EBmorVA9twFyA4JuXqPE+puWNrjjP3h8HdIfkJ
-drkkeDtVLYrygKnZsGtwQjOA1lQJL1DUf1Duj1R+4pcn8UYIK4T5ztFyVtzGuV9Z
-7JKxgVcUUG9y2kPUqt8veYGmWtshOHd932GeqnnGqIzY9CILGQfDqqNZf7KIRsX9
-QViR5labBGt/lASoTp3QM8tFSbffVz6cE5JoLyBy4INB5hT1BpHFtQ1/7jPmo5Zh
-O7hEjOevbzICHpVrWu6oxonp0Nt3+EvOEvLB5oHMSDPc8TnkthxrglTOYw/8OvaH
-eRl6QVpJapiko+DLLkyq
-=bU6y
------END PGP SIGNATURE-----
+I think that if there are really power-cut issues while marking a bad
+block, we will often have to resort to the imperfect "best we can do".
+If we don't have any more fundamental objections, I will resend soon,
+where we will write to OOB first, then to BBT. There will be an option
+to simply disable writing markers to OOB.
 
---=-y1yFiKE/Cz/OXEm9kqZR--
+Thanks,
+Brian
