@@ -1,18 +1,25 @@
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
- helo=TX2EHSOBE004.bigfish.com)
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RnMtn-0007BH-GV
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 04:13:24 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd/nand:Fix wrong usage of is_blank() in fsl_ifc_run_command
-Date: Wed, 18 Jan 2012 09:43:11 +0530
-Message-ID: <1326859991-7469-1-git-send-email-prabhakar@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Scott Wood <scottwood@freescale.com>,
- Poonam Aggrwal <poonam.aggrwal@freescale.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>
+ id 1RnWIl-0005Oz-3N
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 14:15:49 +0000
+Received: by iagw33 with SMTP id w33so469774iag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2012 06:15:45 -0800 (PST)
+Message-ID: <1326896252.28477.17.camel@sauron.fi.intel.com>
+Subject: Re: ubiformat & linux 3.0.14-rt
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Tim Sander <tim01@iss.tu-darmstadt.de>
+Date: Wed, 18 Jan 2012 16:17:32 +0200
+In-Reply-To: <201201161559.44592.tim01@iss.tu-darmstadt.de>
+References: <201201131006.33998.tim01@iss.tu-darmstadt.de>
+ <201201161359.49629.tim01@iss.tu-darmstadt.de>
+ <1326719043.14299.88.camel@sauron.fi.intel.com>
+ <201201161559.44592.tim01@iss.tu-darmstadt.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-ZUAna8J5gb24TnG4CSky"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,113 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Freescale IFC NAND Machine calculates ECC on 512byte sector and same is used in
-fsl_ifc_run_command() during ECC status verification. Also this sector is passed
-to is_blank() for blank checking. It is wrong at first place because
-is_blank()'s implementation checks for Page size and OOB area size. 
-is_blank() should be called per page for main and OOB area verification.
 
-Variables name are redefined to avoid confusion between buffer and ecc sector.
+--=-ZUAna8J5gb24TnG4CSky
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
-Signed-off-by: Scott Wood <scottwood@freescale.com>
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
----
- git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git (branch next)
+On Mon, 2012-01-16 at 15:59 +0100, Tim Sander wrote:
+> So is there some work to be done, after mounting a ubiformat updated imag=
+e?
 
- Tested on P1010RDB
+Hmm, should not be. If there is, this is most probably a bug or I forgot
+something.
 
- This patch is created on top of IFC driver patch (already floated in mailing
- list). Please find their link:
- http://patchwork.ozlabs.org/patch/133315/
- http://patchwork.ozlabs.org/patch/133316/
+--=20
+Best Regards,
+Artem Bityutskiy
 
- This patch is replacement of my earlier patch
-  "mtd/nand:Fix wrong address read in is_blank()"
+--=-ZUAna8J5gb24TnG4CSky
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
- drivers/mtd/nand/fsl_ifc_nand.c |   52 +++++++++++++++++++++------------------
- 1 files changed, 28 insertions(+), 24 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 854fe95..33b55d2 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -1,7 +1,7 @@
- /*
-  * Freescale Integrated Flash Controller NAND driver
-  *
-- * Copyright 2011 Freescale Semiconductor, Inc
-+ * Copyright 2011,2012 Freescale Semiconductor, Inc
-  *
-  * Author: Dipen Dudhat <Dipen.Dudhat@freescale.com>
-  *
-@@ -216,24 +216,11 @@ static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
- 			  u32 *eccstat, unsigned int bufnum)
- {
- 	u32 reg = eccstat[bufnum / 4];
--	int errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
-+	int errors;
- 
--	if (errors == 15) { /* uncorrectable */
--		/* Blank pages fail hw ECC checks */
--		if (is_blank(mtd, bufnum))
--			return 1;
-+	errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
- 
--		/*
--		 * We disable ECCER reporting in hardware due to
--		 * erratum IFC-A002770 -- so report it now if we
--		 * see an uncorrectable error in ECCSTAT.
--		 */
--		ctrl->nand_stat |= IFC_NAND_EVTER_STAT_ECCER;
--	} else if (errors > 0) {
--		mtd->ecc_stats.corrected += errors;
--	}
--
--	return 0;
-+	return errors;
- }
- 
- /*
-@@ -273,16 +260,33 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 		dev_err(priv->dev, "NAND Flash Write Protect Error\n");
- 
- 	if (nctrl->eccread) {
--		int bufperpage = mtd->writesize / 512;
--		int bufnum = (nctrl->page & priv->bufnum_mask) * bufperpage;
--		int bufnum_end = bufnum + bufperpage - 1;
-+		int errors;
-+		int bufnum = nctrl->page & priv->bufnum_mask;
-+		int sector = bufnum * chip->ecc.steps;
-+		int sector_end = sector + chip->ecc.steps - 1;
- 
--		for (i = bufnum / 4; i <= bufnum_end / 4; i++)
-+		for (i = sector / 4; i <= sector_end / 4; i++)
- 			eccstat[i] = in_be32(&ifc->ifc_nand.nand_eccstat[i]);
- 
--		for (i = bufnum; i <= bufnum_end; i++) {
--			if (check_read_ecc(mtd, ctrl, eccstat, i))
-+		for (i = sector; i <= sector_end; i++) {
-+			errors = check_read_ecc(mtd, ctrl, eccstat, i);
-+
-+			if (errors == 15) {
-+				/*
-+				 * Uncorrectable error.
-+				 * OK only if the whole page is blank.
-+				 *
-+				 * We disable ECCER reporting due to...
-+				 * erratum IFC-A002770 -- so report it now if we
-+				 * see an uncorrectable error in ECCSTAT.
-+				 */
-+				if (!is_blank(mtd, bufnum))
-+					ctrl->nand_stat |=
-+						IFC_NAND_EVTER_STAT_ECCER;
- 				break;
-+			}
-+
-+			mtd->ecc_stats.corrected += errors;
- 		}
- 
- 		nctrl->eccread = 0;
--- 
-1.7.5.4
+iQIcBAABAgAGBQJPFtR8AAoJECmIfjd9wqK0k6QP/2jfLLQVVmXEgtbbQjnjM7vB
+r0+eqz0Gfc1zf+/e0Ky9PzI1v+QcSKP18XItz2XBArgX8Y+xAwHLtolIUjYfR5Ez
+1mjqErcCSFpS8vZvISUzsu1P0rSpY+rBkshj7AEMTAOX4uFpsf3Xc3E4g7tEcIbF
+Cs6HcaJa2Vo2jYkUk2sNMiFkgy8KjKasVH25KoaGduqnN760T2Flv9upMR1W//Ra
+xcXJ0atszqFpNNgbot7YBht1nn3Kve3rjjB+kPl2UMNgSAOiGoQUls8aKA5gYE2d
+S2zV0pM7IB5+wyxI0TI2nSrmB11zPAUbZGAkoc9VvEdlSHKA1g1TAB/o8lyazUyj
+dPwO0gq6sAvXypic1oVxLyjJhMYFARKADs5adqcmZSrL2K5LMUwdsrMNcuRPGPSJ
+kU3IFRJ3XoyYHIpJubI2G5lKGwR6BTg8nUiHbNfpRjgLxkYT7hddyQdt+J1kLJ4+
+Oxo86tAtDVfRIqkYdVev69x8Scs6WUlXMqy1s+VJOSICpmLnJIzkGRiQykshjRx5
+crBUAGHY8oKfTMgzagPCXpbmoXWez1dy7oRT6Q5lUeQnFl4Mfi5BF2qmMdobwXys
+lJOR9aSlgeeK/1AW+vssv6DXOkuwqZXkXRaczx3UMjOYhFod/txoBNxtaPp2972e
+wwqgU9SrnEqTtGmOQ1oI
+=REwV
+-----END PGP SIGNATURE-----
+
+--=-ZUAna8J5gb24TnG4CSky--
