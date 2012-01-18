@@ -1,22 +1,26 @@
-Received: from smtp3.newsguy.com ([74.209.136.66] helo=smtp.newsguy.com)
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RnWt7-0005Dw-Md
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 14:53:22 +0000
-Received: from [192.168.12.102] (30.sub-166-250-10.myvzw.com [166.250.10.30])
- by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id q0IErF4r011153
- (version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2012 06:53:16 -0800 (PST)
- (envelope-from mikedunn@newsguy.com)
-Message-ID: <4F16DCC3.9040803@newsguy.com>
-Date: Wed, 18 Jan 2012 06:52:51 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: identifying a flash file system
-References: <CACJFQ2X831y+Kr2==4NS+Jz8wtOn+k5WMuidepjOQuRQ-SKO9Q@mail.gmail.com>
-In-Reply-To: <CACJFQ2X831y+Kr2==4NS+Jz8wtOn+k5WMuidepjOQuRQ-SKO9Q@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RnYa8-0005Gz-1J
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 16:41:52 +0000
+Received: by ggnl1 with SMTP id l1so4582422ggn.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2012 08:41:50 -0800 (PST)
+Message-ID: <1326905018.28477.44.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
+ device
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Wed, 18 Jan 2012 18:43:38 +0200
+In-Reply-To: <4F1476F2.7040800@newsguy.com>
+References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
+ <1326183912.8847.10.camel@sauron.fi.intel.com>
+ <4F0E567F.8020405@newsguy.com> <87y5t9xm0r.fsf@free.fr>
+ <4F1476F2.7040800@newsguy.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-y1yFiKE/Cz/OXEm9kqZR"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +30,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/17/2012 07:12 PM, Ballymunboy wrote:
-> Hello,
->
-> We have extracted the NAND flash contents from the TriMedia-based
-> routers from 2Wire.
 
+--=-y1yFiKE/Cz/OXEm9kqZR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is a Diskonchip flash?  Which variant?  What did you use to dump the
-contents?  A couple of us have developed drivers for some of these. 
-Specifically, the G3 (which will probably work on the P3 with slight
-modification) and the G4.
+On Mon, 2012-01-16 at 11:13 -0800, Mike Dunn wrote:
+> I'd like to resubmit the patch to fix the warning.  Alternatively, I can =
+follow
+> up with a separate patch once this one is pushed if the maintainers prefe=
+r.
 
+Please, submit an incremental patch and I'll squash it it in, thanks.
 
->
-> We would like to re-build the router's firmware. But, as yet, the
-> flash file system to those devices cannot be identified.
->
-> There is a header found in the first half of page zero of the flash
-> device.  Fields in that header appear to reference two partitions - a
-> boot partition and a file system partition.  [1]
->
-> There is a hunch that the devices are using the flash translation
-> layer from m-Systems TrueFFS  (now part of Sandisk). [2]
+--=20
+Best Regards,
+Artem Bityutskiy
 
+--=-y1yFiKE/Cz/OXEm9kqZR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-The latest TrueFFS implementation uses the M-Sys proprietary "saftl"
-formatting.  Look for ASCII 'CNAND" at the start of the first page of an erase
-block.  The page that starts with this magic string contains the TrueFFS/saftl
-media header, which has partitioning info, etc.  On my Palm Treo 680 with the
-diskonchip G4, it's on erase block 5.  The size of an erase block varies among
-the diskonchip variants.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
+iQIcBAABAgAGBQJPFva6AAoJECmIfjd9wqK0HykQAJjvyGFd6VS6iLTVRjVH8ysN
+WVu0dCORTZBEzBtriAa8yXneIuCtkP+Wwm7X2oJl00PkbZeakU63K3ZgMV+kMSsn
+xisNLlkvatmYe68Lnf/5kJybRF5Ka2iB7AoGs1U+oX/XqomJQRX5Rn3MgfuYuxh+
+AHcljJ0X1F7ODbpD/Fmhku+zjWDfcXVcrjnwxuG+Wg27+58fk+rbvVBEhs142oqi
+6ju0K6GBucFIMDT4pC2OzDmgoK3KpWDkz7D8D+AxM7UNGLJCkzmhqMhw+WQRSiAa
+aqIgC8595Lkm0tjAyCo/4i4JSgcGxQh4eTT6/1SCjan7Uao8HZ6yuIZi+9CpA7bP
+dRtoRP07b3br9hyv2UKbpHrDj6EBmorVA9twFyA4JuXqPE+puWNrjjP3h8HdIfkJ
+drkkeDtVLYrygKnZsGtwQjOA1lQJL1DUf1Duj1R+4pcn8UYIK4T5ztFyVtzGuV9Z
+7JKxgVcUUG9y2kPUqt8veYGmWtshOHd932GeqnnGqIzY9CILGQfDqqNZf7KIRsX9
+QViR5labBGt/lASoTp3QM8tFSbffVz6cE5JoLyBy4INB5hT1BpHFtQ1/7jPmo5Zh
+O7hEjOevbzICHpVrWu6oxonp0Nt3+EvOEvLB5oHMSDPc8TnkthxrglTOYw/8OvaH
+eRl6QVpJapiko+DLLkyq
+=bU6y
+-----END PGP SIGNATURE-----
 
->
-> The 2Wires are running an in-house flavour of BSD  (rtBSD/tm) so maybe
-> the file system itself is ported from elsewhere in the *BSD platform.
-
-
-Not likely.  If it's TrueFFS, it's M-Sys proprietary. 
-
-
->
-> Has anyone here worked with TrueFFS?  What would be the best method
-> for mounting the volume on a Linux PC for examination?
-
-
-Write an saftl implementation for linux mtd :)  I think this was done to some
-degree for ntfl and inftl, the predecessors of saftl.  Header files describing
-the data in the aforementioned media header were provided to developers under
-NDA, and they're floating around out there.  But I don't think a full-blown
-saftl filesystem is worth it unless there's a need to examine the existing
-filesystem contents.  Ubifs has been working well on my diskonchip.  What would
-be useful is an mtd partition parser for saftl, though.
-
-Looks like a neat effort.  I don't recognize the data you dumped from page 0. 
-I'll compare it with what is on my device when I get a chance.  From perusing
-your blog, it appears you boot from a separate flash device, so the BOOTboot
-string doesn't really make sense.
-
-Thanks,
-Mike
+--=-y1yFiKE/Cz/OXEm9kqZR--
