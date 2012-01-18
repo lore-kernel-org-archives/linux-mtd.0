@@ -1,12 +1,14 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RnWs9-0003U3-Mr
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 14:52:22 +0000
+ id 1RnWsB-0003UP-P1
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 14:52:24 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] UBIFS: amend recovery debugging message
-Date: Wed, 18 Jan 2012 16:54:12 +0200
-Message-Id: <1326898454-1957-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/3] UBIFS: make the dbg_lock spinlock static
+Date: Wed, 18 Jan 2012 16:54:14 +0200
+Message-Id: <1326898454-1957-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1326898454-1957-1-git-send-email-dedekind1@gmail.com>
+References: <1326898454-1957-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +20,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Print LEB and offset as well.
+Remove the usage of the 'dbg_lock' spinlock from 'dbg_err()' and make
+it static.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- fs/ubifs/recovery.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ fs/ubifs/debug.c |    2 +-
+ fs/ubifs/debug.h |    3 ---
+ 2 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index ee4f43f..2a935b3 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -679,7 +679,8 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
- 			   ret == SCANNED_GARBAGE     ||
- 			   ret == SCANNED_A_BAD_PAD_NODE ||
- 			   ret == SCANNED_A_CORRUPT_NODE) {
--			dbg_rcvry("found corruption - %d", ret);
-+			dbg_rcvry("found corruption (%d) at %d:%d",
-+				  ret, lnum, offs);
- 			break;
- 		} else {
- 			dbg_err("unexpected return value %d", ret);
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 3050628..1934084 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -36,7 +36,7 @@
+ 
+ #ifdef CONFIG_UBIFS_FS_DEBUG
+ 
+-DEFINE_SPINLOCK(dbg_lock);
++static DEFINE_SPINLOCK(dbg_lock);
+ 
+ static const char *get_key_fmt(int fmt)
+ {
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index ad1a6fe..9f71765 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -164,9 +164,7 @@ struct ubifs_global_debug_info {
+ #define dbg_dump_stack() dump_stack()
+ 
+ #define dbg_err(fmt, ...) do {                                                 \
+-	spin_lock(&dbg_lock);                                                  \
+ 	ubifs_err(fmt, ##__VA_ARGS__);                                         \
+-	spin_unlock(&dbg_lock);                                                \
+ } while (0)
+ 
+ #define ubifs_dbg_msg(type, fmt, ...) \
+@@ -217,7 +215,6 @@ struct ubifs_global_debug_info {
+ /* Additional recovery messages */
+ #define dbg_rcvry(fmt, ...) ubifs_dbg_msg("rcvry", fmt, ##__VA_ARGS__)
+ 
+-extern spinlock_t dbg_lock;
+ extern struct ubifs_global_debug_info ubifs_dbg;
+ 
+ static inline int dbg_is_chk_gen(const struct ubifs_info *c)
 -- 
 1.7.7.5
