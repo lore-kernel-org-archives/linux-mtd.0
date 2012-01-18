@@ -1,16 +1,18 @@
-Received: from mail-tul01m020-f177.google.com ([209.85.214.177])
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+ helo=TX2EHSOBE004.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RnLx3-0005DQ-MD
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 03:12:42 +0000
-Received: by obcuz6 with SMTP id uz6so4824500obc.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2012 19:12:36 -0800 (PST)
+ id 1RnMtn-0007BH-GV
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2012 04:13:24 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd/nand:Fix wrong usage of is_blank() in fsl_ifc_run_command
+Date: Wed, 18 Jan 2012 09:43:11 +0530
+Message-ID: <1326859991-7469-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
-Date: Wed, 18 Jan 2012 03:12:36 +0000
-Message-ID: <CACJFQ2X831y+Kr2==4NS+Jz8wtOn+k5WMuidepjOQuRQ-SKO9Q@mail.gmail.com>
-Subject: identifying a flash file system
-From: Ballymunboy <ballymunboy@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
+Cc: Scott Wood <scottwood@freescale.com>,
+ Poonam Aggrwal <poonam.aggrwal@freescale.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +22,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Freescale IFC NAND Machine calculates ECC on 512byte sector and same is used in
+fsl_ifc_run_command() during ECC status verification. Also this sector is passed
+to is_blank() for blank checking. It is wrong at first place because
+is_blank()'s implementation checks for Page size and OOB area size. 
+is_blank() should be called per page for main and OOB area verification.
 
-We have extracted the NAND flash contents from the TriMedia-based
-routers from 2Wire.
+Variables name are redefined to avoid confusion between buffer and ecc sector.
 
-We would like to re-build the router's firmware. But, as yet, the
-flash file system to those devices cannot be identified.
+Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
+Signed-off-by: Scott Wood <scottwood@freescale.com>
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+---
+ git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git (branch next)
 
-There is a header found in the first half of page zero of the flash
-device.  Fields in that header appear to reference two partitions - a
-boot partition and a file system partition.  [1]
+ Tested on P1010RDB
 
-There is a hunch that the devices are using the flash translation
-layer from m-Systems TrueFFS  (now part of Sandisk). [2]
+ This patch is created on top of IFC driver patch (already floated in mailing
+ list). Please find their link:
+ http://patchwork.ozlabs.org/patch/133315/
+ http://patchwork.ozlabs.org/patch/133316/
 
-The 2Wires are running an in-house flavour of BSD  (rtBSD/tm) so maybe
-the file system itself is ported from elsewhere in the *BSD platform.
+ This patch is replacement of my earlier patch
+  "mtd/nand:Fix wrong address read in is_blank()"
 
-Has anyone here worked with TrueFFS?  What would be the best method
-for mounting the volume on a Linux PC for examination?
+ drivers/mtd/nand/fsl_ifc_nand.c |   52 +++++++++++++++++++++------------------
+ 1 files changed, 28 insertions(+), 24 deletions(-)
 
-All comments and suggestions gratefully received!
-
-cheers,
-asbokid
-
-[1] http://hackingbtbusinesshub.wordpress.com/category/nand-flash/
-[2] http://www.texim-europe.com/promotion/119/trueffs%20product%20brief.pdf
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 854fe95..33b55d2 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale Integrated Flash Controller NAND driver
+  *
+- * Copyright 2011 Freescale Semiconductor, Inc
++ * Copyright 2011,2012 Freescale Semiconductor, Inc
+  *
+  * Author: Dipen Dudhat <Dipen.Dudhat@freescale.com>
+  *
+@@ -216,24 +216,11 @@ static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
+ 			  u32 *eccstat, unsigned int bufnum)
+ {
+ 	u32 reg = eccstat[bufnum / 4];
+-	int errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
++	int errors;
+ 
+-	if (errors == 15) { /* uncorrectable */
+-		/* Blank pages fail hw ECC checks */
+-		if (is_blank(mtd, bufnum))
+-			return 1;
++	errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
+ 
+-		/*
+-		 * We disable ECCER reporting in hardware due to
+-		 * erratum IFC-A002770 -- so report it now if we
+-		 * see an uncorrectable error in ECCSTAT.
+-		 */
+-		ctrl->nand_stat |= IFC_NAND_EVTER_STAT_ECCER;
+-	} else if (errors > 0) {
+-		mtd->ecc_stats.corrected += errors;
+-	}
+-
+-	return 0;
++	return errors;
+ }
+ 
+ /*
+@@ -273,16 +260,33 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 		dev_err(priv->dev, "NAND Flash Write Protect Error\n");
+ 
+ 	if (nctrl->eccread) {
+-		int bufperpage = mtd->writesize / 512;
+-		int bufnum = (nctrl->page & priv->bufnum_mask) * bufperpage;
+-		int bufnum_end = bufnum + bufperpage - 1;
++		int errors;
++		int bufnum = nctrl->page & priv->bufnum_mask;
++		int sector = bufnum * chip->ecc.steps;
++		int sector_end = sector + chip->ecc.steps - 1;
+ 
+-		for (i = bufnum / 4; i <= bufnum_end / 4; i++)
++		for (i = sector / 4; i <= sector_end / 4; i++)
+ 			eccstat[i] = in_be32(&ifc->ifc_nand.nand_eccstat[i]);
+ 
+-		for (i = bufnum; i <= bufnum_end; i++) {
+-			if (check_read_ecc(mtd, ctrl, eccstat, i))
++		for (i = sector; i <= sector_end; i++) {
++			errors = check_read_ecc(mtd, ctrl, eccstat, i);
++
++			if (errors == 15) {
++				/*
++				 * Uncorrectable error.
++				 * OK only if the whole page is blank.
++				 *
++				 * We disable ECCER reporting due to...
++				 * erratum IFC-A002770 -- so report it now if we
++				 * see an uncorrectable error in ECCSTAT.
++				 */
++				if (!is_blank(mtd, bufnum))
++					ctrl->nand_stat |=
++						IFC_NAND_EVTER_STAT_ECCER;
+ 				break;
++			}
++
++			mtd->ecc_stats.corrected += errors;
+ 		}
+ 
+ 		nctrl->eccread = 0;
+-- 
+1.7.5.4
