@@ -1,16 +1,16 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <vinod.koul@intel.com>
-Subject: [PATCH 09/10] MTD/GPMI : add a new field `gpmi_version`
-Date: Thu, 19 Jan 2012 14:16:06 +0800
-Message-ID: <1326953767-24155-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1326953767-24155-1-git-send-email-b32955@freescale.com>
+Date: Thu, 19 Jan 2012 17:10:37 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 00/10] patch set about the MXS-DMA
+Message-ID: <20120119091034.GH2247@S2101-09.ap.freescale.net>
 References: <1326953767-24155-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
- b29396@freescale.com, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1326953767-24155-1-git-send-email-b32955@freescale.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, b29396@freescale.com,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de,
+ linux-mtd@lists.infradead.org, artem.bityutskiy@intel.com, shijie8@gmail.com,
  linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,54 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add this field to store the GPMI verison.
+On Thu, Jan 19, 2012 at 02:15:57PM +0800, Huang Shijie wrote:
+> This patch set does two things about the MXS-DMA:
+> [1] patch 1 ~ patch 5: move the mxs dma header to a more common place.
+> 	Beside the mx23/mx28, the APBH-DMA is also used by MX50 and MX6Q.
+> 	So move the mxs dma header file to a more common place, and rename
+> 	it to mxs-dma.h
+> 
+For the sake of bitsec, these 5 patches need to be one.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    3 +++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++++
- drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    2 ++
- 3 files changed, 9 insertions(+), 0 deletions(-)
+> [2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 7f68042..5b73ae5 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -133,6 +133,9 @@ int gpmi_init(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto err_out;
- 
-+	/* Read out the GPMI version */
-+	this->gpmi_version = readl(r->gpmi_regs + HW_GPMI_VERSION);
-+
- 	/* Choose NAND mode. */
- 	writel(BM_GPMI_CTRL1_GPMI_MODE, r->gpmi_regs + HW_GPMI_CTRL1_CLR);
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 1c7fdbb..5c277e3 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -132,6 +132,10 @@ struct gpmi_nand_data {
- 	/* Flash Hardware */
- 	struct nand_timing	timing;
- 
-+	/* GPMI hardware version */
-+#define GPMI_VERSION_0501	(0x05010000)
-+	u32			gpmi_version;
-+
- 	/* BCH */
- 	struct bch_geometry	bch_geometry;
- 	struct completion	bch_done;
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-index 8343124..f005b24 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-@@ -169,4 +169,6 @@
- #define HW_GPMI_DEBUG					0x000000c0
- #define MX23_BP_GPMI_DEBUG_READY0			28
- #define MX23_BM_GPMI_DEBUG_READY0	(1 << MX23_BP_GPMI_DEBUG_READY0)
-+
-+#define HW_GPMI_VERSION					0x000000d0
- #endif
+For the sake of bitsec, at least patches #7 and #8 need to be one patch.
+That said, if I apply the series and then check out the commit at patch
+#7, you need to all mxs-dma client drivers, mxs-mmc, gpmi do not break.
+
+> 	In the new GPMI version, some hardware behavior changes.
+> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+> 	The DMA chain should be set like this:
+> 
+>           +-----+               +-----+                      +-----+
+>           | cmd | ------------> | cmd | ------------------>  | cmd |
+>           +-----+               +-----+                      +-----+
+>                                    ^                            ^
+>                                    |                            |
+>                                    |                            |
+>                               set WAIT4END here too        set WAIT4END here
+> 
+>          Please read the comment in patch "MXS-DMA : add more flags for MXS-DMA".
+> 
+> Huang Shijie (10):
+>   MXS-DMA : move the mxs-dma.h to a more common place
+>   MXS-DMA : change the header
+>   MXS-MMC : change the DMA header file
+>   MTD/GPMI : change the DMA header file
+>   ASoc : change the DMA header file
+>   MXS-DMA : add more flags for MXS-DMA
+>   MXS-DMA : change the last parameter of mxs_dma_prep_slave_sg()
+>   MXS-MMC : use the new DMA flags
+>   MTD/GPMI : add a new field `gpmi_version`
+>   MTD/GPMI : change the code for new DMA interface
+> 
+Please try to make these subject prefix consistent with the existing
+ones in the tree.  You can get them from 'git log' output.  For example
+"mxs-dma: ..." is better than "MXS-DMA : ...".
+
 -- 
-1.7.0.4
+Regards,
+Shawn
