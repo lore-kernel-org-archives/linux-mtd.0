@@ -1,18 +1,20 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ro2A2-0006Yd-9J
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2012 00:16:54 +0000
-Received: by qcso7 with SMTP id o7so10265qcs.36
- for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2012 16:16:52 -0800 (PST)
+Message-ID: <4F18DF95.80700@freescale.com>
+Date: Fri, 20 Jan 2012 11:29:25 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGiDA6LO-PWL6OeGwwPJzdx8TVEXMA84ceOvQZ3UECKkG54YAw@mail.gmail.com>
-References: <CAGiDA6LO-PWL6OeGwwPJzdx8TVEXMA84ceOvQZ3UECKkG54YAw@mail.gmail.com>
-Date: Thu, 19 Jan 2012 19:16:52 -0500
-Message-ID: <CAGiDA6KjJKQcho9aiqA2KSe30tvU0JZnMgv86zSE_Pt2=JRdDA@mail.gmail.com>
-Subject: Re: Kernel panic when reading mtd device
-From: "Shawn J. Goff" <shawn7400@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 00/10] patch set about the MXS-DMA
+References: <1326953767-24155-1-git-send-email-b32955@freescale.com>
+ <20120119091034.GH2247@S2101-09.ap.freescale.net>
+ <20120119094513.GB2630@pengutronix.de>
+In-Reply-To: <20120119094513.GB2630@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
+ vinod.koul@intel.com, b29396@freescale.com, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@linaro.org>, shijie8@gmail.com,
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I believe the problem is in drivers/spi/atmel_spi.c. It looks like it
-needs to break the transfer down into chunks that can fit in the
-buffer. It seems that this driver as it exists in the Linux4SAM tree (
-https://github.com/linux4sam/linux-at91/tree/linus2639_5series_1.x )
-is unfinished(?) As a quick workaround, I did the following, which
-allows me to function for now.
 
-diff --git a/drivers/spi/atmel_spi.c b/drivers/spi/atmel_spi.c
-index ca9dab5..825371f 100644
---- a/drivers/spi/atmel_spi.c
-+++ b/drivers/spi/atmel_spi.c
-@@ -463,7 +463,7 @@ static void atmel_spi_next_xfer(struct spi_master *master,
+>>> [2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
+>> For the sake of bitsec, at least patches #7 and #8 need to be one patch.
+>> That said, if I apply the series and then check out the commit at patch
+>> #7, you need to all mxs-dma client drivers, mxs-mmc, gpmi do not break.
+> I'd say patch 6-10 should be squashed, simply. My personal preference is
+> to change #9 to simply read the register when needed and do not expand
+It's better to add a new field. i also want to add a new field
+`bch_version`, because different
+BCH version may support different ECC strength. For example, some
+version BCH can support to 24 bit,
+while the latest BCH may support to 40 bit. So the BCH version may
+limits the computing of ECC strength.
 
-        as->current_transfer = xfer;
+Best Regards
+Huang Shijie
 
--       if (atmel_spi_use_dma(xfer)) {
-+       if (atmel_spi_use_dma(xfer) && xfer->len <= BUFFER_SIZE) {
-                if (!atmel_spi_next_xfer_dma(master, xfer))
-                        return;
-                else
+> the struct, but this is a minor thing.
+>
+> Regards,
+>
+>    Wolfram
+>
