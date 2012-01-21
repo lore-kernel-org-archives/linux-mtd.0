@@ -1,23 +1,28 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RoSih-0007dy-Ph
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 04:38:30 +0000
-Received: by mail-iy0-f177.google.com with SMTP id w33so2339146iag.36
- for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2012 20:38:27 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with flash-based BBT
-Date: Fri, 20 Jan 2012 20:38:04 -0800
-Message-Id: <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
+ id 1RoXhb-0005xQ-H8
+ for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 09:57:40 +0000
+Received: by wgbdq13 with SMTP id dq13so971323wgb.18
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Jan 2012 01:57:34 -0800 (PST)
+Date: Sat, 21 Jan 2012 11:57:04 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with
+ flash-based BBT
+Message-ID: <20120121115704.3c10a64f@pixies.home.jungo.com>
+In-Reply-To: <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
 References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
+ <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
  Kulikov Vasiliy <segooon@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
- Guillaume LECERF <glecerf@gmail.com>, Jonas Gorski <jonas.gorski@gmail.com>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
  Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
  David Woodhouse <David.Woodhouse@intel.com>,
@@ -34,10 +39,9 @@ Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
  Adrian Hunter <adrian.hunter@intel.com>,
  Matthieu CASTET <matthieu.castet@parrot.com>,
  Kyungmin Park <kyungmin.park@samsung.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
  Wolfram Sang <w.sang@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Brian Norris <computersforpeace@gmail.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
  Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -48,171 +52,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the flash-based BBT implementation writes bad block data only
-to its flash-based table and not to the OOB marker area. Then, as new bad
-blocks are marked over time, the OOB markers become out of date and the
-flash-based table becomes the only source of current bad block
-information.
+On Fri, 20 Jan 2012 20:38:04 -0800 Brian Norris <computersforpeace@gmail.com> wrote:
+> The new flash-based BBT procedure for marking bad blocks:
+>  (1) erase the affected block, to allow OOB marker to be written cleanly
+>  (2) update in-memory BBT
+>  (3) write bad block marker to OOB area of affected block
+>  (4) update flash-based BBT
+> Note that we retain the first error encountered in (3) or (4), finish the
+> procedures, and dump the error in the end:
+> 
+> This should handle power cuts gracefully enough. (1) and (2) are mostly
+> harmless (note that (1) will not erase an already-recognized bad block).
+> The OOB and BBT may be "out of sync" if we experience power loss bewteen
+> (3) and (4), but we can reasonably expect that on next boot, subsequent
+> I/O operations will discover that the block should be marked bad again,
+> thus re-syncing the OOB and BBT.
+> 
+> Note that this is a change from the previous default flash-based BBT
+> behavior. If your system cannot support writing bad block markers to OOB,
+> use the new NAND_BBT_NO_OOB_BBM option (in combination with
+> NAND_BBT_USE_FLASH and NAND_BBT_NO_OOB).
 
-This is undesirable because the OOB area is considered the standard
-location for bad block information and its distributed nature allows it to
-tolerate some more corruption than a centralized table. It becomes a more
-obvious problem when, for example:
+Looks good.
 
- * bootloader cannot read the flash-based BBT format
- * BBT is corrupted and the flash must be rescanned for bad
-   blocks; we want to remember bad blocks that were marked from Linux
+I've came up with another idea - an addition to your patch which
+improves BBM vs BBT out-of-sync handling in a rather simple,
+non-intrusive way, adapting Artem's idea of lazy checking.
 
-So to keep the bad block markers in sync with the flash-based BBT, this
-patch changes the default so that we write bad block markers to the proper
-OOB area on each block in addition to flash-based BBT. Comments are
-updated, expanded, and/or relocated as necessary.
+Users of the MTD interface use the 'mtd->block_isbad' method for
+querying the badness of a block.
 
-The new flash-based BBT procedure for marking bad blocks:
- (1) erase the affected block, to allow OOB marker to be written cleanly
- (2) update in-memory BBT
- (3) write bad block marker to OOB area of affected block
- (4) update flash-based BBT
-Note that we retain the first error encountered in (3) or (4), finish the
-procedures, and dump the error in the end:
+Current implementation ('nand_block_checkbad') queries the in-ram BBT
+(using 'nand_isbad_bbt'), which was built by scanning the on-flash BBT
+in the NAND_BBT_USE_FLASH case.
 
-This should handle power cuts gracefully enough. (1) and (2) are mostly
-harmless (note that (1) will not erase an already-recognized bad block).
-The OOB and BBT may be "out of sync" if we experience power loss bewteen
-(3) and (4), but we can reasonably expect that on next boot, subsequent
-I/O operations will discover that the block should be marked bad again,
-thus re-syncing the OOB and BBT.
+We could augment 'nand_block_checkbad' as follows:
+- query the in-ram BBT (nand_isbad_bbt)
+- if !NAND_BBT_USE_FLASH or (NAND_BBT_USE_FLASH && NAND_BBT_NO_OOB_BBM)
+   single source of badness indicator. return the in-ram bbt value
+- otherwise, also read from the OOB BBM using 'chip->block_bad'
+- if no inconsistency, we're done
+- inconsistency? synchronise:
+   OOB BBM is marked? update flash BBT
+   BBT marked? update OOB BBM // shouldn't happen, OOB was marked first
 
-Note that this is a change from the previous default flash-based BBT
-behavior. If your system cannot support writing bad block markers to OOB,
-use the new NAND_BBT_NO_OOB_BBM option (in combination with
-NAND_BBT_USE_FLASH and NAND_BBT_NO_OOB).
+This way we keep them synced using lazy checking, relying on the fact
+that MTD users use the 'block_isbad' interface for querying the badness
+of a block.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-v4: Re-order operations so we write BBM before BBT. This should help with
-    power cuts. Option for old behavior changed to NAND_BBT_NO_OOB_BBM, 
-    use in chip->bbt_options.
-v3: Writing to flash-based BBT and to BBM is still default, but
-    there is a new option NAND_NO_WRITE_OOB that can prevent writing the
-    BBM as well as prevent all other OOB writes.
-v2: Explain potential power cut issues and remove option for retaining
-    old behavior.
-v1: Implement option NAND_BBT_WRITE_BBM that causes marker to be written
-    to both BBT + BBM.
+The penatly is a 'chip->block_bad' (OOB read) invocation per
+'block_isbad' call.
 
- drivers/mtd/nand/nand_base.c |   45 ++++++++++++++++++++++++++++--------------
- include/linux/mtd/bbm.h      |    5 ++++
- 2 files changed, 35 insertions(+), 15 deletions(-)
+Alternatively, we can do it only once, within 'nand_isbad_bbt', if we
+have an additional bit per eraseblock in the in-ram BBT, as Artem
+suggested.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b902066..0493176 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -392,15 +392,26 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-  * @ofs: offset from device start
-  *
-  * This is the default implementation, which can be overridden by a hardware
-- * specific driver.
-+ * specific driver. We try operations in the following order, according to our
-+ * bbt_options (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-+ *  (1) erase the affected block, to allow OOB marker to be written cleanly
-+ *  (2) update in-memory BBT
-+ *  (3) write bad block marker to OOB area of affected block
-+ *  (4) update flash-based BBT
-+ * Note that we retain the first error encountered in (3) or (4), finish the
-+ * procedures, and dump the error in the end.
- */
- static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
- 	uint8_t buf[2] = { 0, 0 };
--	int block, ret, i = 0;
-+	int block, res, ret = 0, i = 0;
-+	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
- 
--	if (!(chip->bbt_options & NAND_BBT_USE_FLASH)) {
-+	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-+			!(chip->bbt_options & NAND_BBT_USE_FLASH));
-+
-+	if (write_oob) {
- 		struct erase_info einfo;
- 
- 		/* Attempt erase before marking OOB */
-@@ -413,23 +424,17 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- 	/* Get block number */
- 	block = (int)(ofs >> chip->bbt_erase_shift);
-+	/* Mark block bad in memory-based BBT */
- 	if (chip->bbt)
- 		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
- 
--	/* Do we have a flash based bad block table? */
--	if (chip->bbt_options & NAND_BBT_USE_FLASH)
--		ret = nand_update_bbt(mtd, ofs);
--	else {
-+	/* Write bad block marker to OOB */
-+	if (write_oob) {
- 		struct mtd_oob_ops ops;
- 		loff_t wr_ofs = ofs;
- 
- 		nand_get_device(chip, mtd, FL_WRITING);
- 
--		/*
--		 * Write to first/last page(s) if necessary. If we write to more
--		 * than one location, the first error encountered quits the
--		 * procedure.
--		 */
- 		ops.datbuf = NULL;
- 		ops.oobbuf = buf;
- 		ops.ooboffs = chip->badblockpos;
-@@ -441,18 +446,28 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		}
- 		ops.mode = MTD_OPS_PLACE_OOB;
- 
-+		/* Write to first/last page(s) if necessary */
- 		if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
- 			wr_ofs += mtd->erasesize - mtd->writesize;
- 		do {
--			ret = nand_do_write_oob(mtd, wr_ofs, &ops);
-+			res = nand_do_write_oob(mtd, wr_ofs, &ops);
-+			if (!ret)
-+				ret = res;
- 
- 			i++;
- 			wr_ofs += mtd->writesize;
--		} while (!ret && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE) &&
--				i < 2);
-+		} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
- 
- 		nand_release_device(mtd);
- 	}
-+
-+	/* Update flash-based bad block table */
-+	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
-+		res = nand_update_bbt(mtd, ofs);
-+		if (!ret)
-+			ret = res;
-+	}
-+
- 	if (!ret)
- 		mtd->ecc_stats.badblocks++;
- 
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index c4eec22..650ef35 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -112,6 +112,11 @@ struct nand_bbt_descr {
- #define NAND_BBT_USE_FLASH	0x00020000
- /* Do not store flash based bad block table in OOB area; store it in-band */
- #define NAND_BBT_NO_OOB		0x00040000
-+/*
-+ * Do not write new bad block markers to OOB; useful, e.g., when ECC covers
-+ * entire spare area. Must be used with NAND_BBT_USE_FLASH.
-+ */
-+#define NAND_BBT_NO_OOB_BBM	0x00080000
- 
- /*
-  * Flag set by nand_create_default_bbt_descr(), marking that the nand_bbt_descr
--- 
-1.7.5.4
+I assume this additional feature isn't a must, but OTOH it doesn't look
+like a drastic change.
+
+Regards
+Shmulik
