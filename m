@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RoXhb-0005xQ-H8
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 09:57:40 +0000
-Received: by wgbdq13 with SMTP id dq13so971323wgb.18
- for <linux-mtd@lists.infradead.org>; Sat, 21 Jan 2012 01:57:34 -0800 (PST)
-Date: Sat, 21 Jan 2012 11:57:04 +0200
+ id 1RoXuW-0006C3-7l
+ for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 10:11:01 +0000
+Received: by werm13 with SMTP id m13so1341635wer.36
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Jan 2012 02:10:58 -0800 (PST)
+Date: Sat, 21 Jan 2012 12:10:49 +0200
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with
  flash-based BBT
-Message-ID: <20120121115704.3c10a64f@pixies.home.jungo.com>
+Message-ID: <20120121121049.7dbfa3a1@pixies.home.jungo.com>
 In-Reply-To: <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
 References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
  <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
@@ -53,62 +53,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Fri, 20 Jan 2012 20:38:04 -0800 Brian Norris <computersforpeace@gmail.com> wrote:
-> The new flash-based BBT procedure for marking bad blocks:
->  (1) erase the affected block, to allow OOB marker to be written cleanly
->  (2) update in-memory BBT
->  (3) write bad block marker to OOB area of affected block
->  (4) update flash-based BBT
-> Note that we retain the first error encountered in (3) or (4), finish the
-> procedures, and dump the error in the end:
-> 
-> This should handle power cuts gracefully enough. (1) and (2) are mostly
-> harmless (note that (1) will not erase an already-recognized bad block).
-> The OOB and BBT may be "out of sync" if we experience power loss bewteen
-> (3) and (4), but we can reasonably expect that on next boot, subsequent
-> I/O operations will discover that the block should be marked bad again,
-> thus re-syncing the OOB and BBT.
-> 
-> Note that this is a change from the previous default flash-based BBT
-> behavior. If your system cannot support writing bad block markers to OOB,
-> use the new NAND_BBT_NO_OOB_BBM option (in combination with
-> NAND_BBT_USE_FLASH and NAND_BBT_NO_OOB).
+>  static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	struct nand_chip *chip = mtd->priv;
+>  	uint8_t buf[2] = { 0, 0 };
+> -	int block, ret, i = 0;
+> +	int block, res, ret = 0, i = 0;
+> +	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
+>  
+> -	if (!(chip->bbt_options & NAND_BBT_USE_FLASH)) {
+> +	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
+> +			!(chip->bbt_options & NAND_BBT_USE_FLASH));
+> +
+> +	if (write_oob) {
+>  		struct erase_info einfo;
+>  
+>  		/* Attempt erase before marking OOB */
 
-Looks good.
+About to erase the block, but it could have been OOB BBM marked (due
+to former power cut between BBM marking and BBT update).
+Should we test if the OOB BBM is already set, as Artem suggested?
+(at least when NAND_BBT_USE_FLASH && !NAND_BBT_NO_OOB_BBM)
 
-I've came up with another idea - an addition to your patch which
-improves BBM vs BBT out-of-sync handling in a rather simple,
-non-intrusive way, adapting Artem's idea of lazy checking.
+>  
+> -	/* Do we have a flash based bad block table? */
+> -	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+> -		ret = nand_update_bbt(mtd, ofs);
+> -	else {
+> +	/* Write bad block marker to OOB */
+> +	if (write_oob) {
 
-Users of the MTD interface use the 'mtd->block_isbad' method for
-querying the badness of a block.
+Same question as above.
 
-Current implementation ('nand_block_checkbad') queries the in-ram BBT
-(using 'nand_isbad_bbt'), which was built by scanning the on-flash BBT
-in the NAND_BBT_USE_FLASH case.
-
-We could augment 'nand_block_checkbad' as follows:
-- query the in-ram BBT (nand_isbad_bbt)
-- if !NAND_BBT_USE_FLASH or (NAND_BBT_USE_FLASH && NAND_BBT_NO_OOB_BBM)
-   single source of badness indicator. return the in-ram bbt value
-- otherwise, also read from the OOB BBM using 'chip->block_bad'
-- if no inconsistency, we're done
-- inconsistency? synchronise:
-   OOB BBM is marked? update flash BBT
-   BBT marked? update OOB BBM // shouldn't happen, OOB was marked first
-
-This way we keep them synced using lazy checking, relying on the fact
-that MTD users use the 'block_isbad' interface for querying the badness
-of a block.
-
-The penatly is a 'chip->block_bad' (OOB read) invocation per
-'block_isbad' call.
-
-Alternatively, we can do it only once, within 'nand_isbad_bbt', if we
-have an additional bit per eraseblock in the in-ram BBT, as Artem
-suggested.
-
-I assume this additional feature isn't a must, but OTOH it doesn't look
-like a drastic change.
-
-Regards
+Regards,
 Shmulik
