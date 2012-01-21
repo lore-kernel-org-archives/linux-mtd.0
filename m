@@ -1,14 +1,17 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RoSiJ-0007dy-D6
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 04:38:04 +0000
-Received: by iagw33 with SMTP id w33so2339146iag.36
- for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2012 20:38:02 -0800 (PST)
+ id 1RoSiU-0007dy-Nq
+ for linux-mtd@lists.infradead.org; Sat, 21 Jan 2012 04:38:15 +0000
+Received: by mail-iy0-f177.google.com with SMTP id w33so2339146iag.36
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2012 20:38:14 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 0/2] write OOB BBM + flash-based BBT
-Date: Fri, 20 Jan 2012 20:38:02 -0800
-Message-Id: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v4 1/2] mtd: nand: move SCANLASTPAGE handling to the correct
+ code block
+Date: Fri, 20 Jan 2012 20:38:03 -0800
+Message-Id: <1327120684-7066-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
+References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
 Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
  Kulikov Vasiliy <segooon@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
@@ -46,51 +49,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+As nand_default_block_markbad() is becoming more complex, it helps to
+have code appear only in its relevant codepath(s). Here, the calculation
+of `ofs' based on NAND_BBT_SCANLASTPAGE is only useful on paths where we
+write bad block markers to OOB. We move the condition/calculation closer
+to the `write' operation and update the comment to more correctly
+describe the operation.
 
-It looks like we have some consensus that:
-- OOB markers are not a guaranteed reliable method for tracking bad blocks
-- We should work to make flash-based BBT a reliable, primary source of bad
-  block information
-- There are occasions where having bad block markers in OOB is important,
-  so we should make a best effort to write bad block markers even when
-  using flash-based BBT
-- Some users do not want to write bad block markers to OOB for one reason
-  or another; so we provide an option (bbt_options) that will prevent this
+The variable `wr_ofs' is also used to help isolate our calculation of
+the "write" offset from the usage of `ofs' to represent the eraseblock
+offset. This will become useful when we reorder operations in the next
+patch.
 
-Thus, this is yet another iteration of my patch(es) to write bad block data
-to both the OOB area and the flash-based BBT when marking new bad blocks.
-They try to accomodate for some of the issues brought up in previous
-threads. Please comment if more changes are necessary or if I introduced
-crazy ones.
+This patch should make no functional change.
 
-This series consists of a small fixup patch followed by the main
-substantial patch.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
 
-I will highlight a few things here, but see the patch descriptions for
-details.
-
-I re-ordered nand_default_block_markbad() so that BBM is written before
-BBT, for power cut reasons, and since when available, we mostly use
-flash-based BBT as the "primary" source of information.
-
-v4: re-order operations so we write BBM before BBT. This should help with
-    power cuts. Option for old behavior changed to NAND_BBT_NO_OOB_BBM,
-    use in chip->bbt_options.
-v3: writing to flash-based BBT and to BBM is still default, but
-    there is a new option NAND_NO_WRITE_OOB that can prevent writing the
-    BBM as well as prevent all other OOB writes.
-
-Thanks,
-Brian
-
-Brian Norris (2):
-  mtd: nand: move SCANLASTPAGE handling to the correct code block
-  mtd: nand: write BBM to OOB even with flash-based BBT
-
- drivers/mtd/nand/nand_base.c |   54 +++++++++++++++++++++++++++--------------
- include/linux/mtd/bbm.h      |    5 ++++
- 2 files changed, 40 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c6603d4..b902066 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -411,9 +411,6 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		nand_erase_nand(mtd, &einfo, 0);
+ 	}
+ 
+-	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+-		ofs += mtd->erasesize - mtd->writesize;
+-
+ 	/* Get block number */
+ 	block = (int)(ofs >> chip->bbt_erase_shift);
+ 	if (chip->bbt)
+@@ -424,11 +421,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		ret = nand_update_bbt(mtd, ofs);
+ 	else {
+ 		struct mtd_oob_ops ops;
++		loff_t wr_ofs = ofs;
+ 
+ 		nand_get_device(chip, mtd, FL_WRITING);
+ 
+ 		/*
+-		 * Write to first two pages if necessary. If we write to more
++		 * Write to first/last page(s) if necessary. If we write to more
+ 		 * than one location, the first error encountered quits the
+ 		 * procedure.
+ 		 */
+@@ -442,11 +440,14 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 			ops.len = ops.ooblen = 1;
+ 		}
+ 		ops.mode = MTD_OPS_PLACE_OOB;
++
++		if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
++			wr_ofs += mtd->erasesize - mtd->writesize;
+ 		do {
+-			ret = nand_do_write_oob(mtd, ofs, &ops);
++			ret = nand_do_write_oob(mtd, wr_ofs, &ops);
+ 
+ 			i++;
+-			ofs += mtd->writesize;
++			wr_ofs += mtd->writesize;
+ 		} while (!ret && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE) &&
+ 				i < 2);
+ 
 -- 
 1.7.5.4
