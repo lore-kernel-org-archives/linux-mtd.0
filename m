@@ -1,23 +1,49 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RpNKE-0008Qu-8z
- for linux-mtd@lists.infradead.org; Mon, 23 Jan 2012 17:04:59 +0000
-Date: Mon, 23 Jan 2012 17:04:36 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-Subject: Re: [RESEND PATCH] arm:davinci: prepare to move aemif driver to
- drivers/mfd
-Message-ID: <20120123170436.GZ1068@n2100.arm.linux.org.uk>
-References: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
+ id 1RpRUS-000355-PT
+ for linux-mtd@lists.infradead.org; Mon, 23 Jan 2012 21:31:49 +0000
+Received: by wgbds1 with SMTP id ds1so1355234wgb.18
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2012 13:31:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- Samuel Ortiz <sameo@linux.intel.com>, Sekhar Nori <nsekhar@ti.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120121121049.7dbfa3a1@pixies.home.jungo.com>
+References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
+ <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
+ <20120121121049.7dbfa3a1@pixies.home.jungo.com>
+Date: Mon, 23 Jan 2012 13:31:43 -0800
+Message-ID: <CAN8TOE87aw2JCMokQfT+D+XV08xS3kMO76rQU2XRVWLvUTOSdw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with flash-based
+ BBT
+From: Brian Norris <computersforpeace@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
+ Kulikov Vasiliy <segooon@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +53,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 23, 2012 at 08:42:32PM +0530, Manjunathappa, Prakash wrote:
-> Adding: MFD maintainer and mailing list.
-> 
->  arch/arm/mach-davinci/aemif.c              |    2 +-
->  arch/arm/mach-davinci/board-da830-evm.c    |    2 +-
->  arch/arm/mach-davinci/board-da850-evm.c    |    2 +-
->  arch/arm/mach-davinci/include/mach/aemif.h |   36 ----------------------------
->  drivers/mtd/nand/davinci_nand.c            |    2 +-
->  include/linux/mfd/davinci_aemif.h          |   36 ++++++++++++++++++++++++++++
->  6 files changed, 40 insertions(+), 40 deletions(-)
->  delete mode 100644 arch/arm/mach-davinci/include/mach/aemif.h
->  create mode 100644 include/linux/mfd/davinci_aemif.h
+On Sat, Jan 21, 2012 at 2:10 AM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+> On Fri, 20 Jan 2012 20:38:04 -0800 Brian Norris <computersforpeace@gmail.=
+com> wrote:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Attempt erase before marking OOB */
+>
+> About to erase the block, but it could have been OOB BBM marked (due
+> to former power cut between BBM marking and BBT update).
+> Should we test if the OOB BBM is already set, as Artem suggested?
+> (at least when NAND_BBT_USE_FLASH && !NAND_BBT_NO_OOB_BBM)
 
-As Linus has requested on many occasions, and it's a damned good
-idea, use -M when generating diffstat - and its also a *really* good
-idea to use -M if you're submitting patches which rename files for
-review as well.
+Possibly. This seems useful only for these few cases:
+(1) you don't like erasing and rewriting the bad block marker
+(2) power cut occurs after erase but before re-writing OOB
+(3) write error occurs on re-writing OOB
 
-Obviously arch/arm/mach-davinci/include/mach/aemif.h was moved to
-include/linux/mfd/davinci_aemif.h, but were there any changes to its
-contents?  Without -M, there only way of knowing is to compare each
-file line by line.  With -M, it'll tell us that it was renamed and
-produce a diff between the old and new location.
+And I suppose it's not too difficult. We could use chip->block_bad
+(defaults to nand_block_bad()) to check this pretty simply.
+
+Brian
