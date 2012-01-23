@@ -1,14 +1,16 @@
 From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/3] arm:davinci: prepare to move aemif driver to drivers/mfd
-Date: Mon, 23 Jan 2012 20:22:47 +0530
-Message-ID: <1327330367-4025-1-git-send-email-prakash.pm@ti.com>
+To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH] arm:davinci: prepare to move aemif driver to
+ drivers/mfd
+Date: Mon, 23 Jan 2012 20:42:32 +0530
+Message-ID: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Russell King <linux@arm.linux.org.uk>,
- davinci-linux-open-source@linux.davincidsp.com, Sekhar Nori <nsekhar@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, "Manjunathappa,
- Prakash" <prakash.pm@ti.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+ Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
+ Sekhar Nori <nsekhar@ti.com>, "Manjunathappa, Prakash" <prakash.pm@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,6 +31,8 @@ http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configu
 
 Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
 ---
+Adding: MFD maintainer and mailing list.
+
  arch/arm/mach-davinci/aemif.c              |    2 +-
  arch/arm/mach-davinci/board-da830-evm.c    |    2 +-
  arch/arm/mach-davinci/board-da850-evm.c    |    2 +-
