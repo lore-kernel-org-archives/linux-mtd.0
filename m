@@ -1,49 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RpRUS-000355-PT
- for linux-mtd@lists.infradead.org; Mon, 23 Jan 2012 21:31:49 +0000
-Received: by wgbds1 with SMTP id ds1so1355234wgb.18
- for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2012 13:31:46 -0800 (PST)
+Message-ID: <4F1DF465.60206@freescale.com>
+Date: Mon, 23 Jan 2012 17:59:33 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20120121121049.7dbfa3a1@pixies.home.jungo.com>
-References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
- <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
- <20120121121049.7dbfa3a1@pixies.home.jungo.com>
-Date: Mon, 23 Jan 2012 13:31:43 -0800
-Message-ID: <CAN8TOE87aw2JCMokQfT+D+XV08xS3kMO76rQU2XRVWLvUTOSdw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with flash-based
- BBT
-From: Brian Norris <computersforpeace@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
- Kulikov Vasiliy <segooon@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>,
- Florian Fainelli <florian@openwrt.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Wolfram Sang <w.sang@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: Heiko Schocher <hs@denx.de>
+Subject: Re: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for
+ davinci nand controller
+References: <1327308967-8092-1-git-send-email-hs@denx.de>
+ <1327308967-8092-7-git-send-email-hs@denx.de>
+In-Reply-To: <1327308967-8092-7-git-send-email-hs@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+ devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -53,23 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 21, 2012 at 2:10 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> On Fri, 20 Jan 2012 20:38:04 -0800 Brian Norris <computersforpeace@gmail.=
-com> wrote:
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Attempt erase before marking OOB */
->
-> About to erase the block, but it could have been OOB BBM marked (due
-> to former power cut between BBM marking and BBT update).
-> Should we test if the OOB BBM is already set, as Artem suggested?
-> (at least when NAND_BBT_USE_FLASH && !NAND_BBT_NO_OOB_BBM)
+On 01/23/2012 02:56 AM, Heiko Schocher wrote:
+> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+> new file mode 100644
+> index 0000000..7e8d6db
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+> @@ -0,0 +1,72 @@
+> +* Texas Instruments Davinci NAND
+> +
+> +This file provides information, what the device node for the
+> +davinci nand interface contain.
+> +
+> +Required properties:
+> +- compatible: "ti,davinci-nand";
+> +- reg : contain 2 offset/length values:
+> +        - offset and length for the access window
+> +        - offset and length for accessing the aemif control registers
+> +- id: id of the controller
 
-Possibly. This seems useful only for these few cases:
-(1) you don't like erasing and rewriting the bad block marker
-(2) power cut occurs after erase but before re-writing OOB
-(3) write error occurs on re-writing OOB
+What does "id of the controller" mean, specfically?  From this I can't
+even tell if it's a number or a string, much less how to use it
+semantically.  If it's just a "match what's in the manual" thing,
+perhaps an alias would be better here.  Or, if it's a value with a
+specific meaning (e.g. that you need to program into a register) use a
+more specific name.
 
-And I suppose it's not too difficult. We could use chip->block_bad
-(defaults to nand_block_bad()) to check this pretty simply.
+> +Recommended properties :
+> +- mask_ale: mask for ale
+> +- mask_cle: mask for cle
+> +- mask_chipsel: mask for chipselect
+> +- ecc_mode: ECC mode, see NAND_ECC_* defines
+> +- ecc_bits: used ECC bits
+> +- options: nand options, defined in
+> +           include/linux/mtd/nand.h, grep for NAND_NO_AUTOINCR
+> +- bbt_options: NAND_BBT_* defines
 
-Brian
+Binding-specific properties should have a vendor prefix.  Dashes are
+preferred to underscores.
+
+Don't specify Linux internals by reference -- they could change and
+invalidate existing device trees and non-Linux code that accepts them
+(e.g. U-Boot).  If you want them to line up, copy the definition here,
+and if Linux changes, write glue code to convert.  It would probably be
+better to define specific properties for anything that must be specified
+here (neither deteted dynamically nor defined by compatible =
+"ti,davinci-nand").
+
+Do all of these properties really belong here?  I can see providing some
+information about ECC or BBT mode, if there are multiple conventions
+already in use (or that are reasonably justifiable for different
+situations), as that must agree with how the flash has already been
+programmed.  How much of the rest can vary from one "ti,davinci-nand" to
+another?  Maybe it's obvious to someone more familiar with davinci, but
+what does "mask for ale/cle/chipselect" mean?
+
+> +	nandflash@3,0 {
+
+PowerPC's ePAPR document -- not directly relevant to ARM, but contains a
+more recently updated list of generic names than the IEEE1275
+recommended pratice -- specifies "flash@".  If you don't want to do
+that, "nand@" is used in many existing trees.  Why introduce a new name?
+
+-Scott
