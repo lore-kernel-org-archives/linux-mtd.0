@@ -1,15 +1,23 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] arm: da830: move NAND and NOR devices as aemif MFD slaves
-Date: Mon, 23 Jan 2012 20:45:25 +0530
-Message-ID: <1327331725-10559-1-git-send-email-prakash.pm@ti.com>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RpNKE-0008Qu-8z
+ for linux-mtd@lists.infradead.org; Mon, 23 Jan 2012 17:04:59 +0000
+Date: Mon, 23 Jan 2012 17:04:36 +0000
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+Subject: Re: [RESEND PATCH] arm:davinci: prepare to move aemif driver to
+ drivers/mfd
+Message-ID: <20120123170436.GZ1068@n2100.arm.linux.org.uk>
+References: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Cc: davinci-linux-open-source@linux.davincidsp.com,
- Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
- Sekhar Nori <nsekhar@ti.com>, "Manjunathappa, Prakash" <prakash.pm@ti.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Samuel Ortiz <sameo@linux.intel.com>, Sekhar Nori <nsekhar@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND and NOR device are made as aemif devices slave, hence device
-registration achieved via aemif MFD driver.
+On Mon, Jan 23, 2012 at 08:42:32PM +0530, Manjunathappa, Prakash wrote:
+> Adding: MFD maintainer and mailing list.
+> 
+>  arch/arm/mach-davinci/aemif.c              |    2 +-
+>  arch/arm/mach-davinci/board-da830-evm.c    |    2 +-
+>  arch/arm/mach-davinci/board-da850-evm.c    |    2 +-
+>  arch/arm/mach-davinci/include/mach/aemif.h |   36 ----------------------------
+>  drivers/mtd/nand/davinci_nand.c            |    2 +-
+>  include/linux/mfd/davinci_aemif.h          |   36 ++++++++++++++++++++++++++++
+>  6 files changed, 40 insertions(+), 40 deletions(-)
+>  delete mode 100644 arch/arm/mach-davinci/include/mach/aemif.h
+>  create mode 100644 include/linux/mfd/davinci_aemif.h
 
-Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
----
- arch/arm/mach-davinci/board-da830-evm.c |   31 +++++++++++++++++++++++--------
- 1 files changed, 23 insertions(+), 8 deletions(-)
+As Linus has requested on many occasions, and it's a damned good
+idea, use -M when generating diffstat - and its also a *really* good
+idea to use -M if you're submitting patches which rename files for
+review as well.
 
-diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-index 0b43554..0ad3662 100644
---- a/arch/arm/mach-davinci/board-da830-evm.c
-+++ b/arch/arm/mach-davinci/board-da830-evm.c
-@@ -396,14 +396,29 @@ static struct resource da830_evm_nand_resources[] = {
- 	},
- };
- 
--static struct platform_device da830_evm_nand_device = {
--	.name		= "davinci_nand",
--	.id		= 1,
--	.dev		= {
--		.platform_data	= &da830_evm_nand_pdata,
-+static struct platform_device da830_evm_devices[] __initdata = {
-+	{
-+		.name		= "davinci_nand",
-+		.id		= 1,
-+		.dev		= {
-+			.platform_data	= &da830_evm_nand_pdata,
-+		},
-+		.num_resources	= ARRAY_SIZE(da830_evm_nand_resources),
-+		.resource	= da830_evm_nand_resources,
-+	},
-+};
-+
-+static struct davinci_aemif_devices da830_emif_devices = {
-+	.devices	= da830_evm_devices,
-+	.num_devices	= ARRAY_SIZE(da830_evm_devices),
-+};
-+
-+static struct platform_device davinci_emif_device = {
-+	.name	= "davinci_aemif",
-+	.id	= -1,
-+	.dev	= {
-+		.platform_data	= &da830_emif_devices,
- 	},
--	.num_resources	= ARRAY_SIZE(da830_evm_nand_resources),
--	.resource	= da830_evm_nand_resources,
- };
- 
- static inline void da830_evm_init_nand(int mux_mode)
-@@ -422,7 +437,7 @@ static inline void da830_evm_init_nand(int mux_mode)
- 		pr_warning("da830_evm_init: emif25 mux setup failed: %d\n",
- 				ret);
- 
--	ret = platform_device_register(&da830_evm_nand_device);
-+	ret = platform_device_register(&davinci_emif_device);
- 	if (ret)
- 		pr_warning("da830_evm_init: NAND device not registered.\n");
- 
--- 
-1.7.1
+Obviously arch/arm/mach-davinci/include/mach/aemif.h was moved to
+include/linux/mfd/davinci_aemif.h, but were there any changes to its
+contents?  Without -M, there only way of knowing is to compare each
+file line by line.  With -M, it'll tell us that it was renamed and
+produce a diff between the old and new location.
