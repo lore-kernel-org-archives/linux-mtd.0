@@ -1,8 +1,9 @@
 From: Shubhrajyoti D <shubhrajyoti@ti.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 1/2] mtd : Prevent the NULL pointer access
-Date: Mon, 23 Jan 2012 13:42:40 +0530
-Message-ID: <1327306361-9803-2-git-send-email-shubhrajyoti@ti.com>
+Subject: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the suspend is
+ not implemented
+Date: Mon, 23 Jan 2012 13:42:41 +0530
+Message-ID: <1327306361-9803-3-git-send-email-shubhrajyoti@ti.com>
 In-Reply-To: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
 References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
 MIME-Version: 1.0
@@ -18,28 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch intends to fix the null pointer access.
+Currently mtd_suspend returns an error value -EOPNOTSUPP
+if the suspend function is not implemented which prevents the
+suspend. This patch prevents the nack of suspend if suspend
+is not implemented.
 
 Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
 ---
- drivers/mtd/mtdcore.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ include/linux/mtd/mtd.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 6ae9ca0..2b3bda7 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -118,8 +118,9 @@ static void mtd_release(struct device *dev)
- static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 1a81fde..c717bb6 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -427,9 +427,9 @@ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ static inline int mtd_suspend(struct mtd_info *mtd)
  {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
--
--	return mtd_suspend(mtd);
-+	if (mtd)
-+		return mtd_suspend(mtd);
+-	if (!mtd->suspend)
+-		return -EOPNOTSUPP;
+-	return mtd->suspend(mtd);
++	if (mtd->suspend)
++		return mtd->suspend(mtd);
 +	return 0;
  }
  
- static int mtd_cls_resume(struct device *dev)
+ static inline void mtd_resume(struct mtd_info *mtd)
 -- 
 1.7.1
