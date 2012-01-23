@@ -1,13 +1,13 @@
 From: Heiko Schocher <hs@denx.de>
 To: davinci-linux-open-source@linux.davincidsp.com
-Subject: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for davinci
- nand controller
-Date: Mon, 23 Jan 2012 09:56:06 +0100
-Message-Id: <1327308967-8092-7-git-send-email-hs@denx.de>
-In-Reply-To: <1327308967-8092-1-git-send-email-hs@denx.de>
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
-Cc: devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+Subject: [RFC PATCH 0/7] ARM: davinci: add support for the am1808 based
+ enbw_cmc board
+Date: Mon, 23 Jan 2012 09:56:00 +0100
+Message-Id: <1327308967-8092-1-git-send-email-hs@denx.de>
+Cc: Kevin Hilman <khilman@ti.com>, netdev@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
  Heiko Schocher <hs@denx.de>, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,224 +19,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add OF support for the davinci nand controller.
+add support for the davinci am1808 based enbw_cmc board.
+
+This is thought as a RFC patchserie, as this patches
+surely have to be discussed:
+
+- ARM: davinci: configure davinci aemif chipselects through OF
+  not moved to mfd, as mentioned in this discussion:
+  http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
+  instead use a phandle in the DTS, so drivers which
+  uses the davinci aemif, can call davinci_aemif_setup_timing_of()
+
+  This is just thought as an RFC ... The enbw_cmc board
+  support not really need to setup this bus timings, as
+  they are setup in U-Boot ... but I want to post this,
+  as I think, it is a nice to have, and I am not really
+  sure, if this has to be a MFD device (If so, all bus
+  interfaces for other SoCs should be converted also to
+  MFD devices) ... as an example how this can be used
+  I add this to the davinci nand controller OF support
+  patch, in this patchserie.
+
+- ARM: davinci: mux: add OF support
+  I want to get rid of the pin setup code in board code ...
+  This patch introduces a davinci_cfg_reg_of() function,
+  which davinci drivers can call, if they found a
+  "pinmux-handle", so used in the following drivers in
+  this patchserie:
+
+  drivers/net/ethernet/ti/davinci_emac
+  drivers/i2c/busses/i2c-davinci.c
+  drivers/mtd/nand/davinci_nand.c
+
+- post this board support with USB support, even though
+  USB is only working with the 10 ms "workaround", posted here:
+  http://comments.gmane.org/gmane.linux.usb.general/54505
+  I see this issue also on the AM1808 TMDXEXP1808L evalboard.
+
+- MMC and USB are not using OF support yet, ideas how to port
+  this are welcome. I need for USB and MMC board specific
+  callbacks, how to solve this with OF support?
 
 Signed-off-by: Heiko Schocher <hs@denx.de>
-Cc: davinci-linux-open-source@linux.davincidsp.com
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: devicetree-discuss@lists.ozlabs.org
+Cc: davinci-linux-open-source@linux.davincidsp.com
 Cc: linux-mtd@lists.infradead.org
+Cc: linux-i2c@vger.kernel.org
+Cc: netdev@vger.kernel.org
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Wolfram Sang <w.sang@pengutronix.de>
 Cc: Sekhar Nori <nsekhar@ti.com>
+Cc: Kevin Hilman <khilman@ti.com>
 Cc: Wolfgang Denk <wd@denx.de>
----
- .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++++++++++++++++
- drivers/mtd/nand/davinci_nand.c                    |   78 +++++++++++++++++++-
- 2 files changed, 148 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
 
-diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-new file mode 100644
-index 0000000..7e8d6db
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-@@ -0,0 +1,72 @@
-+* Texas Instruments Davinci NAND
-+
-+This file provides information, what the device node for the
-+davinci nand interface contain.
-+
-+Required properties:
-+- compatible: "ti,davinci-nand";
-+- reg : contain 2 offset/length values:
-+        - offset and length for the access window
-+        - offset and length for accessing the aemif control registers
-+- id: id of the controller
-+
-+Recommended properties :
-+- mask_ale: mask for ale
-+- mask_cle: mask for cle
-+- mask_chipsel: mask for chipselect
-+- ecc_mode: ECC mode, see NAND_ECC_* defines
-+- ecc_bits: used ECC bits
-+- options: nand options, defined in
-+           include/linux/mtd/nand.h, grep for NAND_NO_AUTOINCR
-+- bbt_options: NAND_BBT_* defines
-+
-+Optional properties:
-+- pinmux-handle: contains a handle to configure the pinmux settings.
-+- timing-handle: contains a handle to setup aemif timing.
-+
-+Example (enbw_cmc board):
-+aemif@60000000 {
-+	compatible = "ti,davinci-aemif";
-+	#address-cells = <2>;
-+	#size-cells = <1>;
-+	reg = <0x68000000 0x80000>;
-+	ranges = <2 0 0x60000000 0x02000000
-+		  3 0 0x62000000 0x02000000
-+		  4 0 0x64000000 0x02000000
-+		  5 0 0x66000000 0x02000000
-+		  6 0 0x68000000 0x02000000>;
-+	nand_cs: cs3@68000000 {
-+		compatible = "ti,davinci-cs";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		/* all timings in nanoseconds */
-+		cs = <3>;
-+		asize = <0>;
-+		ta = <0>;
-+		rhold = <7>;
-+		rstrobe = <42>;
-+		rsetup = <7>;
-+		whold = <7>;
-+		wstrobe = <14>;
-+		wsetup = <7>;
-+		ew = <0>;
-+		ss = <0>;
-+	};
-+	nandflash@3,0 {
-+		compatible = "ti,davinci-nand";
-+		reg = <3 0x0 0x807ff
-+			6 0x0 0x8000>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		id = <1>;
-+		mask_ale = <0>;
-+		mask_cle = <0>;
-+		mask_chipsel = <0>;
-+		ecc_mode = <2>;
-+		ecc_bits = <4>;
-+		options = <0>;
-+		bbt_options = <0x20000>;
-+		pinmux-handle = <&nand_pins>;
-+		timing-handle = <&nand_cs>;
-+	};
-+};
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 6e56615..a1946c3 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -33,9 +33,12 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
-+#include <linux/of_i2c.h>
-+#include <linux/of_device.h>
- 
- #include <mach/nand.h>
- #include <mach/aemif.h>
-+#include <mach/mux.h>
- 
- /*
-  * This is a device driver for the NAND flash controller found on the
-@@ -518,9 +521,76 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
- 	},
- };
- 
-+#if defined(CONFIG_OF)
-+static const struct of_device_id davinci_nand_of_match[] = {
-+	{.compatible = "ti,davinci-nand", },
-+	{},
-+}
-+MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
-+
-+static struct davinci_nand_pdata
-+	*nand_davinci_get_pdata(struct platform_device *pdev)
-+{
-+	if ((pdev->dev.platform_data == NULL) &&
-+		(pdev->dev.of_node)) {
-+		struct device_node *tmp_np;
-+		struct davinci_nand_pdata *pdata;
-+		u32 prop;
-+
-+		pdata =  kzalloc(sizeof(struct davinci_nand_pdata),
-+				GFP_KERNEL);
-+		pdev->dev.platform_data = pdata;
-+		if (!pdata)
-+			return NULL;
-+		if (!of_property_read_u32(pdev->dev.of_node, "id",
-+			&prop))
-+			pdev->id = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "mask_ale",
-+			&prop))
-+			pdata->mask_ale = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "mask_cle",
-+			&prop))
-+			pdata->mask_cle = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "mask_chipsel",
-+			&prop))
-+			pdata->mask_chipsel = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "ecc_mode",
-+			&prop))
-+			pdata->ecc_mode = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "ecc_bits",
-+			&prop))
-+			pdata->ecc_bits = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "options",
-+			&prop))
-+			pdata->options = prop;
-+		if (!of_property_read_u32(pdev->dev.of_node, "bbt_options",
-+			&prop))
-+			pdata->bbt_options = prop;
-+		tmp_np = of_parse_phandle(pdev->dev.of_node,
-+				"pinmux-handle", 0);
-+		if (tmp_np)
-+			davinci_cfg_reg_of(tmp_np);
-+
-+		tmp_np = of_parse_phandle(pdev->dev.of_node,
-+				"timing-handle", 0);
-+		if (tmp_np)
-+			davinci_aemif_setup_timing_of(tmp_np);
-+	}
-+
-+	return pdev->dev.platform_data;
-+}
-+#else
-+#define davinci_nand_of_match NULL
-+static struct davinci_nand_pdata
-+	*nand_davinci_get_pdata(struct platform_device *pdev)
-+{
-+	return pdev->dev.platform_data;
-+}
-+#endif
-+
- static int __init nand_davinci_probe(struct platform_device *pdev)
- {
--	struct davinci_nand_pdata	*pdata = pdev->dev.platform_data;
-+	struct davinci_nand_pdata	*pdata;
- 	struct davinci_nand_info	*info;
- 	struct resource			*res1;
- 	struct resource			*res2;
-@@ -530,6 +600,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	uint32_t			val;
- 	nand_ecc_modes_t		ecc_mode;
- 
-+	pdata = nand_davinci_get_pdata(pdev);
- 	/* insist on board-specific configuration */
- 	if (!pdata)
- 		return -ENODEV;
-@@ -812,16 +883,19 @@ static int __exit nand_davinci_remove(struct platform_device *pdev)
- }
- 
- static struct platform_driver nand_davinci_driver = {
-+	.probe		= nand_davinci_probe,
- 	.remove		= __exit_p(nand_davinci_remove),
- 	.driver		= {
- 		.name	= "davinci_nand",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = davinci_nand_of_match,
- 	},
- };
- MODULE_ALIAS("platform:davinci_nand");
- 
- static int __init nand_davinci_init(void)
- {
--	return platform_driver_probe(&nand_davinci_driver, nand_davinci_probe);
-+	return platform_driver_register(&nand_davinci_driver);
- }
- module_init(nand_davinci_init);
- 
+Heiko Schocher (7):
+  ARM: davinci, intc: Add OF support for TI interrupt controller
+  ARM: davinci: configure davinci aemif chipselects through OF
+  ARM: davinci: mux: add OF support
+  ARM: davinci: net: davinci_emac: add OF support
+  ARM: davinci: i2c: add OF support
+  ARM: mtd: nand: davinci: add OF support for davinci nand controller
+  ARM: davinci: add support for the am1808 based enbw_cmc board
+
+ .../devicetree/bindings/arm/davinci/aemif.txt      |  119 ++++++
+ .../bindings/arm/davinci/davinci_emac.txt          |   46 +++
+ .../devicetree/bindings/arm/davinci/i2c.txt        |   39 ++
+ .../devicetree/bindings/arm/davinci/intc.txt       |   26 ++
+ .../devicetree/bindings/arm/davinci/mux.txt        |   40 ++
+ .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++
+ arch/arm/boot/dts/enbw_cmc.dts                     |  286 +++++++++++++++
+ arch/arm/configs/enbw_cmc_defconfig                |  125 +++++++
+ arch/arm/mach-davinci/Kconfig                      |    8 +
+ arch/arm/mach-davinci/Makefile                     |    1 +
+ arch/arm/mach-davinci/aemif.c                      |   86 +++++-
+ arch/arm/mach-davinci/board-enbw-cmc.c             |  384 ++++++++++++++++++++
+ arch/arm/mach-davinci/cp_intc.c                    |   51 +++
+ arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
+ arch/arm/mach-davinci/include/mach/cp_intc.h       |    1 +
+ arch/arm/mach-davinci/include/mach/mux.h           |    2 +
+ arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
+ arch/arm/mach-davinci/mux.c                        |   73 ++++-
+ drivers/i2c/busses/i2c-davinci.c                   |   43 +++
+ drivers/mtd/nand/davinci_nand.c                    |   78 ++++-
+ drivers/net/ethernet/ti/davinci_emac.c             |  111 ++++++-
+ 21 files changed, 1588 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/davinci_emac.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/mux.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+ create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
+ create mode 100644 arch/arm/configs/enbw_cmc_defconfig
+ create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+
 -- 
 1.7.7.5
