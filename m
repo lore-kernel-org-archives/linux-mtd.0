@@ -1,20 +1,21 @@
-Message-ID: <4F1F0A3E.40805@freescale.com>
-Date: Tue, 24 Jan 2012 13:45:02 -0600
-From: Scott Wood <scottwood@freescale.com>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rpmmr-0004p7-Er
+ for linux-mtd@lists.infradead.org; Tue, 24 Jan 2012 20:16:14 +0000
+Received: by wico1 with SMTP id o1so855784wic.36
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Jan 2012 12:16:11 -0800 (PST)
 MIME-Version: 1.0
-To: <hs@denx.de>
-Subject: Re: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for
- davinci nand controller
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
- <1327308967-8092-7-git-send-email-hs@denx.de> <4F1DF465.60206@freescale.com>
- <4F1E5C82.60108@denx.de>
-In-Reply-To: <4F1E5C82.60108@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <201201241024.22372.brian.foster@maxim-ic.com>
+References: <201201241024.22372.brian.foster@maxim-ic.com>
+Date: Tue, 24 Jan 2012 12:16:11 -0800
+Message-ID: <CAN8TOE-Jp50bmpn-c_zWgB7KHXZ54y3LM9BTSA6yiEnF3nkkGA@mail.gmail.com>
+Subject: Re: [BUG v1.4.6] `ubinfo -a' confused about non-consecutive UBI
+ device numbers
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/24/2012 01:23 AM, Heiko Schocher wrote:
-> Hello Scott,
-> 
-> Scott Wood wrote:
->> On 01/23/2012 02:56 AM, Heiko Schocher wrote:
->>> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
->>> new file mode 100644
->>> index 0000000..7e8d6db
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
->>> @@ -0,0 +1,72 @@
->>> +* Texas Instruments Davinci NAND
->>> +
->>> +This file provides information, what the device node for the
->>> +davinci nand interface contain.
->>> +
->>> +Required properties:
->>> +- compatible: "ti,davinci-nand";
->>> +- reg : contain 2 offset/length values:
->>> +        - offset and length for the access window
->>> +        - offset and length for accessing the aemif control registers
->>> +- id: id of the controller
->>
->> What does "id of the controller" mean, specfically?  From this I can't
->> even tell if it's a number or a string, much less how to use it
->> semantically.  If it's just a "match what's in the manual" thing,
->> perhaps an alias would be better here.  Or, if it's a value with a
->> specific meaning (e.g. that you need to program into a register) use a
->> more specific name.
-> 
-> Ok, fix this. Id means here, which chipselect the controller uses.
-> Maybe it is better to rename it to "chipselect" ?
+On Tue, Jan 24, 2012 at 1:24 AM, Brian Foster <brian.foster@maxim-ic.com> w=
+rote:
+> =A0Using mtd-utils v1.4.6 with a v2.6.36 Linux kernel,
+> =A0if I have non-consecutive UBI device numbers (in the
+> =A0example below, =91ubi0=92 and =91ubi10=92), then =91ubinfo -a=92,
+> =A0after printing the info for =91ubi0=92, errors with:
+>
+> =A0 =A0ubinfo: error!: cannot get information about UBI device 1
+> =A0 =A0 =A0 =A0 =A0 =A0error 2 (No such file or directory)
+...
+> =A0I have not investigated, nor tried other/recent versions.
 
-Yes, or better "ti,chipselect" or "ti,davinci-chipselect".
+Still present on current git. The fix doesn't look too bad. I'll
+probably send a fix in the next few days.
 
->>> +Recommended properties :
->>> +- mask_ale: mask for ale
->>> +- mask_cle: mask for cle
->>> +- mask_chipsel: mask for chipselect
->>> +- ecc_mode: ECC mode, see NAND_ECC_* defines
->>> +- ecc_bits: used ECC bits
->>> +- options: nand options, defined in
->>> +           include/linux/mtd/nand.h, grep for NAND_NO_AUTOINCR
->>> +- bbt_options: NAND_BBT_* defines
->>
->> Binding-specific properties should have a vendor prefix.  Dashes are
->> preferred to underscores.
-> 
-> You think something like that:
-> 
-> davinci-mask-ale
-> davinci-mask-cle
-> ...
-
-"ti,davinci-mask-ale", etc.
-
->> Don't specify Linux internals by reference -- they could change and
->> invalidate existing device trees and non-Linux code that accepts them
->> (e.g. U-Boot).  If you want them to line up, copy the definition here,
->> and if Linux changes, write glue code to convert.  It would probably be
->> better to define specific properties for anything that must be specified
->> here (neither deteted dynamically nor defined by compatible =
->> "ti,davinci-nand").
-> 
-> Ok, I add the defines here, and add also a comment in the dts.
-
-Which options actually need to come from the device tree?
-
->> Do all of these properties really belong here?  I can see providing some
-> 
-> I think so, because this values come from existing platform code
-> (grep for struct davinci_nand_pdata)
-
-The standards are a bit stricter for the device tree, since it's a more
-stable interface across components -- at least that's how we've used it
-on a lot of powerpc targets.  I'm not sure if that's the intent here,
-but I have seen U-Boot patches for ARM hardware using them as well.
-
-> Comment in arch/arm/mach-davinci/include/mach/nand.h says for
-> mask_ale and mask_cle:
-> 
-> /* NOTE:  boards don't need to use these address bits
->  * for ALE/CLE unless they support booting from NAND.
->  * They're used unless platform data overrides them.
->  */
-> 
-> It is used for addressing the ALE/CLE Signals through the address,
-> used on the arch/arm/mach-davinci/board-dm646x-evm.c and
-> arch/arm/mach-davinci/board-tnetv107x-evm.c board ... so I think,
-> this should be also be setupable through OF ...
-
-OK, if it's board logic that does the decoding, and the compatible is
-not board-specific, they belong here.
-
--Scott
+Brian
