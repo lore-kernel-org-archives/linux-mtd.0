@@ -1,19 +1,23 @@
-Message-ID: <4F1DF465.60206@freescale.com>
-Date: Mon, 23 Jan 2012 17:59:33 -0600
-From: Scott Wood <scottwood@freescale.com>
+From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: RE: [RESEND PATCH] arm:davinci: prepare to move aemif driver to
+ drivers/mfd
+Date: Tue, 24 Jan 2012 05:24:00 +0000
+Message-ID: <A73F36158E33644199EB82C5EC81C7BC3175A568@DBDE01.ent.ti.com>
+References: <1327331552-9913-1-git-send-email-prakash.pm@ti.com>
+ <20120123170436.GZ1068@n2100.arm.linux.org.uk>
+In-Reply-To: <20120123170436.GZ1068@n2100.arm.linux.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Heiko Schocher <hs@denx.de>
-Subject: Re: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for
- davinci nand controller
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
- <1327308967-8092-7-git-send-email-hs@denx.de>
-In-Reply-To: <1327308967-8092-7-git-send-email-hs@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ Samuel Ortiz <sameo@linux.intel.com>, "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/23/2012 02:56 AM, Heiko Schocher wrote:
-> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-> new file mode 100644
-> index 0000000..7e8d6db
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-> @@ -0,0 +1,72 @@
-> +* Texas Instruments Davinci NAND
-> +
-> +This file provides information, what the device node for the
-> +davinci nand interface contain.
-> +
-> +Required properties:
-> +- compatible: "ti,davinci-nand";
-> +- reg : contain 2 offset/length values:
-> +        - offset and length for the access window
-> +        - offset and length for accessing the aemif control registers
-> +- id: id of the controller
+Hi Russell King,
 
-What does "id of the controller" mean, specfically?  From this I can't
-even tell if it's a number or a string, much less how to use it
-semantically.  If it's just a "match what's in the manual" thing,
-perhaps an alias would be better here.  Or, if it's a value with a
-specific meaning (e.g. that you need to program into a register) use a
-more specific name.
+On Mon, Jan 23, 2012 at 22:34:36, Russell King - ARM Linux wrote:
+> On Mon, Jan 23, 2012 at 08:42:32PM +0530, Manjunathappa, Prakash wrote:
+> > Adding: MFD maintainer and mailing list.
+> >=20
+> >  arch/arm/mach-davinci/aemif.c              |    2 +-
+> >  arch/arm/mach-davinci/board-da830-evm.c    |    2 +-
+> >  arch/arm/mach-davinci/board-da850-evm.c    |    2 +-
+> >  arch/arm/mach-davinci/include/mach/aemif.h |   36 --------------------=
+--------
+> >  drivers/mtd/nand/davinci_nand.c            |    2 +-
+> >  include/linux/mfd/davinci_aemif.h          |   36 ++++++++++++++++++++=
+++++++++
+> >  6 files changed, 40 insertions(+), 40 deletions(-)
+> >  delete mode 100644 arch/arm/mach-davinci/include/mach/aemif.h
+> >  create mode 100644 include/linux/mfd/davinci_aemif.h
+>=20
+> As Linus has requested on many occasions, and it's a damned good
+> idea, use -M when generating diffstat - and its also a *really* good
+> idea to use -M if you're submitting patches which rename files for
+> review as well.
+>=20
+> Obviously arch/arm/mach-davinci/include/mach/aemif.h was moved to
+> include/linux/mfd/davinci_aemif.h, but were there any changes to its
+> contents?  Without -M, there only way of knowing is to compare each
+> file line by line.  With -M, it'll tell us that it was renamed and
+> produce a diff between the old and new location.
+>=20
 
-> +Recommended properties :
-> +- mask_ale: mask for ale
-> +- mask_cle: mask for cle
-> +- mask_chipsel: mask for chipselect
-> +- ecc_mode: ECC mode, see NAND_ECC_* defines
-> +- ecc_bits: used ECC bits
-> +- options: nand options, defined in
-> +           include/linux/mtd/nand.h, grep for NAND_NO_AUTOINCR
-> +- bbt_options: NAND_BBT_* defines
+Yes, I will make it a point to do this in next version and in future.
 
-Binding-specific properties should have a vendor prefix.  Dashes are
-preferred to underscores.
-
-Don't specify Linux internals by reference -- they could change and
-invalidate existing device trees and non-Linux code that accepts them
-(e.g. U-Boot).  If you want them to line up, copy the definition here,
-and if Linux changes, write glue code to convert.  It would probably be
-better to define specific properties for anything that must be specified
-here (neither deteted dynamically nor defined by compatible =
-"ti,davinci-nand").
-
-Do all of these properties really belong here?  I can see providing some
-information about ECC or BBT mode, if there are multiple conventions
-already in use (or that are reasonably justifiable for different
-situations), as that must agree with how the flash has already been
-programmed.  How much of the rest can vary from one "ti,davinci-nand" to
-another?  Maybe it's obvious to someone more familiar with davinci, but
-what does "mask for ale/cle/chipselect" mean?
-
-> +	nandflash@3,0 {
-
-PowerPC's ePAPR document -- not directly relevant to ARM, but contains a
-more recently updated list of generic names than the IEEE1275
-recommended pratice -- specifies "flash@".  If you don't want to do
-that, "nand@" is used in many existing trees.  Why introduce a new name?
-
--Scott
+Thanks,
+Prakash
