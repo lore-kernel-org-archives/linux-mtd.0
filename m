@@ -1,20 +1,18 @@
-Date: Tue, 24 Jan 2012 08:23:46 +0100
-From: Heiko Schocher <hs@denx.de>
-Subject: Re: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for
- davinci nand controller
-In-reply-to: <4F1DF465.60206@freescale.com>
-To: Scott Wood <scottwood@freescale.com>
-Message-id: <4F1E5C82.60108@denx.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7BIT
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
- <1327308967-8092-7-git-send-email-hs@denx.de> <4F1DF465.60206@freescale.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Reply-To: hs@denx.de
+MIME-Version: 1.0
+In-Reply-To: <1327306361-9803-3-git-send-email-shubhrajyoti@ti.com>
+References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
+ <1327306361-9803-3-git-send-email-shubhrajyoti@ti.com>
+Date: Tue, 24 Jan 2012 00:09:04 -0800
+Message-ID: <CAN8TOE8i-g_QTsidqDW=TRfZMQ8u93+iP8V7rr4paek=7xZ7UA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the
+ suspend is not implemented
+From: Brian Norris <computersforpeace@gmail.com>
+To: Shubhrajyoti D <shubhrajyoti@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Scott,
+Hi,
 
-Scott Wood wrote:
-> On 01/23/2012 02:56 AM, Heiko Schocher wrote:
->> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
->> new file mode 100644
->> index 0000000..7e8d6db
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
->> @@ -0,0 +1,72 @@
->> +* Texas Instruments Davinci NAND
->> +
->> +This file provides information, what the device node for the
->> +davinci nand interface contain.
->> +
->> +Required properties:
->> +- compatible: "ti,davinci-nand";
->> +- reg : contain 2 offset/length values:
->> +        - offset and length for the access window
->> +        - offset and length for accessing the aemif control registers
->> +- id: id of the controller
-> 
-> What does "id of the controller" mean, specfically?  From this I can't
-> even tell if it's a number or a string, much less how to use it
-> semantically.  If it's just a "match what's in the manual" thing,
-> perhaps an alias would be better here.  Or, if it's a value with a
-> specific meaning (e.g. that you need to program into a register) use a
-> more specific name.
-
-Ok, fix this. Id means here, which chipselect the controller uses.
-Maybe it is better to rename it to "chipselect" ?
-
->> +Recommended properties :
->> +- mask_ale: mask for ale
->> +- mask_cle: mask for cle
->> +- mask_chipsel: mask for chipselect
->> +- ecc_mode: ECC mode, see NAND_ECC_* defines
->> +- ecc_bits: used ECC bits
->> +- options: nand options, defined in
->> +           include/linux/mtd/nand.h, grep for NAND_NO_AUTOINCR
->> +- bbt_options: NAND_BBT_* defines
-> 
-> Binding-specific properties should have a vendor prefix.  Dashes are
-> preferred to underscores.
-
-You think something like that:
-
-davinci-mask-ale
-davinci-mask-cle
+On Mon, Jan 23, 2012 at 12:12 AM, Shubhrajyoti D <shubhrajyoti@ti.com> wrot=
+e:
 ...
+> =A0include/linux/mtd/mtd.h | =A0 =A06 +++---
+> =A01 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 1a81fde..c717bb6 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -427,9 +427,9 @@ static inline int mtd_is_locked(struct mtd_info *mtd,=
+ loff_t ofs, uint64_t len)
+>
+> =A0static inline int mtd_suspend(struct mtd_info *mtd)
+> =A0{
+> - =A0 =A0 =A0 if (!mtd->suspend)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EOPNOTSUPP;
+> - =A0 =A0 =A0 return mtd->suspend(mtd);
+> + =A0 =A0 =A0 if (mtd->suspend)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return mtd->suspend(mtd);
+> + =A0 =A0 =A0 return 0;
+> =A0}
+>
+> =A0static inline void mtd_resume(struct mtd_info *mtd)
 
-?
+I believe this fix is already accounted for in Artem Bityutskiy's
+l2-mtd-2.6 repository as:
 
-> Don't specify Linux internals by reference -- they could change and
-> invalidate existing device trees and non-Linux code that accepts them
-> (e.g. U-Boot).  If you want them to line up, copy the definition here,
-> and if Linux changes, write glue code to convert.  It would probably be
-> better to define specific properties for anything that must be specified
-> here (neither deteted dynamically nor defined by compatible =
-> "ti,davinci-nand").
+commit 091a7fe219ee8d3e76be9e02221433af10c6f574
+mtd: fix MTD suspend
+(http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/091a7fe219ee=
+8d3e76be9e02221433af10c6f574)
 
-Ok, I add the defines here, and add also a comment in the dts.
+However, the bug made it into the 3.3 merge window, so shouldn't this
+bugfix be sent upstream immediately?
 
-> Do all of these properties really belong here?  I can see providing some
-
-I think so, because this values come from existing platform code
-(grep for struct davinci_nand_pdata)
-
-> information about ECC or BBT mode, if there are multiple conventions
-> already in use (or that are reasonably justifiable for different
-> situations), as that must agree with how the flash has already been
-> programmed.  How much of the rest can vary from one "ti,davinci-nand" to
-> another?  Maybe it's obvious to someone more familiar with davinci, but
-> what does "mask for ale/cle/chipselect" mean?
-
-I mapped here just the existing platform code (=struct davinci_nand_pdata)
-to OF, so existing boards can easy switch to OF.
-
-Comment in arch/arm/mach-davinci/include/mach/nand.h says for
-mask_ale and mask_cle:
-
-/* NOTE:  boards don't need to use these address bits
- * for ALE/CLE unless they support booting from NAND.
- * They're used unless platform data overrides them.
- */
-
-It is used for addressing the ALE/CLE Signals through the address,
-used on the arch/arm/mach-davinci/board-dm646x-evm.c and
-arch/arm/mach-davinci/board-tnetv107x-evm.c board ... so I think,
-this should be also be setupable through OF ...
-
->> +	nandflash@3,0 {
-> 
-> PowerPC's ePAPR document -- not directly relevant to ARM, but contains a
-> more recently updated list of generic names than the IEEE1275
-> recommended pratice -- specifies "flash@".  If you don't want to do
-> that, "nand@" is used in many existing trees.  Why introduce a new name?
-
-There is no reason for that, change this to "nand@".
-
-Thanks for the review.
-
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Brian
