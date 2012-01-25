@@ -1,17 +1,20 @@
-Received: from p3plsmtp16-05-2.prod.phx3.secureserver.net ([173.201.193.62]
- helo=p3plwbeout16-05.prod.phx3.secureserver.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RpotE-0007PK-K3
- for linux-mtd@lists.infradead.org; Tue, 24 Jan 2012 22:30:57 +0000
+MIME-Version: 1.0
+In-Reply-To: <20120124090630.GR16726@n2100.arm.linux.org.uk>
+References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
+ <1327306361-9803-3-git-send-email-shubhrajyoti@ti.com>
+ <CAN8TOE8i-g_QTsidqDW=TRfZMQ8u93+iP8V7rr4paek=7xZ7UA@mail.gmail.com>
+ <20120124090630.GR16726@n2100.arm.linux.org.uk>
+Date: Tue, 24 Jan 2012 21:16:33 -0800
+Message-ID: <CAN8TOE9hw8_qRd2CmkHr2eDAsbjbspD6gwQ7wpU-2skJTty-AQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the
+ suspend is not implemented
+From: Brian Norris <computersforpeace@gmail.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20120124153052.9a4f1a4b2a45238f732670fb1ee2460e.355e0f7a6b.wbe@email16.secureserver.net>
-From: "Brad Parker" <brad@heeltoe.com>
-To: linux-mtd@lists.infradead.org
-Subject: ubifs - scrubbing failed due to ecc error on new
- =?UTF-8?Q?eraseblock=3F?= =?UTF-8?Q?=20=28=32=2E=36=2E=33=39=29?=
-Date: Tue, 24 Jan 2012 15:30:52 -0700
-Mime-Version: 1.0
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Shubhrajyoti D <shubhrajyoti@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I saw this panic on 2.6.39; is this an example of an ecc error on a new =0A=
-block during scrubbing?=0A=0A...=0AFile Edit Options Buffers Tools Help=0AU=
-BI: scrubbed PEB 3762 (LEB 0:1548), data moved to PEB 3684=0AUBI error: ubi=
-_io_read: error -74 (ECC error) while reading 65 bytes =0Afrom PEB 3684:648=
-64, read 65 bytes=0AUBIFS error (pid 912): ubifs_read_node: bad node type (=
-0 but expected 2)=0AUBIFS error (pid 912): ubifs_read_node: bad node at LEB=
- 1548:56952, LEB =0Amapping status 1=0ANot a node, first 24 bytes:=0A000000=
-00: 68 02 00 00 00 00 00 00 c6 4a 39 4c 00 00 00 00 b6 02 01 00 00=0A=0A00 =
-00 00 h........J9L............=0A[<c002b968>] (unwind_backtrace+0x0/0xf0) f=
-rom [<c0108608>] =0A(ubifs_read_node+0x324/0x368)=0A[<c0108608>] (ubifs_rea=
-d_node+0x324/0x368) from [<c0129de0>] =0A(ubifs_tnc_read_node+0x4c/0x190)=
-=0A[<c0129de0>] (ubifs_tnc_read_node+0x4c/0x190) from [<c010afd0>] =0A(matc=
-hes_name+0x44/0xcc)=0A[<c010afd0>] (matches_name+0x44/0xcc) from [<c010b08c=
->] =0A(resolve_collision+0x34/0x334)=0A[<c010b08c>] (resolve_collision+0x34=
-/0x334) from [<c010dfa4>] =0A(ubifs_tnc_add_nm+0xec/0x2c4)=0A[<c010dfa4>] (=
-ubifs_tnc_add_nm+0xec/0x2c4) from [<c00fb9e4>] =0A(ubifs_jnl_rename+0x6bc/0=
-x90c)=0A[<c00fb9e4>] (ubifs_jnl_rename+0x6bc/0x90c) from [<c010033c>] =0A(u=
-bifs_rename+0x47c/0x614)=0A[<c010033c>] (ubifs_rename+0x47c/0x614) from [<c=
-0099df8>] =0A(vfs_rename+0x214/0x364)=0A[<c0099df8>] (vfs_rename+0x214/0x36=
-4) from [<c009aaf4>] =0A(sys_renameat+0x168/0x1e0)=0A[<c009aaf4>] (sys_rena=
-meat+0x168/0x1e0) from [<c0027640>] =0A(ret_fast_syscall+0x0/0x2c)=0AUBIFS =
-warning (pid 912): ubifs_ro_mode: switched to read-only mode, =0Aerror -22=
-=0A[<c002b968>] (unwind_backtrace+0x0/0xf0) from [<c00fbbd4>] =0A(ubifs_jnl=
-_rename+0x8ac/0x90c)=0A[<c00fbbd4>] (ubifs_jnl_rename+0x8ac/0x90c) from [<c=
-010033c>] =0A(ubifs_rename+0x47c/0x614)=0A[<c010033c>] (ubifs_rename+0x47c/=
-0x614) from [<c0099df8>] =0A(vfs_rename+0x214/0x364)=0A[<c0099df8>] (vfs_re=
-name+0x214/0x364) from [<c009aaf4>] =0A(sys_renameat+0x168/0x1e0)=0A[<c009a=
-af4>] (sys_renameat+0x168/0x1e0) from [<c0027640>] =0A(ret_fast_syscall+0x0=
-/0x2c)=0AUBIFS error (pid 603): make_reservation: cannot reserve 160 bytes =
-in =0Ajhead 1, error -30=0A...=0A=0A=0A=0A
+On Tue, Jan 24, 2012 at 1:06 AM, Russell King - ARM Linux
+<linux@arm.linux.org.uk> wrote:
+> On Tue, Jan 24, 2012 at 12:09:04AM -0800, Brian Norris wrote:
+>> However, the bug made it into the 3.3 merge window, so shouldn't this
+>> bugfix be sent upstream immediately?
+>
+> David is the MTD maintainer, and Artem just helps out. =A0I believe Artem
+> is waiting for David to finish travelling before asking David (last seen
+> at Hong Kong airport) to pull these fixes. =A0David in turn will pass the=
+m
+> onto Linus. =A0Plus, Linus only started adding to -rc1 yesterday, so its =
+a
+> little early to expect this to be fixed.
+
+Right, thanks for the reality check. I was just ensuring that this
+bugfix was on the right track. I probably should have said "in
+3.3-rcX", not "immediately."
+
+Regards,
+Brian
