@@ -1,14 +1,8 @@
-Received: from hd5b91d02.k46641.sta.perspektivbredband.net ([213.185.29.2]
- helo=fg-dc1.flatfrog.local)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqTXA-00053j-6t
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 17:54:52 +0000
-Message-ID: <4F219369.3040208@flatfrog.com>
-Date: Thu, 26 Jan 2012 18:54:49 +0100
-From: Orjan Friberg <of@flatfrog.com>
-MIME-Version: 1.0
-To: Paul Walmsley <paul@pwsan.com>
-Subject: Re: CONFIG_PREEMPT and JFFS2 oops
+Received: from gw1.transmode.se ([195.58.98.146])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RqVVT-0000TZ-El
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 20:01:16 +0000
+In-Reply-To: <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
 References: <4F206213.9070704@flatfrog.com>
  <alpine.DEB.2.00.1201251351500.5324@utopia.booyaka.com>
  <4F2127B8.9000005@flatfrog.com> <4F213ED8.2020500@flatfrog.com>
@@ -18,14 +12,18 @@ References: <4F206213.9070704@flatfrog.com>
  <alpine.DEB.2.00.1201260936440.11174@utopia.booyaka.com>
  <OF4651C12F.58F763E5-ONC1257991.005C0D05-C1257991.005C4F23@transmode.se>
  <alpine.DEB.2.00.1201260953550.32667@utopia.booyaka.com>
-In-Reply-To: <alpine.DEB.2.00.1201260953550.32667@utopia.booyaka.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Purdie <rpurdie@openedhand.com>,
+ <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
+Subject: Re: CONFIG_PREEMPT and JFFS2 oops
+Message-ID: <OF98F390C1.0794131C-ONC1257991.006D971F-C1257991.006DF8A8@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 26 Jan 2012 21:01:10 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: Paul Walmsley <paul@pwsan.com>, Richard Purdie <rpurdie@openedhand.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Orjan Friberg <of@flatfrog.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/26/2012 05:57 PM, Paul Walmsley wrote:
->>
->> You just throw away best_buf here, don't you?
+
+> >
+> > On Thu, 26 Jan 2012, Joakim Tjernlund wrote:
+> >
+> > > Still leeks:
+> > > +                            best_slen = tdl;
+> > > +                            best_buf = tmp_buf;
+> > > +                            best = this;
+> > >
+> > > You just throw away best_buf here, don't you?
+> >
+> > You're right.  It's even worse than that.  best_buf will contain the data
+> > from the last compressor used.  And it will be prematurely freed.  Here's
+> > a fixed version.
+> >
+> > Time for breakfast.
 >
-> You're right.  It's even worse than that.  best_buf will contain the data
-> from the last compressor used.  And it will be prematurely freed.  Here's
-> a fixed version.
+> hmm, that memcpy is costly. Just swap tmp_buf and best_buf instead?
+>
+> Time to go home :)
 
-I've tested this version for a while now with the same result as before.
+.. and you should delay the second allocation to when it is needed. After swapping ptrs, test if
+tmp_buf is NULL and kmalloc if so.
 
-No oopses, no spinlock violations.  I copied a 2MB file from the SD/MMC 
-partition to the two JFFS2 partitions and md5summ'ed it a bunch of 
-times.  After that I unmounted and remounted both partitions.
-
-I do see a steady memory usage increase when doing continuous testing, 
-but whether that's normal I don't know.  I see at least some of it being 
-reclaimed when unmounting the JFFS2 partitions (grep jffs2 /proc/slabinfo).
-
--- 
-Orjan Friberg
-FlatFrog Laboratories AB
+ Jocke
