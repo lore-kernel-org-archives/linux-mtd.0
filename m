@@ -1,29 +1,21 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqVVT-0000TZ-El
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 20:01:16 +0000
-In-Reply-To: <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
-References: <4F206213.9070704@flatfrog.com>
- <alpine.DEB.2.00.1201251351500.5324@utopia.booyaka.com>
- <4F2127B8.9000005@flatfrog.com> <4F213ED8.2020500@flatfrog.com>
- <alpine.DEB.2.00.1201260801410.11174@utopia.booyaka.com>
- <OF645D734B.78418504-ONC1257991.005A101B-C1257991.005A7809@transmode.se>
- <alpine.DEB.2.00.1201260934190.11174@utopia.booyaka.com>
- <alpine.DEB.2.00.1201260936440.11174@utopia.booyaka.com>
- <OF4651C12F.58F763E5-ONC1257991.005C0D05-C1257991.005C4F23@transmode.se>
- <alpine.DEB.2.00.1201260953550.32667@utopia.booyaka.com>
- <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
-Subject: Re: CONFIG_PREEMPT and JFFS2 oops
-Message-ID: <OF98F390C1.0794131C-ONC1257991.006D971F-C1257991.006DF8A8@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 26 Jan 2012 21:01:10 +0100
+Message-ID: <4F21B8AC.40002@freescale.com>
+Date: Thu, 26 Jan 2012 14:33:48 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: Paul Walmsley <paul@pwsan.com>, Richard Purdie <rpurdie@openedhand.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Orjan Friberg <of@flatfrog.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>
+To: <hs@denx.de>
+Subject: Re: [RFC PATCH 6/7] ARM: mtd: nand: davinci: add OF support for
+ davinci nand controller
+References: <1327308967-8092-1-git-send-email-hs@denx.de>
+ <1327308967-8092-7-git-send-email-hs@denx.de> <4F1DF465.60206@freescale.com>
+ <4F1E5C82.60108@denx.de> <4F1F0A3E.40805@freescale.com>
+ <4F1FAAAE.2060007@denx.de>
+In-Reply-To: <4F1FAAAE.2060007@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+ devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,28 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 01/25/2012 01:09 AM, Heiko Schocher wrote:
+> Scott Wood wrote:
+> I found the following used options:
+> 
+> ecc_mode:
+> NAND_ECC_NONE
+> NAND_ECC_SOFT
+> NAND_ECC_HW
+> NAND_ECC_HW_SYNDROME
+> 
+> bbt_options:
+> NAND_BBT_USE_FLASH
+> 
+> ecc_bits:
+> 1
+> 4
+> 
+> options:
+> NAND_BUSWIDTH_16
+> 
+>>>> Do all of these properties really belong here?  I can see providing some
+>>> I think so, because this values come from existing platform code
+>>> (grep for struct davinci_nand_pdata)
+>>
+>> The standards are a bit stricter for the device tree, since it's a more
+>> stable interface across components -- at least that's how we've used it
+>> on a lot of powerpc targets.  I'm not sure if that's the intent here,
+>> but I have seen U-Boot patches for ARM hardware using them as well.
+> 
+> Ok, so, should I introduce instead properties for the above
+> needed parameters? 
 
-> >
-> > On Thu, 26 Jan 2012, Joakim Tjernlund wrote:
-> >
-> > > Still leeks:
-> > > +                            best_slen = tdl;
-> > > +                            best_buf = tmp_buf;
-> > > +                            best = this;
-> > >
-> > > You just throw away best_buf here, don't you?
-> >
-> > You're right.  It's even worse than that.  best_buf will contain the data
-> > from the last compressor used.  And it will be prematurely freed.  Here's
-> > a fixed version.
-> >
-> > Time for breakfast.
->
-> hmm, that memcpy is costly. Just swap tmp_buf and best_buf instead?
->
-> Time to go home :)
+Yes.
 
-.. and you should delay the second allocation to when it is needed. After swapping ptrs, test if
-tmp_buf is NULL and kmalloc if so.
+> (As this are not davinci specific parameters, are there somewhere such definitions for them?)
 
- Jocke
+It's controller-specific which options are changeable, and whether
+there's a better source of information.  Most controllers don't seem to
+need this.  I'd keep the definitions davinci specific for now.  If
+there's enough of a common need, a common definition could be considered.
+
+-Scott
