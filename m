@@ -1,20 +1,21 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RqLMz-0005zC-53
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 09:11:50 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] ubinfo: fix `--all' for non-consecutive device numbers
-Date: Thu, 26 Jan 2012 09:53:04 +0100
-References: <1327563110-23966-1-git-send-email-computersforpeace@gmail.com>
- <1327563110-23966-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1327563110-23966-2-git-send-email-computersforpeace@gmail.com>
+Received: from gw1.transmode.se ([195.58.98.146])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RqM1y-000397-LT
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 09:54:11 +0000
+In-Reply-To: <4F21169C.6050309@flatfrog.com>
+References: <4F1E802D.5010402@flatfrog.com> <4F1EE749.6020801@flatfrog.com>
+ <4F1F004C.6040501@flatfrog.com> <4F205DBA.2090103@flatfrog.com>
+ <4F206D8F.5010206@flatfrog.com>
+ <OF0111198C.16CD12BA-ONC1257991.002D7AD9-C1257991.002DC3EB@transmode.se>
+ <4F21169C.6050309@flatfrog.com>
+Subject: Re: JFFS2 oops when writing to two partitions simultaneously
+To: Orjan Friberg <of@flatfrog.com>
+Message-ID: <OFACA7AF03.334529A7-ONC1257991.00362059-C1257991.00365A29@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 26 Jan 2012 10:53:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <201201260953.04349.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-type: text/plain; charset=US-ASCII
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 26 January 2012 08:31:50 Brian Norris wrote:
-> When we have assigned non-consecutive device numbers to our UBI devices [=
-=2E..]
-> This patch adds a check to first see if device is present, then continue
-> to the next ID if it doesn't exist.
->[ ... ]=20
+Orjan Friberg <of@flatfrog.com> wrote on 2012/01/26 10:02:20:
+>
+> On 01/26/2012 09:19 AM, Joakim Tjernlund wrote:
+> > Works for me on PowerPC, 2.6.35, NOR flash
+>
+> Just to clarify: two instances of that program, each on their own partition?
 
- Looks Ok to me (when used with part 1).
+1 to 4 instances on one partition(only got one)
 
- However, looking at the mtd-utils v1.4.6 =E2=80=98mtdinfo.c=E2=80=99,
- is there a similar issue there?  But I have no idea
- how you could get non-consecutive MTD device numbers?
+>
+> What CONFIG_PREEMPT options are in your kernelconfig?
 
-cheers!
-	-blf-
-
-=2D-=20
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated Products      |  Web:  http://www.maxim-ic.com/
+CONFIG_HZ_1000=y
+CONFIG_HZ=1000
+CONFIG_SCHED_HRTICK=y
+# CONFIG_PREEMPT_NONE is not set
+# CONFIG_PREEMPT_VOLUNTARY is not set
+CONFIG_PREEMPT=y
