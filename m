@@ -1,21 +1,21 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqM1y-000397-LT
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 09:54:11 +0000
-In-Reply-To: <4F21169C.6050309@flatfrog.com>
-References: <4F1E802D.5010402@flatfrog.com> <4F1EE749.6020801@flatfrog.com>
- <4F1F004C.6040501@flatfrog.com> <4F205DBA.2090103@flatfrog.com>
- <4F206D8F.5010206@flatfrog.com>
- <OF0111198C.16CD12BA-ONC1257991.002D7AD9-C1257991.002DC3EB@transmode.se>
- <4F21169C.6050309@flatfrog.com>
-Subject: Re: JFFS2 oops when writing to two partitions simultaneously
-To: Orjan Friberg <of@flatfrog.com>
-Message-ID: <OFACA7AF03.334529A7-ONC1257991.00362059-C1257991.00365A29@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 26 Jan 2012 10:53:40 +0100
+Received: from hd5b91d02.k46641.sta.perspektivbredband.net ([213.185.29.2]
+ helo=fg-dc1.flatfrog.local)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RqMMa-0001ex-4z
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2012 10:15:28 +0000
+Message-ID: <4F2127B8.9000005@flatfrog.com>
+Date: Thu, 26 Jan 2012 11:15:20 +0100
+From: Orjan Friberg <of@flatfrog.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Paul Walmsley <paul@pwsan.com>
+Subject: Re: CONFIG_PREEMPT and JFFS2 oops
+References: <4F206213.9070704@flatfrog.com>
+ <alpine.DEB.2.00.1201251351500.5324@utopia.booyaka.com>
+In-Reply-To: <alpine.DEB.2.00.1201251351500.5324@utopia.booyaka.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Orjan Friberg <of@flatfrog.com> wrote on 2012/01/26 10:02:20:
->
-> On 01/26/2012 09:19 AM, Joakim Tjernlund wrote:
-> > Works for me on PowerPC, 2.6.35, NOR flash
->
-> Just to clarify: two instances of that program, each on their own partition?
+On 01/25/2012 10:18 PM, Paul Walmsley wrote:
+> - If your oopses are consistently in the same places, add some debugging
+>    to that code to determine which line is actually causing the oops.
 
-1 to 4 instances on one partition(only got one)
+(CC:d linux-mtd.)
 
+They are semi-consistent I'd say.  The oops trace I posted is by far the 
+most common.
+
+>    problem to mysteriously disappear.  Doing this analysis should provide a
+>    good clue as to where to look next.  I personally would be rather
+>    suspicious of that
 >
-> What CONFIG_PREEMPT options are in your kernelconfig?
+> 		ri->data_crc = cpu_to_je32(crc32(0, comprbuf, cdatalen));
+>
+>    in jffs2_write_inode_range().
 
-CONFIG_HZ_1000=y
-CONFIG_HZ=1000
-CONFIG_SCHED_HRTICK=y
-# CONFIG_PREEMPT_NONE is not set
-# CONFIG_PREEMPT_VOLUNTARY is not set
-CONFIG_PREEMPT=y
+That is indeed the place where crc32 is called from .  I'll see it I can 
+track the use of comprbuf.
+
+> - Try turning on JFFS2 debugging and seeing if you can reproduce it.
+>    The output might provide a clue as to where the problem would be.
+
+Here are two examples (immediately preceding the oops):
+
+jffs2_reserve_space(): Requested 0x30 bytes
+jffs2_reserve_space(): alloc sem got
+[JFFS2 DBG] (1189) jffs2_do_reserve_space: minsize=48 , jeb->free=46852 
+,summary->size=16586 , sumsize=29
+jffs2_do_reserve_space(): Giving 0x75f4 bytes at 0x3d48fc
+jffs2_write_dirent(ino #1, name at *0xdea7b93c "file1"->ino #111, 
+name_crc 0x58c597f8)
+
+
+jffs2_write_begin()
+jffs2_read_inode_range: ino #12, range 0x00000000-0x00001000
+Filling non-frag hole from 0-4096
+end write_begin(). pg->flags 9
+jffs2_write_end(): ino #12, page at 0x0, range 0-800, flags d
+jffs2_write_inode_range(): Ino #12, ofs 0x0, len 0x320
+jffs2_reserve_space(): Requested 0xc4 bytes
+jffs2_reserve_space(): alloc sem got
+[JFFS2 DBG] (1454) jffs2_do_reserve_space: minsize=196 , 
+jeb->free=123148 ,summary->size=1567 , sumsize=18
+jffs2_do_reserve_space(): Giving 0x1dab0 bytes at 0xf941ef4
+calling deflate with avail_in 788, avail_out 788
+deflate returned with avail_in 0, avail_out 428, total_in 788, total_out 360
+calling deflate with avail_in 12, avail_out 428
+deflate returned with avail_in 0, avail_out 414, total_in 800, total_out 374
+zlib compressed 800 bytes into 380
+
+
+I'll take a look at what jffs2_do_reserve_space is up to.
+
+
+Thanks.
+
+-- 
+Orjan Friberg
+FlatFrog Laboratories AB
