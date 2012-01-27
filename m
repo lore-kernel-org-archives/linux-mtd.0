@@ -1,16 +1,17 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqqYQ-00080b-FZ
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 18:29:42 +0000
-Received: by dadz9 with SMTP id z9so783370dad.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 10:29:41 -0800 (PST)
+ id 1RqqYl-00084M-Qr
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 18:30:04 +0000
+Received: by pbdx9 with SMTP id x9so2270703pbd.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 10:30:02 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] libmtd: add `mtd_dev_present()' library function
-Date: Fri, 27 Jan 2012 10:30:45 -0800
-Message-Id: <1327689046-1450-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Subject: [PATCH 2/2] mtdinfo: fix `--all' for non-consecutive device numbers
+Date: Fri, 27 Jan 2012 10:30:46 -0800
+Message-Id: <1327689046-1450-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1327689046-1450-1-git-send-email-computersforpeace@gmail.com>
+References: <1327689046-1450-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,76 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Will be used for `mtdinfo --all'
+When we have assigned non-consecutive device numbers to our MTD devices,
+then we run `mtdinfo --all', we get errors once mtdinfo tries to process
+the devices in the "hole". For instance, suppose that at boot time, we have
+one MTD (/dev/mtd0) then perform a sequence like the following:
 
+ # modprobe mtdram
+ # modprobe nandsim
+ # rmmod mtdram
+
+Then at this point, we have should have devices 0 and 2 without 1. Then:
+
+ # mtdinfo --all
+ ...
+ mtdinfo: error!: mtd1 does not correspond to any existing MTD device
+
+We add a check to first see if device is present, then continue to the next
+ID if it doesn't exist.
+
+Reported-by: Brian Foster <brian.foster@maxim-ic.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/libmtd.h |    9 +++++++++
- lib/libmtd.c     |   22 ++++++++++++----------
- 2 files changed, 21 insertions(+), 10 deletions(-)
+ ubi-utils/mtdinfo.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/include/libmtd.h b/include/libmtd.h
-index 07c304a..a78c8cb 100644
---- a/include/libmtd.h
-+++ b/include/libmtd.h
-@@ -106,6 +106,15 @@ libmtd_t libmtd_open(void);
- void libmtd_close(libmtd_t desc);
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index ead4bce..d25595a 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -378,6 +378,8 @@ static int print_general_info(libmtd_t libmtd, const struct mtd_info *mtd_info,
  
- /**
-+ * mtd_dev_present - check whether a MTD device is present.
-+ * @desc: MTD library descriptor
-+ * @mtd_num: MTD device number to check
-+ *
-+ * This function returns %1 if MTD device is present and %0 if not.
-+ */
-+int mtd_dev_present(libmtd_t desc, int mtd_num);
-+
-+/**
-  * mtd_get_info - get general MTD information.
-  * @desc: MTD library descriptor
-  * @info: the MTD device information is returned here
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index c6e5b20..9786e83 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -713,10 +713,18 @@ out_close:
- 	return -1;
- }
- 
-+int mtd_dev_present(libmtd_t desc, int mtd_num) {
-+	struct stat st;
-+	struct libmtd *lib = (struct libmtd *)desc;
-+	char file[strlen(lib->mtd) + 10];
-+
-+	sprintf(file, lib->mtd, mtd_num);
-+	return !stat(file, &st);
-+}
-+
- int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
- {
- 	int ret;
--	struct stat st;
- 	struct libmtd *lib = (struct libmtd *)desc;
- 
- 	memset(mtd, 0, sizeof(struct mtd_dev_info));
-@@ -724,15 +732,9 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
- 
- 	if (!lib->sysfs_supported)
- 		return legacy_get_dev_info1(mtd_num, mtd);
--	else {
--		char file[strlen(lib->mtd) + 10];
--
--		sprintf(file, lib->mtd, mtd_num);
--		if (stat(file, &st)) {
--			if (errno == ENOENT)
--				errno = ENODEV;
--			return -1;
--		}
-+	else if (!mtd_dev_present(desc, mtd_num)) {
-+		errno = ENODEV;
-+		return -1;
- 	}
- 
- 	if (dev_get_major(lib, mtd_num, &mtd->major, &mtd->minor))
+ 	for (i = mtd_info->lowest_mtd_num;
+ 	     i <= mtd_info->highest_mtd_num; i++) {
++		if (!mtd_dev_present(libmtd, i))
++			continue;
+ 		err = print_dev_info(libmtd, mtd_info, i);
+ 		if (err)
+ 			return err;
 -- 
 1.7.5.4
