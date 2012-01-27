@@ -1,22 +1,23 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqlH2-0006lh-VN
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 12:51:25 +0000
-Received: by pbdx9 with SMTP id x9so1971756pbd.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 04:51:22 -0800 (PST)
-Message-ID: <1327668807.26648.38.camel@sauron.fi.intel.com>
-Subject: Re: Kernel panic when reading mtd device
+ id 1RqlcP-0000Br-Tm
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 13:13:30 +0000
+Received: by dadz9 with SMTP id z9so503359dad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 05:13:28 -0800 (PST)
+Message-ID: <1327670133.26648.40.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd/nand:Fix wrong usage of is_blank() in
+ fsl_ifc_run_command
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Shawn J. Goff" <shawn7400@gmail.com>
-Date: Fri, 27 Jan 2012 14:53:27 +0200
-In-Reply-To: <CAGiDA6KjJKQcho9aiqA2KSe30tvU0JZnMgv86zSE_Pt2=JRdDA@mail.gmail.com>
-References: <CAGiDA6LO-PWL6OeGwwPJzdx8TVEXMA84ceOvQZ3UECKkG54YAw@mail.gmail.com>
- <CAGiDA6KjJKQcho9aiqA2KSe30tvU0JZnMgv86zSE_Pt2=JRdDA@mail.gmail.com>
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Date: Fri, 27 Jan 2012 15:15:33 +0200
+In-Reply-To: <1326859991-7469-1-git-send-email-prabhakar@freescale.com>
+References: <1326859991-7469-1-git-send-email-prabhakar@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-a6jWyH0IOLzfIh7GK6b4"
+ boundary="=-/l8yZfJW974mBC31yWcY"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, Poonam Aggrwal <poonam.aggrwal@freescale.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,29 +29,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-a6jWyH0IOLzfIh7GK6b4
+--=-/l8yZfJW974mBC31yWcY
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-01-19 at 19:16 -0500, Shawn J. Goff wrote:
-> I believe the problem is in drivers/spi/atmel_spi.c. It looks like it
-> needs to break the transfer down into chunks that can fit in the
-> buffer. It seems that this driver as it exists in the Linux4SAM tree (
-> https://github.com/linux4sam/linux-at91/tree/linus2639_5series_1.x )
-> is unfinished(?) As a quick workaround, I did the following, which
-> allows me to function for now.
+On Wed, 2012-01-18 at 09:43 +0530, Prabhakar Kushwaha wrote:
+> Freescale IFC NAND Machine calculates ECC on 512byte sector and same is u=
+sed in
+> fsl_ifc_run_command() during ECC status verification. Also this sector is=
+ passed
+> to is_blank() for blank checking. It is wrong at first place because
+> is_blank()'s implementation checks for Page size and OOB area size.=20
+> is_blank() should be called per page for main and OOB area verification.
 >=20
-> diff --git a/drivers/spi/atmel_spi.c b/drivers/spi/atmel_spi.c
+> Variables name are redefined to avoid confusion between buffer and ecc se=
+ctor.
+>=20
+> Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
+> Signed-off-by: Scott Wood <scottwood@freescale.com>
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
 
-This driver is not in upstream - I do not have it in my 3.3-rc1 at
-least.
-
+The driver is not in 3.3-rc1, so I skip this patch.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-a6jWyH0IOLzfIh7GK6b4
+--=-/l8yZfJW974mBC31yWcY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPIp5HAAoJECmIfjd9wqK0pPcQAMlzOGzZLqAs2j/KxwVmKvAw
-ISREs4VE20nuyPerXXYpgA66/P5CiJjEqeWEQ7TEK+gDJ5jgjELO7hrGiW1oNKpF
-f0MNc4l2/Wexx2hnqUWCTXJL5qACu3IPzPwLsszMwGqMuUQDoTgdPAGu6fOpSwym
-TlytbFoLlJeMNL1mJNcDsQ/+Dfqa5XQoFWb89rbpjqF02mVLTYPtr/Q1kQ6gISh/
-7TS81PfZqYVhYeVjwOo9uk1ye5evmrg/BPRGb8GiRcbypNy262T8MfoAf86itP6h
-xi7LlRgeijTqS8HOBQgVozOf6uMOQ1iBr/b49IoWVWDm/y6IUgJ996EhmBiXZDOI
-7Oetpdb46XFRv8qkLdELhyRXn+ouarB37eVrr/WXTWdjGIPax4eJJ5trkiMOOxIF
-edynBipDt9OjUWRLJZDGe6a5F1ZSotMkjdiPIS1DEB1IA+AOLtcOKsqD3bBYP0RX
-se5Aa+9nT00vAuOpda/iSICyTvpYA7SN6QtpH1uHhNzwUZokV7XiFsC+kXtiEiRn
-+mN8tDM1Z/hgrHCdi1F3Rhl7sIhEABikJ+87p6J/P3mnBeEyraeJ3LFeb+5Ni7vY
-mq6FWvuIq638Jx+orNaEEHojvca6hD6mQmWJYi29z3jswzw6yuax446ZDUpD9FHl
-Fnp9sTpZwrFLKcD9cuSe
-=BRut
+iQIcBAABAgAGBQJPIqN1AAoJECmIfjd9wqK0gbIP/iyK9JJBinXxp8RLUcvgpTs/
+5tqnrR6oBpBRoHFfLU46pskKRXYVtD2mXMkgSTXt32R6HOpxgnzToS/sg3R0Vpz6
+SNEIJH3dZzcjYtFF+5iJDNEnZvMtuNMdvMSq4sIF5lY2dzGkjOd/KTb+860fYY6T
+tHgxyrhVrVwitoRUauybdEAJG7gXdGjzrPEexbtzEPsSeKcfZ8ObMVwZCZ98YH4q
+zm1dWbt4cV72Y08tRpAtb2h++ld1PEm0wkD/oj2we9BsRBJlPSzo8OqCIXcb7JWv
+mxbp+3xBahz0hdSrVOI0uOrPDsgnmfGsAe4FflUJrQEaxdIP7whJC7BYRUbboHIa
+TsBcnAXmciz6Z6wMd7vU45jYbv/3+P2kI7pBZpQoxZBGSdy4KpIMog6gjSXvFIs1
+mzd+VKChsIn2bYAK7kqTDTrU20A/XG5Xbu8BDY1GgHguwjjy7zu3HCedLVZvoGpS
+ey+X25L7vORLo/RRmxT7s4v9Tq9CbWQH3JpKNjMGlessFwOGucN7tXBS64l1tE4l
+XW+7zUm4XQz27dHggtbXoBQLVp/4g3QPFq8i7Q3/pN2xFQoqfss3frjrYxxktlJl
+JK/f4VmSHywGMPYmeAM8TcqDI5TuRtuqPb7XUp2SK/foepIgAPb2pjscmygTfrK8
+HZlPEe5Q8wrd6ttTAwyh
+=RCir
 -----END PGP SIGNATURE-----
 
---=-a6jWyH0IOLzfIh7GK6b4--
+--=-/l8yZfJW974mBC31yWcY--
