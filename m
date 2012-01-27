@@ -1,23 +1,26 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqmaI-0005jX-EM
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:15:23 +0000
-Received: by dadz9 with SMTP id z9so556384dad.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 06:15:21 -0800 (PST)
-Message-ID: <1327673847.29385.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
- device
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Fri, 27 Jan 2012 16:17:27 +0200
-In-Reply-To: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
-References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-lmy/62LDldhiub1lyqST"
-Mime-Version: 1.0
-Cc: robert.jarzmik@free.fr, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1RqmfP-0006tq-NU
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:20:40 +0000
+From: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH] mtd/nand:Fix wrong usage of is_blank() in
+ fsl_ifc_run_command
+Date: Fri, 27 Jan 2012 14:20:33 +0000
+Message-ID: <071A08F2C6A57E4E94D980ECA553F8744DABE2@039-SN1MPN1-006.039d.mgd.msft.net>
+References: <1326859991-7469-1-git-send-email-prabhakar@freescale.com>
+ <1327670133.26648.40.camel@sauron.fi.intel.com>
+In-Reply-To: <1327670133.26648.40.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Aggrwal Poonam-B10812 <B10812@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ Kumar Gala <galak@kernel.crashing.org>,
+ Wood Scott-B07421 <B07421@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-lmy/62LDldhiub1lyqST
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Mike,
-
-On Tue, 2012-01-03 at 16:05 -0800, Mike Dunn wrote:
-> +config MTD_NAND_DOCG4
-> +	tristate "Support for DiskOnChip G4 (EXPERIMENTAL)"
-> +	depends on EXPERIMENTAL
-> +	select BCH
-> +	select BITREVERSE
-> +	help
-> +	  Support for diskonchip G4 nand flash, found in various smartphones an=
-d
-> +	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
-> +	  Portege G900, Asus P526, and O2 XDA Zinc.
-> +
-> +	  With this driver you will be able to use UBI and create a ubifs on th=
-e
-> +	  device, so you may wish to consider enabling UBI and UBIFS as well.
-> +
-> +	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
-> +	  there is currently no mtd parser, so you may want to use command line
-> +	  partitioning to segregate write-protected blocks.  On the Treo680, th=
-e
-> +	  first five erase blocks (256K each) are write-protected, followed by
-> +	  the block containing the saftl partition table.  This is probably
-> +	  typical.
-
-Why do add this to drivers/mtd/nand/Kconfig instead of
-drivers/mtd/devices/Kconfig lige DOCG3 does?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-lmy/62LDldhiub1lyqST
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPIrH3AAoJECmIfjd9wqK0yfEQAJTlDc9ep1vvP+hIGaa77J0P
-kF4cW7kK3F+zyyznUTLVfeeDi2B5DWREj5VYNgtaXRzr0HlBgLiWJc8FzeYTwnN/
-MKKhjz8Paq7QrlFMozFN9+TcKud7LORhCf1HZL5mZsQv/5qcPXXCc+7sMewi5r28
-8z39+Acvbf9wI7M5ciS8p8Klp3hyumYMiiPfhhibr4rftVLdB9FlFTIxoI89507n
-ooJkC1hZ3Hn0xGImdVixAm8+B4muRIY6lQ/nKjMEoeh/xy4oS9pXXz0DeeGaR0p/
-BCyroE/p9gk8i6ggkZ+vF8UxL3GDaP++7xsejECCx3jee+zCRP/ikytBbquvAV5A
-6LDnDH1Xiu3mXOAOB2WLz2PI0lmtMFoedmiOxrUYWDa2ghYy6zHDEm7bbReDs43J
-qtDk6EG0K0GLvBZLCSoqSlQjR+W14q5MKjmseJWLrYuk28bTwBQN5LyUSA2p7V+0
-656KOEb09Iuz8ujEkljgJaOQ2nqHjzfzjwC9wUcmxghNK0AoEJXtb433G/0I2Pl4
-CRzgrn/aE2vjKZiyHBbOBeoWJOtALHTM+tBR/kbgjKIDQyXyZ0om5Xqj46W7kipd
-MyhH4S+yNFtm4qVqDKXb5PK0B0kEva5C7ZHarVWsL1DtJW44pVU3qqMyXbrmunbE
-G37M5M4tAg8o3O5kGqbv
-=zj8H
------END PGP SIGNATURE-----
-
---=-lmy/62LDldhiub1lyqST--
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tp
+eSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgSmFudWFyeSAy
+NywgMjAxMiA2OjQ2IFBNDQo+IFRvOiBLdXNod2FoYSBQcmFiaGFrYXItQjMyNTc5DQo+IENjOiBs
+aW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
+cmc7IFdvb2QNCj4gU2NvdHQtQjA3NDIxOyBBZ2dyd2FsIFBvb25hbS1CMTA4MTINCj4gU3ViamVj
+dDogUmU6IFtQQVRDSF0gbXRkL25hbmQ6Rml4IHdyb25nIHVzYWdlIG9mIGlzX2JsYW5rKCkgaW4N
+Cj4gZnNsX2lmY19ydW5fY29tbWFuZA0KPiANCj4gT24gV2VkLCAyMDEyLTAxLTE4IGF0IDA5OjQz
+ICswNTMwLCBQcmFiaGFrYXIgS3VzaHdhaGEgd3JvdGU6DQo+ID4gRnJlZXNjYWxlIElGQyBOQU5E
+IE1hY2hpbmUgY2FsY3VsYXRlcyBFQ0Mgb24gNTEyYnl0ZSBzZWN0b3IgYW5kIHNhbWUNCj4gPiBp
+cyB1c2VkIGluDQo+ID4gZnNsX2lmY19ydW5fY29tbWFuZCgpIGR1cmluZyBFQ0Mgc3RhdHVzIHZl
+cmlmaWNhdGlvbi4gQWxzbyB0aGlzIHNlY3Rvcg0KPiA+IGlzIHBhc3NlZCB0byBpc19ibGFuaygp
+IGZvciBibGFuayBjaGVja2luZy4gSXQgaXMgd3JvbmcgYXQgZmlyc3QgcGxhY2UNCj4gPiBiZWNh
+dXNlIGlzX2JsYW5rKCkncyBpbXBsZW1lbnRhdGlvbiBjaGVja3MgZm9yIFBhZ2Ugc2l6ZSBhbmQg
+T09CIGFyZWENCj4gc2l6ZS4NCj4gPiBpc19ibGFuaygpIHNob3VsZCBiZSBjYWxsZWQgcGVyIHBh
+Z2UgZm9yIG1haW4gYW5kIE9PQiBhcmVhDQo+IHZlcmlmaWNhdGlvbi4NCj4gPg0KPiA+IFZhcmlh
+YmxlcyBuYW1lIGFyZSByZWRlZmluZWQgdG8gYXZvaWQgY29uZnVzaW9uIGJldHdlZW4gYnVmZmVy
+IGFuZCBlY2MNCj4gc2VjdG9yLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUG9vbmFtIEFnZ3J3
+YWwgPHBvb25hbS5hZ2dyd2FsQGZyZWVzY2FsZS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2Nv
+dHQgV29vZCA8c2NvdHR3b29kQGZyZWVzY2FsZS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogUHJh
+Ymhha2FyIEt1c2h3YWhhIDxwcmFiaGFrYXJAZnJlZXNjYWxlLmNvbT4NCj4gDQo+IFRoZSBkcml2
+ZXIgaXMgbm90IGluIDMuMy1yYzEsIHNvIEkgc2tpcCB0aGlzIHBhdGNoLg0KPiANCg0KDQpUaGlz
+IHBhdGNoIGlzIHNxdWFzaGVkIGluIExpbnV4IE5BTkQgZHJpdmVyIHBhdGNoLiBJdCB3aWxsIGJl
+IHByb3ZpZGVkIGJ5IGdhbGFrJ3MgdHJlZQ0KDQoiTkFORCBNYWNoaW5lIHN1cHBvcnQgZm9yIElu
+dGVncmF0ZWQgRmxhc2ggQ29udHJvbGxlciINCmh0dHA6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9w
+YXRjaC8xMzcwMjQvDQoNCi0tUHJhYmhha2FyDQoNCg==
