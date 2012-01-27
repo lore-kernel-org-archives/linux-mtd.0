@@ -1,17 +1,16 @@
-MIME-Version: 1.0
-In-Reply-To: <1327306361-9803-2-git-send-email-shubhrajyoti@ti.com>
-References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
- <1327306361-9803-2-git-send-email-shubhrajyoti@ti.com>
-Date: Fri, 27 Jan 2012 11:08:01 -0800
-Message-ID: <CAN8TOE9a=OUcs-37RtDJE6ig-aZdFkSmfOrzL2PAyEgbQ+dJjw@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] mtd : Prevent the NULL pointer access
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RqsZ6-0003JX-BV
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 20:38:32 +0000
+Received: by dadz9 with SMTP id z9so896373dad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 12:38:30 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Shubhrajyoti D <shubhrajyoti@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: mtdcore: remove unnecessary mtd->resume check
+Date: Fri, 27 Jan 2012 12:39:32 -0800
+Message-Id: <1327696772-18081-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 23, 2012 at 12:12 AM, Shubhrajyoti D <shubhrajyoti@ti.com> wrot=
-e:
-> This patch intends to fix the null pointer access.
->
-> Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
-> ---
-> =A0drivers/mtd/mtdcore.c | =A0 =A05 +++--
-> =A01 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 6ae9ca0..2b3bda7 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -118,8 +118,9 @@ static void mtd_release(struct device *dev)
-> =A0static int mtd_cls_suspend(struct device *dev, pm_message_t state)
-> =A0{
-> =A0 =A0 =A0 =A0struct mtd_info *mtd =3D dev_get_drvdata(dev);
-> -
-> - =A0 =A0 =A0 return mtd_suspend(mtd);
-> + =A0 =A0 =A0 if (mtd)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return mtd_suspend(mtd);
-> + =A0 =A0 =A0 return 0;
-> =A0}
->
-> =A0static int mtd_cls_resume(struct device *dev)
+We don't need to to check for mtd->resume before calling mtd_resume().
+mtd_resume() should take care of that.
 
-Forgot this patch was here; this fix is also covered in
-l2-mtd-2.6.git, waiting for inclusion in the 3.3-rcX release cycle.
-Thanks for the work though!
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/mtdcore.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Brian
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index de96865..f96c2cd 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -126,7 +126,7 @@ static int mtd_cls_resume(struct device *dev)
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	if (mtd && mtd->resume)
++	if (mtd)
+ 		mtd_resume(mtd);
+ 	return 0;
+ }
+-- 
+1.7.5.4
