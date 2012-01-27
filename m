@@ -1,22 +1,16 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqmLH-0002yj-EG
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 13:59:52 +0000
-Received: by pbdx9 with SMTP id x9so2029408pbd.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 05:59:50 -0800 (PST)
-Message-ID: <1327672893.29385.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] mtd/spear_smi: release memory region during remove
+Message-ID: <1327673774.29385.2.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] MTD: sa11x0: Remove shutdown handler
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Fri, 27 Jan 2012 16:01:33 +0200
-In-Reply-To: <1327055719-17644-1-git-send-email-sr@denx.de>
-References: <1327055719-17644-1-git-send-email-sr@denx.de>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Date: Fri, 27 Jan 2012 16:16:14 +0200
+In-Reply-To: <E1RoBvE-0005qY-BC@rmk-PC.arm.linux.org.uk>
+References: <E1RoBvE-0005qY-BC@rmk-PC.arm.linux.org.uk>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zVrGUPiZ0pod2DnS/gZH"
+ boundary="=-FdBh0CEkDcT92eaTew0o"
 Mime-Version: 1.0
-Cc: Shiraz Hashim <shiraz.hashim@st.com>,
- spear--sw-devel@lists.codex.cro.st.com, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,23 +22,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zVrGUPiZ0pod2DnS/gZH
+--=-FdBh0CEkDcT92eaTew0o
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-01-20 at 11:35 +0100, Stefan Roese wrote:
-> From: Shiraz Hashim <shiraz.hashim@st.com>
+On Fri, 2012-01-20 at 10:42 +0000, Russell King - ARM Linux wrote:
+> Commit c4a9f88daf ([MTD] [NOR] fix ctrl-alt-del can't reboot for
+> intel flash bug) interferes with this work-around, causing MTD to
+> issue this warning:
 >=20
-> Driver must cleanup all held resources during remove. It wasn't
-> releasing requested memory region.
+> 	Flash device refused suspend due to active operation (state 0)
+>=20
+> The commit makes our work-around in the map driver unnecessary, so
+> let's remove it.
+>=20
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-Pushed to l2-mtd, thanks!
+Pushed both to l2-mtd tree, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zVrGUPiZ0pod2DnS/gZH
+--=-FdBh0CEkDcT92eaTew0o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPIq49AAoJECmIfjd9wqK0SkgP/0u7j9ZqXuFqClX8Pzr+exgw
-lis4rrmoHhf8sTL7HC7B9gNO1uEgNmh4dwKrO22eZqqF8Xqs200/KsGn5s3UD8GB
-aX0haGb3c0/we1SNeysNQFH7/+HmbjzAMSmjwSSZgRcAiAF+L9uY+pbD7Vyjdz/f
-kSP+D/h5Dj12go7U9wXLPi0SRwbGGgl9LVDV2tSFsBDNTBIZVguNahTHsWFcKzzv
-zMGzehvUxdxtvIq5JtAjhXcdAv1O7wdu+b4eRtgbJ8Me342yJD81llUyLjtl1i9E
-Lhe+VpBiUAn+MtQSvYLSoky2UEIHcUQBQlIwDB68oYXiZ8jCR+yO46N3GifdKoOk
-FroRLAKrIYqtotsSemqFTGu0ONawIuTaT8rvhrzZy+vvEMhGenlWXl0ASeSt4zgD
-1/jWAyD3O8PSgkyVPXJoSCuVoV8lMi4PXny5JGIDUfltr8kpjWjcJeCjZB8udS0R
-bVnOhe3ySrusPrbi8qJIhVm5d6dpjdHgO0NM+4jd9nKjy09J7eMMjBAxFfaA5DTl
-lZLDrWata/RuQAsSLL8JBMKJp0pRm1ZEmhLndtIw/NqmuCQQTaQS1uuiKbqrmM2a
-eebYV2CumLXu92/f+bcHeIopsehNNlaGOokcOwbgBpENSz1GCLk/x1P5U0SG6o16
-ObnhmrzhzspiKyXmKlkz
-=7m3o
+iQIcBAABAgAGBQJPIrGuAAoJECmIfjd9wqK0994P/idAxNVRB7ReWm7iapEu14IM
+cbGRUx3KJbmJtx4q6+4gcE241XijhHLKYKz3XraOtRnJt6HxTJyfpE+x4+uGeItS
+C/+Rt0T1GVVymsUigJQs6y8AEtO13U/GDh0snwXHk0FLOihV89ifDoj+1v2R3lbP
+JjdIpXmRTKhho1x+Prj7rAJ3J6I/aEJ3QrphtoZvgbu5IkiPL2wy/4UZc8NhaNit
+63EtqypynuEkcEgaHK8OgKIXS58VpBmfQpMapwOci6w5xIh1AILAO4B/5O2gUmAa
+L26d98jV/ueOhwna1IVTBadcALayJA+vp+YENDNtBfMzQWv+gOLYmkX2iwzCRPc8
+/SXRydnDLEjkOLJwqIkLFiKHg/RJl8DbM64LEiVYvyI2mUmNy76CwPuf6BiBwQLK
+lq0nseBxMoRz7suRa0y12CmqiITwTEkZAJNo7+PT53s1Q7Jb47ly4b1Q+kxeV7SE
+nA0wu64cBtMYeCtKcF6a7gE74mtq8WgR6opUvqUZEV8usjI0L7v63UxH/zssyUfX
+xcNqMwr185pg+CFaaxo4IWBxQrMKvqqb4W5d+uLY05WTQ5iwrYZcOJJg4R7Bfkt+
+tNEymyDq4elKHvMuPVvIwH15NXCb9KCEXJaaNCHg6uSnXbCCZbJFFCQLvI8c6Jez
+lyCraTEHiH9Zs4V8056t
+=lmpb
 -----END PGP SIGNATURE-----
 
---=-zVrGUPiZ0pod2DnS/gZH--
+--=-FdBh0CEkDcT92eaTew0o--
