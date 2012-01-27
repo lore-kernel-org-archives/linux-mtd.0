@@ -1,15 +1,15 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rqmjc-0007Ma-4K
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:25:01 +0000
-Received: by dadz9 with SMTP id z9so564831dad.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 06:24:59 -0800 (PST)
+ id 1Rqmje-0007KX-O8
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:25:03 +0000
+Received: by mail-pw0-f49.google.com with SMTP id x9so2050943pbd.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 06:25:02 -0800 (PST)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH] mtd/inftlmount: use memchr_inv
-Date: Fri, 27 Jan 2012 23:24:52 +0900
-Message-Id: <1327674295-3700-5-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH] mtd/nftlmount: use memchr_inv
+Date: Fri, 27 Jan 2012 23:24:53 +0900
+Message-Id: <1327674295-3700-6-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
 References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
@@ -31,15 +31,15 @@ Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/inftlmount.c |   14 ++------------
- 1 files changed, 2 insertions(+), 12 deletions(-)
+ drivers/mtd/nftlmount.c |   20 +++++---------------
+ 1 files changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 4adc037..419b1c9 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -320,16 +320,6 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 	return -1;
+diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+index 51b9d6a..a96bdb4 100644
+--- a/drivers/mtd/nftlmount.c
++++ b/drivers/mtd/nftlmount.c
+@@ -255,16 +255,6 @@ The new DiskOnChip driver already scanned the bad block table.  Just query it.
+ 	return boot_record_count?0:-1;
  }
  
 -static int memcmpb(void *a, int c, int n)
@@ -52,10 +52,10 @@ index 4adc037..419b1c9 100644
 -	return 0;
 -}
 -
- /*
-  * check_free_sector: check if a free sector is actually FREE,
-  *	i.e. All 0xff in data and oob area.
-@@ -345,14 +335,14 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+ /* check_free_sector: check if a free sector is actually FREE, i.e. All 0xff in data and oob area */
+ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int len,
+ 			      int check_oob)
+@@ -277,14 +267,14 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
  	for (i = 0; i < len; i += SECTORSIZE) {
  		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
  			return -1;
@@ -64,13 +64,35 @@ index 4adc037..419b1c9 100644
  			return -1;
  
  		if (check_oob) {
- 			if(inftl_read_oob(mtd, address, mtd->oobsize,
- 					  &retlen, &buf[SECTORSIZE]) < 0)
+ 			if(nftl_read_oob(mtd, address, mtd->oobsize,
+ 					 &retlen, &buf[SECTORSIZE]) < 0)
  				return -1;
 -			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
 +			if (memchr_inv(buf + SECTORSIZE, 0xff, mtd->oobsize))
  				return -1;
  		}
  		address += SECTORSIZE;
+@@ -392,7 +382,7 @@ static void check_sectors_in_chain(struct NFTLrecord *nftl, unsigned int first_b
+ 			case SECTOR_FREE:
+ 				/* verify that the sector is really free. If not, mark
+ 				   as ignore */
+-				if (memcmpb(&bci, 0xff, 8) != 0 ||
++				if (memchr_inv(&bci, 0xff, 8) ||
+ 				    check_free_sectors(nftl, block * nftl->EraseSize + i * SECTORSIZE,
+ 						       SECTORSIZE, 0) != 0) {
+ 					printk("Incorrect free sector %d in block %d: "
+@@ -529,10 +519,10 @@ static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
+ 				return -1;
+ 			if (i == SECTORSIZE) {
+ 				/* skip erase mark */
+-				if (memcmpb(buf, 0xff, 8))
++				if (memchr_inv(buf, 0xff, 8))
+ 					return -1;
+ 			} else {
+-				if (memcmpb(buf, 0xff, 16))
++				if (memchr_inv(buf, 0xff, 16))
+ 					return -1;
+ 			}
+ 		}
 -- 
 1.7.4.4
