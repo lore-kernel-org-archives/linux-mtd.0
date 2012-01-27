@@ -1,23 +1,25 @@
 Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rqqam-0008OO-SU
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 18:32:09 +0000
-Received: by wico1 with SMTP id o1so1943564wic.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 10:32:07 -0800 (PST)
+ id 1Rqqup-0000vr-Tf
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 18:52:52 +0000
+Received: by wico1 with SMTP id o1so1962358wic.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 10:52:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1327689046-1450-2-git-send-email-computersforpeace@gmail.com>
-References: <1327689046-1450-1-git-send-email-computersforpeace@gmail.com>
- <1327689046-1450-2-git-send-email-computersforpeace@gmail.com>
-Date: Fri, 27 Jan 2012 10:32:07 -0800
-Message-ID: <CAN8TOE-MD4Zgm+UdZ3qa5d-vTP+dNaFgY=2FsN+3Ym77tuKEPg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtdinfo: fix `--all' for non-consecutive device
- numbers
+In-Reply-To: <1327684589.12089.22.camel@joe2Laptop>
+References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
+ <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
+ <1327684589.12089.22.camel@joe2Laptop>
+Date: Fri, 27 Jan 2012 10:52:49 -0800
+Message-ID: <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
+Subject: Re: [PATCH] mtd/nand: use string library
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
+To: Joe Perches <joe@perches.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Scott Branden <sbranden@broadcom.com>,
+ Akinobu Mita <akinobu.mita@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Jiandong Zheng <jdzheng@broadcom.com>,
+ akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hmm, didn't CC Brian Foster. Must have mixed up my headers...
+On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
+> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
+>> - Use memchr_inv to check if the data contains all 0xFF bytes.
+>> =A0 It is faster than looping for each byte.
+>
+> Stupid question:
+>
+> Are there any mtd devices modified that are slower
+> at 64 bit accesses than repeated 8 bit accesses?
 
-On Fri, Jan 27, 2012 at 10:30 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> When we have assigned non-consecutive device numbers to our MTD devices,
-> then we run `mtdinfo --all', we get errors once mtdinfo tries to process
-> the devices in the "hole". For instance, suppose that at boot time, we ha=
-ve
-> one MTD (/dev/mtd0) then perform a sequence like the following:
->
-> =A0# modprobe mtdram
-> =A0# modprobe nandsim
-> =A0# rmmod mtdram
->
-> Then at this point, we have should have devices 0 and 2 without 1. Then:
->
-> =A0# mtdinfo --all
-> =A0...
-> =A0mtdinfo: error!: mtd1 does not correspond to any existing MTD device
->
-> We add a check to first see if device is present, then continue to the ne=
-xt
-> ID if it doesn't exist.
->
-> Reported-by: Brian Foster <brian.foster@maxim-ic.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> =A0ubi-utils/mtdinfo.c | =A0 =A02 ++
-> =A01 files changed, 2 insertions(+), 0 deletions(-)
->
-> diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
-> index ead4bce..d25595a 100644
-> --- a/ubi-utils/mtdinfo.c
-> +++ b/ubi-utils/mtdinfo.c
-> @@ -378,6 +378,8 @@ static int print_general_info(libmtd_t libmtd, const =
-struct mtd_info *mtd_info,
->
-> =A0 =A0 =A0 =A0for (i =3D mtd_info->lowest_mtd_num;
-> =A0 =A0 =A0 =A0 =A0 =A0 i <=3D mtd_info->highest_mtd_num; i++) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!mtd_dev_present(libmtd, i))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D print_dev_info(libmtd, mtd_info, i=
-);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (err)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return err;
-> --
-> 1.7.5.4
->
+I believe this patch deals with kernel buffers, not any kind of direct
+access to the MTD, so the question (which is not stupid IMO) should be
+regarding CPU architectures. And my educated guess is that 64-bit
+access should not be any slower. I do know that 8-bit access *is*
+slower for some relevant architectures.
+
+Brian
