@@ -1,23 +1,26 @@
-Received: from ogre.sisk.pl ([217.79.144.158])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RquaU-0000SY-3f
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 22:48:07 +0000
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] PM / MTD: Fix regressions related to mtd_suspend()
-Date: Fri, 27 Jan 2012 23:51:32 +0100
-References: <201201151443.30897.rjw@sisk.pl> <201201160018.02305.rjw@sisk.pl>
- <1326705441.14299.10.camel@sauron.fi.intel.com>
-In-Reply-To: <1326705441.14299.10.camel@sauron.fi.intel.com>
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rqvao-0000gB-0q
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 23:52:31 +0000
+Received: by qcsc14 with SMTP id c14so1339171qcs.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 15:52:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201201272351.32455.rjw@sisk.pl>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Maciej Rutecki <maciej.rutecki@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
- Linux PM list <linux-pm@vger.kernel.org>
+In-Reply-To: <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
+References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
+ <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
+ <1327684589.12089.22.camel@joe2Laptop>
+ <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
+Date: Sat, 28 Jan 2012 08:52:25 +0900
+Message-ID: <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd/nand: use string library
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: eric.dumazet@gmail.com, Scott Branden <sbranden@broadcom.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Jiandong Zheng <jdzheng@broadcom.com>, Joe Perches <joe@perches.com>,
+ akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, January 16, 2012, Artem Bityutskiy wrote:
-> Thanks Rafael!
-> 
-> I've pushed this patch to l2-mtd-2.6.git (David, would you please merge
-> it upstream?).
-> 
-> Rafael, should I add some tags with your name like Tested-by or
-> Acked-by?
-> 
-> 
-> From d0eb0d769923d562781fcf43fdc6fa28e3823756 Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date: Mon, 16 Jan 2012 11:07:16 +0200
-> Subject: [PATCH] mtd: fix MTD suspend
-> 
-> Commits 3fe4bae88460869a8e553397cd9057a4ee7ca341 and
-> 079c985e7a6f4ce60f931cebfdd5ee3c3 broke MTD suspend in 2 ways:
-> 
-> 1. When the '->suspend' method is not present, we return -EOPNOTSUPP, but
->    the callers of 'mtd_suspend()' expects 0 instead.
-> 2. Checking of the 'mtd' parameter against NULL has been incorrectly removed
->    in 'mtd_cls_suspend()'.
-> 
-> This patch fixes the breakages. This has been found, analyzed, reported
-> and tested by Rafael J. Wysocki <rjw@sisk.pl>.
+2012/1/28 Brian Norris <computersforpeace@gmail.com>:
+> On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
+>> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
+>>> - Use memchr_inv to check if the data contains all 0xFF bytes.
+>>> =A0 It is faster than looping for each byte.
+>>
+>> Stupid question:
+>>
+>> Are there any mtd devices modified that are slower
+>> at 64 bit accesses than repeated 8 bit accesses?
+>
+> I believe this patch deals with kernel buffers, not any kind of direct
+> access to the MTD, so the question (which is not stupid IMO) should be
+> regarding CPU architectures. And my educated guess is that 64-bit
+> access should not be any slower. I do know that 8-bit access *is*
+> slower for some relevant architectures.
 
-Reported-and-tested-by: Rafael J. Wysocki <rjw@sisk.pl>
+It could be slower when the number of bytes scanned is very small
+(found a unmatched character immediately, or the size of the area
+is very small), because memchr_inv() needs to generate a 64bit pattern
+to compare before starting the loop.  I recalled that Eric Dumazet
+pointed out it could generate the 64bit pattern more efficiently.
+(https://lkml.org/lkml/2011/8/8/480)
 
-Is there any plan to push this patch to Linus for 3.3?  It fixes a rather
-nasty suspend regression.
-
-Thanks,
-Rafael
-
-
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  drivers/mtd/mtdcore.c   |    2 +-
->  include/linux/mtd/mtd.h |    4 +---
->  2 files changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index b265188..de96865 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -119,7 +119,7 @@ static int mtd_cls_suspend(struct device *dev, pm_message_t state)
->  {
->         struct mtd_info *mtd = dev_get_drvdata(dev);
->  
-> -       return mtd_suspend(mtd);
-> +       return mtd ? mtd_suspend(mtd) : 0;
->  }
->  
->  static int mtd_cls_resume(struct device *dev)
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 1a81fde..d8c7aad 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -427,9 +427,7 @@ static inline int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  
->  static inline int mtd_suspend(struct mtd_info *mtd)
->  {
-> -       if (!mtd->suspend)
-> -               return -EOPNOTSUPP;
-> -       return mtd->suspend(mtd);
-> +       return mtd->suspend ? mtd->suspend(mtd) : 0;
->  }
->  
->  static inline void mtd_resume(struct mtd_info *mtd)
-> 
+Even if that small scanning is slower, this change can be assumed cleanup
+patch that simplifies the code.
