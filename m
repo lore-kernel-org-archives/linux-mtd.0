@@ -1,25 +1,17 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rqqup-0000vr-Tf
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 18:52:52 +0000
-Received: by wico1 with SMTP id o1so1962358wic.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 10:52:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1327684589.12089.22.camel@joe2Laptop>
-References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
- <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
- <1327684589.12089.22.camel@joe2Laptop>
-Date: Fri, 27 Jan 2012 10:52:49 -0800
-Message-ID: <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
-Subject: Re: [PATCH] mtd/nand: use string library
+In-Reply-To: <1327306361-9803-2-git-send-email-shubhrajyoti@ti.com>
+References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
+ <1327306361-9803-2-git-send-email-shubhrajyoti@ti.com>
+Date: Fri, 27 Jan 2012 11:08:01 -0800
+Message-ID: <CAN8TOE9a=OUcs-37RtDJE6ig-aZdFkSmfOrzL2PAyEgbQ+dJjw@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] mtd : Prevent the NULL pointer access
 From: Brian Norris <computersforpeace@gmail.com>
-To: Joe Perches <joe@perches.com>
+To: Shubhrajyoti D <shubhrajyoti@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: Scott Branden <sbranden@broadcom.com>,
- Akinobu Mita <akinobu.mita@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Jiandong Zheng <jdzheng@broadcom.com>,
- akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
-> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
->> - Use memchr_inv to check if the data contains all 0xFF bytes.
->> =A0 It is faster than looping for each byte.
+On Mon, Jan 23, 2012 at 12:12 AM, Shubhrajyoti D <shubhrajyoti@ti.com> wrot=
+e:
+> This patch intends to fix the null pointer access.
 >
-> Stupid question:
+> Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
+> ---
+> =A0drivers/mtd/mtdcore.c | =A0 =A05 +++--
+> =A01 files changed, 3 insertions(+), 2 deletions(-)
 >
-> Are there any mtd devices modified that are slower
-> at 64 bit accesses than repeated 8 bit accesses?
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 6ae9ca0..2b3bda7 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -118,8 +118,9 @@ static void mtd_release(struct device *dev)
+> =A0static int mtd_cls_suspend(struct device *dev, pm_message_t state)
+> =A0{
+> =A0 =A0 =A0 =A0struct mtd_info *mtd =3D dev_get_drvdata(dev);
+> -
+> - =A0 =A0 =A0 return mtd_suspend(mtd);
+> + =A0 =A0 =A0 if (mtd)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return mtd_suspend(mtd);
+> + =A0 =A0 =A0 return 0;
+> =A0}
+>
+> =A0static int mtd_cls_resume(struct device *dev)
 
-I believe this patch deals with kernel buffers, not any kind of direct
-access to the MTD, so the question (which is not stupid IMO) should be
-regarding CPU architectures. And my educated guess is that 64-bit
-access should not be any slower. I do know that 8-bit access *is*
-slower for some relevant architectures.
+Forgot this patch was here; this fix is also covered in
+l2-mtd-2.6.git, waiting for inclusion in the 3.3-rcX release cycle.
+Thanks for the work though!
 
 Brian
