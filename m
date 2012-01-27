@@ -1,19 +1,19 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RqmjX-0007KX-J0
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:24:56 +0000
-Received: by mail-pw0-f49.google.com with SMTP id x9so2050943pbd.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 06:24:55 -0800 (PST)
+ id 1Rqmjc-0007Ma-4K
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2012 14:25:01 +0000
+Received: by dadz9 with SMTP id z9so564831dad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2012 06:24:59 -0800 (PST)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH] mtd/ubi: use memchr_inv
-Date: Fri, 27 Jan 2012 23:24:51 +0900
-Message-Id: <1327674295-3700-4-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH] mtd/inftlmount: use memchr_inv
+Date: Fri, 27 Jan 2012 23:24:52 +0900
+Message-Id: <1327674295-3700-5-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
 References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
+ Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,123 +25,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Use memchr_inv to check if the data contains all 0xFF bytes.  It is
 faster than looping for each byte.
-This also removes ubi_check_pattern which is no longer used.
+This also removes memcmpb which is no longer used.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/ubi/io.c   |   14 +++++---------
- drivers/mtd/ubi/misc.c |   19 -------------------
- drivers/mtd/ubi/scan.c |    2 +-
- drivers/mtd/ubi/ubi.h  |    1 -
- 4 files changed, 6 insertions(+), 30 deletions(-)
+ drivers/mtd/inftlmount.c |   14 ++------------
+ 1 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 5cde4e5..9fc27d3 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -435,8 +435,7 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
- 		if (err)
- 			goto out;
- 
--		err = ubi_check_pattern(ubi->peb_buf1, 0xFF, ubi->peb_size);
--		if (err == 0) {
-+		if (memchr_inv(ubi->peb_buf1, 0xFF, ubi->peb_size)) {
- 			ubi_err("erased PEB %d, but a non-0xFF byte found",
- 				pnum);
- 			err = -EIO;
-@@ -454,9 +453,7 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
- 		if (err)
- 			goto out;
- 
--		err = ubi_check_pattern(ubi->peb_buf1, patterns[i],
--					ubi->peb_size);
--		if (err == 0) {
-+		if (memchr_inv(ubi->peb_buf1, patterns[i], ubi->peb_size)) {
- 			ubi_err("pattern %x checking failed for PEB %d",
- 				patterns[i], pnum);
- 			err = -EIO;
-@@ -783,7 +780,7 @@ int ubi_io_read_ec_hdr(struct ubi_device *ubi, int pnum,
- 		 * 0xFF. If yes, this physical eraseblock is assumed to be
- 		 * empty.
- 		 */
--		if (ubi_check_pattern(ec_hdr, 0xFF, UBI_EC_HDR_SIZE)) {
-+		if (!memchr_inv(ec_hdr, 0xFF, UBI_EC_HDR_SIZE)) {
- 			/* The physical eraseblock is supposedly empty */
- 			if (verbose)
- 				ubi_warn("no EC header found at PEB %d, "
-@@ -1039,7 +1036,7 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
- 		if (mtd_is_eccerr(read_err))
- 			return UBI_IO_BAD_HDR_EBADMSG;
- 
--		if (ubi_check_pattern(vid_hdr, 0xFF, UBI_VID_HDR_SIZE)) {
-+		if (!memchr_inv(vid_hdr, 0xFF, UBI_VID_HDR_SIZE)) {
- 			if (verbose)
- 				ubi_warn("no VID header found at PEB %d, "
- 					 "only 0xFF bytes", pnum);
-@@ -1427,8 +1424,7 @@ int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
- 		goto error;
- 	}
- 
--	err = ubi_check_pattern(buf, 0xFF, len);
--	if (err == 0) {
-+	if (memchr_inv(buf, 0xFF, len)) {
- 		ubi_err("flash region at PEB %d:%d, length %d does not "
- 			"contain all 0xFF bytes", pnum, offset, len);
- 		goto fail;
-diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
-index f6a7d7a..0e4b9a2 100644
---- a/drivers/mtd/ubi/misc.c
-+++ b/drivers/mtd/ubi/misc.c
-@@ -103,22 +103,3 @@ void ubi_calculate_reserved(struct ubi_device *ubi)
- 	if (ubi->beb_rsvd_level < MIN_RESEVED_PEBS)
- 		ubi->beb_rsvd_level = MIN_RESEVED_PEBS;
+diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index 4adc037..419b1c9 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -320,16 +320,6 @@ static int find_boot_record(struct INFTLrecord *inftl)
+ 	return -1;
  }
--
--/**
-- * ubi_check_pattern - check if buffer contains only a certain byte pattern.
-- * @buf: buffer to check
-- * @patt: the pattern to check
-- * @size: buffer size in bytes
-- *
-- * This function returns %1 in there are only @patt bytes in @buf, and %0 if
-- * something else was also found.
-- */
--int ubi_check_pattern(const void *buf, uint8_t patt, int size)
+ 
+-static int memcmpb(void *a, int c, int n)
 -{
 -	int i;
--
--	for (i = 0; i < size; i++)
--		if (((const uint8_t *)buf)[i] != patt)
--			return 0;
--	return 1;
+-	for (i = 0; i < n; i++) {
+-		if (c != ((unsigned char *)a)[i])
+-			return 1;
+-	}
+-	return 0;
 -}
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 0cb17d9..54a56acc 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -808,7 +808,7 @@ static int check_corruption(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
- 	if (err)
- 		goto out_unlock;
+-
+ /*
+  * check_free_sector: check if a free sector is actually FREE,
+  *	i.e. All 0xff in data and oob area.
+@@ -345,14 +335,14 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+ 	for (i = 0; i < len; i += SECTORSIZE) {
+ 		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
+ 			return -1;
+-		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
++		if (memchr_inv(buf, 0xff, SECTORSIZE))
+ 			return -1;
  
--	if (ubi_check_pattern(ubi->peb_buf1, 0xFF, ubi->leb_size))
-+	if (!memchr_inv(ubi->peb_buf1, 0xFF, ubi->leb_size))
- 		goto out_unlock;
- 
- 	ubi_err("PEB %d contains corrupted VID header, and the data does not "
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index d51d75d..2ff1eb6 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -519,7 +519,6 @@ int ubi_calc_data_len(const struct ubi_device *ubi, const void *buf,
- 		      int length);
- int ubi_check_volume(struct ubi_device *ubi, int vol_id);
- void ubi_calculate_reserved(struct ubi_device *ubi);
--int ubi_check_pattern(const void *buf, uint8_t patt, int size);
- 
- /* eba.c */
- int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		if (check_oob) {
+ 			if(inftl_read_oob(mtd, address, mtd->oobsize,
+ 					  &retlen, &buf[SECTORSIZE]) < 0)
+ 				return -1;
+-			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
++			if (memchr_inv(buf + SECTORSIZE, 0xff, mtd->oobsize))
+ 				return -1;
+ 		}
+ 		address += SECTORSIZE;
 -- 
 1.7.4.4
