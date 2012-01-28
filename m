@@ -1,48 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RrEa9-0008Pb-RC
- for linux-mtd@lists.infradead.org; Sat, 28 Jan 2012 20:09:06 +0000
-Received: by wgbds1 with SMTP id ds1so2153478wgb.18
- for <linux-mtd@lists.infradead.org>; Sat, 28 Jan 2012 12:09:03 -0800 (PST)
+Sender: Grant Likely <glikely@secretlab.ca>
+Date: Sat, 28 Jan 2012 13:05:45 -0700
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [FOR 3.4 PATCH 4/6] of/mtd/nand: add generic bindings and helpers
+Message-ID: <20120128200545.GH2501@ponder.secretlab.ca>
+References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+ <1327727444-23908-4-git-send-email-plagnioj@jcrosoft.com>
 MIME-Version: 1.0
-In-Reply-To: <1327676348.29385.7.camel@sauron.fi.intel.com>
-References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
- <1327120684-7066-2-git-send-email-computersforpeace@gmail.com>
- <1327676348.29385.7.camel@sauron.fi.intel.com>
-Date: Sat, 28 Jan 2012 12:09:00 -0800
-Message-ID: <CAN8TOE_8OaL7uu-oEzVRGEGTXw3q9cf8HPwtEiu13fL=8Hvg+Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] mtd: nand: move SCANLASTPAGE handling to the
- correct code block
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
- Barry Song <21cnbao@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, "Hunter,
- Adrian" <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jonas Gorski <jonas.gorski@gmail.com>, Jamie Iles <jamie@jamieiles.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- "Woodhouse, David" <david.woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Florian Fainelli <florian@openwrt.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Peter Wippich <pewi@gw-instruments.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>, "Dong,
- Chuanxiao" <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1327727444-23908-4-git-send-email-plagnioj@jcrosoft.com>
+Cc: linux-mtd@lists.infradead.org, devicetree-discuss@lists.ozlabs.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,37 +21,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 27, 2012 at 6:56 AM, Bityutskiy, Artem
-<artem.bityutskiy@intel.com> wrote:
-> On Fri, 2012-01-20 at 20:38 -0800, Brian Norris wrote:
->> As nand_default_block_markbad() is becoming more complex, it helps to
->> have code appear only in its relevant codepath(s). Here, the calculation
->> of `ofs' based on NAND_BBT_SCANLASTPAGE is only useful on paths where we
->> write bad block markers to OOB. We move the condition/calculation closer
->> to the `write' operation and update the comment to more correctly
->> describe the operation.
->
-> Pushed this patch to l2-mtd.git because it seem to be good regardless of
-> whether your second patch gets merged or not, thanks.
+On Sat, Jan 28, 2012 at 06:10:42AM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+>   "soft_bch".
+> - nand-bus-width : 8 or 16 bus width if not present 8
+> - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+> 
+> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Cc: devicetree-discuss@lists.ozlabs.org
+> Cc: linux-mtd@lists.infradead.org
 
-Sure, thanks.
+Fine by me.
 
-> Not sure about the second patch yet, though.
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
 
-OK, what are the remaining concerns?
-
-Last I saw, Shmulik was recommending we follow up on your suggestion
-to check the OOB marker before erasing/writing new bad block marker. I
-can try implementing this with "chip->block_bad" if this seems
-necessary.
-
-Also, there was mention of "lazy checking" of some sort. I feel like
-that's not central to this patch and might add unnecessary complexity
-and overhead.
-
-So, please comment which of the above are necessary additions to the
-second patch. I'm fine as is, but I can easily implement the first.
-The second would require more discussion and/or somebody else to do
-it.
-
-Brian
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |    7 ++
+>  drivers/of/Kconfig                             |    4 +
+>  drivers/of/Makefile                            |    1 +
+>  drivers/of/of_mtd.c                            |   90 ++++++++++++++++++++++++
+>  include/linux/of_mtd.h                         |   19 +++++
+>  5 files changed, 121 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
+>  create mode 100644 drivers/of/of_mtd.c
+>  create mode 100644 include/linux/of_mtd.h
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> new file mode 100644
+> index 0000000..03855c8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -0,0 +1,7 @@
+> +* MTD generic binding
+> +
+> +- nand-ecc-mode : String, operation mode of the NAND ecc mode.
+> +  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+> +  "soft_bch".
+> +- nand-bus-width : 8 or 16 bus width if not present 8
+> +- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> index 268163d..fa666a9 100644
+> --- a/drivers/of/Kconfig
+> +++ b/drivers/of/Kconfig
+> @@ -90,4 +90,8 @@ config OF_PCI_IRQ
+>  	help
+>  	  OpenFirmware PCI IRQ routing helpers
+>  
+> +config OF_MTD
+> +	depends on MTD
+> +	def_bool y
+> +
+>  endmenu # OF
+> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+> index a73f5a5..8c4980a 100644
+> --- a/drivers/of/Makefile
+> +++ b/drivers/of/Makefile
+> @@ -12,3 +12,4 @@ obj-$(CONFIG_OF_SELFTEST) += selftest.o
+>  obj-$(CONFIG_OF_MDIO)	+= of_mdio.o
+>  obj-$(CONFIG_OF_PCI)	+= of_pci.o
+>  obj-$(CONFIG_OF_PCI_IRQ)  += of_pci_irq.o
+> +obj-$(CONFIG_OF_NET)	+= of_mtd.o
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> new file mode 100644
+> index 0000000..199bf58
+> --- /dev/null
+> +++ b/drivers/of/of_mtd.c
+> @@ -0,0 +1,90 @@
+> +/*
+> + * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> + *
+> + * OF helpers for mtd.
+> + *
+> + * This file is released under the GPLv2
+> + *
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/of_mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/export.h>
+> +
+> +/**
+> + * It maps 'enum nand_ecc_modes_t' found in include/linux/mtd/nand.h
+> + * into the device tree binding of 'phy-mode', so that Ethernet
+> + * device driver can get phy interface from device tree.
+> + */
+> +static const char *nand_ecc_modes[] = {
+> +	[NAND_ECC_NONE]		= "none",
+> +	[NAND_ECC_SOFT]		= "soft",
+> +	[NAND_ECC_HW]		= "hw",
+> +	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+> +	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
+> +	[NAND_ECC_SOFT_BCH]	= "soft_bch",
+> +};
+> +
+> +/**
+> + * of_get_nand_ecc_mode - Get nand ecc mode for given device_node
+> + * @np:	Pointer to the given device_node
+> + *
+> + * The function gets ecc mode string from property 'nand-ecc-mode',
+> + * and return its index in nand_ecc_modes table, or errno in error case.
+> + */
+> +const int of_get_nand_ecc_mode(struct device_node *np)
+> +{
+> +	const char *pm;
+> +	int err, i;
+> +
+> +	err = of_property_read_string(np, "nand-ecc-mode", &pm);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(nand_ecc_modes); i++)
+> +		if (!strcasecmp(pm, nand_ecc_modes[i]))
+> +			return i;
+> +
+> +	return -ENODEV;
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
+> +
+> +/**
+> + * of_get_nand_bus_width - Get nand bus witdh for given device_node
+> + * @np:	Pointer to the given device_node
+> + *
+> + * return bus width option, or errno in error case.
+> + */
+> +int of_get_nand_bus_width(struct device_node *np)
+> +{
+> +	u32 val;
+> +
+> +	if (of_property_read_u32(np, "nand-bus-width", &val))
+> +		return 8;
+> +
+> +	switch(val) {
+> +	case 8:
+> +	case 16:
+> +		return val;
+> +	default:
+> +		return -EIO;
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_bus_width);
+> +
+> +/**
+> + * of_get_nand_on_flash_bbt - Get nand on flash bbt for given device_node
+> + * @np:	Pointer to the given device_node
+> + *
+> + * return true if 1 false other wise
+> + */
+> +bool of_get_nand_on_flash_bbt(struct device_node *np)
+> +{
+> +	u32 val;
+> +
+> +	if (of_property_read_u32(np, "nand-on-flash-bbt", &val))
+> +		return false;
+> +
+> +	return val ? true : false;
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
+> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+> new file mode 100644
+> index 0000000..bae1b60
+> --- /dev/null
+> +++ b/include/linux/of_mtd.h
+> @@ -0,0 +1,19 @@
+> +/*
+> + * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> + *
+> + * OF helpers for mtd.
+> + *
+> + * This file is released under the GPLv2
+> + */
+> +
+> +#ifndef __LINUX_OF_MTD_H
+> +#define __LINUX_OF_NET_H
+> +
+> +#ifdef CONFIG_OF_MTD
+> +#include <linux/of.h>
+> +extern const int of_get_nand_ecc_mode(struct device_node *np);
+> +int of_get_nand_bus_width(struct device_node *np);
+> +bool of_get_nand_on_flash_bbt(struct device_node *np);
+> +#endif
+> +
+> +#endif /* __LINUX_OF_MTD_H */
+> -- 
+> 1.7.7
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
