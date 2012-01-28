@@ -1,13 +1,13 @@
 Received: from utopia.booyaka.com ([72.9.107.138])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rr4vz-00005C-OU
- for linux-mtd@lists.infradead.org; Sat, 28 Jan 2012 09:51:00 +0000
-Date: Sat, 28 Jan 2012 02:50:57 -0700 (MST)
+ id 1Rr4wQ-00006r-TS
+ for linux-mtd@lists.infradead.org; Sat, 28 Jan 2012 09:51:27 +0000
+Date: Sat, 28 Jan 2012 02:51:26 -0700 (MST)
 From: Paul Walmsley <paul@pwsan.com>
 To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 Subject: Re: CONFIG_PREEMPT and JFFS2 oops
-In-Reply-To: <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
-Message-ID: <alpine.DEB.2.00.1201280250330.13783@utopia.booyaka.com>
+In-Reply-To: <OF98F390C1.0794131C-ONC1257991.006D971F-C1257991.006DF8A8@transmode.se>
+Message-ID: <alpine.DEB.2.00.1201280251020.13783@utopia.booyaka.com>
 References: <4F206213.9070704@flatfrog.com>
  <alpine.DEB.2.00.1201251351500.5324@utopia.booyaka.com>
  <4F2127B8.9000005@flatfrog.com> <4F213ED8.2020500@flatfrog.com>
@@ -18,14 +18,13 @@ References: <4F206213.9070704@flatfrog.com>
  <OF4651C12F.58F763E5-ONC1257991.005C0D05-C1257991.005C4F23@transmode.se>
  <alpine.DEB.2.00.1201260953550.32667@utopia.booyaka.com>
  <OFDD72D713.95FC023B-ONC1257991.005F7988-C1257991.00607681@transmode.se>
+ <OF98F390C1.0794131C-ONC1257991.006D971F-C1257991.006DF8A8@transmode.se>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd-bounces@lists.infradead.org,
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Richard Purdie <rpurdie@openedhand.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Orjan Friberg <of@flatfrog.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, Orjan Friberg <of@flatfrog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,9 +36,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Thu, 26 Jan 2012, Joakim Tjernlund wrote:
 
-> hmm, that memcpy is costly. Just swap tmp_buf and best_buf instead?
+> .. and you should delay the second allocation to when it is needed. After swapping ptrs, test if
+> tmp_buf is NULL and kmalloc if so.
 
-Thanks, that's a good idea.  Updated.
+Hmm.  You are thinking of a GFP_ATOMIC allocation?  Seems best to avoid 
+those?
 
 
 - Paul
