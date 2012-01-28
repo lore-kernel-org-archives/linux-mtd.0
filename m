@@ -1,20 +1,17 @@
-Received: from 10.mo3.mail-out.ovh.net ([87.98.165.232]
+Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162]
  helo=mo3.mail-out.ovh.net)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rr0bs-00026T-IN
- for linux-mtd@lists.infradead.org; Sat, 28 Jan 2012 05:14:08 +0000
+ id 1Rr0bs-00026O-KX
+ for linux-mtd@lists.infradead.org; Sat, 28 Jan 2012 05:14:14 +0000
 Received: from mail617.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id A0890100060C
- for <linux-mtd@lists.infradead.org>; Sat, 28 Jan 2012 06:15:46 +0100 (CET)
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id 16B8C1000604
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Jan 2012 06:15:45 +0100 (CET)
 From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 To: linux-arm-kernel@lists.infradead.org
-Subject: [FOR 3.4 PATCH 4/6] of/mtd/nand: add generic bindings and helpers
-Date: Sat, 28 Jan 2012 06:10:42 +0100
-Message-Id: <1327727444-23908-4-git-send-email-plagnioj@jcrosoft.com>
-In-Reply-To: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
-References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+Subject: [FOR 3.3 PATCH 1/6] ATMEL: fix nand ecc support
+Date: Sat, 28 Jan 2012 06:10:39 +0100
+Message-Id: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
 Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
- devicetree-discuss@lists.ozlabs.org,
  Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
  linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,182 +23,462 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-- nand-ecc-mode : String, operation mode of the NAND ecc mode.
-  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-  "soft_bch".
-- nand-bus-width : 8 or 16 bus width if not present 8
-- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+so we can now choose for the board the ecc mode (ecc soft, soft bch, no ecc
+and hardware)
+
+set ecc mode in the boards to soft as currently in the driver
+
+move platform data to a common header
+include/linux/platform_data/atmel_nand.h
 
 Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
 Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: devicetree-discuss@lists.ozlabs.org
 Cc: linux-mtd@lists.infradead.org
 ---
- Documentation/devicetree/bindings/mtd/nand.txt |    7 ++
- drivers/of/Kconfig                             |    4 +
- drivers/of/Makefile                            |    1 +
- drivers/of/of_mtd.c                            |   90 ++++++++++++++++++++++++
- include/linux/of_mtd.h                         |   19 +++++
- 5 files changed, 121 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
- create mode 100644 drivers/of/of_mtd.c
- create mode 100644 include/linux/of_mtd.h
+ arch/arm/mach-at91/board-afeb-9260v1.c      |    1 +
+ arch/arm/mach-at91/board-cam60.c            |    1 +
+ arch/arm/mach-at91/board-cap9adk.c          |    1 +
+ arch/arm/mach-at91/board-cpu9krea.c         |    1 +
+ arch/arm/mach-at91/board-dt.c               |    1 +
+ arch/arm/mach-at91/board-kb9202.c           |    1 +
+ arch/arm/mach-at91/board-neocore926.c       |    1 +
+ arch/arm/mach-at91/board-qil-a9260.c        |    1 +
+ arch/arm/mach-at91/board-rm9200dk.c         |    1 +
+ arch/arm/mach-at91/board-sam9-l9260.c       |    1 +
+ arch/arm/mach-at91/board-sam9260ek.c        |    1 +
+ arch/arm/mach-at91/board-sam9261ek.c        |    1 +
+ arch/arm/mach-at91/board-sam9263ek.c        |    1 +
+ arch/arm/mach-at91/board-sam9g20ek.c        |    1 +
+ arch/arm/mach-at91/board-sam9m10g45ek.c     |    1 +
+ arch/arm/mach-at91/board-sam9rlek.c         |    1 +
+ arch/arm/mach-at91/board-snapper9260.c      |    1 +
+ arch/arm/mach-at91/board-stamp9g20.c        |    1 +
+ arch/arm/mach-at91/board-usb-a926x.c        |    1 +
+ arch/arm/mach-at91/board-yl-9200.c          |    1 +
+ arch/arm/mach-at91/include/mach/board.h     |   13 +------------
+ arch/avr32/boards/atngw100/setup.c          |    1 +
+ arch/avr32/boards/atstk1000/atstk1002.c     |    1 +
+ arch/avr32/mach-at32ap/include/mach/board.h |   13 +------------
+ drivers/mtd/nand/atmel_nand.c               |   25 ++++++-------------------
+ include/linux/platform_data/atmel.h         |   26 ++++++++++++++++++++++++++
+ 26 files changed, 56 insertions(+), 43 deletions(-)
+ create mode 100644 include/linux/platform_data/atmel.h
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-new file mode 100644
-index 0000000..03855c8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/nand.txt
-@@ -0,0 +1,7 @@
-+* MTD generic binding
-+
-+- nand-ecc-mode : String, operation mode of the NAND ecc mode.
-+  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-+  "soft_bch".
-+- nand-bus-width : 8 or 16 bus width if not present 8
-+- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 268163d..fa666a9 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -90,4 +90,8 @@ config OF_PCI_IRQ
- 	help
- 	  OpenFirmware PCI IRQ routing helpers
+diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
+index 3bb4069..161efba 100644
+--- a/arch/arm/mach-at91/board-afeb-9260v1.c
++++ b/arch/arm/mach-at91/board-afeb-9260v1.c
+@@ -138,6 +138,7 @@ static struct atmel_nand_data __initdata afeb9260_nand_data = {
+ 	.rdy_pin	= AT91_PIN_PC13,
+ 	.enable_pin	= AT91_PIN_PC14,
+ 	.bus_width_16	= 0,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= afeb9260_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(afeb9260_nand_partition),
+ 	.det_pin	= -EINVAL,
+diff --git a/arch/arm/mach-at91/board-cam60.c b/arch/arm/mach-at91/board-cam60.c
+index 8510e9e..c6d44ee 100644
+--- a/arch/arm/mach-at91/board-cam60.c
++++ b/arch/arm/mach-at91/board-cam60.c
+@@ -140,6 +140,7 @@ static struct atmel_nand_data __initdata cam60_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PA9,
+ 	.enable_pin	= AT91_PIN_PA7,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= cam60_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(cam60_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-cap9adk.c b/arch/arm/mach-at91/board-cap9adk.c
+index e0165a2..9c05eea 100644
+--- a/arch/arm/mach-at91/board-cap9adk.c
++++ b/arch/arm/mach-at91/board-cap9adk.c
+@@ -178,6 +178,7 @@ static struct atmel_nand_data __initdata cap9adk_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= -EINVAL,
+ 	.enable_pin	= AT91_PIN_PD15,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= cap9adk_nand_partitions,
+ 	.num_parts	= ARRAY_SIZE(cap9adk_nand_partitions),
+ };
+diff --git a/arch/arm/mach-at91/board-cpu9krea.c b/arch/arm/mach-at91/board-cpu9krea.c
+index 8c60e0d..e69e2a1 100644
+--- a/arch/arm/mach-at91/board-cpu9krea.c
++++ b/arch/arm/mach-at91/board-cpu9krea.c
+@@ -116,6 +116,7 @@ static struct atmel_nand_data __initdata cpu9krea_nand_data = {
+ 	.enable_pin	= AT91_PIN_PC14,
+ 	.bus_width_16	= 0,
+ 	.det_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ };
  
-+config OF_MTD
-+	depends on MTD
-+	def_bool y
+ #ifdef CONFIG_MACH_CPU9260
+diff --git a/arch/arm/mach-at91/board-dt.c b/arch/arm/mach-at91/board-dt.c
+index bb6b434..552390d 100644
+--- a/arch/arm/mach-at91/board-dt.c
++++ b/arch/arm/mach-at91/board-dt.c
+@@ -53,6 +53,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC8,
+ 	.enable_pin	= AT91_PIN_PC14,
++	.ecc_mode	= NAND_ECC_SOFT,
+ };
+ 
+ static struct sam9_smc_config __initdata ek_nand_smc_config = {
+diff --git a/arch/arm/mach-at91/board-kb9202.c b/arch/arm/mach-at91/board-kb9202.c
+index 4d23b6a..04d9b8e 100644
+--- a/arch/arm/mach-at91/board-kb9202.c
++++ b/arch/arm/mach-at91/board-kb9202.c
+@@ -107,6 +107,7 @@ static struct atmel_nand_data __initdata kb9202_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC29,
+ 	.enable_pin	= AT91_PIN_PC28,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= kb9202_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(kb9202_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-neocore926.c b/arch/arm/mach-at91/board-neocore926.c
+index 3f8617c..57d5f6a 100644
+--- a/arch/arm/mach-at91/board-neocore926.c
++++ b/arch/arm/mach-at91/board-neocore926.c
+@@ -190,6 +190,7 @@ static struct atmel_nand_data __initdata neocore926_nand_data = {
+ 	.rdy_pin		= AT91_PIN_PB19,
+ 	.rdy_pin_active_low	= 1,
+ 	.enable_pin		= AT91_PIN_PD15,
++	.ecc_mode		= NAND_ECC_SOFT,
+ 	.parts			= neocore926_nand_partition,
+ 	.num_parts		= ARRAY_SIZE(neocore926_nand_partition),
+ 	.det_pin		= -EINVAL,
+diff --git a/arch/arm/mach-at91/board-qil-a9260.c b/arch/arm/mach-at91/board-qil-a9260.c
+index e029d22..97907e4 100644
+--- a/arch/arm/mach-at91/board-qil-a9260.c
++++ b/arch/arm/mach-at91/board-qil-a9260.c
+@@ -138,6 +138,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC13,
+ 	.enable_pin	= AT91_PIN_PC14,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-rm9200dk.c b/arch/arm/mach-at91/board-rm9200dk.c
+index fe13640..55a5202 100644
+--- a/arch/arm/mach-at91/board-rm9200dk.c
++++ b/arch/arm/mach-at91/board-rm9200dk.c
+@@ -149,6 +149,7 @@ static struct atmel_nand_data __initdata dk_nand_data = {
+ 	.det_pin	= AT91_PIN_PB1,
+ 	.rdy_pin	= AT91_PIN_PC2,
+ 	.enable_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= dk_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(dk_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9-l9260.c b/arch/arm/mach-at91/board-sam9-l9260.c
+index 84bce58..e8b116b 100644
+--- a/arch/arm/mach-at91/board-sam9-l9260.c
++++ b/arch/arm/mach-at91/board-sam9-l9260.c
+@@ -139,6 +139,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC13,
+ 	.enable_pin	= AT91_PIN_PC14,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9260ek.c b/arch/arm/mach-at91/board-sam9260ek.c
+index be8233b..3118ab1 100644
+--- a/arch/arm/mach-at91/board-sam9260ek.c
++++ b/arch/arm/mach-at91/board-sam9260ek.c
+@@ -181,6 +181,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC13,
+ 	.enable_pin	= AT91_PIN_PC14,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9261ek.c b/arch/arm/mach-at91/board-sam9261ek.c
+index 4089507..60cf37b 100644
+--- a/arch/arm/mach-at91/board-sam9261ek.c
++++ b/arch/arm/mach-at91/board-sam9261ek.c
+@@ -187,6 +187,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC15,
+ 	.enable_pin	= AT91_PIN_PC14,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9263ek.c b/arch/arm/mach-at91/board-sam9263ek.c
+index 29f6605..aeabf85 100644
+--- a/arch/arm/mach-at91/board-sam9263ek.c
++++ b/arch/arm/mach-at91/board-sam9263ek.c
+@@ -187,6 +187,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PA22,
+ 	.enable_pin	= AT91_PIN_PD15,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index 843d628..419e0d5 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -166,6 +166,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.rdy_pin	= AT91_PIN_PC13,
+ 	.enable_pin	= AT91_PIN_PC14,
+ 	.det_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9m10g45ek.c b/arch/arm/mach-at91/board-sam9m10g45ek.c
+index ea0d1b9..452ec37 100644
+--- a/arch/arm/mach-at91/board-sam9m10g45ek.c
++++ b/arch/arm/mach-at91/board-sam9m10g45ek.c
+@@ -146,6 +146,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.rdy_pin	= AT91_PIN_PC8,
+ 	.enable_pin	= AT91_PIN_PC14,
+ 	.det_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-sam9rlek.c b/arch/arm/mach-at91/board-sam9rlek.c
+index c1366d0..70a026d 100644
+--- a/arch/arm/mach-at91/board-sam9rlek.c
++++ b/arch/arm/mach-at91/board-sam9rlek.c
+@@ -94,6 +94,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PD17,
+ 	.enable_pin	= AT91_PIN_PB6,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-snapper9260.c b/arch/arm/mach-at91/board-snapper9260.c
+index 4770db0..8898c1a 100644
+--- a/arch/arm/mach-at91/board-snapper9260.c
++++ b/arch/arm/mach-at91/board-snapper9260.c
+@@ -110,6 +110,7 @@ static struct atmel_nand_data __initdata snapper9260_nand_data = {
+ 	.bus_width_16	= 0,
+ 	.enable_pin	= -EINVAL,
+ 	.det_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ };
+ 
+ static struct sam9_smc_config __initdata snapper9260_nand_smc_config = {
+diff --git a/arch/arm/mach-at91/board-stamp9g20.c b/arch/arm/mach-at91/board-stamp9g20.c
+index 72eb3b4..7640049 100644
+--- a/arch/arm/mach-at91/board-stamp9g20.c
++++ b/arch/arm/mach-at91/board-stamp9g20.c
+@@ -86,6 +86,7 @@ static struct atmel_nand_data __initdata nand_data = {
+ 	.enable_pin	= AT91_PIN_PC14,
+ 	.bus_width_16	= 0,
+ 	.det_pin	= -EINVAL,
++	.ecc_mode	= NAND_ECC_SOFT,
+ };
+ 
+ static struct sam9_smc_config __initdata nand_smc_config = {
+diff --git a/arch/arm/mach-at91/board-usb-a926x.c b/arch/arm/mach-at91/board-usb-a926x.c
+index 26c36fc..cc93152 100644
+--- a/arch/arm/mach-at91/board-usb-a926x.c
++++ b/arch/arm/mach-at91/board-usb-a926x.c
+@@ -198,6 +198,7 @@ static struct atmel_nand_data __initdata ek_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PA22,
+ 	.enable_pin	= AT91_PIN_PD15,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= ek_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/board-yl-9200.c b/arch/arm/mach-at91/board-yl-9200.c
+index 34ebdcf..40087b8 100644
+--- a/arch/arm/mach-at91/board-yl-9200.c
++++ b/arch/arm/mach-at91/board-yl-9200.c
+@@ -181,6 +181,7 @@ static struct atmel_nand_data __initdata yl9200_nand_data = {
+ 	.det_pin	= -EINVAL,
+ 	.rdy_pin	= AT91_PIN_PC14,	/* R/!B (Sheet10) */
+ 	.enable_pin	= AT91_PIN_PC15,	/* !CE  (Sheet10) */
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= yl9200_nand_partition,
+ 	.num_parts	= ARRAY_SIZE(yl9200_nand_partition),
+ };
+diff --git a/arch/arm/mach-at91/include/mach/board.h b/arch/arm/mach-at91/include/mach/board.h
+index 3b33f07..762930e 100644
+--- a/arch/arm/mach-at91/include/mach/board.h
++++ b/arch/arm/mach-at91/include/mach/board.h
+@@ -41,6 +41,7 @@
+ #include <sound/atmel-ac97c.h>
+ #include <linux/serial.h>
+ #include <linux/platform_data/macb.h>
++#include <linux/platform_data/atmel.h>
+ 
+  /* USB Device */
+ struct at91_udc_data {
+@@ -98,18 +99,6 @@ extern void __init at91_add_device_usbh(struct at91_usbh_data *data);
+ extern void __init at91_add_device_usbh_ohci(struct at91_usbh_data *data);
+ extern void __init at91_add_device_usbh_ehci(struct at91_usbh_data *data);
+ 
+- /* NAND / SmartMedia */
+-struct atmel_nand_data {
+-	int		enable_pin;	/* chip enable */
+-	int		det_pin;	/* card detect */
+-	int		rdy_pin;	/* ready/busy */
+-	u8              rdy_pin_active_low;     /* rdy_pin value is inverted */
+-	u8		ale;		/* address line number connected to ALE */
+-	u8		cle;		/* address line number connected to CLE */
+-	u8		bus_width_16;	/* buswidth is 16 bit */
+-	struct mtd_partition *parts;
+-	unsigned int	num_parts;
+-};
+ extern void __init at91_add_device_nand(struct atmel_nand_data *data);
+ 
+  /* I2C*/
+diff --git a/arch/avr32/boards/atngw100/setup.c b/arch/avr32/boards/atngw100/setup.c
+index 7c756fb..afeae89 100644
+--- a/arch/avr32/boards/atngw100/setup.c
++++ b/arch/avr32/boards/atngw100/setup.c
+@@ -97,6 +97,7 @@ static struct atmel_nand_data atngw100mkii_nand_data __initdata = {
+ 	.rdy_pin	= GPIO_PIN_PB(28),
+ 	.enable_pin	= GPIO_PIN_PE(23),
+ 	.bus_width_16	= true,
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= nand_partitions,
+ 	.num_parts	= ARRAY_SIZE(nand_partitions),
+ };
+diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/atstk1000/atstk1002.c
+index c56ddac..dc52633 100644
+--- a/arch/avr32/boards/atstk1000/atstk1002.c
++++ b/arch/avr32/boards/atstk1000/atstk1002.c
+@@ -95,6 +95,7 @@ static struct atmel_nand_data atstk1006_nand_data __initdata = {
+ 	.ale		= 22,
+ 	.rdy_pin	= GPIO_PIN_PB(30),
+ 	.enable_pin	= GPIO_PIN_PB(29),
++	.ecc_mode	= NAND_ECC_SOFT,
+ 	.parts		= nand_partitions,
+ 	.num_parts	= ARRAY_SIZE(num_partitions),
+ };
+diff --git a/arch/avr32/mach-at32ap/include/mach/board.h b/arch/avr32/mach-at32ap/include/mach/board.h
+index 67b111c..7173386 100644
+--- a/arch/avr32/mach-at32ap/include/mach/board.h
++++ b/arch/avr32/mach-at32ap/include/mach/board.h
+@@ -7,6 +7,7 @@
+ #include <linux/types.h>
+ #include <linux/serial.h>
+ #include <linux/platform_data/macb.h>
++#include <linux/platform_data/atmel_nand.h>
+ 
+ #define GPIO_PIN_NONE	(-1)
+ 
+@@ -116,18 +117,6 @@ struct platform_device *
+ at32_add_device_cf(unsigned int id, unsigned int extint,
+ 		struct cf_platform_data *data);
+ 
+-/* NAND / SmartMedia */
+-struct atmel_nand_data {
+-	int	enable_pin;	/* chip enable */
+-	int	det_pin;	/* card detect */
+-	int	rdy_pin;	/* ready/busy */
+-	u8	rdy_pin_active_low;	/* rdy_pin value is inverted */
+-	u8	ale;		/* address line number connected to ALE */
+-	u8	cle;		/* address line number connected to CLE */
+-	u8	bus_width_16;	/* buswidth is 16 bit */
+-	struct mtd_partition *parts;
+-	unsigned int	num_parts;
+-};
+ struct platform_device *
+ at32_add_device_nand(unsigned int id, struct atmel_nand_data *data);
+ 
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 4dd056e..0d955e1 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -34,22 +34,10 @@
+ #include <linux/dmaengine.h>
+ #include <linux/gpio.h>
+ #include <linux/io.h>
++#include <linux/platform_data/atmel.h>
+ 
+-#include <mach/board.h>
+ #include <mach/cpu.h>
+ 
+-#ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
+-#define hard_ecc	1
+-#else
+-#define hard_ecc	0
+-#endif
+-
+-#ifdef CONFIG_MTD_NAND_ATMEL_ECC_NONE
+-#define no_ecc		1
+-#else
+-#define no_ecc		0
+-#endif
+-
+ static int use_dma = 1;
+ module_param(use_dma, int, 0);
+ 
+@@ -495,23 +483,22 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	if (gpio_is_valid(host->board->rdy_pin))
+ 		nand_chip->dev_ready = atmel_nand_device_ready;
+ 
++	nand_chip->ecc.mode = host->board->ecc_mode;
 +
- endmenu # OF
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index a73f5a5..8c4980a 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_OF_SELFTEST) += selftest.o
- obj-$(CONFIG_OF_MDIO)	+= of_mdio.o
- obj-$(CONFIG_OF_PCI)	+= of_pci.o
- obj-$(CONFIG_OF_PCI_IRQ)  += of_pci_irq.o
-+obj-$(CONFIG_OF_NET)	+= of_mtd.o
-diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (!regs && hard_ecc) {
++	if (!regs && nand_chip->ecc.mode == NAND_ECC_HW) {
+ 		printk(KERN_ERR "atmel_nand: can't get I/O resource "
+ 				"regs\nFalling back on software ECC\n");
++		nand_chip->ecc.mode = NAND_ECC_SOFT;
+ 	}
+ 
+-	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* enable ECC */
+-	if (no_ecc)
+-		nand_chip->ecc.mode = NAND_ECC_NONE;
+-	if (hard_ecc && regs) {
++	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+ 		host->ecc = ioremap(regs->start, resource_size(regs));
+ 		if (host->ecc == NULL) {
+ 			printk(KERN_ERR "atmel_nand: ioremap failed\n");
+ 			res = -EIO;
+ 			goto err_ecc_ioremap;
+ 		}
+-		nand_chip->ecc.mode = NAND_ECC_HW;
+ 		nand_chip->ecc.calculate = atmel_nand_calculate;
+ 		nand_chip->ecc.correct = atmel_nand_correct;
+ 		nand_chip->ecc.hwctl = atmel_nand_hwctl;
+diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
 new file mode 100644
-index 0000000..199bf58
+index 0000000..7b8a445
 --- /dev/null
-+++ b/drivers/of/of_mtd.c
-@@ -0,0 +1,90 @@
++++ b/include/linux/platform_data/atmel.h
+@@ -0,0 +1,26 @@
 +/*
-+ * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
++ * atmel platform data
 + *
-+ * OF helpers for mtd.
-+ *
-+ * This file is released under the GPLv2
-+ *
++ * GPL v2 Only
 + */
-+#include <linux/kernel.h>
-+#include <linux/of_mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/export.h>
 +
-+/**
-+ * It maps 'enum nand_ecc_modes_t' found in include/linux/mtd/nand.h
-+ * into the device tree binding of 'phy-mode', so that Ethernet
-+ * device driver can get phy interface from device tree.
-+ */
-+static const char *nand_ecc_modes[] = {
-+	[NAND_ECC_NONE]		= "none",
-+	[NAND_ECC_SOFT]		= "soft",
-+	[NAND_ECC_HW]		= "hw",
-+	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
-+	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
-+	[NAND_ECC_SOFT_BCH]	= "soft_bch",
++#ifndef __ATMEL_NAND_H__
++#define __ATMEL_NAND_H__
++
++#include <linux/mtd/nand.h>
++
++ /* NAND / SmartMedia */
++struct atmel_nand_data {
++	int		enable_pin;		/* chip enable */
++	int		det_pin;		/* card detect */
++	int		rdy_pin;		/* ready/busy */
++	u8		rdy_pin_active_low;	/* rdy_pin value is inverted */
++	u8		ale;			/* address line number connected to ALE */
++	u8		cle;			/* address line number connected to CLE */
++	u8		bus_width_16;		/* buswidth is 16 bit */
++	u8		ecc_mode;		/* ecc mode */
++	struct mtd_partition *parts;
++	unsigned int	num_parts;
 +};
 +
-+/**
-+ * of_get_nand_ecc_mode - Get nand ecc mode for given device_node
-+ * @np:	Pointer to the given device_node
-+ *
-+ * The function gets ecc mode string from property 'nand-ecc-mode',
-+ * and return its index in nand_ecc_modes table, or errno in error case.
-+ */
-+const int of_get_nand_ecc_mode(struct device_node *np)
-+{
-+	const char *pm;
-+	int err, i;
-+
-+	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-+	if (err < 0)
-+		return err;
-+
-+	for (i = 0; i < ARRAY_SIZE(nand_ecc_modes); i++)
-+		if (!strcasecmp(pm, nand_ecc_modes[i]))
-+			return i;
-+
-+	return -ENODEV;
-+}
-+EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
-+
-+/**
-+ * of_get_nand_bus_width - Get nand bus witdh for given device_node
-+ * @np:	Pointer to the given device_node
-+ *
-+ * return bus width option, or errno in error case.
-+ */
-+int of_get_nand_bus_width(struct device_node *np)
-+{
-+	u32 val;
-+
-+	if (of_property_read_u32(np, "nand-bus-width", &val))
-+		return 8;
-+
-+	switch(val) {
-+	case 8:
-+	case 16:
-+		return val;
-+	default:
-+		return -EIO;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(of_get_nand_bus_width);
-+
-+/**
-+ * of_get_nand_on_flash_bbt - Get nand on flash bbt for given device_node
-+ * @np:	Pointer to the given device_node
-+ *
-+ * return true if 1 false other wise
-+ */
-+bool of_get_nand_on_flash_bbt(struct device_node *np)
-+{
-+	u32 val;
-+
-+	if (of_property_read_u32(np, "nand-on-flash-bbt", &val))
-+		return false;
-+
-+	return val ? true : false;
-+}
-+EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
-diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-new file mode 100644
-index 0000000..bae1b60
---- /dev/null
-+++ b/include/linux/of_mtd.h
-@@ -0,0 +1,19 @@
-+/*
-+ * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-+ *
-+ * OF helpers for mtd.
-+ *
-+ * This file is released under the GPLv2
-+ */
-+
-+#ifndef __LINUX_OF_MTD_H
-+#define __LINUX_OF_NET_H
-+
-+#ifdef CONFIG_OF_MTD
-+#include <linux/of.h>
-+extern const int of_get_nand_ecc_mode(struct device_node *np);
-+int of_get_nand_bus_width(struct device_node *np);
-+bool of_get_nand_on_flash_bbt(struct device_node *np);
-+#endif
-+
-+#endif /* __LINUX_OF_MTD_H */
++#endif /* __ATMEL_NAND_H__ */
 -- 
 1.7.7
