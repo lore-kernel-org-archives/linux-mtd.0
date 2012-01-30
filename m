@@ -1,24 +1,22 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: RE: [PATCH v2 3/3] arm: da830: move NAND and NOR devices as aemif
- MFD slaves
-Date: Mon, 30 Jan 2012 06:58:12 +0000
-Message-ID: <A73F36158E33644199EB82C5EC81C7BC3175BD35@DBDE01.ent.ti.com>
-References: <1327487156-10238-1-git-send-email-prakash.pm@ti.com>
- <1327487156-10238-3-git-send-email-prakash.pm@ti.com>
- <4F2016F4.2080302@mvista.com>
-In-Reply-To: <4F2016F4.2080302@mvista.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from portal.weinmann.de ([62.8.140.122])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rrm7W-0006zK-Te
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 07:57:48 +0000
+From: "Voss, Nikolaus" <N.Voss@weinmann.de>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Mon, 30 Jan 2012 08:57:17 +0100
+Subject: RE: [PATCH] mtd: atmel_nand: fix access to 16 bit NAND devices
+Message-ID: <EF2E73589CA71846A15D0B2CDF79505D08AD3E5453@wm021.weinmann.com>
+References: <201201251217.q0PCHmRe027024@gatekeeper.vosshq.de>
+ <1327670996.26648.43.camel@sauron.fi.intel.com>
+In-Reply-To: <1327670996.26648.43.camel@sauron.fi.intel.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
+ 'Nicolas Ferre' <nicolas.ferre@atmel.com>,
+ "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
-
-On Wed, Jan 25, 2012 at 20:21:32, Sergei Shtylyov wrote:
-> Hello.
->=20
-> On 01/25/2012 01:25 PM, Manjunathappa, Prakash wrote:
->=20
-> > NAND and NOR device are made as aemif devices slave, hence device
-> > registration achieved via aemif MFD driver.
->=20
-> > Signed-off-by: Manjunathappa, Prakash<prakash.pm@ti.com>
-> > ---
-> > Since v1:
-> > Patch is generated using -M option.
->=20
-> >   arch/arm/mach-davinci/board-da830-evm.c |   31 ++++++++++++++++++++++=
-+--------
-> >   1 files changed, 23 insertions(+), 8 deletions(-)
->=20
->     Why only this file? Don't other board files have NAND/NOR devices?
-
-Yes I thought of sending board-da850 changes in separate patch. Should I ha=
-ve to send those changes also in this patch?
-
-Thanks,
-Prakash
->=20
-> WBR, Sergei
->=20
+QXJ0ZW0gQml0eXV0c2tpeSB3cm90ZSBvbiAyMDEyLTAxLTI3Og0KPiBPbiBXZWQsIDIwMTItMDEt
+MTggYXQgMTA6MTYgKzAxMDAsIE5pa29sYXVzIFZvc3Mgd3JvdGU6DQo+PiBjb21taXQgZmI1NDI3
+NTA4YWJiZDYzNWU4NzdmYWJkZjU1Nzk1NDg4MTE5YzJkNiBvcHRpbWl6ZXMgUElPDQo+PiBOQU5E
+IGFjY2Vzc2VzIGJ5IHVzaW5nIElPIG1lbWNweSBpbnN0ZWFkIG9mIElPIHJlYWQvd3JpdGUNCj4+
+IHJlcGVhdGVkIGZ1bmN0aW9ucy4NCj4+IA0KPj4gVGhpcyBicmVha3MgYWNjZXNzIHRvIDE2IGJp
+dCBOQU5EIGRldmljZXMgYXMgbWVtY3B5X2Zyb21pbygpL3RvaW8oKQ0KPj4gX2Fsd2F5c18gdXNl
+IGJ5dGUgYWNjZXNzZXMgKHNlZSBhcmNoL2FybS9rZXJuZWwvaW8uYyksIHNvIHdpdGgNCj4+IDE2
+IGJpdCBOQU5ELCBvbmUgYnl0ZSBnZXRzIGxvc3QgcGVyIE5BTkQgYWNjZXNzIGN5Y2xlIGFuZCBO
+QU5EDQo+PiBhZGRyZXNzIGNvdW50IGlzIHdyb25nLg0KPj4gDQo+PiBVc2luZyBtZW1jcHkoKSBp
+bnN0ZWFkIG9mIHRoZSBJTyBtZW1jcHkgZnVuY3Rpb25zIGZpeGVzIHRoaXMsIGJ1dA0KPj4gZGVw
+ZW5kcyBvbiBjb3JyZWN0IHdvcmQgYWxpZ25tZW50IG9mIHRoZSBidWZmZXIgYW5kIGxlbmd0aCBo
+YXMgdG8NCj4+IGJlIGEgbXVsdGlwbGUgb2YgZm91ciwgb3RoZXJ3aXNlIGl0IG1pZ2h0IGlzc3Vl
+IGJ5dGUgYWNjZXNzZXMgYW5kDQo+PiBwb3NzaWJseSBicmVhayAxNiBiaXQgTkFORCBhY2Nlc3Mg
+KGNmIGFyY2gvYXJtL2xpYi9jb3B5X3RlbXBsYXRlLlMpLg0KPj4gDQo+PiBNZW1jcHkgdmFyaWFu
+dHMgc2VlbSB0byBiZSB0aGUgd3JvbmcgYXBwcm9hY2ggaGVyZSwgc2luY2UgdGhlDQo+PiBOQU5E
+IGNvbnRyb2xsZXIgZG9lc24ndCBtYWtlIHRoZSBOQU5EIGFwcGVhciBhcyB0cnVlbHkgcmFuZG9t
+bHkNCj4+IGFjY2Vzc2libGUgbWVtb3J5IChhcyBvcHBvc2VkIHRvIHRoZSBEUkFNIGNvbnRyb2xs
+ZXIgd2hpY2ggZG9lcw0KPj4gZXhhY3RseSB0aGF0KS4NCj4+IA0KPj4gU28sIG15IHByb3Bvc2Fs
+IGlzIHRvIHVzZSAzMiBiaXQgSU8gcmVhZC93cml0ZSAoYW5kIGxldCBTTUMNCj4+IG1hcCBpdCB0
+byA4IGJpdCBvciAxNiBiaXQgTkFORCBhY2Nlc3NlcykgYW5kIGFjY291bnQgZm9yDQo+PiBsZW5n
+dGggJSA0ID4gMCB3aXRoIHR3byBhZGRpdGlvbmFsIElPIHJlYWQvd3JpdGVzLg0KPj4gDQo+PiBT
+aWduZWQtb2ZmLWJ5OiBOaWtvbGF1cyBWb3NzIDxuLnZvc3NAd2Vpbm1hbm4uZGU+DQo+IA0KPiBX
+aHkgbm90IHRvIHJldmVydCBmYjU0Mjc1MDhhYmJkNjM1ZTg3N2ZhYmRmNTU3OTU0ODgxMTljMmQ2
+IGluc3RlYWQsIGl0DQo+IGlzIGluIG15IG9waW5pb24gYSBiaXQgbW9yZSByZWFkYWJsZT8NCg0K
+Tm8gb2JqZWN0aW9ucy4gSSd2ZSB0cmllZCB0byBzYXZlIHRoZSBpZGVhIG9mDQpmYjU0Mjc1MDhh
+YmJkNjM1ZTg3N2ZhYmRmNTU3OTU0ODgxMTljMmQ2IGJ1dCB0aGF0IGxlbmd0aCAlIDQgPiAwIHN0
+dWZmDQp1Z2xpZmllcyBpdCBhIGxpdHRsZSBiaXQuLi4NCg0KTmlrbw0KDQoNCg==
