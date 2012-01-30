@@ -1,21 +1,21 @@
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Mon, 30 Jan 2012 13:32:52 -0700
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Heiko Schocher <hs@denx.de>
-Subject: Re: [RFC PATCH 7/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-Message-ID: <20120130203252.GX28397@ponder.secretlab.ca>
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
- <1327308967-8092-8-git-send-email-hs@denx.de>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the
+ suspend is not implemented
+Date: Mon, 30 Jan 2012 23:58:25 +0100
+References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
+ <20120124090630.GR16726@n2100.arm.linux.org.uk>
+ <1327923953.2487.13.camel@sauron.fi.intel.com>
+In-Reply-To: <1327923953.2487.13.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1327308967-8092-8-git-send-email-hs@denx.de>
-Cc: Kevin Hilman <khilman@ti.com>,
- davinci-linux-open-source@linux.davincidsp.com, netdev@vger.kernel.org,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
+Content-Type: Text/Plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201201302358.26152.rjw@sisk.pl>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, Shubhrajyoti D <shubhrajyoti@ti.com>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,238 +26,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 23, 2012 at 09:56:07AM +0100, Heiko Schocher wrote:
-> - AM1808 based board
-> - 64 MiB DDR ram
-> - 2 MiB Nor flash
-> - 128 MiB NAND flash
-> - use internal RTC
-> - I2C support
-> - hwmon lm75 support
-> - UBI/UBIFS support
-> - MMC support
-> - USB OTG support
+On Monday, January 30, 2012, Artem Bityutskiy wrote:
+> On Tue, 2012-01-24 at 09:06 +0000, Russell King - ARM Linux wrote:
+> > > However, the bug made it into the 3.3 merge window, so shouldn't this
+> > > bugfix be sent upstream immediately?
+> > 
+> > David is the MTD maintainer, and Artem just helps out.  I believe Artem
+> > is waiting for David to finish travelling before asking David (last seen
+> > at Hong Kong airport) to pull these fixes.  David in turn will pass them
+> > onto Linus.  Plus, Linus only started adding to -rc1 yesterday, so its a
+> > little early to expect this to be fixed.
 > 
-> Signed-off-by: Heiko Schocher <hs@denx.de>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: devicetree-discuss@lists.ozlabs.org
-> Cc: davinci-linux-open-source@linux.davincidsp.com
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Ben Dooks <ben-linux@fluff.org>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Sekhar Nori <nsekhar@ti.com>
-> Cc: Kevin Hilman <khilman@ti.com>
-> Cc: Wolfgang Denk <wd@denx.de>
+> Hi,
 > 
+> here is the latest version of the fix.
+> 
+> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/283d43b9ce2952535aa89c0195085e2a1b7e5fce
+> 
+> Also attached.
+> 
+> From 283d43b9ce2952535aa89c0195085e2a1b7e5fce Mon Sep 17 00:00:00 2001
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Date: Mon, 16 Jan 2012 11:07:16 +0200
+> Subject: [PATCH] mtd: fix MTD suspend
+> 
+> Commits 3fe4bae88460869a8e553397cd9057a4ee7ca341 and
+> 079c985e7a6f4ce60f931cebfdd5ee3c3 broke MTD suspend in 2 ways:
+> 
+> 1. When the '->suspend' method is not present, we return -EOPNOTSUPP,
+> but
+>    the callers of 'mtd_suspend()' expects 0 instead.
+> 2. Checking of the 'mtd' parameter against NULL has been incorrectly
+> removed
+>    in 'mtd_cls_suspend()'.
+> 
+> This patch fixes the breakages. This has been found, analyzed, reported
+> and tested by Rafael J. Wysocki <rjw@sisk.pl>.
+> 
+> Note, this patch is not needed in the stable tree because it causes a
+> regression introduced during the v3.3 merge window.
+> 
+> Reported-by: Rafael J. Wysocki <rjw@sisk.pl>
+> Tested-by: Rafael J. Wysocki <rjw@sisk.pl>
+> Tested-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+Thanks, but is anyone actually going to push it to Linus any time soon?
+
+If not, then I can do that through the linux-pm tree.  I'll be sending
+at least one more pull request with fixes for v3.3.
+
+Thanks,
+Rafael
+
+
 > ---
-> - post this board support with USB support, even though
->   USB is only working with the 10 ms "workaround", posted here:
->   http://comments.gmane.org/gmane.linux.usb.general/54505
->   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
-> - MMC and USB are not using OF support yet, ideas how to port
->   this are welcome. I need for USB and MMC boards board
->   specific callbacks, how to solve this with OF support?
+>  drivers/mtd/mtdcore.c   |    2 +-
+>  include/linux/mtd/mtd.h |    4 +---
+>  2 files changed, 2 insertions(+), 4 deletions(-)
 > 
->  arch/arm/boot/dts/enbw_cmc.dts                  |  286 +++++++++++++++++
->  arch/arm/configs/enbw_cmc_defconfig             |  125 ++++++++
->  arch/arm/mach-davinci/Kconfig                   |    8 +
->  arch/arm/mach-davinci/Makefile                  |    1 +
->  arch/arm/mach-davinci/board-enbw-cmc.c          |  384 +++++++++++++++++++++++
->  arch/arm/mach-davinci/include/mach/uncompress.h |    1 +
->  6 files changed, 805 insertions(+), 0 deletions(-)
->  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
->  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
->  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b265188..de96865 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -119,7 +119,7 @@ static int mtd_cls_suspend(struct device *dev,
+> pm_message_t state)
+>  {
+>  	struct mtd_info *mtd = dev_get_drvdata(dev);
+>  
+> -	return mtd_suspend(mtd);
+> +	return mtd ? mtd_suspend(mtd) : 0;
+>  }
+>  
+>  static int mtd_cls_resume(struct device *dev)
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 1a81fde..d8c7aad 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -427,9 +427,7 @@ static inline int mtd_is_locked(struct mtd_info
+> *mtd, loff_t ofs, uint64_t len)
+>  
+>  static inline int mtd_suspend(struct mtd_info *mtd)
+>  {
+> -	if (!mtd->suspend)
+> -		return -EOPNOTSUPP;
+> -	return mtd->suspend(mtd);
+> +	return mtd->suspend ? mtd->suspend(mtd) : 0;
+>  }
+>  
+>  static inline void mtd_resume(struct mtd_info *mtd)
 > 
-> diff --git a/arch/arm/boot/dts/enbw_cmc.dts b/arch/arm/boot/dts/enbw_cmc.dts
-> new file mode 100644
-> index 0000000..e5995ce
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/enbw_cmc.dts
-> @@ -0,0 +1,286 @@
-> +/*
-> + * Device Tree for the EnBW CMC plattform
-> + *
-> + * Copyright 2011 DENX Software Engineering GmbH
-> + * Heiko Schocher <hs@denx.de>
-> + *
-> + * This program is free software; you can redistribute  it and/or modify it
-> + * under  the terms of  the GNU General  Public License as published by the
-> + * Free Software Foundation;  either version 2 of the  License, or (at your
-> + * option) any later version.
-> + */
-> +/dts-v1/;
-> +/include/ "skeleton.dtsi"
-> +
-> +/ {
-> +	model = "EnBW CMC";
-> +	compatible = "enbw,cmc";
-> +
-> +	aliases {
-> +		ethernet0 = &eth0;
-> +	};
-> +
-> +	arm {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0 0xfffee000 0x00020000>;
-> +		intc: interrupt-controller@1 {
-> +			compatible = "ti,davinci-intc";
-> +			interrupt-controller;
-> +			#interrupt-cells = <1>;
-> +			ti,intc-size = <101>;
-> +			reg = <0x0 0x2000>;
-> +		};
-> +	};
-> +	soc@1c00000 {
-> +		compatible = "ti,da8xx";
-
-As previously mentioned, using wildcard ('x') characters in compatible
-properties is bad practice.  Always be specific and use the compatible
-list to make sure the correct driver gets bound (assuming the device
-is 100% register level compatible with the older one).
-
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x01c00000 0x400000>;
-> +
-> +		serial0: serial@1c42000 {
-> +			cell-index = <2>;
-
-As previously mentioned, don't use cell index.  If you *really* need
-to assign a number to a device, then use a property in the /aliases
-node and make sure pdev->id does *not* get modified.
-
-> +			compatible = "ns16550a";
-
-Should include a string for the specific device.  Something like:
-
-	compatible = "ti,da800", "ns16550a";
-
-> diff --git a/arch/arm/mach-davinci/board-enbw-cmc.c b/arch/arm/mach-davinci/board-enbw-cmc.c
-> new file mode 100644
-> index 0000000..4473c4a
-> --- /dev/null
-> +++ b/arch/arm/mach-davinci/board-enbw-cmc.c
-> @@ -0,0 +1,384 @@
-> +/*
-> + * EnBW Communication Module Compact board
-> + * Copyright 2011 DENX Software Engineering GmbH
-> + * Author: Heiko Schocher <hs@denx.de>
-> + *
-> + * based on:
-> + * TI DA850/OMAP-L138 EVM board
-> + *
-> + * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-> + *
-> + * Derived from: arch/arm/mach-davinci/board-da850-evm.c
-> + * Original Copyrights follow:
-> + *
-> + * 2007, 2009 (c) MontaVista Software, Inc. This file is licensed under
-> + * the terms of the GNU General Public License version 2. This program
-> + * is licensed "as is" without any warranty of any kind, whether express
-> + * or implied.
-> + */
-> +#include <linux/console.h>
-> +#include <linux/gpio.h>
-> +#include <linux/gpio_keys.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/mtd/physmap.h>
-> +#include <linux/of.h>
-> +#include <linux/of_net.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/phy.h>
-> +#include <linux/phy_fixed.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/flash.h>
-> +#include <asm/mach-types.h>
-> +#include <asm/mach/arch.h>
-> +#include <mach/aemif.h>
-> +#include <mach/cp_intc.h>
-> +#include <mach/da8xx.h>
-> +#include <mach/mux.h>
-> +#include <mach/nand.h>
-> +#include <mach/spi.h>
-> +
-> +#define ENBW_CMC_MMCSD_CD_PIN          GPIO_TO_PIN(3, 13)
-> +
-> +/*
-> + * USB1 VBUS is controlled by GPIO7[12], over-current is reported on GPIO7[8].
-> + */
-> +#define DA850_USB_VBUS_PIN	GPIO_TO_PIN(7, 12)
-> +#define ON_BD_USB_OVC		GPIO_TO_PIN(7, 8)
-> +
-> +#if defined(CONFIG_USB_OHCI_HCD)
-> +static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id);
-> +static da8xx_ocic_handler_t enbw_cmc_usb_ocic_handler;
-> +
-> +static int enbw_cmc_usb_set_power(unsigned port, int on)
-> +{
-> +	gpio_set_value(DA850_USB_VBUS_PIN, on);
-> +	return 0;
-> +}
-> +
-> +static int enbw_cmc_usb_get_power(unsigned port)
-> +{
-> +	return gpio_get_value(DA850_USB_VBUS_PIN);
-> +}
-> +
-> +static int enbw_cmc_usb_get_oci(unsigned port)
-> +{
-> +	return !gpio_get_value(ON_BD_USB_OVC);
-> +}
-> +
-> +static irqreturn_t enbw_cmc_usb_ocic_irq(int, void *);
-> +
-> +static int enbw_cmc_usb_ocic_notify(da8xx_ocic_handler_t handler)
-> +{
-> +	int irq         = gpio_to_irq(ON_BD_USB_OVC);
-> +	int error       = 0;
-> +
-> +	if (handler != NULL) {
-> +		enbw_cmc_usb_ocic_handler = handler;
-> +
-> +		error = request_irq(irq, enbw_cmc_usb_ocic_irq,
-> +					IRQF_DISABLED | IRQF_TRIGGER_RISING |
-> +					IRQF_TRIGGER_FALLING,
-> +					"OHCI over-current indicator", NULL);
-> +		if (error)
-> +			pr_err("%s: could not request IRQ to watch "
-> +				"over-current indicator changes\n", __func__);
-> +	} else {
-> +		free_irq(irq, NULL);
-> +	}
-> +	return error;
-> +}
-> +
-> +static struct da8xx_ohci_root_hub enbw_cmc_usb11_pdata = {
-> +	.set_power      = enbw_cmc_usb_set_power,
-> +	.get_power      = enbw_cmc_usb_get_power,
-> +	.get_oci        = enbw_cmc_usb_get_oci,
-> +	.ocic_notify    = enbw_cmc_usb_ocic_notify,
-> +	.potpgt         = (10 + 1) / 2,  /* 10 ms max */
-> +};
-> +
-> +static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id)
-> +{
-> +	enbw_cmc_usb_ocic_handler(&enbw_cmc_usb11_pdata, 1);
-> +	return IRQ_HANDLED;
-> +}
-> +#endif
-> +
-> +#if defined(CONFIG_OF)
-> +static __init void enbw_cmc_usb_init(void)
-
-All the focus is on DT now.  How about making CONFIG_OF required for
-this board?  Also, this is just another board file.  The focus should
-be on creating a generic board support file for DT platforms.
