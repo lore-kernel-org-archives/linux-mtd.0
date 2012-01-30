@@ -1,14 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rrutz-00051S-Es
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 17:20:24 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] UBI: Fix error handling in ubi_scan()
-Date: Mon, 30 Jan 2012 18:20:13 +0100
-Message-Id: <1327944013-18944-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, stable@kernel.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Sender: Grant Likely <glikely@secretlab.ca>
+Date: Mon, 30 Jan 2012 13:32:52 -0700
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Heiko Schocher <hs@denx.de>
+Subject: Re: [RFC PATCH 7/7] ARM: davinci: add support for the am1808 based
+ enbw_cmc board
+Message-ID: <20120130203252.GX28397@ponder.secretlab.ca>
+References: <1327308967-8092-1-git-send-email-hs@denx.de>
+ <1327308967-8092-8-git-send-email-hs@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1327308967-8092-8-git-send-email-hs@denx.de>
+Cc: Kevin Hilman <khilman@ti.com>,
+ davinci-linux-open-source@linux.davincidsp.com, netdev@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,52 +26,238 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two bad things can happen in ubi_scan():
-1. If kmem_cache_create() fails we jump to out_si and call
-   ubi_scan_destroy_si() which calls kmem_cache_destroy().
-   But si->scan_leb_slab is NULL.
-2. If process_eb() fails we jump to out_vidh, call
-   kmem_cache_destroy() and ubi_scan_destroy_si() which calls
-   again kmem_cache_destroy().
+On Mon, Jan 23, 2012 at 09:56:07AM +0100, Heiko Schocher wrote:
+> - AM1808 based board
+> - 64 MiB DDR ram
+> - 2 MiB Nor flash
+> - 128 MiB NAND flash
+> - use internal RTC
+> - I2C support
+> - hwmon lm75 support
+> - UBI/UBIFS support
+> - MMC support
+> - USB OTG support
+> 
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: devicetree-discuss@lists.ozlabs.org
+> Cc: davinci-linux-open-source@linux.davincidsp.com
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Kevin Hilman <khilman@ti.com>
+> Cc: Wolfgang Denk <wd@denx.de>
+> 
+> ---
+> - post this board support with USB support, even though
+>   USB is only working with the 10 ms "workaround", posted here:
+>   http://comments.gmane.org/gmane.linux.usb.general/54505
+>   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
+> - MMC and USB are not using OF support yet, ideas how to port
+>   this are welcome. I need for USB and MMC boards board
+>   specific callbacks, how to solve this with OF support?
+> 
+>  arch/arm/boot/dts/enbw_cmc.dts                  |  286 +++++++++++++++++
+>  arch/arm/configs/enbw_cmc_defconfig             |  125 ++++++++
+>  arch/arm/mach-davinci/Kconfig                   |    8 +
+>  arch/arm/mach-davinci/Makefile                  |    1 +
+>  arch/arm/mach-davinci/board-enbw-cmc.c          |  384 +++++++++++++++++++++++
+>  arch/arm/mach-davinci/include/mach/uncompress.h |    1 +
+>  6 files changed, 805 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
+>  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
+>  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+> 
+> diff --git a/arch/arm/boot/dts/enbw_cmc.dts b/arch/arm/boot/dts/enbw_cmc.dts
+> new file mode 100644
+> index 0000000..e5995ce
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/enbw_cmc.dts
+> @@ -0,0 +1,286 @@
+> +/*
+> + * Device Tree for the EnBW CMC plattform
+> + *
+> + * Copyright 2011 DENX Software Engineering GmbH
+> + * Heiko Schocher <hs@denx.de>
+> + *
+> + * This program is free software; you can redistribute  it and/or modify it
+> + * under  the terms of  the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + */
+> +/dts-v1/;
+> +/include/ "skeleton.dtsi"
+> +
+> +/ {
+> +	model = "EnBW CMC";
+> +	compatible = "enbw,cmc";
+> +
+> +	aliases {
+> +		ethernet0 = &eth0;
+> +	};
+> +
+> +	arm {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0 0xfffee000 0x00020000>;
+> +		intc: interrupt-controller@1 {
+> +			compatible = "ti,davinci-intc";
+> +			interrupt-controller;
+> +			#interrupt-cells = <1>;
+> +			ti,intc-size = <101>;
+> +			reg = <0x0 0x2000>;
+> +		};
+> +	};
+> +	soc@1c00000 {
+> +		compatible = "ti,da8xx";
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
-CC: stable@kernel.org
----
- drivers/mtd/ubi/scan.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+As previously mentioned, using wildcard ('x') characters in compatible
+properties is bad practice.  Always be specific and use the compatible
+list to make sure the correct driver gets bound (assuming the device
+is 100% register level compatible with the older one).
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 0cb17d9..b99318e 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -1174,7 +1174,7 @@ struct ubi_scan_info *ubi_scan(struct ubi_device *ubi)
- 
- 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
- 	if (!ech)
--		goto out_slab;
-+		goto out_si;
- 
- 	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
- 	if (!vidh)
-@@ -1235,8 +1235,6 @@ out_vidh:
- 	ubi_free_vid_hdr(ubi, vidh);
- out_ech:
- 	kfree(ech);
--out_slab:
--	kmem_cache_destroy(si->scan_leb_slab);
- out_si:
- 	ubi_scan_destroy_si(si);
- 	return ERR_PTR(err);
-@@ -1325,7 +1323,9 @@ void ubi_scan_destroy_si(struct ubi_scan_info *si)
- 		}
- 	}
- 
--	kmem_cache_destroy(si->scan_leb_slab);
-+	if (si->scan_leb_slab)
-+		kmem_cache_destroy(si->scan_leb_slab);
-+
- 	kfree(si);
- }
- 
--- 
-1.7.8.3
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0x01c00000 0x400000>;
+> +
+> +		serial0: serial@1c42000 {
+> +			cell-index = <2>;
+
+As previously mentioned, don't use cell index.  If you *really* need
+to assign a number to a device, then use a property in the /aliases
+node and make sure pdev->id does *not* get modified.
+
+> +			compatible = "ns16550a";
+
+Should include a string for the specific device.  Something like:
+
+	compatible = "ti,da800", "ns16550a";
+
+> diff --git a/arch/arm/mach-davinci/board-enbw-cmc.c b/arch/arm/mach-davinci/board-enbw-cmc.c
+> new file mode 100644
+> index 0000000..4473c4a
+> --- /dev/null
+> +++ b/arch/arm/mach-davinci/board-enbw-cmc.c
+> @@ -0,0 +1,384 @@
+> +/*
+> + * EnBW Communication Module Compact board
+> + * Copyright 2011 DENX Software Engineering GmbH
+> + * Author: Heiko Schocher <hs@denx.de>
+> + *
+> + * based on:
+> + * TI DA850/OMAP-L138 EVM board
+> + *
+> + * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
+> + *
+> + * Derived from: arch/arm/mach-davinci/board-da850-evm.c
+> + * Original Copyrights follow:
+> + *
+> + * 2007, 2009 (c) MontaVista Software, Inc. This file is licensed under
+> + * the terms of the GNU General Public License version 2. This program
+> + * is licensed "as is" without any warranty of any kind, whether express
+> + * or implied.
+> + */
+> +#include <linux/console.h>
+> +#include <linux/gpio.h>
+> +#include <linux/gpio_keys.h>
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/mtd/physmap.h>
+> +#include <linux/of.h>
+> +#include <linux/of_net.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/phy.h>
+> +#include <linux/phy_fixed.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/spi/flash.h>
+> +#include <asm/mach-types.h>
+> +#include <asm/mach/arch.h>
+> +#include <mach/aemif.h>
+> +#include <mach/cp_intc.h>
+> +#include <mach/da8xx.h>
+> +#include <mach/mux.h>
+> +#include <mach/nand.h>
+> +#include <mach/spi.h>
+> +
+> +#define ENBW_CMC_MMCSD_CD_PIN          GPIO_TO_PIN(3, 13)
+> +
+> +/*
+> + * USB1 VBUS is controlled by GPIO7[12], over-current is reported on GPIO7[8].
+> + */
+> +#define DA850_USB_VBUS_PIN	GPIO_TO_PIN(7, 12)
+> +#define ON_BD_USB_OVC		GPIO_TO_PIN(7, 8)
+> +
+> +#if defined(CONFIG_USB_OHCI_HCD)
+> +static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id);
+> +static da8xx_ocic_handler_t enbw_cmc_usb_ocic_handler;
+> +
+> +static int enbw_cmc_usb_set_power(unsigned port, int on)
+> +{
+> +	gpio_set_value(DA850_USB_VBUS_PIN, on);
+> +	return 0;
+> +}
+> +
+> +static int enbw_cmc_usb_get_power(unsigned port)
+> +{
+> +	return gpio_get_value(DA850_USB_VBUS_PIN);
+> +}
+> +
+> +static int enbw_cmc_usb_get_oci(unsigned port)
+> +{
+> +	return !gpio_get_value(ON_BD_USB_OVC);
+> +}
+> +
+> +static irqreturn_t enbw_cmc_usb_ocic_irq(int, void *);
+> +
+> +static int enbw_cmc_usb_ocic_notify(da8xx_ocic_handler_t handler)
+> +{
+> +	int irq         = gpio_to_irq(ON_BD_USB_OVC);
+> +	int error       = 0;
+> +
+> +	if (handler != NULL) {
+> +		enbw_cmc_usb_ocic_handler = handler;
+> +
+> +		error = request_irq(irq, enbw_cmc_usb_ocic_irq,
+> +					IRQF_DISABLED | IRQF_TRIGGER_RISING |
+> +					IRQF_TRIGGER_FALLING,
+> +					"OHCI over-current indicator", NULL);
+> +		if (error)
+> +			pr_err("%s: could not request IRQ to watch "
+> +				"over-current indicator changes\n", __func__);
+> +	} else {
+> +		free_irq(irq, NULL);
+> +	}
+> +	return error;
+> +}
+> +
+> +static struct da8xx_ohci_root_hub enbw_cmc_usb11_pdata = {
+> +	.set_power      = enbw_cmc_usb_set_power,
+> +	.get_power      = enbw_cmc_usb_get_power,
+> +	.get_oci        = enbw_cmc_usb_get_oci,
+> +	.ocic_notify    = enbw_cmc_usb_ocic_notify,
+> +	.potpgt         = (10 + 1) / 2,  /* 10 ms max */
+> +};
+> +
+> +static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id)
+> +{
+> +	enbw_cmc_usb_ocic_handler(&enbw_cmc_usb11_pdata, 1);
+> +	return IRQ_HANDLED;
+> +}
+> +#endif
+> +
+> +#if defined(CONFIG_OF)
+> +static __init void enbw_cmc_usb_init(void)
+
+All the focus is on DT now.  How about making CONFIG_OF required for
+this board?  Also, this is just another board file.  The focus should
+be on creating a generic board support file for DT platforms.
