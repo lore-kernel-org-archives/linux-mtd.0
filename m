@@ -1,25 +1,20 @@
-Received: from mo3.mail-out.ovh.net ([178.32.228.3])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RrkQY-0007rD-T6
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 06:09:20 +0000
-Received: from mail617.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 787331008A1F
- for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2012 07:01:56 +0100 (CET)
-Date: Mon, 30 Jan 2012 06:56:31 +0100
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Simon Glass <sjg@chromium.org>
-Subject: Re: [FOR 3.4 PATCH 5/6] atmel/nand: add DT support
-Message-ID: <20120130055631.GG705@game.jcrosoft.org>
-References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
- <1327727444-23908-5-git-send-email-plagnioj@jcrosoft.com>
- <CAPnjgZ0uTwFwaK2Dxdna7p6zrj9OZdV=CxT1eGsT+M5Aa+SJNA@mail.gmail.com>
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rrkt3-00009q-Gx
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 06:38:46 +0000
+Message-ID: <4F263AD8.7030809@newsguy.com>
+Date: Sun, 29 Jan 2012 22:38:16 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPnjgZ0uTwFwaK2Dxdna7p6zrj9OZdV=CxT1eGsT+M5Aa+SJNA@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree-discuss@lists.ozlabs.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>, linux-arm-kernel@lists.infradead.org
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v4] MTD: nand: add support for diskonchip G4 nand flash
+ device
+References: <1325635544-17885-1-git-send-email-mikedunn@newsguy.com>
+ <1327673847.29385.4.camel@sauron.fi.intel.com>
+In-Reply-To: <1327673847.29385.4.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, robert.jarzmik@free.fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,78 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10:31 Sun 29 Jan     , Simon Glass wrote:
-> Hi,
-> 
-> On Fri, Jan 27, 2012 at 9:10 PM, Jean-Christophe PLAGNIOL-VILLARD
-> <plagnioj@jcrosoft.com> wrote:
-> > use a local copy of board informatin and fill with DT data
-> >
-> > Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> > Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> > Cc: devicetree-discuss@lists.ozlabs.org
-> > Cc: linux-mtd@lists.infradead.org
-> > ---
-> >  .../devicetree/bindings/mtd/atmel-nand.txt         |   41 ++++++++
-> >  drivers/mtd/nand/atmel_nand.c                      |  107 ++++++++++++++++----
-> >  2 files changed, 130 insertions(+), 18 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> > new file mode 100644
-> > index 0000000..a910ab9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> > @@ -0,0 +1,41 @@
-> > +Atmel NAND flash
-> > +
-> > +Required properties:
-> > +- compatible : "atmel,at91rm9200-nand".
-> > +- reg : should specify localbus address and size used for the chip,
-> > +       and if availlable the ECC.
-> > +- atmel,nand-addr-offset : offset for the address latch.
-> > +- atmel,nand-cmd-offset : offset for the command latch.
-> > +- #address-cells, #size-cells : Must be present if the device has sub-nodes
-> > +  representing partitions.
-> > +
-> > +- gpios : specifies the gpio pins to control the NAND device. detect is an
-> > +  optional gpio and may be set to 0 if not present.
-> 
-> What does this mean please? What is 'detect' and what 'control' do the
-> gpios provide?
-> 
-> Below you have two GPIOs pioC 13 and pioC 14. I think the binding
-> should document the two GPIOs, the order, and what they are for.
-no as it's said in the binding the detect pin is optional
-> 
-> > +
-> > +Optional properties:
-> > +- nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
-> > +  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-> > +  "soft_bch".
-> > +- nand-bus-width : 8 or 16 bus width if not present 8
-> > +- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
-> > +
-> > +Examples:
-> > +nand0: nand@40000000,0 {
-> > +       compatible = "atmel,at91rm9200-nand";
-> > +       #address-cells = <1>;
-> > +       #size-cells = <1>;
-> > +       reg = <0x40000000 0x10000000
-> > +              0xffffe800 0x200
-> > +             >;
-> > +       atmel,nand-addr-offset = <21>;
-> > +       atmel,nand-cmd-offset = <22>;
-> > +       nand-on-flash-bbt = <1>;
-> > +       nand-ecc-mode = "soft";
-> > +       gpios = <&pioC 13 0
-> > +                &pioC 14 0
-> > +                0
-> 
-> Sorry, I haven't seen this before, perhaps it is a standard thing in
-> Linux. Does 0 mean end of list? Can we not just use the property's
-> size value for this?
-0 means not used as specified in the DT
+On 01/27/2012 06:17 AM, Artem Bityutskiy wrote:
+> Hi Mike,
+>
+> On Tue, 2012-01-03 at 16:05 -0800, Mike Dunn wrote:
+>> +config MTD_NAND_DOCG4
+>> +	tristate "Support for DiskOnChip G4 (EXPERIMENTAL)"
+>> +	depends on EXPERIMENTAL
+>> +	select BCH
+>> +	select BITREVERSE
+>> +	help
+>> +	  Support for diskonchip G4 nand flash, found in various smartphones and
+>> +	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
+>> +	  Portege G900, Asus P526, and O2 XDA Zinc.
+>> +
+>> +	  With this driver you will be able to use UBI and create a ubifs on the
+>> +	  device, so you may wish to consider enabling UBI and UBIFS as well.
+>> +
+>> +	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
+>> +	  there is currently no mtd parser, so you may want to use command line
+>> +	  partitioning to segregate write-protected blocks.  On the Treo680, the
+>> +	  first five erase blocks (256K each) are write-protected, followed by
+>> +	  the block containing the saftl partition table.  This is probably
+>> +	  typical.
+> Why do add this to drivers/mtd/nand/Kconfig instead of
+> drivers/mtd/devices/Kconfig lige DOCG3 does?
 
-Best Regards,
-J.
+
+Because the driver uses the mtd/nand interface (unlike the docg3).  It is on top
+of the nand infrastructure code.  Specifically, nand_base.c and nand_bbt.c.
+
+I questioned my initial decision to use the nand interface when I saw that
+Robert did not do that for the docg3.  Although both devices are MLC nand, they
+don't conform very well with the typical nand device behavior because they are
+wrapped in a proprietary controller.  My initial decision was driven by the fact
+that the legacy diskonchip drivers (doc2000, etc) were re-implemented (and
+consolidated) some time ago to use the nand interface.  But I think Robert's
+decision might have been the better one.  The nand infrastructure only provided
+me with code that breaks up read/write operations into single-page chunks, and
+also I was able to use some of the nand bbt management code.  The price for that
+is integration with the messy nand code.  But the nand code is sufficiently
+flexible that most of the default methods can be replaced, which is what I did. 
+It might be best if both drivers used the same interface, and I thought about
+reworking the driver to interface with the mtd code directly - as the docg3 does
+- but I don't have the time.
+
+BTW, most of the drivers in mtd/nand use the nand interface, but there is one
+exception: drivers/mtd/nand/alauda.c is a nand flash, but it is actually a usb
+device that does not use the nand interface.  But all drivers that *do* use the
+nand interface are in this directory.
+
+Hope this makes sense.  Let me know if not.
+
+Thanks,
+Mike
