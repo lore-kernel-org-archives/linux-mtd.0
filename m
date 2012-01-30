@@ -1,12 +1,14 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rrs7X-0005zi-Fl
+ id 1Rrs7X-0005zj-Fl
  for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 14:22:12 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/3] jffs2: remove direct mtd->point reference
-Date: Mon, 30 Jan 2012 16:24:05 +0200
-Message-Id: <1327933447-17356-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/3] romfs: switch to new MTD API
+Date: Mon, 30 Jan 2012 16:24:06 +0200
+Message-Id: <1327933447-17356-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1327933447-17356-1-git-send-email-dedekind1@gmail.com>
+References: <1327933447-17356-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,45 +20,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Commit 10934478e44d9a5a7b16dadd89094fb608cf101e did not remove now useless
-"if (mtd->point)" check mistakingly - let's kill it now.
+We have changed the MTD API and now ROMFS should use 'mtd_read()' instead
+of mtd->read().
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- fs/jffs2/scan.c |   20 +++++++++-----------
- 1 files changed, 9 insertions(+), 11 deletions(-)
+ fs/romfs/storage.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index f994648..c027373 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -96,18 +96,16 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
- #ifndef __ECOS
- 	size_t pointlen, try_size;
- 
--	if (c->mtd->point) {
--		ret = mtd_point(c->mtd, 0, c->mtd->size, &pointlen,
--				(void **)&flashbuf, NULL);
--		if (!ret && pointlen < c->mtd->size) {
--			/* Don't muck about if it won't let us point to the whole flash */
--			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
--			mtd_unpoint(c->mtd, 0, pointlen);
--			flashbuf = NULL;
--		}
--		if (ret && ret != -EOPNOTSUPP)
--			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
-+	ret = mtd_point(c->mtd, 0, c->mtd->size, &pointlen,
-+			(void **)&flashbuf, NULL);
-+	if (!ret && pointlen < c->mtd->size) {
-+		/* Don't muck about if it won't let us point to the whole flash */
-+		D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
-+		mtd_unpoint(c->mtd, 0, pointlen);
-+		flashbuf = NULL;
- 	}
-+	if (ret && ret != -EOPNOTSUPP)
-+		D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
+diff --git a/fs/romfs/storage.c b/fs/romfs/storage.c
+index 71e2b4d..f86f51f 100644
+--- a/fs/romfs/storage.c
++++ b/fs/romfs/storage.c
+@@ -19,7 +19,7 @@
  #endif
- 	if (!flashbuf) {
- 		/* For NAND it's quicker to read a whole eraseblock at a time,
+ 
+ #ifdef CONFIG_ROMFS_ON_MTD
+-#define ROMFS_MTD_READ(sb, ...) ((sb)->s_mtd->read((sb)->s_mtd, ##__VA_ARGS__))
++#define ROMFS_MTD_READ(sb, ...) mtd_read((sb)->s_mtd, ##__VA_ARGS__)
+ 
+ /*
+  * read data from an romfs image on an MTD device
 -- 
 1.7.7.6
