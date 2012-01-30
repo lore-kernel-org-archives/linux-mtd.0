@@ -1,21 +1,22 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rrmfw-0002B5-Tk
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 08:33:22 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] ubinfo: fix `--all' for non-consecutive device numbers
-Date: Mon, 30 Jan 2012 09:32:13 +0100
-References: <1327563110-23966-1-git-send-email-computersforpeace@gmail.com>
- <201201260953.04349.brian.foster@maxim-ic.com>
- <CAN8TOE9hvxBGG40P9RV=-1r9m3wrYGOnBUFvBmZk3nn-8=RAnw@mail.gmail.com>
-In-Reply-To: <CAN8TOE9hvxBGG40P9RV=-1r9m3wrYGOnBUFvBmZk3nn-8=RAnw@mail.gmail.com>
+Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rrn3n-0007sI-HM
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 08:58:02 +0000
+Message-ID: <4F265B7E.6060806@atmel.com>
+Date: Mon, 30 Jan 2012 09:57:34 +0100
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <201201300932.14012.brian.foster@maxim-ic.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: "Voss, Nikolaus" <N.Voss@weinmann.de>,
+ "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix access to 16 bit NAND devices
+References: <201201251217.q0PCHmRe027024@gatekeeper.vosshq.de>
+ <1327670996.26648.43.camel@sauron.fi.intel.com>
+ <EF2E73589CA71846A15D0B2CDF79505D08AD3E5453@wm021.weinmann.com>
+In-Reply-To: <EF2E73589CA71846A15D0B2CDF79505D08AD3E5453@wm021.weinmann.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
+ "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 27 January 2012 19:28:59 Brian Norris wrote:
-> On Thu, Jan 26, 2012 at 12:53 AM, Brian Foster <brian.foster@maxim-ic.com=
-> wrote:
-> > [ ... ] looking at the mtd-utils v1.4.6 =E2=80=98mtdinfo.c=E2=80=99,
-> >  is there a similar issue there?  But I have no idea
-> >  how you could get non-consecutive MTD device numbers?
->=20
-> Yeah, there is a problem there. It's a little more difficult to see,
-> but it can happen.
->=20
-> Suppose you have /dev/mtd0 on your system, then you can get an error
-> with the following sequence:
->=20
-> # modprobe mtdram
-> # modprobe nandsim
-> # rmmod mtdram
-> # mtdinfo --all
-> ...
-> mtdinfo: error!: mtd1 does not correspond to any existing MTD device
+On 01/30/2012 08:57 AM, Voss, Nikolaus :
+> Artem Bityutskiy wrote on 2012-01-27:
+>> On Wed, 2012-01-18 at 10:16 +0100, Nikolaus Voss wrote:
+>>> commit fb5427508abbd635e877fabdf55795488119c2d6 optimizes PIO
+>>> NAND accesses by using IO memcpy instead of IO read/write
+>>> repeated functions.
+>>>
+>>> This breaks access to 16 bit NAND devices as memcpy_fromio()/toio()
+>>> _always_ use byte accesses (see arch/arm/kernel/io.c), so with
+>>> 16 bit NAND, one byte gets lost per NAND access cycle and NAND
+>>> address count is wrong.
+>>>
+>>> Using memcpy() instead of the IO memcpy functions fixes this, but
+>>> depends on correct word alignment of the buffer and length has to
+>>> be a multiple of four, otherwise it might issue byte accesses and
+>>> possibly break 16 bit NAND access (cf arch/arm/lib/copy_template.S).
+>>>
+>>> Memcpy variants seem to be the wrong approach here, since the
+>>> NAND controller doesn't make the NAND appear as truely randomly
+>>> accessible memory (as opposed to the DRAM controller which does
+>>> exactly that).
+>>>
+>>> So, my proposal is to use 32 bit IO read/write (and let SMC
+>>> map it to 8 bit or 16 bit NAND accesses) and account for
+>>> length % 4 > 0 with two additional IO read/writes.
+>>>
+>>> Signed-off-by: Nikolaus Voss <n.voss@weinmann.de>
+>>
+>> Why not to revert fb5427508abbd635e877fabdf55795488119c2d6 instead, it
+>> is in my opinion a bit more readable?
+> 
+> No objections. I've tried to save the idea of
+> fb5427508abbd635e877fabdf55795488119c2d6 but that length % 4 > 0 stuff
+> uglifies it a little bit...
 
- Ah, Ok!  I had a similar thought over the weekend,
- and before seeing your e-mail tried to set-up the
- situation up on one of our SoC evaluation boards,
- using our H/W drivers.  But for some reason those
- drivers won't unload  =E2=80=94 I should look into that =E2=80=94
- and then saw your e-mails ....
+After double checking with designers, I must admit that I misunderstood
+the way of optimizing accesses to SMC. 16 bit nand is not so common
+those days...
 
-> I'm sending a quick patch set for this.
+So yes, Nikolaus your correction makes sense.
 
- Yeah, saw it, seemed Ok to me.  Thanks.
+What I would have liked is to optimize the possibility to trigger
+incremental bursts from the processor to the SMC on internal bus. I
+suspect that this will need further investigation (moreover, note that
+if we use assembly code, we should also think about AVR32).
 
-cheers!
-	-blf-
+In conclusion, maybe simply reverting the initial commit will allow us
+to rework this part of code from simpler basis.
 
-=2D-=20
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated Products      |  Web:  http://www.maxim-ic.com/
+Artem, do you want me to prepare a patch for reverting initial commit or
+you just need my "Acked-by" (feel free to add though)?
+
+Best regards,
+-- 
+Nicolas Ferre
