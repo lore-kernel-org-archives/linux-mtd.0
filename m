@@ -1,22 +1,20 @@
-Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rrn3n-0007sI-HM
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 08:58:02 +0000
-Message-ID: <4F265B7E.6060806@atmel.com>
-Date: Mon, 30 Jan 2012 09:57:34 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rrnoe-0000zB-9z
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 09:46:25 +0000
+Date: Mon, 30 Jan 2012 10:46:10 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : add BBT support
+Message-ID: <20120130094610.GA15596@pengutronix.de>
+References: <1327898174-13656-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: "Voss, Nikolaus" <N.Voss@weinmann.de>,
- "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix access to 16 bit NAND devices
-References: <201201251217.q0PCHmRe027024@gatekeeper.vosshq.de>
- <1327670996.26648.43.camel@sauron.fi.intel.com>
- <EF2E73589CA71846A15D0B2CDF79505D08AD3E5453@wm021.weinmann.com>
-In-Reply-To: <EF2E73589CA71846A15D0B2CDF79505D08AD3E5453@wm021.weinmann.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
- "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
+Content-Disposition: inline
+In-Reply-To: <1327898174-13656-1-git-send-email-b32955@freescale.com>
+Cc: artem.bityutskiy@intel.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/30/2012 08:57 AM, Voss, Nikolaus :
-> Artem Bityutskiy wrote on 2012-01-27:
->> On Wed, 2012-01-18 at 10:16 +0100, Nikolaus Voss wrote:
->>> commit fb5427508abbd635e877fabdf55795488119c2d6 optimizes PIO
->>> NAND accesses by using IO memcpy instead of IO read/write
->>> repeated functions.
->>>
->>> This breaks access to 16 bit NAND devices as memcpy_fromio()/toio()
->>> _always_ use byte accesses (see arch/arm/kernel/io.c), so with
->>> 16 bit NAND, one byte gets lost per NAND access cycle and NAND
->>> address count is wrong.
->>>
->>> Using memcpy() instead of the IO memcpy functions fixes this, but
->>> depends on correct word alignment of the buffer and length has to
->>> be a multiple of four, otherwise it might issue byte accesses and
->>> possibly break 16 bit NAND access (cf arch/arm/lib/copy_template.S).
->>>
->>> Memcpy variants seem to be the wrong approach here, since the
->>> NAND controller doesn't make the NAND appear as truely randomly
->>> accessible memory (as opposed to the DRAM controller which does
->>> exactly that).
->>>
->>> So, my proposal is to use 32 bit IO read/write (and let SMC
->>> map it to 8 bit or 16 bit NAND accesses) and account for
->>> length % 4 > 0 with two additional IO read/writes.
->>>
->>> Signed-off-by: Nikolaus Voss <n.voss@weinmann.de>
->>
->> Why not to revert fb5427508abbd635e877fabdf55795488119c2d6 instead, it
->> is in my opinion a bit more readable?
-> 
-> No objections. I've tried to save the idea of
-> fb5427508abbd635e877fabdf55795488119c2d6 but that length % 4 > 0 stuff
-> uglifies it a little bit...
 
-After double checking with designers, I must admit that I misunderstood
-the way of optimizing accesses to SMC. 16 bit nand is not so common
-those days...
+--fdj2RfSjLxBAspz7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So yes, Nikolaus your correction makes sense.
+On Mon, Jan 30, 2012 at 12:36:14PM +0800, Huang Shijie wrote:
+> add the BBT support to the gpmi nand driver.
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
+mi-nand/gpmi-nand.c
+> index 493ec2f..4fbb341 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1493,6 +1493,7 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand=
+_data *this)
+>  	chip->ecc.mode		=3D NAND_ECC_HW;
+>  	chip->ecc.size		=3D 1;
+>  	chip->ecc.layout	=3D &gpmi_hw_ecclayout;
+> +	chip->bbt_options	=3D NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
 
-What I would have liked is to optimize the possibility to trigger
-incremental bursts from the processor to the SMC on internal bus. I
-suspect that this will need further investigation (moreover, note that
-if we use assembly code, we should also think about AVR32).
+You are making this default. Is there a bootloader which supports that
+on MXS?
 
-In conclusion, maybe simply reverting the initial commit will allow us
-to rework this part of code from simpler basis.
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-Artem, do you want me to prepare a patch for reverting initial commit or
-you just need my "Acked-by" (feel free to add though)?
+--fdj2RfSjLxBAspz7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Best regards,
--- 
-Nicolas Ferre
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8mZuIACgkQD27XaX1/VRtUCQCfSK5APstYQ5uATV93SJUVSEVo
+q1QAn1kuYmsfVrzuGqyGCHXgIKzqlFKJ
+=N2qi
+-----END PGP SIGNATURE-----
+
+--fdj2RfSjLxBAspz7--
