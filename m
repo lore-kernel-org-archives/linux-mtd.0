@@ -1,23 +1,12 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RrrUR-00018M-8m
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 13:41:47 +0000
-Date: Mon, 30 Jan 2012 14:41:30 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd/gpmi : add BBT support
-Message-ID: <20120130134130.GG15596@pengutronix.de>
-References: <1327898174-13656-1-git-send-email-b32955@freescale.com>
- <201201301327.41298.marek.vasut@gmail.com>
- <20120130131205.GD15596@pengutronix.de>
- <201201301430.44374.marek.vasut@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
-Content-Disposition: inline
-In-Reply-To: <201201301430.44374.marek.vasut@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, artem.bityutskiy@intel.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rrs7X-0005zi-Fl
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2012 14:22:12 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/3] jffs2: remove direct mtd->point reference
+Date: Mon, 30 Jan 2012 16:24:05 +0200
+Message-Id: <1327933447-17356-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +16,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
---+sHJum3is6Tsg7/J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 10934478e44d9a5a7b16dadd89094fb608cf101e did not remove now useless
+"if (mtd->point)" check mistakingly - let's kill it now.
 
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ fs/jffs2/scan.c |   20 +++++++++-----------
+ 1 files changed, 9 insertions(+), 11 deletions(-)
 
-> Hehe, just torturing you guys a bit :)
-
-And the gain of that is? The only outcome I currently see is that I feel
-less motivated to put you on CC next time.
-
-> > > > Did it always do that? Or is a newer version needed?
-> > >=20
-> > > I can't comment on this one, I never used it. I rather got NAND worki=
-ng
-> > > properly.
-> >=20
-> > Me neither. But if so, we have another regression candidate.
->=20
-> What regression candidate ? The version of NAND driver in u-boot should b=
-e close=20
-> to what's in mainline Linux kernel.
-
-I am not talking about U-Boot here. I was wondering if somebody who uses
-the FSL deployment method would need to update kobs-ng, so a proper BBT
-gets written. If so, people missing the need to update would see a
-regression. Which is another reason to not make BBT usage default. But I
-maybe wrong here. Huang will tell.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---+sHJum3is6Tsg7/J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk8mngoACgkQD27XaX1/VRudwwCguUOhXzkf09y/Y6N4GfpOc1Ls
-O0QAn1bXuMp1+OoqkaR0dJR9JU1Dx4yY
-=hK9B
------END PGP SIGNATURE-----
-
---+sHJum3is6Tsg7/J--
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index f994648..c027373 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -96,18 +96,16 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ #ifndef __ECOS
+ 	size_t pointlen, try_size;
+ 
+-	if (c->mtd->point) {
+-		ret = mtd_point(c->mtd, 0, c->mtd->size, &pointlen,
+-				(void **)&flashbuf, NULL);
+-		if (!ret && pointlen < c->mtd->size) {
+-			/* Don't muck about if it won't let us point to the whole flash */
+-			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
+-			mtd_unpoint(c->mtd, 0, pointlen);
+-			flashbuf = NULL;
+-		}
+-		if (ret && ret != -EOPNOTSUPP)
+-			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
++	ret = mtd_point(c->mtd, 0, c->mtd->size, &pointlen,
++			(void **)&flashbuf, NULL);
++	if (!ret && pointlen < c->mtd->size) {
++		/* Don't muck about if it won't let us point to the whole flash */
++		D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
++		mtd_unpoint(c->mtd, 0, pointlen);
++		flashbuf = NULL;
+ 	}
++	if (ret && ret != -EOPNOTSUPP)
++		D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
+ #endif
+ 	if (!flashbuf) {
+ 		/* For NAND it's quicker to read a whole eraseblock at a time,
+-- 
+1.7.7.6
