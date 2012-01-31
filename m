@@ -1,20 +1,28 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsBJA-000217-8Y
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 10:51:29 +0000
-Date: Tue, 31 Jan 2012 11:51:18 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2] mtd/gpmi : add BBT support to gpmi nand driver
-Message-ID: <20120131105118.GK2471@pengutronix.de>
-References: <1328006303-26844-1-git-send-email-b32955@freescale.com>
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsBWC-00023M-Ne
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:04:57 +0000
+Received: by bke5 with SMTP id 5so5818054bke.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 03:04:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="FCF9ydJxlAJsfRTu"
-Content-Disposition: inline
-In-Reply-To: <1328006303-26844-1-git-send-email-b32955@freescale.com>
-Cc: marek.vasut@gmail.com, artem.bityutskiy@intel.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120131101734.GE2471@pengutronix.de>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <20120131101734.GE2471@pengutronix.de>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 31 Jan 2012 19:04:34 +0800
+Message-ID: <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
+ workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2012/1/31 Wolfram Sang <w.sang@pengutronix.de>:
+> On Tue, Jan 31, 2012 at 06:00:00PM +0800, Barry Song wrote:
+>> From: Barry Song <Baohua.Song@csr.com>
+>>
+>> this patch helps to move the common pattern from
+>>
+>> "
+>> res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> if (!res) {
+>> =C2=A0 =C2=A0 =C2=A0 ret =3D -ENODEV;
+>> =C2=A0 =C2=A0 =C2=A0 goto err;
+>> }
+>
+> You don't need to do the error checking for 'res'. You can simply do
+>
+> res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> base =3D devm_request_and_ioremap(&dev->dev, res);
 
---FCF9ydJxlAJsfRTu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+i do know  devm_request_and_ioremap() does res checking. but that is
+implicit, confused and not a smart way actually.
+actually, no people by now really use the implicit checking. that
+shows people don't really think that is a good programming way.
 
-On Tue, Jan 31, 2012 at 06:38:23PM +0800, Huang Shijie wrote:
-> Add a new field to gpmi_nand_platform_data{}.
-> Make the BBT support to board specific.
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+>
+> devm_request_and_ioremap() will check res. Given that, I don't think
+> we can save a lot with another wrapper.
 
-Much better :)
+i think we can save some.
+The story begins from Grant's feedback in:
+http://www.spinics.net/lists/arm-kernel/msg157644.html
 
-> @@ -64,5 +65,6 @@ struct gpmi_nand_platform_data {
->  	/* Medium information. */
->  	struct		mtd_partition *partitions;
->  	unsigned	partition_count;
-> +	int		enable_bbt;
+>
+> Thanks,
+>
+> =C2=A0 Wolfram
+>
+> --
+> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
+> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
 
-Bitfield? (check imx for example)
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---FCF9ydJxlAJsfRTu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk8nx6YACgkQD27XaX1/VRvKsACdGRgJoLkwwUN74aRDvx7ivfYj
-fKYAnjO6abukmLQqXJWVm4vgAYGtzeRu
-=WxUh
------END PGP SIGNATURE-----
-
---FCF9ydJxlAJsfRTu--
+-barry
