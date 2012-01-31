@@ -1,28 +1,26 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsDei-0002tw-Jr
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 13:21:53 +0000
-Received: by iafj26 with SMTP id j26so8227385iaf.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 05:21:51 -0800 (PST)
-Message-ID: <1328016225.28171.7.camel@sauron.fi.intel.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsDkK-00053J-Vi
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 13:27:42 +0000
+Date: Tue, 31 Jan 2012 14:27:20 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [PATCH 0/3] platform: add platform_devm_request_and_ioremap()
  common API
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Barry Song <21cnbao@gmail.com>
-Date: Tue, 31 Jan 2012 15:23:45 +0200
-In-Reply-To: <1328015763.28171.2.camel@sauron.fi.intel.com>
+Message-ID: <20120131132720.GP2471@pengutronix.de>
 References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
  <1328008455.956.30.camel@sauron.fi.intel.com>
  <CAGsJ_4yVTaZQOE2dB4A3L6WCLE78b4eBPaOcDDJ7RH+0LN=R_A@mail.gmail.com>
  <1328015763.28171.2.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ZmP5SANqvNfJKRfXZHtw"
-Mime-Version: 1.0
-Cc: workgroup.linux@csr.com, Greg Kroah-Hartman <gregkh@suse.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Barry Song <Barry.Song@csr.com>
-Reply-To: dedekind1@gmail.com
+ <1328016225.28171.7.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="/NwG7NuG0/W8LcLh"
+Content-Disposition: inline
+In-Reply-To: <1328016225.28171.7.camel@sauron.fi.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@suse.de>, Barry Song <21cnbao@gmail.com>,
+ linux-kernel@vger.kernel.org, workgroup.linux@csr.com,
+ linux-mtd@lists.infradead.org, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +31,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ZmP5SANqvNfJKRfXZHtw
-Content-Type: text/plain; charset="UTF-8"
+--/NwG7NuG0/W8LcLh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-01-31 at 15:16 +0200, Artem Bityutskiy wrote:
-> On Tue, 2012-01-31 at 20:57 +0800, Barry Song wrote:
-> > > If yes, I think it would be nice of you to give a credit to coccinell=
-e
-> > > and its authors for developing this awesome tool in every commit
-> > > message.
-> >=20
-> > devm_request_and_ioremap() is still something new by commit
->=20
-> Ah, ok. But it would be cool if you could create a coccinell semantic
-> patch for this, although I should admit this is not very easy, but a lot
-> of fun.
 
-To promote the idea further. If you manage to create a semantic patch
-for this, then you will just generate your patches automatically. You
-will also be able to make it more probable that people will use this new
-api by adding your semantic patch to scripts/coccinelle/api.
+> To promote the idea further. If you manage to create a semantic patch
+> for this, then you will just generate your patches automatically. You
+> will also be able to make it more probable that people will use this new
+> api by adding your semantic patch to scripts/coccinelle/api.
 
-I do not know how many people run coccinelle, but I recently started to
-check all incoming MTD patches with coccinelle before applying them. A
-little bit of scripting and this becomes easy to do.
+I'd think Julia is already at it [1], but the same issue has come up
+there, too [2].
+
+Regards,
+
+   Wolfram
+
+[1] http://lkml.org/lkml/2012/1/26/169
+[2] http://lkml.org/lkml/2012/1/28/10
 
 --=20
-Best Regards,
-Artem Bityutskiy
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---=-ZmP5SANqvNfJKRfXZHtw
+--/NwG7NuG0/W8LcLh
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: Digital signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAABAgAGBQJPJ+thAAoJECmIfjd9wqK0scIP/R5HGcfZERRauUrwiwKuB3h+
-TstSL7bhHcf7LDafx5+ON7NT6hLwsduYzj7FMsvO4+vNbQcD83XCL/1eMDDHc59W
-cpiQfqreeEcguLVV1gPKevdQaZY36PVs791QPIfzWlgD5279BrDRvr1Nvk8fUb/N
-XUw7Ogbpqa1u8tTRomIhDcCwVrvszoqA8zTn6XdfTQiUG7NH9EmcFp4G94VrUEya
-/Y7o8JpH3Wk9tEY1V5cniVjeFOwz81QDstLof3sBPrsLRwOPBV6V9LAjM5J8Q0Uz
-HO85QOWP/72sHhlvrU3xfrzAwdRMw8Ww7MnWCZ8YKD+nspzcdX1GomYIhNlAWHS5
-LKuKLZyRcuW2FWUKl7z+iGIDJxEq+Qnv+p54YxRHp6/aJvNyTThTuKPLyRvZYetf
-lV1I5s7TLDU749R5hpBWuyKCvY7MEWwfcsoE/hrV2OR14WSQvodzlUC13zJ8gmTW
-7lY+JWKnC1o/rkgiSCQaYLC7tbkQQ2ibg9gUcDAPh9zz1n9JB65KCjVeWOTwsyqc
-cI2sVGLKAcVFzyx22e7eNtGC43tIVX26ALsGJ9LORr/kTdQB+yYM/fzgkuLu0Pbb
-wugQXfRR6wWoRODIIAxvBAmI8um9JvZz6CFUL7gPTKlLwX+8DQQkDSm5xMRGUAR/
-3KtlrjjQDMmjWKT41OMM
-=h6Fr
+iEYEARECAAYFAk8n7DgACgkQD27XaX1/VRt3XwCfQ+egjVYitwN3nezvDCpbqj1Y
+2IUAni6IBt+SY+K80WjAl+ozwy6dLRbu
+=erOA
 -----END PGP SIGNATURE-----
 
---=-ZmP5SANqvNfJKRfXZHtw--
+--/NwG7NuG0/W8LcLh--
