@@ -1,18 +1,18 @@
-Message-ID: <4F27AA98.2090602@freescale.com>
-Date: Tue, 31 Jan 2012 16:47:20 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from rcsinet15.oracle.com ([148.87.113.117])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rs9Td-000388-Ej
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 08:54:10 +0000
+Date: Tue, 31 Jan 2012 11:54:06 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [patch] mtd: nand: fix printk() warnings
+Message-ID: <20120131085405.GD22039@elgon.mountain>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] mtd/gpmi : add BBT support
-References: <1327898174-13656-1-git-send-email-b32955@freescale.com>
- <20120130094610.GA15596@pengutronix.de> <4F2671C3.6000809@freescale.com>
- <20120130104428.GB15596@pengutronix.de> <4F267F21.1030204@freescale.com>
- <20120130114131.GC15596@pengutronix.de>
-In-Reply-To: <20120130114131.GC15596@pengutronix.de>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marek.vasut@gmail.com>, artem.bityutskiy@intel.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, kernel-janitors@vger.kernel.org,
+ Mike Dunn <mikedunn@newsguy.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
-> CCing Marek, he can say more about the U-Boot side probably...
->
->>> Bootloaders may also need to write to NAND. So, they need to share the
->> Do you mean the uboot may write something to the NAND?
->> Could you show me some more detail cases?
-> U-Boot has NAND support in mainline, for barebox it is work-in-progress.
-> Both can and do write to NAND (kernel, rootfs), because both have
-> established procedures to do so (and maybe don't want to rely on
-> third-party tools like kobs-ng).
->
-ok.
+Gcc complains here:
+drivers/mtd/nand/docg4.c: In function ‘probe_docg4’:
+drivers/mtd/nand/docg4.c:1277:4: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘resource_size_t’ [-Wformat]
+drivers/mtd/nand/docg4.c:1277:4: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘resource_size_t’ [-Wformat]
 
-What's about to add a module_param() to enable/disable the BBT for GPMI?
-What's your suggestion?
+We have a standard way of printing these using a format string
+extension.
 
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Br
-Huang Shijie
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 3ec1d10..8a0d7f6 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -1272,9 +1272,7 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 
+ 	virtadr = ioremap(r->start, resource_size(r));
+ 	if (!virtadr) {
+-		dev_err(dev, "Diskonchip ioremap failed: "
+-			"0x%x bytes at 0x%x\n",
+-			resource_size(r), r->start);
++		dev_err(dev, "Diskonchip ioremap failed: %pR\n", r);
+ 		return -EIO;
+ 	}
+ 
