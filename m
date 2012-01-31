@@ -1,27 +1,22 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=TX2EHSOBE007.bigfish.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsHxO-00065B-T1
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 17:57:28 +0000
-Received: by mail-wi0-f177.google.com with SMTP id o1so244838wic.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 09:57:26 -0800 (PST)
+ id 1RsJ4y-0002wh-CK
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 19:09:20 +0000
+Message-ID: <4F283C59.2050800@freescale.com>
+Date: Tue, 31 Jan 2012 13:09:13 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
-References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
- <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
- <1327684589.12089.22.camel@joe2Laptop>
- <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
- <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
-Date: Tue, 31 Jan 2012 09:57:26 -0800
-Message-ID: <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd/nand: use string library
-From: Brian Norris <computersforpeace@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: eric.dumazet@gmail.com, Scott Branden <sbranden@broadcom.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Jiandong Zheng <jdzheng@broadcom.com>, Joe Perches <joe@perches.com>,
- akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: GPMI-NAND: Wrong ECC size in driver
+References: <201201040148.32847.marek.vasut@gmail.com>
+ <201201050038.39448.marek.vasut@gmail.com> <4F04E558.7000002@freescale.com>
+ <201201311233.06949.marek.vasut@gmail.com> <4F282519.5020802@gmail.com>
+In-Reply-To: <4F282519.5020802@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,42 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 27, 2012 at 3:52 PM, Akinobu Mita <akinobu.mita@gmail.com> wrot=
-e:
-> 2012/1/28 Brian Norris <computersforpeace@gmail.com>:
->> On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
->>> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
->>>> - Use memchr_inv to check if the data contains all 0xFF bytes.
->>>> =A0 It is faster than looping for each byte.
->>>
->>> Stupid question:
->>>
->>> Are there any mtd devices modified that are slower
->>> at 64 bit accesses than repeated 8 bit accesses?
->>
->> I believe this patch deals with kernel buffers, not any kind of direct
->> access to the MTD, so the question (which is not stupid IMO) should be
->> regarding CPU architectures. And my educated guess is that 64-bit
->> access should not be any slower. I do know that 8-bit access *is*
->> slower for some relevant architectures.
->
-> It could be slower when the number of bytes scanned is very small
-> (found a unmatched character immediately, or the size of the area
-> is very small), because memchr_inv() needs to generate a 64bit pattern
-> to compare before starting the loop. =A0I recalled that Eric Dumazet
-> pointed out it could generate the 64bit pattern more efficiently.
-> (https://lkml.org/lkml/2011/8/8/480)
->
-> Even if that small scanning is slower, this change can be assumed cleanup
-> patch that simplifies the code.
+On 01/31/2012 11:30 AM, Brian Norris wrote:
+> There's another distinct possibility (one that I use on an out-of-tree
+> driver): instead of calling "nand_scan()", separate it into its two
+> sub-functions "nand_scan_ident()" and "nand_scan_tail()" so you have
+> something like this
+> 
+>     ret = nand_scan_ident(mtd, pdata->max_chip_count, NULL);
+>     chip->options |= NAND_NO_SUBPAGE_WRITE;
+>     if (!ret)
+>             ret = nand_scan_tail(mtd);
+> 
+> That way your option is set after we mask with NAND_CHIPOPTIONS_MSK. I'm
+> not sure if this solution is better than really trying to tackle the
+> issue of why we have that mask and whether it is still needed, but it
+> solves the problem.
 
-Well, I agree that it qualifies as cleanup as well, but we should at
-least make an attempt not to cause performance regression...
 
-So by my understanding, the use of memchr_inv() is on buffers of
-minimum length of 10 in this patch, so we're likely to have decent
-results. And memcmp() usage looks fine to me.
+It's a bit hackish, but should work.  Why not get just rid of the mask,
+though, if it's not actually doing anything constructive and is
+requiring such workarounds?
 
-So unless other concerns arise:
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+-Scott
