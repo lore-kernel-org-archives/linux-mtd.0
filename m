@@ -1,30 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsL3i-0006Gv-Fl
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 21:16:11 +0000
-Date: Tue, 31 Jan 2012 22:15:54 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
- helper
-Message-ID: <20120131211554.GA28105@pengutronix.de>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsL7R-0007qB-O1
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 21:20:02 +0000
+Received: by iafj26 with SMTP id j26so604772iaf.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 13:20:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
 References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
  <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
- <20120131101734.GE2471@pengutronix.de>
- <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
- <20120131113358.GM2471@pengutronix.de>
- <20120131203455.GG22611@ponder.secretlab.ca>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
-Content-Disposition: inline
-In-Reply-To: <20120131203455.GG22611@ponder.secretlab.ca>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@suse.de>, Barry Song <21cnbao@gmail.com>,
+Date: Tue, 31 Jan 2012 22:20:00 +0100
+Message-ID: <CACRpkdaLekGTdkpfr_Zf5PXAZ16dZsXrwnFHjBe+aEvGb5zYjg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Barry Song <Barry.Song@csr.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Greg Kroah-Hartman <gregkh@suse.de>,
  linux-kernel@vger.kernel.org, workgroup.linux@csr.com,
- linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
  Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
- Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
+ Erik Gilling <konkers@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,62 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Jan 31, 2012 at 11:00 AM, Barry Song <Barry.Song@csr.com> wrote:
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Barry Song <Baohua.Song@csr.com>
+>
+> this patch helps to move the common pattern from
 
+Good idea!
 
-> > I am not sure using 'platform_devm_request_and_ioremap' and later using
-> > plain 'devm_*' functions (without platform_-prefix) is less confusing.
-> > The alternative would be to check which helper functions also use
-> > 'struct resource' and if they do checks on that. If all do that, you
-> > would have the simple rule, that you only need to check yourself if you
-> > access it yourself.
->=20
-> The reason I suggested the wrapper is that then the driver code doesn't n=
-eed
-> to fart around with the res pointer at all.  It reduces boilerplate in pl=
-atform
-> drivers which I think is a good thing.
+> @@ -44,6 +44,7 @@ extern struct device platform_bus;
+>
+> =A0extern void arch_setup_pdev_archdata(struct platform_device *);
+> =A0extern struct resource *platform_get_resource(struct platform_device *=
+, unsigned int, unsigned int);
+> +extern void __iomem *platform_devm_request_and_ioremap(struct platform_d=
+evice *, unsigned int);
 
-I do understand your motivation and fully agree with what you are aiming for
-(that's exactly why I implemented devm_request_and_ioremap()).
+But don't you want a reverse call for the module remove() function?
 
-This patch is a micro-optimization, though, and won't cut it IMHO. I still =
-have
-issues with only one platform_devm_* and all the rest being devm_* (without
-platform_). Things might look better, if we'd for example also have
-platform_devm_request_irq() or something similar. That might be an approach
-where we can play around with and see what is left to do. Or, if other
-approaches might be more elegant.
+Like:
 
-To discuss that, try things, etc, I'd simply like to have a bit more time. =
-If
-we are accepting the first iteration right away, and people let run their
-coccinelle-scripts based on that, it might get annoying to change that a se=
-cond
-time, I'd think.
+extern void __iomem *platform_devm_iounmap_and_free(struct
+platform_device *, unsigned int);
 
-Regards,
+?
 
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk8oWgoACgkQD27XaX1/VRv/RQCbBqDcDHfcf6yjhBBArqo1+MTE
-2PwAn0eIynZTYHg6zEWxwCrUyZ2tYZFe
-=+4+Z
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
+Yours,
+Linus Walleij
