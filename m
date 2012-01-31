@@ -1,21 +1,27 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsHmz-0002ez-Ld
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 17:46:42 +0000
-Received: by wera10 with SMTP id a10so316009wer.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 09:46:40 -0800 (PST)
+ id 1RsHxO-00065B-T1
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 17:57:28 +0000
+Received: by mail-wi0-f177.google.com with SMTP id o1so244838wic.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 09:57:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGiDA6Jw52CGM6KT5EANaGb8xxQQEH0Lf5ms24NGZLeMtqgjGA@mail.gmail.com>
-References: <1327997163-9354-1-git-send-email-computersforpeace@gmail.com>
- <CAGiDA6Jw52CGM6KT5EANaGb8xxQQEH0Lf5ms24NGZLeMtqgjGA@mail.gmail.com>
-Date: Tue, 31 Jan 2012 09:46:40 -0800
-Message-ID: <CAN8TOE-Yt445aXE_sA9xo8ycV4EQB=5OtwL6yyfPBGusYd93CA@mail.gmail.com>
-Subject: Re: [RFC/PATCH] mtd: m25p80: set writebufsize
+In-Reply-To: <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
+References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
+ <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
+ <1327684589.12089.22.camel@joe2Laptop>
+ <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
+ <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
+Date: Tue, 31 Jan 2012 09:57:26 -0800
+Message-ID: <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd/nand: use string library
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Shawn J. Goff" <shawn7400@gmail.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
- agust@denx.de, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: eric.dumazet@gmail.com, Scott Branden <sbranden@broadcom.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Jiandong Zheng <jdzheng@broadcom.com>, Joe Perches <joe@perches.com>,
+ akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2012 at 6:08 AM, Shawn J. Goff <shawn7400@gmail.com> wrote:
-> Yes, I ran into this problem myself and fixed it in a similar way.
+On Fri, Jan 27, 2012 at 3:52 PM, Akinobu Mita <akinobu.mita@gmail.com> wrot=
+e:
+> 2012/1/28 Brian Norris <computersforpeace@gmail.com>:
+>> On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
+>>> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
+>>>> - Use memchr_inv to check if the data contains all 0xFF bytes.
+>>>> =A0 It is faster than looping for each byte.
+>>>
+>>> Stupid question:
+>>>
+>>> Are there any mtd devices modified that are slower
+>>> at 64 bit accesses than repeated 8 bit accesses?
+>>
+>> I believe this patch deals with kernel buffers, not any kind of direct
+>> access to the MTD, so the question (which is not stupid IMO) should be
+>> regarding CPU architectures. And my educated guess is that 64-bit
+>> access should not be any slower. I do know that 8-bit access *is*
+>> slower for some relevant architectures.
+>
+> It could be slower when the number of bytes scanned is very small
+> (found a unmatched character immediately, or the size of the area
+> is very small), because memchr_inv() needs to generate a 64bit pattern
+> to compare before starting the loop. =A0I recalled that Eric Dumazet
+> pointed out it could generate the 64bit pattern more efficiently.
+> (https://lkml.org/lkml/2011/8/8/480)
+>
+> Even if that small scanning is slower, this change can be assumed cleanup
+> patch that simplifies the code.
 
-I'm wondering now: how do we guarantee that we're picking the
-*correct* writebufsize and not just one that *works*? It's only used
-by UBI, I think, so it depends on UBI's needs.
+Well, I agree that it qualifies as cleanup as well, but we should at
+least make an attempt not to cause performance regression...
 
-> Even after adding this fix, it turned out that I still couldn't boot
-> from a UBI volume because SPI comes up after UBI, so the UBI tries to
-> attach, but there is no MTD device to attach to.
+So by my understanding, the use of memchr_inv() is on buffers of
+minimum length of 10 in this patch, so we're likely to have decent
+results. And memcmp() usage looks fine to me.
 
-Well, the boot order problem is a different issue :)
+So unless other concerns arise:
 
-Brian
+Acked-by: Brian Norris <computersforpeace@gmail.com>
