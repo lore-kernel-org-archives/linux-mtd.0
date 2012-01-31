@@ -1,26 +1,30 @@
-Received: from mail-lpp01m020-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsKS1-0006Au-J4
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 20:37:14 +0000
-Received: by lbon10 with SMTP id n10so73758lbo.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 12:37:10 -0800 (PST)
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Tue, 31 Jan 2012 13:37:03 -0700
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Barry Song <Barry.Song@csr.com>
-Subject: Re: [PATCH 2/3] GPIO: TEGRA: move to use
- platform_devm_request_and_ioremap() helper
-Message-ID: <20120131203703.GI22611@ponder.secretlab.ca>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsL3i-0006Gv-Fl
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 21:16:11 +0000
+Date: Tue, 31 Jan 2012 22:15:54 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+Message-ID: <20120131211554.GA28105@pengutronix.de>
 References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
- <1328004002-24646-3-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <20120131101734.GE2471@pengutronix.de>
+ <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
+ <20120131113358.GM2471@pengutronix.de>
+ <20120131203455.GG22611@ponder.secretlab.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
 Content-Disposition: inline
-In-Reply-To: <1328004002-24646-3-git-send-email-Barry.Song@csr.com>
+In-Reply-To: <20120131203455.GG22611@ponder.secretlab.ca>
 Cc: Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
- workgroup.linux@csr.com, linux-mtd@lists.infradead.org,
- Barry Song <Baohua.Song@csr.com>, Erik Gilling <konkers@google.com>
+ Greg Kroah-Hartman <gregkh@suse.de>, Barry Song <21cnbao@gmail.com>,
+ linux-kernel@vger.kernel.org, workgroup.linux@csr.com,
+ linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +34,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2012 at 06:00:01PM +0800, Barry Song wrote:
-> From: Barry Song <Baohua.Song@csr.com>
-> 
-> Signed-off-by: Barry Song <Baohua.Song@csr.com>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Erik Gilling <konkers@google.com>
 
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
-
-This of course depends on the other patch, so I won't merge it until
-there is an okay from gregkh.  Also, with his okay I'd be happy to
-take it through the gpio tree to reduce dependencies.
-
-g.
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
-> ---
->  drivers/gpio/gpio-tegra.c |    8 +-------
->  1 files changed, 1 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
-> index bdc2937..118e367 100644
-> --- a/drivers/gpio/gpio-tegra.c
-> +++ b/drivers/gpio/gpio-tegra.c
-> @@ -355,13 +355,7 @@ static int __devinit tegra_gpio_probe(struct platform_device *pdev)
->  		bank->irq = res->start;
->  	}
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "Missing MEM resource\n");
-> -		return -ENODEV;
-> -	}
-> -
-> -	regs = devm_request_and_ioremap(&pdev->dev, res);
-> +	regs = platform_devm_request_and_ioremap(pdev, 0);
->  	if (!regs) {
->  		dev_err(&pdev->dev, "Couldn't ioremap regs\n");
->  		return -ENODEV;
-> -- 
-> 1.7.1
-> 
-> 
-> 
-> Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
-> More information can be found at www.csr.com. Follow CSR on Twitter at http://twitter.com/CSR_PLC and read our blog at www.csr.com/blog
+> > I am not sure using 'platform_devm_request_and_ioremap' and later using
+> > plain 'devm_*' functions (without platform_-prefix) is less confusing.
+> > The alternative would be to check which helper functions also use
+> > 'struct resource' and if they do checks on that. If all do that, you
+> > would have the simple rule, that you only need to check yourself if you
+> > access it yourself.
+>=20
+> The reason I suggested the wrapper is that then the driver code doesn't n=
+eed
+> to fart around with the res pointer at all.  It reduces boilerplate in pl=
+atform
+> drivers which I think is a good thing.
+
+I do understand your motivation and fully agree with what you are aiming for
+(that's exactly why I implemented devm_request_and_ioremap()).
+
+This patch is a micro-optimization, though, and won't cut it IMHO. I still =
+have
+issues with only one platform_devm_* and all the rest being devm_* (without
+platform_). Things might look better, if we'd for example also have
+platform_devm_request_irq() or something similar. That might be an approach
+where we can play around with and see what is left to do. Or, if other
+approaches might be more elegant.
+
+To discuss that, try things, etc, I'd simply like to have a bit more time. =
+If
+we are accepting the first iteration right away, and people let run their
+coccinelle-scripts based on that, it might get annoying to change that a se=
+cond
+time, I'd think.
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--PNTmBPCT7hxwcZjr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk8oWgoACgkQD27XaX1/VRv/RQCbBqDcDHfcf6yjhBBArqo1+MTE
+2PwAn0eIynZTYHg6zEWxwCrUyZ2tYZFe
+=+4+Z
+-----END PGP SIGNATURE-----
+
+--PNTmBPCT7hxwcZjr--
