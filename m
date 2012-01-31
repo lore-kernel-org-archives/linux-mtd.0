@@ -1,22 +1,21 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the
- suspend is not implemented
-Date: Mon, 30 Jan 2012 23:58:25 +0100
-References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
- <20120124090630.GR16726@n2100.arm.linux.org.uk>
- <1327923953.2487.13.camel@sauron.fi.intel.com>
-In-Reply-To: <1327923953.2487.13.camel@sauron.fi.intel.com>
+Received: from oproxy5.bluehost.com ([2605:dc00:100:2::a5]
+ helo=oproxy5-pub.bluehost.com)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rs3Aq-00048t-EU
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 02:10:22 +0000
+Message-ID: <4F275B20.6010105@xenotime.net>
+Date: Mon, 30 Jan 2012 19:08:16 -0800
+From: Randy Dunlap <rdunlap@xenotime.net>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-2"
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH -next] mtd: fix nand/docg4.c printk format warnings
+References: <20120130144102.8d202c7d8eccd503a86b3053@canb.auug.org.au>
+In-Reply-To: <20120130144102.8d202c7d8eccd503a86b3053@canb.auug.org.au>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <201201302358.26152.rjw@sisk.pl>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Shubhrajyoti D <shubhrajyoti@ti.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-next@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,93 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, January 30, 2012, Artem Bityutskiy wrote:
-> On Tue, 2012-01-24 at 09:06 +0000, Russell King - ARM Linux wrote:
-> > > However, the bug made it into the 3.3 merge window, so shouldn't this
-> > > bugfix be sent upstream immediately?
-> > 
-> > David is the MTD maintainer, and Artem just helps out.  I believe Artem
-> > is waiting for David to finish travelling before asking David (last seen
-> > at Hong Kong airport) to pull these fixes.  David in turn will pass them
-> > onto Linus.  Plus, Linus only started adding to -rc1 yesterday, so its a
-> > little early to expect this to be fixed.
-> 
-> Hi,
-> 
-> here is the latest version of the fix.
-> 
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/283d43b9ce2952535aa89c0195085e2a1b7e5fce
-> 
-> Also attached.
-> 
-> From 283d43b9ce2952535aa89c0195085e2a1b7e5fce Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date: Mon, 16 Jan 2012 11:07:16 +0200
-> Subject: [PATCH] mtd: fix MTD suspend
-> 
-> Commits 3fe4bae88460869a8e553397cd9057a4ee7ca341 and
-> 079c985e7a6f4ce60f931cebfdd5ee3c3 broke MTD suspend in 2 ways:
-> 
-> 1. When the '->suspend' method is not present, we return -EOPNOTSUPP,
-> but
->    the callers of 'mtd_suspend()' expects 0 instead.
-> 2. Checking of the 'mtd' parameter against NULL has been incorrectly
-> removed
->    in 'mtd_cls_suspend()'.
-> 
-> This patch fixes the breakages. This has been found, analyzed, reported
-> and tested by Rafael J. Wysocki <rjw@sisk.pl>.
-> 
-> Note, this patch is not needed in the stable tree because it causes a
-> regression introduced during the v3.3 merge window.
-> 
-> Reported-by: Rafael J. Wysocki <rjw@sisk.pl>
-> Tested-by: Rafael J. Wysocki <rjw@sisk.pl>
-> Tested-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+From: Randy Dunlap <rdunlap@xenotime.net>
 
-Thanks, but is anyone actually going to push it to Linus any time soon?
+Fix printk format warnings for resource_size_t:
 
-If not, then I can do that through the linux-pm tree.  I'll be sending
-at least one more pull request with fixes for v3.3.
+drivers/mtd/nand/docg4.c:1277:4: warning: format '%x' expects type 'unsigned int', but argument 3 has type 'resource_size_t'
+drivers/mtd/nand/docg4.c:1277:4: warning: format '%x' expects type 'unsigned int', but argument 4 has type 'resource_size_t'
 
-Thanks,
-Rafael
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+Cc:	David Woodhouse <dwmw2@infradead.org>
+Cc:	linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/docg4.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-
-> ---
->  drivers/mtd/mtdcore.c   |    2 +-
->  include/linux/mtd/mtd.h |    4 +---
->  2 files changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index b265188..de96865 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -119,7 +119,7 @@ static int mtd_cls_suspend(struct device *dev,
-> pm_message_t state)
->  {
->  	struct mtd_info *mtd = dev_get_drvdata(dev);
->  
-> -	return mtd_suspend(mtd);
-> +	return mtd ? mtd_suspend(mtd) : 0;
->  }
->  
->  static int mtd_cls_resume(struct device *dev)
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 1a81fde..d8c7aad 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -427,9 +427,7 @@ static inline int mtd_is_locked(struct mtd_info
-> *mtd, loff_t ofs, uint64_t len)
->  
->  static inline int mtd_suspend(struct mtd_info *mtd)
->  {
-> -	if (!mtd->suspend)
-> -		return -EOPNOTSUPP;
-> -	return mtd->suspend(mtd);
-> +	return mtd->suspend ? mtd->suspend(mtd) : 0;
->  }
->  
->  static inline void mtd_resume(struct mtd_info *mtd)
-> 
+--- linux-next-20120130.orig/drivers/mtd/nand/docg4.c
++++ linux-next-20120130/drivers/mtd/nand/docg4.c
+@@ -1273,8 +1273,9 @@ static int __init probe_docg4(struct pla
+ 	virtadr = ioremap(r->start, resource_size(r));
+ 	if (!virtadr) {
+ 		dev_err(dev, "Diskonchip ioremap failed: "
+-			"0x%x bytes at 0x%x\n",
+-			resource_size(r), r->start);
++			"0x%llx bytes at 0x%llx\n",
++			(unsigned long long)resource_size(r),
++			(unsigned long long)r->start);
+ 		return -EIO;
+ 	}
+ 
