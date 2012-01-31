@@ -1,22 +1,24 @@
-Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RsA8g-0000SD-H3
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 09:36:35 +0000
-Content-class: urn:content-classes:message
+Received: from cluster-g.mailcontrol.com ([208.87.233.190])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsAWB-0000bM-5u
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 10:00:53 +0000
+Received: from rly32g.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
+ by rly32g.srv.mailcontrol.com (MailControl) with ESMTP id
+ q0VA0jcp008948
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 10:00:47 GMT
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+ by rly32g.srv.mailcontrol.com (MailControl) id q0VA0P94005946
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 10:00:25 GMT
+From: Barry Song <Barry.Song@csr.com>
+To: Greg Kroah-Hartman <gregkh@suse.de>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] platform: add platform_devm_request_and_ioremap() common
+ API
+Date: Tue, 31 Jan 2012 17:59:59 +0800
+Message-ID: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] MTD: atmel_nand: Update driver to support Programmable HW
- ECC controller
-Date: Tue, 31 Jan 2012 17:35:54 +0800
-Message-ID: <4C79549CB6F772498162A641D92D5328042F2032@penmb01.corp.atmel.com>
-In-Reply-To: <20120131090520.GA4993@parrot.com>
-References: <1327979470-11522-1-git-send-email-hong.xu@atmel.com>
- <20120131090520.GA4993@parrot.com>
-From: "Xu, Hong" <Hong.Xu@atmel.com>
-To: "Ivan Djelic" <ivan.djelic@parrot.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, Barry Song <Barry.Song@csr.com>,
+ workgroup.linux@csr.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,79 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ivan,
+these patches move the common pattern from
 
-> -----Original Message-----
-> From: Ivan Djelic [mailto:ivan.djelic@parrot.com]
-> Sent: Tuesday, January 31, 2012 5:05 PM
-> To: Xu, Hong
-> Cc: dedekind1@gmail.com; linux-mtd@lists.infradead.org;
-dwmw2@infradead.org
-> Subject: Re: [PATCH] MTD: atmel_nand: Update driver to support
-Programmable
-> HW ECC controller
->=20
-[...]
-> > +       while (err_nbr) {
-> > +               byte_pos =3D (pmerrloc_readl_el(host->pmerrloc_base,
-i) - 1)
-> / 8;
-> > +               bit_pos =3D (pmerrloc_readl_el(host->pmerrloc_base, =
-i)
-- 1)
-> % 8;
->=20
-> Hello,
-> do you really need to read this register twice?
->=20
-
-Not needed actually. It'll be fixed in next version.
-
-> > +               dev_info(host->dev, "PMECC correction, byte_pos: %d
 "
-> > +                       "bit_pos: %d\n", byte_pos, bit_pos);
-> > +
-> > +               if (byte_pos < (sector_size + extra_bytes)) {
-> > +                       tmp =3D sector_size + pmecc_readl(host->ecc,
-SADDR);
-> > +                       if (byte_pos < tmp) {
->=20
-> > +                               if (*(buf + byte_pos) & (1 <<
-bit_pos))
-> > +                                       *(buf + byte_pos) &=3D
-> > +                                               (0xFF ^ (1 <<
-bit_pos));
-> > +                               else
-> > +                                       *(buf + byte_pos) |=3D (1 <<
-> bit_pos);
->=20
-> why not replace the 5 lines above with:  *(buf + byte_pos) ^=3D 1 <<
-bit_pos;
+res = platform_get_resource(pdev, IORESOURCE_MEM, 0); 
+if (!res) {
+	        ret = -ENODEV;
+		        goto err;
+}
 
-Thanks. It'll be modified in next version.
+base = devm_request_and_ioremap(&dev->dev, mem_res);
+if (!base) {
+	        ret = -ENODEV;
+		        goto err;
+}
+"
 
->=20
-> > +                       } else {
-> > +                               if (*(buf + byte_pos + ecc_size) &
-> > +                                    (1 << bit_pos))
-> > +                                       *(buf + byte_pos + ecc_size)
-&=3D
-> > +                                               (0xFF ^ (1 <<
-bit_pos));
-> > +                               else
-> > +                                       *(buf + byte_pos + ecc_size)
-|=3D
-> > +                                               (1 << bit_pos);
->=20
-> same idea:   *(buf + byte_pos + ecc_size) ^=3D 1 << bit_pos;
->=20
+to
 
-Ditto.
+"
+base = platform_devm_request_and_ioremap(pdev, 0); 
+if (!base) {
+	        ret = -ENODEV;
+		        goto err;
+}
+"
 
-BR,
-Eric
 
-[...]
-> BR,
-> --
-> Ivan
+Barry Song (3):
+  platform: add common resource requesting and mapping helper
+  GPIO: TEGRA: move to use platform_devm_request_and_ioremap() helper
+  MTD: NAND: txx9ndfmc: move to use platform_devm_request_and_ioremap()
+    helper
+
+ drivers/base/platform.c         |   19 +++++++++++++++++++
+ drivers/gpio/gpio-tegra.c       |    8 +-------
+ drivers/mtd/nand/txx9ndfmc.c    |    6 +-----
+ include/linux/platform_device.h |    1 +
+ 4 files changed, 22 insertions(+), 12 deletions(-)
+
+
+
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+More information can be found at www.csr.com. Follow CSR on Twitter at http://twitter.com/CSR_PLC and read our blog at www.csr.com/blog
