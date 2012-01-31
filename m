@@ -1,21 +1,26 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rs9fE-0004Hh-Pv
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 09:06:09 +0000
-Date: Tue, 31 Jan 2012 10:05:20 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Hong Xu <hong.xu@atmel.com>
-Subject: Re: [PATCH] MTD: atmel_nand: Update driver to support Programmable
- HW ECC controller
-Message-ID: <20120131090520.GA4993@parrot.com>
-References: <1327979470-11522-1-git-send-email-hong.xu@atmel.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rs9x0-0005zU-Fd
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 09:24:31 +0000
+Date: Tue, 31 Jan 2012 10:24:12 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : add BBT support
+Message-ID: <20120131092412.GA2471@pengutronix.de>
+References: <1327898174-13656-1-git-send-email-b32955@freescale.com>
+ <20120130094610.GA15596@pengutronix.de>
+ <4F2671C3.6000809@freescale.com>
+ <20120130104428.GB15596@pengutronix.de>
+ <4F267F21.1030204@freescale.com>
+ <20120130114131.GC15596@pengutronix.de>
+ <4F27AA98.2090602@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
 Content-Disposition: inline
-In-Reply-To: <1327979470-11522-1-git-send-email-hong.xu@atmel.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <4F27AA98.2090602@freescale.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, artem.bityutskiy@intel.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2012 at 03:11:10AM +0000, Hong Xu wrote:
-(...)
-> +static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf,
-> +               int extra_bytes, int err_nbr)
-> +{
-> +       int                     i = 0;
-> +       int                     byte_pos, bit_pos;
-> +       int                     sector_size, ecc_size;
-> +       uint32_t                tmp;
-> +       struct nand_chip        *nand_chip = mtd->priv;
-> +       struct atmel_nand_host  *host = nand_chip->priv;
-> +
-> +       sector_size = host->board->sector_size;
-> +       ecc_size = nand_chip->ecc.bytes;
-> +
-> +       while (err_nbr) {
-> +               byte_pos = (pmerrloc_readl_el(host->pmerrloc_base, i) - 1) / 8;
-> +               bit_pos = (pmerrloc_readl_el(host->pmerrloc_base, i) - 1) % 8;
 
-Hello,
-do you really need to read this register twice?
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +               dev_info(host->dev, "PMECC correction, byte_pos: %d "
-> +                       "bit_pos: %d\n", byte_pos, bit_pos);
-> +
-> +               if (byte_pos < (sector_size + extra_bytes)) {
-> +                       tmp = sector_size + pmecc_readl(host->ecc, SADDR);
-> +                       if (byte_pos < tmp) {
+> What's about to add a module_param() to enable/disable the BBT for GPMI?
+> What's your suggestion?
 
-> +                               if (*(buf + byte_pos) & (1 << bit_pos))
-> +                                       *(buf + byte_pos) &=
-> +                                               (0xFF ^ (1 << bit_pos));
-> +                               else
-> +                                       *(buf + byte_pos) |= (1 << bit_pos);
+I'd make it board specific rather than a module parameter like most
+other drivers seem to do.
 
-why not replace the 5 lines above with:  *(buf + byte_pos) ^= 1 << bit_pos;
+Thanks,
 
-> +                       } else {
-> +                               if (*(buf + byte_pos + ecc_size) &
-> +                                    (1 << bit_pos))
-> +                                       *(buf + byte_pos + ecc_size) &=
-> +                                               (0xFF ^ (1 << bit_pos));
-> +                               else
-> +                                       *(buf + byte_pos + ecc_size) |=
-> +                                               (1 << bit_pos);
+   Wolfram
 
-same idea:   *(buf + byte_pos + ecc_size) ^= 1 << bit_pos;
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-BR,
---
-Ivan
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8nszwACgkQD27XaX1/VRtLxgCgthBktVOvL3RfOPH34KZ/bjBp
+a88AoLwuPSyMRWCirlGYG5S8Dz+TWCwr
+=VL84
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
