@@ -1,15 +1,20 @@
-Received: from [206.117.179.246] (helo=labridge.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsMPO-0002s8-UN
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 22:42:39 +0000
-From: Joe Perches <joe@perches.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/4] jffs2: Remove unnecessary OOM messages
-Date: Tue, 31 Jan 2012 14:42:08 -0800
-Message-Id: <98592226b940c1fa59ced4a28418343508714161.1328049542.git.joe@perches.com>
-In-Reply-To: <cover.1328049542.git.joe@perches.com>
-References: <cover.1328049542.git.joe@perches.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1RsMQC-00030v-7L
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 22:43:29 +0000
+Message-ID: <4F286F29.2010605@nod.at>
+Date: Tue, 31 Jan 2012 23:46:01 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] MTD: Refine HAS_IOMEM dependency
+References: <1327512102-22447-1-git-send-email-richard@nod.at>
+In-Reply-To: <1327512102-22447-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: artem.bityutskiy@linux.intel.com, kyungmin.park@samsung.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +24,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Per call site OOM messages are unnecessary.
-k.alloc and v.alloc failures use dump_stack().
+Am 25.01.2012 18:21, schrieb Richard Weinberger:
+> Making the entire mtd subsystem depend on HAS_IOMEM is a bit overkill.
+> HAS_IOMEM is only needed for real devices drivers.
+> nandsim and friends are perfectly usable on systems without IO memory.
+>
+> I'm my case I'm using nandsim on UML to do some UBI and JFFS2 development.
+>
+> Signed-off-by: Richard Weinberger<richard@nod.at>
+> ---
+>   drivers/mtd/Kconfig         |    1 -
+>   drivers/mtd/devices/Kconfig |    1 +
+>   drivers/mtd/maps/Kconfig    |    1 +
+>   drivers/mtd/nand/Kconfig    |    2 ++
+>   drivers/mtd/onenand/Kconfig |    1 +
+>   5 files changed, 5 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> index 1be6218..bfbd62c 100644
+> --- a/drivers/mtd/Kconfig
+> +++ b/drivers/mtd/Kconfig
+> @@ -1,6 +1,5 @@
+>   menuconfig MTD
+>   	tristate "Memory Technology Device (MTD) support"
+> -	depends on HAS_IOMEM
+>   	help
+>   	  Memory Technology Devices are flash, RAM and similar chips, often
+>   	  used for solid state file systems on embedded devices. This option
+> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+> index 37b05c3..8d3dac4 100644
+> --- a/drivers/mtd/devices/Kconfig
+> +++ b/drivers/mtd/devices/Kconfig
+> @@ -1,5 +1,6 @@
+>   menu "Self-contained MTD device drivers"
+>   	depends on MTD!=n
+> +	depends on HAS_IOMEM
+>
+>   config MTD_PMC551
+>   	tristate "Ramix PMC551 PCI Mezzanine RAM card support"
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index 6c5c431..8af67cf 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -1,5 +1,6 @@
+>   menu "Mapping drivers for chip access"
+>   	depends on MTD!=n
+> +	depends on HAS_IOMEM
+>
+>   config MTD_COMPLEX_MAPPINGS
+>   	bool "Support non-linear mappings of flash chips"
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 31b034b..80de7b3 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -246,6 +246,7 @@ config MTD_NAND_BCM_UMI_HWCS
+>   config MTD_NAND_DISKONCHIP
+>   	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
+>   	depends on EXPERIMENTAL
+> +	depends on HAS_IOMEM
+>   	select REED_SOLOMON
+>   	select REED_SOLOMON_DEC16
+>   	help
+> @@ -431,6 +432,7 @@ config MTD_NAND_GPMI_NAND
+>
+>   config MTD_NAND_PLATFORM
+>   	tristate "Support for generic platform NAND driver"
+> +	depends on HAS_IOMEM
+>   	help
+>   	  This implements a generic NAND driver for on-SOC platform
+>   	  devices. You will need to provide platform-specific functions
+> diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
+> index 772ad29..91467bb 100644
+> --- a/drivers/mtd/onenand/Kconfig
+> +++ b/drivers/mtd/onenand/Kconfig
+> @@ -1,6 +1,7 @@
+>   menuconfig MTD_ONENAND
+>   	tristate "OneNAND Device Support"
+>   	depends on MTD
+> +	depends on HAS_IOMEM
+>   	help
+>   	  This enables support for accessing all type of OneNAND flash
+>   	  devices. For further information see
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- fs/jffs2/compr_lzo.c  |    1 -
- fs/jffs2/compr_zlib.c |    6 ++----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Ping?
 
-diff --git a/fs/jffs2/compr_lzo.c b/fs/jffs2/compr_lzo.c
-index af186ee..c553bd6 100644
---- a/fs/jffs2/compr_lzo.c
-+++ b/fs/jffs2/compr_lzo.c
-@@ -33,7 +33,6 @@ static int __init alloc_workspace(void)
- 	lzo_compress_buf = vmalloc(lzo1x_worst_compress(PAGE_SIZE));
- 
- 	if (!lzo_mem || !lzo_compress_buf) {
--		printk(KERN_WARNING "Failed to allocate lzo deflate workspace\n");
- 		free_workspace();
- 		return -ENOMEM;
- 	}
-diff --git a/fs/jffs2/compr_zlib.c b/fs/jffs2/compr_zlib.c
-index 5a00102..4e7a138 100644
---- a/fs/jffs2/compr_zlib.c
-+++ b/fs/jffs2/compr_zlib.c
-@@ -42,14 +42,12 @@ static int __init alloc_workspaces(void)
- {
- 	def_strm.workspace = vmalloc(zlib_deflate_workspacesize(MAX_WBITS,
- 							MAX_MEM_LEVEL));
--	if (!def_strm.workspace) {
--		printk(KERN_WARNING "Failed to allocate %d bytes for deflate workspace\n", zlib_deflate_workspacesize(MAX_WBITS, MAX_MEM_LEVEL));
-+	if (!def_strm.workspace)
- 		return -ENOMEM;
--	}
-+
- 	D1(printk(KERN_DEBUG "Allocated %d bytes for deflate workspace\n", zlib_deflate_workspacesize(MAX_WBITS, MAX_MEM_LEVEL)));
- 	inf_strm.workspace = vmalloc(zlib_inflate_workspacesize());
- 	if (!inf_strm.workspace) {
--		printk(KERN_WARNING "Failed to allocate %d bytes for inflate workspace\n", zlib_inflate_workspacesize());
- 		vfree(def_strm.workspace);
- 		return -ENOMEM;
- 	}
--- 
-1.7.8.111.gad25c.dirty
+Thanks,
+//richard
