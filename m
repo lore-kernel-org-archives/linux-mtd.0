@@ -1,27 +1,26 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lpp01m020-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsKQV-0005zP-Ec
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 20:35:40 +0000
-Received: by mail-lpp01m010-f49.google.com with SMTP id m7so303695laa.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 12:35:39 -0800 (PST)
+ id 1RsKS1-0006Au-J4
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 20:37:14 +0000
+Received: by lbon10 with SMTP id n10so73758lbo.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 12:37:10 -0800 (PST)
 Sender: Grant Likely <glikely@secretlab.ca>
-Date: Tue, 31 Jan 2012 13:35:31 -0700
+Date: Tue, 31 Jan 2012 13:37:03 -0700
 From: Grant Likely <grant.likely@secretlab.ca>
 To: Barry Song <Barry.Song@csr.com>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
- helper
-Message-ID: <20120131203531.GH22611@ponder.secretlab.ca>
+Subject: Re: [PATCH 2/3] GPIO: TEGRA: move to use
+ platform_devm_request_and_ioremap() helper
+Message-ID: <20120131203703.GI22611@ponder.secretlab.ca>
 References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
- <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-3-git-send-email-Barry.Song@csr.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+In-Reply-To: <1328004002-24646-3-git-send-email-Barry.Song@csr.com>
 Cc: Linus Walleij <linus.walleij@linaro.org>,
  Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
  workgroup.linux@csr.com, linux-mtd@lists.infradead.org,
- Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Barry Song <Baohua.Song@csr.com>,
- David Woodhouse <dwmw2@infradead.org>, Erik Gilling <konkers@google.com>
+ Barry Song <Baohua.Song@csr.com>, Erik Gilling <konkers@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,91 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2012 at 06:00:00PM +0800, Barry Song wrote:
+On Tue, Jan 31, 2012 at 06:00:01PM +0800, Barry Song wrote:
 > From: Barry Song <Baohua.Song@csr.com>
-> 
-> this patch helps to move the common pattern from
-> 
-> "
-> res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> if (!res) {
-> 	ret = -ENODEV;
-> 	goto err;
-> }
-> 
-> base = devm_request_and_ioremap(&dev->dev, mem_res);
-> if (!base) {
-> 	ret = -ENODEV;
-> 	goto err;
-> }
-> "
-> 
-> to
-> 
-> "
-> base = platform_devm_request_and_ioremap(pdev, 0);
-> if (!base) {
-> 	ret = -ENODEV;
-> 	goto err;
-> }
-> "
 > 
 > Signed-off-by: Barry Song <Baohua.Song@csr.com>
 > Cc: Grant Likely <grant.likely@secretlab.ca>
 > Cc: Linus Walleij <linus.walleij@linaro.org>
 > Cc: Erik Gilling <konkers@google.com>
-> Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-> Cc: David Woodhouse <dwmw2@infradead.org>
 
 Acked-by: Grant Likely <grant.likely@secretlab.ca>
 
+This of course depends on the other patch, so I won't merge it until
+there is an okay from gregkh.  Also, with his okay I'd be happy to
+take it through the gpio tree to reduce dependencies.
+
+g.
+
+
 > ---
->  drivers/base/platform.c         |   19 +++++++++++++++++++
->  include/linux/platform_device.h |    1 +
->  2 files changed, 20 insertions(+), 0 deletions(-)
+>  drivers/gpio/gpio-tegra.c |    8 +-------
+>  1 files changed, 1 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index f0c605e..39ca0ab 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -72,6 +72,25 @@ struct resource *platform_get_resource(struct platform_device *dev,
->  EXPORT_SYMBOL_GPL(platform_get_resource);
+> diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
+> index bdc2937..118e367 100644
+> --- a/drivers/gpio/gpio-tegra.c
+> +++ b/drivers/gpio/gpio-tegra.c
+> @@ -355,13 +355,7 @@ static int __devinit tegra_gpio_probe(struct platform_device *pdev)
+>  		bank->irq = res->start;
+>  	}
 >  
->  /**
-> + * platform_devm_request_and_ioremap() - get resource, check, request region,
-> + * and ioremap resource
-> + * @dev: platform device
-> + * @num: IOMEM resource index
-> + */
-> +void __iomem *platform_devm_request_and_ioremap(struct platform_device *dev,
-> +	unsigned int num)
-> +{
-> +	struct resource *res;
-> +
-> +	res = platform_get_resource(dev, IORESOURCE_MEM, num);
-> +	if (!res)
-> +		return NULL;
-> +
-> +	return devm_request_and_ioremap(&dev->dev, res);
-> +}
-> +EXPORT_SYMBOL_GPL(platform_devm_request_and_ioremap);
-> +
-> +/**
->   * platform_get_irq - get an IRQ for a device
->   * @dev: platform device
->   * @num: IRQ number index
-> diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-> index 60e9994..768c0d7 100644
-> --- a/include/linux/platform_device.h
-> +++ b/include/linux/platform_device.h
-> @@ -44,6 +44,7 @@ extern struct device platform_bus;
->  
->  extern void arch_setup_pdev_archdata(struct platform_device *);
->  extern struct resource *platform_get_resource(struct platform_device *, unsigned int, unsigned int);
-> +extern void __iomem *platform_devm_request_and_ioremap(struct platform_device *, unsigned int);
->  extern int platform_get_irq(struct platform_device *, unsigned int);
->  extern struct resource *platform_get_resource_byname(struct platform_device *, unsigned int, const char *);
->  extern int platform_get_irq_byname(struct platform_device *, const char *);
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "Missing MEM resource\n");
+> -		return -ENODEV;
+> -	}
+> -
+> -	regs = devm_request_and_ioremap(&pdev->dev, res);
+> +	regs = platform_devm_request_and_ioremap(pdev, 0);
+>  	if (!regs) {
+>  		dev_err(&pdev->dev, "Couldn't ioremap regs\n");
+>  		return -ENODEV;
 > -- 
 > 1.7.1
 > 
