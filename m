@@ -1,23 +1,27 @@
-Date: Tue, 31 Jan 2012 14:04:32 +0100
-From: Heiko Schocher <hs@denx.de>
-Subject: Re: [RFC PATCH 7/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-In-reply-to: <20120130203252.GX28397@ponder.secretlab.ca>
-To: Grant Likely <grant.likely@secretlab.ca>
-Message-id: <4F27E6E0.1050608@denx.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7BIT
-References: <1327308967-8092-1-git-send-email-hs@denx.de>
- <1327308967-8092-8-git-send-email-hs@denx.de>
- <20120130203252.GX28397@ponder.secretlab.ca>
-Cc: Kevin Hilman <khilman@ti.com>,
- davinci-linux-open-source@linux.davincidsp.com, netdev@vger.kernel.org,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Reply-To: hs@denx.de
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsDXb-0002Bm-Lw
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 13:14:32 +0000
+Received: by pbdx9 with SMTP id x9so178894pbd.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 05:14:29 -0800 (PST)
+Message-ID: <1328015763.28171.2.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/3] platform: add platform_devm_request_and_ioremap()
+ common API
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Barry Song <21cnbao@gmail.com>
+Date: Tue, 31 Jan 2012 15:16:03 +0200
+In-Reply-To: <CAGsJ_4yVTaZQOE2dB4A3L6WCLE78b4eBPaOcDDJ7RH+0LN=R_A@mail.gmail.com>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328008455.956.30.camel@sauron.fi.intel.com>
+ <CAGsJ_4yVTaZQOE2dB4A3L6WCLE78b4eBPaOcDDJ7RH+0LN=R_A@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-5YXVZEynsY7kl5lhKV7v"
+Mime-Version: 1.0
+Cc: workgroup.linux@csr.com, Greg Kroah-Hartman <gregkh@suse.de>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Barry Song <Barry.Song@csr.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,157 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Grant,
 
-Grant Likely wrote:
-> On Mon, Jan 23, 2012 at 09:56:07AM +0100, Heiko Schocher wrote:
->> - AM1808 based board
->> - 64 MiB DDR ram
->> - 2 MiB Nor flash
->> - 128 MiB NAND flash
->> - use internal RTC
->> - I2C support
->> - hwmon lm75 support
->> - UBI/UBIFS support
->> - MMC support
->> - USB OTG support
->>
->> Signed-off-by: Heiko Schocher <hs@denx.de>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: devicetree-discuss@lists.ozlabs.org
->> Cc: davinci-linux-open-source@linux.davincidsp.com
->> Cc: linux-mtd@lists.infradead.org
->> Cc: linux-i2c@vger.kernel.org
->> Cc: netdev@vger.kernel.org
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Ben Dooks <ben-linux@fluff.org>
->> Cc: Wolfram Sang <w.sang@pengutronix.de>
->> Cc: Sekhar Nori <nsekhar@ti.com>
->> Cc: Kevin Hilman <khilman@ti.com>
->> Cc: Wolfgang Denk <wd@denx.de>
->>
->> ---
->> - post this board support with USB support, even though
->>   USB is only working with the 10 ms "workaround", posted here:
->>   http://comments.gmane.org/gmane.linux.usb.general/54505
->>   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
->> - MMC and USB are not using OF support yet, ideas how to port
->>   this are welcome. I need for USB and MMC boards board
->>   specific callbacks, how to solve this with OF support?
+--=-5YXVZEynsY7kl5lhKV7v
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Can you give me a hint, how to add callbacks to OF support?
+On Tue, 2012-01-31 at 20:57 +0800, Barry Song wrote:
+> > If yes, I think it would be nice of you to give a credit to coccinelle
+> > and its authors for developing this awesome tool in every commit
+> > message.
+>=20
+> devm_request_and_ioremap() is still something new by commit
 
->>  arch/arm/boot/dts/enbw_cmc.dts                  |  286 +++++++++++++++++
->>  arch/arm/configs/enbw_cmc_defconfig             |  125 ++++++++
->>  arch/arm/mach-davinci/Kconfig                   |    8 +
->>  arch/arm/mach-davinci/Makefile                  |    1 +
->>  arch/arm/mach-davinci/board-enbw-cmc.c          |  384 +++++++++++++++++++++++
->>  arch/arm/mach-davinci/include/mach/uncompress.h |    1 +
->>  6 files changed, 805 insertions(+), 0 deletions(-)
->>  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
->>  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
->>  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
->>
->> diff --git a/arch/arm/boot/dts/enbw_cmc.dts b/arch/arm/boot/dts/enbw_cmc.dts
->> new file mode 100644
->> index 0000000..e5995ce
->> --- /dev/null
->> +++ b/arch/arm/boot/dts/enbw_cmc.dts
->> @@ -0,0 +1,286 @@
->> +/*
->> + * Device Tree for the EnBW CMC plattform
->> + *
->> + * Copyright 2011 DENX Software Engineering GmbH
->> + * Heiko Schocher <hs@denx.de>
->> + *
->> + * This program is free software; you can redistribute  it and/or modify it
->> + * under  the terms of  the GNU General  Public License as published by the
->> + * Free Software Foundation;  either version 2 of the  License, or (at your
->> + * option) any later version.
->> + */
->> +/dts-v1/;
->> +/include/ "skeleton.dtsi"
->> +
->> +/ {
->> +	model = "EnBW CMC";
->> +	compatible = "enbw,cmc";
->> +
->> +	aliases {
->> +		ethernet0 = &eth0;
->> +	};
->> +
->> +	arm {
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges = <0 0xfffee000 0x00020000>;
->> +		intc: interrupt-controller@1 {
->> +			compatible = "ti,davinci-intc";
->> +			interrupt-controller;
->> +			#interrupt-cells = <1>;
->> +			ti,intc-size = <101>;
->> +			reg = <0x0 0x2000>;
->> +		};
->> +	};
->> +	soc@1c00000 {
->> +		compatible = "ti,da8xx";
-> 
-> As previously mentioned, using wildcard ('x') characters in compatible
-> properties is bad practice.  Always be specific and use the compatible
-> list to make sure the correct driver gets bound (assuming the device
-> is 100% register level compatible with the older one).
+Ah, ok. But it would be cool if you could create a coccinell semantic
+patch for this, although I should admit this is not very easy, but a lot
+of fun.
 
-fixed.
+--=20
+Best Regards,
+Artem Bityutskiy
 
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges = <0x0 0x01c00000 0x400000>;
->> +
->> +		serial0: serial@1c42000 {
->> +			cell-index = <2>;
-> 
-> As previously mentioned, don't use cell index.  If you *really* need
-> to assign a number to a device, then use a property in the /aliases
-> node and make sure pdev->id does *not* get modified.
+--=-5YXVZEynsY7kl5lhKV7v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-removed, as not needed.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
->> +			compatible = "ns16550a";
-> 
-> Should include a string for the specific device.  Something like:
-> 
-> 	compatible = "ti,da800", "ns16550a";
+iQIcBAABAgAGBQJPJ+mTAAoJECmIfjd9wqK0XNsQAJ35UJFcm7hjzUfAouJhXEy8
+NlG0keuOUgucZ8pgJg8ujbyn+NXzjjuVgr10JgvGycYwlyCf/VQcapcI1Hgc0V2l
++LitNRS9BJ+uttzJddkFJ86/91fgOAXa4/h1Lqe1BdqfCx8kmic0WFUq6syW1uHL
+R9ijv4eBJCnEe16EQtwDkJg9gkLQzJs490pjyKF3RXna90Jft6A8OKVRdKgf741P
+VVSuvKrL0yK+vwqV/InV3XzeIzLHOMKaezEyHHRAeiipOprQhdYgcV3rQSdiuTbA
+1hE31pYnOXktRm/UAT7iXfcPgZHAl6g3frIakQCnpNzeh0EXIeyKV7s/nOrz6TWW
+0hSLnHinoFLy1xuQVQVScNayz8h5HWQW7MvdB1Wx0DxOH/ujn+LFWEo12V0mRaYM
+/bG0KAFPSYx2bCdlbwAA6ZRiXWKcu5kdlygSZqKj0ZeZWS0ak3sbsbFzBKmjJjSs
+kXdUuR3ljKm0sJn2kQn0UV0j1ibDTc9t2hVayoMc5Ct4Po01Rr3dRTFqDjoFnNRn
+PMSOQMkQ8d1OPi5pYsscnNJCnlxCqwASO5XVL9W/fRLC0ZCOsqoymzxVrOIcU6mR
+4MAKgPs6FTIIHccp7x9iUbuzAkKGgEu/vNP6+vFefS5TZ59zWpUEuGyOKT5/LRPb
+JyxJNUbMkSzIuYz0mZwK
+=F0QH
+-----END PGP SIGNATURE-----
 
-added.
-
->> diff --git a/arch/arm/mach-davinci/board-enbw-cmc.c b/arch/arm/mach-davinci/board-enbw-cmc.c
->> new file mode 100644
->> index 0000000..4473c4a
->> --- /dev/null
->> +++ b/arch/arm/mach-davinci/board-enbw-cmc.c
->> @@ -0,0 +1,384 @@
-[...]
->> +#if defined(CONFIG_OF)
->> +static __init void enbw_cmc_usb_init(void)
-> 
-> All the focus is on DT now.  How about making CONFIG_OF required for
-> this board?  Also, this is just another board file.  The focus should
-
-fixed.
-
-> be on creating a generic board support file for DT platforms.
-
-move the arch/arm/mach-davinci/board-enbw-cmc.c to
-arch/arm/mach-davinci/board-da850_simple.c
-
-and do it like
-
-arch/powerpc/platforms/52xx/mpc5200_simple.c ?
-
-and extract common nodes from arch/arm/boot/dts/enbw_cmc.dts
-to arch/arm/boot/dts/da850.dtsi?
-
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+--=-5YXVZEynsY7kl5lhKV7v--
