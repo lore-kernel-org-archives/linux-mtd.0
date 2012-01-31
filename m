@@ -1,17 +1,18 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rs8jG-0007e1-9Z
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 08:06:14 +0000
-Received: by pbdx9 with SMTP id x9so5495261pbd.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 00:06:10 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [RFC/PATCH] mtd: m25p80: set writebufsize
-Date: Tue, 31 Jan 2012 00:06:03 -0800
-Message-Id: <1327997163-9354-1-git-send-email-computersforpeace@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, agust@denx.de,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <4F27AA98.2090602@freescale.com>
+Date: Tue, 31 Jan 2012 16:47:20 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH] mtd/gpmi : add BBT support
+References: <1327898174-13656-1-git-send-email-b32955@freescale.com>
+ <20120130094610.GA15596@pengutronix.de> <4F2671C3.6000809@freescale.com>
+ <20120130104428.GB15596@pengutronix.de> <4F267F21.1030204@freescale.com>
+ <20120130114131.GC15596@pengutronix.de>
+In-Reply-To: <20120130114131.GC15596@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marek.vasut@gmail.com>, artem.bityutskiy@intel.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using UBI on m25p80 can give messages like:
+hi,
+> CCing Marek, he can say more about the U-Boot side probably...
+>
+>>> Bootloaders may also need to write to NAND. So, they need to share the
+>> Do you mean the uboot may write something to the NAND?
+>> Could you show me some more detail cases?
+> U-Boot has NAND support in mainline, for barebox it is work-in-progress.
+> Both can and do write to NAND (kernel, rootfs), because both have
+> established procedures to do so (and maybe don't want to rely on
+> third-party tools like kobs-ng).
+>
+ok.
 
-    UBI error: io_init: bad write buffer size 0 for 1 min. I/O unit
+What's about to add a module_param() to enable/disable the BBT for GPMI?
+What's your suggestion?
 
-We need to initialize writebufsize; I think "page_size" is the correct
-"bufsize", although I'm not sure. Comments?
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index f83e4d0..8808da9 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -932,6 +932,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	ppdata.of_node = spi->dev.of_node;
- 	flash->mtd.dev.parent = &spi->dev;
- 	flash->page_size = info->page_size;
-+	flash->mtd.writebufsize = flash->page_size;
- 
- 	if (info->addr_width)
- 		flash->addr_width = info->addr_width;
--- 
-1.7.5.4
+Br
+Huang Shijie
