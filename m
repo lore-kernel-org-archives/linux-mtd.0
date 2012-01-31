@@ -1,24 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsBdO-0003ws-Av
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:12:23 +0000
-Received: by iafj26 with SMTP id j26so8061084iaf.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 03:12:21 -0800 (PST)
-Message-ID: <1328008455.956.30.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/3] platform: add platform_devm_request_and_ioremap()
- common API
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Barry Song <Barry.Song@csr.com>
-Date: Tue, 31 Jan 2012 13:14:15 +0200
-In-Reply-To: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
-References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FMh3AKwSqszx+f6QOdCL"
-Mime-Version: 1.0
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, workgroup.linux@csr.com
-Reply-To: dedekind1@gmail.com
+ id 1RsBxW-0007sB-Kc
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:33:11 +0000
+Received: by wera10 with SMTP id a10so5295970wer.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 03:33:09 -0800 (PST)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: GPMI-NAND: Wrong ECC size in driver
+Date: Tue, 31 Jan 2012 12:33:06 +0100
+References: <201201040148.32847.marek.vasut@gmail.com>
+ <201201050038.39448.marek.vasut@gmail.com> <4F04E558.7000002@freescale.com>
+In-Reply-To: <4F04E558.7000002@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201201311233.06949.marek.vasut@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> On 01/04/2012 05:38 PM, Marek Vasut wrote:
+> > Scott Wood wrote:
+> >> On 01/04/2012 03:32 PM, Marek Vasut wrote:
+> >>> Scott Wood wrote:
+> >>>> Can we just get rid of NAND_CHIPOPTIONS_MSK and trust that drivers
+> >>>> won't set options that aren't appropriate?  Possibly replace it with
+> >>>> documentation about which options are for chips, which are for
+> >>>> drivers, and which (such as NAND_NO_SUBPAGE_WRITE) can be set by
+> >>>> either.
+> >>> 
+> >>> Rather let's just adjust the mask?
+> >> 
+> >> The way the mask is used means that any given option can only be chip or
+> >> driver, not both.  Though, I don't see anywhere this option is set by a
+> >> chip -- maybe we can just renumber it to be in the controller half.
+> > 
+> > I suspect this was meant to allow controllers where one chip can do
+> > subpage- write and the other can not.
+> 
+> What I mean is I don't see any place where this is actually used --
+> gpmi-nand is the only place I see this flag being set (though it belongs
+> on at least elbc as well).
+> 
+> >> I still don't see a whole lot of value in the mask, though -- seems to
+> >> be just causing problems, especially given that bits set by the "wrong"
+> >> component are silently discarded.
+> > 
+> > Yes. Patch is welcome to remove it and separate these two ;-)
+> 
+> Do they need to be separated?  Just OR them with no mask.  If either the
+> controller or the chip set the flag, then it's set, and subpage writes
+> are disallowed.  Obviously you can only do this for certain types of
+> options -- for others, just don't set the flag in an inappropriate context.
+> 
+> -Scott
 
---=-FMh3AKwSqszx+f6QOdCL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-01-31 at 17:59 +0800, Barry Song wrote:
-> these patches move the common pattern from
->=20
-> "
-> res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);=20
-> if (!res) {
-> 	        ret =3D -ENODEV;
-> 		        goto err;
-> }
->=20
-> base =3D devm_request_and_ioremap(&dev->dev, mem_res);
-> if (!base) {
-> 	        ret =3D -ENODEV;
-> 		        goto err;
-> }
-> "
-
-Am I right that these patches have been generated using the
-coccinelle/api/devm_request_and_ioremap.cocci script?
-
-If yes, I think it would be nice of you to give a credit to coccinelle
-and its authors for developing this awesome tool in every commit
-message.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-FMh3AKwSqszx+f6QOdCL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPJ80HAAoJECmIfjd9wqK0iQwP/1sZGw0kf297MdZKYjz5INT6
-aathplkk6+3QejuECiUI+0epeIrjMpIIR+M0NKIGFEqhWzH7SduWVLCEkNzlhA7X
-4kkxz0qypKK3clVF+cu7aZJ8OovOVeiIhpBW3ZWfazjVfxKgDRwmV1btoJnAGggx
-HqCo+cy0uj5P1Fn2lPFNQ34x3DD5IEAqDRQpHPvJ+zjN4h5qnRCIJYMVhMQl/M6E
-cDirzBcanQuvDhjX+XHa4KIuecmzI4KTOEETElBTe2emYjOJyQ7/A9eLNiTCPtKY
-zqHvxDkwclW5ZrI1kkH9sLF6fVjunKWiBRoCwHQeY0RVgAhKqv/JixmSwS4iXkRN
-FHtw0/j+JOATUv78nw3YyedeWdAQ94aUiM826zNTpoC0wXst5HVkzxS1QIW25juP
-tf1SR9FSb3kHtsPxCaGOdBbjWQcTtJwdB8tQnphjtj807g/QnoOszmBRhVxPas1T
-yg1az17KmEIx8tSayee+s9b0x1v4rnw0oBUdGxlaF4f6wFzJ2a7OCKdz+Q8lhN8O
-59yNPmOghz2DybYDr+UMK0GZ4Lo3TYm/Y8AmtoaEl7wNWr/t1ycd6UKfFqja8cno
-TTILiMxLGmrnQ4KuXyavDsNoQ5IJMBdT2PedQ9H8l9Tx9s8JBjk2SAxy0QHfSx6J
-S/6rv+EIKeXGCo0jPNfH
-=G+0s
------END PGP SIGNATURE-----
-
---=-FMh3AKwSqszx+f6QOdCL--
+BUMP?
