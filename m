@@ -1,30 +1,20 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsCWs-0004P1-4A
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 12:09:42 +0000
-Received: by bke5 with SMTP id 5so5876671bke.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 04:09:39 -0800 (PST)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsCXQ-0003Zp-SV
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 12:10:18 +0000
+Date: Tue, 31 Jan 2012 13:10:07 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3] mtd/gpmi : add BBT support to gpmi nand driver
+Message-ID: <20120131121007.GO2471@pengutronix.de>
+References: <1328008316-27258-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20120131113358.GM2471@pengutronix.de>
-References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
- <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
- <20120131101734.GE2471@pengutronix.de>
- <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
- <20120131113358.GM2471@pengutronix.de>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 31 Jan 2012 20:09:19 +0800
-Message-ID: <CAGsJ_4zM=6ivn0uCtP4wsS67U77uHd5nVZQ-LP1vS07AE3dMxQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
- helper
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
- workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
- Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
- Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="ABYnUdqoGSokwVM+"
+Content-Disposition: inline
+In-Reply-To: <1328008316-27258-1-git-send-email-b32955@freescale.com>
+Cc: marek.vasut@gmail.com, artem.bityutskiy@intel.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,61 +24,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi Wolfram,
 
-2012/1/31 Wolfram Sang <w.sang@pengutronix.de>:
-> Barry,
->
->> > You don't need to do the error checking for 'res'. You can simply do
->> >
->> > res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> > base =3D devm_request_and_ioremap(&dev->dev, res);
->>
->> i do know =C2=A0devm_request_and_ioremap() does res checking. but that i=
-s
->> implicit, confused and not a smart way actually.
->
-> I agree about the implicit thing (keep in mind the function is new). But
-> calling a function "not smart" because it checks its arguments? I do
-> like the NULL check of kfree() for example.
+--ABYnUdqoGSokwVM+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-i didn't mean it is not smart for devm_request_and_ioremap() to check
-its param. that is definitely ok.
-i mean it is not smart for people to depend on another function to do
-implicit check on what they should check by themselves.
->
->> actually, no people by now really use the implicit checking. that
->> shows people don't really think that is a good programming way.
->
-> I'd think most people just copy&paste and don't have an opinion either
-> way, so the quantity doesn't show much.
->
->> > devm_request_and_ioremap() will check res. Given that, I don't think
->> > we can save a lot with another wrapper.
->>
->> i think we can save some.
->> The story begins from Grant's feedback in:
->> http://www.spinics.net/lists/arm-kernel/msg157644.html
->
-> I am not sure using 'platform_devm_request_and_ioremap' and later using
-> plain 'devm_*' functions (without platform_-prefix) is less confusing.
-> The alternative would be to check which helper functions also use
-> 'struct resource' and if they do checks on that. If all do that, you
-> would have the simple rule, that you only need to check yourself if you
-> access it yourself.
+On Tue, Jan 31, 2012 at 07:11:56PM +0800, Huang Shijie wrote:
+> Add a new field to gpmi_nand_platform_data{}.
+> Make the BBT support to board specific.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-it is just a helper, just like clk_disable_unprepare() which do
-clk_disable() + clk_unprepare().
+Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
 
->
-> Regards,
->
-> =C2=A0 Wolfram
->
-> --
-> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
-> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
--barry
+I'd think you won't be able to mark blocks bad, though. Will send a
+patch in a minute. Please test.
+
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 ++
+>  include/linux/mtd/gpmi-nand.h          |    2 ++
+>  2 files changed, 4 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
+mi-nand/gpmi-nand.c
+> index 493ec2f..4d369df 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1493,6 +1493,8 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand=
+_data *this)
+>  	chip->ecc.mode		=3D NAND_ECC_HW;
+>  	chip->ecc.size		=3D 1;
+>  	chip->ecc.layout	=3D &gpmi_hw_ecclayout;
+> +	if (pdata->enable_bbt)
+> +		chip->bbt_options =3D NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> =20
+>  	/* Allocate a temporary DMA buffer for reading ID in the nand_scan() */
+>  	this->bch_geometry.payload_size =3D 1024;
+> diff --git a/include/linux/mtd/gpmi-nand.h b/include/linux/mtd/gpmi-nand.h
+> index 69b6dbf..04ab366 100644
+> --- a/include/linux/mtd/gpmi-nand.h
+> +++ b/include/linux/mtd/gpmi-nand.h
+> @@ -51,6 +51,7 @@
+>   * @partitions:              An optional pointer to an array of partition
+>   *                           descriptions.
+>   * @partition_count:         The number of elements in the partitions ar=
+ray.
+> + * @enable_bbt:              Enable the BBT or not.
+>   */
+>  struct gpmi_nand_platform_data {
+>  	/* SoC hardware information. */
+> @@ -64,5 +65,6 @@ struct gpmi_nand_platform_data {
+>  	/* Medium information. */
+>  	struct		mtd_partition *partitions;
+>  	unsigned	partition_count;
+> +	unsigned int	enable_bbt:1;
+>  };
+>  #endif
+> --=20
+> 1.7.0.4
+>=20
+>=20
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--ABYnUdqoGSokwVM+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8n2h8ACgkQD27XaX1/VRt63wCgiAt6iSRaMYGhnQB0jpjfo1oo
+XYQAoLmgZ73Op8wdOLo48mzEBzKw4xeb
+=lhji
+-----END PGP SIGNATURE-----
+
+--ABYnUdqoGSokwVM+--
