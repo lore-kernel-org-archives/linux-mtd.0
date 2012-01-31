@@ -1,28 +1,12 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsBWC-00023M-Ne
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:04:57 +0000
-Received: by bke5 with SMTP id 5so5818054bke.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 03:04:54 -0800 (PST)
+From: Huang Shijie <b32955@freescale.com>
+To: <artem.bityutskiy@intel.com>
+Subject: [PATCH v3] mtd/gpmi : add BBT support to gpmi nand driver
+Date: Tue, 31 Jan 2012 19:11:56 +0800
+Message-ID: <1328008316-27258-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20120131101734.GE2471@pengutronix.de>
-References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
- <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
- <20120131101734.GE2471@pengutronix.de>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 31 Jan 2012 19:04:34 +0800
-Message-ID: <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
- helper
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
- workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
- Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
- Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
+Content-Type: text/plain
+Cc: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, w.sang@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +16,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/1/31 Wolfram Sang <w.sang@pengutronix.de>:
-> On Tue, Jan 31, 2012 at 06:00:00PM +0800, Barry Song wrote:
->> From: Barry Song <Baohua.Song@csr.com>
->>
->> this patch helps to move the common pattern from
->>
->> "
->> res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> if (!res) {
->> =C2=A0 =C2=A0 =C2=A0 ret =3D -ENODEV;
->> =C2=A0 =C2=A0 =C2=A0 goto err;
->> }
->
-> You don't need to do the error checking for 'res'. You can simply do
->
-> res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> base =3D devm_request_and_ioremap(&dev->dev, res);
+Add a new field to gpmi_nand_platform_data{}.
+Make the BBT support to board specific.
 
-i do know  devm_request_and_ioremap() does res checking. but that is
-implicit, confused and not a smart way actually.
-actually, no people by now really use the implicit checking. that
-shows people don't really think that is a good programming way.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 ++
+ include/linux/mtd/gpmi-nand.h          |    2 ++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
->
-> devm_request_and_ioremap() will check res. Given that, I don't think
-> we can save a lot with another wrapper.
-
-i think we can save some.
-The story begins from Grant's feedback in:
-http://www.spinics.net/lists/arm-kernel/msg157644.html
-
->
-> Thanks,
->
-> =C2=A0 Wolfram
->
-> --
-> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
-> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
-
--barry
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 493ec2f..4d369df 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1493,6 +1493,8 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	chip->ecc.mode		= NAND_ECC_HW;
+ 	chip->ecc.size		= 1;
+ 	chip->ecc.layout	= &gpmi_hw_ecclayout;
++	if (pdata->enable_bbt)
++		chip->bbt_options = NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+ 
+ 	/* Allocate a temporary DMA buffer for reading ID in the nand_scan() */
+ 	this->bch_geometry.payload_size = 1024;
+diff --git a/include/linux/mtd/gpmi-nand.h b/include/linux/mtd/gpmi-nand.h
+index 69b6dbf..04ab366 100644
+--- a/include/linux/mtd/gpmi-nand.h
++++ b/include/linux/mtd/gpmi-nand.h
+@@ -51,6 +51,7 @@
+  * @partitions:              An optional pointer to an array of partition
+  *                           descriptions.
+  * @partition_count:         The number of elements in the partitions array.
++ * @enable_bbt:              Enable the BBT or not.
+  */
+ struct gpmi_nand_platform_data {
+ 	/* SoC hardware information. */
+@@ -64,5 +65,6 @@ struct gpmi_nand_platform_data {
+ 	/* Medium information. */
+ 	struct		mtd_partition *partitions;
+ 	unsigned	partition_count;
++	unsigned int	enable_bbt:1;
+ };
+ #endif
+-- 
+1.7.0.4
