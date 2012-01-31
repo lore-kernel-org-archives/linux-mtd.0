@@ -1,22 +1,28 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsBxW-0007sB-Kc
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:33:11 +0000
-Received: by wera10 with SMTP id a10so5295970wer.36
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 03:33:09 -0800 (PST)
-From: Marek Vasut <marek.vasut@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: GPMI-NAND: Wrong ECC size in driver
-Date: Tue, 31 Jan 2012 12:33:06 +0100
-References: <201201040148.32847.marek.vasut@gmail.com>
- <201201050038.39448.marek.vasut@gmail.com> <4F04E558.7000002@freescale.com>
-In-Reply-To: <4F04E558.7000002@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsByc-0000pv-BG
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2012 11:34:20 +0000
+Date: Tue, 31 Jan 2012 12:33:58 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and
+ mapping helper
+Message-ID: <20120131113358.GM2471@pengutronix.de>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <20120131101734.GE2471@pengutronix.de>
+ <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201201311233.06949.marek.vasut@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="gw4vLALk08fVJy3V"
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
+ workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +32,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On 01/04/2012 05:38 PM, Marek Vasut wrote:
-> > Scott Wood wrote:
-> >> On 01/04/2012 03:32 PM, Marek Vasut wrote:
-> >>> Scott Wood wrote:
-> >>>> Can we just get rid of NAND_CHIPOPTIONS_MSK and trust that drivers
-> >>>> won't set options that aren't appropriate?  Possibly replace it with
-> >>>> documentation about which options are for chips, which are for
-> >>>> drivers, and which (such as NAND_NO_SUBPAGE_WRITE) can be set by
-> >>>> either.
-> >>> 
-> >>> Rather let's just adjust the mask?
-> >> 
-> >> The way the mask is used means that any given option can only be chip or
-> >> driver, not both.  Though, I don't see anywhere this option is set by a
-> >> chip -- maybe we can just renumber it to be in the controller half.
-> > 
-> > I suspect this was meant to allow controllers where one chip can do
-> > subpage- write and the other can not.
-> 
-> What I mean is I don't see any place where this is actually used --
-> gpmi-nand is the only place I see this flag being set (though it belongs
-> on at least elbc as well).
-> 
-> >> I still don't see a whole lot of value in the mask, though -- seems to
-> >> be just causing problems, especially given that bits set by the "wrong"
-> >> component are silently discarded.
-> > 
-> > Yes. Patch is welcome to remove it and separate these two ;-)
-> 
-> Do they need to be separated?  Just OR them with no mask.  If either the
-> controller or the chip set the flag, then it's set, and subpage writes
-> are disallowed.  Obviously you can only do this for certain types of
-> options -- for others, just don't set the flag in an inappropriate context.
-> 
-> -Scott
 
-BUMP?
+--gw4vLALk08fVJy3V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Barry,
+
+> > You don't need to do the error checking for 'res'. You can simply do
+> >
+> > res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > base =3D devm_request_and_ioremap(&dev->dev, res);
+>=20
+> i do know  devm_request_and_ioremap() does res checking. but that is
+> implicit, confused and not a smart way actually.
+
+I agree about the implicit thing (keep in mind the function is new). But
+calling a function "not smart" because it checks its arguments? I do
+like the NULL check of kfree() for example.
+
+> actually, no people by now really use the implicit checking. that
+> shows people don't really think that is a good programming way.
+
+I'd think most people just copy&paste and don't have an opinion either
+way, so the quantity doesn't show much.
+
+> > devm_request_and_ioremap() will check res. Given that, I don't think
+> > we can save a lot with another wrapper.
+>=20
+> i think we can save some.
+> The story begins from Grant's feedback in:
+> http://www.spinics.net/lists/arm-kernel/msg157644.html
+
+I am not sure using 'platform_devm_request_and_ioremap' and later using
+plain 'devm_*' functions (without platform_-prefix) is less confusing.
+The alternative would be to check which helper functions also use
+'struct resource' and if they do checks on that. If all do that, you
+would have the simple rule, that you only need to check yourself if you
+access it yourself.
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--gw4vLALk08fVJy3V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8n0aYACgkQD27XaX1/VRvQQwCfc4uFzEsLurU0rb6k0ZC3H0OI
+jEoAn1OUBDFgco5RfLLPt6oGT05UvGl/
+=UQLr
+-----END PGP SIGNATURE-----
+
+--gw4vLALk08fVJy3V--
