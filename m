@@ -1,18 +1,27 @@
-Message-ID: <4F28A1AF.8040402@freescale.com>
-Date: Wed, 1 Feb 2012 10:21:35 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsPq1-0001Ar-JV
+ for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 02:22:22 +0000
+Received: by ggnf2 with SMTP id f2so471437ggn.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 18:22:20 -0800 (PST)
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 0/2] patch set about the MXS-DMA
-References: <1327044818-4464-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1327044818-4464-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
- vinod.koul@intel.com, b29396@freescale.com, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, w.sang@pengutronix.de,
- linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+In-Reply-To: <CACRpkdaLekGTdkpfr_Zf5PXAZ16dZsXrwnFHjBe+aEvGb5zYjg@mail.gmail.com>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <CACRpkdaLekGTdkpfr_Zf5PXAZ16dZsXrwnFHjBe+aEvGb5zYjg@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 1 Feb 2012 10:22:00 +0800
+Message-ID: <CAGsJ_4z-QB_1z1Dw3H6sE2Vwe2ZQtRce9uy-Xa3V+sfj2drOuA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+To: Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Greg Kroah-Hartman <gregkh@suse.de>,
+ linux-kernel@vger.kernel.org, workgroup.linux@csr.com,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
-> patch 1: move the mxs dma header to a more common place.
-> 	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
-> 	So move the mxs dma header file to a more common place, and rename
-> 	it to mxs-dma.h
->
-> patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
-> 	In the new GPMI version, some hardware behavior changes.
-> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
-> 	The DMA chain should be set like this:
->
->           +-----+               +-----+                      +-----+
->           | cmd | ------------> | cmd | ------------------>  | cmd |
->           +-----+               +-----+                      +-----+
->                                    ^                            ^
->                                    |                            |
->                                    |                            |
->                               set WAIT4END here too        set WAIT4END here
->
->         So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
-> 	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
-> 	And change the relative drivers with the dma_ctrl_flags.
->
-> TEST:
-> 	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
-> 	in MX28 board.
->
-> v1 --> v2:
-> 	[1] squash the trial patches into single patch.
-> 	[2] use the dma_ctrl_flags.
->
-> Huang Shijie (2):
->   mxs-dma : move the mxs dma.h to a more common place
->   mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
->
->  drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
->  drivers/mmc/host/mxs-mmc.c                         |   12 +++---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   28 +++++++++++++---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +++-
->  drivers/mtd/nand/gpmi-nand/gpmi-regs.h             |    2 +
->  .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
->  sound/soc/mxs/mxs-pcm.c                            |    2 +-
->  sound/soc/mxs/mxs-pcm.h                            |    2 +-
->  sound/soc/mxs/mxs-saif.c                           |    2 +-
->  9 files changed, 67 insertions(+), 21 deletions(-)
->  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
->
-ping.
+Linus,
 
+2012/2/1 Linus Walleij <linus.walleij@linaro.org>:
+> On Tue, Jan 31, 2012 at 11:00 AM, Barry Song <Barry.Song@csr.com> wrote:
+>
+>> From: Barry Song <Baohua.Song@csr.com>
+>>
+>> this patch helps to move the common pattern from
+>
+> Good idea!
+>
+>> @@ -44,6 +44,7 @@ extern struct device platform_bus;
+>>
+>> =C2=A0extern void arch_setup_pdev_archdata(struct platform_device *);
+>> =C2=A0extern struct resource *platform_get_resource(struct platform_devi=
+ce *, unsigned int, unsigned int);
+>> +extern void __iomem *platform_devm_request_and_ioremap(struct platform_=
+device *, unsigned int);
+>
+> But don't you want a reverse call for the module remove() function?
+>
+> Like:
+>
+> extern void __iomem *platform_devm_iounmap_and_free(struct
+> platform_device *, unsigned int);
 
-Could these two patches ok ?
+that point is we have the garbage collection mechanism by calling
+devm_ function families. everything is undone on driver detach.
+so we will not have the free and unmap things.
+>
+> ?
+>
+> Yours,
+> Linus Walleij
 
-My following patches depend upon them.
-
-
-BR
-Huang Shijie
+-barry
