@@ -1,28 +1,30 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsZxy-0008OE-Uc
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 13:11:15 +0000
-Received: by qcsu28 with SMTP id u28so712349qcs.36
- for <linux-mtd@lists.infradead.org>; Wed, 01 Feb 2012 05:11:11 -0800 (PST)
+Received: from longford.logfs.org ([213.229.74.203])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RscOT-0001g0-Fu
+ for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 15:46:46 +0000
+Date: Wed, 1 Feb 2012 09:07:06 -0500
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: Re: [GIT PULL] logfs: bug fixes
+Message-ID: <20120201140706.GB6864@logfs.org>
+References: <CALJbWeoznAvoSzdBp0Kunn+uxqB0XafrLmp7im=49ST340vSjw@mail.gmail.com>
+ <CA+55aFzaErfoKG5KEyRMnjHS1=XbA7FNHRhF3J2iR8-m6PqtxQ@mail.gmail.com>
+ <CALJbWep4pD69wP76Fcwupw0ppoztOpfHPnv7RvczW06Ko0E4YQ@mail.gmail.com>
+ <CA+55aFyquFTUxgtHNRdz-rwha7H2bBocC6hw67a_g0FxG_=95Q@mail.gmail.com>
+ <CALJbWeptUqUyVrNZOeQz-toE=akT31L8MLubMj8FKjKy05ppzg@mail.gmail.com>
+ <CA+55aFzruneRNt28L5d_fX71-YSGmMXL=4kck_pQbxob4_2+8g@mail.gmail.com>
+ <CAN8TOE9pJKD9aznYLDh2Se14og3nn-QHCvjQDXHQu2-dhbVavQ@mail.gmail.com>
+ <CA+55aFwMinLTj4Jf5D-LHR73vfPLn4EUHooaBGSrsDdrRWsrrw@mail.gmail.com>
+ <1328100867.28171.88.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
-References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
- <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
- <1327684589.12089.22.camel@joe2Laptop>
- <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
- <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
- <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
-Date: Wed, 1 Feb 2012 22:11:11 +0900
-Message-ID: <CAC5umygV_Nmn_hE04qV1=xVcSWZJfVXMVJO-Y1sadJU4kYz94A@mail.gmail.com>
-Subject: Re: [PATCH] mtd/nand: use string library
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Cc: eric.dumazet@gmail.com, Scott Branden <sbranden@broadcom.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Jiandong Zheng <jdzheng@broadcom.com>, Joe Perches <joe@perches.com>,
- akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1328100867.28171.88.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org, Prasad Joshi <prasadjoshi.linux@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,53 +34,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/2/1 Brian Norris <computersforpeace@gmail.com>:
-> On Fri, Jan 27, 2012 at 3:52 PM, Akinobu Mita <akinobu.mita@gmail.com> wr=
-ote:
->> 2012/1/28 Brian Norris <computersforpeace@gmail.com>:
->>> On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
->>>> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
->>>>> - Use memchr_inv to check if the data contains all 0xFF bytes.
->>>>> =A0 It is faster than looping for each byte.
->>>>
->>>> Stupid question:
->>>>
->>>> Are there any mtd devices modified that are slower
->>>> at 64 bit accesses than repeated 8 bit accesses?
->>>
->>> I believe this patch deals with kernel buffers, not any kind of direct
->>> access to the MTD, so the question (which is not stupid IMO) should be
->>> regarding CPU architectures. And my educated guess is that 64-bit
->>> access should not be any slower. I do know that 8-bit access *is*
->>> slower for some relevant architectures.
->>
->> It could be slower when the number of bytes scanned is very small
->> (found a unmatched character immediately, or the size of the area
->> is very small), because memchr_inv() needs to generate a 64bit pattern
->> to compare before starting the loop. =A0I recalled that Eric Dumazet
->> pointed out it could generate the 64bit pattern more efficiently.
->> (https://lkml.org/lkml/2011/8/8/480)
->>
->> Even if that small scanning is slower, this change can be assumed cleanu=
-p
->> patch that simplifies the code.
->
-> Well, I agree that it qualifies as cleanup as well, but we should at
-> least make an attempt not to cause performance regression...
->
-> So by my understanding, the use of memchr_inv() is on buffers of
-> minimum length of 10 in this patch, so we're likely to have decent
-> results. And memcmp() usage looks fine to me.
+On Wed, 1 February 2012 14:54:27 +0200, Artem Bityutskiy wrote:
+>=20
+> This patch fixes merge conflict resolution breakage introduced by merge
+> commit 'd3712b9dfcf44ca145cf87e7f4096fa2d923471a'.
+>=20
+> The commit changed 'mtd_can_have_bb()' function and made it always return
+> zero, which is incorrect. Instead, we need it to return whether the
+> underlying flash device can have bad eraseblocks or not. UBI needs this
+> information because it affects how it handles the underlying flash.
+> E.g., if the underlying flash is NOR, it cannot have bad blocks and any
+> write or erase error is fatal, and all we can do is to switch to R/O
+> mode. We do not need to reserve a pool of good eraseblocks for bad
+> eraseblocks handling, and so on.
+>=20
+> This patch also removes 'mtd_can_have_bb()' invocations from Logfs
+> to ensure correct Logfs behavior.
+>=20
+> I've tested that with this patch UBI works on top of NOR and NAND
+> flashes emulated by mtdram and nandsim correspondingly.
+>=20
+> This patch is based on patch from Linus Torvalds.
+>=20
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Sorry, I answered without checking memchr_inv() carefully.  If the size
-of buffer is less than 16 bytes, memchr_inv() scans for each byte as the
-original code did.  So it is unlikely to be slower in the most cases.
+Looks good to me.
+Acked-by: Joern Engel <joern@logfs.org>
 
-But I mentioned in the previous email, there are some problems in
-memchr_inv().  I'll send the patch in a few days.
-
-> So unless other concerns arise:
->
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-Thanks.
+J=C3=B6rn
