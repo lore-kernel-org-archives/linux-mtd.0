@@ -1,13 +1,11 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsX2i-0003zU-0J
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 10:03:56 +0000
-Date: Wed, 1 Feb 2012 11:03:27 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and
- mapping helper
-Message-ID: <20120201100327.GB2524@pengutronix.de>
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsXIh-0001wC-9y
+ for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 10:20:27 +0000
+Received: by bke5 with SMTP id 5so1067108bke.36
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Feb 2012 02:20:24 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20120201100327.GB2524@pengutronix.de>
 References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
  <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
  <20120131101734.GE2471@pengutronix.de>
@@ -16,11 +14,15 @@ References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
  <20120131203455.GG22611@ponder.secretlab.ca>
  <20120131211554.GA28105@pengutronix.de>
  <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="qlTNgmc+xy1dBmNv"
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
+ <20120201100327.GB2524@pengutronix.de>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 1 Feb 2012 18:20:04 +0800
+Message-ID: <CAGsJ_4z_08hNMuoLeNms-TKoyF8dzQipZ2B6jco6DKMDhgTg1w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: Linus Walleij <linus.walleij@linaro.org>,
  Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
  workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
@@ -36,40 +38,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2012/2/1 Wolfram Sang <w.sang@pengutronix.de>:
+>
+>> i think it makes sense for us to have platform_devm_request_irq() and
+>> similar things. i'll take care.
+>
+> I'll try, too. Then we can compare and learn from that.
 
---qlTNgmc+xy1dBmNv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+well, thanks.
 
+>
+>> PS: =C2=A0as the man maintaining embedded systems of the i2c subsystem,
+>> would you comment the CSR i2c driver which has been there waiting for
+>> a long time?
+>> http://www.spinics.net/lists/linux-i2c/msg07081.html
+>
+> Relax, you sent that only two days ago.
 
-> i think it makes sense for us to have platform_devm_request_irq() and
-> similar things. i'll take care.
+the v5 is sent two days ago with deleting only one line, v1-v4 has
+been there 3 monthes :-)
+i was not complaining you haven't sent comments for v5.
 
-I'll try, too. Then we can compare and learn from that.
+>
+> --
+> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
+> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
 
-> PS:  as the man maintaining embedded systems of the i2c subsystem,
-> would you comment the CSR i2c driver which has been there waiting for
-> a long time?
-> http://www.spinics.net/lists/linux-i2c/msg07081.html
-
-Relax, you sent that only two days ago.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---qlTNgmc+xy1dBmNv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk8pDe8ACgkQD27XaX1/VRvw2gCdHZsoxHOENXRnF0AjptSIFbUy
-3iMAn18Qzz8rSr8wgtknQgE4seaErJ4E
-=4dBO
------END PGP SIGNATURE-----
-
---qlTNgmc+xy1dBmNv--
+-barry
