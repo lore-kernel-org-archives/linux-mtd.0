@@ -1,20 +1,18 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=VA3EHSOBE005.bigfish.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsPkW-00009q-Su
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 02:16:41 +0000
-Message-ID: <4F28A0E4.2020700@freescale.com>
-Date: Wed, 1 Feb 2012 10:18:12 +0800
+Message-ID: <4F28A1AF.8040402@freescale.com>
+Date: Wed, 1 Feb 2012 10:21:35 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] mtd: nand: gpmi: use correct member for checking
- NAND_BBT_USE_FLASH
-References: <1328011843-7402-1-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1328011843-7402-1-git-send-email-w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 0/2] patch set about the MXS-DMA
+References: <1327044818-4464-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1327044818-4464-1-git-send-email-b32955@freescale.com>
 Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
+ vinod.koul@intel.com, b29396@freescale.com, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, w.sang@pengutronix.de,
+ linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2012=C4=EA01=D4=C231=C8=D5 20:10, Wolfram Sang =D0=B4=B5=C0:
-> This has been moved from .options to .bbt_options meanwhile. So, it
-> currently checks for something totally different (NAND_OWN_BUFFERS) and
-> decides according to that.
+hi,
+> patch 1: move the mxs dma header to a more common place.
+> 	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+> 	So move the mxs dma header file to a more common place, and rename
+> 	it to mxs-dma.h
 >
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Huang Shijie <b32955@freescale.com>
-> ---
+> patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+> 	In the new GPMI version, some hardware behavior changes.
+> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+> 	The DMA chain should be set like this:
 >
-> Artem: NAND_OWN_BUFFERS should not get set, so no danger. But I'd think=
- we
-> should add the stable tag nonetheless if Huang is fine with this change=
-.
+>           +-----+               +-----+                      +-----+
+>           | cmd | ------------> | cmd | ------------------>  | cmd |
+>           +-----+               +-----+                      +-----+
+>                                    ^                            ^
+>                                    |                            |
+>                                    |                            |
+>                               set WAIT4END here too        set WAIT4END here
 >
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+>         So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+> 	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+> 	And change the relative drivers with the dma_ctrl_flags.
 >
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> index 493ec2f..f39f83e 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1124,7 +1124,7 @@ static int gpmi_block_markbad(struct mtd_info *mt=
-d, loff_t ofs)
->  		chip->bbt[block >> 2] |=3D 0x01 << ((block & 0x03) << 1);
-> =20
->  	/* Do we have a flash based bad block table ? */
-> -	if (chip->options & NAND_BBT_USE_FLASH)
-> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
->  		ret =3D nand_update_bbt(mtd, ofs);
->  	else {
->  		chipnr =3D (int)(ofs >> chip->chip_shift);
-Acked-by: Huang Shijie <b32955@freescale.com>
+> TEST:
+> 	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+> 	in MX28 board.
+>
+> v1 --> v2:
+> 	[1] squash the trial patches into single patch.
+> 	[2] use the dma_ctrl_flags.
+>
+> Huang Shijie (2):
+>   mxs-dma : move the mxs dma.h to a more common place
+>   mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+>
+>  drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+>  drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   28 +++++++++++++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +++-
+>  drivers/mtd/nand/gpmi-nand/gpmi-regs.h             |    2 +
+>  .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
+>  sound/soc/mxs/mxs-pcm.c                            |    2 +-
+>  sound/soc/mxs/mxs-pcm.h                            |    2 +-
+>  sound/soc/mxs/mxs-saif.c                           |    2 +-
+>  9 files changed, 67 insertions(+), 21 deletions(-)
+>  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
+>
+ping.
 
 
-I noticed this too.
+Could these two patches ok ?
 
-thanks a lot.
+My following patches depend upon them.
 
+
+BR
 Huang Shijie
