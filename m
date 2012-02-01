@@ -1,31 +1,28 @@
-Received: from cassiel.sirena.org.uk ([80.68.93.111])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsZkF-0003RS-EA
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 12:57:04 +0000
-Date: Wed, 1 Feb 2012 12:56:42 +0000
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-To: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH 1/3] platform: add common resource requesting and
- mapping helper
-Message-ID: <20120201125642.GC13723@sirena.org.uk>
-References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
- <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
- <20120131101734.GE2471@pengutronix.de>
- <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
- <20120131113358.GM2471@pengutronix.de>
- <20120131203455.GG22611@ponder.secretlab.ca>
- <20120131211554.GA28105@pengutronix.de>
- <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RsZxy-0008OE-Uc
+ for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 13:11:15 +0000
+Received: by qcsu28 with SMTP id u28so712349qcs.36
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Feb 2012 05:11:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
-Cc: Erik Gilling <konkers@google.com>, Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>,
- workgroup.linux@csr.com, linux-kernel@vger.kernel.org,
- Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
- Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
- Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Barry Song <Barry.Song@csr.com>
+In-Reply-To: <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
+References: <1327674295-3700-1-git-send-email-akinobu.mita@gmail.com>
+ <1327674295-3700-2-git-send-email-akinobu.mita@gmail.com>
+ <1327684589.12089.22.camel@joe2Laptop>
+ <CAN8TOE8Hq8f3ipQFxBAHXK5ArSH6wNc8GA5CbYr_xORBa5gAWw@mail.gmail.com>
+ <CAC5umyh6H-0JXyQ9V97FH_Cp7Y2swbRMJptXJwnE0cK6HqbkGQ@mail.gmail.com>
+ <CAN8TOE_e8FkTTABRTyrXr5EW3wsJeXaODE4Wpud4ype=tcRFFQ@mail.gmail.com>
+Date: Wed, 1 Feb 2012 22:11:11 +0900
+Message-ID: <CAC5umygV_Nmn_hE04qV1=xVcSWZJfVXMVJO-Y1sadJU4kYz94A@mail.gmail.com>
+Subject: Re: [PATCH] mtd/nand: use string library
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: eric.dumazet@gmail.com, Scott Branden <sbranden@broadcom.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Jiandong Zheng <jdzheng@broadcom.com>, Joe Perches <joe@perches.com>,
+ akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,12 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 01, 2012 at 10:11:10AM +0800, Barry Song wrote:
+2012/2/1 Brian Norris <computersforpeace@gmail.com>:
+> On Fri, Jan 27, 2012 at 3:52 PM, Akinobu Mita <akinobu.mita@gmail.com> wr=
+ote:
+>> 2012/1/28 Brian Norris <computersforpeace@gmail.com>:
+>>> On Fri, Jan 27, 2012 at 9:16 AM, Joe Perches <joe@perches.com> wrote:
+>>>> On Fri, 2012-01-27 at 23:24 +0900, Akinobu Mita wrote:
+>>>>> - Use memchr_inv to check if the data contains all 0xFF bytes.
+>>>>> =A0 It is faster than looping for each byte.
+>>>>
+>>>> Stupid question:
+>>>>
+>>>> Are there any mtd devices modified that are slower
+>>>> at 64 bit accesses than repeated 8 bit accesses?
+>>>
+>>> I believe this patch deals with kernel buffers, not any kind of direct
+>>> access to the MTD, so the question (which is not stupid IMO) should be
+>>> regarding CPU architectures. And my educated guess is that 64-bit
+>>> access should not be any slower. I do know that 8-bit access *is*
+>>> slower for some relevant architectures.
+>>
+>> It could be slower when the number of bytes scanned is very small
+>> (found a unmatched character immediately, or the size of the area
+>> is very small), because memchr_inv() needs to generate a 64bit pattern
+>> to compare before starting the loop. =A0I recalled that Eric Dumazet
+>> pointed out it could generate the 64bit pattern more efficiently.
+>> (https://lkml.org/lkml/2011/8/8/480)
+>>
+>> Even if that small scanning is slower, this change can be assumed cleanu=
+p
+>> patch that simplifies the code.
+>
+> Well, I agree that it qualifies as cleanup as well, but we should at
+> least make an attempt not to cause performance regression...
+>
+> So by my understanding, the use of memchr_inv() is on buffers of
+> minimum length of 10 in this patch, so we're likely to have decent
+> results. And memcmp() usage looks fine to me.
 
-> i think it makes sense for us to have platform_devm_request_irq() and
-> similar things. i'll take care.
+Sorry, I answered without checking memchr_inv() carefully.  If the size
+of buffer is less than 16 bytes, memchr_inv() scans for each byte as the
+original code did.  So it is unlikely to be slower in the most cases.
 
-Note that this one is more tricky than most as it's really important
-that the interrupt handler can't be called when the data it needs and so
-on have been freed.  With things like memory this really doesn't matter
-and you can happily free in any order.
+But I mentioned in the previous email, there are some problems in
+memchr_inv().  I'll send the patch in a few days.
+
+> So unless other concerns arise:
+>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+Thanks.
