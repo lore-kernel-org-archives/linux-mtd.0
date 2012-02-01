@@ -1,18 +1,32 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ri4i3-0002xV-1z
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2012 13:47:24 +0000
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: re: mtd: introduce mtd_put_device interface
-Message-ID: <20120103134752.GB3557@mwanda>
+ id 1RsPfY-0008QX-Mb
+ for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 02:11:33 +0000
+Received: by yenm4 with SMTP id m4so376668yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2012 18:11:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@logfs.org>,
- linux-mtd@lists.infradead.org, Prasad Joshi <prasadjoshi.linux@gmail.com>,
- logfs@logfs.org
+In-Reply-To: <20120131211554.GA28105@pengutronix.de>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <20120131101734.GE2471@pengutronix.de>
+ <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
+ <20120131113358.GM2471@pengutronix.de>
+ <20120131203455.GG22611@ponder.secretlab.ca>
+ <20120131211554.GA28105@pengutronix.de>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 1 Feb 2012 10:11:10 +0800
+Message-ID: <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org,
+ workgroup.linux@csr.com, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Erik Gilling <konkers@google.com>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +35,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Tue, 03 Jan 2012 13:47:24 -0000
 
+hi Wolfram,
 
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+2012/2/1 Wolfram Sang <w.sang@pengutronix.de>:
+>
+>> > I am not sure using 'platform_devm_request_and_ioremap' and later usin=
+g
+>> > plain 'devm_*' functions (without platform_-prefix) is less confusing.
+>> > The alternative would be to check which helper functions also use
+>> > 'struct resource' and if they do checks on that. If all do that, you
+>> > would have the simple rule, that you only need to check yourself if yo=
+u
+>> > access it yourself.
+>>
+>> The reason I suggested the wrapper is that then the driver code doesn't =
+need
+>> to fart around with the res pointer at all. =C2=A0It reduces boilerplate=
+ in platform
+>> drivers which I think is a good thing.
+>
+> I do understand your motivation and fully agree with what you are aiming =
+for
+> (that's exactly why I implemented devm_request_and_ioremap()).
+>
+> This patch is a micro-optimization, though, and won't cut it IMHO. I stil=
+l have
+> issues with only one platform_devm_* and all the rest being devm_* (witho=
+ut
+> platform_). Things might look better, if we'd for example also have
+> platform_devm_request_irq() or something similar. That might be an approa=
+ch
+> where we can play around with and see what is left to do. Or, if other
+> approaches might be more elegant.
+>
+> To discuss that, try things, etc, I'd simply like to have a bit more time=
+. If
+> we are accepting the first iteration right away, and people let run their
+> coccinelle-scripts based on that, it might get annoying to change that a =
+second
+> time, I'd think.
+>
 
-This patch is in linux-next.  The parts of this patch that touch
-logfs are completely bogus and need to be reverted.  Eggnog...
+i think it makes sense for us to have platform_devm_request_irq() and
+similar things. i'll take care.
 
-fs/logfs/super.c:507:2: warning: passing argument 1 of =E2=80=98mtd_put_dev=
-ice=E2=80=99 from incompatible pointer type [enabled by default]
-fs/logfs/super.c:526:3: warning: passing argument 1 of =E2=80=98mtd_put_dev=
-ice=E2=80=99 from incompatible pointer type [enabled by default]
-fs/logfs/super.c:533:3: warning: passing argument 1 of =E2=80=98mtd_put_dev=
-ice=E2=80=99 from incompatible pointer type [enabled by default]
+PS:  as the man maintaining embedded systems of the i2c subsystem,
+would you comment the CSR i2c driver which has been there waiting for
+a long time?
+http://www.spinics.net/lists/linux-i2c/msg07081.html
 
-regards,
-dan carpenter
+> Regards,
+>
+> =C2=A0 Wolfram
+>
+> --
+> Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | Wolfram Sang =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
+> Industrial Linux Solutions =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | http://www.pengutronix.de/ =C2=A0|
 
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPAwcIAAoJEOnZkXI/YHqR2v0P/isAkYo4sgfMmL3dsGfm9Ymh
-6Jhtcvgrje0VlMsheUy4tBRTX4Yq+8Cjsie4HQIQjwWrc7A0np11RAjGtdJbtVY6
-a01qIg7RVfhSli4JgPvVF2wsqqsSgkAGYgVKXe19nmnzs8nuhtw5lgyJebK1Ralq
-BOLIKXBcIzEfNcbsG+XIVHLb38OXP//qV7TjS2TUPhirg2uwIppvLxu+io6CDqoT
-S8J37KcVgKfCIzVmjR2rbt7i9uAyylXqPL86k1bHvf41bQddux2aq/xNhy+ML5mG
-j2QjcdDPRWk39E1WLUTx/X2c0STiJd9Ylj1YR9ZorrtdtBxMqSmnU7sLEz4qj435
-MYU09E8Qn+7FrgTp1zvGULI/v/H7u31/F1SY9LA/FZhtufCuW0vlpjnjKw/PmQkR
-8pyHLZbfVDOczA8g/E/PZktIOJk63pOtljTRDMCYTnBR3R761JtU1hm4/WsyNYZ7
-wgWOdAIws84tdNQMBq+MG3kkvcDfqMRwfSIEEiQRIyY/Y9lOrhhE1d+e8QAW/As0
-lLkdmZnhNR89GR/BQPiagfGwQMk1W8LUGEzOUH3y74PiwYynaa8h6rxQcHfyPxsl
-tWjpiRHJo6ZTTex6p0UQoHfEQnPHT4dH6M4iXq/3F1L3TeN2ASeM5BiTf7AGWV4+
-y0gZ5SHWymyor1WtGzqi
-=cnL8
------END PGP SIGNATURE-----
-
---jho1yZJdad60DJr+--
+Thanks
+barry
