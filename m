@@ -1,47 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rsrn1-0000Ns-Ba
- for linux-mtd@lists.infradead.org; Thu, 02 Feb 2012 08:13:08 +0000
-Content-Type: multipart/mixed; boundary="===============1832522818=="
-MIME-Version: 1.0
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 2/2] mtd: nand: write BBM to OOB even with
- flash-based BBT
-Date: Thu, 2 Feb 2012 08:12:04 +0000
-Message-ID: <1328170449.28171.119.camel@sauron.fi.intel.com>
-References: <1327120684-7066-1-git-send-email-computersforpeace@gmail.com>
- <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1327120684-7066-3-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Cc: Angus CLARK <angus.clark@st.com>, Dan Carpenter <error27@gmail.com>,
- Barry Song <21cnbao@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, "Hunter,
- Adrian" <adrian.hunter@intel.com>, Gabor Juhos <juhosg@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jonas Gorski <jonas.gorski@gmail.com>, Jamie Iles <jamie@jamieiles.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- "Woodhouse, David" <david.woodhouse@intel.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
- Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Florian Fainelli <florian@openwrt.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Peter Wippich <pewi@gw-instruments.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>, "Dong,
- Chuanxiao" <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
- Guillaume LECERF <glecerf@gmail.com>,
- Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rss3m-0002SG-5g
+ for linux-mtd@lists.infradead.org; Thu, 02 Feb 2012 08:30:26 +0000
+Received: by dakp5 with SMTP id p5so1977477dak.36
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 00:30:24 -0800 (PST)
+Message-ID: <1328171541.28171.134.camel@sauron.fi.intel.com>
+Subject: Re: Secure deletion for UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Thu, 02 Feb 2012 10:32:21 +0200
+In-Reply-To: <alpine.DEB.2.00.1201241206570.30726@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1201241206570.30726@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-ni4ORTaW5j+ff7QEbZ6S"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,66 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---===============1832522818==
-MIME-Version: 1.0
-Content-Language: en-US
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-rI9s0XHiHXf+g7tY6Uvp"
 
---=-rI9s0XHiHXf+g7tY6Uvp
+--=-ni4ORTaW5j+ff7QEbZ6S
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-01-20 at 20:38 -0800, Brian Norris wrote:
-> Currently, the flash-based BBT implementation writes bad block data only
-> to its flash-based table and not to the OOB marker area. Then, as new bad
-> blocks are marked over time, the OOB markers become out of date and the
-> flash-based table becomes the only source of current bad block
-> information.
+On Tue, 2012-01-24 at 12:31 +0100, Joel Reardon wrote:
+> This patch provides efficient secure deletion for UBIFS. In short, every=
+=20
+> data node is stored encrypted on the flash memory, each with a different=
+=20
+> key. Encryption/decryption are handled in the compression/decompression=
+=20
 
-I think the comment could be corrected: OOB markers become incomplete,
-not out-of-date?
+Hi Joel,
 
+I think this idea is clever. Sorry for delays, I am realy swamped and
+cannot do a detailed review. But let me provide a minimum feed back so
+far to have this moving. I am looking forward to see your work upstream
+and I hope you'll be persistent enough to make sure this happens. This
+partially depends on me, but mostly on you, because I do not have time
+to help you much :-)
 
->   * This is the default implementation, which can be overridden by a hard=
-ware
-> - * specific driver.
-> + * specific driver. We try operations in the following order, according =
-to our
-> + * bbt_options (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-> + *  (1) erase the affected block, to allow OOB marker to be written clea=
-nly
-> + *  (2) update in-memory BBT
-> + *  (3) write bad block marker to OOB area of affected block
-> + *  (4) update flash-based BBT
-> + * Note that we retain the first error encountered in (3) or (4), finish=
- the
-> + * procedures, and dump the error in the end.
->  */
->  static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
->  {
->  	struct nand_chip *chip =3D mtd->priv;
->  	uint8_t buf[2] =3D { 0, 0 };
-> -	int block, ret, i =3D 0;
-> +	int block, res, ret =3D 0, i =3D 0;
-> +	int write_oob =3D !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
-> =20
-> -	if (!(chip->bbt_options & NAND_BBT_USE_FLASH)) {
-> +	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-> +			!(chip->bbt_options & NAND_BBT_USE_FLASH));
+Could you please stare with the following.
 
-If get the chip options wrong then this will be noticed only in the
-field when a block gets bad? Probably we better put all the validation
-of chip options to the NAND scan function so that incorrect combinations
-are noticed immediately. Probably with a comment why.
+1. Inline the patch instead of attaching it. This way people will be
+able to answer and cite the relevant bits.
 
-Otherwise looks OK and I guess we could merge it.
+2. Provide a bit more detailed design explanation.
+
+3. CC LKML: linux-kernel@vger.kernel.org
+
+4. CC the fs-devel mailing list: linux-fsdevel@vger.kernel.org
+
+5. Provide information how you tested the patch
+
+I also noticed that you changed on-flash data structures (struct
+ubifs_branch) and make incompatible changes. This is a serious change
+and at very least needs introduction of new format. UBIFS has only one
+on-flash format, but it has some provisioned mechanisms for supporting
+new formats. Also, this needs some testing: check that old formats
+refuse mounting new ones, check that new UBIFS supports both formats,
+etc.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-rI9s0XHiHXf+g7tY6Uvp
+--=-ni4ORTaW5j+ff7QEbZ6S
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -118,41 +81,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPKkXRAAoJECmIfjd9wqK0xKkQAKShHFcAPzubTHznEOVbQ4MW
-+Ru3tb/DLB2xA661qzeZEac+AssSjID/SyeBn2kCegsDKU/PVssaqWWlAi2e7q2v
-4qiOp+QJCHPXFX/bO/4WDcYL5yBKKg0er3mxoEYnjW7vyExlKxAq0zHu4s/xQDWw
-CDqOpWhEJy1c8wq7watD6SdRkOaJqUTXHzHtCZbufZtTNbteYKHAqIJlQWKipCD2
-0eRrDgTH1fgEzoe1jNqyGfzzJvmlV5/syvSLkOJsoFWcSB6f3e9x9Fd96K+7gRCN
-7ODUgHtex7YjHPmgHT5yHiman55365eVQWyAqcXketbL5IEIym644SEHMFF/0ld8
-oPrtH5YjdLIUVwNdJk8ikvnRSpG8rjael0iCAitBqzHruFugpvNQcfK5kXSUcgM9
-Afm23rpgt7LGVaz09xVvBs1CzaDaegaybBdNlt50Lx4H51gkZpxqSDKzW8Kt32as
-2yYEsCp+6QS3HAYQjUL3P/f90s5HP/WdiPPkcxlK2rjmjQ9u7AdjbSQF6dmc2o1D
-0YkKYvvz5tcfrXMS7fY7uD+d14EoQFz1kC5oW0YZnDmNd1ckuKqKDjkl9N2KWdgW
-ZxZlp3Ca/qSFDEwgZIrABnmbJCb6nDduXxfdihUe8O6b/ebjm9k5+lGdbGSLgdA3
-H9aQL/xpDpwqehtyqpa5
-=Ne+1
+iQIcBAABAgAGBQJPKkoVAAoJECmIfjd9wqK0pBoP/2jxIhxYFq2OEBp6rLJG2wZI
+pfKIG5hy0rFjNvNFlNL2uIJC0OvnNNvcYlEZPaXQ8zZ8bpDhl6ECXQPI4+QvvQRr
+GjS3JQY2T2i0cgujglRkufixVkDN+QdJtwr6kYg8httQL0NR18knc687ot1AnGr8
+6TusggOoENvj9DGQmG+KATgaOybWICWXhnsVUTDReo7WN08ygaTxv+5Yvak5FbKG
+riCYoIgggtbiJDmMjAiOfroHNjwVtPJKmFaY+FCXEgMICq0kMS4imVvGlrY2zWe0
+PjlgqPybFaTEJloaDQBP4UzYjrXOA1TaeMspi44nMpzN38DAyKiZtXngsEVrG6fI
+Dkhc/Jc4CoCia6BPyQYXceN/C+lRlE71YX0VC1cmv6+sidTNg672ngh7KKJLn1mb
+WkkIoRyGmVwuvhR4VkBeYXRig8yXU4BOnZ4YhD6GQ3tQ1ecYbx7Iw93rWgFqhmSk
+oD2Xkf2Yn5bNsc7lGxeo75QcfGLi4JUppVNtfezrnBIWN6ZVJAnGWWj+yxUWCo28
+v7ZON5q9z0G/r41Sm8XHRZhbttxsrDQIAOlfaBF3PPcvdl7nLOCx9OVlcHV+2q5L
+NXxxOsc8ihUkoQoFSA+BamAYlHXPaYML64IpZoZjHh2dx8sHwrU0vmT6F9Y2Obld
+mg1kQ4ms2m1hULU+myjN
+=z8jb
 -----END PGP SIGNATURE-----
 
---=-rI9s0XHiHXf+g7tY6Uvp--
-
---===============1832522818==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki =
-
-Business Identity Code: 0357606 - 4 =
-
-Domiciled in Helsinki =
-
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
---===============1832522818==--
+--=-ni4ORTaW5j+ff7QEbZ6S--
