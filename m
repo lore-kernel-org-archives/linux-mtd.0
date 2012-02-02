@@ -1,22 +1,20 @@
-Message-ID: <20266.41232.670348.59659@ipc1.ka-ro>
-Date: Thu, 2 Feb 2012 15:43:28 +0100
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] mtd/gpmi : add BBT support to gpmi nand driver
-In-Reply-To: <Pine.LNX.4.64.1202021441330.554@lnxricardw.se.axis.com>
-References: <1328008316-27258-1-git-send-email-b32955@freescale.com>
- <20120131121007.GO2471@pengutronix.de>
- <1328183611.28171.170.camel@sauron.fi.intel.com>
- <20266.36804.844286.216383@ipc1.ka-ro>
- <Pine.LNX.4.64.1202021441330.554@lnxricardw.se.axis.com>
-Cc: Huang Shijie <b32955@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
- Artem" <artem.bityutskiy@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from oproxy6.bluehost.com ([2605:dc00:100:2::a6]
+ helo=oproxy6-pub.bluehost.com)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rt0X5-0001sX-5z
+ for linux-mtd@lists.infradead.org; Thu, 02 Feb 2012 17:33:18 +0000
+Message-ID: <4F2AD4DE.7040508@xenotime.net>
+Date: Thu, 02 Feb 2012 10:24:30 -0800
+From: Randy Dunlap <rdunlap@xenotime.net>
+MIME-Version: 1.0
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: Tree for Feb 2 (fs/jffs2)
+References: <20120202144516.11b33e667a7cbb8d85d96226@canb.auug.org.au>
+In-Reply-To: <20120202144516.11b33e667a7cbb8d85d96226@canb.auug.org.au>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-next@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Ricard Wanderlof writes:
+On 02/01/2012 07:45 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> On Thu, 2 Feb 2012, Lothar Waßmann wrote:
-> 
-> > Hi,
-> 
-> > IMO it's just silly trying to write anything, even a bad block marker,to 
-> > a known bad block in NAND flash.
-> >
-> > The bad block markers in particular bytes in the OOB area are providedby 
-> > the manufacturer to identify "Factory Bad Blocks". That and no more! I 
-> > don't know why everybody is trying to interpret them as a general bad 
-> > block indicator.
-> 
-> Why not? It's just another byte within the block.
-> 
-But on a block that is known to have failed erasure or programming you
-cannot rely on being able to program anything reliably. Thus it is
-vain to try storing the info that the block is bad within that block
-itself.
-
-> The Flash chip reports an error on a write or erase operation if the 
-> operation does not complete successfully within certain time constraints, 
-> which are grounds for marking a block as unusable, i.e. bad, but usually 
-> the block is worn out long before the on-chip write/erase algorithms 
-> report errors. Hence a block should really be marked 'bad' while it still 
-> is 'good', in a sense.
-> 
-How do you know that a worn out block will still retain the 'This
-block is bad' information?
+> Changes since 20120201:
 
 
-Lothar Waßmann
+fs/jffs2/*.c still contains uses of ->read etc. instead of using
+mtd_read() etc.
+
+fs/jffs2/read.c:36:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/read.c:112:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/nodemgmt.c:669:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:83:9: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:676:9: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:954:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:1040:9: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:1216:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/readinode.c:1275:10: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/scan.c:286:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/gc.c:590:8: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/gc.c:894:10: error: 'struct mtd_info' has no member named 'read'
+fs/jffs2/gc.c:977:9: error: 'struct mtd_info' has no member named 'read'
+
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
