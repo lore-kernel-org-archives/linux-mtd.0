@@ -1,30 +1,35 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RsfSO-0006wa-ON
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2012 19:03:01 +0000
-Received: by wico1 with SMTP id o1so1419417wic.36
- for <linux-mtd@lists.infradead.org>; Wed, 01 Feb 2012 11:02:58 -0800 (PST)
+ id 1RskFc-0004wp-L4
+ for linux-mtd@lists.infradead.org; Thu, 02 Feb 2012 00:10:09 +0000
+Received: by dakp5 with SMTP id p5so1630687dak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Feb 2012 16:10:06 -0800 (PST)
+Sender: Grant Likely <glikely@secretlab.ca>
+Date: Wed, 1 Feb 2012 17:10:05 -0700
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] platform: add common resource requesting and mapping
+ helper
+Message-ID: <20120202001005.GB15343@ponder.secretlab.ca>
+References: <1328004002-24646-1-git-send-email-Barry.Song@csr.com>
+ <1328004002-24646-2-git-send-email-Barry.Song@csr.com>
+ <20120131101734.GE2471@pengutronix.de>
+ <CAGsJ_4wyJ6Wymy4AWoW1eHubZX=W7GT_Fbow9ofXoY1RrcHzgA@mail.gmail.com>
+ <20120131113358.GM2471@pengutronix.de>
+ <20120131203455.GG22611@ponder.secretlab.ca>
+ <20120131211554.GA28105@pengutronix.de>
+ <CAGsJ_4yJZYHUzr9YerdM5o8grGd6iP51ra4nJkMuOo5Khn95RQ@mail.gmail.com>
+ <20120201125642.GC13723@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <1328100867.28171.88.camel@sauron.fi.intel.com>
-References: <CALJbWeoznAvoSzdBp0Kunn+uxqB0XafrLmp7im=49ST340vSjw@mail.gmail.com>
- <CA+55aFzaErfoKG5KEyRMnjHS1=XbA7FNHRhF3J2iR8-m6PqtxQ@mail.gmail.com>
- <CALJbWep4pD69wP76Fcwupw0ppoztOpfHPnv7RvczW06Ko0E4YQ@mail.gmail.com>
- <CA+55aFyquFTUxgtHNRdz-rwha7H2bBocC6hw67a_g0FxG_=95Q@mail.gmail.com>
- <CALJbWeptUqUyVrNZOeQz-toE=akT31L8MLubMj8FKjKy05ppzg@mail.gmail.com>
- <CA+55aFzruneRNt28L5d_fX71-YSGmMXL=4kck_pQbxob4_2+8g@mail.gmail.com>
- <CAN8TOE9pJKD9aznYLDh2Se14og3nn-QHCvjQDXHQu2-dhbVavQ@mail.gmail.com>
- <CA+55aFwMinLTj4Jf5D-LHR73vfPLn4EUHooaBGSrsDdrRWsrrw@mail.gmail.com>
- <1328100867.28171.88.camel@sauron.fi.intel.com>
-Date: Wed, 1 Feb 2012 11:02:58 -0800
-Message-ID: <CAN8TOE_OdKRtjf4obP496i8eOoHs_Q9aCbzSBykQR1f4vuCPLQ@mail.gmail.com>
-Subject: Re: [GIT PULL] logfs: bug fixes
-From: Brian Norris <computersforpeace@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Prasad Joshi <prasadjoshi.linux@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
- David Woodhouse <David.Woodhouse@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20120201125642.GC13723@sirena.org.uk>
+Cc: Erik Gilling <konkers@google.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Greg Kroah-Hartman <gregkh@suse.de>, Barry Song <21cnbao@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, workgroup.linux@csr.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Barry Song <Baohua.Song@csr.com>, David Woodhouse <dwmw2@infradead.org>,
+ Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Barry Song <Barry.Song@csr.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,34 +39,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 1, 2012 at 4:54 AM, Artem Bityutskiy
-<artem.bityutskiy@linux.intel.com> wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date: Wed, 1 Feb 2012 11:50:07 +0200
-> Subject: [PATCH] mtd: fix merge conflict resolution breakage
->
-> This patch fixes merge conflict resolution breakage introduced by merge
-> commit 'd3712b9dfcf44ca145cf87e7f4096fa2d923471a'.
->
-> The commit changed 'mtd_can_have_bb()' function and made it always return
-> zero, which is incorrect. Instead, we need it to return whether the
-> underlying flash device can have bad eraseblocks or not. UBI needs this
-> information because it affects how it handles the underlying flash.
-> E.g., if the underlying flash is NOR, it cannot have bad blocks and any
-> write or erase error is fatal, and all we can do is to switch to R/O
-> mode. We do not need to reserve a pool of good eraseblocks for bad
-> eraseblocks handling, and so on.
->
-> This patch also removes 'mtd_can_have_bb()' invocations from Logfs
-> to ensure correct Logfs behavior.
->
-> I've tested that with this patch UBI works on top of NOR and NAND
-> flashes emulated by mtdram and nandsim correspondingly.
->
-> This patch is based on patch from Linus Torvalds.
->
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, Feb 01, 2012 at 12:56:42PM +0000, Mark Brown wrote:
+> On Wed, Feb 01, 2012 at 10:11:10AM +0800, Barry Song wrote:
+> 
+> > i think it makes sense for us to have platform_devm_request_irq() and
+> > similar things. i'll take care.
+> 
+> Note that this one is more tricky than most as it's really important
+> that the interrupt handler can't be called when the data it needs and so
+> on have been freed.  With things like memory this really doesn't matter
+> and you can happily free in any order.
 
-This agrees with my suggestions.
+Good point.
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+g.
