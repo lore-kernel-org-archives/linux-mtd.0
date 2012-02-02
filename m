@@ -1,24 +1,19 @@
-Message-ID: <1328183022.28171.165.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RFC 2/2] mtd : Make the mtd_suspend return 0 if the
- suspend is not implemented
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Rafael J. Wysocki" <rjw@sisk.pl>
-Date: Thu, 02 Feb 2012 13:43:42 +0200
-In-Reply-To: <201201302358.26152.rjw@sisk.pl>
-References: <1327306361-9803-1-git-send-email-shubhrajyoti@ti.com>
- <20120124090630.GR16726@n2100.arm.linux.org.uk>
- <1327923953.2487.13.camel@sauron.fi.intel.com>
- <201201302358.26152.rjw@sisk.pl>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ntbN+tCGDAD6+iGt6fgJ"
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Shubhrajyoti D <shubhrajyoti@ti.com>,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: multipart/mixed; boundary="===============1922810669=="
+MIME-Version: 1.0
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v3] mtd/gpmi : add BBT support to gpmi nand driver
+Date: Thu, 2 Feb 2012 11:51:25 +0000
+Message-ID: <1328183611.28171.170.camel@sauron.fi.intel.com>
+References: <1328008316-27258-1-git-send-email-b32955@freescale.com>
+ <20120131121007.GO2471@pengutronix.de>
+In-Reply-To: <20120131121007.GO2471@pengutronix.de>
+MIME-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--===============1922810669==
+MIME-Version: 1.0
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-d+1VLgiwXS4SZFda1Wbk"
 
---=-ntbN+tCGDAD6+iGt6fgJ
+--=-d+1VLgiwXS4SZFda1Wbk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-01-30 at 23:58 +0100, Rafael J. Wysocki wrote:
-> Thanks, but is anyone actually going to push it to Linus any time soon?
+On Tue, 2012-01-31 at 13:10 +0100, Wolfram Sang wrote:
+> On Tue, Jan 31, 2012 at 07:11:56PM +0800, Huang Shijie wrote:
+> > Add a new field to gpmi_nand_platform_data{}.
+> > Make the BBT support to board specific.
+> >=20
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+>=20
+> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+>=20
+> I'd think you won't be able to mark blocks bad, though. Will send a
+> patch in a minute. Please test.
 
-I agree, but I am not the maintainer so cannot answer. David Woodhouse
-is aware of this, but I do not know when he gonna send the pull request.
+Sorry, I have not read this and the previous related long threads, but
+from the few first e-mails I got the impression that you are not aware
+of the patch from Brian Norris where he modifies MTD BBT code so that it
+will by default write bad block markers _both_ to the BBT and to OOB. It
+sounds like you should hold on with this patch and wait when Brian's
+patch gets in. Then you probably may just use the first version of this
+patch.
+
+The patch I referred to:
+http://patchwork.ozlabs.org/patch/137154/
+
+HTH.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ntbN+tCGDAD6+iGt6fgJ
+--=-d+1VLgiwXS4SZFda1Wbk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +70,41 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPKnbuAAoJECmIfjd9wqK0LAsQAJFiuyXBDpjngQibNdRcbc4J
-IL7jDaixrnyvMY8G5qMCxrN0kfSmNwfgU6LEVwt9NCe7rl3oTruFiTA3oz9hdWT3
-kg6bV9WiOt0U/1I6IhsuOokiQtE61qkBRkhZpazCiS83QMejpgVPw91QxWXfbt6Z
-GhVnLzRmeDx4VGn26N3C9pYGRMw7lt61GYYcGjnejjozyh0FFyHQzotvzkkG7fu8
-AYUQuFEa/KefOXSC3+NEQqqqC9XkqkApl/zWGJLm1A6AWpArsB9YcuSzzFHotCNB
-PrHo6Epjopd5nfNkHWk0hDwPa4gXM9gOhIKR2J9lD24kufcA/AcgfujFcxU5oGGl
-PisbYKgKMdXMozBburzodn4/x6wOkip0stqI5GBgmjcvkp9YegjydhEkFvoUOP2d
-RpAe3EO11T777wCa4+2qnD6d8P/Mtnvc+B/4Ix+9QCr8EaMM79bBMXzLrUbot/l+
-jHBQRuZ56cWf+U3hqzxIrVkvjA2g4Ae+r9VOok9aZfbSIRgbCjl1Cr9CrI6gQj9F
-+EUWN3CjZyLuViV5LGWOzB443kB5uyorRed5WR3IiI7o/pO6iwGT7VQGuI7j0Q/X
-xmzSIumixMH4/kEvOKrGSEu5oKL8xPMd7xYHcN3y99D5vQl6O2FPCm7D0KUYRhjY
-9kO8pYIzpTEy5caUXn2i
-=Dkax
+iQIcBAABAgAGBQJPKnk7AAoJECmIfjd9wqK04vsQAMwT3ogPfVrB73hUZCFpKfrO
+MlPyUCOm133uSsscKaXP5dE0ZyhVSaMfvxQAu1L8Go4dPS6sfynnojVPFfTIWu/g
+Y3JpNtbnNHvSlgqNKG4wH7bstapGM1kXgdmcalZgGAK5nbgvDTh/bjR9zQXkW43f
+Ig8MgTpukN0F6ojDsLGR6zVyAxBlPPuyYnDNjnV/gRm/PjX5iMY0UQXxWdtnxNB6
+3ULcE0pT+g9bsVb98zynpLJ37aqB+bE3J6/7GPCs/HzSaTIzKsNv/JpaDaFmXth1
+EcwEjz/NRNk/46v2JD89CVak+hIKdBjWjrHscC6ZZEaxBQG4rZ5LmjAGWQmm1FCr
+Kbp/hebUQljqFsC657eTT/PxwfpPGHtPvAZw31ObWmgAoi15YWh9g68w+Nnszpgw
+pG7hM3gd/yIBnmX/WGXwHQGf/kBAwahW/vOOQuAX/B+2zD1L6F70sOr7i1LgUWdL
+gnBSENszrmUSXg8uAQ+0PM4p9nMhvLOOX6z0zmg5fydlyQkmvqe0SQvXIky7YDqK
+A1BXjv+F66NpKS3ILKjayEFPVD4QZtNnhrn7CNXpI9VQig8kGZ7kbL+PASgq6/5G
+ZstWoT5Y+Bo1XwVMunmJDmKf5YYNIJk+PLekDJpkyj4KYEND0VtHP4mL8gDrdt9H
+eIHYIv8vwdCU4Cs3ME5U
+=lwko
 -----END PGP SIGNATURE-----
 
---=-ntbN+tCGDAD6+iGt6fgJ--
+--=-d+1VLgiwXS4SZFda1Wbk--
+
+--===============1922810669==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki =
+
+Business Identity Code: 0357606 - 4 =
+
+Domiciled in Helsinki =
+
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
+--===============1922810669==--
