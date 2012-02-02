@@ -1,20 +1,21 @@
-Message-ID: <20266.36804.844286.216383@ipc1.ka-ro>
-Date: Thu, 2 Feb 2012 14:29:40 +0100
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: "Bityutskiy\, Artem" <artem.bityutskiy@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Date: Thu, 2 Feb 2012 15:01:35 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
 Subject: Re: [PATCH v3] mtd/gpmi : add BBT support to gpmi nand driver
-In-Reply-To: <1328183611.28171.170.camel@sauron.fi.intel.com>
+In-Reply-To: <20266.36804.844286.216383@ipc1.ka-ro>
+Message-ID: <Pine.LNX.4.64.1202021441330.554@lnxricardw.se.axis.com>
 References: <1328008316-27258-1-git-send-email-b32955@freescale.com>
  <20120131121007.GO2471@pengutronix.de>
  <1328183611.28171.170.camel@sauron.fi.intel.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Wolfram Sang <w.sang@pengutronix.de>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+ <20266.36804.844286.216383@ipc1.ka-ro>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
+ Artem" <artem.bityutskiy@intel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-Bityutskiy, Artem writes:
-> On Tue, 2012-01-31 at 13:10 +0100, Wolfram Sang wrote:
-> > On Tue, Jan 31, 2012 at 07:11:56PM +0800, Huang Shijie wrote:
-> > > Add a new field to gpmi_nand_platform_data{}.
-> > > Make the BBT support to board specific.
-> > > 
-> > > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> > 
-> > Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
-> > 
-> > I'd think you won't be able to mark blocks bad, though. Will send a
-> > patch in a minute. Please test.
-> 
-> Sorry, I have not read this and the previous related long threads, but
-> from the few first e-mails I got the impression that you are not aware
-> of the patch from Brian Norris where he modifies MTD BBT code so that it
-> will by default write bad block markers _both_ to the BBT and to OOB. It
-> sounds like you should hold on with this patch and wait when Brian's
-> patch gets in. Then you probably may just use the first version of this
-> patch.
-> 
-IMO it's just silly trying to write anything, even a bad block marker,
-to a known bad block in NAND flash.
+On Thu, 2 Feb 2012, Lothar Wa=DFmann wrote:
 
-The bad block markers in particular bytes in the OOB area are provided
-by the manufacturer to identify "Factory Bad Blocks". That and no
-more!
-I don't know why everybody is trying to interpret them as a general
-bad block indicator.
+> Hi,
 
-To keep track of bad blocks you need at least one good block that can
-be reliably written and read (AKA flash based BBT). The only function
-of the "Bad Block Markers" is to provide an initial list of blocks
-that should be listed in the BBT.
+> IMO it's just silly trying to write anything, even a bad block marker,to=
+=20
+> a known bad block in NAND flash.
+>
+> The bad block markers in particular bytes in the OOB area are providedby=
+=20
+> the manufacturer to identify "Factory Bad Blocks". That and no more! I=20
+> don't know why everybody is trying to interpret them as a general bad=20
+> block indicator.
 
+Why not? It's just another byte within the block.
 
-Lothar Waßmann
--- 
-___________________________________________________________
+It depends on what you mean by the concept 'bad block'. In the data sheets=
+=20
+manufacturers usually state that 'additional bad blocks can develop over=20
+time', and this basically means that a block becomes worn out so that they=
+=20
+don't meet the specifications regarding data retention etc, but the block=
+=20
+is not defective in the sense that there's been a destructive change in=20
+the silicon structure.
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+In contrast, factory bad blocks can be both blocks with physical defects=20
+preventing their use, as well as blocks which don't meet the=20
+specifications. In my experience with 1 GB SLC flashes, the latter type of=
+=20
+'bad' dominates, so that in many cases it is possible to erase the bad=20
+block markers on factory bad blocks and use them just as any other block.=
+=20
+Since they were marked bad from the factory it is not a wise idea and=20
+should definitely not be used for production but can be very handy for=20
+'unbricking' a device where something has gone wrong with the flash=20
+management and all blocks have been marked as 'bad' with no information as=
+=20
+to whether they were factory bad or not.
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+(In fact in a test concluded by NASA the factory marked bad blocks did not=
+=20
+seem to correlate with the blocks having the worst characteristics; I=20
+think the relevant document is=20
+http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/40761/1/08-07.pdf but=20
+I'm not completely sure).
+
+The Flash chip reports an error on a write or erase operation if the=20
+operation does not complete successfully within certain time constraints,=
+=20
+which are grounds for marking a block as unusable, i.e. bad, but usually=20
+the block is worn out long before the on-chip write/erase algorithms=20
+report errors. Hence a block should really be marked 'bad' while it still=
+=20
+is 'good', in a sense.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
