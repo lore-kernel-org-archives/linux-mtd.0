@@ -1,13 +1,16 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RtEjg-0007nY-51
+ id 1RtEjg-0007na-JE
  for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 08:43:13 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/8] mtd: block2mtd: initialize writebufsize
-Date: Fri,  3 Feb 2012 10:43:07 +0200
-Message-Id: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
-Cc: Joern Engel <joern@lazybastard.org>
+Subject: [PATCH 3/8] mtd: doc2001: initialize writebufsize
+Date: Fri,  3 Feb 2012 10:43:09 +0200
+Message-Id: <d88a1db7b795fca836e99f39f6c3ee69edaab16b.1328257053.git.artem.bityutskiy@linux.intel.com>
+In-Reply-To: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
+References: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
+In-Reply-To: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
+References: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +28,27 @@ the maximum amount of data the device writes to the media at a time. This is
 an important parameter for UBIFS which is used during recovery and which
 basically defines how big a corruption caused by a power cut can be.
 
-However, we forgot to set this parameter for block2mtd. Set it to PAGE_SIZE
-because this is actually the amount of data we write at a time.
+Set it to be equivalent to mtd->writesize because this is the maximum amount
+of data the driver writes at a time.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Cc: stable@kernel.org [2.6.38+]
-Cc: Joern Engel <joern@lazybastard.org>
 ---
- drivers/mtd/devices/block2mtd.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/mtd/devices/doc2001.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index d9e75da..0fccf14 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -283,6 +283,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
- 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.writesize = 1;
-+	dev->mtd.writebufsize = PAGE_SIZE;
- 	dev->mtd.type = MTD_RAM;
- 	dev->mtd.flags = MTD_CAP_RAM;
- 	dev->mtd._erase = block2mtd_erase;
+diff --git a/drivers/mtd/devices/doc2001.c b/drivers/mtd/devices/doc2001.c
+index 3785733..b1185f9 100644
+--- a/drivers/mtd/devices/doc2001.c
++++ b/drivers/mtd/devices/doc2001.c
+@@ -346,7 +346,7 @@ void DoCMil_init(struct mtd_info *mtd)
+ 
+ 	/* FIXME: erase size is not always 8KiB */
+ 	mtd->erasesize = 0x2000;
+-	mtd->writesize = 512;
++	mtd->writebufsize = mtd->writesize = 512;
+ 	mtd->oobsize = 16;
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->_erase = doc_erase;
 -- 
 1.7.9
