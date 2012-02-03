@@ -1,22 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RtCdl-000841-QK
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 06:28:58 +0000
-Received: by dakp5 with SMTP id p5so2995288dak.36
- for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 22:28:55 -0800 (PST)
-Message-ID: <1328250655.6750.43.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: use correct member for checking
- NAND_BBT_USE_FLASH
+ id 1RtD6H-0000p8-VI
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 06:58:26 +0000
+Received: by pbdx9 with SMTP id x9so3192677pbd.36
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 22:58:23 -0800 (PST)
+Message-ID: <1328252423.6750.47.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/4] jffs2: Remove unnecessary OOM messages
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Fri, 03 Feb 2012 08:30:55 +0200
-In-Reply-To: <1328011843-7402-1-git-send-email-w.sang@pengutronix.de>
-References: <1328011843-7402-1-git-send-email-w.sang@pengutronix.de>
+To: Joe Perches <joe@perches.com>
+Date: Fri, 03 Feb 2012 09:00:23 +0200
+In-Reply-To: <98592226b940c1fa59ced4a28418343508714161.1328049542.git.joe@perches.com>
+References: <cover.1328049542.git.joe@perches.com>
+ <98592226b940c1fa59ced4a28418343508714161.1328049542.git.joe@perches.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-BSgvH+ZPkyajKKAJ3sRn"
+ boundary="=-IGf1R394+TPJhxFq/2C3"
 Mime-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,26 +29,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-BSgvH+ZPkyajKKAJ3sRn
+--=-IGf1R394+TPJhxFq/2C3
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-01-31 at 13:10 +0100, Wolfram Sang wrote:
-> This has been moved from .options to .bbt_options meanwhile. So, it
-> currently checks for something totally different (NAND_OWN_BUFFERS) and
-> decides according to that.
+On Tue, 2012-01-31 at 14:42 -0800, Joe Perches wrote:
+> Per call site OOM messages are unnecessary.
+> k.alloc and v.alloc failures use dump_stack().
 >=20
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-Pushed to l2-mtd.git, added the following tag:
-Cc: stable@kernel.org [3.2+]
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-BSgvH+ZPkyajKKAJ3sRn
+--=-IGf1R394+TPJhxFq/2C3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPK38fAAoJECmIfjd9wqK0kQ0P/Amt0AmFeSfF2SZF81tWm9PM
-iKIumYCQNc9bHmx4AUIzpGDfD+0hoivIYM10gwLHtIOkK5UfgMeYBLcf6larwrzm
-DjTi4bJYG8xyJSzg+tfq9s7VLnq0Z7eadNoAdzshQ/eeTZMjGFnbFO2653UWmoCe
-Nof71Wnly9KbHyiwkQ0eSaHelIFm+KktNT/afS/JJ4Mi4vm7jJiddfV1SwX7GBkX
-FtsP/NCv4TiKVHWHux6jGUoQKDfyFdGOyRyC05Sr9cOt3OHN/lEigrO7zqgdueyi
-BoFN4Yqf0dXmh+GEAsN6YKNQxJ1zZeZp6zo+5t9FHNzSuNWo8ALBGbKBEOoak5bk
-9AFMOXH4iHCjHdFQ3o4ENeqx7DVvdDe5gv/lv2pkK+shu9V11usvPocod2AVK5vS
-HyiW6CJ7z4gHATGnCCsgxRX2mLUKNahQ+JqavzzNqGpEQG2JS1gNrslrrDKP0QRX
-NZ0Z/lBMV3KWWiAlFh4oemy51df8MrzxU0O+yeXvaG2x9wY9zX23Va7xF7T7WU1r
-z+/uLeIn2YNyUvRVgi8Xnq0vZoaV13+wAm+xPoNgl9sFXwaLe/MnGjVeoWKF4h0e
-R3onnujlBlD4OzMFJ8ypeG5v9GhM6XFBuVBYGfgHYU0GthZYbS81K4GF4wR5XVw3
-94q0PazQLkg0wIjei0iR
-=7xA7
+iQIcBAABAgAGBQJPK4YHAAoJECmIfjd9wqK04o4P/jseB136azEkGBN+9OdQCjh1
+m6Gdxu8z1VPvH+/E0okJmoYrzl3W6Vwf56tz3lsDflOorFHtlnsTTEA0SR0Ci5/V
+o8CPoAMpvXR9ZuM4ZKezKqT8rrz6R9Kxcy6jaOfq3RPkjz0s5inqJvJa8jMHkpD5
+BfqUKxo/vQsTU3UObgenm6QfVd+D+GTDL6dw0QiPuGV1NqwwxiJZqUUrcoKU16l0
+UsW7Q/pYfVSYaJrr+SOcqEewi1GpBNDk9oG9gCygb6lwHt9t/uO8LFJRHoXpiDpd
+ZEITACcEkshZqEfP4nk5TNAOZUwMxqQ2QqazraKWvTnjr7GbzmpbPx1MGxtYEKqR
+wae/M1EXJDzRqk2Qd2hElX7mD4Gr73y5eUKEdmO37im5z7UddvVlZNCFZcwY71EL
+2JkE43LftqEHwas9rNSM2/2wKCuBMn7Stw4yUUtD33g7MRx31p/abE29hWyF8Juo
+DUeMQ56E+aGsLXLmLLrs4ZC3XQLueARuBtwugy42PjAUMDYdRoUOt9kZWFl7a0g6
+d8uTrjqHSZ/wDlzm6JC59rxcjPvGUeY7q1FLaYfb8cyrVVKVoCOAOjMu8yWVgFBU
+h7WawO7/hLH24hCuUjgKVpYWX5vgV80YHXom9IW0s7Tj0f7F6AaaJhH/AE6PWQwA
+akY6iQKc14NTQAmD2bl4
+=BP6n
 -----END PGP SIGNATURE-----
 
---=-BSgvH+ZPkyajKKAJ3sRn--
+--=-IGf1R394+TPJhxFq/2C3--
