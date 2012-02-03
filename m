@@ -1,22 +1,18 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RtJnN-0004l5-D2
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 14:07:22 +0000
-Received: by dakp5 with SMTP id p5so3307128dak.36
- for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2012 06:07:20 -0800 (PST)
-Message-ID: <1328278161.13362.23.camel@sauron.fi.intel.com>
-Subject: Re: RFC : attach ubi in readonly mode
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Fri, 03 Feb 2012 16:09:21 +0200
-In-Reply-To: <4F2BE3C1.8000104@parrot.com>
-References: <4F2BE3C1.8000104@parrot.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-rsinMtC4zLmGuC6mCWvc"
-Mime-Version: 1.0
-Cc: mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1RtKDC-0007uZ-GB
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 14:34:03 +0000
+Received: by pbdx9 with SMTP id x9so3510353pbd.36
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2012 06:34:00 -0800 (PST)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+ Eric Dumazet <eric.dumazet@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, joe@perches.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] string: memchr_inv speed improvements
+Date: Fri,  3 Feb 2012 23:34:17 +0900
+Message-Id: <1328279657-9054-1-git-send-email-akinobu.mita@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+- Generate a 64-bit pattern more efficiently
 
---=-rsinMtC4zLmGuC6mCWvc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+memchr_inv needs to generate a 64-bit pattern filled with a target
+character.  The operation can be done by more efficient way.
 
-On Fri, 2012-02-03 at 14:40 +0100, Matthieu CASTET wrote:
-> Hi,
->=20
-> it could be interesting to attach ubi in read-only mode (for example gett=
-ing ubi
-> volume info without altering flash).
->=20
-> A solution to do that could be to add an argument to UBI_IOCATT ioctl.
+- Don't call the slow check_bytes() if the memory area is 64-bit aligned
 
-No objections in general, especially if you also:
+memchr_inv compares contiguous 64-bit words with the 64-bit pattern as
+much as possible.  The outside of the region is checked by check_bytes()
+that scans for each byte.  Unfortunately, the first 64-bit word is
+unexpectedly scanned by check_bytes() even if the memory area is aligned
+to a 64-bit boundary.
 
-1. amend the mtd-utils and add support for this option
-2. add a piece of doc for the mtd web site
-3. add a test for this feature to mtd-utils.git/tests/ubi-test/
-(probably simpler to improve one of the existing tests there)
+Both changes were originally suggested by Eric Dumazet.
 
-> Another solution should be to have a way to switch MTD_WRITEABLE flags.
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
+---
+ lib/string.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
 
-This can be done as well, up to you. But I guess UBI will need changes
-anyway to handle gracefully situation like:
-
-1. you have RW partition, do a lot of I/O, then reboot uncleanly, so
-that there are many erase operations unfinished
-
-2. You reboot, mark the partition R/O, try to attach it - UBI will
-probably anyway try to erase some blocks and get -EFORS, not sure will
-it panic or not. Should be tested, but probably not a big deal.
-
-IOW, both approaches should be OK.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-rsinMtC4zLmGuC6mCWvc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPK+qRAAoJECmIfjd9wqK09JwP/0p4GXTg1BENr/Wk8mnCww4P
-AsggzUkMFYst7D9MxGFrxE2euH6XghuUACIzn9eEq9iKCpI2NfhtCFpOnwk+UlDw
-Su+c9p+NJVegFg7KcpD1rpzTSq9Nd7vWbStAQBAZTiflAIn23Q5MXb7VgxHGh8cC
-9ZPVOwtD23jCjSoeBObinMMwy1MmVTpiAjxbSkt4dNFljHFEitp/Xu/yJNsLfQDb
-1EJ4ashAC7EKeYE5adhgKvtbXOmUrl2i7bNFl5SigFO/TS5ILFnrHxuSrbrUbYL7
-Xdo+kNPLkJwru4ChuxU0h4gaMshOwIU1BfY9bdkSYg1pBGKDDYWOGWSrDPHEiFYe
-LicEtUT1TIiRMQXMzzOeJ6X8zKm4k4puxmbHdW8JH16QykDPI8f/OyJWOtzTvYTZ
-Magg09ItM28aHezyN/im3h0f5il1s//5iFRYgzKhhZGyhxZnd81CkD7aXNgY5ZQo
-EfGk4I5ijfxCgzb33j9aXblRNmRzZVCfXEI6DYU4YV5m6ya/NojxHZB5ZFrC8MUp
-S7DzfEWcDaIJgSfkPsQFPFeQTe2gj9p0VVIeOj+rSQYV5XY+LOGxUmIEA5P93Pur
-3D58BpviN0hSBVoMhVSW7TuG++vYvo3QvBZzNAeJae1Jc26exvWt8udpnr+6LtLk
-/WKajNCFGB0tpyKKqlX8
-=QqDX
------END PGP SIGNATURE-----
-
---=-rsinMtC4zLmGuC6mCWvc--
+diff --git a/lib/string.c b/lib/string.c
+index dc4a863..3a03782 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -785,12 +785,24 @@ void *memchr_inv(const void *start, int c, size_t bytes)
+ 	if (bytes <= 16)
+ 		return check_bytes8(start, value, bytes);
+ 
+-	value64 = value | value << 8 | value << 16 | value << 24;
+-	value64 = (value64 & 0xffffffff) | value64 << 32;
+-	prefix = 8 - ((unsigned long)start) % 8;
++	value64 = value;
++#if defined(ARCH_HAS_FAST_MULTIPLIER) && BITS_PER_LONG == 64
++	value64 *= 0x0101010101010101;
++#elif defined(ARCH_HAS_FAST_MULTIPLIER)
++	value64 *= 0x01010101;
++	value64 |= value64 << 32;
++#else
++	value64 |= value64 << 8;
++	value64 |= value64 << 16;
++	value64 |= value64 << 32;
++#endif
+ 
++	prefix = (unsigned long)start % 8;
+ 	if (prefix) {
+-		u8 *r = check_bytes8(start, value, prefix);
++		u8 *r;
++
++		prefix = 8 - prefix;
++		r = check_bytes8(start, value, prefix);
+ 		if (r)
+ 			return r;
+ 		start += prefix;
+-- 
+1.7.4.4
