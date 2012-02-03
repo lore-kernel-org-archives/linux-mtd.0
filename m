@@ -1,17 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RtJNK-0002x4-5b
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 13:40:27 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
- by co202.xi-lite.net (Postfix) with ESMTPS id A3747260327
- for <linux-mtd@lists.infradead.org>; Fri,  3 Feb 2012 14:40:21 +0100 (CET)
-Message-ID: <4F2BE3C1.8000104@parrot.com>
-Date: Fri, 3 Feb 2012 14:40:17 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: mtd <linux-mtd@lists.infradead.org>
-Subject: RFC : attach ubi in readonly mode
-Content-Type: multipart/mixed; boundary="------------060907000506000502050909"
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RtJnN-0004l5-D2
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 14:07:22 +0000
+Received: by dakp5 with SMTP id p5so3307128dak.36
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2012 06:07:20 -0800 (PST)
+Message-ID: <1328278161.13362.23.camel@sauron.fi.intel.com>
+Subject: Re: RFC : attach ubi in readonly mode
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Fri, 03 Feb 2012 16:09:21 +0200
+In-Reply-To: <4F2BE3C1.8000104@parrot.com>
+References: <4F2BE3C1.8000104@parrot.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-rsinMtC4zLmGuC6mCWvc"
+Mime-Version: 1.0
+Cc: mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,97 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------060907000506000502050909
-Content-Type: text/plain; charset="ISO-8859-1"
+
+--=-rsinMtC4zLmGuC6mCWvc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2012-02-03 at 14:40 +0100, Matthieu CASTET wrote:
+> Hi,
+>=20
+> it could be interesting to attach ubi in read-only mode (for example gett=
+ing ubi
+> volume info without altering flash).
+>=20
+> A solution to do that could be to add an argument to UBI_IOCATT ioctl.
+
+No objections in general, especially if you also:
+
+1. amend the mtd-utils and add support for this option
+2. add a piece of doc for the mtd web site
+3. add a test for this feature to mtd-utils.git/tests/ubi-test/
+(probably simpler to improve one of the existing tests there)
+
+> Another solution should be to have a way to switch MTD_WRITEABLE flags.
+
+This can be done as well, up to you. But I guess UBI will need changes
+anyway to handle gracefully situation like:
+
+1. you have RW partition, do a lot of I/O, then reboot uncleanly, so
+that there are many erase operations unfinished
+
+2. You reboot, mark the partition R/O, try to attach it - UBI will
+probably anyway try to erase some blocks and get -EFORS, not sure will
+it panic or not. Should be tested, but probably not a big deal.
+
+IOW, both approaches should be OK.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-rsinMtC4zLmGuC6mCWvc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
-Hi,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-it could be interesting to attach ubi in read-only mode (for example getting ubi
-volume info without altering flash).
+iQIcBAABAgAGBQJPK+qRAAoJECmIfjd9wqK09JwP/0p4GXTg1BENr/Wk8mnCww4P
+AsggzUkMFYst7D9MxGFrxE2euH6XghuUACIzn9eEq9iKCpI2NfhtCFpOnwk+UlDw
+Su+c9p+NJVegFg7KcpD1rpzTSq9Nd7vWbStAQBAZTiflAIn23Q5MXb7VgxHGh8cC
+9ZPVOwtD23jCjSoeBObinMMwy1MmVTpiAjxbSkt4dNFljHFEitp/Xu/yJNsLfQDb
+1EJ4ashAC7EKeYE5adhgKvtbXOmUrl2i7bNFl5SigFO/TS5ILFnrHxuSrbrUbYL7
+Xdo+kNPLkJwru4ChuxU0h4gaMshOwIU1BfY9bdkSYg1pBGKDDYWOGWSrDPHEiFYe
+LicEtUT1TIiRMQXMzzOeJ6X8zKm4k4puxmbHdW8JH16QykDPI8f/OyJWOtzTvYTZ
+Magg09ItM28aHezyN/im3h0f5il1s//5iFRYgzKhhZGyhxZnd81CkD7aXNgY5ZQo
+EfGk4I5ijfxCgzb33j9aXblRNmRzZVCfXEI6DYU4YV5m6ya/NojxHZB5ZFrC8MUp
+S7DzfEWcDaIJgSfkPsQFPFeQTe2gj9p0VVIeOj+rSQYV5XY+LOGxUmIEA5P93Pur
+3D58BpviN0hSBVoMhVSW7TuG++vYvo3QvBZzNAeJae1Jc26exvWt8udpnr+6LtLk
+/WKajNCFGB0tpyKKqlX8
+=QqDX
+-----END PGP SIGNATURE-----
 
-A solution to do that could be to add an argument to UBI_IOCATT ioctl.
-
-Another solution should be to have a way to switch MTD_WRITEABLE flags.
-
-What do you think a that ?
-
-
-PS : attached a proof of concept for solution 1
-
---------------060907000506000502050909
-Content-Type: text/x-diff; name="poc_ubi_attach_ro.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="poc_ubi_attach_ro.diff"
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 13b05cb..56c2249 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -841,6 +841,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * @mtd: MTD device description object
-  * @ubi_num: number to assign to the new UBI device
-  * @vid_hdr_offset: VID header offset
-+ * @ro : attach in readonly mode
-  *
-  * This function attaches MTD device @mtd_dev to UBI and assign @ubi_num number
-  * to the newly created UBI device, unless @ubi_num is %UBI_DEV_NUM_AUTO, in
-@@ -851,7 +852,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * Note, the invocations of this function has to be serialized by the
-  * @ubi_devices_mutex.
-  */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset, int ro)
- {
- 	struct ubi_device *ubi;
- 	int i, err, ref = 0;
-@@ -922,6 +923,12 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 
- 	ubi_msg("attaching mtd%d to ubi%d", mtd->index, ubi_num);
- 
-+	if (ro) {
-+		ubi_msg("attach in "
-+			"read-only mode");
-+		ubi->ro_mode = 1;
-+	}
-+
- 	err = io_init(ubi);
- 	if (err)
- 		goto out_free;
-@@ -1209,7 +1216,7 @@ static int __init ubi_init(void)
- 
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, UBI_DEV_NUM_AUTO,
--					 p->vid_hdr_offs);
-+					 p->vid_hdr_offs, 0);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
- 			ubi_err("cannot attach mtd%d", mtd->index);
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 4dfa6b9..9be009f 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1007,7 +1007,7 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 		 * 'ubi_attach_mtd_dev()'.
- 		 */
- 		mutex_lock(&ubi_devices_mutex);
--		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset);
-+		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset, req.padding[0]);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0)
- 			put_mtd_device(mtd);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index a637f02..aff929f 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -550,7 +550,7 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
- 			 struct ubi_vid_hdr *vid_hdr);
- 
- /* build.c */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset);
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset, int ro);
- int ubi_detach_mtd_dev(int ubi_num, int anyway);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
-
---------------060907000506000502050909--
+--=-rsinMtC4zLmGuC6mCWvc--
