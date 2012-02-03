@@ -1,23 +1,19 @@
-Received: from haggis.tip.net.au ([2402:b800:7003:1::20]
- helo=members.tip.net.au)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rt6T4-0002di-Oj
- for linux-mtd@lists.infradead.org; Thu, 02 Feb 2012 23:53:31 +0000
-Date: Fri, 3 Feb 2012 10:44:53 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: linux-next: Tree for Feb 2 (fs/jffs2)
-Message-Id: <20120203104453.8438182da9f365c24d3c2128@canb.auug.org.au>
-In-Reply-To: <4F2AD4DE.7040508@xenotime.net>
-References: <20120202144516.11b33e667a7cbb8d85d96226@canb.auug.org.au>
- <4F2AD4DE.7040508@xenotime.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Fri__3_Feb_2012_10_44_53_+1100_KPBENjOXy6lr7v/K"
-Cc: linux-mtd@lists.infradead.org, Randy Dunlap <rdunlap@xenotime.net>,
- linux-next@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rt6uu-0003I6-SP
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 00:22:17 +0000
+Received: by pbdx9 with SMTP id x9so2932476pbd.36
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 16:22:14 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] jffs2: update to new MTD interface (missed a few)
+Date: Thu,  2 Feb 2012 16:21:09 -0800
+Message-Id: <1328228469-10539-1-git-send-email-computersforpeace@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Randy Dunlap <rdunlap@xenotime.net>, linux-next@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Fri__3_Feb_2012_10_44_53_+1100_KPBENjOXy6lr7v/K
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There were a few instances of the old MTD interface remaining for JFFS2. We
+fix one error that shows up (only when CONFIG_JFFS2_FS_WRITEBUFFER is not
+defined) like this:
 
-On Thu, 02 Feb 2012 10:24:30 -0800 Randy Dunlap <rdunlap@xenotime.net> wrot=
-e:
->=20
-> fs/jffs2/*.c still contains uses of ->read etc. instead of using
-> mtd_read() etc.
->=20
-> fs/jffs2/read.c:36:8: error: 'struct mtd_info' has no member named 'read'
-> fs/jffs2/read.c:112:8: error: 'struct mtd_info' has no member named 'read'
-> fs/jffs2/nodemgmt.c:669:8: error: 'struct mtd_info' has no member named '=
-read'
-> fs/jffs2/readinode.c:83:9: error: 'struct mtd_info' has no member named '=
-read'
-> fs/jffs2/readinode.c:676:9: error: 'struct mtd_info' has no member named =
-'read'
-> fs/jffs2/readinode.c:954:8: error: 'struct mtd_info' has no member named =
-'read'
-> fs/jffs2/readinode.c:1040:9: error: 'struct mtd_info' has no member named=
- 'read'
-> fs/jffs2/readinode.c:1216:8: error: 'struct mtd_info' has no member named=
- 'read'
-> fs/jffs2/readinode.c:1275:10: error: 'struct mtd_info' has no member name=
-d 'read'
-> fs/jffs2/scan.c:286:8: error: 'struct mtd_info' has no member named 'read'
-> fs/jffs2/gc.c:590:8: error: 'struct mtd_info' has no member named 'read'
-> fs/jffs2/gc.c:894:10: error: 'struct mtd_info' has no member named 'read'
-> fs/jffs2/gc.c:977:9: error: 'struct mtd_info' has no member named 'read'
+  fs/jffs2/read.c: In function 'jffs2_read_dnode':
+  fs/jffs2/read.c:36:8: error: 'struct mtd_info' has no member named 'read'
+  fs/jffs2/read.c:112:8: error: 'struct mtd_info' has no member named 'read'
+  ...
 
-They were probably missed because they use the jffs2_flash_read() macro
-in fs/jffs2/os-linux.h
+We also simply remove two macros that are not in use, were not updated to
+the new MTD interface, and don't even utilize the old interface properly.
+(That means they weren't used since commit 8593fbc6, year 2006; almost 6
+years ago, for those who don't want to do the math)
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
+Reported-by: Randy Dunlap <rdunlap@xenotime.net>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+This fixes some linux-next build errors seen by Randy Dunlap
 
---Signature=_Fri__3_Feb_2012_10_44_53_+1100_KPBENjOXy6lr7v/K
-Content-Type: application/pgp-signature
+ fs/jffs2/os-linux.h |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJPKx/1AAoJEECxmPOUX5FEjfMQAKkQBMSZ1l1DbYtAXeqWSI74
-gTF0UQn3Ejj6yQr9VlQRzBik46yxhSVsScvVZ6waIVAN/m3KVMyjninNm5LMdaWq
-rni9lCDUFXUTKQwZCtmTpyNQHxm4ua62xlH4wuWS0+YtS918XEpR8cnDoQHEYTO9
-kvhWf4X8tZoGzboBeCcKMH9TcA1WhEwnruVZ+jG4OF1QTvbiANss9dZxTe56DpnM
-ONRBqglftu+O6qpv/JIbxYZ6bKVyRJt7LU4iPKDi9qK2qgC1SJ83zSFq4BCGPjHs
-zoShD2rBfrNX9RRjgOYNeiUI+mGj0XVIt4oTQuRyzeA018xV5F7ep/OsFBSGfaYa
-9RqkZXTcBNjQ/xI7JB86YHrRjd/p3IHliYLfZ8jx/+v09Q7rYbC/rlxCdvvYz9cT
-D0nQ9qYme6AJAwx1alFv1ZOnJ2S/cOz3fM4MK7C9vJDdNsAXzOJN4u+o8DB2eddw
-GZR+ejy15WmgKVluIJi9XVOYKfGPgok6tILhMB3cC7YDz0op0KvXyrviO9HWBDJb
-IYgRWOnT9cus1Zk8ZcIJ3p0La/mE6RZhmFuJV8yb19/nw5ckuI4U9cpG6gsAGyoW
-IzGZOvuhg/jNleRX1Y9osJUmNOrfmUE+3LNl2f0RbDai2TiqyRdV5EUAD+WtH0bw
-sI2pkGkPKTdndIfyK0AQ
-=Nl48
------END PGP SIGNATURE-----
-
---Signature=_Fri__3_Feb_2012_10_44_53_+1100_KPBENjOXy6lr7v/K--
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index ab65ee3..1cd3aec 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -76,7 +76,7 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
+ #define jffs2_write_nand_cleanmarker(c,jeb) (-EIO)
+ 
+ #define jffs2_flash_write(c, ofs, len, retlen, buf) jffs2_flash_direct_write(c, ofs, len, retlen, buf)
+-#define jffs2_flash_read(c, ofs, len, retlen, buf) ((c)->mtd->read((c)->mtd, ofs, len, retlen, buf))
++#define jffs2_flash_read(c, ofs, len, retlen, buf) (mtd_read((c)->mtd, ofs, len, retlen, buf))
+ #define jffs2_flush_wbuf_pad(c) ({ do{} while(0); (void)(c), 0; })
+ #define jffs2_flush_wbuf_gc(c, i) ({ do{} while(0); (void)(c), (void) i, 0; })
+ #define jffs2_write_nand_badblock(c,jeb,bad_offset) (1)
+@@ -108,8 +108,6 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
+ 
+ #define jffs2_cleanmarker_oob(c) (c->mtd->type == MTD_NANDFLASH)
+ 
+-#define jffs2_flash_write_oob(c, ofs, len, retlen, buf) ((c)->mtd->write_oob((c)->mtd, ofs, len, retlen, buf))
+-#define jffs2_flash_read_oob(c, ofs, len, retlen, buf) ((c)->mtd->read_oob((c)->mtd, ofs, len, retlen, buf))
+ #define jffs2_wbuf_dirty(c) (!!(c)->wbuf_len)
+ 
+ /* wbuf.c */
+-- 
+1.7.5.4
