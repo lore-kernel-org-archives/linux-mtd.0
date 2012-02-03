@@ -1,24 +1,26 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RtD6H-0000p8-VI
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 06:58:26 +0000
-Received: by pbdx9 with SMTP id x9so3192677pbd.36
- for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 22:58:23 -0800 (PST)
-Message-ID: <1328252423.6750.47.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/4] jffs2: Remove unnecessary OOM messages
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe Perches <joe@perches.com>
-Date: Fri, 03 Feb 2012 09:00:23 +0200
-In-Reply-To: <98592226b940c1fa59ced4a28418343508714161.1328049542.git.joe@perches.com>
-References: <cover.1328049542.git.joe@perches.com>
- <98592226b940c1fa59ced4a28418343508714161.1328049542.git.joe@perches.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-IGf1R394+TPJhxFq/2C3"
+ id 1RtDwz-0003fG-7q
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2012 07:52:55 +0000
+Received: by wera10 with SMTP id a10so3246663wer.36
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2012 23:52:48 -0800 (PST)
+Date: Fri, 3 Feb 2012 09:52:31 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [RFC/PATCH] mtd: m25p80: set writebufsize
+Message-ID: <20120203095231.44512164@pixies.home.jungo.com>
+In-Reply-To: <1328249696.6750.41.camel@sauron.fi.intel.com>
+References: <1327997163-9354-1-git-send-email-computersforpeace@gmail.com>
+ <CAGiDA6Jw52CGM6KT5EANaGb8xxQQEH0Lf5ms24NGZLeMtqgjGA@mail.gmail.com>
+ <CAN8TOE-Yt445aXE_sA9xo8ycV4EQB=5OtwL6yyfPBGusYd93CA@mail.gmail.com>
+ <20120201111153.3c1fe085@pixies.home.jungo.com>
+ <1328249696.6750.41.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: "Shawn J. Goff" <shawn7400@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ agust@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 03 Feb 2012 08:14:56 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2012-02-01 at 11:11 +0200, Shmulik Ladkani wrote:
+> > According to mtd.h, 'writebufsize' should be set to the "Size of the
+> > write buffer used by the MTD".
+> > 
+> > m25p->page_size should be set to the size of the device's data buffer
+> > (used by the Page Program operation).
+> > 
+> > Hence for m25p80, 'flash->mtd.writebufsize = flash->page_size' seems
+> > right.
+> > 
+> > BTW 'writebufsize' is propagated to UBI's 'max_write_size' which
+> > currently affects UBIFS write-buffer size.
+> > 
+> > It should be set to "the maximum amount of bytes the underlying flash is
+> > able to program at a time" (according to ubifs/io.c).
+> > 
+> > Hence again, for m25p80, 'flash->page_size' seems adequate.
+> 
+> This parameter was introduced for NOR flashes, and in NAND flashes
+> context it looks weird. Probably we could document this better. But
+> basically, it describes how much data the driver is able to write at a
+> time. All NAND drivers write only one page at a time, so this parameter
+> should be set to NAND page size.
 
---=-IGf1R394+TPJhxFq/2C3
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sorry, prev message was vague.
 
-On Tue, 2012-01-31 at 14:42 -0800, Joe Perches wrote:
-> Per call site OOM messages are unnecessary.
-> k.alloc and v.alloc failures use dump_stack().
->=20
-> Signed-off-by: Joe Perches <joe@perches.com>
+Note m25p is Serial NOR Flash (its 'writesize' is set to 1, as it can be
+programmed byte at a time).
 
-Pushed to l2-mtd.git, thanks!
+m25p->page_size denotes the *maximum* number of bytes which can be
+programmed using the "Page Program" instruction of the serial interface.
 
---=20
-Best Regards,
-Artem Bityutskiy
+This number equals the size of the device's internal write buffer.
+Which also means "the maximum amount of bytes the underlying flash is
+able to program at a time".
 
---=-IGf1R394+TPJhxFq/2C3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+(To be honest, this is correct for two m25p devices I've worked with,
+according to their data sheets. I beleive it should be correct for other
+m25p devices as well)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+For these reasons, setting m25p's mtd.writebufsize to m25p->page_size is
+adequate.
 
-iQIcBAABAgAGBQJPK4YHAAoJECmIfjd9wqK04o4P/jseB136azEkGBN+9OdQCjh1
-m6Gdxu8z1VPvH+/E0okJmoYrzl3W6Vwf56tz3lsDflOorFHtlnsTTEA0SR0Ci5/V
-o8CPoAMpvXR9ZuM4ZKezKqT8rrz6R9Kxcy6jaOfq3RPkjz0s5inqJvJa8jMHkpD5
-BfqUKxo/vQsTU3UObgenm6QfVd+D+GTDL6dw0QiPuGV1NqwwxiJZqUUrcoKU16l0
-UsW7Q/pYfVSYaJrr+SOcqEewi1GpBNDk9oG9gCygb6lwHt9t/uO8LFJRHoXpiDpd
-ZEITACcEkshZqEfP4nk5TNAOZUwMxqQ2QqazraKWvTnjr7GbzmpbPx1MGxtYEKqR
-wae/M1EXJDzRqk2Qd2hElX7mD4Gr73y5eUKEdmO37im5z7UddvVlZNCFZcwY71EL
-2JkE43LftqEHwas9rNSM2/2wKCuBMn7Stw4yUUtD33g7MRx31p/abE29hWyF8Juo
-DUeMQ56E+aGsLXLmLLrs4ZC3XQLueARuBtwugy42PjAUMDYdRoUOt9kZWFl7a0g6
-d8uTrjqHSZ/wDlzm6JC59rxcjPvGUeY7q1FLaYfb8cyrVVKVoCOAOjMu8yWVgFBU
-h7WawO7/hLH24hCuUjgKVpYWX5vgV80YHXom9IW0s7Tj0f7F6AaaJhH/AE6PWQwA
-akY6iQKc14NTQAmD2bl4
-=BP6n
------END PGP SIGNATURE-----
-
---=-IGf1R394+TPJhxFq/2C3--
+Regards
+Shmulik
