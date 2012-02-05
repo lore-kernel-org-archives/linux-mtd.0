@@ -1,18 +1,20 @@
-Received: from longford.logfs.org ([213.229.74.203])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RtlTg-0007qz-B6
- for linux-mtd@lists.infradead.org; Sat, 04 Feb 2012 19:40:53 +0000
-Date: Sat, 4 Feb 2012 13:00:35 -0500
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RtxXX-0002br-8t
+ for linux-mtd@lists.infradead.org; Sun, 05 Feb 2012 08:33:39 +0000
+Received: by wico1 with SMTP id o1so4326712wic.36
+ for <linux-mtd@lists.infradead.org>; Sun, 05 Feb 2012 00:33:33 -0800 (PST)
+Date: Sun, 5 Feb 2012 10:33:21 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/8] mtd: block2mtd: initialize writebufsize
-Message-ID: <20120204180035.GB28736@logfs.org>
-References: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4fe90e9a0ba750bbdb34d04ca3437b493a19277f.1328257053.git.artem.bityutskiy@linux.intel.com>
+Subject: Re: [PATCH 4/4] mtd: remove R/O checking duplication
+Message-ID: <20120205103321.0a7e2e1c@pixies.home.jungo.com>
+In-Reply-To: <1328288491-8744-4-git-send-email-dedekind1@gmail.com>
+References: <1328288491-8744-1-git-send-email-dedekind1@gmail.com>
+ <1328288491-8744-4-git-send-email-dedekind1@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 3 February 2012 10:43:07 +0200, Artem Bityutskiy wrote:
-> 
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> The writebufsize concept was introduce by commit
-> "0e4ca7e mtd: add writebufsize field to mtd_info struct" and it represents
-> the maximum amount of data the device writes to the media at a time. This is
-> an important parameter for UBIFS which is used during recovery and which
-> basically defines how big a corruption caused by a power cut can be.
-> 
-> However, we forgot to set this parameter for block2mtd. Set it to PAGE_SIZE
-> because this is actually the amount of data we write at a time.
-> 
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: stable@kernel.org [2.6.38+]
-> Cc: Joern Engel <joern@lazybastard.org>
+On Fri,  3 Feb 2012 19:01:31 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 13bd4fa..78e1df6 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -754,7 +756,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+>  	      const u_char *buf)
+>  {
+>  	*retlen = 0;
+> -	if (!mtd->_write)
+> +	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
+>  		return -EROFS;
+>  	if (to < 0 || to > mtd->size || len > mtd->size - to)
+>  		return -EINVAL;
 
-Acked-by: Joern Engel <joern@lazybastard.org>
+(sorry for nit-picking)
 
->From the description of 0e4ca7e it appears as if using a minimum of
-say 8 for ubifs recovery would have done the trick as well.  Oh well!
+Here you perform "writable" (EROFS) validation prior offset/length
+validation (EINVAL) - however in other API funtions you had it
+vice-versa.
+Really not that important, but better if handling is consistent.
 
-Jörn
+Regards,
+Shmulik
