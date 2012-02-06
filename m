@@ -1,23 +1,22 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuKcU-0000UA-Am
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 09:12:18 +0000
-Received: by dakp5 with SMTP id p5so5635994dak.36
- for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2012 01:12:16 -0800 (PST)
-Message-ID: <1328519654.22240.31.camel@sauron.fi.intel.com>
-Subject: Re: linux-next: build failure after merge of the l2-mtd tree
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 06 Feb 2012 11:14:14 +0200
-In-Reply-To: <20120206120706.cf5d951972d22eb7fa134fbd@canb.auug.org.au>
-References: <20120206120706.cf5d951972d22eb7fa134fbd@canb.auug.org.au>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-PEazU30TuUcS8KRchU3/"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from 10.mo3.mail-out.ovh.net ([87.98.165.232]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RuLzb-0003qT-TL
+ for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 10:40:17 +0000
+Received: from mail617.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id D10F41004CA4
+ for <linux-mtd@lists.infradead.org>; Mon,  6 Feb 2012 11:42:24 +0100 (CET)
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 4/6 V2] of/mtd/nand: add generic bindings and helpers
+Date: Mon,  6 Feb 2012 11:35:11 +0100
+Message-Id: <1328524512-18159-1-git-send-email-plagnioj@jcrosoft.com>
+In-Reply-To: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
+ devicetree-discuss@lists.ozlabs.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +26,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+- nand-ecc-mode : String, operation mode of the NAND ecc mode.
+  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+  "soft_bch".
+- nand-bus-width : 8 or 16 bus width if not present 8
+- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
 
---=-PEazU30TuUcS8KRchU3/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Acked-by: Grant Likely <grant.likely@secretlab.ca>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: devicetree-discuss@lists.ozlabs.org
+Cc: linux-mtd@lists.infradead.org
+---
+ Documentation/devicetree/bindings/mtd/nand.txt |    7 ++
+ drivers/of/Kconfig                             |    4 +
+ drivers/of/Makefile                            |    1 +
+ drivers/of/of_mtd.c                            |   90 ++++++++++++++++++++++++
+ include/linux/of_mtd.h                         |   19 +++++
+ 5 files changed, 121 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
+ create mode 100644 drivers/of/of_mtd.c
+ create mode 100644 include/linux/of_mtd.h
 
-On Mon, 2012-02-06 at 12:07 +1100, Stephen Rothwell wrote:
-> Hi Artem,
->=20
-> After merging the l2-mtd tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/mtd/devices/pmc551.c:191:12: error: conflicting types for 'pmc551=
-_unpoint'
-> include/linux/mtd/pmc551.h:37:13: note: previous declaration of 'pmc551_u=
-npoint' was here
-> drivers/mtd/devices/pmc551.c: In function 'pmc551_unpoint':
-> drivers/mtd/devices/pmc551.c:196:1: warning: no return statement in funct=
-ion returning non-void [-Wreturn-type]
->=20
-> Caused by commit 753c57f84b57 ("mtd: return error code from
-> mtd_unpoint").  [Mind you, I don't understand why those static functions
-> would be declared in a header file ...]
-
-Thanks, fixed. I am doing rather massive MTD API cleaning, so new small
-issues are possible.
-
-WRT the header file - I think it should not be in 'inlude/linux' at all
-- I'll try to cook a patch to kick it out of there, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-PEazU30TuUcS8KRchU3/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPL5nmAAoJECmIfjd9wqK00vgP/jTXzDlebZ5EHRT1jhXFa5O2
-OUrrBpqHMl81uq7A70JctZXbwVh0nJnc0Uj53SbxCuvjqoPrve7ymC6jLOcWqBU7
-M+CZZGmp63jzH5LQzeEVS03bDARqjMDoGh9hO0G+B0fhaqR8IhwUZT5nVvmUwYji
-GbuiBD/jqH78Oi+Cl5MwNgYGFXbBpdVCuIBmI2oH9RI4TrNnHS910FsKLOXpTzBM
-QHFXUMYt1nhU1mnrjRcx8bWYMrPacwfiS9Xcm6YT9lZngbYnQhNZMkfavr4wwuSk
-bH0RUuYGE1Xlbt4lxP5hn8Z4P8FARzu30b5pxuesBZxDQet028EcjRz3gU/laEsJ
-H/PCdj7KZLk9RLyp14bkgSh7mX0kQSoi8kKx0uaS0QHBtUbhl2PBXRxH4H1Dqf0D
-AoCbtBb/HbaglodVJSf5JnEWz6G8RPmLUQf7wU1510LgSMEUrj9evSwe4EBn7lUP
-smniMyefA0FCqt4sCO1M+afaunPiAQeRIA8oLMT06nMm3vh+L36RBIDMRtJ9kHGb
-8hnU6199gC4iBNaXjFHZ2h3T7cZHDJ5clCAbQuxVQCCJ41yDlHFFziSpsdIHfnSh
-eFakQlTSCzX2C6FTAuZPv8oMqc1Qqlyp/eh2rjTVcC5291RsblT/FCFiFnFu26Hd
-xHg4wp2mdy+sLX8QNtSr
-=B/mH
------END PGP SIGNATURE-----
-
---=-PEazU30TuUcS8KRchU3/--
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+new file mode 100644
+index 0000000..03855c8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -0,0 +1,7 @@
++* MTD generic binding
++
++- nand-ecc-mode : String, operation mode of the NAND ecc mode.
++  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
++  "soft_bch".
++- nand-bus-width : 8 or 16 bus width if not present 8
++- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+index 268163d..fa666a9 100644
+--- a/drivers/of/Kconfig
++++ b/drivers/of/Kconfig
+@@ -90,4 +90,8 @@ config OF_PCI_IRQ
+ 	help
+ 	  OpenFirmware PCI IRQ routing helpers
+ 
++config OF_MTD
++	depends on MTD
++	def_bool y
++
+ endmenu # OF
+diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+index a73f5a5..8c4980a 100644
+--- a/drivers/of/Makefile
++++ b/drivers/of/Makefile
+@@ -12,3 +12,4 @@ obj-$(CONFIG_OF_SELFTEST) += selftest.o
+ obj-$(CONFIG_OF_MDIO)	+= of_mdio.o
+ obj-$(CONFIG_OF_PCI)	+= of_pci.o
+ obj-$(CONFIG_OF_PCI_IRQ)  += of_pci_irq.o
++obj-$(CONFIG_OF_NET)	+= of_mtd.o
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+new file mode 100644
+index 0000000..d7183de
+--- /dev/null
++++ b/drivers/of/of_mtd.c
+@@ -0,0 +1,90 @@
++/*
++ * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
++ *
++ * OF helpers for mtd.
++ *
++ * This file is released under the GPLv2
++ *
++ */
++#include <linux/kernel.h>
++#include <linux/of_mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/export.h>
++
++/**
++ * It maps 'enum nand_ecc_modes_t' found in include/linux/mtd/nand.h
++ * into the device tree binding of 'nand-ecc', so that MTD
++ * device driver can get nand ecc from device tree.
++ */
++static const char *nand_ecc_modes[] = {
++	[NAND_ECC_NONE]		= "none",
++	[NAND_ECC_SOFT]		= "soft",
++	[NAND_ECC_HW]		= "hw",
++	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
++	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
++	[NAND_ECC_SOFT_BCH]	= "soft_bch",
++};
++
++/**
++ * of_get_nand_ecc_mode - Get nand ecc mode for given device_node
++ * @np:	Pointer to the given device_node
++ *
++ * The function gets ecc mode string from property 'nand-ecc-mode',
++ * and return its index in nand_ecc_modes table, or errno in error case.
++ */
++const int of_get_nand_ecc_mode(struct device_node *np)
++{
++	const char *pm;
++	int err, i;
++
++	err = of_property_read_string(np, "nand-ecc-mode", &pm);
++	if (err < 0)
++		return err;
++
++	for (i = 0; i < ARRAY_SIZE(nand_ecc_modes); i++)
++		if (!strcasecmp(pm, nand_ecc_modes[i]))
++			return i;
++
++	return -ENODEV;
++}
++EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
++
++/**
++ * of_get_nand_bus_width - Get nand bus witdh for given device_node
++ * @np:	Pointer to the given device_node
++ *
++ * return bus width option, or errno in error case.
++ */
++int of_get_nand_bus_width(struct device_node *np)
++{
++	u32 val;
++
++	if (of_property_read_u32(np, "nand-bus-width", &val))
++		return 8;
++
++	switch(val) {
++	case 8:
++	case 16:
++		return val;
++	default:
++		return -EIO;
++	}
++}
++EXPORT_SYMBOL_GPL(of_get_nand_bus_width);
++
++/**
++ * of_get_nand_on_flash_bbt - Get nand on flash bbt for given device_node
++ * @np:	Pointer to the given device_node
++ *
++ * return true if 1 false other wise
++ */
++bool of_get_nand_on_flash_bbt(struct device_node *np)
++{
++	u32 val;
++
++	if (of_property_read_u32(np, "nand-on-flash-bbt", &val))
++		return false;
++
++	return val ? true : false;
++}
++EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
+diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+new file mode 100644
+index 0000000..bae1b60
+--- /dev/null
++++ b/include/linux/of_mtd.h
+@@ -0,0 +1,19 @@
++/*
++ * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
++ *
++ * OF helpers for mtd.
++ *
++ * This file is released under the GPLv2
++ */
++
++#ifndef __LINUX_OF_MTD_H
++#define __LINUX_OF_NET_H
++
++#ifdef CONFIG_OF_MTD
++#include <linux/of.h>
++extern const int of_get_nand_ecc_mode(struct device_node *np);
++int of_get_nand_bus_width(struct device_node *np);
++bool of_get_nand_on_flash_bbt(struct device_node *np);
++#endif
++
++#endif /* __LINUX_OF_MTD_H */
+-- 
+1.7.7
