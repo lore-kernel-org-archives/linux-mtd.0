@@ -1,12 +1,14 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RuNHj-00071i-ER
+ id 1RuNHj-00071j-ER
  for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 12:03:08 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/3] mtd: remove retlen zeroing duplication
-Date: Mon,  6 Feb 2012 14:03:07 +0200
-Message-Id: <1328529789-2106-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/3] mtd: move zero length verification to MTD API functions
+Date: Mon,  6 Feb 2012 14:03:08 +0200
+Message-Id: <1328529789-2106-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1328529789-2106-1-git-send-email-dedekind1@gmail.com>
+References: <1328529789-2106-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,429 +20,400 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The MTD API function now zero the 'retlen' parameter before calling
-the driver's method - do not do this again in dirvers. This removes
-duplicated '*retlen = 0' assignent from the following methods:
-
-    'mtd_point()'
-    'mtd_read()'
-    'mtd_write()'
-    'mtd_writev()'
-    'mtd_panic_write()'
+In many places in drivers we verify for the zero length, but this is very
+inconsistent across drivers. This is obviously the right thing to do, though.
+This patch moves the check to the MTD API functions instead and removes a lot
+of duplication.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c |    5 -----
- drivers/mtd/chips/cfi_cmdset_0002.c |   12 ------------
+ drivers/mtd/chips/cfi_cmdset_0001.c |    3 ---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    9 ---------
  drivers/mtd/chips/cfi_cmdset_0020.c |    3 ---
- drivers/mtd/chips/map_absent.c      |    2 --
- drivers/mtd/devices/block2mtd.c     |    5 -----
- drivers/mtd/devices/doc2000.c       |    4 ----
- drivers/mtd/devices/doc2001.c       |    1 -
- drivers/mtd/devices/doc2001plus.c   |    1 -
- drivers/mtd/devices/lart.c          |    2 --
- drivers/mtd/devices/m25p80.c        |    7 -------
- drivers/mtd/devices/mtd_dataflash.c |    4 ----
- drivers/mtd/devices/phram.c         |    2 --
- drivers/mtd/devices/spear_smi.c     |   10 ----------
- drivers/mtd/devices/sst25l.c        |    3 ---
- drivers/mtd/lpddr/lpddr_cmds.c      |    3 ---
- drivers/mtd/mtdconcat.c             |    6 ------
- drivers/mtd/onenand/onenand_base.c  |    3 ---
- 17 files changed, 0 insertions(+), 73 deletions(-)
+ drivers/mtd/devices/block2mtd.c     |    3 ---
+ drivers/mtd/devices/lart.c          |    3 ---
+ drivers/mtd/devices/m25p80.c        |   12 ------------
+ drivers/mtd/devices/mtd_dataflash.c |   10 ----------
+ drivers/mtd/devices/spear_smi.c     |    6 ------
+ drivers/mtd/devices/sst25l.c        |    8 --------
+ drivers/mtd/lpddr/lpddr_cmds.c      |    1 -
+ drivers/mtd/maps/vmu-flash.c        |    8 --------
+ drivers/mtd/mtdcore.c               |   21 +++++++++++++++++++++
+ drivers/mtd/nand/nand_base.c        |   10 ----------
+ 13 files changed, 21 insertions(+), 76 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 27008ae..dc66df6 100644
+index dc66df6..2d96690 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0001.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1334,7 +1334,6 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
- 	ofs = from - (chipnum << cfi->chipshift);
- 
- 	*virt = map->virt + cfi->chips[chipnum].start + ofs;
--	*retlen = 0;
- 	if (phys)
- 		*phys = map->phys + cfi->chips[chipnum].start + ofs;
- 
-@@ -1460,8 +1459,6 @@ static int cfi_intelext_read (struct mtd_info *mtd, loff_t from, size_t len, siz
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
- 
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1569,7 +1566,6 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
+@@ -1566,9 +1566,6 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
  	int chipnum;
  	unsigned long ofs;
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-@@ -1817,7 +1813,6 @@ static int cfi_intelext_writev (struct mtd_info *mtd, const struct kvec *vecs,
- 	for (i = 0; i < count; i++)
- 		len += vecs[i].iov_len;
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
+-	if (!len)
+-		return 0;
+-
+ 	chipnum = to >> cfi->chipshift;
+ 	ofs = to  - (chipnum << cfi->chipshift);
  
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 27ac062..a89d899 100644
+index a89d899..c1d4624 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1017,13 +1017,9 @@ static int cfi_amdstd_read (struct mtd_info *mtd, loff_t from, size_t len, size_
- 	int ret = 0;
- 
- 	/* ofs: offset within the first chip that the first read should start */
--
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
- 
--
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1101,16 +1097,11 @@ static int cfi_amdstd_secsi_read (struct mtd_info *mtd, loff_t from, size_t len,
- 	int chipnum;
- 	int ret = 0;
- 
--
- 	/* ofs: offset within the first chip that the first read should start */
--
- 	/* 8 secsi bytes per chip */
- 	chipnum=from>>3;
- 	ofs=from & 7;
- 
--
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1255,7 +1246,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -1246,9 +1246,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
  	unsigned long ofs, chipstart;
  	DECLARE_WAITQUEUE(wait, current);
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-@@ -1497,7 +1487,6 @@ static int cfi_amdstd_write_buffers(struct mtd_info *mtd, loff_t to, size_t len,
+-	if (!len)
+-		return 0;
+-
+ 	chipnum = to >> cfi->chipshift;
+ 	ofs = to  - (chipnum << cfi->chipshift);
+ 	chipstart = cfi->chips[chipnum].start;
+@@ -1487,9 +1484,6 @@ static int cfi_amdstd_write_buffers(struct mtd_info *mtd, loff_t to, size_t len,
  	int chipnum;
  	unsigned long ofs;
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
+-	if (!len)
+-		return 0;
+-
+ 	chipnum = to >> cfi->chipshift;
+ 	ofs = to  - (chipnum << cfi->chipshift);
  
-@@ -1708,7 +1697,6 @@ static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -1697,9 +1691,6 @@ static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
  	int ret = 0;
  	int chipnum;
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
+-	if (!len)
+-		return 0;
+-
+ 	chipnum = to >> cfi->chipshift;
+ 	ofs = to - (chipnum << cfi->chipshift);
+ 	chipstart = cfi->chips[chipnum].start;
 diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index 160402f..d690b7d 100644
+index d690b7d..096993f 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0020.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -394,8 +394,6 @@ static int cfi_staa_read (struct mtd_info *mtd, loff_t from, size_t len, size_t
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
- 
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -617,7 +615,6 @@ static int cfi_staa_write_buffers (struct mtd_info *mtd, loff_t to,
+@@ -615,9 +615,6 @@ static int cfi_staa_write_buffers (struct mtd_info *mtd, loff_t to,
  	int chipnum;
  	unsigned long ofs;
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-diff --git a/drivers/mtd/chips/map_absent.c b/drivers/mtd/chips/map_absent.c
-index 6be2edd..f7a5bca 100644
---- a/drivers/mtd/chips/map_absent.c
-+++ b/drivers/mtd/chips/map_absent.c
-@@ -70,13 +70,11 @@ static struct mtd_info *map_absent_probe(struct map_info *map)
- 
- static int map_absent_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
- {
--	*retlen = 0;
- 	return -ENODEV;
- }
- 
- static int map_absent_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf)
- {
--	*retlen = 0;
- 	return -ENODEV;
- }
+-	if (!len)
+-		return 0;
+-
+ 	chipnum = to >> cfi->chipshift;
+ 	ofs = to  - (chipnum << cfi->chipshift);
  
 diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 4c2f84c..ba2d74b 100644
+index ba2d74b..a4a80b7 100644
 --- a/drivers/mtd/devices/block2mtd.c
 +++ b/drivers/mtd/devices/block2mtd.c
-@@ -104,9 +104,6 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	int offset = from & (PAGE_SIZE-1);
- 	int cpylen;
+@@ -178,9 +178,6 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct block2mtd_dev *dev = mtd->priv;
+ 	int err;
  
--	if (retlen)
--		*retlen = 0;
+-	if (!len)
+-		return 0;
 -
- 	while (len) {
- 		if ((offset + len) > PAGE_SIZE)
- 			cpylen = PAGE_SIZE - offset;	// multiple pages
-@@ -143,8 +140,6 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
- 	int offset = to & ~PAGE_MASK;	// page offset
- 	int cpylen;
- 
--	if (retlen)
--		*retlen = 0;
- 	while (len) {
- 		if ((offset+len) > PAGE_SIZE)
- 			cpylen = PAGE_SIZE - offset;	// multiple pages
-diff --git a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
-index ee4ee0b..7ad7b05 100644
---- a/drivers/mtd/devices/doc2000.c
-+++ b/drivers/mtd/devices/doc2000.c
-@@ -603,8 +603,6 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	size_t left = len;
- 
- 	mutex_lock(&this->lock);
--
--	*retlen = 0;
- 	while (left) {
- 		len = left;
- 
-@@ -745,8 +743,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	int status;
- 
- 	mutex_lock(&this->lock);
--
--	*retlen = 0;
- 	while (left) {
- 		len = left;
- 
-diff --git a/drivers/mtd/devices/doc2001.c b/drivers/mtd/devices/doc2001.c
-index 1784415..7bff54e 100644
---- a/drivers/mtd/devices/doc2001.c
-+++ b/drivers/mtd/devices/doc2001.c
-@@ -591,7 +591,6 @@ static int doc_write (struct mtd_info *mtd, loff_t to, size_t len,
- 		printk("Error programming flash\n");
- 		/* Error in programming
- 		   FIXME: implement Bad Block Replacement (in nftl.c ??) */
--		*retlen = 0;
- 		ret = -EIO;
- 	}
- 	dummy = ReadDOC(docptr, LastDataRead);
-diff --git a/drivers/mtd/devices/doc2001plus.c b/drivers/mtd/devices/doc2001plus.c
-index a472bab..4a03d86 100644
---- a/drivers/mtd/devices/doc2001plus.c
-+++ b/drivers/mtd/devices/doc2001plus.c
-@@ -792,7 +792,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		printk("MTD: Error 0x%x programming at 0x%x\n", dummy, (int)to);
- 		/* Error in programming
- 		   FIXME: implement Bad Block Replacement (in nftl.c ??) */
--		*retlen = 0;
- 		ret = -EIO;
- 	}
- 	dummy = ReadDOC(docptr, Mplus_LastDataRead);
+ 	mutex_lock(&dev->write_mutex);
+ 	err = _block2mtd_write(dev, buf, to, len, retlen);
+ 	mutex_unlock(&dev->write_mutex);
 diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-index c9ae601..6fb8dba 100644
+index 6fb8dba..82bd00a 100644
 --- a/drivers/mtd/devices/lart.c
 +++ b/drivers/mtd/devices/lart.c
-@@ -518,8 +518,6 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
-    printk (KERN_DEBUG "%s(to = 0x%.8x, len = %d)\n", __func__, (__u32)to, len);
+@@ -437,9 +437,6 @@ static int flash_read (struct mtd_info *mtd,loff_t from,size_t len,size_t *retle
+    printk (KERN_DEBUG "%s(from = 0x%.8x, len = %d)\n", __func__, (__u32)from, len);
  #endif
  
--   *retlen = 0;
+-   /* sanity checks */
+-   if (!len) return (0);
 -
-    /* sanity checks */
-    if (!len) return (0);
+    /* we always read len bytes */
+    *retlen = len;
  
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 0955a8f..45cc4a1 100644
+index 45cc4a1..1924d24 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -365,9 +365,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
+@@ -346,10 +346,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+ 			__func__, (u32)from, len);
  
--	/* Byte count starts at zero. */
--	*retlen = 0;
+-	/* sanity checks */
+-	if (!len)
+-		return 0;
 -
- 	mutex_lock(&flash->lock);
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
  
- 	/* Wait till previous write/erase is done. */
-@@ -411,8 +408,6 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -408,10 +404,6 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
  	pr_debug("%s: %s to 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
  			__func__, (u32)to, len);
  
--	*retlen = 0;
+-	/* sanity checks */
+-	if (!len)
+-		return(0);
 -
- 	/* sanity checks */
- 	if (!len)
- 		return(0);
-@@ -500,8 +495,6 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
+@@ -495,10 +487,6 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
  	pr_debug("%s: %s to 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
  			__func__, (u32)to, len);
  
--	*retlen = 0;
+-	/* sanity checks */
+-	if (!len)
+-		return 0;
 -
- 	/* sanity checks */
- 	if (!len)
- 		return 0;
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
 diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index fc5c781..c76b446 100644
+index c76b446..928fb0e 100644
 --- a/drivers/mtd/devices/mtd_dataflash.c
 +++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -249,8 +249,6 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+@@ -249,10 +249,6 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
  	pr_debug("%s: read 0x%x..0x%x\n", dev_name(&priv->spi->dev),
  			(unsigned)from, (unsigned)(from + len));
  
--	*retlen = 0;
+-	/* Sanity checks */
+-	if (!len)
+-		return 0;
 -
- 	/* Sanity checks */
- 	if (!len)
- 		return 0;
-@@ -323,8 +321,6 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	/* Calculate flash page/byte address */
+ 	addr = (((unsigned)from / priv->page_size) << priv->page_offset)
+ 		+ ((unsigned)from % priv->page_size);
+@@ -321,10 +317,6 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
  	pr_debug("%s: write 0x%x..0x%x\n",
  		dev_name(&spi->dev), (unsigned)to, (unsigned)(to + len));
  
--	*retlen = 0;
+-	/* Sanity checks */
+-	if (!len)
+-		return 0;
 -
- 	/* Sanity checks */
- 	if (!len)
- 		return 0;
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index d0e8dc6..d3474a4 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -85,8 +85,6 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return 0;
- }
+ 	spi_message_init(&msg);
  
--
--
- static void unregister_devices(void)
- {
- 	struct phram_mtd_list *this, *safe;
+ 	x[0].tx_buf = command = priv->command;
+@@ -479,8 +471,6 @@ static ssize_t otp_read(struct spi_device *spi, unsigned base,
+ 
+ 	if ((off + len) > 64)
+ 		len = 64 - off;
+-	if (len == 0)
+-		return len;
+ 
+ 	spi_message_init(&m);
+ 
 diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index f7b9949..520e387 100644
+index 520e387..4f7b682 100644
 --- a/drivers/mtd/devices/spear_smi.c
 +++ b/drivers/mtd/devices/spear_smi.c
-@@ -576,11 +576,6 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		return -EINVAL;
- 	}
+@@ -565,9 +565,6 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	u32 ctrlreg1, val;
+ 	int ret;
  
--	if (!retlen)
--		return -EINVAL;
--	else
--		*retlen = 0;
+-	if (!len)
+-		return 0;
 -
- 	/* select address as per bank number */
- 	src = flash->base_addr + from;
+ 	if (!flash || !dev)
+ 		return -ENODEV;
  
-@@ -677,11 +672,6 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		return -EINVAL;
- 	}
+@@ -664,9 +661,6 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (!flash || !dev)
+ 		return -ENODEV;
  
--	if (!retlen)
--		return -EINVAL;
--	else
--		*retlen = 0;
+-	if (!len)
+-		return 0;
 -
- 	/* select address as per bank number */
- 	dest = flash->base_addr + to;
- 	mutex_lock(&flash->lock);
+ 	if (flash->bank > dev->num_flashes - 1) {
+ 		dev_err(&dev->pdev->dev, "Invalid Bank Num");
+ 		return -EINVAL;
 diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index 99d4a3c..5c2613c 100644
+index 5c2613c..51b2df3 100644
 --- a/drivers/mtd/devices/sst25l.c
 +++ b/drivers/mtd/devices/sst25l.c
-@@ -224,9 +224,6 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (len == 0)
- 		return 0;
+@@ -220,10 +220,6 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	unsigned char command[4];
+ 	int ret;
  
--	if (retlen)
--		*retlen = 0;
+-	/* Sanity checking */
+-	if (len == 0)
+-		return 0;
 -
  	spi_message_init(&message);
  	memset(&transfer, 0, sizeof(transfer));
  
+@@ -265,10 +261,6 @@ static int sst25l_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	int i, j, ret, bytes, copied = 0;
+ 	unsigned char command[5];
+ 
+-	/* Sanity checks */
+-	if (!len)
+-		return 0;
+-
+ 	if ((uint32_t)to % mtd->writesize)
+ 		return -EINVAL;
+ 
 diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 0f3731c..a92906b 100644
+index a92906b..d3cfe26b 100644
 --- a/drivers/mtd/lpddr/lpddr_cmds.c
 +++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -535,9 +535,7 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
- 
- 	/* ofs: offset within the first chip that the first read should start */
- 	ofs = adr - (chipnum << lpddr->chipshift);
+@@ -639,7 +639,6 @@ static int lpddr_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 	int chipnum;
+ 	unsigned long ofs, vec_seek, i;
+ 	int wbufsize = 1 << lpddr->qinfo->BufSizeShift;
 -
- 	*mtdbuf = (void *)map->virt + chip->start + ofs;
--	*retlen = 0;
+ 	size_t len = 0;
  
- 	while (len) {
- 		unsigned long thislen;
-@@ -647,7 +645,6 @@ static int lpddr_writev(struct mtd_info *mtd, const struct kvec *vecs,
  	for (i = 0; i < count; i++)
- 		len += vecs[i].iov_len;
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 48a803e..2e2b094 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -360,9 +360,6 @@ static int vmu_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int index = 0, retval, partition, leftover, numblocks;
+ 	unsigned char cx;
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index dd24232..f7a31cc 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -72,8 +72,6 @@ concat_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	int ret = 0, err;
- 	int i;
- 
--	*retlen = 0;
+-	if (len < 1)
+-		return -EIO;
 -
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
- 		size_t size, retsize;
-@@ -126,8 +124,6 @@ concat_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	int err = -EINVAL;
- 	int i;
+ 	mpart = mtd->priv;
+ 	mdev = mpart->mdev;
+ 	partition = mpart->partition;
+@@ -434,11 +431,6 @@ static int vmu_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	partition = mpart->partition;
+ 	card = maple_get_drvdata(mdev);
  
--	*retlen = 0;
--
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
- 		size_t size, retsize;
-@@ -169,8 +165,6 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 	int i;
- 	int err = -EINVAL;
+-	/* simple sanity checks */
+-	if (len < 1) {
+-		error = -EIO;
+-		goto failed;
+-	}
+ 	numblocks = card->parts[partition].numblocks;
+ 	if (to + len > numblocks * card->blocklen)
+ 		len = numblocks * card->blocklen - to;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index ad76a6a..9c49d87 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -695,6 +695,11 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		return -EINVAL;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	if (!instr->len) {
++		instr->state = MTD_ERASE_DONE;
++		mtd_erase_callback(instr);
++		return 0;
++	}
+ 	return mtd->_erase(mtd, instr);
+ }
+ EXPORT_SYMBOL_GPL(mtd_erase);
+@@ -712,6 +717,8 @@ int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 		return -EOPNOTSUPP;
+ 	if (from < 0 || from > mtd->size || len > mtd->size - from)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_point(mtd, from, len, retlen, virt, phys);
+ }
+ EXPORT_SYMBOL_GPL(mtd_point);
+@@ -723,6 +730,8 @@ int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+ 		return -EOPNOTSUPP;
+ 	if (from < 0 || from > mtd->size || len > mtd->size - from)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_unpoint(mtd, from, len);
+ }
+ EXPORT_SYMBOL_GPL(mtd_unpoint);
+@@ -748,6 +757,8 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ {
+ 	if (from < 0 || from > mtd->size || len > mtd->size - from)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_read(mtd, from, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_read);
+@@ -760,6 +771,8 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EINVAL;
+ 	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	if (!len)
++		return 0;
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
+@@ -781,6 +794,8 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EINVAL;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	if (!len)
++		return 0;
+ 	return mtd->_panic_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_panic_write);
+@@ -792,6 +807,8 @@ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		return -EOPNOTSUPP;
+ 	if (ofs < 0 || ofs > mtd->size || len > mtd->size - ofs)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_lock(mtd, ofs, len);
+ }
+ EXPORT_SYMBOL_GPL(mtd_lock);
+@@ -802,6 +819,8 @@ int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		return -EOPNOTSUPP;
+ 	if (ofs < 0 || ofs > mtd->size || len > mtd->size - ofs)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_unlock(mtd, ofs, len);
+ }
+ EXPORT_SYMBOL_GPL(mtd_unlock);
+@@ -812,6 +831,8 @@ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		return -EOPNOTSUPP;
+ 	if (ofs < 0 || ofs > mtd->size || len > mtd->size - ofs)
+ 		return -EINVAL;
++	if (!len)
++		return 0;
+ 	return mtd->_is_locked(mtd, ofs, len);
+ }
+ EXPORT_SYMBOL_GPL(mtd_is_locked);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index daaa6a5..2d010e4 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1602,9 +1602,6 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
  
--	*retlen = 0;
+-	if (!len)
+-		return 0;
 -
- 	/* Calculate total length of data */
- 	for (i = 0; i < count; i++)
- 		total_len += vecs[i].iov_len;
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 9c6445d..a1592cf 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1753,9 +1753,6 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	pr_debug("%s: to = 0x%08x, len = %i\n", __func__, (unsigned int)to,
- 			(int)len);
+ 	nand_get_device(chip, mtd, FL_READING);
+ 	ops.len = len;
+ 	ops.datbuf = buf;
+@@ -2301,10 +2298,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
  
--	/* Initialize retlen, in case of early exit */
--	*retlen = 0;
+-	/* Do not allow reads past end of device */
+-	if (!len)
+-		return 0;
 -
- 	/* Reject writes, which are not page aligned */
-         if (unlikely(NOTALIGNED(to) || NOTALIGNED(len))) {
- 		printk(KERN_ERR "%s: Attempt to write not page aligned data\n",
+ 	/* Wait for the device to get ready */
+ 	panic_nand_wait(mtd, chip, 400);
+ 
+@@ -2339,9 +2332,6 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
+ 
+-	if (!len)
+-		return 0;
+-
+ 	nand_get_device(chip, mtd, FL_WRITING);
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
 -- 
 1.7.9
