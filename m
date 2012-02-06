@@ -1,23 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuKaZ-0000L4-Cu
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 09:10:19 +0000
-Received: by iafj26 with SMTP id j26so9775145iaf.36
- for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2012 01:10:18 -0800 (PST)
-Message-ID: <1328519540.22240.29.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] mtd: remove R/O checking duplication
+ id 1RuKcU-0000UA-Am
+ for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 09:12:18 +0000
+Received: by dakp5 with SMTP id p5so5635994dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2012 01:12:16 -0800 (PST)
+Message-ID: <1328519654.22240.31.camel@sauron.fi.intel.com>
+Subject: Re: linux-next: build failure after merge of the l2-mtd tree
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Mon, 06 Feb 2012 11:12:20 +0200
-In-Reply-To: <20120205103321.0a7e2e1c@pixies.home.jungo.com>
-References: <1328288491-8744-1-git-send-email-dedekind1@gmail.com>
- <1328288491-8744-4-git-send-email-dedekind1@gmail.com>
- <20120205103321.0a7e2e1c@pixies.home.jungo.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 06 Feb 2012 11:14:14 +0200
+In-Reply-To: <20120206120706.cf5d951972d22eb7fa134fbd@canb.auug.org.au>
+References: <20120206120706.cf5d951972d22eb7fa134fbd@canb.auug.org.au>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-OQ4MHkCG0x5jWIUCAXiS"
+ boundary="=-PEazU30TuUcS8KRchU3/"
 Mime-Version: 1.0
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,47 +28,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-OQ4MHkCG0x5jWIUCAXiS
+--=-PEazU30TuUcS8KRchU3/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-02-05 at 10:33 +0200, Shmulik Ladkani wrote:
-> On Fri,  3 Feb 2012 19:01:31 +0200 Artem Bityutskiy <dedekind1@gmail.com>=
- wrote:
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 13bd4fa..78e1df6 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -754,7 +756,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size=
-_t len, size_t *retlen,
-> >  	      const u_char *buf)
-> >  {
-> >  	*retlen =3D 0;
-> > -	if (!mtd->_write)
-> > +	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
-> >  		return -EROFS;
-> >  	if (to < 0 || to > mtd->size || len > mtd->size - to)
-> >  		return -EINVAL;
+On Mon, 2012-02-06 at 12:07 +1100, Stephen Rothwell wrote:
+> Hi Artem,
 >=20
-> (sorry for nit-picking)
+> After merging the l2-mtd tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> drivers/mtd/devices/pmc551.c:191:12: error: conflicting types for 'pmc551=
+_unpoint'
+> include/linux/mtd/pmc551.h:37:13: note: previous declaration of 'pmc551_u=
+npoint' was here
+> drivers/mtd/devices/pmc551.c: In function 'pmc551_unpoint':
+> drivers/mtd/devices/pmc551.c:196:1: warning: no return statement in funct=
+ion returning non-void [-Wreturn-type]
+>=20
+> Caused by commit 753c57f84b57 ("mtd: return error code from
+> mtd_unpoint").  [Mind you, I don't understand why those static functions
+> would be declared in a header file ...]
 
-No need to sorry, you are very welcome - I am happy when people spot
-issues before patches get merged.
+Thanks, fixed. I am doing rather massive MTD API cleaning, so new small
+issues are possible.
 
-> Here you perform "writable" (EROFS) validation prior offset/length
-> validation (EINVAL) - however in other API funtions you had it
-> vice-versa.
-> Really not that important, but better if handling is consistent.
-
-I think this is rather important to first validate the input parameters
-and then check for R/O. I've done this in other functions, but failed to
-do in 'mtd_write()'. Fixed in l2-mtd.git, thanks!
+WRT the header file - I think it should not be in 'inlude/linux' at all
+- I'll try to cook a patch to kick it out of there, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-OQ4MHkCG0x5jWIUCAXiS
+--=-PEazU30TuUcS8KRchU3/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -77,19 +68,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPL5l0AAoJECmIfjd9wqK0OosQAMcRqY5mCH8SutdbGVnx6EBe
-wXWpcZbeuXkGrk9eubzIbLR1bfuifvX7JgsKjhpfCEx0HnwMLPvxVSgPGWzPe2EZ
-WyVsvvI0uomUXNmWzTFtC9k9NaAjgzfap284v+UQWu8xwbJH11+xMO0JVl0PKuVq
-f2mzK+/VeShETrAV6vg/RK5jfgCCrhq1eaB9hTqNwcfLz1A9F4CXhUtiC2lysh4U
-lrUTj6/YUoRLKkIWnPox/39oapNUpYWq13b0jNhcyyZcJoff29J2IJoAtu+DVQcU
-eyq2GTm+A9IVgXcwq7E/kS7uewDZfYVUyXTha04UqL56XjqYGEH3wFICDZCF/1YN
-nbKCnQhAl7yTRlnI/nZGUgBFrb0vwjoFutHVlOewaUDH0mypQKrdrI5Ol3jLfqb3
-wSYb7rGG3dtMSKrjcjbFuHsN/eKq2+WzeVBmYTELKV1FRR4t4DzBvkY5QPqU8ChF
-1/LzZRGTP2ylKKJcxu4Pzl20P1Jqllc8EaDqgSorhitVug7vxL03oxm17y27s3QE
-Y37ItWTjUrwLmzHGbzP275dsriAUt1CCuM703/1+j754GYMEfDICNvSBsq4caRzo
-62R+vlhc3ZvCQys3jfDL01i4iULf2C4weD1z4RmBuo8nDFcAJBZXGXn8VKPBlvKC
-sONPo3tPUtrPd7eJ9ir5
-=iNHK
+iQIcBAABAgAGBQJPL5nmAAoJECmIfjd9wqK00vgP/jTXzDlebZ5EHRT1jhXFa5O2
+OUrrBpqHMl81uq7A70JctZXbwVh0nJnc0Uj53SbxCuvjqoPrve7ymC6jLOcWqBU7
+M+CZZGmp63jzH5LQzeEVS03bDARqjMDoGh9hO0G+B0fhaqR8IhwUZT5nVvmUwYji
+GbuiBD/jqH78Oi+Cl5MwNgYGFXbBpdVCuIBmI2oH9RI4TrNnHS910FsKLOXpTzBM
+QHFXUMYt1nhU1mnrjRcx8bWYMrPacwfiS9Xcm6YT9lZngbYnQhNZMkfavr4wwuSk
+bH0RUuYGE1Xlbt4lxP5hn8Z4P8FARzu30b5pxuesBZxDQet028EcjRz3gU/laEsJ
+H/PCdj7KZLk9RLyp14bkgSh7mX0kQSoi8kKx0uaS0QHBtUbhl2PBXRxH4H1Dqf0D
+AoCbtBb/HbaglodVJSf5JnEWz6G8RPmLUQf7wU1510LgSMEUrj9evSwe4EBn7lUP
+smniMyefA0FCqt4sCO1M+afaunPiAQeRIA8oLMT06nMm3vh+L36RBIDMRtJ9kHGb
+8hnU6199gC4iBNaXjFHZ2h3T7cZHDJ5clCAbQuxVQCCJ41yDlHFFziSpsdIHfnSh
+eFakQlTSCzX2C6FTAuZPv8oMqc1Qqlyp/eh2rjTVcC5291RsblT/FCFiFnFu26Hd
+xHg4wp2mdy+sLX8QNtSr
+=B/mH
 -----END PGP SIGNATURE-----
 
---=-OQ4MHkCG0x5jWIUCAXiS--
+--=-PEazU30TuUcS8KRchU3/--
