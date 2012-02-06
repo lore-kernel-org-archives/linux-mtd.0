@@ -1,20 +1,18 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuNop-0000Ao-3J
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2012 12:37:19 +0000
-Received: by dakp5 with SMTP id p5so5783186dak.36
- for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2012 04:37:12 -0800 (PST)
-Message-ID: <4f2fc976.5379440a.24a6.ffffa75c@mx.google.com>
-Date: Mon, 06 Feb 2012 04:37:10 -0800 (PST)
-From: bhagyashri.bijwe@gmail.com
-To: linux-mtd@lists.infradead.org, soekris-tech-bounces@lists.soekris.com,
- fosdem-bounces@lists.fosdem.org, redhat-list-bounces@redhat.com,
- soekris-tech-bounces@lists.soekris.com, fosdem-bounces@lists.fosdem.org,
- soekris-tech-bounces@lists.soekris.com, to_bhagyashri@yahoo.com,
- soekris-tech-bounces@lists.soekris.com
+From: Stefan Roese <sr@denx.de>
+To: devicetree-discuss@lists.ozlabs.org
+Subject: Re: [PATCH 4/6 V2] of/mtd/nand: add generic bindings and helpers
+Date: Mon, 6 Feb 2012 17:20:24 +0100
+References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+ <1328524512-18159-1-git-send-email-plagnioj@jcrosoft.com>
+In-Reply-To: <1328524512-18159-1-git-send-email-plagnioj@jcrosoft.com>
 MIME-Version: 1.0
-Content-type: Multipart/mixed; boundary="3DE93131_1709299C_boundary"
-Content-Description: Multipart message
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201202061720.24996.sr@denx.de>
+Cc: linux-mtd@lists.infradead.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---3DE93131_1709299C_boundary
-Content-type: text/html; charset=UTF-8
-Content-Transfer-Encoding: Quoted-printable
-Content-Disposition: inline
-Content-Description: HTML text
+Hi Jean-Christophe,
 
-=EF=BB=BF<html><a id=3D"jkjodetxmv" href=
-=3D"http://overheardonxboxlive.com/wp-content/themes/hemingway-reloaded-10/ima=
-ges/shffujk.html">http://overheardonxboxlive.com/wp-content/themes/hemingway-r=
-eloaded-10/images/shffujk.html</a></html>
---3DE93131_1709299C_boundary--
+On Monday 06 February 2012 11:35:11 Jean-Christophe PLAGNIOL-VILLARD wrote:
+> - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>   Supported values are: "none", "soft", "hw", "hw_syndrome",
+> "hw_oob_first", "soft_bch".
+> - nand-bus-width : 8 or 16 bus width if not present 8
+> - nand-on-flash-bbt: boolean to enable on flash bbt option if not present
+> false
+
+Why not use an "empty" type (without argument) for nand-on-flash-bbt then?
+
+Thanks,
+Stefan
