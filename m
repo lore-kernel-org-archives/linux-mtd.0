@@ -1,19 +1,22 @@
-Message-ID: <4F31552D.9060505@criticallink.com>
-Date: Tue, 07 Feb 2012 11:45:33 -0500
-From: Michael Williamson <michael.williamson@criticallink.com>
-MIME-Version: 1.0
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-Subject: Re: [PATCH v3 3/3] arm:davinci: move NAND and NOR devices as aemif
- MFD slaves
-References: <1328627513-30134-1-git-send-email-prakash.pm@ti.com>
- <1328627513-30134-4-git-send-email-prakash.pm@ti.com>
-In-Reply-To: <1328627513-30134-4-git-send-email-prakash.pm@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RuoYI-0004P5-T8
+ for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 17:09:59 +0000
+Received: by wera10 with SMTP id a10so6691736wer.36
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2012 09:09:57 -0800 (PST)
+Date: Tue, 7 Feb 2012 19:09:38 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Userspace write to UBI partitions
+Message-ID: <20120207190938.7a59fae9@pixies.home.jungo.com>
+In-Reply-To: <Pine.LNX.4.64.1202071733580.17234@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1202071616560.17234@lnxricardw.se.axis.com>
+ <20120207182944.334b4665@pixies.home.jungo.com>
+ <Pine.LNX.4.64.1202071733580.17234@lnxricardw.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Prakash,
+On Tue, 7 Feb 2012 17:36:25 +0100 (CET) Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+> 
+> On Tue, 7 Feb 2012, Shmulik Ladkani wrote:
+> 
+> > On Tue, 7 Feb 2012 16:20:58 +0100 (CET) Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+> >>
+> >> Is it possible to do a userspace write to a UBI volume as if it were plain
+> >> flash memory, i.e. should I be able to do "cat somefile > /dev/ubi0_0" ? I
+> >> get a 'Write Error: Operation not permitted' when I do this (Linux 2.6.35)
+> >> but I'm pretty sure that I've used UBI volumes that way in the past, may
+> >> have been with older kernels then.
+> >
+> > Is your volume dynamic or static?
+> 
+> I tried both, but given the nature of the data we want to keep in the 
+> volume it should really be dynamic.
+> 
+> > If dynamic, have you tried setting the UBI_VOL_PROP_DIRECT_WRITE
+> > property by issuing a UBI_IOCSETVOLPROP volume ioctl?
+> > (formerly named UBI_PROP_DIRECT_WRITE and UBI_IOCSETPROP)
+> 
+> Thanks for the pointer, I've never noticed this ioctl before.
+> 
+> I'll try this out. In the meantime, there doesn't seem to be an ioctl for 
+> erasing blocks?
+> 
 
-On 2/7/2012 10:11 AM, Manjunathappa, Prakash wrote:
+Well, another option would be using Gluebi - (CONFIG_MTD_UBI_GLUEBI).
+It exposes a "regular" mtd for every existing volume.
 
-> NAND and NOR device are made as aemif device slaves, hence all DaVinci
-> board NAND/NOR device registration achieved via aemif MFD driver.
->
-> Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
-> ---
-> Since v2:
-> Make changes for all DaVinci boards in single patch.
+You'd be able to work using standard mtd interfaces on it (mtdchar
+ioctls, e.g. MEMERASE, or even the mtdblock abstraction).
 
-
-
-[...]
-
-> diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-> index 672d820..bb29b7a 100644
-> --- a/arch/arm/mach-davinci/board-mityomapl138.c
-> +++ b/arch/arm/mach-davinci/board-mityomapl138.c
-> @@ -19,6 +19,7 @@
->  #include <linux/etherdevice.h>
->  #include <linux/spi/spi.h>
->  #include <linux/spi/flash.h>
-> +#include <linux/mfd/davinci_aemif.h>
->  
->  #include <asm/io.h>
->  #include <asm/mach-types.h>
-> @@ -414,18 +415,35 @@ static struct resource mityomapl138_nandflash_resource[] = {
->  	},
->  };
->  
-> -static struct platform_device mityomapl138_nandflash_device = {
-> -	.name		= "davinci_nand",
-> -	.id		= 1,
-> -	.dev		= {
-> -		.platform_data	= &mityomapl138_nandflash_data,
-> +static struct platform_device mityomapl138_emif_devices[] __initdata = {
-> +	{
-> +		.name		= "davinci_nand",
-> +		.id		= 0,
-
-
-
-Pretty sure this still needs to be a 1.  The nand is on chip select 3,
-EMA_CS3, which I believe is the same as the da850 EVM.
-
--Mike
+Regards,
+Shmulik
