@@ -1,12 +1,14 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuYp9-0002EY-If
+ id 1RuYp9-0002Ey-GX
  for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 00:22:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] Introduce CONFIG_GENERIC_IO
-Date: Tue,  7 Feb 2012 01:22:46 +0100
-Message-Id: <1328574170-2286-1-git-send-email-richard@nod.at>
+Subject: [PATCH 5/5] MTD: Relax dependencies
+Date: Tue,  7 Feb 2012 01:22:50 +0100
+Message-Id: <1328574170-2286-5-git-send-email-richard@nod.at>
+In-Reply-To: <1328574170-2286-1-git-send-email-richard@nod.at>
+References: <1328574170-2286-1-git-send-email-richard@nod.at>
 Cc: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
  viro@zeniv.linux.org.uk, user-mode-linux-devel@lists.sourceforge.net,
  Richard Weinberger <richard@nod.at>
@@ -19,39 +21,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are situations where CONFIG_HAS_IOMEM is too restrictive.
-For example CONFIG_MTD_NAND_NANDSIM depends on CONFIG_HAS_IOMEM
-but it works perfectly fine if an architecture without io memory
-just includes asm-generic/io.h or implements everything defined in it.
-UML is such a corner case.
+CONFIG_GENERIC_IO is just enough for the basic MTD stuff.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- lib/Kconfig |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ drivers/mtd/Kconfig         |    2 +-
+ drivers/mtd/devices/Kconfig |    1 +
+ drivers/mtd/maps/Kconfig    |    1 +
+ drivers/mtd/nand/Kconfig    |    2 ++
+ drivers/mtd/onenand/Kconfig |    1 +
+ 5 files changed, 6 insertions(+), 1 deletions(-)
 
-diff --git a/lib/Kconfig b/lib/Kconfig
-index d69d321..c3c4c1c 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -26,6 +26,10 @@ config GENERIC_IOMAP
- 	bool
- 	select GENERIC_PCI_IOMAP
- 
-+config GENERIC_IO
-+	boolean
-+	default n
-+
- config CRC_CCITT
- 	tristate "CRC-CCITT functions"
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 1be6218..284cf34 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -1,6 +1,6 @@
+ menuconfig MTD
+ 	tristate "Memory Technology Device (MTD) support"
+-	depends on HAS_IOMEM
++	depends on GENERIC_IO
  	help
-@@ -221,6 +225,7 @@ config BTREE
- config HAS_IOMEM
- 	boolean
- 	depends on !NO_IOMEM
-+	select GENERIC_IO
- 	default y
+ 	  Memory Technology Devices are flash, RAM and similar chips, often
+ 	  used for solid state file systems on embedded devices. This option
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 37b05c3..8d3dac4 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -1,5 +1,6 @@
+ menu "Self-contained MTD device drivers"
+ 	depends on MTD!=n
++	depends on HAS_IOMEM
  
- config HAS_IOPORT
+ config MTD_PMC551
+ 	tristate "Ramix PMC551 PCI Mezzanine RAM card support"
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 6c5c431..8af67cf 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -1,5 +1,6 @@
+ menu "Mapping drivers for chip access"
+ 	depends on MTD!=n
++	depends on HAS_IOMEM
+ 
+ config MTD_COMPLEX_MAPPINGS
+ 	bool "Support non-linear mappings of flash chips"
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 31b034b..80de7b3 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -246,6 +246,7 @@ config MTD_NAND_BCM_UMI_HWCS
+ config MTD_NAND_DISKONCHIP
+ 	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
+ 	depends on EXPERIMENTAL
++	depends on HAS_IOMEM
+ 	select REED_SOLOMON
+ 	select REED_SOLOMON_DEC16
+ 	help
+@@ -431,6 +432,7 @@ config MTD_NAND_GPMI_NAND
+ 
+ config MTD_NAND_PLATFORM
+ 	tristate "Support for generic platform NAND driver"
++	depends on HAS_IOMEM
+ 	help
+ 	  This implements a generic NAND driver for on-SOC platform
+ 	  devices. You will need to provide platform-specific functions
+diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
+index 772ad29..91467bb 100644
+--- a/drivers/mtd/onenand/Kconfig
++++ b/drivers/mtd/onenand/Kconfig
+@@ -1,6 +1,7 @@
+ menuconfig MTD_ONENAND
+ 	tristate "OneNAND Device Support"
+ 	depends on MTD
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables support for accessing all type of OneNAND flash
+ 	  devices. For further information see
 -- 
 1.7.6
