@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuYp9-0002Ey-GX
- for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 00:22:21 +0000
+ id 1RuYp9-0002Ej-HM
+ for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 00:22:22 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] MTD: Relax dependencies
-Date: Tue,  7 Feb 2012 01:22:50 +0100
-Message-Id: <1328574170-2286-5-git-send-email-richard@nod.at>
+Subject: [PATCH 3/5] um: a bunch of headers can be killed by using generic-y
+Date: Tue,  7 Feb 2012 01:22:48 +0100
+Message-Id: <1328574170-2286-3-git-send-email-richard@nod.at>
 In-Reply-To: <1328574170-2286-1-git-send-email-richard@nod.at>
 References: <1328574170-2286-1-git-send-email-richard@nod.at>
 Cc: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
@@ -21,82 +21,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CONFIG_GENERIC_IO is just enough for the basic MTD stuff.
+From: Al Viro <viro@zeniv.linux.org.uk>
 
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Richard Weinberger <richard@nod.at>
+[richard@nod.at: Fixed get_current()]
 ---
- drivers/mtd/Kconfig         |    2 +-
- drivers/mtd/devices/Kconfig |    1 +
- drivers/mtd/maps/Kconfig    |    1 +
- drivers/mtd/nand/Kconfig    |    2 ++
- drivers/mtd/onenand/Kconfig |    1 +
- 5 files changed, 6 insertions(+), 1 deletions(-)
+ arch/um/include/asm/Kbuild         |    2 +-
+ arch/um/include/asm/current.h      |   13 --------
+ arch/um/include/asm/delay.h        |   18 -----------
+ arch/um/include/asm/io.h           |   57 ------------------------------------
+ arch/um/include/asm/mutex.h        |    9 ------
+ arch/um/include/asm/param.h        |   20 ------------
+ arch/um/include/asm/pci.h          |    6 ----
+ arch/um/include/shared/kern_util.h |    2 +-
+ arch/um/kernel/process.c           |    4 +-
+ arch/x86/um/bugs_32.c              |    2 +-
+ 10 files changed, 5 insertions(+), 128 deletions(-)
+ delete mode 100644 arch/um/include/asm/current.h
+ delete mode 100644 arch/um/include/asm/delay.h
+ delete mode 100644 arch/um/include/asm/io.h
+ delete mode 100644 arch/um/include/asm/mutex.h
+ delete mode 100644 arch/um/include/asm/param.h
+ delete mode 100644 arch/um/include/asm/pci.h
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 1be6218..284cf34 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig MTD
- 	tristate "Memory Technology Device (MTD) support"
--	depends on HAS_IOMEM
-+	depends on GENERIC_IO
- 	help
- 	  Memory Technology Devices are flash, RAM and similar chips, often
- 	  used for solid state file systems on embedded devices. This option
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 37b05c3..8d3dac4 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -1,5 +1,6 @@
- menu "Self-contained MTD device drivers"
- 	depends on MTD!=n
-+	depends on HAS_IOMEM
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 451f451..8419f5c 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -1,3 +1,3 @@
+ generic-y += bug.h cputime.h device.h emergency-restart.h futex.h hardirq.h
+ generic-y += hw_irq.h irq_regs.h kdebug.h percpu.h sections.h topology.h xor.h
+-generic-y += ftrace.h
++generic-y += ftrace.h pci.h io.h param.h delay.h mutex.h current.h
+diff --git a/arch/um/include/asm/current.h b/arch/um/include/asm/current.h
+deleted file mode 100644
+index c2191d9..0000000
+--- a/arch/um/include/asm/current.h
++++ /dev/null
+@@ -1,13 +0,0 @@
+-/*
+- * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __UM_CURRENT_H
+-#define __UM_CURRENT_H
+-
+-#include "linux/thread_info.h"
+-
+-#define current (current_thread_info()->task)
+-
+-#endif
+diff --git a/arch/um/include/asm/delay.h b/arch/um/include/asm/delay.h
+deleted file mode 100644
+index 8a5576d..0000000
+--- a/arch/um/include/asm/delay.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#ifndef __UM_DELAY_H
+-#define __UM_DELAY_H
+-
+-/* Undefined on purpose */
+-extern void __bad_udelay(void);
+-extern void __bad_ndelay(void);
+-
+-extern void __udelay(unsigned long usecs);
+-extern void __ndelay(unsigned long usecs);
+-extern void __delay(unsigned long loops);
+-
+-#define udelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
+-	__bad_udelay() : __udelay(n))
+-
+-#define ndelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
+-	__bad_ndelay() : __ndelay(n))
+-
+-#endif
+diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
+deleted file mode 100644
+index 44e8b8c..0000000
+--- a/arch/um/include/asm/io.h
++++ /dev/null
+@@ -1,57 +0,0 @@
+-#ifndef __UM_IO_H
+-#define __UM_IO_H
+-
+-#include "asm/page.h"
+-
+-#define IO_SPACE_LIMIT 0xdeadbeef /* Sure hope nothing uses this */
+-
+-static inline int inb(unsigned long i) { return(0); }
+-static inline void outb(char c, unsigned long i) { }
+-
+-/*
+- * Change virtual addresses to physical addresses and vv.
+- * These are pretty trivial
+- */
+-static inline unsigned long virt_to_phys(volatile void * address)
+-{
+-	return __pa((void *) address);
+-}
+-
+-static inline void * phys_to_virt(unsigned long address)
+-{
+-	return __va(address);
+-}
+-
+-/*
+- * Convert a physical pointer to a virtual kernel pointer for /dev/mem
+- * access
+- */
+-#define xlate_dev_mem_ptr(p)	__va(p)
+-
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+-static inline void writeb(unsigned char b, volatile void __iomem *addr)
+-{
+-	*(volatile unsigned char __force *) addr = b;
+-}
+-static inline void writew(unsigned short b, volatile void __iomem *addr)
+-{
+-	*(volatile unsigned short __force *) addr = b;
+-}
+-static inline void writel(unsigned int b, volatile void __iomem *addr)
+-{
+-	*(volatile unsigned int __force *) addr = b;
+-}
+-static inline void writeq(unsigned int b, volatile void __iomem *addr)
+-{
+-	*(volatile unsigned long long __force *) addr = b;
+-}
+-#define __raw_writeb writeb
+-#define __raw_writew writew
+-#define __raw_writel writel
+-#define __raw_writeq writeq
+-
+-#endif
+diff --git a/arch/um/include/asm/mutex.h b/arch/um/include/asm/mutex.h
+deleted file mode 100644
+index 458c1f7..0000000
+--- a/arch/um/include/asm/mutex.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/*
+- * Pull in the generic implementation for the mutex fastpath.
+- *
+- * TODO: implement optimized primitives instead, or leave the generic
+- * implementation in place, or pick the atomic_xchg() based generic
+- * implementation. (see asm-generic/mutex-xchg.h for details)
+- */
+-
+-#include <asm-generic/mutex-dec.h>
+diff --git a/arch/um/include/asm/param.h b/arch/um/include/asm/param.h
+deleted file mode 100644
+index e44f4e6..0000000
+--- a/arch/um/include/asm/param.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-#ifndef _UM_PARAM_H
+-#define _UM_PARAM_H
+-
+-#define EXEC_PAGESIZE   4096
+-
+-#ifndef NOGROUP
+-#define NOGROUP         (-1)
+-#endif
+-
+-#define MAXHOSTNAMELEN  64      /* max length of hostname */
+-
+-#ifdef __KERNEL__
+-#define HZ CONFIG_HZ
+-#define USER_HZ	100	   /* .. some user interfaces are in "ticks" */
+-#define CLOCKS_PER_SEC (USER_HZ)  /* frequency at which times() counts */
+-#else
+-#define HZ 100
+-#endif
+-
+-#endif
+diff --git a/arch/um/include/asm/pci.h b/arch/um/include/asm/pci.h
+deleted file mode 100644
+index b44cf59..0000000
+--- a/arch/um/include/asm/pci.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __UM_PCI_H
+-#define __UM_PCI_H
+-
+-#define PCI_DMA_BUS_IS_PHYS     (1)
+-
+-#endif
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index 0f14838..d7eccd2 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -48,7 +48,7 @@ extern void do_uml_exitcalls(void);
+  * GFP_ATOMIC.
+  */
+ extern int __cant_sleep(void);
+-extern void *get_current(void);
++extern pid_t get_current_pid(void);
+ extern int copy_from_user_proc(void *to, void *from, int size);
+ extern int cpu(void);
+ extern char *uml_strdup(const char *string);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 69f2490..9376c24 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -126,9 +126,9 @@ void exit_thread(void)
+ {
+ }
  
- config MTD_PMC551
- 	tristate "Ramix PMC551 PCI Mezzanine RAM card support"
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 6c5c431..8af67cf 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -1,5 +1,6 @@
- menu "Mapping drivers for chip access"
- 	depends on MTD!=n
-+	depends on HAS_IOMEM
+-void *get_current(void)
++pid_t get_current_pid(void)
+ {
+-	return current;
++	return task_pid_nr(current);
+ }
  
- config MTD_COMPLEX_MAPPINGS
- 	bool "Support non-linear mappings of flash chips"
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 31b034b..80de7b3 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -246,6 +246,7 @@ config MTD_NAND_BCM_UMI_HWCS
- config MTD_NAND_DISKONCHIP
- 	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
- 	depends on EXPERIMENTAL
-+	depends on HAS_IOMEM
- 	select REED_SOLOMON
- 	select REED_SOLOMON_DEC16
- 	help
-@@ -431,6 +432,7 @@ config MTD_NAND_GPMI_NAND
+ /*
+diff --git a/arch/x86/um/bugs_32.c b/arch/x86/um/bugs_32.c
+index a1fba5f..d5263ee 100644
+--- a/arch/x86/um/bugs_32.c
++++ b/arch/x86/um/bugs_32.c
+@@ -51,7 +51,7 @@ void arch_examine_signal(int sig, struct uml_pt_regs *regs)
+ 	 * This is testing for a cmov (0x0f 0x4x) instruction causing a
+ 	 * SIGILL in init.
+ 	 */
+-	if ((sig != SIGILL) || (TASK_PID(get_current()) != 1))
++	if ((sig != SIGILL) || get_current_pid() != 1)
+ 		return;
  
- config MTD_NAND_PLATFORM
- 	tristate "Support for generic platform NAND driver"
-+	depends on HAS_IOMEM
- 	help
- 	  This implements a generic NAND driver for on-SOC platform
- 	  devices. You will need to provide platform-specific functions
-diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
-index 772ad29..91467bb 100644
---- a/drivers/mtd/onenand/Kconfig
-+++ b/drivers/mtd/onenand/Kconfig
-@@ -1,6 +1,7 @@
- menuconfig MTD_ONENAND
- 	tristate "OneNAND Device Support"
- 	depends on MTD
-+	depends on HAS_IOMEM
- 	help
- 	  This enables support for accessing all type of OneNAND flash
- 	  devices. For further information see
+ 	if (copy_from_user_proc(tmp, (void *) UPT_IP(regs), 2)) {
 -- 
 1.7.6
