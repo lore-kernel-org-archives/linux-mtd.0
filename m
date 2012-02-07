@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuYp9-0002Er-Cp
+ id 1RuYp9-0002Ec-FW
  for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 00:22:20 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] um: Wire CONFIG_GENERIC_IO up
-Date: Tue,  7 Feb 2012 01:22:49 +0100
-Message-Id: <1328574170-2286-4-git-send-email-richard@nod.at>
+Subject: [PATCH 2/5] um: Serve io_remap_pfn_range()
+Date: Tue,  7 Feb 2012 01:22:47 +0100
+Message-Id: <1328574170-2286-2-git-send-email-richard@nod.at>
 In-Reply-To: <1328574170-2286-1-git-send-email-richard@nod.at>
 References: <1328574170-2286-1-git-send-email-richard@nod.at>
 Cc: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
@@ -21,25 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UML has no io memory but implements everything defined in
-generic-asm/io.h.
+At some places io_remap_pfn_range() is needed.
+UML has to serve it like all other archs do.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/Kconfig.common |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ arch/um/include/asm/pgtable.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index b37ae70..20a49ba 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -9,6 +9,7 @@ config UML
- 	select HAVE_GENERIC_HARDIRQS
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
-+	select GENERIC_IO
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index 41474fb..6a3f984 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -69,6 +69,8 @@ extern unsigned long end_iomem;
+ #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
+ #define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
  
- config MMU
- 	bool
++#define io_remap_pfn_range	remap_pfn_range
++
+ /*
+  * The i386 can't do page protection for execute, and considers that the same
+  * are read.
 -- 
 1.7.6
