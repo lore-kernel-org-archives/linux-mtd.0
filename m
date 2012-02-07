@@ -1,24 +1,25 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RujfF-0005Eb-Q8
- for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 11:56:50 +0000
-Received: by pbdx9 with SMTP id x9so6992249pbd.36
- for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2012 03:56:47 -0800 (PST)
-Message-ID: <1328615930.22240.47.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 5/5] MTD: Relax dependencies
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Tue, 07 Feb 2012 13:58:50 +0200
-In-Reply-To: <1328574170-2286-5-git-send-email-richard@nod.at>
-References: <1328574170-2286-1-git-send-email-richard@nod.at>
- <1328574170-2286-5-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-0uGCJHws4xJraHmzYgy6"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk
-Reply-To: dedekind1@gmail.com
+Received: from 3.mo3.mail-out.ovh.net ([46.105.44.175]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RujgY-0005TK-UC
+ for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 11:58:12 +0000
+Received: from mail617.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id 11C141008331
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Feb 2012 12:58:09 +0100 (CET)
+Date: Tue, 7 Feb 2012 12:53:06 +0100
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 5/6 V2] atmel/nand: add DT support
+Message-ID: <20120207115306.GF15647@game.jcrosoft.org>
+References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+ <1328524512-18159-2-git-send-email-plagnioj@jcrosoft.com>
+ <4F30FD4B.4050501@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4F30FD4B.4050501@atmel.com>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11:30 Tue 07 Feb     , Nicolas Ferre wrote:
+> On 02/06/2012 11:35 AM, Jean-Christophe PLAGNIOL-VILLARD :
+> > use a local copy of board informatin and fill with DT data
+> > 
+> > Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> > Acked-by: Grant Likely <grant.likely@secretlab.ca>
+> > Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> > Cc: devicetree-discuss@lists.ozlabs.org
+> > Cc: linux-mtd@lists.infradead.org
+> 
+> [..]
+> 
+> > +static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
+> > +					 struct device_node *np)
+> 
+> Maybe you will need to protect this function in case of !DT builds: I
+> suspect that some of the of_xxxxx() calls are not provided if !CONFIG_OF.
+no-need on the of_ function are static inline it !CONFIG_OF
 
---=-0uGCJHws4xJraHmzYgy6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-02-07 at 01:22 +0100, Richard Weinberger wrote:
-> CONFIG_GENERIC_IO is just enough for the basic MTD stuff.
->=20
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-
-Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
---=20
 Best Regards,
-Artem Bityutskiy
-
---=-0uGCJHws4xJraHmzYgy6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPMRH6AAoJECmIfjd9wqK0wQoP/1xKWaIwofLhrWjDPA39+WQq
-6wbWvctSHYhDYYL9WX3gf2qJ4muatsJ3il9TjJBun7XW29S4xMJencahbK1/PKek
-fVv8BHeYMCtSMw9ATlipIA+P80PM3UXcadc1u1tOWqd7cAtr6f4G+3JB2WeAYdpV
-D/djYBisMkalq2XY4SYpNblMUA4K80QmPcTBqMpk2OLngmyXsC9hZCeeOg+4GKJR
-1wqXNGsFEENXbUG70tdbIgukC2Gy+puLWDMBPTlA6YVLr4vFtr18pUWODgUmjcAw
-Sh8UlJ2BIB9FXEDazaO+NNJ2zeDovgKld8hh0mAEWkP320VicT06EPYb+VSZqEuw
-Q/1j4/TyjOl09lU3sm5i2mdM0wXV1L8v8HhXHwZUv7/+KY7BEMq8I7+jScBqI+gC
-JzBLVVn/UUco6TqiT8wWau3IWzJDNfm84KHM9eYhR2ONkFGMVSrPUiz1ed4Oe1SN
-1j07JQPGf/+/OJAKU+vs4V6o0yb39qNR3eKPRgX1aGkBAkEbuCVLu/WcjNQrUxoW
-MI0M/htOKJ7jxysge45qlzH/qDjE1xToJRGaUtNd9JOTg/CZjvxkT4aUfNf3XUk6
-McaA1R9MtKmqZuo/6SQ2T6Co8HqZP27de23TPPOJVyuPhn9F32REp+UfL4i1DfCT
-LIgVud1jTD0AxtyS0ANi
-=ch3m
------END PGP SIGNATURE-----
-
---=-0uGCJHws4xJraHmzYgy6--
+J.
