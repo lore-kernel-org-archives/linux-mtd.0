@@ -1,16 +1,15 @@
-Message-ID: <4F30FD4B.4050501@atmel.com>
-Date: Tue, 07 Feb 2012 11:30:35 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <vinod.koul@intel.com>
+Subject: [PATCH v3 0/2] patch set about the MXS-DMA
+Date: Tue, 7 Feb 2012 18:54:33 +0800
+Message-ID: <1328612075-5825-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 5/6 V2] atmel/nand: add DT support
-References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
- <1328524512-18159-2-git-send-email-plagnioj@jcrosoft.com>
-In-Reply-To: <1328524512-18159-2-git-send-email-plagnioj@jcrosoft.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
+ b29396@freescale.com, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,95 +19,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/06/2012 11:35 AM, Jean-Christophe PLAGNIOL-VILLARD :
-> use a local copy of board informatin and fill with DT data
-> 
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Cc: devicetree-discuss@lists.ozlabs.org
-> Cc: linux-mtd@lists.infradead.org
 
-[..]
+patch 1: move the mxs dma header to a more common place.
+	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+	So move the mxs dma header file to a more common place, and rename
+	it to mxs-dma.h
 
-> +static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
-> +					 struct device_node *np)
+patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+	In the new GPMI version, some hardware behavior changes.
+	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+	The DMA chain should be set like this:
 
-Maybe you will need to protect this function in case of !DT builds: I
-suspect that some of the of_xxxxx() calls are not provided if !CONFIG_OF.
+          +-----+               +-----+                      +-----+
+          | cmd | ------------> | cmd | ------------------>  | cmd |
+          +-----+               +-----+                      +-----+
+                                   ^                            ^
+                                   |                            |
+                                   |                            |
+                              set WAIT4END here too        set WAIT4END here
 
-> +{
-> +	u32 val;
-> +	int ecc_mode;
-> +	struct atmel_nand_data *board = &host->board;
-> +	enum of_gpio_flags flags;
-> +
-> +	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
-> +		if (val >= 32) {
-> +			dev_err(host->dev, "invalid addr-offset %u\n", val);
-> +			return -EINVAL;
-> +		}
-> +		board->ale = val;
-> +	}
-> +
-> +	if (of_property_read_u32(np, "atmel,nand-cmd-offset", &val) == 0) {
-> +		if (val >= 32) {
-> +			dev_err(host->dev, "invalid cmd-offset %u\n", val);
-> +			return -EINVAL;
-> +		}
-> +		board->cle = val;
-> +	}
-> +
-> +	ecc_mode = of_get_nand_ecc_mode(np);
-> +
-> +	board->ecc_mode = ecc_mode < 0 ? NAND_ECC_SOFT : ecc_mode;
-> +
-> +	board->on_flash_bbt = of_get_nand_on_flash_bbt(np);
-> +
-> +	if (of_get_nand_bus_width(np) == 16)
-> +		board->bus_width_16 = 1;
-> +
-> +	board->rdy_pin = of_get_gpio_flags(np, 0, &flags);
-> +	board->rdy_pin_active_low = (flags == OF_GPIO_ACTIVE_LOW);
-> +
-> +	board->enable_pin = of_get_gpio(np, 1);
-> +	board->det_pin = of_get_gpio(np, 2);
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Probe for the NAND device.
->   */
-> @@ -479,6 +525,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  	struct nand_chip *nand_chip;
->  	struct resource *regs;
->  	struct resource *mem;
-> +	struct mtd_part_parser_data ppdata = {};
->  	int res;
->  
->  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> @@ -505,8 +552,15 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  
->  	mtd = &host->mtd;
->  	nand_chip = &host->nand_chip;
-> -	host->board = pdev->dev.platform_data;
->  	host->dev = &pdev->dev;
-> +	if (pdev->dev.of_node) {
-> +		res = atmel_of_init_port(host, pdev->dev.of_node);
+        So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+	And change the relative drivers with the dma_ctrl_flags.
 
-Called here: must compile with !CONFIG_OF
+TEST:
+	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+	in MX28 board.
 
-> +		if (res)
-> +			goto err_nand_ioremap;
-> +	} else {
-> +		memcpy(&host->board, pdev->dev.platform_data,
-> +		       sizeof(struct atmel_nand_data));
-> +	}
->  
->  	nand_chip->priv = host;		/* link the private data structures */
->  	mtd->priv = nand_chip;
+v2 --> v3:
+	[1] remove the field gpmi_version, use GPMI_IS_MX6Q() instead.
 
-Best regards,
--- 
-Nicolas Ferre
+v1 --> v2:
+	[1] squash the trial patches into single patch.
+	[2] use the dma_ctrl_flags.
+
+Huang Shijie (2):
+  mxs-dma : move the mxs dma.h to a more common place
+  mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+
+ drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+ drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   24 ++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
+ .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
+ sound/soc/mxs/mxs-pcm.c                            |    2 +-
+ sound/soc/mxs/mxs-pcm.h                            |    2 +-
+ sound/soc/mxs/mxs-saif.c                           |    2 +-
+ 8 files changed, 57 insertions(+), 21 deletions(-)
+ rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
