@@ -1,16 +1,24 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RuqUQ-00005k-7X
- for linux-mtd@lists.infradead.org; Tue, 07 Feb 2012 19:14:06 +0000
-Received: by wico1 with SMTP id o1so6279668wic.36
- for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2012 11:14:03 -0800 (PST)
+From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+To: Michael Williamson <michael.williamson@criticallink.com>
+Subject: RE: [PATCH v3 3/3] arm:davinci: move NAND and NOR devices as aemif
+ MFD slaves
+Date: Wed, 8 Feb 2012 04:00:13 +0000
+Message-ID: <A73F36158E33644199EB82C5EC81C7BC31761D77@DBDE01.ent.ti.com>
+References: <1328627513-30134-1-git-send-email-prakash.pm@ti.com>
+ <1328627513-30134-4-git-send-email-prakash.pm@ti.com>
+ <4F31552D.9060505@criticallink.com>
+In-Reply-To: <4F31552D.9060505@criticallink.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Tue, 7 Feb 2012 11:14:03 -0800
-Message-ID: <CAF-d49SkoO33Wno2MoX+52uLb1VAgMKA0XAoJQS3GxA=USTtEw@mail.gmail.com>
-Subject: How to measure the mounting time in Linux
-From: Wei Wang <wangw8210@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi Mike,
 
-Is there anyone know how to measure the mounting time in Linux? I have
-searched on google, but cannot find anything about it.
+On Tue, Feb 07, 2012 at 22:15:33, Michael Williamson wrote:
+> Hello Prakash,
+>=20
+> On 2/7/2012 10:11 AM, Manjunathappa, Prakash wrote:
+>=20
+> > NAND and NOR device are made as aemif device slaves, hence all DaVinci
+> > board NAND/NOR device registration achieved via aemif MFD driver.
+> >
+> > Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
+> > ---
+> > Since v2:
+> > Make changes for all DaVinci boards in single patch.
+>=20
+>=20
+>=20
+> [...]
+>=20
+> > diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach=
+-davinci/board-mityomapl138.c
+> > index 672d820..bb29b7a 100644
+> > --- a/arch/arm/mach-davinci/board-mityomapl138.c
+> > +++ b/arch/arm/mach-davinci/board-mityomapl138.c
+> > @@ -19,6 +19,7 @@
+> >  #include <linux/etherdevice.h>
+> >  #include <linux/spi/spi.h>
+> >  #include <linux/spi/flash.h>
+> > +#include <linux/mfd/davinci_aemif.h>
+> > =20
+> >  #include <asm/io.h>
+> >  #include <asm/mach-types.h>
+> > @@ -414,18 +415,35 @@ static struct resource mityomapl138_nandflash_res=
+ource[] =3D {
+> >  	},
+> >  };
+> > =20
+> > -static struct platform_device mityomapl138_nandflash_device =3D {
+> > -	.name		=3D "davinci_nand",
+> > -	.id		=3D 1,
+> > -	.dev		=3D {
+> > -		.platform_data	=3D &mityomapl138_nandflash_data,
+> > +static struct platform_device mityomapl138_emif_devices[] __initdata =
+=3D {
+> > +	{
+> > +		.name		=3D "davinci_nand",
+> > +		.id		=3D 0,
+>=20
+>=20
+>=20
+> Pretty sure this still needs to be a 1.  The nand is on chip select 3,
+> EMA_CS3, which I believe is the same as the da850 EVM.
 
-Do I need to change the kernel or Is there any easy way available to do so?
+Yes I could not test on this board. I will make id as 1.
 
-Thanks!
+Thanks,
+Prakash
 
-Wei
+>=20
+> -Mike
+>=20
+>=20
+>=20
