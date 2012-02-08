@@ -1,12 +1,12 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rv9Kt-0003os-63
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 15:21:37 +0000
+ id 1Rv9Kq-0003pF-Ad
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 15:21:40 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/9] mtd: remove retlen zeroing duplication
-Date: Wed,  8 Feb 2012 17:21:21 +0200
-Message-Id: <1328714485-19536-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/9] mtd: do not duplicate length and offset checks in drivers
+Date: Wed,  8 Feb 2012 17:21:19 +0200
+Message-Id: <1328714485-19536-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1328714485-19536-1-git-send-email-dedekind1@gmail.com>
 References: <1328714485-19536-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,442 +20,1050 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The MTD API function now zero the 'retlen' parameter before calling
-the driver's method - do not do this again in dirvers. This removes
-duplicated '*retlen = 0' assignent from the following methods:
+We already verify that offset and length are within the MTD device size
+in the MTD API functions. Let's remove the duplicated checks in drivers.
+This patch only affects the following API's:
 
-    'mtd_point()'
-    'mtd_read()'
-    'mtd_write()'
-    'mtd_writev()'
-    'mtd_panic_write()'
+'mtd_erase()'
+'mtd_point()'
+'mtd_unpoint()'
+'mtd_get_unmapped_area()'
+'mtd_read()'
+'mtd_write()'
+'mtd_panic_write()'
+'mtd_lock()'
+'mtd_unlock()'
+'mtd_is_locked()'
+'mtd_block_isbad()'
+'mtd_block_markbad()'
+
+This patch adds a bit of noise by removing too sparse empty lines, but this is
+not too bad.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c |    5 -----
- drivers/mtd/chips/cfi_cmdset_0002.c |   12 ------------
- drivers/mtd/chips/cfi_cmdset_0020.c |    3 ---
- drivers/mtd/chips/map_absent.c      |    2 --
- drivers/mtd/devices/block2mtd.c     |    5 -----
- drivers/mtd/devices/doc2000.c       |    4 ----
- drivers/mtd/devices/doc2001.c       |    1 -
- drivers/mtd/devices/doc2001plus.c   |    1 -
- drivers/mtd/devices/lart.c          |    2 --
- drivers/mtd/devices/m25p80.c        |    7 -------
- drivers/mtd/devices/mtd_dataflash.c |    4 ----
- drivers/mtd/devices/phram.c         |    2 --
- drivers/mtd/devices/spear_smi.c     |   10 ----------
- drivers/mtd/devices/sst25l.c        |    3 ---
- drivers/mtd/lpddr/lpddr_cmds.c      |    3 ---
- drivers/mtd/mtdconcat.c             |    6 ------
- drivers/mtd/mtdcore.c               |    1 +
- drivers/mtd/onenand/onenand_base.c  |    3 ---
- 18 files changed, 1 insertions(+), 73 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c |    2 +-
+ drivers/mtd/chips/cfi_cmdset_0020.c |    9 --------
+ drivers/mtd/chips/cfi_util.c        |    6 -----
+ drivers/mtd/devices/block2mtd.c     |    9 --------
+ drivers/mtd/devices/doc2000.c       |    8 -------
+ drivers/mtd/devices/doc2001.c       |    8 -------
+ drivers/mtd/devices/doc2001plus.c   |    8 -------
+ drivers/mtd/devices/lart.c          |    5 ----
+ drivers/mtd/devices/m25p80.c        |   12 -----------
+ drivers/mtd/devices/ms02-nv.c       |    8 -------
+ drivers/mtd/devices/mtd_dataflash.c |    7 ------
+ drivers/mtd/devices/mtdram.c        |   17 ---------------
+ drivers/mtd/devices/phram.c         |   23 ---------------------
+ drivers/mtd/devices/pmc551.c        |   38 -----------------------------------
+ drivers/mtd/devices/slram.c         |   23 ---------------------
+ drivers/mtd/devices/spear_smi.c     |   12 -----------
+ drivers/mtd/devices/sst25l.c        |    9 --------
+ drivers/mtd/lpddr/lpddr_cmds.c      |    5 +---
+ drivers/mtd/mtdconcat.c             |   26 -----------------------
+ drivers/mtd/mtdpart.c               |   30 +--------------------------
+ drivers/mtd/nand/nand_base.c        |   28 -------------------------
+ drivers/mtd/onenand/onenand_base.c  |   20 ------------------
+ drivers/mtd/ubi/gluebi.c            |   11 ----------
+ 23 files changed, 3 insertions(+), 321 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 27008ae..dc66df6 100644
+index 4d04551..27008ae 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0001.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1334,7 +1334,6 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
- 	ofs = from - (chipnum << cfi->chipshift);
- 
- 	*virt = map->virt + cfi->chips[chipnum].start + ofs;
--	*retlen = 0;
- 	if (phys)
- 		*phys = map->phys + cfi->chips[chipnum].start + ofs;
- 
-@@ -1460,8 +1459,6 @@ static int cfi_intelext_read (struct mtd_info *mtd, loff_t from, size_t len, siz
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
- 
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1569,7 +1566,6 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
- 	int chipnum;
- 	unsigned long ofs;
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-@@ -1817,7 +1813,6 @@ static int cfi_intelext_writev (struct mtd_info *mtd, const struct kvec *vecs,
- 	for (i = 0; i < count; i++)
- 		len += vecs[i].iov_len;
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 27ac062..a89d899 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1017,13 +1017,9 @@ static int cfi_amdstd_read (struct mtd_info *mtd, loff_t from, size_t len, size_
- 	int ret = 0;
- 
- 	/* ofs: offset within the first chip that the first read should start */
--
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
- 
--
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1101,16 +1097,11 @@ static int cfi_amdstd_secsi_read (struct mtd_info *mtd, loff_t from, size_t len,
+@@ -1324,7 +1324,7 @@ static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
  	int chipnum;
  	int ret = 0;
  
--
- 	/* ofs: offset within the first chip that the first read should start */
--
- 	/* 8 secsi bytes per chip */
- 	chipnum=from>>3;
- 	ofs=from & 7;
+-	if (!map->virt || (from + len > mtd->size))
++	if (!map->virt)
+ 		return -EINVAL;
  
--
--	*retlen = 0;
--
- 	while (len) {
- 		unsigned long thislen;
- 
-@@ -1255,7 +1246,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 	unsigned long ofs, chipstart;
- 	DECLARE_WAITQUEUE(wait, current);
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-@@ -1497,7 +1487,6 @@ static int cfi_amdstd_write_buffers(struct mtd_info *mtd, loff_t to, size_t len,
- 	int chipnum;
- 	unsigned long ofs;
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
-@@ -1708,7 +1697,6 @@ static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	int ret = 0;
- 	int chipnum;
- 
--	*retlen = 0;
- 	if (!len)
- 		return 0;
- 
+ 	/* Now lock the chip(s) to POINT state */
 diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index 160402f..d690b7d 100644
+index 3861cca..160402f 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0020.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -394,8 +394,6 @@ static int cfi_staa_read (struct mtd_info *mtd, loff_t from, size_t len, size_t
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum <<  cfi->chipshift);
+@@ -904,12 +904,6 @@ static int cfi_staa_erase_varsize(struct mtd_info *mtd,
+ 	int i, first;
+ 	struct mtd_erase_region_info *regions = mtd->eraseregions;
  
--	*retlen = 0;
+-	if (instr->addr > mtd->size)
+-		return -EINVAL;
 -
- 	while (len) {
- 		unsigned long thislen;
+-	if ((instr->len + instr->addr) > mtd->size)
+-		return -EINVAL;
+-
+ 	/* Check that both start and end of the requested erase are
+ 	 * aligned with the erasesize at the appropriate addresses.
+ 	 */
+@@ -1155,9 +1149,6 @@ static int cfi_staa_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	if (len & (mtd->erasesize -1))
+ 		return -EINVAL;
  
-@@ -617,7 +615,6 @@ static int cfi_staa_write_buffers (struct mtd_info *mtd, loff_t to,
- 	int chipnum;
- 	unsigned long ofs;
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+-
+ 	chipnum = ofs >> cfi->chipshift;
+ 	adr = ofs - (chipnum << cfi->chipshift);
  
--	*retlen = 0;
- 	if (!len)
- 		return 0;
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index 8e46405..f992418 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -173,12 +173,6 @@ int cfi_varsize_frob(struct mtd_info *mtd, varsize_frob_t frob,
+ 	int i, first;
+ 	struct mtd_erase_region_info *regions = mtd->eraseregions;
  
-diff --git a/drivers/mtd/chips/map_absent.c b/drivers/mtd/chips/map_absent.c
-index 6be2edd..f7a5bca 100644
---- a/drivers/mtd/chips/map_absent.c
-+++ b/drivers/mtd/chips/map_absent.c
-@@ -70,13 +70,11 @@ static struct mtd_info *map_absent_probe(struct map_info *map)
- 
- static int map_absent_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
- {
--	*retlen = 0;
- 	return -ENODEV;
- }
- 
- static int map_absent_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf)
- {
--	*retlen = 0;
- 	return -ENODEV;
- }
- 
+-	if (ofs > mtd->size)
+-		return -EINVAL;
+-
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+-
+ 	/* Check that both start and end of the requested erase are
+ 	 * aligned with the erasesize at the appropriate addresses.
+ 	 */
 diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 4c2f84c..ba2d74b 100644
+index 0fccf14..4c2f84c 100644
 --- a/drivers/mtd/devices/block2mtd.c
 +++ b/drivers/mtd/devices/block2mtd.c
-@@ -104,9 +104,6 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+@@ -104,11 +104,6 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
  	int offset = from & (PAGE_SIZE-1);
  	int cpylen;
  
--	if (retlen)
--		*retlen = 0;
+-	if (from > mtd->size)
+-		return -EINVAL;
+-	if (from + len > mtd->size)
+-		len = mtd->size - from;
 -
- 	while (len) {
- 		if ((offset + len) > PAGE_SIZE)
- 			cpylen = PAGE_SIZE - offset;	// multiple pages
-@@ -143,8 +140,6 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
- 	int offset = to & ~PAGE_MASK;	// page offset
- 	int cpylen;
+ 	if (retlen)
+ 		*retlen = 0;
  
--	if (retlen)
--		*retlen = 0;
- 	while (len) {
- 		if ((offset+len) > PAGE_SIZE)
- 			cpylen = PAGE_SIZE - offset;	// multiple pages
+@@ -190,10 +185,6 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	if (!len)
+ 		return 0;
+-	if (to >= mtd->size)
+-		return -ENOSPC;
+-	if (to + len > mtd->size)
+-		len = mtd->size - to;
+ 
+ 	mutex_lock(&dev->write_mutex);
+ 	err = _block2mtd_write(dev, buf, to, len, retlen);
 diff --git a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
-index ee4ee0b..7ad7b05 100644
+index 115d890..ee4ee0b 100644
 --- a/drivers/mtd/devices/doc2000.c
 +++ b/drivers/mtd/devices/doc2000.c
-@@ -603,8 +603,6 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+@@ -602,10 +602,6 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int i, len256 = 0, ret=0;
  	size_t left = len;
  
- 	mutex_lock(&this->lock);
+-	/* Don't allow read past end of device */
+-	if (from >= this->totlen)
+-		return -EINVAL;
 -
--	*retlen = 0;
- 	while (left) {
- 		len = left;
+ 	mutex_lock(&this->lock);
  
-@@ -745,8 +743,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	*retlen = 0;
+@@ -748,10 +744,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t left = len;
  	int status;
  
- 	mutex_lock(&this->lock);
+-	/* Don't allow write past end of device */
+-	if (to >= this->totlen)
+-		return -EINVAL;
 -
--	*retlen = 0;
- 	while (left) {
- 		len = left;
+ 	mutex_lock(&this->lock);
  
+ 	*retlen = 0;
 diff --git a/drivers/mtd/devices/doc2001.c b/drivers/mtd/devices/doc2001.c
-index 1784415..7bff54e 100644
+index b1185f9..1784415 100644
 --- a/drivers/mtd/devices/doc2001.c
 +++ b/drivers/mtd/devices/doc2001.c
-@@ -591,7 +591,6 @@ static int doc_write (struct mtd_info *mtd, loff_t to, size_t len,
- 		printk("Error programming flash\n");
- 		/* Error in programming
- 		   FIXME: implement Bad Block Replacement (in nftl.c ??) */
--		*retlen = 0;
- 		ret = -EIO;
- 	}
- 	dummy = ReadDOC(docptr, LastDataRead);
+@@ -383,10 +383,6 @@ static int doc_read (struct mtd_info *mtd, loff_t from, size_t len,
+ 	void __iomem *docptr = this->virtadr;
+ 	struct Nand *mychip = &this->chips[from >> (this->chipshift)];
+ 
+-	/* Don't allow read past end of device */
+-	if (from >= this->totlen)
+-		return -EINVAL;
+-
+ 	/* Don't allow a single read to cross a 512-byte block boundary */
+ 	if (from + len > ((from | 0x1ff) + 1))
+ 		len = ((from | 0x1ff) + 1) - from;
+@@ -494,10 +490,6 @@ static int doc_write (struct mtd_info *mtd, loff_t to, size_t len,
+ 	void __iomem *docptr = this->virtadr;
+ 	struct Nand *mychip = &this->chips[to >> (this->chipshift)];
+ 
+-	/* Don't allow write past end of device */
+-	if (to >= this->totlen)
+-		return -EINVAL;
+-
+ #if 0
+ 	/* Don't allow a single write to cross a 512-byte block boundary */
+ 	if (to + len > ( (to | 0x1ff) + 1))
 diff --git a/drivers/mtd/devices/doc2001plus.c b/drivers/mtd/devices/doc2001plus.c
-index a472bab..4a03d86 100644
+index c9fbadd..a472bab 100644
 --- a/drivers/mtd/devices/doc2001plus.c
 +++ b/drivers/mtd/devices/doc2001plus.c
-@@ -792,7 +792,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		printk("MTD: Error 0x%x programming at 0x%x\n", dummy, (int)to);
- 		/* Error in programming
- 		   FIXME: implement Bad Block Replacement (in nftl.c ??) */
--		*retlen = 0;
- 		ret = -EIO;
- 	}
- 	dummy = ReadDOC(docptr, Mplus_LastDataRead);
+@@ -581,10 +581,6 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	void __iomem * docptr = this->virtadr;
+ 	struct Nand *mychip = &this->chips[from >> (this->chipshift)];
+ 
+-	/* Don't allow read past end of device */
+-	if (from >= this->totlen)
+-		return -EINVAL;
+-
+ 	/* Don't allow a single read to cross a 512-byte block boundary */
+ 	if (from + len > ((from | 0x1ff) + 1))
+ 		len = ((from | 0x1ff) + 1) - from;
+@@ -700,10 +696,6 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	void __iomem * docptr = this->virtadr;
+ 	struct Nand *mychip = &this->chips[to >> (this->chipshift)];
+ 
+-	/* Don't allow write past end of device */
+-	if (to >= this->totlen)
+-		return -EINVAL;
+-
+ 	/* Don't allow writes which aren't exactly one block (512 bytes) */
+ 	if ((to & 0x1ff) || (len != 0x200))
+ 		return -EINVAL;
 diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-index c9ae601..6fb8dba 100644
+index 6d6502c..c9ae601 100644
 --- a/drivers/mtd/devices/lart.c
 +++ b/drivers/mtd/devices/lart.c
-@@ -518,8 +518,6 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
-    printk (KERN_DEBUG "%s(to = 0x%.8x, len = %d)\n", __func__, (__u32)to, len);
+@@ -367,9 +367,6 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
+    printk (KERN_DEBUG "%s(addr = 0x%.8x, len = %d)\n", __func__, instr->addr, instr->len);
  #endif
  
--   *retlen = 0;
+-   /* sanity checks */
+-   if (instr->addr + instr->len > mtd->size) return (-EINVAL);
 -
+    /*
+ 	* check that both start and end of the requested erase are
+ 	* aligned with the erasesize at the appropriate addresses.
+@@ -442,7 +439,6 @@ static int flash_read (struct mtd_info *mtd,loff_t from,size_t len,size_t *retle
+ 
     /* sanity checks */
     if (!len) return (0);
+-   if (from + len > mtd->size) return (-EINVAL);
  
+    /* we always read len bytes */
+    *retlen = len;
+@@ -526,7 +522,6 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
+ 
+    /* sanity checks */
+    if (!len) return (0);
+-   if (to + len > mtd->size) return (-EINVAL);
+ 
+    /* first, we write a 0xFF.... padded byte until we reach a dword boundary */
+    if (to & (BUSWIDTH - 1))
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 0955a8f..45cc4a1 100644
+index 8808da9..0955a8f 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -365,9 +365,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
+@@ -288,9 +288,6 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			__func__, (long long)instr->addr,
+ 			(long long)instr->len);
  
--	/* Byte count starts at zero. */
--	*retlen = 0;
+-	/* sanity checks */
+-	if (instr->addr + instr->len > flash->mtd.size)
+-		return -EINVAL;
+ 	div_u64_rem(instr->len, mtd->erasesize, &rem);
+ 	if (rem)
+ 		return -EINVAL;
+@@ -353,9 +350,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (!len)
+ 		return 0;
+ 
+-	if (from + len > flash->mtd.size)
+-		return -EINVAL;
 -
- 	mutex_lock(&flash->lock);
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
  
- 	/* Wait till previous write/erase is done. */
-@@ -411,8 +408,6 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	pr_debug("%s: %s to 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
- 			__func__, (u32)to, len);
- 
--	*retlen = 0;
--
- 	/* sanity checks */
+@@ -423,9 +417,6 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
  	if (!len)
  		return(0);
-@@ -500,8 +495,6 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	pr_debug("%s: %s to 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
- 			__func__, (u32)to, len);
  
--	*retlen = 0;
+-	if (to + len > flash->mtd.size)
+-		return -EINVAL;
 -
- 	/* sanity checks */
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
+@@ -515,9 +506,6 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
  	if (!len)
  		return 0;
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index fc5c781..c76b446 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -249,8 +249,6 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	pr_debug("%s: read 0x%x..0x%x\n", dev_name(&priv->spi->dev),
- 			(unsigned)from, (unsigned)(from + len));
  
--	*retlen = 0;
+-	if (to + len > flash->mtd.size)
+-		return -EINVAL;
 -
- 	/* Sanity checks */
- 	if (!len)
- 		return 0;
-@@ -323,8 +321,6 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	pr_debug("%s: write 0x%x..0x%x\n",
- 		dev_name(&spi->dev), (unsigned)to, (unsigned)(to + len));
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
  
--	*retlen = 0;
+diff --git a/drivers/mtd/devices/ms02-nv.c b/drivers/mtd/devices/ms02-nv.c
+index 3a05af5..182849d 100644
+--- a/drivers/mtd/devices/ms02-nv.c
++++ b/drivers/mtd/devices/ms02-nv.c
+@@ -59,12 +59,8 @@ static int ms02nv_read(struct mtd_info *mtd, loff_t from,
+ {
+ 	struct ms02nv_private *mp = mtd->priv;
+ 
+-	if (from + len > mtd->size)
+-		return -EINVAL;
 -
- 	/* Sanity checks */
- 	if (!len)
- 		return 0;
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index d0e8dc6..d3474a4 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -85,8 +85,6 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	memcpy(buf, mp->uaddr + from, len);
+ 	*retlen = len;
+-
  	return 0;
  }
  
--
--
- static void unregister_devices(void)
+@@ -73,12 +69,8 @@ static int ms02nv_write(struct mtd_info *mtd, loff_t to,
  {
- 	struct phram_mtd_list *this, *safe;
+ 	struct ms02nv_private *mp = mtd->priv;
+ 
+-	if (to + len > mtd->size)
+-		return -EINVAL;
+-
+ 	memcpy(mp->uaddr + to, buf, len);
+ 	*retlen = len;
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index fd4a9fc..fc5c781 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -164,9 +164,6 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	      dev_name(&spi->dev), (long long)instr->addr,
+ 	      (long long)instr->len);
+ 
+-	/* Sanity checks */
+-	if (instr->addr + instr->len > mtd->size)
+-		return -EINVAL;
+ 	div_u64_rem(instr->len, priv->page_size, &rem);
+ 	if (rem)
+ 		return -EINVAL;
+@@ -257,8 +254,6 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	/* Sanity checks */
+ 	if (!len)
+ 		return 0;
+-	if (from + len > mtd->size)
+-		return -EINVAL;
+ 
+ 	/* Calculate flash page/byte address */
+ 	addr = (((unsigned)from / priv->page_size) << priv->page_offset)
+@@ -333,8 +328,6 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	/* Sanity checks */
+ 	if (!len)
+ 		return 0;
+-	if ((to + len) > mtd->size)
+-		return -EINVAL;
+ 
+ 	spi_message_init(&msg);
+ 
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index e1f017b..0e0e6ed 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -34,27 +34,18 @@ static struct mtd_info *mtd_info;
+ 
+ static int ram_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+-	if (instr->addr + instr->len > mtd->size)
+-		return -EINVAL;
+-
+ 	memset((char *)mtd->priv + instr->addr, 0xff, instr->len);
+-
+ 	instr->state = MTD_ERASE_DONE;
+ 	mtd_erase_callback(instr);
+-
+ 	return 0;
+ }
+ 
+ static int ram_point(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, void **virt, resource_size_t *phys)
+ {
+-	if (from + len > mtd->size)
+-		return -EINVAL;
+-
+ 	/* can we return a physical address with this driver? */
+ 	if (phys)
+ 		return -EINVAL;
+-
+ 	*virt = mtd->priv + from;
+ 	*retlen = len;
+ 	return 0;
+@@ -81,11 +72,7 @@ static unsigned long ram_get_unmapped_area(struct mtd_info *mtd,
+ static int ram_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, u_char *buf)
+ {
+-	if (from + len > mtd->size)
+-		return -EINVAL;
+-
+ 	memcpy(buf, mtd->priv + from, len);
+-
+ 	*retlen = len;
+ 	return 0;
+ }
+@@ -93,11 +80,7 @@ static int ram_read(struct mtd_info *mtd, loff_t from, size_t len,
+ static int ram_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		size_t *retlen, const u_char *buf)
+ {
+-	if (to + len > mtd->size)
+-		return -EINVAL;
+-
+ 	memcpy((char *)mtd->priv + to, buf, len);
+-
+ 	*retlen = len;
+ 	return 0;
+ }
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 3803555..36add7c 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -38,29 +38,20 @@ static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	u_char *start = mtd->priv;
+ 
+-	if (instr->addr + instr->len > mtd->size)
+-		return -EINVAL;
+-
+ 	memset(start + instr->addr, 0xff, instr->len);
+ 
+ 	/* This'll catch a few races. Free the thing before returning :)
+ 	 * I don't feel at all ashamed. This kind of thing is possible anyway
+ 	 * with flash, but unlikely.
+ 	 */
+-
+ 	instr->state = MTD_ERASE_DONE;
+-
+ 	mtd_erase_callback(instr);
+-
+ 	return 0;
+ }
+ 
+ static int phram_point(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, void **virt, resource_size_t *phys)
+ {
+-	if (from + len > mtd->size)
+-		return -EINVAL;
+-
+ 	/* can we return a physical address with this driver? */
+ 	if (phys)
+ 		return -EINVAL;
+@@ -80,14 +71,7 @@ static int phram_read(struct mtd_info *mtd, loff_t from, size_t len,
+ {
+ 	u_char *start = mtd->priv;
+ 
+-	if (from >= mtd->size)
+-		return -EINVAL;
+-
+-	if (len > mtd->size - from)
+-		len = mtd->size - from;
+-
+ 	memcpy(buf, start + from, len);
+-
+ 	*retlen = len;
+ 	return 0;
+ }
+@@ -97,14 +81,7 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
+ {
+ 	u_char *start = mtd->priv;
+ 
+-	if (to >= mtd->size)
+-		return -EINVAL;
+-
+-	if (len > mtd->size - to)
+-		len = mtd->size - to;
+-
+ 	memcpy(start + to, buf, len);
+-
+ 	*retlen = len;
+ 	return 0;
+ }
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index 933127e..d394e06 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -116,16 +116,6 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
+ #endif
+ 
+ 	end = instr->addr + instr->len - 1;
+-
+-	/* Is it past the end? */
+-	if (end > mtd->size) {
+-#ifdef CONFIG_MTD_PMC551_DEBUG
+-		printk(KERN_DEBUG "pmc551_erase() out of bounds (%ld > %ld)\n",
+-			(long)end, (long)mtd->size);
+-#endif
+-		return -EINVAL;
+-	}
+-
+ 	eoff_hi = end & ~(priv->asize - 1);
+ 	soff_hi = instr->addr & ~(priv->asize - 1);
+ 	eoff_lo = end & (priv->asize - 1);
+@@ -179,14 +169,6 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
+ 	printk(KERN_DEBUG "pmc551_point(%ld, %ld)\n", (long)from, (long)len);
+ #endif
+ 
+-	if (from + len > mtd->size) {
+-#ifdef CONFIG_MTD_PMC551_DEBUG
+-		printk(KERN_DEBUG "pmc551_point() out of bounds (%ld > %ld)\n",
+-			(long)from + len, (long)mtd->size);
+-#endif
+-		return -EINVAL;
+-	}
+-
+ 	/* can we return a physical address with this driver? */
+ 	if (phys)
+ 		return -EINVAL;
+@@ -230,16 +212,6 @@ static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
+ #endif
+ 
+ 	end = from + len - 1;
+-
+-	/* Is it past the end? */
+-	if (end > mtd->size) {
+-#ifdef CONFIG_MTD_PMC551_DEBUG
+-		printk(KERN_DEBUG "pmc551_read() out of bounds (%ld > %ld)\n",
+-			(long)end, (long)mtd->size);
+-#endif
+-		return -EINVAL;
+-	}
+-
+ 	soff_hi = from & ~(priv->asize - 1);
+ 	eoff_hi = end & ~(priv->asize - 1);
+ 	soff_lo = from & (priv->asize - 1);
+@@ -297,16 +269,6 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
+ #endif
+ 
+ 	end = to + len - 1;
+-	/* Is it past the end?  or did the u32 wrap? */
+-	if (end > mtd->size) {
+-#ifdef CONFIG_MTD_PMC551_DEBUG
+-		printk(KERN_DEBUG "pmc551_write() out of bounds (end: %ld, "
+-			"size: %ld, to: %ld)\n", (long)end, (long)mtd->size,
+-			(long)to);
+-#endif
+-		return -EINVAL;
+-	}
+-
+ 	soff_hi = to & ~(priv->asize - 1);
+ 	eoff_hi = end & ~(priv->asize - 1);
+ 	soff_lo = to & (priv->asize - 1);
+diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+index 9431ffc..842e489 100644
+--- a/drivers/mtd/devices/slram.c
++++ b/drivers/mtd/devices/slram.c
+@@ -84,21 +84,13 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	slram_priv_t *priv = mtd->priv;
+ 
+-	if (instr->addr + instr->len > mtd->size) {
+-		return(-EINVAL);
+-	}
+-
+ 	memset(priv->start + instr->addr, 0xff, instr->len);
+-
+ 	/* This'll catch a few races. Free the thing before returning :)
+ 	 * I don't feel at all ashamed. This kind of thing is possible anyway
+ 	 * with flash, but unlikely.
+ 	 */
+-
+ 	instr->state = MTD_ERASE_DONE;
+-
+ 	mtd_erase_callback(instr);
+-
+ 	return(0);
+ }
+ 
+@@ -110,10 +102,6 @@ static int slram_point(struct mtd_info *mtd, loff_t from, size_t len,
+ 	/* can we return a physical address with this driver? */
+ 	if (phys)
+ 		return -EINVAL;
+-
+-	if (from + len > mtd->size)
+-		return -EINVAL;
+-
+ 	*virt = priv->start + from;
+ 	*retlen = len;
+ 	return(0);
+@@ -129,14 +117,7 @@ static int slram_read(struct mtd_info *mtd, loff_t from, size_t len,
+ {
+ 	slram_priv_t *priv = mtd->priv;
+ 
+-	if (from > mtd->size)
+-		return -EINVAL;
+-
+-	if (from + len > mtd->size)
+-		len = mtd->size - from;
+-
+ 	memcpy(buf, priv->start + from, len);
+-
+ 	*retlen = len;
+ 	return(0);
+ }
+@@ -146,11 +127,7 @@ static int slram_write(struct mtd_info *mtd, loff_t to, size_t len,
+ {
+ 	slram_priv_t *priv = mtd->priv;
+ 
+-	if (to + len > mtd->size)
+-		return -EINVAL;
+-
+ 	memcpy(priv->start + to, buf, len);
+-
+ 	*retlen = len;
+ 	return(0);
+ }
 diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index f7b9949..520e387 100644
+index b4c02d6..f7b9949 100644
 --- a/drivers/mtd/devices/spear_smi.c
 +++ b/drivers/mtd/devices/spear_smi.c
-@@ -576,11 +576,6 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		return -EINVAL;
- 	}
+@@ -512,10 +512,6 @@ static int spear_mtd_erase(struct mtd_info *mtd, struct erase_info *e_info)
+ 	if (!flash || !dev)
+ 		return -ENODEV;
  
--	if (!retlen)
+-	/* do not allow erase past end of device */
+-	if (e_info->addr + e_info->len > flash->mtd.size)
 -		return -EINVAL;
--	else
--		*retlen = 0;
 -
- 	/* select address as per bank number */
- 	src = flash->base_addr + from;
+ 	bank = flash->bank;
+ 	if (bank > dev->num_flashes - 1) {
+ 		dev_err(&dev->pdev->dev, "Invalid Bank Num");
+@@ -575,10 +571,6 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (!flash || !dev)
+ 		return -ENODEV;
  
-@@ -677,11 +672,6 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		return -EINVAL;
- 	}
- 
--	if (!retlen)
+-	/* do not allow reads past end of device */
+-	if (from + len > flash->mtd.size)
 -		return -EINVAL;
--	else
--		*retlen = 0;
 -
- 	/* select address as per bank number */
- 	dest = flash->base_addr + to;
- 	mutex_lock(&flash->lock);
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index 99d4a3c..5c2613c 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -224,9 +224,6 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (len == 0)
- 		return 0;
- 
--	if (retlen)
--		*retlen = 0;
--
- 	spi_message_init(&message);
- 	memset(&transfer, 0, sizeof(transfer));
- 
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 0f3731c..a92906b 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -535,9 +535,7 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
- 
- 	/* ofs: offset within the first chip that the first read should start */
- 	ofs = adr - (chipnum << lpddr->chipshift);
--
- 	*mtdbuf = (void *)map->virt + chip->start + ofs;
--	*retlen = 0;
- 
- 	while (len) {
- 		unsigned long thislen;
-@@ -647,7 +645,6 @@ static int lpddr_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 	for (i = 0; i < count; i++)
- 		len += vecs[i].iov_len;
- 
--	*retlen = 0;
+ 	if (flash->bank > dev->num_flashes - 1) {
+ 		dev_err(&dev->pdev->dev, "Invalid Bank Num");
+ 		return -EINVAL;
+@@ -680,10 +672,6 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
  	if (!len)
  		return 0;
  
+-	/* do not allow write past end of page */
+-	if (to + len > flash->mtd.size)
+-		return -EINVAL;
+-
+ 	if (flash->bank > dev->num_flashes - 1) {
+ 		dev_err(&dev->pdev->dev, "Invalid Bank Num");
+ 		return -EINVAL;
+diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
+index 8b9ffaf..99d4a3c 100644
+--- a/drivers/mtd/devices/sst25l.c
++++ b/drivers/mtd/devices/sst25l.c
+@@ -175,9 +175,6 @@ static int sst25l_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	int err;
+ 
+ 	/* Sanity checks */
+-	if (instr->addr + instr->len > flash->mtd.size)
+-		return -EINVAL;
+-
+ 	if ((uint32_t)instr->len % mtd->erasesize)
+ 		return -EINVAL;
+ 
+@@ -227,9 +224,6 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (len == 0)
+ 		return 0;
+ 
+-	if (from + len > flash->mtd.size)
+-		return -EINVAL;
+-
+ 	if (retlen)
+ 		*retlen = 0;
+ 
+@@ -278,9 +272,6 @@ static int sst25l_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (!len)
+ 		return 0;
+ 
+-	if (to + len > flash->mtd.size)
+-		return -EINVAL;
+-
+ 	if ((uint32_t)to % mtd->writesize)
+ 		return -EINVAL;
+ 
+diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+index de960b1..0f3731c 100644
+--- a/drivers/mtd/lpddr/lpddr_cmds.c
++++ b/drivers/mtd/lpddr/lpddr_cmds.c
+@@ -530,7 +530,7 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
+ 	struct flchip *chip = &lpddr->chips[chipnum];
+ 	int ret = 0;
+ 
+-	if (!map->virt || (adr + len > mtd->size))
++	if (!map->virt)
+ 		return -EINVAL;
+ 
+ 	/* ofs: offset within the first chip that the first read should start */
+@@ -692,9 +692,6 @@ static int lpddr_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	ofs = instr->addr;
+ 	len = instr->len;
+ 
+-	if (ofs > mtd->size || (len + ofs) > mtd->size)
+-		return -EINVAL;
+-
+ 	while (len > 0) {
+ 		ret = do_erase_oneblock(mtd, ofs);
+ 		if (ret)
 diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index dd24232..f7a31cc 100644
+index d826a8a..1f20718 100644
 --- a/drivers/mtd/mtdconcat.c
 +++ b/drivers/mtd/mtdconcat.c
-@@ -72,8 +72,6 @@ concat_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	int ret = 0, err;
- 	int i;
- 
--	*retlen = 0;
--
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
- 		size_t size, retsize;
-@@ -126,8 +124,6 @@ concat_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	int err = -EINVAL;
- 	int i;
- 
--	*retlen = 0;
--
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
- 		size_t size, retsize;
-@@ -169,8 +165,6 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 	int i;
- 	int err = -EINVAL;
- 
--	*retlen = 0;
--
- 	/* Calculate total length of data */
+@@ -185,10 +185,6 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
  	for (i = 0; i < count; i++)
  		total_len += vecs[i].iov_len;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index b9b2864..ead52b3 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -744,6 +744,7 @@ EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
- int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	     u_char *buf)
+ 
+-	/* Do not allow write past end of device */
+-	if ((to + total_len) > mtd->size)
+-		return -EINVAL;
+-
+ 	/* Check alignment */
+ 	if (mtd->writesize > 1) {
+ 		uint64_t __to = to;
+@@ -406,12 +402,6 @@ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+ 
+-	if (instr->addr > concat->mtd.size)
+-		return -EINVAL;
+-
+-	if (instr->len + instr->addr > concat->mtd.size)
+-		return -EINVAL;
+-
+ 	/*
+ 	 * Check for proper erase block alignment of the to-be-erased area.
+ 	 * It is easier to do this based on the super device's erase
+@@ -538,9 +528,6 @@ static int concat_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	struct mtd_concat *concat = CONCAT(mtd);
+ 	int i, err = -EINVAL;
+ 
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+-
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+ 		uint64_t size;
+@@ -575,9 +562,6 @@ static int concat_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	struct mtd_concat *concat = CONCAT(mtd);
+ 	int i, err = 0;
+ 
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+-
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+ 		uint64_t size;
+@@ -650,9 +634,6 @@ static int concat_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ 	if (!mtd_can_have_bb(concat->subdev[0]))
+ 		return res;
+ 
+-	if (ofs > mtd->size)
+-		return -EINVAL;
+-
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+ 
+@@ -673,9 +654,6 @@ static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	struct mtd_concat *concat = CONCAT(mtd);
+ 	int i, err = -EINVAL;
+ 
+-	if (ofs > mtd->size)
+-		return -EINVAL;
+-
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+ 
+@@ -713,10 +691,6 @@ static unsigned long concat_get_unmapped_area(struct mtd_info *mtd,
+ 			continue;
+ 		}
+ 
+-		/* we've found the subdev over which the mapping will reside */
+-		if (offset + len > subdev->size)
+-			return (unsigned long) -EINVAL;
+-
+ 		return mtd_get_unmapped_area(subdev, len, offset, flags);
+ 	}
+ 
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index da8a0b2..fbe2c8a 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -65,11 +65,6 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int res;
+ 
+ 	stats = part->master->ecc_stats;
+-
+-	if (from >= mtd->size)
+-		len = 0;
+-	else if (from + len > mtd->size)
+-		len = mtd->size - from;
+ 	res = mtd_read(part->master, from + part->offset, len, retlen, buf);
+ 	if (unlikely(res)) {
+ 		if (mtd_is_bitflip(res))
+@@ -84,10 +79,7 @@ static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, void **virt, resource_size_t *phys)
  {
-+	*retlen = 0;
- 	if (from < 0 || from > mtd->size || len > mtd->size - from)
- 		return -EINVAL;
- 	return mtd->_read(mtd, from, len, retlen, buf);
+ 	struct mtd_part *part = PART(mtd);
+-	if (from >= mtd->size)
+-		len = 0;
+-	else if (from + len > mtd->size)
+-		len = mtd->size - from;
++
+ 	return mtd_point(part->master, from + part->offset, len, retlen,
+ 			 virt, phys);
+ }
+@@ -182,10 +174,6 @@ static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_part *part = PART(mtd);
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+-	if (to >= mtd->size)
+-		len = 0;
+-	else if (to + len > mtd->size)
+-		len = mtd->size - to;
+ 	return mtd_write(part->master, to + part->offset, len, retlen, buf);
+ }
+ 
+@@ -195,10 +183,6 @@ static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_part *part = PART(mtd);
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+-	if (to >= mtd->size)
+-		len = 0;
+-	else if (to + len > mtd->size)
+-		len = mtd->size - to;
+ 	return mtd_panic_write(part->master, to + part->offset, len, retlen,
+ 			       buf);
+ }
+@@ -248,8 +232,6 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	int ret;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+-	if (instr->addr >= mtd->size)
+-		return -EINVAL;
+ 	instr->addr += part->offset;
+ 	ret = mtd_erase(part->master, instr);
+ 	if (ret) {
+@@ -277,24 +259,18 @@ EXPORT_SYMBOL_GPL(mtd_erase_callback);
+ static int part_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = PART(mtd);
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+ 	return mtd_lock(part->master, ofs + part->offset, len);
+ }
+ 
+ static int part_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = PART(mtd);
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+ 	return mtd_unlock(part->master, ofs + part->offset, len);
+ }
+ 
+ static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = PART(mtd);
+-	if ((len + ofs) > mtd->size)
+-		return -EINVAL;
+ 	return mtd_is_locked(part->master, ofs + part->offset, len);
+ }
+ 
+@@ -319,8 +295,6 @@ static void part_resume(struct mtd_info *mtd)
+ static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_part *part = PART(mtd);
+-	if (ofs >= mtd->size)
+-		return -EINVAL;
+ 	ofs += part->offset;
+ 	return mtd_block_isbad(part->master, ofs);
+ }
+@@ -332,8 +306,6 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+-	if (ofs >= mtd->size)
+-		return -EINVAL;
+ 	ofs += part->offset;
+ 	res = mtd_block_markbad(part->master, ofs);
+ 	if (!res)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 13a56d3..dd182c8 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -123,12 +123,6 @@ static int check_offs_len(struct mtd_info *mtd,
+ 		ret = -EINVAL;
+ 	}
+ 
+-	/* Do not allow past end of device */
+-	if (ofs + len > mtd->size) {
+-		pr_debug("%s: past end of device\n", __func__);
+-		ret = -EINVAL;
+-	}
+-
+ 	return ret;
+ }
+ 
+@@ -1620,25 +1614,17 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
+ 
+-	/* Do not allow reads past end of device */
+-	if ((from + len) > mtd->size)
+-		return -EINVAL;
+ 	if (!len)
+ 		return 0;
+ 
+ 	nand_get_device(chip, mtd, FL_READING);
+-
+ 	ops.len = len;
+ 	ops.datbuf = buf;
+ 	ops.oobbuf = NULL;
+ 	ops.mode = 0;
+-
+ 	ret = nand_do_read_ops(mtd, from, &ops);
+-
+ 	*retlen = ops.retlen;
+-
+ 	nand_release_device(mtd);
+-
+ 	return ret;
+ }
+ 
+@@ -2328,8 +2314,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	int ret;
+ 
+ 	/* Do not allow reads past end of device */
+-	if ((to + len) > mtd->size)
+-		return -EINVAL;
+ 	if (!len)
+ 		return 0;
+ 
+@@ -2367,25 +2351,17 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
+ 
+-	/* Do not allow reads past end of device */
+-	if ((to + len) > mtd->size)
+-		return -EINVAL;
+ 	if (!len)
+ 		return 0;
+ 
+ 	nand_get_device(chip, mtd, FL_WRITING);
+-
+ 	ops.len = len;
+ 	ops.datbuf = (uint8_t *)buf;
+ 	ops.oobbuf = NULL;
+ 	ops.mode = 0;
+-
+ 	ret = nand_do_write_ops(mtd, to, &ops);
+-
+ 	*retlen = ops.retlen;
+-
+ 	nand_release_device(mtd);
+-
+ 	return ret;
+ }
+ 
+@@ -2749,10 +2725,6 @@ static void nand_sync(struct mtd_info *mtd)
+  */
+ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ {
+-	/* Check for invalid offset */
+-	if (offs > mtd->size)
+-		return -EINVAL;
+-
+ 	return nand_block_checkbad(mtd, offs, 1, 0);
+ }
+ 
 diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 9c6445d..a1592cf 100644
+index 914c49b..9c6445d 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1753,9 +1753,6 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	pr_debug("%s: to = 0x%08x, len = %i\n", __func__, (unsigned int)to,
- 			(int)len);
+@@ -1756,13 +1756,6 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	/* Initialize retlen, in case of early exit */
+ 	*retlen = 0;
  
--	/* Initialize retlen, in case of early exit */
--	*retlen = 0;
+-	/* Do not allow writes past end of device */
+-	if (unlikely((to + len) > mtd->size)) {
+-		printk(KERN_ERR "%s: Attempt write to past end of device\n",
+-			__func__);
+-		return -EINVAL;
+-	}
 -
  	/* Reject writes, which are not page aligned */
          if (unlikely(NOTALIGNED(to) || NOTALIGNED(len))) {
  		printk(KERN_ERR "%s: Attempt to write not page aligned data\n",
+@@ -1890,13 +1883,6 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 	ops->retlen = 0;
+ 	ops->oobretlen = 0;
+ 
+-	/* Do not allow writes past end of device */
+-	if (unlikely((to + len) > mtd->size)) {
+-		printk(KERN_ERR "%s: Attempt write to past end of device\n",
+-			__func__);
+-		return -EINVAL;
+-	}
+-
+ 	/* Reject writes, which are not page aligned */
+         if (unlikely(NOTALIGNED(to) || NOTALIGNED(len))) {
+ 		printk(KERN_ERR "%s: Attempt to write not page aligned data\n",
+@@ -2493,12 +2479,6 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			(unsigned long long)instr->addr,
+ 			(unsigned long long)instr->len);
+ 
+-	/* Do not allow erase past end of device */
+-	if (unlikely((len + addr) > mtd->size)) {
+-		printk(KERN_ERR "%s: Erase past end of device\n", __func__);
+-		return -EINVAL;
+-	}
+-
+ 	if (FLEXONENAND(this)) {
+ 		/* Find the eraseregion of this address */
+ 		int i = flexonenand_region(mtd, addr);
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index 0101dce..b875c2c 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -174,11 +174,7 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int err = 0, lnum, offs, total_read;
+ 	struct gluebi_device *gluebi;
+ 
+-	if (len < 0 || from < 0 || from + len > mtd->size)
+-		return -EINVAL;
+-
+ 	gluebi = container_of(mtd, struct gluebi_device, mtd);
+-
+ 	lnum = div_u64_rem(from, mtd->erasesize, &offs);
+ 	total_read = len;
+ 	while (total_read) {
+@@ -218,9 +214,6 @@ static int gluebi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	int err = 0, lnum, offs, total_written;
+ 	struct gluebi_device *gluebi;
+ 
+-	if (len < 0 || to < 0 || len + to > mtd->size)
+-		return -EINVAL;
+-
+ 	gluebi = container_of(mtd, struct gluebi_device, mtd);
+ 
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+@@ -265,10 +258,6 @@ static int gluebi_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	int err, i, lnum, count;
+ 	struct gluebi_device *gluebi;
+ 
+-	if (instr->addr < 0 || instr->addr > mtd->size - mtd->erasesize)
+-		return -EINVAL;
+-	if (instr->len < 0 || instr->addr + instr->len > mtd->size)
+-		return -EINVAL;
+ 	if (mtd_mod_by_ws(instr->addr, mtd) || mtd_mod_by_ws(instr->len, mtd))
+ 		return -EINVAL;
+ 
 -- 
 1.7.9
