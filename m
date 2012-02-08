@@ -1,28 +1,21 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvA0P-00016o-DK
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 16:04:25 +0000
-Received: by pbdx9 with SMTP id x9so802095pbd.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 08:04:23 -0800 (PST)
-Message-ID: <1328717189.22240.67.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/3] mtd: move zero length verification to MTD API
- functions
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 08 Feb 2012 18:06:29 +0200
-In-Reply-To: <20120208165437.3d0af6b5@pixies.home.jungo.com>
-References: <1328529789-2106-1-git-send-email-dedekind1@gmail.com>
- <1328529789-2106-2-git-send-email-dedekind1@gmail.com>
- <20120207143505.6fba6d5b@pixies.home.jungo.com>
- <1328704973.22240.60.camel@sauron.fi.intel.com>
- <1328707598.22240.64.camel@sauron.fi.intel.com>
- <20120208165437.3d0af6b5@pixies.home.jungo.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Y+U/LJVKIrDVrElKgfsS"
-Mime-Version: 1.0
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1RvC7G-0003m4-C3
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 18:19:38 +0000
+Received: by wera10 with SMTP id a10so714199wer.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 10:19:37 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1202080837040.17234@lnxricardw.se.axis.com>
+References: <CAF-d49SkoO33Wno2MoX+52uLb1VAgMKA0XAoJQS3GxA=USTtEw@mail.gmail.com>
+ <Pine.LNX.4.64.1202080837040.17234@lnxricardw.se.axis.com>
+Date: Wed, 8 Feb 2012 10:19:36 -0800
+Message-ID: <CAF-d49RZ=yyZ58akiSeRxs-nXQnf84Z=b3jmTz9whRZfeiNOuw@mail.gmail.com>
+Subject: Re: How to measure the mounting time in Linux
+From: Wei Wang <wangw8210@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I mean the length of time a a device has been mounted with a special filesy=
+stem.
 
---=-Y+U/LJVKIrDVrElKgfsS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks
 
-On Wed, 2012-02-08 at 16:54 +0200, Shmulik Ladkani wrote:
-> I guess new interface (checking the returned 'phys') is reasonable as
-> well. And, nothing gets broken since no such users...
->=20
-> Reviewed-by: shmulik.ladkani@gmail.com
 
-Thanks, but I added more preferable
-Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-Y+U/LJVKIrDVrElKgfsS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPMp2GAAoJECmIfjd9wqK0EBIQAM83Z3lUvWMp3W95vs06eAAB
-CfGOx1cskUirxo688RRNm+1aUYx4OVbCoRBB9HtRalbX+m1TXr12rIHgiNT+UQ0s
-/7tsLaAOom9h9+rqhxqdmSCItR8jW8ci3swzSwraBLxqu7ka46R6DI6lvoWqR1tY
-4n8odXGXZAbYgGopS8PmpBppAJmBqUBajH6K1BLQwsaT2RcVf7lORnIyeDcshvNl
-0DvYeVPvGYBCRPyZXXAhBExugDAs4T64sIt5ju0wDbHhXcTwdN478uSWINTt/YS1
-8N6S1Fp0WVYKMWPMwKeVBMvDVaGKLXv/cCi+fXRAYFKnKKaE6swViua7heeXz7Ss
-HxQHZlfGRuvXpo82vjrWBVPgAY54P6Ug6pQiwdJsoWiG7cYGoBxl/ZKxtN/XKHJg
-8yBeoiipyOFriSGVe1VHhrLlT0aTTyQzZCAEmEzKtvgD/PeF1KSZfHnkebUnzNGw
-UoucUkc53yWKlOOldfHfRJcsJTor5MsNDy5ranrlB++VlvY7QQ5Am3+eORyrNgiu
-K/zS+J6CvEo893t2ua67R8HiS2E3ktq9P26Fx8Xcw5drVWxUlXs3ynWUbIqpZCMr
-LVP+PdAaTN09OowzIlOUAy01fPhpKDWp0UCMyQEMFa52ovOR7N6xpEOELlGdBrdf
-smDqFOfAXutfYO9IKgzt
-=Do1+
------END PGP SIGNATURE-----
-
---=-Y+U/LJVKIrDVrElKgfsS--
+On Tue, Feb 7, 2012 at 11:37 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Tue, 7 Feb 2012, Wei Wang wrote:
+>
+>> Hi All,
+>>
+>> Is there anyone know how to measure the mounting time in Linux? I have
+>> searched on google, but cannot find anything about it.
+>
+>
+> Do you mean the length of time a device has been mounted, or how long the
+> actual mounting process takes? In the latter case, one could simply do
+>
+> # time mount <options>
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
+> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ Fax +46 46 13 61 30
