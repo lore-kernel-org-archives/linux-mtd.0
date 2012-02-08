@@ -1,15 +1,15 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rv6Sj-0001t3-OU
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 12:17:26 +0000
-Received: by mail-ey0-f177.google.com with SMTP id i1so158342eaa.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 04:17:25 -0800 (PST)
+ id 1Rv6Sm-0001tv-Gr
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 12:17:30 +0000
+Received: by eeke50 with SMTP id e50so165348eek.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 04:17:26 -0800 (PST)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH 4/7] mtd: sh_flctl: Implement NAND_CMD_RNDOUT command
-Date: Wed,  8 Feb 2012 13:16:48 +0100
-Message-Id: <1328703411-3452-4-git-send-email-hechtb@gmail.com>
+Subject: [PATCH 5/7] mtd: sh_flctl: Add FLHOLDCR register
+Date: Wed,  8 Feb 2012 13:16:49 +0100
+Message-Id: <1328703411-3452-5-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1328703411-3452-1-git-send-email-hechtb@gmail.com>
 References: <1328703411-3452-1-git-send-email-hechtb@gmail.com>
 Cc: Bastian Hecht <hechtb@gmail.com>, magnus.damm@gmail.com,
@@ -23,43 +23,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implements the command to seek and read in pages.
+Add a register used in new FLCTL hardware and a feature flag for it.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |    3 +++
+ include/linux/mtd/sh_flctl.h |   12 ++++++++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 407acb5..5c3e71f 100644
+index 5c3e71f..70ca40d 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -303,6 +303,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_va
- 		break;
- 	case NAND_CMD_READ0:
- 	case NAND_CMD_READOOB:
-+	case NAND_CMD_RNDOUT:
- 		addr_len_bytes = flctl->rw_ADRCNT;
- 		flcmdcr_val |= CDSRC_E;
- 		if (flctl->chip.options & NAND_BUSWIDTH_16)
-@@ -558,6 +559,18 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		flctl->read_bytes = mtd->oobsize;
- 		goto read_normal_exit;
+@@ -751,6 +751,8 @@ static int flctl_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ static void flctl_register_init(struct sh_flctl *flctl, unsigned long val)
+ {
+ 	writel(val, FLCMNCR(flctl));
++	if (flctl->holden)
++		writel(HOLDEN, FLHOLDCR(flctl));
+ }
  
-+	case NAND_CMD_RNDOUT:
-+		if (flctl->page_size)
-+			set_cmd_regs(mtd, command, (NAND_CMD_RNDOUTSTART << 8)
-+				| command);
-+		else
-+			set_cmd_regs(mtd, command, command);
-+
-+		set_addr(mtd, column, 0);
-+
-+		flctl->read_bytes = mtd->writesize + mtd->oobsize - column;
-+		goto read_normal_exit;
-+
- 	case NAND_CMD_READID:
- 		set_cmd_regs(mtd, command, command);
+ static int flctl_chip_init_tail(struct mtd_info *mtd)
+@@ -852,6 +854,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
+ 	flctl_mtd->priv = nand;
+ 	flctl->pdev = pdev;
+ 	flctl->hwecc = pdata->has_hwecc;
++	flctl->holden = pdata->use_holden;
  
+ 	flctl_register_init(flctl, pdata->flcmncr_val);
+ 
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index ecbf3e6..fc77017 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -38,6 +38,7 @@
+ #define FLDTFIFO(f)		(f->reg + 0x24)
+ #define FLECFIFO(f)		(f->reg + 0x28)
+ #define FLTRCR(f)		(f->reg + 0x2C)
++#define FLHOLDCR(f)		(f->reg + 0x38)
+ #define	FL4ECCRESULT0(f)	(f->reg + 0x80)
+ #define	FL4ECCRESULT1(f)	(f->reg + 0x84)
+ #define	FL4ECCRESULT2(f)	(f->reg + 0x88)
+@@ -109,6 +110,15 @@
+ #define TRSTRT		(0x1 << 0)	/* translation start */
+ #define TREND		(0x1 << 1)	/* translation end */
+ 
++/*
++ * FLHOLDCR control bits
++ *
++ * HOLDEN: Bus Occupancy Enable (inverted)
++ * Enable this bit when the external bus might be used in between transfers.
++ * If not set and the bus gets used by other modules, a deadlock occurs.
++ */
++#define HOLDEN		(0x1 << 0)
++
+ /* FL4ECCCR control bits */
+ #define	_4ECCFA		(0x1 << 2)	/* 4 symbols correct fault */
+ #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
+@@ -137,6 +147,7 @@ struct sh_flctl {
+ 
+ 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+ 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
++	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
+ };
+ 
+ struct sh_flctl_platform_data {
+@@ -145,6 +156,7 @@ struct sh_flctl_platform_data {
+ 	unsigned long		flcmncr_val;
+ 
+ 	unsigned has_hwecc:1;
++	unsigned use_holden:1;
+ };
+ 
+ static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
 -- 
 1.7.5.4
