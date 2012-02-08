@@ -1,18 +1,44 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Rv26D-00014U-Pu
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 07:37:58 +0000
-Date: Wed, 8 Feb 2012 08:37:48 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Wei Wang <wangw8210@gmail.com>
-Subject: Re: How to measure the mounting time in Linux
-In-Reply-To: <CAF-d49SkoO33Wno2MoX+52uLb1VAgMKA0XAoJQS3GxA=USTtEw@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1202080837040.17234@lnxricardw.se.axis.com>
-References: <CAF-d49SkoO33Wno2MoX+52uLb1VAgMKA0XAoJQS3GxA=USTtEw@mail.gmail.com>
+Received: from eu1sys200aog106.obsmtp.com ([207.126.144.121])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rv2iQ-0006eV-NU
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 08:17:24 +0000
+Message-ID: <4F322F05.9090906@st.com>
+Date: Wed, 08 Feb 2012 08:15:01 +0000
+From: Angus CLARK <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v5] mtd: nand: write BBM to OOB even with flash-based BBT
+References: <1328564640-21417-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1328564640-21417-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Dan Carpenter <error27@gmail.com>, Kulikov Vasiliy <segooon@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Peter Wippich <pewi@gw-instruments.de>, Gabor Juhos <juhosg@openwrt.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ Jamie Iles <jamie@jamieiles.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Barry Song <21cnbao@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, Andres Salomon <dilinger@queued.net>,
+ Axel Lin <axel.lin@gmail.com>, Anatolij Gustschin <agust@denx.de>,
+ Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
+ Lei Wen <leiwen@marvell.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ Florian Fainelli <florian@openwrt.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Joe Perches <joe@perches.com>,
+ Guillaume LECERF <glecerf@gmail.com>,
+ Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +48,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This looks good to me.
 
-On Tue, 7 Feb 2012, Wei Wang wrote:
+On 02/06/2012 09:44 PM, Brian Norris wrote:
+> There are some small issues that may still be addressed in the future, like
+> checking the OOB before erase/rewrite.
 
-> Hi All,
->
-> Is there anyone know how to measure the mounting time in Linux? I have
-> searched on google, but cannot find anything about it.
+There may be some reasons for always re-writing the OOB marker (e.g. floating
+bits after interrupted erase/write operation), but this can be discussed in the
+future...
 
-Do you mean the length of time a device has been mounted, or how long the=
-=20
-actual mounting process takes? In the latter case, one could simply do
-
-# time mount <options>
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Angus
