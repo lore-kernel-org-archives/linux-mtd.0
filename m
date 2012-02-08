@@ -1,21 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rv691-00013P-VZ
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 11:57:04 +0000
-Received: by dakp5 with SMTP id p5so502772dak.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 03:57:01 -0800 (PST)
-Message-ID: <1328702346.22240.48.camel@sauron.fi.intel.com>
+ id 1Rv6AP-0001Ns-HD
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 11:58:30 +0000
+Received: by pbdx9 with SMTP id x9so589267pbd.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 03:58:28 -0800 (PST)
+Message-ID: <1328702434.22240.50.camel@sauron.fi.intel.com>
 Subject: Re: Userspace write to UBI partitions
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Wed, 08 Feb 2012 13:59:06 +0200
-In-Reply-To: <Pine.LNX.4.64.1202071733580.17234@lnxricardw.se.axis.com>
+Date: Wed, 08 Feb 2012 14:00:34 +0200
+In-Reply-To: <Pine.LNX.4.64.1202080834220.17234@lnxricardw.se.axis.com>
 References: <Pine.LNX.4.64.1202071616560.17234@lnxricardw.se.axis.com>
  <20120207182944.334b4665@pixies.home.jungo.com>
  <Pine.LNX.4.64.1202071733580.17234@lnxricardw.se.axis.com>
+ <20120207190938.7a59fae9@pixies.home.jungo.com>
+ <Pine.LNX.4.64.1202080834220.17234@lnxricardw.se.axis.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-bO6l2qLxKafSxccHcUZ5"
+ boundary="=-lxa0dVqWRqTjpn2ouulP"
 Mime-Version: 1.0
 Cc: Linux mtd <linux-mtd@lists.infradead.org>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>
@@ -30,33 +32,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-bO6l2qLxKafSxccHcUZ5
+--=-lxa0dVqWRqTjpn2ouulP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-02-07 at 17:36 +0100, Ricard Wanderlof wrote:
-> > If dynamic, have you tried setting the UBI_VOL_PROP_DIRECT_WRITE
-> > property by issuing a UBI_IOCSETVOLPROP volume ioctl?
-> > (formerly named UBI_PROP_DIRECT_WRITE and UBI_IOCSETPROP)
+On Wed, 2012-02-08 at 08:35 +0100, Ricard Wanderlof wrote:
+> On Tue, 7 Feb 2012, Shmulik Ladkani wrote:
 >=20
-> Thanks for the pointer, I've never noticed this ioctl before.
+> >> I'll try this out. In the meantime, there doesn't seem to be an ioctl =
+for
+> >> erasing blocks?
+> >>
+> > Well, another option would be using Gluebi - (CONFIG_MTD_UBI_GLUEBI).
+> > It exposes a "regular" mtd for every existing volume.
+> >
+> > You'd be able to work using standard mtd interfaces on it (mtdchar
+> > ioctls, e.g. MEMERASE, or even the mtdblock abstraction).
 >=20
-> I'll try this out.
+> For other reasons, gluebi is not a viable alternative for us. Mainly=20
+> because it puts an mtd device on _every_ ubi volume, meaning that volumes=
+=20
+> can't be removed or resized while gluebi is enabled.
 
-It should help.
-
->  In the meantime, there doesn't seem to be an ioctl for=20
-> erasing blocks?
-
-In UBI it is called "unmap" instead of "erase":
-
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_unmap
+I do not recommend to use gluebi in general - it is just a hack, but the
+limitation you brought up is fixable if you really need to :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-bO6l2qLxKafSxccHcUZ5
+--=-lxa0dVqWRqTjpn2ouulP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,19 +69,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPMmOKAAoJECmIfjd9wqK02akP/3HdV+Z0QBCZMUvAdOBaDKBt
-HA0BzhSXLHMzXjLYUF4SxLwxeNVjNwRP23CCsy010ZsKkkNnLcTlpuOfKZAQL5Y1
-0KWv6c1vpbIp1S3TdAu34YYs7R7LKmloWiZeT10SbZUxFlYQhKHkYZMXs0KsUD3s
-Q8/dxnLwpOQdaCkGdajXhQPp0u8AFhz0XGxcd/+ognm8wrjZ1DfIFm8wnhdQS4lD
-1kjpBrv2/Rr6iv5YjGI7pYKZyyzyTDZWabqCTG+BD+oJo+5OltQlgJmqKtgHM1FF
-qvKjHmLnSY/gRMpFZ+Xnqz+T31O2LzgSxdXrueA9ggJurzTnXRNoZYZOA75jAxPj
-uW0BUouTbviEsEEKpnpG+0dE8IJmxgCU5LJ6lUPufKovrdPcLK4fX/D7lmKX0jVe
-RiqjHRs862J1jLjE0lQfrrpE7dUxG/poZYdazu73VumZ+7K0BQod7Wv+fdztUJpw
-qF0Wp3SSoZunhjHXzF0XEg2W4MWMW7RyjiJyqRBNzUhVNw7Cbv3LfHWHs7P1RH7i
-yXeEs6le2BISFV8V7Qyti+lxo0pqMnP1w9QeldXsqwbR67ueJZOWAon3lUpj6Vr7
-XLxtaBQHnskQo9QkPb3GMNOzLHq9J3UBWcqPMpI+iTp5ty6wWtt6aXgcgsgjpsE9
-dbPbV/NSW5urukXQCjTp
-=BKny
+iQIcBAABAgAGBQJPMmPiAAoJECmIfjd9wqK0BDsQALIbGQybixZgAcvQmSLqeeAk
+JqoNiHHb48dJpIF01o+jnda2ImyvIY7+L4hz1eoI5KWl+d9on25P3FE2xomYf9dW
+FLtwn+c3ds7RvXEet7YRrG+OwQ46piQbQaZgBrK0V4gU7cBFt5XOTSDS34p0hS7a
+DTZsNQmEwo4d0FPYgwVE0aVbi031N+m2wqakb5A9JUo2c/6+8LGIV02k4n33+KQB
+9NtUHofi7aKzcsQFN2m0Cp9cxvzme7yp0u3XgjJCz51GqY+Z1OBPkbpygxfzBM8R
+JVRHKr9HuEawbnrUvwgHUtQoI1HzXZtJiXqzkPqUWDqalN5gb/oJTwyDEykz/+/1
+durJdns3caC7d/HH5RDhkoFE37bJPUJfteRX1zHMVkrEA9lp/TVbjsauy6x9YY2r
+hMxe5q2TijfW1orlPS/umGpZGo2Iq1o3Gziv0dsumho461A/uAMv6gGQPkYPTCsM
+DuASZec0959p4jFJ9nGocLZobhuwquDkuGJq1ayUvXXPAWejUeifnxpZ6bl1YLiE
+f9+A2Jq+hltCZQDYhCgpjzCyG0V3awu7C+3b3u07zOGHynUbQo3b4iFIXFvfYbxe
+xMUdIMEi+Jb+1fGDps7t6OXug/kwkzlNUQ8074oHEa2KfaFb58dqCDZYqvfW1D1k
+4xSMtoJvJvXlmb32+7OF
+=Un17
 -----END PGP SIGNATURE-----
 
---=-bO6l2qLxKafSxccHcUZ5--
+--=-lxa0dVqWRqTjpn2ouulP--
