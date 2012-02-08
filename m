@@ -1,16 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvF3W-0000Ic-KR
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:27:59 +0000
-Received: by dakp5 with SMTP id p5so1010268dak.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:27:55 -0800 (PST)
+ id 1RvF3p-0000JY-33
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:28:17 +0000
+Received: by ghbg20 with SMTP id g20so583144ghb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:28:16 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1328260644.13362.1.camel@sauron.fi.intel.com>
+References: <1327689046-1450-1-git-send-email-computersforpeace@gmail.com>
+ <1328182404.28171.161.camel@sauron.fi.intel.com>
+ <201202021420.18252.brian.foster@maxim-ic.com>
+ <1328260644.13362.1.camel@sauron.fi.intel.com>
+Date: Wed, 8 Feb 2012 13:28:16 -0800
+Message-ID: <CAN8TOE_u0KSWRP9CgW7Jv4vdQKZ8ZfaBZucqcjZgfzcZwXT43A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] libmtd: add `mtd_dev_present()' library function
 From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/3] libmtd: perform device checking first
-Date: Wed,  8 Feb 2012 13:26:20 -0800
-Message-Id: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Brian Foster <brian.foster@maxim-ic.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If we don't check for the MTD before calling `legacy_get_dev_info1', we may
-get errors like:
+On Fri, Feb 3, 2012 at 1:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Ok, I've just prepared the below patch. Compile-tested only. Anyone
+> volunteers to verify?
 
-libmtd: MTD subsystem is old and does not support sysfs, so MTD character device nodes have to exist
-libmtd: error!: "/dev/mtd2" is not a character device
-mtdinfo: error!: libmtd failed get MTD device 2 information
-         error 22 (Invalid argument)
+I've tested your patch and it's basically OK, but there are a few
+issues with the rest of how libmtd/mtdinfo handles legacy stuff. I'm
+sending a separate patch series on top of your patch that solves other
+issues (partly fixing up my code and partly fixing up old bugs).
 
-So reverse the order of these two checks.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- lib/libmtd.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index ecf182f..2bb4e57 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -733,12 +733,11 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
- 	memset(mtd, 0, sizeof(struct mtd_dev_info));
- 	mtd->mtd_num = mtd_num;
- 
--	if (!lib->sysfs_supported)
--		return legacy_get_dev_info1(mtd_num, mtd);
--	else if (!mtd_dev_present(desc, mtd_num)) {
-+	if (!mtd_dev_present(desc, mtd_num)) {
- 		errno = ENODEV;
- 		return -1;
--	}
-+	} else if (!lib->sysfs_supported)
-+		return legacy_get_dev_info1(mtd_num, mtd);
- 
- 	if (dev_get_major(lib, mtd_num, &mtd->major, &mtd->minor))
- 		return -1;
--- 
-1.7.5.4
+Brian
