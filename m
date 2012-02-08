@@ -1,14 +1,14 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvF4H-0000LS-2I
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:28:45 +0000
-Received: by dakp5 with SMTP id p5so1010948dak.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:28:44 -0800 (PST)
+ id 1RvF4e-0000LS-6w
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:29:08 +0000
+Received: by mail-pz0-f49.google.com with SMTP id p5so1010948dak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:29:08 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 2/3] libmtd_legacy: don't open device in R/W
-Date: Wed,  8 Feb 2012 13:26:21 -0800
-Message-Id: <1328736382-5798-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/3] libmtd: fix segmentation fault on lib->mtd
+Date: Wed,  8 Feb 2012 13:26:22 -0800
+Message-Id: <1328736382-5798-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
 References: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Foster <brian.foster@maxim-ic.com>,
@@ -22,33 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On legacy kernels with ROM devices, we can get mtdinfo errors like:
-
-libmtd: error!: cannot open "/dev/mtd4"
-        error 13 (Permission denied)
-mtdinfo: error!: libmtd failed get MTD device 4 information
-         error 13 (Permission denied)
-
-We don't need O_RDRW access for informational ioctls(), so make this
-O_RDONLY.
+Legacy systems do not initialize lib->mtd, so we shouldn't perform
+strlen(lib->mtd); this produces a segmentation fault. As this code isn't
+used in the legacy codepath, we can just move it down to an 'else' branch.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- lib/libmtd_legacy.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ lib/libmtd.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c
-index d3f1672..1ae9946 100644
---- a/lib/libmtd_legacy.c
-+++ b/lib/libmtd_legacy.c
-@@ -262,7 +262,7 @@ int legacy_get_dev_info(const char *node, struct mtd_dev_info *mtd)
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 2bb4e57..fb4586c 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -644,13 +644,15 @@ void libmtd_close(libmtd_t desc)
+ int mtd_dev_present(libmtd_t desc, int mtd_num) {
+ 	struct stat st;
+ 	struct libmtd *lib = (struct libmtd *)desc;
+-	char file[strlen(lib->mtd) + 10];
  
- 	mtd->mtd_num = mtd->minor / 2;
+ 	if (!lib->sysfs_supported)
+ 		return legacy_dev_present(mtd_num);
++	else {
++		char file[strlen(lib->mtd) + 10];
  
--	fd = open(node, O_RDWR);
-+	fd = open(node, O_RDONLY);
- 	if (fd == -1)
- 		return sys_errmsg("cannot open \"%s\"", node);
+-	sprintf(file, lib->mtd, mtd_num);
+-	return !stat(file, &st);
++		sprintf(file, lib->mtd, mtd_num);
++		return !stat(file, &st);
++	}
+ }
  
+ int mtd_get_info(libmtd_t desc, struct mtd_info *info)
 -- 
 1.7.5.4
