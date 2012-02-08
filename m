@@ -1,20 +1,16 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvDpG-0007Cc-4P
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 20:09:12 +0000
-Date: Wed, 8 Feb 2012 21:09:04 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Darcy Watkins <DWatkins@tranzeo.com>
-Subject: Re: jffs2 filesystem: possible circular locking dependency
- detected
-In-Reply-To: <D61182AC8012EA4EBC531B3AF23BE109B3C6C6@tranzeo-mail2.12stewart.tranzeo.com>
-Message-ID: <alpine.LFD.2.02.1202082104470.2794@ionos>
-References: <D61182AC8012EA4EBC531B3AF23BE109B3C6C6@tranzeo-mail2.12stewart.tranzeo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Peter Zijlstra <peterz@infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-rt-users <linux-rt-users@vger.kernel.org>
+ id 1RvF3W-0000Ic-KR
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:27:59 +0000
+Received: by dakp5 with SMTP id p5so1010268dak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:27:55 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 1/3] libmtd: perform device checking first
+Date: Wed,  8 Feb 2012 13:26:20 -0800
+Message-Id: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Foster <brian.foster@maxim-ic.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 8 Feb 2012, Darcy Watkins wrote:
-> [    0.000000] Linux version 3.0.18-rt34 (darcy@tr-pentomino) (gcc version 4.4.6 (crosstool-NG 1.12.4) ) #41 PREEMPT RT Wed Feb 8 10:04:00 PST 2012
-> [   20.932000] =======================================================
-> [   20.932000] [ INFO: possible circular locking dependency detected ]
-> [   20.932000] 3.0.18-rt34 #41
-> [   20.932000] -------------------------------------------------------
-> [   20.932000] depmod/734 is trying to acquire lock:
-> [   20.932000]  (&mm->mmap_sem){++++++}, at: [<800e82d0>] might_fault+0x4c/0xa4
-> [   20.932000]
-> [   20.932000] but task is already holding lock:
-> [   20.932000]  (&f->sem){+.+.+.}, at: [<80184f88>] jffs2_readdir+0x108/0x1c0
-> [   20.932000]
-> [   20.932000] which lock already depends on the new lock.
-> [   20.932000]
-> [   20.932000]
-> [   20.932000] the existing dependency chain (in reverse order) is:
-> [   20.932000]
-> [   20.932000] -> #1 (&f->sem){+.+.+.}:
-> [   20.932000]        [<800bae14>] lock_acquire+0x60/0x88
-> [   20.932000]        [<802d3a84>] _mutex_lock+0x34/0x48
-> [   20.932000]        [<80185754>] jffs2_readpage+0x24/0x54
-> [   20.932000]        [<800d91e8>] __do_page_cache_readahead+0x274/0x2dc
-> [   20.932000]        [<800d9278>] ra_submit+0x28/0x34
-> [   20.932000]        [<800d1320>] filemap_fault+0x1a8/0x48c
-> [   20.932000]        [<800e898c>] __do_fault+0x70/0x468
-> [   20.932000]        [<800e9df8>] handle_pte_fault+0x388/0xd28
-> [   20.932000]        [<800eaa44>] handle_mm_fault+0xf4/0x11c
-> [   20.932000]        [<8006c230>] do_page_fault+0x110/0x300
-> [   20.932000]        [<80062c04>] ret_from_exception+0x0/0x10
-> [   20.932000]        [<801c3cb4>] __bzero+0x38/0x164
-> [   20.932000]        [<8014121c>] padzero+0x58/0x84
-> [   20.932000]        [<80142b18>] load_elf_binary+0x774/0x12fc
-> [   20.932000]        [<80102c60>] search_binary_handler+0xec/0x318
-> [   20.932000]        [<801044c4>] do_execve+0x158/0x264
-> [   20.932000]        [<800670a8>] sys_execve+0x44/0x6c
-> [   20.932000]        [<8006a3b8>] stack_done+0x20/0x40
-> [   20.932000]
-> [   20.932000] -> #0 (&mm->mmap_sem){++++++}:
-> [   20.932000]        [<800ba1f4>] __lock_acquire+0x1228/0x1934
-> [   20.932000]        [<800bae14>] lock_acquire+0x60/0x88
-> [   20.932000]        [<800e82f8>] might_fault+0x74/0xa4
-> [   20.932000]        [<8010dd80>] filldir64+0xe0/0x144
-> [   20.932000]        [<80184fe4>] jffs2_readdir+0x164/0x1c0
-> [   20.932000]        [<8010e070>] vfs_readdir+0x74/0xcc
-> [   20.932000]        [<8010e13c>] sys_getdents64+0x74/0xd8
-> [   20.932000]        [<8006a3b8>] stack_done+0x20/0x40
-> [   20.932000]
-> [   20.932000] other info that might help us debug this:
-> [   20.932000]
-> [   20.932000]  Possible unsafe locking scenario:
-> [   20.932000]
-> [   20.932000]        CPU0                    CPU1
-> [   20.932000]        ----                    ----
-> [   20.932000]   lock(&f->sem);
-> [   20.932000]                                lock(&mm->mmap_sem);
-> [   20.932000]                                lock(&f->sem);
-> [   20.932000]   lock(&mm->mmap_sem);
-> [   20.932000]
-> [   20.932000]  *** DEADLOCK ***
-> [   20.932000]
-> [   20.932000] 2 locks held by depmod/734:
-> [   20.932000]  #0:  (&sb->s_type->i_mutex_key#3){+.+.+.}, at: [<8010e044>] vfs_readdir+0x48/0xcc
-> [   20.932000]  #1:  (&f->sem){+.+.+.}, at: [<80184f88>] jffs2_readdir+0x108/0x1c0
-> [   20.932000]
-> [   20.932000] stack backtrace:
-> [   20.932000] Call Trace:
-> [   20.932000] [<802d103c>] dump_stack+0x8/0x34
-> [   20.932000] [<800b8960>] print_circular_bug+0x2bc/0x2e8
-> [   20.932000] [<800ba1f4>] __lock_acquire+0x1228/0x1934
-> [   20.932000] [<800bae14>] lock_acquire+0x60/0x88
-> [   20.932000] [<800e82f8>] might_fault+0x74/0xa4
-> [   20.932000] [<8010dd80>] filldir64+0xe0/0x144
-> [   20.932000] [<80184fe4>] jffs2_readdir+0x164/0x1c0
-> [   20.932000] [<8010e070>] vfs_readdir+0x74/0xcc
-> [   20.932000] [<8010e13c>] sys_getdents64+0x74/0xd8
-> [   20.932000] [<8006a3b8>] stack_done+0x20/0x40
+If we don't check for the MTD before calling `legacy_get_dev_info1', we may
+get errors like:
 
-Classic ABBA deadlock. I don't think it's RT specific, but I might be
-wrong as usual. Will have a look later this week, when noone beats me.
+libmtd: MTD subsystem is old and does not support sysfs, so MTD character device nodes have to exist
+libmtd: error!: "/dev/mtd2" is not a character device
+mtdinfo: error!: libmtd failed get MTD device 2 information
+         error 22 (Invalid argument)
 
-Thanks,
+So reverse the order of these two checks.
 
-	tglx
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ lib/libmtd.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index ecf182f..2bb4e57 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -733,12 +733,11 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
+ 	memset(mtd, 0, sizeof(struct mtd_dev_info));
+ 	mtd->mtd_num = mtd_num;
+ 
+-	if (!lib->sysfs_supported)
+-		return legacy_get_dev_info1(mtd_num, mtd);
+-	else if (!mtd_dev_present(desc, mtd_num)) {
++	if (!mtd_dev_present(desc, mtd_num)) {
+ 		errno = ENODEV;
+ 		return -1;
+-	}
++	} else if (!lib->sysfs_supported)
++		return legacy_get_dev_info1(mtd_num, mtd);
+ 
+ 	if (dev_get_major(lib, mtd_num, &mtd->major, &mtd->minor))
+ 		return -1;
+-- 
+1.7.5.4
