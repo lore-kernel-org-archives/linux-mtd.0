@@ -1,16 +1,23 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] ARM: OMAP1: ams-delta: clean up init data section assignments
-Date: Thu,  9 Feb 2012 12:18:22 +0100
-Message-Id: <1328786302-25131-1-git-send-email-jkrzyszt@tis.icnet.pl>
-In-Reply-To: <1328696173-17226-1-git-send-email-grinberg@compulab.co.il>
-References: <1328696173-17226-1-git-send-email-grinberg@compulab.co.il>
-Cc: linux-fbdev@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>,
- Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org,
- Igor Grinberg <grinberg@compulab.co.il>, linux-input@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RvSHB-0006nj-Dr
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 11:34:58 +0000
+Received: by pbcun1 with SMTP id un1so263316pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2012 03:34:55 -0800 (PST)
+Message-ID: <1328787423.22240.76.camel@sauron.fi.intel.com>
+Subject: Re: [RFC] MTD API rework: Harmonize initialization of
+ erase_info->fail_addr
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Thu, 09 Feb 2012 13:37:03 +0200
+In-Reply-To: <20120209085556.0f494f05@pixies.home.jungo.com>
+References: <20120209085556.0f494f05@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-NtvnyFLiiWAAdE7vp4PX"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,213 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The main purpose of this patch is to fix several section mismatch
-warnings from the board file and a few board specific drivers,
-introduced mostly with recent Amstrad Delta patch series, some of them
-rising up only when building with CONFIG_MODULES not set.
 
-While being at it, section assignments of all init data found in the
-board file have been revised and hopefully optimised.
+--=-NtvnyFLiiWAAdE7vp4PX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Created and tested on top of current linux-omap/omap1, commit
-967809bd7faf71ddc29c8081e0f21db8b201a0f4.
+On Thu, 2012-02-09 at 08:55 +0200, Shmulik Ladkani wrote:
+> Prior MTD API rework, 'mtd->erase()' users needed to initialize
+> 'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN.
+> Sometimes it was taken care of by the mtd driver's 'erase'
+> implementation.
+>=20
+> Harmonize this, by initializing 'fail_addr' within the new 'mtd_erase'
+> interface.
+>=20
+> If idea is suitable, can work on a patch (although not immediately).
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
- arch/arm/mach-omap1/board-ams-delta.c |   35 +++++++++++++++++----------------
- drivers/input/serio/ams_delta_serio.c |    2 +-
- drivers/mtd/nand/ams-delta.c          |    2 +-
- drivers/video/omap/lcd_ams_delta.c    |    2 +-
- 4 files changed, 21 insertions(+), 20 deletions(-)
+Sounds good - no need to ask, just send the patch :-)
 
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index 87b1303..dc2455f 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -126,7 +126,7 @@ static const unsigned int ams_delta_keymap[] = {
- #define LATCH2_PHYS	0x08000000
- #define LATCH2_VIRT	0xEC000000
- 
--static struct map_desc ams_delta_io_desc[] __initdata = {
-+static struct map_desc ams_delta_io_desc[] __initconst = {
- 	/* AMS_DELTA_LATCH1 */
- 	{
- 		.virtual	= LATCH1_VIRT,
-@@ -150,17 +150,17 @@ static struct map_desc ams_delta_io_desc[] __initdata = {
- 	}
- };
- 
--static struct omap_lcd_config ams_delta_lcd_config = {
-+static struct omap_lcd_config ams_delta_lcd_config __initconst = {
- 	.ctrl_name	= "internal",
- };
- 
--static struct omap_usb_config ams_delta_usb_config __initdata = {
-+static struct omap_usb_config ams_delta_usb_config __initdata_or_module = {
- 	.register_host	= 1,
- 	.hmc_mode	= 16,
- 	.pins[0]	= 2,
- };
- 
--static struct omap_board_config_kernel ams_delta_config[] __initdata = {
-+static struct omap_board_config_kernel ams_delta_config[] __initconst = {
- 	{ OMAP_TAG_LCD,		&ams_delta_lcd_config },
- };
- 
-@@ -181,7 +181,7 @@ static struct bgpio_pdata latch1_pdata __initconst = {
- 	.ngpio	= LATCH1_NGPIO,
- };
- 
--static struct platform_device latch1_gpio_device = {
-+static struct platform_device latch1_gpio_device __refdata = {
- 	.name		= "basic-mmio-gpio",
- 	.id		= 0,
- 	.resource	= latch1_resources,
-@@ -205,7 +205,7 @@ static struct bgpio_pdata latch2_pdata __initconst = {
- 	.ngpio	= AMS_DELTA_LATCH2_NGPIO,
- };
- 
--static struct platform_device latch2_gpio_device = {
-+static struct platform_device latch2_gpio_device __refdata = {
- 	.name		= "basic-mmio-gpio",
- 	.id		= 1,
- 	.resource	= latch2_resources,
-@@ -271,7 +271,7 @@ void ams_delta_latch_write(int base, int ngpio, u16 mask, u16 value)
- }
- EXPORT_SYMBOL(ams_delta_latch_write);
- 
--static struct resource ams_delta_nand_resources[] = {
-+static struct resource ams_delta_nand_resources[] __initconst_or_module = {
- 	[0] = {
- 		.start	= OMAP1_MPUIO_BASE,
- 		.end	= OMAP1_MPUIO_BASE +
-@@ -280,14 +280,14 @@ static struct resource ams_delta_nand_resources[] = {
- 	},
- };
- 
--static struct platform_device ams_delta_nand_device = {
-+static struct platform_device ams_delta_nand_device __refdata = {
- 	.name	= "ams-delta-nand",
- 	.id	= -1,
- 	.num_resources	= ARRAY_SIZE(ams_delta_nand_resources),
- 	.resource	= ams_delta_nand_resources,
- };
- 
--static struct resource ams_delta_kp_resources[] = {
-+static struct resource ams_delta_kp_resources[] __initconst_or_module = {
- 	[0] = {
- 		.start	= INT_KEYBOARD,
- 		.end	= INT_KEYBOARD,
-@@ -300,14 +300,14 @@ static const struct matrix_keymap_data ams_delta_keymap_data = {
- 	.keymap_size	= ARRAY_SIZE(ams_delta_keymap),
- };
- 
--static struct omap_kp_platform_data ams_delta_kp_data __initdata = {
-+static struct omap_kp_platform_data ams_delta_kp_data __initconst_or_module = {
- 	.rows		= 8,
- 	.cols		= 8,
- 	.keymap_data	= &ams_delta_keymap_data,
- 	.delay		= 9,
- };
- 
--static struct platform_device ams_delta_kp_device = {
-+static struct platform_device ams_delta_kp_device __refdata = {
- 	.name		= "omap-keypad",
- 	.id		= -1,
- 	.dev		= {
-@@ -363,7 +363,8 @@ static struct gpio_led_platform_data leds_pdata __initconst = {
- 	.num_leds	= ARRAY_SIZE(gpio_leds),
- };
- 
--static struct i2c_board_info ams_delta_camera_board_info[] = {
-+static struct i2c_board_info __initconst_or_module
-+ams_delta_camera_board_info[] = {
- 	{
- 		I2C_BOARD_INFO("ov6650", 0x60),
- 	},
-@@ -387,7 +388,7 @@ static int ams_delta_camera_power(struct device *dev, int power)
- #define ams_delta_camera_power	NULL
- #endif
- 
--static struct soc_camera_link ams_delta_iclink = {
-+static struct soc_camera_link ams_delta_iclink __initconst_or_module = {
- 	.bus_id         = 0,	/* OMAP1 SoC camera bus */
- 	.i2c_adapter_id = 1,
- 	.board_info     = &ams_delta_camera_board_info[0],
-@@ -395,7 +396,7 @@ static struct soc_camera_link ams_delta_iclink = {
- 	.power		= ams_delta_camera_power,
- };
- 
--static struct platform_device ams_delta_camera_device = {
-+static struct platform_device ams_delta_camera_device __refdata = {
- 	.name   = "soc-camera-pdrv",
- 	.id     = 0,
- 	.dev    = {
-@@ -408,7 +409,7 @@ static struct omap1_cam_platform_data ams_delta_camera_platform_data = {
- 	.lclk_khz_max	= 1334,		/* results in 5fps CIF, 10fps QCIF */
- };
- 
--static struct platform_device *ams_delta_devices[] __initdata = {
-+static struct platform_device *ams_delta_devices[] __initconst = {
- 	&latch1_gpio_device,
- 	&latch2_gpio_device,
- 	&ams_delta_kp_device,
-@@ -459,7 +460,7 @@ static void __init ams_delta_init(void)
- 	omap_writew(omap_readw(ARM_RSTCT1) | 0x0004, ARM_RSTCT1);
- }
- 
--static struct plat_serial8250_port ams_delta_modem_ports[] = {
-+static struct plat_serial8250_port ams_delta_modem_ports[] __initdata = {
- 	{
- 		.membase	= IOMEM(MODEM_VIRT),
- 		.mapbase	= MODEM_PHYS,
-@@ -473,7 +474,7 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
- 	{ },
- };
- 
--static struct platform_device ams_delta_modem_device = {
-+static struct platform_device ams_delta_modem_device __refdata = {
- 	.name	= "serial8250",
- 	.id	= PLAT8250_DEV_PLATFORM1,
- 	.dev		= {
-diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-index 0571e2e..0830a76 100644
---- a/drivers/input/serio/ams_delta_serio.c
-+++ b/drivers/input/serio/ams_delta_serio.c
-@@ -103,7 +103,7 @@ static void ams_delta_serio_close(struct serio *serio)
- 	gpio_set_value(AMS_DELTA_GPIO_PIN_KEYBRD_PWR, 0);
- }
- 
--static struct gpio ams_delta_gpios[] __initconst_or_module = {
-+static const struct gpio ams_delta_gpios[] = {
- 	{
- 		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_DATA,
- 		.flags	= GPIOF_DIR_IN,
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 85934dc..7341695 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -145,7 +145,7 @@ static int ams_delta_nand_ready(struct mtd_info *mtd)
- 	return gpio_get_value(AMS_DELTA_GPIO_PIN_NAND_RB);
- }
- 
--static struct gpio _mandatory_gpio[] __initconst_or_module = {
-+static const struct gpio _mandatory_gpio[] = {
- 	{
- 		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NCE,
- 		.flags	= GPIOF_OUT_INIT_HIGH,
-diff --git a/drivers/video/omap/lcd_ams_delta.c b/drivers/video/omap/lcd_ams_delta.c
-index 0e71e28..d3a3113 100644
---- a/drivers/video/omap/lcd_ams_delta.c
-+++ b/drivers/video/omap/lcd_ams_delta.c
-@@ -99,7 +99,7 @@ static struct lcd_ops ams_delta_lcd_ops = {
- 
- /* omapfb panel section */
- 
--static struct gpio _gpios[] __initconst_or_module = {
-+static const struct gpio _gpios[] = {
- 	{
- 		.gpio	= AMS_DELTA_GPIO_PIN_LCD_VBLEN,
- 		.flags	= GPIOF_OUT_INIT_LOW,
--- 
-1.7.3.4
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-NtvnyFLiiWAAdE7vp4PX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJPM6/fAAoJECmIfjd9wqK04VwP/2jjbp8fa6gGwjyb+hY1Df4y
+wQy6xFQNf1kJelyFiYhYmrBBIjz1YCIL6cf4+lRrcDzXF1o9YMpUYpKvNM/e6LGI
+YTozy/kKJjS82Kq8krpT6+WepyqFT89MK0s5FprrVt0rALmKjwhrxMmKb0tMI2ID
+6BvXc5RCnFqgPNWT6Nc6NFmqm1rsZS/CGaRWK1gdGMmoGgd/ajyEtpCPShLGrHFc
+5cPnHYBkHX9iNI2F0R9rxWsYEsZI7OzeSfS1yqwaydjAYe+jYpVDMXdYDoeA0eI+
+HliR4HJeKqy1dJ9Mk9E2lctFGBZmKhflt+cUzP3ACBmkfs85Tn7s9ZrC58Fs2T+N
+ZWo90VBkcZGEXlUZcd1RZdk4l+t3XiZmk1lqnyvyP9sQGTGaXu9F+Gv0q6+/GMpL
+79ufQOeRuAvCa4mZEU7HLs88gPg+EHtFWHUrkxWRYR+WPeOptp1WsgVB80FiCozv
+HBpefCih1AbYGQNeDVB5GaAo5VVHYi042GDjsVenXCiQ+NASlM9a7R4Br75E9Tsy
+R08k72sxtEuCJek2yeLDW7QAMl3x9+MD5DVGoMAkPFLPh41xn75xNbMREruIfmgc
+N1ggC3NoE6whf6+SX3bJ9Xzc+KBDc41XtTaFVqAGnazAMKQrS34p5w9gNTBIYZ+r
+iR0RNuq4OxYM6mMCM89K
+=1OM3
+-----END PGP SIGNATURE-----
+
+--=-NtvnyFLiiWAAdE7vp4PX--
