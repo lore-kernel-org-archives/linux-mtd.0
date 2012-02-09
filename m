@@ -1,19 +1,15 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvNvN-0003Dp-Ib
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 06:56:10 +0000
-Received: by wera10 with SMTP id a10so1116829wer.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 22:56:05 -0800 (PST)
-Date: Thu, 9 Feb 2012 08:55:56 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC] MTD API rework: Harmonize initialization of
- erase_info->fail_addr
-Message-ID: <20120209085556.0f494f05@pixies.home.jungo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+To: <davinci-linux-open-source@linux.davincidsp.com>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/3] Moving EMIF driver to MFD framework
+Date: Thu, 9 Feb 2012 12:48:25 +0530
+Message-ID: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Russell King <linux@arm.linux.org.uk>, "Manjunathappa,
+ Prakash" <prakash.pm@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Prior MTD API rework, 'mtd->erase()' users needed to initialize
-'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN.
-Sometimes it was taken care of by the mtd driver's 'erase'
-implementation.
+Patch series are based on the discussion and concerns expressed in
+davinci-linux-open-source community. Here is the link for the same:
+http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
 
-Harmonize this, by initializing 'fail_addr' within the new 'mtd_erase'
-interface.
+Manjunathappa, Prakash (3):
+  arm:davinci: prepare to move aemif driver to drivers/mfd
+  arm:davinci: move emif driver to drivers/mfd from mach-davinci folder
+  arm:davinci: move NAND and NOR devices as aemif MFD slaves
 
-If idea is suitable, can work on a patch (although not immediately).
-
-Regards,
-Shmulik
+ arch/arm/Kconfig                                   |    1 +
+ arch/arm/mach-davinci/Makefile                     |    2 +-
+ arch/arm/mach-davinci/aemif.c                      |  133 -------------
+ arch/arm/mach-davinci/board-da830-evm.c            |   33 +++-
+ arch/arm/mach-davinci/board-da850-evm.c            |   56 +++---
+ arch/arm/mach-davinci/board-dm355-evm.c            |   33 +++-
+ arch/arm/mach-davinci/board-dm355-leopard.c        |   35 +++-
+ arch/arm/mach-davinci/board-dm365-evm.c            |   34 +++-
+ arch/arm/mach-davinci/board-dm644x-evm.c           |  175 ++++++++++-------
+ arch/arm/mach-davinci/board-dm646x-evm.c           |   32 +++-
+ arch/arm/mach-davinci/board-mityomapl138.c         |   34 +++-
+ arch/arm/mach-davinci/board-neuros-osd2.c          |    1 +
+ arch/arm/mach-davinci/board-sffsdr.c               |   34 +++-
+ drivers/mfd/Makefile                               |    1 +
+ drivers/mfd/davinci_aemif.c                        |  206 ++++++++++++++++++++
+ drivers/mtd/nand/davinci_nand.c                    |    2 +-
+ .../aemif.h => include/linux/mfd/davinci_aemif.h   |   14 ++
+ 17 files changed, 527 insertions(+), 299 deletions(-)
+ delete mode 100644 arch/arm/mach-davinci/aemif.c
+ create mode 100644 drivers/mfd/davinci_aemif.c
+ rename arch/arm/mach-davinci/include/mach/aemif.h => include/linux/mfd/davinci_aemif.h (74%)
