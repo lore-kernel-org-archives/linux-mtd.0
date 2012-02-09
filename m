@@ -1,22 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvTqj-0006Bo-IP
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 13:15:48 +0000
-Message-ID: <4F33C6F5.3090907@pengutronix.de>
-Date: Thu, 09 Feb 2012 14:15:33 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 2/2] mtd: ixp4xx: oops in ixp4xx_flash_probe
-References: <1328729069-21308-1-git-send-email-mkl@blackshift.org>
- <1328729069-21308-3-git-send-email-mkl@blackshift.org>
- <1328789487.22240.84.camel@sauron.fi.intel.com>
-In-Reply-To: <1328789487.22240.84.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig71E88E8B9E1D97FFA0502A25"
-Cc: Marc Kleine-Budde <mkl@blackshift.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RvUAu-0007H5-0C
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 13:36:37 +0000
+Received: by wico1 with SMTP id o1so1373566wic.36
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2012 05:36:34 -0800 (PST)
+Date: Thu, 9 Feb 2012 15:36:29 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: unify initialization of erase_info->fail_addr
+Message-ID: <20120209153629.16bb9b01@pixies.home.jungo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig71E88E8B9E1D97FFA0502A25
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-On 02/09/2012 01:11 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-02-08 at 20:24 +0100, Marc Kleine-Budde wrote:
->> In commit "c797533 mtd: abstract last MTD partition parser argument" t=
-he
->> third argument of "mtd_device_parse_register()" changed from start add=
-ress
->> of the MTD device to a pointer to a struct.
->=20
-> Hi, thanks for the fix. Several comments:
->=20
-> 1. I've removed the huge oops from the description - it is not very
-> helpful and not worth having.
-> 2. It is usually a good idea to CC the author of the commit causing the=
+Initialization of 'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN prior
+erase operation is duplicated accross several MTD drivers, and also taken
+care of by some MTD users as well.
 
-> regression.
-> 3. For regressions like this it is a good idea put the stable tree tag.=
+Harmonize it: initialize 'fail_addr' within 'mtd_erase()' interface.
 
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+Compile tested only, l2-mtd.git
 
-Noted.
-
-> I've added
->=20
-> Cc: stable@kernel.org [3.2+]
->=20
-> (git tag --contains c797533 gives the version)
->=20
-> and pushed to the l2-mtd.git tree, thanks!
-
-Thanks
-
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig71E88E8B9E1D97FFA0502A25
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk8zxvgACgkQjTAFq1RaXHONVwCfXhIyd8iD8TVM5A3Rv9d79QMx
-tyoAn05+Tyor+IQLrc8v7fFj5Q+4FcNQ
-=6yU6
------END PGP SIGNATURE-----
-
---------------enig71E88E8B9E1D97FFA0502A25--
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index f7a31cc..b900056 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -426,8 +426,6 @@ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			return -EINVAL;
+ 	}
+ 
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-
+ 	/* make a local copy of instr to avoid modifying the caller's struct */
+ 	erase = kmalloc(sizeof (struct erase_info), GFP_KERNEL);
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b274fdf..c837507 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -695,6 +695,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		return -EINVAL;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+ 	if (!instr->len) {
+ 		instr->state = MTD_ERASE_DONE;
+ 		mtd_erase_callback(instr);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5822e3a..5c69204 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2550,8 +2550,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 	if (check_offs_len(mtd, instr->addr, instr->len))
+ 		return -EINVAL;
+ 
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-
+ 	/* Grab the lock and see if the device is available */
+ 	nand_get_device(chip, mtd, FL_ERASING);
+ 
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index a1592cf..0e1ff9f 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -2502,8 +2502,6 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		return -EINVAL;
+ 	}
+ 
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-
+ 	/* Grab the lock and see if the device is available */
+ 	onenand_get_device(mtd, FL_ERASING);
+ 
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index eafb8d3..095e4b1 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -69,7 +69,6 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
+ 	instr->len = c->sector_size;
+ 	instr->callback = jffs2_erase_callback;
+ 	instr->priv = (unsigned long)(&instr[1]);
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+ 
+ 	((struct erase_priv_struct *)instr->priv)->jeb = jeb;
+ 	((struct erase_priv_struct *)instr->priv)->c = c;
