@@ -1,18 +1,16 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: <davinci-linux-open-source@linux.davincidsp.com>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/3] arm:davinci: move emif driver to drivers/mfd from
- mach-davinci folder
-Date: Thu, 9 Feb 2012 12:48:27 +0530
-Message-ID: <1328771908-32527-3-git-send-email-prakash.pm@ti.com>
-In-Reply-To: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
-References: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Russell King <linux@arm.linux.org.uk>, "Manjunathappa,
- Prakash" <prakash.pm@ti.com>, Sekhar Nori <nsekhar@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, Samuel Ortiz <sameo@linux.intel.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+To: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH] ARM: OMAP1: ams-delta: clean up init data section assignments
+Date: Thu,  9 Feb 2012 12:18:22 +0100
+Message-Id: <1328786302-25131-1-git-send-email-jkrzyszt@tis.icnet.pl>
+In-Reply-To: <1328696173-17226-1-git-send-email-grinberg@compulab.co.il>
+References: <1328696173-17226-1-git-send-email-grinberg@compulab.co.il>
+Cc: linux-fbdev@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org,
+ Igor Grinberg <grinberg@compulab.co.il>, linux-input@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,189 +20,213 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move aemif kernel module from arch/arm/mach-davinci/ to multi functional
-devices frame work. "davinci_aemif" MFD driver adds "davinci_nand" and
-"physmap-flash" slave devices.
+The main purpose of this patch is to fix several section mismatch
+warnings from the board file and a few board specific drivers,
+introduced mostly with recent Amstrad Delta patch series, some of them
+rising up only when building with CONFIG_MODULES not set.
 
-Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
+While being at it, section assignments of all init data found in the
+board file have been revised and hopefully optimised.
+
+Created and tested on top of current linux-omap/omap1, commit
+967809bd7faf71ddc29c8081e0f21db8b201a0f4.
+
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 ---
-Since v3:
-No change. Resending as 3/3 in patch changed.
-Since v2:
-Modified emif MFD driver to load multiple instance of NAND/NOR devices.
-Since v1:
-Patch generated using -M option.
+ arch/arm/mach-omap1/board-ams-delta.c |   35 +++++++++++++++++----------------
+ drivers/input/serio/ams_delta_serio.c |    2 +-
+ drivers/mtd/nand/ams-delta.c          |    2 +-
+ drivers/video/omap/lcd_ams_delta.c    |    2 +-
+ 4 files changed, 21 insertions(+), 20 deletions(-)
 
- arch/arm/Kconfig                                   |    1 +
- arch/arm/mach-davinci/Makefile                     |    2 +-
- drivers/mfd/Makefile                               |    1 +
- .../aemif.c => drivers/mfd/davinci_aemif.c         |   75 +++++++++++++++++++-
- include/linux/mfd/davinci_aemif.h                  |   14 ++++
- 5 files changed, 91 insertions(+), 2 deletions(-)
- rename arch/arm/mach-davinci/aemif.c => drivers/mfd/davinci_aemif.c (66%)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index a48aecc..09dcb94 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -934,6 +934,7 @@ config ARCH_DAVINCI
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_IRQ_CHIP
- 	select ARCH_HAS_HOLES_MEMORYMODEL
-+	select MFD_CORE
- 	help
- 	  Support for TI's DaVinci platform.
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 87b1303..dc2455f 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -126,7 +126,7 @@ static const unsigned int ams_delta_keymap[] = {
+ #define LATCH2_PHYS	0x08000000
+ #define LATCH2_VIRT	0xEC000000
  
-diff --git a/arch/arm/mach-davinci/Makefile b/arch/arm/mach-davinci/Makefile
-index 2db78bd..8bab47c 100644
---- a/arch/arm/mach-davinci/Makefile
-+++ b/arch/arm/mach-davinci/Makefile
-@@ -5,7 +5,7 @@
+-static struct map_desc ams_delta_io_desc[] __initdata = {
++static struct map_desc ams_delta_io_desc[] __initconst = {
+ 	/* AMS_DELTA_LATCH1 */
+ 	{
+ 		.virtual	= LATCH1_VIRT,
+@@ -150,17 +150,17 @@ static struct map_desc ams_delta_io_desc[] __initdata = {
+ 	}
+ };
  
- # Common objects
- obj-y 			:= time.o clock.o serial.o psc.o \
--			   dma.o usb.o common.o sram.o aemif.o
-+			   dma.o usb.o common.o sram.o
+-static struct omap_lcd_config ams_delta_lcd_config = {
++static struct omap_lcd_config ams_delta_lcd_config __initconst = {
+ 	.ctrl_name	= "internal",
+ };
  
- obj-$(CONFIG_DAVINCI_MUX)		+= mux.o
+-static struct omap_usb_config ams_delta_usb_config __initdata = {
++static struct omap_usb_config ams_delta_usb_config __initdata_or_module = {
+ 	.register_host	= 1,
+ 	.hmc_mode	= 16,
+ 	.pins[0]	= 2,
+ };
  
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index b953bab..54fc267 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_HTC_EGPIO)		+= htc-egpio.o
- obj-$(CONFIG_HTC_PASIC3)	+= htc-pasic3.o
- obj-$(CONFIG_HTC_I2CPLD)	+= htc-i2cpld.o
+-static struct omap_board_config_kernel ams_delta_config[] __initdata = {
++static struct omap_board_config_kernel ams_delta_config[] __initconst = {
+ 	{ OMAP_TAG_LCD,		&ams_delta_lcd_config },
+ };
  
-+obj-${CONFIG_ARCH_DAVINCI}	+= davinci_aemif.o
- obj-$(CONFIG_MFD_DAVINCI_VOICECODEC)	+= davinci_voicecodec.o
- obj-$(CONFIG_MFD_DM355EVM_MSP)	+= dm355evm_msp.o
- obj-$(CONFIG_MFD_TI_SSP)	+= ti-ssp.o
-diff --git a/arch/arm/mach-davinci/aemif.c b/drivers/mfd/davinci_aemif.c
-similarity index 66%
-rename from arch/arm/mach-davinci/aemif.c
-rename to drivers/mfd/davinci_aemif.c
-index b67c115..5fb490d 100644
---- a/arch/arm/mach-davinci/aemif.c
-+++ b/drivers/mfd/davinci_aemif.c
-@@ -14,8 +14,13 @@
- #include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/time.h>
--
- #include <linux/mfd/davinci_aemif.h>
-+#include <linux/mtd/physmap.h>
-+#include <linux/slab.h>
-+#include <mach/nand.h>
-+
-+static char *name[] = {"davinci_nand", "physmap-flash",};
-+#define MAX ARRAY_SIZE(name)
+@@ -181,7 +181,7 @@ static struct bgpio_pdata latch1_pdata __initconst = {
+ 	.ngpio	= LATCH1_NGPIO,
+ };
  
- /* Timing value configuration */
+-static struct platform_device latch1_gpio_device = {
++static struct platform_device latch1_gpio_device __refdata = {
+ 	.name		= "basic-mmio-gpio",
+ 	.id		= 0,
+ 	.resource	= latch1_resources,
+@@ -205,7 +205,7 @@ static struct bgpio_pdata latch2_pdata __initconst = {
+ 	.ngpio	= AMS_DELTA_LATCH2_NGPIO,
+ };
  
-@@ -131,3 +136,71 @@ int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
- 	return 0;
+-static struct platform_device latch2_gpio_device = {
++static struct platform_device latch2_gpio_device __refdata = {
+ 	.name		= "basic-mmio-gpio",
+ 	.id		= 1,
+ 	.resource	= latch2_resources,
+@@ -271,7 +271,7 @@ void ams_delta_latch_write(int base, int ngpio, u16 mask, u16 value)
  }
- EXPORT_SYMBOL(davinci_aemif_setup_timing);
-+
-+static int __init davinci_aemif_probe(struct platform_device *pdev)
-+{
-+	struct davinci_aemif_devices *davinci_aemif_devices =
-+		pdev->dev.platform_data;
-+	struct platform_device *devices;
-+	struct mfd_cell *cells;
-+	int ret, i, j, count;
-+
-+	devices = davinci_aemif_devices->devices;
-+
-+	cells = kzalloc(sizeof(struct mfd_cell) *
-+			davinci_aemif_devices->num_devices, GFP_KERNEL);
-+
-+	for (j = 0, count = 0; j < MAX; j++) {
-+		for (i = 0; i < davinci_aemif_devices->num_devices; i++) {
-+			if (strcmp(devices[i].name, name[j]))
-+				continue;
-+			cells[count].name = name[j];
-+			cells[count].platform_data =
-+				devices[i].dev.platform_data;
-+			cells[count].pdata_size =
-+				sizeof(struct davinci_nand_pdata);
-+			cells[count].id = devices[i].id;
-+			cells[count].resources = devices[i].resource;
-+			cells[count].num_resources = devices[i].num_resources;
-+			count++;
-+		}
-+	}
-+
-+	ret = mfd_add_devices(&pdev->dev, 0, cells,
-+			      count, NULL, 0);
-+	if (ret != 0)
-+		dev_err(&pdev->dev, "fail to register client devices\n");
-+
-+	return 0;
-+}
-+
-+static int __devexit davinci_aemif_remove(struct platform_device *pdev)
-+{
-+	mfd_remove_devices(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver davinci_aemif_driver = {
-+	.driver	= {
-+		.name = "davinci_aemif",
-+		.owner = THIS_MODULE,
-+	},
-+	.remove	= __devexit_p(davinci_aemif_remove),
-+};
-+
-+static int __init davinci_aemif_init(void)
-+{
-+	return platform_driver_probe(&davinci_aemif_driver,
-+			davinci_aemif_probe);
-+}
-+module_init(davinci_aemif_init);
-+
-+static void __exit davinci_aemif_exit(void)
-+{
-+	platform_driver_unregister(&davinci_aemif_driver);
-+}
-+module_exit(davinci_aemif_exit);
-+
-+MODULE_AUTHOR("Prakash Manjunathappa");
-+MODULE_DESCRIPTION("Texas Instruments AEMIF Interface");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/davinci_aemif.h b/include/linux/mfd/davinci_aemif.h
-index 05b2934..18650c3 100644
---- a/include/linux/mfd/davinci_aemif.h
-+++ b/include/linux/mfd/davinci_aemif.h
-@@ -10,6 +10,10 @@
- #ifndef _MACH_DAVINCI_AEMIF_H
- #define _MACH_DAVINCI_AEMIF_H
+ EXPORT_SYMBOL(ams_delta_latch_write);
  
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/mfd/core.h>
-+
- #define NRCSR_OFFSET		0x00
- #define AWCCR_OFFSET		0x04
- #define A1CR_OFFSET		0x10
-@@ -18,6 +22,16 @@
- #define ACR_EW_MASK		BIT(30)
- #define ACR_SS_MASK		BIT(31)
+-static struct resource ams_delta_nand_resources[] = {
++static struct resource ams_delta_nand_resources[] __initconst_or_module = {
+ 	[0] = {
+ 		.start	= OMAP1_MPUIO_BASE,
+ 		.end	= OMAP1_MPUIO_BASE +
+@@ -280,14 +280,14 @@ static struct resource ams_delta_nand_resources[] = {
+ 	},
+ };
  
-+enum davinci_emif_cells {
-+	DAVINCI_NAND_DEVICE_CELL,
-+	DAVINCI_NOR_FLASH_CELL,
-+};
-+
-+struct davinci_aemif_devices {
-+	struct platform_device *devices;
-+	unsigned int num_devices;
-+};
-+
- /* All timings in nanoseconds */
- struct davinci_aemif_timing {
- 	u8	wsetup;
+-static struct platform_device ams_delta_nand_device = {
++static struct platform_device ams_delta_nand_device __refdata = {
+ 	.name	= "ams-delta-nand",
+ 	.id	= -1,
+ 	.num_resources	= ARRAY_SIZE(ams_delta_nand_resources),
+ 	.resource	= ams_delta_nand_resources,
+ };
+ 
+-static struct resource ams_delta_kp_resources[] = {
++static struct resource ams_delta_kp_resources[] __initconst_or_module = {
+ 	[0] = {
+ 		.start	= INT_KEYBOARD,
+ 		.end	= INT_KEYBOARD,
+@@ -300,14 +300,14 @@ static const struct matrix_keymap_data ams_delta_keymap_data = {
+ 	.keymap_size	= ARRAY_SIZE(ams_delta_keymap),
+ };
+ 
+-static struct omap_kp_platform_data ams_delta_kp_data __initdata = {
++static struct omap_kp_platform_data ams_delta_kp_data __initconst_or_module = {
+ 	.rows		= 8,
+ 	.cols		= 8,
+ 	.keymap_data	= &ams_delta_keymap_data,
+ 	.delay		= 9,
+ };
+ 
+-static struct platform_device ams_delta_kp_device = {
++static struct platform_device ams_delta_kp_device __refdata = {
+ 	.name		= "omap-keypad",
+ 	.id		= -1,
+ 	.dev		= {
+@@ -363,7 +363,8 @@ static struct gpio_led_platform_data leds_pdata __initconst = {
+ 	.num_leds	= ARRAY_SIZE(gpio_leds),
+ };
+ 
+-static struct i2c_board_info ams_delta_camera_board_info[] = {
++static struct i2c_board_info __initconst_or_module
++ams_delta_camera_board_info[] = {
+ 	{
+ 		I2C_BOARD_INFO("ov6650", 0x60),
+ 	},
+@@ -387,7 +388,7 @@ static int ams_delta_camera_power(struct device *dev, int power)
+ #define ams_delta_camera_power	NULL
+ #endif
+ 
+-static struct soc_camera_link ams_delta_iclink = {
++static struct soc_camera_link ams_delta_iclink __initconst_or_module = {
+ 	.bus_id         = 0,	/* OMAP1 SoC camera bus */
+ 	.i2c_adapter_id = 1,
+ 	.board_info     = &ams_delta_camera_board_info[0],
+@@ -395,7 +396,7 @@ static struct soc_camera_link ams_delta_iclink = {
+ 	.power		= ams_delta_camera_power,
+ };
+ 
+-static struct platform_device ams_delta_camera_device = {
++static struct platform_device ams_delta_camera_device __refdata = {
+ 	.name   = "soc-camera-pdrv",
+ 	.id     = 0,
+ 	.dev    = {
+@@ -408,7 +409,7 @@ static struct omap1_cam_platform_data ams_delta_camera_platform_data = {
+ 	.lclk_khz_max	= 1334,		/* results in 5fps CIF, 10fps QCIF */
+ };
+ 
+-static struct platform_device *ams_delta_devices[] __initdata = {
++static struct platform_device *ams_delta_devices[] __initconst = {
+ 	&latch1_gpio_device,
+ 	&latch2_gpio_device,
+ 	&ams_delta_kp_device,
+@@ -459,7 +460,7 @@ static void __init ams_delta_init(void)
+ 	omap_writew(omap_readw(ARM_RSTCT1) | 0x0004, ARM_RSTCT1);
+ }
+ 
+-static struct plat_serial8250_port ams_delta_modem_ports[] = {
++static struct plat_serial8250_port ams_delta_modem_ports[] __initdata = {
+ 	{
+ 		.membase	= IOMEM(MODEM_VIRT),
+ 		.mapbase	= MODEM_PHYS,
+@@ -473,7 +474,7 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
+ 	{ },
+ };
+ 
+-static struct platform_device ams_delta_modem_device = {
++static struct platform_device ams_delta_modem_device __refdata = {
+ 	.name	= "serial8250",
+ 	.id	= PLAT8250_DEV_PLATFORM1,
+ 	.dev		= {
+diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
+index 0571e2e..0830a76 100644
+--- a/drivers/input/serio/ams_delta_serio.c
++++ b/drivers/input/serio/ams_delta_serio.c
+@@ -103,7 +103,7 @@ static void ams_delta_serio_close(struct serio *serio)
+ 	gpio_set_value(AMS_DELTA_GPIO_PIN_KEYBRD_PWR, 0);
+ }
+ 
+-static struct gpio ams_delta_gpios[] __initconst_or_module = {
++static const struct gpio ams_delta_gpios[] = {
+ 	{
+ 		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_DATA,
+ 		.flags	= GPIOF_DIR_IN,
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index 85934dc..7341695 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -145,7 +145,7 @@ static int ams_delta_nand_ready(struct mtd_info *mtd)
+ 	return gpio_get_value(AMS_DELTA_GPIO_PIN_NAND_RB);
+ }
+ 
+-static struct gpio _mandatory_gpio[] __initconst_or_module = {
++static const struct gpio _mandatory_gpio[] = {
+ 	{
+ 		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NCE,
+ 		.flags	= GPIOF_OUT_INIT_HIGH,
+diff --git a/drivers/video/omap/lcd_ams_delta.c b/drivers/video/omap/lcd_ams_delta.c
+index 0e71e28..d3a3113 100644
+--- a/drivers/video/omap/lcd_ams_delta.c
++++ b/drivers/video/omap/lcd_ams_delta.c
+@@ -99,7 +99,7 @@ static struct lcd_ops ams_delta_lcd_ops = {
+ 
+ /* omapfb panel section */
+ 
+-static struct gpio _gpios[] __initconst_or_module = {
++static const struct gpio _gpios[] = {
+ 	{
+ 		.gpio	= AMS_DELTA_GPIO_PIN_LCD_VBLEN,
+ 		.flags	= GPIOF_OUT_INIT_LOW,
 -- 
-1.7.1
+1.7.3.4
