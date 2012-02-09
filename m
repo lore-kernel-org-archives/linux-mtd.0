@@ -1,21 +1,16 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvYVl-0005Cs-4H
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 18:14:25 +0000
-Received: by yenm4 with SMTP id m4so1139261yen.36
- for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2012 10:14:22 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1328789269.22240.83.camel@sauron.fi.intel.com>
-References: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
- <1328789146.22240.82.camel@sauron.fi.intel.com>
- <1328789269.22240.83.camel@sauron.fi.intel.com>
-Date: Thu, 9 Feb 2012 10:14:22 -0800
-Message-ID: <CAN8TOE_FGbEaFbjO9q+Y+Ce_Kf6tXcg0VLT8wkWuvUbYkO=94w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] libmtd: perform device checking first
+ id 1RvYW7-0005ES-0y
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 18:14:48 +0000
+Received: by pbcun1 with SMTP id un1so605964pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2012 10:14:45 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Brian Foster <brian.foster@maxim-ic.com>, linux-mtd@lists.infradead.org
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 0/3] mtdinfo fixes (--all, etc.)
+Date: Thu,  9 Feb 2012 10:13:28 -0800
+Message-Id: <1328811211-13653-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Foster <brian.foster@maxim-ic.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 9, 2012 at 4:07 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2012-02-09 at 14:05 +0200, Artem Bityutskiy wrote:
->> Looks good, thanks, but could you please send a version which applies to
->> mtd-utils.git? The 3rd patch in this series does not apply.
->
-> Actually, I've pushed patches 1 and 2, would you please re-send the 3rd
-> one?
+These fixes help `mtdinfo --all' to work on legacy systems where sysfs is
+not supported in MTD.
 
-Perhaps I should have stated in this patch thread: these patches were
-meant to be on top of your previous test patch (you asked for
-comments, since you compile-tested only).
+Patch 1: submitted by Artem as a test patch
+Patch 2: previously submitted by me and didn't apply directly to
+         mtd-utils.git, as it depended on Patch 1
+Patch 3: trivial (new) grammar fixup patch
 
-Also, I do not see patches 1 and 2 in mtd-utils.git.
-
-I will resend your original patch + my "PATCH 3" as a new series.
+Hopefully this is easy to review and apply :)
 
 Brian
+
+Artem Bityutskiy (1):
+  limbtd: implement mtd_dev_present for old kernels
+
+Brian Norris (2):
+  libmtd: fix segmentation fault on lib->mtd
+  mtdinfo: correct grammar on error message
+
+ lib/libmtd.c        |   27 ++++++++++++++-------------
+ lib/libmtd_int.h    |    1 +
+ lib/libmtd_legacy.c |   25 +++++++++++++++++++++++++
+ ubi-utils/mtdinfo.c |    2 +-
+ 4 files changed, 41 insertions(+), 14 deletions(-)
+
+-- 
+1.7.5.4
