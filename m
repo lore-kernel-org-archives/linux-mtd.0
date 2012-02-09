@@ -1,18 +1,19 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RvF4e-0000LS-6w
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2012 21:29:08 +0000
-Received: by mail-pz0-f49.google.com with SMTP id p5so1010948dak.36
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 13:29:08 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 3/3] libmtd: fix segmentation fault on lib->mtd
-Date: Wed,  8 Feb 2012 13:26:22 -0800
-Message-Id: <1328736382-5798-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
-References: <1328736382-5798-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Foster <brian.foster@maxim-ic.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+ id 1RvNvN-0003Dp-Ib
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2012 06:56:10 +0000
+Received: by wera10 with SMTP id a10so1116829wer.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2012 22:56:05 -0800 (PST)
+Date: Thu, 9 Feb 2012 08:55:56 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] MTD API rework: Harmonize initialization of
+ erase_info->fail_addr
+Message-ID: <20120209085556.0f494f05@pixies.home.jungo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Legacy systems do not initialize lib->mtd, so we shouldn't perform
-strlen(lib->mtd); this produces a segmentation fault. As this code isn't
-used in the legacy codepath, we can just move it down to an 'else' branch.
+Prior MTD API rework, 'mtd->erase()' users needed to initialize
+'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN.
+Sometimes it was taken care of by the mtd driver's 'erase'
+implementation.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- lib/libmtd.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+Harmonize this, by initializing 'fail_addr' within the new 'mtd_erase'
+interface.
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 2bb4e57..fb4586c 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -644,13 +644,15 @@ void libmtd_close(libmtd_t desc)
- int mtd_dev_present(libmtd_t desc, int mtd_num) {
- 	struct stat st;
- 	struct libmtd *lib = (struct libmtd *)desc;
--	char file[strlen(lib->mtd) + 10];
- 
- 	if (!lib->sysfs_supported)
- 		return legacy_dev_present(mtd_num);
-+	else {
-+		char file[strlen(lib->mtd) + 10];
- 
--	sprintf(file, lib->mtd, mtd_num);
--	return !stat(file, &st);
-+		sprintf(file, lib->mtd, mtd_num);
-+		return !stat(file, &st);
-+	}
- }
- 
- int mtd_get_info(libmtd_t desc, struct mtd_info *info)
--- 
-1.7.5.4
+If idea is suitable, can work on a patch (although not immediately).
+
+Regards,
+Shmulik
