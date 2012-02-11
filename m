@@ -1,15 +1,15 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RwBPD-000479-R1
- for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 11:46:16 +0000
-Received: by mail-bk0-f49.google.com with SMTP id jk13so3578637bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:15 -0800 (PST)
+ id 1RwBPF-00047A-7i
+ for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 11:46:18 +0000
+Received: by mail-bk0-f49.google.com with SMTP id jk13so3578648bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:16 -0800 (PST)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-sh@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 5/7] mtd: sh_flctl: Use cached register value for FLCMNCR
-Date: Sat, 11 Feb 2012 12:45:03 +0100
-Message-Id: <1328960705-18699-6-git-send-email-hechtb@gmail.com>
+Subject: [PATCH v2 6/7] mtd: sh_flctl: Add FLHOLDCR register
+Date: Sat, 11 Feb 2012 12:45:04 +0100
+Message-Id: <1328960705-18699-7-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 Cc: Magnus Damm <magnus.damm@gmail.com>,
@@ -23,78 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of reading out the register, use a cached value. This will
-make way for a proper runtime power management implementation.
+Add a register used in new FLCTL hardware and a feature flag for it.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
-changelog: I delayed the rtpm patch until the clock code is fixed for
-board mackerel, so that no "udelay(1);" is needed. Instead I cleaned
-up the code to use a cached register value. The rtpm code will benefit
-from it.
+changelog: the write to the register has been moved due to patch 5.
 
- drivers/mtd/nand/sh_flctl.c  |   15 +++------------
- include/linux/mtd/sh_flctl.h |    1 +
- 2 files changed, 4 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |    3 +++
+ include/linux/mtd/sh_flctl.h |   12 ++++++++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 5c3e71f..1af41fd 100644
+index 1af41fd..40dda26 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -681,16 +681,13 @@ read_normal_exit:
- static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
- {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
--	uint32_t flcmncr_val = readl(FLCMNCR(flctl));
- 
- 	switch (chipnr) {
- 	case -1:
--		flcmncr_val &= ~CE0_ENABLE;
--		writel(flcmncr_val, FLCMNCR(flctl));
-+		writel(flctl->flcmncr_val, FLCMNCR(flctl));
+@@ -688,6 +688,8 @@ static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
  		break;
  	case 0:
--		flcmncr_val |= CE0_ENABLE;
--		writel(flcmncr_val, FLCMNCR(flctl));
-+		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
+ 		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
++		if (flctl->holden)
++			writel(HOLDEN, FLHOLDCR(flctl));
  		break;
  	default:
  		BUG();
-@@ -748,11 +745,6 @@ static int flctl_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
- 	return 0;
- }
- 
--static void flctl_register_init(struct sh_flctl *flctl, unsigned long val)
--{
--	writel(val, FLCMNCR(flctl));
--}
--
- static int flctl_chip_init_tail(struct mtd_info *mtd)
- {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-@@ -851,10 +843,9 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	nand = &flctl->chip;
- 	flctl_mtd->priv = nand;
+@@ -845,6 +847,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
  	flctl->pdev = pdev;
-+	flctl->flcmncr_val = pdata->flcmncr_val;
+ 	flctl->flcmncr_val = pdata->flcmncr_val;
  	flctl->hwecc = pdata->has_hwecc;
++	flctl->holden = pdata->use_holden;
  
--	flctl_register_init(flctl, pdata->flcmncr_val);
--
  	nand->options = NAND_NO_AUTOINCR;
  
- 	/* Set address of hardware control function */
 diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index e66c393..107fd8a 100644
+index 107fd8a..6046443 100644
 --- a/include/linux/mtd/sh_flctl.h
 +++ b/include/linux/mtd/sh_flctl.h
-@@ -132,6 +132,7 @@ struct sh_flctl {
- 	int	erase1_page_addr;	/* page_addr in ERASE1 cmd */
- 	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
- 	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
-+	uint32_t flcmncr_val;	/* base value of FLCMNCR */
+@@ -38,6 +38,7 @@
+ #define FLDTFIFO(f)		(f->reg + 0x24)
+ #define FLECFIFO(f)		(f->reg + 0x28)
+ #define FLTRCR(f)		(f->reg + 0x2C)
++#define FLHOLDCR(f)		(f->reg + 0x38)
+ #define	FL4ECCRESULT0(f)	(f->reg + 0x80)
+ #define	FL4ECCRESULT1(f)	(f->reg + 0x84)
+ #define	FL4ECCRESULT2(f)	(f->reg + 0x88)
+@@ -109,6 +110,15 @@
+ #define TRSTRT		(0x1 << 0)	/* translation start */
+ #define TREND		(0x1 << 1)	/* translation end */
  
- 	int	hwecc_cant_correct[4];
++/*
++ * FLHOLDCR control bits
++ *
++ * HOLDEN: Bus Occupancy Enable (inverted)
++ * Enable this bit when the external bus might be used in between transfers.
++ * If not set and the bus gets used by other modules, a deadlock occurs.
++ */
++#define HOLDEN		(0x1 << 0)
++
+ /* FL4ECCCR control bits */
+ #define	_4ECCFA		(0x1 << 2)	/* 4 symbols correct fault */
+ #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
+@@ -138,6 +148,7 @@ struct sh_flctl {
  
+ 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+ 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
++	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
+ };
+ 
+ struct sh_flctl_platform_data {
+@@ -146,6 +157,7 @@ struct sh_flctl_platform_data {
+ 	unsigned long		flcmncr_val;
+ 
+ 	unsigned has_hwecc:1;
++	unsigned use_holden:1;
+ };
+ 
+ static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
 -- 
 1.7.5.4
