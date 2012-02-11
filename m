@@ -1,15 +1,15 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RwBPD-000478-8G
- for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 11:46:15 +0000
-Received: by mail-bk0-f49.google.com with SMTP id jk13so3578629bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:14 -0800 (PST)
+ id 1RwBPD-000479-R1
+ for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 11:46:16 +0000
+Received: by mail-bk0-f49.google.com with SMTP id jk13so3578637bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:15 -0800 (PST)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-sh@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 4/7] mtd: sh_flctl: Implement NAND_CMD_RNDOUT command
-Date: Sat, 11 Feb 2012 12:45:02 +0100
-Message-Id: <1328960705-18699-5-git-send-email-hechtb@gmail.com>
+Subject: [PATCH v2 5/7] mtd: sh_flctl: Use cached register value for FLCMNCR
+Date: Sat, 11 Feb 2012 12:45:03 +0100
+Message-Id: <1328960705-18699-6-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 Cc: Magnus Damm <magnus.damm@gmail.com>,
@@ -23,45 +23,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implements the command to seek and read in pages.
+Instead of reading out the register, use a cached value. This will
+make way for a proper runtime power management implementation.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
-changelog: exactly same as patch v1.
+changelog: I delayed the rtpm patch until the clock code is fixed for
+board mackerel, so that no "udelay(1);" is needed. Instead I cleaned
+up the code to use a cached register value. The rtpm code will benefit
+from it.
 
- drivers/mtd/nand/sh_flctl.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |   15 +++------------
+ include/linux/mtd/sh_flctl.h |    1 +
+ 2 files changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 407acb5..5c3e71f 100644
+index 5c3e71f..1af41fd 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -303,6 +303,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_va
- 		break;
- 	case NAND_CMD_READ0:
- 	case NAND_CMD_READOOB:
-+	case NAND_CMD_RNDOUT:
- 		addr_len_bytes = flctl->rw_ADRCNT;
- 		flcmdcr_val |= CDSRC_E;
- 		if (flctl->chip.options & NAND_BUSWIDTH_16)
-@@ -558,6 +559,18 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		flctl->read_bytes = mtd->oobsize;
- 		goto read_normal_exit;
+@@ -681,16 +681,13 @@ read_normal_exit:
+ static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
+ {
+ 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+-	uint32_t flcmncr_val = readl(FLCMNCR(flctl));
  
-+	case NAND_CMD_RNDOUT:
-+		if (flctl->page_size)
-+			set_cmd_regs(mtd, command, (NAND_CMD_RNDOUTSTART << 8)
-+				| command);
-+		else
-+			set_cmd_regs(mtd, command, command);
-+
-+		set_addr(mtd, column, 0);
-+
-+		flctl->read_bytes = mtd->writesize + mtd->oobsize - column;
-+		goto read_normal_exit;
-+
- 	case NAND_CMD_READID:
- 		set_cmd_regs(mtd, command, command);
+ 	switch (chipnr) {
+ 	case -1:
+-		flcmncr_val &= ~CE0_ENABLE;
+-		writel(flcmncr_val, FLCMNCR(flctl));
++		writel(flctl->flcmncr_val, FLCMNCR(flctl));
+ 		break;
+ 	case 0:
+-		flcmncr_val |= CE0_ENABLE;
+-		writel(flcmncr_val, FLCMNCR(flctl));
++		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
+ 		break;
+ 	default:
+ 		BUG();
+@@ -748,11 +745,6 @@ static int flctl_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ 	return 0;
+ }
+ 
+-static void flctl_register_init(struct sh_flctl *flctl, unsigned long val)
+-{
+-	writel(val, FLCMNCR(flctl));
+-}
+-
+ static int flctl_chip_init_tail(struct mtd_info *mtd)
+ {
+ 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+@@ -851,10 +843,9 @@ static int __devinit flctl_probe(struct platform_device *pdev)
+ 	nand = &flctl->chip;
+ 	flctl_mtd->priv = nand;
+ 	flctl->pdev = pdev;
++	flctl->flcmncr_val = pdata->flcmncr_val;
+ 	flctl->hwecc = pdata->has_hwecc;
+ 
+-	flctl_register_init(flctl, pdata->flcmncr_val);
+-
+ 	nand->options = NAND_NO_AUTOINCR;
+ 
+ 	/* Set address of hardware control function */
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index e66c393..107fd8a 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -132,6 +132,7 @@ struct sh_flctl {
+ 	int	erase1_page_addr;	/* page_addr in ERASE1 cmd */
+ 	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
+ 	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
++	uint32_t flcmncr_val;	/* base value of FLCMNCR */
+ 
+ 	int	hwecc_cant_correct[4];
  
 -- 
 1.7.5.4
