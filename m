@@ -1,24 +1,22 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rw6uB-00058U-9M
- for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 06:57:55 +0000
-Received: by ggnf2 with SMTP id f2so2029774ggn.36
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2012 22:57:54 -0800 (PST)
+Date: Fri, 10 Feb 2012 23:39:36 -0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v3 1/2] mxs-dma : move the mxs dma.h to a more common place
+Message-ID: <20120211073934.GE2198@r65073-Latitude-D630>
+References: <1328612075-5825-1-git-send-email-b32955@freescale.com>
+ <1328612075-5825-2-git-send-email-b32955@freescale.com>
+ <20120210162134.GA2723@r65073-Latitude-D630>
+ <CAMiH66EP6UFDYkguzfSFgysDzVREPZ8P1x29TkYvQ+Cuvz-4hg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.02.1202082104470.2794@ionos>
-References: <D61182AC8012EA4EBC531B3AF23BE109B3C6C6@tranzeo-mail2.12stewart.tranzeo.com>
- <alpine.LFD.2.02.1202082104470.2794@ionos>
-Date: Fri, 10 Feb 2012 22:57:54 -0800
-Message-ID: <CAN8TOE8xLdawRm9i6oTXJOE5T+MUEinkQysH9_ossikdW+8ZhA@mail.gmail.com>
-Subject: Re: jffs2 filesystem: possible circular locking dependency detected
-From: Brian Norris <computersforpeace@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-rt-users <linux-rt-users@vger.kernel.org>,
- Darcy Watkins <DWatkins@tranzeo.com>, Peter Zijlstra <peterz@infradead.org>,
- linux-mtd@lists.infradead.org, Josh Cartwright <joshc@linux.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMiH66EP6UFDYkguzfSFgysDzVREPZ8P1x29TkYvQ+Cuvz-4hg@mail.gmail.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ artem.bityutskiy@intel.com, b29396@freescale.com,
+ linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 8, 2012 at 12:09 PM, Thomas Gleixner <tglx@linutronix.de> wrote=
-:
-> On Wed, 8 Feb 2012, Darcy Watkins wrote:
->> [ =A0 20.932000] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> [ =A0 20.932000] [ INFO: possible circular locking dependency detected ]
->> [ =A0 20.932000] 3.0.18-rt34 #41
->> [ =A0 20.932000] -------------------------------------------------------
->> [ =A0 20.932000] depmod/734 is trying to acquire lock:
->> [ =A0 20.932000] =A0(&mm->mmap_sem){++++++}, at: [<800e82d0>] might_faul=
-t+0x4c/0xa4
->> [ =A0 20.932000]
->> [ =A0 20.932000] but task is already holding lock:
->> [ =A0 20.932000] =A0(&f->sem){+.+.+.}, at: [<80184f88>] jffs2_readdir+0x=
-108/0x1c0
->> [ =A0 20.932000]
->> [ =A0 20.932000] which lock already depends on the new lock.
->
-> Classic ABBA deadlock. I don't think it's RT specific, but I might be
-> wrong as usual. Will have a look later this week, when noone beats me.
+On Sat, Feb 11, 2012 at 07:36:50AM +0800, Huang Shijie wrote:
+> hi,
+> 
+> On Sat, Feb 11, 2012 at 12:21 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> > On Tue, Feb 07, 2012 at 06:54:34PM +0800, Huang Shijie wrote:
+> >> Move the header to a more common place.
+> >> The mxs dma engine is not only used in mx23/mx28, but also used
+> >> in mx50/mx6q.  It will also be used in the future chips.
+> >>
+> >> Rename it to mxs-dma.h
+> >>
+> >> change mxs-dma driver, mxs-mmc driver, gpmi-nand driver, mxs-saif driver
+> >> to the new header file.
+> >>
+> >> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> >> ---
+> >>  drivers/dma/mxs-dma.c                              |    2 +-
+> >>  drivers/mmc/host/mxs-mmc.c                         |    2 +-
+> >>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
+> >>  .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
+> >>  sound/soc/mxs/mxs-pcm.c                            |    2 +-
+> >>  sound/soc/mxs/mxs-pcm.h                            |    2 +-
+> >>  sound/soc/mxs/mxs-saif.c                           |    2 +-
+> >>  7 files changed, 6 insertions(+), 6 deletions(-)
+> >>  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
+> >
+> > I suggested you rename it include/linux/fsl/mxs-dma.h [1].  It seems
+> > you are ignoring the comment.  Can you explain why it's not a
+> > reasonable suggestion?
+> 
+> For gpmi-nand.h is placed in include/linux/mtd/ directory, so i think
+> it's better to place the mxs-dma.h
+> to similar include/linux/dma/ directory, but the directory does not exit.
+> 
+Yes, from subsystem point of view, it makes sense too.
 
-Looks like someone beat you :) Josh Cartwright has a patch here:
-http://lists.infradead.org/pipermail/linux-mtd/2012-February/039787.html
+> If i place it at include/linux/fsl/mxs-dma.h , i have to create a new
+> folder, I am not sure i have the right
+> to do so. But i can try it in the next version.
+> 
+So either way works for me.  But you need to create a folder anyway.
+So let's do it to test people.
 
-Testing is always helpful to the MTD maintainers!
+> thanks a lot.
+> 
+> 
+> 
+> >
+> > And Wolfram and Mark told you that you need to Cc subsystem maintainers
+> > to collect their acks [2].  But you are still not Ccing Mark Brown and
+> > Chris Ball for sound/soc/ and drivers/mmc changes.  So you are not
+> > listening.
+> 
+> ok, i will CC them in next version.  I　really did not know to whom I　should cc .
+> 
+The file MAINTAINERS is created for this purpose.
 
-Brian
+-- 
+Regards,
+Shawn
