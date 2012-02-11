@@ -1,15 +1,17 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RwBPA-000478-SR
+ id 1RwBPB-000479-0T
  for linux-mtd@lists.infradead.org; Sat, 11 Feb 2012 11:46:14 +0000
-Received: by bkcjk13 with SMTP id jk13so3578629bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:09 -0800 (PST)
+Received: by bkcjk13 with SMTP id jk13so3578637bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Feb 2012 03:46:11 -0800 (PST)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-sh@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
-Date: Sat, 11 Feb 2012 12:44:58 +0100
-Message-Id: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+Subject: [PATCH v2 1/7] mtd: sh_flctl: Expand FLCMNCR register bit field
+Date: Sat, 11 Feb 2012 12:44:59 +0100
+Message-Id: <1328960705-18699-2-git-send-email-hechtb@gmail.com>
+In-Reply-To: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 Cc: Magnus Damm <magnus.damm@gmail.com>,
  Laurent Pichart <laurent.pinchart@ideasonboard.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,25 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series brushs up the sh_flctl.c a bit to make it work with
-the mackerel board. The hardware has changed and this needed to be
-reflected in the NAND host driver.
-On the road some minor enhancements have been incorporated.
+Add support for a new hardware generation. The meaning of some bits
+of the FLCMNCR register changed, so some new defines are added
+parallel to the existing ones to keep backward compatibility.
 
-Bastian Hecht (7):
-  mtd: sh_flctl: Expand FLCMNCR register bit field
-  mtd: sh_flctl: Reorder empty_fifo() calls
-  mtd: sh_flctl: Expand the READID command to 8 bytes
-  mtd: sh_flctl: Implement NAND_CMD_RNDOUT command
-  mtd: sh_flctl: Use cached register value for FLCMNCR
-  mtd: sh_flctl: Add FLHOLDCR register
-  ARM: mach-shmobile: mackerel: Add the flash controller flctl
+The defines allow to choose an appropriate clocking scheme.
 
- arch/arm/mach-shmobile/board-mackerel.c |   71 +++++++++++++++++++++++++++++++
- arch/arm/mach-shmobile/clock-sh7372.c   |    4 +-
- drivers/mtd/nand/sh_flctl.c             |   48 +++++++++++++--------
- include/linux/mtd/sh_flctl.h            |   37 ++++++++++++++++
- 4 files changed, 141 insertions(+), 19 deletions(-)
+Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+---
+changelog: code stays the same, just the description is slightly corrected.
 
+ include/linux/mtd/sh_flctl.h |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 9cf4c4c..e66c393 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -67,6 +67,30 @@
+ #define	CE0_ENABLE	(0x1 << 3)	/* Chip Enable 0 */
+ #define	TYPESEL_SET	(0x1 << 0)
+ 
++/*
++ * Clock settings using the PULSEx registers from FLCMNCR
++ *
++ * Some hardware uses bits called PULSEx instead of FCKSEL_E and QTSEL_E
++ * to control the clock divider used between the High-Speed Peripheral Clock
++ * and the FLCTL internal clock. If so, use CLK_8_BIT_xxx for connecting 8 bit
++ * and CLK_16_BIT_xxx for connecting 16 bit bus bandwith NAND chips. For the 16
++ * bit version the divider is seperate for the pulse width of high and low
++ * signals.
++ */
++#define PULSE3	(0x1 << 27)
++#define PULSE2	(0x1 << 17)
++#define PULSE1	(0x1 << 15)
++#define PULSE0	(0x1 << 9)
++#define CLK_8_BIT_0_5HP			PULSE1
++#define CLK_8_BIT_1HP			0x0
++#define CLK_8_BIT_1_5HP			(PULSE1 | PULSE2)
++#define CLK_8_BIT_2HP			PULSE0
++#define CLK_8_BIT_3HP			(PULSE0 | PULSE1 | PULSE2)
++#define CLK_8_BIT_4HP			(PULSE0 | PULSE2)
++#define CLK_16_BIT_6HP_LOW_2HP_HIGH	PULSE0
++#define CLK_16_BIT_9HP_LOW_3HP_HIGH	(PULSE0 | PULSE1 | PULSE2)
++#define CLK_16_BIT_12HP_LOW_4HP_HIGH	(PULSE0 | PULSE2)
++
+ /* FLCMDCR control bits */
+ #define ADRCNT2_E	(0x1 << 31)	/* 5byte address enable */
+ #define ADRMD_E		(0x1 << 26)	/* Sector address access */
 -- 
 1.7.5.4
