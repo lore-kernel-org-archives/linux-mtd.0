@@ -1,27 +1,28 @@
-To: linux-mtd@lists.infradead.org, linux-mtd-request@lists.infradead.org,
- linux-pci@vger.kernel.org, majordomo@vger.kernel.org,
- netfilter@vger.kernel.org, netfilter-core@lists.netfilter.org,
- netfilter-core-request@lists.netfilter.org,
- netfilter-devel@vger.kernel.org, ocf-linux-users@lists.sourceforge.net,
- oprofile-list@lists.sourceforge.net, patthurston@kgoradio.com,
- peter@peterbcollins.com, ray@raytal.com, raytaliaferro2@yahoo.com,
- richwalcoff@kgoradio.com, robert.richter@amd.com,
- rogerswilliamj@aol.com, sis-scps-interest@mailman.ccsds.org,
- u-boot@lists.denx.de, u-boot-users@lists.sourceforge.net,
- valgrind-users@lists.sourceforge.net,
- valgrind-users-request@lists.sourceforge.net,
- welcome@members.fling.com, wireshark-users@wireshark.org,
- wireshark-users-request@wireshark.org, xorp-users@xorp.org,
- hello@midrivers.com, hellidontknow@proplepc.com,
- helenwil@southwest.com, heleng@dolch.com, helene.dufay@neuf.fr,
- helena_queiroz@portugalmail.pt, helen@nelsonspecialties.net
-Content-Transfer-Encoding: quoted-printable
-Subject: Fwd: I am my own boss!
+Received: from 99.f7bed1.client.atlantech.net ([209.190.247.153]
+ helo=calypso.tux.org)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RwUcb-00030a-UH
+ for linux-mtd@lists.infradead.org; Sun, 12 Feb 2012 08:17:23 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by calypso.tux.org (Postfix) with ESMTP id DDD1AD180AC
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Feb 2012 03:17:11 -0500 (EST)
+Received: from calypso.tux.org ([127.0.0.1])
+ by localhost (calypso.tux.org [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id A6D2LMhXBCEv for <linux-mtd@lists.infradead.org>;
+ Sun, 12 Feb 2012 03:17:11 -0500 (EST)
+Received: from calypso2.tux.org (localhost.localdomain [127.0.0.1])
+ by calypso.tux.org (Postfix) with ESMTP id 4E26CD1807A
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Feb 2012 03:17:11 -0500 (EST)
 MIME-Version: 1.0
-From: jobhunts02@aol.com
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Message-Id: <8CEB72578319B3C-11D0-9756@Webmail-d118.sysops.aol.com>
-Date: Sat, 11 Feb 2012 17:41:46 -0500 (EST)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Your message to linux-pe awaits moderator approval
+From: linux-pe-bounces@calypso.tux.org
+To: linux-mtd@lists.infradead.org
+Message-ID: <mailman.626.1329034629.3956.linux-pe@calypso.tux.org>
+Date: Sun, 12 Feb 2012 03:17:09 -0500
+Sender: linux-pe-bounces@calypso.tux.org
+Errors-To: linux-pe-bounces@calypso.tux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,9 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I used to constantly ask for money from my friends this was my last=20
-shot at success all the stress was starting to take a toll on me!
-http://camperz.in/breakingnews/81SimonScott/ now nobody disrespects me
-I heard you can use some help.
+Your mail to 'linux-pe' with the subject
 
-c ya
+    ??????????(EMBA)???????????????
+
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+    Post by non-member to a members-only list
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+    http://calypso.tux.org/mailman/confirm/linux-pe/cf2d8d2a56cc2538d9e4d39212e0cfd71e4448db
