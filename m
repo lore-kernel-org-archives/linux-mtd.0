@@ -1,22 +1,25 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rx14v-0000DS-F2
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 18:56:46 +0000
-Received: by wico1 with SMTP id o1so4270270wic.36
- for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 10:56:43 -0800 (PST)
-Date: Mon, 13 Feb 2012 20:56:26 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] mtd: unify initialization of erase_info->fail_addr
-Message-ID: <20120213205626.55a5c0b3@pixies.home.jungo.com>
-In-Reply-To: <1329141796.22240.154.camel@sauron.fi.intel.com>
-References: <20120209153629.16bb9b01@pixies.home.jungo.com>
- <1329141752.22240.153.camel@sauron.fi.intel.com>
- <1329141796.22240.154.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Received: from joshcartwright.net ([69.164.192.171]
+ helo=li107-171.members.linode.com)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rx27H-00066i-Kl
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 20:03:16 +0000
+Date: Mon, 13 Feb 2012 15:02:32 -0500
+From: Josh Cartwright <joshc@linux.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: jffs2 filesystem: possible circular locking dependency detected
+Message-ID: <20120213200232.GA19958@joshcartwright.net>
+References: <D61182AC8012EA4EBC531B3AF23BE109B3C6C6@tranzeo-mail2.12stewart.tranzeo.com>
+ <alpine.LFD.2.02.1202082104470.2794@ionos>
+ <CAN8TOE8xLdawRm9i6oTXJOE5T+MUEinkQysH9_ossikdW+8ZhA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN8TOE8xLdawRm9i6oTXJOE5T+MUEinkQysH9_ossikdW+8ZhA@mail.gmail.com>
+Cc: linux-rt-users <linux-rt-users@vger.kernel.org>,
+ Darcy Watkins <DWatkins@tranzeo.com>, Peter Zijlstra <peterz@infradead.org>,
+ linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +29,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 Feb 2012 16:03:16 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2012-02-13 at 16:02 +0200, Artem Bityutskiy wrote:
-> > On Thu, 2012-02-09 at 15:36 +0200, Shmulik Ladkani wrote:
-> > > From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> > > 
-> > > Initialization of 'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN prior
-> > > erase operation is duplicated accross several MTD drivers, and also taken
-> > > care of by some MTD users as well.
-> > > 
-> > > Harmonize it: initialize 'fail_addr' within 'mtd_erase()' interface.
-> > > 
-> > > Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> > 
-> > Could you please re-send this one and
-> > 
-> > [PATCH] sfc: mtd: Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff
-> > 
-> > as a single patch or a series of 2 patches?
+On Fri, Feb 10, 2012 at 10:57:54PM -0800, Brian Norris wrote:
+> On Wed, Feb 8, 2012 at 12:09 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > On Wed, 8 Feb 2012, Darcy Watkins wrote:
+> >> [   20.932000] =======================================================
+> >> [   20.932000] [ INFO: possible circular locking dependency detected ]
+> >> [   20.932000] 3.0.18-rt34 #41
+> >> [   20.932000] -------------------------------------------------------
+> >> [   20.932000] depmod/734 is trying to acquire lock:
+> >> [   20.932000]  (&mm->mmap_sem){++++++}, at: [<800e82d0>] might_fault+0x4c/0xa4
+> >> [   20.932000]
+> >> [   20.932000] but task is already holding lock:
+> >> [   20.932000]  (&f->sem){+.+.+.}, at: [<80184f88>] jffs2_readdir+0x108/0x1c0
+> >> [   20.932000]
+> >> [   20.932000] which lock already depends on the new lock.
+> >
+> > Classic ABBA deadlock. I don't think it's RT specific, but I might be
+> > wrong as usual. Will have a look later this week, when noone beats me.
 > 
-> I mean this patch should also patch 'sfc' or just contain that change,
-> right?
-> 
+> Looks like someone beat you :) Josh Cartwright has a patch here:
+> http://lists.infradead.org/pipermail/linux-mtd/2012-February/039787.html
 
-No, these are independent patches.
+Unfortunately, Darcy's lockdep splat implicates a different set of
+locks, so I think it is a different issue then I resolved in the linked
+patch.
 
-'mtd: unify initialization of erase_info->fail_addr' deals with the
-duplication of 'fail_addr' initialization accross mtd users and drivers.
+Looking into this one, however, I think I convinced myself that the
+lockdep warning is bogus.  Here are two stack snippets that lockdep
+claims would be problematic if interleaved:
 
-'sfc: mtd: Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff' is a bug fix
-which I accidentally encountered when grepping 'fail_addr' during the
-work on the former patch.
-Here we're dealing with an 'erase()' implementation, in the case were
-the erase has actually failed, however the 'sfc' driver seems not
-capable of stating the location of the failure.
-In this case 'fail_addr' should be set to MTD_FAIL_ADDR_UNKNOWN
-(which was 0xffffffff ages ago).
-Note today 'fail_addr' is a uint64_t, and MTD_FAIL_ADDR_UNKNOWN is -1LL,
-meaning 'efx_mtd_erase()' was not adhering to the interface.
+do_page_fault()
+   down_read(&current->mm->mmap_sem)
+   /* readahead... */
+      jffs2_readpage()
+         mutex_lock(&JFFS2_INODE_INFO(inode)->sem)
 
-Regards
-Shmulik
+vfs_readdir()
+  /* ... */
+  jffs2_readdir()
+     mutex_lock(&JFFS2_INODE_INFO(inode)->sem)
+     filldir()
+        __put_user()
+        /* fault ... */
+           do_page_fault()
+              down_read(&current->mm->mmap_sem)
+
+In Darcy's case, the validator saw the do_page_fault() segment first,
+and decided the lock order should be [mmap_sem, &JFFS2_INODE_INFO(inode)->sem].
+It complained when it then saw the vfs_readdir() codepath reverse the
+order [1].
+
+This would be problematic, if it wasn't for the guarantee that the
+jffs2_inode_info::sem in both paths will be different.  In the readdir()
+path, the inode is the directory inode, whose i_fops doesn't even
+support mmap(), and so couldn't possibly be involved in a fault().
+
+1: Well, not exactly the same codepath, since a fault was not generated.
+   put_user() includes a might_fault() which hints to lockdep that
+   mmap_sem _could_ be acquired if a fault occurs.
+
+-- 
+                                           joshc
