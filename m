@@ -1,22 +1,21 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rww84-0004jV-Vy
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 13:39:41 +0000
-Received: by dakp5 with SMTP id p5so5493407dak.36
- for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 05:39:39 -0800 (PST)
-Message-ID: <1329140515.22240.145.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
+ id 1RwwNY-0005ii-GP
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 13:55:41 +0000
+Received: by dakp5 with SMTP id p5so5507118dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 05:55:39 -0800 (PST)
+Message-ID: <1329141475.22240.151.camel@sauron.fi.intel.com>
+Subject: Re: Updating UBIFS rootfilesystem
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Mon, 13 Feb 2012 15:41:55 +0200
-In-Reply-To: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
-References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+To: Matthias Fuchs <matthias.fuchs@esd.eu>
+Date: Mon, 13 Feb 2012 15:57:55 +0200
+In-Reply-To: <4F326E27.7020407@esd.eu>
+References: <4F326E27.7020407@esd.eu>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-JHzTCu//G6JlmVgoQz9W"
+ boundary="=-wq5cJjvzN2zBhoAbsWq7"
 Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,35 +27,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-JHzTCu//G6JlmVgoQz9W
+--=-wq5cJjvzN2zBhoAbsWq7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
-> This patch series brushs up the sh_flctl.c a bit to make it work with
-> the mackerel board. The hardware has changed and this needed to be
-> reflected in the NAND host driver.
-> On the road some minor enhancements have been incorporated.
+On Wed, 2012-02-08 at 13:44 +0100, Matthias Fuchs wrote:
+> Hi,
+>=20
+> is there an elegant way to update an UBIFS rootfilesystem?
+>=20
+> Let's say I have enough flash space for my actual rootfilesystem
+> (rootfs1) and a new version (rootfs2). So while running from rootfs1
+> I updated rootfs2 volume with a new rootfilesystem.
 
-I cannot even compile-test this patch because I get the following error:
+I you cannot update a mounted fs - you have to unmount it first. If you
+are able to do this, you should be able to ubirename.
 
-
-sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
-by this configuration
-
-
-with the cross-compiler downloaded from here:
-
-http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc-4.6=
-.0-nolibc_sh4-linux.tar.bz2
-
-Could you please describe how could I compile-test it?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-JHzTCu//G6JlmVgoQz9W
+--=-wq5cJjvzN2zBhoAbsWq7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPORMjAAoJECmIfjd9wqK0l7wP/00MVUTfzqyD7GtD+XVhZdL/
-N1+jmB+l9x6rZa2dfWiK3DFrYa0ARVHPZ6e5gUInyt4Sz9NHyKTisNc9WCVc+DsO
-x+4/Hp41O8+3UleRlNZpalIuOP1/aePfUfyanUBILemUfk3NONyi0qFgH+ph6goy
-CAMLVikc0m2j+yB00kCKBhNmYykfCHN3otcX6BjbJWg5GfNs2U9p4DtoDPOx+ivR
-V/nE41+3b4mGMfe92pHCaBMt5ICJ22PCYnjqzfa+AAHqCyvZXP73eSu5USsUTjwW
-U4E730buU8OQL1TiGg/6QvSeocdngBGxE3/3J/BZXGQoap+DiU3j5muakhABOSdD
-WwD5CdjIYZjpG72pOFRNMcIz0+NUs67obwSPySrISfQd4PL3hQojMyvOTCBcB4yf
-D07XQwdB/8rYYIiL6WzV01bhnXCSy7imJgDdkC3SZ5ujgIVcKQPBC8Rqyy3qjymm
-kkeGobZjH76bFH/EJrqv9PJlR8FlBQP8uJCtYS5WasUI60HiYZ+AmTD/J6CjkJPL
-RLBGmSkiBglagbFuf6yIqZMy6XQaMDcOWxH0wHH58A7nhEVaVzNUdG15LpH+swTA
-WfAYZp0gokCrDrRFNxFZR/fAaXJjbqpULc32IRVlTgTndRLFTrHUXvjT7NNZMYLw
-/0Mrt1eHiIJGweSTfoq6
-=0Cvo
+iQIcBAABAgAGBQJPORbjAAoJECmIfjd9wqK0wCgP/iDJYU6xwZG4wbLu72m5ILsR
+J1n/cI3bCxhuGK7I2D4b0DQd/llel1bXXc4GqA+hpOb60Gwm4Q0V+kdjub1fUZeh
+N1gwfUa5MJCeScdqP/ZvZ8irinTxOVlkBuPBfpg/FEj7+ohUo+u8Upe5FnVEsosp
+cJyE/gf0d5wN6090LcVmN2JiiSMgDkU+EtCmvLlZR+DCBgDMiUvJfvnkROtGMdhm
+AbPrFAxaZLn0sTDJVoS57z/0DKwR2fGCHPMnF6fZ36YkBWKPYQUnwW1WJeqz+0Mk
+Z/9TZQzNwrDsphIBjM50txHApl43j/s/NECNEVJm3KNNIr2DfisJ9JufYAAj6Xdt
+MaaAXWaqyCiuLVhhUvdvrGszv+s8gDjR+4icScwiEeFWBVBXH8EUDAzpQCHCHdpl
+jEwZ4/TXUkKc29BUq6mK/8l6G97Ktis/X7TZKABWpK9wcnFlgc4zxSfQBUIFSGfF
+i6OMyQxAdcjleqhOaFv5FFdR0gbBCPjfmj8qMrFoYFoI7DngPjuDBhWfQ9dD98DA
+P6ApaztCgucwD5rbXdpsMS3ndDC79lZpWPwx1BAJch/jc4KrYubmx9DnP91voAp2
+zo1nzfsYcspi8e6dEo9aS2sepQqNCmPuqWrrY3z706RQA3qCdlyygkwUk7428Q3d
+TVYUjGlbw1EMableNYNx
+=nb55
 -----END PGP SIGNATURE-----
 
---=-JHzTCu//G6JlmVgoQz9W--
+--=-wq5cJjvzN2zBhoAbsWq7--
