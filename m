@@ -1,22 +1,22 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rwv48-0001bZ-M1
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 12:31:33 +0000
-Received: by pbcun1 with SMTP id un1so4057945pbc.36
- for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 04:31:30 -0800 (PST)
-Message-ID: <1329136425.22240.119.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [trivial] jffs2: Fix typo in compr.c
+ id 1Rww84-0004jV-Vy
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 13:39:41 +0000
+Received: by dakp5 with SMTP id p5so5493407dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 05:39:39 -0800 (PST)
+Message-ID: <1329140515.22240.145.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Masanari Iida <standby24x7@gmail.com>
-Date: Mon, 13 Feb 2012 14:33:45 +0200
-In-Reply-To: <1328701179-1823-1-git-send-email-standby24x7@gmail.com>
-References: <1328701179-1823-1-git-send-email-standby24x7@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Mon, 13 Feb 2012 15:41:55 +0200
+In-Reply-To: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-47UGooDptLg5R3qI3rXw"
+ boundary="=-JHzTCu//G6JlmVgoQz9W"
 Mime-Version: 1.0
-Cc: trivial@kernel.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,23 +28,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-47UGooDptLg5R3qI3rXw
+--=-JHzTCu//G6JlmVgoQz9W
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-02-08 at 20:39 +0900, Masanari Iida wrote:
-> Correct spelling "modul" to "module" in
-> fs/hffs2/compr.c
->=20
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
+> This patch series brushs up the sh_flctl.c a bit to make it work with
+> the mackerel board. The hardware has changed and this needed to be
+> reflected in the NAND host driver.
+> On the road some minor enhancements have been incorporated.
 
-Pushed to l2-mtd.git tree, thanks!
+I cannot even compile-test this patch because I get the following error:
+
+
+sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
+by this configuration
+
+
+with the cross-compiler downloaded from here:
+
+http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc-4.6=
+.0-nolibc_sh4-linux.tar.bz2
+
+Could you please describe how could I compile-test it?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-47UGooDptLg5R3qI3rXw
+--=-JHzTCu//G6JlmVgoQz9W
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +64,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPOQMpAAoJECmIfjd9wqK0oUAP+weFoPgKv08kbWqGcnCbXmFG
-NA94cfTKwsoNBauNtgJgTosnuNsD4vwKIQ5cXt60ayVvJM17WZwesIX5YnXhTjp3
-Bx34e9qWyYnuPlPCVRv4is+P+C8c1qQe5AvHNBoNXMseH3SphvFMcXYHRDxfJYku
-6RbeBYkwcL+dEk9mVJtTEtx6hu5+L+jgF4y4BDOjyJq4YyOc7yyQqJAwZWX860dI
-DHGePTtCHijGqvBW/j19neMt9UtIWb2iO81wm6CWhiq0C47o3/GHEbJCrNxk8reE
-yNU6atNnVC28M2oZOQ+TS6eQKnwioived0+RLBs1V8qf+a7ug1onUqvs4enQkFlY
-edoX5cV7nvWD7ZQzauoXfRuyMKqOniu/8LpvFC/JGVWBWd7+YGBZaIHTzg37J1Go
-+o+3wXHLnK5STVwQOhLnlVF5xEDK/XVwaglALG2NXC8NxvdQlRKDHhpmCtayNEkA
-MyLV0+0vE6o6lKyKC57a3SfYL9jgVanoM9RTBj/k0nFn5Qtkj1e7wI9Z/bDnlgSh
-nIk14r00XwfvMDwdnq1j8jf+Xnu+h2gvvF5yvj1dUy/ER6LZhh1TP0mIaO2eS346
-E5zaGpflmzHzHwGdORL9RPqzF9hlQNIvCrFV6vq//qfvX9eqKbyEkuJNkLBdYp0T
-j6YSfB8Pky6uI4fr2H0u
-=GjfV
+iQIcBAABAgAGBQJPORMjAAoJECmIfjd9wqK0l7wP/00MVUTfzqyD7GtD+XVhZdL/
+N1+jmB+l9x6rZa2dfWiK3DFrYa0ARVHPZ6e5gUInyt4Sz9NHyKTisNc9WCVc+DsO
+x+4/Hp41O8+3UleRlNZpalIuOP1/aePfUfyanUBILemUfk3NONyi0qFgH+ph6goy
+CAMLVikc0m2j+yB00kCKBhNmYykfCHN3otcX6BjbJWg5GfNs2U9p4DtoDPOx+ivR
+V/nE41+3b4mGMfe92pHCaBMt5ICJ22PCYnjqzfa+AAHqCyvZXP73eSu5USsUTjwW
+U4E730buU8OQL1TiGg/6QvSeocdngBGxE3/3J/BZXGQoap+DiU3j5muakhABOSdD
+WwD5CdjIYZjpG72pOFRNMcIz0+NUs67obwSPySrISfQd4PL3hQojMyvOTCBcB4yf
+D07XQwdB/8rYYIiL6WzV01bhnXCSy7imJgDdkC3SZ5ujgIVcKQPBC8Rqyy3qjymm
+kkeGobZjH76bFH/EJrqv9PJlR8FlBQP8uJCtYS5WasUI60HiYZ+AmTD/J6CjkJPL
+RLBGmSkiBglagbFuf6yIqZMy6XQaMDcOWxH0wHH58A7nhEVaVzNUdG15LpH+swTA
+WfAYZp0gokCrDrRFNxFZR/fAaXJjbqpULc32IRVlTgTndRLFTrHUXvjT7NNZMYLw
+/0Mrt1eHiIJGweSTfoq6
+=0Cvo
 -----END PGP SIGNATURE-----
 
---=-47UGooDptLg5R3qI3rXw--
+--=-JHzTCu//G6JlmVgoQz9W--
