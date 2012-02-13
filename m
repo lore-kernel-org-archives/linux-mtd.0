@@ -1,18 +1,20 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <vinod.koul@intel.com>
-Subject: [PATCH v5 1/2] mxs-dma : move the mxs dma.h to a more common place
-Date: Mon, 13 Feb 2012 13:25:55 +0800
-Message-ID: <1329110756-14434-2-git-send-email-b32955@freescale.com>
-In-Reply-To: <1329110756-14434-1-git-send-email-b32955@freescale.com>
-References: <1329110756-14434-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
- broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org,
- w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- cjb@laptop.org, shawn.guo@linaro.org, lrg@ti.com,
- linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Received: from shards.monkeyblade.net ([198.137.202.13])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rwor9-0003QY-1N
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 05:53:43 +0000
+Date: Mon, 13 Feb 2012 00:51:31 -0500 (EST)
+Message-Id: <20120213.005131.707348228946745194.davem@davemloft.net>
+To: shmulik.ladkani@gmail.com
+Subject: Re: [PATCH] sfc: mtd: Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <20120212111308.0267f200@pixies.home.jungo.com>
+References: <20120212111308.0267f200@pixies.home.jungo.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: bhutchings@solarflare.com, netdev@vger.kernel.org,
+ linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,127 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move the header to a more common place.
-The mxs dma engine is not only used in mx23/mx28, but also used
-in mx50/mx6q.  It will also be used in the future chips.
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Sun, 12 Feb 2012 11:13:08 +0200
 
-Rename it to mxs-dma.h, and create a new folder include/linux/fsl/ to
-store the Freescale's header files.
+> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> 
+> As of bb0eb217, MTD_FAIL_ADDR_UNKNOWN should be used to indicate mtd
+> erase failure not specific to any particular block.
+> 
+> Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff when setting
+> 'erase->fail_addr' in 'efx_mtd_erase()'.
+> 
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-change mxs-dma driver, mxs-mmc driver, gpmi-nand driver, mxs-saif driver
-to the new header file.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/dma/mxs-dma.c                              |    2 +-
- drivers/mmc/host/mxs-mmc.c                         |    2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
- .../mach/dma.h => include/linux/fsl/mxs-dma.h      |    0
- sound/soc/mxs/mxs-pcm.c                            |    2 +-
- sound/soc/mxs/mxs-pcm.h                            |    2 +-
- sound/soc/mxs/mxs-saif.c                           |    2 +-
- 7 files changed, 6 insertions(+), 6 deletions(-)
- rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/fsl/mxs-dma.h (100%)
-
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index b06cd4c..0afcedb 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -22,10 +22,10 @@
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
- #include <linux/delay.h>
-+#include <linux/fsl/mxs-dma.h>
- 
- #include <asm/irq.h>
- #include <mach/mxs.h>
--#include <mach/dma.h>
- #include <mach/common.h>
- 
- /*
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index 382c835..e5ea2b1 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -38,10 +38,10 @@
- #include <linux/gpio.h>
- #include <linux/regulator/consumer.h>
- #include <linux/module.h>
-+#include <linux/fsl/mxs-dma.h>
- 
- #include <mach/mxs.h>
- #include <mach/common.h>
--#include <mach/dma.h>
- #include <mach/mmc.h>
- 
- #define DRIVER_NAME	"mxs-mmc"
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index c93b0ae..b9002c8 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -20,7 +20,7 @@
- #include <linux/mtd/nand.h>
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
--#include <mach/dma.h>
-+#include <linux/fsl/mxs-dma.h>
- 
- struct resources {
- 	void          *gpmi_regs;
-diff --git a/arch/arm/mach-mxs/include/mach/dma.h b/include/linux/fsl/mxs-dma.h
-similarity index 100%
-rename from arch/arm/mach-mxs/include/mach/dma.h
-rename to include/linux/fsl/mxs-dma.h
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 105f42a..420715e 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -28,6 +28,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/dmaengine.h>
-+#include <linux/fsl/mxs-dma.h>
- 
- #include <sound/core.h>
- #include <sound/initval.h>
-@@ -35,7 +36,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- 
--#include <mach/dma.h>
- #include "mxs-pcm.h"
- 
- static struct snd_pcm_hardware snd_mxs_hardware = {
-diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
-index f55ac4f..d2c8b12 100644
---- a/sound/soc/mxs/mxs-pcm.h
-+++ b/sound/soc/mxs/mxs-pcm.h
-@@ -19,7 +19,7 @@
- #ifndef _MXS_PCM_H
- #define _MXS_PCM_H
- 
--#include <mach/dma.h>
-+#include <linux/fsl/mxs-dma.h>
- 
- struct mxs_pcm_dma_params {
- 	int chan_irq;
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index f204dba..ce59112 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -24,12 +24,12 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/time.h>
-+#include <linux/fsl/mxs-dma.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/saif.h>
--#include <mach/dma.h>
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/mxs.h>
--- 
-1.7.0.4
+Ben, what would you like me to do with this one?
