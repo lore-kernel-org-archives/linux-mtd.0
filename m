@@ -1,25 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RwqYS-0000lg-ND
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 07:42:33 +0000
-Received: by dakp5 with SMTP id p5so5212431dak.36
- for <linux-mtd@lists.infradead.org>; Sun, 12 Feb 2012 23:42:28 -0800 (PST)
-Message-ID: <1329119082.22240.108.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] sfc: mtd: Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Miller <davem@davemloft.net>
-Date: Mon, 13 Feb 2012 09:44:42 +0200
-In-Reply-To: <20120213.005131.707348228946745194.davem@davemloft.net>
-References: <20120212111308.0267f200@pixies.home.jungo.com>
- <20120213.005131.707348228946745194.davem@davemloft.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-AbiReZK+VGtY+c4ZOiFu"
-Mime-Version: 1.0
-Cc: bhutchings@solarflare.com, netdev@vger.kernel.org,
- linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org,
- shmulik.ladkani@gmail.com
-Reply-To: dedekind1@gmail.com
+Received: from mo5.mail-out.ovh.net ([178.32.228.5])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RwrdC-000260-P4
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 08:51:32 +0000
+Received: from mail98.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo5.mail-out.ovh.net (Postfix) with SMTP id 7FBBEFF9C15
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 09:53:48 +0100 (CET)
+Date: Mon, 13 Feb 2012 09:45:16 +0100
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Hong Xu <hong.xu@atmel.com>
+Subject: Re: [PATCH] MTD: atmel_nand: Update driver to support Programmable
+ HW ECC controller
+Message-ID: <20120213084516.GB3378@game.jcrosoft.org>
+References: <1329117469-23637-1-git-send-email-hong.xu@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1329117469-23637-1-git-send-email-hong.xu@atmel.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 15:17 Mon 13 Feb     , Hong Xu wrote:
+> The Programmable Hardware ECC (PMECC) controller is a programmable binary
+> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
+> can be used to support both SLC and MLC NAND Flash devices. It supports to
+> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
+> 
+> To use this driver, the user needs to pass in the correction capability and
+> the sector size.
+> 
+> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
+> YAFFS2, UBIFS and mtd-utils.
+> 
+> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> ---
+this patch must be based on the nand fixes and DT support
 
---=-AbiReZK+VGtY+c4ZOiFu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+and pass the rom code base via resoruces
 
-On Mon, 2012-02-13 at 00:51 -0500, David Miller wrote:
-> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> Date: Sun, 12 Feb 2012 11:13:08 +0200
->=20
-> > From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> >=20
-> > As of bb0eb217, MTD_FAIL_ADDR_UNKNOWN should be used to indicate mtd
-> > erase failure not specific to any particular block.
-> >=20
-> > Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff when setting
-> > 'erase->fail_addr' in 'efx_mtd_erase()'.
-> >=20
-> > Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
->=20
-> Ben, what would you like me to do with this one?
+and drop the ifdef
 
-Please, do nothing if you can, we'll handle this through the MTD tree,
-thanks.
-
---=20
 Best Regards,
-Artem Bityutskiy
-
---=-AbiReZK+VGtY+c4ZOiFu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPOL9qAAoJECmIfjd9wqK0aPgQAJUYOBoZSjVr8sXDb3TdFOlL
-SiUp1IHX9rIOAQpKeZm0BQKjZSaCeI7TS4ZhIpr/EzEqYqG9t1/P5PR2Vt80xQBJ
-OmVMeriozT7gdBZfWIFC4xPCOThi12X0SEsag/DFeDUtAxMTeLL/ZUKW6DxChCPZ
-yW3K8FLQQiblZHN4lgcpNU5QncDyr0NNUoTdyO57igL6RB28L6oLYG71abZiMe/k
-0+3wkjtTZTP59qsttyHwWw1rWoYTdXUTCncgDXnhLTnvW9DXm4hIzQHDjle8fiA7
-qE2rZxANfH7X4oPFkDEStEbaSVEkSr3foBpME/ogHFndKUJSED+uUtngmfptHsvC
-lJot6EQPwBSTitXnOSc/sF6yscJxKFtq2eD2gM6YgURrT7doPQbMvw7tAg7wyRLa
-0wd4Q65eXObg1fowbFdpDo8GmQ2CFnSu1MPv/I4D96r8UErD1z7suM7NETYQFYnZ
-RYoXdrwAEzuau983qfWOSAA5jPdwWDF7ush2avrir6tQvuAE182vYycODMr8skMU
-J3hUvjKOsixtOR1LkMHX+O4EDeTe+iNcBrVsHDM+QZDpwhehiJKoJrhwoQGYFVM5
-9yMIOBAOjultnFMGfoutVnJHqpu1Si0ZTfKWbX8k3G91TEzEotn+wZ9oOcI7UqJx
-wL9lBjCbMKKFCohsOVIq
-=niE4
------END PGP SIGNATURE-----
-
---=-AbiReZK+VGtY+c4ZOiFu--
+J.
