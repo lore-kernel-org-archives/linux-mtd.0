@@ -1,17 +1,21 @@
-Message-ID: <1329134891.22240.116.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: atmel_nand: Update driver to support Programmable
- HW ECC controller
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RwumU-0000js-Pt
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 12:13:19 +0000
+Received: by dakp5 with SMTP id p5so5421673dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 04:13:17 -0800 (PST)
+Message-ID: <1329135333.22240.118.camel@sauron.fi.intel.com>
+Subject: Re: Translation for you'r page
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Hong Xu <hong.xu@atmel.com>
-Date: Mon, 13 Feb 2012 14:08:11 +0200
-In-Reply-To: <1329117469-23637-1-git-send-email-hong.xu@atmel.com>
-References: <1329117469-23637-1-git-send-email-hong.xu@atmel.com>
+To: Ted Mosby <tmosbyd@gmail.com>
+Date: Mon, 13 Feb 2012 14:15:33 +0200
+In-Reply-To: <4F38F713.2000104@gmail.com>
+References: <4F38F713.2000104@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YpsnkMY5w0pDybk1WSs6"
+ boundary="=-c5rfNME5ePzsiJO4X8no"
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,44 +27,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YpsnkMY5w0pDybk1WSs6
+--=-c5rfNME5ePzsiJO4X8no
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-02-13 at 15:17 +0800, Hong Xu wrote:
-> The Programmable Hardware ECC (PMECC) controller is a programmable binary
-> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
-> can be used to support both SLC and MLC NAND Flash devices. It supports t=
-o
-> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of dat=
-a.
+On Mon, 2012-02-13 at 13:42 +0200, Ted Mosby wrote:
+> Hello.
 >=20
-> To use this driver, the user needs to pass in the correction capability a=
-nd
-> the sector size.
+> My name is Ted Mosby, and i have make an translation for you'r page=20
+> http://www.linux-mtd.infradead.org/faq/general.html into Russian language=
+.
 >=20
-> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS=
-2,
-> YAFFS2, UBIFS and mtd-utils.
+> Here is the translation http://trumplin.com/mtd.html
 >=20
-> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> If you have some questions, feel free to contact me.
 
-Please, do not forget to fix the following warnings as well:
-
-Sparse:
-+drivers/mtd/nand/atmel_nand.c:1446:52: warning: Using plain integer as NUL=
-L pointer [sparse]
-
-gcc:
-+drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
-+drivers/mtd/nand/atmel_nand.c:1451:1: warning: label 'err' defined but not=
- used [-Wunused-label]
+I wonder why do you publish machine-generated translations which are not
+readable for native speakers anyway? What's the point? Can't people use
+google translate instead?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YpsnkMY5w0pDybk1WSs6
+--=-c5rfNME5ePzsiJO4X8no
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -68,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPOP0rAAoJECmIfjd9wqK0uw4QAMvUHvsDIwk7ZaMcuuWOotZp
-YiLzmZQzUvpkHHWHBI7M0DWeKUvip4nuKpIGh7eSFphRIw8vHwCy830QMsfvsD0c
-O8n+Ye9oNDTfjS2fNRf1PHpDGzcYgp60c+75YRsGIUMEZgZ3KioxLKqPZJbe4UQ8
-LTYK0IFzHppxtllWUOFNIlfCbV174w5HZ3e94XaunpbJm4L0jPTdtxu+hxG/QgAq
-p2UE/uLir14Pcc2xT+gIf7cdF6D7N+NUq2/izZUyqRikdJgPyzxjm6NKOey4Rzr5
-nndaLe/iUAP5gJgPycNey0jB8xOdmdVzsNBoPtf7kKgiRJBMP13S18KJVNDY3aWf
-ySTlN/1hC5ve4TU3YdNsMBvCKkkTJDizR839HXwUjhXZcsaxrcVF8Da9l5Eiecv7
-MFMEUEQwjVLcVzsoMgMFQpm9N+dAnr74jMubQbDE/RSNkCu7wlqGf2mwSydirIqD
-jpWeFVBqjK5zG5Xm4vkO5soq8CwkM83zjMR7el3/dc/ddjbqxiihbpqmXFOK0pU0
-HCPvPOndCb+LZZ9uItWgL6M6z1ikHsdukUH7bnAjoD5hrruLJ5+OazlrzHttUCJ5
-irgSDQ4vWgfKAmyjS0sJ9mmKyzIK6cMqj8VF3HVFyFO6egFqVHTxZ3eshgf2Bx0x
-jgZbPhjy5aaf08GHZQWN
-=2AK1
+iQIcBAABAgAGBQJPOP7lAAoJECmIfjd9wqK0vy8QAMQYHOaLWgmxDiMC8vkO/LZU
+oHRUkCLFd+p2e1Op+Zj7i2o19ufBZ2+AhZlYR0UJ5z037XzqVgTSnQVc+ZGqa3k2
+L7MVoNt1ZSPkdxeI1HYCm2+z9kiQQbDg+1hfKjEkOvqxFUqxpjiWf9vRaJGlEFUT
+ETPANVocq63j5jiXhLfTu3rmEqGqhAQwAOoo76ofsKLvrgF2sBMIfUqraBnydmUS
+W1IG2XBxgJlrwltaFTOCQ1JnMz6wdcBf9UIlOc76WeWJEXnzCTBOUsqqpgQFYgO+
+OUvQ1zb+2pn628yv17gfNLCj6pMRJ71gPfC/Z6SFZhwF04Ey2chyh0AvpldswPCb
+bbKY5tLSlkxy5u6/9dj2TymdZIsXCq/pflxP0cwYSLbj1En82EbwvOp8vmwkaxef
+M+xMeSepucoiXguDS8zgfWiIT6joDxYovRxl7mUYjDUWQQ+oHIAgByWuqm+afCa1
+l6bCWvfBCZ30/5V3LUIHospqu9u2fczogMqUpjjcIho8vkCh4an8s3pMuFompSN5
+yBL3V4IseYvd1VyGhk+NMpu+KXnb9BgwyK87c+/cWOfSfbJQ4f6hZ7jlWaFnjac0
+8FNKi7/qTAJWJsUaGmkdKB/H66Hq8htzAzUGaEcbR/4/Myl2B1JWNZUC+KADpxes
+DuaHJAFN6C3Rd1TwHsIu
+=5A8V
 -----END PGP SIGNATURE-----
 
---=-YpsnkMY5w0pDybk1WSs6--
+--=-c5rfNME5ePzsiJO4X8no--
