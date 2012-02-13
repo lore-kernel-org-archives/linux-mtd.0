@@ -1,19 +1,17 @@
-From: Huang Shijie-B32955 <B32955@freescale.com>
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: =?big5?B?tarOYDogW1BBVENIXSBtdGQvZ3BtaSA6IGFkZCBncG1pIHN1cHBvcnQgZm9yIG14?=
- =?big5?Q?6q?=
-Date: Mon, 13 Feb 2012 15:05:55 +0000
-Message-ID: <14C4E31473AF7E4B98176CB73615181C362D9F@039-SN1MPN1-006.039d.mgd.msft.net>
-References: <1328505606-27981-1-git-send-email-b32955@freescale.com>,
- <1329134454.22240.114.camel@sauron.fi.intel.com>
-In-Reply-To: <1329134454.22240.114.camel@sauron.fi.intel.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rwxa9-0000rG-8j
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 15:12:46 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] trivial/mtd: simplify return logic in do_map_probe()
+Date: Mon, 13 Feb 2012 16:12:24 +0100
+Message-Id: <1329145944-10068-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Jiri Kosina <trivial@kernel.org>,
+ kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW06Cgo+UGxlYXNlLCBsZXQgbWUga25vdyBob3cgSSBjYW4gY29tcGlsZS10ZXN0IHRo
-aXMuIFRoaXMgZGl2ZXIgZGVwZW5kcyBvbgo+aW14MjMgb3IgaW14MjggYW5kIEkgY2Fubm90IGZp
-bmQgYSBkZWZjb25maWcgZm9yIHRoZXNlLiBXaGVuIEkgc2VsZWN0Cj5NWFMgcGxhdGZvcm0gdGhl
-IGNvbXBpbGF0aW9uIGZhaWxzLiBDb3VsZCB5b3UgcGxlYXNlIGRlc2NyaWJlIHNvbWUgd2F5Cj50
-byBnZW5lcmF0ZSBhIGNvbXBpbGFibGUgY29uZmlndXJhdGlvbiB3aGljaCB3b3VsZCBpbmNsdWRl
-IHRoaXMgZHJpdmVyCj5hcyB3ZWxsLCBvciBzZW5kIG1lIHRoZSBkZWZjb25maWcgZmlsZS4KCnVz
-ZSBtYWtlIG14c19kZWZjb25maWcgdG8gbWFrZSB0aGUgLmNvbmZpZy4KYW5kIHNlbGVjdCB0aGUg
-Z3BtaS1uYW5kIGRyaXZlci4gdGhlbiB5b3UgY2FuIGNvbXBpbGUgaXQuCgpUaGlzIHBhdGNoIGlz
-IGp1c3QgcGFydCBvZiB0aGUgcGF0Y2hlcyBmb3IgbXg2cSwgYW5vdGhlciB0d28gcGF0Y2hlcyBh
-cmUgdGhlIG14cy1kbWEgcGF0Y2hlcy4KU28gaW4gdGhlIG14NnEsIEkgZG8gbm90IGVuYWJsZSB0
-aGUgIGdwbWktbmFuZCBkcml2ZXIuIHlvdSBjYW4gY29tcGlsZS10ZXN0IGl0IGp1c3Qgb24gbXhz
-X2RlZmNvbmZpZy4KCkJSCkh1YW5nIFNoaWppZQ==
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/chips/chipreg.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/chips/chipreg.c b/drivers/mtd/chips/chipreg.c
+index da1f96f..0bbc61b 100644
+--- a/drivers/mtd/chips/chipreg.c
++++ b/drivers/mtd/chips/chipreg.c
+@@ -76,10 +76,7 @@ struct mtd_info *do_map_probe(const char *name, struct map_info *map)
+ 	*/
+ 	module_put(drv->module);
+ 
+-	if (ret)
+-		return ret;
+-
+-	return NULL;
++	return ret;
+ }
+ /*
+  * Destroy an MTD device which was created for a map device.
+-- 
+1.7.9
