@@ -1,25 +1,12 @@
-Received: from joshcartwright.net ([69.164.192.171]
- helo=li107-171.members.linode.com)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rx27H-00066i-Kl
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 20:03:16 +0000
-Date: Mon, 13 Feb 2012 15:02:32 -0500
-From: Josh Cartwright <joshc@linux.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: jffs2 filesystem: possible circular locking dependency detected
-Message-ID: <20120213200232.GA19958@joshcartwright.net>
-References: <D61182AC8012EA4EBC531B3AF23BE109B3C6C6@tranzeo-mail2.12stewart.tranzeo.com>
- <alpine.LFD.2.02.1202082104470.2794@ionos>
- <CAN8TOE8xLdawRm9i6oTXJOE5T+MUEinkQysH9_ossikdW+8ZhA@mail.gmail.com>
+Date: Tue, 14 Feb 2012 04:28:59 +0700 (WIT)
+From: mr jackie gallop <arif.budi@kemdikbud.go.id>
+Message-ID: <84136145.283997.1329168539432.JavaMail.root@alpha>
+Subject: =?utf-8?Q?Informaci=C3=B3n_Personal?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE8xLdawRm9i6oTXJOE5T+MUEinkQysH9_ossikdW+8ZhA@mail.gmail.com>
-Cc: linux-rt-users <linux-rt-users@vger.kernel.org>,
- Darcy Watkins <DWatkins@tranzeo.com>, Peter Zijlstra <peterz@infradead.org>,
- linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+To: undisclosed-recipients:;
+Reply-To: mr jackie gallop <jackiegallop45@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,64 +16,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 10, 2012 at 10:57:54PM -0800, Brian Norris wrote:
-> On Wed, Feb 8, 2012 at 12:09 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
-> > On Wed, 8 Feb 2012, Darcy Watkins wrote:
-> >> [   20.932000] =======================================================
-> >> [   20.932000] [ INFO: possible circular locking dependency detected ]
-> >> [   20.932000] 3.0.18-rt34 #41
-> >> [   20.932000] -------------------------------------------------------
-> >> [   20.932000] depmod/734 is trying to acquire lock:
-> >> [   20.932000]  (&mm->mmap_sem){++++++}, at: [<800e82d0>] might_fault+0x4c/0xa4
-> >> [   20.932000]
-> >> [   20.932000] but task is already holding lock:
-> >> [   20.932000]  (&f->sem){+.+.+.}, at: [<80184f88>] jffs2_readdir+0x108/0x1c0
-> >> [   20.932000]
-> >> [   20.932000] which lock already depends on the new lock.
-> >
-> > Classic ABBA deadlock. I don't think it's RT specific, but I might be
-> > wrong as usual. Will have a look later this week, when noone beats me.
-> 
-> Looks like someone beat you :) Josh Cartwright has a patch here:
-> http://lists.infradead.org/pipermail/linux-mtd/2012-February/039787.html
-
-Unfortunately, Darcy's lockdep splat implicates a different set of
-locks, so I think it is a different issue then I resolved in the linked
-patch.
-
-Looking into this one, however, I think I convinced myself that the
-lockdep warning is bogus.  Here are two stack snippets that lockdep
-claims would be problematic if interleaved:
-
-do_page_fault()
-   down_read(&current->mm->mmap_sem)
-   /* readahead... */
-      jffs2_readpage()
-         mutex_lock(&JFFS2_INODE_INFO(inode)->sem)
-
-vfs_readdir()
-  /* ... */
-  jffs2_readdir()
-     mutex_lock(&JFFS2_INODE_INFO(inode)->sem)
-     filldir()
-        __put_user()
-        /* fault ... */
-           do_page_fault()
-              down_read(&current->mm->mmap_sem)
-
-In Darcy's case, the validator saw the do_page_fault() segment first,
-and decided the lock order should be [mmap_sem, &JFFS2_INODE_INFO(inode)->sem].
-It complained when it then saw the vfs_readdir() codepath reverse the
-order [1].
-
-This would be problematic, if it wasn't for the guarantee that the
-jffs2_inode_info::sem in both paths will be different.  In the readdir()
-path, the inode is the directory inode, whose i_fops doesn't even
-support mmap(), and so couldn't possibly be involved in a fault().
-
-1: Well, not exactly the same codepath, since a fault was not generated.
-   put_user() includes a might_fault() which hints to lockdep that
-   mmap_sem _could_ be acquired if a fault occurs.
-
--- 
-                                           joshc
+Buenos d=C3=ADas,
+=20
+Elijo llegar a trav=C3=A9s de este medio, ya que es el m=C3=A1s r=C3=A1pido=
+ medio de comunicaci=C3=B3n independientemente del hecho de que ha sido muy=
+ abusado. Por favor, tengan paciencia conmigo. Yo soy el se=C3=B1or Jackie =
+Galope De Harlsden, el noroeste de Londres, en Inglaterra. Yo trabajo con N=
+atwest Bank London. Con el debido respeto y consideraci=C3=B3n, me dirijo a=
+ usted de mi oficina que ser=C3=A1 de gran beneficio para los dos. En mi de=
+partamento, siendo el gestor de Banca Privada (Greater London Regional Offi=
+ce), descubr=C3=AD una suma abandonada de =C2=A3 18,5 millones EUR (diecioc=
+ho millones quinientos mil d=C3=B3lares) en una cuenta que pertenece a uno =
+de nuestros clientes extranjeros de =C3=BAltima hora el Dr. Erin Jacobson, =
+un ciudadano norteamericano que lamentablemente perdi=C3=B3 la vida y toda =
+su familia en accidente a=C3=A9reo en Montana, el 23 de marzo de 2009, en s=
+u camino a unas vacaciones de esqu=C3=AD del grupo.
+=20
+La elecci=C3=B3n de ponerse en contacto con usted se ha levantado de la nat=
+uraleza geogr=C3=A1fica del lugar donde vive, sobre todo debido a la sensib=
+ilidad de esta transacci=C3=B3n y la confidencialidad en este documento. Ah=
+ora, nuestro banco ha estado esperando por cualquiera de los parientes para=
+ venir en marcha de la reclamaci=C3=B3n, pero nadie ha hecho that.I persona=
+lmente he tenido =C3=A9xito en la localizaci=C3=B3n de los familiares desde=
+ hace dos a=C3=B1os, busco su consentimiento para presentaros a los familia=
+res / beneficiario a la persona fallecida, para que los ingresos de esta cu=
+enta por valor de =C2=A3 18,5 millones EUR se puede pagar a usted.
+=20
+Este ser=C3=A1 desembolsado o compartido en estos porcentajes, el 60% para =
+m=C3=AD y 40% para usted. Me han asegurado todos los documentos legales nec=
+esarios que pueden ser utilizados para respaldar esta afirmaci=C3=B3n estam=
+os a punto de hacer. Todo lo que necesito es llenar sus nombres a los docum=
+entos y legalizar en la corte aqu=C3=AD para demostrar que el beneficiario =
+leg=C3=ADtimo.
+=20
+Todo lo que necesitamos ahora es la honesta cooperaci=C3=B3n, confidenciali=
+dad y la confianza que nos permita ver a trav=C3=A9s de esta transacci=C3=
+=B3n. Les garantizo que este ser=C3=A1 ejecutado en virtud de un acuerdo le=
+g=C3=ADtimo que le proteger=C3=A1 de cualquier violaci=C3=B3n de la ley.
+=20
+Por favor, proporcione lo siguiente: ya que tenemos cinco d=C3=ADas para qu=
+e atraviesan. POR FAVOR, esto es muy urgente.
+1. Nombre completo
+2. Su n=C3=BAmero de tel=C3=A9fono
+3. Su persona de contacto Direcci=C3=B3n.
+=20
+Despu=C3=A9s de haber pasado a trav=C3=A9s de una b=C3=BAsqueda met=C3=B3di=
+ca, decid=C3=AD contactar con usted con la esperanza de que se encuentra es=
+ta interesante propuesta. Por favor, en la confirmaci=C3=B3n de este mensaj=
+e e indicando su inter=C3=A9s, que le facilitar=C3=A1 m=C3=A1s informaci=C3=
+=B3n. Hacer lo posible para que me haga saber su decisi=C3=B3n y no me haga=
+s esperar. Ll=C3=A1mame al recibir el correo Tel: +447924445158 o la respue=
+sta a trav=C3=A9s de jackiegallop45@gmail.com.
+=20
+Saludos cordiales,
+Sr. Jackie galope.
