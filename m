@@ -1,26 +1,16 @@
-Received: from 1.mo5.mail-out.ovh.net ([188.165.57.91]
- helo=mo5.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RwlxF-0005bY-H0
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 02:47:51 +0000
-Received: from mail98.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo5.mail-out.ovh.net (Postfix) with SMTP id 4F214FF972F
- for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 03:50:04 +0100 (CET)
-Date: Mon, 13 Feb 2012 03:41:39 +0100
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH V3] MTD: atmel_nand: Update driver to support
- Programmable HW ECC controller
-Message-ID: <20120213024139.GA3378@game.jcrosoft.org>
-References: <1328491977-30448-1-git-send-email-hong.xu@atmel.com>
- <1328959692.22240.103.camel@sauron.fi.intel.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <vinod.koul@intel.com>
+Subject: [PATCH v4 0/2] patch set about the MXS-DMA
+Date: Mon, 13 Feb 2012 11:38:21 +0800
+Message-ID: <1329104303-13566-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1328959692.22240.103.camel@sauron.fi.intel.com>
-Cc: linux-mtd@lists.infradead.org, Hong Xu <hong.xu@atmel.com>,
- dwmw2@infradead.org, ivan.djelic@parrot.com,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
+ broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org,
+ w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ cjb@laptop.org, shawn.guo@linaro.org, lrg@ti.com,
+ linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13:28 Sat 11 Feb     , Artem Bityutskiy wrote:
-> On Mon, 2012-02-06 at 09:32 +0800, Hong Xu wrote:
-> > +static int16_t *pmecc_get_index_of(struct atmel_nand_host *host)
-> > +{
-> > +       int16_t *p = (int16_t *)host->rom_base;
-this need to be passed via resource
+patch 1: move the mxs dma header to a more common place.
+	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+	So move the mxs dma header file to a more common place, and rename
+	it to mxs-dma.h
 
-Best Regards,
-J.
+patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+	In the new GPMI version, some hardware behavior changes.
+	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+	The DMA chain should be set like this:
+
+          +-----+               +-----+                      +-----+
+          | cmd | ------------> | cmd | ------------------>  | cmd |
+          +-----+               +-----+                      +-----+
+                                   ^                            ^
+                                   |                            |
+                                   |                            |
+                              set WAIT4END here too        set WAIT4END here
+
+        So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+	And change the relative drivers with the dma_ctrl_flags.
+
+TEST:
+	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+	in MX28 board.
+
+v3 --> v4:
+	[1] create a new folder include/linux/fsl/ for store the Freescale's
+	    header files.
+	[2] add more CCs.
+
+v2 --> v3:
+	[1] remove field gpmi_version, use GPMI_IS_MX6Q() instead.
+
+v1 --> v2:
+	[1] squash the trial patches into single patch.
+	[2] use the dma_ctrl_flags.
+
+Huang Shijie (2):
+  mxs-dma : move the mxs dma.h to a more common place
+  mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+
+ drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+ drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   24 ++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
+ .../mach/dma.h => include/linux/fsl/mxs-dma.h      |    0
+ sound/soc/mxs/mxs-pcm.c                            |    2 +-
+ sound/soc/mxs/mxs-pcm.h                            |    2 +-
+ sound/soc/mxs/mxs-saif.c                           |    2 +-
+ 8 files changed, 57 insertions(+), 21 deletions(-)
+ rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/fsl/mxs-dma.h (100%)
