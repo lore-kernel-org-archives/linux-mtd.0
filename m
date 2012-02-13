@@ -1,22 +1,24 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rwz8R-0003aW-5P
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 16:52:15 +0000
-Received: by dakp5 with SMTP id p5so5684201dak.36
- for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 08:52:12 -0800 (PST)
-Message-ID: <1329152067.22240.214.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Adding Secure Deletion to UBIFS
+ id 1Rwz9u-0003vo-RX
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 16:53:47 +0000
+Received: by dakp5 with SMTP id p5so5685679dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 08:53:46 -0800 (PST)
+Message-ID: <1329152161.22240.215.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] sfc: mtd: Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 13 Feb 2012 18:54:27 +0200
-In-Reply-To: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+To: Ben Hutchings <bhutchings@solarflare.com>
+Date: Mon, 13 Feb 2012 18:56:01 +0200
+In-Reply-To: <1329149739.2697.0.camel@bwh-desktop>
+References: <20120212111308.0267f200@pixies.home.jungo.com>
+ <1329149739.2697.0.camel@bwh-desktop>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kgyEtLFGEhJaOjmQ5UBh"
+ boundary="=-RWU6SidvjGO6aRv1Cl23"
 Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-net-drivers@solarflare.com,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Miller <davem@davemloft.net>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,32 +30,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kgyEtLFGEhJaOjmQ5UBh
+--=-RWU6SidvjGO6aRv1Cl23
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, I will try to get into more details soon, but to keep you busy - the
-first thing to start is to introduce new on-flash format version -
-because you need more space in 'struct ubifs_branch'
+On Mon, 2012-02-13 at 16:15 +0000, Ben Hutchings wrote:
+> On Sun, 2012-02-12 at 11:13 +0200, Shmulik Ladkani wrote:
+> > From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> >=20
+> > As of bb0eb217, MTD_FAIL_ADDR_UNKNOWN should be used to indicate mtd
+> > erase failure not specific to any particular block.
+> >=20
+> > Use MTD_FAIL_ADDR_UNKNOWN instead of 0xffffffff when setting
+> > 'erase->fail_addr' in 'efx_mtd_erase()'.
+> >=20
+> > Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> Acked-by: Ben Hutchings <bhutchings@solarflare.com>
 
-On Thu, 2012-02-09 at 16:24 +0100, Joel Reardon wrote:
-> @@ -742,6 +751,7 @@ struct ubifs_branch {
->   	__le32 lnum;
->   	__le32 offs;
->   	__le32 len;
-> +	__le64 crypto_lookup;
->   	__u8 key[];
->   } __packed;
-
-Could you make a separate patch which adds new on-flash format and make
-sure that new ubifs binaries can mount the old formats and work with
-them. And that old ubifs binaries gracefully reject the new format.
+OK, pushed to l2-mtd.git with this ack, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kgyEtLFGEhJaOjmQ5UBh
+--=-RWU6SidvjGO6aRv1Cl23
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJPOUBDAAoJECmIfjd9wqK0NxUQAMkbSqxjb5+pqwGgBxPZH8XZ
-ad5B3ehyiK7jBOMUZnQczxXohwNcM5fYjIktigD912s1aGxNIDrZbOdCs03+CzFi
-/4VcZy2yFNhr8ZNCxF74/5r+z1QdG6l5KPcPK9DYrj/dQXVjvhmYjX7qOYWub8wb
-bdgw131gB1Hg4IKUTGxs8wRUFjV2jnYbidJjripKKN8PxL0pxPiJu4/wEzKhHv2o
-xkRetVyEEc5m4RDkpe+zqVxWaFeO7DQWGiWeXvnveh4YFWCigziAQqqZ33Ra8Dh6
-+2jFpf5/xqr/Q8cNjFmzqGKaF1M/y6CoAhxaGeej2oT+LaM8gNXDdf7YnI1+Xeu5
-Js1IEx3Pg0txxwvyt8H1VL6cpm5a5o9LiIvI6M1TAxg4i+dDdmaciFVzUYCqJY9R
-gQWp9lVk7ItAtsA5O5XucEZ8+WLwd8WQWI8Z/sNG+qbYLykFqEHMELL1051P1TBm
-9ma8DGPxeLvCZWT2zfMoJssHBbTiUI3rrYY4G0s4fByYqt2DMeVDqgsVMO0sIYcE
-aK28dq3KiF7YD1x6U6xIGeaOXO8lmr8vL4tXbJ/GZaddb2mF8xqU1EUooHx+umnl
-mo0CRuKMOi/5cMTRp5/IVO7mIxlAH+QOSCaHvvhyuMHFNbxvLc+UmsgJsy98P3bO
-Hy2urMuLfcB4T6htRE0f
-=INn4
+iQIcBAABAgAGBQJPOUChAAoJECmIfjd9wqK04ycP/RXNKThWRNj5UGagNBMxzecs
+LFaNFRT77w7YkdQBjndz/vKTvAPwGZ7aIvttVlR6tbNfc0UFUd2NTcgyUKOcw31w
+Rkx3VVLQ+D0Z25KbGfjXb/Z/d3XOpgCnIMNBP1c2cadGDBVxDLjfjfaqmYCJUunc
+311GDQo/BsJOR3i+cNGSPmx1Ft48rdw5pvr8zWKLVziuE8/LcV+IjUuwm9LdcJjI
+aZ/eNzAZSbxYn+Mcr5YFeQ2rXYot+5DPCuAzoOsneiG0D2w9vs1ZETfqVfWbQFnz
+zAeDEI7/YQPmcU2W2GmEtGCwGoLZB5vTkRJWZI7Tq0gynIC8lk3WplhFxybfEUH1
+FERrmwYdLw2bmJJ5Q6IAr4/3yK7wu0ROUHiIDQ1Tmw8ZwOrTg6pCp6HMwBrrv1MW
+YRtNi7F4iqZ5QPQYRYeE3SQ8632UIQnl+q0GjmDznnqTNKaiN8huf0dlx50GCW/R
+66RgFCtNYdBfW34vd8jM7/x2vsFKpZLGyKjkYCVoX8H4taV09vonqnslBT/6HYSJ
+b0NfrV56sVvDK+Z3QPT/O1lV9GB/eQ4b4Mw2YGcxAXJ7viwwhnzdwKTKEDXd2SK3
+lzSUaIF6ChjzenybCGVLzrOXa3w0KoE/bEwKgO/JOTmGNFMS6N/QYdGiJsEKeUaM
+ed0Mn9EopAfYJPYl93p8
+=NJUx
 -----END PGP SIGNATURE-----
 
---=-kgyEtLFGEhJaOjmQ5UBh--
+--=-RWU6SidvjGO6aRv1Cl23--
