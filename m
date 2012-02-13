@@ -1,20 +1,23 @@
-Date: Mon, 13 Feb 2012 08:33:20 -0800
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 1/2] mxs-dma : move the mxs dma.h to a more common place
-Message-ID: <20120213163319.GC3494@opensource.wolfsonmicro.com>
-References: <1329110756-14434-1-git-send-email-b32955@freescale.com>
- <1329110756-14434-2-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="f0KYrhQ4vYSV2aJu"
-Content-Disposition: inline
-In-Reply-To: <1329110756-14434-2-git-send-email-b32955@freescale.com>
-Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
- vinod.koul@intel.com, linux-mmc@vger.kernel.org, w.sang@pengutronix.de,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, cjb@laptop.org,
- shawn.guo@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org,
- LW@KARO-electronics.de
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rwz8R-0003aW-5P
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 16:52:15 +0000
+Received: by dakp5 with SMTP id p5so5684201dak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 08:52:12 -0800 (PST)
+Message-ID: <1329152067.22240.214.camel@sauron.fi.intel.com>
+Subject: Re: [patch] Adding Secure Deletion to UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Mon, 13 Feb 2012 18:54:27 +0200
+In-Reply-To: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-kgyEtLFGEhJaOjmQ5UBh"
+Mime-Version: 1.0
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +28,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---f0KYrhQ4vYSV2aJu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-kgyEtLFGEhJaOjmQ5UBh
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 13, 2012 at 01:25:55PM +0800, Huang Shijie wrote:
-> Move the header to a more common place.
-> The mxs dma engine is not only used in mx23/mx28, but also used
-> in mx50/mx6q.  It will also be used in the future chips.
+Hi, I will try to get into more details soon, but to keep you busy - the
+first thing to start is to introduce new on-flash format version -
+because you need more space in 'struct ubifs_branch'
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On Thu, 2012-02-09 at 16:24 +0100, Joel Reardon wrote:
+> @@ -742,6 +751,7 @@ struct ubifs_branch {
+>   	__le32 lnum;
+>   	__le32 offs;
+>   	__le32 len;
+> +	__le64 crypto_lookup;
+>   	__u8 key[];
+>   } __packed;
 
---f0KYrhQ4vYSV2aJu
+Could you make a separate patch which adds new on-flash format and make
+sure that new ubifs binaries can mount the old formats and work with
+them. And that old ubifs binaries gracefully reject the new format.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-kgyEtLFGEhJaOjmQ5UBh
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPOTs+AAoJEBus8iNuMP3dshgP/0oxrWuqvejvhp1kOy6FWPbK
-i2VdoFTU7ordzqj4U2osLcPKSx4vOgbEM+AQLmsebA7n37t17pkA0h2GtdIFYZrZ
-SNJc4sDI6RJYL7E17yE+LzoBwQcaTp1yZxY6oGIfYzcOfZrROOCtVMfyTGt2cB4+
-Lwiarl5HU+frDb/rQ7KsN5qlvKW5/w2xgXIl6EtH63h61nyw9PBVo/8mj8Rhb6Tw
-tQJMmnQpmtbXdpMSVtEWctz3LP+tMUJhY9BIdyIifZ9BmBPaPq3phpj0nid7Zi+l
-zvqjgV708j1aUpZkScRqLMLeAev5vUW4j/AZ0/jcCyt1RYw3k+/3Y2A/kmPF71M5
-cZdrIBjQYwkxYEeM6LeLlkOh28iqXi1cIh/3AO3hQJxezRvqyyFHfNQu/unVLbvZ
-BpZUcDVo8Sie2DeskRha+nBO2hqmy4SpUqRLLOWLLjCfixu1BQ8Y5XshEnHjPpyq
-oUI0iK17OSpDcKC1DezOm4x/St/pTn3GWYNYaO7aiMLu9STAQmPZwLU9D6Rf673B
-idmEdXQq0Xk0Fh38Hu4EzVavYsb1AZbdTYG3KZWgHM0GR70QSXUv9R0kYobt8Dqc
-HLYb9/sSrl5BlT/kIuP3QNY/ZEHrf6w94fVMTk4xgxYSluY6EcVMz+YHpXGU0u+A
-JHvRGx6M7t4h+hYTLQJe
-=EySv
+iQIcBAABAgAGBQJPOUBDAAoJECmIfjd9wqK0NxUQAMkbSqxjb5+pqwGgBxPZH8XZ
+ad5B3ehyiK7jBOMUZnQczxXohwNcM5fYjIktigD912s1aGxNIDrZbOdCs03+CzFi
+/4VcZy2yFNhr8ZNCxF74/5r+z1QdG6l5KPcPK9DYrj/dQXVjvhmYjX7qOYWub8wb
+bdgw131gB1Hg4IKUTGxs8wRUFjV2jnYbidJjripKKN8PxL0pxPiJu4/wEzKhHv2o
+xkRetVyEEc5m4RDkpe+zqVxWaFeO7DQWGiWeXvnveh4YFWCigziAQqqZ33Ra8Dh6
++2jFpf5/xqr/Q8cNjFmzqGKaF1M/y6CoAhxaGeej2oT+LaM8gNXDdf7YnI1+Xeu5
+Js1IEx3Pg0txxwvyt8H1VL6cpm5a5o9LiIvI6M1TAxg4i+dDdmaciFVzUYCqJY9R
+gQWp9lVk7ItAtsA5O5XucEZ8+WLwd8WQWI8Z/sNG+qbYLykFqEHMELL1051P1TBm
+9ma8DGPxeLvCZWT2zfMoJssHBbTiUI3rrYY4G0s4fByYqt2DMeVDqgsVMO0sIYcE
+aK28dq3KiF7YD1x6U6xIGeaOXO8lmr8vL4tXbJ/GZaddb2mF8xqU1EUooHx+umnl
+mo0CRuKMOi/5cMTRp5/IVO7mIxlAH+QOSCaHvvhyuMHFNbxvLc+UmsgJsy98P3bO
+Hy2urMuLfcB4T6htRE0f
+=INn4
 -----END PGP SIGNATURE-----
 
---f0KYrhQ4vYSV2aJu--
+--=-kgyEtLFGEhJaOjmQ5UBh--
