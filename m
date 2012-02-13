@@ -1,19 +1,26 @@
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH V3] MTD: atmel_nand: Update driver to support Programmable
- HW ECC controller
-Date: Mon, 13 Feb 2012 10:15:34 +0800
-Message-ID: <4C79549CB6F772498162A641D92D5328045B52C6@penmb01.corp.atmel.com>
-In-Reply-To: <1328959692.22240.103.camel@sauron.fi.intel.com>
+Received: from 1.mo5.mail-out.ovh.net ([188.165.57.91]
+ helo=mo5.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RwlxF-0005bY-H0
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2012 02:47:51 +0000
+Received: from mail98.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo5.mail-out.ovh.net (Postfix) with SMTP id 4F214FF972F
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Feb 2012 03:50:04 +0100 (CET)
+Date: Mon, 13 Feb 2012 03:41:39 +0100
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH V3] MTD: atmel_nand: Update driver to support
+ Programmable HW ECC controller
+Message-ID: <20120213024139.GA3378@game.jcrosoft.org>
 References: <1328491977-30448-1-git-send-email-hong.xu@atmel.com>
  <1328959692.22240.103.camel@sauron.fi.intel.com>
-From: "Xu, Hong" <Hong.Xu@atmel.com>
-To: <dedekind1@gmail.com>,
- "linux-arm-kernel" <linux-arm-kernel@lists.infradead.org>
-Cc: dwmw2@infradead.org, ivan.djelic@parrot.com, linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1328959692.22240.103.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org, Hong Xu <hong.xu@atmel.com>,
+ dwmw2@infradead.org, ivan.djelic@parrot.com,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +30,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-> -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
-> Sent: Saturday, February 11, 2012 7:28 PM
-> To: Xu, Hong; linux-arm-kernel
-> Cc: linux-mtd@lists.infradead.org; ivan.djelic@parrot.com;
-> dwmw2@infradead.org
-> Subject: Re: [PATCH V3] MTD: atmel_nand: Update driver to support
-Programmable
-> HW ECC controller
->=20
+On 13:28 Sat 11 Feb     , Artem Bityutskiy wrote:
 > On Mon, 2012-02-06 at 09:32 +0800, Hong Xu wrote:
 > > +static int16_t *pmecc_get_index_of(struct atmel_nand_host *host)
 > > +{
-> > +       int16_t *p =3D (int16_t *)host->rom_base;
->=20
-> I did not really get into details, but you annotate rom_base with
-> __iomem, and then you have to cast it to int16_t in several - this
-does
-> not look very nice.
->=20
-OK, this line shall be removed actually, thanks.
-The logic here is, we want to use one lookup table which sits in ROM.
-ROM region is mapped into kernel space by ioremap and the VA is saved in
-rom_base. The function pmecc_get_index_of and pmecc_get_alpha_to are
-used to return the correct ROM offset according to SoC and PMECC
-configurations.
-The lookup table is of type int16.
+> > +       int16_t *p = (int16_t *)host->rom_base;
+this need to be passed via resource
 
-> Could you please CC the arm list? There are much more people who can
-> give this code a review.
->=20
-
-OK, I'll resend the patch and CC the arm list.
-
-Thanks and Br,
-Eric
-> --
-> Best Regards,
-> Artem Bityutskiy
+Best Regards,
+J.
