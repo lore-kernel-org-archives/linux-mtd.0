@@ -1,19 +1,12 @@
-Content-class: urn:content-classes:message
+From: Huang Shijie <b32955@freescale.com>
+To: <artem.bityutskiy@intel.com>
+Subject: [PATCH v2] mtd/gpmi : add gpmi support for mx6q
+Date: Tue, 14 Feb 2012 10:36:19 +0800
+Message-ID: <1329186979-25382-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] MTD: atmel_nand: Update driver to support Programmable HW
- ECC controller
-Date: Tue, 14 Feb 2012 09:10:29 +0800
-Message-ID: <4C79549CB6F772498162A641D92D5328045B5ADE@penmb01.corp.atmel.com>
-In-Reply-To: <1329134891.22240.116.camel@sauron.fi.intel.com>
-References: <1329117469-23637-1-git-send-email-hong.xu@atmel.com>
- <1329134891.22240.116.camel@sauron.fi.intel.com>
-From: "Xu, Hong" <Hong.Xu@atmel.com>
-To: <dedekind1@gmail.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +16,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI Artem,
+add gpmi support to mx6q.
 
-> -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
-> Sent: Monday, February 13, 2012 8:08 PM
-> To: Xu, Hong
-> Cc: linux-mtd@lists.infradead.org; dwmw2@infradead.org;
-> linux-arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH] MTD: atmel_nand: Update driver to support
-Programmable
-> HW ECC controller
->=20
-> On Mon, 2012-02-13 at 15:17 +0800, Hong Xu wrote:
-> > The Programmable Hardware ECC (PMECC) controller is a programmable
-binary
-> > BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This
-controller
-> > can be used to support both SLC and MLC NAND Flash devices. It
-supports to
-> > generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector
-of data.
-> >
-> > To use this driver, the user needs to pass in the correction
-capability and
-> > the sector size.
-> >
-> > This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with
-JFFS2,
-> > YAFFS2, UBIFS and mtd-utils.
-> >
-> > Signed-off-by: Hong Xu <hong.xu@atmel.com>
->=20
-> Please, do not forget to fix the following warnings as well:
->=20
-> Sparse:
-> +drivers/mtd/nand/atmel_nand.c:1446:52: warning: Using plain integer
-as NULL
-> pointer [sparse]
->=20
-> gcc:
-> +drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
-> +drivers/mtd/nand/atmel_nand.c:1451:1: warning: label 'err' defined
-but not
-> used [-Wunused-label]
->=20
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+v1 --> v2:
+         create this patch based on l2-mtd.git tree.
 
-OK, I'll also check with `sparse' as well. Thanks.
 
-BR,
-Eric
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |   42 ++++++++++++++++++++++++-------
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   14 ++++++----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    3 ++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    2 +
+ 4 files changed, 45 insertions(+), 16 deletions(-)
 
-> --
-> Best Regards,
-> Artem Bityutskiy
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index 4effb8c..a092451 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -51,15 +51,26 @@
+ 
+ #define BP_BCH_FLASH0LAYOUT0_ECC0		12
+ #define BM_BCH_FLASH0LAYOUT0_ECC0	(0xf << BP_BCH_FLASH0LAYOUT0_ECC0)
+-#define BF_BCH_FLASH0LAYOUT0_ECC0(v)		\
+-	(((v) << BP_BCH_FLASH0LAYOUT0_ECC0) & BM_BCH_FLASH0LAYOUT0_ECC0)
++#define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
++#define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
++#define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
++	(GPMI_IS_MX6Q(x)					\
++		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
++			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
++		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
++			& BM_BCH_FLASH0LAYOUT0_ECC0)		\
++	)
+ 
+ #define BP_BCH_FLASH0LAYOUT0_DATA0_SIZE		0
+ #define BM_BCH_FLASH0LAYOUT0_DATA0_SIZE		\
+ 			(0xfff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
+-#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v)	\
+-	(((v) << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)\
+-					 & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)
++#define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
++			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
++#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
++	(GPMI_IS_MX6Q(x)						\
++		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
++		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
++	)
+ 
+ #define HW_BCH_FLASH0LAYOUT1			0x00000090
+ 
+@@ -72,13 +83,24 @@
+ 
+ #define BP_BCH_FLASH0LAYOUT1_ECCN		12
+ #define BM_BCH_FLASH0LAYOUT1_ECCN	(0xf << BP_BCH_FLASH0LAYOUT1_ECCN)
+-#define BF_BCH_FLASH0LAYOUT1_ECCN(v)		\
+-	(((v) << BP_BCH_FLASH0LAYOUT1_ECCN) & BM_BCH_FLASH0LAYOUT1_ECCN)
++#define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
++#define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
++#define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
++	(GPMI_IS_MX6Q(x)					\
++		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
++			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
++		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
++			& BM_BCH_FLASH0LAYOUT1_ECCN)		\
++	)
+ 
+ #define BP_BCH_FLASH0LAYOUT1_DATAN_SIZE		0
+ #define BM_BCH_FLASH0LAYOUT1_DATAN_SIZE		\
+ 			(0xfff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
+-#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v)	\
+-	(((v) << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE) \
+-					 & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)
++#define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
++			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
++#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
++	(GPMI_IS_MX6Q(x)						\
++		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
++		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
++	)
+ #endif
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 7db6555..cbcf022 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -223,13 +223,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	/* Configure layout 0. */
+ 	writel(BF_BCH_FLASH0LAYOUT0_NBLOCKS(block_count)
+ 			| BF_BCH_FLASH0LAYOUT0_META_SIZE(metadata_size)
+-			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength)
+-			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size),
++			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this)
++			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size, this),
+ 			r->bch_regs + HW_BCH_FLASH0LAYOUT0);
+ 
+ 	writel(BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size)
+-			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength)
+-			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size),
++			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this)
++			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+ 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+ 
+ 	/* Set *all* chip selects to use layout 0. */
+@@ -803,7 +803,8 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 	if (GPMI_IS_MX23(this)) {
+ 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
+ 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
+-	} else if (GPMI_IS_MX28(this)) {
++	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
++		/* MX28 shares the same R/B register as MX6Q. */
+ 		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
+ 		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
+ 	} else
+@@ -1055,8 +1056,9 @@ int gpmi_read_page(struct gpmi_nand_data *this,
+ 		| BF_GPMI_CTRL0_ADDRESS(address)
+ 		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size);
+ 	pio[1] = 0;
++	pio[2] = 0; /* Set GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
+ 	desc = channel->device->device_prep_slave_sg(channel,
+-				(struct scatterlist *)pio, 2,
++				(struct scatterlist *)pio, 3,
+ 				DMA_TRANS_NONE, 1);
+ 	if (!desc) {
+ 		pr_err("step 3 error\n");
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index f39f83e..cfcc0eb 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1582,6 +1582,9 @@ static const struct platform_device_id gpmi_ids[] = {
+ 	}, {
+ 		.name = "imx28-gpmi-nand",
+ 		.driver_data = IS_MX28,
++	}, {
++		.name = "imx6q-gpmi-nand",
++		.driver_data = IS_MX6Q,
+ 	}, {},
+ };
+ 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index e023bcc..c93b0ae 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -268,6 +268,8 @@ extern int gpmi_read_page(struct gpmi_nand_data *,
+ /* Use the platform_id to distinguish different Archs. */
+ #define IS_MX23			0x1
+ #define IS_MX28			0x2
++#define IS_MX6Q			0x8
+ #define GPMI_IS_MX23(x)		((x)->pdev->id_entry->driver_data == IS_MX23)
+ #define GPMI_IS_MX28(x)		((x)->pdev->id_entry->driver_data == IS_MX28)
++#define GPMI_IS_MX6Q(x)		((x)->pdev->id_entry->driver_data == IS_MX6Q)
+ #endif
+-- 
+1.7.0.4
