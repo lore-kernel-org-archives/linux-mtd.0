@@ -1,12 +1,12 @@
 Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RxPOv-0002CJ-2q
- for linux-mtd@lists.infradead.org; Tue, 14 Feb 2012 20:55:05 +0000
+ id 1RxPOw-0002Cn-3d
+ for linux-mtd@lists.infradead.org; Tue, 14 Feb 2012 20:55:07 +0000
 From: Richard Weinberger <rw@linutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC][PATCH 3/7] MTD: UBI: Export next_sqnum()
-Date: Tue, 14 Feb 2012 21:06:42 +0100
-Message-Id: <1329250006-22944-4-git-send-email-rw@linutronix.de>
+Subject: [RFC][PATCH 7/7] MTD: UBI: wire up checkpointing
+Date: Tue, 14 Feb 2012 21:06:46 +0100
+Message-Id: <1329250006-22944-8-git-send-email-rw@linutronix.de>
 In-Reply-To: <1329250006-22944-1-git-send-email-rw@linutronix.de>
 References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
 Cc: tglx@linutronix.de, dedekind1@gmail.com, linux-kernel@vger.kernel.org,
@@ -20,111 +20,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The checkpointing subsystem needs to read the next sequence nummber
-directly.
-
 Signed-off-by: Richard Weinberger <rw@linutronix.de>
 ---
- drivers/mtd/ubi/eba.c |   18 +++++++++---------
- drivers/mtd/ubi/ubi.h |    1 +
- 2 files changed, 10 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/build.c |   83 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 83 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index cd26da8..4dae50c 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -57,7 +57,7 @@
-  * global sequence counter value. It also increases the global sequence
-  * counter.
-  */
--static unsigned long long next_sqnum(struct ubi_device *ubi)
-+unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
- {
- 	unsigned long long sqnum;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 115749f..06c5c77 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -148,6 +148,17 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
  
-@@ -522,7 +522,7 @@ retry:
- 		goto out_put;
- 	}
+ 	ubi_do_get_device_info(ubi, &nt.di);
+ 	ubi_do_get_volume_info(ubi, vol, &nt.vi);
++
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	switch (ntype) {
++		case UBI_VOLUME_ADDED:
++		case UBI_VOLUME_REMOVED:
++		case UBI_VOLUME_RESIZED:
++		case UBI_VOLUME_RENAMED:
++			if (ubi_update_checkpoint(ubi))
++				ubi_err("Unable to update checkpoint!");
++	}
++#endif
+ 	return blocking_notifier_call_chain(&ubi_notifiers, ntype, &nt);
+ }
  
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
+@@ -852,6 +863,61 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++static int attach_by_checkpointing(struct ubi_device *ubi)
++{
++	int cp_start, err;
++	struct ubi_scan_info *si;
++
++	cp_start = ubi_find_checkpoint(ubi);
++	if (cp_start < 0)
++		return -ENOENT;
++
++	si = ubi_read_checkpoint(ubi, cp_start);
++	if (IS_ERR(si))
++		return PTR_ERR(si);
++
++	ubi->bad_peb_count = 0;
++	ubi->good_peb_count = ubi->peb_count;
++	ubi->corr_peb_count = 0;
++	ubi->max_ec = si->max_ec;
++	ubi->mean_ec = si->mean_ec;
++	ubi_msg("max. sequence number:       %llu", si->max_sqnum);
++
++	err = ubi_read_volume_table(ubi, si);
++	if (err) {
++		ubi_err("ubi_read_volume_table failed");
++		goto out_si;
++	}
++
++	err = ubi_wl_init_scan(ubi, si);
++	if (err) {
++		ubi_err("ubi_wl_init_scan failed!");
++		goto out_vtbl;
++	}
++
++	err = ubi_eba_init_scan(ubi, si);
++	if (err) {
++		ubi_err("ubi_eba_init_scan failed!");
++		goto out_wl;
++	}
++
++	ubi_msg("successfully recovered from checkpoint!");
++	ubi_scan_destroy_si(si);
++	return 0;
++
++out_wl:
++	ubi_wl_close(ubi);
++out_vtbl:
++	free_internal_volumes(ubi);
++	vfree(ubi->vtbl);
++out_si:
++	ubi_scan_destroy_si(si);
++
++	return err;
++}
++#endif
++
+ /**
+  * ubi_attach_mtd_dev - attach an MTD device.
+  * @mtd: MTD device description object
+@@ -931,6 +997,12 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	ubi->vid_hdr_offset = vid_hdr_offset;
+ 	ubi->autoresize_vol_id = -1;
+ 
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	ubi->long_pool.used = ubi->long_pool.size = ubi->long_pool.max_size = ARRAY_SIZE(ubi->long_pool.pebs);
++	ubi->short_pool.used = ubi->short_pool.size = ubi->short_pool.max_size = ARRAY_SIZE(ubi->short_pool.pebs);
++	ubi->unk_pool.used = ubi->unk_pool.size = ubi->unk_pool.max_size = ARRAY_SIZE(ubi->unk_pool.pebs);
++#endif
++
+ 	mutex_init(&ubi->buf_mutex);
+ 	mutex_init(&ubi->ckvol_mutex);
+ 	mutex_init(&ubi->device_mutex);
+@@ -957,7 +1029,18 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
  	if (err)
- 		goto write_error;
-@@ -634,7 +634,7 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 	}
+ 		goto out_free;
  
- 	vid_hdr->vol_type = UBI_VID_DYNAMIC;
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -695,7 +695,7 @@ write_error:
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -750,7 +750,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -815,7 +815,7 @@ write_error:
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -868,7 +868,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- 	if (err)
- 		goto out_mutex;
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -936,7 +936,7 @@ write_error:
- 		goto out_leb_unlock;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -1096,7 +1096,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		vid_hdr->data_size = cpu_to_be32(data_size);
- 		vid_hdr->data_crc = cpu_to_be32(crc);
- 	}
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 
- 	err = ubi_io_write_vid_hdr(ubi, to, vid_hdr);
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	err = attach_by_checkpointing(ubi);
++
++	if (err) {
++		if (err != -ENOENT)
++			ubi_msg("falling back to attach by scanning mode!\n");
++
++		err = attach_by_scanning(ubi);
++	}
++#else
+ 	err = attach_by_scanning(ubi);
++#endif
  	if (err) {
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 4fe3638..b4dca54 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -557,6 +557,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		     struct ubi_vid_hdr *vid_hdr);
- int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
-+unsigned long long ubi_next_sqnum(struct ubi_device *ubi);
- 
- /* wl.c */
- int ubi_wl_get_peb(struct ubi_device *ubi, int dtype);
+ 		dbg_err("failed to attach by scanning, error %d", err);
+ 		goto out_debugging;
 -- 
 1.7.7
