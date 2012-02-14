@@ -1,22 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-lpp01m020-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RxEEa-00019I-T8
- for linux-mtd@lists.infradead.org; Tue, 14 Feb 2012 08:59:37 +0000
-Received: by dakp5 with SMTP id p5so6439200dak.36
- for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2012 00:59:34 -0800 (PST)
-Message-ID: <1329210112.22240.217.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] libmtd: fix mtd_write() issues for large data-only writes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 14 Feb 2012 11:01:52 +0200
-In-Reply-To: <1328934905-27007-1-git-send-email-computersforpeace@gmail.com>
-References: <1328934905-27007-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-B0MqnjCLpDBWnFEKFfBY"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1RxG5w-0006l1-K4
+ for linux-mtd@lists.infradead.org; Tue, 14 Feb 2012 10:58:49 +0000
+Received: by lbon10 with SMTP id n10so3762243lbo.36
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2012 02:58:45 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20120214033810.GF21094@verge.net.au>
+References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+ <1329140515.22240.145.camel@sauron.fi.intel.com>
+ <20120214033810.GF21094@verge.net.au>
+Date: Tue, 14 Feb 2012 11:58:45 +0100
+Message-ID: <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms@verge.net.au>,
+ linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Artem,
 
---=-B0MqnjCLpDBWnFEKFfBY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+2012/2/14 Simon Horman <horms@verge.net.au>:
+> On Mon, Feb 13, 2012 at 03:41:55PM +0200, Artem Bityutskiy wrote:
+>> On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
+>> > This patch series brushs up the sh_flctl.c a bit to make it work with
+>> > the mackerel board. The hardware has changed and this needed to be
+>> > reflected in the NAND host driver.
+>> > On the road some minor enhancements have been incorporated.
+>>
+>> I cannot even compile-test this patch because I get the following error:
+>>
+>>
+>> sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
+>> by this configuration
+>>
+>>
+>> with the cross-compiler downloaded from here:
+>>
+>> http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc-4.6.0-nolibc_sh4-linux.tar.bz2
+>>
+>> Could you please describe how could I compile-test it?
+>
+> You may find it easier to build a kernel for mackerel using
+> arch arm and defconfig_mackerel.
+>
+> Personally I have had good experience using Code Sourcery (now part of
+> Mentor Graphics?) G++ lite to compile both arm and sh kernels.
+>
+>
 
-On Fri, 2012-02-10 at 20:35 -0800, Brian Norris wrote:
-> ioctl(MEMWRITE) is implemented with memdup_user(), and so it allocates
-> kernel memory in contiguous regions. This limits its usefulness for large
-> amounts of data, since contiguous kernel memory can become scarce. I have
-> experienced "out of memory" problems with ubiformat, for instance, which
-> writes in eraseblock-sized regions:
+I as well use a Code Sourcery toolchain. arm-none-linux-gnueabi-gcc -v
+states "gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202)". It took me
+quite a bit to find a link to the toolchain as these gpl toolchains
+from Code Sourcery almost seem to be hidden. But here it is if you
+want to give it a try:
 
-Pushed this one and the other 3 patches to mtd-utils.git, thanks a lot!
+http://www.codesourcery.com/sgpp/lite/arm/portal/package6488/public/arm-none-linux-gnueabi/arm-2010q1-202-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 
---=20
-Best Regards,
-Artem Bityutskiy
+I very appreciate that you take a look at the patches - I really hope
+them to be merged.
 
---=-B0MqnjCLpDBWnFEKFfBY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+thanks,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJPOiMAAAoJECmIfjd9wqK0YMQP/inKKnf55LMBYLjLHxd5bMt0
-9UkTm3tIenTPr2TlUuNF3gLaOuDkKvK6rB/36oKPy4iHHXJ56nDJ/2YJPI9qzhRQ
-+bDkaaUSrjS4sfH02ZOsJ7SUM0Q/7+Z9oPPlx4xqVDyhniclsPlseFubRIz6ngRv
-5tgtKuDpquKbZIveb2PhlsP9rH8/HXOCkidCcCStqkTJL2jfWw3TsytNSq6BtjOB
-r6km7lmeHLdxYI6aECeO4vCoPdsW6trHN+6H/p1bB+iG1srII/nERRFWCrhuqSg7
-8T3bsUbilH2kNPWjZVM6JDEZMcuWZtV0ef/F/4mpMGxtaBLsp3F1SomaX35Z8T70
-PIbgMxH14zpNknSZwBwu3k9EtVDx0mWI+jXJAXV/x0a77YBo4vcAxJm96u8Htfiz
-7R3JOh6Puk5/QDABET3eOOyNo6r0VAUNtDBNBuDqRUTVMqWm9pBeelIboe9LwhSO
-uPEZxTINL5cg4BMcqvpRn4nZmzeoOWZmnLYUAKzz4JVqF1/e/KB2tH/kfI4A5sE5
-PdS2I6tA56zdHJe4+bMgEFg/qErE1Am8ErlcosF7QS32j1JRjsMiYFNr+Rw9SNFG
-lSycpScIKpI+RFxq1f8igg32Wlmr5TwXOjbiJ4BFEpbbnLeKEnCPGM0CYhxPEpSS
-5b8IEdV/jnWCJQ/0SIDf
-=OEBK
------END PGP SIGNATURE-----
-
---=-B0MqnjCLpDBWnFEKFfBY--
+ Bastian
