@@ -1,17 +1,32 @@
-Received: from radmz1.prettl-elektronik.de ([212.185.50.242])
+Received: from anubis.se.axis.com ([195.60.68.12])
  by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RxfuQ-0005l0-Bi
- for linux-mtd@lists.infradead.org; Wed, 15 Feb 2012 14:32:39 +0000
-Content-class: urn:content-classes:message
+ id 1RxhiH-0006C4-FW
+ for linux-mtd@lists.infradead.org; Wed, 15 Feb 2012 16:28:17 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by anubis.se.axis.com (Postfix) with ESMTP id F0C1C19F35
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2012 17:28:02 +0100 (CET)
+Received: from anubis.se.axis.com ([127.0.0.1])
+ by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id AvwQqJckML5J for <linux-mtd@lists.infradead.org>;
+ Wed, 15 Feb 2012 17:27:57 +0100 (CET)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by anubis.se.axis.com (Postfix) with ESMTP id 8486019F33
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2012 17:27:52 +0100 (CET)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
+ by thoth.se.axis.com (Postfix) with ESMTP id 9EC2F34103
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2012 17:27:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+ q1FGRqoO021067
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2012 17:27:52 +0100
+Date: Wed, 15 Feb 2012 17:27:52 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Problem with UBI/ubifs mount
+Message-ID: <Pine.LNX.4.64.1202151723400.13194@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: JFFS2: file damages after write: Where to start investigation
-Date: Wed, 15 Feb 2012 15:32:28 +0100
-Message-ID: <A116BBDA09FF5D488D7DB1E6C97F7550B04B2E@RASRV02.prettl-elektronik.de>
-From: "Weickelt, Richard \(lesswire AG\)" <Weickelt@lesswire.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +36,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
 
-I have linux 2.6.38 running on an Freescale i.MX25 with a 64MiB NAND
-Flash and a jffs2 root file system mounted RW. After initial flashing
-with U-Boot the system runs stand-alone and reads/writes from time to
-time some text files without any errors. But in very rare cases, some
-days (and reboots) after a firmware update (which means, transferring a
-TAR to the target and overwriting some files during runtime), some of
-these replaced files show annoying damages:
+I'm having a problem I'm trying to get my head around.
 
-When doing a hexdump of a broken file, a 4KiB-section somewhere (offset
-always aligned to 0x1000) shows only zero "00 00 ..." instead of "real"
-data.
+I have a ubifs image, where the image file is about 3.7 MB in size.
 
-The checksum (cksum, busybox) of the file is still valid, but the md5sum
-is not. I think this is because cksum does not really calculate a CRC of
-the file, but read it from file system meta information. But anyway, the
-file is broken.
+If I ubiupdatevol it to a ubi volume that is 7.4 MiB in size (60 LEBs of=20
+126 KiB each), and then try to mount the resulting volume, I get
 
-The second annoying fact is: When a file was broken, sometimes a reboot
-helped and the file was ok again. But after some time, a reboot did not
-help anymore. I did not discover this by myself, but I was told so, so I
-can not proof it. It does not sound logical to me.
+UBIFS error (pid 1578): validate_sb: bad superblock, error 8
 
-My question is now: It looks like a hardware problem, since the erronous
-files are not touched after a firmware update. I do not have much
-experience with jffs2/mtd, but I keep reading the documents.=20
-Where should I begin to investigate? Which of the mtd utils could help
-me further? Would it help, if I could find out the raw address of that
-file or errounous pages and then dump the flash data directly? Then I
-can compare, if the raw data is still there and only some bytes where
-damaged. How to find out the address?=20
-The block size is 16K, the page size is 512B, so I think the broken 4K
-are 1 inode and maybe only a page is damaged...
+If instead try to ubiupdatevol it to a ubi volume that is 28.8 MiB in size=
+=20
+(234 LEBs), the mount goes fine and I can see the files in the file system=
+=20
+at the mount point as expected.
 
-Thank You for any hints
-Best regards
-Richard
+Does anyone have an inkling what could be going on here? Ubiupdatevol does=
+=20
+not give any error messages about the image being to big for the volume or=
+=20
+indeed any error messages at all.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
