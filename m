@@ -1,18 +1,17 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RxdM2-0000Lb-Qt
- for linux-mtd@lists.infradead.org; Wed, 15 Feb 2012 11:49:01 +0000
-Date: Wed, 15 Feb 2012 11:48:34 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] Fix 'Flash device refused suspend due to active operation'
- message
-Message-ID: <20120215114834.GG13673@n2100.arm.linux.org.uk>
+Received: from radmz1.prettl-elektronik.de ([212.185.50.242])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RxfuQ-0005l0-Bi
+ for linux-mtd@lists.infradead.org; Wed, 15 Feb 2012 14:32:39 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2: file damages after write: Where to start investigation
+Date: Wed, 15 Feb 2012 15:32:28 +0100
+Message-ID: <A116BBDA09FF5D488D7DB1E6C97F7550B04B2E@RASRV02.prettl-elektronik.de>
+From: "Weickelt, Richard \(lesswire AG\)" <Weickelt@lesswire.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Russell King <rmk+kernel@arm.linux.org.uk>
+Dear all,
 
-While debugging on SA11x0, the following message was observed:
+I have linux 2.6.38 running on an Freescale i.MX25 with a 64MiB NAND
+Flash and a jffs2 root file system mounted RW. After initial flashing
+with U-Boot the system runs stand-alone and reads/writes from time to
+time some text files without any errors. But in very rare cases, some
+days (and reboots) after a firmware update (which means, transferring a
+TAR to the target and overwriting some files during runtime), some of
+these replaced files show annoying damages:
 
-"Flash device refused suspend due to active operation (state 20)"
+When doing a hexdump of a broken file, a 4KiB-section somewhere (offset
+always aligned to 0x1000) shows only zero "00 00 ..." instead of "real"
+data.
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
-I'm afraid that it's been too long since I looked at this, and I no
-longer remember the details behind this to write a proper commit log,
-so maybe someone who understands the code can do that.  I seem to
-remember dwmw2 said the current code was in error, so here's the
-patch.
+The checksum (cksum, busybox) of the file is still valid, but the md5sum
+is not. I think this is because cksum does not really calculate a CRC of
+the file, but read it from file system meta information. But anyway, the
+file is broken.
 
- drivers/mtd/chips/cfi_cmdset_0001.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The second annoying fact is: When a file was broken, sometimes a reboot
+helped and the file was ok again. But after some time, a reboot did not
+help anymore. I did not discover this by myself, but I was told so, so I
+can not proof it. It does not sound logical to me.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index e1e122f..709a11f 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2483,7 +2483,7 @@ static int cfi_intelext_suspend(struct mtd_info *mtd)
- 			   allowed to. Or should we return -EAGAIN, because the upper layers
- 			   ought to have already shut down anything which was using the device
- 			   anyway? The latter for now. */
--			printk(KERN_NOTICE "Flash device refused suspend due to active operation (state %d)\n", chip->oldstate);
-+			printk(KERN_NOTICE "Flash device refused suspend due to active operation (state %d)\n", chip->state);
- 			ret = -EAGAIN;
- 		case FL_PM_SUSPENDED:
- 			break;
+My question is now: It looks like a hardware problem, since the erronous
+files are not touched after a firmware update. I do not have much
+experience with jffs2/mtd, but I keep reading the documents.=20
+Where should I begin to investigate? Which of the mtd utils could help
+me further? Would it help, if I could find out the raw address of that
+file or errounous pages and then dump the flash data directly? Then I
+can compare, if the raw data is still there and only some bytes where
+damaged. How to find out the address?=20
+The block size is 16K, the page size is 512B, so I think the broken 4K
+are 1 inode and maybe only a page is damaged...
+
+Thank You for any hints
+Best regards
+Richard
