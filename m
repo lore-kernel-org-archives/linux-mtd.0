@@ -1,16 +1,19 @@
-Message-ID: <4F3C74DC.1000706@freescale.com>
-Date: Thu, 16 Feb 2012 11:15:40 +0800
-From: Huang Shijie <b32955@freescale.com>
+Date: Wed, 15 Feb 2012 20:51:12 -0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : add gpmi support for mx6q
+Message-ID: <20120216045111.GH30946@r65073-Latitude-D630>
+References: <1328505606-27981-1-git-send-email-b32955@freescale.com>
+ <20120215183720.GA2399@r65073-Latitude-D630>
+ <4F3C623A.3000301@freescale.com>
+ <20120216021841.GG30946@r65073-Latitude-D630>
+ <4F3C6C22.2010003@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: fix the wrong check condition
-References: <1329302008-10228-1-git-send-email-b32955@freescale.com>
- <4F3C712A.5060406@gmail.com>
-In-Reply-To: <4F3C712A.5060406@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Matthieu Castet <matthieu.castet@parrot.com>,
- linux-arm-kernel@lists.infradead.org, Florian Fainelli <ffainelli@freebox.fr>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4F3C6C22.2010003@freescale.com>
+Cc: artem.bityutskiy@intel.com, linux-mtd@lists.infradead.org,
+ w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> (Add Florian and Matthieu)
->
-> On 2/15/2012 2:33 AM, Huang Shijie wrote:
->> If we use `||` check condition, many NAND chips which are not
->> ONFI nands have to do the ONFI detection.
->
-> Running the ONFI detection on non-ONFI NAND should not, ideally, be a
-> problem. They should fail one or both tests included in the routine:
-> the 'O N F I' string check or the CRC calculation.
-NO.
+On Thu, Feb 16, 2012 at 10:38:26AM +0800, Huang Shijie wrote:
+> Hi,
+> >On Thu, Feb 16, 2012 at 09:56:10AM +0800, Huang Shijie wrote:
+> >>Hi,
+> >>>The imx6q only supports DT boot, but I do not see you are adding DT
+> >>>probe for the driver, so I'm wondering how you tested the driver on
+> >>>imx6q.
+> >>>
+> >>This patch is just the first patch  for mx6q. My following patches will
+> >>add DT to the gpmi nand driver for mx6q. Due to the dependency
+> >>issue, I will send the patches
+> >>in the following order:
+> >>[1] mtd/gpmi: add gpmi support for mx6q.
+> >>[2] [PATCH v5] patch set about the MXS-DMA
+> >>[3] add DT support to gpmi for mx6q.
+> >>
+> >It should be:
+> >
+> >  1. MXS-DMA series
+> >  2. Add imx6q support with DT probe
+> >
+> I ever did so in this order. But the mxs-dma series delayed for long
+> time( I missed the CCs).
+> But Artem's tree is faster to merge patch.
 
-I have Hynix nand in my hand: H27UBG8T2A (page size :8192, oob:448).
-It is not an ONFI nand.
+You can not change the order because of that.  The fact is imx6q gpmi
+support depends on the mxs-dma change.
 
+> >>I tested this patch based on our bsp code.
+> >>
+> >This is wrong approach.  You are submitting patches to mainline, so
+> >you should test your patches on mainline tree.
+> >
+> Beside the DT, the gpmi nand driver is the same.
+> 
+> Is the mainline tree ready now? How can i to set the pinmux for gpmi?
+> 
+People have eventually archived the agreement on pinctrl DT design,
+and the patch will come out pretty soon.  Before we have the pinctrl
+driver for imx6q, you can rely on boot loader to set pins up properly
+for your testing. 
 
-But it accidentally can pass the ONFI detection, and get the result : 
-page size 4192, oob:96. This is a wrong result.
-
-
-
-
->
->> Use `&&` here to detect the ONFI NAND when we can not find any type
->> in the nand_flash_ids.
->
-> There are many chips whose ID might be in the NAND table but for which
-> it is preferable (or even required) to check by ONFI for one reason or
-> another. For instance, some ONFI chips might use odd-sized OOB that
-> isn't in the ID decoding algorithm.
->
-This nand is 32Gb, but we can not parse it out from the id.
-I ever want to add a new database which use the all the 8/6 bytes id as key.
-It seems it's time to change it now.
-
-Huang Shijie
-
-> The current `||` check is, I think, designed to weed out old
-> small-page NAND only, which define both 'name' and 'pagesize' in the
-> table.
->
-> So in short: the current code works as intended.
->
-> Brian
->
+-- 
+Regards,
+Shawn
