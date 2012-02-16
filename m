@@ -1,17 +1,15 @@
-Message-ID: <4F3C6C22.2010003@freescale.com>
-Date: Thu, 16 Feb 2012 10:38:26 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <4F3C712A.5060406@gmail.com>
+Date: Wed, 15 Feb 2012 18:59:54 -0800
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] mtd/gpmi : add gpmi support for mx6q
-References: <1328505606-27981-1-git-send-email-b32955@freescale.com>
- <20120215183720.GA2399@r65073-Latitude-D630> <4F3C623A.3000301@freescale.com>
- <20120216021841.GG30946@r65073-Latitude-D630>
-In-Reply-To: <20120216021841.GG30946@r65073-Latitude-D630>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: fix the wrong check condition
+References: <1329302008-10228-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1329302008-10228-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: artem.bityutskiy@intel.com, linux-mtd@lists.infradead.org,
- w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Matthieu Castet <matthieu.castet@parrot.com>,
+ linux-arm-kernel@lists.infradead.org, Florian Fainelli <ffainelli@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> On Thu, Feb 16, 2012 at 09:56:10AM +0800, Huang Shijie wrote:
->> Hi,
->>> The imx6q only supports DT boot, but I do not see you are adding DT
->>> probe for the driver, so I'm wondering how you tested the driver on
->>> imx6q.
->>>
->> This patch is just the first patch  for mx6q. My following patches will
->> add DT to the gpmi nand driver for mx6q. Due to the dependency
->> issue, I will send the patches
->> in the following order:
->> [1] mtd/gpmi: add gpmi support for mx6q.
->> [2] [PATCH v5] patch set about the MXS-DMA
->> [3] add DT support to gpmi for mx6q.
->>
-> It should be:
->
->   1. MXS-DMA series
->   2. Add imx6q support with DT probe
->
-I ever did so in this order. But the mxs-dma series delayed for long 
-time( I missed the CCs).
-But Artem's tree is faster to merge patch.
->> I tested this patch based on our bsp code.
->>
-> This is wrong approach.  You are submitting patches to mainline, so
-> you should test your patches on mainline tree.
->
-Beside the DT, the gpmi nand driver is the same.
+(Add Florian and Matthieu)
 
-Is the mainline tree ready now? How can i to set the pinmux for gpmi?
+On 2/15/2012 2:33 AM, Huang Shijie wrote:
+> If we use `||` check condition, many NAND chips which are not
+> ONFI nands have to do the ONFI detection.
 
-BR
-Huang Shijie
+Running the ONFI detection on non-ONFI NAND should not, ideally, be a 
+problem. They should fail one or both tests included in the routine: the 
+'O N F I' string check or the CRC calculation.
+
+> Use `&&` here to detect the ONFI NAND when we can not find any type
+> in the nand_flash_ids.
+
+There are many chips whose ID might be in the NAND table but for which 
+it is preferable (or even required) to check by ONFI for one reason or 
+another. For instance, some ONFI chips might use odd-sized OOB that 
+isn't in the ID decoding algorithm.
+
+The current `||` check is, I think, designed to weed out old small-page 
+NAND only, which define both 'name' and 'pagesize' in the table.
+
+So in short: the current code works as intended.
+
+Brian
