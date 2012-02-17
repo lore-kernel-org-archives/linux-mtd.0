@@ -1,13 +1,15 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <artem.bityutskiy@intel.com>
-Subject: [PATCH] mtd :  change the location of the ONFI detected log
-Date: Fri, 17 Feb 2012 11:22:37 +0800
-Message-ID: <1329448957-9756-1-git-send-email-b32955@freescale.com>
+Message-ID: <4F3E1427.4080502@freebox.fr>
+Date: Fri, 17 Feb 2012 09:47:35 +0100
+From: Florian Fainelli <ffainelli@freebox.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- ffainelli@freebox.fr
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd :  change the location of the ONFI detected log
+References: <1329448957-9756-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1329448957-9756-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: computersforpeace@gmail.com, artem.bityutskiy@intel.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,36 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some strange nand chip(such as Hynix H27UBG8T2A) can pass the `ONFI` signature
-check. So the log can be printed out even it is not an ONFI nand indeed.
+Le 02/17/12 04:22, Huang Shijie a écrit :
+> Some strange nand chip(such as Hynix H27UBG8T2A) can pass the `ONFI` signature
+> check. So the log can be printed out even it is not an ONFI nand indeed.
+>
+> Change this log to the end of the function. Print out the log only when we
+> really detect an ONFI nand.
+>
+> Signed-off-by: Huang Shijie<b32955@freescale.com>
 
-Change this log to the end of the function. Print out the log only when we
-really detect an ONFI nand.
+Acked-by: Florian Fainelli <ffainelli@freebox.fr>
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5822e3a..1e907dc 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2853,7 +2853,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
- 		return 0;
- 
--	pr_info("ONFI flash detected\n");
- 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
- 	for (i = 0; i < 3; i++) {
- 		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
-@@ -2903,6 +2902,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	chip->options |= (NAND_NO_READRDY |
- 			NAND_NO_AUTOINCR) & NAND_CHIPOPTIONS_MSK;
- 
-+	pr_info("ONFI flash detected\n");
- 	return 1;
- }
- 
--- 
-1.7.0.4
+> ---
+>   drivers/mtd/nand/nand_base.c |    2 +-
+>   1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 5822e3a..1e907dc 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2853,7 +2853,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>   		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+>   		return 0;
+>
+> -	pr_info("ONFI flash detected\n");
+>   	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+>   	for (i = 0; i<  3; i++) {
+>   		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+> @@ -2903,6 +2902,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>   	chip->options |= (NAND_NO_READRDY |
+>   			NAND_NO_AUTOINCR)&  NAND_CHIPOPTIONS_MSK;
+>
+> +	pr_info("ONFI flash detected\n");
+>   	return 1;
+>   }
+>
