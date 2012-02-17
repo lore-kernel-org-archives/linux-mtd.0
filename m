@@ -1,20 +1,34 @@
-Message-ID: <4F3E14BD.10705@freebox.fr>
-Date: Fri, 17 Feb 2012 09:50:05 +0100
-From: Florian Fainelli <ffainelli@freebox.fr>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1RyKp0-0006XN-Ag
+ for linux-mtd@lists.infradead.org; Fri, 17 Feb 2012 10:13:50 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by ra.se.axis.com (Postfix) with ESMTP id 944E6167445
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2012 11:13:34 +0100 (CET)
+Received: from ra.se.axis.com ([127.0.0.1])
+ by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id j+AMlP1laoaq for <linux-mtd@lists.infradead.org>;
+ Fri, 17 Feb 2012 11:13:28 +0100 (CET)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by ra.se.axis.com (Postfix) with ESMTP id 6B1201672CB
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2012 11:13:28 +0100 (CET)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
+ by seth.se.axis.com (Postfix) with ESMTP id 688E33E08A
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2012 11:13:28 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+ q1HADS7D027907
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2012 11:13:28 +0100
+Date: Fri, 17 Feb 2012 11:13:28 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: UBI/ubifs problem
+In-Reply-To: <Pine.LNX.4.64.1202161543340.13194@lnxricardw.se.axis.com>
+Message-ID: <Pine.LNX.4.64.1202171107440.13194@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1202161543340.13194@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: fix the wrong check condition
-References: <1329302008-10228-1-git-send-email-b32955@freescale.com>
- <4F3C712A.5060406@gmail.com> <4F3C7433.5030306@freescale.com>
- <4F3CE2D4.4070506@freebox.fr>
- <CAMiH66GRD97y4mK-9TCRqsQkTOoqqwVp4gREv3=0qiX_vrueGA@mail.gmail.com>
-In-Reply-To: <CAMiH66GRD97y4mK-9TCRqsQkTOoqqwVp4gREv3=0qiX_vrueGA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Matthieu Castet <matthieu.castet@parrot.com>
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,85 +38,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 02/17/12 04:07, Huang Shijie a écrit :
-> hi,
->
-> On Thu, Feb 16, 2012 at 7:04 PM, Florian Fainelli<ffainelli@freebox.fr>  wrote:
->> Hi,
->>
->> On 02/16/12 04:12, Huang Shijie wrote:
->>> Hi,
->>>> (Add Florian and Matthieu)
->>>>
->>>> On 2/15/2012 2:33 AM, Huang Shijie wrote:
->>>>> If we use `||` check condition, many NAND chips which are not
->>>>> ONFI nands have to do the ONFI detection.
->>>>
->>>> Running the ONFI detection on non-ONFI NAND should not, ideally, be a
->>>> problem. They should fail one or both tests included in the routine:
->>>> the 'O N F I' string check or the CRC calculation.
->>> NO.
->>
->> Can you please post the dump of the ONFI page as read by your controller? Is
->> the CRC check passing? The ONFI crc function is made so that a page full of
->> zeroes or 0xff won't generate a respectively 0 or ff checksum, so we should
->> catch this during the CRC check.
->>
-> Sorry. I did not check the log carefully.
->
-> the Hynix nand does _not_ pass the CRC check, but it passed the "ONFI"
-> string check.
 
-This is exactly what I saw too with a different Hynix chip, it replied 
-ONFI, but the CRC check failed.
+Yesterday I reported a problem I had when flashing a ubifs volume.
 
->
-> The log "ONFI flash detected" made me misunderstood.
+On Thu, 16 Feb 2012, Ricard Wanderlof wrote:
 
-Yes I agree, the log is there too soon, thanks for your patch.
+> ...
+> UBIFS error (pid 2965): validate_sb: bad superblock, error 8
+> mount: Mounting ubi0:rwfs on /mnt/2 failed: Invalid argument
+> ...
 
-Thanks.
+I think I've figured this out part way. I've been specifying a=20
+--max-leb-count of 1000 to mkfs.ubifs, thinking that it basically just=20
+sets a maximum size for the resulting file system. But it seems that it=20
+also sets some sort of bounds for how much space it expects to take up in=
+=20
+the volume. If I reduce the --max-leb-count to the size of the target=20
+volume, I get no errors and the file system mounts fine.
 
->
-> BR
-> Huang Shijie
->
->
->>> I have Hynix nand in my hand: H27UBG8T2A (page size :8192, oob:448).
->>> It is not an ONFI nand. See the datasheet in the attachment.
->>> But it accidentally can pass the ONFI detection, and get the result :
->>> page size 4192, oob:96. This is a wrong result.
->>
->> I have already seen a Hynix chip answering to the READID command too, and
->> this was highly confusing our bootloader, however, I suppose that we should
->> be able to circumvent this issue anyway.
->>
->>>
->>>
->>>
->>>>> Use `&&` here to detect the ONFI NAND when we can not find any type
->>>>> in the nand_flash_ids.
->>>>
->>>> There are many chips whose ID might be in the NAND table but for which
->>>> it is preferable (or even required) to check by ONFI for one reason or
->>>> another. For instance, some ONFI chips might use odd-sized OOB that
->>>> isn't in the ID decoding algorithm.
->>>>
->>> This nand is 32Gb, but we can not parse it out from the id.
->>> I ever want to add a new database which use the all the 8/6 bytes id as
->>> key.
->>> It seems it's time to change it now.
->>
->> You have said that already, but we have yet to see patches for this, I guess
->> if you can post your database patch that will be easier to comment on.
->> --
->> Florian
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+That being so, I think the resulting error message is odd, which indicates=
+=20
+there is a bug somewhere, probably in mkfs.ubifs ?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
