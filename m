@@ -1,16 +1,15 @@
 Received: from perceval.ideasonboard.com ([95.142.166.194])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RyZt1-0006B8-4H
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:18:55 +0000
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RyZuw-0006Sz-VS
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:20:55 +0000
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 5/7] mtd: sh_flctl: Use cached register value for
- FLCMNCR
-Date: Sat, 18 Feb 2012 03:18:29 +0100
-Message-ID: <2837466.z8bW9OK9D4@avalon>
-In-Reply-To: <1328960705-18699-6-git-send-email-hechtb@gmail.com>
+Subject: Re: [PATCH v2 3/7] mtd: sh_flctl: Expand the READID command to 8 bytes
+Date: Sat, 18 Feb 2012 03:20:22 +0100
+Message-ID: <5473968.KjMqXsbqus@avalon>
+In-Reply-To: <1328960705-18699-4-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-6-git-send-email-hechtb@gmail.com>
+ <1328960705-18699-4-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -29,82 +28,60 @@ Hi Bastian,
 
 Thanks for the patch.
 
-On Saturday 11 February 2012 12:45:03 Bastian Hecht wrote:
-> Instead of reading out the register, use a cached value. This will
-> make way for a proper runtime power management implementation.
+On Saturday 11 February 2012 12:45:01 Bastian Hecht wrote:
+> The nand base code wants to read out 8 bytes in the READID command.
+> Reflect this in the driver code.
 > 
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
-> changelog: I delayed the rtpm patch until the clock code is fixed for
-> board mackerel, so that no "udelay(1);" is needed. Instead I cleaned
-> up the code to use a cached register value. The rtpm code will benefit
-> from it.
+> changelog: exactly same as patch v1.
 > 
->  drivers/mtd/nand/sh_flctl.c  |   15 +++------------
->  include/linux/mtd/sh_flctl.h |    1 +
->  2 files changed, 4 insertions(+), 12 deletions(-)
+>  drivers/mtd/nand/sh_flctl.c |   13 ++++++++++---
+>  1 files changed, 10 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 5c3e71f..1af41fd 100644
+> index 8c97367..407acb5 100644
 > --- a/drivers/mtd/nand/sh_flctl.c
 > +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -681,16 +681,13 @@ read_normal_exit:
->  static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
->  {
->  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-> -	uint32_t flcmncr_val = readl(FLCMNCR(flctl));
-> 
->  	switch (chipnr) {
->  	case -1:
-> -		flcmncr_val &= ~CE0_ENABLE;
-> -		writel(flcmncr_val, FLCMNCR(flctl));
-> +		writel(flctl->flcmncr_val, FLCMNCR(flctl));
->  		break;
->  	case 0:
-> -		flcmncr_val |= CE0_ENABLE;
-> -		writel(flcmncr_val, FLCMNCR(flctl));
-> +		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
->  		break;
->  	default:
->  		BUG();
+> @@ -320,6 +320,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t
+> cmd, uint32_t flcmcdr_va break;
+>  	case NAND_CMD_READID:
+>  		flcmncr_val &= ~SNAND_E;
+> +		flcmdcr_val |= CDSRC_E;
 
-Shouldn't you use the cached value in set_cmd_regs() as well ?
+this bit is marked as reserved in my SH7372 documentation, and should be set 
+to 0. Won't this break compatibility with the SH7372 ?
 
-> @@ -748,11 +745,6 @@ static int flctl_verify_buf(struct mtd_info *mtd, const
-> u_char *buf, int len) return 0;
->  }
+>  		addr_len_bytes = ADRCNT_1;
+>  		break;
+>  	case NAND_CMD_STATUS:
+> @@ -559,12 +560,18 @@ static void flctl_cmdfunc(struct mtd_info *mtd,
+> unsigned int command,
 > 
-> -static void flctl_register_init(struct sh_flctl *flctl, unsigned long val)
-> -{
-> -	writel(val, FLCMNCR(flctl));
-> -}
-> -
->  static int flctl_chip_init_tail(struct mtd_info *mtd)
->  {
->  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-> @@ -851,10 +843,9 @@ static int __devinit flctl_probe(struct platform_device
-> *pdev) nand = &flctl->chip;
->  	flctl_mtd->priv = nand;
->  	flctl->pdev = pdev;
-> +	flctl->flcmncr_val = pdata->flcmncr_val;
->  	flctl->hwecc = pdata->has_hwecc;
+>  	case NAND_CMD_READID:
+>  		set_cmd_regs(mtd, command, command);
+> -		set_addr(mtd, 0, 0);
 > 
-> -	flctl_register_init(flctl, pdata->flcmncr_val);
-> -
->  	nand->options = NAND_NO_AUTOINCR;
+> -		flctl->read_bytes = 4;
+> +		/* READID is always performed using an 8-bit bus */
+> +		if (flctl->chip.options & NAND_BUSWIDTH_16)
+> +			column <<= 1;
+> +		set_addr(mtd, column, 0);
+> +
+> +		flctl->read_bytes = 8;
+>  		writel(flctl->read_bytes, FLDTCNTR(flctl)); /* set read size */
+> +		empty_fifo(flctl);
+>  		start_translation(flctl);
+> -		read_datareg(flctl, 0);	/* read and end */
+> +		read_fiforeg(flctl, flctl->read_bytes, 0);
+
+Not saying it's a bad thing, but why do you switch from read_datareg() to 
+read_fiforeg() ?
+
+> +		wait_completion(flctl);
+>  		break;
 > 
->  	/* Set address of hardware control function */
-> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index e66c393..107fd8a 100644
-> --- a/include/linux/mtd/sh_flctl.h
-> +++ b/include/linux/mtd/sh_flctl.h
-> @@ -132,6 +132,7 @@ struct sh_flctl {
->  	int	erase1_page_addr;	/* page_addr in ERASE1 cmd */
->  	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
->  	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
-> +	uint32_t flcmncr_val;	/* base value of FLCMNCR */
-> 
->  	int	hwecc_cant_correct[4];
+>  	case NAND_CMD_ERASE1:
 -- 
 Regards,
 
