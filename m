@@ -1,15 +1,15 @@
 Received: from perceval.ideasonboard.com ([95.142.166.194])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RyZuw-0006Sz-VS
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:20:55 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RyZw7-00078p-Jd
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:22:08 +0000
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 3/7] mtd: sh_flctl: Expand the READID command to 8 bytes
-Date: Sat, 18 Feb 2012 03:20:22 +0100
-Message-ID: <5473968.KjMqXsbqus@avalon>
-In-Reply-To: <1328960705-18699-4-git-send-email-hechtb@gmail.com>
+Subject: Re: [PATCH v2 2/7] mtd: sh_flctl: Reorder empty_fifo() calls
+Date: Sat, 18 Feb 2012 03:21:31 +0100
+Message-ID: <2825429.HMivvWFhbq@avalon>
+In-Reply-To: <1328960705-18699-3-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-4-git-send-email-hechtb@gmail.com>
+ <1328960705-18699-3-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -28,60 +28,64 @@ Hi Bastian,
 
 Thanks for the patch.
 
-On Saturday 11 February 2012 12:45:01 Bastian Hecht wrote:
-> The nand base code wants to read out 8 bytes in the READID command.
-> Reflect this in the driver code.
-> 
+On Saturday 11 February 2012 12:45:00 Bastian Hecht wrote:
+> Reorders the calls to make it a bit shorter and match the calling
+> procedure displayed in the datasheet.
+
+Could you point me to the datasheet section in which the order is documented ?
+
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
 > changelog: exactly same as patch v1.
 > 
->  drivers/mtd/nand/sh_flctl.c |   13 ++++++++++---
->  1 files changed, 10 insertions(+), 3 deletions(-)
+>  drivers/mtd/nand/sh_flctl.c |    4 +---
+>  1 files changed, 1 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 8c97367..407acb5 100644
+> index 93b1f74..8c97367 100644
 > --- a/drivers/mtd/nand/sh_flctl.c
 > +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -320,6 +320,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t
-> cmd, uint32_t flcmcdr_va break;
->  	case NAND_CMD_READID:
->  		flcmncr_val &= ~SNAND_E;
-> +		flcmdcr_val |= CDSRC_E;
-
-this bit is marked as reserved in my SH7372 documentation, and should be set 
-to 0. Won't this break compatibility with the SH7372 ?
-
->  		addr_len_bytes = ADRCNT_1;
->  		break;
->  	case NAND_CMD_STATUS:
-> @@ -559,12 +560,18 @@ static void flctl_cmdfunc(struct mtd_info *mtd,
-> unsigned int command,
+> @@ -525,7 +525,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
+> int command, execmd_read_page_sector(mtd, page_addr);
+>  			break;
+>  		}
+> -		empty_fifo(flctl);
+>  		if (flctl->page_size)
+>  			set_cmd_regs(mtd, command, (NAND_CMD_READSTART << 8)
+> 
+>  				| command);
+> 
+> @@ -547,7 +546,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
+> int command, break;
+>  		}
+> 
+> -		empty_fifo(flctl);
+>  		if (flctl->page_size) {
+>  			set_cmd_regs(mtd, command, (NAND_CMD_READSTART << 8)
+> 
+>  				| NAND_CMD_READ0);
+> 
+> @@ -560,7 +558,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
+> int command, goto read_normal_exit;
 > 
 >  	case NAND_CMD_READID:
+> -		empty_fifo(flctl);
+
+This case doesn't end up in the read_normal_exit label. The empty_fifo() call 
+will thus be completely removed. Is that intentional ?
+
 >  		set_cmd_regs(mtd, command, command);
-> -		set_addr(mtd, 0, 0);
+>  		set_addr(mtd, 0, 0);
 > 
-> -		flctl->read_bytes = 4;
-> +		/* READID is always performed using an 8-bit bus */
-> +		if (flctl->chip.options & NAND_BUSWIDTH_16)
-> +			column <<= 1;
-> +		set_addr(mtd, column, 0);
-> +
-> +		flctl->read_bytes = 8;
->  		writel(flctl->read_bytes, FLDTCNTR(flctl)); /* set read size */
-> +		empty_fifo(flctl);
->  		start_translation(flctl);
-> -		read_datareg(flctl, 0);	/* read and end */
-> +		read_fiforeg(flctl, flctl->read_bytes, 0);
-
-Not saying it's a bad thing, but why do you switch from read_datareg() to 
-read_fiforeg() ?
-
-> +		wait_completion(flctl);
->  		break;
+> @@ -654,6 +651,7 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
+> int command,
 > 
->  	case NAND_CMD_ERASE1:
+>  read_normal_exit:
+>  	writel(flctl->read_bytes, FLDTCNTR(flctl));	/* set read size */
+> +	empty_fifo(flctl);
+>  	start_translation(flctl);
+>  	read_fiforeg(flctl, flctl->read_bytes, 0);
+>  	wait_completion(flctl);
 -- 
 Regards,
 
