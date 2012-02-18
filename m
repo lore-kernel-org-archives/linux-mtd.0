@@ -1,17 +1,20 @@
+Received: from perceval.ideasonboard.com ([95.142.166.194])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RyYEZ-0005MD-OO
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 00:33:04 +0000
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Subject: Re: [PATCH v2 6/7] mtd: sh_flctl: Add FLHOLDCR register
+Date: Sat, 18 Feb 2012 01:25:15 +0100
+Message-ID: <2427717.Or3gUAU8Yx@avalon>
+In-Reply-To: <1328960705-18699-7-git-send-email-hechtb@gmail.com>
+References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+ <1328960705-18699-7-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1329490172-8043-1-git-send-email-walle@corscience.de>
-References: <1329490172-8043-1-git-send-email-walle@corscience.de>
-Date: Fri, 17 Feb 2012 20:52:19 +0530
-Message-ID: <CAM=Q2cuXfYA=bibwzDBdb41_KiHu1X4bExbyS2FsfjBM7RXopQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: omap2: Release memory region in .remove function
-From: Shubhrajyoti Datta <omaplinuxkernel@gmail.com>
-To: Bernhard Walle <walle@corscience.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: tony@atomide.com, Artem.Bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, s-ghorai@ti.com,
- vimal.newwork@gmail.com, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +24,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 17, 2012 at 8:19 PM, Bernhard Walle <walle@corscience.de> wrote=
-:
-> When the driver is compiled as module, it's not possible to unload and
-> reload the driver again:
->
-> =A0 =A0omap2-nand: probe of omap2-nand.0 failed with error -16
->
-Looks right to me
-Reviewed-by: Shubhrajyoti D <shubhrajyoti@ti.com>
+Hi Bastian,
 
-> This patch fixes the problem because it releases the memory region, so
-> that it can be requested again.
->
-> Signed-off-by: Bernhard Walle <walle@corscience.de>
+Thanks for the patch.
+
+On Saturday 11 February 2012 12:45:04 Bastian Hecht wrote:
+> Add a register used in new FLCTL hardware and a feature flag for it.
+> 
+> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
-> =A0drivers/mtd/nand/omap2.c | =A0 =A01 +
-> =A01 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index b3a883e..7dfcf68 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1132,6 +1132,7 @@ static int omap_nand_remove(struct platform_device =
-*pdev)
-> =A0 =A0 =A0 =A0/* Release NAND device, its internal structures and partit=
-ions */
-> =A0 =A0 =A0 =A0nand_release(&info->mtd);
-> =A0 =A0 =A0 =A0iounmap(info->nand.IO_ADDR_R);
-> + =A0 =A0 =A0 release_mem_region(info->phys_base, NAND_IO_SIZE);
-> =A0 =A0 =A0 =A0kfree(&info->mtd);
-> =A0 =A0 =A0 =A0return 0;
-> =A0}
-> --
-> 1.7.9.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> changelog: the write to the register has been moved due to patch 5.
+> 
+>  drivers/mtd/nand/sh_flctl.c  |    3 +++
+>  include/linux/mtd/sh_flctl.h |   12 ++++++++++++
+>  2 files changed, 15 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+> index 1af41fd..40dda26 100644
+> --- a/drivers/mtd/nand/sh_flctl.c
+> +++ b/drivers/mtd/nand/sh_flctl.c
+> @@ -688,6 +688,8 @@ static void flctl_select_chip(struct mtd_info *mtd, int
+> chipnr) break;
+>  	case 0:
+>  		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
+> +		if (flctl->holden)
+> +			writel(HOLDEN, FLHOLDCR(flctl));
+
+Can't this be done at probe time (maybe in flctl_chip_init_tail()) ? You could 
+then get rid of the flctl->holden field and use platform data directly.
+
+>  		break;
+>  	default:
+>  		BUG();
+> @@ -845,6 +847,7 @@ static int __devinit flctl_probe(struct platform_device
+> *pdev) flctl->pdev = pdev;
+>  	flctl->flcmncr_val = pdata->flcmncr_val;
+>  	flctl->hwecc = pdata->has_hwecc;
+> +	flctl->holden = pdata->use_holden;
+> 
+>  	nand->options = NAND_NO_AUTOINCR;
+> 
+> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+> index 107fd8a..6046443 100644
+> --- a/include/linux/mtd/sh_flctl.h
+> +++ b/include/linux/mtd/sh_flctl.h
+> @@ -38,6 +38,7 @@
+>  #define FLDTFIFO(f)		(f->reg + 0x24)
+>  #define FLECFIFO(f)		(f->reg + 0x28)
+>  #define FLTRCR(f)		(f->reg + 0x2C)
+> +#define FLHOLDCR(f)		(f->reg + 0x38)
+>  #define	FL4ECCRESULT0(f)	(f->reg + 0x80)
+>  #define	FL4ECCRESULT1(f)	(f->reg + 0x84)
+>  #define	FL4ECCRESULT2(f)	(f->reg + 0x88)
+> @@ -109,6 +110,15 @@
+>  #define TRSTRT		(0x1 << 0)	/* translation start */
+>  #define TREND		(0x1 << 1)	/* translation end */
+> 
+> +/*
+> + * FLHOLDCR control bits
+> + *
+> + * HOLDEN: Bus Occupancy Enable (inverted)
+> + * Enable this bit when the external bus might be used in between
+> transfers. + * If not set and the bus gets used by other modules, a
+> deadlock occurs. + */
+> +#define HOLDEN		(0x1 << 0)
+> +
+>  /* FL4ECCCR control bits */
+>  #define	_4ECCFA		(0x1 << 2)	/* 4 symbols correct fault */
+>  #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
+> @@ -138,6 +148,7 @@ struct sh_flctl {
+> 
+>  	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+>  	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
+> +	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
+>  };
+> 
+>  struct sh_flctl_platform_data {
+> @@ -146,6 +157,7 @@ struct sh_flctl_platform_data {
+>  	unsigned long		flcmncr_val;
+> 
+>  	unsigned has_hwecc:1;
+> +	unsigned use_holden:1;
+>  };
+> 
+>  static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
+
+-- 
+Regards,
+
+Laurent Pinchart
