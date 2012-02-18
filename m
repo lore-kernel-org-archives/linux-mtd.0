@@ -1,20 +1,20 @@
-Received: from perceval.ideasonboard.com ([95.142.166.194])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RyZx0-00079w-OC
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:23:04 +0000
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 1/7] mtd: sh_flctl: Expand FLCMNCR register bit field
-Date: Sat, 18 Feb 2012 03:22:40 +0100
-Message-ID: <1554023.Gzzuis43Tg@avalon>
-In-Reply-To: <1328960705-18699-2-git-send-email-hechtb@gmail.com>
-References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-2-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org
+In-Reply-To: <4F3E14BD.10705@freebox.fr>
+References: <1329302008-10228-1-git-send-email-b32955@freescale.com>
+ <4F3C712A.5060406@gmail.com> <4F3C7433.5030306@freescale.com>
+ <4F3CE2D4.4070506@freebox.fr>
+ <CAMiH66GRD97y4mK-9TCRqsQkTOoqqwVp4gREv3=0qiX_vrueGA@mail.gmail.com>
+ <4F3E14BD.10705@freebox.fr>
+Date: Fri, 17 Feb 2012 21:43:44 -0800
+Message-ID: <CAN8TOE9q3OgKFTwQ4=mSyCJ7WsCHz2yC0hOYq_sGBrx4joB7Cg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: fix the wrong check condition
+From: Brian Norris <computersforpeace@gmail.com>
+To: Florian Fainelli <ffainelli@freebox.fr>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>,
+ Huang Shijie <shijie8@gmail.com>, Matthieu Castet <matthieu.castet@parrot.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bastian,
+On Fri, Feb 17, 2012 at 12:50 AM, Florian Fainelli <ffainelli@freebox.fr> w=
+rote:
+> Le 02/17/12 04:07, Huang Shijie a =E9crit :
+>> Sorry. I did not check the log carefully.
+>>
+>> the Hynix nand does _not_ pass the CRC check, but it passed the "ONFI"
+>> string check.
+>
+> This is exactly what I saw too with a different Hynix chip, it replied ON=
+FI,
+> but the CRC check failed.
 
-Thanks for the patch.
+So your root detection issue is actually that this Hynix chip is
+neither ONFI-compliant nor does it have a good ID decoding scheme,
+hence the need for the ID table patch (separate; I'll review it soon).
 
-On Saturday 11 February 2012 12:44:59 Bastian Hecht wrote:
-> Add support for a new hardware generation. The meaning of some bits
-> of the FLCMNCR register changed, so some new defines are added
-> parallel to the existing ones to keep backward compatibility.
-> 
-> The defines allow to choose an appropriate clocking scheme.
-> 
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+>>
+>> The log "ONFI flash detected" made me misunderstood.
+>
+> Yes I agree, the log is there too soon, thanks for your patch.
 
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+I agree as well. I'll ACK the other patch.
 
-> ---
-> changelog: code stays the same, just the description is slightly corrected.
-> 
->  include/linux/mtd/sh_flctl.h |   24 ++++++++++++++++++++++++
->  1 files changed, 24 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index 9cf4c4c..e66c393 100644
-> --- a/include/linux/mtd/sh_flctl.h
-> +++ b/include/linux/mtd/sh_flctl.h
-> @@ -67,6 +67,30 @@
->  #define	CE0_ENABLE	(0x1 << 3)	/* Chip Enable 0 */
->  #define	TYPESEL_SET	(0x1 << 0)
-> 
-> +/*
-> + * Clock settings using the PULSEx registers from FLCMNCR
-> + *
-> + * Some hardware uses bits called PULSEx instead of FCKSEL_E and QTSEL_E
-> + * to control the clock divider used between the High-Speed Peripheral
-> Clock + * and the FLCTL internal clock. If so, use CLK_8_BIT_xxx for
-> connecting 8 bit + * and CLK_16_BIT_xxx for connecting 16 bit bus bandwith
-> NAND chips. For the 16 + * bit version the divider is seperate for the
-> pulse width of high and low + * signals.
-> + */
-> +#define PULSE3	(0x1 << 27)
-> +#define PULSE2	(0x1 << 17)
-> +#define PULSE1	(0x1 << 15)
-> +#define PULSE0	(0x1 << 9)
-> +#define CLK_8_BIT_0_5HP			PULSE1
-> +#define CLK_8_BIT_1HP			0x0
-> +#define CLK_8_BIT_1_5HP			(PULSE1 | PULSE2)
-> +#define CLK_8_BIT_2HP			PULSE0
-> +#define CLK_8_BIT_3HP			(PULSE0 | PULSE1 | PULSE2)
-> +#define CLK_8_BIT_4HP			(PULSE0 | PULSE2)
-> +#define CLK_16_BIT_6HP_LOW_2HP_HIGH	PULSE0
-> +#define CLK_16_BIT_9HP_LOW_3HP_HIGH	(PULSE0 | PULSE1 | PULSE2)
-> +#define CLK_16_BIT_12HP_LOW_4HP_HIGH	(PULSE0 | PULSE2)
-> +
-
-This is nitpicking, but you could shorten the names to something like 
-CLK_16B_12L_4P (at the expense of readability though). Feel free to ignore 
-this.
-
->  /* FLCMDCR control bits */
->  #define ADRCNT2_E	(0x1 << 31)	/* 5byte address enable */
->  #define ADRMD_E		(0x1 << 26)	/* Sector address access */
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+Brian
