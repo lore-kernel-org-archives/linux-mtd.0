@@ -1,15 +1,15 @@
 Received: from perceval.ideasonboard.com ([95.142.166.194])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RyZw7-00078p-Jd
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:22:08 +0000
+ id 1RyZx0-00079w-OC
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:23:04 +0000
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 2/7] mtd: sh_flctl: Reorder empty_fifo() calls
-Date: Sat, 18 Feb 2012 03:21:31 +0100
-Message-ID: <2825429.HMivvWFhbq@avalon>
-In-Reply-To: <1328960705-18699-3-git-send-email-hechtb@gmail.com>
+Subject: Re: [PATCH v2 1/7] mtd: sh_flctl: Expand FLCMNCR register bit field
+Date: Sat, 18 Feb 2012 03:22:40 +0100
+Message-ID: <1554023.Gzzuis43Tg@avalon>
+In-Reply-To: <1328960705-18699-2-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-3-git-send-email-hechtb@gmail.com>
+ <1328960705-18699-2-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -28,64 +28,63 @@ Hi Bastian,
 
 Thanks for the patch.
 
-On Saturday 11 February 2012 12:45:00 Bastian Hecht wrote:
-> Reorders the calls to make it a bit shorter and match the calling
-> procedure displayed in the datasheet.
-
-Could you point me to the datasheet section in which the order is documented ?
-
+On Saturday 11 February 2012 12:44:59 Bastian Hecht wrote:
+> Add support for a new hardware generation. The meaning of some bits
+> of the FLCMNCR register changed, so some new defines are added
+> parallel to the existing ones to keep backward compatibility.
+> 
+> The defines allow to choose an appropriate clocking scheme.
+> 
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 > ---
-> changelog: exactly same as patch v1.
+> changelog: code stays the same, just the description is slightly corrected.
 > 
->  drivers/mtd/nand/sh_flctl.c |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
+>  include/linux/mtd/sh_flctl.h |   24 ++++++++++++++++++++++++
+>  1 files changed, 24 insertions(+), 0 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 93b1f74..8c97367 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -525,7 +525,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
-> int command, execmd_read_page_sector(mtd, page_addr);
->  			break;
->  		}
-> -		empty_fifo(flctl);
->  		if (flctl->page_size)
->  			set_cmd_regs(mtd, command, (NAND_CMD_READSTART << 8)
+> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+> index 9cf4c4c..e66c393 100644
+> --- a/include/linux/mtd/sh_flctl.h
+> +++ b/include/linux/mtd/sh_flctl.h
+> @@ -67,6 +67,30 @@
+>  #define	CE0_ENABLE	(0x1 << 3)	/* Chip Enable 0 */
+>  #define	TYPESEL_SET	(0x1 << 0)
 > 
->  				| command);
-> 
-> @@ -547,7 +546,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
-> int command, break;
->  		}
-> 
-> -		empty_fifo(flctl);
->  		if (flctl->page_size) {
->  			set_cmd_regs(mtd, command, (NAND_CMD_READSTART << 8)
-> 
->  				| NAND_CMD_READ0);
-> 
-> @@ -560,7 +558,6 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
-> int command, goto read_normal_exit;
-> 
->  	case NAND_CMD_READID:
-> -		empty_fifo(flctl);
+> +/*
+> + * Clock settings using the PULSEx registers from FLCMNCR
+> + *
+> + * Some hardware uses bits called PULSEx instead of FCKSEL_E and QTSEL_E
+> + * to control the clock divider used between the High-Speed Peripheral
+> Clock + * and the FLCTL internal clock. If so, use CLK_8_BIT_xxx for
+> connecting 8 bit + * and CLK_16_BIT_xxx for connecting 16 bit bus bandwith
+> NAND chips. For the 16 + * bit version the divider is seperate for the
+> pulse width of high and low + * signals.
+> + */
+> +#define PULSE3	(0x1 << 27)
+> +#define PULSE2	(0x1 << 17)
+> +#define PULSE1	(0x1 << 15)
+> +#define PULSE0	(0x1 << 9)
+> +#define CLK_8_BIT_0_5HP			PULSE1
+> +#define CLK_8_BIT_1HP			0x0
+> +#define CLK_8_BIT_1_5HP			(PULSE1 | PULSE2)
+> +#define CLK_8_BIT_2HP			PULSE0
+> +#define CLK_8_BIT_3HP			(PULSE0 | PULSE1 | PULSE2)
+> +#define CLK_8_BIT_4HP			(PULSE0 | PULSE2)
+> +#define CLK_16_BIT_6HP_LOW_2HP_HIGH	PULSE0
+> +#define CLK_16_BIT_9HP_LOW_3HP_HIGH	(PULSE0 | PULSE1 | PULSE2)
+> +#define CLK_16_BIT_12HP_LOW_4HP_HIGH	(PULSE0 | PULSE2)
+> +
 
-This case doesn't end up in the read_normal_exit label. The empty_fifo() call 
-will thus be completely removed. Is that intentional ?
+This is nitpicking, but you could shorten the names to something like 
+CLK_16B_12L_4P (at the expense of readability though). Feel free to ignore 
+this.
 
->  		set_cmd_regs(mtd, command, command);
->  		set_addr(mtd, 0, 0);
-> 
-> @@ -654,6 +651,7 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned
-> int command,
-> 
->  read_normal_exit:
->  	writel(flctl->read_bytes, FLDTCNTR(flctl));	/* set read size */
-> +	empty_fifo(flctl);
->  	start_translation(flctl);
->  	read_fiforeg(flctl, flctl->read_bytes, 0);
->  	wait_completion(flctl);
+>  /* FLCMDCR control bits */
+>  #define ADRCNT2_E	(0x1 << 31)	/* 5byte address enable */
+>  #define ADRMD_E		(0x1 << 26)	/* Sector address access */
 -- 
 Regards,
 
