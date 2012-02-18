@@ -1,15 +1,16 @@
 Received: from perceval.ideasonboard.com ([95.142.166.194])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1RyYEZ-0005MD-OO
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 00:33:04 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1RyZt1-0006B8-4H
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2012 02:18:55 +0000
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 6/7] mtd: sh_flctl: Add FLHOLDCR register
-Date: Sat, 18 Feb 2012 01:25:15 +0100
-Message-ID: <2427717.Or3gUAU8Yx@avalon>
-In-Reply-To: <1328960705-18699-7-git-send-email-hechtb@gmail.com>
+Subject: Re: [PATCH v2 5/7] mtd: sh_flctl: Use cached register value for
+ FLCMNCR
+Date: Sat, 18 Feb 2012 03:18:29 +0100
+Message-ID: <2837466.z8bW9OK9D4@avalon>
+In-Reply-To: <1328960705-18699-6-git-send-email-hechtb@gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-7-git-send-email-hechtb@gmail.com>
+ <1328960705-18699-6-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -28,87 +29,82 @@ Hi Bastian,
 
 Thanks for the patch.
 
-On Saturday 11 February 2012 12:45:04 Bastian Hecht wrote:
-> Add a register used in new FLCTL hardware and a feature flag for it.
+On Saturday 11 February 2012 12:45:03 Bastian Hecht wrote:
+> Instead of reading out the register, use a cached value. This will
+> make way for a proper runtime power management implementation.
 > 
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
-> changelog: the write to the register has been moved due to patch 5.
+> changelog: I delayed the rtpm patch until the clock code is fixed for
+> board mackerel, so that no "udelay(1);" is needed. Instead I cleaned
+> up the code to use a cached register value. The rtpm code will benefit
+> from it.
 > 
->  drivers/mtd/nand/sh_flctl.c  |    3 +++
->  include/linux/mtd/sh_flctl.h |   12 ++++++++++++
->  2 files changed, 15 insertions(+), 0 deletions(-)
+>  drivers/mtd/nand/sh_flctl.c  |   15 +++------------
+>  include/linux/mtd/sh_flctl.h |    1 +
+>  2 files changed, 4 insertions(+), 12 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 1af41fd..40dda26 100644
+> index 5c3e71f..1af41fd 100644
 > --- a/drivers/mtd/nand/sh_flctl.c
 > +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -688,6 +688,8 @@ static void flctl_select_chip(struct mtd_info *mtd, int
-> chipnr) break;
+> @@ -681,16 +681,13 @@ read_normal_exit:
+>  static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
+>  {
+>  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+> -	uint32_t flcmncr_val = readl(FLCMNCR(flctl));
+> 
+>  	switch (chipnr) {
+>  	case -1:
+> -		flcmncr_val &= ~CE0_ENABLE;
+> -		writel(flcmncr_val, FLCMNCR(flctl));
+> +		writel(flctl->flcmncr_val, FLCMNCR(flctl));
+>  		break;
 >  	case 0:
->  		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
-> +		if (flctl->holden)
-> +			writel(HOLDEN, FLHOLDCR(flctl));
-
-Can't this be done at probe time (maybe in flctl_chip_init_tail()) ? You could 
-then get rid of the flctl->holden field and use platform data directly.
-
+> -		flcmncr_val |= CE0_ENABLE;
+> -		writel(flcmncr_val, FLCMNCR(flctl));
+> +		writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNCR(flctl));
 >  		break;
 >  	default:
 >  		BUG();
-> @@ -845,6 +847,7 @@ static int __devinit flctl_probe(struct platform_device
-> *pdev) flctl->pdev = pdev;
->  	flctl->flcmncr_val = pdata->flcmncr_val;
->  	flctl->hwecc = pdata->has_hwecc;
-> +	flctl->holden = pdata->use_holden;
+
+Shouldn't you use the cached value in set_cmd_regs() as well ?
+
+> @@ -748,11 +745,6 @@ static int flctl_verify_buf(struct mtd_info *mtd, const
+> u_char *buf, int len) return 0;
+>  }
 > 
+> -static void flctl_register_init(struct sh_flctl *flctl, unsigned long val)
+> -{
+> -	writel(val, FLCMNCR(flctl));
+> -}
+> -
+>  static int flctl_chip_init_tail(struct mtd_info *mtd)
+>  {
+>  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+> @@ -851,10 +843,9 @@ static int __devinit flctl_probe(struct platform_device
+> *pdev) nand = &flctl->chip;
+>  	flctl_mtd->priv = nand;
+>  	flctl->pdev = pdev;
+> +	flctl->flcmncr_val = pdata->flcmncr_val;
+>  	flctl->hwecc = pdata->has_hwecc;
+> 
+> -	flctl_register_init(flctl, pdata->flcmncr_val);
+> -
 >  	nand->options = NAND_NO_AUTOINCR;
 > 
+>  	/* Set address of hardware control function */
 > diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index 107fd8a..6046443 100644
+> index e66c393..107fd8a 100644
 > --- a/include/linux/mtd/sh_flctl.h
 > +++ b/include/linux/mtd/sh_flctl.h
-> @@ -38,6 +38,7 @@
->  #define FLDTFIFO(f)		(f->reg + 0x24)
->  #define FLECFIFO(f)		(f->reg + 0x28)
->  #define FLTRCR(f)		(f->reg + 0x2C)
-> +#define FLHOLDCR(f)		(f->reg + 0x38)
->  #define	FL4ECCRESULT0(f)	(f->reg + 0x80)
->  #define	FL4ECCRESULT1(f)	(f->reg + 0x84)
->  #define	FL4ECCRESULT2(f)	(f->reg + 0x88)
-> @@ -109,6 +110,15 @@
->  #define TRSTRT		(0x1 << 0)	/* translation start */
->  #define TREND		(0x1 << 1)	/* translation end */
+> @@ -132,6 +132,7 @@ struct sh_flctl {
+>  	int	erase1_page_addr;	/* page_addr in ERASE1 cmd */
+>  	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
+>  	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
+> +	uint32_t flcmncr_val;	/* base value of FLCMNCR */
 > 
-> +/*
-> + * FLHOLDCR control bits
-> + *
-> + * HOLDEN: Bus Occupancy Enable (inverted)
-> + * Enable this bit when the external bus might be used in between
-> transfers. + * If not set and the bus gets used by other modules, a
-> deadlock occurs. + */
-> +#define HOLDEN		(0x1 << 0)
-> +
->  /* FL4ECCCR control bits */
->  #define	_4ECCFA		(0x1 << 2)	/* 4 symbols correct fault */
->  #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
-> @@ -138,6 +148,7 @@ struct sh_flctl {
-> 
->  	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
->  	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
-> +	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
->  };
-> 
->  struct sh_flctl_platform_data {
-> @@ -146,6 +157,7 @@ struct sh_flctl_platform_data {
->  	unsigned long		flcmncr_val;
-> 
->  	unsigned has_hwecc:1;
-> +	unsigned use_holden:1;
->  };
-> 
->  static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
-
+>  	int	hwecc_cant_correct[4];
 -- 
 Regards,
 
