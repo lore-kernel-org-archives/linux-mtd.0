@@ -1,18 +1,17 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rz4Jv-000230-9H
- for linux-mtd@lists.infradead.org; Sun, 19 Feb 2012 10:48:43 +0000
-Received: by lahg1 with SMTP id g1so6722845lah.36
- for <linux-mtd@lists.infradead.org>; Sun, 19 Feb 2012 02:48:41 -0800 (PST)
+ id 1Rz4Yu-0002Su-5j
+ for linux-mtd@lists.infradead.org; Sun, 19 Feb 2012 11:04:13 +0000
+Received: by lahg1 with SMTP id g1so6730093lah.36
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Feb 2012 03:04:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2837466.z8bW9OK9D4@avalon>
+In-Reply-To: <2427717.Or3gUAU8Yx@avalon>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-6-git-send-email-hechtb@gmail.com>
- <2837466.z8bW9OK9D4@avalon>
-Date: Sun, 19 Feb 2012 11:48:41 +0100
-Message-ID: <CABYn4sz+a4wp-pfFvRhK=VMzxzQ9M1fXc73heXss+SN5o8rZew@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] mtd: sh_flctl: Use cached register value for
- FLCMNCR
+ <1328960705-18699-7-git-send-email-hechtb@gmail.com>
+ <2427717.Or3gUAU8Yx@avalon>
+Date: Sun, 19 Feb 2012 12:04:08 +0100
+Message-ID: <CABYn4syza6kL04SkWqgDYBp91hXJzLiAL2V6q+Dno6HDVzyQug@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] mtd: sh_flctl: Add FLHOLDCR register
 From: Bastian Hecht <hechtb@googlemail.com>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -35,96 +34,119 @@ Hello Laurent,
 >
 > Thanks for the patch.
 >
-> On Saturday 11 February 2012 12:45:03 Bastian Hecht wrote:
->> Instead of reading out the register, use a cached value. This will
->> make way for a proper runtime power management implementation.
+> On Saturday 11 February 2012 12:45:04 Bastian Hecht wrote:
+>> Add a register used in new FLCTL hardware and a feature flag for it.
 >>
 >> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 >> ---
->> changelog: I delayed the rtpm patch until the clock code is fixed for
->> board mackerel, so that no "udelay(1);" is needed. Instead I cleaned
->> up the code to use a cached register value. The rtpm code will benefit
->> from it.
+>> changelog: the write to the register has been moved due to patch 5.
 >>
->> =A0drivers/mtd/nand/sh_flctl.c =A0| =A0 15 +++------------
->> =A0include/linux/mtd/sh_flctl.h | =A0 =A01 +
->> =A02 files changed, 4 insertions(+), 12 deletions(-)
+>> =A0drivers/mtd/nand/sh_flctl.c =A0| =A0 =A03 +++
+>> =A0include/linux/mtd/sh_flctl.h | =A0 12 ++++++++++++
+>> =A02 files changed, 15 insertions(+), 0 deletions(-)
 >>
 >> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
->> index 5c3e71f..1af41fd 100644
+>> index 1af41fd..40dda26 100644
 >> --- a/drivers/mtd/nand/sh_flctl.c
 >> +++ b/drivers/mtd/nand/sh_flctl.c
->> @@ -681,16 +681,13 @@ read_normal_exit:
->> =A0static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
->> =A0{
->> =A0 =A0 =A0 struct sh_flctl *flctl =3D mtd_to_flctl(mtd);
->> - =A0 =A0 uint32_t flcmncr_val =3D readl(FLCMNCR(flctl));
->>
->> =A0 =A0 =A0 switch (chipnr) {
->> =A0 =A0 =A0 case -1:
->> - =A0 =A0 =A0 =A0 =A0 =A0 flcmncr_val &=3D ~CE0_ENABLE;
->> - =A0 =A0 =A0 =A0 =A0 =A0 writel(flcmncr_val, FLCMNCR(flctl));
->> + =A0 =A0 =A0 =A0 =A0 =A0 writel(flctl->flcmncr_val, FLCMNCR(flctl));
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> @@ -688,6 +688,8 @@ static void flctl_select_chip(struct mtd_info *mtd, =
+int
+>> chipnr) break;
 >> =A0 =A0 =A0 case 0:
->> - =A0 =A0 =A0 =A0 =A0 =A0 flcmncr_val |=3D CE0_ENABLE;
->> - =A0 =A0 =A0 =A0 =A0 =A0 writel(flcmncr_val, FLCMNCR(flctl));
->> + =A0 =A0 =A0 =A0 =A0 =A0 writel(flctl->flcmncr_val | CE0_ENABLE, FLCMNC=
-R(flctl));
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(flctl->flcmncr_val | CE0_ENABLE, FLCM=
+NCR(flctl));
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (flctl->holden)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(HOLDEN, FLHOLDCR(flctl)=
+);
+>
+> Can't this be done at probe time (maybe in flctl_chip_init_tail()) ? You =
+could
+> then get rid of the flctl->holden field and use platform data directly.
+
+I need this information for runtime pm. I reworked this patch series
+to be without rtpm, but from the next patch on (that's only waiting to
+be posted), I'll want to have it like this.
+In fact this is a design question:
+I can either have a resume/runtime_resume callback whose only job is
+to set FLHOLDCR. or I integrate this into select_chip. The first
+variation saves 1 register write in case of no rtpm activated - the
+second variation makes the code a bit slimmer.
+
+What do you think?
+1. Leave it like this and save the callbacks in the future
+2. Rework it to be set at probe time() and postpone the design decision?
+3. Rework it to be set at probe time() and implement callbacks in the
+upcoming patches?
+
 >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
 >> =A0 =A0 =A0 default:
 >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 BUG();
->
-> Shouldn't you use the cached value in set_cmd_regs() as well ?
-
-Yes that's true. I agree that I should use it on all occasions.
-
->> @@ -748,11 +745,6 @@ static int flctl_verify_buf(struct mtd_info *mtd, c=
-onst
->> u_char *buf, int len) return 0;
->> =A0}
->>
->> -static void flctl_register_init(struct sh_flctl *flctl, unsigned long v=
-al)
->> -{
->> - =A0 =A0 writel(val, FLCMNCR(flctl));
->> -}
->> -
->> =A0static int flctl_chip_init_tail(struct mtd_info *mtd)
->> =A0{
->> =A0 =A0 =A0 struct sh_flctl *flctl =3D mtd_to_flctl(mtd);
->> @@ -851,10 +843,9 @@ static int __devinit flctl_probe(struct platform_de=
-vice
->> *pdev) nand =3D &flctl->chip;
->> =A0 =A0 =A0 flctl_mtd->priv =3D nand;
->> =A0 =A0 =A0 flctl->pdev =3D pdev;
->> + =A0 =A0 flctl->flcmncr_val =3D pdata->flcmncr_val;
+>> @@ -845,6 +847,7 @@ static int __devinit flctl_probe(struct platform_dev=
+ice
+>> *pdev) flctl->pdev =3D pdev;
+>> =A0 =A0 =A0 flctl->flcmncr_val =3D pdata->flcmncr_val;
 >> =A0 =A0 =A0 flctl->hwecc =3D pdata->has_hwecc;
+>> + =A0 =A0 flctl->holden =3D pdata->use_holden;
 >>
->> - =A0 =A0 flctl_register_init(flctl, pdata->flcmncr_val);
->> -
 >> =A0 =A0 =A0 nand->options =3D NAND_NO_AUTOINCR;
 >>
->> =A0 =A0 =A0 /* Set address of hardware control function */
 >> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
->> index e66c393..107fd8a 100644
+>> index 107fd8a..6046443 100644
 >> --- a/include/linux/mtd/sh_flctl.h
 >> +++ b/include/linux/mtd/sh_flctl.h
->> @@ -132,6 +132,7 @@ struct sh_flctl {
->> =A0 =A0 =A0 int =A0 =A0 erase1_page_addr; =A0 =A0 =A0 /* page_addr in ER=
-ASE1 cmd */
->> =A0 =A0 =A0 uint32_t erase_ADRCNT; =A0 =A0 =A0 =A0 =A0/* bits of FLCMDCR=
- in ERASE1 cmd */
->> =A0 =A0 =A0 uint32_t rw_ADRCNT; =A0 =A0 /* bits of FLCMDCR in READ WRITE=
- cmd */
->> + =A0 =A0 uint32_t flcmncr_val; =A0 /* base value of FLCMNCR */
+>> @@ -38,6 +38,7 @@
+>> =A0#define FLDTFIFO(f) =A0 =A0 =A0 =A0 =A0(f->reg + 0x24)
+>> =A0#define FLECFIFO(f) =A0 =A0 =A0 =A0 =A0(f->reg + 0x28)
+>> =A0#define FLTRCR(f) =A0 =A0 =A0 =A0 =A0 =A0(f->reg + 0x2C)
+>> +#define FLHOLDCR(f) =A0 =A0 =A0 =A0 =A0(f->reg + 0x38)
+>> =A0#define =A0 =A0 =A0FL4ECCRESULT0(f) =A0 =A0 =A0 =A0(f->reg + 0x80)
+>> =A0#define =A0 =A0 =A0FL4ECCRESULT1(f) =A0 =A0 =A0 =A0(f->reg + 0x84)
+>> =A0#define =A0 =A0 =A0FL4ECCRESULT2(f) =A0 =A0 =A0 =A0(f->reg + 0x88)
+>> @@ -109,6 +110,15 @@
+>> =A0#define TRSTRT =A0 =A0 =A0 =A0 =A0 =A0 =A0 (0x1 << 0) =A0 =A0 =A0/* t=
+ranslation start */
+>> =A0#define TREND =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(0x1 << 1) =A0 =A0 =A0/*=
+ translation end */
 >>
->> =A0 =A0 =A0 int =A0 =A0 hwecc_cant_correct[4];
+>> +/*
+>> + * FLHOLDCR control bits
+>> + *
+>> + * HOLDEN: Bus Occupancy Enable (inverted)
+>> + * Enable this bit when the external bus might be used in between
+>> transfers. + * If not set and the bus gets used by other modules, a
+>> deadlock occurs. + */
+>> +#define HOLDEN =A0 =A0 =A0 =A0 =A0 =A0 =A0 (0x1 << 0)
+>> +
+>> =A0/* FL4ECCCR control bits */
+>> =A0#define =A0 =A0 =A0_4ECCFA =A0 =A0 =A0 =A0 (0x1 << 2) =A0 =A0 =A0/* 4=
+ symbols correct fault */
+>> =A0#define =A0 =A0 =A0_4ECCEND =A0 =A0 =A0 =A0(0x1 << 1) =A0 =A0 =A0/* 4=
+ symbols end */
+>> @@ -138,6 +148,7 @@ struct sh_flctl {
+>>
+>> =A0 =A0 =A0 unsigned page_size:1; =A0 /* NAND page size (0 =3D 512, 1 =
+=3D 2048) */
+>> =A0 =A0 =A0 unsigned hwecc:1; =A0 =A0 =A0 /* Hardware ECC (0 =3D disable=
+d, 1 =3D enabled) */
+>> + =A0 =A0 unsigned holden:1; =A0 =A0 =A0/* Hardware has FLHOLDCR and HOL=
+DEN is set */
+>> =A0};
+>>
+>> =A0struct sh_flctl_platform_data {
+>> @@ -146,6 +157,7 @@ struct sh_flctl_platform_data {
+>> =A0 =A0 =A0 unsigned long =A0 =A0 =A0 =A0 =A0 flcmncr_val;
+>>
+>> =A0 =A0 =A0 unsigned has_hwecc:1;
+>> + =A0 =A0 unsigned use_holden:1;
+>> =A0};
+>>
+>> =A0static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
+>
 > --
 > Regards,
 >
 > Laurent Pinchart
 
-thanks,
+thanks for all the reviews!
 
  Bastian
