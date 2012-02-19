@@ -1,17 +1,17 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rz46T-0001e4-9d
- for linux-mtd@lists.infradead.org; Sun, 19 Feb 2012 10:34:52 +0000
-Received: by lahg1 with SMTP id g1so6717047lah.36
- for <linux-mtd@lists.infradead.org>; Sun, 19 Feb 2012 02:34:44 -0800 (PST)
+ id 1Rz4IG-0001tF-5a
+ for linux-mtd@lists.infradead.org; Sun, 19 Feb 2012 10:47:00 +0000
+Received: by lahg1 with SMTP id g1so6722204lah.36
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Feb 2012 02:46:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1554023.Gzzuis43Tg@avalon>
+In-Reply-To: <5473968.KjMqXsbqus@avalon>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1328960705-18699-2-git-send-email-hechtb@gmail.com>
- <1554023.Gzzuis43Tg@avalon>
-Date: Sun, 19 Feb 2012 11:34:44 +0100
-Message-ID: <CABYn4swJxi_30duDZnYzBTU8uR0bsVd-9XDEEQDsuL8xiiHypA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] mtd: sh_flctl: Expand FLCMNCR register bit field
+ <1328960705-18699-4-git-send-email-hechtb@gmail.com>
+ <5473968.KjMqXsbqus@avalon>
+Date: Sun, 19 Feb 2012 11:46:58 +0100
+Message-ID: <CABYn4swSzkOgCe5Fe=jVP_j5ywA4xRZTzXFYS=BzaUMscri0cQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] mtd: sh_flctl: Expand the READID command to 8 bytes
 From: Bastian Hecht <hechtb@googlemail.com>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -29,86 +29,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hello Laurent,
 
-thanks for reviewing this patch.
-
 2012/2/18 Laurent Pinchart <laurent.pinchart@ideasonboard.com>:
 > Hi Bastian,
 >
 > Thanks for the patch.
 >
-> On Saturday 11 February 2012 12:44:59 Bastian Hecht wrote:
->> Add support for a new hardware generation. The meaning of some bits
->> of the FLCMNCR register changed, so some new defines are added
->> parallel to the existing ones to keep backward compatibility.
->>
->> The defines allow to choose an appropriate clocking scheme.
+> On Saturday 11 February 2012 12:45:01 Bastian Hecht wrote:
+>> The nand base code wants to read out 8 bytes in the READID command.
+>> Reflect this in the driver code.
 >>
 >> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
->
-> Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
 >> ---
->> changelog: code stays the same, just the description is slightly correct=
-ed.
+>> changelog: exactly same as patch v1.
 >>
->> =A0include/linux/mtd/sh_flctl.h | =A0 24 ++++++++++++++++++++++++
->> =A01 files changed, 24 insertions(+), 0 deletions(-)
+>> =A0drivers/mtd/nand/sh_flctl.c | =A0 13 ++++++++++---
+>> =A01 files changed, 10 insertions(+), 3 deletions(-)
 >>
->> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
->> index 9cf4c4c..e66c393 100644
->> --- a/include/linux/mtd/sh_flctl.h
->> +++ b/include/linux/mtd/sh_flctl.h
->> @@ -67,6 +67,30 @@
->> =A0#define =A0 =A0 =A0CE0_ENABLE =A0 =A0 =A0(0x1 << 3) =A0 =A0 =A0/* Chi=
-p Enable 0 */
->> =A0#define =A0 =A0 =A0TYPESEL_SET =A0 =A0 (0x1 << 0)
->>
->> +/*
->> + * Clock settings using the PULSEx registers from FLCMNCR
->> + *
->> + * Some hardware uses bits called PULSEx instead of FCKSEL_E and QTSEL_=
-E
->> + * to control the clock divider used between the High-Speed Peripheral
->> Clock + * and the FLCTL internal clock. If so, use CLK_8_BIT_xxx for
->> connecting 8 bit + * and CLK_16_BIT_xxx for connecting 16 bit bus bandwi=
-th
->> NAND chips. For the 16 + * bit version the divider is seperate for the
->> pulse width of high and low + * signals.
->> + */
->> +#define PULSE3 =A0 =A0 =A0 (0x1 << 27)
->> +#define PULSE2 =A0 =A0 =A0 (0x1 << 17)
->> +#define PULSE1 =A0 =A0 =A0 (0x1 << 15)
->> +#define PULSE0 =A0 =A0 =A0 (0x1 << 9)
->> +#define CLK_8_BIT_0_5HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PULS=
-E1
->> +#define CLK_8_BIT_1HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00x=
-0
->> +#define CLK_8_BIT_1_5HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(PUL=
-SE1 | PULSE2)
->> +#define CLK_8_BIT_2HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PU=
-LSE0
->> +#define CLK_8_BIT_3HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(P=
-ULSE0 | PULSE1 | PULSE2)
->> +#define CLK_8_BIT_4HP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(P=
-ULSE0 | PULSE2)
->> +#define CLK_16_BIT_6HP_LOW_2HP_HIGH =A0PULSE0
->> +#define CLK_16_BIT_9HP_LOW_3HP_HIGH =A0(PULSE0 | PULSE1 | PULSE2)
->> +#define CLK_16_BIT_12HP_LOW_4HP_HIGH (PULSE0 | PULSE2)
->> +
+>> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+>> index 8c97367..407acb5 100644
+>> --- a/drivers/mtd/nand/sh_flctl.c
+>> +++ b/drivers/mtd/nand/sh_flctl.c
+>> @@ -320,6 +320,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint3=
+2_t
+>> cmd, uint32_t flcmcdr_va break;
+>> =A0 =A0 =A0 case NAND_CMD_READID:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 flcmncr_val &=3D ~SNAND_E;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 flcmdcr_val |=3D CDSRC_E;
 >
-> This is nitpicking, but you could shorten the names to something like
-> CLK_16B_12L_4P (at the expense of readability though). Feel free to ignor=
-e
-> this.
+> this bit is marked as reserved in my SH7372 documentation, and should be =
+set
+> to 0. Won't this break compatibility with the SH7372 ?
 
-Well yeah - I felt a bit unsure about the verbosity too, so I'll take
-your suggestion, thanks.
+It's flcm*D*cr not flcmncr. Took me some time to separate these
+beautiful abbreviations too ;)
+It's to tell the flctl to save the read in the fifo instead of a register.
 
->> =A0/* FLCMDCR control bits */
->> =A0#define ADRCNT2_E =A0 =A0(0x1 << 31) =A0 =A0 /* 5byte address enable =
-*/
->> =A0#define ADRMD_E =A0 =A0 =A0 =A0 =A0 =A0 =A0(0x1 << 26) =A0 =A0 /* Sec=
-tor address access */
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 addr_len_bytes =3D ADRCNT_1;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> =A0 =A0 =A0 case NAND_CMD_STATUS:
+>> @@ -559,12 +560,18 @@ static void flctl_cmdfunc(struct mtd_info *mtd,
+>> unsigned int command,
+>>
+>> =A0 =A0 =A0 case NAND_CMD_READID:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 set_cmd_regs(mtd, command, command);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 set_addr(mtd, 0, 0);
+>>
+>> - =A0 =A0 =A0 =A0 =A0 =A0 flctl->read_bytes =3D 4;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 /* READID is always performed using an 8-bit b=
+us */
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (flctl->chip.options & NAND_BUSWIDTH_16)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 column <<=3D 1;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 set_addr(mtd, column, 0);
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 flctl->read_bytes =3D 8;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(flctl->read_bytes, FLDTCNTR(flctl)); =
+/* set read size */
+>> + =A0 =A0 =A0 =A0 =A0 =A0 empty_fifo(flctl);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 start_translation(flctl);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 read_datareg(flctl, 0); /* read and end */
+>> + =A0 =A0 =A0 =A0 =A0 =A0 read_fiforeg(flctl, flctl->read_bytes, 0);
+>
+> Not saying it's a bad thing, but why do you switch from read_datareg() to
+> read_fiforeg() ?
+
+We can only read 4 bytes from a register read, while we need 8 bytes
+for the ID. The extra 4 bytes are used to determine the correct NAND
+chip size in nand_base.c.
+
+>> + =A0 =A0 =A0 =A0 =A0 =A0 wait_completion(flctl);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>>
+>> =A0 =A0 =A0 case NAND_CMD_ERASE1:
 > --
 > Regards,
 >
