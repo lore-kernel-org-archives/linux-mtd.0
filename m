@@ -1,25 +1,22 @@
-Received: from 11.mo5.mail-out.ovh.net ([46.105.47.167]
- helo=mo5.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1RznZU-0005CR-Jp
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2012 11:07:53 +0000
-Received: from mail98.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo5.mail-out.ovh.net (Postfix) with SMTP id 1CC26FFABB1
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2012 12:10:22 +0100 (CET)
-Date: Tue, 21 Feb 2012 12:00:04 +0100
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 5/6 V3] atmel/nand: add DT support
-Message-ID: <20120221110004.GC9371@game.jcrosoft.org>
-References: <1328524512-18159-2-git-send-email-plagnioj@jcrosoft.com>
- <1329817573-6473-1-git-send-email-plagnioj@jcrosoft.com>
- <4F436AF5.5030104@atmel.com>
+Received: from cerga.lunarpages.com ([67.210.123.115])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Rzr8k-0002Db-5Y
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2012 14:56:30 +0000
+Received: from [189.136.20.204] (helo=[10.25.3.10])
+ by cerga.lunarpages.com with esmtpa (Exim 4.69)
+ (envelope-from <elopez@softel.net.mx>) id 1Rzr8S-00019B-Bf
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2012 06:56:08 -0800
+Message-ID: <4F435C55.9000402@softel.net.mx>
+Date: Tue, 21 Feb 2012 08:56:53 +0000
+From: Esteban Lopez <elopez@softel.net.mx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4F436AF5.5030104@atmel.com>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: Re: df -h, du -ahx and flash size not match
+References: <4F4285AF.30300@softel.net.mx>
+ <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
+In-Reply-To: <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10:59 Tue 21 Feb     , Nicolas Ferre wrote:
-> On 02/21/2012 10:46 AM, Jean-Christophe PLAGNIOL-VILLARD :
-> > Use a local copy of board informatin and fill with DT data.
-> > 
-> > Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> > Acked-by: Grant Likely <grant.likely@secretlab.ca>
-> > Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> > Cc: devicetree-discuss@lists.ozlabs.org
-> > Cc: linux-mtd@lists.infradead.org
-> > ---
-> > v3:
-> > 
-> > 	protect against !CONFIG_OF
-> > 
-> > Best Regards,
-> > J.
-> >  .../devicetree/bindings/mtd/atmel-nand.txt         |   41 +++++++
-> >  arch/arm/boot/dts/at91sam9g20.dtsi                 |   17 +++
-> >  arch/arm/boot/dts/at91sam9g45.dtsi                 |   17 +++
-> >  arch/arm/boot/dts/at91sam9m10g45ek.dts             |   26 +++++-
-> >  arch/arm/boot/dts/usb_a9g20.dts                    |   46 ++++++++-
-> >  arch/arm/mach-at91/at91sam9x5.c                    |    5 -
-> 
-> As we will put this series on top of 9x5, we may also add the entries in
-> at91sam9x5.dtsi / at91sam9x5cm.dtsi ...
-will add the sam9x5 support on an other patch
+I read the UBIFS FAQ and UBIFS documentation but all the explanation is about free space. I don't understand why df -h reports 236M of total space if I have 469762048 bytes in this partition.
 
-Best Regards,
-J.
-> 
-> >  arch/arm/mach-at91/board-dt.c                      |   52 ---------
-> >  drivers/mtd/nand/atmel_nand.c                      |  113 ++++++++++++++++----
-> >  8 files changed, 238 insertions(+), 79 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> 
-> Otherwise,
-> 
-> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-> 
-> Bye,
-> -- 
-> Nicolas Ferre
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+rootfs                236M  138M   98M  59% /
+
+cat /proc/mtd
+
+dev:    size   erasesize  name
+
+mtd0: 04000000 00020000 "Partition 1"
+
+mtd1: 1c000000 00020000 "Partition 2"
+
+Sorry if this is a obvious answer but I will apreciate your help to understand
+
+
+El 02/20/2012 11:47 PM, Brian Norris escribió:
+> On Mon, Feb 20, 2012 at 9:41 AM, Esteban Lopez<elopez@softel.net.mx>  wrote:
+>> If I create big files and I run du -ahx command over / I get a  total of
+>> 593M
+>>   of info
+>> Why the size not match ? why I can have 593M in my ROOTFS if I only have
+>> 469762048 bytes?? Why df -h report 161M used in rootfs if du report 593M?
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
+>
