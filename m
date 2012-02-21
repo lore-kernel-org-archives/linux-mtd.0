@@ -1,22 +1,23 @@
-Received: from cerga.lunarpages.com ([67.210.123.115])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Rzr8k-0002Db-5Y
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2012 14:56:30 +0000
-Received: from [189.136.20.204] (helo=[10.25.3.10])
- by cerga.lunarpages.com with esmtpa (Exim 4.69)
- (envelope-from <elopez@softel.net.mx>) id 1Rzr8S-00019B-Bf
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2012 06:56:08 -0800
-Message-ID: <4F435C55.9000402@softel.net.mx>
-Date: Tue, 21 Feb 2012 08:56:53 +0000
-From: Esteban Lopez <elopez@softel.net.mx>
+From: "Nori, Sekhar" <nsekhar@ti.com>
+To: "Manjunathappa, Prakash" <prakash.pm@ti.com>,
+ "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 0/3] Moving EMIF driver to MFD framework
+Date: Tue, 21 Feb 2012 16:43:00 +0000
+Message-ID: <DF0F476B391FA8409C78302C7BA518B6317C9199@DBDE01.ent.ti.com>
+References: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
+ <A73F36158E33644199EB82C5EC81C7BC31769AF1@DBDE01.ent.ti.com>
+In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC31769AF1@DBDE01.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: df -h, du -ahx and flash size not match
-References: <4F4285AF.30300@softel.net.mx>
- <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
-In-Reply-To: <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I read the UBIFS FAQ and UBIFS documentation but all the explanation is about free space. I don't understand why df -h reports 236M of total space if I have 469762048 bytes in this partition.
+Hi Prakash,
 
-rootfs                236M  138M   98M  59% /
+On Tue, Feb 21, 2012 at 11:54:56, Manjunathappa, Prakash wrote:
+> Hi,
+>=20
+> I do not see any comments on this series. Can it be applied?
 
-cat /proc/mtd
+I have not yet gotten to reviewing the davinci parts of this series.
+I have a backlog and am clearing it oldest first. Hope to get to this
+by this week or early next week.
 
-dev:    size   erasesize  name
-
-mtd0: 04000000 00020000 "Partition 1"
-
-mtd1: 1c000000 00020000 "Partition 2"
-
-Sorry if this is a obvious answer but I will apreciate your help to understand
-
-
-El 02/20/2012 11:47 PM, Brian Norris escribió:
-> On Mon, Feb 20, 2012 at 9:41 AM, Esteban Lopez<elopez@softel.net.mx>  wrote:
->> If I create big files and I run du -ahx command over / I get a  total of
->> 593M
->>   of info
->> Why the size not match ? why I can have 593M in my ROOTFS if I only have
->> 469762048 bytes?? Why df -h report 161M used in rootfs if du report 593M?
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
->
+Thanks,
+Sekhar
