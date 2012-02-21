@@ -1,22 +1,17 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>,
- "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 0/3] Moving EMIF driver to MFD framework
-Date: Tue, 21 Feb 2012 06:24:56 +0000
-Message-ID: <A73F36158E33644199EB82C5EC81C7BC31769AF1@DBDE01.ent.ti.com>
-References: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
-In-Reply-To: <1328771908-32527-1-git-send-email-prakash.pm@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4F43625E.7070908@atmel.com>
+Date: Tue, 21 Feb 2012 10:22:38 +0100
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Cc: Russell King <linux@arm.linux.org.uk>, "Nori, Sekhar" <nsekhar@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, Samuel Ortiz <sameo@linux.intel.com>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [PATCH 5/6 V2] atmel/nand: add DT support
+References: <1327727444-23908-1-git-send-email-plagnioj@jcrosoft.com>
+ <1328524512-18159-2-git-send-email-plagnioj@jcrosoft.com>
+ <4F30FD4B.4050501@atmel.com> <20120207115306.GF15647@game.jcrosoft.org>
+In-Reply-To: <20120207115306.GF15647@game.jcrosoft.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 02/07/2012 12:53 PM, Jean-Christophe PLAGNIOL-VILLARD :
+> On 11:30 Tue 07 Feb     , Nicolas Ferre wrote:
+>> On 02/06/2012 11:35 AM, Jean-Christophe PLAGNIOL-VILLARD :
+>>> use a local copy of board informatin and fill with DT data
+>>>
+>>> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+>>> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+>>> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+>>> Cc: devicetree-discuss@lists.ozlabs.org
+>>> Cc: linux-mtd@lists.infradead.org
+>>
+>> [..]
+>>
+>>> +static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
+>>> +					 struct device_node *np)
+>>
+>> Maybe you will need to protect this function in case of !DT builds: I
+>> suspect that some of the of_xxxxx() calls are not provided if !CONFIG_OF.
+> no-need on the of_ function are static inline it !CONFIG_OF
 
-I do not see any comments on this series. Can it be applied?
+Sorry to come back to this but:
 
-Thanks,
-Prakash
+of_get_nand_ecc_mode(np);
+of_get_nand_on_flash_bbt(np);
 
-On Thu, Feb 09, 2012 at 12:48:25, Manjunathappa, Prakash wrote:
-> Patch series are based on the discussion and concerns expressed in
-> davinci-linux-open-source community. Here is the link for the same:
-> http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-=
-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
->=20
-> Manjunathappa, Prakash (3):
->   arm:davinci: prepare to move aemif driver to drivers/mfd
->   arm:davinci: move emif driver to drivers/mfd from mach-davinci folder
->   arm:davinci: move NAND and NOR devices as aemif MFD slaves
->=20
->  arch/arm/Kconfig                                   |    1 +
->  arch/arm/mach-davinci/Makefile                     |    2 +-
->  arch/arm/mach-davinci/aemif.c                      |  133 -------------
->  arch/arm/mach-davinci/board-da830-evm.c            |   33 +++-
->  arch/arm/mach-davinci/board-da850-evm.c            |   56 +++---
->  arch/arm/mach-davinci/board-dm355-evm.c            |   33 +++-
->  arch/arm/mach-davinci/board-dm355-leopard.c        |   35 +++-
->  arch/arm/mach-davinci/board-dm365-evm.c            |   34 +++-
->  arch/arm/mach-davinci/board-dm644x-evm.c           |  175 ++++++++++----=
----
->  arch/arm/mach-davinci/board-dm646x-evm.c           |   32 +++-
->  arch/arm/mach-davinci/board-mityomapl138.c         |   34 +++-
->  arch/arm/mach-davinci/board-neuros-osd2.c          |    1 +
->  arch/arm/mach-davinci/board-sffsdr.c               |   34 +++-
->  drivers/mfd/Makefile                               |    1 +
->  drivers/mfd/davinci_aemif.c                        |  206 ++++++++++++++=
-++++++
->  drivers/mtd/nand/davinci_nand.c                    |    2 +-
->  .../aemif.h =3D> include/linux/mfd/davinci_aemif.h   |   14 ++
->  17 files changed, 527 insertions(+), 299 deletions(-)
->  delete mode 100644 arch/arm/mach-davinci/aemif.c
->  create mode 100644 drivers/mfd/davinci_aemif.c
->  rename arch/arm/mach-davinci/include/mach/aemif.h =3D> include/linux/mfd=
-/davinci_aemif.h (74%)
->=20
->=20
+for example are not available in case of non-DT compilation: so we must
+protect the atmel_of_init_port() against this error.
+
+Can you please rework another patch.
+
+Bye,
+-- 
+Nicolas Ferre
