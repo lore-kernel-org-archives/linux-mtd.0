@@ -1,14 +1,21 @@
-Received: from nbd.name ([46.4.11.11])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S0c26-0000ex-Bb
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2012 17:00:43 +0000
-From: John Crispin <blogic@openwrt.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: MIPS: lantiq: reintroduce support for cmdline partitions
-Date: Thu, 23 Feb 2012 17:59:49 +0100
-Message-Id: <1330016389-20973-1-git-send-email-blogic@openwrt.org>
-Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
- linux-mtd@lists.infradead.org, John Crispin <blogic@openwrt.org>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S0eRl-0005r4-PP
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2012 19:35:22 +0000
+Received: by yenm4 with SMTP id m4so870675yen.36
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2012 11:35:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4F45FE0C.3070807@softel.net.mx>
+References: <4F4285AF.30300@softel.net.mx>
+ <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
+ <4F45FE0C.3070807@softel.net.mx>
+Date: Thu, 23 Feb 2012 11:35:19 -0800
+Message-ID: <CAN8TOE_uX0zY7vikXNUgBjU6Lyp5tVyOEpcDydsFeOt8uAzT-A@mail.gmail.com>
+Subject: Re: df -h, du -ahx and flash size not match
+From: Brian Norris <computersforpeace@gmail.com>
+To: Esteban Lopez <elopez@softel.net.mx>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+On Thu, Feb 23, 2012 at 12:51 AM, Esteban Lopez <elopez@softel.net.mx> wrot=
+e:
+> Hello Brian
+>
+> After re read the link and make some test I found that -c option in my
+> mkfs.ubi command was the reason because I had 236M in total space. I
+> modified this parameter from 2048 to 3570 and now I have a =A0volume of 4=
+00
+> MiB
+>
+> Now is clear for me how interpreted the df and du output.
+>
+> Thank you for your help!!!!
 
-Since commit ca97dec2ab5c87e9fbdf7e882e1820004a3966fa the
-command line parsing of MTD partitions does not work anymore.
+You're welcome for the small pointer :)
 
-Signed-off-by: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
-Signed-off-by: John Crispin <blogic@openwrt.org>
----
- drivers/mtd/maps/lantiq-flash.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+BTW, when you are corresponding with people on mailing lists, it's
+good practice to Reply-All. That way, you CC the mailing list and
+others can see if/how you fixed your problems.
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 395ebfe..ccc6954 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -45,6 +45,7 @@ struct ltq_mtd {
- };
- 
- static char ltq_map_name[] = "ltq_nor";
-+static const char *ltq_probe_types[] __devinitconst = { "cmdlinepart", NULL };
- 
- static map_word
- ltq_read16(struct map_info *map, unsigned long adr)
-@@ -168,7 +169,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	cfi->addr_unlock1 ^= 1;
- 	cfi->addr_unlock2 ^= 1;
- 
--	err = mtd_device_parse_register(ltq_mtd->mtd, NULL, 0,
-+	err = mtd_device_parse_register(ltq_mtd->mtd, ltq_probe_types, 0,
- 			ltq_mtd_data->parts, ltq_mtd_data->nr_parts);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to add partitions\n");
--- 
-1.7.7.1
+Brian
