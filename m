@@ -1,9 +1,9 @@
 Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S0qIq-0005mG-1L
- for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 08:14:56 +0000
-Message-ID: <4F4746E8.9040002@esd.eu>
-Date: Fri, 24 Feb 2012 09:14:32 +0100
+ id 1S0qKr-0005pr-QV
+ for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 08:17:02 +0000
+Message-ID: <4F474777.4080408@esd.eu>
+Date: Fri, 24 Feb 2012 09:16:55 +0100
 From: Matthias Fuchs <matthias.fuchs@esd.eu>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
@@ -38,4 +38,8 @@ On 02/13/2012 02:57 PM, Artem Bityutskiy wrote:
 So I was thinking that a ubirename is not really an update and expected the rename
 op to work even on a mounted fs.
 
-I solved the issue by booting an initramfs first. There I do the rename "rootfs2" exists and then switch root 
+I solved the issue by booting an initramfs first. 
+There I do the rename "rootfs2" -> "rootfs1" and then switch root 
+to "rootfs1". 
+
+Matthias
