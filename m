@@ -1,16 +1,16 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
+Received: from antispam02.maxim-ic.com ([205.153.101.183])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S0xa8-0007Az-6W
- for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 16:01:17 +0000
+ id 1S0xu4-0000Uh-EB
+ for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 16:21:53 +0000
 From: Brian Foster <brian.foster@maxim-ic.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Re: UBIFS kernel oops
-Date: Fri, 24 Feb 2012 16:58:52 +0100
+Subject: Re: UBI: infinite error loop
+Date: Fri, 24 Feb 2012 17:16:02 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <201202241658.52516.brian.foster@maxim-ic.com>
-Cc: nigel.hathaway@node-h.com
+Content-Transfer-Encoding: base64
+Message-ID: <201202241717.04475.brian.foster@maxim-ic.com>
+Cc: kpa_info@yahoo.fr, matthieu.castet@parrot.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nigel.hathaway wrote:
-> We are seeing the following:
-> 
-> Oops[#1]:
->[ ... ]
-> PrId  : 59019381 (MIPS 24Kc)
-
- Nice to see another MIPS user....!  ;-)
-
->[ ... ]
-> The kernel version is 3.6.31.12 with real-time extensions [ ... ]
-
- This is a *guess*, and quite possibly not a very
- good one (Sorry!).  Do you have commits?:
-
-   cd1510cb5 random: Remove unused inode variable
-   a996996dd random: drop weird m_time/a_time manipulation
-
- We had a devil of a time on our 2.6.30 MIPS system
- with a very(!) *vaguely* similar-ish issue until I
- back-ported those commits.  They may already be in
- your 2.6.31, I'm not sure.
-
- I also back-ported two other commits, albeit these
- are not known to be related to any problems we had:
-
-   b86a2c56e UBI: do not switch to R/O mode on read errors
-   90bf0265e UBI: introduce new constants
-
- Very probably a Red Herring, Sorry!
-cheers,
-	-blf-
-
--- 
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated Products      |  Web:  http://www.maxim-ic.com/
+bWF0dGhpZXUuY2FzdGV0QHBhcnJvdC5jb20gd3JvdGU6Cj4gUGF0cmljayBhIMOpY3JpdCA6Cj4g
+PiBXaGVuIEkgYW0gZG9pbmcgYW4gdGhlIHViaWF0dGFjaCAtcCAvZGV2L210ZDQgY29tbWFuZAo+
+ID4gSSBoYXZlIHRoZSBmb2xsb3dpbmcgaW5maW5pdGUgZXJyb3IgbG9vcDoKPlsgLi4uIF0KPiBM
+b29rIGxpa2UgaXQgZG9lc24ndCBoYW5kbGUgc3VicGFnZSByZWFkaW5nIDoKPiB5b3UgaGF2ZSBl
+Y2MgZXJyb3Igd2hlbiByZWFkaW5nIDUxMiBieXRlcyBhdCBvZmZzZXQgNTEyLgoKIEFsc28sIGtl
+ZXAgaW4gbWluZCByZWFkLWFmdGVyLXdyaXRlIGNoZWNrcyBkb24ndCB3b3JrIHdpdGggc3VicGFn
+ZXMsCiBodHRwOi8vd3d3LmxpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2ZhcS91YmkuaHRtbCNMX3N1
+YnBhZ2VfdmVyaWZ5X2ZhaWwK4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkkgZ2V0ICJ1YmlfaW9fd3JpdGU6IGVycm9yIC01IHdo
+aWxlIHdyaXRpbmcgNTEyIGJ5dGVzIHRvIFBFQiA1OjUxMiIKCklmIHlvdSBoYXZlIGEgMjA0OCBi
+eXRlcyBwZXIgTkFORCBwYWdlIGRldmljZSwgYW5kIGhhdmUKQ09ORklHX01URF9OQU5EX1ZFUklG
+WV9XUklURSBlbmFibGVkIGluIHlvdXIga2VybmVsLAp5b3Ugd2lsbCBuZWVkIHRvIHR1cm4gaXQg
+b2ZmLiAgVGhlIGNvZGUgZG9lcyBub3QgY3VycmVudGx5CihhcyBvZiAyLjYuMjYpIHBlcmZvcm0g
+dmVyaWZpY2F0aW9uIG9mIHN1Yi1wYWdlIHdyaXRlcwpjb3JyZWN0bHkuICBBcyBVQkkgaXMgb25l
+IG9mIHRoZSBmZXcgdXNlcnMgb2Ygc3ViLXBhZ2UKd3JpdGVzLCBub3QgbXVjaCBlbHNlIHNlZW1z
+IHRvIGJlIGFmZmVjdGVkIGJ5IHRoaXMgYnVnLgrilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKCiBZRVMsIEkgcmVhbGl6ZSB0aGF0
+IGlzIG5vdCB5b3VyIGVycm9yLCBidXQgdGhpcyB3YXMKIHNvbWV0aGluZyB0aGF0IGJhZGx5IHRy
+aXBwZWQgdXMgdXAgdW50aWwgYW4gaW50ZW5zZQogc2VhcmNoLWVuZ2luZSBzZXNzaW9uIC4uLi4g
+IDstXCAgKEkgaGF2ZSBubyBpZGVhIGlmCiB0aGlzIGhhcyBzaW5jZSBiZWVuIGZpeGVkIG9yIG5v
+dD8pCgpjaGVlcnMhCgktYmxmLQoKLS0gCkJyaWFuIEZvc3RlcgpQcmluY2lwYWwgTVRTLCBTb2Z0
+d2FyZSAgICAgICAgfCAgTGEgQ2lvdGF0LCBGcmFuY2UKTWF4aW0gSW50ZWdyYXRlZCBQcm9kdWN0
+cyAgICAgIHwgIFdlYjogIGh0dHA6Ly93d3cubWF4aW0taWMuY29tLwo=
