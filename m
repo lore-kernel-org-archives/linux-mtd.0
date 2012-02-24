@@ -1,18 +1,16 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2t3Y-0000ER-4Z
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 23:35:36 +0000
-In-Reply-To: <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
-References: <OFB4D94431.92097836-ONC12579B3.002C764D-C12579B3.00314167@transmode.se>
- <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-To: Paul Parsons <lost.distance@yahoo.com>
-Message-ID: <OF3A221559.E83A6FE6-ONC12579B3.0080422F-C12579B3.008197D4@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 1 Mar 2012 00:35:30 +0100
+Received: from antispam01.maxim-ic.com ([205.153.101.182])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S0xa8-0007Az-6W
+ for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 16:01:17 +0000
+From: Brian Foster <brian.foster@maxim-ic.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: UBIFS kernel oops
+Date: Fri, 24 Feb 2012 16:58:52 +0100
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <201202241658.52516.brian.foster@maxim-ic.com>
+Cc: nigel.hathaway@node-h.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+nigel.hathaway wrote:
+> We are seeing the following:
+> 
+> Oops[#1]:
+>[ ... ]
+> PrId  : 59019381 (MIPS 24Kc)
 
-Paul Parsons <lost.distance@yahoo.com> wrote on 2012/02/29 18:22:39:
->
-> --- On Wed, 29/2/12, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:
-> > If erase is suspended, chip->state is changed which will
-> > keep the function in
-> > the for(;;) loop. Once erase has been resumed again
-> > chip->state will change back.
-> > It seems to me that chip->state and SR.6 are mutally
-> > exclusive? I can not see how
-> > you can get to
-> >     status = map_read(map, cmd_adr);
-> >     if (map_word_andequal(map, status,
-> > status_OK, status_OK))
-> > if the the erase has been suspended.
->
-> OK, I understand. Let me demonstrate.
->
-> I Added the following debug to the original linux-3.3-rc5
-> drivers/mtd/chips/cfi_cmdset_0001.c file (i.e. without my patch):
+ Nice to see another MIPS user....!  ;-)
 
-This looks like a erase resume problem, cfi driver issues a resume command but the
-chip fails or is slow to respond. I remember someone having a similar problem
-some time ago. Don't think we got to bottom of it though, look for subject:
-  Numonyx NOR and chip->mutex bug?
+>[ ... ]
+> The kernel version is 3.6.31.12 with real-time extensions [ ... ]
 
-Try adding extra read status cmds around resume, check if SR.6 is cleared too.
-Enable all driver debug code and look for the first sign of trouble.
+ This is a *guess*, and quite possibly not a very
+ good one (Sorry!).  Do you have commits?:
 
-That said, there seems to be something fishy going on with UBI as it is
-erasing the same failing block over and over again.
-Also, it would probably be good to add test of SR.6 in some places, just
-to make sure the flash does what the driver wants it to do.
+   cd1510cb5 random: Remove unused inode variable
+   a996996dd random: drop weird m_time/a_time manipulation
 
- Jocke
+ We had a devil of a time on our 2.6.30 MIPS system
+ with a very(!) *vaguely* similar-ish issue until I
+ back-ported those commits.  They may already be in
+ your 2.6.31, I'm not sure.
+
+ I also back-ported two other commits, albeit these
+ are not known to be related to any problems we had:
+
+   b86a2c56e UBI: do not switch to R/O mode on read errors
+   90bf0265e UBI: introduce new constants
+
+ Very probably a Red Herring, Sorry!
+cheers,
+	-blf-
+
+-- 
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated Products      |  Web:  http://www.maxim-ic.com/
