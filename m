@@ -1,20 +1,19 @@
-Received: from sarigua.uspnet.usp.br ([200.144.190.149])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S0hgB-0006OB-N6
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2012 23:02:28 +0000
-Message-ID: <20120223205541.19461lt1odmerdnx@webmail.usp.br>
-Date: Thu, 23 Feb 2012 20:55:41 -0200
-From: DIAMOND FINANCIAL SERVICE <tolomei@usp.br>
-To: undisclosed-recipients:;
-Subject: 3% BUSINESS LOAN OFFER
+Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S0qIq-0005mG-1L
+ for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 08:14:56 +0000
+Message-ID: <4F4746E8.9040002@esd.eu>
+Date: Fri, 24 Feb 2012 09:14:32 +0100
+From: Matthias Fuchs <matthias.fuchs@esd.eu>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Disposition: inline
+To: dedekind1@gmail.com
+Subject: Re: Updating UBIFS rootfilesystem
+References: <4F326E27.7020407@esd.eu>
+ <1329141475.22240.151.camel@sauron.fi.intel.com>
+In-Reply-To: <1329141475.22240.151.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Reply-To: diamondfinancialloanservice@qualityservice.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 02/13/2012 02:57 PM, Artem Bityutskiy wrote:
+> On Wed, 2012-02-08 at 13:44 +0100, Matthias Fuchs wrote:
+>> Hi,
+>>
+>> is there an elegant way to update an UBIFS rootfilesystem?
+>>
+>> Let's say I have enough flash space for my actual rootfilesystem
+>> (rootfs1) and a new version (rootfs2). So while running from rootfs1
+>> I updated rootfs2 volume with a new rootfilesystem.
+> 
+> I you cannot update a mounted fs - you have to unmount it first. If you
+> are able to do this, you should be able to ubirename.
+So I was thinking that a ubirename is not really an update and expected the rename
+op to work even on a mounted fs.
 
-We are Diamond Financial Loan service, we are registered and  
-guaranteed loan company here in Europe, and we give out loans to  
-individuals, companies, government establishments, churches and  
-business organizations.Are you in need of a loan for any purpose? Are  
-you in a financial problem? Do you need financial solution? Diamond  
-loans is the solution to all your financial problems, our loans are  
-easy, cheap, and quick. Contact us today for that loan that you  
-desire, we can arrange any loan to suit your budget at only 3%  
-interest rate,minimum of 5,000euros to maximum of 5 millions euro.If  
-interested, contact us back immediately.
-
-Best Regards
-MRS WHITE GOLDMAN
+I solved the issue by booting an initramfs first. There I do the rename "rootfs2" exists and then switch root 
