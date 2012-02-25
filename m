@@ -1,22 +1,26 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S0wyJ-0002T9-NL
- for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 15:22:12 +0000
-Message-ID: <4F47AB21.1080807@parrot.com>
-Date: Fri, 24 Feb 2012 16:22:09 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S19Gw-0007tT-DF
+ for linux-mtd@lists.infradead.org; Sat, 25 Feb 2012 04:30:15 +0000
+Received: by ggnf2 with SMTP id f2so1594178ggn.36
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Feb 2012 20:30:09 -0800 (PST)
 MIME-Version: 1.0
-To: Patrick <kpa_info@yahoo.fr>
-Subject: Re: Re : Re : UBI: infinite error loop
-References: <1330090528.12272.YahooMailNeo@web29011.mail.ird.yahoo.com>
- <4F479601.9010605@parrot.com>
- <1330094829.26769.YahooMailNeo@web29019.mail.ird.yahoo.com>
- <4F47A58E.80702@parrot.com>
- <1330096132.68067.YahooMailNeo@web29008.mail.ird.yahoo.com>
-In-Reply-To: <1330096132.68067.YahooMailNeo@web29008.mail.ird.yahoo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <4F44AA27.9090605@freescale.com>
+References: <1329476273-14381-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE92WVD0Z6e7WtyUp4gD4XN9EwFBXwg8Y9UPcpoQQEzBnQ@mail.gmail.com>
+ <4F430DA5.9040003@freescale.com>
+ <CAN8TOE8MVdnG4jc785H5r9J5gAf2cEe_GZYCh0nSN7jrnYYzRg@mail.gmail.com>
+ <4F44AA27.9090605@freescale.com>
+Date: Fri, 24 Feb 2012 20:30:09 -0800
+Message-ID: <CAN8TOE_=zbTVnLZqeYmT_323=443BCwNSmgD-QNKrSGisfK9pw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: use the full-id string as the keyword to search the
+ id table
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <shijie8@gmail.com>, artem.bityutskiy@intel.com,
+ linux-mtd@lists.infradead.org, ffainelli@freebox.fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Patrick a écrit :
-> 
->>>>> Dear mailing-list,
->>>>>
->>>>> I am still trying to use UBI and UBIFS on my board running a 3.0.21 kernel.
->>>>>
->>>>> When I am doing an the ubiattach -p /dev/mtd4 command I have the following infinite error loop:
->>>>>
->>>>>
->>>>> .....
->>>>>
->>>>>
->>>>> I don't think it's normal that this error loop infinitely again and again...
->>>>>
->>>>> Any help is appreciated !
->>>>>
->>>>> Thanks in advance
->>>>>
->>>> What's your nand driver ?
->>>> What's your nand device ?
->>>>
->>>> Look like it doesn't handle subpage reading : you have ecc error when reading
->>>> 512 bytes at offset 512.
->>>>
->>>> Maybe you should pass -O 2048 to ubiattach
->>>>
->>> Hello Matthieu,
->>>
->>> Thanks for your answer.
->>>
->>> I have a Micron MT29F4G08ABBDAH4 and I use the MTD_NAND driver.
->> But what driver is using your nand controller ?
-> 
-> MTD_NAND_OMAP2
-> 
->>> I have made a try with the -O 2048 flag but it's worst:
->> You need to use before ubiformat with the same flag.
-> 
-> It's seems to help. I could attach without error, but now I couldn't mount the volume:
-> "LEB size mismatch: 129024 in superblock, 126976 real"
-> I will try to rebuild my fs image with this size of LEB
-> 
-Yes now your leb size is 62*2K instead of 63*2K.
+On Wed, Feb 22, 2012 at 12:41 AM, Huang Shijie <b32955@freescale.com> wrote=
+:
+> =D3=DA 2012=C4=EA02=D4=C222=C8=D5 16:18, Brian Norris =D0=B4=B5=C0:
+>> There is already a 0xD7 device ID, but it's correct, isn't it? I mean,
+>> H27UBG8T2A is 32 Gbit and so is 0xD7? There's still a problem with
+>
+> :(, yes, you are right. I am an idiot.
+>
+> It seems there is no need to add a new table now.
+> The only thing is to add parsing functions for Hynix.
 
-Matthieu
+OK, well I still might work on updating the detection/table
+infrastructure soon anyway. And we need to come up with a way to
+determine *when* to use this parsing scheme. It looks like it could
+work for all MLC Hynix NAND, but I'll have a closer look later.
+
+Brian
