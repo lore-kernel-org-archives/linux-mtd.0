@@ -1,18 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S1Kw4-0007Jw-SE
- for linux-mtd@lists.infradead.org; Sat, 25 Feb 2012 16:57:30 +0000
-Received: by wgbdt13 with SMTP id dt13so1915240wgb.18
- for <linux-mtd@lists.infradead.org>; Sat, 25 Feb 2012 08:57:25 -0800 (PST)
-From: Fubo Chen <fubo.chen@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Fix memory leak triggered by removal
-Date: Sat, 25 Feb 2012 16:57:22 +0000
-Message-ID: <4462354.EgehQQfXY4@asus>
+Received: from nm1-vm0.bullet.mail.ukl.yahoo.com ([217.146.183.224])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S1yas-0001iM-KP
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2012 11:18:15 +0000
+Message-ID: <4F4B6673.7030509@yahoo.fr>
+Date: Mon, 27 Feb 2012 12:18:11 +0100
+From: Patrick <kpa_info@yahoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Error when mounting ubi image
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +19,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make sure that blk_cleanup_queue() is called in del_mtd_blktrans_dev().
+Dear mailing-list,
 
-Signed-off-by: Fubo Chen <fubo.chen@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/mtd_blkdevs.c |    9 ++-------
- 1 files changed, 2 insertions(+), 7 deletions(-)
+I am still facing some trouble with UBI and UBIFS. I am working on an 
+OMAP4 processor with a 3.0.21 kernel and a Micron MT29F4G08ABBDAH4 1GB 
+NAND Flash.
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 424ca5f..8b72f24 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -196,7 +196,7 @@ static void mtd_blktrans_request(struct request_queue *rq)
- 
- 	dev = rq->queuedata;
- 
--	if (!dev)
-+	if (unlikely(blk_queue_dead(rq)))
- 		while ((req = blk_fetch_request(rq)) != NULL)
- 			__blk_end_request_all(req, -ENODEV);
- 	else {
-@@ -469,8 +469,6 @@ error1:
- 
- int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- {
--	unsigned long flags;
--
- 	if (mutex_trylock(&mtd_table_mutex)) {
- 		mutex_unlock(&mtd_table_mutex);
- 		BUG();
-@@ -488,10 +486,7 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 	kthread_stop(old->thread);
- 
- 	/* Kill current requests */
--	spin_lock_irqsave(&old->queue_lock, flags);
--	old->rq->queuedata = NULL;
--	blk_start_queue(old->rq);
--	spin_unlock_irqrestore(&old->queue_lock, flags);
-+	blk_cleanup_queue(old->rq);
- 
- 	/* If the device is currently open, tell trans driver to close it,
- 		then put mtd device, and don't touch it again */
--- 
-1.7.7
+I generate the ubi image of my rootfs using the following command:
+
+   mkfs.ubifs -r my_rootfs -o my_image.ubifs -m 2048 -e 129024 -c 4060
+   ubinize -o my_rootfs.ubi -m 2048 -p 128KiB -s 512 ubinize.cfg
+
+And the following ubinize.cfg file:
+
+   [ubifs]
+   mode=ubi
+   image=my_image.ubifs
+   vol_id=0
+   vol_type=static
+   vol_name=my_rootfs
+
+Then I flash this image and mount it with the following commands:
+
+   ubiformat /dev/mtd4 -f my_rootfs.ubi
+   ubiattach -p /dev/mtd4
+   mount -t ubifs ubi0_0 /media/test/
+
+I then have the following error:
+
+   mount: block device ubi0_0 is write-protected, mounting read-only
+
+And from the kernel (dmesg):
+
+UBI warning: ubi_eba_read_leb: CRC error: calculated 0x34afeca5, must be 
+0x74215933
+UBI warning: ubi_open_volume: volume 0 on UBI device 0 is corrupted
+UBIFS warning (pid 226): init_constants_early: UBI volume is corrupted - 
+read-only mode
+UBIFS: static UBI volume - read-only mode
+UBIFS error (pid 226): mount_ubifs: cannot mount read-write - read-only 
+media
+UBIFS warning (pid 226): init_constants_early: UBI volume is corrupted - 
+read-only mode
+UBIFS: static UBI volume - read-only mode
+UBIFS: mounted UBI device 0, volume 0, name "my_rootfs"
+UBIFS: mounted read-only
+UBIFS: file system size:   42190848 bytes (41202 KiB, 40 MiB, 327 LEBs)
+UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+UBIFS: media format:       w4/r0 (latest is w4/r0)
+UBIFS: default compressor: lzo
+UBIFS: reserved for root:  0 bytes (0 KiB)
+
+I couldn't find what I am doing wrong. Any help will be really appreciated !
+
+Thanks in advance
+
+Patrick
