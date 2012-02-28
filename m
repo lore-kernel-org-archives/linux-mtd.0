@@ -1,16 +1,16 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2H4a-00030I-Cs
- for linux-mtd@lists.infradead.org; Tue, 28 Feb 2012 07:02:09 +0000
-Received: by qcsu28 with SMTP id u28so861829qcs.36
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2012 23:02:07 -0800 (PST)
-MIME-Version: 1.0
-Date: Tue, 28 Feb 2012 08:02:06 +0100
-Message-ID: <CAHMF36Gy9r2mPRrahpbAMvwOE=jWD3jzWqpF4846gG6saHjZ-w@mail.gmail.com>
-Subject: Problems with mtd_oobtest
-From: Matej Kupljen <matej.kupljen@gmail.com>
+Received: from nm5-vm1.bullet.mail.ird.yahoo.com ([77.238.189.202])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2P2H-0007A4-Md
+ for linux-mtd@lists.infradead.org; Tue, 28 Feb 2012 15:32:18 +0000
+Message-ID: <1330443135.75072.YahooMailClassic@web29019.mail.ird.yahoo.com>
+Date: Tue, 28 Feb 2012 15:32:15 +0000 (GMT)
+From: Paul Parsons <lost.distance@yahoo.com>
+Subject: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, philipp.zabel@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,82 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear list,
-
-I'am working on a custom board with NXP LPC31xx CPU on it, which is designed
-very similar to Embedded Artists LPC3152 Development Kit:
-http://www.embeddedartists.com/products/kits/lpc3152_kit.php
-
-I am trying to use UBIFS on it and it works, however there are
-frequent file system
-corruption and I read on the Linux MTD WEB page about the tests.
-
-I can run mtd_speedtest, mtd_stresstest, mtd_readtest, mtd_pagetest without the
-problems, but when I start the mtd_oobtest it fails, basically on every page!
-
-This is what I get:
-# insmod mtd_oobtest.ko  dev=1
-[ 8332.880000]
-[ 8332.880000] =================================================
-[ 8332.884000] mtd_oobtest: MTD device: 1
-[ 8332.888000] mtd_oobtest: MTD device size 112459776, eraseblock size
-131072, page size 2048, count of eraseblocks4
-[ 8332.892000] mtd_oobtest: scanning for bad eraseblocks
-[ 8332.920000] mtd_oobtest: block 854 is bad
-[ 8332.924000] mtd_oobtest: block 855 is bad
-[ 8332.932000] mtd_oobtest: block 856 is bad
-[ 8332.936000] mtd_oobtest: block 857 is bad
-[ 8332.944000] mtd_oobtest: scanned 858 eraseblocks, 4 are bad
-[ 8332.948000] mtd_oobtest: test 1 of 5
-[ 8332.952000] mtd_oobtest: erasing whole device
-[ 8333.484000] mtd_oobtest: erased 858 eraseblocks
-[ 8333.488000] mtd_oobtest: writing OOBs of whole device
-[ 8333.512000] mtd_oobtest: written up to eraseblock 0
-[ 8337.132000] mtd_oobtest: written up to eraseblock 256
-[ 8340.764000] mtd_oobtest: written up to eraseblock 512
-[ 8340.764000] mtd_oobtest: written up to eraseblock 768
-..............
-[ 8350.844000] mtd_oobtest: error: verify failed at 0x1e9000
-[ 8350.848000] mtd_oobtest: error: verify failed at 0x1e9800
-[ 8350.856000] mtd_oobtest: error: verify failed at 0x1ea000
-
-A lot of this messages and finally:
-
-[ 8350.956000] mtd_oobtest: error: too many errors
-[ 8350.960000] mtd_oobtest: error -1 occurred
-[ 8350.964000] =================================================
-
-I read that I should disable the sub_page writing with
-ubi.vid_hdr_offs=2048 kernel parameter,
-but the problems remains the same.
-
-I use kernel version 2.6.33 with the latest back ported patches
-available on your site.
-My NAND Flash is detected as:
-
-[    0.644000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xa1
-(Micron NAND 128MiB 1,8V 8-bit)
-[    0.652000] Creating 2 MTD partitions on "lpc313x_nand":
-[    0.656000] 0x000000060000-0x000000080000 : "u-boot envirnment"
-[    0.668000] 0x0000014c0000-0x000008000000 : "lpc313x-rootfs"
-[    0.684000] UBI: attaching mtd1 to ubi0
-[    0.688000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-[    0.692000] UBI: logical eraseblock size:    129024 bytes
-[    0.696000] UBI: smallest flash I/O unit:    2048
-[    0.700000] UBI: sub-page size:              512
-[    0.704000] UBI: VID header offset:          512 (aligned 512)
-[    0.708000] UBI: data offset:                2048
-[    1.184000] UBI: max. sequence number:       0
-
-(This is the output without the ubi.vid_hdr_offs=2048 kernel parameter)
-
-I can use JFFS2 on this device, and for some time even UBIFS, but then
-it just fails.
-
-Is there anything I am doing wrong?
-Should I provide any more information?
-
-I'd appreciate any hint, how to solve this problem.
-
-Thank you and Best Regards,
-Matej
+If an Erase Suspend Command (0xb0) is issued while a Block Erase operation=
+=0A(0x20, 0xd0) is in progress, Status Register bit 6 (SR.6) will be set to=
+ 1.=0AAfter an Erase Resume Command (0xd0) is issued, SR.6 will be set back=
+ to 0.=0A=0AUnfortunately when inval_cache_and_wait_for_operation() is call=
+ed to wait for=0Aa Block Erase operation to finish, it never checks that SR=
+.6 =3D 0 before=0Areturning. Consequently it can (and does) return while a =
+Block Erase operation=0Ais still suspended, resulting in random breakage.=
+=0A=0AThis patch ensures that when inval_cache_and_wait_for_operation() is =
+called to=0Await for a Block Erase operation to finish (chip->state =3D=3D =
+FL_ERASING), it does=0Anot return until both SR.7 =3D 1 (as before) and SR.=
+6 =3D 0.=0A=0ASigned-off-by: Paul Parsons <lost.distance@yahoo.com>=0A---=
+=0A=0AI found this after switching my HP iPAQ hx4700 from using jffs2 to ub=
+ifs. It=0Athen consistently reported "block erase error: (bad VPP)" errors.=
+ Intriguingly,=0Athe bootloader never reporting erase or programming failur=
+es; it turned out that=0Athe bootloader never issued Erase Suspend Commands=
+.=0A=0AShould SR.6 =3D 0 also be checked after an Erase Suspend Command (0x=
+b0) is issued?=0AThis should preclude an unnecessary (and perhaps unpredict=
+able) subsequent Erase=0AResume Command (0xd0).=0A=0A--- clean-3.3-rc5/driv=
+ers/mtd/chips/cfi_cmdset_0001.c=092012-02-25 20:18:16.000000000 +0000=0A+++=
+ linux-3.3-rc5/drivers/mtd/chips/cfi_cmdset_0001.c=092012-02-28 03:13:30.52=
+1537614 +0000=0A@@ -1211,6 +1211,7 @@ static int inval_cache_and_wait_for_o=
+per=0A {=0A =09struct cfi_private *cfi =3D map->fldrv_priv;=0A =09map_word =
+status, status_OK =3D CMD(0x80);=0A+=09map_word status_76 =3D (chip->state =
+=3D=3D FL_ERASING) ? CMD(0xc0) : CMD(0x80);=0A =09int chip_state =3D chip->=
+state;=0A =09unsigned int timeo, sleep_time, reset_timeo;=0A =0A@@ -1239,7 =
++1240,7 @@ static int inval_cache_and_wait_for_oper=0A =09=09}=0A =0A =09=
+=09status =3D map_read(map, cmd_adr);=0A-=09=09if (map_word_andequal(map, s=
+tatus, status_OK, status_OK))=0A+=09=09if (map_word_andequal(map, status, s=
+tatus_76, status_OK))=0A =09=09=09break;=0A =0A =09=09if (chip->erase_suspe=
+nded && chip_state =3D=3D FL_ERASING)  {=0A
