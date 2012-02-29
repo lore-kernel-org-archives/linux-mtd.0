@@ -1,18 +1,25 @@
-Message-ID: <4F4D9725.3090100@freescale.com>
-Date: Wed, 29 Feb 2012 11:10:29 +0800
-From: Huang Shijie <b32955@freescale.com>
+From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+To: "Manjunathappa, Prakash" <prakash.pm@ti.com>, Samuel Ortiz
+ <sameo@linux.intel.com>
+Subject: RE: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
+Date: Wed, 29 Feb 2012 07:01:52 +0000
+Message-ID: <A73F36158E33644199EB82C5EC81C7BC3176D90F@DBDE01.ent.ti.com>
+References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
+ <20120227142638.GN27687@sortiz-mobl>
+ <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1329373053-19494-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
- vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com,
- linux-mmc@vger.kernel.org, w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, cjb@laptop.org, shawn.guo@linaro.org,
- lrg@ti.com, linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
+Hi Samuel,
 
-ping.
+On Tue, Feb 28, 2012 at 11:14:39, Manjunathappa, Prakash wrote:
+> Hi Samuel,
+>=20
+> On Mon, Feb 27, 2012 at 19:56:38, Samuel Ortiz wrote:
+> [snip]
+> > So it seems you're passing a platform devices array through your mfd ae=
+mif
+> > platform data pointer. And from what I can see, it's mostly a 1 entry a=
+rray
+> > (for the NAND case) or a 2 entries array (for the NAND and NOR case).
+> > In that case, adding an MFD driver in the middle brings basically nothi=
+ng but
+> > confusion and overhead (and 200+ lines of code).
+> > So unless someone explains to me how this is doing any good to the kern=
+el in
+> > general, I'm not going to take this patchset.
+> >=20
+> > Cheers,
+> > Samuel.
+> >
+>=20
+> In this way we trying to isolate future modification of aemif driver not =
+to depict
+> as platform code change, the need for this is based on discussion in belo=
+w thread
+> http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-=
+configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
+>=20
+> Earlier also concern was expressed to move aemif driver out of arch/arm t=
+o drivers folder.
+> Here is the link for the same: http://lists.infradead.org/pipermail/linux=
+-mtd/2011-August/037308.html
+> Since aemif driver supports NAND/NOR devices, we feel MFD is the place ho=
+lder.
+>=20
+> Thanks,
+> Prakash
 
-Any comment about this patch set?
+Some more information which I missed out earlier:
+DaVinci AEMIF is an async memory interface, driver for which was implemente=
+d in
+arch/arm/mach-davinci/aemif.c. It can be interfaced to NAND, NOR and other
+asynchronous memories. Currently it just provides an API for timing value
+configuration. The API is invoked by the MTD NAND driver.=20
 
-thanks
-Huang Shijie
-> patch 1: move the mxs dma header to a more common place.
-> 	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
-> 	So move the mxs dma header file to a more common place, and rename
-> 	it to mxs-dma.h
->
-> patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
-> 	In the new GPMI version, some hardware behavior changes.
-> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
-> 	The DMA chain should be set like this:
->
->           +-----+               +-----+                      +-----+
->           | cmd | ------------> | cmd | ------------------>  | cmd |
->           +-----+               +-----+                      +-----+
->                                    ^                            ^
->                                    |                            |
->                                    |                            |
->                               set WAIT4END here too        set WAIT4END here
->
->         So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
-> 	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
-> 	And change the relative drivers with the dma_ctrl_flags.
->
-> TEST:
-> 	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
-> 	in MX28 board.
->
-> v5 --> v6:
-> 	[1] create this patch set based on the mainline.
->
-> v4 --> v5:
-> 	[1] remove GPMI_IS_MX6Q(), make the mxs and mx6q use the same code.
-> 		
-> v3 --> v4:
-> 	[1] create a new folder include/linux/fsl/ for store the Freescale's
-> 	    header files.
-> 	[2] add more CCs.
->
-> v2 --> v3:
-> 	[1] remove field gpmi_version, use GPMI_IS_MX6Q() instead.
->
-> v1 --> v2:
-> 	[1] squash the trial patches into single patch.
-> 	[2] use the dma_ctrl_flags.
->
->
-> Huang Shijie (2):
->   mxs-dma : move the mxs dma.h to a more common place
->   mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
->
->  drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
->  drivers/mmc/host/mxs-mmc.c                         |   12 +++---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   19 +++++++---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
->  .../mach/dma.h => include/linux/fsl/mxs-dma.h      |    0
->  sound/soc/mxs/mxs-pcm.c                            |    2 +-
->  sound/soc/mxs/mxs-pcm.h                            |    2 +-
->  sound/soc/mxs/mxs-saif.c                           |    2 +-
->  8 files changed, 52 insertions(+), 21 deletions(-)
->  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/fsl/mxs-dma.h (100%)
->
+Specification here: http://www.ti.com/lit/ug/sprue20c/sprue20c.pdf
+
+Reason for moving it to MFD frame work:
+1) AEMIF is also present on devices belonging to arch-c6x and arch-omap2 ar=
+chitectures.
+   So having the driver in architecture neutral place seems to be the way t=
+o go.
+2) Other than NAND/NOR there are use cases where people are interfacing oth=
+er devices,
+   for eg: FPGAs through UIO framework. So MTD is not the place for AEMIF d=
+river.
+
+Taking above points into consideration Arnd Bergmann suggested to move AEMI=
+F driver to
+MFD framework. Here is the link:
+http://lists.ozlabs.org/pipermail/devicetree-discuss/2011-December/010295.h=
+tml
+
+Thanks,
+Prakash
