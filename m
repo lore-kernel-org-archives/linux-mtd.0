@@ -1,23 +1,20 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2nq1-00035m-Ca
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 18:01:17 +0000
-Received: by yhjj52 with SMTP id j52so1535721yhj.36
- for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 10:01:16 -0800 (PST)
-Message-ID: <1330538621.3545.163.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Parsons <lost.distance@yahoo.com>
-Date: Wed, 29 Feb 2012 20:03:41 +0200
-In-Reply-To: <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
-References: <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-rk8RnewzB8v1+Ee4Afu6"
+ id 1S2onQ-0007lr-G7
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 19:02:41 +0000
+Message-ID: <1330542157.13689.17.camel@joe2Laptop>
+Subject: Re: [PATCH 0/4] jffs2: logging message neatening
+From: Joe Perches <joe@perches.com>
+To: dedekind1@gmail.com
+Date: Wed, 29 Feb 2012 11:02:37 -0800
+In-Reply-To: <1330517290.3545.107.camel@sauron.fi.intel.com>
+References: <cover.1329349881.git.joe@perches.com>
+ <1330517290.3545.107.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>, philipp.zabel@gmail.com
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2012-02-29 at 14:08 +0200, Artem Bityutskiy wrote:
+> On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
+> > Joe Perches (4):
+> >   jffs2: Convert most D1/D2 macros to jffs2_dbg
+> >   jffs2: Convert printks to pr_<level>
+> >   jffs2: Use pr_fmt and remove jffs: from formats
+> >   jffs2: Standardize JFFS_<LEVEL> uses
+> 
+> Thanks for the work, appreciated. But your patch introduces new sparse
+> and smatch warnings, which did not exist before your patch:
 
---=-rk8RnewzB8v1+Ee4Afu6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hello Artem.
 
-Did you try to validate your setup with mtd tests?
+> Successfully built configuration "l2_mxs_defconfig,arm,arm-unknown-linux-gnueabi-", results:
+> 
+> --- before_patching.log
+> +++ after_patching.log 
+> @@ @@
+> +fs/jffs2/file.c:330:2: warning: signed and unsigned type in conditional expression [-Wsign-compare]
+> @@ @@
+> -fs/jffs2/read.c:154 jffs2_read_dnode(129) warn: possible memory leak of 'decomprbuf' [smatch]
+> -fs/jffs2/read.c:154 jffs2_read_dnode(129) warn: possible memory leak of 'readbuf' [smatch]
+> +fs/jffs2/read.c:154 jffs2_read_dnode(131) warn: possible memory leak of 'decomprbuf' [smatch]
+> +fs/jffs2/read.c:154 jffs2_read_dnode(131) warn: possible memory leak of 'readbuf' [smatch]
+> @@ @@
+> -fs/jffs2/scan.c:108:54: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+> @@ @@
+> +fs/jffs2/super.c:377:1: error: directive in argument list [sparse]
+> +fs/jffs2/super.c:379:1: error: directive in argument list [sparse]
+> +fs/jffs2/super.c:380:1: error: directive in argument list [sparse]
+> +fs/jffs2/super.c:382:1: error: directive in argument list [sparse]
 
---=20
-Best Regards,
-Artem Bityutskiy
+I don't see how this is a new error.
+printk vs pr_info shouldn't change this.
+maybe it's a smatch issue?
 
---=-rk8RnewzB8v1+Ee4Afu6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+> Would you please take a look? Ideally patches should eliminate warnings,
+> not introduce new ones.
 
-iQIcBAABAgAGBQJPTmh9AAoJECmIfjd9wqK0G2cP/jZaM7SdtXiqnVFikAHf2Ypl
-TIsWUYyrbhVFsFoABw2IFKs49KHHP0o5noNJgrcy7U5mCsXiiOkhMwMJEwt7FEWC
-QWWN+ru6oF5BbYQ/2I5egcttlKWV+MCnrRazQ+kpVIok65nJukCsHjIsNT35I6BS
-rnsZsudoqjljGkYDt+5MqDbpl6g/ZrzdjAEJ7kW3eKjRagaWqW99OqaL/CHW4CSd
-BR+W0lk9HMZ47s/BaWnKgO8z6288n6GeER+pdZLSvIdaSerrnkxEdJF0zOvwRXQu
-eVXRNbKrIypr0i1vQo/jXk9Yx+5+TI3XgaiG+FIed+7iM2LGGwa8+a2eEOao+Epd
-zWsax3k3UfZsW6Do6/ixJblVtm49AuG+zeyOzSokvP8xR4ma/2x0ZX+jBsgUH4Sf
-JAq+BEY/fmDtXH7SMYaKYxo8TV+/6yKbyBv37LiH/iyVw8hZwSvyejBQfaLG29mk
-KKopH0zaq/AaO27kjfeOa+g8zog1qfFgUNNTqqd7nt6lN9F2hRUexM76In9TtpT9
-DEAL7pYOuoOdqapC0U/6jIDx/U+FQ4ZDc4M3VKM0diSVlg3mZNtf41JN+FYHO5sd
-jeKsV9VHNIySB2UB720ezyJ2R+ggRt1eQMzz9mTZRYX+jaA7Ae9fkGOiQ9tQclFK
-Vx4S8HhgNhSQYb1jukDt
-=r54/
------END PGP SIGNATURE-----
+I believe this simply exposes a current defect rather than
+adds "new" ones.  It seems the old D1/D2 macros hide them.
 
---=-rk8RnewzB8v1+Ee4Afu6--
+> Also, your patch does not apply cleanly to my l2-mtd tree - and this is
+> the tree which is currently used for merging MTD and JFFS2 stuff
+> upstream, and it is in linux-next as well. Would you send patches
+> against the l2 tree?
+
+This patchset applies cleanly against next-20120229
+Where is your git tree?
+
+cheers, Joe
