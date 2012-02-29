@@ -1,22 +1,25 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2eF1-0004iV-2O
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:46:27 +0000
-Received: by iaky10 with SMTP id y10so8115949iak.36
- for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:46:26 -0800 (PST)
-Message-ID: <1330501730.3545.77.camel@sauron.fi.intel.com>
-Subject: Re: Problem with UBI/ubifs mount
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Wed, 29 Feb 2012 09:48:50 +0200
-In-Reply-To: <Pine.LNX.4.64.1202151723400.13194@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.1202151723400.13194@lnxricardw.se.axis.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Pl5mz3hXVkuWaOH7QYWX"
-Mime-Version: 1.0
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Type: multipart/mixed; boundary="===============0779507818=="
+MIME-Version: 1.0
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
+Date: Wed, 29 Feb 2012 07:52:27 +0000
+Message-ID: <1330502098.3545.78.camel@sauron.fi.intel.com>
+References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
+ <4F4D9725.3090100@freescale.com>
+In-Reply-To: <4F4D9725.3090100@freescale.com>
+MIME-Version: 1.0
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "cjb@laptop.org" <cjb@laptop.org>, "Koul, Vinod" <vinod.koul@intel.com>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "lrg@ti.com" <lrg@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "LW@KARO-electronics.de" <LW@KARO-electronics.de>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--===============0779507818==
+MIME-Version: 1.0
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-9K266iUeum0N5msiMUhs"
 
---=-Pl5mz3hXVkuWaOH7QYWX
+--=-9K266iUeum0N5msiMUhs
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-02-15 at 17:27 +0100, Ricard Wanderlof wrote:
-> I'm having a problem I'm trying to get my head around.
+On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
+> Hi:
 >=20
-> I have a ubifs image, where the image file is about 3.7 MB in size.
+> ping.
 
-How did you generate it?
+Is this patch-set independent or requires something like gpma patches?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Pl5mz3hXVkuWaOH7QYWX
+--=-9K266iUeum0N5msiMUhs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +58,41 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTdhiAAoJECmIfjd9wqK0g4IP/RHobysHhDHRdikxC0XzqHry
-0yJK0QYUE7Ra94BVXQW2Udf/umWqfpAclc+DiZdQ6Xg1rDkUSN96UFsB7Smwyntr
-hrgZk/1ESe1v4MMORErw6zibrUA59ten5S3UFVyC/7Au8+hOilmj4x3v1oYzCtkF
-k9jGUK74CrRLIvuC6NBo0n1ha2fn4LwukcKfIOjf49H8p+/OjNTLTWMLKS5Pjx6t
-1rfrKAv4KID4uBQrTQR7wPOsyJmamsUlujPENJTXof8iED3htFJ+oJA1QDqP/0kl
-bp8x5QUFhPI/kltOqw8gjqtxUQFuleIpNW0cmrNfMaTXdhoJMJjzmIT2nuesQzcO
-0hQvO8hkwFfGVjFiD6Ccx6yiDFgxJ9OQzS0xVprCcAnvFVQICNejYg4ybDr5r3rs
-3teQ00XPH5pZydkGWi7Dpg1sbGWXdzaWCt6V6PQcYyAKE6cw1E3vPgMpZRmSycYi
-ZwkQh4pRtzT0cNLomtqpuCdt6EYGFQgXU9idSsA4fP0bQAURu2DThZHYQtt2Ric/
-EWmRCpAKkz/jhq0hP3/qMr83a1pku9oUE9xhqtejcq4MQcC9SB6azDQ+MR6X7lLw
-dTHHgco0AE3bI5ZKnLxcuc0aLTiyFW1T8G7Gs0pb7kXqOXOowrogdnOlSqDE7Z3E
-DpTapGkk/NQtRBfIRsQ1
-=gCVs
+iQIcBAABAgAGBQJPTdnSAAoJECmIfjd9wqK0UBkP/jREokO8SztjTQET6O9crX+L
+9spU0Vg2O20j0Cr+/xGeZ+nDbq0VtMCln63bB6Wl9VwMaBfg3RRVrPUTBIKsUk4Z
+oxCMw2PDJmUav2tgwB15oa8297kL9M5j9mfg4swQgayBsKhqzjblfVkfuH9wT4bn
+8Wyn2tjUo2fLrjDrIuqkTwb5jYpZm188UpVZA5VN4HzzG4xdD3qvuBLHvXGVjjv3
+U3dxtESo/TU1ObjZoVA61TJteh2DHHyqyDL9F/1pleVKHjB+6v63zt+v3PqMLUni
+m0TwiXcBtnYZBIkQuZ9uzmrpnvuxIIfCJRajIHHU+DZSE6CdZnuOPDzd6WDRMChp
+JTJhaR2TMmY+XtKs8hWNmHJz1o2uapse3bXeIyox2RTHiZWMIKF31gjO+06prX2V
+WlkV+UqoXaMBB4C9pkjmZhC29B5CT1nxcKqVIwvP9Q9puht0W4dNXntqzrcAWzbq
+dvUAM1d34hF4SYyRT60SEagUM1HjPjkapTqivpG2crz773pBKELHu+J1S8s9ldj5
+fsVqTsNHsp+eB5VOd9zeMbRH/daDErxbqkepVshRt1jsiue3FojrpdeZowcsPQqo
+6ERyVlQRgQ3gCRWjSN2Dch32xvHX9Ph607kxpK7XhM0FqEwTaaQoh3U9Wb72pxRc
+Jrr1/Sej4TWhc+a4D5H0
+=wxJl
 -----END PGP SIGNATURE-----
 
---=-Pl5mz3hXVkuWaOH7QYWX--
+--=-9K266iUeum0N5msiMUhs--
+
+--===============0779507818==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki =
+
+Business Identity Code: 0357606 - 4 =
+
+Domiciled in Helsinki =
+
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
+--===============0779507818==--
