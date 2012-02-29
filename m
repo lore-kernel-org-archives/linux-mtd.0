@@ -1,20 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2m4Q-0001LZ-SK
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 16:08:04 +0000
-Received: by iaky10 with SMTP id y10so8768160iak.36
- for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 08:08:02 -0800 (PST)
-Message-ID: <1330531826.3545.128.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Move CRC computation to separate function
+ id 1S2mzc-0005ml-E3
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 17:07:09 +0000
+Received: by iaky10 with SMTP id y10so8848359iak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 09:07:07 -0800 (PST)
+Message-ID: <1330535372.3545.150.camel@sauron.fi.intel.com>
+Subject: Re: [patch] Adding Secure Deletion to UBIFS
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Wed, 29 Feb 2012 18:10:26 +0200
-In-Reply-To: <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
+Date: Wed, 29 Feb 2012 19:09:32 +0200
+In-Reply-To: <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
+ <1329152067.22240.214.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-sITxPpcgRQ9Xzto0rYxK"
+ boundary="=-r471b1j2igp+BgeYigUd"
 Mime-Version: 1.0
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
@@ -29,58 +30,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-sITxPpcgRQ9Xzto0rYxK
+--=-r471b1j2igp+BgeYigUd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-02-20 at 21:15 +0100, Joel Reardon wrote:
-> This patch moves the computation of CRCs for data nodes from=20
-> within ubifs_prepare_node to a separate function ubifs_set_datanode_crc,=
-=20
-> which takes a data node, and computes and sets the CRC. This is to avoid=
-=20
-> duplication of the CRC computation code in other places where it may be=
-=20
-> needed.
+On Thu, 2012-02-23 at 15:59 +0100, Joel Reardon wrote:
+> >
+> > Could you make a separate patch which adds new on-flash format and make
+> > sure that new ubifs binaries can mount the old formats and work with
+> > them. And that old ubifs binaries gracefully reject the new format.
+> >
 >=20
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
-> diff -uprN -X linux-3.2.1-vanilla/Documentation/dontdiff=20
-> linux-3.2.1-vanilla/fs/ubifs/io.c linux-3.2.1-ubifsec/fs/ubifs/io.c
-> --- linux-3.2.1-vanilla/fs/ubifs/io.c   2012-01-12 20:42:45.000000000=20
-> +0100
-> +++ linux-3.2.1-ubifsec/fs/ubifs/io.c   2012-02-20 20:17:48.796684293=20
-> +0100
-> @@ -367,6 +367,18 @@ static unsigned long long next_sqnum(str
->   }
+> This patch provides a new version of two on-flash data structures for=20
+> UBIFS:
 
-This patch is line-wrapped and cannot be applied. Would you please send
-a non-wrapped version. You may experiment by sending to yourself, then
-saving, and then applying using "git am".
+Similarly - wrapped patch and git am wont' apply it, sorry.
 
->=20
->   /**
-> + * ubifs_set_datanode_crc - writes the crc for a data node to the common
-> + * header.
-> + * @node: the data node
-> + */
-> +void ubifs_set_datanode_crc(void *node)
-> +{
-> +       struct ubifs_ch *ch =3D (struct ubifs_ch *) node;
-> +       int len =3D le32_to_cpu(ch->len);
-> +       ch->crc =3D cpu_to_le32(crc32(UBIFS_CRC32_INIT, node + 8, len - 8=
-));
-> +}
+> ubifs_branch and ubifs_data_node have been grown by 8 bytes to include a=
+=20
+> 64-bit reference
+> to a key position, which is needed by a proposed ubifs secure deletion=
+=20
+> addition. This patch is generated
+> against linux-3.2.1.
 
-This changes is not needed unless there is other code which needs this
-function. So once I get a non-wrapped patch I can create a branch for
-you in the UBIFS tree and collect your patches. Once they are ready,
-they can be merged.
+Please, use linux-ubifs tree instead:
+git://git.infradead.org/linux-ubifs.git
+
+It has the newest stuff.
+
+> Because both data structures use C99 flexible arrays, it is not possible=
+=20
+> to add the new field as
+> the last member of the structure.
+
+>  Thus, it was added one before last, the=20
+> last was renamed, and in a
+> handful of places where it was used, a macro accessor is used to get the=
+=20
+> version-correct position.
+
+Hmm, we can make it to be key[UBIFS_SK_LEN] instead, if it helps.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-sITxPpcgRQ9Xzto0rYxK
+--=-r471b1j2igp+BgeYigUd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -88,19 +84,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTk3yAAoJECmIfjd9wqK0n6oP/R7Pn1CXx1QyTjsyZiO1JcHo
-joWMErZwZ4+UB5lC0A/XZOfiG80Po0QpG0vEIOEw4q+ppA4DdccrqWZ1WwdE+a3I
-ZYcpH/aFZuThjXAXfW6wsOXpMQZcD1KHwT92W1ajXn5NeQ07EiEL4Z3+XZNoTtqL
-L9vaUfRyLZNXnTEtw0DaSn4VDMUpWrJwvGRzM6bzxPZ5LEbkycenTZ1T6nmTSRWd
-RB41efS9ck9QViZZBve2LRzWFdqQKX8aCOpCnXArXA6y5Q6e/b5KMqdCutWt1IaJ
-mskt4+U4hAo2qoksI9a37AG7ncEl1YZP+iMEA3wp7hfrS6c9UOpumkRC/hQdoPHj
-WViJK9uh26dJ/yGshDB4a7x2nmHIJmmvJpo5rTGz36PP3MG3tjJ/nzJNxASvBX09
-zmvln3gUu2ekMI7jyPwVpM6IPNRo7QGT0sYSkY009oWX2X2+IAD4MU6oL/id9O/G
-2UHxcCYKbxuZsrNdub8qEcp7J9M0PDKeFOK+KOYgFJuRHdqf+1rFdCWQTCJQKjJo
-ftKdS9RakR4KfpBtQ1mWyLGX6syqcfyHAa7zi80/hkHlvCZSj8YPYXFc3qxpaEb+
-Q0wFVP0suR8lQrVoPLSRvn7YVy5jKB8BeBsDqkyrWI65o+It62qEsc1r89z7ptrD
-oQI1Fymhrwb3uFgChBnY
-=xntw
+iQIcBAABAgAGBQJPTlvMAAoJECmIfjd9wqK0IFAP/Reyc4KEMnejBNMRSIka5/oG
+sJFim5CbwaYX8Zj2YMTTDBW9RMrsg5TbKVlopluqFyL2m0BDZ13qU6CfmhePHcpr
+3X+iDbYT36yQQtQ9FSUg40KSqvHjIlH7gIb7tnNTCRJmAcLQQk9/PV+InLC9AIFR
+0yYhm6Q35A5a0VBb6RjxIXTmCq/SyLGfzjsc7nnpiJ/w78ThXrLHrOskpKQmXbiD
+Yx/SufBnMhV3d/JqlRMDHshAFuyQzzkdB3dq/q9PtP+uBuyMtmS4O6trde6deL9D
+x/ubPKqbsacSu4U0+YyqLe7M54PqjtnCbqRngaB/wyV7MtyVuVYM53UQ/NOTAxmB
+vFLuYxEg7yMWaEvaK4QhF9IgN1ifibBZCvnE8f4vWFxzGSznd5SPYE9bue8DQPPp
+pwApNkVTXgfpCQIZv0NpdFEGd8kVA/pFGco3Cs++sZYweWHc0NyMV6jP/favdUDq
+GLW/Zyg3Taw0QXN4zwi6sU4/FqQmQfYKqhe5Nf8KPgzvbfq+36SEb8DB2atbU+ci
+GjH0nrWPxhcMwP8Uqcs3flWEg5Ya+EZxJCmvFhyLdqc9CqFb4DD+XIHfckmaytyI
+enqBBj3IpMtvpeo4FP7NnGBh/BqlM9bwTvO2e6n4ucwy2rFPflEvh/TITjDI8bER
+/6pVoFdqrj4MSHjnAvK/
+=FdCZ
 -----END PGP SIGNATURE-----
 
---=-sITxPpcgRQ9Xzto0rYxK--
+--=-r471b1j2igp+BgeYigUd--
