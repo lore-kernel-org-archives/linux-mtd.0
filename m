@@ -1,17 +1,18 @@
-Received: from nm21-vm6.bullet.mail.ird.yahoo.com ([212.82.109.246])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S2XKO-0004D8-Oy
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 00:23:33 +0000
-Message-ID: <1330475001.50223.YahooMailClassic@web29002.mail.ird.yahoo.com>
-Date: Wed, 29 Feb 2012 00:23:21 +0000 (GMT)
-From: Paul Parsons <lost.distance@yahoo.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OF718A97E1.ACAF6B20-ONC12579B2.00754C8D-C12579B2.0075B1B3@transmode.se>
+Message-ID: <4F4D9725.3090100@freescale.com>
+Date: Wed, 29 Feb 2012 11:10:29 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, philipp.zabel@gmail.com
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
+References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1329373053-19494-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com,
+ vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com,
+ linux-mmc@vger.kernel.org, w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cjb@laptop.org, shawn.guo@linaro.org,
+ lrg@ti.com, linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > If an Erase Suspend Command (0xb0) is issued while a=0A> Block Erase op=
-eration=0A> > (0x20, 0xd0) is in progress, Status Register bit 6=0A> (SR.6)=
- will be set to 1.=0A> > After an Erase Resume Command (0xd0) is issued, SR=
-.6=0A> will be set back to 0.=0A> >=0A> > Unfortunately when inval_cache_an=
-d_wait_for_operation()=0A> is called to wait for=0A> > a Block Erase operat=
-ion to finish, it never checks that=0A> SR.6 =3D 0 before=0A> > returning. =
-Consequently it can (and does) return while=0A> a Block Erase operation=0A>=
- > is still suspended, resulting in random breakage.=0A> >=0A> > This patch=
- ensures that when=0A> inval_cache_and_wait_for_operation() is called to=0A=
-> > wait for a Block Erase operation to finish=0A> (chip->state =3D=3D FL_E=
-RASING), it does=0A> > not return until both SR.7 =3D 1 (as before) and SR.=
-6 =3D=0A> 0.=0A> =0A> Interesting but I do wonder, should not the=0A> =A0 i=
-f (chip->state !=3D chip_state)=0A> test just before the status test preven=
-t this in the first=0A> place?=0A=0AI'm not sure I understand. The (chip->s=
-tate !=3D chip_state) test forces=0Ainval_cache_and_wait_for_operation() to=
- stop polling and sleep, pending=0Athe operation which suspended it. After =
-it wakes it resumes polling. The=0Atest doesn't prevent inval_cache_and_wai=
-t_for_operation() returning=0Aprematurely, i.e. before the Block Erase has =
-finished.=0A=0AAn important point which I suspect has been overlooked is th=
-at both SR.7=0Aand SR.6 are set when a Block Erase is suspended. Thus testi=
-ng SR.7 only=0Ais not sufficient to determine that a Block Erase has comple=
-ted.=0A=0A> > +=A0=A0=A0map_word status_76 =3D (chip->state=0A> =3D=3D FL_E=
-RASING) ? CMD(0xc0) : CMD(0x80);=0A> =0A> hmm, I wonder if you can get by w=
-ithout the chip->state=0A> test? Just always set it to 0xc0?=0A=0ANo, unfor=
-tunately not. For example a write buffer sequence will finish=0Awhether or =
-not a Block Erase is currently suspended; thus it must test=0ASR.7 only, no=
-t SR.6.=0A=0APaul
+Hi:
+
+ping.
+
+Any comment about this patch set?
+
+thanks
+Huang Shijie
+> patch 1: move the mxs dma header to a more common place.
+> 	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+> 	So move the mxs dma header file to a more common place, and rename
+> 	it to mxs-dma.h
+>
+> patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+> 	In the new GPMI version, some hardware behavior changes.
+> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+> 	The DMA chain should be set like this:
+>
+>           +-----+               +-----+                      +-----+
+>           | cmd | ------------> | cmd | ------------------>  | cmd |
+>           +-----+               +-----+                      +-----+
+>                                    ^                            ^
+>                                    |                            |
+>                                    |                            |
+>                               set WAIT4END here too        set WAIT4END here
+>
+>         So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+> 	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+> 	And change the relative drivers with the dma_ctrl_flags.
+>
+> TEST:
+> 	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+> 	in MX28 board.
+>
+> v5 --> v6:
+> 	[1] create this patch set based on the mainline.
+>
+> v4 --> v5:
+> 	[1] remove GPMI_IS_MX6Q(), make the mxs and mx6q use the same code.
+> 		
+> v3 --> v4:
+> 	[1] create a new folder include/linux/fsl/ for store the Freescale's
+> 	    header files.
+> 	[2] add more CCs.
+>
+> v2 --> v3:
+> 	[1] remove field gpmi_version, use GPMI_IS_MX6Q() instead.
+>
+> v1 --> v2:
+> 	[1] squash the trial patches into single patch.
+> 	[2] use the dma_ctrl_flags.
+>
+>
+> Huang Shijie (2):
+>   mxs-dma : move the mxs dma.h to a more common place
+>   mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+>
+>  drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+>  drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   19 +++++++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    2 +-
+>  .../mach/dma.h => include/linux/fsl/mxs-dma.h      |    0
+>  sound/soc/mxs/mxs-pcm.c                            |    2 +-
+>  sound/soc/mxs/mxs-pcm.h                            |    2 +-
+>  sound/soc/mxs/mxs-saif.c                           |    2 +-
+>  8 files changed, 52 insertions(+), 21 deletions(-)
+>  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/fsl/mxs-dma.h (100%)
+>
