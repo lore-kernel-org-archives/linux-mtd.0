@@ -1,25 +1,24 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>, Samuel Ortiz
- <sameo@linux.intel.com>
-Subject: RE: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
-Date: Wed, 29 Feb 2012 07:01:52 +0000
-Message-ID: <A73F36158E33644199EB82C5EC81C7BC3176D90F@DBDE01.ent.ti.com>
-References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
- <20120227142638.GN27687@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
-In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2dpk-000329-Ei
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:20:21 +0000
+Received: by iaky10 with SMTP id y10so8089861iak.36
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:20:17 -0800 (PST)
+Message-ID: <1330500162.3545.75.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] libmtd: fix mtd_write() issues for large data-only writes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 29 Feb 2012 09:22:42 +0200
+In-Reply-To: <CAN8TOE9AsPc-GyEC7o9ZzDjWTj-JNy3f-VzOoFW0QjsC8duNxA@mail.gmail.com>
+References: <1328934905-27007-1-git-send-email-computersforpeace@gmail.com>
+ <1329210112.22240.217.camel@sauron.fi.intel.com>
+ <CAN8TOE9AsPc-GyEC7o9ZzDjWTj-JNy3f-VzOoFW0QjsC8duNxA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-QKQ71wtyCeVdBA/R241O"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Samuel,
 
-On Tue, Feb 28, 2012 at 11:14:39, Manjunathappa, Prakash wrote:
-> Hi Samuel,
+--=-QKQ71wtyCeVdBA/R241O
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2012-02-14 at 11:53 -0800, Brian Norris wrote:
+> On Tue, Feb 14, 2012 at 1:01 AM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+> > Pushed this one and the other 3 patches to mtd-utils.git, thanks a lot!
 >=20
-> On Mon, Feb 27, 2012 at 19:56:38, Samuel Ortiz wrote:
-> [snip]
-> > So it seems you're passing a platform devices array through your mfd ae=
-mif
-> > platform data pointer. And from what I can see, it's mostly a 1 entry a=
-rray
-> > (for the NAND case) or a 2 entries array (for the NAND and NOR case).
-> > In that case, adding an MFD driver in the middle brings basically nothi=
-ng but
-> > confusion and overhead (and 200+ lines of code).
-> > So unless someone explains to me how this is doing any good to the kern=
-el in
-> > general, I'm not going to take this patchset.
-> >=20
-> > Cheers,
-> > Samuel.
-> >
+> Thanks for the push! Please note that there are still two patches
+> outstanding, that you said you pushed earlier but are not in the
+> repository AFAICT. They were in another thread, with subjects:
 >=20
-> In this way we trying to isolate future modification of aemif driver not =
-to depict
-> as platform code change, the need for this is based on discussion in belo=
-w thread
-> http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-=
-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
->=20
-> Earlier also concern was expressed to move aemif driver out of arch/arm t=
-o drivers folder.
-> Here is the link for the same: http://lists.infradead.org/pipermail/linux=
--mtd/2011-August/037308.html
-> Since aemif driver supports NAND/NOR devices, we feel MFD is the place ho=
-lder.
->=20
-> Thanks,
-> Prakash
+> [PATCH 1/3] libmtd: perform device checking first
+> [PATCH 2/3] libmtd_legacy: don't open device in R/W
 
-Some more information which I missed out earlier:
-DaVinci AEMIF is an async memory interface, driver for which was implemente=
-d in
-arch/arm/mach-davinci/aemif.c. It can be interfaced to NAND, NOR and other
-asynchronous memories. Currently it just provides an API for timing value
-configuration. The API is invoked by the MTD NAND driver.=20
+Pushed those 2, thanks!
 
-Specification here: http://www.ti.com/lit/ug/sprue20c/sprue20c.pdf
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Reason for moving it to MFD frame work:
-1) AEMIF is also present on devices belonging to arch-c6x and arch-omap2 ar=
-chitectures.
-   So having the driver in architecture neutral place seems to be the way t=
-o go.
-2) Other than NAND/NOR there are use cases where people are interfacing oth=
-er devices,
-   for eg: FPGAs through UIO framework. So MTD is not the place for AEMIF d=
-river.
+--=-QKQ71wtyCeVdBA/R241O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Taking above points into consideration Arnd Bergmann suggested to move AEMI=
-F driver to
-MFD framework. Here is the link:
-http://lists.ozlabs.org/pipermail/devicetree-discuss/2011-December/010295.h=
-tml
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Thanks,
-Prakash
+iQIcBAABAgAGBQJPTdJCAAoJECmIfjd9wqK0z8cP/jo4hSBbu8apsv+vzwSegPjf
+Q6T7DQ/L0Umjo7k7hdO23X6VBWL6/vNtVjHZ0Y3wJBKw2c0hy4QQZBK50CUN/5vR
+LFJzlPTPYlCz+gNqSUWXn/KNqCcooYRZ+3KJbNmLbOrxrJAyB1MFY8ZWZFD9HbQu
+9IFg+56ecAo0Q91G5ttMQc11K5DuD2Z0qQn3STQu/9xMriClwB4qZxr8TN+P0kPD
+7o0K53O7OLW+T3TJWmF+UToI/QqJefS+42FRnhB282j2YE3tXS1VKNj5k6zf18Zl
+Vs5ihtbQy3FNOJxf37n0JmrRqs9dt9AvIWzDvF5CYWUjyo0UqEQPNA+70Gtk4qLA
+W30y0m9gxZeVH8HM5oCxrshPqN2IT1YqOInkRcEPnBI6Q/L9KsiSsXnZQVztiMmf
+yYJeBLO1wvcAGG2qvGdZMoRwLUZ1CMwyorhbVLxM96vaAayiUcs4GKI/BIWWBU01
+wN1+IjORcUFW1X1SxCXc5xNLMcz4jFRyABQusMUYKLMRpwS5Ce4xVM544EXwf81x
+legv29VjfGg9o6vVR9qJn9N6wwouyPrvjPuT5dbw/ZIetTgQ0JEr6cf3Fkcq/iqb
+6A5N6vKZtlcwC4pWeOIyDlkiPjRW7/FPQ4UkK9sPuShi3K6eR6/YlvbeTkSJ9zGp
+zETX9mwXV7L+hNTTCsGi
+=TGPF
+-----END PGP SIGNATURE-----
+
+--=-QKQ71wtyCeVdBA/R241O--
