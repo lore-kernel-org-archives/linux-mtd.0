@@ -1,25 +1,23 @@
-Content-Type: multipart/mixed; boundary="===============0779507818=="
-MIME-Version: 1.0
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-Date: Wed, 29 Feb 2012 07:52:27 +0000
-Message-ID: <1330502098.3545.78.camel@sauron.fi.intel.com>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
- <4F4D9725.3090100@freescale.com>
-In-Reply-To: <4F4D9725.3090100@freescale.com>
-MIME-Version: 1.0
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "cjb@laptop.org" <cjb@laptop.org>, "Koul, Vinod" <vinod.koul@intel.com>,
- "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "lrg@ti.com" <lrg@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "LW@KARO-electronics.de" <LW@KARO-electronics.de>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2eP4-0005Lx-Mw
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:56:51 +0000
+Received: by iaky10 with SMTP id y10so8127298iak.36
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:56:49 -0800 (PST)
+Message-ID: <1330502353.3545.79.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] trivial/mtd: simplify return logic in do_map_probe()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Wed, 29 Feb 2012 09:59:13 +0200
+In-Reply-To: <1329145944-10068-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1329145944-10068-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-RLrrlfD54korl+n1kUKc"
+Mime-Version: 1.0
+Cc: Jiri Kosina <trivial@kernel.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, kernel@pengutronix.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---===============0779507818==
-MIME-Version: 1.0
-Content-Language: en-US
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-9K266iUeum0N5msiMUhs"
 
---=-9K266iUeum0N5msiMUhs
+--=-RLrrlfD54korl+n1kUKc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
-> Hi:
->=20
-> ping.
+On Mon, 2012-02-13 at 16:12 +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-Is this patch-set independent or requires something like gpma patches?
+Pushed to l2-mtd.git tree, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-9K266iUeum0N5msiMUhs
+--=-RLrrlfD54korl+n1kUKc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,41 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTdnSAAoJECmIfjd9wqK0UBkP/jREokO8SztjTQET6O9crX+L
-9spU0Vg2O20j0Cr+/xGeZ+nDbq0VtMCln63bB6Wl9VwMaBfg3RRVrPUTBIKsUk4Z
-oxCMw2PDJmUav2tgwB15oa8297kL9M5j9mfg4swQgayBsKhqzjblfVkfuH9wT4bn
-8Wyn2tjUo2fLrjDrIuqkTwb5jYpZm188UpVZA5VN4HzzG4xdD3qvuBLHvXGVjjv3
-U3dxtESo/TU1ObjZoVA61TJteh2DHHyqyDL9F/1pleVKHjB+6v63zt+v3PqMLUni
-m0TwiXcBtnYZBIkQuZ9uzmrpnvuxIIfCJRajIHHU+DZSE6CdZnuOPDzd6WDRMChp
-JTJhaR2TMmY+XtKs8hWNmHJz1o2uapse3bXeIyox2RTHiZWMIKF31gjO+06prX2V
-WlkV+UqoXaMBB4C9pkjmZhC29B5CT1nxcKqVIwvP9Q9puht0W4dNXntqzrcAWzbq
-dvUAM1d34hF4SYyRT60SEagUM1HjPjkapTqivpG2crz773pBKELHu+J1S8s9ldj5
-fsVqTsNHsp+eB5VOd9zeMbRH/daDErxbqkepVshRt1jsiue3FojrpdeZowcsPQqo
-6ERyVlQRgQ3gCRWjSN2Dch32xvHX9Ph607kxpK7XhM0FqEwTaaQoh3U9Wb72pxRc
-Jrr1/Sej4TWhc+a4D5H0
-=wxJl
+iQIcBAABAgAGBQJPTdrRAAoJECmIfjd9wqK0crAP/2dv9EDeDQ65OuYO3gI/2wH9
+xrplrjIkXmnZOF5vH1xnluNkZBC9Z3QL2xvpDe+2tRmRTyzPd48LWwTdOas75CTH
+HdtKVqdd03NPdN6JL6V/ucL3YlvEkmIVjJygdT1za2LIZXkjoart9WwnHkZYxMSZ
+UNDL5iYgIsgiQ7Hq/S7NBMrook+wiqw11N6EEaSD1OIoCpGHmHPGBcuhxBUiR21z
+TDZxRWQtCEn8X1IleOZ+O31mpd69DI0QI9VyalItHG4dsAsW7jq9hmLRU2jk55kz
+jGTzLGLeI3qDHJ32dIf5yBBZaJo0dmxR5rTJlloYoiVO9JkfkCN6eoGj6YLk/HKe
+GPlM/z4k4ETP3Er2Mc3w7nHsnsk3zPFTjASFFaaTlfLZjApxHQgD3JwDH3VsS0Js
+j+1opugXcmAafX4/Hlz8y1mT5fOaY61GvTHYG5kiWCoSGAzIc2Iu/btiLLGqOrGR
+rxGdg3FxHBnP9GoPS6p2xEDlwKdhR4ue8v/7/z4Tnm4icPUV9YltEoJAU3b58Imx
+VE+WQJZlG0ecRhbNRqrPdN3WrL78btVZtg0ggt5q1+VSq1Zq5s+zdnGQ15Kr1pUC
+bniBzbPSrygv+5rlF59/7guY81cZnh+wPAW5/iCFWDQKh6BM30I9rWhMv7447vPA
+k+r6/GosMjkzTq/aHhfT
+=Pc/8
 -----END PGP SIGNATURE-----
 
---=-9K266iUeum0N5msiMUhs--
-
---===============0779507818==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki =
-
-Business Identity Code: 0357606 - 4 =
-
-Domiciled in Helsinki =
-
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
---===============0779507818==--
+--=-RLrrlfD54korl+n1kUKc--
