@@ -1,23 +1,21 @@
 Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2dpk-000329-Ei
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:20:21 +0000
-Received: by iaky10 with SMTP id y10so8089861iak.36
- for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:20:17 -0800 (PST)
-Message-ID: <1330500162.3545.75.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] libmtd: fix mtd_write() issues for large data-only writes
+ id 1S2eF1-0004iV-2O
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:46:27 +0000
+Received: by iaky10 with SMTP id y10so8115949iak.36
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:46:26 -0800 (PST)
+Message-ID: <1330501730.3545.77.camel@sauron.fi.intel.com>
+Subject: Re: Problem with UBI/ubifs mount
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 29 Feb 2012 09:22:42 +0200
-In-Reply-To: <CAN8TOE9AsPc-GyEC7o9ZzDjWTj-JNy3f-VzOoFW0QjsC8duNxA@mail.gmail.com>
-References: <1328934905-27007-1-git-send-email-computersforpeace@gmail.com>
- <1329210112.22240.217.camel@sauron.fi.intel.com>
- <CAN8TOE9AsPc-GyEC7o9ZzDjWTj-JNy3f-VzOoFW0QjsC8duNxA@mail.gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Wed, 29 Feb 2012 09:48:50 +0200
+In-Reply-To: <Pine.LNX.4.64.1202151723400.13194@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1202151723400.13194@lnxricardw.se.axis.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-QKQ71wtyCeVdBA/R241O"
+ boundary="=-Pl5mz3hXVkuWaOH7QYWX"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,29 +27,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QKQ71wtyCeVdBA/R241O
+--=-Pl5mz3hXVkuWaOH7QYWX
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-02-14 at 11:53 -0800, Brian Norris wrote:
-> On Tue, Feb 14, 2012 at 1:01 AM, Artem Bityutskiy <dedekind1@gmail.com> w=
-rote:
-> > Pushed this one and the other 3 patches to mtd-utils.git, thanks a lot!
+On Wed, 2012-02-15 at 17:27 +0100, Ricard Wanderlof wrote:
+> I'm having a problem I'm trying to get my head around.
 >=20
-> Thanks for the push! Please note that there are still two patches
-> outstanding, that you said you pushed earlier but are not in the
-> repository AFAICT. They were in another thread, with subjects:
->=20
-> [PATCH 1/3] libmtd: perform device checking first
-> [PATCH 2/3] libmtd_legacy: don't open device in R/W
+> I have a ubifs image, where the image file is about 3.7 MB in size.
 
-Pushed those 2, thanks!
+How did you generate it?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QKQ71wtyCeVdBA/R241O
+--=-Pl5mz3hXVkuWaOH7QYWX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -59,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTdJCAAoJECmIfjd9wqK0z8cP/jo4hSBbu8apsv+vzwSegPjf
-Q6T7DQ/L0Umjo7k7hdO23X6VBWL6/vNtVjHZ0Y3wJBKw2c0hy4QQZBK50CUN/5vR
-LFJzlPTPYlCz+gNqSUWXn/KNqCcooYRZ+3KJbNmLbOrxrJAyB1MFY8ZWZFD9HbQu
-9IFg+56ecAo0Q91G5ttMQc11K5DuD2Z0qQn3STQu/9xMriClwB4qZxr8TN+P0kPD
-7o0K53O7OLW+T3TJWmF+UToI/QqJefS+42FRnhB282j2YE3tXS1VKNj5k6zf18Zl
-Vs5ihtbQy3FNOJxf37n0JmrRqs9dt9AvIWzDvF5CYWUjyo0UqEQPNA+70Gtk4qLA
-W30y0m9gxZeVH8HM5oCxrshPqN2IT1YqOInkRcEPnBI6Q/L9KsiSsXnZQVztiMmf
-yYJeBLO1wvcAGG2qvGdZMoRwLUZ1CMwyorhbVLxM96vaAayiUcs4GKI/BIWWBU01
-wN1+IjORcUFW1X1SxCXc5xNLMcz4jFRyABQusMUYKLMRpwS5Ce4xVM544EXwf81x
-legv29VjfGg9o6vVR9qJn9N6wwouyPrvjPuT5dbw/ZIetTgQ0JEr6cf3Fkcq/iqb
-6A5N6vKZtlcwC4pWeOIyDlkiPjRW7/FPQ4UkK9sPuShi3K6eR6/YlvbeTkSJ9zGp
-zETX9mwXV7L+hNTTCsGi
-=TGPF
+iQIcBAABAgAGBQJPTdhiAAoJECmIfjd9wqK0g4IP/RHobysHhDHRdikxC0XzqHry
+0yJK0QYUE7Ra94BVXQW2Udf/umWqfpAclc+DiZdQ6Xg1rDkUSN96UFsB7Smwyntr
+hrgZk/1ESe1v4MMORErw6zibrUA59ten5S3UFVyC/7Au8+hOilmj4x3v1oYzCtkF
+k9jGUK74CrRLIvuC6NBo0n1ha2fn4LwukcKfIOjf49H8p+/OjNTLTWMLKS5Pjx6t
+1rfrKAv4KID4uBQrTQR7wPOsyJmamsUlujPENJTXof8iED3htFJ+oJA1QDqP/0kl
+bp8x5QUFhPI/kltOqw8gjqtxUQFuleIpNW0cmrNfMaTXdhoJMJjzmIT2nuesQzcO
+0hQvO8hkwFfGVjFiD6Ccx6yiDFgxJ9OQzS0xVprCcAnvFVQICNejYg4ybDr5r3rs
+3teQ00XPH5pZydkGWi7Dpg1sbGWXdzaWCt6V6PQcYyAKE6cw1E3vPgMpZRmSycYi
+ZwkQh4pRtzT0cNLomtqpuCdt6EYGFQgXU9idSsA4fP0bQAURu2DThZHYQtt2Ric/
+EWmRCpAKkz/jhq0hP3/qMr83a1pku9oUE9xhqtejcq4MQcC9SB6azDQ+MR6X7lLw
+dTHHgco0AE3bI5ZKnLxcuc0aLTiyFW1T8G7Gs0pb7kXqOXOowrogdnOlSqDE7Z3E
+DpTapGkk/NQtRBfIRsQ1
+=gCVs
 -----END PGP SIGNATURE-----
 
---=-QKQ71wtyCeVdBA/R241O--
+--=-Pl5mz3hXVkuWaOH7QYWX--
