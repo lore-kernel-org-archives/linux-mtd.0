@@ -1,23 +1,17 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2eP4-0005Lx-Mw
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 07:56:51 +0000
-Received: by iaky10 with SMTP id y10so8127298iak.36
- for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2012 23:56:49 -0800 (PST)
-Message-ID: <1330502353.3545.79.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] trivial/mtd: simplify return logic in do_map_probe()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Wed, 29 Feb 2012 09:59:13 +0200
-In-Reply-To: <1329145944-10068-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1329145944-10068-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-RLrrlfD54korl+n1kUKc"
-Mime-Version: 1.0
-Cc: Jiri Kosina <trivial@kernel.org>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, kernel@pengutronix.de
-Reply-To: dedekind1@gmail.com
+Content-Type: multipart/mixed; boundary="===============1496034800=="
+MIME-Version: 1.0
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : fix compiler warning
+Date: Wed, 29 Feb 2012 07:58:20 +0000
+Message-ID: <1330502452.3545.81.camel@sauron.fi.intel.com>
+References: <1329189724-26100-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1329189724-26100-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--===============1496034800==
+MIME-Version: 1.0
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-KmRm/8vYLaFjTf/Xn3kM"
 
---=-RLrrlfD54korl+n1kUKc
+--=-KmRm/8vYLaFjTf/Xn3kM
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-02-13 at 16:12 +0100, Uwe Kleine-K=C3=B6nig wrote:
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Tue, 2012-02-14 at 11:22 +0800, Huang Shijie wrote:
+> The gpmi driver selects the MTD_CMDLINE_PARTS directly.
+> But we should not select a visible symbol.
+>=20
+> Just remove the select.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Pushed to l2-mtd.git tree, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-RLrrlfD54korl+n1kUKc
+--=-KmRm/8vYLaFjTf/Xn3kM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +53,41 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTdrRAAoJECmIfjd9wqK0crAP/2dv9EDeDQ65OuYO3gI/2wH9
-xrplrjIkXmnZOF5vH1xnluNkZBC9Z3QL2xvpDe+2tRmRTyzPd48LWwTdOas75CTH
-HdtKVqdd03NPdN6JL6V/ucL3YlvEkmIVjJygdT1za2LIZXkjoart9WwnHkZYxMSZ
-UNDL5iYgIsgiQ7Hq/S7NBMrook+wiqw11N6EEaSD1OIoCpGHmHPGBcuhxBUiR21z
-TDZxRWQtCEn8X1IleOZ+O31mpd69DI0QI9VyalItHG4dsAsW7jq9hmLRU2jk55kz
-jGTzLGLeI3qDHJ32dIf5yBBZaJo0dmxR5rTJlloYoiVO9JkfkCN6eoGj6YLk/HKe
-GPlM/z4k4ETP3Er2Mc3w7nHsnsk3zPFTjASFFaaTlfLZjApxHQgD3JwDH3VsS0Js
-j+1opugXcmAafX4/Hlz8y1mT5fOaY61GvTHYG5kiWCoSGAzIc2Iu/btiLLGqOrGR
-rxGdg3FxHBnP9GoPS6p2xEDlwKdhR4ue8v/7/z4Tnm4icPUV9YltEoJAU3b58Imx
-VE+WQJZlG0ecRhbNRqrPdN3WrL78btVZtg0ggt5q1+VSq1Zq5s+zdnGQ15Kr1pUC
-bniBzbPSrygv+5rlF59/7guY81cZnh+wPAW5/iCFWDQKh6BM30I9rWhMv7447vPA
-k+r6/GosMjkzTq/aHhfT
-=Pc/8
+iQIcBAABAgAGBQJPTds0AAoJECmIfjd9wqK0LwUP/R1/p82+xii1wA0xaYtuhBy5
+LUbHTz28rjcpye1W3RnCXcYDgET3Vi98cBHAISR6nXC3kzkxuo5zK+HouFdXcDOU
+OrYeA/yVLu1OMhfZBLQfbtsw/KwjgdaW2b93y4i4GXa+AfffIgU3/92S246llE8W
+v0nmFjVxHfgIsjwVbNF7BF4FN54EbszaT9qwxmZWnFrDdkoriQ8vUtvb///dJhqI
+eq/XHCxgRuWB17ax7dqHgg0FdA0EYzAX9VvkoSOGSpsjXzONArWfZztAwtegtMYf
+s9nWHrYwP3VYXCGbot93ME35ZZSexGjBxmxB/tBKwO1bIPgaRA1C+yhiOT9ZZfz1
+ksHWJJuCJYoKegeXDyejsD9dcfilSubhq8u8/WoPcx3rag7NMgPJAl6XyqNwEiYp
+oZplVcVUx6oeLLVHBGCGNyurZFjMXwpy2rOMA7ZRQvxHA82TrnvRORGhW0vmbG1r
+dtsRHJbMCEXZUE70hupwtXIth1KzP/LqF0mVXFKvYKxDl3xhfGdDiWttDjQp+dJl
+GFldw2zFHvOFd31tQzkzrNNsYSqDScgiackM5UP6OgcVk3f0Fj/9uuh2i1+06veS
+LkjDYiIma97dxLKEwRTeBS9dAdW6ohGEwQaJ9pKFisDhNky49fm847ubPzV9ZqQF
+QVC8TTMX4lxIJ8nFdrYQ
+=2pmT
 -----END PGP SIGNATURE-----
 
---=-RLrrlfD54korl+n1kUKc--
+--=-KmRm/8vYLaFjTf/Xn3kM--
+
+--===============1496034800==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki =
+
+Business Identity Code: 0357606 - 4 =
+
+Domiciled in Helsinki =
+
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
+--===============1496034800==--
