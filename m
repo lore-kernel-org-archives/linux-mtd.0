@@ -1,23 +1,20 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2fEZ-0004hs-2Z
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 08:50:03 +0000
-Received: by iaky10 with SMTP id y10so8189009iak.36
- for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 00:50:01 -0800 (PST)
-Message-ID: <1330505546.3545.84.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] Fix 'Flash device refused suspend due to active
- operation' message
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Date: Wed, 29 Feb 2012 10:52:26 +0200
-In-Reply-To: <20120215114834.GG13673@n2100.arm.linux.org.uk>
-References: <20120215114834.GG13673@n2100.arm.linux.org.uk>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-sj5cMnIswL+OvS0emPh/"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from gw1.transmode.se ([195.58.98.146])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2fMP-0000YE-7S
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 08:58:11 +0000
+In-Reply-To: <1330475001.50223.YahooMailClassic@web29002.mail.ird.yahoo.com>
+References: <OF718A97E1.ACAF6B20-ONC12579B2.00754C8D-C12579B2.0075B1B3@transmode.se>
+ <1330475001.50223.YahooMailClassic@web29002.mail.ird.yahoo.com>
+Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
+To: Paul Parsons <lost.distance@yahoo.com>,
+	<lost.distance@yahoo.com>
+Message-ID: <OFB4D94431.92097836-ONC12579B3.002C764D-C12579B3.00314167@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Wed, 29 Feb 2012 09:58:00 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=ISO-8859-15
+Content-transfer-encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +24,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Paul Parsons <lost.distance@yahoo.com> wrote on 2012/02/29 01:23:21:
+> From: Paul Parsons <lost.distance@yahoo.com>
+>
+> > > If an Erase Suspend Command (0xb0) is issued while a
+> > Block Erase operation
+> > > (0x20, 0xd0) is in progress, Status Register bit 6
+> > (SR.6) will be set to 1.
+> > > After an Erase Resume Command (0xd0) is issued, SR.6
+> > will be set back to 0.
+> > >
+> > > Unfortunately when inval_cache_and_wait_for_operation()
+> > is called to wait for
+> > > a Block Erase operation to finish, it never checks that
+> > SR.6 =3D 0 before
+> > > returning. Consequently it can (and does) return while
+> > a Block Erase operation
+> > > is still suspended, resulting in random breakage.
+> > >
+> > > This patch ensures that when
+> > inval_cache_and_wait_for_operation() is called to
+> > > wait for a Block Erase operation to finish
+> > (chip->state =3D=3D FL_ERASING), it does
+> > > not return until both SR.7 =3D 1 (as before) and SR.6 =3D
+> > 0.
+> >
+> > Interesting but I do wonder, should not the
+> > =A0 if (chip->state !=3D chip_state)
+> > test just before the status test prevent this in the first
+> > place?
+>
+> I'm not sure I understand. The (chip->state !=3D chip_state) test for=
+ces
+> inval_cache_and_wait_for_operation() to stop polling and sleep, pendi=
+ng
+> the operation which suspended it. After it wakes it resumes polling. =
+The
+> test doesn't prevent inval_cache_and_wait_for_operation() returning
+> prematurely, i.e. before the Block Erase has finished.
 
---=-sj5cMnIswL+OvS0emPh/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Been to long since I been in this code I guess, but I still don't get i=
+t.
 
-On Wed, 2012-02-15 at 11:48 +0000, Russell King - ARM Linux wrote:
-> From: Russell King <rmk+kernel@arm.linux.org.uk>
->=20
-> While debugging on SA11x0, the following message was observed:
->=20
-> "Flash device refused suspend due to active operation (state 20)"
->=20
-> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+If erase is suspended, chip->state is changed which will keep the funct=
+ion in
+the for(;;) loop. Once erase has been resumed again chip->state will ch=
+ange back.
+It seems to me that chip->state and SR.6 are mutally exclusive? I can n=
+ot see how
+you can get to
+	status =3D map_read(map, cmd_adr);
+	if (map_word_andequal(map, status, status_OK, status_OK))
+if the the erase has been suspended.
 
-Pushed to l2-mtd.git, thanks!
+>
+> An important point which I suspect has been overlooked is that both S=
+R.7
+> and SR.6 are set when a Block Erase is suspended. Thus testing SR.7 o=
+nly
+> is not sufficient to determine that a Block Erase has completed.
+>
+> > > +=A0=A0=A0map_word status_76 =3D (chip->state
+> > =3D=3D FL_ERASING) ? CMD(0xc0) : CMD(0x80);
+> >
+> > hmm, I wonder if you can get by without the chip->state
+> > test? Just always set it to 0xc0?
+>
+> No, unfortunately not. For example a write buffer sequence will finis=
+h
+> whether or not a Block Erase is currently suspended; thus it must tes=
+t
+> SR.7 only, not SR.6.
 
---=20
-Best Regards,
-Artem Bityutskiy
+I see, thanks.
 
---=-sj5cMnIswL+OvS0emPh/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPTedLAAoJECmIfjd9wqK01CQQAKbzJ7mw6OJ4Lff4IcRHS4Xz
-sREtPiPYcZTW13dPSD+s0olPow28ORvKJKHZGW078D/m1o/UsU+BOZ+2KxHjRt6/
-NUN2YLiCuAfkbYlXIuzU+lxoGysXtvdgqYpW0v0xRqL0W9fsSGEycK964BhnNHfF
-dDJZ8JUp0YtseduvlVcbVrTQ/yBqQuR/47Lx7HxtnS5LPkhvcPVHxVNXSHyQrJmw
-fVeIzYDQBA1FhK3q//dehLa8dfFw3Ibi8/H+eHrQruzqMs5pBYQ+XvWWlp7vs5GC
-q+x82A6zlqU0Z5W8pidJvv/1QiPJYvk9WWqyKiraSQww2OYVzA7AEAMclzwYzinc
-hIr+8qYCGly1uHZkMLk7sWQImDHKBxpnc6qMtDoDaTbxpN6Lz7MzIkYbcaX3XLQf
-Qftmj5c8BsfY560NYBCyYfSdhJhxCvCFvvTNW2Si89ahq36+THpQMgaYFacWAiQJ
-+K2zGgIf1yeX6TUDf6WUE4z4E4aExtoY4FIFpPv0FrGDYkGFP13YYGDxHmswtmYg
-1vGmZLPpEoeNtGN/+qlirsvmi0iMYdNFzMw7OJgejkw1zVKpIbM79YslCjVtlOg0
-llEKw/6tcmcuCtTFhReVwnOsXCOY8GUOTeZKPjs13+k24XYWPRe9W+kJv+AuYcJu
-BBq222epD6hj+MJSspMm
-=0hpQ
------END PGP SIGNATURE-----
-
---=-sj5cMnIswL+OvS0emPh/--
+ Jocke=
