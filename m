@@ -1,20 +1,18 @@
-Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2onQ-0007lr-G7
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 19:02:41 +0000
-Message-ID: <1330542157.13689.17.camel@joe2Laptop>
-Subject: Re: [PATCH 0/4] jffs2: logging message neatening
-From: Joe Perches <joe@perches.com>
+Received: from nm21-vm7.bullet.mail.ird.yahoo.com ([212.82.109.247])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2ryo-0004QB-2N
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 22:26:38 +0000
+Message-ID: <1330554395.65878.YahooMailClassic@web29011.mail.ird.yahoo.com>
+Date: Wed, 29 Feb 2012 22:26:35 +0000 (GMT)
+From: Paul Parsons <lost.distance@yahoo.com>
+Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
 To: dedekind1@gmail.com
-Date: Wed, 29 Feb 2012 11:02:37 -0800
-In-Reply-To: <1330517290.3545.107.camel@sauron.fi.intel.com>
-References: <cover.1329349881.git.joe@perches.com>
- <1330517290.3545.107.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1330538621.3545.163.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Joakim Tjernlund <joakim.tjernlund@transmode.se>, philipp.zabel@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-02-29 at 14:08 +0200, Artem Bityutskiy wrote:
-> On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
-> > Joe Perches (4):
-> >   jffs2: Convert most D1/D2 macros to jffs2_dbg
-> >   jffs2: Convert printks to pr_<level>
-> >   jffs2: Use pr_fmt and remove jffs: from formats
-> >   jffs2: Standardize JFFS_<LEVEL> uses
-> 
-> Thanks for the work, appreciated. But your patch introduces new sparse
-> and smatch warnings, which did not exist before your patch:
-
-Hello Artem.
-
-> Successfully built configuration "l2_mxs_defconfig,arm,arm-unknown-linux-gnueabi-", results:
-> 
-> --- before_patching.log
-> +++ after_patching.log 
-> @@ @@
-> +fs/jffs2/file.c:330:2: warning: signed and unsigned type in conditional expression [-Wsign-compare]
-> @@ @@
-> -fs/jffs2/read.c:154 jffs2_read_dnode(129) warn: possible memory leak of 'decomprbuf' [smatch]
-> -fs/jffs2/read.c:154 jffs2_read_dnode(129) warn: possible memory leak of 'readbuf' [smatch]
-> +fs/jffs2/read.c:154 jffs2_read_dnode(131) warn: possible memory leak of 'decomprbuf' [smatch]
-> +fs/jffs2/read.c:154 jffs2_read_dnode(131) warn: possible memory leak of 'readbuf' [smatch]
-> @@ @@
-> -fs/jffs2/scan.c:108:54: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-> @@ @@
-> +fs/jffs2/super.c:377:1: error: directive in argument list [sparse]
-> +fs/jffs2/super.c:379:1: error: directive in argument list [sparse]
-> +fs/jffs2/super.c:380:1: error: directive in argument list [sparse]
-> +fs/jffs2/super.c:382:1: error: directive in argument list [sparse]
-
-I don't see how this is a new error.
-printk vs pr_info shouldn't change this.
-maybe it's a smatch issue?
-
-
-> Would you please take a look? Ideally patches should eliminate warnings,
-> not introduce new ones.
-
-I believe this simply exposes a current defect rather than
-adds "new" ones.  It seems the old D1/D2 macros hide them.
-
-> Also, your patch does not apply cleanly to my l2-mtd tree - and this is
-> the tree which is currently used for merging MTD and JFFS2 stuff
-> upstream, and it is in linux-next as well. Would you send patches
-> against the l2 tree?
-
-This patchset applies cleanly against next-20120229
-Where is your git tree?
-
-cheers, Joe
+--- On Wed, 29/2/12, Artem Bityutskiy <dedekind1@gmail.com> wrote:=0A> Did =
+you try to validate your setup=0A> with mtd tests?=0A=0ANo I did not.=0A=0A=
+I've just quickly tried the readtest on all mtd partitions and they seemed=
+=0Ato pass. A torturetest on a small unused partition reported "retried 3=
+=0Atimes, still errors, give-up", but a stresstest on the same partition pa=
+ssed.=0A=0AWas there a specific test and set of options I should try?=0AThe=
+ hx4700 has NOR flash (Intel StrataFlash) so it looks like at least 4=0Aof =
+the tests - pagetest, oobtest, subpagetest, nandecctest - are not=0Aappropr=
+iate.
