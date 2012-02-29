@@ -1,20 +1,25 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2htP-0007ZX-2l
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 11:40:24 +0000
-Message-ID: <4F4E0E9D.7090002@linutronix.de>
-Date: Wed, 29 Feb 2012 12:40:13 +0100
-From: Richard Weinberger <rw@linutronix.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
+ id 1S2iBM-0000wf-Lc
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 11:58:57 +0000
+Received: by iaky10 with SMTP id y10so8429129iak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 03:58:55 -0800 (PST)
+Message-ID: <1330516879.3545.103.camel@sauron.fi.intel.com>
 Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <rw@linutronix.de>
+Date: Wed, 29 Feb 2012 14:01:19 +0200
+In-Reply-To: <4F4E0E9D.7090002@linutronix.de>
 References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
  <1330515322.3545.99.camel@sauron.fi.intel.com>
-In-Reply-To: <1330515322.3545.99.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+ <4F4E0E9D.7090002@linutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-jFegWjEazJlIbKQhlAa1"
+Mime-Version: 1.0
 Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, tim.bird@am.sony.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +29,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.02.2012 12:35, schrieb Artem Bityutskiy:
-> On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
->> The following patch set implements checkpointing support for
->> UBI. Checkpointing is an optional feature which stores the physical to
->> logical eraseblock relations in a checkpointing superblock to reduce
->> the initialization time of UBI. The current init time of UBI is
->> proportional to the number of physical erase blocks on the FLASH
->> device. With checkpointing enabled the scan time is limited to a fixed
->> number of blocks.
-> 
-> Notice, your patch-set has huge amount of checkpatch.pl complaints -
-> please fix them. This will also be consistent with the overall UBI
-> coding style where I honored checkpatch.pl limitations like identation
-> style and 80 chars per line.
-> 
 
-All checkpatch.pl complaints will be fixed.
-But first we have to discuss and address real problems.
+--=-jFegWjEazJlIbKQhlAa1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-By sending the second iteration of the patch-set I'll make checkpatch.pl
-happy. :-)
+On Wed, 2012-02-29 at 12:40 +0100, Richard Weinberger wrote:
+> Am 29.02.2012 12:35, schrieb Artem Bityutskiy:
+> > On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
+> >> The following patch set implements checkpointing support for
+> >> UBI. Checkpointing is an optional feature which stores the physical to
+> >> logical eraseblock relations in a checkpointing superblock to reduce
+> >> the initialization time of UBI. The current init time of UBI is
+> >> proportional to the number of physical erase blocks on the FLASH
+> >> device. With checkpointing enabled the scan time is limited to a fixed
+> >> number of blocks.
+> >=20
+> > Notice, your patch-set has huge amount of checkpatch.pl complaints -
+> > please fix them. This will also be consistent with the overall UBI
+> > coding style where I honored checkpatch.pl limitations like identation
+> > style and 80 chars per line.
+> >=20
+>=20
+> All checkpatch.pl complaints will be fixed.
+> But first we have to discuss and address real problems.
 
-Thanks,
-//richard
+Sure, I just to not have time to look at real stuff now.
 
--- 
-Phone: +49 7556 91 98 91; Fax.: +49 7556 91 98 86
+But yes, I assume you will come up with a good way to stress-test it.
+You will look how the unstable bits problem affects the checkpointing. I
+would suggest you to implement power-cut emulation in UBI just like we
+have it in UBIFS, then run the integck test which already supports UBIFS
+power cut emulation. This will allow to catch a lot of issues.
 
-Firmensitz: 88690 Uhldingen, Auf dem Berg 3
-Registergericht: Amtsgericht Freiburg i. Br., HRB 700 806;
-StNr. 87007/07777; Ust-Id Nr.: DE252739476
-Geschäftsführer: Heinz Egger, Thomas Gleixner
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-jFegWjEazJlIbKQhlAa1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPThOQAAoJECmIfjd9wqK0GHEP+wXJSq1/U/5sj22cWL+zjM4q
+XPzOB3pd0E9CMnqq17DMt+zC9qmGvYn0f+v6LC0x3NbI2eKt/jhrQ86I6u9OU8NL
+k5bZkq512yk0sC6i2uE9HI1dTi8mrFuwNvj6CnHYI9ap6BNMrROmsA3M7r4anajF
+ie+8+LNu5Ekb+3K2IniZQCxcoEsoN8wh2xgoBeDYxmy+7nrXjCdyRXYv6oXetcUj
+HJJpGrGUyrqeJN2R0G5SsTFvcMbPicEpSZBuhgw087l8S9gNvOmaqKkoE0yYzMso
+SqjsjXTWYLrGtgJ6Nc+rPvg+oOU7FcOvT3JW9b3TGSYmM+xFLKM+iLKzbJTi2BWh
+FcwwR+8GbJNNUcktF2aMR2XnYdVacaZruVNhTxj85dUeDMCD5iDp9OolZgHpFdDv
+4kqFJ68B28sJ9uZnJjvWl62JWsZ3hV39r6JD+9QS4GvZMIkLdOhHWbmO+rWi0+C5
+PFkqZhdRsat4Fm3ffsodRq226VGc/HVDg8uqS5yUjIAdO7jflKo3IrHJepqI28U+
+0OCSKvYEkxcfmO8mKi9FYok1Go+oJ+P0CM7gzK9OOtJyx7WccrbqWnfrf1FaozQv
+/1N1J7r7qgA9PvrSwau4pKNeVFok8TBCDNFOatgNvBcXHPu53F1NacBG15iuxKLU
+VcUagiunmeREWO6Mt2r4
+=BjHj
+-----END PGP SIGNATURE-----
+
+--=-jFegWjEazJlIbKQhlAa1--
