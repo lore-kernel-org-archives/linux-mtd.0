@@ -1,22 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S2nEi-0006oc-44
- for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 17:22:44 +0000
-Received: by iaky10 with SMTP id y10so8871004iak.36
- for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 09:22:43 -0800 (PST)
-Message-ID: <1330536308.3545.158.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Adding Secure Deletion to UBIFS
+ id 1S2nq1-00035m-Ca
+ for linux-mtd@lists.infradead.org; Wed, 29 Feb 2012 18:01:17 +0000
+Received: by yhjj52 with SMTP id j52so1535721yhj.36
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Feb 2012 10:01:16 -0800 (PST)
+Message-ID: <1330538621.3545.163.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Wed, 29 Feb 2012 19:25:08 +0200
-In-Reply-To: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+To: Paul Parsons <lost.distance@yahoo.com>
+Date: Wed, 29 Feb 2012 20:03:41 +0200
+In-Reply-To: <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
+References: <1330536159.1477.YahooMailClassic@web29014.mail.ird.yahoo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3bY69MkNSulJmrlkXsOv"
+ boundary="=-rk8RnewzB8v1+Ee4Afu6"
 Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ Joakim Tjernlund <joakim.tjernlund@transmode.se>, philipp.zabel@gmail.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,38 +28,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3bY69MkNSulJmrlkXsOv
+--=-rk8RnewzB8v1+Ee4Afu6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-02-09 at 16:24 +0100, Joel Reardon wrote:
->=20
-> Each data nodes includes a reference to a key in the KSA. This key is rea=
-d and=20
-> used to decrypt the data. When a new data node is written, an unused key =
-is=20
-> selected from the KSA and used to encrypt the data node. The reference to=
- the=20
-> key is then included with the node. The keys in the KSA are written befor=
-e=20
-> actually being used to encrypt data. To securely delete a data node, we s=
-imply=20
-> mark the corresponding key position as deleted, and during the next purgi=
-ng=20
-> operation the KSA erase block that contains the key is then updated to a=
-=20
-> version that does not contain the key.
-
-Why do you need to have your '__u64 crypto_lookup' both in the data node
-and the index? Isn't it enough to have them only inside the data nodes?
-ubifs_branch anyway points to the data node and you can read your
-'crypto_lookup' from there.
+Did you try to validate your setup with mtd tests?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3bY69MkNSulJmrlkXsOv
+--=-rk8RnewzB8v1+Ee4Afu6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -67,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPTl91AAoJECmIfjd9wqK0JJcP/AqCnbP9BH9mBFltA8ygnwvt
-BwPhEl/2lcr6ajmFsDgn2B5Z9juo+2Ba6UcYs4eARob87rtnwEzMQDakp+sg7uPd
-SPVXOCdHC5L2+2axFZOUDTCGbGMLm8fO1gxPFJnH9NmwpnP5lJH33kaf/jcxPQvY
-l6wrutaFdN9cIo2UkRVQtOKV++JqV06H7U+4ABhImRB0eu9cUMFA12hOA46+mIw6
-WAysYzd66pfrNUCedxBUycwIg2ckPfOgeESsoCMQB8HIRpmrrrboLRI/aekmbBa5
-tN0RUvuXeiJAjJ//3+g1oaVykPVr8JGjvNi2dHmP5Oiu/izHx5d4v7F6xc0mdvcC
-VpJ7FqssiPTKCkzAv2dI1tItfHoinjNtkwfKMDmIBSEZJSbsLo/WNdosyv+uhvnw
-5kmMbh8j/CtYq6a9OFq3XPcwZCCSbw6FfzCwtogHMd29p2CKpl4OT7NeOlfEDM+G
-HG3JTMF9IJUXwvDnInY86lDGLHk2wOvqHVjC2uCaNHpPG1xc0YVIudaJYxH9MAgv
-4rvQdbEsjlfJ10gzPzJ3pp2pmib3fe6SdeHXMh36IZoptsv7y0M1DSL+8VRMk683
-m0rf7xBxTFc/6nLupPxmbZP50VaUKGCeydian9fhfxv+sOrN3U21wtju4YBXf61J
-NZdafpvQGyjR7THchgZ7
-=/RSv
+iQIcBAABAgAGBQJPTmh9AAoJECmIfjd9wqK0G2cP/jZaM7SdtXiqnVFikAHf2Ypl
+TIsWUYyrbhVFsFoABw2IFKs49KHHP0o5noNJgrcy7U5mCsXiiOkhMwMJEwt7FEWC
+QWWN+ru6oF5BbYQ/2I5egcttlKWV+MCnrRazQ+kpVIok65nJukCsHjIsNT35I6BS
+rnsZsudoqjljGkYDt+5MqDbpl6g/ZrzdjAEJ7kW3eKjRagaWqW99OqaL/CHW4CSd
+BR+W0lk9HMZ47s/BaWnKgO8z6288n6GeER+pdZLSvIdaSerrnkxEdJF0zOvwRXQu
+eVXRNbKrIypr0i1vQo/jXk9Yx+5+TI3XgaiG+FIed+7iM2LGGwa8+a2eEOao+Epd
+zWsax3k3UfZsW6Do6/ixJblVtm49AuG+zeyOzSokvP8xR4ma/2x0ZX+jBsgUH4Sf
+JAq+BEY/fmDtXH7SMYaKYxo8TV+/6yKbyBv37LiH/iyVw8hZwSvyejBQfaLG29mk
+KKopH0zaq/AaO27kjfeOa+g8zog1qfFgUNNTqqd7nt6lN9F2hRUexM76In9TtpT9
+DEAL7pYOuoOdqapC0U/6jIDx/U+FQ4ZDc4M3VKM0diSVlg3mZNtf41JN+FYHO5sd
+jeKsV9VHNIySB2UB720ezyJ2R+ggRt1eQMzz9mTZRYX+jaA7Ae9fkGOiQ9tQclFK
+Vx4S8HhgNhSQYb1jukDt
+=r54/
 -----END PGP SIGNATURE-----
 
---=-3bY69MkNSulJmrlkXsOv--
+--=-rk8RnewzB8v1+Ee4Afu6--
