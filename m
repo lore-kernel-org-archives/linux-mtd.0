@@ -1,16 +1,26 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S0xu4-0000Uh-EB
- for linux-mtd@lists.infradead.org; Fri, 24 Feb 2012 16:21:53 +0000
-From: Brian Foster <brian.foster@maxim-ic.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: UBI: infinite error loop
-Date: Fri, 24 Feb 2012 17:16:02 +0100
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S2viN-0000Rr-Il
+ for linux-mtd@lists.infradead.org; Thu, 01 Mar 2012 02:25:56 +0000
+From: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
+To: Kumar Gala <galak@kernel.crashing.org>, "dedekind1@gmail.com"
+ <dedekind1@gmail.com>
+Subject: RE: [PATCH][v3] NAND Machine support for Integrated Flash Controller
+Date: Thu, 1 Mar 2012 02:25:46 +0000
+Message-ID: <071A08F2C6A57E4E94D980ECA553F874566564@039-SN1MPN1-005.039d.mgd.msft.net>
+References: <1327063925-3580-1-git-send-email-prabhakar@freescale.com>
+In-Reply-To: <1327063925-3580-1-git-send-email-prabhakar@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Message-ID: <201202241717.04475.brian.foster@maxim-ic.com>
-Cc: kpa_info@yahoo.fr, matthieu.castet@parrot.com
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ Aggrwal Poonam-B10812 <B10812@freescale.com>,
+ Li Yang-R58472 <r58472@freescale.com>, Liu Shuo-B35362 <B35362@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dipen Dudhat <Dipen.Dudhat@freescale.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-bWF0dGhpZXUuY2FzdGV0QHBhcnJvdC5jb20gd3JvdGU6Cj4gUGF0cmljayBhIMOpY3JpdCA6Cj4g
-PiBXaGVuIEkgYW0gZG9pbmcgYW4gdGhlIHViaWF0dGFjaCAtcCAvZGV2L210ZDQgY29tbWFuZAo+
-ID4gSSBoYXZlIHRoZSBmb2xsb3dpbmcgaW5maW5pdGUgZXJyb3IgbG9vcDoKPlsgLi4uIF0KPiBM
-b29rIGxpa2UgaXQgZG9lc24ndCBoYW5kbGUgc3VicGFnZSByZWFkaW5nIDoKPiB5b3UgaGF2ZSBl
-Y2MgZXJyb3Igd2hlbiByZWFkaW5nIDUxMiBieXRlcyBhdCBvZmZzZXQgNTEyLgoKIEFsc28sIGtl
-ZXAgaW4gbWluZCByZWFkLWFmdGVyLXdyaXRlIGNoZWNrcyBkb24ndCB3b3JrIHdpdGggc3VicGFn
-ZXMsCiBodHRwOi8vd3d3LmxpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2ZhcS91YmkuaHRtbCNMX3N1
-YnBhZ2VfdmVyaWZ5X2ZhaWwK4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkkgZ2V0ICJ1YmlfaW9fd3JpdGU6IGVycm9yIC01IHdo
-aWxlIHdyaXRpbmcgNTEyIGJ5dGVzIHRvIFBFQiA1OjUxMiIKCklmIHlvdSBoYXZlIGEgMjA0OCBi
-eXRlcyBwZXIgTkFORCBwYWdlIGRldmljZSwgYW5kIGhhdmUKQ09ORklHX01URF9OQU5EX1ZFUklG
-WV9XUklURSBlbmFibGVkIGluIHlvdXIga2VybmVsLAp5b3Ugd2lsbCBuZWVkIHRvIHR1cm4gaXQg
-b2ZmLiAgVGhlIGNvZGUgZG9lcyBub3QgY3VycmVudGx5CihhcyBvZiAyLjYuMjYpIHBlcmZvcm0g
-dmVyaWZpY2F0aW9uIG9mIHN1Yi1wYWdlIHdyaXRlcwpjb3JyZWN0bHkuICBBcyBVQkkgaXMgb25l
-IG9mIHRoZSBmZXcgdXNlcnMgb2Ygc3ViLXBhZ2UKd3JpdGVzLCBub3QgbXVjaCBlbHNlIHNlZW1z
-IHRvIGJlIGFmZmVjdGVkIGJ5IHRoaXMgYnVnLgrilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKCiBZRVMsIEkgcmVhbGl6ZSB0aGF0
-IGlzIG5vdCB5b3VyIGVycm9yLCBidXQgdGhpcyB3YXMKIHNvbWV0aGluZyB0aGF0IGJhZGx5IHRy
-aXBwZWQgdXMgdXAgdW50aWwgYW4gaW50ZW5zZQogc2VhcmNoLWVuZ2luZSBzZXNzaW9uIC4uLi4g
-IDstXCAgKEkgaGF2ZSBubyBpZGVhIGlmCiB0aGlzIGhhcyBzaW5jZSBiZWVuIGZpeGVkIG9yIG5v
-dD8pCgpjaGVlcnMhCgktYmxmLQoKLS0gCkJyaWFuIEZvc3RlcgpQcmluY2lwYWwgTVRTLCBTb2Z0
-d2FyZSAgICAgICAgfCAgTGEgQ2lvdGF0LCBGcmFuY2UKTWF4aW0gSW50ZWdyYXRlZCBQcm9kdWN0
-cyAgICAgIHwgIFdlYjogIGh0dHA6Ly93d3cubWF4aW0taWMuY29tLwo=
+Hi Kumar,
+
+This patch is supposed to be pushed via powerpc.git repository to main-line=
+.
+Because of dependent patch in powerpc/mpc85xx: " powerpc/fsl: Add support f=
+or Integrated Flash Controller support"
+And it is already picked by you.
+	Commit ID: a20cbdeffce247a2b6fb83cd8d22433994068565
+
+So, can you please pick this patch in powerpc.git for future main-line pull=
+ request as early as possible.
+It will avoid future rebasing of this :)
+
+Regards,
+Prabhakar
+
+> -----Original Message-----
+> From: Kushwaha Prabhakar-B32579
+> Sent: Friday, January 20, 2012 6:22 PM
+> To: linuxppc-dev@lists.ozlabs.org; linux-mtd@lists.infradead.org
+> Cc: Kushwaha Prabhakar-B32579; Dipen Dudhat; Wood Scott-B07421; Li Yang-
+> R58472; Liu Shuo-B35362; Aggrwal Poonam-B10812
+> Subject: [PATCH][v3] NAND Machine support for Integrated Flash Controller
+>=20
+> Integrated Flash Controller(IFC) can be used to hook NAND Flash chips
+> using NAND Flash Machine available on it.
+>=20
+> Signed-off-by: Dipen Dudhat <Dipen.Dudhat@freescale.com>
+> Signed-off-by: Scott Wood <scottwood@freescale.com>
+> Signed-off-by: Li Yang <leoli@freescale.com>
+> Signed-off-by: Liu Shuo <b35362@freescale.com>
+> Signed-off-by: Poonam Aggrwal <poonam.aggrwal@freescale.com>
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+> ---
+>  Based upon
+> git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git (branch
+> next)
+>=20
+>  Tested on P1010RDB
+>=20
+>  Changes for v2: Ported IFC driver for linux-3.2.0-rc3
+> 	- Use chip->bbt_options for BBT
+> 	- Use mtd_device_parse_register instead of old parse_mtd_partitions
+>=20
+>   Changes for v3: Squashed following patch to make singe NAND driver
+> patch
+> 	- mtd/nand:Fix wrong usage of is_blank() in fsl_ifc_run_command
+> 		http://patchwork.ozlabs.org/patch/136547/
+> 	- mtd/nand: Fix IFC driver to support 2K NAND page
+> 		http://patchwork.ozlabs.org/patch/135010/
+>=20
