@@ -1,20 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S32dd-0003Uj-KL
- for linux-mtd@lists.infradead.org; Thu, 01 Mar 2012 09:49:31 +0000
-Received: by mail-ey0-f177.google.com with SMTP id k13so143864eaa.36
- for <linux-mtd@lists.infradead.org>; Thu, 01 Mar 2012 01:49:29 -0800 (PST)
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-sh@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v3 7/7] ARM: mach-shmobile: mackerel: Add the flash controller
- flctl
-Date: Thu,  1 Mar 2012 10:48:41 +0100
-Message-Id: <1330595321-2728-7-git-send-email-hechtb@gmail.com>
-In-Reply-To: <1330595321-2728-1-git-send-email-hechtb@gmail.com>
-References: <1330595321-2728-1-git-send-email-hechtb@gmail.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>
+Date: Thu, 1 Mar 2012 12:23:29 +0100
+From: Samuel Ortiz <sameo@linux.intel.com>
+To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+Subject: Re: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
+Message-ID: <20120301112329.GI9008@sortiz-mobl>
+References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
+ <20120227142638.GN27687@sortiz-mobl>
+ <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "Nori,
+ Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,154 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add board and clock setup code for the SH Mobile flctl controller.
+Hi Prakash,
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
-changelog: stays the same, only patch meta info changed.
+On Tue, Feb 28, 2012 at 05:44:39AM +0000, Manjunathappa, Prakash wrote:
+> Hi Samuel,
+> 
+> On Mon, Feb 27, 2012 at 19:56:38, Samuel Ortiz wrote:
+> [snip]
+> > So it seems you're passing a platform devices array through your mfd aemif
+> > platform data pointer. And from what I can see, it's mostly a 1 entry array
+> > (for the NAND case) or a 2 entries array (for the NAND and NOR case).
+> > In that case, adding an MFD driver in the middle brings basically nothing but
+> > confusion and overhead (and 200+ lines of code).
+> > So unless someone explains to me how this is doing any good to the kernel in
+> > general, I'm not going to take this patchset.
+> > 
+> > Cheers,
+> > Samuel.
+> >
+> 
+> In this way we trying to isolate future modification of aemif driver not to depict
+> as platform code change, the need for this is based on discussion in below thread
+> http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
+> 
+I fail to see how you're going to achieve that with adding an MFD platform
+device registration in the middle.
 
- arch/arm/mach-shmobile/board-mackerel.c |   71 +++++++++++++++++++++++++++++++
- arch/arm/mach-shmobile/clock-sh7372.c   |    4 +-
- 2 files changed, 74 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
-index a281324..899ae48 100644
---- a/arch/arm/mach-shmobile/board-mackerel.c
-+++ b/arch/arm/mach-shmobile/board-mackerel.c
-@@ -39,6 +39,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
-+#include <linux/mtd/sh_flctl.h>
- #include <linux/pm_clock.h>
- #include <linux/smsc911x.h>
- #include <linux/sh_intc.h>
-@@ -965,6 +966,50 @@ static struct platform_device fsi_ak4643_device = {
- 	},
- };
- 
-+/* FLCTL */
-+static struct mtd_partition nand_partition_info[] = {
-+	{
-+		.name	= "system",
-+		.offset	= 0,
-+		.size	= 128 * 1024 * 1024,
-+	},
-+	{
-+		.name	= "userdata",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= 256 * 1024 * 1024,
-+	},
-+	{
-+		.name	= "cache",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= 128 * 1024 * 1024,
-+	},
-+};
-+
-+static struct resource nand_flash_resources[] = {
-+	[0] = {
-+		.start	= 0xe6a30000,
-+		.end	= 0xe6a3009b,
-+		.flags	= IORESOURCE_MEM,
-+	}
-+};
-+
-+static struct sh_flctl_platform_data nand_flash_data = {
-+	.parts		= nand_partition_info,
-+	.nr_parts	= ARRAY_SIZE(nand_partition_info),
-+	.flcmncr_val	= CLK_16B_12L_4H | TYPESEL_SET
-+			| SHBUSSEL | SEL_16BIT | SNAND_E,
-+	.use_holden	= 1,
-+};
-+
-+static struct platform_device nand_flash_device = {
-+	.name		= "sh_flctl",
-+	.resource	= nand_flash_resources,
-+	.num_resources	= ARRAY_SIZE(nand_flash_resources),
-+	.dev		= {
-+		.platform_data = &nand_flash_data,
-+	},
-+};
-+
- /*
-  * The card detect pin of the top SD/MMC slot (CN7) is active low and is
-  * connected to GPIO A22 of SH7372 (GPIO_PORT41).
-@@ -1268,6 +1313,7 @@ static struct platform_device *mackerel_devices[] __initdata = {
- 	&fsi_device,
- 	&fsi_ak4643_device,
- 	&fsi_hdmi_device,
-+	&nand_flash_device,
- 	&sdhi0_device,
- #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
- 	&sdhi1_device,
-@@ -1515,6 +1561,30 @@ static void __init mackerel_init(void)
- 	gpio_request(GPIO_FN_MMCCMD0, NULL);
- 	gpio_request(GPIO_FN_MMCCLK0, NULL);
- 
-+	/* FLCTL */
-+	gpio_request(GPIO_FN_D0_NAF0, NULL);
-+	gpio_request(GPIO_FN_D1_NAF1, NULL);
-+	gpio_request(GPIO_FN_D2_NAF2, NULL);
-+	gpio_request(GPIO_FN_D3_NAF3, NULL);
-+	gpio_request(GPIO_FN_D4_NAF4, NULL);
-+	gpio_request(GPIO_FN_D5_NAF5, NULL);
-+	gpio_request(GPIO_FN_D6_NAF6, NULL);
-+	gpio_request(GPIO_FN_D7_NAF7, NULL);
-+	gpio_request(GPIO_FN_D8_NAF8, NULL);
-+	gpio_request(GPIO_FN_D9_NAF9, NULL);
-+	gpio_request(GPIO_FN_D10_NAF10, NULL);
-+	gpio_request(GPIO_FN_D11_NAF11, NULL);
-+	gpio_request(GPIO_FN_D12_NAF12, NULL);
-+	gpio_request(GPIO_FN_D13_NAF13, NULL);
-+	gpio_request(GPIO_FN_D14_NAF14, NULL);
-+	gpio_request(GPIO_FN_D15_NAF15, NULL);
-+	gpio_request(GPIO_FN_FCE0, NULL);
-+	gpio_request(GPIO_FN_WE0_FWE, NULL);
-+	gpio_request(GPIO_FN_FRB, NULL);
-+	gpio_request(GPIO_FN_A4_FOE, NULL);
-+	gpio_request(GPIO_FN_A5_FCDE, NULL);
-+	gpio_request(GPIO_FN_RD_FSC, NULL);
-+
- 	/* enable GPS module (GT-720F) */
- 	gpio_request(GPIO_FN_SCIFA2_TXD1, NULL);
- 	gpio_request(GPIO_FN_SCIFA2_RXD1, NULL);
-@@ -1559,6 +1629,7 @@ static void __init mackerel_init(void)
- 	sh7372_add_device_to_domain(&sh7372_a4mp, &fsi_device);
- 	sh7372_add_device_to_domain(&sh7372_a3sp, &usbhs0_device);
- 	sh7372_add_device_to_domain(&sh7372_a3sp, &usbhs1_device);
-+	sh7372_add_device_to_domain(&sh7372_a3sp, &nand_flash_device);
- 	sh7372_add_device_to_domain(&sh7372_a3sp, &sh_mmcif_device);
- 	sh7372_add_device_to_domain(&sh7372_a3sp, &sdhi0_device);
- #if !defined(CONFIG_MMC_SH_MMCIF) && !defined(CONFIG_MMC_SH_MMCIF_MODULE)
-diff --git a/arch/arm/mach-shmobile/clock-sh7372.c b/arch/arm/mach-shmobile/clock-sh7372.c
-index 293456d..b692ad3 100644
---- a/arch/arm/mach-shmobile/clock-sh7372.c
-+++ b/arch/arm/mach-shmobile/clock-sh7372.c
-@@ -511,7 +511,7 @@ enum { MSTP001, MSTP000,
-        MSTP223,
-        MSTP218, MSTP217, MSTP216, MSTP214, MSTP208, MSTP207,
-        MSTP206, MSTP205, MSTP204, MSTP203, MSTP202, MSTP201, MSTP200,
--       MSTP328, MSTP323, MSTP322, MSTP314, MSTP313, MSTP312,
-+	MSTP328, MSTP323, MSTP322, MSTP315, MSTP314, MSTP313, MSTP312,
-        MSTP423, MSTP415, MSTP413, MSTP411, MSTP410, MSTP407, MSTP406,
-        MSTP405, MSTP404, MSTP403, MSTP400,
-        MSTP_NR };
-@@ -553,6 +553,7 @@ static struct clk mstp_clks[MSTP_NR] = {
- 	[MSTP328] = MSTP(&div6_clks[DIV6_SPU], SMSTPCR3, 28, 0), /* FSI2 */
- 	[MSTP323] = MSTP(&div6_clks[DIV6_SUB], SMSTPCR3, 23, 0), /* IIC1 */
- 	[MSTP322] = MSTP(&div6_clks[DIV6_SUB], SMSTPCR3, 22, 0), /* USB0 */
-+	[MSTP315] = MSTP(&div4_clks[DIV4_HP], SMSTPCR3, 15, 0), /* FLCTL*/
- 	[MSTP314] = MSTP(&div4_clks[DIV4_HP], SMSTPCR3, 14, 0), /* SDHI0 */
- 	[MSTP313] = MSTP(&div4_clks[DIV4_HP], SMSTPCR3, 13, 0), /* SDHI1 */
- 	[MSTP312] = MSTP(&div4_clks[DIV4_HP], SMSTPCR3, 12, 0), /* MMC */
-@@ -653,6 +654,7 @@ static struct clk_lookup lookups[] = {
- 	CLKDEV_DEV_ID("r8a66597_hcd.0", &mstp_clks[MSTP322]), /* USB0 */
- 	CLKDEV_DEV_ID("r8a66597_udc.0", &mstp_clks[MSTP322]), /* USB0 */
- 	CLKDEV_DEV_ID("renesas_usbhs.0", &mstp_clks[MSTP322]), /* USB0 */
-+	CLKDEV_DEV_ID("sh_flctl.0", &mstp_clks[MSTP315]), /* FLCTL */
- 	CLKDEV_DEV_ID("sh_mobile_sdhi.0", &mstp_clks[MSTP314]), /* SDHI0 */
- 	CLKDEV_DEV_ID("sh_mobile_sdhi.1", &mstp_clks[MSTP313]), /* SDHI1 */
- 	CLKDEV_DEV_ID("sh_mmcif.0", &mstp_clks[MSTP312]), /* MMC */
+> Earlier also concern was expressed to move aemif driver out of arch/arm to drivers folder.
+> Here is the link for the same: http://lists.infradead.org/pipermail/linux-mtd/2011-August/037308.html
+> Since aemif driver supports NAND/NOR devices, we feel MFD is the place holder.
+I would disagree with that. And it certainly makes sense to move many drivers
+out of arch/arm into a more appropriate place but I'd like to keep mfd as
+something else than yet another misc.
+
+Cheers,
+Samuel.
+
 -- 
-1.7.5.4
+Intel Open Source Technology Centre
+http://oss.intel.com/
