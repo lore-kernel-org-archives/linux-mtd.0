@@ -1,17 +1,17 @@
-Received: from nm8-vm0.bullet.mail.ird.yahoo.com ([77.238.189.203])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S3UCR-0000pk-CN
- for linux-mtd@lists.infradead.org; Fri, 02 Mar 2012 15:15:16 +0000
-Message-ID: <1330701313.29258.YahooMailClassic@web29001.mail.ird.yahoo.com>
-Date: Fri, 2 Mar 2012 15:15:13 +0000 (GMT)
-From: Paul Parsons <lost.distance@yahoo.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
+Received: from hd5b91d02.k46641.sta.perspektivbredband.net ([213.185.29.2]
+ helo=fg-dc1.flatfrog.local)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S3VB7-0007kt-Co
+ for linux-mtd@lists.infradead.org; Fri, 02 Mar 2012 16:17:58 +0000
+Message-ID: <4F50F2AB.10209@flatfrog.com>
+Date: Fri, 2 Mar 2012 17:17:47 +0100
+From: Orjan Friberg <of@flatfrog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Subject: Spurious ECC errors with mtd_subpagetest (OMAP3, NAND)
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---- On Fri, 2/3/12, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:=
-=0A> > The problem only became a problem for me after I=0A> switched from J=
-FFS2 to=0A> > UBIFS. I found that UBIFS would make file systems=0A> read-on=
-ly. Either JFFS2=0A> > was more forgiving of CFI errors, or UBIFS exercised=
-=0A> CFI in new ways that=0A> > provoked the errors. As others switch from =
-JFFS2 to=0A> UBIFS they too might=0A> > find the same problem.=0A> =0A> yes=
-, UBI probably has some different use. One seems that it=0A> keeps erasing =
-the=0A> same block over and over again if the erase fails. JFFS2=0A> doesn'=
-t do that since=0A> you can't trust a block that is failing erase(how can y=
-ou be=0A> sure that write will work?)=0A> So, IMHO, UBIFS should reconsider=
- this policy.=0A> =0A> On that note, have you noticed any difference betwee=
-n JFFS2=0A> and UBIFS?=0A> Is performance comparable?=0A=0AI haven't spent =
-any time considering performance since I am preoccupied=0Awith the errors. =
-However my perception is that UBIFS boots slower but is=0Aquicker for norma=
-l file writes and perhaps reads.=0A=0AOne functional difference which I hav=
-e tested is the mmap(2) MAP_SHARED=0Aflag. This was not supported in JFFS2 =
-and consequently commands such as=0Alocaledef would simply fail. On UBIFS l=
-ocaledef works normally.
+Hi,
+
+When running the mtd_subpagetest I'm seeing more or less spurious ECC 
+corrections.  I.e., one round may show 4 corrections and the next will 
+show 7, only some of which are the same as the previous 4.
+
+Are the ECC errors expected to be that volatile and frequent?
+
+
+I've seen various discussions regarding the OMAP sub page support, as 
+well as problems with the GPMC prefetch engine.  Disabling both made no 
+difference regarding this.  I've also tried two different sets of NAND 
+timings (relaxed and optimized), with no difference.
+
+I'm using a Micron NAND that requires 4-bit ECC correction but I'm 
+running with only 1-bit (software) ECC.  This is on an old kernel, 2.6.32.
+
+Thanks,
+Orjan
+
+-- 
+Orjan Friberg
+FlatFrog Laboratories AB
