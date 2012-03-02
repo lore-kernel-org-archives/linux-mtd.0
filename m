@@ -1,21 +1,30 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S3W6w-0002Hq-Um
- for linux-mtd@lists.infradead.org; Fri, 02 Mar 2012 17:17:44 +0000
-Received: by iaky10 with SMTP id y10so3066602iak.36
- for <linux-mtd@lists.infradead.org>; Fri, 02 Mar 2012 09:17:40 -0800 (PST)
+From: Chris Ball <cjb@laptop.org>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
+References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
+ <4F4D9725.3090100@freescale.com>
+ <1330502098.3545.78.camel@sauron.fi.intel.com>
+ <4F4DE0E5.8070808@freescale.com>
+ <1330516974.3545.104.camel@sauron.fi.intel.com>
+ <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+Date: Fri, 02 Mar 2012 15:50:25 -0500
+In-Reply-To: <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+ (Huang Shijie's message of "Wed, 29 Feb 2012 08:13:15 -0500")
+Message-ID: <m2mx7yn2we.fsf@bob.laptop.org>
 MIME-Version: 1.0
-In-Reply-To: <4F50F2AB.10209@flatfrog.com>
-References: <4F50F2AB.10209@flatfrog.com>
-Date: Fri, 2 Mar 2012 19:17:40 +0200
-Message-ID: <CANOLnOM6X=29r7_aMs=z4eiDtw0kvWZ-jSeds_NO0KdZ3E8Ouw@mail.gmail.com>
-Subject: Re: Spurious ECC errors with mtd_subpagetest (OMAP3, NAND)
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Orjan Friberg <of@flatfrog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
+ Artem" <artem.bityutskiy@intel.com>, "lrg@ti.com" <lrg@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "LW@KARO-electronics.de" <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +34,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-On Fri, Mar 2, 2012 at 6:17 PM, Orjan Friberg <of@flatfrog.com> wrote:
-> When running the mtd_subpagetest I'm seeing more or less spurious ECC
-> corrections. =C2=A0I.e., one round may show 4 corrections and the next wi=
-ll show
-> 7, only some of which are the same as the previous 4.
+On Wed, Feb 29 2012, Huang Shijie wrote:
+>> Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
+>> other subsystems like dma, sound, and mmc and there are no acks for
+>> those. Would be nice to get them somehow.
 >
-> Are the ECC errors expected to be that volatile and frequent?
+> I ever thought Vinod could accept this patch set.
 >
->
-> I've seen various discussions regarding the OMAP sub page support, as wel=
-l
-> as problems with the GPMC prefetch engine. =C2=A0Disabling both made no
-> difference regarding this. =C2=A0I've also tried two different sets of NA=
-ND
-> timings (relaxed and optimized), with no difference.
->
-> I'm using a Micron NAND that requires 4-bit ECC correction but I'm runnin=
-g
-> with only 1-bit (software) ECC. =C2=A0This is on an old kernel, 2.6.32.
+> To Vinod & Chris:
+>       Could you give the ack to the first patch?
 
-IIRC NAND in mainline was broken for very long time on OMAP3, I think
-it was only fixed in 2.6.39.1.
+Yes -- for the first patch:
 
---=20
-Gra=C5=BEvydas
+Acked-by: Chris Ball <cjb@laptop.org>
+
+(I think Shawn's ACK is sufficient for the second patch.)
+
+Thanks,
+
+- Chris.
+-- 
+Chris Ball   <cjb@laptop.org>   <http://printf.net/>
+One Laptop Per Child
