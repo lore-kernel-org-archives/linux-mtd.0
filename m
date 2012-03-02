@@ -1,18 +1,17 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S3Rlc-0005ic-N4
- for linux-mtd@lists.infradead.org; Fri, 02 Mar 2012 12:39:25 +0000
-In-Reply-To: <1330627829.44517.YahooMailClassic@web29011.mail.ird.yahoo.com>
-References: <OFF8581AC6.39235742-ONC12579B4.00629DA8-C12579B4.00633A79@transmode.se>
- <1330627829.44517.YahooMailClassic@web29011.mail.ird.yahoo.com>
+Received: from nm22-vm8.bullet.mail.ird.yahoo.com ([212.82.109.227])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S3T7z-0006HX-DE
+ for linux-mtd@lists.infradead.org; Fri, 02 Mar 2012 14:06:36 +0000
+Message-ID: <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
+Date: Fri, 2 Mar 2012 14:06:33 +0000 (GMT)
+From: Paul Parsons <lost.distance@yahoo.com>
 Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-To: Paul Parsons <lost.distance@yahoo.com>
-Message-ID: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Fri, 2 Mar 2012 13:39:15 +0100
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, philipp.zabel@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Paul Parsons <lost.distance@yahoo.com> wrote on 2012/03/01 19:50:29:
->
-> --- On Thu, 1/3/12, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:
-> > > > > It seems to me that waiting for SR[7:6]=00
-> > instead of
-> > > > just
-> > > > > SR.6=0 would:
-> > > > > 1. Have the same outcome.
-> > > > > 2. Be strictly within spec; SR[7:6] have been
-> > cleared
-> > > > > therefore the Erase
-> > > > > Resume command has been accepted.
-> > > >
-> > > > Actually on second thoughts maybe not: if the
-> > erase has
-> > > > actually completed
-> > > > when we issue an Erase Resume command then SR.7
-> > should read
-> > > > back as 1 and we
-> > > > end up looping forever. hmm...
-> > >
-> > > OK, how about this:
-> > >
-> > > 1. Erase Suspend now checks SR.6, exactly as it
-> > *should* according to the
-> > > spec flowchart.
-> > >
-> > > 2. If SR.6=0 then the erase has already completed, and
-> > there is no need to set chip->erase_suspended or
-> > subsequently issue an Erase Resume command.
-> >
-> > Wont work when you have interleaved chips, there one chip
-> > may complete and the other not.
->
-> OK, I see, I think: one chip might have finished erasing by the time we
-> issue an Erase Suspend, but the other might not. Yikes, they don't make it
-> easy for us.
->
-> > It would be an optimization though, if all chips complete
-> > then skip suspend state.
->
-> And it might just preclude other problems elsewhere. Issuing an unnecessary
-> Erase Resume does seem risky, given that the command code - 0xd0 - is so
-> overloaded:
-> 1. 3rd cycle of Buffered Program.
-> 2. 2nd cycle of Buffered Enhanced Factory Program.
-> 3. 2nd cycle of Block Erase.
-> 4. 1st cycle of Program Resume.
-> 5. 1st cycle of Erase Resume.
-> 6. 2nd cycle of Unlock Block.
-> That said, I presume the state machine already prevents any ambiguity.
->
-> > > 3. If an Erase Resume command is needed then we know
-> > that the erase has
-> > > not completed, therefore it should be safe to wait for
-> > SR[7:6]=00.
-> >
-> > Just wait for SR.6 to clear might work.
->
-> That is what my 2nd patch does. Should I just submit that as V2?
-
-Not sure yet, you would have add tmo support though and check
-were to change state/oldstate as the loop drop the lock.
-
->
-> > Perhaps adding 1 or 2 extra throw away status reads to
-> > create a small delay instead?
->
-> How much delay is enough for which platform and which chips? I would
-> prefer just waiting for SR.6 to clear if that works.
-
-The problem is very rare, the other case I mentioned is the only one I know of.
-I seem to recall that in that case adding a throwaway status read cured his problem.
-You could try, just so we known if it works and mail the other guy too, he might have
-some more info.
-
- Jocke
+--- On Fri, 2/3/12, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:=
+=0A> > > > 2. If SR.6=3D0 then the erase has already=0A> completed, and=0A>=
+ > > there is no need to set chip->erase_suspended=0A> or=0A> > > subsequen=
+tly issue an Erase Resume command.=0A> > >=0A> > > Wont work when you have =
+interleaved chips, there=0A> one chip=0A> > > may complete and the other no=
+t.=0A> >=0A> > OK, I see, I think: one chip might have finished=0A> erasing=
+ by the time we=0A> > issue an Erase Suspend, but the other might not. Yike=
+s,=0A> they don't make it=0A> > easy for us.=0A=0AThinking about this more,=
+ it shouldn't matter if not all interleaved chips=0Ahave completed their er=
+ase. We should initiate Erase Resume to *all* chips=0Aif we find that *any*=
+ chips have suspended. The worse that happens is that=0Awe issue unnecessar=
+y resumes to those chips which have already completed.=0ASince this is what=
+ the current MTD driver already does it shouldn't be a=0Aproblem.=0A=0A> > =
+> Just wait for SR.6 to clear might work.=0A> >=0A> > That is what my 2nd p=
+atch does. Should I just submit=0A> that as V2?=0A> =0A> Not sure yet, you =
+would have add tmo support though and=0A> check=0A> were to change state/ol=
+dstate as the loop drop the lock.=0A=0AOK.=0A=0A> > > Perhaps adding 1 or 2=
+ extra throw away status=0A> reads to=0A> > > create a small delay instead?=
+=0A> >=0A> > How much delay is enough for which platform and which=0A> chip=
+s? I would=0A> > prefer just waiting for SR.6 to clear if that works.=0A> =
+=0A> The problem is very rare, the other case I mentioned is the=0A> only o=
+ne I know of.=0A> I seem to recall that in that case adding a throwaway sta=
+tus=0A> read cured his problem.=0A> You could try, just so we known if it w=
+orks and mail the=0A> other guy too, he might have=0A> some more info.=0A=
+=0AThe problem only became a problem for me after I switched from JFFS2 to=
+=0AUBIFS. I found that UBIFS would make file systems read-only. Either JFFS=
+2=0Awas more forgiving of CFI errors, or UBIFS exercised CFI in new ways th=
+at=0Aprovoked the errors. As others switch from JFFS2 to UBIFS they too mig=
+ht=0Afind the same problem.
