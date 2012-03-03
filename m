@@ -1,10 +1,13 @@
-From: Huang Shijie <shijie8@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Subject: [PATCH] mtd/gpmi : move the __mxs_setl()/__mxs_clrl() to gpmi-lib.c
-Date: Sat,  3 Mar 2012 15:40:32 -0500
-Message-Id: <1330807232-5616-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S3w1X-00006M-Bu
+ for linux-mtd@lists.infradead.org; Sat, 03 Mar 2012 20:57:53 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] drivers/mtd: docg3 trivial renaming
+Date: Sat,  3 Mar 2012 21:57:33 +0100
+Message-Id: <1330808254-17336-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,45 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We will meet the compiler error in mx6q, since there is no mxs.h header anymore.
-So move these two helper functions to gpmi-lib.c.
+Change the name of the mtd so that it is simpler, and is easier to
+cope with by mtdparts.
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   14 +++++++++++++-
- 1 files changed, 13 insertions(+), 1 deletions(-)
+ drivers/mtd/devices/docg3.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 5e3c505..9a208cb 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -21,7 +21,6 @@
- #include <linux/mtd/gpmi-nand.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
--#include <mach/mxs.h>
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index ad11ef0a..a0f4087 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1804,7 +1804,7 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
  
- #include "gpmi-nand.h"
- #include "gpmi-regs.h"
-@@ -37,6 +36,19 @@ struct timing_threshod timing_default_threshold = {
- 	.max_dll_delay_in_ns         = 16,
- };
- 
-+#define MXS_SET_ADDR		0x4
-+#define MXS_CLR_ADDR		0x8
-+
-+static inline void __mxs_setl(u32 mask, void __iomem *reg)
-+{
-+	writel(mask, reg + MXS_SET_ADDR);
-+}
-+
-+static inline void __mxs_clrl(u32 mask, void __iomem *reg)
-+{
-+	writel(mask, reg + MXS_CLR_ADDR);
-+}
-+
- /*
-  * Clear the bit and poll it cleared.  This is usually called with
-  * a reset address and mask being either SFTRST(bit 31) or CLKGATE
+ 	switch (chip_id) {
+ 	case DOC_CHIPID_G3:
+-		mtd->name = kasprintf(GFP_KERNEL, "DiskOnChip G3 floor %d",
++		mtd->name = kasprintf(GFP_KERNEL, "docg3.%d",
+ 				      docg3->device_id);
+ 		docg3->max_block = 2047;
+ 		break;
 -- 
-1.7.4
+1.7.5.4
