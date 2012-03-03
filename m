@@ -1,31 +1,10 @@
-MIME-Version: 1.0
-In-Reply-To: <m2mx7yn2we.fsf@bob.laptop.org>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
- <4F4D9725.3090100@freescale.com>
- <1330502098.3545.78.camel@sauron.fi.intel.com>
- <4F4DE0E5.8070808@freescale.com>
- <1330516974.3545.104.camel@sauron.fi.intel.com>
- <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
- <m2mx7yn2we.fsf@bob.laptop.org>
-Date: Sat, 3 Mar 2012 09:54:05 +0800
-Message-ID: <CAMiH66G54BCoMrSTqnXyJy=C8w4RqVkv_qvQosUHWj4qd+Xh=Q@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
 From: Huang Shijie <shijie8@gmail.com>
-To: Chris Ball <cjb@laptop.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "Koul,
- Vinod" <vinod.koul@intel.com>,
- "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
- Artem" <artem.bityutskiy@intel.com>, "lrg@ti.com" <lrg@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "LW@KARO-electronics.de" <LW@karo-electronics.de>
+To: artem.bityutskiy@linux.intel.com
+Subject: [PATCH] mtd/gpmi : move the __mxs_setl()/__mxs_clrl() to gpmi-lib.c
+Date: Sat,  3 Mar 2012 15:40:32 -0500
+Message-Id: <1330807232-5616-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
+ w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +14,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+We will meet the compiler error in mx6q, since there is no mxs.h header anymore.
+So move these two helper functions to gpmi-lib.c.
 
-On Sat, Mar 3, 2012 at 4:50 AM, Chris Ball <cjb@laptop.org> wrote:
-> Hi,
->
-> On Wed, Feb 29 2012, Huang Shijie wrote:
->>> Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
->>> other subsystems like dma, sound, and mmc and there are no acks for
->>> those. Would be nice to get them somehow.
->>
->> I ever thought Vinod could accept this patch set.
->>
->> To Vinod & Chris:
->> =C2=A0 =C2=A0 =C2=A0 Could you give the ack to the first patch?
->
-> Yes -- for the first patch:
->
-> Acked-by: Chris Ball <cjb@laptop.org>
->
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
-thanks a lot.
-
-Huang Shijie
-
-
-> (I think Shawn's ACK is sufficient for the second patch.)
->
-> Thanks,
->
-> - Chris.
-> --
-> Chris Ball =C2=A0 <cjb@laptop.org> =C2=A0 <http://printf.net/>
-> One Laptop Per Child
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 5e3c505..9a208cb 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -21,7 +21,6 @@
+ #include <linux/mtd/gpmi-nand.h>
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+-#include <mach/mxs.h>
+ 
+ #include "gpmi-nand.h"
+ #include "gpmi-regs.h"
+@@ -37,6 +36,19 @@ struct timing_threshod timing_default_threshold = {
+ 	.max_dll_delay_in_ns         = 16,
+ };
+ 
++#define MXS_SET_ADDR		0x4
++#define MXS_CLR_ADDR		0x8
++
++static inline void __mxs_setl(u32 mask, void __iomem *reg)
++{
++	writel(mask, reg + MXS_SET_ADDR);
++}
++
++static inline void __mxs_clrl(u32 mask, void __iomem *reg)
++{
++	writel(mask, reg + MXS_CLR_ADDR);
++}
++
+ /*
+  * Clear the bit and poll it cleared.  This is usually called with
+  * a reset address and mask being either SFTRST(bit 31) or CLKGATE
+-- 
+1.7.4
