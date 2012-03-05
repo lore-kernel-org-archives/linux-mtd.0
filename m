@@ -1,21 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S4ao3-0005Rs-Jk
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2012 16:30:41 +0000
-Message-ID: <1330965033.7220.16.camel@golum>
+Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S4bgX-0002ah-3T
+ for linux-mtd@lists.infradead.org; Mon, 05 Mar 2012 17:26:58 +0000
+Message-ID: <1330966615.3140.6.camel@joe2Laptop>
 Subject: Re: [PATCH 1/4] jffs2: Convert most D1/D2 macros to jffs2_dbg
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe Perches <joe@perches.com>
-Date: Mon, 05 Mar 2012 18:30:33 +0200
-In-Reply-To: <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
+From: Joe Perches <joe@perches.com>
+To: dedekind1@gmail.com
+Date: Mon, 05 Mar 2012 08:56:55 -0800
+In-Reply-To: <1330965033.7220.16.camel@golum>
 References: <cover.1329349881.git.joe@perches.com>
  <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
+ <1330965033.7220.16.camel@golum>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,112 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
-> D1 and D2 macros are mostly uses to emit debugging messages.
+On Mon, 2012-03-05 at 18:30 +0200, Artem Bityutskiy wrote:
+> On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
+[]
+> I would just kill all the levels and left only the first one - others
+> are not useful. This FS is in the kernel for ages and it is safe to
+> assume it is robust enough to require no level 2. And change the Kconfig
+> correspondingly.
 > 
-> Convert the logging uses of D1 & D2 to jffs2_dbg(level, fmt, ...)
-> to be a bit more consistent style with the rest of the kernel.
+> I would accept that to my l2 tree, although the final word is from
+> dwmw2, of course.
+
+Separate patch I think.
+
+> Would it please be possible to make the patch which introduces jffs2_dbg
+> macros be separate? It is very difficult to find the definition (most
+> interesting in this patch) while looking at the e-mail.
+
+Shrug.  Maybe if David W wants it so.
+
+> How about make one more step forward and remove this prefix from all the
+> messages and make it to be part of the 'jffs2_dbg' macro?
+
+Maybe in another patch.
+
+[]
+> > +				jffs2_dbg(1, "%s(): SIGSTOP received\n",
+> > +					  __func__);
+
+				jffs2_dbg(1, "%s(): SIGSTOP received\n",
+> May become a one-liner here and in many other places.
+
+Goes beyond 80 chars.
+
+> > +				jffs2_dbg(1, "%s(): SIGKILL received\n",
+> > +					  __func__);
 > 
-> All jffs2_dbg output is now at KERN_DEBUG where some of
-> the previous uses were emitted at various KERN_<LEVEL>s.
+> Ditto, and there are many other places.
 
-I would just kill all the levels and left only the first one - others
-are not useful. This FS is in the kernel for ages and it is safe to
-assume it is robust enough to require no level 2. And change the Kconfig
-correspondingly.
-
-I would accept that to my l2 tree, although the final word is from
-dwmw2, of course.
-
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-
-Would it please be possible to make the patch which introduces jffs2_dbg
-macros be separate? It is very difficult to find the definition (most
-interesting in this patch) while looking at the e-mail.
-
-
-> @@ -47,7 +47,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
->  		ret = PTR_ERR(tsk);
->  	} else {
->  		/* Wait for it... */
-> -		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", tsk->pid));
-> +		jffs2_dbg(1, "JFFS2: Garbage collect thread is pid %d\n",
-> +			  tsk->pid);
-
-Notice JFFS2 prefix.
-
-> -		D1(printk(KERN_DEBUG "jffs2: Killing GC task %d\n", c->gc_task->pid));
-> +		jffs2_dbg(1, "jffs2: Killing GC task %d\n", c->gc_task->pid);
-
-Here and in many other places we have jffs2: prefix.
-
-How about make one more step forward and remove this prefix from all the
-messages and make it to be part of the 'jffs2_dbg' macro?
-
-Really, just mechanical D1 -> jffs2_dbg() translation is not so
-interesting.
-
-> -			D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread():  kthread_stop() called.\n"));
-> +			jffs2_dbg(1, "%s(): kthread_stop() called\n", __func__);
-
-A lot of messages have the function name prefix - would you make another
-step forward and make this to be generated by 'jffs2_dbg()' instead as
-well?
-
-I believe you may not worry about breaking anything by changing the
-messages.
-
-
-> +				jffs2_dbg(1, "%s(): SIGSTOP received\n",
-> +					  __func__);
-
-May become a one-liner here and in many other places.
-
-> ;
-> +				jffs2_dbg(1, "%s(): SIGKILL received\n",
-> +					  __func__);
-
-Ditto, and there are many other places.
+Same as above.
  
-> -	D1(printk(KERN_DEBUG "jffs2_erase_block(): erase block %#08x (range %#08x-%#08x)\n",
-> -				jeb->offset, jeb->offset, jeb->offset + c->sector_size));
-> +	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
-> +		  __func__,
-> +		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
+> > -	D1(printk(KERN_DEBUG "jffs2_erase_block(): erase block %#08x (range %#08x-%#08x)\n",
+> > -				jeb->offset, jeb->offset, jeb->offset + c->sector_size));
+> > +	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
+> > +		  __func__,
+> > +		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
+> 
+> Probably lines can be joined?
 
-Probably lines can be joined?
+Going to have that many lines anyway.
 
->  				if (jeb == c->gcblock) {
-> -					D1(printk(KERN_DEBUG "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
-> -						  frag->ofs, frag->ofs+frag->size, ref_offset(raw)));
-> +					jffs2_dbg(1, "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
-> +						  frag->ofs,
-> +						  frag->ofs + frag->size,
-> +						  ref_offset(raw));
+> >  				if (jeb == c->gcblock) {
+> > -					D1(printk(KERN_DEBUG "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
+> > -						  frag->ofs, frag->ofs+frag->size, ref_offset(raw)));
+> > +					jffs2_dbg(1, "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
+> > +						  frag->ofs,
+> > +						  frag->ofs + frag->size,
+> > +						  ref_offset(raw));
+> 
+> Lines can be joined, and in other places as well.
 
-Lines can be joined, and in other places as well.
+Not really.  Try it.
 
-> -						  frag->ofs, frag->ofs+frag->size, jeb->offset));
-> +					jffs2_dbg(1, "Not expanding down to cover frag (0x%x-0x%x) in clean block %08x\n",
-> +						  frag->ofs,
-> +						  frag->ofs + frag->size,
-> +						  jeb->offset);
+> > -						  frag->ofs, frag->ofs+frag->size, jeb->offset));
+> > +					jffs2_dbg(1, "Not expanding down to cover frag (0x%x-0x%x) in clean block %08x\n",
+> > +						  frag->ofs,
+> > +						  frag->ofs + frag->size,
+> > +						  jeb->offset);
+> 
+> > -		D1(printk(KERN_DEBUG "Obsoleting previously unchecked node at 0x%08x of len %x: ", ref_offset(ref), freed_len));
+> > +			jffs2_dbg(1, "Obsoleting previously unchecked node at 0x%08x of len %x\n",
+> > +				  ref_offset(ref), freed_len);
+> 
+> What happened to the indentation?
 
-> -		D1(printk(KERN_DEBUG "Obsoleting previously unchecked node at 0x%08x of len %x: ", ref_offset(ref), freed_len));
-> +			jffs2_dbg(1, "Obsoleting previously unchecked node at 0x%08x of len %x\n",
-> +				  ref_offset(ref), freed_len);
-
-What happened to the indentation?
-
-> -		D1(printk(KERN_DEBUG "Obsoleting node at 0x%08x of len %#x: ", ref_offset(ref), freed_len));
-> +			jffs2_dbg(1, "Obsoleting node at 0x%08x of len %#x: ",
-> +				  ref_offset(ref), freed_len);
-
-And here.
-
-... did not review further.
-
--- 
-Best Regards,
-Artem Bityutskiy
+Incorrect before, correct now.
+It's still in a D1 block.
