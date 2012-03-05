@@ -1,16 +1,21 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S4ZPx-0008Bz-E9
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2012 15:01:42 +0000
-From: "Stern, Eli" <eli.stern@intel.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: jffs2: False report of "No space left on device"
-Date: Mon, 5 Mar 2012 14:58:31 +0000
-Message-ID: <2F2D37999334844EBB941E4D6CB428B507FA8C@HASMSX104.ger.corp.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+ id 1S4ao3-0005Rs-Jk
+ for linux-mtd@lists.infradead.org; Mon, 05 Mar 2012 16:30:41 +0000
+Message-ID: <1330965033.7220.16.camel@golum>
+Subject: Re: [PATCH 1/4] jffs2: Convert most D1/D2 macros to jffs2_dbg
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joe Perches <joe@perches.com>
+Date: Mon, 05 Mar 2012 18:30:33 +0200
+In-Reply-To: <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
+References: <cover.1329349881.git.joe@perches.com>
+ <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +25,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
+> D1 and D2 macros are mostly uses to emit debugging messages.
+> 
+> Convert the logging uses of D1 & D2 to jffs2_dbg(level, fmt, ...)
+> to be a bit more consistent style with the rest of the kernel.
+> 
+> All jffs2_dbg output is now at KERN_DEBUG where some of
+> the previous uses were emitted at various KERN_<LEVEL>s.
 
-I came across a scenario that reaches "No space left on device".=20
-IMHO this is a false conclusion, since after reboot there is plenty of spac=
-e.
+I would just kill all the levels and left only the first one - others
+are not useful. This FS is in the kernel for ages and it is safe to
+assume it is robust enough to require no level 2. And change the Kconfig
+correspondingly.
 
-This is the setup:
-- Kernel 2.6.39.2
-- ARM 11
-# cat /proc/mtd | grep nvram
-mtd8: 00040000 00001000 "nvram"
-# mount | grep nvram
-/dev/mtdblock8 on /nvram type jffs2 (rw)
-- The "nvram" device is quite empty.=20
-    I managed to copy 8 zipped files of size ~11Kbytes (compressed) before =
-the=20
-    filesystem complained that it is full. (and then removed them. And rebo=
-oted.)
+I would accept that to my l2 tree, although the final word is from
+dwmw2, of course.
 
-this is the test:
-# ### Start at 13:20:40
-# while [ 1 ] ; do echo 0 > /nvram/eli/full/b; echo 1 > /nvram/eli/full/b; =
-done
-Newly-erased block contained word 0x2688eeac at offset 0x000295c0
-... Some more of these
-Newly-erased block contained word 0x2d2ebc71 at offset 0x000265c0
-/bin/sh: can't create /nvram/eli/full/b: No space left on device
-/bin/sh: can't create /nvram/eli/full/b: No space left on device
-/bin/sh: can't create /nvram/eli/full/b: No space left on device
-/bin/sh: can't create /nvram/eli/full/b: No space left on device
-^C
-# ### End at 13:21:09
-# echo 0 > /nvram/eli/full/b
-/bin/sh: can't create /nvram/eli/full/b: No space left on device
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-This persists after ~1 Hour.
+Would it please be possible to make the patch which introduces jffs2_dbg
+macros be separate? It is very difficult to find the definition (most
+interesting in this patch) while looking at the e-mail.
 
-Everything goes back to normal after Reboot.
 
-I would have expected the garbage collector to kick in and free space, but =
-it seems this does not happen.
+> @@ -47,7 +47,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
+>  		ret = PTR_ERR(tsk);
+>  	} else {
+>  		/* Wait for it... */
+> -		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", tsk->pid));
+> +		jffs2_dbg(1, "JFFS2: Garbage collect thread is pid %d\n",
+> +			  tsk->pid);
 
-Running the same test on a similar board, but with
-# cat /proc/mtd |grep nvram
-mtd8: 00050000 00010000 "nvram"
-#
-Produces similar results, but it takes 10 Minutes instead of 30 Seconds.
+Notice JFFS2 prefix.
 
-Running both tests on Kernel 2.6.18 does NOT fail! Ran for several hours.
+> -		D1(printk(KERN_DEBUG "jffs2: Killing GC task %d\n", c->gc_task->pid));
+> +		jffs2_dbg(1, "jffs2: Killing GC task %d\n", c->gc_task->pid);
 
-Can anyone shed some light on this behavior?
+Here and in many other places we have jffs2: prefix.
 
-Thanx
+How about make one more step forward and remove this prefix from all the
+messages and make it to be part of the 'jffs2_dbg' macro?
 
-Eli Stern
+Really, just mechanical D1 -> jffs2_dbg() translation is not so
+interesting.
 
----------------------------------------------------------------------
-Intel Israel (74) Limited
+> -			D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread():  kthread_stop() called.\n"));
+> +			jffs2_dbg(1, "%s(): kthread_stop() called\n", __func__);
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+A lot of messages have the function name prefix - would you make another
+step forward and make this to be generated by 'jffs2_dbg()' instead as
+well?
+
+I believe you may not worry about breaking anything by changing the
+messages.
+
+
+> +				jffs2_dbg(1, "%s(): SIGSTOP received\n",
+> +					  __func__);
+
+May become a one-liner here and in many other places.
+
+> ;
+> +				jffs2_dbg(1, "%s(): SIGKILL received\n",
+> +					  __func__);
+
+Ditto, and there are many other places.
+ 
+> -	D1(printk(KERN_DEBUG "jffs2_erase_block(): erase block %#08x (range %#08x-%#08x)\n",
+> -				jeb->offset, jeb->offset, jeb->offset + c->sector_size));
+> +	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
+> +		  __func__,
+> +		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
+
+Probably lines can be joined?
+
+>  				if (jeb == c->gcblock) {
+> -					D1(printk(KERN_DEBUG "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
+> -						  frag->ofs, frag->ofs+frag->size, ref_offset(raw)));
+> +					jffs2_dbg(1, "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
+> +						  frag->ofs,
+> +						  frag->ofs + frag->size,
+> +						  ref_offset(raw));
+
+Lines can be joined, and in other places as well.
+
+> -						  frag->ofs, frag->ofs+frag->size, jeb->offset));
+> +					jffs2_dbg(1, "Not expanding down to cover frag (0x%x-0x%x) in clean block %08x\n",
+> +						  frag->ofs,
+> +						  frag->ofs + frag->size,
+> +						  jeb->offset);
+
+> -		D1(printk(KERN_DEBUG "Obsoleting previously unchecked node at 0x%08x of len %x: ", ref_offset(ref), freed_len));
+> +			jffs2_dbg(1, "Obsoleting previously unchecked node at 0x%08x of len %x\n",
+> +				  ref_offset(ref), freed_len);
+
+What happened to the indentation?
+
+> -		D1(printk(KERN_DEBUG "Obsoleting node at 0x%08x of len %#x: ", ref_offset(ref), freed_len));
+> +			jffs2_dbg(1, "Obsoleting node at 0x%08x of len %#x: ",
+> +				  ref_offset(ref), freed_len);
+
+And here.
+
+... did not review further.
+
+-- 
+Best Regards,
+Artem Bityutskiy
