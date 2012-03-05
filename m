@@ -1,16 +1,30 @@
-MIME-Version: 1.0
-In-Reply-To: <1330807232-5616-1-git-send-email-shijie8@gmail.com>
-References: <1330807232-5616-1-git-send-email-shijie8@gmail.com>
-Date: Sat, 3 Mar 2012 20:11:18 -0500
-Message-ID: <CAMiH66E9Hr5oeNCk1cAQJKO-qtc8a=mHxNgDGgGwXC95XWhGMQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd/gpmi : move the __mxs_setl()/__mxs_clrl() to
- gpmi-lib.c
-From: Huang Shijie <shijie8@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
+From: Vinod Koul <vinod.koul@intel.com>
+To: Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
+ <4F4D9725.3090100@freescale.com>
+ <1330502098.3545.78.camel@sauron.fi.intel.com>
+ <4F4DE0E5.8070808@freescale.com>
+ <1330516974.3545.104.camel@sauron.fi.intel.com>
+ <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 05 Mar 2012 10:17:10 +0530
+Message-ID: <1330922830.24656.137.camel@vkoul-udesk3>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "cjb@laptop.org" <cjb@laptop.org>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
+ Artem" <artem.bityutskiy@intel.com>, "lrg@ti.com" <lrg@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "LW@KARO-electronics.de" <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +34,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-please ignore this patch.
-
-mxs-dma and some other module also have the same problem.
-A more powerful patch is needed.
-
-BR
-Huang Shijie
-
-
-On Sat, Mar 3, 2012 at 3:40 PM, Huang Shijie <shijie8@gmail.com> wrote:
-> We will meet the compiler error in mx6q, since there is no mxs.h header a=
-nymore.
-> So move these two helper functions to gpmi-lib.c.
->
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
-> ---
-> =C2=A0drivers/mtd/nand/gpmi-nand/gpmi-lib.c | =C2=A0 14 +++++++++++++-
-> =C2=A01 files changed, 13 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpm=
-i-nand/gpmi-lib.c
-> index 5e3c505..9a208cb 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -21,7 +21,6 @@
-> =C2=A0#include <linux/mtd/gpmi-nand.h>
-> =C2=A0#include <linux/delay.h>
-> =C2=A0#include <linux/clk.h>
-> -#include <mach/mxs.h>
->
-> =C2=A0#include "gpmi-nand.h"
-> =C2=A0#include "gpmi-regs.h"
-> @@ -37,6 +36,19 @@ struct timing_threshod timing_default_threshold =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.max_dll_delay_in_ns =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =3D 16,
-> =C2=A0};
->
-> +#define MXS_SET_ADDR =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x4
-> +#define MXS_CLR_ADDR =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x8
-> +
-> +static inline void __mxs_setl(u32 mask, void __iomem *reg)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 writel(mask, reg + MXS_SET_ADDR);
-> +}
-> +
-> +static inline void __mxs_clrl(u32 mask, void __iomem *reg)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 writel(mask, reg + MXS_CLR_ADDR);
-> +}
-> +
-> =C2=A0/*
-> =C2=A0* Clear the bit and poll it cleared. =C2=A0This is usually called w=
-ith
-> =C2=A0* a reset address and mask being either SFTRST(bit 31) or CLKGATE
+On Wed, 2012-02-29 at 08:13 -0500, Huang Shijie wrote:
+> Hi Artem:
+> 
+> On Wed, Feb 29, 2012 at 7:00 AM, Bityutskiy, Artem
+> <artem.bityutskiy@intel.com> wrote:
+> > On Wed, 2012-02-29 at 16:25 +0800, Huang Shijie wrote:
+> >> Hi Artem:
+> >> > On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
+> >> >> Hi:
+> >> >>
+> >> >> ping.
+> >> > Is this patch-set independent or requires something like gpma patches?
+> >> >
+> >> This patch set is independent, and it does not depend upon any other
+> >> patches.
+> >
+> > Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
+> > other subsystems like dma, sound, and mmc and there are no acks for
+> > those. Would be nice to get them somehow.
+> >
+> 
+> I ever thought Vinod could accept this patch set.
+> 
+> To Vinod & Chris:
+>       Could you give the ack to the first patch?
+Both,
+Acked-by: Vinod Koul <vinod.koul@linux.intel.com>
+Although the second patch overloads the dmaengine flags but for lack of
+any other suitable alternative, this looks okay...
+> 
+> Does the second patch need  extra acks beside Shawn's?
+> 
+> BR
+> Huang Shijie
 > --
-> 1.7.4
->
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+
+
+-- 
+~Vinod
