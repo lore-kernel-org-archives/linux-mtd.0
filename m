@@ -1,21 +1,25 @@
-Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S4bgX-0002ah-3T
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2012 17:26:58 +0000
-Message-ID: <1330966615.3140.6.camel@joe2Laptop>
-Subject: Re: [PATCH 1/4] jffs2: Convert most D1/D2 macros to jffs2_dbg
-From: Joe Perches <joe@perches.com>
-To: dedekind1@gmail.com
-Date: Mon, 05 Mar 2012 08:56:55 -0800
-In-Reply-To: <1330965033.7220.16.camel@golum>
-References: <cover.1329349881.git.joe@perches.com>
- <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
- <1330965033.7220.16.camel@golum>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+To: Samuel Ortiz <sameo@linux.intel.com>
+Subject: RE: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
+Date: Tue, 6 Mar 2012 13:12:25 +0000
+Message-ID: <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
+References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
+ <20120227142638.GN27687@sortiz-mobl>
+ <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+ <20120301112329.GI9008@sortiz-mobl>
+In-Reply-To: <20120301112329.GI9008@sortiz-mobl>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +29,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-03-05 at 18:30 +0200, Artem Bityutskiy wrote:
-> On Wed, 2012-02-15 at 15:56 -0800, Joe Perches wrote:
-[]
-> I would just kill all the levels and left only the first one - others
-> are not useful. This FS is in the kernel for ages and it is safe to
-> assume it is robust enough to require no level 2. And change the Kconfig
-> correspondingly.
-> 
-> I would accept that to my l2 tree, although the final word is from
-> dwmw2, of course.
+Hi Samuel,
 
-Separate patch I think.
+May be I did not do a good job giving complete information on this earlier.
+So I have replied on top of my mail with below information (seems you misse=
+d it)
 
-> Would it please be possible to make the patch which introduces jffs2_dbg
-> macros be separate? It is very difficult to find the definition (most
-> interesting in this patch) while looking at the e-mail.
+More information on AEMIF:
+DaVinci AEMIF is an async memory interface, driver for which was implemente=
+d
+in arch/arm/mach-davinci/aemif.c. It can be interfaced to NAND, NOR and oth=
+er
+asynchronous memories. Currently it just provides an API for timing value c=
+onfiguration.
+The API is invoked by the MTD NAND driver.=20
 
-Shrug.  Maybe if David W wants it so.
+Specification here: http://www.ti.com/lit/ug/sprue20c/sprue20c.pdf
 
-> How about make one more step forward and remove this prefix from all the
-> messages and make it to be part of the 'jffs2_dbg' macro?
+Reason for moving it to MFD frame work:
+1) AEMIF is also present on devices belonging to arch-c6x and arch-omap2 ar=
+chitectures.
+   So having the driver in architecture neutral place seems to be the way t=
+o go.
+2) Other than NAND/NOR there are use cases where people are interfacing oth=
+er devices,
+   for eg: FPGAs through UIO framework. So MTD is not the place for AEMIF d=
+river.
 
-Maybe in another patch.
+Taking above points into consideration Arnd Bergmann suggested to move AEMI=
+F driver to
+MFD framework [1], relevant portion of his mail as follows,
 
-[]
-> > +				jffs2_dbg(1, "%s(): SIGSTOP received\n",
-> > +					  __func__);
+" If you want it to provide endpoint devices that are handled by
+distinct subsystems in Linux, I would make it an mfd multifunction
+device and make the common... "
 
-				jffs2_dbg(1, "%s(): SIGSTOP received\n",
-> May become a one-liner here and in many other places.
+[1] http://lists.ozlabs.org/pipermail/devicetree-discuss/2011-December/0102=
+95.html
 
-Goes beyond 80 chars.
+Thanks,
+Prakash
 
-> > +				jffs2_dbg(1, "%s(): SIGKILL received\n",
-> > +					  __func__);
-> 
-> Ditto, and there are many other places.
-
-Same as above.
- 
-> > -	D1(printk(KERN_DEBUG "jffs2_erase_block(): erase block %#08x (range %#08x-%#08x)\n",
-> > -				jeb->offset, jeb->offset, jeb->offset + c->sector_size));
-> > +	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
-> > +		  __func__,
-> > +		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
-> 
-> Probably lines can be joined?
-
-Going to have that many lines anyway.
-
-> >  				if (jeb == c->gcblock) {
-> > -					D1(printk(KERN_DEBUG "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
-> > -						  frag->ofs, frag->ofs+frag->size, ref_offset(raw)));
-> > +					jffs2_dbg(1, "Expanding down to cover frag (0x%x-0x%x) in gcblock at %08x\n",
-> > +						  frag->ofs,
-> > +						  frag->ofs + frag->size,
-> > +						  ref_offset(raw));
-> 
-> Lines can be joined, and in other places as well.
-
-Not really.  Try it.
-
-> > -						  frag->ofs, frag->ofs+frag->size, jeb->offset));
-> > +					jffs2_dbg(1, "Not expanding down to cover frag (0x%x-0x%x) in clean block %08x\n",
-> > +						  frag->ofs,
-> > +						  frag->ofs + frag->size,
-> > +						  jeb->offset);
-> 
-> > -		D1(printk(KERN_DEBUG "Obsoleting previously unchecked node at 0x%08x of len %x: ", ref_offset(ref), freed_len));
-> > +			jffs2_dbg(1, "Obsoleting previously unchecked node at 0x%08x of len %x\n",
-> > +				  ref_offset(ref), freed_len);
-> 
-> What happened to the indentation?
-
-Incorrect before, correct now.
-It's still in a D1 block.
+On Thu, Mar 01, 2012 at 16:53:29, Samuel Ortiz wrote:
+> Hi Prakash,
+>=20
+> On Tue, Feb 28, 2012 at 05:44:39AM +0000, Manjunathappa, Prakash wrote:
+> > Hi Samuel,
+> >=20
+> > On Mon, Feb 27, 2012 at 19:56:38, Samuel Ortiz wrote:
+> > [snip]
+> > > So it seems you're passing a platform devices array through your mfd =
+aemif
+> > > platform data pointer. And from what I can see, it's mostly a 1 entry=
+ array
+> > > (for the NAND case) or a 2 entries array (for the NAND and NOR case).
+> > > In that case, adding an MFD driver in the middle brings basically not=
+hing but
+> > > confusion and overhead (and 200+ lines of code).
+> > > So unless someone explains to me how this is doing any good to the ke=
+rnel in
+> > > general, I'm not going to take this patchset.
+> > >=20
+> > > Cheers,
+> > > Samuel.
+> > >
+> >=20
+> > In this way we trying to isolate future modification of aemif driver no=
+t to depict
+> > as platform code change, the need for this is based on discussion in be=
+low thread
+> > http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinc=
+i-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
+> >=20
+> I fail to see how you're going to achieve that with adding an MFD platfor=
+m
+> device registration in the middle.
+>=20
+>=20
+> > Earlier also concern was expressed to move aemif driver out of arch/arm=
+ to drivers folder.
+> > Here is the link for the same: http://lists.infradead.org/pipermail/lin=
+ux-mtd/2011-August/037308.html
+> > Since aemif driver supports NAND/NOR devices, we feel MFD is the place =
+holder.
+> I would disagree with that. And it certainly makes sense to move many dri=
+vers
+> out of arch/arm into a more appropriate place but I'd like to keep mfd as
+> something else than yet another misc.
+>=20
+> Cheers,
+> Samuel.
+>=20
+> --=20
+> Intel Open Source Technology Centre
+> http://oss.intel.com/
+>=20
