@@ -1,21 +1,20 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5NiN-0003Pz-5k
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 20:44:03 +0000
-Received: by wiwc10 with SMTP id c10so3990931wiw.36
- for <linux-mtd@lists.infradead.org>; Wed, 07 Mar 2012 12:44:01 -0800 (PST)
-Date: Wed, 7 Mar 2012 22:43:55 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1S5Nzg-0004lV-65
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 21:01:57 +0000
+Message-ID: <4F57CCB9.9090001@linutronix.de>
+Date: Wed, 07 Mar 2012 22:01:45 +0100
+From: Richard Weinberger <rw@linutronix.de>
+MIME-Version: 1.0
 To: dedekind1@gmail.com
-Subject: Re: ubi: suspicious calculation in 'ubi_wl_get_peb'
-Message-ID: <20120307224355.0e53e418@halley>
-In-Reply-To: <1331140808.3463.28.camel@sauron.fi.intel.com>
-References: <20120217153828.71eba4e4@pixies.home.jungo.com>
- <1331140808.3463.28.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
+References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
+ <1331136246.32316.39.camel@sauron.fi.intel.com>
+In-Reply-To: <1331136246.32316.39.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <rw@linutronix.de>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 07 Mar 2012 19:20:08 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date: Wed, 7 Mar 2012 19:08:36 +0200
-> Subject: [PATCH 2/2] UBI: fix eraseblock picking criteria
-> 
-> The 'find_wl_entry()' function expects the maximum difference as the second
-> argument, not the maximum absolute value. So the "unknown" eraseblock picking
-> was incorrect, as Shmulik Ladkani spotted. This patch fixes the issue.
-> 
-> Reported-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: stable@kernel.org
-> ---
->  drivers/mtd/ubi/wl.c |    8 +++-----
->  1 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 10d7b98..051cb3a 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -390,7 +390,7 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
->   */
->  int ubi_wl_get_peb(struct ubi_device *ubi, int dtype)
->  {
-> -	int err, medium_ec;
-> +	int err;
->  	struct ubi_wl_entry *e, *first, *last;
->  
->  	ubi_assert(dtype == UBI_LONGTERM || dtype == UBI_SHORTTERM ||
-> @@ -437,10 +437,8 @@ retry:
->  		if (last->ec - first->ec < WL_FREE_MAX_DIFF)
->  			e = rb_entry(ubi->free.rb_node,
->  					struct ubi_wl_entry, u.rb);
-> -		else {
-> -			medium_ec = (first->ec + WL_FREE_MAX_DIFF)/2;
-> -			e = find_wl_entry(&ubi->free, medium_ec);
-> -		}
-> +		else
-> +			e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF/2);
->  		break;
->  	case UBI_SHORTTERM:
->  		/*
+Am 07.03.2012 17:04, schrieb Artem Bityutskiy:
+> Another not-so-technical comment.
+>
+> On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
+>> The following patch set implements checkpointing support for
+>> UBI. Checkpointing is an optional feature which stores the physical to
+>> logical eraseblock relations in a checkpointing superblock to reduce
+>> the initialization time of UBI.
+>
+> So this is basically about improving scalability and "mount" time. This
+> has nothing to do with checkpointing most people are aware of.
+> Confusing...
 
-Unfortunately, currently unable to give it a runtime test, sorry.
+Mostly because "checkpointing" is a buzzword. ;-)
 
-Also, I suspect the remark:
-		 * erase counter. But we by no means can pick a physical
-		 * eraseblock with erase counter greater or equivalent than the
-		 * lowest erase counter plus %WL_FREE_MAX_DIFF.
+> Really, this tirm is already reserved by file-systems, things like
+> virtual machines where it means "freezing" the contents and doing COW
+> when changing the freezed blocks and guaranteeing the ability to
+> "roll-back" to the checkpointed data.
+>
+> Please, consider an option of picking a different name. In JFFS2 a
+> "similar" thing was called "summaries", and even this is better than
+> "checkpoint", I think.
 
-Should be fixed as well:
--		 * lowest erase counter plus %WL_FREE_MAX_DIFF.
-+		 * lowest erase counter plus %WL_FREE_MAX_DIFF/2.
+What about "Erase block indexing"?
+Basically a checkpoint is an index...
 
-Other than that, looks correct.
+Thanks,
+//richard
 
-Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+P.s: I'm really bad in picking names.
