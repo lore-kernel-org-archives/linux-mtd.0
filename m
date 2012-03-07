@@ -1,21 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5KlW-00008e-LL
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 17:35:07 +0000
-Message-ID: <1331141402.3463.34.camel@sauron.fi.intel.com>
-Subject: Re: df -h, du -ahx and flash size not match
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Esteban Lopez <elopez@softel.net.mx>
-Date: Wed, 07 Mar 2012 19:30:02 +0200
-In-Reply-To: <4F435C55.9000402@softel.net.mx>
-References: <4F4285AF.30300@softel.net.mx>
- <CAN8TOE_dF1ri7cxMVBzZ9Mwqv-XCyo+mZJi1Nwhb7-OkBErU_A@mail.gmail.com>
- <4F435C55.9000402@softel.net.mx>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5N9j-000875-NI
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 20:08:16 +0000
+Received: by wiwc10 with SMTP id c10so3964726wiw.36
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Mar 2012 12:08:13 -0800 (PST)
+Date: Wed, 7 Mar 2012 22:08:03 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: ubi: suspicious calculation in 'ubi_wl_get_peb'
+Message-ID: <20120307220803.045816fc@halley>
+In-Reply-To: <1331140808.3463.28.camel@sauron.fi.intel.com>
+References: <20120217153828.71eba4e4@pixies.home.jungo.com>
+ <1331140808.3463.28.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <rw@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-02-21 at 08:56 +0000, Esteban Lopez wrote:
-> I read the UBIFS FAQ and UBIFS documentation but all the explanation
-> is about free space. I don't understand why df -h reports 236M of
-> total space if I have 469762048 bytes in this partition.
+On Wed, 07 Mar 2012 19:20:08 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-02-17 at 15:38 +0200, Shmulik Ladkani wrote:
+> > -			e = find_wl_entry(&ubi->free, medium_ec);
+> > +			e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF/2)
+> > 
+> > Did I get something wrong?
+> 
+> Yeah, I think you are right. Now I am completely convinced we should
+> remove this "short/long-term" stuff because this did even work
+> correctly :-)
 
-I think it is also around the same set of issues. Because we do not in
-advance what kind of data the FS will be holding and how it is written,
-we do not really know how much data can fit to the FS. So UBIFS makes
-pessimistic calculations and reports its size as the absolutely minimum
-amount of space which it can fit in the worst case scenario. So in your
-case UBIFS decides that in the worst case it can fit a 236M file of
-uncompressible data (e.g., a movie).
+I would not jump into this conclusion just yet :-)
 
-This is kind of a compromise. Imagine UBIFS reported 500MiB free space,
-then you write a 300MiB AVI movie, and it does not fit. So we prefer to
-report the absolute minimum.
+Note the bug affects UBI_UNKNOWN requests, which are supposed to be
+general-purpose 'ubi_wl_get_peb' requests... troubling...
 
--- 
-Best Regards,
-Artem Bityutskiy
+UBI_LONGTERM/UBI_SHORTTERM seem to work just fine.
