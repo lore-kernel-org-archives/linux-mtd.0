@@ -1,25 +1,19 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: Samuel Ortiz <sameo@linux.intel.com>
-Subject: RE: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
-Date: Tue, 6 Mar 2012 13:12:25 +0000
-Message-ID: <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
-References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
- <20120227142638.GN27687@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
- <20120301112329.GI9008@sortiz-mobl>
-In-Reply-To: <20120301112329.GI9008@sortiz-mobl>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5F5z-0006U4-Tp
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 11:31:53 +0000
+From: Vipin Kumar <vipin.kumar@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 02/18] mtd/fsmc_nand: ECC1 & ECC4 layout separated for
+ different page sizes
+Date: Wed, 7 Mar 2012 17:00:50 +0530
+Message-ID: <b349613ffcc0749bfe5dbd4207cb77b073927fec.1331119143.git.vipin.kumar@st.com>
+In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
+References: <cover.1331119143.git.vipin.kumar@st.com>
 MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: Artem.Bityutskiy@nokia.com, linus.walleij@linaro.org,
+ Bhavna Yadav <bhavna.yadav@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,98 +23,235 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Samuel,
+From: Bhavna Yadav <bhavna.yadav@st.com>
 
-May be I did not do a good job giving complete information on this earlier.
-So I have replied on top of my mail with below information (seems you misse=
-d it)
+ECC1 & ECC4 layout for NAND of different pages sizes for e.g. 512bytes, 2K, 4K
+and 8K are separated. Previously there existed one ECC4 layout for 2K & 4K page
+size due to which oob test module available in drivers/mtd/nand/test was failing
 
-More information on AEMIF:
-DaVinci AEMIF is an async memory interface, driver for which was implemente=
-d
-in arch/arm/mach-davinci/aemif.c. It can be interfaced to NAND, NOR and oth=
-er
-asynchronous memories. Currently it just provides an API for timing value c=
-onfiguration.
-The API is invoked by the MTD NAND driver.=20
+Signed-off-by: Bhavna Yadav <bhavna.yadav@st.com>
+---
+ drivers/mtd/nand/fsmc_nand.c |  176 ++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 159 insertions(+), 17 deletions(-)
 
-Specification here: http://www.ti.com/lit/ug/sprue20c/sprue20c.pdf
-
-Reason for moving it to MFD frame work:
-1) AEMIF is also present on devices belonging to arch-c6x and arch-omap2 ar=
-chitectures.
-   So having the driver in architecture neutral place seems to be the way t=
-o go.
-2) Other than NAND/NOR there are use cases where people are interfacing oth=
-er devices,
-   for eg: FPGAs through UIO framework. So MTD is not the place for AEMIF d=
-river.
-
-Taking above points into consideration Arnd Bergmann suggested to move AEMI=
-F driver to
-MFD framework [1], relevant portion of his mail as follows,
-
-" If you want it to provide endpoint devices that are handled by
-distinct subsystems in Linux, I would make it an mfd multifunction
-device and make the common... "
-
-[1] http://lists.ozlabs.org/pipermail/devicetree-discuss/2011-December/0102=
-95.html
-
-Thanks,
-Prakash
-
-On Thu, Mar 01, 2012 at 16:53:29, Samuel Ortiz wrote:
-> Hi Prakash,
->=20
-> On Tue, Feb 28, 2012 at 05:44:39AM +0000, Manjunathappa, Prakash wrote:
-> > Hi Samuel,
-> >=20
-> > On Mon, Feb 27, 2012 at 19:56:38, Samuel Ortiz wrote:
-> > [snip]
-> > > So it seems you're passing a platform devices array through your mfd =
-aemif
-> > > platform data pointer. And from what I can see, it's mostly a 1 entry=
- array
-> > > (for the NAND case) or a 2 entries array (for the NAND and NOR case).
-> > > In that case, adding an MFD driver in the middle brings basically not=
-hing but
-> > > confusion and overhead (and 200+ lines of code).
-> > > So unless someone explains to me how this is doing any good to the ke=
-rnel in
-> > > general, I'm not going to take this patchset.
-> > >=20
-> > > Cheers,
-> > > Samuel.
-> > >
-> >=20
-> > In this way we trying to isolate future modification of aemif driver no=
-t to depict
-> > as platform code change, the need for this is based on discussion in be=
-low thread
-> > http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinc=
-i-configure-davinci-aemif-chipselects-through-OF-tt7059739.html#none
-> >=20
-> I fail to see how you're going to achieve that with adding an MFD platfor=
-m
-> device registration in the middle.
->=20
->=20
-> > Earlier also concern was expressed to move aemif driver out of arch/arm=
- to drivers folder.
-> > Here is the link for the same: http://lists.infradead.org/pipermail/lin=
-ux-mtd/2011-August/037308.html
-> > Since aemif driver supports NAND/NOR devices, we feel MFD is the place =
-holder.
-> I would disagree with that. And it certainly makes sense to move many dri=
-vers
-> out of arch/arm into a more appropriate place but I'd like to keep mfd as
-> something else than yet another misc.
->=20
-> Cheers,
-> Samuel.
->=20
-> --=20
-> Intel Open Source Technology Centre
-> http://oss.intel.com/
->=20
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 9c7d9d8..abbff77 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -34,7 +34,7 @@
+ #include <linux/amba/bus.h>
+ #include <mtd/mtd-abi.h>
+ 
+-static struct nand_ecclayout fsmc_ecc1_layout = {
++static struct nand_ecclayout fsmc_ecc1_128_layout = {
+ 	.eccbytes = 24,
+ 	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52,
+ 		66, 67, 68, 82, 83, 84, 98, 99, 100, 114, 115, 116},
+@@ -50,7 +50,91 @@ static struct nand_ecclayout fsmc_ecc1_layout = {
+ 	}
+ };
+ 
+-static struct nand_ecclayout fsmc_ecc4_lp_layout = {
++static struct nand_ecclayout fsmc_ecc1_64_layout = {
++	.eccbytes = 12,
++	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52},
++	.oobfree = {
++		{.offset = 8, .length = 8},
++		{.offset = 24, .length = 8},
++		{.offset = 40, .length = 8},
++		{.offset = 56, .length = 8},
++	}
++};
++
++static struct nand_ecclayout fsmc_ecc1_16_layout = {
++	.eccbytes = 3,
++	.eccpos = {2, 3, 4},
++	.oobfree = {
++		{.offset = 8, .length = 8},
++	}
++};
++
++/*
++ * ECC4 layout for NAND of pagesize 8192 bytes & OOBsize 256 bytes. 13*16 bytes
++ * of OB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block and 46
++ * bytes are free for use.
++ */
++static struct nand_ecclayout fsmc_ecc4_256_layout = {
++	.eccbytes = 208,
++	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
++		9,  10,  11,  12,  13,  14,
++		18,  19,  20,  21,  22,  23,  24,
++		25,  26,  27,  28,  29,  30,
++		34,  35,  36,  37,  38,  39,  40,
++		41,  42,  43,  44,  45,  46,
++		50,  51,  52,  53,  54,  55,  56,
++		57,  58,  59,  60,  61,  62,
++		66,  67,  68,  69,  70,  71,  72,
++		73,  74,  75,  76,  77,  78,
++		82,  83,  84,  85,  86,  87,  88,
++		89,  90,  91,  92,  93,  94,
++		98,  99, 100, 101, 102, 103, 104,
++		105, 106, 107, 108, 109, 110,
++		114, 115, 116, 117, 118, 119, 120,
++		121, 122, 123, 124, 125, 126,
++		130, 131, 132, 133, 134, 135, 136,
++		137, 138, 139, 140, 141, 142,
++		146, 147, 148, 149, 150, 151, 152,
++		153, 154, 155, 156, 157, 158,
++		162, 163, 164, 165, 166, 167, 168,
++		169, 170, 171, 172, 173, 174,
++		178, 179, 180, 181, 182, 183, 184,
++		185, 186, 187, 188, 189, 190,
++		194, 195, 196, 197, 198, 199, 200,
++		201, 202, 203, 204, 205, 206,
++		210, 211, 212, 213, 214, 215, 216,
++		217, 218, 219, 220, 221, 222,
++		226, 227, 228, 229, 230, 231, 232,
++		233, 234, 235, 236, 237, 238,
++		242, 243, 244, 245, 246, 247, 248,
++		249, 250, 251, 252, 253, 254
++	},
++	.oobfree = {
++		{.offset = 15, .length = 3},
++		{.offset = 31, .length = 3},
++		{.offset = 47, .length = 3},
++		{.offset = 63, .length = 3},
++		{.offset = 79, .length = 3},
++		{.offset = 95, .length = 3},
++		{.offset = 111, .length = 3},
++		{.offset = 127, .length = 3},
++		{.offset = 143, .length = 3},
++		{.offset = 159, .length = 3},
++		{.offset = 175, .length = 3},
++		{.offset = 191, .length = 3},
++		{.offset = 207, .length = 3},
++		{.offset = 223, .length = 3},
++		{.offset = 239, .length = 3},
++		{.offset = 255, .length = 1}
++	}
++};
++
++/*
++ * ECC4 layout for NAND of pagesize 4096 bytes & OOBsize 128 bytes. 13*8 bytes
++ * of OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block & 22
++ * bytes are free for use.
++ */
++static struct nand_ecclayout fsmc_ecc4_128_layout = {
+ 	.eccbytes = 104,
+ 	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
+ 		9,  10,  11,  12,  13,  14,
+@@ -82,6 +166,45 @@ static struct nand_ecclayout fsmc_ecc4_lp_layout = {
+ };
+ 
+ /*
++ * ECC4 layout for NAND of pagesize 2048 bytes & OOBsize 64 bytes. 13*4 bytes of
++ * OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block and 10
++ * bytes are free for use.
++ */
++static struct nand_ecclayout fsmc_ecc4_64_layout = {
++	.eccbytes = 52,
++	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
++		9,  10,  11,  12,  13,  14,
++		18,  19,  20,  21,  22,  23,  24,
++		25,  26,  27,  28,  29,  30,
++		34,  35,  36,  37,  38,  39,  40,
++		41,  42,  43,  44,  45,  46,
++		50,  51,  52,  53,  54,  55,  56,
++		57,  58,  59,  60,  61,  62,
++	},
++	.oobfree = {
++		{.offset = 15, .length = 3},
++		{.offset = 31, .length = 3},
++		{.offset = 47, .length = 3},
++		{.offset = 63, .length = 1},
++	}
++};
++
++/*
++ * ECC4 layout for NAND of pagesize 512 bytes & OOBsize 16 bytes. 13 bytes of
++ * OOB size is reserved for ECC, Byte no. 4 & 5 reserved for bad block and One
++ * byte is free for use.
++ */
++static struct nand_ecclayout fsmc_ecc4_16_layout = {
++	.eccbytes = 13,
++	.eccpos = { 0,  1,  2,  3,  6,  7, 8,
++		9, 10, 11, 12, 13, 14
++	},
++	.oobfree = {
++		{.offset = 15, .length = 1},
++	}
++};
++
++/*
+  * ECC placement definitions in oobfree type format.
+  * There are 13 bytes of ecc for every 512 byte block and it has to be read
+  * consecutively and immediately after the 512 byte data block for hardware to
+@@ -103,16 +226,6 @@ static struct fsmc_eccplace fsmc_ecc4_lp_place = {
+ 	}
+ };
+ 
+-static struct nand_ecclayout fsmc_ecc4_sp_layout = {
+-	.eccbytes = 13,
+-	.eccpos = { 0,  1,  2,  3,  6,  7, 8,
+-		9, 10, 11, 12, 13, 14
+-	},
+-	.oobfree = {
+-		{.offset = 15, .length = 1},
+-	}
+-};
+-
+ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
+ 	.eccplace = {
+ 		{.offset = 0, .length = 4},
+@@ -733,15 +846,44 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (AMBA_REV_BITS(host->pid) >= 8) {
+-		if (host->mtd.writesize == 512) {
+-			nand->ecc.layout = &fsmc_ecc4_sp_layout;
++		switch (host->mtd.oobsize) {
++		case 16:
++			nand->ecc.layout = &fsmc_ecc4_16_layout;
+ 			host->ecc_place = &fsmc_ecc4_sp_place;
+-		} else {
+-			nand->ecc.layout = &fsmc_ecc4_lp_layout;
++			break;
++		case 64:
++			nand->ecc.layout = &fsmc_ecc4_64_layout;
++			host->ecc_place = &fsmc_ecc4_lp_place;
++			break;
++		case 128:
++			nand->ecc.layout = &fsmc_ecc4_128_layout;
++			host->ecc_place = &fsmc_ecc4_lp_place;
++			break;
++		case 256:
++			nand->ecc.layout = &fsmc_ecc4_256_layout;
+ 			host->ecc_place = &fsmc_ecc4_lp_place;
++			break;
++		default:
++			printk(KERN_WARNING "No oob scheme defined for "
++			       "oobsize %d\n", mtd->oobsize);
++			BUG();
+ 		}
+ 	} else {
+-		nand->ecc.layout = &fsmc_ecc1_layout;
++		switch (host->mtd.oobsize) {
++		case 16:
++			nand->ecc.layout = &fsmc_ecc1_16_layout;
++			break;
++		case 64:
++			nand->ecc.layout = &fsmc_ecc1_64_layout;
++			break;
++		case 128:
++			nand->ecc.layout = &fsmc_ecc1_128_layout;
++			break;
++		default:
++			printk(KERN_WARNING "No oob scheme defined for "
++			       "oobsize %d\n", mtd->oobsize);
++			BUG();
++		}
+ 	}
+ 
+ 	/* Second stage of scan to fill MTD data-structures */
+-- 
+1.7.0.4
