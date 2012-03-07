@@ -1,21 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5JPY-0007j3-88
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 16:08:20 +0000
-Message-ID: <1331136589.3463.3.camel@sauron.fi.intel.com>
-Subject: Re: [RFC][PATCH 1/7] MTD: UBI: Add checkpoint on-chip layout
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <rw@linutronix.de>
-Date: Wed, 07 Mar 2012 18:09:49 +0200
-In-Reply-To: <1329250006-22944-2-git-send-email-rw@linutronix.de>
-References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
- <1329250006-22944-2-git-send-email-rw@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5JRA-0007r7-Ah
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 16:10:00 +0000
+Received: by iaky10 with SMTP id y10so10527381iak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Mar 2012 08:09:59 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <b35532ebcf4ae0c89dd4c8e9834829104b5cdb37.1331119143.git.vipin.kumar@st.com>
+References: <cover.1331119143.git.vipin.kumar@st.com>
+ <b35532ebcf4ae0c89dd4c8e9834829104b5cdb37.1331119143.git.vipin.kumar@st.com>
+Date: Wed, 7 Mar 2012 17:09:59 +0100
+Message-ID: <CACRpkdbiZe3NzA2ekmf7q8=A3r9KU2hFHcToLW3CWdu=i9iXUg@mail.gmail.com>
+Subject: Re: [PATCH 18/18] fsmc/nand: Add DMA support
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Vipin Kumar <vipin.kumar@st.com>, Dan Williams <dan.j.williams@intel.com>,
+ Vinod Koul <vinod.koul@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
-> Specify the on-chip checkpoint layout.
-> The checkpoint consists of two major parts.
-> A super block (identified via UBI_CP_SB_VOLUME_ID) and
-> zero or more data blocks (identified via UBI_CP_DATA_VOLUME_ID).
-> Data blocks are only used if whole checkpoint information does not fit
-> into the super block.
+On Wed, Mar 7, 2012 at 12:31 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
 
-And superblock is also a more or less standard name used by file-system.
-I easily imagine difficulties and confusion when discussing UBIFS and
-UBI and mixing UBI and UBIFS supersblocks up. IMHO, anything unique is
-much better, even if it does not make much sense. E.g., "boss block" or
-"pomo block" (pomo = boss in Finnish).
+> The fsmc_nand driver uses cpu to read/write onto the device. This is inefficient
+> because of two reasons
+> - the cpu gets locked on AHB bus while reading from NAND
+> - the cpu is unnecessarily used when dma can do the job
+>
+> This patch adds the support for accessing the device through DMA
 
-Would you consider picking a different name as well please?
+Please elaborate a bit on how this is done, because I think it's new
+stuff.
 
--- 
-Best Regards,
-Artem Bityutskiy
+It appears that the FSMC is not like a slave device, i.e. not taking a
+stream of bytes. Instead you use the memcpy() portions of the
+dmaengine API to move data in/out of the flash pages to the
+page currently handled by the controller.
+
+Is this correct? I think it's pretty interesting since it's a new usecase
+for in-kernel memcpy() which (AFAIK) has so far only been used
+to accelerate network packet copying (correct me if wrong!).
+
+Please add Dan Williams and Vinod Koul to CC on this patch so
+the dmaengine people get to look at it.
+
+Yours,
+Linus Walleij
