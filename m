@@ -1,19 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5JlX-0001JB-VX
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 16:31:04 +0000
-Message-ID: <1331138007.3463.16.camel@sauron.fi.intel.com>
-Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
+ id 1S5JpX-0001iM-Ua
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 16:35:12 +0000
+Message-ID: <1331138261.3463.19.camel@sauron.fi.intel.com>
+Subject: Re: UBI/ubifs problem
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <rw@linutronix.de>
-Date: Wed, 07 Mar 2012 18:33:27 +0200
-In-Reply-To: <1329250006-22944-1-git-send-email-rw@linutronix.de>
-References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Wed, 07 Mar 2012 18:37:41 +0200
+In-Reply-To: <Pine.LNX.4.64.1203071723410.21132@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1202161543340.13194@lnxricardw.se.axis.com>
+ <Pine.LNX.4.64.1202171107440.13194@lnxricardw.se.axis.com>
+ <1331131250.32316.8.camel@sauron.fi.intel.com>
+ <Pine.LNX.4.64.1203071723410.21132@lnxricardw.se.axis.com>
+Content-Type: multipart/mixed; boundary="=-pKBTYIBeS6mpTF0IlyMS"
 Mime-Version: 1.0
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, tim.bird@am.sony.com
+Cc: Ricard =?ISO-8859-1?Q?Wanderl=F6f?= <ricardw@axis.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,86 +26,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just basic questions to make sure I understand things correctly.
 
-Do you have plans to also change the user-space tools?
+--=-pKBTYIBeS6mpTF0IlyMS
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
-> 1) A primary checkpoint block, which contains merily a pointer to the
->    erase block(s) which hold the real checkpointing data.
+On Wed, 2012-03-07 at 17:26 +0100, Ricard Wanderlof wrote:
+> Is it possible to get mkfs.ubifs to create an image without specifying the 
+> max-leb-count ? I.e. just to create an image that is as big as it has to 
+> be.
+
+Has to be? :-) Not sure how to find this out. Basically the idea was
+that you know how big is has to be and translate that to
+--max-leb-count.
+
+> > P.S. I did not even compile - test the below patch, but will push out a
+> > tested version.
 > 
->    This primary block is guaranteed to be held within the first N
->    eraseblocks of a device. N is momentarily set to 16, but it might
->    be necessary to make this configurable in some way.
+> Thanks for the patch, I'll try to test it.
 
-Does it mean that you reserve the first 16 PEBs for the primary block? 
-
-I guess we need to carefully look an this number and make the default to
-be good enough for the general case.
-
-> 2) The secondary checkpoint blocks, which contain the real
->    checkpointing data (physical to logical eraseblock relations,
->    erase counts, sequence numbers ...)
-
->    Aside of that the checkpointing data contains a list of blocks
->    which belong to the active working pool. The active working pool is
->    a fixed number of blocks for shortterm, longterm and unknown
->    storage time, which can be modified before the next checkpoint set
->    is written to FLASH. These blocks need to be scanned in the
->    conventional UBI scan mode.
-
-BTW, WRT short-term etc - how about just killing these concepts? I am
-really not sure they make much sense anyway and give any improvements. 
-
-I guess this would simplify things for you as well. I'd vote for
-removing them.
-
->    The reason for these pool blocks is to reduce the checkpoint
->    updates to the necessary minimum to avoid accelerated device
->    wearout in scenarios where data changes rapidly. The checkpoint
->    data is updated whenever a working pool runs out of blocks.
-> 
->    The number of pool blocks can be defined with a config option at
->    the moment, but this could also be done at runtime via sysfs. In
->    case of a change the checkpointing data would be reconstructed.
-
-Id suggest to introduce as few configuration knob as possible. My
-experience show that they usually only hurt. I'd stick to this rule for
-most cases: no user, no knob.
-
-> So the checkpoint scan consists of the following steps:
-> 
->    1) Find the primary checkpoint block by scanning the start of the
->       device.
-> 
->    2) Read the real checkpoint data and construct the UBI device info
->       structures.
-> 
->    3) Scan the pool blocks.
-> 
-> All these operations scan a limited number of erase blocks which makes
-> the UBI init O(1) and independent of the device size.
-
-Well, is it really true? The larger is the flash the more you read and
-process anyway, and it is still linear, but the multiplier becomes very
-small, so this is a huge improvement.
-
-> The checkpoint functionality is fully compatible with existing UBI
-> deployments. If no checkpoint blocks can be found then the device is
-> scanned and the checkpoint blocks are created from the scanned
-> information.
-> 
-> Aside of review and testing it needs to be decided, whether the number
-> of pool blocks should be deduced from the device size (number of
-> physical eraseblocks) or made configurable at compile or runtime.
-
-I would go for automatic decisions. Manual configuration can always be
-added later if needed.
-
-> Thanks to the folks at CELF who sponsored this work!
-
-Indeed thanks! And thank you Richard!
+It broke compilation, the working one is attached.
 
 -- 
 Best Regards,
 Artem Bityutskiy
+
+--=-pKBTYIBeS6mpTF0IlyMS
+Content-Disposition: attachment; filename="0001-UBIFS-improve-error-messages.patch"
+Content-Type: text/x-patch; name="0001-UBIFS-improve-error-messages.patch";
+	charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+>From 5a1f36c90c9b21a7aa31c29a1926b376dd6a11cf Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Wed, 7 Mar 2012 16:29:45 +0200
+Subject: [PATCH] UBIFS: improve error messages
+
+Ricard complaints that the following error message is odd:
+
+"UBIFS error (pid 1578): validate_sb: bad superblock, error 8"
+
+and he is right. This patch improves the error messages a bit and makes
+them more user-friendly.
+
+Reported-by: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ fs/ubifs/sb.c |   19 ++++++++++++++-----
+ 1 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 6094c5a..771f7fb 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -410,13 +410,23 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 	}
+ 
+ 	if (c->main_lebs < UBIFS_MIN_MAIN_LEBS) {
+-		err = 7;
++		ubifs_err("too few main LEBs count %d, must be at least %d",
++			  c->main_lebs, UBIFS_MIN_MAIN_LEBS);
+ 		goto failed;
+ 	}
+ 
+-	if (c->max_bud_bytes < (long long)c->leb_size * UBIFS_MIN_BUD_LEBS ||
+-	    c->max_bud_bytes > (long long)c->leb_size * c->main_lebs) {
+-		err = 8;
++	max_bytes = (long long)c->leb_size * UBIFS_MIN_BUD_LEBS;
++	if (c->max_bud_bytes < max_bytes) {
++		ubifs_err("too small journal (%lld bytes), must be at least "
++			  "%lld bytes",  c->max_bud_bytes, max_bytes);
++		goto failed;
++	}
++
++	max_bytes = (long long)c->leb_size * c->main_lebs;
++	if (c->max_bud_bytes > max_bytes) {
++		ubifs_err("too large journal size (%lld bytes), only %lld bytes"
++			  "available in the main area",
++			  c->max_bud_bytes, max_bytes);
+ 		goto failed;
+ 	}
+ 
+@@ -450,7 +460,6 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 		goto failed;
+ 	}
+ 
+-	max_bytes = c->main_lebs * (long long)c->leb_size;
+ 	if (c->rp_size < 0 || max_bytes < c->rp_size) {
+ 		err = 14;
+ 		goto failed;
+-- 
+1.7.9.1
+
+
+--=-pKBTYIBeS6mpTF0IlyMS--
