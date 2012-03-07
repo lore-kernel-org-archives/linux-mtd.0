@@ -1,15 +1,14 @@
-Received: from eu1sys200aog101.obsmtp.com ([207.126.144.111])
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5F6f-0006iD-4c
+ id 1S5F6e-0006h3-Up
  for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 11:32:36 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH next-3.3 19/19] spear13xx: Use dma/word access for NAND based
- on platform
-Date: Wed, 7 Mar 2012 17:01:07 +0530
-Message-ID: <121d8b6451af054b99e4654dfda996de872aeaa3.1331116555.git.vipin.kumar@st.com>
-In-Reply-To: <cover.1331116554.git.vipin.kumar@st.com>
-References: <cover.1331116554.git.vipin.kumar@st.com>
+Subject: [PATCH 18/18] fsmc/nand: Add DMA support
+Date: Wed, 7 Mar 2012 17:01:06 +0530
+Message-ID: <b35532ebcf4ae0c89dd4c8e9834829104b5cdb37.1331119143.git.vipin.kumar@st.com>
+In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
+References: <cover.1331119143.git.vipin.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Vipin Kumar <vipin.kumar@st.com>, Artem.Bityutskiy@nokia.com,
@@ -23,233 +22,301 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The fsmc_nand driver uses cpu to read/write onto the device. This is inefficient
+because of two reasons
+- the cpu gets locked on AHB bus while reading from NAND
+- the cpu is unnecessarily used when dma can do the job
+
+This patch adds the support for accessing the device through DMA
+
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 Reviewed-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- arch/arm/mach-spear13xx/include/mach/generic.h  |    2 ++
- arch/arm/mach-spear13xx/r1801e.c                |    3 +++
- arch/arm/mach-spear13xx/spear1300_evb.c         |    3 +++
- arch/arm/mach-spear13xx/spear1310_evb.c         |    3 +++
- arch/arm/mach-spear13xx/spear1310_reva_evb.c    |    3 +++
- arch/arm/mach-spear13xx/spear1340_evb.c         |    3 +++
- arch/arm/mach-spear13xx/spear1340_lcad.c        |    3 +++
- arch/arm/mach-spear13xx/spear13xx.c             |   12 ++++++++++++
- arch/arm/mach-spear13xx/spear900_evb.c          |    3 +++
- arch/arm/mach-spear13xx/spear_hurricane_board.c |    3 +++
- arch/arm/mach-spear3xx/spear300_evb.c           |    1 +
- arch/arm/mach-spear3xx/spear310_evb.c           |    1 +
- arch/arm/mach-spear3xx/spear320_evb.c           |    1 +
- arch/arm/mach-spear3xx/spear320_hmi.c           |    1 +
- arch/arm/mach-spear6xx/spear600_evb.c           |    1 +
- 15 files changed, 43 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |  173 ++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/fsmc.h     |    4 +
+ 2 files changed, 172 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/mach-spear13xx/include/mach/generic.h b/arch/arm/mach-spear13xx/include/mach/generic.h
-index 2693a3b..ffff6fd 100644
---- a/arch/arm/mach-spear13xx/include/mach/generic.h
-+++ b/arch/arm/mach-spear13xx/include/mach/generic.h
-@@ -500,6 +500,8 @@ extern struct sys_timer spear13xx_timer;
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 3828279..5cc79bc 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -17,6 +17,10 @@
+  */
  
- /* Add spear13xx structure declarations here */
- extern struct dw_dma_slave cf_dma_priv;
-+extern struct dw_dma_slave nand_read_dma_priv;
-+extern struct dw_dma_slave nand_write_dma_priv;
+ #include <linux/clk.h>
++#include <linux/completion.h>
++#include <linux/dmaengine.h>
++#include <linux/dma-direction.h>
++#include <linux/dma-mapping.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -452,6 +456,11 @@ static struct mtd_partition partition_info_2048KB_blk[] = {
+  * @bank:		Bank number for probed device.
+  * @clk:		Clock structure for FSMC.
+  *
++ * @read_dma_chan:	DMA channel for read access
++ * @write_dma_chan:	DMA channel for write access to NAND
++ * @dma_access_complete: Completion structure
++ *
++ * @data_pa:		NAND Physical port for Data.
+  * @data_va:		NAND port for Data.
+  * @cmd_va:		NAND port for Command.
+  * @addr_va:		NAND port for Address.
+@@ -465,10 +474,17 @@ struct fsmc_nand_data {
+ 	struct fsmc_eccplace	*ecc_place;
+ 	unsigned int		bank;
+ 	struct device		*dev;
++	enum access_mode	mode;
+ 	struct clk		*clk;
  
- /* Add spear13xx family function declarations here */
- bool dw_dma_filter(struct dma_chan *chan, void *slave);
-diff --git a/arch/arm/mach-spear13xx/r1801e.c b/arch/arm/mach-spear13xx/r1801e.c
-index 0383e16..043e718 100644
---- a/arch/arm/mach-spear13xx/r1801e.c
-+++ b/arch/arm/mach-spear13xx/r1801e.c
-@@ -227,6 +227,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.cle_off = PLAT_NAND_CLE,
- 	.partitions = partition_info,
- 	.nr_partitions = ARRAY_SIZE(partition_info),
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
++	/* DMA related objects */
++	struct dma_chan		*read_dma_chan;
++	struct dma_chan		*write_dma_chan;
++	struct completion	dma_access_complete;
++
+ 	struct fsmc_nand_timings *dev_timings;
  
- #ifdef CONFIG_SPEAR_PCIE_REV341
-diff --git a/arch/arm/mach-spear13xx/spear1300_evb.c b/arch/arm/mach-spear13xx/spear1300_evb.c
-index 077ba1e..e4be164 100644
---- a/arch/arm/mach-spear13xx/spear1300_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1300_evb.c
-@@ -128,6 +128,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- #if 0
-diff --git a/arch/arm/mach-spear13xx/spear1310_evb.c b/arch/arm/mach-spear13xx/spear1310_evb.c
-index 6b8238a..ce5ecca 100644
---- a/arch/arm/mach-spear13xx/spear1310_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1310_evb.c
-@@ -174,6 +174,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- /* fsmc nor platform data */
-diff --git a/arch/arm/mach-spear13xx/spear1310_reva_evb.c b/arch/arm/mach-spear13xx/spear1310_reva_evb.c
-index 9d9c22d..b44850e 100644
---- a/arch/arm/mach-spear13xx/spear1310_reva_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1310_reva_evb.c
-@@ -263,6 +263,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- /* fsmc nor partition info */
-diff --git a/arch/arm/mach-spear13xx/spear1340_evb.c b/arch/arm/mach-spear13xx/spear1340_evb.c
-index c0ead2b..59604b5 100644
---- a/arch/arm/mach-spear13xx/spear1340_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1340_evb.c
-@@ -314,6 +314,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- /* arasan compact flash controller's platform data */
-diff --git a/arch/arm/mach-spear13xx/spear1340_lcad.c b/arch/arm/mach-spear13xx/spear1340_lcad.c
-index 9b0476f..073f769 100644
---- a/arch/arm/mach-spear13xx/spear1340_lcad.c
-+++ b/arch/arm/mach-spear13xx/spear1340_lcad.c
-@@ -234,6 +234,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- /* I2S STA529 i2c board info */
-diff --git a/arch/arm/mach-spear13xx/spear13xx.c b/arch/arm/mach-spear13xx/spear13xx.c
-index de4757d..f893b3f 100644
---- a/arch/arm/mach-spear13xx/spear13xx.c
-+++ b/arch/arm/mach-spear13xx/spear13xx.c
-@@ -524,6 +524,18 @@ void nand_select_bank(u32 bank, u32 busw)
- 	writel(fsmc_cfg, VA_FSMC_CFG);
++	dma_addr_t		data_pa;
+ 	void __iomem		*data_va;
+ 	void __iomem		*cmd_va;
+ 	void __iomem		*addr_va;
+@@ -691,6 +707,82 @@ static int count_written_bits(uint8_t *buff, int size, int max_bits)
+ 	return written_bits;
  }
  
-+struct dw_dma_slave nand_read_dma_priv = {
-+	.dma_dev = &spear13xx_dmac_device[0].dev,
-+	.src_master = SPEAR13XX_DMA_MASTER_FSMC,
-+	.dst_master = SPEAR13XX_DMA_MASTER_MEMORY,
-+};
++static void dma_complete(void *param)
++{
++	struct fsmc_nand_data *host = param;
 +
-+struct dw_dma_slave nand_write_dma_priv = {
-+	.dma_dev = &spear13xx_dmac_device[0].dev,
-+	.src_master = SPEAR13XX_DMA_MASTER_MEMORY,
-+	.dst_master = SPEAR13XX_DMA_MASTER_FSMC,
-+};
++	complete(&host->dma_access_complete);
++}
 +
- static struct resource nand_resources[] = {
- 	{
- 		.name = "nand_data",
-diff --git a/arch/arm/mach-spear13xx/spear900_evb.c b/arch/arm/mach-spear13xx/spear900_evb.c
-index 9045640..ba2a816 100644
---- a/arch/arm/mach-spear13xx/spear900_evb.c
-+++ b/arch/arm/mach-spear13xx/spear900_evb.c
-@@ -130,6 +130,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
++static int dma_xfer(struct fsmc_nand_data *host, void *buffer, int len,
++		enum dma_data_direction direction)
++{
++	struct dma_chan *chan;
++	struct dma_device *dma_dev;
++	struct dma_async_tx_descriptor *tx;
++	dma_addr_t dma_dst, dma_src, dma_addr;
++	dma_cookie_t cookie;
++	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
++	int ret;
++
++	if (direction == DMA_TO_DEVICE)
++		chan = host->write_dma_chan;
++	else if (direction == DMA_FROM_DEVICE)
++		chan = host->read_dma_chan;
++	else
++		return -EINVAL;
++
++	dma_dev = chan->device;
++	dma_addr = dma_map_single(dma_dev->dev, buffer, len, direction);
++
++	if (direction == DMA_TO_DEVICE) {
++		dma_src = dma_addr;
++		dma_dst = host->data_pa;
++		flags |= DMA_COMPL_SRC_UNMAP_SINGLE | DMA_COMPL_SKIP_DEST_UNMAP;
++	} else {
++		dma_src = host->data_pa;
++		dma_dst = dma_addr;
++		flags |= DMA_COMPL_DEST_UNMAP_SINGLE | DMA_COMPL_SKIP_SRC_UNMAP;
++	}
++
++	tx = dma_dev->device_prep_dma_memcpy(chan, dma_dst, dma_src,
++			len, flags);
++
++	if (!tx) {
++		dev_err(host->dev, "device_prep_dma_memcpy error\n");
++		dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
++		return -EIO;
++	}
++
++	tx->callback = dma_complete;
++	tx->callback_param = host;
++	cookie = tx->tx_submit(tx);
++
++	ret = dma_submit_error(cookie);
++	if (ret) {
++		dev_err(host->dev, "dma_submit_error %d\n", cookie);
++		return ret;
++	}
++
++	dma_async_issue_pending(chan);
++
++	ret =
++	wait_for_completion_interruptible_timeout(&host->dma_access_complete,
++				msecs_to_jiffies(3000));
++	if (ret <= 0) {
++		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
++		dev_err(host->dev, "wait_for_completion_timeout\n");
++		return ret ? ret : -ETIMEDOUT;
++	}
++
++	preempt_disable();
++	__this_cpu_add(chan->local->bytes_transferred, len);
++	__this_cpu_inc(chan->local->memcpy_count);
++	preempt_enable();
++
++	return 0;
++}
++
+ /*
+  * fsmc_write_buf - write buffer to chip
+  * @mtd:	MTD device structure
+@@ -738,6 +830,35 @@ static void fsmc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ }
+ 
+ /*
++ * fsmc_read_buf_dma - read chip data into buffer
++ * @mtd:	MTD device structure
++ * @buf:	buffer to store date
++ * @len:	number of bytes to read
++ */
++static void fsmc_read_buf_dma(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++	struct fsmc_nand_data *host;
++
++	host = container_of(mtd, struct fsmc_nand_data, mtd);
++	dma_xfer(host, buf, len, DMA_FROM_DEVICE);
++}
++
++/*
++ * fsmc_write_buf_dma - write buffer to chip
++ * @mtd:	MTD device structure
++ * @buf:	data buffer
++ * @len:	number of bytes to write
++ */
++static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
++		int len)
++{
++	struct fsmc_nand_data *host;
++
++	host = container_of(mtd, struct fsmc_nand_data, mtd);
++	dma_xfer(host, (void *)buf, len, DMA_TO_DEVICE);
++}
++
++/*
+  * fsmc_read_page_hwecc
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -899,6 +1020,12 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+ 	return i;
+ }
+ 
++static bool filter(struct dma_chan *chan, void *slave)
++{
++	chan->private = slave;
++	return true;
++}
++
+ /*
+  * fsmc_nand_probe - Probe function
+  * @pdev:       platform device structure
+@@ -912,6 +1039,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	struct fsmc_regs *regs;
+ 	struct resource *res;
+ 	struct mtd_partition *parts;
++	dma_cap_mask_t mask;
+ 	int nr_parts;
+ 	int ret = 0;
+ 	u32 pid;
+@@ -939,6 +1067,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 	}
+ 
++	host->data_pa = (dma_addr_t)res->start;
+ 	host->data_va = devm_ioremap(&pdev->dev, res->start,
+ 			resource_size(res));
+ 	if (!host->data_va) {
+@@ -1015,6 +1144,11 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	host->select_chip = pdata->select_bank;
+ 	host->dev = &pdev->dev;
+ 	host->dev_timings = pdata->nand_timings;
++	host->mode = pdata->mode;
++
++	if (host->mode == USE_DMA_ACCESS)
++		init_completion(&host->dma_access_complete);
++
+ 	regs = host->regs_va;
+ 
+ 	/* Link all private pointers */
+@@ -1039,13 +1173,31 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	if (pdata->width == FSMC_NAND_BW16)
+ 		nand->options |= NAND_BUSWIDTH_16;
+ 
+-	/*
+-	 * use customized (word by word) version of read_buf, write_buf if
+-	 * access_with_dev_width is reset supported
+-	 */
+-	if (pdata->mode == USE_WORD_ACCESS) {
++	switch (host->mode) {
++	case USE_DMA_ACCESS:
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_MEMCPY, mask);
++		host->read_dma_chan = dma_request_channel(mask, filter,
++				pdata->read_dma_priv);
++		if (!host->read_dma_chan) {
++			dev_err(&pdev->dev, "Unable to get read dma channel\n");
++			goto err_req_read_chnl;
++		}
++		host->write_dma_chan = dma_request_channel(mask, filter,
++				pdata->write_dma_priv);
++		if (!host->write_dma_chan) {
++			dev_err(&pdev->dev, "Unable to get write dma channel\n");
++			goto err_req_write_chnl;
++		}
++		nand->read_buf = fsmc_read_buf_dma;
++		nand->write_buf = fsmc_write_buf_dma;
++		break;
++
++	default:
++	case USE_WORD_ACCESS:
+ 		nand->read_buf = fsmc_read_buf;
+ 		nand->write_buf = fsmc_write_buf;
++		break;
+ 	}
+ 
+ 	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
+@@ -1177,6 +1329,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 
+ err_probe:
+ err_scan_ident:
++	if (host->mode == USE_DMA_ACCESS)
++		dma_release_channel(host->write_dma_chan);
++err_req_write_chnl:
++	if (host->mode == USE_DMA_ACCESS)
++		dma_release_channel(host->read_dma_chan);
++err_req_read_chnl:
+ 	clk_disable(host->clk);
+ err_clk_enable:
+ 	clk_put(host->clk);
+@@ -1194,6 +1352,11 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ 
+ 	if (host) {
+ 		nand_release(&host->mtd);
++
++		if (host->mode == USE_DMA_ACCESS) {
++			dma_release_channel(host->write_dma_chan);
++			dma_release_channel(host->read_dma_chan);
++		}
+ 		clk_disable(host->clk);
+ 		clk_put(host->clk);
+ 	}
+diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
+index 1edd2b3..18f9127 100644
+--- a/include/linux/mtd/fsmc.h
++++ b/include/linux/mtd/fsmc.h
+@@ -172,6 +172,10 @@ struct fsmc_nand_platform_data {
+ 	enum access_mode	mode;
+ 
+ 	void			(*select_bank)(uint32_t bank, uint32_t busw);
++
++	/* priv structures for dma accesses */
++	void			*read_dma_priv;
++	void			*write_dma_priv;
  };
  
- #if 0
-diff --git a/arch/arm/mach-spear13xx/spear_hurricane_board.c b/arch/arm/mach-spear13xx/spear_hurricane_board.c
-index e45f92f..2bcb395 100644
---- a/arch/arm/mach-spear13xx/spear_hurricane_board.c
-+++ b/arch/arm/mach-spear13xx/spear_hurricane_board.c
-@@ -222,6 +222,9 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_DMA_ACCESS,
-+	.read_dma_priv = &nand_read_dma_priv,
-+	.write_dma_priv = &nand_write_dma_priv,
- };
- 
- static struct arasan_cf_pdata cf_pdata = {
-diff --git a/arch/arm/mach-spear3xx/spear300_evb.c b/arch/arm/mach-spear3xx/spear300_evb.c
-index 1602fde..92b8238 100644
---- a/arch/arm/mach-spear3xx/spear300_evb.c
-+++ b/arch/arm/mach-spear3xx/spear300_evb.c
-@@ -119,6 +119,7 @@ static const struct fsmc_nand_platform_data nand0_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = SPEAR300_PLAT_NAND_ALE,
- 	.cle_off = SPEAR300_PLAT_NAND_CLE,
-+	.mode = USE_WORD_ACCESS,
- };
- 
- /* keyboard specific platform data */
-diff --git a/arch/arm/mach-spear3xx/spear310_evb.c b/arch/arm/mach-spear3xx/spear310_evb.c
-index 69778b5..da11f2d 100644
---- a/arch/arm/mach-spear3xx/spear310_evb.c
-+++ b/arch/arm/mach-spear3xx/spear310_evb.c
-@@ -194,6 +194,7 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = SPEAR310_PLAT_NAND_ALE,
- 	.cle_off = SPEAR310_PLAT_NAND_CLE,
-+	.mode = USE_WORD_ACCESS,
- };
- 
- /* spi board information */
-diff --git a/arch/arm/mach-spear3xx/spear320_evb.c b/arch/arm/mach-spear3xx/spear320_evb.c
-index 09aa95b..ce41448 100644
---- a/arch/arm/mach-spear3xx/spear320_evb.c
-+++ b/arch/arm/mach-spear3xx/spear320_evb.c
-@@ -174,6 +174,7 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = SPEAR320_PLAT_NAND_ALE,
- 	.cle_off = SPEAR320_PLAT_NAND_CLE,
-+	.mode = USE_WORD_ACCESS,
- };
- 
- /* Currently no gpios are free on eval board so it is kept commented */
-diff --git a/arch/arm/mach-spear3xx/spear320_hmi.c b/arch/arm/mach-spear3xx/spear320_hmi.c
-index bba73f1..cd12fc9 100644
---- a/arch/arm/mach-spear3xx/spear320_hmi.c
-+++ b/arch/arm/mach-spear3xx/spear320_hmi.c
-@@ -155,6 +155,7 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = SPEAR320_PLAT_NAND_ALE,
- 	.cle_off = SPEAR320_PLAT_NAND_CLE,
-+	.mode = USE_WORD_ACCESS,
- };
- 
- static void __init spear320_hmi_init(void)
-diff --git a/arch/arm/mach-spear6xx/spear600_evb.c b/arch/arm/mach-spear6xx/spear600_evb.c
-index 36b6183..881f0eb 100644
---- a/arch/arm/mach-spear6xx/spear600_evb.c
-+++ b/arch/arm/mach-spear6xx/spear600_evb.c
-@@ -90,6 +90,7 @@ static const struct fsmc_nand_platform_data nand_plat_data __initconst = {
- 	.width = FSMC_NAND_BW8,
- 	.ale_off = PLAT_NAND_ALE,
- 	.cle_off = PLAT_NAND_CLE,
-+	.mode = USE_WORD_ACCESS,
- };
- 
- /* spi board information */
+ extern int __init fsmc_nor_init(struct platform_device *pdev,
 -- 
 1.7.0.4
