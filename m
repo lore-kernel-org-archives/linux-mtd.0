@@ -1,13 +1,12 @@
-Received: from eu1sys200aog107.obsmtp.com ([207.126.144.123])
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5F6Q-0006dc-Ag
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 11:32:20 +0000
+ id 1S5F6R-0006el-Od
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 11:32:21 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 14/18] fsmc/nand: Modify fsmc driver to accept nand timing
- parameters via platform
-Date: Wed, 7 Mar 2012 17:01:02 +0530
-Message-ID: <074f5f888413522a7f81d2c0178dcb8ba4a4fb52.1331119143.git.vipin.kumar@st.com>
+Subject: [PATCH 15/18] fsmc/nand: Use devm routines
+Date: Wed, 7 Mar 2012 17:01:03 +0530
+Message-ID: <13308836dd35bfdda2c30d0fb748d2fd1e6c8ddc.1331119143.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
 References: <cover.1331119143.git.vipin.kumar@st.com>
 MIME-Version: 1.0
@@ -23,175 +22,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FSMC controllers provide registers to program the required timing values for
-attached NAND device. The timing values used until now are relaxed and should
-work for all devices.
-
-Although, for read/write performance improvements, the fsmc nand driver should
-accept nand timings as a platform data and program the timing parameters into
-fsmc registers accordingly.
-
-This patch implements this modification. Additionally, it programs the default
-timing parameters if these are not passed via platform data.
+fsmc_nand driver currently uses normal kzalloc, request_mem etc routines. This
+patch replaces these routines with devm_kzalloc and devm_request_mem_region etc.
+Consequently, the error and driver removal scenarios are curtailed.
 
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |   41 +++++++++++++++++++++++++++++++++--------
- include/linux/mtd/fsmc.h     |   34 ++++++++++++++++++++++++++++------
- 2 files changed, 61 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |  134 +++++++++++++----------------------------
+ 1 files changed, 43 insertions(+), 91 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 51add35..7b2e66c 100644
+index 7b2e66c..08aa93e 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -471,6 +471,8 @@ struct fsmc_nand_data {
- 	struct resource		*resaddr;
- 	struct resource		*resdata;
+@@ -466,11 +466,6 @@ struct fsmc_nand_data {
+ 	unsigned int		bank;
+ 	struct clk		*clk;
  
-+	struct fsmc_nand_timings *dev_timings;
-+
+-	struct resource		*resregs;
+-	struct resource		*rescmd;
+-	struct resource		*resaddr;
+-	struct resource		*resdata;
+-
+ 	struct fsmc_nand_timings *dev_timings;
+ 
  	void __iomem		*data_va;
- 	void __iomem		*cmd_va;
- 	void __iomem		*addr_va;
-@@ -551,21 +553,41 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-  * FSMC registers
-  */
- static void fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
--				   uint32_t busw)
-+			   uint32_t busw, struct fsmc_nand_timings *timings)
- {
- 	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
-+	uint32_t tclr, tar, thiz, thold, twait, tset;
-+	struct fsmc_nand_timings *tims;
-+	struct fsmc_nand_timings default_timings = {
-+		.tclr	= FSMC_TCLR_1,
-+		.tar	= FSMC_TAR_1,
-+		.thiz	= FSMC_THIZ_1,
-+		.thold	= FSMC_THOLD_4,
-+		.twait	= FSMC_TWAIT_6,
-+		.tset	= FSMC_TSET_0,
-+	};
-+
-+	if (timings)
-+		tims = timings;
-+	else
-+		tims = &default_timings;
-+
-+	tclr = (tims->tclr & FSMC_TCLR_MASK) << FSMC_TCLR_SHIFT;
-+	tar = (tims->tar & FSMC_TAR_MASK) << FSMC_TAR_SHIFT;
-+	thiz = (tims->thiz & FSMC_THIZ_MASK) << FSMC_THIZ_SHIFT;
-+	thold = (tims->thold & FSMC_THOLD_MASK) << FSMC_THOLD_SHIFT;
-+	twait = (tims->twait & FSMC_TWAIT_MASK) << FSMC_TWAIT_SHIFT;
-+	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
+@@ -876,88 +871,81 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	}
  
- 	if (busw)
- 		writel(value | FSMC_DEVWID_16, &regs->bank_regs[bank].pc);
- 	else
- 		writel(value | FSMC_DEVWID_8, &regs->bank_regs[bank].pc);
+ 	/* Allocate memory for the device structure (and zero it) */
+-	host = kzalloc(sizeof(*host), GFP_KERNEL);
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host) {
+ 		dev_err(&pdev->dev, "failed to allocate device structure\n");
+ 		return -ENOMEM;
+ 	}
  
--	writel(readl(&regs->bank_regs[bank].pc) | FSMC_TCLR_1 | FSMC_TAR_1,
-+	writel(readl(&regs->bank_regs[bank].pc) | tclr | tar,
- 	       &regs->bank_regs[bank].pc);
--	writel(FSMC_THIZ_1 | FSMC_THOLD_4 | FSMC_TWAIT_6 | FSMC_TSET_0,
--	       &regs->bank_regs[bank].comm);
--	writel(FSMC_THIZ_1 | FSMC_THOLD_4 | FSMC_TWAIT_6 | FSMC_TSET_0,
--	       &regs->bank_regs[bank].attrib);
-+	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].comm);
-+	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].attrib);
- }
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
+-	if (!res) {
+-		ret = -EIO;
+-		goto err_probe1;
+-	}
++	if (!res)
++		return -EINVAL;
  
- /*
-@@ -951,6 +973,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+-	host->resdata = request_mem_region(res->start, resource_size(res),
+-			pdev->name);
+-	if (!host->resdata) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
++				pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory data resourse\n");
++		return -ENOENT;
+ 	}
  
- 	host->bank = pdata->bank;
- 	host->select_chip = pdata->select_bank;
-+	host->dev_timings = pdata->nand_timings;
- 	regs = host->regs_va;
+-	host->data_va = ioremap(res->start, resource_size(res));
++	host->data_va = devm_ioremap(&pdev->dev, res->start,
++			resource_size(res));
+ 	if (!host->data_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "data ioremap failed\n");
++		return -ENOMEM;
+ 	}
  
- 	/* Link all private pointers */
-@@ -975,7 +998,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (pdata->width == FSMC_NAND_BW16)
- 		nand->options |= NAND_BUSWIDTH_16;
+-	host->resaddr = request_mem_region(res->start + pdata->ale_off,
+-			resource_size(res), pdev->name);
+-	if (!host->resaddr) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start + pdata->ale_off,
++			resource_size(res), pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory ale resourse\n");
++		return -ENOENT;
+ 	}
  
--	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16);
-+	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
-+			host->dev_timings);
+-	host->addr_va = ioremap(res->start + pdata->ale_off,
++	host->addr_va = devm_ioremap(&pdev->dev, res->start + pdata->ale_off,
+ 			resource_size(res));
+ 	if (!host->addr_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "ale ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+-	host->rescmd = request_mem_region(res->start + pdata->cle_off,
+-			resource_size(res), pdev->name);
+-	if (!host->rescmd) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start + pdata->cle_off,
++			resource_size(res), pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory cle resourse\n");
++		return -ENOENT;
+ 	}
+ 
+-	host->cmd_va = ioremap(res->start + pdata->cle_off, resource_size(res));
++	host->cmd_va = devm_ioremap(&pdev->dev, res->start + pdata->cle_off,
++			resource_size(res));
+ 	if (!host->cmd_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "ale ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fsmc_regs");
+-	if (!res) {
+-		ret = -EIO;
+-		goto err_probe1;
+-	}
++	if (!res)
++		return -EINVAL;
+ 
+-	host->resregs = request_mem_region(res->start, resource_size(res),
+-			pdev->name);
+-	if (!host->resregs) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
++			pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory regs resourse\n");
++		return -ENOENT;
+ 	}
+ 
+-	host->regs_va = ioremap(res->start, resource_size(res));
++	host->regs_va = devm_ioremap(&pdev->dev, res->start,
++			resource_size(res));
+ 	if (!host->regs_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "regs ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+ 	host->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "failed to fetch block clock\n");
+-		ret = PTR_ERR(host->clk);
+-		host->clk = NULL;
+-		goto err_probe1;
++		return PTR_ERR(host->clk);
+ 	}
+ 
+ 	ret = clk_enable(host->clk);
+ 	if (ret)
+-		goto err_probe1;
++		goto err_clk_enable;
+ 
+ 	/*
+ 	 * This device ID is actually a common AMBA ID as used on the
+@@ -1018,7 +1006,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	if (nand_scan_ident(&host->mtd, 1, NULL)) {
+ 		ret = -ENXIO;
+ 		dev_err(&pdev->dev, "No NAND Device found!\n");
+-		goto err_probe;
++		goto err_scan_ident;
+ 	}
  
  	if (AMBA_REV_BITS(host->pid) >= 8) {
- 		nand->ecc.read_page = fsmc_read_page_hwecc;
-@@ -1178,7 +1202,8 @@ static int fsmc_nand_resume(struct device *dev)
- 	if (host) {
- 		clk_enable(host->clk);
- 		fsmc_nand_setup(host->regs_va, host->bank,
--				host->nand.options & NAND_BUSWIDTH_16);
-+				host->nand.options & NAND_BUSWIDTH_16,
-+				host->dev_timings);
+@@ -1126,32 +1114,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_probe:
++err_scan_ident:
+ 	clk_disable(host->clk);
+-err_probe1:
+-	if (host->clk)
+-		clk_put(host->clk);
+-	if (host->regs_va)
+-		iounmap(host->regs_va);
+-	if (host->resregs)
+-		release_mem_region(host->resregs->start,
+-				resource_size(host->resregs));
+-	if (host->cmd_va)
+-		iounmap(host->cmd_va);
+-	if (host->rescmd)
+-		release_mem_region(host->rescmd->start,
+-				resource_size(host->rescmd));
+-	if (host->addr_va)
+-		iounmap(host->addr_va);
+-	if (host->resaddr)
+-		release_mem_region(host->resaddr->start,
+-				resource_size(host->resaddr));
+-	if (host->data_va)
+-		iounmap(host->data_va);
+-	if (host->resdata)
+-		release_mem_region(host->resdata->start,
+-				resource_size(host->resdata));
+-
+-	kfree(host);
++err_clk_enable:
++	clk_put(host->clk);
+ 	return ret;
+ }
+ 
+@@ -1168,22 +1134,8 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ 		nand_release(&host->mtd);
+ 		clk_disable(host->clk);
+ 		clk_put(host->clk);
+-
+-		iounmap(host->regs_va);
+-		release_mem_region(host->resregs->start,
+-				resource_size(host->resregs));
+-		iounmap(host->cmd_va);
+-		release_mem_region(host->rescmd->start,
+-				resource_size(host->rescmd));
+-		iounmap(host->addr_va);
+-		release_mem_region(host->resaddr->start,
+-				resource_size(host->resaddr));
+-		iounmap(host->data_va);
+-		release_mem_region(host->resdata->start,
+-				resource_size(host->resdata));
+-
+-		kfree(host);
  	}
++
  	return 0;
  }
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index e877325..c4ac07a 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -90,17 +90,29 @@ struct fsmc_regs {
- #define FSMC_ECCEN		(1 << 6)
- #define FSMC_ECCPLEN_512	(0 << 7)
- #define FSMC_ECCPLEN_256	(1 << 7)
--#define FSMC_TCLR_1		(1 << 9)
--#define FSMC_TAR_1		(1 << 13)
-+#define FSMC_TCLR_1		(1)
-+#define FSMC_TCLR_SHIFT		(9)
-+#define FSMC_TCLR_MASK		(0xF)
-+#define FSMC_TAR_1		(1)
-+#define FSMC_TAR_SHIFT		(13)
-+#define FSMC_TAR_MASK		(0xF)
  
- /* sts register definitions */
- #define FSMC_CODE_RDY		(1 << 15)
- 
- /* comm register definitions */
--#define FSMC_TSET_0		(0 << 0)
--#define FSMC_TWAIT_6		(6 << 8)
--#define FSMC_THOLD_4		(4 << 16)
--#define FSMC_THIZ_1		(1 << 24)
-+#define FSMC_TSET_0		0
-+#define FSMC_TSET_SHIFT		0
-+#define FSMC_TSET_MASK		0xFF
-+#define FSMC_TWAIT_6		6
-+#define FSMC_TWAIT_SHIFT	8
-+#define FSMC_TWAIT_MASK		0xFF
-+#define FSMC_THOLD_4		4
-+#define FSMC_THOLD_SHIFT	16
-+#define FSMC_THOLD_MASK		0xFF
-+#define FSMC_THIZ_1		1
-+#define FSMC_THIZ_SHIFT		24
-+#define FSMC_THIZ_MASK		0xFF
- 
- /*
-  * There are 13 bytes of ecc for every 512 byte block in FSMC version 8
-@@ -120,6 +132,15 @@ struct fsmc_eccplace {
- 	struct fsmc_nand_eccplace eccplace[MAX_ECCPLACE_ENTRIES];
- };
- 
-+struct fsmc_nand_timings {
-+	uint8_t tclr;
-+	uint8_t tar;
-+	uint8_t thiz;
-+	uint8_t thold;
-+	uint8_t twait;
-+	uint8_t tset;
-+};
-+
- /**
-  * fsmc_nand_platform_data - platform specific NAND controller config
-  * @partitions: partition table for the platform, use a default fallback
-@@ -133,6 +154,7 @@ struct fsmc_eccplace {
-  * this may be set to NULL
-  */
- struct fsmc_nand_platform_data {
-+	struct fsmc_nand_timings *nand_timings;
- 	struct mtd_partition	*partitions;
- 	unsigned int		nr_partitions;
- 	unsigned int		options;
 -- 
 1.7.0.4
