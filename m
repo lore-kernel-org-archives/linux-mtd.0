@@ -1,11 +1,11 @@
-Received: from nm13.bullet.mail.ird.yahoo.com ([77.238.189.66])
+Received: from nm16-vm0.bullet.mail.ird.yahoo.com ([77.238.189.192])
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5HZb-0008SH-15
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 14:10:36 +0000
-Message-ID: <1331129433.70688.YahooMailClassic@web29017.mail.ird.yahoo.com>
-Date: Wed, 7 Mar 2012 14:10:33 +0000 (GMT)
+ id 1S5HaH-00006i-Ut
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 14:11:19 +0000
+Message-ID: <1331129476.90478.YahooMailClassic@web29011.mail.ird.yahoo.com>
+Date: Wed, 7 Mar 2012 14:11:16 +0000 (GMT)
 From: Paul Parsons <lost.distance@yahoo.com>
-Subject: [PATCH 1/6] mtd: chips: cfi_cmdset_0001: Match
+Subject: [PATCH 2/6] mtd: chips: cfi_cmdset_0002: Match
  ENABLE_VPP()/DISABLE_VPP() calls
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
@@ -26,32 +26,24 @@ rrors=0Aresulting from the MTD CFI driver turning off vpp while an erase is=
  in progress.=0AThis patch ensures that only those flash operations which c=
 all ENABLE_VPP() can=0Athen call DISABLE_VPP(). Other operations should nev=
 er call DISABLE_VPP().=0A=0ASigned-off-by: Paul Parsons <lost.distance@yaho=
-o.com>=0A---=0Adiff -uprN clean-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0001.c=
- linux-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0001.c=0A--- clean-3.3-rc6/driv=
-ers/mtd/chips/cfi_cmdset_0001.c=092012-03-04 01:08:09.000000000 +0000=0A+++=
- linux-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0001.c=092012-03-06 16:38:29.78=
-7134295 +0000=0A@@ -1017,8 +1017,6 @@ static void put_chip(struct map_info =
-*ma=0A =09case FL_READY:=0A =09case FL_STATUS:=0A =09case FL_JEDEC_QUERY:=
-=0A-=09=09/* We should really make set_vpp() count, rather than doing this =
-*/=0A-=09=09DISABLE_VPP(map);=0A =09=09break;=0A =09default:=0A =09=09print=
-k(KERN_ERR "%s: put_chip() called with oldstate %d!!\n", map->name, chip->o=
-ldstate);=0A@@ -1551,7 +1549,8 @@ static int __xipram do_write_oneword(str=
-=0A =09}=0A =0A =09xip_enable(map, chip, adr);=0A- out:=09put_chip(map, chi=
-p, adr);=0A+ out:=09DISABLE_VPP(map);=0A+=09put_chip(map, chip, adr);=0A =
-=09mutex_unlock(&chip->mutex);=0A =09return ret;=0A }=0A@@ -1794,7 +1793,8 =
-@@ static int __xipram do_write_buffer(stru=0A =09}=0A =0A =09xip_enable(ma=
-p, chip, cmd_adr);=0A- out:=09put_chip(map, chip, cmd_adr);=0A+ out:=09DISA=
-BLE_VPP(map);=0A+=09put_chip(map, chip, cmd_adr);=0A =09mutex_unlock(&chip-=
->mutex);=0A =09return ret;=0A }=0A@@ -1932,6 +1932,7 @@ static int __xipram=
- do_erase_oneblock(st=0A =09=09=09ret =3D -EIO;=0A =09=09} else if (chipsta=
-tus & 0x20 && retries--) {=0A =09=09=09printk(KERN_DEBUG "block erase faile=
-d at 0x%08lx: status 0x%lx. Retrying...\n", adr, chipstatus);=0A+=09=09=09D=
-ISABLE_VPP(map);=0A =09=09=09put_chip(map, chip, adr);=0A =09=09=09mutex_un=
-lock(&chip->mutex);=0A =09=09=09goto retry;=0A@@ -1944,7 +1945,8 @@ static =
-int __xipram do_erase_oneblock(st=0A =09}=0A =0A =09xip_enable(map, chip, a=
-dr);=0A- out:=09put_chip(map, chip, adr);=0A+ out:=09DISABLE_VPP(map);=0A+=
-=09put_chip(map, chip, adr);=0A =09mutex_unlock(&chip->mutex);=0A =09return=
- ret;=0A }=0A@@ -2086,7 +2088,8 @@ static int __xipram do_xxlock_oneblock(s=
-=0A =09}=0A =0A =09xip_enable(map, chip, adr);=0A-out:=09put_chip(map, chip=
-, adr);=0A+ out:=09DISABLE_VPP(map);=0A+=09put_chip(map, chip, adr);=0A =09=
-mutex_unlock(&chip->mutex);=0A =09return ret;=0A }=0A
+o.com>=0A---=0Adiff -uprN clean-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0002.c=
+ linux-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0002.c=0A--- clean-3.3-rc6/driv=
+ers/mtd/chips/cfi_cmdset_0002.c=092012-03-04 01:08:09.000000000 +0000=0A+++=
+ linux-3.3-rc6/drivers/mtd/chips/cfi_cmdset_0002.c=092012-03-06 16:38:29.78=
+7134295 +0000=0A@@ -770,8 +770,6 @@ static void put_chip(struct map_info *m=
+a=0A =0A =09case FL_READY:=0A =09case FL_STATUS:=0A-=09=09/* We should real=
+ly make set_vpp() count, rather than doing this */=0A-=09=09DISABLE_VPP(map=
+);=0A =09=09break;=0A =09default:=0A =09=09printk(KERN_ERR "MTD: put_chip()=
+ called with oldstate %d!!\n", chip->oldstate);=0A@@ -1234,6 +1232,7 @@ sta=
+tic int __xipram do_write_oneword(str=0A =09xip_enable(map, chip, adr);=0A =
+ op_done:=0A =09chip->state =3D FL_READY;=0A+=09DISABLE_VPP(map);=0A =09put=
+_chip(map, chip, adr);=0A =09mutex_unlock(&chip->mutex);=0A =0A@@ -1476,6 +=
+1475,7 @@ static int __xipram do_write_buffer(stru=0A =09ret =3D -EIO;=0A  =
+op_done:=0A =09chip->state =3D FL_READY;=0A+=09DISABLE_VPP(map);=0A =09put_=
+chip(map, chip, adr);=0A =09mutex_unlock(&chip->mutex);=0A =0A@@ -1649,6 +1=
+649,7 @@ static int __xipram do_erase_chip(struct=0A =0A =09chip->state =3D=
+ FL_READY;=0A =09xip_enable(map, chip, adr);=0A+=09DISABLE_VPP(map);=0A =09=
+put_chip(map, chip, adr);=0A =09mutex_unlock(&chip->mutex);=0A =0A@@ -1739,=
+6 +1740,7 @@ static int __xipram do_erase_oneblock(st=0A =09}=0A =0A =09chi=
+p->state =3D FL_READY;=0A+=09DISABLE_VPP(map);=0A =09put_chip(map, chip, ad=
+r);=0A =09mutex_unlock(&chip->mutex);=0A =09return ret;=0A
