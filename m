@@ -1,21 +1,20 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5IVZ-0004uY-MX
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 15:10:36 +0000
-Received: by iaky10 with SMTP id y10so10445663iak.36
- for <linux-mtd@lists.infradead.org>; Wed, 07 Mar 2012 07:10:26 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <279c36d7ca1b849e2622fac18467ed70fb1970e9.1331119143.git.vipin.kumar@st.com>
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <279c36d7ca1b849e2622fac18467ed70fb1970e9.1331119143.git.vipin.kumar@st.com>
-Date: Wed, 7 Mar 2012 16:10:26 +0100
-Message-ID: <CACRpkdYbTDi7Vzo_cErExKuu0dkssFr=EDbcjdEW+H_8s=Lgfg@mail.gmail.com>
-Subject: Re: [PATCH 01/18] nand/fsmc: Newly erased page read algorithm
- implemented
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5JJ5-0007Bg-7c
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 16:01:40 +0000
+Message-ID: <1331136246.32316.39.camel@sauron.fi.intel.com>
+Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <rw@linutronix.de>
+Date: Wed, 07 Mar 2012 18:04:06 +0200
+In-Reply-To: <1329250006-22944-1-git-send-email-rw@linutronix.de>
+References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, tim.bird@am.sony.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 7, 2012 at 12:30 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
+Another not-so-technical comment.
 
-> A newly erased page contains ff in data as well as spare area. While reading an
-> erased page, the read out ecc from spare area does not match the ecc generated
-> by fsmc ecc hardware accelerator. This is because ecc of data ff ff is not ff
-> ff. This leads to errors when file system erases and reads back the pages to
-> ensure consistency.
->
-> This patch adds a software workaround to ensure that the ecc check is not
-> performed for erased pages. This problem is solved by checking the number of
-> bits (in 512 byte data + 13 byte ecc) which are 0. If these number of bits are
-> less than 8, the page is considered erased and correction algorithm is not tried
-> on that page
->
-> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+On Tue, 2012-02-14 at 21:06 +0100, Richard Weinberger wrote:
+> The following patch set implements checkpointing support for
+> UBI. Checkpointing is an optional feature which stores the physical to
+> logical eraseblock relations in a checkpointing superblock to reduce
+> the initialization time of UBI. 
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+So this is basically about improving scalability and "mount" time. This
+has nothing to do with checkpointing most people are aware of.
+Confusing...
 
-Thanks,
-Linus Walleij
+Really, this tirm is already reserved by file-systems, things like
+virtual machines where it means "freezing" the contents and doing COW
+when changing the freezed blocks and guaranteeing the ability to
+"roll-back" to the checkpointed data.
+
+Please, consider an option of picking a different name. In JFFS2 a
+"similar" thing was called "summaries", and even this is better than
+"checkpoint", I think.
+
+-- 
+Best Regards,
+Artem Bityutskiy
