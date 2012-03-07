@@ -1,12 +1,13 @@
-Received: from eu1sys200aog113.obsmtp.com ([207.126.144.135])
+Received: from eu1sys200aog108.obsmtp.com ([207.126.144.125])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5F6J-0006at-7P
+ id 1S5F6K-0006b9-0B
  for linux-mtd@lists.infradead.org; Wed, 07 Mar 2012 11:32:12 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 09/18] nand/fsmc: Correct the multiline comment format
-Date: Wed, 7 Mar 2012 17:00:57 +0530
-Message-ID: <7c94ac6623c184eab7ee02f353dcba1ea064481e.1331119143.git.vipin.kumar@st.com>
+Subject: [PATCH 11/18] nand/fsmc: Flip the bit only if the error index is <
+ 4096
+Date: Wed, 7 Mar 2012 17:00:59 +0530
+Message-ID: <8604c83bfbd5051c6e1ed2d10e726136419b3950.1331119143.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
 References: <cover.1331119143.git.vipin.kumar@st.com>
 MIME-Version: 1.0
@@ -22,29 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+ECC can correct upto 8 bits in 512 bytes data + 13 bytes ecc. This means that
+the algorithm can correct a max of 8 bits in 4200 bits ie the error indices can
+be from 0 to 4199. Of these 0 to 4095 are for data and 4096 to 4199 for ecc.
+
+The driver flips the bit only if the index is <= 4096. This is a bug since the
+data bits are only from 0 to 4095.
+
+This patch modifies the check as < 4096
+
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index e9b2265..29be94c 100644
+index 5bc6410..9e9d90b 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -713,10 +713,10 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 			group++;
+@@ -822,7 +822,7 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+ 		change_bit(0, (unsigned long *)&err_idx[i]);
+ 		change_bit(1, (unsigned long *)&err_idx[i]);
  
- 			/*
--			* length is intentionally kept a higher multiple of 2
--			* to read at least 13 bytes even in case of 16 bit NAND
--			* devices
--			*/
-+			 * length is intentionally kept a higher multiple of 2
-+			 * to read at least 13 bytes even in case of 16 bit NAND
-+			 * devices
-+			 */
- 			len = roundup(len, 2);
- 			chip->cmdfunc(mtd, NAND_CMD_READOOB, off, page);
- 			chip->read_buf(mtd, oob + j, len);
+-		if (err_idx[i] <= chip->ecc.size * 8) {
++		if (err_idx[i] < chip->ecc.size * 8) {
+ 			change_bit(err_idx[i], (unsigned long *)dat);
+ 			i++;
+ 		}
 -- 
 1.7.0.4
