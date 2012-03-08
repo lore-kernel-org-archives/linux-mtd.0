@@ -1,21 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5ftJ-00040g-CT
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 16:08:34 +0000
-Received: by wgbdr1 with SMTP id dr1so424117wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 08 Mar 2012 08:08:31 -0800 (PST)
-Date: Thu, 8 Mar 2012 18:08:26 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/2] UBI: allocate verification buffer on demand
-Message-ID: <20120308180826.53123148@halley>
-In-Reply-To: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
-References: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+ id 1S5gbh-00010K-HY
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 16:54:26 +0000
+Received: by bkcjk13 with SMTP id jk13so699484bkc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Mar 2012 08:54:22 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1330726673-9860-1-git-send-email-computersforpeace@gmail.com>
+References: <1330726673-9860-1-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 8 Mar 2012 11:54:02 -0500
+Message-ID: <CAMjpGUc1m8D-nKVoddTehEDfx0r9R+sMTgtqxkfEG9W2Ok6-6w@mail.gmail.com>
+Subject: Re: [PATCH (mtd-utils)] Makefile: fix "make clean" for old GNU find
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  8 Mar 2012 16:14:50 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
-> 
-> Remove the pre-allocated 'peb_buf2' buffer because we do not really need it.
-> The only reason UBI has it is to check that the data were written correctly.
-> But we do not have to have 2 buffers for this and waste RAM - we can just
-> compare CRC checksums instead.
-> 
-> Artem bityutskiy: massaged the patch and commit message
-> 
-> Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Fri, Mar 2, 2012 at 17:17, Brian Norris <computersforpeace@gmail.com> wrote:
+> findutils v4.1.x does not have the `-exec CMD {} +' syntax. We can just as
+> easily use the `-exec CMD {} \;' syntax.
 
-Josselin's original title "allocate verification buffer on demand" does
-no longer describe this patch.
-Should be "Remove the pre-allocated 'peb_buf2'" or alike.
+really it's a workaround for old tools that don't adhere to the new POSIX spec
 
-Regards,
-Shmulik
+> However, it will launch a lot more `rm' processes...
+
+indeed, that does suck.  you could do this, but it kind of sucks too ...
+CLEAN_FIND = find "$(BUILDDIR)/" -xdev '(' -name '*.[ao]' -o -name
+'.*.c.dep' ')'
+...
+    @if test -d "$(BUILDDIR)/"; then
+        $(CLEAN_FIND) -exec rm -f {} + 2>/dev/null || \
+        $(CLEAN_FIND) -exec rm -f {} \; ; \
+    fi
+...
+-mike
