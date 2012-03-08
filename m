@@ -1,27 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5dD5-0003nR-JJ
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 13:16:48 +0000
-Received: by wgbdr1 with SMTP id dr1so302768wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 08 Mar 2012 05:16:45 -0800 (PST)
-Date: Thu, 8 Mar 2012 15:16:40 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
-Message-ID: <20120308151640.0a7aa240@halley>
-In-Reply-To: <1331207881.7257.37.camel@sauron.fi.intel.com>
-References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
- <1331138007.3463.16.camel@sauron.fi.intel.com>
- <4F57D0C4.1050605@linutronix.de>
- <20120308090835.032fe13a@pixies.home.jungo.com>
- <4F587A28.6080205@linutronix.de>
- <1331207881.7257.37.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5dhF-0002GX-6v
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 13:47:58 +0000
+Message-ID: <1331214629.7257.58.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: allocate verification buffer on demand
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: josselin.costanzi@mobile-devices.fr
+Date: Thu, 08 Mar 2012 15:50:29 +0200
+In-Reply-To: <4f450bbc.334cb40a.7321.64ad@mx.google.com>
+References: <1329925025-4980-1-git-send-email-y>
+ <4f450bbc.334cb40a.7321.64ad@mx.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <rw@linutronix.de>,
- tim.bird@am.sony.com
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 08 Mar 2012 13:58:01 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> To write the ubibis and to ubibis? Hmm... not sure.
+On Wed, 2012-02-22 at 16:37 +0100, josselin.costanzi@mobile-devices.fr
+wrote:
+> From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
 > 
-> To write the fastmap and to fastmap or decide to not fastmap because all
-> PEBs within the first 64 have too high erasecounter? Sounds better IMO.
+> Instead of using pre-allocated 'ubi->peb_buf2' buffer in
+> 'ubi_eba_copy_leb()', dynamically allocate it when needed. The intent is
+> to get rid of the pre-allocated 'ubi->peb_buf2' buffer and save up to
+> 2MiB of RAM per attached device (or more if PEB size is larger). If the
+> allocation fails, we fallback to a degraded mode where data integrity is
+> still ensured, at the cost of higher CPU usage.
 
-FWIW, fastmap sounds reasonable to me.
+Hi, thanks for the patch! We actually do not need peb_buf2 at all, we
+can just always use CRC for checking. So I have modified your patch a
+bit. I'll send them shortly. Also, you did not add Signed-off-by - I did
+it for you, but I am not supposed to do this :-) I also added another
+patch which renames peb_buf1 to peb_buf. I'll send them out shortly -
+please - review and test. Once you report that they work, I'll push them
+to my tree. Thanks!
 
-(aside from the fact that "fast" is the outcome of using the map,
-whereas the map's definition is essentially a peb/leb map).
+And yeah, as you already suggested, you do not have to allocate so much
+memory for peb_buf as well. 2-4 NAND pages is good enough. You can
+optimize RAM usage further then. And I think that CRC caclulation for
+partial buffers can be done easily - you just use UBI_CRC32_INIT seed
+for the first chunk, then you pass the previous CRC as the seed for the
+next chunk and so on. The result should be the same as calculating CRC
+for the whole buffer at once.
 
-Anyways,
+Also, peb_buf1 does not have to be pre-allocated. You can allocate it
+when you actually need it, and then free it. Use
+'mtd_kmalloc_up_to(ubi->mtd, 512)' for example.
 
-CONFIG_MTD_UBI_FASTMAP, ubi_find_fastmap(), ubi_scan_fastmap(),
-ubi_read_fastmap(), ubi_update_fastmap() ...
+If the system does not have memory at all, then it is in big trouble
+anyway.
 
-all seem pretty explanatory IMO.
-
-Using plain "map" (ubi_find_map, ubi_update_map) might also be an
-option, however it might be less obvious.
-
-Regards,
-Shmulik
+-- 
+Best Regards,
+Artem Bityutskiy
