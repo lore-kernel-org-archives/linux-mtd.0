@@ -1,19 +1,27 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5cAD-00076j-DF
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 12:09:46 +0000
-Message-ID: <1331208736.7257.39.camel@sauron.fi.intel.com>
-Subject: Re: Error whe mounting ubifs volume
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Patrick <kpa_info@yahoo.fr>
-Date: Thu, 08 Mar 2012 14:12:16 +0200
-In-Reply-To: <1329843430.47249.YahooMailNeo@web29019.mail.ird.yahoo.com>
-References: <1329843430.47249.YahooMailNeo@web29019.mail.ird.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S5dD5-0003nR-JJ
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 13:16:48 +0000
+Received: by wgbdr1 with SMTP id dr1so302768wgb.18
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Mar 2012 05:16:45 -0800 (PST)
+Date: Thu, 8 Mar 2012 15:16:40 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [RFC][PATCH 0/7] UBI checkpointing support
+Message-ID: <20120308151640.0a7aa240@halley>
+In-Reply-To: <1331207881.7257.37.camel@sauron.fi.intel.com>
+References: <1329250006-22944-1-git-send-email-rw@linutronix.de>
+ <1331138007.3463.16.camel@sauron.fi.intel.com>
+ <4F57D0C4.1050605@linutronix.de>
+ <20120308090835.032fe13a@pixies.home.jungo.com>
+ <4F587A28.6080205@linutronix.de>
+ <1331207881.7257.37.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <rw@linutronix.de>,
+ tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-02-21 at 16:57 +0000, Patrick wrote:
-> On the kernel log I have the following error:
+On Thu, 08 Mar 2012 13:58:01 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> To write the ubibis and to ubibis? Hmm... not sure.
 > 
->  UBIFS error (pid 397): ubifs_read_node: bad node type (0 but expected 6)
->  UBIFS error (pid 397): ubifs_read_node: bad node at LEB 0:0, LEB mapping status 1
+> To write the fastmap and to fastmap or decide to not fastmap because all
+> PEBs within the first 64 have too high erasecounter? Sounds better IMO.
 
-Looks like you did not flash your image properly.
+FWIW, fastmap sounds reasonable to me.
 
-Does it work if you just mount an empty volume, then unmount, then mount
-again?
+(aside from the fact that "fast" is the outcome of using the map,
+whereas the map's definition is essentially a peb/leb map).
 
--- 
-Best Regards,
-Artem Bityutskiy
+Anyways,
+
+CONFIG_MTD_UBI_FASTMAP, ubi_find_fastmap(), ubi_scan_fastmap(),
+ubi_read_fastmap(), ubi_update_fastmap() ...
+
+all seem pretty explanatory IMO.
+
+Using plain "map" (ubi_find_map, ubi_update_map) might also be an
+option, however it might be less obvious.
+
+Regards,
+Shmulik
