@@ -1,12 +1,14 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5eDd-0004Hl-Id
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 14:21:26 +0000
+ id 1S5eDe-0004Hl-PN
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 14:21:27 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] UBI: fix documentation and improve readability
-Date: Thu,  8 Mar 2012 16:21:30 +0200
-Message-Id: <1331216491-6728-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/2] UBI: fix eraseblock picking criteria
+Date: Thu,  8 Mar 2012 16:21:31 +0200
+Message-Id: <1331216491-6728-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1331216491-6728-1-git-send-email-dedekind1@gmail.com>
+References: <1331216491-6728-1-git-send-email-dedekind1@gmail.com>
 Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,44 +21,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The "max" parameter of 'find_wl_entry()' was documented incorrectly and
-it actually means the maximum possible difference from th smallest erase
-counter. Rename it to "diff" instead, and amend the documentation.
+The 'find_wl_entry()' function expects the maximum difference as the second
+argument, not the maximum absolute value. So the "unknown" eraseblock picking
+was incorrect, as Shmulik Ladkani spotted. This patch fixes the issue.
 
 Reported-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: stable@kernel.org
 ---
- drivers/mtd/ubi/wl.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/wl.c |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 0696e36..8616f52 100644
+index 8616f52..512eab0 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -350,18 +350,19 @@ static void prot_queue_add(struct ubi_device *ubi, struct ubi_wl_entry *e)
- /**
-  * find_wl_entry - find wear-leveling entry closest to certain erase counter.
-  * @root: the RB-tree where to look for
-- * @max: highest possible erase counter
-+ * @diff: maximum possible difference from the smallest erase counter
-  *
-  * This function looks for a wear leveling entry with erase counter closest to
-- * @max and less than @max.
-+ * min + @diff, where min is the smallest erase counter.
+@@ -390,7 +390,7 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
   */
--static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int max)
-+static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
+ int ubi_wl_get_peb(struct ubi_device *ubi, int dtype)
  {
- 	struct rb_node *p;
- 	struct ubi_wl_entry *e;
-+	int max;
+-	int err, medium_ec;
++	int err;
+ 	struct ubi_wl_entry *e, *first, *last;
  
- 	e = rb_entry(rb_first(root), struct ubi_wl_entry, u.rb);
--	max += e->ec;
-+	max = e->ec + diff;
- 
- 	p = root->rb_node;
- 	while (p) {
+ 	ubi_assert(dtype == UBI_LONGTERM || dtype == UBI_SHORTTERM ||
+@@ -428,7 +428,7 @@ retry:
+ 		 * For unknown data we pick a physical eraseblock with medium
+ 		 * erase counter. But we by no means can pick a physical
+ 		 * eraseblock with erase counter greater or equivalent than the
+-		 * lowest erase counter plus %WL_FREE_MAX_DIFF.
++		 * lowest erase counter plus %WL_FREE_MAX_DIFF/2.
+ 		 */
+ 		first = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry,
+ 					u.rb);
+@@ -437,10 +437,8 @@ retry:
+ 		if (last->ec - first->ec < WL_FREE_MAX_DIFF)
+ 			e = rb_entry(ubi->free.rb_node,
+ 					struct ubi_wl_entry, u.rb);
+-		else {
+-			medium_ec = (first->ec + WL_FREE_MAX_DIFF)/2;
+-			e = find_wl_entry(&ubi->free, medium_ec);
+-		}
++		else
++			e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF/2);
+ 		break;
+ 	case UBI_SHORTTERM:
+ 		/*
 -- 
 1.7.9.1
