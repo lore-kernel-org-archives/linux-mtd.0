@@ -1,20 +1,13 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5dhF-0002GX-6v
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 13:47:58 +0000
-Message-ID: <1331214629.7257.58.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: allocate verification buffer on demand
+ id 1S5e72-0003DY-US
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2012 14:14:37 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: josselin.costanzi@mobile-devices.fr
-Date: Thu, 08 Mar 2012 15:50:29 +0200
-In-Reply-To: <4f450bbc.334cb40a.7321.64ad@mx.google.com>
-References: <1329925025-4980-1-git-send-email-y>
- <4f450bbc.334cb40a.7321.64ad@mx.google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] UBI: allocate verification buffer on demand
+Date: Thu,  8 Mar 2012 16:14:50 +0200
+Message-Id: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
+Cc: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +17,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-02-22 at 16:37 +0100, josselin.costanzi@mobile-devices.fr
-wrote:
-> From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
-> 
-> Instead of using pre-allocated 'ubi->peb_buf2' buffer in
-> 'ubi_eba_copy_leb()', dynamically allocate it when needed. The intent is
-> to get rid of the pre-allocated 'ubi->peb_buf2' buffer and save up to
-> 2MiB of RAM per attached device (or more if PEB size is larger). If the
-> allocation fails, we fallback to a degraded mode where data integrity is
-> still ensured, at the cost of higher CPU usage.
+From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
 
-Hi, thanks for the patch! We actually do not need peb_buf2 at all, we
-can just always use CRC for checking. So I have modified your patch a
-bit. I'll send them shortly. Also, you did not add Signed-off-by - I did
-it for you, but I am not supposed to do this :-) I also added another
-patch which renames peb_buf1 to peb_buf. I'll send them out shortly -
-please - review and test. Once you report that they work, I'll push them
-to my tree. Thanks!
+Remove the pre-allocated 'peb_buf2' buffer because we do not really need it.
+The only reason UBI has it is to check that the data were written correctly.
+But we do not have to have 2 buffers for this and waste RAM - we can just
+compare CRC checksums instead.
 
-And yeah, as you already suggested, you do not have to allocate so much
-memory for peb_buf as well. 2-4 NAND pages is good enough. You can
-optimize RAM usage further then. And I think that CRC caclulation for
-partial buffers can be done easily - you just use UBI_CRC32_INIT seed
-for the first chunk, then you pass the previous CRC as the seed for the
-next chunk and so on. The result should be the same as calculating CRC
-for the whole buffer at once.
+Artem bityutskiy: massaged the patch and commit message
 
-Also, peb_buf1 does not have to be pre-allocated. You can allocate it
-when you actually need it, and then free it. Use
-'mtd_kmalloc_up_to(ubi->mtd, 512)' for example.
+Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/build.c |    6 ------
+ drivers/mtd/ubi/eba.c   |    6 +++---
+ drivers/mtd/ubi/ubi.h   |    4 +---
+ 3 files changed, 4 insertions(+), 12 deletions(-)
 
-If the system does not have memory at all, then it is in big trouble
-anyway.
-
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 115749f..6e0806b 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -949,10 +949,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	if (!ubi->peb_buf1)
+ 		goto out_free;
+ 
+-	ubi->peb_buf2 = vmalloc(ubi->peb_size);
+-	if (!ubi->peb_buf2)
+-		goto out_free;
+-
+ 	err = ubi_debugging_init_dev(ubi);
+ 	if (err)
+ 		goto out_free;
+@@ -1030,7 +1026,6 @@ out_debugging:
+ 	ubi_debugging_exit_dev(ubi);
+ out_free:
+ 	vfree(ubi->peb_buf1);
+-	vfree(ubi->peb_buf2);
+ 	if (ref)
+ 		put_device(&ubi->dev);
+ 	else
+@@ -1102,7 +1097,6 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	put_mtd_device(ubi->mtd);
+ 	ubi_debugging_exit_dev(ubi);
+ 	vfree(ubi->peb_buf1);
+-	vfree(ubi->peb_buf2);
+ 	ubi_msg("mtd%d is detached from ubi%d", ubi->mtd->index, ubi->ubi_num);
+ 	put_device(&ubi->dev);
+ 	return 0;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index cd26da8..f548af3 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1134,8 +1134,8 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 		 * We've written the data and are going to read it back to make
+ 		 * sure it was written correctly.
+ 		 */
+-
+-		err = ubi_io_read_data(ubi, ubi->peb_buf2, to, 0, aldata_size);
++		memset(ubi->peb_buf1, 0xFF, aldata_size);
++		err = ubi_io_read_data(ubi, ubi->peb_buf1, to, 0, aldata_size);
+ 		if (err) {
+ 			if (err != UBI_IO_BITFLIPS) {
+ 				ubi_warn("error %d while reading data back "
+@@ -1149,7 +1149,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 
+ 		cond_resched();
+ 
+-		if (memcmp(ubi->peb_buf1, ubi->peb_buf2, aldata_size)) {
++		if (crc != crc32(UBI_CRC32_INIT, ubi->peb_buf1, data_size)) {
+ 			ubi_warn("read data back from PEB %d and it is "
+ 				 "different", to);
+ 			err = -EINVAL;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index d51d75d..cb93ad9 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -388,8 +388,7 @@ struct ubi_wl_entry;
+  * @mtd: MTD device descriptor
+  *
+  * @peb_buf1: a buffer of PEB size used for different purposes
+- * @peb_buf2: another buffer of PEB size used for different purposes
+- * @buf_mutex: protects @peb_buf1 and @peb_buf2
++ * @buf_mutex: protects @peb_buf1
+  * @ckvol_mutex: serializes static volume checking when opening
+  *
+  * @dbg: debugging information for this UBI device
+@@ -472,7 +471,6 @@ struct ubi_device {
+ 	struct mtd_info *mtd;
+ 
+ 	void *peb_buf1;
+-	void *peb_buf2;
+ 	struct mutex buf_mutex;
+ 	struct mutex ckvol_mutex;
+ 
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.9.1
