@@ -1,19 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5zyJ-0003Kd-9i
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 13:35:04 +0000
-Message-ID: <1331300238.29445.29.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/6] mtd: Fix unnecessary flash erase and write errors
+ id 1S5znw-00034o-P9
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 13:24:21 +0000
+Message-ID: <1331299599.29445.28.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 00/18] mtd/nand/fsmc related modifications
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Parsons <lost.distance@yahoo.com>
-Date: Fri, 09 Mar 2012 15:37:18 +0200
-In-Reply-To: <1331129384.28469.YahooMailClassic@web29020.mail.ird.yahoo.com>
-References: <1331129384.28469.YahooMailClassic@web29020.mail.ird.yahoo.com>
+To: Vipin Kumar <vipin.kumar@st.com>
+Date: Fri, 09 Mar 2012 15:26:39 +0200
+In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
+References: <cover.1331119143.git.vipin.kumar@st.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- joakim.tjernlund@transmode.se, philipp.zabel@gmail.com
+Cc: linus.walleij@linaro.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,13 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-03-07 at 14:09 +0000, Paul Parsons wrote:
-> The problem:
+On Wed, 2012-03-07 at 17:00 +0530, Vipin Kumar wrote:
+> Hello All,
 > 
-> An HP iPAQ hx4700 consistently reports flash erase and write errors when running
-> Linux:
+> Please find the nand/fsmc driver modifications
+> Major modifications include
+> - DMA support
+> - Word read/write support to improve performance
+> - Move platform related things(ALE/CLE) from driver to platfrom files
+> - Add default partition support for more devices with erase sizes (256KB, 512KB,
+> 		1024KB, 2048KB)
+> - Bugfixes
+> 	- Read only 512 + 13 bytes for 8bit NAND devices
+> 	- Flip the bit only if the error index is < 4096
+> 	- Fixed data abort inside change_bit()
 
-Pushed to l2-mtd.git, thanks!
+Pushed patches 1-7 to l2-mtd.git. Patch 8 look wrong to me, the other
+won't apply without patch 8 so I did not look beyond patch 7. Thanks!
+
+But please, confirm that it is OK to have only some of these patches
+merged, not the complete set. Thanks!
 
 -- 
 Best Regards,
