@@ -1,19 +1,23 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5uSD-0005p7-7k
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 07:41:34 +0000
-Message-ID: <1331279023.22872.20.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] UBI: fix documentation and improve readability
+ id 1S5u39-0005PG-W7
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 07:15:41 +0000
+Message-ID: <1331277476.22872.2.camel@sauron.fi.intel.com>
+Subject: Re: [patch] Add encryption key parameter to compress/decompress
+ functions
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Fri, 09 Mar 2012 09:43:43 +0200
-In-Reply-To: <20120308175722.19211186@halley>
-References: <1331216491-6728-1-git-send-email-dedekind1@gmail.com>
- <20120308175722.19211186@halley>
+To: Joel Reardon <joel@clambassador.com>
+Date: Fri, 09 Mar 2012 09:17:56 +0200
+In-Reply-To: <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+ <1329152067.22240.214.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,16 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2012-03-08 at 17:57 +0200, Shmulik Ladkani wrote:
-> On Thu,  8 Mar 2012 16:21:30 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > 
-> > The "max" parameter of 'find_wl_entry()' was documented incorrectly and
-> > it actually means the maximum possible difference from th smallest erase
-> 
-> s/ th / the /
+On Thu, 2012-02-23 at 16:29 +0100, Joel Reardon wrote:
+> This patch extends to interface for compression and decompression of data 
+> nodes to take a cryptographic key
+> as a parameter. If it is set to NULL, then the current behaviour persists. 
+> If it is non-null, then it is taken
+> as a pointer to an array of length UBIFSEC_KEYSIZE (=16 bytes) which 
+> contains the key to use to encrypt
+> the data node. Each data node should be encrypted with a separate key as 
+> it uses the same initialization vector  (of 0).
 
-Fixed, thanks!
+This patch is also wrapped... Would you consider using git - commit your
+patches, then git format-patch, then git send-email them - git tools
+will take everything right. Use --dry-run with git send-email first to
+check everything is right.
 
 -- 
 Best Regards,
