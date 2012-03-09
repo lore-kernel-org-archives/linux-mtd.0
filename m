@@ -1,18 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5w9K-00016B-Ji
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 09:30:11 +0000
-Message-ID: <1331285548.22872.39.camel@sauron.fi.intel.com>
-Subject: Re: Error when mounting ubi image
+ id 1S5w3K-0007GN-Pl
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 09:23:59 +0000
+Message-ID: <1331285175.22872.36.camel@sauron.fi.intel.com>
+Subject: Re: UBI: infinite error loop
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Patrick <kpa_info@yahoo.fr>
-Date: Fri, 09 Mar 2012 11:32:28 +0200
-In-Reply-To: <4F4B9F2D.80709@yahoo.fr>
-References: <4F4B6673.7030509@yahoo.fr> <4F4B9F2D.80709@yahoo.fr>
+To: Brian Foster <brian.foster@maxim-ic.com>
+Date: Fri, 09 Mar 2012 11:26:15 +0200
+In-Reply-To: <201202241717.04475.brian.foster@maxim-ic.com>
+References: <201202241717.04475.brian.foster@maxim-ic.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: kpa_info@yahoo.fr, linux-mtd@lists.infradead.org,
+ matthieu.castet@parrot.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,20 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-02-27 at 16:20 +0100, Patrick wrote:
-> UBI: data offset:                2048
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-> from PEB 605:0, read 64 bytes
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes 
-> from PEB 605:512, read 512 bytes
+On Fri, 2012-02-24 at 17:16 +0100, Brian Foster wrote:
+>  Also, keep in mind read-after-write checks don't work with subpages,
+>  http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail
+> ───────────────────────────────────────────────────────────
+> I get "ubi_io_write: error -5 while writing 512 bytes to PEB 5:512"
+> 
+> If you have a 2048 bytes per NAND page device, and have
+> CONFIG_MTD_NAND_VERIFY_WRITE enabled in your kernel,
+> you will need to turn it off.  The code does not currently
+> (as of 2.6.26) perform verification of sub-page writes
+> correctly.  As UBI is one of the few users of sub-page
+> writes, not much else seems to be affected by this bug.
+> ───────────────────────────────────────────────────────────
+> 
+>  YES, I realize that is not your error, but this was
+>  something that badly tripped us up until an intense
+>  search-engine session ....  ;-\  (I have no idea if
+>  this has since been fixed or not?)
 
-I think your MTD driver is buggy - it fails to do sub-page I/O but
-reports that it supports sub-pages. Either fix sub-pages support or do
-not use them. You can find a lot if info about sub-pages in the MTD web
-site. Also, it is a good idea to run the MTD tests, just like it is
-suggested here:
-
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
+Well, no one cares enough to investigate this and fix the issue. I think
+this article should be removed - may be this will inspire someone to
+send a fix...
 
 -- 
 Best Regards,
