@@ -1,24 +1,14 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga14.intel.com ([143.182.124.37])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5yeZ-0001fg-81
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:10:36 +0000
-Message-ID: <1331295112.29445.14.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
+ id 1S5y6x-00011R-Vq
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 11:35:53 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Fri, 09 Mar 2012 14:11:52 +0200
-In-Reply-To: <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
-References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <1329140515.22240.145.camel@sauron.fi.intel.com>
- <20120214033810.GF21094@verge.net.au>
- <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms@verge.net.au>,
- linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH] MIPS: Kbuild: remove -Werror
+Date: Fri,  9 Mar 2012 13:35:47 +0200
+Message-Id: <1331292947-14913-1-git-send-email-dedekind1@gmail.com>
+Cc: linux-mips@linux-mips.org, MTD Maling List <linux-mtd@lists.infradead.org>,
+ John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +18,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2012-02-14 at 11:58 +0100, Bastian Hecht wrote:
-> Hello Artem,
-> 
-> 2012/2/14 Simon Horman <horms@verge.net.au>:
-> > On Mon, Feb 13, 2012 at 03:41:55PM +0200, Artem Bityutskiy wrote:
-> >> On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
-> >> > This patch series brushs up the sh_flctl.c a bit to make it work with
-> >> > the mackerel board. The hardware has changed and this needed to be
-> >> > reflected in the NAND host driver.
-> >> > On the road some minor enhancements have been incorporated.
-> >>
-> >> I cannot even compile-test this patch because I get the following error:
-> >>
-> >>
-> >> sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
-> >> by this configuration
-> >>
-> >>
-> >> with the cross-compiler downloaded from here:
-> >>
-> >> http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc-4.6.0-nolibc_sh4-linux.tar.bz2
-> >>
-> >> Could you please describe how could I compile-test it?
-> >
-> > You may find it easier to build a kernel for mackerel using
-> > arch arm and defconfig_mackerel.
-> >
-> > Personally I have had good experience using Code Sourcery (now part of
-> > Mentor Graphics?) G++ lite to compile both arm and sh kernels.
-> >
-> >
-> 
-> I as well use a Code Sourcery toolchain. arm-none-linux-gnueabi-gcc -v
-> states "gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202)". It took me
-> quite a bit to find a link to the toolchain as these gpl toolchains
-> from Code Sourcery almost seem to be hidden. But here it is if you
-> want to give it a try:
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-I am a bit confused. We have the following in drivers/mtd/nand/Kconfig
+MIPS does not build with the standard W=1 Kbuild switch with - tested with
+gcc-4.6 by me and gcc-4.5 by John Crispin. The reason is that MIPS adds
+-Werror build option.
 
-config MTD_NAND_SH_FLCTL
-        tristate "Support for NAND on Renesas SuperH FLCTL"
-        depends on SUPERH || ARCH_SHMOBILE
-        help
-          Several Renesas SuperH CPU has FLCTL. This option enables support
-          for NAND Flash using FLCTL.
+This patch removes the option to make W=1 work. I do compile-tests for various
+architecture before accepting MTD patches and I have scripts which build before
+applying the patch, then after, and then compare 2 build logs and report about
+new warnings. I use W=1 to see more warnings in the logs diff. And from my
+perspective all platforms should build with W=1.
 
-SUPERH and ARCH_SHMOBILE are SH platforms - how can I compile-test your
-patch-set with an arm cross-compiler?
+The other way would be to fix all warnings, but there are false positives, and
+it is too difficult to maintain the code warning-free, so it is easier to just
+remove -Werror.
 
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ arch/mips/Kbuild |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/Kbuild b/arch/mips/Kbuild
+index 7dd65cf..0d37730 100644
+--- a/arch/mips/Kbuild
++++ b/arch/mips/Kbuild
+@@ -1,8 +1,3 @@
+-# Fail on warnings - also for files referenced in subdirs
+-# -Werror can be disabled for specific files using:
+-# CFLAGS_<file.o> := -Wno-error
+-subdir-ccflags-y := -Werror
+-
+ # platform specific definitions
+ include arch/mips/Kbuild.platforms
+ obj-y := $(platform-y)
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.9.1
