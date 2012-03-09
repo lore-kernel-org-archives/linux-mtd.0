@@ -1,21 +1,24 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by bombadil.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S65bY-0003sC-Ko
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 19:35:57 +0000
-Date: Fri, 9 Mar 2012 20:29:12 +0100 (CET)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] Adding Secure Deletion to UBIFS
-In-Reply-To: <1331278562.22872.18.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1203091959570.25737@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1330536308.3545.158.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203011434220.2462@eristoteles.iwoars.net>
- <1331278562.22872.18.camel@sauron.fi.intel.com>
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S62uC-0007c1-HQ
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 16:43:02 +0000
+Received: by werp11 with SMTP id p11so1573819wer.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 08:42:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <CAJA4uhcdy4QzspQy7=x1srDfvrTp-bQCA7X5u8cU5KA2UdtkWQ@mail.gmail.com>
+References: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
+ <20120308180826.53123148@halley>
+ <1331279109.22872.22.camel@sauron.fi.intel.com>
+ <CAJA4uhcdy4QzspQy7=x1srDfvrTp-bQCA7X5u8cU5KA2UdtkWQ@mail.gmail.com>
+From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+Date: Fri, 9 Mar 2012 17:42:30 +0100
+Message-ID: <CAJA4uhctD3+QacUEmtuyjp3u7ougHjQ4DA8NcLuGY_xKF1Rdbg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] UBI: allocate verification buffer on demand
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,81 +28,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
+2012/3/9 Josselin Costanzi <josselin.costanzi@mobile-devices.fr>:
+> 2012/3/9 Artem Bityutskiy <dedekind1@gmail.com>:
+>> On Thu, 2012-03-08 at 18:08 +0200, Shmulik Ladkani wrote:
+>>> On Thu, =A08 Mar 2012 16:14:50 +0200 Artem Bityutskiy <dedekind1@gmail.=
+com> wrote:
+>>> > From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+>>> >
+>>> > Remove the pre-allocated 'peb_buf2' buffer because we do not really n=
+eed it.
+>>> > The only reason UBI has it is to check that the data were written cor=
+rectly.
+>>> > But we do not have to have 2 buffers for this and waste RAM - we can =
+just
+>>> > compare CRC checksums instead.
+>>> >
+>>> > Artem bityutskiy: massaged the patch and commit message
+>>> >
+>>> > Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices.fr=
 >
-> I wonder also if it is wise to enable secure deletion globally. Yes, we
-> pay the cost of maintaining the keys anyways, but we could avoid paying
-> the costs at deletion time when deleting non-securely.
+>>> > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>>>
+>>> Josselin's original title "allocate verification buffer on demand" does
+>>> no longer describe this patch.
+>>> Should be "Remove the pre-allocated 'peb_buf2'" or alike.
+>>
+>> Fixed as well and pushed out, thanks! Waiting for Josselin's reply
+>> anyway.
+> I will try to find time to test your patches today and will give my
+> feedback ASAP
+I'm okay with your version of the patch.
+Thanks.
+
+>> commit 43b043e78b876ce27034f167897b57fd2556ad29
+>> Author: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+>> Date: =A0 Wed Feb 22 16:37:05 2012 +0100
+>>
+>> =A0 =A0UBI: reduce memory consumption
+>>
+>> =A0 =A0Remove the pre-allocated 'peb_buf2' buffer because we do not real=
+ly need it.
+>> =A0 =A0The only reason UBI has it is to check that the data were written=
+ correctly.
+>> =A0 =A0But we do not have to have 2 buffers for this and waste RAM - we =
+can just
+>> =A0 =A0compare CRC checksums instead. This reduces UBI memory consumptio=
+n.
+>>
+>> =A0 =A0Artem bityutskiy: massaged the patch and commit message
+>>
+>> =A0 =A0Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-device=
+s.fr>
+>> =A0 =A0Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com=
 >
-> Isn't it wiser to have a special interface for secure deletion which
-> would be slower than normal deletion? I believe this is the right
-> approach. And I believe block-based file-systems would go this way. Just
-> think about MMC which has secure erase trim which is so slow - I do not
-> think anyone would use it for everything by default - people would have
-> a separate interface.
-
-Here there is a wide space of solutions. One approach used in block-based
-systems is to use a +s attribute, and then progate this whenever files are
-copied etc. However, it presents the major useability problem in that a
-user must remember to set this attribute for this files. And no
-application can be reliably expected to set this value correctly since it
-is not a standard action. Sensitive data not marked as such will thus not
-be securely deleted. It suffers the same way as requiring users to use srm
-when appropriate---after the first time they forget they'll probably never
-again remember.
-
-In this solution, keys are marked to be deleted when the data node
-encrypted with that key is removed from the TNC. So a really simple
-change:
-1. node is added - key marked as used;
-2. node is removed - key marked as deleted;
-3. node is modified to a new value; old key marked deleted, new key marked
-as used.
-
-The keys themselves are not immediately removed, this occurs during
-UBIFS commit (although it can also happen independently, but also as a
-periodic background action). Thus, deletion has a low cost, just erasing
-the small set of key storing blocks in the background, and the cost will
-likely be
-the same regardless if the entire partition is purged instead of
-just some data marked as sensitive: it only takes one key on an
-LEB to warrant erasure of the LEB, and there are (LEB_SIZE >> 16)
-keys per LEB.
-
-However, without caching the keys in the TNC, then deletion takes as long
-as reading a file. Thankfully, it will be nowhere near as bad as MMC
-secure erase trim, which (I presume) actually GCs and erases all the EBs that
-store file data. In this solution, it only needs to read the data node's
-header to get the key position, and mark it as deleted. Deletion happens
-in the backgroun.
-
-To me, being able to set secure erase or not as a partition level setting
-makes alot of sense. The OS partition does not need it, but the user file data
-partition will have it, and UBI makes sense that wear levelling is done
-among all the partitions properly. Then taint status for files'
-sensitivity doesn't need to be maintained. The deployer simply chooses for
-this part of the FS, do they want secure deletion over the data or not,
-one time at the beginning. (Compare this to the decision on whether or
-not to encrypt their entire partition or later encrypting each file they
-make.)
-
-
+>>
+>>
+>> --
+>> Best Regards,
+>> Artem Bityutskiy
+>>
 >
-> Did you explore, by the way, if something like this is being worked on
-> for other FSes in Linux?
 >
+>
+> --
+> Josselin Costanzi
+> =A0 Embedded Linux System Engineer
+>
+> T=E9l. : +33 (0) 1 42 11 93 25
+> Fax: +33 (0) 1 42 11 87 17
+>
+>
+> Warning
+> This message (and any associated files) is intended only for the use
+> of its intended recipient and may contain information that is
+> confidential, subject to copyright or constitutes a trade secret. If
+> you are not the intended recipient you are hereby notified that any
+> dissemination, copying or distribution of this message, or files
+> associated with this message, is strictly prohibited. If you have
+> received this message in error, please notify us immediately by
+> replying to the message and deleting it from your computer. Any views
+> or opinions presented are solely those of the author
+> josselin.costanzi@mobile-devices.fr and do not necessarily represent
+> those of the company. Although the company has taken reasonable
+> precautions to ensure no viruses are present in this email, the
+> company cannot accept responsibility for any loss or damage arising
+> from the use of this email or attachments.
 
-In my related works research I found nothing like this. Some advocated
-putting a key in the inode for a file then securely deleting things at a
-file-level granularity by GC and erasing the inode. Another suggestion
-multiple overwrites with zeros but that doesn't seem like it works with
-modern denser flash memories.
-
-I'll remove the change to tree branch, and repost correctly the
-version change where only data node is effected. Btw, when I was
-developing it I used the last 8 bytes from the key as the key position,
-because the key was 16 bytes but only 8 were used. Could you comment on
-the last 8 bytes of ubifs keys?
 
 
-Joel
+--=20
+Josselin Costanzi
+=A0 Embedded Linux System Engineer
