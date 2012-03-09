@@ -1,20 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S702b-0002hi-SA
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 07:51:38 +0000
-Date: Mon, 12 Mar 2012 08:51:07 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd/gpmi : fix the wrong DMA command.
-Message-ID: <20120312075107.GB3928@pengutronix.de>
-References: <1331518938-24047-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
-Content-Disposition: inline
-In-Reply-To: <1331518938-24047-1-git-send-email-b32955@freescale.com>
-Cc: artem.bityutskiy@intel.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+ id 1S63vs-0004zO-TN
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 17:48:49 +0000
+Received: by dakp5 with SMTP id p5so1868160dak.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 09:48:45 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2] Makefile: fix "make clean" for old GNU find
+Date: Fri,  9 Mar 2012 09:49:09 -0800
+Message-Id: <1331315349-8541-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+findutils v4.1.x does not have the `-exec CMD {} +' syntax. We can just as
+easily use the `-exec CMD {} \;' syntax. However, it will launch a lot more
+`rm' processes, so we only use it if the first form fails with an error.
+This isn't a perfect solution (`find -exec +' can fail for other reasons)
+but it works well enough.
 
---MW5yreqqjyrRcusr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This problem manifests itself in RHEL 4, findutils 4.1.20:
 
-On Mon, Mar 12, 2012 at 10:22:18AM +0800, Huang Shijie wrote:
-> The last DMA command of ECC read page is used to disable the BCH module.
-> But the original code missed to set the pio[2] which is used to set the
-> GPMI_HW_GPMI_ECCCTRL register. fix it now.
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+  $ make clean
+  rm -f /XXX/mtd-utils/*.o /XXX/mtd-utils/ftl_format  ...
+  find: missing argument to `-exec'
+  make: *** [clean] Error 1
 
-Thanks! What does happen because of this bug? Additional checksum errors? I
-haven't seen many on MX28 IIRC, so I wonder.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
+---
+v2: try '+' syntax, then fall back to old format
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+ Makefile |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
---MW5yreqqjyrRcusr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk9dqusACgkQD27XaX1/VRtAjwCgjRfc600KcvEGonIcAmrU319M
-yi8An0qaLAPUQ8jqFXPz4cnBM0ZSmJ5s
-=RfSN
------END PGP SIGNATURE-----
-
---MW5yreqqjyrRcusr--
+diff --git a/Makefile b/Makefile
+index 17a1216..7506ed4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -42,6 +42,8 @@ OBJDEPS = $(BUILDDIR)/include/version.h
+ 
+ include common.mk
+ 
++CLEAN_FIND = find "$(BUILDDIR)/" -xdev '(' -name '*.[ao]' -o -name '.*.c.dep' ')'
++
+ clean::
+ ifneq ($(BUILDDIR)/.git,)
+ ifneq ($(BUILDDIR),.)
+@@ -50,10 +52,10 @@ ifneq ($(BUILDDIR),$(CURDIR))
+ endif
+ endif
+ endif
++	# findutils v4.1.x (RHEL 4) do not have '+' syntax
+ 	@if test -d "$(BUILDDIR)/"; then \
+-		find $(BUILDDIR)/ -xdev \
+-			'(' -name '*.[ao]' -o -name '.*.c.dep' ')' \
+-			-exec rm -f {} + ; \
++		$(CLEAN_FIND) -exec rm -f {} + 2> /dev/null || \
++		$(CLEAN_FIND) -exec rm -f {} \; ; \
+ 	fi
+ 	rm -f $(BUILDDIR)/include/version.h
+ 	$(MAKE) -C $(TESTS) clean
+-- 
+1.7.5.4.2.g519b1
