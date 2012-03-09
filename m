@@ -1,22 +1,24 @@
-Received: from perceval.ideasonboard.com ([95.142.166.194])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5yiF-0004of-E9
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:14:24 +0000
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
-Date: Fri, 09 Mar 2012 13:14:37 +0100
-Message-ID: <1351292.ArCFK2UoQF@avalon>
-In-Reply-To: <1331295112.29445.14.camel@sauron.fi.intel.com>
-References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
- <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
- <1331295112.29445.14.camel@sauron.fi.intel.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S608e-0001Uc-5d
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 13:45:46 +0000
+Date: Fri, 9 Mar 2012 14:45:34 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBI/ubifs problem
+In-Reply-To: <1331300366.29445.31.camel@sauron.fi.intel.com>
+Message-ID: <Pine.LNX.4.64.1203091444540.21132@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1202161543340.13194@lnxricardw.se.axis.com>
+ <Pine.LNX.4.64.1202171107440.13194@lnxricardw.se.axis.com>
+ <1331131250.32316.8.camel@sauron.fi.intel.com>
+ <Pine.LNX.4.64.1203071723410.21132@lnxricardw.se.axis.com>
+ <1331138261.3463.19.camel@sauron.fi.intel.com>
+ <Pine.LNX.4.64.1203080606110.24516@lnxricardw.se.axis.com>
+ <1331300366.29445.31.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms@verge.net.au>,
- linux-mtd@lists.infradead.org, Bastian Hecht <hechtb@googlemail.com>,
- linux-sh@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-On Friday 09 March 2012 14:11:52 Artem Bityutskiy wrote:
-> On Tue, 2012-02-14 at 11:58 +0100, Bastian Hecht wrote:
-> > 2012/2/14 Simon Horman <horms@verge.net.au>:
-> > > On Mon, Feb 13, 2012 at 03:41:55PM +0200, Artem Bityutskiy wrote:
-> > >> On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
-> > >> > This patch series brushs up the sh_flctl.c a bit to make it work with
-> > >> > the mackerel board. The hardware has changed and this needed to be
-> > >> > reflected in the NAND host driver.
-> > >> > On the road some minor enhancements have been incorporated.
-> > >> 
-> > >> I cannot even compile-test this patch because I get the following
-> > >> error:
-> > >> 
-> > >> 
-> > >> sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
-> > >> by this configuration
-> > >> 
-> > >> 
-> > >> with the cross-compiler downloaded from here:
-> > >> 
-> > >> http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc
-> > >> -4.6.0-nolibc_sh4-linux.tar.bz2
-> > >> 
-> > >> Could you please describe how could I compile-test it?
-> > > 
-> > > You may find it easier to build a kernel for mackerel using
-> > > arch arm and defconfig_mackerel.
-> > > 
-> > > Personally I have had good experience using Code Sourcery (now part of
-> > > Mentor Graphics?) G++ lite to compile both arm and sh kernels.
-> > 
-> > I as well use a Code Sourcery toolchain. arm-none-linux-gnueabi-gcc -v
-> > states "gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202)". It took me
-> > quite a bit to find a link to the toolchain as these gpl toolchains
-> > from Code Sourcery almost seem to be hidden. But here it is if you
-> 
-> > want to give it a try:
-> I am a bit confused. We have the following in drivers/mtd/nand/Kconfig
-> 
-> config MTD_NAND_SH_FLCTL
->         tristate "Support for NAND on Renesas SuperH FLCTL"
->         depends on SUPERH || ARCH_SHMOBILE
->         help
->           Several Renesas SuperH CPU has FLCTL. This option enables support
->           for NAND Flash using FLCTL.
-> 
-> SUPERH and ARCH_SHMOBILE are SH platforms - how can I compile-test your
-> patch-set with an arm cross-compiler?
+On Fri, 9 Mar 2012, Artem Bityutskiy wrote:
 
-ARCH_SHMOBILE is an ARM platform (defined in arch/arm/Kconfig).
+>> I think what I'm thinking about is that in the specialized case of ubifs
+>> used for a read-only file system, such as a root file system (without
+>> /etc, /var, and so on), it would be possible for mkfs.ubifs to create a
+>> file system, and use as many LEBs as it needs for the actual data. On a
+>> read-only file system there doesn't even have to be a journal, although =
+I
+>> don't know if that is possible.
+>
+> Well, I'd accept a patch which added a --optimize-for-ro option which
+> would prepare a file-system with the smallest journal size.
 
--- 
-Regards,
+Can the journal be eliminated completely or does something in ubifs=20
+require there to be a journal at all times, albeit small?
 
-Laurent Pinchart
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
