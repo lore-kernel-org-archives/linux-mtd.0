@@ -1,22 +1,23 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5z27-00029d-2n
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:34:57 +0000
-Message-ID: <1331296632.29445.18.camel@sauron.fi.intel.com>
+ id 1S5yeZ-0001fg-81
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:10:36 +0000
+Message-ID: <1331295112.29445.14.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Date: Fri, 09 Mar 2012 14:37:12 +0200
-In-Reply-To: <1351292.ArCFK2UoQF@avalon>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Fri, 09 Mar 2012 14:11:52 +0200
+In-Reply-To: <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
 References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+ <1329140515.22240.145.camel@sauron.fi.intel.com>
+ <20120214033810.GF21094@verge.net.au>
  <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
- <1331295112.29445.14.camel@sauron.fi.intel.com> <1351292.ArCFK2UoQF@avalon>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
 Cc: Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms@verge.net.au>,
- linux-mtd@lists.infradead.org, Bastian Hecht <hechtb@googlemail.com>,
- linux-sh@vger.kernel.org
+ linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,14 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-03-09 at 13:14 +0100, Laurent Pinchart wrote:
-> ARCH_SHMOBILE is an ARM platform (defined in arch/arm/Kconfig).
+On Tue, 2012-02-14 at 11:58 +0100, Bastian Hecht wrote:
+> Hello Artem,
+> 
+> 2012/2/14 Simon Horman <horms@verge.net.au>:
+> > On Mon, Feb 13, 2012 at 03:41:55PM +0200, Artem Bityutskiy wrote:
+> >> On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
+> >> > This patch series brushs up the sh_flctl.c a bit to make it work with
+> >> > the mackerel board. The hardware has changed and this needed to be
+> >> > reflected in the NAND host driver.
+> >> > On the road some minor enhancements have been incorporated.
+> >>
+> >> I cannot even compile-test this patch because I get the following error:
+> >>
+> >>
+> >> sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
+> >> by this configuration
+> >>
+> >>
+> >> with the cross-compiler downloaded from here:
+> >>
+> >> http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc-4.6.0-nolibc_sh4-linux.tar.bz2
+> >>
+> >> Could you please describe how could I compile-test it?
+> >
+> > You may find it easier to build a kernel for mackerel using
+> > arch arm and defconfig_mackerel.
+> >
+> > Personally I have had good experience using Code Sourcery (now part of
+> > Mentor Graphics?) G++ lite to compile both arm and sh kernels.
+> >
+> >
+> 
+> I as well use a Code Sourcery toolchain. arm-none-linux-gnueabi-gcc -v
+> states "gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202)". It took me
+> quite a bit to find a link to the toolchain as these gpl toolchains
+> from Code Sourcery almost seem to be hidden. But here it is if you
+> want to give it a try:
 
-Hmm, ok, thanks. So you say that
+I am a bit confused. We have the following in drivers/mtd/nand/Kconfig
 
-http://www.renesas.eu/products/soc/assp/mobile/sh_mobile/mt1/index.jsp
+config MTD_NAND_SH_FLCTL
+        tristate "Support for NAND on Renesas SuperH FLCTL"
+        depends on SUPERH || ARCH_SHMOBILE
+        help
+          Several Renesas SuperH CPU has FLCTL. This option enables support
+          for NAND Flash using FLCTL.
 
-saying "CPU core: sh4a" actually means ARM? I must be very confused :-)
+SUPERH and ARCH_SHMOBILE are SH platforms - how can I compile-test your
+patch-set with an arm cross-compiler?
 
 -- 
 Best Regards,
