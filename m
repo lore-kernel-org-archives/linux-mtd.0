@@ -1,14 +1,14 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5zMc-0002cy-F1
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:56:07 +0000
-Message-ID: <1331297904.29445.21.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: fix partition wrapper functions
+ id 1S5zJx-0002Z2-MP
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:53:22 +0000
+Message-ID: <1331297718.29445.20.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] drivers/mtd: docg3 trivial renaming
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Fri, 09 Mar 2012 14:58:24 +0200
-In-Reply-To: <1330809186-3432-1-git-send-email-mikedunn@newsguy.com>
-References: <1330809186-3432-1-git-send-email-mikedunn@newsguy.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Fri, 09 Mar 2012 14:55:18 +0200
+In-Reply-To: <1330808254-17336-1-git-send-email-robert.jarzmik@free.fr>
+References: <1330808254-17336-1-git-send-email-robert.jarzmik@free.fr>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
@@ -23,12 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2012-03-03 at 13:13 -0800, Mike Dunn wrote:
-> This patch reverts a change that may have been mistakenly included
-> with the set
-> of patches that introduced the new mtd api entry functions.  Or
-> perhaps I am
-> mistaken :) 
+On Sat, 2012-03-03 at 21:57 +0100, Robert Jarzmik wrote:
+> Change the name of the mtd so that it is simpler, and is easier to
+> cope with by mtdparts.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
 Pushed to l2-mtd.git, thanks!
 
