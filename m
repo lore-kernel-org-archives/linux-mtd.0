@@ -1,22 +1,22 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from perceval.ideasonboard.com ([95.142.166.194])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S63tL-0004y1-QC
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 17:46:12 +0000
-Received: by ghbf11 with SMTP id f11so1136897ghb.36
- for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 09:46:09 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1331286099.22872.45.camel@sauron.fi.intel.com>
-References: <1330726673-9860-1-git-send-email-computersforpeace@gmail.com>
- <CAMjpGUc1m8D-nKVoddTehEDfx0r9R+sMTgtqxkfEG9W2Ok6-6w@mail.gmail.com>
- <CAN8TOE9yLLnV2_imd0GUbue+z0A2PNdD6Vz7qr2dYaVjsugN=w@mail.gmail.com>
- <1331286099.22872.45.camel@sauron.fi.intel.com>
-Date: Fri, 9 Mar 2012 09:46:09 -0800
-Message-ID: <CAN8TOE9J22ns6PdP4EWWcL3RbD4Syk7iDc6ZkSzM0FfH4-npQA@mail.gmail.com>
-Subject: Re: [PATCH (mtd-utils)] Makefile: fix "make clean" for old GNU find
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1S5yiF-0004of-E9
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 12:14:24 +0000
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH v2 0/7] SH Mobile sh_flctl driver brush up
+Date: Fri, 09 Mar 2012 13:14:37 +0100
+Message-ID: <1351292.ArCFK2UoQF@avalon>
+In-Reply-To: <1331295112.29445.14.camel@sauron.fi.intel.com>
+References: <1328960705-18699-1-git-send-email-hechtb@gmail.com>
+ <CABYn4sydNW_S=mivCOCd5RoxeW0T+Q-encFRUps2xYU0_H2GHg@mail.gmail.com>
+ <1331295112.29445.14.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms@verge.net.au>,
+ linux-mtd@lists.infradead.org, Bastian Hecht <hechtb@googlemail.com>,
+ linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 9, 2012 at 1:41 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> May be adding a one-line comment like "work-around for ancient find
-> utils not supporting '+'" would also be a good idea?
+Hi Artem,
 
-Already have something similar in my patch. Will send now.
+On Friday 09 March 2012 14:11:52 Artem Bityutskiy wrote:
+> On Tue, 2012-02-14 at 11:58 +0100, Bastian Hecht wrote:
+> > 2012/2/14 Simon Horman <horms@verge.net.au>:
+> > > On Mon, Feb 13, 2012 at 03:41:55PM +0200, Artem Bityutskiy wrote:
+> > >> On Sat, 2012-02-11 at 12:44 +0100, Bastian Hecht wrote:
+> > >> > This patch series brushs up the sh_flctl.c a bit to make it work with
+> > >> > the mackerel board. The hardware has changed and this needed to be
+> > >> > reflected in the NAND host driver.
+> > >> > On the road some minor enhancements have been incorporated.
+> > >> 
+> > >> I cannot even compile-test this patch because I get the following
+> > >> error:
+> > >> 
+> > >> 
+> > >> sh4-linux-gcc: error: command line option '-m4-nofpu' is not supported
+> > >> by this configuration
+> > >> 
+> > >> 
+> > >> with the cross-compiler downloaded from here:
+> > >> 
+> > >> http://kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.0/x86_64-gcc
+> > >> -4.6.0-nolibc_sh4-linux.tar.bz2
+> > >> 
+> > >> Could you please describe how could I compile-test it?
+> > > 
+> > > You may find it easier to build a kernel for mackerel using
+> > > arch arm and defconfig_mackerel.
+> > > 
+> > > Personally I have had good experience using Code Sourcery (now part of
+> > > Mentor Graphics?) G++ lite to compile both arm and sh kernels.
+> > 
+> > I as well use a Code Sourcery toolchain. arm-none-linux-gnueabi-gcc -v
+> > states "gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202)". It took me
+> > quite a bit to find a link to the toolchain as these gpl toolchains
+> > from Code Sourcery almost seem to be hidden. But here it is if you
+> 
+> > want to give it a try:
+> I am a bit confused. We have the following in drivers/mtd/nand/Kconfig
+> 
+> config MTD_NAND_SH_FLCTL
+>         tristate "Support for NAND on Renesas SuperH FLCTL"
+>         depends on SUPERH || ARCH_SHMOBILE
+>         help
+>           Several Renesas SuperH CPU has FLCTL. This option enables support
+>           for NAND Flash using FLCTL.
+> 
+> SUPERH and ARCH_SHMOBILE are SH platforms - how can I compile-test your
+> patch-set with an arm cross-compiler?
 
-Brian
+ARCH_SHMOBILE is an ARM platform (defined in arch/arm/Kconfig).
+
+-- 
+Regards,
+
+Laurent Pinchart
