@@ -1,17 +1,21 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S6OGd-000552-MY
- for linux-mtd@lists.infradead.org; Sat, 10 Mar 2012 15:31:36 +0000
-Received: by wibhj13 with SMTP id hj13so1338606wib.0
- for <linux-mtd@lists.infradead.org>; Sat, 10 Mar 2012 07:31:26 -0800 (PST)
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-sh@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: sh_flctl: Add power management support
-Date: Sat, 10 Mar 2012 16:31:18 +0100
-Message-Id: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by bombadil.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S65bY-0003sC-Ko
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 19:35:57 +0000
+Date: Fri, 9 Mar 2012 20:29:12 +0100 (CET)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [patch] Adding Secure Deletion to UBIFS
+In-Reply-To: <1331278562.22872.18.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1203091959570.25737@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+ <1330536308.3545.158.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203011434220.2462@eristoteles.iwoars.net>
+ <1331278562.22872.18.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,128 +25,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All transactions with the NAND chip require a chip enable signal. So we
-wrap the runtime_pm_get()/put()s around it. As registers are cached, we
-need no suspend()/resume() callbacks.
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
- drivers/mtd/nand/sh_flctl.c  |   31 +++++++++++++++++++++++++------
- include/linux/mtd/sh_flctl.h |    1 +
- 2 files changed, 26 insertions(+), 6 deletions(-)
+>
+> I wonder also if it is wise to enable secure deletion globally. Yes, we
+> pay the cost of maintaining the keys anyways, but we could avoid paying
+> the costs at deletion time when deleting non-securely.
+>
+> Isn't it wiser to have a special interface for secure deletion which
+> would be slower than normal deletion? I believe this is the right
+> approach. And I believe block-based file-systems would go this way. Just
+> think about MMC which has secure erase trim which is so slow - I do not
+> think anyone would use it for everything by default - people would have
+> a separate interface.
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index d0f1f3c..c72de39 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -26,6 +26,7 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- 
- #include <linux/mtd/mtd.h>
-@@ -515,6 +516,8 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
- 	uint32_t read_cmd = 0;
- 
-+	BUG_ON(!flctl->power);
-+
- 	flctl->read_bytes = 0;
- 	if (command != NAND_CMD_PAGEPROG)
- 		flctl->index = 0;
-@@ -689,12 +692,22 @@ static void flctl_select_chip(struct mtd_info *mtd, int chipnr)
- 	case -1:
- 		flctl->flcmncr_base &= ~CE0_ENABLE;
- 		writel(flctl->flcmncr_base, FLCMNCR(flctl));
-+
-+		if (flctl->power) {
-+			pm_runtime_put_sync(&flctl->pdev->dev);
-+			flctl->power = 0;
-+		}
- 		break;
- 	case 0:
- 		flctl->flcmncr_base |= CE0_ENABLE;
- 		writel(flctl->flcmncr_base, FLCMNCR(flctl));
- 		if (flctl->holden)
- 			writel(HOLDEN, FLHOLDCR(flctl));
-+
-+		if (!flctl->power) {
-+			pm_runtime_get_sync(&flctl->pdev->dev);
-+			flctl->power = 1;
-+		}
- 		break;
- 	default:
- 		BUG();
-@@ -835,13 +848,13 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
- 		dev_err(&pdev->dev, "failed to get I/O memory\n");
--		goto err;
-+		goto err_iomap;
- 	}
- 
- 	flctl->reg = ioremap(res->start, resource_size(res));
- 	if (flctl->reg == NULL) {
- 		dev_err(&pdev->dev, "failed to remap I/O memory\n");
--		goto err;
-+		goto err_iomap;
- 	}
- 
- 	platform_set_drvdata(pdev, flctl);
-@@ -871,23 +884,28 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 		nand->read_word = flctl_read_word;
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_resume(&pdev->dev);
-+
- 	ret = nand_scan_ident(flctl_mtd, 1, NULL);
- 	if (ret)
--		goto err;
-+		goto err_chip;
- 
- 	ret = flctl_chip_init_tail(flctl_mtd);
- 	if (ret)
--		goto err;
-+		goto err_chip;
- 
- 	ret = nand_scan_tail(flctl_mtd);
- 	if (ret)
--		goto err;
-+		goto err_chip;
- 
- 	mtd_device_register(flctl_mtd, pdata->parts, pdata->nr_parts);
- 
- 	return 0;
- 
--err:
-+err_chip:
-+	pm_runtime_disable(&pdev->dev);
-+err_iomap:
- 	kfree(flctl);
- 	return ret;
- }
-@@ -897,6 +915,7 @@ static int __devexit flctl_remove(struct platform_device *pdev)
- 	struct sh_flctl *flctl = platform_get_drvdata(pdev);
- 
- 	nand_release(&flctl->mtd);
-+	pm_runtime_disable(&pdev->dev);
- 	kfree(flctl);
- 
- 	return 0;
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 8bcf299..f34a0a1 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -149,6 +149,7 @@ struct sh_flctl {
- 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
- 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
- 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
-+	unsigned power:1;	/* RTPM flag */
- };
- 
- struct sh_flctl_platform_data {
--- 
-1.7.5.4
+Here there is a wide space of solutions. One approach used in block-based
+systems is to use a +s attribute, and then progate this whenever files are
+copied etc. However, it presents the major useability problem in that a
+user must remember to set this attribute for this files. And no
+application can be reliably expected to set this value correctly since it
+is not a standard action. Sensitive data not marked as such will thus not
+be securely deleted. It suffers the same way as requiring users to use srm
+when appropriate---after the first time they forget they'll probably never
+again remember.
+
+In this solution, keys are marked to be deleted when the data node
+encrypted with that key is removed from the TNC. So a really simple
+change:
+1. node is added - key marked as used;
+2. node is removed - key marked as deleted;
+3. node is modified to a new value; old key marked deleted, new key marked
+as used.
+
+The keys themselves are not immediately removed, this occurs during
+UBIFS commit (although it can also happen independently, but also as a
+periodic background action). Thus, deletion has a low cost, just erasing
+the small set of key storing blocks in the background, and the cost will
+likely be
+the same regardless if the entire partition is purged instead of
+just some data marked as sensitive: it only takes one key on an
+LEB to warrant erasure of the LEB, and there are (LEB_SIZE >> 16)
+keys per LEB.
+
+However, without caching the keys in the TNC, then deletion takes as long
+as reading a file. Thankfully, it will be nowhere near as bad as MMC
+secure erase trim, which (I presume) actually GCs and erases all the EBs that
+store file data. In this solution, it only needs to read the data node's
+header to get the key position, and mark it as deleted. Deletion happens
+in the backgroun.
+
+To me, being able to set secure erase or not as a partition level setting
+makes alot of sense. The OS partition does not need it, but the user file data
+partition will have it, and UBI makes sense that wear levelling is done
+among all the partitions properly. Then taint status for files'
+sensitivity doesn't need to be maintained. The deployer simply chooses for
+this part of the FS, do they want secure deletion over the data or not,
+one time at the beginning. (Compare this to the decision on whether or
+not to encrypt their entire partition or later encrypting each file they
+make.)
+
+
+>
+> Did you explore, by the way, if something like this is being worked on
+> for other FSes in Linux?
+>
+
+In my related works research I found nothing like this. Some advocated
+putting a key in the inode for a file then securely deleting things at a
+file-level granularity by GC and erasing the inode. Another suggestion
+multiple overwrites with zeros but that doesn't seem like it works with
+modern denser flash memories.
+
+I'll remove the change to tree branch, and repost correctly the
+version change where only data node is effected. Btw, when I was
+developing it I used the last 8 bytes from the key as the key position,
+because the key was 16 bytes but only 8 were used. Could you comment on
+the last 8 bytes of ubifs keys?
+
+
+Joel
