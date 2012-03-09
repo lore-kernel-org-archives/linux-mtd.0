@@ -1,15 +1,23 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S6rAK-0005W1-Ki
- for linux-mtd@lists.infradead.org; Sun, 11 Mar 2012 22:23:01 +0000
-From: Mike Dunn <mikedunn@newsguy.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
-Date: Sun, 11 Mar 2012 14:21:13 -0700
-Message-Id: <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
-In-Reply-To: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
+ id 1S5vtK-0004v5-AA
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 09:13:39 +0000
+Received: by werp11 with SMTP id p11so1247433wer.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 01:13:30 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1331279109.22872.22.camel@sauron.fi.intel.com>
+References: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
+ <20120308180826.53123148@halley>
+ <1331279109.22872.22.camel@sauron.fi.intel.com>
+From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+Date: Fri, 9 Mar 2012 10:13:10 +0100
+Message-ID: <CAJA4uhcdy4QzspQy7=x1srDfvrTp-bQCA7X5u8cU5KA2UdtkWQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] UBI: allocate verification buffer on demand
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,299 +27,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The drivers' read methods, absent an error, return a non-negative integer
-indicating the maximum number of bit errors that were corrected in any one
-writesize region.  MTD returns -EUCLEAN if this is >= euclean_threshold, 0
-otherwise.  Note that this is a subtle change to the driver interface.
+2012/3/9 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Thu, 2012-03-08 at 18:08 +0200, Shmulik Ladkani wrote:
+>> On Thu, =A08 Mar 2012 16:14:50 +0200 Artem Bityutskiy <dedekind1@gmail.c=
+om> wrote:
+>> > From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+>> >
+>> > Remove the pre-allocated 'peb_buf2' buffer because we do not really ne=
+ed it.
+>> > The only reason UBI has it is to check that the data were written corr=
+ectly.
+>> > But we do not have to have 2 buffers for this and waste RAM - we can j=
+ust
+>> > compare CRC checksums instead.
+>> >
+>> > Artem bityutskiy: massaged the patch and commit message
+>> >
+>> > Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+>> > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>>
+>> Josselin's original title "allocate verification buffer on demand" does
+>> no longer describe this patch.
+>> Should be "Remove the pre-allocated 'peb_buf2'" or alike.
+>
+> Fixed as well and pushed out, thanks! Waiting for Josselin's reply
+> anyway.
+I will try to find time to test your patches today and will give my
+feedback ASAP
 
-This and the preceeding patches in this set were tested ubi on top of the
-nandsim and docg4 devices, running the ubi test io_basic from mtd-utils.
+> commit 43b043e78b876ce27034f167897b57fd2556ad29
+> Author: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+> Date: =A0 Wed Feb 22 16:37:05 2012 +0100
+>
+> =A0 =A0UBI: reduce memory consumption
+>
+> =A0 =A0Remove the pre-allocated 'peb_buf2' buffer because we do not reall=
+y need it.
+> =A0 =A0The only reason UBI has it is to check that the data were written =
+correctly.
+> =A0 =A0But we do not have to have 2 buffers for this and waste RAM - we c=
+an just
+> =A0 =A0compare CRC checksums instead. This reduces UBI memory consumption=
+.
+>
+> =A0 =A0Artem bityutskiy: massaged the patch and commit message
+>
+> =A0 =A0Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices=
+.fr>
+> =A0 =A0Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
 
-Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
----
 
-We may want to also change the name of the macro mtd_is_bitflip(), since this is
-not really correctly named anymore.
 
- drivers/mtd/devices/docg3.c        |    4 +++-
- drivers/mtd/mtdcore.c              |   35 ++++++++++++++++++++++++++++++++++-
- drivers/mtd/mtdpart.c              |   25 +++++++++++++------------
- drivers/mtd/nand/alauda.c          |    4 ++--
- drivers/mtd/nand/nand_base.c       |   14 ++++++++++++--
- drivers/mtd/onenand/onenand_base.c |    6 ++++--
- include/linux/mtd/mtd.h            |   10 +---------
- 7 files changed, 69 insertions(+), 29 deletions(-)
+--=20
+Josselin Costanzi
+=A0 Embedded Linux System Engineer
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 886ca0f..95ea33e 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -854,6 +854,7 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	u8 *buf = ops->datbuf;
- 	size_t len, ooblen, nbdata, nboob;
- 	u8 hwecc[DOC_ECC_BCH_SIZE], eccconf1;
-+	int max_bitflips = 0;
- 
- 	if (buf)
- 		len = ops->len;
-@@ -938,7 +939,8 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 			}
- 			if (ret > 0) {
- 				mtd->ecc_stats.corrected += ret;
--				ret = -EUCLEAN;
-+				max_bitflips = max(max_bitflips, ret);
-+				ret = max_bitflips;
- 			}
- 		}
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5bbd717..6871658 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -789,12 +789,24 @@ EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
- int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	     u_char *buf)
- {
-+	int ret_code;
- 	*retlen = 0;
- 	if (from < 0 || from > mtd->size || len > mtd->size - from)
- 		return -EINVAL;
- 	if (!len)
- 		return 0;
--	return mtd->_read(mtd, from, len, retlen, buf);
-+
-+	/*
-+	 * In the absence of an error, drivers return a non-negative integer
-+	 * representing the maximum number of bitflips that were corrected on
-+	 * any one writesize region (typically a NAND page).
-+	 */
-+	ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+
-+	if (unlikely(ret_code < 0))
-+		return ret_code;
-+
-+	return ret_code >= mtd->euclean_threshold ? -EUCLEAN : 0;
- }
- EXPORT_SYMBOL_GPL(mtd_read);
- 
-@@ -835,6 +847,27 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- }
- EXPORT_SYMBOL_GPL(mtd_panic_write);
- 
-+int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
-+{
-+	int ret_code;
-+	ops->retlen = ops->oobretlen = 0;
-+	if (!mtd->_read_oob)
-+		return -EOPNOTSUPP;
-+
-+	/*
-+	 * In the absence of an error, drivers return a non-negative integer
-+	 * representing the maximum number of bitflips that were corrected on
-+	 * any one writesize region (typically a NAND page).
-+	 */
-+	ret_code = mtd->_read_oob(mtd, from, ops);
-+
-+	if (unlikely(ret_code < 0))
-+		return ret_code;
-+
-+	return ret_code >= mtd->euclean_threshold ? -EUCLEAN : 0;
-+}
-+EXPORT_SYMBOL_GPL(mtd_read_oob);
-+
- /*
-  * Method to access the protection register area, present in some flash
-  * devices. The user data is one time programmable but the factory data is read
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 9651c06..24022ce 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -67,12 +67,12 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	stats = part->master->ecc_stats;
- 	res = part->master->_read(part->master, from + part->offset, len,
- 				  retlen, buf);
--	if (unlikely(res)) {
--		if (mtd_is_bitflip(res))
--			mtd->ecc_stats.corrected += part->master->ecc_stats.corrected - stats.corrected;
--		if (mtd_is_eccerr(res))
--			mtd->ecc_stats.failed += part->master->ecc_stats.failed - stats.failed;
--	}
-+	if (unlikely(mtd_is_eccerr(res)))
-+		mtd->ecc_stats.failed +=
-+			part->master->ecc_stats.failed - stats.failed;
-+	else
-+		mtd->ecc_stats.corrected +=
-+			part->master->ecc_stats.corrected - stats.corrected;
- 	return res;
- }
- 
-@@ -108,6 +108,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 		struct mtd_oob_ops *ops)
- {
- 	struct mtd_part *part = PART(mtd);
-+	struct mtd_ecc_stats stats = part->master->ecc_stats;
- 	int res;
- 
- 	if (from >= mtd->size)
-@@ -133,12 +134,12 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 	}
- 
- 	res = part->master->_read_oob(part->master, from + part->offset, ops);
--	if (unlikely(res)) {
--		if (mtd_is_bitflip(res))
--			mtd->ecc_stats.corrected++;
--		if (mtd_is_eccerr(res))
--			mtd->ecc_stats.failed++;
--	}
-+	if (unlikely(mtd_is_eccerr(res)))
-+		mtd->ecc_stats.failed +=
-+			part->master->ecc_stats.failed - stats.failed;
-+	else
-+		mtd->ecc_stats.corrected +=
-+			part->master->ecc_stats.corrected - stats.corrected;
- 	return res;
- }
- 
-diff --git a/drivers/mtd/nand/alauda.c b/drivers/mtd/nand/alauda.c
-index 4f20e1d..7e59e83 100644
---- a/drivers/mtd/nand/alauda.c
-+++ b/drivers/mtd/nand/alauda.c
-@@ -414,7 +414,7 @@ static int alauda_bounce_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	}
- 	err = 0;
- 	if (corrected)
--		err = -EUCLEAN;
-+		err = 1;	/* return max bitflips per page */
- 	if (uncorrected)
- 		err = -EBADMSG;
- out:
-@@ -446,7 +446,7 @@ static int alauda_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	}
- 	err = 0;
- 	if (corrected)
--		err = -EUCLEAN;
-+		err = 1;	/* return max bitflips per page */
- 	if (uncorrected)
- 		err = -EBADMSG;
- 	return err;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8008853..e2bf003 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1469,6 +1469,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	uint32_t oobreadlen = ops->ooblen;
- 	uint32_t max_oobsize = ops->mode == MTD_OPS_AUTO_OOB ?
- 		mtd->oobavail : mtd->oobsize;
-+	unsigned int max_bitflips = 0;
- 
- 	uint8_t *bufpoi, *oob, *buf;
- 
-@@ -1491,6 +1492,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 
- 		/* Is the current page in the buffer? */
- 		if (realpage != chip->pagebuf || oob) {
-+			unsigned int prev_corrected = mtd->ecc_stats.corrected;
-+
- 			bufpoi = aligned ? buf : chip->buffers->databuf;
- 
- 			if (likely(sndcmd)) {
-@@ -1553,6 +1556,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 				else
- 					nand_wait_ready(mtd);
- 			}
-+			max_bitflips = max(max_bitflips,
-+					   mtd->ecc_stats.corrected -
-+					   prev_corrected);
- 		} else {
- 			memcpy(buf, chip->buffers->databuf + col, bytes);
- 			buf += bytes;
-@@ -1594,7 +1600,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
- 
--	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	return max_bitflips;
- }
- 
- /**
-@@ -1782,6 +1788,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	int readlen = ops->ooblen;
- 	int len;
- 	uint8_t *buf = ops->oobbuf;
-+	unsigned int max_bitflips = 0;
- 
- 	pr_debug("%s: from = 0x%08Lx, len = %i\n",
- 			__func__, (unsigned long long)from, readlen);
-@@ -1816,6 +1823,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	page = realpage & chip->pagemask;
- 
- 	while (1) {
-+		unsigned int prev_corrected = mtd->ecc_stats.corrected;
- 		if (ops->mode == MTD_OPS_RAW)
- 			sndcmd = chip->ecc.read_oob_raw(mtd, chip, page, sndcmd);
- 		else
-@@ -1836,6 +1844,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 			else
- 				nand_wait_ready(mtd);
- 		}
-+		max_bitflips = max(max_bitflips,
-+				   mtd->ecc_stats.corrected - prev_corrected);
- 
- 		readlen -= len;
- 		if (!readlen)
-@@ -1865,7 +1875,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
- 
--	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	return  max_bitflips;
- }
- 
- /**
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 3d781b8..177b0a5 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1201,7 +1201,8 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
- 
--	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	/* return max bitflips per page; ONENANDs correct 1 bit only */
-+	return mtd->ecc_stats.corrected != stats.corrected ? 1 : 0;
- }
- 
- /**
-@@ -1333,7 +1334,8 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
- 
--	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	/* return max bitflips per page; ONENANDs correct 1 bit only */
-+	return mtd->ecc_stats.corrected != stats.corrected ? 1 : 0;
- }
- 
- /**
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 20b5c40..b0c78f4 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -262,15 +262,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	      const u_char *buf);
- int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 		    const u_char *buf);
--
--static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
--			       struct mtd_oob_ops *ops)
--{
--	ops->retlen = ops->oobretlen = 0;
--	if (!mtd->_read_oob)
--		return -EOPNOTSUPP;
--	return mtd->_read_oob(mtd, from, ops);
--}
-+int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops);
- 
- static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 				struct mtd_oob_ops *ops)
--- 
-1.7.3.4
+T=E9l. : +33 (0) 1 42 11 93 25
+Fax: +33 (0) 1 42 11 87 17
+
+
+Warning
+This message (and any associated files) is intended only for the use
+of its intended recipient and may contain information that is
+confidential, subject to copyright or constitutes a trade secret. If
+you are not the intended recipient you are hereby notified that any
+dissemination, copying or distribution of this message, or files
+associated with this message, is strictly prohibited. If you have
+received this message in error, please notify us immediately by
+replying to the message and deleting it from your computer. Any views
+or opinions presented are solely those of the author
+josselin.costanzi@mobile-devices.fr and do not necessarily represent
+those of the company. Although the company has taken reasonable
+precautions to ensure no viruses are present in this email, the
+company cannot accept responsibility for any loss or damage arising
+from the use of this email or attachments.
