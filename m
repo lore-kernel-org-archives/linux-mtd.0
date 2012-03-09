@@ -1,21 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5xHk-0000Yt-Ur
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 10:42:58 +0000
-Message-ID: <1331289909.22872.65.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
+ id 1S5wID-0002ga-VN
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 09:39:22 +0000
+Message-ID: <1331286099.22872.45.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH (mtd-utils)] Makefile: fix "make clean" for old GNU find
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Fri, 09 Mar 2012 12:45:09 +0200
-In-Reply-To: <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
-References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
- <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
- <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 09 Mar 2012 11:41:39 +0200
+In-Reply-To: <CAN8TOE9yLLnV2_imd0GUbue+z0A2PNdD6Vz7qr2dYaVjsugN=w@mail.gmail.com>
+References: <1330726673-9860-1-git-send-email-computersforpeace@gmail.com>
+ <CAMjpGUc1m8D-nKVoddTehEDfx0r9R+sMTgtqxkfEG9W2Ok6-6w@mail.gmail.com>
+ <CAN8TOE9yLLnV2_imd0GUbue+z0A2PNdD6Vz7qr2dYaVjsugN=w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, philipp.zabel@gmail.com,
- Paul Parsons <lost.distance@yahoo.com>
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,20 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
-> yes, UBI probably has some different use. One seems that it keeps
-> erasing the
-> same block over and over again if the erase fails. JFFS2 doesn't do
-> that since
-> you can't trust a block that is failing erase(how can you be sure that
-> write will work?)
-> So, IMHO, UBIFS should reconsider this policy. 
+On Thu, 2012-03-08 at 09:52 -0800, Brian Norris wrote:
+> On Thu, Mar 8, 2012 at 8:54 AM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> > On Fri, Mar 2, 2012 at 17:17, Brian Norris <computersforpeace@gmail.com> wrote:
+> >> However, it will launch a lot more `rm' processes...
+> >
+> > indeed, that does suck.  you could do this, but it kind of sucks too ...
+> > CLEAN_FIND = find "$(BUILDDIR)/" -xdev '(' -name '*.[ao]' -o -name
+> > '.*.c.dep' ')'
+> > ...
+> >    @if test -d "$(BUILDDIR)/"; then
+> >        $(CLEAN_FIND) -exec rm -f {} + 2>/dev/null || \
+> >        $(CLEAN_FIND) -exec rm -f {} \; ; \
+> >    fi
+> 
+> I'm fine with that too. It's a little uglier, but it's not quite as
+> bad for systems that have a modern `find', I think. I'll resend with
+> your suggestion if there are no better suggestions.
 
-The thread is very long and I would like save my time by not going
-through it. But if you could start a new thread and formulate the
-problem with UBI, I could think about it a bit. I am open to change
-policies if it is not too much work.  Otherwise I am open to give hints
-and suggestions and accept patches which change the policy. :-)
+May be adding a one-line comment like "work-around for ancient find
+utils not supporting '+'" would also be a good idea?
 
 -- 
 Best Regards,
