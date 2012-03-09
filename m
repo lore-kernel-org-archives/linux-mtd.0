@@ -1,12 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5znw-00034o-P9
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 13:24:21 +0000
-Message-ID: <1331299599.29445.28.camel@sauron.fi.intel.com>
+ id 1S5zjL-0002z8-5A
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 13:19:36 +0000
+Message-ID: <1331299248.29445.24.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 00/18] mtd/nand/fsmc related modifications
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Vipin Kumar <vipin.kumar@st.com>
-Date: Fri, 09 Mar 2012 15:26:39 +0200
+Date: Fri, 09 Mar 2012 15:20:48 +0200
 In-Reply-To: <cover.1331119143.git.vipin.kumar@st.com>
 References: <cover.1331119143.git.vipin.kumar@st.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -25,24 +25,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Wed, 2012-03-07 at 17:00 +0530, Vipin Kumar wrote:
 > Hello All,
-> 
-> Please find the nand/fsmc driver modifications
-> Major modifications include
-> - DMA support
-> - Word read/write support to improve performance
-> - Move platform related things(ALE/CLE) from driver to platfrom files
-> - Add default partition support for more devices with erase sizes (256KB, 512KB,
-> 		1024KB, 2048KB)
-> - Bugfixes
-> 	- Read only 512 + 13 bytes for 8bit NAND devices
-> 	- Flip the bit only if the error index is < 4096
-> 	- Fixed data abort inside change_bit()
 
-Pushed patches 1-7 to l2-mtd.git. Patch 8 look wrong to me, the other
-won't apply without patch 8 so I did not look beyond patch 7. Thanks!
+BTW, sparse gives a lot of warnings like this for this driver:
 
-But please, confirm that it is OK to have only some of these patches
-merged, not the complete set. Thanks!
+drivers/mtd/nand/fsmc_nand.c:300:9: warning: incorrect type in argument 1 (different address spaces) [sparse]
+drivers/mtd/nand/fsmc_nand.c:300:9:    expected void const volatile [noderef] <asn:2>*<noident> [sparse]
+drivers/mtd/nand/fsmc_nand.c:300:9:    got unsigned int *<noident> [sparse]
 
 -- 
 Best Regards,
