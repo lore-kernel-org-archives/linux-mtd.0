@@ -1,13 +1,16 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S6r9M-0005Ui-GF
- for linux-mtd@lists.infradead.org; Sun, 11 Mar 2012 22:22:01 +0000
-From: Mike Dunn <mikedunn@newsguy.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/4] MTD: Change meaning of -EUCLEAN return code on reads
-Date: Sun, 11 Mar 2012 14:21:09 -0700
-Message-Id: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, Mike Dunn <mikedunn@newsguy.com>
+ id 1S6FSv-0003fq-Tm
+ for linux-mtd@lists.infradead.org; Sat, 10 Mar 2012 06:07:43 +0000
+Received: by ggnk1 with SMTP id k1so1664904ggn.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 22:07:37 -0800 (PST)
+MIME-Version: 1.0
+Date: Sat, 10 Mar 2012 07:07:36 +0100
+Message-ID: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
+Subject: UBIFS crash (was Re: Problems with mtd_oobtest)
+From: Matej Kupljen <matej.kupljen@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,98 +20,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Dear all,
 
-This patchset addresses the problem of insufficient information being returned
-by mtd_read() and mtd_read_oob() with regard to bit error corrections.
-Currently -EUCLEAN is returned if one or more bit errors were corrected during
-the course of the read operation.  Higher layers like UBI use this return code
-as an indication that the erase block may be degrading and should be considered
-as a candidate for being marked as a bad block.  The problem is that high bit
-error rates are common on more recent NAND flash devices, which these devices
-compensate for by using strong ecc algorithms.  Frequent (but entirely normal)
-bit error corrections on these devices result in blocks being incorrectly marked
-as bad.  On some devices, ubi/ubifs can not be reliably used because of this.
+>> Now, I'll do some intentional power cuts, and when the problem
+>> appears, I'll post a kernel log here.
+>
+> Please, be aware of the unstable bits issue which not one dares to
+> resolve in UBIFS, but many people yelled...
+>
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
 
-This problem was discussed a while back [1][2][3], and a consensus of sorts was
-reached for a solution, which these patches implement.  The recent addition of
-the mtd api entry functions now make this solution practical (thanks Artem!).  A
-quick description of each patch will provide a synopsis of the patchset:
+Thanks for the link, I'll check it.
 
-(1) The element 'ecc_strength' is added to struct mtd_info, which will store the
-    maximum number of bit errors that can be corrected in one writesize region.
+Now, I did what I said, and after some power crashes, I get:
+==============================================================================
+[    1.576000] UBIFS: recovery needed
+[    1.584000] UBIFS error (pid 1): check_lpt_crc: invalid crc in LPT
+node: crc f382 calc f342
+[    1.588000] [<c002ba14>] (unwind_backtrace+0x0/0xe0) from
+[<c0124604>] (check_lpt_crc+0x78/0x90)
+[    1.592000] [<c0124604>] (check_lpt_crc+0x78/0x90) from
+[<c01246e4>] (ubifs_unpack_nnode+0xc8/0xd8)
+[    1.596000] [<c01246e4>] (ubifs_unpack_nnode+0xc8/0xd8) from
+[<c01248e8>] (ubifs_read_nnode+0xc8/0x188)
+[    1.600000] [<c01248e8>] (ubifs_read_nnode+0xc8/0x188) from
+[<c01249c4>] (ubifs_get_nnode+0x1c/0x30)
+[    1.604000] [<c01249c4>] (ubifs_get_nnode+0x1c/0x30) from
+[<c01257d8>] (ubifs_lpt_lookup_dirty+0x6c/0x258)
+[    1.608000] [<c01257d8>] (ubifs_lpt_lookup_dirty+0x6c/0x258) from
+[<c0119d1c>] (ubifs_replay_journal+0x28/0x14d0)
+[    1.612000] [<c0119d1c>] (ubifs_replay_journal+0x28/0x14d0) from
+[<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8)
+[    1.616000] [<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8) from
+[<c0110314>] (ubifs_get_sb+0x1f4/0x258)
+[    1.620000] [<c0110314>] (ubifs_get_sb+0x1f4/0x258) from
+[<c008ae14>] (vfs_kern_mount+0x50/0xd0)
+[    1.624000] [<c008ae14>] (vfs_kern_mount+0x50/0xd0) from
+[<c008aed8>] (do_kern_mount+0x34/0xd8)
+[    1.628000] [<c008aed8>] (do_kern_mount+0x34/0xd8) from
+[<c009e618>] (do_mount+0x5e4/0x648)
+[    1.632000] [<c009e618>] (do_mount+0x5e4/0x648) from [<c009e700>]
+(sys_mount+0x84/0xc4)
+[    1.636000] [<c009e700>] (sys_mount+0x84/0xc4) from [<c0008ba4>]
+(do_mount_root+0x20/0xb4)
+[    1.640000] [<c0008ba4>] (do_mount_root+0x20/0xb4) from
+[<c0008e24>] (mount_block_root+0xe8/0x20c)
+[    1.644000] [<c0008e24>] (mount_block_root+0xe8/0x20c) from
+[<c00090d8>] (prepare_namespace+0x8c/0x1c8)
+[    1.648000] [<c00090d8>] (prepare_namespace+0x8c/0x1c8) from
+[<c000874c>] (kernel_init+0xd4/0x10c)
+[    1.652000] [<c000874c>] (kernel_init+0xd4/0x10c) from [<c0026df0>]
+(kernel_thread_exit+0x0/0x8)
+[    1.656000] UBIFS error (pid 1): ubifs_read_nnode: error -22
+reading nnode at 8:6651
+[    1.660000] [<c002ba14>] (unwind_backtrace+0x0/0xe0) from
+[<c0124984>] (ubifs_read_nnode+0x164/0x188)
+[    1.664000] [<c0124984>] (ubifs_read_nnode+0x164/0x188) from
+[<c01249c4>] (ubifs_get_nnode+0x1c/0x30)
+[    1.668000] [<c01249c4>] (ubifs_get_nnode+0x1c/0x30) from
+[<c01257d8>] (ubifs_lpt_lookup_dirty+0x6c/0x258)
+[    1.672000] [<c01257d8>] (ubifs_lpt_lookup_dirty+0x6c/0x258) from
+[<c0119d1c>] (ubifs_replay_journal+0x28/0x14d0)
+[    1.676000] [<c0119d1c>] (ubifs_replay_journal+0x28/0x14d0) from
+[<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8)
+[    1.680000] [<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8) from
+[<c0110314>] (ubifs_get_sb+0x1f4/0x258)
+[    1.684000] [<c0110314>] (ubifs_get_sb+0x1f4/0x258) from
+[<c008ae14>] (vfs_kern_mount+0x50/0xd0)
+[    1.688000] [<c008ae14>] (vfs_kern_mount+0x50/0xd0) from
+[<c008aed8>] (do_kern_mount+0x34/0xd8)
+[    1.692000] [<c008aed8>] (do_kern_mount+0x34/0xd8) from
+[<c009e618>] (do_mount+0x5e4/0x648)
+[    1.696000] [<c009e618>] (do_mount+0x5e4/0x648) from [<c009e700>]
+(sys_mount+0x84/0xc4)
+[    1.700000] [<c009e700>] (sys_mount+0x84/0xc4) from [<c0008ba4>]
+(do_mount_root+0x20/0xb4)
+[    1.704000] [<c0008ba4>] (do_mount_root+0x20/0xb4) from
+[<c0008e24>] (mount_block_root+0xe8/0x20c)
+[    1.708000] [<c0008e24>] (mount_block_root+0xe8/0x20c) from
+[<c00090d8>] (prepare_namespace+0x8c/0x1c8)
+[    1.712000] [<c00090d8>] (prepare_namespace+0x8c/0x1c8) from
+[<c000874c>] (kernel_init+0xd4/0x10c)
+[    1.716000] [<c000874c>] (kernel_init+0xd4/0x10c) from [<c0026df0>]
+(kernel_thread_exit+0x0/0x8)
+[    1.724000] List of all partitions:
+[    1.728000] 1f00             128 mtdblock0 (driver?)
+[    1.732000] 1f01          109824 mtdblock1 (driver?)
+[    1.736000] No filesystem could mount root, tried:  ubifs
+[    1.740000] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(0,0)
 
-(2) Drivers set ecc_strength during initialization.
+==============================================================================
 
-(3) The element 'euclean_threshold' is added to struct mtd_info.  If the driver
-    leaves this uninitialized, mtd sets it to ecc_strength when the device or
-    partition is registered.  This element is also exposed for reading and
-    writing from userspace through sysfs.
+I re-flashed the unit, rebooted several time and:
+==============================================================================
+[    1.576000] UBIFS error (pid 1): ubifs_scan: garbage
+[    1.616000] UBI: scrubbed PEB 3 (LEB 0:1), data moved to PEB 2
+[    1.644000] UBIFS error (pid 1): ubifs_recover_master_node: failed
+to recover master node
+==============================================================================
 
-(4) The drivers' read methods, absent an error, return a non-negative integer
-    indicating the maximum number of bit errors that were corrected in any one
-    writesize region.  MTD returns -EUCLEAN if this is >= euclean_threshold, 0
-    otherwise.
+Again, with the same result:
+==============================================================================
+[    1.608000] UBIFS: recovery needed
+[    1.752000] UBIFS error (pid 1): ubifs_check_node: bad magic
+0x6104531, expected 0x6101831
+[    1.756000] UBIFS error (pid 1): ubifs_check_node: bad node at LEB 140:81848
+[    1.760000] [<c002ba14>] (unwind_backtrace+0x0/0xe0) from
+[<c01122f4>] (ubifs_check_node+0x264/0x2a8)
+[    1.764000] [<c01122f4>] (ubifs_check_node+0x264/0x2a8) from
+[<c0112c80>] (ubifs_read_node+0x184/0x274)
+[    1.772000] [<c0112c80>] (ubifs_read_node+0x184/0x274) from
+[<c012da9c>] (ubifs_load_znode+0xc0/0x50c)
+[    1.776000] [<c012da9c>] (ubifs_load_znode+0xc0/0x50c) from
+[<c0116288>] (ubifs_lookup_level0+0x104/0x1c8)
+[    1.780000] [<c0116288>] (ubifs_lookup_level0+0x104/0x1c8) from
+[<c01165e0>] (ubifs_tnc_next_ent+0x74/0x178)
+[    1.784000] [<c01165e0>] (ubifs_tnc_next_ent+0x74/0x178) from
+[<c0117e1c>] (ubifs_tnc_remove_ino+0x50/0x180)
+[    1.788000] [<c0117e1c>] (ubifs_tnc_remove_ino+0x50/0x180) from
+[<c011acac>] (ubifs_replay_journal+0xfb8/0x14d0)
+[    1.792000] [<c011acac>] (ubifs_replay_journal+0xfb8/0x14d0) from
+[<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8)
+[    1.796000] [<c010ec9c>] (ubifs_fill_super+0xc08/0x12b8) from
+[<c0110314>] (ubifs_get_sb+0x1f4/0x258)
+[    1.800000] [<c0110314>] (ubifs_get_sb+0x1f4/0x258) from
+[<c008ae14>] (vfs_kern_mount+0x50/0xd0)
+[    1.804000] [<c008ae14>] (vfs_kern_mount+0x50/0xd0) from
+[<c008aed8>] (do_kern_mount+0x34/0xd8)
+[    1.808000] [<c008aed8>] (do_kern_mount+0x34/0xd8) from
+[<c009e618>] (do_mount+0x5e4/0x648)
+[    1.812000] [<c009e618>] (do_mount+0x5e4/0x648) from [<c009e700>]
+(sys_mount+0x84/0xc4)
+[    1.816000] [<c009e700>] (sys_mount+0x84/0xc4) from [<c0008ba4>]
+(do_mount_root+0x20/0xb4)
+[    1.820000] [<c0008ba4>] (do_mount_root+0x20/0xb4) from
+[<c0008e24>] (mount_block_root+0xe8/0x20c)
+[    1.824000] [<c0008e24>] (mount_block_root+0xe8/0x20c) from
+[<c00090d8>] (prepare_namespace+0x8c/0x1c8)
+[    1.828000] [<c00090d8>] (prepare_namespace+0x8c/0x1c8) from
+[<c000874c>] (kernel_init+0xd4/0x10c)
+[    1.832000] [<c000874c>] (kernel_init+0xd4/0x10c) from [<c0026df0>]
+(kernel_thread_exit+0x0/0x8)
+[    1.836000] UBIFS error (pid 1): ubifs_read_node: expected node type 9
+[    1.844000] VFS: Cannot open root device "ubi0:ubi_rootfs" or
+unknown-block(0,0)
+[    1.848000] Please append a correct "root=" boot option; here are
+the available partitions:
+[    1.852000] 1f00             128 mtdblock0 (driver?)
+[    1.856000] 1f01          109824 mtdblock1 (driver?)
+[    1.860000] b300         7842816 mmcblk0 driver: mmcblk
+[    1.868000]   b301         7838720 mmcblk0p1
+[    1.872000] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(0,0)
+==============================================================================
 
-So basically, the meaning of -EUCLEAN is changed from "one or more bit errors
-were corrected over the entire read operation", to "a dangerously high number of
-bit errors were corrected on one or more writesize regions".  By default,
-"dangerously high" is interpreted as the maximum number of correctible bit
-errors per writesize.  Drivers can specify a different value, and the user can
-override it if more or less caution regarding data integrity is desired.
 
-Patch #2 touches a lot of files, but they are small changes in most cases.  If
-you can verify the correctness of the device's ecc strength, an ACK would be
-much appreciated!
+Please note, that I have several similar devices and majority of them
+don't have this problem.
+The one I am using now, seems to crash with different errors.
+Is this the symptom I could expect from the problem mentioned in the
+link you provided?
+Any other problem?
 
-And of course general reviews greatly appreciated.  Thanks!
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038755.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038688.html
-[3] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038828.html
-
-Mike Dunn (4):
-  MTD: add ecc_strength fields to mtd structs
-  MTD: flash drivers set ecc strength
-  MTD: euclean_threshold added to mtd_info and sysfs
-  MTD: drivers return max_bitflips, mtd returns -EUCLEAN
-
- Documentation/ABI/testing/sysfs-class-mtd |   23 ++++++++++
- drivers/mtd/devices/doc2000.c             |    1 +
- drivers/mtd/devices/doc2001.c             |    1 +
- drivers/mtd/devices/doc2001plus.c         |    1 +
- drivers/mtd/devices/docg3.c               |    5 ++-
- drivers/mtd/mtdcore.c                     |   68 ++++++++++++++++++++++++++++-
- drivers/mtd/mtdpart.c                     |   26 ++++++-----
- drivers/mtd/nand/alauda.c                 |    5 +-
- drivers/mtd/nand/atmel_nand.c             |    1 +
- drivers/mtd/nand/bcm_umi_nand.c           |    8 +++
- drivers/mtd/nand/bf5xx_nand.c             |    2 +
- drivers/mtd/nand/cafe_nand.c              |    1 +
- drivers/mtd/nand/cs553x_nand.c            |    2 +
- drivers/mtd/nand/davinci_nand.c           |    1 +
- drivers/mtd/nand/denali.c                 |    3 +
- drivers/mtd/nand/diskonchip.c             |    1 +
- drivers/mtd/nand/docg4.c                  |    1 +
- drivers/mtd/nand/fsl_elbc_nand.c          |    6 +++
- drivers/mtd/nand/fsmc_nand.c              |    2 +
- drivers/mtd/nand/jz4740_nand.c            |    5 ++
- drivers/mtd/nand/mxc_nand.c               |    7 +++
- drivers/mtd/nand/nand_base.c              |   21 ++++++++-
- drivers/mtd/nand/ndfc.c                   |    1 +
- drivers/mtd/nand/omap2.c                  |    1 +
- drivers/mtd/nand/pxa3xx_nand.c            |    1 +
- drivers/mtd/nand/r852.c                   |    1 +
- drivers/mtd/nand/rtc_from4.c              |    1 +
- drivers/mtd/nand/s3c2410.c                |    1 +
- drivers/mtd/nand/sh_flctl.c               |    1 +
- drivers/mtd/nand/sharpsl.c                |    1 +
- drivers/mtd/nand/tmio_nand.c              |    1 +
- drivers/mtd/nand/txx9ndfmc.c              |    1 +
- drivers/mtd/onenand/onenand_base.c        |    7 ++-
- include/linux/mtd/mtd.h                   |   20 +++++----
- include/linux/mtd/nand.h                  |    2 +
- 35 files changed, 200 insertions(+), 30 deletions(-)
-
--- 
-1.7.3.4
+Thank you and Best Regards,
+Matej Kupljen
