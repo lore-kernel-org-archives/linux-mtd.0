@@ -1,24 +1,13 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S62uC-0007c1-HQ
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 16:43:02 +0000
-Received: by werp11 with SMTP id p11so1573819wer.36
- for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2012 08:42:51 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAJA4uhcdy4QzspQy7=x1srDfvrTp-bQCA7X5u8cU5KA2UdtkWQ@mail.gmail.com>
-References: <1331216091-6560-1-git-send-email-dedekind1@gmail.com>
- <20120308180826.53123148@halley>
- <1331279109.22872.22.camel@sauron.fi.intel.com>
- <CAJA4uhcdy4QzspQy7=x1srDfvrTp-bQCA7X5u8cU5KA2UdtkWQ@mail.gmail.com>
-From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
-Date: Fri, 9 Mar 2012 17:42:30 +0100
-Message-ID: <CAJA4uhctD3+QacUEmtuyjp3u7ougHjQ4DA8NcLuGY_xKF1Rdbg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] UBI: allocate verification buffer on demand
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1S6r9M-0005Ui-GF
+ for linux-mtd@lists.infradead.org; Sun, 11 Mar 2012 22:22:01 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/4] MTD: Change meaning of -EUCLEAN return code on reads
+Date: Sun, 11 Mar 2012 14:21:09 -0700
+Message-Id: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,94 +17,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/3/9 Josselin Costanzi <josselin.costanzi@mobile-devices.fr>:
-> 2012/3/9 Artem Bityutskiy <dedekind1@gmail.com>:
->> On Thu, 2012-03-08 at 18:08 +0200, Shmulik Ladkani wrote:
->>> On Thu, =A08 Mar 2012 16:14:50 +0200 Artem Bityutskiy <dedekind1@gmail.=
-com> wrote:
->>> > From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
->>> >
->>> > Remove the pre-allocated 'peb_buf2' buffer because we do not really n=
-eed it.
->>> > The only reason UBI has it is to check that the data were written cor=
-rectly.
->>> > But we do not have to have 2 buffers for this and waste RAM - we can =
-just
->>> > compare CRC checksums instead.
->>> >
->>> > Artem bityutskiy: massaged the patch and commit message
->>> >
->>> > Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-devices.fr=
->
->>> > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->>>
->>> Josselin's original title "allocate verification buffer on demand" does
->>> no longer describe this patch.
->>> Should be "Remove the pre-allocated 'peb_buf2'" or alike.
->>
->> Fixed as well and pushed out, thanks! Waiting for Josselin's reply
->> anyway.
-> I will try to find time to test your patches today and will give my
-> feedback ASAP
-I'm okay with your version of the patch.
-Thanks.
+Hi,
 
->> commit 43b043e78b876ce27034f167897b57fd2556ad29
->> Author: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
->> Date: =A0 Wed Feb 22 16:37:05 2012 +0100
->>
->> =A0 =A0UBI: reduce memory consumption
->>
->> =A0 =A0Remove the pre-allocated 'peb_buf2' buffer because we do not real=
-ly need it.
->> =A0 =A0The only reason UBI has it is to check that the data were written=
- correctly.
->> =A0 =A0But we do not have to have 2 buffers for this and waste RAM - we =
-can just
->> =A0 =A0compare CRC checksums instead. This reduces UBI memory consumptio=
-n.
->>
->> =A0 =A0Artem bityutskiy: massaged the patch and commit message
->>
->> =A0 =A0Signed-off-by: Josselin Costanzi <josselin.costanzi@mobile-device=
-s.fr>
->> =A0 =A0Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com=
->
->>
->>
->> --
->> Best Regards,
->> Artem Bityutskiy
->>
->
->
->
-> --
-> Josselin Costanzi
-> =A0 Embedded Linux System Engineer
->
-> T=E9l. : +33 (0) 1 42 11 93 25
-> Fax: +33 (0) 1 42 11 87 17
->
->
-> Warning
-> This message (and any associated files) is intended only for the use
-> of its intended recipient and may contain information that is
-> confidential, subject to copyright or constitutes a trade secret. If
-> you are not the intended recipient you are hereby notified that any
-> dissemination, copying or distribution of this message, or files
-> associated with this message, is strictly prohibited. If you have
-> received this message in error, please notify us immediately by
-> replying to the message and deleting it from your computer. Any views
-> or opinions presented are solely those of the author
-> josselin.costanzi@mobile-devices.fr and do not necessarily represent
-> those of the company. Although the company has taken reasonable
-> precautions to ensure no viruses are present in this email, the
-> company cannot accept responsibility for any loss or damage arising
-> from the use of this email or attachments.
+This patchset addresses the problem of insufficient information being returned
+by mtd_read() and mtd_read_oob() with regard to bit error corrections.
+Currently -EUCLEAN is returned if one or more bit errors were corrected during
+the course of the read operation.  Higher layers like UBI use this return code
+as an indication that the erase block may be degrading and should be considered
+as a candidate for being marked as a bad block.  The problem is that high bit
+error rates are common on more recent NAND flash devices, which these devices
+compensate for by using strong ecc algorithms.  Frequent (but entirely normal)
+bit error corrections on these devices result in blocks being incorrectly marked
+as bad.  On some devices, ubi/ubifs can not be reliably used because of this.
 
+This problem was discussed a while back [1][2][3], and a consensus of sorts was
+reached for a solution, which these patches implement.  The recent addition of
+the mtd api entry functions now make this solution practical (thanks Artem!).  A
+quick description of each patch will provide a synopsis of the patchset:
 
+(1) The element 'ecc_strength' is added to struct mtd_info, which will store the
+    maximum number of bit errors that can be corrected in one writesize region.
 
---=20
-Josselin Costanzi
-=A0 Embedded Linux System Engineer
+(2) Drivers set ecc_strength during initialization.
+
+(3) The element 'euclean_threshold' is added to struct mtd_info.  If the driver
+    leaves this uninitialized, mtd sets it to ecc_strength when the device or
+    partition is registered.  This element is also exposed for reading and
+    writing from userspace through sysfs.
+
+(4) The drivers' read methods, absent an error, return a non-negative integer
+    indicating the maximum number of bit errors that were corrected in any one
+    writesize region.  MTD returns -EUCLEAN if this is >= euclean_threshold, 0
+    otherwise.
+
+So basically, the meaning of -EUCLEAN is changed from "one or more bit errors
+were corrected over the entire read operation", to "a dangerously high number of
+bit errors were corrected on one or more writesize regions".  By default,
+"dangerously high" is interpreted as the maximum number of correctible bit
+errors per writesize.  Drivers can specify a different value, and the user can
+override it if more or less caution regarding data integrity is desired.
+
+Patch #2 touches a lot of files, but they are small changes in most cases.  If
+you can verify the correctness of the device's ecc strength, an ACK would be
+much appreciated!
+
+And of course general reviews greatly appreciated.  Thanks!
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038755.html
+[2] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038688.html
+[3] http://lists.infradead.org/pipermail/linux-mtd/2011-December/038828.html
+
+Mike Dunn (4):
+  MTD: add ecc_strength fields to mtd structs
+  MTD: flash drivers set ecc strength
+  MTD: euclean_threshold added to mtd_info and sysfs
+  MTD: drivers return max_bitflips, mtd returns -EUCLEAN
+
+ Documentation/ABI/testing/sysfs-class-mtd |   23 ++++++++++
+ drivers/mtd/devices/doc2000.c             |    1 +
+ drivers/mtd/devices/doc2001.c             |    1 +
+ drivers/mtd/devices/doc2001plus.c         |    1 +
+ drivers/mtd/devices/docg3.c               |    5 ++-
+ drivers/mtd/mtdcore.c                     |   68 ++++++++++++++++++++++++++++-
+ drivers/mtd/mtdpart.c                     |   26 ++++++-----
+ drivers/mtd/nand/alauda.c                 |    5 +-
+ drivers/mtd/nand/atmel_nand.c             |    1 +
+ drivers/mtd/nand/bcm_umi_nand.c           |    8 +++
+ drivers/mtd/nand/bf5xx_nand.c             |    2 +
+ drivers/mtd/nand/cafe_nand.c              |    1 +
+ drivers/mtd/nand/cs553x_nand.c            |    2 +
+ drivers/mtd/nand/davinci_nand.c           |    1 +
+ drivers/mtd/nand/denali.c                 |    3 +
+ drivers/mtd/nand/diskonchip.c             |    1 +
+ drivers/mtd/nand/docg4.c                  |    1 +
+ drivers/mtd/nand/fsl_elbc_nand.c          |    6 +++
+ drivers/mtd/nand/fsmc_nand.c              |    2 +
+ drivers/mtd/nand/jz4740_nand.c            |    5 ++
+ drivers/mtd/nand/mxc_nand.c               |    7 +++
+ drivers/mtd/nand/nand_base.c              |   21 ++++++++-
+ drivers/mtd/nand/ndfc.c                   |    1 +
+ drivers/mtd/nand/omap2.c                  |    1 +
+ drivers/mtd/nand/pxa3xx_nand.c            |    1 +
+ drivers/mtd/nand/r852.c                   |    1 +
+ drivers/mtd/nand/rtc_from4.c              |    1 +
+ drivers/mtd/nand/s3c2410.c                |    1 +
+ drivers/mtd/nand/sh_flctl.c               |    1 +
+ drivers/mtd/nand/sharpsl.c                |    1 +
+ drivers/mtd/nand/tmio_nand.c              |    1 +
+ drivers/mtd/nand/txx9ndfmc.c              |    1 +
+ drivers/mtd/onenand/onenand_base.c        |    7 ++-
+ include/linux/mtd/mtd.h                   |   20 +++++----
+ include/linux/mtd/nand.h                  |    2 +
+ 35 files changed, 200 insertions(+), 30 deletions(-)
+
+-- 
+1.7.3.4
