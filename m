@@ -1,24 +1,15 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7Bfc-0003G8-UC
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 20:16:41 +0000
-Message-ID: <1331560226.12037.34.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH l2-mtd] jffs2: Fix build when CONFIG_JFFS2_FS_DEBUG > 0
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe Perches <joe@perches.com>
-Date: Mon, 12 Mar 2012 15:50:26 +0200
-In-Reply-To: <1331330354.14442.6.camel@joe2Laptop>
-References: <cover.1329349881.git.joe@perches.com>
- <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
- <1330965033.7220.16.camel@golum> <1330966615.3140.6.camel@joe2Laptop>
- <1331294012.29445.10.camel@sauron.fi.intel.com>
- <1331330354.14442.6.camel@joe2Laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S6g1f-0001Ek-0Z
+ for linux-mtd@lists.infradead.org; Sun, 11 Mar 2012 10:29:20 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] drivers/mtd: docg3 fix writebufsize
+Date: Sun, 11 Mar 2012 11:28:46 +0100
+Message-Id: <1331461726-10087-2-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
+References: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-03-09 at 13:59 -0800, Joe Perches wrote:
-> commit c6f6dad20d71 ("jffs2: Standardize JFFS_<LEVEL> uses")
-> broke the build when CONFIG_JFFS2_FS_DEBUG > 0.  Similarly,
-> commit 41f75c15285c ("jffs2: Convert printks to pr_<level>")
-> also broke the build.
-> 
-> Oops.  Insufficient compile testing...
+The docg3 drivers lacked mtd writebufsize initialization. Without it,
+ubifs cannot work.
 
-Folded in and pushed to l2-mtd.git, thanks!
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/devices/docg3.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index bd9e992..c30b56a 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1822,6 +1822,7 @@ static void __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
+ 	if (docg3->reliable == 2)
+ 		mtd->erasesize /= 2;
+ 	mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
++	mtd->writebufsize = DOC_LAYOUT_PAGE_SIZE;
+ 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->erase = doc_erase;
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.5.4
