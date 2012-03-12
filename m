@@ -1,23 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga14.intel.com ([143.182.124.37])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S5u39-0005PG-W7
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 07:15:41 +0000
-Message-ID: <1331277476.22872.2.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Add encryption key parameter to compress/decompress
- functions
+ id 1S74wz-0000Nh-44
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 13:06:10 +0000
+Message-ID: <1331557710.12037.10.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] Makefile: fix "make clean" for old GNU find
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Fri, 09 Mar 2012 09:17:56 +0200
-In-Reply-To: <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 12 Mar 2012 15:08:30 +0200
+In-Reply-To: <1331315349-8541-1-git-send-email-computersforpeace@gmail.com>
+References: <1331315349-8541-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,20 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2012-02-23 at 16:29 +0100, Joel Reardon wrote:
-> This patch extends to interface for compression and decompression of data 
-> nodes to take a cryptographic key
-> as a parameter. If it is set to NULL, then the current behaviour persists. 
-> If it is non-null, then it is taken
-> as a pointer to an array of length UBIFSEC_KEYSIZE (=16 bytes) which 
-> contains the key to use to encrypt
-> the data node. Each data node should be encrypted with a separate key as 
-> it uses the same initialization vector  (of 0).
+On Fri, 2012-03-09 at 09:49 -0800, Brian Norris wrote:
+> findutils v4.1.x does not have the `-exec CMD {} +' syntax. We can just as
+> easily use the `-exec CMD {} \;' syntax. However, it will launch a lot more
+> `rm' processes, so we only use it if the first form fails with an error.
+> This isn't a perfect solution (`find -exec +' can fail for other reasons)
+> but it works well enough.
+> 
+> This problem manifests itself in RHEL 4, findutils 4.1.20:
 
-This patch is also wrapped... Would you consider using git - commit your
-patches, then git format-patch, then git send-email them - git tools
-will take everything right. Use --dry-run with git send-email first to
-check everything is right.
+Pushed, thanks you!
 
 -- 
 Best Regards,
