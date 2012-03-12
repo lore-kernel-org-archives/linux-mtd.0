@@ -1,22 +1,23 @@
-Received: from nbd.name ([46.4.11.11])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S5vfQ-0006u5-3j
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2012 08:59:16 +0000
-Message-ID: <4F59C630.3060501@openwrt.org>
-Date: Fri, 09 Mar 2012 09:58:24 +0100
-From: John Crispin <blogic@openwrt.org>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7C3Z-0003VG-7i
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 20:41:26 +0000
+Date: Mon, 12 Mar 2012 14:34:41 +0100 (CET)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [patch] Adding Secure Deletion to UBIFS
+In-Reply-To: <1331559053.12037.25.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1203121430020.29192@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+ <1330536308.3545.158.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203011434220.2462@eristoteles.iwoars.net>
+ <1331278562.22872.18.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203091959570.25737@eristoteles.iwoars.net>
+ <1331559053.12037.25.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] MTD: MIPS: lantiq: reintroduce support for cmdline
- partitions
-References: <1330016389-20973-1-git-send-email-blogic@openwrt.org>
- <1331282453.22872.29.camel@sauron.fi.intel.com>
-In-Reply-To: <1331282453.22872.29.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
- Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/03/12 09:40, Artem Bityutskiy wrote:
-> On Thu, 2012-02-23 at 17:59 +0100, John Crispin wrote:
->> From: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
->>
->> Since commit ca97dec2ab5c87e9fbdf7e882e1820004a3966fa the
->> command line parsing of MTD partitions does not work anymore.
->>
->> Signed-off-by: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
->> Signed-off-by: John Crispin <blogic@openwrt.org>
+>
+> I think you can use them. But is it possible to kill these things from
+> the data nodes themselves? We can always find it by looking up the index
+> by the data node key, right?
 >
 
-Hi Artem,
-
-i have tested this patch using arch/mips/configs/xway_defconfig and
-gcc4.6+linaro
-
-i will try a build with your config in a moment
-
-which git-tree are you building on top of ?
-
-thanks,
-John
+Yep, thats exactly right. Originally it was just inside the data node;
+I put it into the TNC as a optimization later during development. If I use
+the last eight bytes from the data node's key, and I remove the position
+from ubifs_branch, then there is no longer any change to the on-disk
+format, so thats should be useful. Yeah, storing the same value twice
+means also needing a consistency check. What can be done is that when the
+value is loaded once after mounting, it is stored in in the z-node in
+memory.
