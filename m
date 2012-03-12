@@ -1,25 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7BQi-0002vg-5L
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 20:01:16 +0000
-Message-ID: <1331559361.12037.29.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Adding Secure Deletion to UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 12 Mar 2012 15:36:01 +0200
-In-Reply-To: <1331559053.12037.25.camel@sauron.fi.intel.com>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1330536308.3545.158.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203011434220.2462@eristoteles.iwoars.net>
- <1331278562.22872.18.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203091959570.25737@eristoteles.iwoars.net>
- <1331559053.12037.25.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S702b-0002hi-SA
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2012 07:51:38 +0000
+Date: Mon, 12 Mar 2012 08:51:07 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : fix the wrong DMA command.
+Message-ID: <20120312075107.GB3928@pengutronix.de>
+References: <1331518938-24047-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
+Content-Disposition: inline
+In-Reply-To: <1331518938-24047-1-git-send-email-b32955@freescale.com>
+Cc: artem.bityutskiy@intel.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-03-12 at 15:30 +0200, Artem Bityutskiy wrote:
-> >  Btw, when I was
-> > developing it I used the last 8 bytes from the key as the key position,
-> > because the key was 16 bytes but only 8 were used. Could you comment on
-> > the last 8 bytes of ubifs keys?
-> 
-> I think you can use them. But is it possible to kill these things from
-> the data nodes themselves? We can always find it by looking up the index
-> by the data node key, right?
 
-Joel, but please, send small patches, preparation patches, etc. Do not
-disappear for several months and do not come back with another big
-patch. Tell about your intentions in advance.
+--MW5yreqqjyrRcusr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-E.g., if you decide to start using those unused 8 bytes - first do small
-preparations like removing the notion of "key scheme" which we
-provisioned but never used (from comments as well). Clean-up the "space"
-for yourself. Then start using them for your purposes. As I said, as
-soon as I get the first patch I like, I'll create a separate branch in
-the UBIFS git tree for your work.
+On Mon, Mar 12, 2012 at 10:22:18AM +0800, Huang Shijie wrote:
+> The last DMA command of ECC read page is used to disable the BCH module.
+> But the original code missed to set the pio[2] which is used to set the
+> GPMI_HW_GPMI_ECCCTRL register. fix it now.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Thanks!
+Thanks! What does happen because of this bug? Additional checksum errors? I
+haven't seen many on MX28 IIRC, so I wonder.
 
--- 
-Best Regards,
-Artem Bityutskiy
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--MW5yreqqjyrRcusr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk9dqusACgkQD27XaX1/VRtAjwCgjRfc600KcvEGonIcAmrU319M
+yi8An0qaLAPUQ8jqFXPz4cnBM0ZSmJ5s
+=RfSN
+-----END PGP SIGNATURE-----
+
+--MW5yreqqjyrRcusr--
