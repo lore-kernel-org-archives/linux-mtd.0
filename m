@@ -1,23 +1,21 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7MDM-00054L-4q
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 07:32:12 +0000
-Received: by yhjj52 with SMTP id j52so247062yhj.36
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2012 00:32:10 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1331619893.2443.10.camel@koala>
-References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
- <1331559644.12037.33.camel@sauron.fi.intel.com>
- <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
- <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
- <1331619893.2443.10.camel@koala>
-Date: Tue, 13 Mar 2012 08:32:10 +0100
-Message-ID: <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
-Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
-From: Matej Kupljen <matej.kupljen@gmail.com>
+Received: from gw1.transmode.se ([195.58.98.146])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7N56-0004Z9-63
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 08:27:45 +0000
+In-Reply-To: <1331289909.22872.65.camel@sauron.fi.intel.com>
+References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
+ <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
+ <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
+ <1331289909.22872.65.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Tue, 13 Mar 2012 09:27:34 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com,
+ Paul Parsons <lost.distance@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem,
 
->> What could be the cause of such many errors in FS?
->> I am really running out of ideas, how to solve this, so any hint would
->> be appreciated.
 >
-> This looks like non-UBI/UBIFS issue but more like issue with your flash
-> driver or HW. Start stress-testing the driver. Try MTD running mtd tests
-> over night.
+> On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
+> > yes, UBI probably has some different use. One seems that it keeps
+> > erasing the
+> > same block over and over again if the erase fails. JFFS2 doesn't do
+> > that since
+> > you can't trust a block that is failing erase(how can you be sure that
+> > write will work?)
+> > So, IMHO, UBIFS should reconsider this policy.
+>
+> The thread is very long and I would like save my time by not going
+> through it. But if you could start a new thread and formulate the
+> problem with UBI, I could think about it a bit. I am open to change
+> policies if it is not too much work.  Otherwise I am open to give hints
+> and suggestions and accept patches which change the policy. :-)
 
-O.K.
-I already tried that, but only the mtd_oobtest failed.
-
-Which tests should I run? All of them or maybe just mtd_stresstest?
-
-Do I need to format the NAND?
-I'll boot it with rootfs on SD card and try the stresstest.
-
-Thanks and Best Regards,
-Matej
+I just noted from one of the logs Paul sent, it LOOKED like UBI tried
+to erase the same sector several times if erase failed, gave me the impression
+that UBI would try erasing a failing sector over and over again.
+I think Paul will have to provide details if this is the case or not.
