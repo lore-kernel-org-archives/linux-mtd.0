@@ -1,20 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7QlI-0000Yb-Vv
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:23:33 +0000
-Message-ID: <1331641505.3595.23.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] MTD: add ecc_strength fields to mtd structs
+ id 1S7QmS-0000cg-P9
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:24:45 +0000
+Message-ID: <1331641636.3595.25.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/4] MTD: flash drivers set ecc strength
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Dunn <mikedunn@newsguy.com>
-Date: Tue, 13 Mar 2012 14:25:05 +0200
-In-Reply-To: <1331500873-9792-2-git-send-email-mikedunn@newsguy.com>
+Date: Tue, 13 Mar 2012 14:27:16 +0200
+In-Reply-To: <1331500873-9792-3-git-send-email-mikedunn@newsguy.com>
 References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-2-git-send-email-mikedunn@newsguy.com>
+ <1331500873-9792-3-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-fE00Q5dDtqQjqELufqfD"
+ boundary="=-MOU2LhjRAS20KJxaBFFi"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,34 +26,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-fE00Q5dDtqQjqELufqfD
+--=-MOU2LhjRAS20KJxaBFFi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sun, 2012-03-11 at 14:21 -0700, Mike Dunn wrote:
-> This adds 'ecc_strength' to struct mtd_info.  This stores the maximum num=
-ber of
-> bit errors that can be corrected in one writesize region.
->=20
-> For consistency with the nand code, 'strength' is similiarly added to str=
-uct
-> nand_ecc_ctrl.  This stores the maximum number of bit errors that can be
-> corrected in one ecc step.
->=20
-> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> Flash device drivers initialize 'ecc_strength' in struct mtd_info, which =
+is the
+> maximum number of bit errors that can be corrected in one writesize regio=
+n.
 
-If you expose 'bitflips_threshold' to user-space, I think you also
-should expose the strength - otherwise how would users select the
-correct value in a general manner? Would you please expose it in a
-separate patch?
+Looks ok, so pushed to l2-mtd.git. But please, try to find a list of
+possibly relevant people and send them a "please, take a look" request
+to make sure we give people a chance to fix possible errors early.
 
-Pushed this one to l2-mtd.git, thanks!
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-fE00Q5dDtqQjqELufqfD
+--=-MOU2LhjRAS20KJxaBFFi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPXzyhAAoJECmIfjd9wqK01owP/i5VLxU7x74m+uDekuoNQO1Z
-ezUXM/GAc7tVdpC56wutgSufKcm7iPrC5AoLvM65Z8gRuxpUixE9aLshko5ZZTDo
-6UjkI7exSNDPdyE2IOOFSPxLcqYxwlMkhAAqbOU/j7lI1w5JwmOTjlclbl/P9XWr
-SR57rJKSNc2AfIFcYRtb5kAqe7KoRQX10O8V2NOc1QZhs98Raq60bDqEQSg6UUH/
-K1AUV2w/M+BVsVC2F33lm6Dq2J9+kOkFjHhyOgl1WdPjNhLqhIdLSaeF0Cv/S4Bp
-LFz25bBknHJEwKAcofy5UtIGWk8yZpE/AzQ+8uabqFJir3P71l3+V3/dsH+3Hm56
-f9uRCke8UCNIPd+yDb8AV052Tz18a8SrgX5+y2Mwdrh/xmtVhMUBBZ/APQM1txpP
-w25Rz28NdkaOvjCCzu4UioMYRxVBz8EXovySyAtN97ObtJu75O4J+MNGpH1bjjwb
-IQRZWaqVJzjDGh9oSUAiTed6Ud6h6VOF85durV/aEKDJAELyVf7GIGWnrvKiRzNE
-IrIw6WA4S4yYrU0bkNJ6X51OpHwadM6OPiSM5awvbo1uW2b3Tmmz2FGxgT9OM0U1
-DjEIfP7Joc1sx3bo0+ZAtIAveDPpaO2AHe/cFbyljAzQASaDWI1zJOPVhLYN6Ugm
-w3dfX9fBkmYMu4eNw0/d
-=/kob
+iQIcBAABAgAGBQJPXz0kAAoJECmIfjd9wqK0bxEQAKFqAjD+dt/Y6EbN6uNA9P7V
+Q8+1L0Hqnda/rftO5g/e0tSrT23P343l9mu7eXm4XbQaAkWQaawsszXAq9wt7YOa
+6XFBkuaCs8I1JZIJsvqw9apFk5HvMEO1nHXTcdIB6vVZF2g0VlHW2dXLmNHW4FeV
+s2o+yZPpmtjkEzaHKdJwF7kwlUmALBhRqCm2WBEsrLFa2JSO8bqcoa4MX5J+JGdn
+CJ70iT7mVIz11I08yyk7uePAG6EBDlK6xCbbpxkF/zbpiPaIeh5SNtd2ZyWTBFmD
+1dydrv18c5EGtyAn5rcqJZjwwORCUbPsdMnk7xHsISJufw6xpO+3vx+BtVRG0eex
+5h2ld5BFIBLmr2vOFvoFamig9rpTwJ/S5740aDCQS3ZmjU1EJzz0cpUZuTRbGwL8
+hXMHg4hFE1t34WE5rRE+j0Htn/oGy2hKX7wVvzVOP0DNGzf1lJD3xxXC1Zrj6GRz
+JWM+PLz2Q8clva+Lpska7svMVI94euH/w32wGoxrdaC0F5xfY+jlnmTvAZVCJMMm
+96V5R6xAWXn0Sc+1QEXF6mT7q7gzQN579RF8pkr0bsH+RoVqwwZ7BAc0rSgNMBQ2
+R1GyBTu8RfGEYQfH4fBbfB+lpNAvKp4S/sXTA1mY2NVlL8U/TbBsuNbrxd5sU4+1
+Vk63KgGvi58nkMsuQwyv
+=87K7
 -----END PGP SIGNATURE-----
 
---=-fE00Q5dDtqQjqELufqfD--
+--=-MOU2LhjRAS20KJxaBFFi--
