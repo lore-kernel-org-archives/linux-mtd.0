@@ -1,28 +1,24 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7R4H-0005Ds-J8
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:43:10 +0000
-Message-ID: <1331642742.3595.37.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
- several NAND devices
+ id 1S7R7k-0005qh-DF
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:46:44 +0000
+Message-ID: <1331642936.3595.39.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 13 Mar 2012 14:45:42 +0200
-In-Reply-To: <CACRpkda26TT24Wrm5A7u2T-zTgWYHWC2EJD=frBAQX8ffkB3eA@mail.gmail.com>
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <1e02585381b1fb93a8fd5b826ac33d355eaedaa5.1331119143.git.vipin.kumar@st.com>
- <1331298422.29445.23.camel@sauron.fi.intel.com> <4F5A181D.1080106@st.com>
- <1331305901.29445.39.camel@sauron.fi.intel.com> <4F5F1931.7060602@st.com>
- <CACRpkdbf1_4otJFK728LKO=neGFdC6YEHFX+R00iTL0dcvKe1A@mail.gmail.com>
- <CACRpkda26TT24Wrm5A7u2T-zTgWYHWC2EJD=frBAQX8ffkB3eA@mail.gmail.com>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Tue, 13 Mar 2012 14:48:56 +0200
+In-Reply-To: <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
+References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
+ <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
+ <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
+ <1331289909.22872.65.camel@sauron.fi.intel.com>
+ <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-5sdSIjDUbxUsrGSHad+O"
+ boundary="=-iC4VIVT10+ZoyqwZ8aEQ"
 Mime-Version: 1.0
-Cc: Armando Visconti <armando.visconti@st.com>,
- Vipin KUMAR <vipin.kumar@st.com>, dbaryshkov@gmail.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com,
+ Paul Parsons <lost.distance@yahoo.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,47 +30,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-5sdSIjDUbxUsrGSHad+O
+--=-iC4VIVT10+ZoyqwZ8aEQ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-03-13 at 13:39 +0100, Linus Walleij wrote:
-> On Tue, Mar 13, 2012 at 12:56 PM, Linus Walleij
-> <linus.walleij@linaro.org> wrote:
-> > On Tue, Mar 13, 2012 at 10:53 AM, Armando Visconti
+On Tue, 2012-03-13 at 09:27 +0100, Joakim Tjernlund wrote:
 > >
-> >> Actually I checked better and I can say that:
-> >>
-> >>  1. We do have the provision to pass the partitions thru pdata and
-> >>     cmdline
+> > On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
+> > > yes, UBI probably has some different use. One seems that it keeps
+> > > erasing the
+> > > same block over and over again if the erase fails. JFFS2 doesn't do
+> > > that since
+> > > you can't trust a block that is failing erase(how can you be sure tha=
+t
+> > > write will work?)
+> > > So, IMHO, UBIFS should reconsider this policy.
+> >
+> > The thread is very long and I would like save my time by not going
+> > through it. But if you could start a new thread and formulate the
+> > problem with UBI, I could think about it a bit. I am open to change
+> > policies if it is not too much work.  Otherwise I am open to give hints
+> > and suggestions and accept patches which change the policy. :-)
 >=20
-> Oh. no, wait. The driver is broken, I just realized:
-> commit 0d04eda1430e9a796214bee644b7e05d99cfe613
-> "mtd: fsmc_nand.c: use mtd_device_parse_register" broke
-> the ability to pass in partitions from platform data and I did
-> not realize until now. :-/
->=20
-> > (...) and I get the default partitions from some SPEAr platform
-> > currently,
->=20
-> This is just because of the above bug.
+> I just noted from one of the logs Paul sent, it LOOKED like UBI tried
+> to erase the same sector several times if erase failed, gave me the impre=
+ssion
+> that UBI would try erasing a failing sector over and over again.
+> I think Paul will have to provide details if this is the case or not.
 
-Yeah, there were many bug-fixes like for this stuff. Please, base your
-patch on top of the l2-mtd.git tree:
-
-git://git.infradead.org/users/dedekind/l2-mtd.git
-
-and add
-
-Cc: stable@kernel.org [3.2+]
-
-Thanks!
+Correct, UBI does retry erasing several times, see function
+'do_sync_erase()' in drivers/mtd/ubi/io.c. Why would this be a problem?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-5sdSIjDUbxUsrGSHad+O
+--=-iC4VIVT10+ZoyqwZ8aEQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -82,19 +73,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPX0F2AAoJECmIfjd9wqK09wEP/R9k1Obwgs3yVpre5uc2iF5Q
-wGEHuh/CFnMfe4Mq2sWvKA+Ocu0jFpvSd/Yz7ws17374sSfgU+x/nhNkg/Lxz28N
-J+B30/e/A/H9uD2mSB8+7TD2Ngs/NLZwl9bqL4FnC9MveP10viaZYEg4D1KiUD5l
-Syq5UFTOypKI8sP33paqpL9ecCBa0VvM7e0FTDdE+t+oj+JGWsSgJtj0pTWBRUuu
-NWmjxrHDNF6ex3Ao4cTMDad30C/lbESxgt8l+YHqLgwl1u/vRg8lFbEtPYHz95B6
-0HH171BwHEL3jNVc62vhD2l5FfEjK1hEmJzFp/hBij0nQ10ehop7jpT+cJTtInYF
-NL7oWJzaKMT5AcHWSYDbHrTPR09017nPVsfb/jKvj+3uihB0B7Cpa9KeunTr/w0S
-MqcaTPykOx9IGCicQpr1EiauZUOM+wGeJFu7rwPO5qUvC5iiAVXoXsm/IOYLZfZl
-r8FgDaD4tDRGBoa2HBF0y/qpCCu0/nI4YlI2PrH4wVzOUYtKb6ZiBGNhR9vQkO81
-GCvo1bm3IYzWhA6p2GI/pGwYXMKzreTvh5TYT7QalmSAkAJdM/k69zjPpyFBQfP2
-3xB4ICdsrXANzuV89jf6i0x4eT/Jm6PSP1S9wL/apIhkCbDeb8e+Cz9CoVSXMGUK
-vGZTSAKxat0kvDFQBNfW
-=d1j4
+iQIcBAABAgAGBQJPX0I4AAoJECmIfjd9wqK0dnQQAJLTV246SHZtvrZf0yvq3yNJ
+PdiVbuTj8XrbBfUCXZSz05c+0PgiSWghzElYb+aM36MJl2rcQYgRtcnBtxrD3xFe
+r2X4D7i3cmyBKXZAZFaMu0iSes0Vxhi6xqSgUp9yO0ZY1yqoTDgolscl4Os6/SBi
+kFqtKXki4AWHnPJTIechJdBUaVw4qKNMjmy11AZjPXjwTtqGEUWY5AOtpG/o/FLO
+SOVip5w7Jg1XDme2OYIv/RpHyzn4T/vQhXxo+iVPVSNK+PF2qMvieZz4H9sfRmCw
+Hwyl+vPVLZNTSHlHem0mDtmSOeX0kA45fROicczu2DqKDQ0H58Yfss2D0p79ACg4
+SFPPV14Mn4vf5iSCP71nqKzGdTnjeDNqQ3ANRx9Gd2CMcPSVUb4BQe+rvRQw5NN2
+HUUHO+H+uW1/zUc9Ys7TTo75wYjgGHeuG8TbvshWq5JLsPqJHbhvWMQMQe38Ze79
+7IJiBRrN5Trmo3nFTSNFQKdgYCm7JzHMtnyEujeGVPROSgxSqUeJz5wC7Ao+93ZE
+ROXirBvQmCcLxTBQuc/76yUGRHsK/+iPej9g3kXi5mrmU8ntQ2oNDIX7C7Vcz6lr
+9ABUUsAv9ANWnbgr7JDWtEMIa5BDbpNtJhT76oNuKf4WyOac2B6f9o7C4oQ9+J+L
+Nmd3HZH1FW2N6lvTOpcx
+=jJ2s
 -----END PGP SIGNATURE-----
 
---=-5sdSIjDUbxUsrGSHad+O--
+--=-iC4VIVT10+ZoyqwZ8aEQ--
