@@ -1,25 +1,21 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7RM1-00014f-9w
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:01:29 +0000
-Received: by yenm10 with SMTP id m10so564640yen.36
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2012 06:01:28 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201203131353.40163.sr@denx.de>
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <CACRpkdbf1_4otJFK728LKO=neGFdC6YEHFX+R00iTL0dcvKe1A@mail.gmail.com>
- <CACRpkda26TT24Wrm5A7u2T-zTgWYHWC2EJD=frBAQX8ffkB3eA@mail.gmail.com>
- <201203131353.40163.sr@denx.de>
-Date: Tue, 13 Mar 2012 14:01:28 +0100
-Message-ID: <CACRpkdZw-nR3uS=FKrOtzgTACWc+=FfrspuT9PvyXDm+RMRFSg@mail.gmail.com>
-Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
- several NAND devices
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Stefan Roese <sr@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Armando Visconti <armando.visconti@st.com>,
- Vipin KUMAR <vipin.kumar@st.com>, dbaryshkov@gmail.com,
- linux-mtd@lists.infradead.org, Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7ROe-0001G3-Uv
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:04:13 +0000
+Message-ID: <1331644006.3595.45.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: phram: dot not crash when built-in and passing
+ boot param
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: h-fache@ti.com
+Date: Tue, 13 Mar 2012 15:06:46 +0200
+In-Reply-To: <1331632351-32610-1-git-send-email-h-fache@ti.com>
+References: <1331632351-32610-1-git-send-email-h-fache@ti.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-5EybFfRptlSqR2SpOCJh"
+Mime-Version: 1.0
+Cc: joern@lazybastard.org, joern@logfs.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 13, 2012 at 1:53 PM, Stefan Roese <sr@denx.de> wrote:
-> On Tuesday 13 March 2012 13:39:32 Linus Walleij wrote:
->> > (...) and I get the default partitions from some SPEAr platform
->> > currently,
->>
->> This is just because of the above bug.
->>
->> I'll fix!
->
-> I already sent a fix for this:
->
-> mtd: fsmc_nand.c: Partition info from pdata overrides driver defaults
 
-Oh sorry I was coding too quickly. Missed it previously.
-Thanks for fixing this.
+--=-5EybFfRptlSqR2SpOCJh
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Artem, forget my patch if you like, if you already have Stefan's patch
-applied, please add Cc: stable@kernel.org on it because I'm using
-this driver...
+On Tue, 2012-03-13 at 10:52 +0100, h-fache@ti.com wrote:
+>   * Copyright (c) ????		Jochen Sch=C3=A4uble <psionic@psionic.de>
+>   * Copyright (c) 2003-2004	Joern Engel <joern@wh.fh-wedel.de>
+> + * Copyright (c) 2012		Herv=C3=A9 Fache <h-fache@ti.com>
 
-Yours,
-Linus Walleij
+I think a little change does not justify adding own copyright to the
+whole driver, or does it?
+
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-5EybFfRptlSqR2SpOCJh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPX0ZmAAoJECmIfjd9wqK02VYQAJmrT/t95VCVz+0IVHUcYTqG
+CS7sHr2chaezfuyOfgfJZGMJHGnuFFaVb15IaBijlcyL31GdniiIcROmf0vXIAyx
+tCENlAfgd1jt1GSGhUfxPflF7LBDFcbMgSf/PkrkpMbx+fqUse/hFjT3UWvfIOj4
+TTN4HNN2eWm/s35j+DeCD0Ys6UzXPHI8GFsrIqrqL6k0acqNNnTGLNwzQxiJ5dP5
+Zote3GaU/0JaGgPAga8B/4CpNPl2EWsXzSCHVmUw+WAwJBVziv8Q23tR3YBrtgcS
+dPiOICWihuWuzv7mlPo1IyZJuwZNxcLziw7gV1tusIZCpLg6JT+yuCEwYOPbKrmG
+M/sRTLZmCdyDyXkfThDFWySnqMynHdm7EehF1AtV5GhCm1OPPAwzX7WwY/a9xaFq
+SqADe7/zYsoHgvZw8jSy4ypm8Aq1Pevk1YfYt1VxoKOlnKSPFH3vggmfHK26jBMm
+re82uBErGCokdBDG20+rIIxb26rSIouProfKcQKFN8iuyWvY/iuobz5fxAydWfWQ
+Zj+ve1KGwVE9CeG8lHi3jJjy17/ZAVmMLIO/u87tEOhSv8r72tpuUweN0X5VRXaF
+lkfBhhaiut9bcHUb8ArCHxGgq1qSRRniKuQl2T5V3yU847syphdMjIFDk6vXqZsh
+XwHMjYMc96wtTcDHkBjr
+=aRd9
+-----END PGP SIGNATURE-----
+
+--=-5EybFfRptlSqR2SpOCJh--
