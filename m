@@ -1,20 +1,19 @@
-In-Reply-To: <1331642936.3595.39.camel@sauron.fi.intel.com>
-References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
- <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
- <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
- <1331289909.22872.65.camel@sauron.fi.intel.com>
- <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
- <1331642936.3595.39.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
-To: dedekind1@gmail.com
-Message-ID: <OF1F093251.0E93488C-ONC12579C0.0046E1EF-C12579C0.0046FAF5@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 13 Mar 2012 13:55:17 +0100
+Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7RHw-0000dd-5X
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:57:18 +0000
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: fsmc_nand: restore platform data partition support
+Date: Tue, 13 Mar 2012 13:56:45 +0100
+Message-ID: <1331643405-759-1-git-send-email-linus.walleij@stericsson.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd-bounces@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, philipp.zabel@gmail.com,
- Paul Parsons <lost.distance@yahoo.com>
+Content-Type: text/plain
+Cc: Armando Visconti <armando.visconti@st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Vipin Kumar <vipin.kumar@st.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, stable@kernel.org,
+ Vincenzo Frascino <vincenzo.frascino@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> On Tue, 2012-03-13 at 09:27 +0100, Joakim Tjernlund wrote:
-> > >
-> > > On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
-> > > > yes, UBI probably has some different use. One seems that it keeps
-> > > > erasing the
-> > > > same block over and over again if the erase fails. JFFS2 doesn't do
-> > > > that since
-> > > > you can't trust a block that is failing erase(how can you be sure that
-> > > > write will work?)
-> > > > So, IMHO, UBIFS should reconsider this policy.
-> > >
-> > > The thread is very long and I would like save my time by not going
-> > > through it. But if you could start a new thread and formulate the
-> > > problem with UBI, I could think about it a bit. I am open to change
-> > > policies if it is not too much work.  Otherwise I am open to give hints
-> > > and suggestions and accept patches which change the policy. :-)
-> >
-> > I just noted from one of the logs Paul sent, it LOOKED like UBI tried
-> > to erase the same sector several times if erase failed, gave me the impression
-> > that UBI would try erasing a failing sector over and over again.
-> > I think Paul will have to provide details if this is the case or not.
->
-> Correct, UBI does retry erasing several times, see function
-> 'do_sync_erase()' in drivers/mtd/ubi/io.c. Why would this be a problem?
+From: Linus Walleij <linus.walleij@linaro.org>
 
-How can you trust a sector that fails to erase several times and then suddenly works ?
+Commit 0d04eda1430e9a796214bee644b7e05d99cfe613
+"mtd: fsmc_nand.c: use mtd_device_parse_register"
+accidentally broke the platform data partition supply
+capability in the FSMC driver, this make it work again.
+Tested on the U300 that use this scheme.
 
- Jocke
+Cc: stable@kernel.org
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/mtd/nand/fsmc_nand.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index e53b760..fd9f94f 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -713,7 +713,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	 * Check for partition info passed
+ 	 */
+ 	host->mtd.name = "nand";
+-	ret = mtd_device_parse_register(&host->mtd, NULL, 0,
++	if (pdata->partitions)
++		ret = mtd_device_parse_register(&host->mtd, NULL, 0,
++						pdata->partitions,
++						pdata->nr_partitions);
++	else
++		ret = mtd_device_parse_register(&host->mtd, NULL, 0,
+ 			host->mtd.size <= 0x04000000 ?
+ 				partition_info_16KB_blk :
+ 				partition_info_128KB_blk,
+-- 
+1.7.8
