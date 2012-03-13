@@ -1,25 +1,25 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7Rqx-00055j-VR
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:33:28 +0000
-In-Reply-To: <1331644149.3595.48.camel@sauron.fi.intel.com>
-References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>	
- <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
- <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
- <1331289909.22872.65.camel@sauron.fi.intel.com>	
- <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
- <1331642936.3595.39.camel@sauron.fi.intel.com>	
- <OF1F093251.0E93488C-ONC12579C0.0046E1EF-C12579C0.0046FAF5@transmode.se>
- <1331644149.3595.48.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
+Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7Rtr-0006gN-Ss
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:36:29 +0000
+From: Stefan Roese <sr@denx.de>
 To: dedekind1@gmail.com
-Message-ID: <OF0AE165ED.636A2414-ONC12579C0.004A6244-C12579C0.004A7844@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 13 Mar 2012 14:33:24 +0100
+Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
+ several NAND devices
+Date: Tue, 13 Mar 2012 14:36:09 +0100
+References: <cover.1331119143.git.vipin.kumar@st.com>
+ <CACRpkdZw-nR3uS=FKrOtzgTACWc+=FfrspuT9PvyXDm+RMRFSg@mail.gmail.com>
+ <1331644780.3595.56.camel@sauron.fi.intel.com>
+In-Reply-To: <1331644780.3595.56.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, philipp.zabel@gmail.com,
- Paul Parsons <lost.distance@yahoo.com>
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201203131436.09379.sr@denx.de>
+Cc: Armando Visconti <armando.visconti@st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Vipin KUMAR <vipin.kumar@st.com>,
+ dbaryshkov@gmail.com, linux-mtd@lists.infradead.org,
+ Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> wrote on 2012/03/13 14:09:09:
->
-> On Tue, 2012-03-13 at 13:55 +0100, Joakim Tjernlund wrote:
-> > >
-> > > On Tue, 2012-03-13 at 09:27 +0100, Joakim Tjernlund wrote:
-> > > > >
-> > > > > On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
-> > > > > > yes, UBI probably has some different use. One seems that it keeps
-> > > > > > erasing the
-> > > > > > same block over and over again if the erase fails. JFFS2 doesn't do
-> > > > > > that since
-> > > > > > you can't trust a block that is failing erase(how can you be sure that
-> > > > > > write will work?)
-> > > > > > So, IMHO, UBIFS should reconsider this policy.
-> > > > >
-> > > > > The thread is very long and I would like save my time by not going
-> > > > > through it. But if you could start a new thread and formulate the
-> > > > > problem with UBI, I could think about it a bit. I am open to change
-> > > > > policies if it is not too much work.  Otherwise I am open to give hints
-> > > > > and suggestions and accept patches which change the policy. :-)
-> > > >
-> > > > I just noted from one of the logs Paul sent, it LOOKED like UBI tried
-> > > > to erase the same sector several times if erase failed, gave me the impression
-> > > > that UBI would try erasing a failing sector over and over again.
-> > > > I think Paul will have to provide details if this is the case or not.
-> > >
-> > > Correct, UBI does retry erasing several times, see function
-> > > 'do_sync_erase()' in drivers/mtd/ubi/io.c. Why would this be a problem?
-> >
-> > How can you trust a sector that fails to erase several times and then suddenly works ?
->
-> It could be a transient error, some random noise in the line, some
-> electrons did not want to move by an accident, something like this :-)
->
-> But I guess it does not make much sense for erase and write. For read it
-> does make sense to re-try. I am happy to accept a patch.
+Artem,
 
-I am not using UBIFS(yet anyway) so don't wait for me.
+On Tuesday 13 March 2012 14:19:40 Artem Bityutskiy wrote:
+> > Oh sorry I was coding too quickly. Missed it previously.
+> > Thanks for fixing this.
+> > 
+> > Artem, forget my patch if you like, if you already have Stefan's patch
+> > applied, please add Cc: stable@kernel.org on it because I'm using
+> > this driver...
+> 
+> I somehow missed Stefan's patch, and was not pinged, unfortunately. I
+> see it in my mailbox, but it does not apply anymore because it conflicts
+> with patches from st.com which I applied recently.
+> 
+> Stefan, would you re-send a new version and add:
+>
+> Cc: stable@kernel.org [3.2+]
+> 
+> Sorry for missing your patch.
 
- Jocke
+No problem.
+
+But the patch still applies clean onto kernel.org. I suspect that the 
+conflicts are with your l2-mtd.git tree, correct? Will you push the l2 tree 
+still into v3.3? If not, then this patch could be applied as is into mainline.
+
+I'm confused. ;) Please advise.
+ 
+Thanks,
+Stefan
