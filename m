@@ -1,21 +1,17 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7QoN-0000xJ-3U
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:26:43 +0000
-Message-ID: <1331641756.3595.27.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/4] MTD: euclean_threshold added to mtd_info and sysfs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Tue, 13 Mar 2012 14:29:16 +0200
-In-Reply-To: <1331500873-9792-4-git-send-email-mikedunn@newsguy.com>
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-4-git-send-email-mikedunn@newsguy.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-QLpwEGqF4RacYJhr//W/"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: multipart/mixed; boundary="===============1558675968=="
+MIME-Version: 1.0
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd/gpmi : fix the wrong DMA command.
+Date: Tue, 13 Mar 2012 12:33:22 +0000
+Message-ID: <1331642159.3595.28.camel@sauron.fi.intel.com>
+References: <1331518938-24047-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1331518938-24047-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "w.sang@pengutronix.de" <w.sang@pengutronix.de>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--===============1558675968==
+MIME-Version: 1.0
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-N61pK41Cxr6ClDhkQjf6"
 
---=-QLpwEGqF4RacYJhr//W/
+--=-N61pK41Cxr6ClDhkQjf6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-03-11 at 14:21 -0700, Mike Dunn wrote:
-> The element 'euclean_threshold' is added to struct mtd_info.  If the driv=
-er
-> leaves this uninitialized, mtd sets it to ecc_strength when the device or
-> partition is registered.  This element is also exposed for reading and wr=
-iting
-> from userspace through sysfs.
+On Mon, 2012-03-12 at 10:22 +0800, Huang Shijie wrote:
+> The last DMA command of ECC read page is used to disable the BCH module.
+> But the original code missed to set the pio[2] which is used to set the
+> GPMI_HW_GPMI_ECCCTRL register. fix it now.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Would you please change the name?
-
-> An afterthought... ecc_strength should probably also be exposed through s=
-yfs as
-> a r/o value.  Ioctls for querying both these values could also be added t=
-o
-> mtdchar.
-
-Yeah, I believe so!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QLpwEGqF4RacYJhr//W/
+--=-N61pK41Cxr6ClDhkQjf6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,19 +52,41 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPXz2cAAoJECmIfjd9wqK0ER4QALI9eAN1cP+bZDK/WdRcPUes
-rA1gqQ3pviay0N6U+BdnFLMlUIZ0xLmaCwxkK1v4zrzhbO5Nfr7nTzKZc30Ogv5H
-M2od6lw0WvvYCVXj+sfEmk9rHlUkYLyhUd/ph3cMbURS0xJT/aq9wdB1wDOUq4hm
-gzbA07ModdpzPb2f2sApawdLqiKX8Qj9+zusTQVgu11YO+Nsdbb/G58y7CsOjjJF
-Y+YdU+Ev1R7WizJrj1qPV3Fpequz2duK4kzTh3ziYTsC/djtiyMiPEK5Pj5BlpRC
-u+n27BTzgzOntyKi68HzM2Uj3XVmcJjm/apLLOaMhz4Tiyt0ftFimHPiqVm6GgLq
-u7xNe9EWFbKPROQoFYMVZ9iFBHIkqRCdHPPgISb2k6k3IzAdqTUk8nW5kGElqMDz
-oWxWM100JeKeqxATjL74gboJYYp/y4YJ+5sXZTQSPNubc2IJLFmSuA8iYU8zMxaK
-TnaZdYreZQUeDiMyM4ufi+Ia6gSwadCa8t2bd5tL+vEkmPt3sxVUnf9ItPe/pZgP
-LMaY3rAF2WZK6SupEikKF8oFKj1TcH/2Y0uAHim85zzrQ/Qw4CPfq8uXv39HQXyq
-s+XaSJFLd95iFwYTAIXbRXDMY7zqiVuv313fn3qgXyLtKtblTx2CrZVPdvGa9RiW
-j4hbYYvRvGKyfKoQf/Ar
-=yFEP
+iQIcBAABAgAGBQJPXz8vAAoJECmIfjd9wqK0TYMP/Ay9gicjug1QhAa1KKvRSH60
+MFsoj4Pzm7dTZMOgN+LcnhFj5YOqKMb5Ryiv9lunLE9KWLSLNg5zpiIr+954eOjL
+M2M9k3GhMYHCePZzAxcn99pRPbK8Hrmk8lWQnDnyCPoMiA2lNW6A3gIemCj2Bc3z
+haO3x2d0P9qFuXffTOKSyQlQ60HQIwmLC+xuXDJo+bRPhirsZsXZhD3qVC6FtUOz
+AGkkKcEtEPX/+z2k9+ZvxdK8Klv/Y574oPQnk1mMi6+09qTDBkM+OCyeM5g8ZMF/
+upedSQLCC1wFFDEvfCXHipYnaM5jbIzNSCYDC00SNIpXFYt7zPkf6FH50XjgJXfK
+I3RUoU/RlVRKFW3nQpAKm3GqGY9CgtfDFLD5sNmdx/8dy7ibwOV/jKvogWcmkWRu
+fLFD8zv1PV0qUFM1wFW0Lu8B1C3Sc6rliMHVEKpcNpzGw1ntD5RlFWPG6DRgYjjq
+DNPo1yBJySa63i0YL+KMQI3DcP7Ws/W9xEr+JxhhVjdgn6SrWX+iCTl6mQY663cp
+0EpShkt21dm6bFDHIO2xv7gvKRxjAMlnGcItEJTlmUd6g2sDHMTlATFUIB4cNi6M
+0SfSpE2ZCc5eVHOPA8npaS/2oqIzv67WZPd+pOktB4D//VzZTF8/Kk1Ua8Bce8NT
+CynMHr00Yikm2XwbXP26
+=NPtF
 -----END PGP SIGNATURE-----
 
---=-QLpwEGqF4RacYJhr//W/--
+--=-N61pK41Cxr6ClDhkQjf6--
+
+--===============1558675968==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki =
+
+Business Identity Code: 0357606 - 4 =
+
+Domiciled in Helsinki =
+
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
+--===============1558675968==--
