@@ -1,23 +1,23 @@
-Message-ID: <1331644149.3595.48.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi: Wait for Block Erase operation to finish
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7RVv-0001z9-CU
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:11:43 +0000
+Message-ID: <1331644379.3595.49.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: fsmc_nand: restore platform data partition support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 13 Mar 2012 15:09:09 +0200
-In-Reply-To: <OF1F093251.0E93488C-ONC12579C0.0046E1EF-C12579C0.0046FAF5@transmode.se>
-References: <OF56C9B29B.F0D0442B-ONC12579B5.00450ADB-C12579B5.00458326@transmode.se>
- <1330697193.91058.YahooMailClassic@web29016.mail.ird.yahoo.com>
- <OF3BA4765E.16024E23-ONC12579B5.004E96D5-C12579B5.004FAAF8@transmode.se>
- <1331289909.22872.65.camel@sauron.fi.intel.com>
- <OF75BE5BF1.29391153-ONC12579C0.002D7F3D-C12579C0.002E7828@transmode.se>
- <1331642936.3595.39.camel@sauron.fi.intel.com>
- <OF1F093251.0E93488C-ONC12579C0.0046E1EF-C12579C0.0046FAF5@transmode.se>
+To: Linus Walleij <linus.walleij@stericsson.com>
+Date: Tue, 13 Mar 2012 15:12:59 +0200
+In-Reply-To: <1331643405-759-1-git-send-email-linus.walleij@stericsson.com>
+References: <1331643405-759-1-git-send-email-linus.walleij@stericsson.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-UWT14OazFHWWtYbCkCPh"
+ boundary="=-FbwoUsfolI3dVbT+vWp9"
 Mime-Version: 1.0
-Cc: linux-mtd-bounces@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, philipp.zabel@gmail.com,
- Paul Parsons <lost.distance@yahoo.com>
+Cc: Armando Visconti <armando.visconti@st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Vipin Kumar <vipin.kumar@st.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, stable@kernel.org,
+ Vincenzo Frascino <vincenzo.frascino@st.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,55 +29,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-UWT14OazFHWWtYbCkCPh
+--=-FbwoUsfolI3dVbT+vWp9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-03-13 at 13:55 +0100, Joakim Tjernlund wrote:
-> >
-> > On Tue, 2012-03-13 at 09:27 +0100, Joakim Tjernlund wrote:
-> > > >
-> > > > On Fri, 2012-03-02 at 15:30 +0100, Joakim Tjernlund wrote:
-> > > > > yes, UBI probably has some different use. One seems that it keeps
-> > > > > erasing the
-> > > > > same block over and over again if the erase fails. JFFS2 doesn't =
-do
-> > > > > that since
-> > > > > you can't trust a block that is failing erase(how can you be sure=
- that
-> > > > > write will work?)
-> > > > > So, IMHO, UBIFS should reconsider this policy.
-> > > >
-> > > > The thread is very long and I would like save my time by not going
-> > > > through it. But if you could start a new thread and formulate the
-> > > > problem with UBI, I could think about it a bit. I am open to change
-> > > > policies if it is not too much work.  Otherwise I am open to give h=
-ints
-> > > > and suggestions and accept patches which change the policy. :-)
-> > >
-> > > I just noted from one of the logs Paul sent, it LOOKED like UBI tried
-> > > to erase the same sector several times if erase failed, gave me the i=
-mpression
-> > > that UBI would try erasing a failing sector over and over again.
-> > > I think Paul will have to provide details if this is the case or not.
-> >
-> > Correct, UBI does retry erasing several times, see function
-> > 'do_sync_erase()' in drivers/mtd/ubi/io.c. Why would this be a problem?
+On Tue, 2012-03-13 at 13:56 +0100, Linus Walleij wrote:
+> From: Linus Walleij <linus.walleij@linaro.org>
 >=20
-> How can you trust a sector that fails to erase several times and then sud=
-denly works ?
+> Commit 0d04eda1430e9a796214bee644b7e05d99cfe613
+> "mtd: fsmc_nand.c: use mtd_device_parse_register"
+> accidentally broke the platform data partition supply
+> capability in the FSMC driver, this make it work again.
+> Tested on the U300 that use this scheme.
+>=20
+> Cc: stable@kernel.org
 
-It could be a transient error, some random noise in the line, some
-electrons did not want to move by an accident, something like this :-)
+Specify the version please: [3.2+]
 
-But I guess it does not make much sense for erase and write. For read it
-does make sense to re-try. I am happy to accept a patch.
+> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+
+This patch does not apply on top of the l2-mtd.git tree.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-UWT14OazFHWWtYbCkCPh
+--=-FbwoUsfolI3dVbT+vWp9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -85,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPX0b1AAoJECmIfjd9wqK0amUP/1p5L3+MW7+8jOkhmNbHt1pH
-MxvWocqTLJ/CV1Y8wq8GrE75OBuFhDXiskrYuS9c8b4X3JCzHS25c5k9rzw1utL5
-66PDHuC2X7ol2thcD2q2Q9Oae/N2A0r91hEVTBI71nzk1OTmGPBBR9BrjdQwFXSv
-QzqrKk0fj2kWUdcD8WJhBbUgehpvaNVbRAax+JoiIcE056ToxeHxLc/yIJ6mKyAz
-RaHjey/Z4OrsTQh5+WBQWz6s2dXTzjiltuep9pBun4kMdeTDArfB/SWQlAwhBfQx
-CktRxXXx+BS2Zp1I4rytsQgejWGQn9v8C58rLNh+D6VfRv81kcOo4tUd5UG/kUhk
-dw8x9ELM4Khph55Xe+OPHw4tjDVLRv2HCCPudcwWGJIpgoviPNav59wisgEtJDFJ
-tpcaXYw8k315+tl+fAZY9Hn7MECVGLfvmVkXP1yQB6onDW+9r8VhgczYvl81zqH9
-ZpMi2kNk5R2nc4UEmZ+0ppBYxWYvJvFBpLI4XD709kIKPeakHvSEfFdb+H97o2wK
-Snu8wdE0Wg+eGXTAnRgi/lGTbm77mDJTOsZMNwlzyq7qknsZ3O7Q8i+T491gsJ43
-U+5yUUIHaC/n/2QFPsCaaTww1R1Jyq+kNFUHlyjvLqXyjqYdC94krO9Wt9L6SRY4
-xZIUVZuonz85irwxIME8
-=EKZ6
+iQIcBAABAgAGBQJPX0fbAAoJECmIfjd9wqK0F3YP/iqanUTnRucT1T12355jqSJ9
+JW2iUuVSQ9AShluMp4YIW0GNRIQIX+ZTfhkzu7oOGRsHB/xBO/yLM747jc8q363X
+O3hHY+js4VwBH//3y3vk3EFrDUeaF0rzfF/GP9I9sSWAbFzJ3f4VVBgHbHUVvzNq
+F06+f3mgTLm1EsYaIkxI5R1oFYZwWSzfRhJ0I+MsEcg65P+xHIe4F9bioCb4LUB5
+Zy8XXbORWsou+jAuqIe4ebehDY2eQjAMYoIafFImS2odny8qDGRUTHZncpRV3Vz9
+/5th8cHIJOkG6bToOeP+gu3MkPCsT8/+c3cByYKJt8oz0XTzObhAhiTgIsCPGW8I
+Eja+LFqHmZYzhZNaic3CtO6cgPjfTVN6hgtCH0mBkcgw2cHoL/xZ05G3RNjBCRtl
++jcdS5WvMHTgfokBplInHREUknRZ/MTajOYuTxDgFwBJsGoa22c9WVcWB69l2SpJ
+n0IuFdXY2NOKD+1qwtjuSmqalK+Tu20e6f+qezr2rjv+ibZY5q2nShX91i+vxTb3
+xoBp0Zb9ehWlyg4qWyaj33lvaEUsQra5RsXWOTv+/Lf0ee4hEtTAHPKRJNj3jYZs
+RcPK2ene9BuEhlC5iOMD33aUy10NZ8ZDm+WKpVXm0263+YbjHg3yRAJJAKBTS19W
+5g83MibXUuPYj0xIHM0A
+=sG9M
 -----END PGP SIGNATURE-----
 
---=-UWT14OazFHWWtYbCkCPh--
+--=-FbwoUsfolI3dVbT+vWp9--
