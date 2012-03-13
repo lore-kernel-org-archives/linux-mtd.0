@@ -1,19 +1,25 @@
-Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7RHw-0000dd-5X
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:57:18 +0000
-From: Linus Walleij <linus.walleij@stericsson.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: fsmc_nand: restore platform data partition support
-Date: Tue, 13 Mar 2012 13:56:45 +0100
-Message-ID: <1331643405-759-1-git-send-email-linus.walleij@stericsson.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7RM1-00014f-9w
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 13:01:29 +0000
+Received: by yenm10 with SMTP id m10so564640yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2012 06:01:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <201203131353.40163.sr@denx.de>
+References: <cover.1331119143.git.vipin.kumar@st.com>
+ <CACRpkdbf1_4otJFK728LKO=neGFdC6YEHFX+R00iTL0dcvKe1A@mail.gmail.com>
+ <CACRpkda26TT24Wrm5A7u2T-zTgWYHWC2EJD=frBAQX8ffkB3eA@mail.gmail.com>
+ <201203131353.40163.sr@denx.de>
+Date: Tue, 13 Mar 2012 14:01:28 +0100
+Message-ID: <CACRpkdZw-nR3uS=FKrOtzgTACWc+=FfrspuT9PvyXDm+RMRFSg@mail.gmail.com>
+Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
+ several NAND devices
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Stefan Roese <sr@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Armando Visconti <armando.visconti@st.com>,
- Linus Walleij <linus.walleij@linaro.org>, Vipin Kumar <vipin.kumar@st.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, stable@kernel.org,
- Vincenzo Frascino <vincenzo.frascino@st.com>
+ Vipin KUMAR <vipin.kumar@st.com>, dbaryshkov@gmail.com,
+ linux-mtd@lists.infradead.org, Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Linus Walleij <linus.walleij@linaro.org>
+On Tue, Mar 13, 2012 at 1:53 PM, Stefan Roese <sr@denx.de> wrote:
+> On Tuesday 13 March 2012 13:39:32 Linus Walleij wrote:
+>> > (...) and I get the default partitions from some SPEAr platform
+>> > currently,
+>>
+>> This is just because of the above bug.
+>>
+>> I'll fix!
+>
+> I already sent a fix for this:
+>
+> mtd: fsmc_nand.c: Partition info from pdata overrides driver defaults
 
-Commit 0d04eda1430e9a796214bee644b7e05d99cfe613
-"mtd: fsmc_nand.c: use mtd_device_parse_register"
-accidentally broke the platform data partition supply
-capability in the FSMC driver, this make it work again.
-Tested on the U300 that use this scheme.
+Oh sorry I was coding too quickly. Missed it previously.
+Thanks for fixing this.
 
-Cc: stable@kernel.org
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mtd/nand/fsmc_nand.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+Artem, forget my patch if you like, if you already have Stefan's patch
+applied, please add Cc: stable@kernel.org on it because I'm using
+this driver...
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index e53b760..fd9f94f 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -713,7 +713,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	 * Check for partition info passed
- 	 */
- 	host->mtd.name = "nand";
--	ret = mtd_device_parse_register(&host->mtd, NULL, 0,
-+	if (pdata->partitions)
-+		ret = mtd_device_parse_register(&host->mtd, NULL, 0,
-+						pdata->partitions,
-+						pdata->nr_partitions);
-+	else
-+		ret = mtd_device_parse_register(&host->mtd, NULL, 0,
- 			host->mtd.size <= 0x04000000 ?
- 				partition_info_16KB_blk :
- 				partition_info_128KB_blk,
--- 
-1.7.8
+Yours,
+Linus Walleij
