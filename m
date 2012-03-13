@@ -1,30 +1,20 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7R0p-0004Rd-H6
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:39:36 +0000
-Received: by yenm10 with SMTP id m10so536806yen.36
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2012 05:39:32 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACRpkdbf1_4otJFK728LKO=neGFdC6YEHFX+R00iTL0dcvKe1A@mail.gmail.com>
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <1e02585381b1fb93a8fd5b826ac33d355eaedaa5.1331119143.git.vipin.kumar@st.com>
- <1331298422.29445.23.camel@sauron.fi.intel.com>
- <4F5A181D.1080106@st.com>
- <1331305901.29445.39.camel@sauron.fi.intel.com>
- <4F5F1931.7060602@st.com>
- <CACRpkdbf1_4otJFK728LKO=neGFdC6YEHFX+R00iTL0dcvKe1A@mail.gmail.com>
-Date: Tue, 13 Mar 2012 13:39:32 +0100
-Message-ID: <CACRpkda26TT24Wrm5A7u2T-zTgWYHWC2EJD=frBAQX8ffkB3eA@mail.gmail.com>
-Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
- several NAND devices
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Armando Visconti <armando.visconti@st.com>,
- Vipin KUMAR <vipin.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dbaryshkov@gmail.com, Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7R12-0004VL-Uo
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 12:39:49 +0000
+Message-ID: <1331642471.3595.33.camel@sauron.fi.intel.com>
+Subject: Re: MTD API locking and concurrency
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 13 Mar 2012 14:41:11 +0200
+In-Reply-To: <87obs1rr4b.fsf@free.fr>
+References: <87obs1rr4b.fsf@free.fr>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-6EX4gHTHv6Zd2km0FfLr"
+Mime-Version: 1.0
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,27 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 13, 2012 at 12:56 PM, Linus Walleij
-<linus.walleij@linaro.org> wrote:
-> On Tue, Mar 13, 2012 at 10:53 AM, Armando Visconti
->
->> Actually I checked better and I can say that:
->>
->> =A01. We do have the provision to pass the partitions thru pdata and
->> =A0 =A0 cmdline
 
-Oh. no, wait. The driver is broken, I just realized:
-commit 0d04eda1430e9a796214bee644b7e05d99cfe613
-"mtd: fsmc_nand.c: use mtd_device_parse_register" broke
-the ability to pass in partitions from platform data and I did
-not realize until now. :-/
+--=-6EX4gHTHv6Zd2km0FfLr
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> (...) and I get the default partitions from some SPEAr platform
-> currently,
+On Tue, 2012-03-13 at 06:45 +0100, Robert Jarzmik wrote:
+> Hi,
+>=20
+> I came across a concurrent usage of my MTD driver by UBIFS by doing
+> an IOC_UBI_UPVOL. As my chip doesn't support multiple requests at a time,=
+ I need
+> to protect the access to chip registers.
+>=20
+> I wonder if mtd api function can be called in interrupt context.
 
-This is just because of the above bug.
+No, this is not explicitely documented and you are welcome to send a
+patch which adds a comment to mtd.h, but all the MTD API functions are
+supposed to be called from sleeping context. IOW, the caller should keep
+in mind that these functions may sleep.
 
-I'll fix!
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Yours,
-Linus Walleij
+--=-6EX4gHTHv6Zd2km0FfLr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPX0BnAAoJECmIfjd9wqK0NvkQAIKRO6ot5jVl1RJ7chMsRNB1
+1QwQFdyh4WkMLebaK/n3E6n7Fgk9KxwyxDsG6FsTZdjW4wXui52+/9ld8jPb3rc+
+2aJfvuZjjMffRQ6wX9QUFUVVmtxfUdUK2PDTTgYIkaJdEm7yaxT6efezW0+UvB40
+jdL+RHRseyphBidMEQTrtyQrxgkr8+B75j2/DL5ViBfRwTW3AfyePRhPqNayMjKH
+NzKkS6WDs8AbsGl5P7iGNbibnsnZSvCU2327ukF/oT6N5UOJUoJJoiYZid1ZaK5r
+mgwi1z5bSAeWqqjY7xwJFxPfg5+tbqOZTR3qRmTPvtko2y97oErvori0YzXi0Cgx
+AJSvM0qfjXkF/Kd5r0WywUH6PRZbUHu7Op4+4AuAlG2cet/IjIhxZyoWAh2CzZPc
+UAtsDJw+CwxF7lkZras/VD/fFiM2rRF4A4kPNt45+tYtJAWSyWDPg0cGgoT2QPOs
+CVNI8zyO5f2W0IkuCcDse3GAC5Orf7tNlUfI/dATO/i5XMa6E+V9l4VUfnJEaRUa
+eIlhH6tKEkncKtb4zvDUpbdkS5QfF/8O+68aiP6+U9k1luFf+L0/Kjtnz5Fhd3bw
+2QbkVotlpaQJnO2M0dk1VCDj0MPnRUbxtq2R8s7x4EwHyFCNouSJ71evfbwOCT/M
+hA26wtjALD5W+JysLubk
+=//fM
+-----END PGP SIGNATURE-----
+
+--=-6EX4gHTHv6Zd2km0FfLr--
