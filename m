@@ -1,26 +1,21 @@
-Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7P4P-00051l-QU
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 10:35:10 +0000
-Message-ID: <4F5F22A7.1000808@st.com>
-Date: Tue, 13 Mar 2012 16:04:15 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
-MIME-Version: 1.0
-To: Armando VISCONTI <armando.visconti@st.com>
-Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
- several NAND devices
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <1e02585381b1fb93a8fd5b826ac33d355eaedaa5.1331119143.git.vipin.kumar@st.com>
- <1331298422.29445.23.camel@sauron.fi.intel.com> <4F5A181D.1080106@st.com>
- <1331305901.29445.39.camel@sauron.fi.intel.com> <4F5F1931.7060602@st.com>
-In-Reply-To: <4F5F1931.7060602@st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
- "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7Pej-0001xW-Le
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 11:12:42 +0000
+Message-ID: <1331637313.3595.10.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: sh_flctl: Add power management support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Tue, 13 Mar 2012 13:15:13 +0200
+In-Reply-To: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
+References: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-y40YAjKdIhLKn4LaTOVv"
+Mime-Version: 1.0
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,68 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/13/2012 3:23 PM, Armando VISCONTI wrote:
-> On 03/09/2012 04:11 PM, Artem Bityutskiy wrote:
->> On Fri, 2012-03-09 at 15:47 +0100, Armando Visconti wrote:
->>> On 03/09/2012 02:07 PM, Artem Bityutskiy wrote:
->>>> On Wed, 2012-03-07 at 17:00 +0530, Vipin Kumar wrote:
->>>>> +static struct mtd_partition partition_info_64KB_blk[] = {
->>>>> +	{
->>>>> +		.name = "X-loader",
->>>>> +		.offset = 0,
->>>>> +		.size = 4*0x10000,
->>>>> +	},
->>>>> +	{
->>>>> +		.name = "U-Boot",
->>>>> +		.offset = 4*0x10000,
->>>>> +		.size = 8*0x40000,
->>>>> +	},
->>>>> +	{
->>>>> +		.name = "Kernel",
->>>>> +		.offset = (4+8)*0x10000,
->>>>> +		.size = 64*0x40000,
->>>>> +	},
->>>>> +	{
->>>>> +		.name = "Root File System",
->>>>> +		.offset = (4+8+64)*0x10000,
->>>>> +		.size = MTDPART_SIZ_FULL,
->>>>> +	},
->>>>> +};
->>>>
->>>> Shouldn't this kind of data come from DT/platform data or cmdline
->>>> instead? Does it make sense to have it hard-coded in the driver?
->>>>
->>>
->>> These are just the default partitions.
->>
->> I thing the default should be "no partitions" instead of a hard-coded
->> list of partitions tailored to a specific system.
->>
->>> We are passing them also from platform, and it is possible also
->>> from cmdline.
->>
->> Fine, then deleting the defaults should not hurt :-)
->>
->
-> Yes, Artem, I think you are right.
-> Actually I checked better and I can say that:
->
->     1. We do have the provision to pass the partitions thru pdata and
->        cmdline
->     2. Nevertheless, we are not passing partitions thru pdata in none
->        of our platforms.
->
-> I think we need to change this and pass partitions thru pdata.
-> Vipin, what's your opinion?
->
 
-Yes, I was thinking on the same lines. Infact I have prepared the 
-patches and only going through a basic testing before sending the 
-patches to mainline
+--=-y40YAjKdIhLKn4LaTOVv
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Regards
-Vipin
+On Sat, 2012-03-10 at 16:31 +0100, Bastian Hecht wrote:
+> All transactions with the NAND chip require a chip enable signal. So we
+> wrap the runtime_pm_get()/put()s around it. As registers are cached, we
+> need no suspend()/resume() callbacks.
+>=20
+> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 
-> Thx,
-> Arm
->
+Pushed to l2-mtd.git, thanks.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-y40YAjKdIhLKn4LaTOVv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPXyxBAAoJECmIfjd9wqK0PpoQAL0j4ijACz6BysGaJX9AxwwU
++ETZDhmWVnFRlC1HvbnBwwiLu5G+ZEsF57+AdBgEcwNFs9z/w9O8xHFUjnbabUiw
+nNhvS7tmu+ixB5sfnX/Xwsl41FxzGSObKH7MSwzrZ5919vCSQKtiC8IWjoE/uPDR
+zw47UVkly8mSyvv+PTb9Wf5uZ6dfyLGo3ASv4HCiQouYznI/7Hq+UkD3ibG6WUbb
+n776i+xqlXYlC+9hWDFK/xbHfA7swW1Ht6ufOk1ZbJQdpHd5UbGyGFaFbabj9o3n
+O3zHSbsLKKlnPZ+RhyfGSiB9Asx6XmyP32AWnWXU+7zVBT1sP0ak8wuaFznjStio
+g2q8eY+7x4RLJ0B1OaBHlhc4xw8WV0q9eM+WoqrFmmPET/gyeVEK125GLhAd9pHV
+fvlge3wSTNm+pCrR62krbnivaNwY3KQGNT+8MsNHV+hDym31GAvA7NFOatyX0c9h
+8FayNXwTl8qbS5nQeaXSEKDUbweWPHRm4MnjSFFnHOYMEeXDtCsJpHpCh4jSF1wl
+aFUcv6aEULRGAf6BTIsQ/pkUc5iWjcCjKxVmZv+oPvA5sNQAExV8bvAcMT73ALDl
+NMafSpnSdCdnQnWlY9CwHiAZMYn2IPfcsfCMAElXaI1BkD5iu5ltwPXNREM9jSVD
+6Qi8izQDytX+JGpELF9m
+=swLi
+-----END PGP SIGNATURE-----
+
+--=-y40YAjKdIhLKn4LaTOVv--
