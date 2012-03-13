@@ -1,17 +1,18 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7Q9k-0003wR-DD
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 11:44:45 +0000
-Message-ID: <1331639237.3595.11.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] drivers/mtd: docg3 lessen read alignement burden
+ id 1S7QBo-00048V-El
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 11:46:53 +0000
+Message-ID: <1331639294.3595.12.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] drivers/mtd: docg3 fix writebufsize
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 13 Mar 2012 13:47:17 +0200
-In-Reply-To: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
+Date: Tue, 13 Mar 2012 13:48:14 +0200
+In-Reply-To: <1331461726-10087-2-git-send-email-robert.jarzmik@free.fr>
 References: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
+ <1331461726-10087-2-git-send-email-robert.jarzmik@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Aldeh3mAuEDYdo1ZEtfs"
+ boundary="=-/5Ph7N32YqvGHzm3b3U1"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,25 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Aldeh3mAuEDYdo1ZEtfs
+--=-/5Ph7N32YqvGHzm3b3U1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sun, 2012-03-11 at 11:28 +0100, Robert Jarzmik wrote:
-> The read function was so far requiring the reads to be aligned on page
-> boundaries, and be page length multiples in size. Relieve these
-> constraints to ease the userspace ubifs programs runs, which read ubifs
-> headers of 64 bytes.
+> The docg3 drivers lacked mtd writebufsize initialization. Without it,
+> ubifs cannot work.
 >=20
 > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Pushed to l2-mtd.git, thanks!
+I think I've already done this in the l2-mtd.git tree. I strongly
+recommend you to test on top of the l2-mtd.git because it has the latest
+stuff.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Aldeh3mAuEDYdo1ZEtfs
+--=-/5Ph7N32YqvGHzm3b3U1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPXzPFAAoJECmIfjd9wqK0wSYP/iDKQqkvrdCAntSRphfSRPRD
-1qe46JxgIYvzX819oxT4qxXlmOiLESD/7A4jwoH09sNkgfLRueFpx7EBa1/sIPIj
-r87P/og+/qObf33JxFbIW8ag2AQlqiZjCg8oNQtF4ebbfn3Je8DfrIY8EVanpvx2
-a3H6KA+DtnZwxppnl9Si/Fl6xdNsPHtBNzyQB9AiUdaNDbxiQExOJZ1IQAznpwS5
-82Ibwnt/NJWrcnyrPmGNRUuxmFhTEKZrfHVLabdbB1NVQVicnxnEeY63pdVfD5gI
-4tBdNxAdP0DkZj7IJZWkmnyjQ+DccjwOpz1Cl68htX7O7uUYHq4+b00ofHjL3Oix
-qhKpqKjFRu8FwL/KyQgXxDpJtOKC7141wfUuIeozaIXJgxq7qaYU7Dw4kGRQ28Qd
-PR+WjjnSeF/GNMhe8PPQOVnvtLA5v3u41EPV9jRjsl8dubpI4dXzWpsXECo8Vfzr
-2/jm8cGJ5In6yK8j0x/VSf2Inq/D7Q5xieXHa/O414yQnpSwdWsrDQmaYpMmWa3P
-OIFZ2Q5Mp9QMbfaOlbpd4x6IpXBdhcGfE7Yps/aaW3KHp5GCwmDN3zcnpXuzu2xe
-YT4YPcNmYrnGZ6Pj5R6PunDePzldQYh3eS/ougRUvm/WjuRnDLBvE6ZC7mOz3fPZ
-Rp/iC5o2mAeLs8iYuxTJ
-=xKpN
+iQIcBAABAgAGBQJPXzP+AAoJECmIfjd9wqK0F4QP/2rwTh5OXh0m/v64H8TlQLd9
+47cu2cm3C79/AhNLTkrdwycIe+ZkNhOBWNl6hwnIo44IaH6H63S8jLK1rAJySzLi
+A8W9yu154zMREcFmVmyI3rvEqVPj6g1qvdMaL1ur66rk/vg42uDV8lq1e0tc3c+X
+nN78odlyBqtB1TbMh6P1y3UfuAyB74pZmNXDfk0zJkP7teKtbZdX3jq2NhGugM43
+QE343Zb+eEcVAolcGd16aHTJlaiL8kRfsD4X4uznELNT/H812DX6yMCsSD1ZfuMi
+gXdV/O28K3GAduq6qfidmP1Zc6HDzrtwrcfPW9pYBsRCP1LckWuCT+syB+oT1YvL
+tYvCPlwSx+SZNe4/hn8JsvRQJE39ujOcAAH/JH62YzyrDi8dRhKXcvqGAbwo75e5
+7hpwB8237dHoAxwGX/AEV7AWnOzlwTUd2ZgyQhLYL5LlNvcrdthNIVoyFk6HoAOt
+Z9w5sgJtaqxM0qkxzUF5AYaGmzLPQYDs+dYrgHo6dCxu6sgLEmM3xfMHz4pssYZ2
+NP3WKibT5nmKEZIDPgagZmaioQaSHaDCxGuBJwor/CmurE5qf3aKRv+o2ECGNOma
+qBZjmysgXAbLnUTPKrFPeXuh0rbCYmlxcEDi4YqwUNi6k0yMp9ifJ5qO5IB53SoT
+pKL4IDZtcNgPT/Xp3/Bt
+=TdSv
 -----END PGP SIGNATURE-----
 
---=-Aldeh3mAuEDYdo1ZEtfs--
+--=-/5Ph7N32YqvGHzm3b3U1--
