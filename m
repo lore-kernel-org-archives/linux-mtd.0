@@ -1,17 +1,28 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7TKY-0004GS-1t
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 15:08:07 +0000
-From: h-fache@ti.com
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: phram: dot not crash when built-in and passing boot param
-Date: Tue, 13 Mar 2012 16:07:53 +0100
-Message-Id: <1331651273-5893-1-git-send-email-h-fache@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: joern@logfs.org, joern@lazybastard.org,
- =?UTF-8?q?Herv=C3=A9=20Fache?= <h-fache@ti.com>, dedekind1@gmail.com
+Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7Uge-0008PR-90
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 16:35:00 +0000
+Message-ID: <1331656495.11405.4.camel@joe2Laptop>
+Subject: Re: [PATCH 1/4] jffs2: Convert most D1/D2 macros to jffs2_dbg
+From: Joe Perches <joe@perches.com>
+To: dedekind1@gmail.com
+Date: Tue, 13 Mar 2012 09:34:55 -0700
+In-Reply-To: <1331642368.3595.31.camel@sauron.fi.intel.com>
+References: <cover.1329349881.git.joe@perches.com>
+ <2d68e76db16d42f451370714f03ef952e0839692.1329349881.git.joe@perches.com>
+ <1330965033.7220.16.camel@golum> <1330966615.3140.6.camel@joe2Laptop>
+ <1331294012.29445.10.camel@sauron.fi.intel.com>
+ <1331318968.13055.8.camel@joe2Laptop>
+ <1331557935.12037.11.camel@sauron.fi.intel.com>
+ <1331566415.13200.14.camel@joe2Laptop>
+ <1331570150.12037.55.camel@sauron.fi.intel.com>
+ <1331572270.13200.30.camel@joe2Laptop>
+ <1331642368.3595.31.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hervé Fache <h-fache@ti.com>
+On Tue, 2012-03-13 at 14:39 +0200, Artem Bityutskiy wrote:
+> On Mon, 2012-03-12 at 10:11 -0700, Joe Perches wrote:
+> > On Mon, 2012-03-12 at 18:35 +0200, Artem Bityutskiy wrote:
+> > > On Mon, 2012-03-12 at 08:33 -0700, Joe Perches wrote:
+> > > > I tentatively converted them to a bitmap
+> > > > and a single jffs2_dbg(mask, fmt, ...)
+> > > > but perhaps all of these could be deleted
+> > > > too.
+> > > I think it is better to convert them to jffs2_debug(). And I guess after
+> > > the change the "mask" parameter will go away?
+> > Mask would remain and perhaps become a module
+> > variable instead of a compile #define.
+> > What is jffs2_debug?
+> Sorry, I meant to suggest to just turn them all to jffs2_dbg() which you
+> introduced, without any bitmasks.
 
-This patch is based on Ville Herva's similar patch to block2mtd.
+These functions are conditionally compiled today.
 
-Trying to pass a parameter through the kernel command line when built-in would
-crash the kernel, as phram_setup() was called so early that kmalloc() was not
-functional yet.
+Introducing a bitmask allows the same conditional
+compilation optimization.
 
-This patch only saves the parameter string at the early boot stage, and parses
-it later when init_phram() is called. The same happens in both module and
-built-in cases.
+David?  as nominal maintainer, do you have an opinion?
 
-With this patch, I can boot with a statically-compiled phram, and mount a
-ext2 root fs from physical RAM, without the need for a initrd.
-
-This has been tested in built-in and module cases, with and without a
-parameter string.
-
-Signed-off-by: Hervé Fache <h-fache@ti.com>
----
- drivers/mtd/devices/phram.c |   28 ++++++++++++++++++++++++++--
- 1 files changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 23423bd..dd55ae2 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -233,7 +233,16 @@ static inline void kill_final_newline(char *str)
- 	return 1;		\
- } while (0)
- 
--static int phram_setup(const char *val, struct kernel_param *kp)
-+/* This shall contain the module parameter if any. It is of the form:
-+ * - phram=<device>,<address>,<size> for module case
-+ * - phram.phram=<device>,<address>,<size> for built-in case
-+ * We leave 64 bytes for the device name, 12 for the address and 12 for the
-+ * size.
-+ * Example: phram.phram=rootfs,0xa0000000,512Mi
-+ */
-+static __initdata char phram_paramline[64+12+12];
-+
-+static int phram_setup(const char *val)
- {
- 	char buf[64+12+12], *str = buf;
- 	char *token[3];
-@@ -282,12 +291,27 @@ static int phram_setup(const char *val, struct kernel_param *kp)
- 	return ret;
- }
- 
--module_param_call(phram, phram_setup, NULL, NULL, 000);
-+static int __init phram_param_call(const char *val, struct kernel_param *kp)
-+{
-+	/* This function is always called before 'init_phram()', whether
-+	 * built-in or module.
-+	 */
-+	if (strlen(val) >= sizeof(phram_paramline))
-+		return -ENOSPC;
-+	strcpy(phram_paramline, val);
-+
-+	return 0;
-+}
-+
-+module_param_call(phram, phram_param_call, NULL, NULL, 000);
- MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
- 
- 
- static int __init init_phram(void)
- {
-+	if (phram_paramline[0])
-+		return phram_setup(phram_paramline);
-+
- 	return 0;
- }
- 
--- 
-1.7.9
+btw: Artem, you are not listed in the MAINTAINERS
+entry for jffs2.  Should you be?
