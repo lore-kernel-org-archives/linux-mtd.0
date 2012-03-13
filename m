@@ -1,20 +1,19 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7Pej-0001xW-Le
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 11:12:42 +0000
-Message-ID: <1331637313.3595.10.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: sh_flctl: Add power management support
+ id 1S7Q9k-0003wR-DD
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 11:44:45 +0000
+Message-ID: <1331639237.3595.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] drivers/mtd: docg3 lessen read alignement burden
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Tue, 13 Mar 2012 13:15:13 +0200
-In-Reply-To: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
-References: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 13 Mar 2012 13:47:17 +0200
+In-Reply-To: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
+References: <1331461726-10087-1-git-send-email-robert.jarzmik@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-y40YAjKdIhLKn4LaTOVv"
+ boundary="=-Aldeh3mAuEDYdo1ZEtfs"
 Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,24 +25,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-y40YAjKdIhLKn4LaTOVv
+--=-Aldeh3mAuEDYdo1ZEtfs
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-03-10 at 16:31 +0100, Bastian Hecht wrote:
-> All transactions with the NAND chip require a chip enable signal. So we
-> wrap the runtime_pm_get()/put()s around it. As registers are cached, we
-> need no suspend()/resume() callbacks.
+On Sun, 2012-03-11 at 11:28 +0100, Robert Jarzmik wrote:
+> The read function was so far requiring the reads to be aligned on page
+> boundaries, and be page length multiples in size. Relieve these
+> constraints to ease the userspace ubifs programs runs, which read ubifs
+> headers of 64 bytes.
 >=20
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Pushed to l2-mtd.git, thanks.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-y40YAjKdIhLKn4LaTOVv
+--=-Aldeh3mAuEDYdo1ZEtfs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPXyxBAAoJECmIfjd9wqK0PpoQAL0j4ijACz6BysGaJX9AxwwU
-+ETZDhmWVnFRlC1HvbnBwwiLu5G+ZEsF57+AdBgEcwNFs9z/w9O8xHFUjnbabUiw
-nNhvS7tmu+ixB5sfnX/Xwsl41FxzGSObKH7MSwzrZ5919vCSQKtiC8IWjoE/uPDR
-zw47UVkly8mSyvv+PTb9Wf5uZ6dfyLGo3ASv4HCiQouYznI/7Hq+UkD3ibG6WUbb
-n776i+xqlXYlC+9hWDFK/xbHfA7swW1Ht6ufOk1ZbJQdpHd5UbGyGFaFbabj9o3n
-O3zHSbsLKKlnPZ+RhyfGSiB9Asx6XmyP32AWnWXU+7zVBT1sP0ak8wuaFznjStio
-g2q8eY+7x4RLJ0B1OaBHlhc4xw8WV0q9eM+WoqrFmmPET/gyeVEK125GLhAd9pHV
-fvlge3wSTNm+pCrR62krbnivaNwY3KQGNT+8MsNHV+hDym31GAvA7NFOatyX0c9h
-8FayNXwTl8qbS5nQeaXSEKDUbweWPHRm4MnjSFFnHOYMEeXDtCsJpHpCh4jSF1wl
-aFUcv6aEULRGAf6BTIsQ/pkUc5iWjcCjKxVmZv+oPvA5sNQAExV8bvAcMT73ALDl
-NMafSpnSdCdnQnWlY9CwHiAZMYn2IPfcsfCMAElXaI1BkD5iu5ltwPXNREM9jSVD
-6Qi8izQDytX+JGpELF9m
-=swLi
+iQIcBAABAgAGBQJPXzPFAAoJECmIfjd9wqK0wSYP/iDKQqkvrdCAntSRphfSRPRD
+1qe46JxgIYvzX819oxT4qxXlmOiLESD/7A4jwoH09sNkgfLRueFpx7EBa1/sIPIj
+r87P/og+/qObf33JxFbIW8ag2AQlqiZjCg8oNQtF4ebbfn3Je8DfrIY8EVanpvx2
+a3H6KA+DtnZwxppnl9Si/Fl6xdNsPHtBNzyQB9AiUdaNDbxiQExOJZ1IQAznpwS5
+82Ibwnt/NJWrcnyrPmGNRUuxmFhTEKZrfHVLabdbB1NVQVicnxnEeY63pdVfD5gI
+4tBdNxAdP0DkZj7IJZWkmnyjQ+DccjwOpz1Cl68htX7O7uUYHq4+b00ofHjL3Oix
+qhKpqKjFRu8FwL/KyQgXxDpJtOKC7141wfUuIeozaIXJgxq7qaYU7Dw4kGRQ28Qd
+PR+WjjnSeF/GNMhe8PPQOVnvtLA5v3u41EPV9jRjsl8dubpI4dXzWpsXECo8Vfzr
+2/jm8cGJ5In6yK8j0x/VSf2Inq/D7Q5xieXHa/O414yQnpSwdWsrDQmaYpMmWa3P
+OIFZ2Q5Mp9QMbfaOlbpd4x6IpXBdhcGfE7Yps/aaW3KHp5GCwmDN3zcnpXuzu2xe
+YT4YPcNmYrnGZ6Pj5R6PunDePzldQYh3eS/ougRUvm/WjuRnDLBvE6ZC7mOz3fPZ
+Rp/iC5o2mAeLs8iYuxTJ
+=xKpN
 -----END PGP SIGNATURE-----
 
---=-y40YAjKdIhLKn4LaTOVv--
+--=-Aldeh3mAuEDYdo1ZEtfs--
