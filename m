@@ -1,13 +1,13 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S7lK5-0001gC-Dy
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 10:20:50 +0000
-Date: Wed, 14 Mar 2012 11:20:46 +0100 (CET)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7lNr-0003o2-OA
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 10:24:44 +0000
+Message-ID: <1331720835.2140.4.camel@sauron.fi.intel.com>
 Subject: Re: [patch] Adding Secure Deletion to UBIFS
-In-Reply-To: <1331559361.12037.29.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1203141117430.14300@eristoteles.iwoars.net>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Wed, 14 Mar 2012 12:27:15 +0200
+In-Reply-To: <alpine.DEB.2.00.1203141117430.14300@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <1330536308.3545.158.camel@sauron.fi.intel.com>
  <alpine.DEB.2.00.1203011434220.2462@eristoteles.iwoars.net>
@@ -15,10 +15,14 @@ References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1203091959570.25737@eristoteles.iwoars.net>
  <1331559053.12037.25.camel@sauron.fi.intel.com>
  <1331559361.12037.29.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+ <alpine.DEB.2.00.1203141117430.14300@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-K6Lh/2wvzSKZbG3dHkSV"
+Mime-Version: 1.0
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For removing the key scheme notion, is it correct to remove:
-UBIFS_KEY_MAX_LEN and UBIFS_SK_, UBIFS_S_KEY_BLOCK_BITS, ... and replace
-it with a fixed UBIFS_KEY_LEN (and other values), thus also ignoring
-key_fmt in key_max_inode_size and simply use a fixed key scheme? Or should
-I simply reduce MAX_LEN to 8 but still allow multiple bit assignments
-within those 8 bytes via selecting a different key_fmt.
 
-Cheers,
-Joel Reardon
+--=-K6Lh/2wvzSKZbG3dHkSV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, 2012-03-14 at 11:20 +0100, Joel Reardon wrote:
+> For removing the key scheme notion, is it correct to remove:
+> UBIFS_KEY_MAX_LEN and UBIFS_SK_, UBIFS_S_KEY_BLOCK_BITS, ... and replace
+> it with a fixed UBIFS_KEY_LEN (and other values), thus also ignoring
+> key_fmt in key_max_inode_size and simply use a fixed key scheme? Or shoul=
+d
+> I simply reduce MAX_LEN to 8 but still allow multiple bit assignments
+> within those 8 bytes via selecting a different key_fmt.
 
+Yes, sounds reasonable.
 
-On Mon, 12 Mar 2012, Artem Bityutskiy wrote:
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> On Mon, 2012-03-12 at 15:30 +0200, Artem Bityutskiy wrote:
-> > >  Btw, when I was
-> > > developing it I used the last 8 bytes from the key as the key position,
-> > > because the key was 16 bytes but only 8 were used. Could you comment on
-> > > the last 8 bytes of ubifs keys?
-> >
-> > I think you can use them. But is it possible to kill these things from
-> > the data nodes themselves? We can always find it by looking up the index
-> > by the data node key, right?
->
-> Joel, but please, send small patches, preparation patches, etc. Do not
-> disappear for several months and do not come back with another big
-> patch. Tell about your intentions in advance.
->
-> E.g., if you decide to start using those unused 8 bytes - first do small
-> preparations like removing the notion of "key scheme" which we
-> provisioned but never used (from comments as well). Clean-up the "space"
-> for yourself. Then start using them for your purposes. As I said, as
-> soon as I get the first patch I like, I'll create a separate branch in
-> the UBIFS git tree for your work.
->
-> Thanks!
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
->
+--=-K6Lh/2wvzSKZbG3dHkSV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPYHKDAAoJECmIfjd9wqK0sosP/R8f0u4XyhtShLcQkqJL2BKy
+PovVEOi48W8OsOF2F3XwSlyfwOGUxJBix3lljlYIfU+R0N66uq/U5YUPvB8dZ3sp
+DvmdxWRiNl5WjyT9YzYQ0VzrWKgl21QwS0O6BiwL/r8OfCfeNLSpzKgmmuW694wU
+/GDa9KNjkPP8rD/ZUO2UX7/J4i5G0K904gPEJvLO0Af7qY8UI/RlaJ12OSf9MG30
+DeznqaXnj9cn0szM201MBV6SEqHQa2yLA/Ed/OtpmdRHT72/dkmJ5y0V5EhcueCv
+HOhSu9JSDqoNdPUrCz9rOzA94jsDFVgqVmoaOEPM2VAUvhldBRgy3PM1Gq947TMg
+oRWI1Ux8Ua1gW3PUJfgPGIzoxM06BLs/I3unqcBwVxHLnanDuhKKiVTdgezbSbzs
+CnC0c8ttiP0KWCa0jJ9q1PRW1311H7xueaVCdeHtgykJ8XaYHQkZeCpSqi0gea2n
+E8nfAhQe/1cRMU3E8SKv1JCO5kIjyTX0QqCgIc8t79jHiAngX355w2k4z62+Pvro
+Nc9ghmbNwtR7LKFaMX6q0EG/JVh7cH5im1KyXrO0DLamHfXcDS6ADJefUz6pP038
+jly6V5PZ17KZ/JkfeEGkkjXE6fLvNfKiyi+nz/yLAUq9fIxRKlWt9G4ON0ccaocp
+7SyBipAOIOuxuRA9pGVU
+=AFKq
+-----END PGP SIGNATURE-----
+
+--=-K6Lh/2wvzSKZbG3dHkSV--
