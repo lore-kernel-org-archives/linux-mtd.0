@@ -1,13 +1,13 @@
-Received: from eu1sys200aog115.obsmtp.com ([207.126.144.139])
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hXR-0002l5-Bi
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:22 +0000
+ id 1S7hXT-0002lu-Gx
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:25 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
-Subject: [PATCH v2 04/13] nand/fsmc: Read only 512 + 13 bytes for 8bit NAND
- devices
-Date: Wed, 14 Mar 2012 11:47:10 +0530
-Message-ID: <d9057834d9845715dcb69a2ab895943bf1a5fd0e.1331705527.git.vipin.kumar@st.com>
+Subject: [PATCH v2 05/13] nand/fsmc: Flip the bit only if the error index is <
+ 4096
+Date: Wed, 14 Mar 2012 11:47:11 +0530
+Message-ID: <bd939b7baf9eadce1ee78eb13d901d016c65b462.1331705527.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331705527.git.vipin.kumar@st.com>
 References: <cover.1331705527.git.vipin.kumar@st.com>
 MIME-Version: 1.0
@@ -23,34 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ECC logic of FSMC works on 512 bytes data + 13 bytes ECC to generate error
-indices of upto 8 incorrect bits. The FSMC driver reads 14 instead of 13 oob
-bytes to accommodate for 16 bit device as well.
+ECC can correct upto 8 bits in 512 bytes data + 13 bytes ecc. This means that
+the algorithm can correct a max of 8 bits in 4200 bits ie the error indices can
+be from 0 to 4199. Of these 0 to 4095 are for data and 4096 to 4199 for ecc.
 
-Unfortunately, the internal ecc state machine gets corrupted for 8 bit devices
-reading 512 + 14 bytes of data resulting in error indices not getting reported.
+The driver flips the bit only if the index is <= 4096. This is a bug since the
+data bits are only from 0 to 4095.
 
-Fix this by reading 14 bytes only for 16 bit devices
+This patch modifies the check as < 4096
 
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index fb2cc8b..3f33103 100644
+index 3f33103..745db62 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -549,7 +549,9 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 			 * to read at least 13 bytes even in case of 16 bit NAND
- 			 * devices
- 			 */
--			len = roundup(len, 2);
-+			if (chip->options & NAND_BUSWIDTH_16)
-+				len = roundup(len, 2);
-+
- 			chip->cmdfunc(mtd, NAND_CMD_READOOB, off, page);
- 			chip->read_buf(mtd, oob + j, len);
- 			j += len;
+@@ -654,7 +654,7 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+ 		change_bit(0, (unsigned long *)&err_idx[i]);
+ 		change_bit(1, (unsigned long *)&err_idx[i]);
+ 
+-		if (err_idx[i] <= chip->ecc.size * 8) {
++		if (err_idx[i] < chip->ecc.size * 8) {
+ 			change_bit(err_idx[i], (unsigned long *)dat);
+ 			i++;
+ 		}
 -- 
 1.7.0.4
