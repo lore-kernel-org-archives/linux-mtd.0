@@ -1,27 +1,26 @@
-Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hn0-0008PE-DD
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:34:27 +0000
-Message-ID: <4F603BC0.7050808@st.com>
-Date: Wed, 14 Mar 2012 12:03:36 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7iLw-0006I8-69
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 07:10:34 +0000
+From: Stefan Roese <sr@denx.de>
+To: Vipin Kumar <vipin.kumar@st.com>
 Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
  several NAND devices
+Date: Wed, 14 Mar 2012 08:10:10 +0100
 References: <cover.1331119143.git.vipin.kumar@st.com>
- <CACRpkdZw-nR3uS=FKrOtzgTACWc+=FfrspuT9PvyXDm+RMRFSg@mail.gmail.com>
- <1331644780.3595.56.camel@sauron.fi.intel.com>
- <201203131436.09379.sr@denx.de>
- <1331647621.3595.64.camel@sauron.fi.intel.com>
-In-Reply-To: <1331647621.3595.64.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ <1331647621.3595.64.camel@sauron.fi.intel.com> <4F603BC0.7050808@st.com>
+In-Reply-To: <4F603BC0.7050808@st.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: Armando VISCONTI <armando.visconti@st.com>,
+Message-Id: <201203140810.10964.sr@denx.de>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Armando VISCONTI <armando.visconti@st.com>,
  Linus Walleij <linus.walleij@linaro.org>,
  "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Stefan Roese <sr@denx.de>, Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
+ Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,35 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/13/2012 7:37 PM, Artem Bityutskiy wrote:
-> On Tue, 2012-03-13 at 14:36 +0100, Stefan Roese wrote:
->> No problem.
->>
->> But the patch still applies clean onto kernel.org.
->
-> OK.
->
+On Wednesday 14 March 2012 07:33:36 Vipin Kumar wrote:
+> On 3/13/2012 7:37 PM, Artem Bityutskiy wrote:
+> > On Tue, 2012-03-13 at 14:36 +0100, Stefan Roese wrote:
+> >> No problem.
+> >> 
+> >> But the patch still applies clean onto kernel.org.
+> > 
+> > OK.
+> 
+> I am sorry for pitching in too late. It seems that Stefan, Linus and I
+> have sent the same patch (in the same order) achieving same result. It
+> was a mistake on my part to not have rebased on either of these patches.
+> 
+> Artem, please suggest how to proceed as there would be conflicts if you
+> try to apply Stefan's patch before my patch-set
 
-I am sorry for pitching in too late. It seems that Stefan, Linus and I 
-have sent the same patch (in the same order) achieving same result. It 
-was a mistake on my part to not have rebased on either of these patches.
+I suggest to just drop my patch then, since I still have to rebase it on-top 
+of the l2 tree. So easiest is most likely, to apply Vipins's patchset now.
 
-Artem, please suggest how to proceed as there would be conflicts if you 
-try to apply Stefan's patch before my patch-set
+Okay?
 
->>   I suspect that the
->> conflicts are with your l2-mtd.git tree, correct?
->
-> Right.
->
->>   Will you push the l2 tree
->> still into v3.3?
->
-> No.
->
-
-So, these changes would be merged in next release
-Am I right
-
-Regards
-Vipin
+Thanks,
+Stefan
