@@ -1,18 +1,18 @@
-Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hXs-0002vR-0r
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:51 +0000
+ id 1S7hXx-0002ui-Ne
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:55 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
-Subject: [PATCH v2 12/13] nand/fsmc: Add DMA support
-Date: Wed, 14 Mar 2012 11:47:18 +0530
-Message-ID: <c77e2635a9e352c1237a2782329c855fa5bf96b0.1331705527.git.vipin.kumar@st.com>
+Subject: [PATCH v2 09/13] nand/fsmc: Use devm routines
+Date: Wed, 14 Mar 2012 11:47:15 +0530
+Message-ID: <b43d3c0528e8d18223d220c637a313827a6610bd.1331705527.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331705527.git.vipin.kumar@st.com>
 References: <cover.1331705527.git.vipin.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: vinod.koul@intel.com, linus.walleij@linaro.org, spear-devel@list.st.com,
- Vipin Kumar <vipin.kumar@st.com>, dan.j.williams@intel.com, sr@denx.de
+Cc: sr@denx.de, Vipin Kumar <vipin.kumar@st.com>, linus.walleij@linaro.org,
+ spear-devel@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,296 +22,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fsmc_nand driver uses cpu to read/write onto the device. This is inefficient
-because of two reasons
-- the cpu gets locked on AHB bus while reading from NAND
-- the cpu is unnecessarily used when dma can do the job
-
-This patch adds the support for accessing the device through DMA
+fsmc_nand driver currently uses normal kzalloc, request_mem etc routines. This
+patch replaces these routines with devm_kzalloc and devm_request_mem_region etc.
+Consequently, the error and driver removal scenarios are curtailed.
 
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 Reviewed-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |  168 ++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/fsmc.h     |    4 +
- 2 files changed, 167 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |  134 +++++++++++++----------------------------
+ 1 files changed, 43 insertions(+), 91 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index cc23bc1..2e9adfc 100644
+index 71fd9f6..f0168a3 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -17,6 +17,10 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/completion.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/init.h>
- #include <linux/module.h>
-@@ -282,6 +286,11 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
-  * @bank:		Bank number for probed device.
-  * @clk:		Clock structure for FSMC.
-  *
-+ * @read_dma_chan:	DMA channel for read access
-+ * @write_dma_chan:	DMA channel for write access to NAND
-+ * @dma_access_complete: Completion structure
-+ *
-+ * @data_pa:		NAND Physical port for Data.
-  * @data_va:		NAND port for Data.
-  * @cmd_va:		NAND port for Command.
-  * @addr_va:		NAND port for Address.
-@@ -297,10 +306,17 @@ struct fsmc_nand_data {
- 	struct fsmc_eccplace	*ecc_place;
+@@ -298,11 +298,6 @@ struct fsmc_nand_data {
  	unsigned int		bank;
- 	struct device		*dev;
-+	enum access_mode	mode;
  	struct clk		*clk;
  
-+	/* DMA related objects */
-+	struct dma_chan		*read_dma_chan;
-+	struct dma_chan		*write_dma_chan;
-+	struct completion	dma_access_complete;
-+
+-	struct resource		*resregs;
+-	struct resource		*rescmd;
+-	struct resource		*resaddr;
+-	struct resource		*resdata;
+-
  	struct fsmc_nand_timings *dev_timings;
  
-+	dma_addr_t		data_pa;
  	void __iomem		*data_va;
- 	void __iomem		*cmd_va;
- 	void __iomem		*addr_va;
-@@ -523,6 +539,77 @@ static int count_written_bits(uint8_t *buff, int size, int max_bits)
- 	return written_bits;
- }
+@@ -706,88 +701,81 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	}
  
-+static void dma_complete(void *param)
-+{
-+	struct fsmc_nand_data *host = param;
-+
-+	complete(&host->dma_access_complete);
-+}
-+
-+static int dma_xfer(struct fsmc_nand_data *host, void *buffer, int len,
-+		enum dma_data_direction direction)
-+{
-+	struct dma_chan *chan;
-+	struct dma_device *dma_dev;
-+	struct dma_async_tx_descriptor *tx;
-+	dma_addr_t dma_dst, dma_src, dma_addr;
-+	dma_cookie_t cookie;
-+	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-+	int ret;
-+
-+	if (direction == DMA_TO_DEVICE)
-+		chan = host->write_dma_chan;
-+	else if (direction == DMA_FROM_DEVICE)
-+		chan = host->read_dma_chan;
-+	else
+ 	/* Allocate memory for the device structure (and zero it) */
+-	host = kzalloc(sizeof(*host), GFP_KERNEL);
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host) {
+ 		dev_err(&pdev->dev, "failed to allocate device structure\n");
+ 		return -ENOMEM;
+ 	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
+-	if (!res) {
+-		ret = -EIO;
+-		goto err_probe1;
+-	}
++	if (!res)
 +		return -EINVAL;
-+
-+	dma_dev = chan->device;
-+	dma_addr = dma_map_single(dma_dev->dev, buffer, len, direction);
-+
-+	if (direction == DMA_TO_DEVICE) {
-+		dma_src = dma_addr;
-+		dma_dst = host->data_pa;
-+		flags |= DMA_COMPL_SRC_UNMAP_SINGLE | DMA_COMPL_SKIP_DEST_UNMAP;
-+	} else {
-+		dma_src = host->data_pa;
-+		dma_dst = dma_addr;
-+		flags |= DMA_COMPL_DEST_UNMAP_SINGLE | DMA_COMPL_SKIP_SRC_UNMAP;
-+	}
-+
-+	tx = dma_dev->device_prep_dma_memcpy(chan, dma_dst, dma_src,
-+			len, flags);
-+
-+	if (!tx) {
-+		dev_err(host->dev, "device_prep_dma_memcpy error\n");
-+		dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
-+		return -EIO;
-+	}
-+
-+	tx->callback = dma_complete;
-+	tx->callback_param = host;
-+	cookie = tx->tx_submit(tx);
-+
-+	ret = dma_submit_error(cookie);
-+	if (ret) {
-+		dev_err(host->dev, "dma_submit_error %d\n", cookie);
-+		return ret;
-+	}
-+
-+	dma_async_issue_pending(chan);
-+
-+	ret =
-+	wait_for_completion_interruptible_timeout(&host->dma_access_complete,
-+				msecs_to_jiffies(3000));
-+	if (ret <= 0) {
-+		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
-+		dev_err(host->dev, "wait_for_completion_timeout\n");
-+		return ret ? ret : -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * fsmc_write_buf - write buffer to chip
-  * @mtd:	MTD device structure
-@@ -570,6 +657,35 @@ static void fsmc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- }
  
- /*
-+ * fsmc_read_buf_dma - read chip data into buffer
-+ * @mtd:	MTD device structure
-+ * @buf:	buffer to store date
-+ * @len:	number of bytes to read
-+ */
-+static void fsmc_read_buf_dma(struct mtd_info *mtd, uint8_t *buf, int len)
-+{
-+	struct fsmc_nand_data *host;
-+
-+	host = container_of(mtd, struct fsmc_nand_data, mtd);
-+	dma_xfer(host, buf, len, DMA_FROM_DEVICE);
-+}
-+
-+/*
-+ * fsmc_write_buf_dma - write buffer to chip
-+ * @mtd:	MTD device structure
-+ * @buf:	data buffer
-+ * @len:	number of bytes to write
-+ */
-+static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
-+		int len)
-+{
-+	struct fsmc_nand_data *host;
-+
-+	host = container_of(mtd, struct fsmc_nand_data, mtd);
-+	dma_xfer(host, (void *)buf, len, DMA_TO_DEVICE);
-+}
-+
-+/*
-  * fsmc_read_page_hwecc
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-@@ -731,6 +847,12 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
- 	return i;
- }
- 
-+static bool filter(struct dma_chan *chan, void *slave)
-+{
-+	chan->private = slave;
-+	return true;
-+}
-+
- /*
-  * fsmc_nand_probe - Probe function
-  * @pdev:       platform device structure
-@@ -743,6 +865,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	struct nand_chip *nand;
- 	struct fsmc_regs *regs;
- 	struct resource *res;
-+	dma_cap_mask_t mask;
- 	int ret = 0;
- 	u32 pid;
- 	int i;
-@@ -769,6 +892,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		return -ENOENT;
+-	host->resdata = request_mem_region(res->start, resource_size(res),
+-			pdev->name);
+-	if (!host->resdata) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
++				pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory data resourse\n");
++		return -ENOENT;
  	}
  
-+	host->data_pa = (dma_addr_t)res->start;
- 	host->data_va = devm_ioremap(&pdev->dev, res->start,
- 			resource_size(res));
+-	host->data_va = ioremap(res->start, resource_size(res));
++	host->data_va = devm_ioremap(&pdev->dev, res->start,
++			resource_size(res));
  	if (!host->data_va) {
-@@ -847,6 +971,11 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	host->nr_partitions = pdata->nr_partitions;
- 	host->dev = &pdev->dev;
- 	host->dev_timings = pdata->nand_timings;
-+	host->mode = pdata->mode;
-+
-+	if (host->mode == USE_DMA_ACCESS)
-+		init_completion(&host->dma_access_complete);
-+
- 	regs = host->regs_va;
- 
- 	/* Link all private pointers */
-@@ -871,13 +1000,31 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (pdata->width == FSMC_NAND_BW16)
- 		nand->options |= NAND_BUSWIDTH_16;
- 
--	/*
--	 * use customized (word by word) version of read_buf, write_buf if
--	 * access_with_dev_width is reset supported
--	 */
--	if (pdata->mode == USE_WORD_ACCESS) {
-+	switch (host->mode) {
-+	case USE_DMA_ACCESS:
-+		dma_cap_zero(mask);
-+		dma_cap_set(DMA_MEMCPY, mask);
-+		host->read_dma_chan = dma_request_channel(mask, filter,
-+				pdata->read_dma_priv);
-+		if (!host->read_dma_chan) {
-+			dev_err(&pdev->dev, "Unable to get read dma channel\n");
-+			goto err_req_read_chnl;
-+		}
-+		host->write_dma_chan = dma_request_channel(mask, filter,
-+				pdata->write_dma_priv);
-+		if (!host->write_dma_chan) {
-+			dev_err(&pdev->dev, "Unable to get write dma channel\n");
-+			goto err_req_write_chnl;
-+		}
-+		nand->read_buf = fsmc_read_buf_dma;
-+		nand->write_buf = fsmc_write_buf_dma;
-+		break;
-+
-+	default:
-+	case USE_WORD_ACCESS:
- 		nand->read_buf = fsmc_read_buf;
- 		nand->write_buf = fsmc_write_buf;
-+		break;
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "data ioremap failed\n");
++		return -ENOMEM;
  	}
  
- 	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
-@@ -978,6 +1125,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+-	host->resaddr = request_mem_region(res->start + pdata->ale_off,
+-			resource_size(res), pdev->name);
+-	if (!host->resaddr) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start + pdata->ale_off,
++			resource_size(res), pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory ale resourse\n");
++		return -ENOENT;
+ 	}
+ 
+-	host->addr_va = ioremap(res->start + pdata->ale_off,
++	host->addr_va = devm_ioremap(&pdev->dev, res->start + pdata->ale_off,
+ 			resource_size(res));
+ 	if (!host->addr_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "ale ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+-	host->rescmd = request_mem_region(res->start + pdata->cle_off,
+-			resource_size(res), pdev->name);
+-	if (!host->rescmd) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start + pdata->cle_off,
++			resource_size(res), pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory cle resourse\n");
++		return -ENOENT;
+ 	}
+ 
+-	host->cmd_va = ioremap(res->start + pdata->cle_off, resource_size(res));
++	host->cmd_va = devm_ioremap(&pdev->dev, res->start + pdata->cle_off,
++			resource_size(res));
+ 	if (!host->cmd_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "ale ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fsmc_regs");
+-	if (!res) {
+-		ret = -EIO;
+-		goto err_probe1;
+-	}
++	if (!res)
++		return -EINVAL;
+ 
+-	host->resregs = request_mem_region(res->start, resource_size(res),
+-			pdev->name);
+-	if (!host->resregs) {
+-		ret = -EIO;
+-		goto err_probe1;
++	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
++			pdev->name)) {
++		dev_err(&pdev->dev, "Failed to get memory regs resourse\n");
++		return -ENOENT;
+ 	}
+ 
+-	host->regs_va = ioremap(res->start, resource_size(res));
++	host->regs_va = devm_ioremap(&pdev->dev, res->start,
++			resource_size(res));
+ 	if (!host->regs_va) {
+-		ret = -EIO;
+-		goto err_probe1;
++		dev_err(&pdev->dev, "regs ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+ 	host->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "failed to fetch block clock\n");
+-		ret = PTR_ERR(host->clk);
+-		host->clk = NULL;
+-		goto err_probe1;
++		return PTR_ERR(host->clk);
+ 	}
+ 
+ 	ret = clk_enable(host->clk);
+ 	if (ret)
+-		goto err_probe1;
++		goto err_clk_enable;
+ 
+ 	/*
+ 	 * This device ID is actually a common AMBA ID as used on the
+@@ -852,7 +840,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	if (nand_scan_ident(&host->mtd, 1, NULL)) {
+ 		ret = -ENXIO;
+ 		dev_err(&pdev->dev, "No NAND Device found!\n");
+-		goto err_probe;
++		goto err_scan_ident;
+ 	}
+ 
+ 	if (AMBA_REV_BITS(host->pid) >= 8) {
+@@ -927,32 +915,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	return 0;
  
  err_probe:
- err_scan_ident:
-+	if (host->mode == USE_DMA_ACCESS)
-+		dma_release_channel(host->write_dma_chan);
-+err_req_write_chnl:
-+	if (host->mode == USE_DMA_ACCESS)
-+		dma_release_channel(host->read_dma_chan);
-+err_req_read_chnl:
++err_scan_ident:
  	clk_disable(host->clk);
- err_clk_enable:
- 	clk_put(host->clk);
-@@ -995,6 +1148,11 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+-err_probe1:
+-	if (host->clk)
+-		clk_put(host->clk);
+-	if (host->regs_va)
+-		iounmap(host->regs_va);
+-	if (host->resregs)
+-		release_mem_region(host->resregs->start,
+-				resource_size(host->resregs));
+-	if (host->cmd_va)
+-		iounmap(host->cmd_va);
+-	if (host->rescmd)
+-		release_mem_region(host->rescmd->start,
+-				resource_size(host->rescmd));
+-	if (host->addr_va)
+-		iounmap(host->addr_va);
+-	if (host->resaddr)
+-		release_mem_region(host->resaddr->start,
+-				resource_size(host->resaddr));
+-	if (host->data_va)
+-		iounmap(host->data_va);
+-	if (host->resdata)
+-		release_mem_region(host->resdata->start,
+-				resource_size(host->resdata));
+-
+-	kfree(host);
++err_clk_enable:
++	clk_put(host->clk);
+ 	return ret;
+ }
  
- 	if (host) {
+@@ -969,22 +935,8 @@ static int fsmc_nand_remove(struct platform_device *pdev)
  		nand_release(&host->mtd);
-+
-+		if (host->mode == USE_DMA_ACCESS) {
-+			dma_release_channel(host->write_dma_chan);
-+			dma_release_channel(host->read_dma_chan);
-+		}
  		clk_disable(host->clk);
  		clk_put(host->clk);
+-
+-		iounmap(host->regs_va);
+-		release_mem_region(host->resregs->start,
+-				resource_size(host->resregs));
+-		iounmap(host->cmd_va);
+-		release_mem_region(host->rescmd->start,
+-				resource_size(host->rescmd));
+-		iounmap(host->addr_va);
+-		release_mem_region(host->resaddr->start,
+-				resource_size(host->resaddr));
+-		iounmap(host->data_va);
+-		release_mem_region(host->resdata->start,
+-				resource_size(host->resdata));
+-
+-		kfree(host);
  	}
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index 1edd2b3..18f9127 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -172,6 +172,10 @@ struct fsmc_nand_platform_data {
- 	enum access_mode	mode;
- 
- 	void			(*select_bank)(uint32_t bank, uint32_t busw);
 +
-+	/* priv structures for dma accesses */
-+	void			*read_dma_priv;
-+	void			*write_dma_priv;
- };
+ 	return 0;
+ }
  
- extern int __init fsmc_nor_init(struct platform_device *pdev,
 -- 
 1.7.0.4
