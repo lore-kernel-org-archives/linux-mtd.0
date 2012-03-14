@@ -1,20 +1,27 @@
-Received: from eu1sys200aog113.obsmtp.com ([207.126.144.135])
+Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hbC-0005cF-Pa
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:22:15 +0000
-Message-ID: <4F6038E7.8090608@st.com>
-Date: Wed, 14 Mar 2012 11:51:27 +0530
+ id 1S7hn0-0008PE-DD
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:34:27 +0000
+Message-ID: <4F603BC0.7050808@st.com>
+Date: Wed, 14 Mar 2012 12:03:36 +0530
 From: Vipin Kumar <vipin.kumar@st.com>
 MIME-Version: 1.0
 To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH 00/18] mtd/nand/fsmc related modifications
+Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
+ several NAND devices
 References: <cover.1331119143.git.vipin.kumar@st.com>
- <1331299599.29445.28.camel@sauron.fi.intel.com>
-In-Reply-To: <1331299599.29445.28.camel@sauron.fi.intel.com>
+ <CACRpkdZw-nR3uS=FKrOtzgTACWc+=FfrspuT9PvyXDm+RMRFSg@mail.gmail.com>
+ <1331644780.3595.56.camel@sauron.fi.intel.com>
+ <201203131436.09379.sr@denx.de>
+ <1331647621.3595.64.camel@sauron.fi.intel.com>
+In-Reply-To: <1331647621.3595.64.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Armando VISCONTI <armando.visconti@st.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Stefan Roese <sr@denx.de>, Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/9/2012 6:56 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-03-07 at 17:00 +0530, Vipin Kumar wrote:
->> Hello All,
+On 3/13/2012 7:37 PM, Artem Bityutskiy wrote:
+> On Tue, 2012-03-13 at 14:36 +0100, Stefan Roese wrote:
+>> No problem.
 >>
->> Please find the nand/fsmc driver modifications
->> Major modifications include
->> - DMA support
->> - Word read/write support to improve performance
->> - Move platform related things(ALE/CLE) from driver to platfrom files
->> - Add default partition support for more devices with erase sizes (256KB, 512KB,
->> 		1024KB, 2048KB)
->> - Bugfixes
->> 	- Read only 512 + 13 bytes for 8bit NAND devices
->> 	- Flip the bit only if the error index is<  4096
->> 	- Fixed data abort inside change_bit()
+>> But the patch still applies clean onto kernel.org.
 >
-> Pushed patches 1-7 to l2-mtd.git. Patch 8 look wrong to me, the other
-> won't apply without patch 8 so I did not look beyond patch 7. Thanks!
->
-> But please, confirm that it is OK to have only some of these patches
-> merged, not the complete set. Thanks!
+> OK.
 >
 
-Please find the patch-set v2 in another mail. This patch-set contains 
-only the remaining patches from the original patch-set
+I am sorry for pitching in too late. It seems that Stefan, Linus and I 
+have sent the same patch (in the same order) achieving same result. It 
+was a mistake on my part to not have rebased on either of these patches.
+
+Artem, please suggest how to proceed as there would be conflicts if you 
+try to apply Stefan's patch before my patch-set
+
+>>   I suspect that the
+>> conflicts are with your l2-mtd.git tree, correct?
+>
+> Right.
+>
+>>   Will you push the l2 tree
+>> still into v3.3?
+>
+> No.
+>
+
+So, these changes would be merged in next release
+Am I right
 
 Regards
 Vipin
