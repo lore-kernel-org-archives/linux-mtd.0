@@ -1,26 +1,25 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7k0z-0001og-7o
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 08:57:01 +0000
-Received: by yhjj52 with SMTP id j52so1742606yhj.36
- for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2012 01:57:00 -0700 (PDT)
+ id 1S7l1A-0000j3-V1
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 10:01:17 +0000
+Received: by ghbf11 with SMTP id f11so1776779ghb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2012 03:01:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <201203140810.10964.sr@denx.de>
-References: <cover.1331119143.git.vipin.kumar@st.com>
- <1331647621.3595.64.camel@sauron.fi.intel.com>
- <4F603BC0.7050808@st.com> <201203140810.10964.sr@denx.de>
-Date: Wed, 14 Mar 2012 09:57:00 +0100
-Message-ID: <CACRpkdYOE0JbAoQqLUKro5Q2hRP9BJiJ-cEtXSE=bobCs82iDQ@mail.gmail.com>
-Subject: Re: [PATCH 08/18] fsmc/nand: Add support for default partitions for
- several NAND devices
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Stefan Roese <sr@denx.de>, Vipin Kumar <vipin.kumar@st.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1331628462.12037.56.camel@sauron.fi.intel.com>
+References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
+ <1331559644.12037.33.camel@sauron.fi.intel.com>
+ <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
+ <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
+ <1331619893.2443.10.camel@koala>
+ <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
+ <1331628462.12037.56.camel@sauron.fi.intel.com>
+Date: Wed, 14 Mar 2012 11:01:15 +0100
+Message-ID: <CAHMF36G_iE3pEVh1WEVgm5H0p3wsePUxwu9-MCVB+v7vxFf4RQ@mail.gmail.com>
+Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
+From: Matej Kupljen <matej.kupljen@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Armando VISCONTI <armando.visconti@st.com>,
- "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Vincenzo FRASCINO <Vincenzo.FRASCINO@st.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 14, 2012 at 8:10 AM, Stefan Roese <sr@denx.de> wrote:
-> On Wednesday 14 March 2012 07:33:36 Vipin Kumar wrote:
->> Artem, please suggest how to proceed as there would be conflicts if you
->> try to apply Stefan's patch before my patch-set
->
-> I suggest to just drop my patch then, since I still have to rebase it on-top
-> of the l2 tree. So easiest is most likely, to apply Vipins's patchset now.
+Dear Artem,
 
-I agree, use Vipin's stuff!
+>> Which tests should I run? All of them or maybe just mtd_stresstest?
+>>
 
-Yours,
-Linus Walleij
+I sent you the results yesterday, with no errors.
+
+> I think the mtd_torture test would also be a good one to run for a day
+> of 2.
+
+Here is the first results of the mtd_tourturetest:
+
+[84703.428000] mtd_torturetest: 00010240 erase cycles done, took
+2054461 milliseconds (2054 seconds)
+[86757.800000] mtd_torturetest: 00010752 erase cycles done, took
+2054365 milliseconds (2054 seconds)
+[88812.120000] mtd_torturetest: 00011264 erase cycles done, took
+2054319 milliseconds (2054 seconds)
+[90866.352000] mtd_torturetest: 00011776 erase cycles done, took
+2054229 milliseconds (2054 seconds)
+[92920.496000] mtd_torturetest: 00012288 erase cycles done, took
+2054137 milliseconds (2054 seconds)
+[94974.508000] mtd_torturetest: 00012800 erase cycles done, took
+2054008 milliseconds (2054 seconds)
+
+As far as I can see, there are no errors yet.
+Should I continue with this, or should I try something else?
+
+Thank you and Best Regards,
+Matej
