@@ -1,18 +1,18 @@
 Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hXq-0002uf-Ru
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:50 +0000
+ id 1S7hXs-0002vR-0r
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:51 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
-Subject: [PATCH v2 13/13] nand/fsmc: Remove sparse warnings and errors
-Date: Wed, 14 Mar 2012 11:47:19 +0530
-Message-ID: <5cb06f6c9b2ffdd30f20a7874ed4e84d3c49b0a1.1331705527.git.vipin.kumar@st.com>
+Subject: [PATCH v2 12/13] nand/fsmc: Add DMA support
+Date: Wed, 14 Mar 2012 11:47:18 +0530
+Message-ID: <c77e2635a9e352c1237a2782329c855fa5bf96b0.1331705527.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331705527.git.vipin.kumar@st.com>
 References: <cover.1331705527.git.vipin.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: sr@denx.de, Vipin Kumar <vipin.kumar@st.com>, linus.walleij@linaro.org,
- spear-devel@list.st.com
+Cc: vinod.koul@intel.com, linus.walleij@linaro.org, spear-devel@list.st.com,
+ Vipin Kumar <vipin.kumar@st.com>, dan.j.williams@intel.com, sr@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,399 +22,296 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch removes the sparse below warnings and errors for nand/fsmc driver
-/root/vipin/spear/kernel/3.3/linux-3.3/drivers/mtd/nand/fsmc_nand.c:363:31:
-warning: incorrect type in initializer (different address spaces)
-/root/vipin/spear/kernel/3.3/linux-3.3/drivers/mtd/nand/fsmc_nand.c:363:31:
-expected struct fsmc_regs *regs
-/root/vipin/spear/kernel/3.3/linux-3.3/drivers/mtd/nand/fsmc_nand.c:363:31:
-got void [noderef] <asn:2>*regs_va
+The fsmc_nand driver uses cpu to read/write onto the device. This is inefficient
+because of two reasons
+- the cpu gets locked on AHB bus while reading from NAND
+- the cpu is unnecessarily used when dma can do the job
 
-[...]
+This patch adds the support for accessing the device through DMA
 
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |   91 +++++++++++++-------------
- include/linux/mtd/fsmc.h     |  143 +++++++++++++++++++----------------------
- 2 files changed, 111 insertions(+), 123 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |  168 ++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/fsmc.h     |    4 +
+ 2 files changed, 167 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 2e9adfc..32f98c2 100644
+index cc23bc1..2e9adfc 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -360,28 +360,29 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- 	struct nand_chip *this = mtd->priv;
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
--	struct fsmc_regs *regs = host->regs_va;
-+	void *__iomem *regs = host->regs_va;
- 	unsigned int bank = host->bank;
- 
- 	if (ctrl & NAND_CTRL_CHANGE) {
-+		u32 pc;
-+
- 		if (ctrl & NAND_CLE) {
--			this->IO_ADDR_R = (void __iomem *)host->cmd_va;
--			this->IO_ADDR_W = (void __iomem *)host->cmd_va;
-+			this->IO_ADDR_R = host->cmd_va;
-+			this->IO_ADDR_W = host->cmd_va;
- 		} else if (ctrl & NAND_ALE) {
--			this->IO_ADDR_R = (void __iomem *)host->addr_va;
--			this->IO_ADDR_W = (void __iomem *)host->addr_va;
-+			this->IO_ADDR_R = host->addr_va;
-+			this->IO_ADDR_W = host->addr_va;
- 		} else {
--			this->IO_ADDR_R = (void __iomem *)host->data_va;
--			this->IO_ADDR_W = (void __iomem *)host->data_va;
-+			this->IO_ADDR_R = host->data_va;
-+			this->IO_ADDR_W = host->data_va;
- 		}
- 
--		if (ctrl & NAND_NCE) {
--			writel(readl(&regs->bank_regs[bank].pc) | FSMC_ENABLE,
--					&regs->bank_regs[bank].pc);
--		} else {
--			writel(readl(&regs->bank_regs[bank].pc) & ~FSMC_ENABLE,
--				       &regs->bank_regs[bank].pc);
--		}
-+		pc = readl(FSMC_NAND_REG(regs, bank, PC));
-+		if (ctrl & NAND_NCE)
-+			pc |= FSMC_ENABLE;
-+		else
-+			pc &= ~FSMC_ENABLE;
-+		writel(pc, FSMC_NAND_REG(regs, bank, PC));
- 	}
- 
- 	mb();
-@@ -396,7 +397,7 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-  * This routine initializes timing parameters related to NAND memory access in
-  * FSMC registers
+@@ -17,6 +17,10 @@
   */
--static void fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
-+static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
- 			   uint32_t busw, struct fsmc_nand_timings *timings)
- {
- 	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
-@@ -424,14 +425,14 @@ static void fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
- 	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
  
- 	if (busw)
--		writel(value | FSMC_DEVWID_16, &regs->bank_regs[bank].pc);
-+		writel(value | FSMC_DEVWID_16, FSMC_NAND_REG(regs, bank, PC));
- 	else
--		writel(value | FSMC_DEVWID_8, &regs->bank_regs[bank].pc);
-+		writel(value | FSMC_DEVWID_8, FSMC_NAND_REG(regs, bank, PC));
+ #include <linux/clk.h>
++#include <linux/completion.h>
++#include <linux/dmaengine.h>
++#include <linux/dma-direction.h>
++#include <linux/dma-mapping.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -282,6 +286,11 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
+  * @bank:		Bank number for probed device.
+  * @clk:		Clock structure for FSMC.
+  *
++ * @read_dma_chan:	DMA channel for read access
++ * @write_dma_chan:	DMA channel for write access to NAND
++ * @dma_access_complete: Completion structure
++ *
++ * @data_pa:		NAND Physical port for Data.
+  * @data_va:		NAND port for Data.
+  * @cmd_va:		NAND port for Command.
+  * @addr_va:		NAND port for Address.
+@@ -297,10 +306,17 @@ struct fsmc_nand_data {
+ 	struct fsmc_eccplace	*ecc_place;
+ 	unsigned int		bank;
+ 	struct device		*dev;
++	enum access_mode	mode;
+ 	struct clk		*clk;
  
--	writel(readl(&regs->bank_regs[bank].pc) | tclr | tar,
--	       &regs->bank_regs[bank].pc);
--	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].comm);
--	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].attrib);
-+	writel(readl(FSMC_NAND_REG(regs, bank, PC)) | tclr | tar,
-+			FSMC_NAND_REG(regs, bank, PC));
-+	writel(thiz | thold | twait | tset, FSMC_NAND_REG(regs, bank, COMM));
-+	writel(thiz | thold | twait | tset, FSMC_NAND_REG(regs, bank, ATTRIB));
++	/* DMA related objects */
++	struct dma_chan		*read_dma_chan;
++	struct dma_chan		*write_dma_chan;
++	struct completion	dma_access_complete;
++
+ 	struct fsmc_nand_timings *dev_timings;
+ 
++	dma_addr_t		data_pa;
+ 	void __iomem		*data_va;
+ 	void __iomem		*cmd_va;
+ 	void __iomem		*addr_va;
+@@ -523,6 +539,77 @@ static int count_written_bits(uint8_t *buff, int size, int max_bits)
+ 	return written_bits;
+ }
+ 
++static void dma_complete(void *param)
++{
++	struct fsmc_nand_data *host = param;
++
++	complete(&host->dma_access_complete);
++}
++
++static int dma_xfer(struct fsmc_nand_data *host, void *buffer, int len,
++		enum dma_data_direction direction)
++{
++	struct dma_chan *chan;
++	struct dma_device *dma_dev;
++	struct dma_async_tx_descriptor *tx;
++	dma_addr_t dma_dst, dma_src, dma_addr;
++	dma_cookie_t cookie;
++	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
++	int ret;
++
++	if (direction == DMA_TO_DEVICE)
++		chan = host->write_dma_chan;
++	else if (direction == DMA_FROM_DEVICE)
++		chan = host->read_dma_chan;
++	else
++		return -EINVAL;
++
++	dma_dev = chan->device;
++	dma_addr = dma_map_single(dma_dev->dev, buffer, len, direction);
++
++	if (direction == DMA_TO_DEVICE) {
++		dma_src = dma_addr;
++		dma_dst = host->data_pa;
++		flags |= DMA_COMPL_SRC_UNMAP_SINGLE | DMA_COMPL_SKIP_DEST_UNMAP;
++	} else {
++		dma_src = host->data_pa;
++		dma_dst = dma_addr;
++		flags |= DMA_COMPL_DEST_UNMAP_SINGLE | DMA_COMPL_SKIP_SRC_UNMAP;
++	}
++
++	tx = dma_dev->device_prep_dma_memcpy(chan, dma_dst, dma_src,
++			len, flags);
++
++	if (!tx) {
++		dev_err(host->dev, "device_prep_dma_memcpy error\n");
++		dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
++		return -EIO;
++	}
++
++	tx->callback = dma_complete;
++	tx->callback_param = host;
++	cookie = tx->tx_submit(tx);
++
++	ret = dma_submit_error(cookie);
++	if (ret) {
++		dev_err(host->dev, "dma_submit_error %d\n", cookie);
++		return ret;
++	}
++
++	dma_async_issue_pending(chan);
++
++	ret =
++	wait_for_completion_interruptible_timeout(&host->dma_access_complete,
++				msecs_to_jiffies(3000));
++	if (ret <= 0) {
++		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
++		dev_err(host->dev, "wait_for_completion_timeout\n");
++		return ret ? ret : -ETIMEDOUT;
++	}
++
++	return 0;
++}
++
+ /*
+  * fsmc_write_buf - write buffer to chip
+  * @mtd:	MTD device structure
+@@ -570,6 +657,35 @@ static void fsmc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
  }
  
  /*
-@@ -441,15 +442,15 @@ static void fsmc_enable_hwecc(struct mtd_info *mtd, int mode)
- {
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
--	struct fsmc_regs *regs = host->regs_va;
-+	void __iomem *regs = host->regs_va;
- 	uint32_t bank = host->bank;
- 
--	writel(readl(&regs->bank_regs[bank].pc) & ~FSMC_ECCPLEN_256,
--		       &regs->bank_regs[bank].pc);
--	writel(readl(&regs->bank_regs[bank].pc) & ~FSMC_ECCEN,
--			&regs->bank_regs[bank].pc);
--	writel(readl(&regs->bank_regs[bank].pc) | FSMC_ECCEN,
--			&regs->bank_regs[bank].pc);
-+	writel(readl(FSMC_NAND_REG(regs, bank, PC)) & ~FSMC_ECCPLEN_256,
-+			FSMC_NAND_REG(regs, bank, PC));
-+	writel(readl(FSMC_NAND_REG(regs, bank, PC)) & ~FSMC_ECCEN,
-+			FSMC_NAND_REG(regs, bank, PC));
-+	writel(readl(FSMC_NAND_REG(regs, bank, PC)) | FSMC_ECCEN,
-+			FSMC_NAND_REG(regs, bank, PC));
++ * fsmc_read_buf_dma - read chip data into buffer
++ * @mtd:	MTD device structure
++ * @buf:	buffer to store date
++ * @len:	number of bytes to read
++ */
++static void fsmc_read_buf_dma(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++	struct fsmc_nand_data *host;
++
++	host = container_of(mtd, struct fsmc_nand_data, mtd);
++	dma_xfer(host, buf, len, DMA_FROM_DEVICE);
++}
++
++/*
++ * fsmc_write_buf_dma - write buffer to chip
++ * @mtd:	MTD device structure
++ * @buf:	data buffer
++ * @len:	number of bytes to write
++ */
++static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
++		int len)
++{
++	struct fsmc_nand_data *host;
++
++	host = container_of(mtd, struct fsmc_nand_data, mtd);
++	dma_xfer(host, (void *)buf, len, DMA_TO_DEVICE);
++}
++
++/*
+  * fsmc_read_page_hwecc
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -731,6 +847,12 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+ 	return i;
  }
  
++static bool filter(struct dma_chan *chan, void *slave)
++{
++	chan->private = slave;
++	return true;
++}
++
  /*
-@@ -462,13 +463,13 @@ static int fsmc_read_hwecc_ecc4(struct mtd_info *mtd, const uint8_t *data,
- {
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
--	struct fsmc_regs *regs = host->regs_va;
-+	void __iomem *regs = host->regs_va;
- 	uint32_t bank = host->bank;
- 	uint32_t ecc_tmp;
- 	unsigned long deadline = jiffies + FSMC_BUSY_WAIT_TIMEOUT;
- 
- 	do {
--		if (readl(&regs->bank_regs[bank].sts) & FSMC_CODE_RDY)
-+		if (readl(FSMC_NAND_REG(regs, bank, STS)) & FSMC_CODE_RDY)
- 			break;
- 		else
- 			cond_resched();
-@@ -479,25 +480,25 @@ static int fsmc_read_hwecc_ecc4(struct mtd_info *mtd, const uint8_t *data,
- 		return -ETIMEDOUT;
- 	}
- 
--	ecc_tmp = readl(&regs->bank_regs[bank].ecc1);
-+	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC1));
- 	ecc[0] = (uint8_t) (ecc_tmp >> 0);
- 	ecc[1] = (uint8_t) (ecc_tmp >> 8);
- 	ecc[2] = (uint8_t) (ecc_tmp >> 16);
- 	ecc[3] = (uint8_t) (ecc_tmp >> 24);
- 
--	ecc_tmp = readl(&regs->bank_regs[bank].ecc2);
-+	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC2));
- 	ecc[4] = (uint8_t) (ecc_tmp >> 0);
- 	ecc[5] = (uint8_t) (ecc_tmp >> 8);
- 	ecc[6] = (uint8_t) (ecc_tmp >> 16);
- 	ecc[7] = (uint8_t) (ecc_tmp >> 24);
- 
--	ecc_tmp = readl(&regs->bank_regs[bank].ecc3);
-+	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC3));
- 	ecc[8] = (uint8_t) (ecc_tmp >> 0);
- 	ecc[9] = (uint8_t) (ecc_tmp >> 8);
- 	ecc[10] = (uint8_t) (ecc_tmp >> 16);
- 	ecc[11] = (uint8_t) (ecc_tmp >> 24);
- 
--	ecc_tmp = readl(&regs->bank_regs[bank].sts);
-+	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, STS));
- 	ecc[12] = (uint8_t) (ecc_tmp >> 16);
- 
- 	return 0;
-@@ -513,11 +514,11 @@ static int fsmc_read_hwecc_ecc1(struct mtd_info *mtd, const uint8_t *data,
- {
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
--	struct fsmc_regs *regs = host->regs_va;
-+	void __iomem *regs = host->regs_va;
- 	uint32_t bank = host->bank;
- 	uint32_t ecc_tmp;
- 
--	ecc_tmp = readl(&regs->bank_regs[bank].ecc1);
-+	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC1));
- 	ecc[0] = (uint8_t) (ecc_tmp >> 0);
- 	ecc[1] = (uint8_t) (ecc_tmp >> 8);
- 	ecc[2] = (uint8_t) (ecc_tmp >> 16);
-@@ -771,13 +772,13 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
- 	struct nand_chip *chip = mtd->priv;
--	struct fsmc_regs *regs = host->regs_va;
-+	void __iomem *regs = host->regs_va;
- 	unsigned int bank = host->bank;
- 	uint32_t err_idx[8];
- 	uint32_t num_err, i;
- 	uint32_t ecc1, ecc2, ecc3, ecc4;
- 
--	num_err = (readl(&regs->bank_regs[bank].sts) >> 10) & 0xF;
-+	num_err = (readl(FSMC_NAND_REG(regs, bank, STS)) >> 10) & 0xF;
- 
- 	/* no bit flipping */
- 	if (likely(num_err == 0))
-@@ -820,10 +821,10 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
- 	 * uint64_t array and error offset indexes are populated in err_idx
- 	 * array
- 	 */
--	ecc1 = readl(&regs->bank_regs[bank].ecc1);
--	ecc2 = readl(&regs->bank_regs[bank].ecc2);
--	ecc3 = readl(&regs->bank_regs[bank].ecc3);
--	ecc4 = readl(&regs->bank_regs[bank].sts);
-+	ecc1 = readl(FSMC_NAND_REG(regs, bank, ECC1));
-+	ecc2 = readl(FSMC_NAND_REG(regs, bank, ECC2));
-+	ecc3 = readl(FSMC_NAND_REG(regs, bank, ECC3));
-+	ecc4 = readl(FSMC_NAND_REG(regs, bank, STS));
- 
- 	err_idx[0] = (ecc1 >> 0) & 0x1FFF;
- 	err_idx[1] = (ecc1 >> 13) & 0x1FFF;
-@@ -863,7 +864,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	struct fsmc_nand_data *host;
- 	struct mtd_info *mtd;
+  * fsmc_nand_probe - Probe function
+  * @pdev:       platform device structure
+@@ -743,6 +865,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
  	struct nand_chip *nand;
--	struct fsmc_regs *regs;
+ 	struct fsmc_regs *regs;
  	struct resource *res;
- 	dma_cap_mask_t mask;
++	dma_cap_mask_t mask;
  	int ret = 0;
-@@ -976,8 +976,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (host->mode == USE_DMA_ACCESS)
- 		init_completion(&host->dma_access_complete);
- 
--	regs = host->regs_va;
--
- 	/* Link all private pointers */
- 	mtd = &host->mtd;
- 	nand = &host->nand;
-@@ -1027,7 +1025,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		break;
+ 	u32 pid;
+ 	int i;
+@@ -769,6 +892,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		return -ENOENT;
  	}
  
--	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
-+	fsmc_nand_setup(host->regs_va, host->bank,
-+			nand->options & NAND_BUSWIDTH_16,
- 			host->dev_timings);
++	host->data_pa = (dma_addr_t)res->start;
+ 	host->data_va = devm_ioremap(&pdev->dev, res->start,
+ 			resource_size(res));
+ 	if (!host->data_va) {
+@@ -847,6 +971,11 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	host->nr_partitions = pdata->nr_partitions;
+ 	host->dev = &pdev->dev;
+ 	host->dev_timings = pdata->nand_timings;
++	host->mode = pdata->mode;
++
++	if (host->mode == USE_DMA_ACCESS)
++		init_completion(&host->dma_access_complete);
++
+ 	regs = host->regs_va;
  
- 	if (AMBA_REV_BITS(host->pid) >= 8) {
+ 	/* Link all private pointers */
+@@ -871,13 +1000,31 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	if (pdata->width == FSMC_NAND_BW16)
+ 		nand->options |= NAND_BUSWIDTH_16;
+ 
+-	/*
+-	 * use customized (word by word) version of read_buf, write_buf if
+-	 * access_with_dev_width is reset supported
+-	 */
+-	if (pdata->mode == USE_WORD_ACCESS) {
++	switch (host->mode) {
++	case USE_DMA_ACCESS:
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_MEMCPY, mask);
++		host->read_dma_chan = dma_request_channel(mask, filter,
++				pdata->read_dma_priv);
++		if (!host->read_dma_chan) {
++			dev_err(&pdev->dev, "Unable to get read dma channel\n");
++			goto err_req_read_chnl;
++		}
++		host->write_dma_chan = dma_request_channel(mask, filter,
++				pdata->write_dma_priv);
++		if (!host->write_dma_chan) {
++			dev_err(&pdev->dev, "Unable to get write dma channel\n");
++			goto err_req_write_chnl;
++		}
++		nand->read_buf = fsmc_read_buf_dma;
++		nand->write_buf = fsmc_write_buf_dma;
++		break;
++
++	default:
++	case USE_WORD_ACCESS:
+ 		nand->read_buf = fsmc_read_buf;
+ 		nand->write_buf = fsmc_write_buf;
++		break;
+ 	}
+ 
+ 	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
+@@ -978,6 +1125,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 
+ err_probe:
+ err_scan_ident:
++	if (host->mode == USE_DMA_ACCESS)
++		dma_release_channel(host->write_dma_chan);
++err_req_write_chnl:
++	if (host->mode == USE_DMA_ACCESS)
++		dma_release_channel(host->read_dma_chan);
++err_req_read_chnl:
+ 	clk_disable(host->clk);
+ err_clk_enable:
+ 	clk_put(host->clk);
+@@ -995,6 +1148,11 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ 
+ 	if (host) {
+ 		nand_release(&host->mtd);
++
++		if (host->mode == USE_DMA_ACCESS) {
++			dma_release_channel(host->write_dma_chan);
++			dma_release_channel(host->read_dma_chan);
++		}
+ 		clk_disable(host->clk);
+ 		clk_put(host->clk);
+ 	}
 diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index 18f9127..823359c 100644
+index 1edd2b3..18f9127 100644
 --- a/include/linux/mtd/fsmc.h
 +++ b/include/linux/mtd/fsmc.h
-@@ -32,88 +32,77 @@
- #define FSMC_FLASH_WIDTH8	1
- #define FSMC_FLASH_WIDTH16	2
+@@ -172,6 +172,10 @@ struct fsmc_nand_platform_data {
+ 	enum access_mode	mode;
  
--struct fsmc_nor_bank_regs {
--	uint32_t ctrl;
--	uint32_t ctrl_tim;
--};
--
--/* ctrl register definitions */
--#define BANK_ENABLE		(1 << 0)
--#define MUXED			(1 << 1)
--#define NOR_DEV			(2 << 2)
--#define WIDTH_8			(0 << 4)
--#define WIDTH_16		(1 << 4)
--#define RSTPWRDWN		(1 << 6)
--#define WPROT			(1 << 7)
--#define WRT_ENABLE		(1 << 12)
--#define WAIT_ENB		(1 << 13)
--
--/* ctrl_tim register definitions */
--
--struct fsmc_nand_bank_regs {
--	uint32_t pc;
--	uint32_t sts;
--	uint32_t comm;
--	uint32_t attrib;
--	uint32_t ioata;
--	uint32_t ecc1;
--	uint32_t ecc2;
--	uint32_t ecc3;
--};
--
-+/* fsmc controller registers for NOR flash */
-+#define CTRL			0x0
-+	/* ctrl register definitions */
-+	#define BANK_ENABLE		(1 << 0)
-+	#define MUXED			(1 << 1)
-+	#define NOR_DEV			(2 << 2)
-+	#define WIDTH_8			(0 << 4)
-+	#define WIDTH_16		(1 << 4)
-+	#define RSTPWRDWN		(1 << 6)
-+	#define WPROT			(1 << 7)
-+	#define WRT_ENABLE		(1 << 12)
-+	#define WAIT_ENB		(1 << 13)
+ 	void			(*select_bank)(uint32_t bank, uint32_t busw);
 +
-+#define CTRL_TIM		0x4
-+	/* ctrl_tim register definitions */
-+
-+#define FSMC_NOR_BANK_SZ	0x8
- #define FSMC_NOR_REG_SIZE	0x40
++	/* priv structures for dma accesses */
++	void			*read_dma_priv;
++	void			*write_dma_priv;
+ };
  
--struct fsmc_regs {
--	struct fsmc_nor_bank_regs nor_bank_regs[FSMC_MAX_NOR_BANKS];
--	uint8_t reserved_1[0x40 - 0x20];
--	struct fsmc_nand_bank_regs bank_regs[FSMC_MAX_NAND_BANKS];
--	uint8_t reserved_2[0xfe0 - 0xc0];
--	uint32_t peripid0;			/* 0xfe0 */
--	uint32_t peripid1;			/* 0xfe4 */
--	uint32_t peripid2;			/* 0xfe8 */
--	uint32_t peripid3;			/* 0xfec */
--	uint32_t pcellid0;			/* 0xff0 */
--	uint32_t pcellid1;			/* 0xff4 */
--	uint32_t pcellid2;			/* 0xff8 */
--	uint32_t pcellid3;			/* 0xffc */
--};
-+#define FSMC_NOR_REG(base, bank, reg)		(base + \
-+						FSMC_NOR_BANK_SZ * (bank) + \
-+						reg)
-+
-+/* fsmc controller registers for NAND flash */
-+#define PC			0x00
-+	/* pc register definitions */
-+	#define FSMC_RESET		(1 << 0)
-+	#define FSMC_WAITON		(1 << 1)
-+	#define FSMC_ENABLE		(1 << 2)
-+	#define FSMC_DEVTYPE_NAND	(1 << 3)
-+	#define FSMC_DEVWID_8		(0 << 4)
-+	#define FSMC_DEVWID_16		(1 << 4)
-+	#define FSMC_ECCEN		(1 << 6)
-+	#define FSMC_ECCPLEN_512	(0 << 7)
-+	#define FSMC_ECCPLEN_256	(1 << 7)
-+	#define FSMC_TCLR_1		(1)
-+	#define FSMC_TCLR_SHIFT		(9)
-+	#define FSMC_TCLR_MASK		(0xF)
-+	#define FSMC_TAR_1		(1)
-+	#define FSMC_TAR_SHIFT		(13)
-+	#define FSMC_TAR_MASK		(0xF)
-+#define STS			0x04
-+	/* sts register definitions */
-+	#define FSMC_CODE_RDY		(1 << 15)
-+#define COMM			0x08
-+	/* comm register definitions */
-+	#define FSMC_TSET_0		0
-+	#define FSMC_TSET_SHIFT		0
-+	#define FSMC_TSET_MASK		0xFF
-+	#define FSMC_TWAIT_6		6
-+	#define FSMC_TWAIT_SHIFT	8
-+	#define FSMC_TWAIT_MASK		0xFF
-+	#define FSMC_THOLD_4		4
-+	#define FSMC_THOLD_SHIFT	16
-+	#define FSMC_THOLD_MASK		0xFF
-+	#define FSMC_THIZ_1		1
-+	#define FSMC_THIZ_SHIFT		24
-+	#define FSMC_THIZ_MASK		0xFF
-+#define ATTRIB			0x0C
-+#define IOATA			0x10
-+#define ECC1			0x14
-+#define ECC2			0x18
-+#define ECC3			0x1C
-+#define FSMC_NAND_BANK_SZ	0x20
-+
-+#define FSMC_NAND_REG(base, bank, reg)		(base + FSMC_NOR_REG_SIZE + \
-+						(FSMC_NAND_BANK_SZ * (bank)) + \
-+						reg)
- 
- #define FSMC_BUSY_WAIT_TIMEOUT	(1 * HZ)
- 
--/* pc register definitions */
--#define FSMC_RESET		(1 << 0)
--#define FSMC_WAITON		(1 << 1)
--#define FSMC_ENABLE		(1 << 2)
--#define FSMC_DEVTYPE_NAND	(1 << 3)
--#define FSMC_DEVWID_8		(0 << 4)
--#define FSMC_DEVWID_16		(1 << 4)
--#define FSMC_ECCEN		(1 << 6)
--#define FSMC_ECCPLEN_512	(0 << 7)
--#define FSMC_ECCPLEN_256	(1 << 7)
--#define FSMC_TCLR_1		(1)
--#define FSMC_TCLR_SHIFT		(9)
--#define FSMC_TCLR_MASK		(0xF)
--#define FSMC_TAR_1		(1)
--#define FSMC_TAR_SHIFT		(13)
--#define FSMC_TAR_MASK		(0xF)
--
--/* sts register definitions */
--#define FSMC_CODE_RDY		(1 << 15)
--
--/* comm register definitions */
--#define FSMC_TSET_0		0
--#define FSMC_TSET_SHIFT		0
--#define FSMC_TSET_MASK		0xFF
--#define FSMC_TWAIT_6		6
--#define FSMC_TWAIT_SHIFT	8
--#define FSMC_TWAIT_MASK		0xFF
--#define FSMC_THOLD_4		4
--#define FSMC_THOLD_SHIFT	16
--#define FSMC_THOLD_MASK		0xFF
--#define FSMC_THIZ_1		1
--#define FSMC_THIZ_SHIFT		24
--#define FSMC_THIZ_MASK		0xFF
--
- /*
-  * There are 13 bytes of ecc for every 512 byte block in FSMC version 8
-  * and it has to be read consecutively and immediately after the 512
+ extern int __init fsmc_nor_init(struct platform_device *pdev,
 -- 
 1.7.0.4
