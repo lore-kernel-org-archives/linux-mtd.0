@@ -1,13 +1,12 @@
-Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131])
+Received: from eu1sys200aog115.obsmtp.com ([207.126.144.139])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7hXf-0002qO-4q
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:36 +0000
+ id 1S7hXj-0002ry-8w
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:40 +0000
 From: Vipin Kumar <vipin.kumar@st.com>
 To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
-Subject: [PATCH v2 08/13] nand/fsmc: Modify fsmc driver to accept nand timing
- parameters via platform
-Date: Wed, 14 Mar 2012 11:47:14 +0530
-Message-ID: <7138d02e28bfab8521c97c8ac482b6c754605e28.1331705527.git.vipin.kumar@st.com>
+Subject: [PATCH v2 10/13] nand/fsmc: Use dev_err to report error scenario
+Date: Wed, 14 Mar 2012 11:47:16 +0530
+Message-ID: <da0b3f37d0be34c431fe1c07610a27e914cd0ee9.1331705527.git.vipin.kumar@st.com>
 In-Reply-To: <cover.1331705527.git.vipin.kumar@st.com>
 References: <cover.1331705527.git.vipin.kumar@st.com>
 MIME-Version: 1.0
@@ -23,175 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FSMC controllers provide registers to program the required timing values for
-attached NAND device. The timing values used until now are relaxed and should
-work for all devices.
-
-Although, for read/write performance improvements, the fsmc nand driver should
-accept nand timings as a platform data and program the timing parameters into
-fsmc registers accordingly.
-
-This patch implements this modification. Additionally, it programs the default
-timing parameters if these are not passed via platform data.
+fsmc controller takes time to calculate the bch8 codes and the error offsets.
+The calculate logic checks for completion upto a timeout. This patch adds a
+error print when this timer expires and the ecc or error offsets are not yet
+calculated.
 
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |   41 +++++++++++++++++++++++++++++++++--------
- include/linux/mtd/fsmc.h     |   34 ++++++++++++++++++++++++++++------
- 2 files changed, 61 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 5433856..71fd9f6 100644
+index f0168a3..e093fd5 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -303,6 +303,8 @@ struct fsmc_nand_data {
- 	struct resource		*resaddr;
- 	struct resource		*resdata;
+@@ -296,6 +296,7 @@ struct fsmc_nand_data {
  
-+	struct fsmc_nand_timings *dev_timings;
+ 	struct fsmc_eccplace	*ecc_place;
+ 	unsigned int		bank;
++	struct device		*dev;
+ 	struct clk		*clk;
+ 
+ 	struct fsmc_nand_timings *dev_timings;
+@@ -457,6 +458,11 @@ static int fsmc_read_hwecc_ecc4(struct mtd_info *mtd, const uint8_t *data,
+ 			cond_resched();
+ 	} while (!time_after_eq(jiffies, deadline));
+ 
++	if (time_after_eq(jiffies, deadline)) {
++		dev_err(host->dev, "calculate ecc timed out\n");
++		return -ETIMEDOUT;
++	}
 +
- 	void __iomem		*data_va;
- 	void __iomem		*cmd_va;
- 	void __iomem		*addr_va;
-@@ -383,21 +385,41 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-  * FSMC registers
-  */
- static void fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
--				   uint32_t busw)
-+			   uint32_t busw, struct fsmc_nand_timings *timings)
- {
- 	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
-+	uint32_t tclr, tar, thiz, thold, twait, tset;
-+	struct fsmc_nand_timings *tims;
-+	struct fsmc_nand_timings default_timings = {
-+		.tclr	= FSMC_TCLR_1,
-+		.tar	= FSMC_TAR_1,
-+		.thiz	= FSMC_THIZ_1,
-+		.thold	= FSMC_THOLD_4,
-+		.twait	= FSMC_TWAIT_6,
-+		.tset	= FSMC_TSET_0,
-+	};
-+
-+	if (timings)
-+		tims = timings;
-+	else
-+		tims = &default_timings;
-+
-+	tclr = (tims->tclr & FSMC_TCLR_MASK) << FSMC_TCLR_SHIFT;
-+	tar = (tims->tar & FSMC_TAR_MASK) << FSMC_TAR_SHIFT;
-+	thiz = (tims->thiz & FSMC_THIZ_MASK) << FSMC_THIZ_SHIFT;
-+	thold = (tims->thold & FSMC_THOLD_MASK) << FSMC_THOLD_SHIFT;
-+	twait = (tims->twait & FSMC_TWAIT_MASK) << FSMC_TWAIT_SHIFT;
-+	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
- 
- 	if (busw)
- 		writel(value | FSMC_DEVWID_16, &regs->bank_regs[bank].pc);
- 	else
- 		writel(value | FSMC_DEVWID_8, &regs->bank_regs[bank].pc);
- 
--	writel(readl(&regs->bank_regs[bank].pc) | FSMC_TCLR_1 | FSMC_TAR_1,
-+	writel(readl(&regs->bank_regs[bank].pc) | tclr | tar,
- 	       &regs->bank_regs[bank].pc);
--	writel(FSMC_THIZ_1 | FSMC_THOLD_4 | FSMC_TWAIT_6 | FSMC_TSET_0,
--	       &regs->bank_regs[bank].comm);
--	writel(FSMC_THIZ_1 | FSMC_THOLD_4 | FSMC_TWAIT_6 | FSMC_TSET_0,
--	       &regs->bank_regs[bank].attrib);
-+	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].comm);
-+	writel(thiz | thold | twait | tset, &regs->bank_regs[bank].attrib);
- }
- 
- /*
-@@ -783,6 +805,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	ecc_tmp = readl(&regs->bank_regs[bank].ecc1);
+ 	ecc[0] = (uint8_t) (ecc_tmp >> 0);
+ 	ecc[1] = (uint8_t) (ecc_tmp >> 8);
+@@ -793,6 +799,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
  	host->select_chip = pdata->select_bank;
  	host->partitions = pdata->partitions;
  	host->nr_partitions = pdata->nr_partitions;
-+	host->dev_timings = pdata->nand_timings;
++	host->dev = &pdev->dev;
+ 	host->dev_timings = pdata->nand_timings;
  	regs = host->regs_va;
  
- 	/* Link all private pointers */
-@@ -807,7 +830,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (pdata->width == FSMC_NAND_BW16)
- 		nand->options |= NAND_BUSWIDTH_16;
- 
--	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16);
-+	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16,
-+			host->dev_timings);
- 
- 	if (AMBA_REV_BITS(host->pid) >= 8) {
- 		nand->ecc.read_page = fsmc_read_page_hwecc;
-@@ -979,7 +1003,8 @@ static int fsmc_nand_resume(struct device *dev)
- 	if (host) {
- 		clk_enable(host->clk);
- 		fsmc_nand_setup(host->regs_va, host->bank,
--				host->nand.options & NAND_BUSWIDTH_16);
-+				host->nand.options & NAND_BUSWIDTH_16,
-+				host->dev_timings);
- 	}
- 	return 0;
- }
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index e877325..c4ac07a 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -90,17 +90,29 @@ struct fsmc_regs {
- #define FSMC_ECCEN		(1 << 6)
- #define FSMC_ECCPLEN_512	(0 << 7)
- #define FSMC_ECCPLEN_256	(1 << 7)
--#define FSMC_TCLR_1		(1 << 9)
--#define FSMC_TAR_1		(1 << 13)
-+#define FSMC_TCLR_1		(1)
-+#define FSMC_TCLR_SHIFT		(9)
-+#define FSMC_TCLR_MASK		(0xF)
-+#define FSMC_TAR_1		(1)
-+#define FSMC_TAR_SHIFT		(13)
-+#define FSMC_TAR_MASK		(0xF)
- 
- /* sts register definitions */
- #define FSMC_CODE_RDY		(1 << 15)
- 
- /* comm register definitions */
--#define FSMC_TSET_0		(0 << 0)
--#define FSMC_TWAIT_6		(6 << 8)
--#define FSMC_THOLD_4		(4 << 16)
--#define FSMC_THIZ_1		(1 << 24)
-+#define FSMC_TSET_0		0
-+#define FSMC_TSET_SHIFT		0
-+#define FSMC_TSET_MASK		0xFF
-+#define FSMC_TWAIT_6		6
-+#define FSMC_TWAIT_SHIFT	8
-+#define FSMC_TWAIT_MASK		0xFF
-+#define FSMC_THOLD_4		4
-+#define FSMC_THOLD_SHIFT	16
-+#define FSMC_THOLD_MASK		0xFF
-+#define FSMC_THIZ_1		1
-+#define FSMC_THIZ_SHIFT		24
-+#define FSMC_THIZ_MASK		0xFF
- 
- /*
-  * There are 13 bytes of ecc for every 512 byte block in FSMC version 8
-@@ -120,6 +132,15 @@ struct fsmc_eccplace {
- 	struct fsmc_nand_eccplace eccplace[MAX_ECCPLACE_ENTRIES];
- };
- 
-+struct fsmc_nand_timings {
-+	uint8_t tclr;
-+	uint8_t tar;
-+	uint8_t thiz;
-+	uint8_t thold;
-+	uint8_t twait;
-+	uint8_t tset;
-+};
-+
- /**
-  * fsmc_nand_platform_data - platform specific NAND controller config
-  * @partitions: partition table for the platform, use a default fallback
-@@ -133,6 +154,7 @@ struct fsmc_eccplace {
-  * this may be set to NULL
-  */
- struct fsmc_nand_platform_data {
-+	struct fsmc_nand_timings *nand_timings;
- 	struct mtd_partition	*partitions;
- 	unsigned int		nr_partitions;
- 	unsigned int		options;
 -- 
 1.7.0.4
