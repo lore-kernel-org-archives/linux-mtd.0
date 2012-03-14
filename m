@@ -1,23 +1,19 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S7Zyu-0007X4-FD
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2012 22:14:13 +0000
-Received: from [192.168.12.102] (182.sub-166-250-18.myvzw.com [166.250.18.182])
- by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id q2DME84r013075
- (version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2012 15:14:09 -0700 (PDT)
- (envelope-from mikedunn@newsguy.com)
-Message-ID: <4F5FC6AC.9050707@newsguy.com>
-Date: Tue, 13 Mar 2012 15:14:04 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from eu1sys200aog101.obsmtp.com ([207.126.144.111])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S7hXK-0002jH-7Y
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2012 06:18:15 +0000
+From: Vipin Kumar <vipin.kumar@st.com>
+To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
+Subject: [PATCH v2 01/13] nand/fsmc: Pass partition information through
+ platform data
+Date: Wed, 14 Mar 2012 11:47:07 +0530
+Message-ID: <cde13f8b2efacc7588963d4ca978f42514e2759c.1331705527.git.vipin.kumar@st.com>
+In-Reply-To: <cover.1331705527.git.vipin.kumar@st.com>
+References: <cover.1331705527.git.vipin.kumar@st.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/4] MTD: Change meaning of -EUCLEAN return code on reads
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331640228.3595.19.camel@sauron.fi.intel.com> <4F5F87E6.7010301@newsguy.com>
-In-Reply-To: <4F5F87E6.7010301@newsguy.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Cc: sr@denx.de, Vipin Kumar <vipin.kumar@st.com>, linus.walleij@linaro.org,
+ spear-devel@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/13/2012 10:46 AM, Mike Dunn wrote:
->>
->> I'd be pro-active and just CC'ed maintainers/possibly relevant people.
->> scripts/get_maintainer.pl would give you the ones, I think. Just spend a
->> little time and come up with a list of people and CC them.
-> 
-> 
-> I actually did do this, and git-send-email kept rejecting it because of "too
-> many recipients" or some such.  After several iterations of trying to
-> intelligently whittle down the CC list and getting the same result, I got
-> frustrated and just CC'd Ivan.  (Hope you don't mind, Ivan :) Anyone know how
-> many recipients git allows?
+This patch reimplements the passing of partition information through platform
+data. This was unintentionally deleted in commit
+0d04eda1430e9a796214bee644b7e05d99cfe613
+"mtd: fsmc_nand.c: use mtd_device_parse_register"
 
+Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+---
+ drivers/mtd/nand/fsmc_nand.c |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
 
-This is my smtp server rejecting it, not git.  Apparently it has an absurdly low
-limit to the number of recipients.
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 588e373..2d7683b 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -333,6 +333,8 @@ static struct mtd_partition partition_info_128KB_blk[] = {
+  * @pid:		Part ID on the AMBA PrimeCell format
+  * @mtd:		MTD info for a NAND flash.
+  * @nand:		Chip related info for a NAND flash.
++ * @partitions:		Partition info for a NAND Flash.
++ * @nr_partitions:	Total number of partition of a NAND flash.
+  *
+  * @ecc_place:		ECC placing locations in oobfree type format.
+  * @bank:		Bank number for probed device.
+@@ -347,6 +349,8 @@ struct fsmc_nand_data {
+ 	u32			pid;
+ 	struct mtd_info		mtd;
+ 	struct nand_chip	nand;
++	struct mtd_partition	*partitions;
++	unsigned int		nr_partitions;
+ 
+ 	struct fsmc_eccplace	*ecc_place;
+ 	unsigned int		bank;
+@@ -833,6 +837,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 
+ 	host->bank = pdata->bank;
+ 	host->select_chip = pdata->select_bank;
++	host->partitions = pdata->partitions;
++	host->nr_partitions = pdata->nr_partitions;
+ 	regs = host->regs_va;
+ 
+ 	/* Link all private pointers */
+@@ -942,13 +948,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	 * Check for partition info passed
+ 	 */
+ 	host->mtd.name = "nand";
+-	ret = mtd_device_parse_register(&host->mtd, NULL, NULL,
+-					host->mtd.size <= 0x04000000 ?
+-					partition_info_16KB_blk :
+-					partition_info_128KB_blk,
+-					host->mtd.size <= 0x04000000 ?
+-					ARRAY_SIZE(partition_info_16KB_blk) :
+-					ARRAY_SIZE(partition_info_128KB_blk));
++	ret = mtd_device_parse_register(&host->mtd, NULL, 0, host->partitions,
++			host->nr_partitions);
+ 	if (ret)
+ 		goto err_probe;
+ 
+-- 
+1.7.0.4
