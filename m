@@ -1,16 +1,16 @@
-Received: from as-smtp3.itc.alstom.com ([159.245.16.38] helo=itc.alstom.com)
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S8DLg-0004gQ-7G
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 16:16:22 +0000
-From: STOTTS Timothy <timothy.stotts@transport.alstom.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: how to support 4096+224 page size with plat_nand ?
-Date: Thu, 15 Mar 2012 16:00:33 +0000
-Message-ID: <6E13A53B51111A48A6299DFACA193D4A85FDBF@041-DB3MPN1-015.041d.mgd.msft.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1S8ERY-0003qq-QH
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 17:26:30 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] MTD: expose ecc_strength through sysfs
+Date: Thu, 15 Mar 2012 10:25:51 -0700
+Message-Id: <1331832353-15569-2-git-send-email-mikedunn@newsguy.com>
+In-Reply-To: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,114 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am looking to add support for the NAND Flash chip MT29F16G08ABABA to a bo=
-ard implementation of the platform NAND driver plat_nand.c .
+This patch exposes the struct mtd_info element ecc_strength as a read-only
+variable through sysfs.
 
-I have followed the instructions available for my architecture at:
-http://docs.blackfin.uclinux.org/doku.php?id=3Dlinux-kernel:drivers:bfin_as=
-ync_nand
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ Documentation/ABI/testing/sysfs-class-mtd |   11 +++++++++++
+ drivers/mtd/mtdcore.c                     |   10 ++++++++++
+ 2 files changed, 21 insertions(+), 0 deletions(-)
 
-The chip has a page size of 4096+224.
-
-According to the manufacturer, all blocks come preset as either 0xFF or 0x0=
-0. If 0xFF, the block is erased and good. If 0x00, the block was factory-de=
-termined to be bad.
-
-It was necessary to make the following changes to the NAND subsystem for OO=
-B of size 224.
-=3D=3D=3D modified file 'drivers/mtd/nand/nand_base.c'
---- drivers/mtd/nand/nand_base.c        2011-12-28 19:57:41 +0000
-+++ drivers/mtd/nand/nand_base.c        2012-03-15 15:08:23 +0000
-@@ -3256,6 +3256,11 @@
-                case 128:
-                        chip->ecc.layout =3D &nand_oob_128;
-                        break;
-+               case 224:
-+                       chip->ecc.layout =3D &nand_oob_128;
-+                       break;
-                default:
-                        printk(KERN_WARNING "No oob scheme defined for "
-                               "oobsize %d\n", mtd->oobsize);
-
-All kernel MTD Tests (kernel modules) run without error.
-MTD nandtest executable runs without error.
-
-Works as expected: ubiformat /dev/mtd4
-
-Does not work as expected: ubiattach /dev/ubi_ctrl -m 4
-root:~> ubiattach /dev/ubi_ctrl -m 4
-UBI: attaching mtd4 to ubi0
-UBI: physical eraseblock size:   524288 bytes (512 KiB)
-UBI: logical eraseblock size:    520192 bytes
-UBI: smallest flash I/O unit:    4096
-UBI: sub-page size:              1024
-UBI: VID header offset:          1024 (aligned 1024)
-UBI: data offset:                4096
-uncorrectable error :
-uncorrectable error :
-...
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI: max. sequence number:       0
-UBI: attached mtd4 to ubi0
-UBI: MTD device name:            "file system(nand)"
-UBI: MTD device size:            2048 MiB
-UBI: number of good PEBs:        4096
-UBI: number of bad PEBs:         0
-UBI: number of corrupted PEBs:   0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     0
-UBI: available PEBs:             4052
-UBI: total number of reserved PEBs: 44
-UBI: number of PEBs reserved for bad PEB handling: 40
-UBI: max/mean erase counter: 0/0
-UBI: image sequence number:  760250844
-UBI: background thread "ubi_bgt0d" started, PID 482
-UBI device number 0, total 4096 LEBs (2130706432 bytes, 2.0 GiB), available=
- 4052 LEBs (2107817984 bytes, 2.0 GiB), LEB size 520192 bytes (508.0 KiB)
-
-I am assuming that the errors are due to an incorrect OOB layout, or the EC=
-C not being written correctly by ubiformat. What can I do to define the cor=
-rect OOB layout for a chip with OOB size of 224 bytes?
-
-Works as expected: ubimkvol /dev/ubi0 -N nand -m
-
-root:~> ubimkvol /dev/ubi0 -N nand -m
-Set volume size to 2107817984
-Volume ID 0, size 4052 LEBs (2107817984 bytes, 2.0 GiB), LEB size 520192 by=
-tes (508.0 KiB), dynamic, name "nand", alignment 1
-
-Does not work as expected: mount -t ubifs ubi0:nand /mnt
-
-root:~> mount -t ubifs ubi0:nand /mnt
-UBIFS: default file-system created
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBIFS: mounted UBI device 0, volume 0, name "nand"
-UBIFS: file system size:   2102616064 bytes (2053336 KiB, 2005 MiB, 4042 LE=
-Bs)
-UBIFS: journal size:       33292288 bytes (32512 KiB, 31 MiB, 64 LEBs)
-UBIFS: media format:       w4/r0 (latest is w4/r0)
-UBIFS: default compressor: lzo
-UBIFS: reserved for root:  4952683 bytes (4836 KiB)
-
-Regards,
-Timothy Stotts
-
-
-________________________________
-CONFIDENTIALITY : This e-mail and any attachments are confidential and may =
-be privileged. If you are not a named recipient, please notify the sender i=
-mmediately and do not disclose the contents to another person, use it for a=
-ny purpose or store or copy the information in any medium.
+diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
+index 4d55a18..6a218e6 100644
+--- a/Documentation/ABI/testing/sysfs-class-mtd
++++ b/Documentation/ABI/testing/sysfs-class-mtd
+@@ -123,3 +123,14 @@ Description:
+ 		half page, or a quarter page).
+ 
+ 		In the case of ECC NOR, it is the ECC block size.
++
++What:		/sys/class/mtd/mtdX/ecc_strength
++Date:		March 2012
++KernelVersion:	3.3.1
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Maximum number of bit errors that the device is capable of
++		correcting when reading a region of size writesize.  This will
++		always be a non-negative integer.
++
++		In the case of devices lacking any ECC capability, it is 0.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b274fdf..1573644 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -250,6 +250,15 @@ static ssize_t mtd_name_show(struct device *dev,
+ }
+ static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
+ 
++static ssize_t mtd_ecc_strength_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_strength);
++}
++static DEVICE_ATTR(ecc_strength, S_IRUGO, mtd_ecc_strength_show, NULL);
++
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
+@@ -260,6 +269,7 @@ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_oobsize.attr,
+ 	&dev_attr_numeraseregions.attr,
+ 	&dev_attr_name.attr,
++	&dev_attr_ecc_strength.attr,
+ 	NULL,
+ };
+ 
+-- 
+1.7.3.4
