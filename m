@@ -1,15 +1,29 @@
-Received: from ipmail05.adl6.internode.on.net ([150.101.137.143])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S898w-0003FH-RO
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 11:46:56 +0000
-Message-ID: <4F61D6CF.4080707@internode.on.net>
-Date: Thu, 15 Mar 2012 22:17:27 +1030
-From: Craig Peacock <Craig.Peacock@internode.on.net>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S8AAn-0007ng-Ef
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 12:52:54 +0000
+Received: by eaak13 with SMTP id k13so1684713eaa.36
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2012 05:52:47 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Assistance with debugging ubi_io_read error -74 (ECC Error)
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1331731119.3730.17.camel@sauron.fi.intel.com>
+References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
+ <1331559644.12037.33.camel@sauron.fi.intel.com>
+ <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
+ <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
+ <1331619893.2443.10.camel@koala>
+ <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
+ <1331628462.12037.56.camel@sauron.fi.intel.com>
+ <CAHMF36G_iE3pEVh1WEVgm5H0p3wsePUxwu9-MCVB+v7vxFf4RQ@mail.gmail.com>
+ <1331727617.3730.5.camel@sauron.fi.intel.com>
+ <CAHMF36H_+ohHph_mn+iaVnH9Z_WQR0bkQT8Fv8s8cTHE5vV+fg@mail.gmail.com>
+ <1331731119.3730.17.camel@sauron.fi.intel.com>
+Date: Thu, 15 Mar 2012 13:52:46 +0100
+Message-ID: <CAHMF36G7nXXGc_uQySzPFhtALb=9Vp2Lwn=dop+EauSL-Rf=Bg@mail.gmail.com>
+Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
+From: Matej Kupljen <matej.kupljen@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,202 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear Artem,
 
-I'm trying to get UBI volumes/fs working on a Seagate GoFlex Home 
-platform with a custom kernel. The product orginally ships with a 
-working UBIFS. It has a Marvell Kirkwood (ARM) processor with a Toshiba 
-TC58NVG1S3ETA00 256Mbyte NAND flash and runs Kernel 2.6.22.18. It 
-appears to be based on Marvell LSP Version KW_LSP_4.3.4_patch22. One of 
-the kernel parameters is ubi.mtd=2,2048 setting the VID header to an 
-offset of 2048 bytes and avoiding subpages.
+> I guess I meant to somehow make sure that UBIFS exclusively owns the mtd
+> device and no one or nothing accesses it.
 
-I've recompiled my own kernel for the board based on Linux 3.2.9 but I 
-am unable to successfully use UBIFS even when I set the VID header to a 
-2048 byte offset.
+Thanks for all the suggestions, I guess I'll start with them now, because
+my device has been tortured for 3 days with result:
 
-When I try to boot with the root UBIFS on mtd2 I get:
+[179113.412000] mtd_torturetest: 00033792 erase cycles done, took
+2051108 milliseconds (2051 seconds)
+[181164.576000] mtd_torturetest: 00034304 erase cycles done, took
+2051160 milliseconds (2051 seconds)
+[183215.724000] mtd_torturetest: 00034816 erase cycles done, took
+2051143 milliseconds (2051 seconds)
+[185266.832000] mtd_torturetest: 00035328 erase cycles done, took
+2051102 milliseconds (2051 seconds)
+[187317.844000] mtd_torturetest: 00035840 erase cycles done, took
+2051006 milliseconds (2051 seconds)
+[189368.464000] mtd_torturetest: 00036352 erase cycles done, took
+2050615 milliseconds (2050 seconds)
+[191419.440000] mtd_torturetest: 00036864 erase cycles done, took
+2050974 milliseconds (2050 seconds)
 
-NAND device: Manufacturer ID: 0x98, Chip ID: 0xda (Toshiba NAND 256MiB 
-3,3V 8-bit)
-Scanning device for bad blocks
-Creating 3 MTD partitions on "orion_nand":
-0x000000000000-0x000000100000 : "u-boot"
-0x000000100000-0x000000700000 : "uImage"
-0x000000700000-0x000010000000 : "root"
-UBI: attaching mtd2 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    126976 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-from PEB 6:0, read 64 bytes
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-from PEB 8:0, read 64 bytes
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-from PEB 17:0, read 64 bytes
+I'll let you know if I find what caused all the problems.
 
-...
-
-UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-from PEB 1984:0, read 64 bytes
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI: max. sequence number:       5
-UBI: attached mtd2 to ubi0
-UBI: MTD device name:            "root"
-UBI: MTD device size:            249 MiB
-UBI: number of good PEBs:        1992
-UBI: number of bad PEBs:         0
-UBI: number of corrupted PEBs:   0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     0
-UBI: available PEBs:             1969
-UBI: total number of reserved PEBs: 23
-UBI: number of PEBs reserved for bad PEB handling: 19
-UBI: max/mean erase counter: 9/0
-UBI: image sequence number:  205915892
-UBI: background thread "ubi_bgt0d" started, PID 472
-
-Documentation would suggest it could be a buggy NAND driver, ECC or 
-subpage problem.
-
-I've compiled and executed the mtd_nandecctest module. It reports ECC is 
-all o.k. :
-
-mtd_nandecctest: ok - nand-ecc-256
-mtd_nandecctest: ok - nand-ecc-512
-
-The pagetest module works fine, but the subpagetest returns the following :
-
-=================================================
-mtd_subpagetest: MTD device: 2
-mtd_subpagetest: MTD device size 261095424, eraseblock size 131072, page 
-size 2048, subpage size 512, count of eraseblocks 1992, pages per 
-eraseblock 64, OOB size 64
-mtd_subpagetest: scanning for bad eraseblocks
-mtd_subpagetest: scanned 1992 eraseblocks, 0 are bad
-mtd_subpagetest: erasing whole device
-mtd_subpagetest: erased 1992 eraseblocks
-mtd_subpagetest: writing whole device
-mtd_subpagetest: written up to eraseblock 0
-mtd_subpagetest: written up to eraseblock 256
-mtd_subpagetest: written up to eraseblock 512
-mtd_subpagetest: written up to eraseblock 768
-mtd_subpagetest: written up to eraseblock 1024
-mtd_subpagetest: written up to eraseblock 1280
-mtd_subpagetest: written up to eraseblock 1536
-mtd_subpagetest: written up to eraseblock 1792
-mtd_subpagetest: written 1992 eraseblocks
-mtd_subpagetest: verifying all eraseblocks
-uncorrectable error :
-mtd_subpagetest: error: read failed at 0x200
-mtd_subpagetest: error -74 occurred
-=================================================
-insmod: error inserting 'mtd_subpagetest.ko': -1 Bad message
-
-suggesting there is in fact a subpage problem.
-
-I can mount a root filesystem using NFS. From here, I can erase, format 
-and attach mtd2 on the target :
-
-# flash_erase /dev/mtd2 0 0
-# ubiformat /dev/mtd2 -s 2048 -O 2048
-# ubiattach -p /dev/mtd2 -O 2048
-UBI: attaching mtd2 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    126976 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes 
-from PEB 0:2048, read 512 bytes
-uncorrectable error :
-...
-UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes 
-from PEB 1989:0, read 64 bytes
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-uncorrectable error :
-UBI: max. sequence number:       0
-UBI: attached mtd2 to ubi0
-UBI: MTD device name:            "root"
-UBI: MTD device size:            249 MiB
-UBI: number of good PEBs:        1992
-UBI: number of bad PEBs:         0
-UBI: number of corrupted PEBs:   0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     0
-UBI: available PEBs:             1969
-UBI: total number of reserved PEBs: 23
-UBI: number of PEBs reserved for bad PEB handling: 19
-UBI: max/mean erase counter: 0/0
-UBI: image sequence number:  1321006557
-UBI: background thread "ubi_bgt0d" started, PID 1172
-UBI device number 0, total 1992 LEBs (252936192 bytes, 241.2 MiB), 
-available 1969 LEBs (250015744 bytes, 238.4 MiB), LEB size 126976 bytes 
-(124.0 KiB)
-UBI: scrubbed PEB 0 (LEB 2147479551:0), data moved to PEB 1991
-UBI: scrubbed PEB 1 (LEB 2147479551:1), data moved to PEB 0
-
-If there any other tests I can run to narrow down the problem?
-
-Do I assume this is a problem with the NAND driver, or do you have any 
-ideas where I should start looking?
-
-Regards,
-
-Craig
+Thank you again,
+Matej
