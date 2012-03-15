@@ -1,20 +1,15 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S8Bz9-0003s5-Oo
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 14:49:01 +0000
-Date: Thu, 15 Mar 2012 15:48:56 +0100 (CET)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [patch] Remove notion of key schemes
-In-Reply-To: <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
-Message-ID: <alpine.DEB.2.00.1203151545410.26775@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
+Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S8COI-0006as-CL
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2012 15:15:03 +0000
+Message-ID: <4F62076E.2080409@linutronix.de>
+Date: Thu, 15 Mar 2012 16:14:54 +0100
+From: Richard Weinberger <rw@linutronix.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+To: linux-mtd@lists.infradead.org
+Subject: ubiattach oops/warning
+Content-Type: multipart/mixed; boundary="------------070900010007090507010807"
+Cc: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,457 +19,442 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Removed the notion of different  key schemes for ubifs with a single 64
-bit key scheme. Reduced the size of UBIFS keys to 8 bytes
-globally. Fill in the void left by the shorter key with a cryptolookup
-field (8 byte) for data node and padding for the other nodes.
-Changed zero_* functions to operate on the new padding. Replaced key scheme
-enum with one entry into a define.
+This is a multi-part message in MIME format.
+--------------070900010007090507010807
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 
-This was tested using integck and writing files on a nandsimmed partition
-using both the vanilla version of ubifs and the modified version. Data
-was written using both ubifs drivers and successfully read when later
-mounting with either driver.
+Hi!
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- fs/ubifs/dir.c         |    2 +-
- fs/ubifs/journal.c     |    2 +
- fs/ubifs/key.h         |   78 ++++++++++++++++++++---------------------------
- fs/ubifs/sb.c          |    4 +-
- fs/ubifs/ubifs-media.h |   38 ++++++++++-------------
- fs/ubifs/ubifs.h       |   12 ++++----
- 6 files changed, 61 insertions(+), 75 deletions(-)
+While attaching to a NAND chip with lot's of damaged PEBs
+I UBI gone nuts.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index ec9f187..7e87f92 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -365,7 +365,7 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
+See the attached log file.
+Looks like a bug in an error path.
 
- 	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, file->f_pos);
+Kernel is 3.0.23 plus some board specific fixes.
+I didn't touch any UBI stuff...
 
--	if (file->f_pos > UBIFS_S_KEY_HASH_MASK || file->f_pos == 2)
-+	if (file->f_pos > UBIFS_KEY_HASH_MASK || file->f_pos == 2)
- 		/*
- 		 * The directory was seek'ed to a senseless position or there
- 		 * are no more entries.
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 2f438ab..d7b8f10 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -66,6 +66,7 @@
-  */
- static inline void zero_ino_node_unused(struct ubifs_ino_node *ino)
- {
-+	memset(ino->padding0, 0, 8);
- 	memset(ino->padding1, 0, 4);
- 	memset(ino->padding2, 0, 26);
- }
-@@ -77,6 +78,7 @@ static inline void zero_ino_node_unused(struct ubifs_ino_node *ino)
-  */
- static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
- {
-+	memset(dent->padding0, 0, 8);
- 	dent->padding1 = 0;
- 	memset(dent->padding2, 0, 4);
- }
-diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
-index 92a8491..5dc1e2b 100644
---- a/fs/ubifs/key.h
-+++ b/fs/ubifs/key.h
-@@ -22,16 +22,13 @@
+Thanks,
+//richard
 
- /*
-  * This header contains various key-related definitions and helper function.
-- * UBIFS allows several key schemes, so we access key fields only via these
-- * helpers. At the moment only one key scheme is supported.
-+ * All access to key fields must be done only via the helper functions
-+ * defined in this file.
-  *
-- * Simple key scheme
-- * ~~~~~~~~~~~~~~~~~
-- *
-- * Keys are 64-bits long. First 32-bits are inode number (parent inode number
-- * in case of direntry key). Next 3 bits are node type. The last 29 bits are
-- * 4KiB offset in case of inode node, and direntry hash in case of a direntry
-- * node. We use "r5" hash borrowed from reiserfs.
-+ * Keys are 64-bits long. The first 32-bits are inode number (parent inode
-+ * number in case of direntry key). The next 3 bits are node type. The next
-+ * 29 bits are 4KiB offset in case of inode node, and direntry hash in case
-+ * of a direntry node. We use "r5" hash borrowed from reiserfs.
-  */
-
- #ifndef __UBIFS_KEY_H__
-@@ -47,7 +44,7 @@
-  */
- static inline uint32_t key_mask_hash(uint32_t hash)
- {
--	hash &= UBIFS_S_KEY_HASH_MASK;
-+	hash &= UBIFS_KEY_HASH_MASK;
- 	if (unlikely(hash <= 2))
- 		hash += 3;
- 	return hash;
-@@ -97,7 +94,7 @@ static inline void ino_key_init(const struct ubifs_info *c,
- 				union ubifs_key *key, ino_t inum)
- {
- 	key->u32[0] = inum;
--	key->u32[1] = UBIFS_INO_KEY << UBIFS_S_KEY_BLOCK_BITS;
-+	key->u32[1] = UBIFS_INO_KEY << UBIFS_KEY_BLOCK_BITS;
- }
-
- /**
-@@ -112,8 +109,7 @@ static inline void ino_key_init_flash(const struct ubifs_info *c, void *k,
- 	union ubifs_key *key = k;
-
- 	key->j32[0] = cpu_to_le32(inum);
--	key->j32[1] = cpu_to_le32(UBIFS_INO_KEY << UBIFS_S_KEY_BLOCK_BITS);
--	memset(k + 8, 0, UBIFS_MAX_KEY_LEN - 8);
-+	key->j32[1] = cpu_to_le32(UBIFS_INO_KEY << UBIFS_KEY_BLOCK_BITS);
- }
-
- /**
-@@ -155,9 +151,9 @@ static inline void dent_key_init(const struct ubifs_info *c,
- {
- 	uint32_t hash = c->key_hash(nm->name, nm->len);
-
--	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	ubifs_assert(!(hash & ~UBIFS_KEY_HASH_MASK));
- 	key->u32[0] = inum;
--	key->u32[1] = hash | (UBIFS_DENT_KEY << UBIFS_S_KEY_HASH_BITS);
-+	key->u32[1] = hash | (UBIFS_DENT_KEY << UBIFS_KEY_HASH_BITS);
- }
-
- /**
-@@ -172,9 +168,9 @@ static inline void dent_key_init_hash(const struct ubifs_info *c,
- 				      union ubifs_key *key, ino_t inum,
- 				      uint32_t hash)
- {
--	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	ubifs_assert(!(hash & ~UBIFS_KEY_HASH_MASK));
- 	key->u32[0] = inum;
--	key->u32[1] = hash | (UBIFS_DENT_KEY << UBIFS_S_KEY_HASH_BITS);
-+	key->u32[1] = hash | (UBIFS_DENT_KEY << UBIFS_KEY_HASH_BITS);
- }
-
- /**
-@@ -190,11 +186,10 @@ static inline void dent_key_init_flash(const struct ubifs_info *c, void *k,
- 	union ubifs_key *key = k;
- 	uint32_t hash = c->key_hash(nm->name, nm->len);
-
--	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	ubifs_assert(!(hash & ~UBIFS_KEY_HASH_MASK));
- 	key->j32[0] = cpu_to_le32(inum);
- 	key->j32[1] = cpu_to_le32(hash |
--				  (UBIFS_DENT_KEY << UBIFS_S_KEY_HASH_BITS));
--	memset(k + 8, 0, UBIFS_MAX_KEY_LEN - 8);
-+				  (UBIFS_DENT_KEY << UBIFS_KEY_HASH_BITS));
- }
-
- /**
-@@ -207,7 +202,7 @@ static inline void lowest_dent_key(const struct ubifs_info *c,
- 				   union ubifs_key *key, ino_t inum)
- {
- 	key->u32[0] = inum;
--	key->u32[1] = UBIFS_DENT_KEY << UBIFS_S_KEY_HASH_BITS;
-+	key->u32[1] = UBIFS_DENT_KEY << UBIFS_KEY_HASH_BITS;
- }
-
- /**
-@@ -223,9 +218,9 @@ static inline void xent_key_init(const struct ubifs_info *c,
- {
- 	uint32_t hash = c->key_hash(nm->name, nm->len);
-
--	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	ubifs_assert(!(hash & ~UBIFS_KEY_HASH_MASK));
- 	key->u32[0] = inum;
--	key->u32[1] = hash | (UBIFS_XENT_KEY << UBIFS_S_KEY_HASH_BITS);
-+	key->u32[1] = hash | (UBIFS_XENT_KEY << UBIFS_KEY_HASH_BITS);
- }
-
- /**
-@@ -241,11 +236,10 @@ static inline void xent_key_init_flash(const struct ubifs_info *c, void *k,
- 	union ubifs_key *key = k;
- 	uint32_t hash = c->key_hash(nm->name, nm->len);
-
--	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	ubifs_assert(!(hash & ~UBIFS_KEY_HASH_MASK));
- 	key->j32[0] = cpu_to_le32(inum);
- 	key->j32[1] = cpu_to_le32(hash |
--				  (UBIFS_XENT_KEY << UBIFS_S_KEY_HASH_BITS));
--	memset(k + 8, 0, UBIFS_MAX_KEY_LEN - 8);
-+				  (UBIFS_XENT_KEY << UBIFS_KEY_HASH_BITS));
- }
-
- /**
-@@ -258,7 +252,7 @@ static inline void lowest_xent_key(const struct ubifs_info *c,
- 				   union ubifs_key *key, ino_t inum)
- {
- 	key->u32[0] = inum;
--	key->u32[1] = UBIFS_XENT_KEY << UBIFS_S_KEY_HASH_BITS;
-+	key->u32[1] = UBIFS_XENT_KEY << UBIFS_KEY_HASH_BITS;
- }
-
- /**
-@@ -272,9 +266,9 @@ static inline void data_key_init(const struct ubifs_info *c,
- 				 union ubifs_key *key, ino_t inum,
- 				 unsigned int block)
- {
--	ubifs_assert(!(block & ~UBIFS_S_KEY_BLOCK_MASK));
-+	ubifs_assert(!(block & ~UBIFS_KEY_BLOCK_MASK));
- 	key->u32[0] = inum;
--	key->u32[1] = block | (UBIFS_DATA_KEY << UBIFS_S_KEY_BLOCK_BITS);
-+	key->u32[1] = block | (UBIFS_DATA_KEY << UBIFS_KEY_BLOCK_BITS);
- }
-
- /**
-@@ -286,7 +280,7 @@ static inline void data_key_init(const struct ubifs_info *c,
- static inline void highest_data_key(const struct ubifs_info *c,
- 				   union ubifs_key *key, ino_t inum)
- {
--	data_key_init(c, key, inum, UBIFS_S_KEY_BLOCK_MASK);
-+	data_key_init(c, key, inum, UBIFS_KEY_BLOCK_MASK);
- }
-
- /**
-@@ -302,7 +296,7 @@ static inline void trun_key_init(const struct ubifs_info *c,
- 				 union ubifs_key *key, ino_t inum)
- {
- 	key->u32[0] = inum;
--	key->u32[1] = UBIFS_TRUN_KEY << UBIFS_S_KEY_BLOCK_BITS;
-+	key->u32[1] = UBIFS_TRUN_KEY << UBIFS_KEY_BLOCK_BITS;
- }
-
- /**
-@@ -327,7 +321,7 @@ static inline void invalid_key_init(const struct ubifs_info *c,
- static inline int key_type(const struct ubifs_info *c,
- 			   const union ubifs_key *key)
- {
--	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
-+	return key->u32[1] >> UBIFS_KEY_BLOCK_BITS;
- }
-
- /**
-@@ -339,7 +333,7 @@ static inline int key_type_flash(const struct ubifs_info *c, const void *k)
- {
- 	const union ubifs_key *key = k;
-
--	return le32_to_cpu(key->j32[1]) >> UBIFS_S_KEY_BLOCK_BITS;
-+	return le32_to_cpu(key->j32[1]) >> UBIFS_KEY_BLOCK_BITS;
- }
-
- /**
-@@ -374,7 +368,7 @@ static inline ino_t key_inum_flash(const struct ubifs_info *c, const void *k)
- static inline uint32_t key_hash(const struct ubifs_info *c,
- 				const union ubifs_key *key)
- {
--	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
-+	return key->u32[1] & UBIFS_KEY_HASH_MASK;
- }
-
- /**
-@@ -386,7 +380,7 @@ static inline uint32_t key_hash_flash(const struct ubifs_info *c, const void *k)
- {
- 	const union ubifs_key *key = k;
-
--	return le32_to_cpu(key->j32[1]) & UBIFS_S_KEY_HASH_MASK;
-+	return le32_to_cpu(key->j32[1]) & UBIFS_KEY_HASH_MASK;
- }
-
- /**
-@@ -397,7 +391,7 @@ static inline uint32_t key_hash_flash(const struct ubifs_info *c, const void *k)
- static inline unsigned int key_block(const struct ubifs_info *c,
- 				     const union ubifs_key *key)
- {
--	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
-+	return key->u32[1] & UBIFS_KEY_BLOCK_MASK;
- }
-
- /**
-@@ -410,7 +404,7 @@ static inline unsigned int key_block_flash(const struct ubifs_info *c,
- {
- 	const union ubifs_key *key = k;
-
--	return le32_to_cpu(key->j32[1]) & UBIFS_S_KEY_BLOCK_MASK;
-+	return le32_to_cpu(key->j32[1]) & UBIFS_KEY_BLOCK_MASK;
- }
-
- /**
-@@ -441,7 +435,6 @@ static inline void key_write(const struct ubifs_info *c,
-
- 	t->j32[0] = cpu_to_le32(from->u32[0]);
- 	t->j32[1] = cpu_to_le32(from->u32[1]);
--	memset(to + 8, 0, UBIFS_MAX_KEY_LEN - 8);
- }
-
- /**
-@@ -532,17 +525,12 @@ static inline int is_hash_key(const struct ubifs_info *c,
- }
-
- /**
-- * key_max_inode_size - get maximum file size allowed by current key format.
-+ * key_max_inode_size - get maximum file size allowed.
-  * @c: UBIFS file-system description object
-  */
- static inline unsigned long long key_max_inode_size(const struct ubifs_info *c)
- {
--	switch (c->key_fmt) {
--	case UBIFS_SIMPLE_KEY_FMT:
--		return (1ULL << UBIFS_S_KEY_BLOCK_BITS) * UBIFS_BLOCK_SIZE;
--	default:
--		return 0;
--	}
-+	return (1ULL << UBIFS_KEY_BLOCK_BITS) * UBIFS_BLOCK_SIZE;
- }
-
- #endif /* !__UBIFS_KEY_H__ */
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 771f7fb..3fc9071 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -86,7 +86,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	__le64 tmp_le64;
-
- 	/* Some functions called from here depend on the @c->key_len filed */
--	c->key_len = UBIFS_SK_LEN;
-+	c->key_len = UBIFS_KEY_LEN;
-
- 	/*
- 	 * First of all, we have to calculate default file-system geometry -
-@@ -599,7 +599,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
-
- 	switch (c->key_fmt) {
- 	case UBIFS_SIMPLE_KEY_FMT:
--		c->key_len = UBIFS_SK_LEN;
-+		c->key_len = UBIFS_KEY_LEN;
- 		break;
- 	default:
- 		ubifs_err("unsupported key format");
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index e24380c..0b769da 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -108,11 +108,11 @@
- /* UBIFS padding byte pattern (must not be first or last byte of node magic) */
- #define UBIFS_PADDING_BYTE 0xCE
-
--/* Maximum possible key length */
--#define UBIFS_MAX_KEY_LEN 16
-+/* UBIFS key length */
-+#define UBIFS_KEY_LEN 8
-
--/* Key length ("simple" format) */
--#define UBIFS_SK_LEN 8
-+/* UBIFS key format */
-+#define UBIFS_SIMPLE_KEY_FMT 0
-
- /* Minimum index tree fanout */
- #define UBIFS_MIN_FANOUT 3
-@@ -196,22 +196,13 @@ enum {
- };
-
- /*
-- * Supported key formats.
-- *
-- * UBIFS_SIMPLE_KEY_FMT: simple key format
-- */
--enum {
--	UBIFS_SIMPLE_KEY_FMT,
--};
--
--/*
-  * The simple key format uses 29 bits for storing UBIFS block number and hash
-  * value.
-  */
--#define UBIFS_S_KEY_BLOCK_BITS 29
--#define UBIFS_S_KEY_BLOCK_MASK 0x1FFFFFFF
--#define UBIFS_S_KEY_HASH_BITS  UBIFS_S_KEY_BLOCK_BITS
--#define UBIFS_S_KEY_HASH_MASK  UBIFS_S_KEY_BLOCK_MASK
-+#define UBIFS_KEY_BLOCK_BITS 29
-+#define UBIFS_KEY_BLOCK_MASK 0x1FFFFFFF
-+#define UBIFS_KEY_HASH_BITS  UBIFS_KEY_BLOCK_BITS
-+#define UBIFS_KEY_HASH_MASK  UBIFS_KEY_BLOCK_MASK
-
- /*
-  * Key types.
-@@ -456,6 +447,7 @@ union ubifs_dev_desc {
-  * struct ubifs_ino_node - inode node.
-  * @ch: common header
-  * @key: node key
-+ * @padding0: reserved for future, zeroes
-  * @creat_sqnum: sequence number at time of creation
-  * @size: inode size in bytes (amount of uncompressed data)
-  * @atime_sec: access time seconds
-@@ -489,7 +481,8 @@ union ubifs_dev_desc {
-  */
- struct ubifs_ino_node {
- 	struct ubifs_ch ch;
--	__u8 key[UBIFS_MAX_KEY_LEN];
-+	__u8 key[UBIFS_KEY_LEN];
-+	__u8 padding0[8]; /* Watch 'zero_ino_node_unused()' if changing! */
- 	__le64 creat_sqnum;
- 	__le64 size;
- 	__le64 atime_sec;
-@@ -517,6 +510,7 @@ struct ubifs_ino_node {
-  * struct ubifs_dent_node - directory entry node.
-  * @ch: common header
-  * @key: node key
-+ * @padding0: reserved for future, zeroes
-  * @inum: target inode number
-  * @padding1: reserved for future, zeroes
-  * @type: type of the target inode (%UBIFS_ITYPE_REG, %UBIFS_ITYPE_DIR, etc)
-@@ -529,9 +523,10 @@ struct ubifs_ino_node {
-  */
- struct ubifs_dent_node {
- 	struct ubifs_ch ch;
--	__u8 key[UBIFS_MAX_KEY_LEN];
-+	__u8 key[UBIFS_KEY_LEN];
-+	__u8 padding0[8]; /* Watch 'zero_dent_node_unused()' if changing! */
- 	__le64 inum;
--	__u8 padding1;
-+	__u8 padding1; /* Watch 'zero_dent_node_unused()' if changing! */
- 	__u8 type;
- 	__le16 nlen;
- 	__u8 padding2[4]; /* Watch 'zero_dent_node_unused()' if changing! */
-@@ -552,7 +547,8 @@ struct ubifs_dent_node {
-  */
- struct ubifs_data_node {
- 	struct ubifs_ch ch;
--	__u8 key[UBIFS_MAX_KEY_LEN];
-+	__u8 key[UBIFS_KEY_LEN];
-+	__le64 crypto_lookup;
- 	__le32 size;
- 	__le16 compr_type;
- 	__u8 padding[2]; /* Watch 'zero_data_node_unused()' if changing! */
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 93d59ac..7c343e1 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -274,10 +274,10 @@ struct ubifs_old_idx {
-
- /* The below union makes it easier to deal with keys */
- union ubifs_key {
--	uint8_t u8[UBIFS_SK_LEN];
--	uint32_t u32[UBIFS_SK_LEN/4];
--	uint64_t u64[UBIFS_SK_LEN/8];
--	__le32 j32[UBIFS_SK_LEN/4];
-+	uint8_t u8[UBIFS_KEY_LEN];
-+	uint32_t u32[UBIFS_KEY_LEN/4];
-+	uint64_t u64[UBIFS_KEY_LEN/8];
-+	__le32 j32[UBIFS_KEY_LEN/4];
- };
-
- /**
-@@ -1065,8 +1065,8 @@ struct ubifs_debug_info;
-  *
-  * @key_hash_type: type of the key hash
-  * @key_hash: direntry key hash function
-- * @key_fmt: key format
-- * @key_len: key length
-+ * @key_fmt: (obsolete, set to 0) key format
-+ * @key_len: key length in bytes
-  * @fanout: fanout of the index tree (number of links per indexing node)
-  *
-  * @min_io_size: minimal input/output unit size
 -- 
-1.7.0.4
+Phone: +49 7556 91 98 91; Fax.: +49 7556 91 98 86
+
+Firmensitz: 88690 Uhldingen, Auf dem Berg 3
+Registergericht: Amtsgericht Freiburg i. Br., HRB 700 806;
+StNr. 87007/07777; Ust-Id Nr.: DE252739476
+Geschäftsführer: Heinz Egger, Thomas Gleixner
+
+--------------070900010007090507010807
+Content-Type: text/plain;
+ name="log.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="log.txt"
+
+cm9vdEBkZWJpYW4tcG93ZXJwYzp+IyB1YmlhdHRhY2ggLW0wIC9kZXYvdWJpX2N0cmwgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4LjQwODc5OF0gVUJJOiBhdHRhY2hpbmcgbXRkMCB0byB1YmkwICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+LjQxMjczNV0gVUJJOiBwaHlzaWNhbCBlcmFzZWJsb2NrIHNpemU6ICAgMTMxMDcyIGJ5dGVz
+ICgxMjggS2lCKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQx
+OTA5M10gVUJJOiBsb2dpY2FsIGVyYXNlYmxvY2sgc2l6ZTogICAgMTI2OTc2IGJ5dGVzICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQyNDY5
+MF0gVUJJOiBzbWFsbGVzdCBmbGFzaCBJL08gdW5pdDogICAgMjA0OCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQyOTM5N10g
+VUJJOiBWSUQgaGVhZGVyIG9mZnNldDogICAgICAgICAgMjA0OCAoYWxpZ25lZCAyMDQ4KSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQzNTQ0MV0gVUJJ
+OiBkYXRhIG9mZnNldDogICAgICAgICAgICAgICAgNDA5NiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ0MTE0OV0gVUJJIGVy
+cm9yOiB2YWxpZGF0ZV9lY19oZHI6IGJhZCBWSUQgaGVhZGVyIG9mZnNldCA1MTIsIGV4cGVj
+dGVkIDIwNDggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ0ODU4NF0gVUJJIGVycm9y
+OiB2YWxpZGF0ZV9lY19oZHI6IGJhZCBFQyBoZWFkZXIgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ1MzY2OF0gVUJJIGVycm9yOiB1
+YmlfaW9fcmVhZF9lY19oZHI6IHZhbGlkYXRpb24gZmFpbGVkIGZvciBQRUIgMCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ2MDQxN10gLS0tLS0tLS0tLS0tWyBj
+dXQgaGVyZSBdLS0tLS0tLS0tLS0tICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ2NTAwNV0gV0FSTklORzogYXQgbGliL2xp
+c3RfZGVidWcuYzo0NyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKWyAgIDM4LjQ3MDA0Nl0gLS0tWyBlbmQgdHJhY2UgNWY5NDQ1
+ODdmMGFhYTk0YSBdLS0tICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjQ3NDczM10gVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwg
+cGFnaW5nIHJlcXVlc3QgZm9yIGRhdGEgYXQgYWRkcmVzcyAweGJiZmJmZmYzICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4LjQ4MjIyM10gRmF1bHRpbmcgaW5zdHJ1Y3Rpb24gYWRkcmVz
+czogMHhjMDBhYWZmMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4LjQ4NzIzNF0gT29wczogS2VybmVsIGFjY2VzcyBvZiBiYWQgYXJl
+YSwgc2lnOiAxMSBbIzFdICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4LjQ5MjY3MF0gUFJFRU1QVCBNUEM1MTI1IENhbkNvcmRlcjIgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4LjQ5NjQ0OV0gTW9kdWxlcyBsaW5rZWQgaW46ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4LjQ5OTUyNV0gTklQOiBjMDBhYWZmMCBMUjogYzAwYWI1MzggQ1RSOiAwMDAwMDAw
+MSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4LjUwNDUzM10gUkVHUzogY2VjZDViYjAgVFJBUDogMDMwMCAgIFRhaW50ZWQ6IEcgICAg
+ICAgIFcgICAgKDMuMC4yMyspICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+LjUxMTI4OV0gTVNSOiAwMDAwMTAzMiA8TUUsSVIsRFI+ICBDUjogNDIwMDg0MjggIFhFUjog
+MjAwMDAwMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjUx
+NzQzOF0gREFSOiBiYmZiZmZmMywgRFNJU1I6IDIwMDAwMDAwICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjUyMTU2
+OF0gVEFTSyA9IGNmYjZlNDIwWzEzNTNdICd1YmlhdHRhY2gnIFRIUkVBRDogY2VjZDQwMDAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjUyNzI3Ml0g
+R1BSMDA6IDAwMDA4MDAwIGNlY2Q1YzYwIGNmYjZlNDIwIGJiZmJmZmYzIGNlYzZhYzMwIDZi
+NmI2YjZiIDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIGMwNDM2NTQwICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjUzNTcwM10gR1BSMDg6
+IGMwNTY3N2E0IGZiM2VlZmZmIDAwMDAwMDAwIGMwNWFiMDAwIDIyMDA4NDgyIDEwMDFlNTVj
+IDdmZmZmZmZmICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIGMwMzYyM2E0ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjU0NDEzM10gR1BSMTY6IGMwMzYy
+MzhjIGNmYWM3NDc4IGMwNWEwMDAwIGMwNTlmYzBjIGNlYzAxOGFjIGZmZmZmZmZkIGMwNDYx
+MjE0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKIGNmOGQwZjhjICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjU1MjU2M10gR1BSMjQ6IDAwMDAwMDAwIDZi
+NmI2YjZiIGNlYzZhYzMwIDAwMDAwMDAwIDZiNmI2YjZiIGNmOGQwZjAwIGNmOGQwZjAwICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKIGNlYzZhYzIwICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjU2MTE3OF0gTklQIFtjMDBhYWZmMF0gZnJlZV9ibG9j
+aysweDkwLzB4MWI4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4LjU2NTgzMV0gTFIgW2MwMGFiNTM4XSBfX2NhY2hlX3Nocmlu
+aysweDU0LzB4MTM4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4LjU3MDc0MV0gQ2FsbCBUcmFjZTogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4LjU3MzIwN10gW2NlY2Q1YzYwXSBbMjAwMDAwMDBdIDB4MjAwMDAwMDAg
+KHVucmVsaWFibGUpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4LjU3ODY1M10gW2NlY2Q1Y2EwXSBbYzAwYWI1MzhdIF9fY2FjaGVfc2hyaW5r
+KzB4NTQvMHgxMzggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4LjU4NDI3NF0gW2NlY2Q1Y2IwXSBbYzAwYWNhYzBdIGttZW1fY2FjaGVfZGVzdHJv
+eSsweDU0LzB4ZWMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4LjU5MDE2MF0gW2NlY2Q1Y2QwXSBbYzAyMzkxZjRdIHViaV9zY2FuX2Rlc3Ryb3lfc2kr
+MHgyMzAvMHgyNjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+LjU5NjMwNl0gW2NlY2Q1Y2YwXSBbYzAyMzlkODhdIHViaV9zY2FuKzB4MTkwLzB4YTNjICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYw
+MTQ4N10gW2NlY2Q1ZDYwXSBbYzAyMzE2YThdIHViaV9hdHRhY2hfbXRkX2RldisweDU5MC8w
+eGM5OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYwNzU0
+Nl0gW2NlY2Q1ZTYwXSBbYzAyMzIwNjBdIGN0cmxfY2Rldl9pb2N0bCsweDE0MC8weDFkOCAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYxMzM0M10g
+W2NlY2Q1ZWEwXSBbYzAwYzBkZmNdIGRvX3Zmc19pb2N0bCsweDljLzB4N2JjICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYxODc4Nl0gW2Nl
+Y2Q1ZjEwXSBbYzAwYzE1NWNdIHN5c19pb2N0bCsweDQwLzB4ODggICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYyMzg4M10gW2NlY2Q1
+ZjQwXSBbYzAwMTFmMTBdIHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4MzggICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYyOTUwMF0gLS0tIEV4Y2Vw
+dGlvbjogYzAxIGF0IDB4ZmY1MzI4OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYyOTUwOF0gICAgIExSID0gMHhm
+ZjUzMWVjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYzNjc4MV0gSW5zdHJ1Y3Rpb24gZHVt
+cDogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjYzOTc2OF0gM2I1YTAwMDQgN2Y5OWQ4MDAg
+NDA5ZDAxMGMgODM5YTAwMDAgODE3NjAwMDAgM2MxYzQwMDAgNTQwMGM5ZjQgN2QyYjAwICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKMmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjY0NzU4M10gN2M2YjAyMTQgNzEyMDgwMDAgNDE4MjAw
+MDggODA2MzAwMGMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4LjY1MjA2M10gIDY4MDAwMDgwIDU0MDBjZmZlIDBmMDAwMDAw
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4LjY1NjE5Nl0gLS0tWyBlbmQgdHJhY2UgNWY5NDQ1ODdmMGFhYTk0
+YiBdLS0tICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4LjY2MDg1MV0gbm90ZTogdWJpYXR0YWNoWzEzNTNdIGV4aXRlZCB3aXRo
+IHByZWVtcHRfY291bnQgMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4LjY2NjczOF0gQlVHOiBzY2hlZHVsaW5nIHdoaWxlIGF0b21pYzogdWJpYXR0
+YWNoLzEzNTMvMHgxMDAwMDAwMiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4LjY3MzAzNV0gTW9kdWxlcyBsaW5rZWQgaW46ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4LjY3NjA2OF0gQ2FsbCBUcmFjZTogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+LjY3ODU2NV0gW2NlY2Q1ODkwXSBbYzAwMDg1MDhdIHNob3dfc3RhY2srMHg0OC8weDE2OCAo
+dW5yZWxpYWJsZSkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjY4
+NDk1OF0gW2NlY2Q1OGQwXSBbYzAwMjIyMmNdIF9fc2NoZWR1bGVfYnVnKzB4NjgvMHg2YyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjY5MDQ5
+MF0gW2NlY2Q1OGUwXSBbYzAzNDI5YThdIF9fc2NoZWR1bGUrMHg0MDAvMHg0MTAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjY5NTg0MV0g
+W2NlY2Q1OWUwXSBbYzAwMjI3NWNdIF9fY29uZF9yZXNjaGVkKzB4MTgvMHgyYyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcwMTM3M10gW2Nl
+Y2Q1OWYwXSBbYzAzNDJiYzhdIF9jb25kX3Jlc2NoZWQrMHg0MC8weDU0ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcwNjgyNV0gW2NlY2Q1
+YTAwXSBbYzAwOTg5YmNdIHVubWFwX3ZtYXMrMHgzMjgvMHg0ZWMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcxMjE3NF0gW2NlY2Q1YTgw
+XSBbYzAwOWIxZGNdIGV4aXRfbW1hcCsweGFjLzB4MTYwICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcxNzM1Nl0gW2NlY2Q1YWUwXSBb
+YzAwMjdmNzhdIG1tcHV0KzB4NTQvMHgxMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcyMjE4Nl0gW2NlY2Q1YWYwXSBbYzAw
+MmM0MThdIGV4aXRfbW0rMHgxMzgvMHgxNmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjcyNzI3OF0gW2NlY2Q1YjIwXSBbYzAwMmU1
+ZWNdIGRvX2V4aXQrMHg1YmMvMHg2ZGMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKWyAgIDM4LjczMjM3MF0gW2NlY2Q1YjcwXSBbYzAwMGMwZmNd
+IGRpZSsweDIyOC8weDIzYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjczNzEzNl0gW2NlY2Q1YjkwXSBbYzAwMTg1MzRdIGJh
+ZF9wYWdlX2ZhdWx0KzB4YjQvMHhmYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4Ljc0MjY1MV0gW2NlY2Q1YmEwXSBbYzAwMTIzYjBdIGhhbmRs
+ZV9wYWdlX2ZhdWx0KzB4N2MvMHg4MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4Ljc0ODQ0N10gLS0tIEV4Y2VwdGlvbjogMzAwIGF0IGZyZWVfYmxv
+Y2srMHg5MC8weDFiOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4Ljc0ODQ1N10gICAgIExSID0gX19jYWNoZV9zaHJpbmsrMHg1NC8weDEz
+OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4Ljc1ODIwOV0gW2NlY2Q1YzYwXSBbMjAwMDAwMDBdIDB4MjAwMDAwMDAgKHVu
+cmVsaWFibGUpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4Ljc2MzYzM10gW2NlY2Q1Y2EwXSBbYzAwYWI1MzhdIF9fY2FjaGVfc2hyaW5rKzB4
+NTQvMHgxMzggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4Ljc2OTI1NF0gW2NlY2Q1Y2IwXSBbYzAwYWNhYzBdIGttZW1fY2FjaGVfZGVzdHJveSsw
+eDU0LzB4ZWMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+Ljc3NTE0M10gW2NlY2Q1Y2QwXSBbYzAyMzkxZjRdIHViaV9zY2FuX2Rlc3Ryb3lfc2krMHgy
+MzAvMHgyNjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljc4
+MTI4Nl0gW2NlY2Q1Y2YwXSBbYzAyMzlkODhdIHViaV9zY2FuKzB4MTkwLzB4YTNjICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljc4NjQ2
+N10gW2NlY2Q1ZDYwXSBbYzAyMzE2YThdIHViaV9hdHRhY2hfbXRkX2RldisweDU5MC8weGM5
+OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljc5MjUyNl0g
+W2NlY2Q1ZTYwXSBbYzAyMzIwNjBdIGN0cmxfY2Rldl9pb2N0bCsweDE0MC8weDFkOCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljc5ODMyNV0gW2Nl
+Y2Q1ZWEwXSBbYzAwYzBkZmNdIGRvX3Zmc19pb2N0bCsweDljLzB4N2JjICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjgwMzc2N10gW2NlY2Q1
+ZjEwXSBbYzAwYzE1NWNdIHN5c19pb2N0bCsweDQwLzB4ODggICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjgwODg2Ml0gW2NlY2Q1ZjQw
+XSBbYzAwMTFmMTBdIHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4MzggICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjgxNDQ3OV0gLS0tIEV4Y2VwdGlv
+bjogYzAxIGF0IDB4ZmY1MzI4OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjgxNDQ4OV0gICAgIExSID0gMHhmZjUz
+MWVjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjgyMjA5N10gQlVHOiBzY2hlZHVsaW5nIHdo
+aWxlIGF0b21pYzogdWJpYXR0YWNoLzEzNTMvMHgxMDAwMDAwMiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKWyAgIDM4LjgyODQzOF0gTW9kdWxlcyBsaW5rZWQgaW46ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjgzMTQ0M10gQ2FsbCBUcmFjZTogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4LjgzMzk0OV0gW2NlY2Q1OTkwXSBbYzAwMDg1MDhdIHNob3df
+c3RhY2srMHg0OC8weDE2OCAodW5yZWxpYWJsZSkgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4Ljg0MDMzNV0gW2NlY2Q1OWQwXSBbYzAwMjIyMmNdIF9fc2NoZWR1
+bGVfYnVnKzB4NjgvMHg2YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4Ljg0NTg2NF0gW2NlY2Q1OWUwXSBbYzAzNDI5YThdIF9fc2NoZWR1bGUr
+MHg0MDAvMHg0MTAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4Ljg1MTIxNl0gW2NlY2Q1YWUwXSBbYzAwMjI3NWNdIF9fY29uZF9yZXNjaGVk
+KzB4MTgvMHgyYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4Ljg1Njc0OF0gW2NlY2Q1YWYwXSBbYzAzNDJiYzhdIF9jb25kX3Jlc2NoZWQrMHg0
+MC8weDU0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4Ljg2MjE5NV0gW2NlY2Q1YjAwXSBbYzAwMmM2N2NdIHB1dF9maWxlc19zdHJ1Y3QrMHgx
+MDgvMHgxMjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+Ljg2ODA3NF0gW2NlY2Q1YjIwXSBbYzAwMmU2MDBdIGRvX2V4aXQrMHg1ZDAvMHg2ZGMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg3
+MzE4NF0gW2NlY2Q1YjcwXSBbYzAwMGMwZmNdIGRpZSsweDIyOC8weDIzYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg3Nzkx
+OF0gW2NlY2Q1YjkwXSBbYzAwMTg1MzRdIGJhZF9wYWdlX2ZhdWx0KzB4YjQvMHhmYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg4MzQ1MF0g
+W2NlY2Q1YmEwXSBbYzAwMTIzYjBdIGhhbmRsZV9wYWdlX2ZhdWx0KzB4N2MvMHg4MCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg4OTI0NF0gLS0t
+IEV4Y2VwdGlvbjogMzAwIGF0IGZyZWVfYmxvY2srMHg5MC8weDFiOCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg4OTI1NV0gICAgIExS
+ID0gX19jYWNoZV9zaHJpbmsrMHg1NC8weDEzOCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljg5OTAwNl0gW2NlY2Q1YzYw
+XSBbMjAwMDAwMDBdIDB4MjAwMDAwMDAgKHVucmVsaWFibGUpICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjkwNDQzMV0gW2NlY2Q1Y2EwXSBb
+YzAwYWI1MzhdIF9fY2FjaGVfc2hyaW5rKzB4NTQvMHgxMzggICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjkxMDA1Ml0gW2NlY2Q1Y2IwXSBbYzAw
+YWNhYzBdIGttZW1fY2FjaGVfZGVzdHJveSsweDU0LzB4ZWMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM4LjkxNTk0Ml0gW2NlY2Q1Y2QwXSBbYzAyMzkx
+ZjRdIHViaV9zY2FuX2Rlc3Ryb3lfc2krMHgyMzAvMHgyNjQgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKWyAgIDM4LjkyMjA4Nl0gW2NlY2Q1Y2YwXSBbYzAyMzlkODhd
+IHViaV9zY2FuKzB4MTkwLzB4YTNjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM4LjkyNzI2NF0gW2NlY2Q1ZDYwXSBbYzAyMzE2YThdIHVi
+aV9hdHRhY2hfbXRkX2RldisweDU5MC8weGM5OCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM4LjkzMzMyNV0gW2NlY2Q1ZTYwXSBbYzAyMzIwNjBdIGN0cmxf
+Y2Rldl9pb2N0bCsweDE0MC8weDFkOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM4LjkzOTEyNF0gW2NlY2Q1ZWEwXSBbYzAwYzBkZmNdIGRvX3Zmc19p
+b2N0bCsweDljLzB4N2JjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM4Ljk0NDU2NF0gW2NlY2Q1ZjEwXSBbYzAwYzE1NWNdIHN5c19pb2N0bCsw
+eDQwLzB4ODggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM4Ljk0OTY2MV0gW2NlY2Q1ZjQwXSBbYzAwMTFmMTBdIHJldF9mcm9tX3N5c2Nh
+bGwrMHgwLzB4MzggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM4Ljk1NTI3Nl0gLS0tIEV4Y2VwdGlvbjogYzAxIGF0IDB4ZmY1MzI4OCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM4Ljk1NTI4Nl0gICAgIExSID0gMHhmZjUzMWVjICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4
+Ljk2MjYyMl0gQlVHOiBzY2hlZHVsaW5nIHdoaWxlIGF0b21pYzogdWJpYXR0YWNoLzEzNTMv
+MHgxMDAwMDAwMiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk2
+ODkwOV0gTW9kdWxlcyBsaW5rZWQgaW46ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk3MTk1
+Ml0gQ2FsbCBUcmFjZTogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk3NDQ1M10g
+W2NlY2Q1OTkwXSBbYzAwMDg1MDhdIHNob3dfc3RhY2srMHg0OC8weDE2OCAodW5yZWxpYWJs
+ZSkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk4MDgzOV0gW2Nl
+Y2Q1OWQwXSBbYzAwMjIyMmNdIF9fc2NoZWR1bGVfYnVnKzB4NjgvMHg2YyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk4NjM3MV0gW2NlY2Q1
+OWUwXSBbYzAzNDI5YThdIF9fc2NoZWR1bGUrMHg0MDAvMHg0MTAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk5MTcyNV0gW2NlY2Q1YWUw
+XSBbYzAwMjI3NWNdIF9fY29uZF9yZXNjaGVkKzB4MTgvMHgyYyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM4Ljk5NzI1OF0gW2NlY2Q1YWYwXSBb
+YzAzNDJiYzhdIF9jb25kX3Jlc2NoZWQrMHg0MC8weDU0ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjAwMjcwMl0gW2NlY2Q1YjAwXSBbYzAw
+MmM2N2NdIHB1dF9maWxlc19zdHJ1Y3QrMHgxMDgvMHgxMjAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjAwODU4M10gW2NlY2Q1YjIwXSBbYzAwMmU2
+MDBdIGRvX2V4aXQrMHg1ZDAvMHg2ZGMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAKWyAgIDM5LjAxMzY3N10gW2NlY2Q1YjcwXSBbYzAwMGMwZmNd
+IGRpZSsweDIyOC8weDIzYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKWyAgIDM5LjAxODQyM10gW2NlY2Q1YjkwXSBbYzAwMTg1MzRdIGJh
+ZF9wYWdlX2ZhdWx0KzB4YjQvMHhmYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAKWyAgIDM5LjAyMzk1Nl0gW2NlY2Q1YmEwXSBbYzAwMTIzYjBdIGhhbmRs
+ZV9wYWdlX2ZhdWx0KzB4N2MvMHg4MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAKWyAgIDM5LjAyOTc1M10gLS0tIEV4Y2VwdGlvbjogMzAwIGF0IGZyZWVfYmxv
+Y2srMHg5MC8weDFiOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAKWyAgIDM5LjAyOTc2M10gICAgIExSID0gX19jYWNoZV9zaHJpbmsrMHg1NC8weDEz
+OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAKWyAgIDM5LjAzOTUxNF0gW2NlY2Q1YzYwXSBbMjAwMDAwMDBdIDB4MjAwMDAwMDAgKHVu
+cmVsaWFibGUpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+WyAgIDM5LjA0NDkzOV0gW2NlY2Q1Y2EwXSBbYzAwYWI1MzhdIF9fY2FjaGVfc2hyaW5rKzB4
+NTQvMHgxMzggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAg
+IDM5LjA1MDU2MV0gW2NlY2Q1Y2IwXSBbYzAwYWNhYzBdIGttZW1fY2FjaGVfZGVzdHJveSsw
+eDU0LzB4ZWMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5
+LjA1NjQ1MF0gW2NlY2Q1Y2QwXSBbYzAyMzkxZjRdIHViaV9zY2FuX2Rlc3Ryb3lfc2krMHgy
+MzAvMHgyNjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA2
+MjU5Ml0gW2NlY2Q1Y2YwXSBbYzAyMzlkODhdIHViaV9zY2FuKzB4MTkwLzB4YTNjICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA2Nzc3
+M10gW2NlY2Q1ZDYwXSBbYzAyMzE2YThdIHViaV9hdHRhY2hfbXRkX2RldisweDU5MC8weGM5
+OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA3MzgzM10g
+W2NlY2Q1ZTYwXSBbYzAyMzIwNjBdIGN0cmxfY2Rldl9pb2N0bCsweDE0MC8weDFkOCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA3OTYzMV0gW2Nl
+Y2Q1ZWEwXSBbYzAwYzBkZmNdIGRvX3Zmc19pb2N0bCsweDljLzB4N2JjICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA4NTA4OF0gW2NlY2Q1
+ZjEwXSBbYzAwYzE1NWNdIHN5c19pb2N0bCsweDQwLzB4ODggICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA5MDE2OF0gW2NlY2Q1ZjQw
+XSBbYzAwMTFmMTBdIHJldF9mcm9tX3N5c2NhbGwrMHgwLzB4MzggICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA5NTc4NV0gLS0tIEV4Y2VwdGlv
+bjogYzAxIGF0IDB4ZmY1MzI4OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAKWyAgIDM5LjA5NTc5NF0gICAgIExSID0gMHhmZjUz
+MWVjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKU2VnbWVudGF0aW9uIGZhdWx0
+--------------070900010007090507010807--
