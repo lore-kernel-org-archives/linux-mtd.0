@@ -1,20 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S8Vfs-0007XN-2S
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 11:50:24 +0000
-Message-ID: <1331898781.3730.63.camel@sauron.fi.intel.com>
-Subject: Re: Assistance with debugging ubi_io_read error -74 (ECC Error)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Craig Peacock <Craig.Peacock@internode.on.net>
-Date: Fri, 16 Mar 2012 13:53:01 +0200
-In-Reply-To: <4F61D6CF.4080707@internode.on.net>
-References: <4F61D6CF.4080707@internode.on.net>
+ id 1S8WKB-000544-SA
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 12:32:04 +0000
+Message-ID: <1331901281.3730.64.camel@sauron.fi.intel.com>
+Subject: Re: [RESEND PATCH] mtd: fix section mismatch for doc_probe_device
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Ryosuke Saito <raitosyo@gmail.com>
+Date: Fri, 16 Mar 2012 14:34:41 +0200
+In-Reply-To: <CADTWAOL7aBi64yimwPubAJ22=4AQ1BRjzQCahUXUsbSa1oJ59A@mail.gmail.com>
+References: <CADTWAOL7aBi64yimwPubAJ22=4AQ1BRjzQCahUXUsbSa1oJ59A@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-xPKcvIMNabv0eAVG64cE"
+ boundary="=-Sq6XX+Lyk/QEEAH9S7f+"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: mikedunn@newsguy.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com, robert.jarzmik@free.fr
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-xPKcvIMNabv0eAVG64cE
+--=-Sq6XX+Lyk/QEEAH9S7f+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-03-15 at 22:17 +1030, Craig Peacock wrote:
-> I'm trying to get UBI volumes/fs working on a Seagate GoFlex Home=20
-> platform with a custom kernel. The product orginally ships with a=20
-> working UBIFS. It has a Marvell Kirkwood (ARM) processor with a Toshiba=
-=20
-> TC58NVG1S3ETA00 256Mbyte NAND flash and runs Kernel 2.6.22.18. It=20
-> appears to be based on Marvell LSP Version KW_LSP_4.3.4_patch22. One of=
-=20
-> the kernel parameters is ubi.mtd=3D2,2048 setting the VID header to an=
-=20
-> offset of 2048 bytes and avoiding subpages.
+On Thu, 2012-03-15 at 19:19 +0900, Ryosuke Saito wrote:
+> doc_probe_device() is only called from docg3_probe() which is in .init.te=
+xt,
+> so it must be in the same section to avoid a section mismatch warning.
 >=20
-> I've recompiled my own kernel for the board based on Linux 3.2.9 but I=
-=20
-> am unable to successfully use UBIFS even when I set the VID header to a=
-=20
-> 2048 byte offset.
+> Signed-off-by: Ryosuke Saito <raitosyo@gmail.com>
 
-=46rom a quick glance your driver has issues with reading. When you
-disable subpage usage in UBI - this will only mean that it won't _write_
-sub-pages, but it will still read them. Every drivers should allow
-reading less than a full NAND page.
-
-...
-
-> # flash_erase /dev/mtd2 0 0
-> # ubiformat /dev/mtd2 -s 2048 -O 2048
-> # ubiattach -p /dev/mtd2 -O 2048
-
-...
-
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes=20
-> from PEB 0:2048, read 512 bytes
-
-Read 512 from page-aligned address does not work - check the driver.
-
-> uncorrectable error :
-> ...
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes=20
-> from PEB 1989:0, read 64 bytes
-
-Reading 64 bytes from aligned address 0 does not work - check the
-driver.
-
-I guess the problem is that your driver does not support sub-pages, but
-still believes it supports them. You can hack it quickly and make
-mtd->subpage_sft to be 0, then the NAND base code wont try to do subpage
-reads.
+I've fixed up your patch and push to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-xPKcvIMNabv0eAVG64cE
+--=-Sq6XX+Lyk/QEEAH9S7f+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -90,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPYymdAAoJECmIfjd9wqK0VBkP+wSwAbCcs2rcBEndM1js+Fsn
-s/hHelXi4mzSZLhWOJ89jzIo6qvytQn0SIv1tb0JLhuPPwOVBPlli1n/VR6ulkRX
-GHEYZyhXvByro3oMGNnkoULPyPJf4fD1VSEbO0vX7MSf1MZ+fm7zpODK/Xi58Pm5
-pu7zZfM1Hczv1c8so6mqEOvBfJOBIgJDT3lRGKhFXb72FHE4/9n9QI0tphA+dRz9
-T95qUmz35iXmqS85s/SiAl3VWMSz4F8PX8bHq84UA0Ei5d9aMP+0LBZ4CWRE+ORh
-G3gk23JBrHOC9eN5wnyEQriDSnaJXBX20wCj5QCnCCHEUfSdibSK+H2xK4ZY0HMT
-fj0Pq5UglqolX/C8a1N4yM8QFz/E5dh/zsblXqHuYCSVvjlh879jJvJ4M/5uAnD0
-Iv/K1NsQ3BwJR31hh+tD6AdXZfRFgXRim3J8l+UJFPMIByCxvEWHvuDt6n2t1HRY
-6uGiu9SQ1LxFyyiYydije/SWsCQgbEMnzuaHA+OwDcL6BpbqUE8NH1LIzStA3nhZ
-cxBkRT6oUnmtEgWNxgdQw8y+EXAisS3vv3Na55zdGAjatNnhTgSMNzlSUZTARE6Z
-0RvZ3K2WHmmccq3qowzHZqfHLt9vCEdmmFTRbGqNQgrdDMpje2m8XWuyy5EazCKu
-ZTC/SRwKPZXq6YB4nZek
-=i7Rg
+iQIcBAABAgAGBQJPYzNhAAoJECmIfjd9wqK0xYYP/1kXxueKJVgNVovBD558Hdh3
+jBwwqeGm6dGNdQWWP2ULwuhAKkW4oCX1XAjMDclrXSc4dEjR4sSXM79goV33xego
+3xLofG6+ZG9ZDb/cVBNtg9fguZ4CYu2YPMUdG9e6u7sem029hlMtQ9ugQx2K+InC
+cDteZIJ0LqcOoEDb9PDnL8XjZ9UYogeesOU7SAA5noO7MRCo6xbZKeKbGCy3+TT+
+QXsDFBsAN14QSFDYNdkTVrl/sL0SvffANdexPdi4ro09iMzRY9vqweRFD9SSgltJ
+YxHA2idhItCrLH26Kk41ODA7yN8a26IpcSkRUsrTaI9AKX0jhHP6csL7jJds7oM5
+UWZjfCMxjxrcixq2CDohiR5fFnmMDRQ4BcCnPk1xRI3cN3d6Dgujk7iFG7yM6M+v
+cR0gP9ZcxrHalT6nHufSu7L3HkRig21KP0BNMkPb4BHoctH4eAEGsN7RfanTqi1B
+41H9dyzjSINxikKkL6aIMWMgUnMrchNooVjMUG31NendudtVrT9q5Sv1dtnUt98f
+ReXdrprYIpQdyKmRnJdXJtqgB58ZS6Lx53pzH9GsJKkeNNwKjndbTLbvoRyhbJ0F
+o7MK6LiC8wlBDyYq6WGnNjtm8QpxK8Ab/Li6DQwgJobt7AoW71uFpl5YpC6OPPgO
+e4imDGF6BuV6YUyLX03O
+=jkc2
 -----END PGP SIGNATURE-----
 
---=-xPKcvIMNabv0eAVG64cE--
+--=-Sq6XX+Lyk/QEEAH9S7f+--
