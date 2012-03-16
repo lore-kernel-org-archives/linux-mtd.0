@@ -1,22 +1,19 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S8a3b-0006gY-El
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 16:31:11 +0000
-Message-ID: <4F636AB4.7080008@newsguy.com>
-Date: Fri, 16 Mar 2012 09:30:44 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S8a5T-0006uo-1C
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 16:33:07 +0000
+Date: Fri, 16 Mar 2012 17:31:11 +0100
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH 2/3] MTD: bitflip_threshold added to mtd_info and sysfs
+Message-ID: <20120316163111.GE10228@parrot.com>
 References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
- <20120316111939.GA10362@parrot.com>
- <1331902176.3730.75.camel@sauron.fi.intel.com>
-In-Reply-To: <1331902176.3730.75.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ <1331832353-15569-3-git-send-email-mikedunn@newsguy.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1331832353-15569-3-git-send-email-mikedunn@newsguy.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,13 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/16/2012 05:49 AM, Artem Bityutskiy wrote:
->> Consider the following situation:
->> - a NAND device with 2kB pages and 4 ecc steps per page (4 x 512 bytes)
->> - the driver has chip->ecc.strength = 4, and therefore mtd->ecc_strength = 16
-> 
-> I would expect in this case we should have mtd->ecc_strength = 4 anyway.
+On Thu, Mar 15, 2012 at 05:25:52PM +0000, Mike Dunn wrote:
+> +
+> +What:		/sys/class/mtd/mtdX/bitflip_threshold
+> +Date:		March 2012
+> +KernelVersion:	3.3.1
+> +Contact:	linux-mtd@lists.infradead.org
+> +Description:
+> +		This allows the user to examine and adjust the criteria by which
+> +		mtd returns -EUCLEAN from mtd_read() and mtd_read_oob().  If the
+> +		maximum number of bit errors that were corrected on any single
+> +		writesize region (as reported by the driver) equals or exceeds
+> +		this value, -EUCLEAN is returned.  Otherwise, absent an error, 0
+> +		is returned.  Higher layers (e.g., UBI) use this return code as
+> +		an indication that an erase block may be degrading and should be
+> +		scrutinized as a candidate for being marked as bad.
+> +
+> +		The initial value may be specified by the flash device driver.
+> +		If not, then the default value is ecc_strength.  Users who wish
+> +		to be more paranoid about data integrity can lower the value.
+> +		If the value exceeds ecc_strength, -EUCLEAN is never returned by
+> +		the read functions.
 
+Hmmm. I don't think it's a good idea to say "Users who wish to be more paranoid
+about data integrity can lower the value"; because this is not exactly true.
 
-But Ivan is correct; the patches would make it 16 because it is per page, not
-per ecc.size.
+Lowering the value is very dangerous, and can have devastating effects: on NAND
+devices where sticky bitflips appear (we have plenty of those devices), a low
+threshold (say 1) triggers block torture by UBI, then bad block retirement,
+quickly reducing the number of valid blocks; the other "sane" blocks
+with intermittent bitflips keep being scrubbed, thrashing the whole device.
+Even worse: if enough bad blocks appear, UBI runs out of replacement blocks
+and stops working.
+
+IMHO the value of 'bitflip_threshold' should be carefully chosen:
+
+- low enough to ensure ecc correction has a safety margin and manufacturer
+  requirements are met
+- high enough to avoid the effects described above
+
+In some cases, controlling bitflip_threshold can be interesting for other
+reasons; for instance, on a specific board, I have used a NAND device
+requiring 4-bit ecc, but I implemented 8-bit protection through hardware BCH for
+extra safety (and future 8-bit NAND upgrades).
+In that particular setup, I would set bitflip_threshold to 3 or 4 instead of the
+value derived from the ecc strength (8).
+
+So in practice, setting bitflip_threshold is tricky and requires a good
+knowledge of the NAND (or Doc/whatever) device your are using, and of how mtd/UBI
+will use the threshold.
+I suggest we warn about the dangers and discourage people from messing with this
+knob unless they know what they are doing.
+
+BR,
+-- 
+Ivan
