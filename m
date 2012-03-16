@@ -1,23 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S8WSK-00071M-HF
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 12:40:29 +0000
-Message-ID: <1331901784.3730.72.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Remove notion of key schemes
+ id 1S8WYc-0007dv-Ia
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 12:46:59 +0000
+Message-ID: <1331902176.3730.75.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Fri, 16 Mar 2012 14:43:04 +0200
-In-Reply-To: <alpine.DEB.2.00.1203151545410.26775@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1203151545410.26775@eristoteles.iwoars.net>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Date: Fri, 16 Mar 2012 14:49:36 +0200
+In-Reply-To: <20120316111939.GA10362@parrot.com>
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-2uWgSi+Dric7/+wGK+Tb"
+ boundary="=-K0KGjBMMYfxC10Catakn"
 Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Mike Dunn <mikedunn@newsguy.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,77 +28,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-2uWgSi+Dric7/+wGK+Tb
+--=-K0KGjBMMYfxC10Catakn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-03-15 at 15:48 +0100, Joel Reardon wrote:
-> @@ -112,8 +109,7 @@ static inline void ino_key_init_flash(const struct ub=
-ifs_info *c, void *k,
->  	union ubifs_key *key =3D k;
+> Consider the following situation:
+> - a NAND device with 2kB pages and 4 ecc steps per page (4 x 512 bytes)
+> - the driver has chip->ecc.strength =3D 4, and therefore mtd->ecc_strengt=
+h =3D 16
+
+I would expect in this case we should have mtd->ecc_strength =3D 4 anyway.
+
+> So my point is that the cleaning decision happens at the ecc step level,
+> not at the page reading level.
+
+I agree, good point.
+
+> I think this could be fixed by dropping 'ecc_strength' and changing the s=
+emantics
+> of 'bitflip_threshold' in the following way (rephrasing your explanation)=
+:
 >=20
->  	key->j32[0] =3D cpu_to_le32(inum);
-> -	key->j32[1] =3D cpu_to_le32(UBIFS_INO_KEY << UBIFS_S_KEY_BLOCK_BITS);
-> -	memset(k + 8, 0, UBIFS_MAX_KEY_LEN - 8);
-> +	key->j32[1] =3D cpu_to_le32(UBIFS_INO_KEY << UBIFS_KEY_BLOCK_BITS);
->  }
+>   (3) The drivers' read methods, absent an error, return a non-negative i=
+nteger
+>       indicating the maximum number of bit errors that were corrected in =
+any one
+>       ecc step.  MTD returns -EUCLEAN if this is >=3D bitflip_threshold, =
+0
+>       otherwise.
+>=20
+>   So basically, the meaning of -EUCLEAN is changed from "one or more bit =
+errors
+>   were corrected", to "a dangerously high number of bit errors were corre=
+cted on
+>   one or more ecc step block".  By default, "dangerously high" is interpr=
+eted
+>   as chip->ecc.strength.  Drivers can specify a different value, and the =
+user can
+>   override it if more or less caution regarding data integrity is desired=
+.
+>=20
+> But still, there is a problem: how do we implement (3), i.e. how do we kn=
+ow
+> "the maximum number of bit errors that were corrected in any one ecc step=
+" ?
+>=20
+> Just looking at ecc_stats.corrected is not enough, as it accumulates over=
+ each
+> ecc step result, and does not allow us to distinguish cases 1 and 2 (from=
+ my
+> previous example). Maybe we could have per-step ecc stats ? or have the d=
+river
+> return directly the information ?
 
-So current UBIFS driver will always zero out unused parts of the key.
-Looks like a flaw in UBIFS, but it is too late to do anything about
-this. Could you please also think about the situation when a
-security-enabled image is mounted in an older kernel which will start
-zeroing unused bytes. What will happen when it is mounted by newer UBIFS
-with the security stuff? Would be great to make sure this is handled
-nicely.
-
->  /**
-> - * key_max_inode_size - get maximum file size allowed by current key for=
-mat.
-> + * key_max_inode_size - get maximum file size allowed.
->   * @c: UBIFS file-system description object
->   */
->  static inline unsigned long long key_max_inode_size(const struct ubifs_i=
-nfo *c)
->  {
-> -	switch (c->key_fmt) {
-> -	case UBIFS_SIMPLE_KEY_FMT:
-> -		return (1ULL << UBIFS_S_KEY_BLOCK_BITS) * UBIFS_BLOCK_SIZE;
-> -	default:
-> -		return 0;
-> -	}
-> +	return (1ULL << UBIFS_KEY_BLOCK_BITS) * UBIFS_BLOCK_SIZE;
->  }
-
-I think this function should also be removed and turned into a macro.=20
->  struct ubifs_dent_node {
->  	struct ubifs_ch ch;
-> -	__u8 key[UBIFS_MAX_KEY_LEN];
-> +	__u8 key[UBIFS_KEY_LEN];
-> +	__u8 padding0[8]; /* Watch 'zero_dent_node_unused()' if changing! */
->  	__le64 inum;
-> -	__u8 padding1;
-> +	__u8 padding1; /* Watch 'zero_dent_node_unused()' if changing! */
->  	__u8 type;
->  	__le16 nlen;
->  	__u8 padding2[4]; /* Watch 'zero_dent_node_unused()' if changing! */
-> @@ -552,7 +547,8 @@ struct ubifs_dent_node {
->   */
->  struct ubifs_data_node {
->  	struct ubifs_ch ch;
-> -	__u8 key[UBIFS_MAX_KEY_LEN];
-> +	__u8 key[UBIFS_KEY_LEN];
-> +	__le64 crypto_lookup;
-
-Err, no, this patch should be _pure_ key schemes removal. All the crypto
-stuff should be separate.
-
-Otherwise looks good!
+Yeah, sounds like we should have per-step stats.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-2uWgSi+Dric7/+wGK+Tb
+--=-K0KGjBMMYfxC10Catakn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -107,19 +95,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPYzVYAAoJECmIfjd9wqK0lPIQALimbYgWSrh4G/zNEaywVCtH
-vdN1GwCCDAkiyk9jv82Rgwrq9GynzF08bmHEbfMY5BNGfVQJC5ZE/RJWvDR7v2Jj
-W/F9ZKM9O1RUw3fFcBF2SHhTHyAIhHgqXNfr0I8Ug9dzUItRM/eU0WkwSGmgMbsf
-5lcHgrHkpzfwu0Mk1HacyE5VRK0Vcr2TLqqJfcXwpCs8Flddd+UN7DEF03zBRZtp
-bOdQm+m4AHHYIqolibdhzI/EC5mQ7f6+ajEgMXUy0uconDK4y5yV1ml6Ef5IJAp9
-6nZ3L8gbpCRza5ViErMCu5kakW/359P7v59+HPlfcTnjpue6H5RmYRDDTBCObql2
-eOmnEn6oLZka1NFucGmBxQZY7M4pTmareUNsYVIrzhXC8FUwT4LyVe8CX2WGr4KB
-qmRSFY+5pap4nTI76SMSAlJ2e9T/ZL2OShXUdxqxN9glbVVPzaI5fRziy0sS9KAz
-b/NXTdGN0b/k4lepVSqHFlQeSll8XaNmgqRYgugE47TTZQmIqKkBez8tqdFK+7mL
-qyYnW22CrRf4R5TWuXOiBmD2f7HiPyZs0FpMWWNUIpmzmmxnqftY/s3CZQiZ1+2h
-Q439oyyNvnXOqKf4DVI1XxLx+ntRnzo4KgOEKUSM0s+o4G0EbmOXEDgV6dQWfiJD
-bNwxqwyF7EuCJEuadiJp
-=e6O4
+iQIcBAABAgAGBQJPYzbgAAoJECmIfjd9wqK0F4MQAKj5Ynus2IYb94we8Gz3m/HR
+2m6NaGjRcEHEzZcworTVLzK7Vcpn12GeSndDmadFXCrmlmhqYwvSnJY4Bu6GXn9B
++91j3Qvlz0ezfwEtTF+rrIuyw+p6qSaIAk1qCLNH4qfKXpeErJqeVjRqlKzebTR2
+dTgtyXnT0845cbMXz3pWJrCI6ZTKF6nd4i1Mq0XOu0CrWH33D/5154OaEfuBbJJ9
+LUD3wGXV/5Jw/9BZFgmJ7xuNMAdqD1KkqFBGLtmbm+lV7+1RSMGnw5NtnQaOL2Ry
+4iwNLRc6OP2iMCv52bqhaJIsnMJGBmxdnzbw5PqGq6o6Ohrt0DCzlgcuZD+OzqU7
+Pezb7EuIA6XVd/lcCq1lrDNpOWyIHwCcibE41fLyXQgZ+EQj0nHzasSZYpUG6i21
+y+CAv8Q7qPCIbAs1HUsOp5j++0k22il/J34sDa7lndWECGM442Ow8KYN/kosz4r9
++SHJbxUfVSNALzfkwgsrzYmJ6EVfEuC6PRqBz1K604P4xdYbRE7jjVNMEy0ND96H
+J13BMKSCkUDGmSt7x3/BYZfnDXdcSBl5vRIrsJuBIAgLpOUnFN23WfGTy2wszvoC
+zOmHTBwgnMM4IfHIsDN0rGYoAOHTD29BiwxMktQB0ac1r7caW8bXVA7de7rJz8Tr
+pqFffvNpLEEfI52T9178
+=e+w0
 -----END PGP SIGNATURE-----
 
---=-2uWgSi+Dric7/+wGK+Tb--
+--=-K0KGjBMMYfxC10Catakn--
