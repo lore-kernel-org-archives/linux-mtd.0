@@ -1,25 +1,21 @@
-Date: Fri, 16 Mar 2012 18:29:08 +0100
-From: Samuel Ortiz <sameo@linux.intel.com>
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-Subject: Re: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
-Message-ID: <20120316172908.GG20524@sortiz-mobl>
-References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
- <20120227142638.GN27687@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
- <20120301112329.GI9008@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S8c9k-00066b-9F
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 18:45:41 +0000
+Date: Fri, 16 Mar 2012 19:43:45 +0100
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
+Message-ID: <20120316184345.GF10228@parrot.com>
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <4F636964.3030904@newsguy.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Prakash,
-
-On Tue, Mar 06, 2012 at 01:12:25PM +0000, Manjunathappa, Prakash wrote:
-> Hi Samuel,
+On Fri, Mar 16, 2012 at 04:25:08PM +0000, Mike Dunn wrote:
 > 
-> May be I did not do a good job giving complete information on this earlier.
-> So I have replied on top of my mail with below information (seems you missed it)
+> Maybe my (admittedly limited) understanding of the physical nature of NAND flash
+> is flawed.  I assumed that a writesize region (i.e., a NAND page for our
+> purposes) is the most elemental unit wrt physical wear, regardless of whether or
+> not ecc is caclulated once for the whole page or incrementally in steps.
 > 
-I did get it, sorry for not being able to reply earlier.
-
-
-> Taking above points into consideration Arnd Bergmann suggested to move AEMIF driver to
-> MFD framework [1], relevant portion of his mail as follows,
 > 
-> " If you want it to provide endpoint devices that are handled by
-> distinct subsystems in Linux, I would make it an mfd multifunction
-> device and make the common... "
-You're missing that part of the quote:
+> > 
+> > In both cases, you will compare the same value 4 to mtd->bitflip_threshold (16)
+> > and decide to return 0 (and not -EUCLEAN).
+> > 
+> > So my point is that the cleaning decision happens at the ecc step level,
+> > not at the page reading level.
+> 
+> 
+> But you're sayimg my assumption is incorrect.  So each ecc-sized area within a
+> page is physically distinct and must be considered in isolation?  Could you
+> maybe elaborate on this?
 
-"...code a driver that scans the connected memories in order to register
-its child devices for each of the subsystems."
+When NAND manufacturers specify ECC requirements in their datasheet, they indicate:
+- a block size on which ECC should be computed (possibly smaller than the page size)
+- how many errors should be correctable in a single block size, i.e. strength
 
-If you can do that, then I'd take that patch to the MFD subsystem. Otherwise,
-the only incentive for me to take it would be to be able to share the 2
-functions currently in this driver between several archs. But MFD would just
-be a placeholder for this driver right now.
+For instance:
+- size = 512 bytes
+- strength = 8 errors
 
-Cheers,
-Samuel.
+If the NAND device has 2 kB (resp. 4kB) pages, you will need to perform 4 (resp. 8) ECC
+computations per page.
 
+The point of implementing the specified ECC is to ensure the integrity of data for the
+specified lifetime, i.e. its longevity.
+
+Manufacturers select an ECC size/strength setup for a device purely from statistical
+computations or empirical results: there is no "special" physical ecc-sized area in each
+page. It's just that the error distribution empirically observed is well covered by the
+specified size/strength combination. You could perfectly protect your NAND device using
+a different size/strength combination, with different longevity results.
+The manufacturer size/strength recommendation takes also into account the available spare
+space and ECC computational requirements.
+
+As a matter of fact, NAND manufacturers run write/read cycle aging tests in ovens, and
+measure how fast data corruption happens, assuming various protection schemes: no ECC,
+1-bit ECC/512, 2-bit ECC/512, and so on. Google "NAND UBER" for more details (UBER =
+Uncorrectable Bit Error Rate).
+
+Now, the point of scrubbing a block is to avoid error accumulation to the point when
+ECC is no longer able to correct all errors. This is why we must monitor each single
+ecc step rather than consider the total amount of errors corrected in a page.
+
+BR,
 -- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+Ivan
