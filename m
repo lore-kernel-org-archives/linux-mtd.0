@@ -1,24 +1,21 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S8f6a-00080i-LF
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 21:54:37 +0000
-Received: by werp11 with SMTP id p11so5376205wer.36
- for <linux-mtd@lists.infradead.org>; Fri, 16 Mar 2012 14:54:34 -0700 (PDT)
-Date: Fri, 16 Mar 2012 23:54:24 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
+ id 1S8g5v-0005OI-L1
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 22:58:00 +0000
+Received: by ghbf11 with SMTP id f11so5363348ghb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Mar 2012 15:57:57 -0700 (PDT)
+Message-ID: <4F63C571.4000400@gmail.com>
+Date: Fri, 16 Mar 2012 18:57:53 -0400
+From: Peter Barada <peter.barada@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
-Message-ID: <20120316235424.60a62ed0@halley>
-In-Reply-To: <4F636964.3030904@newsguy.com>
 References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
  <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <20120316235424.60a62ed0@halley>
+In-Reply-To: <20120316235424.60a62ed0@halley>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mike,
+On 03/16/2012 05:54 PM, Shmulik Ladkani wrote:
+>
+> So question is, would you consider 4 bit errors in the first ECC portion
+> to be "a dangerously high number of bit errors" as what's reported to
+> the MTD users?
+> If so, then yes, the cleaning decision should be according to the ecc
+> step level, not at the page reading level.
+If you had a ECC method that could correct N bits over the entire page 
+and the ECC showed N-1 bits needed correcting then it should be obvious 
+that the page is in danger of becoming uncorrectable.  This should be 
+the same as if there are multiple ECC steps per page and a single step 
+shoes N-1 bits that need correcting.  I think the indication from MTD 
+should be the worst case found in all the ECC steps...
 
-On Fri, 16 Mar 2012 09:25:08 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
-> Maybe my (admittedly limited) understanding of the physical nature of NAND flash
-> is flawed.  I assumed that a writesize region (i.e., a NAND page for our
-> purposes) is the most elemental unit wrt physical wear, regardless of whether or
-> not ecc is caclulated once for the whole page or incrementally in steps.
+The bigger issue is how to discern whether the degredation is due to 
+read-disturb (which can be recovered by erasing/reprogramming the block) 
+or the page physically wearing out (in which case it needs to be 
+retired).  For first generation SLC parts with large geometries this was 
+relatively straightforward where the block didn't show *any* any 
+bitflips up until it got close to its wear limit.  With smaller geometry 
+SLC (and definitely with MLC) things are not straightfoward.
 
-Bit-flips may occur at a per-cell basis, even on the OOB cells, as a
-result of program-disturb, charge-loss, or cell ware-out causing read
-sensing errors.
+In discussions with at least one NAND manufacturer, they indicated that 
+the "proper" method is to track reads per block (somehow across power 
+cycles) and when the number of reads per block (after an erasure of the 
+block) hits a limit then refresh the block, *and* disregard statistical 
+counting of bit flips - the read patterns across pages/blocks can affect 
+the number of bitflips seen - apparently it has to do with how the 
+physical geometry of the cells are laid out (due to the address lines 
+that are energized that exist nearby, but no details for the part in 
+question were provided).
 
-> But you're sayimg my assumption is incorrect.  So each ecc-sized area within a
-> page is physically distinct and must be considered in isolation? 
+Unfortunately there's no current method (that I know of) in MTD to keep 
+a non-volatile count of reads of pages within a block between erases 
+that can be used to handle the read-disturb case.  If such existed (and 
+kept track of erase counts) then it should be possible to handle both 
+cases.  Then a NAND manufacturer's rating of "at temperature range M, N 
+year retention, you can get X UBER if limt reads to Y thousands of 
+reads/block, and Z thousands of erasures" would be tractable...
 
-There's no "physical" distinction, in the sense that cells are separated
-in the device or alike.
-Simply, the ECC algorithm is independently calculated over several
-portions of the page.
-But that's not a must: suppose X bits per Y bytes ECC is required; you
-may use a 2X / 2Y ECC and acheive similar intergrity and endurance
-statistical characteristics.
-
-For your purposes, the question whether the cleaning decision should be
-according to the ecc step level, is dependent of how you define
-"a dangerously high number of bit errors".
-
-Lets continue with Ivan's example (2KiB page, 4 eccsteps, 512 bytes
-each step, strength 4bits/512bytes).
-Suppose the first ECC portion has 4 bit errors, the other 3 portions
-have none.
-If, for example, several read operations later, a new bitflip is
-intorduced within the first portion, leading to 5 bit errors.
-Obviously, the ECC algorithm is now unable to correct this portion,
-meaning, the buffer is corrupt - which also means the entire page data
-read is corrupt. The nand infrastructure would return -EBADMSG - and you
-had just 5 bit errors over the entire page.
-
-So question is, would you consider 4 bit errors in the first ECC portion
-to be "a dangerously high number of bit errors" as what's reported to
-the MTD users?
-If so, then yes, the cleaning decision should be according to the ecc
-step level, not at the page reading level.
-
-Regards,
-Shmulik
+-- 
+Peter Barada
+peter.barada@gmil.com
