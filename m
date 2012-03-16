@@ -1,19 +1,14 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S8UNe-00015L-7M
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 10:27:31 +0000
-Message-ID: <4F63158F.1030405@linutronix.de>
-Date: Fri, 16 Mar 2012 11:27:27 +0100
-From: Richard Weinberger <rw@linutronix.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: ubiattach oops/warning
-References: <4F62076E.2080409@linutronix.de>
- <1331893462.3730.41.camel@sauron.fi.intel.com>
-In-Reply-To: <1331893462.3730.41.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+ id 1S8Ubn-0002N5-QO
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 10:42:09 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] MTD: spear_smi: Remove default partition information from
+ driver
+Date: Fri, 16 Mar 2012 11:41:40 +0100
+Message-Id: <1331894500-21305-1-git-send-email-sr@denx.de>
+Cc: Vipin Kumar <vipin.kumar@st.com>, spear-devel@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +18,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16.03.2012 11:24, Artem Bityutskiy wrote:
-> On Thu, 2012-03-15 at 16:14 +0100, Richard Weinberger wrote:
->> Hi!
->>
->> While attaching to a NAND chip with lot's of damaged PEBs
->> I UBI gone nuts.
->>
->> See the attached log file.
->> Looks like a bug in an error path.
->>
->> Kernel is 3.0.23 plus some board specific fixes.
->> I didn't touch any UBI stuff...
->
-> Can you reproduce this? Did you preserve the flash image?
->
+Additionally, after failing in mtd_device_parse_register(), the driver
+unmap/free code is now executed.
 
-Not really. :(
-I got this because the nand driver had a bug.
-(That's why most PEBs contained bad data)
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Vipin Kumar <vipin.kumar@st.com>
+---
+ drivers/mtd/devices/spear_smi.c |   41 ++++++---------------------------------
+ 1 file changed, 6 insertions(+), 35 deletions(-)
 
-I'll try to reproduce it.
-
-Thanks,
-//richard
-
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index ad3b7cc..94c5cd9 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -151,21 +151,6 @@ static struct flash_device flash_devices[] = {
+ 	FLASH_ID("mac 25l6405"   , 0xd8, 0x001720C2, 0x100, 0x10000, 0x800000),
+ };
+ 
+-/* These partitions would be used if platform doesn't pass one */
+-static struct mtd_partition part_info_8M[] = {
+-	DEFINE_PARTS("Xloader", 0x00, 0x10000),
+-	DEFINE_PARTS("UBoot", MTDPART_OFS_APPEND, 0x40000),
+-	DEFINE_PARTS("Kernel", MTDPART_OFS_APPEND, 0x2C0000),
+-	DEFINE_PARTS("Root File System", MTDPART_OFS_APPEND, MTDPART_SIZ_FULL),
+-};
+-
+-static struct mtd_partition part_info_16M[] = {
+-	DEFINE_PARTS("Xloader", 0x00, 0x40000),
+-	DEFINE_PARTS("UBoot", MTDPART_OFS_APPEND, 0x100000),
+-	DEFINE_PARTS("Kernel", MTDPART_OFS_APPEND, 0x300000),
+-	DEFINE_PARTS("Root File System", MTDPART_OFS_APPEND, MTDPART_SIZ_FULL),
+-};
+-
+ /* Define spear specific structures */
+ 
+ struct spear_snor_flash;
+@@ -771,8 +756,8 @@ static int spear_smi_setup_banks(struct platform_device *pdev, u32 bank)
+ 	struct spear_smi_flash_info *flash_info;
+ 	struct spear_smi_plat_data *pdata;
+ 	struct spear_snor_flash *flash;
+-	struct mtd_partition *parts;
+-	int count;
++	struct mtd_partition *parts = NULL;
++	int count = 0;
+ 	int flash_index;
+ 	int ret = 0;
+ 
+@@ -836,28 +821,14 @@ static int spear_smi_setup_banks(struct platform_device *pdev, u32 bank)
+ 	if (flash_info->partitions) {
+ 		parts = flash_info->partitions;
+ 		count = flash_info->nr_partitions;
+-	} else {
+-		/* choose from default ones */
+-		switch (flash->mtd.size) {
+-		case 0x800000:/* 8MB */
+-			parts = part_info_8M;
+-			count = ARRAY_SIZE(part_info_8M);
+-			break;
+-		case 0x1000000:/* 16MB */
+-			parts = part_info_16M;
+-			count = ARRAY_SIZE(part_info_16M);
+-			break;
+-		default:
+-			dev_err(&pdev->dev, "undefined partition\n");
+-			ret = ENODEV;
+-			goto err_map;
+-		}
+ 	}
+ 	ret = mtd_device_parse_register(&flash->mtd, NULL, NULL, parts, count);
+-	if (ret)
++	if (ret) {
+ 		dev_err(&dev->pdev->dev, "Err MTD partition=%d\n", ret);
++		goto err_map;
++	}
+ 
+-	return ret;
++	return 0;
+ 
+ err_map:
+ 	iounmap(flash->base_addr);
 -- 
-Phone: +49 7556 91 98 91; Fax.: +49 7556 91 98 86
-
-Firmensitz: 88690 Uhldingen, Auf dem Berg 3
-Registergericht: Amtsgericht Freiburg i. Br., HRB 700 806;
-StNr. 87007/07777; Ust-Id Nr.: DE252739476
-Geschäftsführer: Heinz Egger, Thomas Gleixner
+1.7.9.2
