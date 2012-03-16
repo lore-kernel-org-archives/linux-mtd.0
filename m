@@ -1,20 +1,25 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S8a5T-0006uo-1C
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2012 16:33:07 +0000
-Date: Fri, 16 Mar 2012 17:31:11 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH 2/3] MTD: bitflip_threshold added to mtd_info and sysfs
-Message-ID: <20120316163111.GE10228@parrot.com>
-References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
- <1331832353-15569-3-git-send-email-mikedunn@newsguy.com>
+Date: Fri, 16 Mar 2012 18:29:08 +0100
+From: Samuel Ortiz <sameo@linux.intel.com>
+To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+Subject: Re: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
+Message-ID: <20120316172908.GG20524@sortiz-mobl>
+References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
+ <20120227142638.GN27687@sortiz-mobl>
+ <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
+ <20120301112329.GI9008@sortiz-mobl>
+ <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1331832353-15569-3-git-send-email-mikedunn@newsguy.com>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 15, 2012 at 05:25:52PM +0000, Mike Dunn wrote:
-> +
-> +What:		/sys/class/mtd/mtdX/bitflip_threshold
-> +Date:		March 2012
-> +KernelVersion:	3.3.1
-> +Contact:	linux-mtd@lists.infradead.org
-> +Description:
-> +		This allows the user to examine and adjust the criteria by which
-> +		mtd returns -EUCLEAN from mtd_read() and mtd_read_oob().  If the
-> +		maximum number of bit errors that were corrected on any single
-> +		writesize region (as reported by the driver) equals or exceeds
-> +		this value, -EUCLEAN is returned.  Otherwise, absent an error, 0
-> +		is returned.  Higher layers (e.g., UBI) use this return code as
-> +		an indication that an erase block may be degrading and should be
-> +		scrutinized as a candidate for being marked as bad.
-> +
-> +		The initial value may be specified by the flash device driver.
-> +		If not, then the default value is ecc_strength.  Users who wish
-> +		to be more paranoid about data integrity can lower the value.
-> +		If the value exceeds ecc_strength, -EUCLEAN is never returned by
-> +		the read functions.
+Hi Prakash,
 
-Hmmm. I don't think it's a good idea to say "Users who wish to be more paranoid
-about data integrity can lower the value"; because this is not exactly true.
+On Tue, Mar 06, 2012 at 01:12:25PM +0000, Manjunathappa, Prakash wrote:
+> Hi Samuel,
+> 
+> May be I did not do a good job giving complete information on this earlier.
+> So I have replied on top of my mail with below information (seems you missed it)
+> 
+I did get it, sorry for not being able to reply earlier.
 
-Lowering the value is very dangerous, and can have devastating effects: on NAND
-devices where sticky bitflips appear (we have plenty of those devices), a low
-threshold (say 1) triggers block torture by UBI, then bad block retirement,
-quickly reducing the number of valid blocks; the other "sane" blocks
-with intermittent bitflips keep being scrubbed, thrashing the whole device.
-Even worse: if enough bad blocks appear, UBI runs out of replacement blocks
-and stops working.
 
-IMHO the value of 'bitflip_threshold' should be carefully chosen:
+> Taking above points into consideration Arnd Bergmann suggested to move AEMIF driver to
+> MFD framework [1], relevant portion of his mail as follows,
+> 
+> " If you want it to provide endpoint devices that are handled by
+> distinct subsystems in Linux, I would make it an mfd multifunction
+> device and make the common... "
+You're missing that part of the quote:
 
-- low enough to ensure ecc correction has a safety margin and manufacturer
-  requirements are met
-- high enough to avoid the effects described above
+"...code a driver that scans the connected memories in order to register
+its child devices for each of the subsystems."
 
-In some cases, controlling bitflip_threshold can be interesting for other
-reasons; for instance, on a specific board, I have used a NAND device
-requiring 4-bit ecc, but I implemented 8-bit protection through hardware BCH for
-extra safety (and future 8-bit NAND upgrades).
-In that particular setup, I would set bitflip_threshold to 3 or 4 instead of the
-value derived from the ecc strength (8).
+If you can do that, then I'd take that patch to the MFD subsystem. Otherwise,
+the only incentive for me to take it would be to be able to share the 2
+functions currently in this driver between several archs. But MFD would just
+be a placeholder for this driver right now.
 
-So in practice, setting bitflip_threshold is tricky and requires a good
-knowledge of the NAND (or Doc/whatever) device your are using, and of how mtd/UBI
-will use the threshold.
-I suggest we warn about the dangers and discourage people from messing with this
-knob unless they know what they are doing.
+Cheers,
+Samuel.
 
-BR,
 -- 
-Ivan
+Intel Open Source Technology Centre
+http://oss.intel.com/
