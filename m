@@ -1,18 +1,21 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S9Cu1-00009t-LR
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2012 09:59:54 +0000
-Received: by wgbdr1 with SMTP id dr1so345362wgb.18
- for <linux-mtd@lists.infradead.org>; Sun, 18 Mar 2012 02:59:51 -0700 (PDT)
-Date: Sun, 18 Mar 2012 11:59:46 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Peter Barada <peter.barada@gmail.com>
-Subject: Distinguishing bitflips due to read-disturb or due to wear-out
-Message-ID: <20120318115946.5614a889@pixies.home.jungo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+ id 1S9Gr9-0003G3-2V
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2012 14:13:11 +0000
+Received: by lbol5 with SMTP id l5so3471738lbo.36
+ for <linux-mtd@lists.infradead.org>; Sun, 18 Mar 2012 07:13:08 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1331637313.3595.10.camel@sauron.fi.intel.com>
+References: <1331393478-30850-1-git-send-email-hechtb@gmail.com>
+ <1331637313.3595.10.camel@sauron.fi.intel.com>
+Date: Sun, 18 Mar 2012 15:13:07 +0100
+Message-ID: <CABYn4swpzrmpcSw_KgUOBsWUrigBdiH1yeRuf58Jqmc1S32+-w@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sh_flctl: Add power management support
+From: Bastian Hecht <hechtb@googlemail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quote from [1].
-Started a new thread as this is off-topic.
+2012/3/13 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Sat, 2012-03-10 at 16:31 +0100, Bastian Hecht wrote:
+>> All transactions with the NAND chip require a chip enable signal. So we
+>> wrap the runtime_pm_get()/put()s around it. As registers are cached, we
+>> need no suspend()/resume() callbacks.
+>>
+>> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+>
+> Pushed to l2-mtd.git, thanks.
 
-[1]
-http://lists.infradead.org/pipermail/linux-mtd/2012-March/040336.html
+Ouch, I've realized that I've sent an old incorrect version where 2
+code blocks are swapped.
+I write to the device before calling runtime_pm_get().
 
-> The bigger issue is how to discern whether the degredation is due to 
-> read-disturb (which can be recovered by erasing/reprogramming the block) 
-> or the page physically wearing out (in which case it needs to be 
-> retired).
+As I was on the way to a new version anyway, I've finished it today
+and suggest you drop this one and consider pushing the new one. I post
+it after this mail. Sorry.
 
-Question is, do we really need to distinguish between the two?
+Best regards,
 
-If there is a "dangerously high" number of bit errors, then scrubbing
-should be performed.
-If the reason for the bit errors was due to read-disturb, then those
-error are gone after scrubbing (for now, until read-disturb affects
-again).
-If the reason was wear-out, then it is likely that high number of bit
-errors will be evident, again. But if the block is totally worn-out,
-shouldn't the device return an error status for the erase operation,
-eventually? (and as such, the MTD software will retire the block)?
+ Bastian Hecht
 
-Regards
-Shmulik
+
+> --
+> Best Regards,
+> Artem Bityutskiy
