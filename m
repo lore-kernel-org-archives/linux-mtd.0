@@ -1,18 +1,23 @@
-Received: from ra.se.axis.com ([195.60.68.13])
+Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9N9l-0003O9-Rh
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2012 20:56:53 +0000
-Date: Sun, 18 Mar 2012 21:56:45 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: Distinguishing bitflips due to read-disturb or due to wear-out
-In-Reply-To: <20120318115946.5614a889@pixies.home.jungo.com>
-Message-ID: <Pine.LNX.4.64.1203182145120.29156@lnxricardw.se.axis.com>
-References: <20120318115946.5614a889@pixies.home.jungo.com>
+ id 1S9YIt-0004lu-BV
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 08:51:00 +0000
+Message-ID: <4F66F36E.9010102@parrot.com>
+Date: Mon, 19 Mar 2012 09:50:54 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Peter Barada <peter.barada@gmail.com>,
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
+ <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
+ <20120318100000.336c347d@pixies.home.jungo.com>
+In-Reply-To: <20120318100000.336c347d@pixies.home.jungo.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Mike Dunn <mikedunn@newsguy.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,68 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Sun, 18 Mar 2012, Shmulik Ladkani wrote:
+Shmulik Ladkani a écrit :
+> Hi Mike,
+> 
 
->> The bigger issue is how to discern whether the degredation is due to
->> read-disturb (which can be recovered by erasing/reprogramming the block)
->> or the page physically wearing out (in which case it needs to be
->> retired).
->
-> Question is, do we really need to distinguish between the two?
->
-> If there is a "dangerously high" number of bit errors, then scrubbing
-> should be performed.
-> If the reason for the bit errors was due to read-disturb, then those
-> error are gone after scrubbing (for now, until read-disturb affects
-> again).
-> If the reason was wear-out, then it is likely that high number of bit
-> errors will be evident, again. But if the block is totally worn-out,
-> shouldn't the device return an error status for the erase operation,
-> eventually? (and as such, the MTD software will retire the block)?
+> The only immediate blocker for such a scheme would be those nand
+> controller drivers, where the controller is responsible of the ECC
+> correction, and it does not report per-step stats to the software.
+> Are there any?
+> (In that case, we have nothing else to do besides falling back to a
+> per-page decision. For example, such driver's 'read_page' may return
+> total_corrected_per_page/ecc.steps as an estimate of the number of
+> per-step corrected bits, or alike)
+No, they should return the worst case : max(total_corrected_per_page, ecc.strength).
+Otherwise you have the same problem : case 2 in [1] will fail.
+It is better to trigger false positive (do scrubbing) than having uncorrectable
+error.
 
-Just my $0.02 worth ... in my experience, what happens as a block wears=20
-out is that the frequency / probability of read disturb errors increases,=
-=20
-but there are not necessarily bit cells which have failed completely.
 
-I once did a test on a single 32 Mbyte NAND flash device, by torturing a=20
-block over and over again until the erase or write operation failed=20
-according to the device. The guaranteed specified maximum erase/write=20
-cycle count was 100000 (quite typical for SLC flash). In a particular=20
-case, the erase operation returned an error status first when 2.3 million=
-=20
-cycles had been performed. In this state, it took about fifteen minutes=20
-after writing until a bit flipped during read. However, immediately=20
-reading back the data after writing showed no errors. Also, even after the=
-=20
-erase operation returned an error the first time, several more write/erase=
-=20
-cycles were completed with no errors.
+Matthieu
 
-From=20this can be concluded that the 'wearing out' issue is gradual and no=
-t=20
-a sudden transition into a 'failed' status. Also, when the chip begins=20
-reporting errors during erase and write, the blocks may long have passed=20
-their erase cycle specification. Finally, the 'read disturb' errors are=20
-probably of the same nature independent of whether the blocks are new or=20
-have been used a lot, it's just the error probability that increases.
 
-Since it is not really possible to determine a block is by reading back=20
-the data immedately after write, it would seem that any form of mechanism=
-=20
-that attempts to track how bad the block is, should either monitor the=20
-erase cycle count for each block, and retire the block after a certain=20
-number of cycles have been reached (say, per the specifications), or try=20
-to keep some sort of statistic on how old the data is, i.e. for each read,=
-=20
-how long ago the data was written, and how many read cycles have been=20
-performed since then, in order to determine how serious the 'read disturb'=
-=20
-errors (bitflips) are.
+[1]
+Consider the following situation:
+- a NAND device with 2kB pages and 4 ecc steps per page (4 x 512 bytes)
+- the driver has chip->ecc.strength = 4, and therefore mtd->ecc_strength = 16
+- let's say mtd->bitflip_threshold = 16
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+The driver read() method could return a non-negative integer, say 4, in at least
+the following cases:
+
+1. During a single page read, each of the 4 ecc steps corrected 1 bit, with a
+total variation of ecc_stats.corrected equal to 4.
+=> no cleaning needed
+
+2. During a single page read, 1 ecc step corrected 4 bits, the 3 other steps had
+no correction to perform, with a total variation of ecc_stats.corrected equal
+to 4.
+=> cleaning is needed
+
+In both cases, you will compare the same value 4 to mtd->bitflip_threshold (16)
+and decide to return 0 (and not -EUCLEAN).
