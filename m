@@ -1,18 +1,13 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9k4z-0000JN-O8
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 21:25:28 +0000
+ id 1S9l2F-0007T7-Jh
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 22:26:40 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/9] mtd: MTD API rework
-References: <1328714485-19536-1-git-send-email-dedekind1@gmail.com>
-Date: Mon, 19 Mar 2012 22:25:14 +0100
-In-Reply-To: <1328714485-19536-1-git-send-email-dedekind1@gmail.com> (Artem
- Bityutskiy's message of "Wed, 8 Feb 2012 17:21:16 +0200")
-Message-ID: <87wr6g8erp.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: add documentation about locking context of MTD API
+Date: Mon, 19 Mar 2012 23:26:25 +0100
+Message-Id: <1332195985-21043-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +17,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> writes:
+Add a comment to mtd header for MTD drivers writters, so that they
+know that each function in the MTD API, ie. in the mtd_info
+structure, is called in a sleeping context.
 
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-...zip..
->
-> Please, do test the changes if you use MTD - it is easy to break something when
-> you are trying to clean-up ancient crap.
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ include/linux/mtd/mtd.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-Hi Artem,
-
-Just a note to let you know I tested these patches with the docg3, and
-everything is alright. Of course, docg3 is less impacted than others, but still
-read/write/erase do work, on an UBIFS mounted filesystem (which tends to proove
-things do work, don't it ?)
-
-Cheers.
-
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index cf5ea8c..4a417e7 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -176,6 +176,11 @@ struct mtd_info {
+ 	/*
+ 	 * Do not call via these pointers, use corresponding mtd_*()
+ 	 * wrappers instead.
++	 *
++	 * All the following functions are called in a sleeping context, ie. it
++	 * can be safely assumed in mtd drivers that :
++	 *  - might_sleep() == 1
++	 *  - msleep(), mutex_lock() and co are authorized
+ 	 */
+ 	int (*_erase) (struct mtd_info *mtd, struct erase_info *instr);
+ 	int (*_point) (struct mtd_info *mtd, loff_t from, size_t len,
 -- 
-Robert
+1.7.5.4
