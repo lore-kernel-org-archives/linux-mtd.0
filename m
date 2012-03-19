@@ -1,22 +1,25 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9fwo-0003ej-0C
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 17:00:42 +0000
-Message-ID: <1332176607.11468.5.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] MTD: spear_smi: Remove default partition
- information from driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Mon, 19 Mar 2012 19:03:27 +0200
-In-Reply-To: <1331894500-21305-1-git-send-email-sr@denx.de>
-References: <1331894500-21305-1-git-send-email-sr@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-yKlpu21DlGTz1ps+iNZF"
-Mime-Version: 1.0
-Cc: Vipin Kumar <vipin.kumar@st.com>, spear-devel@list.st.com,
- linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1S9hxI-0001P2-Ju
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 19:09:21 +0000
+Message-ID: <4F67844E.5020404@newsguy.com>
+Date: Mon, 19 Mar 2012 12:09:02 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
+ <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
+ <20120318100000.336c347d@pixies.home.jungo.com> <4F66F36E.9010102@parrot.com>
+In-Reply-To: <4F66F36E.9010102@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 03/19/2012 01:50 AM, Matthieu CASTET wrote:
+> Hi,
+> 
+> Shmulik Ladkani a écrit :
+>> Hi Mike,
+>>
+> 
+>> The only immediate blocker for such a scheme would be those nand
+>> controller drivers, where the controller is responsible of the ECC
+>> correction, and it does not report per-step stats to the software.
+>> Are there any?
 
---=-yKlpu21DlGTz1ps+iNZF
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-03-16 at 11:41 +0100, Stefan Roese wrote:
-> Additionally, after failing in mtd_device_parse_register(), the driver
-> unmap/free code is now executed.
->=20
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Vipin Kumar <vipin.kumar@st.com>
+I didn't get Shmulik's original email for some reason, only what was quoted in
+Matthieu's.  I think the answer to this question is no.  There is one driver,
+fsl_elbc_nand.c, that fits this description; i.e., detection, correction, and
+stats reporting are all done in hardware, and it looks like the hardware can
+only report that some corrections occurred, not the exact number.  Ecc can be
+done in multiple steps (depending on page size). but because ecc.strength==1, we
+only need to know if any corrections were made at all in order to report
+bitflips on a per ecc step basis.  I don't believe there are any other drivers
+where bitflips per step can not be determined.
 
-Pushed both to l2-mtd.git, thanks!
 
---=20
-Best Regards,
-Artem Bityutskiy
+>> (In that case, we have nothing else to do besides falling back to a
+>> per-page decision. For example, such driver's 'read_page' may return
+>> total_corrected_per_page/ecc.steps as an estimate of the number of
+>> per-step corrected bits, or alike)
 
---=-yKlpu21DlGTz1ps+iNZF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+A compromise between max_bitflips per page vs per ecc step?  As Matthieu and
+Ivan pointed out, you can still have a hard error and be under the threshold.
 
-iQIcBAABAgAGBQJPZ2bfAAoJECmIfjd9wqK0y/4P/jC8L0yHOQAvPUEF5LFmFC4A
-gNg1X0sSp611LOUF2OT+1YPdzlFdN/Wrl+AyVHCA4mz3MDha/Q+y/3DlI76hQvss
-UabmZkyrTKsZUqczyylE7fT+cTOWe5Be5znuC05FUr8ZWwrJ49zsXD94E3iumINv
-4bgwezLL9VLZK3blaso4mImkPQSFirbeRKbFtRrLpUPYpsdivhNkxO9EXHN5+B9E
-phtndQqWhByFLM5HtQbHp3xTSsrEK48N2my2UxSPvj/Oc+UAM7JPRV0wF1iEVub4
-dnzEWqkBJEZzW8FXwoeEcMyJ/mV+7c4o9/qEOIR4NBKAtPJiQYaS+oZ/+gvNr3am
-iMi2PYT4A2ZiF0DYWJt1hNsSocd8K3QA7DyNX8L6svFNbtFwielW9Sj1scB+k4QK
-Ss1b9MqvW414Ik+4g34hriVw6wLaEvvovIhi4rvPrQNk+pwfigijFV4Gm2d4cUtU
-XAjXOpAs9H9L5Z03uHCnx9hvz9cVKvA+Sv0muaQqWuuBP1Jug/byO3DHGKMiNT/b
-i6jrbWCUdifMnWLz0K0AkAXP5PBpEOBiMKWxbPebOtA2ouZie57ziF45u11gCyLA
-CCBZtSSjcgAjWnL2OEVNBeWtZdW5Xzjyr59zZLAEK0jl/OHllb7hTPl7qQJb0T4W
-x/UJQ1c/Xc2kzWF/Op/E
-=//lw
------END PGP SIGNATURE-----
 
---=-yKlpu21DlGTz1ps+iNZF--
+> No, they should return the worst case : max(total_corrected_per_page, ecc.strength).
+
+
+I don't quite understand that.
+
+
+> Otherwise you have the same problem : case 2 in [1] will fail.
+> It is better to trigger false positive (do scrubbing) than having uncorrectable
+> error.
+
+
+I agree.
+
+Thanks,
+Mike
