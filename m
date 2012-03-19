@@ -1,22 +1,18 @@
-Received: from mail.grid-net.com ([97.65.115.2])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9jRT-0004L3-8T
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 20:44:36 +0000
-Message-ID: <4F679AAB.6030506@grid-net.com>
-Date: Mon, 19 Mar 2012 13:44:27 -0700
-From: Subodh Nijsure <snijsure@grid-net.com>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S9k4z-0000JN-O8
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 21:25:28 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 0/9] mtd: MTD API rework
+References: <1328714485-19536-1-git-send-email-dedekind1@gmail.com>
+Date: Mon, 19 Mar 2012 22:25:14 +0100
+In-Reply-To: <1328714485-19536-1-git-send-email-dedekind1@gmail.com> (Artem
+ Bityutskiy's message of "Wed, 8 Feb 2012 17:21:16 +0200")
+Message-ID: <87wr6g8erp.fsf@free.fr>
 MIME-Version: 1.0
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
- <4F4D9725.3090100@freescale.com>
- <1330502098.3545.78.camel@sauron.fi.intel.com>
- <4F4DE0E5.8070808@freescale.com>
- <1330516974.3545.104.camel@sauron.fi.intel.com>
-In-Reply-To: <1330516974.3545.104.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/29/2012 04:00 AM, Bityutskiy, Artem wrote:
-> On Wed, 2012-02-29 at 16:25 +0800, Huang Shijie wrote:
->> Hi Artem:
->>> On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
->>>> Hi:
->>>>
->>>> ping.
->>> Is this patch-set independent or requires something like gpma patches?
->>>
->> This patch set is independent, and it does not depend upon any other
->> patches.
-> Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
-> other subsystems like dma, sound, and mmc and there are no acks for
-> those. Would be nice to get them somehow.
-I am using following git
+Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-git remote -v
-origin  git://git.infradead.org/mtd-2.6.git (fetch)
-origin  git://git.infradead.org/mtd-2.6.git (push)
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+...zip..
+>
+> Please, do test the changes if you use MTD - it is easy to break something when
+> you are trying to clean-up ancient crap.
 
-And I don't see MXS-DMA patch applied, am I looking at the wrong 
-tree/branch for l2-mtd.git? Or this patch not applied to l2-mtd.git tree?
+Hi Artem,
 
+Just a note to let you know I tested these patches with the docg3, and
+everything is alright. Of course, docg3 is less impacted than others, but still
+read/write/erase do work, on an UBIFS mounted filesystem (which tends to proove
+things do work, don't it ?)
 
-/Subodh
+Cheers.
+
+-- 
+Robert
