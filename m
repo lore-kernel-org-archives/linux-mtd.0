@@ -1,20 +1,19 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9lLT-00024j-Q0
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 22:46:33 +0000
-Date: Mon, 19 Mar 2012 23:46:29 +0100 (CET)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] Move CRC computation to separate function
-In-Reply-To: <1330531826.3545.128.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
- <1330531826.3545.128.camel@sauron.fi.intel.com>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1S9lQa-0003J3-DI
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2012 22:51:50 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: add documentation about locking context of MTD API
+In-Reply-To: <4F67B3B8.7090909@nod.at> (Richard Weinberger's message of "Mon,
+ 19 Mar 2012 23:31:20 +0100")
+References: <1332195985-21043-1-git-send-email-robert.jarzmik@free.fr>
+ <4F67B3B8.7090909@nod.at>
+Date: Mon, 19 Mar 2012 23:51:38 +0100
+Message-ID: <87r4wo8arp.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch moves the computation of CRCs for data nodes from
-within ubifs_prepare_node to a separate function ubifs_set_datanode_crc,
-which takes a data node, and computes and sets the CRC. This is to avoid
-duplication of the CRC computation code in other places where it may be
-needed.
+Richard Weinberger <richard@nod.at> writes:
 
+> Am 19.03.2012 23:26, schrieb Robert Jarzmik:
+>> Add a comment to mtd header for MTD drivers writters, so that they
+>> know that each function in the MTD API, ie. in the mtd_info
+>> structure, is called in a sleeping context.
+>> 
+>
+> Why do we need this comment?
+Because I was asked to, in [1].
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+> "sleeping" context isn't special, it's the default.
+> atomic would be...
+Ah, well, maybe. From what I've seen in the usb drivers area, portions of code
+are called from interrupts, through hooks. As a driver writer, I'm always
+interested to know whether I can msleep() or not.
 
----
- fs/ubifs/io.c    |   16 +++++++++++++---
- fs/ubifs/ubifs.h |    1 +
- 2 files changed, 14 insertions(+), 3 deletions(-)
+Cheers.
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 9228950..9d39b27 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -367,6 +367,18 @@ static unsigned long long next_sqnum(struct ubifs_info *c)
- }
+--
+Robert
 
- /**
-+ * ubifs_set_datanode_crc - writes the crc for a data node to the common
-+ * header.
-+ * @node: the data node
-+ */
-+void ubifs_set_datanode_crc(void *node)
-+{
-+	struct ubifs_ch *ch = (struct ubifs_ch *) node;
-+	int len = le32_to_cpu(ch->len);
-+	ch->crc = cpu_to_le32(crc32(UBIFS_CRC32_INIT, node + 8, len - 8));
-+}
-+
-+/**
-  * ubifs_prepare_node - prepare node to be written to flash.
-  * @c: UBIFS file-system description object
-  * @node: the node to pad
-@@ -379,7 +391,6 @@ static unsigned long long next_sqnum(struct ubifs_info *c)
-  */
- void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
- {
--	uint32_t crc;
- 	struct ubifs_ch *ch = node;
- 	unsigned long long sqnum = next_sqnum(c);
-
-@@ -390,8 +401,7 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
- 	ch->group_type = UBIFS_NO_NODE_GROUP;
- 	ch->sqnum = cpu_to_le64(sqnum);
- 	ch->padding[0] = ch->padding[1] = 0;
--	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
--	ch->crc = cpu_to_le32(crc);
-+	ubifs_set_datanode_crc(node);
-
- 	if (pad) {
- 		len = ALIGN(len, 8);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 7c343e1..bfd0798 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1486,6 +1486,7 @@ int ubifs_write_node(struct ubifs_info *c, void *node, int len, int lnum,
- 		     int offs, int dtype);
- int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
- 		     int offs, int quiet, int must_chk_crc);
-+void ubifs_set_datanode_crc(void *node);
- void ubifs_prepare_node(struct ubifs_info *c, void *buf, int len, int pad);
- void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last);
- int ubifs_io_init(struct ubifs_info *c);
--- 
-1.7.0.4
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040236.html
