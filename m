@@ -1,23 +1,23 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1S9nrj-0007V3-TA
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 01:28:00 +0000
-Message-ID: <4F67DD13.6020501@newsguy.com>
-Date: Mon, 19 Mar 2012 18:27:47 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1S9omg-0001gu-VL
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 02:26:51 +0000
+Received: by ghbf11 with SMTP id f11so6798727ghb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2012 19:26:49 -0700 (PDT)
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
-References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
- <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
- <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
- <20120318100000.336c347d@pixies.home.jungo.com> <4F66F36E.9010102@parrot.com>
- <4F67844E.5020404@newsguy.com> <20120319211835.1073a491@halley>
-In-Reply-To: <20120319211835.1073a491@halley>
+In-Reply-To: <6E13A53B51111A48A6299DFACA193D4A8612FB@041-DB3MPN1-015.041d.mgd.msft.net>
+References: <201203161505.03858.brian.foster@maxim-ic.com>
+ <CAN8TOE9FyJ8UJyx3hoaKcqYtie-BrmGJ3SwRgzVjgph=1tow6A@mail.gmail.com>
+ <6E13A53B51111A48A6299DFACA193D4A8612FB@041-DB3MPN1-015.041d.mgd.msft.net>
+Date: Mon, 19 Mar 2012 19:26:48 -0700
+Message-ID: <CAN8TOE90iK2LgsgRgtPJFYfnTtGHiTrTXYcuT_yg5eHYWw-iQA@mail.gmail.com>
+Subject: Re: how to support 4096+224 page size with plat_nand ?
+From: Brian Norris <computersforpeace@gmail.com>
+To: STOTTS Timothy <timothy.stotts@transport.alstom.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: robert.jarzmik@free.fr, ivan.djelic@parrot.com, ricard.wanderlof@axis.com,
- linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: Brian Foster <brian.foster@maxim-ic.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/19/2012 12:18 PM, Shmulik Ladkani wrote:
-> On Mon, 19 Mar 2012 12:09:02 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
->>
->> I didn't get Shmulik's original email for some reason, only what was quoted in
->> Matthieu's. 
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2012-March/040343.html
+On Mon, Mar 19, 2012 at 7:40 AM, STOTTS Timothy
+<timothy.stotts@transport.alstom.com> wrote:
+> How can I determine a valid ECC layout for OOB size of 224? A copy-and-pa=
+ste of a layout found on the Internet resulted in the driver marking all bl=
+ocks as "bad block" on the NAND Flash. (We have additional chips to work wi=
+th.) My chip uses software ECC. Does it require BCH?
 
+This depends on your ECC level needed. If you stick with
+NAND_ECC_SOFT, then (I think) you get 1-bit (Hamming) ECC. You can
+probably just reuse the nand_oob_128 layout for 224. If you need
+higher ECC correction, you might need BCH and would switch to
+NAND_ECC_SOFT_BCH which I think calculates its own layout.
 
-Many thanks Shmulik.  I'm glad I didn't miss this.  Don't know why some emails
-are getting dropped.  What you describe is exactly what I had in mind, and is
-just an extension of the previous patches to the finer granularity of ecc steps.
- Yes it's not too hard, but touching drivers that I don't have the means to test
-has to be done very carefully.
+BTW, BCH is simply an algorithm used for Error Correction. It's
+commonly used for anything higher than 1-bit ECC. I'm not very
+familiar with software BCH (or software ECC in general).
 
-Quoting from your post off the list archive...
+So you might try just using nand_oob_128 layout by modifying the
+`switch (mtd->oobsize) ...' logic. BCH would be a fallback option, or
+if you need higher correction.
 
+> My datasheet does not specify ECC as number of OOB bytes per 4096 bytes, =
+as such, but rather as a number of bits per a smaller number of bytes. Does=
+ that matter?
 
-  [ BTW, at a side note, I failed to understand why you prefer the
-  threshold comparison at the generic 'mtd_read' wrapper, and not within
-  nand_base.c.
-  I guess you didn't want to duplicate the condition into onenand_base.c
-  and alauda.c?
-  Thing is, I feel mtd->bitflip_threshold is a NAND property, so it
-  makes more sense if it is tested within the NAND infrastricture (and
-  clones).
-  Changing the 'mtd->_read' interface was less elegant IMO. ]
+That's typical. Usually it's measured across a 512-byte or 1024-byte
+sector (sometimes adding OOB, giving odd sizes like 512+16=3D528, or
+512+28=3D540, etc.).
 
-I agree, it is a NAND property and would have preferred to keep it in the nand
-interface,  But in addition to alauda, devices/docg3.c also is a nand device
-that does not use the nand interface,  After being bandied about, it was decided
-to make it part of the mtd driver interface.
-
-Thanks,
-Mike
+Brian
