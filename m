@@ -1,22 +1,20 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9xNj-0000bA-HA
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 11:37:40 +0000
-Message-ID: <1332243623.11468.19.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: sm_ftl: fix typo in major number.
+ id 1S9xPj-0000gQ-IO
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 11:39:43 +0000
+Message-ID: <1332243749.11468.21.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 4/4] drivers/mtd: docg3 add protection against concurrency
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Tue, 20 Mar 2012 13:40:23 +0200
-In-Reply-To: <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
-References: <20120317175827.GB12111@agk-dp.fab.redhat.com>
- <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 20 Mar 2012 13:42:29 +0200
+In-Reply-To: <1332196342-21545-5-git-send-email-robert.jarzmik@free.fr>
+References: <1332196342-21545-1-git-send-email-robert.jarzmik@free.fr>
+ <1332196342-21545-5-git-send-email-robert.jarzmik@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-6pA44/MnfWm3zzwvUcNT"
+ boundary="=-XNnaVmLsd2Ffhwl1DYyl"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, John Mesmon <jmesmon@gmail.com>,
- Alasdair G Kergon <agk@redhat.com>,
- LVM general discussion and development <linux-lvm@redhat.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,22 +26,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-6pA44/MnfWm3zzwvUcNT
+--=-XNnaVmLsd2Ffhwl1DYyl
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-03-17 at 20:16 +0200, Maxim Levitsky wrote:
-> major =3D=3D 0 allocates dynamic major, not major =3D=3D -1
->=20
-> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+On Mon, 2012-03-19 at 23:32 +0100, Robert Jarzmik wrote:
+> +static void cascade_lock(struct docg3 *docg3)
+> +{
+> +	mutex_lock(&docg3->cascade->lock);
+> +}
+> +
+> +static void cascade_unlock(struct docg3 *docg3)
+> +{
+> +	mutex_unlock(&docg3->cascade->lock);
+> +}
 
-Pushed to l2-mtd.git, thanks!
+Please, do not introduce that trivial wrappers - they are useless and
+only hurt readability. Open-coded mutex_lock()/mutex_unlock() is more
+readable.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-6pA44/MnfWm3zzwvUcNT
+--=-XNnaVmLsd2Ffhwl1DYyl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPaGynAAoJECmIfjd9wqK00FAP/juIp4P3D/5IvGfwfIyfBKT1
-8zAmEcsrPRnwsy7F2gKFEC5ijGlZOvo37RUOD0yuIsFgBg62QzPKT1lZu7XoiYre
-Kaeeyj0HN7kMYxrM4FSleSG67HkIKYKLKkJMYeZYJnS3kSZPaOP16kNJz6qmfcwp
-cRbDYmqxj0Qj6JppV/p0bnjYt8XpqUZE8jmKjy9SU8uoDX3CSzktxMQeIwFUJVrQ
-LAjtWwNGIKnZbK9qaLe7Dxs07+O1fRBkUuj+h/n/0tPSRT3Y/n6JsIqJEaSMixtL
-VO6lGsigVfbdfj8EpmAeO6eloRpq6n1/c1j1wjJ14y5ILUSULQdTmC/Lrf2F4sie
-u0UAhXtwa9EGyAOt5pM6bHOE3XAaWW9tbXY+0157QVx0RVXOgSPRKHAPUiI/MlGJ
-nbg6vOPrAzzf7ZKzbtV7a20gEKglz+c6Kg7qgAYFL/QAVLagmiVzxD+N8AfOCS/Y
-8Hk0urWh/zhmMfLwUCoLNdoxOL49V2xA+MMIz+baK5SY3FoaDKhkwzqlNhVjF127
-zul2hYUwUXZpx0poMKyUDV7qwUKDNDq8mDlHO8mNtpJz9VzXWi3aeqvBZP+Vkas9
-CekO6i4MBpornDVMHDQikSLmxzeVH3syRDommEa2LTJp0viURJFojaXrkYbG9ka5
-D9bF1zOYnNEWEUFAdB3G
-=PvXW
+iQIcBAABAgAGBQJPaG0mAAoJECmIfjd9wqK0+08P/AlWfqdH26OB0Qr1EFvunDKJ
+MPxRysT4Ba5lxGOBLpKjmJsmhNVYUvKErn9sVN1APuZcMCd2qBmakGha6VHZEic7
+C50zucTwGoO+dLbXkQ0mK+WniJ/d8zhymuDJL0+I3oH39IB5KHX493IaQDDezn2r
+HfN4ImZmgd6/JHBr9shyot+Y8uxlJ43z+2z+n96o3NFLLZw3OoYkDTcSoyk6IqrO
+cZ72tfwpXhEpkjyoqJPUy4w4sixwa2rCrnG/pE10rTQmjLmxI72INe+kaoEEk2g/
+XWAcaB+/QW+Hb9VCoqW31prBilJV+V41aqXhTcFex0Z77gDYx5tb9sKpsCOIg7Cu
+Dn7Z+ZiSMhmxaidthKdGsxcOCU0EjORgYEB0y1c2ZBUw0Iq650k2hzesx6PpMOK4
+MeAgOhQcplsr65KNxxtViv+A9m5P0Nz6tPPQSQgYBJrIlZXDYEGI4M0HwKHKQ8jE
+hYUJBuIqHdOhE4s48s+J4BEY2LU6nEzOcRCshd78B/PcZb/HYsda5m3ndv/yHA1s
+irRlXwf5rl/48kLJz2Z4T9jUkxqs0r5MGzqngrhmcd7sSKCNd/QtLojYB5Ewmt7v
+jwr7eKNra/oTLXuOyudSwD+3liDbl64MLxPV4j93weUwM7NuIeXvWnL3zySS/BuE
+PH4uzFOCeyzD27h8UxEs
+=Igt3
 -----END PGP SIGNATURE-----
 
---=-6pA44/MnfWm3zzwvUcNT--
+--=-XNnaVmLsd2Ffhwl1DYyl--
