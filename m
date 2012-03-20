@@ -1,27 +1,26 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-To: Samuel Ortiz <sameo@linux.intel.com>
-Subject: RE: [PATCH v5 2/3] arm:davinci: move emif driver to mfd framework
-Date: Tue, 20 Mar 2012 12:57:55 +0000
-Message-ID: <A73F36158E33644199EB82C5EC81C7BC3178627F@DBDE01.ent.ti.com>
-References: <y> <1330005504-25321-3-git-send-email-prakash.pm@ti.com>
- <20120227142638.GN27687@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC3176D103@DBDE01.ent.ti.com>
- <20120301112329.GI9008@sortiz-mobl>
- <A73F36158E33644199EB82C5EC81C7BC317702E9@DBDE01.ent.ti.com>
- <20120316172908.GG20524@sortiz-mobl>
-In-Reply-To: <20120316172908.GG20524@sortiz-mobl>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from afex01.hadm.msfc.nasa.gov ([198.119.226.234])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SA35H-0008Pc-Dx
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 17:42:59 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Date: Tue, 20 Mar 2012 13:40:23 +0200
+In-Reply-To: <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
+References: <20120317175827.GB12111@agk-dp.fab.redhat.com>
+ <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
 MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed;
+ boundary="----=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8"
+Sender: <linux-lvm-bounces@redhat.com>
+Errors-To: linux-lvm-bounces@redhat.com
+Message-ID: <6b20a531-dd45-445d-944e-f123e8820d86>
+Subject: Unquarantined: Re: [linux-lvm] [PATCH] mtd: sm_ftl:
+ fix typo in major number.
+Cc: Alasdair@redhat.com, linux-mtd@lists.infradead.org,
+ John Mesmon <jmesmon@gmail.com>, G Kergon <agk@redhat.com>,
+ LVM general discussion and development <linux-lvm@redhat.com>
+Reply-To: dedekind1@gmail.com,
+ LVM general discussion and development <linux-lvm@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +30,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Samuel,
+------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 16, 2012 at 22:59:08, Samuel Ortiz wrote:
-> Hi Prakash,
+On Sat, 2012-03-17 at 20:16 +0200, Maxim Levitsky wrote:
+> major =3D=3D 0 allocates dynamic major, not major =3D=3D -1
 >=20
-> On Tue, Mar 06, 2012 at 01:12:25PM +0000, Manjunathappa, Prakash wrote:
-> > Hi Samuel,
-> >=20
-> > May be I did not do a good job giving complete information on this earl=
-ier.
-> > So I have replied on top of my mail with below information (seems you m=
-issed it)
-> >=20
-> I did get it, sorry for not being able to reply earlier.
->=20
->=20
-> > Taking above points into consideration Arnd Bergmann suggested to move =
-AEMIF driver to
-> > MFD framework [1], relevant portion of his mail as follows,
-> >=20
-> > " If you want it to provide endpoint devices that are handled by
-> > distinct subsystems in Linux, I would make it an mfd multifunction
-> > device and make the common... "
-> You're missing that part of the quote:
->=20
-> "...code a driver that scans the connected memories in order to register
-> its child devices for each of the subsystems."
->=20
+> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 
-emif is not discoverable interface, does not support scanning for connected=
- devices.
+Pushed to l2-mtd.git, thanks!
 
-Could you please let me know if there is any other way to achieve this? I w=
-ill be happy
-to incorporate that and submit next version of the patch.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Thanks,
-Prakash
+------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
+Content-Type: text/plain; charset="us-ascii"; name="ATT00001"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="ATT00001"
+Content-Description: ATT00001
+
+_______________________________________________
+linux-lvm mailing list
+linux-lvm@redhat.com
+https://www.redhat.com/mailman/listinfo/linux-lvm
+read the LVM HOW-TO at http://tldp.org/HOWTO/LVM-HOWTO/
+------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: signature.asc
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPaGynAAoJECmIfjd9wqK00FAP/juIp4P3D/5IvGfwfIyfBKT1
+8zAmEcsrPRnwsy7F2gKFEC5ijGlZOvo37RUOD0yuIsFgBg62QzPKT1lZu7XoiYre
+Kaeeyj0HN7kMYxrM4FSleSG67HkIKYKLKkJMYeZYJnS3kSZPaOP16kNJz6qmfcwp
+cRbDYmqxj0Qj6JppV/p0bnjYt8XpqUZE8jmKjy9SU8uoDX3CSzktxMQeIwFUJVrQ
+LAjtWwNGIKnZbK9qaLe7Dxs07+O1fRBkUuj+h/n/0tPSRT3Y/n6JsIqJEaSMixtL
+VO6lGsigVfbdfj8EpmAeO6eloRpq6n1/c1j1wjJ14y5ILUSULQdTmC/Lrf2F4sie
+u0UAhXtwa9EGyAOt5pM6bHOE3XAaWW9tbXY+0157QVx0RVXOgSPRKHAPUiI/MlGJ
+nbg6vOPrAzzf7ZKzbtV7a20gEKglz+c6Kg7qgAYFL/QAVLagmiVzxD+N8AfOCS/Y
+8Hk0urWh/zhmMfLwUCoLNdoxOL49V2xA+MMIz+baK5SY3FoaDKhkwzqlNhVjF127
+zul2hYUwUXZpx0poMKyUDV7qwUKDNDq8mDlHO8mNtpJz9VzXWi3aeqvBZP+Vkas9
+CekO6i4MBpornDVMHDQikSLmxzeVH3syRDommEa2LTJp0viURJFojaXrkYbG9ka5
+D9bF1zOYnNEWEUFAdB3G
+=PvXW
+-----END PGP SIGNATURE-----
+
+------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8--
