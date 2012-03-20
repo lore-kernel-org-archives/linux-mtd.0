@@ -1,26 +1,24 @@
-Received: from afex01.hadm.msfc.nasa.gov ([198.119.226.234])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SA35H-0008Pc-Dx
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 17:42:59 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Tue, 20 Mar 2012 13:40:23 +0200
-In-Reply-To: <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
-References: <20120317175827.GB12111@agk-dp.fab.redhat.com>
- <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
+Received: from oproxy1-pub.bluehost.com ([66.147.249.253])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SA5OK-0005mx-G3
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 20:10:49 +0000
+Message-ID: <4F68E420.30801@xenotime.net>
+Date: Tue, 20 Mar 2012 13:10:08 -0700
+From: Randy Dunlap <rdunlap@xenotime.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8"
-Sender: <linux-lvm-bounces@redhat.com>
-Errors-To: linux-lvm-bounces@redhat.com
-Message-ID: <6b20a531-dd45-445d-944e-f123e8820d86>
-Subject: Unquarantined: Re: [linux-lvm] [PATCH] mtd: sm_ftl:
- fix typo in major number.
-Cc: Alasdair@redhat.com, linux-mtd@lists.infradead.org,
- John Mesmon <jmesmon@gmail.com>, G Kergon <agk@redhat.com>,
- LVM general discussion and development <linux-lvm@redhat.com>
-Reply-To: dedekind1@gmail.com,
- LVM general discussion and development <linux-lvm@redhat.com>
+To: Joel Reardon <joel@clambassador.com>
+Subject: Re: [patch] Add design document for UBIFS secure deletion
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+ <1329152067.22240.214.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
+ <1331277476.22872.2.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
+In-Reply-To: <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,55 +28,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 03/19/2012 09:54 AM, Joel Reardon wrote:
 
-On Sat, 2012-03-17 at 20:16 +0200, Maxim Levitsky wrote:
-> major =3D=3D 0 allocates dynamic major, not major =3D=3D -1
->=20
-> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 
-Pushed to l2-mtd.git, thanks!
+Nice job overall.  I have just a few comments below.
 
---=20
-Best Regards,
-Artem Bityutskiy
 
-------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
-Content-Type: text/plain; charset="us-ascii"; name="ATT00001"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="ATT00001"
-Content-Description: ATT00001
+> Design document should be self explanatory.
+> 
+> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+> 
+> ---
+>  Documentation/filesystems/ubifsec.txt |  358 +++++++++++++++++++++++++++++++++
+>  1 files changed, 358 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/filesystems/ubifsec.txt
+> 
+> diff --git a/Documentation/filesystems/ubifsec.txt b/Documentation/filesystems/ubifsec.txt
+> new file mode 100644
+> index 0000000..4eb41fb
+> --- /dev/null
+> +++ b/Documentation/filesystems/ubifsec.txt
+> @@ -0,0 +1,357 @@
+> +UBIFS Secure Deletion Enhancement
+> +
+> +Written by Joel Reardon <reardonj@inf.ethz.ch>
+> +Last revised: 19.3.2012
+> +
+> +Introduction
+> +============
 
-_______________________________________________
-linux-lvm mailing list
-linux-lvm@redhat.com
-https://www.redhat.com/mailman/listinfo/linux-lvm
-read the LVM HOW-TO at http://tldp.org/HOWTO/LVM-HOWTO/
-------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: signature.asc
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPaGynAAoJECmIfjd9wqK00FAP/juIp4P3D/5IvGfwfIyfBKT1
-8zAmEcsrPRnwsy7F2gKFEC5ijGlZOvo37RUOD0yuIsFgBg62QzPKT1lZu7XoiYre
-Kaeeyj0HN7kMYxrM4FSleSG67HkIKYKLKkJMYeZYJnS3kSZPaOP16kNJz6qmfcwp
-cRbDYmqxj0Qj6JppV/p0bnjYt8XpqUZE8jmKjy9SU8uoDX3CSzktxMQeIwFUJVrQ
-LAjtWwNGIKnZbK9qaLe7Dxs07+O1fRBkUuj+h/n/0tPSRT3Y/n6JsIqJEaSMixtL
-VO6lGsigVfbdfj8EpmAeO6eloRpq6n1/c1j1wjJ14y5ILUSULQdTmC/Lrf2F4sie
-u0UAhXtwa9EGyAOt5pM6bHOE3XAaWW9tbXY+0157QVx0RVXOgSPRKHAPUiI/MlGJ
-nbg6vOPrAzzf7ZKzbtV7a20gEKglz+c6Kg7qgAYFL/QAVLagmiVzxD+N8AfOCS/Y
-8Hk0urWh/zhmMfLwUCoLNdoxOL49V2xA+MMIz+baK5SY3FoaDKhkwzqlNhVjF127
-zul2hYUwUXZpx0poMKyUDV7qwUKDNDq8mDlHO8mNtpJz9VzXWi3aeqvBZP+Vkas9
-CekO6i4MBpornDVMHDQikSLmxzeVH3syRDommEa2LTJp0viURJFojaXrkYbG9ka5
-D9bF1zOYnNEWEUFAdB3G
-=PvXW
------END PGP SIGNATURE-----
 
-------=_EDNP_0000_fa2e02c1-73cd-48f3-b5d0-e77312ee8ad8--
+
+...
+
+> +Key State Map
+> +=============
+
+
+
+...
+
+> +The operation of purging performed on a correct key state map guarantees
+> +DNEFS's soundness: purging securely deletes any key in the KSA marked as
+
+
+
+
+What is DNEFS?
+
+> +deleted---afterwards, every key either decrypts one valid data node or nothing
+> +at all and every valid data node can be decrypted.  A correct key state map
+> +also guarantees the integrity of our data during purging, because no key that
+> +is used to decrypt valid data will be removed.
+> +
+
+
+
+
+...
+
+> +
+> +The key state map is built from a periodic checkpoint combined with a replay
+> +of the most recent changes while mounting.  We checkpoint the current key
+> +state map to the storage medium whenever the KSA is purged. After a purge,
+> +every key is either unused or used, and so a checkpoint of this map can be
+> +stored using one bit per key---less than 1\% of the KSA's size---which is then
+
+
+
+
+drop '\' ?
+
+> +compressed.  A special LEB is used to store checkpoints, where each new
+
+
+
+
+What is LEB?
+
+> +checkpoint is appended; when the erase block is full then the next checkpoint
+> +is written at the beginning using an atomic update.
+> +
+> +Correctness of the Key State Map
+> +================================
+
+
+
+
+...
+
+> +Second, failure can occur after purging one, several, or indeed  all of the
+> +KSA's LEBs. When remounting the device, the loaded checkpoint merged with the
+> +replay data  reflects the state before the first purge, so some purged LEBs
+> +contain new unused data while the key state map claims it is a deleted key. As
+> +these are cryptographically-suitable random values, with high probability they
+> +cannot successfully decrypt any existing valid data node.
+
+
+
+
+Last sentence seems to be incomplete or just odd.
+
+> +
+> +Third, failure can occur while writing to the checkpoint LEB.  When the
+> +checkpoint is written using atomic updates, then failing during the operation
+> +is equivalent to failing before it begins (cf. 2nd case).  Incomplete
+
+
+
+
+s/cf./compare/
+No need to save the space and lots of people probably won't know what
+cf. is.
+
+> +checkpoints are detected and so the previous valid checkpoint is loaded
+> +instead.  After replaying all the nodes, the key state map is equal to its
+> +state immediately before purging the KSA. This means that all entries marked
+> +as deleted are actually unused entries, so the invariant holds.
+
+
+
+-- 
+~Randy
