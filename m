@@ -1,17 +1,18 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1S9wQz-0003W7-6I
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 10:36:57 +0000
-Message-ID: <1332239983.11468.14.camel@sauron.fi.intel.com>
+ id 1S9wS8-0003ho-0G
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 10:38:08 +0000
+Message-ID: <1332240054.11468.15.camel@sauron.fi.intel.com>
 Subject: Re: UBI/UBIFS issue: corrupt empty space => switched to read-only mode
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Matteo Mattei <matteo.mattei@gmail.com>
-Date: Tue, 20 Mar 2012 12:39:43 +0200
-In-Reply-To: <CAHea38St440q-T+FawSic=brdv-dHb7H7yXh0Unq028Op75zuQ@mail.gmail.com>
+Date: Tue, 20 Mar 2012 12:40:54 +0200
+In-Reply-To: <loom.20120319T102527-948@post.gmane.org>
 References: <CAHea38St440q-T+FawSic=brdv-dHb7H7yXh0Unq028Op75zuQ@mail.gmail.com>
+ <loom.20120319T102527-948@post.gmane.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-rqLIray1nJXNJOe13vBK"
+ boundary="=-Atu00wKXcU00VuGsTMQB"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,46 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-rqLIray1nJXNJOe13vBK
+--=-Atu00wKXcU00VuGsTMQB
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-03-16 at 17:14 +0100, Matteo Mattei wrote:
-> Hi guys,
->=20
-> I am working hard on UBIFS to make it works on 2.6.32 and OMAP3530.
->=20
-> I already posted some requests to TI forum but I have no answers up to no=
-w:
-> http://e2e.ti.com/support/embedded/linux/f/354/t/171839.aspx#627875
+On Mon, 2012-03-19 at 09:28 +0000, Matteo Mattei wrote:
+> I have one more information about the problem...
+> Commenting the goto corrupted line in scan.c (inside ubifs) I was able
+> to recover a board with the previously reported error:
 
-Well, this error was reported several times. AFAIR, there are 2 possible
-causes for this.
-
-1. Your driver does not protect the empty space. Normally the driver
-corrects bit-flips using ECC, but some systems do not do this for empty
-space, i.e., for the flash regions which have been erased but have never
-been written. UBIFS expects to see all 0xFFs there, and if it doesn't,
-it reports about corrupt empty space.
-
-You can fix this by fixing the driver, at least this is what people seem
-to do. If this is impossible to fix, you can teach UBIFS to tolerate
-bit-flips in the empty space.
-
-2. More difficult issue which no one still dares to start fixing is the
-unstable bits issue. I do not have time to work on this, so I offer
-everyone assistance, but no on so far started working on this, AFAIK.
-Here is the description of the issue:
-
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
-
-HTH.
+This is incorrect because it will also make UBIFS ignore real issues.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-rqLIray1nJXNJOe13vBK
+--=-Atu00wKXcU00VuGsTMQB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -72,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPaF5vAAoJECmIfjd9wqK0w1cP/imNugwqrXleF/psXINbaiHW
-8GUvBX/P688x1ny1YWe2MQ1AYy40OjyekD750FehFHlyVtFqB6qlkVsfNPgA89QM
-MRSPp2UZwI6JZ+j+hcVbjkUNkaARQsS5DeLCpCHIxhpBWHlWao9VlTonStrmpijx
-pcddrShB3PnsU7GEpLsFSiYkrNq7yA4LvVhofswCL7pD4OZnYc1l76XGjqEJwRoD
-T0WNkFBgjUaNvqvpnxkYKa1i4pdl20WUh+qNxC9zRBmTD+4ICA5WJPZWHMeglII8
-52SOMgAl5NqKwQzTvf7BsAk+U4DhEpbTVGxst4BSXa4H8dtEgYN0Rp8CPNU7g/bq
-5oKeL5/bOO4hh2PdQPEQUS6N6mpOQfQhVez6dvHU4CQImFeFqaYR39D/ZJOTUvWZ
-mhrtspqd1oyIhpIwnz3xih0rFxiDfn4j587xz32dqUi0Tfa41SEsF4SlHS3a6WJO
-nIsn+Lms2YVMoAfw7FOk0OPBBL1m7NF4/kHLhe1xBAPDJvCZjFuIzbywIekZmUpX
-mg/9cMHQe6HwBkHW9URAwrHaqIlMNCDSh/E8XwyQnd3M1usAZgIEeMHU4hrJp9fZ
-Joa+AqH3U0iUcayZyPO+WzF4iPUY5l0f4pIlbSdHal8KSCdsb8lRFwo5VXnhiIf0
-HY3ppVOmrG3tAMnaphLJ
-=KbQc
+iQIcBAABAgAGBQJPaF62AAoJECmIfjd9wqK0ViIP/jzkUgOQCturI3RtphI0wL7c
+fIvqKYjHHptJD+CNvW2fKhIJAfvE9ylo/c7YUfv2fbBjyQUapgWJuQDWtdke8jHH
+xfrkuXGu7MMMQhI7wI64dl45s2fA1dfNT/mjJxsj0b5+EHVPhDt4KNWgAh3OZ/JC
+fN+ozY7Ohd3q1C08V3Ja5HA4VEMJNjC4vu5Dn9g1UFJQnZdiBLX//TQ06bJqrTNP
+4oEuccBuHXjJUdyVO34i0MnvfSD2Nujk0PS4PiBNZTu0v9x7baEfm//4G4XJqVpJ
+OpmKRNsIuQjU/UeBzGWuPVqwWDS13wP8swjqHV2im4I1AZU9A5NyS0fkcrkX01Tn
+zdjM4rafVNOO6WKEGCo8oNMNvxwltOza8uoTHJCReSUoExVJOh5OkvOmS27TMxOY
+/JxLYwsO70dXPsesyJ6RqvR2x27Bg6TU1qsnmBVCO3zyLixsK75V2svyv2nYeUfy
+0UAYUOpa4ptcMG+FI+xvT4aiX3COBo9hCjECgFAT+iEfPOsGByIkOH9BMb4EYpkU
+cFHJV+JMP5hJLrf8WRF23U0jyPuRrJBpx5c8Z5iHv8szPPkM7WCiqQ7klL4TuOfU
+RD6lgexC0viaaMsKsqiq0Y2dHmfsM8swQbD8b6aOdPFu25SHt+qeMjDm1RKPG1XP
+2RYkQacJXD9S8rUpSODm
+=7tjF
 -----END PGP SIGNATURE-----
 
---=-rqLIray1nJXNJOe13vBK--
+--=-Atu00wKXcU00VuGsTMQB--
