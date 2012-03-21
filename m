@@ -1,18 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mo-p05-ob6.rzone.de ([2a01:238:20a:202:53f5::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SAI9p-0000B4-PG
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 09:48:42 +0000
-Received: by pbcun4 with SMTP id un4so777630pbc.36
- for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2012 02:48:39 -0700 (PDT)
-Subject: [PATCH] mtd: phram: fix section mismatch for phram_setup
-From: Ryosuke Saito <raitosyo@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Mar 2012 18:47:47 +0900
-Message-ID: <1332323267.14283.13.camel@HDL00099>
-Mime-Version: 1.0
+ id 1SALMH-0007e8-Se
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 13:13:48 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 2/2] MTD: Add device-tree support to spear_smi
+Date: Wed, 21 Mar 2012 14:12:59 +0100
+References: <1331894531-21411-1-git-send-email-sr@denx.de>
+In-Reply-To: <1331894531-21411-1-git-send-email-sr@denx.de>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, h-fache@ti.com
+Message-Id: <201203211413.00013.sr@denx.de>
+Cc: Viresh Kumar <viresh.kumar@st.com>, devicetree-discuss@ozlabs.org,
+ spear-devel@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-phram_setup() is only called from init_phram() which is in .init.text,
-so it must be in the same section to avoid a section mismatch warning.
+Hi Artem,
 
-Signed-off-by: Ryosuke Saito <raitosyo@gmail.com>
----
- drivers/mtd/devices/phram.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Friday 16 March 2012 11:42:11 Stefan Roese wrote:
+> This patch adds support to configure the SPEAr SMI driver via
+> device-tree instead of platform_data.
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 3d91ace..67823de 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -215,7 +215,7 @@ static inline void kill_final_newline(char *str)
-  */
- static __initdata char phram_paramline[64+12+12];
- 
--static int phram_setup(const char *val)
-+static int __init phram_setup(const char *val)
- {
- 	char buf[64+12+12], *str = buf;
- 	char *token[3];
--- 
-1.7.3.4
+I noticed that you pushed the first part of this patch:
+
+[PATCH 1/2] MTD: spear_smi: Remove default partition information from driver
+
+into l2-mtd.git. What's do plan for this patch?
+
+Thanks,
+Stefan
