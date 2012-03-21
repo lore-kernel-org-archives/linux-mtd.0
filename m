@@ -1,20 +1,18 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SAHYZ-00022r-Bn
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 09:10:12 +0000
-Received: by wibhj13 with SMTP id hj13so911684wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2012 02:10:08 -0700 (PDT)
-Date: Wed, 21 Mar 2012 11:09:58 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: unify initialization of erase_info->fail_addr
-Message-ID: <20120321110958.24256ef1@pixies.home.jungo.com>
-In-Reply-To: <20120209153629.16bb9b01@pixies.home.jungo.com>
-References: <20120209153629.16bb9b01@pixies.home.jungo.com>
+ id 1SAI9p-0000B4-PG
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 09:48:42 +0000
+Received: by pbcun4 with SMTP id un4so777630pbc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2012 02:48:39 -0700 (PDT)
+Subject: [PATCH] mtd: phram: fix section mismatch for phram_setup
+From: Ryosuke Saito <raitosyo@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 21 Mar 2012 18:47:47 +0900
+Message-ID: <1332323267.14283.13.camel@HDL00099>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, h-fache@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,88 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+phram_setup() is only called from init_phram() which is in .init.text,
+so it must be in the same section to avoid a section mismatch warning.
 
-Pinging.
+Signed-off-by: Ryosuke Saito <raitosyo@gmail.com>
+---
+ drivers/mtd/devices/phram.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Code harmonization and polish. No semantic changes (hopefully :-)
-
-Regards,
-Shmulik
-
-On Thu, 9 Feb 2012 15:36:29 +0200 Shmulik Ladkani <shmulik.ladkani@gmail.com> wrote:
-> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> 
-> Initialization of 'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN prior
-> erase operation is duplicated accross several MTD drivers, and also taken
-> care of by some MTD users as well.
-> 
-> Harmonize it: initialize 'fail_addr' within 'mtd_erase()' interface.
-> 
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> ---
-> Compile tested only, l2-mtd.git
-> 
-> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> index f7a31cc..b900056 100644
-> --- a/drivers/mtd/mtdconcat.c
-> +++ b/drivers/mtd/mtdconcat.c
-> @@ -426,8 +426,6 @@ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
->  			return -EINVAL;
->  	}
->  
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-> -
->  	/* make a local copy of instr to avoid modifying the caller's struct */
->  	erase = kmalloc(sizeof (struct erase_info), GFP_KERNEL);
->  
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index b274fdf..c837507 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -695,6 +695,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		return -EINVAL;
->  	if (!(mtd->flags & MTD_WRITEABLE))
->  		return -EROFS;
-> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
->  	if (!instr->len) {
->  		instr->state = MTD_ERASE_DONE;
->  		mtd_erase_callback(instr);
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 5822e3a..5c69204 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2550,8 +2550,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
->  	if (check_offs_len(mtd, instr->addr, instr->len))
->  		return -EINVAL;
->  
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-> -
->  	/* Grab the lock and see if the device is available */
->  	nand_get_device(chip, mtd, FL_ERASING);
->  
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-> index a1592cf..0e1ff9f 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -2502,8 +2502,6 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		return -EINVAL;
->  	}
->  
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-> -
->  	/* Grab the lock and see if the device is available */
->  	onenand_get_device(mtd, FL_ERASING);
->  
-> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-> index eafb8d3..095e4b1 100644
-> --- a/fs/jffs2/erase.c
-> +++ b/fs/jffs2/erase.c
-> @@ -69,7 +69,6 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
->  	instr->len = c->sector_size;
->  	instr->callback = jffs2_erase_callback;
->  	instr->priv = (unsigned long)(&instr[1]);
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
->  
->  	((struct erase_priv_struct *)instr->priv)->jeb = jeb;
->  	((struct erase_priv_struct *)instr->priv)->c = c;
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 3d91ace..67823de 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -215,7 +215,7 @@ static inline void kill_final_newline(char *str)
+  */
+ static __initdata char phram_paramline[64+12+12];
+ 
+-static int phram_setup(const char *val)
++static int __init phram_setup(const char *val)
+ {
+ 	char buf[64+12+12], *str = buf;
+ 	char *token[3];
+-- 
+1.7.3.4
