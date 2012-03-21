@@ -1,24 +1,20 @@
-Received: from oproxy1-pub.bluehost.com ([66.147.249.253])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SA5OK-0005mx-G3
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2012 20:10:49 +0000
-Message-ID: <4F68E420.30801@xenotime.net>
-Date: Tue, 20 Mar 2012 13:10:08 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
-MIME-Version: 1.0
-To: Joel Reardon <joel@clambassador.com>
-Subject: Re: [patch] Add design document for UBIFS secure deletion
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
- <1331277476.22872.2.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
-In-Reply-To: <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SAHYZ-00022r-Bn
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 09:10:12 +0000
+Received: by wibhj13 with SMTP id hj13so911684wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2012 02:10:08 -0700 (PDT)
+Date: Wed, 21 Mar 2012 11:09:58 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: unify initialization of erase_info->fail_addr
+Message-ID: <20120321110958.24256ef1@pixies.home.jungo.com>
+In-Reply-To: <20120209153629.16bb9b01@pixies.home.jungo.com>
+References: <20120209153629.16bb9b01@pixies.home.jungo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,127 +24,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/19/2012 09:54 AM, Joel Reardon wrote:
+Hi Artem,
 
+Pinging.
 
-Nice job overall.  I have just a few comments below.
+Code harmonization and polish. No semantic changes (hopefully :-)
 
+Regards,
+Shmulik
 
-> Design document should be self explanatory.
+On Thu, 9 Feb 2012 15:36:29 +0200 Shmulik Ladkani <shmulik.ladkani@gmail.com> wrote:
+> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 > 
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+> Initialization of 'erase_info->fail_addr' to MTD_FAIL_ADDR_UNKNOWN prior
+> erase operation is duplicated accross several MTD drivers, and also taken
+> care of by some MTD users as well.
 > 
+> Harmonize it: initialize 'fail_addr' within 'mtd_erase()' interface.
+> 
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 > ---
->  Documentation/filesystems/ubifsec.txt |  358 +++++++++++++++++++++++++++++++++
->  1 files changed, 358 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/filesystems/ubifsec.txt
+> Compile tested only, l2-mtd.git
 > 
-> diff --git a/Documentation/filesystems/ubifsec.txt b/Documentation/filesystems/ubifsec.txt
-> new file mode 100644
-> index 0000000..4eb41fb
-> --- /dev/null
-> +++ b/Documentation/filesystems/ubifsec.txt
-> @@ -0,0 +1,357 @@
-> +UBIFS Secure Deletion Enhancement
-> +
-> +Written by Joel Reardon <reardonj@inf.ethz.ch>
-> +Last revised: 19.3.2012
-> +
-> +Introduction
-> +============
-
-
-
-
-
-...
-
-> +Key State Map
-> +=============
-
-
-
-...
-
-> +The operation of purging performed on a correct key state map guarantees
-> +DNEFS's soundness: purging securely deletes any key in the KSA marked as
-
-
-
-
-What is DNEFS?
-
-> +deleted---afterwards, every key either decrypts one valid data node or nothing
-> +at all and every valid data node can be decrypted.  A correct key state map
-> +also guarantees the integrity of our data during purging, because no key that
-> +is used to decrypt valid data will be removed.
-> +
-
-
-
-
-...
-
-> +
-> +The key state map is built from a periodic checkpoint combined with a replay
-> +of the most recent changes while mounting.  We checkpoint the current key
-> +state map to the storage medium whenever the KSA is purged. After a purge,
-> +every key is either unused or used, and so a checkpoint of this map can be
-> +stored using one bit per key---less than 1\% of the KSA's size---which is then
-
-
-
-
-drop '\' ?
-
-> +compressed.  A special LEB is used to store checkpoints, where each new
-
-
-
-
-What is LEB?
-
-> +checkpoint is appended; when the erase block is full then the next checkpoint
-> +is written at the beginning using an atomic update.
-> +
-> +Correctness of the Key State Map
-> +================================
-
-
-
-
-...
-
-> +Second, failure can occur after purging one, several, or indeed  all of the
-> +KSA's LEBs. When remounting the device, the loaded checkpoint merged with the
-> +replay data  reflects the state before the first purge, so some purged LEBs
-> +contain new unused data while the key state map claims it is a deleted key. As
-> +these are cryptographically-suitable random values, with high probability they
-> +cannot successfully decrypt any existing valid data node.
-
-
-
-
-Last sentence seems to be incomplete or just odd.
-
-> +
-> +Third, failure can occur while writing to the checkpoint LEB.  When the
-> +checkpoint is written using atomic updates, then failing during the operation
-> +is equivalent to failing before it begins (cf. 2nd case).  Incomplete
-
-
-
-
-s/cf./compare/
-No need to save the space and lots of people probably won't know what
-cf. is.
-
-> +checkpoints are detected and so the previous valid checkpoint is loaded
-> +instead.  After replaying all the nodes, the key state map is equal to its
-> +state immediately before purging the KSA. This means that all entries marked
-> +as deleted are actually unused entries, so the invariant holds.
-
-
-
--- 
-~Randy
+> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> index f7a31cc..b900056 100644
+> --- a/drivers/mtd/mtdconcat.c
+> +++ b/drivers/mtd/mtdconcat.c
+> @@ -426,8 +426,6 @@ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  			return -EINVAL;
+>  	}
+>  
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+> -
+>  	/* make a local copy of instr to avoid modifying the caller's struct */
+>  	erase = kmalloc(sizeof (struct erase_info), GFP_KERNEL);
+>  
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b274fdf..c837507 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -695,6 +695,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		return -EINVAL;
+>  	if (!(mtd->flags & MTD_WRITEABLE))
+>  		return -EROFS;
+> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>  	if (!instr->len) {
+>  		instr->state = MTD_ERASE_DONE;
+>  		mtd_erase_callback(instr);
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 5822e3a..5c69204 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2550,8 +2550,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+>  	if (check_offs_len(mtd, instr->addr, instr->len))
+>  		return -EINVAL;
+>  
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+> -
+>  	/* Grab the lock and see if the device is available */
+>  	nand_get_device(chip, mtd, FL_ERASING);
+>  
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+> index a1592cf..0e1ff9f 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -2502,8 +2502,6 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		return -EINVAL;
+>  	}
+>  
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+> -
+>  	/* Grab the lock and see if the device is available */
+>  	onenand_get_device(mtd, FL_ERASING);
+>  
+> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+> index eafb8d3..095e4b1 100644
+> --- a/fs/jffs2/erase.c
+> +++ b/fs/jffs2/erase.c
+> @@ -69,7 +69,6 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
+>  	instr->len = c->sector_size;
+>  	instr->callback = jffs2_erase_callback;
+>  	instr->priv = (unsigned long)(&instr[1]);
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>  
+>  	((struct erase_priv_struct *)instr->priv)->jeb = jeb;
+>  	((struct erase_priv_struct *)instr->priv)->c = c;
