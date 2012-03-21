@@ -1,20 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SAM4r-0005CJ-6Z
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 13:59:49 +0000
-Message-ID: <1332338496.14983.7.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MIPS: Kbuild: remove -Werror
+ id 1SAMD3-0006Zv-40
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2012 14:08:17 +0000
+Message-ID: <1332338937.14983.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: unify initialization of erase_info->fail_addr
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ralf Baechle <ralf@linux-mips.org>
-Date: Wed, 21 Mar 2012 16:01:36 +0200
-In-Reply-To: <1331292947-14913-1-git-send-email-dedekind1@gmail.com>
-References: <1331292947-14913-1-git-send-email-dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Wed, 21 Mar 2012 16:08:57 +0200
+In-Reply-To: <20120321110958.24256ef1@pixies.home.jungo.com>
+References: <20120209153629.16bb9b01@pixies.home.jungo.com>
+ <20120321110958.24256ef1@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-8fUx/z2EktEUi1++CT0s"
+ boundary="=-cqVQINi7Y0IoRn73/O5D"
 Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, MTD Maling List <linux-mtd@lists.infradead.org>,
- John Crispin <blogic@openwrt.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,26 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-8fUx/z2EktEUi1++CT0s
+--=-cqVQINi7Y0IoRn73/O5D
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-03-09 at 13:35 +0200, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, 2012-03-21 at 11:09 +0200, Shmulik Ladkani wrote:
+> Hi Artem,
 >=20
-> MIPS does not build with the standard W=3D1 Kbuild switch with - tested w=
-ith
-> gcc-4.6 by me and gcc-4.5 by John Crispin. The reason is that MIPS adds
+> Pinging.
+>=20
+> Code harmonization and polish. No semantic changes (hopefully :-)
 
-Hi Ralf,
-
-what's the fate of this patch?
+Sorry, missed it, pushed now.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-8fUx/z2EktEUi1++CT0s
+--=-cqVQINi7Y0IoRn73/O5D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPad9AAAoJECmIfjd9wqK0gvwP/RIFHMvlayHuShAnh9Ingceh
-rX/qO7QN1yEGZEnIol05Jsbo0wCtsltRDJklGhpsiEIr3TQdnQzu+6V5hYG85S/n
-78CodPiRysw4K1trsyb7DUGhWHAI/rU2wuv//UAcCgQ/rdTkBGjgTtLkpx8vlg03
-es+2+nAIAgI1szQjwXqTmBDxPACwmYRq/+S9/bruysNR9xEtRnNkJ30YDkAMT/yZ
-2oYStUi8elJtX+Ec4X5lSoT3YmycXRH2TIs5WbaVY/Y7Pf4ZXEvX1VFZunWowokT
-wnVh7R8lV5/nmGGRNplFWJy3j2EpHVFb2SimxcrGeTfq9Qoh7tc49QTX5PBq/CqR
-Ne+Tahjjdi6QweFGYBYqVCUeypeh4+wO6dAYHh1eh+aDGb4DWVurNsTR9ESPuxXw
-Rv5gHEU1WythsvFs8jQoV+QjmzMGwRngIqyvk6SS0STvpot2h4WIw+pmM3W3jcwE
-r52FbH5p22z+Y8MhBmT49qpKYsp5/dOaLy4o9BcEJyeQoNI6Vt9fDxyYckFYR0Zy
-GpAgH+Gg26DFYjl4maA+RPU9mamkbWRaLykhoU60G9eH9AMZWQIyVDfRb7Th3jaH
-eqKAQHNZfPqp3L824S7A6FeTTDtblPRZW87LkBAYXWBs+CQdhvjAGQdfaoR4AgAt
-aP6xjcZsMsjQLaEqb2e2
-=/UiI
+iQIcBAABAgAGBQJPaeD5AAoJECmIfjd9wqK0cr4P/Rx2RegcBaE+gAxCVNjXwNB1
+JRb+DZFHwGIbedcU+tMRmZ8kKoYnepozm6eKejZztwIR12ZFVzB4VaIifj6fdWmx
+B3lmNgyh3Gkhh7oObsgMQHIDMNSnRnisNSXbDlkSQ1ibjyGIQRvUKeJK69sXfiDb
+1R50BnOe0XvK5xcY34XIzMFV4dqqyvMgNcTLxJuVohWDhI1mjUyRFJUJrVzL5pvv
++IGqfRhIrJhjMRRrBSdruOdEeSqsEPA1WLTXoCGvxiGai+yHk5/DyTyDboZMuBK0
+D9o9Gbmz3UtKbJToBPow5eXoxKHUPkRYC7+XhBISZru6rjK6Cp0IIy+rj8GwqvLQ
+JMNE8L8hAeIzYArjJOvnQkLyv/Lkq/CA1eIpuswQgJcuhsoqHstLeTEEGAs/GNvA
+Kt5ykKnMDTHzrhQsFjOpXnB+7AC/InhF2UbAraCyfVDVD7dFdrsM8nlioRCx2VfU
+rjQezmFvgrimewiHDd6cUi2+QHuoe96SPb/zuhBN8kIGNNcwptB2OMzHShWqouuO
+uJtL6F7FEqqZd9qD71ZNupAJH9bb2KnfEWwZ1T0GtSLY9Inwm5B4RHkNnWSyjhU7
+W/EQ/dVIUOUMtV/gkYSWuAnbzi4teg5wyCFxcUzeiQWH7faBJk/MrIGvS+ts0Dgr
+E076M/gOV0057B5tbYmD
+=aJ/3
 -----END PGP SIGNATURE-----
 
---=-8fUx/z2EktEUi1++CT0s--
+--=-cqVQINi7Y0IoRn73/O5D--
