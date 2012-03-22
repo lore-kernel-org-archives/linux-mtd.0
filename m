@@ -1,22 +1,29 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SAgSJ-0004zw-Nv
- for linux-mtd@lists.infradead.org; Thu, 22 Mar 2012 11:45:24 +0000
-Message-ID: <1332416894.18717.23.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] drivers/mtd: docg3 add protection against concurrency
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Thu, 22 Mar 2012 13:48:14 +0200
-In-Reply-To: <87iphx8zyp.fsf@free.fr>
-References: <1332196342-21545-1-git-send-email-robert.jarzmik@free.fr>
- <1332196342-21545-5-git-send-email-robert.jarzmik@free.fr>
- <1332243749.11468.21.camel@sauron.fi.intel.com> <87iphx8zyp.fsf@free.fr>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-nTRKNyFZFzi6g4w5+Vqs"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SAgx2-0005nd-U5
+ for linux-mtd@lists.infradead.org; Thu, 22 Mar 2012 12:17:09 +0000
+Received: by qcsu28 with SMTP id u28so1412265qcs.36
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Mar 2012 05:17:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1331731119.3730.17.camel@sauron.fi.intel.com>
+References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
+ <1331559644.12037.33.camel@sauron.fi.intel.com>
+ <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
+ <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
+ <1331619893.2443.10.camel@koala>
+ <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
+ <1331628462.12037.56.camel@sauron.fi.intel.com>
+ <CAHMF36G_iE3pEVh1WEVgm5H0p3wsePUxwu9-MCVB+v7vxFf4RQ@mail.gmail.com>
+ <1331727617.3730.5.camel@sauron.fi.intel.com>
+ <CAHMF36H_+ohHph_mn+iaVnH9Z_WQR0bkQT8Fv8s8cTHE5vV+fg@mail.gmail.com>
+ <1331731119.3730.17.camel@sauron.fi.intel.com>
+Date: Thu, 22 Mar 2012 13:17:06 +0100
+Message-ID: <CAHMF36Fyb+X_tZjgs1Siu2p1Zbrmu-7TBL73Zf3Rjx3SiyeBjA@mail.gmail.com>
+Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
+From: Matej Kupljen <matej.kupljen@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear Artem,
 
---=-nTRKNyFZFzi6g4w5+Vqs
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> Well, you can try the ones you used, or the fsstress test from the LTP
+> project, or I'd recommend to try the integck test from mtd-utils.
 
-On Wed, 2012-03-21 at 21:24 +0100, Robert Jarzmik wrote:
-> I'll await comments for 3 or 4 days before releasing V2.
+I finally found some time again to do the tests and cross compiled latest
+mtd-utils form git. I booted form SD card, mounted the UBIFS and tried
+to run integck, as you suggested. But here is what I get:
 
-On the surface they look ok to me. If you are quick you _may_ be able to
-have this merged to 3.4, but send v2 patches today then.
+# ./integck /mnt/card/
+integck: error!: cannot find file-system info
+integck: error!: condition '0' failed in get_tested_fs_info() at integck.c:2942
+integck: error 0 (Success)
 
---=20
-Best Regards,
-Artem Bityutskiy
+Any known error?
 
---=-nTRKNyFZFzi6g4w5+Vqs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPaxF+AAoJECmIfjd9wqK0yn8QAKR3ZUz2f6arypxhYnGSavuv
-AmJQ7r76103+d9c0nz6jHzBK9OHPSQ/Hwi8wQwSwJ66qZNmC61DBB6kOiuWyp/mh
-Lex4xJlzaJ+S82fQK1moTcCyn5aA9ahyM7xbtvbmz93B0QdYwCoiGqo2KQotW/ak
-j5gLc0jTf7zD7V2vJ73iQPOEGCuJ3/mR2SFrS9/b8e6UuvcT6H66craOkJqzGhnM
-LWOCWdF7PAfepevV9SCnDASRr1OYo20quwIs3TX3xz1tz2GidKmGs2jIc8MF2pe6
-EHCtw4fWJo2LZzERRhw6AeUMVO2UrrXZWA/iz1K/4mdcLnXxQuoSZFvB8drUw8dA
-gJkwn3hjqk8W782VrvomSF+idXgidmOWPql89Xcza0oKWEep+dr0Of8cQdF2QgZP
-OdJ0KL8RJFDRXI52Syxnoli/2NOwCxzVkCVqqazY9Ku6lEozcuG3A9svustM1h3R
-+FSjb8X2ARG7t1+FyQiFvP+kCMt9ThrQxRxef9AVfKK2CofXL26Z0VcwJrPeR3+3
-xik6ysK7wsInivl60y9nzPJWXH1B8tacNYxYYzSQJYzZ8QvRh+2BohL5mpzFnWfn
-5RRvmVgznQSbe5BsTkUqxdBP/rOi9vRNTLjmz4LJpC+VKqgJgtw74Da3aZY3d0Fs
-gobesDnkZONP4udFAi2f
-=Dta2
------END PGP SIGNATURE-----
-
---=-nTRKNyFZFzi6g4w5+Vqs--
+Thanks and Best Regards,
+Matej
