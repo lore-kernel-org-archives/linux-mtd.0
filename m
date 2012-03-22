@@ -1,12 +1,14 @@
 Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SAoC6-0008Px-PR
- for linux-mtd@lists.infradead.org; Thu, 22 Mar 2012 20:01:13 +0000
+ id 1SAoCA-0008Q8-2C
+ for linux-mtd@lists.infradead.org; Thu, 22 Mar 2012 20:01:15 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH V2 0/4] Fixes for docg3 to enable ubifs over docg3
-Date: Thu, 22 Mar 2012 21:00:49 +0100
-Message-Id: <1332446453-3527-1-git-send-email-robert.jarzmik@free.fr>
+Subject: [PATCH V2 2/4] drivers/mtd: docg3 increase write/erase timeout
+Date: Thu, 22 Mar 2012 21:00:51 +0100
+Message-Id: <1332446453-3527-3-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1332446453-3527-1-git-send-email-robert.jarzmik@free.fr>
+References: <1332446453-3527-1-git-send-email-robert.jarzmik@free.fr>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -17,28 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This set of patches is the feedback from ubifs usage over the docg3.
-This set is split into 2 subsets:
- - patches 1 and 2 are fixes
- - patches 3 and 4 are an evolution to provided concurrent access protection
+After several tries with ubifs, it appears empirically that constructor
+provided figures for erase/write timeouts are underestimated. A timeout
+of 100ms seems to work with a 5 years worn chip, and no timeouts occur
+anymore.
 
-Cheers.
-
---
-Robert
-
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
-Since v1: Removed cascade_lock() and cascade_unlock()
+ drivers/mtd/devices/docg3.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Robert Jarzmik (4):
-  drivers/mtd: docg3 fix inbound calculations
-  drivers/mtd: docg3 increase write/erase timeout
-  drivers/mtd: docg3 refactor cascade floors structure
-  drivers/mtd: docg3 add protection against concurrency
-
- drivers/mtd/devices/docg3.c |  169 ++++++++++++++++++++++++++-----------------
- drivers/mtd/devices/docg3.h |   20 +++++-
- 2 files changed, 119 insertions(+), 70 deletions(-)
-
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 09d039d..f33c130 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1115,10 +1115,10 @@ static int doc_get_op_status(struct docg3 *docg3)
+  */
+ static int doc_write_erase_wait_status(struct docg3 *docg3)
+ {
+-	int status, ret = 0;
++	int i, status, ret = 0;
+ 
+-	if (!doc_is_ready(docg3))
+-		usleep_range(3000, 3000);
++	for (i = 0; !doc_is_ready(docg3) && i < 5; i++)
++		msleep(20);
+ 	if (!doc_is_ready(docg3)) {
+ 		doc_dbg("Timeout reached and the chip is still not ready\n");
+ 		ret = -EAGAIN;
 -- 
 1.7.5.4
