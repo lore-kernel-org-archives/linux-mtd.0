@@ -1,22 +1,18 @@
 Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SB7Va-00017t-D4
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2012 16:38:35 +0000
-Date: Fri, 23 Mar 2012 17:38:32 +0100 (CET)
+ id 1SB7cJ-0001Np-0C
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2012 16:45:31 +0000
+Date: Fri, 23 Mar 2012 17:45:30 +0100 (CET)
 From: Joel Reardon <joel@clambassador.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] Add design document for UBIFS secure deletion
-In-Reply-To: <1332517132.18717.102.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1203231705500.22944@eristoteles.iwoars.net>
+Subject: Re: [patch] Move CRC computation to separate function
+In-Reply-To: <1332511796.18717.72.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1203231739330.22944@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
- <1331277476.22872.2.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
- <1332346218.14983.20.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203231448520.22944@eristoteles.iwoars.net>
- <1332517132.18717.102.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
+ <1330531826.3545.128.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
+ <1332511796.18717.72.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -30,113 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'll answer some quickly here now while they're fresh in mind and add them
-to the doc later.
+When GCing a data node, it may be reencrypted as a means of organizing the
+KSA and reducing the number of LEBs that need to be erased. A Long term
+keys in one half for stable data, short term in the other.  During this
+reencryption the CRC is recomputed. Also, after truncating it the last
+chunk needs to be reencrypted too, or else the key can be used with the
+old version to find the truncated part.
 
->
-> > In particular, it does not behave like a
-> > +log-structured file system: when a KSA LEB is updated, its contents are
-> > +written to a new physical location on the flash memory, UBI's logical map is
-> > +then updated to this new physical address and the previous version of the KSA
-> > +LEB is then erased.
->
-> Am I right that you basically wanted to say that when you update a KSA
-> LEB, you make sure that the physical flash does not contain the old
-> contents of this LEB? Would be nice to re-phrase.
->
-> Side question - how do you do this?
+For the misc.h approach, it does not currently include ubifs-media.h, but
+that is where UBIFS_CRC32_INIT is defined, so move it also to misc.h
 
-Here I'm just spelling out atomic update, so nothing fancy except
-leb_change() to replace the keys.
 
->
-> > Thus, except while updating the KSA, only one copy of the
-> > +data in the KSA is available on the storage medium.  When the file system is
-> > +created, cryptographically-suitable random data is written from random_bytes()
-> > +to each of the KSA's LEBs and all the keys are marked as unused. Purging
-> > +writes new versions of the KSA LEBs using UBI's atomic update feature.
->
-> Just a general question about: I guess you have to call ubi_sync() then
-> to make sure the old version is actually erased, right?
 
-There was an ioctl I think I was using, but I suspect ubi_sync is
-more elegant. Is it already performed after UBIFS commit?
+On Fri, 23 Mar 2012, Artem Bityutskiy wrote:
 
+> On Mon, 2012-03-19 at 23:46 +0100, Joel Reardon wrote:
+> >  /**
+> > + * ubifs_set_datanode_crc - writes the crc for a data node to the common
+> > + * header.
+> > + * @node: the data node
+> > + */
+> > +void ubifs_set_datanode_crc(void *node)
+> > +{
+> > +	struct ubifs_ch *ch = (struct ubifs_ch *) node;
+> > +	int len = le32_to_cpu(ch->len);
+> > +	ch->crc = cpu_to_le32(crc32(UBIFS_CRC32_INIT, node + 8, len - 8));
+> > +}
 >
-> Read this far, and have 2 big questions:
+> Will this be used by other code, outside of io.c? Because currently
+> there is only one user in the same file, which does not justify
+> introducing it and making non-static. If answers are "yes", then it is
+> better to make it static inline and put to misc.h instead, because it is
+> very small.
 >
-> 1. How keys are marked as deleted (I guess in some in-memory data
-> structure)
-> 2. When deleted keys are removed from the medium (probably on commit?)
-
-1. Yeah, 2bit for key state
-2. During commit, the KSA LEBs are rewritten.
-
+> >  void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+> >  {
+> > -	uint32_t crc;
+> >  	struct ubifs_ch *ch = node;
+> >  	unsigned long long sqnum = next_sqnum(c);
+> >
+> > @@ -390,8 +401,7 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+> >  	ch->group_type = UBIFS_NO_NODE_GROUP;
+> >  	ch->sqnum = cpu_to_le64(sqnum);
+> >  	ch->padding[0] = ch->padding[1] = 0;
+> > -	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
+> > -	ch->crc = cpu_to_le32(crc);
+> > +	ubifs_set_datanode_crc(node);
 >
-> I guess I'll find the answers below.
+> But ubifs_prepare_node() is generic and works for any node type, not
+> just data nodes, which means that using 'datanode' in the name is not a
+> good idea.
 >
-> > +When a new data node is written to the storage medium, an unused key is
-> > +selected from the KSA and its position is written to the data node's header.
+> --
+> Best Regards,
+> Artem Bityutskiy
 >
-> Questions arises - how the key is selected?
-
-Assigns the next unused key and keeps track of where it was to search
-onwards.
-
->
-> > +The keys are in a protected area of the file system, so only users with root
-> > +access to the storage medium are capable of reading the keys that encrypt
-> > +data.
->
-> Hmm, what is the protected area? What prevents anyone from reading them
-> by finding them in /dev/ubiX_Y or /dev/mtdZ ?
-
-Protected as in the kernel stops joe user from reading raw from /dev/mtd,
-no? Of course anyone with physical access can get the keys, so the
-security relys on these keys being securely deleted, but anyhow keeping
-live keys out of the filesystem also helps.
-
->
-> Hmm, why is it necessary to re-initialize unused keys?
->
-
-This can be a mount option actually, it was a response to  attack that was
-proposed to me about the design. The idea here is that, suppose the
-attacker reads the drive at time X with sufficient privilages to read the
-keys. Then the attacker will know for certain that those keys will
-eventually be used to encrypt data. So they can compromise not only the
-current data, but also future data. By replacing unused keys, the attacker
-is limited only to compromizing current data.
-
->
-> Is it 2 bits per key?
->
-
-In development it was 32bits :). But its now properly 2bits per with
-bitwise ops for accessing.
->
-> I guess you do not enforce these rules, you just rely on the randomness?
-
-Yep, so the conditions need only hold with cryptographically high
-probability.
-
->
-> You'd also need to teach mkfs.ubifs to write correct KSA.
->
-
-Ah, yes! Any other tool?
-
->
-> Hmm, interesting how you manage checkpoints. I guess the easiest would
-> be to have a special inode (not visible for users) and store checkpoints
-> there?
->
-
-The first block of the KSA stores only checkpoints, so KSA size is 1 +
-minrequired + some slack. So this may need the multiple LEB
-approach for one of the other UBIFS areas when its size is too big, but I
-havn't done that since its generally so highly compressable that it
-wasn't ever a concern.
-
-Cheers,
-Joel Reardon
