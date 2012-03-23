@@ -1,24 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SB58y-0000Qb-Mw
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2012 14:07:05 +0000
-Message-ID: <1332511796.18717.72.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Move CRC computation to separate function
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Fri, 23 Mar 2012 16:09:56 +0200
-In-Reply-To: <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
- <1330531826.3545.128.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-kw5F36rQQiw9GF+qjPv+"
-Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SB5CT-0000tA-UH
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2012 14:10:45 +0000
+Received: by obbup16 with SMTP id up16so2983610obb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2012 07:10:39 -0700 (PDT)
+Message-ID: <4F6C8451.1020005@gmail.com>
+Date: Fri, 23 Mar 2012 09:10:25 -0500
+From: Rob Herring <robherring2@gmail.com>
+MIME-Version: 1.0
+To: Viresh Kumar <viresh.kumar@st.com>
+Subject: Re: [PATCH] mtd: spear-smi: Update compatible property
+References: <97859bb4d86d008968a784339be8567094c487a1.1332492461.git.viresh.kumar@st.com>
+In-Reply-To: <97859bb4d86d008968a784339be8567094c487a1.1332492461.git.viresh.kumar@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: devicetree-discuss@ozlabs.org, artem.bityutskiy@linux.intel.com,
+ spear-devel@list.st.com, linux-mtd@lists.infradead.org, viresh.linux@gmail.com,
+ sr@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,75 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 03/23/2012 03:48 AM, Viresh Kumar wrote:
+> SPEAr SMI controller version is same for all SPEAr machines. Thus we don't need
+> per machine compatible property in driver.
 
---=-kw5F36rQQiw9GF+qjPv+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Until the next chip...
 
-On Mon, 2012-03-19 at 23:46 +0100, Joel Reardon wrote:
->  /**
-> + * ubifs_set_datanode_crc - writes the crc for a data node to the common
-> + * header.
-> + * @node: the data node
-> + */
-> +void ubifs_set_datanode_crc(void *node)
-> +{
-> +	struct ubifs_ch *ch =3D (struct ubifs_ch *) node;
-> +	int len =3D le32_to_cpu(ch->len);
-> +	ch->crc =3D cpu_to_le32(crc32(UBIFS_CRC32_INIT, node + 8, len - 8));
-> +}
+> Thus this patch updates compatible entry to: "st,spear-smi", so that it
+> works for all SPEAr machines.
+> 
 
-Will this be used by other code, outside of io.c? Because currently
-there is only one user in the same file, which does not justify
-introducing it and making non-static. If answers are "yes", then it is
-better to make it static inline and put to misc.h instead, because it is
-very small.
+There is no reason all machines can't use "st,spear600-smi" in their
+dts. It doesn't have to be a spear600, just compatible with it. Really
+you want the string to be the oldest SOC the block is in and then newer
+SOCs can claim compatibility with the old version.
 
->  void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int p=
-ad)
->  {
-> -	uint32_t crc;
->  	struct ubifs_ch *ch =3D node;
->  	unsigned long long sqnum =3D next_sqnum(c);
->=20
-> @@ -390,8 +401,7 @@ void ubifs_prepare_node(struct ubifs_info *c, void *n=
-ode, int len, int pad)
->  	ch->group_type =3D UBIFS_NO_NODE_GROUP;
->  	ch->sqnum =3D cpu_to_le64(sqnum);
->  	ch->padding[0] =3D ch->padding[1] =3D 0;
-> -	crc =3D crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
-> -	ch->crc =3D cpu_to_le32(crc);
-> +	ubifs_set_datanode_crc(node);
+This is also bad that you would break any existing dtb's out there. This
+is probably not a concern yet since it's all new and in transition, but
+down the road this is something that can't be done.
 
-But ubifs_prepare_node() is generic and works for any node type, not
-just data nodes, which means that using 'datanode' in the name is not a
-good idea.
+Rob
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-kw5F36rQQiw9GF+qjPv+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPbIQ0AAoJECmIfjd9wqK0NTMP/jRWltCaEzocqgb78yuh/kSl
-H1kk3Rky6SJUDM36pngTkMdy0x+373nIJqTlQbXi21OeJ+aVNnSw4sdIf029v6U3
-TgNUx8EBkpZRHu3vVQhSJyQQ03E81ZnYcaHCIAnoOk4Kb0bMW1H3yMez+ZZaE5Ax
-hMPi7f+i6ZYG/GQ+D0wJQv2tO9AV+OMeltI3nVkRtWHYOFxQ/bkvf1tgMDtt8DWY
-3n55aNc8u470/HqMHlhdY2LLetml840IqcWrawbRxCem8X63NgsU4uGA67+cNDZR
-GM+7cprcxjeHFyvbLmg4ZfVTjQjaqZ3FEcKzoyHgx7B9sPygEabdUoct09M2XAQO
-VhZFGlVrcJRPQ/33Be5WzlAg6JLKACpI7bsFbCYruL5OXO6AC2o62u2DHqAA6fzD
-MN+Wr00gPBZDZsCQH/gjdisZBkgRXUY+OQeKWLIHmPTHGRo43R3qBAbwbDC0jt/x
-dSKPtCA8LUvjwG6tZ45X/t84Xm4IXmqN/5ATud7IZh0A4gjWBQeiblianlJGRS9F
-y4pyffDvkOdgTJvMopll3bnqXAxeO59S8nbJfPqq1btaAStysBDQwSFNI+jRaMJe
-JCkg4g2f+qj3qbqqNY4ic3Wu4YaAScfDPVmcEQOkTPlTkY/VKfk+XKDt23Gk+NpN
-7M8BobzuMHw4w/FlG3J/
-=PC7Y
------END PGP SIGNATURE-----
-
---=-kw5F36rQQiw9GF+qjPv+--
+> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+> ---
+>  .../devicetree/bindings/mtd/spear_smi.txt          |    4 ++--
+>  drivers/mtd/devices/spear_smi.c                    |    2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/spear_smi.txt b/Documentation/devicetree/bindings/mtd/spear_smi.txt
+> index 7248aad..80dfd96 100644
+> --- a/Documentation/devicetree/bindings/mtd/spear_smi.txt
+> +++ b/Documentation/devicetree/bindings/mtd/spear_smi.txt
+> @@ -1,7 +1,7 @@
+>  * SPEAr SMI
+>  
+>  Required properties:
+> -- compatible : "st,spear600-smi"
+> +- compatible : "st,spear-smi"
+>  - reg : Address range of the mtd chip
+>  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+>    representing partitions.
+> @@ -16,7 +16,7 @@ Optional properties:
+>  Example:
+>  
+>  	smi: flash@fc000000 {
+> -		compatible = "st,spear600-smi";
+> +		compatible = "st,spear-smi";
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		reg = <0xfc000000 0x1000>;
+> diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+> index bebce11..f392594 100644
+> --- a/drivers/mtd/devices/spear_smi.c
+> +++ b/drivers/mtd/devices/spear_smi.c
+> @@ -1113,7 +1113,7 @@ int spear_smi_resume(struct platform_device *pdev)
+>  
+>  #ifdef CONFIG_OF
+>  static const struct of_device_id spear_smi_id_table[] = {
+> -	{ .compatible = "st,spear600-smi" },
+> +	{ .compatible = "st,spear-smi" },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, spear_smi_id_table);
