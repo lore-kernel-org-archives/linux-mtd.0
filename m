@@ -1,22 +1,16 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SAoCa-0008Uj-MX
- for linux-mtd@lists.infradead.org; Thu, 22 Mar 2012 20:01:43 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 4/4] drivers/mtd: docg3 add protection against concurrency
-References: <1332196342-21545-1-git-send-email-robert.jarzmik@free.fr>
- <1332196342-21545-5-git-send-email-robert.jarzmik@free.fr>
- <1332243749.11468.21.camel@sauron.fi.intel.com>
- <87iphx8zyp.fsf@free.fr>
- <1332416894.18717.23.camel@sauron.fi.intel.com>
-Date: Thu, 22 Mar 2012 21:01:31 +0100
-In-Reply-To: <1332416894.18717.23.camel@sauron.fi.intel.com> (Artem
- Bityutskiy's message of "Thu, 22 Mar 2012 13:48:14 +0200")
-Message-ID: <87ehsk8kx0.fsf@free.fr>
+Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SB0MY-0000kj-DZ
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2012 09:00:50 +0000
+From: Viresh Kumar <viresh.kumar@st.com>
+To: <sr@denx.de>, <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd: fsmc-nand: Update compatible property
+Date: Fri, 23 Mar 2012 14:15:32 +0530
+Message-ID: <2667979af077daa0f1bff81db7e25f5c8157b4bc.1332492218.git.viresh.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Viresh Kumar <viresh.kumar@st.com>,
+ spear-devel@list.st.com, viresh.linux@gmail.com, devicetree-discuss@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> writes:
+FSMC NAND driver can verify device version by itself and so we wouldn't be
+required to have separate .compatible entries for different SPEAr SoCs.
 
-> On Wed, 2012-03-21 at 21:24 +0100, Robert Jarzmik wrote:
->> I'll await comments for 3 or 4 days before releasing V2.
->
-> On the surface they look ok to me. If you are quick you _may_ be able to
-> have this merged to 3.4, but send v2 patches today then.
-Ok, understood, and pushed out.
+Thus this patch updates compatible entry to: "st,spear-fsmc-nand", so that it
+works for all SPEAr machines.
 
-Cheers.
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+---
+ .../devicetree/bindings/mtd/fsmc-nand.txt          |    4 ++--
+ drivers/mtd/nand/fsmc_nand.c                       |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+index e2c663b..7551600 100644
+--- a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+@@ -1,7 +1,7 @@
+ * FSMC NAND
+ 
+ Required properties:
+-- compatible : "st,spear600-fsmc-nand"
++- compatible : "st,spear-fsmc-nand"
+ - reg : Address range of the mtd chip
+ - reg-names: Should contain the reg names "fsmc_regs" and "nand_data"
+ - st,ale-off : Chip specific offset to ALE
+@@ -15,7 +15,7 @@ Optional properties:
+ Example:
+ 
+ 	fsmc: flash@d1800000 {
+-		compatible = "st,spear600-fsmc-nand";
++		compatible = "st,spear-fsmc-nand";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		reg = <0xd1800000 0x1000	/* FSMC Register */
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 1b8330e..ecb103e 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -1231,7 +1231,7 @@ static SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id fsmc_nand_id_table[] = {
+-	{ .compatible = "st,spear600-fsmc-nand" },
++	{ .compatible = "st,spear-fsmc-nand" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, fsmc_nand_id_table);
 -- 
-Robert
+1.7.8.110.g4cb5d
