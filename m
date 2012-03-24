@@ -1,18 +1,17 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SBRaO-0004Ub-3t
- for linux-mtd@lists.infradead.org; Sat, 24 Mar 2012 14:04:53 +0000
-Received: by lbol5 with SMTP id l5so3682810lbo.36
- for <linux-mtd@lists.infradead.org>; Sat, 24 Mar 2012 07:04:47 -0700 (PDT)
+ id 1SBVvc-00017A-GW
+ for linux-mtd@lists.infradead.org; Sat, 24 Mar 2012 18:43:05 +0000
+Received: by vcbf13 with SMTP id f13so4846218vcb.36
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Mar 2012 11:43:02 -0700 (PDT)
 MIME-Version: 1.0
-Sender: paul.gortmaker@gmail.com
 In-Reply-To: <20120324103830.GA17632@Fedora16>
 References: <20120324103830.GA17632@Fedora16>
-Date: Sat, 24 Mar 2012 10:04:47 -0400
-Message-ID: <CAP=VYLqL_cKj_d8fT1Q1V=Da+2EY8uBhCKkd2f67VvRZuvT_tQ@mail.gmail.com>
+Date: Sat, 24 Mar 2012 19:43:02 +0100
+Message-ID: <CACW_hTYnXs8iuYPNYsk1RgbhvLsAW+Tx_Hb_pSTjh84dQ63bGg@mail.gmail.com>
 Subject: Re: [PATCH] mtd/nand/nand_ecc.c: replace bitsperbyte table by a
  simple operation
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+From: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
 To: Zhaoxiu Zeng <zengzhaoxiu@163.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -26,17 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 24, 2012 at 6:38 AM, Zhaoxiu Zeng <zengzhaoxiu@163.com> wrote:
+Dear Zhaoxiu
+
+Thanks for contributing this patch.
+However, I think it has some issues and should not be applied. See my
+remarks below
+
+2012/3/24 Zhaoxiu Zeng <zengzhaoxiu@163.com>:
 >
 > Signed-off-by: Zhaoxiu Zeng <zengzhaoxiu@163.com>
-
-In two different instances, the code you delete says that using
-the lookup table is a performance win, yet you don't write a commit
-log saying anything about this (or the rest of the changes) at all?
-
-Paul.
---
-
 >
 > ---
 > =A0drivers/mtd/nand/nand_ecc.c | =A0 50 +++++++++------------------------=
@@ -103,6 +100,12 @@ Paul.
 > -
 > - =A0 =A0 =A0 if ((b0 | b1 | b2) =3D=3D 0)
 > + =A0 =A0 =A0 tmp =3D ((uint32_t)b2 << 16) | ((uint32_t)b1 << 8) | b0;
+
+Not sure how efficient this is; on some systems shifting by N takes N
+clock cycles so this could be relatively expensive.
+(and the systems where it takes more clock cycles have a higher chance
+on not having hw crc correction).
+
 > + =A0 =A0 =A0 if (tmp =3D=3D 0)
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0; =A0 =A0 =A0 /* no error */
 >
@@ -113,6 +116,12 @@ Paul.
 > - =A0 =A0 =A0 =A0 =A0 =A0(eccsize_mult =3D=3D 2 && ((b2 ^ (b2 >> 1)) & 0x=
 55) =3D=3D 0x55))) {
 > + =A0 =A0 =A0 if (((tmp ^ (tmp >> 1)) & check_mask) =3D=3D check_mask) {
+
+Have you benchmarked this?
+
+And while it might be an optimisation, it is not mentioned in the
+commit message.
+
 > =A0 =A0 =A0 =A0/* single bit error */
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * rp17/rp15/13/11/9/7/5/3/1 indicate whic=
@@ -136,6 +145,13 @@ essbits[b0];
 > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (eccsize_mult =3D=3D 2)
 > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 byte_addr +=3D (addressbits=
 [b2 & 0x3] << 8);
+
+I'm not sure if this is a win. It *looks* like an optimisation since
+you factor out some common code. Then again within the if you need to
+add to byte_addr.
+For a naive compiler this is probably more expensive. For a good
+compiler this probably makes no difference at all.
+
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0bit_addr =3D addressbits[b2 >> 2];
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* flip the bit */
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0buf[byte_addr] ^=3D (1 << bit_addr);
@@ -148,6 +164,41 @@ ing it */
 =3D=3D 1)
 > +
 > + =A0 =A0 =A0 if (!(tmp & (tmp - 1)))
+
+This is not the same as the code you replace!!!
+
+take as example b0 =3D 1; b1 =3D0, b2 =3D 0;
+The original if statement will return true:
+bitsperbyte[b0] in that case is 1
+bitsperbyte[b1] =3D 0
+bitsperbyte[b2] =3D 0
+so (bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) equals 1 and
+((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) =3D=3D 1)  yields 1 =
+so true
+
+However if I take your code
+tmp =3D  ((uint32_t)b2 << 16) | ((uint32_t)b1 << 8) | b0;
+taking the example values from above this results in tmp being 1;
+tmp & (tmp - 1)  becomes 1 & 0 which effectively results in 0.
+
+So in my original code  b0 =3D 1; b1 =3D0, b2 =3D 0; results in 1 being
+returned whereas your code will result in a log entry "incorrectable
+error" and a return of -1.
+
+Given this, I'd say this patch is to be rejected.
+
+BTW: optimisations in this part of code are not too important. This is
+only called when ecc errors are to be corrected and that is not very
+likely.
+So perhaps it is not worth the time to improve it.
+(and yes, it might be possible to save some bytes by eliminating the
+array; then again the code and logic is not really trivial so good
+testing is needed)
+
+See also Documentation/mtd/nand_ecc.txt
+near the end there is a small section on correcting.
+
+
 > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 1; =A0 =A0 =A0 /* error in ECC data=
 ; no action needed */
 >
@@ -156,9 +207,5 @@ ing it */
 > 1.7.7.6
 >
 >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" i=
-n
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at =A0http://www.tux.org/lkml/
+
+Best regards, Frans.
