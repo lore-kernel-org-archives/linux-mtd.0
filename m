@@ -1,13 +1,14 @@
 Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SBuD0-0003yq-A8
- for linux-mtd@lists.infradead.org; Sun, 25 Mar 2012 20:38:39 +0000
-Date: Sun, 25 Mar 2012 22:38:34 +0200 (CEST)
+ id 1SBuiT-0004EH-9S
+ for linux-mtd@lists.infradead.org; Sun, 25 Mar 2012 21:11:11 +0000
+Date: Sun, 25 Mar 2012 23:11:07 +0200 (CEST)
 From: Joel Reardon <joel@clambassador.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] Move CRC computation to separate function
+Subject: [patch] Add a encryption key parameter to the compress / decompress
+ function.
 In-Reply-To: <1332521515.22278.2.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1203252234440.5527@eristoteles.iwoars.net>
+Message-ID: <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
  <1330531826.3545.128.camel@sauron.fi.intel.com>
@@ -28,69 +29,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CRC computation now an inline header function which will be used in
-multiple places in the future.
-
---
+Compress and decompress now have an extra u8 *key field, and NULL is
+passed wherever it is used. Later this will be used for an encryption key
+for the data being compressed/decompressed (and NULL if no cryptographic operations should be done.)
 
 Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 
- fs/ubifs/io.c   |    4 +---
- fs/ubifs/misc.h |   15 +++++++++++++++
- 2 files changed, 16 insertions(+), 3 deletions(-)
+>From 650a52b5301778cf2f0c17ed993a104a4473a8fb Mon Sep 17 00:00:00 2001
+From: Joel Reardon <jreardon@fatbottomsworth.(none)>
+Date: Sun, 25 Mar 2012 23:06:03 +0200
+Subject: [PATCH] Added a key parameter to de/compress.
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 9228950..103532e 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -379,7 +379,6 @@ static unsigned long long next_sqnum(struct ubifs_info *c)
+---
+ fs/ubifs/compress.c |    8 ++++++--
+ fs/ubifs/file.c     |    5 +++--
+ fs/ubifs/journal.c  |    7 ++++---
+ fs/ubifs/ubifs.h    |    4 ++--
+ 4 files changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
+index 11e4132..d1812fa 100644
+--- a/fs/ubifs/compress.c
++++ b/fs/ubifs/compress.c
+@@ -82,6 +82,8 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+  * @out_len: output buffer length is returned here
+  * @compr_type: type of compression to use on enter, actually used compression
+  *              type on exit
++ * @key: a pointer to a key-sized buffer to use as the encryption key. if NULL
++ *      then no encryption is performed.
+  *
+  * This function compresses input buffer @in_buf of length @in_len and stores
+  * the result in the output buffer @out_buf and the resulting length in
+@@ -93,7 +95,7 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+  * buffer and %UBIFS_COMPR_NONE is returned in @compr_type.
   */
- void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+ void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
+-		    int *compr_type)
++		    int *compr_type, u8 *key)
  {
--	uint32_t crc;
- 	struct ubifs_ch *ch = node;
- 	unsigned long long sqnum = next_sqnum(c);
+ 	int err;
+ 	struct ubifs_compressor *compr = ubifs_compressors[*compr_type];
+@@ -140,13 +142,15 @@ no_compr:
+  * @out_buf: output buffer where decompressed data should
+  * @out_len: output length is returned here
+  * @compr_type: type of compression
++ * @key: a pointer to a key-sized buffer to use as the decryption key. if
++ *	 NULL then no decryption is performed.
+  *
+  * This function decompresses data from buffer @in_buf into buffer @out_buf.
+  * The length of the uncompressed data is returned in @out_len. This functions
+  * returns %0 on success or a negative error code on failure.
+  */
+ int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
+-		     int *out_len, int compr_type)
++		     int *out_len, int compr_type, u8 *key)
+ {
+ 	int err;
+ 	struct ubifs_compressor *compr;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index f9c234b..2660c9f 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -80,7 +80,7 @@ static int read_block(struct inode *inode, void *addr, unsigned int block,
+ 	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+ 	out_len = UBIFS_BLOCK_SIZE;
+ 	err = ubifs_decompress(&dn->data, dlen, addr, &out_len,
+-			       le16_to_cpu(dn->compr_type));
++			       le16_to_cpu(dn->compr_type), NULL);
+ 	if (err || len != out_len)
+ 		goto dump;
 
-@@ -390,8 +389,7 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
- 	ch->group_type = UBIFS_NO_NODE_GROUP;
- 	ch->sqnum = cpu_to_le64(sqnum);
- 	ch->padding[0] = ch->padding[1] = 0;
--	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
--	ch->crc = cpu_to_le32(crc);
-+	ubifs_set_node_crc(node);
+@@ -649,7 +649,8 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+ 			dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+ 			out_len = UBIFS_BLOCK_SIZE;
+ 			err = ubifs_decompress(&dn->data, dlen, addr, &out_len,
+-					       le16_to_cpu(dn->compr_type));
++					       le16_to_cpu(dn->compr_type),
++					       NULL);
+ 			if (err || len != out_len)
+ 				goto out_err;
 
- 	if (pad) {
- 		len = ALIGN(len, 8);
-diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-index ee7cb5e..ffda6a5 100644
---- a/fs/ubifs/misc.h
-+++ b/fs/ubifs/misc.h
-@@ -27,6 +27,9 @@
- #ifndef __UBIFS_MISC_H__
- #define __UBIFS_MISC_H__
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 2f438ab..9156395 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -727,7 +727,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 		compr_type = ui->compr_type;
 
-+#include <linux/crc32.h>
-+#include "ubifs-media.h"
-+
- /**
-  * ubifs_zn_dirty - check if znode is dirty.
-  * @znode: znode to check
-@@ -300,4 +303,16 @@ static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
- 	return lnum;
- }
+ 	out_len = dlen - UBIFS_DATA_NODE_SZ;
+-	ubifs_compress(buf, len, &data->data, &out_len, &compr_type);
++	ubifs_compress(buf, len, &data->data, &out_len, &compr_type, NULL);
+ 	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
 
-+/**
-+ * ubifs_set_crc - computes and writes the crc for a ubifs node to the common
-+ * header.
-+ * @node: the data node
-+ */
-+static inline void ubifs_set_node_crc(void *node)
-+{
-+	struct ubifs_ch *ch = (struct ubifs_ch *) node;
-+	int len = le32_to_cpu(ch->len);
-+	ch->crc = cpu_to_le32(crc32(UBIFS_CRC32_INIT, node + 8, len - 8));
-+}
-+
- #endif /* __UBIFS_MISC_H__ */
+ 	dlen = UBIFS_DATA_NODE_SZ + out_len;
+@@ -1110,11 +1110,12 @@ static int recomp_data_node(struct ubifs_data_node *dn, int *new_len)
+
+ 	len = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+ 	compr_type = le16_to_cpu(dn->compr_type);
+-	err = ubifs_decompress(&dn->data, len, buf, &out_len, compr_type);
++	err = ubifs_decompress(
++		&dn->data, len, buf, &out_len, compr_type, NULL);
+ 	if (err)
+ 		goto out;
+
+-	ubifs_compress(buf, *new_len, &dn->data, &out_len, &compr_type);
++	ubifs_compress(buf, *new_len, &dn->data, &out_len, &compr_type, NULL);
+ 	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
+ 	dn->compr_type = cpu_to_le16(compr_type);
+ 	dn->size = cpu_to_le32(*new_len);
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 93d59ac..0cc1180 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1772,9 +1772,9 @@ long ubifs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ int __init ubifs_compressors_init(void);
+ void ubifs_compressors_exit(void);
+ void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
+-		    int *compr_type);
++		    int *compr_type, u8 *key);
+ int ubifs_decompress(const void *buf, int len, void *out, int *out_len,
+-		     int compr_type);
++		     int compr_type, u8 *key);
+
+ #include "debug.h"
+ #include "misc.h"
 -- 
 1.7.1
