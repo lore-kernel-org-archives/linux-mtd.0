@@ -1,26 +1,15 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SBv8b-0004Ye-L0
- for linux-mtd@lists.infradead.org; Sun, 25 Mar 2012 21:38:10 +0000
-Date: Sun, 25 Mar 2012 23:38:08 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SBvHo-0004nJ-F1
+ for linux-mtd@lists.infradead.org; Sun, 25 Mar 2012 21:47:42 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [patch] Add cryptographic functionality when a key is passed to the
- compress / decompress functions
-In-Reply-To: <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
-Message-ID: <alpine.DEB.2.00.1203252325100.5527@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
- <1330531826.3545.128.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
- <1332511796.18717.72.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203231739330.22944@eristoteles.iwoars.net>
- <1332521515.22278.2.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
+Subject: Fix docg3 read align bug
+Date: Sun, 25 Mar 2012 23:47:29 +0200
+Message-ID: <87haxcs68e.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,168 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a function to perform AES encryption. The compress and
-decompress routines use this function if they are called with a non-NULL
-key parameter. It uses AES counter mode (where encryption and decryption
-are the same function) and performs the operation in place on the data. It
-uses a default IV of 0, since each key is only evey used to encrypt one
-data item the IV does not matter.
+Hi Artem,
 
-The const qualifier was removed from the decompress routine for the
-following reason. Encrypted data is not compressable, so compression is
-first applied then the result is encrypted. In the reverse, decryption is
-first applied and the result decompressed. This means that either the
-input buffer for decompression is used to perform an in-place decryption
-before decompression, or a third buffer is added and data is copied around.
+I sent not long ago a patch for unaligned reads. And ... I made an error. I have
+a patch to patch my previous submission. I wonder if this can be squashed in, or
+requires an incremental commit. Tell me what you want to do, the patch is at the
+end of the mail.
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index d1812fa..b738ab0 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -27,9 +27,12 @@
-  * decompression.
-  */
+I hope I have not overseen another corner case, I'll recheck tomorrow evening
+(GMT+1).
 
--#include <linux/crypto.h>
- #include "ubifs.h"
+Cheers.
 
-+#include <linux/crypto.h>
-+#include <linux/scatterlist.h>
-+
-+
- /* Fake description object for the "none" compressor */
- static struct ubifs_compressor none_compr = {
- 	.compr_type = UBIFS_COMPR_NONE,
-@@ -75,6 +78,53 @@ static struct ubifs_compressor zlib_compr = {
- struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+-- 
+Robert
 
- /**
-+ * ubifs_aes_crypt - encrypt / decrypt data.
-+ * @str: data to crypt
-+ * @len: length of the data
-+ * @key: the key to use to crypt the data
-+ * @key_len: the length of the key
-+ * @iv: the initialization vector to use
-+ * @ivlen: the length of the initialization vector
-+ *
-+ * This function applies aes encryption to the data. It is done in counter
-+ * mode, which means that encryption and decryption are the same operation,
-+ * i.e., it XORs the same generated bitstream, so it can be used both for
-+ * encryption / decryption. The operation is done in-place, so str mutates.
-+ */
-+int ubifs_aes_crypt(void *str, int len, u8 *key, int keylen, u8 *iv, int ivlen)
-+{
-+	struct crypto_blkcipher *tfm;
-+	struct blkcipher_desc desc;
-+	struct scatterlist sg;
-+	int err = 0;
-+	tfm = crypto_alloc_blkcipher(UBIFS_CRYPTO_ALGORITHM, 0, 0);
-+
-+	if (IS_ERR(tfm)) {
-+		ubifs_err("failed to load transform for aes: %ld",
-+			  PTR_ERR(tfm));
-+		return err;
-+	}
-+
-+	err = crypto_blkcipher_setkey(tfm, key, keylen);
-+	desc.tfm = tfm;
-+	desc.flags = 0;
-+	if (err) {
-+		ubifs_err("setkey() failed  flags=%x",
-+			  crypto_blkcipher_get_flags(tfm));
-+	return err;
-+	}
-+	memset(&sg, 0, sizeof(struct scatterlist));
-+
-+	sg_set_buf(&sg, str, len);
-+	desc.info = iv;
-+	err = crypto_blkcipher_encrypt(&desc, &sg, &sg, len);
-+	crypto_free_blkcipher(tfm);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+/**
-  * ubifs_compress - compress data.
-  * @in_buf: data to compress
-  * @in_len: length of the data to compress
-@@ -127,12 +177,21 @@ void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
- 	if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
- 		goto no_compr;
+---8>---
+>From c013bc50a456c3c127eae3f1751369dec1e32221 Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Sun, 25 Mar 2012 23:26:05 +0200
+Subject: [PATCH] mtd: docg3 refix docg3 lessen read alignement burden
 
--	return;
-+	goto encrypt;
+After the fix "mtd: docg3 less read alignement burden", a corner case
+where read is unaligned an length read is small was left. As a full
+page must be read, the remaining data bytes to read number was
+miscalculated, leading to unreadable LEBs by UBIFS.
 
- no_compr:
- 	memcpy(out_buf, in_buf, in_len);
- 	*out_len = in_len;
- 	*compr_type = UBIFS_COMPR_NONE;
-+	goto encrypt;
-+
-+encrypt:
-+	if (key) {
-+		u8 iv[UBIFS_CRYPTO_KEYSIZE];
-+		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
-+		ubifs_aes_crypt(out_buf, *out_len, key, UBIFS_CRYPTO_KEYSIZE,
-+				iv, UBIFS_CRYPTO_KEYSIZE);
-+	}
- }
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/devices/docg3.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
- /**
-@@ -149,7 +208,7 @@ no_compr:
-  * The length of the uncompressed data is returned in @out_len. This functions
-  * returns %0 on success or a negative error code on failure.
-  */
--int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
-+int ubifs_decompress(void *in_buf, int in_len, void *out_buf,
- 		     int *out_len, int compr_type, u8 *key)
- {
- 	int err;
-@@ -167,6 +226,13 @@ int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
- 		return -EINVAL;
- 	}
-
-+	if (key) {
-+		u8 iv[UBIFS_CRYPTO_KEYSIZE];
-+		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
-+		ubifs_aes_crypt(in_buf, in_len, key, UBIFS_CRYPTO_KEYSIZE,
-+				iv, UBIFS_CRYPTO_KEYSIZE);
-+	}
-+
- 	if (compr_type == UBIFS_COMPR_NONE) {
- 		memcpy(out_buf, in_buf, in_len);
- 		*out_len = in_len;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 0cc1180..923babe 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -160,6 +160,14 @@
- /* Maximum number of data nodes to bulk-read */
- #define UBIFS_MAX_BULK_READ 32
-
-+/* Size of 128 bits in bytes */
-+#define AES_KEYSIZE_128 16
-+
-+/* Key size in bytes for UBIFS */
-+#define UBIFS_CRYPTO_KEYSIZE AES_KEYSIZE_128
-+/* AES in counter mode is the encryption algorithm. */
-+#define UBIFS_CRYPTO_ALGORITHM "ctr(aes)"
-+
- /*
-  * Lockdep classes for UBIFS inode @ui_mutex.
-  */
-@@ -1771,9 +1779,11 @@ long ubifs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- /* compressor.c */
- int __init ubifs_compressors_init(void);
- void ubifs_compressors_exit(void);
-+int ubifs_aes_crypt(void *str, int len, u8 *key, int keylen,
-+		    u8 *iv, int ivlen);
- void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
- 		    int *compr_type, u8 *key);
--int ubifs_decompress(const void *buf, int len, void *out, int *out_len,
-+int ubifs_decompress(void *buf, int len, void *out, int *out_len,
- 		     int compr_type, u8 *key);
-
- #include "debug.h"
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 7ced089..8272c02 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -893,7 +893,8 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 		ret = doc_read_page_getbytes(docg3, nbdata, buf, 0);
+ 		if (ret < nbdata)
+ 			goto err_in_read;
+-		doc_read_page_getbytes(docg3, DOC_LAYOUT_PAGE_SIZE - nbdata,
++		doc_read_page_getbytes(docg3,
++				       DOC_LAYOUT_PAGE_SIZE - nbdata - skip,
+ 				       NULL, 0);
+ 		ret = doc_read_page_getbytes(docg3, nboob, oobbuf, 0);
+ 		if (ret < nboob)
+-- 
+1.7.5.4
