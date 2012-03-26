@@ -1,30 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SCBPF-0005b9-7M
- for linux-mtd@lists.infradead.org; Mon, 26 Mar 2012 15:00:25 +0000
-Message-ID: <1332774201.22278.47.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Add design document for UBIFS secure deletion
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 26 Mar 2012 18:03:21 +0300
-In-Reply-To: <alpine.DEB.2.00.1203231705500.22944@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
- <1329152067.22240.214.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1202231558400.13720@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1202231628360.13720@eristoteles.iwoars.net>
- <1331277476.22872.2.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203191752300.22256@eristoteles.iwoars.net>
- <1332346218.14983.20.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203231448520.22944@eristoteles.iwoars.net>
- <1332517132.18717.102.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203231705500.22944@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-17E376cia7Evqx5wh8qA"
-Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from v031479.home.net.pl ([89.161.171.237])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SCBVA-0005rd-Ht
+ for linux-mtd@lists.infradead.org; Mon, 26 Mar 2012 15:06:38 +0000
+Message-ID: <4F7085EE.60205@flytronic.pl>
+Date: Mon, 26 Mar 2012 17:06:22 +0200
+From: =?UTF-8?B?TWljaGHFgiBXcsOzYmVs?= <Michal.Wrobel@flytronic.pl>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: ixp4xx: fix partition parser argument
+References: <20120326133735.GA19800@FLYC077.flytronic.local>
+ <1332772726.22278.34.camel@sauron.fi.intel.com>
+In-Reply-To: <1332772726.22278.34.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,121 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 26.03.2012 16:38, Artem Bityutskiy wrote:
+> On Mon, 2012-03-26 at 15:37 +0200, Michał Wróbel wrote:
+>> Commit c7975330154af17aecc167b33ca866b6b3d98918 ("mtd: abstract last MTD
+>> partition parser argument") moved the "origin" argument into struct
+>> mtd_part_parser_data, but didn't update its only user: ixp4xx.c.
+>>
+>> Signed-off-by: Michał Wróbel <michal.wrobel@flytronic.pl>
+>> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+>> ---
+>>  drivers/mtd/maps/ixp4xx.c |    4 +++-
+>>  1 files changed, 3 insertions(+), 1 deletions(-)
+> Thanks, but we already have a fix scheduled in the l2-mtd.git tree:
+>
+> http://git.infradead.org/users/dedekind/l2-mtd.git/commit/87cd5901e82658b49357f41d27b0acbe454b1a3f
+Oh, that's right. I should have searched for an existing solution before
+finding it on my own.
 
---=-17E376cia7Evqx5wh8qA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2012-03-23 at 17:38 +0100, Joel Reardon wrote:
-> I'll answer some quickly here now while they're fresh in mind and add the=
-m
-> to the doc later.
->=20
-> >
-> > > In particular, it does not behave like a
-> > > +log-structured file system: when a KSA LEB is updated, its contents =
-are
-> > > +written to a new physical location on the flash memory, UBI's logica=
-l map is
-> > > +then updated to this new physical address and the previous version o=
-f the KSA
-> > > +LEB is then erased.
-> >
-> > Am I right that you basically wanted to say that when you update a KSA
-> > LEB, you make sure that the physical flash does not contain the old
-> > contents of this LEB? Would be nice to re-phrase.
-> >
-> > Side question - how do you do this?
->=20
-> Here I'm just spelling out atomic update, so nothing fancy except
-> leb_change() to replace the keys.
-
-This will write the new data to a different PEB, and schedule the old
-PEB for erasure in background. If the UBI thread is alive, it will
-schedule the erasure soon. But if it is stopped or dead, the erasure may
-happen only when there is a need in an empty PEB.
-
-To make sure the old contents are really erased, you'd have to call
-'ubi_sync()'. But the problem with this is that it will force erasure of
-_all_ the scheduled PEBs, so it may block for long time, especially on
-NOR.
-
-For the security things you'd probably need to extend 'ubi_leb_change()'
-and add a 'sync' parameter which would make sure the previous PEB is
-synchronously erased before 'ubi_leb_change()' returns. I think it is
-very easy to do.
-
-> Protected as in the kernel stops joe user from reading raw from /dev/mtd,
-> no?
-
-No, I think both UBI volumes and MTD devices are world-readable.
-
-
-> > Hmm, why is it necessary to re-initialize unused keys?
-> >
->=20
-> This can be a mount option actually, it was a response to  attack that wa=
-s
-> proposed to me about the design. The idea here is that, suppose the
-> attacker reads the drive at time X with sufficient privilages to read the
-> keys. Then the attacker will know for certain that those keys will
-> eventually be used to encrypt data. So they can compromise not only the
-> current data, but also future data. By replacing unused keys, the attacke=
-r
-> is limited only to compromizing current data.
-
-Would be nice to put this to the doc, and I do not think we need a mount
-option for this.
-
-> Ah, yes! Any other tool?
-
-No, just this one.
-
-> > Hmm, interesting how you manage checkpoints. I guess the easiest would
-> > be to have a special inode (not visible for users) and store checkpoint=
-s
-> > there?
-> >
->=20
-> The first block of the KSA stores only checkpoints, so KSA size is 1 +
-> minrequired + some slack. So this may need the multiple LEB
-> approach for one of the other UBIFS areas when its size is too big, but I
-> havn't done that since its generally so highly compressable that it
-> wasn't ever a concern.
-
-But I guess the larger is the volume the larger the checkpoint is? Also,
-would you please rename it to something else because checkpoint is a
-very common word with more or less commonly understood meaning, and
-using it for something else in context of file-systems is asking for
-troubles. Even if you call it 'backpack' (random word from my head) -
-I'll be happier :-) But something more sensible is more appreciated of
-course :-)
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-17E376cia7Evqx5wh8qA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPcIU5AAoJECmIfjd9wqK0O70P+wcg8PYwrxe6KfVeJuEqdBCj
-mc77SSvlbj67qRrTp+7mdr6QGpeOU4RoaoVghOCFaTe83WOjumP2WZBPrNQ8xnSR
-sJhGuA1o9ySMoOpWPVffwt9IhBvlGhv9Vfv7pGpqJwqXmDEzfUAsxE6TGwo5rM/e
-1pCgrPdFoVNCrnkXiYHSJaOFWAfEwoypM8VtyM+SxiQsuaob2YudPOVUQY1fWfUv
-MDjFGy6Cy+ivZVDCdmLQW/P4rxYAsk0E9kKKEEQMiuH3J9hl63Fgd5KFBUCY4JKm
-ofPpKAT+rhuvQbC1sESc0J31NcTzSIyUtvks43q5NYniW0dB+N3J8hygrFXVyA2g
-soNlLcFbqyMNExQVlsrJHsPBoa6bIbpupFL8r9Cxb139FWmZA5rcT9q+PSIe7b0O
-qYGZ5sF17aOqkk2nHO54hiJDyg/cKOzmx1Q2luZsyJBOnXf0L1EzjUsoymvglrH+
-f/fcyZC5otBD6E/4uodpwCJD8AB79nuEWzVS8Is0Khwz14tevJc71no5yVNDP62e
-un8mqfAps8vVab2gK+1TFVTQWasPSAZI5iPFjuUW5weN71vsPaNAj1NB5p9plB2S
-Tr+an5r4uji/TYkgl7wN8emO7Tb4RZ05oYZWI/M8jIpkp//NXUxM32fJQYFx67fg
-LIpyXzA3MnV6gz3Wa77h
-=5Pdr
------END PGP SIGNATURE-----
-
---=-17E376cia7Evqx5wh8qA--
+-- 
+Kind regards,
+Michał Wróbel
