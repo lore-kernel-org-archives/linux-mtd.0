@@ -1,14 +1,14 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SCRht-0005gF-R7
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2012 08:24:46 +0000
-Message-ID: <1332836863.31549.9.camel@sauron.fi.intel.com>
-Subject: Re: [patch] Add a encryption key parameter to the compress /
- decompress function.
+ id 1SCRn9-0006G2-S9
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2012 08:30:12 +0000
+Message-ID: <1332837188.31549.14.camel@sauron.fi.intel.com>
+Subject: Re: [patch] Add cryptographic functionality when a key is passed to
+ the compress / decompress functions
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Tue, 27 Mar 2012 11:27:43 +0300
-In-Reply-To: <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
+Date: Tue, 27 Mar 2012 11:33:08 +0300
+In-Reply-To: <alpine.DEB.2.00.1203252325100.5527@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
  <1330531826.3545.128.camel@sauron.fi.intel.com>
@@ -17,9 +17,10 @@ References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1203231739330.22944@eristoteles.iwoars.net>
  <1332521515.22278.2.camel@sauron.fi.intel.com>
  <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1203252325100.5527@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-jxGyBJwZuv+P9U6RDpJw"
+ boundary="=-gzZ1T2oxsNFNO5R/zIE5"
 Mime-Version: 1.0
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
@@ -34,63 +35,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-jxGyBJwZuv+P9U6RDpJw
+--=-gzZ1T2oxsNFNO5R/zIE5
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-03-25 at 23:11 +0200, Joel Reardon wrote:
-> Compress and decompress now have an extra u8 *key field, and NULL is
-> passed wherever it is used. Later this will be used for an encryption key
-> for the data being compressed/decompressed (and NULL if no cryptographic =
-operations should be done.)
->=20
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
->=20
-> From 650a52b5301778cf2f0c17ed993a104a4473a8fb Mon Sep 17 00:00:00 2001
-> From: Joel Reardon <jreardon@fatbottomsworth.(none)>
-> Date: Sun, 25 Mar 2012 23:06:03 +0200
-> Subject: [PATCH] Added a key parameter to de/compress.
+I guess you'll need to amend this patch if you change the previous one.
+Also 2 nit-picks.
 
-If I use git-am I will get the above "From" etc stuff in the commit
-message, which is not what was intended. Just send the 'git
-format-patch' output "as-is".
+On Sun, 2012-03-25 at 23:38 +0200, Joel Reardon wrote:
+> +	if (err) {
+> +		ubifs_err("setkey() failed  flags=3D%x",
+Please, use %#x instead.
+> +			  crypto_blkcipher_get_flags(tfm));
+> +	return err;
+> +	}
 
->=20
-> ---
->  fs/ubifs/compress.c |    8 ++++++--
->  fs/ubifs/file.c     |    5 +++--
->  fs/ubifs/journal.c  |    7 ++++---
->  fs/ubifs/ubifs.h    |    4 ++--
->  4 files changed, 15 insertions(+), 9 deletions(-)
->=20
-> diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-> index 11e4132..d1812fa 100644
-> --- a/fs/ubifs/compress.c
-> +++ b/fs/ubifs/compress.c
-> @@ -82,6 +82,8 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_=
-TYPES_CNT];
->   * @out_len: output buffer length is returned here
->   * @compr_type: type of compression to use on enter, actually used compr=
-ession
->   *              type on exit
-> + * @key: a pointer to a key-sized buffer to use as the encryption key. i=
-f NULL
-> + *      then no encryption is performed.
+Indentation.
 
-This is confusing. In UBIFS we already have notion of "key" with
-established meaning, defined in fs/ubifs/key.h. Would you please use a
-different term, e.g., "encryption key", "crypto-key", for better
-readability. The same for the variable name - to avoid ambiguity, use
-something like 'cryptokey' or at least 'ckey' or something else.
 
-Also, the comment says "key-sized" buffer, which is also confusing.
-Either do not say anything about the size or define it better.
+> +	if (key) {
+> +		u8 iv[UBIFS_CRYPTO_KEYSIZE];
+> +		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
+
+Please to the same convention we use globally in UBIFS - put a blank
+like between "iv" declaration and the "memset" invocation..
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-jxGyBJwZuv+P9U6RDpJw
+--=-gzZ1T2oxsNFNO5R/zIE5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -98,19 +72,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPcXn/AAoJECmIfjd9wqK0dqEQAJfcFGuUzyIPqN9Zjn4A+/RR
-8ADfXZDEPkQthGNfsc6gjyS94B9jxsTZcB5JKcayuncXUQ3TzHARIJCOgX3ri13P
-hLWbdB96FPSvWU7+iqlOIfV/uJTnT0Zz+C02VFTJsaOW5s29/xrU4manTVd31BUa
-7NKgiZWuyMQvsGryj87XwJRoFHwtyRXk+hh0FvS8+RaIDZAGvlBsLVARJ9A5o7mV
-R3XIOMTM9bo5roLbAGEVN9hxMyvvW7QHo3tOOtHWPOU+Y1A7r9AYhpnZliT/QtGd
-PngXtG2Tgi5sxjajWu24zk00v7nqOxUS4deWJLrFa4MwQ5pefXBP9udO9Rmmmn1L
-9FFFpsaUWDuy5cIMEUwqsQhhkBaP6peenyDbUIOWXM6+gbL2l+MSGaavFIjLVpjk
-nK2nGDmmnEwJeARyo/c7l8RfndlnLx+xbfAsvMLDSptRAwGx6XvegIliyKkLTSBY
-zH1JJe3kd+ntyS+jy4AEV8YXQhGgj53F2lceCnGTCnIISH2qx6BdWl3kLotyKOzb
-ygHu+8UhqphIPtro06tWNG2MWGd71t4xF/Pq6TGSK9rDr7+1/FC4E7kPWMKj+kw0
-3EIe5bKh6ft+/18wBBnv29HWRmBs+lSigMiC5jmVRcSAWxzV8MOXpCf7KSIr9Nk6
-8Jban0uR2KXwCVkk4DOM
-=HYKJ
+iQIcBAABAgAGBQJPcXtEAAoJECmIfjd9wqK0WCYP/3Lf+/iKaxxKVC60iQlmrYtP
+NRwEegw10g9fatk7l/MDULtRQ1BIzbiJ65Td2JVvLvONzrTM2NGSwUQG6GzHhsW9
+7nt2MLKQKPGUwZIGofL6eU6hFuTQcloTGwrGUy7naSOoknGZ3SS50t2BcCtC9kq7
+gYN66jajxvc4gjhQ+pavYF7QXA7iOmjw8LgYdnJVj+lERLk+mjP05Q9jszI4X/3u
+Sh/AD0Im6VhbGC2+kRh/8a7FbSTKlmc7VTzBe7BpF2jv8ub8BNUEth2RtPxnykbJ
+Rgx4ESz0K0OVhrWzS6I3IR1NMUM8E8JX/KYn7DaiO8weOmn0tQCTDlU1vQIvb2JC
+vOtgF1IAwtETARBq0lDinVih1uOIcqvKGNzVs+0e9BVvdDYBgZnwWojpWZl3KQDV
+zUzbqr316L5B1sQnHnhsnDtoma4suTjZ4k1ZE3p+BnQZTjpOHVV2b1yYNKi4dwF2
+eaiM2bIItflwJXoKe4tTfopMLclQupGIEA0Mw1lwC8d5v+Ch5IP60Vp2uHZqhPcX
++4Pkuoft11u0sbrn2y/vesu/usERKb2sWayTQO5Y5uu2gzf0ZVArIR4MvYDyIi6Q
+pZR93qGS+d0AtYLZpfmlaxwwwOmHQHYQGoDnW8EzFmuc289QcTJ0ILzILPotvby2
+NO/XIeMmFSQK9j76G7cE
+=dCSy
 -----END PGP SIGNATURE-----
 
---=-jxGyBJwZuv+P9U6RDpJw--
+--=-gzZ1T2oxsNFNO5R/zIE5--
