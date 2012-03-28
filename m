@@ -1,19 +1,16 @@
-Date: Wed, 28 Mar 2012 22:13:28 +0100
-From: Alexander Clouter <alex@digriz.org.uk>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: Re: [PATCH 2/5] arm: Use the plat_nand default partition parser
-Message-ID: <20120328211327.GC6586@marmot>
-References: <201203281113.10684.hartleys@visionengravers.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201203281113.10684.hartleys@visionengravers.com>
-Sender: alex <alex@wormnet.eu>
-Cc: linux-omap@vger.kernel.org, eric.y.miao@gmail.com, rmallon@gmail.com,
- nico@fluxnic.net, tony@atomide.com,
- Linux Kernel <linux-kernel@vger.kernel.org>, haojian.zhuang@gmail.com,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, kaloz@openwrt.org,
- linux-arm-kernel@lists.infradead.org, khc@pm.waw.pl
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SD2m9-0001r1-GV
+ for linux-mtd@lists.infradead.org; Wed, 28 Mar 2012 23:59:38 +0000
+Received: by pbcun4 with SMTP id un4so2760717pbc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Mar 2012 16:59:34 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH (mtd-utils)] Makefile: fixup previous 'make clean' fix
+Date: Wed, 28 Mar 2012 16:59:06 -0700
+Message-Id: <1332979146-8866-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* H Hartley Sweeten <hartleys@visionengravers.com> [2012-03-28 11:13:09-0700]:
->
-> Use the default partition parser, cmdlinepart, provided by the plat_nand driver.
-> 
-> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: Ryan Mallon <rmallon@gmail.com>
-> Cc: Imre Kaloz <kaloz@openwrt.org>
-> Cc: Krzysztof Halasa <khc@pm.waw.pl>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Alexander Clouter <alex@digriz.org.uk>
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Cc: Eric Miao <eric.y.miao@gmail.com>
-> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> 
-Acked-by: Alexander Clouter <alex@digriz.org.uk>
+Apparently, Makefile comments need to be made without indentation. Otherwise,
+they are printed out as shell commands. This fix prevents seeing this in your
+shell during 'make clean':
 
-Thanks
+  $ make clean
+  ...
+  # findutils v4.1.x (RHEL 4) do not have '+' syntax
+  ...
 
--- 
-Alexander Clouter
-.sigmonster says: The only rose without thorns is friendship.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+
+Artem, can you please just merge this into my last Makefile fix?
+
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7506ed4..40cb676 100644
+--- a/Makefile
++++ b/Makefile
+@@ -52,7 +52,7 @@ ifneq ($(BUILDDIR),$(CURDIR))
+ endif
+ endif
+ endif
+-	# findutils v4.1.x (RHEL 4) do not have '+' syntax
++# findutils v4.1.x (RHEL 4) do not have '+' syntax
+ 	@if test -d "$(BUILDDIR)/"; then \
+ 		$(CLEAN_FIND) -exec rm -f {} + 2> /dev/null || \
+ 		$(CLEAN_FIND) -exec rm -f {} \; ; \
