@@ -1,24 +1,19 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail209.messagelabs.com ([216.82.255.3])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SCw3O-0001F2-8O
- for linux-mtd@lists.infradead.org; Wed, 28 Mar 2012 16:48:58 +0000
-Received: by yhjj52 with SMTP id j52so976768yhj.36
- for <linux-mtd@lists.infradead.org>; Wed, 28 Mar 2012 09:48:57 -0700 (PDT)
+ id 1SCxN8-0006Wa-0N
+ for linux-mtd@lists.infradead.org; Wed, 28 Mar 2012 18:13:27 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] mtd: plat_nand: Add default partition parser and use it
+Date: Wed, 28 Mar 2012 11:12:48 -0700
 MIME-Version: 1.0
-In-Reply-To: <1332929665.2058.102.camel@shinybook.infradead.org>
-References: <CAN8TOE_8sTtuvBq+SOSLv5Kbw_2G8ByX-euiDm=z2btO-kLkcw@mail.gmail.com>
- <alpine.LFD.2.02.1203281149010.2542@ionos>
- <1332929665.2058.102.camel@shinybook.infradead.org>
-Date: Wed, 28 Mar 2012 09:42:32 -0700
-Message-ID: <CAN8TOE90kUTDA8WDaELSL7E2D8qNUB9uYN5W4Tg3Jpw+u-Mffg@mail.gmail.com>
-Subject: Re: nand_base - kill chip->oob_poi?
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Woodhouse, David" <david.woodhouse@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Thomas Gleixner <tglx@linutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-ID: <201203281112.48788.hartleys@visionengravers.com>
+Cc: linux-mips@linux-mips.org, linux-sh@vger.kernel.org,
+ linux-mtd@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 28, 2012 at 3:14 AM, Woodhouse, David
-<david.woodhouse@intel.com> wrote:
-> On Wed, 2012-03-28 at 11:51 +0200, Thomas Gleixner wrote:
->> On Tue, 27 Mar 2012, Brian Norris wrote:
->> > I'm looking to support a new NAND hardware controller, and it doesn't
->> > support OOB read/write for its fastest modes of operation, since most
->> > normal activity (i.e., UBI(FS)) doesn't need OOB. So I'm trying to
->>
->> And how is ECC working for that "normal" activity ?
->>
->> Using NAND w/o ECC is doomed for fail.
->
-> I was assuming that the controller *used* the OOB area for hardware ECC,
-> but just didn't support letting the *host* access the OOB area "in its
-> fastest modes of operation".
+This patch series adds cmdlinepart as the default partition parser for the
+plat_nand driver and updates all the arch setup code to use it.
 
-Right, HW ECC is working with a HW internal buffer that isn't exposed
-to the host in its DMA modes. I can access it via PIO, but that's not
-ideal.
+Arch setup code that requires other partition parsers can still pass that
+information as chip.part_probe_types.
 
->> > My plan looked something like the following:
->> > - avoid using chip->oob_poi explicitly if at all possible
->> > - pass both buf and oob pointers to the various {read,write}_page
->> > =A0 interfaces (in nand_chip and in nand_ecc_ctrl)
->> > - allow oob to be NULL, which would imply that the API call only
->> > =A0 needed the in-band data
->
-> And presumably the swecc/hwecc cases would still use either oob_poi or
-> their own buffer, since they have to put the syndrome *somewhere* after
-> calculating it... but those are only for those controllers which *use*
-> the swecc/hwecc support.
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+  mtd: plat_nand: Add default partition parser to driver
+  arm: Use the plat_nand default partition parser
+  blackfin: Use the plat_nand default partition parser
+  mips: Use the plat_nand default partition parser
+  sh: Use the plat_nand default partition parser
 
-Yes, I guess they still need it. Maybe in places where they would have
-used chip->oob_poi, I can replace it with a buffer passed as an
-argument, then when that buffer is NULL we fall back to chip->oob_poi,
-like the following:
-
-static int nand_read_page_raw_syndrome(... uint8_t *buf, uint8_t *oobbuf ..=
-.)
-{
-    ...
-    uint8_t *oob =3D oobbuf ? oobbuf : chip->oob_poi;
-    ...
-    chip->read_buf(mtd, oob, ...);
-    ...
-}
-
-> I don't think it matters that your plan "conflicts" with the ECC
-> implementations that you wouldn't be able to to use on this hardware
-> anyway.
-
-Right. I'm just concerned with modifying the nand_chip / nand_ecc_ctrl
-interfaces enough to work with this hardware while avoiding breaking
-existing stuff and keeping the interfaces sane. I have to at least
-break the assumption that the {read,write}_page interfaces *always*
-will fill/use chip->oob_poi.
-
-Brian
+ arch/arm/mach-ep93xx/snappercl15.c        |    3 ---
+ arch/arm/mach-ep93xx/ts72xx.c             |    3 ---
+ arch/arm/mach-ixp4xx/ixdp425-setup.c      |    3 ---
+ arch/arm/mach-omap1/board-fsample.c       |    3 ---
+ arch/arm/mach-omap1/board-h2.c            |    3 ---
+ arch/arm/mach-omap1/board-h3.c            |    3 ---
+ arch/arm/mach-omap1/board-perseus2.c      |    3 ---
+ arch/arm/mach-orion5x/ts78xx-setup.c      |    3 ---
+ arch/arm/mach-pxa/balloon3.c              |    3 ---
+ arch/arm/mach-pxa/em-x270.c               |    3 ---
+ arch/arm/mach-pxa/palmtx.c                |    3 ---
+ arch/blackfin/mach-bf561/boards/acvilon.c |    3 ---
+ arch/mips/alchemy/devboards/db1200.c      |    3 ---
+ arch/mips/alchemy/devboards/db1300.c      |    3 ---
+ arch/mips/alchemy/devboards/db1550.c      |    3 ---
+ arch/mips/pnx833x/common/platform.c       |    6 ------
+ arch/sh/boards/mach-migor/setup.c         |    1 -
+ drivers/mtd/nand/plat_nand.c              |    8 ++++++--
+ 18 files changed, 6 insertions(+), 54 deletions(-)
