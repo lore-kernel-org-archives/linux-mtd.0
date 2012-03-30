@@ -1,17 +1,24 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SDZQ8-0004W0-J6
- for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 10:51:05 +0000
-Received: by pbcun4 with SMTP id un4so1693266pbc.36
- for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2012 03:51:02 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 30 Mar 2012 11:51:02 +0100
-Message-ID: <CAFbHwiTfaXOFX-WYWeyisK4WCiXBRv_LpEcoR=v8qvsLAO7FJQ@mail.gmail.com>
-Subject: Oops with mtd_dataflash driver in 3.3
-From: Will Newton <will.newton@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SDafF-0008FZ-6G
+ for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 12:10:45 +0000
+Message-ID: <1333109630.5440.18.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 30 Mar 2012 15:13:50 +0300
+In-Reply-To: <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
+ <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
+ <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-D5FqMXdzcjv8Ey84ETfC"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I'm seeing an oops in mtd_dataflash.c with Linux 3.3. What appears to
-be happening is that otp_select_filemode calls mtd_read_fact_prot_reg
-with -1 for offset and length and a NULL buffer to test if OTP
-operations are supported. This finds its way down to otp_read in
-mtd_dataflash.c and causes an oops when memcpying the returned data
-into the NULL buf.
+--=-D5FqMXdzcjv8Ey84ETfC
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-None of the checks in otp_read catches the negative length and offset.
-Changing the length of the dummy read to 0 prevents the oops, but I'm
-not sure if it is the preferred solution. Would this change be
-acceptable?
+On Thu, 2012-03-29 at 10:30 -0700, Brian Norris wrote:
+> On Sun, Mar 11, 2012 at 2:21 PM, Mike Dunn <mikedunn@newsguy.com> wrote:
+> > The drivers' read methods, absent an error, return a non-negative integ=
+er
+> > indicating the maximum number of bit errors that were corrected in any =
+one
+> > writesize region.  MTD returns -EUCLEAN if this is >=3D euclean_thresho=
+ld, 0
+> > otherwise.  Note that this is a subtle change to the driver interface.
+> >
+> > This and the preceeding patches in this set were tested ubi on top of t=
+he
+> > nandsim and docg4 devices, running the ubi test io_basic from mtd-utils=
+.
+>=20
+> Did you test any non-NAND devices? I'm getting the feeling that some
+> of this is misguided or at least needs some fixing. See below.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 50c6a1e..853744d 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -369,7 +369,7 @@ static int otp_select_filemode(struct
-mtd_file_info *mfi, int mode)
-         * Make a fake call to mtd_read_fact_prot_reg() to check if OTP
-         * operations are supported.
-         */
--       if (mtd_read_fact_prot_reg(mtd, -1, -1, &retlen, NULL) == -EOPNOTSUPP)
-+       if (mtd_read_fact_prot_reg(mtd, -1, 0, &retlen, NULL) == -EOPNOTSUPP)
-                return -EOPNOTSUPP;
+Brian,
 
-        switch (mode) {
+you are right, these 2 should be reverted and Mike should come back with
+a better patch-set. I was not careful enough, and thanks for the review.
 
-Thanks,
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-D5FqMXdzcjv8Ey84ETfC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPdaN+AAoJECmIfjd9wqK0dHUQAIT1ImjCLkS4B43j0WHWVz5N
+m4PvVgFhXTxS1eU6Yox4CX0NznYvq/nivx0bELMAhMJkPXlyuNm4uV6KdjQMWiWJ
+9ODMet0D8F7NBXf7YRaeHAJQG6Hz4RS0d+JufK6Epd1rYgIMIu647xncD2EH9Nd/
+hAvS1P2XqFaS00d61hqbE+31DYtS8BwVZwL2WltT9gwohlLMcH0Pb3ycSq2mSKz1
+/1rK+//A3iYw3TAUzL38nGaewvVvwuhFhCW5NSkm40RG2Z5egT/NAtxchD6Gp9rw
+InpkbUKY+GUfgB0yvI5Fdwc2ijfkz4ZTYPq0gORjr4it/wROH38OoZ3+Ux3MyQEn
+eplYOHYNVK7fe82Xy1XrRUY4SkDeQK++meBl9MqWXYKzArpjN+Xf5cuDCme9y1xm
+GY1229n2fIpLa1Qy0VYjNEFHT96xQAYoyZcHGffJqH6QDGanJX1L2ohmKb+TFxfj
+ZADQGmjPoVSrLDrD9l7OXZG975FQnyS2b11GW4ej6hI9opZzxLUy2uPed6A1poFP
+dhhvSW9DWF3GDKju4daTgcQ2eFF0YEMGpb9fq4CItzDh6AqWCGkmJt8tJifTb17m
+fv7qJ7uVcq5Utvajpmzfy90Y+5jgQlvzidZ9LCo7lMK3dHEYB/vWkXmBqk/zpS0k
+PutjhVfL73ISNsSO6jiQ
+=QMax
+-----END PGP SIGNATURE-----
+
+--=-D5FqMXdzcjv8Ey84ETfC--
