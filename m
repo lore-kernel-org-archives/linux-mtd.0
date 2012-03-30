@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SDcaL-0006hF-Tg
- for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 14:13:50 +0000
-Message-ID: <1333117016.5440.41.camel@sauron.fi.intel.com>
+ id 1SDcce-0006o1-IN
+ for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 14:16:13 +0000
+Message-ID: <1333117156.5440.43.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Dunn <mikedunn@newsguy.com>
-Date: Fri, 30 Mar 2012 17:16:56 +0300
+Date: Fri, 30 Mar 2012 17:19:16 +0300
 In-Reply-To: <4F64F17C.2070409@newsguy.com>
 References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
  <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
  <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-32xhleHqgjOOp97RuXgO"
+ boundary="=-AcSEB4nRy9vkY4nLhbVP"
 Mime-Version: 1.0
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Ivan Djelic <ivan.djelic@parrot.com>,
@@ -30,25 +30,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-32xhleHqgjOOp97RuXgO
+--=-AcSEB4nRy9vkY4nLhbVP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sat, 2012-03-17 at 13:18 -0700, Mike Dunn wrote:
-> Before I start on this, I'd like to get a
-> blessing from Artem / David, since the chamges will touch many drivers
-> in a
-> somehat non-trivial manner.=20
+>=20
+> If I do go ahead, I can first post patches that fixes the two patches
+> already
+> pushed to l2-mtd, or Artem can just pull them out and I'll start from
+> scratch.
+> I personally prefer the former, since it's easier for me, plus it
+> would be
+> illustrative of the change of plans.=20
 
-Come on Mike, just go ahead without blessings. The stuff you are want to
-do very important I believe. Currently MTD is basically lacking behind
-the technology.
+We can do this during the post-rc1 cycle. It is my fault that I did not
+weed them out in time, but this does not look fatal.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-32xhleHqgjOOp97RuXgO
+--=-AcSEB4nRy9vkY4nLhbVP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIbBAABAgAGBQJPdcBYAAoJECmIfjd9wqK0R1MP+I4/0GdXQueEcLLvJkYDF3rJ
-DuT0O/LAx1v4oy8oz1YtTWn6tu4oMNkTvsI/fhtTfaptEA5/VNgKM4VNqXMrVlZN
-MtK5gv+3kAVyS7sYbktedA5JzR6w5mC9OsiufzIYkKfMNRGx/2mZO93O3x5cON5v
-MLA3nbOu7Ysh3RRlZLFQl49o6+4wufQyiZCqkXG8ZlZFCmpk8tA9EN5NDvPlXV/x
-SmEVydwDQWlcBo4myDaW99F7NTjkAoYsB/gWGG/vrxARNohRAxAZFyclbkGnysmd
-qrNHsWQJExrO2Ijf3mtOoELpKG5YLpyGFBKhDKGI2dKwxj5ZTYxhvdDUiRQcmsGk
-owf2gRUgt0sDAssokB4550t4XTz1oU+dMQLB3H/aGVFGw+mbB4XGqkGSDafLbXc4
-i6zTQB/r44PQUq1rIGjODbxBBTj8b2d4Xq1JdAjDtzV5YCGtnQAiOS+nGjVWOvzM
-JV30oK+2Utt22XjeBL0EnhS/9XxNZsnaObVB99FC3ghXxD4xMtMu/zl7J7LCMP2m
-TAs5YR/426vR9FH14PrUJAFqAAwdlvmyUZT1VpsJkqxNqZy04rSn+9mhOFPMy9nS
-l9N5hrkVehc28zViVsmFAYZ8+JBzTns/tIvH4Gq/wKEV6bX0/axWoXI063t4ICfe
-BKtETdiXUdpcsc3Demo=
-=H9TK
+iQIcBAABAgAGBQJPdcDkAAoJECmIfjd9wqK0cyoQAL9RFqTiiGPIgEdh/kiLoc5b
+v4tv9hNufrfL3yuukR7BgZYCo3zRL9J9op4yNH/EdMekUSeVCnQQ9uZAL7bQB274
+4FQvRl1fUY3gNvuIdXsTGJGd3CFXa6IPOd66lCZUMdT3GF6wzYLCsXSu5ILfdwPt
+A23vur2YACs2sr73FurQX0Mm1CIDmfhDY7zFONiF1s4W6yt2gPxFDc7IM3OE3Cli
+t4jmtFuCseSCjRAHSQ9QFbCpWPfTVQ8FXA5Ow9u1XiBw0JcwE5ImTT6981VzJkwo
+m0KGO1WHwRrnTtZlwNKibkQPvA28udx9+TjQegKpCtd6jLl1bMchwNu5NICVPp2u
+rMGVJMGp811s4bomVwRKfLnW1wTD/bk+ZVp/JmNh+/b4LivgeGCjEV+QtLzj9+pn
+hPtZL60AyZA/QSt4Xlp2/1K9SNj2di+lXR62LLDYwE5Io/+Zgqr0mM/oFyBm0CVo
+/vd/mjqsxSC/YZ5YTpk4yRF0TGlwhkdgtAdNnYx06wnXyML78BomngvgvfoLF6NU
+PwKZIlG39m74yZWQ1exswljDWF+Of1SZVS8etYEyIL2r9FeuJ0DXhEYqXsGyXf22
+gDCHLuZHdLWJZ6Pks82FhH0yrZwpS+GF552JvxklaTGR8d5XXMgFxFkng2zjW+eb
+llky236rtCtAqIO2tQ+I
+=RdMf
 -----END PGP SIGNATURE-----
 
---=-32xhleHqgjOOp97RuXgO--
+--=-AcSEB4nRy9vkY4nLhbVP--
