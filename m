@@ -1,26 +1,33 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SDb6V-0003Mj-8n
- for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 12:38:55 +0000
-Message-ID: <1333111321.5440.29.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: allow atomic updates to sychronously erase old PEB
+ id 1SDcRF-0004ff-2F
+ for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 14:04:25 +0000
+Message-ID: <1333116451.5440.39.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Fri, 30 Mar 2012 15:42:01 +0300
-In-Reply-To: <alpine.DEB.2.00.1203301433270.10066@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1203291653210.912@eristoteles.iwoars.net>
- <4F748CD6.4080704@parrot.com>
- <alpine.DEB.2.00.1203301413080.10066@eristoteles.iwoars.net>
- <1333110503.5440.24.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203301433270.10066@eristoteles.iwoars.net>
+To: Matej Kupljen <matej.kupljen@gmail.com>
+Date: Fri, 30 Mar 2012 17:07:31 +0300
+In-Reply-To: <CAHMF36FjJcd3au5GWFzy-=vfmM1HViLnZJN-HDeDTLyu9R1fSw@mail.gmail.com>
+References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
+ <1331559644.12037.33.camel@sauron.fi.intel.com>
+ <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
+ <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
+ <1331619893.2443.10.camel@koala>
+ <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
+ <1331628462.12037.56.camel@sauron.fi.intel.com>
+ <CAHMF36G_iE3pEVh1WEVgm5H0p3wsePUxwu9-MCVB+v7vxFf4RQ@mail.gmail.com>
+ <1331727617.3730.5.camel@sauron.fi.intel.com>
+ <CAHMF36H_+ohHph_mn+iaVnH9Z_WQR0bkQT8Fv8s8cTHE5vV+fg@mail.gmail.com>
+ <1331731119.3730.17.camel@sauron.fi.intel.com>
+ <CAHMF36Fyb+X_tZjgs1Siu2p1Zbrmu-7TBL73Zf3Rjx3SiyeBjA@mail.gmail.com>
+ <1332421678.18717.25.camel@sauron.fi.intel.com>
+ <CAHMF36Ews_JmsOptgeo1mWJ-yb0tKtaCtBjozbCqa74ck=FLgQ@mail.gmail.com>
+ <CAHMF36FjJcd3au5GWFzy-=vfmM1HViLnZJN-HDeDTLyu9R1fSw@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-xNYMSv0O6nG03DmufvMS"
+ boundary="=-F3IK6GD/ZP7nLljBs/R1"
 Mime-Version: 1.0
-Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Matthieu CASTET <matthieu.castet@parrot.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,22 +39,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-xNYMSv0O6nG03DmufvMS
+--=-F3IK6GD/ZP7nLljBs/R1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-03-30 at 14:33 +0200, Joel Reardon wrote:
-> Just for 'blocking', or also all the 'erase's.
+On Sat, 2012-03-24 at 08:22 +0100, Matej Kupljen wrote:
+> To all,
+>=20
+> after reading the posts on the mailing list, with similar problems,  I
+> believe that
+> Artem was right already in the beginning where he suggested that I am
+> experiencing
+> "unstable bit" issue.
+>=20
+> If you look at the kernel log, the dump of the empty space, clearly
+> shows one bit-flip,
+> where the first word is read as 0xfffffffd, instead of 0xffffffff.
 
-Not sure I can provide a general definition :-) But use it for waiting
-for erase of the previous block to finish. It is also coherent with the
-'mtd_sync()' name.
+The unstable bits issue is related to unclean reboots. AFAIU, you
+observe problems when you do not have power cuts at all. This means you
+have some issues in your driver/HW level. Did you check if your driver
+corrects bit-flips in empty space?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-xNYMSv0O6nG03DmufvMS
+--=-F3IK6GD/ZP7nLljBs/R1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +73,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPdaoZAAoJECmIfjd9wqK0mykP/i19z3dbCh6BdLfBv0wJtfYN
-CTpzla1fDUD5TrhmwOjRTMH13V8NIYUB2dHdbmS1hqD3d4Fm7CNuHg72cHJZrl78
-FEgVgSFjAEaBc+amKv4Aw1Km21LPblnFGYedIZq1evzRcFtlDZ16tcZfiabJdZeT
-pOQXHwXW4aBBaBnU0XjSqyMpMeQMnDmJ667L+T8C2tTgTZacmcYMabiac/n/GF1I
-Ri41wqaHnegBa2AFR0u+VQFI2hlEK+IKJ3PRIO/raducLF9yBJoX3XfaOlYECmfZ
-YAqtUew2OO3BdxDJDXQvj/dxyxWDuDp+WjODTOQF/QcwBVonFN7y5QklSk3RKD3k
-yn4aMXYDLjQ44eGPDuW2jtT+vGBjA30EI/i4BpOyP4JBR4q31yd8lK+tUFxFiqeU
-Ve1xpUSd+RQdF1WvQa+rKecf/FvQvLMKsFoDyiW7hnWrQU59+jrvSxJ04Y2Lb82S
-GziOypnZcJsdBxHLx7LQd6GyDJVnzwmnU+nRoGatCdCyDnipXAwLdA+TmtwXklix
-rSsEaMQqGvkG4KeFUD8J06GvkANeJhU1C6P+hCdwTUXDhKI2OhxEgjtMIzsjgdHc
-YgZ1P0ktI6rmovHLFpmzVrax10qPq2x7paU8Ho2qpIdMzuu6MhfNIt7IW+mhPsr5
-x+DBcSyHD6WvjAMWe/c/
-=Qx4i
+iQIcBAABAgAGBQJPdb4jAAoJECmIfjd9wqK0csMQAL1cBOZufcaYeW8OXM3GOs3x
+rqvxv1vvIw5eex/KZ3ILQhEh7sLW/rXAwzrEDYlgjUI59ZYrrYZfiVzCdmULa9z4
+oK8lpB1lEAVY4PdFDK2i9aPMWrYRcvrt8shzNgDnP4XazEoZ+AJ5CFbdF1O/UgzC
+0vohd6B4z2S5buHXmso1XXIgSmU/Tpcwm+ZwA0M5ae49yeSkKwY/OHLrYhITyRvw
+0hpoP6fPoCJhAlJLkOuBalhxS6F8ZgRlMIyOFzHGo0MA7lSqlnMjy6yGaE+q4PrC
+rKrJoGMJ+w96Ibv8CyHUbprgXl/ErBEUhFftX2rafPKbY+3M4ub4gHgVKggoLKo+
+zhokI/Eo1RJHLakpwObjMVzIhR6LevVxnNXGVoNhEY7wjFUhUQc6EUSEPfDE8dkx
+FHz0kHTBXC3uvVNECoqSocrjOrg60qo22KU0KmZboD8Vq3u1qyxPqzQVPrRLeOCK
+2+vE/EYmMcg08Q6CuOE0LTBvEOKCHZ4CTtf2olPVv2rGWb1HPkTTsLL3itvP3Go8
+GePAxuTwlRIMPzqm6Lec1L5+oqwnfuM9MVRP5X8/5hiJRUAd4DKZhGw9tDu4QaRl
+nmtwIvTcil52qXJd7rV9WJvSFZ0Mav/bQopbSATFMPNQ+y2umrQuESfsRI3m15jd
+Rq3pGsMXuzwZmYMLiiEJ
+=u0oE
 -----END PGP SIGNATURE-----
 
---=-xNYMSv0O6nG03DmufvMS--
+--=-F3IK6GD/ZP7nLljBs/R1--
