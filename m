@@ -1,33 +1,24 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SDcRF-0004ff-2F
- for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 14:04:25 +0000
-Message-ID: <1333116451.5440.39.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS crash (was Re: Problems with mtd_oobtest)
+ id 1SDcaL-0006hF-Tg
+ for linux-mtd@lists.infradead.org; Fri, 30 Mar 2012 14:13:50 +0000
+Message-ID: <1333117016.5440.41.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matej Kupljen <matej.kupljen@gmail.com>
-Date: Fri, 30 Mar 2012 17:07:31 +0300
-In-Reply-To: <CAHMF36FjJcd3au5GWFzy-=vfmM1HViLnZJN-HDeDTLyu9R1fSw@mail.gmail.com>
-References: <CAHMF36G-dXbjZfBMnzEuqK_bkNM81+aCZW5gDHSAKEeyE8VKTg@mail.gmail.com>
- <1331559644.12037.33.camel@sauron.fi.intel.com>
- <CAHMF36ExY=Q2CFgF_V2dVZTsC_znNLGx6wk8GAh5SRKwjJXi3Q@mail.gmail.com>
- <CAHMF36EA-99oYmoBPuOjrohYefTMtoUQ6KLMrMw=XxGmWm3ehQ@mail.gmail.com>
- <1331619893.2443.10.camel@koala>
- <CAHMF36EpG5T2L3GDfgqPKA2XBqw2SipzX1OxXP0SDh==djgcsQ@mail.gmail.com>
- <1331628462.12037.56.camel@sauron.fi.intel.com>
- <CAHMF36G_iE3pEVh1WEVgm5H0p3wsePUxwu9-MCVB+v7vxFf4RQ@mail.gmail.com>
- <1331727617.3730.5.camel@sauron.fi.intel.com>
- <CAHMF36H_+ohHph_mn+iaVnH9Z_WQR0bkQT8Fv8s8cTHE5vV+fg@mail.gmail.com>
- <1331731119.3730.17.camel@sauron.fi.intel.com>
- <CAHMF36Fyb+X_tZjgs1Siu2p1Zbrmu-7TBL73Zf3Rjx3SiyeBjA@mail.gmail.com>
- <1332421678.18717.25.camel@sauron.fi.intel.com>
- <CAHMF36Ews_JmsOptgeo1mWJ-yb0tKtaCtBjozbCqa74ck=FLgQ@mail.gmail.com>
- <CAHMF36FjJcd3au5GWFzy-=vfmM1HViLnZJN-HDeDTLyu9R1fSw@mail.gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Fri, 30 Mar 2012 17:16:56 +0300
+In-Reply-To: <4F64F17C.2070409@newsguy.com>
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
+ <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-F3IK6GD/ZP7nLljBs/R1"
+ boundary="=-32xhleHqgjOOp97RuXgO"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,33 +30,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-F3IK6GD/ZP7nLljBs/R1
+--=-32xhleHqgjOOp97RuXgO
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-03-24 at 08:22 +0100, Matej Kupljen wrote:
-> To all,
->=20
-> after reading the posts on the mailing list, with similar problems,  I
-> believe that
-> Artem was right already in the beginning where he suggested that I am
-> experiencing
-> "unstable bit" issue.
->=20
-> If you look at the kernel log, the dump of the empty space, clearly
-> shows one bit-flip,
-> where the first word is read as 0xfffffffd, instead of 0xffffffff.
+On Sat, 2012-03-17 at 13:18 -0700, Mike Dunn wrote:
+> Before I start on this, I'd like to get a
+> blessing from Artem / David, since the chamges will touch many drivers
+> in a
+> somehat non-trivial manner.=20
 
-The unstable bits issue is related to unclean reboots. AFAIU, you
-observe problems when you do not have power cuts at all. This means you
-have some issues in your driver/HW level. Did you check if your driver
-corrects bit-flips in empty space?
+Come on Mike, just go ahead without blessings. The stuff you are want to
+do very important I believe. Currently MTD is basically lacking behind
+the technology.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-F3IK6GD/ZP7nLljBs/R1
+--=-32xhleHqgjOOp97RuXgO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -73,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPdb4jAAoJECmIfjd9wqK0csMQAL1cBOZufcaYeW8OXM3GOs3x
-rqvxv1vvIw5eex/KZ3ILQhEh7sLW/rXAwzrEDYlgjUI59ZYrrYZfiVzCdmULa9z4
-oK8lpB1lEAVY4PdFDK2i9aPMWrYRcvrt8shzNgDnP4XazEoZ+AJ5CFbdF1O/UgzC
-0vohd6B4z2S5buHXmso1XXIgSmU/Tpcwm+ZwA0M5ae49yeSkKwY/OHLrYhITyRvw
-0hpoP6fPoCJhAlJLkOuBalhxS6F8ZgRlMIyOFzHGo0MA7lSqlnMjy6yGaE+q4PrC
-rKrJoGMJ+w96Ibv8CyHUbprgXl/ErBEUhFftX2rafPKbY+3M4ub4gHgVKggoLKo+
-zhokI/Eo1RJHLakpwObjMVzIhR6LevVxnNXGVoNhEY7wjFUhUQc6EUSEPfDE8dkx
-FHz0kHTBXC3uvVNECoqSocrjOrg60qo22KU0KmZboD8Vq3u1qyxPqzQVPrRLeOCK
-2+vE/EYmMcg08Q6CuOE0LTBvEOKCHZ4CTtf2olPVv2rGWb1HPkTTsLL3itvP3Go8
-GePAxuTwlRIMPzqm6Lec1L5+oqwnfuM9MVRP5X8/5hiJRUAd4DKZhGw9tDu4QaRl
-nmtwIvTcil52qXJd7rV9WJvSFZ0Mav/bQopbSATFMPNQ+y2umrQuESfsRI3m15jd
-Rq3pGsMXuzwZmYMLiiEJ
-=u0oE
+iQIbBAABAgAGBQJPdcBYAAoJECmIfjd9wqK0R1MP+I4/0GdXQueEcLLvJkYDF3rJ
+DuT0O/LAx1v4oy8oz1YtTWn6tu4oMNkTvsI/fhtTfaptEA5/VNgKM4VNqXMrVlZN
+MtK5gv+3kAVyS7sYbktedA5JzR6w5mC9OsiufzIYkKfMNRGx/2mZO93O3x5cON5v
+MLA3nbOu7Ysh3RRlZLFQl49o6+4wufQyiZCqkXG8ZlZFCmpk8tA9EN5NDvPlXV/x
+SmEVydwDQWlcBo4myDaW99F7NTjkAoYsB/gWGG/vrxARNohRAxAZFyclbkGnysmd
+qrNHsWQJExrO2Ijf3mtOoELpKG5YLpyGFBKhDKGI2dKwxj5ZTYxhvdDUiRQcmsGk
+owf2gRUgt0sDAssokB4550t4XTz1oU+dMQLB3H/aGVFGw+mbB4XGqkGSDafLbXc4
+i6zTQB/r44PQUq1rIGjODbxBBTj8b2d4Xq1JdAjDtzV5YCGtnQAiOS+nGjVWOvzM
+JV30oK+2Utt22XjeBL0EnhS/9XxNZsnaObVB99FC3ghXxD4xMtMu/zl7J7LCMP2m
+TAs5YR/426vR9FH14PrUJAFqAAwdlvmyUZT1VpsJkqxNqZy04rSn+9mhOFPMy9nS
+l9N5hrkVehc28zViVsmFAYZ8+JBzTns/tIvH4Gq/wKEV6bX0/axWoXI063t4ICfe
+BKtETdiXUdpcsc3Demo=
+=H9TK
 -----END PGP SIGNATURE-----
 
---=-F3IK6GD/ZP7nLljBs/R1--
+--=-32xhleHqgjOOp97RuXgO--
