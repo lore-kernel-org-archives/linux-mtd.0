@@ -1,21 +1,21 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SDlpL-0002J3-Ef
- for linux-mtd@lists.infradead.org; Sat, 31 Mar 2012 00:05:56 +0000
-Message-ID: <4F764A59.1030908@newsguy.com>
-Date: Fri, 30 Mar 2012 17:05:45 -0700
+ id 1SDmlY-0003e9-Vz
+ for linux-mtd@lists.infradead.org; Sat, 31 Mar 2012 01:06:05 +0000
+Message-ID: <4F765873.6090209@newsguy.com>
+Date: Fri, 30 Mar 2012 18:05:55 -0700
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/4] MTD: flash drivers set ecc strength
+Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
 References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-3-git-send-email-mikedunn@newsguy.com>
- <CAN8TOE_BxgTMJb0beyDC17jcmavmuz0WGvLw3NbJRCiuvB4VnA@mail.gmail.com>
-In-Reply-To: <CAN8TOE_BxgTMJb0beyDC17jcmavmuz0WGvLw3NbJRCiuvB4VnA@mail.gmail.com>
+ <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
+ <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
+Cc: David Woodhouse <David.Woodhouse@intel.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,87 +26,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/29/2012 10:24 AM, Brian Norris wrote:
-> Hi Mike, Artem, David,
-> 
-> Sorry for the late review here. It looks like this is already queued
-> up for merging soon by David...
-
-
-Thanks for having a look Brian.
-
-
-> (BTW, patch 1 and 2 seem to do nothing by themselves; should they
-> really be merged in the 3.4 window?)
-
-
-Correct; it's just cruft currently.  There is a flaw in the patchset that was
-pointed out by Ivan.  Basically, the threshold should be determined based on the
-ecc strength of each ecc step, not on the aggregate ecc strength of the entire
-page.  Since no one is clamoring for this change, I figured I'd wait until this
-merge window passed before following up.  Fixing this flaw will require patching
-many individual drivers.  The scope of the original patches was limited to the
-nand infrastructure code.
-
-
-> 
+On 03/29/2012 10:30 AM, Brian Norris wrote:
 > On Sun, Mar 11, 2012 at 2:21 PM, Mike Dunn <mikedunn@newsguy.com> wrote:
->> Flash device drivers initialize 'ecc_strength' in struct mtd_info, which is the
->> maximum number of bit errors that can be corrected in one writesize region.
+>> The drivers' read methods, absent an error, return a non-negative integer
+>> indicating the maximum number of bit errors that were corrected in any one
+>> writesize region.  MTD returns -EUCLEAN if this is >= euclean_threshold, 0
+>> otherwise.  Note that this is a subtle change to the driver interface.
 >>
->> Drivers using the nand interface intitialize 'strength' in struct nand_ecc_ctrl,
->> which is the maximum number of bit errors that can be corrected in one ecc step.
->> Nand infrastructure code translates this to 'ecc_strength'.
->>
->> Also for nand drivers, the nand infrastructure code sets ecc.strength for ecc
->> modes NAND_ECC_SOFT, NAND_ECC_SOFT_BCH, and NAND_ECC_NONE.  It is set in the
->> driver for all other modes.
+>> This and the preceeding patches in this set were tested ubi on top of the
+>> nandsim and docg4 devices, running the ubi test io_basic from mtd-utils.
 > 
-> I agree that the other modes should be set by the driver, but is there
-> any kind of sanity check? We've seen problems with the addition of the
-> mtd->writebufsize parameter that didn't get caught as uninitialized in
-> a large number of drivers. I don't think your later patches handle the
-> case that mtd->ecc_strength is not initialized or is 0.
+> Did you test any non-NAND devices? I'm getting the feeling that some
+> of this is misguided or at least needs some fixing. See below.
 
 
-I'll look into adding sanity checks.
+No, not tested on non-nand yet.
 
 
 > 
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 1e907dc..8008853 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -3350,6 +3350,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->>                if (!chip->ecc.size)
->>                        chip->ecc.size = 256;
->>                chip->ecc.bytes = 3;
->> +               chip->ecc.strength = 1;
->>                break;
->>
->>        case NAND_ECC_SOFT_BCH:
->> @@ -3384,6 +3385,8 @@ int nand_scan_tail(struct mtd_info *mtd)
->>                        pr_warn("BCH ECC initialization failed!\n");
->>                        BUG();
->>                }
->> +               chip->ecc.strength =
->> +                       chip->ecc.bytes*8 / fls(8*chip->ecc.size);
+>> We may want to also change the name of the macro mtd_is_bitflip(), since this is
+>> not really correctly named anymore.
 > 
-> Isn't this spacing against coding style? I'd suggest spaces around the
-> '*'. Also, after a few minutes, I have no idea where this calculation
-> comes from. But I'm not familiar with SOFT_BCH. Maybe a comment is in
-> order?
+> What sort of name change? Shouldn't EUCLEAN still mean bitflip? We are
+> just masking the bitflips below a threshold. Anyway, if you have a
+> better name, bring it up! I think I changed the name from my original
+> choice based on Artem's suggestions, so I'm open to anything with more
+> merit :)
 > 
->> @@ -3397,6 +3400,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->>                chip->ecc.write_oob = nand_write_oob_std;
->>                chip->ecc.size = mtd->writesize;
->>                chip->ecc.bytes = 0;
->> +               chip->ecc.strength = 0;
->>                break;
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index 5bbd717..6871658 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -789,12 +789,24 @@ EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
+>>  int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+>>             u_char *buf)
+>>  {
+>> +       int ret_code;
+>>        *retlen = 0;
+>>        if (from < 0 || from > mtd->size || len > mtd->size - from)
+>>                return -EINVAL;
+>>        if (!len)
+>>                return 0;
+>> -       return mtd->_read(mtd, from, len, retlen, buf);
+>> +
+>> +       /*
+>> +        * In the absence of an error, drivers return a non-negative integer
+>> +        * representing the maximum number of bitflips that were corrected on
+>> +        * any one writesize region (typically a NAND page).
+>> +        */
+>> +       ret_code = mtd->_read(mtd, from, len, retlen, buf);
+>> +
+>> +       if (unlikely(ret_code < 0))
+>> +               return ret_code;
+>> +
+>> +       return ret_code >= mtd->euclean_threshold ? -EUCLEAN : 0;
+>>  }
 > 
-> This will cause problems with your patch 4, I think. I'll comment on
-> the other email.
+> This seems wrong in the case that mtd->euclean_threshold == 0. 
+
+
+You are correct!  Thanks.  Devices with no ecc (for which euclean_threshold ==
+0) will always return 0 (absent an error), which will result in mtd always
+returning -EUCLEAN.  Oops! Thanks again.
+
+
+> This could be the case for any of the following:
+> (1) NAND that uses ECC_NONE
+> (2) NAND drivers with HW_ECC that don't initialize chip->ecc.strength
+> (3) MTD without ECC (e.g., NOR)
+> (4) Other drivers that might have missed initializing mtd->ecc_strength
 > 
-> Brian
+> Regarding (1): although ECC_NONE is not recommended, it's possible. I
+> don't think this deserves an EUCLEAN message.
 > 
-> 
+> Regarding (2): I notice that your nand_base.c code (patch 2) leaves
+> ecc.strength initialization up to the driver. I think a sanity check
+> could be provided in those cases. For instance, in the NAND_ECC_HW*
+> cases, you could warn or error out on 'chip->ecc.strength == 0'.
+
+
+Yes, I'll include sanity checks in next patches.
+
+
+> If I'm correct, (3) is quite significant, since non-ECC'd MTDs would
+> produce EUCLEAN statuses on every read.
+
+
+Yup.  Again, oops!
+
+Artem, what are your thoughts on fixing these patches, given that many nand
+drivers will have to be touched?  I'm willing to see it through.
+
+Thanks again Brian,
+Mike
