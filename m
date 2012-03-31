@@ -1,23 +1,24 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SDmwo-0003tq-Rh
- for linux-mtd@lists.infradead.org; Sat, 31 Mar 2012 01:17:43 +0000
-Message-ID: <4F765B2D.5040604@newsguy.com>
-Date: Fri, 30 Mar 2012 18:17:33 -0700
+ id 1SDn2R-0004YY-Ib
+ for linux-mtd@lists.infradead.org; Sat, 31 Mar 2012 01:23:32 +0000
+Message-ID: <4F765C88.5020306@newsguy.com>
+Date: Fri, 30 Mar 2012 18:23:20 -0700
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
-Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
- <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
- <1333109630.5440.18.camel@sauron.fi.intel.com>
-In-Reply-To: <1333109630.5440.18.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH 0/3] MTD: Change meaning of -EUCLEAN return code on reads
+References: <1331832353-15569-1-git-send-email-mikedunn@newsguy.com>
+ <20120316111939.GA10362@parrot.com> <4F636964.3030904@newsguy.com>
+ <20120316184345.GF10228@parrot.com> <4F64F17C.2070409@newsguy.com>
+ <1333117016.5440.41.camel@sauron.fi.intel.com>
+In-Reply-To: <1333117016.5440.41.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/30/2012 05:13 AM, Artem Bityutskiy wrote:
-> On Thu, 2012-03-29 at 10:30 -0700, Brian Norris wrote:
->> Did you test any non-NAND devices? I'm getting the feeling that some
->> of this is misguided or at least needs some fixing. See below.
+On 03/30/2012 07:16 AM, Artem Bityutskiy wrote:
+> On Sat, 2012-03-17 at 13:18 -0700, Mike Dunn wrote:
+>> Before I start on this, I'd like to get a
+>> blessing from Artem / David, since the chamges will touch many drivers
+>> in a
+>> somehat non-trivial manner. 
 > 
-> you are right, these 2 should be reverted and Mike should come back with
-> a better patch-set. I was not careful enough, and thanks for the review.
+> Come on Mike, just go ahead without blessings. The stuff you are want to
+> do very important I believe. Currently MTD is basically lacking behind
+> the technology.
 
 
-At least you were not the author.  Yes, thank you Brian.
+How about just a slight nod in my general direction?  :)
 
-Artem, I don't think you pushed the offending patches (3 and 4).  If you want to
-leave the first two patches in, I'll be happy to fix them (they currently don't
-do anything) when the whole efort is done.  Or else you can pull them and I'll
-start from scratch.  Or slink away in shame :)  But I'd prefer to get this done
-right.
+OK, I was letting it rest until the merge window passed, which was good because
+it gave Brian time to point out my blunder.
 
 Mike
