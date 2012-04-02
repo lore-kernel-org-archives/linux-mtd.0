@@ -1,19 +1,30 @@
-Message-ID: <1333364925.5440.104.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/5] mtd: plat_nand: Add default partition parser and
- use it
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SEhml-00067U-NL
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 13:59:08 +0000
+Message-ID: <1333375338.22146.6.camel@sauron.fi.intel.com>
+Subject: Re: [patch] UBIFS: Add a encryption key parameter to the compress /
+ decompress function.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Date: Mon, 02 Apr 2012 14:08:45 +0300
-In-Reply-To: <201203281112.48788.hartleys@visionengravers.com>
-References: <201203281112.48788.hartleys@visionengravers.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Mon, 02 Apr 2012 17:02:18 +0300
+In-Reply-To: <alpine.DEB.2.00.1203291606450.912@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
+ <1330531826.3545.128.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203191635030.22256@eristoteles.iwoars.net>
+ <1332511796.18717.72.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203231739330.22944@eristoteles.iwoars.net>
+ <1332521515.22278.2.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
+ <1332836863.31549.9.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203291606450.912@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-tYG+VEjJEvHHNxPyqYt8"
+ boundary="=-GuAY6Oye8GgZrNz57ORi"
 Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, linux-sh@vger.kernel.org,
- Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- uclinux-dist-devel@blackfin.uclinux.org, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,27 +36,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-tYG+VEjJEvHHNxPyqYt8
+--=-GuAY6Oye8GgZrNz57ORi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-03-28 at 11:12 -0700, H Hartley Sweeten wrote:
-> This patch series adds cmdlinepart as the default partition parser for th=
-e
-> plat_nand driver and updates all the arch setup code to use it.
+On Thu, 2012-03-29 at 16:11 +0200, Joel Reardon wrote:
+> Added a crypto_key parameter to ubifs compress and decompress. Will be us=
+ed
+> later if non-NULL to encrypt / decrypt data nodes.
 >=20
-> Arch setup code that requires other partition parsers can still pass that
-> information as chip.part_probe_types.
->=20
-> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 
-Pushed the series to l2-mtd.git, thanks!
+Hi,
+
+thanks, pushed with the following amendments:
+
+diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
+index c91974a..b796b8d 100644
+--- a/fs/ubifs/compress.c
++++ b/fs/ubifs/compress.c
+@@ -82,8 +82,8 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TY=
+PES_CNT];
+  * @out_len: output buffer length is returned here
+  * @compr_type: type of compression to use on enter, actually used compres=
+sion
+  *              type on exit
+- * @crypto_key: a pointer to bytes to use as the encryption key,
+- *              if NULL then no encryption is performed.
++ * @crypto_key: a pointer to bytes to use as the encryption key, if NULL t=
+hen
++ *              no encryption is performed
+  *
+  * This function compresses input buffer @in_buf of length @in_len and sto=
+res
+  * the result in the output buffer @out_buf and the resulting length in
+@@ -142,8 +142,8 @@ no_compr:
+  * @out_buf: output buffer where decompressed data should
+  * @out_len: output length is returned here
+  * @compr_type: type of compression
+- * @crypto_key: a pointer to bytes to use as the decryption key,
+- *             if NULL then no decryption is performed.
++ * @crypto_key: a pointer to bytes to use as the decryption key, if NULL t=
+hen
++ *              no decryption is performed.
+  *
+  * This function decompresses data from buffer @in_buf into buffer @out_bu=
+f.
+  * The length of the uncompressed data is returned in @out_len. This funct=
+ions
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 9ece275..57c4d2f 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -1113,8 +1113,7 @@ static int recomp_data_node(struct ubifs_data_node *d=
+n, int *new_len)
+=20
+        len =3D le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+        compr_type =3D le16_to_cpu(dn->compr_type);
+-       err =3D ubifs_decompress(
+-               &dn->data, len, buf, &out_len, compr_type, NULL);
++       err =3D ubifs_decompress(&dn->data, len, buf, &out_len, compr_type,=
+ NULL);
+        if (err)
+                goto out;
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-tYG+VEjJEvHHNxPyqYt8
+--=-GuAY6Oye8GgZrNz57ORi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +112,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPeYi9AAoJECmIfjd9wqK01TkQAMewuEX1gPp1EPSpGZQcSvXs
-jsTvmYqJE6vhHRv8KlbN+bfz5Gjh4xsUyz63/QqILHv8ru3R3MypineF9tGlV+k+
-fvWdcmMuXQ4VmkfsIKQIQ4Y51wWJG91J4QG5Va/Epk7yXzyvskINWN3YWKp0J0Mk
-zePW7mBxEZFFRr45/sTK7Wx3Us8FU3NEV71cbXWjjw+AosLc4G92dIDXEie7BTUn
-OqS2+oRbNyigsDSb9WPTAu4O9Ln5p7F99elipFtBP/OGuSVK9Q92ImUwPB6FJf6E
-+rZs/PiYrfMxkyCUsIw/4FVT49PbRusDsVSKzIrTxzzZ/mjb6ANx3gRJBqDXNyvH
-hdhzlacV4H4Id60jIuDeAocI95v39MPX5oQ075P4dNBDd06og9K0RGXvpFPXrVy5
-ZUwfws9ltOEy1oo4Mg8FpJ6j2OWTK/9xc0jFHcLB8WrQ669W9ScM+xQNpki1eaJk
-u5qPSAYr7mod3RLahiPytspkqGdXdtdK256ceUZ0c2u/Bc18mEtq27flRVA3/tc5
-OiWFAS+8d/qCR8evTAn5PSJoGmZk0ZAldcoZ2IRimwEuz8aXZjdX0pkezc8yhulV
-INJBhHNlei00Rop7Gq851ob32uUQrUO5DiPyhF/4WwIxMfeTQ3PsYjEI+j3IzfEF
-DyRHjIGr/NVucPumONWe
-=pJwc
+iQIcBAABAgAGBQJPebFqAAoJECmIfjd9wqK0qPMQAJar+Nk0465TDo5O5hSdlEwv
+E+ZuJ/XvQAYcHrCi7oQhd9a8v3lhTNTuvZNCpN6Hj5mTQIqQ/T98s0jGiwXI9+I9
+HQgdMeF/HLrbj0gNHg66dqKX+BA0fS/FrXosNIzkFjvj+ybXjzmBeZiXOKSnWHAd
+SgVA/71aXVlY77n0PGvo4qhJ4eFSE6bcV4zExSuCYGj1wQ26wX9NLknoqUHnq66W
+NPxJH5ipD0iO2LO9d2OZaUJtPp5HE4lQS4chEzVYk22isAfOieuR7agJgTozL65G
+NsGx9wHDsNd3/mjhSW8ve7Fd6dCXaO+ng/+U08aor0NEW8sQO6qmCNNCNYaPg+8d
+ytqPKJTnutDfttgomqhXd6HJv/JRFrohrinPipC1DssrI6rJpD9OEhbux91jdN/4
+oj8DefY3mem3cBQsLve2tYJdOekoBpMehzuCJsyu97w+IYhsxnAaX3eI3SS8QOR7
+ZgWB+b+Pp47towo1KPSD4y9jOet6fZVJRpeVeVVt6mXZwaMIPCOdMIHLudwUw8nI
+9VxIh3YGrn6JYibAi45zXMf+YAQd5y+dARSU25JvAXvj1fQ+lAP2IyaYfcnd+UHc
+PY5PEFZi6XakfvpFc7b0yVe1LucCM8uTLXZLJNuXaaTP14ag0R24C6TVLdKVmKBD
+8Y4lmwrAX2WrN9dIVXOU
+=qe7E
 -----END PGP SIGNATURE-----
 
---=-tYG+VEjJEvHHNxPyqYt8--
+--=-GuAY6Oye8GgZrNz57ORi--
