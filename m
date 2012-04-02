@@ -1,22 +1,20 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SEl94-0006eF-LT
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 17:34:23 +0000
-Message-ID: <4F79E314.609@newsguy.com>
-Date: Mon, 02 Apr 2012 10:34:12 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from cooperlighting-sw.cooperlighting.com ([216.130.131.68])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SElCV-0007fv-Km
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 17:37:57 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/4] MTD: flash drivers set ecc strength
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-3-git-send-email-mikedunn@newsguy.com>
- <CAN8TOE_BxgTMJb0beyDC17jcmavmuz0WGvLw3NbJRCiuvB4VnA@mail.gmail.com>
-In-Reply-To: <CAN8TOE_BxgTMJb0beyDC17jcmavmuz0WGvLw3NbJRCiuvB4VnA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: User error with fw_printenv - I hope
+Date: Mon, 2 Apr 2012 13:37:34 -0400
+Message-ID: <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
+In-Reply-To: <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
+References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
+ <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
+From: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
-
-I was just reviewing things and realized that I accidentally ignored one of your
-comments...
-
-
-On 03/29/2012 10:24 AM, Brian Norris wrote:
->>
->>        case NAND_ECC_SOFT_BCH:
->> @@ -3384,6 +3385,8 @@ int nand_scan_tail(struct mtd_info *mtd)
->>                        pr_warn("BCH ECC initialization failed!\n");
->>                        BUG();
->>                }
->> +               chip->ecc.strength =
->> +                       chip->ecc.bytes*8 / fls(8*chip->ecc.size);
-> 
-> Isn't this spacing against coding style? I'd suggest spaces around the
-> '*'. Also, after a few minutes, I have no idea where this calculation
-> comes from. But I'm not familiar with SOFT_BCH. Maybe a comment is in
-> order?
-
-
-I'm no bch expert myself (ping, Ivan), but I believe this is correct, and it is
-consistant with the equations used to determine the 't' parameter (i.e.,
-ecc_strength) from nand_bch_init() in drivers/mtd/nand/nand_bch.c.  (BTW,
-currently only nandsim uses SOFT_BCH.)  As for coding style... honestly, I
-mostly just rely on checkpatch.pl, but I'll check the style guide document.
-
-Thanks,
-Mike
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBGcnlzaW5nZXIg
+W21haWx0bzp2YXBpZXIuYWRpQGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBNYXJjaCAzMCwg
+MjAxMiA2OjMwIFBNDQo+IFRvOiBCaXNob3AsIE1hcmsNCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFJlOiBVc2VyIGVycm9yIHdpdGggZndfcHJpbnRlbnYg
+LSBJIGhvcGUNCj4gDQo+IE9uIEZyaSwgTWFyIDMwLCAyMDEyIGF0IDE2OjU0LCBCaXNob3AsIE1h
+cmsgd3JvdGU6DQo+ID4gSSBhbSB0cnlpbmcgdG8gcmVhZCBteSB1Ym9vdCBlbnZpcm9ubWVudCBm
+cm9tIHVzZXJzcGFjZS7CoCBOb3QgdG9vDQo+IHN1Y2Nlc3NmdWwuDQo+ID4NCj4gPiByb290Oi8+
+IGNhdCAvcHJvYy9tdGQNCj4gPiBkZXY6wqDCoMKgIHNpemXCoMKgIGVyYXNlc2l6ZcKgIG5hbWUN
+Cj4gPiBtdGQwOiAwMDA4MDAwMCAwMDAyMDAwMCAiYm9vdGxvYWRlcihuYW5kKSINCj4gPiBtdGQx
+OiAwMDgwMDAwMCAwMDAyMDAwMCAibGludXgga2VybmVsKG5hbmQpIg0KPiA+IG10ZDI6IDA2NDAw
+MDAwIDAwMDIwMDAwICJmaWxlIHN5c3RlbShuYW5kKSINCj4gPiBtdGQzOiAwOTM4MDAwMCAwMDAy
+MDAwMCAiZmlsZSBzeXN0ZW0odWJpZnMpIg0KPiA+DQo+ID4gRnJvbSBteSB1Ym9vdCBjb25maWc6
+DQo+ID4gI2RlZmluZSBDT05GSUdfRU5WX09GRlNFVMKgwqDCoMKgwqDCoCAweDYwMDAwDQo+ID4g
+I2RlZmluZSBDT05GSUdfRU5WX1NJWkXCoMKgwqDCoMKgwqDCoMKgIDB4MjAwMDANCj4gPg0KPiA+
+IFRyeSAjMQ0KPiA+IHJvb3Q6Lz4gY2F0IC9ldGMvZndfZW52LmNvbmZpZw0KPiA+IC9kZXYvbXRk
+MMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMHg2MDAwMMKgwqDCoMKgwqDCoMKgwqAgMHgy
+MDAwMA0KPiAweDIwMDAwwqDCoMKgwqDCoMKgwqDCoCAxDQo+ID4NCj4gPiByb290Oi8+IC4vZndf
+cHJpbnRlbnYNCj4gPiBDYW5ub3QgcmVhZCBiYWQgYmxvY2sgbWFyazogSW52YWxpZCBhcmd1bWVu
+dA0KPiANCj4gc3RyYWNlIGl0IHRvIHNlZSB3aGF0IGlzIGFjdHVhbGx5IGNvbXBsYWluaW5nDQo+
+IC1taWtlDQoNCnJvb3Q6Lz4gc3RyYWNlIGZ3X3ByaW50ZW52DQptbWFwMihOVUxMLCA0MDk2LCBQ
+Uk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZBVEV8TUFQX0FOT05ZTU9VU3wweDQwMDAwMDAs
+IC0xLCAwKSA9IDB4ODg2MDAwDQpzdGF0KCIvZXRjL2xkLnNvLmNhY2hlIiwge3N0X21vZGU9U19J
+RlJFR3wwNjQ0LCBzdF9zaXplPTExMDgsIC4uLn0pID0gMA0Kb3BlbigiL2V0Yy9sZC5zby5jYWNo
+ZSIsIE9fUkRPTkxZKSAgICAgID0gMw0KbW1hcDIoTlVMTCwgMTEwOCwgUFJPVF9SRUFELCBNQVBf
+UFJJVkFURSwgMywgMCkgPSAweDg5ZjAwMA0KY2xvc2UoMykgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgID0gMA0Kb3BlbigiL2xpYi9saWJnY2Nfcy5zby4xIiwgT19SRE9OTFkpICAgID0g
+Mw0KZnN0YXQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBzdF9zaXplPTYyNDE2LCAuLi59KSA9
+IDANCm1tYXAyKE5VTEwsIDQwOTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxN
+QVBfQU5PTllNT1VTfDB4NDAwMDAwMCwgLTEsIDApID0gMHg4OTAwMDANCnJlYWQoMywgIlwxNzdF
+TEZcMVwxXDFcMFwwXDBcMFwwXDBcMFwwXDBcM1wwalwwXDFcMFwwXDBcMzI0I1wwXDAwMDRcMFww
+XDAiLi4uLCA0MDk2KSA9IDQwOTYNCm1tYXAyKE5VTEwsIDU3MjU2LCBQUk9UX1JFQUR8UFJPVF9F
+WEVDLCBNQVBfUFJJVkFURXxNQVBfREVOWVdSSVRFfE1BUF9FWEVDVVRBQkxFLCAzLCAwKSA9IDB4
+MjcwMDAwDQptbWFwMihOVUxMLCA4MTg0LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
+VEV8TUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHg4OTIwMDANCnByZWFkKDMsICJcMTdkXDMyNS9c
+MGhcNWg7L1wzNTNcMjcwOFwyNDJcMjAyXDMxNlw2XDMwMlwzMjJcMjcwXDBcMFwzNzdcMzQzXDM1
+XDM3MlwyMTYvOFwyNTZcMzAyXDI1NCIuLi4sIDgwMjQsIDUzMjQ4KSA9IDgwMjQNCmNsb3NlKDMp
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDANCm11bm1hcCgweDg5MDAwMCwgNDA5
+NikgICAgICAgICAgICAgICAgICA9IDANCm9wZW4oIi9saWIvbGliYy5zby4wIiwgT19SRE9OTFkp
+ICAgICAgICA9IDMNCmZzdGF0KDMsIHtzdF9tb2RlPVNfSUZSRUd8MDc1NSwgc3Rfc2l6ZT0yNTIy
+MzYsIC4uLn0pID0gMA0KbW1hcDIoTlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1B
+UF9QUklWQVRFfE1BUF9BTk9OWU1PVVN8MHg0MDAwMDAwLCAtMSwgMCkgPSAweDg5MDAwMA0KcmVh
+ZCgzLCAiXDE3N0VMRlwxXDFcMVwwXDBcMFwwXDBcMFwwXDBcMFwzXDBqXDBcMVwwXDBcMFxmXDMx
+M1wwXDAwMDRcMFwwXDAiLi4uLCA0MDk2KSA9IDQwOTYNCm1tYXAyKE5VTEwsIDI0MzkwOCwgUFJP
+VF9SRUFEfFBST1RfRVhFQywgTUFQX1BSSVZBVEV8TUFQX0RFTllXUklURXxNQVBfRVhFQ1VUQUJM
+RSwgMywgMCkgPSAweDgwMDAwMA0KbW1hcDIoTlVMTCwgMTc5MjAsIFBST1RfUkVBRHxQUk9UX1dS
+SVRFLCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLCAtMSwgMCkgPSAweDg4ODAwMA0KcHJlYWQo
+MywgIl9fZ2V0X215YWRkcmVzczogc29ja2V0XDBfX2dldF9teSIuLi4sIDg4NDAsIDI0MTY2NCkg
+PSA4ODQwDQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQptdW5t
+YXAoMHg4OTAwMDAsIDQwOTYpICAgICAgICAgICAgICAgICAgPSAwDQpvcGVuKCIvbGliL2xpYmMu
+c28uMCIsIE9fUkRPTkxZKSAgICAgICAgPSAzDQpmc3RhdCgzLCB7c3RfbW9kZT1TX0lGUkVHfDA3
+NTUsIHN0X3NpemU9MjUyMjM2LCAuLi59KSA9IDANCmNsb3NlKDMpICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA9IDANCm11bm1hcCgweDg5ZjAwMCwgMTEwOCkgICAgICAgICAgICAgICAg
+ICA9IDANCnN0YXQoIi9saWIvbGQtdUNsaWJjLnNvLjAiLCB7c3RfbW9kZT1TX0lGUkVHfDA3NTUs
+IHN0X3NpemU9MjAzNDgsIC4uLn0pID0gMA0KaW9jdGwoMCwgU05EQ1RMX1RNUl9USU1FQkFTRSBv
+ciBTTkRSVl9USU1FUl9JT0NUTF9ORVhUX0RFVklDRSBvciBUQ0dFVFMsIHtCNTc2MDAgb3Bvc3Qg
+aXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDANCmlvY3RsKDEsIFNORENUTF9UTVJfVElNRUJBU0Ug
+b3IgU05EUlZfVElNRVJfSU9DVExfTkVYVF9ERVZJQ0Ugb3IgVENHRVRTLCB7QjU3NjAwIG9wb3N0
+IGlzaWcgaWNhbm9uIGVjaG8gLi4ufSkgPSAwDQpvcGVuKCIvZXRjL2Z3X2Vudi5jb25maWciLCBP
+X1JET05MWSkgICAgPSAzDQppb2N0bCgzLCBTTkRDVExfVE1SX1RJTUVCQVNFIG9yIFNORFJWX1RJ
+TUVSX0lPQ1RMX05FWFRfREVWSUNFIG9yIFRDR0VUUywgMHgyZGZmYjc4KSA9IC0xIEVOT1RUWSAo
+SW5hcHByb3ByaWF0ZSBpb2N0bCBmb3IgZGV2aWNlKQ0KbW1hcDIoTlVMTCwgNDA5NiwgUFJPVF9S
+RUFEfFBST1RfV1JJVEUsIE1BUF9TSEFSRUR8TUFQX0FOT05ZTU9VU3wweDQwMDAwMDAsIDAsIDAp
+ID0gMHg4OWYwMDANCnJlYWQoMywgIi9kZXYvbXRkMCAgICAgICAgICAgICAgIDB4NjAwMDAgIi4u
+LiwgMjU2KSA9IDc0DQpyZWFkKDMsICIiLCAyNTYpICAgICAgICAgICAgICAgICAgICAgICAgPSAw
+DQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQpzdGF0KCIvZGV2
+L210ZDAiLCB7c3RfbW9kZT1TX0lGQ0hSfDA2NjAsIHN0X3JkZXY9bWFrZWRldig5MCwgMCksIC4u
+Ln0pID0gMA0KbW1hcDIoTlVMTCwgMTM1MTY4LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1NI
+QVJFRHxNQVBfQU5PTllNT1VTfDB4NDAwMDAwMCwgMCwgMCkgPSAweDg0MDAwMA0Kb3BlbigiL2Rl
+di9tdGQwIiwgT19SRE9OTFkpICAgICAgICAgICAgID0gMw0KaW9jdGwoMywgTUVNR0VUSU5GTyBv
+ciBNRkJfU0VUX0NIUk9NQV9LRVksIDB4MmRmZmMyMCkgPSAwDQppb2N0bCgzLCBNRU1HRVRCQURC
+TE9DSywgMHgyZGZmYjljKSAgICAgPSAxDQppb2N0bCgzLCBNRU1HRVRCQURCTE9DSywgMHgyZGZm
+YjljKSAgICAgPSAtMSBFSU5WQUwgKEludmFsaWQgYXJndW1lbnQpDQp3cml0ZSgyLCAiQ2Fubm90
+IHJlYWQgYmFkIGJsb2NrIG1hcmsiLCAyNkNhbm5vdCByZWFkIGJhZCBibG9jayBtYXJrKSA9IDI2
+DQp3cml0ZSgyLCAiOiAiLCAyOiApICAgICAgICAgICAgICAgICAgICAgICA9IDINCndyaXRlKDIs
+ICJJbnZhbGlkIGFyZ3VtZW50IiwgMTZJbnZhbGlkIGFyZ3VtZW50KSAgICAgICAgPSAxNg0Kd3Jp
+dGUoMiwgIlxuIiwgMQ0KKSAgICAgICAgICAgICAgICAgICAgICAgPSAxDQpjbG9zZSgzKSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQpfZXhpdCgxKSAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgPSA/DQpyb290Oi8+DQo=
