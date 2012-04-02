@@ -1,14 +1,14 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SEhml-00067U-NL
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 13:59:08 +0000
-Message-ID: <1333375338.22146.6.camel@sauron.fi.intel.com>
-Subject: Re: [patch] UBIFS: Add a encryption key parameter to the compress /
- decompress function.
+ id 1SEiJl-000829-BM
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 14:33:14 +0000
+Message-ID: <1333377383.22146.14.camel@sauron.fi.intel.com>
+Subject: Re: [patch] UBIFS: Add cryptographic functionality when a key is
+ passed to the compress / decompress functions
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 02 Apr 2012 17:02:18 +0300
-In-Reply-To: <alpine.DEB.2.00.1203291606450.912@eristoteles.iwoars.net>
+Date: Mon, 02 Apr 2012 17:36:23 +0300
+In-Reply-To: <alpine.DEB.2.00.1203291639200.912@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
  <1330531826.3545.128.camel@sauron.fi.intel.com>
@@ -17,11 +17,12 @@ References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1203231739330.22944@eristoteles.iwoars.net>
  <1332521515.22278.2.camel@sauron.fi.intel.com>
  <alpine.DEB.2.00.1203252302310.5527@eristoteles.iwoars.net>
- <1332836863.31549.9.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203291606450.912@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1203252325100.5527@eristoteles.iwoars.net>
+ <1332837188.31549.14.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203291639200.912@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-GuAY6Oye8GgZrNz57ORi"
+ boundary="=-qvz89XWxp7QBZ6T+HkL8"
 Mime-Version: 1.0
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
@@ -36,75 +37,120 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-GuAY6Oye8GgZrNz57ORi
+--=-qvz89XWxp7QBZ6T+HkL8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-03-29 at 16:11 +0200, Joel Reardon wrote:
-> Added a crypto_key parameter to ubifs compress and decompress. Will be us=
-ed
-> later if non-NULL to encrypt / decrypt data nodes.
+On Thu, 2012-03-29 at 16:39 +0200, Joel Reardon wrote:
+>  /* Fake description object for the "none" compressor */
+>  static struct ubifs_compressor none_compr =3D {
+>  	.compr_type =3D UBIFS_COMPR_NONE,
+> @@ -75,6 +78,55 @@ static struct ubifs_compressor zlib_compr =3D {
+>  struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
 >=20
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+>  /**
+> + * ubifs_aes_crypt - encrypt / decrypt data.
+> + * @str: data to crypt
+> + * @len: length of the data
+> + * @crypto_key: the cryptographic key to use to crypt the data
+> + * @crypto_key_len: the length of the crypto_key
+> + * @iv: the initialization vector to use
+> + * @ivlen: the length of the initialization vector
+> + *
+> + * This function applies aes encryption to the data. It is done in count=
+er
+> + * mode, which means that encryption and decryption are the same operati=
+on,
+> + * i.e., it XORs the same generated bitstream, so it can be used both fo=
+r
+> + * encryption / decryption. The operation is done in-place, so str mutat=
+es.
+> + */
+> +int ubifs_aes_crypt(void *str, int len, u8 *crypto_key,
+> +		    int crypto_key_len, u8 *iv, int ivlen)
 
-Hi,
+You support only one length - please, kill ivlen parameter.
 
-thanks, pushed with the following amendments:
+Also, should ubifs_aes_crypt be static? I do not see any users outside
+of compress.c. In this case remove the "ubifs_" prefix. But a
+non-written convention, in UBIFS we _tend_ to prefix only non-static
+functions with "ubifs_" and avoid having it for static functions.
 
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index c91974a..b796b8d 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -82,8 +82,8 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TY=
-PES_CNT];
-  * @out_len: output buffer length is returned here
-  * @compr_type: type of compression to use on enter, actually used compres=
-sion
-  *              type on exit
-- * @crypto_key: a pointer to bytes to use as the encryption key,
-- *              if NULL then no encryption is performed.
-+ * @crypto_key: a pointer to bytes to use as the encryption key, if NULL t=
-hen
-+ *              no encryption is performed
-  *
-  * This function compresses input buffer @in_buf of length @in_len and sto=
-res
-  * the result in the output buffer @out_buf and the resulting length in
-@@ -142,8 +142,8 @@ no_compr:
-  * @out_buf: output buffer where decompressed data should
-  * @out_len: output length is returned here
-  * @compr_type: type of compression
-- * @crypto_key: a pointer to bytes to use as the decryption key,
-- *             if NULL then no decryption is performed.
-+ * @crypto_key: a pointer to bytes to use as the decryption key, if NULL t=
-hen
-+ *              no decryption is performed.
-  *
-  * This function decompresses data from buffer @in_buf into buffer @out_bu=
-f.
-  * The length of the uncompressed data is returned in @out_len. This funct=
-ions
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 9ece275..57c4d2f 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1113,8 +1113,7 @@ static int recomp_data_node(struct ubifs_data_node *d=
-n, int *new_len)
-=20
-        len =3D le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-        compr_type =3D le16_to_cpu(dn->compr_type);
--       err =3D ubifs_decompress(
--               &dn->data, len, buf, &out_len, compr_type, NULL);
-+       err =3D ubifs_decompress(&dn->data, len, buf, &out_len, compr_type,=
- NULL);
-        if (err)
-                goto out;
+> +{
+> +	struct crypto_blkcipher *tfm;
+> +	struct blkcipher_desc desc;
+> +	struct scatterlist sg;
+> +	int err =3D 0;
+> +
+> +	tfm =3D crypto_alloc_blkcipher(UBIFS_CRYPTO_ALGORITHM, 0, 0);
+> +
+
+Unnecessary empty line.
+
+> +	if (IS_ERR(tfm)) {
+> +		ubifs_err("failed to load transform for aes: %ld",
+> +			  PTR_ERR(tfm));
+> +		return err;
+> +	}
+> +
+> +	err =3D crypto_blkcipher_setkey(tfm, crypto_key, crypto_key_len);
+> +	desc.tfm =3D tfm;
+> +	desc.flags =3D 0;
+> +	if (err) {
+> +		ubifs_err("crypto_blkcipher_setkey() failed  flags=3D%#x",
+> +			  crypto_blkcipher_get_flags(tfm));
+> +		return err;
+> +	}
+> +	memset(&sg, 0, sizeof(struct scatterlist));
+> +
+
+Empty lines mean grouping, and I think this memeset should be grouped
+with sg_set_buf instead.
+
+
+>  no_compr:
+>  	memcpy(out_buf, in_buf, in_len);
+>  	*out_len =3D in_len;
+>  	*compr_type =3D UBIFS_COMPR_NONE;
+> +	goto encrypt;
+> +
+> +encrypt:
+
+I guess the above goto is redundant?
+
+> +	if (crypto_key) {
+> +		u8 iv[UBIFS_CRYPTO_KEYSIZE];
+> +
+> +		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
+> +		ubifs_aes_crypt(out_buf, *out_len, crypto_key,
+> +				UBIFS_CRYPTO_KEYSIZE, iv, UBIFS_CRYPTO_KEYSIZE);
+> +	}
+>  }
+>=20
+>  /**
+> @@ -149,7 +211,7 @@ no_compr:
+>   * The length of the uncompressed data is returned in @out_len. This fun=
+ctions
+>   * returns %0 on success or a negative error code on failure.
+>   */
+> -int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
+> +int ubifs_decompress(void *in_buf, int in_len, void *out_buf,
+>  		     int *out_len, int compr_type, u8 *crypto_key)
+
+Please, write a fat "WARNING" note in the comment and tell that this
+function modifies the input buffer.
+
+> +/* Size of 128 bits in bytes */
+> +#define AES_KEYSIZE_128 16
+
+If you have no plans to support keys larger than 128 just kill this
+constant please.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-GuAY6Oye8GgZrNz57ORi
+--=-qvz89XWxp7QBZ6T+HkL8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -112,19 +158,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPebFqAAoJECmIfjd9wqK0qPMQAJar+Nk0465TDo5O5hSdlEwv
-E+ZuJ/XvQAYcHrCi7oQhd9a8v3lhTNTuvZNCpN6Hj5mTQIqQ/T98s0jGiwXI9+I9
-HQgdMeF/HLrbj0gNHg66dqKX+BA0fS/FrXosNIzkFjvj+ybXjzmBeZiXOKSnWHAd
-SgVA/71aXVlY77n0PGvo4qhJ4eFSE6bcV4zExSuCYGj1wQ26wX9NLknoqUHnq66W
-NPxJH5ipD0iO2LO9d2OZaUJtPp5HE4lQS4chEzVYk22isAfOieuR7agJgTozL65G
-NsGx9wHDsNd3/mjhSW8ve7Fd6dCXaO+ng/+U08aor0NEW8sQO6qmCNNCNYaPg+8d
-ytqPKJTnutDfttgomqhXd6HJv/JRFrohrinPipC1DssrI6rJpD9OEhbux91jdN/4
-oj8DefY3mem3cBQsLve2tYJdOekoBpMehzuCJsyu97w+IYhsxnAaX3eI3SS8QOR7
-ZgWB+b+Pp47towo1KPSD4y9jOet6fZVJRpeVeVVt6mXZwaMIPCOdMIHLudwUw8nI
-9VxIh3YGrn6JYibAi45zXMf+YAQd5y+dARSU25JvAXvj1fQ+lAP2IyaYfcnd+UHc
-PY5PEFZi6XakfvpFc7b0yVe1LucCM8uTLXZLJNuXaaTP14ag0R24C6TVLdKVmKBD
-8Y4lmwrAX2WrN9dIVXOU
-=qe7E
+iQIcBAABAgAGBQJPeblnAAoJECmIfjd9wqK0lZMQAMMjW5FqBajDqto/0Y8ExCcX
+tnjz2ZT6+T96gwer7ZDbkgt5Eh6V3z1JOSSB6oZoqJ8UgM5rKffV6n//7aXypebO
+e7lDF6Hcs/9YRWSR6j8nFOWpmNiQBa4eNWrp9j9XGMeyt4Joa/lvoDpbFVLU9tRs
+vSv5nZg2tLFVt5xaIQLBflXCUg4goyId3odixtSrEChfK/2iVS+9vzyp/tjuAYdF
+UH/xWMkclNp9n/1CkVJ3NdJREKUngAnLsy6PSX+aab959/FKvMA43iQXKMsTfgSV
+meWpyuKut+zWI30FngPcArLqa3Opb2KVl1MEapZrvjYoz9zPuAA1FOY59bWEATiQ
+0EdxYLAHOz1kBq3PVdNN6WuHVt14WcA/bx0ImAbld0lk78Os3fa0TzqwpW/VrmE+
+fOnmSngM+apanFnATzOoj15ZI3m8usZ9e6WQaNGXl7PCzOvLTvL3R73TDDmebINU
+Gk4o+NmkeBaOJSFiU+ej2Mqv/bnzcS1raSkXXxMGdmTrV2WnjyOdAgQ56bw+s1Mt
+oYnm+kFkm0Dadj8t9K3rbvVzFOoDSEzy1IJBIDPqqC0syeXOWZrCZMWdX/pkeqYv
+grSNG5jLsQpKfX8bUGmIOPdg4Ei/+ydEz4tS6TCIOztiwcZiIZAPAEePFJui8761
+RUEQbMOJMp48m8IWUjEn
+=MeXg
 -----END PGP SIGNATURE-----
 
---=-GuAY6Oye8GgZrNz57ORi--
+--=-qvz89XWxp7QBZ6T+HkL8--
