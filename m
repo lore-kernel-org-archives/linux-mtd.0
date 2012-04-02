@@ -1,20 +1,24 @@
-Received: from x9703.hospira.com ([12.144.124.6] helo=HQAX9703.hospira.com)
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SEj2m-0004HD-8q
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 15:19:44 +0000
-Received: from HQSX5762.Hospira.corp ([10.23.45.240]) by HQAX9703.hospira.com
- with ESMTP id YNmwxNU1Nnz29Qdt (version=TLSv1 cipher=AES128-SHA bits=128
- verify=NO) for <linux-mtd@lists.infradead.org>;
- Mon, 02 Apr 2012 10:19:42 -0500 (CDT)
-From: "Walden, Gerald" <Gerald.Walden@hospira.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 2 Apr 2012 10:19:40 -0500
-Subject: jffs2 file corruption shows up in linux kernel but not u-boot
-Message-ID: <E27A5536A95F1943B6E938D32A37417E02F43C1B77@USNBSX5710.Hospira.corp>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1SEjGb-0004mU-2d
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 15:34:01 +0000
+Message-ID: <4F79C6D5.2070200@newsguy.com>
+Date: Mon, 02 Apr 2012 08:33:41 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
+References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
+ <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
+ <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+ <1333109630.5440.18.camel@sauron.fi.intel.com> <4F765B2D.5040604@newsguy.com>
+ <1333351068.5440.85.camel@sauron.fi.intel.com>
+In-Reply-To: <1333351068.5440.85.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using the 2.6.33 kernel.
+On 04/02/2012 12:17 AM, Artem Bityutskiy wrote:
+> On Fri, 2012-03-30 at 18:17 -0700, Mike Dunn wrote:
+>> Artem, I don't think you pushed the offending patches (3 and 4).  If you want to
+>> leave the first two patches in, I'll be happy to fix them (they currently don't
+>> do anything) when the whole efort is done.  Or else you can pull them and I'll
+>> start from scratch.  Or slink away in shame :)  But I'd prefer to get this done
+>> right.
+> 
+> Yeah, I won't touch them so far and will just wait for incremental
+> patches.
+> 
 
-I am also using the latest version of u-boot.
+OK, thanks Artem.  I can start today and should have patches ready soon.
 
-Our devices have the jffs2 filesystem on flash - mounted at /mnt/jffs2
-
-We write a file which is about 64k to /mnt/jffs2/lib/filename.xml
-
-On 50 out of some 500 boards, we get the error "requestied to read an nonex=
-istent ino #25" after I do
-an "ls -al /mnt/jffs2/lib"
-
-Subsequent mounts will mount the file system - the error message above is s=
-till printed out during mounting.
-
-The reason I bring up u-boot is that I can halt the boot process to get to =
-the u-boot prompt, and I can
-execute the command "ls".  The ls command scans the jffs2 filesystem.  The =
-u-boot jffs2 scan process shows no=20
-errors and completes printing out the filesystem listing.
-
-It seems that u-boot has validated the filesystem, yet when I load the linu=
-x kernel and interact with the filesystem
-at the /mnt/jffs2/lib the readinode.c routine in the jffs2 subsystems finds=
- an error.
-
-Any advice on these results??
-
-Thanks
-
-Jerry
-
-CONFIDENTIALITY STATEMENT. This email and any attachment is for the sole us=
-e of the intended recipient and may contain private, confidential and/or pr=
-ivileged information that may be subject to Hospira internal policies. If y=
-ou are not the intended recipient, any dissemination, distribution or copyi=
-ng is strictly prohibited. If you have received this transmission in error,=
- please notify Hospira immediately by return email or by email to privacypo=
-stmaster@hospira.com and delete the message and all copies and attachments =
-from your system.
+Mike
