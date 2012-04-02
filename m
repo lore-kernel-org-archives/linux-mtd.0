@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SEcIJ-0005AZ-FQ
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 08:07:20 +0000
-Message-ID: <1333354231.5440.89.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH (mtd-utils)] Makefile: fixup previous 'make clean' fix
+Message-ID: <1333364925.5440.104.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/5] mtd: plat_nand: Add default partition parser and
+ use it
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 02 Apr 2012 11:10:31 +0300
-In-Reply-To: <1332979146-8866-1-git-send-email-computersforpeace@gmail.com>
-References: <1332979146-8866-1-git-send-email-computersforpeace@gmail.com>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Date: Mon, 02 Apr 2012 14:08:45 +0300
+In-Reply-To: <201203281112.48788.hartleys@visionengravers.com>
+References: <201203281112.48788.hartleys@visionengravers.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-QKmDP17U+tI4jcDgsTJT"
+ boundary="=-tYG+VEjJEvHHNxPyqYt8"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-sh@vger.kernel.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ uclinux-dist-devel@blackfin.uclinux.org, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +25,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QKmDP17U+tI4jcDgsTJT
+--=-tYG+VEjJEvHHNxPyqYt8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-03-28 at 16:59 -0700, Brian Norris wrote:
-> Apparently, Makefile comments need to be made without indentation. Otherw=
-ise,
-> they are printed out as shell commands. This fix prevents seeing this in =
-your
-> shell during 'make clean':
+On Wed, 2012-03-28 at 11:12 -0700, H Hartley Sweeten wrote:
+> This patch series adds cmdlinepart as the default partition parser for th=
+e
+> plat_nand driver and updates all the arch setup code to use it.
+>=20
+> Arch setup code that requires other partition parsers can still pass that
+> information as chip.part_probe_types.
+>=20
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 
-Pushed to mtd-utils.git, thanks!
+Pushed the series to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QKmDP17U+tI4jcDgsTJT
+--=-tYG+VEjJEvHHNxPyqYt8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPeV73AAoJECmIfjd9wqK0MdUP/0EPdDuVi50i66Lu4AZUo968
-9/bpbyFDS43+Pw8JkvYt8A2gVRvss0mn2mu1lVzrWI/kK5f22ICGQ6V0GZQeTH7E
-/BAXKqXlRUc/uLvwyexQRspWnR17T09enLFF0cE61yRIyB6D95rzK4L3gGF7dlAR
-zc9SPqHyWgGQN5dZoGT4PF8voAdy4McX0OwnTs5lKtFyPsoazTQRaHFgUX+vdRIk
-tBHGiZBXvK0wbABGtPY1LdpTRmJdPoSDJtVmNK0uoPR8iYwpc/VZZWW7lRrE+rQO
-XMU7Poe9pB60xXpi/DbCQxXF8fBbl5D4rXX41t2FzgBwyYl5z1HH/dYagmwjEtxB
-qkhZIKSPO/eEc1rjUgSf1+rirCN7gkYr7j5s5k6m4xAQZsZW4Wjvtze8eFZQVNTQ
-wuYih0FmsfbzmAoYC82DB7YMKRpQ13etTJaT2CjOFriH4j7cujeqCWWdQi+4f9/J
-xkXa+V2n8O518Hs9MK16mDU0Mc30lN+YdlzjzLlhMex85OJtVmsus9TyF7yC6VOK
-E/NeQ82qiom40Na5tN+Hy6wPs/Tus/9Vb4pH85nT/BTiOcISd0tigHjfuUd10zqG
-RqfFhsciB1boaJ/OwhBpEP2AeurxHGx+bNNQJBcyHCYxeeOGxgr809lmck3ITwDO
-W0eqdF3OoTaSwJrEKqTw
-=bpYB
+iQIcBAABAgAGBQJPeYi9AAoJECmIfjd9wqK01TkQAMewuEX1gPp1EPSpGZQcSvXs
+jsTvmYqJE6vhHRv8KlbN+bfz5Gjh4xsUyz63/QqILHv8ru3R3MypineF9tGlV+k+
+fvWdcmMuXQ4VmkfsIKQIQ4Y51wWJG91J4QG5Va/Epk7yXzyvskINWN3YWKp0J0Mk
+zePW7mBxEZFFRr45/sTK7Wx3Us8FU3NEV71cbXWjjw+AosLc4G92dIDXEie7BTUn
+OqS2+oRbNyigsDSb9WPTAu4O9Ln5p7F99elipFtBP/OGuSVK9Q92ImUwPB6FJf6E
++rZs/PiYrfMxkyCUsIw/4FVT49PbRusDsVSKzIrTxzzZ/mjb6ANx3gRJBqDXNyvH
+hdhzlacV4H4Id60jIuDeAocI95v39MPX5oQ075P4dNBDd06og9K0RGXvpFPXrVy5
+ZUwfws9ltOEy1oo4Mg8FpJ6j2OWTK/9xc0jFHcLB8WrQ669W9ScM+xQNpki1eaJk
+u5qPSAYr7mod3RLahiPytspkqGdXdtdK256ceUZ0c2u/Bc18mEtq27flRVA3/tc5
+OiWFAS+8d/qCR8evTAn5PSJoGmZk0ZAldcoZ2IRimwEuz8aXZjdX0pkezc8yhulV
+INJBhHNlei00Rop7Gq851ob32uUQrUO5DiPyhF/4WwIxMfeTQ3PsYjEI+j3IzfEF
+DyRHjIGr/NVucPumONWe
+=pJwc
 -----END PGP SIGNATURE-----
 
---=-QKmDP17U+tI4jcDgsTJT--
+--=-tYG+VEjJEvHHNxPyqYt8--
