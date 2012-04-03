@@ -1,24 +1,20 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SF9JW-0001BF-9p
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 19:22:46 +0000
-Received: by bkcjk13 with SMTP id jk13so80731bkc.36
- for <linux-mtd@lists.infradead.org>; Tue, 03 Apr 2012 12:22:44 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SF9Zh-0002gn-Sr
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 19:39:30 +0000
+Date: Tue, 3 Apr 2012 21:39:20 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd/gpmi : do not include the mxs.h
+Message-ID: <20120403193920.GC2201@pengutronix.de>
+References: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
-References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
- <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
- <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
- <CAMjpGUeMXtTTjdOjEyxZM2Gc0Ww9qyViMufSFu22voTLs33Xxg@mail.gmail.com>
- <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 3 Apr 2012 12:22:23 -0700
-Message-ID: <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
-Subject: Re: User error with fw_printenv - I hope
-To: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="69pVuxX8awAiJ7fD"
+Content-Disposition: inline
+In-Reply-To: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 3, 2012 at 08:59, Bishop, Mark wrote:
-> I don't have a print_loff_t(). =C2=A0I have a ioctl_decode() instead and =
-I am trying to cram your patch into it.
 
-all the print_loff_t does is process a pointer to an int.  you could
-probably do the same thing by changing the mtd.c file to process the
-int directly (look at the other ioctls that do umove() with &i).
--mike
+--69pVuxX8awAiJ7fD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Mar 31, 2012 at 10:36:57PM -0400, Huang Shijie wrote:
+> The mxs.h does not exit in the mx6q.
+> So rewrite the __mxs_clrl()/__mxs_setl() and remove the mxs.h.
+>=20
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+
+I am quite sure we will have STMP devices in 3.5 which should make this pat=
+ch
+obsolete. If this patch is considered a bugfix for 3.4, then OK for now.
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--69pVuxX8awAiJ7fD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk97UegACgkQD27XaX1/VRvmsQCfXylR4pqF5WNlzrLOKsP7PQVk
+U4oAoJDoErn34dhEXouqcNZD9J33QRrT
+=4AYS
+-----END PGP SIGNATURE-----
+
+--69pVuxX8awAiJ7fD--
