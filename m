@@ -1,22 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SEyij-0005iS-0J
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 08:04:05 +0000
-Date: Tue, 3 Apr 2012 10:03:54 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SEzPg-0001V5-IE
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 08:48:29 +0000
+Received: by werp11 with SMTP id p11so2689775wer.36
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Apr 2012 01:48:26 -0700 (PDT)
+Date: Tue, 3 Apr 2012 11:48:18 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH 2/4] MTD: flash drivers set ecc strength
-Message-ID: <20120403080354.GA6767@parrot.com>
+Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
+Message-ID: <20120403114818.1cea9f2b@pixies.home.jungo.com>
+In-Reply-To: <4F79D668.9090903@newsguy.com>
 References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-3-git-send-email-mikedunn@newsguy.com>
- <CAN8TOE_BxgTMJb0beyDC17jcmavmuz0WGvLw3NbJRCiuvB4VnA@mail.gmail.com>
- <4F79E314.609@newsguy.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4F79E314.609@newsguy.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
+ <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+ <4F765873.6090209@newsguy.com> <20120331093752.341037b4@halley>
+ <4F79D668.9090903@newsguy.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  David Woodhouse <David.Woodhouse@intel.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,44 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 02, 2012 at 06:34:12PM +0100, Mike Dunn wrote:
-> On 03/29/2012 10:24 AM, Brian Norris wrote:
-> >>
-> >>        case NAND_ECC_SOFT_BCH:
-> >> @@ -3384,6 +3385,8 @@ int nand_scan_tail(struct mtd_info *mtd)
-> >>                        pr_warn("BCH ECC initialization failed!\n");
-> >>                        BUG();
-> >>                }
-> >> +               chip->ecc.strength =
-> >> +                       chip->ecc.bytes*8 / fls(8*chip->ecc.size);
-> > 
-> > Isn't this spacing against coding style? I'd suggest spaces around the
-> > '*'. Also, after a few minutes, I have no idea where this calculation
-> > comes from. But I'm not familiar with SOFT_BCH. Maybe a comment is in
-> > order?
+On Mon, 02 Apr 2012 09:40:08 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
+> Hi Shmulik,
+> 
+> On 03/30/2012 11:37 PM, Shmulik Ladkani wrote:
+> > Please re-consider having the 'euclean_threshold' comparison within the
+> > NAND infrastructure (nand_base.c and clones), instead of within the
+> > generic 'mtd_read()' wrapper, as discussed in [1].
 > 
 > 
-> I'm no bch expert myself (ping, Ivan), but I believe this is correct, and it is
-> consistant with the equations used to determine the 't' parameter (i.e.,
-> ecc_strength) from nand_bch_init() in drivers/mtd/nand/nand_bch.c.
+> This isn't possible given the intended functionality of the patches.  The plan
+> is to allow the user to adjust the bitflip_threshold through sysfs, and do it
+> uniquely for each partition.  Since the driver itself receives as its argument
+> the mtd_info for the master, not the partition, it can't compare the bitflip
+> count with the appropriate threshold to determine whether or not to return
+> -EUCLEAN.  
 
-Yes you are correct. Quoting nand_bch.c:
+Ok.
 
-	m = fls(1+8*eccsize);
-	t = (eccbytes*8)/m;
+Now I understand why you submitted [l2-mtd ac5b1dd mtd: fix partition
+wrapper functions]...
+You rely on ac5b1dd in order for the comparison to be executed per
+partition.
+Reasnoable, however delicate. The reslationship between the
+'euclean_threeshold' feature and this patch is implicit and not obvious.
+It raises a concern that one might later change the behavior of
+'part_read' to use the mtd_read wrapper for some reason, without
+understanding the affects.
 
-The first line computes the smallest 'm' such that
-    2^m-1 > number_of_bits_in_ecc_block
-hence
-    m = fls(1+8*eccsize)
+Anyway, looking on it in a broader perspective, can you please state
+use-case examples where one might set different thresholds for different
+partitions of same device?
+I mean, do we really need that granularity?
 
-In practice, adding 1 to 8*eccsize has no effect on the fls() result (unless
-eccsize is 0 :-), but I left it for consistency with nand_bch_init() doc.
-
-Arguably it would have been less confusing to pass 'm' and 't' directly to nand_bch_init(),
-but the present solution had the advantage of providing enough information, without
-requiring any additional redundant field in mtd structures.
-
-BR,
---
-Ivan
+Regards,
+Shmulik
