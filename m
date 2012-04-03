@@ -1,14 +1,12 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SF0z9-0000fH-4S
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 10:29:12 +0000
-Date: Tue, 3 Apr 2012 12:29:08 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [patch] UBIFS: Add cryptographic functionality when a key is passed
- to the compress / decompress functions
-In-Reply-To: <1333378674.22146.18.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1204031228470.4560@eristoteles.iwoars.net>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SF1Bd-0000ty-0u
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 10:42:06 +0000
+Received: by iaky10 with SMTP id y10so6784874iak.36
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Apr 2012 03:42:03 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <alpine.DEB.2.00.1204031228470.4560@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <alpine.DEB.2.00.1202202112220.21022@eristoteles.iwoars.net>
  <1330531826.3545.128.camel@sauron.fi.intel.com>
@@ -23,10 +21,17 @@ References: <alpine.DEB.2.00.1202091615540.26924@eristoteles.iwoars.net>
  <1333377383.22146.14.camel@sauron.fi.intel.com>
  <alpine.DEB.2.00.1204021645070.29393@eristoteles.iwoars.net>
  <1333378674.22146.18.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+ <alpine.DEB.2.00.1204031228470.4560@eristoteles.iwoars.net>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 3 Apr 2012 12:41:42 +0200
+Message-ID: <CAJpamw7rXn_tLcFSE07AK4nrh9QXLBNzuehzLhB+rUbMv9UePA@mail.gmail.com>
+Subject: Re: [patch] UBIFS: Add cryptographic functionality when a key is
+ passed to the compress / decompress functions
+To: Joel Reardon <joel@clambassador.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,182 +41,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a function to perform AES encryption. The compress and
-decompress routines use this function if they are called with a non-NULL
-key parameter. It uses AES counter mode (where encryption and decryption
-are the same function) and performs the operation in place on the data. It
-uses a default IV of 0, since each key is only evey used to encrypt one
-data item the IV does not matter.
+Hi,
 
-The const qualifier was removed from the decompress routine for the
-following reason. Encrypted data is not compressable, so compression is
-first applied then the result is encrypted. In the reverse, decryption is
-first applied and the result decompressed. This means that either the
-input buffer for decompression is used to perform an in-place decryption
-before decompression, or a third buffer is added and data is copied around.
+2012/4/3 Joel Reardon <joel@clambassador.com>:
+> =C2=A0no_compr:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0memcpy(out_buf, in_buf, in_len);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0*out_len =3D in_len;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0*compr_type =3D UBIFS_COMPR_NONE;
+> + =C2=A0 =C2=A0 =C2=A0 goto encrypt;
 
-This was tested by using a static key as the key parameter where both compress
-and decompress were called. Data was written and the file system was unmounted
-and the mtd dev was scanned with hexdump to make sure that no plaintext data
-was available. The drive was remounted and the data successful read back. The
-static key was then removed and replaced with NULL, and the same test was done
-except that now the data appeared in plaintext on the raw device.
+This goto seems unneeded here.
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- fs/ubifs/compress.c |   75 ++++++++++++++++++++++++++++++++++++++++++++++++---
- fs/ubifs/ubifs.h    |    8 +++++-
- 2 files changed, 78 insertions(+), 5 deletions(-)
+> +
+> +encrypt:
+> + =C2=A0 =C2=A0 =C2=A0 if (crypto_key) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 u8 iv[UBIFS_CRYPTO_KEY=
+SIZE];
+> +
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 memset(iv, 0, UBIFS_CR=
+YPTO_KEYSIZE);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ubifs_aes_crypt(out_bu=
+f, *out_len, crypto_key, iv);
+> + =C2=A0 =C2=A0 =C2=A0 }
 
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index b796b8d..e6dc77d 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -27,9 +27,12 @@
-  * decompression.
-  */
 
--#include <linux/crypto.h>
- #include "ubifs.h"
 
-+#include <linux/crypto.h>
-+#include <linux/scatterlist.h>
-+
-+
- /* Fake description object for the "none" compressor */
- static struct ubifs_compressor none_compr = {
- 	.compr_type = UBIFS_COMPR_NONE,
-@@ -75,6 +78,53 @@ static struct ubifs_compressor zlib_compr = {
- struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
 
- /**
-+ * ubifs_aes_crypt - encrypt / decrypt data.
-+ * @str: data to crypt
-+ * @len: length of the data
-+ * @crypto_key: the cryptographic key to use to crypt the data
-+ * @iv: the initialization vector to use
-+ *
-+ * This function applies aes encryption to the data. It is done in counter
-+ * mode, which means that encryption and decryption are the same operation,
-+ * i.e., it XORs the same generated bitstream, so it can be used both for
-+ * encryption / decryption. The operation is done in-place, so str mutates.
-+ * Both crypto_key and iv are valid pointers to a buffer of length
-+ * UBIFS_CRYPTO_KEYSIZE.
-+ */
-+int ubifs_aes_crypt(void *str, int len, u8 *crypto_key, u8 *iv)
-+{
-+	struct crypto_blkcipher *tfm;
-+	struct blkcipher_desc desc;
-+	struct scatterlist sg;
-+	int err = 0;
-+
-+	tfm = crypto_alloc_blkcipher(UBIFS_CRYPTO_ALGORITHM, 0, 0);
-+	if (IS_ERR(tfm)) {
-+		ubifs_err("failed to load transform for aes: %ld",
-+			  PTR_ERR(tfm));
-+		return err;
-+	}
-+
-+	err = crypto_blkcipher_setkey(tfm, crypto_key, UBIFS_CRYPTO_KEYSIZE);
-+	desc.tfm = tfm;
-+	desc.flags = 0;
-+	if (err) {
-+		ubifs_err("crypto_blkcipher_setkey() failed  flags=%#x",
-+			  crypto_blkcipher_get_flags(tfm));
-+		return err;
-+	}
-+
-+	memset(&sg, 0, sizeof(struct scatterlist));
-+	sg_set_buf(&sg, str, len);
-+	desc.info = iv;
-+	err = crypto_blkcipher_encrypt(&desc, &sg, &sg, len);
-+	crypto_free_blkcipher(tfm);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+/**
-  * ubifs_compress - compress data.
-  * @in_buf: data to compress
-  * @in_len: length of the data to compress
-@@ -126,13 +176,21 @@ void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
- 	 */
- 	if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
- 		goto no_compr;
--
--	return;
-+	goto encrypt;
-
- no_compr:
- 	memcpy(out_buf, in_buf, in_len);
- 	*out_len = in_len;
- 	*compr_type = UBIFS_COMPR_NONE;
-+	goto encrypt;
-+
-+encrypt:
-+	if (crypto_key) {
-+		u8 iv[UBIFS_CRYPTO_KEYSIZE];
-+
-+		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
-+		ubifs_aes_crypt(out_buf, *out_len, crypto_key, iv);
-+	}
- }
-
- /**
-@@ -148,8 +206,10 @@ no_compr:
-  * This function decompresses data from buffer @in_buf into buffer @out_buf.
-  * The length of the uncompressed data is returned in @out_len. This functions
-  * returns %0 on success or a negative error code on failure.
-+ *
-+ * WARNING: this function may modify the contents of in_buf when executing.
-  */
--int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
-+int ubifs_decompress(void *in_buf, int in_len, void *out_buf,
- 		     int *out_len, int compr_type, u8 *crypto_key)
- {
- 	int err;
-@@ -167,6 +227,13 @@ int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
- 		return -EINVAL;
- 	}
-
-+	if (crypto_key) {
-+		u8 iv[UBIFS_CRYPTO_KEYSIZE];
-+
-+		memset(iv, 0, UBIFS_CRYPTO_KEYSIZE);
-+		ubifs_aes_crypt(in_buf, in_len, crypto_key, iv);
-+	}
-+
- 	if (compr_type == UBIFS_COMPR_NONE) {
- 		memcpy(out_buf, in_buf, in_len);
- 		*out_len = in_len;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3ed12be..84d2c49 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -160,6 +160,11 @@
- /* Maximum number of data nodes to bulk-read */
- #define UBIFS_MAX_BULK_READ 32
-
-+/* 128 bit key size in bytes for UBIFS */
-+#define UBIFS_CRYPTO_KEYSIZE 16
-+/* AES in counter mode is the encryption algorithm. */
-+#define UBIFS_CRYPTO_ALGORITHM "ctr(aes)"
-+
- /*
-  * Lockdep classes for UBIFS inode @ui_mutex.
-  */
-@@ -1771,9 +1776,10 @@ long ubifs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- /* compressor.c */
- int __init ubifs_compressors_init(void);
- void ubifs_compressors_exit(void);
-+int ubifs_aes_crypt(void *str, int len, u8 *crypto_key, u8 *iv);
- void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
- 		    int *compr_type, u8 *crypto_key);
--int ubifs_decompress(const void *buf, int len, void *out, int *out_len,
-+int ubifs_decompress(void *buf, int len, void *out, int *out_len,
- 		     int compr_type, u8 *crypto_key);
-
- #include "debug.h"
--- 
-1.7.5.4
+--=20
+Guillaume LECERF
+OpenBricks developer - www.openbricks.org
