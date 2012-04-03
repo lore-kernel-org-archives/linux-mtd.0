@@ -1,20 +1,22 @@
-Received: from cooperlighting-sw.cooperlighting.com ([216.130.131.68])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SElCV-0007fv-Km
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2012 17:37:57 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: User error with fw_printenv - I hope
-Date: Mon, 2 Apr 2012 13:37:34 -0400
-Message-ID: <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
-In-Reply-To: <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
-References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
- <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
-From: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SEt2I-0001yw-PA
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 01:59:55 +0000
+Received: by iaky10 with SMTP id y10so6164301iak.36
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Apr 2012 18:59:50 -0700 (PDT)
+Message-ID: <1333418384.18133.6.camel@phoenix>
+Subject: [PATCH] mtd: use module_pci_driver
+From: Axel Lin <axel.lin@gmail.com>
+To: linux-kernel@vger.kernel.org
+Date: Tue, 03 Apr 2012 09:59:44 +0800
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: Jamie Iles <jamie@jamieiles.com>, Maxim Levitsky <maximlevitsky@gmail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Andy Lowe <alowe@mvista.com>,
+ Tim Hockin <thockin@sun.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Russell King <rmk@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +26,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBGcnlzaW5nZXIg
-W21haWx0bzp2YXBpZXIuYWRpQGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBNYXJjaCAzMCwg
-MjAxMiA2OjMwIFBNDQo+IFRvOiBCaXNob3AsIE1hcmsNCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFJlOiBVc2VyIGVycm9yIHdpdGggZndfcHJpbnRlbnYg
-LSBJIGhvcGUNCj4gDQo+IE9uIEZyaSwgTWFyIDMwLCAyMDEyIGF0IDE2OjU0LCBCaXNob3AsIE1h
-cmsgd3JvdGU6DQo+ID4gSSBhbSB0cnlpbmcgdG8gcmVhZCBteSB1Ym9vdCBlbnZpcm9ubWVudCBm
-cm9tIHVzZXJzcGFjZS7CoCBOb3QgdG9vDQo+IHN1Y2Nlc3NmdWwuDQo+ID4NCj4gPiByb290Oi8+
-IGNhdCAvcHJvYy9tdGQNCj4gPiBkZXY6wqDCoMKgIHNpemXCoMKgIGVyYXNlc2l6ZcKgIG5hbWUN
-Cj4gPiBtdGQwOiAwMDA4MDAwMCAwMDAyMDAwMCAiYm9vdGxvYWRlcihuYW5kKSINCj4gPiBtdGQx
-OiAwMDgwMDAwMCAwMDAyMDAwMCAibGludXgga2VybmVsKG5hbmQpIg0KPiA+IG10ZDI6IDA2NDAw
-MDAwIDAwMDIwMDAwICJmaWxlIHN5c3RlbShuYW5kKSINCj4gPiBtdGQzOiAwOTM4MDAwMCAwMDAy
-MDAwMCAiZmlsZSBzeXN0ZW0odWJpZnMpIg0KPiA+DQo+ID4gRnJvbSBteSB1Ym9vdCBjb25maWc6
-DQo+ID4gI2RlZmluZSBDT05GSUdfRU5WX09GRlNFVMKgwqDCoMKgwqDCoCAweDYwMDAwDQo+ID4g
-I2RlZmluZSBDT05GSUdfRU5WX1NJWkXCoMKgwqDCoMKgwqDCoMKgIDB4MjAwMDANCj4gPg0KPiA+
-IFRyeSAjMQ0KPiA+IHJvb3Q6Lz4gY2F0IC9ldGMvZndfZW52LmNvbmZpZw0KPiA+IC9kZXYvbXRk
-MMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMHg2MDAwMMKgwqDCoMKgwqDCoMKgwqAgMHgy
-MDAwMA0KPiAweDIwMDAwwqDCoMKgwqDCoMKgwqDCoCAxDQo+ID4NCj4gPiByb290Oi8+IC4vZndf
-cHJpbnRlbnYNCj4gPiBDYW5ub3QgcmVhZCBiYWQgYmxvY2sgbWFyazogSW52YWxpZCBhcmd1bWVu
-dA0KPiANCj4gc3RyYWNlIGl0IHRvIHNlZSB3aGF0IGlzIGFjdHVhbGx5IGNvbXBsYWluaW5nDQo+
-IC1taWtlDQoNCnJvb3Q6Lz4gc3RyYWNlIGZ3X3ByaW50ZW52DQptbWFwMihOVUxMLCA0MDk2LCBQ
-Uk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZBVEV8TUFQX0FOT05ZTU9VU3wweDQwMDAwMDAs
-IC0xLCAwKSA9IDB4ODg2MDAwDQpzdGF0KCIvZXRjL2xkLnNvLmNhY2hlIiwge3N0X21vZGU9U19J
-RlJFR3wwNjQ0LCBzdF9zaXplPTExMDgsIC4uLn0pID0gMA0Kb3BlbigiL2V0Yy9sZC5zby5jYWNo
-ZSIsIE9fUkRPTkxZKSAgICAgID0gMw0KbW1hcDIoTlVMTCwgMTEwOCwgUFJPVF9SRUFELCBNQVBf
-UFJJVkFURSwgMywgMCkgPSAweDg5ZjAwMA0KY2xvc2UoMykgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgID0gMA0Kb3BlbigiL2xpYi9saWJnY2Nfcy5zby4xIiwgT19SRE9OTFkpICAgID0g
-Mw0KZnN0YXQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBzdF9zaXplPTYyNDE2LCAuLi59KSA9
-IDANCm1tYXAyKE5VTEwsIDQwOTYsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxN
-QVBfQU5PTllNT1VTfDB4NDAwMDAwMCwgLTEsIDApID0gMHg4OTAwMDANCnJlYWQoMywgIlwxNzdF
-TEZcMVwxXDFcMFwwXDBcMFwwXDBcMFwwXDBcM1wwalwwXDFcMFwwXDBcMzI0I1wwXDAwMDRcMFww
-XDAiLi4uLCA0MDk2KSA9IDQwOTYNCm1tYXAyKE5VTEwsIDU3MjU2LCBQUk9UX1JFQUR8UFJPVF9F
-WEVDLCBNQVBfUFJJVkFURXxNQVBfREVOWVdSSVRFfE1BUF9FWEVDVVRBQkxFLCAzLCAwKSA9IDB4
-MjcwMDAwDQptbWFwMihOVUxMLCA4MTg0LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
-VEV8TUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHg4OTIwMDANCnByZWFkKDMsICJcMTdkXDMyNS9c
-MGhcNWg7L1wzNTNcMjcwOFwyNDJcMjAyXDMxNlw2XDMwMlwzMjJcMjcwXDBcMFwzNzdcMzQzXDM1
-XDM3MlwyMTYvOFwyNTZcMzAyXDI1NCIuLi4sIDgwMjQsIDUzMjQ4KSA9IDgwMjQNCmNsb3NlKDMp
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDANCm11bm1hcCgweDg5MDAwMCwgNDA5
-NikgICAgICAgICAgICAgICAgICA9IDANCm9wZW4oIi9saWIvbGliYy5zby4wIiwgT19SRE9OTFkp
-ICAgICAgICA9IDMNCmZzdGF0KDMsIHtzdF9tb2RlPVNfSUZSRUd8MDc1NSwgc3Rfc2l6ZT0yNTIy
-MzYsIC4uLn0pID0gMA0KbW1hcDIoTlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1B
-UF9QUklWQVRFfE1BUF9BTk9OWU1PVVN8MHg0MDAwMDAwLCAtMSwgMCkgPSAweDg5MDAwMA0KcmVh
-ZCgzLCAiXDE3N0VMRlwxXDFcMVwwXDBcMFwwXDBcMFwwXDBcMFwzXDBqXDBcMVwwXDBcMFxmXDMx
-M1wwXDAwMDRcMFwwXDAiLi4uLCA0MDk2KSA9IDQwOTYNCm1tYXAyKE5VTEwsIDI0MzkwOCwgUFJP
-VF9SRUFEfFBST1RfRVhFQywgTUFQX1BSSVZBVEV8TUFQX0RFTllXUklURXxNQVBfRVhFQ1VUQUJM
-RSwgMywgMCkgPSAweDgwMDAwMA0KbW1hcDIoTlVMTCwgMTc5MjAsIFBST1RfUkVBRHxQUk9UX1dS
-SVRFLCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLCAtMSwgMCkgPSAweDg4ODAwMA0KcHJlYWQo
-MywgIl9fZ2V0X215YWRkcmVzczogc29ja2V0XDBfX2dldF9teSIuLi4sIDg4NDAsIDI0MTY2NCkg
-PSA4ODQwDQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQptdW5t
-YXAoMHg4OTAwMDAsIDQwOTYpICAgICAgICAgICAgICAgICAgPSAwDQpvcGVuKCIvbGliL2xpYmMu
-c28uMCIsIE9fUkRPTkxZKSAgICAgICAgPSAzDQpmc3RhdCgzLCB7c3RfbW9kZT1TX0lGUkVHfDA3
-NTUsIHN0X3NpemU9MjUyMjM2LCAuLi59KSA9IDANCmNsb3NlKDMpICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICA9IDANCm11bm1hcCgweDg5ZjAwMCwgMTEwOCkgICAgICAgICAgICAgICAg
-ICA9IDANCnN0YXQoIi9saWIvbGQtdUNsaWJjLnNvLjAiLCB7c3RfbW9kZT1TX0lGUkVHfDA3NTUs
-IHN0X3NpemU9MjAzNDgsIC4uLn0pID0gMA0KaW9jdGwoMCwgU05EQ1RMX1RNUl9USU1FQkFTRSBv
-ciBTTkRSVl9USU1FUl9JT0NUTF9ORVhUX0RFVklDRSBvciBUQ0dFVFMsIHtCNTc2MDAgb3Bvc3Qg
-aXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDANCmlvY3RsKDEsIFNORENUTF9UTVJfVElNRUJBU0Ug
-b3IgU05EUlZfVElNRVJfSU9DVExfTkVYVF9ERVZJQ0Ugb3IgVENHRVRTLCB7QjU3NjAwIG9wb3N0
-IGlzaWcgaWNhbm9uIGVjaG8gLi4ufSkgPSAwDQpvcGVuKCIvZXRjL2Z3X2Vudi5jb25maWciLCBP
-X1JET05MWSkgICAgPSAzDQppb2N0bCgzLCBTTkRDVExfVE1SX1RJTUVCQVNFIG9yIFNORFJWX1RJ
-TUVSX0lPQ1RMX05FWFRfREVWSUNFIG9yIFRDR0VUUywgMHgyZGZmYjc4KSA9IC0xIEVOT1RUWSAo
-SW5hcHByb3ByaWF0ZSBpb2N0bCBmb3IgZGV2aWNlKQ0KbW1hcDIoTlVMTCwgNDA5NiwgUFJPVF9S
-RUFEfFBST1RfV1JJVEUsIE1BUF9TSEFSRUR8TUFQX0FOT05ZTU9VU3wweDQwMDAwMDAsIDAsIDAp
-ID0gMHg4OWYwMDANCnJlYWQoMywgIi9kZXYvbXRkMCAgICAgICAgICAgICAgIDB4NjAwMDAgIi4u
-LiwgMjU2KSA9IDc0DQpyZWFkKDMsICIiLCAyNTYpICAgICAgICAgICAgICAgICAgICAgICAgPSAw
-DQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQpzdGF0KCIvZGV2
-L210ZDAiLCB7c3RfbW9kZT1TX0lGQ0hSfDA2NjAsIHN0X3JkZXY9bWFrZWRldig5MCwgMCksIC4u
-Ln0pID0gMA0KbW1hcDIoTlVMTCwgMTM1MTY4LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1NI
-QVJFRHxNQVBfQU5PTllNT1VTfDB4NDAwMDAwMCwgMCwgMCkgPSAweDg0MDAwMA0Kb3BlbigiL2Rl
-di9tdGQwIiwgT19SRE9OTFkpICAgICAgICAgICAgID0gMw0KaW9jdGwoMywgTUVNR0VUSU5GTyBv
-ciBNRkJfU0VUX0NIUk9NQV9LRVksIDB4MmRmZmMyMCkgPSAwDQppb2N0bCgzLCBNRU1HRVRCQURC
-TE9DSywgMHgyZGZmYjljKSAgICAgPSAxDQppb2N0bCgzLCBNRU1HRVRCQURCTE9DSywgMHgyZGZm
-YjljKSAgICAgPSAtMSBFSU5WQUwgKEludmFsaWQgYXJndW1lbnQpDQp3cml0ZSgyLCAiQ2Fubm90
-IHJlYWQgYmFkIGJsb2NrIG1hcmsiLCAyNkNhbm5vdCByZWFkIGJhZCBibG9jayBtYXJrKSA9IDI2
-DQp3cml0ZSgyLCAiOiAiLCAyOiApICAgICAgICAgICAgICAgICAgICAgICA9IDINCndyaXRlKDIs
-ICJJbnZhbGlkIGFyZ3VtZW50IiwgMTZJbnZhbGlkIGFyZ3VtZW50KSAgICAgICAgPSAxNg0Kd3Jp
-dGUoMiwgIlxuIiwgMQ0KKSAgICAgICAgICAgICAgICAgICAgICAgPSAxDQpjbG9zZSgzKSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQpfZXhpdCgxKSAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgPSA/DQpyb290Oi8+DQo=
+This patch converts the drivers in drivers/mtd/* to use module_pci_driver()
+macro which makes the code smaller and a bit simpler.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Cc: Andy Lowe <alowe@mvista.com>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Tim Hockin <thockin@sun.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/maps/intel_vr_nor.c |   13 +------------
+ drivers/mtd/maps/pci.c          |   13 +------------
+ drivers/mtd/maps/scb2_flash.c   |   15 +--------------
+ drivers/mtd/nand/cafe_nand.c    |   12 +-----------
+ drivers/mtd/nand/denali.c       |   15 +--------------
+ drivers/mtd/nand/r852.c         |   13 +------------
+ 6 files changed, 6 insertions(+), 75 deletions(-)
+
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index 92e1f41..93f0317 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -260,18 +260,7 @@ static struct pci_driver vr_nor_pci_driver = {
+ 	.id_table = vr_nor_pci_ids,
+ };
+ 
+-static int __init vr_nor_mtd_init(void)
+-{
+-	return pci_register_driver(&vr_nor_pci_driver);
+-}
+-
+-static void __exit vr_nor_mtd_exit(void)
+-{
+-	pci_unregister_driver(&vr_nor_pci_driver);
+-}
+-
+-module_init(vr_nor_mtd_init);
+-module_exit(vr_nor_mtd_exit);
++module_pci_driver(vr_nor_pci_driver);
+ 
+ MODULE_AUTHOR("Andy Lowe");
+ MODULE_DESCRIPTION("MTD map driver for NOR flash on Intel Vermilion Range");
+diff --git a/drivers/mtd/maps/pci.c b/drivers/mtd/maps/pci.c
+index 1d005a3..f14ce0a 100644
+--- a/drivers/mtd/maps/pci.c
++++ b/drivers/mtd/maps/pci.c
+@@ -352,18 +352,7 @@ static struct pci_driver mtd_pci_driver = {
+ 	.id_table =	mtd_pci_ids,
+ };
+ 
+-static int __init mtd_pci_maps_init(void)
+-{
+-	return pci_register_driver(&mtd_pci_driver);
+-}
+-
+-static void __exit mtd_pci_maps_exit(void)
+-{
+-	pci_unregister_driver(&mtd_pci_driver);
+-}
+-
+-module_init(mtd_pci_maps_init);
+-module_exit(mtd_pci_maps_exit);
++module_pci_driver(mtd_pci_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
+diff --git a/drivers/mtd/maps/scb2_flash.c b/drivers/mtd/maps/scb2_flash.c
+index 934a72c..9dcbc68 100644
+--- a/drivers/mtd/maps/scb2_flash.c
++++ b/drivers/mtd/maps/scb2_flash.c
+@@ -234,20 +234,7 @@ static struct pci_driver scb2_flash_driver = {
+ 	.remove =   __devexit_p(scb2_flash_remove),
+ };
+ 
+-static int __init
+-scb2_flash_init(void)
+-{
+-	return pci_register_driver(&scb2_flash_driver);
+-}
+-
+-static void __exit
+-scb2_flash_exit(void)
+-{
+-	pci_unregister_driver(&scb2_flash_driver);
+-}
+-
+-module_init(scb2_flash_init);
+-module_exit(scb2_flash_exit);
++module_pci_driver(scb2_flash_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Tim Hockin <thockin@sun.com>");
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 2a96e1a..2973d97 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -888,17 +888,7 @@ static struct pci_driver cafe_nand_pci_driver = {
+ 	.resume = cafe_nand_resume,
+ };
+ 
+-static int __init cafe_nand_init(void)
+-{
+-	return pci_register_driver(&cafe_nand_pci_driver);
+-}
+-
+-static void __exit cafe_nand_exit(void)
+-{
+-	pci_unregister_driver(&cafe_nand_pci_driver);
+-}
+-module_init(cafe_nand_init);
+-module_exit(cafe_nand_exit);
++module_pci_driver(cafe_nand_pci_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index a9e57d6..a1048c7 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1702,17 +1702,4 @@ static struct pci_driver denali_pci_driver = {
+ 	.remove = denali_pci_remove,
+ };
+ 
+-static int __devinit denali_init(void)
+-{
+-	printk(KERN_INFO "Spectra MTD driver\n");
+-	return pci_register_driver(&denali_pci_driver);
+-}
+-
+-/* Free memory */
+-static void __devexit denali_exit(void)
+-{
+-	pci_unregister_driver(&denali_pci_driver);
+-}
+-
+-module_init(denali_init);
+-module_exit(denali_exit);
++module_pci_driver(denali_pci_driver);
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index c204018..859ef31 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -1104,18 +1104,7 @@ static struct pci_driver r852_pci_driver = {
+ 	.driver.pm	= &r852_pm_ops,
+ };
+ 
+-static __init int r852_module_init(void)
+-{
+-	return pci_register_driver(&r852_pci_driver);
+-}
+-
+-static void __exit r852_module_exit(void)
+-{
+-	pci_unregister_driver(&r852_pci_driver);
+-}
+-
+-module_init(r852_module_init);
+-module_exit(r852_module_exit);
++module_pci_driver(r852_pci_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");
+-- 
+1.7.5.4
