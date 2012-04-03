@@ -1,22 +1,24 @@
-Received: from cooperlighting-sw.cooperlighting.com ([216.130.131.68])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SF6A5-0003Nq-BQ
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 16:00:49 +0000
-Content-class: urn:content-classes:message
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SF9JW-0001BF-9p
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 19:22:46 +0000
+Received: by bkcjk13 with SMTP id jk13so80731bkc.36
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Apr 2012 12:22:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: User error with fw_printenv - I hope
-Date: Tue, 3 Apr 2012 11:59:56 -0400
-Message-ID: <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
-In-Reply-To: <CAMjpGUeMXtTTjdOjEyxZM2Gc0Ww9qyViMufSFu22voTLs33Xxg@mail.gmail.com>
+In-Reply-To: <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
 References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
  <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
  <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
  <CAMjpGUeMXtTTjdOjEyxZM2Gc0Ww9qyViMufSFu22voTLs33Xxg@mail.gmail.com>
-From: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
-To: <linux-mtd@lists.infradead.org>
+ <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 3 Apr 2012 12:22:23 -0700
+Message-ID: <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
+Subject: Re: User error with fw_printenv - I hope
+To: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSBkb24ndCBoYXZlIGEgcHJpbnRfbG9mZl90KCkuICBJIGhhdmUgYSBpb2N0bF9kZWNvZGUoKSBp
-bnN0ZWFkIGFuZCBJIGFtIHRyeWluZyB0byBjcmFtIHlvdXIgcGF0Y2ggaW50byBpdC4NCg0KSSds
-bCBnZXQgYmFjayB0byB5b3Ugd2hlbiBJIGdldCBzb21ldGhpbmcgdGhhdCB3b3Jrcy4NCg0KPiAt
-LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaWtlIEZyeXNpbmdlciBbbWFpbHRv
-OnZhcGllci5hZGlAZ21haWwuY29tXQ0KPiBTZW50OiBUdWVzZGF5LCBBcHJpbCAwMywgMjAxMiAy
-OjI2IEFNDQo+IFRvOiBCaXNob3AsIE1hcmsNCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnDQo+IFN1YmplY3Q6IFJlOiBVc2VyIGVycm9yIHdpdGggZndfcHJpbnRlbnYgLSBJIGhv
-cGUNCj4gDQo+IE9uIE1vbiwgQXByIDIsIDIwMTIgYXQgMTM6MzcsIEJpc2hvcCwgTWFyayB3cm90
-ZToNCj4gPiBpb2N0bCgzLCBNRU1HRVRCQURCTE9DSywgMHgyZGZmYjljKSDCoCDCoCA9IDEgaW9j
-dGwoMywgTUVNR0VUQkFEQkxPQ0ssDQo+ID4gMHgyZGZmYjljKSDCoCDCoCA9IC0xIEVJTlZBTCAo
-SW52YWxpZCBhcmd1bWVudCkNCj4gDQo+IGJlIG5pY2UgdG8gc2VlIHdoYXQncyBhY3R1YWxseSBp
-biB0aG9zZSBwb2ludGVycy4gIHVwZGF0ZSB5b3VyIHN0cmFjZQ0KPiB3aXRoIHRoZSBhdHRhY2hl
-ZCBwYXRjaCBhbmQgdHJ5IGFnYWluLg0KPiAtbWlrZQ0K
+On Tue, Apr 3, 2012 at 08:59, Bishop, Mark wrote:
+> I don't have a print_loff_t(). =C2=A0I have a ioctl_decode() instead and =
+I am trying to cram your patch into it.
+
+all the print_loff_t does is process a pointer to an int.  you could
+probably do the same thing by changing the mtd.c file to process the
+int directly (look at the other ioctls that do umove() with &i).
+-mike
