@@ -1,20 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SF9Zh-0002gn-Sr
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 19:39:30 +0000
-Date: Tue, 3 Apr 2012 21:39:20 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd/gpmi : do not include the mxs.h
-Message-ID: <20120403193920.GC2201@pengutronix.de>
-References: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
+Received: from cooperlighting-sw.cooperlighting.com ([216.130.131.68])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SFBYZ-000188-A9
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 21:46:27 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="69pVuxX8awAiJ7fD"
-Content-Disposition: inline
-In-Reply-To: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: User error with fw_printenv - I hope
+Date: Tue, 3 Apr 2012 17:46:16 -0400
+Message-ID: <5D308BD40154E4439D82454FE483A502065DD769@EVS4.nam.ci.root>
+In-Reply-To: <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
+References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
+ <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
+ <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
+ <CAMjpGUeMXtTTjdOjEyxZM2Gc0Ww9qyViMufSFu22voTLs33Xxg@mail.gmail.com>
+ <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
+ <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
+From: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
+To: "Mike Frysinger" <vapier.adi@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---69pVuxX8awAiJ7fD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Mar 31, 2012 at 10:36:57PM -0400, Huang Shijie wrote:
-> The mxs.h does not exit in the mx6q.
-> So rewrite the __mxs_clrl()/__mxs_setl() and remove the mxs.h.
->=20
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
-
-I am quite sure we will have STMP devices in 3.5 which should make this pat=
-ch
-obsolete. If this patch is considered a bugfix for 3.4, then OK for now.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---69pVuxX8awAiJ7fD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk97UegACgkQD27XaX1/VRvmsQCfXylR4pqF5WNlzrLOKsP7PQVk
-U4oAoJDoErn34dhEXouqcNZD9J33QRrT
-=4AYS
------END PGP SIGNATURE-----
-
---69pVuxX8awAiJ7fD--
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBGcnlzaW5nZXIg
+W21haWx0bzp2YXBpZXIuYWRpQGdtYWlsLmNvbV0NCj4gU2VudDogVHVlc2RheSwgQXByaWwgMDMs
+IDIwMTIgMzoyMiBQTQ0KPiBUbzogQmlzaG9wLCBNYXJrDQo+IENjOiBsaW51eC1tdGRAbGlzdHMu
+aW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogVXNlciBlcnJvciB3aXRoIGZ3X3ByaW50ZW52
+IC0gSSBob3BlDQo+IA0KPiBPbiBUdWUsIEFwciAzLCAyMDEyIGF0IDA4OjU5LCBCaXNob3AsIE1h
+cmsgd3JvdGU6DQo+ID4gSSBkb24ndCBoYXZlIGEgcHJpbnRfbG9mZl90KCkuIMKgSSBoYXZlIGEg
+aW9jdGxfZGVjb2RlKCkgaW5zdGVhZCBhbmQgSQ0KPiBhbSB0cnlpbmcgdG8gY3JhbSB5b3VyIHBh
+dGNoIGludG8gaXQuDQo+IA0KPiBhbGwgdGhlIHByaW50X2xvZmZfdCBkb2VzIGlzIHByb2Nlc3Mg
+YSBwb2ludGVyIHRvIGFuIGludC4gIHlvdSBjb3VsZA0KPiBwcm9iYWJseSBkbyB0aGUgc2FtZSB0
+aGluZyBieSBjaGFuZ2luZyB0aGUgbXRkLmMgZmlsZSB0byBwcm9jZXNzIHRoZQ0KPiBpbnQgZGly
+ZWN0bHkgKGxvb2sgYXQgdGhlIG90aGVyIGlvY3RscyB0aGF0IGRvIHVtb3ZlKCkgd2l0aCAmaSku
+DQo+IC1taWtlDQoNCkFueSBpZGVhIHdoYXQgaXMgY2F1c2luZyB0aGlzOg0KDQovaG9tZS9tYXJr
+L25ld19pbWFnZS91Y2xpbnV4LWRpc3QvdXNlci9zdHJhY2Uvc3RyYWNlLTQuNi9tdGQuYzogSW4g
+ZnVuY3Rpb24g4oCYbXRkX2lvY3Rs4oCZOg0KL2hvbWUvbWFyay9uZXdfaW1hZ2UvdWNsaW51eC1k
+aXN0L3VzZXIvc3RyYWNlL3N0cmFjZS00LjYvbXRkLmM6MTAyOiB3YXJuaW5nOiBpbXBsaWNpdCBk
+ZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJh0cHJpbnRz4oCZDQovaG9tZS9tYXJrL25ld19pbWFn
+ZS91Y2xpbnV4LWRpc3QvdXNlci9zdHJhY2Uvc3RyYWNlLTQuNi9tdGQuYzoxMDY6IGVycm9yOiBl
+eHBlY3RlZCDigJgp4oCZIGJlZm9yZSDigJhQUkl4MzLigJkNCi9ob21lL21hcmsvbmV3X2ltYWdl
+L3VjbGludXgtZGlzdC91c2VyL3N0cmFjZS9zdHJhY2UtNC42L210ZC5jOjEwNzogd2FybmluZzog
+Y29udmVyc2lvbiBsYWNrcyB0eXBlIGF0IGVuZCBvZiBmb3JtYXQNCi9ob21lL21hcmsvbmV3X2lt
+YWdlL3VjbGludXgtZGlzdC91c2VyL3N0cmFjZS9zdHJhY2UtNC42L210ZC5jOjEwODogZXJyb3I6
+IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmFBSSXgzMuKAmQ0KLi4uLi4NCg0K
