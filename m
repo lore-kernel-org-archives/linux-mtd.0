@@ -1,22 +1,22 @@
-Received: from mtaout03-winn.ispmail.ntl.com ([81.103.221.49])
+Received: from mtaout02-winn.ispmail.ntl.com ([81.103.221.48])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SFXjV-0003oC-II
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 21:27:14 +0000
-Received: from aamtaout02-winn.ispmail.ntl.com ([81.103.221.35])
- by mtaout03-winn.ispmail.ntl.com
+ id 1SFXjw-0003rS-C9
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 21:27:41 +0000
+Received: from aamtaout04-winn.ispmail.ntl.com ([81.103.221.35])
+ by mtaout02-winn.ispmail.ntl.com
  (InterMail vM.7.08.04.00 201-2186-134-20080326) with ESMTP id
- <20120404212710.KMUQ18388.mtaout03-winn.ispmail.ntl.com@aamtaout02-winn.ispmail.ntl.com>
- for <linux-mtd@lists.infradead.org>; Wed, 4 Apr 2012 22:27:10 +0100
+ <20120404212738.FYXJ23305.mtaout02-winn.ispmail.ntl.com@aamtaout04-winn.ispmail.ntl.com>
+ for <linux-mtd@lists.infradead.org>; Wed, 4 Apr 2012 22:27:38 +0100
 Received: from zog.reactivated.net ([86.14.215.141])
- by aamtaout02-winn.ispmail.ntl.com
+ by aamtaout04-winn.ispmail.ntl.com
  (InterMail vG.3.00.04.00 201-2196-133-20080908) with ESMTP id
- <20120404212710.GHQP3795.aamtaout02-winn.ispmail.ntl.com@zog.reactivated.net>
- for <linux-mtd@lists.infradead.org>; Wed, 4 Apr 2012 22:27:10 +0100
+ <20120404212738.CEBB23925.aamtaout04-winn.ispmail.ntl.com@zog.reactivated.net>
+ for <linux-mtd@lists.infradead.org>; Wed, 4 Apr 2012 22:27:38 +0100
 From: Daniel Drake <dsd@laptop.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-www] UBI FAQ: suggest omission of vol_size option
-Message-Id: <20120404212706.970C69D401E@zog.reactivated.net>
-Date: Wed,  4 Apr 2012 22:27:06 +0100 (BST)
+Subject: [PATCH] UBI FAQ: document behaviour when lots of blocks go bad
+Message-Id: <20120404212736.5DBB39D401E@zog.reactivated.net>
+Date: Wed,  4 Apr 2012 22:27:36 +0100 (BST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OLPC set vol_size based on the size of the target NAND and found out
-that it resulted in some systems being unbootable, where such systems
-had a lot of bad blocks on their flash.
-
-For distributors such as OLPC wishing to maximize robustness in the
-face of varying bad block counts, it makes a lot of sense to avoid
-the vol_size option and let it be calculated automatically.
-Document this.
+Based on an email from Artem.
 
 Signed-off-by: Daniel Drake <dsd@laptop.org>
 ---
- faq/ubi.xml |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ faq/ubi.xml |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
 
 diff --git a/faq/ubi.xml b/faq/ubi.xml
-index 7133867..c9f1c57 100644
+index c9f1c57..8af461e 100644
 --- a/faq/ubi.xml
 +++ b/faq/ubi.xml
-@@ -299,6 +299,20 @@ actually has to be at least 225MiB in size. Of course it may be larger,
- in which case the "rootfs" volume will be re-sized and take the rest of the
- flash space (because of the auto-resize flag).</p>
+@@ -26,6 +26,7 @@
+ 	<li><a href="ubi.html#L_restrict">Can UBI logical eraseblocks be written randomly?</a></li>
+ 	<li><a href="ubi.html#L_why_no_oob">Why UBI does not use OOB area of NAND flashes?</a></li>
+ 	<li><a href="ubi.html#L_crash_safe">Is UBI tolerant of power failures?</a></li>
++	<li><a href="ubi.html#L_bad_blocks_exceeded">What happens when the PEBs reserved for bad block handling run out?</a></li>
+ 	<li><a href="ubi.html#L_mlc">May UBI be used on MLC flash?</a></li>
+ 	<li><a href="ubi.html#L_vid_offset_mismatch">Why does ubiattach on a freshly formatted device fail with "Invalid argument"?</a></li>
+ 	<li><a href="ubi.html#L_subpage">What is a sub-page?</a></li>
+@@ -456,6 +457,22 @@ must be an issue for UBI as well.</p>
  
-+<p>
-+The implications of the above paragraph are important. The
-+<code>vol_size</code> option effectively represents the minimum size of the
-+flash where the volume will be installed. If you are working with multiple
-+devices (i.e. you are producing an image to be flashed on various devices,
-+even when 'identical'), the amount of usable flash <em>will</em> vary because
-+some devices have more bad blocks than others. Excluding the
-+<code>vol_size</code> option will cause vol_size to be automatically
-+calculated based on the size of the input image, and this will produce
-+maximum robustness in the face of varying numbers of bad blocks on target
-+devices. You can combine this with the autoresize functionality so that the
-+maximum amount of free space is made available upon first mount.
-+</p>
+ 
+ 
++<h2><a name="L_bad_blocks_exceeded">What happens when the PEBs reserved for bad block handling run out?</a></h2>
 +
- <p>Also, the <code>config_data.img</code> and <code>rootfs.img</code> input
- files do not have to be 512KiB and 220MiB respectively, but may be smaller if
- they contain less data. In this case the resulting <code>ubi.img</code> file
++By default, 1% of the available PEBs are reserved for handling bad blocks.
++
++If the number of blocks that turn bad exceeds that allocation, an error
++will be presented and UBI will switch to read-only mode.
++
++To recover from this error you could re-flash the device. The run-time
++recovery would require deleting or shrinking one of the UBI volumes.
++
++So, you need to carefully select the amount of PEBs reserved for bad
++blocks handling. For Nokia phones like N900 (with Samsung OneNAND flash,
++256MiB in size, 128KiB PEBs) 1% was just fine.
++
++
++
+ <h2><a name="L_mlc">May UBI be used on MLC flash?</a></h2>
+ 
+ <p>Yes, it may, as long as the flash is supported by the MTD layer. UBI does
 -- 
 1.7.7.6
