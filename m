@@ -1,16 +1,19 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SFJM0-0003nC-8X
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 06:06:00 +0000
-Received: by bkcjk13 with SMTP id jk13so541768bkc.36
- for <linux-mtd@lists.infradead.org>; Tue, 03 Apr 2012 23:05:56 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SFKEM-0002ke-KP
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 07:02:12 +0000
+Date: Wed, 4 Apr 2012 09:01:57 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Sam Gandhi <samgandhi9@gmail.com>
+Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
+Message-ID: <20120404070157.GB24930@pengutronix.de>
+References: <CAOdLEarFOdmDBS0iDmafLeBU=NNWxWjejTvJ-eEkQjRO12+VYg@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 3 Apr 2012 23:05:56 -0700
-Message-ID: <CAOdLEarFOdmDBS0iDmafLeBU=NNWxWjejTvJ-eEkQjRO12+VYg@mail.gmail.com>
-Subject: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-From: Sam Gandhi <samgandhi9@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
+Content-Disposition: inline
+In-Reply-To: <CAOdLEarFOdmDBS0iDmafLeBU=NNWxWjejTvJ-eEkQjRO12+VYg@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Has anybody out there been successful in running the new GPMI-NAND
-driver when running 3.4-rc1 kernel on any kind of MX28 hardware?
 
-We have enabled options
+--R3G7APHDIzY6R/pk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-CONFIG_SOC_IMX28=y
-CONFIG_MTD_NAND_GPMI_NAND=y
-CONFIG_MXS_DMA=y
 
-When booting kernel with initcall_debug we never see that
-gpmi_nand_probe() function is never getting called.
+> When booting kernel with initcall_debug we never see that
+> gpmi_nand_probe() function is never getting called.
 
-We have tried booting board with kernel parameters
-mtdparts=gpmi-nand:10(m),-(user)  or
-mtdparts=imx28-gpmi-nand:10(m),-(user)  without any luck.
+You probably don't have a NAND device registered. Then, there is nothing to
+bind a driver to.
 
-I have gone through the MTD  mailinglist log, and I didn't find
-details on how this GPMI-NAND driver was actually tested on hardware.
+> I have gone through the MTD  mailinglist log, and I didn't find
+> details on how this GPMI-NAND driver was actually tested on hardware.
 
-Would appreciate the help.
+It should be there somewhere, the mach relevant patches have been mentioned
+there, too.
 
--Sam
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--R3G7APHDIzY6R/pk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk978eUACgkQD27XaX1/VRvxAQCfeqdm31PKyp60+t0D/ZBVi3Xl
+j7IAoLzWpr+y5TIfQvdndjcR0MUYcMtb
+=TgdT
+-----END PGP SIGNATURE-----
+
+--R3G7APHDIzY6R/pk--
