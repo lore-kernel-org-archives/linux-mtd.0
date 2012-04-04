@@ -1,24 +1,15 @@
-Received: from cooperlighting-sw.cooperlighting.com ([216.130.131.68])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SFCrp-0004zJ-BN
- for linux-mtd@lists.infradead.org; Tue, 03 Apr 2012 23:10:32 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: User error with fw_printenv - I hope
-Date: Tue, 3 Apr 2012 19:09:41 -0400
-Message-ID: <5D308BD40154E4439D82454FE483A502065DD7FF@EVS4.nam.ci.root>
-In-Reply-To: <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
-References: <5D308BD40154E4439D82454FE483A5020655576C@EVS4.nam.ci.root>
- <CAMjpGUenHB6VU7k84E1Qdh+h6V3C1ZY1DVkV3rBmMfCueh2c4A@mail.gmail.com>
- <5D308BD40154E4439D82454FE483A5020659EE00@EVS4.nam.ci.root>
- <CAMjpGUeMXtTTjdOjEyxZM2Gc0Ww9qyViMufSFu22voTLs33Xxg@mail.gmail.com>
- <5D308BD40154E4439D82454FE483A5020659F81E@EVS4.nam.ci.root>
- <CAMjpGUehny_-ZjoCseFDeqQjbrDy1BAe=bVB0bQfCRcyozfREA@mail.gmail.com>
-From: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
-To: <linux-mtd@lists.infradead.org>
+From: Rob Herring <robherring2@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 4/5] mtd: remove ixp2000 map device
+Date: Tue,  3 Apr 2012 20:34:02 -0500
+Message-Id: <1333503243-7702-4-git-send-email-robherring2@gmail.com>
+In-Reply-To: <1333503243-7702-1-git-send-email-robherring2@gmail.com>
+References: <1333503243-7702-1-git-send-email-robherring2@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Nicolas Pitre <nico@fluxnic.net>, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Olof Johansson <olof@lixom.net>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,88 +19,310 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBGcnlzaW5nZXIg
-W21haWx0bzp2YXBpZXIuYWRpQGdtYWlsLmNvbV0NCj4gU2VudDogVHVlc2RheSwgQXByaWwgMDMs
-IDIwMTIgMzoyMiBQTQ0KPiBUbzogQmlzaG9wLCBNYXJrDQo+IENjOiBsaW51eC1tdGRAbGlzdHMu
-aW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogVXNlciBlcnJvciB3aXRoIGZ3X3ByaW50ZW52
-IC0gSSBob3BlDQo+IA0KPiBPbiBUdWUsIEFwciAzLCAyMDEyIGF0IDA4OjU5LCBCaXNob3AsIE1h
-cmsgd3JvdGU6DQo+ID4gSSBkb24ndCBoYXZlIGEgcHJpbnRfbG9mZl90KCkuIMKgSSBoYXZlIGEg
-aW9jdGxfZGVjb2RlKCkgaW5zdGVhZCBhbmQgSQ0KPiBhbSB0cnlpbmcgdG8gY3JhbSB5b3VyIHBh
-dGNoIGludG8gaXQuDQo+IA0KPiBhbGwgdGhlIHByaW50X2xvZmZfdCBkb2VzIGlzIHByb2Nlc3Mg
-YSBwb2ludGVyIHRvIGFuIGludC4gIHlvdSBjb3VsZA0KPiBwcm9iYWJseSBkbyB0aGUgc2FtZSB0
-aGluZyBieSBjaGFuZ2luZyB0aGUgbXRkLmMgZmlsZSB0byBwcm9jZXNzIHRoZQ0KPiBpbnQgZGly
-ZWN0bHkgKGxvb2sgYXQgdGhlIG90aGVyIGlvY3RscyB0aGF0IGRvIHVtb3ZlKCkgd2l0aCAmaSku
-DQo+IC1taWtlDQoNClRoYW5rcyBNaWtlLiAgSG9wZWZ1bGx5IHlvdSBjYW4gdGVsbCBtZSB3aGF0
-IEkgbmVlZCB0byBkbyBoZXJlOg0KDQpyb290Oi8+IHN0cmFjZSBmd19wcmludGVudg0KbW1hcDIo
-TlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1P
-VVN8MHg0MDAwMDAwLCAtMSwgMCkgPSAweDI5NTAwMDANCnN0YXQoIi9ldGMvbGQuc28uY2FjaGUi
-LCB7c3RfbW9kZT1TX0lGUkVHfDA2NDQsIHN0X3NpemU9MTEwOCwgLi4ufSkgPSAwDQpvcGVuKCIv
-ZXRjL2xkLnNvLmNhY2hlIiwgT19SRE9OTFkpICAgICAgPSAzDQptbWFwMihOVUxMLCAxMTA4LCBQ
-Uk9UX1JFQUQsIE1BUF9QUklWQVRFLCAzLCAwKSA9IDB4MmQxODAwMA0KY2xvc2UoMykgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgID0gMA0Kb3BlbigiL2xpYi9saWJnY2Nfcy5zby4xIiwg
-T19SRE9OTFkpICAgID0gMw0KZnN0YXQoMywge3N0X21vZGU9U19JRlJFR3wwNzU1LCBzdF9zaXpl
-PTYyNDE2LCAuLi59KSA9IDANCm1tYXAyKE5VTEwsIDQwOTYsIFBST1RfUkVBRHxQUk9UX1dSSVRF
-LCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTfDB4NDAwMDAwMCwgLTEsIDApID0gMHgyZDE5MDAw
-DQpyZWFkKDMsICJcMTc3RUxGXDFcMVwxXDBcMFwwXDBcMFwwXDBcMFwwXDNcMGpcMFwxXDBcMFww
-XDMyNCNcMFwwMDA0XDBcMFwwIi4uLiwgNDA5NikgPSA0MDk2DQptbWFwMihOVUxMLCA1NzI1Niwg
-UFJPVF9SRUFEfFBST1RfRVhFQywgTUFQX1BSSVZBVEV8TUFQX0RFTllXUklURXxNQVBfRVhFQ1VU
-QUJMRSwgMywgMCkgPSAweDJkOTAwMDANCm1tYXAyKE5VTEwsIDgxODQsIFBST1RfUkVBRHxQUk9U
-X1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLCAtMSwgMCkgPSAweDJkNTAwMDANCnBy
-ZWFkKDMsICJcMTdkXDMyNS9cMGhcNWg7L1wzNTNcMjcwOFwyNDJcMjAyXDMxNlw2XDMwMlwzMjJc
-MjcwXDBcMFwzNzdcMzQzXDM1XDM3MlwyMTYvOFwyNTZcMzAyXDI1NCIuLi4sIDgwMjQsIDUzMjQ4
-KSA9IDgwMjQNCmNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDANCm11
-bm1hcCgweDJkMTkwMDAsIDQwOTYpICAgICAgICAgICAgICAgICA9IDANCm9wZW4oIi9saWIvbGli
-Yy5zby4wIiwgT19SRE9OTFkpICAgICAgICA9IDMNCmZzdGF0KDMsIHtzdF9tb2RlPVNfSUZSRUd8
-MDc1NSwgc3Rfc2l6ZT0yNTIyMzYsIC4uLn0pID0gMA0KbW1hcDIoTlVMTCwgNDA5NiwgUFJPVF9S
-RUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVN8MHg0MDAwMDAwLCAtMSwg
-MCkgPSAweDJkMTkwMDANCnJlYWQoMywgIlwxNzdFTEZcMVwxXDFcMFwwXDBcMFwwXDBcMFwwXDBc
-M1wwalwwXDFcMFwwXDBcZlwzMTNcMFwwMDA0XDBcMFwwIi4uLiwgNDA5NikgPSA0MDk2DQptbWFw
-MihOVUxMLCAyNDM5MDgsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfE1BUF9ERU5Z
-V1JJVEV8TUFQX0VYRUNVVEFCTEUsIDMsIDApID0gMHgyZTQwMDAwDQptbWFwMihOVUxMLCAxNzky
-MCwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsIC0xLCAw
-KSA9IDB4MmQ0ODAwMA0KcHJlYWQoMywgIl9fZ2V0X215YWRkcmVzczogc29ja2V0XDBfX2dldF9t
-eSIuLi4sIDg4NDAsIDI0MTY2NCkgPSA4ODQwDQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgPSAwDQptdW5tYXAoMHgyZDE5MDAwLCA0MDk2KSAgICAgICAgICAgICAgICAg
-PSAwDQpvcGVuKCIvbGliL2xpYmMuc28uMCIsIE9fUkRPTkxZKSAgICAgICAgPSAzDQpmc3RhdCgz
-LCB7c3RfbW9kZT1TX0lGUkVHfDA3NTUsIHN0X3NpemU9MjUyMjM2LCAuLi59KSA9IDANCmNsb3Nl
-KDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDANCm11bm1hcCgweDJkMTgwMDAs
-IDExMDgpICAgICAgICAgICAgICAgICA9IDANCnN0YXQoIi9saWIvbGQtdUNsaWJjLnNvLjAiLCB7
-c3RfbW9kZT1TX0lGUkVHfDA3NTUsIHN0X3NpemU9MjAzNDgsIC4uLn0pID0gMA0KaW9jdGwoMCwg
-U05EQ1RMX1RNUl9USU1FQkFTRSBvciBTTkRSVl9USU1FUl9JT0NUTF9ORVhUX0RFVklDRSBvciBU
-Q0dFVFMsIHtCNTc2MDAgb3Bvc3QgaXNpZyBpY2Fub24gZWNobyAuLi59KSA9IDANCmlvY3RsKDEs
-IFNORENUTF9UTVJfVElNRUJBU0Ugb3IgU05EUlZfVElNRVJfSU9DVExfTkVYVF9ERVZJQ0Ugb3Ig
-VENHRVRTLCB7QjU3NjAwIG9wb3N0IGlzaWcgaWNhbm9uIGVjaG8gLi4ufSkgPSAwDQpvcGVuKCIv
-ZXRjL2Z3X2Vudi5jb25maWciLCBPX1JET05MWSkgICAgPSAzDQppb2N0bCgzLCBTTkRDVExfVE1S
-X1RJTUVCQVNFIG9yIFNORFJWX1RJTUVSX0lPQ1RMX05FWFRfREVWSUNFIG9yIFRDR0VUUywgMHgy
-ZTFmYjc4KSA9IC0xIEVOT1RUWSAoSW5hcHByb3ByaWF0ZSBpb2N0bCBmb3IgZGV2aWNlKQ0KbW1h
-cDIoTlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJVEUsIE1BUF9TSEFSRUR8TUFQX0FOT05Z
-TU9VU3wweDQwMDAwMDAsIDAsIDApID0gMHgyZDE4MDAwDQpyZWFkKDMsICIjIENvbmZpZ3VyYXRp
-b24gZmlsZSBmb3IgZndfKHByaSIuLi4sIDI1NikgPSAyNTYNCnJlYWQoMywgIkZsYXNoIHNlY3Rv
-ciBzaXplXHROdW1iZXIgb2Ygc2VjdCIuLi4sIDI1NikgPSAxNjMNCnJlYWQoMywgIiIsIDI1Nikg
-ICAgICAgICAgICAgICAgICAgICAgICA9IDANCmNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICA9IDANCnN0YXQoIi9kZXYvbXRkMCIsIHtzdF9tb2RlPVNfSUZDSFJ8MDY2MCwg
-c3RfcmRldj1tYWtlZGV2KDkwLCAwKSwgLi4ufSkgPSAwDQptbWFwMihOVUxMLCAxMzUxNjgsIFBS
-T1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfU0hBUkVEfE1BUF9BTk9OWU1PVVN8MHg0MDAwMDAwLCAw
-LCAwKSA9IDB4MmU4MDAwMA0Kb3BlbigiL2Rldi9tdGQwIiwgT19SRE9OTFkpICAgICAgICAgICAg
-ID0gMw0KaW9jdGwoMywgTUVNR0VUSU5GTyBvciBNRkJfU0VUX0NIUk9NQV9LRVksIHt0eXBlPU1U
-RF9OQU5ERkxBU0gsIGZsYWdzPU1URF9XUklURUFCTEUsIHNpemU9MHg4MDAwMCwgZXJhc2VzaXpl
-PTB4MjAwMDAsIHdyaXRlc2l6ZT0weDgwMCwgb29ic2l6ZT0weDQwLCBwYWRkaW5nPTB4ZmZmZmZm
-ZmZ9KSA9IDANCmlvY3RsKDMsIE1FTUdFVEJBREJMT0NLLCBbMzkzMjE2XSkgICAgICA9IDENCmlv
-Y3RsKDMsIE1FTUdFVEJBREJMT0NLLCBbNTI0Mjg4XSkgICAgICA9IC0xIEVJTlZBTCAoSW52YWxp
-ZCBhcmd1bWVudCkNCndyaXRlKDIsICJDYW5ub3QgcmVhZCBiYWQgYmxvY2sgbWFyayIsIDI2Q2Fu
-bm90IHJlYWQgYmFkIGJsb2NrIG1hcmspID0gMjYNCndyaXRlKDIsICI6ICIsIDI6ICkgICAgICAg
-ICAgICAgICAgICAgICAgID0gMg0Kd3JpdGUoMiwgIkludmFsaWQgYXJndW1lbnQiLCAxNkludmFs
-aWQgYXJndW1lbnQpICAgICAgICA9IDE2DQp3cml0ZSgyLCAiXG4iLCAxDQopICAgICAgICAgICAg
-ICAgICAgICAgICA9IDENCmNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9
-IDANCl9leGl0KDEpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9ID8NCnJvb3Q6Lz4N
-Cg0KDQpyb290Oi8+IGNhdCAvZXRjL2Z3X2Vudi5jb25maWcNCiMgQ29uZmlndXJhdGlvbiBmaWxl
-IGZvciBmd18ocHJpbnRlbnYvc2F2ZWVudikgdXRpbGl0eS4NCiMgVXAgdG8gdHdvIGVudHJpZXMg
-YXJlIHZhbGlkLCBpbiB0aGlzIGNhc2UgdGhlIHJlZHVuZGFudA0KIyBlbnZpcm9ubWVudCBzZWN0
-b3IgaXMgYXNzdW1lZCBwcmVzZW50Lg0KIyBOb3RpY2UsIHRoYXQgdGhlICJOdW1iZXIgb2Ygc2Vj
-dG9ycyIgaXMgaWdub3JlZCBvbiBOT1IuDQoNCiMgTVREIGRldmljZSBuYW1lICAgICAgIERldmlj
-ZSBvZmZzZXQgICBFbnYuIHNpemUgICAgICAgRmxhc2ggc2VjdG9yIHNpemUgICAgICAgTnVtYmVy
-IG9mIHNlY3RvcnMNCiMvZGV2L210ZDEgICAgICAgICAgICAgIDB4MDAwMCAgICAgICAgICAweDQw
-MDAgICAgICAgICAgMHg0MDAwDQojL2Rldi9tdGQyICAgICAgICAgICAgICAweDAwMDAgICAgICAg
-ICAgMHg0MDAwICAgICAgICAgIDB4NDAwMA0KDQojIE5BTkQgZXhhbXBsZQ0KL2Rldi9tdGQwICAg
-ICAgICAgICAgICAgMHg2MDAwMCAgICAgICAgIDB4MjAwMDAgICAgICAgICAweDIwMDAwICAgICAg
-ICAgICAgICAgICAxDQpyb290Oi8+DQoNCg0K
+From: Rob Herring <rob.herring@calxeda.com>
+
+The platform is removed, so there are no users of this driver.
+
+Signed-off-by: Rob Herring <rob.herring@calxeda.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/maps/Kconfig   |    9 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/ixp2000.c |  253 --------------------------------------------
+ 3 files changed, 0 insertions(+), 263 deletions(-)
+ delete mode 100644 drivers/mtd/maps/ixp2000.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 8af67cf..ddb2935 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -356,15 +356,6 @@ config MTD_IXP4XX
+ 	  IXDP425 and Coyote. If you have an IXP4xx based board and
+ 	  would like to use the flash chips on it, say 'Y'.
+ 
+-config MTD_IXP2000
+-	tristate "CFI Flash device mapped on Intel IXP2000 based systems"
+-	depends on MTD_CFI && MTD_COMPLEX_MAPPINGS && ARCH_IXP2000
+-	help
+-	  This enables MTD access to flash devices on platforms based
+-	  on Intel's IXP2000 family of network processors. If you have an
+-	  IXP2000 based board and would like to use the flash chips on it,
+-	  say 'Y'.
+-
+ config MTD_FORTUNET
+ 	tristate "CFI Flash device mapped on the FortuNet board"
+ 	depends on MTD_CFI && SA1100_FORTUNET
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 68a9a91..cfa110c 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -46,7 +46,6 @@ obj-$(CONFIG_MTD_NETtel)	+= nettel.o
+ obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
+ obj-$(CONFIG_MTD_H720X)		+= h720x-flash.o
+ obj-$(CONFIG_MTD_IXP4XX)	+= ixp4xx.o
+-obj-$(CONFIG_MTD_IXP2000)	+= ixp2000.o
+ obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
+ obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
+ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+diff --git a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
+deleted file mode 100644
+index 4a41ced..0000000
+--- a/drivers/mtd/maps/ixp2000.c
++++ /dev/null
+@@ -1,253 +0,0 @@
+-/*
+- * drivers/mtd/maps/ixp2000.c
+- *
+- * Mapping for the Intel XScale IXP2000 based systems
+- *
+- * Copyright (C) 2002 Intel Corp.
+- * Copyright (C) 2003-2004 MontaVista Software, Inc.
+- *
+- * Original Author: Naeem M Afzal <naeem.m.afzal@intel.com>
+- * Maintainer: Deepak Saxena <dsaxena@plexity.net>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/string.h>
+-#include <linux/slab.h>
+-#include <linux/ioport.h>
+-#include <linux/device.h>
+-#include <linux/platform_device.h>
+-
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/io.h>
+-#include <mach/hardware.h>
+-#include <asm/mach/flash.h>
+-
+-#include <linux/reboot.h>
+-
+-struct ixp2000_flash_info {
+-	struct		mtd_info *mtd;
+-	struct		map_info map;
+-	struct		resource *res;
+-};
+-
+-static inline unsigned long flash_bank_setup(struct map_info *map, unsigned long ofs)
+-{
+-	unsigned long (*set_bank)(unsigned long) =
+-		(unsigned long(*)(unsigned long))map->map_priv_2;
+-
+-	return (set_bank ? set_bank(ofs) : ofs);
+-}
+-
+-#ifdef __ARMEB__
+-/*
+- * Rev A0 and A1 of IXP2400 silicon have a broken addressing unit which
+- * causes the lower address bits to be XORed with 0x11 on 8 bit accesses
+- * and XORed with 0x10 on 16 bit accesses. See the spec update, erratum 44.
+- */
+-static int erratum44_workaround = 0;
+-
+-static inline unsigned long address_fix8_write(unsigned long addr)
+-{
+-	if (erratum44_workaround) {
+-		return (addr ^ 3);
+-	}
+-	return addr;
+-}
+-#else
+-
+-#define address_fix8_write(x)	(x)
+-#endif
+-
+-static map_word ixp2000_flash_read8(struct map_info *map, unsigned long ofs)
+-{
+-	map_word val;
+-
+-	val.x[0] =  *((u8 *)(map->map_priv_1 + flash_bank_setup(map, ofs)));
+-	return val;
+-}
+-
+-/*
+- * We can't use the standard memcpy due to the broken SlowPort
+- * address translation on rev A0 and A1 silicon and the fact that
+- * we have banked flash.
+- */
+-static void ixp2000_flash_copy_from(struct map_info *map, void *to,
+-			      unsigned long from, ssize_t len)
+-{
+-	from = flash_bank_setup(map, from);
+-	while(len--)
+-		*(__u8 *) to++ = *(__u8 *)(map->map_priv_1 + from++);
+-}
+-
+-static void ixp2000_flash_write8(struct map_info *map, map_word d, unsigned long ofs)
+-{
+-	*(__u8 *) (address_fix8_write(map->map_priv_1 +
+-				      flash_bank_setup(map, ofs))) = d.x[0];
+-}
+-
+-static void ixp2000_flash_copy_to(struct map_info *map, unsigned long to,
+-			    const void *from, ssize_t len)
+-{
+-	to = flash_bank_setup(map, to);
+-	while(len--) {
+-		unsigned long tmp = address_fix8_write(map->map_priv_1 + to++);
+-		*(__u8 *)(tmp) = *(__u8 *)(from++);
+-	}
+-}
+-
+-
+-static int ixp2000_flash_remove(struct platform_device *dev)
+-{
+-	struct flash_platform_data *plat = dev->dev.platform_data;
+-	struct ixp2000_flash_info *info = platform_get_drvdata(dev);
+-
+-	platform_set_drvdata(dev, NULL);
+-
+-	if(!info)
+-		return 0;
+-
+-	if (info->mtd) {
+-		mtd_device_unregister(info->mtd);
+-		map_destroy(info->mtd);
+-	}
+-	if (info->map.map_priv_1)
+-		iounmap((void *) info->map.map_priv_1);
+-
+-	if (info->res) {
+-		release_resource(info->res);
+-		kfree(info->res);
+-	}
+-
+-	if (plat->exit)
+-		plat->exit();
+-
+-	return 0;
+-}
+-
+-
+-static int ixp2000_flash_probe(struct platform_device *dev)
+-{
+-	static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-	struct ixp2000_flash_data *ixp_data = dev->dev.platform_data;
+-	struct flash_platform_data *plat;
+-	struct ixp2000_flash_info *info;
+-	unsigned long window_size;
+-	int err = -1;
+-
+-	if (!ixp_data)
+-		return -ENODEV;
+-
+-	plat = ixp_data->platform_data;
+-	if (!plat)
+-		return -ENODEV;
+-
+-	window_size = resource_size(dev->resource);
+-	dev_info(&dev->dev, "Probe of IXP2000 flash(%d banks x %dMiB)\n",
+-		 ixp_data->nr_banks, ((u32)window_size >> 20));
+-
+-	if (plat->width != 1) {
+-		dev_err(&dev->dev, "IXP2000 MTD map only supports 8-bit mode, asking for %d\n",
+-			plat->width * 8);
+-		return -EIO;
+-	}
+-
+-	info = kzalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
+-	if(!info) {
+-		err = -ENOMEM;
+-		goto Error;
+-	}
+-
+-	platform_set_drvdata(dev, info);
+-
+-	/*
+-	 * Tell the MTD layer we're not 1:1 mapped so that it does
+-	 * not attempt to do a direct access on us.
+-	 */
+-	info->map.phys = NO_XIP;
+-
+-	info->map.size = ixp_data->nr_banks * window_size;
+-	info->map.bankwidth = 1;
+-
+-	/*
+- 	 * map_priv_2 is used to store a ptr to the bank_setup routine
+- 	 */
+-	info->map.map_priv_2 = (unsigned long) ixp_data->bank_setup;
+-
+-	info->map.name = dev_name(&dev->dev);
+-	info->map.read = ixp2000_flash_read8;
+-	info->map.write = ixp2000_flash_write8;
+-	info->map.copy_from = ixp2000_flash_copy_from;
+-	info->map.copy_to = ixp2000_flash_copy_to;
+-
+-	info->res = request_mem_region(dev->resource->start,
+-				       resource_size(dev->resource),
+-				       dev_name(&dev->dev));
+-	if (!info->res) {
+-		dev_err(&dev->dev, "Could not reserve memory region\n");
+-		err = -ENOMEM;
+-		goto Error;
+-	}
+-
+-	info->map.map_priv_1 =
+-		(unsigned long)ioremap(dev->resource->start,
+-				       resource_size(dev->resource));
+-	if (!info->map.map_priv_1) {
+-		dev_err(&dev->dev, "Failed to ioremap flash region\n");
+-		err = -EIO;
+-		goto Error;
+-	}
+-
+-#if defined(__ARMEB__)
+-	/*
+-	 * Enable erratum 44 workaround for NPUs with broken slowport
+-	 */
+-
+-	erratum44_workaround = ixp2000_has_broken_slowport();
+-	dev_info(&dev->dev, "Erratum 44 workaround %s\n",
+-	       erratum44_workaround ? "enabled" : "disabled");
+-#endif
+-
+-	info->mtd = do_map_probe(plat->map_name, &info->map);
+-	if (!info->mtd) {
+-		dev_err(&dev->dev, "map_probe failed\n");
+-		err = -ENXIO;
+-		goto Error;
+-	}
+-	info->mtd->owner = THIS_MODULE;
+-
+-	err = mtd_device_parse_register(info->mtd, probes, NULL, NULL, 0);
+-	if (err)
+-		goto Error;
+-
+-	return 0;
+-
+-Error:
+-	ixp2000_flash_remove(dev);
+-	return err;
+-}
+-
+-static struct platform_driver ixp2000_flash_driver = {
+-	.probe		= ixp2000_flash_probe,
+-	.remove		= ixp2000_flash_remove,
+-	.driver		= {
+-		.name	= "IXP2000-Flash",
+-		.owner	= THIS_MODULE,
+-	},
+-};
+-
+-module_platform_driver(ixp2000_flash_driver);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net>");
+-MODULE_ALIAS("platform:IXP2000-Flash");
+-- 
+1.7.5.4
