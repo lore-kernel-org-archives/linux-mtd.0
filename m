@@ -1,22 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SFL6J-00043h-LY
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 07:57:56 +0000
-Date: Wed, 4 Apr 2012 09:57:48 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd/gpmi : do not include the mxs.h
-Message-ID: <20120404075748.GA9073@pengutronix.de>
-References: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
- <20120403193920.GC2201@pengutronix.de>
- <CAMiH66FhFFi1Kd7t6uK4S46Yt=g1kxxCUZywCNAmy14E1AHH1A@mail.gmail.com>
+Received: from mail-qa0-f41.google.com ([209.85.216.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SFML5-0002wC-Qx
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2012 09:17:16 +0000
+Received: by qafl39 with SMTP id l39so245608qaf.0
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2012 02:17:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
-Content-Disposition: inline
-In-Reply-To: <CAMiH66FhFFi1Kd7t6uK4S46Yt=g1kxxCUZywCNAmy14E1AHH1A@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+In-Reply-To: <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
+References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
+ <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
+Date: Wed, 4 Apr 2012 11:17:13 +0200
+Message-ID: <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
+Subject: Re: Unstable bits and JFFS2
+From: Matej Kupljen <matej.kupljen@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +24,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Brian,
 
---ZPt4rx8FFjLCG7dd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Mar 28, 2012 at 4:16 AM, Matej Kupljen <matej.kupljen@gmail.com> wrote:
+>> during my experiments with the UBIFS crashing, I believe that I am experiencing
+>> the "unstable bit" issue.
+>>
+>> Would another FS, like JFFS2 work on such device, or I'd have the problems on
+>> such device with all file systems?
+>
+> I doubt it. JFFS2 is not supported much anymore, and it is not
+> designed for some of the problems with modern NAND flash.
 
-Hi,
+Aha, I see.
+Thank you for the information.
 
-> Do you mean your patch "lib: add support for stmp-style devices" ?
-> or some other patch?
+> Have you read the information here?
+>
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
 
-Yes, it adds the SET and CLR macros. writel() then need to be modified agai=
-n.
-Nothing major, though.
+Yes, I have. Artem already pointed me to that FAQ.
 
-> Your patch "lib: add support for stmp-style devices" does not give me the=
- API
-> to remove this code as i ever wished to.
+> I'm not much of an export on UBIFS or unstable bits, but I think that
+> there are some unsolved problems. However, before ruling this an
+> unstable bits problem, it's a good idea to rule out any other possible
+> issues.
 
-Then please speak up. The only comment I can find from you is the requested
-move to a fsl-directory, but this is nothing about API?
+Yes, I'll check the MTD driver.
 
-Regards,
+At the moment I am running again integrity check on my UBIFS for
+almost 24 hours
+now, but until now no error:
+# ./integck -n 0 -v -e /media/card
 
-   Wolfram
+The only difference from previous run, where I saw one bit flip is
+that previously
+I run the test with power failure option set to ON. Now it is off.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Artem, you said that this unstable bits only happen during power cuts,
+is this right?
+Would those appear also on simulated power cuts, the ones that can
+integck produce?
 
---ZPt4rx8FFjLCG7dd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+As for the ECC correction of the empty space, nothing is mentioned in
+the manual.
+Maybe I should ask the manufacturer of the chip (NXP LPC3152)??
+It uses HW error correction included in the FLASH controller, with:
+"The error correction code used is Reed-Solomon over GF(2^9). The
+primitive polynomial
+g(x) over GF(2) is:
+g(x) = x9 + x4 +1"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk97/vwACgkQD27XaX1/VRti9wCgjYrgzFOmB5ewA77KYC1D7hXp
-a4oAnA/UfKkuy8xCF2ZE8qIG5R56e3t+
-=17Dj
------END PGP SIGNATURE-----
-
---ZPt4rx8FFjLCG7dd--
+Thank you and Best Regards,
+Matej
