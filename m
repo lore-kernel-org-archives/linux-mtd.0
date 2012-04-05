@@ -1,21 +1,21 @@
-Message-ID: <4F7E01CF.3040203@ti.com>
-Date: Thu, 5 Apr 2012 15:34:23 -0500
-From: Jon Hunter <jon-hunter@ti.com>
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SFtkx-0001uK-Qg
+ for linux-mtd@lists.infradead.org; Thu, 05 Apr 2012 20:58:13 +0000
+Received: by yhjj52 with SMTP id j52so1143593yhj.36
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Apr 2012 13:58:09 -0700 (PDT)
 MIME-Version: 1.0
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
-References: <cover.1333640054.git.afzal@ti.com>
- <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
- <4F7DFED5.4030000@ti.com>
-In-Reply-To: <4F7DFED5.4030000@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Kevin Hilman <khilman@ti.com>, nm@ti.com, linux@arm.linux.org.uk,
- sameo@linux.intel.com, tony@atomide.com, artem.bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, Vaibhav Hiremath <hvaibhav@ti.com>,
- dbaryshkov@gmail.com, vimal.newwork@gmail.com, grinberg@compulab.co.il,
- mike@compulab.co.il, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <071A08F2C6A57E4E94D980ECA553F8745E82D5@039-SN1MPN1-005.039d.mgd.msft.net>
+References: <071A08F2C6A57E4E94D980ECA553F8745E82D5@039-SN1MPN1-005.039d.mgd.msft.net>
+Date: Thu, 5 Apr 2012 13:58:09 -0700
+Message-ID: <CAN8TOE-0GPgbfgrps-ieQb9NYnOFv79TZdxhTyd_ydPboP_8Pg@mail.gmail.com>
+Subject: Re: Query mtd-utils v1.4.9 : flash_erase.c
+From: Brian Norris <computersforpeace@gmail.com>
+To: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,252 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Afzal,
+On Thu, Apr 5, 2012 at 2:21 AM, Kushwaha Prabhakar-B32579
+<B32579@freescale.com> wrote:
+> =A0I checked latest mtd-utils ver 1.4.9 for file flash_erase.c.
+>
+> It usage MEMGETOOBSEL ioctl to get OOB information from the driver. But t=
+his ioctl may returns error for big NAND chips.
+> The reason of failure would be the following condition at linux/driver/mt=
+d/mtdchar.c
+> =A0if (mtd->ecclayout->eccbytes > ARRAY_SIZE(oi.eccpos))
+>
+> MEMGETOOBSEL has been obsolete. then Why mtd-utils still using it.
 
-On 04/05/2012 03:21 PM, Jon Hunter wrote:
-> Hi Afzal,
->
-> On 04/05/2012 10:45 AM, Afzal Mohammed wrote:
->
-> [...]
->
->> +struct gpmc_irq {
->> + unsigned irq;
->> + u32 regval;
->
-> Are you using regval to indicate the bit-mask? If so, maybe call it
-> "bitmask" instead.
->
-> [...]
->
->> +static __devinit
->> +int gpmc_setup_cs_irq(struct gpmc *gpmc, struct gpmc_device_pdata *gdp,
->> + struct gpmc_cs_data *cs, struct resource *res)
->> +{
->> + int i, n, val;
->> +
->> + for (i = 0, n = 0; i< gpmc->num_irq; i++)
->> + if (gpmc->irq[i].regval& cs->irq_flags) {
->> + res[n].start = res[n].end = gpmc->irq[i].irq;
->> + res[n].flags = IORESOURCE_IRQ;
->> +
->> + dev_info(gpmc->dev, "resource irq %u for %s "
->> + "(on CS %d) [bit: %x]\n", res[n].start,
->> + gdp->name, cs->cs, __ffs(gpmc->irq[i].regval));
->> +
->> + switch (gpmc->irq[i].regval) {
->> + case GPMC_IRQ_WAIT0EDGEDETECTION:
->> + case GPMC_IRQ_WAIT1EDGEDETECTION:
->> + case GPMC_IRQ_WAIT2EDGEDETECTION:
->> + case GPMC_IRQ_WAIT3EDGEDETECTION:
->> + val = __ffs(gpmc->irq[i].regval);
->> + val -= __ffs(GPMC_IRQ_WAIT0EDGEDETECTION);
->> + gpmc_cs_configure(cs->cs,
->> + GPMC_CONFIG_WAITPIN, val);
->
-> Why is the configuration of the wait pin done here? It is possible to
-> use the wait pin may be used without enabling the interrupt.
+A few reasons:
+(1) There is no replacement interface and there is no plan for a
+replacement AFAIK (unless you count MTD_OOB_AUTO within the kernel, as
+you mention).
+(2) It's only used for the legacy option JFFS2 format option (-j or
+--jffs2). JFFS2 isn't supported much anymore, and it probably is not
+worth using on "big NAND chips." On some systems, ECC does not even
+leave enough room in OOB for JFFS2.
 
-Sorry very bad english here on my part. I meant "it is possible to use a 
-wait pin, without enabling the interrupt".
+> Also, I don't think flash_erase.c supports MTD_OOB_AUTO. Although its sup=
+port is already part of Linux kernel.
 
-> Where do you handle allocating the wait pins to ensure two devices don't
-> attempt to use the same one? Like how the CS are managed.
->
-> Also, where you you configure the polarity of the wait pins? I would
-> have thought it would make sense to have the wait pin configured as part
-> of the cs configuration.
->
->> + }
->> + n++;
->> + }
->> +
->> + return n;
->> +}
->> +
->> +static __devinit int gpmc_setup_device(struct gpmc_device_pdata *gdp,
->> + struct gpmc_device *dev, struct gpmc *gpmc)
->> +{
->> + int i, j, n;
->> + struct gpmc_cs_data *cs;
->> +
->> + for (i = 0, n = 0, cs = gdp->cs_data; i< gdp->num_cs; i++, cs++)
->> + n += hweight32(cs->irq_flags& GPMC_IRQ_MASK);
->> +
->> + n += gdp->num_cs;
->> +
->> + dev->gpmc_res = devm_kzalloc(gpmc->dev, sizeof(*dev->gpmc_res) * n,
->> + GFP_KERNEL);
->> + if (dev->gpmc_res == NULL) {
->> + dev_err(gpmc->dev, "error: memory allocation\n");
->> + return -ENOMEM;
->> + }
->> +
->> + for (i = 0, j = 0, cs = gdp->cs_data; i< gdp->num_cs; cs++, i++) {
->> + dev->gpmc_res[j] = gpmc_setup_cs_mem(cs, gdp, gpmc);
->> + if (dev->gpmc_res[j++].flags& IORESOURCE_MEM)
->> + j += gpmc_setup_cs_irq(gpmc, gdp, cs,
->> + dev->gpmc_res + j);
->> + else {
->> + dev_err(gpmc->dev, "error: setup for %s\n", gdp->name);
->> + devm_kfree(gpmc->dev, dev->gpmc_res);
->> + dev->gpmc_res = NULL;
->> + dev->num_gpmc_res = 0;
->> + return -EINVAL;
->> + }
->> }
->
-> This section of code is not straight-forward to read. I see what you are
-> doing, but I am wondering if this could be improved.
->
-> First of all, returning a structure from a function is making this code
-> harder to read. Per the CodingStyle document in the kernel, it is
-> preferred for a function to return success or failure if the function is
-> an action, like a setup.
->
-> Secondly, do you need to pass cs, gdp and gpmc to gpmc_setup_cs_mem()?
-> It appears that gdp and gpmc are only used for prints. You could
-> probably avoid passing gdp and move the print to outside this function.
->
->> + dev->num_gpmc_res = j;
->>
->> - ret = request_irq(gpmc_irq,
->> - gpmc_handle_irq, IRQF_SHARED, "gpmc", gpmc_base);
->> - if (ret)
->> - pr_err("gpmc: irq-%d could not claim: err %d\n",
->> - gpmc_irq, ret);
->> - return ret;
->> + dev->name = gdp->name;
->> + dev->id = gdp->id;
->> + dev->pdata = gdp->pdata;
->> + dev->pdata_size = gdp->pdata_size;
->> + dev->per_res = gdp->per_res;
->> + dev->num_per_res = gdp->num_per_res;
->> +
->> + return 0;
->> +}
->> +
->> +static __devinit
->> +struct platform_device *gpmc_create_device(struct gpmc_device *p,
->> + struct gpmc *gpmc)
->> +{
->> + int num = p->num_per_res + p->num_gpmc_res;
->> + struct resource *res;
->> + struct platform_device *pdev;
->> +
->> + res = devm_kzalloc(gpmc->dev, sizeof(struct resource) * num,
->> + GFP_KERNEL);
->> + if (!res) {
->> + dev_err(gpmc->dev, "error: allocating memory\n");
->> + return NULL;
->> + }
->> +
->> + memcpy((char *)res, (const char *) p->gpmc_res,
->> + sizeof(struct resource) * p->num_gpmc_res);
->> + memcpy((char *)(res + p->num_gpmc_res), (const char *)p->per_res,
->> + sizeof(struct resource) * p->num_per_res);
->> +
->> + pdev = platform_device_register_resndata(gpmc->dev, p->name, p->id,
->> + res, num, p->pdata, p->pdata_size);
->> +
->> + devm_kfree(gpmc->dev, res);
->> +
->> + return pdev;
->> }
->> -postcore_initcall(gpmc_init);
->>
->> static irqreturn_t gpmc_handle_irq(int irq, void *dev)
->> {
->> - u8 cs;
->> + int i;
->> + u32 regval;
->> + struct gpmc *gpmc = dev;
->>
->> - /* check cs to invoke the irq */
->> - cs = ((gpmc_read_reg(GPMC_PREFETCH_CONFIG1))>> CS_NUM_SHIFT)& 0x7;
->> - if (OMAP_GPMC_IRQ_BASE+cs<= OMAP_GPMC_IRQ_END)
->> - generic_handle_irq(OMAP_GPMC_IRQ_BASE+cs);
->> + regval = gpmc_read_reg(GPMC_IRQSTATUS);
->> +
->> +
->> + for (i = 0; i< gpmc->num_irq; i++)
->> + if (regval& gpmc->irq[i].regval)
->> + generic_handle_irq(gpmc->irq[i].irq);
->> + gpmc_write_reg(GPMC_IRQSTATUS, regval);
->>
->> return IRQ_HANDLED;
->> }
->>
->> +static int gpmc_irq_endis(struct irq_data *p, bool endis)
->> +{
->> + struct gpmc *gpmc = irq_data_get_irq_chip_data(p);
->> + int i;
->> + u32 regval;
->> +
->> + for (i = 0; i< gpmc->num_irq; i++)
->> + if (p->irq == gpmc->irq[i].irq) {
->> + regval = gpmc_read_reg(GPMC_IRQENABLE);
->> + if (endis)
->> + regval |= gpmc->irq[i].regval;
->> + else
->> + regval&= ~gpmc->irq[i].regval;
->> + gpmc_write_reg(GPMC_IRQENABLE, regval);
->> + break;
->> + }
->> +
->> + return 0;
->> +}
->> +
->> +static void gpmc_irq_disable(struct irq_data *p)
->> +{
->> + gpmc_irq_endis(p, false);
->> +}
->> +
->> +static void gpmc_irq_enable(struct irq_data *p)
->> +{
->> + gpmc_irq_endis(p, true);
->> +}
->> +
->> +static void gpmc_irq_noop(struct irq_data *data) { }
->> +
->> +static unsigned int gpmc_irq_noop_ret(struct irq_data *data) { return
->> 0; }
->> +
->> +static __devinit int gpmc_setup_irq(struct gpmc *gpmc)
->> +{
->> + int i;
->> + u32 regval;
->> +
->> + if (!gpmc->master_irq)
->> + return -EINVAL;
->> +
->> + if (gpmc->num_irq< GPMC_NR_IRQ) {
->> + dev_warn(gpmc->dev, "Insufficient interrupts for device\n");
->> + return -EINVAL;
->> + } else if (gpmc->num_irq> GPMC_NR_IRQ)
->> + gpmc->num_irq = GPMC_NR_IRQ;
->
-> Hmmm ... why not just have ...
->
-> if (gpmc->num_irq != GPMC_NR_IRQ) {
-> dev_warn(...);
-> return -EINVAL;
-> }
->
-> This also raises the question why bother passing num_irq if we always
-> want it to be GPMC_NR_IRQ? Why not always initialise them all driver?
->
->> + gpmc->irq[0].regval = GPMC_IRQ_FIFOEVENT;
->> + gpmc->irq[1].regval = GPMC_IRQ_TERMINALCOUNT;
->> + gpmc->irq[2].regval = GPMC_IRQ_WAIT0EDGEDETECTION;
->> + gpmc->irq[3].regval = GPMC_IRQ_WAIT1EDGEDETECTION;
->> + gpmc->irq[4].regval = GPMC_IRQ_WAIT2EDGEDETECTION;
->> + gpmc->irq[5].regval = GPMC_IRQ_WAIT3EDGEDETECTION;
+What do you mean by "support MTD_OOB_AUTO" (this is actually renamed
+MTD_OPS_AUTO_OOB, btw)? If you're speaking of the -j option still,
+then it's probably because nobody has bothered supporting old features
+on new userspace tools with new (large-OOB) chips. This would require
+a developer who cares about JFFS2 to compare the various versions of
+"autoplace." It wouldn't be too hard to make this use
+MTD_OPS_AUTO_OOB; I just haven't studied auto/jffs2 much...
 
-We need to be careful here, OMAP4 and OMAP5 devices only have 3 wait 
-pins. Hence, one less interrupt.
+Also, aside from -j, flash_erase is only an *erase* tool, not a
+formatting tool, so maybe the -j option is misplaced.
 
-We may need to add a check on GPMC IP revision here.
-
-Cheers
-Jon
+Brian
