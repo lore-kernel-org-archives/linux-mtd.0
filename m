@@ -1,27 +1,21 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SFbPy-0007FL-Bh
- for linux-mtd@lists.infradead.org; Thu, 05 Apr 2012 01:23:18 +0000
-Received: by iaky10 with SMTP id y10so1362311iak.36
- for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2012 18:23:17 -0700 (PDT)
-Date: Thu, 5 Apr 2012 09:23:47 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
-Message-ID: <20120405012343.GH7264@S2101-09.ap.freescale.net>
-References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
- <1314169643-23425-5-git-send-email-b32955@freescale.com>
- <CAOMZO5D_ACi73J0QfXoJmvyw6fBMrQfyoKLkK2P+-kMm5EzaDQ@mail.gmail.com>
- <20120405010829.GG7264@S2101-09.ap.freescale.net>
- <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
+ id 1SFcsy-0000s0-PW
+ for linux-mtd@lists.infradead.org; Thu, 05 Apr 2012 02:57:21 +0000
+Message-ID: <4F7D0AC9.9080100@freescale.com>
+Date: Thu, 5 Apr 2012 11:00:25 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
-Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
+References: <CAOdLEarFOdmDBS0iDmafLeBU=NNWxWjejTvJ-eEkQjRO12+VYg@mail.gmail.com>	<20120404070157.GB24930@pengutronix.de>	<CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>	<20120404183314.GF17187@pengutronix.de>	<CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>	<CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>	<CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
+ <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Sam Gandhi <samgandhi9@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 04, 2012 at 10:19:25PM -0300, Fabio Estevam wrote:
-> On Wed, Apr 4, 2012 at 10:08 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
-> 
-> > No.
-> >
-> > 1) The pin confliction between gpmi and lcdif remains.
-> > 2) I intend to freeze the board file updates, as we are on the way to
-> >   device tree.
-> >
-> > So instead of patching board file, please contribute to device tree
-> > conversion.
-> 
-> I don't see mx28 dts support in mainline yet.
-> 
-I will be soon on arm-soc and in turn linux-next.
 
-> Does it mean my spi patches will not be accepted as well?
+> Huang,
+>
+> Are you able to use gpmi on mx28 running 3.4-rc1?
+I will test it today.
 
-Yes and sorry.
-
--- 
-Regards,
-Shawn
+BR
+Huang Shijie
+>> >
