@@ -1,32 +1,27 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SGA2V-0000wP-I1
- for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 14:21:23 +0000
-Received: by iaky10 with SMTP id y10so3926376iak.36
- for <linux-mtd@lists.infradead.org>; Fri, 06 Apr 2012 07:21:21 -0700 (PDT)
-Date: Fri, 6 Apr 2012 22:21:53 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Sam Gandhi <samgandhi9@gmail.com>
-Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-Message-ID: <20120406142151.GS7264@S2101-09.ap.freescale.net>
-References: <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <4F7EC6AF.6000603@freescale.com>
+References: <20120404070157.GB24930@pengutronix.de>
+ <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
+ <20120404183314.GF17187@pengutronix.de>
+ <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
+ <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
+ <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
  <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
  <4F7D3DB8.6080009@freescale.com>
  <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
  <1333628861.31825.22.camel@vkoul-udesk3>
  <20120406022305.GJ7264@S2101-09.ap.freescale.net>
  <4F7EC6AF.6000603@freescale.com>
- <CAOdLEaoD2sezmXbOoBdZ4h4E+A2rqf-2K9P-Y6aUt+zeASZQrw@mail.gmail.com>
- <20120406135929.GR7264@S2101-09.ap.freescale.net>
- <CAOdLEaontAAN71LkHET7thE5a30wa0EiXPg9b84EOW_GgGoQJg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOdLEaontAAN71LkHET7thE5a30wa0EiXPg9b84EOW_GgGoQJg@mail.gmail.com>
+Date: Fri, 6 Apr 2012 07:53:06 -0700
+Message-ID: <CAOdLEapBs-5RqUN_tjO+pOp9OvGh0YnusOpLz9MoxBLBgSPY2A@mail.gmail.com>
+Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
+From: Sam Gandhi <samgandhi9@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Vinod Koul <vinod.koul@linux.intel.com>,
  Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Wolfram Sang <w.sang@pengutronix.de>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
  Fabio Estevam <festevam@gmail.com>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,24 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 06, 2012 at 07:06:41AM -0700, Sam Gandhi wrote:
-...
-> Well then change the name of the function
-> mxs_assign_cookie_enable_chan(), my point still stands.
-> 
-I just do not see the need of such churn.
+> I tested the following code :
+> ==============================================================
+>
+> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> index 5978113..0f5b09a 100644
+> --- a/drivers/dma/mxs-dma.c
+> +++ b/drivers/dma/mxs-dma.c
+> @@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct
+> dma_cha
+> static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+> {
+> struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
+> + dma_cookie_t c;
+>
+> + c = dma_cookie_assign(tx);
+> mxs_dma_enable_chan(mxs_chan);
+>
+> - return dma_cookie_assign(tx);
+> + return c;
+> }
+>
+> static void mxs_dma_tasklet(unsigned long data)
+>
+>
+Ack on testing.
 
-> As the case illustrates  cookie needs to assigned before enabling the
-> channel then why not do it in that function itself.
+I reverted the change that Vinod had suggested earlier, and applied
+Huang's suggested change and it fixed the issue. Successfully erased
+NAND, made UBI partitions and ran integck tests for several hours.
 
-It's simply because cookie is cookie and channel is channel.
-
-> At worst please
-> put a comment in mxs_assign_cookie_enable() that says cookie must be
-> assigned prior to calling enable channel.
-> 
-It's the best rather than worst to me. 
-
--- 
-Regards,
-Shawn
+-Sam
