@@ -1,31 +1,29 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SG9U3-0005ry-Ix
- for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 13:45:48 +0000
-Received: by ghbf11 with SMTP id f11so1450565ghb.36
- for <linux-mtd@lists.infradead.org>; Fri, 06 Apr 2012 06:45:46 -0700 (PDT)
-Date: Fri, 6 Apr 2012 21:46:02 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
-Message-ID: <20120406134600.GQ7264@S2101-09.ap.freescale.net>
-References: <1314169643-23425-5-git-send-email-b32955@freescale.com>
- <CAOMZO5D_ACi73J0QfXoJmvyw6fBMrQfyoKLkK2P+-kMm5EzaDQ@mail.gmail.com>
- <20120405010829.GG7264@S2101-09.ap.freescale.net>
- <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
- <20120405012343.GH7264@S2101-09.ap.freescale.net>
- <CAOMZO5D2v4-ZoUXEhn7-Z7oSJ190egpkWGLkbaVzkjU5=HCNVA@mail.gmail.com>
- <20120406023121.GK7264@S2101-09.ap.freescale.net>
- <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
- <20120406065302.GN7264@S2101-09.ap.freescale.net>
- <CAOMZO5Ab=cdOevjBhEyQtxVo3mEuoq7xy0auGinUoyh-TddTDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Ab=cdOevjBhEyQtxVo3mEuoq7xy0auGinUoyh-TddTDw@mail.gmail.com>
-Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Sam Gandhi <samgandhi9@gmail.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <4F7EC6AF.6000603@freescale.com>
+References: <20120404070157.GB24930@pengutronix.de>
+ <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
+ <20120404183314.GF17187@pengutronix.de>
+ <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
+ <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
+ <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
+ <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
+ <4F7D3DB8.6080009@freescale.com>
+ <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
+ <1333628861.31825.22.camel@vkoul-udesk3>
+ <20120406022305.GJ7264@S2101-09.ap.freescale.net>
+ <4F7EC6AF.6000603@freescale.com>
+Date: Fri, 6 Apr 2012 06:49:05 -0700
+Message-ID: <CAOdLEaoD2sezmXbOoBdZ4h4E+A2rqf-2K9P-Y6aUt+zeASZQrw@mail.gmail.com>
+Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
+From: Sam Gandhi <samgandhi9@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Vinod Koul <vinod.koul@linux.intel.com>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 06, 2012 at 10:16:48AM -0300, Fabio Estevam wrote:
-> On Fri, Apr 6, 2012 at 3:53 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
-...
-> > I could accept your spi board file patch when spi-mxs driver hit
-> > mainline while mx28 dt does not.
-> 
-> Excellent, that's good news and we come to an agreement  :-) Thanks!
+>
+>
+> It's maybe too late to assign the DMA cookie after mxs_dma_enable_chan() in
+> mxs_dma_tx_submit().
+> The interrupt may arise before the dma_cookie_assign() finishes.
+>
+> Why mmc/audio do not have this bug? their interrupt arise too slow.
+>
+> I tested the following code :
+> ==============================================================
+>
+> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> index 5978113..0f5b09a 100644
+> --- a/drivers/dma/mxs-dma.c
+> +++ b/drivers/dma/mxs-dma.c
+> @@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct
+> dma_cha
+> static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+> {
+> struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
+> + dma_cookie_t c;
+>
+> + c = dma_cookie_assign(tx);
+> mxs_dma_enable_chan(mxs_chan);
+>
+> - return dma_cookie_assign(tx);
+> + return c;
+> }
+>
+If this is the issue, then why not have mxs_dma_enable_chan itself
+call dma_cookie_assign() and return that cookie.
 
-I'm pretty sure that imx28 dt patch from Dong Aisheng will hit mainline
-with v3.5-rc1, which could be the earliest time for spi-mxs to hit
-mainline.  In that case, I do not have any reason to take your board
-file patch from there, so what's point of the while argument?
+That way mxs_dma_enable_chan() is self contained function that assign
+the cookie, enables channel and returns assigned cookie. And nobody
+will make mistake of calling just mxs_dma_enable_chan without first
+calling dma_cookie_assign?
 
--- 
-Regards,
-Shawn
+-Sam
