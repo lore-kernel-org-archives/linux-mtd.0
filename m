@@ -1,34 +1,22 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SG06t-0007hT-1z
- for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 03:45:15 +0000
-Received: by iaky10 with SMTP id y10so3274370iak.36
- for <linux-mtd@lists.infradead.org>; Thu, 05 Apr 2012 20:45:12 -0700 (PDT)
-Date: Fri, 6 Apr 2012 11:45:48 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-Message-ID: <20120406034542.GM7264@S2101-09.ap.freescale.net>
-References: <20120404183314.GF17187@pengutronix.de>
- <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
- <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
- <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
- <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
- <4F7D3DB8.6080009@freescale.com>
- <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
- <1333628861.31825.22.camel@vkoul-udesk3>
- <20120406022305.GJ7264@S2101-09.ap.freescale.net>
- <4F7E58B3.4050408@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4F7E58B3.4050408@freescale.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
- Sam Gandhi <samgandhi9@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20120406023121.GK7264@S2101-09.ap.freescale.net>
+References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
+ <1314169643-23425-5-git-send-email-b32955@freescale.com>
+ <CAOMZO5D_ACi73J0QfXoJmvyw6fBMrQfyoKLkK2P+-kMm5EzaDQ@mail.gmail.com>
+ <20120405010829.GG7264@S2101-09.ap.freescale.net>
+ <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
+ <20120405012343.GH7264@S2101-09.ap.freescale.net>
+ <CAOMZO5D2v4-ZoUXEhn7-Z7oSJ190egpkWGLkbaVzkjU5=HCNVA@mail.gmail.com>
+ <20120406023121.GK7264@S2101-09.ap.freescale.net>
+Date: Fri, 6 Apr 2012 02:49:05 -0300
+Message-ID: <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
+Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
+From: Fabio Estevam <festevam@gmail.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Sam Gandhi <samgandhi9@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,18 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 06, 2012 at 10:45:07AM +0800, Huang Shijie wrote:
-> hi,
-> >Isn't it done in mxs_dma_tx_submit() already? The gpmi driver somehow
-> >misses the call to dmaengine_submit() for some case?
-> >
-> I checked the code again. It seems I do not miss the call to
-> dmaengine_submit().
-> 
-I do not have nand device to play.  Maybe you want to have a check
-if dma_cookie_assign (dmaengine_submit) and dma_cookie_complete
-(via mxs_dma_int_handler) are being called as a pair for gpmi.
+On Thu, Apr 5, 2012 at 11:31 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
 
--- 
-Regards,
-Shawn
+> I have to do that to motivate people to add DT support for the drivers
+> they submit from the beginning.
+
+Understand your point for new drivers.
+
+If you take the GPMI driver for example: it has been available for a
+long time and there is no board using it in mainline.
+
+So how can people easily test it and find bugs with this driver?
+Patching their own trees themselves? Sam Gandhi did extensive tests on
+NAND and found some DMA issues with it.
+
+If we could have mx28evk supporting GPMI driver today it would
+estimulate people to use it and more issues can be found and fixed.
+
+Waiting for DT support to be in place is just blocking the progress for mx28.
+
+Please note that right now there is no dt support for mx28 in mainline.
+
+If what blocks this patch "ARM: mxs/mx28evk: add GPMI-NAND device" to
+be accepted is the pin mux conflict, that would be easy to fix and
+Huang could do a v5 if you agree.
+
+> Also I do not see much point to keep patching board files which are
+> to be removed.
+
+I understand your point, but again, right now there is no dt support,
+so the only mechanism we have to register driver is via board files
+for mx28.
+
+So it would be nice if you could still accept patches for mx28 while
+mx28 dt does not show up in mainline.
