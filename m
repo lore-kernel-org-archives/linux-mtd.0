@@ -1,12 +1,15 @@
-Message-ID: <4F7EC6AF.6000603@freescale.com>
-Date: Fri, 6 Apr 2012 18:34:23 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SG8bI-0001pR-TE
+ for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 12:49:13 +0000
+Received: by iaky10 with SMTP id y10so3800871iak.36
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Apr 2012 05:49:11 -0700 (PDT)
+Date: Fri, 6 Apr 2012 20:49:41 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>
 Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-References: <20120404070157.GB24930@pengutronix.de>
- <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
- <20120404183314.GF17187@pengutronix.de>
+Message-ID: <20120406124938.GP7264@S2101-09.ap.freescale.net>
+References: <20120404183314.GF17187@pengutronix.de>
  <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
  <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
  <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
@@ -15,9 +18,11 @@ References: <20120404070157.GB24930@pengutronix.de>
  <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
  <1333628861.31825.22.camel@vkoul-udesk3>
  <20120406022305.GJ7264@S2101-09.ap.freescale.net>
-In-Reply-To: <20120406022305.GJ7264@S2101-09.ap.freescale.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ <4F7EC6AF.6000603@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4F7EC6AF.6000603@freescale.com>
 Cc: Vinod Koul <vinod.koul@linux.intel.com>,
  Russell King - ARM Linux <linux@arm.linux.org.uk>,
  Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
@@ -33,85 +38,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B404=E6=9C=8806=E6=97=A5 10:23, Shawn Guo =E5=86=99=E9=
-=81=93:
-> On Thu, Apr 05, 2012 at 05:57:41PM +0530, Vinod Koul wrote:
->> On Thu, 2012-04-05 at 05:03 -0700, Sam Gandhi wrote:
->>> 2012/4/4 Huang Shijie<b32955@freescale.com>:
-> ...
->>>>>> flash_erase /dev/mtd1 0 0
->>>>>> Erasing 1------------[ cut here ]------------
->>>>>> kernel BUG at /home/sam/linux/drivers/dma/dmaengine.h:53!
->>>> the mxs-dma has added some patches about the cookie.
->>>> The bug is in the dmaengine.h.
->>>>
->>>> So let more people know this bug.
->>>>
-> I'm still trying to understand why I did run into the BUG_ON when I
-> test it with mxs mmc and sound drivers.
->
-> ...
->
->> This means you are trying to mark a cookie complete when it is already
->> marked so!, hence dmaengine screams.
->> The bug is is mxs-dma.
->> Let me know if below fixes it (assuming you are not using cyclic API,
->> that would need fixup as well)
->>
->> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
->> index c81ef7e..5ddd84e 100644
->> --- a/drivers/dma/mxs-dma.c
->> +++ b/drivers/dma/mxs-dma.c
->> @@ -399,6 +399,10 @@ static struct dma_async_tx_descriptor
->> *mxs_dma_prep_slave_sg(
->>   		ccw->bits&=3D ~CCW_DEC_SEM;
->>   	} else {
->>   		idx =3D 0;
->> +		/* assign cookie here,
->> +		 * hopefully for above case we dont need it
->> +		 */
->> +		dma_cookie_assign(&mxs_chan->desc);
-> Isn't it done in mxs_dma_tx_submit() already? The gpmi driver somehow
+On Fri, Apr 06, 2012 at 06:34:23PM +0800, Huang Shijie wrote:
+...
+> It's maybe too late to assign the DMA cookie after
+> mxs_dma_enable_chan() in mxs_dma_tx_submit().
+> The interrupt may arise before the dma_cookie_assign() finishes.
+> 
+> Why mmc/audio do not have this bug? their interrupt arise too slow.
+> 
+> I tested the following code :
 
-It's maybe too late to assign the DMA cookie after mxs_dma_enable_chan()=20
-in mxs_dma_tx_submit().
-The interrupt may arise before the dma_cookie_assign() finishes.
+Great.  Send a formal patch to Vinod?
 
-Why mmc/audio do not have this bug? their interrupt arise too slow.
+Regards,
+Shawn
 
-I tested the following code :
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 5978113..0f5b09a 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct=20
-dma_cha
-static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
-{
-struct mxs_dma_chan *mxs_chan =3D to_mxs_dma_chan(tx->chan);
-+ dma_cookie_t c;
-
-+ c =3D dma_cookie_assign(tx);
-mxs_dma_enable_chan(mxs_chan);
-
-- return dma_cookie_assign(tx);
-+ return c;
-}
-
-static void mxs_dma_tasklet(unsigned long data)
-
-
-> misses the call to dmaengine_submit() for some case?
->
-> Regards,
-> Shawn
->
->>   	}
->>
->>   	if (direction =3D=3D DMA_TRANS_NONE) {
->>
->> --=20
+> ==============================================================
+> 
+> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> index 5978113..0f5b09a 100644
+> --- a/drivers/dma/mxs-dma.c
+> +++ b/drivers/dma/mxs-dma.c
+> @@ -202,10 +202,12 @@ static struct mxs_dma_chan
+> *to_mxs_dma_chan(struct dma_cha
+> static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+> {
+> struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
+> + dma_cookie_t c;
+> 
+> + c = dma_cookie_assign(tx);
+> mxs_dma_enable_chan(mxs_chan);
+> 
+> - return dma_cookie_assign(tx);
+> + return c;
+> }
+> 
+> static void mxs_dma_tasklet(unsigned long data)
+> 
