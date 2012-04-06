@@ -1,30 +1,29 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SG326-0004Sj-KJ
- for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 06:52:32 +0000
-Received: by iaky10 with SMTP id y10so3432285iak.36
- for <linux-mtd@lists.infradead.org>; Thu, 05 Apr 2012 23:52:28 -0700 (PDT)
-Date: Fri, 6 Apr 2012 14:53:05 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
-Message-ID: <20120406065302.GN7264@S2101-09.ap.freescale.net>
-References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
- <1314169643-23425-5-git-send-email-b32955@freescale.com>
- <CAOMZO5D_ACi73J0QfXoJmvyw6fBMrQfyoKLkK2P+-kMm5EzaDQ@mail.gmail.com>
- <20120405010829.GG7264@S2101-09.ap.freescale.net>
- <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
- <20120405012343.GH7264@S2101-09.ap.freescale.net>
- <CAOMZO5D2v4-ZoUXEhn7-Z7oSJ190egpkWGLkbaVzkjU5=HCNVA@mail.gmail.com>
- <20120406023121.GK7264@S2101-09.ap.freescale.net>
- <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
+Message-ID: <4F7EC6AF.6000603@freescale.com>
+Date: Fri, 6 Apr 2012 18:34:23 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
-Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Sam Gandhi <samgandhi9@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
+References: <20120404070157.GB24930@pengutronix.de>
+ <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
+ <20120404183314.GF17187@pengutronix.de>
+ <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
+ <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
+ <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
+ <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
+ <4F7D3DB8.6080009@freescale.com>
+ <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
+ <1333628861.31825.22.camel@vkoul-udesk3>
+ <20120406022305.GJ7264@S2101-09.ap.freescale.net>
+In-Reply-To: <20120406022305.GJ7264@S2101-09.ap.freescale.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Vinod Koul <vinod.koul@linux.intel.com>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
+ Sam Gandhi <samgandhi9@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,57 +33,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 06, 2012 at 02:49:05AM -0300, Fabio Estevam wrote:
-> On Thu, Apr 5, 2012 at 11:31 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
-> 
-> > I have to do that to motivate people to add DT support for the drivers
-> > they submit from the beginning.
-> 
-> Understand your point for new drivers.
-> 
-> If you take the GPMI driver for example: it has been available for a
-> long time and there is no board using it in mainline.
-> 
-> So how can people easily test it and find bugs with this driver?
-> Patching their own trees themselves? Sam Gandhi did extensive tests on
-> NAND and found some DMA issues with it.
-> 
-Look, people can still test and find issue with no board in mainline
-using it.
+=E4=BA=8E 2012=E5=B9=B404=E6=9C=8806=E6=97=A5 10:23, Shawn Guo =E5=86=99=E9=
+=81=93:
+> On Thu, Apr 05, 2012 at 05:57:41PM +0530, Vinod Koul wrote:
+>> On Thu, 2012-04-05 at 05:03 -0700, Sam Gandhi wrote:
+>>> 2012/4/4 Huang Shijie<b32955@freescale.com>:
+> ...
+>>>>>> flash_erase /dev/mtd1 0 0
+>>>>>> Erasing 1------------[ cut here ]------------
+>>>>>> kernel BUG at /home/sam/linux/drivers/dma/dmaengine.h:53!
+>>>> the mxs-dma has added some patches about the cookie.
+>>>> The bug is in the dmaengine.h.
+>>>>
+>>>> So let more people know this bug.
+>>>>
+> I'm still trying to understand why I did run into the BUG_ON when I
+> test it with mxs mmc and sound drivers.
+>
+> ...
+>
+>> This means you are trying to mark a cookie complete when it is already
+>> marked so!, hence dmaengine screams.
+>> The bug is is mxs-dma.
+>> Let me know if below fixes it (assuming you are not using cyclic API,
+>> that would need fixup as well)
+>>
+>> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+>> index c81ef7e..5ddd84e 100644
+>> --- a/drivers/dma/mxs-dma.c
+>> +++ b/drivers/dma/mxs-dma.c
+>> @@ -399,6 +399,10 @@ static struct dma_async_tx_descriptor
+>> *mxs_dma_prep_slave_sg(
+>>   		ccw->bits&=3D ~CCW_DEC_SEM;
+>>   	} else {
+>>   		idx =3D 0;
+>> +		/* assign cookie here,
+>> +		 * hopefully for above case we dont need it
+>> +		 */
+>> +		dma_cookie_assign(&mxs_chan->desc);
+> Isn't it done in mxs_dma_tx_submit() already? The gpmi driver somehow
 
-> If we could have mx28evk supporting GPMI driver today it would
-> estimulate people to use it and more issues can be found and fixed.
-> 
-> Waiting for DT support to be in place is just blocking the progress for mx28.
-> 
-Please tell me what are exactly being blocked there.
+It's maybe too late to assign the DMA cookie after mxs_dma_enable_chan()=20
+in mxs_dma_tx_submit().
+The interrupt may arise before the dma_cookie_assign() finishes.
 
-> Please note that right now there is no dt support for mx28 in mainline.
-> 
-There are still no spi-mxs driver in mainline, why are you sending me
-spi board file patches?
+Why mmc/audio do not have this bug? their interrupt arise too slow.
 
-> If what blocks this patch "ARM: mxs/mx28evk: add GPMI-NAND device" to
-> be accepted is the pin mux conflict, that would be easy to fix and
-> Huang could do a v5 if you agree.
-> 
-We had the discussion and agreed that migrating to pinctrl subsystem is
-the right solution.  I will be more than happy to accept if someone
-send me mxs pinctrl support rather than any "easy" fix.
+I tested the following code :
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> > Also I do not see much point to keep patching board files which are
-> > to be removed.
-> 
-> I understand your point, but again, right now there is no dt support,
-> so the only mechanism we have to register driver is via board files
-> for mx28.
-> 
-> So it would be nice if you could still accept patches for mx28 while
-> mx28 dt does not show up in mainline.
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 5978113..0f5b09a 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct=20
+dma_cha
+static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+{
+struct mxs_dma_chan *mxs_chan =3D to_mxs_dma_chan(tx->chan);
++ dma_cookie_t c;
 
-I could accept your spi board file patch when spi-mxs driver hit
-mainline while mx28 dt does not.
++ c =3D dma_cookie_assign(tx);
+mxs_dma_enable_chan(mxs_chan);
 
--- 
-Regards,
-Shawn
+- return dma_cookie_assign(tx);
++ return c;
+}
+
+static void mxs_dma_tasklet(unsigned long data)
+
+
+> misses the call to dmaengine_submit() for some case?
+>
+> Regards,
+> Shawn
+>
+>>   	}
+>>
+>>   	if (direction =3D=3D DMA_TRANS_NONE) {
+>>
+>> --=20
