@@ -1,29 +1,30 @@
-Message-ID: <4F7E58B3.4050408@freescale.com>
-Date: Fri, 6 Apr 2012 10:45:07 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SFzwp-0006mW-Mr
+ for linux-mtd@lists.infradead.org; Fri, 06 Apr 2012 03:34:52 +0000
+Received: by iaky10 with SMTP id y10so3265299iak.36
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Apr 2012 20:34:50 -0700 (PDT)
+Date: Fri, 6 Apr 2012 11:35:20 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Subodh Nijsure <snijsure@grid-net.com>
+Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
+Message-ID: <20120406033517.GL7264@S2101-09.ap.freescale.net>
+References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
+ <1314169643-23425-5-git-send-email-b32955@freescale.com>
+ <CAOMZO5D_ACi73J0QfXoJmvyw6fBMrQfyoKLkK2P+-kMm5EzaDQ@mail.gmail.com>
+ <20120405010829.GG7264@S2101-09.ap.freescale.net>
+ <CAOMZO5ACk06aFWmmH0ZXCf6XoLaShwUaoAW0jHKmDTsJ0v027A@mail.gmail.com>
+ <20120405012343.GH7264@S2101-09.ap.freescale.net>
+ <CAOMZO5D2v4-ZoUXEhn7-Z7oSJ190egpkWGLkbaVzkjU5=HCNVA@mail.gmail.com>
+ <20120406023121.GK7264@S2101-09.ap.freescale.net>
+ <C7A5B00EFC707A46AB67997D0215216701B5C28A@mx1.grid-net.com>
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-References: <20120404070157.GB24930@pengutronix.de>
- <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
- <20120404183314.GF17187@pengutronix.de>
- <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
- <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
- <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
- <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
- <4F7D3DB8.6080009@freescale.com>
- <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
- <1333628861.31825.22.camel@vkoul-udesk3>
- <20120406022305.GJ7264@S2101-09.ap.freescale.net>
-In-Reply-To: <20120406022305.GJ7264@S2101-09.ap.freescale.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Vinod Koul <vinod.koul@linux.intel.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
- Sam Gandhi <samgandhi9@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C7A5B00EFC707A46AB67997D0215216701B5C28A@mx1.grid-net.com>
+Cc: dedekind1@gmail.com, s.hauer@pengutronix.de, w.sang@pengutronix.de,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,19 +34,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
-> Isn't it done in mxs_dma_tx_submit() already? The gpmi driver somehow
-> misses the call to dmaengine_submit() for some case?
->
-I checked the code again. It seems I do not miss the call to 
-dmaengine_submit().
+On Thu, Apr 05, 2012 at 08:08:52PM -0700, Subodh Nijsure wrote:
+> 
+> Hello Shawn,
+> 
+> You also have to consider that folks who are using MX28 based design might be just now shifting from freescale provided 2.6.35 SDK to the latest 3.4-rcX train on their own (my case). To make them wait for 3.5 to get all the iMX driver seems like hard thing to do.
+>  
+I'm pretty sure that even 3.5 will not have all the imx28 drivers
+support.  Also freezing board file update does not block anyone adding
+new driver support in any way.  I do not understand what your argument
+is.
 
-There are five places where call the dmaengine_submit() by 
-start_dma_with_bch_irq()/start_dma_without_bch_irq():
-         gpmi_send_command(),gpmi_send_data(),gpmi_read_data(), 
-gpmi_send_page(), gpmi_read_page().
+Please note, the gpmi nand mx28evk board patch was not accept because
+it has pin confliction issue to be resolved.
 
-The gpmi nand code runs well in previous mxs-dma code.
-
-BR
-Huang Shijie
+-- 
+Regards,
+Shawn
