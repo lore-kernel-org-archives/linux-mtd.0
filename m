@@ -1,29 +1,12 @@
-MIME-Version: 1.0
-In-Reply-To: <4F7EC6AF.6000603@freescale.com>
-References: <20120404070157.GB24930@pengutronix.de>
- <CAOdLEaqXyvHzTRSq2=RquZLqEO6kMEp11rjKJ+UtSqtF4nr-EA@mail.gmail.com>
- <20120404183314.GF17187@pengutronix.de>
- <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
- <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
- <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
- <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
- <4F7D3DB8.6080009@freescale.com>
- <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
- <1333628861.31825.22.camel@vkoul-udesk3>
- <20120406022305.GJ7264@S2101-09.ap.freescale.net>
- <4F7EC6AF.6000603@freescale.com>
-Date: Fri, 6 Apr 2012 07:53:06 -0700
-Message-ID: <CAOdLEapBs-5RqUN_tjO+pOp9OvGh0YnusOpLz9MoxBLBgSPY2A@mail.gmail.com>
-Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-From: Sam Gandhi <samgandhi9@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Vinod Koul <vinod.koul@linux.intel.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
- Fabio Estevam <festevam@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Huang Shijie <shijie8@gmail.com>
+To: vinod.koul@linux.intel.com
+Subject: [PATCH] mxs-dma : assign the dma cookie before we enable the dma
+ channel
+Date: Sat,  7 Apr 2012 01:29:35 -0400
+Message-Id: <1333776575-3462-1-git-send-email-shijie8@gmail.com>
+Cc: linux@arm.linux.org.uk, samgandhi9@gmail.com, w.sang@pengutronix.de,
+ linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ shawn.guo@linaro.org, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +16,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I tested the following code :
-> ==============================================================
->
-> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-> index 5978113..0f5b09a 100644
-> --- a/drivers/dma/mxs-dma.c
-> +++ b/drivers/dma/mxs-dma.c
-> @@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct
-> dma_cha
-> static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
-> {
-> struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
-> + dma_cookie_t c;
->
-> + c = dma_cookie_assign(tx);
-> mxs_dma_enable_chan(mxs_chan);
->
-> - return dma_cookie_assign(tx);
-> + return c;
-> }
->
-> static void mxs_dma_tasklet(unsigned long data)
->
->
-Ack on testing.
+The dma chain may finished very fast, so an interrupt may arises before
+we assign the dma cookie. In this case, the mxs_dma_int_handler() may
+hit the BUG_ON() in dma_cookie_complete().
 
-I reverted the change that Vinod had suggested earlier, and applied
-Huang's suggested change and it fixed the issue. Successfully erased
-NAND, made UBI partitions and ran integck tests for several hours.
+So assign the dma cookie before we enable the dma channel.
 
--Sam
+Acked-by: Sam Gandhi <samgandhi9@gmail.com>
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/dma/mxs-dma.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index a1e2d00..1e16d0e 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -210,10 +210,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct dma_chan *chan)
+ static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+ {
+ 	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
++	dma_cookie_t cookie;
+ 
++	cookie = dma_cookie_assign(tx);
+ 	mxs_dma_enable_chan(mxs_chan);
+ 
+-	return dma_cookie_assign(tx);
++	return cookie;
+ }
+ 
+ static void mxs_dma_tasklet(unsigned long data)
+-- 
+1.7.4.4
