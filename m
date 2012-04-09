@@ -1,17 +1,28 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SH76k-0001u6-9M
- for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 05:25:42 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] driver/mtd: IFC NAND: Add support of ONFI NAND flash
-Date: Mon, 9 Apr 2012 10:55:22 +0530
-Message-ID: <1333949122-10401-1-git-send-email-prabhakar@freescale.com>
+ id 1SH7FP-0002C1-DY
+ for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 05:34:40 +0000
+Received: by bkcjk13 with SMTP id jk13so4155896bkc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Apr 2012 22:34:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
- dedekind1@gmail.com
+In-Reply-To: <071A08F2C6A57E4E94D980ECA553F8745F3F98@039-SN1MPN1-005.039d.mgd.msft.net>
+References: <071A08F2C6A57E4E94D980ECA553F8745E82D5@039-SN1MPN1-005.039d.mgd.msft.net>
+ <CAN8TOE-0GPgbfgrps-ieQb9NYnOFv79TZdxhTyd_ydPboP_8Pg@mail.gmail.com>
+ <071A08F2C6A57E4E94D980ECA553F8745EEA99@039-SN1MPN1-005.039d.mgd.msft.net>
+ <CAN8TOE9P9NvD+sRB8MurCkETDKmKUmvkq_M-3kCF+0zaZgsjTg@mail.gmail.com>
+ <CAMjpGUf+nEV09MWb5e2kzjJq0SAQGq=iqce2rzt9UON6wkji8w@mail.gmail.com>
+ <071A08F2C6A57E4E94D980ECA553F8745F3F98@039-SN1MPN1-005.039d.mgd.msft.net>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 9 Apr 2012 01:34:15 -0400
+Message-ID: <CAMjpGUc6=H+4QfJmtU7+HY=anP-V5-Ogdmf__NRGQJCjcyHXjQ@mail.gmail.com>
+Subject: Re: Query mtd-utils v1.4.9 : flash_erase.c
+To: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+ "stanley.miao@windriver.com" <stanley.miao@windriver.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  - Fix NAND_CMD_READID command for ONFI detect.
-  - Add NAND_CMD_PARAM command to read the ONFI parameter page.
+On Sun, Apr 8, 2012 at 23:55, Kushwaha Prabhakar-B32579 wrote:
+> Yes I am fully agree. I have a question about few patches send long back by "Stanley Miao".
+> They are as follows:
+>
+> http://patchwork.ozlabs.org/patch/56261/
+> http://patchwork.ozlabs.org/patch/56262/
+> http://patchwork.ozlabs.org/patch/56263/
+>
+> These patches were never delegated/applied as state are still "New".
+>
+> These patches can become a good base for new patches.
+>
+> Do anyone has any idea; why were these never applied/delegated?
 
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
-Acked-by: Scott Wood <scottwood@freescale.com>
----
- Based upon git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git 
- Branch master
-
- drivers/mtd/nand/fsl_ifc_nand.c |   22 ++++++++++++++++------
- 1 files changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index c30ac7b..4e7f31e 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -375,21 +375,31 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 
- 		return;
- 
--	/* READID must read all 8 possible bytes */
- 	case NAND_CMD_READID:
-+	case NAND_CMD_PARAM: {
-+		int timing = IFC_FIR_OP_RB;
-+		if (command == NAND_CMD_PARAM)
-+			timing = IFC_FIR_OP_RBCD;
-+
- 		out_be32(&ifc->ifc_nand.nand_fir0,
- 				(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
- 				(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
--				(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT));
-+				(timing << IFC_NAND_FIR0_OP2_SHIFT));
- 		out_be32(&ifc->ifc_nand.nand_fcr0,
--				NAND_CMD_READID << IFC_NAND_FCR0_CMD0_SHIFT);
--		/* 8 bytes for manuf, device and exts */
--		out_be32(&ifc->ifc_nand.nand_fbcr, 8);
--		ifc_nand_ctrl->read_bytes = 8;
-+				command << IFC_NAND_FCR0_CMD0_SHIFT);
-+		out_be32(&ifc->ifc_nand.row3, column);
-+
-+		/*
-+		 * although currently it's 8 bytes for READID, we always read
-+		 * the maximum 256 bytes(for PARAM)
-+		 */
-+		out_be32(&ifc->ifc_nand.nand_fbcr, 256);
-+		ifc_nand_ctrl->read_bytes = 256;
- 
- 		set_addr(mtd, 0, 0, 0);
- 		fsl_ifc_run_command(mtd);
- 		return;
-+	}
- 
- 	/* ERASE1 stores the block and page address */
- 	case NAND_CMD_ERASE1:
--- 
-1.7.5.4
+they'll certainly need rebasing now as the code has changed, and i can
+see some issues that need addressing, but fundamentally, those seem
+like a good idea
+-mike
