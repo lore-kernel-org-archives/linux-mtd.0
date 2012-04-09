@@ -1,29 +1,13 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SH8UC-0004Qm-7a
- for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 06:54:00 +0000
-From: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: RE: Query mtd-utils v1.4.9 : flash_erase.c
-Date: Mon, 9 Apr 2012 06:53:55 +0000
-Message-ID: <071A08F2C6A57E4E94D980ECA553F8745F62AA@039-SN1MPN1-005.039d.mgd.msft.net>
-References: <071A08F2C6A57E4E94D980ECA553F8745E82D5@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAN8TOE-0GPgbfgrps-ieQb9NYnOFv79TZdxhTyd_ydPboP_8Pg@mail.gmail.com>
- <071A08F2C6A57E4E94D980ECA553F8745EEA99@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAN8TOE9P9NvD+sRB8MurCkETDKmKUmvkq_M-3kCF+0zaZgsjTg@mail.gmail.com>
- <CAMjpGUf+nEV09MWb5e2kzjJq0SAQGq=iqce2rzt9UON6wkji8w@mail.gmail.com>
- <071A08F2C6A57E4E94D980ECA553F8745F3F98@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAMjpGUc6=H+4QfJmtU7+HY=anP-V5-Ogdmf__NRGQJCjcyHXjQ@mail.gmail.com>
-In-Reply-To: <CAMjpGUc6=H+4QfJmtU7+HY=anP-V5-Ogdmf__NRGQJCjcyHXjQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHCd8-0000hu-6w
+ for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 11:19:31 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: docg3 fix in-middle of blocks reads
+Date: Mon,  9 Apr 2012 13:19:08 +0200
+Message-Id: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,27 +17,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBGcnlzaW5nZXIg
-W21haWx0bzp2YXBpZXIuYWRpQGdtYWlsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBBcHJpbCAwOSwg
-MjAxMiAxMTowNCBBTQ0KPiBUbzogS3VzaHdhaGEgUHJhYmhha2FyLUIzMjU3OQ0KPiBDYzogQnJp
-YW4gTm9ycmlzOyBXb29kIFNjb3R0LUIwNzQyMTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
-cmc7IEFydGVtDQo+IEJpdHl1dHNraXk7IHN0YW5sZXkubWlhb0B3aW5kcml2ZXIuY29tDQo+IFN1
-YmplY3Q6IFJlOiBRdWVyeSBtdGQtdXRpbHMgdjEuNC45IDogZmxhc2hfZXJhc2UuYw0KPiANCj4g
-T24gU3VuLCBBcHIgOCwgMjAxMiBhdCAyMzo1NSwgS3VzaHdhaGEgUHJhYmhha2FyLUIzMjU3OSB3
-cm90ZToNCj4gPiBZZXMgSSBhbSBmdWxseSBhZ3JlZS4gSSBoYXZlIGEgcXVlc3Rpb24gYWJvdXQg
-ZmV3IHBhdGNoZXMgc2VuZCBsb25nDQo+IGJhY2sgYnkgIlN0YW5sZXkgTWlhbyIuDQo+ID4gVGhl
-eSBhcmUgYXMgZm9sbG93czoNCj4gPg0KPiA+IGh0dHA6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9w
-YXRjaC81NjI2MS8NCj4gPiBodHRwOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvNTYyNjIv
-DQo+ID4gaHR0cDovL3BhdGNod29yay5vemxhYnMub3JnL3BhdGNoLzU2MjYzLw0KPiA+DQo+ID4g
-VGhlc2UgcGF0Y2hlcyB3ZXJlIG5ldmVyIGRlbGVnYXRlZC9hcHBsaWVkIGFzIHN0YXRlIGFyZSBz
-dGlsbCAiTmV3Ii4NCj4gPg0KPiA+IFRoZXNlIHBhdGNoZXMgY2FuIGJlY29tZSBhIGdvb2QgYmFz
-ZSBmb3IgbmV3IHBhdGNoZXMuDQo+ID4NCj4gPiBEbyBhbnlvbmUgaGFzIGFueSBpZGVhOyB3aHkg
-d2VyZSB0aGVzZSBuZXZlciBhcHBsaWVkL2RlbGVnYXRlZD8NCj4gDQo+IHRoZXknbGwgY2VydGFp
-bmx5IG5lZWQgcmViYXNpbmcgbm93IGFzIHRoZSBjb2RlIGhhcyBjaGFuZ2VkLCBhbmQgaSBjYW4N
-Cj4gc2VlIHNvbWUgaXNzdWVzIHRoYXQgbmVlZCBhZGRyZXNzaW5nLCBidXQgZnVuZGFtZW50YWxs
-eSwgdGhvc2Ugc2VlbSBsaWtlDQo+IGEgZ29vZCBpZGVhDQoNCkdvdCB5b3VyIHBvaW50IDopDQoN
-CkEgZ2VuZXJhbCBxdWVzdGlvbiB3aHkgdGhlc2UgdHlwZSBvZiBwYXRjaGVzIGFyZSBub3QgY29t
-aW5nIGluIG10ZC11dGlscy4NCklzIGl0IGJlY2F1c2UgZ29pbmcgZm9yd2FyZCBVQklGUyBpcyB0
-aGUgbmV4dCBmaWxlIHN5c3RlbSBhbmQgbm9ib2R5IHdhbnRzIHRvIGZvY3VzIGpmZnMyLg0KDQpv
-cg0KDQp1bmZvcnR1bmF0ZWx5IGRldmVsb3BlciBkb2VzbuKAmXQgaGF2ZSB0aW1lLiANCg0KLS1Q
-cmFiaGFrYXINCg0K
+Corner case reads do not work, and return false data and
+ECC. This case is typically seen in a ubifs usage, with a
+read of type:
+ - docg3 docg3: doc_read_oob(from=14882415, mode=1,
+ data=(c30eca40:12), oob=(  (null):0))
+
+This results in the following reads:
+ - docg3 docg3: doc_read_data_area(buf=  (null), len=111)
+ - docg3 docg3: doc_read_data_area(buf=c30eca40, len=12)
+ - docg3 docg3: doc_read_data_area(buf=  (null), len=389)
+ - docg3 docg3: doc_read_data_area(buf=  (null), len=0)
+ - docg3 docg3: doc_read_data_area(buf=  (null), len=16)
+
+If we suppose that the pages content is :
+ - bytes 0 .. 111   : 0x0a
+ - bytes 112 .. 255 : 0x0f
+Then the returned bytes will be :
+ - 111 times 0x0a (correct)
+ - 0x0a 2 times and 0x0f 10 times (incorrect, should be
+ 0x0a,0x0f)
+ - 0x0f 389 times (correct)
+ - nothing
+ - correct OOB
+
+The reason seams that the first 111 bytes read ends between
+the 2 docg3 planes, and that the first following read (in
+the 12 bytes sequence, read of 16 bit word) returns the byte
+of the rightmost plane duplicated in high and lower byte of
+the word.
+
+Fix this behaviour by ensuring that if the previous read
+ended up in-between the 2 planes, there will be a first 1
+byte read to get back to the beginning of leftmost plane.
+
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/devices/docg3.c |   34 +++++++++++++++++++++++-----------
+ 1 files changed, 23 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 8272c02..3414031 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -227,7 +227,7 @@ static void doc_read_data_area(struct docg3 *docg3, void *buf, int len,
+ 	u8 data8, *dst8;
+ 
+ 	doc_dbg("doc_read_data_area(buf=%p, len=%d)\n", buf, len);
+-	cdr = len & 0x3;
++	cdr = len & 0x1;
+ 	len4 = len - cdr;
+ 
+ 	if (first)
+@@ -732,12 +732,24 @@ err:
+  * @len: the number of bytes to be read (must be a multiple of 4)
+  * @buf: the buffer to be filled in (or NULL is forget bytes)
+  * @first: 1 if first time read, DOC_READADDRESS should be set
++ * @last_odd: 1 if last read ended up on an odd byte
++ *
++ * Reads bytes from a prepared page. There is a trickery here : if the last read
++ * ended up on an odd offset in the 1024 bytes double page, ie. between the 2
++ * planes, the first byte must be read apart. If a word (16bit) read was used,
++ * the read would return the byte of plane 2 as low *and* high endian, which
++ * will mess the read.
+  *
+  */
+ static int doc_read_page_getbytes(struct docg3 *docg3, int len, u_char *buf,
+-				  int first)
++				  int first, int last_odd)
+ {
+-	doc_read_data_area(docg3, buf, len, first);
++	if (last_odd && len > 0) {
++		doc_read_data_area(docg3, buf, 1, first);
++		doc_read_data_area(docg3, buf ? buf + 1 : buf, len - 1, 0);
++	} else {
++		doc_read_data_area(docg3, buf, len, first);
++	}
+ 	doc_delay(docg3, 2);
+ 	return len;
+ }
+@@ -887,20 +899,20 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 		ret = doc_read_page_ecc_init(docg3, DOC_ECC_BCH_TOTAL_BYTES);
+ 		if (ret < 0)
+ 			goto err_in_read;
+-		ret = doc_read_page_getbytes(docg3, skip, NULL, 1);
++		ret = doc_read_page_getbytes(docg3, skip, NULL, 1, 0);
+ 		if (ret < skip)
+ 			goto err_in_read;
+-		ret = doc_read_page_getbytes(docg3, nbdata, buf, 0);
++		ret = doc_read_page_getbytes(docg3, nbdata, buf, 0, skip % 2);
+ 		if (ret < nbdata)
+ 			goto err_in_read;
+ 		doc_read_page_getbytes(docg3,
+ 				       DOC_LAYOUT_PAGE_SIZE - nbdata - skip,
+-				       NULL, 0);
+-		ret = doc_read_page_getbytes(docg3, nboob, oobbuf, 0);
++				       NULL, 0, (skip + nbdata) % 2);
++		ret = doc_read_page_getbytes(docg3, nboob, oobbuf, 0, 0);
+ 		if (ret < nboob)
+ 			goto err_in_read;
+ 		doc_read_page_getbytes(docg3, DOC_LAYOUT_OOB_SIZE - nboob,
+-				       NULL, 0);
++				       NULL, 0, nboob % 2);
+ 
+ 		doc_get_bch_hw_ecc(docg3, hwecc);
+ 		eccconf1 = doc_register_readb(docg3, DOC_ECCCONF1);
+@@ -1004,7 +1016,7 @@ static int doc_reload_bbt(struct docg3 *docg3)
+ 						     DOC_LAYOUT_PAGE_SIZE);
+ 		if (!ret)
+ 			doc_read_page_getbytes(docg3, DOC_LAYOUT_PAGE_SIZE,
+-					       buf, 1);
++					       buf, 1, 0);
+ 		buf += DOC_LAYOUT_PAGE_SIZE;
+ 	}
+ 	doc_read_page_finish(docg3);
+@@ -1064,10 +1076,10 @@ static int doc_get_erase_count(struct docg3 *docg3, loff_t from)
+ 	ret = doc_reset_seq(docg3);
+ 	if (!ret)
+ 		ret = doc_read_page_prepare(docg3, block0, block1, page,
+-					    ofs + DOC_LAYOUT_WEAR_OFFSET);
++					    ofs + DOC_LAYOUT_WEAR_OFFSET, 0);
+ 	if (!ret)
+ 		ret = doc_read_page_getbytes(docg3, DOC_LAYOUT_WEAR_SIZE,
+-					     buf, 1);
++					     buf, 1, 0);
+ 	doc_read_page_finish(docg3);
+ 
+ 	if (ret || (buf[0] != DOC_ERASE_MARK) || (buf[2] != DOC_ERASE_MARK))
+-- 
+1.7.5.4
