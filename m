@@ -1,25 +1,30 @@
-Received: from nm29-vm0.access.bullet.mail.mud.yahoo.com ([66.94.236.255])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SHGCo-0000Ag-Fb
- for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 15:08:35 +0000
-Message-ID: <4F82FB6F.7000706@schaufler-ca.com>
-Date: Mon, 09 Apr 2012 08:08:31 -0700
-From: Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <4F833D8D.8000802@ti.com>
+Date: Mon, 9 Apr 2012 14:50:37 -0500
+From: Jon Hunter <jon-hunter@ti.com>
 MIME-Version: 1.0
-To: Subodh Nijsure <subodh.nijsure@gmail.com>
-Subject: Re: [PATCH] Add security.selinux XATTR support for the UBIFS. Also
- fix couple of bugs in UBIFS extended attribute length calculation.
-References: <1333892851-10758-1-git-send-email-snijsure@grid-net.com>
- <4F824B4F.8090107@schaufler-ca.com>
- <CALr9Q3b=U8jRZv_rEXX0VmeC1f_wgjXOEtZA=bkxfmba+a1YnA@mail.gmail.com>
-In-Reply-To: <CALr9Q3b=U8jRZv_rEXX0VmeC1f_wgjXOEtZA=bkxfmba+a1YnA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
+References: <cover.1333640054.git.afzal@ti.com>
+ <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
+ <4F7DFED5.4030000@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Subodh Nijsure <snijsure@grid-net.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- LSM <linux-security-module@vger.kernel.org>, linux-mtd@lists.infradead.org,
- SE Linux <selinux@tycho.nsa.gov>, Casey Schaufler <casey@schaufler-ca.com>
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "sameo@linux.intel.com" <sameo@linux.intel.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "mike@compulab.co.il" <mike@compulab.co.il>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,352 +34,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/8/2012 11:40 PM, Subodh Nijsure wrote:
-> On Sun, Apr 8, 2012 at 7:37 PM, Casey Schaufler <casey@schaufler-ca.com> wrote:
->> On 4/8/2012 6:47 AM, Subodh Nijsure wrote:
->>> TESTING: Tested on  MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
->>>          With these change we are able to label UBIFS filesystem with security.selinux
->>>          and run system with selinux enabled.
->>>          Also ran integck test on UBI filesystem.
->>>
->>> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
->> There is no reason to restrict xattr support to SELinux.
->> SELinux specific behavior belongs within the SELinux LSM.
->> This code needs to support the full xattr semantics.
->>
->> Nacked-by: Casey Schaufler <casey@scahufler-ca.com>
->>
->>> ---
->>>  fs/ubifs/dir.c     |    4 ++
->>>  fs/ubifs/file.c    |    6 ++
->>>  fs/ubifs/journal.c |   12 +++-
->>>  fs/ubifs/super.c   |    3 +
->>>  fs/ubifs/ubifs.h   |    9 +++
->>>  fs/ubifs/xattr.c   |  147 ++++++++++++++++++++++++++++++++++++++++++++++++----
->>>  6 files changed, 167 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->>> index ec9f187..f4e06c4 100644
->>> --- a/fs/ubifs/dir.c
->>> +++ b/fs/ubifs/dir.c
->>> @@ -293,6 +293,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
->>>       ubifs_release_budget(c, &req);
->>>       insert_inode_hash(inode);
->>>       d_instantiate(dentry, inode);
->>> +     ubifs_init_security(dir, inode, &dentry->d_name);
->>>       return 0;
->>>
->>>  out_cancel:
->>> @@ -754,6 +755,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
->>>
->>>       ubifs_release_budget(c, &req);
->>>       d_instantiate(dentry, inode);
->>> +     ubifs_init_security(dir, inode, &dentry->d_name);
->>>       return 0;
->>>
->>>  out_cancel:
->>> @@ -831,6 +833,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
->>>       ubifs_release_budget(c, &req);
->>>       insert_inode_hash(inode);
->>>       d_instantiate(dentry, inode);
->>> +     ubifs_init_security(dir, inode, &dentry->d_name);
->>>       return 0;
->>>
->>>  out_cancel:
->>> @@ -907,6 +910,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
->>>       ubifs_release_budget(c, &req);
->>>       insert_inode_hash(inode);
->>>       d_instantiate(dentry, inode);
->>> +     ubifs_init_security(dir, inode, &dentry->d_name);
->>>       return 0;
->>>
->>>  out_cancel:
->>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->>> index 5c8f6dc..b8e9d66 100644
->>> --- a/fs/ubifs/file.c
->>> +++ b/fs/ubifs/file.c
->>> @@ -1575,6 +1575,12 @@ const struct inode_operations ubifs_symlink_inode_operations = {
->>>       .follow_link = ubifs_follow_link,
->>>       .setattr     = ubifs_setattr,
->>>       .getattr     = ubifs_getattr,
->>> +#ifdef CONFIG_UBIFS_FS_XATTR
->>> +     .setxattr    = ubifs_symlink_setxattr,
->>> +     .getxattr    = ubifs_symlink_getxattr,
->>> +     .listxattr   = ubifs_listxattr,
->>> +     .removexattr = ubifs_removexattr,
->>> +#endif
->>>  };
->>>
->>>  const struct file_operations ubifs_file_operations = {
->>> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
->>> index 2f438ab..725dc17 100644
->>> --- a/fs/ubifs/journal.c
->>> +++ b/fs/ubifs/journal.c
->>> @@ -553,7 +553,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->>>
->>>       dbg_jnl("ino %lu, dent '%.*s', data len %d in dir ino %lu",
->>>               inode->i_ino, nm->len, nm->name, ui->data_len, dir->i_ino);
->>> -     ubifs_assert(dir_ui->data_len == 0);
->>> +     if (!xent)
->>> +             ubifs_assert(dir_ui->data_len == 0);
->>>       ubifs_assert(mutex_is_locked(&dir_ui->ui_mutex));
->>>
->>>       dlen = UBIFS_DENT_NODE_SZ + nm->len + 1;
->>> @@ -572,7 +573,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->>>
->>>       aligned_dlen = ALIGN(dlen, 8);
->>>       aligned_ilen = ALIGN(ilen, 8);
->>> -     len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
->>> +     /* Make sure to account for dir_ui+data_len in length calculation
->>> +      * in case there is extended attribute.
->>> +      */
->>> +     len = aligned_dlen + aligned_ilen +
->>> +           UBIFS_INO_NODE_SZ + dir_ui->data_len;
->>>       dent = kmalloc(len, GFP_NOFS);
->>>       if (!dent)
->>>               return -ENOMEM;
->>> @@ -649,7 +654,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->>>
->>>       ino_key_init(c, &ino_key, dir->i_ino);
->>>       ino_offs += aligned_ilen;
->>> -     err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, UBIFS_INO_NODE_SZ);
->>> +     err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs,
->>> +                         UBIFS_INO_NODE_SZ + dir_ui->data_len);
->>>       if (err)
->>>               goto out_ro;
->>>
->>> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
->>> index 76e4e05..c28ac04 100644
->>> --- a/fs/ubifs/super.c
->>> +++ b/fs/ubifs/super.c
->>> @@ -2061,6 +2061,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
->>>       if (c->max_inode_sz > MAX_LFS_FILESIZE)
->>>               sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
->>>       sb->s_op = &ubifs_super_operations;
->>> +#ifdef CONFIG_UBIFS_FS_XATTR
->>> +     sb->s_xattr = ubifs_xattr_handlers;
->>> +#endif
->>>
->>>       mutex_lock(&c->umount_mutex);
->>>       err = mount_ubifs(c);
->>> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
->>> index 93d59ac..60b57f7 100644
->>> --- a/fs/ubifs/ubifs.h
->>> +++ b/fs/ubifs/ubifs.h
->>> @@ -36,6 +36,7 @@
->>>  #include <linux/mtd/ubi.h>
->>>  #include <linux/pagemap.h>
->>>  #include <linux/backing-dev.h>
->>> +#include <linux/security.h>
->>>  #include "ubifs-media.h"
->>>
->>>  /* Version of this UBIFS implementation */
->>> @@ -1454,6 +1455,7 @@ extern spinlock_t ubifs_infos_lock;
->>>  extern atomic_long_t ubifs_clean_zn_cnt;
->>>  extern struct kmem_cache *ubifs_inode_slab;
->>>  extern const struct super_operations ubifs_super_operations;
->>> +extern const struct xattr_handler *ubifs_xattr_handlers[];
->>>  extern const struct address_space_operations ubifs_file_address_operations;
->>>  extern const struct file_operations ubifs_file_operations;
->>>  extern const struct inode_operations ubifs_file_inode_operations;
->>> @@ -1736,10 +1738,17 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
->>>                 struct kstat *stat);
->>>
->>>  /* xattr.c */
->>> +
->>>  int ubifs_setxattr(struct dentry *dentry, const char *name,
->>>                  const void *value, size_t size, int flags);
->>> +int ubifs_init_security(struct inode *dentry, struct inode *inode,
->>> +                     const struct qstr *qstr);
->>> +int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
->>> +                        const void *value, size_t size, int flags);
->>>  ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
->>>                      size_t size);
->>> +ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
->>> +                            void *buf, size_t size);
->>>  ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
->>>  int ubifs_removexattr(struct dentry *dentry, const char *name);
->>>
->>> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
->>> index 85b2722..a402c7d 100644
->>> --- a/fs/ubifs/xattr.c
->>> +++ b/fs/ubifs/xattr.c
->>> @@ -209,11 +209,11 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
->>>               goto out_free;
->>>       }
->>>       inode->i_size = ui->ui_size = size;
->>> -     ui->data_len = size;
->>>
->>>       mutex_lock(&host_ui->ui_mutex);
->>>       host->i_ctime = ubifs_current_time(host);
->>>       host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
->>> +     ui->data_len = size;
->>>       host_ui->xattr_size += CALC_XATTR_BYTES(size);
->>>
->>>       /*
->>> @@ -293,18 +293,16 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
->>>       return ERR_PTR(-EINVAL);
->>>  }
->>>
->>> -int ubifs_setxattr(struct dentry *dentry, const char *name,
->>> -                const void *value, size_t size, int flags)
->>> +static int __ubifs_setxattr(struct inode *host, const char *name,
->>> +                         const void *value, size_t size, int flags)
->>>  {
->>> -     struct inode *inode, *host = dentry->d_inode;
->>> +     struct inode *inode;
->>>       struct ubifs_info *c = host->i_sb->s_fs_info;
->>>       struct qstr nm = { .name = name, .len = strlen(name) };
->>>       struct ubifs_dent_node *xent;
->>>       union ubifs_key key;
->>>       int err, type;
->>>
->>> -     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
->>> -             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>>       ubifs_assert(mutex_is_locked(&host->i_mutex));
->>>
->>>       if (size > UBIFS_MAX_INO_DATA)
->>> @@ -356,10 +354,29 @@ out_free:
->>>       return err;
->>>  }
->>>
->>> -ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
->>> -                    size_t size)
->>> +int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
->>> +                        const void *value, size_t size, int flags)
->>>  {
->>> -     struct inode *inode, *host = dentry->d_inode;
->>> +     struct inode *host = dentry->d_inode;
->>> +     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
->>> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>> +     return __ubifs_setxattr(host, name, value, size, flags);
->>> +}
->>> +
->>> +int ubifs_setxattr(struct dentry *dentry, const char *name,
->>> +                const void *value, size_t size, int flags)
->>> +{
->>> +     struct inode *host = dentry->d_inode;
->>> +     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
->>> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>> +     return __ubifs_setxattr(host, name, value, size, flags);
->>> +}
->>> +
->>> +static
->>> +ssize_t __ubifs_getxattr(struct inode *host, const char *name, void *buf,
->>> +                      size_t size)
->>> +{
->>> +     struct inode *inode;
->>>       struct ubifs_info *c = host->i_sb->s_fs_info;
->>>       struct qstr nm = { .name = name, .len = strlen(name) };
->>>       struct ubifs_inode *ui;
->>> @@ -367,8 +384,8 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
->>>       union ubifs_key key;
->>>       int err;
->>>
->>> -     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
->>> -             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>> +     dbg_gen("xattr '%s', ino %lu  buf size %zd", name,
->>> +             host->i_ino, size);
->>>
->>>       err = check_namespace(&nm);
->>>       if (err < 0)
->>> @@ -416,6 +433,25 @@ out_unlock:
->>>       return err;
->>>  }
->>>
->>> +ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
->>> +                            void *buf, size_t size)
->>> +{
->>> +     struct inode *host = dentry->d_inode;
->>> +     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
->>> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>> +     return __ubifs_getxattr(host, name, buf, size);
->>> +}
->>> +
->>> +ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
->>> +                    size_t size)
->>> +{
->>> +     struct inode *host = dentry->d_inode;
->>> +     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
->>> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
->>> +     return __ubifs_getxattr(host, name, buf, size);
->>> +}
->>> +
->>> +
->>>  ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
->>>  {
->>>       union ubifs_key key;
->>> @@ -568,3 +604,92 @@ out_free:
->>>       kfree(xent);
->>>       return err;
->>>  }
->>> +
->>> +size_t
->>> +ubifs_security_listxattr(struct dentry *d, char *list, size_t list_size,
->>> +                      const char *name, size_t name_len, int flags)
->>> +{
->>> +     const int prefix_len = XATTR_SECURITY_PREFIX_LEN;
->>> +     const size_t total_len = prefix_len + name_len + 1;
->>> +     if (list && total_len <= list_size) {
->>> +             memcpy(list, XATTR_SECURITY_PREFIX, prefix_len);
->>> +             memcpy(list+prefix_len, name, name_len);
->>> +             list[prefix_len + name_len] = '\0';
->>> +     }
->>> +     return total_len;
->>> +}
->>> +
->>> +
->>> +int ubifs_security_getxattr(struct dentry *d, const char *name,
->>> +                         void *buffer, size_t size, int flags)
->>> +{
->>> +     if (strcmp(name, "") == 0)
->>> +             return -EINVAL;
->>> +     return __ubifs_getxattr(d->d_inode, XATTR_NAME_SELINUX, buffer, size);
->>> +}
->>> +
->>> +
->>> +int ubifs_security_setxattr(struct dentry *d, const char *name,
->>> +                         const void *value, size_t size,
->>> +                         int flags, int handler_flags)
->>> +{
->>> +     if (strcmp(name, "") == 0)
->>> +             return -EINVAL;
->>> +     return __ubifs_setxattr(d->d_inode, XATTR_NAME_SELINUX, value,
->> This is silly. If you're supporting xattrs there is no reason
->> single out a particular LSM. Make this general so that Smack
->> and any other LSM that wants to use xattrs will work.
->>
->> Move the changes into the SELinux LSM if you are going to
->> hard code it.
->>
-> Yup, my bad, following change  fixes that specific issue and one can
-> set xattr for all  security.*  namespace. Will submit patch v2
-> shortly...
+Hi Afzal,
 
-Thank you. The update looks fine, although I haven't tried it.
+On 04/06/2012 01:52 AM, Mohammed, Afzal wrote:
+> Hi Jon,
+>
+> On Fri, Apr 06, 2012 at 01:51:41, Hunter, Jon wrote:
+>>> +struct gpmc_irq	{
+>>> +	unsigned		irq;
+>>> +	u32			regval;
+>>
+>> Are you using regval to indicate the bit-mask? If so, maybe call it
+>> "bitmask" instead.
+>
+> Yes, bitmask would be better.
+>
+>>> +			switch (gpmc->irq[i].regval) {
+>>> +			case GPMC_IRQ_WAIT0EDGEDETECTION:
+>>> +			case GPMC_IRQ_WAIT1EDGEDETECTION:
+>>> +			case GPMC_IRQ_WAIT2EDGEDETECTION:
+>>> +			case GPMC_IRQ_WAIT3EDGEDETECTION:
+>>> +				val = __ffs(gpmc->irq[i].regval);
+>>> +				val -= __ffs(GPMC_IRQ_WAIT0EDGEDETECTION);
+>>> +				gpmc_cs_configure(cs->cs,
+>>> +					GPMC_CONFIG_WAITPIN, val);
+>>
+>> Why is the configuration of the wait pin done here? It is possible to
+>> use the wait pin may be used without enabling the interrupt.
+>>
+>> Where do you handle allocating the wait pins to ensure two devices don't
+>> attempt to use the same one? Like how the CS are managed.
+>>
+>> Also, where you you configure the polarity of the wait pins? I would
+>> have thought it would make sense to have the wait pin configured as part
+>> of the cs configuration.
+>
+> I will revisit waitpin configurations.
 
+Ok.
+
+>>> +	for (i = 0, j = 0, cs = gdp->cs_data; i<   gdp->num_cs; cs++, i++) {
+>>> +		dev->gpmc_res[j] = gpmc_setup_cs_mem(cs, gdp, gpmc);
+>>> +		if (dev->gpmc_res[j++].flags&   IORESOURCE_MEM)
+>>> +			j += gpmc_setup_cs_irq(gpmc, gdp, cs,
+>>> +						dev->gpmc_res + j);
+>>> +		else {
+>>> +			dev_err(gpmc->dev, "error: setup for %s\n", gdp->name);
+>>> +			devm_kfree(gpmc->dev, dev->gpmc_res);
+>>> +			dev->gpmc_res = NULL;
+>>> +			dev->num_gpmc_res = 0;
+>>> +			return -EINVAL;
+>>> +		}
+>>>    	}
+>>
+>> This section of code is not straight-forward to read. I see what you are
+>> doing, but I am wondering if this could be improved.
+>>
+>> First of all, returning a structure from a function is making this code
+>> harder to read. Per the CodingStyle document in the kernel, it is
+>> preferred for a function to return success or failure if the function is
+>> an action, like a setup.
+>>
+>> Secondly, do you need to pass cs, gdp and gpmc to gpmc_setup_cs_mem()?
+>> It appears that gdp and gpmc are only used for prints. You could
+>> probably avoid passing gdp and move the print to outside this function.
 >
-> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-> index a402c7d..c8be7cd 100644
-> --- a/fs/ubifs/xattr.c
-> +++ b/fs/ubifs/xattr.c
-> @@ -625,7 +625,7 @@ int ubifs_security_getxattr(struct dentry *d,
-> const char *name,
->  {
->         if (strcmp(name, "") == 0)
->                 return -EINVAL;
-> -       return __ubifs_getxattr(d->d_inode, XATTR_NAME_SELINUX, buffer, size);
-> +       return __ubifs_getxattr(d->d_inode, name, buffer, size);
->  }
+> This section will be modified to make it clearer.
+
+Thanks.
+
+>>> +	if (gpmc->num_irq<   GPMC_NR_IRQ) {
+>>> +		dev_warn(gpmc->dev, "Insufficient interrupts for device\n");
+>>> +		return -EINVAL;
+>>> +	} else if (gpmc->num_irq>   GPMC_NR_IRQ)
+>>> +		gpmc->num_irq = GPMC_NR_IRQ;
+>>
+>> Hmmm ... why not just have ...
+>>
+>> 	if (gpmc->num_irq != GPMC_NR_IRQ) {
+>> 		dev_warn(...);
+>> 		return -EINVAL;
+>> 	}
 >
+> This will cause irq setup to fail if num_irq>  GPMC_NR_IRQ, even though
+> irq setup could have been done w/o any problem, only because platform
+> indicated willingness to accommodate more number of interrupts than
+> actually required for this device.
+
+Ok, so num_irqs represents OMAP_GPMC_NR_IRQS and we are making sure we 
+have enough IRQs allocated by the platform.
+
+>> This also raises the question why bother passing num_irq if we always
+>> want it to be GPMC_NR_IRQ? Why not always initialise them all driver?
 >
-> @@ -635,7 +635,7 @@ int ubifs_security_setxattr(struct dentry *d,
-> const char *name,
->  {
->         if (strcmp(name, "") == 0)
->                 return -EINVAL;
-> -       return __ubifs_setxattr(d->d_inode, XATTR_NAME_SELINUX, value,
-> +       return __ubifs_setxattr(d->d_inode, name, value,
->                                 size, flags);
->  }
+> Because num_irq (or available irqs for fictitious irq chip) is platform specific.
+
+Ok, so OMAP_GPMC_NR_IRQS is defined and will not vary from device to 
+device, so why pass this? Why not use it directly?
+
+Furthermore, GPMC_NR_IRQ is defined as 6 which is correct for OMAP2/3 
+but not for OMAP4/5, it is 5. Therefore, we need to detect whether we 
+are using an OMAP2/3 or OMAP4+ and set num_irqs based upon this. This 
+could be done in the probe and we can avoid passing this.
+
+So we could simplify this by configuring num_irqs in the probe function 
+and then just make sure num_irqs is less than OMAP_GPMC_NR_IRQS above.
+
+>>> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+>>> +	if (res == NULL)
+>>> +		dev_warn(gpmc->dev, "Failed to get resource: irq\n");
+>>> +	else
+>>> +		gpmc->master_irq = res->start;
+>>
+>> Why not return an error if the IRQ is not found? We don't know if anyone
+>> will be trying to use them.
 >
+> Why do you want to do that ?
+
+Because this indicates a BUG :-)
+
+> If someone (say NAND) wants to work with irq, and if interrupt is not
+> available, NAND driver can fail, and suppose smsc911x ethernet is present
+> and he is not using gpmc irq, if we fail here, smsc911x also would
+> not work, which would have worked otherwise.
+>
+> It is a different matter that even NAND setup will happen properly,
+> even if interrupt is not available, it is only when NAND is told to
+> work with IRQ, it fails, please see nand patches.
+>
+> And as of now in mainline (with the code as is), there is not a single
+> board that will need gpmc irq for gpmc peripherals to work.
+>
+> I feel we should try to get more devices working rather than preventing
+> more devices from working, when it could have.
+
+I understand your point, but then you are hiding a BUG. If someone 
+introduces a BUG that causes this to fail, then it is easier to detect, 
+find and fix.
+
+ From my perspective get the resources should never fail and if it does 
+and break the driver for all devices, then so be it, because a BUG has 
+been introduced. Ok, this may not be critical at this point but still is 
+should not fail.
+
+>>> +	for (gdq = gp->device_pdata, gd = gpmc->device; *gdq; gdq++, i++) {
+>>> +		ret = gpmc_setup_device(*gdq, gd, gpmc);
+>>> +		if (IS_ERR_VALUE(ret))
+>>> +			dev_err(gpmc->dev, "gpmc setup on %s failed\n",
+>>> +								(*gdq)->name);
+>>> +		else
+>>> +			gd++;
+>>> +	}
+>>
+>> Would a while loop be simpler?
+>
+> My preference is to go with "for"
+
+Ok, just wondering if this could be cleaned up a little.
+
+>>
+>> The above loop appears to terminate when *gdq == 0. Is this always
+>> guaranteed? In other words, safe?
+>
+> This is a standard idiom for array of pointers
+
+Ok.
+
+>>
+>> I see that "i" is not being used in the above loop either.
+>
+> That was left over code, it will be removed.
+
+Thanks.
+
+>>> +struct gpmc_cs_data {
+>>> +	unsigned		cs;
+>>> +	unsigned long		mem_size;
+>>> +	unsigned long		mem_start;
+>>> +	unsigned long		mem_offset;
+>>> +	struct gpmc_config	*config;
+>>> +	unsigned		num_config;
+>>> +	struct gpmc_timings	*timing;
+>>> +	unsigned		irq_flags;
+>>
+>> I found the name irq_flags a bit unclear. This appears to be a mask for
+>> the interrupts used. So may be this should be "irq_mask" or just "irqs".
+>
+> Probably, this confusion arose as an attempt was made to club irq bit fields
+> with irq capability, so as to reduce additional macro definitions.
+>
+> Here my preference is to keep irq_flags (or can be irq_capabilities), define
+> a new set of macros, and use bitmask in struct gpmc_irq
+
+Ok, how about irq_config? The name irq_flags make me think of flags 
+passed to configure the irq as in the set_irq_flags() API.
+
+> Thanks for the comments.
+
+No problem.
+
+Jon
