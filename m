@@ -1,30 +1,15 @@
-Message-ID: <4F833D8D.8000802@ti.com>
-Date: Mon, 9 Apr 2012 14:50:37 -0500
-From: Jon Hunter <jon-hunter@ti.com>
-MIME-Version: 1.0
-To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
-References: <cover.1333640054.git.afzal@ti.com>
- <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
- <4F7DFED5.4030000@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- "sameo@linux.intel.com" <sameo@linux.intel.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
- "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
- "mike@compulab.co.il" <mike@compulab.co.il>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mail-qa0-f49.google.com ([209.85.216.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHNIk-000662-Ou
+ for linux-mtd@lists.infradead.org; Mon, 09 Apr 2012 22:43:11 +0000
+Received: by qafi29 with SMTP id i29so1764972qaf.15
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Apr 2012 15:43:08 -0700 (PDT)
+From: Xi Wang <xi.wang@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: refactor csize in jffs2_do_read_inode_internal()
+Date: Mon,  9 Apr 2012 18:42:59 -0400
+Message-Id: <1334011379-24445-1-git-send-email-xi.wang@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Xi Wang <xi.wang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,203 +19,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Afzal,
+Replace the verbose `je32_to_cpu(latest_node->csize)' with a shorter
+variable `csize'.
 
-On 04/06/2012 01:52 AM, Mohammed, Afzal wrote:
-> Hi Jon,
->
-> On Fri, Apr 06, 2012 at 01:51:41, Hunter, Jon wrote:
->>> +struct gpmc_irq	{
->>> +	unsigned		irq;
->>> +	u32			regval;
->>
->> Are you using regval to indicate the bit-mask? If so, maybe call it
->> "bitmask" instead.
->
-> Yes, bitmask would be better.
->
->>> +			switch (gpmc->irq[i].regval) {
->>> +			case GPMC_IRQ_WAIT0EDGEDETECTION:
->>> +			case GPMC_IRQ_WAIT1EDGEDETECTION:
->>> +			case GPMC_IRQ_WAIT2EDGEDETECTION:
->>> +			case GPMC_IRQ_WAIT3EDGEDETECTION:
->>> +				val = __ffs(gpmc->irq[i].regval);
->>> +				val -= __ffs(GPMC_IRQ_WAIT0EDGEDETECTION);
->>> +				gpmc_cs_configure(cs->cs,
->>> +					GPMC_CONFIG_WAITPIN, val);
->>
->> Why is the configuration of the wait pin done here? It is possible to
->> use the wait pin may be used without enabling the interrupt.
->>
->> Where do you handle allocating the wait pins to ensure two devices don't
->> attempt to use the same one? Like how the CS are managed.
->>
->> Also, where you you configure the polarity of the wait pins? I would
->> have thought it would make sense to have the wait pin configured as part
->> of the cs configuration.
->
-> I will revisit waitpin configurations.
+Also check for a bogus `csize' value 0xffffffff, which would turn the
+subsequent kmalloc(cisze + 1, ...) into kmalloc(0, ...).
 
-Ok.
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+---
+ fs/jffs2/readinode.c |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
 
->>> +	for (i = 0, j = 0, cs = gdp->cs_data; i<   gdp->num_cs; cs++, i++) {
->>> +		dev->gpmc_res[j] = gpmc_setup_cs_mem(cs, gdp, gpmc);
->>> +		if (dev->gpmc_res[j++].flags&   IORESOURCE_MEM)
->>> +			j += gpmc_setup_cs_irq(gpmc, gdp, cs,
->>> +						dev->gpmc_res + j);
->>> +		else {
->>> +			dev_err(gpmc->dev, "error: setup for %s\n", gdp->name);
->>> +			devm_kfree(gpmc->dev, dev->gpmc_res);
->>> +			dev->gpmc_res = NULL;
->>> +			dev->num_gpmc_res = 0;
->>> +			return -EINVAL;
->>> +		}
->>>    	}
->>
->> This section of code is not straight-forward to read. I see what you are
->> doing, but I am wondering if this could be improved.
->>
->> First of all, returning a structure from a function is making this code
->> harder to read. Per the CodingStyle document in the kernel, it is
->> preferred for a function to return success or failure if the function is
->> an action, like a setup.
->>
->> Secondly, do you need to pass cs, gdp and gpmc to gpmc_setup_cs_mem()?
->> It appears that gdp and gpmc are only used for prints. You could
->> probably avoid passing gdp and move the print to outside this function.
->
-> This section will be modified to make it clearer.
-
-Thanks.
-
->>> +	if (gpmc->num_irq<   GPMC_NR_IRQ) {
->>> +		dev_warn(gpmc->dev, "Insufficient interrupts for device\n");
->>> +		return -EINVAL;
->>> +	} else if (gpmc->num_irq>   GPMC_NR_IRQ)
->>> +		gpmc->num_irq = GPMC_NR_IRQ;
->>
->> Hmmm ... why not just have ...
->>
->> 	if (gpmc->num_irq != GPMC_NR_IRQ) {
->> 		dev_warn(...);
->> 		return -EINVAL;
->> 	}
->
-> This will cause irq setup to fail if num_irq>  GPMC_NR_IRQ, even though
-> irq setup could have been done w/o any problem, only because platform
-> indicated willingness to accommodate more number of interrupts than
-> actually required for this device.
-
-Ok, so num_irqs represents OMAP_GPMC_NR_IRQS and we are making sure we 
-have enough IRQs allocated by the platform.
-
->> This also raises the question why bother passing num_irq if we always
->> want it to be GPMC_NR_IRQ? Why not always initialise them all driver?
->
-> Because num_irq (or available irqs for fictitious irq chip) is platform specific.
-
-Ok, so OMAP_GPMC_NR_IRQS is defined and will not vary from device to 
-device, so why pass this? Why not use it directly?
-
-Furthermore, GPMC_NR_IRQ is defined as 6 which is correct for OMAP2/3 
-but not for OMAP4/5, it is 5. Therefore, we need to detect whether we 
-are using an OMAP2/3 or OMAP4+ and set num_irqs based upon this. This 
-could be done in the probe and we can avoid passing this.
-
-So we could simplify this by configuring num_irqs in the probe function 
-and then just make sure num_irqs is less than OMAP_GPMC_NR_IRQS above.
-
->>> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->>> +	if (res == NULL)
->>> +		dev_warn(gpmc->dev, "Failed to get resource: irq\n");
->>> +	else
->>> +		gpmc->master_irq = res->start;
->>
->> Why not return an error if the IRQ is not found? We don't know if anyone
->> will be trying to use them.
->
-> Why do you want to do that ?
-
-Because this indicates a BUG :-)
-
-> If someone (say NAND) wants to work with irq, and if interrupt is not
-> available, NAND driver can fail, and suppose smsc911x ethernet is present
-> and he is not using gpmc irq, if we fail here, smsc911x also would
-> not work, which would have worked otherwise.
->
-> It is a different matter that even NAND setup will happen properly,
-> even if interrupt is not available, it is only when NAND is told to
-> work with IRQ, it fails, please see nand patches.
->
-> And as of now in mainline (with the code as is), there is not a single
-> board that will need gpmc irq for gpmc peripherals to work.
->
-> I feel we should try to get more devices working rather than preventing
-> more devices from working, when it could have.
-
-I understand your point, but then you are hiding a BUG. If someone 
-introduces a BUG that causes this to fail, then it is easier to detect, 
-find and fix.
-
- From my perspective get the resources should never fail and if it does 
-and break the driver for all devices, then so be it, because a BUG has 
-been introduced. Ok, this may not be critical at this point but still is 
-should not fail.
-
->>> +	for (gdq = gp->device_pdata, gd = gpmc->device; *gdq; gdq++, i++) {
->>> +		ret = gpmc_setup_device(*gdq, gd, gpmc);
->>> +		if (IS_ERR_VALUE(ret))
->>> +			dev_err(gpmc->dev, "gpmc setup on %s failed\n",
->>> +								(*gdq)->name);
->>> +		else
->>> +			gd++;
->>> +	}
->>
->> Would a while loop be simpler?
->
-> My preference is to go with "for"
-
-Ok, just wondering if this could be cleaned up a little.
-
->>
->> The above loop appears to terminate when *gdq == 0. Is this always
->> guaranteed? In other words, safe?
->
-> This is a standard idiom for array of pointers
-
-Ok.
-
->>
->> I see that "i" is not being used in the above loop either.
->
-> That was left over code, it will be removed.
-
-Thanks.
-
->>> +struct gpmc_cs_data {
->>> +	unsigned		cs;
->>> +	unsigned long		mem_size;
->>> +	unsigned long		mem_start;
->>> +	unsigned long		mem_offset;
->>> +	struct gpmc_config	*config;
->>> +	unsigned		num_config;
->>> +	struct gpmc_timings	*timing;
->>> +	unsigned		irq_flags;
->>
->> I found the name irq_flags a bit unclear. This appears to be a mask for
->> the interrupts used. So may be this should be "irq_mask" or just "irqs".
->
-> Probably, this confusion arose as an attempt was made to club irq bit fields
-> with irq capability, so as to reduce additional macro definitions.
->
-> Here my preference is to keep irq_flags (or can be irq_capabilities), define
-> a new set of macros, and use bitmask in struct gpmc_irq
-
-Ok, how about irq_config? The name irq_flags make me think of flags 
-passed to configure the irq as in the set_irq_flags() API.
-
-> Thanks for the comments.
-
-No problem.
-
-Jon
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index dc0437e..2be7a8e 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1266,19 +1266,24 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			/* Symlink's inode data is the target path. Read it and
+ 			 * keep in RAM to facilitate quick follow symlink
+ 			 * operation. */
+-			f->target = kmalloc(je32_to_cpu(latest_node->csize) + 1, GFP_KERNEL);
++			uint32_t csize = je32_to_cpu(latest_node->csize);
++			/* Avoid overflowing csize + 1. */
++			if (csize > INT_MAX)
++				f->target = 0;
++			else
++				f->target = kmalloc(csize + 1, GFP_KERNEL);
+ 			if (!f->target) {
+-				JFFS2_ERROR("can't allocate %d bytes of memory for the symlink target path cache\n", je32_to_cpu(latest_node->csize));
++				JFFS2_ERROR("can't allocate %u bytes of memory for the symlink target path cache\n", csize);
+ 				mutex_unlock(&f->sem);
+ 				jffs2_do_clear_inode(c, f);
+ 				return -ENOMEM;
+ 			}
+ 
+ 			ret = jffs2_flash_read(c, ref_offset(rii.latest_ref) + sizeof(*latest_node),
+-						je32_to_cpu(latest_node->csize), &retlen, (char *)f->target);
++					       csize, &retlen, (char *)f->target);
+ 
+-			if (ret  || retlen != je32_to_cpu(latest_node->csize)) {
+-				if (retlen != je32_to_cpu(latest_node->csize))
++			if (ret || retlen != csize) {
++				if (retlen != csize)
+ 					ret = -EIO;
+ 				kfree(f->target);
+ 				f->target = NULL;
+@@ -1287,7 +1292,7 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 				return ret;
+ 			}
+ 
+-			f->target[je32_to_cpu(latest_node->csize)] = '\0';
++			f->target[csize] = '\0';
+ 			dbg_readinode("symlink's target '%s' cached\n", f->target);
+ 		}
+ 
+-- 
+1.7.5.4
