@@ -1,19 +1,32 @@
-Received: from zmc.proxad.net ([212.27.53.206])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SHYKp-0007gD-GL
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2012 10:30:07 +0000
-Message-ID: <4F840B56.403@freebox.fr>
-Date: Tue, 10 Apr 2012 12:28:38 +0200
-From: Florian Fainelli <ffainelli@freebox.fr>
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "Hunter, Jon" <jon-hunter@ti.com>
+Subject: RE: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
+Date: Tue, 10 Apr 2012 11:00:33 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A9317C693C@DBDE01.ent.ti.com>
+References: <cover.1333640054.git.afzal@ti.com>
+ <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
+ <4F7DFED5.4030000@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
+ <4F833D8D.8000802@ti.com>
+In-Reply-To: <4F833D8D.8000802@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd : print out the page size and oob size after parsing
- out the nand
-References: <1333942897-7392-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1333942897-7392-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "sameo@linux.intel.com" <sameo@linux.intel.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "mike@compulab.co.il" <mike@compulab.co.il>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +36,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+Hi Jon,
 
-Le 04/09/12 05:41, Huang Shijie a écrit :
-> Some not-supported nand chips may pass the current parsing code,
-> and get the wrong page size and oob size. Sometimes, it's hard to notice
-> that you get the wrong values, because there is no warning or error.
->
-> So it's useful to print out the page size and oob size in the end of
-> the parsing function. We can check these values with the datasheet of the nand
-> chip as soon as possible.
+On Tue, Apr 10, 2012 at 01:20:37, Hunter, Jon wrote:
+> > Because num_irq (or available irqs for fictitious irq chip) is platform=
+ specific.
+>=20
+> Ok, so OMAP_GPMC_NR_IRQS is defined and will not vary from device to=20
+> device, so why pass this? Why not use it directly?
 
-Relying on the kernel to print something to assert the correctness of 
-the NAND detection is really weak, you'd better query these properties 
-in userland. Also, I am afraid everyone adds a new NAND property print-out.
+Because OMAP_GPMC_NR_IRQS is platform specific, final intention is to
+not have any platform specific header files in GPMC driver, not sure
+as of now whether it would be possible. So keeping platform specific
+things away from the driver as much as possible.
 
->
-> Signed-off-by: Huang Shijie<b32955@freescale.com>
-> ---
->   drivers/mtd/nand/nand_base.c |    7 ++++---
->   1 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 47b19c0..6315b94 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3155,9 +3155,10 @@ ident_done:
->   		chip->cmdfunc = nand_command_lp;
->
->   	pr_info("NAND device: Manufacturer ID:"
-> -		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
-> -		nand_manuf_ids[maf_idx].name,
-> -		chip->onfi_version ? chip->onfi_params.model : type->name);
-> +		" 0x%02x, Chip ID: 0x%02x (%s %s), pagesize: %d, oobsize: %d\n",
-> +		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
-> +		chip->onfi_version ? chip->onfi_params.model : type->name,
-> +		mtd->writesize, mtd->oobsize);
->
->   	return type;
->   }
+And consider scenario where GPMC IP is used in other than OMAP family,
+even though this a theoretical case, wanted to stress the point that
+intention is to keep driver platform independent.
+
+Or else dynamic allocation of irqs may have to be used.
+
+>=20
+> Furthermore, GPMC_NR_IRQ is defined as 6 which is correct for OMAP2/3=20
+> but not for OMAP4/5, it is 5. Therefore, we need to detect whether we=20
+> are using an OMAP2/3 or OMAP4+ and set num_irqs based upon this. This=20
+> could be done in the probe and we can avoid passing this.
+=20
+Is it dependent on OMAPX or GPMC IP version? if it is IP version, then driv=
+er
+can be enhanced to handle it, if not, platform has to pass this information=
+.
+
+> >>> +	res =3D platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> >>> +	if (res =3D=3D NULL)
+> >>> +		dev_warn(gpmc->dev, "Failed to get resource: irq\n");
+> >>> +	else
+> >>> +		gpmc->master_irq =3D res->start;
+> >>
+> >> Why not return an error if the IRQ is not found? We don't know if anyo=
+ne
+> >> will be trying to use them.
+> >
+> > Why do you want to do that ?
+>=20
+> Because this indicates a BUG :-)
+
+I disagree, this need not be considered a bug always,
+for eg. If gpmc irq is not connected to intc
+
+>=20
+> > If someone (say NAND) wants to work with irq, and if interrupt is not
+> > available, NAND driver can fail, and suppose smsc911x ethernet is prese=
+nt
+> > and he is not using gpmc irq, if we fail here, smsc911x also would
+> > not work, which would have worked otherwise.
+> >
+> > It is a different matter that even NAND setup will happen properly,
+> > even if interrupt is not available, it is only when NAND is told to
+> > work with IRQ, it fails, please see nand patches.
+> >
+> > And as of now in mainline (with the code as is), there is not a single
+> > board that will need gpmc irq for gpmc peripherals to work.
+> >
+> > I feel we should try to get more devices working rather than preventing
+> > more devices from working, when it could have.
+>=20
+> I understand your point, but then you are hiding a BUG. If someone=20
+> introduces a BUG that causes this to fail, then it is easier to detect,=20
+> find and fix.
+>=20
+>  From my perspective get the resources should never fail and if it does=20
+> and break the driver for all devices, then so be it, because a BUG has=20
+> been introduced. Ok, this may not be critical at this point but still is=
+=20
+> should not fail.
+
+Agree for resources which are a must for device to work, not for resources
+that can enhance its capability.
+
+>=20
+> >>> +	for (gdq =3D gp->device_pdata, gd =3D gpmc->device; *gdq; gdq++, i+=
++) {
+> >>> +		ret =3D gpmc_setup_device(*gdq, gd, gpmc);
+> >>> +		if (IS_ERR_VALUE(ret))
+> >>> +			dev_err(gpmc->dev, "gpmc setup on %s failed\n",
+> >>> +								(*gdq)->name);
+> >>> +		else
+> >>> +			gd++;
+> >>> +	}
+> >>
+> >> Would a while loop be simpler?
+> >
+> > My preference is to go with "for"
+>=20
+> Ok, just wondering if this could be cleaned up a little.
+
+For travelling through array of pointers, for looks natural to me, if you
+have a better way, please send it, it can be folded in next version.
+
+Regards
+Afzal
