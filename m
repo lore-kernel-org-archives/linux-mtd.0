@@ -1,20 +1,13 @@
-Message-ID: <4F84890A.30500@ti.com>
-Date: Tue, 10 Apr 2012 14:24:58 -0500
-From: Jon Hunter <jon-hunter@ti.com>
-MIME-Version: 1.0
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v3 4/9] ARM: OMAP2+: gpmc-nand: populate gpmc configs
-References: <cover.1333640054.git.afzal@ti.com>
- <6c120ab77d0900a6f977246bc58fb37c62280371.1333640054.git.afzal@ti.com>
-In-Reply-To: <6c120ab77d0900a6f977246bc58fb37c62280371.1333640054.git.afzal@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, sameo@linux.intel.com,
- tony@atomide.com, artem.bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, dbaryshkov@gmail.com, vimal.newwork@gmail.com,
- grinberg@compulab.co.il, mike@compulab.co.il, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mtaout02-winn.ispmail.ntl.com ([81.103.221.48])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHiWQ-0002Sc-Cz
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2012 21:22:44 +0000
+From: Daniel Drake <dsd@laptop.org>
+To: dwmw2@infradead.org
+Subject: [PATCH] JFFS2: Add parameter to reserve disk space for root
+Message-Id: <20120410212235.951079D401E@zog.reactivated.net>
+Date: Tue, 10 Apr 2012 22:22:35 +0100 (BST)
+Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org, dilinger@queued.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +17,162 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Afzal,
+Add a new rp_size= parameter which creates a "reserved pool" of disk
+space which can only be used by root. Other users are not permitted
+to write to disk when the available space is less than the pool size.
 
-On 04/05/2012 10:46 AM, Afzal Mohammed wrote:
-> Currently gpmc is configured in platform for nand.
-> As configuring gpmc has been moved to gpmc driver,
-> populate details needed for the driver to configure
-> gpmc. gpmc driver would configure based on this
-> information.
->
-> Signed-off-by: Afzal Mohammed<afzal@ti.com>
-> ---
->   arch/arm/mach-omap2/gpmc-nand.c        |   97 ++++++++++++++------------------
->   arch/arm/plat-omap/include/plat/nand.h |    8 ++-
->   2 files changed, 48 insertions(+), 57 deletions(-)
->
-> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-> index 386dec8..85de31f 100644
-> --- a/arch/arm/mach-omap2/gpmc-nand.c
-> +++ b/arch/arm/mach-omap2/gpmc-nand.c
-> @@ -21,24 +21,38 @@
->   #include<plat/board.h>
->   #include<plat/gpmc.h>
->
-> -static struct resource gpmc_nand_resource = {
-> -	.flags		= IORESOURCE_MEM,
-> +
-> +#define	GPMC_NAND_CONFIG_NUM	4
+Based on original code by Artem Bityutskiy in
+https://dev.laptop.org/ticket/5317
 
-Where does 4 come from?
+Signed-off-by: Daniel Drake <dsd@laptop.org>
+---
+ fs/jffs2/jffs2_fs_sb.h |    7 +++++++
+ fs/jffs2/nodemgmt.c    |   42 ++++++++++++++++++++++++++++++++++++++++++
+ fs/jffs2/super.c       |   17 +++++++++++++++++
+ 3 files changed, 66 insertions(+), 0 deletions(-)
 
-Jon
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 55a0c1d..0d00bf2 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -32,6 +32,13 @@ struct jffs2_inodirty;
+ struct jffs2_mount_opts {
+ 	bool override_compr;
+ 	unsigned int compr;
++
++	/* The size of the reserved pool. The reserved pool is the JFFS2 flash
++	 * space which may only be used by root cannot be used by the other
++	 * users. This is implemented simply by means of not allowing the
++	 * latter users to write to the file system if the amount if the
++	 * available space is less then 'rp_size'. */
++	unsigned int rp_size;
+ };
+ 
+ /* A struct for the overall file system control.  Pointers to
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 6784d1e..7d4c869 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -18,6 +18,37 @@
+ #include "nodelist.h"
+ #include "debug.h"
+ 
++/*
++ * Check whether the user is allowed to write.
++ */
++static int jffs2_rp_can_write(struct jffs2_sb_info *c)
++{
++	uint32_t avail;
++	struct jffs2_mount_opts *opts = &c->mount_opts;
++
++	avail = c->dirty_size + c->free_size + c->unchecked_size +
++		c->erasing_size - c->resv_blocks_write * c->sector_size
++		- c->nospc_dirty_size;
++
++	if (avail < 2 * opts->rp_size)
++		D1(printk(KERN_DEBUG "rpsize %u, dirty_size %u, free_size %u, "
++			"erasing_size %u, unchecked_size %u, "
++			"nr_erasing_blocks %u, avail %u, resrv %u\n",
++			opts->rp_size, c->dirty_size, c->free_size,
++			c->erasing_size, c->unchecked_size,
++			c->nr_erasing_blocks, avail, c->nospc_dirty_size));
++
++	if (avail > opts->rp_size)
++		return 1;
++
++	/* Always allow root */
++	if (current_fsuid() == 0 || current_fsgid() == 0)
++		return 1;
++
++	D1(printk(KERN_DEBUG "forbid writing\n"));
++	return 0;
++}
++
+ /**
+  *	jffs2_reserve_space - request physical space to write nodes to flash
+  *	@c: superblock info
+@@ -55,6 +86,15 @@ int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+ 
+ 	spin_lock(&c->erase_completion_lock);
+ 
++	/*
++	 * Check if the free space is greater then size of the reserved pool.
++	 * If not, only allow root to proceed with writing.
++	 */
++	if (prio != ALLOC_DELETION && !jffs2_rp_can_write(c)) {
++		ret = -ENOSPC;
++		goto out;
++	}
++
+ 	/* this needs a little more thought (true <tglx> :)) */
+ 	while(ret == -EAGAIN) {
+ 		while(c->nr_free_blocks + c->nr_erasing_blocks < blocksneeded) {
+@@ -158,6 +198,8 @@ int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+ 			jffs2_dbg(1, "%s(): ret is %d\n", __func__, ret);
+ 		}
+ 	}
++
++out:
+ 	spin_unlock(&c->erase_completion_lock);
+ 	if (!ret)
+ 		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index f9916f3..3dba438 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -105,6 +105,8 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
+ 
+ 	if (opts->override_compr)
+ 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
++	if (opts->rp_size)
++		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
+ 
+ 	return 0;
+ }
+@@ -171,15 +173,18 @@ static const struct export_operations jffs2_export_ops = {
+  * JFFS2 mount options.
+  *
+  * Opt_override_compr: override default compressor
++ * Opt_rp_size: size of reserved pool in KiB
+  * Opt_err: just end of array marker
+  */
+ enum {
+ 	Opt_override_compr,
++	Opt_rp_size,
+ 	Opt_err,
+ };
+ 
+ static const match_table_t tokens = {
+ 	{Opt_override_compr, "compr=%s"},
++	{Opt_rp_size, "rp_size=%u"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -187,6 +192,7 @@ static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
+ {
+ 	substring_t args[MAX_OPT_ARGS];
+ 	char *p, *name;
++	unsigned int opt;
+ 
+ 	if (!data)
+ 		return 0;
+@@ -224,6 +230,17 @@ static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
+ 			kfree(name);
+ 			c->mount_opts.override_compr = true;
+ 			break;
++		case Opt_rp_size:
++			if (match_int(&args[0], &opt))
++				return -EINVAL;
++			opt *= 1024;
++			if (opt > c->mtd->size) {
++				pr_warn("Too large reserve pool specified, "
++					"max is %llu KB\n", c->mtd->size / 1024);
++				return -EINVAL;
++			}
++			c->mount_opts.rp_size = opt;
++			break;
+ 		default:
+ 			pr_err("Error: unrecognized mount option '%s' or missing value\n",
+ 			       p);
+-- 
+1.7.7.6
