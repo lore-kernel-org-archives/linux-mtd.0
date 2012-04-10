@@ -1,33 +1,21 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SHaLe-0005W7-0C
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2012 12:39:02 +0000
-Received: by iaky10 with SMTP id y10so9085532iak.36
- for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2012 05:39:00 -0700 (PDT)
-Date: Tue, 10 Apr 2012 20:39:58 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: Using GPMI-NAND driver on iMX28 using 3.4-rc1?
-Message-ID: <20120410123952.GA419@S2101-09.ap.freescale.net>
-References: <CAOdLEaoboQowyx3T9ONjv-Y3q1JfFRb4ahS8CNrzeJi3N8Dczg@mail.gmail.com>
- <CAOMZO5AsbFDXHs3JRLC5=1MjZ7QrxciqV25xpZQL1Yvk3boQmw@mail.gmail.com>
- <CAOdLEaoEDr7fnswwV-Gs8tZF9Zj-RFnRa9Z=eqRFd0==OgV10Q@mail.gmail.com>
- <CAOMZO5AoFnM=cCR-kS4A1k2xY_bRd9+gN1p9bFxdyPS2-UdbkQ@mail.gmail.com>
- <4F7D3DB8.6080009@freescale.com>
- <CAOdLEaoy8ARS=awimR6fN8EcX+FrqxaSr3VUG3rP3zrNLOf+Gw@mail.gmail.com>
- <1333628861.31825.22.camel@vkoul-udesk3>
- <20120406022305.GJ7264@S2101-09.ap.freescale.net>
- <4F7EC6AF.6000603@freescale.com>
- <20120410094223.GN24211@n2100.arm.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20120410094223.GN24211@n2100.arm.linux.org.uk>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Fabio Estevam <festevam@gmail.com>,
- Wolfram Sang <w.sang@pengutronix.de>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@freescale.com>,
- Sam Gandhi <samgandhi9@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from emvm-gh1-uea09.nsa.gov ([63.239.67.10] helo=nsa.gov)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHaSs-0006kE-OT
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2012 12:46:31 +0000
+Subject: Re: [PATCH v2] Add security.* XATTR support for the UBIFS
+From: Stephen Smalley <sds@tycho.nsa.gov>
+To: subodh.nijsure@gmail.com
+In-Reply-To: <1334015486-20616-1-git-send-email-snijsure@grid-net.com>
+References: <1334015486-20616-1-git-send-email-snijsure@grid-net.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 10 Apr 2012 08:46:25 -0400
+Message-ID: <1334061985.23411.3.camel@moss-pluto>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Subodh Nijsure <snijsure@grid-net.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-security-module@vger.kernel.org,
+ linux-mtd@lists.infradead.org, casey@scahufler-ca.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,34 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 10, 2012 at 10:42:23AM +0100, Russell King - ARM Linux wrote:
-> On Fri, Apr 06, 2012 at 06:34:23PM +0800, Huang Shijie wrote:
-> > diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-> > index 5978113..0f5b09a 100644
-> > --- a/drivers/dma/mxs-dma.c
-> > +++ b/drivers/dma/mxs-dma.c
-> > @@ -202,10 +202,12 @@ static struct mxs_dma_chan *to_mxs_dma_chan(struct  
-> > dma_cha
-> > static dma_cookie_t mxs_dma_tx_submit(struct dma_async_tx_descriptor *tx)
-> > {
-> > struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(tx->chan);
-> > + dma_cookie_t c;
-> >
-> > + c = dma_cookie_assign(tx);
-> > mxs_dma_enable_chan(mxs_chan);
-> >
-> > - return dma_cookie_assign(tx);
-> > + return c;
+On Mon, 2012-04-09 at 16:51 -0700, subodh.nijsure@gmail.com wrote:
+> From: Subodh Nijsure <snijsure@grid-net.com>
 > 
-> Hang on, why are you enabling a channel (and presumably allowing this
-> transaction to be issued) before dma_async_issue_pending() has been
-> called for the channel?
+> Also fix couple of bugs in UBIFS extended attribute length calculation.
+> 
+> Changes Since V1:
+>          Instead of just handling security.selinux extended attribute handle
+>          all security.* attributes.
+> 
+> TESTING: Tested on  MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
+>          With these change we are able to label UBIFS filesystem with
+>          security.selinux and run system with selinux enabled.
+>          This change also allows one to set other security.* extended
+>          attributesr, such as security.smack security.evm, security.ima
+>          Ran integck test on UBI filesystem.
+> 
+> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+> ---
+>  fs/ubifs/dir.c     |    4 ++
+>  fs/ubifs/file.c    |    6 ++
+>  fs/ubifs/journal.c |   12 +++-
+>  fs/ubifs/super.c   |    3 +
+>  fs/ubifs/ubifs.h   |    9 +++
+>  fs/ubifs/xattr.c   |  147 ++++++++++++++++++++++++++++++++++++++++++++++++----
+>  6 files changed, 167 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index ec9f187..f4e06c4 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -293,6 +293,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>  	ubifs_release_budget(c, &req);
+>  	insert_inode_hash(inode);
+>  	d_instantiate(dentry, inode);
+> +	ubifs_init_security(dir, inode, &dentry->d_name);
+>  	return 0;
+>  
+>  out_cancel:
 
-When mxs-dma driver was created, we chose to only support a single
-descriptor at the beginning, and mxs_dma_issue_pending() is an empty
-function right now .  This is something needs to be improved, but it
-should be orthogonal to the bug fix posted here.
+The ubifs_init_security() should occur before d_instantiate() so that
+the inode is not accessible to other threads before its security
+attributes have been set.  And if it fails, you would ideally drop the
+inode altogether and return an error to the creating process.
 
 -- 
-Regards,
-Shawn
+Stephen Smalley
+National Security Agency
