@@ -1,27 +1,34 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SHzcR-0008OG-GN
- for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 15:38:04 +0000
-Date: Wed, 11 Apr 2012 17:38:01 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBIFS: use ubi's new ubi_leb_change sync parameter
-In-Reply-To: <alpine.DEB.2.00.1204111514120.10181@eristoteles.iwoars.net>
-Message-ID: <alpine.DEB.2.00.1204111735530.12033@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1203291653210.912@eristoteles.iwoars.net>
- <4F748CD6.4080704@parrot.com>
- <alpine.DEB.2.00.1203301413080.10066@eristoteles.iwoars.net>
- <1333110503.5440.24.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203301433270.10066@eristoteles.iwoars.net>
- <1333111321.5440.29.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1203301709080.10066@eristoteles.iwoars.net>
- <1334147205.13842.8.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1204111514120.10181@eristoteles.iwoars.net>
+Message-ID: <4F85A77E.30203@ti.com>
+Date: Wed, 11 Apr 2012 10:47:10 -0500
+From: Jon Hunter <jon-hunter@ti.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
+References: <cover.1333640054.git.afzal@ti.com>
+ <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
+ <4F7DFED5.4030000@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
+ <4F833D8D.8000802@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A9317C693C@DBDE01.ent.ti.com>
+ <4F8488A2.7030602@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A9317C6F4B@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A9317C6F4B@DBDE01.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "sameo@linux.intel.com" <sameo@linux.intel.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "mike@compulab.co.il" <mike@compulab.co.il>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,273 +38,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes UBIFS to use the new sync parameter for ubi's ubi_leb_change
-function. In the previous post, one of the calls had sync = 1, this is
-fixed. This, along with the ubi patch that introduces the new
-parameter, was tested using integck for both sync=0 and sync=1 in the
-tnc_commit's call to leb_change and the underlying free'd PEB was
-inspected through debug statements to ensure that it was later reallocated
-for new data.
+Hi Afzal,
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- fs/ubifs/debug.c      |    4 ++--
- fs/ubifs/debug.h      |    2 +-
- fs/ubifs/io.c         |    6 +++---
- fs/ubifs/log.c        |    5 +++--
- fs/ubifs/lpt.c        |   10 +++++-----
- fs/ubifs/orphan.c     |    2 +-
- fs/ubifs/recovery.c   |   12 ++++++------
- fs/ubifs/sb.c         |    4 ++--
- fs/ubifs/tnc_commit.c |    2 +-
- fs/ubifs/ubifs.h      |    2 +-
- 10 files changed, 25 insertions(+), 24 deletions(-)
+On 04/11/2012 12:11 AM, Mohammed, Afzal wrote:
+> Hi Jon,
+> 
+> On Wed, Apr 11, 2012 at 00:53:14, Hunter, Jon wrote:
+>> I agree with your argument but I was thinking today only OMAP uses the 
+>> GPMC so we could not worry about this. Ok, leave as-is, but can we 
+>> modify the code as follows as the "else if" is not really needed...
+>>
+>> if (gpmc->num_irq < GPMC_NR_IRQ) {
+>> 	dev_warn(gpmc->dev, "Insufficient interrupts for device\n");
+>> 	return -EINVAL;
+>> }
+>>
+>> gpmc->num_irq = GPMC_NR_IRQ;
+> 
+> Yes, it is better
+> 
+>>
+>>>>
+>>>> Furthermore, GPMC_NR_IRQ is defined as 6 which is correct for OMAP2/3
+>>>> but not for OMAP4/5, it is 5. Therefore, we need to detect whether we
+>>>> are using an OMAP2/3 or OMAP4+ and set num_irqs based upon this. This
+>>>> could be done in the probe and we can avoid passing this.
+>>>
+>>> Is it dependent on OMAPX or GPMC IP version? if it is IP version, then driver
+>>> can be enhanced to handle it, if not, platform has to pass this information.
+>>
+>> Here are the GPMC IP revisions ...
+>>
+>> OMAP5430 = 0x00000060
+>> OMAP4430 = 0x00000060
+>> OMAP3630 = 0x00000050
+>> OMAP3430 = 0x00000050
+>>
+>> So this should work for OMAP. We should check OMAP2 as well. What about 
+>> the AMxxx devices?
+> 
+> 
+> I badly needed this information, thanks.
+> 
+> AM3359 = 0x00000060, it has only 2 waitpin interrupts
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 1934084..46eea79 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2697,7 +2697,7 @@ int dbg_leb_write(struct ubifs_info *c, int lnum, const void *buf,
- }
+Great so this is consistent!
 
- int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf,
--		   int len, int dtype)
-+		   int len, int dtype, int sync)
- {
- 	int err;
+>>>>>>> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+>>>>>>> +	if (res == NULL)
+>>>>>>> +		dev_warn(gpmc->dev, "Failed to get resource: irq\n");
+>>>>>>> +	else
+>>>>>>> +		gpmc->master_irq = res->start;
+>>>>>>
+>>>>>> Why not return an error if the IRQ is not found? We don't know if anyone
+>>>>>> will be trying to use them.
+>>>>>
+>>>>> Why do you want to do that ?
+>>>>
+>>>> Because this indicates a BUG :-)
+>>>
+>>> I disagree, this need not be considered a bug always,
+>>> for eg. If gpmc irq is not connected to intc
+>>
+>> Ok, so for devices existing today this indicates a bug ;-)
+> 
+> I do not want to consider that case to be bug enough for probe
+> to fail, there are other drivers which does similar enhancing
+> its use cases,
+> 
+> eg. 1e351a9 mfd: Make TPS65910 usable without interrupts
 
-@@ -2705,7 +2705,7 @@ int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf,
- 		return -EROFS;
- 	if (power_cut_emulated(c, lnum, 1))
- 		return -EROFS;
--	err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
-+	err = ubi_leb_change(c->ubi, lnum, buf, len, dtype, sync);
- 	if (err)
- 		return err;
- 	if (power_cut_emulated(c, lnum, 1))
-diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index 9f71765..9cee4cc 100644
---- a/fs/ubifs/debug.h
-+++ b/fs/ubifs/debug.h
-@@ -309,7 +309,7 @@ int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head);
- int dbg_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
- 		  int len, int dtype);
- int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
--		   int dtype);
-+		   int dtype, int sync);
- int dbg_leb_unmap(struct ubifs_info *c, int lnum);
- int dbg_leb_map(struct ubifs_info *c, int lnum, int dtype);
+Ok, fine.
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 103532e..5203787 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -136,7 +136,7 @@ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
- }
+>>
+>> At a minimum you need to improve the error handing here. If the 
+>> platform_get_resource fails you are still calling "gpmc_setup_irq()" 
+>> which appears to be pointless. It would be better if the gpmc irq chip 
+>> is not initialised in this case so that drivers attempting to request 
+>> these irqs failed.
+> 
+> Please see gpmc_setup_irq, if irq is not present, it returns in the
+> beginning, and gpmc_irq_chip is not initialized in that case.
 
- int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
--		     int dtype)
-+		     int dtype, int sync)
- {
- 	int err;
+Yes you are right.
 
-@@ -144,9 +144,9 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
- 	if (c->ro_error)
- 		return -EROFS;
- 	if (!dbg_is_tst_rcvry(c))
--		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
-+		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype, sync);
- 	else
--		err = dbg_leb_change(c, lnum, buf, len, dtype);
-+		err = dbg_leb_change(c, lnum, buf, len, dtype, sync);
- 	if (err) {
- 		ubifs_err("changing %d bytes in LEB %d failed, error %d",
- 			  len, lnum, err);
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index f9fd068..a3d4660 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -623,7 +623,7 @@ static int add_node(struct ubifs_info *c, void *buf, int *lnum, int *offs,
- 		int sz = ALIGN(*offs, c->min_io_size), err;
+>>>>>>> +	for (gdq = gp->device_pdata, gd = gpmc->device; *gdq; gdq++, i++) {
+>>>>>>> +		ret = gpmc_setup_device(*gdq, gd, gpmc);
+>>>>>>> +		if (IS_ERR_VALUE(ret))
+>>>>>>> +			dev_err(gpmc->dev, "gpmc setup on %s failed\n",
+>>>>>>> +								(*gdq)->name);
+>>>>>>> +		else
+>>>>>>> +			gd++;
+>>>>>>> +	}
+>>>>>>
+>>>>>> Would a while loop be simpler?
+>>>>>
+>>>>> My preference is to go with "for"
+>>>>
+>>>> Ok, just wondering if this could be cleaned up a little.
+>>>
+>>> For travelling through array of pointers, for looks natural to me, if you
+>>> have a better way, please send it, it can be folded in next version.
+>>
+>> Could you have num_devices to indicate how many platform devices there 
+>> are and then a simple for-loop of 0 to num_devices?
+> 
+> This will cause coding to be done by platform to be less simple, and my
+> preference is not to use another variable
 
- 		ubifs_pad(c, buf + *offs, sz - *offs);
--		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM);
-+		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM, 0);
- 		if (err)
- 			return err;
- 		*lnum = ubifs_next_log_lnum(c, *lnum);
-@@ -702,7 +702,8 @@ int ubifs_consolidate_log(struct ubifs_info *c)
- 		int sz = ALIGN(offs, c->min_io_size);
+Hehe, I wondered if that would make life a little more difficult. Ok
+lets leave it for now.
 
- 		ubifs_pad(c, buf + offs, sz - offs);
--		err = ubifs_leb_change(c, write_lnum, buf, sz, UBI_SHORTTERM);
-+		err = ubifs_leb_change(c, write_lnum, buf,
-+				       sz, UBI_SHORTTERM, 0);
- 		if (err)
- 			goto out_free;
- 		offs = ALIGN(offs, c->min_io_size);
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index 66d59d0..c974211 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -702,7 +702,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
- 			err = ubifs_leb_change(c, lnum++, buf, alen,
--					       UBI_SHORTTERM);
-+					       UBI_SHORTTERM, 0);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -733,7 +733,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
- 					    alen - len);
- 				memset(p, 0xff, alen - len);
- 				err = ubifs_leb_change(c, lnum++, buf, alen,
--						       UBI_SHORTTERM);
-+						       UBI_SHORTTERM, 0);
- 				if (err)
- 					goto out;
- 				p = buf;
-@@ -781,7 +781,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
- 			err = ubifs_leb_change(c, lnum++, buf, alen,
--					       UBI_SHORTTERM);
-+					       UBI_SHORTTERM, 0);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -806,7 +806,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
- 		alen = ALIGN(len, c->min_io_size);
- 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 		memset(p, 0xff, alen - len);
--		err = ubifs_leb_change(c, lnum++, buf, alen, UBI_SHORTTERM);
-+		err = ubifs_leb_change(c, lnum++, buf, alen, UBI_SHORTTERM, 0);
- 		if (err)
- 			goto out;
- 		p = buf;
-@@ -826,7 +826,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
-
- 	/* Write remaining buffer */
- 	memset(p, 0xff, alen - len);
--	err = ubifs_leb_change(c, lnum, buf, alen, UBI_SHORTTERM);
-+	err = ubifs_leb_change(c, lnum, buf, alen, UBI_SHORTTERM, 0);
- 	if (err)
- 		goto out;
-
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index c542c73..a0ec4ed 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -249,7 +249,7 @@ static int do_write_orph_node(struct ubifs_info *c, int len, int atomic)
- 		ubifs_prepare_node(c, c->orph_buf, len, 1);
- 		len = ALIGN(len, c->min_io_size);
- 		err = ubifs_leb_change(c, c->ohead_lnum, c->orph_buf, len,
--				       UBI_SHORTTERM);
-+				       UBI_SHORTTERM, 0);
- 	} else {
- 		if (c->ohead_offs == 0) {
- 			/* Ensure LEB has been unmapped */
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 2a935b3..0531112 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -213,10 +213,10 @@ static int write_rcvrd_mst_node(struct ubifs_info *c,
- 	mst->flags |= cpu_to_le32(UBIFS_MST_RCVRY);
-
- 	ubifs_prepare_node(c, mst, UBIFS_MST_NODE_SZ, 1);
--	err = ubifs_leb_change(c, lnum, mst, sz, UBI_SHORTTERM);
-+	err = ubifs_leb_change(c, lnum, mst, sz, UBI_SHORTTERM, 0);
- 	if (err)
- 		goto out;
--	err = ubifs_leb_change(c, lnum + 1, mst, sz, UBI_SHORTTERM);
-+	err = ubifs_leb_change(c, lnum + 1, mst, sz, UBI_SHORTTERM, 0);
- 	if (err)
- 		goto out;
- out:
-@@ -556,7 +556,7 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 				}
- 			}
- 			err = ubifs_leb_change(c, lnum, sleb->buf, len,
--					       UBI_UNKNOWN);
-+					       UBI_UNKNOWN, 0);
- 			if (err)
- 				return err;
- 		}
-@@ -941,7 +941,7 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
- 		err = ubifs_leb_read(c, lnum, sbuf, 0, offs, 1);
- 		if (err)
- 			return err;
--		return ubifs_leb_change(c, lnum, sbuf, offs, UBI_UNKNOWN);
-+		return ubifs_leb_change(c, lnum, sbuf, offs, UBI_UNKNOWN, 0);
- 	}
-
- 	return 0;
-@@ -1071,7 +1071,7 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
- 	}
-
- 	/* Write back the LEB atomically */
--	err = ubifs_leb_change(c, lnum, sbuf, len, UBI_UNKNOWN);
-+	err = ubifs_leb_change(c, lnum, sbuf, len, UBI_UNKNOWN, 0);
- 	if (err)
- 		return err;
-
-@@ -1472,7 +1472,7 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
- 		len -= 1;
- 	len = ALIGN(len + 1, c->min_io_size);
- 	/* Atomically write the fixed LEB back again */
--	err = ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN);
-+	err = ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN, 0);
- 	if (err)
- 		goto out;
- 	dbg_rcvry("inode %lu at %d:%d size %lld -> %lld",
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 3fc9071..29de5bb 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -518,7 +518,7 @@ int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 	int len = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
-
- 	ubifs_prepare_node(c, sup, UBIFS_SB_NODE_SZ, 1);
--	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len, UBI_LONGTERM);
-+	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len, UBI_LONGTERM, 0);
- }
-
- /**
-@@ -691,7 +691,7 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
- 	if (err)
- 		return err;
-
--	return ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN);
-+	return ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN, 0);
- }
-
- /**
-diff --git a/fs/ubifs/tnc_commit.c b/fs/ubifs/tnc_commit.c
-index 4c15f07..485a283 100644
---- a/fs/ubifs/tnc_commit.c
-+++ b/fs/ubifs/tnc_commit.c
-@@ -323,7 +323,7 @@ static int layout_leb_in_gaps(struct ubifs_info *c, int *p)
- 	if (err)
- 		return err;
- 	err = ubifs_leb_change(c, lnum, c->ileb_buf, c->ileb_len,
--			       UBI_SHORTTERM);
-+			       UBI_SHORTTERM, 0);
- 	if (err)
- 		return err;
- 	dbg_gc("LEB %d wrote %d index nodes", lnum, tot_written);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3ed12be..3aaeb45 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1470,7 +1470,7 @@ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
- int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
- 		    int len, int dtype);
- int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
--		     int dtype);
-+		     int dtype, int sync);
- int ubifs_leb_unmap(struct ubifs_info *c, int lnum);
- int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype);
- int ubifs_is_mapped(const struct ubifs_info *c, int lnum);
--- 
-1.7.5.4
+Jon
