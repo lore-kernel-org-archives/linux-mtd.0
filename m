@@ -1,34 +1,30 @@
-Message-ID: <4F85A77E.30203@ti.com>
-Date: Wed, 11 Apr 2012 10:47:10 -0500
-From: Jon Hunter <jon-hunter@ti.com>
-MIME-Version: 1.0
-To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH v3 1/9] ARM: OMAP2+: gpmc: driver conversion
-References: <cover.1333640054.git.afzal@ti.com>
- <cefbe934da40f0a169b1e3a75c46451e5546a8bd.1333640054.git.afzal@ti.com>
- <4F7DFED5.4030000@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A9317C5E58@DBDE01.ent.ti.com>
- <4F833D8D.8000802@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A9317C693C@DBDE01.ent.ti.com>
- <4F8488A2.7030602@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A9317C6F4B@DBDE01.ent.ti.com>
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A9317C6F4B@DBDE01.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- "sameo@linux.intel.com" <sameo@linux.intel.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
- "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
- "mike@compulab.co.il" <mike@compulab.co.il>,
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHzzT-0005an-1Q
+ for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 16:01:52 +0000
+Message-ID: <1334160265.13842.23.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: allow atomic updates to sychronously erase old PEB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Wed, 11 Apr 2012 19:04:25 +0300
+In-Reply-To: <alpine.DEB.2.00.1204111513230.10181@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1203291653210.912@eristoteles.iwoars.net>
+ <4F748CD6.4080704@parrot.com>
+ <alpine.DEB.2.00.1203301413080.10066@eristoteles.iwoars.net>
+ <1333110503.5440.24.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203301433270.10066@eristoteles.iwoars.net>
+ <1333111321.5440.29.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203301709080.10066@eristoteles.iwoars.net>
+ <1334147205.13842.8.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1204111513230.10181@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Qwrin9GrUl87QEiSJrHf"
+Mime-Version: 1.0
+Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,115 +34,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Afzal,
 
-On 04/11/2012 12:11 AM, Mohammed, Afzal wrote:
-> Hi Jon,
-> 
-> On Wed, Apr 11, 2012 at 00:53:14, Hunter, Jon wrote:
->> I agree with your argument but I was thinking today only OMAP uses the 
->> GPMC so we could not worry about this. Ok, leave as-is, but can we 
->> modify the code as follows as the "else if" is not really needed...
->>
->> if (gpmc->num_irq < GPMC_NR_IRQ) {
->> 	dev_warn(gpmc->dev, "Insufficient interrupts for device\n");
->> 	return -EINVAL;
->> }
->>
->> gpmc->num_irq = GPMC_NR_IRQ;
-> 
-> Yes, it is better
-> 
->>
->>>>
->>>> Furthermore, GPMC_NR_IRQ is defined as 6 which is correct for OMAP2/3
->>>> but not for OMAP4/5, it is 5. Therefore, we need to detect whether we
->>>> are using an OMAP2/3 or OMAP4+ and set num_irqs based upon this. This
->>>> could be done in the probe and we can avoid passing this.
->>>
->>> Is it dependent on OMAPX or GPMC IP version? if it is IP version, then driver
->>> can be enhanced to handle it, if not, platform has to pass this information.
->>
->> Here are the GPMC IP revisions ...
->>
->> OMAP5430 = 0x00000060
->> OMAP4430 = 0x00000060
->> OMAP3630 = 0x00000050
->> OMAP3430 = 0x00000050
->>
->> So this should work for OMAP. We should check OMAP2 as well. What about 
->> the AMxxx devices?
-> 
-> 
-> I badly needed this information, thanks.
-> 
-> AM3359 = 0x00000060, it has only 2 waitpin interrupts
+--=-Qwrin9GrUl87QEiSJrHf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Great so this is consistent!
+On Wed, 2012-04-11 at 15:14 +0200, Joel Reardon wrote:
+> This is a proposal for adding an immediate mode for atomic updates of LEB=
+s in
+> UBI. The idea is that, if the erase parameter is non-zero, then the old P=
+EB
+> will be erase after the new PEB is written, but before the function retur=
+ns. It
+> will not go into a work queue. This is for security-relevant situations w=
+here,
+> for instance, the user needs assurance that sensitive information on an
+> eraseblock is actually gone after the update.
 
->>>>>>> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->>>>>>> +	if (res == NULL)
->>>>>>> +		dev_warn(gpmc->dev, "Failed to get resource: irq\n");
->>>>>>> +	else
->>>>>>> +		gpmc->master_irq = res->start;
->>>>>>
->>>>>> Why not return an error if the IRQ is not found? We don't know if anyone
->>>>>> will be trying to use them.
->>>>>
->>>>> Why do you want to do that ?
->>>>
->>>> Because this indicates a BUG :-)
->>>
->>> I disagree, this need not be considered a bug always,
->>> for eg. If gpmc irq is not connected to intc
->>
->> Ok, so for devices existing today this indicates a bug ;-)
-> 
-> I do not want to consider that case to be bug enough for probe
-> to fail, there are other drivers which does similar enhancing
-> its use cases,
-> 
-> eg. 1e351a9 mfd: Make TPS65910 usable without interrupts
+Amended the commit message, and actually squashed 2 patches to preserve
+bisectability.
 
-Ok, fine.
+I've pushed this to the master branch.
 
->>
->> At a minimum you need to improve the error handing here. If the 
->> platform_get_resource fails you are still calling "gpmc_setup_irq()" 
->> which appears to be pointless. It would be better if the gpmc irq chip 
->> is not initialised in this case so that drivers attempting to request 
->> these irqs failed.
-> 
-> Please see gpmc_setup_irq, if irq is not present, it returns in the
-> beginning, and gpmc_irq_chip is not initialized in that case.
+I've also re-based your 'joel' branch on top of the master branch.
 
-Yes you are right.
+Your old branch is saved in 'joel_old'.
 
->>>>>>> +	for (gdq = gp->device_pdata, gd = gpmc->device; *gdq; gdq++, i++) {
->>>>>>> +		ret = gpmc_setup_device(*gdq, gd, gpmc);
->>>>>>> +		if (IS_ERR_VALUE(ret))
->>>>>>> +			dev_err(gpmc->dev, "gpmc setup on %s failed\n",
->>>>>>> +								(*gdq)->name);
->>>>>>> +		else
->>>>>>> +			gd++;
->>>>>>> +	}
->>>>>>
->>>>>> Would a while loop be simpler?
->>>>>
->>>>> My preference is to go with "for"
->>>>
->>>> Ok, just wondering if this could be cleaned up a little.
->>>
->>> For travelling through array of pointers, for looks natural to me, if you
->>> have a better way, please send it, it can be folded in next version.
->>
->> Could you have num_devices to indicate how many platform devices there 
->> are and then a simple for-loop of 0 to num_devices?
-> 
-> This will cause coding to be done by platform to be less simple, and my
-> preference is not to use another variable
+I did this because there were minor a minor conflict with other UBIFS
+changes, so I thought it makes sense to rebase now.
 
-Hehe, I wondered if that would make life a little more difficult. Ok
-lets leave it for now.
+Some tips.
 
-Jon
+1. save all your changes.
+2. checkout the 'joel' branch
+3. git fetch -f
+4. git reset --hard origin/joel
+
+This will let you update to the latest joel.
+
+git checkout -b jeol_old origin/joel_old
+
+will give you your old stuff.
+
+Yes, sorry, I told you I won't rebase but then I noticed small conflicts
+and decided that it is better if you are up-to-date. If you are unhappy
+- let me know and I'll return you to the old stuff and will apply this
+patch there.
+
+Thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-Qwrin9GrUl87QEiSJrHf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPhauJAAoJECmIfjd9wqK0ji0QAIy4t6ATaWcfmhA0iVXnH3GS
+Bx1QyHBjpe7ymo1PJOt9xh5oMyKP8urVtB7De6QOsr2J6QpsTvJJTuOGkA3ca3Ut
+D9jNOOofVK7llJt7PdghBHWPGFZCtgOV42rPumhydl9LIuOzMF2HKrbrylSkrL/d
+gacOAd+dyyHv46FV5sLXVwI3O/QcUzrxJpPSjWSZls3Sr/ASJzfPdF6l+9uEx1Gl
+FNpRkMtQ1ggvFL8ylbpLG0aMvs7+/oH1JtKnOsT8o6WAJlmGct6qzquCzMSGja3C
+JqkjK842rBAXZXwYiEdnwYP4mWQCBR4WqHUabpf8OxVEPV5UnaHHCEH4NtDZNX+N
+98jcS2UW6sNoI4NwpY2McoAuTJR0IzFvnpb1EAWu6kEwZkUozZzfz7M4OliJKNgA
+ZTGaJGzainZz4RdiJ6KC0pZV6ZS8xjPZ0WnsUomF0GRZKe+2cWQZ/0JOLJdQcIF5
+F0SqgG7o4YxCY1Z3OUq0QMrItZJWJwFVMrCt6GQoJRciVipjwL9cCKGT68UFO+PB
+X2niL6WNnzo/kFXTjbWpwDb2w165otjjDRxZ3aI9j2C4PWqHB09ZBFeOKTPEyt7V
+LtCivtLY9jJBKX2snrGljiMNVGINhVyc9IEavSGU5Zuy80PC0jTdrSJuZk6zQhb0
+aXCZMjUuNOUWlHsBmzDa
+=53tp
+-----END PGP SIGNATURE-----
+
+--=-Qwrin9GrUl87QEiSJrHf--
