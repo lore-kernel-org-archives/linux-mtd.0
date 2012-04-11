@@ -1,17 +1,21 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SHlz7-000798-Ef
- for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 01:04:33 +0000
-Received: by werp11 with SMTP id p11so291301wer.36
- for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2012 18:04:31 -0700 (PDT)
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: omap2: fix resource leak in prefetch-busy path
-Date: Wed, 11 Apr 2012 04:04:34 +0300
-Message-Id: <1334106274-24993-1-git-send-email-notasas@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Grazvydas Ignotas <notasas@gmail.com>
+ id 1SHmoy-0001ut-3q
+ for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 01:58:08 +0000
+Message-ID: <4F84E5F6.7050805@freescale.com>
+Date: Wed, 11 Apr 2012 10:01:26 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Florian Fainelli <ffainelli@freebox.fr>
+Subject: Re: [PATCH] mtd : print out the page size and oob size after parsing
+ out the nand
+References: <1333942897-7392-1-git-send-email-b32955@freescale.com>
+ <4F840B56.403@freebox.fr>
+In-Reply-To: <4F840B56.403@freebox.fr>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If prefetch engine is busy, current code "forgets" to call
-dma_unmap_single(), which results in a deadlock later, so add it.
+Hi,
+> Relying on the kernel to print something to assert the correctness of 
+> the NAND detection is really weak, you'd better query these properties 
+> in userland. Also, I am afraid everyone adds a new NAND property 
+> print-out.
+thanks.
 
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
----
- drivers/mtd/nand/omap2.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+If no one like this patch, just ignore it.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f745f00..7feb274 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -402,7 +402,7 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 			PREFETCH_FIFOTHRESHOLD_MAX, 0x1, len, is_write);
- 	if (ret)
- 		/* PFPW engine is busy, use cpu copy method */
--		goto out_copy;
-+		goto out_copy_unmap;
- 
- 	init_completion(&info->comp);
- 
-@@ -421,6 +421,8 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 	dma_unmap_single(&info->pdev->dev, dma_addr, len, dir);
- 	return 0;
- 
-+out_copy_unmap:
-+	dma_unmap_single(&info->pdev->dev, dma_addr, len, dir);
- out_copy:
- 	if (info->nand.options & NAND_BUSWIDTH_16)
- 		is_write == 0 ? omap_read_buf16(mtd, (u_char *) addr, len)
--- 
-1.7.0.4
+Huang Shijie
