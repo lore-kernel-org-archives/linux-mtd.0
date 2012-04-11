@@ -1,25 +1,27 @@
-Received: from emvm-gh1-uea08.nsa.gov ([63.239.67.9] helo=nsa.gov)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SHySD-0006lb-1e
- for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 14:23:25 +0000
-Subject: Re: [PATCH v2] Add security.* XATTR support for the UBIFS
-From: Stephen Smalley <sds@tycho.nsa.gov>
-To: Subodh Nijsure <subodh.nijsure@gmail.com>
-In-Reply-To: <CALr9Q3a89_wa48BfOriP=MEQAXa1Sgf+k_Ey=kuKN9Ydewwegw@mail.gmail.com>
-References: <1334015486-20616-1-git-send-email-snijsure@grid-net.com>
- <1334061985.23411.3.camel@moss-pluto>
- <CALr9Q3Yto9VOhFNRQFVqP7Zi6RWWBaoDUu1zxsup7=+g7_pijQ@mail.gmail.com>
- <1334149853.14296.29.camel@moss-pluto>
- <CALr9Q3a89_wa48BfOriP=MEQAXa1Sgf+k_Ey=kuKN9Ydewwegw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 11 Apr 2012 10:23:22 -0400
-Message-ID: <1334154202.14296.58.camel@moss-pluto>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Subodh Nijsure <snijsure@grid-net.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-security-module@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SHzcR-0008OG-GN
+ for linux-mtd@lists.infradead.org; Wed, 11 Apr 2012 15:38:04 +0000
+Date: Wed, 11 Apr 2012 17:38:01 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: use ubi's new ubi_leb_change sync parameter
+In-Reply-To: <alpine.DEB.2.00.1204111514120.10181@eristoteles.iwoars.net>
+Message-ID: <alpine.DEB.2.00.1204111735530.12033@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1203291653210.912@eristoteles.iwoars.net>
+ <4F748CD6.4080704@parrot.com>
+ <alpine.DEB.2.00.1203301413080.10066@eristoteles.iwoars.net>
+ <1333110503.5440.24.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203301433270.10066@eristoteles.iwoars.net>
+ <1333111321.5440.29.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1203301709080.10066@eristoteles.iwoars.net>
+ <1334147205.13842.8.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1204111514120.10181@eristoteles.iwoars.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,87 +31,273 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-04-11 at 07:12 -0700, Subodh Nijsure wrote:
-> On Wed, Apr 11, 2012 at 6:10 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > On Wed, 2012-04-11 at 06:00 -0700, Subodh Nijsure wrote:
-> >> On Tue, Apr 10, 2012 at 5:46 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> >> > On Mon, 2012-04-09 at 16:51 -0700, subodh.nijsure@gmail.com wrote:
-> >> >> From: Subodh Nijsure <snijsure@grid-net.com>
-> >> >>
-> >> >> Also fix couple of bugs in UBIFS extended attribute length calculation.
-> >> >>
-> >> >> Changes Since V1:
-> >> >>          Instead of just handling security.selinux extended attribute handle
-> >> >>          all security.* attributes.
-> >> >>
-> >> >> TESTING: Tested on  MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
-> >> >>          With these change we are able to label UBIFS filesystem with
-> >> >>          security.selinux and run system with selinux enabled.
-> >> >>          This change also allows one to set other security.* extended
-> >> >>          attributesr, such as security.smack security.evm, security.ima
-> >> >>          Ran integck test on UBI filesystem.
-> >> >>
-> >> >> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
-> >> >> ---
-> >> >>  fs/ubifs/dir.c     |    4 ++
-> >> >>  fs/ubifs/file.c    |    6 ++
-> >> >>  fs/ubifs/journal.c |   12 +++-
-> >> >>  fs/ubifs/super.c   |    3 +
-> >> >>  fs/ubifs/ubifs.h   |    9 +++
-> >> >>  fs/ubifs/xattr.c   |  147 ++++++++++++++++++++++++++++++++++++++++++++++++----
-> >> >>  6 files changed, 167 insertions(+), 14 deletions(-)
-> >> >>
-> >> >> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> >> >> index ec9f187..f4e06c4 100644
-> >> >> --- a/fs/ubifs/dir.c
-> >> >> +++ b/fs/ubifs/dir.c
-> >> >> @@ -293,6 +293,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-> >> >>       ubifs_release_budget(c, &req);
-> >> >>       insert_inode_hash(inode);
-> >> >>       d_instantiate(dentry, inode);
-> >> >> +     ubifs_init_security(dir, inode, &dentry->d_name);
-> >> >>       return 0;
-> >> >>
-> >> >>  out_cancel:
-> >> >
-> >> > The ubifs_init_security() should occur before d_instantiate() so that
-> >> > the inode is not accessible to other threads before its security
-> >> > attributes have been set.  And if it fails, you would ideally drop the
-> >> > inode altogether and return an error to the creating process.
-> >> >
-> >>
-> >> I will look into moving ubifs_init_security() before d_instantiate().
-> >> Last time I had tried I had run into some issues and had to keep
-> >> creating inode and then creating xattr as two seperate items. I will
-> >> look through the UBIFS code that actually creates xattr ubi nodes.
-> >> Also I will wait for couple of days to send v3 patch with to see if
-> >> mtd folks have other comments this patch.
-> >
-> > I'd favor moving the call to ubifs_init_security() inside of
-> > ubifs_new_inode() so that it gets done as part of all inode creation.
-> > To do that, you'll need to pass the &dentry->d_name (const struct qstr
-> > *) down to ubifs_new_inode(). But you can see that it is done that way
-> > for ext4_new_inode(), for example.
-> >
-> > --
-> 
-> Okay, I will look at that code little bit mode.
-> 
-> UBIFS create_xattr() (fs/ubifs/xattr.c)  calls ubifs_new_inode() so it
-> can get tricky if I want to create xattr in ubifs_new_inode().
-> 
-> Also noticed that UBIFS doesn't d_instantiate() inode entry created to
-> hold extended attribute, not certain if that would be an issue.
-> 
-> I will look how other fs manage xattrs, I certainly don't want to
-> modify how UBIFS manages extended attributes.
+This patch fixes UBIFS to use the new sync parameter for ubi's ubi_leb_change
+function. In the previous post, one of the calls had sync = 1, this is
+fixed. This, along with the ubi patch that introduces the new
+parameter, was tested using integck for both sync=0 and sync=1 in the
+tnc_commit's call to leb_change and the underlying free'd PEB was
+inspected through debug statements to ensure that it was later reallocated
+for new data.
 
-Oh, I missed the fact that ubifs xattrs are implemented as their own
-inodes.  In that case, I guess you don't want to do what I said above,
-and your current approach is fine (aside from moving it up before
-d_instantiate and handling the error case).  ext4 doesn't implement the
-xattr as a regular inode so that is different.
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ fs/ubifs/debug.c      |    4 ++--
+ fs/ubifs/debug.h      |    2 +-
+ fs/ubifs/io.c         |    6 +++---
+ fs/ubifs/log.c        |    5 +++--
+ fs/ubifs/lpt.c        |   10 +++++-----
+ fs/ubifs/orphan.c     |    2 +-
+ fs/ubifs/recovery.c   |   12 ++++++------
+ fs/ubifs/sb.c         |    4 ++--
+ fs/ubifs/tnc_commit.c |    2 +-
+ fs/ubifs/ubifs.h      |    2 +-
+ 10 files changed, 25 insertions(+), 24 deletions(-)
 
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 1934084..46eea79 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2697,7 +2697,7 @@ int dbg_leb_write(struct ubifs_info *c, int lnum, const void *buf,
+ }
+
+ int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf,
+-		   int len, int dtype)
++		   int len, int dtype, int sync)
+ {
+ 	int err;
+
+@@ -2705,7 +2705,7 @@ int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf,
+ 		return -EROFS;
+ 	if (power_cut_emulated(c, lnum, 1))
+ 		return -EROFS;
+-	err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
++	err = ubi_leb_change(c->ubi, lnum, buf, len, dtype, sync);
+ 	if (err)
+ 		return err;
+ 	if (power_cut_emulated(c, lnum, 1))
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index 9f71765..9cee4cc 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -309,7 +309,7 @@ int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head);
+ int dbg_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+ 		  int len, int dtype);
+ int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
+-		   int dtype);
++		   int dtype, int sync);
+ int dbg_leb_unmap(struct ubifs_info *c, int lnum);
+ int dbg_leb_map(struct ubifs_info *c, int lnum, int dtype);
+
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 103532e..5203787 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -136,7 +136,7 @@ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+ }
+
+ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
+-		     int dtype)
++		     int dtype, int sync)
+ {
+ 	int err;
+
+@@ -144,9 +144,9 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
+ 	if (c->ro_error)
+ 		return -EROFS;
+ 	if (!dbg_is_tst_rcvry(c))
+-		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
++		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype, sync);
+ 	else
+-		err = dbg_leb_change(c, lnum, buf, len, dtype);
++		err = dbg_leb_change(c, lnum, buf, len, dtype, sync);
+ 	if (err) {
+ 		ubifs_err("changing %d bytes in LEB %d failed, error %d",
+ 			  len, lnum, err);
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index f9fd068..a3d4660 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -623,7 +623,7 @@ static int add_node(struct ubifs_info *c, void *buf, int *lnum, int *offs,
+ 		int sz = ALIGN(*offs, c->min_io_size), err;
+
+ 		ubifs_pad(c, buf + *offs, sz - *offs);
+-		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM);
++		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM, 0);
+ 		if (err)
+ 			return err;
+ 		*lnum = ubifs_next_log_lnum(c, *lnum);
+@@ -702,7 +702,8 @@ int ubifs_consolidate_log(struct ubifs_info *c)
+ 		int sz = ALIGN(offs, c->min_io_size);
+
+ 		ubifs_pad(c, buf + offs, sz - offs);
+-		err = ubifs_leb_change(c, write_lnum, buf, sz, UBI_SHORTTERM);
++		err = ubifs_leb_change(c, write_lnum, buf,
++				       sz, UBI_SHORTTERM, 0);
+ 		if (err)
+ 			goto out_free;
+ 		offs = ALIGN(offs, c->min_io_size);
+diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+index 66d59d0..c974211 100644
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -702,7 +702,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+ 			err = ubifs_leb_change(c, lnum++, buf, alen,
+-					       UBI_SHORTTERM);
++					       UBI_SHORTTERM, 0);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -733,7 +733,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+ 					    alen - len);
+ 				memset(p, 0xff, alen - len);
+ 				err = ubifs_leb_change(c, lnum++, buf, alen,
+-						       UBI_SHORTTERM);
++						       UBI_SHORTTERM, 0);
+ 				if (err)
+ 					goto out;
+ 				p = buf;
+@@ -781,7 +781,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+ 			err = ubifs_leb_change(c, lnum++, buf, alen,
+-					       UBI_SHORTTERM);
++					       UBI_SHORTTERM, 0);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -806,7 +806,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+ 		alen = ALIGN(len, c->min_io_size);
+ 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 		memset(p, 0xff, alen - len);
+-		err = ubifs_leb_change(c, lnum++, buf, alen, UBI_SHORTTERM);
++		err = ubifs_leb_change(c, lnum++, buf, alen, UBI_SHORTTERM, 0);
+ 		if (err)
+ 			goto out;
+ 		p = buf;
+@@ -826,7 +826,7 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+
+ 	/* Write remaining buffer */
+ 	memset(p, 0xff, alen - len);
+-	err = ubifs_leb_change(c, lnum, buf, alen, UBI_SHORTTERM);
++	err = ubifs_leb_change(c, lnum, buf, alen, UBI_SHORTTERM, 0);
+ 	if (err)
+ 		goto out;
+
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index c542c73..a0ec4ed 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -249,7 +249,7 @@ static int do_write_orph_node(struct ubifs_info *c, int len, int atomic)
+ 		ubifs_prepare_node(c, c->orph_buf, len, 1);
+ 		len = ALIGN(len, c->min_io_size);
+ 		err = ubifs_leb_change(c, c->ohead_lnum, c->orph_buf, len,
+-				       UBI_SHORTTERM);
++				       UBI_SHORTTERM, 0);
+ 	} else {
+ 		if (c->ohead_offs == 0) {
+ 			/* Ensure LEB has been unmapped */
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 2a935b3..0531112 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -213,10 +213,10 @@ static int write_rcvrd_mst_node(struct ubifs_info *c,
+ 	mst->flags |= cpu_to_le32(UBIFS_MST_RCVRY);
+
+ 	ubifs_prepare_node(c, mst, UBIFS_MST_NODE_SZ, 1);
+-	err = ubifs_leb_change(c, lnum, mst, sz, UBI_SHORTTERM);
++	err = ubifs_leb_change(c, lnum, mst, sz, UBI_SHORTTERM, 0);
+ 	if (err)
+ 		goto out;
+-	err = ubifs_leb_change(c, lnum + 1, mst, sz, UBI_SHORTTERM);
++	err = ubifs_leb_change(c, lnum + 1, mst, sz, UBI_SHORTTERM, 0);
+ 	if (err)
+ 		goto out;
+ out:
+@@ -556,7 +556,7 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 				}
+ 			}
+ 			err = ubifs_leb_change(c, lnum, sleb->buf, len,
+-					       UBI_UNKNOWN);
++					       UBI_UNKNOWN, 0);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -941,7 +941,7 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 		err = ubifs_leb_read(c, lnum, sbuf, 0, offs, 1);
+ 		if (err)
+ 			return err;
+-		return ubifs_leb_change(c, lnum, sbuf, offs, UBI_UNKNOWN);
++		return ubifs_leb_change(c, lnum, sbuf, offs, UBI_UNKNOWN, 0);
+ 	}
+
+ 	return 0;
+@@ -1071,7 +1071,7 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
+ 	}
+
+ 	/* Write back the LEB atomically */
+-	err = ubifs_leb_change(c, lnum, sbuf, len, UBI_UNKNOWN);
++	err = ubifs_leb_change(c, lnum, sbuf, len, UBI_UNKNOWN, 0);
+ 	if (err)
+ 		return err;
+
+@@ -1472,7 +1472,7 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
+ 		len -= 1;
+ 	len = ALIGN(len + 1, c->min_io_size);
+ 	/* Atomically write the fixed LEB back again */
+-	err = ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN);
++	err = ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN, 0);
+ 	if (err)
+ 		goto out;
+ 	dbg_rcvry("inode %lu at %d:%d size %lld -> %lld",
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 3fc9071..29de5bb 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -518,7 +518,7 @@ int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 	int len = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
+
+ 	ubifs_prepare_node(c, sup, UBIFS_SB_NODE_SZ, 1);
+-	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len, UBI_LONGTERM);
++	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len, UBI_LONGTERM, 0);
+ }
+
+ /**
+@@ -691,7 +691,7 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
+ 	if (err)
+ 		return err;
+
+-	return ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN);
++	return ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN, 0);
+ }
+
+ /**
+diff --git a/fs/ubifs/tnc_commit.c b/fs/ubifs/tnc_commit.c
+index 4c15f07..485a283 100644
+--- a/fs/ubifs/tnc_commit.c
++++ b/fs/ubifs/tnc_commit.c
+@@ -323,7 +323,7 @@ static int layout_leb_in_gaps(struct ubifs_info *c, int *p)
+ 	if (err)
+ 		return err;
+ 	err = ubifs_leb_change(c, lnum, c->ileb_buf, c->ileb_len,
+-			       UBI_SHORTTERM);
++			       UBI_SHORTTERM, 0);
+ 	if (err)
+ 		return err;
+ 	dbg_gc("LEB %d wrote %d index nodes", lnum, tot_written);
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 3ed12be..3aaeb45 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1470,7 +1470,7 @@ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
+ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+ 		    int len, int dtype);
+ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
+-		     int dtype);
++		     int dtype, int sync);
+ int ubifs_leb_unmap(struct ubifs_info *c, int lnum);
+ int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype);
+ int ubifs_is_mapped(const struct ubifs_info *c, int lnum);
 -- 
-Stephen Smalley
-National Security Agency
+1.7.5.4
