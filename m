@@ -1,39 +1,21 @@
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SI7aV-0003V0-80
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2012 00:08:36 +0000
-Received: from /spool/local
- by e34.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <zohar@linux.vnet.ibm.com>;
- Wed, 11 Apr 2012 18:08:34 -0600
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
- by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 361CAC9005E
- for <linux-mtd@lists.infradead.org>; Wed, 11 Apr 2012 20:08:29 -0400 (EDT)
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
- by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q3C08Twq323874
- for <linux-mtd@lists.infradead.org>; Wed, 11 Apr 2012 20:08:29 -0400
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
- by d03av05.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q3C08SeL006215
- for <linux-mtd@lists.infradead.org>; Wed, 11 Apr 2012 18:08:29 -0600
-Subject: Re: [PATCH v3] Add security.* XATTR support for the UBIFS
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-To: Subodh Nijsure <subodh.nijsure@gmail.com>
-Date: Wed, 11 Apr 2012 20:08:23 -0400
-In-Reply-To: <CALr9Q3aNxe6bE5HzM6dSJctKPKiOC+=1nZmYGWL5-Mye2yk8wQ@mail.gmail.com>
-References: <1334179707-31754-1-git-send-email-snijsure@grid-net.com>
- <1334186854.2153.12.camel@falcor>
- <CALr9Q3aNxe6bE5HzM6dSJctKPKiOC+=1nZmYGWL5-Mye2yk8wQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1SI9yD-00073Y-7T
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2012 02:41:14 +0000
+Message-ID: <4F86416B.4090501@freescale.com>
+Date: Thu, 12 Apr 2012 10:43:55 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
+References: <1334026606-18327-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <1334189304.2153.21.camel@falcor>
-Mime-Version: 1.0
-Cc: Subodh Nijsure <snijsure@grid-net.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-security-module@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,458 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-04-11 at 16:45 -0700, Subodh Nijsure wrote:
-> On Wed, Apr 11, 2012 at 4:27 PM, Mimi Zohar <zohar@linux.vnet.ibm.com> wrote:
-> > On Wed, 2012-04-11 at 14:28 -0700, subodh.nijsure@gmail.com wrote:
-> >> From: Subodh Nijsure <snijsure@grid-net.com>
-> >>
-> >> Also fix couple of bugs in UBIFS extended attribute length calculation.
-> >>
-> >> Changes in v3:
-> >>          Invoke ubifs_init_security only if CONFIG_UBIFS_FS_XATTR is defined.
-> >>          Invoke it before d_instantiate and check ubifs_init_security return
-> >>          code.
-> >
-> >> Changes in v2:
-> >>          Instead of just handling security.selinux extended attribute handle
-> >>          all security.* attributes.
-> >>
-> >> TESTING: Tested on  MX28 based platforms using Micron MT29F2G08ABAEAH4 NAND
-> >>          With these change we are able to label UBIFS filesystem with
-> >>          security.selinux and run system with selinux enabled.
-> >>          This change also allows one to set other security.* extended
-> >>          attributes, such as security.smack security.evm, security.ima
-> >>          Ran integck test on UBI filesystem.
-> >>
-> >> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
-> >> ---
-> >>  fs/ubifs/dir.c     |   47 +++++++++++++++++
-> >>  fs/ubifs/file.c    |    6 ++
-> >>  fs/ubifs/journal.c |   12 +++-
-> >>  fs/ubifs/super.c   |    3 +
-> >>  fs/ubifs/ubifs.h   |    9 +++
-> >>  fs/ubifs/xattr.c   |  147 ++++++++++++++++++++++++++++++++++++++++++++++++----
-> >>  6 files changed, 210 insertions(+), 14 deletions(-)
-> >>
-> >> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> >> index ec9f187..422bcec 100644
-> >> --- a/fs/ubifs/dir.c
-> >> +++ b/fs/ubifs/dir.c
-> >> @@ -292,6 +292,18 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-> >>
-> >>       ubifs_release_budget(c, &req);
-> >>       insert_inode_hash(inode);
-> >> +
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +
-> >> +     err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >> +     if (err) {
-> >> +             ubifs_err("cannot initialize extended attribute, error %d",
-> >> +                       err);
-> >> +             goto out_cancel;
-> >> +     }
-> >> +
-> >> +#endif
-> >> +
-> >
-> > The preferred method for including code based on CONFIG options is to
-> > define a stub function in an include file.  #ifdef's in C code is
-> > frowned upon (refer to section 2.2 of Documentation/SubmittingPatches).
-> >
-> > thanks,
-> >
-> > Mimi
-> 
-> I can certainly change the code to follow that guideline, sorry I missed it...
-> 
-> There is other code in ubifs that uses #ifdef
-> CONFIG_UBIFS_FS_XATTR/#endif should I be changing that or expectation
-> is not to introduce new  #ifdef/#endif? And if its the prior should
-> that change come in as separate patch set?
-> 
-> BTW, would very much appreciate if someone can actually test this
-> patch with UBIFS on their hardware. I have posted a patch to
-> mtd-utils/integck  test program on linux-mtd mailing list.
-> 
-> Regards,
-> -Subodh
+Hi Brian:
+> Hi Huang,
+>
+> On Mon, Apr 9, 2012 at 7:56 PM, Huang Shijie<b32955@freescale.com>  wrote:
+>>   drivers/mtd/nand/nand_base.c |   43 ++++++++++++++++++++++++++++++++++++++++++
+>>   1 files changed, 43 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index 6315b94..8997023 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -3028,6 +3028,49 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+>>                         mtd->erasesize = (128 * 1024)<<
+>>                                 (((extid>>  1)&  0x04) | (extid&  0x03));
+>>                         busw = 0;
+>> +               } else if (id_data[0] == NAND_MFR_HYNIX&&  id_data[1] == 0xd7) {
+>> +                       /* Calc pagesize */
+> I'm not sure this is the beset heuristic. Hynix could easily make a
+> larger chip that has the same decoding table, so we probably shouldn't
+> compare dev_id == 0xD7. It actually seems like the decoding table
+> might be intended for all Hynix MLC. What do you think about the
+> following condition?
+>
+> +       } else if ((chip->cellinfo&  NAND_CI_CELLTYPE_MSK)&&
+> id_data[0] == NAND_MFR_HYNIX) {
+I am afraid this can not solve the problem.
+The HY27UT088G2M whose id_data[2] is 0x14 DOES not follow your code.
+Please check the datasheet of HY27UT088G2M. ( I ever emailed to you.)
 
-Definitely keep your patch separate from any other cleanup.   Most, if
-not all other filesystems, put the xattr code in a separate file.  The
-Makefile includes the file based on the CONFIG option.  Refer to
-fs/ext3|ext4/Makefile for an example.
+The same issue exits in H627UW08CGFM too.
 
-thanks,
+>> +                       /* Calc oobsize */
+>> +                       switch (extid&  0x03) {
+> The table actually includes a third column (bit 6) that corresponds
+> with the OOB field that, in future revs could have an expanded OOB
+> size. Personally, I wrote this condition as:
+>
+> +               switch (((extid>>  2)&  0x04) | (extid&  0x03)) {
+yes, we can add this.
+> That way, we can catch the "default" case as an unknown OOB size.
+>
+>> +                       default:
+>> +                               pr_info("Cannot parse out the oobsize.\n");
+>> +                               break;
+>> +                       }
+> I'm not sure if we should just print a message for the default case;
+> the warning message could easily be missed, and the uninitialized
+> oobsize would cause problems. Either we should throw an error somehow
+> or just default to the highest known OOB for this chip type (448
+> bytes). Personally, I just chose the latter...
+ok. I can use the 448 as the default.
+> BTW, I actually have some patches queued up that I need to complete
+> properly, where I'm trying to clean up and update NAND detection a
+> little. So I basically have this same patch, but rebased on top of
+> some other changes I have ready... I don't mind taking a revised
+> version of yours, or I can try to clean up my series and send it out
+> soon.
+>
+I hope you send it out as soon as possible. :)
 
-Mimi
+> Either way, please remember to copy me on these type of NAND detection
+> patches! I've been studying this for a while and have a lot of stuff
+> queued up to work on sometime, so it's nice to know when others are
+> touching these areas.
+ok, no problem.
 
-> >>       d_instantiate(dentry, inode);
-> >>       return 0;
-> >>
-> >> @@ -753,6 +765,17 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
-> >>       mutex_unlock(&dir_ui->ui_mutex);
-> >>
-> >>       ubifs_release_budget(c, &req);
-> >> +
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +
-> >> +     err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >> +     if (err) {
-> >> +             ubifs_err("cannot initialize extended attribute, error %d",
-> >> +                       err);
-> >> +             goto out_cancel;
-> >> +     }
-> >> +
-> >> +#endif
-> >>       d_instantiate(dentry, inode);
-> >>       return 0;
-> >>
-> >> @@ -830,6 +853,18 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
-> >>
-> >>       ubifs_release_budget(c, &req);
-> >>       insert_inode_hash(inode);
-> >> +
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +
-> >> +     err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >> +     if (err) {
-> >> +             ubifs_err("cannot initialize extended attribute, error %d",
-> >> +                       err);
-> >> +             goto out_cancel;
-> >> +     }
-> >> +
-> >> +#endif
-> >> +
-> >>       d_instantiate(dentry, inode);
-> >>       return 0;
-> >>
-> >> @@ -906,6 +941,18 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
-> >>
-> >>       ubifs_release_budget(c, &req);
-> >>       insert_inode_hash(inode);
-> >> +
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +
-> >> +     err = ubifs_init_security(dir, inode, &dentry->d_name);
-> >> +     if (err) {
-> >> +             ubifs_err("cannot initialize extended attribute, error %d",
-> >> +                       err);
-> >> +             goto out_cancel;
-> >> +     }
-> >> +
-> >> +#endif
-> >> +
-> >>       d_instantiate(dentry, inode);
-> >>       return 0;
-> >>
-> >> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> >> index 5c8f6dc..b8e9d66 100644
-> >> --- a/fs/ubifs/file.c
-> >> +++ b/fs/ubifs/file.c
-> >> @@ -1575,6 +1575,12 @@ const struct inode_operations ubifs_symlink_inode_operations = {
-> >>       .follow_link = ubifs_follow_link,
-> >>       .setattr     = ubifs_setattr,
-> >>       .getattr     = ubifs_getattr,
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +     .setxattr    = ubifs_symlink_setxattr,
-> >> +     .getxattr    = ubifs_symlink_getxattr,
-> >> +     .listxattr   = ubifs_listxattr,
-> >> +     .removexattr = ubifs_removexattr,
-> >> +#endif
-> >>  };
-> >>
-> >>  const struct file_operations ubifs_file_operations = {
-> >> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> >> index 2f438ab..725dc17 100644
-> >> --- a/fs/ubifs/journal.c
-> >> +++ b/fs/ubifs/journal.c
-> >> @@ -553,7 +553,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
-> >>
-> >>       dbg_jnl("ino %lu, dent '%.*s', data len %d in dir ino %lu",
-> >>               inode->i_ino, nm->len, nm->name, ui->data_len, dir->i_ino);
-> >> -     ubifs_assert(dir_ui->data_len == 0);
-> >> +     if (!xent)
-> >> +             ubifs_assert(dir_ui->data_len == 0);
-> >>       ubifs_assert(mutex_is_locked(&dir_ui->ui_mutex));
-> >>
-> >>       dlen = UBIFS_DENT_NODE_SZ + nm->len + 1;
-> >> @@ -572,7 +573,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
-> >>
-> >>       aligned_dlen = ALIGN(dlen, 8);
-> >>       aligned_ilen = ALIGN(ilen, 8);
-> >> -     len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
-> >> +     /* Make sure to account for dir_ui+data_len in length calculation
-> >> +      * in case there is extended attribute.
-> >> +      */
-> >> +     len = aligned_dlen + aligned_ilen +
-> >> +           UBIFS_INO_NODE_SZ + dir_ui->data_len;
-> >>       dent = kmalloc(len, GFP_NOFS);
-> >>       if (!dent)
-> >>               return -ENOMEM;
-> >> @@ -649,7 +654,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
-> >>
-> >>       ino_key_init(c, &ino_key, dir->i_ino);
-> >>       ino_offs += aligned_ilen;
-> >> -     err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, UBIFS_INO_NODE_SZ);
-> >> +     err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs,
-> >> +                         UBIFS_INO_NODE_SZ + dir_ui->data_len);
-> >>       if (err)
-> >>               goto out_ro;
-> >>
-> >> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> >> index 76e4e05..c28ac04 100644
-> >> --- a/fs/ubifs/super.c
-> >> +++ b/fs/ubifs/super.c
-> >> @@ -2061,6 +2061,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
-> >>       if (c->max_inode_sz > MAX_LFS_FILESIZE)
-> >>               sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
-> >>       sb->s_op = &ubifs_super_operations;
-> >> +#ifdef CONFIG_UBIFS_FS_XATTR
-> >> +     sb->s_xattr = ubifs_xattr_handlers;
-> >> +#endif
-> >>
-> >>       mutex_lock(&c->umount_mutex);
-> >>       err = mount_ubifs(c);
-> >> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> >> index 93d59ac..60b57f7 100644
-> >> --- a/fs/ubifs/ubifs.h
-> >> +++ b/fs/ubifs/ubifs.h
-> >> @@ -36,6 +36,7 @@
-> >>  #include <linux/mtd/ubi.h>
-> >>  #include <linux/pagemap.h>
-> >>  #include <linux/backing-dev.h>
-> >> +#include <linux/security.h>
-> >>  #include "ubifs-media.h"
-> >>
-> >>  /* Version of this UBIFS implementation */
-> >> @@ -1454,6 +1455,7 @@ extern spinlock_t ubifs_infos_lock;
-> >>  extern atomic_long_t ubifs_clean_zn_cnt;
-> >>  extern struct kmem_cache *ubifs_inode_slab;
-> >>  extern const struct super_operations ubifs_super_operations;
-> >> +extern const struct xattr_handler *ubifs_xattr_handlers[];
-> >>  extern const struct address_space_operations ubifs_file_address_operations;
-> >>  extern const struct file_operations ubifs_file_operations;
-> >>  extern const struct inode_operations ubifs_file_inode_operations;
-> >> @@ -1736,10 +1738,17 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
-> >>                 struct kstat *stat);
-> >>
-> >>  /* xattr.c */
-> >> +
-> >>  int ubifs_setxattr(struct dentry *dentry, const char *name,
-> >>                  const void *value, size_t size, int flags);
-> >> +int ubifs_init_security(struct inode *dentry, struct inode *inode,
-> >> +                     const struct qstr *qstr);
-> >> +int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
-> >> +                        const void *value, size_t size, int flags);
-> >>  ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
-> >>                      size_t size);
-> >> +ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
-> >> +                            void *buf, size_t size);
-> >>  ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
-> >>  int ubifs_removexattr(struct dentry *dentry, const char *name);
-> >>
-> >> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-> >> index 85b2722..c8be7cd 100644
-> >> --- a/fs/ubifs/xattr.c
-> >> +++ b/fs/ubifs/xattr.c
-> >> @@ -209,11 +209,11 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
-> >>               goto out_free;
-> >>       }
-> >>       inode->i_size = ui->ui_size = size;
-> >> -     ui->data_len = size;
-> >>
-> >>       mutex_lock(&host_ui->ui_mutex);
-> >>       host->i_ctime = ubifs_current_time(host);
-> >>       host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
-> >> +     ui->data_len = size;
-> >>       host_ui->xattr_size += CALC_XATTR_BYTES(size);
-> >>
-> >>       /*
-> >> @@ -293,18 +293,16 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
-> >>       return ERR_PTR(-EINVAL);
-> >>  }
-> >>
-> >> -int ubifs_setxattr(struct dentry *dentry, const char *name,
-> >> -                const void *value, size_t size, int flags)
-> >> +static int __ubifs_setxattr(struct inode *host, const char *name,
-> >> +                         const void *value, size_t size, int flags)
-> >>  {
-> >> -     struct inode *inode, *host = dentry->d_inode;
-> >> +     struct inode *inode;
-> >>       struct ubifs_info *c = host->i_sb->s_fs_info;
-> >>       struct qstr nm = { .name = name, .len = strlen(name) };
-> >>       struct ubifs_dent_node *xent;
-> >>       union ubifs_key key;
-> >>       int err, type;
-> >>
-> >> -     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
-> >> -             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >>       ubifs_assert(mutex_is_locked(&host->i_mutex));
-> >>
-> >>       if (size > UBIFS_MAX_INO_DATA)
-> >> @@ -356,10 +354,29 @@ out_free:
-> >>       return err;
-> >>  }
-> >>
-> >> -ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
-> >> -                    size_t size)
-> >> +int ubifs_symlink_setxattr(struct dentry *dentry, const char *name,
-> >> +                        const void *value, size_t size, int flags)
-> >>  {
-> >> -     struct inode *inode, *host = dentry->d_inode;
-> >> +     struct inode *host = dentry->d_inode;
-> >> +     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
-> >> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >> +     return __ubifs_setxattr(host, name, value, size, flags);
-> >> +}
-> >> +
-> >> +int ubifs_setxattr(struct dentry *dentry, const char *name,
-> >> +                const void *value, size_t size, int flags)
-> >> +{
-> >> +     struct inode *host = dentry->d_inode;
-> >> +     dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
-> >> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >> +     return __ubifs_setxattr(host, name, value, size, flags);
-> >> +}
-> >> +
-> >> +static
-> >> +ssize_t __ubifs_getxattr(struct inode *host, const char *name, void *buf,
-> >> +                      size_t size)
-> >> +{
-> >> +     struct inode *inode;
-> >>       struct ubifs_info *c = host->i_sb->s_fs_info;
-> >>       struct qstr nm = { .name = name, .len = strlen(name) };
-> >>       struct ubifs_inode *ui;
-> >> @@ -367,8 +384,8 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
-> >>       union ubifs_key key;
-> >>       int err;
-> >>
-> >> -     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
-> >> -             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >> +     dbg_gen("xattr '%s', ino %lu  buf size %zd", name,
-> >> +             host->i_ino, size);
-> >>
-> >>       err = check_namespace(&nm);
-> >>       if (err < 0)
-> >> @@ -416,6 +433,25 @@ out_unlock:
-> >>       return err;
-> >>  }
-> >>
-> >> +ssize_t ubifs_symlink_getxattr(struct dentry *dentry, const char *name,
-> >> +                            void *buf, size_t size)
-> >> +{
-> >> +     struct inode *host = dentry->d_inode;
-> >> +     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
-> >> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >> +     return __ubifs_getxattr(host, name, buf, size);
-> >> +}
-> >> +
-> >> +ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
-> >> +                    size_t size)
-> >> +{
-> >> +     struct inode *host = dentry->d_inode;
-> >> +     dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
-> >> +             host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
-> >> +     return __ubifs_getxattr(host, name, buf, size);
-> >> +}
-> >> +
-> >> +
-> >>  ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
-> >>  {
-> >>       union ubifs_key key;
-> >> @@ -568,3 +604,92 @@ out_free:
-> >>       kfree(xent);
-> >>       return err;
-> >>  }
-> >> +
-> >> +size_t
-> >> +ubifs_security_listxattr(struct dentry *d, char *list, size_t list_size,
-> >> +                      const char *name, size_t name_len, int flags)
-> >> +{
-> >> +     const int prefix_len = XATTR_SECURITY_PREFIX_LEN;
-> >> +     const size_t total_len = prefix_len + name_len + 1;
-> >> +     if (list && total_len <= list_size) {
-> >> +             memcpy(list, XATTR_SECURITY_PREFIX, prefix_len);
-> >> +             memcpy(list+prefix_len, name, name_len);
-> >> +             list[prefix_len + name_len] = '\0';
-> >> +     }
-> >> +     return total_len;
-> >> +}
-> >> +
-> >> +
-> >> +int ubifs_security_getxattr(struct dentry *d, const char *name,
-> >> +                         void *buffer, size_t size, int flags)
-> >> +{
-> >> +     if (strcmp(name, "") == 0)
-> >> +             return -EINVAL;
-> >> +     return __ubifs_getxattr(d->d_inode, name, buffer, size);
-> >> +}
-> >> +
-> >> +
-> >> +int ubifs_security_setxattr(struct dentry *d, const char *name,
-> >> +                         const void *value, size_t size,
-> >> +                         int flags, int handler_flags)
-> >> +{
-> >> +     if (strcmp(name, "") == 0)
-> >> +             return -EINVAL;
-> >> +     return __ubifs_setxattr(d->d_inode, name, value,
-> >> +                             size, flags);
-> >> +}
-> >> +
-> >> +struct xattr_handler ubifs_xattr_security_handler = {
-> >> +     .prefix = XATTR_SECURITY_PREFIX,
-> >> +     .list   = ubifs_security_listxattr,
-> >> +     .get    = ubifs_security_getxattr,
-> >> +     .set    = ubifs_security_setxattr,
-> >> +};
-> >> +
-> >> +const struct xattr_handler *ubifs_xattr_handlers[] = {
-> >> +     &ubifs_xattr_security_handler,
-> >> +     NULL
-> >> +};
-> >> +
-> >> +static int ubifs_initxattrs(struct inode *inode,
-> >> +                         const struct xattr *xattr_array, void *fs_info)
-> >> +{
-> >> +     const struct xattr *xattr;
-> >> +     char *name;
-> >> +     int err = 0;
-> >> +
-> >> +     for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-> >> +             name = kmalloc(XATTR_SECURITY_PREFIX_LEN +
-> >> +                            strlen(xattr->name) + 1, GFP_NOFS);
-> >> +             if (!name) {
-> >> +                     err = -ENOMEM;
-> >> +                     break;
-> >> +             }
-> >> +             strcpy(name, XATTR_SECURITY_PREFIX);
-> >> +             strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
-> >> +
-> >> +             err = __ubifs_setxattr(inode, xattr->name, xattr->value,
-> >> +                            xattr->value_len, 0);
-> >> +             kfree(name);
-> >> +             if (err < 0)
-> >> +                     break;
-> >> +     }
-> >> +     return err;
-> >> +}
-> >> +
-> >> +int
-> >> +ubifs_init_security(struct inode *dentry, struct inode *inode,
-> >> +                const struct qstr *qstr)
-> >> +{
-> >> +     struct ubifs_inode *dir_ui = ubifs_inode(inode);
-> >> +     int err = 0;
-> >> +
-> >> +     mutex_lock(&dir_ui->ui_mutex);
-> >> +     mutex_lock(&inode->i_mutex);
-> >> +
-> >> +     err = security_inode_init_security(inode, dentry, qstr,
-> >> +                                        &ubifs_initxattrs, 0);
-> >> +     mutex_unlock(&inode->i_mutex);
-> >> +     mutex_unlock(&dir_ui->ui_mutex);
-> >> +     return err;
-> >> +}
-> >
-> >
-> 
+thanks
+Huang Shijie
