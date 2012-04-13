@@ -1,20 +1,26 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIkHI-0005Yg-MO
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 17:27:21 +0000
-Message-ID: <1334338208.13160.25.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Fri, 13 Apr 2012 20:30:08 +0300
-In-Reply-To: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
-References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-e3IfoLJnORXvzm9tKc5r"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIl4U-0008U0-RZ
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 18:18:11 +0000
+Message-ID: <4F886DDB.20003@newsguy.com>
+Date: Fri, 13 Apr 2012 11:18:03 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
+References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
+ <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
+ <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
+ <4F765873.6090209@newsguy.com> <20120331093752.341037b4@halley>
+ <4F79D668.9090903@newsguy.com>
+ <20120403114818.1cea9f2b@pixies.home.jungo.com>
+ <1334332456.13160.1.camel@sauron.fi.intel.com>
+In-Reply-To: <1334332456.13160.1.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sorry Shmulik, I didn't get your post again.  (Why?? I get a blizzard of emails
+from various lists, but seem to lose the important ones!)
 
---=-e3IfoLJnORXvzm9tKc5r
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 04/13/2012 08:54 AM, Artem Bityutskiy wrote:
+> On Tue, 2012-04-03 at 11:48 +0300, Shmulik Ladkani wrote:
+>> Anyway, looking on it in a broader perspective, can you please state
+>> use-case examples where one might set different thresholds for
+>> different
+>> partitions of same device?
+>> I mean, do we really need that granularity?
+> 
+> Current MTD partitions support is very simple and makes it difficult to
+> distinguished between partitions and not partitions.
 
-On Mon, 2012-04-09 at 13:19 +0200, Robert Jarzmik wrote:
-> Corner case reads do not work, and return false data and
-> ECC. This case is typically seen in a ubifs usage, with a
-> read of type:
->  - docg3 docg3: doc_read_oob(from=3D14882415, mode=3D1,
->  data=3D(c30eca40:12), oob=3D(  (null):0))
->=20
-> This results in the following reads:
->  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D111)
->  - docg3 docg3: doc_read_data_area(buf=3Dc30eca40, len=3D12)
->  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D389)
->  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D0)
->  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D16)
+Yes, the way the mtd code is structured, I think going through the partitions is
+the correct way for the sake of cleanliness alone.
 
-I usually go my e-mails bottom-up, but since you pinged me I jumped at
-your patch right away. Pushed to l2-mtd.git, thanks!
+BTW, I haven't forgotten this.  I hope to have patches ready in a couple days.
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-e3IfoLJnORXvzm9tKc5r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPiGKgAAoJECmIfjd9wqK01YwP/1cL9tvBd/ElOAOHKe5mbcq7
-wNioHbhuyrtxRtnxNMiI4nDYjCE+CMZ28rf0lYg1M7dSznbx+ou7wJbjADc6tQil
-UK5Jq7gS3ZVvM299iAQX3roRcOH1iZuU07HBV3E16APmz9hu7sqUpm9frKcMn5sX
-cSLSOlVHiBVEIi0T0OYeJ6LaLBrtVrnhFebzg5fl+159dp2InxuvLEvOoQ+6hkZx
-ZRsQVO4uNAg244X4tl7BUc30+tjZDn6eIaelSIoffJ2PbY4ye++uIPorwObj8rCe
-VSdDsrBn+7/TNf0mRhv7/gCULo710QUNGeu2abH55MGTEdxkJoo6zLbmMXlfCSAJ
-jlKHvyRgFlAPI2Zizw13/QKeUgibpgztO9lQ+N4driXi+I5KAmFRw6WBLaCAtd8L
-wsgVgDWN0Rp5S6sWq/qpM96z5OqW7iPn/jkM6xlzkQQA5QDPvstuNcJ8s5g6Tk69
-uZzhWrsLvqtKfgtySMoY2WZEfwrAQJc4D9mJvDZxC+rqdIrnFrogYca2GefbSBPK
-vJt1Pu1x52sCr+lgctLNltThTiM0RdQfsdsXxIRwpqV0MkXOcF728xnJFJQMvTBC
-CGv+Z31gsMz9y/AV4vlvADYsj2LmiD3eWUQ1V5RbkiwaiPbnjww+QsLeI1S2MnIQ
-UfTI6PwgUvrWOz1SA9aq
-=NKRL
------END PGP SIGNATURE-----
-
---=-e3IfoLJnORXvzm9tKc5r--
+Thanks,
+Mike
