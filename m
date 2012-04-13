@@ -1,16 +1,20 @@
-Message-ID: <1334333373.13160.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd/gpmi : do not include the mxs.h
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIj2p-0005gQ-Ju
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 16:08:21 +0000
+Message-ID: <1334333478.13160.5.camel@sauron.fi.intel.com>
+Subject: Re: [patch] UBIFS: remove douple initialization in change_category()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Fri, 13 Apr 2012 19:09:33 +0300
-In-Reply-To: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
-References: <1333247817-18472-1-git-send-email-shijie8@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Fri, 13 Apr 2012 19:11:18 +0300
+In-Reply-To: <20120401155759.GA21238@elgon.mountain>
+References: <20120401155759.GA21238@elgon.mountain>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-v1Le70Zrq51dlcviCLfY"
+ boundary="=-tX2aOYZVOl9XV4wr8gqB"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, w.sang@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,23 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-v1Le70Zrq51dlcviCLfY
+--=-tX2aOYZVOl9XV4wr8gqB
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-03-31 at 22:36 -0400, Huang Shijie wrote:
-> The mxs.h does not exit in the mx6q.
-> So rewrite the __mxs_clrl()/__mxs_setl() and remove the mxs.h.
+On Sun, 2012-04-01 at 18:57 +0300, Dan Carpenter wrote:
+> "heap" is initialized twice.  I removed the first one, because it makes
+> Smatch complain that we use "new_cat" as an offset before checking it.
 >=20
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> This doesn't change how the code works, it's just a cleanup.
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Pushed  to l2-mtd.git, thanks!
+Pushed to linux-ubifs.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-v1Le70Zrq51dlcviCLfY
+--=-tX2aOYZVOl9XV4wr8gqB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPiE+9AAoJECmIfjd9wqK0SPAQAIkkOvwGVEpNSZL1km96wYF6
-20g0Qd2ISE956SrbbGpQc3EvxRQ02nxFQWvCYFXvdcd5o6Pw4sC+D2I9mLm44wQw
-qZBDa5mfklN/toSK7MHIJFZqIBNtQcf9UgVSeo91XWPbgrr9OKWQiyGzd0Scp3DG
-4u0inFIfAHs0e/aJY4Tltsz/LUnswIqkzPfAfRb3zw29c2wvP1CXK8yYngA9ZDtu
-wOgNEVJ5pRbuZGbnDvijuOsbljTxkV4tEPklWpsRjI0+t2lo9ZYgncsJgNEG2Ozd
-IbXIsfrLWHKM9E+Px3uwf/+9FkXCooGgcDCSy3XgxRAC43/QCljlqBUYG/hASMcx
-38l5ZcuPOO9lFea5x4u73naEd5JM6fjDw0Zm00hijyfSxsAQFgUC4Zoj4DZ+nl6n
-FzsIChZXPcAk0bmr61qt9lUs3QOBFVy4Vlg2hDbaGMnShP1jPbVA+KrjrFlF1hIz
-YWUy6J8XY2DcUUP0V0KnZsVgYxYrj//kJk1Fy0F2pSs3jlRsr769ml0jvliHp486
-CvaPlY4cWxKQMwIi8sRHLc+3dTtqaOXiHPE4C928aYF5LAmC+BZxz2nGxDboJPkD
-qbi/cbYlvwNoqkWvEYmDZK/tBvkUwIMdYDWWNOIwwv8RPxFLQ+h/1duI5YPWojdG
-/BVgzhvtXOQ6AzDHPw6K
-=452J
+iQIcBAABAgAGBQJPiFAmAAoJECmIfjd9wqK0ULAQAL2L0cmWRfm7sD+pabef5GTE
+wsEirMZhUexxw8n/lgxR6sIi/CAZlkXyUE7y5Mfr6kTnAbsbMt4Jl61uMrZhiQG9
+TYnalXfd3OPPJute8Cj3D9AXuMLzfrmOLtaMTLMUuE9TystYqVmN96AHFWsXYFUl
+sYkdw28iba3FZp5Y+66d3JtAbkgIDG9dJCJ5M2NDnVzl3DoURxbSSbJcNmb5J3c/
+MuUr9iE9EjwKaxPKaQ5xFtg8pbPb/GZD30hrOGFZhvhqGufZV+45ho7QUIH8ZmLo
+yJzGSxRjxwnxrR+/kGE15EUCIOZ5Af9xwkJEecruJOK4eHxjteA3zRuiDohJasnB
+jj86riPtEYHA3fM+EKLC/KeVAH+EFlUebR/QQAQ9kTRMCwqR5eA3O1VGRqdGEtqP
+JvsyrAI68WrSsMoZ15v12wxEytPjFnj5Kfukw5GYJ+CGBVLCmeJYCrgDbJk+Fvxx
+c7Zt10jB0WhQnB9ovFvIrOxqJdj1q2g4zGdOOFAXu2qn0xEucFFPxQ5MnLdF5qLM
+doEJCoh3RXnUeWeF+WyK/DstX6Kt55y6/EpbdC5vkSVqCgnfyB/ut10DCRMc7kLB
+y/wvrasTR8lvkz890TZnLFXgiGD/LKNEYgUWnFnHtiBvl9XGsQtGe6qrSX7jaNr8
+m+BmQIe6ZQk6ZJNqFAkZ
+=8oZn
 -----END PGP SIGNATURE-----
 
---=-v1Le70Zrq51dlcviCLfY--
+--=-tX2aOYZVOl9XV4wr8gqB--
