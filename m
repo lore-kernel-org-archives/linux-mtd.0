@@ -1,17 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIk4f-0004K5-Bo
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 17:14:17 +0000
-Message-ID: <1334337435.13160.22.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH mtd-www] UBI FAQ: suggest omission of vol_size option
+ id 1SIkHF-0005YA-2Y
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 17:27:17 +0000
+Message-ID: <1334338211.13160.26.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Drake <dsd@laptop.org>
-Date: Fri, 13 Apr 2012 20:17:15 +0300
-In-Reply-To: <20120404212706.970C69D401E@zog.reactivated.net>
-References: <20120404212706.970C69D401E@zog.reactivated.net>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Fri, 13 Apr 2012 20:30:11 +0300
+In-Reply-To: <87r4vsg3ps.fsf@free.fr>
+References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+ <87r4vsg3ps.fsf@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zESxkQUakGBsz1uRTtEA"
+ boundary="=-QRVuWNEVde0+8TTmkpO6"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,29 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zESxkQUakGBsz1uRTtEA
+--=-QRVuWNEVde0+8TTmkpO6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-04-04 at 22:27 +0100, Daniel Drake wrote:
-> OLPC set vol_size based on the size of the target NAND and found out
-> that it resulted in some systems being unbootable, where such systems
-> had a lot of bad blocks on their flash.
+On Thu, 2012-04-12 at 21:17 +0200, Robert Jarzmik wrote:
+> Hi Artem,
 >=20
-> For distributors such as OLPC wishing to maximize robustness in the
-> face of varying bad block counts, it makes a lot of sense to avoid
-> the vol_size option and let it be calculated automatically.
-> Document this.
->=20
-> Signed-off-by: Daniel Drake <dsd@laptop.org>
+> Any chance this fix makes it into 3.4-rcN ?
 
-Pushed both to mtd-www, thanks a lot!
+Hmm, not sure about 3.4-rcN - it is up to him. But I'll try to ping him,
+although I am going to be away for few weeks soon, so no guarantees.
+Better ping him yourself.
+
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zESxkQUakGBsz1uRTtEA
+--=-QRVuWNEVde0+8TTmkpO6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPiF+bAAoJECmIfjd9wqK0+JcQAIfHjF+2i5IEBfOarskHZqcU
-Cpret60VBMZHSmkWCppe9nHDGwUQ52gVwDo8kmngMdaMyeiAeUe0w2Nm7+Qmlv81
-7yNh9WnEiVo64GUjuR+V/ztzIyeiNFODPOkCfdpYWngQ8G5FV2ZWgxQZvBTak6/d
-sOVWXGfjNfY166JrKLIBqR1y4Rh/iagyUQ1A7sxdOBq4Evy3Ik/Sj/RZiRN4fGWp
-ZX7+YFERqc5HEuKW7nVxlhbaN4WVExtOpx9XAHBv4/qrk/9R9EQ69kjfkfxthN0u
-kScxAEli+DKjvkVLm1dppTXkuPCKdD9hEHJb1tlsJPDSZDUcgmxtHx/1+zUocj7A
-kOOs4bRsXoFt+ZE1I9HsrC/uWotnA1NDTBNI8nCe/68upFGMjWp8jdR9gMhV1hrN
-gxOTcIwduauO+rlSyTfyeMD6c0Ft1ZyGvLef8udForBIPyl71GznYsVW91NUlOE9
-Dzdibj7h/h8C8mOocUb9oJMweRqeeMSkosLvpP4Bcm5QNQmHty9scijFs9Yq45dO
-JhoO3Gf/y1lmz0w0Sktnace3FcxSFHm9pq4DIANPtTC6geDdOgI7q2gabjS7bZAD
-Iqq6wBpq3XYOLiSbgoGdd2i4ckOR4MnZ2Easoa6LLEKXuT95KCBFdYALhjk5M1Gu
-qqlorB0j10bMG8pEX/am
-=bnYv
+iQIcBAABAgAGBQJPiGKjAAoJECmIfjd9wqK0h1UP/13oocWKmfIXbwmhttNknIfI
+rc9AFDBHkw6541Q56HtzXXNDZlvyxHc25zUT8IVeCciNeVnKpNSqYPj02ufrCdP+
+Bzxakz1lE+uFOEGyVzAVqs7n2yJ7bW2TV+ag+UxHAf8fRJhZ02Gy/Lxa8Ly5nxWn
+GVJBakGxDbsqlEk6RCy7AKeLDiiXkvANHgtAGbDFzyTd3HvQ23o0bVyHdzD4oF7p
+eCbNWxPKxIWD182D6oBXFbEjcMwNOrx7iyjnZzXXgBf7tf54B949JWz4GiMQa85N
+FFCyN0T6mo9LTzyMcp8XvWentvK6cFFiQLO7pGcfIGNtDfBpAiztg2ZNWUmHW/1u
+Mmqs5YUMfTMrPhd8SP0otcpwglnVI3wfOPHpPEY2T1T8e8RMCp7e6bt2+Y8NSqPM
+h8f2DNgojcebnUAF0F4nztSI0FfF6ELvFkNsqw8ajJwinv+o/AHpFK9GAtoMLSGo
+qP2RH5j3sbD1vaYXRwrp2nm+idW5z36FM0cQWG+G9YjeqABh1EfaMf+QkNXDOPdx
+kbKIuhQ5N4UnXptpWTHJ8WOx8byeHlCrxsKT8lQA25BYUBqs5ThNxBcn/itDznuM
+PgKXbHuMFWZ1opqBLevcOsVBI0vo5tG2M9EvfNMKEJc92/KineydcRbPOc7CkUMW
+mPm50x/sdCCorbeDnpNB
+=+FFm
 -----END PGP SIGNATURE-----
 
---=-zESxkQUakGBsz1uRTtEA--
+--=-QRVuWNEVde0+8TTmkpO6--
