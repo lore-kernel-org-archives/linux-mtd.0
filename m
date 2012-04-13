@@ -1,19 +1,26 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIjnA-0003ME-Ed
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 16:56:13 +0000
-Message-ID: <1334336350.13160.16.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS recovery fail after power-cut
+ id 1SIjpe-0003UC-Li
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 16:58:47 +0000
+Message-ID: <1334336505.13160.19.camel@sauron.fi.intel.com>
+Subject: RE: Unstable bits and JFFS2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: b w <wdjjwb@gmail.com>
-Date: Fri, 13 Apr 2012 19:59:10 +0300
-In-Reply-To: <CAHvCehVNgTgL+vY8SV1APN_xokogCM=Q+c7U1X9-_H1jn47Dpg@mail.gmail.com>
-References: <CAHvCehVNgTgL+vY8SV1APN_xokogCM=Q+c7U1X9-_H1jn47Dpg@mail.gmail.com>
+To: Atlant Schmidt <aschmidt@dekaresearch.com>
+Date: Fri, 13 Apr 2012 20:01:45 +0300
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD3351F9CADBE@dekaexchange07.deka.local>
+References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
+ <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
+ <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CAD87@dekaexchange07.deka.local>
+ <1334334462.13160.10.camel@sauron.fi.intel.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CADBE@dekaexchange07.deka.local>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3/HCdKruM+IvAf/wNBaX"
+ boundary="=-UDDrcLZ1gTDvKVmIGNmK"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: 'Matej Kupljen' <matej.kupljen@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,53 +32,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3/HCdKruM+IvAf/wNBaX
+--=-UDDrcLZ1gTDvKVmIGNmK
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-04-04 at 20:09 +0800, b w wrote:
-> Hello list,
->         Using kernel 2.6.32 (which have already apply the latest UBIFS
-> and UBI patches),nor flash.
-> UBIFS mount fail fail after an power cut due to recovery . Recovery
-> failed because after power cut ,the flash image is like this:
-> 02ab3eb0h: 00 00 00 00 00 00 00 00 00 E6 0C 00 11 00 00 00
-> 02ab3ec0h: 31 18 10 06 04 80 DE AF FF FF FF FF FF FF FF FF
-> 02ab3ed0h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-> 02ab3ee0h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-> 02ab3ef0h: 05 89 AB CD EF 89 AB CD EF 20 00 00 00 00 00 00
-> 02ab3f00h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-> First,when ubifs_recover_leb call ubifs_scan_a_node,and found that in
-> 0x02ab3ec8h
-> had a bad node type,so ubifs_scan_a_node return SCANNED_A_CORRUPT_NODE.
+On Fri, 2012-04-13 at 12:40 -0400, Atlant Schmidt wrote:
+> Artem:
+>=20
+> > Yeah, thanks for correcting. Yeah, read/write-disturb may make bits
+> > to become unstable, but we assume this is a slow process which will
+> > gradually make more and more bits flip and ECC will take care of
+> > that. So I think Matej can exclude this.
+>=20
+>   Unfortunately, ECC can only fix those PEBs that
+>   are actually read. If one of the PEBs in your
+>   filesystem is being used entirely to contain
+>   obscure data that only gets read once in a
+>   blue moon (i.e., very rarely), then multiple
+>   read-/write-disturbs can hit accumulate in
+>   that PEB and when it is finally read, it may
+>   already contains too many errors to be
+>   corrected by the ECC.
+>=20
+>   We've seen this exact scenario occur with the
+>   current UBI/UBIfs and will be implementing a
+>   userland "scrubbing" system to ensure that
+>   every PEB gets read at least once in a while
+>   (e.g., weekly or whatever interval seems right).
 
-OK.
+This is right, people should have a user-space app which periodically
+reads all /dev/ubiX_Y. Care to send a patch against mtd-www with some
+explantion of this issue and extend the unstable bits issue?
 
-> Then in ubifs_recover_leb,when call no_more_nodes this function return
-> 0 (which i think
-> should be return 1).At last recovery failed,so mount failed too.
-
-We have this code in that function:
-
-        /* Check for empty space after the corrupt node's common header */
-        skip =3D ALIGN(offs + UBIFS_CH_SZ, c->max_write_size) - offs;
-        if (is_empty(buf + skip, len - skip))
-                return 1;
-
-
-UBIFS_CH_SZ is 64, c->max_write_size is 64, then ALIGN(offs +
-UBIFS_CH_SZ, c->max_write_size) should be 0x2ab3f40, which points to the
-area with all 0xFFs, so 'is_empty' should return 1.
-
-Did you check that your c->max_write_size is 64?
-
-Preserve the image for investigations.
+But in Matej's case I do not believe he is testing long enough to hit
+this scenario. But everything is possible of course.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3/HCdKruM+IvAf/wNBaX
+--=-UDDrcLZ1gTDvKVmIGNmK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -79,19 +79,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPiFteAAoJECmIfjd9wqK04EgP/3snM58kNgX+VSqPDm7zyhos
-jZJEkVTs/wx8ygO2RlAth57s+DylG50ljCGIyaNXFd6474msomKKpRv0M0+yZTFz
-yLSyFJo2308f2XRLBQR8Ddfzl7D7XGi8eGmRJQyuAIEmRsfnNEX8kbp+Ya6vKU7R
-NBENAfGfk3/1eGV6eacrcNchkl9dAPF9LKPAS+J3oIzWy4OqsEwaBCZA1CvBa426
-92K5ixPB4ZBGfj7B7MDbPQZqPDjcxSrH1JOjpyIH8toGEAWceD0Ln3U16j2XQ9DU
-as54Ifolp6ZFytcHxAyFNB33Z5BL8XO5MEVD2Jyz3f5wEQolzMYFePH0//RnwFiw
-m1Le4CBLpC9LAyRDrM5iDxFTbzDFO1bLvOgi/ilRqyh1tBjvE7Lld7f61oKLx5Lk
-mHz/d7COZ14tvQqFYu5z7m5wVjMUPc8FTpIwAlNU1qSpC7bMmYJtgGRNzsAHxylT
-5IGSJhci111uOuj+Nyv7hgyBIepjwX1qlRDAUr0Fk+nJpOQxyIH4SwRu1L83M791
-hgBgO/fdMXYHtJaWcSToEQJTmbzjRIh+iQOpRlI1ChOnHeVkkGG/DKDFSME7fYvG
-TCbieEW5un3dqwaGK1eyTNeGONwuWBIJJFCCCQHupFqTUtffvFrbH8pW+7SCwCzU
-ZlEtYcU4t4rb3YxHi1fC
-=cOlg
+iQIcBAABAgAGBQJPiFv5AAoJECmIfjd9wqK0xpQP/2wEX2rCP5yIAxQHXABO6+0o
+zzlYZQq3TyQ+PuYpA+WVpk0NFVF5zXhYWO54eGCyxTXcnTl6Q+ze+UsL+l7gjDfG
+6KU4ZaB1a3+5sCV5hDbeeW3crH2o6O1+OdceA38T30yRj5qCbJyJEkTkfwc8IlQN
+rXf7nI8px69pRir7DS4Bv0Ihsuxqcmh+e2mmIPZ9aQMBjGQ5HlbTzVosr6L6zEeF
+quK8/QgAqG42iSpQ1lmCaYTHGtz1Idkhu9qezrMY0sxoADA/cOnWgf7coGz7WFU6
+k+P8DIv1wZLY5E72ws3Wh8C943HMfVrsODncltG62GXlwnJIP7W2INNXSYbwr+k5
+4MwA4HCwXgGqAfrwcRyEyZoTXekFoSb+Hi0CXxcCailGvuI45DyKL6eqwOS6hjOh
+TQfvtTvVzBKh5HHQjyjAXS5CiDWuH0QL4syz11MDkxU4S66rY1uYDNL1n4UzIUO5
+hKAFTpyFJbhuCOvUR8vzyGokHTViQ/xFvuond/4BulQ5M42DkvRdtGhIX6qHDSLV
+55m/6MpBrRN+oPx7PPmBWTH6G1FoeWr+gvSFb2gJt+yKuMKrdQet6XRrQsOhFWfK
+346ChZD+uADg3o78km2kRs49KK5r4bVrgAcna7GhpVUKYKwRzRwKSOFnAHvIMU5Q
+0AdZv+wSnpvVnbXuSapP
+=3iKP
 -----END PGP SIGNATURE-----
 
---=-3/HCdKruM+IvAf/wNBaX--
+--=-UDDrcLZ1gTDvKVmIGNmK--
