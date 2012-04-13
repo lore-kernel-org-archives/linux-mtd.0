@@ -1,18 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIkHF-0005YA-2Y
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 17:27:17 +0000
-Message-ID: <1334338211.13160.26.camel@sauron.fi.intel.com>
+ id 1SIkHI-0005Yg-MO
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 17:27:21 +0000
+Message-ID: <1334338208.13160.25.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Fri, 13 Apr 2012 20:30:11 +0300
-In-Reply-To: <87r4vsg3ps.fsf@free.fr>
+Date: Fri, 13 Apr 2012 20:30:08 +0300
+In-Reply-To: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
 References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
- <87r4vsg3ps.fsf@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-QRVuWNEVde0+8TTmkpO6"
+ boundary="=-e3IfoLJnORXvzm9tKc5r"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -26,25 +25,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QRVuWNEVde0+8TTmkpO6
+--=-e3IfoLJnORXvzm9tKc5r
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-04-12 at 21:17 +0200, Robert Jarzmik wrote:
-> Hi Artem,
+On Mon, 2012-04-09 at 13:19 +0200, Robert Jarzmik wrote:
+> Corner case reads do not work, and return false data and
+> ECC. This case is typically seen in a ubifs usage, with a
+> read of type:
+>  - docg3 docg3: doc_read_oob(from=3D14882415, mode=3D1,
+>  data=3D(c30eca40:12), oob=3D(  (null):0))
 >=20
-> Any chance this fix makes it into 3.4-rcN ?
+> This results in the following reads:
+>  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D111)
+>  - docg3 docg3: doc_read_data_area(buf=3Dc30eca40, len=3D12)
+>  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D389)
+>  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D0)
+>  - docg3 docg3: doc_read_data_area(buf=3D  (null), len=3D16)
 
-Hmm, not sure about 3.4-rcN - it is up to him. But I'll try to ping him,
-although I am going to be away for few weeks soon, so no guarantees.
-Better ping him yourself.
-
+I usually go my e-mails bottom-up, but since you pinged me I jumped at
+your patch right away. Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QRVuWNEVde0+8TTmkpO6
+--=-e3IfoLJnORXvzm9tKc5r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPiGKjAAoJECmIfjd9wqK0h1UP/13oocWKmfIXbwmhttNknIfI
-rc9AFDBHkw6541Q56HtzXXNDZlvyxHc25zUT8IVeCciNeVnKpNSqYPj02ufrCdP+
-Bzxakz1lE+uFOEGyVzAVqs7n2yJ7bW2TV+ag+UxHAf8fRJhZ02Gy/Lxa8Ly5nxWn
-GVJBakGxDbsqlEk6RCy7AKeLDiiXkvANHgtAGbDFzyTd3HvQ23o0bVyHdzD4oF7p
-eCbNWxPKxIWD182D6oBXFbEjcMwNOrx7iyjnZzXXgBf7tf54B949JWz4GiMQa85N
-FFCyN0T6mo9LTzyMcp8XvWentvK6cFFiQLO7pGcfIGNtDfBpAiztg2ZNWUmHW/1u
-Mmqs5YUMfTMrPhd8SP0otcpwglnVI3wfOPHpPEY2T1T8e8RMCp7e6bt2+Y8NSqPM
-h8f2DNgojcebnUAF0F4nztSI0FfF6ELvFkNsqw8ajJwinv+o/AHpFK9GAtoMLSGo
-qP2RH5j3sbD1vaYXRwrp2nm+idW5z36FM0cQWG+G9YjeqABh1EfaMf+QkNXDOPdx
-kbKIuhQ5N4UnXptpWTHJ8WOx8byeHlCrxsKT8lQA25BYUBqs5ThNxBcn/itDznuM
-PgKXbHuMFWZ1opqBLevcOsVBI0vo5tG2M9EvfNMKEJc92/KineydcRbPOc7CkUMW
-mPm50x/sdCCorbeDnpNB
-=+FFm
+iQIcBAABAgAGBQJPiGKgAAoJECmIfjd9wqK01YwP/1cL9tvBd/ElOAOHKe5mbcq7
+wNioHbhuyrtxRtnxNMiI4nDYjCE+CMZ28rf0lYg1M7dSznbx+ou7wJbjADc6tQil
+UK5Jq7gS3ZVvM299iAQX3roRcOH1iZuU07HBV3E16APmz9hu7sqUpm9frKcMn5sX
+cSLSOlVHiBVEIi0T0OYeJ6LaLBrtVrnhFebzg5fl+159dp2InxuvLEvOoQ+6hkZx
+ZRsQVO4uNAg244X4tl7BUc30+tjZDn6eIaelSIoffJ2PbY4ye++uIPorwObj8rCe
+VSdDsrBn+7/TNf0mRhv7/gCULo710QUNGeu2abH55MGTEdxkJoo6zLbmMXlfCSAJ
+jlKHvyRgFlAPI2Zizw13/QKeUgibpgztO9lQ+N4driXi+I5KAmFRw6WBLaCAtd8L
+wsgVgDWN0Rp5S6sWq/qpM96z5OqW7iPn/jkM6xlzkQQA5QDPvstuNcJ8s5g6Tk69
+uZzhWrsLvqtKfgtySMoY2WZEfwrAQJc4D9mJvDZxC+rqdIrnFrogYca2GefbSBPK
+vJt1Pu1x52sCr+lgctLNltThTiM0RdQfsdsXxIRwpqV0MkXOcF728xnJFJQMvTBC
+CGv+Z31gsMz9y/AV4vlvADYsj2LmiD3eWUQ1V5RbkiwaiPbnjww+QsLeI1S2MnIQ
+UfTI6PwgUvrWOz1SA9aq
+=NKRL
 -----END PGP SIGNATURE-----
 
---=-QRVuWNEVde0+8TTmkpO6--
+--=-e3IfoLJnORXvzm9tKc5r--
