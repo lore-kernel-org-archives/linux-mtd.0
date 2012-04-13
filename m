@@ -1,25 +1,20 @@
-Received: from mail2.spectraaccess.net ([208.65.172.25])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIjY4-000315-I3
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 16:40:37 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Fri, 13 Apr 2012 12:40:30 -0400
-Subject: RE: Unstable bits and JFFS2
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD3351F9CADBE@dekaexchange07.deka.local>
-References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
- <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
- <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CAD87@dekaexchange07.deka.local>
- <1334334462.13160.10.camel@sauron.fi.intel.com>
-In-Reply-To: <1334334462.13160.10.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: 'Matej Kupljen' <matej.kupljen@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIjnA-0003ME-Ed
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 16:56:13 +0000
+Message-ID: <1334336350.13160.16.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS recovery fail after power-cut
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: b w <wdjjwb@gmail.com>
+Date: Fri, 13 Apr 2012 19:59:10 +0300
+In-Reply-To: <CAHvCehVNgTgL+vY8SV1APN_xokogCM=Q+c7U1X9-_H1jn47Dpg@mail.gmail.com>
+References: <CAHvCehVNgTgL+vY8SV1APN_xokogCM=Q+c7U1X9-_H1jn47Dpg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-3/HCdKruM+IvAf/wNBaX"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW06DQoNCj4gWWVhaCwgdGhhbmtzIGZvciBjb3JyZWN0aW5nLiBZZWFoLCByZWFkL3dyaXRl
-LWRpc3R1cmIgbWF5IG1ha2UgYml0cw0KPiB0byBiZWNvbWUgdW5zdGFibGUsIGJ1dCB3ZSBhc3N1
-bWUgdGhpcyBpcyBhIHNsb3cgcHJvY2VzcyB3aGljaCB3aWxsDQo+IGdyYWR1YWxseSBtYWtlIG1v
-cmUgYW5kIG1vcmUgYml0cyBmbGlwIGFuZCBFQ0Mgd2lsbCB0YWtlIGNhcmUgb2YNCj4gdGhhdC4g
-U28gSSB0aGluayBNYXRlaiBjYW4gZXhjbHVkZSB0aGlzLg0KDQogIFVuZm9ydHVuYXRlbHksIEVD
-QyBjYW4gb25seSBmaXggdGhvc2UgUEVCcyB0aGF0DQogIGFyZSBhY3R1YWxseSByZWFkLiBJZiBv
-bmUgb2YgdGhlIFBFQnMgaW4geW91cg0KICBmaWxlc3lzdGVtIGlzIGJlaW5nIHVzZWQgZW50aXJl
-bHkgdG8gY29udGFpbg0KICBvYnNjdXJlIGRhdGEgdGhhdCBvbmx5IGdldHMgcmVhZCBvbmNlIGlu
-IGENCiAgYmx1ZSBtb29uIChpLmUuLCB2ZXJ5IHJhcmVseSksIHRoZW4gbXVsdGlwbGUNCiAgcmVh
-ZC0vd3JpdGUtZGlzdHVyYnMgY2FuIGhpdCBhY2N1bXVsYXRlIGluDQogIHRoYXQgUEVCIGFuZCB3
-aGVuIGl0IGlzIGZpbmFsbHkgcmVhZCwgaXQgbWF5DQogIGFscmVhZHkgY29udGFpbnMgdG9vIG1h
-bnkgZXJyb3JzIHRvIGJlDQogIGNvcnJlY3RlZCBieSB0aGUgRUNDLg0KDQogIFdlJ3ZlIHNlZW4g
-dGhpcyBleGFjdCBzY2VuYXJpbyBvY2N1ciB3aXRoIHRoZQ0KICBjdXJyZW50IFVCSS9VQklmcyBh
-bmQgd2lsbCBiZSBpbXBsZW1lbnRpbmcgYQ0KICB1c2VybGFuZCAic2NydWJiaW5nIiBzeXN0ZW0g
-dG8gZW5zdXJlIHRoYXQNCiAgZXZlcnkgUEVCIGdldHMgcmVhZCBhdCBsZWFzdCBvbmNlIGluIGEg
-d2hpbGUNCiAgKGUuZy4sIHdlZWtseSBvciB3aGF0ZXZlciBpbnRlcnZhbCBzZWVtcyByaWdodCku
-DQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEF0bGFudA0KDQotLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBn
-bWFpbC5jb21dDQpTZW50OiBGcmlkYXksIEFwcmlsIDEzLCAyMDEyIDEyOjI4DQpUbzogQXRsYW50
-IFNjaG1pZHQNCkNjOiAnTWF0ZWogS3VwbGplbic7IEJyaWFuIE5vcnJpczsgbGludXgtbXRkDQpT
-dWJqZWN0OiBSRTogVW5zdGFibGUgYml0cyBhbmQgSkZGUzINCg0KT24gV2VkLCAyMDEyLTA0LTA0
-IGF0IDA2OjU0IC0wNDAwLCBBdGxhbnQgU2NobWlkdCB3cm90ZToNCj4gTWF0ZWo6DQo+DQo+ID4g
-QXJ0ZW0sIHlvdSBzYWlkIHRoYXQgdGhpcyB1bnN0YWJsZSBiaXRzIG9ubHkgaGFwcGVuDQo+ID4g
-ZHVyaW5nIHBvd2VyIGN1dHMsIGlzIHRoaXMgcmlnaHQ/IFdvdWxkIHRob3NlIGFwcGVhcg0KPiA+
-IGFsc28gb24gc2ltdWxhdGVkIHBvd2VyIGN1dHMsIHRoZSBvbmVzIHRoYXQgaW50ZWdjaw0KPiA+
-IGNhbiBwcm9kdWNlPw0KPg0KPiAgIChOb3RlOiBUaGlzIGlzbid0IEFydGVtIHJlcGx5aW5nLikN
-Cj4NCj4gICBVbnN0YWJsZSBiaXRzIGNhbiBoYXBwZW4gYW55dGltZSwgYnV0ICpSRUFMKiBwb3dl
-ci1jdXRzDQo+ICAgd2hpbGUgd3JpdGluZyBhcmUgY2VydGFpbmx5IGEgZ3JlYXQgd2F5IHRvIHBy
-b2R1Y2UgdGhlbTsNCj4gICBhZnRlciBhbGwsIGlmIHlvdSd2ZSBvbmx5IHRyYW5zZmVycmVkIGhh
-bGYgdGhlIGVsZWN0cm9ucw0KPiAgIHRvIHRoZSBmbG9hdGluZyBnYXRlIHdoZW4gcG93ZXIgZ29l
-cyBhd2F5LCB3ZWxsLCB0aGF0DQo+ICAgRmxhc2ggY2VsbCBpcyBub3cgYSByb2xsLW9mLXRoZS1x
-dWFudHVtLWRpY2UgZWFjaCB0aW1lDQo+ICAgeW91IHJlYWQgaXQuDQo+DQo+ICAgU2ltdWxhdGVk
-IHBvd2VyIGN1dHMgKHRoYXQganVzdCBzdG9wIHRoZSBzb2Z0d2FyZQ0KPiAgIHByb2Nlc3Npbmcg
-YXQgYXJiaXRyYXJ5IGFuZCByYW5kb20gcG9pbnRzKSBjYW4ndA0KPiAgIHByb2R1Y2UgdGhpcyBl
-ZmZlY3QuDQo+DQo+ICAgQnV0IGFueSB0aW1lIGEgcmVhZC1kaXN0dXJiIG9yIHdyaXRlLWRpc3R1
-cmIgdGFrZXMgcGxhY2UsDQo+ICAgdGhlcmUncyBzb21lIHByb2JhYmlsaXR5IHRoYXQgYSBGbGFz
-aCBjZWxsIHdpbGwgYmUgbGVmdA0KPiAgIHdpdGggYSAibmVhci10aHJlc2hvbGQiIGNoYXJnZSBv
-biB0aGUgZmxvYXRpbmcgZ2F0ZSwgc28NCj4gICB1bnN0YWJsZSBiaXRzIGFyZSBhIGZhY3Qgb2Yg
-bGlmZSB0aGF0IG11c3QgYmUgZmFjZWQgYnkNCj4gICBhbnkgc29mdHdhcmUgdGhhdCBkcml2ZXMg
-TkFORCBGbGFzaCBtZW1vcnkgY2hpcHMuIFRoaXMNCj4gICBpcywgb2YgY291cnNlLCBlc3BlY2lh
-bGx5IHRydWUgb2YgTUxDIGNoaXBzIGFuZCBldmVuDQo+ICAgbW9yZS10cnVlIGZvciBUTEMgY2hp
-cHMgKHdpdGggdGhyZWUgYml0cyBwZXIgY2VsbCkuDQoNClllYWgsIHRoYW5rcyBmb3IgY29ycmVj
-dGluZy4gWWVhaCwgcmVhZC93cml0ZS1kaXN0dXJiIG1heSBtYWtlIGJpdHMgdG8NCmJlY29tZSB1
-bnN0YWJsZSwgYnV0IHdlIGFzc3VtZSB0aGlzIGlzIGEgc2xvdyBwcm9jZXNzIHdoaWNoIHdpbGwN
-CmdyYWR1YWxseSBtYWtlIG1vcmUgYW5kIG1vcmUgYml0cyBmbGlwIGFuZCBFQ0Mgd2lsbCB0YWtl
-IGNhcmUgb2YgdGhhdC4NClNvIEkgdGhpbmsgTWF0ZWogY2FuIGV4Y2x1ZGUgdGhpcy4NCg0KLS0N
-CkJlc3QgUmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCg0KVGhpcyBlLW1haWwgYW5kIHRoZSBp
-bmZvcm1hdGlvbiwgaW5jbHVkaW5nIGFueSBhdHRhY2htZW50cywgaXQgY29udGFpbnMgYXJlIGlu
-dGVuZGVkIHRvIGJlIGEgY29uZmlkZW50aWFsIGNvbW11bmljYXRpb24gb25seSB0byB0aGUgcGVy
-c29uIG9yIGVudGl0eSB0byB3aG9tIGl0IGlzIGFkZHJlc3NlZCBhbmQgbWF5IGNvbnRhaW4gaW5m
-b3JtYXRpb24gdGhhdCBpcyBwcml2aWxlZ2VkLiBJZiB0aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2Fn
-ZSBpcyBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQg
-dGhhdCBhbnkgZGlzc2VtaW5hdGlvbiwgZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBj
-b21tdW5pY2F0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBoYXZlIHJlY2VpdmVk
-IHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwgcGxlYXNlIGltbWVkaWF0ZWx5IG5vdGlmeSB0
-aGUgc2VuZGVyIGFuZCBkZXN0cm95IHRoZSBvcmlnaW5hbCBtZXNzYWdlLg0KDQpUaGFuayB5b3Uu
-DQoNClBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMg
-ZW1haWwuDQo=
+
+--=-3/HCdKruM+IvAf/wNBaX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2012-04-04 at 20:09 +0800, b w wrote:
+> Hello list,
+>         Using kernel 2.6.32 (which have already apply the latest UBIFS
+> and UBI patches),nor flash.
+> UBIFS mount fail fail after an power cut due to recovery . Recovery
+> failed because after power cut ,the flash image is like this:
+> 02ab3eb0h: 00 00 00 00 00 00 00 00 00 E6 0C 00 11 00 00 00
+> 02ab3ec0h: 31 18 10 06 04 80 DE AF FF FF FF FF FF FF FF FF
+> 02ab3ed0h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+> 02ab3ee0h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+> 02ab3ef0h: 05 89 AB CD EF 89 AB CD EF 20 00 00 00 00 00 00
+> 02ab3f00h: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+> First,when ubifs_recover_leb call ubifs_scan_a_node,and found that in
+> 0x02ab3ec8h
+> had a bad node type,so ubifs_scan_a_node return SCANNED_A_CORRUPT_NODE.
+
+OK.
+
+> Then in ubifs_recover_leb,when call no_more_nodes this function return
+> 0 (which i think
+> should be return 1).At last recovery failed,so mount failed too.
+
+We have this code in that function:
+
+        /* Check for empty space after the corrupt node's common header */
+        skip =3D ALIGN(offs + UBIFS_CH_SZ, c->max_write_size) - offs;
+        if (is_empty(buf + skip, len - skip))
+                return 1;
+
+
+UBIFS_CH_SZ is 64, c->max_write_size is 64, then ALIGN(offs +
+UBIFS_CH_SZ, c->max_write_size) should be 0x2ab3f40, which points to the
+area with all 0xFFs, so 'is_empty' should return 1.
+
+Did you check that your c->max_write_size is 64?
+
+Preserve the image for investigations.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-3/HCdKruM+IvAf/wNBaX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPiFteAAoJECmIfjd9wqK04EgP/3snM58kNgX+VSqPDm7zyhos
+jZJEkVTs/wx8ygO2RlAth57s+DylG50ljCGIyaNXFd6474msomKKpRv0M0+yZTFz
+yLSyFJo2308f2XRLBQR8Ddfzl7D7XGi8eGmRJQyuAIEmRsfnNEX8kbp+Ya6vKU7R
+NBENAfGfk3/1eGV6eacrcNchkl9dAPF9LKPAS+J3oIzWy4OqsEwaBCZA1CvBa426
+92K5ixPB4ZBGfj7B7MDbPQZqPDjcxSrH1JOjpyIH8toGEAWceD0Ln3U16j2XQ9DU
+as54Ifolp6ZFytcHxAyFNB33Z5BL8XO5MEVD2Jyz3f5wEQolzMYFePH0//RnwFiw
+m1Le4CBLpC9LAyRDrM5iDxFTbzDFO1bLvOgi/ilRqyh1tBjvE7Lld7f61oKLx5Lk
+mHz/d7COZ14tvQqFYu5z7m5wVjMUPc8FTpIwAlNU1qSpC7bMmYJtgGRNzsAHxylT
+5IGSJhci111uOuj+Nyv7hgyBIepjwX1qlRDAUr0Fk+nJpOQxyIH4SwRu1L83M791
+hgBgO/fdMXYHtJaWcSToEQJTmbzjRIh+iQOpRlI1ChOnHeVkkGG/DKDFSME7fYvG
+TCbieEW5un3dqwaGK1eyTNeGONwuWBIJJFCCCQHupFqTUtffvFrbH8pW+7SCwCzU
+ZlEtYcU4t4rb3YxHi1fC
+=cOlg
+-----END PGP SIGNATURE-----
+
+--=-3/HCdKruM+IvAf/wNBaX--
