@@ -1,29 +1,18 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SImWg-0002Yy-5k
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 19:51:22 +0000
-Received: by lboj14 with SMTP id j14so3117303lbo.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Apr 2012 12:51:19 -0700 (PDT)
-Message-ID: <1334346542.2200.18.camel@brekeke>
-Subject: Re: Unstable bits and JFFS2
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Fri, 13 Apr 2012 22:49:02 +0300
-In-Reply-To: <20120413183617.GA22004@pengutronix.de>
-References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
- <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
- <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CAD87@dekaexchange07.deka.local>
- <1334334462.13160.10.camel@sauron.fi.intel.com>
- <20120413183617.GA22004@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: 'Matej Kupljen' <matej.kupljen@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Atlant Schmidt <aschmidt@dekaresearch.com>
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIolE-0004IG-8Q
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 22:14:33 +0000
+Date: Sat, 14 Apr 2012 00:14:17 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] CEWG Open Project Proposal for "unstable bits" work
+Message-ID: <20120413221417.GA26836@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutski <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +22,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-04-13 at 20:36 +0200, Wolfram Sang wrote:
-> Hi,
-> 
-> > > > Artem, you said that this unstable bits only happen
-> > > > during power cuts, is this right? Would those appear
-> > > > also on simulated power cuts, the ones that integck
-> > > > can produce?
-> 
-> A bit of hijacking this thread, yet it fits somehow to the idea I got
-> yesterday:
-> 
-> There is the Open Project Proposal again, where the CEWG funds topics which
-> improve embedded linux in general [1]. I wonder if it makes sense to hand in a
-> proposal starting to tackle the 'unstable bits' issue. I could imagine task 1
-> mentioned in the wiki page (1. Improve the existing power cut emulation
-> infrastructure in UBIFS and start emulating unstable bits. Start with emulating
-> only one type of unstable bits, e.g., type 1.) could be a good candidate for
-> such a proposal. Since I am not deeply involved with this topic:
-> 
-> 1) Is this task still needed?
-> 2) Is it a good task for a 2-3 week period (I'd think so)
-> 3) Are there people around up for the task?
-> 
-> I'd be willing to write the proposal, if nobody else volunteers. (yet, given my
-> constraints, I am not the right person to actually work on it). Even if the
-> proposal doesn't get contracted, the topic itself might get some attention
-> since it will be discussed in the CEWG.
 
-Yes, definitely a hot topic now, I am swamped with lots of things and
-never found time for writing proposals like this. Please, go ahead,
-would be very appreciated. I might help reviewing it and amending.
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+as mentioned in another thread, here is a draft for the CEWG project propos=
+al.
+Please comment.
+
+Thanks,
+
+   Wolfram
+
+=3D=3D=3D=3D
+
+Start working on the "unstable bits" issue to make UBIFS more robust
+
+; Summary: Start working on the "unstable bits" issue to make UBIFS more ro=
+bust
+
+; Proposer: Wolfram Sang
+
+=3D=3D Description =3D=3D
+
+UBIFS on top of UBI is today the defacto standard filesystem for flash-based
+storage (NOR, NAND) and is already used in many consumer products. It is st=
+able
+and well tested. There is one major known issue, though, called "unstable b=
+its"
+(see link in related work), often in accordance with power cuts. The proble=
+ms
+involved are complex and even to start tackling them, a concentrated effort=
+ is
+needed. In the description of "unstable bits", there is already a roadmap
+presented and this proposal suggests to pick up the first task:
+
+--- Quote starts
+
+1) Improve the existing power cut emulation infrastructure in UBIFS and sta=
+rt
+emulating unstable bits. Start with emulating only one type of unstable bit=
+s,
+e.g., type 1.
+
+--- Quote ends
+
+When this is in place, it will enable UBIFS developers (and file system
+developers in general) to do power cut simulations much more easily and fix
+related bugs or implement proper mechanisms. Automated tests will also bene=
+fit
+=66rom this work.
+
+Given the importance of flash based storage these days, it seems worthwhile=
+ to
+get the ball rolling regarding "unstable bits".
+
+
+=3D=3D Related work =3D=3D
+* "unstable bits" description - http://www.linux-mtd.infradead.org/doc/ubif=
+s.html#L_unstable_bits
+
+=3D=3D Scope =3D=3D
+3 weeks should be needed to make the general emulation proper. If all goes =
+well,
+more types of power cuts could be implemented.
+
+=3D=3D Contractor Candidates =3D=3D
+Artem Bityutskiy (current UBI/UBIFS maintainer)
+
+=3D=3D Comments =3D=3D
+
+
+[[Category:Project proposals 2012]]
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk+IpTkACgkQD27XaX1/VRt3SwCffSNfoyIBGlVXmAC0uiqYOA4m
+AfEAnRkatLVl2V/dI9IA9tPnC6UMva1P
+=ZALX
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
