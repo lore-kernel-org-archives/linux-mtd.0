@@ -1,26 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIimW-00041x-7K
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 15:51:28 +0000
-Message-ID: <1334332456.13160.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] MTD: drivers return max_bitflips, mtd returns -EUCLEAN
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Fri, 13 Apr 2012 18:54:16 +0300
-In-Reply-To: <20120403114818.1cea9f2b@pixies.home.jungo.com>
-References: <1331500873-9792-1-git-send-email-mikedunn@newsguy.com>
- <1331500873-9792-5-git-send-email-mikedunn@newsguy.com>
- <CAN8TOE_Zwg1evBBCSY3zcV6=O07WVyXf2ZOtgf7qgKGLUBcBrQ@mail.gmail.com>
- <4F765873.6090209@newsguy.com> <20120331093752.341037b4@halley>
- <4F79D668.9090903@newsguy.com>
- <20120403114818.1cea9f2b@pixies.home.jungo.com>
+ id 1SIiqf-0004Fo-AR
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 15:55:46 +0000
+Message-ID: <1334332724.13160.3.camel@sauron.fi.intel.com>
+Subject: Re: Oops with mtd_dataflash driver in 3.3
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Will Newton <will.newton@gmail.com>
+Date: Fri, 13 Apr 2012 18:58:44 +0300
+In-Reply-To: <CAFbHwiTfaXOFX-WYWeyisK4WCiXBRv_LpEcoR=v8qvsLAO7FJQ@mail.gmail.com>
+References: <CAFbHwiTfaXOFX-WYWeyisK4WCiXBRv_LpEcoR=v8qvsLAO7FJQ@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-rho1n8oXzqMw7tFnGy4S"
+ boundary="=-qzFw5Ig+c5rqNju9r33H"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- Mike Dunn <mikedunn@newsguy.com>, David Woodhouse <David.Woodhouse@intel.com>
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-rho1n8oXzqMw7tFnGy4S
+--=-qzFw5Ig+c5rqNju9r33H
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-04-03 at 11:48 +0300, Shmulik Ladkani wrote:
-> Anyway, looking on it in a broader perspective, can you please state
-> use-case examples where one might set different thresholds for
-> different
-> partitions of same device?
-> I mean, do we really need that granularity?
+On Fri, 2012-03-30 at 11:51 +0100, Will Newton wrote:
+> Hi all,
+>=20
+> I'm seeing an oops in mtd_dataflash.c with Linux 3.3. What appears to
+> be happening is that otp_select_filemode calls mtd_read_fact_prot_reg
+> with -1 for offset and length and a NULL buffer to test if OTP
+> operations are supported. This finds its way down to otp_read in
+> mtd_dataflash.c and causes an oops when memcpying the returned data
+> into the NULL buf.
 
-Current MTD partitions support is very simple and makes it difficult to
-distinguished between partitions and not partitions.
+Hi, good catch, thanks!
+
+I've added "Cc: stable@krnel.org [3.3+]" and pushed to l2-mtd.git,
+thanks you.
+
+But note, you should add your Signed-off-by when sending patches.
+Also this patch is line-wrapped so I had to do a small surgery to apply
+it. Try to save it from your mailbox and apply with 'git am'.
+
+Anyway, thanks for the catch.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-rho1n8oXzqMw7tFnGy4S
+--=-qzFw5Ig+c5rqNju9r33H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPiEwoAAoJECmIfjd9wqK0HcQQAK87KHsRjxtW1jHTPLnZ3+aO
-aVvVf+bZ1H+RwwOo7w5ZXSR26+hhG1ESxfklVVtSi0FSP5EFaTJEU40BnCP9ApeX
-IncvKHvGGhC4ebvPlBQs1tBE8HoM7GfvlQA4TVjlp93FAkqrZ55RPaBMpnFY97Cc
-nxp9DzxspO9Et9ReRhEXxORgHZSNryCR6KhvUtEc+aDIe6p2tF4Qls9J1qqqDePb
-Su0CmVwJYgIryAdBCB8E4xo1jFH+JlIQV/6ojr4Z1vrzYFCfX6uxGu/qDIfqVamG
-Oy/2JAS8aD96gpFokhjrCGvsqbtVJFqYrFIsZticKYQhgkHzhjSfc2BN26QZ1T+L
-aOPMropxpsSW9pej0xI9xOhZED+eFhi1+Io/UWLNXv4fwlWnHET4vkG1L6G5fkbV
-p5uyvUXq2Xl/wfHiC5P8Z8/Dme3WTIqqq3ogJpO5KICUekyvSgibPuRc1CPu8LSc
-coye3mPD2cIWck+0jZFSS9PEN8KmazVAVKrIN9Ewrds0JgaXhnA65tup1Pl+8jh/
-6qkNd78TLYxJwWCLpvEa9JsMSRsuLXmWG8ZUUNeljDSTplJiK1o2YgFZmbbl/rrF
-QbJiNfQV814N5pm69iWKbXmCsnPsYYRyqC4ho0WOLFTkSraGhHp3rEvoOGn7l848
-KChrJAMOTNm7AY4z2r3A
-=Rieh
+iQIcBAABAgAGBQJPiE00AAoJECmIfjd9wqK01V0QAMotT7Exr2iiicQZ1RMar3Xn
+noUWsgCkEBFDDCManJikjYhvHblKMwOj02SPfoPzQbA+7aQ1I/ShHZ38BeeTB2h5
+xk+++MtIr3BovXisXRacSf8OsOMSxE7kc8b5NDqoMaL2wBuxr64O0ytcjza0GmZF
+C6KjA+rwNy0vFVR8RfmaRfzi8j8mRnZP2zKxcX0kVYI9Ohdh9BC2jaBzoh0OlJpx
+j/Vh1z9Hq/T/tM0no+GbrOr9fIvQ241koqb3qPAr9QRSRdn82Wil0H++UOhP2nSm
+n/LHIX6GqeAHgRlGNUmJba7sBrHMcnU7HNuxdNMPpBaDRn1vHLSSVFXQyYfU43hI
+5TbqQ/HC8ORe9/l/1WaZO4M4ifQtY4Qf00ParXvjLRa9VXZMN53L1X2G18w8HIUR
+6hDi1hYdFl1v4B9OXZi1ESmDn05T+QegUX4qKG1ZwyTVGQ+Ipm5Qmtd8dCyS7Wv6
+HrSxG0zLlbaDKF+FKPhpjgfIZKvvJYWr0SovqQntAyAHSgdVbqwBqiQfBdIa2s6z
+CtwagXs7qc9Hyp2zLu6jKSx1Bt5MpA22+mGB7R/4o4XklSiy/8JoIOX/TKUzVfVh
+Bg815px477QiJpCquF6Mbk9uBPrOK9MepKd0HOPjcqiFnuPbtx3E8Uewshr/GtIF
+NN3x+TcFpzQaTDK6uOQZ
+=nOIE
 -----END PGP SIGNATURE-----
 
---=-rho1n8oXzqMw7tFnGy4S--
+--=-qzFw5Ig+c5rqNju9r33H--
