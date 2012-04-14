@@ -1,27 +1,20 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SIuUJ-0003CM-KS
- for linux-mtd@lists.infradead.org; Sat, 14 Apr 2012 04:21:28 +0000
-Date: Sat, 14 Apr 2012 06:21:14 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: RE: Unstable bits and JFFS2
-In-Reply-To: <1334336505.13160.19.camel@sauron.fi.intel.com>
-Message-ID: <Pine.LNX.4.64.1204140618350.7481@lnxricardw.se.axis.com>
-References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
- <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
- <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CAD87@dekaexchange07.deka.local>
- <1334334462.13160.10.camel@sauron.fi.intel.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CADBE@dekaexchange07.deka.local>
- <1334336505.13160.19.camel@sauron.fi.intel.com>
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIydT-0007UC-04
+ for linux-mtd@lists.infradead.org; Sat, 14 Apr 2012 08:47:12 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
+References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+ <87r4vsg3ps.fsf@free.fr>
+ <1334338211.13160.26.camel@sauron.fi.intel.com>
+Date: Sat, 14 Apr 2012 10:46:55 +0200
+In-Reply-To: <1334338211.13160.26.camel@sauron.fi.intel.com> (Artem
+ Bityutskiy's message of "Fri, 13 Apr 2012 20:30:11 +0300")
+Message-ID: <87fwc6g0ow.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: 'Matej Kupljen' <matej.kupljen@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Atlant Schmidt <aschmidt@dekaresearch.com>
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Artem Bityutskiy <dedekind1@gmail.com> writes:
+> Hmm, not sure about 3.4-rcN - it is up to him. But I'll try to ping him,
+> although I am going to be away for few weeks soon, so no guarantees.
+> Better ping him yourself.
 
-On Fri, 13 Apr 2012, Artem Bityutskiy wrote:
+OK.
+But no stress, we're at rc2/3, that leaves me 3 weeks. I'm not totally convinced
+he'll pick a single patch from anybody else than a maintainer in the -rc series
+anyway.
+But I'll try to ping him in 1 or 2 weeks, let's see what happens then.
 
-> On Fri, 2012-04-13 at 12:40 -0400, Atlant Schmidt wrote:
->>
->>   Unfortunately, ECC can only fix those PEBs that
->>   are actually read. If one of the PEBs in your
->>   filesystem is being used entirely to contain
->>   obscure data that only gets read once in a
->>   blue moon (i.e., very rarely), then multiple
->>   read-/write-disturbs can hit accumulate in
->>   that PEB and when it is finally read, it may
->>   already contains too many errors to be
->>   corrected by the ECC.
->>
->>   We've seen this exact scenario occur with the
->>   current UBI/UBIfs and will be implementing a
->>   userland "scrubbing" system to ensure that
->>   every PEB gets read at least once in a while
->>   (e.g., weekly or whatever interval seems right).
->
-> This is right, people should have a user-space app which periodically
-> reads all /dev/ubiX_Y. Care to send a patch against mtd-www with some
-> explantion of this issue and extend the unstable bits issue?
+Have a good vacation !
 
-Would it not be preferable to have this functionality within UBI itself,=20
-so that, for instance governed by some sysfs parameter, UBI reads through=
-=20
-all PEBs at some interval, triggering scrubbing of any blocks that require=
-=20
-too much ECC for comfort?
-
-To me it seems something that userspace should not be concerned with,=20
-given the rest of the features that UBI deals with so that userspace does=
-=20
-not have to.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-- 
+Robert
