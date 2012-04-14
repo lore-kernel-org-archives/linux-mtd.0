@@ -1,22 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SJ0td-0002d9-OH
- for linux-mtd@lists.infradead.org; Sat, 14 Apr 2012 11:12:02 +0000
-Received: by lagy4 with SMTP id y4so3441104lag.36
- for <linux-mtd@lists.infradead.org>; Sat, 14 Apr 2012 04:11:59 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SJ1HP-0002qe-35
+ for linux-mtd@lists.infradead.org; Sat, 14 Apr 2012 11:36:38 +0000
+Date: Sat, 14 Apr 2012 13:35:56 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [RFC] CEWG Open Project Proposal for "unstable bits" work
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Sat, 14 Apr 2012 14:11:56 +0300
-In-Reply-To: <20120413221417.GA26836@pengutronix.de>
+Message-ID: <20120414113556.GA1558@pengutronix.de>
 References: <20120413221417.GA26836@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-y0qwdVrCiP7VMTR3yXe6"
-Message-ID: <1334401918.2263.28.camel@koala>
-Mime-Version: 1.0
+ <1334401918.2263.28.camel@koala>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Disposition: inline
+In-Reply-To: <1334401918.2263.28.camel@koala>
 Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +25,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-y0qwdVrCiP7VMTR3yXe6
-Content-Type: text/plain; charset="UTF-8"
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-04-14 at 00:14 +0200, Wolfram Sang wrote:
-> as mentioned in another thread, here is a draft for the CEWG project prop=
-osal.
-> Please comment.
+On Sat, Apr 14, 2012 at 02:11:56PM +0300, Artem Bityutskiy wrote:
+> On Sat, 2012-04-14 at 00:14 +0200, Wolfram Sang wrote:
+> > as mentioned in another thread, here is a draft for the CEWG project pr=
+oposal.
+> > Please comment.
+>=20
+> Thanks, looks good, but I did not realize you suggest I do this :-)
 
-Thanks, looks good, but I did not realize you suggest I do this :-)
+:) I wanted to put at least one name there. Will drop it.
 
-> =3D=3D Contractor Candidates =3D=3D
-> Artem Bityutskiy (current UBI/UBIFS maintainer)
-
-Sorry, I do not think I have time for doing this myself, I can only
-review/direct/discuss/suggest.
-
+I'll leave it empty; it's an open project proposal, so everyone can bid on
+doing this task if it gets selected.
 
 --=20
-Best Regards,
-Artem Bityutskiy
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---=-y0qwdVrCiP7VMTR3yXe6
+--vtzGhvizbBRQ85DL
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAABAgAGBQJPiVt8AAoJEJtuLFy+q7fegK8H/0yfe8znFkRazMzlidahf98s
-7R3EnIYDehsLANcxPZAtFcLzb8FjU1HE0cPcmkU3J9cNPw9Z4135TzfS3DH8lwuW
-nKyaBn7ESpexkr8ijSGqprdbVYcViv7cgufH9OZPg2Nq2tk0a2gvv2H49896s5gl
-7rGlPHimDRsJfcRH1iaXNYEcEbVy9GK5zCdVO+oS0eMU0iCChL8AYUK7xA+DDXy4
-RGVcQSoP50G+pX6mzo4qsWmG8vx3wgVpxLDrl3gTyxPnxZaOLFCvphiShEghOnqf
-3T/UeEW0K9DdF5u+JAeUfgNsXMa18atlMKSfrNSpSHZJr3rRay731EvBQ7vwcRM=
-=AFgz
+iEYEARECAAYFAk+JYRwACgkQD27XaX1/VRuXnwCfQesNvlDXT8ihr1XEXfcI5MUJ
+wtoAn1FLbS56RuIHfmGoOzoprPkl5/PT
+=bZ2x
 -----END PGP SIGNATURE-----
 
---=-y0qwdVrCiP7VMTR3yXe6--
+--vtzGhvizbBRQ85DL--
