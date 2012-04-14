@@ -1,18 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SIolE-0004IG-8Q
- for linux-mtd@lists.infradead.org; Fri, 13 Apr 2012 22:14:33 +0000
-Date: Sat, 14 Apr 2012 00:14:17 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC] CEWG Open Project Proposal for "unstable bits" work
-Message-ID: <20120413221417.GA26836@pengutronix.de>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SIuUJ-0003CM-KS
+ for linux-mtd@lists.infradead.org; Sat, 14 Apr 2012 04:21:28 +0000
+Date: Sat, 14 Apr 2012 06:21:14 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: RE: Unstable bits and JFFS2
+In-Reply-To: <1334336505.13160.19.camel@sauron.fi.intel.com>
+Message-ID: <Pine.LNX.4.64.1204140618350.7481@lnxricardw.se.axis.com>
+References: <CAHMF36FsVeg=ZVtZZz8H6YLj3GhKwD-ofCV1hcJcL5cVVKRK1A@mail.gmail.com>
+ <CAN8TOE-2exM1YomfbiQ_CzkZn=MbotYwSxJnzU6mNVK4WPBNdQ@mail.gmail.com>
+ <CAHMF36GrBOZBTzyBpxD2U+nkBcZExGqkvKY7fkA6494M2PtShw@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CAD87@dekaexchange07.deka.local>
+ <1334334462.13160.10.camel@sauron.fi.intel.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CADBE@dekaexchange07.deka.local>
+ <1334336505.13160.19.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
-Content-Disposition: inline
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutski <dedekind1@gmail.com>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: 'Matej Kupljen' <matej.kupljen@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Atlant Schmidt <aschmidt@dekaresearch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,96 +32,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 13 Apr 2012, Artem Bityutskiy wrote:
 
-Hi,
+> On Fri, 2012-04-13 at 12:40 -0400, Atlant Schmidt wrote:
+>>
+>>   Unfortunately, ECC can only fix those PEBs that
+>>   are actually read. If one of the PEBs in your
+>>   filesystem is being used entirely to contain
+>>   obscure data that only gets read once in a
+>>   blue moon (i.e., very rarely), then multiple
+>>   read-/write-disturbs can hit accumulate in
+>>   that PEB and when it is finally read, it may
+>>   already contains too many errors to be
+>>   corrected by the ECC.
+>>
+>>   We've seen this exact scenario occur with the
+>>   current UBI/UBIfs and will be implementing a
+>>   userland "scrubbing" system to ensure that
+>>   every PEB gets read at least once in a while
+>>   (e.g., weekly or whatever interval seems right).
+>
+> This is right, people should have a user-space app which periodically
+> reads all /dev/ubiX_Y. Care to send a patch against mtd-www with some
+> explantion of this issue and extend the unstable bits issue?
 
-as mentioned in another thread, here is a draft for the CEWG project propos=
-al.
-Please comment.
+Would it not be preferable to have this functionality within UBI itself,=20
+so that, for instance governed by some sysfs parameter, UBI reads through=
+=20
+all PEBs at some interval, triggering scrubbing of any blocks that require=
+=20
+too much ECC for comfort?
 
-Thanks,
+To me it seems something that userspace should not be concerned with,=20
+given the rest of the features that UBI deals with so that userspace does=
+=20
+not have to.
 
-   Wolfram
-
-=3D=3D=3D=3D
-
-Start working on the "unstable bits" issue to make UBIFS more robust
-
-; Summary: Start working on the "unstable bits" issue to make UBIFS more ro=
-bust
-
-; Proposer: Wolfram Sang
-
-=3D=3D Description =3D=3D
-
-UBIFS on top of UBI is today the defacto standard filesystem for flash-based
-storage (NOR, NAND) and is already used in many consumer products. It is st=
-able
-and well tested. There is one major known issue, though, called "unstable b=
-its"
-(see link in related work), often in accordance with power cuts. The proble=
-ms
-involved are complex and even to start tackling them, a concentrated effort=
- is
-needed. In the description of "unstable bits", there is already a roadmap
-presented and this proposal suggests to pick up the first task:
-
---- Quote starts
-
-1) Improve the existing power cut emulation infrastructure in UBIFS and sta=
-rt
-emulating unstable bits. Start with emulating only one type of unstable bit=
-s,
-e.g., type 1.
-
---- Quote ends
-
-When this is in place, it will enable UBIFS developers (and file system
-developers in general) to do power cut simulations much more easily and fix
-related bugs or implement proper mechanisms. Automated tests will also bene=
-fit
-=66rom this work.
-
-Given the importance of flash based storage these days, it seems worthwhile=
- to
-get the ball rolling regarding "unstable bits".
-
-
-=3D=3D Related work =3D=3D
-* "unstable bits" description - http://www.linux-mtd.infradead.org/doc/ubif=
-s.html#L_unstable_bits
-
-=3D=3D Scope =3D=3D
-3 weeks should be needed to make the general emulation proper. If all goes =
-well,
-more types of power cuts could be implemented.
-
-=3D=3D Contractor Candidates =3D=3D
-Artem Bityutskiy (current UBI/UBIFS maintainer)
-
-=3D=3D Comments =3D=3D
-
-
-[[Category:Project proposals 2012]]
-
+/Ricard
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---1yeeQ81UyVL57Vl7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk+IpTkACgkQD27XaX1/VRt3SwCffSNfoyIBGlVXmAC0uiqYOA4m
-AfEAnRkatLVl2V/dI9IA9tPnC6UMva1P
-=ZALX
------END PGP SIGNATURE-----
-
---1yeeQ81UyVL57Vl7--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
