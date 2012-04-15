@@ -1,21 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from zeniv.linux.org.uk ([195.92.253.2])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SJQXE-0001E2-ST
- for linux-mtd@lists.infradead.org; Sun, 15 Apr 2012 14:34:37 +0000
-Received: by eaak13 with SMTP id k13so1094149eaa.36
- for <linux-mtd@lists.infradead.org>; Sun, 15 Apr 2012 07:34:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4F8ADB04.3090901@linutronix.de>
-References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
- <4F8ADB04.3090901@linutronix.de>
-Date: Sun, 15 Apr 2012 11:34:33 -0300
-Message-ID: <CAOMZO5B9iEOHTrUpHsKDhy1tcjr2tP4g_dnhAFmoJ7HEW_cgGQ@mail.gmail.com>
+ id 1SJRRF-0002wO-N1
+ for linux-mtd@lists.infradead.org; Sun, 15 Apr 2012 15:32:30 +0000
+Date: Sun, 15 Apr 2012 16:32:20 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Joel Reardon <joel@clambassador.com>
 Subject: Re: mtdchar kernel oops
-From: Fabio Estevam <festevam@gmail.com>
-To: Richard Weinberger <rw@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org,
- Javier Martin <javier.martin@vista-silicon.com>
+Message-ID: <20120415153220.GR6589@ZenIV.linux.org.uk>
+References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,10 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 15, 2012 at 11:28 AM, Richard Weinberger <rw@linutronix.de> wrote:
+On Sun, Apr 15, 2012 at 01:58:39PM +0200, Joel Reardon wrote:
+> I think that this patch:
+> "mtdchar: kill persistently held vfsmount"
+> http://permalink.gmane.org/gmane.linux.kernel.commits.head/314175
+> 
+> has started causing kernel oops's when running ubiformat. The oops is
+> occuring in fs/namespace.c's mnt_add_count() line:
+>         this_cpu_add(mnt->mnt_pcp->mnt_count, n);
+> 
+> with the stack trace:
+> mntget()
+> simple_pin_fs()
+> mtdchar_open()
 
-> Can you please submit the stack trace verbatim?
+Check if commit c65390f4dd49755863f6d772ec538ee4757c08d7
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Mon Apr 9 01:36:28 2012 -0400
 
-I don't have may hardware handy, but here you can find a similiar
-error report with the stack trace:
-https://lkml.org/lkml/2012/4/3/140
+    fix breakage in mtdchar_open(), sanitize failure exits
+
+has fixed that.
