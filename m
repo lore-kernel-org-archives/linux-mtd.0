@@ -1,18 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SJsaf-0000m4-SS
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 20:32:02 +0000
-Date: Mon, 16 Apr 2012 22:31:53 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: celinux-dev@lists.celinuxforum.org
-Subject: [PROPOSAL] Start working on the "unstable bits" issue to make UBIFS
- more robust
-Message-ID: <20120416203153.GA11951@pengutronix.de>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SJuHu-000114-0r
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 22:20:46 +0000
+Received: by lboj14 with SMTP id j14so4981218lbo.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Apr 2012 15:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Sender: paul.gortmaker@gmail.com
+In-Reply-To: <4F8C780D.9010702@xenotime.net>
+References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
+ <4F8C780D.9010702@xenotime.net>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Date: Mon, 16 Apr 2012 18:20:12 -0400
+Message-ID: <CAP=VYLr6TtABMNz1EBY2T6vYdhpR5X6S3yQTtvvqV0D7c9U5Lw@mail.gmail.com>
+Subject: Re: [PATCH -next] mtd: fix sbc2_flash build when PCI is not enabled
+To: Randy Dunlap <rdunlap@xenotime.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Tim Hockin <thockin@sun.com>,
+ LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,91 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Apr 16, 2012 at 3:50 PM, Randy Dunlap <rdunlap@xenotime.net> wrote:
+> From: Randy Dunlap <rdunlap@xenotime.net>
+>
+> sbc2_flash.c is a PCI driver, but its build fails when CONFIG_PCI
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Minor nit -- above line and subject reference sbc2, when fail comes
+from scb2 source module.
 
-Start working on the "unstable bits" issue to make UBIFS more robust
+Paul.
+--
 
-; Summary: Start working on the "unstable bits" issue to make UBIFS more ro=
-bust
-
-; Proposer: Wolfram Sang
-
-=3D=3D Description =3D=3D
-
-UBIFS on top of UBI is today the defacto standard filesystem for flash-based
-storage (NOR, NAND) and is already used in many consumer products. It is st=
-able
-and well tested. There is one major known issue, though, called "unstable b=
-its"
-(see link in related work), often in accordance with power cuts. The proble=
-ms
-involved are complex and even to start tackling them, a concentrated effort=
- is
-needed. In the description of "unstable bits", there is already a roadmap
-presented and this proposal suggests to pick up the first task:
-
---- Quote starts
-
-1) Improve the existing power cut emulation infrastructure in UBIFS and sta=
-rt
-emulating unstable bits. Start with emulating only one type of unstable bit=
-s,
-e.g., type 1.
-
---- Quote ends
-
-When this is in place, it will enable UBIFS developers (and file system
-developers in general) to do power cut simulations much more easily and fix
-related bugs or implement proper mechanisms. Automated tests will also bene=
-fit
-=66rom this work.
-
-Given the importance of flash based storage these days, it seems worthwhile=
- to
-get the ball rolling regarding "unstable bits".
-
-
-=3D=3D Related work =3D=3D
-
-* "unstable bits" description - http://www.linux-mtd.infradead.org/doc/ubif=
-s.html#L_unstable_bits
-
-=3D=3D Scope =3D=3D
-
-3 weeks should be needed to make the general emulation proper. If all goes =
-well,
-maybe more types of power cuts could be implemented in that timeframe.
-
-=3D=3D Contractor Candidates =3D=3D
-
-Artem Bityutskiy (current UBI/UBIFS maintainer) already declined, sadly. Bu=
-t he
-will be around for reviews etc. Other recently active contributors to MTD/U=
-BI
-could probably be asked.
-
-=3D=3D Comments =3D=3D
-
-[[Category:Project proposals 2012]]
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk+MgbkACgkQD27XaX1/VRvLwwCfXFM5iZ3wst8Qh/g7aXP667BD
-S64An0HJNvyglmOn+Nm2FgQAkyz2d7H7
-=PySL
------END PGP SIGNATURE-----
-
---tThc/1wpZn/ma/RB--
+> is not enabled, so make it depend on PCI.
+>
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: data definition has no type=
+ or storage class
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: type defaults to 'int' in d=
+eclaration of 'module_pci_driver'
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: parameter names (without ty=
+pes) in function declaration
+>
+> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+> Cc: =A0 =A0 David Woodhouse <dwmw2@infradead.org>
+> Cc: =A0 =A0 linux-mtd@lists.infradead.org
+> ---
+> =A0drivers/mtd/maps/Kconfig | =A0 =A02 +-
+> =A01 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- linux-next-20120416.orig/drivers/mtd/maps/Kconfig
+> +++ linux-next-20120416/drivers/mtd/maps/Kconfig
+> @@ -224,7 +224,7 @@ config MTD_CK804XROM
+>
+> =A0config MTD_SCB2_FLASH
+> =A0 =A0 =A0 =A0tristate "BIOS flash chip on Intel SCB2 boards"
+> - =A0 =A0 =A0 depends on X86 && MTD_JEDECPROBE
+> + =A0 =A0 =A0 depends on X86 && MTD_JEDECPROBE && PCI
+> =A0 =A0 =A0 =A0help
+> =A0 =A0 =A0 =A0 =A0Support for treating the BIOS flash chip on Intel SCB2=
+ boards
+> =A0 =A0 =A0 =A0 =A0as an MTD device - with this you can reprogram your BI=
+OS.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-next" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
