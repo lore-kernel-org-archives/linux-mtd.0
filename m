@@ -1,21 +1,24 @@
-Received: from oproxy9.bluehost.com ([2605:dc00:100:2::a2])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SJp8O-0006vL-7R
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 16:50:37 +0000
-Message-ID: <4F8C780D.9010702@xenotime.net>
-Date: Mon, 16 Apr 2012 12:50:37 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SJrQR-0000gE-K7
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 19:17:24 +0000
+Date: Mon, 16 Apr 2012 20:17:18 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Joel Reardon <joel@clambassador.com>
+Subject: Re: mtdchar kernel oops
+Message-ID: <20120416191718.GT6589@ZenIV.linux.org.uk>
+References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
+ <20120415153220.GR6589@ZenIV.linux.org.uk>
+ <alpine.DEB.2.00.1204151951560.16000@eristoteles.iwoars.net>
+ <20120415215355.GS6589@ZenIV.linux.org.uk>
+ <alpine.DEB.2.00.1204161329200.21808@eristoteles.iwoars.net>
 MIME-Version: 1.0
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH -next] mtd: fix sbc2_flash build when PCI is not enabled
-References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
-In-Reply-To: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Tim Hockin <thockin@sun.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1204161329200.21808@eristoteles.iwoars.net>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@xenotime.net>
+On Mon, Apr 16, 2012 at 02:37:06PM +0200, Joel Reardon wrote:
+> The troubled asm pair corresponds to this line:
+> this_cpu_add(mnt->mnt_pcp->mnt_count, n) in  the inline mnt_add_count().
+> So I suppose that perhaps either mnt is bad, or mnt_pcp is bad.
+> 
+> I'm using nandsim to simulate the mtd device. Steps are simple, load the
+> modules:
+> nand_ecc nand nand_ids mtd  mtd_blkdevs mtdblock mtdchar
+> nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
+> 
+> then `ubiformat /dev/mtd0` does the oops.
 
-sbc2_flash.c is a PCI driver, but its build fails when CONFIG_PCI
-is not enabled, so make it depend on PCI.
+Not here:
 
-drivers/mtd/maps/scb2_flash.c:237:1: warning: data definition has no type or storage class
-drivers/mtd/maps/scb2_flash.c:237:1: warning: type defaults to 'int' in declaration of 'module_pci_driver'
-drivers/mtd/maps/scb2_flash.c:237:1: warning: parameter names (without types) in function declaration
+root@dizzy:~# modprobe nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
+ubiformat: mtd0 (nand), size 343932928 bytes (328.0 MiB), 2624 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 2623 -- 100 % complete  
+ubiformat: 2624 eraseblocks are supposedly empty
+ubiformat: formatting eraseblock 2623 -- 100 % complete  
+root@dizzy:~# uname -a
+Linux dizzy 3.4.0-rc2+ #4 SMP Mon Apr 16 15:04:25 EDT 2012 x86_64 GNU/Linux
 
-Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
-Cc:	David Woodhouse <dwmw2@infradead.org>
-Cc:	linux-mtd@lists.infradead.org
----
- drivers/mtd/maps/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+and no oopsen in sight...
 
---- linux-next-20120416.orig/drivers/mtd/maps/Kconfig
-+++ linux-next-20120416/drivers/mtd/maps/Kconfig
-@@ -224,7 +224,7 @@ config MTD_CK804XROM
- 
- config MTD_SCB2_FLASH
- 	tristate "BIOS flash chip on Intel SCB2 boards"
--	depends on X86 && MTD_JEDECPROBE
-+	depends on X86 && MTD_JEDECPROBE && PCI
- 	help
- 	  Support for treating the BIOS flash chip on Intel SCB2 boards
- 	  as an MTD device - with this you can reprogram your BIOS.
+
+> > Could you add printk into mtdchar_open(), dumping mnt and count values
+> > right after simple_pin_fs() call?
+> >
+> 
+> It oopses before it returns from the simple_pin_fs call, so that won't be
+> possible...
+
+Wha...?  You mean, that happens on the _first_ simple_pin_fs() call?
+But that makes no damn sense whatsoever - we just do vfs_kern_mount(),
+get a vfsmount from it (and not an ERR_PTR(), at that), then store
+it into mnt and do mntget(mnt) followed by mntput(mnt).  If that really
+happens when simple_pin_fs() gets called with mnt == NULL and count == 0,
+we have much bigger problem on hands...
+
+Please, slap such printks before and after simple_pin_fs() in mtdchar_open()
+and before and after simple_release_fs() in mtdchar_close().  And verify that
+you have commit c65390f4dd49755863f6d772ec538ee4757c08d7 in your tree.
