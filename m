@@ -1,21 +1,21 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+Received: from mail2.spectraaccess.net ([208.65.172.25])
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SJlB6-0005Qw-Lj
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 12:37:09 +0000
-Date: Mon, 16 Apr 2012 14:37:06 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: mtdchar kernel oops
-In-Reply-To: <20120415215355.GS6589@ZenIV.linux.org.uk>
-Message-ID: <alpine.DEB.2.00.1204161329200.21808@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
- <20120415153220.GR6589@ZenIV.linux.org.uk>
- <alpine.DEB.2.00.1204151951560.16000@eristoteles.iwoars.net>
- <20120415215355.GS6589@ZenIV.linux.org.uk>
+ id 1SJm2Q-00017v-47
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 13:32:17 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>, Sebastian Huber
+ <sebastian.huber@embedded-brains.de>
+Date: Mon, 16 Apr 2012 09:32:10 -0400
+Subject: RE: Alternative License for Parts of MTD?
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD3351F9CADC2@dekaexchange07.deka.local>
+References: <4F883513.4000301@embedded-brains.de>
+ <1334330926.2544.88.camel@sauron.fi.intel.com>
+In-Reply-To: <1334330926.2544.88.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The troubled asm pair corresponds to this line:
-this_cpu_add(mnt->mnt_pcp->mnt_count, n) in  the inline mnt_add_count().
-So I suppose that perhaps either mnt is bad, or mnt_pcp is bad.
-
-I'm using nandsim to simulate the mtd device. Steps are simple, load the
-modules:
-nand_ecc nand nand_ids mtd  mtd_blkdevs mtdblock mtdchar
-nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
-
-then `ubiformat /dev/mtd0` does the oops.
-
->
-> Could you add printk into mtdchar_open(), dumping mnt and count values
-> right after simple_pin_fs() call?
->
-
-It oopses before it returns from the simple_pin_fs call, so that won't be
-possible...
-
-Cheers,
-Joel
+QXJ0ZW0sIGV0IGFsLjoNCg0KPiBJcnJlc3BlY3RpdmVseSBvZiB3aGF0IHJhbmRvbSBwZW9wbGUg
+aW4gdGhlIG1haWxpbmcgbGlzdCB0aGluaywgdGhpcyBpcw0KPiBhIHF1ZXN0aW9uIHRvIGxheWVy
+cy4gQW5kIEkgZ3Vlc3MgeW91J2QgbmVlZCB0byBoYXZlIHBlcm1pc3Npb24gb2YgYWxsDQo+IGNv
+cHlyaWdodCBob2xkZXJzLCB3aGljaCBJIGd1ZXNzIGFsbCBwZW9wbGUgd2hvIGNvbnRyaWJ1dGVk
+LCBhbmQgdGhpcyBpcw0KPiBwcmFjdGljYWxseSBpbXBvc3NpYmxlIHRvIGRvLiBCdXQgSSBkbyBu
+b3Qga25vdyBmb3Igc3VyZSB3aGV0aGVyIHRoaXMgaXMNCj4gY29ycmVjdCBvciBub3QgOi0pDQoN
+CiAgWWVzLCB0aGUgY3VycmVudCBvcGluaW9uIHNlZW1zIHRvIGJlIHRoYXQgdG8gY2hhbmdlDQog
+IHRoZSBsaWNlbnNpbmcgdGVybXMgZm9yIGEgZ2l2ZW4gbW9kdWxlIGZyb20gcmVzdHJpY3RpdmUN
+CiAgdGVybXMgKHN1Y2ggYXMgKEwpR1BMKSB0byBsZXNzLXJlc3RyaWN0aXZlIHRlcm1zLCBvbmUN
+CiAgbmVlZHMgdGhlIGFzc2VudCBvZiBhbnlvbmUgd2hvIGV2ZXIgY29udHJpYnV0ZWQgdG8gdGhh
+dA0KICBtb2R1bGUuIFRoYXQncyB3aHkgY29udmVyc2lvbiB0byBhIG1vcmUtcmVzdHJpY3RpdmUN
+CiAgbGljZW5zZSBzdWNoIGFzIChsKUdQTCB0ZW5kcyB0byBiZSBhICJzdGlja3kiIChvbmUtd2F5
+KQ0KICBjb252ZXJzaW9uLg0KDQogIFRoZSBiZXN0IGFsdGVybmF0aXZlIGlzIHRvIHJlLXdyaXRl
+IHRoZSBmdW5jdGlvbmFsaXR5DQogIGluIGEgImNsZWFuIHJvb20iIGVudmlyb25tZW50IGFuZCB0
+aGVuIHJlbGVhc2UgaXQNCiAgdW5kZXIgeW91ciBjaG9pY2Ugb2YgbGljZW5zZSB0ZXJtcy4gT25l
+IGNhbiBjZXJ0YWlubHkNCiAgZW11bGF0ZSB0aGUgZGVzaWduIG9mIHRoZSBleGlzdGluZyBjb2Rl
+IHdpdGhvdXQNCiAgdmlvbGF0aW5nIGFueSBjb3B5cmlnaHQuIFBhdGVudHMgYXJlLCBvZiBjb3Vy
+c2UsDQogIGFub3RoZXIgKGFuZCBzZXBhcmF0ZSkgaXNzdWU7IHRoZSBleGlzdGluZyBkZXNpZ24N
+CiAgbWF5IGluY29ycG9yYXRlIHBhdGVudGVkIG1ldGhvZHMgd2hpY2ggb25lIGNhbid0DQogIG5l
+Y2Vzc2FyaWx5IGVtdWxhdGUgZnJlZWx5Lg0KDQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+QXRsYW50DQogICAgICAgICAgICAgICAgICAgICAgICAoSUFOQUwsIGV0Yy4pDQoNCi0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBsaW51eC1tdGQtYm91bmNlc0BsaXN0cy5pbmZyYWRl
+YWQub3JnIFttYWlsdG86bGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24g
+QmVoYWxmIE9mIEFydGVtIEJpdHl1dHNraXkNClNlbnQ6IEZyaWRheSwgQXByaWwgMTMsIDIwMTIg
+MTE6MjkNClRvOiBTZWJhc3RpYW4gSHViZXINCkNjOiBMaW51eCBNVEQNClN1YmplY3Q6IFJlOiBB
+bHRlcm5hdGl2ZSBMaWNlbnNlIGZvciBQYXJ0cyBvZiBNVEQ/DQoNCk9uIEZyaSwgMjAxMi0wNC0x
+MyBhdCAxNjoxNSArMDIwMCwgU2ViYXN0aWFuIEh1YmVyIHdyb3RlOg0KPiBIZWxsbywNCj4NCj4g
+SSB3b3JrIHdpdGggdGhlIHJlYWwtdGltZSBvcGVyYXRpbmcgc3lzdGVtIFJURU1TIChodHRwOi8v
+d3d3LnJ0ZW1zLmNvbSkuICBUaGUNCj4gbGljZW5zZSBvZiB0aGlzIHN5c3RlbSBpcyBHUEwgd2l0
+aCBhbiBleGNlcHRpb24gdGhhdCBhbGxvd3Mgc3RhdGljIGxpbmtpbmcNCj4gd2l0aG91dCByZXN0
+cmljdGlvbnM6DQo+DQo+IGh0dHA6Ly93d3cucnRlbXMuY29tL2xpY2Vuc2UvTElDRU5TRQ0KPg0K
+PiBUaGlzIGlzIHZlcnkgc2ltaWxhciB0byB0aGUgZUNvcyBsaWNlbnNlOg0KPg0KPiBodHRwOi8v
+ZWNvcy5zb3VyY2V3YXJlLm9yZy9saWNlbnNlLW92ZXJ2aWV3Lmh0bWwNCj4NCj4gUlRFTVMgaGFz
+IGN1cnJlbnRseSBubyBmcmFtZXdvcmsgZm9yIGZsYXNoIGRldmljZXMuICBJdCB3b3VsZCBiZSBu
+aWNlIGlmIHdlIGNhbg0KPiB1c2UgcGFydHMgb2YgdGhlIE1URCBzeXN0ZW0sIGUuZy4gdGhlIGhl
+YWRlciBmaWxlcyBhbmQgZGV2aWNlIGluZGVwZW5kZW50DQo+IHN1cHBvcnQgcm91dGluZXMgbGlr
+ZSAiZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyIuICBJcyBpdCBwb3NzaWJsZSB0bw0KPiBy
+ZWxlYXNlIHBhcnRzIG9mIHRoZSBNVEQgY29kZSB1bmRlciB0aGUgUlRFTVMgb3IgZUNvcyBsaWNl
+bnNlLCBvciB3b3VsZCB5b3UNCj4gY2F0ZWdvcmljYWxseSByZWZ1c2UgdGhpcz8NCg0KSXJyZXNw
+ZWN0aXZlbHkgb2Ygd2hhdCByYW5kb20gcGVvcGxlIGluIHRoZSBtYWlsaW5nIGxpc3QgdGhpbmss
+IHRoaXMgaXMNCmEgcXVlc3Rpb24gdG8gbGF5ZXJzLiBBbmQgSSBndWVzcyB5b3UnZCBuZWVkIHRv
+IGhhdmUgcGVybWlzc2lvbiBvZiBhbGwNCmNvcHlyaWdodCBob2xkZXJzLCB3aGljaCBJIGd1ZXNz
+IGFsbCBwZW9wbGUgd2hvIGNvbnRyaWJ1dGVkLCBhbmQgdGhpcyBpcw0KcHJhY3RpY2FsbHkgaW1w
+b3NzaWJsZSB0byBkby4gQnV0IEkgZG8gbm90IGtub3cgZm9yIHN1cmUgd2hldGhlciB0aGlzIGlz
+DQpjb3JyZWN0IG9yIG5vdCA6LSkNCg0KLS0NCkJlc3QgUmVnYXJkcywNCkFydGVtIEJpdHl1dHNr
+aXkNCg0KVGhpcyBlLW1haWwgYW5kIHRoZSBpbmZvcm1hdGlvbiwgaW5jbHVkaW5nIGFueSBhdHRh
+Y2htZW50cywgaXQgY29udGFpbnMgYXJlIGludGVuZGVkIHRvIGJlIGEgY29uZmlkZW50aWFsIGNv
+bW11bmljYXRpb24gb25seSB0byB0aGUgcGVyc29uIG9yIGVudGl0eSB0byB3aG9tIGl0IGlzIGFk
+ZHJlc3NlZCBhbmQgbWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcml2aWxlZ2VkLiBJ
+ZiB0aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVu
+dCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQgdGhhdCBhbnkgZGlzc2VtaW5hdGlvbiwgZGlzdHJp
+YnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBjb21tdW5pY2F0aW9uIGlzIHN0cmljdGx5IHByb2hp
+Yml0ZWQuIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwg
+cGxlYXNlIGltbWVkaWF0ZWx5IG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZXN0cm95IHRoZSBvcmln
+aW5hbCBtZXNzYWdlLg0KDQpUaGFuayB5b3UuDQoNClBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJv
+bm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZW1haWwuDQo=
