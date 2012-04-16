@@ -1,16 +1,19 @@
-Received: from vw-hfger.navico.com ([81.89.228.210])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SJYu4-0000Bs-N9
- for linux-mtd@lists.infradead.org; Sun, 15 Apr 2012 23:30:45 +0000
-From: Tom Isaacson <Tom.Isaacson@navico.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Exposing NAND chip information
-Date: Sun, 15 Apr 2012 23:20:25 +0000
-Message-ID: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
-Content-Language: en-NZ
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SJcsU-00062x-N7
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 03:45:23 +0000
+Received: by yhjj52 with SMTP id j52so2507055yhj.36
+ for <linux-mtd@lists.infradead.org>; Sun, 15 Apr 2012 20:45:19 -0700 (PDT)
 MIME-Version: 1.0
+From: John Williams <john.williams@petalogix.com>
+Date: Mon, 16 Apr 2012 13:44:59 +1000
+Message-ID: <CACPZLaXx3gHRZKxd=kD8rGUe5S4=Dc=NZhgbO1ND62w5FeaeqQ@mail.gmail.com>
+Subject: QSPI support in MTD
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Michal Simek <michal.simek@petalogix.com>,
+ Wendy Liang <wendy.liang@petalogix.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=
-=0A=
-Our production software needs to record the NAND chip type used in producti=
-on so we have a record in case we get problems later. The information we ne=
-ed is printed out by nand_get_flash_type(), e.g.:=0A=
-  NAND device: Manufacturer ID: 0x98, Chip ID: 0xd1 (Toshiba NAND 128MiB 3,=
-3V 8-bit)=0A=
-My plan is to add some files to the /sys tree to expose this information. B=
-ut the only part of that information stored is the device name, in mtd_info=
-.name. Is there any reason why I shouldn't add the manufacturer name and ID=
- and the chip ID to mtd_info so they can be accessed later on? Or should I =
-add them to mxd_mtd_s (in nand_base.c) and keep it local?=0A=
-=0A=
-Also, when I add the files to the /sys tree is there any naming convention =
-I should follow? I was going to copy the way the eMMC device does it:=0A=
-  manfid - Manufacturer ID=0A=
-  devid - Chip ID=0A=
-  manf_name - Manufacturer name=0A=
-  dev_name - Chip name=0A=
-=0A=
-Thanks for any help.=0A=
-=0A=
-Tom Isaacson=0A=
-Senior Software Developer=0A=
-Navico=0A=
+Hi,
+
+We are looking into adding support for QSPI flash devices in MTD.
+It's easy enough to hack this up with roughly the following:
+ 1. query the device's support for QSPI (vendor/device specific)
+ 2. enable QSPI transfers on the device (vendor/device specific)
+ 3. query or hope that the parent SPI controller is itself QSPI-capable
+ 4. hope that the PCB is actually connected for QSPI
+ 5. if (1),(3) and (4) are all true, use QPAGE read/write commands for
+data transfer (vendor/device specific - maybe).
+
+There's an awful lot of vendor and device specificity there, and also
+a little more 'hope' that I feel comfortable with.
+
+In our research so far we've seen two different versions of (1) and
+(2), from a sample size of 2.  The QPAGE data transfer commands
+themselves are the same between these two devices, so I'm not sure how
+much variability we are looking at there.
+
+Point (4) probably must remain at the 'hope' level - if there's a
+QSPI-capable controller connected to a QSPI-capable flash device, then
+short a destructive test where we speculatively write then read back a
+page using quad mode, I'm not sure how we can ever hope to know with
+any certainty that the board is actually wired for QSPI operations.
+
+You could maybe try a normal page read followed by a QSPI page read,
+but in the case of an empty flash device I suspect you'd get all 0xFF
+bytes in either case.
+
+Before we dive too far down this particular rabbit hole I'd really
+like to hear from anyone else who has looked into or attempted this.
+Our thinking so far is:
+
+ * extend the vendor/device table to capture info about how to query
+and set QSPI support for each particular known flash device
+ * add some property on the SPI controllers themselves regarding QSPI
+support, and have this be queried by the flash driver
+
+The sad thing is that the quick hack, non-portable version of this is
+a trivial patch, which may be how vendors are doing this already.
+However, doing it properly in a generic, runtime queried and managed
+way is already feeling like pain.  I hope I'm wrong.
+
+Thanks in advance for any contributions to the discussion.  Maybe
+someone's solved this already and we've just plain missed it.
+
+Regards,
+
+John
+--=20
+John Williams, PhD, B. Eng, B. IT
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com=A0=A0p: +61-7-30090663=A0 f: +61-7-30090663
