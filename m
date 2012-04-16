@@ -1,14 +1,17 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SJuXU-0001pG-93
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 22:36:53 +0000
-Received: by pbcun4 with SMTP id un4so7486560pbc.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Apr 2012 15:36:49 -0700 (PDT)
+ id 1SJuXW-0001pd-NQ
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 22:36:56 +0000
+Received: by dadn15 with SMTP id n15so9114789dad.16
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Apr 2012 15:36:54 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
-Date: Mon, 16 Apr 2012 15:35:53 -0700
-Message-Id: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: nand: nand_do_{read,
+ write}_ops - pass OOB buffer through
+Date: Mon, 16 Apr 2012 15:35:55 -0700
+Message-Id: <1334615755-15418-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
+References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
 Cc: Viresh Kumar <viresh.kumar@st.com>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
@@ -36,59 +39,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Now that we have a function parameter for the OOB buffer, we can pass the OOB
+buffer as an argument to the nand_ecc_ctrl functions. This allows drivers to
+know when OOB data must be returned to the upper layers and when it is simply
+needed for internal calculations, potentially saving time for NAND HW/SW that
+can simply avoid reading the OOB data.
 
-I made a proposal to change the nand_chip and nand_ecc_ctrl interfaces a few
-weeks ago to address a problem I see with a new NAND controller I'm working
-with. This new controller does not return OOB data easily when performing page
-reads/writes. However, currently these interfaces assume that OOB data is
-read/written to/from the nand_chip.oob_poi buffer, even when the high-level
-user did not request OOB data. I need to break that assumption with my NAND
-driver, and so I have developed the following changes to the NAND interfaces
-(see patch descriptions for more info).
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
-You can see the original proposal and a little discussion here:
-
-  http://lists.infradead.org/pipermail/linux-mtd/2012-March/040441.html
-
-Note that I could not compile all the affected drivers, since some required
-ARCH-specific builds that I am not familiar with.
-
-Artem: can you perform your regular compile tests? I compile-tested as many as
-I could.
-
-Others: if you care about your driver, please compile test and review to be
-sure I'm doing things safely for you. Because most in-kernel drivers seem to be
-perfecly happy using nand_chip.oob_poi for OOB data unconditionally, I have not
-struggled to port most of them to take advantage of this full change. However,
-I might make an attempt eventually, if I can get the proper amount of review
-support. I cannot test most of these drivers properly, and so I *need* your
-reviewing and testing to prevent breakage.
-
-Thanks for reviewing!
-
-Brian
-
-Brian Norris (2):
-  mtd: nand: add OOB argument to NAND {read,write}_page interfaces
-  mtd: nand: nand_do_{read,write}_ops - pass OOB buffer through
-
- drivers/mtd/nand/atmel_nand.c          |    7 +-
- drivers/mtd/nand/bcm_umi_bch.c         |   10 ++-
- drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
- drivers/mtd/nand/bf5xx_nand.c          |    4 +-
- drivers/mtd/nand/cafe_nand.c           |   26 ++++---
- drivers/mtd/nand/denali.c              |    8 +-
- drivers/mtd/nand/docg4.c               |   12 ++--
- drivers/mtd/nand/fsl_elbc_nand.c       |    7 +-
- drivers/mtd/nand/fsl_ifc_nand.c        |    4 +-
- drivers/mtd/nand/fsmc_nand.c           |    3 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    5 +-
- drivers/mtd/nand/nand_base.c           |  131 ++++++++++++++++++--------------
- drivers/mtd/nand/pxa3xx_nand.c         |    4 +-
- drivers/mtd/nand/sh_flctl.c            |    4 +-
- include/linux/mtd/nand.h               |   11 ++-
- 15 files changed, 132 insertions(+), 106 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 95ba987..a206f43 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1475,7 +1475,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	uint32_t max_oobsize = ops->mode == MTD_OPS_AUTO_OOB ?
+ 		mtd->oobavail : mtd->oobsize;
+ 
+-	uint8_t *bufpoi, *oob, *buf;
++	uint8_t *bufpoi, *oobpoi, *oob, *buf;
+ 
+ 	stats = mtd->ecc_stats;
+ 
+@@ -1489,6 +1489,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 
+ 	buf = ops->datbuf;
+ 	oob = ops->oobbuf;
++	oobpoi = oob ? chip->oob_poi : NULL;
+ 
+ 	while (1) {
+ 		bytes = min(mtd->writesize - col, readlen);
+@@ -1506,13 +1507,13 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			/* Now read the page into the buffer */
+ 			if (unlikely(ops->mode == MTD_OPS_RAW))
+ 				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi,
+-							      NULL, page);
++							      oobpoi, page);
+ 			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
+ 				ret = chip->ecc.read_subpage(mtd, chip,
+ 							col, bytes, bufpoi);
+ 			else
+ 				ret = chip->ecc.read_page(mtd, chip, bufpoi,
+-							  NULL, page);
++							  oobpoi, page);
+ 			if (ret < 0) {
+ 				if (!aligned)
+ 					/* Invalidate page cache */
+@@ -1535,7 +1536,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
+ 
+ 			if (unlikely(oob)) {
+-
+ 				int toread = min(oobreadlen, max_oobsize);
+ 
+ 				if (toread) {
+@@ -2256,7 +2256,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	while (1) {
+ 		int bytes = mtd->writesize;
+ 		int cached = writelen > bytes && page != blockmask;
+-		uint8_t *wbuf = buf;
++		uint8_t *wbuf = buf, *oobpoi;
+ 
+ 		/* Partial page write? */
+ 		if (unlikely(column || writelen < (mtd->writesize - 1))) {
+@@ -2272,12 +2272,14 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 			size_t len = min(oobwritelen, oobmaxlen);
+ 			oob = nand_fill_oob(mtd, oob, len, ops);
+ 			oobwritelen -= len;
++			oobpoi = chip->oob_poi;
+ 		} else {
++			oobpoi = NULL;
+ 			/* We still need to erase leftover OOB data */
+ 			memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 		}
+ 
+-		ret = chip->write_page(mtd, chip, wbuf, NULL, page, cached,
++		ret = chip->write_page(mtd, chip, wbuf, oobpoi, page, cached,
+ 				       (ops->mode == MTD_OPS_RAW));
+ 		if (ret)
+ 			break;
 -- 
 1.7.5.4.2.g519b1
