@@ -1,18 +1,21 @@
-Received: from zmc.proxad.net ([212.27.53.206])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SJful-00048M-Lt
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 06:59:56 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Exposing NAND chip information
-Date: Mon, 16 Apr 2012 08:59:48 +0200
-Message-ID: <8396132.PHseJUhzUe@bender>
-In-Reply-To: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
-References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SJlB6-0005Qw-Lj
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 12:37:09 +0000
+Date: Mon, 16 Apr 2012 14:37:06 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: mtdchar kernel oops
+In-Reply-To: <20120415215355.GS6589@ZenIV.linux.org.uk>
+Message-ID: <alpine.DEB.2.00.1204161329200.21808@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
+ <20120415153220.GR6589@ZenIV.linux.org.uk>
+ <alpine.DEB.2.00.1204151951560.16000@eristoteles.iwoars.net>
+ <20120415215355.GS6589@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Tom Isaacson <Tom.Isaacson@navico.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The troubled asm pair corresponds to this line:
+this_cpu_add(mnt->mnt_pcp->mnt_count, n) in  the inline mnt_add_count().
+So I suppose that perhaps either mnt is bad, or mnt_pcp is bad.
 
-On Sunday 15 April 2012 23:20:25 Tom Isaacson wrote:
-> Hi,
-> 
-> Our production software needs to record the NAND chip type used in
-> production so we have a record in case we get problems later. The
-> information we need is printed out by nand_get_flash_type(), e.g.: NAND
-> device: Manufacturer ID: 0x98, Chip ID: 0xd1 (Toshiba NAND 128MiB 3,3V
-> 8-bit) My plan is to add some files to the /sys tree to expose this
-> information. But the only part of that information stored is the device
-> name, in mtd_info.name. Is there any reason why I shouldn't add the
-> manufacturer name and ID and the chip ID to mtd_info so they can be
-> accessed later on? Or should I add them to mxd_mtd_s (in nand_base.c) and
-> keep it local?
-> 
-> Also, when I add the files to the /sys tree is there any naming convention I
-> should follow? I was going to copy the way the eMMC device does it: manfid
-> - Manufacturer ID
->   devid - Chip ID
->   manf_name - Manufacturer name
->   dev_name - Chip name
+I'm using nandsim to simulate the mtd device. Steps are simple, load the
+modules:
+nand_ecc nand nand_ids mtd  mtd_blkdevs mtdblock mtdchar
+nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
 
-I have the exact same requirement and cooked up a patch to do this for NAND:
-http://patchwork.ozlabs.org/patch/94407/
+then `ubiformat /dev/mtd0` does the oops.
 
-however, to be complete it would also need to expose such informations for SPI 
-and NOR flashes, which I have not done yet.
---
-Florian
+>
+> Could you add printk into mtdchar_open(), dumping mnt and count values
+> right after simple_pin_fs() call?
+>
+
+It oopses before it returns from the simple_pin_fs call, so that won't be
+possible...
+
+Cheers,
+Joel
