@@ -1,20 +1,14 @@
-Received: from vw-hfger.navico.com ([81.89.228.210])
+Received: from moh2-ve3.go2.pl ([193.17.41.208])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SJvhe-0005LQ-TZ
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2012 23:51:27 +0000
-From: Tom Isaacson <Tom.Isaacson@navico.com>
-To: Florian Fainelli <ffainelli@freebox.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: Exposing NAND chip information
-Date: Mon, 16 Apr 2012 23:51:20 +0000
-Message-ID: <B36E81988B048A4FA3600EDE585F756BD0F7AC@EXCH02-AKLNZ.MARINE.NET.INT>
-References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>,
- <8396132.PHseJUhzUe@bender>
-In-Reply-To: <8396132.PHseJUhzUe@bender>
-Content-Language: en-NZ
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1SJxJu-0007lM-Co
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 01:35:03 +0000
+Subject: =?UTF-8?Q?TRANSFER_INFORMATION!?=
+From: =?UTF-8?Q?jamesmichaels?= <jamesmichaels@o2.pl>
+Mime-Version: 1.0
+Message-ID: <34cb467c.700ca28f.4f8cc6db.c6724@o2.pl>
+Date: Tue, 17 Apr 2012 03:26:51 +0200
+Content-Type: multipart/mixed;
+ boundary="==o2.pl-WebMail-13a2e5bc.6b5e10b3.c672a=="
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +18,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I have the exact same requirement and cooked up a patch to do this for NA=
-ND:=0A=
-> http://patchwork.ozlabs.org/patch/94407/=0A=
-=0A=
-Ah, your patch shows you've added the sysfs files in mtdcore.c, which means=
- they'll show up in:=0A=
-/sys/class/mtd/..=0A=
-The code I've done adds them in mxc_nd2.c (the device I have) so they appea=
-r in:=0A=
-/sys/devices/platform/mxc_nandv2_flash.0/..=0A=
-Obviously this only works for one type of flash right now, but I was thinki=
-ng of extending all the separate uses of DEVICE_ATTR and manage_sysfs_files=
-() to call back to a generic sysfs function in nand_base.c so these new par=
-ameters appear for all NAND devices.=0A=
-I can't find anything online that gives a guide to where files should be ad=
-ded to sysfs - is there such a thing, or do people just make it up as they =
-go along?=0A=
-=0A=
-> however, to be complete it would also need to expose such informations fo=
-r SPI=0A=
-> and NOR flashes, which I have not done yet.=0A=
-=0A=
-I don't have access to those devices so I can't test any code I might attem=
-pt.=0A=
-=0A=
-Tom=0A=
+This is a multi-part message in MIME format.
+
+--==o2.pl-WebMail-13a2e5bc.6b5e10b3.c672a==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+
+--==o2.pl-WebMail-13a2e5bc.6b5e10b3.c672a==
+Content-Type: application/msword;
+	name="=?UTF-8?Q?OPEN_YOUR_ATTACHMENT_FILE_FOR_YOUR?=
+	=?UTF-8?Q?_TRANSFER_INFORMATION.rtf?="
+Content-Disposition: attachment;
+	filename="=?UTF-8?Q?OPEN_YOUR_ATTACHMENT_FILE_FOR_YOUR?=
+	=?UTF-8?Q?_TRANSFER_INFORMATION.rtf?="
+Content-Transfer-Encoding: base64
+
+e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcdWMxXGRlZmYwXHN0c2hmZGJjaDBcc3RzaGZsb2No
+MFxzdHNoZmhpY2gwXHN0c2hmYmkwXGRlZmxhbmcxMDMzXGRlZmxhbmdmZTEwMzN7XGZvbnR0
+Ymx7XGYwXGZyb21hblxmY2hhcnNldDBcZnBycTJ7XCpccGFub3NlIDAyMDIwNjAzMDUwNDA1
+MDIwMzA0fVRpbWVzIE5ldyBSb21hbjt9e1xmMVxmc3dpc3NcZmNoYXJzZXQwXGZwcnEye1wq
+XHBhbm9zZSAwMjBiMDYwNDAyMDIwMjAyMDIwNH1BcmlhbDt9DQp7XGYzN1xmcm9tYW5cZmNo
+YXJzZXQyMzhcZnBycTIgVGltZXMgTmV3IFJvbWFuIENFO317XGYzOFxmcm9tYW5cZmNoYXJz
+ZXQyMDRcZnBycTIgVGltZXMgTmV3IFJvbWFuIEN5cjt9e1xmNDBcZnJvbWFuXGZjaGFyc2V0
+MTYxXGZwcnEyIFRpbWVzIE5ldyBSb21hbiBHcmVlazt9e1xmNDFcZnJvbWFuXGZjaGFyc2V0
+MTYyXGZwcnEyIFRpbWVzIE5ldyBSb21hbiBUdXI7fQ0Ke1xmNDJcZnJvbWFuXGZjaGFyc2V0
+MTc3XGZwcnEyIFRpbWVzIE5ldyBSb21hbiAoSGVicmV3KTt9e1xmNDNcZnJvbWFuXGZjaGFy
+c2V0MTc4XGZwcnEyIFRpbWVzIE5ldyBSb21hbiAoQXJhYmljKTt9e1xmNDRcZnJvbWFuXGZj
+aGFyc2V0MTg2XGZwcnEyIFRpbWVzIE5ldyBSb21hbiBCYWx0aWM7fXtcZjQ1XGZyb21hblxm
+Y2hhcnNldDE2M1xmcHJxMiBUaW1lcyBOZXcgUm9tYW4gKFZpZXRuYW1lc2UpO30NCntcZjQ3
+XGZzd2lzc1xmY2hhcnNldDIzOFxmcHJxMiBBcmlhbCBDRTt9e1xmNDhcZnN3aXNzXGZjaGFy
+c2V0MjA0XGZwcnEyIEFyaWFsIEN5cjt9e1xmNTBcZnN3aXNzXGZjaGFyc2V0MTYxXGZwcnEy
+IEFyaWFsIEdyZWVrO317XGY1MVxmc3dpc3NcZmNoYXJzZXQxNjJcZnBycTIgQXJpYWwgVHVy
+O317XGY1Mlxmc3dpc3NcZmNoYXJzZXQxNzdcZnBycTIgQXJpYWwgKEhlYnJldyk7fQ0Ke1xm
+NTNcZnN3aXNzXGZjaGFyc2V0MTc4XGZwcnEyIEFyaWFsIChBcmFiaWMpO317XGY1NFxmc3dp
+c3NcZmNoYXJzZXQxODZcZnBycTIgQXJpYWwgQmFsdGljO317XGY1NVxmc3dpc3NcZmNoYXJz
+ZXQxNjNcZnBycTIgQXJpYWwgKFZpZXRuYW1lc2UpO319e1xjb2xvcnRibDtccmVkMFxncmVl
+bjBcYmx1ZTA7XHJlZDBcZ3JlZW4wXGJsdWUyNTU7XHJlZDBcZ3JlZW4yNTVcYmx1ZTI1NTtc
+cmVkMFxncmVlbjI1NVxibHVlMDsNClxyZWQyNTVcZ3JlZW4wXGJsdWUyNTU7XHJlZDI1NVxn
+cmVlbjBcYmx1ZTA7XHJlZDI1NVxncmVlbjI1NVxibHVlMDtccmVkMjU1XGdyZWVuMjU1XGJs
+dWUyNTU7XHJlZDBcZ3JlZW4wXGJsdWUxMjg7XHJlZDBcZ3JlZW4xMjhcYmx1ZTEyODtccmVk
+MFxncmVlbjEyOFxibHVlMDtccmVkMTI4XGdyZWVuMFxibHVlMTI4O1xyZWQxMjhcZ3JlZW4w
+XGJsdWUwO1xyZWQxMjhcZ3JlZW4xMjhcYmx1ZTA7XHJlZDEyOFxncmVlbjEyOFxibHVlMTI4
+Ow0KXHJlZDE5MlxncmVlbjE5MlxibHVlMTkyO317XHN0eWxlc2hlZXR7XHFsIFxsaTBccmkw
+XHdpZGN0bHBhclxhc3BhbHBoYVxhc3BudW1cZmFhdXRvXGFkanVzdHJpZ2h0XHJpbjBcbGlu
+MFxpdGFwMCBcZnMyNFxsYW5nMTAzM1xsYW5nZmUxMDMzXGNncmlkXGxhbmducDEwMzNcbGFu
+Z2ZlbnAxMDMzIFxzbmV4dDAgTm9ybWFsO317XCpcY3MxMCBcYWRkaXRpdmUgXHNzZW1paGlk
+ZGVuIERlZmF1bHQgUGFyYWdyYXBoIEZvbnQ7fXtcKg0KXHRzMTFcdHNyb3dkXHRyZnRzV2lk
+dGhCM1x0cnBhZGRsMTA4XHRycGFkZHIxMDhcdHJwYWRkZmwzXHRycGFkZGZ0M1x0cnBhZGRm
+YjNcdHJwYWRkZnIzXHRyY2JwYXQxXHRyY2ZwYXQxXHRzY2VsbHdpZHRoZnRzMFx0c3ZlcnRh
+bHRcdHNicmRydFx0c2JyZHJsXHRzYnJkcmJcdHNicmRyclx0c2JyZHJkZ2xcdHNicmRyZGdy
+XHRzYnJkcmhcdHNicmRydiANClxxbCBcbGkwXHJpMFx3aWRjdGxwYXJcYXNwYWxwaGFcYXNw
+bnVtXGZhYXV0b1xhZGp1c3RyaWdodFxyaW4wXGxpbjBcaXRhcDAgXGZzMjBcbGFuZzEwMjRc
+bGFuZ2ZlMTAyNFxjZ3JpZFxsYW5nbnAxMDI0XGxhbmdmZW5wMTAyNCBcc25leHQxMSBcc3Nl
+bWloaWRkZW4gTm9ybWFsIFRhYmxlO319e1wqXGxhdGVudHN0eWxlc1xsc2RzdGltYXgxNTZc
+bHNkbG9ja2VkZGVmMH17XCpccnNpZHRibCBccnNpZDE0MzE5Nlxyc2lkODE5MDU5DQpccnNp
+ZDQwMTQyODJccnNpZDczMDE1NzB9e1wqXGdlbmVyYXRvciBNaWNyb3NvZnQgV29yZCAxMS4w
+LjY1Njg7fXtcaW5mb3tcdGl0bGUgSGVsbG8sfXtcYXV0aG9yIFVTRVJ9e1xvcGVyYXRvciBV
+U0VSfXtcY3JlYXRpbVx5cjIwMTJcbW80XGR5MTNcaHIyXG1pbjMwfXtccmV2dGltXHlyMjAx
+MlxtbzRcZHkxNlxocjJ9e1x2ZXJzaW9uM317XGVkbWluczF9e1xub2ZwYWdlczF9e1xub2Z3
+b3JkczEwNn17XG5vZmNoYXJzNjA1fQ0Ke1wqXGNvbXBhbnkgPGFyYWJpYW5ob3JzZT59e1xu
+b2ZjaGFyc3dzNzEwfXtcdmVybjI0NTc5fX1cd2lkb3djdHJsXGZ0bmJqXGFlbmRkb2Ncbm94
+bGF0dG95ZW5cZXhwc2hydG5cbm91bHRybHNwY1xkbnRibG5zYmRiXG5vc3BhY2Vmb3J1bFxo
+eXBoY2FwczBcaG9yemRvY1xkZ2hzcGFjZTEyMFxkZ3ZzcGFjZTEyMFxkZ2hvcmlnaW4xNzAx
+XGRndm9yaWdpbjE5ODRcZGdoc2hvdzBcZGd2c2hvdzMNClxqY29tcHJlc3Ncdmlld2tpbmQ0
+XHZpZXdzY2FsZTExMFxub2xuaHRhZGp0YmxccnNpZHJvb3QxNDMxOTYgXGZldDBcc2VjdGQg
+XGxpbmV4MFxzZWN0ZGVmYXVsdGNsXHNmdG5iaiB7XCpccG5zZWNsdmwxXHBudWNybVxwbnN0
+YXJ0MVxwbmluZGVudDcyMFxwbmhhbmcge1xwbnR4dGEgLn19e1wqXHBuc2VjbHZsMlxwbnVj
+bHRyXHBuc3RhcnQxXHBuaW5kZW50NzIwXHBuaGFuZyB7XHBudHh0YSAufX17XCpccG5zZWNs
+dmwzDQpccG5kZWNccG5zdGFydDFccG5pbmRlbnQ3MjBccG5oYW5nIHtccG50eHRhIC59fXtc
+KlxwbnNlY2x2bDRccG5sY2x0clxwbnN0YXJ0MVxwbmluZGVudDcyMFxwbmhhbmcge1xwbnR4
+dGEgKX19e1wqXHBuc2VjbHZsNVxwbmRlY1xwbnN0YXJ0MVxwbmluZGVudDcyMFxwbmhhbmcg
+e1xwbnR4dGIgKH17XHBudHh0YSApfX17XCpccG5zZWNsdmw2XHBubGNsdHJccG5zdGFydDFc
+cG5pbmRlbnQ3MjBccG5oYW5nIHtccG50eHRiICh9e1xwbnR4dGEgKX19DQp7XCpccG5zZWNs
+dmw3XHBubGNybVxwbnN0YXJ0MVxwbmluZGVudDcyMFxwbmhhbmcge1xwbnR4dGIgKH17XHBu
+dHh0YSApfX17XCpccG5zZWNsdmw4XHBubGNsdHJccG5zdGFydDFccG5pbmRlbnQ3MjBccG5o
+YW5nIHtccG50eHRiICh9e1xwbnR4dGEgKX19e1wqXHBuc2VjbHZsOVxwbmxjcm1ccG5zdGFy
+dDFccG5pbmRlbnQ3MjBccG5oYW5nIHtccG50eHRiICh9e1xwbnR4dGEgKX19XHBhcmRccGxh
+aW4gDQpccWwgXGxpMFxyaTBcd2lkY3RscGFyXGFzcGFscGhhXGFzcG51bVxmYWF1dG9cYWRq
+dXN0cmlnaHRccmluMFxsaW4wXGl0YXAwXHBhcmFyc2lkODE5MDU5IFxmczI0XGxhbmcxMDMz
+XGxhbmdmZTEwMzNcY2dyaWRcbGFuZ25wMTAzM1xsYW5nZmVucDEwMzMge1xpXGYxXGZzMjBc
+aW5zcnNpZDgxOTA1OVxjaGFycnNpZDgxOTA1OSANClxwYXIgDQpccGFyIEhlbGxvLA0KXHBh
+ciANClxwYXIgSSBoYXZlIGNvbnRhY3RlZCB5b3UgYmVjYXVzZSBJJ3ZlIHNlbnQgeW91IHRo
+ZSBmaXJzdCBwYXltZW50IG9mICQ1LDAwMA0KXHBhciB0b2RheSBmcm9tIHlvdXIgd2lubmlu
+ZyBmdW5kcyB0b3RhbCBhbW91bnQgb2YgJDEuNU1pbGxpb24gVVNELFRoZXJlZm9yZQ0KXHBh
+ciB5b3UgbmVlZCB0byBjb250YWN0IHdlc3Rlcm4gdW5pb24gYWdlbnQgTXIuIERhcnJlbGwg
+TW9yZ2FuICwgZm9yIGhpbSB0bw0KXHBhciBnaXZlIHlvdSB0aGUgdHJhbnNmZXIgcGF5bWVu
+dCBpbmZvcm1hdGlvbiBhbmQgTVRDTi4NClxwYXIgDQpccGFyIEFnZW50OiBNci4gRGFycmVs
+bCBNb3JnYW4NClxwYXIgRW1haWw6IGluZm8ud3VtdHJhbnNmZXJAYWRtaW5pc3RyYXRpdm9z
+LmNvbQ0KXHBhciBQaG9uZTogKzIyOSA5OTgwNzU4NQ0KXHBhciANClxwYXIgUGxlYXNlIHRy
+eSB0byBjb250YWN0IGhpbSB0b2RheSBmb3IgaGltIHRvIGZvcndhcmQgdGhlIHBheW1lbnQg
+aW5mb3JtYXRpb24NClxwYXIgdG8geW91LCBSZW1lbWJlciB0byBJbmRpY2F0ZSB0aGUgcmVn
+aXN0cmF0aW9uIGNvZGUgb2YgRUItMjUyMCB0byBoaW0gd2hlbg0KXHBhciBlLW1haWxpbmcg
+b3IgY2FsbGluZyBoaW0sIEFsc28gaGUgd2lsbCBiZSBzZW5kaW5nIHlvdSAkNSwwMDAuMDAg
+ZGFpbHkgYXMNClxwYXIgcGVyIG15IGRpc2N1c3Npb24gd2l0aCBoaW0uDQpccGFyIA0KXHBh
+ciBEbyBnZXQgaW4gdG91Y2ggd2l0aCBtZSBvbmNlIHlvdSBoYXZlIFJlY2VpdmVkIHRoZSB0
+cmFuc2Zlci4NClxwYXIgDQpccGFyIFNpbmNlcmVseSwNClxwYXIgTXIuIEZyZWQgSm9obnNv
+bn17XGlcZjFcZnMyMFxpbnNyc2lkMTQzMTk2XGNoYXJyc2lkODE5MDU5IA0KXHBhciB9fQ==
+
+--==o2.pl-WebMail-13a2e5bc.6b5e10b3.c672a==--
