@@ -1,22 +1,20 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK4h3-000695-N9
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:27:30 +0000
-Received: by yenm10 with SMTP id m10so3247754yen.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 02:27:24 -0700 (PDT)
+Received: from zmc.proxad.net ([212.27.53.206])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SK4uH-0002v4-Gb
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:41:09 +0000
+Message-ID: <4F8D3A50.5000203@freebox.fr>
+Date: Tue, 17 Apr 2012 11:39:28 +0200
+From: Florian Fainelli <ffainelli@freebox.fr>
 MIME-Version: 1.0
-In-Reply-To: <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
-References: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
- <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
-Date: Tue, 17 Apr 2012 11:27:23 +0200
-Message-ID: <CACRpkdYwRFFM+W3+Yg9Si3_TVjExjCkMQ7HXVa-PCbYU_UJ=6g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: fsmc_nand: Add clk_{un}prepare() support
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Viresh Kumar <viresh.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: artem.bityutskiy@linux.intel.com, spear-devel@list.st.com,
- viresh.linux@gmail.com, linux-mtd@lists.infradead.org, sr@denx.de,
- dwmw2@infradead.org
+To: Tom Isaacson <Tom.Isaacson@navico.com>
+Subject: Re: Exposing NAND chip information
+References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>,
+ <8396132.PHseJUhzUe@bender>
+ <B36E81988B048A4FA3600EDE585F756BD0F7AC@EXCH02-AKLNZ.MARINE.NET.INT>
+In-Reply-To: <B36E81988B048A4FA3600EDE585F756BD0F7AC@EXCH02-AKLNZ.MARINE.NET.INT>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 17, 2012 at 10:56 AM, Viresh Kumar <viresh.kumar@st.com> wrote:
+Hi Tom,
 
-> clk_{un}prepare is mandatory for platforms using common clock framework. Since
-> this driver is used by SPEAr platform, which supports common clock framework,
-> add clk_{un}prepare() support for it.
+Le 04/17/12 01:51, Tom Isaacson a écrit :
+>> I have the exact same requirement and cooked up a patch to do this for NAND:
+>> http://patchwork.ozlabs.org/patch/94407/
 >
-> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+> Ah, your patch shows you've added the sysfs files in mtdcore.c, which means they'll show up in:
+> /sys/class/mtd/..
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Yes, when I first asked what was the best place to add those attributes, 
+I initially wanted to create something like /sys/class/mtd/nand0 or such 
+and put attributes there, but Artem preferred having them in 
+/sys/class/mtd/mtd<N>/
 
-BTW: this driver looks like we could use some runtime PM on it to gate off the
-block when not used.
+> The code I've done adds them in mxc_nd2.c (the device I have) so they appear in:
+> /sys/devices/platform/mxc_nandv2_flash.0/..
+> Obviously this only works for one type of flash right now, but I was thinking of extending all the separate uses of DEVICE_ATTR and manage_sysfs_files() to call back to a generic sysfs function in nand_base.c so these new parameters appear for all NAND devices.
+> I can't find anything online that gives a guide to where files should be added to sysfs - is there such a thing, or do people just make it up as they go along?
+>
+>> however, to be complete it would also need to expose such informations for SPI
+>> and NOR flashes, which I have not done yet.
+>
+> I don't have access to those devices so I can't test any code I might attempt.
 
-Yours,
-Linus Walleij
+I do, it's just that I have been lazy on working again on this.
+--
+Florian
