@@ -1,14 +1,12 @@
-Received: from eu1sys200aog101.obsmtp.com ([207.126.144.111])
+Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK6xG-000657-1A
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 11:52:21 +0000
+ id 1SK6xG-000658-Ea
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 11:52:22 +0000
 From: Viresh Kumar <viresh.kumar@st.com>
 To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 2/2 V2] mtd: fsmc_nand: Add clk_{un}prepare() support
-Date: Tue, 17 Apr 2012 17:07:57 +0530
-Message-ID: <0e30cc60464d6052706b96a020700ecbf2121d71.1334662614.git.viresh.kumar@st.com>
-In-Reply-To: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
-References: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
+Subject: [PATCH 1/2 V2] mtd: spear_smi: Add clk_{un}prepare() support
+Date: Tue, 17 Apr 2012 17:07:56 +0530
+Message-ID: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Viresh Kumar <viresh.kumar@st.com>, linus.walleij@linaro.org,
@@ -32,62 +30,62 @@ Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 V1->V2:
 - Use clk_prepare_enable and clk_disable_unprepare
 
- drivers/mtd/nand/fsmc_nand.c |   14 +++++++-------
+ drivers/mtd/devices/spear_smi.c |   14 +++++++-------
  1 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 1b8330e..9d7f417 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -994,9 +994,9 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		return PTR_ERR(host->clk);
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 797d43c..6796036 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -990,9 +990,9 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
+ 		goto err_clk;
  	}
  
--	ret = clk_enable(host->clk);
-+	ret = clk_prepare_enable(host->clk);
+-	ret = clk_enable(dev->clk);
++	ret = clk_prepare_enable(dev->clk);
  	if (ret)
 -		goto err_clk_enable;
 +		goto err_clk_prepare_enable;
  
- 	/*
- 	 * This device ID is actually a common AMBA ID as used on the
-@@ -1176,8 +1176,8 @@ err_req_write_chnl:
- 	if (host->mode == USE_DMA_ACCESS)
- 		dma_release_channel(host->read_dma_chan);
- err_req_read_chnl:
--	clk_disable(host->clk);
+ 	ret = request_irq(irq, spear_smi_int_handler, 0, pdev->name, dev);
+ 	if (ret) {
+@@ -1020,8 +1020,8 @@ err_bank_setup:
+ 	free_irq(irq, dev);
+ 	platform_set_drvdata(pdev, NULL);
+ err_irq:
+-	clk_disable(dev->clk);
 -err_clk_enable:
-+	clk_disable_unprepare(host->clk);
++	clk_disable_unprepare(dev->clk);
 +err_clk_prepare_enable:
- 	clk_put(host->clk);
- 	return ret;
- }
-@@ -1198,7 +1198,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- 			dma_release_channel(host->write_dma_chan);
- 			dma_release_channel(host->read_dma_chan);
- 		}
--		clk_disable(host->clk);
-+		clk_disable_unprepare(host->clk);
- 		clk_put(host->clk);
- 	}
+ 	clk_put(dev->clk);
+ err_clk:
+ 	iounmap(dev->io_base);
+@@ -1074,7 +1074,7 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
+ 	irq = platform_get_irq(pdev, 0);
+ 	free_irq(irq, dev);
  
-@@ -1210,7 +1210,7 @@ static int fsmc_nand_suspend(struct device *dev)
- {
- 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
- 	if (host)
--		clk_disable(host->clk);
-+		clk_disable_unprepare(host->clk);
+-	clk_disable(dev->clk);
++	clk_disable_unprepare(dev->clk);
+ 	clk_put(dev->clk);
+ 	iounmap(dev->io_base);
+ 	kfree(dev);
+@@ -1091,7 +1091,7 @@ int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
+ 	struct spear_smi *dev = platform_get_drvdata(pdev);
+ 
+ 	if (dev && dev->clk)
+-		clk_disable(dev->clk);
++		clk_disable_unprepare(dev->clk);
+ 
  	return 0;
  }
+@@ -1102,7 +1102,7 @@ int spear_smi_resume(struct platform_device *pdev)
+ 	int ret = -EPERM;
  
-@@ -1218,7 +1218,7 @@ static int fsmc_nand_resume(struct device *dev)
- {
- 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
- 	if (host) {
--		clk_enable(host->clk);
-+		clk_prepare_enable(host->clk);
- 		fsmc_nand_setup(host->regs_va, host->bank,
- 				host->nand.options & NAND_BUSWIDTH_16,
- 				host->dev_timings);
+ 	if (dev && dev->clk)
+-		ret = clk_enable(dev->clk);
++		ret = clk_prepare_enable(dev->clk);
+ 
+ 	if (!ret)
+ 		spear_smi_hw_init(dev);
 -- 
 1.7.9
