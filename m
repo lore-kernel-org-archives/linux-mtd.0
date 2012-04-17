@@ -1,17 +1,21 @@
-Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK6xG-000658-Ea
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 11:52:22 +0000
-From: Viresh Kumar <viresh.kumar@st.com>
-To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 1/2 V2] mtd: spear_smi: Add clk_{un}prepare() support
-Date: Tue, 17 Apr 2012 17:07:56 +0530
-Message-ID: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SK84e-00050C-5A
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 13:04:00 +0000
+Received: by pbcun4 with SMTP id un4so8266262pbc.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 06:03:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Viresh Kumar <viresh.kumar@st.com>, linus.walleij@linaro.org,
- spear-devel@list.st.com, linux-mtd@lists.infradead.org, viresh.linux@gmail.com,
- sr@denx.de
+In-Reply-To: <1334336350.13160.16.camel@sauron.fi.intel.com>
+References: <CAHvCehVNgTgL+vY8SV1APN_xokogCM=Q+c7U1X9-_H1jn47Dpg@mail.gmail.com>
+ <1334336350.13160.16.camel@sauron.fi.intel.com>
+Date: Tue, 17 Apr 2012 21:03:57 +0800
+Message-ID: <CAHvCehW+wXWC6MmPsjsZ6mr3i9CPR48anjSr-5rq8T7A8HEVhA@mail.gmail.com>
+Subject: Re: UBIFS recovery fail after power-cut
+From: b w <wdjjwb@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-clk_{un}prepare is mandatory for platforms using common clock framework. Since
-this driver is used by SPEAr platform, which supports common clock framework,
-add clk_{un}prepare() support for it.
+> On Wed, 2012-04-04 at 20:09 +0800, b w wrote:
+>
+>> Then in ubifs_recover_leb,when call no_more_nodes this function return
+>> 0 (which i think
+>> should be return 1).At last recovery failed,so mount failed too.
+>
+> We have this code in that function:
+>
+> =A0 =A0 =A0 =A0/* Check for empty space after the corrupt node's common h=
+eader */
+> =A0 =A0 =A0 =A0skip =3D ALIGN(offs + UBIFS_CH_SZ, c->max_write_size) - of=
+fs;
+> =A0 =A0 =A0 =A0if (is_empty(buf + skip, len - skip))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 1;
+>
+> UBIFS_CH_SZ is 64, c->max_write_size is 64, then ALIGN(offs +
+> UBIFS_CH_SZ, c->max_write_size) should be 0x2ab3f40, which points to the
+> area with all 0xFFs, so 'is_empty' should return 1.
+>
+> Did you check that your c->max_write_size is 64?
+>
+> Preserve the image for investigations.
+>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
----
-V1->V2:
-- Use clk_prepare_enable and clk_disable_unprepare
-
- drivers/mtd/devices/spear_smi.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 797d43c..6796036 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -990,9 +990,9 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 		goto err_clk;
- 	}
- 
--	ret = clk_enable(dev->clk);
-+	ret = clk_prepare_enable(dev->clk);
- 	if (ret)
--		goto err_clk_enable;
-+		goto err_clk_prepare_enable;
- 
- 	ret = request_irq(irq, spear_smi_int_handler, 0, pdev->name, dev);
- 	if (ret) {
-@@ -1020,8 +1020,8 @@ err_bank_setup:
- 	free_irq(irq, dev);
- 	platform_set_drvdata(pdev, NULL);
- err_irq:
--	clk_disable(dev->clk);
--err_clk_enable:
-+	clk_disable_unprepare(dev->clk);
-+err_clk_prepare_enable:
- 	clk_put(dev->clk);
- err_clk:
- 	iounmap(dev->io_base);
-@@ -1074,7 +1074,7 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
- 	irq = platform_get_irq(pdev, 0);
- 	free_irq(irq, dev);
- 
--	clk_disable(dev->clk);
-+	clk_disable_unprepare(dev->clk);
- 	clk_put(dev->clk);
- 	iounmap(dev->io_base);
- 	kfree(dev);
-@@ -1091,7 +1091,7 @@ int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
- 	struct spear_smi *dev = platform_get_drvdata(pdev);
- 
- 	if (dev && dev->clk)
--		clk_disable(dev->clk);
-+		clk_disable_unprepare(dev->clk);
- 
- 	return 0;
- }
-@@ -1102,7 +1102,7 @@ int spear_smi_resume(struct platform_device *pdev)
- 	int ret = -EPERM;
- 
- 	if (dev && dev->clk)
--		ret = clk_enable(dev->clk);
-+		ret = clk_prepare_enable(dev->clk);
- 
- 	if (!ret)
- 		spear_smi_hw_init(dev);
--- 
-1.7.9
+Thank you very much. I do not apply this patch: "UBIFS: use
+max_write_size during recovery". So the code is "skip =3D ALIGN(offs +
+UBIFS_CH_SZ, c->min_io_size) - offs;" the c->min_io_size is 8. When i
+modify MTD/UBI/UBIFS and apply that patch,use  c->max_write_size
+instead,this problem is solved.I think that patch not just an optimize
+but fix this problem. Should we use "fix" in the title of that patch?
+By the way, in my machine UBIFS_CH_SZ is 24 not 64.
