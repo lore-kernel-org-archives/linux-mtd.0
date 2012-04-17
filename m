@@ -1,20 +1,16 @@
-Received: from zmc.proxad.net ([212.27.53.206])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SK4uH-0002v4-Gb
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:41:09 +0000
-Message-ID: <4F8D3A50.5000203@freebox.fr>
-Date: Tue, 17 Apr 2012 11:39:28 +0200
-From: Florian Fainelli <ffainelli@freebox.fr>
-MIME-Version: 1.0
-To: Tom Isaacson <Tom.Isaacson@navico.com>
-Subject: Re: Exposing NAND chip information
-References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>,
- <8396132.PHseJUhzUe@bender>
- <B36E81988B048A4FA3600EDE585F756BD0F7AC@EXCH02-AKLNZ.MARINE.NET.INT>
-In-Reply-To: <B36E81988B048A4FA3600EDE585F756BD0F7AC@EXCH02-AKLNZ.MARINE.NET.INT>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SK6LC-00071K-Qu
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 11:13:02 +0000
+Received: by wibhm17 with SMTP id hm17so489988wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 04:12:57 -0700 (PDT)
+Sender: "Ivantchek ." <ivantchek@gmail.com>
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: omap: fix race condition in omap_wait()
+Date: Tue, 17 Apr 2012 13:11:53 +0200
+Message-Id: <1334661113-24709-1-git-send-email-ivan.djelic@parrot.com>
+Cc: ivan.djelic@parrot.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tom,
+If a context switch occurs in function omap_wait() just before the
+while loop is entered, then upon return from context switch the
+timeout may already have elapsed: in that case, status is never
+read from NAND device, and omap_wait() returns an error.
+This failure has been experimentally observed during stress tests.
 
-Le 04/17/12 01:51, Tom Isaacson a écrit :
->> I have the exact same requirement and cooked up a patch to do this for NAND:
->> http://patchwork.ozlabs.org/patch/94407/
->
-> Ah, your patch shows you've added the sysfs files in mtdcore.c, which means they'll show up in:
-> /sys/class/mtd/..
+This patch ensures a NAND status read is always performed before
+returning, as in the generic nand_wait() function.
 
-Yes, when I first asked what was the best place to add those attributes, 
-I initially wanted to create something like /sys/class/mtd/nand0 or such 
-and put attributes there, but Artem preferred having them in 
-/sys/class/mtd/mtd<N>/
+Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
+---
+ drivers/mtd/nand/omap2.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> The code I've done adds them in mxc_nd2.c (the device I have) so they appear in:
-> /sys/devices/platform/mxc_nandv2_flash.0/..
-> Obviously this only works for one type of flash right now, but I was thinking of extending all the separate uses of DEVICE_ATTR and manage_sysfs_files() to call back to a generic sysfs function in nand_base.c so these new parameters appear for all NAND devices.
-> I can't find anything online that gives a guide to where files should be added to sysfs - is there such a thing, or do people just make it up as they go along?
->
->> however, to be complete it would also need to expose such informations for SPI
->> and NOR flashes, which I have not done yet.
->
-> I don't have access to those devices so I can't test any code I might attempt.
-
-I do, it's just that I have been lazy on working again on this.
---
-Florian
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index c2b0bba..45c6205 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -879,7 +879,7 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
+ 	unsigned long timeo = jiffies;
+-	int status = NAND_STATUS_FAIL, state = this->state;
++	int status, state = this->state;
+ 
+ 	if (state == FL_ERASING)
+ 		timeo += (HZ * 400) / 1000;
+@@ -894,6 +894,8 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 			break;
+ 		cond_resched();
+ 	}
++
++	status = gpmc_nand_read(info->gpmc_cs, GPMC_NAND_DATA);
+ 	return status;
+ }
+ 
+-- 
+1.7.10
