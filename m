@@ -1,12 +1,14 @@
-Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
  by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK4R1-0004qV-JC
+ id 1SK4R1-0004qW-Jk
  for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:11:00 +0000
 From: Viresh Kumar <viresh.kumar@st.com>
 To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 1/2] mtd: spear_smi: Add clk_{un}prepare() support
-Date: Tue, 17 Apr 2012 14:26:17 +0530
-Message-ID: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
+Subject: [PATCH 2/2] mtd: fsmc_nand: Add clk_{un}prepare() support
+Date: Tue, 17 Apr 2012 14:26:18 +0530
+Message-ID: <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
+In-Reply-To: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
+References: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Viresh Kumar <viresh.kumar@st.com>, linus.walleij@linaro.org,
@@ -27,82 +29,72 @@ add clk_{un}prepare() support for it.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- drivers/mtd/devices/spear_smi.c |   31 ++++++++++++++++++++++++++-----
- 1 files changed, 26 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |   24 ++++++++++++++++++++++--
+ 1 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 797d43c..55507be 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -990,6 +990,10 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 		goto err_clk;
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 1b8330e..29d03b6 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -994,6 +994,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		return PTR_ERR(host->clk);
  	}
  
-+	ret = clk_prepare(dev->clk);
++	ret = clk_prepare(host->clk);
 +	if (ret)
 +		goto err_clk_prepare;
 +
- 	ret = clk_enable(dev->clk);
+ 	ret = clk_enable(host->clk);
  	if (ret)
  		goto err_clk_enable;
-@@ -1022,6 +1026,8 @@ err_bank_setup:
- err_irq:
- 	clk_disable(dev->clk);
+@@ -1178,6 +1182,8 @@ err_req_write_chnl:
+ err_req_read_chnl:
+ 	clk_disable(host->clk);
  err_clk_enable:
-+	clk_unprepare(dev->clk);
++	clk_unprepare(host->clk);
 +err_clk_prepare:
- 	clk_put(dev->clk);
- err_clk:
- 	iounmap(dev->io_base);
-@@ -1075,6 +1081,7 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
- 	free_irq(irq, dev);
- 
- 	clk_disable(dev->clk);
-+	clk_unprepare(dev->clk);
- 	clk_put(dev->clk);
- 	iounmap(dev->io_base);
- 	kfree(dev);
-@@ -1090,8 +1097,10 @@ int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
- {
- 	struct spear_smi *dev = platform_get_drvdata(pdev);
- 
--	if (dev && dev->clk)
-+	if (dev && dev->clk) {
- 		clk_disable(dev->clk);
-+		clk_unprepare(dev->clk);
-+	}
- 
- 	return 0;
- }
-@@ -1099,13 +1108,25 @@ int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
- int spear_smi_resume(struct platform_device *pdev)
- {
- 	struct spear_smi *dev = platform_get_drvdata(pdev);
--	int ret = -EPERM;
-+	int ret;
-+
-+	if (dev && dev->clk) {
-+		ret = clk_prepare(dev->clk);
-+		if (ret)
-+			goto err_clk_prepare;
- 
--	if (dev && dev->clk)
- 		ret = clk_enable(dev->clk);
-+		if (ret)
-+			goto err_clk_enable;
-+	}
-+
-+	spear_smi_hw_init(dev);
- 
--	if (!ret)
--		spear_smi_hw_init(dev);
-+	return 0;
-+
-+err_clk_enable:
-+	clk_unprepare(dev->clk);
-+err_clk_prepare:
+ 	clk_put(host->clk);
  	return ret;
  }
+@@ -1199,6 +1205,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ 			dma_release_channel(host->read_dma_chan);
+ 		}
+ 		clk_disable(host->clk);
++		clk_unprepare(host->clk);
+ 		clk_put(host->clk);
+ 	}
  
+@@ -1209,16 +1216,29 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ static int fsmc_nand_suspend(struct device *dev)
+ {
+ 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
+-	if (host)
++	if (host) {
+ 		clk_disable(host->clk);
++		clk_unprepare(host->clk);
++	}
+ 	return 0;
+ }
+ 
+ static int fsmc_nand_resume(struct device *dev)
+ {
+ 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
++	int ret;
++
+ 	if (host) {
+-		clk_enable(host->clk);
++		ret = clk_prepare(host->clk);
++		if (ret)
++			return ret;
++
++		ret = clk_enable(host->clk);
++		if (ret) {
++			clk_unprepare(host->clk);
++			return ret;
++		}
++
+ 		fsmc_nand_setup(host->regs_va, host->bank,
+ 				host->nand.options & NAND_BUSWIDTH_16,
+ 				host->dev_timings);
 -- 
 1.7.9
