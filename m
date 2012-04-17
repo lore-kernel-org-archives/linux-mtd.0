@@ -1,19 +1,22 @@
-Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK4R1-0004qW-Jk
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:11:00 +0000
-From: Viresh Kumar <viresh.kumar@st.com>
-To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 2/2] mtd: fsmc_nand: Add clk_{un}prepare() support
-Date: Tue, 17 Apr 2012 14:26:18 +0530
-Message-ID: <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
-In-Reply-To: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
-References: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SK4h3-000695-N9
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 09:27:30 +0000
+Received: by yenm10 with SMTP id m10so3247754yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 02:27:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Viresh Kumar <viresh.kumar@st.com>, linus.walleij@linaro.org,
- spear-devel@list.st.com, linux-mtd@lists.infradead.org, viresh.linux@gmail.com,
- sr@denx.de
+In-Reply-To: <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
+References: <e95a4f03450aa1761d137bf3487de3e33e454563.1334652831.git.viresh.kumar@st.com>
+ <e602342fa929bc44ef85683e457b1cdfcd6b9946.1334652831.git.viresh.kumar@st.com>
+Date: Tue, 17 Apr 2012 11:27:23 +0200
+Message-ID: <CACRpkdYwRFFM+W3+Yg9Si3_TVjExjCkMQ7HXVa-PCbYU_UJ=6g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: fsmc_nand: Add clk_{un}prepare() support
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Viresh Kumar <viresh.kumar@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: artem.bityutskiy@linux.intel.com, spear-devel@list.st.com,
+ viresh.linux@gmail.com, linux-mtd@lists.infradead.org, sr@denx.de,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-clk_{un}prepare is mandatory for platforms using common clock framework. Since
-this driver is used by SPEAr platform, which supports common clock framework,
-add clk_{un}prepare() support for it.
+On Tue, Apr 17, 2012 at 10:56 AM, Viresh Kumar <viresh.kumar@st.com> wrote:
 
-Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
----
- drivers/mtd/nand/fsmc_nand.c |   24 ++++++++++++++++++++++--
- 1 files changed, 22 insertions(+), 2 deletions(-)
+> clk_{un}prepare is mandatory for platforms using common clock framework. Since
+> this driver is used by SPEAr platform, which supports common clock framework,
+> add clk_{un}prepare() support for it.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 1b8330e..29d03b6 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -994,6 +994,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		return PTR_ERR(host->clk);
- 	}
- 
-+	ret = clk_prepare(host->clk);
-+	if (ret)
-+		goto err_clk_prepare;
-+
- 	ret = clk_enable(host->clk);
- 	if (ret)
- 		goto err_clk_enable;
-@@ -1178,6 +1182,8 @@ err_req_write_chnl:
- err_req_read_chnl:
- 	clk_disable(host->clk);
- err_clk_enable:
-+	clk_unprepare(host->clk);
-+err_clk_prepare:
- 	clk_put(host->clk);
- 	return ret;
- }
-@@ -1199,6 +1205,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- 			dma_release_channel(host->read_dma_chan);
- 		}
- 		clk_disable(host->clk);
-+		clk_unprepare(host->clk);
- 		clk_put(host->clk);
- 	}
- 
-@@ -1209,16 +1216,29 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- static int fsmc_nand_suspend(struct device *dev)
- {
- 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
--	if (host)
-+	if (host) {
- 		clk_disable(host->clk);
-+		clk_unprepare(host->clk);
-+	}
- 	return 0;
- }
- 
- static int fsmc_nand_resume(struct device *dev)
- {
- 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
-+	int ret;
-+
- 	if (host) {
--		clk_enable(host->clk);
-+		ret = clk_prepare(host->clk);
-+		if (ret)
-+			return ret;
-+
-+		ret = clk_enable(host->clk);
-+		if (ret) {
-+			clk_unprepare(host->clk);
-+			return ret;
-+		}
-+
- 		fsmc_nand_setup(host->regs_va, host->bank,
- 				host->nand.options & NAND_BUSWIDTH_16,
- 				host->dev_timings);
--- 
-1.7.9
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+BTW: this driver looks like we could use some runtime PM on it to gate off the
+block when not used.
+
+Yours,
+Linus Walleij
