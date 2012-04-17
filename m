@@ -1,16 +1,37 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SK9FK-0000EU-GC
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 14:19:10 +0000
-Received: by dadn15 with SMTP id n15so10191788dad.16
- for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 07:19:03 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 17 Apr 2012 22:19:03 +0800
-Message-ID: <CAHvCehVVPoORvmV=WZESDkb_9es1B7W9ojFv9P3W1ANpQyQ1xA@mail.gmail.com>
-Subject: UBI use subpage and verify fail when write on nandflash
-From: b w <wdjjwb@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+ id 1SK9Pu-0001G5-6q
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2012 14:30:02 +0000
+Received: by wibhj13 with SMTP id hj13so434006wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 07:29:59 -0700 (PDT)
+Date: Tue, 17 Apr 2012 17:29:48 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: add OOB argument to NAND
+ {read,write}_page interfaces
+Message-ID: <20120417172948.20ad0701@pixies.home.jungo.com>
+In-Reply-To: <1334615755-15418-2-git-send-email-computersforpeace@gmail.com>
+References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
+ <1334615755-15418-2-git-send-email-computersforpeace@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Viresh Kumar <viresh.kumar@st.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
+ linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
+ Mike Dunn <mikedunn@newsguy.com>, Bastian Hecht <hechtb@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Armando Visconti <armando.visconti@st.com>, Liu Shuo <b35362@freescale.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +41,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-    Use linux 2.6.32,ARM,nandflash(support subpage),config
-CONFIG_MTD_NAND_VERIFY_WRITE. UBI attach fail on empty flash.I found
-when UBI write VID header to the second subpage of eraseblock,will
-call function "nand_write_page",this function write a whole page(i
-think the page size is 2048),the unset bit of the buf is filled with
-0xff,after write,
+Hi Brian,
 
-#ifdef CONFIG_MTD_NAND_VERIFY_WRITE
-	/* Send command to read back the data */
-	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+I have no inputs regarding the concept, others probably know better.
 
-	if (chip->verify_buf(mtd, buf, mtd->writesize))
-		return -EIO;
-#endif
+Only verified execution in nand_base.c and nand.h, see below.
 
-now,the buf for verify is not equal to the buf which write,because the
-buf which read from flash contains EC header ?
+On Mon, 16 Apr 2012 15:35:54 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+>  static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+> -				   uint8_t *buf, int page)
+> +				   uint8_t *buf, uint8_t *oob, int page)
+>  {
+>  	int i, eccsize = chip->ecc.size;
+>  	int eccbytes = chip->ecc.bytes;
+>  	int eccsteps = chip->ecc.steps;
+>  	uint8_t *p = buf;
+> -	uint8_t *oob = chip->oob_poi;
+> +	uint8_t *oobbuf = chip->oob_poi;
+>  
+>  	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+>  		int stat;
+> @@ -1371,23 +1376,23 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  		chip->read_buf(mtd, p, eccsize);
+>  
+>  		if (chip->ecc.prepad) {
+> -			chip->read_buf(mtd, oob, chip->ecc.prepad);
+> -			oob += chip->ecc.prepad;
+> +			chip->read_buf(mtd, oobbuf, chip->ecc.prepad);
+> +			oobbuf += chip->ecc.prepad;
+>  		}
+>  
+>  		chip->ecc.hwctl(mtd, NAND_ECC_READSYN);
+> -		chip->read_buf(mtd, oob, eccbytes);
+> -		stat = chip->ecc.correct(mtd, p, oob, NULL);
+> +		chip->read_buf(mtd, oobbuf, eccbytes);
+> +		stat = chip->ecc.correct(mtd, p, oobbuf, NULL);
+>  
+>  		if (stat < 0)
+>  			mtd->ecc_stats.failed++;
+>  		else
+>  			mtd->ecc_stats.corrected += stat;
+>  
+> -		oob += eccbytes;
+> +		oobbuf += eccbytes;
+>  
+>  		if (chip->ecc.postpad) {
+> -			chip->read_buf(mtd, oob, chip->ecc.postpad);
+> +			chip->read_buf(mtd, oobbuf, chip->ecc.postpad);
+>  			oob += chip->ecc.postpad;
 
-I found there is topic also mention subpage:
-http://lists.infradead.org/pipermail/linux-mtd/2010-September/031822.html
+Missed convertion of 'oob' in the last line above.
+s/oob/oobbuf/
 
-error log:
-UBI: attaching mtd3 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI: empty MTD device detected
-UBI: create volume table (copy #1)
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
-0:512, written 0 bytes
-Backtrace:
-[<c0212a24>] (dump_stack+0x18/0x1c)
-[<c040aab8>] (ubi_io_write+0x324/0x3a8)
-[<c038e118>] (ubi_io_write_vid_hdr+0x134/0x150)
-[<c038e4c0>] (create_vtbl+0x1bc/0x290)
-[<c0383734>] (ubi_read_volume_table+0xe8/0x984)
-[<c0384070>] (ubi_attach_mtd_dev+0x690/0xd24)
-[<c03873c0>] (ctrl_cdev_ioctl+0xe8/0x1a4)
-[<c03883a0>] (vfs_ioctl+0x38/0x78)
+Same problem in the following lines of 'nand_read_page_syndrome'.
+Should be:
+
+@@ -1393,9 +1393,9 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+        }
+ 
+        /* Calculate remaining oob bytes */
+-       i = mtd->oobsize - (oob - chip->oob_poi);
++       i = mtd->oobsize - (oobbuf - chip->oob_poi);
+        if (i)
+-               chip->read_buf(mtd, oob, i);
++               chip->read_buf(mtd, oobbuf, i);
+ 
+        return 0;
+ }
+
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 1482340..be9ee1f 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -363,15 +363,15 @@ struct nand_ecc_ctrl {
+>  	int (*correct)(struct mtd_info *mtd, uint8_t *dat, uint8_t *read_ecc,
+>  			uint8_t *calc_ecc);
+>  	int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
+> -			uint8_t *buf, int page);
+> +			uint8_t *buf, uint8_t *oob, int page);
+>  	void (*write_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
+> -			const uint8_t *buf);
+> +			const uint8_t *buf, const uint8_t *oob);
+>  	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> -			uint8_t *buf, int page);
+> +			uint8_t *buf, uint8_t *oob, int page);
+>  	int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
+>  			uint32_t offs, uint32_t len, uint8_t *buf);
+
+No need to pass 'oob' to 'read_subpage'?
+
+Regards,
+Shmulik
