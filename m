@@ -1,31 +1,21 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKOeC-0001kI-BU
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 06:45:52 +0000
-Received: by lbol5 with SMTP id l5so228082lbo.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 23:45:45 -0700 (PDT)
-Message-ID: <1334731400.12496.7.camel@brekeke>
-Subject: RE: Query mtd-utils v1.4.9 : flash_erase.c
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kushwaha Prabhakar-B32579 <B32579@freescale.com>
-Date: Wed, 18 Apr 2012 09:43:20 +0300
-In-Reply-To: <071A08F2C6A57E4E94D980ECA553F8745F62AA@039-SN1MPN1-005.039d.mgd.msft.net>
-References: <071A08F2C6A57E4E94D980ECA553F8745E82D5@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAN8TOE-0GPgbfgrps-ieQb9NYnOFv79TZdxhTyd_ydPboP_8Pg@mail.gmail.com>
- <071A08F2C6A57E4E94D980ECA553F8745EEA99@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAN8TOE9P9NvD+sRB8MurCkETDKmKUmvkq_M-3kCF+0zaZgsjTg@mail.gmail.com>
- <CAMjpGUf+nEV09MWb5e2kzjJq0SAQGq=iqce2rzt9UON6wkji8w@mail.gmail.com>
- <071A08F2C6A57E4E94D980ECA553F8745F3F98@039-SN1MPN1-005.039d.mgd.msft.net>
- <CAMjpGUc6=H+4QfJmtU7+HY=anP-V5-Ogdmf__NRGQJCjcyHXjQ@mail.gmail.com>
- <071A08F2C6A57E4E94D980ECA553F8745F62AA@039-SN1MPN1-005.039d.mgd.msft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind1@gmail.com
+ id 1SKPd8-0007Iz-85
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 07:48:47 +0000
+Message-ID: <4F8E72B3.1090205@freescale.com>
+Date: Wed, 18 Apr 2012 15:52:19 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
+References: <1334026606-18327-1-git-send-email-b32955@freescale.com>	<CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>	<4F86416B.4090501@freescale.com>
+ <CAN8TOE_yhvB+xnyS_UZn0ko+QySFZJsYBk5w0PB_O37eZaQj9g@mail.gmail.com>
+In-Reply-To: <CAN8TOE_yhvB+xnyS_UZn0ko+QySFZJsYBk5w0PB_O37eZaQj9g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2012-04-09 at 06:53 +0000, Kushwaha Prabhakar-B32579 wrote:
-> A general question why these type of patches are not coming in mtd-utils.
-> Is it because going forward UBIFS is the next file system and nobody wants to focus jffs2.
+=E4=BA=8E 2012=E5=B9=B404=E6=9C=8818=E6=97=A5 13:00, Brian Norris =E5=86=99=
+=E9=81=93:
+> Now that I've given them all a second read, it really looks like this
+> new Hynix chip actually follows no discernible pattern, which seems to
+> suggest that we have to know all the chip parameters in order to know
+> which ID decode table to use...but if we know all the parameters, then
+> why do we need the table?? (Just being devil's advocate) If I had
+This makes me confused too.
+It looks like hardcode when i use the 0xd7 to disdinguish this nand chip.
 
-No one would reject good patches which make JFFS2 and related tools work
-on modern flashes. Feel free to submit. WRT to the links you posted -
-this was long time ago and I do not remember why they were not merged.
-But it looks like Stanley wanted to send a new version but never did
-that. Please, read the discussion here:
+> samples of all the chips, perhaps I could test some to determine other
+> patterns, like ID wraparound behavior, but I doubt it...
+>
+> So really, I'd be interested in asking Hynix (and Toshiba and probably
+> Samsung, for that matter): what do you expect software developers to
+> do when you provide datasheets with useless ID decode tables? Are we
+> supposed to read your mind to determine which chips are supposed to
+> follow a given decode table?
+>
+> But seriously: let me know if you have better insight into how to
+> associate this table with a set of chip IDs. Otherwise, I might as
+I only have the H27UBG8T2A nand chip in my hand, and test it in the=20
+imx28 board.
+I do not have other nand chips which may also follow the same parsing=20
+code as the H27UBG8T2A.
 
-http://thread.gmane.org/gmane.linux.drivers.mtd/30476/focus=31352
 
-BTW, I agree with Mike that -j option is misplaced and it wold be
-cleaner to create a separate jffs2format tool.
+Best Regards
+Huang Shijie
 
-Artem.
+> well finish adding an 8-byte ID table and adding this one chip
+> manually.
