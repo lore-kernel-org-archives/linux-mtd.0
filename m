@@ -1,39 +1,38 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKLoY-0005WG-Jz
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 03:44:22 +0000
-Received: by ggnk1 with SMTP id k1so3888326ggn.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 20:44:13 -0700 (PDT)
+ id 1SKMEk-0006L8-KP
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 04:11:24 +0000
+Received: by yenm10 with SMTP id m10so3889102yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 21:11:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4F8D20C4.9010607@parrot.com>
+In-Reply-To: <20120417172948.20ad0701@pixies.home.jungo.com>
 References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
  <1334615755-15418-2-git-send-email-computersforpeace@gmail.com>
- <4F8D20C4.9010607@parrot.com>
-Date: Tue, 17 Apr 2012 20:44:11 -0700
-Message-ID: <CAN8TOE8d8w6EQZkF8hgBqzgY-Q80gb=wSwUijFjt2sq+7mqC8g@mail.gmail.com>
+ <20120417172948.20ad0701@pixies.home.jungo.com>
+Date: Tue, 17 Apr 2012 21:11:10 -0700
+Message-ID: <CAN8TOE9+pKgfXAAsDrR_OuW4cpXy8sJuvxChbj_xU_5WhUC5DQ@mail.gmail.com>
 Subject: Re: [PATCH 1/2] mtd: nand: add OOB argument to NAND {read,
  write}_page interfaces
 From: Brian Norris <computersforpeace@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Cc: Viresh Kumar <viresh.kumar@st.com>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-mtd@lists.infradead.org,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Lei Wen <leiwen@marvell.com>,
- Jamie Iles <jamie@jamieiles.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
+ Mike Dunn <mikedunn@newsguy.com>, Bastian Hecht <hechtb@gmail.com>,
  Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Bastian Hecht <hechtb@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
  Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
  Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
  Armando Visconti <armando.visconti@st.com>,
  Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
  Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Huang Shijie <b32955@freescale.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Jiandong Zheng <jdzheng@broadcom.com>, David Woodhouse <dwmw2@infradead.org>
+ Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,73 +42,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthieu,
+Hi Shmulik,
 
-On Tue, Apr 17, 2012 at 12:50 AM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
-> Brian Norris a =E9crit :
->> New NAND controllers can perform read/write via HW engines which don't e=
-xpose
->> OOB data in their DMA mode. To reflect this, we should rework the nand_c=
-hip /
->> nand_ecc_ctrl interfaces that assume that drivers will always read/write=
- OOB
->> data in the nand_chip.oob_poi buffer. A better interface would pass the
->> appropriate buffer explicitly when OOB data is requested and otherwise p=
-ass a
->> NULL pointer, meaning that no OOB data is needed.
+On Tue, Apr 17, 2012 at 7:29 AM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+> Only verified execution in nand_base.c and nand.h, see below.
+
+Thanks, this is helpful!
+
+> On Mon, 16 Apr 2012 15:35:54 -0700 Brian Norris <computersforpeace@gmail.=
+com> wrote:
+>> @@ -1371,23 +1376,23 @@ static int nand_read_page_syndrome(struct mtd_in=
+fo *mtd, struct nand_chip *chip,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, p, eccsize);
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (chip->ecc.prepad) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oob, chip-=
+>ecc.prepad);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 oob +=3D chip->ecc.prepad;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oobbuf, ch=
+ip->ecc.prepad);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 oobbuf +=3D chip->ecc.prepad;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->ecc.hwctl(mtd, NAND_ECC_READSYN);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oob, eccbytes);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 stat =3D chip->ecc.correct(mtd, p, oob, NULL);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oobbuf, eccbytes);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 stat =3D chip->ecc.correct(mtd, p, oobbuf, NUL=
+L);
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (stat < 0)
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mtd->ecc_stats.failed++;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mtd->ecc_stats.corrected +=
+=3D stat;
+>>
+>> - =A0 =A0 =A0 =A0 =A0 =A0 oob +=3D eccbytes;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 oobbuf +=3D eccbytes;
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (chip->ecc.postpad) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oob, chip-=
+>ecc.postpad);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oobbuf, ch=
+ip->ecc.postpad);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 oob +=3D chip->ecc.postpad;
 >
-> If I understand correctly you propose that these driver will fetch oob (v=
-ia pio
-> mode) only when needed ?
+> Missed convertion of 'oob' in the last line above.
+> s/oob/oobbuf/
 
-Sure, that's the idea.
+Yes, good catch. Thanks.
 
-> Do you have an example of such controller ?
+> Same problem in the following lines of 'nand_read_page_syndrome'.
+> Should be:
+>
+> @@ -1393,9 +1393,9 @@ static int nand_read_page_syndrome(struct mtd_info =
+*mtd, struct nand_chip *chip,
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* Calculate remaining oob bytes */
+> - =A0 =A0 =A0 i =3D mtd->oobsize - (oob - chip->oob_poi);
+> + =A0 =A0 =A0 i =3D mtd->oobsize - (oobbuf - chip->oob_poi);
+> =A0 =A0 =A0 =A0if (i)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oob, i);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->read_buf(mtd, oobbuf, i);
+>
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
+>
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index 1482340..be9ee1f 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -363,15 +363,15 @@ struct nand_ecc_ctrl {
+>> =A0 =A0 =A0 int (*correct)(struct mtd_info *mtd, uint8_t *dat, uint8_t *=
+read_ecc,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *calc_ecc);
+>> =A0 =A0 =A0 int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip =
+*chip,
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *buf, int page);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *buf, uint8_t *oob, in=
+t page);
+>> =A0 =A0 =A0 void (*write_page_raw)(struct mtd_info *mtd, struct nand_chi=
+p *chip,
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const uint8_t *buf);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const uint8_t *buf, const uint=
+8_t *oob);
+>> =A0 =A0 =A0 int (*read_page)(struct mtd_info *mtd, struct nand_chip *chi=
+p,
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *buf, int page);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *buf, uint8_t *oob, in=
+t page);
+>> =A0 =A0 =A0 int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *=
+chip,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint32_t offs, uint32_t len,=
+ uint8_t *buf);
+>
+> No need to pass 'oob' to 'read_subpage'?
 
-Yes. I'm working with a new ASIC which has a DMA mode as well as a PIO
-mode. For DMA transactions (the preferred interface), I fill out a
-64-byte descriptor (format specified below) then point the controller
-to that DRAM address via a register. The "command" field only supports
-page program, page read, and block erase, though.
+No. It seems like 'read_subpage' is already assumed not to read OOB
+data; it only has one user, in nand_base.c, and this user has the
+condition '!oob'. (My driver simply avoids subpage read/write
+entirely, BTW, so I'm not too familiar with subpages.)
 
-So for instance, if I want to perform a page program, I can only
-specify a single buffer (via dram_addr/dram_addr_ext) for the in-band
-data; the OOB data is automatically filled with 0xFF + HW ECC
-(calculated on the fly, internally, by HW controller). And on page
-read, I only receive the in-band data in my DRAM buffer.
-
-Now, in future revisions of this ASIC, it may be possible to access
-OOB via DMA as well, but even if this happens, it doesn't make a lot
-of sense on this hardware to *always* pull OOB data. As mentioned
-previously, most normal applications (i.e., UBI(FS)) don't need to
-access this OOB data at all, so it seems silly to go to extra work to
-have the DMA controller return it to the MTD/NAND layers. I'm not
-familiar with the OOB/ECC schemes on enough other hardware to
-determine whether other drivers could make use of this same
-optimization. It would require hardware with internal buffers for
-error correction and an access mode that easily returns page data
-only...
+Thanks a lot for the review! This lets me know I should take a closer
+look at my patch submissions...this pair of patches went through a lot
+of revision before sending, so the 'oob' vs. 'oobbuf' thing got a
+little convoluted.
 
 Brian
-
-struct nand_dma_desc {
-       __le32 next_desc;
-       __le32 next_desc_ext;
-       u8 type_E;
-       u8 irq_swap;
-       u8 __pad1;
-       u8 command;
-       __le32 dram_addr;
-       __le32 dram_addr_ext;
-       __le32 tfr_len;
-       __le32 total_len;
-       __le32 flash_addr;
-       __le32 flash_addr_ext;
-       __le32 cs;
-       u32 __pad[5];
-       u8 valid;
-       u8 ecc_status;
-       u8 flash_status;
-       u8 dma_status;
-} __attribute__((packed));
