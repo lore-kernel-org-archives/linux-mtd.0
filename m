@@ -1,37 +1,23 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKTRI-0000gG-Og
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 11:52:49 +0000
-Received: by wibhj13 with SMTP id hj13so422676wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 18 Apr 2012 04:52:44 -0700 (PDT)
-Date: Wed, 18 Apr 2012 14:52:32 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: nand_do_{read,write}_ops - pass OOB
- buffer through
-Message-ID: <20120418145232.6ba77552@pixies.home.jungo.com>
-In-Reply-To: <1334615755-15418-3-git-send-email-computersforpeace@gmail.com>
-References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
- <1334615755-15418-3-git-send-email-computersforpeace@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Viresh Kumar <viresh.kumar@st.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
- linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- Mike Dunn <mikedunn@newsguy.com>, Bastian Hecht <hechtb@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>, Liu Shuo <b35362@freescale.com>,
- Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SKUPc-0002YE-F1
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 12:55:09 +0000
+Date: Wed, 18 Apr 2012 14:55:05 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: mtdchar kernel oops
+In-Reply-To: <20120416191718.GT6589@ZenIV.linux.org.uk>
+Message-ID: <alpine.DEB.2.00.1204181452410.8114@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1204151350450.13924@eristoteles.iwoars.net>
+ <20120415153220.GR6589@ZenIV.linux.org.uk>
+ <alpine.DEB.2.00.1204151951560.16000@eristoteles.iwoars.net>
+ <20120415215355.GS6589@ZenIV.linux.org.uk>
+ <alpine.DEB.2.00.1204161329200.21808@eristoteles.iwoars.net>
+ <20120416191718.GT6589@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,51 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Perhaps Artem can shed some light on this, I'm working on a branch he's
+prepared. But if its not happening at your end then perhaps something's up
+on mine; the oops log is rather bizzare. I'll remake it from scratch and
+see what happens.
 
-On Mon, 16 Apr 2012 15:35:55 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> Now that we have a function parameter for the OOB buffer, we can pass the OOB
-> buffer as an argument to the nand_ecc_ctrl functions. This allows drivers to
-> know when OOB data must be returned to the upper layers and when it is simply
-> needed for internal calculations, potentially saving time for NAND HW/SW that
-> can simply avoid reading the OOB data.
+Cheers,
+Joel
 
-I think for consistency sake, existing chip->ecc.{read,write}_page_xxx
-methods do need to be ported to support the new 'oob' parameter.
+On Mon, 16 Apr 2012, Al Viro wrote:
 
-> @@ -2272,12 +2272,14 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  			size_t len = min(oobwritelen, oobmaxlen);
->  			oob = nand_fill_oob(mtd, oob, len, ops);
->  			oobwritelen -= len;
-> +			oobpoi = chip->oob_poi;
->  		} else {
-> +			oobpoi = NULL;
->  			/* We still need to erase leftover OOB data */
->  			memset(chip->oob_poi, 0xff, mtd->oobsize);
->  		}
->  
-> -		ret = chip->write_page(mtd, chip, wbuf, NULL, page, cached,
-> +		ret = chip->write_page(mtd, chip, wbuf, oobpoi, page, cached,
->  				       (ops->mode == MTD_OPS_RAW));
->  		if (ret)
->  			break;
-
-The 'write_page' interface is problematic, as the meaning of 'oob'
-parameter is a bit inconsistent:
-- A NULL 'oob' actually states "no OOB buffer to write"
-- Your driver instructs HW to write the page (ECC taken care of by HW)
-- However default chip->ecc.write_page_xxx methods do need a temp buffer
-  for OOB ECC calculation (hence will probably use the internal
-  chip->oob_poi buffer)
-- But when non-null 'oob' is passed to the default methods, they should
-  probably use the given 'oob' buffer (and not a temp buffer)
-
-(This is same for the read interface.)
-
-So the 'oob' parameter is more of a boolean than an actual buffer to be
-used by the various ecc.{read,write}_page implementors.
-
-Any reason not to pass a boolean instead?
-
-Regards,
-Shmulik
+> On Mon, Apr 16, 2012 at 02:37:06PM +0200, Joel Reardon wrote:
+> > The troubled asm pair corresponds to this line:
+> > this_cpu_add(mnt->mnt_pcp->mnt_count, n) in  the inline mnt_add_count().
+> > So I suppose that perhaps either mnt is bad, or mnt_pcp is bad.
+> >
+> > I'm using nandsim to simulate the mtd device. Steps are simple, load the
+> > modules:
+> > nand_ecc nand nand_ids mtd  mtd_blkdevs mtdblock mtdchar
+> > nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
+> >
+> > then `ubiformat /dev/mtd0` does the oops.
+>
+> Not here:
+>
+> root@dizzy:~# modprobe nandsim first_id_byte=0x20 second_id_byte=0xa5 third_id_byte=0x00 fourth_id_byte=0x15 parts=0xa40 rptwear=1000
+> ubiformat: mtd0 (nand), size 343932928 bytes (328.0 MiB), 2624 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 2623 -- 100 % complete
+> ubiformat: 2624 eraseblocks are supposedly empty
+> ubiformat: formatting eraseblock 2623 -- 100 % complete
+> root@dizzy:~# uname -a
+> Linux dizzy 3.4.0-rc2+ #4 SMP Mon Apr 16 15:04:25 EDT 2012 x86_64 GNU/Linux
+>
+> and no oopsen in sight...
+>
+>
+> > > Could you add printk into mtdchar_open(), dumping mnt and count values
+> > > right after simple_pin_fs() call?
+> > >
+> >
+> > It oopses before it returns from the simple_pin_fs call, so that won't be
+> > possible...
+>
+> Wha...?  You mean, that happens on the _first_ simple_pin_fs() call?
+> But that makes no damn sense whatsoever - we just do vfs_kern_mount(),
+> get a vfsmount from it (and not an ERR_PTR(), at that), then store
+> it into mnt and do mntget(mnt) followed by mntput(mnt).  If that really
+> happens when simple_pin_fs() gets called with mnt == NULL and count == 0,
+> we have much bigger problem on hands...
+>
+> Please, slap such printks before and after simple_pin_fs() in mtdchar_open()
+> and before and after simple_release_fs() in mtdchar_close().  And verify that
+> you have commit c65390f4dd49755863f6d772ec538ee4757c08d7 in your tree.
+>
