@@ -1,16 +1,16 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKN0b-0007vf-4r
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 05:00:53 +0000
-Received: by ggnk1 with SMTP id k1so3898674ggn.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 22:00:47 -0700 (PDT)
+ id 1SKN0d-0007vk-2T
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 05:00:55 +0000
+Received: by lbol5 with SMTP id l5so182314lbo.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Apr 2012 22:00:48 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <4F86416B.4090501@freescale.com>
 References: <1334026606-18327-1-git-send-email-b32955@freescale.com>
  <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
  <4F86416B.4090501@freescale.com>
-Date: Tue, 17 Apr 2012 22:00:46 -0700
-Message-ID: <CAN8TOE_yhvB+xnyS_UZn0ko+QySFZJsYBk5w0PB_O37eZaQj9g@mail.gmail.com>
+Date: Tue, 17 Apr 2012 22:00:48 -0700
+Message-ID: <CAN8TOE-_5LuceaNmFCZgdjc4i_1AmnumRHRrPP-1uHtp6XFxBw@mail.gmail.com>
 Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
