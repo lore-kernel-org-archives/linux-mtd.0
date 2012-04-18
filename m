@@ -1,39 +1,20 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKaoU-00071i-UH
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2012 19:45:15 +0000
-Received: by werp11 with SMTP id p11so6026244wer.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Apr 2012 12:45:11 -0700 (PDT)
-Date: Wed, 18 Apr 2012 22:43:56 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: nand_do_{read,write}_ops - pass OOB
- buffer through
-Message-ID: <20120418224356.0709fc40@halley>
-In-Reply-To: <4F8EE832.3090002@gmail.com>
-References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
- <1334615755-15418-3-git-send-email-computersforpeace@gmail.com>
- <20120418145232.6ba77552@pixies.home.jungo.com>
- <4F8EE832.3090002@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 4/4] ARM: mxs/mx28evk: add GPMI-NAND device
+Date: Wed, 18 Apr 2012 23:46:48 +0200
+References: <1314169643-23425-1-git-send-email-b32955@freescale.com>
+ <20120406023121.GK7264@S2101-09.ap.freescale.net>
+ <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
+In-Reply-To: <CAOMZO5Dr+qVMOpG6T03L-+i6qYkJRPUPT87hcJAs6DxHs+EcmA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Viresh Kumar <viresh.kumar@st.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
- linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- Mike Dunn <mikedunn@newsguy.com>, Bastian Hecht <hechtb@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>,
- Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
- David Woodhouse <dwmw2@infradead.org>
+Message-Id: <201204182346.48333.marek.vasut@gmail.com>
+Cc: dedekind1@gmail.com, Sam Gandhi <samgandhi9@gmail.com>,
+ s.hauer@pengutronix.de, w.sang@pengutronix.de,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,48 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Dear Fabio Estevam,
 
-On Wed, 18 Apr 2012 09:13:38 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> > So the 'oob' parameter is more of a boolean than an actual buffer to be
-> > used by the various ecc.{read,write}_page implementors.
+> On Thu, Apr 5, 2012 at 11:31 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> > I have to do that to motivate people to add DT support for the drivers
+> > they submit from the beginning.
 > 
-> Yes, I suppose so. I naturally used 'oob' as a buffer, since that's very 
-> straightforward and logical from a 'layers' perspective and because my 
-> driver doesn't need any buffer when oob is not required. But I see that 
-> it essentially would become a boolean flag for many of the other 
-> interfaces, and so a boolean can work just as well.
+> Understand your point for new drivers.
 > 
-> > Any reason not to pass a boolean instead?
+> If you take the GPMI driver for example: it has been available for a
+> long time and there is no board using it in mainline.
 > 
-> Only reason I'm thinking of: a cleaner interface.
+> So how can people easily test it and find bugs with this driver?
+> Patching their own trees themselves? Sam Gandhi did extensive tests on
+> NAND and found some DMA issues with it.
 > 
-> To me, the interface is rather non-obvious and ugly when data is 
-> constantly shuttled back and forth behind the scenes (i.e., not via 
-> function arguments or ret values) by using chip->oob_poi.
+> If we could have mx28evk supporting GPMI driver today it would
+> estimulate people to use it and more issues can be found and fixed.
 > 
-> However, this sense of "ugliness" competes with the ugliness of needing 
-> a buffer even when the interface might otherwise say "no OOB." Many 
-> {read,write}_page functions would need something like:
-> 
->      uint8_t *oobbuf = oob ? oob : chip->oob_poi;
-> 
-> which is not pretty.
-> 
-> I'm open to either way, I guess, but I'm now leaning a little toward 
-> 'oob' as a boolean.
+> Waiting for DT support to be in place is just blocking the progress for
+> mx28.
 
-Yes, both approaches aren't perfect.
+Sadly, I have to agree. I'm not against DT, but blocking it now is bogus.
 
-However a 'int has_user_oob' (or 'has_oob') has a precise, consistent
-meaning: the mtd user explicitly provided an OOB buffer (or in the read
-case, the mtd user expects the OOB to be returned).
-(need help with the boolean's name, though)
+> Please note that right now there is no dt support for mx28 in mainline.
+> 
+> If what blocks this patch "ARM: mxs/mx28evk: add GPMI-NAND device" to
+> be accepted is the pin mux conflict, that would be easy to fix and
+> Huang could do a v5 if you agree.
+> 
+> > Also I do not see much point to keep patching board files which are
+> > to be removed.
+> 
+> I understand your point, but again, right now there is no dt support,
+> so the only mechanism we have to register driver is via board files
+> for mx28.
+> 
+> So it would be nice if you could still accept patches for mx28 while
+> mx28 dt does not show up in mainline.
+> 
 
-Also, I think it will result in less changes (makes the whole
-s/oob/oobbuf/ collateral damage of 1st patch irrelevant).
+Agreed
 
-So IMO a boolean is better.
 
-Regards,
-Shmulik
+Best regards,
+Marek Vasut
