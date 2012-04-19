@@ -1,40 +1,19 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKncr-0000cm-WE
- for linux-mtd@lists.infradead.org; Thu, 19 Apr 2012 09:26:09 +0000
-Received: by iaky10 with SMTP id y10so14286946iak.36
- for <linux-mtd@lists.infradead.org>; Thu, 19 Apr 2012 02:26:04 -0700 (PDT)
+ id 1SKpLZ-0005FZ-NA
+ for linux-mtd@lists.infradead.org; Thu, 19 Apr 2012 11:16:25 +0000
+Received: by bkcjk13 with SMTP id jk13so8517009bkc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Apr 2012 04:16:18 -0700 (PDT)
+From: Jonas Gorski <jonas.gorski@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: =?UTF-8?q?=5BPATCH=5D=20MTD=3A=20bcm63xxpart=3A=20handle=20Broadcom=20partition=20order?=
+Date: Thu, 19 Apr 2012 13:15:57 +0200
+Message-Id: <1334834157-16860-1-git-send-email-jonas.gorski@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4F8EEA29.20106@gmail.com>
-References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
- <1334615755-15418-2-git-send-email-computersforpeace@gmail.com>
- <CABYn4syA53-ce6ZVXEj9AmS-_xne_0vAcAqJWiS7meKQ5YZ7vQ@mail.gmail.com>
- <CABYn4sw9jQbRB5ja3=7sZ9wuP-t0iAv8WdR=mZRNDX2UnQZjNw@mail.gmail.com>
- <4F8EEA29.20106@gmail.com>
-Date: Thu, 19 Apr 2012 11:26:03 +0200
-Message-ID: <CABYn4swDUivaRoo8bZcKnjfZVMx7Uu2N8hNAMv2dVa1+pwA+pQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add OOB argument to NAND {read,
- write}_page interfaces
-From: Bastian Hecht <hechtb@googlemail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Viresh Kumar <viresh.kumar@st.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Vipin Kumar <vipin.kumar@st.com>,
- linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- Mike Dunn <mikedunn@newsguy.com>, Bastian Hecht <hechtb@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>, Liu Shuo <b35362@freescale.com>,
- Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Huang Shijie <b32955@freescale.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Jiandong Zheng <jdzheng@broadcom.com>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Florian Fainelli <florian@openwrt.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,52 +23,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+The original Broadcom partition order has the root fs in front of the
+kernel, which resulted in miscalculated partition sizes.
+Detect when such an image is on the flash and also reorder the partitions
+accordingly.
 
-2012/4/18 Brian Norris <computersforpeace@gmail.com>:
-> Hi Bastian,
->
-> On 4/18/2012 2:37 AM, Bastian Hecht wrote:
->>
->> 2012/4/18 Bastian Hecht<hechtb@googlemail.com>:
->>
->>> I'm currently working on the hardware ECC part of the SH Mobile flctl
->>> and I like the patchset as it makes things more explicit when OOB data
->>> is requested or not and such things. It's cleaner and better, thanks!
->
->
-> Glad it will help! It's good to know other drivers will see a benefit.
->
->
->> To be a bit more of a concrete help, if you can give me a use case to
->> test the oob reads/writes I can modify my driver to work with your
->> patches. Right now I rely on nandwrite, nanddump, nandtest, the kernel
->> test modules and ubi. With none of them I produced an error so far
->> although the current implementation of the hardware ECC completely
->> ignores OOB data other than ECC.
->
->
-> Well, for me the big "use case" is that I can support my new DMA controller
-> (that doesn't read/write OOB) without the rest of MTD/NAND choking on
-> anything or returning junk data. So I mostly make sure that
-> nanddump/nandwrite work both with and without OOB (the -o flag) or ECC (the
-> -n flag); that the kernel test modules work; and that UBI/UBIFS work on top
-> of MTD.
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+---
 
-Ah very nice! You made me look at the nandwrite -o thing once again. I
-used it before without success, there was no write at all when I
-issued it, but now ( - I compiled the git version of mtd-utils and
-replaced the debian prehistoric prepackaged one with it - ) it works!
-Now I can finish my work on the flctl ECC part. Thanks!
+This patch is made on top of l2-mtd.
 
-> I don't know if there are any more specific tests you would need to run; are
-> you looking for something else?
+ drivers/mtd/bcm63xxpart.c |   41 ++++++++++++++++++++++++++++++-----------
+ 1 files changed, 30 insertions(+), 11 deletions(-)
 
-Nope, thanks.
-
-cheers,
-
- Bastian Hecht
-
-
-> Brian
+diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
+index 608321e..63d2a64 100644
+--- a/drivers/mtd/bcm63xxpart.c
++++ b/drivers/mtd/bcm63xxpart.c
+@@ -4,7 +4,7 @@
+  * Copyright © 2006-2008  Florian Fainelli <florian@openwrt.org>
+  *			  Mike Albon <malbon@openwrt.org>
+  * Copyright © 2009-2010  Daniel Dickinson <openwrt@cshore.neomailbox.net>
+- * Copyright © 2011 Jonas Gorski <jonas.gorski@gmail.com>
++ * Copyright © 2011-2012  Jonas Gorski <jonas.gorski@gmail.com>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -82,6 +82,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+ 	int namelen = 0;
+ 	int i;
+ 	u32 computed_crc;
++	bool rootfs_first = false;
+ 
+ 	if (bcm63xx_detect_cfe(master))
+ 		return -EINVAL;
+@@ -109,6 +110,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+ 		char *boardid = &(buf->board_id[0]);
+ 		char *tagversion = &(buf->tag_version[0]);
+ 
++		sscanf(buf->flash_image_start, "%u", &rootfsaddr);
+ 		sscanf(buf->kernel_address, "%u", &kerneladdr);
+ 		sscanf(buf->kernel_length, "%u", &kernellen);
+ 		sscanf(buf->total_length, "%u", &totallen);
+@@ -117,10 +119,19 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+ 			tagversion, boardid);
+ 
+ 		kerneladdr = kerneladdr - BCM63XX_EXTENDED_SIZE;
+-		rootfsaddr = kerneladdr + kernellen;
++		rootfsaddr = rootfsaddr - BCM63XX_EXTENDED_SIZE;
+ 		spareaddr = roundup(totallen, master->erasesize) + cfelen;
+ 		sparelen = master->size - spareaddr - nvramlen;
+-		rootfslen = spareaddr - rootfsaddr;
++
++		if (rootfsaddr < kerneladdr) {
++			/* default Broadcom layout */
++			rootfslen = kerneladdr - rootfsaddr;
++			rootfs_first = true;
++		} else {
++			/* OpenWrt layout */
++			rootfsaddr = kerneladdr + kernellen;
++			rootfslen = spareaddr - rootfsaddr;
++		}
+ 	} else {
+ 		pr_warn("CFE boot tag CRC invalid (expected %08x, actual %08x)\n",
+ 			buf->header_crc, computed_crc);
+@@ -156,18 +167,26 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+ 	curpart++;
+ 
+ 	if (kernellen > 0) {
+-		parts[curpart].name = "kernel";
+-		parts[curpart].offset = kerneladdr;
+-		parts[curpart].size = kernellen;
++		int kernelpart = curpart;
++
++		if (rootfslen > 0 && rootfs_first)
++			kernelpart++;
++		parts[kernelpart].name = "kernel";
++		parts[kernelpart].offset = kerneladdr;
++		parts[kernelpart].size = kernellen;
+ 		curpart++;
+ 	}
+ 
+ 	if (rootfslen > 0) {
+-		parts[curpart].name = "rootfs";
+-		parts[curpart].offset = rootfsaddr;
+-		parts[curpart].size = rootfslen;
+-		if (sparelen > 0)
+-			parts[curpart].size += sparelen;
++		int rootfspart = curpart;
++
++		if (kernellen > 0 && rootfs_first)
++			rootfspart--;
++		parts[rootfspart].name = "rootfs";
++		parts[rootfspart].offset = rootfsaddr;
++		parts[rootfspart].size = rootfslen;
++		if (sparelen > 0  && !rootfs_first)
++			parts[rootfspart].size += sparelen;
+ 		curpart++;
+ 	}
+ 
+-- 
+1.7.2.5
