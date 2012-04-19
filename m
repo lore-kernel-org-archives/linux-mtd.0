@@ -1,16 +1,22 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SKwLk-0006Og-UM
- for linux-mtd@lists.infradead.org; Thu, 19 Apr 2012 18:45:02 +0000
-Received: by wgbdr1 with SMTP id dr1so5696031wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 19 Apr 2012 11:44:58 -0700 (PDT)
-Sender: "Ivantchek ." <ivantchek@gmail.com>
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH v2] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Date: Thu, 19 Apr 2012 20:43:44 +0200
-Message-Id: <1334861024-27386-1-git-send-email-ivan.djelic@parrot.com>
-Cc: ivan.djelic@parrot.com, linux-mtd@lists.infradead.org
+ id 1SKyD7-0003EX-N6
+ for linux-mtd@lists.infradead.org; Thu, 19 Apr 2012 20:44:15 +0000
+Received: by eaak13 with SMTP id k13so2347714eaa.36
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Apr 2012 13:44:11 -0700 (PDT)
+Sender: Florian Fainelli <f.fainelli@gmail.com>
+From: Florian Fainelli <florian@openwrt.org>
+To: Jonas Gorski <jonas.gorski@gmail.com>
+Subject: Re: [PATCH] MTD: bcm63xxpart: handle Broadcom partition order
+Date: Thu, 19 Apr 2012 22:44:07 +0200
+Message-ID: <2162174.ToTc5ziCmi@bender>
+In-Reply-To: <1334834157-16860-1-git-send-email-jonas.gorski@gmail.com>
+References: <1334834157-16860-1-git-send-email-jonas.gorski@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,224 +26,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-Here is version 2 of this patch, fixing in bug discovered while testing
-on a BeagleBoard rev C3 (OMAP3530 ES3.0 + Micron NAND 256MiB 1,8V 16-bit).
---
-Ivan
+On Thursday 19 April 2012 13:15:57 Jonas Gorski wrote:
+> The original Broadcom partition order has the root fs in front of the=
 
+> kernel, which resulted in miscalculated partition sizes.
+> Detect when such an image is on the flash and also reorder the partit=
+ions
+> accordingly.
+>=20
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-This patch adds a simple BCH ecc computation api, similar to the
-existing Hamming ecc api. It is intended to be used by the MTD layer.
-It implements the following features:
+Acked-by: Florian Fainelli <florian@openwrt.org>
 
-- support 4-bit and 8-bit ecc computation
-- do not protect user bytes in spare area, only data area is protected
-- ecc for an erased NAND page (0xFFs) is also a sequence of 0xFFs
-
-This last feature is obtained by adding a constant polynomial to
-the hardware computed ecc. It allows to correct bitflips in blank pages
-and is extremely useful to support filesystems such as UBIFS, which expect
-erased pages to contain only 0xFFs.
-
-This api has been tested on an OMAP3630 board.
-
-Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
----
- v2 changelog: added missing control register configuration
-
- arch/arm/mach-omap2/gpmc.c             |  148 ++++++++++++++++++++++++++++++++
- arch/arm/plat-omap/include/plat/gpmc.h |   10 +++
- 2 files changed, 158 insertions(+)
-
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 00d5108..e3a91a1 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -49,6 +49,7 @@
- #define GPMC_ECC_CONTROL	0x1f8
- #define GPMC_ECC_SIZE_CONFIG	0x1fc
- #define GPMC_ECC1_RESULT        0x200
-+#define GPMC_ECC_BCH_RESULT_0   0x240
- 
- #define GPMC_CS0_OFFSET		0x60
- #define GPMC_CS_SIZE		0x30
-@@ -920,3 +921,150 @@ int gpmc_calculate_ecc(int cs, const u_char *dat, u_char *ecc_code)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(gpmc_calculate_ecc);
-+
-+#ifdef CONFIG_ARCH_OMAP3
-+
-+/**
-+ * gpmc_enable_hwecc_bch - enable hardware BCH ecc functionality
-+ * @cs: chip select number
-+ * @mode: read/write mode
-+ * @dev_width: device bus width(1 for x16, 0 for x8)
-+ * @nsectors: how many 512-byte sectors to process
-+ * @nerrors: how many errors to correct per sector (4 or 8)
-+ */
-+int gpmc_enable_hwecc_bch(int cs, int mode, int dev_width, int nsectors,
-+			  int nerrors)
-+{
-+	unsigned int val;
-+
-+	/* check if ecc module is in use */
-+	if (gpmc_ecc_used != -EINVAL)
-+		return -EINVAL;
-+	/*
-+	 * FIXME: some OMAP3 revisions have a hardware bug which prevents
-+	 * the 4-bit BCH mode from working properly. Such revisions could be
-+	 * detected and rejected here.
-+	 */
-+
-+	gpmc_ecc_used = cs;
-+
-+	/* clear ecc and enable bits */
-+	gpmc_write_reg(GPMC_ECC_CONTROL, 0x1);
-+
-+	/*
-+	 * When using BCH, sector size is hardcoded to 512 bytes.
-+	 * Here we are using wrapping mode 6 both for reading and writing, with:
-+	 *  size0 = 0  (no additional protected byte in spare area)
-+	 *  size1 = 32 (skip 32 nibbles = 16 bytes per sector in spare area)
-+	 */
-+	gpmc_write_reg(GPMC_ECC_SIZE_CONFIG, (32 << 22) | (0 << 12));
-+
-+	/* BCH configuration */
-+	val = ((1                        << 16) | /* enable BCH */
-+	       (((nerrors == 8) ? 1 : 0) << 12) | /* 8 or 4 bits */
-+	       (0x06                     <<  8) | /* wrap mode = 6 */
-+	       (dev_width                <<  7) | /* bus width */
-+	       (((nsectors-1) & 0x7)     <<  4) | /* number of sectors */
-+	       (cs                       <<  1) | /* ECC CS */
-+	       (0x1));                            /* enable ECC */
-+
-+	gpmc_write_reg(GPMC_ECC_CONFIG, val);
-+	gpmc_write_reg(GPMC_ECC_CONTROL, 0x101);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(gpmc_enable_hwecc_bch);
-+
-+/**
-+ * gpmc_calculate_ecc_bch4 - Generate 7 ecc bytes per sector of 512 data bytes
-+ * @cs:  chip select number
-+ * @dat: The pointer to data on which ecc is computed
-+ * @ecc: The ecc output buffer
-+ */
-+int gpmc_calculate_ecc_bch4(int cs, const u_char *dat, u_char *ecc)
-+{
-+	int i;
-+	unsigned long nsectors, reg, val1, val2;
-+
-+	if (gpmc_ecc_used != cs)
-+		return -EINVAL;
-+
-+	nsectors = ((gpmc_read_reg(GPMC_ECC_CONFIG) >> 4) & 0x7) + 1;
-+
-+	for (i = 0; i < nsectors; i++) {
-+
-+		reg = GPMC_ECC_BCH_RESULT_0 + 16*i;
-+
-+		/* Read hw-computed remainder */
-+		val1 = gpmc_read_reg(reg + 0);
-+		val2 = gpmc_read_reg(reg + 4);
-+
-+		/*
-+		 * Add constant polynomial to remainder, in order to get an ecc
-+		 * sequence of 0xFFs for a buffer filled with 0xFFs; and
-+		 * left-justify the resulting polynomial.
-+		 */
-+		*ecc++ = 0x28 ^ ((val2 >> 12) & 0xFF);
-+		*ecc++ = 0x13 ^ ((val2 >>  4) & 0xFF);
-+		*ecc++ = 0xcc ^ (((val2 & 0xF) << 4)|((val1 >> 28) & 0xF));
-+		*ecc++ = 0x39 ^ ((val1 >> 20) & 0xFF);
-+		*ecc++ = 0x96 ^ ((val1 >> 12) & 0xFF);
-+		*ecc++ = 0xac ^ ((val1 >> 4) & 0xFF);
-+		*ecc++ = 0x7f ^ ((val1 & 0xF) << 4);
-+	}
-+
-+	gpmc_ecc_used = -EINVAL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(gpmc_calculate_ecc_bch4);
-+
-+/**
-+ * gpmc_calculate_ecc_bch8 - Generate 13 ecc bytes per block of 512 data bytes
-+ * @cs:  chip select number
-+ * @dat: The pointer to data on which ecc is computed
-+ * @ecc: The ecc output buffer
-+ */
-+int gpmc_calculate_ecc_bch8(int cs, const u_char *dat, u_char *ecc)
-+{
-+	int i;
-+	unsigned long nsectors, reg, val1, val2, val3, val4;
-+
-+	if (gpmc_ecc_used != cs)
-+		return -EINVAL;
-+
-+	nsectors = ((gpmc_read_reg(GPMC_ECC_CONFIG) >> 4) & 0x7) + 1;
-+
-+	for (i = 0; i < nsectors; i++) {
-+
-+		reg = GPMC_ECC_BCH_RESULT_0 + 16*i;
-+
-+		/* Read hw-computed remainder */
-+		val1 = gpmc_read_reg(reg + 0);
-+		val2 = gpmc_read_reg(reg + 4);
-+		val3 = gpmc_read_reg(reg + 8);
-+		val4 = gpmc_read_reg(reg + 12);
-+
-+		/*
-+		 * Add constant polynomial to remainder, in order to get an ecc
-+		 * sequence of 0xFFs for a buffer filled with 0xFFs.
-+		 */
-+		*ecc++ = 0xef ^ (val4 & 0xFF);
-+		*ecc++ = 0x51 ^ ((val3 >> 24) & 0xFF);
-+		*ecc++ = 0x2e ^ ((val3 >> 16) & 0xFF);
-+		*ecc++ = 0x09 ^ ((val3 >> 8) & 0xFF);
-+		*ecc++ = 0xed ^ (val3 & 0xFF);
-+		*ecc++ = 0x93 ^ ((val2 >> 24) & 0xFF);
-+		*ecc++ = 0x9a ^ ((val2 >> 16) & 0xFF);
-+		*ecc++ = 0xc2 ^ ((val2 >> 8) & 0xFF);
-+		*ecc++ = 0x97 ^ (val2 & 0xFF);
-+		*ecc++ = 0x79 ^ ((val1 >> 24) & 0xFF);
-+		*ecc++ = 0xe5 ^ ((val1 >> 16) & 0xFF);
-+		*ecc++ = 0x24 ^ ((val1 >> 8) & 0xFF);
-+		*ecc++ = 0xb5 ^ (val1 & 0xFF);
-+	}
-+
-+	gpmc_ecc_used = -EINVAL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(gpmc_calculate_ecc_bch8);
-+
-+#endif /* CONFIG_ARCH_OMAP3 */
-diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 1527929..23791ca 100644
---- a/arch/arm/plat-omap/include/plat/gpmc.h
-+++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -92,6 +92,8 @@ enum omap_ecc {
- 	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
- 		/* 1-bit ecc: stored at beginning of spare area as romcode */
- 	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
-+	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
-+	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
- };
- 
- /*
-@@ -157,4 +159,12 @@ extern int gpmc_nand_write(int cs, int cmd, int wval);
- 
- int gpmc_enable_hwecc(int cs, int mode, int dev_width, int ecc_size);
- int gpmc_calculate_ecc(int cs, const u_char *dat, u_char *ecc_code);
-+
-+#ifdef CONFIG_ARCH_OMAP3
-+int gpmc_enable_hwecc_bch(int cs, int mode, int dev_width, int nsectors,
-+			  int nerrors);
-+int gpmc_calculate_ecc_bch4(int cs, const u_char *dat, u_char *ecc);
-+int gpmc_calculate_ecc_bch8(int cs, const u_char *dat, u_char *ecc);
-+#endif /* CONFIG_ARCH_OMAP3 */
-+
- #endif
--- 
-1.7.10
+> ---
+>=20
+> This patch is made on top of l2-mtd.
+>=20
+>  drivers/mtd/bcm63xxpart.c |   41 ++++++++++++++++++++++++++++++-----=
+------
+>  1 files changed, 30 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
+> index 608321e..63d2a64 100644
+> --- a/drivers/mtd/bcm63xxpart.c
+> +++ b/drivers/mtd/bcm63xxpart.c
+> @@ -4,7 +4,7 @@
+>   * Copyright =A9 2006-2008  Florian Fainelli <florian@openwrt.org>
+>   *=09=09=09  Mike Albon <malbon@openwrt.org>
+>   * Copyright =A9 2009-2010  Daniel Dickinson <openwrt@cshore.neomail=
+box.net>
+> - * Copyright =A9 2011 Jonas Gorski <jonas.gorski@gmail.com>
+> + * Copyright =A9 2011-2012  Jonas Gorski <jonas.gorski@gmail.com>
+>   *
+>   * This program is free software; you can redistribute it and/or mod=
+ify
+>   * it under the terms of the GNU General Public License as published=
+ by
+> @@ -82,6 +82,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_=
+info
+> *master, int namelen =3D 0;
+>  =09int i;
+>  =09u32 computed_crc;
+> +=09bool rootfs_first =3D false;
+>=20
+>  =09if (bcm63xx_detect_cfe(master))
+>  =09=09return -EINVAL;
+> @@ -109,6 +110,7 @@ static int bcm63xx_parse_cfe_partitions(struct mt=
+d_info
+> *master, char *boardid =3D &(buf->board_id[0]);
+>  =09=09char *tagversion =3D &(buf->tag_version[0]);
+>=20
+> +=09=09sscanf(buf->flash_image_start, "%u", &rootfsaddr);
+>  =09=09sscanf(buf->kernel_address, "%u", &kerneladdr);
+>  =09=09sscanf(buf->kernel_length, "%u", &kernellen);
+>  =09=09sscanf(buf->total_length, "%u", &totallen);
+> @@ -117,10 +119,19 @@ static int bcm63xx_parse_cfe_partitions(struct
+> mtd_info *master, tagversion, boardid);
+>=20
+>  =09=09kerneladdr =3D kerneladdr - BCM63XX_EXTENDED_SIZE;
+> -=09=09rootfsaddr =3D kerneladdr + kernellen;
+> +=09=09rootfsaddr =3D rootfsaddr - BCM63XX_EXTENDED_SIZE;
+>  =09=09spareaddr =3D roundup(totallen, master->erasesize) + cfelen;
+>  =09=09sparelen =3D master->size - spareaddr - nvramlen;
+> -=09=09rootfslen =3D spareaddr - rootfsaddr;
+> +
+> +=09=09if (rootfsaddr < kerneladdr) {
+> +=09=09=09/* default Broadcom layout */
+> +=09=09=09rootfslen =3D kerneladdr - rootfsaddr;
+> +=09=09=09rootfs_first =3D true;
+> +=09=09} else {
+> +=09=09=09/* OpenWrt layout */
+> +=09=09=09rootfsaddr =3D kerneladdr + kernellen;
+> +=09=09=09rootfslen =3D spareaddr - rootfsaddr;
+> +=09=09}
+>  =09} else {
+>  =09=09pr_warn("CFE boot tag CRC invalid (expected %08x, actual %08x)=
+\n",
+>  =09=09=09buf->header_crc, computed_crc);
+> @@ -156,18 +167,26 @@ static int bcm63xx_parse_cfe_partitions(struct
+> mtd_info *master, curpart++;
+>=20
+>  =09if (kernellen > 0) {
+> -=09=09parts[curpart].name =3D "kernel";
+> -=09=09parts[curpart].offset =3D kerneladdr;
+> -=09=09parts[curpart].size =3D kernellen;
+> +=09=09int kernelpart =3D curpart;
+> +
+> +=09=09if (rootfslen > 0 && rootfs_first)
+> +=09=09=09kernelpart++;
+> +=09=09parts[kernelpart].name =3D "kernel";
+> +=09=09parts[kernelpart].offset =3D kerneladdr;
+> +=09=09parts[kernelpart].size =3D kernellen;
+>  =09=09curpart++;
+>  =09}
+>=20
+>  =09if (rootfslen > 0) {
+> -=09=09parts[curpart].name =3D "rootfs";
+> -=09=09parts[curpart].offset =3D rootfsaddr;
+> -=09=09parts[curpart].size =3D rootfslen;
+> -=09=09if (sparelen > 0)
+> -=09=09=09parts[curpart].size +=3D sparelen;
+> +=09=09int rootfspart =3D curpart;
+> +
+> +=09=09if (kernellen > 0 && rootfs_first)
+> +=09=09=09rootfspart--;
+> +=09=09parts[rootfspart].name =3D "rootfs";
+> +=09=09parts[rootfspart].offset =3D rootfsaddr;
+> +=09=09parts[rootfspart].size =3D rootfslen;
+> +=09=09if (sparelen > 0  && !rootfs_first)
+> +=09=09=09parts[rootfspart].size +=3D sparelen;
+>  =09=09curpart++;
+>  =09}
+--=20
+Florian
