@@ -1,15 +1,15 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SL9ui-0001Y8-31
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:14:00 +0000
-Received: by werp11 with SMTP id p11so7261649wer.36
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:13:59 -0700 (PDT)
+ id 1SL9uj-0001Yc-Q7
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:14:02 +0000
+Received: by wgbdr1 with SMTP id dr1so6041816wgb.18
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:14:00 -0700 (PDT)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH 2/9] ARM: sh-mobile: mackerel: Add error IRQ resource
-Date: Fri, 20 Apr 2012 11:13:43 +0200
-Message-Id: <1334913230-23615-3-git-send-email-hechtb@gmail.com>
+Subject: [PATCH 3/9] mtd: sh_flctl: Use different OOB layout
+Date: Fri, 20 Apr 2012 11:13:44 +0200
+Message-Id: <1334913230-23615-4-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
 References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
 Cc: Magnus Damm <magnus.damm@gmail.com>,
@@ -23,29 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Supply the platform data for the FLSTEI error IRQ.
+The flctl hardware has changed and a new OOB layout must be adapted for
+2k page size NAND chips when using hardware ECC.
+The related bit fields ECCPOS[0-2] are gone - the bits are marked as
+reserved now in the datasheet. As there are no official users of the
+hardware ECC so far, they are completely removed.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
- arch/arm/mach-shmobile/board-mackerel.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |   20 +++++++++++++-------
+ include/linux/mtd/sh_flctl.h |    4 ----
+ 2 files changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
-index 8758f94..1de1fb7 100644
---- a/arch/arm/mach-shmobile/board-mackerel.c
-+++ b/arch/arm/mach-shmobile/board-mackerel.c
-@@ -990,7 +990,11 @@ static struct resource nand_flash_resources[] = {
- 		.start	= 0xe6a30000,
- 		.end	= 0xe6a3009b,
- 		.flags	= IORESOURCE_MEM,
--	}
-+	},
-+	[1] = {
-+		.start	= evt2irq(0x0d80), /* flstei: status error irq */
-+		.flags	= IORESOURCE_IRQ,
-+	},
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 3c27921..411d783 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -44,11 +44,17 @@ static struct nand_ecclayout flctl_4secc_oob_16 = {
  };
  
- static struct sh_flctl_platform_data nand_flash_data = {
+ static struct nand_ecclayout flctl_4secc_oob_64 = {
+-	.eccbytes = 10,
+-	.eccpos = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57},
+-	.oobfree = {
+-		{.offset = 60,
+-		. length = 4} },
++	.eccbytes = 4 * 10,
++		.eccpos = {
++			 6,  7, 8,  9, 10, 11, 12, 13, 14, 15,
++			22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
++			38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
++			54, 55, 56, 57, 58, 59, 60, 61, 62, 63 },
++		.oobfree = {
++			{.offset = 2, .length = 4},
++			{.offset = 16, .length = 6},
++			{.offset = 32, .length = 6},
++			{.offset = 48, .length = 6} },
+ };
+ 
+ static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+@@ -62,7 +68,7 @@ static struct nand_bbt_descr flctl_4secc_smallpage = {
+ 
+ static struct nand_bbt_descr flctl_4secc_largepage = {
+ 	.options = NAND_BBT_SCAN2NDPAGE,
+-	.offs = 58,
++	.offs = 0,
+ 	.len = 2,
+ 	.pattern = scan_ff_pattern,
+ };
+@@ -831,7 +837,7 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
+ 		chip->ecc.mode = NAND_ECC_HW;
+ 
+ 		/* 4 symbols ECC enabled */
+-		flctl->flcmncr_base |= _4ECCEN | ECCPOS2 | ECCPOS_02;
++		flctl->flcmncr_base |= _4ECCEN;
+ 	} else {
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+ 	}
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 6832a90..91c5b01 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -49,7 +49,6 @@
+ #define	FLERRADR(f)		(f->reg + 0x98)
+ 
+ /* FLCMNCR control bits */
+-#define ECCPOS2		(0x1 << 25)
+ #define _4ECCCNTEN	(0x1 << 24)
+ #define _4ECCEN		(0x1 << 23)
+ #define _4ECCCORRECT	(0x1 << 22)
+@@ -59,9 +58,6 @@
+ #define QTSEL_E		(0x1 << 17)
+ #define ENDIAN		(0x1 << 16)	/* 1 = little endian */
+ #define FCKSEL_E	(0x1 << 15)
+-#define ECCPOS_00	(0x00 << 12)
+-#define ECCPOS_01	(0x01 << 12)
+-#define ECCPOS_02	(0x02 << 12)
+ #define ACM_SACCES_MODE	(0x01 << 10)
+ #define NANWF_E		(0x1 << 9)
+ #define SE_D		(0x1 << 8)	/* Spare area disable */
 -- 
 1.7.5.4
