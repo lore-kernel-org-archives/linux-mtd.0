@@ -1,23 +1,15 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail.grid-net.com ([97.65.115.2])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLJMg-0006hD-Rr
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 19:19:31 +0000
-Received: by yenm10 with SMTP id m10so6070512yen.36
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 12:19:29 -0700 (PDT)
+ id 1SLMng-00060C-Rn
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 22:59:37 +0000
+Message-ID: <4F91EA56.50803@grid-net.com>
+Date: Fri, 20 Apr 2012 15:59:34 -0700
+From: Subodh Nijsure <snijsure@grid-net.com>
 MIME-Version: 1.0
-In-Reply-To: <4F918E00.90904@newsguy.com>
-References: <70E876B0EA86DD4BAF101844BC814DFE0BF6014363@Cloud.RL.local>
- <4F918E00.90904@newsguy.com>
-Date: Fri, 20 Apr 2012 12:19:29 -0700
-Message-ID: <CAN8TOE979m7Rt6xA_YonzHcK16GKWhn8KFf0UqZL=g=oebgX8w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add OOB argument to NAND {read,
- write}_page interfaces
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>, Jon Povey <Jon.Povey@racelogic.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- "prabhakar@freescale.com" <prabhakar@freescale.com>
+To: mtd <linux-mtd@lists.infradead.org>
+Subject: Suggestion needed to set proper journal size
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 20, 2012 at 9:25 AM, Mike Dunn <mikedunn@newsguy.com> wrote:
-> On 04/19/2012 06:10 PM, Jon Povey wrote:
->>
->> In theory nobody should ever need to worry about OOB+ECC but being able
->> to fiddle with it has its uses and I hope that ability doesn't go away.
->
->
-> I think we're just trying to figure out how to make it optional.
+Hello,
 
-Right, optional.
+I know general implications of changing journal size on UBIFS -- bigger 
+the journal,
+longer it may take to replay the journal, increasing time UBIFS takes to 
+mount. Smaller
+journal means more re-writes to flash.
 
-Brian
+We created 2 partitions 100MB and 45MB and we see that by default 
+mkfs.ubifs is reserving 8MB for journal.
+
+UBIFS: file system size:   101834752 bytes (99448 KiB, 97 MiB, 802 LEBs)
+UBIFS: journal size:         9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
+
+UBIFS: file system size:     47996928 bytes (46872 KiB, 45 MiB, 378 LEBs)
+UBIFS: journal size:          9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
+
+I know I can specify size of journal with -j option.
+
+Should the journal size be scaled in some proportion of size of UBIFS 
+partition?
+
+Should the journal size depend on how often you expect file-system to be 
+updated?
+
+Has anyone done experiments with setting really small (1MB/2MB) journal 
+size?
+What side effects is one likely to encounter if the journal size is too 
+small.
+
+fwiw in my use case, file-system doesn't get updated that often, perhaps 
+2K data in about 4 files once a week.
+
+-Subodh
