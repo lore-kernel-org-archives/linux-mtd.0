@@ -1,15 +1,15 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SL9uk-0001Z4-JG
+ id 1SL9ul-0001Xl-0W
  for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:14:04 +0000
-Received: by wgbdr1 with SMTP id dr1so6041834wgb.18
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:14:01 -0700 (PDT)
+Received: by mail-we0-f177.google.com with SMTP id p11so7261635wer.36
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:14:02 -0700 (PDT)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH 4/9] mtd: sh_flctl: Fix hardware ECC behaviour
-Date: Fri, 20 Apr 2012 11:13:45 +0200
-Message-Id: <1334913230-23615-5-git-send-email-hechtb@gmail.com>
+Subject: [PATCH 5/9] mtd: sh_flctl: Simplify the hardware ecc page read/write
+Date: Fri, 20 Apr 2012 11:13:46 +0200
+Message-Id: <1334913230-23615-6-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
 References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
 Cc: Magnus Damm <magnus.damm@gmail.com>,
@@ -23,74 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The flctl uses 10 bytes ECC data for every 512 bytes sector. This patch
-makes the controller write all 40 bytes instead of 10 bytes only.
+As the equation mtd->writesize == eccsteps * eccsize holds, we can
+simplify the code. The second loop of the 1st hunk is never entered,
+so we delete it.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c |   30 +++++++-----------------------
- 1 files changed, 7 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/sh_flctl.c |   25 ++-----------------------
+ 1 files changed, 2 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 411d783..c16479c 100644
+index c16479c..8e56f87 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -427,30 +427,20 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
- static void execmd_read_oob(struct mtd_info *mtd, int page_addr)
+@@ -353,35 +353,14 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_va
+ static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 				uint8_t *buf, int page)
  {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-+	int page_sectors = flctl->page_size ? 4 : 1;
-+	int i;
- 
- 	set_cmd_regs(mtd, NAND_CMD_READ0,
- 		(NAND_CMD_READSTART << 8) | NAND_CMD_READ0);
- 
- 	empty_fifo(flctl);
--	if (flctl->page_size) {
--		int i;
--		/* In case that the page size is 2k */
--		for (i = 0; i < 16 * 3; i++)
--			flctl->done_buff[i] = 0xFF;
+-	int i, eccsize = chip->ecc.size;
+-	int eccbytes = chip->ecc.bytes;
+-	int eccsteps = chip->ecc.steps;
+-	uint8_t *p = buf;
+-	struct sh_flctl *flctl = mtd_to_flctl(mtd);
 -
--		set_addr(mtd, 3 * 528 + 512, page_addr);
--		writel(16, FLDTCNTR(flctl));
- 
--		start_translation(flctl);
--		read_fiforeg(flctl, 16, 16 * 3);
--		wait_completion(flctl);
--	} else {
--		/* In case that the page size is 512b */
--		set_addr(mtd, 512, page_addr);
-+	for (i = 0; i < page_sectors; i++) {
-+		set_addr(mtd, (512 + 16) * i + 512 , page_addr);
- 		writel(16, FLDTCNTR(flctl));
- 
- 		start_translation(flctl);
--		read_fiforeg(flctl, 16, 0);
-+		read_fiforeg(flctl, 16, 16 * i);
- 		wait_completion(flctl);
- 	}
- }
-@@ -495,18 +485,12 @@ static void execmd_write_oob(struct mtd_info *mtd)
- 	int page_addr = flctl->seqin_page_addr;
- 	int sector, page_sectors;
- 
--	if (flctl->page_size) {
--		sector = 3;
--		page_sectors = 4;
--	} else {
--		sector = 0;
--		page_sectors = 1;
+-	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+-		chip->read_buf(mtd, p, eccsize);
+-
+-	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+-		if (flctl->hwecc_cant_correct[i])
+-			mtd->ecc_stats.failed++;
+-		else
+-			mtd->ecc_stats.corrected += 0;
 -	}
-+	page_sectors = flctl->page_size ? 4 : 1;
+-
++	chip->read_buf(mtd, buf, mtd->writesize);
+ 	return 0;
+ }
  
- 	set_cmd_regs(mtd, NAND_CMD_PAGEPROG,
- 			(NAND_CMD_PAGEPROG << 8) | NAND_CMD_SEQIN);
+ static void flctl_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 				   const uint8_t *buf)
+ {
+-	int i, eccsize = chip->ecc.size;
+-	int eccbytes = chip->ecc.bytes;
+-	int eccsteps = chip->ecc.steps;
+-	const uint8_t *p = buf;
+-
+-	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+-		chip->write_buf(mtd, p, eccsize);
++	chip->write_buf(mtd, buf, mtd->writesize);
+ }
  
--	for (; sector < page_sectors; sector++) {
-+	for (sector = 0; sector < page_sectors; sector++) {
- 		empty_fifo(flctl);
- 		set_addr(mtd, sector * 528 + 512, page_addr);
- 		writel(16, FLDTCNTR(flctl));	/* set read size */
+ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
 -- 
 1.7.5.4
