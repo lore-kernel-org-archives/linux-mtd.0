@@ -1,28 +1,17 @@
-Received: from 12.mo3.mail-out.ovh.net ([188.165.41.191]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SLARh-0006TN-G9
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:48:06 +0000
-Received: from mail622.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 5DFE8FF9469
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 11:40:47 +0200 (CEST)
-Date: Fri, 20 Apr 2012 11:20:22 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: "Xu, Hong" <Hong.Xu@atmel.com>
-Subject: Re: [PATCH v4 1/2] MTD: atmel_nand: Update driver to support
- Programmable HW ECC controller
-Message-ID: <20120420092022.GA16641@game.jcrosoft.org>
-References: <1334906788-18704-1-git-send-email-hong.xu@atmel.com>
- <20120420082533.GX16641@game.jcrosoft.org>
- <A92DB5DF46DBC241980A99BFD8A00AEE0F62D642@penmbx01>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A92DB5DF46DBC241980A99BFD8A00AEE0F62D642@penmbx01>
-Cc: "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SLATe-00072b-KY
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:50:07 +0000
+Received: by wibhj13 with SMTP id hj13so371515wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:50:04 -0700 (PDT)
+Sender: "Ivantchek ." <ivantchek@gmail.com>
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: omap: add support for hardware BCH ecc
+Date: Fri, 20 Apr 2012 11:48:48 +0200
+Message-Id: <1334915328-10673-1-git-send-email-ivan.djelic@parrot.com>
+Cc: Jan Weitzel <J.Weitzel@phytec.de>, Ivan Djelic <ivan.djelic@parrot.com>,
+ linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,196 +21,415 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09:13 Fri 20 Apr     , Xu, Hong wrote:
-> Hi JC,
-> 
-> > -----Original Message-----
-> > From: Jean-Christophe PLAGNIOL-VILLARD [mailto:plagnioj@jcrosoft.com]
-> > Sent: Friday, April 20, 2012 4:26 PM
-> > To: Xu, Hong
-> > Cc: linux-mtd@lists.infradead.org; linux-arm-kernel@lists.infradead.org;
-> > dedekind1@gmail.com; Ferre, Nicolas
-> > Subject: Re: [PATCH v4 1/2] MTD: atmel_nand: Update driver to support
-> > Programmable HW ECC controller
-> > 
-> > On 15:26 Fri 20 Apr     , Hong Xu wrote:
-> > > The Programmable Hardware ECC (PMECC) controller is a programmable binary
-> > > BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
-> > > can be used to support both SLC and MLC NAND Flash devices. It supports to
-> > > generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
-> > >
-> > > To use this driver, the user needs to pass in the correction capability and
-> > > the sector size.
-> > >
-> > > This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
-> > > YAFFS2, UBIFS and mtd-utils.
-> > >
-> > > Signed-off-by: Hong Xu <hong.xu@atmel.com>
-> > what is the status on the other soc?
-> 
-> So far, PMECC appears on SAM9X5 and SAM9N12 (PMECC will be available on the SoCs in the future). And the test is done on the two platforms.
-yes but you have hw ecc on other soc did you test it
-to be sure you break nothing
-> 
-> > > ---
-> > > Changes since v3,
-> > > 	Rebased on AT91 Nand fixes and DT
-> > >
-> > >  drivers/mtd/nand/atmel_nand.c     |  955
-> > ++++++++++++++++++++++++++++++++++---
-> > >  drivers/mtd/nand/atmel_nand_ecc.h |  123 ++++-
-> > >  2 files changed, 998 insertions(+), 80 deletions(-)
-> > >
-> > > diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> > > index 2165576..7d494c8 100644
-> > > --- a/drivers/mtd/nand/atmel_nand.c
-> > > +++ b/drivers/mtd/nand/atmel_nand.c
-> > > @@ -15,6 +15,8 @@
-> > >   *     		(u-boot-1.1.5/board/atmel/at91sam9263ek/nand.c)
-> > >   *     (C) Copyright 2006 ATMEL Rousset, Lacressonniere Nicolas
-> > >   *
-> > > + *  Add Programmable Hardware ECC support for various AT91 SoC
-> > > + *     (C) Copyright 2012 ATMEL, Hong Xu
-> > the comment is wrong the hw ecc is already implemented
-> 
-> Well, original code is Hamming based ECC. New one is based on BCH. But anyway, these two lines can be removed.
-> 
-> > >   *
-> > >   * This program is free software; you can redistribute it and/or modify
-> > >   * it under the terms of the GNU General Public License version 2 as
-> > > @@ -42,19 +44,50 @@
-> > >
-> > >  #include <mach/cpu.h>
-> > >
-> > > +/* Hardware ECC registers */
-> > > +#include "atmel_nand_ecc.h"
-> > > +
-> > >  static int use_dma = 1;
-> > >  module_param(use_dma, int, 0);
-> > >
-> > >  static int on_flash_bbt = 0;
-> > >  module_param(on_flash_bbt, int, 0);
-> > >
-> 
-> [...]
-> 
-> > > +
-> > > +static int cpu_has_pmecc(void)
-> > > +{
-> > > +	if (cpu_is_at91sam9x5())
-> > > +		return 1;
-> > this must be pass via DT do not use cpu_is
-> 
-> Well, I agreed we could add something in the DT of the SoC. But when can we use cpu_is_xxx in the context of DT?
-no decribe it via property
-> 
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int pmecc_get_clkctrl(void)
-> > > +{
-> > > +	/* See datasheet about PMECC Clock Control Register */
-> > > +	if (cpu_is_at91sam9x5())
-> > > +		return 2;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static void pmecc_config_ecc_layout(struct nand_ecclayout *layout, int
-> > oobsize,
-> [...]
-> > > +	 */
-> > > +	si = host->si;
-> > > +
-> > > +	for (i = 1; i < 2 * AT_NB_ERROR_MAX; i++)
-> > > +		si[i] = 0;
-> > > +
-> > > +	/* Computation 2t syndromes based on S(x) */
-> > > +	/* Odd syndromes */
-> > > +	for (i = 1; i <= 2 * host->cap - 1; i = i + 2) {
-> > i += 2
-> > < without the -1
-> 
-> I'd keep it as it is. We could find similar lines in datasheet or internal tested code.
-> 
-> > > +		si[i] = 0;
-> > > +		for (j = 0; j < host->degree; j++) {
-> > > +			if (partial_syn[i] & ((unsigned short)0x1 << j))
-> > > +				si[i] = __raw_readw(alpha_to + i * j) ^ si[i];
-> > use relaxed read/write
-> 
-> OK, I'll have a look.
-> 
-> > > +		}
-> > > +	}
-> > > +	/* Even syndrome = (Odd syndrome) ** 2 */
-> > > +	for (i = 2; i <= 2 * host->cap; i = i + 2) {
-> > > +		j = i / 2;
-> > > +		if (si[j] == 0)
-> > > +			si[i] = 0;
-> > > +		else {
-> > > +			int16_t tmp;
-> > please check your patch with checkpath
-> 
-> I've done it before submitting. BTW with checkpatch instead of checkpath.
-so here you miss an empty line
-and I see others
-> 
-> > > +			tmp = __raw_readw(index_of + si[j]);
-> > > +			tmp = (tmp * 2) % host->cw_len;
-> > > +			si[i] = __raw_readw(alpha_to + tmp);
-> > > +		}
-> > > +	}
-> > > +
-> > > +	return;
-> > > +}
-> > > +
-> > > +static void pmecc_get_sigma(struct mtd_info *mtd)
-> > > +{
-> > > +	int			i, j, k;
-> > > +	struct nand_chip	*nand_chip = mtd->priv;
-> > > +	struct atmel_nand_host	*host = nand_chip->priv;
-> > > +
-> > > +	uint32_t		dmu_0_count, tmp;
-> > > +	int16_t			*lmu = host->lmu;
-> > > +	int16_t			*si = host->si;
-> > > +	int16_t			cap = host->cap;
-> > > +	int16_t __iomem		*index_of = host->index_of;
-> > > +	int16_t __iomem		*alpha_to = host->alpha_to;
-> > > +
-> > > +	/* mu */
-> > > +	int mu[AT_NB_ERROR_MAX + 1];
-> > > +
-> > > +	/* discrepancy */
-> > > +	int dmu[AT_NB_ERROR_MAX + 1];
-> > > +
-> > > +	/* delta order */
-> > > +	int delta[AT_NB_ERROR_MAX + 1];
-> > allocate these
-> 
-> OK.
-> 
-> > > +
-> > > +	/* index of largest delta */
-> > > +	int ro;
-> > > +	int largest;
-> > > +	int diff;
-> > > +
-> > > +	dmu_0_count = 0;
-> > > +
-> > > +	/* First Row */
-> > > +
-> > > +	/* Mu */
-> > > +	mu[0] = -1;
-> > > +
-> > > +	for (i = 0; i < 2 * AT_NB_ERROR_MAX + 1; i++)
-> > > +		host->smu[0][i] = 0;
-> > use memeset
-> 
-> A big deal? Or I'd keep this as found in datasheet.
-please forget the datasheet we do it clean
-same upper
+Hello,
+This patch provides hardware NAND BCH ecc support for OMAP3 boards.
+It depends on the following patches:
 
-Best Regards,
-J.
+new GPMC BCH api (linux-omap):
+http://lists.infradead.org/pipermail/linux-mtd/2012-April/040757.html
+
+race condition fix in OMAP mtd driver:
+http://lists.infradead.org/pipermail/linux-mtd/2012-April/040724.html
+
+I was able to run low-level mtd stress tests on a BeagleBoard, but I
+would be interested if someone could test this patch with UBI/UBIFS.
+BR,
+
+Ivan
+
+--
+Two modes are supported: 4-bit and 8-bit error correction.
+The OMAP3 GPMC hardware BCH engine computes remainder polynomials,
+it does not provide automatic error location and correction: this
+step is implemented using the BCH library.
+
+Error concealment thresholds are implemented in order to avoid
+over-scrubbing blocks with sticky bitflips (which are common on
+4-bit nand devices).
+
+This implementation only protects page data, there is no support
+for protecting user-defined spare area bytes (this could be added
+with a few modifications); therefore, it cannot be used with YAFFS2
+or other similar filesystems that depend on oob storage.
+
+Before being stored to nand flash, hardware BCH ecc is adjusted
+so that an erased page has a valid ecc; thus allowing correction of
+bitflips in blank pages (also common on 4-bit devices).
+
+BCH correction mode is selected at runtime by setting platform data
+parameter 'ecc_opt' to value OMAP_ECC_BCH4_CODE_HW or
+OMAP_ECC_BCH8_CODE_HW.
+
+This code has been tested on a BeagleBoard revC3
+(OMAP3530 ES3.0 + Micron NAND 256MiB 1,8V 16-bit).
+
+Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
+---
+ drivers/mtd/nand/Kconfig |   40 +++++++
+ drivers/mtd/nand/omap2.c |  262 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 302 insertions(+)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 0ea7084..0b4ce93 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -115,6 +115,46 @@ config MTD_NAND_OMAP2
+           Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
+ 	  platforms.
+ 
++config MTD_NAND_OMAP_BCH
++	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
++	bool "Enable support for hardware BCH error correction"
++	default n
++	select BCH
++	select BCH_CONST_PARAMS
++	help
++	 Support for hardware BCH error correction.
++
++choice
++	prompt "BCH error correction capability"
++	depends on MTD_NAND_OMAP_BCH
++
++config MTD_NAND_OMAP_BCH8
++	bool "8 bits / 512 bytes (recommended)"
++	help
++	 Support correcting up to 8 bitflips per 512-byte block.
++	 This will use 13 bytes of spare area per 512 bytes of page data.
++	 This is the recommended mode, as 4-bit mode does not work
++	 on some OMAP3 revisions, due to a hardware bug.
++
++config MTD_NAND_OMAP_BCH4
++	bool "4 bits / 512 bytes"
++	help
++	 Support correcting up to 4 bitflips per 512-byte block.
++	 This will use 7 bytes of spare area per 512 bytes of page data.
++	 Note that this mode does not work on some OMAP3 revisions, due to a
++	 hardware bug. Please check your OMAP datasheet before selecting this
++	 mode.
++
++endchoice
++
++if MTD_NAND_OMAP_BCH
++config BCH_CONST_M
++	default 13
++config BCH_CONST_T
++	default 4 if MTD_NAND_OMAP_BCH4
++	default 8 if MTD_NAND_OMAP_BCH8
++endif
++
+ config MTD_NAND_IDS
+ 	tristate
+ 
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 45c6205..d03ef5f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -21,6 +21,10 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ 
++#ifdef CONFIG_MTD_NAND_OMAP_BCH
++#include <linux/bch.h>
++#endif
++
+ #include <plat/dma.h>
+ #include <plat/gpmc.h>
+ #include <plat/nand.h>
+@@ -127,6 +131,12 @@ struct omap_nand_info {
+ 	} iomode;
+ 	u_char				*buf;
+ 	int					buf_len;
++
++#ifdef CONFIG_MTD_NAND_OMAP_BCH
++	struct bch_control             *bch;
++	struct nand_ecclayout           ecclayout;
++	int                             error_threshold;
++#endif
+ };
+ 
+ /**
+@@ -927,6 +937,236 @@ static int omap_dev_ready(struct mtd_info *mtd)
+ 	return 1;
+ }
+ 
++#ifdef CONFIG_MTD_NAND_OMAP_BCH
++
++/**
++ * omap3_enable_hwecc_bch - Program OMAP3 GPMC to perform BCH ECC correction
++ * @mtd: MTD device structure
++ * @mode: Read/Write mode
++ */
++static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
++{
++	int nerrors;
++	unsigned int dev_width;
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	struct nand_chip *chip = mtd->priv;
++
++	nerrors = (info->nand.ecc.bytes == 13) ? 8 : 4;
++	dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
++	/*
++	 * Program GPMC to perform correction on one 512-byte sector at a time.
++	 * Using 4 sectors at a time (i.e. ecc.size = 2048) is also possible and
++	 * gives a slight (5%) performance gain (but requires additional code).
++	 */
++	(void)gpmc_enable_hwecc_bch(info->gpmc_cs, mode, dev_width, 1, nerrors);
++}
++
++/**
++ * omap3_calculate_ecc_bch4 - Generate 7 bytes of ECC bytes
++ * @mtd: MTD device structure
++ * @dat: The pointer to data on which ecc is computed
++ * @ecc_code: The ecc_code buffer
++ */
++static int omap3_calculate_ecc_bch4(struct mtd_info *mtd, const u_char *dat,
++				    u_char *ecc_code)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	return gpmc_calculate_ecc_bch4(info->gpmc_cs, dat, ecc_code);
++}
++
++/**
++ * omap3_calculate_ecc_bch8 - Generate 13 bytes of ECC bytes
++ * @mtd: MTD device structure
++ * @dat: The pointer to data on which ecc is computed
++ * @ecc_code: The ecc_code buffer
++ */
++static int omap3_calculate_ecc_bch8(struct mtd_info *mtd, const u_char *dat,
++				    u_char *ecc_code)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	return gpmc_calculate_ecc_bch8(info->gpmc_cs, dat, ecc_code);
++}
++
++/**
++ * omap3_correct_data_bch - Decode received data and correct errors
++ * @mtd: MTD device structure
++ * @data: page data
++ * @read_ecc: ecc read from nand flash
++ * @calc_ecc: ecc read from HW ECC registers
++ */
++static int omap3_correct_data_bch(struct mtd_info *mtd, u_char *data,
++				  u_char *read_ecc, u_char *calc_ecc)
++{
++	int i, count;
++	/* cannot correct more than 8 errors */
++	unsigned int errloc[8];
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++
++	count = decode_bch(info->bch, NULL, 512, read_ecc, calc_ecc, NULL,
++			   errloc);
++	if (count > 0) {
++		/* correct errors */
++		for (i = 0; i < count; i++) {
++			/* correct data only, not ecc bytes */
++			if (errloc[i] < 8*512)
++				data[errloc[i]/8] ^= 1 << (errloc[i] & 7);
++			pr_debug("corrected bitflip %u\n", errloc[i]);
++		}
++		/*
++		 * FIXME: in order to prevent upper layers (such as UBI) from
++		 * torturing and marking a block as bad as soon as 1 bitflip
++		 * is persistent, we implement a threshold below which errors
++		 * are corrected but not reported. Instead, mtd should provide
++		 * a generic way to handle this situation.
++		 */
++		if (count < info->error_threshold)
++			count = 0;
++
++	} else if (count < 0) {
++		pr_err("ecc unrecoverable error\n");
++	}
++	return count;
++}
++
++/**
++ * omap3_free_bch - Release BCH ecc resources
++ * @mtd: MTD device structure
++ */
++static void omap3_free_bch(struct mtd_info *mtd)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	if (info->bch) {
++		free_bch(info->bch);
++		info->bch = NULL;
++	}
++}
++/**
++ * omap3_init_bch - Initialize BCH ECC
++ * @mtd: MTD device structure
++ * @ecc_opt: OMAP ECC mode (OMAP_ECC_BCH4_CODE_HW or OMAP_ECC_BCH8_CODE_HW)
++ */
++static int omap3_init_bch(struct mtd_info *mtd, int ecc_opt)
++{
++	int max_errors;
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	/*
++	 * Define conservative default error concealment thresholds.
++	 * Errors are concealed to avoid over-scrubbing blocks with sticky
++	 * bitflips. These thresholds should probably be provided by platform
++	 * data or mtd.
++	 */
++
++#ifdef CONFIG_MTD_NAND_OMAP_BCH8
++	/* correct up to 8 errors, but conceal 1-bit and 2-bit errors (< 3) */
++	const int hw_errors = 8, error_threshold = 3;
++#else
++	/* correct up to 4 errors, but conceal 1-bit errors (< 2) */
++	const int hw_errors = 4, error_threshold = 2;
++#endif
++	info->bch = NULL;
++
++	max_errors = (ecc_opt == OMAP_ECC_BCH8_CODE_HW) ? 8 : 4;
++	if (max_errors != hw_errors) {
++		pr_err("cannot configure %d-bit BCH ecc, only %d-bit supported",
++		       max_errors, hw_errors);
++		goto fail;
++	}
++	info->error_threshold = error_threshold;
++
++	/* software bch library is only used to detect and locate errors */
++	info->bch = init_bch(13, max_errors, 0x201b /* hw polynomial */);
++	if (!info->bch)
++		goto fail;
++
++	info->nand.ecc.size    = 512;
++	info->nand.ecc.hwctl   = omap3_enable_hwecc_bch;
++	info->nand.ecc.correct = omap3_correct_data_bch;
++	info->nand.ecc.mode    = NAND_ECC_HW;
++
++	if (max_errors == 8) {
++		info->nand.ecc.strength  = 8;
++		info->nand.ecc.bytes     = 13;
++		info->nand.ecc.calculate = omap3_calculate_ecc_bch8;
++	} else {
++		info->nand.ecc.strength  = 4;
++		info->nand.ecc.bytes     = 7;
++		info->nand.ecc.calculate = omap3_calculate_ecc_bch4;
++	}
++
++	pr_info("enabling hardware NAND BCH ECC, %d errors max, threshold %d\n",
++		max_errors, error_threshold);
++
++	return 0;
++fail:
++	omap3_free_bch(mtd);
++	return -1;
++}
++
++/**
++ * omap3_init_bch_tail - Build an oob layout for BCH ECC correction.
++ * @mtd: MTD device structure
++ */
++static int omap3_init_bch_tail(struct mtd_info *mtd)
++{
++	int i, steps;
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++						   mtd);
++	struct nand_ecclayout *layout = &info->ecclayout;
++
++	/* build oob layout */
++	steps = mtd->writesize/info->nand.ecc.size;
++	layout->eccbytes = steps*info->nand.ecc.bytes;
++
++	/* do not bother creating special oob layouts for small page devices */
++	if (mtd->oobsize < 64) {
++		pr_err("BCH ecc is not supported on small page devices\n");
++		goto fail;
++	}
++
++	/* reserve 2 bytes for bad block marker */
++	if (layout->eccbytes+2 > mtd->oobsize) {
++		pr_err("no oob layout available for oobsize %d eccbytes %u\n",
++		       mtd->oobsize, layout->eccbytes);
++		goto fail;
++	}
++
++	/* put ecc bytes at oob tail */
++	for (i = 0; i < layout->eccbytes; i++)
++		layout->eccpos[i] = mtd->oobsize-layout->eccbytes+i;
++
++	layout->oobfree[0].offset = 2;
++	layout->oobfree[0].length = mtd->oobsize-2-layout->eccbytes;
++	info->nand.ecc.layout = layout;
++
++	if (!(info->nand.options & NAND_BUSWIDTH_16))
++		info->nand.badblock_pattern = &bb_descrip_flashbased;
++	return 0;
++fail:
++	omap3_free_bch(mtd);
++	return -1;
++}
++
++#else
++static int omap3_init_bch(struct mtd_info *mtd, int ecc_opt)
++{
++	pr_err("CONFIG_MTD_NAND_OMAP_BCH is not enabled\n");
++	return -1;
++}
++static int omap3_init_bch_tail(struct mtd_info *mtd)
++{
++	return -1;
++}
++static void omap3_free_bch(struct mtd_info *mtd)
++{
++}
++#endif /* CONFIG_MTD_NAND_OMAP_BCH */
++
+ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ {
+ 	struct omap_nand_info		*info;
+@@ -1065,6 +1305,13 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.ecc.hwctl            = omap_enable_hwecc;
+ 		info->nand.ecc.correct          = omap_correct_data;
+ 		info->nand.ecc.mode             = NAND_ECC_HW;
++	} else if ((pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) ||
++		   (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW)) {
++		err = omap3_init_bch(&info->mtd, pdata->ecc_opt);
++		if (err) {
++			err = -EINVAL;
++			goto out_release_mem_region;
++		}
+ 	}
+ 
+ 	/* DIP switches on some boards change between 8 and 16 bit
+@@ -1096,6 +1343,14 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 					(offset + omap_oobinfo.eccbytes);
+ 
+ 		info->nand.ecc.layout = &omap_oobinfo;
++	} else if ((pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) ||
++		   (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW)) {
++		/* build OOB layout for BCH ECC correction */
++		err = omap3_init_bch_tail(&info->mtd);
++		if (err) {
++			err = -EINVAL;
++			goto out_release_mem_region;
++		}
+ 	}
+ 
+ 	/* second phase scan */
+@@ -1121,9 +1376,16 @@ out_free_info:
+ 
+ static int omap_nand_remove(struct platform_device *pdev)
+ {
++	struct omap_nand_platform_data *pdata;
+ 	struct mtd_info *mtd = platform_get_drvdata(pdev);
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
++	pdata = pdev->dev.platform_data;
++	if (pdata &&
++	    ((pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) ||
++	     (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW))) {
++		omap3_free_bch(&info->mtd);
++	}
+ 
+ 	platform_set_drvdata(pdev, NULL);
+ 	if (info->dma_ch != -1)
+-- 
+1.7.10
