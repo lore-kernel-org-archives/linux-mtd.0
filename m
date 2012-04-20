@@ -1,19 +1,12 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SL9ur-0001bj-K5
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2012 09:14:12 +0000
-Received: by wgbds1 with SMTP id ds1so488726wgb.0
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2012 02:14:07 -0700 (PDT)
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-mtd@lists.infradead.org,
-	linux-sh@vger.kernel.org
-Subject: [PATCH 9/9] ARM: sh-mobile: mackerel: Use hardware error correction
-Date: Fri, 20 Apr 2012 11:13:50 +0200
-Message-Id: <1334913230-23615-10-git-send-email-hechtb@gmail.com>
-In-Reply-To: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
-References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <shawn.guo@linaro.org>
+Subject: [PATCH 0/3] add gpmi-nand dt support for mx6q-arm2 and imx28evk
+Date: Fri, 20 Apr 2012 17:24:16 +0800
+Message-ID: <1334913859-5314-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +16,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the built-in hardware error code correction of the sh_flctl.
+The mx6q-arm2 and imx28evk have already support the device tree now.
+So i decide to add the gpmi-nand dt support to them.
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
- arch/arm/mach-shmobile/board-mackerel.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+The mx23 does not support the device tree now. I will add the gpmi dt support
+when it is ready.
 
-diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
-index 1de1fb7..f8289f4 100644
---- a/arch/arm/mach-shmobile/board-mackerel.c
-+++ b/arch/arm/mach-shmobile/board-mackerel.c
-@@ -1003,6 +1003,7 @@ static struct sh_flctl_platform_data nand_flash_data = {
- 	.flcmncr_val	= CLK_16B_12L_4H | TYPESEL_SET
- 			| SHBUSSEL | SEL_16BIT | SNAND_E,
- 	.use_holden	= 1,
-+	.has_hwecc	= 1,
- };
- 
- static struct platform_device nand_flash_device = {
--- 
-1.7.5.4
+Test this patch set on both MX6Q-arm2 and mx28evk.
+
+Huang Shijie (3):
+  ARM: mx6q-arm2: add gpmi-nand dt support
+  ARM: mx28evk: add gpmi-nand dt support
+  mtd: gpmi: add device tree support for mx6q-arm2 and mx28evk
+
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |   30 +++
+ arch/arm/boot/dts/imx28.dtsi                       |    9 +-
+ arch/arm/boot/dts/imx6q.dtsi                       |   12 +
+ arch/arm/mach-imx/clock-imx6q.c                    |    5 +-
+ arch/arm/mach-mxs/clock-mx28.c                     |    2 +-
+ drivers/mtd/nand/Kconfig                           |    2 +-
+ drivers/mtd/nand/gpmi-nand/bch-regs.h              |   42 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   18 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  240 +++++++++-----------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +-
+ 10 files changed, 202 insertions(+), 164 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpmi-nand.txt
