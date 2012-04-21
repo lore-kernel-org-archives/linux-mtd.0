@@ -1,15 +1,15 @@
 Received: from perceval.ideasonboard.com ([95.142.166.194])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLgb5-0007cY-Ne
+ id 1SLgb5-0007cZ-OG
  for linux-mtd@lists.infradead.org; Sat, 21 Apr 2012 20:07:57 +0000
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH 3/9] mtd: sh_flctl: Use different OOB layout
-Date: Sat, 21 Apr 2012 16:41:21 +0200
-Message-ID: <1514423.eX5bz1T5jX@avalon>
-In-Reply-To: <1334913230-23615-4-git-send-email-hechtb@gmail.com>
+Subject: Re: [PATCH 1/9] mtd: sh_flctl: Add support for error IRQ
+Date: Sat, 21 Apr 2012 16:29 +0200
+Message-ID: <1563935.g1Nah5i3Kc@avalon>
+In-Reply-To: <1334913230-23615-2-git-send-email-hechtb@gmail.com>
 References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
- <1334913230-23615-4-git-send-email-hechtb@gmail.com>
+ <1334913230-23615-2-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -28,92 +28,146 @@ Hi Bastian,
 
 Thanks for the patch.
 
-On Friday 20 April 2012 11:13:44 Bastian Hecht wrote:
-> The flctl hardware has changed and a new OOB layout must be adapted for
-> 2k page size NAND chips when using hardware ECC.
-> The related bit fields ECCPOS[0-2] are gone - the bits are marked as
-> reserved now in the datasheet. As there are no official users of the
-> hardware ECC so far, they are completely removed.
+On Friday 20 April 2012 11:13:42 Bastian Hecht wrote:
+> When the data transfer between the controller and the NAND chip fails,
+> we now get notified.
 > 
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
->  drivers/mtd/nand/sh_flctl.c  |   20 +++++++++++++-------
->  include/linux/mtd/sh_flctl.h |    4 ----
->  2 files changed, 13 insertions(+), 11 deletions(-)
+>  drivers/mtd/nand/sh_flctl.c  |   31 +++++++++++++++++++++++++++++--
+>  include/linux/mtd/sh_flctl.h |    7 +++++++
+>  2 files changed, 36 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 3c27921..411d783 100644
+> index 2ee9a1b..3c27921 100644
 > --- a/drivers/mtd/nand/sh_flctl.c
 > +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -44,11 +44,17 @@ static struct nand_ecclayout flctl_4secc_oob_16 = {
->  };
-> 
->  static struct nand_ecclayout flctl_4secc_oob_64 = {
-> -	.eccbytes = 10,
-> -	.eccpos = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57},
-> -	.oobfree = {
-> -		{.offset = 60,
-> -		. length = 4} },
-> +	.eccbytes = 4 * 10,
-> +		.eccpos = {
-> +			 6,  7, 8,  9, 10, 11, 12, 13, 14, 15,
-> +			22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-> +			38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-> +			54, 55, 56, 57, 58, 59, 60, 61, 62, 63 },
+> @@ -24,6 +24,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/delay.h>
+> +#include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> @@ -69,7 +70,7 @@ static struct nand_bbt_descr flctl_4secc_largepage = {
+>  static void empty_fifo(struct sh_flctl *flctl)
+>  {
+>  	writel(0x000c0000, FLINTDMACR(flctl));	/* FIFO Clear */
 
-Indentation mistake ?
+Shouldn't this write flctl->flintdmacr_base | 0x000c0000 ? If you change this 
+line, you could also define and use the AC1CLR and AC0CLR bits.
 
-> +		.oobfree = {
-> +			{.offset = 2, .length = 4},
-> +			{.offset = 16, .length = 6},
-> +			{.offset = 32, .length = 6},
-> +			{.offset = 48, .length = 6} },
+> -	writel(0x00000000, FLINTDMACR(flctl));	/* Clear Error flags */
+> +	writel(flctl->flintdmacr_base, FLINTDMACR(flctl));
+>  }
+> 
+>  static void start_translation(struct sh_flctl *flctl)
+> @@ -838,6 +839,14 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
+>  	return 0;
+>  }
+> 
+> +static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
+> +{
+> +	struct sh_flctl *flctl = dev_id;
+> +	dev_err(&flctl->pdev->dev, "flste irq: %x\n", readl(FLINTDMACR(flctl)));
+> +
 
-Just for my information, where does that information come from ?
+You should clear the interrupt flags here, otherwise endless interrupts will 
+occur. I suppose this will be fixed in a later patch, but it's a good practice 
+to avoid breaking git bisect.
 
->  };
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int __devinit flctl_probe(struct platform_device *pdev)
+>  {
+>  	struct resource *res;
+> @@ -846,6 +855,7 @@ static int __devinit flctl_probe(struct platform_device
+> *pdev) struct nand_chip *nand;
+>  	struct sh_flctl_platform_data *pdata;
+>  	int ret = -ENXIO;
+> +	int irq;
 > 
->  static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
-> @@ -62,7 +68,7 @@ static struct nand_bbt_descr flctl_4secc_smallpage = {
-> 
->  static struct nand_bbt_descr flctl_4secc_largepage = {
->  	.options = NAND_BBT_SCAN2NDPAGE,
-> -	.offs = 58,
-> +	.offs = 0,
->  	.len = 2,
->  	.pattern = scan_ff_pattern,
->  };
-> @@ -831,7 +837,7 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
->  		chip->ecc.mode = NAND_ECC_HW;
-> 
->  		/* 4 symbols ECC enabled */
-> -		flctl->flcmncr_base |= _4ECCEN | ECCPOS2 | ECCPOS_02;
-> +		flctl->flcmncr_base |= _4ECCEN;
->  	} else {
->  		chip->ecc.mode = NAND_ECC_SOFT;
+>  	pdata = pdev->dev.platform_data;
+>  	if (pdata == NULL) {
+> @@ -871,14 +881,27 @@ static int __devinit flctl_probe(struct
+> platform_device *pdev) goto err_iomap;
 >  	}
+> 
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0) {
+> +		dev_err(&pdev->dev, "failed to get flste irq data\n");
+> +		goto err_flste;
+> +	}
+> +
+> +	ret = request_irq(irq, flctl_handle_flste, IRQF_SHARED, "flste", flctl);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "request interrupt failed.\n");
+> +		goto err_flste;
+> +	}
+> +
+>  	platform_set_drvdata(pdev, flctl);
+>  	flctl_mtd = &flctl->mtd;
+>  	nand = &flctl->chip;
+>  	flctl_mtd->priv = nand;
+>  	flctl->pdev = pdev;
+> -	flctl->flcmncr_base = pdata->flcmncr_val;
+>  	flctl->hwecc = pdata->has_hwecc;
+>  	flctl->holden = pdata->use_holden;
+> +	flctl->flcmncr_base = pdata->flcmncr_val;
+> +	flctl->flintdmacr_base = flctl->hwecc ? (STERINTE | ECERB) : STERINTE;
+> 
+>  	nand->options = NAND_NO_AUTOINCR;
+> 
+> @@ -919,6 +942,9 @@ static int __devinit flctl_probe(struct platform_device
+> *pdev)
+> 
+>  err_chip:
+>  	pm_runtime_disable(&pdev->dev);
+> +	free_irq(platform_get_irq(pdev, 0), flctl);
+> +err_flste:
+> +	iounmap(flctl->reg);
+
+The missing iounmap() is a separate issue, you should split it to its own 
+patch. It's also seems to be missing in flctl_remove() btw.
+
+>  err_iomap:
+>  	kfree(flctl);
+>  	return ret;
+> @@ -930,6 +956,7 @@ static int __devexit flctl_remove(struct platform_device
+> *pdev)
+> 
+>  	nand_release(&flctl->mtd);
+>  	pm_runtime_disable(&pdev->dev);
+> +	free_irq(platform_get_irq(pdev, 0), flctl);
+>  	kfree(flctl);
+> 
+>  	return 0;
 > diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index 6832a90..91c5b01 100644
+> index a38e1fa..6832a90 100644
 > --- a/include/linux/mtd/sh_flctl.h
 > +++ b/include/linux/mtd/sh_flctl.h
-> @@ -49,7 +49,6 @@
->  #define	FLERRADR(f)		(f->reg + 0x98)
+> @@ -107,6 +107,12 @@
+>  #define DOCMD2_E	(0x1 << 17)	/* 2nd cmd stage execute */
+>  #define DOCMD1_E	(0x1 << 16)	/* 1st cmd stage execute */
 > 
->  /* FLCMNCR control bits */
-> -#define ECCPOS2		(0x1 << 25)
->  #define _4ECCCNTEN	(0x1 << 24)
->  #define _4ECCEN		(0x1 << 23)
->  #define _4ECCCORRECT	(0x1 << 22)
-> @@ -59,9 +58,6 @@
->  #define QTSEL_E		(0x1 << 17)
->  #define ENDIAN		(0x1 << 16)	/* 1 = little endian */
->  #define FCKSEL_E	(0x1 << 15)
-> -#define ECCPOS_00	(0x00 << 12)
-> -#define ECCPOS_01	(0x01 << 12)
-> -#define ECCPOS_02	(0x02 << 12)
->  #define ACM_SACCES_MODE	(0x01 << 10)
->  #define NANWF_E		(0x1 << 9)
->  #define SE_D		(0x1 << 8)	/* Spare area disable */
+> +/* FLINTDMACR control bits */
+> +#define ESTERINTE	(0x1 << 24)	/* ECC error interrupt enable */
+> +#define ECERB		(0x1 << 9)	/* ECC error */
+> +#define STERB		(0x1 << 8)	/* Status error */
+> +#define STERINTE	(0x1 << 4)	/* Status error enable */
+> +
+>  /* FLTRCR control bits */
+>  #define TRSTRT		(0x1 << 0)	/* translation start */
+>  #define TREND		(0x1 << 1)	/* translation end */
+> @@ -145,6 +151,7 @@ struct sh_flctl {
+>  	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
+>  	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
+>  	uint32_t flcmncr_base;	/* base value of FLCMNCR */
+> +	uint32_t flintdmacr_base;	/* irq enable bits */
+> 
+>  	int	hwecc_cant_correct[4];
 -- 
 Regards,
 
