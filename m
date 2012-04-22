@@ -1,20 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SLw9V-0006zs-He
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 12:44:29 +0000
-Message-ID: <1335098664.4879.6.camel@golum>
-Subject: Re: UBIFS mount failure upon power off
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mark <xiaoming1981.zhang@gmail.com>
-Date: Sun, 22 Apr 2012 15:44:24 +0300
-In-Reply-To: <4F85764C.7070408@gmail.com>
-References: <4F85764C.7070408@gmail.com>
+ id 1SLwAL-00072F-FG
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 12:45:22 +0000
+Message-ID: <1335098716.4879.7.camel@golum>
+Subject: Re: [PATCH] mtd: omap2: fix resource leak in prefetch-busy path
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Date: Sun, 22 Apr 2012 15:45:16 +0300
+In-Reply-To: <1334106274-24993-1-git-send-email-notasas@gmail.com>
+References: <1334106274-24993-1-git-send-email-notasas@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-2daS6qwAUNwlibIaIuR1"
+ boundary="=-IZTs6yjpwK6c0S+eo9hE"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +26,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-2daS6qwAUNwlibIaIuR1
+--=-IZTs6yjpwK6c0S+eo9hE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Wed, 2012-04-11 at 20:17 +0800, Mark wrote:
-> brcmnand_read_page: 3: brcmnand_posted_read_cache failed at
-> offset=3D3c81c00, ret=3D-77
-> UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
-> 21:4096, read 2048 bytes
-> UBIFS error (pid 484): ubifs_start_scan: cannot read 126976 bytes from
-> LEB 18:0, error -5
-> mount: mounting ubi13_0 on /usr/local/appdata failed: Input/output
-> error
+On Wed, 2012-04-11 at 04:04 +0300, Grazvydas Ignotas wrote:
+> If prefetch engine is busy, current code "forgets" to call
+> dma_unmap_single(), which results in a deadlock later, so add it.
 >=20
-Please fix your NAND driver and why it returns strange error code
--EBADFD (-77). Uncorrectable ECC errors should be reported as -EBADMSG
-instead. Bit-flips as -EUCLEAN.
+> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-2daS6qwAUNwlibIaIuR1
+--=-IZTs6yjpwK6c0S+eo9hE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPk/0oAAoJECmIfjd9wqK0YxUQAIyCvPWor0kP+QtHLHHkKPuo
-5FRUScQ3AEvDo0Y6aMV9m7PNtxHnwnW78k26PZUORUPz5E+HulHIU8slnJzdqS3H
-wbXMdDtsObhviCJhRIUAWOZhwHHLDxJZOV//jN/3qWCOvQghm3ovTJSMMCJy9Oxh
-wKcSZUwE1k/3Qsj7kFeaxsHrdfx9rHAeaWU6V3Su8pKtDo4nwIH46v1UfatIMW4H
-K42RG+z42Q9H3ahxw5iqYywDx83GnkI0m9CzGD1D59q6P/Klzo4asiALbnF8l7FM
-MEpxKQXFlzo8ZduJ+RSdv6ewr5j5RRuEoUxON9gBPaWFgWuTohba4DQ7gg5b+JO7
-c0wtJQ2RK30fLOiuXMeNjD0SuJ0hK8CCCYeN2afVvcDqffXxe8mrp3GIUpNPlmx0
-mptf0h68q1s+IjV+/FWI0V/vH1Lp6gWyo0nttQpkmxqY3dmV+86eju+uewpCLsLh
-vV/K+O8u6mttk8HmdIBa2IL2g/yJasS4DxrKavSHWzuVkInGAOZTqnw+L8w4znmo
-xd+97TsHqIpcJBAZjD/ijSPdGQNHelzd5rGtodTSPVBFq1vMu/oB2vhM7PS9ujNB
-8JckhChBKKeLcVtanFckPqpz9RvF7Bno5tQmbfxb6HDMLxupP0uOm8hURRbVDn5E
-E0bCZDWFX8B4CO+lqnJl
-=VgYO
+iQIcBAABAgAGBQJPk/1dAAoJECmIfjd9wqK0zbsQAJiLSJIYdzQtC9syYamMc8yf
+6x6cdglhtSj/BuOg/se8JqIWTVPS7uams6EU/uopvqxYZkCcj3bgTlPvPPT/nFhM
+7wwpVBWLmvfFZUbMJb0J8s7H1yC222DmkQYCM6srhfyfVW9h/+2KEWgW1JbGEEuM
+8wsRJLB89r6Tu52fjopo1W1CAYmduI/sXrgXisLiFACzrHkvLr9ljX7D/vTjmvR2
+ZzgrGEPMh+czRGbwrg6b4eUFsvXN+xoppUZMo80v1C/Wq5OEv6008Ahzp0pcGUCr
+zOoLPQ4Sosm87rF9DYrN1roqwiHztwuolFrWfGmSng36kyFLKxYuufuS/dXbeH9o
+IdR5GCNky6/MtHx5+Wdpk3IxLCmeZVbl9LiPdsvypk0aXizAorZW+4arxqlKUOkg
+7N/CfgT39qGqHo7meGvWWfoCdSWYyPCEZmckAoreNiCjUBpLqHXXxQNxi/vkb0sU
+Fr/6eB3rMi9gKSeIZ7UyQ3ZqxcvRBu02unkScs3Hfrk5uzX3uD6ybAOgPFXo4F3u
+6vissNSvo0EXDb+5usR85/drytRg7sMXpymQKcOP91Ybcia1GIET8kup6tRHm2RI
+b9YOL0hThVqhjS2l0duRtsitqMTC7D2VWBIhCZtGIBmvPwWcGCzdvc/iYF4+3W/C
+8qOUp+302riNyPvoQAbj
+=GN7r
 -----END PGP SIGNATURE-----
 
---=-2daS6qwAUNwlibIaIuR1--
+--=-IZTs6yjpwK6c0S+eo9hE--
