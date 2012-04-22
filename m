@@ -1,23 +1,20 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLwge-0005Lw-DD
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 13:18:45 +0000
-Received: by mail-lb0-f177.google.com with SMTP id l5so3603928lbo.36
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 06:18:44 -0700 (PDT)
-Message-ID: <1335100568.28267.12.camel@brekeke>
-Subject: Re: [PATCH] [JFFS2] load_xattr_datum need to return a positive
- number in case of unrecoverable error
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jean-Christophe DUBOIS <jcd@tribudubois.net>
-Date: Sun, 22 Apr 2012 16:16:08 +0300
-In-Reply-To: <1334177689-19732-1-git-send-email-jcd@tribudubois.net>
-References: <1334177689-19732-1-git-send-email-jcd@tribudubois.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-DS7Gg81UgB4HY+PgYgPY"
-Mime-Version: 1.0
+ id 1SLxDO-00074r-CF
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 13:52:35 +0000
+Received: by dadn15 with SMTP id n15so17593767dad.16
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 06:52:32 -0700 (PDT)
+Message-ID: <4F940D08.3080101@gmail.com>
+Date: Sun, 22 Apr 2012 21:52:08 +0800
+From: Mark <xiaoming1981.zhang@gmail.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: UBIFS mount failure upon power off
+References: <4F85764C.7070408@gmail.com> <1335100532.28267.9.camel@brekeke>
+In-Reply-To: <1335100532.28267.9.camel@brekeke>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 04/22/2012 09:15 PM, Artem Bityutskiy wrote:
+> Hi,
+>
+> On Wed, 2012-04-11 at 20:17 +0800, Mark wrote:
+>>  brcmnand_read_page: 3: brcmnand_posted_read_cache failed at
+>>  offset=3c81c00, ret=-77
+>>  UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
+>>  21:4096, read 2048 bytes
+>>  UBIFS error (pid 484): ubifs_start_scan: cannot read 126976 bytes from
+>>  LEB 18:0, error -5
+>>  mount: mounting ubi13_0 on /usr/local/appdata failed: Input/output
+>>  error
+>>
+> Please fix your NAND driver and why it returns strange error code
+> -EBADFD (-77). Uncorrectable ECC errors should be reported as -EBADMSG
+> instead. Bit-flips as -EUCLEAN.
+>
 
---=-DS7Gg81UgB4HY+PgYgPY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thank you very much, I still have some questions:
 
-On Wed, 2012-04-11 at 22:54 +0200, Jean-Christophe DUBOIS wrote:
-> As per load_xattr_datum() comment:
-> 	rc < 0 : recoverable error, try again
-> 	rc =3D 0 : success
-> 	rc > 0 : Unrecoverable error, this node should be deleted.
->=20
-> For now we were only returning negative number (so recoverable error).
-> But a CRC failure or some inconsitent data seems fatal enough to
-> consider the attribute instance (version) as lost.
->=20
-> So this patch returns a positive number (1) when it detects an
-> unrecoverable error.
->=20
-> Signed-off-by: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+1. I'm using mips platform so I think "-77" is "-EBADMSG":
+       ./arch/mips/include/asm/errno.h:51:#define      EBADMSG 
+77      /* Not a data message */
 
-Looks sensible. But since I did not take your previous patch, you might
-want to check whether this patch is really independent. Also, please,
-tell  whether this fixes a real-life bug or you are fixing a complaint
-of a static analysis tools or something like this? And please, tell how
-you tested it.
+2. I found these comments in ubi_io_read():
+	        /* 
+ 
 
-Thanks!
+                  * The driver should never return -EBADMSG if it failed 
+to read 
 
---=20
-Best Regards,
-Artem Bityutskiy
+                  * all the requested data. But some buggy drivers might 
+do 
 
+                  * this, so we change it to -EIO. 
+ 
 
---=-DS7Gg81UgB4HY+PgYgPY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+                  */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+    but seems my nand driver do_read_ops() function returns immediately
+    on an ecc error. Why the driver must continue reading the left data?
 
-iQIcBAABAgAGBQJPlASYAAoJECmIfjd9wqK0dDwQAL2HowH6brkGOIgkKrhGpG/E
-iLV9qd6nOfs2qaovqTD9wv2NKj2h763Kkt3lkt2CcQ6/fU5J107UZ+vLqZf+9l/B
-6kU3yEWOiohulVuZHIKpRKTeWNEYmaPV8bGLWx3iYTK1uqX2iwdOM0dcP+p2nZTh
-szuEzVAkOEDChXiyFMTF8/MKMYMGZmvbF8aM5tIqFawwzwrBJhu5lD9sc7eD7fcV
-Opt5Okp0Fl5BQVeBsAFCcmjVBEq6Gmb3X2q0koLAkhR+4SkTwM6oDEZ1EYzag2oH
-7x7s1OVIvkRvT6BZIRXOP2YdfDtkU0rdRsxkhhwH52mHfxaux3y7chq1SqvUo+sv
-G8JZZI6i5u3rN+nCNmBl4WtxeJaLzX60TipPLQUJipKHPBAxn1IVGqOgmmi9rWwb
-BwqxmXWs4wft5guiO+O2VofCMtwNAmAmxSg5+tSvHNKIC5MSwDS03EAHmHycn2S9
-zvZf8/8tT2gaCqoCY+IDVjcdqHGyuZJ1lrd/z86jrU1zqSWSOXxOJPF9m+Agn73A
-fG9MrJ+nAmJOgi4BO+C+tOJBlwHNqEAWL3+M88f0IMMTz1dlZeJoiIqFYiJoEkWG
-OnW4uxdiuEy83YK4HiYeVcymgAVomUbCN9dQZzH92VmY3uG6rg9573z4H/ffhrZe
-YV+InJnQmWubOYAJE6Wx
-=R1un
------END PGP SIGNATURE-----
+3. I fixed this problem, in most situations the ubifs can recover 
+successfully,
+    but I still get this error (though difficult to reproduce):
 
---=-DS7Gg81UgB4HY+PgYgPY--
+        UBI error: ubi_io_read: error -77 while reading 126976 bytes 
+from PEB 2:4096, read 126976 bytes
+        UBIFS error (pid 481): insert_node: duplicate sqnum in replay
+        mount: mounting ubi13_0 on /usr/local/hmt/appdata failed: 
+Invalid argument
+
+    What could be the reason?
+
+4. The problem mentioned in #2 and #3 never happens with yaffs2.
+
+Thank you very much.
+
+-- 
+Have fun,
+Mark Zhang
