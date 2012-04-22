@@ -1,19 +1,19 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SLvlC-0006ZQ-MY
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 12:19:23 +0000
-Message-ID: <1335097157.4879.3.camel@golum>
-Subject: Re: [PATCH] JFFS2: Add parameter to reserve disk space for root
+ id 1SLw9V-0006zs-He
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 12:44:29 +0000
+Message-ID: <1335098664.4879.6.camel@golum>
+Subject: Re: UBIFS mount failure upon power off
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Drake <dsd@laptop.org>
-Date: Sun, 22 Apr 2012 15:19:17 +0300
-In-Reply-To: <20120410212235.951079D401E@zog.reactivated.net>
-References: <20120410212235.951079D401E@zog.reactivated.net>
+To: Mark <xiaoming1981.zhang@gmail.com>
+Date: Sun, 22 Apr 2012 15:44:24 +0300
+In-Reply-To: <4F85764C.7070408@gmail.com>
+References: <4F85764C.7070408@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-pFmtFYLDsjFN6SqDzWFH"
+ boundary="=-2daS6qwAUNwlibIaIuR1"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dilinger@queued.net
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,29 +25,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-pFmtFYLDsjFN6SqDzWFH
+--=-2daS6qwAUNwlibIaIuR1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-04-10 at 22:22 +0100, Daniel Drake wrote:
-> Add a new rp_size=3D parameter which creates a "reserved pool" of disk
-> space which can only be used by root. Other users are not permitted
-> to write to disk when the available space is less than the pool size.
->=20
-> Based on original code by Artem Bityutskiy in
-> https://dev.laptop.org/ticket/5317
->=20
-> Signed-off-by: Daniel Drake <dsd@laptop.org>
+Hi,
 
-I think it is ok to merge this patch because JFFS2 is slowly dying and
-adding new features like superblock would be too intrusive. Pushed to
-l2-mtd.git, thanks.
+On Wed, 2012-04-11 at 20:17 +0800, Mark wrote:
+> brcmnand_read_page: 3: brcmnand_posted_read_cache failed at
+> offset=3D3c81c00, ret=3D-77
+> UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
+> 21:4096, read 2048 bytes
+> UBIFS error (pid 484): ubifs_start_scan: cannot read 126976 bytes from
+> LEB 18:0, error -5
+> mount: mounting ubi13_0 on /usr/local/appdata failed: Input/output
+> error
+>=20
+Please fix your NAND driver and why it returns strange error code
+-EBADFD (-77). Uncorrectable ECC errors should be reported as -EBADMSG
+instead. Bit-flips as -EUCLEAN.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-pFmtFYLDsjFN6SqDzWFH
+--=-2daS6qwAUNwlibIaIuR1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPk/dFAAoJECmIfjd9wqK0Y+IQAJzcTlty8RZ4mUCLhh/jv0Oc
-aAEzzoknBVA1JyeVF5FYvZPFl54Ta9yWbd0i/k4Y8vdLZNm0Gfeg3b5WRA3ZtpKO
-dpJh3m/3cWmKajIJHw5rUX/vCBZkHMq/hHWej3OxXWPjNvhGIxFgcdEN/F/DsRmZ
-gs0qcvyZWra1Fs+KcFgPxv2dJF0moRd8lQBT+HxiIz4y8OuAFO7MitlkeYOPWC99
-P+AxryORTT7KfG0s+jZWCIPWgd0O5nk6E34OgUM9OlLLMca+W7JLMxuzW4wkZVbE
-JhX9AGSP3M07NTwmJ12/iJOsC/kWxjXtwEC2w7sc2XikfdtEVcJOhb3KoVDAoUMN
-Iy5uh+gOZxNX2x+6b2GaeBSSSrPwmUkZWuBxWuv75gGpKUH0hbn+TqhMVAAfGfHI
-cI14N8zrU3zjcWoLKxs0WW+lXIGS5lz2MNUMWm1CXcvQOuhBzRgDBSFo1Hjl2H4w
-WeK6XZ2b6JVes289nf5XwfLodmUkH7CPlrjcc5ZWm1mKXa7L6CsMFP8PxTS2w9Om
-mu4YjSnrBswiIvPKqxZljhI1VIetK+jvVEOolzT1RQQMeppYKuvW8kv2zz6jdH+X
-Yeijnw0jsNx4NPqKArMhK3HUD8zP0MfeAqPgLExN+9WbnwJOHZhfPDy6MzYA4UU2
-yDs2JKYq/9TggFZX/TuG
-=+tnL
+iQIcBAABAgAGBQJPk/0oAAoJECmIfjd9wqK0YxUQAIyCvPWor0kP+QtHLHHkKPuo
+5FRUScQ3AEvDo0Y6aMV9m7PNtxHnwnW78k26PZUORUPz5E+HulHIU8slnJzdqS3H
+wbXMdDtsObhviCJhRIUAWOZhwHHLDxJZOV//jN/3qWCOvQghm3ovTJSMMCJy9Oxh
+wKcSZUwE1k/3Qsj7kFeaxsHrdfx9rHAeaWU6V3Su8pKtDo4nwIH46v1UfatIMW4H
+K42RG+z42Q9H3ahxw5iqYywDx83GnkI0m9CzGD1D59q6P/Klzo4asiALbnF8l7FM
+MEpxKQXFlzo8ZduJ+RSdv6ewr5j5RRuEoUxON9gBPaWFgWuTohba4DQ7gg5b+JO7
+c0wtJQ2RK30fLOiuXMeNjD0SuJ0hK8CCCYeN2afVvcDqffXxe8mrp3GIUpNPlmx0
+mptf0h68q1s+IjV+/FWI0V/vH1Lp6gWyo0nttQpkmxqY3dmV+86eju+uewpCLsLh
+vV/K+O8u6mttk8HmdIBa2IL2g/yJasS4DxrKavSHWzuVkInGAOZTqnw+L8w4znmo
+xd+97TsHqIpcJBAZjD/ijSPdGQNHelzd5rGtodTSPVBFq1vMu/oB2vhM7PS9ujNB
+8JckhChBKKeLcVtanFckPqpz9RvF7Bno5tQmbfxb6HDMLxupP0uOm8hURRbVDn5E
+E0bCZDWFX8B4CO+lqnJl
+=VgYO
 -----END PGP SIGNATURE-----
 
---=-pFmtFYLDsjFN6SqDzWFH--
+--=-2daS6qwAUNwlibIaIuR1--
