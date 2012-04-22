@@ -1,22 +1,21 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLxwy-00028H-6I
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 14:39:40 +0000
-Received: by lagy4 with SMTP id y4so9609724lag.36
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 07:39:37 -0700 (PDT)
-Message-ID: <1335105421.28267.21.camel@brekeke>
-Subject: Re: Why the nand chip driver "should never return -EBADMSG if it
- failed to read all the request data"
+ id 1SLy4W-0003D5-HL
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 14:47:29 +0000
+Received: by lagy4 with SMTP id y4so9612254lag.36
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 07:47:26 -0700 (PDT)
+Message-ID: <1335105890.28267.27.camel@brekeke>
+Subject: Re: Exposing NAND chip information
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mark <xiaoming1981.zhang@gmail.com>
-Date: Sun, 22 Apr 2012 17:37:01 +0300
-In-Reply-To: <4F8AD1E5.6080307@gmail.com>
-References: <4F8AD1E5.6080307@gmail.com>
+To: Tom Isaacson <Tom.Isaacson@navico.com>
+Date: Sun, 22 Apr 2012 17:44:50 +0300
+In-Reply-To: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
+References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3+qsaU+lWmmaKUjBOzWX"
+ boundary="=-zIOi65lPdOFVuNyKJlre"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, zxm927@163.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,39 +27,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3+qsaU+lWmmaKUjBOzWX
+--=-zIOi65lPdOFVuNyKJlre
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-04-15 at 21:49 +0800, Mark wrote:
-> And, after I patched the nand driver, in most of the situations the
-> UBIFS can be successfully recovered, but I still get this error:
+On Sun, 2012-04-15 at 23:20 +0000, Tom Isaacson wrote:
+> Hi,
 >=20
-> ...
-> UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
-> 2:4096, read 126976 bytes
-> UBIFS error (pid 481): insert_node: duplicate sqnum in replay
-> mount: mounting ubi13_0 on /usr/local/hmt/appdata failed: Invalid argumen=
-t
-> ...
+> Our production software needs to record the NAND chip type used in
+> production so we have a record in case we get problems later. The
+> information we need is printed out by nand_get_flash_type(), e.g.:
+>   NAND device: Manufacturer ID: 0x98, Chip ID: 0xd1 (Toshiba NAND
+> 128MiB 3,3V 8-bit)
+> My plan is to add some files to the /sys tree to expose this
+> information. But the only part of that information stored is the
+> device name, in mtd_info.name. Is there any reason why I shouldn't add
+> the manufacturer name and ID and the chip ID to mtd_info so they can
+> be accessed later on? Or should I add them to mxd_mtd_s (in
+> nand_base.c) and keep it local?
 >=20
-> Does this mean this should never happen to UBIFS? Then what could be the=
-=20
-> reason?
-> Thank you very much, and my test environment:
+If you have a need to have them in mtd_info - probably you can add
+those. Just add/document a way to detect that the chip does not have
+this data. E.g., all zeroes or -1. I mean, NORs might not have the IDs.
 
-I see ubi_dbg_dump_stack() call in ubi_io_read() when it returns an
-error. If you have debugging enabled - you should have the dump in your
-kernel buffer.
+> Also, when I add the files to the /sys tree is there any naming
+> convention I should follow? I was going to copy the way the eMMC
+> device does it:
+>   manfid - Manufacturer ID
+>   devid - Chip ID
+>   manf_name - Manufacturer name
+>   dev_name - Chip name
 
-Yeah, we should turn it into 'dump_stack()' to always have the dump. I'd
-gratefully accept a patch.
+Should we put all ID's to the same file instead? Or at lease
+manfid/manf_name and devid/dev_name pairs to waste less RAM because each
+sysfs file cunsumes several KiBs of RAM AFAIR (struct inode alone is
+several KiB). Also if you add sysfs files - do not forget to document
+them id Documentation/ABI and CC Greg KH.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3+qsaU+lWmmaKUjBOzWX
+--=-zIOi65lPdOFVuNyKJlre
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -68,19 +76,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPlBeNAAoJECmIfjd9wqK0KOgP/35/lBgHtWxUAhBcXMvXMC9t
-xDgPiE+y2e77IE11NnBNTjDao0FHFpOWnD1oS8aZP0VbaegacWreMcPQB+r8sJjF
-xJcAVqzA1Wypdfaqo9X2wpLX6jsVaE6nWeVTdgS2aGJ1vg8pCBw5H7qqEfa70UAf
-g/kBXfocBqfgA//Cex+Dqv5vH+EtEzci4Bh680JAyrLYArtpeXNmG239U5YCWnLJ
-ww4RKC1UhZfS9Fu4rQu7Ia6vtb+qtDF2T2Sm6CLASMofv9OkLrO311+l4lI2Yclk
-xNY87bUXrd0u7V3TWiDG8Ny/dURKnD3KEr168q5lOi4cZqo5uWa5oBEz7ZEeVHVg
-Wngh0MZrMfSmgHRglguAWiYtj5YM6d3oRdWKAQ5eIUgChVVzskPfVxDgOiMq7Vgw
-JYG95MJPOFhIzkacoHHaHI5Ozp9lQGdSTBUPI29Tcj7+DzK7JISsq+4rqAg5WOmn
-4Tuqwp3nCSZ4h8NOPrJRDBDb5goc39nJfrSwNYHJRX6n5TfmSrCg5r+DyjuiUwUv
-8OkV+yOJBW/5SHlCzsTswCaNqx7QTU1z8hqhtlr4kgM02FXJ4khJFIFVqD82Mf/M
-9COmI4dFsT+diBAqnkfmsEkyjDxY0nkYWxM5441OhbfQmiLAbzj0iHqIa4h+NCdr
-Y8FgMkwRXVaisvI0oj+a
-=F60r
+iQIcBAABAgAGBQJPlBliAAoJECmIfjd9wqK02pIP/2b0ix1TdFxleEER70o32MbH
+5kC4TRZfiFaHRCRr7Zkbm8HLXA0bw23wxeVKyYvDdKFr6DY+yGx8WydHQf0bgqUO
+dO7OPxIUMlmbUGNqP51YZKt9CHPnX71LhydzqS4xsB6ND8xIgdlEupz1L5/XCkWs
+aEBZ1bLqEuUedH+V2Uo93y7FjhT8uBf4631lQFBRQE/pCUZKDTMwowB9cGN8/G4f
+FyRWFVmNo643MOO5cnUOr8VRqe/A8yoE5lJdvE8jYTwivACffudjMGTJVA1izr1M
+vDTgKt4UKCIrh85mDOheCBvHYJ3Bbkfpz24q1ct+3WEQdmBKdLj350uazqRI/F1B
+y0IZcfCn1+JK9vasnJdbcMnxmw1RA2xFfwcfWA71hWdKWBABO8n1ozWisE70mz0k
+6sgdIuGUsVS7bCDnlvqAHjtkBSWhN9TeSHsvRYDDGKr1NMGZd4i1FTcQbFxwyzsx
+VaYWlGsVcqKPCV9Gf4CIdFPCP0Dbisaf9wcr1KoAG7Ivx3Bq1mK3Po+vzoWITz/3
+/C61rMNUhSJQe5+6wIBkxwKTmAFUBzmqfn86NU90Y7kMLX2f3UZEQy7tC1zE2glQ
+SYPfuHouPhinneUsmd0EOk7z/S9/HeEzuaUvkWTJ4x/x9XfoDpAE3OjcFb841SPp
+wXSJOYbqXzgFRZthPbcX
+=X7Pk
 -----END PGP SIGNATURE-----
 
---=-3+qsaU+lWmmaKUjBOzWX--
+--=-zIOi65lPdOFVuNyKJlre--
