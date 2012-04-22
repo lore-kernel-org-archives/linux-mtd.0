@@ -1,20 +1,21 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLxDO-00074r-CF
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 13:52:35 +0000
-Received: by dadn15 with SMTP id n15so17593767dad.16
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 06:52:32 -0700 (PDT)
-Message-ID: <4F940D08.3080101@gmail.com>
-Date: Sun, 22 Apr 2012 21:52:08 +0800
-From: Mark <xiaoming1981.zhang@gmail.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: UBIFS mount failure upon power off
-References: <4F85764C.7070408@gmail.com> <1335100532.28267.9.camel@brekeke>
-In-Reply-To: <1335100532.28267.9.camel@brekeke>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SLxdX-0008Dw-Hs
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 14:19:36 +0000
+Message-ID: <1335104359.7078.0.camel@golum>
+Subject: Re: [PATCH 1/1] Remove UBIFS_FS_XATTR config option.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Subodh Nijsure <subodh.nijsure@gmail.com>
+Date: Sun, 22 Apr 2012 17:19:19 +0300
+In-Reply-To: <1334419797-28995-1-git-send-email-snijsure@grid-net.com>
+References: <1334419797-28995-1-git-send-email-snijsure@grid-net.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-zIAwDYVTXJHeKVHgvwid"
+Mime-Version: 1.0
+Cc: Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/22/2012 09:15 PM, Artem Bityutskiy wrote:
-> Hi,
->
-> On Wed, 2012-04-11 at 20:17 +0800, Mark wrote:
->>  brcmnand_read_page: 3: brcmnand_posted_read_cache failed at
->>  offset=3c81c00, ret=-77
->>  UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
->>  21:4096, read 2048 bytes
->>  UBIFS error (pid 484): ubifs_start_scan: cannot read 126976 bytes from
->>  LEB 18:0, error -5
->>  mount: mounting ubi13_0 on /usr/local/appdata failed: Input/output
->>  error
->>
-> Please fix your NAND driver and why it returns strange error code
-> -EBADFD (-77). Uncorrectable ECC errors should be reported as -EBADMSG
-> instead. Bit-flips as -EUCLEAN.
->
 
-Thank you very much, I still have some questions:
+--=-zIAwDYVTXJHeKVHgvwid
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-1. I'm using mips platform so I think "-77" is "-EBADMSG":
-       ./arch/mips/include/asm/errno.h:51:#define      EBADMSG 
-77      /* Not a data message */
+On Sat, 2012-04-14 at 09:09 -0700, Subodh Nijsure wrote:
+> Remove CONFIG_UBIFS_FS_XATTR configuration option and associated
+> UBIFS_FS_XATTR ifdefs.
+>=20
+> Testing:
+>        Tested using integck while using nandsim on x86 & MX28 based=20
+>        platform with Micron MT29F2G08ABAEAH4 nand.
+>=20
+> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
 
-2. I found these comments in ubi_io_read():
-	        /* 
- 
+Ok, while babies are sleeping I had time to handle my inbox. Pushed to
+linux-ubifs.git, thanks!
 
-                  * The driver should never return -EBADMSG if it failed 
-to read 
+--=20
+Best Regards,
+Artem Bityutskiy
 
-                  * all the requested data. But some buggy drivers might 
-do 
+--=-zIAwDYVTXJHeKVHgvwid
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-                  * this, so we change it to -EIO. 
- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-                  */
+iQIcBAABAgAGBQJPlBNnAAoJECmIfjd9wqK0HMoQALvIYv08xI/FkXPUYYLmCfZD
+ocSbo0f5JBDeMkDOqc3WCxK7mISC/f0fNFHZHBGFMjEy4lZmVKnokr97CQtYYqqg
+84+be4v0JfLLJcTrAWne5eyUGqs7mWbV6A4cu1u/2MH31+Nkc9+QeCU8AVxqcpzk
+nhh3GbazsPavKWLyJNbU1fGjkk4YMkLemuD+D/O97MTVLQPofsZ9oovyUWPuBjXE
+gXVV4MFAROr68woaAuAnm1ixBiPQXccZb6Zc44BLwU8Fz44tggdfMUO+GCND93Ts
+wzOwWDjOxinr2nnPW/EGxdbQRd6wShaF0ugCbC+TAkBLrZWv6Ki3JQCSc+hCTDEq
+Yb7qxSA2TzrLdfas/iDwdueogwVN0CToYvMpQyEqPyFWa/yrNduPb4w5xE/X4IVA
+rvePzwHkgAMuypb4awUlfNWX4mZSPAt8Vk9SkN993oTAGxYaiviXobdHO8NWcbFQ
+Jvsq07VtByWOSc5M6uNr/HQkDIDVW4dPfrYPsJukFgyaiL5ELNX7jL6r8NyAWZWg
+dtLxjYrdxY1GCZWXyLcbi7xiGBBOqpZAaRzmBcX9TbpXiYBxCGZ8WM9Oo7nF2wJu
+6PCteVcwz+97fMnaNYsc8qNOdrNjsYGtxyMz+bDukPrx9VrleLQGSVl8TTpmdw38
+D+gm/sDHRqOxzAv52OUz
+=oED8
+-----END PGP SIGNATURE-----
 
-    but seems my nand driver do_read_ops() function returns immediately
-    on an ecc error. Why the driver must continue reading the left data?
-
-3. I fixed this problem, in most situations the ubifs can recover 
-successfully,
-    but I still get this error (though difficult to reproduce):
-
-        UBI error: ubi_io_read: error -77 while reading 126976 bytes 
-from PEB 2:4096, read 126976 bytes
-        UBIFS error (pid 481): insert_node: duplicate sqnum in replay
-        mount: mounting ubi13_0 on /usr/local/hmt/appdata failed: 
-Invalid argument
-
-    What could be the reason?
-
-4. The problem mentioned in #2 and #3 never happens with yaffs2.
-
-Thank you very much.
-
--- 
-Have fun,
-Mark Zhang
+--=-zIAwDYVTXJHeKVHgvwid--
