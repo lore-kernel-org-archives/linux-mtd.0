@@ -1,20 +1,22 @@
-Received: from perceval.ideasonboard.com ([95.142.166.194])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SLgb5-0007cZ-OG
- for linux-mtd@lists.infradead.org; Sat, 21 Apr 2012 20:07:57 +0000
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH 1/9] mtd: sh_flctl: Add support for error IRQ
-Date: Sat, 21 Apr 2012 16:29 +0200
-Message-ID: <1563935.g1Nah5i3Kc@avalon>
-In-Reply-To: <1334913230-23615-2-git-send-email-hechtb@gmail.com>
-References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
- <1334913230-23615-2-git-send-email-hechtb@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org
+ id 1SLpBU-0001tr-LB
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2012 05:18:05 +0000
+Received: by lagy4 with SMTP id y4so9456165lag.36
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Apr 2012 22:17:59 -0700 (PDT)
+Message-ID: <1335071724.28267.5.camel@brekeke>
+Subject: Re: [PATCH] mtd : print out the page size and oob size after
+ parsing out the nand
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Sun, 22 Apr 2012 08:15:24 +0300
+In-Reply-To: <1333942897-7392-1-git-send-email-b32955@freescale.com>
+References: <1333942897-7392-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,151 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bastian,
+On Mon, 2012-04-09 at 11:41 +0800, Huang Shijie wrote:
+>  	pr_info("NAND device: Manufacturer ID:"
+> -		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
+> -		nand_manuf_ids[maf_idx].name,
+> -		chip->onfi_version ? chip->onfi_params.model : type->name);
+> +		" 0x%02x, Chip ID: 0x%02x (%s %s), pagesize: %d, oobsize: %d\n",
+> +		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+> +		chip->onfi_version ? chip->onfi_params.model : type->name,
+> +		mtd->writesize, mtd->oobsize);
 
-Thanks for the patch.
+I've amended this to print "page size" and "OOB size" instead, because
+this is a bit more user-friendly, and pushed to l2-mtd.git, thanks.
 
-On Friday 20 April 2012 11:13:42 Bastian Hecht wrote:
-> When the data transfer between the controller and the NAND chip fails,
-> we now get notified.
-> 
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
-> ---
->  drivers/mtd/nand/sh_flctl.c  |   31 +++++++++++++++++++++++++++++--
->  include/linux/mtd/sh_flctl.h |    7 +++++++
->  2 files changed, 36 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 2ee9a1b..3c27921 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -24,6 +24,7 @@
->  #include <linux/module.h>
->  #include <linux/kernel.h>
->  #include <linux/delay.h>
-> +#include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
-> @@ -69,7 +70,7 @@ static struct nand_bbt_descr flctl_4secc_largepage = {
->  static void empty_fifo(struct sh_flctl *flctl)
->  {
->  	writel(0x000c0000, FLINTDMACR(flctl));	/* FIFO Clear */
-
-Shouldn't this write flctl->flintdmacr_base | 0x000c0000 ? If you change this 
-line, you could also define and use the AC1CLR and AC0CLR bits.
-
-> -	writel(0x00000000, FLINTDMACR(flctl));	/* Clear Error flags */
-> +	writel(flctl->flintdmacr_base, FLINTDMACR(flctl));
->  }
-> 
->  static void start_translation(struct sh_flctl *flctl)
-> @@ -838,6 +839,14 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
->  	return 0;
->  }
-> 
-> +static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
-> +{
-> +	struct sh_flctl *flctl = dev_id;
-> +	dev_err(&flctl->pdev->dev, "flste irq: %x\n", readl(FLINTDMACR(flctl)));
-> +
-
-You should clear the interrupt flags here, otherwise endless interrupts will 
-occur. I suppose this will be fixed in a later patch, but it's a good practice 
-to avoid breaking git bisect.
-
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static int __devinit flctl_probe(struct platform_device *pdev)
->  {
->  	struct resource *res;
-> @@ -846,6 +855,7 @@ static int __devinit flctl_probe(struct platform_device
-> *pdev) struct nand_chip *nand;
->  	struct sh_flctl_platform_data *pdata;
->  	int ret = -ENXIO;
-> +	int irq;
-> 
->  	pdata = pdev->dev.platform_data;
->  	if (pdata == NULL) {
-> @@ -871,14 +881,27 @@ static int __devinit flctl_probe(struct
-> platform_device *pdev) goto err_iomap;
->  	}
-> 
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0) {
-> +		dev_err(&pdev->dev, "failed to get flste irq data\n");
-> +		goto err_flste;
-> +	}
-> +
-> +	ret = request_irq(irq, flctl_handle_flste, IRQF_SHARED, "flste", flctl);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "request interrupt failed.\n");
-> +		goto err_flste;
-> +	}
-> +
->  	platform_set_drvdata(pdev, flctl);
->  	flctl_mtd = &flctl->mtd;
->  	nand = &flctl->chip;
->  	flctl_mtd->priv = nand;
->  	flctl->pdev = pdev;
-> -	flctl->flcmncr_base = pdata->flcmncr_val;
->  	flctl->hwecc = pdata->has_hwecc;
->  	flctl->holden = pdata->use_holden;
-> +	flctl->flcmncr_base = pdata->flcmncr_val;
-> +	flctl->flintdmacr_base = flctl->hwecc ? (STERINTE | ECERB) : STERINTE;
-> 
->  	nand->options = NAND_NO_AUTOINCR;
-> 
-> @@ -919,6 +942,9 @@ static int __devinit flctl_probe(struct platform_device
-> *pdev)
-> 
->  err_chip:
->  	pm_runtime_disable(&pdev->dev);
-> +	free_irq(platform_get_irq(pdev, 0), flctl);
-> +err_flste:
-> +	iounmap(flctl->reg);
-
-The missing iounmap() is a separate issue, you should split it to its own 
-patch. It's also seems to be missing in flctl_remove() btw.
-
->  err_iomap:
->  	kfree(flctl);
->  	return ret;
-> @@ -930,6 +956,7 @@ static int __devexit flctl_remove(struct platform_device
-> *pdev)
-> 
->  	nand_release(&flctl->mtd);
->  	pm_runtime_disable(&pdev->dev);
-> +	free_irq(platform_get_irq(pdev, 0), flctl);
->  	kfree(flctl);
-> 
->  	return 0;
-> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index a38e1fa..6832a90 100644
-> --- a/include/linux/mtd/sh_flctl.h
-> +++ b/include/linux/mtd/sh_flctl.h
-> @@ -107,6 +107,12 @@
->  #define DOCMD2_E	(0x1 << 17)	/* 2nd cmd stage execute */
->  #define DOCMD1_E	(0x1 << 16)	/* 1st cmd stage execute */
-> 
-> +/* FLINTDMACR control bits */
-> +#define ESTERINTE	(0x1 << 24)	/* ECC error interrupt enable */
-> +#define ECERB		(0x1 << 9)	/* ECC error */
-> +#define STERB		(0x1 << 8)	/* Status error */
-> +#define STERINTE	(0x1 << 4)	/* Status error enable */
-> +
->  /* FLTRCR control bits */
->  #define TRSTRT		(0x1 << 0)	/* translation start */
->  #define TREND		(0x1 << 1)	/* translation end */
-> @@ -145,6 +151,7 @@ struct sh_flctl {
->  	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
->  	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
->  	uint32_t flcmncr_base;	/* base value of FLCMNCR */
-> +	uint32_t flintdmacr_base;	/* irq enable bits */
-> 
->  	int	hwecc_cant_correct[4];
 -- 
-Regards,
-
-Laurent Pinchart
+Best Regards,
+Artem Bityutskiy
