@@ -1,18 +1,21 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SM9A5-0003VC-De
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 02:37:58 +0000
-Received: by pbcun4 with SMTP id un4so3577575pbc.36
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 19:37:55 -0700 (PDT)
+ id 1SMBmt-0008Pt-Gt
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:26:12 +0000
+Received: by pbcun4 with SMTP id un4so3711314pbc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 22:26:09 -0700 (PDT)
+Date: Mon, 23 Apr 2012 13:26:57 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 0/3] add gpmi-nand dt support for mx6q-arm2 and imx28evk
+Message-ID: <20120423052655.GN26306@S2101-09.ap.freescale.net>
+References: <1334913859-5314-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Date: Mon, 23 Apr 2012 10:37:53 +0800
-Message-ID: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
-Subject: [PATCH] ubi: Do "dump_stack()" in case of the
- ubi_io_read()/ubi_io_write()/do_sync_erase() has an error
-From: Xiaoming Zhang <xiaoming1981.zhang@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, zxm927@163.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1334913859-5314-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,106 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Fri, Apr 20, 2012 at 05:24:16PM +0800, Huang Shijie wrote:
+> The mx6q-arm2 and imx28evk have already support the device tree now.
+> So i decide to add the gpmi-nand dt support to them.
+> 
+> The mx23 does not support the device tree now. I will add the gpmi dt support
+> when it is ready.
+> 
+> Test this patch set on both MX6Q-arm2 and mx28evk.
+> 
+> Huang Shijie (3):
+>   ARM: mx6q-arm2: add gpmi-nand dt support
+>   ARM: mx28evk: add gpmi-nand dt support
+>   mtd: gpmi: add device tree support for mx6q-arm2 and mx28evk
 
-As you suggested there's a patch to turn "ubi_dbg_dump_stack()" into
-"dump_stack()".
-This is generated and tested on Linux-2.6.31/mips. The test result:
+I think the patch "mtd: gpmi: ..." needs to be the first one.  Also,
+the support is not board but soc specific, so it really should not
+have board name in the patch subject.
 
-...
-UBI error: ubi_io_read: error -77 while reading 2048 bytes from PEB
-0:2048, read 2048 bytes
-Call Trace:
-[<80016fac>] dump_stack+0x8/0x34
-[<80322b70>] ubi_io_read+0x158/0x1ac
-[<80322c14>] ubi_io_read_vid_hdr+0x50/0x494
-[<80324b04>] wear_leveling_worker+0x14c/0x634
-[<80325448>] do_work+0x9c/0x134
-[<80325660>] ubi_thread+0x180/0x204
-[<8006934c>] kthread+0x84/0x8c
-[<80021534>] kernel_thread_helper+0x10/0x18
-...
+Regards,
+Shawn
 
-The patch is listed below. Thank you.
-
-
-ubi: Do "dump_stack()" to always have the dump in case of the
-ubi_io_read()/ubi_io_write()/do_sync_erase() has an error.
-
-Signed-off-by: Mark Zhang <mark.zhang@motorola.com>
-
---- linux-2.6.31.orig/drivers/mtd/ubi/io.c	2012-04-23 08:58:24.000000000 +0800
-+++ linux-2.6.31/drivers/mtd/ubi/io.c	2012-04-23 09:01:51.000000000 +0800
-@@ -173,7 +173,7 @@ retry:
-
- 		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
- 			"read %zd bytes", err, len, pnum, offset, read);
--		ubi_dbg_dump_stack();
-+		dump_stack();
-
- 		/*
- 		 * The driver should never return -EBADMSG if it failed to read
-@@ -259,7 +259,7 @@ int ubi_io_write(struct ubi_device *ubi,
- 	if (ubi_dbg_is_write_failure()) {
- 		dbg_err("cannot write %d bytes to PEB %d:%d "
- 			"(emulated)", len, pnum, offset);
--		ubi_dbg_dump_stack();
-+		dump_stack();
- 		return -EIO;
- 	}
-
-@@ -268,7 +268,7 @@ int ubi_io_write(struct ubi_device *ubi,
- 	if (err) {
- 		ubi_err("error %d while writing %d bytes to PEB %d:%d, written "
- 			"%zd bytes", err, len, pnum, offset, written);
--		ubi_dbg_dump_stack();
-+		dump_stack();
- 	} else
- 		ubi_assert(written == len);
-
-@@ -323,7 +323,7 @@ retry:
- 			goto retry;
- 		}
- 		ubi_err("cannot erase PEB %d, error %d", pnum, err);
--		ubi_dbg_dump_stack();
-+		dump_stack();
- 		return err;
- 	}
-
-@@ -341,7 +341,7 @@ retry:
- 			goto retry;
- 		}
- 		ubi_err("cannot erase PEB %d", pnum);
--		ubi_dbg_dump_stack();
-+		dump_stack();
- 		return -EIO;
- 	}
-
-
-
-On Sun, Apr 22, 2012 at 10:37 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sun, 2012-04-15 at 21:49 +0800, Mark wrote:
->> And, after I patched the nand driver, in most of the situations the
->> UBIFS can be successfully recovered, but I still get this error:
->>
->> ...
->> UBI error: ubi_io_read: error -77 while reading 126976 bytes from PEB
->> 2:4096, read 126976 bytes
->> UBIFS error (pid 481): insert_node: duplicate sqnum in replay
->> mount: mounting ubi13_0 on /usr/local/hmt/appdata failed: Invalid argument
->> ...
->>
->> Does this mean this should never happen to UBIFS? Then what could be the
->> reason?
->> Thank you very much, and my test environment:
->
-> I see ubi_dbg_dump_stack() call in ubi_io_read() when it returns an
-> error. If you have debugging enabled - you should have the dump in your
-> kernel buffer.
->
-> Yeah, we should turn it into 'dump_stack()' to always have the dump. I'd
-> gratefully accept a patch.
->
-> --
-> Best Regards,
-> Artem Bityutskiy
+> 
+>  .../devicetree/bindings/mtd/gpmi-nand.txt          |   30 +++
+>  arch/arm/boot/dts/imx28.dtsi                       |    9 +-
+>  arch/arm/boot/dts/imx6q.dtsi                       |   12 +
+>  arch/arm/mach-imx/clock-imx6q.c                    |    5 +-
+>  arch/arm/mach-mxs/clock-mx28.c                     |    2 +-
+>  drivers/mtd/nand/Kconfig                           |    2 +-
+>  drivers/mtd/nand/gpmi-nand/bch-regs.h              |   42 +++-
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   18 +-
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  240 +++++++++-----------
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +-
+>  10 files changed, 202 insertions(+), 164 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> 
+> 
