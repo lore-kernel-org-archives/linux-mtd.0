@@ -1,22 +1,23 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMCLj-0003Xr-Td
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 06:02:12 +0000
-Received: by lbol5 with SMTP id l5so3968694lbo.36
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 23:02:09 -0700 (PDT)
-Message-ID: <1335160773.28267.29.camel@brekeke>
-Subject: Re: [PATCH] ubi: Do "dump_stack()" in case of the
- ubi_io_read()/ubi_io_write()/do_sync_erase() has an error
+ id 1SMCN2-0003cg-Tt
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 06:03:33 +0000
+Received: by lagy4 with SMTP id y4so9949161lag.36
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 23:03:30 -0700 (PDT)
+Message-ID: <1335160854.28267.30.camel@brekeke>
+Subject: Re: [PATCH] jffs2: refactor csize in jffs2_do_read_inode_internal()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Xiaoming Zhang <xiaoming1981.zhang@gmail.com>
-Date: Mon, 23 Apr 2012 08:59:33 +0300
-In-Reply-To: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
-References: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
+To: Xi Wang <xi.wang@gmail.com>
+Date: Mon, 23 Apr 2012 09:00:54 +0300
+In-Reply-To: <8EF5D079-1EBB-46D7-9A0A-A6054D94C958@gmail.com>
+References: <1334011379-24445-1-git-send-email-xi.wang@gmail.com>
+ <1335095871.2097.3.camel@golum>
+ <8EF5D079-1EBB-46D7-9A0A-A6054D94C958@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-MFgl2HKt8fcssDtyx/Wq"
+ boundary="=-+2xSWfrbvPF3l5ZLJM9N"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, zxm927@163.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,28 +29,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-MFgl2HKt8fcssDtyx/Wq
+--=-+2xSWfrbvPF3l5ZLJM9N
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-04-23 at 10:37 +0800, Xiaoming Zhang wrote:
-> Hi Artem,
+On Mon, 2012-04-23 at 01:43 -0400, Xi Wang wrote:
+> On Apr 22, 2012, at 7:57 AM, Artem Bityutskiy wrote:
 >=20
-> As you suggested there's a patch to turn "ubi_dbg_dump_stack()" into
-> "dump_stack()".
-> This is generated and tested on Linux-2.6.31/mips. The test result:
+> > Please, introduce the variable in a separate patch.
+>=20
+> Okay.
+>=20
+> > WRT the csize check - you should compare it to something more sensible
+> > than INT_MAX - try to dig the code and find out what is maximum value
+> > JFFS2 expects.=20
+>=20
+> KMALLOC_MAX_SIZE - 1 is the smallest number I can find, since the code
+> calls `kmalloc(csize + 1)'.  Does that look good?
 
-Hi,
-
-thanks, but would you please be kind enough to re-send it in a form
-which I can just save and feed to git am. This e-mail has junk text
-after the patch, and "Hi Artem" will need to be stripped. Thanks!
+I think JFFS2 has its own limit on the maximum size of the symlink
+target. Probably it is PAGE_CACHE_SIZE, but not sure.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-MFgl2HKt8fcssDtyx/Wq
+--=-+2xSWfrbvPF3l5ZLJM9N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPlO/FAAoJECmIfjd9wqK0LjQP/1vwvGgiToIZLLaZ4BuXI5QZ
-mbHDk59QpV5r5igW+mw/hljpM0od/FhMi9AJT5gLB3QiEf0QKRLGYdBQQszinXc/
-z+L3lGE1UU+8BVBRiOPk5cx5GIvsOrH7FQA3qo/ug0VrwTL757MnHvUNjmdoguU7
-j7xn/FNDWpH2dETYQG5J7kVBKhsFU8jicK8iFh5YKQHWFB0hKe+4Qt3qQ6g2kSEG
-xmlqm/fdqgBiSQxAo44m6ilTCy/kVFR8mz48EI4WzBGus2yfSnblYYMzQxbYm0pf
-r14YyBitDRpjB3/3uG4RIyjKHp3anqEXStFOLaIhIRzU7Zj3lLipAwoJIPHIl0po
-NQ3Ax0wtMM95EGm7GUfPqgPXNItgkyQFZPMgVQrFOFxRI9hlGlUUN0nimvWAP245
-YbkOaLwm6RF1xAmHlvdUkjzV+tTvfCMBHXKBe324XuTRJQZhDMMGhtBaYdGXymSP
-37g1+RTe29dJj/F1r/SuUVqMJn/3d4Haxj8s7d/r9dQIkCNlu+jqmd41gIIy5Dvx
-ua4+eJ/IktRfarj0eulvNwMRuWvaokcrs3kskMTJ/Gfaft/TxyXE7Wbw/A14fo5U
-h99eFm24AAlJUdwoVFjCXykalCi2hziCdUfU2ezVTRVnJ9a2SJsYIrOqU5Yj3vT2
-7hrqqJ9GQHsfF0Y9kcX1
-=bSqJ
+iQIcBAABAgAGBQJPlPAWAAoJECmIfjd9wqK06EEQAJ8rxOp/342JzrxIS0xLo+6I
+VHWhWsAjFNkYoYB+GOesy9yq5KYKclWSEQshNeROAZGP0+dq9wENYMa8EhFjnkNX
+DFVNWHhAfbVBqYuXjalhMs0D4WKZ/LaMllF/9HSZiS3/ErIUjRT1QTOQh27RKeuh
+HmOdSajDo8JPjiw66klrMvUvtLoJQQdCQF8khfAnniGGYf+1r10Mdq6yT21e75El
+zVbCXESLpY4XPJMvaNddFN5AcUkn1cCYLNXhNDOgRG14KC8YPH3UjY39DJ+K+us+
+PQAHd3fqmUxMDJrpZBEGNbKMAmnFPnfxq5ldPfj5ZDJsB8XP4OtrnZwyQsTsGtNa
+cShfoFxkfGu8i+oQvGMzw4g3u1u1SHONCLYqp3KCcvlmBz22s8PufQ9hfcH8jkD3
+Sq0hKYb+rp7mL7CZcQ5hzQji2GJ0lAUpYuZZWAMFFFDA9ECSPZMf6ThV0qW7NiUE
+wXfS8N4qWvF5/V2hkguTPMWb5caOB5YzNcTkTZV7jEyKM9rf4TwVul+Iqtd9iwLZ
+/vSJ+mjtkveFtRaVdHkVOd7Ms+iBmnVM8FFaDQ0hLsrxZnJj1FxoHAs11XGC2nnp
+/Pg6r+HVhrcQU4+UXiBGWqARcbkoaaQzLzv66lsynIluNMrowhn8i+XiIJsWKfOH
+W669dRl/+DPMGvPriUxD
+=Tanc
 -----END PGP SIGNATURE-----
 
---=-MFgl2HKt8fcssDtyx/Wq--
+--=-+2xSWfrbvPF3l5ZLJM9N--
