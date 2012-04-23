@@ -1,21 +1,16 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMC4B-0002RC-CZ
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:44:03 +0000
-Received: by iaky10 with SMTP id y10so19700879iak.36
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 22:44:01 -0700 (PDT)
-Subject: Re: [PATCH] jffs2: refactor csize in jffs2_do_read_inode_internal()
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Type: text/plain; charset=us-ascii
-From: Xi Wang <xi.wang@gmail.com>
-In-Reply-To: <1335095871.2097.3.camel@golum>
-Date: Mon, 23 Apr 2012 01:43:57 -0400
-Content-Transfer-Encoding: 7bit
-Message-Id: <8EF5D079-1EBB-46D7-9A0A-A6054D94C958@gmail.com>
-References: <1334011379-24445-1-git-send-email-xi.wang@gmail.com>
- <1335095871.2097.3.camel@golum>
-To: dedekind1@gmail.com
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from portal.weinmann.de ([62.8.140.122])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SMC6A-0001TL-Vn
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:46:08 +0000
+From: "Voss, Nikolaus" <N.Voss@weinmann.de>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Mon, 23 Apr 2012 07:45:59 +0200
+Subject: [PATCH (mtd-utils)] mtd_write: fall back to old method on ENOMEM
+Message-ID: <EF2E73589CA71846A15D0B2CDF79505D0905DB465E@wm021.weinmann.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Apr 22, 2012, at 7:57 AM, Artem Bityutskiy wrote:
+MEMWRITE ioctl tries to kmalloc the whole data. With usual
+eraseblock sizes of 128 KiB, on memory constrained systems
+this can easily lead to ENOMEM due to memory fragmentation
+even if there are plenty of free pages left e.g.:
 
-> Please, introduce the variable in a separate patch.
+--------------------------------------------------------------
 
-Okay.
+libmtd: error!: MEMWRITE ioctl failed for eraseblock 55 (mtd6)
+        error 12 (Cannot allocate memory)
+ubiformat: error!: cannot write eraseblock 55
+           error 12 (Cannot allocate memory)
 
-> WRT the csize check - you should compare it to something more sensible
-> than INT_MAX - try to dig the code and find out what is maximum value
-> JFFS2 expects. 
+Kernel log:
+[   67.870000] Normal: 85*4kB 37*8kB 15*16kB 4*32kB 8*64kB 0*128kB 0*256kB
+0*512kB 0*1024kB 0*2048kB 0*4096kB =3D 1516kB
+[   67.870000] 11214 total pagecache pages
+[   67.873000] 16384 pages of RAM
+[   67.873000] 493 free pages
+[   67.873000] 1067 reserved pages
+[   67.873000] 887 slab pages
+[   67.873000] 6266 pages shared=20
+[   67.873000] 0 pages swap cached
 
-KMALLOC_MAX_SIZE - 1 is the smallest number I can find, since the code
-calls `kmalloc(csize + 1)'.  Does that look good?
+--------------------------------------------------------------
 
-- xi
+In such a case, it is better to write slower than not at all.
+
+Signed-off-by: Nikolaus Voss <n.voss@weinmann.de>
+---
+ lib/libmtd.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 9b247ae..9d24ef0 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -1151,7 +1151,7 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_inf=
+o *mtd, int fd, int eb,
+ 	ret =3D ioctl(fd, MEMWRITE, &ops);
+ 	if (ret =3D=3D 0)
+ 		return 0;
+-	else if (errno !=3D ENOTTY && errno !=3D EOPNOTSUPP)
++	else if (errno !=3D ENOTTY && errno !=3D EOPNOTSUPP && errno !=3D ENOMEM)
+ 		return mtd_ioctl_error(mtd, eb, "MEMWRITE");
+=20
+ 	/* Fall back to old methods if necessary */
+--=20
+1.7.5.4
