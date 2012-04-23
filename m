@@ -1,18 +1,23 @@
-Message-ID: <4F950E81.8040706@freescale.com>
-Date: Mon, 23 Apr 2012 16:10:41 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SMEqC-0007iX-It
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 08:41:50 +0000
+Received: by lbol5 with SMTP id l5so4054891lbo.36
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2012 01:41:46 -0700 (PDT)
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 3/3] mtd: gpmi: add device tree support for mx6q-arm2
- and mx28evk
-References: <1334913859-5314-1-git-send-email-b32955@freescale.com>
- <1334913859-5314-4-git-send-email-b32955@freescale.com>
- <20120423064334.GQ26306@S2101-09.ap.freescale.net>
-In-Reply-To: <20120423064334.GQ26306@S2101-09.ap.freescale.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <1563935.g1Nah5i3Kc@avalon>
+References: <1334913230-23615-1-git-send-email-hechtb@gmail.com>
+ <1334913230-23615-2-git-send-email-hechtb@gmail.com>
+ <1563935.g1Nah5i3Kc@avalon>
+Date: Mon, 23 Apr 2012 10:41:45 +0200
+Message-ID: <CABYn4syas_6QsL+A3Vw32_AsL2oQRCFDrvY+=dJdnM5ouTDkmA@mail.gmail.com>
+Subject: Re: [PATCH 1/9] mtd: sh_flctl: Add support for error IRQ
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,288 +27,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B404=E6=9C=8823=E6=97=A5 14:43, Shawn Guo =E5=86=99=E9=
-=81=93:
-> On Fri, Apr 20, 2012 at 05:24:19PM +0800, Huang Shijie wrote:
->> add DT support to mx6q-arm2 and mx28evk.
->>
-> Again, this is not a support about board but soc.
+Hello Laurent,
+
+2012/4/21 Laurent Pinchart <laurent.pinchart@ideasonboard.com>:
+> Hi Bastian,
 >
-thanks. I will change it in next version.
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
+> Thanks for the patch.
+
+Thanks for the reviews. Let me know if you could need my help too.
+
+> On Friday 20 April 2012 11:13:42 Bastian Hecht wrote:
+>> When the data transfer between the controller and the NAND chip fails,
+>> we now get notified.
+>>
+>> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 >> ---
->>   .../devicetree/bindings/mtd/gpmi-nand.txt          |   30 +++
->>   drivers/mtd/nand/Kconfig                           |    2 +-
->>   drivers/mtd/nand/gpmi-nand/bch-regs.h              |   42 +++-
->>   drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   18 +-
->>   drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  240 +++++++++-=
-----------
->>   drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +-
->>   6 files changed, 181 insertions(+), 157 deletions(-)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/gpmi-nand.t=
-xt
+>> =A0drivers/mtd/nand/sh_flctl.c =A0| =A0 31 +++++++++++++++++++++++++++++=
+--
+>> =A0include/linux/mtd/sh_flctl.h | =A0 =A07 +++++++
+>> =A02 files changed, 36 insertions(+), 2 deletions(-)
 >>
->> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Doc=
-umentation/devicetree/bindings/mtd/gpmi-nand.txt
->> new file mode 100644
->> index 0000000..e1181ee
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
->> @@ -0,0 +1,30 @@
->> +* Freescale General-Purpose Media Interface (GPMI)
->> +
->> +The GPMI nand controller provides an interface to control the
->> +NAND flash chips. We support only one NAND chips now.
->> +
->> +The GPMI nand controller required properties:
->> +  - compatible : should be "fsl,<chip>-gpmi-nand"
->> +  - reg : should contain registers location and length.
->> +  - interrupts : should contain the DMA interrupt number for GPMI.
->> +                 We do not use the GPMI interrupt.
->> +  - dma_channel: Should contain the dma channel it uses.
->> +
->> +The BCH required properties:
->> +  - compatible : should be "fsl,<chip>-bch"
->> +  - reg : should contain registers location and length.
->> +  - interrupts : should contain the BCH interrupt.
->> +
->> +Examples:
->> +
->> +gpmi-nand@8000c000 {
->> +	compatible =3D "fsl,imx28-gpmi-nand";
->> +	reg =3D<0x8000c000 2000>;
->> +	interrupts =3D<88>;
->> +	dma_channel =3D<4>;
-> Before generic dma helper is available, do not use such generic propert=
-y
-> name, and use something like "fsl,gpmi-dma-events".  Yes, "-" rather
-> than "_" should be used in property name.
+>> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+>> index 2ee9a1b..3c27921 100644
+>> --- a/drivers/mtd/nand/sh_flctl.c
+>> +++ b/drivers/mtd/nand/sh_flctl.c
+>> @@ -24,6 +24,7 @@
+>> =A0#include <linux/module.h>
+>> =A0#include <linux/kernel.h>
+>> =A0#include <linux/delay.h>
+>> +#include <linux/interrupt.h>
+>> =A0#include <linux/io.h>
+>> =A0#include <linux/platform_device.h>
+>> =A0#include <linux/pm_runtime.h>
+>> @@ -69,7 +70,7 @@ static struct nand_bbt_descr flctl_4secc_largepage =3D=
+ {
+>> =A0static void empty_fifo(struct sh_flctl *flctl)
+>> =A0{
+>> =A0 =A0 =A0 writel(0x000c0000, FLINTDMACR(flctl)); =A0/* FIFO Clear */
 >
-got it.
->> +};
->> +bch@8000a000 {
->> +	compatible =3D "fsl,imx28-bch";
->> +	reg =3D<0x8000a000 2000>;
->> +	interrupts =3D<41>;
->> +};
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 7d17cec..bf0a28d 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -440,7 +440,7 @@ config MTD_NAND_NANDSIM
+> Shouldn't this write flctl->flintdmacr_base | 0x000c0000 ? If you change =
+this
+> line, you could also define and use the AC1CLR and AC0CLR bits.
+
+True, it should be better not to toggle the other settings.
+
+>> - =A0 =A0 writel(0x00000000, FLINTDMACR(flctl)); =A0/* Clear Error flags=
+ */
+>> + =A0 =A0 writel(flctl->flintdmacr_base, FLINTDMACR(flctl));
+>> =A0}
 >>
->>   config MTD_NAND_GPMI_NAND
->>           bool "GPMI NAND Flash Controller driver"
->> -        depends on MTD_NAND&&  (SOC_IMX23 || SOC_IMX28)
->> +        depends on MTD_NAND&&  (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
->>           help
->>   	 Enables NAND Flash support for IMX23 or IMX28.
->>   	 The GPMI controller is very powerful, with the help of BCH
->> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/=
-gpmi-nand/bch-regs.h
->> index 4effb8c..a092451 100644
->> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
->> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
->> @@ -51,15 +51,26 @@
+>> =A0static void start_translation(struct sh_flctl *flctl)
+>> @@ -838,6 +839,14 @@ static int flctl_chip_init_tail(struct mtd_info *mt=
+d)
+>> =A0 =A0 =A0 return 0;
+>> =A0}
 >>
->>   #define BP_BCH_FLASH0LAYOUT0_ECC0		12
->>   #define BM_BCH_FLASH0LAYOUT0_ECC0	(0xf<<  BP_BCH_FLASH0LAYOUT0_ECC0)
->> -#define BF_BCH_FLASH0LAYOUT0_ECC0(v)		\
->> -	(((v)<<  BP_BCH_FLASH0LAYOUT0_ECC0)&  BM_BCH_FLASH0LAYOUT0_ECC0)
->> +#define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
->> +#define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f<<  MX6Q_BP_BCH_FLASH0LAY=
-OUT0_ECC0)
->> +#define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
->> +	(GPMI_IS_MX6Q(x)					\
->> +		? (((v)<<  MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
->> +			&  MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
->> +		: (((v)<<  BP_BCH_FLASH0LAYOUT0_ECC0)		\
->> +			&  BM_BCH_FLASH0LAYOUT0_ECC0)		\
->> +	)
->>
->>   #define BP_BCH_FLASH0LAYOUT0_DATA0_SIZE		0
->>   #define BM_BCH_FLASH0LAYOUT0_DATA0_SIZE		\
->>   			(0xfff<<  BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->> -#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v)	\
->> -	(((v)<<  BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)\
->> -					&  BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->> +#define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
->> +			(0x3ff<<  BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->> +#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
->> +	(GPMI_IS_MX6Q(x)						\
->> +		? (((v)>>  2)&  MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
->> +		: ((v)&  BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
->> +	)
->>
->>   #define HW_BCH_FLASH0LAYOUT1			0x00000090
->>
->> @@ -72,13 +83,24 @@
->>
->>   #define BP_BCH_FLASH0LAYOUT1_ECCN		12
->>   #define BM_BCH_FLASH0LAYOUT1_ECCN	(0xf<<  BP_BCH_FLASH0LAYOUT1_ECCN)
->> -#define BF_BCH_FLASH0LAYOUT1_ECCN(v)		\
->> -	(((v)<<  BP_BCH_FLASH0LAYOUT1_ECCN)&  BM_BCH_FLASH0LAYOUT1_ECCN)
->> +#define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
->> +#define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f<<  MX6Q_BP_BCH_FLASH0LAY=
-OUT1_ECCN)
->> +#define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
->> +	(GPMI_IS_MX6Q(x)					\
->> +		? (((v)<<  MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
->> +			&  MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
->> +		: (((v)<<  BP_BCH_FLASH0LAYOUT1_ECCN)		\
->> +			&  BM_BCH_FLASH0LAYOUT1_ECCN)		\
->> +	)
->>
->>   #define BP_BCH_FLASH0LAYOUT1_DATAN_SIZE		0
->>   #define BM_BCH_FLASH0LAYOUT1_DATAN_SIZE		\
->>   			(0xfff<<  BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->> -#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v)	\
->> -	(((v)<<  BP_BCH_FLASH0LAYOUT1_DATAN_SIZE) \
->> -					&  BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->> +#define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
->> +			(0x3ff<<  BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->> +#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
->> +	(GPMI_IS_MX6Q(x)						\
->> +		? (((v)>>  2)&  MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
->> +		: ((v)&  BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
->> +	)
->>   #endif
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-lib.c
->> index fa5200b..a1f4332 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> @@ -224,13 +224,13 @@ int bch_set_geometry(struct gpmi_nand_data *this=
-)
->>   	/* Configure layout 0. */
->>   	writel(BF_BCH_FLASH0LAYOUT0_NBLOCKS(block_count)
->>   			| BF_BCH_FLASH0LAYOUT0_META_SIZE(metadata_size)
->> -			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength)
->> -			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size),
->> +			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this)
->> +			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size, this),
->>   			r->bch_regs + HW_BCH_FLASH0LAYOUT0);
->>
->>   	writel(BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size)
->> -			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength)
->> -			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size),
->> +			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this)
->> +			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
->>   			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
->>
->>   	/* Set *all* chip selects to use layout 0. */
->> @@ -256,11 +256,12 @@ static unsigned int ns_to_cycles(unsigned int ti=
-me,
->>   	return max(k, min);
->>   }
->>
->> +#define DEF_MIN_PROP_DELAY	5
->> +#define DEF_MAX_PROP_DELAY	9
->>   /* Apply timing to current hardware conditions. */
->>   static int gpmi_nfc_compute_hardware_timing(struct gpmi_nand_data *t=
-his,
->>   					struct gpmi_nfc_hardware_timing *hw)
->>   {
->> -	struct gpmi_nand_platform_data *pdata =3D this->pdata;
->>   	struct timing_threshod *nfc =3D&timing_default_threshold;
->>   	struct nand_chip *nand =3D&this->nand;
->>   	struct nand_timing target =3D this->timing;
->> @@ -277,8 +278,8 @@ static int gpmi_nfc_compute_hardware_timing(struct=
- gpmi_nand_data *this,
->>   	int ideal_sample_delay_in_ns;
->>   	unsigned int sample_delay_factor;
->>   	int tEYE;
->> -	unsigned int min_prop_delay_in_ns =3D pdata->min_prop_delay_in_ns;
->> -	unsigned int max_prop_delay_in_ns =3D pdata->max_prop_delay_in_ns;
->> +	unsigned int min_prop_delay_in_ns =3D DEF_MIN_PROP_DELAY;
->> +	unsigned int max_prop_delay_in_ns =3D DEF_MAX_PROP_DELAY;
->>
->>   	/*
->>   	 * If there are multiple chips, we need to relax the timings to all=
-ow
->> @@ -804,7 +805,8 @@ int gpmi_is_ready(struct gpmi_nand_data *this, uns=
-igned chip)
->>   	if (GPMI_IS_MX23(this)) {
->>   		mask =3D MX23_BM_GPMI_DEBUG_READY0<<  chip;
->>   		reg =3D readl(r->gpmi_regs + HW_GPMI_DEBUG);
->> -	} else if (GPMI_IS_MX28(this)) {
->> +	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
->> +		/* MX28 shares the same R/B register as MX6Q. */
->>   		mask =3D MX28_BF_GPMI_STAT_READY_BUSY(1<<  chip);
->>   		reg =3D readl(r->gpmi_regs + HW_GPMI_STAT);
->>   	} else
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand=
-/gpmi-nand/gpmi-nand.c
->> index 75b1dde..5c6af5d 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> @@ -24,6 +24,9 @@
->>   #include<linux/module.h>
->>   #include<linux/mtd/gpmi-nand.h>
->>   #include<linux/mtd/partitions.h>
->> +#include<linux/of_address.h>
->> +#include<linux/of_device.h>
->> +#include<linux/of_irq.h>
->>   #include "gpmi-nand.h"
->>
->>   /* add our owner bbt descriptor */
->> @@ -306,36 +309,6 @@ int start_dma_with_bch_irq(struct gpmi_nand_data =
-*this,
->>   	return 0;
->>   }
->>
->> -static int __devinit
->> -acquire_register_block(struct gpmi_nand_data *this, const char *res_n=
-ame)
->> -{
->> -	struct platform_device *pdev =3D this->pdev;
->> -	struct resources *res =3D&this->resources;
->> -	struct resource *r;
->> -	void *p;
->> -
->> -	r =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
->> -	if (!r) {
->> -		pr_err("Can't get resource for %s\n", res_name);
->> -		return -ENXIO;
->> -	}
->> -
->> -	p =3D ioremap(r->start, resource_size(r));
->> -	if (!p) {
->> -		pr_err("Can't remap %s\n", res_name);
->> -		return -ENOMEM;
->> -	}
->> -
->> -	if (!strcmp(res_name, GPMI_NAND_GPMI_REGS_ADDR_RES_NAME))
->> -		res->gpmi_regs =3D p;
->> -	else if (!strcmp(res_name, GPMI_NAND_BCH_REGS_ADDR_RES_NAME))
->> -		res->bch_regs =3D p;
->> -	else
->> -		pr_err("unknown resource name : %s\n", res_name);
->> -
->> -	return 0;
->> -}
->> -
-> I think the patch goes to a wrong way for acquiring resources from
-> device tree.
+>> +static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
+>> +{
+>> + =A0 =A0 struct sh_flctl *flctl =3D dev_id;
+>> + =A0 =A0 dev_err(&flctl->pdev->dev, "flste irq: %x\n", readl(FLINTDMACR=
+(flctl)));
+>> +
 >
-> You need to have a look at Documentation/devicetree/bindings/resource-n=
-ames.txt
-> and understand that DT core has populated the resources for device,
-> and device driver can call the same suite of functions to retrieve
-Do you mean I can merge the gpmi and bch into one device node such as :
+> You should clear the interrupt flags here, otherwise endless interrupts w=
+ill
+> occur. I suppose this will be fixed in a later patch, but it's a good pra=
+ctice
+> to avoid breaking git bisect.
 
-gpmi-nand@xx {
-compatible =3D "fsl, mx28-gpmi-nand";
-reg =3D <xx>, <xx>;
-reg-names =3D "gpmi", "bch";
+Oh yes! Thanks for the hint.
 
-};
-
-Best Regards
-Huang Shijie
-> the resources.  That said device driver does not need any change on
-> resource acquiring for device tree probe at all.
+>> + =A0 =A0 return IRQ_HANDLED;
+>> +}
+>> +
+>> =A0static int __devinit flctl_probe(struct platform_device *pdev)
+>> =A0{
+>> =A0 =A0 =A0 struct resource *res;
+>> @@ -846,6 +855,7 @@ static int __devinit flctl_probe(struct platform_dev=
+ice
+>> *pdev) struct nand_chip *nand;
+>> =A0 =A0 =A0 struct sh_flctl_platform_data *pdata;
+>> =A0 =A0 =A0 int ret =3D -ENXIO;
+>> + =A0 =A0 int irq;
+>>
+>> =A0 =A0 =A0 pdata =3D pdev->dev.platform_data;
+>> =A0 =A0 =A0 if (pdata =3D=3D NULL) {
+>> @@ -871,14 +881,27 @@ static int __devinit flctl_probe(struct
+>> platform_device *pdev) goto err_iomap;
+>> =A0 =A0 =A0 }
+>>
+>> + =A0 =A0 irq =3D platform_get_irq(pdev, 0);
+>> + =A0 =A0 if (irq < 0) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "failed to get flste irq d=
+ata\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 goto err_flste;
+>> + =A0 =A0 }
+>> +
+>> + =A0 =A0 ret =3D request_irq(irq, flctl_handle_flste, IRQF_SHARED, "fls=
+te", flctl);
+>> + =A0 =A0 if (ret) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "request interrupt failed.=
+\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 goto err_flste;
+>> + =A0 =A0 }
+>> +
+>> =A0 =A0 =A0 platform_set_drvdata(pdev, flctl);
+>> =A0 =A0 =A0 flctl_mtd =3D &flctl->mtd;
+>> =A0 =A0 =A0 nand =3D &flctl->chip;
+>> =A0 =A0 =A0 flctl_mtd->priv =3D nand;
+>> =A0 =A0 =A0 flctl->pdev =3D pdev;
+>> - =A0 =A0 flctl->flcmncr_base =3D pdata->flcmncr_val;
+>> =A0 =A0 =A0 flctl->hwecc =3D pdata->has_hwecc;
+>> =A0 =A0 =A0 flctl->holden =3D pdata->use_holden;
+>> + =A0 =A0 flctl->flcmncr_base =3D pdata->flcmncr_val;
+>> + =A0 =A0 flctl->flintdmacr_base =3D flctl->hwecc ? (STERINTE | ECERB) :=
+ STERINTE;
+>>
+>> =A0 =A0 =A0 nand->options =3D NAND_NO_AUTOINCR;
+>>
+>> @@ -919,6 +942,9 @@ static int __devinit flctl_probe(struct platform_dev=
+ice
+>> *pdev)
+>>
+>> =A0err_chip:
+>> =A0 =A0 =A0 pm_runtime_disable(&pdev->dev);
+>> + =A0 =A0 free_irq(platform_get_irq(pdev, 0), flctl);
+>> +err_flste:
+>> + =A0 =A0 iounmap(flctl->reg);
 >
+> The missing iounmap() is a separate issue, you should split it to its own
+> patch. It's also seems to be missing in flctl_remove() btw.
+
+Ok I see. I've added an additional patch.
+
+Best regards,
+
+ Bastian Hecht
+
+>> =A0err_iomap:
+>> =A0 =A0 =A0 kfree(flctl);
+>> =A0 =A0 =A0 return ret;
+>> @@ -930,6 +956,7 @@ static int __devexit flctl_remove(struct platform_de=
+vice
+>> *pdev)
+>>
+>> =A0 =A0 =A0 nand_release(&flctl->mtd);
+>> =A0 =A0 =A0 pm_runtime_disable(&pdev->dev);
+>> + =A0 =A0 free_irq(platform_get_irq(pdev, 0), flctl);
+>> =A0 =A0 =A0 kfree(flctl);
+>>
+>> =A0 =A0 =A0 return 0;
+>> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+>> index a38e1fa..6832a90 100644
+>> --- a/include/linux/mtd/sh_flctl.h
+>> +++ b/include/linux/mtd/sh_flctl.h
+>> @@ -107,6 +107,12 @@
+>> =A0#define DOCMD2_E =A0 =A0 (0x1 << 17) =A0 =A0 /* 2nd cmd stage execute=
+ */
+>> =A0#define DOCMD1_E =A0 =A0 (0x1 << 16) =A0 =A0 /* 1st cmd stage execute=
+ */
+>>
+>> +/* FLINTDMACR control bits */
+>> +#define ESTERINTE =A0 =A0(0x1 << 24) =A0 =A0 /* ECC error interrupt ena=
+ble */
+>> +#define ECERB =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(0x1 << 9) =A0 =A0 =A0/* E=
+CC error */
+>> +#define STERB =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(0x1 << 8) =A0 =A0 =A0/* S=
+tatus error */
+>> +#define STERINTE =A0 =A0 (0x1 << 4) =A0 =A0 =A0/* Status error enable *=
+/
+>> +
+>> =A0/* FLTRCR control bits */
+>> =A0#define TRSTRT =A0 =A0 =A0 =A0 =A0 =A0 =A0 (0x1 << 0) =A0 =A0 =A0/* t=
+ranslation start */
+>> =A0#define TREND =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(0x1 << 1) =A0 =A0 =A0/*=
+ translation end */
+>> @@ -145,6 +151,7 @@ struct sh_flctl {
+>> =A0 =A0 =A0 uint32_t erase_ADRCNT; =A0 =A0 =A0 =A0 =A0/* bits of FLCMDCR=
+ in ERASE1 cmd */
+>> =A0 =A0 =A0 uint32_t rw_ADRCNT; =A0 =A0 /* bits of FLCMDCR in READ WRITE=
+ cmd */
+>> =A0 =A0 =A0 uint32_t flcmncr_base; =A0/* base value of FLCMNCR */
+>> + =A0 =A0 uint32_t flintdmacr_base; =A0 =A0 =A0 /* irq enable bits */
+>>
+>> =A0 =A0 =A0 int =A0 =A0 hwecc_cant_correct[4];
+> --
 > Regards,
-> Shawn
+>
+> Laurent Pinchart
 >
