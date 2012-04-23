@@ -1,21 +1,16 @@
 Received: from mail-pz0-f43.google.com ([209.85.210.43])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMIR5-0001ZK-9u
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 12:32:10 +0000
-Received: by dadn15 with SMTP id n15so18904907dad.16
- for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2012 05:32:05 -0700 (PDT)
-Message-ID: <4F954BAD.2010606@gmail.com>
-Date: Mon, 23 Apr 2012 20:31:41 +0800
-From: Mark <xiaoming1981.zhang@gmail.com>
+ id 1SMITE-0001uL-SZ
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 12:34:21 +0000
+Received: by dadn15 with SMTP id n15so18907645dad.16
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2012 05:34:19 -0700 (PDT)
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] ubi: Do "dump_stack()" in case of the
- ubi_io_read()/ubi_io_write()/do_sync_erase() has an error
-References: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
-In-Reply-To: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, zxm927@163.com
+Date: Mon, 23 Apr 2012 14:34:19 +0200
+Message-ID: <CAHea38QAtH52kLu29dztxLhfBBdPFdpSPUV3pyUxMCruBpPweg@mail.gmail.com>
+Subject: UBIFS mount error: No space left on device
+From: Matteo Mattei <matteo.mattei@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,61 +20,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubi: Do "dump_stack()" to always have the dump in case of the
-ubi_io_read()/ubi_io_write()/do_sync_erase() has an error.
+Hi guys,
 
-Signed-off-by: Mark Zhang <mark.zhang@motorola.com>
----
-  drivers/mtd/ubi/io.c |   10 +++++-----
-  1 files changed, 5 insertions(+), 5 deletions(-)
+After about 2 weeks with continuous read/write stress operation (w/o
+powercycles) I moved a board to the power-cycles reliability lab to
+perform also some other tests.
+After a while I had an error during mounting the filesystem.
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 43f1a00..4a866db 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -198,7 +198,7 @@ retry:
+After a further analysis seems that there is not enough space to mount
+the device (I don't know who is the responsible for this because there
+is a quite big empty space in the device).
+What is strange is that in read-only mode I am able to mount it.
 
-  		ubi_err("error %d%s while reading %d bytes from PEB %d:%d, "
-  			"read %zd bytes", err, errstr, len, pnum, offset, read);
--		ubi_dbg_dump_stack();
-+		dump_stack();
 
-  		/*
-  		 * The driver should never return -EBADMSG if it failed to read
-@@ -284,7 +284,7 @@ int ubi_io_write(struct ubi_device *ubi, const void 
-*buf, int pnum, int offset,
-  	if (ubi_dbg_is_write_failure(ubi)) {
-  		dbg_err("cannot write %d bytes to PEB %d:%d "
-  			"(emulated)", len, pnum, offset);
--		ubi_dbg_dump_stack();
-+		dump_stack();
-  		return -EIO;
-  	}
+Software and environment:
+- linux kernel 2.6.32 (from TI)
+- ubifs backport (from git://git.infradead.org/~dedekind/ubifs-v2.6.32.git).
+- 8-bit BCH.
+- UBIFS mounted with no compression.
+- usage of ubiformat instead of flash_eraseall for the first
+filesystem initialization.
 
-@@ -293,7 +293,7 @@ int ubi_io_write(struct ubi_device *ubi, const void 
-*buf, int pnum, int offset,
-  	if (err) {
-  		ubi_err("error %d while writing %d bytes to PEB %d:%d, written "
-  			"%zd bytes", err, len, pnum, offset, written);
--		ubi_dbg_dump_stack();
-+		dump_stack();
-  		ubi_dbg_dump_flash(ubi, pnum, offset, len);
-  	} else
-  		ubi_assert(written == len);
-@@ -370,7 +370,7 @@ retry:
-  			goto retry;
-  		}
-  		ubi_err("cannot erase PEB %d, error %d", pnum, err);
--		ubi_dbg_dump_stack();
-+		dump_stack();
-  		return err;
-  	}
 
-@@ -388,7 +388,7 @@ retry:
-  			goto retry;
-  		}
-  		ubi_err("cannot erase PEB %d", pnum);
--		ubi_dbg_dump_stack();
-+		dump_stack();
-  		return -EIO;
-  	}
+Hardware:
+- CPU: OMAP3530.
+- NAND chips: Micron MT29F4G08ABBDAH4-IT.
+
+
+I have the board that failed in this condition:
+
+[root@myhost /]# mount -t ubifs ubi0:Filesystem /rootfs -o
+sync,noatime,compr=none
+UBIFS: recovery needed
+...bch correct (1 512 byte) count=1
+mount: mounting ubi0:Filesystem on /rootfs failed: No space left on device
+[root@myhost /]#
+[root@myhost /]#
+[root@myhost /]# mount
+rootfs on / type rootfs (rw)
+none on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+none on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+none on /dev type devtmpfs (rw,relatime,size=107880k,nr_inodes=26970,mode=755)
+none on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620)
+[root@myhost /]#
+[root@myhost /]#
+[root@myhost /]# mount -t ubifs ubi0:Filesystem /rootfs -o
+ro,sync,noatime,compr=none
+UBIFS: recovery needed
+UBIFS: recovery deferred
+UBIFS: mounted UBI device 0, volume 0, name "Filesystem"
+UBIFS: mounted read-only
+UBIFS: file system size:   840708096 bytes (821004 KiB, 801 MiB, 6621 LEBs)
+UBIFS: journal size:       33521664 bytes (32736 KiB, 31 MiB, 264 LEBs)
+UBIFS: media format:       w4/r0 (latest is w4/r0)
+UBIFS: default compressor: none
+UBIFS: reserved for root:  4952683 bytes (4836 KiB)
+[root@myhost /]#
+[root@myhost /]#
+[root@myhost /]# mount
+rootfs on / type rootfs (rw)
+none on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+none on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+none on /dev type devtmpfs (rw,relatime,size=107880k,nr_inodes=26970,mode=755)
+none on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620)
+ubi0:Filesystem on /rootfs type ubifs (ro,sync,noatime,compr=none)
+[root@myhost /]#
+[root@myhost /]#
+[root@myhost /]# df -h
+Filesystem                Size      Used Available Use% Mounted on
+none                    105.4M         0    105.4M   0% /dev
+ubi0:Filesystem    740.9M    523.7M    212.5M  71% /rootfs
+[root@myhost /]#
+[root@myhost /]#
+[root@myhost /]# mount -o remount,rw /rootfs
+UBIFS: completing deferred recovery
+mount: mounting ubi0:Filesystem on /rootfs failed: No space left on device
+[root@myhost /]#
+
+
+Can you clarify why this strange behavior happened?
+Maybe there is not enough space in the journal?!
+Is there a way to avoid this or a workaround to let me to recover the board?
+
+I have also one other question but not strictly related to this issue
+(maybe there are already some other threads on this, but I didn't find
+the answer): Do the UBI and UBIFS handle the erased space?
+If so, how do they handle it?
+
+Thanks a lot for your time,
+
+Matteo
