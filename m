@@ -1,22 +1,21 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMBy7-0001DH-NZ
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:37:48 +0000
-Received: by dadn15 with SMTP id n15so18421692dad.16
- for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 22:37:46 -0700 (PDT)
-Date: Mon, 23 Apr 2012 13:38:39 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 2/3] ARM: mx28evk: add gpmi-nand dt support
-Message-ID: <20120423053837.GP26306@S2101-09.ap.freescale.net>
-References: <1334913859-5314-1-git-send-email-b32955@freescale.com>
- <1334913859-5314-3-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
+ id 1SMC4B-0002RC-CZ
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:44:03 +0000
+Received: by iaky10 with SMTP id y10so19700879iak.36
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 22:44:01 -0700 (PDT)
+Subject: Re: [PATCH] jffs2: refactor csize in jffs2_do_read_inode_internal()
+Mime-Version: 1.0 (Apple Message framework v1084)
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1334913859-5314-3-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+From: Xi Wang <xi.wang@gmail.com>
+In-Reply-To: <1335095871.2097.3.camel@golum>
+Date: Mon, 23 Apr 2012 01:43:57 -0400
+Content-Transfer-Encoding: 7bit
+Message-Id: <8EF5D079-1EBB-46D7-9A0A-A6054D94C958@gmail.com>
+References: <1334011379-24445-1-git-send-email-xi.wang@gmail.com>
+ <1335095871.2097.3.camel@golum>
+To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,67 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 20, 2012 at 05:24:18PM +0800, Huang Shijie wrote:
-> add gpmi-nand device tree support, and add proper clock for it.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  arch/arm/boot/dts/imx28.dtsi   |    9 +++++----
->  arch/arm/mach-mxs/clock-mx28.c |    2 +-
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
-> index dd209a3..2804a43 100644
-> --- a/arch/arm/boot/dts/imx28.dtsi
-> +++ b/arch/arm/boot/dts/imx28.dtsi
-> @@ -63,15 +63,16 @@
->  			};
->  
->  			bch@8000a000 {
-> +				compatible = "fsl,imx28-bch";
->  				reg = <0x8000a000 2000>;
->  				interrupts = <41>;
-> -				status = "disabled";
->  			};
->  
-> -			gpmi@8000c000 {
-> +			gpmi-nand@8000c000 {
-> +				compatible = "fsl,imx28-gpmi-nand";
->  				reg = <0x8000c000 2000>;
-> -				interrupts = <42 88>;
-> -				status = "disabled";
+On Apr 22, 2012, at 7:57 AM, Artem Bityutskiy wrote:
 
-Keep the line and enable it in <board>.dts file.
+> Please, introduce the variable in a separate patch.
 
-Regards,
-Shawn
+Okay.
 
-> +				interrupts = <88>;
-> +				dma_channel = <4>;
->  			};
->  
->  			ssp@80010000 {
-> diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-> index 8401854..6fe6737 100644
-> --- a/arch/arm/mach-mxs/clock-mx28.c
-> +++ b/arch/arm/mach-mxs/clock-mx28.c
-> @@ -617,7 +617,6 @@ static struct clk_lookup lookups[] = {
->  	_REGISTER_CLOCK("duart", NULL, uart_clk)
->  	_REGISTER_CLOCK("imx28-fec.0", NULL, fec_clk)
->  	_REGISTER_CLOCK("imx28-fec.1", NULL, fec_clk)
-> -	_REGISTER_CLOCK("imx28-gpmi-nand", NULL, gpmi_clk)
->  	_REGISTER_CLOCK("mxs-auart.0", NULL, uart_clk)
->  	_REGISTER_CLOCK("mxs-auart.1", NULL, uart_clk)
->  	_REGISTER_CLOCK("mxs-auart.2", NULL, uart_clk)
-> @@ -649,6 +648,7 @@ static struct clk_lookup lookups[] = {
->  	_REGISTER_CLOCK("mxs-saif.0", NULL, saif0_clk)
->  	_REGISTER_CLOCK("mxs-saif.1", NULL, saif1_clk)
->  	/* for DT */
-> +	_REGISTER_CLOCK("8000c000.gpmi-nand", NULL, gpmi_clk)
->  	_REGISTER_CLOCK("80074000.serial", NULL, uart_clk)
->  	_REGISTER_CLOCK("800f0000.ethernet", NULL, fec_clk)
->  	_REGISTER_CLOCK("800f4000.ethernet", NULL, fec_clk)
-> -- 
-> 1.7.0.4
-> 
-> 
+> WRT the csize check - you should compare it to something more sensible
+> than INT_MAX - try to dig the code and find out what is maximum value
+> JFFS2 expects. 
+
+KMALLOC_MAX_SIZE - 1 is the smallest number I can find, since the code
+calls `kmalloc(csize + 1)'.  Does that look good?
+
+- xi
