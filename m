@@ -1,12 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMFV0-0005QC-Ml
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 09:23:59 +0000
+ id 1SMFV5-0005Qk-LL
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 09:24:05 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/10] mtd: mxc_nand: put ecc layout into devtype structs
-Date: Mon, 23 Apr 2012 11:23:37 +0200
-Message-Id: <1335173022-22371-5-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 04/10] mtd: mxc_nand: split some functions to get rid of more
+ nfc_is_vX()
+Date: Mon, 23 Apr 2012 11:23:36 +0200
+Message-Id: <1335173022-22371-4-git-send-email-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <20120423092240.GA18013@pengutronix.de>
 References: <20120423092240.GA18013@pengutronix.de>
 MIME-Version: 1.0
@@ -23,109 +24,218 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit makes problems on v1 and v2 regarding 4k pages more obvious.
-As I don't have a 4k flash handy I just keep the status quo.
-
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |  109 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 80 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index c9cdec2..1389d40 100644
+index 1672e4b..c9cdec2 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -152,6 +152,7 @@ struct mxc_nand_devtype_data {
+@@ -151,6 +151,7 @@ struct mxc_nand_devtype_data {
+ 	uint16_t (*get_dev_status)(struct mxc_nand_host *);
  	int (*check_int)(struct mxc_nand_host *);
  	void (*irq_control)(struct mxc_nand_host *, int);
- 	u32 (*get_ecc_status)(struct mxc_nand_host *);
-+	struct nand_ecclayout *ecclayout_512, *ecclayout_2k, *ecclayout_4k;
++	u32 (*get_ecc_status)(struct mxc_nand_host *);
  };
  
  struct mxc_nand_host {
-@@ -1114,6 +1115,9 @@ static const struct mxc_nand_devtype_data imx21_nand_devtype_data = {
+@@ -325,6 +326,21 @@ static void irq_control(struct mxc_nand_host *host, int activate)
+ 	}
+ }
+ 
++static u32 get_ecc_status_v1(struct mxc_nand_host *host)
++{
++	return readw(NFC_V1_V2_ECC_STATUS_RESULT);
++}
++
++static u32 get_ecc_status_v2(struct mxc_nand_host *host)
++{
++	return readl(NFC_V1_V2_ECC_STATUS_RESULT);
++}
++
++static u32 get_ecc_status_v3(struct mxc_nand_host *host)
++{
++	return readl(NFC_V3_ECC_STATUS_RESULT);
++}
++
+ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+ {
+ 	struct mxc_nand_host *host = dev_id;
+@@ -445,13 +461,27 @@ static void send_page_v3(struct mtd_info *mtd, unsigned int ops)
+ 	wait_op_done(host, false);
+ }
+ 
+-static void send_page_v1_v2(struct mtd_info *mtd, unsigned int ops)
++static void send_page_v2(struct mtd_info *mtd, unsigned int ops)
++{
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++
++	/* NANDFC buffer 0 is used for page read/write */
++	writew(host->active_cs << 4, NFC_V1_V2_BUF_ADDR);
++
++	writew(ops, NFC_V1_V2_CONFIG2);
++
++	/* Wait for operation to complete */
++	wait_op_done(host, true);
++}
++
++static void send_page_v1(struct mtd_info *mtd, unsigned int ops)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	int bufs, i;
+ 
+-	if (nfc_is_v1() && mtd->writesize > 512)
++	if (mtd->writesize > 512)
+ 		bufs = 4;
+ 	else
+ 		bufs = 1;
+@@ -567,7 +597,7 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ 	 * additional correction.  2-Bit errors cannot be corrected by
+ 	 * HW ECC, so we need to return failure
+ 	 */
+-	uint16_t ecc_status = readw(NFC_V1_V2_ECC_STATUS_RESULT);
++	uint16_t ecc_status = get_ecc_status_v1(host);
+ 
+ 	if (((ecc_status & 0x3) == 2) || ((ecc_status >> 2) == 2)) {
+ 		pr_debug("MXC_NAND: HWECC uncorrectable 2-bit ECC error\n");
+@@ -592,10 +622,7 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 
+ 	no_subpages = mtd->writesize >> 9;
+ 
+-	if (nfc_is_v21())
+-		ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
+-	else
+-		ecc_stat = readl(NFC_V3_ECC_STATUS_RESULT);
++	ecc_stat = host->devtype_data->get_ecc_status(host);
+ 
+ 	do {
+ 		err = ecc_stat & ecc_bit_mask;
+@@ -822,7 +849,7 @@ static int get_eccsize(struct mtd_info *mtd)
+ 		return 8;
+ }
+ 
+-static void preset_v1_v2(struct mtd_info *mtd)
++static void preset_v1(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+@@ -831,13 +858,40 @@ static void preset_v1_v2(struct mtd_info *mtd)
+ 	if (nand_chip->ecc.mode == NAND_ECC_HW)
+ 		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
+ 
+-	if (nfc_is_v21())
+-		config1 |= NFC_V2_CONFIG1_FP_INT;
++	if (!host->irqpending_quirk)
++		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
++
++	host->eccsize = 1;
++
++	writew(config1, NFC_V1_V2_CONFIG1);
++	/* preset operation */
++
++	/* Unlock the internal RAM Buffer */
++	writew(0x2, NFC_V1_V2_CONFIG);
++
++	/* Blocks to be unlocked */
++	writew(0x0, NFC_V1_UNLOCKSTART_BLKADDR);
++	writew(0xffff, NFC_V1_UNLOCKEND_BLKADDR);
++
++	/* Unlock Block Command for given address range */
++	writew(0x4, NFC_V1_V2_WRPROT);
++}
++
++static void preset_v2(struct mtd_info *mtd)
++{
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++	uint16_t config1 = 0;
++
++	if (nand_chip->ecc.mode == NAND_ECC_HW)
++		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
++
++	config1 |= NFC_V2_CONFIG1_FP_INT;
+ 
+ 	if (!host->irqpending_quirk)
+ 		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
+ 
+-	if (nfc_is_v21() && mtd->writesize) {
++	if (mtd->writesize) {
+ 		uint16_t pages_per_block = mtd->erasesize / mtd->writesize;
+ 
+ 		host->eccsize = get_eccsize(mtd);
+@@ -856,20 +910,14 @@ static void preset_v1_v2(struct mtd_info *mtd)
+ 	writew(0x2, NFC_V1_V2_CONFIG);
+ 
+ 	/* Blocks to be unlocked */
+-	if (nfc_is_v21()) {
+-		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR0);
+-		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR1);
+-		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR2);
+-		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR3);
+-		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR0);
+-		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR1);
+-		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR2);
+-		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR3);
+-	} else if (nfc_is_v1()) {
+-		writew(0x0, NFC_V1_UNLOCKSTART_BLKADDR);
+-		writew(0xffff, NFC_V1_UNLOCKEND_BLKADDR);
+-	} else
+-		BUG();
++	writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR0);
++	writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR1);
++	writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR2);
++	writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR3);
++	writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR0);
++	writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR1);
++	writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR2);
++	writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR3);
+ 
+ 	/* Unlock Block Command for given address range */
+ 	writew(0x4, NFC_V1_V2_WRPROT);
+@@ -1057,26 +1105,28 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 
+ /* v1: 21, 27, 31 */
+ static const struct mxc_nand_devtype_data imx21_nand_devtype_data = {
+-	.preset = preset_v1_v2,
++	.preset = preset_v1,
+ 	.send_cmd = send_cmd_v1_v2,
+ 	.send_addr = send_addr_v1_v2,
+-	.send_page = send_page_v1_v2,
++	.send_page = send_page_v1,
+ 	.send_read_id = send_read_id_v1_v2,
+ 	.get_dev_status = get_dev_status_v1_v2,
  	.check_int = check_int_v1_v2,
  	.irq_control = irq_control_v1_v2,
- 	.get_ecc_status = get_ecc_status_v1,
-+	.ecclayout_512 = &nandv1_hw_eccoob_smallpage,
-+	.ecclayout_2k = &nandv1_hw_eccoob_largepage,
-+	.ecclayout_4k = &nandv1_hw_eccoob_smallpage, /* XXX: needs fix */
++	.get_ecc_status = get_ecc_status_v1,
  };
  
  /* v21: 25, 35 */
-@@ -1127,6 +1131,9 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+-	.preset = preset_v1_v2,
++	.preset = preset_v2,
+ 	.send_cmd = send_cmd_v1_v2,
+ 	.send_addr = send_addr_v1_v2,
+-	.send_page = send_page_v1_v2,
++	.send_page = send_page_v2,
+ 	.send_read_id = send_read_id_v1_v2,
+ 	.get_dev_status = get_dev_status_v1_v2,
  	.check_int = check_int_v1_v2,
  	.irq_control = irq_control_v1_v2,
- 	.get_ecc_status = get_ecc_status_v2,
-+	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
-+	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
-+	.ecclayout_4k = &nandv2_hw_eccoob_4k,
++	.get_ecc_status = get_ecc_status_v2,
  };
  
  /* v3: 51, 53 */
-@@ -1140,6 +1147,9 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+@@ -1089,6 +1139,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ 	.get_dev_status = get_dev_status_v3,
  	.check_int = check_int_v3,
  	.irq_control = irq_control_v3,
- 	.get_ecc_status = get_ecc_status_v3,
-+	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
-+	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
-+	.ecclayout_4k = &nandv2_hw_eccoob_smallpage, /* XXX: needs fix */
++	.get_ecc_status = get_ecc_status_v3,
  };
  
  static int __init mxcnd_probe(struct platform_device *pdev)
-@@ -1150,7 +1160,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	struct mxc_nand_host *host;
- 	struct resource *res;
- 	int err = 0;
--	struct nand_ecclayout *oob_smallpage, *oob_largepage;
- 
- 	/* Allocate memory for MTD device structure and private data */
- 	host = kzalloc(sizeof(struct mxc_nand_host) + NAND_MAX_PAGESIZE +
-@@ -1212,8 +1221,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->regs = host->base + 0xe00;
- 		host->spare0 = host->base + 0x800;
- 		host->spare_len = 16;
--		oob_smallpage = &nandv1_hw_eccoob_smallpage;
--		oob_largepage = &nandv1_hw_eccoob_largepage;
- 		this->ecc.bytes = 3;
- 		host->eccsize = 1;
- 	} else if (nfc_is_v21()) {
-@@ -1221,8 +1228,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->regs = host->base + 0x1e00;
- 		host->spare0 = host->base + 0x1000;
- 		host->spare_len = 64;
--		oob_smallpage = &nandv2_hw_eccoob_smallpage;
--		oob_largepage = &nandv2_hw_eccoob_largepage;
- 		this->ecc.bytes = 9;
- 	} else if (nfc_is_v3_2()) {
- 		host->devtype_data = &imx51_nand_devtype_data;
-@@ -1239,13 +1244,11 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->regs_axi = host->base + 0x1e00;
- 		host->spare0 = host->base + 0x1000;
- 		host->spare_len = 64;
--		oob_smallpage = &nandv2_hw_eccoob_smallpage;
--		oob_largepage = &nandv2_hw_eccoob_largepage;
- 	} else
- 		BUG();
- 
- 	this->ecc.size = 512;
--	this->ecc.layout = oob_smallpage;
-+	this->ecc.layout = host->devtype_data->ecclayout_512;
- 
- 	if (pdata->hw_ecc) {
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
-@@ -1305,9 +1308,9 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	host->devtype_data->preset(mtd);
- 
- 	if (mtd->writesize == 2048)
--		this->ecc.layout = oob_largepage;
--	if (nfc_is_v21() && mtd->writesize == 4096)
--		this->ecc.layout = &nandv2_hw_eccoob_4k;
-+		this->ecc.layout = host->devtype_data->ecclayout_2k;
-+	else if (mtd->writesize == 4096)
-+		this->ecc.layout = host->devtype_data->ecclayout_4k;
- 
- 	/* second phase scan */
- 	if (nand_scan_tail(mtd)) {
 -- 
 1.7.10
