@@ -1,16 +1,23 @@
-Received: from portal.weinmann.de ([62.8.140.122])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SMC6A-0001TL-Vn
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 05:46:08 +0000
-From: "Voss, Nikolaus" <N.Voss@weinmann.de>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Mon, 23 Apr 2012 07:45:59 +0200
-Subject: [PATCH (mtd-utils)] mtd_write: fall back to old method on ENOMEM
-Message-ID: <EF2E73589CA71846A15D0B2CDF79505D0905DB465E@wm021.weinmann.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SMCLj-0003Xr-Td
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2012 06:02:12 +0000
+Received: by lbol5 with SMTP id l5so3968694lbo.36
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Apr 2012 23:02:09 -0700 (PDT)
+Message-ID: <1335160773.28267.29.camel@brekeke>
+Subject: Re: [PATCH] ubi: Do "dump_stack()" in case of the
+ ubi_io_read()/ubi_io_write()/do_sync_erase() has an error
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Xiaoming Zhang <xiaoming1981.zhang@gmail.com>
+Date: Mon, 23 Apr 2012 08:59:33 +0300
+In-Reply-To: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
+References: <CAGKjfA1YN6wrSpV3ZuvYfA=gW_hjBLPKTraudeL_FTUu2dTJ8Q@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-MFgl2HKt8fcssDtyx/Wq"
+Mime-Version: 1.0
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, zxm927@163.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MEMWRITE ioctl tries to kmalloc the whole data. With usual
-eraseblock sizes of 128 KiB, on memory constrained systems
-this can easily lead to ENOMEM due to memory fragmentation
-even if there are plenty of free pages left e.g.:
 
---------------------------------------------------------------
+--=-MFgl2HKt8fcssDtyx/Wq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-libmtd: error!: MEMWRITE ioctl failed for eraseblock 55 (mtd6)
-        error 12 (Cannot allocate memory)
-ubiformat: error!: cannot write eraseblock 55
-           error 12 (Cannot allocate memory)
+On Mon, 2012-04-23 at 10:37 +0800, Xiaoming Zhang wrote:
+> Hi Artem,
+>=20
+> As you suggested there's a patch to turn "ubi_dbg_dump_stack()" into
+> "dump_stack()".
+> This is generated and tested on Linux-2.6.31/mips. The test result:
 
-Kernel log:
-[   67.870000] Normal: 85*4kB 37*8kB 15*16kB 4*32kB 8*64kB 0*128kB 0*256kB
-0*512kB 0*1024kB 0*2048kB 0*4096kB =3D 1516kB
-[   67.870000] 11214 total pagecache pages
-[   67.873000] 16384 pages of RAM
-[   67.873000] 493 free pages
-[   67.873000] 1067 reserved pages
-[   67.873000] 887 slab pages
-[   67.873000] 6266 pages shared=20
-[   67.873000] 0 pages swap cached
+Hi,
 
---------------------------------------------------------------
+thanks, but would you please be kind enough to re-send it in a form
+which I can just save and feed to git am. This e-mail has junk text
+after the patch, and "Hi Artem" will need to be stripped. Thanks!
 
-In such a case, it is better to write slower than not at all.
-
-Signed-off-by: Nikolaus Voss <n.voss@weinmann.de>
----
- lib/libmtd.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 9b247ae..9d24ef0 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -1151,7 +1151,7 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_inf=
-o *mtd, int fd, int eb,
- 	ret =3D ioctl(fd, MEMWRITE, &ops);
- 	if (ret =3D=3D 0)
- 		return 0;
--	else if (errno !=3D ENOTTY && errno !=3D EOPNOTSUPP)
-+	else if (errno !=3D ENOTTY && errno !=3D EOPNOTSUPP && errno !=3D ENOMEM)
- 		return mtd_ioctl_error(mtd, eb, "MEMWRITE");
-=20
- 	/* Fall back to old methods if necessary */
 --=20
-1.7.5.4
+Best Regards,
+Artem Bityutskiy
+
+--=-MFgl2HKt8fcssDtyx/Wq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPlO/FAAoJECmIfjd9wqK0LjQP/1vwvGgiToIZLLaZ4BuXI5QZ
+mbHDk59QpV5r5igW+mw/hljpM0od/FhMi9AJT5gLB3QiEf0QKRLGYdBQQszinXc/
+z+L3lGE1UU+8BVBRiOPk5cx5GIvsOrH7FQA3qo/ug0VrwTL757MnHvUNjmdoguU7
+j7xn/FNDWpH2dETYQG5J7kVBKhsFU8jicK8iFh5YKQHWFB0hKe+4Qt3qQ6g2kSEG
+xmlqm/fdqgBiSQxAo44m6ilTCy/kVFR8mz48EI4WzBGus2yfSnblYYMzQxbYm0pf
+r14YyBitDRpjB3/3uG4RIyjKHp3anqEXStFOLaIhIRzU7Zj3lLipAwoJIPHIl0po
+NQ3Ax0wtMM95EGm7GUfPqgPXNItgkyQFZPMgVQrFOFxRI9hlGlUUN0nimvWAP245
+YbkOaLwm6RF1xAmHlvdUkjzV+tTvfCMBHXKBe324XuTRJQZhDMMGhtBaYdGXymSP
+37g1+RTe29dJj/F1r/SuUVqMJn/3d4Haxj8s7d/r9dQIkCNlu+jqmd41gIIy5Dvx
+ua4+eJ/IktRfarj0eulvNwMRuWvaokcrs3kskMTJ/Gfaft/TxyXE7Wbw/A14fo5U
+h99eFm24AAlJUdwoVFjCXykalCi2hziCdUfU2ezVTRVnJ9a2SJsYIrOqU5Yj3vT2
+7hrqqJ9GQHsfF0Y9kcX1
+=bSqJ
+-----END PGP SIGNATURE-----
+
+--=-MFgl2HKt8fcssDtyx/Wq--
