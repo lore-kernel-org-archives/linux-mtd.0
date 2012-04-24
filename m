@@ -1,18 +1,16 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMlGP-00058C-OJ
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 19:19:02 +0000
+ id 1SMlGR-00058U-Ex
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 19:19:04 +0000
 From: Mike Dunn <mikedunn@newsguy.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/7] mtd: nand: fix incorrect ecc strength values
-Date: Tue, 24 Apr 2012 12:18:20 -0700
-Message-Id: <1335295105-7981-3-git-send-email-mikedunn@newsguy.com>
+Subject: [PATCH 6/7] mtd: nand: sanity checks of ecc strength in
+ nand_scan_tail()
+Date: Tue, 24 Apr 2012 12:18:24 -0700
+Message-Id: <1335295105-7981-7-git-send-email-mikedunn@newsguy.com>
 In-Reply-To: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
 References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
-Cc: Scott Branden <sbranden@broadcom.com>, Mike Dunn <mikedunn@newsguy.com>,
- Jiandong Zheng <jdzheng@broadcom.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>,
- Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +20,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a couple of ecc strength values for which I earlier made conservative
-guesses, but whose correct values were later determined [1] (thanks Ivan).  Also
-sets strength for fsl_ifc_nand, which was merged to mainline after the original
-patch that set the strength for all drivers.
+This patch adds sanity checks that ensure that drivers for controllers with
+hardware ECC set the 'strength' element in struct nand_ecc_ctrl.  Also stylistic
+changes to the line that calculates strength for software ECC.  Both suggested
+during discussion [1].
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040325.html
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040467.html
 
 Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 ---
- drivers/mtd/nand/bcm_umi_nand.c |    7 +------
- drivers/mtd/nand/fsl_ifc_nand.c |    1 +
- drivers/mtd/nand/jz4740_nand.c  |    6 +-----
- 3 files changed, 3 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/nand_base.c |   28 ++++++++++++++++++++++------
+ 1 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index 6908cdd..7134adf 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -476,12 +476,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 		this->badblock_pattern = &largepage_bbt;
- 	}
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3137abd..275c43f 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3302,10 +3302,21 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 				   "hardware ECC not possible\n");
+ 			BUG();
+ 		}
++
++		if (!chip->ecc.strength) {
++			pr_warn("Driver must set ecc.strength when using hardware ECC\n");
++			BUG();
++		}
++
+ 		if (!chip->ecc.read_page)
+ 			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
  
--	/*
--	 * FIXME: ecc strength value of 6 bits per 512 bytes of data is a
--	 * conservative guess, given 13 ecc bytes and using bch alg.
--	 * (Assume Galois field order m=15 to allow a margin of error.)
--	 */
--	this->ecc.strength = 6;
-+	this->ecc.strength = 8;
+ 	case NAND_ECC_HW:
++		if (!chip->ecc.strength) {
++			pr_warn("Driver must set ecc.strength when using hardware ECC\n");
++			BUG();
++		}
++
+ 		/* Use standard hwecc read page function? */
+ 		if (!chip->ecc.read_page)
+ 			chip->ecc.read_page = nand_read_page_hwecc;
+@@ -3345,12 +3356,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		if (!chip->ecc.write_oob)
+ 			chip->ecc.write_oob = nand_write_oob_syndrome;
  
- #endif
+-		if (mtd->writesize >= chip->ecc.size)
+-			break;
+-		pr_warn("%d byte HW ECC not possible on "
+-			   "%d byte page size, fallback to SW ECC\n",
+-			   chip->ecc.size, mtd->writesize);
++		if (mtd->writesize >= chip->ecc.size) {
++			if (!chip->ecc.strength) {
++				pr_warn("Driver must set ecc.strength when using hardware ECC\n");
++				BUG();
++			}
++			break;	/* all's well */
++		}
++		pr_warn("%d byte HW ECC not possible on %d byte page size, fallback to SW ECC\n",
++			chip->ecc.size, mtd->writesize);
+ 		chip->ecc.mode = NAND_ECC_SOFT;
++		/* fall through */
  
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 5387cec..872cc96 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -821,6 +821,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 	/* Hardware generates ECC per 512 Bytes */
- 	chip->ecc.size = 512;
- 	chip->ecc.bytes = 8;
-+	chip->ecc.strength = 4;
+ 	case NAND_ECC_SOFT:
+ 		chip->ecc.calculate = nand_calculate_ecc;
+@@ -3401,7 +3417,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			BUG();
+ 		}
+ 		chip->ecc.strength =
+-			chip->ecc.bytes*8 / fls(8*chip->ecc.size);
++			chip->ecc.bytes * 8 / fls(8 * chip->ecc.size);
+ 		break;
  
- 	switch (csor & CSOR_NAND_PGS_MASK) {
- 	case CSOR_NAND_PGS_512:
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index e4147e8..a6fa884 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -332,11 +332,7 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
- 	chip->ecc.mode		= NAND_ECC_HW_OOB_FIRST;
- 	chip->ecc.size		= 512;
- 	chip->ecc.bytes		= 9;
--	chip->ecc.strength	= 2;
--	/*
--	 * FIXME: ecc_strength value of 2 bits per 512 bytes of data is a
--	 * conservative guess, given 9 ecc bytes and reed-solomon alg.
--	 */
-+	chip->ecc.strength	= 4;
- 
- 	if (pdata)
- 		chip->ecc.layout = pdata->ecc_layout;
+ 	case NAND_ECC_NONE:
 -- 
 1.7.3.4
