@@ -1,37 +1,16 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-pz0-f43.google.com ([209.85.210.43])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMeri-0001Er-2G
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 12:29:07 +0000
-Received: by lbol5 with SMTP id l5so496334lbo.36
- for <linux-mtd@lists.infradead.org>; Tue, 24 Apr 2012 05:29:04 -0700 (PDT)
-Date: Tue, 24 Apr 2012 15:28:55 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: add 'use_oob' argument to NAND
- {read,write}_page interfaces
-Message-ID: <20120424152855.28df673d@pixies.home.jungo.com>
-In-Reply-To: <1335212069-7450-2-git-send-email-computersforpeace@gmail.com>
-References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
- <1335212069-7450-2-git-send-email-computersforpeace@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Lei Wen <leiwen@marvell.com>,
- Jamie Iles <jamie@jamieiles.com>, prabhakar@freescale.com,
- Mike Dunn <mikedunn@newsguy.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Bastian Hecht <hechtb@gmail.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>,
- Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1SMhwm-0006VE-Kj
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 15:46:33 +0000
+Received: by dadn15 with SMTP id n15so1413467dad.16
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Apr 2012 08:46:30 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 24 Apr 2012 17:46:30 +0200
+Message-ID: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+Subject: UBIFS switched to read-only mode after make_reservation warnings
+From: Matteo Mattei <matteo.mattei@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,74 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi guys,
 
-Thanks for the v2 adaptations.
+continuing the tests on UBI/UBIFS and power cyclings I have the
+following errors (dumping dmesg):
 
-Reviewing nand_base.c and nand.h (less familiar with the others).
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (123)
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (124)
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (125)
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (126)
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (127)
+UBIFS warning (pid 776): make_reservation: too many space allocation
+re-tries (128)
+UBIFS error (pid 776): make_reservation: stuck in space allocation
+UBIFS error (pid 776): make_reservation: cannot reserve 4144 bytes in
+jhead 2, error -28
+UBIFS error (pid 776): do_writepage: cannot write page 2075 of inode
+80294, error -28
+UBIFS warning (pid 776): ubifs_ro_mode: switched to read-only mode, error -28
 
-BTW I think you missed one API convertion in gpmi-nand.c: there's a
-call to 'chip->ecc.write_page_raw' not ported.
+It seems that there is not enough space for the journal...
 
-(still not completely happy with my suggestion, as the boolean
-approach is not that elegant as you previously noted...)
+This is the software and environment used:
+- linux kernel 2.6.32 (from TI)
+- ubifs backport (from git://git.infradead.org/~dedekind/ubifs-v2.6.32.git).
+- 8-bit BCH.
+- UBIFS mounted with no compression.
+- usage of ubiformat instead of flash_eraseall for the first
+filesystem initialization.
 
-On Mon, 23 Apr 2012 13:14:28 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index eb88d8b..c4989b5 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1066,12 +1066,13 @@ EXPORT_SYMBOL(nand_lock);
->   * @mtd: mtd info structure
->   * @chip: nand chip info structure
->   * @buf: buffer to store read data
-> + * @use_oob: caller expects OOB data read to chip->oob_poi
->   * @page: page number to read
->   *
->   * Not for syndrome calculating ECC controllers, which use a special oob layout.
->   */
->  static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> -			      uint8_t *buf, int page)
-> +			      uint8_t *buf, bool use_oob, int page)
->  {
->  	chip->read_buf(mtd, buf, mtd->writesize);
->  	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+This is the hardware used:
+- CPU: OMAP3530.
+- NAND chips: Micron MT29F4G08ABBDAH4-IT.
 
-Why don't you adapt 'nand_read_page_raw' (and others) to use the
-'use_oob' hint? Do you plan to?
 
-IMO having a parameter called 'use_oob', but not using the parameter
-value is very confusing.
+Do you have any idea on what happened and how to fix this?
+Which are the conditions that lead this behavior?
 
-Maybe we need an indication that states "hey, you may skip filling the
-oob_poi if you don't want to, that's okay (but if you'd like to fill
-it for your own purposes, it's okay too)"...
-More of a 'oob_must_be_read' or 'oob_expected' for the read case (and
-'oob_must_be_written' or 'oob_was_placed' for write).
+Thanks,
 
-(tried to come-up with better names, no success ;-)
-
->  static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
-> -				uint8_t *buf, int page)
-> +				uint8_t *buf, bool use_oob, int page)
->  {
->  	int i, eccsize = chip->ecc.size;
->  	int eccbytes = chip->ecc.bytes;
-> @@ -1139,7 +1142,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
->  	uint8_t *ecc_code = chip->buffers->ecccode;
->  	uint32_t *eccpos = chip->ecc.layout->eccpos;
->  
-> -	chip->ecc.read_page_raw(mtd, chip, buf, page);
-> +	chip->ecc.read_page_raw(mtd, chip, buf, use_oob, page);
-
-Should pass 'true' instead of 'use_oob'.
-That's because 'nand_read_page_swecc' later uses 'chip->oob_poi' and
-expects it to be read.
-(relevant for few other calls, e.g. nand_write_page_swecc)
-
-BTW you used 'bool', however convention for some other boolean parameters
-around nand_base.c is 'int'.
-(no preference, just like things consistent)
-
-Regards,
-Shmulik
+Matteo
