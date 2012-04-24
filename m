@@ -1,13 +1,37 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SMdjF-0006Nw-FJ
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 11:16:18 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: always dump flash contents in case of errors
-Date: Tue, 24 Apr 2012 14:17:03 +0300
-Message-Id: <1335266223-21517-1-git-send-email-dedekind1@gmail.com>
-Cc: Mark <xiaoming1981.zhang@gmail.com>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SMeri-0001Er-2G
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 12:29:07 +0000
+Received: by lbol5 with SMTP id l5so496334lbo.36
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Apr 2012 05:29:04 -0700 (PDT)
+Date: Tue, 24 Apr 2012 15:28:55 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: add 'use_oob' argument to NAND
+ {read,write}_page interfaces
+Message-ID: <20120424152855.28df673d@pixies.home.jungo.com>
+In-Reply-To: <1335212069-7450-2-git-send-email-computersforpeace@gmail.com>
+References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
+ <1335212069-7450-2-git-send-email-computersforpeace@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Lei Wen <leiwen@marvell.com>,
+ Jamie Iles <jamie@jamieiles.com>, prabhakar@freescale.com,
+ Mike Dunn <mikedunn@newsguy.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Bastian Hecht <hechtb@gmail.com>,
+ Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Armando Visconti <armando.visconti@st.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>, Jiandong Zheng <jdzheng@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,146 +41,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+Hi Brian,
 
-UBI (and UBIFS) are a bit over-engineered WRT debugging. The idea was to
-link as few as possible when debugging is disabled, but the downside is
-that most people produce bug reports which are difficult to understand.
+Thanks for the v2 adaptations.
 
-Always dump the flash contents in case of errors, not only when debugging is
-enabled.
+Reviewing nand_base.c and nand.h (less familiar with the others).
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
----
- drivers/mtd/ubi/debug.c |   32 --------------------------------
- drivers/mtd/ubi/debug.h |    3 ---
- drivers/mtd/ubi/io.c    |   36 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 34 insertions(+), 37 deletions(-)
+BTW I think you missed one API convertion in gpmi-nand.c: there's a
+call to 'chip->ecc.write_page_raw' not ported.
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 61af9bb..d7a47d5 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -200,38 +200,6 @@ void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req)
- }
- 
- /**
-- * ubi_dbg_dump_flash - dump a region of flash.
-- * @ubi: UBI device description object
-- * @pnum: the physical eraseblock number to dump
-- * @offset: the starting offset within the physical eraseblock to dump
-- * @len: the length of the region to dump
-- */
--void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len)
--{
--	int err;
--	size_t read;
--	void *buf;
--	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
--
--	buf = vmalloc(len);
--	if (!buf)
--		return;
--	err = mtd_read(ubi->mtd, addr, len, &read, buf);
--	if (err && err != -EUCLEAN) {
--		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
--			"read %zd bytes", err, len, pnum, offset, read);
--		goto out;
--	}
--
--	dbg_msg("dumping %d bytes of data from PEB %d, offset %d",
--		len, pnum, offset);
--	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
--out:
--	vfree(buf);
--	return;
--}
--
--/**
-  * ubi_debugging_init_dev - initialize debugging for an UBI device.
-  * @ubi: UBI device description object
-  *
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index aff6499..b21a90a 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -63,7 +63,6 @@ void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
- void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
- void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
- void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
--void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
- int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
- int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
- 			int offset, int len);
-@@ -205,8 +204,6 @@ static inline void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb,
- 				    int type)                        { return; }
- static inline void
- ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req)              { return; }
--static inline void ubi_dbg_dump_flash(struct ubi_device *ubi,
--				      int pnum, int offset, int len) { return; }
- static inline void
- ubi_dbg_print_hex_dump(const char *l, const char *ps, int pt, int r,
- 		       int g, const void *b, size_t len, bool a)     { return; }
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 507e0c6..d81d044 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -222,6 +222,38 @@ retry:
- }
- 
- /**
-+ * dump_flash - dump a region of flash.
-+ * @ubi: UBI device description object
-+ * @pnum: the physical eraseblock number to dump
-+ * @offset: the starting offset within the physical eraseblock to dump
-+ * @len: the length of the region to dump
-+ */
-+static void dump_flash(struct ubi_device *ubi, int pnum, int offset, int len)
-+{
-+	int err;
-+	size_t read;
-+	void *buf;
-+	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
-+
-+	buf = vmalloc(len);
-+	if (!buf)
-+		return;
-+	err = mtd_read(ubi->mtd, addr, len, &read, buf);
-+	if (err && err != -EUCLEAN) {
-+		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
-+			"read %zd bytes", err, len, pnum, offset, read);
-+		goto out;
-+	}
-+
-+	ubi_msg("dumping %d bytes of data from PEB %d, offset %d",
-+		len, pnum, offset);
-+	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
-+out:
-+	vfree(buf);
-+	return;
-+}
-+
-+/**
-  * ubi_io_write - write data to a physical eraseblock.
-  * @ubi: UBI device description object
-  * @buf: buffer with the data to write
-@@ -294,7 +326,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
- 		ubi_err("error %d while writing %d bytes to PEB %d:%d, written "
- 			"%zd bytes", err, len, pnum, offset, written);
- 		dump_stack();
--		ubi_dbg_dump_flash(ubi, pnum, offset, len);
-+		ubi_dump_flash(ubi, pnum, offset, len);
- 	} else
- 		ubi_assert(written == len);
- 
-@@ -563,7 +595,7 @@ static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
- 	 */
- 	ubi_err("cannot invalidate PEB %d, write returned %d read returned %d",
- 		pnum, err, err1);
--	ubi_dbg_dump_flash(ubi, pnum, 0, ubi->peb_size);
-+	dump_flash(ubi, pnum, 0, ubi->peb_size);
- 	return -EIO;
- }
- 
--- 
-1.7.7.6
+(still not completely happy with my suggestion, as the boolean
+approach is not that elegant as you previously noted...)
+
+On Mon, 23 Apr 2012 13:14:28 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index eb88d8b..c4989b5 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1066,12 +1066,13 @@ EXPORT_SYMBOL(nand_lock);
+>   * @mtd: mtd info structure
+>   * @chip: nand chip info structure
+>   * @buf: buffer to store read data
+> + * @use_oob: caller expects OOB data read to chip->oob_poi
+>   * @page: page number to read
+>   *
+>   * Not for syndrome calculating ECC controllers, which use a special oob layout.
+>   */
+>  static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+> -			      uint8_t *buf, int page)
+> +			      uint8_t *buf, bool use_oob, int page)
+>  {
+>  	chip->read_buf(mtd, buf, mtd->writesize);
+>  	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+
+Why don't you adapt 'nand_read_page_raw' (and others) to use the
+'use_oob' hint? Do you plan to?
+
+IMO having a parameter called 'use_oob', but not using the parameter
+value is very confusing.
+
+Maybe we need an indication that states "hey, you may skip filling the
+oob_poi if you don't want to, that's okay (but if you'd like to fill
+it for your own purposes, it's okay too)"...
+More of a 'oob_must_be_read' or 'oob_expected' for the read case (and
+'oob_must_be_written' or 'oob_was_placed' for write).
+
+(tried to come-up with better names, no success ;-)
+
+>  static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+> -				uint8_t *buf, int page)
+> +				uint8_t *buf, bool use_oob, int page)
+>  {
+>  	int i, eccsize = chip->ecc.size;
+>  	int eccbytes = chip->ecc.bytes;
+> @@ -1139,7 +1142,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+>  	uint8_t *ecc_code = chip->buffers->ecccode;
+>  	uint32_t *eccpos = chip->ecc.layout->eccpos;
+>  
+> -	chip->ecc.read_page_raw(mtd, chip, buf, page);
+> +	chip->ecc.read_page_raw(mtd, chip, buf, use_oob, page);
+
+Should pass 'true' instead of 'use_oob'.
+That's because 'nand_read_page_swecc' later uses 'chip->oob_poi' and
+expects it to be read.
+(relevant for few other calls, e.g. nand_write_page_swecc)
+
+BTW you used 'bool', however convention for some other boolean parameters
+around nand_base.c is 'int'.
+(no preference, just like things consistent)
+
+Regards,
+Shmulik
