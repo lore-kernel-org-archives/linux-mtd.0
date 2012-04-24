@@ -1,30 +1,22 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMYpz-0003Z2-E0
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 06:02:56 +0000
-Received: by lbol5 with SMTP id l5so255844lbo.36
- for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2012 23:02:51 -0700 (PDT)
-Date: Tue, 24 Apr 2012 09:02:42 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add OOB argument to NAND {read,
- write}_page interfaces
-Message-ID: <20120424090242.5023df12@pixies.home.jungo.com>
-In-Reply-To: <CABYn4sy6fOEMwF_Gj24HdnaR55Sf1cFftT=JA-2PPSU1+zFjYA@mail.gmail.com>
-References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
- <1334615755-15418-2-git-send-email-computersforpeace@gmail.com>
- <4F8D20C4.9010607@parrot.com>
- <CAN8TOE8d8w6EQZkF8hgBqzgY-Q80gb=wSwUijFjt2sq+7mqC8g@mail.gmail.com>
- <4F904238.4070600@newsguy.com>
- <CAN8TOE_u9or8b+ZapRqD8XwV8abUDNXBtmAeBwDNiZ8aAs-Mdw@mail.gmail.com>
- <20120422105844.7f131f90@pixies.home.jungo.com>
- <CABYn4sy6fOEMwF_Gj24HdnaR55Sf1cFftT=JA-2PPSU1+zFjYA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
- prabhakar@freescale.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SMa7j-0000wS-QP
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2012 07:25:21 +0000
+Date: Tue, 24 Apr 2012 09:24:57 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Uwe =?iso-8859-15?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 03/10] mtd: mxc_nand: move function pointers to a per-SOC
+ struct
+Message-ID: <20120424072457.GL3852@pengutronix.de>
+References: <20120423092240.GA18013@pengutronix.de>
+ <1335173022-22371-3-git-send-email-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1335173022-22371-3-git-send-email-u.kleine-koenig@pengutronix.de>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +26,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bastian,
+On Mon, Apr 23, 2012 at 11:23:35AM +0200, Uwe Kleine-König wrote:
+> This prepares switching to platform ids and of-tree probing.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |  197 ++++++++++++++++++++++++++-----------------
+>  1 file changed, 118 insertions(+), 79 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index a78e763..1672e4b 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -140,6 +140,19 @@
+>  
+>  #define NFC_V3_DELAY_LINE		(host->regs_ip + 0x34)
+>  
+> +struct mxc_nand_host;
+> +
+> +struct mxc_nand_devtype_data {
+> +	void (*preset)(struct mtd_info *);
+> +	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+> +	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
+> +	void (*send_page)(struct mtd_info *, unsigned int);
+> +	void (*send_read_id)(struct mxc_nand_host *);
+> +	uint16_t (*get_dev_status)(struct mxc_nand_host *);
+> +	int (*check_int)(struct mxc_nand_host *);
+> +	void (*irq_control)(struct mxc_nand_host *, int);
+> +};
+> +
+>  struct mxc_nand_host {
+>  	struct mtd_info		mtd;
+>  	struct nand_chip	nand;
+> @@ -165,14 +178,7 @@ struct mxc_nand_host {
+>  	unsigned int		buf_start;
+>  	int			spare_len;
+>  
+> -	void			(*preset)(struct mtd_info *);
+> -	void			(*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+> -	void			(*send_addr)(struct mxc_nand_host *, uint16_t, int);
+> -	void			(*send_page)(struct mtd_info *, unsigned int);
+> -	void			(*send_read_id)(struct mxc_nand_host *);
+> -	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
+> -	int			(*check_int)(struct mxc_nand_host *);
+> -	void			(*irq_control)(struct mxc_nand_host *, int);
+> +	const struct mxc_nand_devtype_data *devtype_data;
+>  
+>  	/*
+>  	 * On i.MX21 the CONFIG2:INT bit cannot be read if interrupts are masked
+> @@ -251,20 +257,6 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
+>  
+>  static const char *part_probes[] = { "RedBoot", "cmdlinepart", NULL };
+>  
+> -static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+> -{
+> -	struct mxc_nand_host *host = dev_id;
+> -
+> -	if (!host->check_int(host))
+> -		return IRQ_NONE;
+> -
+> -	irq_control(host, 0);
+> -
+> -	complete(&host->op_completion);
+> -
+> -	return IRQ_HANDLED;
+> -}
+> -
+>  static int check_int_v3(struct mxc_nand_host *host)
+>  {
+>  	uint32_t tmp;
+> @@ -329,10 +321,25 @@ static void irq_control(struct mxc_nand_host *host, int activate)
+>  		else
+>  			disable_irq_nosync(host->irq);
+>  	} else {
+> -		host->irq_control(host, activate);
+> +		host->devtype_data->irq_control(host, activate);
+>  	}
+>  }
+>  
+> +static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+> +{
+> +	struct mxc_nand_host *host = dev_id;
+> +
+> +	if (!host->devtype_data->check_int(host))
+> +		return IRQ_NONE;
+> +
+> +	irq_control(host, 0);
+> +
+> +	complete(&host->op_completion);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +
 
-On Mon, 23 Apr 2012 11:14:39 +0200 Bastian Hecht <hechtb@googlemail.com> wrote:
-> Following this thread, I wondered how mtd_write_oob is meant to work.
-> The sh_flctl code simply writes the OOB data 1 to 1 into the oob area
-> of the nand chip when using hardware ECC. So when reading this, it
-> should result in a corrupted page. Is the driver meant to OR the ECC
-> code to the buffer? Then the driver would need a page read and write
-> it back applying the oob data, no?
+The move of mxc_nfc_irq seems unnecessary. Also one blank line too much.
 
-The beahvior is dependent on mtd_oob_ops->mode.
+>  
+> +/* v1: 21, 27, 31 */
 
-If mode is MTD_OPS_AUTO_OOB, 'nand_fill_oob' places the user provided
-'oobbuf' into the "free" locations within the OOB layout (as defined by
-'chip->ecc.layout->oobfree').
-Implementor of 'chip->ecc.write_page' is expected to take care of ECC
-caclulation and fill the ECC bytes (driver's or HW responsibility).
+Can we have imx21 here? People familiar with i.MX may instantly
+recognize these numbers, others do not.
 
-If the mode is MTD_OPS_RAW, user provided 'oobbuf' should be transferred
-as-is, without error correction ('chip->ecc.write_page_raw' will be
-invoked).
+Sascha
 
-If the mode is MTD_OPS_PLACE_OOB, then 'nand_fill_oob' copies user's
-'oobbuf' onto 'oob_poi'.
-As with MTD_OPS_AUTO_OOB, implementor of 'chip->ecc.write_page' is
-expected to take care of ECC calculation; the ECC locations are assumed
-to be overwritten (ignoring user's bytes at the ECC locations).
 
-This is according to the nand_base.c default methods.
-For example, you can follow nand_do_write_ops, nand_write_page,
-nand_write_page_swecc.
-
-Regards,
-Shmulik
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
