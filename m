@@ -1,16 +1,20 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN7Xy-0004Jp-6a
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 19:06:40 +0000
+ id 1SN7Y2-0004Ky-Cv
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 19:06:45 +0000
 From: Mike Dunn <mikedunn@newsguy.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 7/7] mtd: driver _read() returns max_bitflips;
- mtd_read() returns -EUCLEAN
-Date: Wed, 25 Apr 2012 12:06:11 -0700
-Message-Id: <1335380771-27805-8-git-send-email-mikedunn@newsguy.com>
+Subject: [PATCH v2 5/7] mtd: nand: read_page() returns max_bitflips
+Date: Wed, 25 Apr 2012 12:06:09 -0700
+Message-Id: <1335380771-27805-6-git-send-email-mikedunn@newsguy.com>
 In-Reply-To: <1335380771-27805-1-git-send-email-mikedunn@newsguy.com>
 References: <1335380771-27805-1-git-send-email-mikedunn@newsguy.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
+Cc: Jack Lan <jack.lan@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Nick Spence <nick.spence@freescale.com>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
+ Axel Lin <axel.lin@gmail.com>, Roy Zang <tie-fei.zang@freescale.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,238 +24,518 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The drivers _read() method, absent an error, return a non-negative integer
-indicating the maximum number of bit errors that were corrected in any one
-region comprising an ecc step.  MTD returns -EUCLEAN if this is >=
-bitflip_threshold, 0 otherwise.  If bitflip_threshold is zero, the comparison is
-not made since these devices lack ECC and always return zero in the non-error
-case (thanks Brian) [1].  Note that this is a subtle change to the driver
-interface.
+The ecc.read_page() method for nand drivers is changed to return the maximum
+number of bitflips that were corrected on any one region covering an ecc step,
+This patch doesn't change what the nand code returns to mtd.
 
-This and the preceeding patches in this set were tested with ubi on top of the
-nandsim and docg4 devices, running the ubi test io_basic from mtd-utils.
+This v2 includes the change to the fsl_ifc_nand driver requested by Scott [1].
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040468.html
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-April/040883.html
 
 Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 ---
 
-This v2 is actually unchanged from the original set.
+Most of the changes to the drivers are straightforward, but a few really need
+review.  The changes to the freescale controllers (fsl_elbc_nand and
+fsl_ifc_nand) are a little more involved.  I am least confident about the denali
+driver... I confess I am totally confused by the "multi connected nand support"
+patch (commit 08b9ab9996c7e582f86da319f43d2dcb8ff55993).
 
- drivers/mtd/devices/docg3.c        |    4 +++-
- drivers/mtd/mtdcore.c              |   14 +++++++++++++-
- drivers/mtd/mtdpart.c              |   12 ++++++------
- drivers/mtd/nand/alauda.c          |    4 ++--
- drivers/mtd/nand/nand_base.c       |   18 ++++++++++++++----
- drivers/mtd/onenand/onenand_base.c |    6 ++++--
- include/linux/mtd/nand.h           |    3 +++
- 7 files changed, 45 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/atmel_nand.c    |    9 +++++--
+ drivers/mtd/nand/bcm_umi_bch.c   |    4 ++-
+ drivers/mtd/nand/cafe_nand.c     |    4 ++-
+ drivers/mtd/nand/denali.c        |   10 +++++--
+ drivers/mtd/nand/docg4.c         |    5 ++-
+ drivers/mtd/nand/fsl_elbc_nand.c |   21 +++++++++++-----
+ drivers/mtd/nand/fsl_ifc_nand.c  |    9 ++++++-
+ drivers/mtd/nand/fsmc_nand.c     |    9 +++++--
+ drivers/mtd/nand/nand_base.c     |   47 +++++++++++++++++++++++++-------------
+ drivers/mtd/nand/sh_flctl.c      |    2 +-
+ 10 files changed, 82 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 3414031..7644d59 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -862,6 +862,7 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	u8 *buf = ops->datbuf;
- 	size_t len, ooblen, nbdata, nboob;
- 	u8 hwecc[DOC_ECC_BCH_SIZE], eccconf1;
-+	int max_bitflips = 0;
- 
- 	if (buf)
- 		len = ops->len;
-@@ -948,7 +949,8 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 			}
- 			if (ret > 0) {
- 				mtd->ecc_stats.corrected += ret;
--				ret = -EUCLEAN;
-+				max_bitflips = max(max_bitflips, ret);
-+				ret = max_bitflips;
- 			}
- 		}
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 6a7cba1..b5bb628 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -800,12 +800,24 @@ EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
- int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	     u_char *buf)
- {
-+	int ret_code;
- 	*retlen = 0;
- 	if (from < 0 || from > mtd->size || len > mtd->size - from)
- 		return -EINVAL;
- 	if (!len)
- 		return 0;
--	return mtd->_read(mtd, from, len, retlen, buf);
-+
-+	/*
-+	 * In the absence of an error, drivers return a non-negative integer
-+	 * representing the maximum number of bitflips that were corrected on
-+	 * any one ecc region (if applicable; zero otherwise).
-+	 */
-+	ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+	if (unlikely(ret_code < 0))
-+		return ret_code;
-+	if (mtd->bitflip_threshold == 0)
-+		return 0;	/* device lacks ecc */
-+	return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
- }
- EXPORT_SYMBOL_GPL(mtd_read);
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 9651c06..d6321f6 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -67,12 +67,12 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	stats = part->master->ecc_stats;
- 	res = part->master->_read(part->master, from + part->offset, len,
- 				  retlen, buf);
--	if (unlikely(res)) {
--		if (mtd_is_bitflip(res))
--			mtd->ecc_stats.corrected += part->master->ecc_stats.corrected - stats.corrected;
--		if (mtd_is_eccerr(res))
--			mtd->ecc_stats.failed += part->master->ecc_stats.failed - stats.failed;
--	}
-+	if (unlikely(mtd_is_eccerr(res)))
-+		mtd->ecc_stats.failed +=
-+			part->master->ecc_stats.failed - stats.failed;
-+	else
-+		mtd->ecc_stats.corrected +=
-+			part->master->ecc_stats.corrected - stats.corrected;
- 	return res;
- }
- 
-diff --git a/drivers/mtd/nand/alauda.c b/drivers/mtd/nand/alauda.c
-index 4f20e1d..60a0dfd 100644
---- a/drivers/mtd/nand/alauda.c
-+++ b/drivers/mtd/nand/alauda.c
-@@ -414,7 +414,7 @@ static int alauda_bounce_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	}
- 	err = 0;
- 	if (corrected)
--		err = -EUCLEAN;
-+		err = 1;	/* return max_bitflips per ecc step */
- 	if (uncorrected)
- 		err = -EBADMSG;
- out:
-@@ -446,7 +446,7 @@ static int alauda_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	}
- 	err = 0;
- 	if (corrected)
--		err = -EUCLEAN;
-+		err = 1;	/* return max_bitflips per ecc step */
- 	if (uncorrected)
- 		err = -EBADMSG;
- 	return err;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 275c43f..9f1b202 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1486,6 +1486,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 		mtd->oobavail : mtd->oobsize;
- 
- 	uint8_t *bufpoi, *oob, *buf;
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 2165576..9a7876e 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -335,6 +335,7 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	uint8_t *oob = chip->oob_poi;
+ 	uint8_t *ecc_pos;
+ 	int stat;
 +	unsigned int max_bitflips = 0;
  
- 	stats = mtd->ecc_stats;
+ 	/*
+ 	 * Errata: ALE is incorrectly wired up to the ECC controller
+@@ -371,10 +372,12 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	/* check if there's an error */
+ 	stat = chip->ecc.correct(mtd, p, oob, NULL);
  
-@@ -1513,7 +1514,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 				sndcmd = 0;
+-	if (stat < 0)
++	if (stat < 0) {
+ 		mtd->ecc_stats.failed++;
+-	else
++	} else {
+ 		mtd->ecc_stats.corrected += stat;
++		max_bitflips = max_t(unsigned int, max_bitflips, stat);
++	}
+ 
+ 	/* get back to oob start (end of page) */
+ 	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
+@@ -382,7 +385,7 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	/* read the oob */
+ 	chip->read_buf(mtd, oob, mtd->oobsize);
+ 
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ /*
+diff --git a/drivers/mtd/nand/bcm_umi_bch.c b/drivers/mtd/nand/bcm_umi_bch.c
+index a930666..f8472b4 100644
+--- a/drivers/mtd/nand/bcm_umi_bch.c
++++ b/drivers/mtd/nand/bcm_umi_bch.c
+@@ -116,6 +116,7 @@ static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
+ 	uint8_t eccCalc[NAND_ECC_NUM_BYTES];
+ 	int sectorOobSize = mtd->oobsize / eccsteps;
+ 	int stat;
++	unsigned int max_bitflips = 0;
+ 
+ 	for (sectorIdx = 0; sectorIdx < eccsteps;
+ 			sectorIdx++, datap += eccsize) {
+@@ -177,9 +178,10 @@ static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
  			}
+ #endif
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+ 		}
+ 	}
+-	return 0;
++	return max_bitflips;
+ }
  
--			/* Now read the page into the buffer */
-+			/*
-+			 * Now read the page into the buffer.  Absent an error,
-+			 * the read methods return max bitflips per ecc step.
-+			 */
- 			if (unlikely(ops->mode == MTD_OPS_RAW))
- 				ret = chip->ecc.read_page_raw(mtd, chip,
- 							      bufpoi, page);
-@@ -1530,15 +1534,19 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 				break;
- 			}
+ /****************************************************************************
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 2973d97..886ff3a 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -383,6 +383,7 @@ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			       uint8_t *buf, int page)
+ {
+ 	struct cafe_priv *cafe = mtd->priv;
++	unsigned int max_bitflips = 0;
  
-+			max_bitflips = max_t(unsigned int, max_bitflips, ret);
-+
- 			/* Transfer not aligned data */
- 			if (!aligned) {
- 				if (!NAND_SUBPAGE_READ(chip) && !oob &&
- 				    !(mtd->ecc_stats.failed - stats.failed) &&
--				    (ops->mode != MTD_OPS_RAW))
-+				    (ops->mode != MTD_OPS_RAW)) {
- 					chip->pagebuf = realpage;
--				else
-+					chip->pagebuf_bitflips = ret;
-+				} else {
- 					/* Invalidate page cache */
- 					chip->pagebuf = -1;
-+				}
- 				memcpy(buf, chip->buffers->databuf + col, bytes);
- 			}
- 
-@@ -1571,6 +1579,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	cafe_dev_dbg(&cafe->pdev->dev, "ECC result %08x SYN1,2 %08x\n",
+ 		     cafe_readl(cafe, NAND_ECC_RESULT),
+@@ -449,10 +450,11 @@ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
  		} else {
- 			memcpy(buf, chip->buffers->databuf + col, bytes);
- 			buf += bytes;
-+			max_bitflips = max_t(unsigned int, max_bitflips,
-+					     chip->pagebuf_bitflips);
+ 			dev_dbg(&cafe->pdev->dev, "Corrected %d symbol errors\n", n);
+ 			mtd->ecc_stats.corrected += n;
++			max_bitflips = max_t(unsigned int, max_bitflips, n);
+ 		}
+ 	}
+ 
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ static struct nand_ecclayout cafe_oobinfo_2048 = {
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index a1048c7..1b34647 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -924,9 +924,10 @@ bool is_erased(uint8_t *buf, int len)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
+ 
+ static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
+-					uint32_t irq_status)
++		       uint32_t irq_status, unsigned int *max_bitflips)
+ {
+ 	bool check_erased_page = false;
++	unsigned int bitflips = 0;
+ 
+ 	if (irq_status & INTR_STATUS__ECC_ERR) {
+ 		/* read the ECC errors. we'll ignore them for now */
+@@ -965,6 +966,7 @@ static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
+ 					/* correct the ECC error */
+ 					buf[offset] ^= err_correction_value;
+ 					denali->mtd.ecc_stats.corrected++;
++					bitflips++;
+ 				}
+ 			} else {
+ 				/* if the error is not correctable, need to
+@@ -984,6 +986,7 @@ static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
+ 		clear_interrupts(denali);
+ 		denali_set_intr_modes(denali, true);
+ 	}
++	*max_bitflips = bitflips;
+ 	return check_erased_page;
+ }
+ 
+@@ -1121,6 +1124,7 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    uint8_t *buf, int page)
+ {
++	unsigned int max_bitflips;
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 
+ 	dma_addr_t addr = denali->buf.dma_buf;
+@@ -1153,7 +1157,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+ 
+-	check_erased_page = handle_ecc(denali, buf, irq_status);
++	check_erased_page = handle_ecc(denali, buf, irq_status, &max_bitflips);
+ 	denali_enable_dma(denali, false);
+ 
+ 	if (check_erased_page) {
+@@ -1167,7 +1171,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 				denali->mtd.ecc_stats.failed++;
+ 		}
+ 	}
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index b082026..8e7da01 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -720,6 +720,7 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 	struct docg4_priv *doc = nand->priv;
+ 	void __iomem *docptr = doc->virtadr;
+ 	uint16_t status, edc_err, *buf16;
++	int bits_corrected = 0;
+ 
+ 	dev_dbg(doc->dev, "%s: page %08x\n", __func__, page);
+ 
+@@ -772,7 +773,7 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 
+ 		/* If bitflips are reported, attempt to correct with ecc */
+ 		if (edc_err & DOC_ECCCONF1_BCH_SYNDROM_ERR) {
+-			int bits_corrected = correct_data(mtd, buf, page);
++			bits_corrected = correct_data(mtd, buf, page);
+ 			if (bits_corrected == -EBADMSG)
+ 				mtd->ecc_stats.failed++;
+ 			else
+@@ -781,7 +782,7 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 	}
+ 
+ 	writew(0, docptr + DOC_DATAEND);
+-	return 0;
++	return bits_corrected;
+ }
+ 
+ 
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 80b5264..8638b5e 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -75,6 +75,7 @@ struct fsl_elbc_fcm_ctrl {
+ 	unsigned int use_mdr;    /* Non zero if the MDR is to be set      */
+ 	unsigned int oob;        /* Non zero if operating on OOB data     */
+ 	unsigned int counter;	 /* counter for the initializations	  */
++	unsigned int max_bitflips;  /* Saved during READ0 cmd		  */
+ };
+ 
+ /* These map to the positions used by the FCM hardware ECC generator */
+@@ -253,6 +254,8 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
+ 	if (chip->ecc.mode != NAND_ECC_HW)
+ 		return 0;
+ 
++	elbc_fcm_ctrl->max_bitflips = 0;
++
+ 	if (elbc_fcm_ctrl->read_bytes == mtd->writesize + mtd->oobsize) {
+ 		uint32_t lteccr = in_be32(&lbc->lteccr);
+ 		/*
+@@ -262,11 +265,16 @@ static int fsl_elbc_run_command(struct mtd_info *mtd)
+ 		 * bits 28-31 are uncorrectable errors, marked elsewhere.
+ 		 * for small page nand only 1 bit is used.
+ 		 * if the ELBC doesn't have the lteccr register it reads 0
++		 * FIXME: 4 bits can be corrected on NANDs with 2k pages, so
++		 * count the number of sub-pages with bitflips and update
++		 * ecc_stats.corrected accordingly.
+ 		 */
+ 		if (lteccr & 0x000F000F)
+ 			out_be32(&lbc->lteccr, 0x000F000F); /* clear lteccr */
+-		if (lteccr & 0x000F0000)
++		if (lteccr & 0x000F0000) {
+ 			mtd->ecc_stats.corrected++;
++			elbc_fcm_ctrl->max_bitflips = 1;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -743,13 +751,17 @@ static int fsl_elbc_read_page(struct mtd_info *mtd,
+ 			      uint8_t *buf,
+ 			      int page)
+ {
++	struct fsl_elbc_mtd *priv = chip->priv;
++	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
++	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = ctrl->nand;
++
+ 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
+ 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+ 
+ 	if (fsl_elbc_wait(mtd, chip) & NAND_STATUS_FAIL)
+ 		mtd->ecc_stats.failed++;
+ 
+-	return 0;
++	return elbc_fcm_ctrl->max_bitflips;
+ }
+ 
+ /* ECC will be calculated automatically, and errors will be detected in
+@@ -814,11 +826,6 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 		chip->ecc.size = 512;
+ 		chip->ecc.bytes = 3;
+ 		chip->ecc.strength = 1;
+-		/*
+-		 * FIXME: can hardware ecc correct 4 bitflips if page size is
+-		 * 2k?  Then does hardware report number of corrections for this
+-		 * case?  If so, ecc_stats reporting needs to be fixed as well.
+-		 */
+ 	} else {
+ 		/* otherwise fall back to default software ECC */
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 872cc96..0adde96 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -63,6 +63,7 @@ struct fsl_ifc_nand_ctrl {
+ 	unsigned int oob;	/* Non zero if operating on OOB data	*/
+ 	unsigned int eccread;	/* Non zero for a full-page ECC read	*/
+ 	unsigned int counter;	/* counter for the initializations	*/
++	unsigned int max_bitflips;  /* Saved during READ0 cmd		*/
+ };
+ 
+ static struct fsl_ifc_nand_ctrl *ifc_nand_ctrl;
+@@ -262,6 +263,8 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_WPER)
+ 		dev_err(priv->dev, "NAND Flash Write Protect Error\n");
+ 
++	nctrl->max_bitflips = 0;
++
+ 	if (nctrl->eccread) {
+ 		int errors;
+ 		int bufnum = nctrl->page & priv->bufnum_mask;
+@@ -290,6 +293,9 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 			}
+ 
+ 			mtd->ecc_stats.corrected += errors;
++			nctrl->max_bitflips = max_t(unsigned int,
++						    nctrl->max_bitflips,
++						    errors);
  		}
  
- 		readlen -= bytes;
-@@ -1609,7 +1619,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
+ 		nctrl->eccread = 0;
+@@ -698,6 +704,7 @@ static int fsl_ifc_read_page(struct mtd_info *mtd,
+ {
+ 	struct fsl_ifc_mtd *priv = chip->priv;
+ 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
++	struct fsl_ifc_nand_ctrl *nctrl = ifc_nand_ctrl;
  
--	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
+ 	fsl_ifc_read_buf(mtd, buf, mtd->writesize);
+ 	fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+@@ -708,7 +715,7 @@ static int fsl_ifc_read_page(struct mtd_info *mtd,
+ 	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
+ 		mtd->ecc_stats.failed++;
+ 
+-	return 0;
++	return nctrl->max_bitflips;
+ }
+ 
+ /* ECC will be calculated automatically, and errors will be detected in
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 1b8330e..1bf7f80 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -720,6 +720,7 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 */
+ 	uint16_t ecc_oob[7];
+ 	uint8_t *oob = (uint8_t *)&ecc_oob[0];
++	unsigned int max_bitflips = 0;
+ 
+ 	for (i = 0, s = 0; s < eccsteps; s++, i += eccbytes, p += eccsize) {
+ 		chip->cmdfunc(mtd, NAND_CMD_READ0, s * eccsize, page);
+@@ -748,13 +749,15 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 	}
+ 
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ /*
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c2d2e93..3137abd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1138,6 +1138,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint8_t *ecc_calc = chip->buffers->ecccalc;
+ 	uint8_t *ecc_code = chip->buffers->ecccode;
+ 	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	unsigned int max_bitflips = 0;
+ 
+ 	chip->ecc.read_page_raw(mtd, chip, buf, page);
+ 
+@@ -1154,12 +1155,14 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		int stat;
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 	}
+-	return 0;
 +	return max_bitflips;
  }
  
  /**
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index b3ce12e..7153e0d 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1201,7 +1201,8 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
+@@ -1180,6 +1183,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
+ 	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
+ 	int index = 0;
++	unsigned int max_bitflips = 0;
  
--	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	/* return max bitflips per ecc step; ONENANDs correct 1 bit only */
-+	return mtd->ecc_stats.corrected != stats.corrected ? 1 : 0;
+ 	/* Column address within the page aligned to ECC size (256bytes) */
+ 	start_step = data_offs / chip->ecc.size;
+@@ -1244,12 +1248,14 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 		stat = chip->ecc.correct(mtd, p,
+ 			&chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 	}
+-	return 0;
++	return max_bitflips;
  }
  
  /**
-@@ -1333,7 +1334,8 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 	if (mtd->ecc_stats.failed - stats.failed)
- 		return -EBADMSG;
+@@ -1271,6 +1277,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint8_t *ecc_calc = chip->buffers->ecccalc;
+ 	uint8_t *ecc_code = chip->buffers->ecccode;
+ 	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	unsigned int max_bitflips = 0;
  
--	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-+	/* return max bitflips per ecc step; ONENANDs correct 1 bit only */
-+	return mtd->ecc_stats.corrected != stats.corrected ? 1 : 0;
+ 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+ 		chip->ecc.hwctl(mtd, NAND_ECC_READ);
+@@ -1289,12 +1296,14 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		int stat;
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 	}
+-	return 0;
++	return max_bitflips;
  }
  
  /**
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 1482340..2829e8b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -459,6 +459,8 @@ struct nand_buffers {
-  * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-  * @pagebuf:		[INTERN] holds the pagenumber which is currently in
-  *			data_buf.
-+ * @pagebuf_bitflips:	[INTERN] holds the bitflip count for the page which is
-+ *			currently in data_buf.
-  * @subpagesize:	[INTERN] holds the subpagesize
-  * @onfi_version:	[INTERN] holds the chip ONFI version (BCD encoded),
-  *			non 0 if ONFI supported.
-@@ -519,6 +521,7 @@ struct nand_chip {
- 	uint64_t chipsize;
- 	int pagemask;
- 	int pagebuf;
-+	unsigned int pagebuf_bitflips;
- 	int subpagesize;
- 	uint8_t cellinfo;
- 	int badblockpos;
+@@ -1320,6 +1329,7 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+ 	uint8_t *ecc_code = chip->buffers->ecccode;
+ 	uint32_t *eccpos = chip->ecc.layout->eccpos;
+ 	uint8_t *ecc_calc = chip->buffers->ecccalc;
++	unsigned int max_bitflips = 0;
+ 
+ 	/* Read the OOB area first */
+ 	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+@@ -1337,12 +1347,14 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+ 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 	}
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ /**
+@@ -1363,6 +1375,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int eccsteps = chip->ecc.steps;
+ 	uint8_t *p = buf;
+ 	uint8_t *oob = chip->oob_poi;
++	unsigned int max_bitflips = 0;
+ 
+ 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+ 		int stat;
+@@ -1379,10 +1392,12 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->read_buf(mtd, oob, eccbytes);
+ 		stat = chip->ecc.correct(mtd, p, oob, NULL);
+ 
+-		if (stat < 0)
++		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+-		else
++		} else {
+ 			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 
+ 		oob += eccbytes;
+ 
+@@ -1397,7 +1412,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (i)
+ 		chip->read_buf(mtd, oob, i);
+ 
+-	return 0;
++	return max_bitflips;
+ }
+ 
+ /**
+@@ -1588,7 +1603,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	if (oob)
+ 		ops->oobretlen = ops->ooblen - oobreadlen;
+ 
+-	if (ret)
++	if (ret < 0)
+ 		return ret;
+ 
+ 	if (mtd->ecc_stats.failed - stats.failed)
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index e9b2b26..4ea3e20 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -359,7 +359,7 @@ static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		if (flctl->hwecc_cant_correct[i])
+ 			mtd->ecc_stats.failed++;
+ 		else
+-			mtd->ecc_stats.corrected += 0;
++			mtd->ecc_stats.corrected += 0; /* FIXME */
+ 	}
+ 
+ 	return 0;
 -- 
 1.7.3.4
