@@ -1,20 +1,26 @@
-Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN43n-0000no-4N
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 15:23:15 +0000
-Date: Wed, 25 Apr 2012 08:23:10 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120425152310.GR3739@atomide.com>
-References: <1334652536-4442-1-git-send-email-ivan.djelic@parrot.com>
- <1335365341.6356.5.camel@koala>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1335365341.6356.5.camel@koala>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
+ id 1SN4DO-0004WU-U0
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 15:33:11 +0000
+Received: by lagy4 with SMTP id y4so217817lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 08:33:07 -0700 (PDT)
+Subject: Re: [PATCH -next] mtd: fix sbc2_flash build when PCI is not enabled
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <rdunlap@xenotime.net>
+Date: Wed, 25 Apr 2012 18:33:02 +0300
+In-Reply-To: <4F8C780D.9010702@xenotime.net>
+References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
+ <4F8C780D.9010702@xenotime.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-JuECyCsuI5LDt9lG4JKJ"
+Message-ID: <1335367986.6356.12.camel@koala>
+Mime-Version: 1.0
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Tim Hockin <thockin@sun.com>,
+ LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-* Artem Bityutskiy <dedekind1@gmail.com> [120425 07:52]:
-> On Tue, 2012-04-17 at 10:48 +0200, Ivan Djelic wrote:
-> > This patch adds a simple BCH ecc computation api, similar to the
-> > existing Hamming ecc api. It is intended to be used by the MTD layer.
-> > It implements the following features:
-> > 
-> > - support 4-bit and 8-bit ecc computation
-> > - do not protect user bytes in spare area, only data area is protected
-> > - ecc for an erased NAND page (0xFFs) is also a sequence of 0xFFs
-> > 
-> > This last feature is obtained by adding a constant polynomial to
-> > the hardware computed ecc. It allows to correct bitflips in blank pages
-> > and is extremely useful to support filesystems such as UBIFS, which expect
-> > erased pages to contain only 0xFFs.
-> > 
-> > This api has been tested on an OMAP3630 board.
-> > 
-> > Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
-> 
-> Hi Tony,
-> 
-> what do you think about merging this patch? This is the enabler for
-> making UBIFS actually usable on OMAP platforms which use BCH ECC. There
-> are 2 other MTD patches which depend on this - so I wonder if it is
-> easier to merge this one via the MTD tree, providing it has your/others'
-> ack(s).
+--=-JuECyCsuI5LDt9lG4JKJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Looks OK to me, however there are other pending GPMC patches to convert
-it to a platform device device driver. Need to look those closer though.
-Anyways, it's best that I queue them to avoid merge conflicts.
+On Mon, 2012-04-16 at 12:50 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@xenotime.net>
+>=20
+> sbc2_flash.c is a PCI driver, but its build fails when CONFIG_PCI
+> is not enabled, so make it depend on PCI.
+>=20
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: data definition has no type=
+ or storage class
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: type defaults to 'int' in d=
+eclaration of 'module_pci_driver'
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: parameter names (without ty=
+pes) in function declaration
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
 
-Do you these for other changes for UBIFS? If so, I can set up an immutable
-branch for GPMC that you can merge in as well.
+Pushed to l2-mtd.git, thanks!
 
-Regards,
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Tony
+
+--=-JuECyCsuI5LDt9lG4JKJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAABAgAGBQJPmBkuAAoJEJtuLFy+q7feiIgIALof73CXbgSHfMUNoGAFrBRJ
+ngSktsu+8fR32v5EUadpPYYtgHL1wEg+BuRDWsPaEH1mLsSVEHp8VKRDiKRMrbjP
+gqk5o8sxtv0WSdhL6gJJyKv0Sk4ac0RRGLZU/ql1ehO90K+kmy8Euzq8t0PJ1D+o
+gtCSft8lG+GzhSTi2s5xeZIQzEhJF8strXtYqjmKSlaLS8JAPmKT99kJUVmA7p0W
+7SKmpJEyduPEWo6droAJmI3klQN9gP6w6PaOGrhgmdJLmBY+7IYcMgU4WjCHpOWi
+OZgwotr+bKL21DCOCa+8wuWtzUD0iAiIf6B3kyNzmp5SAYqwSL65RBAprI0TDyc=
+=apWk
+-----END PGP SIGNATURE-----
+
+--=-JuECyCsuI5LDt9lG4JKJ--
