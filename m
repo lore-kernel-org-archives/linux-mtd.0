@@ -1,19 +1,19 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN6un-0001wB-9A
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:26:09 +0000
-Received: by ghbf11 with SMTP id f11so450399ghb.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 11:26:08 -0700 (PDT)
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SN6w5-00024O-PP
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:27:32 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
+ mtd_read() returns -EUCLEAN
+References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
+ <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
+Date: Wed, 25 Apr 2012 20:27:18 +0200
+In-Reply-To: <1335295105-7981-8-git-send-email-mikedunn@newsguy.com> (Mike
+ Dunn's message of "Tue, 24 Apr 2012 12:18:25 -0700")
+Message-ID: <871unbis55.fsf@free.fr>
 MIME-Version: 1.0
-In-Reply-To: <1335363413.5114.20.camel@koala>
-References: <1334615755-15418-1-git-send-email-computersforpeace@gmail.com>
- <1335363413.5114.20.camel@koala>
-Date: Wed, 25 Apr 2012 11:26:08 -0700
-Message-ID: <CAN8TOE-hkaPU3QPOdP0xOZjyjKJ=ByL-4-B1+TqQNg1vWjL0UA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,23 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 25, 2012 at 7:16 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2012-04-16 at 15:35 -0700, Brian Norris wrote:
->> Note that I could not compile all the affected drivers, since some required
->> ARCH-specific builds that I am not familiar with.
->>
->> Artem: can you perform your regular compile tests? I compile-tested as many as
->> I could.
->
-> Yes, I compile-test for several architecture/platforms, but not sure I
-> cover everything. I'll check your patches once I reach that point in my
-> inbox queue. I am currently having paternity leave, and I'll be very
-> busy once I return back to work, but I am slowly processing my inbox
-> anyway in background.
+Mike Dunn <mikedunn@newsguy.com> writes:
 
-Right, no problem. We're all busy, and I know you get around to it
-eventually :) I just wanted to make a special note of it, since this
-sort of patch series touches more territory than I'm used to, and I'm
-almost guaranteed to miss something.
+One little trick with docg3 patch part:
+> diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+> index 3414031..7644d59 100644
+> --- a/drivers/mtd/devices/docg3.c
+> +++ b/drivers/mtd/devices/docg3.c
+> @@ -948,7 +949,8 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+>  			}
+>  			if (ret > 0) {
+>  				mtd->ecc_stats.corrected += ret;
+> -				ret = -EUCLEAN;
+> +				max_bitflips = max(max_bitflips, ret);
+> +				ret = max_bitflips;
+>  			}
+>  		}
 
-Brian
+If you do set ret here, the next loop you'll do in the following statement
+"	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
+0.
+
+I think you should change :
+>- 	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
+into
+>- 	while (ret >= 0 && (len > 0 || ooblen > 0)) {".
+
+With that change, please add my:
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Cheers.
+
+-- 
+Robert
+
+PS: It's really a great work that bitflip serie
