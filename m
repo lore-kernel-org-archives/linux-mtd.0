@@ -1,22 +1,24 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SMzF9-0000CZ-4y
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 10:14:39 +0000
-Received: by lagy4 with SMTP id y4so1457636lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 03:14:36 -0700 (PDT)
-Date: Wed, 25 Apr 2012 13:14:32 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
- mtd_read() returns -EUCLEAN
-Message-ID: <20120425131432.2b86d176@pixies.home.jungo.com>
-In-Reply-To: <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SN03A-0004Hx-HK
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 11:06:21 +0000
+Message-ID: <1335351951.2094.0.camel@golum>
+Subject: Re: [PATCH -next] mtd: fix sbc2_flash build when PCI is not enabled
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <rdunlap@xenotime.net>
+Date: Wed, 25 Apr 2012 14:05:51 +0300
+In-Reply-To: <4F8C780D.9010702@xenotime.net>
+References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
+ <4F8C780D.9010702@xenotime.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Gf6yOp/71vBcpW82dVUY"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Tim Hockin <thockin@sun.com>,
+ LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mike,
 
-Reviewed mtdcore.c, mtdpart.c and nand_base.c.
-Looks very good.
+--=-Gf6yOp/71vBcpW82dVUY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Minor comments below.
+On Mon, 2012-04-16 at 12:50 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@xenotime.net>
+>=20
+> sbc2_flash.c is a PCI driver, but its build fails when CONFIG_PCI
+> is not enabled, so make it depend on PCI.
+>=20
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: data definition has no type=
+ or storage class
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: type defaults to 'int' in d=
+eclaration of 'module_pci_driver'
+> drivers/mtd/maps/scb2_flash.c:237:1: warning: parameter names (without ty=
+pes) in function declaration
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
 
-On Tue, 24 Apr 2012 12:18:25 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 9651c06..d6321f6 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -67,12 +67,12 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
->  	stats = part->master->ecc_stats;
->  	res = part->master->_read(part->master, from + part->offset, len,
->  				  retlen, buf);
-> -	if (unlikely(res)) {
-> -		if (mtd_is_bitflip(res))
-> -			mtd->ecc_stats.corrected += part->master->ecc_stats.corrected - stats.corrected;
-> -		if (mtd_is_eccerr(res))
-> -			mtd->ecc_stats.failed += part->master->ecc_stats.failed - stats.failed;
-> -	}
-> +	if (unlikely(mtd_is_eccerr(res)))
-> +		mtd->ecc_stats.failed +=
-> +			part->master->ecc_stats.failed - stats.failed;
-> +	else
-> +		mtd->ecc_stats.corrected +=
-> +			part->master->ecc_stats.corrected - stats.corrected;
->  	return res;
->  }
+Pushed to l2-mtd.git, thanks!
 
-Probably need {} around the statements within the conditions.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Also I think there's no reason to execute "corrected +=" in case 'res'
-is zero (although no harm).
+--=-Gf6yOp/71vBcpW82dVUY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Regards,
-Shmulik
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPl9qPAAoJECmIfjd9wqK0eqcP/2ywNT5oHG7e4nV5WvpbZKss
+TAsFOEKB3ledaiyZWDBbTcw4gvcbP3qKqN//V0KB40NLuvoDCFrKOq9THWEKe97x
+j6wQLDxWlBebUFa17Oan+SqyVPqAY8EAcJBRn+svkC1BmxcEw/K2xeU+Qqwe7eRH
+qOX1KGuBJDIhjwnLvSwyHTuVh1dXYazn7JyIEYoqeHjOT/P4HcQiHde2sll0SE0w
+nnv+1fQEL4bVFOfex6YnEoHsYQgyLk19cG1tDETHHv2ix6E4goqm1UZV6p+FDNZw
+KJKo2c6sM1ajMOXm1l5xBY2zgGIAcu8RWHoSwRmqOucaJeL+TJgATUhXRvCZPuNL
+Qhvd2+0hmiIMWxclop+zFLemJnpKiZYCXipmqXE64FyS48btHQBLWVaee3qRkfg4
+a9Nm/n2v6IE7nsR0OwN8hUZzrk35jHwuRB2lsG1DfTC1Wlv76uJuQbT4J0tlwW7U
+HIkzI7LqbfuacgaznJ12TyQ662v/zGEx3onYBbrwi6s194GRyLbfXp4tU18FMVhU
+zLTPO5tWFTpO9uJr8pkhhcfCrGfeiCZwHcXXaqjtXP+qmQ/M/zce5FgDljRN+tov
+iVhCPWxVVB9kA6OyCP5DYvDVbdjlKM5A77Q7ZN30uo3hsYfgBS9TXPI7br1yIu4q
+IhbZl/teeify0uoFSEu9
+=vsCC
+-----END PGP SIGNATURE-----
+
+--=-Gf6yOp/71vBcpW82dVUY--
