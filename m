@@ -1,21 +1,39 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN4bX-0005Ij-7y
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 15:58:07 +0000
-Date: Wed, 25 Apr 2012 08:58:01 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120425155759.GS3739@atomide.com>
-References: <1334652536-4442-1-git-send-email-ivan.djelic@parrot.com>
- <1335365341.6356.5.camel@koala> <20120425152310.GR3739@atomide.com>
- <1335368681.6356.16.camel@koala>
+ id 1SN4kO-0007dW-37
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 16:07:16 +0000
+Received: by lagy4 with SMTP id y4so253761lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 09:07:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1335368681.6356.16.camel@koala>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
+In-Reply-To: <1335368735.6356.17.camel@koala>
+References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
+ <1335368735.6356.17.camel@koala>
+Date: Wed, 25 Apr 2012 18:07:14 +0200
+Message-ID: <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
+ prabhakar@freescale.com, Mike Dunn <mikedunn@newsguy.com>,
+ Bastian Hecht <hechtb@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Armando Visconti <armando.visconti@st.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
+ dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Jiandong Zheng <jdzheng@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +43,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy <dedekind1@gmail.com> [120425 08:48]:
-> On Wed, 2012-04-25 at 08:23 -0700, Tony Lindgren wrote:
-> > Hi,
-> > 
-> > * Artem Bityutskiy <dedekind1@gmail.com> [120425 07:52]:
-> > > On Tue, 2012-04-17 at 10:48 +0200, Ivan Djelic wrote:
-> > > > This patch adds a simple BCH ecc computation api, similar to the
-> > > > existing Hamming ecc api. It is intended to be used by the MTD layer.
-> > > > It implements the following features:
-> > > > 
-> > > > - support 4-bit and 8-bit ecc computation
-> > > > - do not protect user bytes in spare area, only data area is protected
-> > > > - ecc for an erased NAND page (0xFFs) is also a sequence of 0xFFs
-> > > > 
-> > > > This last feature is obtained by adding a constant polynomial to
-> > > > the hardware computed ecc. It allows to correct bitflips in blank pages
-> > > > and is extremely useful to support filesystems such as UBIFS, which expect
-> > > > erased pages to contain only 0xFFs.
-> > > > 
-> > > > This api has been tested on an OMAP3630 board.
-> > > > 
-> > > > Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
-> > > 
-> > > Hi Tony,
-> > > 
-> > > what do you think about merging this patch? This is the enabler for
-> > > making UBIFS actually usable on OMAP platforms which use BCH ECC. There
-> > > are 2 other MTD patches which depend on this - so I wonder if it is
-> > > easier to merge this one via the MTD tree, providing it has your/others'
-> > > ack(s).
-> > 
-> > Looks OK to me, however there are other pending GPMC patches to convert
-> > it to a platform device device driver. Need to look those closer though.
-> > Anyways, it's best that I queue them to avoid merge conflicts.
-> 
-> Sure.
-> 
-> > Do you these for other changes for UBIFS?
-> 
-> Not in UBIFS, but in drivers/mtd/nand/omap2.c - Ivan sent another patch
-> which adds BCH support to to omap2.c, was sent to linux-omap, subject
-> "[PATCH] mtd: nand: omap: add support for hardware BCH ecc"
-> 
-> >  If so, I can set up an immutable
-> > branch for GPMC that you can merge in as well.
-> 
-> I guess this would be a good idea, but probably it is better to do this
-> when you believe you merged most gpmc patches, so probably closer to the
-> final -rc?
+Hello,
 
-Yes let's wait a week or so as there are also the dmaengine patch for
-drivers/mtd/nand/omap2.c that might conflict. So let's get the dmaengine
-patches to some branch first.
+this should be an sh_flctl unrelated problem. Guennadi, have you seen
+this error somewhere before?
 
-Regards,
+thanks,
 
-Tony
+ Bastian Hecht
+
+> -------------------------------------------------------------------------=
+-------
+> Failed to build the following commit for configuration "l2_mackerel_defco=
+nfig" (architecture arm)":
+>
+> 54043ff MIPS: Kbuild: remove -Werror
+>
+> In file included from include/linux/kernel.h:19:0,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/mtd/nand/sh_flctl.c:24:
+> include/linux/bitops.h: In function 'hweight_long':
+> include/linux/bitops.h:66:26: warning: signed and unsigned type in condit=
+ional expression [-Wsign-compare]
+> drivers/mtd/nand/sh_flctl.c: In function 'set_addr':
+> drivers/mtd/nand/sh_flctl.c:117:25: warning: comparison between signed an=
+d unsigned integer expressions [-Wsign-compare]
+> drivers/mtd/nand/sh_flctl.c: In function 'flctl_cmdfunc':
+> drivers/mtd/nand/sh_flctl.c:611:15: warning: comparison between signed an=
+d unsigned integer expressions [-Wsign-compare]
+> drivers/mtd/nand/sh_flctl.c:638:28: warning: comparison between signed an=
+d unsigned integer expressions [-Wsign-compare]
+> In file included from include/linux/kernel.h:19:0,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from init/version.c:10:
+> include/linux/bitops.h: In function 'hweight_long':
+> include/linux/bitops.h:66:26: warning: signed and unsigned type in condit=
+ional expression [-Wsign-compare]
+> arch/arm/mach-shmobile/built-in.o: In function `mackerel_sdhi0_gpio_cd':
+> pfc-sh7372.c:(.text+0x33ec): undefined reference to `mmc_detect_change'
+> make[1]: *** [.tmp_vmlinux1] Error 1
+>
