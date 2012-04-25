@@ -1,22 +1,20 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
+Received: from mail.z9.com ([64.142.101.243])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN9Ha-0007dK-TH
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 20:57:51 +0000
-Date: Wed, 25 Apr 2012 13:57:46 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v2] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120425205745.GX3739@atomide.com>
-References: <1334861024-27386-1-git-send-email-ivan.djelic@parrot.com>
- <20120425170313.GW3739@atomide.com>
- <20120425182836.GA17023@parrot.com>
+ id 1SNAOz-00011J-Lo
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 22:09:34 +0000
+Received: from GPontisPC by z9.com (MDaemon PRO v12.5.4)
+ with ESMTP id md50000202983.msg
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 15:09:32 -0700
+From: "George Pontis" <GPontis@z9.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: atmel_nand, DMA, and "Fall back to CPU I/O"
+Date: Wed, 25 Apr 2012 15:09:14 -0700
+Message-ID: <037801cd2330$0cd747d0$2685d770$@com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20120425182836.GA17023@parrot.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ivan Djelic <ivan.djelic@parrot.com> [120425 11:33]:
-> Hi Tony,
-> Thanks for the review,
-> 
-> On Wed, Apr 25, 2012 at 06:03:14PM +0100, Tony Lindgren wrote:
-> (...)
-> > >  #define GPMC_ECC1_RESULT        0x200
-> > > +#define GPMC_ECC_BCH_RESULT_0   0x240
-> > 
-> > Can you please add a comment here saying something like:
-> > 
-> > #define GPMC_ECC_BCH_RESULT_0   0x240	/* Not available on omap2 */
-> 
-> OK sure.
-> 
-> > > +	/* check if ecc module is in use */
-> > > +	if (gpmc_ecc_used != -EINVAL)
-> > > +		return -EINVAL;
-> > > +	/*
-> > > +	 * FIXME: some OMAP3 revisions have a hardware bug which prevents
-> > > +	 * the 4-bit BCH mode from working properly. Such revisions could be
-> > > +	 * detected and rejected here.
-> > > +	 */
-> > 
-> > This should then be disabled to avoid corruption. Maybe only allow it
-> > initially on omaps that have been tested? And for omap2 it should return
-> > error  for sure.
-> 
-> OK I'll add a check.
-> 
-> > 
-> > Or do you know the broken omap3 versions?
-> 
-> Well, I was hoping that someone from linux-omap could tell me :)
-> I found this HW ECC feature table in
-> http://processors.wiki.ti.com/index.php/Raw_NAND_ECC:
-> 
->          1b     4b      8b
-> ---------------------------
-> OMAP35x  YES    NO      YES
-> AM35x    YES    YES     YES
-> AM/DM37x YES    YES     YES
-> 
-> and other wiki pages confirmed that 4-bit mode is not supported on all OMAP35xx chips.
-> OTOH, I know from TI support that 4-bit mode is at least supported on
-> OMAP3630 ES1.x (x >= 1).
-> 
-> So, a conservative approach would be to reject 4-bit mode on all chips but
-> omap3630 with rev >= 1.1. Other revisions/chips could be added later if they are
-> confirmed to work; what do you think ?
+Working with 3.0.13 kernel and the at91sam9g45, 8b NAND flash with rootfs in
+NAND
 
-Sounds good to me.
- 
-> > Also, should you first request this feature in case multiple drivers
-> > need to share it?
-> 
-> According to TI documentation (OMAP36xx ES1.x TRM, §10.1.4, GPMC functional diagram),
-> the GPMC ECC engines (Hamming and BCH) are dedicated to NAND access only; therefore
-> I believe the mtd driver is the only potential user of this feature.
-> Also, the existing Hamming ecc API does not perform any request; or did I miss
-> something? If I need to perform the request, is there an existing api to do so?
+At boot, the kernel shows 22 DMA warnings, then another 260 as UBIFS mounts
+the root FS:
 
-OK I guess the only conflict would be multiple NAND chips then, which we don't
-have at least currently AFAIK.
+atmel_nand atmel_nand: Fall back to CPU I/O
 
-Tony
+The Atmel nand driver is being passed an address, 0xc80000000, that fails
+the test
+for being at or higher than high_memory. The memory layout looks like this:
+
+Virtual kernel memory layout:
+    vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+    fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+    DMA     : 0xffa00000 - 0xffe00000   (   4 MB)
+    vmalloc : 0xc8800000 - 0xfee00000   ( 870 MB)
+    lowmem  : 0xc0000000 - 0xc8000000   ( 128 MB)
+    modules : 0xbf000000 - 0xc0000000   (  16 MB)
+      .init : 0xc0008000 - 0xc0027000   ( 124 kB)
+      .text : 0xc0027000 - 0xc0456d8c   (4288 kB)
+      .data : 0xc0458000 - 0xc0480ae0   ( 163 kB)
+       .bss : 0xc0480b04 - 0xc04ab8b4   ( 172 kB)
+
+Is it normal for a driver to get an address that is not inside one of these
+ranges, whether
+it used vmalloc or not ?
+
+If the driver is not going to get pointers to a DMA-safe area, would it not
+be better
+to disable DMA, or at least set the default use_dma=0 ? 
+
+George
