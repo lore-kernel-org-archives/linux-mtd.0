@@ -1,23 +1,22 @@
-Received: from d1.icnet.pl ([212.160.220.21])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SN5pV-0007JD-W6
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 17:16:40 +0000
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v3.4-rc3] MTD: NAND: ams-delta: Fix request_mem_region()
- failure
-Date: Wed, 25 Apr 2012 19:01:14 +0200
-Message-ID: <1587089.0XMyH6e1Ic@acer>
-In-Reply-To: <1335366823.6356.11.camel@koala>
-References: <1334670557-25640-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1335366823.6356.11.camel@koala>
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SN6TH-0007OU-Ro
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 17:57:45 +0000
+Received: by ghbf11 with SMTP id f11so417397ghb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 10:57:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-Cc: Tony Lindgren <tony@atomide.com>,
- Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1335362618-4559-10-git-send-email-hechtb@gmail.com>
+References: <1335362618-4559-1-git-send-email-hechtb@gmail.com>
+ <1335362618-4559-10-git-send-email-hechtb@gmail.com>
+Date: Wed, 25 Apr 2012 10:57:40 -0700
+Message-ID: <CAN8TOE9fnQJb6ivwg997cE93g+PcxvvgZzGHsm2Ua6o_ZzH=HQ@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] mtd: sh_flctl: Use user oob data in hardware ECC
+ mode
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dnia =C5=9Broda, 25 kwietnia 2012 18:13:38 Artem Bityutskiy pisze:
-> On Tue, 2012-04-17 at 15:49 +0200, Janusz Krzysztofik wrote:
-> > A call to request_mem_region() has been introduced in the omap-gpio=
+On Wed, Apr 25, 2012 at 7:03 AM, Bastian Hecht <hechtb@googlemail.com> wrote:
+> In hardware ecc mode, the flctl now writes and reads the oob data
+> provided by the user. Additionally the ECC is now returned in normal
+> page reads, not only when using the explicit NAND_CMD_READOOB command.
 
-> > driver recently (commit 96751fcbe5438e95514b025e9cee7a6d38038f40,
-> > "gpio/omap: Use devm_ API and add request_mem_region"). This change=
+I don't know about the HW-specific details here, but read/write
+data+OOB seems good.
 
-> > prevented the Amstrad Delta NAND driver, which was doing the same i=
-n
-> > order to take control over OMAP MPU I/O lines that the NAND device=20=
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-hangs
-> > off, from loading successfully.
-> >=20
-> > There is another driver, omap-keypad, which also manipulates OMAP=20=
+If these patches are accepted, I will try to make sure this driver
+switches to conditionally reading/writing OOB in my patch series. Keep
+an eye out for them, though.
 
-MPUIO
-> > registers, but has never been calling request_mem_region() on=20
-startup,
-> > so it's not affected by the change in the gpio-omap and works=20
-correctly.
-> >=20
-> > Drop request_mem_region() call and related bits from ams-delta NAND=
+BTW, from the changes I'm seeing in this patch series, your driver was
+previously fairly broken. Or at least, several features of it were...
+Good luck with the cleanup!
 
-> > driver.
-> >=20
-> > Created and tested against linux-3.4-rc3.
-> >=20
-> > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
->=20
-> How about race conditions? Where is the guarantee that these 2 driver=
-s
-> won't affect each other when doing I/O at the same time to the same H=
-W
-> resources?
-
-Both drivers use separate subsets of registers that belong to the OMAP1=
-=20
-MPU I/O device, but are used for controlling different sets of I/O pins=
-.=20
-The NAND driver reads/writes the folowing registers:
-- OMAP_MPUIO_INPUT_LATCH,
-- OMAP_MPUIO_OUTPUT,
-- OMAP_MPUIO_IO_CNTL,
-while the keypad driver - the following:
-- OMAP_MPUIO_KBR_LATCH,
-- OMAP_MPUIO_KBC,
-- OMAP_MPUIO_KBD_MASKIT
-- OMAP_MPUIO_GPIO_DEBOUNCING.
-Both subsets are non-overlapping, and we rely on the drivers being free=
-=20
-of bugs and doing their job correctly, not stepping on each others'=20
-feet, I guess.
-
-Thanks,
-Janusz
+Brian
