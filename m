@@ -1,21 +1,17 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SN6yU-0002Jb-Pg
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:29:59 +0000
-Date: Wed, 25 Apr 2012 20:28:36 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120425182836.GA17023@parrot.com>
-References: <1334861024-27386-1-git-send-email-ivan.djelic@parrot.com>
- <20120425170313.GW3739@atomide.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20120425170313.GW3739@atomide.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SN7Dh-00038i-Dr
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:45:41 +0000
+Received: by qcsu28 with SMTP id u28so314153qcs.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 11:45:39 -0700 (PDT)
+From: Xi Wang <xi.wang@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2 1/2] jffs2: validate symlink size in
+ jffs2_do_read_inode_internal()
+Date: Wed, 25 Apr 2012 14:45:22 -0400
+Message-Id: <1335379523-31415-1-git-send-email-xi.wang@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Xi Wang <xi.wang@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
-Thanks for the review,
+`csize' is read from disk and thus needs validation.  Otherwise a bogus
+value 0xffffffff would turn the subsequent kmalloc(csize + 1, ...) into
+kmalloc(0, ...), leading to out-of-bounds write.
 
-On Wed, Apr 25, 2012 at 06:03:14PM +0100, Tony Lindgren wrote:
-(...)
-> >  #define GPMC_ECC1_RESULT        0x200
-> > +#define GPMC_ECC_BCH_RESULT_0   0x240
-> 
-> Can you please add a comment here saying something like:
-> 
-> #define GPMC_ECC_BCH_RESULT_0   0x240	/* Not available on omap2 */
+This patch limits `csize' to JFFS2_MAX_NAME_LEN, which is also used
+in jffs2_symlink().
 
-OK sure.
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+---
+ fs/jffs2/readinode.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-> > +	/* check if ecc module is in use */
-> > +	if (gpmc_ecc_used != -EINVAL)
-> > +		return -EINVAL;
-> > +	/*
-> > +	 * FIXME: some OMAP3 revisions have a hardware bug which prevents
-> > +	 * the 4-bit BCH mode from working properly. Such revisions could be
-> > +	 * detected and rejected here.
-> > +	 */
-> 
-> This should then be disabled to avoid corruption. Maybe only allow it
-> initially on omaps that have been tested? And for omap2 it should return
-> error  for sure.
-
-OK I'll add a check.
-
-> 
-> Or do you know the broken omap3 versions?
-
-Well, I was hoping that someone from linux-omap could tell me :)
-I found this HW ECC feature table in
-http://processors.wiki.ti.com/index.php/Raw_NAND_ECC:
-
-         1b     4b      8b
----------------------------
-OMAP35x  YES    NO      YES
-AM35x    YES    YES     YES
-AM/DM37x YES    YES     YES
-
-and other wiki pages confirmed that 4-bit mode is not supported on all OMAP35xx chips.
-OTOH, I know from TI support that 4-bit mode is at least supported on
-OMAP3630 ES1.x (x >= 1).
-
-So, a conservative approach would be to reject 4-bit mode on all chips but
-omap3630 with rev >= 1.1. Other revisions/chips could be added later if they are
-confirmed to work; what do you think ?
-
-> Also, should you first request this feature in case multiple drivers
-> need to share it?
-
-According to TI documentation (OMAP36xx ES1.x TRM, §10.1.4, GPMC functional diagram),
-the GPMC ECC engines (Hamming and BCH) are dedicated to NAND access only; therefore
-I believe the mtd driver is the only potential user of this feature.
-Also, the existing Hamming ecc API does not perform any request; or did I miss
-something? If I need to perform the request, is there an existing api to do so?
-
-Thanks,
---
-Ivan
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index dc0437e..9897f38 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1266,6 +1266,12 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			/* Symlink's inode data is the target path. Read it and
+ 			 * keep in RAM to facilitate quick follow symlink
+ 			 * operation. */
++			uint32_t csize = je32_to_cpu(latest_node->csize);
++			if (csize > JFFS2_MAX_NAME_LEN) {
++				mutex_unlock(&f->sem);
++				jffs2_do_clear_inode(c, f);
++				return -ENAMETOOLONG;
++			}
+ 			f->target = kmalloc(je32_to_cpu(latest_node->csize) + 1, GFP_KERNEL);
+ 			if (!f->target) {
+ 				JFFS2_ERROR("can't allocate %d bytes of memory for the symlink target path cache\n", je32_to_cpu(latest_node->csize));
+-- 
+1.7.5.4
