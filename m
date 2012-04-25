@@ -1,21 +1,22 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN7eQ-00064i-2Q
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 19:13:18 +0000
-Message-ID: <4F984CC9.9060701@newsguy.com>
-Date: Wed, 25 Apr 2012 12:13:13 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1SN9Ha-0007dK-TH
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 20:57:51 +0000
+Date: Wed, 25 Apr 2012 13:57:46 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: Re: [PATCH v2] ARM: OMAP3: gpmc: add BCH ecc api and modes
+Message-ID: <20120425205745.GX3739@atomide.com>
+References: <1334861024-27386-1-git-send-email-ivan.djelic@parrot.com>
+ <20120425170313.GW3739@atomide.com>
+ <20120425182836.GA17023@parrot.com>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips; mtd_read()
- returns -EUCLEAN
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
- <871unbis55.fsf@free.fr>
-In-Reply-To: <871unbis55.fsf@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20120425182836.GA17023@parrot.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for the review Robert.
-
-On 04/25/2012 11:27 AM, Robert Jarzmik wrote:
+* Ivan Djelic <ivan.djelic@parrot.com> [120425 11:33]:
+> Hi Tony,
+> Thanks for the review,
 > 
-> I think you should change :
->> - 	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
-> into
->> - 	while (ret >= 0 && (len > 0 || ooblen > 0)) {".
+> On Wed, Apr 25, 2012 at 06:03:14PM +0100, Tony Lindgren wrote:
+> (...)
+> > >  #define GPMC_ECC1_RESULT        0x200
+> > > +#define GPMC_ECC_BCH_RESULT_0   0x240
+> > 
+> > Can you please add a comment here saying something like:
+> > 
+> > #define GPMC_ECC_BCH_RESULT_0   0x240	/* Not available on omap2 */
 > 
-> With that change, please add my:
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> OK sure.
+> 
+> > > +	/* check if ecc module is in use */
+> > > +	if (gpmc_ecc_used != -EINVAL)
+> > > +		return -EINVAL;
+> > > +	/*
+> > > +	 * FIXME: some OMAP3 revisions have a hardware bug which prevents
+> > > +	 * the 4-bit BCH mode from working properly. Such revisions could be
+> > > +	 * detected and rejected here.
+> > > +	 */
+> > 
+> > This should then be disabled to avoid corruption. Maybe only allow it
+> > initially on omaps that have been tested? And for omap2 it should return
+> > error  for sure.
+> 
+> OK I'll add a check.
+> 
+> > 
+> > Or do you know the broken omap3 versions?
+> 
+> Well, I was hoping that someone from linux-omap could tell me :)
+> I found this HW ECC feature table in
+> http://processors.wiki.ti.com/index.php/Raw_NAND_ECC:
+> 
+>          1b     4b      8b
+> ---------------------------
+> OMAP35x  YES    NO      YES
+> AM35x    YES    YES     YES
+> AM/DM37x YES    YES     YES
+> 
+> and other wiki pages confirmed that 4-bit mode is not supported on all OMAP35xx chips.
+> OTOH, I know from TI support that 4-bit mode is at least supported on
+> OMAP3630 ES1.x (x >= 1).
+> 
+> So, a conservative approach would be to reject 4-bit mode on all chips but
+> omap3630 with rev >= 1.1. Other revisions/chips could be added later if they are
+> confirmed to work; what do you think ?
 
+Sounds good to me.
+ 
+> > Also, should you first request this feature in case multiple drivers
+> > need to share it?
+> 
+> According to TI documentation (OMAP36xx ES1.x TRM, §10.1.4, GPMC functional diagram),
+> the GPMC ECC engines (Hamming and BCH) are dedicated to NAND access only; therefore
+> I believe the mtd driver is the only potential user of this feature.
+> Also, the existing Hamming ecc API does not perform any request; or did I miss
+> something? If I need to perform the request, is there an existing api to do so?
 
-In my exuberance, I prematurely sent the next version of the whole set.  Artem,
-Robert's requested change is in patch 7/7.  If no other problems come to light,
-maybe you could consider merging the first 6?  Then I only need to prepare a
-corrected version of patch 7.
+OK I guess the only conflict would be multiple NAND chips then, which we don't
+have at least currently AFAIK.
 
-Thanks,
-Mike
+Tony
