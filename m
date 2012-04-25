@@ -1,20 +1,21 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SN6w5-00024O-PP
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:27:32 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
- mtd_read() returns -EUCLEAN
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
-Date: Wed, 25 Apr 2012 20:27:18 +0200
-In-Reply-To: <1335295105-7981-8-git-send-email-mikedunn@newsguy.com> (Mike
- Dunn's message of "Tue, 24 Apr 2012 12:18:25 -0700")
-Message-ID: <871unbis55.fsf@free.fr>
+ id 1SN6yU-0002Jb-Pg
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 18:29:59 +0000
+Date: Wed, 25 Apr 2012 20:28:36 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v2] ARM: OMAP3: gpmc: add BCH ecc api and modes
+Message-ID: <20120425182836.GA17023@parrot.com>
+References: <1334861024-27386-1-git-send-email-ivan.djelic@parrot.com>
+ <20120425170313.GW3739@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20120425170313.GW3739@atomide.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Dunn <mikedunn@newsguy.com> writes:
+Hi Tony,
+Thanks for the review,
 
-One little trick with docg3 patch part:
-> diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-> index 3414031..7644d59 100644
-> --- a/drivers/mtd/devices/docg3.c
-> +++ b/drivers/mtd/devices/docg3.c
-> @@ -948,7 +949,8 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
->  			}
->  			if (ret > 0) {
->  				mtd->ecc_stats.corrected += ret;
-> -				ret = -EUCLEAN;
-> +				max_bitflips = max(max_bitflips, ret);
-> +				ret = max_bitflips;
->  			}
->  		}
+On Wed, Apr 25, 2012 at 06:03:14PM +0100, Tony Lindgren wrote:
+(...)
+> >  #define GPMC_ECC1_RESULT        0x200
+> > +#define GPMC_ECC_BCH_RESULT_0   0x240
+> 
+> Can you please add a comment here saying something like:
+> 
+> #define GPMC_ECC_BCH_RESULT_0   0x240	/* Not available on omap2 */
 
-If you do set ret here, the next loop you'll do in the following statement
-"	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
-0.
+OK sure.
 
-I think you should change :
->- 	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
-into
->- 	while (ret >= 0 && (len > 0 || ooblen > 0)) {".
+> > +	/* check if ecc module is in use */
+> > +	if (gpmc_ecc_used != -EINVAL)
+> > +		return -EINVAL;
+> > +	/*
+> > +	 * FIXME: some OMAP3 revisions have a hardware bug which prevents
+> > +	 * the 4-bit BCH mode from working properly. Such revisions could be
+> > +	 * detected and rejected here.
+> > +	 */
+> 
+> This should then be disabled to avoid corruption. Maybe only allow it
+> initially on omaps that have been tested? And for omap2 it should return
+> error  for sure.
 
-With that change, please add my:
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+OK I'll add a check.
 
-Cheers.
+> 
+> Or do you know the broken omap3 versions?
 
--- 
-Robert
+Well, I was hoping that someone from linux-omap could tell me :)
+I found this HW ECC feature table in
+http://processors.wiki.ti.com/index.php/Raw_NAND_ECC:
 
-PS: It's really a great work that bitflip serie
+         1b     4b      8b
+---------------------------
+OMAP35x  YES    NO      YES
+AM35x    YES    YES     YES
+AM/DM37x YES    YES     YES
+
+and other wiki pages confirmed that 4-bit mode is not supported on all OMAP35xx chips.
+OTOH, I know from TI support that 4-bit mode is at least supported on
+OMAP3630 ES1.x (x >= 1).
+
+So, a conservative approach would be to reject 4-bit mode on all chips but
+omap3630 with rev >= 1.1. Other revisions/chips could be added later if they are
+confirmed to work; what do you think ?
+
+> Also, should you first request this feature in case multiple drivers
+> need to share it?
+
+According to TI documentation (OMAP36xx ES1.x TRM, §10.1.4, GPMC functional diagram),
+the GPMC ECC engines (Hamming and BCH) are dedicated to NAND access only; therefore
+I believe the mtd driver is the only potential user of this feature.
+Also, the existing Hamming ecc API does not perform any request; or did I miss
+something? If I need to perform the request, is there an existing api to do so?
+
+Thanks,
+--
+Ivan
