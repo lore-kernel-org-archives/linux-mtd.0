@@ -1,19 +1,21 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN4Zh-00040D-P3
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 15:56:14 +0000
-Message-ID: <4F981E9B.9050602@newsguy.com>
-Date: Wed, 25 Apr 2012 08:56:11 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1SN4bX-0005Ij-7y
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 15:58:07 +0000
+Date: Wed, 25 Apr 2012 08:58:01 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] ARM: OMAP3: gpmc: add BCH ecc api and modes
+Message-ID: <20120425155759.GS3739@atomide.com>
+References: <1334652536-4442-1-git-send-email-ivan.djelic@parrot.com>
+ <1335365341.6356.5.camel@koala> <20120425152310.GR3739@atomide.com>
+ <1335368681.6356.16.camel@koala>
 MIME-Version: 1.0
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH 0/7] mtd: Change meaning of -EUCLEAN return code on reads
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <20120425112319.GA23701@parrot.com>
-In-Reply-To: <20120425112319.GA23701@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1335368681.6356.16.camel@koala>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/25/2012 04:23 AM, Ivan Djelic wrote:
+* Artem Bityutskiy <dedekind1@gmail.com> [120425 08:48]:
+> On Wed, 2012-04-25 at 08:23 -0700, Tony Lindgren wrote:
+> > Hi,
+> > 
+> > * Artem Bityutskiy <dedekind1@gmail.com> [120425 07:52]:
+> > > On Tue, 2012-04-17 at 10:48 +0200, Ivan Djelic wrote:
+> > > > This patch adds a simple BCH ecc computation api, similar to the
+> > > > existing Hamming ecc api. It is intended to be used by the MTD layer.
+> > > > It implements the following features:
+> > > > 
+> > > > - support 4-bit and 8-bit ecc computation
+> > > > - do not protect user bytes in spare area, only data area is protected
+> > > > - ecc for an erased NAND page (0xFFs) is also a sequence of 0xFFs
+> > > > 
+> > > > This last feature is obtained by adding a constant polynomial to
+> > > > the hardware computed ecc. It allows to correct bitflips in blank pages
+> > > > and is extremely useful to support filesystems such as UBIFS, which expect
+> > > > erased pages to contain only 0xFFs.
+> > > > 
+> > > > This api has been tested on an OMAP3630 board.
+> > > > 
+> > > > Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
+> > > 
+> > > Hi Tony,
+> > > 
+> > > what do you think about merging this patch? This is the enabler for
+> > > making UBIFS actually usable on OMAP platforms which use BCH ECC. There
+> > > are 2 other MTD patches which depend on this - so I wonder if it is
+> > > easier to merge this one via the MTD tree, providing it has your/others'
+> > > ack(s).
+> > 
+> > Looks OK to me, however there are other pending GPMC patches to convert
+> > it to a platform device device driver. Need to look those closer though.
+> > Anyways, it's best that I queue them to avoid merge conflicts.
 > 
-> Thanks for this new version.
-> The whole series of patches looks OK to me, except for one small glitch:
-> 'mtd->bitflip_threshold' can be customized by the driver, but in that case it is not
-> propagated to the slave partition devices (the same way 'ecc_strength' is propagated).
-> Something like this is missing:
+> Sure.
 > 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index d6321f6..d518e4d 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -517,6 +517,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
->  
->         slave->mtd.ecclayout = master->ecclayout;
->         slave->mtd.ecc_strength = master->ecc_strength;
-> +       slave->mtd.bitflip_threshold = master->bitflip_threshold;
-> +
->         if (master->_block_isbad) {
->                 uint64_t offs = 0;
+> > Do you these for other changes for UBIFS?
 > 
+> Not in UBIFS, but in drivers/mtd/nand/omap2.c - Ivan sent another patch
+> which adds BCH support to to omap2.c, was sent to linux-omap, subject
+> "[PATCH] mtd: nand: omap: add support for hardware BCH ecc"
+> 
+> >  If so, I can set up an immutable
+> > branch for GPMC that you can merge in as well.
+> 
+> I guess this would be a good idea, but probably it is better to do this
+> when you believe you merged most gpmc patches, so probably closer to the
+> final -rc?
 
+Yes let's wait a week or so as there are also the dmaengine patch for
+drivers/mtd/nand/omap2.c that might conflict. So let's get the dmaengine
+patches to some branch first.
 
-Yes, you're right.  Without this it breaks if the driver sets bitflip_threshold.
+Regards,
 
-
-> Apart from that, I was able to run a few tests on a BeagleBoard revC3 with simulated
-> bitflips, dropping my own error concealment code in favor of your patch. I did the
-> following checks:
->  - when errors_corrected < bitflip_threshold, check that mtd_read() returns 0
->  - when errors_corrected >= bitflip_threshold, check that mtd_read() returns -EUCLEAN
->  - check if driver customization of bitflip_threshold works
-
-
-I guess I should have performed this test too :)
-
-
->  - check if per-partition customization of bitflip_threshold through sysfs works
-> Everything worked as expected.
-
-
-Thanks once again Ivan.  I'll follow up with a new version of the patch set in a
-day or too.
-
-Mike
+Tony
