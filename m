@@ -1,38 +1,18 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SN554-0000TC-Kw
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 16:28:39 +0000
-Date: Wed, 25 Apr 2012 18:25:11 +0200 (CEST)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
-In-Reply-To: <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1204251824230.25529@axis700.grange>
-References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
- <1335368735.6356.17.camel@koala>
- <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
+Date: Wed, 25 Apr 2012 09:44:25 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Afzal Mohammed <afzal@ti.com>
+Subject: Re: [PATCH v3 0/9] Convert OMAP GPMC to driver
+Message-ID: <20120425164424.GT3739@atomide.com>
+References: <cover.1333638917.git.afzal@ti.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- prabhakar@freescale.com, Mike Dunn <mikedunn@newsguy.com>,
- Bastian Hecht <hechtb@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>, "Rafael J. Wysocki" <rjw@sisk.pl>,
- Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
- dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Jiandong Zheng <jdzheng@broadcom.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1333638917.git.afzal@ti.com>
+Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, sameo@linux.intel.com,
+ dbaryshkov@gmail.com, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, vimal.newwork@gmail.com, grinberg@compulab.co.il,
+ mike@compulab.co.il, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,69 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bastian
+* Afzal Mohammed <afzal@ti.com> [120405 09:06]:
+> Hi,
+> 
+> GPMC driver conversion series. NAND and smsc911x ethernet device has
+> been adapted to use GPMC driver.
+> 
+> Patches has been generated over linux-omap/master, HEAD
+> 33fc21e Linux-omap rebuilt: Updated to v3.4-rc1, merged in most of pending branches
+> As OMAP3EVM does not boot linux-omap/master, merge commit,
+> 58adb29 Merge branch 'io_chain_devel_3.4' of git://git.pwsan.com/linux-2.6 into prm
+> has to be reverted to get OMAP3EVM boot.
+> Last patch (with subject prefix TMP - 9/9) is for testing.
+> 
+> Once driver is acceptable, platform code for other peripherals
+> connected via GPMC would be adapted to make use of GPMC driver. And
+> then the board modifications. But before that HWMOD entry has to be
+> populated for respective SoC(s ?).
+ 
+No, we can't do it this way, it breaks things. We need to first
+convert everything to use the new GPMC driver, then move it. 
+ 
+> Now DESTINATION FOR THIS DRIVER has to be decided. Original plan was
+> to consider GPMC as MFD. The peripheral(s) connected to GPMC being
+> considered childs of MFD.
 
-On Wed, 25 Apr 2012, Bastian Hecht wrote:
+Let's not put it into MFD. This is a bus driver. But that
+decision can wait as we cleary have quite a few things to convert
+first under arch/arm/mach-omap2.
+ 
+> Various options that could be seen so far on where this driver can go,
+> 1. mfd
+> 2. misc
+> 3. drivers/platform/arm/ (create an new one?)
+> 4. memory (create a new one ?)
 
-> Hello,
->=20
-> this should be an sh_flctl unrelated problem. Guennadi, have you seen
-> this error somewhere before?
+It's a parallel bus driver, not memory not misc, not MFD.
 
-You're #111:
+Cheers,
 
-https://lkml.org/lkml/2012/4/19/621
-
-Thanks
-Guennadi
-
->=20
-> thanks,
->=20
->  Bastian Hecht
->=20
-> > ---------------------------------------------------------------------=
------------
-> > Failed to build the following commit for configuration "l2_mackerel_d=
-efconfig" (architecture arm)":
-> >
-> > 54043ff MIPS: Kbuild: remove -Werror
-> >
-> > In file included from include/linux/kernel.h:19:0,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/mtd/nand/sh_flctl.c:24:
-> > include/linux/bitops.h: In function 'hweight_long':
-> > include/linux/bitops.h:66:26: warning: signed and unsigned type in co=
-nditional expression [-Wsign-compare]
-> > drivers/mtd/nand/sh_flctl.c: In function 'set_addr':
-> > drivers/mtd/nand/sh_flctl.c:117:25: warning: comparison between signe=
-d and unsigned integer expressions [-Wsign-compare]
-> > drivers/mtd/nand/sh_flctl.c: In function 'flctl_cmdfunc':
-> > drivers/mtd/nand/sh_flctl.c:611:15: warning: comparison between signe=
-d and unsigned integer expressions [-Wsign-compare]
-> > drivers/mtd/nand/sh_flctl.c:638:28: warning: comparison between signe=
-d and unsigned integer expressions [-Wsign-compare]
-> > In file included from include/linux/kernel.h:19:0,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from init/version.c:10:
-> > include/linux/bitops.h: In function 'hweight_long':
-> > include/linux/bitops.h:66:26: warning: signed and unsigned type in co=
-nditional expression [-Wsign-compare]
-> > arch/arm/mach-shmobile/built-in.o: In function `mackerel_sdhi0_gpio_c=
-d':
-> > pfc-sh7372.c:(.text+0x33ec): undefined reference to `mmc_detect_chang=
-e'
-> > make[1]: *** [.tmp_vmlinux1] Error 1
-> >
->=20
-
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+Tony 
