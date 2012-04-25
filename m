@@ -1,20 +1,21 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN2hS-0007jS-BK
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 13:56:06 +0000
-Received: by lagy4 with SMTP id y4so107679lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 06:56:04 -0700 (PDT)
-Subject: Re: [PATCH] [JFFS2] check xattr data integrity during the scan.
+ id 1SN2ky-00088I-EG
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 13:59:45 +0000
+Received: by lboj14 with SMTP id j14so116607lbo.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 06:59:42 -0700 (PDT)
+Subject: Re: [PATCH] [JFFS2] load_xattr_datum need to return a positive
+ number in case of unrecoverable error
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Jean-Christophe DUBOIS <jcd@tribudubois.net>
-Date: Wed, 25 Apr 2012 16:55:53 +0300
-In-Reply-To: <4F942F27.2090807@tribudubois.net>
-References: <1334175816-20688-1-git-send-email-jcd@tribudubois.net>
- <1335100558.28267.11.camel@brekeke> <4F942F27.2090807@tribudubois.net>
+Date: Wed, 25 Apr 2012 16:59:39 +0300
+In-Reply-To: <4F944165.4010400@tribudubois.net>
+References: <1334177689-19732-1-git-send-email-jcd@tribudubois.net>
+ <1335100568.28267.12.camel@brekeke> <4F944165.4010400@tribudubois.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-S431syThs62NY51FQnsR"
-Message-ID: <1335362163.5114.14.camel@koala>
+ boundary="=-MKPqT3W2lbug90W2JXmz"
+Message-ID: <1335362381.5114.17.camel@koala>
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -28,68 +29,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-S431syThs62NY51FQnsR
+--=-MKPqT3W2lbug90W2JXmz
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jean-Christophe,
+On Sun, 2012-04-22 at 19:35 +0200, Jean-Christophe DUBOIS wrote:
+> >   Also, please,
+> > tell  whether this fixes a real-life bug or you are fixing a complaint
+> > of a static analysis tools or something like this?
+> >   And please, tell how
+> > you tested it.
 
-On Sun, 2012-04-22 at 18:17 +0200, Jean-Christophe DUBOIS wrote:
-> > The same is done for xattrs - during scanning we do not check the data
-> > payload.
-> In case of attributes, JFFS2 do detect that they are corrupted later but=
-=20
-> it is too late. At that time we have lost reference to earlier=20
-> "versions" of the attribute and I think we would need to rescan the all=
-=20
-> partition to find it back (assuming it has not been deleted in the mean=
-=20
-> time as I am not sure how GC deals with earlier versions of the=20
-> attributes). So it seems better to do it in the first place.
-
-Wait. Now I think I starting remembering a bit more. First of all, you
-surely have many good arguments. But my counter-argument - the same
-happens for data nodes. We do not check data CRC during scanning. Xattr
-nodes should be treated the same way.
-
-JFFS2 scans in 2 phases:
-1. early scanning - it scans only the headers of the nodes, but not the
-payloads. No I/O on the FS is possible.
-2. late background scanning - the GC threads goes through every single
-inode and reads it, so forces data CRC checking. JFFS2 is available for
-reading, but write requests may block (if they require GC, AFAIR,
-because we cannot do GC before we have checked everything, otherwise we
-may lose a valuable older node version).
-
-So I guess this is what you should do for xattrs as well - check payload
-CRC at the second stage scanning, not the first one.
-
-The idea on this split was to do minimum and make the FS available for
-reading, and continue the rest in background. This background thing is
-quite heavy BTW, and slows down the entire system boot.
-
-> You also have to consider that attributes are generally "short" (unlike=
-=20
-> the file content) and there is not much data associated to them. so the=
-=20
-> overhead implied by the attribute data scanning is not very important=20
-> (considering the attribute data is already in memory). But it is true=20
-> that there is an overhead added by this patch.
-> What happen for now is that if an attribute is corrupted, then we will=
-=20
-> not be able to ever read it again (JFFS2 returns a negative/recoverable=
-=20
-> error on corruption detection on any access and does not try to cure the=
-=20
-> problem).
-
-AFAIU, this should be dealt with during the second stage scanning.
+I'd like to get some answers to the above questions. The reason I am
+asking is that JFFS2 is old and does not see too much maintanance
+anymore, so I feel that it is important important to be careful about
+merging something which does not fix a real life issue.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-S431syThs62NY51FQnsR
+--=-MKPqT3W2lbug90W2JXmz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -97,13 +57,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJPmAJpAAoJEJtuLFy+q7fejI4H/3ylOKTw82YdvWTEva4liEs2
-8epb33waAFWmCpqZuV5QkdR+xiuEUGyict8L7hsXh9yLwSb7drux7WH7bRup3iJZ
-8brmQqV6iTjqEW4juEEZXQcmxERamwpLJ32mvb/maEqcwS0sNo7VXdKJ8MsDwzPC
-cNkpyqvcSAXG0ctL7HNfjU5Hcjcj68xLAKcVKS0F/MIOjoVLpkxQtGqA4pCrkqzy
-5ARlSADDqqJnzjHYE76IkdyEcFKu9UlZWcmnQ3jLpTm3R2ZGb24UH3WSLeH9oB3R
-1mQ5v2z8E3GNUHYjiBBaQDt1Tbzqgs8VHGmYyEkYjORnueSH1gVHHOgiK/d3JNc=
-=qQcd
+iQEcBAABAgAGBQJPmANLAAoJEJtuLFy+q7feFKsH/iCXgL7QmmhiPo1VdHWmrq+k
+LGpCoCAv5Ti53ECVkAHeaCynv8z4imC1lkSXE/1J+/LdbTwYkk9u66T1U9tddO+b
+IzHEuTGCXqIuovMY8JbXNeUxJ8MvXLtFM8cWJbPZtWMthSTit3i+K35FvrxnTD0P
+jxyt/wGddzhrM33vGtWNFKysnDaYwbHP2Ag3WOVrz1e82g7GWtXYpluSYphWv5iZ
+FznceohRGeEACN1CQkhERxYkFUAnXV41txwg+35xjG4mVCjEOQUGNLHwGhD57s2Z
+n20ooFbFV1flmJkM98y+3SPVoZbLG7gQa+KaiXwPyj9TswxFrBxhKiODncEtQx4=
+=Miv5
 -----END PGP SIGNATURE-----
 
---=-S431syThs62NY51FQnsR--
+--=-MKPqT3W2lbug90W2JXmz--
