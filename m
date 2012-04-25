@@ -1,24 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SN03A-0004Hx-HK
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 11:06:21 +0000
-Message-ID: <1335351951.2094.0.camel@golum>
-Subject: Re: [PATCH -next] mtd: fix sbc2_flash build when PCI is not enabled
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Randy Dunlap <rdunlap@xenotime.net>
-Date: Wed, 25 Apr 2012 14:05:51 +0300
-In-Reply-To: <4F8C780D.9010702@xenotime.net>
-References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
- <4F8C780D.9010702@xenotime.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Gf6yOp/71vBcpW82dVUY"
-Mime-Version: 1.0
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Tim Hockin <thockin@sun.com>,
- LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1SN0L3-0007KI-Dg
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 11:24:50 +0000
+Date: Wed, 25 Apr 2012 13:23:19 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH 0/7] mtd: Change meaning of -EUCLEAN return code on reads
+Message-ID: <20120425112319.GA23701@parrot.com>
+References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Apr 24, 2012 at 08:18:18PM +0100, Mike Dunn wrote:
+> 
+> This problem was discussed a while back [1][2][3], and a consensus of sorts was
+> reached for a solution, which these patches implement.  The recent addition of
+> the mtd api entry functions now make this solution practical (thanks Artem!).  A
+> quick description of each patch will provide a synopsis of the set:
+> 
+> (1) Fix how mtd->ecc_strength is calculated from nand->ecc.strength to reflect
+>     the fact that granularity is now at ecc step level (the two values are now
+>     the same).
+> (2) Fix a couple incorrect nand->ecc.strength values.
+> (3) Expose mtd->ecc_strength through sysfs (read-only).
+> (4) mtd->bitflip_threshold is added and exposed as read/write through sysfs.
+>     The drivers can initialize it, otherwise mtd initializes it to the default
+>     value of ecc_strength.  Users can change it through sysfs.
+> (5) The nand driver method _read_page() returns max_bitflips to the nand
+>     infrastructure code.  This is the maximum number of bitflip corrections that
+>     were made on any one region comprising an ecc step.
+> (6) Sanity checks added to nand_scan_tail() to ensure that drivers needing to
+>     set ecc strength do so.  (This includes all drivers using hardware ecc.)
+> (7) Absent a hard error, all drivers' mtd->_read() methods now return
+>     max_bitflips to mtd, and mtd_read() makes the decision of whether to return
+>     -EUCLEAN or 0. If max_bitflips >= bitflip_threshold, -EUCLEAN is returned.
+>     If bitflip_threshold == 0 (no ecc), make no comparison and return 0.
+> 
+> Of course reviews greatly appreciated.  Thanks!
 
---=-Gf6yOp/71vBcpW82dVUY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Mike,
 
-On Mon, 2012-04-16 at 12:50 -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@xenotime.net>
->=20
-> sbc2_flash.c is a PCI driver, but its build fails when CONFIG_PCI
-> is not enabled, so make it depend on PCI.
->=20
-> drivers/mtd/maps/scb2_flash.c:237:1: warning: data definition has no type=
- or storage class
-> drivers/mtd/maps/scb2_flash.c:237:1: warning: type defaults to 'int' in d=
-eclaration of 'module_pci_driver'
-> drivers/mtd/maps/scb2_flash.c:237:1: warning: parameter names (without ty=
-pes) in function declaration
->=20
-> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+Thanks for this new version.
+The whole series of patches looks OK to me, except for one small glitch:
+'mtd->bitflip_threshold' can be customized by the driver, but in that case it is not
+propagated to the slave partition devices (the same way 'ecc_strength' is propagated).
+Something like this is missing:
 
-Pushed to l2-mtd.git, thanks!
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index d6321f6..d518e4d 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -517,6 +517,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 
+        slave->mtd.ecclayout = master->ecclayout;
+        slave->mtd.ecc_strength = master->ecc_strength;
++       slave->mtd.bitflip_threshold = master->bitflip_threshold;
++
+        if (master->_block_isbad) {
+                uint64_t offs = 0;
 
---=20
-Best Regards,
-Artem Bityutskiy
+Apart from that, I was able to run a few tests on a BeagleBoard revC3 with simulated
+bitflips, dropping my own error concealment code in favor of your patch. I did the
+following checks:
+ - when errors_corrected < bitflip_threshold, check that mtd_read() returns 0
+ - when errors_corrected >= bitflip_threshold, check that mtd_read() returns -EUCLEAN
+ - check if driver customization of bitflip_threshold works
+ - check if per-partition customization of bitflip_threshold through sysfs works
+Everything worked as expected.
 
---=-Gf6yOp/71vBcpW82dVUY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPl9qPAAoJECmIfjd9wqK0eqcP/2ywNT5oHG7e4nV5WvpbZKss
-TAsFOEKB3ledaiyZWDBbTcw4gvcbP3qKqN//V0KB40NLuvoDCFrKOq9THWEKe97x
-j6wQLDxWlBebUFa17Oan+SqyVPqAY8EAcJBRn+svkC1BmxcEw/K2xeU+Qqwe7eRH
-qOX1KGuBJDIhjwnLvSwyHTuVh1dXYazn7JyIEYoqeHjOT/P4HcQiHde2sll0SE0w
-nnv+1fQEL4bVFOfex6YnEoHsYQgyLk19cG1tDETHHv2ix6E4goqm1UZV6p+FDNZw
-KJKo2c6sM1ajMOXm1l5xBY2zgGIAcu8RWHoSwRmqOucaJeL+TJgATUhXRvCZPuNL
-Qhvd2+0hmiIMWxclop+zFLemJnpKiZYCXipmqXE64FyS48btHQBLWVaee3qRkfg4
-a9Nm/n2v6IE7nsR0OwN8hUZzrk35jHwuRB2lsG1DfTC1Wlv76uJuQbT4J0tlwW7U
-HIkzI7LqbfuacgaznJ12TyQ662v/zGEx3onYBbrwi6s194GRyLbfXp4tU18FMVhU
-zLTPO5tWFTpO9uJr8pkhhcfCrGfeiCZwHcXXaqjtXP+qmQ/M/zce5FgDljRN+tov
-iVhCPWxVVB9kA6OyCP5DYvDVbdjlKM5A77Q7ZN30uo3hsYfgBS9TXPI7br1yIu4q
-IhbZl/teeify0uoFSEu9
-=vsCC
------END PGP SIGNATURE-----
-
---=-Gf6yOp/71vBcpW82dVUY--
+BR,
+--
+Ivan
