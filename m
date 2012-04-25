@@ -1,19 +1,18 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SN4kO-0007dW-37
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 16:07:16 +0000
-Received: by lagy4 with SMTP id y4so253761lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 09:07:14 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1335368735.6356.17.camel@koala>
+Received: from moutng.kundenserver.de ([212.227.126.187])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SN554-0000TC-Kw
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2012 16:28:39 +0000
+Date: Wed, 25 Apr 2012 18:25:11 +0200 (CEST)
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+To: Bastian Hecht <hechtb@googlemail.com>
+Subject: Re: [PATCH v2 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
+In-Reply-To: <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1204251824230.25529@axis700.grange>
 References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
  <1335368735.6356.17.camel@koala>
-Date: Wed, 25 Apr 2012 18:07:14 +0200
-Message-ID: <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
-From: Bastian Hecht <hechtb@googlemail.com>
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Content-Type: text/plain; charset=ISO-8859-1
+ <CABYn4sz0pMSYEA3w968GA-qu0VKc+e-TLqYTcTuudPwpMFxV2A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
  Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
@@ -25,7 +24,7 @@ Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
  Kevin Cernekee <cernekee@gmail.com>, Lei Wen <leiwen@marvell.com>,
  Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
  Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Armando Visconti <armando.visconti@st.com>,
+ Armando Visconti <armando.visconti@st.com>, "Rafael J. Wysocki" <rjw@sisk.pl>,
  Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
  dedekind1@gmail.com, Wolfram Sang <w.sang@pengutronix.de>,
  Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -43,49 +42,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Bastian
 
-this should be an sh_flctl unrelated problem. Guennadi, have you seen
-this error somewhere before?
+On Wed, 25 Apr 2012, Bastian Hecht wrote:
 
-thanks,
+> Hello,
+>=20
+> this should be an sh_flctl unrelated problem. Guennadi, have you seen
+> this error somewhere before?
 
- Bastian Hecht
+You're #111:
 
-> -------------------------------------------------------------------------=
--------
-> Failed to build the following commit for configuration "l2_mackerel_defco=
-nfig" (architecture arm)":
->
-> 54043ff MIPS: Kbuild: remove -Werror
->
-> In file included from include/linux/kernel.h:19:0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/mtd/nand/sh_flctl.c:24:
-> include/linux/bitops.h: In function 'hweight_long':
-> include/linux/bitops.h:66:26: warning: signed and unsigned type in condit=
-ional expression [-Wsign-compare]
-> drivers/mtd/nand/sh_flctl.c: In function 'set_addr':
-> drivers/mtd/nand/sh_flctl.c:117:25: warning: comparison between signed an=
-d unsigned integer expressions [-Wsign-compare]
-> drivers/mtd/nand/sh_flctl.c: In function 'flctl_cmdfunc':
-> drivers/mtd/nand/sh_flctl.c:611:15: warning: comparison between signed an=
-d unsigned integer expressions [-Wsign-compare]
-> drivers/mtd/nand/sh_flctl.c:638:28: warning: comparison between signed an=
-d unsigned integer expressions [-Wsign-compare]
-> In file included from include/linux/kernel.h:19:0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from init/version.c:10:
-> include/linux/bitops.h: In function 'hweight_long':
-> include/linux/bitops.h:66:26: warning: signed and unsigned type in condit=
-ional expression [-Wsign-compare]
-> arch/arm/mach-shmobile/built-in.o: In function `mackerel_sdhi0_gpio_cd':
-> pfc-sh7372.c:(.text+0x33ec): undefined reference to `mmc_detect_change'
-> make[1]: *** [.tmp_vmlinux1] Error 1
->
+https://lkml.org/lkml/2012/4/19/621
+
+Thanks
+Guennadi
+
+>=20
+> thanks,
+>=20
+>  Bastian Hecht
+>=20
+> > ---------------------------------------------------------------------=
+-----------
+> > Failed to build the following commit for configuration "l2_mackerel_d=
+efconfig" (architecture arm)":
+> >
+> > 54043ff MIPS: Kbuild: remove -Werror
+> >
+> > In file included from include/linux/kernel.h:19:0,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/mtd/nand/sh_flctl.c:24:
+> > include/linux/bitops.h: In function 'hweight_long':
+> > include/linux/bitops.h:66:26: warning: signed and unsigned type in co=
+nditional expression [-Wsign-compare]
+> > drivers/mtd/nand/sh_flctl.c: In function 'set_addr':
+> > drivers/mtd/nand/sh_flctl.c:117:25: warning: comparison between signe=
+d and unsigned integer expressions [-Wsign-compare]
+> > drivers/mtd/nand/sh_flctl.c: In function 'flctl_cmdfunc':
+> > drivers/mtd/nand/sh_flctl.c:611:15: warning: comparison between signe=
+d and unsigned integer expressions [-Wsign-compare]
+> > drivers/mtd/nand/sh_flctl.c:638:28: warning: comparison between signe=
+d and unsigned integer expressions [-Wsign-compare]
+> > In file included from include/linux/kernel.h:19:0,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/cache.h:4,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/time.h:7,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/stat.h:60,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from include/linux/module.h:10,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from init/version.c:10:
+> > include/linux/bitops.h: In function 'hweight_long':
+> > include/linux/bitops.h:66:26: warning: signed and unsigned type in co=
+nditional expression [-Wsign-compare]
+> > arch/arm/mach-shmobile/built-in.o: In function `mackerel_sdhi0_gpio_c=
+d':
+> > pfc-sh7372.c:(.text+0x33ec): undefined reference to `mmc_detect_chang=
+e'
+> > make[1]: *** [.tmp_vmlinux1] Error 1
+> >
+>=20
+
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
