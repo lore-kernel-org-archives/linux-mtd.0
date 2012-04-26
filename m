@@ -1,29 +1,22 @@
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: RE: [TMP] OMAP3EVM: Test gpmc nand & smsc911x
-Date: Thu, 26 Apr 2012 05:21:45 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E970122@DBDE01.ent.ti.com>
-References: <cover.1333640054.git.afzal@ti.com>
- <bb95fec60401f7cf6ac77200a12baf3fc83852f5.1333640054.git.afzal@ti.com>
- <20120425164726.GU3739@atomide.com>
-In-Reply-To: <20120425164726.GU3739@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- "sameo@linux.intel.com" <sameo@linux.intel.com>,
- "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
- "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
- "mike@compulab.co.il" <mike@compulab.co.il>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SNHYc-0001IP-1q
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2012 05:47:58 +0000
+Received: by lboj14 with SMTP id j14so805648lbo.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 22:47:55 -0700 (PDT)
+Subject: Re: UBI use subpage and verify fail when write on nandflash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: b w <wdjjwb@gmail.com>
+Date: Thu, 26 Apr 2012 08:47:53 +0300
+In-Reply-To: <CAHvCehVVPoORvmV=WZESDkb_9es1B7W9ojFv9P3W1ANpQyQ1xA@mail.gmail.com>
+References: <CAHvCehVVPoORvmV=WZESDkb_9es1B7W9ojFv9P3W1ANpQyQ1xA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-BYktVZOE1+vHs98b/3YM"
+Message-ID: <1335419274.2290.9.camel@koala>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
 
-On Wed, Apr 25, 2012 at 22:17:26, Tony Lindgren wrote:
-> Obviously we can't merge any of this if until all the board-*.c files
-> are changed and tested.
->=20
-> Can you maybe still keep the old interfaces in addition to the new ones
-> so we can do the conversion one board-*.c file at a time while keeping
-> things working?
+--=-BYktVZOE1+vHs98b/3YM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As there are peripherals using helper functions, to handle those, you
-meant to create a new altered similar function to deal for each too ?,
-while keeping existing functions as such.
+On Tue, 2012-04-17 at 22:19 +0800, b w wrote:
+> Hello,
+>     Use linux 2.6.32,ARM,nandflash(support subpage),config
+> CONFIG_MTD_NAND_VERIFY_WRITE. UBI attach fail on empty flash.I found
+> when UBI write VID header to the second subpage of eraseblock,will
+> call function "nand_write_page",this function write a whole page(i
+> think the page size is 2048),the unset bit of the buf is filled with
+> 0xff,after write,
 
-i.e. like having gpmc_smsc911x_init & gpmc_smsc911x_new_init for
-each peripheral ?, with gpmc_smsc911x_new_init using gpmc driver,
-and gpmc_smsc911x_init as is.
+Yeah, known issue, it just waits for a fix from someone who cares
+enough.
 
-Regards
-Afzal
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-BYktVZOE1+vHs98b/3YM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAABAgAGBQJPmOGJAAoJEJtuLFy+q7feNYYIAJWmt9yImGtreQqQxuY2PFzi
+PRpt3FMft1/hhwv28R0H88w3Kv1HTM3gPczrruiNUflUngSZKOvdgTQk6Nx3B9OX
+9F8X/kUyOLfnMXv0FvCqMwKX2cjtUf2lDDAYZX0mblH0v0xo/QX6XYb+XYTKjETB
+K5p6oQBMKPnLfOEVQ/W8fUXIXU7yffO6FnY+jXgrAEdS/EFO4T+nDicoG7i/VSsj
+eurCOSqlmKB4g087u1C6De3Q5ZgghPQMAE0pLddFFomPNqcgwdU1rUhoCRXh/+2j
+cW2WNJm5bE0CKEDPeo1KLizgXeKshniJHpUscGtHZL5I/2yhjMvtjxxDcmcCs+0=
+=Q4je
+-----END PGP SIGNATURE-----
+
+--=-BYktVZOE1+vHs98b/3YM--
