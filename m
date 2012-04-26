@@ -1,24 +1,17 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNI4k-0004ya-2q
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2012 06:21:10 +0000
-Received: by lboj14 with SMTP id j14so822207lbo.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 23:21:07 -0700 (PDT)
-Subject: Re: [PATCH 1/2 V2] mtd: spear_smi: Add clk_{un}prepare() support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Viresh Kumar <viresh.kumar@st.com>
-Date: Thu, 26 Apr 2012 09:20:37 +0300
-In-Reply-To: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
-References: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-AIiFTDY2Tkm7wAgDA9ol"
-Message-ID: <1335421265.4703.0.camel@koala>
-Mime-Version: 1.0
-Cc: artem.bityutskiy@linux.intel.com, linus.walleij@linaro.org,
- spear-devel@list.st.com, viresh.linux@gmail.com, linux-mtd@lists.infradead.org,
- sr@denx.de, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
+ helo=db3outboundpool.messaging.microsoft.com)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SNMI2-00040j-QF
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2012 10:51:12 +0000
+From: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+To: <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH] powerpc/85xx: Enable MTD/NOR/NAND options by default in
+ defconfig
+Date: Thu, 26 Apr 2012 18:34:03 +0800
+Message-ID: <1335436443-20889-1-git-send-email-Shengzhou.Liu@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, Shengzhou Liu <Shengzhou.Liu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +21,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Enable MTD/NOR/NAND options by default in mpc85xx_defconfig and
+mpc85xx_smp_defconfig to support NOR, NAND flash.
 
---=-AIiFTDY2Tkm7wAgDA9ol
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+---
+based on master branch of git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
 
-On Tue, 2012-04-17 at 17:07 +0530, Viresh Kumar wrote:
-> clk_{un}prepare is mandatory for platforms using common clock framework. =
-Since
-> this driver is used by SPEAr platform, which supports common clock framew=
-ork,
-> add clk_{un}prepare() support for it.
->=20
-> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+ arch/powerpc/configs/mpc85xx_defconfig     |   26 ++++++++++++++++++++++++++
+ arch/powerpc/configs/mpc85xx_smp_defconfig |   25 +++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 0 deletions(-)
 
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-AIiFTDY2Tkm7wAgDA9ol
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAABAgAGBQJPmOk1AAoJEJtuLFy+q7fehsMH/iN5BPxS0uuOyI8POMy4djh/
-rwZhTIaj3e2jnn88IajSJODm4x7TjP2wmu0oV4H0QFlZhuabPTW9gme7Xy2Qp1m+
-pTdshx52IQIf4U6fB4h0LE9IMw8EaZPlf+HNWAZorRztFhtm7jewW9N+mpUtxr18
-sVqum1IYBilRiKqQOAV1+zQq233vqDbKvK/9TuOMGOOW2rekpalUjwXa6CbrTVNW
-rlZpP+oreYvLxxb2GvQm8VxTFgUB9NjefIFmipjTS+Fu/fz6VBkp3YBq7qJE2eHg
-8M3AIPmcMyd4ePXr7YY0JDZrNw8ZfQz0l+vbL8pZ5pBWQKT32mp1XVDKrBXvlww=
-=tu5k
------END PGP SIGNATURE-----
-
---=-AIiFTDY2Tkm7wAgDA9ol--
+diff --git a/arch/powerpc/configs/mpc85xx_defconfig b/arch/powerpc/configs/mpc85xx_defconfig
+index d6b6df5..a42304d 100644
+--- a/arch/powerpc/configs/mpc85xx_defconfig
++++ b/arch/powerpc/configs/mpc85xx_defconfig
+@@ -39,6 +39,7 @@ CONFIG_TQM8560=y
+ CONFIG_SBC8548=y
+ CONFIG_QUICC_ENGINE=y
+ CONFIG_QE_GPIO=y
++CONFIG_MPC8xxx_GPIO=y
+ CONFIG_HIGHMEM=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+@@ -74,6 +75,31 @@ CONFIG_INET_ESP=y
+ CONFIG_IPV6=y
+ CONFIG_IP_SCTP=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_MTD=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_CFI=y
++CONFIG_FTL=y
++CONFIG_MTD_GEN_PROBE=y
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_UTIL=y
++CONFIG_MTD_PHYSMAP_OF=y
++CONFIG_MTD_PARTITIONS=y
++CONFIG_MTD_OF_PARTS=y
++CONFIG_MTD_NAND=y
++CONFIG_MTD_NAND_VERIFY_WRITE=y
++CONFIG_MTD_NAND_FSL_ELBC=y
++CONFIG_MTD_NAND_FSL_IFC=y
++CONFIG_MTD_NAND_IDS=y
++CONFIG_MTD_NAND_ECC=y
++CONFIG_MTD_M25P80=y
+ CONFIG_PROC_DEVICETREE=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=y
+diff --git a/arch/powerpc/configs/mpc85xx_smp_defconfig b/arch/powerpc/configs/mpc85xx_smp_defconfig
+index 5b0e292..31ef74f 100644
+--- a/arch/powerpc/configs/mpc85xx_smp_defconfig
++++ b/arch/powerpc/configs/mpc85xx_smp_defconfig
+@@ -76,6 +76,31 @@ CONFIG_INET_ESP=y
+ CONFIG_IPV6=y
+ CONFIG_IP_SCTP=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_MTD=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_CFI=y
++CONFIG_FTL=y
++CONFIG_MTD_GEN_PROBE=y
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_UTIL=y
++CONFIG_MTD_PHYSMAP_OF=y
++CONFIG_MTD_PARTITIONS=y
++CONFIG_MTD_OF_PARTS=y
++CONFIG_MTD_NAND=y
++CONFIG_MTD_NAND_VERIFY_WRITE=y
++CONFIG_MTD_NAND_FSL_ELBC=y
++CONFIG_MTD_NAND_FSL_IFC=y
++CONFIG_MTD_NAND_IDS=y
++CONFIG_MTD_NAND_ECC=y
++CONFIG_MTD_M25P80=y
+ CONFIG_PROC_DEVICETREE=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=y
+-- 
+1.7.0.4
