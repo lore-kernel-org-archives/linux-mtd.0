@@ -1,23 +1,23 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNHci-0002FK-Qw
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2012 05:52:13 +0000
-Received: by lboj14 with SMTP id j14so807538lbo.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 22:52:11 -0700 (PDT)
-Subject: RE: UBI use subpage and verify fail when write on nandflash
+ id 1SNI4k-0004ya-2q
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2012 06:21:10 +0000
+Received: by lboj14 with SMTP id j14so822207lbo.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2012 23:21:07 -0700 (PDT)
+Subject: Re: [PATCH 1/2 V2] mtd: spear_smi: Add clk_{un}prepare() support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Date: Thu, 26 Apr 2012 08:52:08 +0300
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0BF6013E94@Cloud.RL.local>
-References: <70E876B0EA86DD4BAF101844BC814DFE0BF6013E94@Cloud.RL.local>
+To: Viresh Kumar <viresh.kumar@st.com>
+Date: Thu, 26 Apr 2012 09:20:37 +0300
+In-Reply-To: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
+References: <43a59a35ce076693de33846844ac5be4dae5a49b.1334662614.git.viresh.kumar@st.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ldGzHeOjkCYId8U2Q/7G"
-Message-ID: <1335419530.2290.12.camel@koala>
+ boundary="=-AIiFTDY2Tkm7wAgDA9ol"
+Message-ID: <1335421265.4703.0.camel@koala>
 Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- b w <wdjjwb@gmail.com>
+Cc: artem.bityutskiy@linux.intel.com, linus.walleij@linaro.org,
+ spear-devel@list.st.com, viresh.linux@gmail.com, linux-mtd@lists.infradead.org,
+ sr@denx.de, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,26 +29,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ldGzHeOjkCYId8U2Q/7G
+--=-AIiFTDY2Tkm7wAgDA9ol
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-04-18 at 06:05 +0100, Jon Povey wrote:
-> I have just carried on happily using my hack. Don't have the time to
-> work on a proper fix, sorry.
+On Tue, 2012-04-17 at 17:07 +0530, Viresh Kumar wrote:
+> clk_{un}prepare is mandatory for platforms using common clock framework. =
+Since
+> this driver is used by SPEAr platform, which supports common clock framew=
+ork,
+> add clk_{un}prepare() support for it.
 >=20
-> Hack attached if it is of interest, apologies for the format,
-> blame my email client. This is against roughly mainline 3.0
+> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 
-I really do not know why Thomas implemented it this way - probably there
-was a reason. Would be nice to test your change on few more NANDs and if
-it is fine - merge it.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ldGzHeOjkCYId8U2Q/7G
+--=-AIiFTDY2Tkm7wAgDA9ol
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,13 +56,13 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAABAgAGBQJPmOKIAAoJEJtuLFy+q7feMUoH/R05bEcqRwpFbOCvzohcTehh
-PTzgpcnMym6pAWoM9hT3vjm4pSH+nEy2x84HKrH4q8lmop0xxzbVKnyG6WoAF1l2
-gnIRq6Y92CND23djW0Omw17VGv/t1CxKVoE4LtMFCRGobNeOg31vu6nM0lN3KgAD
-1l1kdSmGWGphYpswGMxxV7QNCUz7++IrOej00AyC7s+YM6+fmZwTptCDHXsMsjDW
-YYiAyJtQ1zvyNCpHPbGrf4rbN5IuBD50JH59C7XcYdbtiduHOeNPvE6roImd+D4W
-ge+TZ+ScFerr4ohGJulCsqwcGHdBmZKrLUmGXhqcJbjJfBlfOIGlrIsc4bSV1E0=
-=m+Q8
+iQEcBAABAgAGBQJPmOk1AAoJEJtuLFy+q7fehsMH/iN5BPxS0uuOyI8POMy4djh/
+rwZhTIaj3e2jnn88IajSJODm4x7TjP2wmu0oV4H0QFlZhuabPTW9gme7Xy2Qp1m+
+pTdshx52IQIf4U6fB4h0LE9IMw8EaZPlf+HNWAZorRztFhtm7jewW9N+mpUtxr18
+sVqum1IYBilRiKqQOAV1+zQq233vqDbKvK/9TuOMGOOW2rekpalUjwXa6CbrTVNW
+rlZpP+oreYvLxxb2GvQm8VxTFgUB9NjefIFmipjTS+Fu/fz6VBkp3YBq7qJE2eHg
+8M3AIPmcMyd4ePXr7YY0JDZrNw8ZfQz0l+vbL8pZ5pBWQKT32mp1XVDKrBXvlww=
+=tu5k
 -----END PGP SIGNATURE-----
 
---=-ldGzHeOjkCYId8U2Q/7G--
+--=-AIiFTDY2Tkm7wAgDA9ol--
