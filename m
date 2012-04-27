@@ -1,18 +1,21 @@
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNbgw-0003Nr-Sh
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 03:17:55 +0000
-From: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-To: <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH v3] powerpc/85xx: Enable MTD/NOR/NAND options by default in
- defconfig
-Date: Fri, 27 Apr 2012 11:01:00 +0800
-Message-ID: <1335495660-14898-1-git-send-email-Shengzhou.Liu@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- Shengzhou Liu <Shengzhou.Liu@freescale.com>
+ id 1SNe5H-0007RR-N5
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 05:51:12 +0000
+Received: by lagy4 with SMTP id y4so293970lag.36
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2012 22:51:08 -0700 (PDT)
+Message-ID: <1335505821.1767.2.camel@koala>
+Subject: Re: [PATCH] mtd: nand: omap: fix race condition in omap_wait()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Date: Fri, 27 Apr 2012 08:50:21 +0300
+In-Reply-To: <1334661113-24709-1-git-send-email-ivan.djelic@parrot.com>
+References: <1334661113-24709-1-git-send-email-ivan.djelic@parrot.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-SC1dgisPue+0vFD9vou+"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable MTD/NOR/NAND options by default in mpc85xx_defconfig and
-mpc85xx_smp_defconfig to support NOR, NAND flash.
 
-Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
----
-based on master branch of git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git tree.
-v3: remove "CONFIG_MTD_NAND_VERIFY_WRITE=y"
-v2: remove typo "CONFIG_MPC8xxx_GPIO=y"
+--=-SC1dgisPue+0vFD9vou+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
- arch/powerpc/configs/mpc85xx_defconfig     |   24 ++++++++++++++++++++++++
- arch/powerpc/configs/mpc85xx_smp_defconfig |   24 ++++++++++++++++++++++++
- 2 files changed, 48 insertions(+), 0 deletions(-)
+On Tue, 2012-04-17 at 13:11 +0200, Ivan Djelic wrote:
+> If a context switch occurs in function omap_wait() just before the
+> while loop is entered, then upon return from context switch the
+> timeout may already have elapsed: in that case, status is never
+> read from NAND device, and omap_wait() returns an error.
+> This failure has been experimentally observed during stress tests.
+>=20
+> This patch ensures a NAND status read is always performed before
+> returning, as in the generic nand_wait() function.
+>=20
+> Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
 
-diff --git a/arch/powerpc/configs/mpc85xx_defconfig b/arch/powerpc/configs/mpc85xx_defconfig
-index d6b6df5..8c3da78 100644
---- a/arch/powerpc/configs/mpc85xx_defconfig
-+++ b/arch/powerpc/configs/mpc85xx_defconfig
-@@ -74,6 +74,30 @@ CONFIG_INET_ESP=y
- CONFIG_IPV6=y
- CONFIG_IP_SCTP=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_MTD=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+CONFIG_MTD_CHAR=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_CFI=y
-+CONFIG_FTL=y
-+CONFIG_MTD_GEN_PROBE=y
-+CONFIG_MTD_MAP_BANK_WIDTH_1=y
-+CONFIG_MTD_MAP_BANK_WIDTH_2=y
-+CONFIG_MTD_MAP_BANK_WIDTH_4=y
-+CONFIG_MTD_CFI_I1=y
-+CONFIG_MTD_CFI_I2=y
-+CONFIG_MTD_CFI_INTELEXT=y
-+CONFIG_MTD_CFI_AMDSTD=y
-+CONFIG_MTD_CFI_UTIL=y
-+CONFIG_MTD_PHYSMAP_OF=y
-+CONFIG_MTD_PARTITIONS=y
-+CONFIG_MTD_OF_PARTS=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_FSL_ELBC=y
-+CONFIG_MTD_NAND_FSL_IFC=y
-+CONFIG_MTD_NAND_IDS=y
-+CONFIG_MTD_NAND_ECC=y
-+CONFIG_MTD_M25P80=y
- CONFIG_PROC_DEVICETREE=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_NBD=y
-diff --git a/arch/powerpc/configs/mpc85xx_smp_defconfig b/arch/powerpc/configs/mpc85xx_smp_defconfig
-index 5b0e292..575c410 100644
---- a/arch/powerpc/configs/mpc85xx_smp_defconfig
-+++ b/arch/powerpc/configs/mpc85xx_smp_defconfig
-@@ -76,6 +76,30 @@ CONFIG_INET_ESP=y
- CONFIG_IPV6=y
- CONFIG_IP_SCTP=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_MTD=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+CONFIG_MTD_CHAR=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_CFI=y
-+CONFIG_FTL=y
-+CONFIG_MTD_GEN_PROBE=y
-+CONFIG_MTD_MAP_BANK_WIDTH_1=y
-+CONFIG_MTD_MAP_BANK_WIDTH_2=y
-+CONFIG_MTD_MAP_BANK_WIDTH_4=y
-+CONFIG_MTD_CFI_I1=y
-+CONFIG_MTD_CFI_I2=y
-+CONFIG_MTD_CFI_INTELEXT=y
-+CONFIG_MTD_CFI_AMDSTD=y
-+CONFIG_MTD_CFI_UTIL=y
-+CONFIG_MTD_PHYSMAP_OF=y
-+CONFIG_MTD_PARTITIONS=y
-+CONFIG_MTD_OF_PARTS=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_FSL_ELBC=y
-+CONFIG_MTD_NAND_FSL_IFC=y
-+CONFIG_MTD_NAND_IDS=y
-+CONFIG_MTD_NAND_ECC=y
-+CONFIG_MTD_M25P80=y
- CONFIG_PROC_DEVICETREE=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_NBD=y
--- 
-1.6.4
+Pushed this one to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-SC1dgisPue+0vFD9vou+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPmjOdAAoJECmIfjd9wqK0Cq4P/3BEofcau9aw1HY+q1VBRF5g
+WgJ2LlyAjcyi3Px9/X4x61fWhlaIaHIn8Fijm1inxF4+2ZBIWzA0C8De0JGZF0U5
+Qm87EocFX+oRDkSN//wUCeADBrzfI9I1yM0l89mtdRypds9lmg2hzwg0jgE0O47N
+V98gVBdmzMH5gmrzBXHxYfSOCJ4OOWwrOXUUkXuWx1Dr5eW6LHwkCcH/yFvpMVTg
+ULbPmJ7CmRc6hiidul0syURc3ClZ5KMEz2iqzVJFOxCqvkEazSGKQeGBU9JUBrm6
+R/e4ldHBgMz+ZUvHmoGF/u2Ogi44fbU7kxrW93YHnW0Y+H2ys8ze+sohbVWO7/jx
+sxxkIdD4kxLvlkSMEk4ypk67rnOzMj47x9qqmVOpPAqhAuantti3k/QRLgIpRHIw
+2evokw0SgjjLMJyAoCeNPPNM/IhLkW8Oln/lkZJJP4vAezzVuDYVh9lrai73kAPE
+IPPH6me/aGeGm3nLG8/ClTam/luDw5/JjZtovy49OhwF7Rb6P/7X95XQT5uyml7y
+Ky5Yym+0AJ3WCL8DpubQAcEQpWDzj4w2wkWQlwVvXruxWX0FJCToxnUSyvRfyY7b
+7VHTNC0yWkCCpNxZD96zfNX/A2I9IdXUS6iDnWaS7u0ahssvX0/cImkearenrgUx
+2ANyMSgEAlwTVnpkGKmc
+=yAeU
+-----END PGP SIGNATURE-----
+
+--=-SC1dgisPue+0vFD9vou+--
