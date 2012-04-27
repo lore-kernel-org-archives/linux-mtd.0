@@ -1,14 +1,20 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNiHl-000364-3O
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 10:20:21 +0000
-Received: by wibhj13 with SMTP id hj13so329333wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 03:20:18 -0700 (PDT)
-From: Bastian Hecht <hechtb@googlemail.com>
+ id 1SNjJq-0007DE-1a
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 11:26:35 +0000
+Received: by wibhj13 with SMTP id hj13so387787wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 04:26:31 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: omap: fix race condition in omap_wait()
+Mime-Version: 1.0 (Apple Message framework v1257)
+Content-Type: text/plain; charset=us-ascii
+From: Mark Olleson <mark.olleson@yamaha.co.uk>
+In-Reply-To: <1335505821.1767.2.camel@koala>
+Date: Fri, 27 Apr 2012 12:26:28 +0100
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8C6340D0-2780-4E43-97C1-6F68013DBF37@yamaha.co.uk>
+References: <1334661113-24709-1-git-send-email-ivan.djelic@parrot.com>
+ <1335505821.1767.2.camel@koala>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Add a NAND_CMD_STATUS when using write verification
-Date: Fri, 27 Apr 2012 12:19:31 +0200
-Message-Id: <1335521971-5046-1-git-send-email-hechtb@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,29 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make sure the NAND chip is properly programmed we need a status
-command before each page write. When CONFIG_MTD_NAND_VERIFY_WRITE=y this
-assumption is broken when writing multiple pages consecutively. This
-patch fixes this.
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+On 27 Apr 2012, at 06:50, Artem Bityutskiy wrote:
+
+> On Tue, 2012-04-17 at 13:11 +0200, Ivan Djelic wrote:
+>> If a context switch occurs in function omap_wait() just before the
+>> while loop is entered, then upon return from context switch the
+>> timeout may already have elapsed: in that case, status is never
+>> read from NAND device, and omap_wait() returns an error.
+>> This failure has been experimentally observed during stress tests.
+>>=20
+>> This patch ensures a NAND status read is always performed before
+>> returning, as in the generic nand_wait() function.
+>>=20
+>> Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
+>=20
+> Pushed this one to l2-mtd.git, thanks!
+>=20
+
+I'm investigating a problem where omap_wait() returns (apparently after =
+the timeout) without the device being ready.    In my case, the loop has =
+run at least once (my system is lightly loaded so cond_resched() is =
+unlikely to block us for long).   This patch will help in the case where =
+cond_resched() blocks the tread beyond the timeout as well as the case =
+where a context switch occurs before ever reading a value.=20
+
+When the timeout is reached without the device becoming ready,  =
+omap_wait() returns with a status value with the NAND_STATUS_FAIL clear, =
+but in many places where omap_wait() is called from only check for  =
+NAND_STATUS_FAIL, and then go on to issue further commands to the device =
+- which fail.  =20
+
+This includes the code enabled by CONFIG_MTD_NAND_VERIFY_WRITE when then =
+reads back garbage and fails.
+
+
+
+Mark
 ---
- drivers/mtd/nand/nand_base.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8a393f9..58335cd 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2101,6 +2101,9 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	if (chip->verify_buf(mtd, buf, mtd->writesize))
- 		return -EIO;
-+
-+	/* Make sure the next page prog is preceded by a status read */
-+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
- #endif
- 	return 0;
- }
--- 
-1.7.5.4
+Mark Olleson - Senior R&D Engineer
+Technology Research & Development Group
+Yamaha R&D Centre London
