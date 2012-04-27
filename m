@@ -1,24 +1,18 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNluQ-0003K4-0u
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 14:12:31 +0000
-Received: by lagy4 with SMTP id y4so613974lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 07:12:28 -0700 (PDT)
-Message-ID: <1335535945.1910.11.camel@koala>
-Subject: RE: Exposing NAND chip information
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tom Isaacson <Tom.Isaacson@navico.com>
-Date: Fri, 27 Apr 2012 17:12:25 +0300
-In-Reply-To: <B36E81988B048A4FA3600EDE585F756BD123D1@EXCH02-AKLNZ.MARINE.NET.INT>
-References: <B36E81988B048A4FA3600EDE585F756BD0EBD2@EXCH02-AKLNZ.MARINE.NET.INT>
- , <1335105890.28267.27.camel@brekeke>
- <B36E81988B048A4FA3600EDE585F756BD123D1@EXCH02-AKLNZ.MARINE.NET.INT>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-37gGKxWbXGxOvEPc4939"
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Florian Fainelli <ffainelli@freebox.fr>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SNmEe-0000SV-BD
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 14:33:25 +0000
+Date: Fri, 27 Apr 2012 16:33:17 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Matteo Mattei <matteo.mattei@gmail.com>
+Subject: Re: UBIFS switched to read-only mode after make_reservation warnings
+Message-ID: <20120427143317.GC2044@parrot.com>
+References: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,54 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Apr 24, 2012 at 04:46:30PM +0100, Matteo Mattei wrote:
+> Hi guys,
+> 
+> continuing the tests on UBI/UBIFS and power cyclings I have the
+> following errors (dumping dmesg):
+> 
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (123)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (124)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (125)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (126)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (127)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (128)
+> UBIFS error (pid 776): make_reservation: stuck in space allocation
+> UBIFS error (pid 776): make_reservation: cannot reserve 4144 bytes in
+> jhead 2, error -28
+> UBIFS error (pid 776): do_writepage: cannot write page 2075 of inode
+> 80294, error -28
+> UBIFS warning (pid 776): ubifs_ro_mode: switched to read-only mode, error -28
+> 
+> It seems that there is not enough space for the journal...
+> 
+> This is the software and environment used:
+> - linux kernel 2.6.32 (from TI)
+> - ubifs backport (from git://git.infradead.org/~dedekind/ubifs-v2.6.32.git).
+> - 8-bit BCH.
+> - UBIFS mounted with no compression.
+> - usage of ubiformat instead of flash_eraseall for the first
+> filesystem initialization.
+> 
+> This is the hardware used:
+> - CPU: OMAP3530.
+> - NAND chips: Micron MT29F4G08ABBDAH4-IT.
+> 
+> 
+> Do you have any idea on what happened and how to fix this?
+> Which are the conditions that lead this behavior?
 
---=-37gGKxWbXGxOvEPc4939
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hello Matteo,
 
-On Sun, 2012-04-22 at 23:40 +0000, Tom Isaacson wrote:
-> The documentation for sysfs (http://lxr.linux.no/linux
-> +v3.3.2/Documentation/filesystems/sysfs.txt) says:
-> "Attributes should be ASCII text files, preferably with only one value
-> per file. It is noted that it may not be efficient to contain only one
-> value per file, so it is socially acceptable to express an array of
-> values of the same type."
-> So if we want to combine we should do it the first way - both IDs in
-> one file, both strings in another:
->   id - Manufacturer and Chip ID (tab separated)
->   name - Manufacturer and Chip name (tab separated)
+Your trace only shows the end of the story; the interesting part is what happens
+before: have blocks been marked bad, e.g. after a UBI torture ? What are MTD/UBI/UBIFS saying ?
 
-I think that would not make sense to combine ids and names. I think that
-is a general recommendation which should be go through the common sense
-filter. E.g., there are many "dev" attributes in "major:minor" format.
-Or look at the 'uevent' attributes contents. Or "resource" pci
-subsystems' files.
+If you are running power cycling tests, I suggest you keep a full log of the system
+(from the initial boot with a pristine flash till the end of the test).
 
---=20
-Best Regards,
-Artem Bityutskiy
+You could also analyze your target NAND flash, especially how many bad blocks and empty
+blocks it currently has.
 
---=-37gGKxWbXGxOvEPc4939
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+BTW, have you been able to run tests using my patch ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPmqlJAAoJECmIfjd9wqK0xPsQAM6dc+8GMRzMa4AuCNkPVWUI
-qUN7NhYjFqj/AyqaJwNdk2kTnlY14Q04ud9b69PphCWknzyp7YM/zvF8jGGtCBK+
-7TTdlwgcfokHDbRIsFcLZYMR0WSXh1iaaxsnhq8O9O0ZJKfOi8+Prsjvb1wbmUWw
-OGp8lLVKivKj6OS8Cqp6gSmKAm8466LR16NOKgvGDU3vHa6c048mm/xtU6ErDd4Q
-LE/lDEk/eiADtIFx9GpUeFtFRWT5t73WX8HXLX1N6vGZAnLQqT9C220BIWAZpdiT
-ANWAsNGW+ve4oGtbzNOKqD8d6fGIh+aQlfA79CUDsaeEOMe1XWu7QpSwcEfDI53Z
-n3Yy+utOeHR97qkQ3rqhJgZ12AiragfrymsyDGMklO7qNzsnu1yew9OUGDPXmMYe
-eVr5ZMT+u6x393UzFcK7bVmIhdzK6H4Fv13xL2ZKKBtmOuPnzxzQouuDzLHzqQzk
-gahw6QCkmyzslqf5WaFSiLjHoetmAVXpfC8yVi9N34hVengMkAGAwnqub6X9HxWv
-vQa6pJ+RKaQbfre88o8cxfKBezmQIVdbN6YCwyAedApUdsTZgX+7XW9OQgev1YxC
-3ViUnOK4+8sUT+HDqrbswf0QbiCwl4QlndTs3CHBxNUnxFgiH91G1eaSPpMEsHaC
-awVdTCX9qitt9tEZfHQa
-=W/r9
------END PGP SIGNATURE-----
-
---=-37gGKxWbXGxOvEPc4939--
+BR,
+-- 
+Ivan
