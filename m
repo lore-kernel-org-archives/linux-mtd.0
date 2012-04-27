@@ -1,18 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SNmEe-0000SV-BD
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 14:33:25 +0000
-Date: Fri, 27 Apr 2012 16:33:17 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Matteo Mattei <matteo.mattei@gmail.com>
-Subject: Re: UBIFS switched to read-only mode after make_reservation warnings
-Message-ID: <20120427143317.GC2044@parrot.com>
-References: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+Received: from mail.grid-net.com ([97.65.115.2])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SNmHK-0000oM-3a
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2012 14:36:10 +0000
+Message-ID: <4F9AAED7.2000800@grid-net.com>
+Date: Fri, 27 Apr 2012 07:36:07 -0700
+From: Subodh Nijsure <snijsure@grid-net.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Suggestion needed to set proper journal size
+References: <4F91EA56.50803@grid-net.com> <1335535527.1910.6.camel@koala>
+In-Reply-To: <1335535527.1910.6.camel@koala>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 24, 2012 at 04:46:30PM +0100, Matteo Mattei wrote:
-> Hi guys,
-> 
-> continuing the tests on UBI/UBIFS and power cyclings I have the
-> following errors (dumping dmesg):
-> 
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (123)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (124)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (125)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (126)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (127)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (128)
-> UBIFS error (pid 776): make_reservation: stuck in space allocation
-> UBIFS error (pid 776): make_reservation: cannot reserve 4144 bytes in
-> jhead 2, error -28
-> UBIFS error (pid 776): do_writepage: cannot write page 2075 of inode
-> 80294, error -28
-> UBIFS warning (pid 776): ubifs_ro_mode: switched to read-only mode, error -28
-> 
-> It seems that there is not enough space for the journal...
-> 
-> This is the software and environment used:
-> - linux kernel 2.6.32 (from TI)
-> - ubifs backport (from git://git.infradead.org/~dedekind/ubifs-v2.6.32.git).
-> - 8-bit BCH.
-> - UBIFS mounted with no compression.
-> - usage of ubiformat instead of flash_eraseall for the first
-> filesystem initialization.
-> 
-> This is the hardware used:
-> - CPU: OMAP3530.
-> - NAND chips: Micron MT29F4G08ABBDAH4-IT.
-> 
-> 
-> Do you have any idea on what happened and how to fix this?
-> Which are the conditions that lead this behavior?
+On 04/27/2012 07:05 AM, Artem Bityutskiy wrote:
+> On Fri, 2012-04-20 at 15:59 -0700, Subodh Nijsure wrote:
+>> Hello,
+>>
+>> I know general implications of changing journal size on UBIFS -- bigger
+>> the journal,
+>> longer it may take to replay the journal, increasing time UBIFS takes to
+>> mount. Smaller
+>> journal means more re-writes to flash.
+>>
+>> We created 2 partitions 100MB and 45MB and we see that by default
+>> mkfs.ubifs is reserving 8MB for journal.
+>>
+>> UBIFS: file system size:   101834752 bytes (99448 KiB, 97 MiB, 802 LEBs)
+>> UBIFS: journal size:         9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
+>>
+>> UBIFS: file system size:     47996928 bytes (46872 KiB, 45 MiB, 378 LEBs)
+>> UBIFS: journal size:          9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
+>>
+>> I know I can specify size of journal with -j option.
+>>
+>> Should the journal size be scaled in some proportion of size of UBIFS
+>> partition?
+> It does grow, but not infinitely. We have some heuristics in mkfs.ubifs,
+> but those were mostly taken out of thin air. I do not remember us doing
+> a lot of experimenting with that.
+>
+>> Should the journal size depend on how often you expect file-system to be
+>> updated?
+>>
+>> Has anyone done experiments with setting really small (1MB/2MB) journal
+>> size?
+>> What side effects is one likely to encounter if the journal size is too
+>> small.
+>>
+>> fwiw in my use case, file-system doesn't get updated that often, perhaps
+>> 2K data in about 4 files once a week.
+> I think you should do your own experiments. If you share the results -
+> will be nice.
+Yes, its on my to-do list once I am done resubmitting XATTR and integck 
+patches.
 
-Hello Matteo,
-
-Your trace only shows the end of the story; the interesting part is what happens
-before: have blocks been marked bad, e.g. after a UBI torture ? What are MTD/UBI/UBIFS saying ?
-
-If you are running power cycling tests, I suggest you keep a full log of the system
-(from the initial boot with a pristine flash till the end of the test).
-
-You could also analyze your target NAND flash, especially how many bad blocks and empty
-blocks it currently has.
-
-BTW, have you been able to run tests using my patch ?
-
-BR,
--- 
-Ivan
+-Subodh
