@@ -1,19 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SO9XY-00072y-ET
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 15:26:29 +0000
-Received: by lagy4 with SMTP id y4so1349635lag.36
- for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 08:26:25 -0700 (PDT)
-Message-ID: <1335626773.1917.3.camel@koala>
+ id 1SO9bk-0007qa-AS
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 15:30:48 +0000
+Received: by lboj14 with SMTP id j14so1369562lbo.36
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 08:30:46 -0700 (PDT)
+Message-ID: <1335627043.1917.4.camel@koala>
 Subject: Re: [PATCH v2 0/10] sh_flctl hardware ECC mode cleanup
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Bastian Hecht <hechtb@googlemail.com>
-Date: Sat, 28 Apr 2012 18:26:13 +0300
-In-Reply-To: <1335362618-4559-1-git-send-email-hechtb@gmail.com>
+Date: Sat, 28 Apr 2012 18:30:43 +0300
+In-Reply-To: <1335626773.1917.3.camel@koala>
 References: <1335362618-4559-1-git-send-email-hechtb@gmail.com>
+ <1335626773.1917.3.camel@koala>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-towusb8ws+Ppq5y3yFMw"
+ boundary="=-r9+4jDIelZ3xpBckAsQb"
 Mime-Version: 1.0
 Cc: Magnus Damm <magnus.damm@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -28,27 +29,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-towusb8ws+Ppq5y3yFMw
+--=-r9+4jDIelZ3xpBckAsQb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-04-25 at 16:03 +0200, Bastian Hecht wrote:
-> changelog:
->   - extract the iounmap calls from patch "Add support for error IRQ" into=
- a new patch.
->   - swapped patches "Add support for error IRQ" and "Add error IRQ resour=
-ce"
->   - corrected an indentation mistake
+On Sat, 2012-04-28 at 18:26 +0300, Artem Bityutskiy wrote:
+> On Wed, 2012-04-25 at 16:03 +0200, Bastian Hecht wrote:
+> > changelog:
+> >   - extract the iounmap calls from patch "Add support for error IRQ" in=
+to a new patch.
+> >   - swapped patches "Add support for error IRQ" and "Add error IRQ reso=
+urce"
+> >   - corrected an indentation mistake
+>=20
+> Unfortunantely, I cannot build-test your patches because mackerel
+> defconfig still does not build (mackerel_defconfig). Any suggestions how
+> to work this around or any other defconfig to use?
 
-Unfortunantely, I cannot build-test your patches because mackerel
-defconfig still does not build (mackerel_defconfig). Any suggestions how
-to work this around or any other defconfig to use?
+If you send me a temprorary work-around patch for the build failure -
+would be fine. This patch does  not have to work, just make the tree
+compile.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-towusb8ws+Ppq5y3yFMw
+--=-r9+4jDIelZ3xpBckAsQb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPnAwVAAoJECmIfjd9wqK0CjoP/24SojzXorFYvJliSKyMJfwv
-Xl5L8LsP98fu1A4xXVpa9wyIU3mxjXM1tWpDN0g/+rwrjjU4cKkgusfRHzQ3/+hp
-Et4hKi5chXZ0+jWMJG2TSesFkYgsL5jxpU+b8g3603sZDiodoxP595/PItTZuVd9
-mM7tT+9nxELgzZVfCf5cMyeC7Q0jk8h1guZZ25Q93NZX9D/TFR1bh5Q8c6JJDoUL
-8CpJ1wc/7RdtvAEB8UsZyCLWXlBIjYd0p3JCyR/xtJwot8DH9TAlapvbXn4DuFfd
-lOBzSmuzQOSD2wr7h8rvUtU67KDtU2evfq5FP8qiv08znZ9uT4azS7yUHRpL4Wld
-Rz4YrlzDY1d4KFWGXZjTa75DwpFP/FNqp85Wh5ZocefjqbDzsoNUsmLT6D/qtsVL
-XIe9Iek9PUVEqkeiHLsV9mliO7sup464mVbUPdr73+2kdWfv29SI/TaI7BwnO9ts
-J0vkGXDSNhEm1kaiqaMcquOjugwDjaNM8jpujosa3IpzpOrIpFW51MyrhFNq9Fpv
-c8xc+B4vkhpoLEWqbnQuGkNj2mBN0Viero3hdgRdfWbjnuPomltGsnZTRm+swBfF
-54hc0mQHM6+0Z6AoMyT3sSJsvlpYeONnAhfN7R+ApCoyTOzOexzPjhW5QWWbkMHj
-dLUdh+X/I6wsHhmTPK79
-=4Ea0
+iQIcBAABAgAGBQJPnA0jAAoJECmIfjd9wqK0h8cQAIk3h5uxfHajo9yFVWnXVv4t
+15IoqLPCsjC8nsHvK9iZEXF1dXEG5qG6+lzi5wFveqZH4/69DezWjtOJqxk0STth
+XNegXhkXN4g4GGrCeMXgEQNEOHIav+yyLqJNl8S08ahoIFujbEtaIsa2jDIZlW5R
+qweLhKkJI24Y/9wH2iaIZpvbswAsmBE6bokn+wFjRtW5bjJRFVu9yVNwzos3VIhc
+odrT67Tgg7cMKJC4/bN00eWJykhYsxg2HNHBBDyiM75QLtHTf665A8Xp4FjxyWd0
+vSKWmjeT5HcAZd3IH4/rhqy3COmY+zO1LXbeVAlq8ilXgoGzuEnm0WQDFLqrOrKR
+URMLomwhoxVLpNCuJoCI8AyTzbkbFV3IrSII5+JmeCbrUF9tdl0Hutl4FFC1SPpE
+tq6yYe4CLRjCcSPms+xnWLHL9TMi0aWct1HgMnRoim2dMuOH7PP9YgRQ/iKidBNV
+QMyoJ09x95BY638zxwpnjCZrkf8UvZfoX3Czt28v1HrMBbWGozGfNfobfeR+p2lS
+gtwoR48L38h/N6cpIS9vuOHOkOpJKh/BU+gMTP7IwP87vWuuL4dqykNgLcqqM58U
+heFnPwseUJv9Kq5IA9ZwrItmqkAd5I7DmhE6nl345I3e0lxMfUXFuKdjAHv5KoFn
++9yQp9Oy6d5ORi8M+S4e
+=c9YV
 -----END PGP SIGNATURE-----
 
---=-towusb8ws+Ppq5y3yFMw--
+--=-r9+4jDIelZ3xpBckAsQb--
