@@ -1,21 +1,22 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SO6EW-00023Z-6E
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 11:54:37 +0000
-Received: by lboj14 with SMTP id j14so1287623lbo.36
- for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 04:54:33 -0700 (PDT)
-Message-ID: <1335614070.1937.10.camel@koala>
-Subject: Re: UBIFS switched to read-only mode after make_reservation warnings
+ id 1SO6IP-0002Go-Oc
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 11:58:38 +0000
+Received: by lboj14 with SMTP id j14so1288920lbo.36
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 04:58:35 -0700 (PDT)
+Message-ID: <1335614313.1937.11.camel@koala>
+Subject: Re: [PATCH] mtd: block2mtd: page_read() never returns NULL
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matteo Mattei <matteo.mattei@gmail.com>
-Date: Sat, 28 Apr 2012 14:54:30 +0300
-In-Reply-To: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
-References: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+To: Ryosuke Saito <raitosyo@gmail.com>
+Date: Sat, 28 Apr 2012 14:58:33 +0300
+In-Reply-To: <1335178037.3060.7.camel@HDL00099>
+References: <1335178037.3060.7.camel@HDL00099>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kE2xqjg9yaGm0Y8XQpYS"
+ boundary="=-ZR4h+uVcq+YhJ9S2s/AQ"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: artem.bityutskiy@linux.intel.com, kernel-janitors@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +27,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kE2xqjg9yaGm0Y8XQpYS
+--=-ZR4h+uVcq+YhJ9S2s/AQ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-04-24 at 17:46 +0200, Matteo Mattei wrote:
-> Hi guys,
+On Mon, 2012-04-23 at 19:47 +0900, Ryosuke Saito wrote:
+> page_read() never returns NULL, so we can remove the NULL check here.
 >=20
-> continuing the tests on UBI/UBIFS and power cyclings I have the
-> following errors (dumping dmesg):
->=20
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (123)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (124)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (125)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (126)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (127)
-> UBIFS warning (pid 776): make_reservation: too many space allocation
-> re-tries (128)
-> UBIFS error (pid 776): make_reservation: stuck in space allocation
-> UBIFS error (pid 776): make_reservation: cannot reserve 4144 bytes in
-> jhead 2, error -28
-> UBIFS error (pid 776): do_writepage: cannot write page 2075 of inode
-> 80294, error -28
-> UBIFS warning (pid 776): ubifs_ro_mode: switched to read-only mode, error=
- -28
+> Signed-off-by: Ryosuke Saito <raitosyo@gmail.com>
 
-Please, when sending bug-reports - type dmesg and sent its contents.
-You miss stack-dumps. Also, please, have debugging enabled.
-
-> Do you have any idea on what happened and how to fix this?
-> Which are the conditions that lead this behavior?
-
-Not really, if you sent more info - could be.  Did you read this:
-http://linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
-
-Is this reproducible?
-
+Pushed to l2-mtd.git, thanks!
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kE2xqjg9yaGm0Y8XQpYS
+--=-ZR4h+uVcq+YhJ9S2s/AQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -79,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPm9p2AAoJECmIfjd9wqK0M6cP/1bC7rpoYPyQ0/G6EqOA1JSU
-jyfN62bFElUXU6r7irlovfIiDT1I8zyVE9yoQ9VTtZ5DRLeR0X82F+9Ee393fXs5
-U7qqN6/S6als4E7ZlZVUG9LFPdPzZO7ttPIBlvKmHF1TVKvtsW0iADTz35Lldjx4
-JssS/4wklHRsCfSq9gc8w3b3c0RsnKXn4q0/R5AoWu3fQB2DNVRrvmtwmmlSJoGp
-7phaOiFUyMakUWtJuA3CRee0ihNDiHXBmmk5keQ+G45GsvS+FE+n8qammYzKR+0A
-2YPDYowwnkd3ZCmCrcGCnXVJ23G1a/72HNRxPAX17iVt1uiN2sdgmm1MVOWxzotD
-57PeFiImfQhWjW8Qu4O1viVlrsM4ZVc5R6DEB9JaTG0qVcH2OajQBg9+ZD64GO2Y
-MJLdZ8vdP+zps4GfKrTu4NmBbjnwNr3/vdrg5FcsHy/LqBYdQJx2/VYCfEHHoUgX
-qP4+BATLedWEjQmpsIQn/2d3yARv15tWc/x8VbKtTiDMjI5vmTbue1yn5kYlVLUZ
-g8CodJ5R6PfviOcYW5I4tv/mzmkTOFlrPRdICmzq3LvXIHY3S3wWVnB4U6RB76sN
-fT58ggSm5Sg0xclYKzLZIC3p/2yOYbFtVo3whVxEoF6pw92eeazUc0wB45ln5zYZ
-OXLcLXA9JlBFU3RQLGSU
-=kyxm
+iQIcBAABAgAGBQJPm9tpAAoJECmIfjd9wqK0v2YP/ioq2oahVcooAX7+ejoNUbUy
+Kmkyty85dz+EC4pzP6gX1bYcJGWscxwffAU7EfutO2kVfFuLne0UndiHCj4j1c0V
+x4pDsM5qz/kYDLMrln5AQjQ/9L8tcvfHPqmRJeY6d9iDP/Uw7y9Ruy7lGy+tNUlZ
+dIsGizZ3s6fM7Vm4DHwep1avxAKNK0t9ggapXDoquzSppwCHDY6F3pGZQgDoG1AH
+RBuz7nPXSYcZZvkEFXaVRUUK+cOmzE3hHF3CpHWStSaJBXmIy807jRHSGNep4TaD
+lU4NsHQ8uENQb6Od9ZnqdQQA0ImrT0depd3f0cuRqDleHPpjmpC9NrUehj2TwyEu
+Qr3X8MzLr15SwQXTCfaCF3OTK/QKFb4+wzRG6AW6S+LCe/onzgexGEm26ZnEP9Ud
+Uq3+Y+jUcBdTjmYeR8PqE9uIcmKVazI2OuxCiqcotbv1R7Ve7YqAcbkYWEincfzf
+nDNvmvY+DIMKlx9PQlGdGIuMraaVVQz85+7evjUBGYaGbfctIoVobXjo8yA8jLfH
+j4TPWzFnHjaTQZAfg3rJApr6UUEiDEbnslHyjJ5/jMhYaX3OG4yj2b+L6ANv+VPp
+fvwnq3C8sXKClpXeVM3GSI4XHkCfcBOh4v0RDzNdLdHCW1WsZWp6P2kIWAzzvcZ3
+1p3Btrr4x7F9d4m25duF
+=9RXd
 -----END PGP SIGNATURE-----
 
---=-kE2xqjg9yaGm0Y8XQpYS--
+--=-ZR4h+uVcq+YhJ9S2s/AQ--
