@@ -1,17 +1,18 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNwWl-00036o-Kq
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 01:32:48 +0000
-Received: by dadn15 with SMTP id n15so2142415dad.16
- for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 18:32:46 -0700 (PDT)
+ id 1SNwWs-00038V-NO
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 01:32:55 +0000
+Received: by pbbrq13 with SMTP id rq13so1739571pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 18:32:53 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 04/10] mtd: cafe_nand: utilize oob_required parameter
-Date: Fri, 27 Apr 2012 18:29:48 -0700
-Message-Id: <1335576594-25267-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 05/10] mtd: denali: utilize oob_required parameter
+Date: Fri, 27 Apr 2012 18:29:49 -0700
+Message-Id: <1335576594-25267-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
 References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+Cc: Jamie Iles <jamie@jamieiles.com>, Axel Lin <axel.lin@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,26 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Don't write OOB if the caller doesn't require it.
+Don't return OOB if the caller doesn't require it.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/cafe_nand.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/denali.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 738aafa..4c9714b 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -525,7 +525,8 @@ static void cafe_nand_write_page_lowlevel(struct mtd_info *mtd,
- 	struct cafe_priv *cafe = mtd->priv;
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 436ea83..c56757f 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1204,7 +1204,9 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	denali_enable_dma(denali, false);
  
- 	chip->write_buf(mtd, buf, mtd->writesize);
--	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+-	memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize, mtd->oobsize);
 +	if (oob_required)
-+		chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
++		memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize,
++				mtd->oobsize);
  
- 	/* Set up ECC autogeneration */
- 	cafe->ctl2 |= (1<<30);
+ 	return 0;
+ }
 -- 
 1.7.5.4.2.g519b1
