@@ -1,23 +1,15 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SO73v-0004Ds-9c
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 12:47:44 +0000
-Received: by lboj14 with SMTP id j14so1306908lbo.36
- for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 05:47:41 -0700 (PDT)
-Message-ID: <1335617248.2118.0.camel@koala>
-Subject: Re: [PATCH] mtd/cmdlinepart: fix reference to mtdpart_setup() in
- comment
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Peter Meerwald <pmeerw@pmeerw.net>
-Date: Sat, 28 Apr 2012 15:47:28 +0300
-In-Reply-To: <1335359657-5963-1-git-send-email-pmeerw@pmeerw.net>
-References: <1335359657-5963-1-git-send-email-pmeerw@pmeerw.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-frrY9KTTPynitU+IFd7V"
-Mime-Version: 1.0
-Cc: Peter Meerwald <p.meerwald@bct-electronic.com>,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org
+MIME-Version: 1.0
+In-Reply-To: <1335614459.1937.13.camel@koala>
+References: <1335323184-11233-1-git-send-email-b32955@freescale.com>
+ <1335614459.1937.13.camel@koala>
+Date: Sat, 28 Apr 2012 09:31:55 -0400
+Message-ID: <CAMiH66GgMFVp4+4+6PVp-+CPqdFykO1BeE_2EHC2YmWYZ917yQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] add gpmi-nand dt support for mx6q and mx28
+From: Huang Shijie <shijie8@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem:
 
---=-frrY9KTTPynitU+IFd7V
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sat, Apr 28, 2012 at 8:00 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2012-04-25 at 11:06 +0800, Huang Shijie wrote:
+>> The mx6q-arm2 and imx28evk have already support the device tree now.
+>> So i decide to add the gpmi-nand dt support to them.
+>>
+>> The mx23 does not support the device tree now. I will add the gpmi dt support
+>> when it is ready.
+>
+> I cannot apply these patches to l2-mtd.git:
+Could you only apply the gpmi-nand patch? The other two patches are
+for DT, and should be appled in Shawn's tree.
 
-On Wed, 2012-04-25 at 15:14 +0200, Peter Meerwald wrote:
-> From: Peter Meerwald <p.meerwald@bct-electronic.com>
->=20
-> Signed-off-by: Peter Meerwald <p.meerwald@bct-electronic.com>
+Best Regards
+Huang Shijie
 
-Pushed to l2-mtd.git, thanks!
 
---=20
-Best Regards,
-Artem Bityutskiy
 
---=-frrY9KTTPynitU+IFd7V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPm+bgAAoJECmIfjd9wqK0VgMP/2P0mlxcKa08J5r9DDdjjaN4
-Un+Ee1XCGt6ia953JdlM5zLDYq9NEnM3OgkP0e/hYdAYp7/ib2gyQiTrU1l2E44s
-Jy5O3VKOx38i9Y7hDjPyiMfZECcrueXqtgMLlicfQnb3jaTBERXtYMQ2VWxHiTEO
-d+UZ9QdJKufxUivrdjlI2TlSnSKUj5DHtveSSLnz8Yl92hGT1DhINZioZlZwqiel
-+7J/Rm9lI736PCdfn0RmERDUfb+/ynbtksOvZTw/hisOTjfpDOtn0nbIsSVkfV7p
-FVbSHixO/g8AR9d39S+7eB+Q6pD36JxNm3rmpxgP6bxZzXtqY+quziRBuxVRqJPy
-mAVGf8O5dywDINcvDBc9unR9DyRGWpgMQee1ocxdfQSouDln6pZHEXGGonY9Qk9O
-IUyoAlAiPk7beSVfyQ+hbzvB+K3gOZR3D+Xhe3VwSa9MGZLWSFTICQ1fsLjY9r0e
-sMYBXgXytHIsIk+QuVIK6/56fzttbozvraJjgC2xuQg1d4CKLt96ftao3Wf61Nfc
-2V3fSset1qoVmCBsVqgdO19mPY05eIl9uya7RuuaXcUxuwoPK+2aDLWUX4yHZxT0
-Wf+I4lADiCGZQzR4cTs/vqnjmXOXnGxpKHOSKbJYSAucFx51n2FyorwDxfzJjSen
-L4rz8nQo8JoE0Jgy0Twv
-=j9x1
------END PGP SIGNATURE-----
 
---=-frrY9KTTPynitU+IFd7V--
+>
+> Applying: ARM: mx28: add gpmi-nand dt support
+> error: arch/arm/boot/dts/imx28-evk.dts: does not exist in index
+> error: arch/arm/boot/dts/imx28.dtsi: does not exist in index
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
