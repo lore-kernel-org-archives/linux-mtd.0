@@ -1,21 +1,15 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from mail4-relais-sop.national.inria.fr ([192.134.164.105])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNxOP-0005zY-Ag
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 02:28:14 +0000
-Message-ID: <4F9B56A3.3060601@freescale.com>
-Date: Sat, 28 Apr 2012 10:32:03 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1SNzzJ-0001E7-1o
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 05:14:30 +0000
+Date: Sat, 28 Apr 2012 07:06:16 +0200 (CEST)
+From: Julia Lawall <julia.lawall@lip6.fr>
+To: dwmw2@infradead.org
+Subject: question about fs/jffs2/readinode.c
+Message-ID: <alpine.DEB.2.02.1204280701210.1917@hadrien>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 08/10] mtd: gpmi-nand: utilize oob_requested parameter
-References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
- <1335576594-25267-9-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1335576594-25267-9-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Wolfram Sang <w.sang@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2012=C4=EA04=D4=C228=C8=D5 09:29, Brian Norris =D0=B4=B5=C0:
-> Don't read OOB if the caller didn't request it.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   35 +++++++++++++++++-------=
--------
->  1 files changed, 19 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> index ec16f2e..805bcf3 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -907,22 +907,25 @@ static int gpmi_ecc_read_page(struct mtd_info *mt=
-d, struct nand_chip *chip,
->  		mtd->ecc_stats.corrected +=3D corrected;
->  	}
-> =20
-> -	/*
-> -	 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob() for
-> -	 * details about our policy for delivering the OOB.
-> -	 *
-> -	 * We fill the caller's buffer with set bits, and then copy the block
-> -	 * mark to th caller's buffer. Note that, if block mark swapping was
-> -	 * necessary, it has already been done, so we can rely on the first
-> -	 * byte of the auxiliary buffer to contain the block mark.
-> -	 */
-> -	memset(chip->oob_poi, ~0, mtd->oobsize);
-> -	chip->oob_poi[0] =3D ((uint8_t *) auxiliary_virt)[0];
-> +	if (oob_required) {
-> +		/*
-> +		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
-> +		 * for details about our policy for delivering the OOB.
-> +		 *
-> +		 * We fill the caller's buffer with set bits, and then copy the
-> +		 * block mark to th caller's buffer. Note that, if block mark
-> +		 * swapping was necessary, it has already been done, so we can
-> +		 * rely on the first byte of the auxiliary buffer to contain
-> +		 * the block mark.
-> +		 */
-> +		memset(chip->oob_poi, ~0, mtd->oobsize);
-> +		chip->oob_poi[0] =3D ((uint8_t *) auxiliary_virt)[0];
-> =20
-> -	read_page_swap_end(this, buf, mtd->writesize,
-> -			this->payload_virt, this->payload_phys,
-> -			nfc_geo->payload_size,
-> -			payload_virt, payload_phys);
-> +		read_page_swap_end(this, buf, mtd->writesize,
-> +				this->payload_virt, this->payload_phys,
-> +				nfc_geo->payload_size,
-> +				payload_virt, payload_phys);
-> +	}
->  exit_nfc:
->  	return ret;
->  }
-it's ok to me.
+The function read_direntry in fs/jffs2/readinode.c contains the following 
+code:
 
-Acked-by: Huang Shijie <b32955@freescale.com>
+         err = jffs2_flash_read(c, (ref_offset(ref)) + read,
+                                rd->nsize - already, &read, &fd->name[already]);
+ 	if (unlikely(read != rd->nsize - already) && likely(!err))
+                       return -EIO;
+
+         if (unlikely(err)) {
+                 JFFS2_ERROR("read remainder of name: error %d\n", err);
+                 jffs2_free_full_dirent(fd);
+                 return -EIO;
+         }
+
+Is it intentional that the first if doesn't free fd?  At first I thought 
+that that might be the case, because what would be the point of having two 
+conditionals if they are going to do the same thing.  But I can't see why 
+fd should not be freed either, so maybe the two conditionals are just 
+there to give different error messages?
+
+thanks,
+julia
