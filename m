@@ -1,19 +1,19 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SO68b-0001uq-5H
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 11:48:29 +0000
-Received: by lagy4 with SMTP id y4so1267524lag.36
- for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 04:48:25 -0700 (PDT)
-Message-ID: <1335613694.1937.6.camel@koala>
-Subject: Re: UBIFS mount error: No space left on device
+ id 1SO6EW-00023Z-6E
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 11:54:37 +0000
+Received: by lboj14 with SMTP id j14so1287623lbo.36
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Apr 2012 04:54:33 -0700 (PDT)
+Message-ID: <1335614070.1937.10.camel@koala>
+Subject: Re: UBIFS switched to read-only mode after make_reservation warnings
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Matteo Mattei <matteo.mattei@gmail.com>
-Date: Sat, 28 Apr 2012 14:48:14 +0300
-In-Reply-To: <CAHea38QAtH52kLu29dztxLhfBBdPFdpSPUV3pyUxMCruBpPweg@mail.gmail.com>
-References: <CAHea38QAtH52kLu29dztxLhfBBdPFdpSPUV3pyUxMCruBpPweg@mail.gmail.com>
+Date: Sat, 28 Apr 2012 14:54:30 +0300
+In-Reply-To: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
+References: <CAHea38Td0PrZSr2c8g12UvVgOsTdKi_-sXhbnizzyEG+U91sVg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-mazxAX3uOACaI2a5BWxs"
+ boundary="=-kE2xqjg9yaGm0Y8XQpYS"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,51 +26,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mazxAX3uOACaI2a5BWxs
+--=-kE2xqjg9yaGm0Y8XQpYS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-04-23 at 14:34 +0200, Matteo Mattei wrote:
+On Tue, 2012-04-24 at 17:46 +0200, Matteo Mattei wrote:
 > Hi guys,
 >=20
-> After about 2 weeks with continuous read/write stress operation (w/o
-> powercycles) I moved a board to the power-cycles reliability lab to
-> perform also some other tests.
-> After a while I had an error during mounting the filesystem.
+> continuing the tests on UBI/UBIFS and power cyclings I have the
+> following errors (dumping dmesg):
 >=20
-> After a further analysis seems that there is not enough space to mount
-> the device (I don't know who is the responsible for this because there
-> is a quite big empty space in the device).
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (123)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (124)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (125)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (126)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (127)
+> UBIFS warning (pid 776): make_reservation: too many space allocation
+> re-tries (128)
+> UBIFS error (pid 776): make_reservation: stuck in space allocation
+> UBIFS error (pid 776): make_reservation: cannot reserve 4144 bytes in
+> jhead 2, error -28
+> UBIFS error (pid 776): do_writepage: cannot write page 2075 of inode
+> 80294, error -28
+> UBIFS warning (pid 776): ubifs_ro_mode: switched to read-only mode, error=
+ -28
 
-Yeah, I fixed several issues with this symptom in the past, probably not
-all of them.
+Please, when sending bug-reports - type dmesg and sent its contents.
+You miss stack-dumps. Also, please, have debugging enabled.
 
-> Can you clarify why this strange behavior happened?
+> Do you have any idea on what happened and how to fix this?
+> Which are the conditions that lead this behavior?
 
-Probably a bug.
+Not really, if you sent more info - could be.  Did you read this:
+http://linux-mtd.infradead.org/faq/ubifs.html#L_how_send_bugreport
 
-> Maybe there is not enough space in the journal?!
-
-May be. I'd need your image to take a look - did you save it?
-
-> Is there a way to avoid this or a workaround to let me to recover the boa=
-rd?
-
-Well, you can re-size the UBI volume a bit and add a couple more LEBs to
-work this around.
-
-> I have also one other question but not strictly related to this issue
-> (maybe there are already some other threads on this, but I didn't find
-> the answer): Do the UBI and UBIFS handle the erased space?
-> If so, how do they handle it?
-
-I do not understand the question.
+Is this reproducible?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-mazxAX3uOACaI2a5BWxs
+--=-kE2xqjg9yaGm0Y8XQpYS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -78,19 +79,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPm9j+AAoJECmIfjd9wqK0/jUQAKWcFxY1UvuEXqJYtD8bpqy/
-6KTPLA99I4rHz4CpVfD07GNRPoPR8ttbTeDaQjVGFTKvikdzWdRiHYyNlsNTBw5C
-LIddDwbwkI2TBQ7Da2mflGLQpiLpAuWsXqdY/c5y1M5tjm+5RnneHChloqeHXg8c
-0rUVrHPI3em1Do5/6m9IPJ5sQY8znUxU7WNZ/bIR73GvsOiDMY3UJlc9XUy6dcqf
-xgQBzKhqI/UGsEQyFl6HmLaL3wF0VQSnMv3GFYarkch6d+A0WqSVtQt2Dgssix5v
-BCxrS8uz3GZeJawkHTnlIGQLKnlYM89h9SKCsL81TJEsuxNf2Jiyl6b/yOb+jJVm
-5hSM2XqHgIa8EC+roxeZ10npxTIyvZdVvQVPKZbeZsXFK4SD6TvukO3kWbRvnjZs
-x4KvcmphCFEQ+utqi8yN3x1CoUwsBnq0vnEoZwc5GBhT2FGYtZP8+yHuatmg9oQi
-KNQUrt/Y4uNSC+xJ/MjB92H2ArAywg81Y9Bby/T1j3XrMNZ3mdTZOuMsiI26dhgK
-6fiQnc52OYNYC+y0uaSGEuEPJm8LAUz5JSM/XAPf7STAdo49j7DIfy5ay2/EpEcT
-JhaPtrVs/ZtRGAqm+x/DGtXgRO3HRd/nDAHg8pufJbD4AfaSWT1kQcrJR9un14+u
-m6i94hGlZ2xcH+lbRN3C
-=oTkJ
+iQIcBAABAgAGBQJPm9p2AAoJECmIfjd9wqK0M6cP/1bC7rpoYPyQ0/G6EqOA1JSU
+jyfN62bFElUXU6r7irlovfIiDT1I8zyVE9yoQ9VTtZ5DRLeR0X82F+9Ee393fXs5
+U7qqN6/S6als4E7ZlZVUG9LFPdPzZO7ttPIBlvKmHF1TVKvtsW0iADTz35Lldjx4
+JssS/4wklHRsCfSq9gc8w3b3c0RsnKXn4q0/R5AoWu3fQB2DNVRrvmtwmmlSJoGp
+7phaOiFUyMakUWtJuA3CRee0ihNDiHXBmmk5keQ+G45GsvS+FE+n8qammYzKR+0A
+2YPDYowwnkd3ZCmCrcGCnXVJ23G1a/72HNRxPAX17iVt1uiN2sdgmm1MVOWxzotD
+57PeFiImfQhWjW8Qu4O1viVlrsM4ZVc5R6DEB9JaTG0qVcH2OajQBg9+ZD64GO2Y
+MJLdZ8vdP+zps4GfKrTu4NmBbjnwNr3/vdrg5FcsHy/LqBYdQJx2/VYCfEHHoUgX
+qP4+BATLedWEjQmpsIQn/2d3yARv15tWc/x8VbKtTiDMjI5vmTbue1yn5kYlVLUZ
+g8CodJ5R6PfviOcYW5I4tv/mzmkTOFlrPRdICmzq3LvXIHY3S3wWVnB4U6RB76sN
+fT58ggSm5Sg0xclYKzLZIC3p/2yOYbFtVo3whVxEoF6pw92eeazUc0wB45ln5zYZ
+OXLcLXA9JlBFU3RQLGSU
+=kyxm
 -----END PGP SIGNATURE-----
 
---=-mazxAX3uOACaI2a5BWxs--
+--=-kE2xqjg9yaGm0Y8XQpYS--
