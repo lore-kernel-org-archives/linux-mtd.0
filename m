@@ -1,18 +1,20 @@
-Received: from mail-pz0-f43.google.com ([209.85.210.43])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SNwX5-00036o-83
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 01:33:08 +0000
-Received: by mail-pz0-f43.google.com with SMTP id n15so2142415dad.16
- for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 18:33:07 -0700 (PDT)
+ id 1SNwX6-00038V-JR
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2012 01:33:09 +0000
+Received: by mail-pb0-f49.google.com with SMTP id rq13so1739571pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2012 18:33:08 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 09/10] mtd: nand: utilize oob_required parameter
-Date: Fri, 27 Apr 2012 18:29:53 -0700
-Message-Id: <1335576594-25267-10-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 10/10] mtd: pxa3xx_nand: utilize oob_required parameter
+Date: Fri, 27 Apr 2012 18:29:54 -0700
+Message-Id: <1335576594-25267-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
 References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Axel Lin <axel.lin@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Don't read/write OOB if the caller doesn't requre it.
+Don't read/write OOB if the caller doesn't require it.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    6 ++++--
+ drivers/mtd/nand/pxa3xx_nand.c |    6 ++++--
  1 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 13a6355..5b390ae 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1075,7 +1075,8 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 			      uint8_t *buf, int oob_required, int page)
- {
- 	chip->read_buf(mtd, buf, mtd->writesize);
--	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	if (oob_required)
-+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
- 	return 0;
- }
- 
-@@ -1934,7 +1935,8 @@ static void nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 				const uint8_t *buf, int oob_required)
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 82ef968..372bc47 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -685,7 +685,8 @@ static void pxa3xx_nand_write_page_hwecc(struct mtd_info *mtd,
+ 		struct nand_chip *chip, const uint8_t *buf, int oob_required)
  {
  	chip->write_buf(mtd, buf, mtd->writesize);
 -	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
@@ -52,6 +44,16 @@ index 13a6355..5b390ae 100644
 +		chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
  }
  
- /**
+ static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
+@@ -696,7 +697,8 @@ static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
+ 	struct pxa3xx_nand_info *info = host->info_data;
+ 
+ 	chip->read_buf(mtd, buf, mtd->writesize);
+-	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	if (oob_required)
++		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+ 
+ 	if (info->retcode == ERR_SBERR) {
+ 		switch (info->use_ecc) {
 -- 
 1.7.5.4.2.g519b1
