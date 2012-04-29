@@ -1,22 +1,24 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SOYFu-0000sb-8r
- for linux-mtd@lists.infradead.org; Sun, 29 Apr 2012 17:49:54 +0000
-Received: by lagy4 with SMTP id y4so1762836lag.36
- for <linux-mtd@lists.infradead.org>; Sun, 29 Apr 2012 10:49:52 -0700 (PDT)
-Message-ID: <1335721789.1942.16.camel@koala>
-Subject: Re: [PATCH] mtd: nand: Add a NAND_CMD_STATUS when using write
- verification
+ id 1SOZjh-0005FD-Jn
+ for linux-mtd@lists.infradead.org; Sun, 29 Apr 2012 19:24:46 +0000
+Received: by lbbgg6 with SMTP id gg6so65745lbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Apr 2012 12:24:43 -0700 (PDT)
+Message-ID: <1335727480.1942.18.camel@koala>
+Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
+ mtd_read() returns -EUCLEAN
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Sun, 29 Apr 2012 20:49:49 +0300
-In-Reply-To: <1335521971-5046-1-git-send-email-hechtb@gmail.com>
-References: <1335521971-5046-1-git-send-email-hechtb@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Sun, 29 Apr 2012 22:24:40 +0300
+In-Reply-To: <4F984CC9.9060701@newsguy.com>
+References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
+ <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
+ <871unbis55.fsf@free.fr> <4F984CC9.9060701@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-1eeT94UW4KLmBgNFljLC"
+ boundary="=-avGIwBoRyDk4uY0AT5p/"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +29,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-1eeT94UW4KLmBgNFljLC
+--=-avGIwBoRyDk4uY0AT5p/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-04-27 at 12:19 +0200, Bastian Hecht wrote:
-> To make sure the NAND chip is properly programmed we need a status
-> command before each page write. When CONFIG_MTD_NAND_VERIFY_WRITE=3Dy thi=
-s
-> assumption is broken when writing multiple pages consecutively. This
-> patch fixes this.
+On Wed, 2012-04-25 at 12:13 -0700, Mike Dunn wrote:
+> Thanks for the review Robert.
 >=20
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+> On 04/25/2012 11:27 AM, Robert Jarzmik wrote:
+> >=20
+> > I think you should change :
+> >> - 	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is=
+ not
+> > into
+> >> - 	while (ret >=3D 0 && (len > 0 || ooblen > 0)) {".
+> >=20
+> > With that change, please add my:
+> > Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>=20
+>=20
+> In my exuberance, I prematurely sent the next version of the whole set.  =
+Artem,
+> Robert's requested change is in patch 7/7.  If no other problems come to =
+light,
+> maybe you could consider merging the first 6?  Then I only need to prepar=
+e a
+> corrected version of patch 7.
 
-Pushed to l2-mtd.git, thanks!
+Pushed the series to l2-mtd.git, thanks! You can send the newer version
+and I'll put it instead of the older one. Do not forget to add
+Acked-by's when you re-send, please.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-1eeT94UW4KLmBgNFljLC
+--=-avGIwBoRyDk4uY0AT5p/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +72,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPnX89AAoJECmIfjd9wqK0i0IP+waCiEWDW0nTygOsjkNxSBQL
-PhFC3Us+IY/mDOKDvK1jQKUU81a+NNqlB2lMRJv51+IBSz86I7/SNCPb9Qwwjy5U
-JgyRcq7utNcZChzERL2t33pwDgBbAFKTeRSKCZEv3XmG67ybyDCEjH+8jpPuYWML
-/hCy7NgmxZynX/SwqTroxiQfjkdbHBiim21b8ILEhR3lQChnu1S9VegtsLAxJwRb
-MczkEJz11GFYgrHuAyWjG8ZMYP5yw1M37tkeopLOCTOMkV8ny0KtxMF22XIFV0sB
-VU+I5FCsp7kLylOsRxY3h/FeGf0Lh9b+H3YmAzldRhmkwhzo+yGQpKLCD6qKSyEl
-PRg26QGL8ge1ZAlbpq0/rk+EyZW8Egie+RmRlbEhSQSk9TWK+iYxjbNyfO7JUGts
-tBCrCiHscQVCFMMORcNXGUVKceTzzPKh0G2RX6vE2AxKJwMIfYV5v3RoXpwfrK8G
-4H5TMIpLxNknX2669DZLkisSl/pJcImXGoMNNGigudQtQhju1BV15HswrYZkfJay
-nlZFRjBXOr88Tdl0R5ZNjTmXTeEWkOOU2xAHxfg56WnR2EvGgelxYq2oBdaWTcru
-w30zZ5fXWt/51O5iOzU7ejlWlD/ZHg1xGHsihtmfnhxuGaK8xzY7LmMA/K3Sm+AJ
-ROxfArTgylr0F9ZkbV9C
-=2nzf
+iQIcBAABAgAGBQJPnZV4AAoJECmIfjd9wqK0v8MQALroFcs8YMURruRe5MLhEa8d
+EAdmDohDqIQZZeReohptxXknVS3DS49y4HqLZtu0AJXsa51jLB0Nl9wue0F9ItMA
+WLI2vmYAX7NQAnjfQB4154ZDFXH0xrJ3hjd2J673M9ICV0rMW4gSL336XeYXeNYl
+pXWaHMqQw5gBJVLYJtpPFC9T3Ba7wqtWl4iMO4yyjK93+5Yk2NoST/lIco5bcUSy
+D9KxYH3muIVoqSaW3gdo9xDLJxi1jq2QPsU1DbMueMjA8ADwNeABeXziZNmXdsY7
+44iUYFo88jHLQW+R7RCvEVWYui+qW4slCgZIJ9PHL3p0d/WhRB6IWkun+v0cb1dD
+37DmoTsSkGthWsAt2LpIpn71xfNM7zvgpLYd7O9lbawm0EV3mqzHClUaoYe4+25F
+YmFl6EV2slyglDKDSe0c6hOnFBxFQ90FxSTgurZbJhdHGm+2tQaHuKdIFkJMXrNU
+onsD10zYB7e3fCofHZ2vxLzfzzbm+UuJPl1rgoajrfZvV2sgOZrFBxRid+36UelO
+ULrp5GJukvnn6CCW/be4HmDS+4iJQ32ri3EmUNuqmDMrjU2ywzrQer7T3JhKUBZo
+X5ubKy/KyA06BDjyqO1UFyVYso3m9rgybMgzXawS21lpGswA2GWUP2G8OT6LoM2q
+l59fTnMpUB/W4CHvKmp3
+=+DJc
 -----END PGP SIGNATURE-----
 
---=-1eeT94UW4KLmBgNFljLC--
+--=-avGIwBoRyDk4uY0AT5p/--
