@@ -1,22 +1,22 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SOxFq-0003BU-FX
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 20:31:32 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
- mtd_read() returns -EUCLEAN
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
- <871unbis55.fsf@free.fr> <4F984CC9.9060701@newsguy.com>
- <1335727480.1942.18.camel@koala> <4F9EEE26.9040806@newsguy.com>
-Date: Mon, 30 Apr 2012 22:31:09 +0200
-In-Reply-To: <4F9EEE26.9040806@newsguy.com> (Mike Dunn's message of "Mon, 30
- Apr 2012 12:55:18 -0700")
-Message-ID: <877gwxgdwy.fsf@free.fr>
+Received: from zose-mta13.web4all.fr ([178.33.204.91])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SOxc2-0002VM-Us
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 20:54:27 +0000
+Message-ID: <4F9EFBF5.6080908@tribudubois.net>
+Date: Mon, 30 Apr 2012 22:54:13 +0200
+From: Jean-Christophe DUBOIS <jcd@tribudubois.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] [JFFS2] load_xattr_datum need to return a positive number
+ in case of unrecoverable error
+References: <1334177689-19732-1-git-send-email-jcd@tribudubois.net>
+ <1335100568.28267.12.camel@brekeke> <4F944165.4010400@tribudubois.net>
+ <1335362381.5114.17.camel@koala> <4F99B9A0.10605@tribudubois.net>
+ <1335714286.1942.14.camel@koala>
+In-Reply-To: <1335714286.1942.14.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Dunn <mikedunn@newsguy.com> writes:
+On 29/04/2012 17:44, Artem Bityutskiy wrote:
+> On Thu, 2012-04-26 at 23:09 +0200, Jean-Christophe DUBOIS wrote:
+>> Is this convincing enough?
+> Sure, thanks.
+>
+>> You might think that the attibute corruption I am showing here is very
+>> artificial but I can assure you that it does happen in the wild when you
+>> get a power cut on your equipment while the GC was moving an attribute
+>> node for example.
+> This issue is for sure worth fixing.
+So, will you accept this patch?
+> Just make sure xattr corruption is
+> handled the same way as data node corruption is handled. I do not
+> remember a lot of details anymore, but I wrote you the main idea in the
+> previous e-mail.
+I will look at the other patch to do the xattr integrity checking in the 
+GC second phase scanning.
 
-> Thanks Artem.  Since you merged all 7, the only thing remaining is the fix to
-> docg3 that Robert describes above.  Robert, if you would rather prepare that
-> patch, I defer to you.  Otherwise, I'll submit it no later than tomorrow.
-Oh no, go ahead, you have my blessing.
+Regards
 
-> Yeah, sorry Artem, I neglected to add the Acked-by's in the patches you just
-> merged.
-That's your opportunity to add it :)
-
-Cheers.
-
--- 
-Robert
+JC
+>
