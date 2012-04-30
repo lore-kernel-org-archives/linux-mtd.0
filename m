@@ -1,27 +1,22 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SOwKR-0003PH-PJ
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:32:12 +0000
-Message-ID: <4F9EE8B6.2030107@freescale.com>
-Date: Mon, 30 Apr 2012 14:32:06 -0500
-From: Scott Wood <scottwood@freescale.com>
+ id 1SOwgu-0005ij-0H
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:55:24 +0000
+Message-ID: <4F9EEE26.9040806@newsguy.com>
+Date: Mon, 30 Apr 2012 12:55:18 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 07/10] mtd: IFC NAND: utilize oob_required parameter
-References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
- <1335576594-25267-8-git-send-email-computersforpeace@gmail.com>
- <4F9EC11A.7020201@freescale.com>
- <CAN8TOE_3kSPhNUN7ETaBDkqvFC9=4xxFLa6O5s-zsCsqEwG4cg@mail.gmail.com>
- <4F9EE445.6010402@freescale.com>
- <CAN8TOE9g-LwDk-5d99400pp16Z7LopWZTJSPEU+EZsdo_D_u2Q@mail.gmail.com>
-In-Reply-To: <CAN8TOE9g-LwDk-5d99400pp16Z7LopWZTJSPEU+EZsdo_D_u2Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips; mtd_read()
+ returns -EUCLEAN
+References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
+ <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
+ <871unbis55.fsf@free.fr> <4F984CC9.9060701@newsguy.com>
+ <1335727480.1942.18.camel@koala>
+In-Reply-To: <1335727480.1942.18.camel@koala>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, Li Yang <leoli@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Prabhakar Kushwaha <prabhakar@freescale.com>
+Cc: linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/30/2012 02:23 PM, Brian Norris wrote:
-> On Mon, Apr 30, 2012 at 12:13 PM, Scott Wood <scottwood@freescale.com> wrote:
->> On 04/30/2012 02:08 PM, Brian Norris wrote:
->>> Is the read_page change sane?
+On 04/29/2012 12:24 PM, Artem Bityutskiy wrote:
+> On Wed, 2012-04-25 at 12:13 -0700, Mike Dunn wrote:
+>> Thanks for the review Robert.
 >>
->> It should be harmless.
+>> On 04/25/2012 11:27 AM, Robert Jarzmik wrote:
+>>>
+>>> I think you should change :
+>>>> - 	while (!ret && (len > 0 || ooblen > 0)) {" will exit because ret is not
+>>> into
+>>>> - 	while (ret >= 0 && (len > 0 || ooblen > 0)) {".
+>>>
+>>> With that change, please add my:
+>>> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>>
+>>
+>> In my exuberance, I prematurely sent the next version of the whole set.  Artem,
+>> Robert's requested change is in patch 7/7.  If no other problems come to light,
+>> maybe you could consider merging the first 6?  Then I only need to prepare a
+>> corrected version of patch 7.
 > 
-> Right, but I am now handling Shmulik's comments about auto-incremented
-> NAND. It seems like there are few/no users of auto-incrementing page
-> reads, but if any driver relied on reading page,oob,page,oob,etc.
-> without a READ command in between, then we might cause problems by
-> skipping the OOB buffer read. Of course, with various NAND
-> controllers/drivers, this issue is hard for me to sort through.
+> Pushed the series to l2-mtd.git, thanks! You can send the newer version
+> and I'll put it instead of the older one. Do not forget to add
+> Acked-by's when you re-send, please.
+> 
 
-This isn't an issue with eLBC/IFC -- besides not currently supporting
-autoincrement, the OOB is still read.  We just wouldn't pull it out of
-the controller buffer.  Not sure if the time saved is significant.
 
--Scott
+Thanks Artem.  Since you merged all 7, the only thing remaining is the fix to
+docg3 that Robert describes above.  Robert, if you would rather prepare that
+patch, I defer to you.  Otherwise, I'll submit it no later than tomorrow.
+
+Yeah, sorry Artem, I neglected to add the Acked-by's in the patches you just merged.
+
+Mike
