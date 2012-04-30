@@ -1,18 +1,22 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SOrxC-0004i4-7u
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 14:51:55 +0000
-Received: by lagy4 with SMTP id y4so2281950lag.36
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2012 07:51:51 -0700 (PDT)
+ id 1SOtgw-0000R6-Vq
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 16:43:15 +0000
+Message-ID: <4F9EC11A.7020201@freescale.com>
+Date: Mon, 30 Apr 2012 11:43:06 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Date: Mon, 30 Apr 2012 16:51:50 +0200
-Message-ID: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
-Subject: State of read-only filesystems in NAND / MTD bad blocks handling when
- reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 07/10] mtd: IFC NAND: utilize oob_required parameter
+References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
+ <1335576594-25267-8-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1335576594-25267-8-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Li Yang <leoli@freescale.com>,
+ linux-mtd@lists.infradead.org, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys,
+On 04/27/2012 08:29 PM, Brian Norris wrote:
+> @@ -717,7 +718,8 @@ static void fsl_ifc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  			       const uint8_t *buf, int oob_required)
+>  {
+>  	fsl_ifc_write_buf(mtd, buf, mtd->writesize);
+> -	fsl_ifc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +	if (oob_required)
+> +		fsl_ifc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>  }
 
-I'm on a TI embedded system on kernel 2.6.37. Could you please fill me
-in on the current state of readonly filesystems living in NAND flash
-w/ bad blocks? I've found several discussions on linux-mtd over the
-years[1][2][3] but none seemed to have reached a conclusion. The point
-is this, while both bootloader and nandwrite will happily skip bad
-blocks encountered upon image write the MTD driver's read function
-will not.
+This will result in writing junk to the non-ECC OOB bytes as opposed to
+leaving it alone.
 
-This means I can safely write the root fs into a MTD partition, but I
-cannot read it back safely (let alone mount it). Is there a generic
-way to have the MTD driver auto-skip bad blocks? What happened to
-MTD_BLOCK_RO_BBFREE?
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2004-May/009672.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2004-May/009683.html
-[3] http://lists.infradead.org/pipermail/linux-mtd/2006-November/016835.htm=
-l
-
-Regards,
-Thilo
-
---=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+-Scott
