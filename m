@@ -1,16 +1,17 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SOwlG-00063T-NY
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:59:55 +0000
-Received: by yhjj52 with SMTP id j52so1766684yhj.36
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2012 12:59:53 -0700 (PDT)
+ id 1SOwx2-0007wB-Fj
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 20:12:05 +0000
+Received: by yenm10 with SMTP id m10so1786537yen.36
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2012 13:12:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20120429154707.01c7be55@pixies.home.jungo.com>
+In-Reply-To: <CAN8TOE-+4FP1rR82L2Kfg__MgmsmMQZuZ_BO_FCcvSZDasChNw@mail.gmail.com>
 References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
  <1335576594-25267-10-git-send-email-computersforpeace@gmail.com>
  <20120429154707.01c7be55@pixies.home.jungo.com>
-Date: Mon, 30 Apr 2012 12:59:52 -0700
-Message-ID: <CAN8TOE-+4FP1rR82L2Kfg__MgmsmMQZuZ_BO_FCcvSZDasChNw@mail.gmail.com>
+ <CAN8TOE-+4FP1rR82L2Kfg__MgmsmMQZuZ_BO_FCcvSZDasChNw@mail.gmail.com>
+Date: Mon, 30 Apr 2012 13:12:03 -0700
+Message-ID: <CAN8TOE8eX-ZACLHiumgD9sZo1Gu7x+K5RDjdjUVV=fGm1HBgzw@mail.gmail.com>
 Subject: Re: [PATCH v3 09/10] mtd: nand: utilize oob_required parameter
 From: Brian Norris <computersforpeace@gmail.com>
 To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
@@ -27,61 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 29, 2012 at 5:47 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> On Fri, 27 Apr 2012 18:29:53 -0700 Brian Norris <computersforpeace@gmail.=
-com> wrote:
->> Don't read/write OOB if the caller doesn't requre it.
+On Mon, Apr 30, 2012 at 12:59 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Sun, Apr 29, 2012 at 5:47 AM, Shmulik Ladkani
+> <shmulik.ladkani@gmail.com> wrote:
+>> - Fix your 02/10 patch, in away that the passed 'oob_required' argument
+>> =A0will be somehow set according to the 'snd_cmd'
 >
-> Re-thinking this, I think this might be incorrect.
-> Sorry I havn't noticed this earlier.
+> I'm fine with adding an 'else' to the 'if (likely(sndcmd))', so that
+> we get something like this in patch 2:
 >
-> Suppose the nand chip is working in "sequential" (aka "incremental")
-> mode.
-> Meaning, a NAND_CMD_READ0 command is issued, and then adjacent pages are
-> read sequencially, without having to re-issue NAND_CMD_READ0.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (likely(sndcmd)) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->cmdfunc(mtd, NAND_CMD_R=
+EAD0, 0x00, page);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sndcmd =3D 0;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* force driver to read OOB,=
+ for sequential read */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0oob_required =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
 >
-> (see for example the loop within 'nand_do_read_ops', especially the
-> 'sndcmd' variable).
->
-> In that case, we MUST read the 'oob', because the OOB bytes will always
-> arrive on the bus following the inband data.
-...
+> I think that would take care of the corner case where we use autoincremen=
+t.
 
-I see. This is the kind of issue I was alluding to back in v2:
+On second thought, this is not good enough. I need to actually check
+for CANAUTOINCR(chip). This is a better candidate:
 
-"For instance, is there any sort of hardware that expects the whole
-page + OOB to be read via chip->read_buf() for all reads..."
-
-This situation comes up if NAND_NO_AUTOINCR is not set. But really, it
-looks like we *always* have NAND_NO_AUTOINCR enabled, and so we
-*always* send a new READ cmd. I know that it's possible for some board
-driver to override this, but I don't see that anywhere...
-
-> I have no idea if this issue is also relevant for 'read_page' implementor=
-s
-> other than of nand_base.c; should carefully review.
->
-> There are 2 options for fixing the issue in nand_base.c:
->
-> - Disregard the 'oob_required' parameter in all nand_base's
-> =A0'read_page' implementations (not future proof, someone might miss the
-> =A0nuance; also bug might still exist in the non-default implementations)
->
-> - Fix your 02/10 patch, in away that the passed 'oob_required' argument
-> =A0will be somehow set according to the 'snd_cmd'
-
-I'm fine with adding an 'else' to the 'if (likely(sndcmd))', so that
-we get something like this in patch 2:
-
-               if (likely(sndcmd)) {
-                       chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-                       sndcmd =3D 0;
-+              } else {
-+                      /* force driver to read OOB, for sequential read */
-+                      oob_required =3D 1;
-               }
-
-I think that would take care of the corner case where we use autoincrement.
++ /* force read OOB, for auto-incremented read */
++ if (unlikely(NAND_CANAUTOINCR(chip)))
++         oob_required =3D 1;
 
 Brian
