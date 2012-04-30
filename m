@@ -1,35 +1,26 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SOw9x-0004By-ME
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:21:23 +0000
-Message-ID: <4F9EE627.5080003@freescale.com>
-Date: Mon, 30 Apr 2012 14:21:11 -0500
-From: Scott Wood <scottwood@freescale.com>
+ id 1SOwBn-0005kC-0M
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:23:16 +0000
+Received: by ghbf11 with SMTP id f11so1746301ghb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2012 12:23:13 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 01/10] mtd: nand: add 'oob_required' argument to NAND
- {read,write}_page interfaces
+In-Reply-To: <4F9EE445.6010402@freescale.com>
 References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
- <1335576594-25267-2-git-send-email-computersforpeace@gmail.com>
- <20120429143631.532ce0a6@pixies.home.jungo.com>
- <1335705942.1942.10.camel@koala>
- <CAN8TOE-ZbZCmH0nAcM0Jx65nOPaJxyue2nd0MTFY9XwJhLqrsA@mail.gmail.com>
-In-Reply-To: <CAN8TOE-ZbZCmH0nAcM0Jx65nOPaJxyue2nd0MTFY9XwJhLqrsA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Kevin Cernekee <cernekee@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- Thomas Gleixner <tglx@linutronix.de>, Li Yang <leoli@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, Axel Lin <axel.lin@gmail.com>,
- Bastian Hecht <hechtb@googlemail.com>
+ <1335576594-25267-8-git-send-email-computersforpeace@gmail.com>
+ <4F9EC11A.7020201@freescale.com>
+ <CAN8TOE_3kSPhNUN7ETaBDkqvFC9=4xxFLa6O5s-zsCsqEwG4cg@mail.gmail.com>
+ <4F9EE445.6010402@freescale.com>
+Date: Mon, 30 Apr 2012 12:23:13 -0700
+Message-ID: <CAN8TOE9g-LwDk-5d99400pp16Z7LopWZTJSPEU+EZsdo_D_u2Q@mail.gmail.com>
+Subject: Re: [PATCH v3 07/10] mtd: IFC NAND: utilize oob_required parameter
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Wood <scottwood@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>, Li Yang <leoli@freescale.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,30 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/30/2012 02:16 PM, Brian Norris wrote:
-> On Sun, Apr 29, 2012 at 6:25 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> On Sun, 2012-04-29 at 14:36 +0300, Shmulik Ladkani wrote:
->>>> Note: I couldn't compile-test all of these easily, as some had ARCH
->>>> dependencies.
->>>>
->>>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>>
->>> Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
->>
->> Brian, probably you take care of this, but just in case I would like to
->> ask to put tags like this to your patches when re-sending. I am trying
->> to be careful about this for several reasons: it shows that the patch
->> was reviewed, it saves the reviewers name in the git history which and
->> makes persons' contribution visible, so it is kind of a credit.
-> 
-> Sure, I'll do this as appropriate. Should I apply these tags when the
-> review is made w/o an explicit "Reviewed-by" (e.g., Scott Wood's
-> comments on patch 7)? There's also the issue of placing "reviewed-by"
-> before the reviewer actually sees my change.
+On Mon, Apr 30, 2012 at 12:13 PM, Scott Wood <scottwood@freescale.com> wrote:
+> On 04/30/2012 02:08 PM, Brian Norris wrote:
+>> Is the read_page change sane?
+>
+> It should be harmless.
 
-You can put mine on if you want in this case, provided the write-side
-change is removed as discussed -- but in general, I'd say that making a
-comment on one part of a patch doesn't indicate that the whole thing has
-been reviewed.
+Right, but I am now handling Shmulik's comments about auto-incremented
+NAND. It seems like there are few/no users of auto-incrementing page
+reads, but if any driver relied on reading page,oob,page,oob,etc.
+without a READ command in between, then we might cause problems by
+skipping the OOB buffer read. Of course, with various NAND
+controllers/drivers, this issue is hard for me to sort through.
 
--Scott
+>> Did you review the (misspelled) eLBC patch? (patch 06/10)
+>
+> No, that one wasn't CCed to me (I should probably get around to
+> subscribing to linux-mtd...).
+
+scripts/get_maintainers.pl only goes so far. It's hard to track down
+the *real* experts here...
+
+> It looks like the same situation as IFC.
+
+OK, I'll fix it too then.
+
+Thanks.
+
+Brian
