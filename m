@@ -1,22 +1,24 @@
-Received: from d1.icnet.pl ([212.160.220.21])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SOv4y-0007Zs-2n
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 18:12:08 +0000
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3.4-rc3] MTD: NAND: ams-delta: Fix request_mem_region()
- failure
-Date: Mon, 30 Apr 2012 20:09:54 +0200
-Message-ID: <1520744.9xCxNUdyzk@acer>
-In-Reply-To: <1335417678.2290.7.camel@koala>
-References: <1334670557-25640-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1587089.0XMyH6e1Ic@acer> <1335417678.2290.7.camel@koala>
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SOvxg-0001J2-37
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2012 19:08:40 +0000
+Received: by ghbf11 with SMTP id f11so1733435ghb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2012 12:08:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: dedekind1@gmail.com, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <4F9EC11A.7020201@freescale.com>
+References: <1335576594-25267-1-git-send-email-computersforpeace@gmail.com>
+ <1335576594-25267-8-git-send-email-computersforpeace@gmail.com>
+ <4F9EC11A.7020201@freescale.com>
+Date: Mon, 30 Apr 2012 12:08:36 -0700
+Message-ID: <CAN8TOE_3kSPhNUN7ETaBDkqvFC9=4xxFLa6O5s-zsCsqEwG4cg@mail.gmail.com>
+Subject: Re: [PATCH v3 07/10] mtd: IFC NAND: utilize oob_required parameter
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Wood <scottwood@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, Li Yang <leoli@freescale.com>,
+ linux-mtd@lists.infradead.org, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dnia czwartek, 26 kwietnia 2012 08:20:59 Artem Bityutskiy pisze:
-> On Wed, 2012-04-25 at 19:01 +0200, Janusz Krzysztofik wrote:
-> > Both drivers use separate subsets of registers that belong to the 
-OMAP1 
-> > MPU I/O device, but are used for controlling different sets of I/O 
-pins. 
-> > The NAND driver reads/writes the folowing registers:
-> > - OMAP_MPUIO_INPUT_LATCH,
-> > - OMAP_MPUIO_OUTPUT,
-> > - OMAP_MPUIO_IO_CNTL,
-> > while the keypad driver - the following:
-> > - OMAP_MPUIO_KBR_LATCH,
-> > - OMAP_MPUIO_KBC,
-> > - OMAP_MPUIO_KBD_MASKIT
-> > - OMAP_MPUIO_GPIO_DEBOUNCING.
-> > Both subsets are non-overlapping, and we rely on the drivers being 
-free 
-> > of bugs and doing their job correctly, not stepping on each others' 
-> > feet, I guess.
-> 
-> First of all, I think this information should be in the commit 
-message.
-> Also, some sort of comment in the driver code would be nice.
-> 
-> If locking the memory region is too coarse approach, the should have a
-> small separate omap-specific MPUIO subsystem which will be used by
-> drivers to access MPUIO?
-> 
-> Another question - should request_mem_region() be also removed from 
-the
-> omap-gpio driver then? I think it is more sensible to put a comment
-> there that it is sharing MPIO with other drivers,  instead of having 
-an
-> illusion of exclusive memory region ownership.
-> 
-> But this is up to the OMAP community - I can take this patch to my
-> l2-mtd tree if you get an ack from Tony or other OMAP guys.
+On Mon, Apr 30, 2012 at 9:43 AM, Scott Wood <scottwood@freescale.com> wrote=
+:
+> On 04/27/2012 08:29 PM, Brian Norris wrote:
+>> @@ -717,7 +718,8 @@ static void fsl_ifc_write_page(struct mtd_info *mtd,=
+ struct nand_chip *chip,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0const uint8_t=
+ *buf, int oob_required)
+>> =A0{
+>> =A0 =A0 =A0 fsl_ifc_write_buf(mtd, buf, mtd->writesize);
+>> - =A0 =A0 fsl_ifc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> + =A0 =A0 if (oob_required)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 fsl_ifc_write_buf(mtd, chip->oob_poi, mtd->oob=
+size);
+>> =A0}
+>
+> This will result in writing junk to the non-ECC OOB bytes as opposed to
+> leaving it alone.
 
-Tony,
-Would I get your Ack for this fix if I extend the commit message as Artem 
-suggested? If not, what do you think should be a correct way to fix the 
-regression?
+Then I'll drop the write_page change from this patch.
 
-Thanks,
-Janusz
+Is the read_page change sane?
+
+Did you review the (misspelled) eLBC patch? (patch 06/10)
+
+Thanks.
+
+Brian
