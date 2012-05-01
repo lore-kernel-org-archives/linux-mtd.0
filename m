@@ -1,18 +1,15 @@
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <khilman@ti.com>, <linux@arm.linux.org.uk>,
- <dwmw2@infradead.org>, <sameo@linux.intel.com>,
- <grinberg@compulab.co.il>, <mike@compulab.co.il>, <nm@ti.com>,
- <artem.bityutskiy@linux.intel.com>, <vimal.newwork@gmail.com>,
- <dbaryshkov@gmail.com>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [TMP] OMAP3EVM: Test gpmc nand & smsc911x
-Message-ID: <bb95fec60401f7cf6ac77200a12baf3fc83852f5.1333640054.git.afzal@ti.com>
-In-Reply-To: <cover.1333640054.git.afzal@ti.com>
-References: <cover.1333640054.git.afzal@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Afzal Mohammed <afzal@ti.com>
+Received: from mail-out.m-online.net ([2001:a60:0:32:0:1:25:1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SP2Rl-0004vr-VF
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2012 02:04:14 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] M25: Add support for Everspin MR25H256 MRAM chip
+Date: Tue,  1 May 2012 04:04:00 +0200
+Message-Id: <1335837840-15511-1-git-send-email-marex@denx.de>
+Cc: Marek Vasut <marex@denx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,174 +18,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Thu, 05 Apr 2012 16:05:09 -0000
 
-Signed-off-by: Afzal Mohammed <afzal@ti.com>
+This chip isn't JEDEC-compatible.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 ---
- arch/arm/mach-omap2/board-omap3evm.c |   95 +++++++++++++++++++++++++++++++++-
- 1 file changed, 94 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/m25p80.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
-index 49df127..60938af 100644
---- a/arch/arm/mach-omap2/board-omap3evm.c
-+++ b/arch/arm/mach-omap2/board-omap3evm.c
-@@ -23,6 +23,7 @@
- #include <linux/input/matrix_keypad.h>
- #include <linux/leds.h>
- #include <linux/interrupt.h>
-+#include <linux/mtd/nand.h>
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 1924d24..85ce6fd 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -639,6 +639,9 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "en25q32b", INFO(0x1c3016, 0, 64 * 1024,  64, 0) },
+ 	{ "en25p64", INFO(0x1c2017, 0, 64 * 1024, 128, 0) },
  
- #include <linux/spi/spi.h>
- #include <linux/spi/ads7846.h>
-@@ -41,6 +42,7 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
- 
-+#include <plat/nand.h>
- #include <plat/board.h>
- #include <plat/usb.h>
- #include "common.h"
-@@ -52,6 +54,7 @@
- #include "sdram-micron-mt46h32m32lf-6.h"
- #include "hsmmc.h"
- #include "common-board-devices.h"
-+#include "board-flash.h"
- 
- #define OMAP3_EVM_TS_GPIO	175
- #define OMAP3_EVM_EHCI_VBUS	22
-@@ -102,6 +105,36 @@ static void __init omap3_evm_get_revision(void)
- 	}
- }
- 
-+static struct gpmc_device_pdata *gpmc_data_array[3];
-+static struct gpmc_device_pdata **gpmc_data_cur = gpmc_data_array;
++	/* Everspin */
++	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2) },
 +
-+static struct gpmc_pdata gpmc_data = {
-+	.device_pdata = gpmc_data_array,
-+};
-+
-+static struct resource gpmc_resources[] = {
-+	{
-+		.start = OMAP34XX_GPMC_BASE,
-+		.end   = OMAP34XX_GPMC_BASE + SZ_4K - 1,
-+		.flags = IORESOURCE_MEM,
-+	},
-+	{
-+		.start = INT_34XX_GPMC_IRQ,
-+		.end   = INT_34XX_GPMC_IRQ,
-+		.flags = IORESOURCE_IRQ,
-+	},
-+};
-+
-+static struct platform_device gpmc_device = {
-+	.name		= "omap-gpmc",
-+	.id		= -1,
-+	.num_resources	= ARRAY_SIZE(gpmc_resources),
-+	.resource	= gpmc_resources,
-+	.dev	= {
-+		.platform_data = &gpmc_data,
-+	}
-+};
-+
- #if defined(CONFIG_SMSC911X) || defined(CONFIG_SMSC911X_MODULE)
- #include <plat/gpmc-smsc911x.h>
- 
-@@ -114,6 +147,8 @@ static struct omap_smsc911x_platform_data smsc911x_cfg = {
- 
- static inline void __init omap3evm_init_smsc911x(void)
- {
-+	struct gpmc_device_pdata *gpmc_smsc911x_info;
-+
- 	/* Configure ethernet controller reset gpio */
- 	if (cpu_is_omap3430()) {
- 		if (get_omap3_evm_rev() == OMAP3EVM_BOARD_GEN_1)
-@@ -122,7 +157,11 @@ static inline void __init omap3evm_init_smsc911x(void)
- 			smsc911x_cfg.gpio_reset = OMAP3EVM_GEN2_ETHR_GPIO_RST;
- 	}
- 
--	gpmc_smsc911x_init(&smsc911x_cfg);
-+	gpmc_smsc911x_info = gpmc_smsc911x_init(&smsc911x_cfg);
-+	if (gpmc_smsc911x_info)
-+		*gpmc_data_cur++ = gpmc_smsc911x_info;
-+	else
-+		pr_err("error: unable to initilaize gpmc smsc911x\n");
- }
- 
- #else
-@@ -523,6 +562,41 @@ static struct usbhs_omap_board_data usbhs_bdata __initdata = {
- 	.reset_gpio_port[2]  = -EINVAL
- };
- 
-+/*
-+ * NAND
-+ */
-+static struct mtd_partition omap3_evm_nand_partitions[] = {
-+	/* All the partition sizes are listed in terms of NAND block size */
-+	{
-+		.name		= "X-Loader-NAND",
-+		.offset		= 0,
-+		.size		= 4 * (64 * 2048),
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "U-Boot-NAND",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x80000 */
-+		.size		= 10 * (64 * 2048),
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "Boot Env-NAND",
-+
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x1c0000 */
-+		.size		= 6 * (64 * 2048),
-+	},
-+	{
-+		.name		= "Kernel-NAND",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
-+		.size		= 40 * (64 * 2048),
-+	},
-+	{
-+		.name		= "File System - NAND",
-+		.size		= MTDPART_SIZ_FULL,
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x780000 */
-+	},
-+};
-+
- #ifdef CONFIG_OMAP_MUX
- static struct omap_board_mux omap35x_board_mux[] __initdata = {
- 	OMAP3_MUX(SYS_NIRQ, OMAP_MUX_MODE0 | OMAP_PIN_INPUT_PULLUP |
-@@ -630,6 +704,8 @@ static struct regulator_consumer_supply dummy_supplies[] = {
- 
- static void __init omap3_evm_init(void)
- {
-+	struct omap_nand_platform_data *nand_data;
-+
- 	omap3_evm_get_revision();
- 	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
- 
-@@ -681,6 +757,23 @@ static void __init omap3_evm_init(void)
- 	omap3evm_init_smsc911x();
- 	omap3_evm_display_init();
- 	omap3_evm_wl12xx_init();
-+	/* NAND */
-+	nand_data = omap_nand_init(omap3_evm_nand_partitions,
-+			ARRAY_SIZE(omap3_evm_nand_partitions),
-+			0, NAND_BUSWIDTH_16, nand_default_timings);
-+/*	nand_data->xfer_type = NAND_OMAP_PREFETCH_IRQ;
-+ */	if (nand_data != NULL) {
-+		*gpmc_data_cur = gpmc_nand_init(nand_data);
-+		(*gpmc_data_cur++)->is_nand = true;
-+	} else
-+		pr_err("omap_nand_init() failed\n");
-+
-+
-+	gpmc_data.fclk_period = gpmc_get_fclk_period();
-+	gpmc_data.irq_start = OMAP_GPMC_IRQ_BASE;
-+	gpmc_data.num_irq = OMAP_GPMC_NR_IRQS;
-+
-+	platform_device_register(&gpmc_device);
- }
- 
- MACHINE_START(OMAP3EVM, "OMAP3 EVM")
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+ 	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
 -- 
-1.7.9.3
+1.7.10
