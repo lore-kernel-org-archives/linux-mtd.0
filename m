@@ -1,23 +1,14 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPIQI-0005Ed-Sr
- for linux-mtd@lists.infradead.org; Tue, 01 May 2012 19:07:44 +0000
-Message-ID: <4FA03472.4030309@broadcom.com>
-Date: Tue, 1 May 2012 12:07:30 -0700
-From: "Jiandong Zheng" <jdzheng@broadcom.com>
-MIME-Version: 1.0
-To: "Mike Dunn" <mikedunn@newsguy.com>
-Subject: Re: [PATCH 2/7] mtd: nand: fix incorrect ecc strength values
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-3-git-send-email-mikedunn@newsguy.com>
-In-Reply-To: <1335295105-7981-3-git-send-email-mikedunn@newsguy.com>
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Lars-Peter Clausen <lars@metafoo.de>, linux-mtd@lists.infradead.org,
- Scott Branden <sbranden@broadcom.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPJBS-0007e9-JF
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2012 19:56:27 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: use ecc_strength to determine whether to perform
+ bitflip_threshold test
+Date: Tue,  1 May 2012 12:56:21 -0700
+Message-Id: <1335902181-18110-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +18,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/24/2012 12:18 PM, Mike Dunn wrote:
-> This fixes a couple of ecc strength values for which I earlier made conservative
-> guesses, but whose correct values were later determined [1] (thanks Ivan).  Also
-> sets strength for fsl_ifc_nand, which was merged to mainline after the original
-> patch that set the strength for all drivers.
->
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040325.html
->
-> Signed-off-by: Mike Dunn<mikedunn@newsguy.com>
-> ---
->   drivers/mtd/nand/bcm_umi_nand.c |    7 +------
->   drivers/mtd/nand/fsl_ifc_nand.c |    1 +
->   drivers/mtd/nand/jz4740_nand.c  |    6 +-----
->   3 files changed, 3 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-> index 6908cdd..7134adf 100644
-> --- a/drivers/mtd/nand/bcm_umi_nand.c
-> +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> @@ -476,12 +476,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
->   		this->badblock_pattern =&largepage_bbt;
->   	}
->
-> -	/*
-> -	 * FIXME: ecc strength value of 6 bits per 512 bytes of data is a
-> -	 * conservative guess, given 13 ecc bytes and using bch alg.
-> -	 * (Assume Galois field order m=15 to allow a margin of error.)
-> -	 */
-> -	this->ecc.strength = 6;
-> +	this->ecc.strength = 8;
->
->   #endif
->
->
-Acked-by: Jiandong Zheng <jdzheng@broadcom.com>
+This is a minor change to the recent EUCLEAN patch set that I think makes it
+more correct.  Currently, the test in mtd_read() that determines whether or not
+to return -EUCLEAN is skipped if bitflip_threshold == 0.  This logic was added
+(without much thought) to fix a bug in an earlier version of the patch set that
+would have caused devices lacking ecc to always return -EUCLEAN [1].
+
+This patch replaces bitflip_threshold with ecc_strength as the value used to
+determine whether the device has ecc capability.  I think this is more correct
+because bitflip_threshold can be changed via sysfs.  Currently, if the user sets
+it to zero, -EUCLEAN is never returned.  This is also what happens if the user
+sets it to a value exceeding ecc_strength.  With this patch, if the user sets it
+to zero, -EUCLEAN will always be returned (provided ecc_strength > 0), which
+makes more sense, and may even be useful occasionally.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040468.html
+
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+
+Sorry for wanting to make tweaks after reviews and Ivan's testing.  It's
+optional, low risk, and I did test it.  Thanks!
+
+ Documentation/ABI/testing/sysfs-class-mtd |    7 +++++--
+ drivers/mtd/mtdcore.c                     |    2 +-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
+index 7883508..db1ad7e 100644
+--- a/Documentation/ABI/testing/sysfs-class-mtd
++++ b/Documentation/ABI/testing/sysfs-class-mtd
+@@ -167,7 +167,10 @@ Description:
+ 		block degradation, but high enough to avoid the consequences of
+ 		a persistent return value of -EUCLEAN on devices where sticky
+ 		bitflips occur.  Note that if bitflip_threshold exceeds
+-		ecc_strength, -EUCLEAN is never returned by the read functions.
++		ecc_strength, -EUCLEAN is never returned by mtd_read().
++		Conversely, if bitflip_threshold is zero, -EUCLEAN is always
++		returned, absent a hard error.
+ 
+ 		This is generally applicable only to NAND flash devices with ECC
+-		capability.  It is ignored on devices lacking ECC capability.
++		capability.  It is ignored on devices lacking ECC capability;
++		i.e., devices for which ecc_strength is zero.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b5bb628..5757307 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -815,7 +815,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	ret_code = mtd->_read(mtd, from, len, retlen, buf);
+ 	if (unlikely(ret_code < 0))
+ 		return ret_code;
+-	if (mtd->bitflip_threshold == 0)
++	if (mtd->ecc_strength == 0)
+ 		return 0;	/* device lacks ecc */
+ 	return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
+ }
+-- 
+1.7.3.4
