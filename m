@@ -1,28 +1,36 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPIBC-0004p6-0y
- for linux-mtd@lists.infradead.org; Tue, 01 May 2012 18:52:07 +0000
-Received: by lbbgg6 with SMTP id gg6so1538004lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 11:52:03 -0700 (PDT)
-Date: Tue, 1 May 2012 21:51:50 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 7/7] mtd: driver _read() returns max_bitflips;
- mtd_read() returns -EUCLEAN
-Message-ID: <20120501215150.1cea96eb@halley>
-In-Reply-To: <4FA01CF2.4030907@newsguy.com>
-References: <1335295105-7981-1-git-send-email-mikedunn@newsguy.com>
- <1335295105-7981-8-git-send-email-mikedunn@newsguy.com>
- <871unbis55.fsf@free.fr> <4F984CC9.9060701@newsguy.com>
- <1335727480.1942.18.camel@koala> <4F9EEE26.9040806@newsguy.com>
- <1335874805.2095.11.camel@koala> <4FA01CF2.4030907@newsguy.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mms3.broadcom.com ([216.31.210.19])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPILE-00053L-GW
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2012 19:02:29 +0000
+Message-ID: <4FA03338.6070009@broadcom.com>
+Date: Tue, 1 May 2012 12:02:16 -0700
+From: "Jiandong Zheng" <jdzheng@broadcom.com>
+MIME-Version: 1.0
+To: "Brian Norris" <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 0/2] mtd: nand: rework nand_ecc_ctrl interface for OOB
+References: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1335212069-7450-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Mike Dunn <mikedunn@newsguy.com>, linux-mtd@lists.infradead.org,
- Scott Wood <scottwood@freescale.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Viresh Kumar <viresh.kumar@st.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Lei Wen <leiwen@marvell.com>,
+ Jamie Iles <jamie@jamieiles.com>, prabhakar@freescale.com,
+ Mike Dunn <mikedunn@newsguy.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Bastian Hecht <hechtb@gmail.com>,
+ Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Armando Visconti <armando.visconti@st.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Scott Branden <sbranden@broadcom.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +40,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 01 May 2012 10:27:14 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
-> On 05/01/2012 05:20 AM, Artem Bityutskiy wrote:
-> > On Mon, 2012-04-30 at 12:55 -0700, Mike Dunn wrote:
-> >>
-> >> Yeah, sorry Artem, I neglected to add the Acked-by's in the patches you just merged.
-> > 
-> > If you know that an Acked-by or Reviewed-by was missed, let me know and
-> > I'll add the tag(s) to the patch(es). I think it is important to be
-> > careful about the tags because people spent their time helping to
-> > improve the patches.
-> 
-> 
-> Well, I owe a debt to several reviewers, among them Brian Norris (caught the bug
-> that would cause all non-ecc devices to return -EUCLEAN), Shmulik Ladkani, Ivan
-> Djelic (reviews and tests), Scott Wood, Robert Jarzmik, yourself, ...
-> 
-> As far as formal tags... maybe these, if they don't object:
-> 
-> mtd: driver _read() returns max_bitflips; mtd_read() returns -EUCLEAN
-> 5568eb3c3bb2816281b6a7c04db92434b72b1495
-> Tested-by: Ivan Djelic <ivan.djelic@parrot.com>
-> 
-> mtd: nand: read_page() returns max_bitflips
-> 6bf87bf989bfdfc78fb2c5cd55de4bab9b572992
-> Acked-by (freescale changes): Scott Wood <scottwood@freescale.com>
-> 
-> If the others feel a tag credit is appropriate, I certainly don't mind.
+On 4/23/2012 1:14 PM, Brian Norris wrote:
+> Brian Norris (2):
+>    mtd: nand: add 'use_oob' argument to NAND {read,write}_page
+>      interfaces
+>    mtd: nand: nand_base - pass proper 'use_oob' parameter
+>
+>   drivers/mtd/nand/bcm_umi_bch.c         |   10 +++--
+>   drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
+>   drivers/mtd/nand/nand_base.c           |   58 ++++++++++++++++++++-----------
+>   include/linux/mtd/nand.h               |   11 +++---
+>   15 files changed, 89 insertions(+), 70 deletions(-)
+>
+I've built and run these successfully on bcmring.
 
-On a side note (sorry for the off-topic post):
-
-It seems the use of the formal tags is somewhat limited.
-
-AFAIU, Acked-by is supposed to be specified by the maintainer or major
-contributor, the one in charge of the code affected, and it could
-be specified to just a part of the patch.
-
-OTOH Reviewed-by can be specified by any interested reviewer, as an
-indication that the entire patch has been reviewed.
-
-However when patches get partially reviewed by interested parties, no
-formal tag is suitable.
-
-Regards,
-Shmulik
+Acked-by: Jiandong Zheng <jdzheng@broadcom.com>
