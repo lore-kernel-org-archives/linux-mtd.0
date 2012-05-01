@@ -1,19 +1,23 @@
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <linux@arm.linux.org.uk>, <khilman@ti.com>,
- <balbi@ti.com>, <dwmw2@infradead.org>, <kyungmin.park@samsung.com>,
- <gregkh@linuxfoundation.org>, <nm@ti.com>, <grinberg@compulab.co.il>,
- <notasas@gmail.com>, <artem.bityutskiy@linux.intel.com>,
- <vimal.newwork@gmail.com>, <dbaryshkov@gmail.com>,
- <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-usb@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 39/39] ARM: OMAP2+: board igep0020: gpmc driver adaptation
-Date: Tue, 1 May 2012 17:53:58 +0530
-Message-ID: <12d7c132864777da63e4f18f5070278275331750.1335874494.git.afzal@ti.com>
-In-Reply-To: <cover.1335874494.git.afzal@ti.com>
-References: <cover.1335874494.git.afzal@ti.com>
+Received: from zose-mta15.web4all.fr ([176.31.217.11])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPE7D-00066k-J7
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2012 14:31:44 +0000
+Message-ID: <4F9FF3C5.9090002@tribudubois.net>
+Date: Tue, 01 May 2012 16:31:33 +0200
+From: Jean-Christophe DUBOIS <jcd@tribudubois.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Afzal Mohammed <afzal@ti.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] [JFFS2] load_xattr_datum need to return a positive number
+ in case of unrecoverable error
+References: <1334177689-19732-1-git-send-email-jcd@tribudubois.net>
+ <1335100568.28267.12.camel@brekeke> <4F944165.4010400@tribudubois.net>
+ <1335362381.5114.17.camel@koala> <4F99B9A0.10605@tribudubois.net>
+ <1335714286.1942.14.camel@koala> <4F9EFBF5.6080908@tribudubois.net>
+ <1335874554.2095.7.camel@koala>
+In-Reply-To: <1335874554.2095.7.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,82 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-gpmc code has been converted to driver. Modify the board
-code to provide gpmc driver with required information.
+On 01/05/2012 14:15, Artem Bityutskiy wrote:
+> On Mon, 2012-04-30 at 22:54 +0200, Jean-Christophe DUBOIS wrote:
+>> On 29/04/2012 17:44, Artem Bityutskiy wrote:
+>>> On Thu, 2012-04-26 at 23:09 +0200, Jean-Christophe DUBOIS wrote:
+>>>> Is this convincing enough?
+>>> Sure, thanks.
+>>>
+>>>> You might think that the attibute corruption I am showing here is very
+>>>> artificial but I can assure you that it does happen in the wild when you
+>>>> get a power cut on your equipment while the GC was moving an attribute
+>>>> node for example.
+>>> This issue is for sure worth fixing.
+>> So, will you accept this patch?
+> No, I meant that I agree that there is an issue, but I think that it
+> should be solved for all node types the same way. So I suggest to look
+> at what happens when data nodes are corrupted, how JFFS2 picks the older
+> node (if it does) and do it similarly for xattrs.
 
-Signed-off-by: Afzal Mohammed <afzal@ti.com>
----
- arch/arm/mach-omap2/board-igep0020.c |   32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
+I just want to restate that this patch is just re-enabling a feature 
+that was (wrongly I think) disabled a bit more than a year ago.
 
-diff --git a/arch/arm/mach-omap2/board-igep0020.c b/arch/arm/mach-omap2/board-igep0020.c
-index 6d171ca..91de8ce 100644
---- a/arch/arm/mach-omap2/board-igep0020.c
-+++ b/arch/arm/mach-omap2/board-igep0020.c
-@@ -36,6 +36,7 @@
- #include <video/omapdss.h>
- #include <video/omap-panel-dvi.h>
- #include <plat/onenand.h>
-+#include <plat/nand.h>
- 
- #include "mux.h"
- #include "hsmmc.h"
-@@ -118,6 +119,13 @@ static void __init igep2_get_revision(void)
- 	gpio_free(IGEP2_GPIO_LED1_RED);
- }
- 
-+static struct gpmc_device_pdata *gpmc_device_data[2];
-+static struct gpmc_device_pdata **gpmc_cur = gpmc_device_data;
-+
-+static struct gpmc_pdata gpmc_data = {
-+	.device_pdata = gpmc_device_data,
-+};
-+
- #if defined(CONFIG_MTD_ONENAND_OMAP2) ||		\
- 	defined(CONFIG_MTD_ONENAND_OMAP2_MODULE) ||	\
- 	defined(CONFIG_MTD_NAND_OMAP2) ||		\
-@@ -172,14 +180,26 @@ static void __init igep_flash_init(void)
- 	mux = igep_get_sysboot_value();
- 
- 	if (mux == IGEP_SYSBOOT_NAND) {
-+		struct omap_nand_platform_data *nand_data;
-+
- 		pr_info("IGEP: initializing NAND memory device\n");
--		board_nand_init(igep_flash_partitions,
-+		nand_data = board_nand_init(igep_flash_partitions,
- 				ARRAY_SIZE(igep_flash_partitions),
--				0, NAND_BUSWIDTH_16, NULL);
-+				0, NAND_BUSWIDTH_16, nand_default_timings);
-+		if (nand_data != NULL) {
-+			*gpmc_cur++ = gpmc_nand_init(nand_data);
-+			gpmc_data.num_device++;
-+		}
- 	} else if (mux == IGEP_SYSBOOT_ONENAND) {
-+		struct omap_onenand_platform_data *onenand_data;
-+
- 		pr_info("IGEP: initializing OneNAND memory device\n");
--		board_onenand_init(igep_flash_partitions,
-+		onenand_data = board_onenand_init(igep_flash_partitions,
- 				   ARRAY_SIZE(igep_flash_partitions), 0);
-+		if (onenand_data != NULL) {
-+			*gpmc_cur++ = gpmc_onenand_init(onenand_data);
-+			gpmc_data.num_device++;
-+		}
- 	} else
- 		pr_err("IGEP: Flash: unsupported sysboot sequence found\n");
- }
-@@ -202,7 +222,11 @@ static struct omap_smsc911x_platform_data smsc911x_cfg = {
- 
- static inline void __init igep2_init_smsc911x(void)
- {
--	gpmc_smsc911x_init(&smsc911x_cfg);
-+	*gpmc_cur = gpmc_smsc911x_init(&smsc911x_cfg);
-+	if (*gpmc_cur)
-+		gpmc_data.num_device++, gpmc_cur++;
-+	else
-+		pr_err("error: gpmc smsc911x setup\n");
- }
- 
- #else
--- 
-1.7.10
+I will have a look at the other way you suggested but this might mean in 
+the end a lot more restructuring of the JFFS2 code (at least the xattr 
+part). As you seem to be very cautious about JFFS2 code change this will 
+certainly mean a slow merge process. In the mean time the broken JFFS2 
+xattr behavior will still be present.
+
+JC
