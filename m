@@ -1,27 +1,13 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPGIU-0004nW-Ed
- for linux-mtd@lists.infradead.org; Tue, 01 May 2012 16:51:31 +0000
-Received: by lagy4 with SMTP id y4so3164943lag.36
- for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 09:51:26 -0700 (PDT)
-Message-ID: <4FA01421.9080808@mvista.com>
-Date: Tue, 01 May 2012 20:49:37 +0400
-From: Sergei Shtylyov <sshtylyov@mvista.com>
-MIME-Version: 1.0
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v4 06/39] ARM: OMAP2+: onenand: return value in init
- function
-References: <cover.1335874494.git.afzal@ti.com>
- <91c09cb6a6cb5e87acdcc3f6100a87b4c2a3dd41.1335874494.git.afzal@ti.com>
-In-Reply-To: <91c09cb6a6cb5e87acdcc3f6100a87b4c2a3dd41.1335874494.git.afzal@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, tony@atomide.com,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, balbi@ti.com,
- dbaryshkov@gmail.com, kyungmin.park@samsung.com, vimal.newwork@gmail.com,
- grinberg@compulab.co.il, artem.bityutskiy@linux.intel.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, notasas@gmail.com
+ id 1SPGpf-0006tJ-8e
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2012 17:25:47 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: docg3: fix max_bitflips related bug
+Date: Tue,  1 May 2012 10:25:25 -0700
+Message-Id: <1335893125-15904-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +17,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+This fixes a bug in the docg3 driver that was introduced by the EUCLEAN patch
+set [1].
 
-On 01-05-2012 16:20, Afzal Mohammed wrote:
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-April/040941.html
 
-> Modify board_onenand_init to return platform data. This
-> would be required for boards to be able to pass it to
-> gpmc driver so that it finally reaches onenand driver.
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/devices/docg3.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> Also un-static the function so that boards can use it.
-
-> Signed-off-by: Afzal Mohammed<afzal@ti.com>
-[...]
-
-> diff --git a/arch/arm/mach-omap2/board-flash.h b/arch/arm/mach-omap2/board-flash.h
-> index 052964c..75ba49f 100644
-> --- a/arch/arm/mach-omap2/board-flash.h
-> +++ b/arch/arm/mach-omap2/board-flash.h
-> @@ -52,3 +52,15 @@ board_nand_init(struct mtd_partition *nand_parts,
->   	return NULL;
->   }
->   #endif
-> +
-> +#if defined(CONFIG_MTD_ONENAND_OMAP2) || \
-> +		defined(CONFIG_MTD_ONENAND_OMAP2_MODULE)
-
-    You can use IS_ENABLED(CONFIG_MTD_ONENAND_OMAP2) instead these two.
-
-> +extern struct omap_onenand_platform_data * __init
-> +board_onenand_init(struct mtd_partition *onenand_parts, u8 nr_parts, u8 cs);
-> +#else
-> +static inline struct omap_onenand_platform_data *
-> +__init board_onenand_init(struct mtd_partition *nor_parts, u8 nr_parts, u8 cs)
-> +{
-> +	return NULL;
-> +}
-> +#endif
-
-WBR, Sergei
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 7644d59..3dbbfa5 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -889,7 +889,7 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 	ret = 0;
+ 	skip = from % DOC_LAYOUT_PAGE_SIZE;
+ 	mutex_lock(&docg3->cascade->lock);
+-	while (!ret && (len > 0 || ooblen > 0)) {
++	while (ret >= 0 && (len > 0 || ooblen > 0)) {
+ 		calc_block_sector(from - skip, &block0, &block1, &page, &ofs,
+ 			docg3->reliable);
+ 		nbdata = min_t(size_t, len, DOC_LAYOUT_PAGE_SIZE - skip);
+-- 
+1.7.3.4
