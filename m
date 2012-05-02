@@ -1,22 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPYYX-0007bj-6E
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:21:17 +0000
-Message-ID: <1335961475.10293.52.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd-www: FAQ: spelling fixes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 02 May 2012 15:24:35 +0300
-In-Reply-To: <20120502140253.52657db3@halley>
-References: <20120502085826.23b8cf5c@halley>
- <CAN8TOE9n9BTstLeU5du_jan8wrFSO9pKxHA_mN7Fptf6pXKVWg@mail.gmail.com>
- <20120502135725.067ca11b@halley> <20120502140253.52657db3@halley>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-lTTHqq3R0IGjO8mrjuwI"
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPYeL-0000Dc-Ey
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:27:18 +0000
+Date: Wed, 2 May 2012 14:27:11 +0200 (CEST)
+From: Julia Lawall <julia.lawall@lip6.fr>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: question about fs/jffs2/readinode.c
+In-Reply-To: <1335960469.10293.49.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.02.1205021426530.1880@hadrien>
+References: <alpine.DEB.2.02.1204280701210.1917@hadrien>
+ <1335960469.10293.49.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: Julia Lawall <julia.lawall@lip6.fr>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2 May 2012, Artem Bityutskiy wrote:
 
---=-lTTHqq3R0IGjO8mrjuwI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On Sat, 2012-04-28 at 07:06 +0200, Julia Lawall wrote:
+>> The function read_direntry in fs/jffs2/readinode.c contains the following
+>> code:
+>>
+>>          err = jffs2_flash_read(c, (ref_offset(ref)) + read,
+>>                                 rd->nsize - already, &read, &fd->name[already]);
+>>  	if (unlikely(read != rd->nsize - already) && likely(!err))
+>>                        return -EIO;
+>>
+>>          if (unlikely(err)) {
+>>                  JFFS2_ERROR("read remainder of name: error %d\n", err);
+>>                  jffs2_free_full_dirent(fd);
+>>                  return -EIO;
+>>          }
+>>
+>> Is it intentional that the first if doesn't free fd?  At first I thought
+>> that that might be the case, because what would be the point of having two
+>> conditionals if they are going to do the same thing.  But I can't see why
+>> fd should not be freed either, so maybe the two conditionals are just
+>> there to give different error messages?
+>
+> Hi Julia,
+>
+> I think this is a bug and thes conditionals can be joined into one.
 
-On Wed, 2012-05-02 at 14:02 +0300, Shmulik Ladkani wrote:
-> Few typos fixed.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Thanks!  I will send a patch soon.
 
-Pushed to mtd-www.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-lTTHqq3R0IGjO8mrjuwI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPoSeDAAoJECmIfjd9wqK0sp0P/3ZKOYhIU+7hB1YkHgvnnDYj
-FI7/4uXgE0/PxZ9rghKGGTJhWkxDxikqqF5EuBQDAQFFMT3say+SVBhkpPmzC1YY
-BaDmYGfQ8y09Zs5ihtA10EVKwQOXLH+dD8DI0Er9IvZTIZEU6MXfEiq++n9cbElc
-1u4gKW91JnGBxmk1MotkgAHxhgmzM5TntK9uqrbZiIrgmHvxQww6YM91o2X4/ZSK
-Dxsk7+rj1u+foy5WOxsql4krxYR1uEloSUiCdVu1GZZgqL56o5jKQWjbZeyBPVJC
-lM0hk1P2zuZpdA/W77MxY9iSXTvgSOkOC/dwz9r8mMJ/YWVnFFGKCl7DPD9SrbCm
-XIzecTOaV6Wlrc7gY9+cs2y+WgjUvzFbu6Pg1cMwu2gmXgmm5lDVznkHLbwb5SD4
-AIcMDqopraOy2p9juyrKt+K7WR56PIfstJqttTOEG27GV6eThtdLiHr7fTms+Q/u
-BMywao7cr+OKfWw9X+rjyWHRk3iJNUcU1Nna9E1QXTPyUSnGqu8wTr+aI8Fp1lGS
-68CFiz/GC8DcOdf5Jn7LhfMsS1Xh2EEqdZXEVmy6QzcWHSzB9ool6F44Z/RcxvDD
-tKC5vaoDnPuZcvOiMvN0HhtdmVUKq3/Ki2VUAdOy+sqPSPfskOHDpQ2n8LShVAZ8
-mpbdZkOvYDmxrHbr6ANc
-=c2Ch
------END PGP SIGNATURE-----
-
---=-lTTHqq3R0IGjO8mrjuwI--
+julia
