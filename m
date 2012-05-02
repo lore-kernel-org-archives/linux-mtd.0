@@ -1,28 +1,29 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPd9u-0002jb-TD
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:16:12 +0000
-Received: by pbbrq13 with SMTP id rq13so1447669pbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:16:09 -0700 (PDT)
+ id 1SPd9y-0002jb-5x
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:16:15 +0000
+Received: by mail-pb0-f49.google.com with SMTP id rq13so1447669pbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:16:13 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 00/10] mtd: nand: rework nand_ecc_ctrl interface for OOB
-Date: Wed,  2 May 2012 10:14:54 -0700
-Message-Id: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
-Cc: Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
- Kevin Cernekee <cernekee@gmail.com>, eric miao <eric.miao@marvell.com>,
- Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
- Bastian Hecht <hechtb@googlemail.com>, Mike Frysinger <vapier.adi@gmail.com>,
- Lei Wen <leiwen@marvell.com>, Scott Wood <scottwood@freescale.com>,
- Thomas Gleixner <tglx@linutronix.de>, Bryan Wu <cooloney@kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+Subject: [PATCH v4 02/10] mtd: nand: pass proper 'oob_required' parameter
+Date: Wed,  2 May 2012 10:14:56 -0700
+Message-Id: <1335978904-8005-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
+References: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
+Cc: Li Yang <leoli@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
  Matthieu CASTET <matthieu.castet@parrot.com>,
  Huang Shijie <b32955@freescale.com>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Jiandong Zheng <jdzheng@broadcom.com>,
+ Jiandong Zheng <jdzheng@broadcom.com>, Florian Fainelli <ffainelli@freebox.fr>,
+ Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, Axel Lin <axel.lin@gmail.com>,
+ Bastian Hecht <hechtb@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,74 +33,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+We now have an interface for notifying the nand_ecc_ctrl functions when OOB
+data must be returned to the upper layers and when it may be left untouched.
+This patch fills in the 'oob_required' parameter properly from
+nand_do_{read,write}_ops. When utilized properly in the lower layers, this
+parameter can improve performance and/or reduce complexity for NAND HW and SW
+that can simply avoid transferring the OOB data.
 
-This is the fourth version of my patches to change the nand_chip and
-nand_ecc_ctrl interfaces so that the nand_ecc_ctrl functions have information
-about whether the higher layers actually need OOB data to be read/written
-from/to the NAND device.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Acked-by: Jiandong Zheng <jdzheng@broadcom.com>
+---
+ drivers/mtd/nand/nand_base.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
-Changes for v4, somewhat ordered by importance:
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 6d4894a..464b742 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1480,7 +1480,7 @@ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
+ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			    struct mtd_oob_ops *ops)
+ {
+-	int chipnr, page, realpage, col, bytes, aligned;
++	int chipnr, page, realpage, col, bytes, aligned, oob_required;
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct mtd_ecc_stats stats;
+ 	int ret = 0;
+@@ -1504,6 +1504,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
  
-  Fixup unsafe behavior for Freescale NAND drivers (thanks Scott)
-
-  Rebase on auto-increment fixes (sent separately; not accepted yet). Some of
-  the nand_base support I provided was not sound for NAND that used
-  auto-increment. But we always had NAND_NO_AUTOINCR set, so I killed the
-  option and dropped support for auto-increment, making the nand_base changes
-  sound again.
-
-  Rebase on top of Mike Dunn's bitflip threshold patch. There wasn't really any
-  conflict; just trivial automerges.
-
-  Applied Ack's, Reviewed-by's
-
-Please refer to previous communications for other info.
-
-I could not compile all the affected drivers, since some required ARCH-specific
-builds that I am not familiar with.
-
-Developers: if you care about your driver, please compile test and review to be
-sure I'm doing things safely for you.
-
-Note to the maintainers: please do NOT accept any of the patches 3-10 without
-an explicit ACK from someone who knows the driver (I included Ack's for 6, 7,
-and 8). I think they're simple, but I am not certain. And it is totally safe to
-ignore one or several of those patches independently.
-
-Thanks for reviewing!
-
-Brian
-
-Brian Norris (10):
-  mtd: nand: add 'oob_required' argument to NAND {read,write}_page
-    interfaces
-  mtd: nand: pass proper 'oob_required' parameter
-  mtd: Blackfin NFC: utilize oob_required parameter
-  mtd: cafe_nand: utilize oob_required parameter
-  mtd: denali: utilize oob_required parameter
-  mtd: eLBC NAND: utilize oob_required parameter
-  mtd: IFC NAND: utilize oob_required parameter
-  mtd: gpmi-nand: utilize oob_requested parameter
-  mtd: nand: utilize oob_required parameter
-  mtd: pxa3xx_nand: utilize oob_required parameter
-
- drivers/mtd/nand/atmel_nand.c          |    5 +-
- drivers/mtd/nand/bcm_umi_bch.c         |   10 +++--
- drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
- drivers/mtd/nand/bf5xx_nand.c          |   10 +++--
- drivers/mtd/nand/cafe_nand.c           |   16 +++++---
- drivers/mtd/nand/denali.c              |   12 +++--
- drivers/mtd/nand/docg4.c               |   12 +++---
- drivers/mtd/nand/fsl_elbc_nand.c       |   14 +++----
- drivers/mtd/nand/fsl_ifc_nand.c        |   13 +++---
- drivers/mtd/nand/fsmc_nand.c           |    3 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   41 ++++++++++---------
- drivers/mtd/nand/nand_base.c           |   70 ++++++++++++++++++++------------
- drivers/mtd/nand/pxa3xx_nand.c         |   11 +++--
- drivers/mtd/nand/sh_flctl.c            |    4 +-
- include/linux/mtd/nand.h               |   11 +++--
- 15 files changed, 134 insertions(+), 100 deletions(-)
-
+ 	buf = ops->datbuf;
+ 	oob = ops->oobbuf;
++	oob_required = oob ? 1 : 0;
+ 
+ 	while (1) {
+ 		bytes = min(mtd->writesize - col, readlen);
+@@ -1521,13 +1522,14 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			 */
+ 			if (unlikely(ops->mode == MTD_OPS_RAW))
+ 				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi,
+-							      1, page);
++							      oob_required,
++							      page);
+ 			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
+ 				ret = chip->ecc.read_subpage(mtd, chip,
+ 							col, bytes, bufpoi);
+ 			else
+ 				ret = chip->ecc.read_page(mtd, chip, bufpoi,
+-							  1, page);
++							  oob_required, page);
+ 			if (ret < 0) {
+ 				if (!aligned)
+ 					/* Invalidate page cache */
+@@ -1554,7 +1556,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
+ 
+ 			if (unlikely(oob)) {
+-
+ 				int toread = min(oobreadlen, max_oobsize);
+ 
+ 				if (toread) {
+@@ -2213,6 +2214,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	uint8_t *oob = ops->oobbuf;
+ 	uint8_t *buf = ops->datbuf;
+ 	int ret, subpage;
++	int oob_required = oob ? 1 : 0;
+ 
+ 	ops->retlen = 0;
+ 	if (!writelen)
+@@ -2275,8 +2277,8 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 			memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 		}
+ 
+-		ret = chip->write_page(mtd, chip, wbuf, 1, page, cached,
+-				       (ops->mode == MTD_OPS_RAW));
++		ret = chip->write_page(mtd, chip, wbuf, oob_required, page,
++				       cached, (ops->mode == MTD_OPS_RAW));
+ 		if (ret)
+ 			break;
+ 
 -- 
 1.7.5.4.2.g519b1
