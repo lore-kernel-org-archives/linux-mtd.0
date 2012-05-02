@@ -1,11 +1,11 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPajI-0005nE-1N
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:40:33 +0000
-Received: by lagy4 with SMTP id y4so578721lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 07:40:30 -0700 (PDT)
+ id 1SPaoh-0007az-LM
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:46:08 +0000
+Received: by lbbgg6 with SMTP id gg6so589244lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 07:46:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1335967727.10293.63.camel@sauron.fi.intel.com>
+In-Reply-To: <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
 References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
  <1335955122.10293.39.camel@sauron.fi.intel.com>
  <CABYn4szhjH0N_DsGc=O0TtJZNUja1KDzZ7HWTnR5nQvnxZEVPQ@mail.gmail.com>
@@ -14,8 +14,9 @@ References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
  <1335966905.10293.59.camel@sauron.fi.intel.com>
  <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
  <1335967727.10293.63.camel@sauron.fi.intel.com>
-Date: Wed, 2 May 2012 16:40:30 +0200
-Message-ID: <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
+ <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
+Date: Wed, 2 May 2012 16:46:05 +0200
+Message-ID: <CABYn4swY_+fh6492DOsSBiCMGH9W_iWSjPOK77W244Ry4pv3Yg@mail.gmail.com>
 Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
 From: Bastian Hecht <hechtb@googlemail.com>
 To: dedekind1@gmail.com
@@ -32,53 +33,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Wed, 2012-05-02 at 16:00 +0200, Bastian Hecht wrote:
->> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
->> > On Wed, 2012-05-02 at 15:41 +0200, Bastian Hecht wrote:
->> >> Ok I'm slowly but surely fighting my way through it. Though I want to
->> >> add an advisor here:
->> >> Don't do this on your crappy laptop like I do. I guess I will move to
->> >> my 8Gb RAM desktop machine for this in the future ;)
->> >
->> > Yeah, I run it on a powerful PC. I need to update the README file - but
->> > if you send a patch - will be appreciated.
+2012/5/2 Bastian Hecht <hechtb@googlemail.com>:
+> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
+>> On Wed, 2012-05-02 at 16:00 +0200, Bastian Hecht wrote:
+>>> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
+>>> > On Wed, 2012-05-02 at 15:41 +0200, Bastian Hecht wrote:
+>>> >> Ok I'm slowly but surely fighting my way through it. Though I want to
+>>> >> add an advisor here:
+>>> >> Don't do this on your crappy laptop like I do. I guess I will move to
+>>> >> my 8Gb RAM desktop machine for this in the future ;)
+>>> >
+>>> > Yeah, I run it on a powerful PC. I need to update the README file - but
+>>> > if you send a patch - will be appreciated.
+>>>
+>>> I assumed people to be smarter than me and instantly realize that a
+>>> compile-test is resource intensive, so I'm unsure if this is
+>>> necessary.
 >>
->> I assumed people to be smarter than me and instantly realize that a
->> compile-test is resource intensive, so I'm unsure if this is
->> necessary.
+>> You are not the first one :-)
 >
-> You are not the first one :-)
+>
+> Now I'm really stuck. The verbose log says the build target "all"
+> failed. When I used -p to keep the clone and used make ARCH=arm
+> CROSS-...=... l2_mackerel_defconfig; make ARCH=... CROSS=... all -
+> everything builds fine.
+>
+> command used: ../aiaiai/concat-mbox-files /tmp/patch/* |
+> ../aiaiai/test-patchset -j8 -p -v ../flctl_patch/ --cppcheck --sparse
+> l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-
+>
+> The log looks like this:
+> HEAD is now at 07126b9 for test compiling
+> [2012-05-02 15:51:43] test-patchset: Build non-patched kernel
+> ("/tmp/test-patchset.IxuP/before/src", configuration
+> "l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-")
+> mkdir: created directory
+> `/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-'
+> [2012-05-02 15:51:43] make-kernel: Making target
+> "l2_mackerel_defconfig" for "/tmp/test-patchset.IxuP/before/src
+> (O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+> [2012-05-02 15:51:49] make-kernel: Making target "all" for
+> "/tmp/test-patchset.IxuP/before/src
+> (O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+> [2012-05-02 15:52:16] make-kernel: Failed to make target "all" for
+> "/tmp/test-patchset.IxuP/before/src
+> (O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+> [2012-05-02 15:52:16] make-kernel: Failed to make a target, exiting
 
 
-Now I'm really stuck. The verbose log says the build target "all"
-failed. When I used -p to keep the clone and used make ARCH=arm
-CROSS-...=... l2_mackerel_defconfig; make ARCH=... CROSS=... all -
-everything builds fine.
+What I forgot to mention is:
 
-command used: ../aiaiai/concat-mbox-files /tmp/patch/* |
-../aiaiai/test-patchset -j8 -p -v ../flctl_patch/ --cppcheck --sparse
-l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-
+The error log l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-.stderr.log
+states:
+...
+...
+make: *** [sub-make] Error 2
+FAILURE
 
-The log looks like this:
-HEAD is now at 07126b9 for test compiling
-[2012-05-02 15:51:43] test-patchset: Build non-patched kernel
-("/tmp/test-patchset.IxuP/before/src", configuration
-"l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-")
-mkdir: created directory
-`/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-'
-[2012-05-02 15:51:43] make-kernel: Making target
-"l2_mackerel_defconfig" for "/tmp/test-patchset.IxuP/before/src
-(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
-[2012-05-02 15:51:49] make-kernel: Making target "all" for
-"/tmp/test-patchset.IxuP/before/src
-(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
-[2012-05-02 15:52:16] make-kernel: Failed to make target "all" for
-"/tmp/test-patchset.IxuP/before/src
-(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
-[2012-05-02 15:52:16] make-kernel: Failed to make a target, exiting
+but in the whole log there is no error listed. It only appears at the
+end without any references.
 
-
-> --
-> Best Regards,
-> Artem Bityutskiy
+>
+>> --
+>> Best Regards,
+>> Artem Bityutskiy
