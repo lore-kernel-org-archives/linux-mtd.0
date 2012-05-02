@@ -1,22 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPWu4-0004kl-Q6
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 10:35:26 +0000
-Message-ID: <1335955122.10293.39.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Wed, 02 May 2012 13:38:42 +0300
-In-Reply-To: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-y236Uy9szDvMFQpG6aWL"
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPXFY-0006dB-Ve
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 10:57:37 +0000
+Received: by bkwj4 with SMTP id j4so412070bkw.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 03:57:34 -0700 (PDT)
+Date: Wed, 2 May 2012 13:57:25 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd-www: FAQ: spelling fixes
+Message-ID: <20120502135725.067ca11b@halley>
+In-Reply-To: <CAN8TOE9n9BTstLeU5du_jan8wrFSO9pKxHA_mN7Fptf6pXKVWg@mail.gmail.com>
+References: <20120502085826.23b8cf5c@halley>
+ <CAN8TOE9n9BTstLeU5du_jan8wrFSO9pKxHA_mN7Fptf6pXKVWg@mail.gmail.com>
 Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---=-y236Uy9szDvMFQpG6aWL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 1 May 2012 23:09:10 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> On Tue, May 1, 2012 at 10:58 PM, Shmulik Ladkani
+> > @@ -210,7 +210,7 @@ write-buffer contained some data and was not yet synced before the unclean
+> > reboot happened. In them first and the third cases, you just lose the very
+> > last data you have written, in the second case you lose nothing. The wrong
+> > nodes will eventually be recycled by Garbage Collector and the massages will go
+> 
+> How about 'massages' -> 'messages'? :)
 
-On Wed, 2012-05-02 at 11:41 +0200, Bastian Hecht wrote:
-> changelog v3:
->=20
-> Just a rebase on current l2-mtd.git.
+Thanks :)
+Apparently my subconscious didn't want the massages to go...
 
-Aiaiai says that your patch-set introduced several warnings, could you
-please take a look:
+Will resubmit shortly.
 
----------------------------------------------------------------------------=
------
-
-Bisectability test results for configuration "l2_mackerel_defconfig,arm,arm=
--unknown-linux-gnueabi-"
-
-Bisecability test passed
-
----------------------------------------------------------------------------=
------
-
-Successfully built configuration "l2_mackerel_defconfig,arm,arm-unknown-lin=
-ux-gnueabi-", results:
-
---- before_patching.log
-+++ after_patching.log
-@@ @@
--drivers/mtd/nand/sh_flctl.c:264:30: warning: incorrect type in argument 1 =
-(different address spaces) [sparse]
--drivers/mtd/nand/sh_flctl.c:264:30:    expected void const volatile [noder=
-ef] <asn:2>*<noident> [sparse]
--drivers/mtd/nand/sh_flctl.c:264:30:    got void *fifo_addr [sparse]
-+drivers/mtd/nand/sh_flctl.c:301:38: warning: incorrect type in argument 1 =
-(different address spaces) [sparse]
-+drivers/mtd/nand/sh_flctl.c:301:38:    expected void const volatile [noder=
-ef] <asn:2>*<noident> [sparse]
-+drivers/mtd/nand/sh_flctl.c:301:38:    got void *fifo_addr [sparse]
-+drivers/mtd/nand/sh_flctl.c:326:28: warning: cast removes address space of=
- expression [sparse]
-+drivers/mtd/nand/sh_flctl.c:331:17: warning: incorrect type in argument 1 =
-(different address spaces) [sparse]
-+drivers/mtd/nand/sh_flctl.c:331:17:    expected void const volatile [noder=
-ef] <asn:2>*<noident> [sparse]
-+drivers/mtd/nand/sh_flctl.c:331:17:    got void *fifo_addr [sparse]
-+drivers/mtd/nand/sh_flctl.c:967 flctl_probe() warn: 'irq' was not released=
- on error [smatch]
-
----------------------------------------------------------------------------=
------
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-y236Uy9szDvMFQpG6aWL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPoQ6yAAoJECmIfjd9wqK0pfAQANIXrofRDS3R1saH/newX0Jj
-BYyMoOeDxs/dWZQ8A26aimtBf8GI37ABv79BZ9y3SDSZ4mSZ0ktpUBYZebw8kZTr
-6MZG3EeseqjDZKcIeycqWwV9Hzki32WsJFP0IXwzs6B5gWwg29sugHuVxTBqtmsg
-1pn7QQLo6Jh4IWNq5ge25EOU+Fey3lu43gDqrpCeREzP7OeJoNZk8V4FxDJipcDL
-MHFOYWdQGv6LKf2AaB5TC1wk2zSpAbPlGMcGMjP/peauGN1bLSeHeALaQ9WnSDOL
-Wc66DPLPn13JO7I9hIPwxEemMR4DKI7YpgyeyFo2HHl6i969KvNjGhd+lG1L222u
-AT5kDTuBtBDd3LYZfx5ayFagjjC9gqI1DOGZEpfYhT62kBJ68+0IxQQvGzcQES5C
-K5mNwR6uYIr7THFU/UxgnnFBv17Z/8LfK88MbVGhbhNRZv8BA6iPBHdsrC+u11ne
-MX8ErZhBQFtQwinNJbS6TnSVA2IeOG8UZEbfHK4cJR5ekyDkWRUg8CRtGhQ3HcXz
-HY/z1jfOJ1XlCltazJaOXpiPwC8ubzULVXc+a7gRrATSc+Cr/opO9iUccQYa3vw4
-auGt1Fuko2eXuVF38Nhd8rOnfCBmttig30KoFQ8LmTvUG9EVfxAEsnx2tG5WqeEi
-WxP9DVSkHUskfTjxJcIk
-=s41c
------END PGP SIGNATURE-----
-
---=-y236Uy9szDvMFQpG6aWL--
+Regards,
+Shmulik
