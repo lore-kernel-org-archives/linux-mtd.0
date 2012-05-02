@@ -1,23 +1,22 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPV00-0000xu-Mu
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 08:33:25 +0000
-Received: by lagy4 with SMTP id y4so291984lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 01:33:22 -0700 (PDT)
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPVN2-0002S3-4C
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 08:57:12 +0000
+Date: Wed, 2 May 2012 10:57:07 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Thilo Fromm <fromm@dresearch-fe.de>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+In-Reply-To: <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1335627043.1917.4.camel@koala>
-References: <1335362618-4559-1-git-send-email-hechtb@gmail.com>
- <1335626773.1917.3.camel@koala> <1335627043.1917.4.camel@koala>
-Date: Wed, 2 May 2012 10:33:22 +0200
-Message-ID: <CABYn4sx1GwgJ8qSSaHPitov-kzZecCcDPopgUWf8BhYhUzpdTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/10] sh_flctl hardware ECC mode cleanup
-From: Bastian Hecht <hechtb@googlemail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +26,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
->> Unfortunantely, I cannot build-test your patches because mackerel
->> defconfig still does not build (mackerel_defconfig). Any suggestions how
->> to work this around or any other defconfig to use?
+On Wed, 2 May 2012, Thilo Fromm wrote:
+
+>> One way is to use a file system intended for flashes, but mount it
+>> read-only. I.e. use a jffs2 filesystem, mounted readonly.
 >
-> If you send me a temprorary work-around patch for the build failure -
-> would be fine. This patch does =A0not have to work, just make the tree
-> compile.
+> Yupp, or I coud hack up SquashFS to be bad blocks aware. However, it
+> feels kind of wrong to me to leave bad block handling to the file
+> system layer. Because I would have to provide bad block awareness to
+> every read-only FS I am planning to use. Over and over again.
 
-Here a quick workaround:
+I principally agree, however, jffs2 is doing just that, managing bad=20
+blocks. Whether that is a good idea or not is debatable of course.=20
+Technically it mixes up file system and device properties. Also, you might=
+=20
+not plan to change read-only FS's very often so the effort might be quite=
+=20
+minimal in practice.
 
-diff --git a/arch/arm/mach-shmobile/board-mackerel.c
-b/arch/arm/mach-shmobile/board-mackerel.c
-index f49e28a..ffa3700 100644
---- a/arch/arm/mach-shmobile/board-mackerel.c
-+++ b/arch/arm/mach-shmobile/board-mackerel.c
-@@ -1017,7 +1017,7 @@ static irqreturn_t mackerel_sdhi0_gpio_cd(int
-irq, void *arg)
- 	struct sh_mobile_sdhi_info *info =3D dev->platform_data;
- 	struct tmio_mmc_data *pdata =3D info->pdata;
+>> Or, let UBI handle the flash, and use ubifs in a static volume, which me=
+ans
+>> it will be non-writable. Last time I checked it wasn't possible to use f=
+ile
+>> systems such as cramfs on UBI, because UBI did not supply a block device
+>> which is required by cramfs. I seem to remember some patch to add block
+>> devices to UBI, not sure what the state of that is.
+>
+> I think a simpler option would be to have your (read-only squash-)root
+> FS image in a static UBI volume and mount it via loop-back. This is
+> currently our fallback option. Still this feels like way too much
+> overhead for what we're looking for.
 
--	tmio_mmc_cd_wakeup(pdata);
-+//	tmio_mmc_cd_wakeup(pdata);
+Interting, it never occurred to me that that was possible. I always think=
+=20
+of loopback mounts for mounting things like files as cdrom drives. How do=
+=20
+you specify a loopback mount for the rootfs on the kernel command line?
 
- 	return IRQ_HANDLED;
- }
+> It's rather easy for both boot loader and Linux to write to a raw
+> flash device, skipping bad blocks along the way. It's also easy for
+> the boot loader to read back what was written, also skipping bad
+> blocks. Finally, using an user space tool like "nanddump", I can read
+> back what *really* has been written without a problem.
+>
+> Unfortunately it seems to be impossible to provide this read behavior
+> via an MTD API to other parts of the linux kernel. All the workarounds
+> seem such a waste, and this bad block-free read-only API seems such a
+> good idea for a lot of things I'm really curious why the work on
+> something as cool as MTD_BLOCK_RO_BBFREE  ceased in 2006.
 
-Thanks,
+I don't know for sure, but I think the majority of flash subsystem effort=
+=20
+has been centered around UBI and ubifs; for instance, there is very little=
+=20
+(if any) development on jffs2 nowadays, with all the effort going into=20
+ubifs (and yaffs, different mailing list). One of the main points of UBI=20
+is to handle bad blocks, consequently with UBI in the mainstream kernel=20
+for a while now, most other efforts have a limited appeal.
 
- Bastian Hecht
+Linutronix have made a small UBI library for reading static UBI volumes=20
+which is suitable for boot loaders, so that one can have the kernel=20
+residing in a UBI volume and get all the benefits of bad block management=
+=20
+etc even at that level.
 
-> --
-> Best Regards,
-> Artem Bityutskiy
+> Since I really like the idea of a MTD block device that skips bad
+> blocks when reading I'm currently in the process of re-animating the
+> BBFREE patch <http://lists.infradead.org/pipermail/linux-mtd/2006-Novembe=
+r/016835.html>:
+> it compiles for me, but still has some major issues. I'll keep this
+> list up to date on my progress.
+
+All pathes would be welcome; I'm sure there are others who would find such=
+=20
+an approach beneficial, even if I think UBI is probably the way to go=20
+these days.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
