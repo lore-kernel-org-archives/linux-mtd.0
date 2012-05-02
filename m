@@ -1,26 +1,28 @@
-Received: from mail2.spectraaccess.net ([208.65.172.25])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPd8b-0002ZT-DD
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:14:50 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'Thilo Fromm' <fromm@dresearch-fe.de>, Ricard Wanderlof
- <ricard.wanderlof@axis.com>
-Date: Wed, 2 May 2012 13:14:45 -0400
-Subject: RE: State of read-only filesystems in NAND / MTD bad blocks
- handling when reading
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
-References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
- <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
- <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
- <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
- <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
-In-Reply-To: <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPd9u-0002jb-TD
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:16:12 +0000
+Received: by pbbrq13 with SMTP id rq13so1447669pbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:16:09 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 00/10] mtd: nand: rework nand_ecc_ctrl interface for OOB
+Date: Wed,  2 May 2012 10:14:54 -0700
+Message-Id: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
+Cc: Florian Fainelli <ffainelli@freebox.fr>, Jamie Iles <jamie@jamieiles.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Kevin Cernekee <cernekee@gmail.com>, eric miao <eric.miao@marvell.com>,
+ Axel Lin <axel.lin@gmail.com>, Li Yang <leoli@freescale.com>,
+ Bastian Hecht <hechtb@googlemail.com>, Mike Frysinger <vapier.adi@gmail.com>,
+ Lei Wen <leiwen@marvell.com>, Scott Wood <scottwood@freescale.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Bryan Wu <cooloney@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Jiandong Zheng <jdzheng@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,55 +32,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBbIGJhZC1ibG9jay1za2lwIHJlYWQgaXMgZWFzeSBmb3IgYm9vdCBsb2FkZXIsIHVzZXIgc3Bh
-Y2UgXQ0KPiA+ID4gVW5mb3J0dW5hdGVseSBpdCBzZWVtcyB0byBiZSBpbXBvc3NpYmxlIHRvIHBy
-b3ZpZGUgdGhpcyByZWFkIGJlaGF2aW9yDQo+ID4gPiB2aWEgYW4gTVREIEFQSSB0byBvdGhlciBw
-YXJ0cyBvZiB0aGUgbGludXgga2VybmVsLiBBbGwgdGhlIHdvcmthcm91bmRzDQo+ID4gPiBzZWVt
-IHN1Y2ggYSB3YXN0ZSwgYW5kIHRoaXMgYmFkIGJsb2NrLWZyZWUgcmVhZC1vbmx5IEFQSSBzZWVt
-cyBzdWNoIGENCj4gPiA+IGdvb2QgaWRlYSBmb3IgYSBsb3Qgb2YgdGhpbmdzIEknbSByZWFsbHkg
-Y3VyaW91cyB3aHkgdGhlIHdvcmsgb24NCj4gPiA+IHNvbWV0aGluZyBhcyBjb29sIGFzIE1URF9C
-TE9DS19ST19CQkZSRUUgIGNlYXNlZCBpbiAyMDA2Lg0KPiA+DQo+ID4NCj4gPiBJIGRvbid0IGtu
-b3cgZm9yIHN1cmUsIGJ1dCBJIHRoaW5rIHRoZSBtYWpvcml0eSBvZiBmbGFzaCBzdWJzeXN0ZW0g
-ZWZmb3J0DQo+ID4gaGFzIGJlZW4gY2VudGVyZWQgYXJvdW5kIFVCSSBhbmQgdWJpZnM7IGZvciBp
-bnN0YW5jZSwgdGhlcmUgaXMgdmVyeSBsaXR0bGUNCj4gPiAoaWYgYW55KSBkZXZlbG9wbWVudCBv
-biBqZmZzMiBub3dhZGF5cywgd2l0aCBhbGwgdGhlIGVmZm9ydCBnb2luZyBpbnRvIHViaWZzDQo+
-ID4gKGFuZCB5YWZmcywgZGlmZmVyZW50IG1haWxpbmcgbGlzdCkuIE9uZSBvZiB0aGUgbWFpbiBw
-b2ludHMgb2YgVUJJIGlzIHRvDQo+ID4gaGFuZGxlIGJhZCBibG9ja3MsIGNvbnNlcXVlbnRseSB3
-aXRoIFVCSSBpbiB0aGUgbWFpbnN0cmVhbSBrZXJuZWwgZm9yIGENCj4gPiB3aGlsZSBub3csIG1v
-c3Qgb3RoZXIgZWZmb3J0cyBoYXZlIGEgbGltaXRlZCBhcHBlYWwuDQo+DQo+IEkgZmluZCB0aGlz
-IHdob2xlIE1URCAvIFVCSSB0aGluZywgbGV0IGFsb25lIFVCSUZTLCBpbmNyZWRpYmx5IGJsdXJy
-eS4NCj4gVGhlcmUgc2VlbXMgdG8gYmUgbm8gY29uc2VxdWVudCBhYnN0cmFjdGlvbiBiZXR3ZWVu
-IHRoZSAibGF5ZXJzIiBtdGQsDQo+IHViaSwgdWJpZnMsIGxldCBhbG9uZSB1bmlxdWUgcmVzcG9u
-c2liaWxpdGllcyBmb3IgZWl0aGVyIG9mIHRoZQ0KPiBsYXllcnMuDQoNCiAgSSBjYW4gYW5zd2Vy
-IHRoYXQgb25lLg0KDQogIE1URCAibWF0ZXJpYWxpemVzIiBhbiBpbXBlcmZlY3QgYmxvY2sgc3Rv
-cmFnZSBkZXZpY2UuIEl0IGNvbnRhaW5zDQogIG0gUEVCcyAoUGh5c2ljYWwgRXJhc2UgQmxvY2tz
-KSBvZiBuIHBhZ2VzIGVhY2guIEl0IGNhbiBlcmFzZSB3aG9sZQ0KICBQRUJzLCB3cml0ZSBwYWdl
-cywgYW5kIHJlYWQgcGFnZXMsIGJ1dCBzb21lIG9mIHRoZXNlIHBhZ2VzIGFyZQ0KICBiYWQsIG90
-aGVyIHBhZ2VzIG1heSBnbyBiYWQsIGFuZCB5b3UgaGF2ZSB0byBiZSBhd2FyZSB0aGF0IHlvdQ0K
-ICBjYW4gd2VhciBvdXQgUEVCcyBieSByZXBlYXRlZCBlcmFzdXJlcy4NCg0KICBVQkkgKG9uIHRv
-cCBvZiBNVEQpICJtYXRlcmlhbGl6ZXMiIGEgcGVyZmVjdCBibG9jayBzdG9yYWdlIGRldmljZS4N
-CiAgSXQgY29udGFpbnMgYSBtYXhpbXVtIG9mIG0tZnVkZ2VfZmFjdG9yIExFQnMgKExvZ2ljYWwg
-RXJhc2UgQmxvY2tzKQ0KICBvZiBuLW92ZWhlYWQgcGFnZXMgZWFjaC4gSXQgY2FuIGVyYXNlIHdo
-b2xlIExFQnMsIHdyaXRlIHBhZ2VzLCBhbmQNCiAgcmVhZCBwYWdlcy4gQnkgcHJvdmlkaW5nIGJh
-ZCBibG9jayBtYXBwaW5nIGFuZCB3ZWFyIGxldmVsaW5nLCBpdA0KICBwcm92aWRlcyBhIGRldmlj
-ZSB3aGljaCBpcyBzbGlnaHRseSBzbWFsbGVyIHRoYW4gdGhlIE1URCBkZXZpY2UNCiAgaXQncyBs
-YXllcmVkIHVwb24sIGJ1dCB0aGF0IGRldmljZSBkb2Vzbid0IGhhdmUgYmFkIGJsb2NrcyBhbmQN
-CiAgeW91IGNhbid0IHdlYXIgb3V0IGFueSBpbmRpdmlkdWFsIExFQiBmYXN0ZXIgdGhhbiB0aGUg
-d2hvbGUNCiAgZGV2aWNlIHdlYXJzIG91dC4gVGhlIGRldmljZSByZW1haW5zIHBlcmZlY3QgdW50
-aWwgaXRzIHJlc2VydmUNCiAgb2YgcmVwbGFjZW1lbnQgKHNwYXJlKSBibG9ja3MgaXMgZXhoYXVz
-dGVkIGFzIGJsb2NrcyBnbyBiYWQuDQoNCiAgVUJJZnMgKG9uIHRvcCBvZiBVQkkgb24gdG9wIG9m
-IE1URCkgIm1hdGVyaWFsaXplcyIgYSBmaWxlIHN5c3RlbS4NCiAgSXQgY29udGFpbnMgb3JkaW5h
-cnkgTGludXgvVW5peCBmaWxlcyBvbiBhIHBlcmZlY3Qgc3RvcmFnZSBtZWRpdW0uDQogIEl0IGRl
-cGVuZHMgdXBvbiB0aGUgcGVyZmVjdCBzdG9yYWdlIHByb3ZpZGVkIGJ5IFVCSS4NCg0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIEF0bGFudA0KDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUg
-aW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBp
-bnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBl
-cnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGlu
-Zm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3Nh
-Z2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVk
-IHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMg
-Y29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZl
-ZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkg
-dGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91
-Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlz
-IGVtYWlsLg0K
+Hello,
+
+This is the fourth version of my patches to change the nand_chip and
+nand_ecc_ctrl interfaces so that the nand_ecc_ctrl functions have information
+about whether the higher layers actually need OOB data to be read/written
+from/to the NAND device.
+
+Changes for v4, somewhat ordered by importance:
+ 
+  Fixup unsafe behavior for Freescale NAND drivers (thanks Scott)
+
+  Rebase on auto-increment fixes (sent separately; not accepted yet). Some of
+  the nand_base support I provided was not sound for NAND that used
+  auto-increment. But we always had NAND_NO_AUTOINCR set, so I killed the
+  option and dropped support for auto-increment, making the nand_base changes
+  sound again.
+
+  Rebase on top of Mike Dunn's bitflip threshold patch. There wasn't really any
+  conflict; just trivial automerges.
+
+  Applied Ack's, Reviewed-by's
+
+Please refer to previous communications for other info.
+
+I could not compile all the affected drivers, since some required ARCH-specific
+builds that I am not familiar with.
+
+Developers: if you care about your driver, please compile test and review to be
+sure I'm doing things safely for you.
+
+Note to the maintainers: please do NOT accept any of the patches 3-10 without
+an explicit ACK from someone who knows the driver (I included Ack's for 6, 7,
+and 8). I think they're simple, but I am not certain. And it is totally safe to
+ignore one or several of those patches independently.
+
+Thanks for reviewing!
+
+Brian
+
+Brian Norris (10):
+  mtd: nand: add 'oob_required' argument to NAND {read,write}_page
+    interfaces
+  mtd: nand: pass proper 'oob_required' parameter
+  mtd: Blackfin NFC: utilize oob_required parameter
+  mtd: cafe_nand: utilize oob_required parameter
+  mtd: denali: utilize oob_required parameter
+  mtd: eLBC NAND: utilize oob_required parameter
+  mtd: IFC NAND: utilize oob_required parameter
+  mtd: gpmi-nand: utilize oob_requested parameter
+  mtd: nand: utilize oob_required parameter
+  mtd: pxa3xx_nand: utilize oob_required parameter
+
+ drivers/mtd/nand/atmel_nand.c          |    5 +-
+ drivers/mtd/nand/bcm_umi_bch.c         |   10 +++--
+ drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
+ drivers/mtd/nand/bf5xx_nand.c          |   10 +++--
+ drivers/mtd/nand/cafe_nand.c           |   16 +++++---
+ drivers/mtd/nand/denali.c              |   12 +++--
+ drivers/mtd/nand/docg4.c               |   12 +++---
+ drivers/mtd/nand/fsl_elbc_nand.c       |   14 +++----
+ drivers/mtd/nand/fsl_ifc_nand.c        |   13 +++---
+ drivers/mtd/nand/fsmc_nand.c           |    3 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   41 ++++++++++---------
+ drivers/mtd/nand/nand_base.c           |   70 ++++++++++++++++++++------------
+ drivers/mtd/nand/pxa3xx_nand.c         |   11 +++--
+ drivers/mtd/nand/sh_flctl.c            |    4 +-
+ include/linux/mtd/nand.h               |   11 +++--
+ 15 files changed, 134 insertions(+), 100 deletions(-)
+
+-- 
+1.7.5.4.2.g519b1
