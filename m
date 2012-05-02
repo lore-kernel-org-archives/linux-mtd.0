@@ -1,25 +1,27 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPbuT-000651-Mk
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 15:56:10 +0000
-Received: by lbbgg6 with SMTP id gg6so671919lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 08:56:07 -0700 (PDT)
+ id 1SPc6c-000737-KD
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 16:08:43 +0000
+Received: by lagy4 with SMTP id y4so679112lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 09:08:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+In-Reply-To: <CADx9zJBwrSWbBQ0KbP-kr2CmYcLs5g3vn10VQdAp6qHwyQbJiw@mail.gmail.com>
 References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
  <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
  <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
  <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
-Date: Wed, 2 May 2012 17:56:07 +0200
-Message-ID: <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+ <CADx9zJBwrSWbBQ0KbP-kr2CmYcLs5g3vn10VQdAp6qHwyQbJiw@mail.gmail.com>
+Date: Wed, 2 May 2012 18:08:39 +0200
+Message-ID: <CADZ6=av8TJJWRPsT=DrAnthZHO6iBzZ9nJMcHTiEV96TvgWkbA@mail.gmail.com>
 Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
  when reading
 From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Gregory CLEMENT <gclement00@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: David Wagner <deubeuliou@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,112 +31,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Richard,
-
-[ MTD read might return bad blocks ]
->>> One way is to use a file system intended for flashes, but mount it
->>> read-only. I.e. use a jffs2 filesystem, mounted readonly.
->>
->>
->> Yupp, or I coud hack up SquashFS to be bad blocks aware. However, it
->> feels kind of wrong to me to leave bad block handling to the file
->> system layer. Because I would have to provide bad block awareness to
->> every read-only FS I am planning to use. Over and over again.
->
->
-> I principally agree, however, jffs2 is doing just that, managing bad bloc=
-ks.
-> Whether that is a good idea or not is debatable of course. Technically it
-> mixes up file system and device properties. Also, you might not plan to
-> change read-only FS's very often so the effort might be quite minimal in
-> practice.
-
-It still feels like the wrong place to do this. Every FS would just
-skip this block, and be done with it.
-
->>> Or, let UBI handle the flash, and use ubifs in a static volume, which
->>> means
->>> it will be non-writable. Last time I checked it wasn't possible to use
->>> file
->>> systems such as cramfs on UBI, because UBI did not supply a block devic=
-e
->>> which is required by cramfs. I seem to remember some patch to add block
->>> devices to UBI, not sure what the state of that is.
->>
->>
->> I think a simpler option would be to have your (read-only squash-)root
->> FS image in a static UBI volume and mount it via loop-back. This is
->> currently our fallback option. Still this feels like way too much
->> overhead for what we're looking for.
->
->
-> Interting, it never occurred to me that that was possible. I always think=
- of
-> loopback mounts for mounting things like files as cdrom drives. How do yo=
-u
-> specify a loopback mount for the rootfs on the kernel command line?
-
-I don't know; I would have done the necessary preparations in an
-initrd, then pivot_root into the loopback mount.
-
-[ bad-block-skip read is easy for boot loader, user space ]
->> Unfortunately it seems to be impossible to provide this read behavior
->> via an MTD API to other parts of the linux kernel. All the workarounds
->> seem such a waste, and this bad block-free read-only API seems such a
->> good idea for a lot of things I'm really curious why the work on
->> something as cool as MTD_BLOCK_RO_BBFREE =C2=A0ceased in 2006.
->
->
-> I don't know for sure, but I think the majority of flash subsystem effort
-> has been centered around UBI and ubifs; for instance, there is very littl=
-e
-> (if any) development on jffs2 nowadays, with all the effort going into ub=
-ifs
-> (and yaffs, different mailing list). One of the main points of UBI is to
-> handle bad blocks, consequently with UBI in the mainstream kernel for a
-> while now, most other efforts have a limited appeal.
-
-I find this whole MTD / UBI thing, let alone UBIFS, incredibly blurry.
-There seems to be no consequent abstraction between the "layers" mtd,
-ubi, ubifs, let alone unique responsibilities for either of the
-layers.
-
-> Linutronix have made a small UBI library for reading static UBI volumes
-> which is suitable for boot loaders, so that one can have the kernel resid=
-ing
-> in a UBI volume and get all the benefits of bad block management etc even=
- at
-> that level.
-
-I already get everything I need from the way our boot loader (u-boot)
-handles MTD writes (it skips bad blocks) and MTD reads (it skips bad
-blocks). I do not, for instance, have trouble booting a kernel image
-which was written into a NAND partition with bad blocks. U-boot will
-read all the sane blocks back just fine, so I can boot. There is
-actually no issue I need to fix inside u-boot.
+Hello Gregory,
 
 >> Since I really like the idea of a MTD block device that skips bad
 >> blocks when reading I'm currently in the process of re-animating the
->> BBFREE patch
->> <http://lists.infradead.org/pipermail/linux-mtd/2006-November/016835.htm=
-l>:
+>> BBFREE patch <http://lists.infradead.org/pipermail/linux-mtd/2006-Novemb=
+er/016835.html>:
 >> it compiles for me, but still has some major issues. I'll keep this
 >> list up to date on my progress.
 >
+> a few years ago I also tried to reanimated this patch, it was nearly
+> adopted, but there were some argue about bit flipping during read or
+> why create a new device driver: see
+> http://lists.infradead.org/pipermail/linux-mtd/2007-November/019938.html
+> and the dozen of email of this thread.
+
+Ah, I see. Well, as I take it  MTD_BLOCK_RO_BBFREE takes care of
+reading back what was actually written instead of "inserting" bad
+blocks as the current driver does. Bit rot after many, many reads and
+the corresponding flash scrubbing routines are a different kind of
+problem. MTD_BLOCK_RO_BBFREE does not solve it, or pretend to solve
+it.
+
+> Finally Ricard Wanderlof share his experience about bit flipping
+> during reading and concluded that "At least for this chip [ST 256
+> Mbit flash], it seemed that if a block has only been written a few
+> times, then there seems to be virtually no limit to how many times it
+> can be read without bit flips occurring ".
+
+So the bit-rot-after-many-reads-issue is maybe a non-issue?
+
+> About "why create a new device driver" vitally Wool explained it was
+> explicitly directed by David because he didn't want to add confusion.
+
+Yepp, I get this, and I think it is a good idea. Still not sure
+whether the extra device nodes are a good idea, though. Maybe
+MTD_BLOCK_RO_BBFREE (and other flash translation layer code) could
+work more like a serial line discipline, so kernel or user space can
+attach and detach them to MTDs as required.
+
+> But this patch were never merged in the end, maybe I should have to
+> push more.
 >
-> All pathes would be welcome; I'm sure there are others who would find suc=
-h
-> an approach beneficial, even if I think UBI is probably the way to go the=
-se
-> days.
+> Since this, at Free Electrons we worked on the same kind of feature
+> but based on UBI: ubiblk, see http://lwn.net/Articles/452944/
+>
+> There were still some minor issue that prevents the patches to be
+> included in mtd. I hope David will find time to solve them soon.
 
-Apart from the fact that my NAND SW stack will then be two layers
-higher than it actually needs to be (and the added complexity this
-brings to boot loader and kernel) -  as far as I know UBI does not
-provide the functionality we require: being able to store a read-only
-file system image, and mount it at boot time. At least we don't get
-this without another boot step (initrd, see above).
-
+This doesn't really help us; we're stuck on kernel 2.6.37 and u-boot
+2010-06, both heavily modified by patches from Texas Instruments. To
+use the new UBI readonly block device we would need to integrate the
+latest linux-mtd into both kernel and u-boot, something which I
+consider way more complex (and risky) than trying to go with
+MTD_BLOCK_RO_BBFREE for now.
 
 Regards,
 Thilo
