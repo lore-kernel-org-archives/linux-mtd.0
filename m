@@ -1,17 +1,18 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPYNQ-0005er-Ig
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:09:49 +0000
-Message-ID: <1335960786.10293.50.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: docg3: fix max_bitflips related bug
+ id 1SPYNj-0005iN-Lf
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:10:08 +0000
+Message-ID: <1335960807.10293.51.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: use ecc_strength to determine whether to perform
+ bitflip_threshold test
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Dunn <mikedunn@newsguy.com>
-Date: Wed, 02 May 2012 15:13:06 +0300
-In-Reply-To: <1335893125-15904-1-git-send-email-mikedunn@newsguy.com>
-References: <1335893125-15904-1-git-send-email-mikedunn@newsguy.com>
+Date: Wed, 02 May 2012 15:13:27 +0300
+In-Reply-To: <1335902181-18110-1-git-send-email-mikedunn@newsguy.com>
+References: <1335902181-18110-1-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zYPJfUsNB4OnfTh4B0Cb"
+ boundary="=-MIJ8fTkk9R+81APuqddN"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,19 +26,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zYPJfUsNB4OnfTh4B0Cb
+--=-MIJ8fTkk9R+81APuqddN
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-01 at 10:25 -0700, Mike Dunn wrote:
-> This fixes a bug in the docg3 driver that was introduced by the EUCLEAN p=
-atch
-> set [1].
+On Tue, 2012-05-01 at 12:56 -0700, Mike Dunn wrote:
+> This is a minor change to the recent EUCLEAN patch set that I think makes=
+ it
+> more correct.  Currently, the test in mtd_read() that determines whether =
+or not
+> to return -EUCLEAN is skipped if bitflip_threshold =3D=3D 0.  This logic =
+was added
+> (without much thought) to fix a bug in an earlier version of the patch se=
+t that
+> would have caused devices lacking ecc to always return -EUCLEAN [1].
 >=20
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2012-April/040941.html
+> This patch replaces bitflip_threshold with ecc_strength as the value used=
+ to
+> determine whether the device has ecc capability.  I think this is more co=
+rrect
+> because bitflip_threshold can be changed via sysfs.  Currently, if the us=
+er sets
+> it to zero, -EUCLEAN is never returned.  This is also what happens if the=
+ user
+> sets it to a value exceeding ecc_strength.  With this patch, if the user =
+sets it
+> to zero, -EUCLEAN will always be returned (provided ecc_strength > 0), wh=
+ich
+> makes more sense, and may even be useful occasionally.
+>=20
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040468.html
 >=20
 > Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
 
 Folded this patch into:
 
@@ -49,7 +70,7 @@ and pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-zYPJfUsNB4OnfTh4B0Cb
+--=-MIJ8fTkk9R+81APuqddN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +78,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPoSTSAAoJECmIfjd9wqK0jogP/3vqPLyGzLae2IrNM++7Tg1G
-TaR8qUvYPuy1oNLb+wDKYGm1uTb2+n1cHn1kDFmDJPPFSVq0d+QulJCwYUQicG3d
-aQgwbcY8xF0wThzXbhQaY+EFnkWSr472NeoR5WCsuBvkpKHclGKxAjU/XMz50/KV
-ERI/sVewH42F1Ih4G0bfxgIxL+/oESNyWxF5ss4djtpdajUYN0BCnYPIKrr8Aqvm
-98z5r+7lW1jO85v2PHfdFysgdVhLcjwXL2/RAHs3Jmd5ElrfqJ2hLwv1h8+M16sM
-KvKXTKQoOb7M3jkLY9FN11C4/ADnc5q1IV9TiaKeLTiR72QkM9L7/hNN0QJZDXxd
-dKYLoQr6Jy6SKhg81olEJtA4Cmqi7tzyQnxEWYZvtCKU59/xobIC0pP024JQsG9y
-DFAASwklqzK/ofNCVv/EgzUSmrMCntowxhWYaynJMQfzoBk1DilH+FBUT18jczpT
-KSm2YNkjOEWUk+Y8V4y3YAeXV5hKRW5qAQVJHXNCror4dSG4RtmSgcmAWejC1Uwt
-VDeSDBCs58fI7Fi/vUGCPkJMu5mpiZKSiy09yW/ImwwI3GI+dRzRo1iCtIRWCMbp
-6bs7J/ibqN54aFgAXJSUfbfp6A28+Iv4dbkKcvynDPqAkW8cxAvmjG614+8Kv4qX
-LFAcDWxB92Q5ly3lBAhR
-=TNu9
+iQIcBAABAgAGBQJPoSTnAAoJECmIfjd9wqK08zoQAMWdYFuy2AB0JXb9O56pBi+u
+pk+sLn7JI5R5V/V7RhKLJc6I06QWp7RTQl6xt0C5M8YCPMWdO7XNQmJcci9GfWKw
+lkh3A+xk0qT7W4rQTQ9JYj6/39NsO3dc/rwMcp/yC7hMvtn3zJrqa1sLsJ4aHWUZ
+6EY+aJoTJUO95ztkDKcHXtiAapzaaGcVJNxQQW4HAaBMCiCd5h3tSwUE/sO/TEJv
+8FlvJV1t81u31eLhL7TV3kh0GhI06b5kalYQG132ACfbaLOVGcx3lBCibXsUJqYK
+BHxS+hKYvji3m/VzX8iGQbGK5h+gbv/OoHPglLYFcb3GmpuRFigL6kRJmdW6bv4T
+V7lWFLw5OcWYm4pEWLqddRAM9JizocIMN3cKVJLnsGznqYBzBmbHojvv4RgVCQj6
+Y293frgK1+2k92RcMvdVovEVwT+7wx1gW8EBb/JyM0uBkrNSJvGo/Be6rqf6XTQX
+UflO5tULzXLU+x66bu1NliZMIpYlZy9GdH+M9LVPRDTW1Pv/Apg0LtajpCqVpWYF
+rAqFECg0SpinPBhn1LYqe2LVYyaIWk81KN+fukwz7u8Z7AGQBHsks2Bw2OaDqfOw
+7Rd6jjQp6AAXHSBk+WV1telzTlh3GV3T6SuPh8ZMYRkDhA08K+T1xiBdnvvJgsUf
+3+Pp4LoJMcL5LmGH9RMx
+=HPvA
 -----END PGP SIGNATURE-----
 
---=-zYPJfUsNB4OnfTh4B0Cb--
+--=-MIJ8fTkk9R+81APuqddN--
