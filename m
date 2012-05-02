@@ -1,20 +1,23 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPfHr-00038D-Ob
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 19:32:32 +0000
-Received: by ghbf11 with SMTP id f11so1221178ghb.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 12:32:29 -0700 (PDT)
+Received: from ogre.sisk.pl ([193.178.161.156])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPgPq-0003ge-9t
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 20:44:51 +0000
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+To: Bastian Hecht <hechtb@googlemail.com>
+Subject: Re: [PATCH v3 02/10] ARM: sh-mobile: mackerel: Add error IRQ resource
+Date: Wed, 2 May 2012 22:49:30 +0200
+References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
+ <1335951710-9390-3-git-send-email-hechtb@gmail.com>
+In-Reply-To: <1335951710-9390-3-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1335959619.10293.41.camel@sauron.fi.intel.com>
-References: <037801cd2330$0cd747d0$2685d770$@com>
- <1335959619.10293.41.camel@sauron.fi.intel.com>
-Date: Wed, 2 May 2012 12:32:29 -0700
-Message-ID: <CAN8TOE9+WpSrYufSpKXy6RW_V8M_1dZg+uBB6ChmcAWnxmVCnA@mail.gmail.com>
-Subject: Re: atmel_nand, DMA, and "Fall back to CPU I/O"
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: George Pontis <GPontis@z9.com>, linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201205022249.30426.rjw@sisk.pl>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-sh@vger.kernel.org,
+ Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 2, 2012 at 4:53 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2012-04-25 at 15:09 -0700, George Pontis wrote:
->> Working with 3.0.13 kernel and the at91sam9g45, 8b NAND flash with rootfs in
->> NAND
->>
->> At boot, the kernel shows 22 DMA warnings, then another 260 as UBIFS mounts
->> the root FS:
->>
->> atmel_nand atmel_nand: Fall back to CPU I/O
->>
->
-> Unfortunately UBI and UBIFS use vmalloced memory for I/O and many people
-> yelled but no one cared to fix this. I think we should make UBI/UBIFS to
-> use kmalloc()'ed memory instead.
+On Wednesday, May 02, 2012, Bastian Hecht wrote:
+> Supply the platform data for the FLSTEI error IRQ.
+> 
+> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 
-I've noticed this problem before. It sometimes give problems for my
-DMA controller, but my driver falls back to PIO if it can't pass a
-check for '!is_vmalloc_addr(addr)'. Would this solution work for you,
-George?
+I'm going to take this patch into the renesas.git tree and push it
+upstream throuch arm-soc, if that's not a problem.
 
-And how might you recommend we use kmalloc()'ed memory, Artem? We
-can't really kmalloc() whole eraseblock-sized chunks. Or is there an
-inexpensive way of providing an intermediary kmalloc'ed buffer? I'm
-not too familiar at hacking at UBI(FS), but it might be worth a shot
-sometime, if you think it's reasonable.
+Thanks,
+Rafael
 
-Brian
+
+> ---
+>  arch/arm/mach-shmobile/board-mackerel.c |    6 +++++-
+>  1 files changed, 5 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
+> index 8758f94..1de1fb7 100644
+> --- a/arch/arm/mach-shmobile/board-mackerel.c
+> +++ b/arch/arm/mach-shmobile/board-mackerel.c
+> @@ -990,7 +990,11 @@ static struct resource nand_flash_resources[] = {
+>  		.start	= 0xe6a30000,
+>  		.end	= 0xe6a3009b,
+>  		.flags	= IORESOURCE_MEM,
+> -	}
+> +	},
+> +	[1] = {
+> +		.start	= evt2irq(0x0d80), /* flstei: status error irq */
+> +		.flags	= IORESOURCE_IRQ,
+> +	},
+>  };
+>  
+>  static struct sh_flctl_platform_data nand_flash_data = {
+> 
