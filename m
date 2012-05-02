@@ -1,16 +1,15 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPW51-000849-K4
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 09:42:40 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so343217bkw.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 02:42:39 -0700 (PDT)
+ id 1SPW53-00084T-3H
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 09:42:42 +0000
+Received: by mail-bk0-f49.google.com with SMTP id j4so343239bkw.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 02:42:40 -0700 (PDT)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH v3 07/10] mtd: sh_flctl: Group sector accesses into a single
- transfer
-Date: Wed,  2 May 2012 11:41:47 +0200
-Message-Id: <1335951710-9390-8-git-send-email-hechtb@gmail.com>
+Subject: [PATCH v3 08/10] mtd: sh_flctl: Restructure the hardware ECC handling
+Date: Wed,  2 May 2012 11:41:48 +0200
+Message-Id: <1335951710-9390-9-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
 References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -26,104 +25,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we use hardware ecc, the flctl is run in so-called "sector access
-mode". We can bundle 4 sector accesses when using 2k page sizes to read
-a whole page at once and speed up things.
+There are multiple reasons for a rewrite:
+ - a race exists: when _4ECCEND is set, _4ECCFA may become true too
+   meanwhile, which is lost and a non-correctable error is treated as
+   correctable.
+ - the ECC statistics don't get properly propagated to the base code.
+ - empty pages would get marked as corrupted
+
+The rewrite resolves the issues and I hope it gives a more explicit
+code flow structure.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c |   44 ++++++++++++++++++------------------------
- 1 files changed, 19 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |  120 ++++++++++++++++++++++++++++--------------
+ include/linux/mtd/sh_flctl.h |   10 +++-
+ 2 files changed, 88 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index b027370..96c88b8 100644
+index 96c88b8..c0eddeb 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -368,25 +368,21 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
+@@ -165,27 +165,56 @@ static void wait_wfifo_ready(struct sh_flctl *flctl)
+ 	timeout_error(flctl, __func__);
+ }
+ 
+-static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
++static enum flctl_ecc_res_t wait_recfifo_ready
++		(struct sh_flctl *flctl, int sector_number)
+ {
+ 	uint32_t timeout = LOOP_TIMEOUT_MAX;
+-	int checked[4];
+ 	void __iomem *ecc_reg[4];
+ 	int i;
++	int state = FL_SUCCESS;
+ 	uint32_t data, size;
+ 
+-	memset(checked, 0, sizeof(checked));
+-
++	/*
++	 * First this loops checks in FLDTCNTR if we are ready to read out the
++	 * oob data. This is the case if either all went fine without errors or
++	 * if the bottom part of the loop corrected the errors or marked them as
++	 * uncorrectable and the controller is given time to push the data into
++	 * the FIFO.
++	 */
+ 	while (timeout--) {
++		/* check if all is ok and we can read out the OOB */
+ 		size = readl(FLDTCNTR(flctl)) >> 24;
+-		if (size & 0xFF)
+-			return 0;	/* success */
++		if ((size & 0xFF) == 4)
++			return state;
++
++		/* check if a correction code has been calculated */
++		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND)) {
++			/*
++			 * either we wait for the fifo to be filled or a
++			 * correction pattern is being generated
++			 */
++			udelay(1);
++			continue;
++		}
+ 
+-		if (readl(FL4ECCCR(flctl)) & _4ECCFA)
+-			return 1;	/* can't correct */
++		/* check for an uncorrectable error */
++		if (readl(FL4ECCCR(flctl)) & _4ECCFA) {
++			/* check if we face a non-empty page */
++			for (i = 0; i < 512; i++) {
++				if (flctl->done_buff[i] != 0xff) {
++					state = FL_ERROR; /* can't correct */
++					break;
++				}
++			}
+ 
+-		udelay(1);
+-		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND))
++			if (state == FL_SUCCESS)
++				dev_dbg(&flctl->pdev->dev,
++				"reading empty sector %d, ecc error ignored\n",
++				sector_number);
++
++			writel(0, FL4ECCCR(flctl));
+ 			continue;
++		}
+ 
+ 		/* start error correction */
+ 		ecc_reg[0] = FL4ECCRESULT0(flctl);
+@@ -194,28 +223,26 @@ static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
+ 		ecc_reg[3] = FL4ECCRESULT3(flctl);
+ 
+ 		for (i = 0; i < 3; i++) {
++			uint8_t org;
++			int index;
++
+ 			data = readl(ecc_reg[i]);
+-			if (data != INIT_FL4ECCRESULT_VAL && !checked[i]) {
+-				uint8_t org;
+-				int index;
+-
+-				if (flctl->page_size)
+-					index = (512 * sector_number) +
+-						(data >> 16);
+-				else
+-					index = data >> 16;
+-
+-				org = flctl->done_buff[index];
+-				flctl->done_buff[index] = org ^ (data & 0xFF);
+-				checked[i] = 1;
+-			}
+-		}
+ 
++			if (flctl->page_size)
++				index = (512 * sector_number) +
++					(data >> 16);
++			else
++				index = data >> 16;
++
++			org = flctl->done_buff[index];
++			flctl->done_buff[index] = org ^ (data & 0xFF);
++		}
++		state = FL_REPAIRABLE;
+ 		writel(0, FL4ECCCR(flctl));
+ 	}
+ 
+ 	timeout_error(flctl, __func__);
+-	return 1;	/* timeout */
++	return FL_TIMEOUT;	/* timeout */
+ }
+ 
+ static void wait_wecfifo_ready(struct sh_flctl *flctl)
+@@ -259,20 +286,24 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+ 	}
+ }
+ 
+-static int read_ecfiforeg(struct sh_flctl *flctl, uint8_t *buff, int sector)
++static enum flctl_ecc_res_t read_ecfiforeg
++		(struct sh_flctl *flctl, uint8_t *buff, int sector)
+ {
+ 	int i;
++	enum flctl_ecc_res_t res;
+ 	unsigned long *ecc_buf = (unsigned long *)buff;
+ 	void *fifo_addr = (void *)FLECFIFO(flctl);
+ 
+-	for (i = 0; i < 4; i++) {
+-		if (wait_recfifo_ready(flctl , sector))
+-			return 1;
+-		ecc_buf[i] = readl(fifo_addr);
+-		ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
++	res = wait_recfifo_ready(flctl , sector);
++
++	if (res != FL_ERROR) {
++		for (i = 0; i < 4; i++) {
++			ecc_buf[i] = readl(fifo_addr);
++			ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
++		}
+ 	}
+ 
+-	return 0;
++	return res;
+ }
+ 
+ static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+@@ -367,6 +398,7 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
+ {
  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
  	int sector, page_sectors;
++	enum flctl_ecc_res_t ecc_result;
  
--	if (flctl->page_size)
--		page_sectors = 4;
--	else
--		page_sectors = 1;
-+	page_sectors = flctl->page_size ? 4 : 1;
-+
-+	set_cmd_regs(mtd, NAND_CMD_READ0,
-+		(NAND_CMD_READSTART << 8) | NAND_CMD_READ0);
+ 	page_sectors = flctl->page_size ? 4 : 1;
  
- 	writel(readl(FLCMNCR(flctl)) | ACM_SACCES_MODE | _4ECCCORRECT,
- 		 FLCMNCR(flctl));
-+	writel(readl(FLCMDCR(flctl)) | page_sectors, FLCMDCR(flctl));
-+	writel(page_addr << 2, FLADR(flctl));
- 
--	set_cmd_regs(mtd, NAND_CMD_READ0,
--		(NAND_CMD_READSTART << 8) | NAND_CMD_READ0);
-+	empty_fifo(flctl);
-+	start_translation(flctl);
+@@ -382,17 +414,27 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
+ 	start_translation(flctl);
  
  	for (sector = 0; sector < page_sectors; sector++) {
- 		int ret;
--
--		empty_fifo(flctl);
--		writel(readl(FLCMDCR(flctl)) | 1, FLCMDCR(flctl));
--		writel(page_addr << 2 | sector, FLADR(flctl));
--
--		start_translation(flctl);
+-		int ret;
  		read_fiforeg(flctl, 512, 512 * sector);
  
- 		ret = read_ecfiforeg(flctl,
-@@ -397,8 +393,10 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
- 			flctl->hwecc_cant_correct[sector] = 1;
+-		ret = read_ecfiforeg(flctl,
++		ecc_result = read_ecfiforeg(flctl,
+ 			&flctl->done_buff[mtd->writesize + 16 * sector],
+ 			sector);
  
- 		writel(0x0, FL4ECCCR(flctl));
--		wait_completion(flctl);
- 	}
-+
-+	wait_completion(flctl);
-+
- 	writel(readl(FLCMNCR(flctl)) & ~(ACM_SACCES_MODE | _4ECCCORRECT),
- 			FLCMNCR(flctl));
- }
-@@ -430,31 +428,27 @@ static void execmd_write_page_sector(struct mtd_info *mtd)
- 	int i, page_addr = flctl->seqin_page_addr;
- 	int sector, page_sectors;
- 
--	if (flctl->page_size)
--		page_sectors = 4;
--	else
--		page_sectors = 1;
+-		if (ret)
+-			flctl->hwecc_cant_correct[sector] = 1;
 -
--	writel(readl(FLCMNCR(flctl)) | ACM_SACCES_MODE, FLCMNCR(flctl));
-+	page_sectors = flctl->page_size ? 4 : 1;
- 
- 	set_cmd_regs(mtd, NAND_CMD_PAGEPROG,
- 			(NAND_CMD_PAGEPROG << 8) | NAND_CMD_SEQIN);
- 
--	for (sector = 0; sector < page_sectors; sector++) {
--		empty_fifo(flctl);
--		writel(readl(FLCMDCR(flctl)) | 1, FLCMDCR(flctl));
--		writel(page_addr << 2 | sector, FLADR(flctl));
-+	empty_fifo(flctl);
-+	writel(readl(FLCMNCR(flctl)) | ACM_SACCES_MODE, FLCMNCR(flctl));
-+	writel(readl(FLCMDCR(flctl)) | page_sectors, FLCMDCR(flctl));
-+	writel(page_addr << 2, FLADR(flctl));
-+	start_translation(flctl);
- 
--		start_translation(flctl);
-+	for (sector = 0; sector < page_sectors; sector++) {
- 		write_fiforeg(flctl, 512, 512 * sector);
- 
- 		for (i = 0; i < 4; i++) {
- 			wait_wecfifo_ready(flctl); /* wait for write ready */
- 			writel(0xFFFFFFFF, FLECFIFO(flctl));
- 		}
--		wait_completion(flctl);
+-		writel(0x0, FL4ECCCR(flctl));
++		switch (ecc_result) {
++		case FL_REPAIRABLE:
++			dev_info(&flctl->pdev->dev,
++				"applied ecc on page 0x%x", page_addr);
++			flctl->mtd.ecc_stats.corrected++;
++			break;
++		case FL_ERROR:
++			dev_warn(&flctl->pdev->dev,
++				"page 0x%x contains corrupted data\n",
++				page_addr);
++			flctl->mtd.ecc_stats.failed++;
++			break;
++		default:
++			;
++		}
  	}
  
-+	wait_completion(flctl);
- 	writel(readl(FLCMNCR(flctl)) & ~ACM_SACCES_MODE, FLCMNCR(flctl));
- }
+ 	wait_completion(flctl);
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 3feaae0..01e4b15 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -129,9 +129,15 @@
+ #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
+ #define	_4ECCEXST	(0x1 << 0)	/* 4 symbols exist */
  
+-#define INIT_FL4ECCRESULT_VAL	0x03FF03FF
+ #define LOOP_TIMEOUT_MAX	0x00010000
+ 
++enum flctl_ecc_res_t {
++	FL_SUCCESS,
++	FL_REPAIRABLE,
++	FL_ERROR,
++	FL_TIMEOUT
++};
++
+ struct sh_flctl {
+ 	struct mtd_info		mtd;
+ 	struct nand_chip	chip;
+@@ -151,8 +157,6 @@ struct sh_flctl {
+ 	uint32_t flcmncr_base;	/* base value of FLCMNCR */
+ 	uint32_t flintdmacr_base;	/* irq enable bits */
+ 
+-	int	hwecc_cant_correct[4];
+-
+ 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+ 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
+ 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
 -- 
 1.7.5.4
