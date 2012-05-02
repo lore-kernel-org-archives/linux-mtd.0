@@ -1,14 +1,16 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPNC3-0000oW-Gg
+ id 1SPNC4-0000oh-0K
  for linux-mtd@lists.infradead.org; Wed, 02 May 2012 00:13:20 +0000
-Received: by pbbrq13 with SMTP id rq13so206959pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 17:13:17 -0700 (PDT)
+Received: by pbbrq13 with SMTP id rq13so206997pbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 17:13:19 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/3] mtd: nandsim: remove autoincrement code
-Date: Tue,  1 May 2012 17:12:53 -0700
-Message-Id: <1335917575-14953-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/3] mtd: nand: remove autoincrement 'sndcmd' code
+Date: Tue,  1 May 2012 17:12:54 -0700
+Message-Id: <1335917575-14953-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1335917575-14953-1-git-send-email-computersforpeace@gmail.com>
+References: <1335917575-14953-1-git-send-email-computersforpeace@gmail.com>
 Cc: Scott Wood <scottwood@freescale.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -23,82 +25,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND layer always has NAND_NO_AUTOINCR set, so we will never utilize the
-AUTOINCR code in nandsim. We will be removing the NAND_NO_AUTOINCR option soon,
-and so kill this code as well.
+The NAND_NO_AUTOINCR option is always set, so we will kill the option and make
+"no autoincrement" the default behavior for nand_base.c. Thus, we should remove
+the code which decides whether or not to send the NAND_CMD_READ0 command.
+Instead, we unconditionally send the command.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nandsim.c |   28 +++-------------------------
- 1 files changed, 3 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/nand_base.c |   43 +++++------------------------------------
+ 1 files changed, 6 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 261f478..6cc8fbf 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -268,7 +268,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
- #define OPT_PAGE512      0x00000002 /* 512-byte  page chips */
- #define OPT_PAGE2048     0x00000008 /* 2048-byte page chips */
- #define OPT_SMARTMEDIA   0x00000010 /* SmartMedia technology chips */
--#define OPT_AUTOINCR     0x00000020 /* page number auto incrementation is possible */
- #define OPT_PAGE512_8BIT 0x00000040 /* 512-byte page chips with 8-bit bus width */
- #define OPT_PAGE4096     0x00000080 /* 4096-byte page chips */
- #define OPT_LARGEPAGE    (OPT_PAGE2048 | OPT_PAGE4096) /* 2048 & 4096-byte page chips */
-@@ -594,7 +593,7 @@ static int init_nandsim(struct mtd_info *mtd)
- 		ns->options |= OPT_PAGE256;
- 	}
- 	else if (ns->geom.pgsz == 512) {
--		ns->options |= (OPT_PAGE512 | OPT_AUTOINCR);
-+		ns->options |= OPT_PAGE512;
- 		if (ns->busw == 8)
- 			ns->options |= OPT_PAGE512_8BIT;
- 	} else if (ns->geom.pgsz == 2048) {
-@@ -663,8 +662,6 @@ static int init_nandsim(struct mtd_info *mtd)
-         for (i = 0; nand_flash_ids[i].name != NULL; i++) {
-                 if (second_id_byte != nand_flash_ids[i].id)
-                         continue;
--		if (!(nand_flash_ids[i].options & NAND_NO_AUTOINCR))
--			ns->options |= OPT_AUTOINCR;
- 	}
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 640f1f8..6246b0f 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1477,8 +1477,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	int chipnr, page, realpage, col, bytes, aligned;
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct mtd_ecc_stats stats;
+-	int blkcheck = (1 << (chip->phys_erase_shift - chip->page_shift)) - 1;
+-	int sndcmd = 1;
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
+@@ -1509,10 +1507,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 		if (realpage != chip->pagebuf || oob) {
+ 			bufpoi = aligned ? buf : chip->buffers->databuf;
  
- 	if (ns->busw == 16)
-@@ -1936,20 +1933,8 @@ static u_char ns_nand_read_byte(struct mtd_info *mtd)
- 	if (ns->regs.count == ns->regs.num) {
- 		NS_DBG("read_byte: all bytes were read\n");
+-			if (likely(sndcmd)) {
+-				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+-				sndcmd = 0;
+-			}
++			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
  
--		/*
--		 * The OPT_AUTOINCR allows to read next consecutive pages without
--		 * new read operation cycle.
--		 */
--		if ((ns->options & OPT_AUTOINCR) && NS_STATE(ns->state) == STATE_DATAOUT) {
--			ns->regs.count = 0;
--			if (ns->regs.row + 1 < ns->geom.pgnum)
--				ns->regs.row += 1;
--			NS_DBG("read_byte: switch to the next page (%#x)\n", ns->regs.row);
--			do_state_action(ns, ACTION_CPY);
--		}
--		else if (NS_STATE(ns->nxstate) == STATE_READY)
-+		if (NS_STATE(ns->nxstate) == STATE_READY)
- 			switch_state(ns);
+ 			/*
+ 			 * Now read the page into the buffer.  Absent an error,
+@@ -1564,13 +1559,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			}
+ 
+ 			if (!(chip->options & NAND_NO_READRDY)) {
+-				/*
+-				 * Apply delay or wait for ready/busy pin. Do
+-				 * this before the AUTOINCR check, so no
+-				 * problems arise if a chip which does auto
+-				 * increment is marked as NOAUTOINCR by the
+-				 * board driver.
+-				 */
++				/* Apply delay or wait for ready/busy pin */
+ 				if (!chip->dev_ready)
+ 					udelay(chip->chip_delay);
+ 				else
+@@ -1600,13 +1589,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			chip->select_chip(mtd, -1);
+ 			chip->select_chip(mtd, chipnr);
+ 		}
 -
+-		/*
+-		 * Check, if the chip supports auto page increment or if we
+-		 * have hit a block boundary.
+-		 */
+-		if (!NAND_CANAUTOINCR(chip) || !(page & blkcheck))
+-			sndcmd = 1;
  	}
  
- 	return outb;
-@@ -2203,14 +2188,7 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- 	ns->regs.count += len;
+ 	ops->retlen = ops->len - (size_t) readlen;
+@@ -1800,10 +1782,9 @@ static int nand_write_oob_syndrome(struct mtd_info *mtd,
+ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 			    struct mtd_oob_ops *ops)
+ {
+-	int page, realpage, chipnr, sndcmd = 1;
++	int page, realpage, chipnr;
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct mtd_ecc_stats stats;
+-	int blkcheck = (1 << (chip->phys_erase_shift - chip->page_shift)) - 1;
+ 	int readlen = ops->ooblen;
+ 	int len;
+ 	uint8_t *buf = ops->oobbuf;
+@@ -1842,20 +1823,15 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
  
- 	if (ns->regs.count == ns->regs.num) {
--		if ((ns->options & OPT_AUTOINCR) && NS_STATE(ns->state) == STATE_DATAOUT) {
--			ns->regs.count = 0;
--			if (ns->regs.row + 1 < ns->geom.pgnum)
--				ns->regs.row += 1;
--			NS_DBG("read_buf: switch to the next page (%#x)\n", ns->regs.row);
--			do_state_action(ns, ACTION_CPY);
--		}
--		else if (NS_STATE(ns->nxstate) == STATE_READY)
-+		if (NS_STATE(ns->nxstate) == STATE_READY)
- 			switch_state(ns);
+ 	while (1) {
+ 		if (ops->mode == MTD_OPS_RAW)
+-			sndcmd = chip->ecc.read_oob_raw(mtd, chip, page, sndcmd);
++			chip->ecc.read_oob_raw(mtd, chip, page, 1);
+ 		else
+-			sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
++			chip->ecc.read_oob(mtd, chip, page, 1);
+ 
+ 		len = min(len, readlen);
+ 		buf = nand_transfer_oob(chip, buf, ops, len);
+ 
+ 		if (!(chip->options & NAND_NO_READRDY)) {
+-			/*
+-			 * Apply delay or wait for ready/busy pin. Do this
+-			 * before the AUTOINCR check, so no problems arise if a
+-			 * chip which does auto increment is marked as
+-			 * NOAUTOINCR by the board driver.
+-			 */
++			/* Apply delay or wait for ready/busy pin */
+ 			if (!chip->dev_ready)
+ 				udelay(chip->chip_delay);
+ 			else
+@@ -1876,13 +1852,6 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 			chip->select_chip(mtd, -1);
+ 			chip->select_chip(mtd, chipnr);
+ 		}
+-
+-		/*
+-		 * Check, if the chip supports auto page increment or if we
+-		 * have hit a block boundary.
+-		 */
+-		if (!NAND_CANAUTOINCR(chip) || !(page & blkcheck))
+-			sndcmd = 1;
  	}
  
+ 	ops->oobretlen = ops->ooblen;
 -- 
 1.7.5.4.2.g519b1
