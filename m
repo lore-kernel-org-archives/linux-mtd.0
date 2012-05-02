@@ -1,19 +1,21 @@
-Received: from mail-pz0-f44.google.com ([209.85.210.44])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPdA9-0002mH-C3
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:16:26 +0000
-Received: by mail-pz0-f44.google.com with SMTP id x6so85712dac.31
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:16:25 -0700 (PDT)
+ id 1SPdG5-0005AB-EL
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:22:34 +0000
+Received: by yenm7 with SMTP id m7so1046494yen.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:22:30 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1335952662.10293.37.camel@sauron.fi.intel.com>
+References: <1335917575-14953-1-git-send-email-computersforpeace@gmail.com>
+ <1335952662.10293.37.camel@sauron.fi.intel.com>
+Date: Wed, 2 May 2012 10:22:30 -0700
+Message-ID: <CAN8TOE8=kcYYL5VNCHGGonmj4kJg2sW5z1J7nK1j0PexpZQ54g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: nandsim: remove autoincrement code
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 10/10] mtd: pxa3xx_nand: utilize oob_required parameter
-Date: Wed,  2 May 2012 10:15:04 -0700
-Message-Id: <1335978904-8005-11-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
-References: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
-Cc: Lei Wen <leiwen@marvell.com>, eric miao <eric.miao@marvell.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Don't read/write OOB if the caller doesn't require it.
+On Wed, May 2, 2012 at 2:57 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Pushed to l2-mtd.git, thanks.
+>
+> P.S. Jumped at your patches to unblock you.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 252aaef..8ca303a 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -685,7 +685,8 @@ static void pxa3xx_nand_write_page_hwecc(struct mtd_info *mtd,
- 		struct nand_chip *chip, const uint8_t *buf, int oob_required)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
--	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	if (oob_required)
-+		chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
- }
- 
- static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
-@@ -696,7 +697,8 @@ static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
- 	struct pxa3xx_nand_info *info = host->info_data;
- 
- 	chip->read_buf(mtd, buf, mtd->writesize);
--	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	if (oob_required)
-+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
- 
- 	if (info->retcode == ERR_SBERR) {
- 		switch (info->use_ecc) {
--- 
-1.7.5.4.2.g519b1
+Thanks, and thanks! Just sent out v4, rebased.
