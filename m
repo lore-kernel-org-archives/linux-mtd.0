@@ -1,20 +1,19 @@
-Message-ID: <4FA05292.7030902@ti.com>
-Date: Tue, 1 May 2012 16:16:02 -0500
-From: Jon Hunter <jon-hunter@ti.com>
-MIME-Version: 1.0
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v4 04/39] ARM: OMAP2+: gpmc: Acquire NAND CS value
-References: <cover.1335874494.git.afzal@ti.com>
- <10220de398d22fad5de783d8f58fc55ebac85338.1335874494.git.afzal@ti.com>
-In-Reply-To: <10220de398d22fad5de783d8f58fc55ebac85338.1335874494.git.afzal@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, tony@atomide.com,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, balbi@ti.com,
- dbaryshkov@gmail.com, kyungmin.park@samsung.com, vimal.newwork@gmail.com,
- grinberg@compulab.co.il, artem.bityutskiy@linux.intel.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, notasas@gmail.com
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPNC3-0000oW-Gg
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 00:13:20 +0000
+Received: by pbbrq13 with SMTP id rq13so206959pbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 17:13:17 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/3] mtd: nandsim: remove autoincrement code
+Date: Tue,  1 May 2012 17:12:53 -0700
+Message-Id: <1335917575-14953-1-git-send-email-computersforpeace@gmail.com>
+Cc: Scott Wood <scottwood@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +23,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Afzal,
+The NAND layer always has NAND_NO_AUTOINCR set, so we will never utilize the
+AUTOINCR code in nandsim. We will be removing the NAND_NO_AUTOINCR option soon,
+and so kill this code as well.
 
-On 05/01/2012 07:20 AM, Afzal Mohammed wrote:
-> Some boards depend on bootloader to update chip select value for NAND.
-> It is felt that Kernel should not depend on bootloader to get CS, as
-> for a particular board CS is hardwired and is fixed, hence this can
-> directly be updated in Kernel. But as CS value for boards that depend
-> on this behaviour is not available, educate gpmc driver to acquire
-> chip select value for NAND. this ideally should be removed once CS
-> for those boards are available.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nandsim.c |   28 +++-------------------------
+ 1 files changed, 3 insertions(+), 25 deletions(-)
 
-Do you know how many boards require this? If so which are those boards?
-
-> Signed-off-by: Afzal Mohammed <afzal@ti.com>
-> ---
->  arch/arm/mach-omap2/gpmc.c |   32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> index 657ce95..ecd3384 100644
-> --- a/arch/arm/mach-omap2/gpmc.c
-> +++ b/arch/arm/mach-omap2/gpmc.c
-> @@ -892,6 +892,30 @@ static int __init gpmc_init(void)
->  }
->  postcore_initcall(gpmc_init);
->  
-> +static __devinit int gpmc_acquire_nand_cs(struct gpmc *gpmc,
-> +					struct gpmc_device_pdata *gdp)
-> +{
-> +	int cs = 0;
-> +	struct omap_nand_platform_data *nand = gdp->pdata;
-> +
-> +	if ((nand->cs >= 0) && (nand->cs < GPMC_CS_NUM))
-> +		return 0;
-> +
-> +	while (cs < GPMC_CS_NUM) {
-> +		u32 l = gpmc_cs_read_reg(cs, GPMC_CS_CONFIG1);
-> +
-> +		if ((l & GPMC_CONFIG1_DEVICETYPE(~0)) ==
-> +				GPMC_CONFIG1_DEVICETYPE_NAND) {
-> +			dev_info(gpmc->dev, "found NAND on CS: %d\n", cs);
-> +			nand->cs = cs;
-> +			gdp->cs_data->cs = cs;
-> +			return 0;
-> +		}
-> +		cs++;
-> +	}
-> +	return -ENODEV;
-> +}
-> +
->  static __devinit void gpmc_update_nand_reg(struct gpmc *gpmc,
->  				struct omap_nand_platform_data *nand)
->  {
-> @@ -1450,8 +1474,14 @@ static __devinit int gpmc_probe(struct platform_device *pdev)
->  
->  	for (i = 0, gdq = gp->device_pdata, gd = gpmc->device;
->  			(i < gp->num_device) && (*gdq); i++, gdq++) {
-> -		if ((*gdq)->is_nand)
-> +		if ((*gdq)->is_nand) {
-> +			ret = gpmc_acquire_nand_cs(gpmc, *gdq);
-> +			if (IS_ERR_VALUE(ret)) {
-> +				dev_err(gpmc->dev, "CS error: %d\n", ret);
-> +				continue;
-> +			}
-
-Should this code be marked with a FIXME?
-
-Cheers
-Jon
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 261f478..6cc8fbf 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -268,7 +268,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+ #define OPT_PAGE512      0x00000002 /* 512-byte  page chips */
+ #define OPT_PAGE2048     0x00000008 /* 2048-byte page chips */
+ #define OPT_SMARTMEDIA   0x00000010 /* SmartMedia technology chips */
+-#define OPT_AUTOINCR     0x00000020 /* page number auto incrementation is possible */
+ #define OPT_PAGE512_8BIT 0x00000040 /* 512-byte page chips with 8-bit bus width */
+ #define OPT_PAGE4096     0x00000080 /* 4096-byte page chips */
+ #define OPT_LARGEPAGE    (OPT_PAGE2048 | OPT_PAGE4096) /* 2048 & 4096-byte page chips */
+@@ -594,7 +593,7 @@ static int init_nandsim(struct mtd_info *mtd)
+ 		ns->options |= OPT_PAGE256;
+ 	}
+ 	else if (ns->geom.pgsz == 512) {
+-		ns->options |= (OPT_PAGE512 | OPT_AUTOINCR);
++		ns->options |= OPT_PAGE512;
+ 		if (ns->busw == 8)
+ 			ns->options |= OPT_PAGE512_8BIT;
+ 	} else if (ns->geom.pgsz == 2048) {
+@@ -663,8 +662,6 @@ static int init_nandsim(struct mtd_info *mtd)
+         for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+                 if (second_id_byte != nand_flash_ids[i].id)
+                         continue;
+-		if (!(nand_flash_ids[i].options & NAND_NO_AUTOINCR))
+-			ns->options |= OPT_AUTOINCR;
+ 	}
+ 
+ 	if (ns->busw == 16)
+@@ -1936,20 +1933,8 @@ static u_char ns_nand_read_byte(struct mtd_info *mtd)
+ 	if (ns->regs.count == ns->regs.num) {
+ 		NS_DBG("read_byte: all bytes were read\n");
+ 
+-		/*
+-		 * The OPT_AUTOINCR allows to read next consecutive pages without
+-		 * new read operation cycle.
+-		 */
+-		if ((ns->options & OPT_AUTOINCR) && NS_STATE(ns->state) == STATE_DATAOUT) {
+-			ns->regs.count = 0;
+-			if (ns->regs.row + 1 < ns->geom.pgnum)
+-				ns->regs.row += 1;
+-			NS_DBG("read_byte: switch to the next page (%#x)\n", ns->regs.row);
+-			do_state_action(ns, ACTION_CPY);
+-		}
+-		else if (NS_STATE(ns->nxstate) == STATE_READY)
++		if (NS_STATE(ns->nxstate) == STATE_READY)
+ 			switch_state(ns);
+-
+ 	}
+ 
+ 	return outb;
+@@ -2203,14 +2188,7 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ 	ns->regs.count += len;
+ 
+ 	if (ns->regs.count == ns->regs.num) {
+-		if ((ns->options & OPT_AUTOINCR) && NS_STATE(ns->state) == STATE_DATAOUT) {
+-			ns->regs.count = 0;
+-			if (ns->regs.row + 1 < ns->geom.pgnum)
+-				ns->regs.row += 1;
+-			NS_DBG("read_buf: switch to the next page (%#x)\n", ns->regs.row);
+-			do_state_action(ns, ACTION_CPY);
+-		}
+-		else if (NS_STATE(ns->nxstate) == STATE_READY)
++		if (NS_STATE(ns->nxstate) == STATE_READY)
+ 			switch_state(ns);
+ 	}
+ 
+-- 
+1.7.5.4.2.g519b1
