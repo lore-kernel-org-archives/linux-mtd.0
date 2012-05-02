@@ -1,19 +1,27 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPa8z-0004YS-Jk
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:03:02 +0000
-Message-ID: <1335967576.10293.62.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] MTD: add m25p80 id for mx25l2005a
+ id 1SPaBN-0005bw-RJ
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:05:30 +0000
+Message-ID: <1335967727.10293.63.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Wed, 02 May 2012 17:06:16 +0300
-In-Reply-To: <1335807048-24032-1-git-send-email-blogic@openwrt.org>
-References: <1335807048-24032-1-git-send-email-blogic@openwrt.org>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Wed, 02 May 2012 17:08:47 +0300
+In-Reply-To: <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
+References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
+ <1335955122.10293.39.camel@sauron.fi.intel.com>
+ <CABYn4szhjH0N_DsGc=O0TtJZNUja1KDzZ7HWTnR5nQvnxZEVPQ@mail.gmail.com>
+ <1335960145.10293.48.camel@sauron.fi.intel.com>
+ <CABYn4swraZL0Zi56xfPyZQ4vo1jK9f4KFLUZxEPrZRO4K83URg@mail.gmail.com>
+ <1335966905.10293.59.camel@sauron.fi.intel.com>
+ <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ZJQSho7juO+260ou7gHb"
+ boundary="=-teXS2fw7LlYwzv3pSp2w"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: Magnus Damm <magnus.damm@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,23 +33,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ZJQSho7juO+260ou7gHb
+--=-teXS2fw7LlYwzv3pSp2w
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-04-30 at 19:30 +0200, John Crispin wrote:
-> Add the id and sector mappings for mx25l2005a flash chips.
+On Wed, 2012-05-02 at 16:00 +0200, Bastian Hecht wrote:
+> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
+> > On Wed, 2012-05-02 at 15:41 +0200, Bastian Hecht wrote:
+> >> Ok I'm slowly but surely fighting my way through it. Though I want to
+> >> add an advisor here:
+> >> Don't do this on your crappy laptop like I do. I guess I will move to
+> >> my 8Gb RAM desktop machine for this in the future ;)
+> >
+> > Yeah, I run it on a powerful PC. I need to update the README file - but
+> > if you send a patch - will be appreciated.
 >=20
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Cc: linux-mtd@lists.infradead.org
+> I assumed people to be smarter than me and instantly realize that a
+> compile-test is resource intensive, so I'm unsure if this is
+> necessary.
 
-Pushed all 4 to l2-mtd.git, thanks!
+You are not the first one :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ZJQSho7juO+260ou7gHb
+--=-teXS2fw7LlYwzv3pSp2w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPoT9YAAoJECmIfjd9wqK0ecYP/RLojC0ByvbHM4KtukKHykbz
-6dvfeBtTJ6Y4NOIuyIn0KFyi3kteYrISh/qmuJNkWB0fIzo4NlrBPtvbfOU05Pjo
-wunq22nc9XlKoggrRoREv1m8TA6UFw79J/7Itv2HT1RlStjEZnxl1CQtyE3XC3dO
-AAW0XK3jdkBpPeLmJESOhUSyP5PoovusK/lWOiXcJ2ZydFV0nW7+o6C+9rs6RQ4G
-Ig4AhrmE7labCKROoBUvGKjjMs/SenZeVkjAgmaUAkd2Ht5UWxLyznlpXcxahn9c
-5jKfLq7oVlOOOff+HShYqaB4tzmBTCZOxkhIk7affZurBQqYMBceoyfz8VFgjR5q
-SBCPT49H3jS9EAPs/HA8pAlwOkX1yiCNBnWJl+I8ZCo57R+l6EHqnbJqBMMEP75H
-ppOiy5wVCA95cN4tV6y+cXY9/b1THGn+lHGtZB5U5Sn4TMEuLE1I+JvYTt7dAPf5
-5nnQvInxuqMQsHivrP5mDm8PRSTTy1OX93OENZ521Mof/hk+OAazsxnUtgxlPrOl
-ywokNo6YNct/BmAutGBpyaz3W7AstkHXlaifnpKgjYPNkdXy+nhIMJcrWWCKvo8l
-W/ZE9v5VBB28ZRSv+B1ykezQWmbzTKtK5AI6R/7m6fHKOq2kJqmNMYtodCmZ/DfL
-Nd/OzEhgAG7Gsbz67Tys
-=iyZM
+iQIcBAABAgAGBQJPoT/wAAoJECmIfjd9wqK0YW0QAMC4PVZ04EYSf6Tatmvfrrz8
+ZtLXTqRakS+r6Riy7C3eGDmNiN9DAOrLKWzWpJTQ+vFXAZvk3EZtwNDYBRyQ4VX9
+xMPMHvLGaY/LvXpcKwu36k49v6+7cHn0X6tuHKGsF9LlHl78o52koN1cO7SaWGbQ
+8OS8GRFgkspHaIGgvEhqE8jeXoYOyugWOYYzL38pAmyrFmbj6GJE0gA311pmKior
+giifOAgmU7UFntFbhdeFrOu1U/O4n1Sk6rv3sq1P9/HbqTXiXmQyEJEwetRX2t1g
+H5cFh9dPsbAvWfKS3M3b0G/m2UAoDY3IeoiKMWcYPuUNvPquxvdsHW7lH7PUfzRl
+mxHXluNFv+YQzmNBa18Z7aYAPBgYaQ23t8+wVzrPtfQCAnG9ZwTs9UKih9ptEd58
+8dcjo7zB04OD4PvrU7JZnc6NWHSO1ZU3xEDapqaO+G3ZTm3BCPqc/KPkUggPR+oR
+6u+mGOLH0MpotrlA/ncPiDjnpuqpLMn2IqTF2mMs9fOn+T6lWC8J5fEUcnFPAffy
+egs+G4ugkY/Boy+zB+daRQpdBiEXPpBCAcezu0sPZbdyl/IdG4o+ns7Qvv+K06sb
+F1vnCQcFhqIi+wfu0Xcf12fSmJ6zIB2LyYIimhdvsEyYjmzHCOsveZnpjNhNjI1p
+2h4OVj2jiHz906xw/9L9
+=Z4zb
 -----END PGP SIGNATURE-----
 
---=-ZJQSho7juO+260ou7gHb--
+--=-teXS2fw7LlYwzv3pSp2w--
