@@ -1,18 +1,20 @@
-Message-ID: <4FA0A16E.30601@freescale.com>
-Date: Wed, 2 May 2012 10:52:30 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPPwT-0002a4-S6
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 03:09:26 +0000
+Received: by eaak13 with SMTP id k13so26595eaa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 01 May 2012 20:09:24 -0700 (PDT)
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 1/3] mtd: gpmi: add device tree support for mx6q and
- mx28
-References: <1335323184-11233-1-git-send-email-b32955@freescale.com>
- <1335323184-11233-2-git-send-email-b32955@freescale.com>
- <20120501074943.GB2194@S2101-09.ap.freescale.net>
-In-Reply-To: <20120501074943.GB2194@S2101-09.ap.freescale.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <1335903148-29539-1-git-send-email-shawn7400@gmail.com>
+References: <1335903148-29539-1-git-send-email-shawn7400@gmail.com>
+Date: Wed, 2 May 2012 00:09:24 -0300
+Message-ID: <CAOMZO5AJn3QjwRga71+HXPr3on7xG-AQtCM58xqx-1J3fA=zuA@mail.gmail.com>
+Subject: Re: [PATCH] Change linking order of SPI and MTD.
+From: Fabio Estevam <festevam@gmail.com>
+To: "Shawn J. Goff" <shawn7400@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B405=E6=9C=8801=E6=97=A5 15:49, Shawn Guo =E5=86=99=E9=
-=81=93:
-> BTW, it seems Documentation/CodingStyle suggest put brace like the
-> following.
+On Tue, May 1, 2012 at 5:12 PM, Shawn J. Goff <shawn7400@gmail.com> wrote:
+> From: "Shawn J. Goff" <shawn7400@gmail.com>
 >
-> 	if (condition) {
-> 		do_this();
-> 	} else {
-> 		otherwise_do_this();
-> 		otherwise_do_that();
-> 	}
-sorry. you are right.
+> Currently, UBI initializes before SPI. This is a problem
+> if you intend to boot to a UBI volume on an SPI device. =C2=A0UBI will
+> fail to initialize with the following message:
+>
+> UBI error: ubi_init: UBI error: cannot initialize UBI, error -19
+>
+> The initialization order is determined by the order the modules are
+> linked into the kernel, so the fix was to change this order. UBI is
+> under the MTD tree, so SPI is now linked in before MTD.
 
-Best Regards
-Huang Shijie
+Could EPROBE_DEFER help in this case?
