@@ -1,21 +1,26 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPd6q-0002Ol-IS
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:13:01 +0000
-Received: by bkwj4 with SMTP id j4so862056bkw.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 10:12:57 -0700 (PDT)
+Received: from mail2.spectraaccess.net ([208.65.172.25])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPd8b-0002ZT-DD
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 17:14:50 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Thilo Fromm' <fromm@dresearch-fe.de>, Ricard Wanderlof
+ <ricard.wanderlof@axis.com>
+Date: Wed, 2 May 2012 13:14:45 -0400
+Subject: RE: State of read-only filesystems in NAND / MTD bad blocks
+ handling when reading
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+In-Reply-To: <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1335903148-29539-1-git-send-email-shawn7400@gmail.com>
-References: <1335903148-29539-1-git-send-email-shawn7400@gmail.com>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 2 May 2012 13:12:37 -0400
-Message-ID: <CAMjpGUf-UiH=nDD9YaMeqk_a5xB9KthExU45KVhgWE8TjO1==g@mail.gmail.com>
-Subject: Re: [PATCH] Change linking order of SPI and MTD.
-To: "Shawn J. Goff" <shawn7400@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +30,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 1, 2012 at 4:12 PM, Shawn J. Goff wrote:
-> Currently, UBI initializes before SPI. This is a problem
-> if you intend to boot to a UBI volume on an SPI device. =C2=A0UBI will
-> fail to initialize with the following message:
-
-this is why many SPI bus masters use subsys_initcall() now
-
-> The initialization order is determined by the order the modules are
-> linked into the kernel, so the fix was to change this order. UBI is
-> under the MTD tree, so SPI is now linked in before MTD.
-
-NAK: linking order is arbitrary and always has been
--mike
+PiBbIGJhZC1ibG9jay1za2lwIHJlYWQgaXMgZWFzeSBmb3IgYm9vdCBsb2FkZXIsIHVzZXIgc3Bh
+Y2UgXQ0KPiA+ID4gVW5mb3J0dW5hdGVseSBpdCBzZWVtcyB0byBiZSBpbXBvc3NpYmxlIHRvIHBy
+b3ZpZGUgdGhpcyByZWFkIGJlaGF2aW9yDQo+ID4gPiB2aWEgYW4gTVREIEFQSSB0byBvdGhlciBw
+YXJ0cyBvZiB0aGUgbGludXgga2VybmVsLiBBbGwgdGhlIHdvcmthcm91bmRzDQo+ID4gPiBzZWVt
+IHN1Y2ggYSB3YXN0ZSwgYW5kIHRoaXMgYmFkIGJsb2NrLWZyZWUgcmVhZC1vbmx5IEFQSSBzZWVt
+cyBzdWNoIGENCj4gPiA+IGdvb2QgaWRlYSBmb3IgYSBsb3Qgb2YgdGhpbmdzIEknbSByZWFsbHkg
+Y3VyaW91cyB3aHkgdGhlIHdvcmsgb24NCj4gPiA+IHNvbWV0aGluZyBhcyBjb29sIGFzIE1URF9C
+TE9DS19ST19CQkZSRUUgIGNlYXNlZCBpbiAyMDA2Lg0KPiA+DQo+ID4NCj4gPiBJIGRvbid0IGtu
+b3cgZm9yIHN1cmUsIGJ1dCBJIHRoaW5rIHRoZSBtYWpvcml0eSBvZiBmbGFzaCBzdWJzeXN0ZW0g
+ZWZmb3J0DQo+ID4gaGFzIGJlZW4gY2VudGVyZWQgYXJvdW5kIFVCSSBhbmQgdWJpZnM7IGZvciBp
+bnN0YW5jZSwgdGhlcmUgaXMgdmVyeSBsaXR0bGUNCj4gPiAoaWYgYW55KSBkZXZlbG9wbWVudCBv
+biBqZmZzMiBub3dhZGF5cywgd2l0aCBhbGwgdGhlIGVmZm9ydCBnb2luZyBpbnRvIHViaWZzDQo+
+ID4gKGFuZCB5YWZmcywgZGlmZmVyZW50IG1haWxpbmcgbGlzdCkuIE9uZSBvZiB0aGUgbWFpbiBw
+b2ludHMgb2YgVUJJIGlzIHRvDQo+ID4gaGFuZGxlIGJhZCBibG9ja3MsIGNvbnNlcXVlbnRseSB3
+aXRoIFVCSSBpbiB0aGUgbWFpbnN0cmVhbSBrZXJuZWwgZm9yIGENCj4gPiB3aGlsZSBub3csIG1v
+c3Qgb3RoZXIgZWZmb3J0cyBoYXZlIGEgbGltaXRlZCBhcHBlYWwuDQo+DQo+IEkgZmluZCB0aGlz
+IHdob2xlIE1URCAvIFVCSSB0aGluZywgbGV0IGFsb25lIFVCSUZTLCBpbmNyZWRpYmx5IGJsdXJy
+eS4NCj4gVGhlcmUgc2VlbXMgdG8gYmUgbm8gY29uc2VxdWVudCBhYnN0cmFjdGlvbiBiZXR3ZWVu
+IHRoZSAibGF5ZXJzIiBtdGQsDQo+IHViaSwgdWJpZnMsIGxldCBhbG9uZSB1bmlxdWUgcmVzcG9u
+c2liaWxpdGllcyBmb3IgZWl0aGVyIG9mIHRoZQ0KPiBsYXllcnMuDQoNCiAgSSBjYW4gYW5zd2Vy
+IHRoYXQgb25lLg0KDQogIE1URCAibWF0ZXJpYWxpemVzIiBhbiBpbXBlcmZlY3QgYmxvY2sgc3Rv
+cmFnZSBkZXZpY2UuIEl0IGNvbnRhaW5zDQogIG0gUEVCcyAoUGh5c2ljYWwgRXJhc2UgQmxvY2tz
+KSBvZiBuIHBhZ2VzIGVhY2guIEl0IGNhbiBlcmFzZSB3aG9sZQ0KICBQRUJzLCB3cml0ZSBwYWdl
+cywgYW5kIHJlYWQgcGFnZXMsIGJ1dCBzb21lIG9mIHRoZXNlIHBhZ2VzIGFyZQ0KICBiYWQsIG90
+aGVyIHBhZ2VzIG1heSBnbyBiYWQsIGFuZCB5b3UgaGF2ZSB0byBiZSBhd2FyZSB0aGF0IHlvdQ0K
+ICBjYW4gd2VhciBvdXQgUEVCcyBieSByZXBlYXRlZCBlcmFzdXJlcy4NCg0KICBVQkkgKG9uIHRv
+cCBvZiBNVEQpICJtYXRlcmlhbGl6ZXMiIGEgcGVyZmVjdCBibG9jayBzdG9yYWdlIGRldmljZS4N
+CiAgSXQgY29udGFpbnMgYSBtYXhpbXVtIG9mIG0tZnVkZ2VfZmFjdG9yIExFQnMgKExvZ2ljYWwg
+RXJhc2UgQmxvY2tzKQ0KICBvZiBuLW92ZWhlYWQgcGFnZXMgZWFjaC4gSXQgY2FuIGVyYXNlIHdo
+b2xlIExFQnMsIHdyaXRlIHBhZ2VzLCBhbmQNCiAgcmVhZCBwYWdlcy4gQnkgcHJvdmlkaW5nIGJh
+ZCBibG9jayBtYXBwaW5nIGFuZCB3ZWFyIGxldmVsaW5nLCBpdA0KICBwcm92aWRlcyBhIGRldmlj
+ZSB3aGljaCBpcyBzbGlnaHRseSBzbWFsbGVyIHRoYW4gdGhlIE1URCBkZXZpY2UNCiAgaXQncyBs
+YXllcmVkIHVwb24sIGJ1dCB0aGF0IGRldmljZSBkb2Vzbid0IGhhdmUgYmFkIGJsb2NrcyBhbmQN
+CiAgeW91IGNhbid0IHdlYXIgb3V0IGFueSBpbmRpdmlkdWFsIExFQiBmYXN0ZXIgdGhhbiB0aGUg
+d2hvbGUNCiAgZGV2aWNlIHdlYXJzIG91dC4gVGhlIGRldmljZSByZW1haW5zIHBlcmZlY3QgdW50
+aWwgaXRzIHJlc2VydmUNCiAgb2YgcmVwbGFjZW1lbnQgKHNwYXJlKSBibG9ja3MgaXMgZXhoYXVz
+dGVkIGFzIGJsb2NrcyBnbyBiYWQuDQoNCiAgVUJJZnMgKG9uIHRvcCBvZiBVQkkgb24gdG9wIG9m
+IE1URCkgIm1hdGVyaWFsaXplcyIgYSBmaWxlIHN5c3RlbS4NCiAgSXQgY29udGFpbnMgb3JkaW5h
+cnkgTGludXgvVW5peCBmaWxlcyBvbiBhIHBlcmZlY3Qgc3RvcmFnZSBtZWRpdW0uDQogIEl0IGRl
+cGVuZHMgdXBvbiB0aGUgcGVyZmVjdCBzdG9yYWdlIHByb3ZpZGVkIGJ5IFVCSS4NCg0KICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIEF0bGFudA0KDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUg
+aW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBp
+bnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlhbCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBl
+cnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBpcyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGlu
+Zm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3Nh
+Z2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVk
+IHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMg
+Y29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZl
+ZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkg
+dGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUgb3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91
+Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlz
+IGVtYWlsLg0K
