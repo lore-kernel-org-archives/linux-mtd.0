@@ -1,30 +1,25 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SParg-00089t-7D
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:49:13 +0000
-Message-ID: <1335970314.13013.2.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Wed, 02 May 2012 17:51:54 +0300
-In-Reply-To: <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
- <1335955122.10293.39.camel@sauron.fi.intel.com>
- <CABYn4szhjH0N_DsGc=O0TtJZNUja1KDzZ7HWTnR5nQvnxZEVPQ@mail.gmail.com>
- <1335960145.10293.48.camel@sauron.fi.intel.com>
- <CABYn4swraZL0Zi56xfPyZQ4vo1jK9f4KFLUZxEPrZRO4K83URg@mail.gmail.com>
- <1335966905.10293.59.camel@sauron.fi.intel.com>
- <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
- <1335967727.10293.63.camel@sauron.fi.intel.com>
- <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-pNDvmTzQvzApXi9hvLXA"
-Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPbuT-000651-Mk
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 15:56:10 +0000
+Received: by lbbgg6 with SMTP id gg6so671919lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 08:56:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+Date: Wed, 2 May 2012 17:56:07 +0200
+Message-ID: <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+From: Thilo Fromm <fromm@dresearch-fe.de>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,63 +29,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello, Richard,
 
---=-pNDvmTzQvzApXi9hvLXA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[ MTD read might return bad blocks ]
+>>> One way is to use a file system intended for flashes, but mount it
+>>> read-only. I.e. use a jffs2 filesystem, mounted readonly.
+>>
+>>
+>> Yupp, or I coud hack up SquashFS to be bad blocks aware. However, it
+>> feels kind of wrong to me to leave bad block handling to the file
+>> system layer. Because I would have to provide bad block awareness to
+>> every read-only FS I am planning to use. Over and over again.
+>
+>
+> I principally agree, however, jffs2 is doing just that, managing bad bloc=
+ks.
+> Whether that is a good idea or not is debatable of course. Technically it
+> mixes up file system and device properties. Also, you might not plan to
+> change read-only FS's very often so the effort might be quite minimal in
+> practice.
 
-On Wed, 2012-05-02 at 16:40 +0200, Bastian Hecht wrote:
-> The log looks like this:
-> HEAD is now at 07126b9 for test compiling
-> [2012-05-02 15:51:43] test-patchset: Build non-patched kernel
-> ("/tmp/test-patchset.IxuP/before/src", configuration
-> "l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-")
-> mkdir: created directory
-> `/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-li=
-nux-gnueabi-'
-> [2012-05-02 15:51:43] make-kernel: Making target
-> "l2_mackerel_defconfig" for "/tmp/test-patchset.IxuP/before/src
-> (O=3D/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-non=
-e-linux-gnueabi-)"
-> [2012-05-02 15:51:49] make-kernel: Making target "all" for
-> "/tmp/test-patchset.IxuP/before/src
-> (O=3D/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-non=
-e-linux-gnueabi-)"
-> [2012-05-02 15:52:16] make-kernel: Failed to make target "all" for
-> "/tmp/test-patchset.IxuP/before/src
-> (O=3D/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-non=
-e-linux-gnueabi-)"
-> [2012-05-02 15:52:16] make-kernel: Failed to make a target, exiting
+It still feels like the wrong place to do this. Every FS would just
+skip this block, and be done with it.
 
-Do you have arm-none-linux-gnueabi-gcc in your PATH? Look at he
-workdir/before/l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-.stderr
-file - it should contain the build log - what it says?
+>>> Or, let UBI handle the flash, and use ubifs in a static volume, which
+>>> means
+>>> it will be non-writable. Last time I checked it wasn't possible to use
+>>> file
+>>> systems such as cramfs on UBI, because UBI did not supply a block devic=
+e
+>>> which is required by cramfs. I seem to remember some patch to add block
+>>> devices to UBI, not sure what the state of that is.
+>>
+>>
+>> I think a simpler option would be to have your (read-only squash-)root
+>> FS image in a static UBI volume and mount it via loop-back. This is
+>> currently our fallback option. Still this feels like way too much
+>> overhead for what we're looking for.
+>
+>
+> Interting, it never occurred to me that that was possible. I always think=
+ of
+> loopback mounts for mounting things like files as cdrom drives. How do yo=
+u
+> specify a loopback mount for the rootfs on the kernel command line?
+
+I don't know; I would have done the necessary preparations in an
+initrd, then pivot_root into the loopback mount.
+
+[ bad-block-skip read is easy for boot loader, user space ]
+>> Unfortunately it seems to be impossible to provide this read behavior
+>> via an MTD API to other parts of the linux kernel. All the workarounds
+>> seem such a waste, and this bad block-free read-only API seems such a
+>> good idea for a lot of things I'm really curious why the work on
+>> something as cool as MTD_BLOCK_RO_BBFREE =C2=A0ceased in 2006.
+>
+>
+> I don't know for sure, but I think the majority of flash subsystem effort
+> has been centered around UBI and ubifs; for instance, there is very littl=
+e
+> (if any) development on jffs2 nowadays, with all the effort going into ub=
+ifs
+> (and yaffs, different mailing list). One of the main points of UBI is to
+> handle bad blocks, consequently with UBI in the mainstream kernel for a
+> while now, most other efforts have a limited appeal.
+
+I find this whole MTD / UBI thing, let alone UBIFS, incredibly blurry.
+There seems to be no consequent abstraction between the "layers" mtd,
+ubi, ubifs, let alone unique responsibilities for either of the
+layers.
+
+> Linutronix have made a small UBI library for reading static UBI volumes
+> which is suitable for boot loaders, so that one can have the kernel resid=
+ing
+> in a UBI volume and get all the benefits of bad block management etc even=
+ at
+> that level.
+
+I already get everything I need from the way our boot loader (u-boot)
+handles MTD writes (it skips bad blocks) and MTD reads (it skips bad
+blocks). I do not, for instance, have trouble booting a kernel image
+which was written into a NAND partition with bad blocks. U-boot will
+read all the sane blocks back just fine, so I can boot. There is
+actually no issue I need to fix inside u-boot.
+
+>> Since I really like the idea of a MTD block device that skips bad
+>> blocks when reading I'm currently in the process of re-animating the
+>> BBFREE patch
+>> <http://lists.infradead.org/pipermail/linux-mtd/2006-November/016835.htm=
+l>:
+>> it compiles for me, but still has some major issues. I'll keep this
+>> list up to date on my progress.
+>
+>
+> All pathes would be welcome; I'm sure there are others who would find suc=
+h
+> an approach beneficial, even if I think UBI is probably the way to go the=
+se
+> days.
+
+Apart from the fact that my NAND SW stack will then be two layers
+higher than it actually needs to be (and the added complexity this
+brings to boot loader and kernel) -  as far as I know UBI does not
+provide the functionality we require: being able to store a read-only
+file system image, and mount it at boot time. At least we don't get
+this without another boot step (initrd, see above).
+
+
+Regards,
+Thilo
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-pNDvmTzQvzApXi9hvLXA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPoUoKAAoJECmIfjd9wqK0O7cP/2EGC5nOh98g9ugIeVqlpSn4
-RVbGSSgYWBv7AXNxH33YbttK6ppFeS6oyIMKtMAleN5kV0drd7RNarcY/Yp5w7ZP
-pZQjyl+Kg5wmheDZ9AlTsdccMadht+6SIEs4xAvZ8GtTth0d4aKKl5yJQOsGX+OR
-/7wYCsF/SCKPoOv6rD0QojJQLQOtZ0CqmClH8Wp8AJZYtT82sw8ATM0YVavWH/wX
-NA0ezOSmc691gqzX4YFIeB1WJLpB4isMSS//VD3Rb3eRf+FxOgl6f5jahDdrriDs
-1GUN3bAyb75Ne3RM3t9oyLPyPJTxQyw8hRYwlesQ1kabgo0ZjTfaP3j6nzs38hh+
-eE3DATSgtebpG8ZxBBfl/2NK5gFtVoL5sgWdUnwQj4eBAsE2/AOg9YXPufcFnlQK
-JwdG877yyIYeeQSeb6JS/FnXWhKMEGT34olrW2xKk9yLcEYCoTj9nXX8CIiVS71o
-fNAiSJyi4dHlRolXqfkHWGrRY8t8F2iotC7xxYzy47N286AhM0lgKU9cwYTaa0dB
-/F6qsJM72++KVq2/31FUPMIo+7/FlDVJHVZXEUpUxiiek0ILhdm0c3+0h+++ywHb
-54LyGlnxJCrVuOSNMPHAtaxPR+aE1F51cPU1oFwf/zUuDoiRWml85/tAZn5Pa/JG
-cnUDftdNL9MqF6MhE1R/
-=KcGc
------END PGP SIGNATURE-----
-
---=-pNDvmTzQvzApXi9hvLXA--
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
