@@ -1,28 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPaBN-0005bw-RJ
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:05:30 +0000
-Message-ID: <1335967727.10293.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Wed, 02 May 2012 17:08:47 +0300
-In-Reply-To: <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
- <1335955122.10293.39.camel@sauron.fi.intel.com>
- <CABYn4szhjH0N_DsGc=O0TtJZNUja1KDzZ7HWTnR5nQvnxZEVPQ@mail.gmail.com>
- <1335960145.10293.48.camel@sauron.fi.intel.com>
- <CABYn4swraZL0Zi56xfPyZQ4vo1jK9f4KFLUZxEPrZRO4K83URg@mail.gmail.com>
- <1335966905.10293.59.camel@sauron.fi.intel.com>
- <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-teXS2fw7LlYwzv3pSp2w"
-Mime-Version: 1.0
-Cc: Magnus Damm <magnus.damm@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-qa0-f42.google.com ([209.85.216.42])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPaMR-0000Uk-Ge
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:16:56 +0000
+Received: by qafi31 with SMTP id i31so2158026qaf.15
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 07:16:53 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAOMZO5AJn3QjwRga71+HXPr3on7xG-AQtCM58xqx-1J3fA=zuA@mail.gmail.com>
+References: <1335903148-29539-1-git-send-email-shawn7400@gmail.com>
+ <CAOMZO5AJn3QjwRga71+HXPr3on7xG-AQtCM58xqx-1J3fA=zuA@mail.gmail.com>
+Date: Wed, 2 May 2012 10:16:53 -0400
+Message-ID: <CAGiDA6LFxcr=UmT4r9uka5sz7k=S8zhCupp2HjS0t+ijQBe_1w@mail.gmail.com>
+Subject: Re: [PATCH] Change linking order of SPI and MTD.
+From: "Shawn J. Goff" <shawn7400@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,53 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, May 1, 2012 at 11:09 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Tue, May 1, 2012 at 5:12 PM, Shawn J. Goff <shawn7400@gmail.com> wrote=
+:
+>> From: "Shawn J. Goff" <shawn7400@gmail.com>
+>>
+>> Currently, UBI initializes before SPI. This is a problem
+>> if you intend to boot to a UBI volume on an SPI device. =A0UBI will
+>> fail to initialize with the following message:
+>>
+>> UBI error: ubi_init: UBI error: cannot initialize UBI, error -19
+>>
+>> The initialization order is determined by the order the modules are
+>> linked into the kernel, so the fix was to change this order. UBI is
+>> under the MTD tree, so SPI is now linked in before MTD.
+>
+> Could EPROBE_DEFER help in this case?
 
---=-teXS2fw7LlYwzv3pSp2w
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2012-05-02 at 16:00 +0200, Bastian Hecht wrote:
-> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Wed, 2012-05-02 at 15:41 +0200, Bastian Hecht wrote:
-> >> Ok I'm slowly but surely fighting my way through it. Though I want to
-> >> add an advisor here:
-> >> Don't do this on your crappy laptop like I do. I guess I will move to
-> >> my 8Gb RAM desktop machine for this in the future ;)
-> >
-> > Yeah, I run it on a powerful PC. I need to update the README file - but
-> > if you send a patch - will be appreciated.
->=20
-> I assumed people to be smarter than me and instantly realize that a
-> compile-test is resource intensive, so I'm unsure if this is
-> necessary.
-
-You are not the first one :-)
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-teXS2fw7LlYwzv3pSp2w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPoT/wAAoJECmIfjd9wqK0YW0QAMC4PVZ04EYSf6Tatmvfrrz8
-ZtLXTqRakS+r6Riy7C3eGDmNiN9DAOrLKWzWpJTQ+vFXAZvk3EZtwNDYBRyQ4VX9
-xMPMHvLGaY/LvXpcKwu36k49v6+7cHn0X6tuHKGsF9LlHl78o52koN1cO7SaWGbQ
-8OS8GRFgkspHaIGgvEhqE8jeXoYOyugWOYYzL38pAmyrFmbj6GJE0gA311pmKior
-giifOAgmU7UFntFbhdeFrOu1U/O4n1Sk6rv3sq1P9/HbqTXiXmQyEJEwetRX2t1g
-H5cFh9dPsbAvWfKS3M3b0G/m2UAoDY3IeoiKMWcYPuUNvPquxvdsHW7lH7PUfzRl
-mxHXluNFv+YQzmNBa18Z7aYAPBgYaQ23t8+wVzrPtfQCAnG9ZwTs9UKih9ptEd58
-8dcjo7zB04OD4PvrU7JZnc6NWHSO1ZU3xEDapqaO+G3ZTm3BCPqc/KPkUggPR+oR
-6u+mGOLH0MpotrlA/ncPiDjnpuqpLMn2IqTF2mMs9fOn+T6lWC8J5fEUcnFPAffy
-egs+G4ugkY/Boy+zB+daRQpdBiEXPpBCAcezu0sPZbdyl/IdG4o+ns7Qvv+K06sb
-F1vnCQcFhqIi+wfu0Xcf12fSmJ6zIB2LyYIimhdvsEyYjmzHCOsveZnpjNhNjI1p
-2h4OVj2jiHz906xw/9L9
-=Z4zb
------END PGP SIGNATURE-----
-
---=-teXS2fw7LlYwzv3pSp2w--
+I hadn't known about EPROBE_DEFER until now. If it does help,
+that's probably a better solution. I'll look into it, but it'll be
+at least a few days before I'm able to spend time on it.
