@@ -1,20 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPYNj-0005iN-Lf
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:10:08 +0000
-Message-ID: <1335960807.10293.51.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: use ecc_strength to determine whether to perform
- bitflip_threshold test
+ id 1SPYYX-0007bj-6E
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 12:21:17 +0000
+Message-ID: <1335961475.10293.52.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd-www: FAQ: spelling fixes
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Wed, 02 May 2012 15:13:27 +0300
-In-Reply-To: <1335902181-18110-1-git-send-email-mikedunn@newsguy.com>
-References: <1335902181-18110-1-git-send-email-mikedunn@newsguy.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Wed, 02 May 2012 15:24:35 +0300
+In-Reply-To: <20120502140253.52657db3@halley>
+References: <20120502085826.23b8cf5c@halley>
+ <CAN8TOE9n9BTstLeU5du_jan8wrFSO9pKxHA_mN7Fptf6pXKVWg@mail.gmail.com>
+ <20120502135725.067ca11b@halley> <20120502140253.52657db3@halley>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-MIJ8fTkk9R+81APuqddN"
+ boundary="=-lTTHqq3R0IGjO8mrjuwI"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,51 +27,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-MIJ8fTkk9R+81APuqddN
+--=-lTTHqq3R0IGjO8mrjuwI
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-01 at 12:56 -0700, Mike Dunn wrote:
-> This is a minor change to the recent EUCLEAN patch set that I think makes=
- it
-> more correct.  Currently, the test in mtd_read() that determines whether =
-or not
-> to return -EUCLEAN is skipped if bitflip_threshold =3D=3D 0.  This logic =
-was added
-> (without much thought) to fix a bug in an earlier version of the patch se=
-t that
-> would have caused devices lacking ecc to always return -EUCLEAN [1].
+On Wed, 2012-05-02 at 14:02 +0300, Shmulik Ladkani wrote:
+> Few typos fixed.
 >=20
-> This patch replaces bitflip_threshold with ecc_strength as the value used=
- to
-> determine whether the device has ecc capability.  I think this is more co=
-rrect
-> because bitflip_threshold can be changed via sysfs.  Currently, if the us=
-er sets
-> it to zero, -EUCLEAN is never returned.  This is also what happens if the=
- user
-> sets it to a value exceeding ecc_strength.  With this patch, if the user =
-sets it
-> to zero, -EUCLEAN will always be returned (provided ecc_strength > 0), wh=
-ich
-> makes more sense, and may even be useful occasionally.
->=20
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2012-March/040468.html
->=20
-> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-
-Folded this patch into:
-
-mtd: driver _read() returns max_bitflips; mtd_read() returns -EUCLEAN
-
-and pushed to l2-mtd.git, thanks!
+Pushed to mtd-www.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-MIJ8fTkk9R+81APuqddN
+--=-lTTHqq3R0IGjO8mrjuwI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -78,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPoSTnAAoJECmIfjd9wqK08zoQAMWdYFuy2AB0JXb9O56pBi+u
-pk+sLn7JI5R5V/V7RhKLJc6I06QWp7RTQl6xt0C5M8YCPMWdO7XNQmJcci9GfWKw
-lkh3A+xk0qT7W4rQTQ9JYj6/39NsO3dc/rwMcp/yC7hMvtn3zJrqa1sLsJ4aHWUZ
-6EY+aJoTJUO95ztkDKcHXtiAapzaaGcVJNxQQW4HAaBMCiCd5h3tSwUE/sO/TEJv
-8FlvJV1t81u31eLhL7TV3kh0GhI06b5kalYQG132ACfbaLOVGcx3lBCibXsUJqYK
-BHxS+hKYvji3m/VzX8iGQbGK5h+gbv/OoHPglLYFcb3GmpuRFigL6kRJmdW6bv4T
-V7lWFLw5OcWYm4pEWLqddRAM9JizocIMN3cKVJLnsGznqYBzBmbHojvv4RgVCQj6
-Y293frgK1+2k92RcMvdVovEVwT+7wx1gW8EBb/JyM0uBkrNSJvGo/Be6rqf6XTQX
-UflO5tULzXLU+x66bu1NliZMIpYlZy9GdH+M9LVPRDTW1Pv/Apg0LtajpCqVpWYF
-rAqFECg0SpinPBhn1LYqe2LVYyaIWk81KN+fukwz7u8Z7AGQBHsks2Bw2OaDqfOw
-7Rd6jjQp6AAXHSBk+WV1telzTlh3GV3T6SuPh8ZMYRkDhA08K+T1xiBdnvvJgsUf
-3+Pp4LoJMcL5LmGH9RMx
-=HPvA
+iQIcBAABAgAGBQJPoSeDAAoJECmIfjd9wqK0sp0P/3ZKOYhIU+7hB1YkHgvnnDYj
+FI7/4uXgE0/PxZ9rghKGGTJhWkxDxikqqF5EuBQDAQFFMT3say+SVBhkpPmzC1YY
+BaDmYGfQ8y09Zs5ihtA10EVKwQOXLH+dD8DI0Er9IvZTIZEU6MXfEiq++n9cbElc
+1u4gKW91JnGBxmk1MotkgAHxhgmzM5TntK9uqrbZiIrgmHvxQww6YM91o2X4/ZSK
+Dxsk7+rj1u+foy5WOxsql4krxYR1uEloSUiCdVu1GZZgqL56o5jKQWjbZeyBPVJC
+lM0hk1P2zuZpdA/W77MxY9iSXTvgSOkOC/dwz9r8mMJ/YWVnFFGKCl7DPD9SrbCm
+XIzecTOaV6Wlrc7gY9+cs2y+WgjUvzFbu6Pg1cMwu2gmXgmm5lDVznkHLbwb5SD4
+AIcMDqopraOy2p9juyrKt+K7WR56PIfstJqttTOEG27GV6eThtdLiHr7fTms+Q/u
+BMywao7cr+OKfWw9X+rjyWHRk3iJNUcU1Nna9E1QXTPyUSnGqu8wTr+aI8Fp1lGS
+68CFiz/GC8DcOdf5Jn7LhfMsS1Xh2EEqdZXEVmy6QzcWHSzB9ool6F44Z/RcxvDD
+tKC5vaoDnPuZcvOiMvN0HhtdmVUKq3/Ki2VUAdOy+sqPSPfskOHDpQ2n8LShVAZ8
+mpbdZkOvYDmxrHbr6ANc
+=c2Ch
 -----END PGP SIGNATURE-----
 
---=-MIJ8fTkk9R+81APuqddN--
+--=-lTTHqq3R0IGjO8mrjuwI--
