@@ -1,20 +1,28 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPaj6-0005i2-Pn
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:40:22 +0000
-Received: by pbbrq13 with SMTP id rq13so1252424pbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 07:40:19 -0700 (PDT)
-Date: Wed, 2 May 2012 22:40:12 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Huang Shijie <b32955@freescale.com>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v3] mtd: gpmi: add device tree support for mx6q and mx28
-Message-ID: <20120502144008.GF2194@S2101-09.ap.freescale.net>
-References: <1335939209-15625-1-git-send-email-b32955@freescale.com>
+ id 1SPajI-0005nE-1N
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 14:40:33 +0000
+Received: by lagy4 with SMTP id y4so578721lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 07:40:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1335939209-15625-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1335967727.10293.63.camel@sauron.fi.intel.com>
+References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
+ <1335955122.10293.39.camel@sauron.fi.intel.com>
+ <CABYn4szhjH0N_DsGc=O0TtJZNUja1KDzZ7HWTnR5nQvnxZEVPQ@mail.gmail.com>
+ <1335960145.10293.48.camel@sauron.fi.intel.com>
+ <CABYn4swraZL0Zi56xfPyZQ4vo1jK9f4KFLUZxEPrZRO4K83URg@mail.gmail.com>
+ <1335966905.10293.59.camel@sauron.fi.intel.com>
+ <CABYn4sz-_VCLUExgT7Bzr_mLCeYEnCV7ayhWCpkcH_2HyVFgjQ@mail.gmail.com>
+ <1335967727.10293.63.camel@sauron.fi.intel.com>
+Date: Wed, 2 May 2012 16:40:30 +0200
+Message-ID: <CABYn4sxfw_qucyHK5Cj_yaM9yFKQQ24SCUJu2AcugXSzCbEYZw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/10] sh_flctl hardware ECC mode cleanup
+From: Bastian Hecht <hechtb@googlemail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Magnus Damm <magnus.damm@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 02, 2012 at 02:13:28PM +0800, Huang Shijie wrote:
-> add gpmi support for mx6q.
-> add DT support to mx6q and mx28.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Wed, 2012-05-02 at 16:00 +0200, Bastian Hecht wrote:
+>> 2012/5/2 Artem Bityutskiy <dedekind1@gmail.com>:
+>> > On Wed, 2012-05-02 at 15:41 +0200, Bastian Hecht wrote:
+>> >> Ok I'm slowly but surely fighting my way through it. Though I want to
+>> >> add an advisor here:
+>> >> Don't do this on your crappy laptop like I do. I guess I will move to
+>> >> my 8Gb RAM desktop machine for this in the future ;)
+>> >
+>> > Yeah, I run it on a powerful PC. I need to update the README file - but
+>> > if you send a patch - will be appreciated.
+>>
+>> I assumed people to be smarter than me and instantly realize that a
+>> compile-test is resource intensive, so I'm unsure if this is
+>> necessary.
+>
+> You are not the first one :-)
 
-Hi Artem,
 
-As the patch heavily depends on mxs device tree branch, I think it will
-be easier to have it go through arm-soc tree.  If you agree, can you
-please give your ack if the patch looks fine to you?
+Now I'm really stuck. The verbose log says the build target "all"
+failed. When I used -p to keep the clone and used make ARCH=arm
+CROSS-...=... l2_mackerel_defconfig; make ARCH=... CROSS=... all -
+everything builds fine.
 
--- 
-Regards,
-Shawn
+command used: ../aiaiai/concat-mbox-files /tmp/patch/* |
+../aiaiai/test-patchset -j8 -p -v ../flctl_patch/ --cppcheck --sparse
+l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-
+
+The log looks like this:
+HEAD is now at 07126b9 for test compiling
+[2012-05-02 15:51:43] test-patchset: Build non-patched kernel
+("/tmp/test-patchset.IxuP/before/src", configuration
+"l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-")
+mkdir: created directory
+`/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-'
+[2012-05-02 15:51:43] make-kernel: Making target
+"l2_mackerel_defconfig" for "/tmp/test-patchset.IxuP/before/src
+(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+[2012-05-02 15:51:49] make-kernel: Making target "all" for
+"/tmp/test-patchset.IxuP/before/src
+(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+[2012-05-02 15:52:16] make-kernel: Failed to make target "all" for
+"/tmp/test-patchset.IxuP/before/src
+(O=/tmp/test-patchset.IxuP/before/obj.l2_mackerel_defconfig,arm,arm-none-linux-gnueabi-)"
+[2012-05-02 15:52:16] make-kernel: Failed to make a target, exiting
+
+
+> --
+> Best Regards,
+> Artem Bityutskiy
