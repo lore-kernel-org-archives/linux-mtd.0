@@ -1,22 +1,23 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPW56-000849-BA
- for linux-mtd@lists.infradead.org; Wed, 02 May 2012 09:42:47 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so343217bkw.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 02:42:44 -0700 (PDT)
+ id 1SPW9c-0001cL-5Y
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2012 09:47:24 +0000
+Received: by lagy4 with SMTP id y4so333862lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 02:47:22 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAN8TOE9fnQJb6ivwg997cE93g+PcxvvgZzGHsm2Ua6o_ZzH=HQ@mail.gmail.com>
+References: <1335362618-4559-1-git-send-email-hechtb@gmail.com>
+ <1335362618-4559-10-git-send-email-hechtb@gmail.com>
+ <CAN8TOE9fnQJb6ivwg997cE93g+PcxvvgZzGHsm2Ua6o_ZzH=HQ@mail.gmail.com>
+Date: Wed, 2 May 2012 11:47:21 +0200
+Message-ID: <CABYn4swN7PrGPVx2+FPkYx+g6Y=0v9e86KXVx2UVxDwhOaZPCg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] mtd: sh_flctl: Use user oob data in hardware ECC
+ mode
 From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-mtd@lists.infradead.org,
-	linux-sh@vger.kernel.org
-Subject: [PATCH v3 10/10] ARM: sh-mobile: mackerel: Use hardware error
- correction
-Date: Wed,  2 May 2012 11:41:50 +0200
-Message-Id: <1335951710-9390-11-git-send-email-hechtb@gmail.com>
-In-Reply-To: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the built-in hardware error code correction of the sh_flctl.
+Hi Brian,
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
- arch/arm/mach-shmobile/board-mackerel.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> I don't know about the HW-specific details here, but read/write
+> data+OOB seems good.
+>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+>
+> If these patches are accepted, I will try to make sure this driver
+> switches to conditionally reading/writing OOB in my patch series. Keep
+> an eye out for them, though.
 
-diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
-index 1de1fb7..f8289f4 100644
---- a/arch/arm/mach-shmobile/board-mackerel.c
-+++ b/arch/arm/mach-shmobile/board-mackerel.c
-@@ -1003,6 +1003,7 @@ static struct sh_flctl_platform_data nand_flash_data = {
- 	.flcmncr_val	= CLK_16B_12L_4H | TYPESEL_SET
- 			| SHBUSSEL | SEL_16BIT | SNAND_E,
- 	.use_holden	= 1,
-+	.has_hwecc	= 1,
- };
- 
- static struct platform_device nand_flash_device = {
--- 
-1.7.5.4
+Thanks! I've submitted a new version of my patchset and they don't
+stack out of the box with your patch-set - either way if yours comes
+first or mine, it should require little to adapt.
+
+> BTW, from the changes I'm seeing in this patch series, your driver was
+> previously fairly broken. Or at least, several features of it were...
+> Good luck with the cleanup!
+
+Yeah thanks! I like the driver and learned a lot from it - but the ECC
+part was broken like hell, true :)
+
+Best regards,
+
+ Bastian
+
+> Brian
