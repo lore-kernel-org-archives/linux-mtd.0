@@ -1,23 +1,26 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUY4p-00065L-CF
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 06:51:17 +0000
-Message-ID: <1337151273.24809.2.camel@sauron.fi.intel.com>
-Subject: Fastmap - please, review and test
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 16 May 2012 09:54:33 +0300
-In-Reply-To: <20120515224645.3af023c3@halley>
-References: <1337101871-31181-1-git-send-email-richard@nod.at>
- <20120515224645.3af023c3@halley>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-E3V4qMSLNpij7KSIyWJw"
-Mime-Version: 1.0
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
-Reply-To: dedekind1@gmail.com
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPsLq-0002ON-2j
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 09:29:30 +0000
+Received: by lbbgg6 with SMTP id gg6so1373031lbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 02:29:26 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1336024908.2056.3.camel@koala>
+References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
+ <1335951710-9390-3-git-send-email-hechtb@gmail.com>
+ <201205022249.30426.rjw@sisk.pl> <1336024825.2056.2.camel@koala>
+ <1336024908.2056.3.camel@koala>
+Date: Thu, 3 May 2012 11:29:26 +0200
+Message-ID: <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
+Subject: Re: [PATCH v3 02/10] ARM: sh-mobile: mackerel: Add error IRQ resource
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: multipart/alternative; boundary=bcaec554d8eca083eb04bf1e7045
+Cc: linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Bastian Hecht <hechtb@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +30,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--bcaec554d8eca083eb04bf1e7045
+Content-Type: text/plain; charset=ISO-8859-1
 
---=-E3V4qMSLNpij7KSIyWJw
-Content-Type: text/plain; charset="UTF-8"
+Am 03.05.2012 08:01 schrieb "Artem Bityutskiy" <dedekind1@gmail.com>:
+>
+> On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:
+> > On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:
+> > > On Wednesday, May 02, 2012, Bastian Hecht wrote:
+> > > > Supply the platform data for the FLSTEI error IRQ.
+> > > >
+> > > > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+> > >
+> > > I'm going to take this patch into the renesas.git tree and push it
+> > > upstream throuch arm-soc, if that's not a problem.
+> >
+> > It is already in the MTD tree with the rest of the 10 patches...
+>
+> Ops, sorry, this is not true. Then Bastian should separate it out and
+> not send it to the MTD tree.
+
+Alright I'll do. I need to fix the compiler warnings of the mtd patches
+anyway. So the board code is independant and can be pushed already by
+Rafael, right? How is it supposed to work in general? I think the sh-mobile
+list wants to be informed when I change something in the flctl code. Would
+the right approach be to send 2 patchsets - posted on both MLs so that
+Artem can take the mtd portions and Rafael the mackerel ones?
+
+Best regards,
+
+Bastian Hecht
+
+> --
+> Best Regards,
+> Artem Bityutskiy
+
+--bcaec554d8eca083eb04bf1e7045
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-15 at 22:46 +0300, Shmulik Ladkani wrote:
-> On Tue, 15 May 2012 19:11:04 +0200 Richard Weinberger <richard@nod.at> wr=
-ote:
-> > TODO:
-> >         - Artem is fully happy with the current on-flash layout,
-> >           maybe I can merge the erase counters into the EBA table
-> >         - Get a full review :)
->=20
-> I'd be glad to take a deep look of the code.
->=20
-> Hopefully I'll get into it in the following days.
+<p><br>
+Am 03.05.2012 08:01 schrieb &quot;Artem Bityutskiy&quot; &lt;<a href=3D"mai=
+lto:dedekind1@gmail.com">dedekind1@gmail.com</a>&gt;:<br>
+&gt;<br>
+&gt; On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:<br>
+&gt; &gt; On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:<br>
+&gt; &gt; &gt; On Wednesday, May 02, 2012, Bastian Hecht wrote:<br>
+&gt; &gt; &gt; &gt; Supply the platform data for the FLSTEI error IRQ.<br>
+&gt; &gt; &gt; &gt;<br>
+&gt; &gt; &gt; &gt; Signed-off-by: Bastian Hecht &lt;<a href=3D"mailto:hech=
+tb@gmail.com">hechtb@gmail.com</a>&gt;<br>
+&gt; &gt; &gt;<br>
+&gt; &gt; &gt; I&#39;m going to take this patch into the renesas.git tree a=
+nd push it<br>
+&gt; &gt; &gt; upstream throuch arm-soc, if that&#39;s not a problem.<br>
+&gt; &gt;<br>
+&gt; &gt; It is already in the MTD tree with the rest of the 10 patches...<=
+br>
+&gt;<br>
+&gt; Ops, sorry, this is not true. Then Bastian should separate it out and<=
+br>
+&gt; not send it to the MTD tree.</p>
+<p>Alright I&#39;ll do. I need to fix the compiler warnings of the mtd patc=
+hes anyway. So the board code is independant and can be pushed already by R=
+afael, right? How is it supposed to work in general? I think the sh-mobile =
+list wants to be informed when I change something in the flctl code. Would =
+the right approach be to send 2 patchsets - posted on both MLs so that Arte=
+m can take the mtd portions and Rafael the mackerel ones?</p>
 
-Thanks Shmulik - I appreciate any help as much as Richard. I am busy and
-my job now has nothing to do with MTD/UBI/UBIFS, and I have limited time
-for review.
+<p>Best regards,</p>
+<p>Bastian Hecht</p>
+<p>&gt; --<br>
+&gt; Best Regards,<br>
+&gt; Artem Bityutskiy<br>
+</p>
 
-There were many people who wanted faster UBI, and I'd ask them to
-participate now - review, test, etc.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-E3V4qMSLNpij7KSIyWJw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPs08pAAoJECmIfjd9wqK0L8cQAJlzXKNMgA5zNFJAYk9iggQb
-MxSW2f6WoCMWPt17ByuTruoVlh/KTWJqeFMDkzV38f+pSxySQcoGpGpcyGfpsSlF
-WtGjddOBbjWYiboDwW4RDgT4pCdcZoICkRPpUBmwv6nBhHE3M5YFlijcJLr7uu0f
-UypCAkH8VGir9xVWNnkW/BRgvm1GgzH1ixEYtjuuJ/BFhgba09l8j5xIeBGB5FCg
-vNaFinBIWlMABltL1DjIndUpZiFPBonQVcdEjBWxm9z+ZSPs2fNuQERQj+XtBS8N
-DvX14HFZjGiM3H4o7eR88tUlp8qfYLvymJb76g+04f3ImLcJ0D7GsxwZCGPbiOtb
-zImqaQhELM1ryXYoLj/Tx3bcVfBYlS6Pa8FbOVZ/3bxjjGj57Xm6N6TOd7VU6rdi
-UZxXJXJRujlNFxbqw/zSJXrK2FjmCcHaEQcUe6BB1f9bDWI7etW+oRt7RJNLVKSV
-w4/c2gkSVY6Vwi3W92TrzTdOpmXxcrdr7/2pGUViQD9cngvr2kGkCyMUNTZwEfGp
-R4rBGdSquZ6UrFMg4bF9tIQakoEX54dv/tCVSHv8U+vk+wrkhyKxEtoncXMpvIIt
-0LlIFRSBXCsccGHiWAksRDVV63fADWuLtcAAUwZMYUMakIopcb7LtEBL0epJdTVZ
-9nEg9VOvHHWaZfjIzywg
-=ORvS
------END PGP SIGNATURE-----
-
---=-E3V4qMSLNpij7KSIyWJw--
+--bcaec554d8eca083eb04bf1e7045--
