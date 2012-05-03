@@ -1,17 +1,32 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQ4Y7-0002ZU-Ey
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 22:31:00 +0000
-Received: by pbbrq13 with SMTP id rq13so3292314pbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 15:30:57 -0700 (PDT)
+ id 1SQ4be-0002nH-NR
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 22:34:39 +0000
+Received: by yenr9 with SMTP id r9so629206yen.36
+ for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 15:34:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20120503204307.6d93115d@halley>
+References: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
+ <1335978904-8005-2-git-send-email-computersforpeace@gmail.com>
+ <4FA2BD85.1050102@newsguy.com> <20120503204307.6d93115d@halley>
+Date: Thu, 3 May 2012 15:34:36 -0700
+Message-ID: <CAN8TOE9ETNcbFamO-rAzb-5GzTwA9x7UiOzgjC+E_rPJPWQ7Zw@mail.gmail.com>
+Subject: Re: [PATCH v4 01/10] mtd: nand: add 'oob_required' argument to NAND
+ {read, write}_page interfaces
 From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] mtd: nand: fixup 1/0 vs. true/false
-Date: Thu,  3 May 2012 15:30:08 -0700
-Message-Id: <1336084208-20461-1-git-send-email-computersforpeace@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Lei Wen <leiwen@marvell.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Bastian Hecht <hechtb@googlemail.com>, Jiandong Zheng <jdzheng@broadcom.com>,
+ Florian Fainelli <ffainelli@freebox.fr>, Scott Wood <scottwood@freescale.com>,
+ Jamie Iles <jamie@jamieiles.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Li Yang <leoli@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Axel Lin <axel.lin@gmail.com>, Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +36,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The 'oob_required' argument is an int, according to the boolean style used in
-nand_base.c, so we should use 1 and 0 instead of true and false.
+Hi Mike and Shmulik,
 
-Thanks Mike for spotting this.
+On Thu, May 3, 2012 at 10:43 AM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+>> Still, it seems inconsistent. =A0When calling the functions, you sometim=
+es pass
+>> the bool form...
+>>
+>> > - =A0 status =3D docg4_read_page(mtd, nand, buf, DOCG4_FACTORY_BBT_PAG=
+E);
+>> > + =A0 status =3D docg4_read_page(mtd, nand, buf, false, DOCG4_FACTORY_=
+BBT_PAGE);
+>>
+>> and sometimes the int form...
+>>
+>> > - =A0 chip->ecc.read_page_raw(mtd, chip, buf, page);
+>> > + =A0 chip->ecc.read_page_raw(mtd, chip, buf, 1, page);
+>
+> I guess the 'true/false' arguments are leftovers from Brian's previous
+> posts...
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
-Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
----
- drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
- drivers/mtd/nand/docg4.c               |    4 ++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+Yes, accidental leftovers.
 
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index c6d691a..c855e7c 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -341,7 +341,7 @@ static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * buf,
- 	 * for MLC parts which may have permanently stuck bits.
- 	 */
- 	struct nand_chip *chip = mtd->priv;
--	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, false, 0);
-+	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, 0, 0);
- 	if (ret < 0)
- 		return -EFAULT;
- 	else {
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index 16221b2..1f8485d 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1003,7 +1003,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
- 		return -ENOMEM;
- 
- 	read_page_prologue(mtd, g4_addr);
--	status = docg4_read_page(mtd, nand, buf, false, DOCG4_FACTORY_BBT_PAGE);
-+	status = docg4_read_page(mtd, nand, buf, 0, DOCG4_FACTORY_BBT_PAGE);
- 	if (status)
- 		goto exit;
- 
-@@ -1080,7 +1080,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- 	/* write first page of block */
- 	write_page_prologue(mtd, g4_addr);
--	docg4_write_page(mtd, nand, buf, true);
-+	docg4_write_page(mtd, nand, buf, 1);
- 	ret = pageprog(mtd);
- 	if (!ret)
- 		mtd->ecc_stats.badblocks++;
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 805bcf3..dcf4152 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1311,7 +1311,7 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
- 		/* Write the first page of the current stride. */
- 		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
- 		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
--		chip->ecc.write_page_raw(mtd, chip, buffer, false);
-+		chip->ecc.write_page_raw(mtd, chip, buffer, 0);
- 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
- 
- 		/* Wait for the write to finish. */
--- 
-1.7.5.4.2.g519b1
+> I noted these while reviewing, and personally don't mind them, but I
+> guess '0/1' are more appropriate.
+
+Yes, these should all be 0/1. It shouldn't be a significant issue,
+except for consistency.
+
+Artem: I fixed these up and sent a fixup patch.
+
+[Mike:] "Aside from that, you can add my Acked-by for the docg4 driver
+if you like."
+
+The docg4 stuff already went into l2-mtd-2.6.git; Artem can add the
+Acked-by as he rebases.
+
+Brian
