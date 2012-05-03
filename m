@@ -1,20 +1,24 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPpsz-0002OC-T8
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 06:51:34 +0000
-Received: by lagy4 with SMTP id y4so1271600lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 02 May 2012 23:51:31 -0700 (PDT)
-Date: Thu, 3 May 2012 09:51:27 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Grant Edwards <grant.b.edwards@gmail.com>
-Subject: Re: Question about mkfs.jffs2 "-s" option
-Message-ID: <20120503095127.6931d370@pixies.home.jungo.com>
-In-Reply-To: <jnrm65$im4$1@dough.gmane.org>
-References: <jnrm65$im4$1@dough.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SPpzr-0002x6-LD
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 06:58:42 +0000
+Date: Thu, 3 May 2012 08:58:30 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Thilo Fromm <fromm@dresearch-fe.de>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+In-Reply-To: <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1205030855540.8107@lnxricardw.se.axis.com>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Grant,
 
-On Wed, 2 May 2012 16:08:38 +0000 (UTC) Grant Edwards <grant.b.edwards@gmail.com> wrote:
-> [apologies if this isn't the right forum for mkfs.jffs2 questions]
-> 
-> According the the mkfs.jffs2 man page (from mtd-utils 1.4.8):
-> 
->   -s, --pagesize=SIZE
->   
->      Use page size SIZE.  The default is 4 KiB.  This size is the
->      maximum size of a data node.
-> 
-> I'm using NAND flash with an erase size of 128K.
-> 
-> I've got a directory tree with 68 files. A few are largish (100KB),
-> but most of them small (a few hundred bytes or less).  They contain a
-> total of 680K bytes of data and take up 900K of space on an ext2
-> filesystem.
-> 
-> When I do a "mkfs.jffs2 -e128 -l -n" I get a jffs2 image with a size
-> of 300K.  That seems reasonable.
-> 
-> If I specify a page size of 4K (which according to the man page is the
-> default) by doing "mkfs.jffs2 -e128 -s4KiB -n -l", I get a jffs2 image
-> with a size of 12MB.
-> 
-> According to the man page the default page size is 4K, so specifying a
-> page size of 4K shouldn't change anything, right?
-> 
-> Why does specifying a page size of 4K make the jffs2 image 40X larger?
-> 
-> The NAND flash I'm using has to be written in 4K blocks -- isn't that
-> the "page size"?
+On Wed, 2 May 2012, Thilo Fromm wrote:
 
-Looks like mkfs.jffs2 sets 
-	case 's':
-		page_size = strtol(optarg, NULL, 0);
+> Apart from the fact that my NAND SW stack will then be two layers
+> higher than it actually needs to be (and the added complexity this
+> brings to boot loader and kernel) -  as far as I know UBI does not
+> provide the functionality we require: being able to store a read-only
+> file system image, and mount it at boot time. At least we don't get
+> this without another boot step (initrd, see above).
 
-and does not further parse KiB/MiB tokens.
+With a root file system in ubifs, you can boot directly with a root=20
+filesystem in UBI, with a kernel command line such as
 
-So my buest guess, try to specify '-s 4096' instead of '4KiB'.
+ubi.mtd=3D2 root=3Dubi0:rootfs rootfstype=3Dubifs
 
-Regards,
-Shmulik
+I don't know how far back that was possible, you were using 2.6.27 were=20
+you not (in my case I'm using 2.6.35)?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
