@@ -1,24 +1,18 @@
-Received: from plane.gmane.org ([80.91.229.3])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPwku-0005KK-UQ
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 14:11:41 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1SPwkl-0005l5-AM
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 16:11:31 +0200
-Received: from dsl.comtrol.com ([64.122.56.22])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 16:11:31 +0200
-Received: from grant.b.edwards by dsl.comtrol.com with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 16:11:31 +0200
-To: linux-mtd@lists.infradead.org
-From: Grant Edwards <grant.b.edwards@gmail.com>
-Subject: Re: Question about mkfs.jffs2 "-s" option
-Date: Thu, 3 May 2012 14:11:09 +0000 (UTC)
-Message-ID: <jnu3lt$8ad$1@dough.gmane.org>
-References: <jnrm65$im4$1@dough.gmane.org>
- <20120503095127.6931d370@pixies.home.jungo.com>
+MIME-Version: 1.0
+In-Reply-To: <CAAQ0ZWSxNxtF6_1+5NDqR_ry++gKbbNLZHRSTXREG18P+kQL3w@mail.gmail.com>
+References: <1335939209-15625-1-git-send-email-b32955@freescale.com>
+ <20120502144008.GF2194@S2101-09.ap.freescale.net>
+ <1336042485.13013.41.camel@sauron.fi.intel.com>
+ <CAAQ0ZWSxNxtF6_1+5NDqR_ry++gKbbNLZHRSTXREG18P+kQL3w@mail.gmail.com>
+Date: Thu, 3 May 2012 22:14:55 +0800
+Message-ID: <CAMiH66EBO-MHXBb1eB4NMAJo6nPN47_42jYNGUGc=GC7oejPWQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: add device tree support for mx6q and mx28
+From: Huang Shijie <shijie8@gmail.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2012-05-03, Shmulik Ladkani <shmulik.ladkani@gmail.com> wrote:
+On Thu, May 3, 2012 at 8:38 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> On 3 May 2012 18:54, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> On Wed, 2012-05-02 at 22:40 +0800, Shawn Guo wrote:
+>>> Hi Artem,
+>>>
+>>> As the patch heavily depends on mxs device tree branch, I think it will
+>>> be easier to have it go through arm-soc tree. =C2=A0If you agree, can y=
+ou
+>>> please give your ack if the patch looks fine to you?
+>>
+>> I do not mind if it goes via the arm-soc tree. I cannot really review
+>> this patch - it is too big, I think it should be split on smaller
+>> chunks.
+>>
+> Right. =C2=A0I also think that the patch should at least be split into tw=
+o,
+> one converts the driver to device tree and the other adds imx6q
+> support. =C2=A0Shijie, can you do that?
+ok, I will  do it tomorrow.
 
-> Looks like mkfs.jffs2 sets 
-> 	case 's':
-> 		page_size = strtol(optarg, NULL, 0);
->
-> and does not further parse KiB/MiB tokens.
->
-> So my buest guess, try to specify '-s 4096' instead of '4KiB'.
+It's better that this patch is merged by l2-mtd, because this patch
+depends on another patch which is
+on the l2-mtd now.
 
-I should have tried that.  Using -s4096 indeed produces the same
-result as without the -s option.  I read the description of how the
-erase block size was parsed, and assumed that applied to the the page
-size as well.
-
--- 
-Grant Edwards               grant.b.edwards        Yow! Gee, I feel kind of
-                                  at               LIGHT in the head now,
-                              gmail.com            knowing I can't make my
-                                                   satellite dish PAYMENTS!
+Best Regards
+Huang Shijie
