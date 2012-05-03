@@ -1,12 +1,13 @@
 From: "Mohammed, Afzal" <afzal@ti.com>
-To: "Hunter, Jon" <jon-hunter@ti.com>
-Subject: RE: [PATCH v4 04/39] ARM: OMAP2+: gpmc: Acquire NAND CS value
-Date: Thu, 3 May 2012 08:42:11 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9829B0@DBDE01.ent.ti.com>
+To: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: RE: [PATCH v4 06/39] ARM: OMAP2+: onenand: return value in init
+ function
+Date: Thu, 3 May 2012 08:54:08 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E982A0E@DBDE01.ent.ti.com>
 References: <cover.1335874494.git.afzal@ti.com>
- <10220de398d22fad5de783d8f58fc55ebac85338.1335874494.git.afzal@ti.com>
- <4FA05292.7030902@ti.com>
-In-Reply-To: <4FA05292.7030902@ti.com>
+ <91c09cb6a6cb5e87acdcc3f6100a87b4c2a3dd41.1335874494.git.afzal@ti.com>
+ <4FA01421.9080808@mvista.com>
+In-Reply-To: <4FA01421.9080808@mvista.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -35,26 +36,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jon,
+Hi Sergei,
 
-On Wed, May 02, 2012 at 02:46:02, Hunter, Jon wrote:
-> > Some boards depend on bootloader to update chip select value for NAND.
-> > It is felt that Kernel should not depend on bootloader to get CS, as
-> > for a particular board CS is hardwired and is fixed, hence this can
-> > directly be updated in Kernel. But as CS value for boards that depend
-> > on this behaviour is not available, educate gpmc driver to acquire
-> > chip select value for NAND. this ideally should be removed once CS
-> > for those boards are available.
+On Tue, May 01, 2012 at 22:19:37, Sergei Shtylyov wrote:
+> > +
+> > +#if defined(CONFIG_MTD_ONENAND_OMAP2) || \
+> > +		defined(CONFIG_MTD_ONENAND_OMAP2_MODULE)
 >=20
-> Do you know how many boards require this? If so which are those boards?
+>     You can use IS_ENABLED(CONFIG_MTD_ONENAND_OMAP2) instead these two.
 
-devkit8000, beagle board, omap3touchbook, overo.
-
-Beagle board, found out to be zero.
-
-> Should this code be marked with a FIXME?
-
-Will let Tony decide it.
+Thanks for educating me.
 
 Regards
 Afzal
