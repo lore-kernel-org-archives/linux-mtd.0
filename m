@@ -1,12 +1,12 @@
 From: "Mohammed, Afzal" <afzal@ti.com>
 To: "Hunter, Jon" <jon-hunter@ti.com>
-Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
-Date: Thu, 3 May 2012 08:23:51 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
+Subject: RE: [PATCH v4 02/39] ARM: OMAP2+: gpmc: Adapt to HWMOD
+Date: Thu, 3 May 2012 08:37:05 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98299B@DBDE01.ent.ti.com>
 References: <cover.1335874494.git.afzal@ti.com>
- <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
- <4FA022FC.5040703@ti.com>
-In-Reply-To: <4FA022FC.5040703@ti.com>
+ <e0cf9678cb9a44d2a16401383ab8496eb825c291.1335874494.git.afzal@ti.com>
+ <4FA04A8C.4050703@ti.com>
+In-Reply-To: <4FA04A8C.4050703@ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -17,8 +17,7 @@ Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
  "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
  "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
  Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
  "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
  "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
  "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
@@ -38,191 +37,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Jon,
 
-On Tue, May 01, 2012 at 23:23:00, Hunter, Jon wrote:
-> Hi Afzal,
+On Wed, May 02, 2012 at 02:11:48, Hunter, Jon wrote:
+> > +
+> > +	pdata->clk_prd =3D gpmc_get_fclk_period();
 >=20
-> Looks good! Some minor comments ...
+> Does this need to be done here? May be this should be done in the probe
+> function. You could store the handle to the main clk in the pdata.
 
-Thanks
-
-> > +#define	GPMC_WAITPIN_IDX0			0x0
-> > +#define	GPMC_WAITPIN_IDX1			0x1
-> > +#define	GPMC_WAITPIN_IDX2			0x2
-> > +#define	GPMC_WAITPIN_IDX3			0x3
-> > +#define	GPMC_NR_WAITPIN				0x4
->=20
-> How about an enum here? Also OMAP4 only have 3 wait pins and so the
-> number is device dependent.
-
-Ok
-
->=20
-> >  #define GPMC_MEM_START		0x00000000
-> >  #define GPMC_MEM_END		0x3FFFFFFF
-> >  #define BOOT_ROM_SPACE		0x100000	/* 1MB */
-> > @@ -64,6 +106,55 @@
-> >  #define ENABLE_PREFETCH		(0x1 << 7)
-> >  #define DMA_MPU_MODE		2
+This is done so that migration of gpmc driver to the drivers folder
+would be smooth, remember that this function will still live here.
+=20
+> > +		pr_err("error: clk_get on %s\n", oh->main_clk);
+> > +		return -EINVAL;
+> >  	}
 > > =20
-> > +#define	DRIVER_NAME	"omap-gpmc"
-> > +
-> > +#define	GPMC_NR_IRQ		2
+> >  	clk_enable(gpmc_l3_clk);
 >=20
-> Why has this been changed to 2? It was 6 in the previous version. As we
-> discussed before the number of IRQs should be detected based upon GPMC
-> IP version.
-
-As mentioned in the cover letter,
-
-"Additional features that currently boards in mainline does not make
-use of like, waitpin interrupt handling, changes to leverage revision
-6 IP differences has not been incorporated."
-
-Priority in this series is to convert into a driver, get all boards working
-on mainline. Once all boards are working with gpmc driver, these features
-which are not required for currently supported boards can be added later.
-
-> > +struct gpmc_device {
-> > +	char			*name;
-> > +	int			id;
-> > +	void			*pdata;
-> > +	unsigned		pdata_size;
-> > +	struct resource		*per_res;
-> > +	unsigned		per_res_cnt;
-> > +	struct resource		*gpmc_res;
-> > +	unsigned		gpmc_res_cnt;
-> > +	bool			have_waitpin;
-> > +	unsigned		waitpin;
-> > +	int			waitpin_polarity;
+> I would have thought we should be able to remove the gpmc_init function
+> completely by now. Most of the code should be moved to the probe function=
+.
 >=20
-> I think that it make more sense to have the wait-pin information part of
-> the gpmc_cs_data structure for the following reasons ...
+> Also now with hwmod in place, we should be able to remove the
+> clk_enable/disable functions and use the pm_runtime APIs instead.
 
-Waitpin information is indeed a part of cs as far as boards are concerned,
-it is only that it gets propogated to device
-
->=20
-> 1. If a device can use multiple CS, then it could use multiple wait signa=
-ls.
-> 2. Eventually, all board information needs to move to device tree. By
-> having it in the pdata it will be easier to migrate to device tree.
->=20
-> It may be nice to have "have_waitpin" be an integer too, that indicates
-> if wait is used for both read and write or just one or the other.
->=20
-> Also, any reason why waitpin_polarity is an int? I see you define LOW as
-> -1, but I not sure why LOW cannot be 0 as 0 is programmed into the
-> register for an active low wait signal.
-
-Only intention is not to alter default waitpin polarity value, i.e. if
-any board does make use of it w/o knowledge of Kernel, I don't want to
-break it, there may be an argument saying that the board code is buggy,
-while if some board does so, it is, but don't want to break working one.
-
-Here unless user explicitly set the flag, it does nothing on polarity
-
-> > +	if (idx !=3D ~0x0) {
-> > +		if (gd->have_waitpin) {
-> > +			if (gd->waitpin !=3D idx ||
-> > +					gd->waitpin_polarity !=3D polarity) {
-> > +				dev_err(gpmc->dev, "error: conflict: waitpin %u with polarity %d o=
-n device %s.%d\n",
-> > +					gd->waitpin, gd->waitpin_polarity,
-> > +					gd->name, gd->id);
-> > +				return -EBUSY;
-> > +			}
-> > +		} else {
-> > +			gd->have_waitpin =3D true;
-> > +			gd->waitpin =3D idx;
-> > +			gd->waitpin_polarity =3D polarity;
-> > +		}
->=20
-> I am not sure about the above code. What happens if a device has
-> multiple CS signals and uses multiple wait signals?
->=20
-> I am also not sure why gpmc_setup_cs_waitpin and gpmc_setup_waitpin
-> cannot be combined. I think that it would be a fair assumption to make
-> that anyone using the waitpin does so inconjunction with the CS (I think
-> that they would have too).
->=20
-> However, if there is a reason for splitting it up this way please
-> explain why.
-
-Initially it was done per CS, the problem happened while trying to
-convert tusb6010. It had multiple CS, but using same waitpin. Problem
-with incorporating this onto CS is we have to sacrifice on wait pin
-conflict prevention capability. The code now handles case of wait pin
-conflict per device, the code can be extended to have multiple
-wait pin per device also. But I prefer to defer it to later, not as
-part of this series, as this feature what you asking for is not required
-for any of the existing boards. I can add it in this series if there is
-a strong opinion in the community for the same in this series.
-
-Policy that is being followed here is first sit, then straighten legs, ;)
-
-> > +static int gpmc_setup_cs_nonres(struct gpmc *gpmc,
-> > +			struct gpmc_device *gd, struct gpmc_cs_data *cs)
->=20
-> The name of this function is not 100% clear to me. What do you mean by
-> "nonres"?
-
-It means anything other than resources like memory & irq, happened for
-want of better name, if you have one, name it, will put it.
-
-> > +int gpmc_cs_reconfigure(char *name, int id, struct gpmc_cs_data *cs)
->=20
-> What scenario is this function used in? May be worth adding a comment
-> about the function.
-
-Ok, it was required for OneNAND, as it needs to reconfigure
-
-> > +	for (i =3D 0, n =3D gdp->num_cs, cs =3D gdp->cs_data;
-> > +				i < gdp->num_cs; i++, cs++)
-> > +		n +=3D hweight32(cs->irq_config);
->=20
-> As you know I am not a fan of these overloaded for-loops as I find them
-> hard to read ;-)
->=20
-> Why not ...
->=20
-> n =3D gdp->num_cs;
-> cs =3D gdp->cs_data;
-
-
-Well, you also know that I am big fan of it; difference of opinion,
-my preference is to keep loop control statements together with "for",
-unless there is a cry from community that it should not be this way.
-I believe that it is not that much unreadable.
-
-> > +	for (i =3D 0, gdq =3D gp->device_pdata, gd =3D gpmc->device;
-> > +			(i < gp->num_device) && (*gdq); i++, gdq++) {
->=20
-> You have num_devices now and so do you really need the "&& (*gdq)"?
-> Seems redundant.
-
-num_device is something that I never wanted to add, was happy with,
-NULL entry termination, only because of your repeated comments,
-I added this. And this additional check now prevents NULL dereference.
-
-> > +	gpmc_setup_writeprotect(gpmc);
->=20
-> Write protect is a pin and there is only one. Like the waitpins and CS
-> signals this needs to be associated with a device. It would make sense
-> that this is associated with the cs data.
-
-As far as platform are concerned, it is associated with cs, it is only
-that while configuring CS, it is propagated such that it is done once.
-
-
-> > +#define	GPMC_READTYPE_ASYNC		BIT(30)
-> > +#define	GPMC_WRITETYPE_ASYNC		BIT(31)
-> > +
->=20
-> Please keep in mind that eventually this has to all be moved into device
-> tree and so at that point these configuration flags will have to be
-> re-worked. However, just a FYI.
-
-On device tree matters, my mind is next to blank, thanks for mentioning it.
+There was no plan to add rpm in this series, but now that you have
+brought it up, I will adapt the driver to rpm.
 
 Regards
 Afzal
