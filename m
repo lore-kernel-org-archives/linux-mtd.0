@@ -1,20 +1,17 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQ1G5-0004dO-G3
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 19:00:10 +0000
-Received: by lagy4 with SMTP id y4so1844074lag.36
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 12:00:06 -0700 (PDT)
-Date: Thu, 3 May 2012 21:59:59 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd-utils: Better document --pagesize of mkfs.jffs2
-Message-ID: <20120503215959.374d0c34@halley>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Grant Edwards <grant.b.edwards@gmail.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>, dedekind1@gmail.com
+ id 1SQ4Y7-0002ZU-Ey
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 22:31:00 +0000
+Received: by pbbrq13 with SMTP id rq13so3292314pbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 15:30:57 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: fixup 1/0 vs. true/false
+Date: Thu,  3 May 2012 15:30:08 -0700
+Message-Id: <1336084208-20461-1-git-send-email-computersforpeace@gmail.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a strict explanation '--pagesize' refers to target system's mm page
-size.
+The 'oob_required' argument is an int, according to the boolean style used in
+nand_base.c, so we should use 1 and 0 instead of true and false.
 
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Thanks Mike for spotting this.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
+Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 ---
+ drivers/mtd/nand/bcm_umi_nand.c        |    2 +-
+ drivers/mtd/nand/docg4.c               |    4 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-This is according to the below discussion:
-http://lists.infradead.org/pipermail/linux-mtd/2012-May/041233.html
-
-diff --git a/mkfs.jffs2.1 b/mkfs.jffs2.1
-index 9b0acc3..47a3ac7 100644
---- a/mkfs.jffs2.1
-+++ b/mkfs.jffs2.1
-@@ -137,7 +137,8 @@ directory.
- .TP
- .B -s, --pagesize=SIZE
- Use page size SIZE.  The default is 4 KiB.  This size is the
--maximum size of a data node.
-+maximum size of a data node.  Set according to target system's memory
-+management page size (NOTE: this is NOT related to NAND page size).
- .TP
- .B -e, --eraseblock=SIZE
- Use erase block size SIZE.  The default is 64 KiB.  If you use a erase
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index ad88ac6..d170a04 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -1391,7 +1391,9 @@ static const char helptext[] =
- "                          not specified, the output is padded to the end of\n"
- "                          the final erase block\n"
- "  -r, -d, --root=DIR      Build file system from directory DIR (default: cwd)\n"
--"  -s, --pagesize=SIZE     Use page size (max data node size) SIZE (default: 4KiB)\n"
-+"  -s, --pagesize=SIZE     Use page size (max data node size) SIZE.\n"
-+"                          Set according to target system's memory management\n"
-+"                          page size (default: 4KiB)\n"
- "  -e, --eraseblock=SIZE   Use erase block size SIZE (default: 64KiB)\n"
- "  -c, --cleanmarker=SIZE  Size of cleanmarker (default 12)\n"
- "  -m, --compr-mode=MODE   Select compression mode (default: priortiry)\n"
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+index c6d691a..c855e7c 100644
+--- a/drivers/mtd/nand/bcm_umi_nand.c
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -341,7 +341,7 @@ static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * buf,
+ 	 * for MLC parts which may have permanently stuck bits.
+ 	 */
+ 	struct nand_chip *chip = mtd->priv;
+-	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, false, 0);
++	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, 0, 0);
+ 	if (ret < 0)
+ 		return -EFAULT;
+ 	else {
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 16221b2..1f8485d 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -1003,7 +1003,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
+ 		return -ENOMEM;
+ 
+ 	read_page_prologue(mtd, g4_addr);
+-	status = docg4_read_page(mtd, nand, buf, false, DOCG4_FACTORY_BBT_PAGE);
++	status = docg4_read_page(mtd, nand, buf, 0, DOCG4_FACTORY_BBT_PAGE);
+ 	if (status)
+ 		goto exit;
+ 
+@@ -1080,7 +1080,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ 	/* write first page of block */
+ 	write_page_prologue(mtd, g4_addr);
+-	docg4_write_page(mtd, nand, buf, true);
++	docg4_write_page(mtd, nand, buf, 1);
+ 	ret = pageprog(mtd);
+ 	if (!ret)
+ 		mtd->ecc_stats.badblocks++;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 805bcf3..dcf4152 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1311,7 +1311,7 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 		/* Write the first page of the current stride. */
+ 		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
+ 		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+-		chip->ecc.write_page_raw(mtd, chip, buffer, false);
++		chip->ecc.write_page_raw(mtd, chip, buffer, 0);
+ 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+ 
+ 		/* Wait for the write to finish. */
+-- 
+1.7.5.4.2.g519b1
