@@ -1,31 +1,32 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPr0v-0004wR-Ne
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 08:03:51 +0000
-Received: by pbbrq13 with SMTP id rq13so2315906pbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 01:03:48 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1205030928370.8107@lnxricardw.se.axis.com>
-References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
- <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
- <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
- <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
- <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
- <4FA15C73.2020606@parrot.com>
- <CADZ6=aveZJx99GPBv=V0SvJ0jo4mGD0HaTKXYVcQa3SHADtmUw@mail.gmail.com>
- <Pine.LNX.4.64.1205030928370.8107@lnxricardw.se.axis.com>
-From: Gregory CLEMENT <gclement00@gmail.com>
-Date: Thu, 3 May 2012 10:03:28 +0200
-Message-ID: <CADx9zJDL6dNnvvJuea=inXPBbW-zTtY4mxT5-0themvU=fGoQQ@mail.gmail.com>
-Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
- when reading
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "Hunter, Jon" <jon-hunter@ti.com>
+Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+Date: Thu, 3 May 2012 08:23:51 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
+References: <cover.1335874494.git.afzal@ti.com>
+ <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
+ <4FA022FC.5040703@ti.com>
+In-Reply-To: <4FA022FC.5040703@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Thilo Fromm <fromm@dresearch-fe.de>
+MIME-Version: 1.0
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "notasas@gmail.com" <notasas@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +36,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/5/3 Ricard Wanderlof <ricard.wanderlof@axis.com>:
->
-> On Wed, 2 May 2012, Thilo Fromm wrote:
->
->>> gluebi + mtdblock_ro doesn't work ?
->>
->>
->> Can you paint the abstraction layer call flow involved in this for a
->> single read transaction and _not_ burst out laughing ;) ? We're on an
->> embedded system, man :)
->
->
-> The crucial issue is really what performance you get, gluebi is fairly
-> transparent so I don't think you loose any significant amount.
+Hi Jon,
 
-Indeed with the direct approach we had with ubi_blk, the performance appear=
-ed
-to be _slightly_ better with ubiblk than gluebi+mtdblock_ro, according to o=
-ur
- benchmarks (see  http://elinux.org/Flash_Filesystem_Benchmarks )
+On Tue, May 01, 2012 at 23:23:00, Hunter, Jon wrote:
+> Hi Afzal,
+>=20
+> Looks good! Some minor comments ...
+
+Thanks
+
+> > +#define	GPMC_WAITPIN_IDX0			0x0
+> > +#define	GPMC_WAITPIN_IDX1			0x1
+> > +#define	GPMC_WAITPIN_IDX2			0x2
+> > +#define	GPMC_WAITPIN_IDX3			0x3
+> > +#define	GPMC_NR_WAITPIN				0x4
+>=20
+> How about an enum here? Also OMAP4 only have 3 wait pins and so the
+> number is device dependent.
+
+Ok
+
+>=20
+> >  #define GPMC_MEM_START		0x00000000
+> >  #define GPMC_MEM_END		0x3FFFFFFF
+> >  #define BOOT_ROM_SPACE		0x100000	/* 1MB */
+> > @@ -64,6 +106,55 @@
+> >  #define ENABLE_PREFETCH		(0x1 << 7)
+> >  #define DMA_MPU_MODE		2
+> > =20
+> > +#define	DRIVER_NAME	"omap-gpmc"
+> > +
+> > +#define	GPMC_NR_IRQ		2
+>=20
+> Why has this been changed to 2? It was 6 in the previous version. As we
+> discussed before the number of IRQs should be detected based upon GPMC
+> IP version.
+
+As mentioned in the cover letter,
+
+"Additional features that currently boards in mainline does not make
+use of like, waitpin interrupt handling, changes to leverage revision
+6 IP differences has not been incorporated."
+
+Priority in this series is to convert into a driver, get all boards working
+on mainline. Once all boards are working with gpmc driver, these features
+which are not required for currently supported boards can be added later.
+
+> > +struct gpmc_device {
+> > +	char			*name;
+> > +	int			id;
+> > +	void			*pdata;
+> > +	unsigned		pdata_size;
+> > +	struct resource		*per_res;
+> > +	unsigned		per_res_cnt;
+> > +	struct resource		*gpmc_res;
+> > +	unsigned		gpmc_res_cnt;
+> > +	bool			have_waitpin;
+> > +	unsigned		waitpin;
+> > +	int			waitpin_polarity;
+>=20
+> I think that it make more sense to have the wait-pin information part of
+> the gpmc_cs_data structure for the following reasons ...
+
+Waitpin information is indeed a part of cs as far as boards are concerned,
+it is only that it gets propogated to device
+
+>=20
+> 1. If a device can use multiple CS, then it could use multiple wait signa=
+ls.
+> 2. Eventually, all board information needs to move to device tree. By
+> having it in the pdata it will be easier to migrate to device tree.
+>=20
+> It may be nice to have "have_waitpin" be an integer too, that indicates
+> if wait is used for both read and write or just one or the other.
+>=20
+> Also, any reason why waitpin_polarity is an int? I see you define LOW as
+> -1, but I not sure why LOW cannot be 0 as 0 is programmed into the
+> register for an active low wait signal.
+
+Only intention is not to alter default waitpin polarity value, i.e. if
+any board does make use of it w/o knowledge of Kernel, I don't want to
+break it, there may be an argument saying that the board code is buggy,
+while if some board does so, it is, but don't want to break working one.
+
+Here unless user explicitly set the flag, it does nothing on polarity
+
+> > +	if (idx !=3D ~0x0) {
+> > +		if (gd->have_waitpin) {
+> > +			if (gd->waitpin !=3D idx ||
+> > +					gd->waitpin_polarity !=3D polarity) {
+> > +				dev_err(gpmc->dev, "error: conflict: waitpin %u with polarity %d o=
+n device %s.%d\n",
+> > +					gd->waitpin, gd->waitpin_polarity,
+> > +					gd->name, gd->id);
+> > +				return -EBUSY;
+> > +			}
+> > +		} else {
+> > +			gd->have_waitpin =3D true;
+> > +			gd->waitpin =3D idx;
+> > +			gd->waitpin_polarity =3D polarity;
+> > +		}
+>=20
+> I am not sure about the above code. What happens if a device has
+> multiple CS signals and uses multiple wait signals?
+>=20
+> I am also not sure why gpmc_setup_cs_waitpin and gpmc_setup_waitpin
+> cannot be combined. I think that it would be a fair assumption to make
+> that anyone using the waitpin does so inconjunction with the CS (I think
+> that they would have too).
+>=20
+> However, if there is a reason for splitting it up this way please
+> explain why.
+
+Initially it was done per CS, the problem happened while trying to
+convert tusb6010. It had multiple CS, but using same waitpin. Problem
+with incorporating this onto CS is we have to sacrifice on wait pin
+conflict prevention capability. The code now handles case of wait pin
+conflict per device, the code can be extended to have multiple
+wait pin per device also. But I prefer to defer it to later, not as
+part of this series, as this feature what you asking for is not required
+for any of the existing boards. I can add it in this series if there is
+a strong opinion in the community for the same in this series.
+
+Policy that is being followed here is first sit, then straighten legs, ;)
+
+> > +static int gpmc_setup_cs_nonres(struct gpmc *gpmc,
+> > +			struct gpmc_device *gd, struct gpmc_cs_data *cs)
+>=20
+> The name of this function is not 100% clear to me. What do you mean by
+> "nonres"?
+
+It means anything other than resources like memory & irq, happened for
+want of better name, if you have one, name it, will put it.
+
+> > +int gpmc_cs_reconfigure(char *name, int id, struct gpmc_cs_data *cs)
+>=20
+> What scenario is this function used in? May be worth adding a comment
+> about the function.
+
+Ok, it was required for OneNAND, as it needs to reconfigure
+
+> > +	for (i =3D 0, n =3D gdp->num_cs, cs =3D gdp->cs_data;
+> > +				i < gdp->num_cs; i++, cs++)
+> > +		n +=3D hweight32(cs->irq_config);
+>=20
+> As you know I am not a fan of these overloaded for-loops as I find them
+> hard to read ;-)
+>=20
+> Why not ...
+>=20
+> n =3D gdp->num_cs;
+> cs =3D gdp->cs_data;
 
 
->
-> /Ricard
-> --
-> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
-> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- Fax +46 46 13 61 30
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Well, you also know that I am big fan of it; difference of opinion,
+my preference is to keep loop control statements together with "for",
+unless there is a cry from community that it should not be this way.
+I believe that it is not that much unreadable.
+
+> > +	for (i =3D 0, gdq =3D gp->device_pdata, gd =3D gpmc->device;
+> > +			(i < gp->num_device) && (*gdq); i++, gdq++) {
+>=20
+> You have num_devices now and so do you really need the "&& (*gdq)"?
+> Seems redundant.
+
+num_device is something that I never wanted to add, was happy with,
+NULL entry termination, only because of your repeated comments,
+I added this. And this additional check now prevents NULL dereference.
+
+> > +	gpmc_setup_writeprotect(gpmc);
+>=20
+> Write protect is a pin and there is only one. Like the waitpins and CS
+> signals this needs to be associated with a device. It would make sense
+> that this is associated with the cs data.
+
+As far as platform are concerned, it is associated with cs, it is only
+that while configuring CS, it is propagated such that it is done once.
 
 
+> > +#define	GPMC_READTYPE_ASYNC		BIT(30)
+> > +#define	GPMC_WRITETYPE_ASYNC		BIT(31)
+> > +
+>=20
+> Please keep in mind that eventually this has to all be moved into device
+> tree and so at that point these configuration flags will have to be
+> re-worked. However, just a FYI.
 
---=20
-Gregory CLEMENT
+On device tree matters, my mind is next to blank, thanks for mentioning it.
+
+Regards
+Afzal
