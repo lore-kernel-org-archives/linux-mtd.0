@@ -1,30 +1,26 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPsmg-0004Gm-Pc
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 09:57:15 +0000
-Message-ID: <1336039230.13013.14.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4 00/10] mtd: nand: rework nand_ecc_ctrl interface for OOB
+ id 1SPsra-0004b8-CK
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 10:02:18 +0000
+Message-ID: <1336039535.13013.17.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3 02/10] ARM: sh-mobile: mackerel: Add error IRQ resource
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 03 May 2012 13:00:30 +0300
-In-Reply-To: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
-References: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Thu, 03 May 2012 13:05:35 +0300
+In-Reply-To: <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
+References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
+ <1335951710-9390-3-git-send-email-hechtb@gmail.com>
+ <201205022249.30426.rjw@sisk.pl> <1336024825.2056.2.camel@koala>
+ <1336024908.2056.3.camel@koala>
+ <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-y/KH0aGhxrr+yd9N448U"
+ boundary="=-e0CcKH7bpd6wrTUxE1cc"
 Mime-Version: 1.0
-Cc: eric miao <eric.miao@marvell.com>, Bryan Wu <cooloney@kernel.org>,
- Mike Dunn <mikedunn@newsguy.com>, Mike Frysinger <vapier.adi@gmail.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>, Lei Wen <leiwen@marvell.com>,
- Kevin Cernekee <cernekee@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
- Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Jiandong Zheng <jdzheng@broadcom.com>, Florian Fainelli <ffainelli@freebox.fr>,
- Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
- Thomas Gleixner <tglx@linutronix.de>, Li Yang <leoli@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, Axel Lin <axel.lin@gmail.com>,
- Bastian Hecht <hechtb@googlemail.com>
+Cc: linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
+ Laurent Pichart <laurent.pinchart@ideasonboard.com>,
+ Brian Norris <computersforpeace@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,26 +32,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-y/KH0aGhxrr+yd9N448U
+--=-e0CcKH7bpd6wrTUxE1cc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-02 at 10:14 -0700, Brian Norris wrote:
-> Hello,
+On Thu, 2012-05-03 at 11:29 +0200, Bastian Hecht wrote:
 >=20
-> This is the fourth version of my patches to change the nand_chip and
-> nand_ecc_ctrl interfaces so that the nand_ecc_ctrl functions have informa=
-tion
-> about whether the higher layers actually need OOB data to be read/written
-> from/to the NAND device.
+> Am 03.05.2012 08:01 schrieb "Artem Bityutskiy" <dedekind1@gmail.com>:
+> >
+> > On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:
+> > > On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:
+> > > > On Wednesday, May 02, 2012, Bastian Hecht wrote:
+> > > > > Supply the platform data for the FLSTEI error IRQ.
+> > > > >
+> > > > > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+> > > >
+> > > > I'm going to take this patch into the renesas.git tree and push
+> it
+> > > > upstream throuch arm-soc, if that's not a problem.
+> > >
+> > > It is already in the MTD tree with the rest of the 10 patches...
+> >
+> > Ops, sorry, this is not true. Then Bastian should separate it out
+> and
+> > not send it to the MTD tree.
+>=20
+> Alright I'll do. I need to fix the compiler warnings of the mtd
+> patches anyway. So the board code is independant and can be pushed
+> already by Rafael, right? How is it supposed to work in general? I
+> think the sh-mobile list wants to be informed when I change something
+> in the flctl code. Would the right approach be to send 2 patchsets -
+> posted on both MLs so that Artem can take the mtd portions and Rafael
+> the mackerel ones?
 
-Pushed patches 1,2,6,7,8,9 to l2-mtd.git, thanks!
+If the patches are completely independent, post them separately. I think
+it is also OK to CC more than one mailing list.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-y/KH0aGhxrr+yd9N448U
+--=-e0CcKH7bpd6wrTUxE1cc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +80,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPolc+AAoJECmIfjd9wqK0D9MP/0ENbRtZVS++g85zlLpWbiyr
-/kHLPHp7i8ZvwFRjxPLOYAkdUruLfCMfuEroEx4F+1MVrkB4PATqHeS41HHvmrF6
-BQmBDL4BUle8x6XKDgKaMWaf71LIorXhYVv3NtCgVRIMwfn+TKAUEdjXDtwWBtlT
-tu58VCNch3mj5mx8O2hCvrN0wcUB6a74TSsSe1a+Pbs6vWMldJ6XVB0VY5MZIEST
-v+HNYX9BPPpG1AblQZZtmqGbbHdBqD0E0kDCr5PDZjG+05IsKpZ/MEtEl4nVLxg4
-yD9BVwECYZ2bJ3c10Sq7Z2FCyochF9/StihhVyxomr7p8l88FzHdTOM4k70khZkv
-t30lLYCp9inb11SLC9xAESDwmPmCGzRxha0f679950zT3QKgJ3/n4hUTErh+gV6k
-Sn5Tq9qqGx4sAaed8yRqXr3FPHTgWorYSw0GmwTseKZ4bXJoBsuAJa9cRROTyiEP
-v/6Rq0JnCdklb4zjze3Gd4XnvqVzEuFRHdwJpf1sIXVBqHAW1KPCevvlVtcLRG6l
-fSChTmojeC1PhGry8sun7NhBEDjxHADiE7ju2OSB3kDxnzERVEj8lgNTQL6lwQI2
-soSP93053erN5HJ6Xi/2FD9fX0UrRhs4/RxOsixVpp+pJTeZt1hMVttteD5OmEV3
-iJFq5YaB/+p04N7c1Opk
-=xaLd
+iQIcBAABAgAGBQJPolhvAAoJECmIfjd9wqK0eBcQALXc5hFJbk7QdZfAIkq/X529
+bkQQ1TTbXmZsVAmXH2qOkXT6PT0ClHP4FpTcIfgxZbPS57U08IrUYWRrdY8XFqfi
+gYGQ2umGKzUlLYPde/QtmsmEw7cbA7PdmV/ml+jQJyZdxxXt5GgIsr3ftLAbQA8o
+HO/RVsXUnBB7GvcK1L0koYJ/2crBLEtUmsP265AK1gOOiQ0ZQpSlSQUqQBmNRs3P
+/A/H+o30rknEbPuCXJqnsw0W55uB01w0vpXOJg01+D63VAGR9pZBxU1bQCFkLIBk
+twdj6ekFDve48uxZ8I42KYog/U3NaTwLDb43af82dXaQOZqVSFIpmDMLSNbwdXY+
+UrjSMdEZrs/Lk7JeE2kJCT7PZwJyGbA9gArHRJMahjFO/pd3W1hDo4opGR3qDCon
+OtJ3yiFP7gSlYwFJqKKVyxvjQtaiHKyh1kKTBL9rdhMUd1H1EqvjJAiWpIQMXf/P
+CJbnb0Z/q0D1YRAR05VpqSGKb4zq9huiF2+kpHFjFDWYOvGAjHlUltWHUtTg7ir0
+19s56vVInN46exhUwmqcHb7qM4gVw4FvJi1V4Vs7G1AOM+AP36s5sRmUOX+yrpW7
+EDNQtgPFlkibJ9AvylTd4rsITmm6lCYZWFfN/i8rPnKW25j6Kwa2eE+VA129+Fl4
+Px+Og6jlkFaK6dkwzzR7
+=3yLB
 -----END PGP SIGNATURE-----
 
---=-y/KH0aGhxrr+yd9N448U--
+--=-e0CcKH7bpd6wrTUxE1cc--
