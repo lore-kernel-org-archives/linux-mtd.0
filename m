@@ -1,26 +1,21 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPsra-0004b8-CK
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 10:02:18 +0000
-Message-ID: <1336039535.13013.17.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 02/10] ARM: sh-mobile: mackerel: Add error IRQ resource
+ id 1SPtKH-0001JH-UQ
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 10:31:58 +0000
+Message-ID: <1336041318.13013.30.camel@sauron.fi.intel.com>
+Subject: Re: atmel_nand, DMA, and "Fall back to CPU I/O"
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Thu, 03 May 2012 13:05:35 +0300
-In-Reply-To: <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
- <1335951710-9390-3-git-send-email-hechtb@gmail.com>
- <201205022249.30426.rjw@sisk.pl> <1336024825.2056.2.camel@koala>
- <1336024908.2056.3.camel@koala>
- <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 03 May 2012 13:35:18 +0300
+In-Reply-To: <CAN8TOE9+WpSrYufSpKXy6RW_V8M_1dZg+uBB6ChmcAWnxmVCnA@mail.gmail.com>
+References: <037801cd2330$0cd747d0$2685d770$@com>
+ <1335959619.10293.41.camel@sauron.fi.intel.com>
+ <CAN8TOE9+WpSrYufSpKXy6RW_V8M_1dZg+uBB6ChmcAWnxmVCnA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-e0CcKH7bpd6wrTUxE1cc"
+ boundary="=-kVJB7nGxbhU+Zu7utmMt"
 Mime-Version: 1.0
-Cc: linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
- "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>,
- Brian Norris <computersforpeace@gmail.com>
+Cc: George Pontis <GPontis@z9.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,47 +27,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-e0CcKH7bpd6wrTUxE1cc
+--=-kVJB7nGxbhU+Zu7utmMt
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-03 at 11:29 +0200, Bastian Hecht wrote:
+On Wed, 2012-05-02 at 12:32 -0700, Brian Norris wrote:
 >=20
-> Am 03.05.2012 08:01 schrieb "Artem Bityutskiy" <dedekind1@gmail.com>:
-> >
-> > On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:
-> > > On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:
-> > > > On Wednesday, May 02, 2012, Bastian Hecht wrote:
-> > > > > Supply the platform data for the FLSTEI error IRQ.
-> > > > >
-> > > > > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
-> > > >
-> > > > I'm going to take this patch into the renesas.git tree and push
-> it
-> > > > upstream throuch arm-soc, if that's not a problem.
-> > >
-> > > It is already in the MTD tree with the rest of the 10 patches...
-> >
-> > Ops, sorry, this is not true. Then Bastian should separate it out
-> and
-> > not send it to the MTD tree.
->=20
-> Alright I'll do. I need to fix the compiler warnings of the mtd
-> patches anyway. So the board code is independant and can be pushed
-> already by Rafael, right? How is it supposed to work in general? I
-> think the sh-mobile list wants to be informed when I change something
-> in the flctl code. Would the right approach be to send 2 patchsets -
-> posted on both MLs so that Artem can take the mtd portions and Rafael
-> the mackerel ones?
+> And how might you recommend we use kmalloc()'ed memory, Artem? We
+> can't really kmalloc() whole eraseblock-sized chunks. Or is there an
+> inexpensive way of providing an intermediary kmalloc'ed buffer? I'm
+> not too familiar at hacking at UBI(FS), but it might be worth a shot
+> sometime, if you think it's reasonable.
 
-If the patches are completely independent, post them separately. I think
-it is also OK to CC more than one mailing list.
+This would need to change several places in UBI and UBIFS and switch
+from continuous vmalloc buffers to iterating over an array of smaller
+buffers.
+
+I was thinking about this in the past but this is rather big project (a
+months or a couple I'd say) so I did not have time to do this.
+
+I think we basically need to switch to flexible arrays
+(Documentation/flexible-arrays.txt), but last time I looked at this I
+remember I decided that flexible arrays functionality would need to be
+extended for our purposes.
+
+If someone seriously is going to do this work, I am happy to discuss.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-e0CcKH7bpd6wrTUxE1cc
+--=-kVJB7nGxbhU+Zu7utmMt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -80,19 +65,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPolhvAAoJECmIfjd9wqK0eBcQALXc5hFJbk7QdZfAIkq/X529
-bkQQ1TTbXmZsVAmXH2qOkXT6PT0ClHP4FpTcIfgxZbPS57U08IrUYWRrdY8XFqfi
-gYGQ2umGKzUlLYPde/QtmsmEw7cbA7PdmV/ml+jQJyZdxxXt5GgIsr3ftLAbQA8o
-HO/RVsXUnBB7GvcK1L0koYJ/2crBLEtUmsP265AK1gOOiQ0ZQpSlSQUqQBmNRs3P
-/A/H+o30rknEbPuCXJqnsw0W55uB01w0vpXOJg01+D63VAGR9pZBxU1bQCFkLIBk
-twdj6ekFDve48uxZ8I42KYog/U3NaTwLDb43af82dXaQOZqVSFIpmDMLSNbwdXY+
-UrjSMdEZrs/Lk7JeE2kJCT7PZwJyGbA9gArHRJMahjFO/pd3W1hDo4opGR3qDCon
-OtJ3yiFP7gSlYwFJqKKVyxvjQtaiHKyh1kKTBL9rdhMUd1H1EqvjJAiWpIQMXf/P
-CJbnb0Z/q0D1YRAR05VpqSGKb4zq9huiF2+kpHFjFDWYOvGAjHlUltWHUtTg7ir0
-19s56vVInN46exhUwmqcHb7qM4gVw4FvJi1V4Vs7G1AOM+AP36s5sRmUOX+yrpW7
-EDNQtgPFlkibJ9AvylTd4rsITmm6lCYZWFfN/i8rPnKW25j6Kwa2eE+VA129+Fl4
-Px+Og6jlkFaK6dkwzzR7
-=3yLB
+iQIcBAABAgAGBQJPol9mAAoJECmIfjd9wqK0ZxwP/1M2vxsPoG0djeZDDJCg8w3d
+FwoHnFWPtCm71xJCoBQgSzTsRZJG5cmj6kTPTOSfW2eW5i6bWtxA8gzao4Q/3ya2
+bma2E+BNm84MPs8MsuTONxe4JsoN/LONmchnJILtsJQ1abQXRQ8LDLpXC//v9WJV
+qIUR5AbaKZRPG7bRSzt/z02AsgwXsHiWkwvf9q3Sscyyz0LD9Qn8oRinTdlbe1UD
+rNYTxbS/QxeEhLs0vLOWcnTSu1lSAy/WnuGnkcW9An+d03lAg1gHYYTeae43Ii3Q
+EFUftlU142cPrtBPL+EzYraWMGlykNgBHN+kBAabbvr6jcQbgslB5hJNuYbmBAAl
+6zfVEH84u/FWsP2YsEFLIvIYJrh89If0Lnc8pwKPLWLw135eKdwZoy+62jqGNMSN
+UtfHbj0xz13iZgLoRXHkc+UrOFC4yHcwyARJYUOnsWcQ6R2x/7dqyk7zs8g9U2Tx
+2I60BzBhZrv7iyrQXPOJTEHwt4ZX23Q5dKLEax2SEp8vLU6CyB2/UR7yagRTIR6D
+2XaHq5EmOK6+6uzQHLmf8/F8y7y3fmtdfLUSmZQ6AEOSm8ZeUyvU7qzdT+WMJx/+
+cnM+cAYzjN3bGRfxplwCDOcZJM2YkjMngPorjbUE3pIOumC55EJhliMwHppprqhZ
+T67fKpirLQK/ZEPcGUjV
+=o+Cy
 -----END PGP SIGNATURE-----
 
---=-e0CcKH7bpd6wrTUxE1cc--
+--=-kVJB7nGxbhU+Zu7utmMt--
