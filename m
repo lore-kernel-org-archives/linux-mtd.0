@@ -1,23 +1,30 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SPshp-000319-RI
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 09:52:14 +0000
-Message-ID: <1336038932.13013.13.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4 03/10] mtd: Blackfin NFC: utilize oob_required parameter
+ id 1SPsmg-0004Gm-Pc
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2012 09:57:15 +0000
+Message-ID: <1336039230.13013.14.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4 00/10] mtd: nand: rework nand_ecc_ctrl interface for OOB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Thu, 03 May 2012 12:55:32 +0300
-In-Reply-To: <1335978904-8005-4-git-send-email-computersforpeace@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 03 May 2012 13:00:30 +0300
+In-Reply-To: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
 References: <1335978904-8005-1-git-send-email-computersforpeace@gmail.com>
- <1335978904-8005-4-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-wNejgHhkEzchKfTBON/x"
+ boundary="=-y/KH0aGhxrr+yd9N448U"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, Bryan Wu <cooloney@kernel.org>,
- Mike Dunn <mikedunn@newsguy.com>, linux-mtd@lists.infradead.org,
- Jamie Iles <jamie@jamieiles.com>
+Cc: eric miao <eric.miao@marvell.com>, Bryan Wu <cooloney@kernel.org>,
+ Mike Dunn <mikedunn@newsguy.com>, Mike Frysinger <vapier.adi@gmail.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>, Lei Wen <leiwen@marvell.com>,
+ Kevin Cernekee <cernekee@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Jiandong Zheng <jdzheng@broadcom.com>, Florian Fainelli <ffainelli@freebox.fr>,
+ Scott Wood <scottwood@freescale.com>, Jamie Iles <jamie@jamieiles.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Li Yang <leoli@freescale.com>,
+ David Woodhouse <dwmw2@infradead.org>, Axel Lin <axel.lin@gmail.com>,
+ Bastian Hecht <hechtb@googlemail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,22 +36,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-wNejgHhkEzchKfTBON/x
+--=-y/KH0aGhxrr+yd9N448U
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, 2012-05-02 at 10:14 -0700, Brian Norris wrote:
-> Don't read/write OOB if the caller doesn't require it.
+> Hello,
 >=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> This is the fourth version of my patches to change the nand_chip and
+> nand_ecc_ctrl interfaces so that the nand_ecc_ctrl functions have informa=
+tion
+> about whether the higher layers actually need OOB data to be read/written
+> from/to the NAND device.
 
-Hi Mike, do you prefer me to accept this patch or drop?
+Pushed patches 1,2,6,7,8,9 to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-wNejgHhkEzchKfTBON/x
+--=-y/KH0aGhxrr+yd9N448U
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPolYUAAoJECmIfjd9wqK00ZgP/2PtBF09OyRwoeQkBHu8mHeA
-hfF/tkOp+RxSf76XZPrP3AfWXSLFsvytKE1Z2HuPHp2hiyxtaCTIssVIunEeBbQm
-e/TJd7vC0ovcr1EQavxGxNCmmv2s5/y4aofBNNVSnEhte0pS1d9YyuUOrFS/GHIV
-Q/RPpUfFh7CDBCLHMKSp7xcKdiELX+9qZZU/QgvsDAQ76mUCUH7yC7IpaELsPlIr
-aoPToK0IX/ay+QwbF5YBcIe92LH4gVF8AJX1XM9Yn1/aFfViok7epEykSrgmoVvy
-D7Et16RXuDiOpQCDilzcfLUFouFenspyWnOTik7kcMZu6eGG9VElt14Ict/lAvXT
-dwVkUonzwfHsyPfvdbvTfvVVvuEdUTcTwxeyW2LG+1M5v5Uuwqy7DFEjKDFHXQFL
-l1EPds1QfEoFhMOfdFO+xpv8cdOD5lIsFbAAbKIU8reYDKH/+0lCzR7rGMct130H
-umpbVyzbpqwRRbVucorDcBQlHn56PGuXB3YwypI7m4CU2gRvoRGqTZJr7cjBYp1p
-Xhs7Mi6vOOCeMSP34Eu74eUaz9Qa59H525Zae+rDPbqozvyW7xmcCAY2Kium2pKQ
-lCmm/zmFak29O6nBLMlj6/2z6Ff5xKXnU0Baeg+pWmNpnifPj/WSbMKJnHlAss7F
-AFmizsbkjw6uVyetUEUD
-=o8WK
+iQIcBAABAgAGBQJPolc+AAoJECmIfjd9wqK0D9MP/0ENbRtZVS++g85zlLpWbiyr
+/kHLPHp7i8ZvwFRjxPLOYAkdUruLfCMfuEroEx4F+1MVrkB4PATqHeS41HHvmrF6
+BQmBDL4BUle8x6XKDgKaMWaf71LIorXhYVv3NtCgVRIMwfn+TKAUEdjXDtwWBtlT
+tu58VCNch3mj5mx8O2hCvrN0wcUB6a74TSsSe1a+Pbs6vWMldJ6XVB0VY5MZIEST
+v+HNYX9BPPpG1AblQZZtmqGbbHdBqD0E0kDCr5PDZjG+05IsKpZ/MEtEl4nVLxg4
+yD9BVwECYZ2bJ3c10Sq7Z2FCyochF9/StihhVyxomr7p8l88FzHdTOM4k70khZkv
+t30lLYCp9inb11SLC9xAESDwmPmCGzRxha0f679950zT3QKgJ3/n4hUTErh+gV6k
+Sn5Tq9qqGx4sAaed8yRqXr3FPHTgWorYSw0GmwTseKZ4bXJoBsuAJa9cRROTyiEP
+v/6Rq0JnCdklb4zjze3Gd4XnvqVzEuFRHdwJpf1sIXVBqHAW1KPCevvlVtcLRG6l
+fSChTmojeC1PhGry8sun7NhBEDjxHADiE7ju2OSB3kDxnzERVEj8lgNTQL6lwQI2
+soSP93053erN5HJ6Xi/2FD9fX0UrRhs4/RxOsixVpp+pJTeZt1hMVttteD5OmEV3
+iJFq5YaB/+p04N7c1Opk
+=xaLd
 -----END PGP SIGNATURE-----
 
---=-wNejgHhkEzchKfTBON/x--
+--=-y/KH0aGhxrr+yd9N448U--
