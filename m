@@ -1,19 +1,24 @@
-Message-ID: <1336127859.4275.14.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd: gpmi: add device tree support to gpmi-nand
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Fri, 04 May 2012 13:37:39 +0300
-In-Reply-To: <4FA3AEDF.8010009@freescale.com>
-References: <1336101182-5200-1-git-send-email-b32955@freescale.com>
- <1336124510.4275.7.camel@sauron.fi.intel.com>
- <4FA3AEDF.8010009@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-wwc97GT/seh1QKCF+T/h"
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQHBF-0003uR-BV
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 12:00:14 +0000
+Received: by wibhj13 with SMTP id hj13so1023633wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 05:00:11 -0700 (PDT)
+Date: Fri, 4 May 2012 15:00:01 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com, Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Question about mkfs.jffs2 "-s" option
+Message-ID: <20120504150001.4268beea@halley>
+In-Reply-To: <1336115737.30168.20.camel@sauron.fi.intel.com>
+References: <jnrm65$im4$1@dough.gmane.org>
+ <Pine.LNX.4.64.1205030930540.8107@lnxricardw.se.axis.com>
+ <20120503211334.17c91b31@halley>
+ <1336115737.30168.20.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: shawn.guo@linaro.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Grant Edwards <grant.b.edwards@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,103 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem, Ricard,
 
---=-wwc97GT/seh1QKCF+T/h
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Fri, 04 May 2012 10:15:37 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2012-05-03 at 21:13 +0300, Shmulik Ladkani wrote:
+> > On Thu, 3 May 2012 09:35:14 +0200 (CEST) Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+> > > 
+> > > The smallest writable unit in a NAND flash is called a 'page', but AFAIK 
+> > > this is not what the -s option in mkfs.jffs2 is for. Instead, it is 
+> > > related for the kernel memory managament page size, which is 4k for most 
+> > > architectures.
+> > 
+> > According to MKFS.JFFS2(1),
+> > 
+> > 	-s, --pagesize=SIZE
+> > 		Use page size SIZE.  The default is 4 KiB.  This size is
+> > 		the maximum size of a data node.
+> > 
+> > And according to http://linux-mtd.infradead.org/~dwmw2/jffs2.pdf
+> > 
+> > 	In order to facilitate rapid decompression of
+> > 	data upon readpage() requests, nodes contain
+> > 	no more than a single page of data, according to
+> > 	the hardware page size on the target platform.
+> > 
+> > Wow.
+> > I always assumed I had to set it according to NAND's page size, not
+> > according to target system's mm page size.
+> 
+> Shmulik, I can give some info about this. First of all because of
+> compression and very different node sizes (UBIFS and JFFS2) and because
+> JFFS2 was designed for NOR flash originally - NAND page size is not
+> something which affects the design of file-systems, or their on-flash
+> layout. We use write-buffers on I/O level to make it appear like the
+> eraseblock is byte-writable.
+> 
+> The RAM page size comes from the general linux design - the VFS writes
+> in RAM page size units, and it is much simpler to make max node size =
+> PAGE_CACHE_SIZE rather than trying to split it when the PAGE_CACHE_SIZE
+> is something like 16KiB. This is where this -s stuff comes from. I think
+> it was a mistake to introduce this parameter because it is very unlikely
+> JFFS2 is/was used on systems with a different PAGE_CACHE_SIZE.
 
-On Fri, 2012-05-04 at 18:26 +0800, Huang Shijie wrote:
-> =E4=BA=8E 2012=E5=B9=B405=E6=9C=8804=E6=97=A5 17:41, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> > On Fri, 2012-05-04 at 11:13 +0800, Huang Shijie wrote:
-> >> This patch just adds the DT support to gpmi-nand.
-> >>
-> >> Signed-off-by: Huang Shijie<b32955@freescale.com>
-> >> ---
-> >> Please select the CONFIG_USE_OF before you do the compiler-test.
-> >> thanks.
-> > It should compile without CONFIG_USE_OF also just fine. Currently it
-> > does not.
-> >
-> why not select CONFIG_USE_OF as the gpmi-nand is converted to a DT driver=
-.
+Thanks for the explanations.
+I pretty much realized this after reading [1]...
 
-Yes, it can be done as well. My point is that you should not break
-compilation. These 2 patches do not compile with for me - aiaiai
-reports:
+BTW, googling [mkfs.jffs2 and "-s 0x200"] or [mkfs.jffs2 and "-s 0x800"]
+yielded few howtos, faqs, and alike....
+Guess I wasn't the only one fooled by the argument's name :-))
 
----------------------------------------------------------------------------=
------
-Failed to build the following commit for configuration "l2_mxs_defconfig" (=
-architecture arm)":
+[1] http://linux-mtd.infradead.org/~dwmw2/jffs2.pdf
 
-d791f1c mtd: gpmi: add gpmi support for mx6q
-
-drivers/mtd/nand/gpmi-nand/gpmi-lib.c:437:36: warning: comparison between s=
-igned and unsigned integer expressions [-Wsign-compare]
-drivers/mtd/nand/gpmi-nand/gpmi-lib.c:579:35: warning: comparison between s=
-igned and unsigned integer expressions [-Wsign-compare]
-In file included from include/linux/kernel.h:19:0,
-                 from include/linux/clk.h:15,
-                 from drivers/mtd/nand/gpmi-nand/gpmi-nand.c:21:
-include/linux/bitops.h: In function 'hweight_long':
-include/linux/bitops.h:66:26: warning: signed and unsigned type in conditio=
-nal expression [-Wsign-compare]
-In file included from include/linux/dma-mapping.h:73:0,
-                 from drivers/mtd/nand/gpmi-nand/gpmi-nand.h:22,
-                 from drivers/mtd/nand/gpmi-nand/gpmi-nand.c:28:
-arch/arm/include/asm/dma-mapping.h: In function 'dma_mapping_error':
-arch/arm/include/asm/dma-mapping.h:126:18: warning: comparison between sign=
-ed and unsigned integer expressions [-Wsign-compare]
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'release_bch_irq':
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:382:11: warning: comparison between =
-signed and unsigned integer expressions [-Wsign-compare]
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'acquire_dma_channels':
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:430:2: error: implicit declaration o=
-f function 'of_property_read_u32' [-Werror=3Dimplicit-function-declaration]
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'mx23_check_transcripti=
-on_stamp':
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1186:9: warning: variable 'byte' set=
- but not used [-Wunused-but-set-variable]
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: In function 'mx23_write_transcripti=
-on_stamp':
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1247:15: warning: variable 'byte' se=
-t but not used [-Wunused-but-set-variable]
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c: At top level:
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c:1448:6: warning: no previous prototy=
-pe for 'gpmi_nfc_exit' [-Wmissing-prototypes]
-cc1: some warnings being treated as errors
-make[5]: *** [drivers/mtd/nand/gpmi-nand/gpmi-nand.o] Error 1
-
----------------------------------------------------------------------------=
------
-
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-wwc97GT/seh1QKCF+T/h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPo7FzAAoJECmIfjd9wqK0zwMP/1UkLDfjQxN5mAB4P/J6lD5X
-oRxnAcTnyinSZnxosAQFMSfFT3IsUaGcyEqFc8uxOEUMXEZUU/N1+NqpoJYFCzrb
-IR09wgA8N4432VHt9G8fs+T/WsJYBn/sCtEctJvrKx77hmbalRnaXX650MJXp4Cj
-w5ifM76QpRqCU9c0I4LOMZkdvJQoSiw2vVNiLa448yHb/qDOPO7aUlZG997JdU3S
-GrJCY3VzQXK17xOIhL2hu/v+Jfo8ADiCW9SyqJWGgObNAz4pB8H+YGZpCvW+bION
-Pkl4ZBoFuoSipSj1vTBtp0UdezXVCzd8KN+A7XfzLzCcQZzkCEaltzfJhwseCG3L
-GPQmajWyIhPj089N3yNOssJQLHrEG3paXzqUKcFad0f9dLk070qZxQxRW4CKD6tj
-xA5ONAcI1dcOHTPFcJd8PaTxcr3QFK1wjrlN7NFnqTk9kltTKkxyc931v7oX8jmO
-Su4cYVsUNks2HYbUTTkDrlTVDUzgQv6KjE1WujXPA8lNeZKrAnexjys2SxueeCIW
-9SQVNntr5RYN2jWPxK/WTZ38J0eLe0HqALdUt8/f2637drvVSH6eaz+mlUmfFszY
-AX+2VOewfhnF/v1q1Blj0CPtvGmwMRSc30VCxfKhDuKwwtKNH9omz+z5ikZilL8s
-pJr1z6ftmJUjCJwpPq21
-=a/yf
------END PGP SIGNATURE-----
-
---=-wwc97GT/seh1QKCF+T/h--
+Regards
+Shmulik
