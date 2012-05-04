@@ -1,21 +1,32 @@
-Date: Fri, 04 May 2012 17:33:22 +0200
-From: Heiko Schocher <hs@denx.de>
-Subject: Re: [PATCH v3 0/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-In-reply-to: <1330945804-3379-1-git-send-email-hs@denx.de>
-To: davinci-linux-open-source@linux.davincidsp.com
-Message-id: <4FA3F6C2.9010602@denx.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7BIT
-References: <1330945804-3379-1-git-send-email-hs@denx.de>
-Cc: Kevin Hilman <khilman@ti.com>, Sergei Shtylyov <sshtylyov@mvista.com>,
- netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
- Sekhar Nori <nsekhar@ti.com>, Wolfram Sang <w.sang@pengutronix.de>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Reply-To: hs@denx.de
+Message-ID: <4FA401C0.7070503@ti.com>
+Date: Fri, 4 May 2012 11:20:16 -0500
+From: Jon Hunter <jon-hunter@ti.com>
+MIME-Version: 1.0
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+References: <cover.1335874494.git.afzal@ti.com>
+ <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
+ <4FA022FC.5040703@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "notasas@gmail.com" <notasas@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,150 +36,240 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Afzal,
 
-this v3 patchset is now pending for more than 1 month without
-seeing comments for it. Are there no more issues?
+On 05/03/2012 03:23 AM, Mohammed, Afzal wrote:
+> Hi Jon,
+> 
+> On Tue, May 01, 2012 at 23:23:00, Hunter, Jon wrote:
+>> Hi Afzal,
+>>
+>> Looks good! Some minor comments ...
+> 
+> Thanks
+> 
+>>> +#define	GPMC_WAITPIN_IDX0			0x0
+>>> +#define	GPMC_WAITPIN_IDX1			0x1
+>>> +#define	GPMC_WAITPIN_IDX2			0x2
+>>> +#define	GPMC_WAITPIN_IDX3			0x3
+>>> +#define	GPMC_NR_WAITPIN				0x4
+>>
+>> How about an enum here? Also OMAP4 only have 3 wait pins and so the
+>> number is device dependent.
+> 
+> Ok
+> 
+>>
+>>>  #define GPMC_MEM_START		0x00000000
+>>>  #define GPMC_MEM_END		0x3FFFFFFF
+>>>  #define BOOT_ROM_SPACE		0x100000	/* 1MB */
+>>> @@ -64,6 +106,55 @@
+>>>  #define ENABLE_PREFETCH		(0x1 << 7)
+>>>  #define DMA_MPU_MODE		2
+>>>  
+>>> +#define	DRIVER_NAME	"omap-gpmc"
+>>> +
+>>> +#define	GPMC_NR_IRQ		2
+>>
+>> Why has this been changed to 2? It was 6 in the previous version. As we
+>> discussed before the number of IRQs should be detected based upon GPMC
+>> IP version.
+> 
+> As mentioned in the cover letter,
+> 
+> "Additional features that currently boards in mainline does not make
+> use of like, waitpin interrupt handling, changes to leverage revision
+> 6 IP differences has not been incorporated."
+> 
+> Priority in this series is to convert into a driver, get all boards working
+> on mainline. Once all boards are working with gpmc driver, these features
+> which are not required for currently supported boards can be added later.
 
-Should I rebase it (if no further comments occur), as it is
-pending so long? (If so, against which tree?)
+Yes, but I meant why 2 and not say 5? Anyway, I think that this should
+be marked with a comment like a TODO so it is clear that this needs to
+be re-visited.
 
-Thanks.
+>>> +struct gpmc_device {
+>>> +	char			*name;
+>>> +	int			id;
+>>> +	void			*pdata;
+>>> +	unsigned		pdata_size;
+>>> +	struct resource		*per_res;
+>>> +	unsigned		per_res_cnt;
+>>> +	struct resource		*gpmc_res;
+>>> +	unsigned		gpmc_res_cnt;
+>>> +	bool			have_waitpin;
+>>> +	unsigned		waitpin;
+>>> +	int			waitpin_polarity;
+>>
+>> I think that it make more sense to have the wait-pin information part of
+>> the gpmc_cs_data structure for the following reasons ...
+> 
+> Waitpin information is indeed a part of cs as far as boards are concerned,
+> it is only that it gets propogated to device
 
-bye,
-Heiko
+Why does the device's driver care? From my point of view, the wait-pin
+is just part of the interface setup/configuration. The external device
+may require this and assumes that this has been setup along with the CS
+and interface timing, but the device's driver should not care. Remember
+this is just a ready signal used to stall the access. Once configured,
+software should be unaware of it.
 
-Heiko Schocher wrote:
-> This patchserie add support for the davinci am1808 based
-> enbw_cmc board.
+>> 1. If a device can use multiple CS, then it could use multiple wait signals.
+>> 2. Eventually, all board information needs to move to device tree. By
+>> having it in the pdata it will be easier to migrate to device tree.
+>>
+>> It may be nice to have "have_waitpin" be an integer too, that indicates
+>> if wait is used for both read and write or just one or the other.
+>>
+>> Also, any reason why waitpin_polarity is an int? I see you define LOW as
+>> -1, but I not sure why LOW cannot be 0 as 0 is programmed into the
+>> register for an active low wait signal.
 > 
-> Important: I rebased this patchserie against the irqdomain/next
-> branch from grant likely, as he suggested to rework the OF
-> intcontroller changes to the irqdomain work, branch found here:
+> Only intention is not to alter default waitpin polarity value, i.e. if
+> any board does make use of it w/o knowledge of Kernel, I don't want to
+> break it, there may be an argument saying that the board code is buggy,
+> while if some board does so, it is, but don't want to break working one.
 > 
-> http://git.secretlab.ca/?p=linux-2.6.git;a=shortlog;h=refs/heads/irqdomain/next
-> 
->     git://git.secretlab.ca/git/linux-2.6.git irqdomain/next
-> 
->     commit 280ad7fda5f95211857fda38960f2b6fdf6edd3e
->     Author: Grant Likely <grant.likely@secretlab.ca>
->     Date:   Fri Feb 24 14:58:54 2012 -0700
-> 
->     mfd: twl-core: Add IRQ_DOMAIN dependency
-> 
-> changes for v2:
-> Post this patchserie now as v2, as reworked in the
-> comments I got for the RFC serie.
-> 
-> changes for v3:
-> - Interrupt Controller:
->   - comment from Sergei Shtylyov:
->     - rename compatible" prop to "ti,cp_intc"
->     - cp_intc_init() is now also for the of case
->       the name of the init function (it calls the
->       "new" __cp_intc_init() function, which was
->       the "old" cp_intc_init()). Through this
->       rework the changes for OF is better visible.
->       As the OF case uses the irq_domain rework from
->       Grant Likely, maybe the none OF case can use
->       this also, but this should be tested on a hw ...
->  
-> Got no comments to the following points, I noted in the
-> RFC series, so posting this patchseries with them:
-> 
-> - ARM: davinci: configure davinci aemif chipselects through OF
->   not moved to mfd, as mentioned in this discussion:
->   http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
->   instead use a phandle in the DTS, so drivers which
->   uses the davinci aemif, can call davinci_aemif_setup_timing_of()
-> 
->   This is just thought as an RFC ... The enbw_cmc board
->   support not really need to setup this bus timings, as
->   they are setup in U-Boot ... but I want to post this,
->   as I think, it is a nice to have, and I am not really
->   sure, if this has to be a MFD device (If so, all bus
->   interfaces for other SoCs should be converted also to
->   MFD devices) ... as an example how this can be used
->   I add this to the davinci nand controller OF support
->   patch, in this patchserie.
-> 
-> - ARM: davinci: mux: add OF support
->   I want to get rid of the pin setup code in board code ...
->   This patch introduces a davinci_cfg_reg_of() function,
->   which davinci drivers can call, if they found a
->   "pinmux-handle", so used in the following drivers in
->   this patchserie:
-> 
->   drivers/net/ethernet/ti/davinci_emac
->   drivers/i2c/busses/i2c-davinci.c
->   drivers/mtd/nand/davinci_nand.c
-> 
-> - post this board support with USB support, even though
->   USB is only working with the 10 ms "workaround", posted here:
->   http://comments.gmane.org/gmane.linux.usb.general/54505
->   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
-> 
-> - MMC and USB are not using OF support yet, ideas how to port
->   this are welcome. I need for USB and MMC board specific
->   callbacks, how to solve this with OF support?
-> 
-> Signed-off-by: Heiko Schocher <hs@denx.de>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: devicetree-discuss@lists.ozlabs.org
-> Cc: davinci-linux-open-source@linux.davincidsp.com
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Ben Dooks <ben-linux@fluff.org>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Sekhar Nori <nsekhar@ti.com>
-> Cc: Kevin Hilman <khilman@ti.com>
-> Cc: Wolfgang Denk <wd@denx.de>
-> Cc: Sergei Shtylyov <sshtylyov@mvista.com>
-> 
-> Heiko Schocher (7):
->   ARM: davinci, intc: Add OF support for TI interrupt controller
->   ARM: davinci: configure davinci aemif chipselects through OF
->   ARM: davinci: mux: add OF support
->   ARM: davinci: net: davinci_emac: add OF support
->   ARM: davinci: i2c: add OF support
->   ARM: mtd: nand: davinci: add OF support for davinci nand controller
->   ARM: davinci: add support for the am1808 based enbw_cmc board
-> 
->  .../devicetree/bindings/arm/davinci/aemif.txt      |  119 ++++++
->  .../bindings/arm/davinci/davinci_emac.txt          |   43 +++
->  .../devicetree/bindings/arm/davinci/i2c.txt        |   33 ++
->  .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
->  .../devicetree/bindings/arm/davinci/mux.txt        |   40 ++
->  .../devicetree/bindings/arm/davinci/nand.txt       |   74 ++++
->  arch/arm/boot/dts/enbw_cmc.dts                     |  268 ++++++++++++++
->  arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
->  arch/arm/mach-davinci/Kconfig                      |    9 +
->  arch/arm/mach-davinci/Makefile                     |    1 +
->  arch/arm/mach-davinci/aemif.c                      |   86 +++++-
->  arch/arm/mach-davinci/board-enbw-cmc.c             |  380 ++++++++++++++++++++
->  arch/arm/mach-davinci/cp_intc.c                    |   87 ++++-
->  arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
->  arch/arm/mach-davinci/include/mach/mux.h           |    2 +
->  arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
->  arch/arm/mach-davinci/mux.c                        |   73 ++++-
->  drivers/i2c/busses/i2c-davinci.c                   |   37 ++
->  drivers/mtd/nand/davinci_nand.c                    |   85 +++++-
->  drivers/net/ethernet/ti/davinci_emac.c             |   94 +++++-
->  20 files changed, 1569 insertions(+), 14 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/davinci_emac.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/mux.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
->  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
->  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
-> 
+> Here unless user explicitly set the flag, it does nothing on polarity
 
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Ok. Do such scenario's exist today? Please note that board code will be
+removed in the future and device-tree will replace. So if there are no
+cases today, I would not be concerned. Unless this could be something
+that has already been configured by the bootloader. However, in that
+case would be even call this function?
+
+>>> +	if (idx != ~0x0) {
+>>> +		if (gd->have_waitpin) {
+>>> +			if (gd->waitpin != idx ||
+>>> +					gd->waitpin_polarity != polarity) {
+>>> +				dev_err(gpmc->dev, "error: conflict: waitpin %u with polarity %d on device %s.%d\n",
+>>> +					gd->waitpin, gd->waitpin_polarity,
+>>> +					gd->name, gd->id);
+>>> +				return -EBUSY;
+>>> +			}
+>>> +		} else {
+>>> +			gd->have_waitpin = true;
+>>> +			gd->waitpin = idx;
+>>> +			gd->waitpin_polarity = polarity;
+>>> +		}
+>>
+>> I am not sure about the above code. What happens if a device has
+>> multiple CS signals and uses multiple wait signals?
+>>
+>> I am also not sure why gpmc_setup_cs_waitpin and gpmc_setup_waitpin
+>> cannot be combined. I think that it would be a fair assumption to make
+>> that anyone using the waitpin does so inconjunction with the CS (I think
+>> that they would have too).
+>>
+>> However, if there is a reason for splitting it up this way please
+>> explain why.
+> 
+> Initially it was done per CS, the problem happened while trying to
+> convert tusb6010. It had multiple CS, but using same waitpin. Problem
+> with incorporating this onto CS is we have to sacrifice on wait pin
+> conflict prevention capability. The code now handles case of wait pin
+> conflict per device, the code can be extended to have multiple
+> wait pin per device also. But I prefer to defer it to later, not as
+> part of this series, as this feature what you asking for is not required
+> for any of the existing boards. I can add it in this series if there is
+> a strong opinion in the community for the same in this series.
+
+Ok, yes this does make sense. I wonder if we can clean up the all the
+nested if-statements in gpmc_setup_cs_waitpin(). Seems there could be
+some redundancy.
+
+> Policy that is being followed here is first sit, then straighten legs, ;)
+
+Ha! Crawl before walking ;-)
+
+>>> +static int gpmc_setup_cs_nonres(struct gpmc *gpmc,
+>>> +			struct gpmc_device *gd, struct gpmc_cs_data *cs)
+>>
+>> The name of this function is not 100% clear to me. What do you mean by
+>> "nonres"?
+> 
+> It means anything other than resources like memory & irq, happened for
+> want of better name, if you have one, name it, will put it.
+
+Not really, but may be worth adding a comment.
+
+>>> +int gpmc_cs_reconfigure(char *name, int id, struct gpmc_cs_data *cs)
+>>
+>> What scenario is this function used in? May be worth adding a comment
+>> about the function.
+> 
+> Ok, it was required for OneNAND, as it needs to reconfigure
+
+Ok, but why is that? Unless this is something generic about one-nand I
+don't comprehend. I have a high-level understanding of one-nand, but I
+am not familiar with the specifics that require it to be reconfigured.
+
+>>> +	for (i = 0, n = gdp->num_cs, cs = gdp->cs_data;
+>>> +				i < gdp->num_cs; i++, cs++)
+>>> +		n += hweight32(cs->irq_config);
+>>
+>> As you know I am not a fan of these overloaded for-loops as I find them
+>> hard to read ;-)
+>>
+>> Why not ...
+>>
+>> n = gdp->num_cs;
+>> cs = gdp->cs_data;
+> 
+> 
+> Well, you also know that I am big fan of it; difference of opinion,
+> my preference is to keep loop control statements together with "for",
+> unless there is a cry from community that it should not be this way.
+> I believe that it is not that much unreadable.
+
+Ok.
+
+>>> +	for (i = 0, gdq = gp->device_pdata, gd = gpmc->device;
+>>> +			(i < gp->num_device) && (*gdq); i++, gdq++) {
+>>
+>> You have num_devices now and so do you really need the "&& (*gdq)"?
+>> Seems redundant.
+> 
+> num_device is something that I never wanted to add, was happy with,
+> NULL entry termination, only because of your repeated comments,
+> I added this. And this additional check now prevents NULL dereference.
+
+Ok, but I would go with one or the other. Make it NULL terminated but
+maybe add a comment?
+
+>>> +	gpmc_setup_writeprotect(gpmc);
+>>
+>> Write protect is a pin and there is only one. Like the waitpins and CS
+>> signals this needs to be associated with a device. It would make sense
+>> that this is associated with the cs data.
+> 
+> As far as platform are concerned, it is associated with cs, it is only
+> that while configuring CS, it is propagated such that it is done once.
+
+Hmmm ... but here it looks like if write-protect is used you are going
+to turn it on. A feature like this seems that it does need to be handled
+by the device's driver. Enabling and disabling write-protect are
+functions that I would expect are exported to the device's driver and
+not directly enabled in the gpmc driver during probe. However, maybe is
+could be valid for the write protect to be enabled by default which
+could make sense. However, I don't see anywhere else in the driver to
+control it.
+
+Shouldn't we warn on multiple devices trying to use write-protect when
+parsing their configuration?
+
+>>> +#define	GPMC_READTYPE_ASYNC		BIT(30)
+>>> +#define	GPMC_WRITETYPE_ASYNC		BIT(31)
+>>> +
+>>
+>> Please keep in mind that eventually this has to all be moved into device
+>> tree and so at that point these configuration flags will have to be
+>> re-worked. However, just a FYI.
+> 
+> On device tree matters, my mind is next to blank, thanks for mentioning it.
+
+No problem. For now lets not worry too much.
+
+Cheers
+Jon
