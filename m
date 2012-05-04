@@ -1,21 +1,31 @@
-Message-ID: <4FA4035E.6020308@ti.com>
-Date: Fri, 4 May 2012 11:27:10 -0500
+Message-ID: <4FA4041D.9010000@ti.com>
+Date: Fri, 4 May 2012 11:30:21 -0500
 From: Jon Hunter <jon-hunter@ti.com>
 MIME-Version: 1.0
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v4 02/39] ARM: OMAP2+: gpmc: Adapt to HWMOD
 References: <cover.1335874494.git.afzal@ti.com>
- <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
-In-Reply-To: <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
+ <e0cf9678cb9a44d2a16401383ab8496eb825c291.1335874494.git.afzal@ti.com>
+ <4FA04A8C.4050703@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E98299B@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E98299B@DBDE01.ent.ti.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, tony@atomide.com,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, balbi@ti.com,
- dbaryshkov@gmail.com, kyungmin.park@samsung.com,
- Vaibhav Hiremath <hvaibhav@ti.com>, vimal.newwork@gmail.com,
- grinberg@compulab.co.il, artem.bityutskiy@linux.intel.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, notasas@gmail.com
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "notasas@gmail.com" <notasas@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,113 +37,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Afzal,
 
-On 05/01/2012 07:19 AM, Afzal Mohammed wrote:
+On 05/03/2012 03:37 AM, Mohammed, Afzal wrote:
+> Hi Jon,
+> 
+> On Wed, May 02, 2012 at 02:11:48, Hunter, Jon wrote:
+>>> +
+>>> +	pdata->clk_prd = gpmc_get_fclk_period();
+>>
+>> Does this need to be done here? May be this should be done in the probe
+>> function. You could store the handle to the main clk in the pdata.
+> 
+> This is done so that migration of gpmc driver to the drivers folder
+> would be smooth, remember that this function will still live here.
 
-[...]
+Sure, but why call this here?
 
-> +static int gpmc_setup_cs_waitpin(struct gpmc *gpmc, struct gpmc_device *gd,
-> +						unsigned cs, unsigned conf)
-> +{
-> +	u32 l = gpmc_cs_read_reg(cs, GPMC_CS_CONFIG1);
-> +	unsigned idx = ~0x0;
-> +	int polarity = 0;
->  
-> -	l = gpmc_read_reg(GPMC_REVISION);
-> -	printk(KERN_INFO "GPMC revision %d.%d\n", (l >> 4) & 0x0f, l & 0x0f);
-> -	/* Set smart idle mode and automatic L3 clock gating */
-> -	l = gpmc_read_reg(GPMC_SYSCONFIG);
-> -	l &= 0x03 << 3;
-> -	l |= (0x02 << 3) | (1 << 0);
-> -	gpmc_write_reg(GPMC_SYSCONFIG, l);
-> -	gpmc_mem_init();
-> +	switch (conf & GPMC_WAITPIN_MASK) {
-> +	case GPMC_WAITPIN_0:
-> +		idx =  GPMC_WAITPIN_IDX0;
-> +		break;
-> +	case GPMC_WAITPIN_1:
-> +		idx =  GPMC_WAITPIN_IDX1;
-> +		break;
-> +	case GPMC_WAITPIN_2:
-> +		idx =  GPMC_WAITPIN_IDX2;
-> +		break;
-> +	case GPMC_WAITPIN_3:
-> +		idx =  GPMC_WAITPIN_IDX3;
-> +		break;
-> +	/* no waitpin */
-> +	case 0:
-> +		break;
-> +	default:
-> +		dev_err(gpmc->dev, "multiple waitpins selected on CS:%u\n", cs);
-> +		return -EINVAL;
-> +		break;
-> +	}
+>>> +		pr_err("error: clk_get on %s\n", oh->main_clk);
+>>> +		return -EINVAL;
+>>>  	}
+>>>  
+>>>  	clk_enable(gpmc_l3_clk);
+>>
+>> I would have thought we should be able to remove the gpmc_init function
+>> completely by now. Most of the code should be moved to the probe function.
+>>
+>> Also now with hwmod in place, we should be able to remove the
+>> clk_enable/disable functions and use the pm_runtime APIs instead.
+> 
+> There was no plan to add rpm in this series, but now that you have
+> brought it up, I will adapt the driver to rpm.
 
-Why not combined case 0 and default? Both are invalid configurations so
-just report invalid selection.
+Ok, great.
 
->  
-> -	/* initalize the irq_chained */
-> -	irq = OMAP_GPMC_IRQ_BASE;
-> -	for (cs = 0; cs < GPMC_CS_NUM; cs++) {
-> -		irq_set_chip_and_handler(irq, &dummy_irq_chip,
-> -						handle_simple_irq);
-> -		set_irq_flags(irq, IRQF_VALID);
-> -		irq++;
-> +	switch (conf & GPMC_WAITPIN_POLARITY_MASK) {
-> +	case GPMC_WAITPIN_ACTIVE_LOW:
-> +		polarity = LOW;
-> +		break;
-> +	case GPMC_WAITPIN_ACTIVE_HIGH:
-> +		polarity = HIGH;
-> +		break;
-> +	/* no waitpin */
-> +	case 0:
-> +		break;
-> +	default:
-> +		dev_err(gpmc->dev, "waitpin polarity set to low & high\n");
-> +		return -EINVAL;
-> +		break;
->  	}
-
-Again, combine case 0 and default as these are invalid.
-
->  
-> -	ret = request_irq(gpmc_irq, gpmc_handle_irq, IRQF_SHARED, "gpmc", NULL);
-> -	if (ret)
-> -		pr_err("gpmc: irq-%d could not claim: err %d\n",
-> -						gpmc_irq, ret);
-> -	return ret;
-> +	if (idx != ~0x0) {
-
-If you combine the above cases, then you can drop the idx test here.
-
-> +		if (gd->have_waitpin) {
-> +			if (gd->waitpin != idx ||
-> +					gd->waitpin_polarity != polarity) {
-> +				dev_err(gpmc->dev, "error: conflict: waitpin %u with polarity %d on device %s.%d\n",
-> +					gd->waitpin, gd->waitpin_polarity,
-> +					gd->name, gd->id);
-> +				return -EBUSY;
-> +			}
-> +		} else {
-
-Don't need the else as you are going to return in the above.
-
-> +			gd->have_waitpin = true;
-> +			gd->waitpin = idx;
-> +			gd->waitpin_polarity = polarity;
-> +		}
-> +
-> +		l &= ~GPMC_CONFIG1_WAIT_PIN_SEL_MASK;
-> +		l |= GPMC_CONFIG1_WAIT_PIN_SEL(idx);
-> +		gpmc_cs_write_reg(cs, GPMC_CS_CONFIG1, l);
-> +	} else if (polarity) {
-> +		dev_err(gpmc->dev, "error: waitpin polarity specified with out wait pin number on device %s.%d\n",
-> +							gd->name, gd->id);
-> +		return -EINVAL;
-
-Drop this else-if. The above switch statements will report the bad
-configuration. This seems a bit redundant.
-
-Cheers
 Jon
