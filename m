@@ -1,19 +1,20 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SQDIh-0005jP-Md
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 07:51:40 +0000
-Message-ID: <1336118088.4275.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: lantiq: fixes typo inside NAND driver
+ id 1SQDJ8-0005kv-GI
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 07:52:06 +0000
+Message-ID: <1336118129.4275.1.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: fixup 1/0 vs. true/false
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Fri, 04 May 2012 10:54:48 +0300
-In-Reply-To: <1336067311-24797-1-git-send-email-blogic@openwrt.org>
-References: <1336067311-24797-1-git-send-email-blogic@openwrt.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 04 May 2012 10:55:29 +0300
+In-Reply-To: <1336084208-20461-1-git-send-email-computersforpeace@gmail.com>
+References: <1336084208-20461-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-q/++4ULHBlYR3JdDcGvp"
+ boundary="=-8KUYlnQkzvQDcPIcTYVh"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Mike Dunn <mikedunn@newsguy.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-q/++4ULHBlYR3JdDcGvp
+--=-8KUYlnQkzvQDcPIcTYVh
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-03 at 19:48 +0200, John Crispin wrote:
-> This Patch fixes a minor typo in my patch
+On Thu, 2012-05-03 at 15:30 -0700, Brian Norris wrote:
+> The 'oob_required' argument is an int, according to the boolean style use=
+d in
+> nand_base.c, so we should use 1 and 0 instead of true and false.
 >=20
-> [PATCH 4/4] MTD: MIPS: lantiq: add xway nand support
->=20
-> from last monday. Could you please fold this fix into the patch.
+> Thanks Mike for spotting this.
 
-Done, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-q/++4ULHBlYR3JdDcGvp
+--=-8KUYlnQkzvQDcPIcTYVh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPo4tIAAoJECmIfjd9wqK0XHkP/06LouAkJJre2Fp+fG16l5PP
-pw8gpbVnRjRUGKHdbal6r5CwoG9ojS0weDtA2IaaUAVPXUDKYtH8kna/rQW3mSqZ
-FqFC44WXMwWySErSsmbImVlroP0jHRN/0uJ03DxB0G8zk6oZAcA+pAPY8sOXdEg2
-aKksQcTVjWE1MHu9Itweel+rwDY4RrU3pXy4hXQa+4Gk3T8WUbLK+bb/umn7cFPi
-aa0YZm9WyyB1QVUkXi+m9/1x4wZAhVxNkHhD1Rgy/QmAHpdgTOmg5iwjtNjNfmzM
-gaU/PYoD55XGpgW8Q0WAqS5oBj9NmYhGLj7avUkVbTRExfseo+BQpXmCtCf5Q+2r
-x6EXN+AuD2NeRtYEPAPDx7bD+NhTfQ+vpaGLom4yifMKUCVkFzkz5Z+RmxhJ5CRV
-lmpZS3tJ75efhmbcsPQsEghTCEl9FQO7TPx5XmE2/P75+2uJIXuhi7oBE9hDTAPu
-M44J2aziP6LIbhFYWyzuyVOnxLDAnIQnFDyaenWlZNMYiAI4okxnMYSM8jkXbYAn
-kjxDLY2mmQS9rGSsC3XLjGtn0GKD/zwYOauq6qxmq/qSeqZTs6qXDQofcWxjcLfs
-/kreCBAjYRe8Rg2V/j18VkQq8m33xFGCc9NymOZqEy+KNewPXjEwi3Z9IM9njT3n
-dupma8ULtBrwnsJfjlQH
-=+xnR
+iQIcBAABAgAGBQJPo4txAAoJECmIfjd9wqK0evcQAKzd07swGbwCLzqRkSUNqwk3
+S0P24bSGQFsJF9Yh9/2b2srAFgtoC+Nduc/6BjafrUPrAnL8flxdc5+lBSHaAZtY
+w0kcOiS12xw7VRs6qErKIH+gtde7Iqejs4ZlYcocUk3tQg4q54I/btCV2MrPEbZc
+lqfOzJ+GyktJ6Y5vYxcbZ8Z8y13YIX6TVpZTvxEtejZyIKnidNXrUa7F9xVw1SfU
+mdw+xJCSDPKoPL1Xkic9876AqDgzEYS+4KiwKuH8EMJQ7TkJ78x/yKhWaWqp5Zah
+MbN2MiKKqRbJU2+m6+HvZaRIBm/lBxNkFAi5p0OJCEx3btc6uyb1mirjBxIuJD8t
+Or4d+3I+xuDbJQIzIsKYC2PkNjlJ4tvBrGmz2fmBqEEtR0Acvjr+Q9AmVnd/Ws/u
+5jrgEv5bq79hqLERRy4NC1qQeL8OZw5iQmhCrWHNlTWFQT9n6rIQ6R3vxgCrKb4/
+SZS4IUvjkfA44CZRCZvTJlhlbvv5noyrbGYrB2YFUl313kv8gfpfw32hgX7N/Kr2
+IM32zHL3ZlQz/bD9DuFPv1VeDR9v9Qaj3eG+z88LXdh1x8QYMgxAWc4lsRrfxIh4
+L9SI8SUHlKjiQcUGYymv+MMYgcrLEbAXt28P/PtGdxUKMcVO8DXkScC+uZHfpUJn
+snH34/YY/FhtUHNalvHI
+=kQwC
 -----END PGP SIGNATURE-----
 
---=-q/++4ULHBlYR3JdDcGvp--
+--=-8KUYlnQkzvQDcPIcTYVh--
