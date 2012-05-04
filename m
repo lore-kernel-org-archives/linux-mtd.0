@@ -1,24 +1,16 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQHBF-0003uR-BV
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 12:00:14 +0000
-Received: by wibhj13 with SMTP id hj13so1023633wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 05:00:11 -0700 (PDT)
-Date: Fri, 4 May 2012 15:00:01 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com, Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Question about mkfs.jffs2 "-s" option
-Message-ID: <20120504150001.4268beea@halley>
-In-Reply-To: <1336115737.30168.20.camel@sauron.fi.intel.com>
-References: <jnrm65$im4$1@dough.gmane.org>
- <Pine.LNX.4.64.1205030930540.8107@lnxricardw.se.axis.com>
- <20120503211334.17c91b31@halley>
- <1336115737.30168.20.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Grant Edwards <grant.b.edwards@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from [2a01:4f8:131:30e2::2] (helo=nbd.name)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQHxr-0006Bn-01
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 12:50:41 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH 12/14] MTD: MIPS: lantiq: implement OF support
+Date: Fri,  4 May 2012 14:18:37 +0200
+Message-Id: <1336133919-26525-12-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1336133919-26525-1-git-send-email-blogic@openwrt.org>
+References: <1336133919-26525-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +20,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem, Ricard,
+Adds bindings for OF and make use of module_platform_driver for lantiq
+based socs.
 
-On Fri, 04 May 2012 10:15:37 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2012-05-03 at 21:13 +0300, Shmulik Ladkani wrote:
-> > On Thu, 3 May 2012 09:35:14 +0200 (CEST) Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
-> > > 
-> > > The smallest writable unit in a NAND flash is called a 'page', but AFAIK 
-> > > this is not what the -s option in mkfs.jffs2 is for. Instead, it is 
-> > > related for the kernel memory managament page size, which is 4k for most 
-> > > architectures.
-> > 
-> > According to MKFS.JFFS2(1),
-> > 
-> > 	-s, --pagesize=SIZE
-> > 		Use page size SIZE.  The default is 4 KiB.  This size is
-> > 		the maximum size of a data node.
-> > 
-> > And according to http://linux-mtd.infradead.org/~dwmw2/jffs2.pdf
-> > 
-> > 	In order to facilitate rapid decompression of
-> > 	data upon readpage() requests, nodes contain
-> > 	no more than a single page of data, according to
-> > 	the hardware page size on the target platform.
-> > 
-> > Wow.
-> > I always assumed I had to set it according to NAND's page size, not
-> > according to target system's mm page size.
-> 
-> Shmulik, I can give some info about this. First of all because of
-> compression and very different node sizes (UBIFS and JFFS2) and because
-> JFFS2 was designed for NOR flash originally - NAND page size is not
-> something which affects the design of file-systems, or their on-flash
-> layout. We use write-buffers on I/O level to make it appear like the
-> eraseblock is byte-writable.
-> 
-> The RAM page size comes from the general linux design - the VFS writes
-> in RAM page size units, and it is much simpler to make max node size =
-> PAGE_CACHE_SIZE rather than trying to split it when the PAGE_CACHE_SIZE
-> is something like 16KiB. This is where this -s stuff comes from. I think
-> it was a mistake to introduce this parameter because it is very unlikely
-> JFFS2 is/was used on systems with a different PAGE_CACHE_SIZE.
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Cc: linux-mtd@lists.infradead.org
+---
+This patch is part of a series moving the mips/lantiq target to OF and clkdev
+support. The patch, once Acked, should go upstream via Ralf's MIPS tree.
 
-Thanks for the explanations.
-I pretty much realized this after reading [1]...
+ drivers/mtd/maps/lantiq-flash.c |   69 ++++++++++++++-------------------------
+ 1 files changed, 25 insertions(+), 44 deletions(-)
 
-BTW, googling [mkfs.jffs2 and "-s 0x200"] or [mkfs.jffs2 and "-s 0x800"]
-yielded few howtos, faqs, and alike....
-Guess I wasn't the only one fooled by the argument's name :-))
-
-[1] http://linux-mtd.infradead.org/~dwmw2/jffs2.pdf
-
-Regards
-Shmulik
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index b5401e3..aefa111 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -21,7 +21,6 @@
+ #include <linux/mtd/physmap.h>
+ 
+ #include <lantiq_soc.h>
+-#include <lantiq_platform.h>
+ 
+ /*
+  * The NOR flash is connected to the same external bus unit (EBU) as PCI.
+@@ -44,8 +43,9 @@ struct ltq_mtd {
+ 	struct map_info *map;
+ };
+ 
+-static char ltq_map_name[] = "ltq_nor";
+-static const char *ltq_probe_types[] __devinitconst = { "cmdlinepart", NULL };
++static const char ltq_map_name[] = "ltq_nor";
++static const char *ltq_probe_types[] __devinitconst = {
++					"cmdlinepart", "ofpart", NULL };
+ 
+ static map_word
+ ltq_read16(struct map_info *map, unsigned long adr)
+@@ -108,12 +108,11 @@ ltq_copy_to(struct map_info *map, unsigned long to,
+ 	spin_unlock_irqrestore(&ebu_lock, flags);
+ }
+ 
+-static int __init
++static int __devinit
+ ltq_mtd_probe(struct platform_device *pdev)
+ {
+-	struct physmap_flash_data *ltq_mtd_data = dev_get_platdata(&pdev->dev);
++	struct mtd_part_parser_data ppdata;
+ 	struct ltq_mtd *ltq_mtd;
+-	struct resource *res;
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+@@ -122,28 +121,19 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 
+ 	ltq_mtd->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!ltq_mtd->res) {
+-		dev_err(&pdev->dev, "failed to get memory resource");
++		dev_err(&pdev->dev, "failed to get memory resource\n");
+ 		err = -ENOENT;
+ 		goto err_out;
+ 	}
+ 
+-	res = devm_request_mem_region(&pdev->dev, ltq_mtd->res->start,
+-		resource_size(ltq_mtd->res), dev_name(&pdev->dev));
+-	if (!ltq_mtd->res) {
+-		dev_err(&pdev->dev, "failed to request mem resource");
+-		err = -EBUSY;
+-		goto err_out;
+-	}
+-
+ 	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
+-	ltq_mtd->map->phys = res->start;
+-	ltq_mtd->map->size = resource_size(res);
+-	ltq_mtd->map->virt = devm_ioremap_nocache(&pdev->dev,
+-				ltq_mtd->map->phys, ltq_mtd->map->size);
++	ltq_mtd->map->phys = ltq_mtd->res->start;
++	ltq_mtd->map->size = resource_size(ltq_mtd->res);
++	ltq_mtd->map->virt = devm_request_and_ioremap(&pdev->dev, ltq_mtd->res);
+ 	if (!ltq_mtd->map->virt) {
+-		dev_err(&pdev->dev, "failed to ioremap!\n");
+-		err = -ENOMEM;
+-		goto err_free;
++		dev_err(&pdev->dev, "failed to remap mem resource\n");
++		err = -EBUSY;
++		goto err_out;
+ 	}
+ 
+ 	ltq_mtd->map->name = ltq_map_name;
+@@ -169,9 +159,9 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	cfi->addr_unlock1 ^= 1;
+ 	cfi->addr_unlock2 ^= 1;
+ 
+-	err = mtd_device_parse_register(ltq_mtd->mtd, ltq_probe_types, NULL,
+-					ltq_mtd_data->parts,
+-					ltq_mtd_data->nr_parts);
++	ppdata.of_node = pdev->dev.of_node;
++	err = mtd_device_parse_register(ltq_mtd->mtd, ltq_probe_types,
++					&ppdata, NULL, 0);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "failed to add partitions\n");
+ 		goto err_destroy;
+@@ -204,32 +194,23 @@ ltq_mtd_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id ltq_mtd_match[] = {
++	{ .compatible = "lantiq,nor" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, ltq_mtd_match);
++
+ static struct platform_driver ltq_mtd_driver = {
++	.probe = ltq_mtd_probe,
+ 	.remove = __devexit_p(ltq_mtd_remove),
+ 	.driver = {
+-		.name = "ltq_nor",
++		.name = "ltq-nor",
+ 		.owner = THIS_MODULE,
++		.of_match_table = ltq_mtd_match,
+ 	},
+ };
+ 
+-static int __init
+-init_ltq_mtd(void)
+-{
+-	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
+-
+-	if (ret)
+-		pr_err("ltq_nor: error registering platform driver");
+-	return ret;
+-}
+-
+-static void __exit
+-exit_ltq_mtd(void)
+-{
+-	platform_driver_unregister(&ltq_mtd_driver);
+-}
+-
+-module_init(init_ltq_mtd);
+-module_exit(exit_ltq_mtd);
++module_platform_driver(ltq_mtd_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
+-- 
+1.7.9.1
