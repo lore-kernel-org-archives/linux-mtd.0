@@ -1,22 +1,30 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SQDqW-0007pe-9p
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 08:26:36 +0000
-Message-ID: <1336120196.4275.5.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd-utils: Better document --pagesize of mkfs.jffs2
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Fri, 04 May 2012 11:29:56 +0300
-In-Reply-To: <20120503215959.374d0c34@halley>
-References: <20120503215959.374d0c34@halley>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-aIZc46JpH82LMmk7cDdj"
-Mime-Version: 1.0
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Grant Edwards <grant.b.edwards@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQDtr-0008Dx-Hs
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 08:30:04 +0000
+Received: by lbbgg6 with SMTP id gg6so2341772lbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 01:30:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1205030928370.8107@lnxricardw.se.axis.com>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+ <4FA15C73.2020606@parrot.com>
+ <CADZ6=aveZJx99GPBv=V0SvJ0jo4mGD0HaTKXYVcQa3SHADtmUw@mail.gmail.com>
+ <Pine.LNX.4.64.1205030928370.8107@lnxricardw.se.axis.com>
+Date: Fri, 4 May 2012 10:30:01 +0200
+Message-ID: <CADZ6=auv4ecY1px-cDpuwUTp1_EfKrJbB+GReaSrvVS+e9ZorQ@mail.gmail.com>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+From: Thilo Fromm <fromm@dresearch-fe.de>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Ricard,
 
---=-aIZc46JpH82LMmk7cDdj
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>>> gluebi + mtdblock_ro doesn't work ?
+>>
+>>
+>> Can you paint the abstraction layer call flow involved in this for a
+>> single read transaction and _not_ burst out laughing ;) ? We're on an
+>> embedded system, man :)
+>
+> The crucial issue is really what performance you get, gluebi is fairly
+> transparent so I don't think you loose any significant amount. True, ther=
+e's
+> a lot of code that must be passed in order to get at the data, but the sa=
+me
+> is true for a lot of the kernel.
 
-On Thu, 2012-05-03 at 21:59 +0300, Shmulik Ladkani wrote:
-> Add a strict explanation '--pagesize' refers to target system's mm page
-> size.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+I fear the complexity. NAND technology has some nasty corner cases, I
+want my NAND code to be simple and separated (KISS in the traditional
+sense). Consequently I try to avoid these other parts of the kernel
+that do things in a weird way, too.
 
-Pushed to mtd-utils.git, thanks!
+> u-boot perhaps can't handle gluebi though?
+
+Hmmm, dunno. I'm not using UBI from u-boot right now.
+
+Regards,
+Thilo
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-aIZc46JpH82LMmk7cDdj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPo5OEAAoJECmIfjd9wqK0FAgP/Ax3IUIb7UcjyErbcFF6PCkR
-Jmd1IKwoPzWpoQk7yjbDrLKVVNzAXDu8Ek4xuC3JdfSGwR/Ae2Xtf7gqtrtMJLTf
-mwPnmcgu79uUhmr0S2/3pFECGQ7xV7+Z3LMgjaZq5SatBTLkKaiwZj3MIPIl/ycR
-mBQCkLPw5kkUWc4pg5XE8DDaoFxXmWfrTefzIicnyJJ2ALuh2ui7TEieeMXwPDXj
-4Foch1hxT2mcZ/fMXJUjh5j7yBwUnqrzblyZIM8/fQmTMav1/DxAlZNCk/NM2c6z
-DAR3n7MPF2SgVScanftkoVuctFKiyOXwz8tAZNUu4mdSpIZyVFE4AKpOpVc8vE3+
-H8Qq/oFUV4ugxCBCuPaxXb8T64bRxOtd66Hi07TG3rezKT0fVCfAy7StLOtC2jF/
-rM5qDEh3sYao87HTD0/t25dE/1t1pTrTDmBQJrCf4aTQtyRkDWi339UdW+su0QyL
-j4i+ili4kjfdeDrYt0QTToGOzFsq69TnbRta9TrNnDTF7G0Ds8KSGw32uoiZm4Nj
-9P4hwd4+vy/Pe4e9Um92CoUjtGgYy2LU59zXjGiNzr8LtY26HCyXI8FQ4FNpLXMp
-3ceaniJNIE3O6ynOvJdFCr3zh7vCrrN+hMeGT4geAoR1kKxNWAF+2YTFNMcykYVL
-wt0qLjPBix3S3npTM2SU
-=AjVA
------END PGP SIGNATURE-----
-
---=-aIZc46JpH82LMmk7cDdj--
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
