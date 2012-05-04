@@ -1,31 +1,27 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQENN-0002rk-EU
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 09:00:34 +0000
-Received: by lagy4 with SMTP id y4so2340935lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 02:00:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CADx9zJB6x=ifbmcGA14HyjnStcGOY21xsB2g2WR00ANQ=Fp0OQ@mail.gmail.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQEWW-000096-Cd
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 09:10:01 +0000
+Date: Fri, 4 May 2012 11:09:54 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Thilo Fromm <fromm@dresearch-fe.de>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+In-Reply-To: <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
 References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
  <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
  <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
  <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <CADx9zJBwrSWbBQ0KbP-kr2CmYcLs5g3vn10VQdAp6qHwyQbJiw@mail.gmail.com>
- <CADZ6=av8TJJWRPsT=DrAnthZHO6iBzZ9nJMcHTiEV96TvgWkbA@mail.gmail.com>
- <Pine.LNX.4.64.1205030859020.8107@lnxricardw.se.axis.com>
- <CADZ6=as4exFqPWm-9D_KWNMeKVrak5aLuvO4Lm1sVvZr4UEHSQ@mail.gmail.com>
- <CADx9zJB6x=ifbmcGA14HyjnStcGOY21xsB2g2WR00ANQ=Fp0OQ@mail.gmail.com>
-Date: Fri, 4 May 2012 11:00:29 +0200
-Message-ID: <CADZ6=as2ecP0O+WXN-UJfYTWbaMjMSr1-cdpWghne_P-A9zmNg@mail.gmail.com>
-Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
- when reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Gregory CLEMENT <gclement00@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Wagner <deubeuliou@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
+ <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Atlant Schmidt <aschmidt@dekaresearch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,57 +31,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Gregory,
 
->> Oh, okay, thanks for the info, so we need to take care about bit rot,
->> too. I don't think this is too big a challenge.
->>
->> Hey guys, I think I've got a bold idea. Could I re-use parts of UBI's
->> EB handling code in my readonly FTL? It depends on whether the erase
->> block scrubbing routines within UBIFS are generic enough to be used by
->> other components. Or whether the linux-mtd project is interested in
->> having these routines re-usable at some point in the future when they
->> are not re-usable right now.
->>
->> Comments, suggestions?
+On Fri, 4 May 2012, Thilo Fromm wrote:
+
+>> =A0It contains a maximum of m-fudge_factor LEBs (Logical Erase Blocks)
+>> =A0of n-ovehead pages each. It can erase whole LEBs, write pages, and
+>> =A0read pages. By providing bad block mapping and wear leveling, it
+>> =A0provides a device which is slightly smaller than the MTD device
+>> =A0it's layered upon, but that device doesn't have bad blocks and
+>> =A0you can't wear out any individual LEB faster than the whole
+>> =A0device wears out. The device remains perfect until its reserve
+>> =A0of replacement (spare) blocks is exhausted as blocks go bad.
 >
-> I think it's better to use UBI in a whole than just take most of its code=
-.
+> But unfortunately I can use these features with nothing else than UBIFS?
 
-I wouldn't "take" it so much as write another component which uses it.
-Which should improve the code overally :) And I don't think I need
-most of it.
+Well, you can use it for large binary objects, such as the Linux kernel,=20
+if you want. There are currently no other filesystems other than ubifs=20
+which run directly on top of UBI, but if you enable the gluebi layer, you=
+=20
+get mtd devices on top of each ubi volume so you can use jffs2 if you=20
+want.
 
-> Indeed UBI is better if it handles all the flash, at least for wear level=
-ing.
+Gluebi is in many cases not really an option, because it maps _each_ ubi=20
+volume to an mtd device, thus you cannot for instance mix jffs2 and ubifs=
+=20
+on a gluebi system. AFAIU it would be possible to extend gluebi so that it=
+=20
+would be possible to enable the gluebi layer only for selected ubi=20
+volumes, but AFAIK it has not been done (yet).
 
-I don't need wear leveling, I'm readonly.
+Technically I suppose one could device a "jffs2a" to run directly on a UBI=
+=20
+device, but it would be rather pointless; we have a "jffs3" which turned=20
+into ubifs in the end.
 
-> That one of the reason we choose to not continue to work on MTDBLCK_RO
-> and switch to ubi_blk.
+While jffs2 is tried-and-tested there is very little development and=20
+maintenence going on nowadays, with development and bug fixing instead=20
+going into ubifs. So over time, jffs2 will probably tend to degrade while=
+=20
+ubifs will continue to improve.
 
-I fully understand this decision. It's just that I don't need (and
-frankly, don't want) all that code, especially the read/write parts of
-it, for my root fs. I would run into trouble with our (old-ish)
-u-boot, too.
+>> =A0UBIfs (on top of UBI on top of MTD) "materializes" a file system.
+>> =A0It contains ordinary Linux/Unix files on a perfect storage medium.
+>> =A0It depends upon the perfect storage provided by UBI.
+>
+> I have the impression that we took a shortcut between the last two
+> paragraphs. Can you please elaborate on why i need a second UBI
+> partition within an UBI partition in order to use UBIFS? Or am I wrong
+> with this point?
 
-On the other hand ubi_blk would be a good choice community-wise, so we
-would better integrate with the current ongoing development in
-linux-mtd. That's another strong advantage. I'll focus on "blockrom"
-for now (as this seems to be the device node's LANANA name, see
-Documentation/devices.txt), since blockrom seems to offer everything
-we need with just a few extensions we have to add. But I'll definitely
-keep ubi_blk in mind.
+I think you've misunderstood something.
 
-Regards,
-Thilo
+Basically, if you have an mtd partition, say mtd2, then you can attach UBI=
+=20
+to it (or is the terminology 'attach an mtd partition to UBI'; I'm not=20
+sure):
 
+# ubiattach -m 5 /dev/ubi_ctrl
+
+/dev/mtd2 --> /dev/ubi0
+
+Within each UBI partition, you can then have several volumes, e.g.:
+
+# ubimkvol /dev/ubi0 -N kernel -s 3 MiB -t static
+# ubimkvol /dev/ubi0 -N rootfs -s 25 MiB -t static
+# ubimkvol /dev/ubi0 -N appdata -s 55 MiB -t dynamic
+
+/dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0
+                         +-> /dev/ubi0_1
+                         +-> /dev/ubi0_2
+
+In each volume you can have a file system, i.e. ubifs, which can be=20
+mounted:
+
+# mount -t ubifs ubi0:appdata /usr/apps
+
+/dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0 --> kernel blob
+                         +-> /dev/ubi0_1 --> /
+                         +-> /dev/ubi0_2 --> /usr/apps
+
+In the simplest case, you can just have one volume in your UBI partition:
+
+/dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0 --> /usr/apps
+
+But yes, there are two devices, one representing a whole partition under=20
+UBI control, and the other one representing a volume. The underlying mtd=20
+device also still exists. But it's not really stranger than having a=20
+classic hard drive, with e.g. /dev/sda as the 'base' device for the drive,=
+=20
+and /dev/sda1 and /dev/sda2 for the partitions, while also having a=20
+/dev/sg1 for certain operations.
+
+/Ricard
 --=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
