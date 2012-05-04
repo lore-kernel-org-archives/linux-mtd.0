@@ -1,23 +1,14 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQM2a-0003c2-U1
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 17:11:37 +0000
-Date: Fri, 4 May 2012 10:11:25 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH v3.4-rc3] MTD: NAND: ams-delta: Fix
- request_mem_region() failure
-Message-ID: <20120504171125.GD5613@atomide.com>
-References: <1334670557-25640-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1587089.0XMyH6e1Ic@acer> <1335417678.2290.7.camel@koala>
- <1520744.9xCxNUdyzk@acer>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1520744.9xCxNUdyzk@acer>
-Cc: dedekind1@gmail.com, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQMGn-0006Mj-4G
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 17:26:17 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/3] do not use s_dirt in JFFS2
+Date: Fri,  4 May 2012 20:27:06 +0300
+Message-Id: <1336152428-24242-1-git-send-email-dedekind1@gmail.com>
+Cc: Linux Kernel Maling List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +18,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This patch-set makes JFFS2 file-system stop using the VFS '->write_supers()'
+call-back because I plan to remove it once all users are gone.
 
-* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120430 11:15]:
-> Dnia czwartek, 26 kwietnia 2012 08:20:59 Artem Bityutskiy pisze:
-> > On Wed, 2012-04-25 at 19:01 +0200, Janusz Krzysztofik wrote:
-> > > Both drivers use separate subsets of registers that belong to the 
-> OMAP1 
-> > > MPU I/O device, but are used for controlling different sets of I/O 
-> pins. 
-> > > The NAND driver reads/writes the folowing registers:
-> > > - OMAP_MPUIO_INPUT_LATCH,
-> > > - OMAP_MPUIO_OUTPUT,
-> > > - OMAP_MPUIO_IO_CNTL,
-> > > while the keypad driver - the following:
-> > > - OMAP_MPUIO_KBR_LATCH,
-> > > - OMAP_MPUIO_KBC,
-> > > - OMAP_MPUIO_KBD_MASKIT
-> > > - OMAP_MPUIO_GPIO_DEBOUNCING.
-> > > Both subsets are non-overlapping, and we rely on the drivers being 
-> free 
-> > > of bugs and doing their job correctly, not stepping on each others' 
-> > > feet, I guess.
-> > 
-> > First of all, I think this information should be in the commit 
-> message.
-> > Also, some sort of comment in the driver code would be nice.
-> > 
-> > If locking the memory region is too coarse approach, the should have a
-> > small separate omap-specific MPUIO subsystem which will be used by
-> > drivers to access MPUIO?
-> > 
-> > Another question - should request_mem_region() be also removed from 
-> the
-> > omap-gpio driver then? I think it is more sensible to put a comment
-> > there that it is sharing MPIO with other drivers,  instead of having 
-> an
-> > illusion of exclusive memory region ownership.
-> > 
-> > But this is up to the OMAP community - I can take this patch to my
-> > l2-mtd tree if you get an ack from Tony or other OMAP guys.
-> 
-> Tony,
-> Would I get your Ack for this fix if I extend the commit message as Artem 
-> suggested? If not, what do you think should be a correct way to fix the 
-> regression?
+The final goal is to get rid of the 'sync_supers()' kernel thread. This kernel
+thread wakes up every 5 seconds (by default) and calls '->write_super()' for
+all mounted file-systems. And the bad thing is that this is done even if all
+the superblocks are clean. Moreover, some file-systems do not even need this
+end they do not register the '->write_super()' method at all (e.g., btrfs).
 
-Well how about adding some exported functions to drivers/gpio/gpio_omap.c
-like omap_mpuio_latch?
+So 'sync_supers()' most often just generates useless wake-ups and wastes power.
+I am trying to make all file-systems independent of '->write_super()' and plan
+to remove 'sync_supers()' and '->write_super' completely once there are no more
+users.
 
-For the regression fix, if you guys want to do what Janusz is suggesting,
-then assuming the patch description also contains some decent long term
-plan to properly fix it:
+The '->write_supers()' method is mostly used by baroque file-systems like hfs,
+udf, etc. Modern file-systems like btrfs and xfs do not use it. This justifies
+removing this stuff from VFS completely and make every FS self-manage own
+superblock.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Note: in the past I was trying to upstream patches which optimized 'sync_super()',
+but Al Viro wanted me to kill it completely instead, which I am trying to do
+now, see http://lkml.org/lkml/2010/7/22/96
+
+======
+Overall status:
+
+1. ext4: patches submitted, waiting for reply from Ted Ts'o:
+   https://lkml.org/lkml/2012/4/2/111
+   Ted keeps silence so far WRT the fate of this patch-set.
+2. ext2: patches are in the ext2 tree maintained by Jan Kara:
+   git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_next
+3. Version 3 of FAT FS changes were sent to Andrew and Hirofumi:
+   https://lkml.org/lkml/2012/5/4/183
+4. JFFS2 patches are sent being sent now.
+
+TODO: affs, exofs, hfs, hfsplus, reiserfs, sysv, udf, ufs
+======
+
+ fs/fat/fat.h             |    1 +
+ fs/fat/fatent.c          |   22 +++++++++++++-----
+ fs/fat/inode.c           |   54 ++++++++++++++++++++-------------------------
+ include/linux/msdos_fs.h |    3 +-
+ 4 files changed, 43 insertions(+), 37 deletions(-)
+
+Thanks,
+Artem.
