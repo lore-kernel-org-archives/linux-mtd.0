@@ -1,32 +1,30 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQE3I-0000lt-7a
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 08:39:49 +0000
-Received: by lbbgg6 with SMTP id gg6so2347330lbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 01:39:46 -0700 (PDT)
+ id 1SQE9h-0001EK-R6
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 08:46:26 +0000
+Received: by obqv19 with SMTP id v19so4538145obq.36
+ for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 01:46:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADx9zJDL6dNnvvJuea=inXPBbW-zTtY4mxT5-0themvU=fGoQQ@mail.gmail.com>
+In-Reply-To: <CADZ6=as4exFqPWm-9D_KWNMeKVrak5aLuvO4Lm1sVvZr4UEHSQ@mail.gmail.com>
 References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
  <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
  <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
  <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
- <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
- <4FA15C73.2020606@parrot.com>
- <CADZ6=aveZJx99GPBv=V0SvJ0jo4mGD0HaTKXYVcQa3SHADtmUw@mail.gmail.com>
- <Pine.LNX.4.64.1205030928370.8107@lnxricardw.se.axis.com>
- <CADx9zJDL6dNnvvJuea=inXPBbW-zTtY4mxT5-0themvU=fGoQQ@mail.gmail.com>
-Date: Fri, 4 May 2012 10:39:45 +0200
-Message-ID: <CADZ6=au+Oq+=GS8RqDP9F=ep77K3efid8isjne1AvmTqqwh0ug@mail.gmail.com>
+ <CADx9zJBwrSWbBQ0KbP-kr2CmYcLs5g3vn10VQdAp6qHwyQbJiw@mail.gmail.com>
+ <CADZ6=av8TJJWRPsT=DrAnthZHO6iBzZ9nJMcHTiEV96TvgWkbA@mail.gmail.com>
+ <Pine.LNX.4.64.1205030859020.8107@lnxricardw.se.axis.com>
+ <CADZ6=as4exFqPWm-9D_KWNMeKVrak5aLuvO4Lm1sVvZr4UEHSQ@mail.gmail.com>
+From: Gregory CLEMENT <gclement00@gmail.com>
+Date: Fri, 4 May 2012 10:46:03 +0200
+Message-ID: <CADx9zJB6x=ifbmcGA14HyjnStcGOY21xsB2g2WR00ANQ=Fp0OQ@mail.gmail.com>
 Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
  when reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Gregory CLEMENT <gclement00@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Thilo Fromm <fromm@dresearch-fe.de>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>
+Cc: David Wagner <deubeuliou@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,35 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Gregory,
-
->>>> gluebi + mtdblock_ro doesn't work ?
->>>
->>> Can you paint the abstraction layer call flow involved in this for a
->>> single read transaction and _not_ burst out laughing ;) ? We're on an
->>> embedded system, man :)
->>
->> The crucial issue is really what performance you get, gluebi is fairly
->> transparent so I don't think you loose any significant amount.
+> Oh, okay, thanks for the info, so we need to take care about bit rot,
+> too. I don't think this is too big a challenge.
 >
-> Indeed with the direct approach we had with ubi_blk, the performance appe=
-ared
-> to be _slightly_ better with ubiblk than gluebi+mtdblock_ro, according to=
- our
-> =C2=A0benchmarks (see =C2=A0http://elinux.org/Flash_Filesystem_Benchmarks=
- )
+> Hey guys, I think I've got a bold idea. Could I re-use parts of UBI's
+> EB handling code in my readonly FTL? It depends on whether the erase
+> block scrubbing routines within UBIFS are generic enough to be used by
+> other components. Or whether the linux-mtd project is interested in
+> having these routines re-usable at some point in the future when they
+> are not re-usable right now.
+>
+> Comments, suggestions?
 
-Yay, benchmarks! Thanks for the link, Gregory.
+I think it's better to use UBI in a whole than just take most of its code.
+Indeed UBI is better if it handles all the flash, at least for wear levelin=
+g.
 
-Regards,
-Thilo
+That one of the reason we choose to not continue to work on MTDBLCK_RO
+and switch to ubi_blk.
+
+>
+> Regards,
+> Thilo
+>
+> --
+> Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+> DResearch Fahrzeugelektronik GmbH
+> Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+> Tel: +49 (30) 515 932 228 =A0 mailto:fromm@dresearch-fe.de
+> Fax: +49 (30) 515 932 77 =A0 =A0http://www.dresearch.de
+> Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+> Ust.-IDNr. DE273952058
+> Gesch=E4ftsf=FChrer: Dr. M. Weber, W. M=F6gle
+
+
 
 --=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+Gregory CLEMENT
