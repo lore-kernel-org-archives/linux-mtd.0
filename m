@@ -1,17 +1,21 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SQMGp-0006NT-Ej
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 17:26:20 +0000
+ id 1SQMSV-0007nm-Tp
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 17:38:24 +0000
+Message-ID: <1336153306.23481.33.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/3] do not use s_dirt in JFFS2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] jffs2: get rid of jffs2_sync_super
-Date: Fri,  4 May 2012 20:27:08 +0300
-Message-Id: <1336152428-24242-3-git-send-email-dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Date: Fri, 04 May 2012 20:41:46 +0300
 In-Reply-To: <1336152428-24242-1-git-send-email-dedekind1@gmail.com>
 References: <1336152428-24242-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-egIkzZ2fsrgLKGGFYCwP"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,138 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Currently JFFS2 file-system maps the VFS "superblock" abstraction to the
-write-buffer. Namely, it uses VFS services to synchronize the write-buffer
-periodically.
+--=-egIkzZ2fsrgLKGGFYCwP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The whole "superblock write-out" VFS infrastructure is served by the
-'sync_supers()' kernel thread, which wakes up every 5 (by default) seconds and
-writes out all dirty superblock using the '->write_super()' call-back. But the
-problem with this thread is that it wastes power by waking up the system every
-5 seconds no matter what. So we want to kill it completely and thus, we need to
-make file-systems to stop using the '->write_super' VFS service, and then
-remove it together with the kernel thread.
+On Fri, 2012-05-04 at 20:27 +0300, Artem Bityutskiy wrote:
+> This patch-set makes JFFS2 file-system stop using the VFS '->write_supers=
+()'
+> call-back because I plan to remove it once all users are gone.
 
-This patch switches the JFFS2 write-buffer management from
-'->write_super()'/'->s_dirt' to 'wbuf_inode'/'->write_inode'. Instead of
-setting the 's_dirt' flag, we just mark the special 'wbuf_inode' inode as
-dirty and let VFS invoke the '->write_inode' call-back when needed, where we
-synchronize the write-buffer.
+I'd really appreciate if someone on the MTD list tested these patches.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- fs/jffs2/fs.c       |   18 ++++++++++++++++++
- fs/jffs2/os-linux.h |    3 ++-
- fs/jffs2/super.c    |   22 +---------------------
- 3 files changed, 21 insertions(+), 22 deletions(-)
+--=20
+Best Regards,
+Artem Bityutskiy
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 94016a9..c6aacbb 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -228,6 +228,24 @@ int jffs2_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	return 0;
- }
- 
-+int jffs2_write_inode(struct inode *inode, struct writeback_control *wbc)
-+{
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-+
-+	/*
-+	 * JFFS2 is synchronous file-system, and the only the fake write-buffer
-+	 * inode is allowed to be writen-out asynchronously - we use this to do
-+	 * delayed write-buffer synchronization.
-+	 */
-+	BUG_ON(inode != c->wbuf_inode);
-+
-+	if (!(inode->i_sb->s_flags & MS_RDONLY)) {
-+		jffs2_dbg(1, "%s()\n", __func__);
-+		jffs2_flush_wbuf_gc(c, 0);
-+	}
-+
-+	return 0;
-+}
- 
- void jffs2_evict_inode (struct inode *inode)
- {
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index 6f28cc5..ab97e88 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -144,7 +144,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- 
- static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
- {
--	OFNI_BS_2SFFJ(c)->s_dirt = 1;
-+	__mark_inode_dirty(c->wbuf_inode, I_DIRTY_SYNC);
- }
- 
- /* background.c */
-@@ -173,6 +173,7 @@ extern const struct inode_operations jffs2_symlink_inode_operations;
- int jffs2_setattr (struct dentry *, struct iattr *);
- int jffs2_do_setattr (struct inode *, struct iattr *);
- struct inode *jffs2_iget(struct super_block *, unsigned long);
-+int jffs2_write_inode(struct inode *inode, struct writeback_control *wbc);
- void jffs2_evict_inode (struct inode *);
- void jffs2_dirty_inode(struct inode *inode, int flags);
- struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode,
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index a180409..0b4e632 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -63,21 +63,6 @@ static void jffs2_i_init_once(void *foo)
- 	inode_init_once(&f->vfs_inode);
- }
- 
--static void jffs2_write_super(struct super_block *sb)
--{
--	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
--
--	lock_super(sb);
--	sb->s_dirt = 0;
--
--	if (!(sb->s_flags & MS_RDONLY)) {
--		jffs2_dbg(1, "%s()\n", __func__);
--		jffs2_flush_wbuf_gc(c, 0);
--	}
--
--	unlock_super(sb);
--}
--
- static const char *jffs2_compr_name(unsigned int compr)
- {
- 	switch (compr) {
-@@ -113,8 +98,6 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
- 
--	jffs2_write_super(sb);
--
- 	mutex_lock(&c->alloc_sem);
- 	jffs2_flush_wbuf_pad(c);
- 	mutex_unlock(&c->alloc_sem);
-@@ -249,9 +232,9 @@ static int jffs2_remount_fs(struct super_block *sb, int *flags, char *data)
- static const struct super_operations jffs2_super_operations =
- {
- 	.alloc_inode =	jffs2_alloc_inode,
-+	.write_inode =  jffs2_write_inode,
- 	.destroy_inode =jffs2_destroy_inode,
- 	.put_super =	jffs2_put_super,
--	.write_super =	jffs2_write_super,
- 	.statfs =	jffs2_statfs,
- 	.remount_fs =	jffs2_remount_fs,
- 	.evict_inode =	jffs2_evict_inode,
-@@ -319,9 +302,6 @@ static void jffs2_put_super (struct super_block *sb)
- 
- 	jffs2_dbg(2, "%s()\n", __func__);
- 
--	if (sb->s_dirt)
--		jffs2_write_super(sb);
--
- 	mutex_lock(&c->alloc_sem);
- 	jffs2_flush_wbuf_pad(c);
- 	mutex_unlock(&c->alloc_sem);
--- 
-1.7.7.6
+--=-egIkzZ2fsrgLKGGFYCwP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPpBTaAAoJECmIfjd9wqK0EYIP/jHRSU1Kx22XWDmPvkKrMewT
+gRn7LDDjMEp/XLd2F5LvMGxIuGSagNQNUIO3Tp+93+TpYwd+kTuz+zAoEeEtezyd
+OdtH9yXT3ybLuOLC9sY3KtIAY61piLUoNWCN369FPc8aiKtEldJi3dknqTxPWFkR
+6myEjpQJi10I0TXo2pC4mYx6rrLaAaDeQCHsIvKz5FE1xz2J60h8oWenoGcqUrAh
+dI0BJ87f7knbRLOGs2mkGzyspKqRcewzUaLu1tAgLqlo5PrxN5cA0MldwFR+Tnf0
+43xnnPUtuaLbSiHxCdPuoulJFpaf2uxCjqGwDzDiGdAcc/Zb2egfUTNOuQRWd7y7
+n/w8/ct5EIgOwKBidxPfPvnFXdjkixqubtS+qSPmtSy7+haIsTQuip6xDH164XnB
+mR/aI7ddjm9LlV8JAb/Cx1y8kjL5NWVObuh0lEp45YrPjjihI3TvWdzXhZ4+PCA4
+rDfV9BIlwsejuEF6+NPV51u6wYBXfNuByMMdTG3jF6aw2oDIUfUHPrcAexJasdsy
+BUUiGR2mwmJyVMLAIjtk8KAdl4u9qb9pkiwhvxUa3il6/EJCkWlBs/UXNJGsx9OW
+xr+6BAp+ORlQULOOVcB/OvNSgje0qmnMcp3MDEGM+yOCCJfzsCt4vHMv8j2YHmKM
+IGRwmTm2iMGYVcB2UFn+
+=BS5m
+-----END PGP SIGNATURE-----
+
+--=-egIkzZ2fsrgLKGGFYCwP--
