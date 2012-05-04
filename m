@@ -1,23 +1,22 @@
-Message-ID: <4FA421A5.4020109@ti.com>
-Date: Sat, 5 May 2012 00:06:21 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+Received: from d1.icnet.pl ([212.160.220.21])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQO98-0001xT-D3
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2012 19:26:32 +0000
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3.4-rc3] MTD: NAND: ams-delta: Fix request_mem_region()
+ failure
+Date: Fri, 04 May 2012 21:23:07 +0200
+Message-ID: <20564014.WxNq7urlj7@acer>
+In-Reply-To: <20120504171125.GD5613@atomide.com>
+References: <1334670557-25640-1-git-send-email-jkrzyszt@tis.icnet.pl>
+ <1520744.9xCxNUdyzk@acer> <20120504171125.GD5613@atomide.com>
 MIME-Version: 1.0
-To: <hs@denx.de>
-Subject: Re: [PATCH v3 0/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-References: <1330945804-3379-1-git-send-email-hs@denx.de>
- <4FA3F6C2.9010602@denx.de>
-In-Reply-To: <4FA3F6C2.9010602@denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Kevin Hilman <khilman@ti.com>,
- davinci-linux-open-source@linux.davincidsp.com,
- Sergei Shtylyov <sshtylyov@mvista.com>, netdev@vger.kernel.org,
- devicetree-discuss@lists.ozlabs.org, Wolfram Sang <w.sang@pengutronix.de>,
- Rob Herring <rob.herring@calxeda.com>,
- Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+Cc: dedekind1@gmail.com, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,161 +26,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Heiko,
-
-On 5/4/2012 9:03 PM, Heiko Schocher wrote:
-> Hello,
+On Fri, 4 May 2012 10:11:25 Tony Lindgren wrote:
+> Hi,
 > 
-> this v3 patchset is now pending for more than 1 month without
-> seeing comments for it. Are there no more issues?
-
-I am yet to get to them. I have mostly cleared my backlog and will be
-looking into these next. Sorry about the delay.
-
-> Should I rebase it (if no further comments occur), as it is
-> pending so long? (If so, against which tree?)
-
-The series touches multiple subsystems, so may be each patch will go
-through individual subsystem maintainer.
-
-Also copying Grant and Rob as device tree maintainers.
-
-Thanks,
-Sekhar
-
+> * Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120430 11:15]:
+> > Dnia czwartek, 26 kwietnia 2012 08:20:59 Artem Bityutskiy pisze:
+> > > On Wed, 2012-04-25 at 19:01 +0200, Janusz Krzysztofik wrote:
+> > > > Both drivers use separate subsets of registers that belong to 
+the 
+> > OMAP1 
+> > > > MPU I/O device, but are used for controlling different sets of 
+I/O 
+> > pins. 
+> > > > The NAND driver reads/writes the folowing registers:
+> > > > - OMAP_MPUIO_INPUT_LATCH,
+> > > > - OMAP_MPUIO_OUTPUT,
+> > > > - OMAP_MPUIO_IO_CNTL,
+> > > > while the keypad driver - the following:
+> > > > - OMAP_MPUIO_KBR_LATCH,
+> > > > - OMAP_MPUIO_KBC,
+> > > > - OMAP_MPUIO_KBD_MASKIT
+> > > > - OMAP_MPUIO_GPIO_DEBOUNCING.
+> > > > Both subsets are non-overlapping, and we rely on the drivers 
+being 
+> > free 
+> > > > of bugs and doing their job correctly, not stepping on each 
+others' 
+> > > > feet, I guess.
+> > > 
+> > > First of all, I think this information should be in the commit 
+> > message.
+> > > Also, some sort of comment in the driver code would be nice.
+> > > 
+> > > If locking the memory region is too coarse approach, the should 
+have a
+> > > small separate omap-specific MPUIO subsystem which will be used by
+> > > drivers to access MPUIO?
+> > > 
+> > > Another question - should request_mem_region() be also removed 
+from 
+> > the
+> > > omap-gpio driver then? I think it is more sensible to put a 
+comment
+> > > there that it is sharing MPIO with other drivers,  instead of 
+having 
+> > an
+> > > illusion of exclusive memory region ownership.
+> > > 
+> > > But this is up to the OMAP community - I can take this patch to my
+> > > l2-mtd tree if you get an ack from Tony or other OMAP guys.
+> > 
+> > Tony,
+> > Would I get your Ack for this fix if I extend the commit message as 
+Artem 
+> > suggested? If not, what do you think should be a correct way to fix 
+the 
+> > regression?
 > 
-> Thanks.
+> Well how about adding some exported functions to 
+drivers/gpio/gpio_omap.c
+> like omap_mpuio_latch?
 > 
-> bye,
-> Heiko
+> For the regression fix, if you guys want to do what Janusz is 
+suggesting,
+> then assuming the patch description also contains some decent long 
+term
+> plan to properly fix it:
 > 
-> Heiko Schocher wrote:
->> This patchserie add support for the davinci am1808 based
->> enbw_cmc board.
->>
->> Important: I rebased this patchserie against the irqdomain/next
->> branch from grant likely, as he suggested to rework the OF
->> intcontroller changes to the irqdomain work, branch found here:
->>
->> http://git.secretlab.ca/?p=linux-2.6.git;a=shortlog;h=refs/heads/irqdomain/next
->>
->>     git://git.secretlab.ca/git/linux-2.6.git irqdomain/next
->>
->>     commit 280ad7fda5f95211857fda38960f2b6fdf6edd3e
->>     Author: Grant Likely <grant.likely@secretlab.ca>
->>     Date:   Fri Feb 24 14:58:54 2012 -0700
->>
->>     mfd: twl-core: Add IRQ_DOMAIN dependency
->>
->> changes for v2:
->> Post this patchserie now as v2, as reworked in the
->> comments I got for the RFC serie.
->>
->> changes for v3:
->> - Interrupt Controller:
->>   - comment from Sergei Shtylyov:
->>     - rename compatible" prop to "ti,cp_intc"
->>     - cp_intc_init() is now also for the of case
->>       the name of the init function (it calls the
->>       "new" __cp_intc_init() function, which was
->>       the "old" cp_intc_init()). Through this
->>       rework the changes for OF is better visible.
->>       As the OF case uses the irq_domain rework from
->>       Grant Likely, maybe the none OF case can use
->>       this also, but this should be tested on a hw ...
->>  
->> Got no comments to the following points, I noted in the
->> RFC series, so posting this patchseries with them:
->>
->> - ARM: davinci: configure davinci aemif chipselects through OF
->>   not moved to mfd, as mentioned in this discussion:
->>   http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
->>   instead use a phandle in the DTS, so drivers which
->>   uses the davinci aemif, can call davinci_aemif_setup_timing_of()
->>
->>   This is just thought as an RFC ... The enbw_cmc board
->>   support not really need to setup this bus timings, as
->>   they are setup in U-Boot ... but I want to post this,
->>   as I think, it is a nice to have, and I am not really
->>   sure, if this has to be a MFD device (If so, all bus
->>   interfaces for other SoCs should be converted also to
->>   MFD devices) ... as an example how this can be used
->>   I add this to the davinci nand controller OF support
->>   patch, in this patchserie.
->>
->> - ARM: davinci: mux: add OF support
->>   I want to get rid of the pin setup code in board code ...
->>   This patch introduces a davinci_cfg_reg_of() function,
->>   which davinci drivers can call, if they found a
->>   "pinmux-handle", so used in the following drivers in
->>   this patchserie:
->>
->>   drivers/net/ethernet/ti/davinci_emac
->>   drivers/i2c/busses/i2c-davinci.c
->>   drivers/mtd/nand/davinci_nand.c
->>
->> - post this board support with USB support, even though
->>   USB is only working with the 10 ms "workaround", posted here:
->>   http://comments.gmane.org/gmane.linux.usb.general/54505
->>   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
->>
->> - MMC and USB are not using OF support yet, ideas how to port
->>   this are welcome. I need for USB and MMC board specific
->>   callbacks, how to solve this with OF support?
->>
->> Signed-off-by: Heiko Schocher <hs@denx.de>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: devicetree-discuss@lists.ozlabs.org
->> Cc: davinci-linux-open-source@linux.davincidsp.com
->> Cc: linux-mtd@lists.infradead.org
->> Cc: linux-i2c@vger.kernel.org
->> Cc: netdev@vger.kernel.org
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Ben Dooks <ben-linux@fluff.org>
->> Cc: Wolfram Sang <w.sang@pengutronix.de>
->> Cc: Sekhar Nori <nsekhar@ti.com>
->> Cc: Kevin Hilman <khilman@ti.com>
->> Cc: Wolfgang Denk <wd@denx.de>
->> Cc: Sergei Shtylyov <sshtylyov@mvista.com>
->>
->> Heiko Schocher (7):
->>   ARM: davinci, intc: Add OF support for TI interrupt controller
->>   ARM: davinci: configure davinci aemif chipselects through OF
->>   ARM: davinci: mux: add OF support
->>   ARM: davinci: net: davinci_emac: add OF support
->>   ARM: davinci: i2c: add OF support
->>   ARM: mtd: nand: davinci: add OF support for davinci nand controller
->>   ARM: davinci: add support for the am1808 based enbw_cmc board
->>
->>  .../devicetree/bindings/arm/davinci/aemif.txt      |  119 ++++++
->>  .../bindings/arm/davinci/davinci_emac.txt          |   43 +++
->>  .../devicetree/bindings/arm/davinci/i2c.txt        |   33 ++
->>  .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
->>  .../devicetree/bindings/arm/davinci/mux.txt        |   40 ++
->>  .../devicetree/bindings/arm/davinci/nand.txt       |   74 ++++
->>  arch/arm/boot/dts/enbw_cmc.dts                     |  268 ++++++++++++++
->>  arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
->>  arch/arm/mach-davinci/Kconfig                      |    9 +
->>  arch/arm/mach-davinci/Makefile                     |    1 +
->>  arch/arm/mach-davinci/aemif.c                      |   86 +++++-
->>  arch/arm/mach-davinci/board-enbw-cmc.c             |  380 ++++++++++++++++++++
->>  arch/arm/mach-davinci/cp_intc.c                    |   87 ++++-
->>  arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
->>  arch/arm/mach-davinci/include/mach/mux.h           |    2 +
->>  arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
->>  arch/arm/mach-davinci/mux.c                        |   73 ++++-
->>  drivers/i2c/busses/i2c-davinci.c                   |   37 ++
->>  drivers/mtd/nand/davinci_nand.c                    |   85 +++++-
->>  drivers/net/ethernet/ti/davinci_emac.c             |   94 +++++-
->>  20 files changed, 1569 insertions(+), 14 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/davinci_emac.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/mux.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->>  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
->>  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
->>  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
->>
-> 
+> Acked-by: Tony Lindgren <tony@atomide.com>
+
+Thanks. Now that we know you prefer to keep the memory requested from 
+inside the gpio-omap, which I was about to suggest to drop back as an 
+alternative fix, I'll try to cook a new description for my patch, and 
+perhaps add a comment replacing the request_mem_region function removed 
+from the ams-delta NAND driver, in order to satisfy both yours and 
+Artem's comments in a few days.
+
+Regards,
+Janusz
