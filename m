@@ -1,13 +1,21 @@
-From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
-Subject: [PATCH v2 2/2] mtd: gpmi: add gpmi support for mx6q
-Date: Fri,  4 May 2012 21:42:06 -0400
-Message-Id: <1336182126-3230-2-git-send-email-shijie8@gmail.com>
-In-Reply-To: <1336182126-3230-1-git-send-email-shijie8@gmail.com>
-References: <1336182126-3230-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, Huang Shijie <b32955@freescale.com>,
- shawn.guo@linaro.org, linux-mtd@lists.infradead.org,
+Date: Fri, 04 May 2012 17:33:22 +0200
+From: Heiko Schocher <hs@denx.de>
+Subject: Re: [PATCH v3 0/7] ARM: davinci: add support for the am1808 based
+ enbw_cmc board
+In-reply-to: <1330945804-3379-1-git-send-email-hs@denx.de>
+To: davinci-linux-open-source@linux.davincidsp.com
+Message-id: <4FA3F6C2.9010602@denx.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+References: <1330945804-3379-1-git-send-email-hs@denx.de>
+Cc: Kevin Hilman <khilman@ti.com>, Sergei Shtylyov <sshtylyov@mvista.com>,
+ netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
+ Sekhar Nori <nsekhar@ti.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
+Reply-To: hs@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,165 +25,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+Hello,
 
-add gpmi support for mx6q.
+this v3 patchset is now pending for more than 1 month without
+seeing comments for it. Are there no more issues?
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/Kconfig               |    2 +-
- drivers/mtd/nand/gpmi-nand/bch-regs.h  |   42 ++++++++++++++++++++++++-------
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   11 ++++----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    4 +++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    2 +
- 5 files changed, 45 insertions(+), 16 deletions(-)
+Should I rebase it (if no further comments occur), as it is
+pending so long? (If so, against which tree?)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index fd4d064..3b29b55 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -440,7 +440,7 @@ config MTD_NAND_NANDSIM
- 
- config MTD_NAND_GPMI_NAND
-         bool "GPMI NAND Flash Controller driver"
--        depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28)
-+        depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
-         help
- 	 Enables NAND Flash support for IMX23 or IMX28.
- 	 The GPMI controller is very powerful, with the help of BCH
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-index 4effb8c..a092451 100644
---- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -51,15 +51,26 @@
- 
- #define BP_BCH_FLASH0LAYOUT0_ECC0		12
- #define BM_BCH_FLASH0LAYOUT0_ECC0	(0xf << BP_BCH_FLASH0LAYOUT0_ECC0)
--#define BF_BCH_FLASH0LAYOUT0_ECC0(v)		\
--	(((v) << BP_BCH_FLASH0LAYOUT0_ECC0) & BM_BCH_FLASH0LAYOUT0_ECC0)
-+#define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
-+#define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
-+#define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
-+	(GPMI_IS_MX6Q(x)					\
-+		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
-+			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
-+		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
-+			& BM_BCH_FLASH0LAYOUT0_ECC0)		\
-+	)
- 
- #define BP_BCH_FLASH0LAYOUT0_DATA0_SIZE		0
- #define BM_BCH_FLASH0LAYOUT0_DATA0_SIZE		\
- 			(0xfff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
--#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v)	\
--	(((v) << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)\
--					 & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)
-+#define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
-+			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
-+#define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
-+	(GPMI_IS_MX6Q(x)						\
-+		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
-+		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
-+	)
- 
- #define HW_BCH_FLASH0LAYOUT1			0x00000090
- 
-@@ -72,13 +83,24 @@
- 
- #define BP_BCH_FLASH0LAYOUT1_ECCN		12
- #define BM_BCH_FLASH0LAYOUT1_ECCN	(0xf << BP_BCH_FLASH0LAYOUT1_ECCN)
--#define BF_BCH_FLASH0LAYOUT1_ECCN(v)		\
--	(((v) << BP_BCH_FLASH0LAYOUT1_ECCN) & BM_BCH_FLASH0LAYOUT1_ECCN)
-+#define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
-+#define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
-+#define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
-+	(GPMI_IS_MX6Q(x)					\
-+		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
-+			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
-+		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
-+			& BM_BCH_FLASH0LAYOUT1_ECCN)		\
-+	)
- 
- #define BP_BCH_FLASH0LAYOUT1_DATAN_SIZE		0
- #define BM_BCH_FLASH0LAYOUT1_DATAN_SIZE		\
- 			(0xfff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
--#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v)	\
--	(((v) << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE) \
--					 & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)
-+#define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
-+			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
-+#define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
-+	(GPMI_IS_MX6Q(x)						\
-+		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
-+		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
-+	)
- #endif
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 5c55c71..a1f4332 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -224,13 +224,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	/* Configure layout 0. */
- 	writel(BF_BCH_FLASH0LAYOUT0_NBLOCKS(block_count)
- 			| BF_BCH_FLASH0LAYOUT0_META_SIZE(metadata_size)
--			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength)
--			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size),
-+			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this)
-+			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size, this),
- 			r->bch_regs + HW_BCH_FLASH0LAYOUT0);
- 
- 	writel(BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size)
--			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength)
--			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size),
-+			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this)
-+			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
- 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
- 
- 	/* Set *all* chip selects to use layout 0. */
-@@ -805,7 +805,8 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
- 	if (GPMI_IS_MX23(this)) {
- 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
- 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
--	} else if (GPMI_IS_MX28(this)) {
-+	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
-+		/* MX28 shares the same R/B register as MX6Q. */
- 		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
- 		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
- 	} else
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8011123..655fc5b 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1514,6 +1514,7 @@ err_out:
- static const struct platform_device_id gpmi_ids[] = {
- 	{ .name = "imx23-gpmi-nand", .driver_data = IS_MX23, },
- 	{ .name = "imx28-gpmi-nand", .driver_data = IS_MX28, },
-+	{ .name = "imx6q-gpmi-nand", .driver_data = IS_MX6Q, },
- 	{},
- };
- 
-@@ -1524,6 +1525,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
- 	}, {
- 		.compatible = "fsl,imx28-gpmi-nand",
- 		.data = (void *)&gpmi_ids[IS_MX28]
-+	}, {
-+		.compatible = "fsl,imx6q-gpmi-nand",
-+		.data = (void *)&gpmi_ids[IS_MX6Q]
- 	}, {}
- };
- MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 12fdd77..ce5daa1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -268,6 +268,8 @@ extern int gpmi_read_page(struct gpmi_nand_data *,
- /* Use the platform_id to distinguish different Archs. */
- #define IS_MX23			0x0
- #define IS_MX28			0x1
-+#define IS_MX6Q			0x2
- #define GPMI_IS_MX23(x)		((x)->pdev->id_entry->driver_data == IS_MX23)
- #define GPMI_IS_MX28(x)		((x)->pdev->id_entry->driver_data == IS_MX28)
-+#define GPMI_IS_MX6Q(x)		((x)->pdev->id_entry->driver_data == IS_MX6Q)
- #endif
+Thanks.
+
+bye,
+Heiko
+
+Heiko Schocher wrote:
+> This patchserie add support for the davinci am1808 based
+> enbw_cmc board.
+> 
+> Important: I rebased this patchserie against the irqdomain/next
+> branch from grant likely, as he suggested to rework the OF
+> intcontroller changes to the irqdomain work, branch found here:
+> 
+> http://git.secretlab.ca/?p=linux-2.6.git;a=shortlog;h=refs/heads/irqdomain/next
+> 
+>     git://git.secretlab.ca/git/linux-2.6.git irqdomain/next
+> 
+>     commit 280ad7fda5f95211857fda38960f2b6fdf6edd3e
+>     Author: Grant Likely <grant.likely@secretlab.ca>
+>     Date:   Fri Feb 24 14:58:54 2012 -0700
+> 
+>     mfd: twl-core: Add IRQ_DOMAIN dependency
+> 
+> changes for v2:
+> Post this patchserie now as v2, as reworked in the
+> comments I got for the RFC serie.
+> 
+> changes for v3:
+> - Interrupt Controller:
+>   - comment from Sergei Shtylyov:
+>     - rename compatible" prop to "ti,cp_intc"
+>     - cp_intc_init() is now also for the of case
+>       the name of the init function (it calls the
+>       "new" __cp_intc_init() function, which was
+>       the "old" cp_intc_init()). Through this
+>       rework the changes for OF is better visible.
+>       As the OF case uses the irq_domain rework from
+>       Grant Likely, maybe the none OF case can use
+>       this also, but this should be tested on a hw ...
+>  
+> Got no comments to the following points, I noted in the
+> RFC series, so posting this patchseries with them:
+> 
+> - ARM: davinci: configure davinci aemif chipselects through OF
+>   not moved to mfd, as mentioned in this discussion:
+>   http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
+>   instead use a phandle in the DTS, so drivers which
+>   uses the davinci aemif, can call davinci_aemif_setup_timing_of()
+> 
+>   This is just thought as an RFC ... The enbw_cmc board
+>   support not really need to setup this bus timings, as
+>   they are setup in U-Boot ... but I want to post this,
+>   as I think, it is a nice to have, and I am not really
+>   sure, if this has to be a MFD device (If so, all bus
+>   interfaces for other SoCs should be converted also to
+>   MFD devices) ... as an example how this can be used
+>   I add this to the davinci nand controller OF support
+>   patch, in this patchserie.
+> 
+> - ARM: davinci: mux: add OF support
+>   I want to get rid of the pin setup code in board code ...
+>   This patch introduces a davinci_cfg_reg_of() function,
+>   which davinci drivers can call, if they found a
+>   "pinmux-handle", so used in the following drivers in
+>   this patchserie:
+> 
+>   drivers/net/ethernet/ti/davinci_emac
+>   drivers/i2c/busses/i2c-davinci.c
+>   drivers/mtd/nand/davinci_nand.c
+> 
+> - post this board support with USB support, even though
+>   USB is only working with the 10 ms "workaround", posted here:
+>   http://comments.gmane.org/gmane.linux.usb.general/54505
+>   I see this issue also on the AM1808 TMDXEXP1808L evalboard.
+> 
+> - MMC and USB are not using OF support yet, ideas how to port
+>   this are welcome. I need for USB and MMC board specific
+>   callbacks, how to solve this with OF support?
+> 
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: devicetree-discuss@lists.ozlabs.org
+> Cc: davinci-linux-open-source@linux.davincidsp.com
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Kevin Hilman <khilman@ti.com>
+> Cc: Wolfgang Denk <wd@denx.de>
+> Cc: Sergei Shtylyov <sshtylyov@mvista.com>
+> 
+> Heiko Schocher (7):
+>   ARM: davinci, intc: Add OF support for TI interrupt controller
+>   ARM: davinci: configure davinci aemif chipselects through OF
+>   ARM: davinci: mux: add OF support
+>   ARM: davinci: net: davinci_emac: add OF support
+>   ARM: davinci: i2c: add OF support
+>   ARM: mtd: nand: davinci: add OF support for davinci nand controller
+>   ARM: davinci: add support for the am1808 based enbw_cmc board
+> 
+>  .../devicetree/bindings/arm/davinci/aemif.txt      |  119 ++++++
+>  .../bindings/arm/davinci/davinci_emac.txt          |   43 +++
+>  .../devicetree/bindings/arm/davinci/i2c.txt        |   33 ++
+>  .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
+>  .../devicetree/bindings/arm/davinci/mux.txt        |   40 ++
+>  .../devicetree/bindings/arm/davinci/nand.txt       |   74 ++++
+>  arch/arm/boot/dts/enbw_cmc.dts                     |  268 ++++++++++++++
+>  arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
+>  arch/arm/mach-davinci/Kconfig                      |    9 +
+>  arch/arm/mach-davinci/Makefile                     |    1 +
+>  arch/arm/mach-davinci/aemif.c                      |   86 +++++-
+>  arch/arm/mach-davinci/board-enbw-cmc.c             |  380 ++++++++++++++++++++
+>  arch/arm/mach-davinci/cp_intc.c                    |   87 ++++-
+>  arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
+>  arch/arm/mach-davinci/include/mach/mux.h           |    2 +
+>  arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
+>  arch/arm/mach-davinci/mux.c                        |   73 ++++-
+>  drivers/i2c/busses/i2c-davinci.c                   |   37 ++
+>  drivers/mtd/nand/davinci_nand.c                    |   85 +++++-
+>  drivers/net/ethernet/ti/davinci_emac.c             |   94 +++++-
+>  20 files changed, 1569 insertions(+), 14 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/davinci_emac.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/mux.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+>  create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
+>  create mode 100644 arch/arm/configs/enbw_cmc_defconfig
+>  create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+> 
+
 -- 
-1.7.4.4
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
