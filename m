@@ -1,22 +1,21 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQbWF-00011z-G0
- for linux-mtd@lists.infradead.org; Sat, 05 May 2012 09:43:16 +0000
-Received: by lbbgg6 with SMTP id gg6so3213702lbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 05 May 2012 02:43:13 -0700 (PDT)
-Message-ID: <1336210990.2027.2.camel@koala>
-Subject: Re: [PATCH v2 0/7] mtd: Change meaning of -EUCLEAN return code on
- reads
+ id 1SQbgB-0001LG-8j
+ for linux-mtd@lists.infradead.org; Sat, 05 May 2012 09:53:31 +0000
+Received: by lbbgg6 with SMTP id gg6so3216762lbb.36
+ for <linux-mtd@lists.infradead.org>; Sat, 05 May 2012 02:53:29 -0700 (PDT)
+Message-ID: <1336211607.2027.4.camel@koala>
+Subject: Re: [PATCH (mtd-www) 1/3] doc: update info for Linux 3.0
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Sat, 05 May 2012 12:43:10 +0300
-In-Reply-To: <1335380771-27805-1-git-send-email-mikedunn@newsguy.com>
-References: <1335380771-27805-1-git-send-email-mikedunn@newsguy.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Sat, 05 May 2012 12:53:27 +0300
+In-Reply-To: <1336190700-27345-1-git-send-email-computersforpeace@gmail.com>
+References: <1336190700-27345-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Y7iQa6BYUVeKuxVRj/rL"
+ boundary="=-pbTgszHxdOZHLtk6oudI"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Y7iQa6BYUVeKuxVRj/rL
+--=-pbTgszHxdOZHLtk6oudI
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-04-25 at 12:06 -0700, Mike Dunn wrote:
-> This v2 of this set includes the following changes:
->   - [Patch 4/7]: Propagate bitflip_threshold from master to slave partiti=
-on.
->   - [Patch 5/7]: Zero out max_bitflips outside of if-block in fsl_ifc_nan=
-d.
->   - [Patch 6/7]: Simplify ecc strength sanity check.
+On Fri, 2012-05-04 at 21:04 -0700, Brian Norris wrote:
+> Although 'linux-2.6.git' is still a valid repository, the preferred name =
+is
+> just 'linux.git', now that Linux has reached version 3.x. And David also =
+has
+> his repository under 'linux-mtd.git' now, so we might as well redirect to=
+ the
+> modern naming.
 
-Would you please do one more thing - create a piece of documentation
-about this feature at the mtd web site.
-
-http://git.infradead.org/mtd-www.git
+Many thanks Brian,
+pushed to mtd-www.git.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Y7iQa6BYUVeKuxVRj/rL
+--=-pbTgszHxdOZHLtk6oudI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPpPYuAAoJECmIfjd9wqK02KoP+gJfq957qr2tDiOPLKHiF55X
-lROdYAHUrmAHctcgMEILP4kRYAqBzLyw8f+P4SOKRFFps7ULZ8coIpJkDuc+OYCt
-d5/2MHV3ZVHwWgCeDK+w548yAZPJEYMKAgbZQ5MjAQpfEPzml+UWqB0cnWW9hf3c
-XuflwxRXNvhwtleRfkBOmDrOANaU6/idL56YHvq5QD/PdwOgPSnO6j6kcjHYaqu9
-V+SHYfHma3xIk3mEnJMvT53msvcdg4+etGYWA3yQMtaLMGQDFWVI9psGL7NZU5Xy
-I2Wa7fuSpkb0JQ/HIuVM5K4EjsAyFIAb5uoE/b/xittxvtXzEIj61Hdpk8mObeJr
-Icat/XSk5c2p8UJxE6MdkrCnVcAUxVg/VD8u6Zm5IxFtu4wZ8XP5dJ7HaPYmkMAA
-qkANFEdlFQ3TSeH7KHbWdWjS6IK8xFgrrh0NwBOZ0kr/PQ+gLMXNDKis9X17ydmT
-MFvMX/wyj9qeJmVJ5N9FaAtPZu11zkLC49PpwK1iOehEhn8AXK54nCvicuiVXx8m
-LwwqmDCmW5MCzLf86dnngKy1f8tZk3DaZDunmJL9SkuFRMceMqkIhJRZj1Lg/MIS
-H91xqu99JS/8giA4iiazRtz5LMHVSDa1sZsWH5YJ6dHUbrmklY8NOcvMkETApNVJ
-0iC4rcOnD5dhf1H8xmT5
-=51SG
+iQIcBAABAgAGBQJPpPiXAAoJECmIfjd9wqK03xkP/3Ee2HxIlS8447lnNmS5KYuw
+PEDzXOZM+C8pddjtp3Qir3YfsZkF1kk981Hxg8GMl4nW4eMXZ+srtgCUQebn6OqV
+1A4J8bsAAiwWg4I+Dk8CgaEat7xLYo63xL9dfglTcEUEOwByVWYIXmw3r6gOndSL
+gHHrsaWM9X54BCkew8ZouQ0zCIDw9Pp51TsmWcqWeUtt87rFj9qgV8FrsuxBSi48
+cL2IAzz54G4rAIZ7l3gf2rMaNv5j/UFIfZEVlS9vhnKmJzolVYUhekI1AfjNMSu6
+EQcEvd52MGmZoNlE6apDpFNDh2pUJkXnBiBpIcwV2hBhF/ROjGA+xhj7nPvM/ylw
+OwGnUozeoJ+UDqajpsISc6ND0IoCX0Hqh0DDrvWWodI+pUZK0N0pk4hNWsrn7xYO
+bhcJmfMlrPw0MrGJ7xZcu7XkFftxMeWOAsc9A/GuMyI1RCBcBAQsPVqlYeyPOgxi
+19iOCgGqqKTbQrn5LgtijmTltfJ7rHNrM5OuWSzcMrHcKac8xxrA6IG10jZ2Tgf/
++StDWMi7uZu4fKSuY3bCIrkHJ5XMRvyRLoKquZAQHLbEtCdGyHPQypYeeK8CX/h2
+2DKylJS86iJPuzTa3fePYjQb6aDruPEpWjRT9bQBOYbShVc3xA3OUIHrFi8B8RfX
+0DdzqX32wFh8eFu/AJnj
+=Cvzv
 -----END PGP SIGNATURE-----
 
---=-Y7iQa6BYUVeKuxVRj/rL--
+--=-pbTgszHxdOZHLtk6oudI--
