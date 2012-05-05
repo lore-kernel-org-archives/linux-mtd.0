@@ -1,22 +1,22 @@
-Received: from d1.icnet.pl ([212.160.220.21])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SQO98-0001xT-D3
- for linux-mtd@lists.infradead.org; Fri, 04 May 2012 19:26:32 +0000
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3.4-rc3] MTD: NAND: ams-delta: Fix request_mem_region()
- failure
-Date: Fri, 04 May 2012 21:23:07 +0200
-Message-ID: <20564014.WxNq7urlj7@acer>
-In-Reply-To: <20120504171125.GD5613@atomide.com>
-References: <1334670557-25640-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1520744.9xCxNUdyzk@acer> <20120504171125.GD5613@atomide.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQTHR-000190-OM
+ for linux-mtd@lists.infradead.org; Sat, 05 May 2012 00:55:26 +0000
+Received: by yenr9 with SMTP id r9so958242yen.36
+ for <linux-mtd@lists.infradead.org>; Fri, 04 May 2012 17:55:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: dedekind1@gmail.com, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1336153306.23481.33.camel@sauron.fi.intel.com>
+References: <1336152428-24242-1-git-send-email-dedekind1@gmail.com>
+ <1336153306.23481.33.camel@sauron.fi.intel.com>
+Date: Fri, 4 May 2012 17:55:23 -0700
+Message-ID: <CAN8TOE_KZQqB6gqA1ccUfQ3v+n_ZN9Hm1Q63QDkhf9GGhj7eEQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] do not use s_dirt in JFFS2
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux Kernel Maling List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 4 May 2012 10:11:25 Tony Lindgren wrote:
-> Hi,
-> 
-> * Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120430 11:15]:
-> > Dnia czwartek, 26 kwietnia 2012 08:20:59 Artem Bityutskiy pisze:
-> > > On Wed, 2012-04-25 at 19:01 +0200, Janusz Krzysztofik wrote:
-> > > > Both drivers use separate subsets of registers that belong to 
-the 
-> > OMAP1 
-> > > > MPU I/O device, but are used for controlling different sets of 
-I/O 
-> > pins. 
-> > > > The NAND driver reads/writes the folowing registers:
-> > > > - OMAP_MPUIO_INPUT_LATCH,
-> > > > - OMAP_MPUIO_OUTPUT,
-> > > > - OMAP_MPUIO_IO_CNTL,
-> > > > while the keypad driver - the following:
-> > > > - OMAP_MPUIO_KBR_LATCH,
-> > > > - OMAP_MPUIO_KBC,
-> > > > - OMAP_MPUIO_KBD_MASKIT
-> > > > - OMAP_MPUIO_GPIO_DEBOUNCING.
-> > > > Both subsets are non-overlapping, and we rely on the drivers 
-being 
-> > free 
-> > > > of bugs and doing their job correctly, not stepping on each 
-others' 
-> > > > feet, I guess.
-> > > 
-> > > First of all, I think this information should be in the commit 
-> > message.
-> > > Also, some sort of comment in the driver code would be nice.
-> > > 
-> > > If locking the memory region is too coarse approach, the should 
-have a
-> > > small separate omap-specific MPUIO subsystem which will be used by
-> > > drivers to access MPUIO?
-> > > 
-> > > Another question - should request_mem_region() be also removed 
-from 
-> > the
-> > > omap-gpio driver then? I think it is more sensible to put a 
-comment
-> > > there that it is sharing MPIO with other drivers,  instead of 
-having 
-> > an
-> > > illusion of exclusive memory region ownership.
-> > > 
-> > > But this is up to the OMAP community - I can take this patch to my
-> > > l2-mtd tree if you get an ack from Tony or other OMAP guys.
-> > 
-> > Tony,
-> > Would I get your Ack for this fix if I extend the commit message as 
-Artem 
-> > suggested? If not, what do you think should be a correct way to fix 
-the 
-> > regression?
-> 
-> Well how about adding some exported functions to 
-drivers/gpio/gpio_omap.c
-> like omap_mpuio_latch?
-> 
-> For the regression fix, if you guys want to do what Janusz is 
-suggesting,
-> then assuming the patch description also contains some decent long 
-term
-> plan to properly fix it:
-> 
-> Acked-by: Tony Lindgren <tony@atomide.com>
+On Fri, May 4, 2012 at 10:41 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-05-04 at 20:27 +0300, Artem Bityutskiy wrote:
+>> This patch-set makes JFFS2 file-system stop using the VFS '->write_supers()'
+>> call-back because I plan to remove it once all users are gone.
+>
+> I'd really appreciate if someone on the MTD list tested these patches.
 
-Thanks. Now that we know you prefer to keep the memory requested from 
-inside the gpio-omap, which I was about to suggest to drop back as an 
-alternative fix, I'll try to cook a new description for my patch, and 
-perhaps add a comment replacing the request_mem_region function removed 
-from the ams-delta NAND driver, in order to satisfy both yours and 
-Artem's comments in a few days.
+Am I crazy, or did you send the cover letter without the patches?
 
-Regards,
-Janusz
+Brian
