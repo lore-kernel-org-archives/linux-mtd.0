@@ -1,15 +1,15 @@
 Received: from utopia.booyaka.com ([72.9.107.138])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQqub-00075I-J6
- for linux-mtd@lists.infradead.org; Sun, 06 May 2012 02:09:26 +0000
-Date: Sat, 5 May 2012 20:09:21 -0600 (MDT)
+ id 1SQquv-00076N-G8
+ for linux-mtd@lists.infradead.org; Sun, 06 May 2012 02:09:45 +0000
+Date: Sat, 5 May 2012 20:09:44 -0600 (MDT)
 From: Paul Walmsley <paul@pwsan.com>
 To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v4 13/39] ARM: OMAP3: hwmod data: add gpmc
-In-Reply-To: <1d1a0ae293834061a15f1b19f903b81bfa01befc.1335874494.git.afzal@ti.com>
-Message-ID: <alpine.DEB.2.00.1205052008560.20926@utopia.booyaka.com>
+Subject: Re: [PATCH v4 14/39] ARM: OMAP2xxx: hwmod data: add gpmc
+In-Reply-To: <3a2e4c8f26e4a0c5e4139f4530c021d2a43a07ca.1335874494.git.afzal@ti.com>
+Message-ID: <alpine.DEB.2.00.1205052009240.20926@utopia.booyaka.com>
 References: <cover.1335874494.git.afzal@ti.com>
- <1d1a0ae293834061a15f1b19f903b81bfa01befc.1335874494.git.afzal@ti.com>
+ <3a2e4c8f26e4a0c5e4139f4530c021d2a43a07ca.1335874494.git.afzal@ti.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, tony@atomide.com,
@@ -35,7 +35,7 @@ On Tue, 1 May 2012, Afzal Mohammed wrote:
 > 
 > Signed-off-by: Afzal Mohammed <afzal@ti.com>
 
-The comments from
+The comments from 
 
 http://marc.info/?l=linux-omap&m=133626998315039&w=2
 
