@@ -1,23 +1,25 @@
-Received: from utopia.booyaka.com ([72.9.107.138])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SQquv-00076N-G8
- for linux-mtd@lists.infradead.org; Sun, 06 May 2012 02:09:45 +0000
-Date: Sat, 5 May 2012 20:09:44 -0600 (MDT)
-From: Paul Walmsley <paul@pwsan.com>
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH v4 14/39] ARM: OMAP2xxx: hwmod data: add gpmc
-In-Reply-To: <3a2e4c8f26e4a0c5e4139f4530c021d2a43a07ca.1335874494.git.afzal@ti.com>
-Message-ID: <alpine.DEB.2.00.1205052009240.20926@utopia.booyaka.com>
-References: <cover.1335874494.git.afzal@ti.com>
- <3a2e4c8f26e4a0c5e4139f4530c021d2a43a07ca.1335874494.git.afzal@ti.com>
+Received: from eddie.linux-mips.org ([78.24.191.182] helo=cvs.linux-mips.org)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SQvWI-00024v-6D
+ for linux-mtd@lists.infradead.org; Sun, 06 May 2012 07:04:39 +0000
+Received: from localhost.localdomain ([127.0.0.1]:38129 "EHLO
+ localhost.localdomain" rhost-flags-OK-OK-OK-OK)
+ by eddie.linux-mips.org with ESMTP id S1903611Ab2EFHEd (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sun, 6 May 2012 09:04:33 +0200
+Date: Sun, 6 May 2012 08:04:33 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@linux-mips.org>
+To: David Daney <ddaney.cavm@gmail.com>
+Subject: Re: [PATCH 1/2] MIPS: Kbuild: remove -Werror
+In-Reply-To: <4F9AD14E.9060008@gmail.com>
+Message-ID: <alpine.LFD.2.00.1205060754390.19691@eddie.linux-mips.org>
+References: <1335534510-12573-1-git-send-email-dedekind1@gmail.com>
+ <4F9AD14E.9060008@gmail.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: khilman@ti.com, nm@ti.com, linux@arm.linux.org.uk, tony@atomide.com,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, balbi@ti.com,
- dbaryshkov@gmail.com, kyungmin.park@samsung.com, vimal.newwork@gmail.com,
- grinberg@compulab.co.il, artem.bityutskiy@linux.intel.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org, notasas@gmail.com
+Cc: MIPS Mailing List <linux-mips@linux-mips.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ralf Baechle <ralf@linux-mips.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Afzal,
+On Fri, 27 Apr 2012, David Daney wrote:
 
-On Tue, 1 May 2012, Afzal Mohammed wrote:
-
-> Add gpmc hwmod and associated interconnect data
+> > MIPS build fails with the standard W=1 Kbuild switch with because of the
+> > -Werror gcc switch.
+> > 
+> > This patch removes the gcc switch to make W=1 work. Mips is the only
+> > architecture I know which does not build with W=1 and this upsets my aiaiai
+> > scripts. And in general, you never know which warnings newer versions of gcc
+> > will start emiting so having -Werror by default is not the best idea.
+> > 
+> > Signed-off-by: Artem Bityutskiy<artem.bityutskiy@linux.intel.com>
 > 
-> Signed-off-by: Afzal Mohammed <afzal@ti.com>
+> I think the warning messages are enough, we don't need to break things.
 
-The comments from 
+ I disagree.  People generally don't fix their broken code just because it 
+triggers warnings.  The cases where GCC is genuinely confused are the 
+minority -- and even if so, chances are the human reader of that code will 
+also be.
 
-http://marc.info/?l=linux-omap&m=133626998315039&w=2
-
-also apply to this patch.
-
-
-- Paul
+  Maciej
