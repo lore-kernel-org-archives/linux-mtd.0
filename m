@@ -1,21 +1,15 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRT78-0003oF-GK
- for linux-mtd@lists.infradead.org; Mon, 07 May 2012 18:56:55 +0000
-Received: by laap9 with SMTP id p9so1112619laa.36
- for <linux-mtd@lists.infradead.org>; Mon, 07 May 2012 11:56:52 -0700 (PDT)
-Message-ID: <1336417009.2041.4.camel@koala>
-Subject: Re: What would cause large block of NAND to be marked as bad?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Subodh Nijsure <snijsure@grid-net.com>
-Date: Mon, 07 May 2012 21:56:49 +0300
-In-Reply-To: <4FA80EEB.8040501@grid-net.com>
-References: <4FA80EEB.8040501@grid-net.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FcbRTGLkSnIPvmjtrX3T"
-Mime-Version: 1.0
-Cc: mtd <linux-mtd@lists.infradead.org>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+To: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+Subject: [PATCH v2 3.4-rc6] MTD: NAND: ams-delta: fix request_mem_region()
+ failure
+Date: Mon,  7 May 2012 22:51:37 +0200
+Message-Id: <1336423897-31729-1-git-send-email-jkrzyszt@tis.icnet.pl>
+In-Reply-To: <20120504171125.GD5613@atomide.com>
+References: <20120504171125.GD5613@atomide.com>
+Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>,
+ Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +19,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+A call to request_mem_region() has been introduced in the omap-gpio
+driver recently (commit 96751fcbe5438e95514b025e9cee7a6d38038f40,
+"gpio/omap: Use devm_ API and add request_mem_region"). This change
+prevented the Amstrad Delta NAND driver, which was doing the same in
+order to take control over OMAP MPU I/O lines that the NAND device hangs
+off, from loading successfully.
 
---=-FcbRTGLkSnIPvmjtrX3T
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The I/O lines and corresponding registers used by the NAND driver are a
+subset of those used for the GPIO function. Then, to avoid run time
+collisions, all MPUIO GPIO lines should be marked as requested while
+initializing the NAND driver, and vice versa, a single MPUIO GPIO line
+already requested before the NAND driver initialization is attempted
+should prevent the NAND device from being started successfully.
 
-On Mon, 2012-05-07 at 11:05 -0700, Subodh Nijsure wrote:
-> Hello,
->=20
-> I am working with some prototype hardware and I have seen some weird=20
-> behaviour when testing power cut.
->=20
-> On my board I have Micron MT29F2G08ABAEAH4 part and now have three=20
-> boards on which close to 20-30 blocks have been marked as bad.
->=20
-> We mainly run UBIFS on these boards, if there was flash data corruption=
-=20
-> we expected to see errors at UBIFS level i.e. not able to mount UBIFS=20
-> file system but we didn't expect NAND blocks themselves to be marked as=
-=20
-> bad, due to power cut.
->=20
-> What would cause large number of NAND blocks to be marked as bad, due to=
-=20
-> power cut?
+There is another driver, omap-keypad, which also manipulates MPUIO
+registers, but has never been calling request_mem_region() on startup,
+so it's not affected by the change in the gpio-omap and works correctly.
+It uses the depreciated omap_read/write functions for accessing MPUIO
+registers. Unlike the NAND driver, these I/O lines and registers are
+separate from those used by the GPIO driver. However, both register sets
+are non-contiguous and overlapping, so it would be impractical to
+request the two sets separately, one from the gpio-omap, the other form
+the omap-keypad driver.
 
-Did you look at Mike Dunn's bitflip_threshold stuff? It is in my
-l2-mtd.git tree. Look at this patch and the next ones from Mike:
+In order to solve all these issues correctly, a solution first suggested
+by Artem Bityutskiy, then closer specified by Tony Lindgren while they
+commented the initial version of this fix, should be implemented. The
+gpio-omap driver should export a few functions which would allow the
+other two drivers to access MPUIO registers in a safe manner instead of
+trying to manage them in parallel to the GPIO driver.  However, such a
+big change, affecting 3 drivers all together, is not suitable for the rc
+cycle, and should be prepared for the merge window.  Then, an
+alternative solution is proposed as a regression fix.
 
-http://git.infradead.org/users/dedekind/l2-mtd.git/commit/be1bb4ef1f98059f9=
-d54623f3ed01423095fa967
+For the ams-delta NAND driver to initialize correctly in coexistence
+with the changed GPIO driver, drop the request_mem_region() call from
+the former, especially as this call is going to be removed while the
+long-term solution is implemented.
 
-Commit messages contain descriptions and references. May be for your
-flash you need to set higher threshold?
+Tested on Amstrad Delta.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Acked-by: Tony Lindgren <tony@atomide.com>
+---
+Artem, Tony,
+I hope the changelog message is now good enough to make you satisfied,
+and render the Tony's Ack valid.
 
---=-FcbRTGLkSnIPvmjtrX3T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Changes against initial version:
+* a comment replacing the removed function call added,
+* more details on the three drivers coexistance and possible interaction
+  provided,
+* a hopefuly decent long-term plan to properly fix all identified issues
+  proposed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+ drivers/mtd/nand/ams-delta.c |   16 ++++++----------
+ 1 files changed, 6 insertions(+), 10 deletions(-)
 
-iQIcBAABAgAGBQJPqBrxAAoJECmIfjd9wqK0p7gQAMYDa4tDGDV+2fuqd6y2a4Se
-8r9rWQs9q7ccew0DxvlI1bUQvMw2gBxRwmB2TtNymyZQ0klGAj0pv1wb2X2gNXVe
-HIxVzaVo7qL7tTgXRRYYnCIjHJ+29mUGzksgrI7n8fcA+Vw54uzvBC5b6LJ8l7ty
-93fa1b3G/RLcla0vuGBuE7yA6P4KjupYxjdvoFkFMYEiVNgRGmbUlmbhS/4+TL/t
-TMQW7eISBzC/Dxy2wtg7hSDmcECy3k8Q/TmitZMh/Ld/W1EkORZDWsGLKKbxdR53
-YD40sCsWiBNoD/A6RohQptQ43sevSEZi4kwSgS7JCO3PypL/rQGaBDfO6br8qhz/
-M1DCxErlkrc1hTPIK9XzyNj5O+ws7v6PhnEuLLcTNIPXEdBGpJEjGR3qDcmCm+bS
-8DeanxzsItToWZ62uPECfTeh9MOCxs42/tQsLdiS5MgVwDNrX/oEdSm5DZ84w/if
-XPd6QqTO0ZTar6xstu4I0xa4lqDlLKPldtVTnk/AEITzG899fKri227mVfHfb+j7
-1aD+JtwQkoos66dEvAxVBV1p4zuCu8iqjSqihWuKMlwlJnaekSBIxs1TEKPOcCo+
-IH4FQHdonOr2vFIU7tpfk3BqDmvpiJzkks46DdJwAFWaM8IRyixYml6KljpJI8gw
-YGL1wlSJ606zn4OG9DuU
-=lb1s
------END PGP SIGNATURE-----
-
---=-FcbRTGLkSnIPvmjtrX3T--
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index 7341695..358162a 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -212,18 +212,17 @@ static int __devinit ams_delta_init(struct platform_device *pdev)
+ 	/* Link the private data with the MTD structure */
+ 	ams_delta_mtd->priv = this;
+ 
+-	if (!request_mem_region(res->start, resource_size(res),
+-			dev_name(&pdev->dev))) {
+-		dev_err(&pdev->dev, "request_mem_region failed\n");
+-		err = -EBUSY;
+-		goto out_free;
+-	}
++	/*
++	 * Don't try to request the memory region from here,
++	 * it should have been already requested from the
++	 * gpio-omap driver and requesting it again would fail.
++	 */
+ 
+ 	io_base = ioremap(res->start, resource_size(res));
+ 	if (io_base == NULL) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+ 		err = -EIO;
+-		goto out_release_io;
++		goto out_free;
+ 	}
+ 
+ 	this->priv = io_base;
+@@ -271,8 +270,6 @@ out_gpio:
+ 	platform_set_drvdata(pdev, NULL);
+ 	gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB);
+ 	iounmap(io_base);
+-out_release_io:
+-	release_mem_region(res->start, resource_size(res));
+ out_free:
+ 	kfree(ams_delta_mtd);
+  out:
+@@ -293,7 +290,6 @@ static int __devexit ams_delta_cleanup(struct platform_device *pdev)
+ 	gpio_free_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+ 	gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB);
+ 	iounmap(io_base);
+-	release_mem_region(res->start, resource_size(res));
+ 
+ 	/* Free the MTD device structure */
+ 	kfree(ams_delta_mtd);
+-- 
+1.7.3.4
