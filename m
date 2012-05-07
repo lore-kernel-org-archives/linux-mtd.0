@@ -1,21 +1,34 @@
-Message-ID: <4FA7A75F.6060909@atmel.com>
-Date: Mon, 07 May 2012 18:43:43 +0800
-From: Josh Wu <josh.wu@atmel.com>
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "Hunter, Jon" <jon-hunter@ti.com>
+Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+Date: Mon, 7 May 2012 10:57:44 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98712C@DBDE01.ent.ti.com>
+References: <cover.1335874494.git.afzal@ti.com>
+ <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
+ <4FA022FC.5040703@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
+ <4FA401C0.7070503@ti.com>
+In-Reply-To: <4FA401C0.7070503@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v5] MTD: atmel_nand: Update driver to support Programmable
- Multibit ECC controller
-References: <1336048655-29486-1-git-send-email-josh.wu@atmel.com>
- <20120503152531.GA2261@parrot.com>
-In-Reply-To: <20120503152531.GA2261@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "hongxu.cn@gmail.com" <hongxu.cn@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>,
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "notasas@gmail.com" <notasas@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,204 +38,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Ivan
+Hi Jon,
 
-Thank you for your comments.
+On Fri, May 04, 2012 at 21:50:16, Hunter, Jon wrote:
+> > As mentioned in the cover letter,
+> >=20
+> > "Additional features that currently boards in mainline does not make
+> > use of like, waitpin interrupt handling, changes to leverage revision
+> > 6 IP differences has not been incorporated."
+> >=20
+> > Priority in this series is to convert into a driver, get all boards wor=
+king
+> > on mainline. Once all boards are working with gpmc driver, these featur=
+es
+> > which are not required for currently supported boards can be added late=
+r.
+>=20
+> Yes, but I meant why 2 and not say 5? Anyway, I think that this should
+> be marked with a comment like a TODO so it is clear that this needs to
+> be re-visited.
+
+Ok, it will be marked with TODO
+
+> >> I think that it make more sense to have the wait-pin information part =
+of
+> >> the gpmc_cs_data structure for the following reasons ...
+> >=20
+> > Waitpin information is indeed a part of cs as far as boards are concern=
+ed,
+> > it is only that it gets propogated to device
+>=20
+> Why does the device's driver care? From my point of view, the wait-pin
+> is just part of the interface setup/configuration. The external device
+> may require this and assumes that this has been setup along with the CS
+> and interface timing, but the device's driver should not care. Remember
+> this is just a ready signal used to stall the access. Once configured,
+> software should be unaware of it.
+
+By device, it is referred to gpmc device which only gpmc driver is aware,
+the peripheral device's driver is not at all aware.
+
+> >> Also, any reason why waitpin_polarity is an int? I see you define LOW =
+as
+> >> -1, but I not sure why LOW cannot be 0 as 0 is programmed into the
+> >> register for an active low wait signal.
+> >=20
+> > Only intention is not to alter default waitpin polarity value, i.e. if
+> > any board does make use of it w/o knowledge of Kernel, I don't want to
+> > break it, there may be an argument saying that the board code is buggy,
+> > while if some board does so, it is, but don't want to break working one=
+.
+> >=20
+> > Here unless user explicitly set the flag, it does nothing on polarity
+>=20
+> Ok. Do such scenario's exist today? Please note that board code will be
+> removed in the future and device-tree will replace. So if there are no
+> cases today, I would not be concerned. Unless this could be something
+> that has already been configured by the bootloader. However, in that
+> case would be even call this function?
+
+Let me check this, here only intent was to play safe, as I have
+only two boards to test.
+
+> >>> +int gpmc_cs_reconfigure(char *name, int id, struct gpmc_cs_data *cs)
+> >>
+> >> What scenario is this function used in? May be worth adding a comment
+> >> about the function.
+> >=20
+> > Ok, it was required for OneNAND, as it needs to reconfigure
+>=20
+> Ok, but why is that? Unless this is something generic about one-nand I
+> don't comprehend. I have a high-level understanding of one-nand, but I
+> am not familiar with the specifics that require it to be reconfigured.
+
+Not too familiar with OneNAND, from the code it has been understood
+that to set into sync mode, first it may have to set to async mode, read
+frequency from OneNAND, then setup sync mode for that frequency.
 
 
-On 5/3/2012 11:25 PM, Ivan Djelic wrote:
-> On Thu, May 03, 2012 at 01:37:35PM +0100, Josh Wu wrote:
->> The Programmable Multibit ECC (PMECC) controller is a programmable binary
->> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
->> can be used to support both SLC and MLC NAND Flash devices. It supports to
->> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
->>
->> To use this driver, the user needs to pass in the correction capability and
->> the sector size.
->>
->> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
->> YAFFS2, UBIFS and mtd-utils.
->>
-> (...)
->
-> Hello Josh,
-> Few comments below,
->
->> + * =====================       ================        =================
->> + *                2-bits                 4-bytes                  4-bytes
->> + *                4-bits                 7-bytes                  7-bytes
->> + *                8-bits                13-bytes                 14-bytes
->> + *               12-bits                20-bytes                 21-bytes
->> + *               24-bits                39-bytes                 42-bytes
->> + *
->> + */
->> +static const int ecc_bytes_table[5][2] = {
->> +       {4, 4}, {7, 7}, {13, 14}, {20, 21}, {39, 42}
->>   };
->>
->>   static int cpu_has_dma(void)
->> @@ -288,6 +333,699 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
->>   }
->>
->>   /*
->> + * Return number of ecc bytes per sector according to sector size and
->> + * correction capability
->> + */
->> +static int pmecc_get_ecc_bytes(int cap, int sector_size)
->> +{
->> +       int i, j;
->> +
->> +       switch (cap) {
->> +       case 2:
->> +               i = 0;
->> +               break;
->> +       case 4:
->> +               i = 1;
->> +               break;
->> +       case 8:
->> +               i = 2;
->> +               break;
->> +       case 12:
->> +               i = 3;
->> +               break;
->> +       case 24:
->> +               i = 4;
->> +               break;
->> +       default:
->> +               BUG();
->> +       }
->> +
->> +       switch (sector_size) {
->> +       case 512:
->> +               j = 0;
->> +               break;
->> +       case 1024:
->> +               j = 1;
->> +               break;
->> +       default:
->> +               BUG();
->> +       }
->> +
->> +       return ecc_bytes_table[i][j];
-> You could get rid of your table and simplify your function:
->
->        int m;
->
->        m = 12+sector_size/512;
->        return (m*cap+7)/8;
+> >>> +	gpmc_setup_writeprotect(gpmc);
+> >>
+> >> Write protect is a pin and there is only one. Like the waitpins and CS
+> >> signals this needs to be associated with a device. It would make sense
+> >> that this is associated with the cs data.
+> >=20
+> > As far as platform are concerned, it is associated with cs, it is only
+> > that while configuring CS, it is propagated such that it is done once.
+>=20
+> Hmmm ... but here it looks like if write-protect is used you are going
+> to turn it on. A feature like this seems that it does need to be handled
+> by the device's driver. Enabling and disabling write-protect are
+> functions that I would expect are exported to the device's driver and
+> not directly enabled in the gpmc driver during probe. However, maybe is
+> could be valid for the write protect to be enabled by default which
+> could make sense. However, I don't see anywhere else in the driver to
+> control it.
+>=20
+> Shouldn't we warn on multiple devices trying to use write-protect when
+> parsing their configuration?
 
-yes, it makes code much simpler. I will use this.
->
->> +static void __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
->> +{
->> +       void __iomem *p;
->> +
->> +       switch (host->sector_size) {
->> +       case 512:
->> +               p = host->rom_base + AT_PMECC_LOOKUP_TABLE_OFFSET_512 +
->> +                       AT_PMECC_LOOKUP_TABLE_SIZE_512 * sizeof(int16_t);
->> +               break;
->> +       case 1024:
->> +               p = host->rom_base + AT_PMECC_LOOKUP_TABLE_OFFSET_1024 +
->> +                       AT_PMECC_LOOKUP_TABLE_SIZE_1024 * sizeof(int16_t);
->> +               break;
-> Just being curious here: it looks like your hardware provides hardcoded Galois field lookup tables.
-> Do you access these through a cached mapping ? If not, maybe your code would be faster with ram-based tables ?
+Even if a single device sets write protect, kernel will log it.
 
-The ROM code is flash based. It is slower than ram-based tables. It has 
-room to improve.
->
->> +static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->> +       u8 *ecc)
->> +{
->> +       int                     i, err_nbr;
->> +       uint8_t                 *buf_pos;
->> +       int                     eccbytes;
->> +       struct nand_chip        *nand_chip = mtd->priv;
->> +       struct atmel_nand_host  *host = nand_chip->priv;
->> +
->> +       eccbytes = nand_chip->ecc.bytes;
->> +       for (i = 0; i<  eccbytes; i++)
->> +               if (ecc[i] != 0xff)
->> +                       goto normal_check;
->> +       /* Erased page, return OK */
->> +       return 0;
-> Here, you work around the fact that an erased page does not have a valid ecc.
-> If an erased page has a bitflip in the ecc bytes region, then your code will jump
-> to 'normal_check' and fail (because the page is erased).
-
-yes, you are right. If any bitflip happens in the ecc bytes region of an 
-erased page, then pmecc will fail to read this erased page.
-
-> On 4-bit and 8-bit NAND devices, bitflips are very common and the risk of such a failure
-> is quite high, especially with a large number of ecc bytes.
->
-> There is a cleaner (and faster) workaround: just pretend your HW generates an extra ecc
-> byte, always equal to 0. Assume you put this extra byte at the beginning of your ecc layout.
-> Now, upon reading, you just need to do something like:
->
->         eccbytes = nand_chip->ecc.bytes;
->         /*
->          * first ecc byte should be zero if page has been programmed,
->          * but tolerate up to 4 bitflips in the same byte (very unlikely)
->          */
->         if (hweight_long(ecc[0])<= 4)
->         	  goto normal_check;
->
->         /* Erased page, return OK */
->         return 0;
->
-> On an erased page, even with bitflips, it is _very_ unlikely that ecc[0] would have
-> less than 4 bits set out of 8.
-
-This solution sounds better and it is workable for our hardware.
-The only problem is the extra byte can cause compatible issue. Since 
-current U-boot, bootstrap code and SAM-BA tools (use to flush binary 
-into nand flash) are not using extra ecc byte at all.
-
-So I think in this version we won't apply your workaround. In future, if 
-we decide to use your workaround, we will apply it to all bootstrap, 
-u-boot, SAM-BA.
-
->
-> Regardless of the workaround, skipping ecc check on an erased page still has a drawback: UBIFS
-> does not like to find uncorrected bitflips in erased pages.
->
-> +static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
-> +               struct nand_chip *chip, uint8_t *buf, int32_t page)
-> +{
-> +       uint32_t                stat;
-> +       int                     eccsize = chip->ecc.size;
-> +       uint8_t                 *oob = chip->oob_poi;
-> +       struct atmel_nand_host  *host = chip->priv;
-> +       uint32_t                *eccpos = chip->ecc.layout->eccpos;
-> +
-> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
-> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +       pmecc_writel(host->ecc, CFG, (pmecc_readl(host->ecc, CFG)
-> +&  ~PMECC_CFG_WRITE_OP) | PMECC_CFG_AUTO_ENABLE);
-> +
-> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
-> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
-> +
-> +       chip->read_buf(mtd, buf, eccsize);
-> +       chip->read_buf(mtd, oob, mtd->oobsize);
-> +
-> +       while ((pmecc_readl(host->ecc, SR)&  PMECC_SR_BUSY))
-> +               cpu_relax();
->
-> Here it seems to me you feed the hardware ecc engine with the entire page (data+oob).
-> Is it possible to feed it with data+oob-eccbytes, i.e. leave out the ecc bytes from the computation ?
-> I'm asking this because it probably would allow correcting bitflips in erased pages (if you ever care about this :).
-
-Understand. Currently the PMECC only take into account the ECC bytes for 
-computation. we can specify the ECC start and end. In this case it is 
-doable.
-
->
-> BR,
-> --
-> Ivan
-
-Best Regards,
-Josh Wu
+Regards
+Afzal
