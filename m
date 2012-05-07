@@ -1,14 +1,16 @@
-Message-ID: <4FA7F232.7050802@ti.com>
-Date: Mon, 7 May 2012 11:02:58 -0500
+Message-ID: <4FA7F473.7060607@ti.com>
+Date: Mon, 7 May 2012 11:12:35 -0500
 From: Jon Hunter <jon-hunter@ti.com>
 MIME-Version: 1.0
 To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+Subject: Re: [PATCH v4 02/39] ARM: OMAP2+: gpmc: Adapt to HWMOD
 References: <cover.1335874494.git.afzal@ti.com>
- <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
- <4FA4035E.6020308@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E987147@DBDE01.ent.ti.com>
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E987147@DBDE01.ent.ti.com>
+ <e0cf9678cb9a44d2a16401383ab8496eb825c291.1335874494.git.afzal@ti.com>
+ <4FA04A8C.4050703@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E98299B@DBDE01.ent.ti.com>
+ <4FA4041D.9010000@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E987159@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E987159@DBDE01.ent.ti.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
@@ -17,8 +19,7 @@ Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
  "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
  "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
  Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
  "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
  "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
  "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
@@ -38,115 +39,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Afzal,
 
-On 05/07/2012 06:01 AM, Mohammed, Afzal wrote:
+On 05/07/2012 06:02 AM, Mohammed, Afzal wrote:
 > Hi Jon,
 > 
-> On Fri, May 04, 2012 at 21:57:10, Hunter, Jon wrote:
->>> -	gpmc_write_reg(GPMC_SYSCONFIG, l);
->>> -	gpmc_mem_init();
->>> +	switch (conf & GPMC_WAITPIN_MASK) {
->>> +	case GPMC_WAITPIN_0:
->>> +		idx =  GPMC_WAITPIN_IDX0;
->>> +		break;
->>> +	case GPMC_WAITPIN_1:
->>> +		idx =  GPMC_WAITPIN_IDX1;
->>> +		break;
->>> +	case GPMC_WAITPIN_2:
->>> +		idx =  GPMC_WAITPIN_IDX2;
->>> +		break;
->>> +	case GPMC_WAITPIN_3:
->>> +		idx =  GPMC_WAITPIN_IDX3;
->>> +		break;
->>> +	/* no waitpin */
->>> +	case 0:
->>> +		break;
->>> +	default:
->>> +		dev_err(gpmc->dev, "multiple waitpins selected on CS:%u\n", cs);
->>> +		return -EINVAL;
->>> +		break;
->>> +	}
+> On Fri, May 04, 2012 at 22:00:21, Hunter, Jon wrote:
+>>>>> +
+>>>>> +	pdata->clk_prd = gpmc_get_fclk_period();
+>>>>
+>>>> Does this need to be done here? May be this should be done in the probe
+>>>> function. You could store the handle to the main clk in the pdata.
+>>>
+>>> This is done so that migration of gpmc driver to the drivers folder
+>>> would be smooth, remember that this function will still live here.
 >>
->> Why not combined case 0 and default? Both are invalid configurations so
->> just report invalid selection.
+>> Sure, but why call this here?
 > 
-> Case 0 is not invalid, a case where waitpin is not used, default refers
-> to when a user selects multiple waitpins wrongly.
+> Clk_prd is a platform data passed to the driver, so platform code
+> updates it, where else can it be done ?
 
-Ok. Then for case 0, just return here. If the polarity is set, you could
-print an error here.
+The point is that you can pass what ever you like. You do not need to
+pass the frequency you can pass the clock handle instead.
 
->>
->>>  
->>> -	/* initalize the irq_chained */
->>> -	irq = OMAP_GPMC_IRQ_BASE;
->>> -	for (cs = 0; cs < GPMC_CS_NUM; cs++) {
->>> -		irq_set_chip_and_handler(irq, &dummy_irq_chip,
->>> -						handle_simple_irq);
->>> -		set_irq_flags(irq, IRQF_VALID);
->>> -		irq++;
->>> +	switch (conf & GPMC_WAITPIN_POLARITY_MASK) {
->>> +	case GPMC_WAITPIN_ACTIVE_LOW:
->>> +		polarity = LOW;
->>> +		break;
->>> +	case GPMC_WAITPIN_ACTIVE_HIGH:
->>> +		polarity = HIGH;
->>> +		break;
->>> +	/* no waitpin */
->>> +	case 0:
->>> +		break;
->>> +	default:
->>> +		dev_err(gpmc->dev, "waitpin polarity set to low & high\n");
->>> +		return -EINVAL;
->>> +		break;
->>>  	}
->>
->> Again, combine case 0 and default as these are invalid.
-> 
-> Similar to above
+What happens it the clk_get() of the gpmc_l3_clk fails during the init?
 
-If you return above, then case 0 is not needed.
-
->>
->>> +		if (gd->have_waitpin) {
->>> +			if (gd->waitpin != idx ||
->>> +					gd->waitpin_polarity != polarity) {
->>> +				dev_err(gpmc->dev, "error: conflict: waitpin %u with polarity %d on device %s.%d\n",
->>> +					gd->waitpin, gd->waitpin_polarity,
->>> +					gd->name, gd->id);
->>> +				return -EBUSY;
->>> +			}
->>> +		} else {
->>
->> Don't need the else as you are going to return in the above.
-> 
-> Not always, only in case of error
-
-Ok, but seems that it can be simplified a little.
-
-What happens if a device uses more than one wait-pin? In other words a
-device with two chip-selects that uses two wait-pins?
-
->>
->>> +			gd->have_waitpin = true;
->>> +			gd->waitpin = idx;
->>> +			gd->waitpin_polarity = polarity;
->>> +		}
->>> +
->>> +		l &= ~GPMC_CONFIG1_WAIT_PIN_SEL_MASK;
->>> +		l |= GPMC_CONFIG1_WAIT_PIN_SEL(idx);
->>> +		gpmc_cs_write_reg(cs, GPMC_CS_CONFIG1, l);
->>> +	} else if (polarity) {
->>> +		dev_err(gpmc->dev, "error: waitpin polarity specified with out wait pin number on device %s.%d\n",
->>> +							gd->name, gd->id);
->>> +		return -EINVAL;
->>
->> Drop this else-if. The above switch statements will report the bad
->> configuration. This seems a bit redundant.
-> 
-> This is required as switch statements will not report error if polarity
-> is specified, w/o waitpin to be used.
-
-Ok, may be you can print that above when you detect that there are no
-wait-pins selected.
+In fact if you migrate to runtime pm then we should not have the clk_get
+in the gpmc_init any more.
 
 Jon
