@@ -1,30 +1,13 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from thilo-fromm.de ([212.40.171.30])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRK2V-0004bj-W9
- for linux-mtd@lists.infradead.org; Mon, 07 May 2012 09:15:33 +0000
-Received: by lbbgg6 with SMTP id gg6so4085195lbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 07 May 2012 02:15:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
-References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
- <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
- <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
- <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
- <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
- <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
- <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
-Date: Mon, 7 May 2012 11:15:29 +0200
-Message-ID: <CADZ6=as7Wz5TvGRbTa=6ydZMcBQHe2VRAPpxNy+3hFKApJEBzw@mail.gmail.com>
-Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
- when reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Atlant Schmidt <aschmidt@dekaresearch.com>
+ id 1SRK3Z-0004gg-Ov
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2012 09:16:39 +0000
+From: Thilo Fromm <github@thilo-fromm.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] Blockrom: badblock-free RO MTD blockdev access
+Date: Mon,  7 May 2012 10:39:16 +0200
+Message-Id: <1336379956-17052-1-git-send-email-github@thilo-fromm.de>
+Cc: Thilo Fromm <github@thilo-fromm.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,150 +17,300 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ricard,
+	The blockrom MTD driver provides bad block free read access to MTDs via
+	/dev/blockromX device files. Bad blocks are automatically skipped upon read,
+	and reading continues with the next good block.
 
->>> =C2=A0It contains a maximum of m-fudge_factor LEBs (Logical Erase Block=
-s)
->>> =C2=A0of n-ovehead pages each. It can erase whole LEBs, write pages, an=
-d
->>> =C2=A0read pages. By providing bad block mapping and wear leveling, it
->>> =C2=A0provides a device which is slightly smaller than the MTD device
->>> =C2=A0it's layered upon, but that device doesn't have bad blocks and
->>> =C2=A0you can't wear out any individual LEB faster than the whole
->>> =C2=A0device wears out. The device remains perfect until its reserve
->>> =C2=A0of replacement (spare) blocks is exhausted as blocks go bad.
->>
->>
->> But unfortunately I can use these features with nothing else than UBIFS?
->
->
-> Well, you can use it for large binary objects, such as the Linux kernel, =
-if
-> you want. There are currently no other filesystems other than ubifs which
-> run directly on top of UBI, but if you enable the gluebi layer, you get m=
-td
-> devices on top of each ubi volume so you can use jffs2 if you want.
+	This allows for read-only filesystems to exist in MTDs with bad blocks:
+	usually the baddies are skipped when writing the filesystem into MTD by
+	the tool performing the write (e.g. nandwrite). To successfully mount
+	these filesystems, however, you will need a translation layer that skips
+	bad blocks upon read as well. blockrom is such a translation layer.
 
-That's a bit much. What do I gain from a kernel in mtd/UBI instead of
-putting it directly into a plain MTD?
+Signed-off-by: Thilo Fromm <github@thilo-fromm.de>
+---
+ drivers/mtd/Kconfig    |   14 +++
+ drivers/mtd/Makefile   |    1 +
+ drivers/mtd/blockrom.c |  234 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 249 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/blockrom.c
 
-> Gluebi is in many cases not really an option, because it maps _each_ ubi
-> volume to an mtd device, thus you cannot for instance mix jffs2 and ubifs=
- on
-> a gluebi system. AFAIU it would be possible to extend gluebi so that it
-> would be possible to enable the gluebi layer only for selected ubi volume=
-s,
-> but AFAIK it has not been done (yet).
-
-Ah, okay.
-
-> Technically I suppose one could device a "jffs2a" to run directly on a UB=
-I
-> device, but it would be rather pointless; we have a "jffs3" which turned
-> into ubifs in the end.
-
-And I think you did some excellent work with the UBI/UBIFS stack. It's
-the way to go when you need a flash-aware r/w fs. The drawback is that
-handling and maintenance of UBI filesystems is still a bit "special"
-(as in: things don't work like they do with other, more generic, file
-systems). And one side effect of this "specialness" is that you're
-currently seem to be limited to the MTD/UBI stack and can't use other
-file systems on MTDs.
-
-> While jffs2 is tried-and-tested there is very little development and
-> maintenence going on nowadays, with development and bug fixing instead go=
-ing
-> into ubifs. So over time, jffs2 will probably tend to degrade while ubifs
-> will continue to improve.
-
-Concerning flash-aware read/write file system stacks I totally agree
-with your opinion about UBIFS vs. JFFS2. It would clearly be UBIFS for
-me if I would have to choose a flash-aware r/w FS stack. But I don't
-need read-write. I don't even need a file system. I just need a r/o
-block device that works for mounts.
-
->>> =C2=A0UBIfs (on top of UBI on top of MTD) "materializes" a file system.
->>> =C2=A0It contains ordinary Linux/Unix files on a perfect storage medium=
-.
->>> =C2=A0It depends upon the perfect storage provided by UBI.
->>
->>
->> I have the impression that we took a shortcut between the last two
->> paragraphs. Can you please elaborate on why i need a second UBI
->> partition within an UBI partition in order to use UBIFS? Or am I wrong
->> with this point?
->
->
-> I think you've misunderstood something.
->
-> Basically, if you have an mtd partition, say mtd2, then you can attach UB=
-I
-> to it (or is the terminology 'attach an mtd partition to UBI'; I'm not
-> sure):
->
-> # ubiattach -m 5 /dev/ubi_ctrl
->
-> /dev/mtd2 --> /dev/ubi0
->
-> Within each UBI partition, you can then have several volumes, e.g.:
->
-> # ubimkvol /dev/ubi0 -N kernel -s 3 MiB -t static
-> # ubimkvol /dev/ubi0 -N rootfs -s 25 MiB -t static
-> # ubimkvol /dev/ubi0 -N appdata -s 55 MiB -t dynamic
->
-> /dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0+-> /dev/ubi0_1
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0+-> /dev/ubi0_2
->
-> In each volume you can have a file system, i.e. ubifs, which can be mount=
-ed:
->
-> # mount -t ubifs ubi0:appdata /usr/apps
->
-> /dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0 --> kernel blob
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0+-> /dev/ubi0_1 --> /
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0+-> /dev/ubi0_2 --> /usr/apps
->
-> In the simplest case, you can just have one volume in your UBI partition:
->
-> /dev/mtd2 --> /dev/ubi0 --> /dev/ubi0_0 --> /usr/apps
-
-Thanks for the walktrhough. However, there are two things I don't like
-here: I must use the r/w block layer ubi0, and I'm limited to one
-specific (r/w !) FS - ubifs - on top of that.
-
-> But yes, there are two devices, one representing a whole partition under =
-UBI
-> control, and the other one representing a volume. The underlying mtd devi=
-ce
-> also still exists. But it's not really stranger than having a classic har=
-d
-> drive, with e.g. /dev/sda as the 'base' device for the drive, and /dev/sd=
-a1
-> and /dev/sda2 for the partitions, while also having a /dev/sg1 for certai=
-n
-> operations.
-
-I beg to differ :)
-HDD device nodes and partition device nodes work much more like
-MTDBLOCK and the MTD "partitioning" layer. Basically all they to is
-mapping relative offsets (partition-based) to absolute offsets
-(chip-based). The only obvious difference imho is that the HDD
-partitioning driver does not hide the original device.
-
-Regards,
-Thilo
-
---=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 1e2cbf5..bbcbabc 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -226,6 +226,20 @@ config MTD_BLOCK_RO
+ 	  You do not need this option for use with the DiskOnChip devices. For
+ 	  those, enable NFTL support (CONFIG_NFTL) instead.
+ 
++config MTD_BLOCK_ROM_BBFREE
++	tristate "Bad-block-skipiping readonly access to MTD devices"
++	depends on MTD_BLOCK!=y && MTD
++	help
++	  The blockrom MTD driver provides bad block free read access to MTDs via
++	  /dev/blockromX device files. Bad blocks are automatically skipped upon read,
++	  and reading continues with the next block.
++
++	  This allows for read-only filesystems to exist in MTDs with bad blocks:
++	  usually the baddies are skipped when writing the filesystem into MTD by
++	  the tool performing the write (e.g. nandwrite). To successfully mount 
++	  these filesystems, however, you will need a translation layer that skips 
++	  bad blocks upon read as well. blockrom is such a translation layer.
++
+ config FTL
+ 	tristate "FTL (Flash Translation Layer) support"
+ 	depends on BLOCK
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 760abc5..2337097 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -19,6 +19,7 @@ obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
+ obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
+ obj-$(CONFIG_MTD_BLOCK)		+= mtdblock.o
+ obj-$(CONFIG_MTD_BLOCK_RO)	+= mtdblock_ro.o
++obj-$(CONFIG_MTD_BLOCK_ROM_BBFREE)	+= blockrom.o
+ obj-$(CONFIG_FTL)		+= ftl.o
+ obj-$(CONFIG_NFTL)		+= nftl.o
+ obj-$(CONFIG_INFTL)		+= inftl.o
+diff --git a/drivers/mtd/blockrom.c b/drivers/mtd/blockrom.c
+new file mode 100644
+index 0000000..b25496c
+--- /dev/null
++++ b/drivers/mtd/blockrom.c
+@@ -0,0 +1,234 @@
++/*
++ *  Readonly Block Device Layer Over MTD
++ *
++ *  (C) 2006 Baydarov Konstantin <kbaidarov@dev.rtsoft.ru>
++ *           Pantelis Antoniou <panto@intracom.gr>
++ *           David Woodhouse <dwmw2@infradead.org>
++ *  (C) 2012 DResearch Fahrzeugelektronik GmbH,
++ *           Thilo Fromm <kontakt@thilo-fromm.de>
++ *
++ *         This program is free software; you can redistribute it and/or
++ *         modify it under the terms of the GNU General Public License
++ *         as published by the Free Software Foundation; either version
++ *         2 of the License, or (at your option) any later version.
++ *
++ *
++ *        The blockrom MTD driver provides bad block free read access to MTDs via
++ *        /dev/blockromX device files. Bad blocks are automatically skipped upon read,
++ *        and reading continues with the next good block.
++ *
++ *        This allows for read-only filesystems to exist in MTDs with bad blocks:
++ *        usually the baddies are skipped when writing the filesystem into MTD by
++ *        the tool performing the write (e.g. nandwrite). To successfully mount 
++ *        these filesystems, however, you will need a translation layer that skips 
++ *        bad blocks upon read as well. blockrom is such a translation layer.
++ */
++
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/blktrans.h>
++
++struct mtd_block_map {
++	struct  mtd_blktrans_dev dev;
++	/* block map for RO */
++	uint32_t *block_map;
++	uint32_t blocks_total;
++	uint32_t blocks_bad;
++	uint32_t blocks_spare;
++	uint32_t blocks_mgmt;
++};
++
++/*
++ * private functions
++ */
++
++static size_t user_blocks(struct mtd_block_map * map)
++{
++	return    map->blocks_total
++		- map->blocks_bad
++		- map->blocks_spare
++		- map->blocks_mgmt;
++}
++
++static void free_map(struct mtd_block_map * map)
++{
++	if (map) {
++		if (map->block_map)
++			kfree (map->block_map);
++		kfree (map);
++	}
++}
++
++static uint32_t map_block(struct mtd_block_map * map, int32_t block)
++{
++	uint32_t mapped_start = map->block_map[ block ],
++	 	 mapped;
++
++	for (mapped = mapped_start; mapped < map->blocks_total; mapped++)
++		if (0 == map->dev.mtd->block_isbad(
++			map->dev.mtd, mapped * map->dev.mtd->erasesize))
++			break;
++
++	/* store mapping of the current source block */
++	map->block_map[ block ] = mapped;
++
++	/* set next map entry so we can continue where we left */
++	if (block + 1 < map->blocks_total)
++		map->block_map[ block + 1 ] = mapped + 1;
++
++	return mapped;
++}
++
++static void map_all_blocks(struct mtd_block_map * map, struct mtd_info * mtd)
++{
++	unsigned int block, 
++		     expect_mapped = 0;
++
++	for (block=0; block < map->blocks_total; block++) {
++		uint32_t mapped;
++		
++		mapped = map_block (map, block);
++		map->blocks_bad += (mapped - expect_mapped);
++
++		expect_mapped = mapped + 1;
++	}
++}
++
++static struct mtd_block_map * init_map(struct mtd_info * mtd) 
++{
++	struct mtd_block_map *map = kzalloc(sizeof(*map), GFP_KERNEL);
++
++	if (map == NULL)
++		return NULL;
++
++	map->dev.mtd 	= mtd;
++	map->dev.devnum	= mtd->index;
++
++	map->blocks_total  = div_u64(mtd->size, mtd->erasesize);
++	map->block_map = kzalloc(sizeof(*map->block_map) * map->blocks_total, 
++			GFP_KERNEL);
++	if (map->block_map == NULL){
++		free_map(map);
++		return NULL;
++	}
++
++	/* init first map entry, then fill mapping table */
++	map->block_map[0]  = 0;
++	map_all_blocks(map, mtd);
++
++	map->dev.size 	  = user_blocks(map) * (mtd->erasesize / 512);
++	map->dev.readonly = 1;
++
++	return map;
++}
++
++static void print_mtd_info(struct mtd_block_map * map)
++{
++	printk(KERN_INFO "blockrom%d: %6d KiB; EBs %6d user, "
++		"%6d spare, %6d mgmt, %6d bad, %6d toal\n",
++		map->dev.mtd->index, 
++		user_blocks(map) * map->dev.mtd->erasesize / 1024, 
++		user_blocks(map),
++		map->blocks_spare, map->blocks_mgmt, map->blocks_bad, map->blocks_total);
++}
++
++/*
++ * mtd_blktrans_dev interface implementation
++ */
++
++static int blockrom_readsect(struct mtd_blktrans_dev *dev,
++			      unsigned long block, char *buf)
++{
++	size_t retlen;
++	uint32_t flash_block;
++	struct mtd_block_map *map = container_of(dev, struct mtd_block_map, dev);
++	loff_t addr, offs;
++
++	/* convert HDD block no. to flash block no. */
++	flash_block = (block * 512) / map->dev.mtd->erasesize;
++
++	if (flash_block >= map->blocks_total) {
++		printk(KERN_ERR "blockrom%d: "
++				"trying to access beyond end of device.",
++				map->dev.devnum);
++		return -ENXIO;
++	}
++
++	offs  = map->block_map[ flash_block ];
++	offs *= map->dev.mtd->erasesize;
++
++	addr = offs | ((block * 512) & (map->dev.mtd->erasesize - 1));
++
++	return dev->mtd->read(dev->mtd, addr, 512, &retlen, buf);
++}
++
++static int blockrom_writesect(struct mtd_blktrans_dev *dev,
++			      unsigned long block, char *buf)
++{
++	size_t retlen;
++
++	if (dev->mtd->write(dev->mtd, (block * 512), 512, &retlen, buf))
++		return 1;
++
++	return 0;
++}
++
++static void blockrom_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
++{
++	struct mtd_block_map * map;
++
++	/* if no bad block checking is possible we don't handle the MTD */
++	if (mtd->block_isbad == NULL)
++		return;
++
++	map = init_map(mtd);
++
++	if (NULL == map)
++		return;
++
++	map->dev.tr  = tr;
++
++	if (add_mtd_blktrans_dev(&(map->dev)))
++		free_map(map);
++	else
++		print_mtd_info(map);
++}
++
++static void blockrom_remove_dev(struct mtd_blktrans_dev *dev)
++{
++	struct mtd_block_map *map = container_of(dev, struct mtd_block_map, dev);
++
++	del_mtd_blktrans_dev(dev);
++	free_map(map);
++}
++
++static struct mtd_blktrans_ops blockrom_tr = {
++	.name		= "blockrom",
++	.major		= 258,
++	.part_bits	= 0,
++	.blksize	= 512,
++	.readsect	= blockrom_readsect,
++	.writesect	= blockrom_writesect,
++	.add_mtd	= blockrom_add_mtd,
++	.remove_dev	= blockrom_remove_dev,
++	.owner		= THIS_MODULE,
++};
++
++static int __init blockrom_init(void)
++{
++	return register_mtd_blktrans(&blockrom_tr);
++}
++
++static void __exit blockrom_exit(void)
++{
++	deregister_mtd_blktrans(&blockrom_tr);
++}
++
++module_init(blockrom_init);
++module_exit(blockrom_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Baydarov Konstantin <kbaidarov@dev.rtsoft.ru>");
++MODULE_AUTHOR("Thilo Fromm <kontakt@thilo-fromm.de>");
++MODULE_DESCRIPTION("Readonly Bad-Block Skipping Block Device Translation Layer");
+-- 
+1.7.7
