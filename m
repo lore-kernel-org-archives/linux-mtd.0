@@ -1,17 +1,23 @@
-Message-ID: <4FA737C2.9040806@atmel.com>
-Date: Mon, 07 May 2012 10:47:30 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Date: Mon, 7 May 2012 15:14:00 +0800
+From: Dong Aisheng <aisheng.dong@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [alsa-devel] [PATCH RESEND 0/9] Enable pinctrl support for
+ mach-mxs
+Message-ID: <20120507071400.GB23607@shlinux2.ap.freescale.net>
+References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH v5] MTD: atmel_nand: Update driver to support Programmable
- Multibit ECC controller
-References: <1336048655-29486-1-git-send-email-josh.wu@atmel.com>
- <20120503134254.GA7788@game.jcrosoft.org>
-In-Reply-To: <20120503134254.GA7788@game.jcrosoft.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+Cc: linux-fbdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org,
+ alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Olof Johansson <olof@lixom.net>, Chris Ball <cjb@laptop.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,213 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, J.C.
+On Mon, May 07, 2012 at 09:16:05AM +0800, Shawn Guo wrote:
+> [Resend to have subsystem lists Cc-ed]
+> 
+> With pinctrl-mxs driver (DT only) applied on pinctrl tree, the mxs
+> device tree conversion can start basing on that support.  This series
+> adopts pinctrl support for mxs device drivers with a dummy pinctrl
+> state provided for non-DT boot, so that the pinctrl call in the device
+> drivers will be bypassed for non-DT probe while it starts working for
+> DT probe.
+> 
+> To ease the merge process, I would like to ask Arnd and Olof to pull
+> pinctrl tree as a dependency in arm-soc and have this series go through
+> arm-soc.
+> 
+As IMX, basically i'd prefer to add pinctrl states in dts file at the
+same time within the patch or using a separate patch to add them before
+this series to avoid breaking the exist platforms.
 
-On 5/3/2012 9:42 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 20:37 Thu 03 May     , Josh Wu wrote:
->> The Programmable Multibit ECC (PMECC) controller is a programmable binary
->> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
->> can be used to support both SLC and MLC NAND Flash devices. It supports to
->> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
->>
->> To use this driver, the user needs to pass in the correction capability and
->> the sector size.
->>
->> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
->> YAFFS2, UBIFS and mtd-utils.
->>
->> Signed-off-by: Hong Xu<hong.xu@atmel.com>
->> Signed-off-by: Josh Wu<josh.wu@atmel.com>
->> ---
->> Hi,
->>
->> Since Hong Xu will not work on pmecc part. so I send out this patch base Hong Xu's latest work.
->>
->> Changes since v4,
->> 	fix typo and checkpatch warnings.
->> 	fix according to JC's suggestion. replace cpu_is_xxx() with DT
->> 	modify dt binding atmel nand document to add pmecc support.
->> 	tested in sam9263 without break hw ecc.
->> 	add ecc.strength.
->>
->>   .../devicetree/bindings/mtd/atmel-nand.txt         |    5 +
->>   drivers/mtd/nand/atmel_nand.c                      |  955 ++++++++++++++++++--
->>   drivers/mtd/nand/atmel_nand_ecc.h                  |  123 ++-
->>   3 files changed, 1004 insertions(+), 79 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
->> index a200695..8936175 100644
->> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
->> @@ -16,9 +16,14 @@ Optional properties:
->>   - nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
->>     Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
->>     "soft_bch".
->> +- atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
->> +  Controller. Supported values are: 2, 4, 8, 12, 24.
-> you need to use it in the code instead of hardcoding it so
->> +- atmel,sector-size : sector size for ECC computation. Supported values are:
->> +  512, 1024.
->>   - nand-bus-width : 8 or 16 bus width if not present 8
->>   - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
->>
->> +
->>   Examples:
->>   nand0: nand@40000000,0 {
->>   	compatible = "atmel,at91rm9200-nand";
-> <snip>
->> +
->> +	cap = host->correction_cap;
->> +	sector_size = host->sector_size;
->> +	dev_info(host->dev, "Initialize PMECC params, cap: %d, sector: %d\n",
->> +		 cap, sector_size);
->> +
->> +	/* Sanity check */
->> +	if ((sector_size != 512)&&  (sector_size != 1024)) {
->> +		dev_err(host->dev, "Unsupported PMECC sector size: %d; " \
->> +			"Valid sector size: 512 or 1024 bytes\n", sector_size);
->> +		return -EINVAL;
->> +	}
->> +	if ((cap != 2)&&  (cap != 4)&&  (cap != 8)&&  (cap != 12)&&
->> +	    (cap != 24)) {
->> +		dev_err(host->dev, "Unsupported PMECC correction capability," \
->> +			" Valid one is either 2, 4, 8, 12 or 24\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	nand_chip =&host->nand_chip;
->> +	mtd =&host->mtd;
->> +
->> +	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* By default */
->> +
->> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> +	if (!regs) {
->> +		dev_warn(host->dev, "Can't get I/O resource regs, " \
->> +				"rolling back on software ECC\n");
->> +		return 0;
->> +	}
->> +
->> +	host->ecc = ioremap(regs->start, resource_size(regs));
->> +	if (host->ecc == NULL) {
->> +		dev_err(host->dev, "ioremap failed\n");
->> +		err_no = -EIO;
->> +		goto err_pmecc_ioremap;
->> +	}
->> +
->> +	regs_pmerr = platform_get_resource(pdev, IORESOURCE_MEM, 2);
->> +	regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
->> +	if (regs_pmerr&&  regs_rom) {
->> +		host->pmerrloc_base = ioremap(regs_pmerr->start,
->> +			resource_size(regs_pmerr));
->> +		host->rom_base = ioremap(regs_rom->start,
->> +			resource_size(regs_rom));
->> +
->> +		if (host->pmerrloc_base&&  host->rom_base) {
->> +			nand_chip->ecc.mode = NAND_ECC_HW;
->> +			nand_chip->ecc.read_page =
->> +				atmel_nand_pmecc_read_page;
->> +			nand_chip->ecc.write_page =
->> +				atmel_nand_pmecc_write_page;
->> +		} else {
->> +			dev_err(host->dev, "Can not get I/O resource" \
->> +				" for HW PMECC controller!\n");
->> +			err_no = -EIO;
->> +			goto err_pmloc_ioremap;
->> +		}
->> +	}
->> +
->> +	/* ECC is calculated for the whole page (1 step) */
->> +	nand_chip->ecc.size = mtd->writesize;
->> +
->> +	/* set ECC page size and oob layout */
->> +	switch (mtd->writesize) {
->> +	case 2048:
->> +		host->degree = GF_DIMENSION_13;
->> +		host->cw_len = (1<<  host->degree) - 1;
->> +		host->cap = cap;
->> +		host->sector_number = mtd->writesize / sector_size;
->> +		host->ecc_bytes_per_sector = pmecc_get_ecc_bytes(
->> +			host->cap, sector_size);
->> +		host->alpha_to = pmecc_get_alpha_to(host);
->> +		host->index_of = pmecc_get_index_of(host);
->> +
->> +		nand_chip->ecc.steps = 1;
->> +		nand_chip->ecc.strength = cap;
->> +		nand_chip->ecc.bytes = host->ecc_bytes_per_sector *
->> +				       host->sector_number;
->> +		if (nand_chip->ecc.bytes>  mtd->oobsize - 2) {
->> +			dev_err(host->dev, "No room for ECC bytes\n");
->> +			err_no = -EINVAL;
->> +			goto err;
->> +		}
->> +		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
->> +					mtd->oobsize,
->> +					nand_chip->ecc.bytes);
->> +		nand_chip->ecc.layout =&atmel_pmecc_oobinfo;
->> +		break;
->> +	case 512:
->> +	case 1024:
->> +	case 4096:
->> +		/* TODO */
->> +		dev_warn(host->dev, "Only 2048 page size is currently " \
->> +			"supported for PMECC, rolling back to Software ECC\n");
->> +	default:
->> +		/* page size not handled by HW ECC */
->> +		/* switching back to soft ECC */
->> +		nand_chip->ecc.mode = NAND_ECC_SOFT;
->> +		nand_chip->ecc.calculate = NULL;
->> +		nand_chip->ecc.correct = NULL;
->> +		nand_chip->ecc.hwctl = NULL;
->> +		nand_chip->ecc.read_page = NULL;
->> +		nand_chip->ecc.write_page = NULL;
->> +		nand_chip->ecc.postpad = 0;
->> +		nand_chip->ecc.prepad = 0;
->> +		nand_chip->ecc.bytes = 0;
->> +		err_no = 0;
->> +		goto err;
->> +	}
->> +
->> +	atmel_pmecc_core_init(mtd);
->> +
->> +	return 0;
->> +
->> +err:
->> +err_pmloc_ioremap:
->> +	iounmap(host->ecc);
->> +	if (host->pmerrloc_base)
->> +		iounmap(host->pmerrloc_base);
->> +	if (host->rom_base)
->> +		iounmap(host->rom_base);
->> +err_pmecc_ioremap:
->> +	return err_no;
->> +}
->> +
->> +/*
->>    * Calculate HW ECC
->>    *
->>    * function called after a write
->> @@ -474,6 +1212,15 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
->>   }
->>
->>   #if defined(CONFIG_OF)
->> +static int cpu_has_pmecc(void)
->> +{
->> +	unsigned long dt_root;
->> +
->> +	dt_root = of_get_flat_dt_root();
->> +	return of_flat_dt_is_compatible(dt_root, "atmel,at91sam9n12") ||
->> +		of_flat_dt_is_compatible(dt_root, "atmel,at91sam9x5");
-> you need to detect it at probe time
-OK. I will do it.
-> and you need to put the first compatbile only no need to put a list
-Do you mean only need check the compatible string "atmel,at91sam9n12"? 
-Since 9x5 and 9n12 both support pmecc. so I check whether is 9n12 or 9x5.
+However i noted that for mxs, most drivers here are still not dt capable,
+so it may be ok to not add their pinctrl state at this time.
 
-or you mean the 9n12 is subset from 9x5. I checked at91sam9n12ek.dts, 
-there is no compatible string like: "atmel,at91sam9x5".
->
-> Best Regards,
-> J.
-Thanks.
-Best Regards,
-Josh Wu
+But for the patch "serial: amba-pl011: adopt pinctrl support" since it is
+dt capable, so with this patch applied, the mx28 dt boot will fail.
+Maybe we should at least add pinctrl states for amba-pl011 first.
+
+> Regards,
+> Shawn
+> 
+> Shawn Guo (9):
+>   ARM: mxs: enable pinctrl dummy states
+>   serial: amba-pl011: adopt pinctrl support
+BTW, will this one break other platforms using this driver?
+
+>   serial: mxs-auart: adopt pinctrl support
+>   mmc: mxs-mmc: adopt pinctrl support
+>   mtd: nand: gpmi: adopt pinctrl support
+>   i2c: mxs: adopt pinctrl support
+>   ASoC: mxs-saif: adopt pinctrl support
+>   video: mxsfb: adopt pinctrl support
+>   ARM: mxs: enable pinctrl support
+> 
+>  arch/arm/Kconfig                        |    1 +
+>  arch/arm/mach-mxs/Kconfig               |    2 ++
+>  arch/arm/mach-mxs/include/mach/common.h |    2 ++
+>  arch/arm/mach-mxs/mach-apx4devkit.c     |    2 ++
+>  arch/arm/mach-mxs/mach-m28evk.c         |    2 ++
+>  arch/arm/mach-mxs/mach-mx23evk.c        |    2 ++
+>  arch/arm/mach-mxs/mach-mx28evk.c        |    2 ++
+>  arch/arm/mach-mxs/mach-stmp378x_devb.c  |    2 ++
+>  arch/arm/mach-mxs/mach-tx28.c           |    2 ++
+>  arch/arm/mach-mxs/mm.c                  |   11 +++++++++++
+>  drivers/i2c/busses/i2c-mxs.c            |    6 ++++++
+>  drivers/mmc/host/mxs-mmc.c              |    8 ++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c  |    9 +++++++++
+>  drivers/tty/serial/amba-pl011.c         |    8 ++++++++
+>  drivers/tty/serial/mxs-auart.c          |    8 ++++++++
+>  drivers/video/mxsfb.c                   |    9 +++++++++
+>  sound/soc/mxs/mxs-saif.c                |    8 ++++++++
+>  17 files changed, 84 insertions(+), 0 deletions(-)
+> 
+> -- 
+> 1.7.5.4
+> 
+
+Regards
+Dong Aisheng
