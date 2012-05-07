@@ -1,20 +1,31 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SRRLV-0007w5-2p
- for linux-mtd@lists.infradead.org; Mon, 07 May 2012 17:03:37 +0000
-Message-ID: <1336410416.13940.29.camel@sauron.fi.intel.com>
-Subject: Re: Why kernel tasks for each MTD partition?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thilo Fromm <fromm@dresearch-fe.de>
-Date: Mon, 07 May 2012 20:06:56 +0300
-In-Reply-To: <CADZ6=asqEUUe3zbZY+NE-Ew2e4Cymfnq+UqgmF2VHesBek3-XQ@mail.gmail.com>
-References: <CADZ6=asqEUUe3zbZY+NE-Ew2e4Cymfnq+UqgmF2VHesBek3-XQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-8WjHO0t7eLJDgtMOgLJ/"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRReX-00012d-Dc
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2012 17:23:18 +0000
+Received: by laap9 with SMTP id p9so1027548laa.36
+ for <linux-mtd@lists.infradead.org>; Mon, 07 May 2012 10:23:15 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1205071145340.722@lnxricardw.se.axis.com>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
+ <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
+ <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
+ <CADZ6=as7Wz5TvGRbTa=6ydZMcBQHe2VRAPpxNy+3hFKApJEBzw@mail.gmail.com>
+ <Pine.LNX.4.64.1205071145340.722@lnxricardw.se.axis.com>
+Date: Mon, 7 May 2012 19:23:15 +0200
+Message-ID: <CADZ6=atoFf46+U9xTbDh-7AniuTBsuAo2MWKLyeAn4oFa=xSFQ@mail.gmail.com>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+From: Thilo Fromm <fromm@dresearch-fe.de>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +35,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Ricard,
 
---=-8WjHO0t7eLJDgtMOgLJ/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>> That's a bit much. What do I gain from a kernel in mtd/UBI instead of
+>> putting it directly into a plain MTD?
+>
+> UBI performs bit scrubbing for you if you have a flash that requires it.
+> Since the kernel is normally read by a bootloader however, you might have=
+ to
+> do the occasional read on the kernel when the Linux system is up and runn=
+ing
+> to trigger it. It still is much less work than "manually" scanning the mt=
+d
+> and rewritting blocks that seem to have bits flipping.
 
-On Mon, 2012-05-07 at 18:55 +0200, Thilo Fromm wrote:
-> Hello *.*,
->=20
-> while playing around with mtdblock and blockrom (see my other mail[1])
-> I noticed that a separate kernel process is active for each "mtdblock"
-> partition (e.g. ps shows "[mtdblock0]", "[mtdblock1]" kernel processes
-> if you have two MTD partitions and you use mtdblock). These also exist
-> for my blockrom device nodes. Since I see comparable processes for all
-> storage on my Linux workstation I suppose the Linux storage stack runs
-> these. Can somebody please fill me in on what they are?
+Agreed. I learned from this thread that scrubbing is almost a
+necessity. I'm actually thinking about adding a very simple scrubbing
+mechanism to blockrom. One could argue that another scrubbing
+mechanism is redundant since UBI already does scrubbing. But then UBI
+is r/w and there's a lot of things you don't have to care about if you
+limit yourself to r/o access.
 
-I guess this is related to the general linux design - every block device
-has to have an I/O queue - and I think each process represent such a
-queue in this case. I am not 100% sure it is the sanest setup for
-mtdblock, may be yes, may be not, needs thinking.
+> By putting a bunch of UBI volumes in one UBI partition you also get the
+> benifit of having UBI manage bad blocks for you, and you can have one lar=
+ge
+> pool of bad blocks rather than an individual pool of bad blocks for each
+> mtd, which in the end translates to better usage of the flash.
+>
+> These things may or may not be important to you, depending on how much fl=
+ash
+> you have and how reliable it is.
 
-But in general note, mtdblock stuff needs a lot of love.
+The most important point for me is whether you use your flash, or a
+specific partition of your flash, in read-only or read-write mode.
+When operating in r/o mode I don't quite see a point in most of the
+more advanced stuff UBI does, e.g. wear leveling.
+
+>>> Technically I suppose one could device a "jffs2a" to run directly on a
+>>> UBI
+>>> device, but it would be rather pointless; we have a "jffs3" which turne=
+d
+>>> into ubifs in the end.
+>>
+>>
+>> And I think you did some excellent work with the UBI/UBIFS stack. It's
+>> the way to go when you need a flash-aware r/w fs. The drawback is that
+>> handling and maintenance of UBI filesystems is still a bit "special"
+>> (as in: things don't work like they do with other, more generic, file
+>> systems). And one side effect of this "specialness" is that you're
+>> currently seem to be limited to the MTD/UBI stack and can't use other
+>> file systems on MTDs.
+>
+>
+> The basic problem is that flash devices are not disks. "Normal" file syst=
+ems
+> are designed to work well with disk-based media. They are not intended to
+> (and don't) work well with flash media. Flash Translation Layer solutions
+> tend to be clumsy and/or unreliable, because you're basiclly trying to
+> pretend a device of one type is really another type. So in the end, if yo=
+u
+> are using flash-based media you are going to need an fs which is designed
+> for the job. I know that that might seem like the properties of the physi=
+cal
+> layer 'bleeding through' to the file system layer, but on the other hand,=
+ if
+> you want to look at it that way, it's the same problem with ordinary file
+> systems which assume that the underlying meda is a disk with a read/write
+> sector size in the kilobyte range, and no penalties for extraneous writes=
+.
+
+Ah, okay, I see, and I do completely follow you with this when it's
+about r/w file systems. Sometimes it is better to expose specifics of
+a lower level if it is only badly abstracted, or, to put it in simpler
+words, if you cannot gracefully degrade, then you should escalate.
+
+I do miss a very simple r/o layer, though. I think there is a strong
+use case for read-only file systems; especially in the embedded world.
+And all things necessary - bad-block handling, scrubbing -
+ can be abstracted well enough for a simple r/o block device at a very
+low level.
+
+Regards,
+Thilo
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-8WjHO0t7eLJDgtMOgLJ/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPqAEwAAoJECmIfjd9wqK0KL4P/R6AD+Z4DImOCXFwByHlc8N4
-+2E60hMc3Gqp6J7mTMKUMYL0s0n7boc/WY9uqs3C5po9zoIQ0iGdt6moJck9Oa2p
-9922SeVpxGm4z988U60ty6ME2wNQeM+Wev4Kb9A4URLLnBuVhEwZlQQoK7Ca3kYz
-DWAfMEoWo6kSbPHNA1NeNmOmXug4BPjTRN4xxJl7Z+iH6rMPPPEMDQ0eQBrixBLD
-ca9xzc/Syu/jPwUMmdsM9ZiJtWgJ9VEqB5Kjp3QYUBLWsIUX+PNYh+IQYlj/HCbZ
-2HpyfjoO2wZ+Lo88n2d9cIhYiinYwQetM23BkEBlEWpTsRshbipd1BnYNyRQOXN0
-HZ1VSTq7pPMV+oCq0O+X/Wnwdw0mDua+cLD5Lt32aQA+M2DlSgtdsa1qlTQpIeJA
-s84kePO8J+Te+71jfPOoi+TBpPsimLIw5Wn2a2s5/eiAu4P858Lg8kvtKlkP/gVp
-6QALn4VX242WpG7C/Q+nnhd+5RmS+FE61fgJ/ebeFpt8ejBYxtxCZkkmi8hLZY7D
-asG3cOx7g0+iOF2ZxoqO1/YsLVAUibbvtSYUos0SQAr7m6Axw1x6rSVNS9DVDh0D
-SCUO4Fvfy/KuX93QNJVFS07BFjvy/L5NXFBumo+3T4ZGhcql5ORcAQuLYWdZSbGL
-8Y0SyeohRsfpZSrTcLbF
-=Ei5t
------END PGP SIGNATURE-----
-
---=-8WjHO0t7eLJDgtMOgLJ/--
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
