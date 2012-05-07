@@ -1,31 +1,14 @@
-Date: Mon, 7 May 2012 16:01:32 +0800
-From: Dong Aisheng <aisheng.dong@freescale.com>
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [alsa-devel] [PATCH RESEND 0/9] Enable pinctrl support for
- mach-mxs
-Message-ID: <20120507080131.GD23607@shlinux2.ap.freescale.net>
-References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
- <20120507071400.GB23607@shlinux2.ap.freescale.net>
- <20120507074658.GH19389@S2101-09.ap.freescale.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20120507074658.GH19389@S2101-09.ap.freescale.net>
-Cc: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Mark Brown <broonie@opensource.wolfsonmicro.com>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Wolfram Sang <w.sang@pengutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Olof Johansson <olof@lixom.net>, Chris Ball <cjb@laptop.org>,
- Dong Aisheng-B29396 <B29396@freescale.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRJVR-0000zW-K5
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2012 08:41:23 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH] make_a_release.sh: suggest announcement e-mail
+Date: Mon,  7 May 2012 11:44:38 +0300
+Message-Id: <1336380278-13532-1-git-send-email-dedekind1@gmail.com>
+Cc: "Josh Boyer \(Fedora\)" <jwboyer@gmail.com>,
+ "Riku Voipio \(Debian\)" <riku.voipio@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,39 +18,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 07, 2012 at 03:47:00PM +0800, Shawn Guo wrote:
-> On Mon, May 07, 2012 at 03:14:00PM +0800, Dong Aisheng wrote:
-> > As IMX, basically i'd prefer to add pinctrl states in dts file at the
-> > same time within the patch or using a separate patch to add them before
-> > this series to avoid breaking the exist platforms.
-> > 
-> > However i noted that for mxs, most drivers here are still not dt capable,
-> > so it may be ok to not add their pinctrl state at this time.
-> > 
-> There no mxs driver on mainline that has been DT aware of.  What I'm
-> going to do is to ask Arnd abandon the mxs/dt branch I sent him before
-> and send him an updated one with the whole mxs DT support based on
-> mxs common clk and pinctrl series.
-> 
-> > But for the patch "serial: amba-pl011: adopt pinctrl support" since it is
-> > dt capable, so with this patch applied, the mx28 dt boot will fail.
-> > Maybe we should at least add pinctrl states for amba-pl011 first.
-> > 
-> The updated mxs/dt will have pinctrl defined in dts for each device
-> that is converted to DT.
-> 
-Well, i did not see amba-pl011 pinctrl states defined in this patch.
-But it would be ok if you can get it done and applied before this patch.
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-> > > Shawn Guo (9):
-> > >   ARM: mxs: enable pinctrl dummy states
-> > >   serial: amba-pl011: adopt pinctrl support
-> > BTW, will this one break other platforms using this driver?
-> > 
-> If the platforms do not turn on CONFIG_PINCTRL, they are fine.  If they
-> turn on the support, they should provide pinctrl state either dummy or
-> real one.
-> 
+The 'make_a_release.sh' script appears to be extremely useful - I do not
+forget things as I used to anymore (amending Makefile, signing, uploading
+to the FTP server, etc). It is very useful that it suggest me exact commands
+which I may just copy-past to my command line.
 
-Regards
-Dong Aisheng
+This patch improves the script and makes it suggest the e-mail announcement
+which I may just copy-paste to my command line and the announcement will
+be sent using 'git send-email' command. It will include all the interested
+parties in CC.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ make_a_release.sh |   36 ++++++++++++++++++++++++++++++++++--
+ 1 files changed, 34 insertions(+), 2 deletions(-)
+
+I am now CCing all the people who will be CCed during the announcement. I'll
+send mtd-utils-1.5.0 announcement using this script shortly.
+
+diff --git a/make_a_release.sh b/make_a_release.sh
+index 460335b..44d67cc 100755
+--- a/make_a_release.sh
++++ b/make_a_release.sh
+@@ -57,10 +57,42 @@ git archive --format=tar --prefix="$release_name/" "$tag_name" | \
+ echo "Signing the tarball"
+ gpg -o "$outdir/$release_name.tar.bz2.asc" --detach-sign -a "$outdir/$release_name.tar.bz2"
+ 
+-cat <<EOF
++scp_url="casper.infradead.org:/var/ftp/pub/mtd-utils"
++ftp_url="ftp://ftp.infradead.org/pub/mtd-utils"
++git_url="git://git.infradead.org/mtd-utils.git"
++
++cat <<EOF1
+ Created $outdir/$release_name.tar.bz2
+ Please, verify, then push the tag and upload the tarball and the signature
+ You can use these commands:
++
++------------------------------------------------------------------------------
+ git push origin master $tag_name
+-scp $outdir/$release_name.tar.bz2 $outdir/$release_name.tar.bz2.asc casper.infradead.org:/var/ftp/pub/mtd-utils
++scp $outdir/$release_name.tar.bz2 $outdir/$release_name.tar.bz2.asc $scp_url
++------------------------------------------------------------------------------
++
++Please, send an announcement, below is the command you may run in your
++run. Substitute "me" with your e-mail address if needed, although it is
++cleaner to configure 'git send-email' to interpret 'me' as an alias for
++your name/email, see 'sendemail.aliasesfile' git configuration option.
++
++------------------------------------------------------------------------------
++mtd_tmpfile=\$(mktemp)
++
++cat > \$mtd_tmpfile <<EOF
++Subject: [ANNOUNCE] $release_name is released
++
++Hi,
++
++$release_name is released.
++
++Tarball:               $ftp_url/$release_name.tar.bz2
++Tarball gpg signature: $ftp_url/$release_name.tar.bz2.asc
++Signed git tag:        $git_url $tag_name
+ EOF
++
++git send-email --from me --to 'MTL Mailing List <linux-mtd@lists.infradead.org>' --cc 'Peter Korsgaard (buildroot) <jacmet@sunsite.dk>' --cc 'Josh Boyer (Fedora) <jwboyer@gmail.com>' --cc 'Riku Voipio (Debian) <riku.voipio@linaro.org>' \$mtd_tmpfile
++
++rm \$mtd_tmpfile
++------------------------------------------------------------------------------
++EOF1
+-- 
+1.7.7.6
