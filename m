@@ -1,19 +1,21 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRKh7-000892-7z
- for linux-mtd@lists.infradead.org; Mon, 07 May 2012 09:57:29 +0000
-Received: by laap9 with SMTP id p9so647690laa.36
- for <linux-mtd@lists.infradead.org>; Mon, 07 May 2012 02:57:27 -0700 (PDT)
+Message-ID: <4FA7A75F.6060909@atmel.com>
+Date: Mon, 07 May 2012 18:43:43 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <1336379956-17052-1-git-send-email-github@thilo-fromm.de>
-References: <1336379956-17052-1-git-send-email-github@thilo-fromm.de>
-Date: Mon, 7 May 2012 11:57:26 +0200
-Message-ID: <CADZ6=asxeFoKjoCYCRjWrsw2wOoDLJo8ro1+GJB-+oaCcOB_9Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Blockrom: badblock-free RO MTD blockdev access
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: Re: [PATCH v5] MTD: atmel_nand: Update driver to support Programmable
+ Multibit ECC controller
+References: <1336048655-29486-1-git-send-email-josh.wu@atmel.com>
+ <20120503152531.GA2261@parrot.com>
+In-Reply-To: <20120503152531.GA2261@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "hongxu.cn@gmail.com" <hongxu.cn@gmail.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +25,204 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello *.*,
+Hi, Ivan
 
-On 7 May 2012 10:39, Thilo Fromm <github@thilo-fromm.de> wrote:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0The blockrom MTD driver provides bad block fre=
-e read access to MTDs via
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/dev/blockromX device files. Bad blocks are au=
-tomatically skipped upon read,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0and reading continues with the next good block=
-.
+Thank you for your comments.
+
+
+On 5/3/2012 11:25 PM, Ivan Djelic wrote:
+> On Thu, May 03, 2012 at 01:37:35PM +0100, Josh Wu wrote:
+>> The Programmable Multibit ECC (PMECC) controller is a programmable binary
+>> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
+>> can be used to support both SLC and MLC NAND Flash devices. It supports to
+>> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
+>>
+>> To use this driver, the user needs to pass in the correction capability and
+>> the sector size.
+>>
+>> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
+>> YAFFS2, UBIFS and mtd-utils.
+>>
+> (...)
 >
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0This allows for read-only filesystems to exist=
- in MTDs with bad blocks:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0usually the baddies are skipped when writing t=
-he filesystem into MTD by
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0the tool performing the write (e.g. nandwrite)=
-. To successfully mount
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0these filesystems, however, you will need a tr=
-anslation layer that skips
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0bad blocks upon read as well. blockrom is such=
- a translation layer.
+> Hello Josh,
+> Few comments below,
 >
+>> + * =====================       ================        =================
+>> + *                2-bits                 4-bytes                  4-bytes
+>> + *                4-bits                 7-bytes                  7-bytes
+>> + *                8-bits                13-bytes                 14-bytes
+>> + *               12-bits                20-bytes                 21-bytes
+>> + *               24-bits                39-bytes                 42-bytes
+>> + *
+>> + */
+>> +static const int ecc_bytes_table[5][2] = {
+>> +       {4, 4}, {7, 7}, {13, 14}, {20, 21}, {39, 42}
+>>   };
+>>
+>>   static int cpu_has_dma(void)
+>> @@ -288,6 +333,699 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+>>   }
+>>
+>>   /*
+>> + * Return number of ecc bytes per sector according to sector size and
+>> + * correction capability
+>> + */
+>> +static int pmecc_get_ecc_bytes(int cap, int sector_size)
+>> +{
+>> +       int i, j;
+>> +
+>> +       switch (cap) {
+>> +       case 2:
+>> +               i = 0;
+>> +               break;
+>> +       case 4:
+>> +               i = 1;
+>> +               break;
+>> +       case 8:
+>> +               i = 2;
+>> +               break;
+>> +       case 12:
+>> +               i = 3;
+>> +               break;
+>> +       case 24:
+>> +               i = 4;
+>> +               break;
+>> +       default:
+>> +               BUG();
+>> +       }
+>> +
+>> +       switch (sector_size) {
+>> +       case 512:
+>> +               j = 0;
+>> +               break;
+>> +       case 1024:
+>> +               j = 1;
+>> +               break;
+>> +       default:
+>> +               BUG();
+>> +       }
+>> +
+>> +       return ecc_bytes_table[i][j];
+> You could get rid of your table and simplify your function:
+>
+>        int m;
+>
+>        m = 12+sector_size/512;
+>        return (m*cap+7)/8;
 
-Some remarks:
-- moved bad block mapping table generation to driver initialisation time.
-  Further optimization opportunities include e.g. doing table generation
-  in the background (work queue or kernel task).
-  The original driver did lazy block mapping, i.e. mapped when a block
-  was accessed for the first time.
-- driver handle already has "spare blocks" and "management blocks" fields
-  which are currently unused but provide for addiition of a very simple
-  scrubbing mechanism later on.
+yes, it makes code much simpler. I will use this.
+>
+>> +static void __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
+>> +{
+>> +       void __iomem *p;
+>> +
+>> +       switch (host->sector_size) {
+>> +       case 512:
+>> +               p = host->rom_base + AT_PMECC_LOOKUP_TABLE_OFFSET_512 +
+>> +                       AT_PMECC_LOOKUP_TABLE_SIZE_512 * sizeof(int16_t);
+>> +               break;
+>> +       case 1024:
+>> +               p = host->rom_base + AT_PMECC_LOOKUP_TABLE_OFFSET_1024 +
+>> +                       AT_PMECC_LOOKUP_TABLE_SIZE_1024 * sizeof(int16_t);
+>> +               break;
+> Just being curious here: it looks like your hardware provides hardcoded Galois field lookup tables.
+> Do you access these through a cached mapping ? If not, maybe your code would be faster with ram-based tables ?
 
-I understand that the main focus of the linux-mtd community is on
-ubi_blk for generic r/w block access, one layer above MTD. I provide
-this FTL for simple bad block-free r/o access directly on the MTD
-level in the hope that it is useful for generic read-only FS. Comments
-and suggestions are welcome.
+The ROM code is flash based. It is slower than ram-based tables. It has 
+room to improve.
+>
+>> +static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+>> +       u8 *ecc)
+>> +{
+>> +       int                     i, err_nbr;
+>> +       uint8_t                 *buf_pos;
+>> +       int                     eccbytes;
+>> +       struct nand_chip        *nand_chip = mtd->priv;
+>> +       struct atmel_nand_host  *host = nand_chip->priv;
+>> +
+>> +       eccbytes = nand_chip->ecc.bytes;
+>> +       for (i = 0; i<  eccbytes; i++)
+>> +               if (ecc[i] != 0xff)
+>> +                       goto normal_check;
+>> +       /* Erased page, return OK */
+>> +       return 0;
+> Here, you work around the fact that an erased page does not have a valid ecc.
+> If an erased page has a bitflip in the ecc bytes region, then your code will jump
+> to 'normal_check' and fail (because the page is erased).
 
-I'm willing to put extra effort into blockrom should the linux-mtd
-community be interested into a merge despite of ubi_blk.
+yes, you are right. If any bitflip happens in the ecc bytes region of an 
+erased page, then pmecc will fail to read this erased page.
 
-Regards,
-Thilo
+> On 4-bit and 8-bit NAND devices, bitflips are very common and the risk of such a failure
+> is quite high, especially with a large number of ecc bytes.
+>
+> There is a cleaner (and faster) workaround: just pretend your HW generates an extra ecc
+> byte, always equal to 0. Assume you put this extra byte at the beginning of your ecc layout.
+> Now, upon reading, you just need to do something like:
+>
+>         eccbytes = nand_chip->ecc.bytes;
+>         /*
+>          * first ecc byte should be zero if page has been programmed,
+>          * but tolerate up to 4 bitflips in the same byte (very unlikely)
+>          */
+>         if (hweight_long(ecc[0])<= 4)
+>         	  goto normal_check;
+>
+>         /* Erased page, return OK */
+>         return 0;
+>
+> On an erased page, even with bitflips, it is _very_ unlikely that ecc[0] would have
+> less than 4 bits set out of 8.
 
---=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+This solution sounds better and it is workable for our hardware.
+The only problem is the extra byte can cause compatible issue. Since 
+current U-boot, bootstrap code and SAM-BA tools (use to flush binary 
+into nand flash) are not using extra ecc byte at all.
+
+So I think in this version we won't apply your workaround. In future, if 
+we decide to use your workaround, we will apply it to all bootstrap, 
+u-boot, SAM-BA.
+
+>
+> Regardless of the workaround, skipping ecc check on an erased page still has a drawback: UBIFS
+> does not like to find uncorrected bitflips in erased pages.
+>
+> +static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+> +               struct nand_chip *chip, uint8_t *buf, int32_t page)
+> +{
+> +       uint32_t                stat;
+> +       int                     eccsize = chip->ecc.size;
+> +       uint8_t                 *oob = chip->oob_poi;
+> +       struct atmel_nand_host  *host = chip->priv;
+> +       uint32_t                *eccpos = chip->ecc.layout->eccpos;
+> +
+> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+> +       pmecc_writel(host->ecc, CFG, (pmecc_readl(host->ecc, CFG)
+> +&  ~PMECC_CFG_WRITE_OP) | PMECC_CFG_AUTO_ENABLE);
+> +
+> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
+> +       pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
+> +
+> +       chip->read_buf(mtd, buf, eccsize);
+> +       chip->read_buf(mtd, oob, mtd->oobsize);
+> +
+> +       while ((pmecc_readl(host->ecc, SR)&  PMECC_SR_BUSY))
+> +               cpu_relax();
+>
+> Here it seems to me you feed the hardware ecc engine with the entire page (data+oob).
+> Is it possible to feed it with data+oob-eccbytes, i.e. leave out the ecc bytes from the computation ?
+> I'm asking this because it probably would allow correcting bitflips in erased pages (if you ever care about this :).
+
+Understand. Currently the PMECC only take into account the ECC bytes for 
+computation. we can specify the ECC start and end. In this case it is 
+doable.
+
+>
+> BR,
+> --
+> Ivan
+
+Best Regards,
+Josh Wu
