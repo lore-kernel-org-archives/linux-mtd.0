@@ -1,20 +1,20 @@
-Message-ID: <1336461106.23308.12.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 3.4-rc6] MTD: NAND: ams-delta: fix
- request_mem_region() failure
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRera-0003Wo-JU
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 07:29:39 +0000
+Message-ID: <1336462376.23308.14.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] MTD: UBI: remove superfluous "!!" operation
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Date: Tue, 08 May 2012 10:11:46 +0300
-In-Reply-To: <1336460605.23308.8.camel@sauron.fi.intel.com>
-References: <20120504171125.GD5613@atomide.com>
- <1336423897-31729-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1336460605.23308.8.camel@sauron.fi.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 08 May 2012 10:32:56 +0300
+In-Reply-To: <1336430840-27232-1-git-send-email-richard@nod.at>
+References: <1336430840-27232-1-git-send-email-richard@nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-bjWdgVQG0bV2xhtwwUtP"
+ boundary="=-zMe0KfcHcnkq4QDZRaMZ"
 Mime-Version: 1.0
-Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,48 +26,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-bjWdgVQG0bV2xhtwwUtP
+--=-zMe0KfcHcnkq4QDZRaMZ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-08 at 10:03 +0300, Artem Bityutskiy wrote:
-> On Mon, 2012-05-07 at 22:51 +0200, Janusz Krzysztofik wrote:
-> > A call to request_mem_region() has been introduced in the omap-gpio
-> > driver recently (commit 96751fcbe5438e95514b025e9cee7a6d38038f40,
-> > "gpio/omap: Use devm_ API and add request_mem_region"). This change
-> > prevented the Amstrad Delta NAND driver, which was doing the same in
-> > order to take control over OMAP MPU I/O lines that the NAND device hang=
-s
-> > off, from loading successfully.
+On Tue, 2012-05-08 at 00:47 +0200, Richard Weinberger wrote:
+> !!(x < y) and (x < y) are identical expressions.
 >=20
-> Aiaiai found out that your patch adds this gcc warning:
->=20
-> -------------------------------------------------------------------------=
--------
->=20
-> Successfully built configuration "l2_omap1_defconfig,arm,arm-unknown-linu=
-x-gnueabi-", results:
->=20
-> --- before_patching.log
-> +++ after_patching.log
-> @@ @@
-> +drivers/mtd/nand/ams-delta.c: In function 'ams_delta_cleanup':
-> +drivers/mtd/nand/ams-delta.c:285:19: warning: unused variable 'res' [-Wu=
-nused-variable]
->=20
-> -------------------------------------------------------------------------=
--------
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-But I've fixed this up and pushed to l2-mtd.git. From the commit message
-I have an impression that you are not going to implement that longer
-term plan. Dunno if Tony has a plan to force someone to do this by
-blocking some changes which are not urgent fixes. Hmm? :-)
+Thanks, pushed to l2-mtd.git.
+
+Since you are submitting often, you may save me a bit of editing if you
+prefix UBI patches with just "UBI:" :-) But I do not mind amending
+patches if you don't.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-bjWdgVQG0bV2xhtwwUtP
+--=-zMe0KfcHcnkq4QDZRaMZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -75,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPqMcyAAoJECmIfjd9wqK0dcsP/3Ulouzeibl5pHRphFaKuQXU
-MqkpF02aeO0CsgiA/6FFsgn/s3oz+fKg6dETmYY1pNtRIei33lVKN6WxRClXseGA
-3Ml8Cr1TeL6j+232EGYoMr/c7+5hayE4Zw2kvTrgq6LLGUS52wrtoR2ROZghhMH7
-atPaJbfEzOsEMP/n6a7bCCExYpOs7XW6gkmH/dDWm+WfzMKTDRGyw+C+r70G5xbz
-8Huxd1jrLvIkXLMaBCdE2niUbHyCRe1pFGDr1IYA+PvfVHIYBHIfUrqPVaK+/STh
-jCeFoA9zeGoFKmGj1UMdh/nm5V6uQn4UAMVS+/cJhX7tX91KceUTXsuVmureQjG8
-Ou4Ohfezx0KKM32K2ZT0JV8MU6aGCex3yzjwgNeIkhDtG7wNwG6Us2A2SYdtP5ur
-z1oGBHWOdgno753pK6+znbPWLcj9JdA8L6XLQ3pv6CFEys4P8biWjAbSu6NJr4yx
-rgqKckLLzA+vBiZ7WZa7yqr457QNOchDFIOaGrEOHYw3gXx1fbnb7YVmdbesBb8M
-fBRNr/qPSIk2mkqsiIfAXd84O8S4Kws6j9wbGNotAg00y0M7osXY5y6a079LCmx0
-ynK5j6ymJFZNtTemcymOiuxjCOQPH8uI7T0guKjqXcwuXPqZa2ZZ6pTFFBhhQe0d
-2kiry/A2RYUi5UrpAfDc
-=VbBB
+iQIcBAABAgAGBQJPqMwoAAoJECmIfjd9wqK0z7wP/0dgscQMbxnGwpDgoJxL1Uej
+5dSEmH98PnxHzyfrVUORpah1WBN1I7HEJjWFvjtwmGmuSEmu1R+hsif8+MhsE9q2
+bcSVadUArW0tm/lhL53rDaa1O/KDIUoA7DU5vurn6fSN2qCSvAjayuDwi0X0I76G
+YcCp5KC7q/+NRqnlfbj79qw3g32J95tE6qArntfn/flMdV7BWVhAWT7u0PpN2GHN
+mDO4sjgWv4lyuiEpcVgCIDsTmmrYSViQOwO6ZtV8agJDjlfXMFdglVMvhismQ0XB
+wAsxXJ7FxBNJAy9FEJor7MMi3B2K+ZMvksSQiEjS+YDoNkhIZq6ahypPlxVuvqUm
+oeF1Cc9WYai7zuh8YMuKCLgICUNEkSGnS2Uu4PsCZXl7PnyNcU9sHFEXppuSUYz1
+dTwKWPvbHUg/vQDY6CkJbAKMKz9Wa8gdk2pe8q5EXBIFDeRbloE75Ko5HpBzIWns
+VDH6Ti5Cbm88+NbJm03hl7fCJTVQmHcVEZKMveRWb8g0zbc6gPAIK0UqymzTzoc0
+oI8+3QiJhCNBE0sNkRxHLHAi2paMnzlGsgRwUY0+uDpIIqB8Q2AiWzBvXQqywQUr
+tSCuwkMXD7wFZO7v/YfCvmHo8bB4FCBKLLyAP+B2bQ4cmXjuyEEi3sCKZH0A/o7O
+6vBlxqlb69E6ngjzjQY9
+=IlsU
 -----END PGP SIGNATURE-----
 
---=-bjWdgVQG0bV2xhtwwUtP--
+--=-zMe0KfcHcnkq4QDZRaMZ--
