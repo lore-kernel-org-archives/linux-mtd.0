@@ -1,36 +1,20 @@
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "Hunter, Jon" <jon-hunter@ti.com>
-Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
-Date: Tue, 8 May 2012 06:27:18 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98792A@DBDE01.ent.ti.com>
-References: <cover.1335874494.git.afzal@ti.com>
- <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
- <4FA022FC.5040703@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E982967@DBDE01.ent.ti.com>
- <4FA401C0.7070503@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E98712C@DBDE01.ent.ti.com>
- <4FA7F706.1020706@ti.com>
-In-Reply-To: <4FA7F706.1020706@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- "tony@atomide.com" <tony@atomide.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
- Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>,
- "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
- "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "notasas@gmail.com" <notasas@gmail.com>
+Message-ID: <1336460605.23308.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 3.4-rc6] MTD: NAND: ams-delta: fix
+ request_mem_region() failure
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Date: Tue, 08 May 2012 10:03:25 +0300
+In-Reply-To: <1336423897-31729-1-git-send-email-jkrzyszt@tis.icnet.pl>
+References: <20120504171125.GD5613@atomide.com>
+ <1336423897-31729-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-e6v+0eKZGKcV0XmYP3Qw"
+Mime-Version: 1.0
+Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,43 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jon,
 
-On Mon, May 07, 2012 at 21:53:34, Hunter, Jon wrote:
+--=-e6v+0eKZGKcV0XmYP3Qw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> >>>> Write protect is a pin and there is only one. Like the waitpins and =
-CS
-> >>>> signals this needs to be associated with a device. It would make sen=
-se
-> >>>> that this is associated with the cs data.
-> >>>
-> >>> As far as platform are concerned, it is associated with cs, it is onl=
-y
-> >>> that while configuring CS, it is propagated such that it is done once=
-.
-> >>
-> >> Hmmm ... but here it looks like if write-protect is used you are going
-> >> to turn it on. A feature like this seems that it does need to be handl=
-ed
-> >> by the device's driver. Enabling and disabling write-protect are
-> >> functions that I would expect are exported to the device's driver and
-> >> not directly enabled in the gpmc driver during probe. However, maybe i=
-s
-> >> could be valid for the write protect to be enabled by default which
-> >> could make sense. However, I don't see anywhere else in the driver to
-> >> control it.
-> >>
-> >> Shouldn't we warn on multiple devices trying to use write-protect when
-> >> parsing their configuration?
-> >=20
-> > Even if a single device sets write protect, kernel will log it.
->=20
-> That does not seem sufficient. It should be flagged as an error.
->=20
-> Write protect is a resource like the CS and waitpins and so I would have
-> thought that it should be reserved in the same way.
+On Mon, 2012-05-07 at 22:51 +0200, Janusz Krzysztofik wrote:
+> A call to request_mem_region() has been introduced in the omap-gpio
+> driver recently (commit 96751fcbe5438e95514b025e9cee7a6d38038f40,
+> "gpio/omap: Use devm_ API and add request_mem_region"). This change
+> prevented the Amstrad Delta NAND driver, which was doing the same in
+> order to take control over OMAP MPU I/O lines that the NAND device hangs
+> off, from loading successfully.
 
-Isn't it valid for multiple devices to make use of write protect pin ?
+Aiaiai found out that your patch adds this gcc warning:
 
-Regards
-Afzal
+---------------------------------------------------------------------------=
+-----
+
+Successfully built configuration "l2_omap1_defconfig,arm,arm-unknown-linux-=
+gnueabi-", results:
+
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/nand/ams-delta.c: In function 'ams_delta_cleanup':
++drivers/mtd/nand/ams-delta.c:285:19: warning: unused variable 'res' [-Wunu=
+sed-variable]
+
+---------------------------------------------------------------------------=
+-----
+
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-e6v+0eKZGKcV0XmYP3Qw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPqMU9AAoJECmIfjd9wqK0sB4QAIH5VWPQ7iL0ZgpR3BwS1R8w
+B3HSyXrvrIJjdmsDDzmi7Ajf8AncDMJMeXjbf/har/UsunS2K76ADhSeMmFWgGmC
+K8daNbkve+Mu3qcrsy2mS2Mn5CrqcW9CT6Ih0/1K3JoddlirpjnpnOTI0RcmwFlA
+5tOngtIlgA2ESHoxJiYtsykkbnsr/wGqzCkuagl7fUSUtKb9eoU/qshIbrx4dOuo
+/Bi/+wQsAz3zPP1HOHaQbHn3HgVPUB82A/026850uM9yfH552nRLTAp80Pj+DLPX
+w2IuGou/vZSrd3mYAMscM33/G9MUMn+33FVqs/sRPU8pLqX10/HWl+uBz+P9T6Zq
+jSQJR/uQvXhBt4/b8QmHmhRuqxQ+VPEVLdtRv7WzXJ7PNme6PQckQIEZQX1HQXgM
+DsxJhnYkkCrBZWjmfWsxjT1Z/Eyr/qxGuQJPaZpmH4jkQn5S4RQrfx3DaeO886wA
+i2Y7V4PLfvandMa0TzYl5dzU/1Gc/FgLjptR3fEm5pC90hSfUh+ooUkrMdrTVt0y
+R9OQtpoFYolG5ZsxaacVhKL3kVFRQWMeUpzvK6mN3WyZd6MLbqF/9jIAcC65g82k
+WHwvc9ezcxH1d+3GHwtLD0c64HWwoF0wOGVheSNtV5M07WPcoidCanWFl+lDtk1x
+B4gIcAgtAbRVuCEw1o7j
+=eXKD
+-----END PGP SIGNATURE-----
+
+--=-e6v+0eKZGKcV0XmYP3Qw--
