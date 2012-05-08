@@ -1,36 +1,28 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRiaP-0007Fy-Db
- for linux-mtd@lists.infradead.org; Tue, 08 May 2012 11:28:10 +0000
-Received: by laap9 with SMTP id p9so1669010laa.36
- for <linux-mtd@lists.infradead.org>; Tue, 08 May 2012 04:28:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD3351F9CAE25@dekaexchange07.deka.local>
-References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
- <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
- <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
- <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
- <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
- <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
- <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
- <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
- <CADZ6=as7Wz5TvGRbTa=6ydZMcBQHe2VRAPpxNy+3hFKApJEBzw@mail.gmail.com>
- <Pine.LNX.4.64.1205071145340.722@lnxricardw.se.axis.com>
- <CADZ6=atoFf46+U9xTbDh-7AniuTBsuAo2MWKLyeAn4oFa=xSFQ@mail.gmail.com>
- <Pine.LNX.4.64.1205080853310.27120@lnxricardw.se.axis.com>
- <CADZ6=as6DeHBpnTmamzaMDR-b8OgqYx=ZFwBLTB5wpKSLZH0ZQ@mail.gmail.com>
- <0A40042D85E7C84DB443060EC44B3FD3351F9CAE25@dekaexchange07.deka.local>
-Date: Tue, 8 May 2012 13:28:06 +0200
-Message-ID: <CADZ6=asTzz-Kj_5BkSeb_LZLfkYWDVpTF654AuRt9Ow=7E=iMA@mail.gmail.com>
-Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
- when reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Content-Type: text/plain; charset=UTF-8
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "Mohammed, Afzal" <afzal@ti.com>, "tony@atomide.com" <tony@atomide.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "Hilman, Kevin"
+ <khilman@ti.com>, "Balbi, Felipe" <balbi@ti.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "kyungmin.park@samsung.com"
+ <kyungmin.park@samsung.com>, "gregkh@linuxfoundation.org"
+ <gregkh@linuxfoundation.org>, "Menon, Nishanth" <nm@ti.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>, "notasas@gmail.com"
+ <notasas@gmail.com>, "artem.bityutskiy@linux.intel.com"
+ <artem.bityutskiy@linux.intel.com>, "vimal.newwork@gmail.com"
+ <vimal.newwork@gmail.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-usb@vger.kernel.org"
+ <linux-usb@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH v4 00/39] OMAP GPMC driver conversion
+Date: Tue, 8 May 2012 11:27:58 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E987D39@DBDE01.ent.ti.com>
+References: <cover.1335874494.git.afzal@ti.com>
+In-Reply-To: <cover.1335874494.git.afzal@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,37 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Atlant,
+Hi Tony,
 
->> Please keep in mind that re-write events (or even bit scrubbing)
->> should be extremely rare since, well, we're r/o.
->
-> =C2=A0I'm not sure this assumption holds on modern NAND Flashes,
-> =C2=A0especially for the highest-density, lowest-cost MLC (and
-> =C2=A0now, even a few TLC!) devices. On these devices, the
-> =C2=A0difference between bits is down to 20-30 electrons on
-> =C2=A0the floating gate. These devices also have relatively
-> =C2=A0high rates of "read disturb" errors so there can't be
-> =C2=A0any such thing as a read-only Flash, only a read-mostly
-> =C2=A0Flash.
+On Tue, May 01, 2012 at 17:49:03, Mohammed, Afzal wrote:
+> GPMC driver conversion patch series. Some peripherals has GPMC helper
+> functions, these has been modified to cater to the needs of GPMC
+> driver. All the boards using GPMC has been adapted to use the new
+> GPMC driver.
+>=20
+> GPMC HWMOD entry for OMAP2/3 has been added. On OMAP3, kernel does
+> spit "omap_hwmod: gpmc: cannot be enabled for reset (3)", but
+> peripherals connected via GPMC are working. Really shaky about OMAP2
+> GPMC HWMOD entry. Would be helpful if someone can help me in resolving
+> warning on OMAP3 & verify whether OMAP2 entry is proper. The series
+> adapts to HWMOD.
+>=20
+> Drivers, NAND & OneNAND of OMAP has been modified to make use of GPMC
+> changes & cleaned up the now unnecessary exported symbol usages.
+>=20
+> This series has been made on top of,
+> 5e136da Linux-omap rebuilt: Updated to -rc5,
+> A patch by Javier Martinez Canillas <javier@dowhile0.org>,
+> OMAP3: igep0020: Add support for Micron NAND Flash storage memory,
+> has also been incorporated into the series as this was necessary for
+> igep0020 board.
+>=20
+> This has been tested on omap3 evm (SMSC911x) & beagle board (NAND)
 
-You're right, and I consider this an important factoid that I learned
-from this whole thread. As a result I aim to add very basic scrubbing
-support to blockrom. I'm still convinced, however, that it can be done
-with very few code at the r/o MTD level compared to r/w UBI. Plus I
-consider having a generic r/o fs image "directly" in an MTD block
-device a strong use case for embedded systems. So it may be worth the
-trade-off of having to maintain slightly more code.
 
-Regards,
-Thilo
+Please let me know your comments on this series.
 
---=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+Regards
+Afzal
