@@ -1,13 +1,19 @@
-Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SRjk9-0007Zq-Vt
- for linux-mtd@lists.infradead.org; Tue, 08 May 2012 12:42:20 +0000
-From: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRkDx-0002uU-FL
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 13:13:06 +0000
+Received: by laap9 with SMTP id p9so1751436laa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 08 May 2012 06:13:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CADZ6=asqEUUe3zbZY+NE-Ew2e4Cymfnq+UqgmF2VHesBek3-XQ@mail.gmail.com>
+References: <CADZ6=asqEUUe3zbZY+NE-Ew2e4Cymfnq+UqgmF2VHesBek3-XQ@mail.gmail.com>
+Date: Tue, 8 May 2012 15:13:02 +0200
+Message-ID: <CADZ6=as0KQwGmvLJdy1P3fx=hjkJrMJf+Mqud+PMSiEyVjjbQg@mail.gmail.com>
+Subject: Re: Why kernel tasks for each MTD partition?
+From: Thilo Fromm <fromm@dresearch-fe.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [JFFS2] check xattr data integrity during first GC scan.
-Date: Tue,  8 May 2012 14:41:51 +0200
-Message-Id: <1336480911-16707-1-git-send-email-jcd@tribudubois.net>
-Cc: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,136 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch allows JFFS2 to distinguish between a recoverable
-and non recoverable errors and to act accordingly.
+Hello me,
 
-Furthermore, extended attribute integrity is now checked on
-first GC pass (at the same time as the file data integrity
-is checked).
+just in case anyone else is ever riddled about this (like I was);
+here's what I found out.
 
-Signed-off-by: Jean-Christophe DUBOIS <jcd@tribudubois.net>
----
- fs/jffs2/readinode.c |    1 +
- fs/jffs2/xattr.c     |   21 +++++++++++++++------
- fs/jffs2/xattr.h     |    2 ++
- 3 files changed, 18 insertions(+), 6 deletions(-)
+> while playing around with mtdblock and blockrom (see my other mail[1])
+> I noticed that a separate kernel process is active for each "mtdblock"
+> partition (e.g. ps shows "[mtdblock0]", "[mtdblock1]" kernel processes
+> if you have two MTD partitions and you use mtdblock). These also exist
+> for my blockrom device nodes. Since I see comparable processes for all
+> storage on my Linux workstation I suppose the Linux storage stack runs
+> these. Can somebody please fill me in on what they are?
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index dc0437e..69eeadb 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -1415,6 +1415,7 @@ int jffs2_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *i
- 		mutex_unlock(&f->sem);
- 		jffs2_do_clear_inode(c, f);
- 	}
-+	jffs2_xattr_do_crccheck_inode(c, ic);
- 	kfree (f);
- 	return ret;
- }
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index b55b803..a7d8e22 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -11,6 +11,8 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#define JFFS2_XATTR_IS_CORRUPTED	1
-+
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/fs.h>
-@@ -153,7 +155,7 @@ static int do_verify_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_dat
- 		JFFS2_ERROR("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
- 			    offset, je32_to_cpu(rx.hdr_crc), crc);
- 		xd->flags |= JFFS2_XFLAGS_INVALID;
--		return -EIO;
-+		return JFFS2_XATTR_IS_CORRUPTED;
- 	}
- 	totlen = PAD(sizeof(rx) + rx.name_len + 1 + je16_to_cpu(rx.value_len));
- 	if (je16_to_cpu(rx.magic) != JFFS2_MAGIC_BITMASK
-@@ -169,7 +171,7 @@ static int do_verify_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_dat
- 			    je32_to_cpu(rx.xid), xd->xid,
- 			    je32_to_cpu(rx.version), xd->version);
- 		xd->flags |= JFFS2_XFLAGS_INVALID;
--		return -EIO;
-+		return JFFS2_XATTR_IS_CORRUPTED;
- 	}
- 	xd->xprefix = rx.xprefix;
- 	xd->name_len = rx.name_len;
-@@ -227,12 +229,12 @@ static int do_load_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datum
- 	data[xd->name_len] = '\0';
- 	crc = crc32(0, data, length);
- 	if (crc != xd->data_crc) {
--		JFFS2_WARNING("node CRC failed (JFFS2_NODETYPE_XREF)"
-+		JFFS2_WARNING("node CRC failed (JFFS2_NODETYPE_XATTR)"
- 			      " at %#08x, read: 0x%08x calculated: 0x%08x\n",
- 			      ref_offset(xd->node), xd->data_crc, crc);
- 		kfree(data);
- 		xd->flags |= JFFS2_XFLAGS_INVALID;
--		return -EIO;
-+		return JFFS2_XATTR_IS_CORRUPTED;
- 	}
- 
- 	xd->flags |= JFFS2_XFLAGS_HOT;
-@@ -435,6 +437,8 @@ static void unrefer_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datu
-  *   is called to release xattr related objects when unmounting. 
-  * check_xattr_ref_inode(c, ic)
-  *   is used to confirm inode does not have duplicate xattr name/value pair.
-+ * jffs2_xattr_do_crccheck_inode(c, ic)
-+ *   is used to force xattr data integrity check during the initial gc scan.
-  * -------------------------------------------------- */
- static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
- {
-@@ -462,7 +466,7 @@ static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref
- 	if (crc != je32_to_cpu(rr.node_crc)) {
- 		JFFS2_ERROR("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
- 			    offset, je32_to_cpu(rr.node_crc), crc);
--		return -EIO;
-+		return JFFS2_XATTR_IS_CORRUPTED;
- 	}
- 	if (je16_to_cpu(rr.magic) != JFFS2_MAGIC_BITMASK
- 	    || je16_to_cpu(rr.nodetype) != JFFS2_NODETYPE_XREF
-@@ -472,7 +476,7 @@ static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref
- 			    offset, je16_to_cpu(rr.magic), JFFS2_MAGIC_BITMASK,
- 			    je16_to_cpu(rr.nodetype), JFFS2_NODETYPE_XREF,
- 			    je32_to_cpu(rr.totlen), PAD(sizeof(rr)));
--		return -EIO;
-+		return JFFS2_XATTR_IS_CORRUPTED;
- 	}
- 	ref->ino = je32_to_cpu(rr.ino);
- 	ref->xid = je32_to_cpu(rr.xid);
-@@ -682,6 +686,11 @@ static int check_xattr_ref_inode(struct jffs2_sb_info *c, struct jffs2_inode_cac
- 	return rc;
- }
- 
-+void jffs2_xattr_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic)
-+{
-+	check_xattr_ref_inode(c, ic);
-+}
-+
- /* -------- xattr subsystem functions ---------------
-  * jffs2_init_xattr_subsystem(c)
-  *   is used to initialize semaphore and list_head, and some variables.
-diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
-index 7be4beb..467ff37 100644
---- a/fs/jffs2/xattr.h
-+++ b/fs/jffs2/xattr.h
-@@ -77,6 +77,7 @@ extern void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c);
- extern struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
- 							 uint32_t xid, uint32_t version);
- 
-+extern void jffs2_xattr_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
- extern void jffs2_xattr_delete_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
- extern void jffs2_xattr_free_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
- 
-@@ -108,6 +109,7 @@ extern ssize_t jffs2_listxattr(struct dentry *, char *, size_t);
- #define jffs2_build_xattr_subsystem(c)
- #define jffs2_clear_xattr_subsystem(c)
- 
-+#define jffs2_xattr_do_crccheck_inode(c, ic)
- #define jffs2_xattr_delete_inode(c, ic)
- #define jffs2_xattr_free_inode(c, ic)
- #define jffs2_verify_xattr(c)			(1)
--- 
-1.7.9.5
+It turns out the generic mtd block device subsystem starts one kernel
+process for each mtd block device added. Each kernel process is an
+endpoint for the corresponding mtd block device's I/O queue. The
+kernel process will call the mtd block device readsect / writesect
+implementation on incoming requests.
+
+The process is implemented in drivers/mtd/mtd_blkdevs.c; the function
+is "static int mtd_blktrans_thread(void *arg)". It is started directly
+by add_mtd_blktrans_dev().
+
+> Also, more importantly, I notice accesses on all my device nodes (the
+> "blockrom" ones) upon system start originating from the corresponding
+> kernel process. However, the "mtdblock" nodes are not touched by their
+> kernel processes. How come?
+
+This is UDEV doing some generic block dev initialisation. udev already
+has default rules for mtd* (amongst lots of other things), so MTD
+devices are not handled like other persistent storage devices
+(actually they're just skipped for udev). The corresponding udev rules
+file is "rules/60-persistent-storage.rules" and is part of the udev
+sources (see e.g.
+<http://git.kernel.org/?p=3Dlinux/hotplug/udev.git;a=3Dblob;f=3Drules/60-pe=
+rsistent-storage.rules;h=3Db74821edd4764d4a353b67f5365b9c783b32c5c4;hb=3DHE=
+AD>).
+
+The mtd* exception does of course not cover my newly introduced
+blockrom* device nodes. However, changing the corresponding line in
+60-persistent-storage.rules
+
+-KERNEL=3D=3D"fd*|mtd*|nbd*|gnbd*|btibm*|dm-*|md*", GOTO=3D"persistent_stor=
+age_end"
++KERNEL=3D=3D"fd*|blockrom*|mtd*|nbd*|gnbd*|btibm*|dm-*|md*",
+GOTO=3D"persistent_storage_end"
+
+does the trick.
+
+Regards,
+Thilo
+
+--=20
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
