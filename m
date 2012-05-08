@@ -1,14 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRWiT-00071a-Q7
- for linux-mtd@lists.infradead.org; Mon, 07 May 2012 22:47:42 +0000
-From: Richard Weinberger <richard@nod.at>
+Received: from mail.3c.sk ([81.88.143.254])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRaSf-0003ph-Ae
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 02:47:38 +0000
+Received: from work ([41.9.101.102])
+ by mail.3c.sk (IceWarp 9.1.5-7) with ASMTP id SHR38304
+ for <linux-mtd@lists.infradead.org>; Tue, 08 May 2012 04:35:04 +0200
+Message-ID: <0325a029$41037$47992326236921@work>
+From: "Daniel Themba" <danielthemba29@yahoo.com.ph>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: UBI: remove superfluous "!!" operation
-Date: Tue,  8 May 2012 00:47:20 +0200
-Message-Id: <1336430840-27232-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Subject: Equity Channel
+Date: Tue, 8 May 2012 05:35:01 +0300
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Reply-To: Daniel Themba <danielthemba29@yahoo.com.ph>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,25 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-!!(x < y) and (x < y) are identical expressions.
+Good Day,
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/scan.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Please kindly accept my apology for sending you this email without your consent I have a business proposal for you contact me for more details,
+I will be expecting your reply to discuss about your benefit/share in this business
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 12c43b4..8d24435 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -337,7 +337,7 @@ static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
- 	}
- 
- 	/* Obviously the LEB with lower sequence counter is older */
--	second_is_newer = !!(sqnum2 > seb->sqnum);
-+	second_is_newer = (sqnum2 > seb->sqnum);
- 
- 	/*
- 	 * Now we know which copy is newer. If the copy flag of the PEB with
--- 
-1.7.7.3
+Regards
+
+Daniel Themba
