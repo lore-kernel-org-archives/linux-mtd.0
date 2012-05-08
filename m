@@ -1,22 +1,13 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRjcI-0005w7-1a
- for linux-mtd@lists.infradead.org; Tue, 08 May 2012 12:34:10 +0000
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
- by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id q48CY7Bx022655
- for <linux-mtd@lists.infradead.org>; Tue, 8 May 2012 07:34:08 -0500
-Received: from DBDE71.ent.ti.com (localhost [127.0.0.1])
- by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id q48CY62H009095
- for <linux-mtd@lists.infradead.org>; Tue, 8 May 2012 18:04:07 +0530 (IST)
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: mtd oob test is failing consistently at same places in NAND flash
-Date: Tue, 8 May 2012 12:33:06 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3E934BF1@DBDE01.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRjk9-0007Zq-Vt
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 12:42:20 +0000
+From: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [JFFS2] check xattr data integrity during first GC scan.
+Date: Tue,  8 May 2012 14:41:51 +0200
+Message-Id: <1336480911-16707-1-git-send-email-jcd@tribudubois.net>
+Cc: Jean-Christophe DUBOIS <jcd@tribudubois.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +17,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This patch allows JFFS2 to distinguish between a recoverable
+and non recoverable errors and to act accordingly.
 
-We are having an 8-bit NAND part (MT29F2G08ABAEAWP from Micron) connected t=
-o GPMC
-Module (General purpose memory controller) from TI.
-We have been seeing mtd_oobtest failure on a partition size of 248 MB. Most=
- of
-the time, test case 2 of mtd_oobtest is failing. On debugging further it se=
-ems
-that bit flip is happening on the test case 2 in OOB area. It is observed t=
-hat
-the failure locations are consistent.=20
+Furthermore, extended attribute integrity is now checked on
+first GC pass (at the same time as the file data integrity
+is checked).
 
-To verify further we had tried writing zeros to OOB area and read it back.=
-=20
-This test is passing and confirms that all OOB bits (that are programmable)
-are not bad.
+Signed-off-by: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+---
+ fs/jffs2/readinode.c |    1 +
+ fs/jffs2/xattr.c     |   21 +++++++++++++++------
+ fs/jffs2/xattr.h     |    2 ++
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
-To test further I had modified the mtd_oobtest.c as follows and found this
-test is passing
-
-diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtes=
-t.c
-index 933f7e5..9f118de 100644
---- a/drivers/mtd/tests/mtd_oobtest.c
-+++ b/drivers/mtd/tests/mtd_oobtest.c
-@@ -50,7 +50,7 @@ static unsigned long next =3D 1;
-
-static inline unsigned int simple_rand(void)
-{
--       next =3D next * 1103515245 + 12345;
-+       next =3D next * 1103515244 + 12345; /* 45 -> 44. Sequence is change=
-d */
-        return (unsigned int)((next / 65536) % 32768);
-}
-
-
-Is this behavior due to bits getting corrupted on certain sequence?=20
-Is this issue observed by anyone else?
-
-Thanks & Regards
-Avinash Philip
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index dc0437e..69eeadb 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1415,6 +1415,7 @@ int jffs2_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *i
+ 		mutex_unlock(&f->sem);
+ 		jffs2_do_clear_inode(c, f);
+ 	}
++	jffs2_xattr_do_crccheck_inode(c, ic);
+ 	kfree (f);
+ 	return ret;
+ }
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index b55b803..a7d8e22 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -11,6 +11,8 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#define JFFS2_XATTR_IS_CORRUPTED	1
++
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/fs.h>
+@@ -153,7 +155,7 @@ static int do_verify_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_dat
+ 		JFFS2_ERROR("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
+ 			    offset, je32_to_cpu(rx.hdr_crc), crc);
+ 		xd->flags |= JFFS2_XFLAGS_INVALID;
+-		return -EIO;
++		return JFFS2_XATTR_IS_CORRUPTED;
+ 	}
+ 	totlen = PAD(sizeof(rx) + rx.name_len + 1 + je16_to_cpu(rx.value_len));
+ 	if (je16_to_cpu(rx.magic) != JFFS2_MAGIC_BITMASK
+@@ -169,7 +171,7 @@ static int do_verify_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_dat
+ 			    je32_to_cpu(rx.xid), xd->xid,
+ 			    je32_to_cpu(rx.version), xd->version);
+ 		xd->flags |= JFFS2_XFLAGS_INVALID;
+-		return -EIO;
++		return JFFS2_XATTR_IS_CORRUPTED;
+ 	}
+ 	xd->xprefix = rx.xprefix;
+ 	xd->name_len = rx.name_len;
+@@ -227,12 +229,12 @@ static int do_load_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datum
+ 	data[xd->name_len] = '\0';
+ 	crc = crc32(0, data, length);
+ 	if (crc != xd->data_crc) {
+-		JFFS2_WARNING("node CRC failed (JFFS2_NODETYPE_XREF)"
++		JFFS2_WARNING("node CRC failed (JFFS2_NODETYPE_XATTR)"
+ 			      " at %#08x, read: 0x%08x calculated: 0x%08x\n",
+ 			      ref_offset(xd->node), xd->data_crc, crc);
+ 		kfree(data);
+ 		xd->flags |= JFFS2_XFLAGS_INVALID;
+-		return -EIO;
++		return JFFS2_XATTR_IS_CORRUPTED;
+ 	}
+ 
+ 	xd->flags |= JFFS2_XFLAGS_HOT;
+@@ -435,6 +437,8 @@ static void unrefer_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datu
+  *   is called to release xattr related objects when unmounting. 
+  * check_xattr_ref_inode(c, ic)
+  *   is used to confirm inode does not have duplicate xattr name/value pair.
++ * jffs2_xattr_do_crccheck_inode(c, ic)
++ *   is used to force xattr data integrity check during the initial gc scan.
+  * -------------------------------------------------- */
+ static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+ {
+@@ -462,7 +466,7 @@ static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref
+ 	if (crc != je32_to_cpu(rr.node_crc)) {
+ 		JFFS2_ERROR("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
+ 			    offset, je32_to_cpu(rr.node_crc), crc);
+-		return -EIO;
++		return JFFS2_XATTR_IS_CORRUPTED;
+ 	}
+ 	if (je16_to_cpu(rr.magic) != JFFS2_MAGIC_BITMASK
+ 	    || je16_to_cpu(rr.nodetype) != JFFS2_NODETYPE_XREF
+@@ -472,7 +476,7 @@ static int verify_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref
+ 			    offset, je16_to_cpu(rr.magic), JFFS2_MAGIC_BITMASK,
+ 			    je16_to_cpu(rr.nodetype), JFFS2_NODETYPE_XREF,
+ 			    je32_to_cpu(rr.totlen), PAD(sizeof(rr)));
+-		return -EIO;
++		return JFFS2_XATTR_IS_CORRUPTED;
+ 	}
+ 	ref->ino = je32_to_cpu(rr.ino);
+ 	ref->xid = je32_to_cpu(rr.xid);
+@@ -682,6 +686,11 @@ static int check_xattr_ref_inode(struct jffs2_sb_info *c, struct jffs2_inode_cac
+ 	return rc;
+ }
+ 
++void jffs2_xattr_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic)
++{
++	check_xattr_ref_inode(c, ic);
++}
++
+ /* -------- xattr subsystem functions ---------------
+  * jffs2_init_xattr_subsystem(c)
+  *   is used to initialize semaphore and list_head, and some variables.
+diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
+index 7be4beb..467ff37 100644
+--- a/fs/jffs2/xattr.h
++++ b/fs/jffs2/xattr.h
+@@ -77,6 +77,7 @@ extern void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c);
+ extern struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
+ 							 uint32_t xid, uint32_t version);
+ 
++extern void jffs2_xattr_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
+ extern void jffs2_xattr_delete_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
+ extern void jffs2_xattr_free_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
+ 
+@@ -108,6 +109,7 @@ extern ssize_t jffs2_listxattr(struct dentry *, char *, size_t);
+ #define jffs2_build_xattr_subsystem(c)
+ #define jffs2_clear_xattr_subsystem(c)
+ 
++#define jffs2_xattr_do_crccheck_inode(c, ic)
+ #define jffs2_xattr_delete_inode(c, ic)
+ #define jffs2_xattr_free_inode(c, ic)
+ #define jffs2_verify_xattr(c)			(1)
+-- 
+1.7.9.5
