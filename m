@@ -1,24 +1,36 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SRiS4-0005eq-1e
- for linux-mtd@lists.infradead.org; Tue, 08 May 2012 11:19:32 +0000
-Message-ID: <1336476174.23308.32.camel@sauron.fi.intel.com>
-Subject: Re: xway_nand does not build
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Tue, 08 May 2012 14:22:54 +0300
-In-Reply-To: <4FA8FF4C.5050400@openwrt.org>
-References: <1336474838.23308.28.camel@sauron.fi.intel.com>
- <4FA8FD24.6060908@openwrt.org>
- <1336475618.23308.30.camel@sauron.fi.intel.com>
- <4FA8FF4C.5050400@openwrt.org>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ntJ3kIXU1PPEY1rrLb4x"
-Mime-Version: 1.0
-Cc: MIPS Mailing List <linux-mips@linux-mips.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRiaP-0007Fy-Db
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 11:28:10 +0000
+Received: by laap9 with SMTP id p9so1669010laa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 08 May 2012 04:28:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD3351F9CAE25@dekaexchange07.deka.local>
+References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
+ <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
+ <CADZ6=asdcCJOnPJfkV67wNHu2CX16NTzmN5z14nDhqGVvHdo4g@mail.gmail.com>
+ <Pine.LNX.4.64.1205021047010.20592@lnxricardw.se.axis.com>
+ <CADZ6=at5axiWkNF5CiqjqJmzsQdrKiVoPJh27ehy0fGsgLdSjw@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CADFB@dekaexchange07.deka.local>
+ <CADZ6=atZPNM+1sXJngdkoWddHX0WzzPqyJPa4Fi2FuiOoaV9dg@mail.gmail.com>
+ <Pine.LNX.4.64.1205041054400.27120@lnxricardw.se.axis.com>
+ <CADZ6=as7Wz5TvGRbTa=6ydZMcBQHe2VRAPpxNy+3hFKApJEBzw@mail.gmail.com>
+ <Pine.LNX.4.64.1205071145340.722@lnxricardw.se.axis.com>
+ <CADZ6=atoFf46+U9xTbDh-7AniuTBsuAo2MWKLyeAn4oFa=xSFQ@mail.gmail.com>
+ <Pine.LNX.4.64.1205080853310.27120@lnxricardw.se.axis.com>
+ <CADZ6=as6DeHBpnTmamzaMDR-b8OgqYx=ZFwBLTB5wpKSLZH0ZQ@mail.gmail.com>
+ <0A40042D85E7C84DB443060EC44B3FD3351F9CAE25@dekaexchange07.deka.local>
+Date: Tue, 8 May 2012 13:28:06 +0200
+Message-ID: <CADZ6=asTzz-Kj_5BkSeb_LZLfkYWDVpTF654AuRt9Ow=7E=iMA@mail.gmail.com>
+Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
+ when reading
+From: Thilo Fromm <fromm@dresearch-fe.de>
+To: Atlant Schmidt <aschmidt@dekaresearch.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +40,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello, Atlant,
 
---=-ntJ3kIXU1PPEY1rrLb4x
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>> Please keep in mind that re-write events (or even bit scrubbing)
+>> should be extremely rare since, well, we're r/o.
+>
+> =C2=A0I'm not sure this assumption holds on modern NAND Flashes,
+> =C2=A0especially for the highest-density, lowest-cost MLC (and
+> =C2=A0now, even a few TLC!) devices. On these devices, the
+> =C2=A0difference between bits is down to 20-30 electrons on
+> =C2=A0the floating gate. These devices also have relatively
+> =C2=A0high rates of "read disturb" errors so there can't be
+> =C2=A0any such thing as a read-only Flash, only a read-mostly
+> =C2=A0Flash.
 
-On Tue, 2012-05-08 at 13:11 +0200, John Crispin wrote:
-> That would be appreciated. i will get aligned with Ralf to make sure
-> this patch flow via his tree
+You're right, and I consider this an important factoid that I learned
+from this whole thread. As a result I aim to add very basic scrubbing
+support to blockrom. I'm still convinced, however, that it can be done
+with very few code at the r/o MTD level compared to r/w UBI. Plus I
+consider having a generic r/o fs image "directly" in an MTD block
+device a strong use case for embedded systems. So it may be worth the
+trade-off of having to maintain slightly more code.
 
-Feel free to add the following when you send to Ralf:
-
-Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Regards,
+Thilo
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-ntJ3kIXU1PPEY1rrLb4x
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPqQIOAAoJECmIfjd9wqK0SL0QAJOkcSNreolgiIYZD5nJBjL7
-DBlS8vzfvH3TBhX8wd8TylVM7wLzuVgtKP2r/LsDN48Qzgod6ccswuNHresrCxgQ
-O7k/dHZV921nbkVGLUqrLb4G8BbsTbI+Gx1hlS7EoJoOprJJ6N/SYdNvg7riSMxf
-O3/5vXUspg+hcd0fjC2bPd/OVV93ZQx+lbaTRmmEZoPj9Dngj4blfnpW7yfOqmJs
-9swnDWu4HsPWxgGvzYmqyPTehyXNrFrWe3p8cUa3VWtHFbBU3RTT2FzN0Doe/zZJ
-1JwDDiXoBZFu2H2cuNjiXq3O+JzAC4DAjKrYXF03OWMh+R9BHCRJydS7T2osPub7
-bHj+C7qDKB/O0Of+kE1EpHvELCUlWL5qx+7TdySm/fN5nQJSETU+o34pNlRaZBSv
-/fZ8Z1tVr8AzI8lKREB67i4LQaSiTcxcn5MBlo+IA0yXLJT7CdpwWN9XNeTrH0jK
-1OKIn4/P+e74evqiLYQf5uSxaya9TF9ug0BSu/TmHfQQNE5l56QhAiotkEMEK+pn
-ZXPIG3ucun+e6hOyZXhri6HVDHlo8Zyo6Rgd/K+dA86C0iLopjkHd9r5Jj765F/w
-FrAs5yLZ/Pk7GBqwd1dOam/YYkC5bhSecSXgRFKG/I2iRwqeV5SEDQMneZcRDd5J
-eyFB2V8YMoDhypvOWzlQ
-=s0vS
------END PGP SIGNATURE-----
-
---=-ntJ3kIXU1PPEY1rrLb4x--
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
