@@ -1,11 +1,14 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRhLq-0008AX-MT
- for linux-mtd@lists.infradead.org; Tue, 08 May 2012 10:09:04 +0000
-Received: by lbbgg6 with SMTP id gg6so5083312lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 08 May 2012 03:09:00 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1205080853310.27120@lnxricardw.se.axis.com>
+Received: from mail2.spectraaccess.net ([208.65.172.25])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRhu3-0001rW-OZ
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 10:44:24 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Thilo Fromm' <fromm@dresearch-fe.de>, Ricard Wanderlof
+ <ricard.wanderlof@axis.com>
+Date: Tue, 8 May 2012 06:44:19 -0400
+Subject: RE: State of read-only filesystems in NAND / MTD bad blocks
+ handling when reading
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD3351F9CAE25@dekaexchange07.deka.local>
 References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
  <CADZ6=asURkKX6VB_UsmtcMnU5N8Xq_Lv7uRpkvYmQ3YBU7tvhQ@mail.gmail.com>
  <Pine.LNX.4.64.1205020933520.20592@lnxricardw.se.axis.com>
@@ -19,14 +22,12 @@ References: <CADZ6=aumk74QxF3kjenFYqQUZ-OaPT8gmrN-xUGE6NPPyq87NQ@mail.gmail.com>
  <Pine.LNX.4.64.1205071145340.722@lnxricardw.se.axis.com>
  <CADZ6=atoFf46+U9xTbDh-7AniuTBsuAo2MWKLyeAn4oFa=xSFQ@mail.gmail.com>
  <Pine.LNX.4.64.1205080853310.27120@lnxricardw.se.axis.com>
-Date: Tue, 8 May 2012 12:08:59 +0200
-Message-ID: <CADZ6=as6DeHBpnTmamzaMDR-b8OgqYx=ZFwBLTB5wpKSLZH0ZQ@mail.gmail.com>
-Subject: Re: State of read-only filesystems in NAND / MTD bad blocks handling
- when reading
-From: Thilo Fromm <fromm@dresearch-fe.de>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <CADZ6=as6DeHBpnTmamzaMDR-b8OgqYx=ZFwBLTB5wpKSLZH0ZQ@mail.gmail.com>
+In-Reply-To: <CADZ6=as6DeHBpnTmamzaMDR-b8OgqYx=ZFwBLTB5wpKSLZH0ZQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,136 +38,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ricard,
-
->>> By putting a bunch of UBI volumes in one UBI partition you also get the
->>> benifit of having UBI manage bad blocks for you, and you can have one
->>> large
->>> pool of bad blocks rather than an individual pool of bad blocks for eac=
-h
->>> mtd, which in the end translates to better usage of the flash.
->>>
->>> These things may or may not be important to you, depending on how much
->>> flash you have and how reliable it is.
->>
->>
->> The most important point for me is whether you use your flash, or a
->> specific partition of your flash, in read-only or read-write mode.
->> When operating in r/o mode I don't quite see a point in most of the
->> more advanced stuff UBI does, e.g. wear leveling.
->
->
-> One could argue though that once you start using UBI for bit scrubbing, t=
-hen
-> wear levelling becomes an issue even on a r/o file system.
-
-I do understand your argument and I can follow you with this - it's a
-conclusion easily reached from the r/w point of view. That is, if you
-consider r/o functionality a subset of r/w functionality, then it's
-easy to re-use all the comfy functions from r/w that you already have
-at your disposal.
-
-However, from a read-only point of view even with scrubbing there's
-still no absolute necessity for wear leveling. Since we do bad block
-mapping anyways and since writes are very rare (bit scrubbing and
-full-image writes) wearing off the blocks evenly is not a requirement.
-If a block dies during image write, then it is mapped out and never
-used again. If a block dies during bit scrub, one could map it, then
-re-write all succeeding blocks. With a MTD only allowing for r/o
-access even a robust implementation of scrubbing / block rewrite
-should be easy to do. With r/w this would be madness.
-
-Please keep in mind that re-write events (or even bit scrubbing)
-should be extremely rare since, well, we're r/o. My argument here is
-that when limiting oneself to r/o access a lot of these robustness
-features can be provided in a much simpler way, allowing for code that
-is both simple and easy to maintain. Also I can do this at a low level
-(the MTD level) instead of a higher layer.
-
->> I do miss a very simple r/o layer, though. I think there is a strong
->> use case for read-only file systems; especially in the embedded world.
->> And all things necessary - bad-block handling, scrubbing -
->> can be abstracted well enough for a simple r/o block device at a very
->> low level.
->
->
-> I'm not too sure. There is a r/o mode in UBI, so-called static volumes,
-> which have a fixed size after creation or writing data to them, and have
-> built-in checksums for validation. They are primarily intended for blobs
-> such as a kernel, but can also be used for read/write file systems.
-
-How would I put a squashfs into that and then mount it upon boot?
-
-> My biggest gripe about adding another "simple" r/o layer is this: Since U=
-BI
-> is stable and maintained, it seems a bit pointless to dilute future
-> development and maintenence efforts by introducing another layer which
-> basically is a subset of UBI. For instance, future changes to the mtd API
-> that affect the layers above will have to be maintained not just for UBI =
-but
-> for other mtd users as well. Sure, a parallel layer may be simpler, but w=
-ith
-> UBI already in place and working well, I'm not convinced it actually make=
-s a
-> practical difference in the end.
-
-I do understand your skepticism. And you're right with the extra
-maintenance effort required. I think we differ in opinion only
-concerning the complexity of a read-only block access implementation
-w/ bad block skipping and bit scrubbing. How about you take a look at
-blockrom.c, and maybe at blockrom_scrub.c after I come up with this
-(probably next week, or the week after that). Then we can decide about
-the implementation's usability, its weaknesses, and most importantly,
-its complexity (especially concerning maintainability).
-
-You once wrote that flashes are actually not disks, and that some of
-the specifics of flashes must be exposed to upper layers in order to
-be handled adequately. From a r/w point of view I do follow your
-argument completely. However, I think that a flash device allowing
-only for r/o generic accesses can indeed be reasonably abstracted to
-look exactly like a disk.
-
-And I think it can be done with only few code, so it should be of low
-complexity, easy to maintain, while still supporting a (imho) strong
-use case (i.e. a generic r/o fs in a MTD block device).
-
-> Especially if you are using UBI in your system anyway, but not necessaril=
-y
-> for you root file system, adding another parallel layer seems rather
-> pointless. You've got UBI in your system anyway, why add something else t=
-hat
-> does the same thing just because UBI seems overly convoluted for readonly
-> file systems. It does the job and does it well and doesn't cost anything
-> since it's there anyway.
-
-I want a simple (and guaranteed r/o) root fs so that if anybody
-power-circles our devices at any point I'd still end up with a working
-root fs. I can guarantee this behavior with MTD + blockrom because the
-stack is simple enough to see through. I would not be able to
-guarantee this with an UBI root fs which is inherently writable, even
-if mounted read-only. Writes would happen because wear leveling, bit
-scrubbing and all the other maintenance operations must account for a
-r/w device. Way more complex, way more risky.
-
-> If you are really pressed for space in the kernel (in terms of required
-> space on the flash or the amount of RAM it consumes run time) I could
-> understand that replacing the Big and Grand UBI with something smaller mi=
-ght
-> have some value.
-
-It's not actually a small footprint requirement I'm trying to fulfill
-but a low-complexity one for robustness reasons. But you're right,
-another use case for the blockrom FTL would be if you're low on space.
-
-Regards,
-Thilo
-
---=20
-Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
-DResearch Fahrzeugelektronik GmbH
-Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
-Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
-Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
-Amtsgericht: Berlin Charlottenburg, HRB 130120 B
-Ust.-IDNr. DE273952058
-Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
+VGhpbG86DQoNCj4gUGxlYXNlIGtlZXAgaW4gbWluZCB0aGF0IHJlLXdyaXRlIGV2ZW50cyAob3Ig
+ZXZlbiBiaXQgc2NydWJiaW5nKQ0KPiBzaG91bGQgYmUgZXh0cmVtZWx5IHJhcmUgc2luY2UsIHdl
+bGwsIHdlJ3JlIHIvby4NCg0KICBJJ20gbm90IHN1cmUgdGhpcyBhc3N1bXB0aW9uIGhvbGRzIG9u
+IG1vZGVybiBOQU5EIEZsYXNoZXMsDQogIGVzcGVjaWFsbHkgZm9yIHRoZSBoaWdoZXN0LWRlbnNp
+dHksIGxvd2VzdC1jb3N0IE1MQyAoYW5kDQogIG5vdywgZXZlbiBhIGZldyBUTEMhKSBkZXZpY2Vz
+LiBPbiB0aGVzZSBkZXZpY2VzLCB0aGUNCiAgZGlmZmVyZW5jZSBiZXR3ZWVuIGJpdHMgaXMgZG93
+biB0byAyMC0zMCBlbGVjdHJvbnMgb24NCiAgdGhlIGZsb2F0aW5nIGdhdGUuIFRoZXNlIGRldmlj
+ZXMgYWxzbyBoYXZlIHJlbGF0aXZlbHkNCiAgaGlnaCByYXRlcyBvZiAicmVhZCBkaXN0dXJiIiBl
+cnJvcnMgc28gdGhlcmUgY2FuJ3QgYmUNCiAgYW55IHN1Y2ggdGhpbmcgYXMgYSByZWFkLW9ubHkg
+Rmxhc2gsIG9ubHkgYSByZWFkLW1vc3RseQ0KICBGbGFzaC4NCg0KICAgICAgICAgICAgICAgICAg
+ICAgICAgICBBdGxhbnQNCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogbGlu
+dXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZyBbbWFpbHRvOmxpbnV4LW10ZC1ib3Vu
+Y2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9uIEJlaGFsZiBPZiBUaGlsbyBGcm9tbQ0KU2VudDog
+VHVlc2RheSwgTWF5IDA4LCAyMDEyIDA2OjA5DQpUbzogUmljYXJkIFdhbmRlcmxvZg0KQ2M6IGxp
+bnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBSZTogU3RhdGUgb2YgcmVhZC1v
+bmx5IGZpbGVzeXN0ZW1zIGluIE5BTkQgLyBNVEQgYmFkIGJsb2NrcyBoYW5kbGluZyB3aGVuIHJl
+YWRpbmcNCg0KSGVsbG8gUmljYXJkLA0KDQo+Pj4gQnkgcHV0dGluZyBhIGJ1bmNoIG9mIFVCSSB2
+b2x1bWVzIGluIG9uZSBVQkkgcGFydGl0aW9uIHlvdSBhbHNvIGdldCB0aGUNCj4+PiBiZW5pZml0
+IG9mIGhhdmluZyBVQkkgbWFuYWdlIGJhZCBibG9ja3MgZm9yIHlvdSwgYW5kIHlvdSBjYW4gaGF2
+ZSBvbmUNCj4+PiBsYXJnZQ0KPj4+IHBvb2wgb2YgYmFkIGJsb2NrcyByYXRoZXIgdGhhbiBhbiBp
+bmRpdmlkdWFsIHBvb2wgb2YgYmFkIGJsb2NrcyBmb3IgZWFjaA0KPj4+IG10ZCwgd2hpY2ggaW4g
+dGhlIGVuZCB0cmFuc2xhdGVzIHRvIGJldHRlciB1c2FnZSBvZiB0aGUgZmxhc2guDQo+Pj4NCj4+
+PiBUaGVzZSB0aGluZ3MgbWF5IG9yIG1heSBub3QgYmUgaW1wb3J0YW50IHRvIHlvdSwgZGVwZW5k
+aW5nIG9uIGhvdyBtdWNoDQo+Pj4gZmxhc2ggeW91IGhhdmUgYW5kIGhvdyByZWxpYWJsZSBpdCBp
+cy4NCj4+DQo+Pg0KPj4gVGhlIG1vc3QgaW1wb3J0YW50IHBvaW50IGZvciBtZSBpcyB3aGV0aGVy
+IHlvdSB1c2UgeW91ciBmbGFzaCwgb3IgYQ0KPj4gc3BlY2lmaWMgcGFydGl0aW9uIG9mIHlvdXIg
+Zmxhc2gsIGluIHJlYWQtb25seSBvciByZWFkLXdyaXRlIG1vZGUuDQo+PiBXaGVuIG9wZXJhdGlu
+ZyBpbiByL28gbW9kZSBJIGRvbid0IHF1aXRlIHNlZSBhIHBvaW50IGluIG1vc3Qgb2YgdGhlDQo+
+PiBtb3JlIGFkdmFuY2VkIHN0dWZmIFVCSSBkb2VzLCBlLmcuIHdlYXIgbGV2ZWxpbmcuDQo+DQo+
+DQo+IE9uZSBjb3VsZCBhcmd1ZSB0aG91Z2ggdGhhdCBvbmNlIHlvdSBzdGFydCB1c2luZyBVQkkg
+Zm9yIGJpdCBzY3J1YmJpbmcsIHRoZW4NCj4gd2VhciBsZXZlbGxpbmcgYmVjb21lcyBhbiBpc3N1
+ZSBldmVuIG9uIGEgci9vIGZpbGUgc3lzdGVtLg0KDQpJIGRvIHVuZGVyc3RhbmQgeW91ciBhcmd1
+bWVudCBhbmQgSSBjYW4gZm9sbG93IHlvdSB3aXRoIHRoaXMgLSBpdCdzIGENCmNvbmNsdXNpb24g
+ZWFzaWx5IHJlYWNoZWQgZnJvbSB0aGUgci93IHBvaW50IG9mIHZpZXcuIFRoYXQgaXMsIGlmIHlv
+dQ0KY29uc2lkZXIgci9vIGZ1bmN0aW9uYWxpdHkgYSBzdWJzZXQgb2Ygci93IGZ1bmN0aW9uYWxp
+dHksIHRoZW4gaXQncw0KZWFzeSB0byByZS11c2UgYWxsIHRoZSBjb21meSBmdW5jdGlvbnMgZnJv
+bSByL3cgdGhhdCB5b3UgYWxyZWFkeSBoYXZlDQphdCB5b3VyIGRpc3Bvc2FsLg0KDQpIb3dldmVy
+LCBmcm9tIGEgcmVhZC1vbmx5IHBvaW50IG9mIHZpZXcgZXZlbiB3aXRoIHNjcnViYmluZyB0aGVy
+ZSdzDQpzdGlsbCBubyBhYnNvbHV0ZSBuZWNlc3NpdHkgZm9yIHdlYXIgbGV2ZWxpbmcuIFNpbmNl
+IHdlIGRvIGJhZCBibG9jaw0KbWFwcGluZyBhbnl3YXlzIGFuZCBzaW5jZSB3cml0ZXMgYXJlIHZl
+cnkgcmFyZSAoYml0IHNjcnViYmluZyBhbmQNCmZ1bGwtaW1hZ2Ugd3JpdGVzKSB3ZWFyaW5nIG9m
+ZiB0aGUgYmxvY2tzIGV2ZW5seSBpcyBub3QgYSByZXF1aXJlbWVudC4NCklmIGEgYmxvY2sgZGll
+cyBkdXJpbmcgaW1hZ2Ugd3JpdGUsIHRoZW4gaXQgaXMgbWFwcGVkIG91dCBhbmQgbmV2ZXINCnVz
+ZWQgYWdhaW4uIElmIGEgYmxvY2sgZGllcyBkdXJpbmcgYml0IHNjcnViLCBvbmUgY291bGQgbWFw
+IGl0LCB0aGVuDQpyZS13cml0ZSBhbGwgc3VjY2VlZGluZyBibG9ja3MuIFdpdGggYSBNVEQgb25s
+eSBhbGxvd2luZyBmb3Igci9vDQphY2Nlc3MgZXZlbiBhIHJvYnVzdCBpbXBsZW1lbnRhdGlvbiBv
+ZiBzY3J1YmJpbmcgLyBibG9jayByZXdyaXRlDQpzaG91bGQgYmUgZWFzeSB0byBkby4gV2l0aCBy
+L3cgdGhpcyB3b3VsZCBiZSBtYWRuZXNzLg0KDQpQbGVhc2Uga2VlcCBpbiBtaW5kIHRoYXQgcmUt
+d3JpdGUgZXZlbnRzIChvciBldmVuIGJpdCBzY3J1YmJpbmcpDQpzaG91bGQgYmUgZXh0cmVtZWx5
+IHJhcmUgc2luY2UsIHdlbGwsIHdlJ3JlIHIvby4gTXkgYXJndW1lbnQgaGVyZSBpcw0KdGhhdCB3
+aGVuIGxpbWl0aW5nIG9uZXNlbGYgdG8gci9vIGFjY2VzcyBhIGxvdCBvZiB0aGVzZSByb2J1c3Ru
+ZXNzDQpmZWF0dXJlcyBjYW4gYmUgcHJvdmlkZWQgaW4gYSBtdWNoIHNpbXBsZXIgd2F5LCBhbGxv
+d2luZyBmb3IgY29kZSB0aGF0DQppcyBib3RoIHNpbXBsZSBhbmQgZWFzeSB0byBtYWludGFpbi4g
+QWxzbyBJIGNhbiBkbyB0aGlzIGF0IGEgbG93IGxldmVsDQoodGhlIE1URCBsZXZlbCkgaW5zdGVh
+ZCBvZiBhIGhpZ2hlciBsYXllci4NCg0KPj4gSSBkbyBtaXNzIGEgdmVyeSBzaW1wbGUgci9vIGxh
+eWVyLCB0aG91Z2guIEkgdGhpbmsgdGhlcmUgaXMgYSBzdHJvbmcNCj4+IHVzZSBjYXNlIGZvciBy
+ZWFkLW9ubHkgZmlsZSBzeXN0ZW1zOyBlc3BlY2lhbGx5IGluIHRoZSBlbWJlZGRlZCB3b3JsZC4N
+Cj4+IEFuZCBhbGwgdGhpbmdzIG5lY2Vzc2FyeSAtIGJhZC1ibG9jayBoYW5kbGluZywgc2NydWJi
+aW5nIC0NCj4+IGNhbiBiZSBhYnN0cmFjdGVkIHdlbGwgZW5vdWdoIGZvciBhIHNpbXBsZSByL28g
+YmxvY2sgZGV2aWNlIGF0IGEgdmVyeQ0KPj4gbG93IGxldmVsLg0KPg0KPg0KPiBJJ20gbm90IHRv
+byBzdXJlLiBUaGVyZSBpcyBhIHIvbyBtb2RlIGluIFVCSSwgc28tY2FsbGVkIHN0YXRpYyB2b2x1
+bWVzLA0KPiB3aGljaCBoYXZlIGEgZml4ZWQgc2l6ZSBhZnRlciBjcmVhdGlvbiBvciB3cml0aW5n
+IGRhdGEgdG8gdGhlbSwgYW5kIGhhdmUNCj4gYnVpbHQtaW4gY2hlY2tzdW1zIGZvciB2YWxpZGF0
+aW9uLiBUaGV5IGFyZSBwcmltYXJpbHkgaW50ZW5kZWQgZm9yIGJsb2JzDQo+IHN1Y2ggYXMgYSBr
+ZXJuZWwsIGJ1dCBjYW4gYWxzbyBiZSB1c2VkIGZvciByZWFkL3dyaXRlIGZpbGUgc3lzdGVtcy4N
+Cg0KSG93IHdvdWxkIEkgcHV0IGEgc3F1YXNoZnMgaW50byB0aGF0IGFuZCB0aGVuIG1vdW50IGl0
+IHVwb24gYm9vdD8NCg0KPiBNeSBiaWdnZXN0IGdyaXBlIGFib3V0IGFkZGluZyBhbm90aGVyICJz
+aW1wbGUiIHIvbyBsYXllciBpcyB0aGlzOiBTaW5jZSBVQkkNCj4gaXMgc3RhYmxlIGFuZCBtYWlu
+dGFpbmVkLCBpdCBzZWVtcyBhIGJpdCBwb2ludGxlc3MgdG8gZGlsdXRlIGZ1dHVyZQ0KPiBkZXZl
+bG9wbWVudCBhbmQgbWFpbnRlbmVuY2UgZWZmb3J0cyBieSBpbnRyb2R1Y2luZyBhbm90aGVyIGxh
+eWVyIHdoaWNoDQo+IGJhc2ljYWxseSBpcyBhIHN1YnNldCBvZiBVQkkuIEZvciBpbnN0YW5jZSwg
+ZnV0dXJlIGNoYW5nZXMgdG8gdGhlIG10ZCBBUEkNCj4gdGhhdCBhZmZlY3QgdGhlIGxheWVycyBh
+Ym92ZSB3aWxsIGhhdmUgdG8gYmUgbWFpbnRhaW5lZCBub3QganVzdCBmb3IgVUJJIGJ1dA0KPiBm
+b3Igb3RoZXIgbXRkIHVzZXJzIGFzIHdlbGwuIFN1cmUsIGEgcGFyYWxsZWwgbGF5ZXIgbWF5IGJl
+IHNpbXBsZXIsIGJ1dCB3aXRoDQo+IFVCSSBhbHJlYWR5IGluIHBsYWNlIGFuZCB3b3JraW5nIHdl
+bGwsIEknbSBub3QgY29udmluY2VkIGl0IGFjdHVhbGx5IG1ha2VzIGENCj4gcHJhY3RpY2FsIGRp
+ZmZlcmVuY2UgaW4gdGhlIGVuZC4NCg0KSSBkbyB1bmRlcnN0YW5kIHlvdXIgc2tlcHRpY2lzbS4g
+QW5kIHlvdSdyZSByaWdodCB3aXRoIHRoZSBleHRyYQ0KbWFpbnRlbmFuY2UgZWZmb3J0IHJlcXVp
+cmVkLiBJIHRoaW5rIHdlIGRpZmZlciBpbiBvcGluaW9uIG9ubHkNCmNvbmNlcm5pbmcgdGhlIGNv
+bXBsZXhpdHkgb2YgYSByZWFkLW9ubHkgYmxvY2sgYWNjZXNzIGltcGxlbWVudGF0aW9uDQp3LyBi
+YWQgYmxvY2sgc2tpcHBpbmcgYW5kIGJpdCBzY3J1YmJpbmcuIEhvdyBhYm91dCB5b3UgdGFrZSBh
+IGxvb2sgYXQNCmJsb2Nrcm9tLmMsIGFuZCBtYXliZSBhdCBibG9ja3JvbV9zY3J1Yi5jIGFmdGVy
+IEkgY29tZSB1cCB3aXRoIHRoaXMNCihwcm9iYWJseSBuZXh0IHdlZWssIG9yIHRoZSB3ZWVrIGFm
+dGVyIHRoYXQpLiBUaGVuIHdlIGNhbiBkZWNpZGUgYWJvdXQNCnRoZSBpbXBsZW1lbnRhdGlvbidz
+IHVzYWJpbGl0eSwgaXRzIHdlYWtuZXNzZXMsIGFuZCBtb3N0IGltcG9ydGFudGx5LA0KaXRzIGNv
+bXBsZXhpdHkgKGVzcGVjaWFsbHkgY29uY2VybmluZyBtYWludGFpbmFiaWxpdHkpLg0KDQpZb3Ug
+b25jZSB3cm90ZSB0aGF0IGZsYXNoZXMgYXJlIGFjdHVhbGx5IG5vdCBkaXNrcywgYW5kIHRoYXQg
+c29tZSBvZg0KdGhlIHNwZWNpZmljcyBvZiBmbGFzaGVzIG11c3QgYmUgZXhwb3NlZCB0byB1cHBl
+ciBsYXllcnMgaW4gb3JkZXIgdG8NCmJlIGhhbmRsZWQgYWRlcXVhdGVseS4gRnJvbSBhIHIvdyBw
+b2ludCBvZiB2aWV3IEkgZG8gZm9sbG93IHlvdXINCmFyZ3VtZW50IGNvbXBsZXRlbHkuIEhvd2V2
+ZXIsIEkgdGhpbmsgdGhhdCBhIGZsYXNoIGRldmljZSBhbGxvd2luZw0Kb25seSBmb3Igci9vIGdl
+bmVyaWMgYWNjZXNzZXMgY2FuIGluZGVlZCBiZSByZWFzb25hYmx5IGFic3RyYWN0ZWQgdG8NCmxv
+b2sgZXhhY3RseSBsaWtlIGEgZGlzay4NCg0KQW5kIEkgdGhpbmsgaXQgY2FuIGJlIGRvbmUgd2l0
+aCBvbmx5IGZldyBjb2RlLCBzbyBpdCBzaG91bGQgYmUgb2YgbG93DQpjb21wbGV4aXR5LCBlYXN5
+IHRvIG1haW50YWluLCB3aGlsZSBzdGlsbCBzdXBwb3J0aW5nIGEgKGltaG8pIHN0cm9uZw0KdXNl
+IGNhc2UgKGkuZS4gYSBnZW5lcmljIHIvbyBmcyBpbiBhIE1URCBibG9jayBkZXZpY2UpLg0KDQo+
+IEVzcGVjaWFsbHkgaWYgeW91IGFyZSB1c2luZyBVQkkgaW4geW91ciBzeXN0ZW0gYW55d2F5LCBi
+dXQgbm90IG5lY2Vzc2FyaWx5DQo+IGZvciB5b3Ugcm9vdCBmaWxlIHN5c3RlbSwgYWRkaW5nIGFu
+b3RoZXIgcGFyYWxsZWwgbGF5ZXIgc2VlbXMgcmF0aGVyDQo+IHBvaW50bGVzcy4gWW91J3ZlIGdv
+dCBVQkkgaW4geW91ciBzeXN0ZW0gYW55d2F5LCB3aHkgYWRkIHNvbWV0aGluZyBlbHNlIHRoYXQN
+Cj4gZG9lcyB0aGUgc2FtZSB0aGluZyBqdXN0IGJlY2F1c2UgVUJJIHNlZW1zIG92ZXJseSBjb252
+b2x1dGVkIGZvciByZWFkb25seQ0KPiBmaWxlIHN5c3RlbXMuIEl0IGRvZXMgdGhlIGpvYiBhbmQg
+ZG9lcyBpdCB3ZWxsIGFuZCBkb2Vzbid0IGNvc3QgYW55dGhpbmcNCj4gc2luY2UgaXQncyB0aGVy
+ZSBhbnl3YXkuDQoNCkkgd2FudCBhIHNpbXBsZSAoYW5kIGd1YXJhbnRlZWQgci9vKSByb290IGZz
+IHNvIHRoYXQgaWYgYW55Ym9keQ0KcG93ZXItY2lyY2xlcyBvdXIgZGV2aWNlcyBhdCBhbnkgcG9p
+bnQgSSdkIHN0aWxsIGVuZCB1cCB3aXRoIGEgd29ya2luZw0Kcm9vdCBmcy4gSSBjYW4gZ3VhcmFu
+dGVlIHRoaXMgYmVoYXZpb3Igd2l0aCBNVEQgKyBibG9ja3JvbSBiZWNhdXNlIHRoZQ0Kc3RhY2sg
+aXMgc2ltcGxlIGVub3VnaCB0byBzZWUgdGhyb3VnaC4gSSB3b3VsZCBub3QgYmUgYWJsZSB0bw0K
+Z3VhcmFudGVlIHRoaXMgd2l0aCBhbiBVQkkgcm9vdCBmcyB3aGljaCBpcyBpbmhlcmVudGx5IHdy
+aXRhYmxlLCBldmVuDQppZiBtb3VudGVkIHJlYWQtb25seS4gV3JpdGVzIHdvdWxkIGhhcHBlbiBi
+ZWNhdXNlIHdlYXIgbGV2ZWxpbmcsIGJpdA0Kc2NydWJiaW5nIGFuZCBhbGwgdGhlIG90aGVyIG1h
+aW50ZW5hbmNlIG9wZXJhdGlvbnMgbXVzdCBhY2NvdW50IGZvciBhDQpyL3cgZGV2aWNlLiBXYXkg
+bW9yZSBjb21wbGV4LCB3YXkgbW9yZSByaXNreS4NCg0KPiBJZiB5b3UgYXJlIHJlYWxseSBwcmVz
+c2VkIGZvciBzcGFjZSBpbiB0aGUga2VybmVsIChpbiB0ZXJtcyBvZiByZXF1aXJlZA0KPiBzcGFj
+ZSBvbiB0aGUgZmxhc2ggb3IgdGhlIGFtb3VudCBvZiBSQU0gaXQgY29uc3VtZXMgcnVuIHRpbWUp
+IEkgY291bGQNCj4gdW5kZXJzdGFuZCB0aGF0IHJlcGxhY2luZyB0aGUgQmlnIGFuZCBHcmFuZCBV
+Qkkgd2l0aCBzb21ldGhpbmcgc21hbGxlciBtaWdodA0KPiBoYXZlIHNvbWUgdmFsdWUuDQoNCkl0
+J3Mgbm90IGFjdHVhbGx5IGEgc21hbGwgZm9vdHByaW50IHJlcXVpcmVtZW50IEknbSB0cnlpbmcg
+dG8gZnVsZmlsbA0KYnV0IGEgbG93LWNvbXBsZXhpdHkgb25lIGZvciByb2J1c3RuZXNzIHJlYXNv
+bnMuIEJ1dCB5b3UncmUgcmlnaHQsDQphbm90aGVyIHVzZSBjYXNlIGZvciB0aGUgYmxvY2tyb20g
+RlRMIHdvdWxkIGJlIGlmIHlvdSdyZSBsb3cgb24gc3BhY2UuDQoNClJlZ2FyZHMsDQpUaGlsbw0K
+DQotLQ0KRGlwbC4tSW5nIChGSCkgVGhpbG8gRnJvbW0sIE1TYy4sIEVtYmVkZGVkIFN5c3RlbXMg
+QXJjaGl0ZWN0DQpEUmVzZWFyY2ggRmFocnpldWdlbGVrdHJvbmlrIEdtYkgNCk90dG8tU2NobWly
+Z2FsLVN0ci4gMywgRC0xMDMxOSBCZXJsaW4sIEdlcm1hbnkNClRlbDogKzQ5ICgzMCkgNTE1IDkz
+MiAyMjggICBtYWlsdG86ZnJvbW1AZHJlc2VhcmNoLWZlLmRlDQpGYXg6ICs0OSAoMzApIDUxNSA5
+MzIgNzcgICAgaHR0cDovL3d3dy5kcmVzZWFyY2guZGUNCkFtdHNnZXJpY2h0OiBCZXJsaW4gQ2hh
+cmxvdHRlbmJ1cmcsIEhSQiAxMzAxMjAgQg0KVXN0Li1JRE5yLiBERTI3Mzk1MjA1OA0KR2VzY2jD
+pGZ0c2bDvGhyZXI6IERyLiBNLiBXZWJlciwgVy4gTcO2Z2xlDQoNCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0DQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8NCg0KDQogQ2xpY2sgaHR0cHM6Ly93d3cubWFpbGNvbnRyb2wuY29tL3Ny
+L0RXWERGSkJRajBqVG5keEkhb1g3VXNrZkVxcG50YlNRa3YrcFRGb0RzWldBRjNkbHArNW9QUTdF
+dXhtZmtzVTFyRWh0eTNOa1ZWdTZSbXl4cmcrNFB3PT0gIHRvIHJlcG9ydCB0aGlzIGVtYWlsIGFz
+IHNwYW0uDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUgaW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkg
+YXR0YWNobWVudHMsIGl0IGNvbnRhaW5zIGFyZSBpbnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlh
+bCBjb21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBlcnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBp
+cyBhZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdl
+ZC4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3NhZ2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNp
+cGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRp
+c3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBw
+cm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJy
+b3IsIHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUg
+b3JpZ2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVu
+dmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGVtYWlsLg0K
