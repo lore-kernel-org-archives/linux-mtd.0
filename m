@@ -1,19 +1,11 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v2 3.4-rc6] MTD: NAND: ams-delta: fix request_mem_region()
- failure
-Date: Tue, 08 May 2012 20:46:25 +0200
-Message-ID: <13373590.4hsHpBS0MY@acer>
-In-Reply-To: <1336461106.23308.12.camel@sauron.fi.intel.com>
-References: <20120504171125.GD5613@atomide.com>
- <1336460605.23308.8.camel@sauron.fi.intel.com>
- <1336461106.23308.12.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+From: Thomas Abraham <thomas.abraham@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: m25p80: Add support for Winbond W25Q80BW
+Date: Wed, 09 May 2012 04:04:54 +0530
+Message-id: <1336516494-22791-1-git-send-email-thomas.abraham@linaro.org>
+Cc: kgene.kim@samsung.com, linux-samsung-soc@vger.kernel.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
+ mike@steroidmicros.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +15,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dnia wtorek, 8 maja 2012 10:11:46 Artem Bityutskiy pisze:
-> On Tue, 2012-05-08 at 10:03 +0300, Artem Bityutskiy wrote:
-> > On Mon, 2012-05-07 at 22:51 +0200, Janusz Krzysztofik wrote:
-> > > A call to request_mem_region() has been introduced in the omap-
-gpio
-> > > driver recently (commit 96751fcbe5438e95514b025e9cee7a6d38038f40,
-> > > "gpio/omap: Use devm_ API and add request_mem_region"). This 
-change
-> > > prevented the Amstrad Delta NAND driver, which was doing the same 
-in
-> > > order to take control over OMAP MPU I/O lines that the NAND device 
-hangs
-> > > off, from loading successfully.
-> > 
-> > Aiaiai found out that your patch adds this gcc warning:
-> > 
-> > 
---------------------------------------------------------------------------------
-> > 
-> > Successfully built configuration "l2_omap1_defconfig,arm,arm-unknown-
-linux-gnueabi-", results:
-> > 
-> > --- before_patching.log
-> > +++ after_patching.log
-> > @@ @@
-> > +drivers/mtd/nand/ams-delta.c: In function 'ams_delta_cleanup':
-> > +drivers/mtd/nand/ams-delta.c:285:19: warning: unused variable 'res' 
-[-Wunused-variable]
-> > 
-> > 
---------------------------------------------------------------------------------
-> 
-> But I've fixed this up and pushed to l2-mtd.git.
+Winbond W25Q80BW is a 8Mbit serial flash memory device.
 
-Many thanks for this.
+Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-> From the commit message
-> I have an impression that you are not going to implement that longer
-> term plan.
-
-I just didn't state 'I'll do it for the next merge window' because my 
-spare time resources are limited, and I've at least one set of changes 
-to the Amstrad Delta code still waiting on my todo list.
-
-I'll try to implement that long term plan as my spare time permits.
-
-Thanks,
-Janusz
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 1924d24..dbd44b1 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -728,6 +728,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1) },
+-- 
+1.6.6.rc2
