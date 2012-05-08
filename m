@@ -1,24 +1,18 @@
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "Mohammed, Afzal" <afzal@ti.com>, "tony@atomide.com" <tony@atomide.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "Hilman, Kevin"
- <khilman@ti.com>, "Balbi, Felipe" <balbi@ti.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "kyungmin.park@samsung.com"
- <kyungmin.park@samsung.com>, "gregkh@linuxfoundation.org"
- <gregkh@linuxfoundation.org>, "Menon, Nishanth" <nm@ti.com>,
- "grinberg@compulab.co.il" <grinberg@compulab.co.il>, "notasas@gmail.com"
- <notasas@gmail.com>, "artem.bityutskiy@linux.intel.com"
- <artem.bityutskiy@linux.intel.com>, "vimal.newwork@gmail.com"
- <vimal.newwork@gmail.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-usb@vger.kernel.org"
- <linux-usb@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v4 00/39] OMAP GPMC driver conversion
-Date: Tue, 8 May 2012 11:27:58 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E987D39@DBDE01.ent.ti.com>
-References: <cover.1335874494.git.afzal@ti.com>
-In-Reply-To: <cover.1335874494.git.afzal@ti.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SRjcI-0005w7-1a
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2012 12:34:10 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+ by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id q48CY7Bx022655
+ for <linux-mtd@lists.infradead.org>; Tue, 8 May 2012 07:34:08 -0500
+Received: from DBDE71.ent.ti.com (localhost [127.0.0.1])
+ by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id q48CY62H009095
+ for <linux-mtd@lists.infradead.org>; Tue, 8 May 2012 18:04:07 +0530 (IST)
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: mtd oob test is failing consistently at same places in NAND flash
+Date: Tue, 8 May 2012 12:33:06 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3E934BF1@DBDE01.ent.ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -32,35 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
+Hi,
 
-On Tue, May 01, 2012 at 17:49:03, Mohammed, Afzal wrote:
-> GPMC driver conversion patch series. Some peripherals has GPMC helper
-> functions, these has been modified to cater to the needs of GPMC
-> driver. All the boards using GPMC has been adapted to use the new
-> GPMC driver.
->=20
-> GPMC HWMOD entry for OMAP2/3 has been added. On OMAP3, kernel does
-> spit "omap_hwmod: gpmc: cannot be enabled for reset (3)", but
-> peripherals connected via GPMC are working. Really shaky about OMAP2
-> GPMC HWMOD entry. Would be helpful if someone can help me in resolving
-> warning on OMAP3 & verify whether OMAP2 entry is proper. The series
-> adapts to HWMOD.
->=20
-> Drivers, NAND & OneNAND of OMAP has been modified to make use of GPMC
-> changes & cleaned up the now unnecessary exported symbol usages.
->=20
-> This series has been made on top of,
-> 5e136da Linux-omap rebuilt: Updated to -rc5,
-> A patch by Javier Martinez Canillas <javier@dowhile0.org>,
-> OMAP3: igep0020: Add support for Micron NAND Flash storage memory,
-> has also been incorporated into the series as this was necessary for
-> igep0020 board.
->=20
-> This has been tested on omap3 evm (SMSC911x) & beagle board (NAND)
+We are having an 8-bit NAND part (MT29F2G08ABAEAWP from Micron) connected t=
+o GPMC
+Module (General purpose memory controller) from TI.
+We have been seeing mtd_oobtest failure on a partition size of 248 MB. Most=
+ of
+the time, test case 2 of mtd_oobtest is failing. On debugging further it se=
+ems
+that bit flip is happening on the test case 2 in OOB area. It is observed t=
+hat
+the failure locations are consistent.=20
+
+To verify further we had tried writing zeros to OOB area and read it back.=
+=20
+This test is passing and confirms that all OOB bits (that are programmable)
+are not bad.
+
+To test further I had modified the mtd_oobtest.c as follows and found this
+test is passing
+
+diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtes=
+t.c
+index 933f7e5..9f118de 100644
+--- a/drivers/mtd/tests/mtd_oobtest.c
++++ b/drivers/mtd/tests/mtd_oobtest.c
+@@ -50,7 +50,7 @@ static unsigned long next =3D 1;
+
+static inline unsigned int simple_rand(void)
+{
+-       next =3D next * 1103515245 + 12345;
++       next =3D next * 1103515244 + 12345; /* 45 -> 44. Sequence is change=
+d */
+        return (unsigned int)((next / 65536) % 32768);
+}
 
 
-Please let me know your comments on this series.
+Is this behavior due to bits getting corrupted on certain sequence?=20
+Is this issue observed by anyone else?
 
-Regards
-Afzal
+Thanks & Regards
+Avinash Philip
