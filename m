@@ -1,20 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SS1zd-0006Sm-NE
- for linux-mtd@lists.infradead.org; Wed, 09 May 2012 08:17:33 +0000
-Date: Wed, 9 May 2012 10:10:47 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120509081047.GC17333@parrot.com>
-References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
- <20120509002927.GF5088@atomide.com>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SS2DJ-0006X7-4A
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2012 08:29:07 +0000
+Received: by laap9 with SMTP id p9so5998laa.36
+ for <linux-mtd@lists.infradead.org>; Wed, 09 May 2012 01:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20120509002927.GF5088@atomide.com>
-Cc: afzal@ti.com, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 9 May 2012 10:24:57 +0200
+Message-ID: <CADZ6=assx9zniZsw4feUh-D3HXjj+iBJuWidFOWc1o8Va-23Ww@mail.gmail.com>
+Subject: mtd_blkdev.c: Why is .blksize a member of mtd_blktrans_ops instead of
+ mtd_blktrans_dev?
+From: Thilo Fromm <fromm@dresearch-fe.de>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 09, 2012 at 01:29:28AM +0100, Tony Lindgren wrote:
-> * Ivan Djelic <ivan.djelic@parrot.com> [120426 05:23]:
-> > Hello,
-> > 
-> > Here is version 3 of this patch after review from Tony Lindgren.
-> > This version adds a separate initialization function mostly to check CPU
-> > compatibility. This check cannot be done in gpmc_enable_hwecc_bch() (which
-> > is meant to be called from mtd function ecc.hwctl) because ecc.hwctl is
-> > not called before the first NAND read access, and it cannot return an error
-> > status.
-> 
-> Thanks applying into devel-gpmc branch.
+Hello list,
 
-OK thanks!
+I really don't see why .blksize (and .blkshift for that matter) is a
+member of struct mtd_blktrans_ops. I feel like it should be in
+mtd_blktrans_dev.
 
-I still have a question though: there are recent patches from
-Afzal Mohammed that seem to go into the opposite direction, that is
-giving back GPMC register access to the omap2 NAND driver.
-In particular, [PATCH v4 17/39] [1] commit message says:
+I'm asking because in our FTL I'd like to set blksize to the page size
+of the underlying flash. I understand I could manipulate tr->blksize
+and tr->blkshift in my add_mtd() callback implementation (because
+these fields do not seem to be used beforehand by mtd_blkdevs.c
+anyway), but it feels kind of hacky.
 
-  GPMC driver has been modified to fill NAND platform data with GPMC
-  NAND register details. As these registers are accessible in NAND
-  driver itself, configure NAND in GPMC by itself.
+So why are blksize and blkshift members of the struct providing
+callback functions of a device instead of the struct providing device
+data?
 
-This also includes ecc configuration. My original mtd driver patch indeed had
-ecc handling code inside the driver (not in arch/arm/mach-omap2/gpmc.c).
+Regards,
+Thilo
 
-So, my question is: which direction are we going to with respect to this
-OMAP GPMC/NAND code separation ?
-
-Note that I could prepare a new MTD patch with BCH ecc code included,
-allowing to drop the GPMC BCH ecc api.
-
-BR,
---
-Ivan
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-May/041105.html
+--=20
+Dipl.-Ing (FH) Thilo Fromm, MSc., Embedded Systems Architect
+DResearch Fahrzeugelektronik GmbH
+Otto-Schmirgal-Str. 3, D-10319 Berlin, Germany
+Tel: +49 (30) 515 932 228 =C2=A0 mailto:fromm@dresearch-fe.de
+Fax: +49 (30) 515 932 77 =C2=A0 =C2=A0http://www.dresearch.de
+Amtsgericht: Berlin Charlottenburg, HRB 130120 B
+Ust.-IDNr. DE273952058
+Gesch=C3=A4ftsf=C3=BChrer: Dr. M. Weber, W. M=C3=B6gle
