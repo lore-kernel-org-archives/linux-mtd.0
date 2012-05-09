@@ -1,18 +1,20 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SRumZ-0003IG-3M
- for linux-mtd@lists.infradead.org; Wed, 09 May 2012 00:29:31 +0000
-Date: Tue, 8 May 2012 17:29:28 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v3] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120509002927.GF5088@atomide.com>
-References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SS0Ws-0004ss-FF
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2012 06:37:43 +0000
+Date: Wed, 9 May 2012 08:37:37 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Subject: RE: mtd oob test is failing consistently at same places in NAND flash
+In-Reply-To: <518397C60809E147AF5323E0420B992E3E934DD0@DBDE01.ent.ti.com>
+Message-ID: <Pine.LNX.4.64.1205090835510.27120@lnxricardw.se.axis.com>
+References: <518397C60809E147AF5323E0420B992E3E934BF1@DBDE01.ent.ti.com>
+ <20120508132354.GA16164@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E934DD0@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ivan Djelic <ivan.djelic@parrot.com> [120426 05:23]:
-> Hello,
-> 
-> Here is version 3 of this patch after review from Tony Lindgren.
-> This version adds a separate initialization function mostly to check CPU
-> compatibility. This check cannot be done in gpmc_enable_hwecc_bch() (which
-> is meant to be called from mtd function ecc.hwctl) because ecc.hwctl is
-> not called before the first NAND read access, and it cannot return an error
-> status.
 
-Thanks applying into devel-gpmc branch.
+On Tue, 8 May 2012, Philip, Avinash wrote:
 
-Tony
+> I add debugs and found bit flips from 1 to 0. The location of bit flips m=
+ight vary on
+> boards. But on the same board it is consistent.
+>
+>>> To verify further we had tried writing zeros to OOB area and read it ba=
+ck.
+>>> This test is passing and confirms that all OOB bits (that are
+>>> programmable) are not bad.
+>>
+>> It does not confirm anything, bits can fail by remaining stuck at 0.
+>>
+>
+> As bit flip is from 1 to 0, you are right. But same experiment with 0x55,
+> test is passing.
+
+Are you sure it's not the bits that happen to be 0 in 0x55 that are the=20
+ones suspected of flipping?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
