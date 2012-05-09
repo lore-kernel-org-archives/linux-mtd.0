@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSArA-0006gi-4h
+ id 1SSAr9-0006hs-Oo
  for linux-mtd@lists.infradead.org; Wed, 09 May 2012 17:39:28 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/7] [RFC] UBI: Export compare_lebs()
-Date: Wed,  9 May 2012 19:38:42 +0200
-Message-Id: <1336585125-127220-5-git-send-email-richard@nod.at>
+Subject: [PATCH 7/7] [RFC] UBI: wire up checkpointing
+Date: Wed,  9 May 2012 19:38:45 +0200
+Message-Id: <1336585125-127220-8-git-send-email-richard@nod.at>
 In-Reply-To: <1336585125-127220-1-git-send-email-richard@nod.at>
 References: <1336585125-127220-1-git-send-email-richard@nod.at>
 Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -21,69 +21,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The checkpointing subsystem need this funtion,
-rename it to ubi_compare_lebs() and export it.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/scan.c |    8 ++++----
- drivers/mtd/ubi/ubi.h  |    4 ++++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/Kconfig      |   29 ++++++++++++++-
+ drivers/mtd/ubi/build.c      |   86 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/checkpoint.c |    4 ++
+ drivers/mtd/ubi/ubi-media.h  |    6 +-
+ 4 files changed, 121 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 12c43b4..5d4c1d3 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -295,7 +295,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 3ba9978..12888a4 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -56,10 +56,37 @@ config MTD_UBI_CHECKPOINT
+ 	depends on EXPERIMENTAL
+ 	default n
+ 	help
+-	   This option enables UBIVIS (AKA checkpointing).
++	   This option enables UBIVIS (aka checkpointing).
+ 	   It allows attaching UBI devices without scanning the whole MTD
+ 	   device. Instead it extracts all needed information from a checkpoint.
+ 
++config MTD_UBI_CHECKPOINT_POOL_SIZE
++	int "Max number of PEBs in a UBIVIS pool"
++	range 10 1024
++	default 128
++	help
++	   This is the number PEBs which have to be scanned while attaching.
++	   A low value means that attaching will be faster but if the value
++	   is too small the checkpoint has to be written too often.
++	   Every time the pool is full a new checkpoint is written to the MTD.
++	   Note that we have currently three pools.
++	   Choose wisely!
++
++config MTD_UBI_CHECKPOINT_MAX_SIZE
++	int "Maximal size of a checkpoint in PEBs"
++	range 10 128
++	default 32
++	help
++	   Maximale size of a checkpoint in PEBs.
++
++config MTD_UBI_CHECKPOINT_SB_POS
++	int "Checkpoint super block position"
++	range 4 128
++	default 64
++	help
++	   The checkpoint super block will be placed within the first N PEBs.
++	   Is this value too large it takes longer to find the checkpoint.
++
+ config MTD_UBI_DEBUG
+ 	bool "UBI debugging"
+ 	depends on SYSFS
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 0fde9fc..316f27a 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -148,6 +148,17 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
+ 
+ 	ubi_do_get_device_info(ubi, &nt.di);
+ 	ubi_do_get_volume_info(ubi, vol, &nt.vi);
++
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	switch (ntype) {
++	case UBI_VOLUME_ADDED:
++	case UBI_VOLUME_REMOVED:
++	case UBI_VOLUME_RESIZED:
++	case UBI_VOLUME_RENAMED:
++		if (ubi_update_checkpoint(ubi))
++			ubi_err("Unable to update checkpoint!");
++	}
++#endif
+ 	return blocking_notifier_call_chain(&ubi_notifiers, ntype, &nt);
  }
  
- /**
-- * compare_lebs - find out which logical eraseblock is newer.
-+ * ubi_compare_lebs - find out which logical eraseblock is newer.
-  * @ubi: UBI device description object
-  * @seb: first logical eraseblock to compare
-  * @pnum: physical eraseblock number of the second logical eraseblock to
-@@ -314,7 +314,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
-  *     o bit 2 is cleared: the older LEB is not corrupted;
-  *     o bit 2 is set: the older LEB is corrupted.
-  */
--static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
- 			int pnum, const struct ubi_vid_hdr *vid_hdr)
- {
- 	void *buf;
-@@ -503,7 +503,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * sequence numbers. We still can attach these images, unless
- 		 * there is a need to distinguish between old and new
- 		 * eraseblocks, in which case we'll refuse the image in
--		 * 'compare_lebs()'. In other words, we attach old clean
-+		 * 'ubi_compare_lebs()'. In other words, we attach old clean
- 		 * images, but refuse attaching old images with duplicated
- 		 * logical eraseblocks because there was an unclean reboot.
- 		 */
-@@ -519,7 +519,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * Now we have to drop the older one and preserve the newer
- 		 * one.
- 		 */
--		cmp_res = compare_lebs(ubi, seb, pnum, vid_hdr);
-+		cmp_res = ubi_compare_lebs(ubi, seb, pnum, vid_hdr);
- 		if (cmp_res < 0)
- 			return cmp_res;
+@@ -852,6 +863,61 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
+ 	return 0;
+ }
  
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 8d2efb9..c3d8e75 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -621,6 +621,10 @@ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
- void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
- 			    struct ubi_volume_info *vi);
- 
-+/* scan.c */
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+		      int pnum, const struct ubi_vid_hdr *vid_hdr);
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++static int attach_by_checkpointing(struct ubi_device *ubi)
++{
++	int cp_start, err;
++	struct ubi_scan_info *si;
 +
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-  * @rb: a pointer to type 'struct rb_node' to use as a loop counter
++	cp_start = ubi_find_checkpoint(ubi);
++	if (cp_start < 0)
++		return -ENOENT;
++
++	si = ubi_read_checkpoint(ubi, cp_start);
++	if (IS_ERR(si))
++		return PTR_ERR(si);
++
++	ubi->bad_peb_count = 0;
++	ubi->good_peb_count = ubi->peb_count;
++	ubi->corr_peb_count = 0;
++	ubi->max_ec = si->max_ec;
++	ubi->mean_ec = si->mean_ec;
++	ubi_msg("max. sequence number:       %llu", si->max_sqnum);
++
++	err = ubi_read_volume_table(ubi, si);
++	if (err) {
++		ubi_err("ubi_read_volume_table failed");
++		goto out_si;
++	}
++
++	err = ubi_wl_init_scan(ubi, si);
++	if (err) {
++		ubi_err("ubi_wl_init_scan failed!");
++		goto out_vtbl;
++	}
++
++	err = ubi_eba_init_scan(ubi, si);
++	if (err) {
++		ubi_err("ubi_eba_init_scan failed!");
++		goto out_wl;
++	}
++
++	ubi_msg("successfully recovered from checkpoint!");
++	ubi_scan_destroy_si(si);
++	return 0;
++
++out_wl:
++	ubi_wl_close(ubi);
++out_vtbl:
++	free_internal_volumes(ubi);
++	vfree(ubi->vtbl);
++out_si:
++	ubi_scan_destroy_si(si);
++
++	return err;
++}
++#endif
++
+ /**
+  * ubi_attach_mtd_dev - attach an MTD device.
+  * @mtd: MTD device description object
+@@ -931,6 +997,15 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	ubi->vid_hdr_offset = vid_hdr_offset;
+ 	ubi->autoresize_vol_id = -1;
+ 
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	ubi->long_pool.used = ubi->long_pool.size = \
++		ubi->long_pool.max_size = ARRAY_SIZE(ubi->long_pool.pebs);
++	ubi->short_pool.used = ubi->short_pool.size = \
++		ubi->short_pool.max_size = ARRAY_SIZE(ubi->short_pool.pebs);
++	ubi->unk_pool.used = ubi->unk_pool.size = \
++		ubi->unk_pool.max_size = ARRAY_SIZE(ubi->unk_pool.pebs);
++#endif
++
+ 	mutex_init(&ubi->buf_mutex);
+ 	mutex_init(&ubi->ckvol_mutex);
+ 	mutex_init(&ubi->device_mutex);
+@@ -953,7 +1028,18 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	if (err)
+ 		goto out_free;
+ 
++#ifdef CONFIG_MTD_UBI_CHECKPOINT
++	err = attach_by_checkpointing(ubi);
++
++	if (err) {
++		if (err != -ENOENT)
++			ubi_msg("falling back to attach by scanning mode!\n");
++
++		err = attach_by_scanning(ubi);
++	}
++#else
+ 	err = attach_by_scanning(ubi);
++#endif
+ 	if (err) {
+ 		dbg_err("failed to attach by scanning, error %d", err);
+ 		goto out_debugging;
+diff --git a/drivers/mtd/ubi/checkpoint.c b/drivers/mtd/ubi/checkpoint.c
+index f43441c..867f32d 100644
+--- a/drivers/mtd/ubi/checkpoint.c
++++ b/drivers/mtd/ubi/checkpoint.c
+@@ -993,6 +993,10 @@ int ubi_update_checkpoint(struct ubi_device *ubi)
+ 	int ret, i;
+ 	struct ubi_checkpoint *new_cp;
+ 
++	BUILD_BUG_ON(UBI_CP_MAX_START < 3);
++	BUILD_BUG_ON(UBI_CP_MAX_BLOCKS < 10);
++	BUILD_BUG_ON(UBI_CP_MAX_POOL_SIZE < 10);
++
+ 	if (ubi->ro_mode)
+ 		return 0;
+ 
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 7223b02..4d14b9e 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -382,9 +382,9 @@ struct ubi_vtbl_record {
+ /* Checkoint format version */
+ #define UBI_CP_FMT_VERSION	1
+ 
+-#define UBI_CP_MAX_START	64
+-#define UBI_CP_MAX_BLOCKS	32
+-#define UBI_CP_MAX_POOL_SIZE	128
++#define UBI_CP_MAX_START	CONFIG_MTD_UBI_CHECKPOINT_SB_POS
++#define UBI_CP_MAX_BLOCKS	CONFIG_MTD_UBI_CHECKPOINT_MAX_SIZE
++#define UBI_CP_MAX_POOL_SIZE	CONFIG_MTD_UBI_CHECKPOINT_POOL_SIZE
+ #define UBI_CP_SB_MAGIC		0x7B11D69F
+ #define UBI_CP_HDR_MAGIC	0xD4B82EF7
+ #define UBI_CP_VHDR_MAGIC	0xFA370ED1
 -- 
 1.7.6.5
