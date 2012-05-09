@@ -1,24 +1,17 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SS9PM-000876-2s
- for linux-mtd@lists.infradead.org; Wed, 09 May 2012 16:06:37 +0000
-Date: Wed, 9 May 2012 18:05:48 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: "Philip, Avinash" <avinashphilip@ti.com>
-Subject: Re: mtd oob test is failing consistently at same places in NAND flash
-Message-ID: <20120509160548.GB12280@parrot.com>
-References: <518397C60809E147AF5323E0420B992E3E934BF1@DBDE01.ent.ti.com>
- <20120508132354.GA16164@parrot.com>
- <518397C60809E147AF5323E0420B992E3E934DD0@DBDE01.ent.ti.com>
- <20120508184516.GA16380@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9366EF@DBDE01.ent.ti.com>
- <20120509152437.GA12280@parrot.com>
- <518397C60809E147AF5323E0420B992E3E936732@DBDE01.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <518397C60809E147AF5323E0420B992E3E936732@DBDE01.ent.ti.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <1336581810.10606.0.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 1/2] mtd: gpmi: add device tree support to gpmi-nand
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Wed, 09 May 2012 19:43:30 +0300
+In-Reply-To: <1336182126-3230-1-git-send-email-shijie8@gmail.com>
+References: <1336182126-3230-1-git-send-email-shijie8@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-ym/8JDQuBCmtV8UjrWXN"
+Mime-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 09, 2012 at 04:46:17PM +0100, Philip, Avinash wrote:
-> > > 
-> > > Yes, we had using patched kernel. OOB free region is exposed.
-> > > 
-> > > ECC layout will be as follows.
-> > > 
-> > > 0-1	-> BAD block marking
-> > > 2-57  -> ECC byte position, ( 14 bytes for 512 byte)
-> > > 58-63 -> oob free bytes
-> > > 
-> > > mtd->ecclayout->eccbytes		= 56
-> > > mtd->ecclayout->eccpos[0]	= 2
-> > > mtd->ecclayout->oobavail		= 6
-> > > mtd->ecclayout->oobfree[0].offset	= 58
-> > > mtd->ecclayout->oobfree[0].length	= 6
-> > > 
-> > 
-> > OK, then it is quite normal that mtd_oobtest should fail when it encounters a bitflip (one that does not match the programmed data) in those unprotected 6 bytes (58-63). What do you think ?
-> 
-> 
-> Is this behavior is expected for which OOB area left unprotected?
-> (I am not sure, What I understood is with failure in OOB area, ECC won't be useful.
 
-Yes.
+--=-ym/8JDQuBCmtV8UjrWXN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Is it ideally we should have ECC protection for OOB area also required?)
+On Fri, 2012-05-04 at 21:42 -0400, Huang Shijie wrote:
+> From: Huang Shijie <b32955@freescale.com>
+>=20
+> This patch just adds the DT support to gpmi-nand.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> ---
+> v1 -- >v2
+> 	[1] add the header file to fix compiling error.
 
-There is no need for ECC protection on free oob bytes if you do not use them.
+OK, pushed both to l2-mtd.git, thanks.
 
-> Basically I am testing why bit flips is happening in OOB area. Some observation related
-> to mtd_oob test in the setup we are having is
-> 1. Modify mtd_oob test to write patterns (0x0, 0x55, 0xAA, 0xff), then test is getting passed
-> for all patterns.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-OK, strange.
+--=-ym/8JDQuBCmtV8UjrWXN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> 2. On inserting a delay of 10 ms after erase_whole_device() in mtd oob test, test is getting passed.
-> I can't correlate how test is getting passed on modifying pattern as we are covering all bits in
-> either of the patterns.
-> 
-> On inserting delay test is getting passed, will point to me some problems in command issue. I am
-> debugging on this.
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-OK. If you are relying on a R/nB pin to wait for operation completion, you
-might want to check that is works properly.
+iQIcBAABAgAGBQJPqp6yAAoJECmIfjd9wqK0mKoP/0G+NKl/cQ206SYkh10yBFtf
+PyRHKSu1VmLrvhq2M8wL7nl/dN5lBhskLHzd7cGulnL3lZcQx2QTsqzoZwM9OLXp
+xYu4c5REC+6ycSvUqItgRTYz5eeQlGHis343L3oKbINym8nMKdPH8R6roCv4BTmu
+7EKQaSMUKEkL4smNeT3OznUKHXz5mCwtvcTqpLzE7zBPDWykBG9gsgyYCh4+3lJf
+MFDiRY9nkRt6syfWoWycY5si4EkItJAiUVMqYAYrjs9U6eIkCMuRYiEfZm5ULXey
+gqaJL1A6eyg8DJv+pj3WCeKIUQDhiktZvh+Pt+oNIGS95TqTV/BAzK/5k0uZ0n0m
+bdbIjX6zj31Tny+0qf9kgG9PCys2o/jBTWBJgNeFTZLw3vTFk2YiW5PdPBa5unXn
+O+PwsMIsgLx0FRl/47uRLLUfUCp/lVhjrjXTIZAkQptNH7YJikECgAKQN540ed3v
+1TeAi1524aK0Q7bHsStU68OxMiU6JXf80RS5fPH3bAqEcv48Utdvw84MvcaW0tMi
+oQHqpqmxM+FZt4wKT78uCN7hA3TExBScwXhCV1CPjJMiQuy5yB+D5yGHIlIlU57O
+60NwQcp21ms1/YH1+0tGzlvfJG4K56EzhTlqSUhzx7Em8bx5WUtEOa0+sMJnsy02
+JX0pMlgYCQsYW3tW5vqh
+=JIT5
+-----END PGP SIGNATURE-----
 
-BR,
--- 
-Ivan
+--=-ym/8JDQuBCmtV8UjrWXN--
