@@ -1,12 +1,12 @@
 Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SS1wn-0006R9-HL
- for linux-mtd@lists.infradead.org; Wed, 09 May 2012 08:09:56 +0000
-Date: Wed, 9 May 2012 10:07:47 +0200
+ id 1SS1zd-0006Sm-NE
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2012 08:17:33 +0000
+Date: Wed, 9 May 2012 10:10:47 +0200
 From: Ivan Djelic <ivan.djelic@parrot.com>
 To: Tony Lindgren <tony@atomide.com>
 Subject: Re: [PATCH v3] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120509080747.GB17333@parrot.com>
+Message-ID: <20120509081047.GC17333@parrot.com>
 References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
  <20120509002927.GF5088@atomide.com>
 MIME-Version: 1.0
@@ -40,7 +40,7 @@ On Wed, May 09, 2012 at 01:29:28AM +0100, Tony Lindgren wrote:
 OK thanks!
 
 I still have a question though: there are recent patches from
-Afzal Mohammed that seem to go into the opposite direction, that is 
+Afzal Mohammed that seem to go into the opposite direction, that is
 giving back GPMC register access to the omap2 NAND driver.
 In particular, [PATCH v4 17/39] [1] commit message says:
 
