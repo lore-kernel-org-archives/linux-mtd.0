@@ -1,22 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSOpM-0000Es-FT
- for linux-mtd@lists.infradead.org; Thu, 10 May 2012 08:34:43 +0000
-Message-ID: <4FAB7D70.1040704@nod.at>
-Date: Thu, 10 May 2012 10:33:52 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC v2] UBI: UBIVIS (aka checkpointing) support
-References: <1336585125-127220-1-git-send-email-richard@nod.at>
- <1336624000.1936.22.camel@brekeke>
-In-Reply-To: <1336624000.1936.22.camel@brekeke>
-Content-Type: multipart/signed; micalg=pgp-sha1;
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSSue-0006Ra-No
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2012 12:56:11 +0000
+Message-ID: <1336654770.2625.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [JFFS2] check xattr data integrity during first GC scan.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+Date: Thu, 10 May 2012 15:59:30 +0300
+In-Reply-To: <1336480911-16707-1-git-send-email-jcd@tribudubois.net>
+References: <1336480911-16707-1-git-send-email-jcd@tribudubois.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="------------enig4A472D14821CF0BDA8640FA7"
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- linux-kernel@vger.kernel.org
+ boundary="=-Wttwc/eFSXTitb1oMUJ3"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,87 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig4A472D14821CF0BDA8640FA7
-Content-Type: text/plain; charset=UTF-8
+
+--=-Wttwc/eFSXTitb1oMUJ3
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Artem!
-
-Am 10.05.2012 06:26, schrieb Artem Bityutskiy:
-> Hi Richard, I would like to complain about the names again. I though I
-> better give this feed back as soon as possible...
-
-No problem. :)
-
-> Firs of all, thanks for doing this, I will look closer, and I am very
-> keen of merging this stuff once we are sure its design is good, allows
-> for future extensions and is backward-compatible.
+On Tue, 2012-05-08 at 14:41 +0200, Jean-Christophe DUBOIS wrote:
+> This patch allows JFFS2 to distinguish between a recoverable
+> and non recoverable errors and to act accordingly.
 >=20
+> Furthermore, extended attribute integrity is now checked on
+> first GC pass (at the same time as the file data integrity
+> is checked).
+>=20
+> Signed-off-by: Jean-Christophe DUBOIS <jcd@tribudubois.net>
 
-Yeah.
-First of all, yes it's fully backward-compatible. It uses two new interna=
-l volume IDs
-with compat =3D UBI_COMPAT_DELETE.
-Old UBI implementations will delete the checkpoint and continue with scan=
-ning...
+Please, separate out the error code stuff and the checking stuff.
+This should be at least 2 patches.
 
-Regarding design, ubi_wl_get_peb() currently offers three types of data t=
-ypes.
-UBI_LONGTERM, UBI_SHORTTERM and UBI_UNKNOWN. Do we really need them?
-Checkpointing has a pool of unknown PEBs. This PEBs have to be scanned wh=
-ile attaching.
-For now I had to create three pools (for UBI_LONGTERM, UBI_SHORTTERM and =
-UBI_UNKNOWN).
-This makes the whole thing complexer than needed.
-It introduces also some nasty corner cases.
+For the error code part - make sure you checked that the
+JFFS2_XATTR_IS_CORRUPTED is never propagated to the user-space, if you
+have to introduce it.
 
-To make the review easier for you:
-The most critical code path is scan_pool() -> process_pool_seb() -> updat=
-e_vol().
-It searches within a pool for PEBs which are no longer empty and scans th=
-em.
-After that it updates the corresponding volume.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-ubi_update_checkpoint() is also very important because it has to find
-unused PEBs at the beginning of the MTD to place the super block.
-
-> So may be just naming your stuff UBI2, having terms like "UBI2 format",=
-
-> would be the easiest? Then someone could make this to be UBI3. A
-> documentation section could describe what UBI2 is and how it is
-> different from UBI1 or just UBI.
-
-Okay, got your point.
-I think "fastmap" is a good name because I can also use it within the cod=
-e.
-So, while reviewing the code please keep s/checkpoint/fastmap/g and s/cp/=
-fm/g in mind. ;-)
-
-I like the UBI2 idea. UBI2 =3D UBI + fastmap.
-After the UBI2/fastmap design is stable I will happily write a detailed d=
-esign paper
-for http://www.linux-mtd.infradead.org/doc/ubi.html.
-
-Thanks,
-//richard
-
-
---------------enig4A472D14821CF0BDA8640FA7
+--=-Wttwc/eFSXTitb1oMUJ3
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPq310AAoJEN9758yqZn9eJnUH/iPEVCRsCCbajySwTx1bc8Sq
-/m1474PrumjB9LzCePlAWlixsQkBf9YsSvDInexHuQWQFc9YS8LbVG/E51qVZM+y
-nX6aoS9aVkmKSxtLxm9VAYDJ2VPOP3EO7a0Tlsf7qaA74RdCz8TISUEXdUjCiKRK
-YpfylfuZE3bKTRHHp79/8KyotfiUv1QefDLGl9AsjBhka9kbB/4X0EY3t9YZan/N
-anqMGbDss8I1ckPXp1Y1MBPZ3pOO+qqi7zMPrGNMciEFHIHMitxry+COzj5slX2+
-ZPKM7HL5Wtyz590yePaLjIjYNfdLRqrYFD46BZNK/0TmEaOw/9T2hX3ruOYrmHE=
-=7lwM
+iQIcBAABAgAGBQJPq7uyAAoJECmIfjd9wqK0j+sP/30EfL0s0QTOdYFaSrYQ5yDr
+4Jk/TX1EzgdhTIgTnj4YqxuvuAnZ85AlAwM60YJ5b687h39cjfG80NJxuhlg10Ab
+xOebgrlKom+h8ykjPKite9pTUsRfawFvL5X1RNTLgDKJ+Wno0v/r9ia6IRw2w0i7
+98kHoiVfAq3LSsKOK/jQi/+tBv2H2NyxkrBcxEKPUzgz5gMMgCK30QceNAKRYS3C
+d65lSet6j0cwuyWEXyb7bS0c3+Vuxx7x+bD3I4vga36oeT13Ldb+ZT8Ud1n/Y6A5
+o/yWfUZO8MGgOOoH6KkjF6+Qk2MKFrlXMlMiPUnojBWlyS9o3CR7kxAkWXQFjV7Q
+u8aSABOSYUMeZJjn0dqEFWmXIXWKgksgr9Niz/wnluFjyMtaSrElslkOTilM21Bw
+Qh6x9yip/gvTryRz2+Q4h873LM9mA6PHbb7xskBbkym129AQenxGym0AAIu7Zbsk
+LSr96fhEkxCHvqlvjkrtYUNu8RP9Hpm+uuHyLISo1vcnmhdXbYkEf3xItIUBs74p
+fFKYc2zrelZLXpsjHZpYci32eleRJI1fiq+HISRvGWgDJgdqM9dJKb2RHda44lFK
+d5rWTi+IwqXlW23EYs1yHOD3cdJjKk52Tl5YArQ0qzPfAhfI4OJeng8M2msKqRq2
+L3xj5L0GAbNMkF3YPZU+
+=fTnr
 -----END PGP SIGNATURE-----
 
---------------enig4A472D14821CF0BDA8640FA7--
+--=-Wttwc/eFSXTitb1oMUJ3--
