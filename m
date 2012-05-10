@@ -1,22 +1,36 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSL4w-0007JT-A5
- for linux-mtd@lists.infradead.org; Thu, 10 May 2012 04:34:33 +0000
-Received: by laap9 with SMTP id p9so962005laa.36
- for <linux-mtd@lists.infradead.org>; Wed, 09 May 2012 21:34:12 -0700 (PDT)
-Message-ID: <1336624262.1936.27.camel@brekeke>
-Subject: Re: ubifs_jnl_update and extended attribute inode removal
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Subodh Nijsure <snijsure@grid-net.com>
-Date: Thu, 10 May 2012 07:31:02 +0300
-In-Reply-To: <4FAB33B2.80104@grid-net.com>
-References: <4FAB33B2.80104@grid-net.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-M6Uu9vBPzQh7mCw+zmWa"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "Hunter, Jon" <jon-hunter@ti.com>
+Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
+Date: Thu, 10 May 2012 05:10:22 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98A285@DBDE01.ent.ti.com>
+References: <cover.1335874494.git.afzal@ti.com>
+ <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
+ <4FA4035E.6020308@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E987147@DBDE01.ent.ti.com>
+ <4FA7F232.7050802@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9878EC@DBDE01.ent.ti.com>
+ <4FA936E8.1080801@ti.com>
+In-Reply-To: <4FA936E8.1080801@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>,
+ "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "notasas@gmail.com" <notasas@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +40,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Jon,
 
---=-M6Uu9vBPzQh7mCw+zmWa
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 08, 2012 at 20:38:24, Hunter, Jon wrote:
 
-On Wed, 2012-05-09 at 20:19 -0700, Subodh Nijsure wrote:
-> Easy way to describe this is: I create 100 files, assign then extended=
-=20
-> attribute, and remember what the xattr was, it always stays the same.=20
-> However now if I delete some of these files randomly some of the files=
-=20
-> end up having wrong xattr.
+> > Different ways of doing things, this looks cleaner to me as already it =
+is
+> > checked, and time of execution in both cases would not differ much.
+>=20
+> Sure. However, I think that this could be simplified so that it is
+> easier to read. At a minimum you may wish to add some comments to
+> explain the purposes of the multi-level if-statements as it is not
+> intuitive for the reader.
 
-I guess this happens only when you do a power cut? I need to look
-closer, but quick feed-back is that there is probably a bug in the
-journal reply - when we see a deleted inode in the journal - we remove
-it from TNC, and we probably forget to look-up for all its xattrs?
-Really need to look closer.
+Ok
 
-Would you prepare a description how I could reproduce this?
+> >> What happens if a device uses more than one wait-pin? In other words a
+> >> device with two chip-selects that uses two wait-pins?
+> >=20
+> > Please re-read http://www.mail-archive.com/linux-omap@vger.kernel.org/m=
+sg67702.html
+> > and your reply
+>=20
+> Ok thats fine. Sorry for my repeated questions, but I think that this
+> just highlights that this code is not clear in it purpose. So again may
+> be some comments would make this all clearer.
 
-Please, go ahead with submitting your older patches, do not cook them
-forever in your tree. Then you may start working on other issues.
+Ok
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-M6Uu9vBPzQh7mCw+zmWa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPq0SGAAoJECmIfjd9wqK0q7oP/AwfJHJHLCEQDTecF31MfemA
-/tnoFPOMVUBrblOTd3IZItIqjTpuBNtegV5U3eP9MgOqW+md6PINs62scJLI4V2S
-TNBWAmM54T5WCxgyT0qvs1ow5K39smbDRPh8P1jIKBWjZcSt5ML0f4JSxCoMg3Pa
-rG6dBN6UA/M846oyqQMLnjPPdgzzzKMUiOsN98Q0d3s3xCfkO7qMOOTxfDQG/GZn
-v1i/EHGyumKeUW7AbzimTkQ3u/w9K1bHRwWqDQ7Xw5nx/zpy2ERIu+NKJhIcYdbk
-aSlZCSUiT5wxC211eGXbgri9p//vC5HgEEeJL9WZHj504rDiKfOFZ7iLaDbGFd+5
-CJ3+KoksKQKoCZ3JYiH5rErsmHRInKze0LIU9jZnBnaGA96ZJ+pBEaNujR9CYEaq
-0zOoGr27Ul35kUlSLMN64GsHFwueFblT+smPSbbQ8dPrwspzE8uiCWe8+STcu5ZK
-XAPVemZ3HzT+Vcj5MMt8G3zkxh1ykZOm9xq7g8g7WeFKSy3ojJhUegDQguCwPzYM
-5h4YeuMS3dqbfkytiLVkSD2rv1NC04rxU8PyIUa4WXSxKR4jUX2gx3exkx/WdFdY
-DlBJecBY6XassnbgHxFV9/JLIUAa1X2i11zhGPI/gMrzATLdgOG5EUUZZNgEhbf9
-M0wS/edDg5I9K5jaK6vs
-=r1fw
------END PGP SIGNATURE-----
-
---=-M6Uu9vBPzQh7mCw+zmWa--
+Regards
+Afzal
