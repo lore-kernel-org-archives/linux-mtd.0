@@ -1,12 +1,12 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SSXQh-00079H-LS
- for linux-mtd@lists.infradead.org; Thu, 10 May 2012 17:45:32 +0000
-Date: Thu, 10 May 2012 19:45:27 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Tony Lindgren <tony@atomide.com>
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSYdU-0004kk-2K
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2012 19:02:48 +0000
+Date: Thu, 10 May 2012 12:02:43 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
 Subject: Re: [PATCH v3] ARM: OMAP3: gpmc: add BCH ecc api and modes
-Message-ID: <20120510174527.GA11275@parrot.com>
+Message-ID: <20120510190243.GM21851@atomide.com>
 References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
  <20120509002927.GF5088@atomide.com>
  <20120509081047.GC17333@parrot.com>
@@ -14,13 +14,15 @@ References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
  <1336655257.2625.8.camel@sauron.fi.intel.com>
  <20120510151725.GA11107@parrot.com>
  <1336665138.2243.1.camel@brekeke>
+ <20120510174527.GA11275@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1336665138.2243.1.camel@brekeke>
+In-Reply-To: <20120510174527.GA11275@parrot.com>
 Cc: "afzal@ti.com" <afzal@ti.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 10, 2012 at 04:52:18PM +0100, Artem Bityutskiy wrote:
-> On Thu, 2012-05-10 at 17:17 +0200, Ivan Djelic wrote:
-> > But in order to do so, I need the changes that Afzal has submitted
-> > (in particular [3]). Those changes (and as a consequence, my new patch)
-> > won't hit 3.5.
+* Ivan Djelic <ivan.djelic@parrot.com> [120510 10:49]:
+> On Thu, May 10, 2012 at 04:52:18PM +0100, Artem Bityutskiy wrote:
+> > On Thu, 2012-05-10 at 17:17 +0200, Ivan Djelic wrote:
+> > > But in order to do so, I need the changes that Afzal has submitted
+> > > (in particular [3]). Those changes (and as a consequence, my new patch)
+> > > won't hit 3.5.
+> > > 
+> > > So, when Afzal's patches are pushed, I'll submit a new, single MTD patch.
 > > 
-> > So, when Afzal's patches are pushed, I'll submit a new, single MTD patch.
+> > But this is not going to happen this merge window as I understood, may
+> > be not even the next one. We need to make UBIFS happy sooner than that,
+> > I think. So may be we go forward with your original patch?
 > 
-> But this is not going to happen this merge window as I understood, may
-> be not even the next one. We need to make UBIFS happy sooner than that,
-> I think. So may be we go forward with your original patch?
+> I'm OK with this too, as the patches are ready and tested.
+> The MTD patch is [2], it depends on [1] which has been pushed, then dropped by Tony.
+> Do you need me to repost [2] ?
+> 
+> Tony, sorry to backpedal on this: would you re-push patch [1], if indeed Afzal's patches
+> are not going to be merged soon ? In the meantime, I can prepare a patch on top of Afzal's to
+> have a smooth transition w.r.t BCH support. What do you think ?
 
-I'm OK with this too, as the patches are ready and tested.
-The MTD patch is [2], it depends on [1] which has been pushed, then dropped by Tony.
-Do you need me to repost [2] ?
+Yes this is OK with me as this removes the blocker for UBIFS work.
 
-Tony, sorry to backpedal on this: would you re-push patch [1], if indeed Afzal's patches
-are not going to be merged soon ? In the meantime, I can prepare a patch on top of Afzal's to
-have a smooth transition w.r.t BCH support. What do you think ?
+For arch/arm/mach-omap2/gpmc.c, I have the following two patches
+queued:
 
-Best Regards,
---
-Ivan
+27aeb3da5f97c55f61d92e3dbfb738762f76dc32 Merge tag 'omap-cleanup-for-v3.5' into tmp-merge
+2c65e7440d56b3b285d1c95563b4dcce8e40dea3 GPMC: add ECC control definitions
+355f8eee48134ba10ca81664ee90eeb240f5f928 ARM: OMAP2+: GPMC: resolve type-conversion warning from sparse
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-April/040965.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2012-April/041020.html
+Looks your patch applies to v3.4-rc6 and what I have queued without
+conflicts, so I suggest you merge both via MTD patches:
+
+Acked-by: Tony Lindgren <tony@atomide.com>
+
+ 
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2012-April/040965.html
+> [2] http://lists.infradead.org/pipermail/linux-mtd/2012-April/041020.html
