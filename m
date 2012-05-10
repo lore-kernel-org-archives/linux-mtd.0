@@ -1,16 +1,18 @@
 From: "Mohammed, Afzal" <afzal@ti.com>
 To: "Hunter, Jon" <jon-hunter@ti.com>
-Subject: RE: [PATCH v4 01/39] ARM: OMAP2+: gpmc: driver conversion
-Date: Thu, 10 May 2012 05:10:22 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98A285@DBDE01.ent.ti.com>
+Subject: RE: [PATCH v4 02/39] ARM: OMAP2+: gpmc: Adapt to HWMOD
+Date: Thu, 10 May 2012 05:17:39 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98A2AA@DBDE01.ent.ti.com>
 References: <cover.1335874494.git.afzal@ti.com>
- <363273a9ef82d6836197929157aa9a8eb8f5171a.1335874494.git.afzal@ti.com>
- <4FA4035E.6020308@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E987147@DBDE01.ent.ti.com>
- <4FA7F232.7050802@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9878EC@DBDE01.ent.ti.com>
- <4FA936E8.1080801@ti.com>
-In-Reply-To: <4FA936E8.1080801@ti.com>
+ <e0cf9678cb9a44d2a16401383ab8496eb825c291.1335874494.git.afzal@ti.com>
+ <4FA04A8C.4050703@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E98299B@DBDE01.ent.ti.com>
+ <4FA4041D.9010000@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E987159@DBDE01.ent.ti.com>
+ <4FA7F473.7060607@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E987902@DBDE01.ent.ti.com>
+ <4FA9380F.90700@ti.com>
+In-Reply-To: <4FA9380F.90700@ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -21,8 +23,7 @@ Cc: "Hilman, Kevin" <khilman@ti.com>, "Menon, Nishanth" <nm@ti.com>,
  "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
  "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "Balbi,
  Felipe" <balbi@ti.com>, "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
  "vimal.newwork@gmail.com" <vimal.newwork@gmail.com>,
  "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
  "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
@@ -42,31 +43,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Jon,
 
-On Tue, May 08, 2012 at 20:38:24, Hunter, Jon wrote:
+On Tue, May 08, 2012 at 20:43:19, Hunter, Jon wrote:
 
-> > Different ways of doing things, this looks cleaner to me as already it =
-is
-> > checked, and time of execution in both cases would not differ much.
->=20
-> Sure. However, I think that this could be simplified so that it is
-> easier to read. At a minimum you may wish to add some comments to
-> explain the purposes of the multi-level if-statements as it is not
-> intuitive for the reader.
-
-Ok
-
-> >> What happens if a device uses more than one wait-pin? In other words a
-> >> device with two chip-selects that uses two wait-pins?
+> >> In fact if you migrate to runtime pm then we should not have the clk_g=
+et
+> >> in the gpmc_init any more.
 > >=20
-> > Please re-read http://www.mail-archive.com/linux-omap@vger.kernel.org/m=
-sg67702.html
-> > and your reply
+> > Even if converted to RPM, to get clk rate, clk_get has to be done
+> > somewhere, right ?
 >=20
-> Ok thats fine. Sorry for my repeated questions, but I think that this
-> just highlights that this code is not clear in it purpose. So again may
-> be some comments would make this all clearer.
+> Yes exactly. However, you could now do this in the driver itself like
+> the probe function. Or may be just pass the frequency of the gpmc fclk
+> to the driver and let the driver convert to the period. No reason we
+> need to convert to the period outside of the driver. Hence, we can keep
+> the function to do the conversion static in the driver and don't need to
+> expose externally.
 
-Ok
+But platform need period before driver is probed (for calculating
+peripheral timings to be passed for driver)
 
 Regards
 Afzal
