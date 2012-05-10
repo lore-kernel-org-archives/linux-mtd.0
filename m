@@ -1,23 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SST2U-0003ja-Vw
- for linux-mtd@lists.infradead.org; Thu, 10 May 2012 13:04:20 +0000
-Message-ID: <1336655257.2625.8.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3] ARM: OMAP3: gpmc: add BCH ecc api and modes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Lindgren <tony@atomide.com>, Ivan Djelic <ivan.djelic@parrot.com>
-Date: Thu, 10 May 2012 16:07:37 +0300
-In-Reply-To: <20120509153141.GI5088@atomide.com>
-References: <1335442669-13474-1-git-send-email-ivan.djelic@parrot.com>
- <20120509002927.GF5088@atomide.com> <20120509081047.GC17333@parrot.com>
- <20120509153141.GI5088@atomide.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-yrD52XDRsdRVQC5fRukn"
-Mime-Version: 1.0
-Cc: afzal@ti.com, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from sncsmrelay2.nai.com ([67.97.80.206])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSNMy-0007Ye-Fz
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2012 07:01:03 +0000
+From: <gerg@snapgear.com>
+To: <linux-mtd@lists.infradead.org>, <uclinux-dev@uclinux.org>
+Subject: [PATCH 2/2] mtd: allow uclinux map driver to be used on any ColdFire
+ CPU platform
+Date: Thu, 10 May 2012 16:55:29 +1000
+Message-ID: <1336632929-26100-2-git-send-email-gerg@snapgear.com>
+In-Reply-To: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
+References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Greg Ungerer <gerg@uclinux.org>
 
---=-yrD52XDRsdRVQC5fRukn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The uclinux.c map driver has traditionally been used only on non-MMU based
+systems. But there is no fundamental reason it can't be used on systems
+running with virtual memory.
 
-On Wed, 2012-05-09 at 08:31 -0700, Tony Lindgren wrote:
-> > Note that I could prepare a new MTD patch with BCH ecc code included,
-> > allowing to drop the GPMC BCH ecc api.
->=20
-> OK, let's do that then. I'll drop this patch and you can coordinate
-> your patch with Afzal.
+Some ColdFire CPU based systems now have full paged MMU hardware and can use
+the uclinux.c mapping driver, so making the uclinux.c driver configuration
+depend on !CONFIG_MMU doesn't make sense now. Allow the CONFIG_MTD_UCLINUX
+option to be enabled if CONFIG_COLDFIRE is enabled. (I have chosen not to
+just more generally allow uclinux.c for any MMU type to keep this option
+hidden for most systems that are not interested in setting it).
 
-Ivan, so are you going to send new patches early enough to make them hit
-3.5? Can you please then re-send all the dependent patches again and
-again describe what depends on what, because I am getting lost :-)
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ drivers/mtd/maps/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-yrD52XDRsdRVQC5fRukn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPq72ZAAoJECmIfjd9wqK013cQAK4GUh+MUpRv1B6H0miTcAL8
-+aaUBkV1Mu5NzqCmf42wzU5YeZTxRkrMU6rX0/lcsKtU+Ve6cYCXhP6LnSGUVaX4
-A5+JQvuT86kewLsZHdG/RZBgRULWHFWE6kQal1nz1KCdwIInEJwOBU7W2wmhKkDK
-4RE1e2/LaHMklONO95dlXqMYxijuvTM7ScCGRWoe6y3FBOLcebrMqYUAsptw/yko
-qXa+h8C6LT7ernOGvJvWhAGLEzO3dmisFFmjatmHFUIHwzj96fX4uHQuy9ch23up
-2qo29CPtLpFxjLj4F946hOS3kqjMJ1c+vOz0PIWNmsm7NBTcReOO69MuMkJ1o7TD
-M10exeTC9QDR1qIr86kYyzG1ay4KjQtj93qsSvp6Kw5fXIVdGP+FOqNVynTgKEn9
-VdkR2eBL74+XFhf1lER/r9RM6W9IV39V+qYb2lDWTRu2II8FzJyH2/nmmzcxZKic
-5NhcPiyOVlwMBq3JwFjpfkP+5Wm4pgHDgqNqSuj2Tv08YX9AykS1X6rIJ4WfocBI
-iWtOOi6N/UhEtQHjQ7vL62JWulnq0V6xYMgE2BOc/vJlV/TQEblgEOddBkluT4/7
-E5T3zFXB8WPtGui/qSXZBNR3WquUgMeqbHEN8N6rWO/4I+Pnqos0I40SyoGV4Zdd
-uqRVJhRkF8KogP0BhRXM
-=Df5E
------END PGP SIGNATURE-----
-
---=-yrD52XDRsdRVQC5fRukn--
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 8af67cf..a5ac6b9 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
+ 
+ config MTD_UCLINUX
+ 	bool "Generic uClinux RAM/ROM filesystem support"
+-	depends on MTD_RAM=y && !MMU
++	depends on MTD_RAM=y && (!MMU || COLDFIRE)
+ 	help
+ 	  Map driver to support image based filesystems for uClinux.
+ 
+-- 
+1.7.0.4
