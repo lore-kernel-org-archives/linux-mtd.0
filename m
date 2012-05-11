@@ -1,20 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SSoK7-0008N1-3X
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 11:47:54 +0000
-Message-ID: <1336737075.2625.52.camel@sauron.fi.intel.com>
-Subject: Re: Regarding latest EUCLEAN/bitflip_threshold patchset
+ id 1SSoVc-00028Q-Bx
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 11:59:49 +0000
+Message-ID: <1336737788.2625.53.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: nand: remove 'sndcmd' parameter of
+ 'read_oob/read_oob_raw'
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>, Mike Dunn
- <mikedunn@newsguy.com>
-Date: Fri, 11 May 2012 14:51:15 +0300
-In-Reply-To: <20120509132613.40db5533@pixies.home.jungo.com>
-References: <20120509132613.40db5533@pixies.home.jungo.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Fri, 11 May 2012 15:03:08 +0300
+In-Reply-To: <20120509130635.32973038@pixies.home.jungo.com>
+References: <20120509130635.32973038@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-X/qq3Tkp4qj2Lo2xV2g5"
+ boundary="=-WBMUYoWpBwVUfI6UaT3Q"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,24 +27,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-X/qq3Tkp4qj2Lo2xV2g5
+--=-WBMUYoWpBwVUfI6UaT3Q
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-09 at 13:26 +0300, Shmulik Ladkani wrote:
-> Hi Mike,
+On Wed, 2012-05-09 at 13:06 +0300, Shmulik Ladkani wrote:
+> As of [mtd: nand: remove autoincrement 'sndcmd' code], the
+> NAND_CMD_READ0 command is issued unconditionally.
 >=20
-> I noticed 'nand_do_read_oob' explicitly tests 'mtd->ecc_stats.corrected'
-> and returns EUCLEAN - as it was not ported to use the new
-> 'bitflip_threshold'.
+> Thus, read_oob/read_oob_raw's 'sndcmd' argument is no longer needed, as
+> well as their return code.
+>=20
+> Remove the 'sndcmd' parameter, and set the return code to 0.
+>=20
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Good point. Mike did you miss this function?
+Pushed this one to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-X/qq3Tkp4qj2Lo2xV2g5
+--=-WBMUYoWpBwVUfI6UaT3Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPrP0zAAoJECmIfjd9wqK05t0QAM+xappBFzp38EVu5p8kaPnp
-mZuMugnFJcyyYhqbrXzoB3v2WCRvNsaqCEZwQstS9R4LhwGgm5K32dG1Nfq7cJtd
-aZoayIEowc6m5lWtN2Fd41ed+glJm1SGtSUOcsJfuWmI8cuS2E6fCdy28v6EfD5v
-tcYZM7O06kcB2LSAeRafUT55Ptz0kzJIHgJRmA87o44Qaq+oVgUlF/sJp+kdbMBY
-iX0kydfmq5JNL+CGwq4U+WHiu5CsWxoBg01qavlHtRArsqiPIfjsNzWOz18Xxbhq
-pZ3N5n169Wzt3IX+9ugrJupNUMKzFc3MU7wa7bNtVBHYyRJi/cfu5QEaI9j30PEH
-mboGZ23xoZKOjWeyXCK3xXo9+SlSZz6k63UDBUKhBM/jELLOO3a0nQIBRWr7gGn+
-wmX5SOqEplRfpjow6yJZIwkFGAXYsBox6CzrOg6JUej8+KNAKEu8BZzu+kVw6U4K
-sApvP3tGPNRtYENtwRLYULlS7ZbLq5WA5QudBvuckCg9QB5UVPMjVHijxBm2MTwS
-5T6P8uM0/KUswG3Le9dUBQE+JPqtbUlpxKk3KcI/0f3XB9RUdkabz1SsYDnbIiJ7
-Fwh1DHWdP0OBZ5ho8x0Rdue9qHF7HVbaQ7l3E2qi3x3XmjGdCNdnmBlWpq94OePX
-fJyfQVTBp7jbdAvK2/gg
-=4kvc
+iQIcBAABAgAGBQJPrP/8AAoJECmIfjd9wqK0gK4QAJW0zExvQuG5H6UXThVNRO8k
+aZFzZyBpwFgRs/Pcdl6sEQgWnafMAeFCY6PhygqybC3P3snn8MTLjC6c7q7KNhbC
+znYt5bra+kHNmdQFy0aTTApcXDzBYH8cQkp13q3Wq558j+PZ6JWdSkWPFjhQODSc
+odtv/+8FIW3knTqjZkbhxa5/vDk9xK1vWLK6PG8rY/CX0J11Z7X8ZVIUZYy5v64O
+EtfovUKn1jMQ+nRZ2t/55i37R3WHdDwEALQlQwf7WmjamiEs9Lv7ChgpXuOfg4Hb
+bXBCC3tzl34z6fHYKn7Y8fvt9f9Hmb3otHHPHkyDIjX4XuzogrcaVnpBAv9TlX0e
+f56YGP3pz/DWVZ+SDNw7bmBMPEwm/wQfBO1IFEvsZdwJvnX9Cn+9U7aDkIE4uP1k
+K6xjy1rA9o43JUVQtTGwpP46iV+m4V4WO16ki3WUGcPfR/9UjpsnrUIFKdbWJCOC
+41CiL52CV+PTf5+MTuYIXL+gtZSBfNca2mTjCDOuy2bxIjLWXHd0yHCWmay6rdvv
+iwjzksE5qqXpbigp8lHEiKL2/c06XDOMRxu1s2Rb/ietQP+jkgxG4g1q5PRQR2Xj
+OYCY4730qIYaxU1jQe7CyqBf6b1zbzkPYdcaKFDcowyfvT3DY0KwTNWSbFzb+xzD
+FuOPwWJSxSzwhsfd+CyX
+=ENH1
 -----END PGP SIGNATURE-----
 
---=-X/qq3Tkp4qj2Lo2xV2g5--
+--=-WBMUYoWpBwVUfI6UaT3Q--
