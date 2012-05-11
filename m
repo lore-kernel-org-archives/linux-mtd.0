@@ -1,17 +1,23 @@
-Message-ID: <1336735456.2625.40.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: m25p80: Add support for Winbond W25Q80BW
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSnwO-00032m-47
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 11:23:26 +0000
+Message-ID: <1336735603.2625.42.camel@sauron.fi.intel.com>
+Subject: Re: [RFC v2] UBI: UBIVIS (aka checkpointing) support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Abraham <thomas.abraham@linaro.org>
-Date: Fri, 11 May 2012 14:24:16 +0300
-In-Reply-To: <1336516494-22791-1-git-send-email-thomas.abraham@linaro.org>
-References: <1336516494-22791-1-git-send-email-thomas.abraham@linaro.org>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 11 May 2012 14:26:43 +0300
+In-Reply-To: <4FACEEA1.9020400@nod.at>
+References: <1336585125-127220-1-git-send-email-richard@nod.at>
+ <1336624000.1936.22.camel@brekeke> <4FAB7D70.1040704@nod.at>
+ <1336733182.2625.17.camel@sauron.fi.intel.com> <4FACEEA1.9020400@nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-jCccJ0Fw38S9ls8uWvwC"
+ boundary="=-uKZ1GFmsTuARIPv5WQMH"
 Mime-Version: 1.0
-Cc: linux-samsung-soc@vger.kernel.org, kgene.kim@samsung.com,
- linux-mtd@lists.infradead.org, mike@steroidmicros.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,22 +29,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-jCccJ0Fw38S9ls8uWvwC
+--=-uKZ1GFmsTuARIPv5WQMH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-09 at 04:04 +0530, Thomas Abraham wrote:
-> Winbond W25Q80BW is a 8Mbit serial flash memory device.
+On Fri, 2012-05-11 at 12:49 +0200, Richard Weinberger wrote:
+> Am 11.05.2012 12:46, schrieb Artem Bityutskiy:
+> > On Thu, 2012-05-10 at 10:33 +0200, Richard Weinberger wrote:
+> >> First of all, yes it's fully backward-compatible. It uses two new inte=
+rnal volume IDs
+> >> with compat =3D UBI_COMPAT_DELETE.
+> >> Old UBI implementations will delete the checkpoint and continue with s=
+canning...
+> >=20
+> > OK. BTW, these patches do not compile when the fastmap is disabled. I
+> > hope you'll just kill the ifdefs in the next revision and this problem
+> > will go away.
 >=20
-> Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
+> It builds fine here with CONFIG_MTD_UBI_CHECKPOINT=3Dn.
+> What error do you get?
 
-Pushed to l2-mtd.git, thanks!
+If you are going to kill the ifdefs anyway, I won't spend time on this.
+I have several defconfigs with different combinations of the UBI
+configuration options, probably one of them did not build. Or may be I
+made a mistake.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-jCccJ0Fw38S9ls8uWvwC
+--=-uKZ1GFmsTuARIPv5WQMH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPrPbgAAoJECmIfjd9wqK08ysQAIKU0gJRhP46eXyGK+A2RcvW
-5R4Tsf5ev6Zv0LfoYCRFNiW9ngmne7GEkkNCpyDrwpWYGRaGth65aEU7GZPPi4/l
-dbM5waZnz/wM1idNIowPuBg9/a17ujqWbTWQcbzX4ZFQ/LCzgZwRogV6C7eG7+Z7
-XQ0eX7P7Fr26XJuEqGUQFtRhpZd6arPURoadXW6Hdu11ib68W6JM/x3cxYOC7kJA
-X31YNde3AFKCyuulMdCICuAhZzgDXyIIc6bJ2VOkNwL+aaNY9/PO07APq6keo6Kk
-f8zk1ZdRGVUL1tfyPf6H7Q5nrrF6/YlMUtrDBsAX2iwH2p3RfMK78mvlW8/7IV5K
-E1Q6azf/dgepYyQ/tpACZYes0GiqkbFz/dI2gkU5t0j5UnFntRELq2HXoMmTl8PO
-rplSAy+W6JEeJxrrc05OvR9DdU4R7bqIQgaM9pPHFXvhciPXvNvmhDUY1J4zDfux
-iKuFgaxoqsNPKBA9/yS/s0Giv1i9KnPr/5z6VlJIPWGVXcxMWrJa/EHAo1IjTlcO
-cb0fuB3yPu7MD9R5VBIBi/h8k6sev0WuIxNRDPPy3Tb4GLb3o7TbYTEyJ5dIVyHb
-9GDWpJRsjdQ3uOjoFGt7k5pzHYmAkMNIAf/1GqFXisi+vpPv9wSeQDn1uGaYK5Y2
-9tMhHA3qGrWZkq643vj5
-=V57E
+iQIcBAABAgAGBQJPrPdzAAoJECmIfjd9wqK0sZ4P/2GUvV81e/9GRO2XnP8vO+Jo
+VxH48hrM88CLa/wQgHgnyOUxTZdC1wjD2wGKwlcubo9fcRxi+cCTwnmC3oTx1ocp
+TLcQicqdXlrz81wYVD/tci7KcY6pPDiDaHOvU1gc/FAr1AX31CpNFIliJFfxDBoL
+SJoIufIvF8yZbDRE9iQPI8XECHOXEyNTOBYIaio1ybPlR2wfNqxCvx9Twno+qxeG
+fYASumSmFwh+2IkSkxTvfEVE6SpQZREe1Hlq+rpfExAswy2EMXdpqQPytd26V+Kl
+5Qj4suh5pLK78AR32r0+yDDiUPdURT3d3A0jtQmf41E/SAciPOl2q01WCUUkPBM6
+G4xgWCYKNwJ2Tgu+KwJb7G6YX0UiaXPxbvX2uei63qHDfJuHNEvbUQpi5fnQ9zdt
+eNlYYBJjA6JIvZhzCVIGtio2lcLbgxYkFauShovqvoRFR9JV+UfEhj6Ez173w6P0
+YY56RmirxgSUbbRjkZfnwEWTZbDLACg+PLOdTTUtuIV95Q8RcKj0b6QrFsrSg9Ca
+Eew4HyqONnLgZvS5y6O2fO3kF3vH9tNQGmAx+ZM8UUJkU4mOEEOxSI6Sag7xnSeH
+xqAzuVS0sj9hLSocrIuPguyJ8zoK3X6DGcKy54NFW7aj7sMRh1Cn3yWMJFEroDut
+rbkrMYE4gBum6ex8GbQY
+=qpob
 -----END PGP SIGNATURE-----
 
---=-jCccJ0Fw38S9ls8uWvwC--
+--=-uKZ1GFmsTuARIPv5WQMH--
