@@ -1,23 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSnPW-00089B-5F
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 10:49:39 +0000
-Message-ID: <4FACEEA1.9020400@nod.at>
-Date: Fri, 11 May 2012 12:49:05 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC v2] UBI: UBIVIS (aka checkpointing) support
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSnnJ-00027O-9G
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 11:14:13 +0000
+Message-ID: <1336735041.2625.35.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/7] [RFC] UBI: Add checkpoint on-chip layout
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 11 May 2012 14:17:21 +0300
+In-Reply-To: <1336585125-127220-2-git-send-email-richard@nod.at>
 References: <1336585125-127220-1-git-send-email-richard@nod.at>
- <1336624000.1936.22.camel@brekeke> <4FAB7D70.1040704@nod.at>
- <1336733182.2625.17.camel@sauron.fi.intel.com>
-In-Reply-To: <1336733182.2625.17.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
+ <1336585125-127220-2-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="------------enigD4331553F95E0AAFE1602F32"
+ boundary="=-PKaHel37MzVOY7Ncvu5+"
+Mime-Version: 1.0
 Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
  linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
  linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +27,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigD4331553F95E0AAFE1602F32
-Content-Type: text/plain; charset=UTF-8
+
+--=-PKaHel37MzVOY7Ncvu5+
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Am 11.05.2012 12:46, schrieb Artem Bityutskiy:
-> On Thu, 2012-05-10 at 10:33 +0200, Richard Weinberger wrote:
->> First of all, yes it's fully backward-compatible. It uses two new inte=
-rnal volume IDs
->> with compat =3D UBI_COMPAT_DELETE.
->> Old UBI implementations will delete the checkpoint and continue with s=
-canning...
->=20
-> OK. BTW, these patches do not compile when the fastmap is disabled. I
-> hope you'll just kill the ifdefs in the next revision and this problem
-> will go away.
+I'd like to a git tree for this stuff at some point, when you feel you
+are ready, and then do all further changes incrementally on top of that.
+Then would also be able to participate - at least do minor things myself
+and send patches to you.
 
-It builds fine here with CONFIG_MTD_UBI_CHECKPOINT=3Dn.
-What error do you get?
+On Wed, 2012-05-09 at 19:38 +0200, Richard Weinberger wrote:
+> +#ifdef CONFIG_MTD_UBI_CHECKPOINT
+> +#define UBI_CP_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
+> +#define UBI_CP_DATA_VOLUME_ID	(UBI_CP_SB_VOLUME_ID + 1)
 
->> Regarding design, ubi_wl_get_peb() currently offers three types of dat=
-a types.
->> UBI_LONGTERM, UBI_SHORTTERM and UBI_UNKNOWN. Do we really need them?
->> Checkpointing has a pool of unknown PEBs. This PEBs have to be scanned=
- while attaching.
->> For now I had to create three pools (for UBI_LONGTERM, UBI_SHORTTERM a=
-nd UBI_UNKNOWN).
->> This makes the whole thing complexer than needed.
->> It introduces also some nasty corner cases.
->=20
-> But AFAIR we already agreed that we kill these, no? I thought you'll
-> send a separate patch for this. We do not need this feature and to our
-> shame it even was not working and there was a bug found very recently.
+#define UBI_CP_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
 
-Perfect!
-I was confused and thought that this feature will be removed later...
+is more readable I think.
 
-Thanks,
-//richard
+> +#define UBI_CP_MAX_BLOCKS	32
 
+This really needs a comment on top of it telling how big flash with say,
+128KiB PEB size this would support.
 
---------------enigD4331553F95E0AAFE1602F32
+> +
+> +/**
+> + * struct ubi_cp_sb - UBI checkpoint super block
+> + * @magic: checkpoint super block magic number (%UBI_CP_SB_MAGIC)
+> + * @version: format version of this checkpoint
+> + * @data_crc: CRC over the checkpoint data
+> + * @nblocks: number of PEBs used by this checkpoint
+> + * @block_loc: an array containing the location of all PEBs of the check=
+point
+> + * @block_ec: the erase counter of each used PEB
+> + * @sqnum: highest sequence number value at the time while taking the ch=
+eckpoint
+> + *
+> + * The checkpoint
+> + */
+> +struct ubi_cp_sb {
+> +	__be32 magic;
+> +	__u8 version;
+> +	__be32 data_crc;
+> +	__be32 nblocks;
+> +	__be32 block_loc[UBI_CP_MAX_BLOCKS];
+> +	__be32 block_ec[UBI_CP_MAX_BLOCKS];
+> +	__be64 sqnum;
+> +} __packed;
+
+Please, unless it is size-critical, always leave some unused space in
+on-flash data structure for possible future extensions, and initialize
+them to 0.
+
+BTW, side-note, please, check that you follow the convention of UBI and
+make all on-flash data structures 64-bit aligned (of course unless it is
+size-critical).
+
+> +/**
+> + * struct ubi_cp_long_pool - Checkpoint pool with long term used PEBs
+> + * @magic: long pool magic numer (%UBI_CP_LPOOL_MAGIC)
+> + * @size: current pool size
+> + * @pebs: an array containing the location of all PEBs in this pool
+> + */
+> +struct ubi_cp_long_pool {
+> +	__be32 magic;
+> +	__be32 size;
+> +	__be32 pebs[UBI_CP_MAX_POOL_SIZE];
+> +} __packed;
+
+What's the perpose of having these pools - once you read all the
+information from the fastmap and the wl subsystem inserts it to the
+RB-trees - you already know this data. Why you need to store this on the
+flash? This whole pool think look redundant and unneeded.
+
+> +/**
+> + * struct ubi_cp_ec - stores the erase counter of a PEB
+> + * @pnum: PEB number
+> + * @ec: ec of this PEB
+> + */
+> +struct ubi_cp_ec {
+> +	__be32 pnum;
+> +	__be32 ec;
+> +} __packed;
+
+It is weird that you do not have an array of ECs instead for _every_
+PEB. Why wasting the flash and time writing/reading this data?
+
+> +/**
+> + * struct ubi_cp_eba - denotes an association beween a PEB and LEB
+> + * @lnum: LEB number
+> + * @pnum: PEB number
+> + */
+> +struct ubi_cp_eba {
+> +	__be32 lnum;
+> +	__be32 pnum;
+> +} __packed;
+
+Same here - I'd expect a simple array for every PEB in the system.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-PKaHel37MzVOY7Ncvu5+
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPrO6oAAoJEN9758yqZn9eKB0IAINa5vvj6Wdo9zI9NQtZr5RC
-OLUL7rs9GlZUPhNM3YuA4CNOCv2cY7uDhRGayg1MYTe5o3Gr+p50sK43RUMxLguj
-S5JieWvEL/gGBtRgE8+Qs6nI2dmJq5JxZdNcVRPdy8UFW0DCtnnTW5gavqKe12lQ
-RDGHV1Dh9/S/y9N0VQ5bRyB+P0jmi0+Pad0Xl7aAuy7d7sdCkGW/jn+7EQKPZUg/
-Kz3/uY0VzPU9OyrpRDF/t1bQtAwAnp4Rt5h4pS4w/lnO7G2x8i3HUaee776oeYbz
-xURb4MOYYwokK/5XYkhYcUSknPTGk77Jes2/08tAeDvS43OwxhQBH8nGpazgUv4=
-=Mbaq
+iQIcBAABAgAGBQJPrPVBAAoJECmIfjd9wqK0IR4P/RsWA/kMgNJwsCzTQzoOHuZl
+DY3itbcEwjhzUqIO5W+eiaZrC9actTWZubcH8CN1J8C/7oDPYbd2ehKoy/V+lbzf
+DFp05xfr06yXFWXfyFDDRNfspcyBrHn22i7ZNbke/kxY1fDlrQ6saBqQotRNc7JI
+VFb2N15HG8UgLKxqNK79uOsazqhXu04ehiSdGex3BZ5QfICPPcbJzq6MdCQCZD12
+c/4faGhK24pTgDNF74JAH0K36MNU3IMR2fylYSkasTKh0zVY9RyDB9fHshQ9+Zue
+uO79gfDt9SQUBfVwDMeSWYikLadFqi5B2vQKI5G5gCqZC9rdRR/d9qrAURy5lFxG
+GKx7oBdfaQFux9C3p4oPoPDNT4dZ8Ygl55v/X24JjsypbNqsyeGEJdQiQ37KqWuP
+US3fDGDZuHSnVNwXjhaFIOKzITqdYKBEoSIuTfVGyAmLOFVkIjazEDk5zRqrdnRS
+XZZz+2WQMXxVZ7IxlybYLHcS1VOr6NV6OI79AT73ZK6uhY5GOXX7k1b20Ct3Mhd+
+0lMTFcdKdNypekJ24K4wbFOTYDBstRHEPqN/+P6wvnD5jS1X722Hn53Z2yV6JBnG
+1dBEEcCJ8aODOu8zDIJee41kBsCBjg53w/rjvFkHTDSdaidwDgq9FBWcz1ed3QJQ
+Dck5mZ5GnundnJnZtLit
+=M9HW
 -----END PGP SIGNATURE-----
 
---------------enigD4331553F95E0AAFE1602F32--
+--=-PKaHel37MzVOY7Ncvu5+--
