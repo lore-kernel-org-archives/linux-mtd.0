@@ -1,14 +1,16 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSwUC-0004zl-16
+ id 1SSwUC-0004zm-7o
  for linux-mtd@lists.infradead.org; Fri, 11 May 2012 20:30:48 +0000
-Received: by dadm1 with SMTP id m1so4049880dad.36
- for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 13:30:46 -0700 (PDT)
+Received: by dadm1 with SMTP id m1so4049899dad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 13:30:47 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/3] mtdoops: refactor loop
-Date: Fri, 11 May 2012 13:30:33 -0700
-Message-Id: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/3] mtd: cafe_nand: spelling mistake
+Date: Fri, 11 May 2012 13:30:34 -0700
+Message-Id: <1336768235-12658-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
+References: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,47 +21,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We can clean up the loop logic a bit, here. This refactoring was enabled
-in part by:
-
- Commit bb4a09866 [mtdoops: clean-up new MTD API usage]
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/mtdoops.c |   14 ++++++--------
- 1 files changed, 6 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/cafe_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index ae36d7e..6ba9507 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -169,14 +169,7 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
- 			cxt->nextpage = 0;
- 	}
- 
--	while (1) {
--		ret = mtd_block_isbad(mtd, cxt->nextpage * record_size);
--		if (!ret)
--			break;
--		if (ret < 0) {
--			printk(KERN_ERR "mtdoops: block_isbad failed, aborting\n");
--			return;
--		}
-+	while ((ret = mtd_block_isbad(mtd, cxt->nextpage * record_size)) > 0) {
- badblock:
- 		printk(KERN_WARNING "mtdoops: bad block at %08lx\n",
- 		       cxt->nextpage * record_size);
-@@ -190,6 +183,11 @@ badblock:
- 		}
- 	}
- 
-+	if (ret < 0) {
-+		printk(KERN_ERR "mtdoops: mtd_block_isbad failed, aborting\n");
-+		return;
-+	}
-+
- 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
- 		ret = mtdoops_erase_block(cxt, cxt->nextpage * record_size);
- 
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 41371ba..f3594a6 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -377,7 +377,7 @@ static int cafe_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+  * @buf:	buffer to store read data
+  * @oob_required:	caller expects OOB data read to chip->oob_poi
+  *
+- * The hw generator calculates the error syndrome automatically. Therefor
++ * The hw generator calculates the error syndrome automatically. Therefore
+  * we need a special oob layout and handling.
+  */
+ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 1.7.5.4.2.g519b1
