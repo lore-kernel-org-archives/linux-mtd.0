@@ -1,24 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SSqb8-0006gj-Ln
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 14:13:35 +0000
-Message-ID: <1336745818.2625.83.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 12/14] MTD: MIPS: lantiq: implement OF support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Fri, 11 May 2012 17:16:58 +0300
-In-Reply-To: <4FAD1C6D.5080701@openwrt.org>
-References: <1336133919-26525-1-git-send-email-blogic@openwrt.org>
- <1336133919-26525-12-git-send-email-blogic@openwrt.org>
- <1336745193.2625.81.camel@sauron.fi.intel.com>
- <4FAD1C6D.5080701@openwrt.org>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-zXnWHEqmyreC7CpAjN4H"
-Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail.grid-net.com ([97.65.115.2])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSqmN-0007v1-Ud
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 14:25:15 +0000
+Message-ID: <4FAD2144.2000902@grid-net.com>
+Date: Fri, 11 May 2012 07:25:08 -0700
+From: Subodh Nijsure <snijsure@grid-net.com>
+MIME-Version: 1.0
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: Re: [PATCH v3] Add security.* XATTR support for the UBIFS
+References: <1336691842-32281-1-git-send-email-snijsure@grid-net.com>
+ <201205112101.AGA05306.JOOFFSHOQMLFtV@I-love.SAKURA.ne.jp>
+In-Reply-To: <201205112101.AGA05306.JOOFFSHOQMLFtV@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-security-module@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +24,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 05/11/2012 05:01 AM, Tetsuo Handa wrote:
+> Subodh Nijsure wrote:
+>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+>> index ad6e550..cec3ffab 100644
+>> --- a/fs/ubifs/dir.c
+>> +++ b/fs/ubifs/dir.c
+>> @@ -292,6 +292,14 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>
+> According to 3.4-rc6,
+>
+> 	mutex_unlock() is here.
+>
+>>   	ubifs_release_budget(c,&req);
+>>   	insert_inode_hash(inode);
+>> +
+>> +	err = ubifs_init_security(dir, inode,&dentry->d_name);
+>> +	if (err) {
+>> +		ubifs_err("cannot initialize extended attribute, error %d",
+>> +			  err);
+>> +		goto out_cancel;
+>> +	}
+>> +
+>>   	d_instantiate(dentry, inode);
+>>   	return 0;
+> out_cancel:
+> 	mutex_unlock() is also here...
+>
+> Same for the rest.
+I will double check, my tree is based off linux-rc2, may be I messed up 
+things.
+>> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+>> index 85b2722..49c426a 100644
+>> --- a/fs/ubifs/xattr.c
+>> +++ b/fs/ubifs/xattr.c
+>> @@ -568,3 +600,91 @@ out_free:
+>>   	kfree(xent);
+>>   	return err;
+>>   }
+>> +
+>> +size_t
+>> +ubifs_security_listxattr(struct dentry *d, char *list, size_t list_size,
+>> +			 const char *name, size_t name_len, int flags)
+>> +{
+>> +	const int prefix_len = XATTR_SECURITY_PREFIX_LEN;
+>> +	const size_t total_len = prefix_len + name_len + 1;
+>> +	if (list&&  total_len<= list_size) {
+>> +		memcpy(list, XATTR_SECURITY_PREFIX, prefix_len);
+>> +		memcpy(list+prefix_len, name, name_len);
+>> +		list[prefix_len + name_len] = '\0';
+>> +	}
+> If (list&&  total_len>  list_size), the caller will see total_len
+> but no data is copied to list. Is it OK?
+the above condition you referred to implies that caller passed in buffer 
+that was too short, in that case we don't need to copy the data. Typical 
+usage would be caller call listxattr with null and list size of zero, we 
+return size of the buffer etc.
 
---=-zXnWHEqmyreC7CpAjN4H
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+man listxattr
+ssize_t listxattr (const char *path, char *list, size_t size);
 
-On Fri, 2012-05-11 at 16:04 +0200, John Crispin wrote:
-> The lantiq platform selects USE_OF
->=20
-> config USE_OF
->         bool "Flattened Device Tree support"
->         select OF
->         select OF_EARLY_FLATTREE
->         select IRQ_DOMAIN
->         help
->           Include support for flattened device tree machine descriptions.
+        An empty buffer of size zero can be passed into these calls to 
+return the current size of the list  of  extende attribute names, which 
+can be used to estimate the size of a buffer which is sufficiently large 
+to hold the list of names.
 
-OK.
-
-> Do i still need an explicit dependency on OF in this case ?
-
-Not sure, but probably not.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-zXnWHEqmyreC7CpAjN4H
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPrR9aAAoJECmIfjd9wqK0JtAQAMVj4D8Ychz3AVWasMykpFe5
-YWGFxRMT6Sp0QF5ABDnsvf9fG0waXC8kF+HxO9hsM+bp/1kom0FO5QN5ZZ8oxZS1
-Ik8v81GlKiWqQdWXKCODIlfRVwtL0jqs0g2QTCyEXympSnDJM2SAGZjhDbbq4GkM
-36ZxInqFIvmmN8mUtvRvbKv39AHkxljk0+LJriVAPDR1xUnSD0lmbajVqMoKqApm
-gPsmAFc0oWj2b5dwu5VmCpj0VMl2MPGY47ygy9j/xFE4+NTYutnQiauuZ2N+9f3Q
-BiRb3su1dFl/uro8r3glXcNku9Rf5NuzLMrUvkvjEJf1uXTOjmvBdH94jDXlVTpC
-rEKN12HWfPx6/nNEobvWQaaPdTRzzn/8e+TgFq2zNIkqmw7JN9oZa7XFcCXv4Rbx
-3jJa3H6ucWIPuaD4VTzk0oW0FUAQtO4cnHA06KCqVcPvzcpsPxTyZCrmZptKCm8x
-zfwE1iR2OoEZloKBBGiaa9k27RIUsoKnR4cOazyhB/7KotcI0LN616W+9t+Hp+qz
-b8+bPMZu1jAdYAFq24AGEUxrm/F+v81zzRlYW2hEfUVN3bfG58OrswEES9F3cumi
-QEQ5JyRnMhy9J2t+7AXCybQ7Lpd04BG9zHRhjN1xWjOzEBIXC6cJm5UoVb8Ts3Jc
-mnYupoRZ4QgVcQouzoWK
-=VoI7
------END PGP SIGNATURE-----
-
---=-zXnWHEqmyreC7CpAjN4H--
+so the above code should be okay?
+>> +	return total_len;
+>> +}
+>> +static int ubifs_initxattrs(struct inode *inode,
+>> +			    const struct xattr *xattr_array, void *fs_info)
+>> +{
+>> +	const struct xattr *xattr;
+>> +	char *name;
+>> +	int err = 0;
+>> +
+>> +	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
+>> +		name = kmalloc(XATTR_SECURITY_PREFIX_LEN +
+>> +			       strlen(xattr->name) + 1, GFP_NOFS);
+> Maybe nice to have kstrdup2(const char *str1, const char *str2, gfp_t flags).
+  I will modify that.
+>> +		if (!name) {
+>> +			err = -ENOMEM;
+>> +			break;
+>> +		}
+>> +		strcpy(name, XATTR_SECURITY_PREFIX);
+>> +		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
+>> +		err = __ubifs_setxattr(inode, name, xattr->value,
+>> +				       xattr->value_len, 0);
+>> +		kfree(name);
+>> +		if (err<  0)
+>> +			break;
+>> +	}
+>> +	return err;
+>> +}
+-Subodh
