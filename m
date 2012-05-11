@@ -1,21 +1,27 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSv1R-0002j2-6M
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 18:57:02 +0000
-Received: by obqv19 with SMTP id v19so4680687obq.36
- for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 11:56:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1336744984.2625.79.camel@sauron.fi.intel.com>
-References: <CAEg8X7XO4xgHravjYtswWZ0xh_o2ZvPcsT=iH=-bYoV57+ZE7w@mail.gmail.com>
- <1336744984.2625.79.camel@sauron.fi.intel.com>
-Date: Fri, 11 May 2012 14:56:57 -0400
-Message-ID: <CAEg8X7UCSoTCLyynVbRaN6Z7M6PvJn7-nBiDf+UhwmcZ91muyg@mail.gmail.com>
-Subject: Re: UBIFS error: replay_log_leb: first log node at LEB 3:0 is not CS
- node
-From: James Nute <newten82@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+ id 1SSv48-0003KR-7H
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 18:59:50 +0000
+Received: by laap9 with SMTP id p9so2649521laa.36
+ for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 11:59:45 -0700 (PDT)
+Message-ID: <1336762570.6126.6.camel@brekeke>
+Subject: Re: [PATCH 1/7] [RFC] UBI: Add checkpoint on-chip layout
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 11 May 2012 21:56:10 +0300
+In-Reply-To: <4FAD493F.1040804@nod.at>
+References: <1336585125-127220-1-git-send-email-richard@nod.at>
+ <1336585125-127220-2-git-send-email-richard@nod.at>
+ <1336735041.2625.35.camel@sauron.fi.intel.com> <4FACFFED.40105@nod.at>
+ <1336738864.2625.66.camel@sauron.fi.intel.com> <4FAD493F.1040804@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-PRwysKf3rmfDa0rmwh63"
+Mime-Version: 1.0
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 11, 2012 at 10:03 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2012-05-09 at 09:45 -0400, James Nute wrote:
->> Hello
->>
->> I'm getting a UBIFS Corruption during a power failure with a fail
->> signature that I believe is different from what has been seen in the
->> past.
->> When I flash a new UBI image onto my device and boot it for the first
->> time everything comes up as expected. However if I force a power
->> failure before any major file writes occur the device will crash when
->> UBIFS attempts to recover during the next reboot. If I force a sync
->> command before the power failure I am able to successfully avert the
->> recovery failure. I worry that this indicates something ugly is going
->> on that I can't detect.
->
-> Unfortunately you did not really enable the debugging messages or you
-> forgot to type "dmesg". Anyway, they are absent.
->
->>
->> To get more debug messages I have enabled UBIFS debugging and enabled
->> the recovery and mount messages by booting with
->> ""ubifs.debug_msgs=6144 ignore_loglevel" kernel parameters
->
-> Can you actually enable them and share the log?
 
-I did the following to enable debugging:
-1. "CONFIG_UBIFS_FS_DEBUG=y" in kernel config
-2. Added "ubifs.debug_msgs=6144" to the kernel command line
-3. Added "ignore_loglevel" to the kernel command line
-4. Captured all console output with putty and uploaded to
-http://mcreech.com/work/ubifs-2012-05-08.txt
+--=-PRwysKf3rmfDa0rmwh63
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure what step I missed to enable the full debugging messages.
-I am getting some UBIFS DBG messages in my log but not many.
+On Fri, 2012-05-11 at 19:15 +0200, Richard Weinberger wrote:
+> Am 11.05.2012 14:21, schrieb Artem Bityutskiy:
+> >>> It is weird that you do not have an array of ECs instead for _every_
+> >>> PEB. Why wasting the flash and time writing/reading this data?
+> >>
+> >> By array of ECs you mean that all ec values are written to the flash
+> >> and pnum is the index?
+> >> Sounds sane.
+> >=20
+> > Yes, to me it sounds like the only sane way, unless there is a strong
+> > reason to have redundant "pnum" fields. :-)
+>=20
+> While looking at my own code a bit closer I found out why I haven't used =
+the
+> array approach. B-)
+> Currently only ec values for PEBs within the free and used list are store=
+d.
+> Therefore, the array can have gaps. E.g. If PEB X is in the erroneous lis=
+t.
 
+I think this is not a good enough justification. I think we may use
+0xFFFFFFFF and other high EC values to indicate that the block was bad
+or erroneous or whatever.
 
-> Or may be you can dump
-> the image and share it - I should be able to put it to nandsim and try
-> to mount and see.
+BTW, did you think about scenario of moving dumping UBI2 on on one
+device with one bad PEBs distribution and then flashing it to a
+different device with a different bad PEB distribution? What would
+happen when we have fastmap enabled? Also, what if I write it to a
+larger flash with otherwise the same geometry?
 
-I will look into dumping the image for you but I have not done this before.
-Do you want a dump from before the power fail or after?
+I guess we could detect these things and fall-back to scanning?
 
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> Is this problem reproducible?
-Yes I have had no trouble recreating this fail.
+--=-PRwysKf3rmfDa0rmwh63
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-I will continue to try to figure out why I am not getting all the
-debug messages.
-Thank you for help
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPrWDKAAoJECmIfjd9wqK0AWsQAMq2tlRmNUbvBEesdYN6EhSq
+tuSKJJ4/LIsaG51tT92NmmEW9tRHfQt6OEXdmLmDOGngDJ07cpoUcu6VRJFlqCSt
+azCMXIF8X0bCMUlUH2iZyAfxH3kldh25dr4g1YyYDjkcTZs6OyQmMJYnzppkF+Pq
+OXE/0d3jqVXBWadfzYtnWAOR0fV4L8Vv/IourOoHg6ONzfzYteox8ccaVsWs0Mhw
+v+Nz+KZl3ut9gjqYA3RCbrzEBlwgJr1OYeFt1VWebxnY8jhDpfoxqYWZfPCsTl/L
+mgcbG/m7/iAhVtXQpSPw8HzdzOEt793rBNUTzUkKoy1igeMzJRlnV2a+JAIKP0aM
+7r95BXcuwbkvzbmJJddRAaK7CDKYR1rDgahKXQeDQBmLWlLnuSFsqiHa3CywG3e4
+q/czglbgQ31P0l3663QuBdMukqQmAlAvlysNagCrq4LX2T9PHLwvaTfTdS9mX/zt
+LZ+9A48HCyWBgmilaeP8PqXYCHTQ0tnJveZZl9mmCaFWb2iECnxzRBZFSE3shH29
+xlblHtBKHJl/nfrdB2bU2MxMZkk/KvaAQUR+q+M1rQWBwEvZzHuD5335YKJ27LSg
+vXAg/gcRE7LLyl/VrkYKy8saV+QQz7guc8adraYb9Z7nNmbsyIFG655tavQ51y0n
+6TCUIjzl5I7zjW3qp9GF
+=yCfM
+-----END PGP SIGNATURE-----
+
+--=-PRwysKf3rmfDa0rmwh63--
