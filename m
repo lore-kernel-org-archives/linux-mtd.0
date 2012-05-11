@@ -1,22 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SSnnJ-00027O-9G
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 11:14:13 +0000
-Message-ID: <1336735041.2625.35.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/7] [RFC] UBI: Add checkpoint on-chip layout
+Message-ID: <1336735456.2625.40.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: Add support for Winbond W25Q80BW
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Fri, 11 May 2012 14:17:21 +0300
-In-Reply-To: <1336585125-127220-2-git-send-email-richard@nod.at>
-References: <1336585125-127220-1-git-send-email-richard@nod.at>
- <1336585125-127220-2-git-send-email-richard@nod.at>
+To: Thomas Abraham <thomas.abraham@linaro.org>
+Date: Fri, 11 May 2012 14:24:16 +0300
+In-Reply-To: <1336516494-22791-1-git-send-email-thomas.abraham@linaro.org>
+References: <1336516494-22791-1-git-send-email-thomas.abraham@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-PKaHel37MzVOY7Ncvu5+"
+ boundary="=-jCccJ0Fw38S9ls8uWvwC"
 Mime-Version: 1.0
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- linux-kernel@vger.kernel.org
+Cc: linux-samsung-soc@vger.kernel.org, kgene.kim@samsung.com,
+ linux-mtd@lists.infradead.org, mike@steroidmicros.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,109 +23,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-PKaHel37MzVOY7Ncvu5+
+--=-jCccJ0Fw38S9ls8uWvwC
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-I'd like to a git tree for this stuff at some point, when you feel you
-are ready, and then do all further changes incrementally on top of that.
-Then would also be able to participate - at least do minor things myself
-and send patches to you.
+On Wed, 2012-05-09 at 04:04 +0530, Thomas Abraham wrote:
+> Winbond W25Q80BW is a 8Mbit serial flash memory device.
+>=20
+> Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
 
-On Wed, 2012-05-09 at 19:38 +0200, Richard Weinberger wrote:
-> +#ifdef CONFIG_MTD_UBI_CHECKPOINT
-> +#define UBI_CP_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
-> +#define UBI_CP_DATA_VOLUME_ID	(UBI_CP_SB_VOLUME_ID + 1)
-
-#define UBI_CP_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
-
-is more readable I think.
-
-> +#define UBI_CP_MAX_BLOCKS	32
-
-This really needs a comment on top of it telling how big flash with say,
-128KiB PEB size this would support.
-
-> +
-> +/**
-> + * struct ubi_cp_sb - UBI checkpoint super block
-> + * @magic: checkpoint super block magic number (%UBI_CP_SB_MAGIC)
-> + * @version: format version of this checkpoint
-> + * @data_crc: CRC over the checkpoint data
-> + * @nblocks: number of PEBs used by this checkpoint
-> + * @block_loc: an array containing the location of all PEBs of the check=
-point
-> + * @block_ec: the erase counter of each used PEB
-> + * @sqnum: highest sequence number value at the time while taking the ch=
-eckpoint
-> + *
-> + * The checkpoint
-> + */
-> +struct ubi_cp_sb {
-> +	__be32 magic;
-> +	__u8 version;
-> +	__be32 data_crc;
-> +	__be32 nblocks;
-> +	__be32 block_loc[UBI_CP_MAX_BLOCKS];
-> +	__be32 block_ec[UBI_CP_MAX_BLOCKS];
-> +	__be64 sqnum;
-> +} __packed;
-
-Please, unless it is size-critical, always leave some unused space in
-on-flash data structure for possible future extensions, and initialize
-them to 0.
-
-BTW, side-note, please, check that you follow the convention of UBI and
-make all on-flash data structures 64-bit aligned (of course unless it is
-size-critical).
-
-> +/**
-> + * struct ubi_cp_long_pool - Checkpoint pool with long term used PEBs
-> + * @magic: long pool magic numer (%UBI_CP_LPOOL_MAGIC)
-> + * @size: current pool size
-> + * @pebs: an array containing the location of all PEBs in this pool
-> + */
-> +struct ubi_cp_long_pool {
-> +	__be32 magic;
-> +	__be32 size;
-> +	__be32 pebs[UBI_CP_MAX_POOL_SIZE];
-> +} __packed;
-
-What's the perpose of having these pools - once you read all the
-information from the fastmap and the wl subsystem inserts it to the
-RB-trees - you already know this data. Why you need to store this on the
-flash? This whole pool think look redundant and unneeded.
-
-> +/**
-> + * struct ubi_cp_ec - stores the erase counter of a PEB
-> + * @pnum: PEB number
-> + * @ec: ec of this PEB
-> + */
-> +struct ubi_cp_ec {
-> +	__be32 pnum;
-> +	__be32 ec;
-> +} __packed;
-
-It is weird that you do not have an array of ECs instead for _every_
-PEB. Why wasting the flash and time writing/reading this data?
-
-> +/**
-> + * struct ubi_cp_eba - denotes an association beween a PEB and LEB
-> + * @lnum: LEB number
-> + * @pnum: PEB number
-> + */
-> +struct ubi_cp_eba {
-> +	__be32 lnum;
-> +	__be32 pnum;
-> +} __packed;
-
-Same here - I'd expect a simple array for every PEB in the system.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-PKaHel37MzVOY7Ncvu5+
+--=-jCccJ0Fw38S9ls8uWvwC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -138,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPrPVBAAoJECmIfjd9wqK0IR4P/RsWA/kMgNJwsCzTQzoOHuZl
-DY3itbcEwjhzUqIO5W+eiaZrC9actTWZubcH8CN1J8C/7oDPYbd2ehKoy/V+lbzf
-DFp05xfr06yXFWXfyFDDRNfspcyBrHn22i7ZNbke/kxY1fDlrQ6saBqQotRNc7JI
-VFb2N15HG8UgLKxqNK79uOsazqhXu04ehiSdGex3BZ5QfICPPcbJzq6MdCQCZD12
-c/4faGhK24pTgDNF74JAH0K36MNU3IMR2fylYSkasTKh0zVY9RyDB9fHshQ9+Zue
-uO79gfDt9SQUBfVwDMeSWYikLadFqi5B2vQKI5G5gCqZC9rdRR/d9qrAURy5lFxG
-GKx7oBdfaQFux9C3p4oPoPDNT4dZ8Ygl55v/X24JjsypbNqsyeGEJdQiQ37KqWuP
-US3fDGDZuHSnVNwXjhaFIOKzITqdYKBEoSIuTfVGyAmLOFVkIjazEDk5zRqrdnRS
-XZZz+2WQMXxVZ7IxlybYLHcS1VOr6NV6OI79AT73ZK6uhY5GOXX7k1b20Ct3Mhd+
-0lMTFcdKdNypekJ24K4wbFOTYDBstRHEPqN/+P6wvnD5jS1X722Hn53Z2yV6JBnG
-1dBEEcCJ8aODOu8zDIJee41kBsCBjg53w/rjvFkHTDSdaidwDgq9FBWcz1ed3QJQ
-Dck5mZ5GnundnJnZtLit
-=M9HW
+iQIcBAABAgAGBQJPrPbgAAoJECmIfjd9wqK08ysQAIKU0gJRhP46eXyGK+A2RcvW
+5R4Tsf5ev6Zv0LfoYCRFNiW9ngmne7GEkkNCpyDrwpWYGRaGth65aEU7GZPPi4/l
+dbM5waZnz/wM1idNIowPuBg9/a17ujqWbTWQcbzX4ZFQ/LCzgZwRogV6C7eG7+Z7
+XQ0eX7P7Fr26XJuEqGUQFtRhpZd6arPURoadXW6Hdu11ib68W6JM/x3cxYOC7kJA
+X31YNde3AFKCyuulMdCICuAhZzgDXyIIc6bJ2VOkNwL+aaNY9/PO07APq6keo6Kk
+f8zk1ZdRGVUL1tfyPf6H7Q5nrrF6/YlMUtrDBsAX2iwH2p3RfMK78mvlW8/7IV5K
+E1Q6azf/dgepYyQ/tpACZYes0GiqkbFz/dI2gkU5t0j5UnFntRELq2HXoMmTl8PO
+rplSAy+W6JEeJxrrc05OvR9DdU4R7bqIQgaM9pPHFXvhciPXvNvmhDUY1J4zDfux
+iKuFgaxoqsNPKBA9/yS/s0Giv1i9KnPr/5z6VlJIPWGVXcxMWrJa/EHAo1IjTlcO
+cb0fuB3yPu7MD9R5VBIBi/h8k6sev0WuIxNRDPPy3Tb4GLb3o7TbYTEyJ5dIVyHb
+9GDWpJRsjdQ3uOjoFGt7k5pzHYmAkMNIAf/1GqFXisi+vpPv9wSeQDn1uGaYK5Y2
+9tMhHA3qGrWZkq643vj5
+=V57E
 -----END PGP SIGNATURE-----
 
---=-PKaHel37MzVOY7Ncvu5+--
+--=-jCccJ0Fw38S9ls8uWvwC--
