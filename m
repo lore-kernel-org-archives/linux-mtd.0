@@ -1,21 +1,24 @@
-Received: from [2a01:4f8:131:30e2::2] (helo=nbd.name)
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSqUI-0007R8-II
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 14:06:31 +0000
-Message-ID: <4FAD1C6D.5080701@openwrt.org>
-Date: Fri, 11 May 2012 16:04:29 +0200
-From: John Crispin <blogic@openwrt.org>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSqb8-0006gj-Ln
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 14:13:35 +0000
+Message-ID: <1336745818.2625.83.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 12/14] MTD: MIPS: lantiq: implement OF support
-References: <1336133919-26525-1-git-send-email-blogic@openwrt.org>	
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: John Crispin <blogic@openwrt.org>
+Date: Fri, 11 May 2012 17:16:58 +0300
+In-Reply-To: <4FAD1C6D.5080701@openwrt.org>
+References: <1336133919-26525-1-git-send-email-blogic@openwrt.org>
  <1336133919-26525-12-git-send-email-blogic@openwrt.org>
  <1336745193.2625.81.camel@sauron.fi.intel.com>
-In-Reply-To: <1336745193.2625.81.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <4FAD1C6D.5080701@openwrt.org>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-zXnWHEqmyreC7CpAjN4H"
+Mime-Version: 1.0
 Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  Ralf Baechle <ralf@linux-mips.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/05/12 16:06, Artem Bityutskiy wrote:
-> On Fri, 2012-05-04 at 14:18 +0200, John Crispin wrote:
->> Adds bindings for OF and make use of module_platform_driver for lantiq
->> based socs.
->>
->> Signed-off-by: John Crispin <blogic@openwrt.org>
->> Cc: linux-mtd@lists.infradead.org
->> ---
->> This patch is part of a series moving the mips/lantiq target to OF and clkdev
->> support. The patch, once Acked, should go upstream via Ralf's MIPS tree.
-> Looks ok, but could you please send me the entire series anyway, may be
-> privately. I want to feed it to aiaiai and check before acking this
-> patch. Also, please, make sure you add dependency on OF in Kconfig.
 
-Hi Artem,
+--=-zXnWHEqmyreC7CpAjN4H
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The lantiq platform selects USE_OF
+On Fri, 2012-05-11 at 16:04 +0200, John Crispin wrote:
+> The lantiq platform selects USE_OF
+>=20
+> config USE_OF
+>         bool "Flattened Device Tree support"
+>         select OF
+>         select OF_EARLY_FLATTREE
+>         select IRQ_DOMAIN
+>         help
+>           Include support for flattened device tree machine descriptions.
 
-config USE_OF
-        bool "Flattened Device Tree support"
-        select OF
-        select OF_EARLY_FLATTREE
-        select IRQ_DOMAIN
-        help
-          Include support for flattened device tree machine descriptions.
+OK.
 
-Do i still need an explicit dependency on OF in this case ?
+> Do i still need an explicit dependency on OF in this case ?
 
-Thanks,
-John
+Not sure, but probably not.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-zXnWHEqmyreC7CpAjN4H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPrR9aAAoJECmIfjd9wqK0JtAQAMVj4D8Ychz3AVWasMykpFe5
+YWGFxRMT6Sp0QF5ABDnsvf9fG0waXC8kF+HxO9hsM+bp/1kom0FO5QN5ZZ8oxZS1
+Ik8v81GlKiWqQdWXKCODIlfRVwtL0jqs0g2QTCyEXympSnDJM2SAGZjhDbbq4GkM
+36ZxInqFIvmmN8mUtvRvbKv39AHkxljk0+LJriVAPDR1xUnSD0lmbajVqMoKqApm
+gPsmAFc0oWj2b5dwu5VmCpj0VMl2MPGY47ygy9j/xFE4+NTYutnQiauuZ2N+9f3Q
+BiRb3su1dFl/uro8r3glXcNku9Rf5NuzLMrUvkvjEJf1uXTOjmvBdH94jDXlVTpC
+rEKN12HWfPx6/nNEobvWQaaPdTRzzn/8e+TgFq2zNIkqmw7JN9oZa7XFcCXv4Rbx
+3jJa3H6ucWIPuaD4VTzk0oW0FUAQtO4cnHA06KCqVcPvzcpsPxTyZCrmZptKCm8x
+zfwE1iR2OoEZloKBBGiaa9k27RIUsoKnR4cOazyhB/7KotcI0LN616W+9t+Hp+qz
+b8+bPMZu1jAdYAFq24AGEUxrm/F+v81zzRlYW2hEfUVN3bfG58OrswEES9F3cumi
+QEQ5JyRnMhy9J2t+7AXCybQ7Lpd04BG9zHRhjN1xWjOzEBIXC6cJm5UoVb8Ts3Jc
+mnYupoRZ4QgVcQouzoWK
+=VoI7
+-----END PGP SIGNATURE-----
+
+--=-zXnWHEqmyreC7CpAjN4H--
