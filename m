@@ -1,24 +1,22 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSpMs-0002uY-Il
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 12:54:49 +0000
-Received: by werc12 with SMTP id c12so129276wer.36
- for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 05:54:39 -0700 (PDT)
-Date: Fri, 11 May 2012 15:54:24 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 2/2] mtd: nand: check the return code of
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SSpuD-0007Qd-4e
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 13:29:14 +0000
+Message-ID: <1336743157.2625.69.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: nand: remove 'sndcmd' parameter of
  'read_oob/read_oob_raw'
-Message-ID: <20120511155424.7e7c5666@halley>
-In-Reply-To: <1336736891.2625.49.camel@sauron.fi.intel.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Fri, 11 May 2012 16:32:37 +0300
+In-Reply-To: <20120509130635.32973038@pixies.home.jungo.com>
 References: <20120509130635.32973038@pixies.home.jungo.com>
- <20120509131334.2d0b7160@pixies.home.jungo.com>
- <1336736891.2625.49.camel@sauron.fi.intel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-z2uxKJFvg3uPHDpbV/UW"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-On Fri, 11 May 2012 14:48:11 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2012-05-09 at 13:13 +0300, Shmulik Ladkani wrote:
-> > @@ -1826,9 +1827,12 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
-> >  
-> >  	while (1) {
-> >  		if (ops->mode == MTD_OPS_RAW)
-> > -			chip->ecc.read_oob_raw(mtd, chip, page);
-> > +			ret = chip->ecc.read_oob_raw(mtd, chip, page);
-> >  		else
-> > -			chip->ecc.read_oob(mtd, chip, page);
-> > +			ret = chip->ecc.read_oob(mtd, chip, page);
-> > +
-> > +		if (ret < 0)
-> > +			break;
-> 
-> For page reading the convention is that we keep reading and try to read
-> everything anyway, I guess it is reasonable thing to do for OOB as well?
+--=-z2uxKJFvg3uPHDpbV/UW
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-AFAIU, we actually _stop_ reading upon 'ecc.read_page()' error.
-And 'ops->retlen' is updated to reflect actual bytes sucessfully read.
+On Wed, 2012-05-09 at 13:06 +0300, Shmulik Ladkani wrote:
+> As of [mtd: nand: remove autoincrement 'sndcmd' code], the
+> NAND_CMD_READ0 command is issued unconditionally.
+>=20
+> Thus, read_oob/read_oob_raw's 'sndcmd' argument is no longer needed, as
+> well as their return code.
+>=20
+> Remove the 'sndcmd' parameter, and set the return code to 0.
+>=20
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-See snip from 'nand_do_read_ops':
+Pushed to l2-mtd.git, thanks!
 
----------------------------------
-	while (1) {
+--=20
+Best Regards,
+Artem Bityutskiy
 
-		...
-		...
+--=-z2uxKJFvg3uPHDpbV/UW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-			/*
-			 * Now read the page into the buffer.  Absent an error,
-			 * the read methods return max bitflips per ecc step.
-			 */
-			if (unlikely(ops->mode == MTD_OPS_RAW))
-				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi,
-							      oob_required,
-							      page);
-			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
-				ret = chip->ecc.read_subpage(mtd, chip,
-							col, bytes, bufpoi);
-			else
-				ret = chip->ecc.read_page(mtd, chip, bufpoi,
-							  oob_required, page);
-			if (ret < 0) {
-				if (!aligned)
-					/* Invalidate page cache */
-					chip->pagebuf = -1;
-				break;
-			}
+iQIcBAABAgAGBQJPrRT1AAoJECmIfjd9wqK0rBMP/REITXIhsr3/OtLTZ8B/q0Us
+Np7blrBWMFmufgpKa73arimqEm3SmBLQ5CNRdbHKHxcNv8kIIPBHGr6lRqzPevbk
+uhOO0A05XaugcSyuN9BQMZurcdCuG6sGQSWyU3qG+5n6EVS5EzyqWhUzZHidljIm
+89WAMxrZsWD8EXH7EMNpbRpyvhjs3+fS/juDxw+zD+y/sRB6zCYQ6NQAzu2LYbU2
+IXz0NCMtNyEVXUdywCm22CLVzllNX5KW03Cbrc/Awh/NaTXFVb/W3FKostcKtRsg
+xV2DjGj2BsKnCEOK8dOmqwHxuSb3lQrtF4fE4XvtM/UIlvaB12nzTJCBQ9gN8tl9
+0/ZSd/Q33NWqRf/aIsedyVnxLGl+FTQv1o3qK1uVZrt7O4uuE3efUjj+9f8SMdGb
+PC5Vc0VEOzhe/w5S/gHDFfBTypbm7qvNEl4VHOqlRf/kXdfgXue2YoakzcSa1gGr
+hyh49QDwO5vmwkzgxGNF6NakSmoYIM62JU4Q2OZoU2Z1IIY+vBwG0JO5ViQnJtl4
+vDsko+qgYoHK4770R1foepyzne44DRKXYGd4P8t9P/t87SncDp294ksbrkLghhHN
+QN064Rpk6C7Y6FtCNjL6zTrvksO3mfeVruYNyfuCgWiZfwFSl15qVClv/2zukS46
+dQ8/NPTNYAwyyMaHWc0U
+=dIEN
+-----END PGP SIGNATURE-----
 
-		...
-		...
-
-	}
-
-	ops->retlen = ops->len - (size_t) readlen;
-	if (oob)
-		ops->oobretlen = ops->ooblen - oobreadlen;
-
-	if (ret < 0)
-		return ret;
----------------------------------
-
-The error is propagated back to 'nand_read' and to the 'mtd->_read'
-user.
-
-Have I misinterpreted your question? Did you mean something else?
-
-BTW, note that the patch does not intend to change existing
-behavior of '_read_oob' in case 'ecc.read_oob()' calls were succesful.
-
-The behavior is changed only if 'ecc.read_oob()' fails.
-In that case an error indication is returned and 'ops->oobretlen' is set
-appropriately.
-I havn't tested this, but it seems as the reaonable thing to report back
-to the '_read_oob' users.
-
-Regards,
-Shmulik
+--=-z2uxKJFvg3uPHDpbV/UW--
