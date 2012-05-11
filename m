@@ -1,20 +1,21 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SSqNi-0005Dh-Qc
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 13:59:43 +0000
-Message-ID: <1336744984.2625.79.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS error: replay_log_leb: first log node at LEB 3:0 is not
- CS node
+ id 1SSqR7-0005QU-7y
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2012 14:03:15 +0000
+Message-ID: <1336745193.2625.81.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 12/14] MTD: MIPS: lantiq: implement OF support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: James Nute <newten82@gmail.com>
-Date: Fri, 11 May 2012 17:03:04 +0300
-In-Reply-To: <CAEg8X7XO4xgHravjYtswWZ0xh_o2ZvPcsT=iH=-bYoV57+ZE7w@mail.gmail.com>
-References: <CAEg8X7XO4xgHravjYtswWZ0xh_o2ZvPcsT=iH=-bYoV57+ZE7w@mail.gmail.com>
+To: John Crispin <blogic@openwrt.org>
+Date: Fri, 11 May 2012 17:06:33 +0300
+In-Reply-To: <1336133919-26525-12-git-send-email-blogic@openwrt.org>
+References: <1336133919-26525-1-git-send-email-blogic@openwrt.org>
+ <1336133919-26525-12-git-send-email-blogic@openwrt.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Uvyfj6Eg4wN5nVMfQV89"
+ boundary="=-Br6LUzRPYqcySERHclUK"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,49 +27,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Uvyfj6Eg4wN5nVMfQV89
+--=-Br6LUzRPYqcySERHclUK
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-09 at 09:45 -0400, James Nute wrote:
-> Hello
+On Fri, 2012-05-04 at 14:18 +0200, John Crispin wrote:
+> Adds bindings for OF and make use of module_platform_driver for lantiq
+> based socs.
 >=20
-> I'm getting a UBIFS Corruption during a power failure with a fail
-> signature that I believe is different from what has been seen in the
-> past.
-> When I flash a new UBI image onto my device and boot it for the first
-> time everything comes up as expected. However if I force a power
-> failure before any major file writes occur the device will crash when
-> UBIFS attempts to recover during the next reboot. If I force a sync
-> command before the power failure I am able to successfully avert the
-> recovery failure. I worry that this indicates something ugly is going
-> on that I can't detect.
+> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+> This patch is part of a series moving the mips/lantiq target to OF and cl=
+kdev
+> support. The patch, once Acked, should go upstream via Ralf's MIPS tree.
 
-Unfortunately you did not really enable the debugging messages or you
-forgot to type "dmesg". Anyway, they are absent.
-
->=20
-> To get more debug messages I have enabled UBIFS debugging and enabled
-> the recovery and mount messages by booting with
-> ""ubifs.debug_msgs=3D6144 ignore_loglevel" kernel parameters
-
-Can you actually enable them and share the log? Or may be you can dump
-the image and share it - I should be able to put it to nandsim and try
-to mount and see.
-
-Looks like old master node was for some reason selected for some reason
-- I'd first looked to the master area. But most probably it was already
-cleaned-up when you tried to mounted for the very first time after the
-power cut. Do you have kernel logs of that ? Are there messages about
-corrupted master node?
-
-Is this problem reproducible?
+Looks ok, but could you please send me the entire series anyway, may be
+privately. I want to feed it to aiaiai and check before acking this
+patch. Also, please, make sure you add dependency on OF in Kconfig.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Uvyfj6Eg4wN5nVMfQV89
+--=-Br6LUzRPYqcySERHclUK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -76,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPrRwZAAoJECmIfjd9wqK0QssP/3UTEtnZO4nehPdn1Sxto85B
-Vc7jTgRcqFJD84sJk0q72HxfCfuiHE/TH/axhP7xfZ+jukuC37pzLQTm02h3oWG5
-AtIMaDDns3lKoa7PiNuGoPlENNZ9Z7eAcV15zh3NG+/4Sdjyfpti0Aq7RIzpmaPL
-y5OUzu48yiXzn0RcUjnEUbeO/X3Z0dLuoskJWCDMqisuz55q4qCTNnWvf3DpQJyh
-pzfxdBSRzU6BzpfPCfri4wf7q2JihLnA+Epat+7c5P/q43IMx43uyUC6UG+6omOB
-t7ibIqIMaa9cEY+9NEFlTd++vvAVG+q0GK1ZdRuNpzZorkP/ThqjO0+8VsBXAYaL
-PnpxLfZ6bN6TC7X6VJqg3DytusRnuFM5jjku02Bv5R5FpoCPsi/T/Zo/fh8pnGjl
-5/lFHpn0Ua/qxh2KGUIrjYsFbi9Hm6tOvG90M/dTu9zvi3mhgbj87nVyn9mX1lF2
-bq7onsA2jXGcMNRmhIoVbzO3V0hiO5WFJ/hz3ROJ1/VlCZ9QkwXauQLkTlFQdWQG
-LGZe0+QX5AwVKr1twajd+vOR5Jcwz0IWZZCuv8Z05Iy/kmYHDPRzKsW2CpOT32Wj
-hML31wTfYcNDMFhWUzasTtAi8P2MrKxdxSi9AwU2DZrRL9+7SmxA6Px+DY5MpDU5
-yQGOKyyFJiIpMZFColuQ
-=giuF
+iQIcBAABAgAGBQJPrRzpAAoJECmIfjd9wqK0unIP/jY4ohepbSULOEHDADQaGi7Q
+2nypFAYH75c6qsugGGUo7sdWWdmwDuced3N4HvzdX6EjCRcfFaQZMhOR27NYLrxA
+S+Tm3JHVgXBwuIuvsaLiKEiULQqTXBMyjSEdXJf2/fH/SRtv7xtkJzCkUYljk7Aq
+mnvpClwQQG7tsk0rsHRbqNevfgPHj7puA3ppImGSg/IR0TBT/qm+t17h85K78HBY
+/7Zj8HdljeuiBj2e/6YtHSYZu1ba7Bhx60P5IowWyuWBNwPAgXYDbjbZrn2kRw5I
+kDVZTcBF4zLZtim//XE13pPIskVywlsw4ahijEu29bz+zQIF3ReNZzukv3gj4W0Q
+N3+Tdyr8+S7HEe9KmgGmgF2GTPNjHB5BJkqlsA87orH1H9p+OMAVCEgIwxJxORU+
+M3DbQMuEqbsIqi4ffkwZgaE4cCxfpPDMjQjeAVznOu38CXybs3BTiDaj0h+QNHRH
+AKJ6ZwN+fqU+4JtKtrR2w2SEhPe/oUBd1DB0uUHloumPoSv2UCZrR8FgNlNxAuA6
+y7D2nnt47wER3oL8uY5VSL4Kk/J5jD0JDWyGJeqURX6o3ZeyAzHRsmvebR4142wS
+t905w+8y4unGprQCbQJa1dhMALbhVjB0555Ume95RPvHdLislCVrezKB69Fjd1Kq
+XrCDFsD+V+9oEirRioym
+=TFFa
 -----END PGP SIGNATURE-----
 
---=-Uvyfj6Eg4wN5nVMfQV89--
+--=-Br6LUzRPYqcySERHclUK--
