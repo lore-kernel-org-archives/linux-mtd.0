@@ -1,18 +1,19 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SSwUE-000504-4d
- for linux-mtd@lists.infradead.org; Fri, 11 May 2012 20:30:50 +0000
-Received: by pbbrq13 with SMTP id rq13so4237804pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 13:30:48 -0700 (PDT)
+ id 1SSzt9-0005Vp-SS
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2012 00:08:49 +0000
+Received: by yenr9 with SMTP id r9so3767940yen.36
+ for <linux-mtd@lists.infradead.org>; Fri, 11 May 2012 17:08:45 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1074804305.215687.1336714462469.JavaMail.root@sz0162a.emeryville.ca.mail.comcast.net>
+References: <1074804305.215687.1336714462469.JavaMail.root@sz0162a.emeryville.ca.mail.comcast.net>
+Date: Fri, 11 May 2012 17:08:45 -0700
+Message-ID: <CAN8TOE9kuC2S_Jh3aMnMDkkh5KFQUV4AsV9HN+a1UODGYvEbew@mail.gmail.com>
+Subject: Re: how do I backup a jffs2 partition to an image file
 From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 3/3] mtd: nand: gpmi: [FIXME] need to use {read, write}_oob_raw
-Date: Fri, 11 May 2012 13:30:35 -0700
-Message-Id: <1336768235-12658-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
-References: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+To: geraldwalden@comcast.net
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is simply an added warning in the comments. Ideally, this patch
-need not be merged, but rather, a developer will write a proper solution
-that can use the ecc.read_oob_raw and ecc.write_oob_raw interfaces.
+On Thu, May 10, 2012 at 10:34 PM,  <geraldwalden@comcast.net> wrote:
+> how do I backup a jffs2 partition to a ".bin" file. I want to run jffs2dump on a jffs2 filesystem, and the utility only takes an image file as a parameter.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Right, jffs2dump is not the right tool.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8250f63..033bd7a 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1054,6 +1054,9 @@ exit_auxiliary:
-  * ECC-based or raw view of the page is implicit in which function it calls
-  * (there is a similar pair of ECC-based/raw functions for writing).
-  *
-+ * FIXME: The following paragraph is incorrect, now that there exist
-+ * ecc.read_oob_raw and ecc.write_oob_raw functions.
-+ *
-  * Since MTD assumes the OOB is not covered by ECC, there is no pair of
-  * ECC-based/raw functions for reading or or writing the OOB. The fact that the
-  * caller wants an ECC-based or raw view of the page is not propagated down to
--- 
-1.7.5.4.2.g519b1
+Are you using NAND, or some other bad-block-free flash (e.g., NOR)?
+
+For NAND, I think the nanddump utility would suffice. It is the
+complement of nandwrite, which is mentioned for copying an image *to*
+the device:
+http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_copyimg
+
+For bad-block-free devices, you aren't restricted, and may be able to
+just use dd, for instance. See the information regarding *writing* an
+image for my rationale:
+http://www.linux-mtd.infradead.org/faq/jffs2.html#L_putimage
+
+But I'm not a JFFS2 expert...
+
+Brian
