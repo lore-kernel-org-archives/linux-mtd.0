@@ -1,23 +1,15 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STCtf-0004Ju-Dq
- for linux-mtd@lists.infradead.org; Sat, 12 May 2012 14:02:13 +0000
-Received: by lbbgg6 with SMTP id gg6so3119185lbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 12 May 2012 07:02:08 -0700 (PDT)
-Message-ID: <1336831313.5707.2.camel@koala>
-Subject: Re: MTD: Add fixup for S29NS512P NOR flash.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Javier Martin <javier.martin@vista-silicon.com>
-Date: Sat, 12 May 2012 17:01:53 +0300
-In-Reply-To: <1336731341-615-1-git-send-email-javier.martin@vista-silicon.com>
-References: <1336731341-615-1-git-send-email-javier.martin@vista-silicon.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-NGT9aM561zZ9xnWItJMr"
-Mime-Version: 1.0
-Cc: Gernot.Hoyler@spansion.com, Artem.Bityutskiy@nokia.com,
- joakim.tjernlund@transmode.se, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, tabe@mvista.com
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1STE2r-00062P-KB
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2012 15:15:47 +0000
+Date: Sat, 12 May 2012 17:15:42 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [patch] UBI: add lnum to ubi_work data structure
+Message-ID: <alpine.DEB.2.00.1205121712410.24689@eristoteles.iwoars.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +19,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is part of a multipart patch to allow UBI to force the erasure of
+particular logical eraseblock numbers. In this patch, the logical erase block
+number is added to ubi_work data structure, and it is also passed as a
+parameter to schedule erase to set it appropriately. Whenever ubi_wl_put_peb
+is called, the lnum is also passed to be forwarded to schedule erase. Later,
+a new ubi_sync_lnum will be added to execute immediately all work related to
+that lnum.
 
---=-NGT9aM561zZ9xnWItJMr
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This was tested by observing the recorded lnum value whenever an eraseblock
+was erased (i.e., the work done). UBIFS was changed to repeat leb_change
+calls 10 times, integck was executed, and the sequence of 10 equal lnums
+with varying pnums was observed.
 
-On Fri, 2012-05-11 at 12:15 +0200, Javier Martin wrote:
-> Spansion S29NS512P flash uses a 16bit transfer to report number
-> of sectors instead of two 8bit accesses as CFI specifies.
->=20
-> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   14 ++++++++++++++
->  1 files changed, 14 insertions(+), 0 deletions(-)
->=20
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_=
-cmdset_0002.c
-> index 23175ed..5873b1f 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -332,6 +332,19 @@ static void fixup_s29gl032n_sectors(struct mtd_info =
-*mtd)
->  	}
->  }
-> =20
-> +static void fixup_s29ns512p_sectors(struct mtd_info *mtd)
-> +{
-> +	struct map_info *map =3D mtd->priv;
-> +	struct cfi_private *cfi =3D map->fldrv_priv;
-> +
-> +	/*
-> +	 *  S29NS512P flash uses more than 8bits to report number of sectors,
-> +	 * which is not permitted by CFI.
-> +	 */
-> +	cfi->cfiq->EraseRegionInfo[0] =3D 0x020001ff;
-> +	pr_warning("%s: Bad S29NS512P CFI data, adjust to 512 sectors\n", mtd->=
-name);
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ drivers/mtd/ubi/eba.c |   16 ++++++++--------
+ drivers/mtd/ubi/ubi.h |    2 +-
+ drivers/mtd/ubi/wl.c  |   23 ++++++++++++++---------
+ 3 files changed, 23 insertions(+), 18 deletions(-)
 
-What is the purpose of printing this warning - how the user should act
-upon it? If you successfully work-around a known HW issue, you should
-not warn. HW workarounds are normal.
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 2455d62..4f3ffc1 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -341,7 +341,7 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	dbg_eba("erase LEB %d:%d, PEB %d", vol_id, lnum, pnum);
 
---=20
-Best Regards,
-Artem Bityutskiy
+ 	vol->eba_tbl[lnum] = UBI_LEB_UNMAPPED;
+-	err = ubi_wl_put_peb(ubi, pnum, 0);
++	err = ubi_wl_put_peb(ubi, pnum, 0, lnum);
 
---=-NGT9aM561zZ9xnWItJMr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+ out_unlock:
+ 	leb_write_unlock(ubi, vol_id, lnum);
+@@ -550,7 +550,7 @@ retry:
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+ 	vol->eba_tbl[lnum] = new_pnum;
+-	ubi_wl_put_peb(ubi, pnum, 1);
++	ubi_wl_put_peb(ubi, pnum, 1, lnum);
 
-iQIcBAABAgAGBQJPrm1RAAoJECmIfjd9wqK0SKQP/2ZsRJxi4RUu4t6dA0ot8kPt
-s56sJmysWwVtkN2vHIk2tSy3/CeZ7LIuP7P3nfU48RVHtpUk9AxPj8oC9jl5lyAc
-4d1/14bq11GJcM8s/ln+HkcXb5Qt3i3JzNFB+vIQbe7juH52CgP0f5mNc/5V9sNp
-kqpK4kfMTK0lBZHnqH5OXoe8jZ7iYb7JEJLG7lfBqV06LGdVoEg/Ntv7lugUa/pR
-44RJaMGRMUzUa1RmRBN2ZkZWSllC05s1vGNMEAgJXcFODRnNBagyk6JvJH88zVwg
-iTQOZeFzRhYVMlTvx061HJ7GXAI9ndUtGqy4n0DHjvPWfo+svo/yG7NwK7Pe1I90
-eZBCnc8xpRxz5RnJOBwspFJnpjCwQTKZKo5dnV56SV7zc5D9neKkGhCI3BvMdx4c
-DKq+eKqQGJzmmGqlns6LoGcGuoO4yu7gTEo8OBGJuVuyef/Yvg4obRdFxq0soCaa
-5SDeX6G424HV6V7D4Rzq9wUCIA1UCt+fGgNYGi00NjebeMu2Sjoop+EzLQ8mPwEq
-ipYg9W7g7ewviNzwmpjeAMPzJptsb7T4uxitGov6YB5uJPPJyEhEqJhoWFQLNAjS
-FMTDqj3/kMqzFsnYS3O424wjN2oydEdolU75jd8jLlGtxOuec3uFdsj3fiWohMqz
-TRl4tb6WSteaBtvfCcDy
-=yg63
------END PGP SIGNATURE-----
+ 	ubi_msg("data was successfully recovered");
+ 	return 0;
+@@ -558,7 +558,7 @@ retry:
+ out_unlock:
+ 	mutex_unlock(&ubi->buf_mutex);
+ out_put:
+-	ubi_wl_put_peb(ubi, new_pnum, 1);
++	ubi_wl_put_peb(ubi, new_pnum, 1, lnum);
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
 
---=-NGT9aM561zZ9xnWItJMr--
+@@ -568,7 +568,7 @@ write_error:
+ 	 * get another one.
+ 	 */
+ 	ubi_warn("failed to write to PEB %d", new_pnum);
+-	ubi_wl_put_peb(ubi, new_pnum, 1);
++	ubi_wl_put_peb(ubi, new_pnum, 1, lnum);
+ 	if (++tries > UBI_IO_RETRIES) {
+ 		ubi_free_vid_hdr(ubi, vid_hdr);
+ 		return err;
+@@ -687,7 +687,7 @@ write_error:
+ 	 * eraseblock, so just put it and request a new one. We assume that if
+ 	 * this physical eraseblock went bad, the erase code will handle that.
+ 	 */
+-	err = ubi_wl_put_peb(ubi, pnum, 1);
++	err = ubi_wl_put_peb(ubi, pnum, 1, lnum);
+ 	if (err || ++tries > UBI_IO_RETRIES) {
+ 		ubi_ro_mode(ubi);
+ 		leb_write_unlock(ubi, vol_id, lnum);
+@@ -807,7 +807,7 @@ write_error:
+ 		return err;
+ 	}
+
+-	err = ubi_wl_put_peb(ubi, pnum, 1);
++	err = ubi_wl_put_peb(ubi, pnum, 1, lnum);
+ 	if (err || ++tries > UBI_IO_RETRIES) {
+ 		ubi_ro_mode(ubi);
+ 		leb_write_unlock(ubi, vol_id, lnum);
+@@ -905,7 +905,7 @@ retry:
+ 	}
+
+ 	if (vol->eba_tbl[lnum] >= 0) {
+-		err = ubi_wl_put_peb(ubi, vol->eba_tbl[lnum], 0);
++		err = ubi_wl_put_peb(ubi, vol->eba_tbl[lnum], 0, lnum);
+ 		if (err)
+ 			goto out_leb_unlock;
+ 	}
+@@ -930,7 +930,7 @@ write_error:
+ 		goto out_leb_unlock;
+ 	}
+
+-	err = ubi_wl_put_peb(ubi, pnum, 1);
++	err = ubi_wl_put_peb(ubi, pnum, 1, lnum);
+ 	if (err || ++tries > UBI_IO_RETRIES) {
+ 		ubi_ro_mode(ubi);
+ 		goto out_leb_unlock;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index b162790..14443a0 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -537,7 +537,7 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
+
+ /* wl.c */
+ int ubi_wl_get_peb(struct ubi_device *ubi, int dtype);
+-int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture);
++int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum);
+ int ubi_wl_flush(struct ubi_device *ubi);
+ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
+ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 7c1a9bf..7f6dd7e 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -148,6 +148,7 @@
+  * @func: worker function
+  * @e: physical eraseblock to erase
+  * @torture: if the physical eraseblock has to be tortured
++ * @lnum: the logical number of the erase block
+  *
+  * The @func pointer points to the worker function. If the @cancel argument is
+  * not zero, the worker has to free the resources and exit immediately. The
+@@ -160,6 +161,7 @@ struct ubi_work {
+ 	/* The below fields are only relevant to erasure works */
+ 	struct ubi_wl_entry *e;
+ 	int torture;
++	int lnum;
+ };
+
+ #ifdef CONFIG_MTD_UBI_DEBUG
+@@ -628,12 +630,13 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+  * @ubi: UBI device description object
+  * @e: the WL entry of the physical eraseblock to erase
+  * @torture: if the physical eraseblock has to be tortured
++ * @lnum: the last used logical eraseblock number for the PEB
+  *
+  * This function returns zero in case of success and a %-ENOMEM in case of
+  * failure.
+  */
+ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
+-			  int torture)
++			  int torture, int lnum)
+ {
+ 	struct ubi_work *wl_wrk;
+
+@@ -647,6 +650,7 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
+ 	wl_wrk->func = &erase_worker;
+ 	wl_wrk->e = e;
+ 	wl_wrk->torture = torture;
++	wl_wrk->lnum = lnum;
+
+ 	schedule_ubi_work(ubi, wl_wrk);
+ 	return 0;
+@@ -846,7 +850,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 	ubi->move_to_put = ubi->wl_scheduled = 0;
+ 	spin_unlock(&ubi->wl_lock);
+
+-	err = schedule_erase(ubi, e1, 0);
++	err = schedule_erase(ubi, e1, 0, lnum);
+ 	if (err) {
+ 		kmem_cache_free(ubi_wl_entry_slab, e1);
+ 		if (e2)
+@@ -861,7 +865,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		 */
+ 		dbg_wl("PEB %d (LEB %d:%d) was put meanwhile, erase",
+ 		       e2->pnum, vol_id, lnum);
+-		err = schedule_erase(ubi, e2, 0);
++		err = schedule_erase(ubi, e2, 0, lnum);
+ 		if (err) {
+ 			kmem_cache_free(ubi_wl_entry_slab, e2);
+ 			goto out_ro;
+@@ -900,7 +904,7 @@ out_not_moved:
+ 	spin_unlock(&ubi->wl_lock);
+
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+-	err = schedule_erase(ubi, e2, torture);
++	err = schedule_erase(ubi, e2, torture, lnum);
+ 	if (err) {
+ 		kmem_cache_free(ubi_wl_entry_slab, e2);
+ 		goto out_ro;
+@@ -1027,7 +1031,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		return 0;
+ 	}
+
+-	dbg_wl("erase PEB %d EC %d", pnum, e->ec);
++	dbg_wl("erase PEB %d EC %d LEB %d", pnum, e->ec, wl_wrk->lnum);
+
+ 	err = sync_erase(ubi, e, wl_wrk->torture);
+ 	if (!err) {
+@@ -1057,7 +1061,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		int err1;
+
+ 		/* Re-schedule the LEB for erasure */
+-		err1 = schedule_erase(ubi, e, 0);
++		err1 = schedule_erase(ubi, e, 0, wl_wrk->lnum);
+ 		if (err1) {
+ 			err = err1;
+ 			goto out_ro;
+@@ -1127,13 +1131,14 @@ out_ro:
+  * @ubi: UBI device description object
+  * @pnum: physical eraseblock to return
+  * @torture: if this physical eraseblock has to be tortured
++ * @lnum: the last used logical eraseblock number for the PEB
+  *
+  * This function is called to return physical eraseblock @pnum to the pool of
+  * free physical eraseblocks. The @torture flag has to be set if an I/O error
+  * occurred to this @pnum and it has to be tested. This function returns zero
+  * in case of success, and a negative error code in case of failure.
+  */
+-int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture)
++int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum)
+ {
+ 	int err;
+ 	struct ubi_wl_entry *e;
+@@ -1199,7 +1204,7 @@ retry:
+ 	}
+ 	spin_unlock(&ubi->wl_lock);
+
+-	err = schedule_erase(ubi, e, torture);
++	err = schedule_erase(ubi, e, torture, lnum);
+ 	if (err) {
+ 		spin_lock(&ubi->wl_lock);
+ 		wl_tree_add(e, &ubi->used);
+@@ -1464,7 +1469,7 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 		e->pnum = seb->pnum;
+ 		e->ec = seb->ec;
+ 		ubi->lookuptbl[e->pnum] = e;
+-		if (schedule_erase(ubi, e, 0)) {
++		if (schedule_erase(ubi, e, 0, seb->lnum)) {
+ 			kmem_cache_free(ubi_wl_entry_slab, e);
+ 			goto out_free;
+ 		}
+-- 
+1.7.5.4
