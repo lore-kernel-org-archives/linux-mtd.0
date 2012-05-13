@@ -1,21 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STVTC-0001fu-MY
- for linux-mtd@lists.infradead.org; Sun, 13 May 2012 09:52:07 +0000
-Message-ID: <4FAF843F.2010704@nod.at>
-Date: Sun, 13 May 2012 11:51:59 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1STXbK-0002xs-KD
+ for linux-mtd@lists.infradead.org; Sun, 13 May 2012 12:08:39 +0000
+Received: by obqv19 with SMTP id v19so7800037obq.36
+ for <linux-mtd@lists.infradead.org>; Sun, 13 May 2012 05:08:36 -0700 (PDT)
 MIME-Version: 1.0
-To: Joel Reardon <joel@clambassador.com>
-Subject: Re: [patch] UBI: add means to clear ubi work queue for particular
- lnums
-References: <alpine.DEB.2.00.1205121712410.24689@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1205131043370.654@eristoteles.iwoars.net>
-In-Reply-To: <alpine.DEB.2.00.1205131043370.654@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig43BCCD732AEC588011752858"
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+In-Reply-To: <alpine.LFD.2.00.1205060950090.3701@eddie.linux-mips.org>
+References: <1335534510-12573-1-git-send-email-dedekind1@gmail.com>
+ <4F9AD14E.9060008@gmail.com>
+ <alpine.LFD.2.00.1205060754390.19691@eddie.linux-mips.org>
+ <1336289676.1996.3.camel@koala>
+ <alpine.LFD.2.00.1205060925070.3701@eddie.linux-mips.org>
+ <1336293478.2801.4.camel@brekeke>
+ <alpine.LFD.2.00.1205060950090.3701@eddie.linux-mips.org>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Sun, 13 May 2012 14:08:16 +0200
+Message-ID: <CAOiHx=k75NsRWSsDNBd+1CVBwGYK6xHMZV_hrcfrs44OM_dFRg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MIPS: Kbuild: remove -Werror
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: MIPS Mailing List <linux-mips@linux-mips.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,59 +33,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig43BCCD732AEC588011752858
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi,
+On 6 May 2012 11:14, Maciej W. Rozycki <macro@linux-mips.org> wrote:
+> On Sun, 6 May 2012, Artem Bityutskiy wrote:
+>
+>> > =C2=A0And my opinion is based on experience. =C2=A0Please check the LM=
+O archives for
+>> > why Ralf added this option in the first place -- many years ago. =C2=
+=A0It's
+>> > probably recorded in the git repository too (I'm not sure if the optio=
+n
+>> > was added before or after we moved away from CVS, but in any case old
+>> > change logs have been imported when our current repo was created).
+>>
+>> We need to figure out how to make -Werror be applied only when we do not
+>> have W=3D[123].
+>
+> =C2=A0Hmm, that sounds better, however has the counter-intuitive side-eff=
+ect of
+> lowering the severity of the warnings that are enabled even without
+> W=3D[123].
+>
+> =C2=A0Modern versions of GCC have that selective -Wno-error=3Dfoo option =
+and I
+> think it should be possible to build the precise list of warnings not to
+> choke on locally in arch/mips/Kbuild with little Makefile magic, falling
+> back to something sane for older GCC versions (I'm not sure exactly when
+> these selective options were added, certainly sometime between 4.1 and
+> 4.3).
+>
+> =C2=A0This will be a bit imperfect if any of these additional -Wfoo optio=
+ns
+> duplicate ones already added to KBUILD_CFLAGS in our top-level Makefile
+> (either explicitly or via -Wall), but that's about the best we can do.
+> I'll see if I can cook up something quickly.
 
-Am 13.05.2012 10:47, schrieb Joel Reardon:
-> +int ubi_wl_flush_lnum(struct ubi_device *ubi, int lnum)
-> +{
-> +	int err =3D 0;
-> +	struct ubi_work *wrk, *tmp;
-> +
-> +	/* For each pending work, if it corresponds to the parameter @lnum,
-> +	 * then execute the work.
-> +	 */
-> +	dbg_wl("flush lnum %d", lnum);
-> +	list_for_each_entry_safe(wrk, tmp, &ubi->works, list) {
-> +		if (wrk->lnum =3D=3D lnum) {
-> +			spin_lock(&ubi->wl_lock);
-> +			list_del(&wrk->list);
-> +			ubi->works_count -=3D 1;
-> +			ubi_assert(ubi->works_count >=3D 0);
-> +			spin_unlock(&ubi->wl_lock);
-> +
-> +			err =3D wrk->func(ubi, wrk, 0);
-> +			if (err)
-> +				ubi_err("work failed with error code %d", err);
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-
-I think you also have to grab ubi->work_sem in read mode here.
-
-Thanks,
-//richard
+Hm, how about doing it the other way round, i.e. explicitly enable
+which warnings we want to treat as errors with -Werror=3Dfoo? That way
+we don't lower the severity when W=3D[123] and new default enabled
+warnings in gcc can't break the build any more, just better (or worse
+;-) heuristics can.
 
 
---------------enig43BCCD732AEC588011752858
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPr4Q/AAoJEN9758yqZn9eYJMIAJ7t852VD4KmliYrCdLGnhN0
-pp/8DppEkZ11H+eqmpLcP+NHBKEiAlsQ9n60hORNvcyPHoqvvTDDp+w8N+2Xr/pk
-Mf8BKgimvUkCcxzXX6pOE2HmcyGhB5U/wDu4PPUn/0V7FQV645dPT3ymoQ524AXi
-0ZwURw2/Ij5Z5qTKKaHYnVLdOYw7zaFckJr/eOk7wlDESIr3opRl6rFOtJaC6H9V
-yH0H9MHge57wwMgtlualMiB3xVbIQig8h0WUEFUTVQJ3F1+ATfZHiOHZZV+g8iV5
-Rcvindu9W1WouB9KiWsRzCqLSuG1Glzjz5WoLSw+ZYycyTdJBoYIWPBY4gZvdbs=
-=IFlB
------END PGP SIGNATURE-----
-
---------------enig43BCCD732AEC588011752858--
+Jonas
