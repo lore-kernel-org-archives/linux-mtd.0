@@ -1,24 +1,16 @@
-Received: from mail-gg0-f177.google.com ([209.85.161.177])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STwwX-0001YR-6Q
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 15:12:13 +0000
-Received: by ggcs5 with SMTP id s5so3757979ggc.36
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 08:12:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1336997687-6868-9-git-send-email-hechtb@gmail.com>
-References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
- <1336997687-6868-9-git-send-email-hechtb@gmail.com>
-Date: Mon, 14 May 2012 08:12:11 -0700
-Message-ID: <CAN8TOE9sq56X_VUgi+ZujLRPs=SpcJm9a1N-NuzF6+6R2WPLAg@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] mtd: sh_flctl: Use user oob data in hardware ECC
- mode
-From: Brian Norris <computersforpeace@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-sh@vger.kernel.org,
- magnus.damm@gmail.com, Bastian Hecht <hechtb@gmail.com>,
- linux-mtd@lists.infradead.org, laurent.pinchart@ideasonboard.com
+ id 1STxd2-0002ki-3K
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 15:56:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/2] UBI: Remove data type hint from ubi-user.h
+Date: Mon, 14 May 2012 17:55:52 +0200
+Message-Id: <1337010952-39543-2-git-send-email-richard@nod.at>
+In-Reply-To: <1337010952-39543-1-git-send-email-richard@nod.at>
+References: <1337010952-39543-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, tglx@linutronix.de,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 14, 2012 at 5:14 AM, Bastian Hecht <hechtb@googlemail.com> wrot=
-e:
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 631f7ed..8a07212 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -384,6 +395,7 @@ static int flctl_read_page_hwecc(struct mtd_info *mtd=
-, struct nand_chip *chip,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0uint8_t *b=
-uf, int oob_required, int page)
-> =A0{
-> =A0 =A0 =A0 =A0chip->read_buf(mtd, buf, mtd->writesize);
-> + =A0 =A0 =A0 chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> =A0 =A0 =A0 =A0return 0;
-> =A0}
+This finally removes the data type hint from the UBI ABI.
+>From now on the "dtype" field will be ignored and must not used
+anymore.
 
-Well, my 'oob_required' patches won the race for inclusion in
-l2-mtd-2.6.git, so it's probably good to just use the 'oob_required'
-parameter now. That is:
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ include/mtd/ubi-user.h |   23 ++---------------------
+ 1 files changed, 2 insertions(+), 21 deletions(-)
 
-if (oob_required)
-       chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-
-> @@ -391,6 +403,7 @@ static void flctl_write_page_hwecc(struct mtd_info *m=
-td, struct nand_chip *chip,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const=
- uint8_t *buf, int oob_required)
-> =A0{
-> =A0 =A0 =A0 =A0chip->write_buf(mtd, buf, mtd->writesize);
-> + =A0 =A0 =A0 chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> =A0}
-
-Similar here:
-
-if (oob_required)
-       chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-
-Brian
+diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+index 3c41097..370c750 100644
+--- a/include/mtd/ubi-user.h
++++ b/include/mtd/ubi-user.h
+@@ -196,23 +196,6 @@
+ #define UBI_MAX_RNVOL 32
+ 
+ /*
+- * UBI data type hint constants.
+- *
+- * UBI_LONGTERM: long-term data
+- * UBI_SHORTTERM: short-term data
+- * UBI_UNKNOWN: data persistence is unknown
+- *
+- * These constants are used when data is written to UBI volumes in order to
+- * help the UBI wear-leveling unit to find more appropriate physical
+- * eraseblocks.
+- */
+-enum {
+-	UBI_LONGTERM  = 1,
+-	UBI_SHORTTERM = 2,
+-	UBI_UNKNOWN   = 3,
+-};
+-
+-/*
+  * UBI volume type constants.
+  *
+  * @UBI_DYNAMIC_VOLUME: dynamic volume
+@@ -375,25 +358,23 @@ struct ubi_rnvol_req {
+  *                             requests.
+  * @lnum: logical eraseblock number to change
+  * @bytes: how many bytes will be written to the logical eraseblock
+- * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
+  * @padding: reserved for future, not used, has to be zeroed
+  */
+ struct ubi_leb_change_req {
+ 	__s32 lnum;
+ 	__s32 bytes;
+-	__s8  dtype;
++	__s8  dtype; /* obsolete, do not use! */
+ 	__s8  padding[7];
+ } __packed;
+ 
+ /**
+  * struct ubi_map_req - a data structure used in map LEB requests.
+  * @lnum: logical eraseblock number to unmap
+- * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
+  * @padding: reserved for future, not used, has to be zeroed
+  */
+ struct ubi_map_req {
+ 	__s32 lnum;
+-	__s8  dtype;
++	__s8  dtype; /* obsolete, do not use! */
+ 	__s8  padding[3];
+ } __packed;
+ 
+-- 
+1.7.6.5
