@@ -1,21 +1,22 @@
-Received: from sncsmrelay2.nai.com ([67.97.80.206])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STur0-00023O-MU
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 12:58:23 +0000
-Message-ID: <4FB1015E.5000008@snapgear.com>
-Date: Mon, 14 May 2012 22:58:06 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: fix wrong usage of ioremap_nocache() in uclinux.c
- map driver
-References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
- <1336997124.2528.22.camel@sauron.fi.intel.com>
-In-Reply-To: <1336997124.2528.22.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org,
- Greg Ungerer <gerg@uclinux.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1STurU-00025t-SF
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 12:58:53 +0000
+Message-ID: <1337000538.2528.50.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4] Add security.* XATTR support for the UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: snijsure@grid-net.com
+Date: Mon, 14 May 2012 16:02:18 +0300
+In-Reply-To: <1336915488-23943-1-git-send-email-snijsure@grid-net.com>
+References: <1336915488-23943-1-git-send-email-snijsure@grid-net.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-uFcVq+Ipq9V/mIaQIYnj"
+Mime-Version: 1.0
+Cc: penguin-kernel@I-love.SAKURA.ne.jp, linux-security-module@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +26,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-On 05/14/2012 10:05 PM, Artem Bityutskiy wrote:
-> I have few requests
->
-> On Thu, 2012-05-10 at 16:55 +1000, gerg@snapgear.com wrote:
->> @@ -80,7 +80,6 @@ static int __init uclinux_mtd_init(void)
->>   	mtd = do_map_probe("map_ram", mapp);
->>   	if (!mtd) {
->>   		printk("uclinux[mtd]: failed to find a mapping?\n");
->
-> KERN_ERR prefixe is missing. Please, fix other printks in this file
-> while on it.
->
->> -		iounmap(mapp->virt);
->>   		return(-ENXIO);
->>   	}
->>
->> @@ -103,10 +102,8 @@ static void __exit uclinux_mtd_cleanup(void)
->>   		map_destroy(uclinux_ram_mtdinfo);
->>   		uclinux_ram_mtdinfo = NULL;
->>   	}
->> -	if (uclinux_ram_map.virt) {
->> -		iounmap((void *) uclinux_ram_map.virt);
->> +	if (uclinux_ram_map.virt)
->>   		uclinux_ram_map.virt = 0;
->> -	}
->
-> The "if" statements are redundant - could you please kill them?
->
-> Would you please be kind to address these sparse warnings while you work
-> on this rarely used file:
->
-> drivers/mtd/maps/uclinux.c:27:17: warning: symbol 'uclinux_ram_map' was not declared. Should it be static? [sparse]
-> drivers/mtd/maps/uclinux.c:49:15: warning: incorrect type in assignment (different address spaces) [sparse]
-> drivers/mtd/maps/uclinux.c:49:15:    expected void *<noident>  [sparse]
-> drivers/mtd/maps/uclinux.c:49:15:    got void [noderef]<asn:2>* [sparse]
-> drivers/mtd/maps/uclinux.c:71:20: warning: incorrect type in assignment (different address spaces) [sparse]
-> drivers/mtd/maps/uclinux.c:71:20:    expected void [noderef]<asn:2>*virt [sparse]
-> drivers/mtd/maps/uclinux.c:71:20:    got void * [sparse]
-> drivers/mtd/maps/uclinux.c:73:27: warning: Using plain integer as NULL pointer [sparse]
-> drivers/mtd/maps/uclinux.c:106:40: warning: Using plain integer as NULL pointer [sparse]
+--=-uFcVq+Ipq9V/mIaQIYnj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sure thing, I can clean all those up. Are you happy to take a single
-cleanup patch on top of the ioremap_nocache fix patch?
+On Sun, 2012-05-13 at 06:24 -0700, snijsure@grid-net.com wrote:
+> +int ubifs_security_getxattr(struct dentry *d, const char *name,
+> +			    void *buffer, size_t size, int flags)
+> +{
+> +	if (strcmp(name, "") =3D=3D 0)
+> +		return -EINVAL;
+> +	return __ubifs_getxattr(d->d_inode, name, buffer, size);
+> +}
+> +
+> +
+> +int ubifs_security_setxattr(struct dentry *d, const char *name,
+> +			    const void *value, size_t size,
+> +			    int flags, int handler_flags)
+> +{
+> +	if (strcmp(name, "") =3D=3D 0)
+> +		return -EINVAL;
 
-Regards
-Greg
+Should this check pushed town to __ubifs_getxattr/__ubifs_setxattr ?
+Does an extended attribute in general with zero name length legitimate?
+Did you check whether the generic code already performs this check?
+
+> +	return __ubifs_setxattr(d->d_inode, name, value,
+> +				size, flags);
+> +}
+> +
+> +struct xattr_handler ubifs_xattr_security_handler =3D {
+> +	.prefix =3D XATTR_SECURITY_PREFIX,
+> +	.list   =3D ubifs_security_listxattr,
+> +	.get    =3D ubifs_security_getxattr,
+> +	.set    =3D ubifs_security_setxattr,
+> +};
+> +
+> +const struct xattr_handler *ubifs_xattr_handlers[] =3D {
+> +	&ubifs_xattr_security_handler,
+> +	NULL
+> +};
+> +
+> +static int ubifs_initxattrs(struct inode *inode,
+> +			    const struct xattr *xattr_array, void *fs_info)
+> +{
+> +	const struct xattr *xattr;
+> +	char *name;
+> +	int err =3D 0;
+> +
+> +	for (xattr =3D xattr_array; xattr->name !=3D NULL; xattr++) {
+> +		name =3D kmalloc(XATTR_SECURITY_PREFIX_LEN +
+> +			       strlen(xattr->name) + 1, GFP_NOFS);
+> +		if (!name) {
+> +			err =3D -ENOMEM;
+> +			break;
+
+Where is the already allocated memory freed in this case?
+
+> +		}
+> +		strcpy(name, XATTR_SECURITY_PREFIX);
+> +		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
+> +		err =3D __ubifs_setxattr(inode, name, xattr->value,
+> +				       xattr->value_len, 0);
+> +		kfree(name);
+> +		if (err < 0)
+> +			break;
+> +	}
+> +	return err;
+> +}
+> +
+> +int
+> +ubifs_init_security(struct inode *dentry, struct inode *inode,
+> +		   const struct qstr *qstr)
+> +{
+> +	struct ubifs_inode *dir_ui =3D ubifs_inode(inode);
+> +	int err =3D 0;
+> +
+> +	mutex_lock(&inode->i_mutex);
+> +	mutex_lock(&dir_ui->ui_mutex);
+> +
+
+You do not actually need these mutexes, because "inode" is new, it is
+not added to any lists yet, so you own it entirely. Which means that you
+do not even need to introduce this helper function - just call
+'security_inode_init_security()' directly.
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-uFcVq+Ipq9V/mIaQIYnj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPsQJaAAoJECmIfjd9wqK0seIP/1J40sHpJ6JsCVX4dOJBnpTO
+HSyrgKVj9rNqvm81gfRj3deekf1dw/lZTyzsZd3AaD+5kkxWJx/Sb6u2yOudgBXf
+rqI9x5kHQ3zDHzmZFM3RYOj8oYx/FMdCcGRphQfQ44YQrlNPuzSAPzghfbOpxhtm
+3mtAEVkoMxQvi6a5hUo+mbo2JfEHGlHGK7OPCY4EYy1cgKdBjOdp/z9+SAp8TIPq
+mr2D00rUrrTmcIq24vP5ls4sSU/WwCNSHuni45EF266qyKrVhdDpxslNOSXOKxD9
+G9VEUp4KsnHu408RySSxJQcIK+rtPiw09rbBkqYZ577pAjBG+wI5zTRAV1lmfMUv
+MCWaRAftsXR1UDWfNu5EY+Lcrb7OPjGNhTNVQ55DiZ5M6mmztb9iVPF7ZAQ7AbZG
+sJvEporOx6PBDO4sHtm4r02cuVybIr5wJ8mJnG1U4WGcj5a4/zoTcUyT8JOkPAr+
+UpPsvH1FLEcR4Belk/JeTa43RZK641OX5gNjrIFn1djLSH95DlXXUNXUYc2CdDf0
+xj/uCyikLFbiPInrk4q/UDEpJ9i7Q+TKRBgf6H/2MCVnnxoa/Gk2W+lWW/TRwp9p
++GmEy1JjqJZa7APdOVJxZ6AXQ1yuP7flpkD1pPSMemqCQckSxuLDuiuMjkokW7u9
+J+S4dSMaDz3L/Iety9HT
+=IkfA
+-----END PGP SIGNATURE-----
+
+--=-uFcVq+Ipq9V/mIaQIYnj--
