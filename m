@@ -1,19 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1STv3J-0003Ev-Al
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 13:11:12 +0000
-Message-ID: <1337001270.2528.53.camel@sauron.fi.intel.com>
-Subject: Re: how do I backup a jffs2 partition to an image file
+ id 1STvAU-0003Zh-Sd
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 13:18:31 +0000
+Message-ID: <1337001716.2528.56.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: add crypto lookup field to tree node cache
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: geraldwalden@comcast.net
-Date: Mon, 14 May 2012 16:14:30 +0300
-In-Reply-To: <1074804305.215687.1336714462469.JavaMail.root@sz0162a.emeryville.ca.mail.comcast.net>
-References: <1074804305.215687.1336714462469.JavaMail.root@sz0162a.emeryville.ca.mail.comcast.net>
+To: Joel Reardon <joel@clambassador.com>
+Date: Mon, 14 May 2012 16:21:56 +0300
+In-Reply-To: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-cOuCwGfZ0nrRnWlzJzN3"
+ boundary="=-LaZhxDAxEYqZZoaYXZkJ"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-cOuCwGfZ0nrRnWlzJzN3
+--=-LaZhxDAxEYqZZoaYXZkJ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-05-11 at 05:34 +0000, geraldwalden@comcast.net wrote:
-> how do I backup a jffs2 partition to a ".bin" file. I want to run jffs2du=
-mp on a jffs2 filesystem, and the utility only takes an image file as a par=
-ameter.
+On Fri, 2012-05-11 at 13:24 +0200, Joel Reardon wrote:
+>  struct ubifs_zbranch {
+>  	union ubifs_key key;
+> @@ -751,6 +752,7 @@ struct ubifs_zbranch {
+>  	int lnum;
+>  	int offs;
+>  	int len;
+> +	long long crypto_lookup;
+>  };
 
-Please, use nanddump/nandwrite tools from the linux-mtd project:
-
-git://git.infradead.org/mtd-utils.git
+Why is it "long long" which is 64 bit? What will it contain? Could we
+make it unsigned int - we'd waste less RAM then - remember that we
+allocate a lot of these structures.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-cOuCwGfZ0nrRnWlzJzN3
+--=-LaZhxDAxEYqZZoaYXZkJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPsQU2AAoJECmIfjd9wqK0UwoP/0oL2/YWMijPdljNqaBgk288
-oX7xgGtplQrADej2QWyr3LzqaGyX/9etbw+e/0fCMC9q/fG3HaD5+s4l2C+ELeRB
-bnqvOufapdkaNFP3G00KO/zhvzhBgRJfHmEp2GIMipstlp/00vDChJsrE7piPYVx
-HIE+es6LI7aezNPoqvEFXGkj80VT+AzJNGh7DBiBG1ISQpTggfNSvlu18zoqM9rh
-OQDfcoL4bRUjePOjMWpUlhtsx2kzMcAPDT6kqKEmMcyBMXW0Fvr1fiAGTH5Xof0y
-DcX22UlFWAPu/iwFQWqWVwYLSrhRgYBKTpc8LFB5fEXEd8ZFfPKYUXSY3dmzvSgt
-LmVWB6g/WFlJrV2bj+HvgnLDbhocg82k16GYRgEn2vpy1V8qfoNqL+RODMGhKLY6
-yybp0Gzp97V3+EEP5X5b+4IXRBqkbDKY0JV00bgV4SPClVsPrQaoCE+u21ocBtJu
-vwrOp8FS+cSDPAggtcGJqGrM0DS8YFYZ4vTQvT3FibsGBhxf+bOvcQwKKSTiKDgg
-omlZ+UBl6oonJmOk4/kESz0Fp8ffZiXc6OxEqoGvRzHydCP2sfGo7/bjTdzhwyml
-sK04vEJ9nxKzRNOnnhTaIAUgxHTrJ17n1yBOL2eDFLu6N9g1BFJ91LtuivSRO+Yp
-FYmpTHbJiS9J5eZLB+xn
-=sY8/
+iQIcBAABAgAGBQJPsQb0AAoJECmIfjd9wqK0IYEQAIk1esjjLDoaj53RN879un89
+DAJZotdsuVkZsoHHx1hIA258dFsHML05I3ZKY82hy0acdYdWFDpfIsvIYDK3f16k
+2uNZqVZ9lcRiP2nibViO7fcB2lrIe707BSBRArFL6nN9zl1wqyl1X6amv/hPTxZE
+buJrB5g5b/6vgWNIXTUgUToLnAac7DGO9oBJc6bZkUimFedR/T/7EYGkB6B5htPo
+q/+9t3tqXNqtCLYT8lkALxUVS2w2hD6rMFNCa/zN2Nsfwh2f0jVAbginPm7ZXkJ/
+DPcA9fSFJz9GvkG3b6oP1fjROHjfVuIsaJd73NPMvgnAKOXTRd7Ydf9dy5uKZ/A6
+4kgGZ8JEzej6V4hP2+yT7cIkciogNSZqBJ2tlwpx0twEzkVX1d9wro/btpblU3MR
+3Ww3wB7KNlvf6sqdXrWEwTnUCkGBB45Y4vBbYIlkIHwq4F7EqjNohWRju55cr8Xj
+5THk9VuknCVvy2lbySjkJMtOVInYb7BYlzOJcBMszGLRDhvWZ0mhPkM7cp8XCufn
+gdWhohZs7BA5Gmr3GU/LE1UBq63NGbB9iOPpWbMfsn9RFHLk4Uv4hE4sxy4M7EX/
+NGR77CLfZNT1SiKk+UEVMJ7ZBuoOAiHtemHhZ4fHQr0elzagaB9kKhuUXPntADoU
+LoPenukOam30663asNVb
+=dp0H
 -----END PGP SIGNATURE-----
 
---=-cOuCwGfZ0nrRnWlzJzN3--
+--=-LaZhxDAxEYqZZoaYXZkJ--
