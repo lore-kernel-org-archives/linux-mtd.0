@@ -1,24 +1,18 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STsb2-0005I2-H5
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 10:33:45 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "tony@atomide.com" <tony@atomide.com>
-Subject: RE: [PATCH v4 04/39] ARM: OMAP2+: gpmc: Acquire NAND CS value
-Date: Mon, 14 May 2012 10:33:38 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98BD5A@DBDE01.ent.ti.com>
-References: <cover.1335874494.git.afzal@ti.com>
- <10220de398d22fad5de783d8f58fc55ebac85338.1335874494.git.afzal@ti.com>
- <4FA05292.7030902@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9829B0@DBDE01.ent.ti.com>
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9829B0@DBDE01.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4FB0E480.1070609@atmel.com>
+Date: Mon, 14 May 2012 18:54:56 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v6] MTD: atmel_nand: Update driver to support Programmable
+ Multibit ECC controller
+References: <1336561255-30905-1-git-send-email-josh.wu@atmel.com>
+ <1336738300.2625.57.camel@sauron.fi.intel.com>
+In-Reply-To: <1336738300.2625.57.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi, Artem
 
-On Thu, May 03, 2012 at 14:12:11, Mohammed, Afzal wrote:
+On 5/11/2012 8:11 PM, Artem Bityutskiy wrote:
+> On Wed, 2012-05-09 at 19:00 +0800, Josh Wu wrote:
+>> The Programmable Multibit ECC (PMECC) controller is a programmable binary
+>> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
+>> can be used to support both SLC and MLC NAND Flash devices. It supports to
+>> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
+>>
+>> To use this driver, the user needs to pass in the correction capability and
+>> the sector size.
+>>
+>> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
+>> YAFFS2, UBIFS and mtd-utils.
+>>
+>> Signed-off-by: Hong Xu<hong.xu@atmel.com>
+>> Signed-off-by: Josh Wu<josh.wu@atmel.com>
+> The patch is really big - please, split it on more smaller patches.
 
-> > > Some boards depend on bootloader to update chip select value for NAND=
-.
-> > > It is felt that Kernel should not depend on bootloader to get CS, as
-> > > for a particular board CS is hardwired and is fixed, hence this can
-> > > directly be updated in Kernel. But as CS value for boards that depend
-> > > on this behaviour is not available, educate gpmc driver to acquire
-> > > chip select value for NAND. this ideally should be removed once CS
-> > > for those boards are available.
-> >=20
-> > Do you know how many boards require this? If so which are those boards?
->=20
-> devkit8000, beagle board, omap3touchbook, overo.
->=20
-> Beagle board, found out to be zero.
+OK, I can spit to more patches.
 
-I need a help.
+> Besides, it does not compile for me:
+>
+> ERROR: "of_flat_dt_is_compatible" [drivers/mtd/nand/atmel_nand.ko] undefined!
+> ERROR: "of_get_flat_dt_root" [drivers/mtd/nand/atmel_nand.ko] undefined!
+> make[2]: *** [__modpost] Error 1
 
-Can someone familiar with boards - devkit8000, omap3touchbook, overo boards=
-,
-let me know GPMC CS on which NAND is connected.
+This function will depend on CONFIG_OF_FLATTREE and 
+CONFIG_OF_EARLY_FLATTREE.
 
-Hi Tony,
+Would it be possible that CONFIG_OF is defined, but above two config 
+options are not defined? Can I see you .config file go get more details?
 
-I am planning to provide actual CS # used for NAND on above boards instead =
-of
-finding the value at runtime. Is there any reason that NAND CS# is found ou=
-t
-at runtime ? (hence remove necessity of omap_nand_flash_init()).
 
-Presence of this also causes an additional dependency of bootloader.
-
-As CS # depends on wiring on the board, my understanding is that it will be
-fixed for a given board. Are you ok if acquiring NAND CS # is removed ?
-
-Removal of this helps in simplifying gpmc driver (undergoing conversion).
-
-Regards
-Afzal
+Best Regards,
+Josh Wu
