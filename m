@@ -1,25 +1,19 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SU0jK-0007I2-3G
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 19:14:50 +0000
-Received: by laap9 with SMTP id p9so4496213laa.36
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 12:14:48 -0700 (PDT)
-Message-ID: <1337022885.2042.9.camel@koala>
-Subject: Re: [PATCH] UBIFS: add crypto lookup field to tree node cache
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 14 May 2012 22:14:45 +0300
-In-Reply-To: <alpine.DEB.2.00.1205142032210.12448@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
- <1337001716.2528.56.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1205141907290.12448@eristoteles.iwoars.net>
- <1337020106.2042.2.camel@koala>
- <alpine.DEB.2.00.1205142032210.12448@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-vtxncxwPCgGRk6DEufF1"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1SU0wP-00089d-UT
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 19:28:22 +0000
+Message-ID: <4FB15CD2.3040202@newsguy.com>
+Date: Mon, 14 May 2012 12:28:18 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: Regarding latest EUCLEAN/bitflip_threshold patchset
+References: <20120509132613.40db5533@pixies.home.jungo.com>
+ <1336737075.2625.52.camel@sauron.fi.intel.com> <4FAEADF1.50308@newsguy.com>
+In-Reply-To: <4FAEADF1.50308@newsguy.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Shmulik, still no joy.  Pasting from the archives again...
 
---=-vtxncxwPCgGRk6DEufF1
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-05-14 at 20:45 +0200, Joel Reardon wrote:
-> I use this because I figured it should be abstracted in functions that
-> have these values, but don't need to know about the internal structure.
-> From the view of all UBIFS components (except the new keymap), two values
-> have no more meaning than one, its all just some value the keymap gives
-> out and returns the same key on read_key.
+> No idea why this happens, others seem to get my posts...
 
-Well, dunno, OK, let's see - we can changes this later if needed. I'll
-apply this patch tomorrow.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Clearly.  Otherwise you'd be talking to yourself a lot :)
 
---=-vtxncxwPCgGRk6DEufF1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+> I see.
+> So the current bitflip_threshold scheme is probably not applicable to
+> 'nand_do_read_oob' - because the strength over the OOB would probably
+> differ from the page's ECC strength.
 
-iQIcBAABAgAGBQJPsVmlAAoJECmIfjd9wqK0sGIP/20pvklcq9bsxpgdmVY8RRdD
-zD4hSNMZhwv2TXXm+O9uQUisui5pveFxL4aPBDBfZYpDZoAokb+yvn6iridS6LZK
-+/n1ZX50+6HjAWZ24wTBvzlO8YGmPQs9FYKEtNCP0TMN51x5hKzMEjwV7ooMAmxX
-PZ8emy0f7tG/E2zpZ0MUpt/W9Z8ijpem/W7K3eTriKTjkwg0TmXdnyzh/kZobzeL
-iHXNHMXddBPfiEYysaKRiphU2Tzpc3NBAI5z0YkfamESo65Uz2b8h3Q7ynju5kQB
-yI3CQsuF8WOMrSQl1YhAVAD2FlJqnWuOD889oI48HpKiQrzf7oV6sxl9CuHFOAqd
-7kTrgov20ppulHdt/KTI4JaxlgG1nQHp9OnqK6QqiodgS1dCALSf7Rp6iPOrX261
-C6kLVFaHW/twk/RuPQFbsNRUs9EZaYukUCAnex8tjy0TQmKj1HFHkiSpQ8Ko5Kyt
-dJm6OVFudk0FVQwjxsQ25yc95F15blTyv5NUKrQpPdc2B7v/j0xcGdyk3K+T7bmO
-rCC7hJz26V2TtUHKO4ju6xZqc/dwg1GUqYzZKQ3QMSDFGX2g7qy+GGssrzWYVp5k
-ngCgL5KKT1P9p24oaAQ7cH45AduDcBMnh0mZWrigeRbTpfLjYY8oFPT9m8w3J6tW
-I9RcUjM5ksNguKPgesR9
-=rKvC
------END PGP SIGNATURE-----
 
---=-vtxncxwPCgGRk6DEufF1--
+Correct.  So if for example the diskonchip docg4 implements hamming in oob, and
+there are two bitflips, that's uncorrectible.  But two bitflips would not be
+considered indicative of a block going bad for a full page read.
+
+
+> Well, I was also surprised to see that 'nand_do_read_oob' may return
+> EUCLEAN or EBADMSG at all.
+
+
+Yeah, I chose to just gloss over that.
+
+
+> Digging further, I found out it was a relatively recent addition:
+> [041e4575 mtd: nand: handle ECC errors in OOB] by Brian Norris.
+
+
+Hmmm...
+
+Thanks,
+Mike
