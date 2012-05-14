@@ -1,14 +1,14 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STuAr-0004j0-1S
+ id 1STuAq-0004jV-Di
  for linux-mtd@lists.infradead.org; Mon, 14 May 2012 12:14:51 +0000
-Received: by mail-wg0-f49.google.com with SMTP id ds1so3474064wgb.18
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 05:14:48 -0700 (PDT)
+Received: by wibhm14 with SMTP id hm14so2800297wib.0
+ for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 05:14:46 -0700 (PDT)
 From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4 8/8] mtd: sh_flctl: Use user oob data in hardware ECC mode
-Date: Mon, 14 May 2012 14:14:47 +0200
-Message-Id: <1336997687-6868-9-git-send-email-hechtb@gmail.com>
+Subject: [PATCH v4 7/8] mtd: sh_flctl: Restructure the hardware ECC handling
+Date: Mon, 14 May 2012 14:14:46 +0200
+Message-Id: <1336997687-6868-8-git-send-email-hechtb@gmail.com>
 In-Reply-To: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
 References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
 Cc: Bastian Hecht <hechtb@gmail.com>, magnus.damm@gmail.com,
@@ -22,91 +22,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In hardware ecc mode, the flctl now writes and reads the oob data
-provided by the user. Additionally the ECC is now returned in normal
-page reads, not only when using the explicit NAND_CMD_READOOB command.
+There are multiple reasons for a rewrite:
+ - a race exists: when _4ECCEND is set, _4ECCFA may become true too
+   meanwhile, which is lost and a non-correctable error is treated as
+   correctable.
+ - the ECC statistics don't get properly propagated to the base code.
+ - empty pages would get marked as corrupted
+
+The rewrite resolves the issues and I hope it gives a more explicit
+code flow structure.
 
 Signed-off-by: Bastian Hecht <hechtb@gmail.com>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/sh_flctl.c |   25 +++++++++++++++++--------
- 1 files changed, 17 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |  121 ++++++++++++++++++++++++++++--------------
+ include/linux/mtd/sh_flctl.h |   10 +++-
+ 2 files changed, 88 insertions(+), 43 deletions(-)
 
 diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 631f7ed..8a07212 100644
+index 9de4225..631f7ed 100644
 --- a/drivers/mtd/nand/sh_flctl.c
 +++ b/drivers/mtd/nand/sh_flctl.c
-@@ -275,13 +275,12 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+@@ -165,27 +165,56 @@ static void wait_wfifo_ready(struct sh_flctl *flctl)
+ 	timeout_error(flctl, __func__);
+ }
+ 
+-static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
++static enum flctl_ecc_res_t wait_recfifo_ready
++		(struct sh_flctl *flctl, int sector_number)
  {
- 	int i, len_4align;
- 	unsigned long *buf = (unsigned long *)&flctl->done_buff[offset];
--	void *fifo_addr = (void *)FLDTFIFO(flctl);
+ 	uint32_t timeout = LOOP_TIMEOUT_MAX;
+-	int checked[4];
+ 	void __iomem *ecc_reg[4];
+ 	int i;
++	int state = FL_SUCCESS;
+ 	uint32_t data, size;
  
- 	len_4align = (rlen + 3) / 4;
+-	memset(checked, 0, sizeof(checked));
+-
++	/*
++	 * First this loops checks in FLDTCNTR if we are ready to read out the
++	 * oob data. This is the case if either all went fine without errors or
++	 * if the bottom part of the loop corrected the errors or marked them as
++	 * uncorrectable and the controller is given time to push the data into
++	 * the FIFO.
++	 */
+ 	while (timeout--) {
++		/* check if all is ok and we can read out the OOB */
+ 		size = readl(FLDTCNTR(flctl)) >> 24;
+-		if (size & 0xFF)
+-			return 0;	/* success */
++		if ((size & 0xFF) == 4)
++			return state;
++
++		/* check if a correction code has been calculated */
++		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND)) {
++			/*
++			 * either we wait for the fifo to be filled or a
++			 * correction pattern is being generated
++			 */
++			udelay(1);
++			continue;
++		}
  
- 	for (i = 0; i < len_4align; i++) {
- 		wait_rfifo_ready(flctl);
--		buf[i] = readl(fifo_addr);
-+		buf[i] = readl(FLDTFIFO(flctl));
- 		buf[i] = be32_to_cpu(buf[i]);
+-		if (readl(FL4ECCCR(flctl)) & _4ECCFA)
+-			return 1;	/* can't correct */
++		/* check for an uncorrectable error */
++		if (readl(FL4ECCCR(flctl)) & _4ECCFA) {
++			/* check if we face a non-empty page */
++			for (i = 0; i < 512; i++) {
++				if (flctl->done_buff[i] != 0xff) {
++					state = FL_ERROR; /* can't correct */
++					break;
++				}
++			}
+ 
+-		udelay(1);
+-		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND))
++			if (state == FL_SUCCESS)
++				dev_dbg(&flctl->pdev->dev,
++				"reading empty sector %d, ecc error ignored\n",
++				sector_number);
++
++			writel(0, FL4ECCCR(flctl));
+ 			continue;
++		}
+ 
+ 		/* start error correction */
+ 		ecc_reg[0] = FL4ECCRESULT0(flctl);
+@@ -194,28 +223,26 @@ static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
+ 		ecc_reg[3] = FL4ECCRESULT3(flctl);
+ 
+ 		for (i = 0; i < 3; i++) {
++			uint8_t org;
++			int index;
++
+ 			data = readl(ecc_reg[i]);
+-			if (data != INIT_FL4ECCRESULT_VAL && !checked[i]) {
+-				uint8_t org;
+-				int index;
+-
+-				if (flctl->page_size)
+-					index = (512 * sector_number) +
+-						(data >> 16);
+-				else
+-					index = data >> 16;
+-
+-				org = flctl->done_buff[index];
+-				flctl->done_buff[index] = org ^ (data & 0xFF);
+-				checked[i] = 1;
+-			}
+-		}
+ 
++			if (flctl->page_size)
++				index = (512 * sector_number) +
++					(data >> 16);
++			else
++				index = data >> 16;
++
++			org = flctl->done_buff[index];
++			flctl->done_buff[index] = org ^ (data & 0xFF);
++		}
++		state = FL_REPAIRABLE;
+ 		writel(0, FL4ECCCR(flctl));
+ 	}
+ 
+ 	timeout_error(flctl, __func__);
+-	return 1;	/* timeout */
++	return FL_TIMEOUT;	/* timeout */
+ }
+ 
+ static void wait_wecfifo_ready(struct sh_flctl *flctl)
+@@ -259,20 +286,23 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
  	}
  }
-@@ -318,6 +317,18 @@ static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+ 
+-static int read_ecfiforeg(struct sh_flctl *flctl, uint8_t *buff, int sector)
++static enum flctl_ecc_res_t read_ecfiforeg
++		(struct sh_flctl *flctl, uint8_t *buff, int sector)
+ {
+ 	int i;
++	enum flctl_ecc_res_t res;
+ 	unsigned long *ecc_buf = (unsigned long *)buff;
+-	void *fifo_addr = (void *)FLECFIFO(flctl);
+ 
+-	for (i = 0; i < 4; i++) {
+-		if (wait_recfifo_ready(flctl , sector))
+-			return 1;
+-		ecc_buf[i] = readl(fifo_addr);
+-		ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
++	res = wait_recfifo_ready(flctl , sector);
++
++	if (res != FL_ERROR) {
++		for (i = 0; i < 4; i++) {
++			ecc_buf[i] = readl(FLECFIFO(flctl));
++			ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
++		}
  	}
+ 
+-	return 0;
++	return res;
  }
  
-+static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
-+{
-+	int i, len_4align;
-+	unsigned long *data = (unsigned long *)&flctl->done_buff[offset];
-+
-+	len_4align = (rlen + 3) / 4;
-+	for (i = 0; i < len_4align; i++) {
-+		wait_wecfifo_ready(flctl);
-+		writel(cpu_to_be32(data[i]), FLECFIFO(flctl));
-+	}
-+}
-+
- static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_val)
+ static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+@@ -367,6 +397,7 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
  {
  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-@@ -384,6 +395,7 @@ static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
- 	chip->read_buf(mtd, buf, mtd->writesize);
-+	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
- 	return 0;
- }
- 
-@@ -391,6 +403,7 @@ static void flctl_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 				   const uint8_t *buf, int oob_required)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
-+	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
- }
- 
- static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
-@@ -466,7 +479,7 @@ static void execmd_read_oob(struct mtd_info *mtd, int page_addr)
- static void execmd_write_page_sector(struct mtd_info *mtd)
- {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
--	int i, page_addr = flctl->seqin_page_addr;
-+	int page_addr = flctl->seqin_page_addr;
  	int sector, page_sectors;
++	enum flctl_ecc_res_t ecc_result;
  
  	page_sectors = flctl->page_size ? 4 : 1;
-@@ -482,11 +495,7 @@ static void execmd_write_page_sector(struct mtd_info *mtd)
+ 
+@@ -382,17 +413,27 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
+ 	start_translation(flctl);
  
  	for (sector = 0; sector < page_sectors; sector++) {
- 		write_fiforeg(flctl, 512, 512 * sector);
+-		int ret;
+ 		read_fiforeg(flctl, 512, 512 * sector);
+ 
+-		ret = read_ecfiforeg(flctl,
++		ecc_result = read_ecfiforeg(flctl,
+ 			&flctl->done_buff[mtd->writesize + 16 * sector],
+ 			sector);
+ 
+-		if (ret)
+-			flctl->hwecc_cant_correct[sector] = 1;
 -
--		for (i = 0; i < 4; i++) {
--			wait_wecfifo_ready(flctl); /* wait for write ready */
--			writel(0xFFFFFFFF, FLECFIFO(flctl));
--		}
-+		write_ec_fiforeg(flctl, 16, mtd->writesize + 16 * sector);
+-		writel(0x0, FL4ECCCR(flctl));
++		switch (ecc_result) {
++		case FL_REPAIRABLE:
++			dev_info(&flctl->pdev->dev,
++				"applied ecc on page 0x%x", page_addr);
++			flctl->mtd.ecc_stats.corrected++;
++			break;
++		case FL_ERROR:
++			dev_warn(&flctl->pdev->dev,
++				"page 0x%x contains corrupted data\n",
++				page_addr);
++			flctl->mtd.ecc_stats.failed++;
++			break;
++		default:
++			;
++		}
  	}
  
  	wait_completion(flctl);
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 3feaae0..01e4b15 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -129,9 +129,15 @@
+ #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
+ #define	_4ECCEXST	(0x1 << 0)	/* 4 symbols exist */
+ 
+-#define INIT_FL4ECCRESULT_VAL	0x03FF03FF
+ #define LOOP_TIMEOUT_MAX	0x00010000
+ 
++enum flctl_ecc_res_t {
++	FL_SUCCESS,
++	FL_REPAIRABLE,
++	FL_ERROR,
++	FL_TIMEOUT
++};
++
+ struct sh_flctl {
+ 	struct mtd_info		mtd;
+ 	struct nand_chip	chip;
+@@ -151,8 +157,6 @@ struct sh_flctl {
+ 	uint32_t flcmncr_base;	/* base value of FLCMNCR */
+ 	uint32_t flintdmacr_base;	/* irq enable bits */
+ 
+-	int	hwecc_cant_correct[4];
+-
+ 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+ 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
+ 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
 -- 
 1.7.5.4
