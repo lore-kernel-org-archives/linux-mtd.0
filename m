@@ -1,21 +1,23 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-gg0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STlGV-0002je-V6
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 02:44:06 +0000
-Message-ID: <4FB07272.4020403@freescale.com>
-Date: Mon, 14 May 2012 10:48:18 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1STqJ1-00046X-CV
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 08:07:00 +0000
+Received: by ggcs5 with SMTP id s5so3360158ggc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 01:06:57 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/3] mtd: nand: gpmi: [FIXME] need to use {read,
- write}_oob_raw
-References: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
- <1336768235-12658-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1336768235-12658-3-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1336933106.1643.0.camel@koala>
+References: <1336731341-615-1-git-send-email-javier.martin@vista-silicon.com>
+ <1336933106.1643.0.camel@koala>
+Date: Mon, 14 May 2012 10:06:57 +0200
+Message-ID: <CACKLOr04VHS_BnrrGfJeBfaDKyMfQyPf9v0ikFwsimdGwmrLHA@mail.gmail.com>
+Subject: Re: MTD: Add fixup for S29NS512P NOR flash.
+From: javier Martin <javier.martin@vista-silicon.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Gernot.Hoyler@spansion.com, Artem.Bityutskiy@nokia.com,
+ joakim.tjernlund@transmode.se, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, tabe@mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian :
-> This patch is simply an added warning in the comments. Ideally, this patch
-> need not be merged, but rather, a developer will write a proper solution
-> that can use the ecc.read_oob_raw and ecc.write_oob_raw interfaces.
+On 13 May 2012 20:18, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-05-11 at 12:15 +0200, Javier Martin wrote:
+>> + =A0 =A0 /*
+>> + =A0 =A0 =A0* =A0S29NS512P flash uses more than 8bits to report number =
+of sectors,
+>> + =A0 =A0 =A0* which is not permitted by CFI.
+>> + =A0 =A0 =A0*/
+>> + =A0 =A0 cfi->cfiq->EraseRegionInfo[0] =3D 0x020001ff;
+>> + =A0 =A0 pr_warning("%s: Bad S29NS512P CFI data, adjust to 512 sectors\=
+n", mtd->name);
 >
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8250f63..033bd7a 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1054,6 +1054,9 @@ exit_auxiliary:
->   * ECC-based or raw view of the page is implicit in which function it calls
->   * (there is a similar pair of ECC-based/raw functions for writing).
->   *
-> + * FIXME: The following paragraph is incorrect, now that there exist
-> + * ecc.read_oob_raw and ecc.write_oob_raw functions.
-I think you can just remove the following paragraph(it's out of date now).
+> I've removed the warning and pushed to l2-mtd.git, thanks! If you
+> disagree - please complain.
 
-Best Regards
-Huang Shijie
-> + *
->   * Since MTD assumes the OOB is not covered by ECC, there is no pair of
->   * ECC-based/raw functions for reading or or writing the OOB. The fact that the
->   * caller wants an ECC-based or raw view of the page is not propagated down to
+Great, I totally agree.
+
+Thanks.
+
+--=20
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
