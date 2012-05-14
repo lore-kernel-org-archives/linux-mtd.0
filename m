@@ -1,23 +1,21 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STdNQ-0002UP-QM
- for linux-mtd@lists.infradead.org; Sun, 13 May 2012 18:18:41 +0000
-Received: by laap9 with SMTP id p9so3606152laa.36
- for <linux-mtd@lists.infradead.org>; Sun, 13 May 2012 11:18:38 -0700 (PDT)
-Message-ID: <1336933106.1643.0.camel@koala>
-Subject: Re: MTD: Add fixup for S29NS512P NOR flash.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Javier Martin <javier.martin@vista-silicon.com>
-Date: Sun, 13 May 2012 21:18:26 +0300
-In-Reply-To: <1336731341-615-1-git-send-email-javier.martin@vista-silicon.com>
-References: <1336731341-615-1-git-send-email-javier.martin@vista-silicon.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-O7rENPfn1gB66h9A4Y7a"
-Mime-Version: 1.0
-Cc: Gernot.Hoyler@spansion.com, Artem.Bityutskiy@nokia.com,
- joakim.tjernlund@transmode.se, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, tabe@mvista.com
+ id 1STlGV-0002je-V6
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 02:44:06 +0000
+Message-ID: <4FB07272.4020403@freescale.com>
+Date: Mon, 14 May 2012 10:48:18 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 3/3] mtd: nand: gpmi: [FIXME] need to use {read,
+ write}_oob_raw
+References: <1336768235-12658-1-git-send-email-computersforpeace@gmail.com>
+ <1336768235-12658-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1336768235-12658-3-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian :
+> This patch is simply an added warning in the comments. Ideally, this patch
+> need not be merged, but rather, a developer will write a proper solution
+> that can use the ecc.read_oob_raw and ecc.write_oob_raw interfaces.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 8250f63..033bd7a 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1054,6 +1054,9 @@ exit_auxiliary:
+>   * ECC-based or raw view of the page is implicit in which function it calls
+>   * (there is a similar pair of ECC-based/raw functions for writing).
+>   *
+> + * FIXME: The following paragraph is incorrect, now that there exist
+> + * ecc.read_oob_raw and ecc.write_oob_raw functions.
+I think you can just remove the following paragraph(it's out of date now).
 
---=-O7rENPfn1gB66h9A4Y7a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2012-05-11 at 12:15 +0200, Javier Martin wrote:
-> +	/*
-> +	 *  S29NS512P flash uses more than 8bits to report number of sectors,
-> +	 * which is not permitted by CFI.
-> +	 */
-> +	cfi->cfiq->EraseRegionInfo[0] =3D 0x020001ff;
-> +	pr_warning("%s: Bad S29NS512P CFI data, adjust to 512 sectors\n", mtd->=
-name);
-
-I've removed the warning and pushed to l2-mtd.git, thanks! If you
-disagree - please complain.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-O7rENPfn1gB66h9A4Y7a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPr/ryAAoJECmIfjd9wqK0yN8P/A6OXcBMlIFNgYUwKBXt975d
-3T4ZB3QvhlROobOBBgF9MPCm0152FI3wRkboBv90Ma7Sf8/5ziXDP1KH/WCqyQSq
-uDuEfT0c9hhMHqE6EcXvz34K/J6Jd3EG6N54TYXybCEH/zGkfef/3lM3/pi7AIFf
-fVpc1SiQlwyFi5Q/hMhOSG27B4dGfHk9sBgD0nblJq36gbS3vp/TqFmNV0PPGWzE
-gTlocxUF9AHy0q7FE1d1qVp7QyKY5WMUSuXMCzfnwkcZjO1tBHFAfxT5YWEBxctQ
-ITe+8A0JN9gLHnC2QKhJgsEBg6Dscihn7jYGKVrzuI2HOopBNUqKuFWDz42ac1XE
-QNvRtYeOUnplA32l8JQnJ8wQhh33MrLbX0eV4yCew3jVHJXud5YN0KBPhA+RXEMr
-BG2fu1jwyHdgOmJdDkps1L12zFAUfzhi9aUCuY3eQ6UiLAv72uO0Wf79jAl4G6cV
-h4F8ox32/0AcA74dtA9oM2X9R5zCBu3dyvciuvKdZcyFhpj2LaCby68Vx12dbvd4
-dwrH6xPSnx5guAbV7g6P1kzRI5EYbAcZYGG8lhzywd2AI8sMh/vzn9NScpSRzM0C
-DXNMRONb9AUjGN7sUkcoaA6dY00peESA/Rihb405z6LoOj8+BhWEDyDA49GmQlDQ
-JEfcmTlyV6lDHz0OzRdh
-=RLPL
------END PGP SIGNATURE-----
-
---=-O7rENPfn1gB66h9A4Y7a--
+Best Regards
+Huang Shijie
+> + *
+>   * Since MTD assumes the OOB is not covered by ECC, there is no pair of
+>   * ECC-based/raw functions for reading or or writing the OOB. The fact that the
+>   * caller wants an ECC-based or raw view of the page is not propagated down to
