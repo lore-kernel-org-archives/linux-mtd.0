@@ -1,18 +1,21 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1STuAq-0004jV-Di
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 12:14:51 +0000
-Received: by wibhm14 with SMTP id hm14so2800297wib.0
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 05:14:46 -0700 (PDT)
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4 7/8] mtd: sh_flctl: Restructure the hardware ECC handling
-Date: Mon, 14 May 2012 14:14:46 +0200
-Message-Id: <1336997687-6868-8-git-send-email-hechtb@gmail.com>
-In-Reply-To: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
-References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
-Cc: Bastian Hecht <hechtb@gmail.com>, magnus.damm@gmail.com,
- laurent.pinchart@ideasonboard.com, linux-sh@vger.kernel.org
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1STuAv-0004l6-SE
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 12:14:54 +0000
+Message-ID: <1336997899.2528.27.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] Modify mtd-utils intgck utility to test extended
+ attribute set/get for UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Subodh Nijsure <snijsure@grid-net.com>
+Date: Mon, 14 May 2012 15:18:19 +0300
+In-Reply-To: <1336691159-31764-1-git-send-email-snijsure@grid-net.com>
+References: <1336691159-31764-1-git-send-email-snijsure@grid-net.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-cS9hqJWAlirPlowOw96Z"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,239 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are multiple reasons for a rewrite:
- - a race exists: when _4ECCEND is set, _4ECCFA may become true too
-   meanwhile, which is lost and a non-correctable error is treated as
-   correctable.
- - the ECC statistics don't get properly propagated to the base code.
- - empty pages would get marked as corrupted
 
-The rewrite resolves the issues and I hope it gives a more explicit
-code flow structure.
+--=-cS9hqJWAlirPlowOw96Z
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
- drivers/mtd/nand/sh_flctl.c  |  121 ++++++++++++++++++++++++++++--------------
- include/linux/mtd/sh_flctl.h |   10 +++-
- 2 files changed, 88 insertions(+), 43 deletions(-)
+On Thu, 2012-05-10 at 16:05 -0700, Subodh Nijsure wrote:
+> + * Verify security.selinux extendend attribute for given path
+> + */
+> +void xattr_check(char *path, char *xattr_value)
+> +{
+> +	int ret;
+> +	char buf[255];
+> +	int attrLen;
+> +	/* Check if path actually exists */
+> +	if (access(path, F_OK) !=3D 0)
+> +		return;
+> +	if (xattr_value =3D=3D NULL)
+> +		return;
+> +	attrLen =3D strlen(xattr_value) + 1;
+> +	v("retrieve extended attribute for  %s", path);
+> +	getxattr(path, "security.selinux", buf, attrLen);
+> +	CHECK(ret =3D=3D 0);
+> +	ret =3D strncmp(buf, xattr_value, attrLen);
+> +	if (ret !=3D 0) {
+> +		printf("ret !=3D 0 PATH %s\n", path);
+> +		printf("Expected value %s and retrived val %s\n",
+> +			xattr_value, buf);
+> +		CHECK(ret =3D=3D 0);
+> +	} else {
+> +		CHECK(ret =3D=3D 0);
+> +	}
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 9de4225..631f7ed 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -165,27 +165,56 @@ static void wait_wfifo_ready(struct sh_flctl *flctl)
- 	timeout_error(flctl, __func__);
- }
- 
--static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
-+static enum flctl_ecc_res_t wait_recfifo_ready
-+		(struct sh_flctl *flctl, int sector_number)
- {
- 	uint32_t timeout = LOOP_TIMEOUT_MAX;
--	int checked[4];
- 	void __iomem *ecc_reg[4];
- 	int i;
-+	int state = FL_SUCCESS;
- 	uint32_t data, size;
- 
--	memset(checked, 0, sizeof(checked));
--
-+	/*
-+	 * First this loops checks in FLDTCNTR if we are ready to read out the
-+	 * oob data. This is the case if either all went fine without errors or
-+	 * if the bottom part of the loop corrected the errors or marked them as
-+	 * uncorrectable and the controller is given time to push the data into
-+	 * the FIFO.
-+	 */
- 	while (timeout--) {
-+		/* check if all is ok and we can read out the OOB */
- 		size = readl(FLDTCNTR(flctl)) >> 24;
--		if (size & 0xFF)
--			return 0;	/* success */
-+		if ((size & 0xFF) == 4)
-+			return state;
-+
-+		/* check if a correction code has been calculated */
-+		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND)) {
-+			/*
-+			 * either we wait for the fifo to be filled or a
-+			 * correction pattern is being generated
-+			 */
-+			udelay(1);
-+			continue;
-+		}
- 
--		if (readl(FL4ECCCR(flctl)) & _4ECCFA)
--			return 1;	/* can't correct */
-+		/* check for an uncorrectable error */
-+		if (readl(FL4ECCCR(flctl)) & _4ECCFA) {
-+			/* check if we face a non-empty page */
-+			for (i = 0; i < 512; i++) {
-+				if (flctl->done_buff[i] != 0xff) {
-+					state = FL_ERROR; /* can't correct */
-+					break;
-+				}
-+			}
- 
--		udelay(1);
--		if (!(readl(FL4ECCCR(flctl)) & _4ECCEND))
-+			if (state == FL_SUCCESS)
-+				dev_dbg(&flctl->pdev->dev,
-+				"reading empty sector %d, ecc error ignored\n",
-+				sector_number);
-+
-+			writel(0, FL4ECCCR(flctl));
- 			continue;
-+		}
- 
- 		/* start error correction */
- 		ecc_reg[0] = FL4ECCRESULT0(flctl);
-@@ -194,28 +223,26 @@ static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
- 		ecc_reg[3] = FL4ECCRESULT3(flctl);
- 
- 		for (i = 0; i < 3; i++) {
-+			uint8_t org;
-+			int index;
-+
- 			data = readl(ecc_reg[i]);
--			if (data != INIT_FL4ECCRESULT_VAL && !checked[i]) {
--				uint8_t org;
--				int index;
--
--				if (flctl->page_size)
--					index = (512 * sector_number) +
--						(data >> 16);
--				else
--					index = data >> 16;
--
--				org = flctl->done_buff[index];
--				flctl->done_buff[index] = org ^ (data & 0xFF);
--				checked[i] = 1;
--			}
--		}
- 
-+			if (flctl->page_size)
-+				index = (512 * sector_number) +
-+					(data >> 16);
-+			else
-+				index = data >> 16;
-+
-+			org = flctl->done_buff[index];
-+			flctl->done_buff[index] = org ^ (data & 0xFF);
-+		}
-+		state = FL_REPAIRABLE;
- 		writel(0, FL4ECCCR(flctl));
- 	}
- 
- 	timeout_error(flctl, __func__);
--	return 1;	/* timeout */
-+	return FL_TIMEOUT;	/* timeout */
- }
- 
- static void wait_wecfifo_ready(struct sh_flctl *flctl)
-@@ -259,20 +286,23 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
- 	}
- }
- 
--static int read_ecfiforeg(struct sh_flctl *flctl, uint8_t *buff, int sector)
-+static enum flctl_ecc_res_t read_ecfiforeg
-+		(struct sh_flctl *flctl, uint8_t *buff, int sector)
- {
- 	int i;
-+	enum flctl_ecc_res_t res;
- 	unsigned long *ecc_buf = (unsigned long *)buff;
--	void *fifo_addr = (void *)FLECFIFO(flctl);
- 
--	for (i = 0; i < 4; i++) {
--		if (wait_recfifo_ready(flctl , sector))
--			return 1;
--		ecc_buf[i] = readl(fifo_addr);
--		ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
-+	res = wait_recfifo_ready(flctl , sector);
-+
-+	if (res != FL_ERROR) {
-+		for (i = 0; i < 4; i++) {
-+			ecc_buf[i] = readl(FLECFIFO(flctl));
-+			ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
-+		}
- 	}
- 
--	return 0;
-+	return res;
- }
- 
- static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
-@@ -367,6 +397,7 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
- {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
- 	int sector, page_sectors;
-+	enum flctl_ecc_res_t ecc_result;
- 
- 	page_sectors = flctl->page_size ? 4 : 1;
- 
-@@ -382,17 +413,27 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
- 	start_translation(flctl);
- 
- 	for (sector = 0; sector < page_sectors; sector++) {
--		int ret;
- 		read_fiforeg(flctl, 512, 512 * sector);
- 
--		ret = read_ecfiforeg(flctl,
-+		ecc_result = read_ecfiforeg(flctl,
- 			&flctl->done_buff[mtd->writesize + 16 * sector],
- 			sector);
- 
--		if (ret)
--			flctl->hwecc_cant_correct[sector] = 1;
--
--		writel(0x0, FL4ECCCR(flctl));
-+		switch (ecc_result) {
-+		case FL_REPAIRABLE:
-+			dev_info(&flctl->pdev->dev,
-+				"applied ecc on page 0x%x", page_addr);
-+			flctl->mtd.ecc_stats.corrected++;
-+			break;
-+		case FL_ERROR:
-+			dev_warn(&flctl->pdev->dev,
-+				"page 0x%x contains corrupted data\n",
-+				page_addr);
-+			flctl->mtd.ecc_stats.failed++;
-+			break;
-+		default:
-+			;
-+		}
- 	}
- 
- 	wait_completion(flctl);
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 3feaae0..01e4b15 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -129,9 +129,15 @@
- #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
- #define	_4ECCEXST	(0x1 << 0)	/* 4 symbols exist */
- 
--#define INIT_FL4ECCRESULT_VAL	0x03FF03FF
- #define LOOP_TIMEOUT_MAX	0x00010000
- 
-+enum flctl_ecc_res_t {
-+	FL_SUCCESS,
-+	FL_REPAIRABLE,
-+	FL_ERROR,
-+	FL_TIMEOUT
-+};
-+
- struct sh_flctl {
- 	struct mtd_info		mtd;
- 	struct nand_chip	chip;
-@@ -151,8 +157,6 @@ struct sh_flctl {
- 	uint32_t flcmncr_base;	/* base value of FLCMNCR */
- 	uint32_t flintdmacr_base;	/* irq enable bits */
- 
--	int	hwecc_cant_correct[4];
--
- 	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
- 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
- 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
--- 
-1.7.5.4
+If the file-system does not support xattrs and returns ENOTSUPP, you
+should not fail. Instead, you should set a "xattrs_supported" variable,
+set it to zero, and have "fi (!xattrs_supported) return" check at the
+top level of this function. Or something like this which handles the
+situation gracefully.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-cS9hqJWAlirPlowOw96Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPsPgLAAoJECmIfjd9wqK0aZEP/AtoeYU+2xol8huEsE3HmlXB
+rLgWj9yJb+h8eGs+f0h0WVXEbPiuVWomusJs0ghBHLqyErN3e84NvsoYUVWms3zU
+4gepdepLPjOoL8Ox+3o6zY/oDai9ekQnkIzQn1bBkmX8sfAzz5t5rhrv9IKGqgqR
+24CkL253aYZF/Jr5sS460MF6dKvKPqr0nfV112xUMYqPSb9QhMpJDyTrUEGn/ciH
+v9NuiHtAFFvvHRXidyn9o4O2ldMy2/B/Rjd0yXKCNHSn+0+MgPqTlwLEu8zJVYkh
+y3vjAXkaG5v14SHZsUWeIhf1kND9kKKuPxNFTj+RQlE/jR3WN6X8/qXkksRieDQm
+yK7np0N5oRnBzlE4PYO4QhRp/CFr2YEzIZO9V/QEP9T27opNyZcqVtY7/rudtSEC
+tEKoDD/qfJ16Q9lnm7CpZzfJ8n9w6GmpaZoYHa0Yc3y5ZLopy7Y3l0gZGod20Bxi
+7T2outk4mj+dVw/V6B+E8Wb/uDjTwAXLYFCBAIwEiDQMdrguOZffLW2VfPpS3zGH
+WVnrusowiWQcq20gvmV8w2BKj2ahE5kESA3LMABmj80SaLi0HdIOFtKhyHU6WZho
+Gk4DF7iUWuwHlD8fpcQnWR0Fq4mUTgmS73jBia5qx9lEqSK/F9wG8rgnFuPpyILY
+Hjo2v+BnAn2/39mCnQEH
+=Leoe
+-----END PGP SIGNATURE-----
+
+--=-cS9hqJWAlirPlowOw96Z--
