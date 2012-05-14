@@ -1,20 +1,24 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1STvAU-0003Zh-Sd
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 13:18:31 +0000
-Message-ID: <1337001716.2528.56.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: add crypto lookup field to tree node cache
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 14 May 2012 16:21:56 +0300
-In-Reply-To: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-LaZhxDAxEYqZZoaYXZkJ"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-gg0-f177.google.com ([209.85.161.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1STwwX-0001YR-6Q
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 15:12:13 +0000
+Received: by ggcs5 with SMTP id s5so3757979ggc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 14 May 2012 08:12:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1336997687-6868-9-git-send-email-hechtb@gmail.com>
+References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
+ <1336997687-6868-9-git-send-email-hechtb@gmail.com>
+Date: Mon, 14 May 2012 08:12:11 -0700
+Message-ID: <CAN8TOE9sq56X_VUgi+ZujLRPs=SpcJm9a1N-NuzF6+6R2WPLAg@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] mtd: sh_flctl: Use user oob data in hardware ECC
+ mode
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-sh@vger.kernel.org,
+ magnus.damm@gmail.com, Bastian Hecht <hechtb@gmail.com>,
+ linux-mtd@lists.infradead.org, laurent.pinchart@ideasonboard.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, May 14, 2012 at 5:14 AM, Bastian Hecht <hechtb@googlemail.com> wrot=
+e:
+> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+> index 631f7ed..8a07212 100644
+> --- a/drivers/mtd/nand/sh_flctl.c
+> +++ b/drivers/mtd/nand/sh_flctl.c
+> @@ -384,6 +395,7 @@ static int flctl_read_page_hwecc(struct mtd_info *mtd=
+, struct nand_chip *chip,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0uint8_t *b=
+uf, int oob_required, int page)
+> =A0{
+> =A0 =A0 =A0 =A0chip->read_buf(mtd, buf, mtd->writesize);
+> + =A0 =A0 =A0 chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
 
---=-LaZhxDAxEYqZZoaYXZkJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Well, my 'oob_required' patches won the race for inclusion in
+l2-mtd-2.6.git, so it's probably good to just use the 'oob_required'
+parameter now. That is:
 
-On Fri, 2012-05-11 at 13:24 +0200, Joel Reardon wrote:
->  struct ubifs_zbranch {
->  	union ubifs_key key;
-> @@ -751,6 +752,7 @@ struct ubifs_zbranch {
->  	int lnum;
->  	int offs;
->  	int len;
-> +	long long crypto_lookup;
->  };
+if (oob_required)
+       chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
 
-Why is it "long long" which is 64 bit? What will it contain? Could we
-make it unsigned int - we'd waste less RAM then - remember that we
-allocate a lot of these structures.
+> @@ -391,6 +403,7 @@ static void flctl_write_page_hwecc(struct mtd_info *m=
+td, struct nand_chip *chip,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const=
+ uint8_t *buf, int oob_required)
+> =A0{
+> =A0 =A0 =A0 =A0chip->write_buf(mtd, buf, mtd->writesize);
+> + =A0 =A0 =A0 chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> =A0}
 
---=20
-Best Regards,
-Artem Bityutskiy
+Similar here:
 
---=-LaZhxDAxEYqZZoaYXZkJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+if (oob_required)
+       chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPsQb0AAoJECmIfjd9wqK0IYEQAIk1esjjLDoaj53RN879un89
-DAJZotdsuVkZsoHHx1hIA258dFsHML05I3ZKY82hy0acdYdWFDpfIsvIYDK3f16k
-2uNZqVZ9lcRiP2nibViO7fcB2lrIe707BSBRArFL6nN9zl1wqyl1X6amv/hPTxZE
-buJrB5g5b/6vgWNIXTUgUToLnAac7DGO9oBJc6bZkUimFedR/T/7EYGkB6B5htPo
-q/+9t3tqXNqtCLYT8lkALxUVS2w2hD6rMFNCa/zN2Nsfwh2f0jVAbginPm7ZXkJ/
-DPcA9fSFJz9GvkG3b6oP1fjROHjfVuIsaJd73NPMvgnAKOXTRd7Ydf9dy5uKZ/A6
-4kgGZ8JEzej6V4hP2+yT7cIkciogNSZqBJ2tlwpx0twEzkVX1d9wro/btpblU3MR
-3Ww3wB7KNlvf6sqdXrWEwTnUCkGBB45Y4vBbYIlkIHwq4F7EqjNohWRju55cr8Xj
-5THk9VuknCVvy2lbySjkJMtOVInYb7BYlzOJcBMszGLRDhvWZ0mhPkM7cp8XCufn
-gdWhohZs7BA5Gmr3GU/LE1UBq63NGbB9iOPpWbMfsn9RFHLk4Uv4hE4sxy4M7EX/
-NGR77CLfZNT1SiKk+UEVMJ7ZBuoOAiHtemHhZ4fHQr0elzagaB9kKhuUXPntADoU
-LoPenukOam30663asNVb
-=dp0H
------END PGP SIGNATURE-----
-
---=-LaZhxDAxEYqZZoaYXZkJ--
+Brian
