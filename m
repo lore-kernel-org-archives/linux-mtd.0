@@ -1,22 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1STynZ-0002QN-1L
- for linux-mtd@lists.infradead.org; Mon, 14 May 2012 17:11:09 +0000
-Message-ID: <1337015671.2528.91.camel@sauron.fi.intel.com>
-Subject: Re: [patch] UBI: add means to clear ubi work queue for particular
- lnums
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Mon, 14 May 2012 20:14:31 +0300
-In-Reply-To: <alpine.DEB.2.00.1205131043370.654@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205121712410.24689@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1205131043370.654@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-UJfIC7+BkD5RmmrctHxN"
-Mime-Version: 1.0
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1STyx1-0003D9-VX
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2012 17:20:53 +0000
+Date: Mon, 14 May 2012 19:20:49 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: add crypto lookup field to tree node cache
+In-Reply-To: <1337001716.2528.56.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205141907290.12448@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205111323010.17715@eristoteles.iwoars.net>
+ <1337001716.2528.56.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,70 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The long long is divided as follows:
+32 bits for the (KSA-relative) LEB number, 32 bits for the offset in the
+leb where the key is found. So its the same as the lnum/offs for the
+current one. Theres substancial compression though, that is available,
+since theres likely not more than 2^^32 LEBS for the KSA and the number of
+bits needed for key offset is LEB_SHIFT - 4.
 
---=-UJfIC7+BkD5RmmrctHxN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Is 32 bits sufficient to address all keys:
+one key per datanode means 4096 * 2^32 = 2^44, so only 16 TB available
+for 32 bit key addresses.
 
-On Sun, 2012-05-13 at 10:47 +0200, Joel Reardon wrote:
-> This is the second part of a patch to allow UBI to force the erasure of
-> particular logical eraseblock numbers. In this patch, a new function,
-> ubi_lnum_purge, is added that allows the caller to synchronously erase al=
-l
-> unmapped erase blocks whose LEB number corresponds to the parameter. This
-> requires a previous patch that stores the LEB number in struct ubi_work.
->=20
-> This was tested by disabling the call to do_work in ubi thread, which res=
-ults
-> in the work queue remaining unless explicitly called to remove. UBIFS was
-> changed to call ubifs_leb_change 50 times for three different LEBs. Then =
-the
-> new function was called to clear the queue for the three differnt LEB num=
-bers
-> one at a time. The work queue was dumped each time and the selective remo=
-val
-> of the particular LEB numbers was observed.
->=20
-> Calls to down_read(&ubi->work_sem) are not being done (unlike in
-> do_work).. I'm not sure
-> exactly where its needed / what it does, so perhaps someone can enlighten
-> me.
->=20
+Though there is similar waste for lnum/offs as well. Perhaps zbranches can
+be stored as a u8[] and demarshalled with bit-op macros when needed for
+computations.
 
-Joel, I've just pushed patches from Richard which will conflict with
-your patch-set. His patches are ready to go in right away so I took them
-first. Please, re-base and re-send your changes.
+Joel Reardon
 
-I've re-based your "joel" branch against latest UBI/UBIFS stuff. Your
-previous branch is now "joel_old".
 
-Thanks!
 
---=20
-Best Regards,
-Artem Bityutskiy
 
---=-UJfIC7+BkD5RmmrctHxN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+On Mon, 14 May 2012, Artem Bityutskiy wrote:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPsT13AAoJECmIfjd9wqK03ncP/1Z/6quqqaoHqBfSyvKHxHTU
-m7FDuAJirtLE5tULHu5x3GlmpSOUr/tvrLKUr09U0/itRVtGR7X3buzXk705/y/6
-U9oPRrGK7FUfpEtyIn7eZhOVSE8P7iTWaq8QkSCFet2AOXS7tKPMCFJrpHsMYF8G
-ui0mGBSkEOOQ6f28XlR8OTKLe6xH961296+XXsjYVqMAjrS3xpNLDdSdsQEFeCno
-T8VyaO1NIFJnhNwtlTHwDiH4AFbA6jskHN2NUsMVlOf2DepJujOTkNREgAeOW49z
-GExsSH7oGzRUeZXIDoB1Gwn3x4rl5T9PL39kygOXMNJB5e1sMbz+r0oQ/Y+Nmbk9
-tJmcR2pukc1nSSyvtsch+4tiZj3aoqThN99wrhX2Kf5ZMRc2bRLIKvQSuQFJWgSf
-hks9846pSw+M6UOkQBngtwc3+yoAsehyGCkQl29leemAb5nsE2ZQtRgLI6ZcXqzK
-qs9WzVrOqN8e5cEdVKY8AEREfAK2mbTtWseQbLx+6gQ0hProR2/Q52zKgJI/aPbX
-nocd22y9ADjeBE/IRY3ykKYJ8Y0LPGxEmXHpM4dBQB8rtF2nd4XkzyoXCq7PLeIl
-PNuOZSLvBYea6JS+4qh2Ru8mbTe/jBoQnxeT+l4vla5ZXiW6QPRWQJLrQem78OAr
-ognkRRmSzQe+AAb5h/Uw
-=sWVA
------END PGP SIGNATURE-----
-
---=-UJfIC7+BkD5RmmrctHxN--
+> On Fri, 2012-05-11 at 13:24 +0200, Joel Reardon wrote:
+> >  struct ubifs_zbranch {
+> >  	union ubifs_key key;
+> > @@ -751,6 +752,7 @@ struct ubifs_zbranch {
+> >  	int lnum;
+> >  	int offs;
+> >  	int len;
+> > +	long long crypto_lookup;
+> >  };
+>
+> Why is it "long long" which is 64 bit? What will it contain? Could we
+> make it unsigned int - we'd waste less RAM then - remember that we
+> allocate a lot of these structures.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
