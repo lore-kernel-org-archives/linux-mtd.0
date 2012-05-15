@@ -1,20 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUGB7-0001G6-EO
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:44:34 +0000
-Message-ID: <1337082481.2528.186.camel@sauron.fi.intel.com>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUGEN-0002JJ-7I
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:47:56 +0000
+Date: Tue, 15 May 2012 13:47:53 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [PATCH v2] UBI: add lnum to struct ubi_work
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Tue, 15 May 2012 14:48:01 +0300
-In-Reply-To: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
+In-Reply-To: <1337081204.2528.171.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205151339020.18866@eristoteles.iwoars.net>
 References: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-hGuWCr+NyIv9tv5mSl83"
-Mime-Version: 1.0
+ <1337080498.2528.161.camel@sauron.fi.intel.com>
+ <1337081204.2528.171.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+For vol_id, its straightforward everywhere except: ubi_wl_init_scan()
 
---=-hGuWCr+NyIv9tv5mSl83
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+where scheduling erase on the:
 
-On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
-> This is part of a multipart patch to allow UBI to force the erasure of
-> particular logical eraseblock numbers. In this patch, the logical erase b=
-lock
-> number is added to ubi_work data structure, and it is also passed as a
-> parameter to schedule erase to set it appropriately. Whenever ubi_wl_put_=
-peb
-> is called, the lnum is also passed to be forwarded to schedule erase. Lat=
-er,
-> a new ubi_sync_lnum will be added to execute immediately all work related=
- to
-> that lnum.
+struct ubi_scan_leb *seb
 
-Hmm, I've just checked your patch with Aiaiai and it complains about
-your changes - and the complaints are correct - you introduce a bug.
+appears to lack access to the volume id.  Should we add vol_id to
+ubi_scan_leb, and in ubi_scan() run:
 
---- before_patching.log
-+++ after_patching.log
-@@ @@
-+drivers/mtd/ubi/wl.c:1023 erase_worker() error: dereferencing freed memory=
- 'wl_wrk' [smatch]
-+drivers/mtd/ubi/wl.c:1023:35-41: ERROR: reference preceded by free on line=
- 1016 [coccinelle]
+        ubi_rb_for_each_entry(rb1, sv, &si->volumes, rb) {
+                ubi_rb_for_each_entry(rb2, seb, &sv->root, u.rb)
+			seb->vol_id = sv->vol_id;
 
---=20
-Best Regards,
-Artem Bityutskiy
+Or is there a simpler way?
 
---=-hGuWCr+NyIv9tv5mSl83
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Cheers,
+Joel Reardon
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+On Tue, 15 May 2012, Artem Bityutskiy wrote:
 
-iQIcBAABAgAGBQJPskJxAAoJECmIfjd9wqK0nbgQALNc7iOZ91BwMzMRMj9ygmFI
-/g89oodxCUf+Xc0V57KOy+ZZqiRkC0MRLpLzWf9cr5uUJC9Czk2c+/A4syq9Kv0H
-MdT9IEyZwhqDrApqhEUDftrzqxNvGtTNA8+jnAnP+62RZA1tij891Y49SUGXvxah
-WAblbiIapcmDTjP+F8gYBNL4YDZOCb5YHOmC2vUZOxCtAqUuaB8w4gtKOmys/CDv
-qZfV/a4kvlfwrY/4Evhb2mXXZ6TDawlY0bDdlaZWJLXM1z59UrKlE4UJ2GcWG6SB
-3ajmnRM4cfzrWqGCHGtRt2WfzZc5slcluEf28l46wqvCqLuTzUPcTwSzT/xwaAI5
-hgaSKS5kV5MO++jr0zvSMLmHUKF9jxecBkM39icNQwRuG+xKCq05YfVrbQgfU1/H
-ou/CIX4OziBeE6cofFzpciL0J7bGPAcxirAsREzp+S85DmNGT+OVnsfXbXf9Tk1w
-Bu0fAOvguhcX5MFcEPphebsn0TGT4mIfVeGvR3tkq3/nUplFJgvksaOdfFbbmFQd
-9qrkJgpg6x/32FjYIdrYsGntqEWH/kkliIHF9cUKNK74x6VEjoIyL1pKYR0WGmr/
-XFU/bVueffCuCbk2qofBD5y6jNXXA7yn3WeKMvYqmBacYEHEMR6wR1hnPpU/ODGh
-vDtNg2qjFlbKDQ1DH0lN
-=mY1p
------END PGP SIGNATURE-----
-
---=-hGuWCr+NyIv9tv5mSl83--
+> On Tue, 2012-05-15 at 14:14 +0300, Artem Bityutskiy wrote:
+> > On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
+> > > @@ -1086,13 +1090,14 @@ out_ro:
+> > >   * @ubi: UBI device description object
+> > >   * @pnum: physical eraseblock to return
+> > >   * @torture: if this physical eraseblock has to be tortured
+> > > + * @lnum: the last used logical eraseblock number for the PEB
+> > >   *
+> > >   * This function is called to return physical eraseblock @pnum to the pool of
+> > >   * free physical eraseblocks. The @torture flag has to be set if an I/O error
+> > >   * occurred to this @pnum and it has to be tested. This function returns zero
+> > >   * in case of success, and a negative error code in case of failure.
+> > >   */
+> > > -int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture)
+> > > +int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum)
+> >
+> > Joel, am sorry for nitpicking again, but could you please put the "lnum"
+> > argument between "ubi" and "lnum" instead? Just feels more natural.
+> > Otherwise the patch is OK. Thanks!
+>
+> Err, but you also need volume ID, because there may be several volumes
+> with the same lnum.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
