@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SULHc-0001EF-Jy
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 17:11:37 +0000
+ id 1SULHc-0001EL-P3
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 17:11:39 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/7] [RFC] UBI: Export compare_lebs()
-Date: Tue, 15 May 2012 19:11:06 +0200
-Message-Id: <1337101871-31181-3-git-send-email-richard@nod.at>
+Subject: [PATCH 4/7] [RFC] UBI: Add fastmap structs to ubi_device
+Date: Tue, 15 May 2012 19:11:08 +0200
+Message-Id: <1337101871-31181-5-git-send-email-richard@nod.at>
 In-Reply-To: <1337101871-31181-1-git-send-email-richard@nod.at>
 References: <1337101871-31181-1-git-send-email-richard@nod.at>
 Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -21,69 +21,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fastmap mechanism needs this funtion,
-rename it to ubi_compare_lebs() and export it.
+struct ubi_fastmap describes the currently used checkpoint.
+Upon checkpoint recreation all currently used PEBs will be returned
+to the wl subsystem.
+
+struct ubi_fm_pool describes the fast pool.
+All PEBs within this pool have to be rescanned after reading the fastmap.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/scan.c |    8 ++++----
- drivers/mtd/ubi/ubi.h  |    4 ++++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/ubi.h |   46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 46 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index c26b1ad..69be65f 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -295,7 +295,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
- }
- 
- /**
-- * compare_lebs - find out which logical eraseblock is newer.
-+ * ubi_compare_lebs - find out which logical eraseblock is newer.
-  * @ubi: UBI device description object
-  * @seb: first logical eraseblock to compare
-  * @pnum: physical eraseblock number of the second logical eraseblock to
-@@ -314,7 +314,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
-  *     o bit 2 is cleared: the older LEB is not corrupted;
-  *     o bit 2 is set: the older LEB is corrupted.
-  */
--static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
- 			int pnum, const struct ubi_vid_hdr *vid_hdr)
- {
- 	void *buf;
-@@ -503,7 +503,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * sequence numbers. We still can attach these images, unless
- 		 * there is a need to distinguish between old and new
- 		 * eraseblocks, in which case we'll refuse the image in
--		 * 'compare_lebs()'. In other words, we attach old clean
-+		 * 'ubi_compare_lebs()'. In other words, we attach old clean
- 		 * images, but refuse attaching old images with duplicated
- 		 * logical eraseblocks because there was an unclean reboot.
- 		 */
-@@ -519,7 +519,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * Now we have to drop the older one and preserve the newer
- 		 * one.
- 		 */
--		cmp_res = compare_lebs(ubi, seb, pnum, vid_hdr);
-+		cmp_res = ubi_compare_lebs(ubi, seb, pnum, vid_hdr);
- 		if (cmp_res < 0)
- 			return cmp_res;
- 
 diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 00c48f6..50c2af2 100644
+index 50c2af2..6c89971 100644
 --- a/drivers/mtd/ubi/ubi.h
 +++ b/drivers/mtd/ubi/ubi.h
-@@ -576,6 +576,10 @@ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
- void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
- 			    struct ubi_volume_info *vi);
+@@ -197,6 +197,39 @@ struct ubi_rename_entry {
+ struct ubi_volume_desc;
  
-+/* scan.c */
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+		      int pnum, const struct ubi_vid_hdr *vid_hdr);
+ /**
++ * struct ubi_fastmap - in-memory fastmap data structure.
++ * @peb: PEBs used by the current fastamp
++ * @ec: the erase counter of each used PEB
++ * @size: size of the fastmap in bytes
++ * @used_blocks: number of used PEBs
++ */
++struct ubi_fastmap {
++	int peb[UBI_FM_MAX_BLOCKS];
++	unsigned int ec[UBI_FM_MAX_BLOCKS];
++	size_t size;
++	int used_blocks;
++};
 +
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-  * @rb: a pointer to type 'struct rb_node' to use as a loop counter
++/**
++ * struct ubi_fm_pool - in-memory fastmap pool
++ * @pebs: PEBs in this pool
++ * @used: number of used PEBs
++ * @size: total number of PEBs in this pool
++ * @max_size: maximal size of the pool
++ *
++ * A pool gets filled with up to max_size.
++ * If all PEBs within the pool are used a new fastmap will be written
++ * to the flash and the pool gets refilled with empty PEBs.
++ *
++ */
++struct ubi_fm_pool {
++	int pebs[UBI_FM_MAX_POOL_SIZE];
++	int used;
++	int size;
++	int max_size;
++};
++
++/**
+  * struct ubi_volume - UBI volume description data structure.
+  * @dev: device object to make use of the the Linux device model
+  * @cdev: character device object to create character device
+@@ -331,6 +364,13 @@ struct ubi_wl_entry;
+  * @ltree: the lock tree
+  * @alc_mutex: serializes "atomic LEB change" operations
+  *
++ * @fm: in-memory data structure of the currently used fastmap
++ * @old_fm: in-memory data structure old fastmap.
++ * 	    (only valid while writing a new one)
++ * @fm_pool: in-memory data structure of the fastmap pool
++ * @attached_by_scanning: this UBI device was attached by the old scanning
++ * 			  methold. All fastmap volumes have to be deleted.
++ *
+  * @used: RB-tree of used physical eraseblocks
+  * @erroneous: RB-tree of erroneous used physical eraseblocks
+  * @free: RB-tree of free physical eraseblocks
+@@ -422,6 +462,12 @@ struct ubi_device {
+ 	struct rb_root ltree;
+ 	struct mutex alc_mutex;
+ 
++	/* Fastmap stuff */
++	struct ubi_fastmap *fm;
++	struct ubi_fastmap *old_fm;
++	struct ubi_fm_pool fm_pool;
++	bool attached_by_scanning;
++
+ 	/* Wear-leveling sub-system's stuff */
+ 	struct rb_root used;
+ 	struct rb_root erroneous;
 -- 
 1.7.6.5
