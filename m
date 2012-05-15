@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUHMM-0008N5-O0
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 13:00:15 +0000
-Message-ID: <1337087022.2528.204.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: read crypto_lookup from datanodes to znodes
+ id 1SUHUg-0000g1-VR
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 13:08:52 +0000
+Message-ID: <1337087537.2528.206.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: clean up uclinux.c map driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Tue, 15 May 2012 16:03:42 +0300
-In-Reply-To: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
+To: gerg@snapgear.com
+Date: Tue, 15 May 2012 16:12:17 +0300
+In-Reply-To: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
+References: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-K9g9HOZ7WRo4pvg+AHHx"
+ boundary="=-L6ad6bNnQyKRDfONIF9r"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,171 +25,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-K9g9HOZ7WRo4pvg+AHHx
+--=-L6ad6bNnQyKRDfONIF9r
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-15 at 11:01 +0200, Joel Reardon wrote:
-> Crypto_lookup values are now oppertunistically read from the data node he=
-ader whenever a data
-> node is read from flash and cached in the TNC. The value will be zero unt=
-il it
-> is read from flash. (If it is needed before it happens to be loaded, i.e.=
-, to
-> delete a node, then it will be forced read.)
+On Tue, 2012-05-15 at 14:08 +1000, gerg@snapgear.com wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
 >=20
-> It was tested by setting cryptolookup values for new datanodes by their l=
-num
-> and offset on flash. This was later asserted in the TNC that they were ei=
-ther
-> zero, or always equal. On mounting, the TNC crypto lookup values were
-> confirmed to be zero and later, after reading the corresponding files,
-> confirmed they were loaded and corresponded to the location on flash.
+> Perform a number of cleanups on the uclinux.c map driver.
+> No structural or semantic changes, only minor cleanups.
 >=20
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
-> ---
->  fs/ubifs/gc.c          |    8 +++++++-
->  fs/ubifs/journal.c     |    9 ++++++---
->  fs/ubifs/tnc.c         |   40 ++++++++++++++++++++++++++++++++++++++++
->  fs/ubifs/ubifs-media.h |    3 ++-
->  4 files changed, 55 insertions(+), 5 deletions(-)
+> . insert appropriate prefix into printk() calls
+> . remove redundant "if" checks in the module exit code
+> . remove unnecessary includes
+> . make the struct uclinux_ram_map static
+> . cast the virtual address calculations to keep them sparse clean
 >=20
-> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-> index f146447..16df2f4 100644
-> --- a/fs/ubifs/gc.c
-> +++ b/fs/ubifs/gc.c
-> @@ -322,15 +322,21 @@ static int move_node(struct ubifs_info *c, struct u=
-bifs_scan_leb *sleb,
->  		     struct ubifs_scan_node *snod, struct ubifs_wbuf *wbuf)
->  {
->  	int err, new_lnum =3D wbuf->lnum, new_offs =3D wbuf->offs + wbuf->used;
-> +	long long crypto_lookup =3D 0;
->=20
->  	cond_resched();
->  	err =3D ubifs_wbuf_write_nolock(wbuf, snod->node, snod->len);
->  	if (err)
->  		return err;
->=20
-> +	if (key_type(c, &snod->key) =3D=3D UBIFS_DATA_KEY) {
-> +		struct ubifs_data_node *dn =3D
-> +			(struct ubifs_data_node *) snod->node;
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-We do not cast void *.
+Thanks, pushed all 3 patches to l2-mtd.git.
 
-> +		crypto_lookup =3D le64_to_cpu(dn->crypto_lookup);
-> +	}
->  	err =3D ubifs_tnc_replace(c, &snod->key, sleb->lnum,
->  				snod->offs, new_lnum, new_offs,
-> -				snod->len, 0);
-> +				snod->len, crypto_lookup);
->  	list_del(&snod->list);
->  	kfree(snod);
->  	return err;
-> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> index 2072b9a..3f7aa05 100644
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -89,7 +89,6 @@ static inline void zero_dent_node_unused(struct ubifs_d=
-ent_node *dent)
->   */
->  static inline void zero_data_node_unused(struct ubifs_data_node *data)
->  {
-> -	data->padding0 =3D 0;
->  	memset(data->padding1, 0, 2);
->  }
->=20
-> @@ -735,6 +734,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const =
-struct inode *inode,
->=20
->  	dlen =3D UBIFS_DATA_NODE_SZ + out_len;
->  	data->compr_type =3D cpu_to_le16(compr_type);
-> +	data->crypto_lookup =3D cpu_to_le64(0);
->=20
->  	/* Make reservation before allocating sequence numbers */
->  	err =3D make_reservation(c, DATAHD, dlen);
-> @@ -742,12 +742,14 @@ int ubifs_jnl_write_data(struct ubifs_info *c, cons=
-t struct inode *inode,
->  		goto out_free;
->=20
->  	err =3D write_node(c, DATAHD, data, dlen, &lnum, &offs);
-> +
->  	if (err)
-
-Please, do not add junk newlines.
-
->  		goto out_release;
->  	ubifs_wbuf_add_ino_nolock(&c->jheads[DATAHD].wbuf, key_inum(c, key));
->  	release_head(c, DATAHD);
->=20
-> -	err =3D ubifs_tnc_add(c, key, lnum, offs, dlen, 0);
-> +	err =3D ubifs_tnc_add(c, key, lnum, offs, dlen,
-> +			    le64_to_cpu(data->crypto_lookup));
->  	if (err)
->  		goto out_ro;
->=20
-> @@ -1226,7 +1228,8 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const =
-struct inode *inode,
->=20
->  	if (dlen) {
->  		sz =3D offs + UBIFS_INO_NODE_SZ + UBIFS_TRUN_NODE_SZ;
-> -		err =3D ubifs_tnc_add(c, &key, lnum, sz, dlen, 0);
-> +		err =3D ubifs_tnc_add(c, &key, lnum, sz, dlen,
-> +				    le64_to_cpu(dn->crypto_lookup));
->  		if (err)
->  			goto out_ro;
->  	}
-> diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-> index b222a72..ac0d03c 100644
-> --- a/fs/ubifs/tnc.c
-> +++ b/fs/ubifs/tnc.c
-> @@ -1431,6 +1431,35 @@ static int maybe_leb_gced(struct ubifs_info *c, in=
-t lnum, int gc_seq1)
->  }
->=20
->  /**
-> + * tnc_set_crypto_lookup - set the crypto_lookup field in a zbranch.
-> + * @c: UBIFS file-system description object
-> + * @zbr: the crypto_lookup field is set in this zbranch
-> + * @node: a pointer to a node containing the zbranch.
-> + *
-> + * Crypto_lookup values are stored on flash memory inside the data node.
-> + * When the system is running, they should be oppertunistically stored i=
-n
-
-What do you mean by "oppertunistically stored" ? Should be
-"opportunistically", but my concern is that we _always_ initialize this
-when read, not by opportunity.
-
-> + * memory inside the zbranch. This function is called whenever a node
-> + * is read from flash memory. If @node is a data node (therefore contain=
-ing a
-> + * @crypto_lookup field), then:
-> + * if @zbr has an unset @crypto_lookup, set it to the value from @node
-> + * if @zbr has already a @crypto_lookup, assert they are the same.
-> + */
-> +static void tnc_set_crypto_lookup(struct ubifs_info *c,
-> +				  struct ubifs_zbranch *zbr, void *node)
-> +{
-> +	if (key_type(c, &(zbr->key)) =3D=3D UBIFS_DATA_KEY) {
-> +		struct ubifs_data_node *dn =3D
-> +			(struct ubifs_data_node *) node;
-
-No cast.
-> +		if (zbr->crypto_lookup !=3D 0) {
-
-No braces.
-
-> +			ubifs_assert(zbr->crypto_lookup =3D=3D
-> +				     le64_to_cpu(dn->crypto_lookup));
-> +		} else {
-
-Please, introduce a temporary variable for crypto_lookup instead.
+Side note: why do you Cc uclinux-dev@uclinux.org if it is closed mailing
+list. Why do you need to make people replying you see rejects from the
+mailing list?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-K9g9HOZ7WRo4pvg+AHHx
+--=-L6ad6bNnQyKRDfONIF9r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -197,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPslQuAAoJECmIfjd9wqK0YegQANIZmCOO6+EE1WT1YDQimAmp
-+H7aRRHFd5kJw0/RvtBhv7FFIniLxd8DlAvRmLRAtr3Me5Clw3sTzDEF2Ndf2ZGO
-ELy1bL/y3tSzfDw1jgWcgnDAMNx1cZwHmnB2Na9QO9njfkV/vSDTi0CsRMaVkXSa
-ww/QPQkl0om2Xi9naus4NiAvbApYmiZXwLYGJUzsNW+svhjcMd4Bee26JoAspqXQ
-1LFE4Tg0aUwZ1Y3E+1jYhzedTPaOTsrEdkmePfzBypFWUHPSliHSwBBJPdQpV6Wm
-dJ8xl4af6wjoi5mbQbPHPKKfFWn2lmNRKPwRYjzkW1LdYcnQli+SqDEFSep4hXoZ
-Ba2f4ZZwQL+JTeXY9SBM4ZCS+dbfhPR3oZoFjoS1eKJIz1YGNpt50Ud409jfGCxK
-Irgg6eFUbZUuLOiDb97L74lDuThs+u9scQM+AbcjI6/Kx6SmJVD14XeHGa/KU9ig
-+yBRHyhIOnEaKQ3OoFnbc3FS1hks7Zrz6RdxBTsKfdhDmXBZ40WPuaqV1lPxndFT
-om+lKA1bfEueM2gmzpKDJUcI1jbMLwr2INIR0fJh71tKuhMXcjHQLjmMKIem23Aq
-gp99hM+oXa+EY8BnC3KwnkLLIM7NIagrDFsIoDwIazYttRa5x0DqP1GSM/Jd42C2
-U3DaCeXxqORU3avM6tmZ
-=PSiS
+iQIcBAABAgAGBQJPslYxAAoJECmIfjd9wqK0KFMP/1J4vCAYdIGEcGf55N0Lenx8
+3+0ZcElm+52b8YX5uY7ZEaUn/euWJJU4BLLAwMnBdVSA/ZxusWkpH4v+XdFeaj1q
+MMvoH0zBqNqP3Sha/YPDK5WrZnHhR4oSIDAYuBxLulT0JMOy9xAK7dpZO7QuJtcS
+c/9qw12P9d+kVFUSYMxhN6GyV0mTHJtX2xdw6ff39iSEMHHvZIUPwO5qneef0G1i
+huAYGyS2SHYoZzo2Nivcm72We91/Y1r19DMXKZxFgegxCZk7BtAyZE2DkTp2PCdW
+64uxX8PDAr9y8VyG9LdjjdpgG5YMSqCNzM7mUUoCtf7oUJ/uYzo0s9OVWVirCc2f
+eFyW6xrbqyM9xGzBNrlOjvvD6UB/k5z95hbVKfFfBRFeE8YkcZ1hMSWHdzCJIKqc
+YITBqvlIwNRmfSpKTxjC/+Os14uFp+CGEh74gLYsDEcRC4qe/Rnaed3+yEyAv5AF
+Ea1Sjg8/6KJL1A1fDd6vn42TzCBzEuWsAFmz8DCwxlPY99SG+xcm+RFo1gfutVf/
+klkZDJ9IOu/O88bRvrUOkvaWYqQYUChiVgmCfvH3TvmkXKXqwpFa7rAyyr+iMFug
+W0UMenYyxhjo5ThBjs/UvmNGIixiHnGVh/M3fcjvhM/kYDhG5vQQi3peuGkd5nUX
+4JaaTgjVzVYaoItl/hw7
+=srJY
 -----END PGP SIGNATURE-----
 
---=-K9g9HOZ7WRo4pvg+AHHx--
+--=-L6ad6bNnQyKRDfONIF9r--
