@@ -1,19 +1,15 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUJ9f-00009F-4N
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 14:55:16 +0000
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <dwmw2@infradead.org>,
- <artem.bityutskiy@linux.intel.com>, <dedekind1@gmail.com>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/3] mtd: nand: omap2: use gpmc provided irqs
-Date: Tue, 15 May 2012 20:08:47 +0530
-Message-ID: <588ded576e45a01d538fd6fa83bde6dd111fc6b2.1337090835.git.afzal@ti.com>
-In-Reply-To: <cover.1337090835.git.afzal@ti.com>
-References: <cover.1337090835.git.afzal@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
+Message-ID: <1337094261.4170.70.camel@shinybook.infradead.org>
+Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
+From: David Woodhouse <dwmw2@infradead.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 15 May 2012 16:04:21 +0100
+In-Reply-To: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+Content-Type: multipart/signed; micalg="sha1";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-s3xKLDGv/X89/cavQx8E"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,179 +19,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPMC driver provides it's clients with interrupts that can be used
-through struct resource. Make use of it for irq mode functionality.
 
-Also now write protect disable is done by GPMC code, hence remove it.
+--=-s3xKLDGv/X89/cavQx8E
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Afzal Mohammed <afzal@ti.com>
----
- drivers/mtd/nand/omap2.c |   70 +++++++++++++++++++++++++++-------------------
- 1 file changed, 42 insertions(+), 28 deletions(-)
+On Mon, 2012-04-09 at 13:19 +0200, Robert Jarzmik wrote:
+>=20
+> The reason seams that the first 111 bytes read ends between
+> the 2 docg3 planes, and that the first following read (in
+> the 12 bytes sequence, read of 16 bit word) returns the byte
+> of the rightmost plane duplicated in high and lower byte of
+> the word.
+>=20
+> Fix this behaviour by ensuring that if the previous read
+> ended up in-between the 2 planes, there will be a first 1
+> byte read to get back to the beginning of leftmost plane.=20
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f69ecc1..2eac7d9 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -131,7 +131,8 @@ struct omap_nand_info {
- 	unsigned long			mem_size;
- 	struct completion		comp;
- 	int				dma_ch;
--	int				gpmc_irq;
-+	int				gpmc_irq_fifo;
-+	int				gpmc_irq_count;
- 	enum {
- 		OMAP_NAND_IO_READ = 0,	/* read */
- 		OMAP_NAND_IO_WRITE,	/* write */
-@@ -556,14 +557,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- {
- 	struct omap_nand_info *info = (struct omap_nand_info *) dev;
- 	u32 bytes;
--	u32 irq_stat;
- 
--	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
- 	bytes = readl(info->reg.gpmc_prefetch_status);
- 	bytes = GPMC_PREFETCH_STATUS_FIFO_CNT(bytes);
- 	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
- 	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 
- 		if (info->buf_len && (info->buf_len < bytes))
-@@ -580,20 +579,17 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- 						(u32 *)info->buf, bytes >> 2);
- 		info->buf = info->buf + bytes;
- 
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 	}
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
- 
- 	return IRQ_HANDLED;
- 
- done:
- 	complete(&info->comp);
--	/* disable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
- 
--	/* clear status */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
-+	disable_irq_nosync(info->gpmc_irq_fifo);
-+	disable_irq_nosync(info->gpmc_irq_count);
- 
- 	return IRQ_HANDLED;
- }
-@@ -627,9 +623,9 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--		(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for read to complete */
- 	wait_for_completion(&info->comp);
-@@ -677,12 +673,13 @@ static void omap_write_buf_irq_pref(struct mtd_info *mtd,
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--			(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for write to complete */
- 	wait_for_completion(&info->comp);
-+
- 	/* wait for data to flushed-out before reset the prefetch */
- 	tim = 0;
- 	limit = (loops_per_jiffy *  msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
-@@ -1079,9 +1076,6 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	info->nand.options	= pdata->devsize;
- 	info->nand.options	|= NAND_SKIP_BBTSCAN;
- 
--	/* NAND write protect off */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
--
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL) {
- 		err = -EINVAL;
-@@ -1104,6 +1098,14 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		goto out_release_mem_region;
- 	}
- 
-+	info->gpmc_irq_fifo = platform_get_irq_byname(pdev, "fifoevent");
-+	if (info->gpmc_irq_fifo == -ENXIO)
-+		dev_warn(&pdev->dev, "error getting FIFO IRQ\n");
-+
-+	info->gpmc_irq_count = platform_get_irq_byname(pdev, "terminalcount");
-+	if (info->gpmc_irq_count == -ENXIO)
-+		dev_warn(&pdev->dev, "error getting TERMINALCOUNT IRQ\n");
-+
- 	info->nand.controller = &info->controller;
- 
- 	info->nand.IO_ADDR_W = info->nand.IO_ADDR_R;
-@@ -1159,17 +1161,24 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		break;
- 
- 	case NAND_OMAP_PREFETCH_IRQ:
--		err = request_irq(pdata->gpmc_irq,
--				omap_nand_irq, IRQF_SHARED, "gpmc-nand", info);
-+		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-fifo", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
--							pdata->gpmc_irq, err);
-+						info->gpmc_irq_fifo, err);
- 			goto out_release_mem_region;
--		} else {
--			info->gpmc_irq	     = pdata->gpmc_irq;
--			info->nand.read_buf  = omap_read_buf_irq_pref;
--			info->nand.write_buf = omap_write_buf_irq_pref;
- 		}
-+		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-count", info);
-+		if (err) {
-+			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
-+						info->gpmc_irq_count, err);
-+			goto out_free_irq_gpmc_fifo;
-+		}
-+
-+		info->nand.read_buf  = omap_read_buf_irq_pref;
-+		info->nand.write_buf = omap_write_buf_irq_pref;
-+
- 		break;
- 
- 	default:
-@@ -1239,6 +1248,8 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+out_free_irq_gpmc_fifo:
-+	free_irq(info->gpmc_irq_fifo, info);
- out_release_mem_region:
- 	release_mem_region(info->phys_base, info->mem_size);
- out_free_info:
-@@ -1257,8 +1268,11 @@ static int omap_nand_remove(struct platform_device *pdev)
- 	if (info->dma_ch != -1)
- 		omap_free_dma(info->dma_ch);
- 
--	if (info->gpmc_irq)
--		free_irq(info->gpmc_irq, info);
-+	if (info->gpmc_irq_fifo > 0)
-+		free_irq(info->gpmc_irq_fifo, info);
-+
-+	if (info->gpmc_irq_count > 0)
-+		free_irq(info->gpmc_irq_count, info);
- 
- 	/* Release NAND device, its internal structures and partitions */
- 	nand_release(&info->mtd);
--- 
-1.7.10
+Um, this seems complex. Wouldn't it be easier just to say "Don't Do That
+Then" =E2=80=94 always read a multiple of two bytes, even if the caller doe=
+sn't
+care about the last byte?
+
+--=20
+dwmw2
+
+--=-s3xKLDGv/X89/cavQx8E
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIUbjCCBjQw
+ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
+BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
+DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
+KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
+dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
+75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
++y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
+z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
+/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
+ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
+fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
+MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
+b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
+XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
+UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
+HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
+sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
+sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
++n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
+zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
+Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
+9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHFzCCBf+g
+AwIBAgIDBCZ6MA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
+A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
+MTIwNTAxMTI1ODI3WhcNMTMwNTAzMTEzNzIwWjBdMRkwFwYDVQQNExA4Y1VOSzUzMTc0ODRYRjk3
+MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
+YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyYe7wo6MrtrB4uIGGbrY
+4IifY/Xsq22pSv605yganL0+uyUdd8rCjrYlH6Q/ra5TVJCQFTgzaepkuqPQc79DC/Cxmzm6Qo+s
+wLZy868oFsccsVokL2bPAWIPaRXfNPJKkYR1FTWQfZpWJVQmT+sPf1XFUullVBAK+d9RztopyacI
+xWoZ/W/Cmv7mseQbttYTtGKJa0btX73nsQRWl6SgErWXo59zg9friCLTy1GXMXJYB8H+PtnuwX0w
+MrAvWDdX1ABgIlA17W3FraCn0eW15ZM46eyu0/amGzJZNtemCWF73P7BAijzeV1jNmiJFXdZ0DT0
+w+hmtMO9PxdDUyt78QIDAQABo4IDrjCCA6owCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTkfe5UOr3PcirsjApibyyUEfsyRzAf
+BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
+YWQub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8wLgYIKwYBBQUHAgEW
+Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0YXJ0
+Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdhcyBp
+c3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRzIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBw
+dXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGc
+BggrBgEFBQcCAjCBjzAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRM
+aWFiaWxpdHkgYW5kIHdhcnJhbnRpZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBh
+bmQgTGltaXRhdGlvbnMiIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6Ap
+oCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGB
+MH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVu
+dC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNz
+MS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkq
+hkiG9w0BAQUFAAOCAQEAqDU1FKifNtCFJbLnvOi1BLRfk7mut55PMtPSZLJ4/AnG7AjmJnbBI4U5
+DELwvVq3mIpwUpGqZUkqkZMEfBPIbfq517UZB3h4iANtqif+ULfTLhg5XgcK5eF8/T6EtX2c3epq
+ylARdleCbj/0FwiUDvPlTsA6PIN4SCekjRLgjKERrL3heFz+Hteq1rtMAvMkNuyL0/0ijyyg2y45
+NASAl2Afl9SLes/fnoh9nBwzfNQfb6qDYUFpnglfpGrq/0b1NtaOUb2z1SR+H1tKlb8bVJJIdvpu
+mEi27kSRIhzk3h30uTfKkKetgy++ouyldxZ7KZ0PuoLQrBy465EoQLosETCCBxcwggX/oAMCAQIC
+AwQmejANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
+ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
+L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBMB4XDTEyMDUw
+MTEyNTgyN1oXDTEzMDUwMzExMzcyMFowXTEZMBcGA1UEDRMQOGNVTks1MzE3NDg0WEY5NzEcMBoG
+A1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFk
+Lm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmHu8KOjK7aweLiBhm62OCIn2P1
+7KttqUr+tOcoGpy9PrslHXfKwo62JR+kP62uU1SQkBU4M2nqZLqj0HO/QwvwsZs5ukKPrMC2cvOv
+KBbHHLFaJC9mzwFiD2kV3zTySpGEdRU1kH2aViVUJk/rD39VxVLpZVQQCvnfUc7aKcmnCMVqGf1v
+wpr+5rHkG7bWE7RiiWtG7V+957EEVpekoBK1l6Ofc4PX64gi08tRlzFyWAfB/j7Z7sF9MDKwL1g3
+V9QAYCJQNe1txa2gp9HlteWTOOnsrtP2phsyWTbXpglhe9z+wQIo83ldYzZoiRV3WdA09MPoZrTD
+vT8XQ1Mre/ECAwEAAaOCA64wggOqMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1UdJQQWMBQG
+CCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQU5H3uVDq9z3Iq7IwKYm8slBH7MkcwHwYDVR0j
+BBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiEGA1UdIASCAhgwggIUMIICEAYLKwYBBAGBtTcBAgIwggH/MC4GCCsGAQUFBwIBFiJodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRwOi8vd3d3LnN0
+YXJ0c3NsLmNvbS9pbnRlcm1lZGlhdGUucGRmMIH3BggrBgEFBQcCAjCB6jAnFiBTdGFydENvbSBD
+ZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0aWZpY2F0ZSB3YXMgaXNzdWVk
+IGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJlcXVpcmVtZW50cyBvZiB0aGUg
+U3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0aGUgaW50ZW5kZWQgcHVycG9z
+ZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9ibGlnYXRpb25zLjCBnAYIKwYB
+BQUHAgIwgY8wJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwAwIBAhpkTGlhYmls
+aXR5IGFuZCB3YXJyYW50aWVzIGFyZSBsaW1pdGVkISBTZWUgc2VjdGlvbiAiTGVnYWwgYW5kIExp
+bWl0YXRpb25zIiBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LjA2BgNVHR8ELzAtMCugKaAnhiVo
+dHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkG
+CCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2Ew
+QgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3RhcnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xp
+ZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcN
+AQEFBQADggEBAKg1NRSonzbQhSWy57zotQS0X5O5rreeTzLT0mSyePwJxuwI5iZ2wSOFOQxC8L1a
+t5iKcFKRqmVJKpGTBHwTyG36ude1GQd4eIgDbaon/lC30y4YOV4HCuXhfP0+hLV9nN3qaspQEXZX
+gm4/9BcIlA7z5U7AOjyDeEgnpI0S4IyhEay94Xhc/h7Xqta7TALzJDbsi9P9Io8soNsuOTQEgJdg
+H5fUi3rP356IfZwcM3zUH2+qg2FBaZ4JX6Rq6v9G9TbWjlG9s9Ukfh9bSpW/G1SSSHb6bphItu5E
+kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
+MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
+dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
+eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTE1MTUwNDIxWjAjBgkqhkiG9w0BCQQx
+FgQUs7Gn6t6+b2iAFkQTki2UKZ3xmRswgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
+ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
+ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
+TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
+aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAk9KBaykKmmPfq/FOZVN0A4NqU
+JayqybRd+weW4KwcsQ+SQmOQBfxj2AR3GtV8Rg+n+SmPXfT/hVDq2W73UrbshgnKpskAwsogyKcS
+KS+LIMqeAVpImh5n255y8lDUl4Q73de0QsK8p5CS47PYMaI+KSVoBVyuYMke1RVCY3TO6FW7Jn/X
+EZ8GzkXptfoFfHsmbRZA9pWXe12g2JxsrnvAqxEPdIHw5/NPWqoAu52IjOsodbWXa3uwDrA3MP3c
+RDsfnlMyay9Y841ouIbO4ekUNuQXYVAyU3Ie07Sj2KmPvZwwjtgO5zFTmazqCWfOyQM1wjGmr7NK
+ajA92UD/lNqWAAAAAAAA
+
+
+--=-s3xKLDGv/X89/cavQx8E--
