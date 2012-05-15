@@ -1,16 +1,21 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUCQv-0007W3-HJ
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 07:44:41 +0000
-Date: Tue, 15 May 2012 09:44:34 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH V2] UBI: add ubi_lnum_purge function to clear work queue for
- a lnum
-Message-ID: <alpine.DEB.2.00.1205150943470.17750@eristoteles.iwoars.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <1337068543.2528.143.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] MTD: LPC32xx SLC NAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roland Stigge <stigge@antcom.de>, Bastian Hecht <hechtb@googlemail.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Huang Shijie <b32955@freescale.com>,
+ Lei Wen <leiwen@marvell.com>
+Date: Tue, 15 May 2012 10:55:43 +0300
+In-Reply-To: <1336829386-23301-1-git-send-email-stigge@antcom.de>
+References: <1336829386-23301-1-git-send-email-stigge@antcom.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-BUTr4U2qvF8OaNVex7Q2"
+Mime-Version: 1.0
+Cc: srinivas.bakki@nxp.com, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,152 +25,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the second part of a patch to allow UBI to force the erasure of
-particular logical eraseblock numbers. In this patch, a new function,
-ubi_lnum_purge, is added that allows the caller to synchronously erase all
-unmapped erase blocks whose LEB number corresponds to the parameter. This
-requires a previous patch that stores the LEB number in struct ubi_work.
 
-This was tested by disabling the call to do_work in ubi thread, which results
-in the work queue remaining unless explicitly called to remove. UBIFS was
-changed to call ubifs_leb_change 50 times for three different LEBs. Then the
-new function was called to clear the queue for the three differnt LEB numbers
-one at a time. The work queue was dumped each time and the selective removal
-of the particular LEB numbers was observed.
+--=-BUTr4U2qvF8OaNVex7Q2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- drivers/mtd/ubi/kapi.c  |   31 +++++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h   |    1 +
- drivers/mtd/ubi/wl.c    |   42 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/ubi.h |    1 +
- 4 files changed, 74 insertions(+), 1 deletions(-)
+I am CCing few other guys who take care of several drivers which use
+similar way of busy-waiting - probably you could change it?
 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 33ede23..a236522 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -704,6 +704,37 @@ int ubi_sync(int ubi_num)
- }
- EXPORT_SYMBOL_GPL(ubi_sync);
+Bastian: drivers/mtd/nand/sh_flctl.c
+Lars-Peter: drivers/mtd/nand/jz4740_nand.c
+Huang: drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+Lei Wen: drivers/mtd/nand/pxa3xx_nand.c
 
-+/**
-+ * ubi_lnum_purge - synchronously erase unmapped PEBs by LEB number.
-+ * @ubi_num: UBI device to erase PEBs
-+ * @lnum: the LEB number to erase old unmapped PEBs.
-+ *
-+ * This function is designed to offer a means to ensure that the contents of
-+ * old, unmapped LEBs are securely erased without having to flush the entire
-+ * work queue of all erase blocks that need erasure.  Simply erasing the block
-+ * at the time of unmapped is insufficient, as the wear-levelling subsystem
-+ * may have already moved the contents. This function navigates the list of
-+ * erase blocks that need erasures, and performs an immediate and synchronous
-+ * erasure of any erase block that has held data for this particular @lnum.
-+ * This may include eraseblocks that held older versions of the same @lnum.
-+ * Returns zero in case of success and a negative error code in case of
-+ * failure.
-+ */
-+int ubi_lnum_purge(int ubi_num, int lnum)
-+{
-+	int err;
-+	struct ubi_device *ubi;
-+
-+	ubi = ubi_get_device(ubi_num);
-+	if (!ubi)
-+		return -ENODEV;
-+
-+	err = ubi_wl_flush_lnum(ubi, lnum);
-+	ubi_put_device(ubi);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(ubi_lnum_purge);
-+
- BLOCKING_NOTIFIER_HEAD(ubi_notifiers);
+On Sat, 2012-05-12 at 15:29 +0200, Roland Stigge wrote:
+> +       /*
+> +        * The DMA is finished, but the NAND controller may still have
+> +        * buffered data. Wait until all the data is sent.
+> +        */
+> +       timeout =3D LPC32XX_DMA_SIMPLE_TIMEOUT;
+> +       while ((readl(SLC_STAT(host->io_base)) & SLCSTAT_DMA_FIFO)
+> +              && (timeout > 0))
+> +               timeout--;
+> +       if (!timeout) {
+> +               dev_err(mtd->dev.parent, "FIFO held data too long\n");
+> +               status =3D -EIO;
+> +       }=20
 
- /**
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index b3e5815..f91f965 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -535,6 +535,7 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
- int ubi_wl_get_peb(struct ubi_device *ubi);
- int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum);
- int ubi_wl_flush(struct ubi_device *ubi);
-+int ubi_wl_flush_lnum(struct ubi_device *ubi, int lnum);
- int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
- int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
- void ubi_wl_close(struct ubi_device *ubi);
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 4e51735..56d9836 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -610,7 +610,6 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- 	wl_wrk->e = e;
- 	wl_wrk->torture = torture;
- 	wl_wrk->lnum = lnum;
--
- 	schedule_ubi_work(ubi, wl_wrk);
- 	return 0;
- }
-@@ -1237,6 +1236,47 @@ retry:
- }
+I know the MTD tree is full of this, but this is bad, I think. The
+timeout should be time-backed, not CPU-cycles-backed.
 
- /**
-+ * ubi_wl_flush_lnum - flush all pending works associated with a LEB number
-+ * @ubi: UBI device description object
-+ * @lnum: the LEB number only for which work should be synchronously executed
-+ *
-+ * This function executes pending works for PEBs which are associated with a
-+ * particular LEB number. If one of the pending works fail, for instance, due
-+ * to the erase block becoming bad block during erasure, then it returns the
-+ * error without continuing, but removes the work from the queue. This
-+ * function returns zero if no work on the queue remains for lnum and all work
-+ * in the call executed successfully.
-+ */
-+int ubi_wl_flush_lnum(struct ubi_device *ubi, int lnum)
-+{
-+	int err = 0;
-+	struct ubi_work *wrk, *tmp;
-+
-+	/* For each pending work, if it corresponds to the parameter @lnum,
-+	 * then execute the work.
-+	 */
-+	dbg_wl("flush lnum %d", lnum);
-+	list_for_each_entry_safe(wrk, tmp, &ubi->works, list) {
-+		if (wrk->lnum == lnum) {
-+			down_read(&ubi->work_sem);
-+			spin_lock(&ubi->wl_lock);
-+
-+			list_del(&wrk->list);
-+			ubi->works_count -= 1;
-+			ubi_assert(ubi->works_count >= 0);
-+			spin_unlock(&ubi->wl_lock);
-+
-+			err = wrk->func(ubi, wrk, 0);
-+			up_read(&ubi->work_sem);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return err;
-+}
-+
-+/**
-  * ubi_wl_flush - flush all pending works.
-  * @ubi: UBI device description object
-  *
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index 9838dce..8087e99 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -216,6 +216,7 @@ int ubi_leb_unmap(struct ubi_volume_desc *desc, int lnum);
- int ubi_leb_map(struct ubi_volume_desc *desc, int lnum);
- int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum);
- int ubi_sync(int ubi_num);
-+int ubi_lnum_purge(int ubi_num, int lnum);
+I do not know the best way to do this, hopefully someone in the arm list
+could suggest, but the following pattern is at least better:
 
- /*
-  * This function is the same as the 'ubi_leb_read()' function, but it does not
--- 
-1.7.5.4
+
+/* Chip reaction time timeout in milliseconds */
+#define LPC32XX_DMA_TIMEOUT 100
+
+timeout =3D loops_per_jiffy * msecs_to_jiffies(LPC32XX_DMA_TIMEOUT);
+
+while ((readl(...)) && timeout-- > 0)
+	cpu_relax();
+
+if (!timeout)
+	error;
+
+
+So basically I turned your hard-coded iterations count into a time-based
+timeout. I also used cpu_relax() which is commonly used in tight-loops
+like this. Here is a piece of documentation about cpu_relax():
+
+"
+The right way to perform a busy wait is:
+
+    while (my_variable !=3D what_i_want)
+        cpu_relax();
+
+The cpu_relax() call can lower CPU power consumption or yield to a
+hyperthreaded twin processor; it also happens to serve as a compiler
+barrier, so, once again, volatile is unnecessary.  Of course, busy-
+waiting is generally an anti-social act to begin with.
+"
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-BUTr4U2qvF8OaNVex7Q2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPsgv/AAoJECmIfjd9wqK0kHMQAKVtllaa4HiixNCsPIC+QKdN
+jrONKGOnOZSuXrAL4DStVWwbij4E2u7RvdoPI4egWXgfe4xhr8HN70PyYxDbTBr3
+29qHm0f3GfBzfZH/VTsFkvih7webx3vVbFii26rbMiQn2AISvmBFduHA+krmECO3
+iJ0O2QAGn7iP6STTcdMuFKff91efFiWWi4PXqLKISh6EpuVJmteHGbWr6JG99m3g
+PzGDbovdQRibMaPJoruEcna6VI9hodMW3WEf02LCJFBVwZvU9UbG/A9j6sFVo4p6
+5iQebBK7GTvF/66UHsjgoJRD2395Lt+Di6ukF+7tlVQREHIc1OR35JUy05D/SZyd
+q26gxEHrVj7qH+dHArwtw3Zl3Ba+UJJpLG9QJTfZbp/FIuDxrotgb+4tQl7CsyLf
+VD8FL6xCN1NPovTwotBULY+7EkarhqjQAjc4efS2pfHUf8SjasJjZWEaSvID7JOq
+4yJXkMZ0E/le5/FrFpeBPfpiKKeD5nRJsY6BB8QsNhHMiaNTn8mSmSzIUvug9ScG
+CCdz9lOM/9cvk83GE9M44koT5R0J1MaMrySe5JQ49ssRSVG1u2FnsEkt5Om2qV/V
+sNcRj/M+5ZJyN11KBJPh8LdyEGcM+h2+gUl8+XuSq8s9d3fQgMKQZKebvUKnOQgM
+m2gUm+QepsF1x1AtA1nE
+=J9oH
+-----END PGP SIGNATURE-----
+
+--=-BUTr4U2qvF8OaNVex7Q2--
