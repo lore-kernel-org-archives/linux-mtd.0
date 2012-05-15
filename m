@@ -1,18 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUFqW-0006Vg-Q9
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:23:17 +0000
-Message-ID: <1337081204.2528.171.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] UBI: add lnum to struct ubi_work
+ id 1SUG3Y-00005p-4I
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:36:44 +0000
+Message-ID: <1337082012.2528.181.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V2] UBI: add ubi_lnum_purge function to clear work queue
+ for a lnum
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Tue, 15 May 2012 14:26:44 +0300
-In-Reply-To: <1337080498.2528.161.camel@sauron.fi.intel.com>
-References: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
- <1337080498.2528.161.camel@sauron.fi.intel.com>
+Date: Tue, 15 May 2012 14:40:12 +0300
+In-Reply-To: <alpine.DEB.2.00.1205150943470.17750@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205150943470.17750@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-S9BE4vQuKYeVRJsp5J43"
+ boundary="=-5QkPN3sT2GSnyzhI5eAb"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
@@ -26,42 +26,120 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-S9BE4vQuKYeVRJsp5J43
+--=-5QkPN3sT2GSnyzhI5eAb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-15 at 14:14 +0300, Artem Bityutskiy wrote:
-> On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
-> > @@ -1086,13 +1090,14 @@ out_ro:
-> >   * @ubi: UBI device description object
-> >   * @pnum: physical eraseblock to return
-> >   * @torture: if this physical eraseblock has to be tortured
-> > + * @lnum: the last used logical eraseblock number for the PEB
-> >   *
-> >   * This function is called to return physical eraseblock @pnum to the =
-pool of
-> >   * free physical eraseblocks. The @torture flag has to be set if an I/=
-O error
-> >   * occurred to this @pnum and it has to be tested. This function retur=
-ns zero
-> >   * in case of success, and a negative error code in case of failure.
-> >   */
-> > -int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture)
-> > +int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int =
-lnum)
+On Tue, 2012-05-15 at 09:44 +0200, Joel Reardon wrote:
+> This is the second part of a patch to allow UBI to force the erasure of
+> particular logical eraseblock numbers. In this patch, a new function,
+> ubi_lnum_purge, is added that allows the caller to synchronously erase al=
+l
+> unmapped erase blocks whose LEB number corresponds to the parameter. This
+> requires a previous patch that stores the LEB number in struct ubi_work.
 >=20
-> Joel, am sorry for nitpicking again, but could you please put the "lnum"
-> argument between "ubi" and "lnum" instead? Just feels more natural.
-> Otherwise the patch is OK. Thanks!
+> This was tested by disabling the call to do_work in ubi thread, which res=
+ults
+> in the work queue remaining unless explicitly called to remove. UBIFS was
+> changed to call ubifs_leb_change 50 times for three different LEBs. Then =
+the
+> new function was called to clear the queue for the three differnt LEB num=
+bers
+> one at a time. The work queue was dumped each time and the selective remo=
+val
+> of the particular LEB numbers was observed.
+>=20
+> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 
-Err, but you also need volume ID, because there may be several volumes
-with the same lnum.
+No objections in general, and I can merge this as soon as you send the
+final version. However, for this version I have several notes.
+
+> +/**
+> + * ubi_lnum_purge - synchronously erase unmapped PEBs by LEB number.
+> + * @ubi_num: UBI device to erase PEBs
+> + * @lnum: the LEB number to erase old unmapped PEBs.
+> + *
+> + * This function is designed to offer a means to ensure that the content=
+s of
+> + * old, unmapped LEBs are securely erased without having to flush the en=
+tire
+> + * work queue of all erase blocks that need erasure.  Simply erasing the=
+ block
+> + * at the time of unmapped is insufficient, as the wear-levelling subsys=
+tem
+> + * may have already moved the contents. This function navigates the list=
+ of
+> + * erase blocks that need erasures, and performs an immediate and synchr=
+onous
+> + * erasure of any erase block that has held data for this particular @ln=
+um.
+> + * This may include eraseblocks that held older versions of the same @ln=
+um.
+> + * Returns zero in case of success and a negative error code in case of
+> + * failure.
+> + */
+> +int ubi_lnum_purge(int ubi_num, int lnum)
+> +{
+> +	int err;
+> +	struct ubi_device *ubi;
+> +
+> +	ubi =3D ubi_get_device(ubi_num);
+> +	if (!ubi)
+> +		return -ENODEV;
+> +
+> +	err =3D ubi_wl_flush_lnum(ubi, lnum);
+> +	ubi_put_device(ubi);
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(ubi_lnum_purge);
+
+Please, do not introduce a separate exported function for this. Instead,
+add "lnum" argument to "ubi_wl_flush". Preserve the old behavior if lnum
+is -1. Document this at the header comment. In your case you also need
+to call mtd->sync() I think.
+
+> +	dbg_wl("flush lnum %d", lnum);
+> +	list_for_each_entry_safe(wrk, tmp, &ubi->works, list) {
+> +		if (wrk->lnum =3D=3D lnum) {
+> +			down_read(&ubi->work_sem);
+> +			spin_lock(&ubi->wl_lock);
+
+But you cannot walk the ubi->works list without holding the spinlock.
+Any one may add/remove elements to/from this list concurrently.
+
+Take the work_sem at the beginning. Release at the very end.
+
+Then you can do something like this:
+
+int found =3D 1;
+
+while (found) {
+	found =3D 0;
+
+	spin_lock(&ubi->wl_lock);
+	list_for_each_entry(wrk, tmp, &ubi->works, list) {
+		if (wrk->lnum =3D=3D lnum) {
+			list_del(&wrk->list);
+			ubi->works_count -=3D 1;
+			ubi_assert(ubi->works_count >=3D 0);
+			spin_unlock(&ubi->wl_lock);
+
+			err =3D wrk->func(ubi, wrk, 0);
+			if (err)
+				return err;
+
+			spin_lock(&ubi->wl_lock);
+			found =3D 1;
+			break;
+	}
+	spin_unlock(&ubi->wl_lock);
+}
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-S9BE4vQuKYeVRJsp5J43
+--=-5QkPN3sT2GSnyzhI5eAb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -69,19 +147,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPsj10AAoJECmIfjd9wqK0UooP/RYKO4H9e2Dwj5F1QVgTOCeN
-c68dJ3I2A+uVzwAYBwZe1Jan7jSoX90TAXmj1rRF+XU1XVJaneafd8rfbxr3dies
-WkSoiyo2He4eACGQ9rZEmU167I4j97kyrTr/F3aJZRLVgSfz0OnHXctNZU7lvwDW
-DdypJn/h9L1Y+mmjtERmsptoqdrihwBsiHtxq6Z/HC6oTUhlK3m1sTj30e8pglSM
-4fDsUqoxf2PJE4v9U5O0O5mT8fs3JRFT8NlrDbvtGzUO0eoL0ZvgvCx1zJN8vF+y
-P1eLdUtjuKVsBnjLBwxsj7dLLEXs49Lwb7/zeK7SQieL9JMhO34zujocRyEL653R
-iKo4BYY3gnFZ1sYYeh6dXosB4UR0IDtYhw2eGt1BAgV7vQcnVFLRiA1i3Cxx8+oA
-tlkA9lQPZQh+1d3Q9GheIW5zdvnFEcMvwt9cqwBinkCjfU14/yDFz3Vx7tRSRbfo
-6CFV6P8L3aqGKMfH/iO+dMpDK3lnCHFDpljXql4sXpWFe5l7zZArViqRgnWXiS7b
-AGEz6uctdQNR4ZKsfoa+FziH4HqhGMjdsphqpp532K7+FSHgOcdze3NTENVtQPyE
-+vgh3vpUhCsfDVK530JGSeNBxNbxiYsC92rr3kAqW4mHuKnHBoVZolM+n2025YTY
-Vu88BzercuVFfNX9T67i
-=MYi7
+iQIcBAABAgAGBQJPskCcAAoJECmIfjd9wqK0q30P/3AbwSQR8T409yRS9h6I/rGz
+2dIrP4cQLgphYS/g6f1oLni/qtuywlhG0wwhPPf3f0hHWT6Bn4H0pg67vdMKiKhU
+Lv1XaSYRmnRz3x4Wxh1vC8+qDoLMMMUAoZDULPFWmbDGa63RVy18ETwM4Qj3Ba7m
++fNrCzeAQ6rP1fkkRjFpnDLt+DtC9yx4oc4qNV1sohLKM/ZEYrlwCbIOOV9TXoHo
++taqMzqNn4NLUvqb34VNv1ZJVjTeFW3nMGKdQVDhirUFWOqIygk+9+rqr35pNtdi
+nTJxt5aoCZgB+xuHwtYz7l7PIN1hNXO5es6LBbJdEyh8UZ4vyNmmkJ1rUnF2H/RX
+fgi4AfYbkGWH3rrpyH/V4cyJs76xuFlNKXq/rYOzXXW7IOGXOLs1r5og0NmnKHXA
+/wtPympPmN5VF5KGsBMUo2AExhmhWfn82ogVf8utA9do5Gt6UZ202SEnZjkiiKfQ
+6MmOpVXSoYCHgHCnfSCjzk5z7Y9or6GFVBp1RyNeXfU7hyxGasS2f0KzNln8u7ya
+9Dr7bswHu2vVHStNOSPmQDy0fu4nropLgguNNUvyex1L2lKx4d6bTOKkmsRjSufV
+J/a+cZTYJmONBaHtIEu9f+bMJUCtY1Kg1U81TM8VCojGQlN+VtW8Zb95ytJ2vUCj
+za54gy9nY/dW2DsgU+An
+=K6GV
 -----END PGP SIGNATURE-----
 
---=-S9BE4vQuKYeVRJsp5J43--
+--=-5QkPN3sT2GSnyzhI5eAb--
