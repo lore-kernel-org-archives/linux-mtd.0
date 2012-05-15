@@ -1,23 +1,16 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUC5d-0005wz-GT
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 07:22:38 +0000
-Date: Tue, 15 May 2012 09:22:15 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/3] ARM: OMAP2+: gpmc: update nand register helper
-Message-ID: <20120515072215.GB14401@parrot.com>
-References: <cover.1336748974.git.afzal@ti.com>
- <b1a955469e6968b369e89f8e47bfc14c7051e6bb.1336748974.git.afzal@ti.com>
- <20120511200214.GZ21851@atomide.com>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUCQv-0007W3-HJ
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 07:44:41 +0000
+Date: Tue, 15 May 2012 09:44:34 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH V2] UBI: add ubi_lnum_purge function to clear work queue for
+ a lnum
+Message-ID: <alpine.DEB.2.00.1205150943470.17750@eristoteles.iwoars.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20120511200214.GZ21851@atomide.com>
-Cc: Afzal Mohammed <afzal@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,112 +20,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 11, 2012 at 09:02:14PM +0100, Tony Lindgren wrote:
-> * Afzal Mohammed <afzal@ti.com> [120511 08:48]:
-> > Provide helper function for updating NAND register details for
-> > the necessary chip select. NAND drivers platform data can be
-> > updated with this information so that NAND driver can handle
-> > GPMC NAND operations by itself.
-> 
-> Hmm this seems that it might be a more future proof path.
+This is the second part of a patch to allow UBI to force the erasure of
+particular logical eraseblock numbers. In this patch, a new function,
+ubi_lnum_purge, is added that allows the caller to synchronously erase all
+unmapped erase blocks whose LEB number corresponds to the parameter. This
+requires a previous patch that stores the LEB number in struct ubi_work.
 
-OK, I'll try to rewrite my patch on top of these.
+This was tested by disabling the call to do_work in ubi thread, which results
+in the work queue remaining unless explicitly called to remove. UBIFS was
+changed to call ubifs_leb_change 50 times for three different LEBs. Then the
+new function was called to clear the queue for the three differnt LEB numbers
+one at a time. The work queue was dumped each time and the selective removal
+of the particular LEB numbers was observed.
 
-Best Regards,
---
-Ivan
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ drivers/mtd/ubi/kapi.c  |   31 +++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi.h   |    1 +
+ drivers/mtd/ubi/wl.c    |   42 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/ubi.h |    1 +
+ 4 files changed, 74 insertions(+), 1 deletions(-)
 
-> 
-> Tony
-> 
->  
-> > Signed-off-by: Afzal Mohammed <afzal@ti.com>
-> > ---
-> >  arch/arm/mach-omap2/gpmc.c             |   21 +++++++++++++++++++++
-> >  arch/arm/plat-omap/include/plat/gpmc.h |   18 ++++++++++++++++++
-> >  2 files changed, 39 insertions(+)
-> > 
-> > diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> > index 46b09da..a409a3e 100644
-> > --- a/arch/arm/mach-omap2/gpmc.c
-> > +++ b/arch/arm/mach-omap2/gpmc.c
-> > @@ -49,6 +49,7 @@
-> >  #define GPMC_ECC_CONTROL	0x1f8
-> >  #define GPMC_ECC_SIZE_CONFIG	0x1fc
-> >  #define GPMC_ECC1_RESULT        0x200
-> > +#define GPMC_ECC_BCH_RESULT_0	0x240
-> >  
-> >  /* GPMC ECC control settings */
-> >  #define GPMC_ECC_CTRL_ECCCLEAR		0x100
-> > @@ -681,6 +682,26 @@ int gpmc_prefetch_reset(int cs)
-> >  }
-> >  EXPORT_SYMBOL(gpmc_prefetch_reset);
-> >  
-> > +void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
-> > +{
-> > +	reg->gpmc_status = gpmc_base + GPMC_STATUS;
-> > +	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
-> > +				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
-> > +	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
-> > +				GPMC_CS_NAND_ADDRESS + GPMC_CS_SIZE * cs;
-> > +	reg->gpmc_nand_data = gpmc_base + GPMC_CS0_OFFSET +
-> > +				GPMC_CS_NAND_DATA + GPMC_CS_SIZE * cs;
-> > +	reg->gpmc_prefetch_config1 = gpmc_base + GPMC_PREFETCH_CONFIG1;
-> > +	reg->gpmc_prefetch_config2 = gpmc_base + GPMC_PREFETCH_CONFIG2;
-> > +	reg->gpmc_prefetch_control = gpmc_base + GPMC_PREFETCH_CONTROL;
-> > +	reg->gpmc_prefetch_status = gpmc_base + GPMC_PREFETCH_STATUS;
-> > +	reg->gpmc_ecc_config = gpmc_base + GPMC_ECC_CONFIG;
-> > +	reg->gpmc_ecc_control = gpmc_base + GPMC_ECC_CONTROL;
-> > +	reg->gpmc_ecc_size_config = gpmc_base + GPMC_ECC_SIZE_CONFIG;
-> > +	reg->gpmc_ecc1_result = gpmc_base + GPMC_ECC1_RESULT;
-> > +	reg->gpmc_bch_result0 = gpmc_base + GPMC_ECC_BCH_RESULT_0;
-> > +}
-> > +
-> >  static void __init gpmc_mem_init(void)
-> >  {
-> >  	int cs;
-> > diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-> > index 1527929..6a8078e 100644
-> > --- a/arch/arm/plat-omap/include/plat/gpmc.h
-> > +++ b/arch/arm/plat-omap/include/plat/gpmc.h
-> > @@ -131,6 +131,24 @@ struct gpmc_timings {
-> >  	u16 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
-> >  };
-> >  
-> > +struct gpmc_nand_regs {
-> > +	void __iomem	*gpmc_status;
-> > +	void __iomem	*gpmc_nand_command;
-> > +	void __iomem	*gpmc_nand_address;
-> > +	void __iomem	*gpmc_nand_data;
-> > +	void __iomem	*gpmc_prefetch_config1;
-> > +	void __iomem	*gpmc_prefetch_config2;
-> > +	void __iomem	*gpmc_prefetch_control;
-> > +	void __iomem	*gpmc_prefetch_status;
-> > +	void __iomem	*gpmc_ecc_config;
-> > +	void __iomem	*gpmc_ecc_control;
-> > +	void __iomem	*gpmc_ecc_size_config;
-> > +	void __iomem	*gpmc_ecc1_result;
-> > +	void __iomem	*gpmc_bch_result0;
-> > +};
-> > +
-> > +extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
-> > +
-> >  extern unsigned int gpmc_ns_to_ticks(unsigned int time_ns);
-> >  extern unsigned int gpmc_ps_to_ticks(unsigned int time_ps);
-> >  extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
-> > -- 
-> > 1.7.10
-> > 
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 33ede23..a236522 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -704,6 +704,37 @@ int ubi_sync(int ubi_num)
+ }
+ EXPORT_SYMBOL_GPL(ubi_sync);
 
++/**
++ * ubi_lnum_purge - synchronously erase unmapped PEBs by LEB number.
++ * @ubi_num: UBI device to erase PEBs
++ * @lnum: the LEB number to erase old unmapped PEBs.
++ *
++ * This function is designed to offer a means to ensure that the contents of
++ * old, unmapped LEBs are securely erased without having to flush the entire
++ * work queue of all erase blocks that need erasure.  Simply erasing the block
++ * at the time of unmapped is insufficient, as the wear-levelling subsystem
++ * may have already moved the contents. This function navigates the list of
++ * erase blocks that need erasures, and performs an immediate and synchronous
++ * erasure of any erase block that has held data for this particular @lnum.
++ * This may include eraseblocks that held older versions of the same @lnum.
++ * Returns zero in case of success and a negative error code in case of
++ * failure.
++ */
++int ubi_lnum_purge(int ubi_num, int lnum)
++{
++	int err;
++	struct ubi_device *ubi;
++
++	ubi = ubi_get_device(ubi_num);
++	if (!ubi)
++		return -ENODEV;
++
++	err = ubi_wl_flush_lnum(ubi, lnum);
++	ubi_put_device(ubi);
++	return err;
++}
++EXPORT_SYMBOL_GPL(ubi_lnum_purge);
++
+ BLOCKING_NOTIFIER_HEAD(ubi_notifiers);
+
+ /**
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index b3e5815..f91f965 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -535,6 +535,7 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
+ int ubi_wl_get_peb(struct ubi_device *ubi);
+ int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum);
+ int ubi_wl_flush(struct ubi_device *ubi);
++int ubi_wl_flush_lnum(struct ubi_device *ubi, int lnum);
+ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
+ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
+ void ubi_wl_close(struct ubi_device *ubi);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 4e51735..56d9836 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -610,7 +610,6 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
+ 	wl_wrk->e = e;
+ 	wl_wrk->torture = torture;
+ 	wl_wrk->lnum = lnum;
+-
+ 	schedule_ubi_work(ubi, wl_wrk);
+ 	return 0;
+ }
+@@ -1237,6 +1236,47 @@ retry:
+ }
+
+ /**
++ * ubi_wl_flush_lnum - flush all pending works associated with a LEB number
++ * @ubi: UBI device description object
++ * @lnum: the LEB number only for which work should be synchronously executed
++ *
++ * This function executes pending works for PEBs which are associated with a
++ * particular LEB number. If one of the pending works fail, for instance, due
++ * to the erase block becoming bad block during erasure, then it returns the
++ * error without continuing, but removes the work from the queue. This
++ * function returns zero if no work on the queue remains for lnum and all work
++ * in the call executed successfully.
++ */
++int ubi_wl_flush_lnum(struct ubi_device *ubi, int lnum)
++{
++	int err = 0;
++	struct ubi_work *wrk, *tmp;
++
++	/* For each pending work, if it corresponds to the parameter @lnum,
++	 * then execute the work.
++	 */
++	dbg_wl("flush lnum %d", lnum);
++	list_for_each_entry_safe(wrk, tmp, &ubi->works, list) {
++		if (wrk->lnum == lnum) {
++			down_read(&ubi->work_sem);
++			spin_lock(&ubi->wl_lock);
++
++			list_del(&wrk->list);
++			ubi->works_count -= 1;
++			ubi_assert(ubi->works_count >= 0);
++			spin_unlock(&ubi->wl_lock);
++
++			err = wrk->func(ubi, wrk, 0);
++			up_read(&ubi->work_sem);
++			if (err)
++				return err;
++		}
++	}
++
++	return err;
++}
++
++/**
+  * ubi_wl_flush - flush all pending works.
+  * @ubi: UBI device description object
+  *
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index 9838dce..8087e99 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -216,6 +216,7 @@ int ubi_leb_unmap(struct ubi_volume_desc *desc, int lnum);
+ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum);
+ int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum);
+ int ubi_sync(int ubi_num);
++int ubi_lnum_purge(int ubi_num, int lnum);
+
+ /*
+  * This function is the same as the 'ubi_leb_read()' function, but it does not
 -- 
-Ivan Djelic
-Operating System Team Manager
-tel + 33 01 48 03 70 16
------------------------------------------
-Parrot
-174, Quai de Jemmapes
-75010 Paris, France
-tel + 33 01 48 03 60 60
-fax + 33 01 48 03 70 08
------------------------------------------
-http://www.parrot.com
+1.7.5.4
