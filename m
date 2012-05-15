@@ -1,27 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUBNm-0002nK-HD
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 06:37:19 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: Thomas Weber <thomas.weber.linux@googlemail.com>
-Subject: RE: [PATCH v4 04/39] ARM: OMAP2+: gpmc: Acquire NAND CS value
-Date: Tue, 15 May 2012 06:37:08 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98C2CD@DBDE01.ent.ti.com>
-References: <cover.1335874494.git.afzal@ti.com>
- <10220de398d22fad5de783d8f58fc55ebac85338.1335874494.git.afzal@ti.com>
- <4FA05292.7030902@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9829B0@DBDE01.ent.ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E98BD5A@DBDE01.ent.ti.com>
- <4FB1F808.9080500@gmail.com>
-In-Reply-To: <4FB1F808.9080500@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUBeL-0003kN-Ri
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 06:54:26 +0000
+Message-ID: <1337065072.2528.118.camel@sauron.fi.intel.com>
+Subject: Re: Missing offset increment in scan_read_raw_oob()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dmitry Maluka <D.Maluka@adbglobal.com>
+Date: Tue, 15 May 2012 09:57:52 +0300
+In-Reply-To: <4FAD51B7.6010303@adbglobal.com>
+References: <4FAD51B7.6010303@adbglobal.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-9NROeQo+Tnr9zLYiTwC/"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas,
 
-On Tue, May 15, 2012 at 12:00:32, Thomas Weber wrote:
+--=-9NROeQo+Tnr9zLYiTwC/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > I need a help.
-> >
-> > Can someone familiar with boards - devkit8000, omap3touchbook, overo bo=
-ards,
-> > let me know GPMC CS on which NAND is connected.
-> On Devkit8000 the NAND is connected to CS0.
-
-Thanks for the information
-
-> I thought that all NAND devices for booting are connected to CS0,=20
-> because of ROM code?
+On Fri, 2012-05-11 at 20:51 +0300, Dmitry Maluka wrote:
+> It seems there is a bug in scan_read_raw_oob() in nand_bbt.c which
+> should cause wrong functioning of NAND_BBT_SCANALLPAGES option.
 >=20
-> According to spruf98w.pdf:
+> Possible fix (relies on offs passed page-aligned):
 >=20
-> 25.4.7.4 NAND
-> ...
->   * The device is connected to CS0.
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -324,6 +324,7 @@ static int scan_read_raw_oob(struct mtd_info *mtd,
+> uint8_t *buf, loff_t offs,
+> =20
+>                 buf +=3D mtd->oobsize + mtd->writesize;
+>                 len -=3D mtd->writesize;
+> +               offs +=3D mtd->writesize;
+>         }
+>         return 0;
+>  }
 
-Yes, expecting they should be, looking for confirmation.
+Looks like a correct fix. Did you encounter a real bug and then spot
+this issue, or you spot it by reading the code?
 
-Regards
-Afzal
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-9NROeQo+Tnr9zLYiTwC/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPsf5wAAoJECmIfjd9wqK0pJIP/AoIy2yDE2wW3Ps7Eii/NvKb
+3Q+sOTjwdOi1sluzoQnHA/VzgJVuzLKNVv94zVRTMbz3uIQciuNc+XHeRLhaCg+D
+xGgtbQiFr5/3XWIl4N5qWlUeYCPw7Ayw4F53UVHsyR4gsuFwc3QkgrT/C2QqnXlK
+ZBQMfcfrG97KxFsdNtPHWSyhlNqE9os70WLFheaqUXAqvLb5opSWJyBOmWjBx3Va
++1jyKSP3+g6/pvaRIL3eNVAx3tU3f3Q7Rei3GVGjuQp73z8tsx/db4PeiLt+3bC0
++iCdZMOUtLwUd8cPR8VRknD/eGqzdxJ+8+8GAOOE4KZaMtn3B7zfpkwCpjDHQNwa
+dAxcAwBJkT9VlfnP2iJqQc2uqZtBWx6nFa3Ibreot1EK5V4FQq+BKWL9+VpFjbnr
+leM/4mk4x7myycDIuoA7ABghe6AuSz1aataGC0A3vOwHsWlBdb5MJpS7JwjEQGjS
+C2nLeVBA1ulJ1AJ0O3PZ+jfObBdPgMFQah90g7u3sbpT4LChYYlhb2G7VLuq3mCJ
+KZZ5hTyB2Piu/q6FPMUUCD7WiF+LAPS8CoxfR2qtQ5irKCYhjylYBywzqUjCCLuX
+7u4wy7G0Uvi2EY0iC26v/ZerV6E0mdX8dxUMmqkjKtrL0wCkq01uEHRntqK4LP8z
+t1qKsP85MaRqJ007eCHw
+=xCVY
+-----END PGP SIGNATURE-----
+
+--=-9NROeQo+Tnr9zLYiTwC/--
