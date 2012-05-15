@@ -1,20 +1,15 @@
-Message-ID: <4FB2109A.2080505@freescale.com>
-Date: Tue, 15 May 2012 16:15:22 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUDdc-0006HI-P7
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 09:01:51 +0000
+Date: Tue, 15 May 2012 11:01:47 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBIFS: read crypto_lookup from datanodes to znodes
+Message-ID: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] MTD: LPC32xx SLC NAND driver
-References: <1336829386-23301-1-git-send-email-stigge@antcom.de>
- <1337068543.2528.143.camel@sauron.fi.intel.com>
-In-Reply-To: <1337068543.2528.143.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com,
- Lars-Peter Clausen <lars@metafoo.de>, linux-doc@vger.kernel.org,
- Lei Wen <leiwen@marvell.com>, devicetree-discuss@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dwmw2@infradead.org, Bastian Hecht <hechtb@googlemail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +19,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B405=E6=9C=8815=E6=97=A5 15:55, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> I am CCing few other guys who take care of several drivers which use
-> similar way of busy-waiting - probably you could change it?
->
-> Bastian: drivers/mtd/nand/sh_flctl.c
-> Lars-Peter: drivers/mtd/nand/jz4740_nand.c
-> Huang: drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> Lei Wen: drivers/mtd/nand/pxa3xx_nand.c
->
-> On Sat, 2012-05-12 at 15:29 +0200, Roland Stigge wrote:
->> +       /*
->> +        * The DMA is finished, but the NAND controller may still have
->> +        * buffered data. Wait until all the data is sent.
-When all the data is sent, is there an interrupt for this?
+Crypto_lookup values are now oppertunistically read from the data node header whenever a data
+node is read from flash and cached in the TNC. The value will be zero until it
+is read from flash. (If it is needed before it happens to be loaded, i.e., to
+delete a node, then it will be forced read.)
 
+It was tested by setting cryptolookup values for new datanodes by their lnum
+and offset on flash. This was later asserted in the TNC that they were either
+zero, or always equal. On mounting, the TNC crypto lookup values were
+confirmed to be zero and later, after reading the corresponding files,
+confirmed they were loaded and corresponded to the location on flash.
 
-Best Regards
-Huang Shijie
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ fs/ubifs/gc.c          |    8 +++++++-
+ fs/ubifs/journal.c     |    9 ++++++---
+ fs/ubifs/tnc.c         |   40 ++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs-media.h |    3 ++-
+ 4 files changed, 55 insertions(+), 5 deletions(-)
 
->> +        */
->> +       timeout =3D LPC32XX_DMA_SIMPLE_TIMEOUT;
->> +       while ((readl(SLC_STAT(host->io_base))&  SLCSTAT_DMA_FIFO)
->> +&&  (timeout>  0))
->> +               timeout--;
->> +       if (!timeout) {
->> +               dev_err(mtd->dev.parent, "FIFO held data too long\n");
->> +               status =3D -EIO;
->> +       }
-> I know the MTD tree is full of this, but this is bad, I think. The
-> timeout should be time-backed, not CPU-cycles-backed.
->
-> I do not know the best way to do this, hopefully someone in the arm lis=
-t
-> could suggest, but the following pattern is at least better:
->
->
-> /* Chip reaction time timeout in milliseconds */
-> #define LPC32XX_DMA_TIMEOUT 100
->
-> timeout =3D loops_per_jiffy * msecs_to_jiffies(LPC32XX_DMA_TIMEOUT);
->
-> while ((readl(...))&&  timeout-->  0)
-> 	cpu_relax();
->
-> if (!timeout)
-> 	error;
->
->
-> So basically I turned your hard-coded iterations count into a time-base=
-d
-> timeout. I also used cpu_relax() which is commonly used in tight-loops
-> like this. Here is a piece of documentation about cpu_relax():
->
-> "
-> The right way to perform a busy wait is:
->
->      while (my_variable !=3D what_i_want)
->          cpu_relax();
->
-> The cpu_relax() call can lower CPU power consumption or yield to a
-> hyperthreaded twin processor; it also happens to serve as a compiler
-> barrier, so, once again, volatile is unnecessary.  Of course, busy-
-> waiting is generally an anti-social act to begin with.
-> "
->
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index f146447..16df2f4 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -322,15 +322,21 @@ static int move_node(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		     struct ubifs_scan_node *snod, struct ubifs_wbuf *wbuf)
+ {
+ 	int err, new_lnum = wbuf->lnum, new_offs = wbuf->offs + wbuf->used;
++	long long crypto_lookup = 0;
+
+ 	cond_resched();
+ 	err = ubifs_wbuf_write_nolock(wbuf, snod->node, snod->len);
+ 	if (err)
+ 		return err;
+
++	if (key_type(c, &snod->key) == UBIFS_DATA_KEY) {
++		struct ubifs_data_node *dn =
++			(struct ubifs_data_node *) snod->node;
++		crypto_lookup = le64_to_cpu(dn->crypto_lookup);
++	}
+ 	err = ubifs_tnc_replace(c, &snod->key, sleb->lnum,
+ 				snod->offs, new_lnum, new_offs,
+-				snod->len, 0);
++				snod->len, crypto_lookup);
+ 	list_del(&snod->list);
+ 	kfree(snod);
+ 	return err;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 2072b9a..3f7aa05 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -89,7 +89,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
+  */
+ static inline void zero_data_node_unused(struct ubifs_data_node *data)
+ {
+-	data->padding0 = 0;
+ 	memset(data->padding1, 0, 2);
+ }
+
+@@ -735,6 +734,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+
+ 	dlen = UBIFS_DATA_NODE_SZ + out_len;
+ 	data->compr_type = cpu_to_le16(compr_type);
++	data->crypto_lookup = cpu_to_le64(0);
+
+ 	/* Make reservation before allocating sequence numbers */
+ 	err = make_reservation(c, DATAHD, dlen);
+@@ -742,12 +742,14 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 		goto out_free;
+
+ 	err = write_node(c, DATAHD, data, dlen, &lnum, &offs);
++
+ 	if (err)
+ 		goto out_release;
+ 	ubifs_wbuf_add_ino_nolock(&c->jheads[DATAHD].wbuf, key_inum(c, key));
+ 	release_head(c, DATAHD);
+
+-	err = ubifs_tnc_add(c, key, lnum, offs, dlen, 0);
++	err = ubifs_tnc_add(c, key, lnum, offs, dlen,
++			    le64_to_cpu(data->crypto_lookup));
+ 	if (err)
+ 		goto out_ro;
+
+@@ -1226,7 +1228,8 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+
+ 	if (dlen) {
+ 		sz = offs + UBIFS_INO_NODE_SZ + UBIFS_TRUN_NODE_SZ;
+-		err = ubifs_tnc_add(c, &key, lnum, sz, dlen, 0);
++		err = ubifs_tnc_add(c, &key, lnum, sz, dlen,
++				    le64_to_cpu(dn->crypto_lookup));
+ 		if (err)
+ 			goto out_ro;
+ 	}
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index b222a72..ac0d03c 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1431,6 +1431,35 @@ static int maybe_leb_gced(struct ubifs_info *c, int lnum, int gc_seq1)
+ }
+
+ /**
++ * tnc_set_crypto_lookup - set the crypto_lookup field in a zbranch.
++ * @c: UBIFS file-system description object
++ * @zbr: the crypto_lookup field is set in this zbranch
++ * @node: a pointer to a node containing the zbranch.
++ *
++ * Crypto_lookup values are stored on flash memory inside the data node.
++ * When the system is running, they should be oppertunistically stored in
++ * memory inside the zbranch. This function is called whenever a node
++ * is read from flash memory. If @node is a data node (therefore containing a
++ * @crypto_lookup field), then:
++ * if @zbr has an unset @crypto_lookup, set it to the value from @node
++ * if @zbr has already a @crypto_lookup, assert they are the same.
++ */
++static void tnc_set_crypto_lookup(struct ubifs_info *c,
++				  struct ubifs_zbranch *zbr, void *node)
++{
++	if (key_type(c, &(zbr->key)) == UBIFS_DATA_KEY) {
++		struct ubifs_data_node *dn =
++			(struct ubifs_data_node *) node;
++		if (zbr->crypto_lookup != 0) {
++			ubifs_assert(zbr->crypto_lookup ==
++				     le64_to_cpu(dn->crypto_lookup));
++		} else {
++			zbr->crypto_lookup = le64_to_cpu(dn->crypto_lookup);
++		}
++	}
++}
++
++/**
+  * ubifs_tnc_locate - look up a file-system node and return it and its location.
+  * @c: UBIFS file-system description object
+  * @key: node key to lookup
+@@ -1485,6 +1514,11 @@ again:
+ 	if (ubifs_get_wbuf(c, zbr.lnum)) {
+ 		/* We do not GC journal heads */
+ 		err = ubifs_tnc_read_node(c, &zbr, node);
++		if (!err) {
++			mutex_lock(&c->tnc_mutex);
++			tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
++			mutex_unlock(&c->tnc_mutex);
++		}
+ 		return err;
+ 	}
+
+@@ -1497,9 +1531,15 @@ again:
+ 		safely = 1;
+ 		goto again;
+ 	}
++
++	mutex_lock(&c->tnc_mutex);
++	tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
++	mutex_unlock(&c->tnc_mutex);
+ 	return 0;
+
+ out:
++	if (!err)
++		tnc_set_crypto_lookup(c, zt, node);
+ 	mutex_unlock(&c->tnc_mutex);
+ 	return err;
+ }
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index 9ecbd37..e03adcf 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -539,6 +539,7 @@ struct ubifs_dent_node {
+  * struct ubifs_data_node - data node.
+  * @ch: common header
+  * @key: node key
++ * @crypto_lookup: the node's cryptographic key's position in the KSA
+  * @size: uncompressed data size in bytes
+  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
+  * @padding: reserved for future, zeroes
+@@ -550,7 +551,7 @@ struct ubifs_dent_node {
+ struct ubifs_data_node {
+ 	struct ubifs_ch ch;
+ 	__u8 key[UBIFS_KEY_LEN];
+-	__le64 padding0; /* Watch 'zero_data_node_unused()' if changing! */
++	__le64 crypto_lookup;
+ 	__le32 size;
+ 	__le16 compr_type;
+ 	__u8 padding1[2]; /* Watch 'zero_data_node_unused()' if changing! */
+-- 
+1.7.5.4
