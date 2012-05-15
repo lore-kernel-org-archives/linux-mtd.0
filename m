@@ -1,17 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUBeL-0003kN-Ri
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 06:54:26 +0000
-Message-ID: <1337065072.2528.118.camel@sauron.fi.intel.com>
+ id 1SUBjc-0003wn-Al
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 06:59:52 +0000
+Message-ID: <1337065400.2528.120.camel@sauron.fi.intel.com>
 Subject: Re: Missing offset increment in scan_read_raw_oob()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Dmitry Maluka <D.Maluka@adbglobal.com>
-Date: Tue, 15 May 2012 09:57:52 +0300
+Date: Tue, 15 May 2012 10:03:20 +0300
 In-Reply-To: <4FAD51B7.6010303@adbglobal.com>
 References: <4FAD51B7.6010303@adbglobal.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-9NROeQo+Tnr9zLYiTwC/"
+ boundary="=-qafGNwFb+UtWLleI742u"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,7 +25,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-9NROeQo+Tnr9zLYiTwC/
+--=-qafGNwFb+UtWLleI742u
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -34,27 +34,22 @@ On Fri, 2012-05-11 at 20:51 +0300, Dmitry Maluka wrote:
 > should cause wrong functioning of NAND_BBT_SCANALLPAGES option.
 >=20
 > Possible fix (relies on offs passed page-aligned):
->=20
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -324,6 +324,7 @@ static int scan_read_raw_oob(struct mtd_info *mtd,
-> uint8_t *buf, loff_t offs,
-> =20
->                 buf +=3D mtd->oobsize + mtd->writesize;
->                 len -=3D mtd->writesize;
-> +               offs +=3D mtd->writesize;
->         }
->         return 0;
->  }
 
-Looks like a correct fix. Did you encounter a real bug and then spot
-this issue, or you spot it by reading the code?
+I pushed it to l2-mtd.git, but please, tell how you found this issue.
+Also you did not provide signed-off-by - can I add this:
+
+Signed-off-by: Dmitry Maluka <D.Maluka@adbglobal.com>
+
+?
+
+Also note, the patch was line-wrapped and did not apply, so I had to
+amend it.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-9NROeQo+Tnr9zLYiTwC/
+--=-qafGNwFb+UtWLleI742u
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPsf5wAAoJECmIfjd9wqK0pJIP/AoIy2yDE2wW3Ps7Eii/NvKb
-3Q+sOTjwdOi1sluzoQnHA/VzgJVuzLKNVv94zVRTMbz3uIQciuNc+XHeRLhaCg+D
-xGgtbQiFr5/3XWIl4N5qWlUeYCPw7Ayw4F53UVHsyR4gsuFwc3QkgrT/C2QqnXlK
-ZBQMfcfrG97KxFsdNtPHWSyhlNqE9os70WLFheaqUXAqvLb5opSWJyBOmWjBx3Va
-+1jyKSP3+g6/pvaRIL3eNVAx3tU3f3Q7Rei3GVGjuQp73z8tsx/db4PeiLt+3bC0
-+iCdZMOUtLwUd8cPR8VRknD/eGqzdxJ+8+8GAOOE4KZaMtn3B7zfpkwCpjDHQNwa
-dAxcAwBJkT9VlfnP2iJqQc2uqZtBWx6nFa3Ibreot1EK5V4FQq+BKWL9+VpFjbnr
-leM/4mk4x7myycDIuoA7ABghe6AuSz1aataGC0A3vOwHsWlBdb5MJpS7JwjEQGjS
-C2nLeVBA1ulJ1AJ0O3PZ+jfObBdPgMFQah90g7u3sbpT4LChYYlhb2G7VLuq3mCJ
-KZZ5hTyB2Piu/q6FPMUUCD7WiF+LAPS8CoxfR2qtQ5irKCYhjylYBywzqUjCCLuX
-7u4wy7G0Uvi2EY0iC26v/ZerV6E0mdX8dxUMmqkjKtrL0wCkq01uEHRntqK4LP8z
-t1qKsP85MaRqJ007eCHw
-=xCVY
+iQIcBAABAgAGBQJPsf+4AAoJECmIfjd9wqK0tJQQANDoOppvyrd6IW6B2cPS2GyB
+VJBoHjYj6O6bUoCcEHtG0L+vx+dodcHQoaa/HWUHHvW5bp+rZi6AfIv4lW1iohxk
+0UQRhm6N2jp4zRpo1bAfkbdUDr8r11Mk91deAOYtTmx4tJxS58RPJzo9ODtbFscB
+9c6yhlNxWGFc1MXmvuZPYk36UPYXvvyu/s0gdZqCmNdZJAinGH13TJuoRIZUaHIn
+CvsJTMcheUMLdahyBEPMHbHbnajHPmek+GNaiMZC5bYSUQSN0KT5zJOWqezI1RSf
+Wg7UQa8bBP6O2Bz/NyLkJ+1IBIy70LtRC60PGesUx8rb2gHzUwgdpYzOC1iojeyg
+BkYU+a6Dc1nT9ZyvXPKYstFmv4nzqz6YUwnGMDKRmYc49rIlksUfzPS0l3xgRTsn
++a0Drh1oxkTBCx7yCx5eAqr78ifiBnJBWhI5C2VegjCon0Hijfl+lLZlyKq9prmg
+OMTB43GwDhF8TTNN3JNILcILaGwNN7wSIy+X2ULNseaW5Bf4k1gMuhUz4tj2wSBT
+fZdq3Qi+42ay/ghhOWjz09PLYkgA6hw2g0wo6m7Y2nPlhOKl2YTq2HYW31+RCHB4
+Nti5qSBCiBuKy8rMrQIaRrDzhf0q14yYNherYanDvEI22lfTY/VBMqriW0u5Sbnq
+xQli+5GEkenli3z1AU+v
+=SrP9
 -----END PGP SIGNATURE-----
 
---=-9NROeQo+Tnr9zLYiTwC/--
+--=-qafGNwFb+UtWLleI742u--
