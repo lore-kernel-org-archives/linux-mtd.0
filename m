@@ -1,17 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUG4C-00007p-Pn
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:37:25 +0000
-Message-ID: <1337082053.2528.182.camel@sauron.fi.intel.com>
-Subject: Re: determining if a block erasure failed
+ id 1SUGB7-0001G6-EO
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:44:34 +0000
+Message-ID: <1337082481.2528.186.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] UBI: add lnum to struct ubi_work
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Tue, 15 May 2012 14:40:53 +0300
-In-Reply-To: <alpine.DEB.2.00.1205150944550.17750@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205150944550.17750@eristoteles.iwoars.net>
+Date: Tue, 15 May 2012 14:48:01 +0300
+In-Reply-To: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-wHcbzVME1qxCAF7Zz4/7"
+ boundary="=-hGuWCr+NyIv9tv5mSl83"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
@@ -25,45 +25,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-wHcbzVME1qxCAF7Zz4/7
+--=-hGuWCr+NyIv9tv5mSl83
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-15 at 09:53 +0200, Joel Reardon wrote:
-> I want the caller of erase_worker() to be aware if the erase block became
-> bad. Here is the relevant code at the end of erase_worker():
->=20
-> /* at this time, the erase has failed. err =3D=3D -EIO */
->         ubi_msg("mark PEB %d as bad", pnum);
->         err =3D ubi_io_mark_bad(ubi, pnum);
->         if (err)
->                 goto out_ro;
->=20
-> /* does other stuff, not touching err */
->=20
-> /* err =3D=3D 0 here, because of above goto */
->         return err;
->=20
-> out_ro:
->         ubi_ro_mode(ubi);
->         return err;
->=20
->=20
-> So, if this function should return zero when the erase block fails, then =
-I
-> will add a "result" field to ubi_work that will store the result of the
-> work function. But I figured I'd check first if the return err that alway=
-s
-> returns 0 is not an oversight and this function should return -EIO if it
-> fails.
+On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
+> This is part of a multipart patch to allow UBI to force the erasure of
+> particular logical eraseblock numbers. In this patch, the logical erase b=
+lock
+> number is added to ubi_work data structure, and it is also passed as a
+> parameter to schedule erase to set it appropriately. Whenever ubi_wl_put_=
+peb
+> is called, the lnum is also passed to be forwarded to schedule erase. Lat=
+er,
+> a new ubi_sync_lnum will be added to execute immediately all work related=
+ to
+> that lnum.
 
-Why do you need the results?
+Hmm, I've just checked your patch with Aiaiai and it complains about
+your changes - and the complaints are correct - you introduce a bug.
+
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/ubi/wl.c:1023 erase_worker() error: dereferencing freed memory=
+ 'wl_wrk' [smatch]
++drivers/mtd/ubi/wl.c:1023:35-41: ERROR: reference preceded by free on line=
+ 1016 [coccinelle]
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-wHcbzVME1qxCAF7Zz4/7
+--=-hGuWCr+NyIv9tv5mSl83
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -71,19 +65,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPskDFAAoJECmIfjd9wqK016AQAI+ivy9LlcCpTlskcpavM2un
-it/3nULP+UUxZWOzr8DiS3SfO//sEuPBlenZgPtwZ7qBn4WYdw9O3EWY7bunjTEJ
-FSr3cIX6CseMBe6RSOsHqdpooNiMHJLN1pPv2QLKe2cX0vY55B/jPr5vzESWiBR1
-B/qiz06qY0I+3AOtkylLQDprviCgjlLUVDc6lo5fzWA48mV5kwR3K17s0rg9mpNR
-vJ8uWTt+z0CN/zVmX7KBMNimZW1FdVO4+7PwWmGwN27XrOGOyO/SEWR4cV+5Euu/
-r4iGMmh9p7+Gxr7dbRciKVfe87p63gnVPZG88uDTokh4PJ3p6jVjQnhPkwocnxYq
-+6MgS8MyG9mFvxr6ZexkIqI6Pi/YJFTypORG3pA5+JlIDLfhbnrXdVaKqWwb1KJx
-ZSmtq0kBfz9i9IG4XpgsjE3hb8t17JOy/tl1QkAE82QUEY5UPxDvLR2/tk+TihQU
-ddRmsCnqyJTkFync9onG4p247V0MZSB8FNKnvBx9EkCgqiq34l8gZkm/7CbQNbu+
-RpHgFEIbJqZiHKgfJIQULBKfRuuGEnIkHxW4/aa8zg2VaEYDI/3aTGzpExnu1TC7
-CA9XwD7/emgwOJVeX+zh/yN8wK7+zXh6eyVRo8J26wvXrHtbE/4HSEiHC6wqSLAl
-eFQptQwf41H3TfeQBYiO
-=0TYs
+iQIcBAABAgAGBQJPskJxAAoJECmIfjd9wqK0nbgQALNc7iOZ91BwMzMRMj9ygmFI
+/g89oodxCUf+Xc0V57KOy+ZZqiRkC0MRLpLzWf9cr5uUJC9Czk2c+/A4syq9Kv0H
+MdT9IEyZwhqDrApqhEUDftrzqxNvGtTNA8+jnAnP+62RZA1tij891Y49SUGXvxah
+WAblbiIapcmDTjP+F8gYBNL4YDZOCb5YHOmC2vUZOxCtAqUuaB8w4gtKOmys/CDv
+qZfV/a4kvlfwrY/4Evhb2mXXZ6TDawlY0bDdlaZWJLXM1z59UrKlE4UJ2GcWG6SB
+3ajmnRM4cfzrWqGCHGtRt2WfzZc5slcluEf28l46wqvCqLuTzUPcTwSzT/xwaAI5
+hgaSKS5kV5MO++jr0zvSMLmHUKF9jxecBkM39icNQwRuG+xKCq05YfVrbQgfU1/H
+ou/CIX4OziBeE6cofFzpciL0J7bGPAcxirAsREzp+S85DmNGT+OVnsfXbXf9Tk1w
+Bu0fAOvguhcX5MFcEPphebsn0TGT4mIfVeGvR3tkq3/nUplFJgvksaOdfFbbmFQd
+9qrkJgpg6x/32FjYIdrYsGntqEWH/kkliIHF9cUKNK74x6VEjoIyL1pKYR0WGmr/
+XFU/bVueffCuCbk2qofBD5y6jNXXA7yn3WeKMvYqmBacYEHEMR6wR1hnPpU/ODGh
+vDtNg2qjFlbKDQ1DH0lN
+=mY1p
 -----END PGP SIGNATURE-----
 
---=-wHcbzVME1qxCAF7Zz4/7--
+--=-hGuWCr+NyIv9tv5mSl83--
