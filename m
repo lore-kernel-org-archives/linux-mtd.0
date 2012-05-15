@@ -1,15 +1,15 @@
-Message-ID: <1337094261.4170.70.camel@shinybook.infradead.org>
-Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
+Message-ID: <1337094404.4170.72.camel@shinybook.infradead.org>
+Subject: Re: [PATCH] JFFS2: Add parameter to reserve disk space for root
 From: David Woodhouse <dwmw2@infradead.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 15 May 2012 16:04:21 +0100
-In-Reply-To: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
-References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+To: Daniel Drake <dsd@laptop.org>
+Date: Tue, 15 May 2012 16:06:44 +0100
+In-Reply-To: <20120410212235.951079D401E@zog.reactivated.net>
+References: <20120410212235.951079D401E@zog.reactivated.net>
 Content-Type: multipart/signed; micalg="sha1";
  protocol="application/x-pkcs7-signature";
- boundary="=-s3xKLDGv/X89/cavQx8E"
+ boundary="=-MkxyQdx4rhzJxD3giVur"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: dilinger@queued.net, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +20,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-s3xKLDGv/X89/cavQx8E
+--=-MkxyQdx4rhzJxD3giVur
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-04-09 at 13:19 +0200, Robert Jarzmik wrote:
+On Tue, 2012-04-10 at 22:22 +0100, Daniel Drake wrote:
 >=20
-> The reason seams that the first 111 bytes read ends between
-> the 2 docg3 planes, and that the first following read (in
-> the 12 bytes sequence, read of 16 bit word) returns the byte
-> of the rightmost plane duplicated in high and lower byte of
-> the word.
->=20
-> Fix this behaviour by ensuring that if the previous read
-> ended up in-between the 2 planes, there will be a first 1
-> byte read to get back to the beginning of leftmost plane.=20
+> +       /* Always allow root */
+> +       if (current_fsuid() =3D=3D 0 || current_fsgid() =3D=3D 0)
+> +               return 1;=20
 
-Um, this seems complex. Wouldn't it be easier just to say "Don't Do That
-Then" =E2=80=94 always read a multiple of two bytes, even if the caller doe=
-sn't
-care about the last byte?
+I've changed that to if (capable(CAP_SYS_RESOURCE)) rather than having a
+hard-coded check for the root user, which is usually the wrong thing to
+do. Please test.
 
 --=20
 dwmw2
 
---=-s3xKLDGv/X89/cavQx8E
+--=-MkxyQdx4rhzJxD3giVur
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -145,19 +138,19 @@ kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
 MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
 dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
 eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTE1MTUwNDIxWjAjBgkqhkiG9w0BCQQx
-FgQUs7Gn6t6+b2iAFkQTki2UKZ3xmRswgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTE1MTUwNjQ0WjAjBgkqhkiG9w0BCQQx
+FgQUH4BlMpi1kJ7zwVak6cg35JyVAG8wgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
 SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
 ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
 ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
 TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
 aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAk9KBaykKmmPfq/FOZVN0A4NqU
-JayqybRd+weW4KwcsQ+SQmOQBfxj2AR3GtV8Rg+n+SmPXfT/hVDq2W73UrbshgnKpskAwsogyKcS
-KS+LIMqeAVpImh5n255y8lDUl4Q73de0QsK8p5CS47PYMaI+KSVoBVyuYMke1RVCY3TO6FW7Jn/X
-EZ8GzkXptfoFfHsmbRZA9pWXe12g2JxsrnvAqxEPdIHw5/NPWqoAu52IjOsodbWXa3uwDrA3MP3c
-RDsfnlMyay9Y841ouIbO4ekUNuQXYVAyU3Ie07Sj2KmPvZwwjtgO5zFTmazqCWfOyQM1wjGmr7NK
-ajA92UD/lNqWAAAAAAAA
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQCID+qckUeiMurgUIrhhBdYTVl3
+sHg3HdYKdzTQ1YeojZmEayvTBmlfnoo9DwNwFDx8Cy1Q2aN9IxQMmxpI/cAL3OljFvBPAkRFW6I4
+7+YrwLjmfQMqN7VMzW+SK7fqPqjdS75eVMAdnOvGQ/rthO71tShFhK+gNX+3eIMJWW3YbJYYptIz
+Mj8ROa3XiQsA5Tb5sJ+9xEEZdN5xSLgggvY4sZw9uGT7GVSAS9OFULRsKIYPaiiOeYsxryIssSYY
+oB9OGVOHaK7fNTKMiNzL7tTDDQY2WN4vTUWnpoHmr+N3VmGF5CPsMu1nGh9cj1lsPj8xOn7PHmkJ
+Uuon6xcnyXKyAAAAAAAA
 
 
---=-s3xKLDGv/X89/cavQx8E--
+--=-MkxyQdx4rhzJxD3giVur--
