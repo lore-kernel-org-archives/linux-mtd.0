@@ -1,20 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUHUg-0000g1-VR
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 13:08:52 +0000
-Message-ID: <1337087537.2528.206.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: clean up uclinux.c map driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: gerg@snapgear.com
-Date: Tue, 15 May 2012 16:12:17 +0300
-In-Reply-To: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
-References: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-L6ad6bNnQyKRDfONIF9r"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>
-Reply-To: dedekind1@gmail.com
+Message-ID: <4FB25837.2050603@antcom.de>
+Date: Tue, 15 May 2012 15:20:55 +0200
+From: Roland Stigge <stigge@antcom.de>
+MIME-Version: 1.0
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] MTD: LPC32xx SLC NAND driver
+References: <1336829386-23301-1-git-send-email-stigge@antcom.de>
+ <1337068543.2528.143.camel@sauron.fi.intel.com>
+ <4FB2109A.2080505@freescale.com>
+In-Reply-To: <4FB2109A.2080505@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: srinivas.bakki@nxp.com, Lars-Peter Clausen <lars@metafoo.de>,
+ dedekind1@gmail.com, Lei Wen <leiwen@marvell.com>,
+ devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dwmw2@infradead.org, Bastian Hecht <hechtb@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem and Huang,
 
---=-L6ad6bNnQyKRDfONIF9r
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+thank you for your feedback!
 
-On Tue, 2012-05-15 at 14:08 +1000, gerg@snapgear.com wrote:
-> From: Greg Ungerer <gerg@uclinux.org>
->=20
-> Perform a number of cleanups on the uclinux.c map driver.
-> No structural or semantic changes, only minor cleanups.
->=20
-> . insert appropriate prefix into printk() calls
-> . remove redundant "if" checks in the module exit code
-> . remove unnecessary includes
-> . make the struct uclinux_ram_map static
-> . cast the virtual address calculations to keep them sparse clean
->=20
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+On 05/15/2012 10:15 AM, Huang Shijie wrote:
+>> On Sat, 2012-05-12 at 15:29 +0200, Roland Stigge wrote:
+>>> +       /*
+>>> +        * The DMA is finished, but the NAND controller may still have
+>>> +        * buffered data. Wait until all the data is sent.
+> When all the data is sent, is there an interrupt for this?
 
-Thanks, pushed all 3 patches to l2-mtd.git.
+Bad news is: No
 
-Side note: why do you Cc uclinux-dev@uclinux.org if it is closed mailing
-list. Why do you need to make people replying you see rejects from the
-mailing list?
+Good news is: The previous DMA operation finished with an interrupt
+which according to the manual should already corresponds to this
+condition. Tests show that at this point of sampling:
 
---=20
-Best Regards,
-Artem Bityutskiy
+>>> +       timeout = LPC32XX_DMA_SIMPLE_TIMEOUT;
+>>> +       while ((readl(SLC_STAT(host->io_base))&  SLCSTAT_DMA_FIFO)
+>>> +&&  (timeout>  0))
+>>> +               timeout--;
 
---=-L6ad6bNnQyKRDfONIF9r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+... the condition is always true and always just jumps over this loop,
+at least with my hardware.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>> /* Chip reaction time timeout in milliseconds */
+>> #define LPC32XX_DMA_TIMEOUT 100
+>>
+>> timeout = loops_per_jiffy * msecs_to_jiffies(LPC32XX_DMA_TIMEOUT);
+>>
+>> while ((readl(...))&&  timeout-->  0)
+>>     cpu_relax();
 
-iQIcBAABAgAGBQJPslYxAAoJECmIfjd9wqK0KFMP/1J4vCAYdIGEcGf55N0Lenx8
-3+0ZcElm+52b8YX5uY7ZEaUn/euWJJU4BLLAwMnBdVSA/ZxusWkpH4v+XdFeaj1q
-MMvoH0zBqNqP3Sha/YPDK5WrZnHhR4oSIDAYuBxLulT0JMOy9xAK7dpZO7QuJtcS
-c/9qw12P9d+kVFUSYMxhN6GyV0mTHJtX2xdw6ff39iSEMHHvZIUPwO5qneef0G1i
-huAYGyS2SHYoZzo2Nivcm72We91/Y1r19DMXKZxFgegxCZk7BtAyZE2DkTp2PCdW
-64uxX8PDAr9y8VyG9LdjjdpgG5YMSqCNzM7mUUoCtf7oUJ/uYzo0s9OVWVirCc2f
-eFyW6xrbqyM9xGzBNrlOjvvD6UB/k5z95hbVKfFfBRFeE8YkcZ1hMSWHdzCJIKqc
-YITBqvlIwNRmfSpKTxjC/+Os14uFp+CGEh74gLYsDEcRC4qe/Rnaed3+yEyAv5AF
-Ea1Sjg8/6KJL1A1fDd6vn42TzCBzEuWsAFmz8DCwxlPY99SG+xcm+RFo1gfutVf/
-klkZDJ9IOu/O88bRvrUOkvaWYqQYUChiVgmCfvH3TvmkXKXqwpFa7rAyyr+iMFug
-W0UMenYyxhjo5ThBjs/UvmNGIixiHnGVh/M3fcjvhM/kYDhG5vQQi3peuGkd5nUX
-4JaaTgjVzVYaoItl/hw7
-=srJY
------END PGP SIGNATURE-----
+As I understand loops_per_jiffy, this loop will take much longer than
+the 100 ms you defined above?
 
---=-L6ad6bNnQyKRDfONIF9r--
+Anyway, I will keep the loop for safety reasons, add an msleep() and add
+a warning, should the loop be entered _at all_.
+
+Maybe someone from NXP can give us more insight here? Maybe the
+condition check isn't necessary anymore after I ported the driver to
+dmaengine (this controller is always wired together with an amba-pl080
+in the LPC32xx)?
+
+Thanks in advance,
+
+Roland
