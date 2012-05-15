@@ -1,22 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUFHt-0003dj-Fp
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 10:47:30 +0000
-Message-ID: <1337079056.2528.158.camel@sauron.fi.intel.com>
-Subject: Re: [RESEND PATCH V2 14/17] MTD: MIPS: lantiq: verify that the NOR
- interface is available on falcon soc
+ id 1SUFfD-000560-5q
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:11:35 +0000
+Message-ID: <1337080498.2528.161.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] UBI: add lnum to struct ubi_work
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Tue, 15 May 2012 13:50:56 +0300
-In-Reply-To: <1337017363-14424-14-git-send-email-blogic@openwrt.org>
-References: <1337017363-14424-1-git-send-email-blogic@openwrt.org>
- <1337017363-14424-14-git-send-email-blogic@openwrt.org>
+To: Joel Reardon <joel@clambassador.com>
+Date: Tue, 15 May 2012 14:14:58 +0300
+In-Reply-To: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-yIDHwD/xOLPxK6Aa6Kas"
+ boundary="=-tC0oWOnLN8uLQcGQ3Xce"
 Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,25 +25,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-yIDHwD/xOLPxK6Aa6Kas
+--=-tC0oWOnLN8uLQcGQ3Xce
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-05-14 at 19:42 +0200, John Crispin wrote:
-> When running on a FALC-ON SoC, we need to check the bootstrap options to =
-see
-> if NOR is available.
->=20
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Cc: linux-mtd@lists.infradead.org
+On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
+> @@ -1086,13 +1090,14 @@ out_ro:
+>   * @ubi: UBI device description object
+>   * @pnum: physical eraseblock to return
+>   * @torture: if this physical eraseblock has to be tortured
+> + * @lnum: the last used logical eraseblock number for the PEB
+>   *
+>   * This function is called to return physical eraseblock @pnum to the po=
+ol of
+>   * free physical eraseblocks. The @torture flag has to be set if an I/O =
+error
+>   * occurred to this @pnum and it has to be tested. This function returns=
+ zero
+>   * in case of success, and a negative error code in case of failure.
+>   */
+> -int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture)
+> +int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int ln=
+um)
 
-Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Joel, am sorry for nitpicking again, but could you please put the "lnum"
+argument between "ubi" and "lnum" instead? Just feels more natural.
+Otherwise the patch is OK. Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-yIDHwD/xOLPxK6Aa6Kas
+--=-tC0oWOnLN8uLQcGQ3Xce
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +64,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPsjUQAAoJECmIfjd9wqK09MkP/ROD0uVJvW4K4YbZmJtxuMvj
-z9iJDqNSxDXxVofo6ykPrL3RjedwI0iYnu1A9cN2X3tzSu5DDzO8+xJ3JeENcuMR
-x7prXmzaKViUtX9LtnaKXR/tGcJ9CWL5NqiqBo3ltrjsBWsehwW5RKFNLJV/2LJD
-hes7Mytr6ua/3pwpuLEJMKhuLvH7fXWTa8Hhswoh1sBRT//qh1w1Ch1kviXdcvZL
-2s/pBAdksnwmiQ9Z1I+b9SXEI8xbZ5bcolEeMXZn1tO1QHXf4+Ai3pDseqQm1PGh
-HC6Co8D6cwHLhu7ZpcTaz/OE9rC7UKa5IunNgINeVvMeQskOnhwfUsp22GUt0Dcs
-PeVwJxQcSx1EQWOojrPVQsoeXQP+NARQqswQkeFlzwjzW7VhizjanPi8JVT+evnG
-nHczq6non40kPM6mQbFOSM4s+xk9HxmpWyqbFvk5tSI2LBMrUjCTYJNU/1sra1rJ
-Th5NGz97NhPJcUbvEhmMDMTjw42eEJnA0iGbYTwD0EJItrzWWYolie1YJ/RrAaRu
-H2A9kpUcXPqcQq6xfAERoNcd7YGJda6YqZK6NjX0i82anhiZi6WTGWfb/Xq8z7R0
-X0X/OtRgSCKcwRDObJ4ItaWVTco7MDqjcmNs3lFnfKkIza1QmD7mAC1r7OmSmX3p
-i9T0HcTnIGuCyVzm4AK6
-=8K2j
+iQIcBAABAgAGBQJPsjqyAAoJECmIfjd9wqK0ij8QAMLIBEQzONNLDgMDCFeqUhnz
+/J2hdxKvxwIl1uMNJg5+ODdKEBQLz7uoh86GIi6USCNxau7GtW3QS4KkAzsJGB3x
+0NVghTyUw1CfvrTGwllM90KqU1vbKTbwY3inAuoVebdZTG0RtJmRhtkmkFgO15E0
+AVwnnVFtz4Icn+0CTNzYFQ5mN5e3f3NNb3SwXHg8jUuAEh1EB4E6SqRXpoyOyhlj
+Xi/mulT+0x2yRI2WSKujrqCYcqO64BPiEI1jO+BPwWLvignhAy+A7LqFwXR8S7bN
++Fg1qNgtlWv/AjxDsg5jcGByWk8sNpgWNKG/15m/Bz1Y5mCF9n8oFLjzf8ud41sO
+azOq7zsIpG2f1cARbF6xpTDGQEITciL0eF7y2vH5DppriurIZGgqenzW2x1hPG2A
+8kQtElveYZt3KEx68toQ0+wfbQ0rjQ9I7xtBO+g+J1bkaQttpBYUEVV/+fqoxnyi
+p3k/BD4WwTofKUkxTBj4KypduoUGJ4BmjU2L0Da2q8jDqRsaQYZdf1R9sapVhi1f
+ecFaouyk7KHSVKgrrNPlhLcBCknXGVUjdzOuqWdNsl3awsBefDwqSsW0hZyPFEhB
+jFZ7PD5ekkEujoauTsvPOaATPNxgUNOH0mgjhOKlZniLIpd+EGZ2xj968mARwvza
+0JaTnzcTpKeuTzmD70sh
+=tGX5
 -----END PGP SIGNATURE-----
 
---=-yIDHwD/xOLPxK6Aa6Kas--
+--=-tC0oWOnLN8uLQcGQ3Xce--
