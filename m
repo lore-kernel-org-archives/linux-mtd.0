@@ -1,25 +1,18 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUJKv-0004hS-LX
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 15:06:54 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "tony@atomide.com" <tony@atomide.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "artem.bityutskiy@linux.intel.com"
- <artem.bityutskiy@linux.intel.com>, "dedekind1@gmail.com"
- <dedekind1@gmail.com>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH 1/3] ARM: OMAP2+: gpmc: Modify interrupt handling
-Date: Tue, 15 May 2012 15:06:43 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98C879@DBDE01.ent.ti.com>
-References: <cover.1337090835.git.afzal@ti.com>
- <d193f1d968843c2580006bf3cde51f951de13892.1337090835.git.afzal@ti.com>
-In-Reply-To: <d193f1d968843c2580006bf3cde51f951de13892.1337090835.git.afzal@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4FB27B24.3030604@antcom.de>
+Date: Tue, 15 May 2012 17:49:56 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-Cc: "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] MTD: LPC32xx MLC NAND driver
+References: <1337091832-10138-1-git-send-email-stigge@antcom.de>
+ <20120515143428.GC13860@n2100.arm.linux.org.uk>
+In-Reply-To: <20120515143428.GC13860@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: srinivas.bakki@nxp.com, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +22,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
+Hi Russell!
 
-On Tue, May 15, 2012 at 20:08:34, Mohammed, Afzal wrote:
-> Modify interrupt handling such that interrupts can be handled by GPMC
-> client drivers using standard interrupt APIs rather than requiring
-> the drivers to have knowledge about GPMC interrupt handling. Currently
-> only NAND related interrupts has been considered (which is the case
-> even without this change) as the only user of GPMC interrupt is NAND.
+Thanks for your notes!
 
-:
+On 05/15/2012 04:34 PM, Russell King - ARM Linux wrote:
+> On Tue, May 15, 2012 at 04:23:52PM +0200, Roland Stigge wrote:
+>> +static int lpc32xx_xmit_dma(struct mtd_info *mtd, dma_addr_t dma,
+>> +			    void *mem, int len, enum dma_transfer_direction dir)
+>> +{
+>> +	struct nand_chip *chip = mtd->priv;
+>> +	struct lpc32xx_nand_host *host = chip->priv;
+>> +	struct dma_async_tx_descriptor *desc;
+>> +	int flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
+>> +	int res;
+>> +	dma_cookie_t cookie;
+>> +
+>> +	host->dma_slave_config.direction = dir;
+>> +	host->dma_slave_config.src_addr = dma;
+>> +	host->dma_slave_config.dst_addr = dma;
+>> +	if (dmaengine_slave_config(host->dma_chan, &host->dma_slave_config)) {
+>> +		dev_err(mtd->dev.parent, "Failed to setup DMA slave\n");
+>> +		return -ENXIO;
+>> +	}
+> 
+> The 'direction' argument should be ignored by all modern DMA engine
+> drivers
 
-> -	ret =3D request_irq(gpmc_irq, gpmc_handle_irq, IRQF_SHARED, "gpmc", NUL=
-L);
+Good - this way, I can move dmaengine_slave_config() to the dma_setup()
+function, i.e., to probe().
 
-If this series could not be considered for 3.5, to prevent failure of
-request_irq, either,
+However, I needed to set it there to some initial value (e.g., DMA_DEV_TO_MEM) -
+otherwise the amba-pl08x driver didn't accept it. Is this a bug in the pl08x
+driver?
 
-355f8ee  ARM: OMAP2+: GPMC: resolve type-conversion warning from sparse,
+Can we remove the .direction element from the struct dma_slave_config to prevent
+others from making the same mistakes? Or is it useful for sth. else still?
 
-should be avoided, or diff [1] would be required, as shared irq needs dev-i=
-d.
+>> +
+>> +	sg_init_one(&host->sgl, mem, len);
+>> +
+>> +	res = dma_map_sg(host->dma_chan->device->dev, &host->sgl, 1, dir);
+> 
+> Also note that dma transfer directions and dma data directions are
+> different things.  You shouldn't mix the two.
 
-Regards
-Afzal
+Thanks for pointing this out - I wasn't aware that the distinction between the
+two is so important. Also consider e.g.:
 
-[1]
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 46b09da..9e1b726 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -768,7 +768,7 @@ static int __init gpmc_init(void)
-                irq++;
-        }
+arch/arm/mm/dma-mapping.c:
+/**
+ * dma_map_sg - map a set of SG buffers for streaming mode DMA
+ * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
+ * @sg: list of buffers
+ * @nents: number of buffers to map 
+ * @dir: DMA transfer direction
+         ^^^^^^^^^^^^^^^^^^^^^^
+ *
+[...]
+ * Device ownership issues as mentioned for dma_map_single are the same
+ * here.
+ */
+int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+                enum dma_data_direction dir)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+;-)
 
--       ret =3D request_irq(gpmc_irq, gpmc_handle_irq, IRQF_SHARED, "gpmc",=
- NULL);
-+       ret =3D request_irq(gpmc_irq, gpmc_handle_irq, 0, "gpmc", NULL);
-        if (ret)
-                pr_err("gpmc: irq-%d could not claim: err %d\n",
-                                                gpmc_irq, ret);
+Roland
