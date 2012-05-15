@@ -1,21 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUMCV-0006wG-88
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 18:10:24 +0000
-Message-ID: <4FB29BF9.7050200@nod.at>
-Date: Tue, 15 May 2012 20:10:01 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUMQu-0002dW-3m
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 18:25:19 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: docg3 fix in-middle of blocks reads
+References: <1333970348-10319-1-git-send-email-robert.jarzmik@free.fr>
+ <1337094261.4170.70.camel@shinybook.infradead.org>
+Date: Tue, 15 May 2012 20:25:05 +0200
+In-Reply-To: <1337094261.4170.70.camel@shinybook.infradead.org> (David
+ Woodhouse's message of "Tue, 15 May 2012 16:04:21 +0100")
+Message-ID: <87ipfxuwse.fsf@free.fr>
 MIME-Version: 1.0
-To: Subodh Nijsure <snijsure@grid-net.com>
-Subject: Re: [RFC v4] UBI: Fastmap support (aka checkpointing)
-References: <1337101871-31181-1-git-send-email-richard@nod.at>
- <4FB296EA.5090104@grid-net.com>
-In-Reply-To: <4FB296EA.5090104@grid-net.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Subodh,
+David Woodhouse <dwmw2@infradead.org> writes:
 
-Am 15.05.2012 19:48, schrieb Subodh Nijsure:
-> Hello Richard,
+> On Mon, 2012-04-09 at 13:19 +0200, Robert Jarzmik wrote:
+>>=20
+>> The reason seams that the first 111 bytes read ends between
+>> the 2 docg3 planes, and that the first following read (in
+>> the 12 bytes sequence, read of 16 bit word) returns the byte
+>> of the rightmost plane duplicated in high and lower byte of
+>> the word.
+>>=20
+>> Fix this behaviour by ensuring that if the previous read
+>> ended up in-between the 2 planes, there will be a first 1
+>> byte read to get back to the beginning of leftmost plane.=20
 >
-> On 05/15/2012 10:11 AM, Richard Weinberger wrote:
->> v1: https://lwn.net/Articles/481612/
->> v2: https://lwn.net/Articles/496586/
->> v3: Didn't release it to linux-mtd
-> Will kernel that has older UBI drivers be able to mount and update the
-> UBI volumes that have been created with checkpointing feature?
+> Um, this seems complex. Wouldn't it be easier just to say "Don't Do That
+> Then" =E2=80=94 always read a multiple of two bytes, even if the caller d=
+oesn't
+> care about the last byte?
 
-Of course!
+Hi David,
 
-> Say I have bootrom that has 3.0.X kernel that has no knowledge of UBI
-> checkpointing, and my flash /dev/mtd2 has UBI volume with checkpointing
-> enabled. Will this bootrom be able to attach /dev/mtd2 and mount UBI
-> volume and read/write files on it?
+I don't get the "Don't Do That Then".
 
-Sure!
-Your bootrom will scan the UBI volume and detect two unknown internal
-volumes with compat=delete in their volume headers.
-So, it will delete the two fastmap volumes and continue scanning.
-It can alter the volume and so on.
+The caller here, UBIFS, wants to read 12 bytes at offset 111 =3D> [
+byte111..byte122]. Note that the number of wanted bytes is even, and it's t=
+he
+offset which is _odd_.
 
-Thanks,
-//richard
+The problem for the driver is to read the 111 first bytes and forget them, =
+and
+then store the next 12 bytes. I don't see an alternative here, apart from h=
+aving
+a bounce buffer to read the bytes [byte110..byte122], and then copy into the
+destination buffer. And I really don't want the bounce buffer.
+
+Do you see any other alternative ?
+
+Cheers.
+
+--=20
+Robert
