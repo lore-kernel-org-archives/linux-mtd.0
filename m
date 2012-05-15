@@ -1,16 +1,15 @@
 Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUGEN-0002JJ-7I
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:47:56 +0000
-Date: Tue, 15 May 2012 13:47:53 +0200 (CEST)
+ id 1SUGMm-00052b-2U
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 11:56:37 +0000
+Date: Tue, 15 May 2012 13:56:34 +0200 (CEST)
 From: Joel Reardon <joel@clambassador.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] UBI: add lnum to struct ubi_work
-In-Reply-To: <1337081204.2528.171.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1205151339020.18866@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205142046080.12448@eristoteles.iwoars.net>
- <1337080498.2528.161.camel@sauron.fi.intel.com>
- <1337081204.2528.171.camel@sauron.fi.intel.com>
+Subject: Re: determining if a block erasure failed
+In-Reply-To: <1337082053.2528.182.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205151349580.18866@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205150944550.17750@eristoteles.iwoars.net>
+ <1337082053.2528.182.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -23,48 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For vol_id, its straightforward everywhere except: ubi_wl_init_scan()
+Ah yes, if wl_wrk is freed in schedule_erase, theres no way to pass it
+back that way.
 
-where scheduling erase on the:
-
-struct ubi_scan_leb *seb
-
-appears to lack access to the volume id.  Should we add vol_id to
-ubi_scan_leb, and in ubi_scan() run:
-
-        ubi_rb_for_each_entry(rb1, sv, &si->volumes, rb) {
-                ubi_rb_for_each_entry(rb2, seb, &sv->root, u.rb)
-			seb->vol_id = sv->vol_id;
-
-Or is there a simpler way?
+The reason is that, if erasing a block of keys fails, then those keys may
+remain on the flash device for eternity. While a rare occurance, it may be
+nice to have ubifs perform GC on all main LEBs storing the data nodes that
+can no longer be deleted through key erasure / reencrypt the valid data
+nodes.
 
 Cheers,
 Joel Reardon
-
 On Tue, 15 May 2012, Artem Bityutskiy wrote:
 
-> On Tue, 2012-05-15 at 14:14 +0300, Artem Bityutskiy wrote:
-> > On Mon, 2012-05-14 at 20:47 +0200, Joel Reardon wrote:
-> > > @@ -1086,13 +1090,14 @@ out_ro:
-> > >   * @ubi: UBI device description object
-> > >   * @pnum: physical eraseblock to return
-> > >   * @torture: if this physical eraseblock has to be tortured
-> > > + * @lnum: the last used logical eraseblock number for the PEB
-> > >   *
-> > >   * This function is called to return physical eraseblock @pnum to the pool of
-> > >   * free physical eraseblocks. The @torture flag has to be set if an I/O error
-> > >   * occurred to this @pnum and it has to be tested. This function returns zero
-> > >   * in case of success, and a negative error code in case of failure.
-> > >   */
-> > > -int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture)
-> > > +int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture, int lnum)
+> On Tue, 2012-05-15 at 09:53 +0200, Joel Reardon wrote:
+> > I want the caller of erase_worker() to be aware if the erase block became
+> > bad. Here is the relevant code at the end of erase_worker():
 > >
-> > Joel, am sorry for nitpicking again, but could you please put the "lnum"
-> > argument between "ubi" and "lnum" instead? Just feels more natural.
-> > Otherwise the patch is OK. Thanks!
+> > /* at this time, the erase has failed. err == -EIO */
+> >         ubi_msg("mark PEB %d as bad", pnum);
+> >         err = ubi_io_mark_bad(ubi, pnum);
+> >         if (err)
+> >                 goto out_ro;
+> >
+> > /* does other stuff, not touching err */
+> >
+> > /* err == 0 here, because of above goto */
+> >         return err;
+> >
+> > out_ro:
+> >         ubi_ro_mode(ubi);
+> >         return err;
+> >
+> >
+> > So, if this function should return zero when the erase block fails, then I
+> > will add a "result" field to ubi_work that will store the result of the
+> > work function. But I figured I'd check first if the return err that always
+> > returns 0 is not an oversight and this function should return -EIO if it
+> > fails.
 >
-> Err, but you also need volume ID, because there may be several volumes
-> with the same lnum.
+> Why do you need the results?
 >
 > --
 > Best Regards,
