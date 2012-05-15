@@ -1,22 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUM8q-0006bs-Hj
- for linux-mtd@lists.infradead.org; Tue, 15 May 2012 18:06:37 +0000
-Received: by pbbrq13 with SMTP id rq13so8863326pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 15 May 2012 11:06:35 -0700 (PDT)
+ id 1SUMCV-0006wG-88
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2012 18:10:24 +0000
+Message-ID: <4FB29BF9.7050200@nod.at>
+Date: Tue, 15 May 2012 20:10:01 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Sender: dsdrake@gmail.com
-In-Reply-To: <1337094404.4170.72.camel@shinybook.infradead.org>
-References: <20120410212235.951079D401E@zog.reactivated.net>
- <1337094404.4170.72.camel@shinybook.infradead.org>
-Date: Tue, 15 May 2012 12:06:34 -0600
-Message-ID: <CAMLZHHQsbnPK=rLynao6k1euV0HFP6_gXAkJ_8WEOs8uo7zhbw@mail.gmail.com>
-Subject: Re: [PATCH] JFFS2: Add parameter to reserve disk space for root
-From: Daniel Drake <dsd@laptop.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dilinger@queued.net, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: Subodh Nijsure <snijsure@grid-net.com>
+Subject: Re: [RFC v4] UBI: Fastmap support (aka checkpointing)
+References: <1337101871-31181-1-git-send-email-richard@nod.at>
+ <4FB296EA.5090104@grid-net.com>
+In-Reply-To: <4FB296EA.5090104@grid-net.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 15, 2012 at 9:06 AM, David Woodhouse <dwmw2@infradead.org> wrot=
-e:
-> On Tue, 2012-04-10 at 22:22 +0100, Daniel Drake wrote:
->>
->> + =A0 =A0 =A0 /* Always allow root */
->> + =A0 =A0 =A0 if (current_fsuid() =3D=3D 0 || current_fsgid() =3D=3D 0)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
+Hi Subodh,
+
+Am 15.05.2012 19:48, schrieb Subodh Nijsure:
+> Hello Richard,
 >
-> I've changed that to if (capable(CAP_SYS_RESOURCE)) rather than having a
-> hard-coded check for the root user, which is usually the wrong thing to
-> do. Please test.
+> On 05/15/2012 10:11 AM, Richard Weinberger wrote:
+>> v1: https://lwn.net/Articles/481612/
+>> v2: https://lwn.net/Articles/496586/
+>> v3: Didn't release it to linux-mtd
+> Will kernel that has older UBI drivers be able to mount and update the
+> UBI volumes that have been created with checkpointing feature?
 
-Yes, this works fine.
+Of course!
 
-Thanks!
-Daniel
+> Say I have bootrom that has 3.0.X kernel that has no knowledge of UBI
+> checkpointing, and my flash /dev/mtd2 has UBI volume with checkpointing
+> enabled. Will this bootrom be able to attach /dev/mtd2 and mount UBI
+> volume and read/write files on it?
+
+Sure!
+Your bootrom will scan the UBI volume and detect two unknown internal
+volumes with compat=delete in their volume headers.
+So, it will delete the two fastmap volumes and continue scanning.
+It can alter the volume and so on.
+
+Thanks,
+//richard
