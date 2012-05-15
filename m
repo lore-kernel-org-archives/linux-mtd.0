@@ -1,14 +1,17 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SULHc-0001E9-OI
+ id 1SULHc-0001EI-Qd
  for linux-mtd@lists.infradead.org; Tue, 15 May 2012 17:11:39 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC v4] UBI: Fastmap support (aka checkpointing)
-Date: Tue, 15 May 2012 19:11:04 +0200
-Message-Id: <1337101871-31181-1-git-send-email-richard@nod.at>
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de, tim.bird@am.sony.com,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Subject: [PATCH 3/7] [RFC] UBI: Add fastmap on-flash layout
+Date: Tue, 15 May 2012 19:11:07 +0200
+Message-Id: <1337101871-31181-4-git-send-email-richard@nod.at>
+In-Reply-To: <1337101871-31181-1-git-send-email-richard@nod.at>
+References: <1337101871-31181-1-git-send-email-richard@nod.at>
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,95 +21,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-v1: https://lwn.net/Articles/481612/
-v2: https://lwn.net/Articles/496586/
-v3: Didn't release it to linux-mtd
+Specifies the fastmap on-flash layout.
+The fastmap on-flash data structure consists of two major parts.
+A super block (identified via UBI_FM_SB_VOLUME_ID) and
+zero or more data blocks (identified via UBI_Fm_DATA_VOLUME_ID).
+Data blocks are only used if whole checkpoint information does not fit
+into the super block.
 
-Changes since v1:
-        - renamed it to UBIVIS (at least in Kconfig)
-        - UBIVIS parameters are now configurable via Kconfig
-        - several bugs have been fixed (design and implementation bugs)
-        - added lots of comments to make the review process easier
-        - made checkpatch.pl happy
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/ubi-media.h |  124 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 124 insertions(+), 0 deletions(-)
 
-Changes since v2:
-        - minor bugs have been fixed
-        - renamed it to UBI fastmap (as Artem requested)
-
-Changes since v3:
-        - changed the on-flash layout (added padding fields, turned the
-          EBA storage into an array)
-        - fixed some corner cases (the protection queue needed some extra work)
-	- removed the data type hint logic
-	- rebased to Artems mtd tree
-
-[PATCH 1/7] [RFC] UBI: Export next_sqnum()
-[PATCH 2/7] [RFC] UBI: Export compare_lebs()
-[PATCH 3/7] [RFC] UBI: Add fastmap on-flash layout
-[PATCH 4/7] [RFC] UBI: Add fastmap structs to ubi_device
-[PATCH 5/7] [RFC] UBI: Make wl subsystem fastmap aware
-[PATCH 6/7] [RFC] UBI: Implement fastmapping support
-[PATCH 7/7] [RFC] UBI: Wire up fastmap support
-
-git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v4
-
-Some benchmark numbers:
-
-4GiB NAND
-Erase block size: 1MiB
-Page size: 4096
-Total PEBs: 4081*
-
-Attach method   Time**          #scanned PEBs
----------------------------------------------
-scanning        0m4.568s        4081
-fastmap         0m0.486s        3
-
-
-2GiB NAND
-Erase block size: 1MiB
-Page size: 4096
-Total PEBs: 2062*
-
-Attach method   Time            #scanned PEBs
----------------------------------------------
-scanning        0m2.440s        2062
-fastmap         0m0.439s        3
-
-
-1GiB NAND
-Erase block size: 1MiB
-Page size: 4096
-Total PEBs: 1038*
-
-Attach method   Time            #scanned PEBs
----------------------------------------------
-scanning        0m1.351s        1038
-fastmap         0m0.422s        4
-
-
-We observe that attaching by scanning depends on the total size N of the UBI
-device.It has a complexity of O(N).
-Whereas attaching by fastmap has a nearly constant attaching time.
-In the best case fastmap has to scan only one PEB.
-This case can happen if the complete fastmap fits into one PEB, the fastmap
-super block is the first PEB on the MTD partition and the fastmap pool is empty.
-On the other side, in the worst case fastmap has to scan UBI_FM_MAX_START +
-UBI_FM_MAX_BLOCKS + UBI_FM_MAX_POOL_SIZE PEBs.
-With the current default settings this would be 192 PEBs.
-So, attaching via fastmap has a complexity of O(1).
-I think we can reduce UBI_FM_MAX_BLOCKS and UBI_FM_MAX_POOL_SIZE to a much
-smaller value. On most real NAND chips the whole fastmap fits into one PEB.
-
-TODO:
-        - Artem is fully happy with the current on-flash layout,
-          maybe I can merge the erase counters into the EBA table
-        - Get a full review :)
-
-Thanks,
-//richard
-
-*) Didn't use the full NAND for UBI because Kernel, U-Boot, DT needed also
-some space.
-
-**) Time was taken by: "time ubiattach -m 5"
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 6fb8ec2..a23196f 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -375,4 +375,128 @@ struct ubi_vtbl_record {
+ 	__be32  crc;
+ } __packed;
+ 
++/* UBI fastmap on-flash data structures */
++
++#define UBI_FM_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
++#define UBI_FM_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
++
++/* fastmap on-flash data structure format version */
++#define UBI_FM_FMT_VERSION	1
++
++#define UBI_FM_SB_MAGIC		0x7B11D69F
++#define UBI_FM_HDR_MAGIC	0xD4B82EF7
++#define UBI_FM_VHDR_MAGIC	0xFA370ED1
++#define UBI_FM_POOL_MAGIC	0x67AF4D08
++#define UBI_FM_EBA_MAGIC	0xf0c040a8
++
++/* Semi-sane default values - TBR */
++#ifndef UBI_FM_MAX_POOL_SIZE
++#define UBI_FM_MAX_POOL_SIZE	128
++#endif
++#ifndef UBI_FM_MAX_BLOCKS
++#define UBI_FM_MAX_BLOCKS	32
++#endif
++#ifndef UBI_FM_MAX_START
++#define UBI_FM_MAX_START	64
++#endif
++
++/**
++ * struct ubi_fm_sb - UBI fastmap super block
++ * @magic: fastmap super block magic number (%UBI_FM_SB_MAGIC)
++ * @version: format version of this fastmap
++ * @data_crc: CRC over the fastmap data
++ * @nblocks: number of PEBs used by this fastmap
++ * @block_loc: an array containing the location of all PEBs of the fastmap
++ * @block_ec: the erase counter of each used PEB
++ * @sqnum: highest sequence number value at the time while taking the fastmap
++ *
++ */
++struct ubi_fm_sb {
++	__be32 magic;
++	__u8 version;
++	__u8 padding1[3];
++	__be32 data_crc;
++	__be32 nblocks;
++	__be32 block_loc[UBI_FM_MAX_BLOCKS];
++	__be32 block_ec[UBI_FM_MAX_BLOCKS];
++	__be64 sqnum;
++	__u8 padding2[32];
++} __packed;
++
++/**
++ * struct ubi_fm_hdr - header of the fastmap data set
++ * @magic: fastmap header magic number (%UBI_FM_HDR_MAGIC)
++ * @nfree: number of free PEBs known by this fastmap
++ * @nused: number of used PEBs known by this fastmap
++ * @nvol: number of UBI volumes known by this fastmap
++ */
++struct ubi_fm_hdr {
++	__be32 magic;
++	__be32 nfree;
++	__be32 nused;
++	__be32 nvol;
++	__u8 padding[16];
++} __packed;
++
++/* struct ubi_fm_hdr is followed by struct ubi_fm_scan_pool */
++
++/**
++ * struct ubi_fm_scan_pool - Fastmap pool PEBs to be scanned while attaching
++ * @magic: pool magic numer (%UBI_FM_POOL_MAGIC)
++ * @size: current pool size
++ * @pebs: an array containing the location of all PEBs in this pool
++ */
++struct ubi_fm_scan_pool {
++	__be32 magic;
++	__be32 size;
++	__be32 pebs[UBI_FM_MAX_POOL_SIZE];
++	__be32 padding[4];
++} __packed;
++
++/* struct ubi_fm_scan_pool is followed by nfree+nused struct ubi_fm_ec records */
++
++/**
++ * struct ubi_fm_ec - stores the erase counter of a PEB
++ * @pnum: PEB number
++ * @ec: ec of this PEB
++ */
++struct ubi_fm_ec {
++	__be32 pnum;
++	__be32 ec;
++} __packed;
++
++/**
++ * struct ubi_fm_volhdr - Fastmap volume header
++ * it identifies the start of an eba table
++ * @magic: Fastmap volume header magic number (%UBI_FM_VHDR_MAGIC)
++ * @vol_id: volume id of the fastmapped volume
++ * @vol_type: type of the fastmapped volume
++ * @data_pad: data_pad value of the fastmapped volume
++ * @used_ebs: number of used LEBs within this volume
++ * @last_eb_bytes: number of bytes used in the last LEB
++ */
++struct ubi_fm_volhdr {
++	__be32 magic;
++	__be32 vol_id;
++	__u8 vol_type;
++	__u8 padding1[3];
++	__be32 data_pad;
++	__be32 used_ebs;
++	__be32 last_eb_bytes;
++	__u8 padding2[8];
++} __packed;
++
++/* struct ubi_fm_volhdr is followed by one struct ubi_fm_eba records */
++
++/**
++ * struct ubi_fm_eba - denotes an association beween a PEB and LEB
++ * @magic EBA table magic number
++ * @nused: number of table entries
++ * @pnum: PEB number of LEB (LEB is the index)
++ */
++struct ubi_fm_eba {
++	__be32 magic;
++	__be32 nused;
++	__be32 pnum[0];
++} __packed;
+ #endif /* !__UBI_MEDIA_H__ */
+-- 
+1.7.6.5
