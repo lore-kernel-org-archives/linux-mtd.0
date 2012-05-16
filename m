@@ -1,19 +1,20 @@
 Received: from dalsmrelay2.nai.com ([205.227.136.216])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUSMx-000350-84
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 00:45:37 +0000
-Message-ID: <4FB2F82E.1040006@snapgear.com>
-Date: Wed, 16 May 2012 10:43:26 +1000
+ id 1SUSOs-00039i-07
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 00:47:34 +0000
+Message-ID: <4FB2F8A9.6010909@snapgear.com>
+Date: Wed, 16 May 2012 10:45:29 +1000
 From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: clean up uclinux.c map driver
+To: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [uClinux-dev] [PATCH] mtd: clean up uclinux.c map driver
 References: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
- <1337087537.2528.206.camel@sauron.fi.intel.com>
-In-Reply-To: <1337087537.2528.206.camel@sauron.fi.intel.com>
+ <CAMjpGUcteBCy7OLVgxF1sDTNi4XqCKsetEQSW-dpG0Ji4mUh2A@mail.gmail.com>
+In-Reply-To: <CAMjpGUcteBCy7OLVgxF1sDTNi4XqCKsetEQSW-dpG0Ji4mUh2A@mail.gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-mtd@lists.infradead.org,
+ uClinux development list <uclinux-dev@uclinux.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15/05/12 23:12, Artem Bityutskiy wrote:
-> On Tue, 2012-05-15 at 14:08 +1000, gerg@snapgear.com wrote:
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> Perform a number of cleanups on the uclinux.c map driver.
->> No structural or semantic changes, only minor cleanups.
->>
->> . insert appropriate prefix into printk() calls
->> . remove redundant "if" checks in the module exit code
->> . remove unnecessary includes
+On 16/05/12 01:57, Mike Frysinger wrote:
+> On Tue, May 15, 2012 at 12:08 AM,<gerg@snapgear.com>  wrote:
 >> . make the struct uclinux_ram_map static
->> . cast the virtual address calculations to keep them sparse clean
->>
->> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
 >
-> Thanks, pushed all 3 patches to l2-mtd.git.
+> NAK: this breaks Blackfin systems.  we specifically don't want this to
+> be static.
+>
+> it should probably get a comment added above it saying as much.
 
-Thanks.
-
-
-> Side note: why do you Cc uclinux-dev@uclinux.org if it is closed mailing
-> list. Why do you need to make people replying you see rejects from the
-> mailing list?
-
-Most of the users of the uclinux.c map driver will be on the uclinux
-mailing list. It is very annoying that it is a closed list, but at
-least there is a chance they know changes are being made to some code
-they use.
+A comment won't fix the sparse warning. You need a proper declaration.
 
 Regards
 Greg
