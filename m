@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUlCk-0000tC-FA
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:23 +0000
+ id 1SUlCk-0000tE-7w
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:24 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/7] [RFC] UBI: Add fastmap on-flash layout
-Date: Wed, 16 May 2012 22:51:58 +0200
-Message-Id: <1337201522-86521-4-git-send-email-richard@nod.at>
+Subject: [PATCH 5/7] [RFC] UBI: Make wl subsystem fastmap aware
+Date: Wed, 16 May 2012 22:52:00 +0200
+Message-Id: <1337201522-86521-6-git-send-email-richard@nod.at>
 In-Reply-To: <1337201522-86521-1-git-send-email-richard@nod.at>
 References: <1337201522-86521-1-git-send-email-richard@nod.at>
 Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -21,150 +21,231 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Specifies the fastmap on-flash layout.
-The fastmap on-flash data structure consists of two major parts.
-A super block (identified via UBI_FM_SB_VOLUME_ID) and
-zero or more data blocks (identified via UBI_Fm_DATA_VOLUME_ID).
-Data blocks are only used if whole checkpoint information does not fit
-into the super block.
+Integrates fastmapping into the wl subsystem.
+Fastmapping deals with PEBs, it has to tell the wl subsystem
+which PEBs are currently used and must not touched by the wl thread.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi-media.h |  124 +++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 124 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/ubi.h |    3 +
+ drivers/mtd/ubi/wl.c  |  141 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 144 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
-index 6fb8ec2..a23196f 100644
---- a/drivers/mtd/ubi/ubi-media.h
-+++ b/drivers/mtd/ubi/ubi-media.h
-@@ -375,4 +375,128 @@ struct ubi_vtbl_record {
- 	__be32  crc;
- } __packed;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 6c89971..cf5cfaf 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -586,6 +586,9 @@ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
+ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
+ void ubi_wl_close(struct ubi_device *ubi);
+ int ubi_thread(void *u);
++int ubi_wl_get_fm_peb(struct ubi_device *ubi, int max_pnum);
++int ubi_wl_put_fm_peb(struct ubi_device *ubi, int pnum, int torture);
++int ubi_is_fm_block(struct ubi_device *ubi, int pnum);
  
-+/* UBI fastmap on-flash data structures */
+ /* io.c */
+ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 64ce993..a329358 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -169,6 +169,25 @@ static int paranoid_check_in_pq(const struct ubi_device *ubi,
+ #endif
+ 
+ /**
++ *  ubi_ubi_is_fm_block - returns 1 if a PEB is currently used in a fastmap.
++ *  @ubi: UBI device description object
++ *  @pnum: the to be checked PEB
++ */
++int ubi_is_fm_block(struct ubi_device *ubi, int pnum)
++{
++	int i;
 +
-+#define UBI_FM_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
-+#define UBI_FM_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
++	if (!ubi->fm)
++		return 0;
 +
-+/* fastmap on-flash data structure format version */
-+#define UBI_FM_FMT_VERSION	1
++	for (i = 0; i < ubi->fm->used_blocks; i++)
++		if (ubi->fm->peb[i] == pnum)
++			return 1;
 +
-+#define UBI_FM_SB_MAGIC		0x7B11D69F
-+#define UBI_FM_HDR_MAGIC	0xD4B82EF7
-+#define UBI_FM_VHDR_MAGIC	0xFA370ED1
-+#define UBI_FM_POOL_MAGIC	0x67AF4D08
-+#define UBI_FM_EBA_MAGIC	0xf0c040a8
-+
-+/* Semi-sane default values - TBR */
-+#ifndef UBI_FM_MAX_POOL_SIZE
-+#define UBI_FM_MAX_POOL_SIZE	128
-+#endif
-+#ifndef UBI_FM_MAX_BLOCKS
-+#define UBI_FM_MAX_BLOCKS	32
-+#endif
-+#ifndef UBI_FM_MAX_START
-+#define UBI_FM_MAX_START	64
-+#endif
++	return 0;
++}
 +
 +/**
-+ * struct ubi_fm_sb - UBI fastmap super block
-+ * @magic: fastmap super block magic number (%UBI_FM_SB_MAGIC)
-+ * @version: format version of this fastmap
-+ * @data_crc: CRC over the fastmap data
-+ * @nblocks: number of PEBs used by this fastmap
-+ * @block_loc: an array containing the location of all PEBs of the fastmap
-+ * @block_ec: the erase counter of each used PEB
-+ * @sqnum: highest sequence number value at the time while taking the fastmap
+  * wl_tree_add - add a wear-leveling entry to a WL RB-tree.
+  * @e: the wear-leveling entry to add
+  * @root: the root of the tree
+@@ -375,6 +394,63 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
+ 
+ /**
+  * ubi_wl_get_peb - get a physical eraseblock.
++ * find_early_wl_entry - find wear-leveling entry with a low pnum.
++ * @root: the RB-tree where to look for
++ * @max_pnum: highest possible pnum
 + *
++ * This function looks for a wear leveling entry containing a eb which
++ * is in front of the memory.
 + */
-+struct ubi_fm_sb {
-+	__be32 magic;
-+	__u8 version;
-+	__u8 padding1[3];
-+	__be32 data_crc;
-+	__be32 nblocks;
-+	__be32 block_loc[UBI_FM_MAX_BLOCKS];
-+	__be32 block_ec[UBI_FM_MAX_BLOCKS];
-+	__be64 sqnum;
-+	__u8 padding2[32];
-+} __packed;
++static struct ubi_wl_entry *find_early_wl_entry(struct rb_root *root,
++						int max_pnum)
++{
++	struct rb_node *p;
++	struct ubi_wl_entry *e, *victim = NULL;
++
++	ubi_rb_for_each_entry(p, e, root, u.rb) {
++		if (e->pnum < max_pnum) {
++			victim = e;
++			max_pnum = e->pnum;
++		}
++	}
++
++	return victim;
++}
 +
 +/**
-+ * struct ubi_fm_hdr - header of the fastmap data set
-+ * @magic: fastmap header magic number (%UBI_FM_HDR_MAGIC)
-+ * @nfree: number of free PEBs known by this fastmap
-+ * @nused: number of used PEBs known by this fastmap
-+ * @nvol: number of UBI volumes known by this fastmap
++ * ubi_wl_get_fm_peb - find a physical erase block with a given maximal number.
++ * @ubi: UBI device description object
++ * @max_pnum: the highest acceptable erase block number
++ *
++ * The function returns a physical erase block with a given maximal number
++ * and removes it from the wl subsystem.
++ * Must be called with wl_lock held!
 + */
-+struct ubi_fm_hdr {
-+	__be32 magic;
-+	__be32 nfree;
-+	__be32 nused;
-+	__be32 nvol;
-+	__u8 padding[16];
-+} __packed;
++int ubi_wl_get_fm_peb(struct ubi_device *ubi, int max_pnum)
++{
++	int ret = -ENOSPC;
++	struct ubi_wl_entry *e;
 +
-+/* struct ubi_fm_hdr is followed by struct ubi_fm_scan_pool */
++	if (!ubi->free.rb_node) {
++		ubi_err("no free eraseblocks");
++
++		goto out;
++	}
++
++	e = find_early_wl_entry(&ubi->free, max_pnum);
++	if (!e)
++		goto out;
++
++	ret = e->pnum;
++
++	/* remove it from the free list,
++	 * the wl subsystem does no longer know this erase block */
++	rb_erase(&e->u.rb, &ubi->free);
++out:
++	return ret;
++}
 +
 +/**
-+ * struct ubi_fm_scan_pool - Fastmap pool PEBs to be scanned while attaching
-+ * @magic: pool magic numer (%UBI_FM_POOL_MAGIC)
-+ * @size: current pool size
-+ * @pebs: an array containing the location of all PEBs in this pool
-+ */
-+struct ubi_fm_scan_pool {
-+	__be32 magic;
-+	__be32 size;
-+	__be32 pebs[UBI_FM_MAX_POOL_SIZE];
-+	__be32 padding[4];
-+} __packed;
+  * @ubi: UBI device description object
+  *
+  * This function returns a physical eraseblock in case of success and a
+@@ -596,6 +672,9 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
+ {
+ 	struct ubi_work *wl_wrk;
+ 
++	ubi_assert(e);
++	ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
 +
-+/* struct ubi_fm_scan_pool is followed by nfree+nused struct ubi_fm_ec records */
+ 	dbg_wl("schedule erasure of PEB %d, EC %d, torture %d",
+ 	       e->pnum, e->ec, torture);
+ 
+@@ -612,6 +691,56 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
+ }
+ 
+ /**
++ * ubi_wl_put_fm_peb - returns a PEB used in a fastmap to the wear-leveling 
++ * sub-system.
++ *
++ * see: ubi_wl_put_peb()
++ */
++int ubi_wl_put_fm_peb(struct ubi_device *ubi, int pnum, int torture)
++{
++	int i, err = 0;
++	struct ubi_wl_entry *e;
++
++	dbg_wl("PEB %d", pnum);
++	ubi_assert(pnum >= 0);
++	ubi_assert(pnum < ubi->peb_count);
++
++	spin_lock(&ubi->wl_lock);
++	e = ubi->lookuptbl[pnum];
++
++	/* This can happen if we recovered from a fastmap the very
++	 * frist time and writing now a new one. In this case the wl system
++	 * has never seen any PEB used by the original fastmap.
++	 */
++	if (!e) {
++		ubi_assert(ubi->old_fm);
++		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_ATOMIC);
++		if (!e) {
++			spin_unlock(&ubi->wl_lock);
++			return -ENOMEM;
++		}
++
++		e->pnum = pnum;
++		e->ec = 0;
++		/* use the ec value from the fastmap */
++		for (i = 0; i < UBI_FM_MAX_BLOCKS; i++) {
++			if (pnum == ubi->old_fm->peb[i]) {
++				e->ec = ubi->old_fm->ec[i];
++				break;
++			}
++		}
++		ubi_assert(e->ec);
++		ubi->lookuptbl[pnum] = e;
++	}
++
++	spin_unlock(&ubi->wl_lock);
++
++	err = schedule_erase(ubi, e, torture);
++
++	return err;
++}
 +
 +/**
-+ * struct ubi_fm_ec - stores the erase counter of a PEB
-+ * @pnum: PEB number
-+ * @ec: ec of this PEB
-+ */
-+struct ubi_fm_ec {
-+	__be32 pnum;
-+	__be32 ec;
-+} __packed;
+  * wear_leveling_worker - wear-leveling worker function.
+  * @ubi: UBI device description object
+  * @wrk: the work object
+@@ -988,6 +1117,8 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 
+ 	dbg_wl("erase PEB %d EC %d", pnum, e->ec);
+ 
++	ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
 +
-+/**
-+ * struct ubi_fm_volhdr - Fastmap volume header
-+ * it identifies the start of an eba table
-+ * @magic: Fastmap volume header magic number (%UBI_FM_VHDR_MAGIC)
-+ * @vol_id: volume id of the fastmapped volume
-+ * @vol_type: type of the fastmapped volume
-+ * @data_pad: data_pad value of the fastmapped volume
-+ * @used_ebs: number of used LEBs within this volume
-+ * @last_eb_bytes: number of bytes used in the last LEB
-+ */
-+struct ubi_fm_volhdr {
-+	__be32 magic;
-+	__be32 vol_id;
-+	__u8 vol_type;
-+	__u8 padding1[3];
-+	__be32 data_pad;
-+	__be32 used_ebs;
-+	__be32 last_eb_bytes;
-+	__u8 padding2[8];
-+} __packed;
+ 	err = sync_erase(ubi, e, wl_wrk->torture);
+ 	if (!err) {
+ 		/* Fine, we've erased it successfully */
+@@ -1422,6 +1553,9 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 
+ 		e->pnum = seb->pnum;
+ 		e->ec = seb->ec;
 +
-+/* struct ubi_fm_volhdr is followed by one struct ubi_fm_eba records */
++		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
 +
-+/**
-+ * struct ubi_fm_eba - denotes an association beween a PEB and LEB
-+ * @magic EBA table magic number
-+ * @nused: number of table entries
-+ * @pnum: PEB number of LEB (LEB is the index)
-+ */
-+struct ubi_fm_eba {
-+	__be32 magic;
-+	__be32 nused;
-+	__be32 pnum[0];
-+} __packed;
- #endif /* !__UBI_MEDIA_H__ */
+ 		ubi->lookuptbl[e->pnum] = e;
+ 		if (schedule_erase(ubi, e, 0)) {
+ 			kmem_cache_free(ubi_wl_entry_slab, e);
+@@ -1439,7 +1573,10 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 		e->pnum = seb->pnum;
+ 		e->ec = seb->ec;
+ 		ubi_assert(e->ec >= 0);
++		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
++
+ 		wl_tree_add(e, &ubi->free);
++
+ 		ubi->lookuptbl[e->pnum] = e;
+ 	}
+ 
+@@ -1454,6 +1591,10 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 			e->pnum = seb->pnum;
+ 			e->ec = seb->ec;
+ 			ubi->lookuptbl[e->pnum] = e;
++
++			if (ubi_is_fm_block(ubi, seb->pnum))
++				continue;
++
+ 			if (!seb->scrub) {
+ 				dbg_wl("add PEB %d EC %d to the used tree",
+ 				       e->pnum, e->ec);
 -- 
 1.7.6.5
