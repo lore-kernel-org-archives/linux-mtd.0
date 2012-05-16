@@ -1,12 +1,15 @@
 Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUdDv-0000Eg-Io
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 12:21:00 +0000
-Date: Wed, 16 May 2012 14:20:56 +0200 (CEST)
+ id 1SUdiT-0003dk-Sl
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 12:52:34 +0000
+Date: Wed, 16 May 2012 14:52:32 +0200 (CEST)
 From: Joel Reardon <joel@clambassador.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] ubi: add volume id and LEB number to struct ubi_scan_leb
-Message-ID: <alpine.DEB.2.00.1205161419590.27131@eristoteles.iwoars.net>
+Subject: [PATCH v2] UBIFS: read crypto_lookup from datanodes to znodes
+In-Reply-To: <1337087022.2528.204.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205161451250.27131@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
+ <1337087022.2528.204.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -19,186 +22,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds the volume id and LEB number to struct ubi_scan_leb when
-scanning the LEBs at startup.  PEBs now added to the erase queue will know
-their original LEB number and volume id, if available, and will be -1
-otherwise (for instance, if the vid header is unreadable).
+Crypto_lookup values are now read from the data node header whenever a
+data node is read from flash and cached in the TNC. The value will be zero
+until it is read from flash. (If it is needed before it happens to be
+loaded, i.e., to delete a node, then it will be forced read.)
 
-This was tested by creating an ubi device with 3 volumes and disabiling the
-ubi_thread's do_work functionality. The different ubi volumes were formatted
-to ubifs and had files created and erased.  The ubi modules was reloaded and
-the list of LEB's added to the erased list was outputted, confirming the
-volume ids and LEB numbers were appropriate.
+It was tested by setting cryptolookup values for new datanodes by their
+lnum and offset on flash. This was later asserted in the TNC that they
+were either zero, or always equal. On mounting, the TNC crypto lookup
+values were confirmed to be zero and later, after reading the
+corresponding files, confirmed they were loaded and corresponded to the
+location on flash.
 
 Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 ---
- drivers/mtd/ubi/scan.c |   49 +++++++++++++++++++++++++++++------------------
- drivers/mtd/ubi/scan.h |    2 +
- 2 files changed, 32 insertions(+), 19 deletions(-)
+ fs/ubifs/gc.c          |    7 ++++++-
+ fs/ubifs/journal.c     |    8 +++++---
+ fs/ubifs/tnc.c         |   39 +++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs-media.h |    3 ++-
+ 4 files changed, 52 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index c26b1ad..3d87446 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -102,20 +102,23 @@ static struct ubi_vid_hdr *vidh;
-  * add_to_list - add physical eraseblock to a list.
-  * @si: scanning information
-  * @pnum: physical eraseblock number to add
-+ * @vol_id: the last used volume id for the PEB
-+ * @lnum: the last used LEB number for the PEB
-  * @ec: erase counter of the physical eraseblock
-  * @to_head: if not zero, add to the head of the list
-  * @list: the list to add to
-  *
-  * This function adds physical eraseblock @pnum to free, erase, or alien lists.
-- * If @to_head is not zero, PEB will be added to the head of the list, which
-- * basically means it will be processed first later. E.g., we add corrupted
-- * PEBs (corrupted due to power cuts) to the head of the erase list to make
-- * sure we erase them first and get rid of corruptions ASAP. This function
-- * returns zero in case of success and a negative error code in case of
-- * failure.
-+ * It stores the @lnum and @vol_id alongside, which can both be -1 if they are
-+ * not available, not readable, or not assigned. If @to_head is not zero, PEB
-+ * will be added to the head of the list, which basically means it will be
-+ * processed first later. E.g., we add corrupted PEBs (corrupted due to power
-+ * cuts) to the head of the erase list to make sure we erase them first and
-+ * get rid of corruptions ASAP. This function returns zero in case of success
-+ * and a negative error code in case of failure.
-  */
--static int add_to_list(struct ubi_scan_info *si, int pnum, int ec, int to_head,
--		       struct list_head *list)
-+static int add_to_list(struct ubi_scan_info *si, int pnum, int vol_id,
-+		       int lnum, int ec, int to_head, struct list_head *list)
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index f146447..98e6683 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -322,15 +322,20 @@ static int move_node(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		     struct ubifs_scan_node *snod, struct ubifs_wbuf *wbuf)
  {
- 	struct ubi_scan_leb *seb;
+ 	int err, new_lnum = wbuf->lnum, new_offs = wbuf->offs + wbuf->used;
++	long long crypto_lookup = 0;
 
-@@ -134,6 +137,8 @@ static int add_to_list(struct ubi_scan_info *si, int pnum, int ec, int to_head,
- 		return -ENOMEM;
+ 	cond_resched();
+ 	err = ubifs_wbuf_write_nolock(wbuf, snod->node, snod->len);
+ 	if (err)
+ 		return err;
 
- 	seb->pnum = pnum;
-+	seb->vol_id = vol_id;
-+	seb->lnum = lnum;
- 	seb->ec = ec;
- 	if (to_head)
- 		list_add(&seb->u.list, list);
-@@ -532,13 +537,16 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			if (err)
- 				return err;
++	if (key_type(c, &snod->key) == UBIFS_DATA_KEY) {
++		struct ubifs_data_node *dn = snod->node;
++		crypto_lookup = le64_to_cpu(dn->crypto_lookup);
++	}
+ 	err = ubifs_tnc_replace(c, &snod->key, sleb->lnum,
+ 				snod->offs, new_lnum, new_offs,
+-				snod->len, 0);
++				snod->len, crypto_lookup);
+ 	list_del(&snod->list);
+ 	kfree(snod);
+ 	return err;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 2072b9a..5f39f75 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -89,7 +89,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
+  */
+ static inline void zero_data_node_unused(struct ubifs_data_node *data)
+ {
+-	data->padding0 = 0;
+ 	memset(data->padding1, 0, 2);
+ }
 
--			err = add_to_list(si, seb->pnum, seb->ec, cmp_res & 4,
-+			err = add_to_list(si, seb->pnum, seb->vol_id,
-+					  seb->lnum, seb->ec, cmp_res & 4,
- 					  &si->erase);
- 			if (err)
- 				return err;
+@@ -735,6 +734,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
 
- 			seb->ec = ec;
- 			seb->pnum = pnum;
-+			seb->vol_id = vol_id;
-+			seb->lnum = lnum;
- 			seb->scrub = ((cmp_res & 2) || bitflips);
- 			seb->copy_flag = vid_hdr->copy_flag;
- 			seb->sqnum = sqnum;
-@@ -553,8 +561,8 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			 * This logical eraseblock is older than the one found
- 			 * previously.
- 			 */
--			return add_to_list(si, pnum, ec, cmp_res & 4,
--					   &si->erase);
-+			return add_to_list(si, pnum, vol_id, lnum, ec,
-+					   cmp_res & 4, &si->erase);
- 		}
+ 	dlen = UBIFS_DATA_NODE_SZ + out_len;
+ 	data->compr_type = cpu_to_le16(compr_type);
++	data->crypto_lookup = cpu_to_le64(0);
+
+ 	/* Make reservation before allocating sequence numbers */
+ 	err = make_reservation(c, DATAHD, dlen);
+@@ -747,7 +747,8 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 	ubifs_wbuf_add_ino_nolock(&c->jheads[DATAHD].wbuf, key_inum(c, key));
+ 	release_head(c, DATAHD);
+
+-	err = ubifs_tnc_add(c, key, lnum, offs, dlen, 0);
++	err = ubifs_tnc_add(c, key, lnum, offs, dlen,
++			    le64_to_cpu(data->crypto_lookup));
+ 	if (err)
+ 		goto out_ro;
+
+@@ -1226,7 +1227,8 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+
+ 	if (dlen) {
+ 		sz = offs + UBIFS_INO_NODE_SZ + UBIFS_TRUN_NODE_SZ;
+-		err = ubifs_tnc_add(c, &key, lnum, sz, dlen, 0);
++		err = ubifs_tnc_add(c, &key, lnum, sz, dlen,
++				    le64_to_cpu(dn->crypto_lookup));
+ 		if (err)
+ 			goto out_ro;
+ 	}
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index b222a72..006caa7 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1431,6 +1431,34 @@ static int maybe_leb_gced(struct ubifs_info *c, int lnum, int gc_seq1)
+ }
+
+ /**
++ * tnc_set_crypto_lookup - set the crypto_lookup field in a zbranch.
++ * @c: UBIFS file-system description object
++ * @zbr: the crypto_lookup field is set in this zbranch
++ * @node: a pointer to a node containing the zbranch.
++ *
++ * Crypto_lookup values are stored on flash memory inside the data node.
++ * When the system is running, they are also stored in memory inside the
++ * zbranch to avoid requiring reading the old data node simply to retrieve the
++ * crypto_lookup when performing a truncation / overwrite / delete operation.
++ * This function is called whenever a node is read from flash memory. If @node
++ * is a data node (therefore containing a @crypto_lookup field), then:
++ * if @zbr has an unset @crypto_lookup, set it to the value from @node
++ * if @zbr has already a @crypto_lookup, assert they are the same.
++ */
++static void tnc_set_crypto_lookup(struct ubifs_info *c,
++				  struct ubifs_zbranch *zbr, void *node)
++{
++	if (key_type(c, &(zbr->key)) == UBIFS_DATA_KEY) {
++		struct ubifs_data_node *dn = node;
++		long long crypto_lookup = le64_to_cpu(dn->crypto_lookup);
++		if (zbr->crypto_lookup != 0)
++			ubifs_assert(zbr->crypto_lookup == crypto_lookup);
++		else
++			zbr->crypto_lookup = crypto_lookup;
++	}
++}
++
++/**
+  * ubifs_tnc_locate - look up a file-system node and return it and its location.
+  * @c: UBIFS file-system description object
+  * @key: node key to lookup
+@@ -1485,6 +1513,11 @@ again:
+ 	if (ubifs_get_wbuf(c, zbr.lnum)) {
+ 		/* We do not GC journal heads */
+ 		err = ubifs_tnc_read_node(c, &zbr, node);
++		if (!err) {
++			mutex_lock(&c->tnc_mutex);
++			tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
++			mutex_unlock(&c->tnc_mutex);
++		}
+ 		return err;
  	}
 
-@@ -573,6 +581,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+@@ -1497,9 +1530,15 @@ again:
+ 		safely = 1;
+ 		goto again;
+ 	}
++
++	mutex_lock(&c->tnc_mutex);
++	tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
++	mutex_unlock(&c->tnc_mutex);
+ 	return 0;
 
- 	seb->ec = ec;
- 	seb->pnum = pnum;
-+	seb->vol_id = vol_id;
- 	seb->lnum = lnum;
- 	seb->scrub = bitflips;
- 	seb->copy_flag = vid_hdr->copy_flag;
-@@ -868,11 +877,11 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		break;
- 	case UBI_IO_FF:
- 		si->empty_peb_count += 1;
--		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, 0,
-+		return add_to_list(si, pnum, -1, -1, UBI_SCAN_UNKNOWN_EC, 0,
- 				   &si->erase);
- 	case UBI_IO_FF_BITFLIPS:
- 		si->empty_peb_count += 1;
--		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, 1,
-+		return add_to_list(si, pnum, -1, -1, UBI_SCAN_UNKNOWN_EC, 1,
- 				   &si->erase);
- 	case UBI_IO_BAD_HDR_EBADMSG:
- 	case UBI_IO_BAD_HDR:
-@@ -984,7 +993,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			return err;
- 		else if (!err)
- 			/* This corruption is caused by a power cut */
--			err = add_to_list(si, pnum, ec, 1, &si->erase);
-+			err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
- 		else
- 			/* This is an unexpected corruption */
- 			err = add_corrupted(si, pnum, ec);
-@@ -992,15 +1001,15 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			return err;
- 		goto adjust_mean_ec;
- 	case UBI_IO_FF_BITFLIPS:
--		err = add_to_list(si, pnum, ec, 1, &si->erase);
-+		err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
- 		if (err)
- 			return err;
- 		goto adjust_mean_ec;
- 	case UBI_IO_FF:
- 		if (ec_err)
--			err = add_to_list(si, pnum, ec, 1, &si->erase);
-+			err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
- 		else
--			err = add_to_list(si, pnum, ec, 0, &si->free);
-+			err = add_to_list(si, pnum, -1, -1, ec, 0, &si->free);
- 		if (err)
- 			return err;
- 		goto adjust_mean_ec;
-@@ -1019,7 +1028,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		case UBI_COMPAT_DELETE:
- 			ubi_msg("\"delete\" compatible internal volume %d:%d"
- 				" found, will remove it", vol_id, lnum);
--			err = add_to_list(si, pnum, ec, 1, &si->erase);
-+			err = add_to_list(si, pnum, vol_id, lnum,
-+					  ec, 1, &si->erase);
- 			if (err)
- 				return err;
- 			return 0;
-@@ -1034,7 +1044,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		case UBI_COMPAT_PRESERVE:
- 			ubi_msg("\"preserve\" compatible internal volume %d:%d"
- 				" found", vol_id, lnum);
--			err = add_to_list(si, pnum, ec, 0, &si->alien);
-+			err = add_to_list(si, pnum, vol_id, lnum,
-+					  ec, 0, &si->alien);
- 			if (err)
- 				return err;
- 			return 0;
-diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index d48aef1..e214647 100644
---- a/drivers/mtd/ubi/scan.h
-+++ b/drivers/mtd/ubi/scan.h
-@@ -28,6 +28,7 @@
-  * struct ubi_scan_leb - scanning information about a physical eraseblock.
-  * @ec: erase counter (%UBI_SCAN_UNKNOWN_EC if it is unknown)
-  * @pnum: physical eraseblock number
-+ * @vol_id: the volume identifier of the LEB.
-  * @lnum: logical eraseblock number
-  * @scrub: if this physical eraseblock needs scrubbing
-  * @copy_flag: this LEB is a copy (@copy_flag is set in VID header of this LEB)
-@@ -42,6 +43,7 @@
- struct ubi_scan_leb {
- 	int ec;
- 	int pnum;
-+	int vol_id;
- 	int lnum;
- 	unsigned int scrub:1;
- 	unsigned int copy_flag:1;
+ out:
++	if (!err)
++		tnc_set_crypto_lookup(c, zt, node);
+ 	mutex_unlock(&c->tnc_mutex);
+ 	return err;
+ }
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index 9ecbd37..e03adcf 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -539,6 +539,7 @@ struct ubifs_dent_node {
+  * struct ubifs_data_node - data node.
+  * @ch: common header
+  * @key: node key
++ * @crypto_lookup: the node's cryptographic key's position in the KSA
+  * @size: uncompressed data size in bytes
+  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
+  * @padding: reserved for future, zeroes
+@@ -550,7 +551,7 @@ struct ubifs_dent_node {
+ struct ubifs_data_node {
+ 	struct ubifs_ch ch;
+ 	__u8 key[UBIFS_KEY_LEN];
+-	__le64 padding0; /* Watch 'zero_data_node_unused()' if changing! */
++	__le64 crypto_lookup;
+ 	__le32 size;
+ 	__le16 compr_type;
+ 	__u8 padding1[2]; /* Watch 'zero_data_node_unused()' if changing! */
 -- 
 1.7.5.4
