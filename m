@@ -1,12 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUgZ1-00027j-9A
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:55:00 +0000
+ id 1SUgZ3-00028u-8h
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:55:03 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/9] UBI: rename ubi_dbg_dump_vtbl_record
-Date: Wed, 16 May 2012 18:55:53 +0300
-Message-Id: <1337183760-24417-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 4/9] UBI: rename ubi_dbg_dump_seb
+Date: Wed, 16 May 2012 18:55:55 +0300
+Message-Id: <1337183760-24417-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1337183760-24417-1-git-send-email-dedekind1@gmail.com>
 References: <1337183760-24417-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,101 +22,78 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 I am going to remove the "UBI debugging" compilation option and make the
 debugging stuff to be always compiled it. This patch is a preparation
-which renames 'ubi_dbg_dump_vtbl_record()' to 'ubi_dump_vtbl_record()'.
+which renames 'ubi_dbg_dump_seb()' to 'ubi_dump_seb()'.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
  drivers/mtd/ubi/debug.c |    4 ++--
- drivers/mtd/ubi/debug.h |    4 ++--
- drivers/mtd/ubi/vmt.c   |    2 +-
- drivers/mtd/ubi/vtbl.c  |    8 ++++----
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/debug.h |    6 +++---
+ drivers/mtd/ubi/scan.c  |    4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 2d3dc26..9b16bcc 100644
+index 9ae8fff..d33a283 100644
 --- a/drivers/mtd/ubi/debug.c
 +++ b/drivers/mtd/ubi/debug.c
-@@ -139,11 +139,11 @@ void ubi_dump_vol_info(const struct ubi_volume *vol)
+@@ -190,11 +190,11 @@ void ubi_dump_sv(const struct ubi_scan_volume *sv)
  }
  
  /**
-- * ubi_dbg_dump_vtbl_record - dump a &struct ubi_vtbl_record object.
-+ * ubi_dump_vtbl_record - dump a &struct ubi_vtbl_record object.
-  * @r: the object to dump
-  * @idx: volume table index
+- * ubi_dbg_dump_seb - dump a &struct ubi_scan_leb object.
++ * ubi_dump_seb - dump a &struct ubi_scan_leb object.
+  * @seb: the object to dump
+  * @type: object type: 0 - not corrupted, 1 - corrupted
   */
--void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)
-+void ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)
+-void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type)
++void ubi_dump_seb(const struct ubi_scan_leb *seb, int type)
  {
- 	int name_len = be16_to_cpu(r->name_len);
- 
+ 	printk(KERN_DEBUG "eraseblock scanning information dump:\n");
+ 	printk(KERN_DEBUG "\tec       %d\n", seb->ec);
 diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index ca36f2d..9728da4 100644
+index 5e3d4e8..b897c4a 100644
 --- a/drivers/mtd/ubi/debug.h
 +++ b/drivers/mtd/ubi/debug.h
-@@ -61,7 +61,7 @@ void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
- #define dbg_bld(fmt, ...) ubi_dbg_msg("bld", fmt, ##__VA_ARGS__)
- 
+@@ -63,7 +63,7 @@ void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
  void ubi_dump_vol_info(const struct ubi_volume *vol);
--void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
-+void ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
- void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
- void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
+ void ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
+ void ubi_dump_sv(const struct ubi_scan_volume *sv);
+-void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
++void ubi_dump_seb(const struct ubi_scan_leb *seb, int type);
  void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
-@@ -196,7 +196,7 @@ static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+ int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
+ int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+@@ -198,8 +198,8 @@ ubi_dump_vol_info(const struct ubi_volume *vol)                      { return; }
  static inline void
- ubi_dump_vol_info(const struct ubi_volume *vol)                      { return; }
+ ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)       { return; }
+ static inline void ubi_dump_sv(const struct ubi_scan_volume *sv)     { return; }
+-static inline void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb,
+-				    int type)                        { return; }
++static inline void ubi_dump_seb(const struct ubi_scan_leb *seb,
++				int type)                            { return; }
  static inline void
--ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)   { return; }
-+ubi_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)       { return; }
- static inline void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv) { return; }
- static inline void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb,
- 				    int type)                        { return; }
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 906f972..a4b4c30 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -856,7 +856,7 @@ fail:
- 	ubi_err("paranoid check failed for volume %d", vol_id);
- 	if (vol)
- 		ubi_dump_vol_info(vol);
--	ubi_dbg_dump_vtbl_record(&ubi->vtbl[vol_id], vol_id);
-+	ubi_dump_vtbl_record(&ubi->vtbl[vol_id], vol_id);
- 	dump_stack();
- 	spin_unlock(&ubi->volumes_lock);
- 	return -EINVAL;
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 7ef3de0..897502f 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -197,7 +197,7 @@ static int vtbl_check(const struct ubi_device *ubi,
- 		if (be32_to_cpu(vtbl[i].crc) != crc) {
- 			ubi_err("bad CRC at record %u: %#08x, not %#08x",
- 				 i, crc, be32_to_cpu(vtbl[i].crc));
--			ubi_dbg_dump_vtbl_record(&vtbl[i], i);
-+			ubi_dump_vtbl_record(&vtbl[i], i);
- 			return 1;
+ ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req)              { return; }
+ static inline void
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index 23f7ad2..b09c8fa 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -510,7 +510,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		if (seb->sqnum == sqnum && sqnum != 0) {
+ 			ubi_err("two LEBs with same sequence number %llu",
+ 				sqnum);
+-			ubi_dbg_dump_seb(seb, 0);
++			ubi_dump_seb(seb, 0);
+ 			ubi_dump_vid_hdr(vid_hdr);
+ 			return -EINVAL;
  		}
+@@ -1583,7 +1583,7 @@ static int paranoid_check_si(struct ubi_device *ubi, struct ubi_scan_info *si)
  
-@@ -277,8 +277,8 @@ static int vtbl_check(const struct ubi_device *ubi,
- 			    !strncmp(vtbl[i].name, vtbl[n].name, len1)) {
- 				ubi_err("volumes %d and %d have the same name"
- 					" \"%s\"", i, n, vtbl[i].name);
--				ubi_dbg_dump_vtbl_record(&vtbl[i], i);
--				ubi_dbg_dump_vtbl_record(&vtbl[n], n);
-+				ubi_dump_vtbl_record(&vtbl[i], i);
-+				ubi_dump_vtbl_record(&vtbl[n], n);
- 				return -EINVAL;
- 			}
- 		}
-@@ -288,7 +288,7 @@ static int vtbl_check(const struct ubi_device *ubi,
- 
- bad:
- 	ubi_err("volume table check failed: record %d, error %d", i, err);
--	ubi_dbg_dump_vtbl_record(&vtbl[i], i);
-+	ubi_dump_vtbl_record(&vtbl[i], i);
- 	return -EINVAL;
- }
+ bad_seb:
+ 	ubi_err("bad scanning information about LEB %d", seb->lnum);
+-	ubi_dbg_dump_seb(seb, 0);
++	ubi_dump_seb(seb, 0);
+ 	ubi_dump_sv(sv);
+ 	goto out;
  
 -- 
 1.7.10
