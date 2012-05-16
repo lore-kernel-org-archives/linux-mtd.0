@@ -1,21 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUfUF-0004pE-VJ
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 14:46:00 +0000
-Message-ID: <1337179769.24809.66.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubi: add volume id and LEB number to struct ubi_scan_leb
+ id 1SUgZ0-00027D-S2
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:54:59 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Wed, 16 May 2012 17:49:29 +0300
-In-Reply-To: <1337178865.24809.62.camel@sauron.fi.intel.com>
-References: <alpine.DEB.2.00.1205161419590.27131@eristoteles.iwoars.net>
- <1337178865.24809.62.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-VGXf697C2CPCzbVffhQ8"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/9] UBI: rename ubi_dbg_dump_vol_info
+Date: Wed, 16 May 2012 18:55:52 +0300
+Message-Id: <1337183760-24417-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +16,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
---=-VGXf697C2CPCzbVffhQ8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I am going to remove the "UBI debugging" compilation option and make the
+debugging stuff to be always compiled it. This patch is a preparation
+which renames 'ubi_dbg_dump_vol_info()' to 'ubi_dump_vol_info()'.
 
-On Wed, 2012-05-16 at 17:34 +0300, Artem Bityutskiy wrote:
-> I've added this code to the joel branch. But please, test this and
-> other
-> UBI merge candidates with all the UBI debugging checks enabled as
-> well.
-> Similar to UBIFS.=20
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/debug.c |    4 ++--
+ drivers/mtd/ubi/debug.h |    4 ++--
+ drivers/mtd/ubi/vmt.c   |    2 +-
+ drivers/mtd/ubi/vtbl.c  |    2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-To do this:
-
-1. Mount debugfs, in my Fedora it is already mounted:
-
-sudo mount -t debugfs none /sys/kernel/debug/
-
-
-Then:
-
-$cd /sys/kernel/debug/ubi/ubi0
-$sudo sh -c 'echo 1 > chk_gen'
-$sudo sh -c 'echo 1 > chk_io'
-
-This will enable "general" and "IO" extra self-checks for UBI device
-"ubi0"
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-VGXf697C2CPCzbVffhQ8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPs755AAoJECmIfjd9wqK0pswQAIVEk0T2fvTOW+vhsdqyKXfA
-vEdEO6qEpCRXIkATlhi3qOd/oCSyUxaUyailHETBcd07vi8YJIvWd84uclXXHdUw
-VSEaQJERFnWk8fw4sTkDNJJhOcm4shmputIpqgndJs7smke7fzJrJrXSE/8W+v9e
-ZCjZkuyY7wEcqTrOU6DbMQRq/NOz14SEx8qh2/jtVQ4kDsnJkX8PVZDaR9AML0HK
-GYFq3qdgqS/x7KUyr3zYM5coBzfcYdAvtOx1u7NzILZCZOPkxSPfb5QMWnB0ECXg
-0aKy/A0hhCcgQ8gWatxNAleeVbIjLCKbugqz0gxzpMxDyPQMI8FncNpSEuJjscU5
-9OACzAcBU8x/AYf/zwDi3GpQEYVae7pxr4rVFDrbBbz6GDqsACG+zuI3+OMgJLV3
-bcThbQqMfk22zdQ5smLvY68BcHGtFA/dLf3+XTGn6hLFe9pPUI/aw7uONfq0fe7m
-/TaoNfXU6FbcUCzVpLnBmNbda7Tw1QPJOlo9rmYZ8RGtJsbghbtsK86zCESOBnrq
-/5N6rlesS12rGxdiqjLe2qeIsB0frfupta6mfsC6es7o2nHPXA3M0m2Q6/1OM+oF
-0Y+mBzVq51MHzNzk8MbtTm6/qRCKydb2MSmwtMKOdja0nv0QmPDFxVtE8ihfvrsR
-Fwoj2hDf3D3BcWRiHWYJ
-=VJ66
------END PGP SIGNATURE-----
-
---=-VGXf697C2CPCzbVffhQ8--
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index dce463d..2d3dc26 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -109,10 +109,10 @@ void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr)
+ #ifdef CONFIG_MTD_UBI_DEBUG
+ 
+ /**
+- * ubi_dbg_dump_vol_info- dump volume information.
++ * ubi_dump_vol_info - dump volume information.
+  * @vol: UBI volume description object
+  */
+-void ubi_dbg_dump_vol_info(const struct ubi_volume *vol)
++void ubi_dump_vol_info(const struct ubi_volume *vol)
+ {
+ 	printk(KERN_DEBUG "Volume information dump:\n");
+ 	printk(KERN_DEBUG "\tvol_id          %d\n", vol->vol_id);
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index b8672c9..ca36f2d 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -60,7 +60,7 @@ void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
+ /* Initialization and build messages */
+ #define dbg_bld(fmt, ...) ubi_dbg_msg("bld", fmt, ##__VA_ARGS__)
+ 
+-void ubi_dbg_dump_vol_info(const struct ubi_volume *vol);
++void ubi_dump_vol_info(const struct ubi_volume *vol);
+ void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
+ void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
+ void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
+@@ -194,7 +194,7 @@ static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+ #define dbg_bld(fmt, ...)  ubi_dbg_msg(fmt, ##__VA_ARGS__)
+ 
+ static inline void
+-ubi_dbg_dump_vol_info(const struct ubi_volume *vol)                  { return; }
++ubi_dump_vol_info(const struct ubi_volume *vol)                      { return; }
+ static inline void
+ ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx)   { return; }
+ static inline void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv) { return; }
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 863835f..906f972 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -855,7 +855,7 @@ static int paranoid_check_volume(struct ubi_device *ubi, int vol_id)
+ fail:
+ 	ubi_err("paranoid check failed for volume %d", vol_id);
+ 	if (vol)
+-		ubi_dbg_dump_vol_info(vol);
++		ubi_dump_vol_info(vol);
+ 	ubi_dbg_dump_vtbl_record(&ubi->vtbl[vol_id], vol_id);
+ 	dump_stack();
+ 	spin_unlock(&ubi->volumes_lock);
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index a6f4b13..7ef3de0 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -701,7 +701,7 @@ static int check_sv(const struct ubi_volume *vol,
+ bad:
+ 	ubi_err("bad scanning information, error %d", err);
+ 	ubi_dbg_dump_sv(sv);
+-	ubi_dbg_dump_vol_info(vol);
++	ubi_dump_vol_info(vol);
+ 	return -EINVAL;
+ }
+ 
+-- 
+1.7.10
