@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUlCk-0000tB-D3
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:22 +0000
+ id 1SUlCk-0000tC-FA
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:23 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/7] [RFC] UBI: Export compare_lebs()
-Date: Wed, 16 May 2012 22:51:57 +0200
-Message-Id: <1337201522-86521-3-git-send-email-richard@nod.at>
+Subject: [PATCH 3/7] [RFC] UBI: Add fastmap on-flash layout
+Date: Wed, 16 May 2012 22:51:58 +0200
+Message-Id: <1337201522-86521-4-git-send-email-richard@nod.at>
 In-Reply-To: <1337201522-86521-1-git-send-email-richard@nod.at>
 References: <1337201522-86521-1-git-send-email-richard@nod.at>
 Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -21,69 +21,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fastmap mechanism needs this funtion,
-rename it to ubi_compare_lebs() and export it.
+Specifies the fastmap on-flash layout.
+The fastmap on-flash data structure consists of two major parts.
+A super block (identified via UBI_FM_SB_VOLUME_ID) and
+zero or more data blocks (identified via UBI_Fm_DATA_VOLUME_ID).
+Data blocks are only used if whole checkpoint information does not fit
+into the super block.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/scan.c |    8 ++++----
- drivers/mtd/ubi/ubi.h  |    4 ++++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/ubi-media.h |  124 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 124 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index c26b1ad..69be65f 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -295,7 +295,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
- }
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 6fb8ec2..a23196f 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -375,4 +375,128 @@ struct ubi_vtbl_record {
+ 	__be32  crc;
+ } __packed;
  
- /**
-- * compare_lebs - find out which logical eraseblock is newer.
-+ * ubi_compare_lebs - find out which logical eraseblock is newer.
-  * @ubi: UBI device description object
-  * @seb: first logical eraseblock to compare
-  * @pnum: physical eraseblock number of the second logical eraseblock to
-@@ -314,7 +314,7 @@ static struct ubi_scan_volume *add_volume(struct ubi_scan_info *si, int vol_id,
-  *     o bit 2 is cleared: the older LEB is not corrupted;
-  *     o bit 2 is set: the older LEB is corrupted.
-  */
--static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
- 			int pnum, const struct ubi_vid_hdr *vid_hdr)
- {
- 	void *buf;
-@@ -503,7 +503,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * sequence numbers. We still can attach these images, unless
- 		 * there is a need to distinguish between old and new
- 		 * eraseblocks, in which case we'll refuse the image in
--		 * 'compare_lebs()'. In other words, we attach old clean
-+		 * 'ubi_compare_lebs()'. In other words, we attach old clean
- 		 * images, but refuse attaching old images with duplicated
- 		 * logical eraseblocks because there was an unclean reboot.
- 		 */
-@@ -519,7 +519,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * Now we have to drop the older one and preserve the newer
- 		 * one.
- 		 */
--		cmp_res = compare_lebs(ubi, seb, pnum, vid_hdr);
-+		cmp_res = ubi_compare_lebs(ubi, seb, pnum, vid_hdr);
- 		if (cmp_res < 0)
- 			return cmp_res;
- 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 00c48f6..50c2af2 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -576,6 +576,10 @@ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
- void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
- 			    struct ubi_volume_info *vi);
- 
-+/* scan.c */
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
-+		      int pnum, const struct ubi_vid_hdr *vid_hdr);
++/* UBI fastmap on-flash data structures */
 +
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-  * @rb: a pointer to type 'struct rb_node' to use as a loop counter
++#define UBI_FM_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
++#define UBI_FM_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
++
++/* fastmap on-flash data structure format version */
++#define UBI_FM_FMT_VERSION	1
++
++#define UBI_FM_SB_MAGIC		0x7B11D69F
++#define UBI_FM_HDR_MAGIC	0xD4B82EF7
++#define UBI_FM_VHDR_MAGIC	0xFA370ED1
++#define UBI_FM_POOL_MAGIC	0x67AF4D08
++#define UBI_FM_EBA_MAGIC	0xf0c040a8
++
++/* Semi-sane default values - TBR */
++#ifndef UBI_FM_MAX_POOL_SIZE
++#define UBI_FM_MAX_POOL_SIZE	128
++#endif
++#ifndef UBI_FM_MAX_BLOCKS
++#define UBI_FM_MAX_BLOCKS	32
++#endif
++#ifndef UBI_FM_MAX_START
++#define UBI_FM_MAX_START	64
++#endif
++
++/**
++ * struct ubi_fm_sb - UBI fastmap super block
++ * @magic: fastmap super block magic number (%UBI_FM_SB_MAGIC)
++ * @version: format version of this fastmap
++ * @data_crc: CRC over the fastmap data
++ * @nblocks: number of PEBs used by this fastmap
++ * @block_loc: an array containing the location of all PEBs of the fastmap
++ * @block_ec: the erase counter of each used PEB
++ * @sqnum: highest sequence number value at the time while taking the fastmap
++ *
++ */
++struct ubi_fm_sb {
++	__be32 magic;
++	__u8 version;
++	__u8 padding1[3];
++	__be32 data_crc;
++	__be32 nblocks;
++	__be32 block_loc[UBI_FM_MAX_BLOCKS];
++	__be32 block_ec[UBI_FM_MAX_BLOCKS];
++	__be64 sqnum;
++	__u8 padding2[32];
++} __packed;
++
++/**
++ * struct ubi_fm_hdr - header of the fastmap data set
++ * @magic: fastmap header magic number (%UBI_FM_HDR_MAGIC)
++ * @nfree: number of free PEBs known by this fastmap
++ * @nused: number of used PEBs known by this fastmap
++ * @nvol: number of UBI volumes known by this fastmap
++ */
++struct ubi_fm_hdr {
++	__be32 magic;
++	__be32 nfree;
++	__be32 nused;
++	__be32 nvol;
++	__u8 padding[16];
++} __packed;
++
++/* struct ubi_fm_hdr is followed by struct ubi_fm_scan_pool */
++
++/**
++ * struct ubi_fm_scan_pool - Fastmap pool PEBs to be scanned while attaching
++ * @magic: pool magic numer (%UBI_FM_POOL_MAGIC)
++ * @size: current pool size
++ * @pebs: an array containing the location of all PEBs in this pool
++ */
++struct ubi_fm_scan_pool {
++	__be32 magic;
++	__be32 size;
++	__be32 pebs[UBI_FM_MAX_POOL_SIZE];
++	__be32 padding[4];
++} __packed;
++
++/* struct ubi_fm_scan_pool is followed by nfree+nused struct ubi_fm_ec records */
++
++/**
++ * struct ubi_fm_ec - stores the erase counter of a PEB
++ * @pnum: PEB number
++ * @ec: ec of this PEB
++ */
++struct ubi_fm_ec {
++	__be32 pnum;
++	__be32 ec;
++} __packed;
++
++/**
++ * struct ubi_fm_volhdr - Fastmap volume header
++ * it identifies the start of an eba table
++ * @magic: Fastmap volume header magic number (%UBI_FM_VHDR_MAGIC)
++ * @vol_id: volume id of the fastmapped volume
++ * @vol_type: type of the fastmapped volume
++ * @data_pad: data_pad value of the fastmapped volume
++ * @used_ebs: number of used LEBs within this volume
++ * @last_eb_bytes: number of bytes used in the last LEB
++ */
++struct ubi_fm_volhdr {
++	__be32 magic;
++	__be32 vol_id;
++	__u8 vol_type;
++	__u8 padding1[3];
++	__be32 data_pad;
++	__be32 used_ebs;
++	__be32 last_eb_bytes;
++	__u8 padding2[8];
++} __packed;
++
++/* struct ubi_fm_volhdr is followed by one struct ubi_fm_eba records */
++
++/**
++ * struct ubi_fm_eba - denotes an association beween a PEB and LEB
++ * @magic EBA table magic number
++ * @nused: number of table entries
++ * @pnum: PEB number of LEB (LEB is the index)
++ */
++struct ubi_fm_eba {
++	__be32 magic;
++	__be32 nused;
++	__be32 pnum[0];
++} __packed;
+ #endif /* !__UBI_MEDIA_H__ */
 -- 
 1.7.6.5
