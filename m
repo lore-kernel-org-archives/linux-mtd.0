@@ -1,24 +1,15 @@
-Received: from dalsmrelay2.nai.com ([205.227.136.216])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUclQ-0005mG-Cj
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 11:51:33 +0000
-Message-ID: <4FB39456.7040208@snapgear.com>
-Date: Wed, 16 May 2012 21:49:42 +1000
-From: Greg Ungerer <gerg@snapgear.com>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUdDv-0000Eg-Io
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 12:21:00 +0000
+Date: Wed, 16 May 2012 14:20:56 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] ubi: add volume id and LEB number to struct ubi_scan_leb
+Message-ID: <alpine.DEB.2.00.1205161419590.27131@eristoteles.iwoars.net>
 MIME-Version: 1.0
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [uClinux-dev] [PATCH] mtd: clean up uclinux.c map driver
-References: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
- <CAMjpGUcteBCy7OLVgxF1sDTNi4XqCKsetEQSW-dpG0Ji4mUh2A@mail.gmail.com>
- <4FB2F8A9.6010909@snapgear.com>
- <CAMjpGUff6=5HhUrt6xRdROb7edFWvZsUDHLZStVQQr55zo6maQ@mail.gmail.com>
- <4FB3170B.5060100@snapgear.com>
- <CAMjpGUcBCVvRreZ2DK+UXkhV2dMZj3xMbTpHaep0yTViGS_1-w@mail.gmail.com>
-In-Reply-To: <CAMjpGUcBCVvRreZ2DK+UXkhV2dMZj3xMbTpHaep0yTViGS_1-w@mail.gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Greg Ungerer <gerg@uclinux.org>, linux-mtd@lists.infradead.org,
- uClinux development list <uclinux-dev@uclinux.org>, dedekind1@gmail.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +19,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/16/2012 03:02 PM, Mike Frysinger wrote:
-> On Tue, May 15, 2012 at 10:55 PM, Greg Ungerer<gerg@snapgear.com>  wrote:
->> On 16/05/12 12:42, Mike Frysinger wrote:
->>> On Tue, May 15, 2012 at 8:45 PM, Greg Ungerer<gerg@snapgear.com>  =C3=
-=A1wrote:
->>>> On 16/05/12 01:57, Mike Frysinger wrote:
->>>>> On Tue, May 15, 2012 at 12:08 AM,<gerg@snapgear.com>  =C3=A1=E2=94=9C=
-=C3=ADwrote:
->>>>>> . make the struct uclinux_ram_map static
->>>>>
->>>>> NAK: this breaks Blackfin systems. =E2=94=9C=C3=ADwe specifically don=
-'t want this to
->>>>> be static.
->>>>> it should probably get a comment added above it saying as much.
->>>>
->>>> A comment won't fix the sparse warning. You need a proper declaration.
->>>
->>> perhaps, but marking it static to fix a warning that people rarely see
->>> whilst simultaneously knowingly breaking an arch doesn't sound like
->>> the correct trade off.
->>
->> I agree, of course. It wasn't done to knowingly break an arch. But
->> the sparse warning can be fixed with a proper declaration, that
->> would avoid you having a local extern for it in
->> arch/blackfin/kernel/setup.c as well. Cleaner all round.
->
-> i thought you were going for merging anyways.
->
-> where would you suggest adding such a decl ?  there isn't an existing
-> one i can see that this would fit into.  might have to create a new
-> one just for this ?
+This patch adds the volume id and LEB number to struct ubi_scan_leb when
+scanning the LEBs at startup.  PEBs now added to the erase queue will know
+their original LEB number and volume id, if available, and will be -1
+otherwise (for instance, if the vid header is unreadable).
 
-No I don't see any existing place that makes any sense. I guess it
-could be something like a new file include/linux/mtd/uclinux.h.
+This was tested by creating an ubi device with 3 volumes and disabiling the
+ubi_thread's do_work functionality. The different ubi volumes were formatted
+to ubifs and had files created and erased.  The ubi modules was reloaded and
+the list of LEB's added to the erased list was outputted, confirming the
+volume ids and LEB numbers were appropriate.
 
-But it looks like Artem is ok with just reverting it to not be static.
-I am happy to leave it that way if you are.
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ drivers/mtd/ubi/scan.c |   49 +++++++++++++++++++++++++++++------------------
+ drivers/mtd/ubi/scan.h |    2 +
+ 2 files changed, 32 insertions(+), 19 deletions(-)
 
-Regards
-Greg
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index c26b1ad..3d87446 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -102,20 +102,23 @@ static struct ubi_vid_hdr *vidh;
+  * add_to_list - add physical eraseblock to a list.
+  * @si: scanning information
+  * @pnum: physical eraseblock number to add
++ * @vol_id: the last used volume id for the PEB
++ * @lnum: the last used LEB number for the PEB
+  * @ec: erase counter of the physical eraseblock
+  * @to_head: if not zero, add to the head of the list
+  * @list: the list to add to
+  *
+  * This function adds physical eraseblock @pnum to free, erase, or alien lists.
+- * If @to_head is not zero, PEB will be added to the head of the list, which
+- * basically means it will be processed first later. E.g., we add corrupted
+- * PEBs (corrupted due to power cuts) to the head of the erase list to make
+- * sure we erase them first and get rid of corruptions ASAP. This function
+- * returns zero in case of success and a negative error code in case of
+- * failure.
++ * It stores the @lnum and @vol_id alongside, which can both be -1 if they are
++ * not available, not readable, or not assigned. If @to_head is not zero, PEB
++ * will be added to the head of the list, which basically means it will be
++ * processed first later. E.g., we add corrupted PEBs (corrupted due to power
++ * cuts) to the head of the erase list to make sure we erase them first and
++ * get rid of corruptions ASAP. This function returns zero in case of success
++ * and a negative error code in case of failure.
+  */
+-static int add_to_list(struct ubi_scan_info *si, int pnum, int ec, int to_head,
+-		       struct list_head *list)
++static int add_to_list(struct ubi_scan_info *si, int pnum, int vol_id,
++		       int lnum, int ec, int to_head, struct list_head *list)
+ {
+ 	struct ubi_scan_leb *seb;
 
+@@ -134,6 +137,8 @@ static int add_to_list(struct ubi_scan_info *si, int pnum, int ec, int to_head,
+ 		return -ENOMEM;
 
+ 	seb->pnum = pnum;
++	seb->vol_id = vol_id;
++	seb->lnum = lnum;
+ 	seb->ec = ec;
+ 	if (to_head)
+ 		list_add(&seb->u.list, list);
+@@ -532,13 +537,16 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			if (err)
+ 				return err;
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+-			err = add_to_list(si, seb->pnum, seb->ec, cmp_res & 4,
++			err = add_to_list(si, seb->pnum, seb->vol_id,
++					  seb->lnum, seb->ec, cmp_res & 4,
+ 					  &si->erase);
+ 			if (err)
+ 				return err;
+
+ 			seb->ec = ec;
+ 			seb->pnum = pnum;
++			seb->vol_id = vol_id;
++			seb->lnum = lnum;
+ 			seb->scrub = ((cmp_res & 2) || bitflips);
+ 			seb->copy_flag = vid_hdr->copy_flag;
+ 			seb->sqnum = sqnum;
+@@ -553,8 +561,8 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			 * This logical eraseblock is older than the one found
+ 			 * previously.
+ 			 */
+-			return add_to_list(si, pnum, ec, cmp_res & 4,
+-					   &si->erase);
++			return add_to_list(si, pnum, vol_id, lnum, ec,
++					   cmp_res & 4, &si->erase);
+ 		}
+ 	}
+
+@@ -573,6 +581,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+
+ 	seb->ec = ec;
+ 	seb->pnum = pnum;
++	seb->vol_id = vol_id;
+ 	seb->lnum = lnum;
+ 	seb->scrub = bitflips;
+ 	seb->copy_flag = vid_hdr->copy_flag;
+@@ -868,11 +877,11 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		break;
+ 	case UBI_IO_FF:
+ 		si->empty_peb_count += 1;
+-		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, 0,
++		return add_to_list(si, pnum, -1, -1, UBI_SCAN_UNKNOWN_EC, 0,
+ 				   &si->erase);
+ 	case UBI_IO_FF_BITFLIPS:
+ 		si->empty_peb_count += 1;
+-		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, 1,
++		return add_to_list(si, pnum, -1, -1, UBI_SCAN_UNKNOWN_EC, 1,
+ 				   &si->erase);
+ 	case UBI_IO_BAD_HDR_EBADMSG:
+ 	case UBI_IO_BAD_HDR:
+@@ -984,7 +993,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			return err;
+ 		else if (!err)
+ 			/* This corruption is caused by a power cut */
+-			err = add_to_list(si, pnum, ec, 1, &si->erase);
++			err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
+ 		else
+ 			/* This is an unexpected corruption */
+ 			err = add_corrupted(si, pnum, ec);
+@@ -992,15 +1001,15 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			return err;
+ 		goto adjust_mean_ec;
+ 	case UBI_IO_FF_BITFLIPS:
+-		err = add_to_list(si, pnum, ec, 1, &si->erase);
++		err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
+ 		if (err)
+ 			return err;
+ 		goto adjust_mean_ec;
+ 	case UBI_IO_FF:
+ 		if (ec_err)
+-			err = add_to_list(si, pnum, ec, 1, &si->erase);
++			err = add_to_list(si, pnum, -1, -1, ec, 1, &si->erase);
+ 		else
+-			err = add_to_list(si, pnum, ec, 0, &si->free);
++			err = add_to_list(si, pnum, -1, -1, ec, 0, &si->free);
+ 		if (err)
+ 			return err;
+ 		goto adjust_mean_ec;
+@@ -1019,7 +1028,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		case UBI_COMPAT_DELETE:
+ 			ubi_msg("\"delete\" compatible internal volume %d:%d"
+ 				" found, will remove it", vol_id, lnum);
+-			err = add_to_list(si, pnum, ec, 1, &si->erase);
++			err = add_to_list(si, pnum, vol_id, lnum,
++					  ec, 1, &si->erase);
+ 			if (err)
+ 				return err;
+ 			return 0;
+@@ -1034,7 +1044,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		case UBI_COMPAT_PRESERVE:
+ 			ubi_msg("\"preserve\" compatible internal volume %d:%d"
+ 				" found", vol_id, lnum);
+-			err = add_to_list(si, pnum, ec, 0, &si->alien);
++			err = add_to_list(si, pnum, vol_id, lnum,
++					  ec, 0, &si->alien);
+ 			if (err)
+ 				return err;
+ 			return 0;
+diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
+index d48aef1..e214647 100644
+--- a/drivers/mtd/ubi/scan.h
++++ b/drivers/mtd/ubi/scan.h
+@@ -28,6 +28,7 @@
+  * struct ubi_scan_leb - scanning information about a physical eraseblock.
+  * @ec: erase counter (%UBI_SCAN_UNKNOWN_EC if it is unknown)
+  * @pnum: physical eraseblock number
++ * @vol_id: the volume identifier of the LEB.
+  * @lnum: logical eraseblock number
+  * @scrub: if this physical eraseblock needs scrubbing
+  * @copy_flag: this LEB is a copy (@copy_flag is set in VID header of this LEB)
+@@ -42,6 +43,7 @@
+ struct ubi_scan_leb {
+ 	int ec;
+ 	int pnum;
++	int vol_id;
+ 	int lnum;
+ 	unsigned int scrub:1;
+ 	unsigned int copy_flag:1;
+-- 
+1.7.5.4
