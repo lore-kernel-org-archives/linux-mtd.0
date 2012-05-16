@@ -1,18 +1,23 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUdiT-0003dk-Sl
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 12:52:34 +0000
-Date: Wed, 16 May 2012 14:52:32 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2] UBIFS: read crypto_lookup from datanodes to znodes
-In-Reply-To: <1337087022.2528.204.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1205161451250.27131@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
- <1337087022.2528.204.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUdnV-0004R5-Eu
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 12:57:46 +0000
+Message-ID: <1337173272.24809.52.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 16 May 2012 16:01:12 +0300
+In-Reply-To: <1337101871-31181-2-git-send-email-richard@nod.at>
+References: <1337101871-31181-1-git-send-email-richard@nod.at>
+ <1337101871-31181-2-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-mmee3KLhHXw8RA/PINH/"
+Mime-Version: 1.0
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ tim.bird@am.sony.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,179 +27,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Crypto_lookup values are now read from the data node header whenever a
-data node is read from flash and cached in the TNC. The value will be zero
-until it is read from flash. (If it is needed before it happens to be
-loaded, i.e., to delete a node, then it will be forced read.)
 
-It was tested by setting cryptolookup values for new datanodes by their
-lnum and offset on flash. This was later asserted in the TNC that they
-were either zero, or always equal. On mounting, the TNC crypto lookup
-values were confirmed to be zero and later, after reading the
-corresponding files, confirmed they were loaded and corresponded to the
-location on flash.
+--=-mmee3KLhHXw8RA/PINH/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- fs/ubifs/gc.c          |    7 ++++++-
- fs/ubifs/journal.c     |    8 +++++---
- fs/ubifs/tnc.c         |   39 +++++++++++++++++++++++++++++++++++++++
- fs/ubifs/ubifs-media.h |    3 ++-
- 4 files changed, 52 insertions(+), 5 deletions(-)
+On Tue, 2012-05-15 at 19:11 +0200, Richard Weinberger wrote:
+> The fastmap mechanism needs to read the next sequence nummber
+> directly.
+>=20
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index f146447..98e6683 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -322,15 +322,20 @@ static int move_node(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 		     struct ubifs_scan_node *snod, struct ubifs_wbuf *wbuf)
- {
- 	int err, new_lnum = wbuf->lnum, new_offs = wbuf->offs + wbuf->used;
-+	long long crypto_lookup = 0;
+I started looking at the code, and made some notes at the same time and
+few minor changes - here is the diff which you can apply on top of your
+patches.
 
- 	cond_resched();
- 	err = ubifs_wbuf_write_nolock(wbuf, snod->node, snod->len);
- 	if (err)
- 		return err;
-
-+	if (key_type(c, &snod->key) == UBIFS_DATA_KEY) {
-+		struct ubifs_data_node *dn = snod->node;
-+		crypto_lookup = le64_to_cpu(dn->crypto_lookup);
-+	}
- 	err = ubifs_tnc_replace(c, &snod->key, sleb->lnum,
- 				snod->offs, new_lnum, new_offs,
--				snod->len, 0);
-+				snod->len, crypto_lookup);
- 	list_del(&snod->list);
- 	kfree(snod);
- 	return err;
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 2072b9a..5f39f75 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -89,7 +89,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
-  */
- static inline void zero_data_node_unused(struct ubifs_data_node *data)
- {
--	data->padding0 = 0;
- 	memset(data->padding1, 0, 2);
- }
-
-@@ -735,6 +734,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
-
- 	dlen = UBIFS_DATA_NODE_SZ + out_len;
- 	data->compr_type = cpu_to_le16(compr_type);
-+	data->crypto_lookup = cpu_to_le64(0);
-
- 	/* Make reservation before allocating sequence numbers */
- 	err = make_reservation(c, DATAHD, dlen);
-@@ -747,7 +747,8 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 	ubifs_wbuf_add_ino_nolock(&c->jheads[DATAHD].wbuf, key_inum(c, key));
- 	release_head(c, DATAHD);
-
--	err = ubifs_tnc_add(c, key, lnum, offs, dlen, 0);
-+	err = ubifs_tnc_add(c, key, lnum, offs, dlen,
-+			    le64_to_cpu(data->crypto_lookup));
- 	if (err)
- 		goto out_ro;
-
-@@ -1226,7 +1227,8 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
-
- 	if (dlen) {
- 		sz = offs + UBIFS_INO_NODE_SZ + UBIFS_TRUN_NODE_SZ;
--		err = ubifs_tnc_add(c, &key, lnum, sz, dlen, 0);
-+		err = ubifs_tnc_add(c, &key, lnum, sz, dlen,
-+				    le64_to_cpu(dn->crypto_lookup));
- 		if (err)
- 			goto out_ro;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 2399511..2f5c362 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -869,15 +869,22 @@ static int attach_by_fastmap(struct ubi_device *ubi)
+=20
+ 	fm_start =3D ubi_find_fastmap(ubi);
+ 	if (fm_start < 0)
++		/* TODO: instead, return 1 which means that fall-back to
++		 * scanning is needed */
+ 		return -ENOENT;
+=20
++	/* TODO: we need to re-name scan.h to attach.h, scan_info to
++	 * attach_info, si to ai, seb to aeb, and so on - because we share the
++	 * same data structures between scanning and fastmap, so the word
++	 * "scan" is not very sensible to have in the name any more.
++	 */
+ 	si =3D ubi_read_fastmap(ubi, fm_start);
+ 	if (IS_ERR(si))
+ 		return PTR_ERR(si);
+=20
+-	ubi->bad_peb_count =3D 0;
++	/* TODO: the rest looks very much like attach_by_scanning() - we
++	 * need to re-structure the code and avoid duplication */
+ 	ubi->good_peb_count =3D ubi->peb_count;
+-	ubi->corr_peb_count =3D 0;
+ 	ubi->max_ec =3D si->max_ec;
+ 	ubi->mean_ec =3D si->mean_ec;
+ 	ubi_msg("max. sequence number:       %llu", si->max_sqnum);
+@@ -888,6 +895,7 @@ static int attach_by_fastmap(struct ubi_device *ubi)
+ 		goto out_si;
  	}
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index b222a72..006caa7 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -1431,6 +1431,34 @@ static int maybe_leb_gced(struct ubifs_info *c, int lnum, int gc_seq1)
- }
-
- /**
-+ * tnc_set_crypto_lookup - set the crypto_lookup field in a zbranch.
-+ * @c: UBIFS file-system description object
-+ * @zbr: the crypto_lookup field is set in this zbranch
-+ * @node: a pointer to a node containing the zbranch.
-+ *
-+ * Crypto_lookup values are stored on flash memory inside the data node.
-+ * When the system is running, they are also stored in memory inside the
-+ * zbranch to avoid requiring reading the old data node simply to retrieve the
-+ * crypto_lookup when performing a truncation / overwrite / delete operation.
-+ * This function is called whenever a node is read from flash memory. If @node
-+ * is a data node (therefore containing a @crypto_lookup field), then:
-+ * if @zbr has an unset @crypto_lookup, set it to the value from @node
-+ * if @zbr has already a @crypto_lookup, assert they are the same.
-+ */
-+static void tnc_set_crypto_lookup(struct ubifs_info *c,
-+				  struct ubifs_zbranch *zbr, void *node)
-+{
-+	if (key_type(c, &(zbr->key)) == UBIFS_DATA_KEY) {
-+		struct ubifs_data_node *dn = node;
-+		long long crypto_lookup = le64_to_cpu(dn->crypto_lookup);
-+		if (zbr->crypto_lookup != 0)
-+			ubifs_assert(zbr->crypto_lookup == crypto_lookup);
-+		else
-+			zbr->crypto_lookup = crypto_lookup;
-+	}
-+}
-+
-+/**
-  * ubifs_tnc_locate - look up a file-system node and return it and its location.
-  * @c: UBIFS file-system description object
-  * @key: node key to lookup
-@@ -1485,6 +1513,11 @@ again:
- 	if (ubifs_get_wbuf(c, zbr.lnum)) {
- 		/* We do not GC journal heads */
- 		err = ubifs_tnc_read_node(c, &zbr, node);
-+		if (!err) {
-+			mutex_lock(&c->tnc_mutex);
-+			tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
-+			mutex_unlock(&c->tnc_mutex);
-+		}
- 		return err;
+=20
++	/* TODO: the _scan suffix makes no sens anymore - kill it */
+ 	err =3D ubi_wl_init_scan(ubi, si);
+ 	if (err) {
+ 		ubi_err("ubi_wl_init_scan failed!");
+@@ -1022,7 +1030,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_=
+num, int vid_hdr_offset)
+ 	err =3D attach_by_fastmap(ubi);
+ 	if (err) {
+ 		if (err !=3D -ENOENT)
+-			ubi_msg("falling back to attach by scanning mode!");
++			ubi_msg("falling back to attach by scanning");
+=20
+ 		ubi->attached_by_scanning =3D true;
+ 		err =3D attach_by_scanning(ubi);
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 2ea1682..7c5f1f7 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -582,7 +582,12 @@ struct ubi_scan_info *ubi_read_fastmap(struct ubi_devi=
+ce *ubi,
+ 		goto out;
+ 	}
+=20
++	/* TODO: Before checking version - check the CRC.
++	 * I think you need to add a separate helper function in io.c, similar
++	 * to ubi_io_read_vid_hdr(). */
+ 	if (fmsb->version !=3D UBI_FM_FMT_VERSION) {
++		/* TODO: we can fall back to scanning instead of saying good
++		 * bye! */
+ 		ubi_err("Unknown fastmap format version!");
+ 		si =3D ERR_PTR(-EINVAL);
+ 		kfree(fmsb);
+@@ -606,6 +611,7 @@ struct ubi_scan_info *ubi_read_fastmap(struct ubi_devic=
+e *ubi,
+ 	if (!fm_raw) {
+ 		si =3D ERR_PTR(-ENOMEM);
+ 		kfree(fmsb);
++		/* TODO: goto? */
+ 	}
+=20
+ 	vh =3D ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
+@@ -617,6 +623,9 @@ struct ubi_scan_info *ubi_read_fastmap(struct ubi_devic=
+e *ubi,
+ 	}
+=20
+ 	for (i =3D 0; i < nblocks; i++) {
++		/* TODO: you basically perform the scanning here - you should
++		 * share the same code as we use in scan.c: use process_peb().
++		 */
+ 		ret =3D ubi_io_read_vid_hdr(ubi, be32_to_cpu(fmsb->block_loc[i]),
+ 			vh, 0);
+ 		if (ret) {
+@@ -653,6 +662,7 @@ struct ubi_scan_info *ubi_read_fastmap(struct ubi_devic=
+e *ubi,
+ 				i, be32_to_cpu(fmsb->block_loc[i]));
+ 			si =3D ERR_PTR(ret);
+=20
++			/* TODO: fsmb is not freed? */
+ 			goto free_vhdr;
+ 		}
  	}
 
-@@ -1497,9 +1530,15 @@ again:
- 		safely = 1;
- 		goto again;
- 	}
-+
-+	mutex_lock(&c->tnc_mutex);
-+	tnc_set_crypto_lookup(c, &(znode->zbranch[n]), node);
-+	mutex_unlock(&c->tnc_mutex);
- 	return 0;
 
- out:
-+	if (!err)
-+		tnc_set_crypto_lookup(c, zt, node);
- 	mutex_unlock(&c->tnc_mutex);
- 	return err;
- }
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index 9ecbd37..e03adcf 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -539,6 +539,7 @@ struct ubifs_dent_node {
-  * struct ubifs_data_node - data node.
-  * @ch: common header
-  * @key: node key
-+ * @crypto_lookup: the node's cryptographic key's position in the KSA
-  * @size: uncompressed data size in bytes
-  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
-  * @padding: reserved for future, zeroes
-@@ -550,7 +551,7 @@ struct ubifs_dent_node {
- struct ubifs_data_node {
- 	struct ubifs_ch ch;
- 	__u8 key[UBIFS_KEY_LEN];
--	__le64 padding0; /* Watch 'zero_data_node_unused()' if changing! */
-+	__le64 crypto_lookup;
- 	__le32 size;
- 	__le16 compr_type;
- 	__u8 padding1[2]; /* Watch 'zero_data_node_unused()' if changing! */
--- 
-1.7.5.4
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-mmee3KLhHXw8RA/PINH/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPs6UZAAoJECmIfjd9wqK0wXEP/2IzAwLv+FebFRh/rdIAQxi1
+s5jn/I5if82NTteXgiN1DNZ3wk2K5vIHn+W28zTtM1I3QDsPfiAHTQMFGY7nxaj7
+vshh1VFt/Ghfa/SUALMTmd1ZPZdMEyQVLJacqsM0OqUhNwYfUcPIPjSKUB7X18Ce
+p6qSiMOKx2eSNulX+hYF2cuUirr8wt+HenchRQis+VrMbuTQgDP5CSxxHSMi5EiV
+Gu8UX2vlmobMtxxA+rf4y5vT0mPIk5ADUwpflSxwZpTFXFiHSMBP9ZLqMfsa9/a3
+MWbV58Fy6hbflGWp08y1udVGCPnB+G3JK6OwKfMnXPkZxpPLHo023Be7cMyo7GYY
+IbnrWuPecIMrFlhs9RT1vqzGNyWiBGSlXVmbF6iQE8JW8mGOh4BqYE5UFXkhY/Kf
+DcNVkK1rXf7fbzMxWmmGTWnMgjQLvhb2zSUaboZwZ9J5rcHu2ObLS0b00HR9aYJN
+g8LQkoT/bfIQvQcgJc320cWySzQSpfhP+k2g28kchoFO38IAR9pnd9OO+fdUWAOX
+5JdB217o3WmQJl/gdmnfa3O7v0NmCO2Crz570P+dr6Iq8yexcgebKrA2eyg2pFaH
+tOtt4TB36e0Lc4uf7blMx5FUq+cbuV7To7S2YYO9m7IUoLKenoGdtzOuOw9p9BaM
+BuS9MVsbMlgzIaKUj786
+=/Z7z
+-----END PGP SIGNATURE-----
+
+--=-mmee3KLhHXw8RA/PINH/--
