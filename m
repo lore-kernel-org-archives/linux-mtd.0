@@ -1,17 +1,17 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUepE-0000aN-Sb
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 14:03:38 +0000
-Received: by laap9 with SMTP id p9so643178laa.36
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2012 07:03:34 -0700 (PDT)
-Date: Wed, 16 May 2012 17:03:24 +0300
+ id 1SUeuo-0001bb-Lh
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 14:09:23 +0000
+Received: by lbbgg6 with SMTP id gg6so658594lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2012 07:09:20 -0700 (PDT)
+Date: Wed, 16 May 2012 17:09:15 +0300
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
-Message-ID: <20120516170324.337f2932@pixies.home.jungo.com>
-In-Reply-To: <1337101871-31181-2-git-send-email-richard@nod.at>
+Subject: Re: [PATCH 2/7] [RFC] UBI: Export compare_lebs()
+Message-ID: <20120516170915.55675b6a@pixies.home.jungo.com>
+In-Reply-To: <1337101871-31181-3-git-send-email-richard@nod.at>
 References: <1337101871-31181-1-git-send-email-richard@nod.at>
- <1337101871-31181-2-git-send-email-richard@nod.at>
+ <1337101871-31181-3-git-send-email-richard@nod.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,33 +29,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Richard,
 
-On Tue, 15 May 2012 19:11:05 +0200 Richard Weinberger <richard@nod.at> wrote:
-> The fastmap mechanism needs to read the next sequence nummber
-> directly.
+On Tue, 15 May 2012 19:11:06 +0200 Richard Weinberger <richard@nod.at> wrote:
+> The fastmap mechanism needs this funtion,
+> rename it to ubi_compare_lebs() and export it.
 > 
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->  drivers/mtd/ubi/eba.c |   18 +++++++++---------
->  drivers/mtd/ubi/ubi.h |    1 +
->  2 files changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index bd5fdbf..d75677d 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -57,7 +57,7 @@
->   * global sequence counter value. It also increases the global sequence
->   * counter.
->   */
-> -static unsigned long long next_sqnum(struct ubi_device *ubi)
-> +unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
+>  drivers/mtd/ubi/scan.c |    8 ++++----
+>  drivers/mtd/ubi/ubi.h  |    4 ++++
+>  2 files changed, 8 insertions(+), 4 deletions(-)
 
-Minor nit.
-
-Comment above the function should have been changed too.
-(look for the "next_sqnum - get next sequence number" comment)
-
-Other than that,
 Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
 Regards,
