@@ -1,14 +1,17 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUlCk-0000t9-A4
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:19 +0000
+ id 1SUlCk-0000tA-BL
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC v5] UBI: Fastmap support (aka checkpointing)
-Date: Wed, 16 May 2012 22:51:55 +0200
-Message-Id: <1337201522-86521-1-git-send-email-richard@nod.at>
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de, tim.bird@am.sony.com,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Subject: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
+Date: Wed, 16 May 2012 22:51:56 +0200
+Message-Id: <1337201522-86521-2-git-send-email-richard@nod.at>
+In-Reply-To: <1337201522-86521-1-git-send-email-richard@nod.at>
+References: <1337201522-86521-1-git-send-email-richard@nod.at>
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,45 +21,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a bug-fix release. v4 handled static volumes wrong.
-v6 will address everything that Artem pointed out.
+The fastmap mechanism needs to read the next sequence nummber
+directly.
 
-v1: https://lwn.net/Articles/481612/
-v2: https://lwn.net/Articles/496586/
-v3: Didn't release it to linux-mtd
-v4: http://article.gmane.org/gmane.linux.kernel/1297626
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/eba.c |   18 +++++++++---------
+ drivers/mtd/ubi/ubi.h |    1 +
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-Changes since v1:
-       - renamed it to UBIVIS (at least in Kconfig)
-       - UBIVIS parameters are now configurable via Kconfig
-       - several bugs have been fixed (design and implementation bugs)
-       - added lots of comments to make the review process easier
-       - made checkpatch.pl happy
-
-Changes since v2:
-       - minor bugs have been fixed
-       - renamed it to UBI fastmap (as Artem requested)
-
-Changes since v3:
-       - changed the on-flash layout (added padding fields, turned the
-         EBA storage into an array)
-       - fixed some corner cases (the protection queue needed some extra work)
-       - removed the data type hint logic
-       - rebased to Artems mtd tree
-
-Changes since v4:
-       - fixed static volume handling (used_ebs and last_data_bytes contained
-         bad values in some cases)
-	
-git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v5
-
-[PATCH 1/7] [RFC] UBI: Export next_sqnum()
-[PATCH 2/7] [RFC] UBI: Export compare_lebs()
-[PATCH 3/7] [RFC] UBI: Add fastmap on-flash layout
-[PATCH 4/7] [RFC] UBI: Add fastmap structs to ubi_device
-[PATCH 5/7] [RFC] UBI: Make wl subsystem fastmap aware
-[PATCH 6/7] [RFC] UBI: Implement fastmapping support
-[PATCH 7/7] [RFC] UBI: Wire up fastmap support
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index bd5fdbf..d75677d 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -57,7 +57,7 @@
+  * global sequence counter value. It also increases the global sequence
+  * counter.
+  */
+-static unsigned long long next_sqnum(struct ubi_device *ubi)
++unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
+ {
+ 	unsigned long long sqnum;
+ 
+@@ -522,7 +522,7 @@ retry:
+ 		goto out_put;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
+ 	if (err)
+ 		goto write_error;
+@@ -633,7 +633,7 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	}
+ 
+ 	vid_hdr->vol_type = UBI_VID_DYNAMIC;
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -694,7 +694,7 @@ write_error:
+ 		return err;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -747,7 +747,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		return err;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -812,7 +812,7 @@ write_error:
+ 		return err;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -864,7 +864,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	if (err)
+ 		goto out_mutex;
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -932,7 +932,7 @@ write_error:
+ 		goto out_leb_unlock;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -1092,7 +1092,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 		vid_hdr->data_size = cpu_to_be32(data_size);
+ 		vid_hdr->data_crc = cpu_to_be32(crc);
+ 	}
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 
+ 	err = ubi_io_write_vid_hdr(ubi, to, vid_hdr);
+ 	if (err) {
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 75b9f1c..00c48f6 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -530,6 +530,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 		     struct ubi_vid_hdr *vid_hdr);
+ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
++unsigned long long ubi_next_sqnum(struct ubi_device *ubi);
+ 
+ /* wl.c */
+ int ubi_wl_get_peb(struct ubi_device *ubi);
+-- 
+1.7.6.5
