@@ -1,22 +1,25 @@
-Message-ID: <1337161217.24809.38.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Date: Wed, 16 May 2012 12:40:17 +0300
-In-Reply-To: <20403.29677.517067.528042@ipc1.ka-ro>
-References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
- <1337160353.24809.26.camel@sauron.fi.intel.com>
- <20403.29677.517067.528042@ipc1.ka-ro>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-pD1+pg2DRwt3fykfysdA"
-Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUafK-0004oN-2z
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 09:37:10 +0000
+Received: by lbbgg6 with SMTP id gg6so442918lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2012 02:37:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAN8TOE9sq56X_VUgi+ZujLRPs=SpcJm9a1N-NuzF6+6R2WPLAg@mail.gmail.com>
+References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
+ <1336997687-6868-9-git-send-email-hechtb@gmail.com>
+ <CAN8TOE9sq56X_VUgi+ZujLRPs=SpcJm9a1N-NuzF6+6R2WPLAg@mail.gmail.com>
+Date: Wed, 16 May 2012 11:37:02 +0200
+Message-ID: <CABYn4sy5MPv42tBBDJX4N+cdJ3Vjc2HA3d=0wWT+9v9gz=bZvQ@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] mtd: sh_flctl: Use user oob data in hardware ECC
+ mode
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-sh@vger.kernel.org,
+ magnus.damm@gmail.com, Bastian Hecht <hechtb@gmail.com>,
+ linux-mtd@lists.infradead.org, laurent.pinchart@ideasonboard.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Brian,
 
---=-pD1+pg2DRwt3fykfysdA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Artem pushed the set and I'll supply a follow-up patch containing your
+suggestion.
 
-On Wed, 2012-05-16 at 11:31 +0200, Lothar Wa=C3=9Fmann wrote:
-> > > +		dev_warn(host->dev, "Only 2048 page size is currently " \
-> > > +			"supported for PMECC, rolling back to Software ECC\n");
-> >=20
-> > Why do you use backslashes?
-> >=20
-> message text should not be split across lines anyway to ease grepping
-> for the message.
+Thanks,
 
-I think the consensus is that it is personal decision of the author. I
-am not trying to enforce this and I also split messages. In this case I
-was only wondering why that backslash is used? I never saw this before
-in the linux kernel.
+Bastian
 
---=20
-Best Regards,
-Artem Bityutskiy
 
---=-pD1+pg2DRwt3fykfysdA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPs3YBAAoJECmIfjd9wqK0LvQP/19WJfif4NaKxl0muTOGvTbJ
-XR/kb4Z3Tk2T6vbg3HQzsUh4RL/3VxtgOOWUy+AXZrTjY4zhag0ERlkW2/QQUWJR
-lJ3OKcDbNQfLdA/zSeAWnhRifwYY7Q2R9Maj9SAOfGS+1Km5Oc0v5gcO8IMpssvz
-lUTrKLSen8XA5/mpytEaUisU7z4Lmn/KqXksmXlnm/lTfCogLwwVMG5ZpBu45R+q
-FMNIswq6muDnkkC8xOROn26JwiAuz0ivLSD8yYezVnfSgKzjoaO0VqrsEVgTZtwI
-zBvXTGwMtj/VzRjEpk0UQ+0RaeoGH1uiZ5tDlFvxCHlNbwVZceEEQDk+UAOkK4US
-dVzRV/C44LBsxzvFMqScSGrI7Q5IpzQBjC+LKid8aZBIFIqqKgy/bx3975JIgTo4
-iXBRAwSlpIzwSuRWHm9zglMhLdKf0PUE7OWfHnqNUAzZUZ6EIgzK/BZLIh4XEeId
-I5jcqKlfHMjEnh+6uvL40Sb7muY4LuHNWpGQwcK2XcYjXUctm0F8kBAIS192Ev2G
-o5dukLRkDNYNhrJmzsdZuR8S5MEvJ8lcZrAWUwNc8+UAASF/IqB+o1f/WOgBAkNZ
-0qWH+r48863rEIwE4SeFs5dkkfSJqPTDQWK/4khGtODkcWwM8ydgMKUCY4VibEba
-MUaqtqHlxwOQogxbjk9n
-=F5Vu
------END PGP SIGNATURE-----
-
---=-pD1+pg2DRwt3fykfysdA--
+2012/5/14 Brian Norris <computersforpeace@gmail.com>:
+> On Mon, May 14, 2012 at 5:14 AM, Bastian Hecht <hechtb@googlemail.com> wr=
+ote:
+>> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+>> index 631f7ed..8a07212 100644
+>> --- a/drivers/mtd/nand/sh_flctl.c
+>> +++ b/drivers/mtd/nand/sh_flctl.c
+>> @@ -384,6 +395,7 @@ static int flctl_read_page_hwecc(struct mtd_info *mt=
+d, struct nand_chip *chip,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0uint8_t *=
+buf, int oob_required, int page)
+>> =A0{
+>> =A0 =A0 =A0 =A0chip->read_buf(mtd, buf, mtd->writesize);
+>> + =A0 =A0 =A0 chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> =A0 =A0 =A0 =A0return 0;
+>> =A0}
+>
+> Well, my 'oob_required' patches won the race for inclusion in
+> l2-mtd-2.6.git, so it's probably good to just use the 'oob_required'
+> parameter now. That is:
+>
+> if (oob_required)
+> =A0 =A0 =A0 chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>
+>> @@ -391,6 +403,7 @@ static void flctl_write_page_hwecc(struct mtd_info *=
+mtd, struct nand_chip *chip,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 cons=
+t uint8_t *buf, int oob_required)
+>> =A0{
+>> =A0 =A0 =A0 =A0chip->write_buf(mtd, buf, mtd->writesize);
+>> + =A0 =A0 =A0 chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> =A0}
+>
+> Similar here:
+>
+> if (oob_required)
+> =A0 =A0 =A0 chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>
+> Brian
