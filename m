@@ -1,12 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUgZ8-00029b-5H
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:55:13 +0000
+ id 1SUgZE-00028u-PR
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:55:15 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 8/9] UBI: more of clean-up terminology for self-checks
-Date: Wed, 16 May 2012 18:55:59 +0300
-Message-Id: <1337183760-24417-8-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 9/9] UBI: get rid of dbg_err
+Date: Wed, 16 May 2012 18:56:00 +0300
+Message-Id: <1337183760-24417-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1337183760-24417-1-git-send-email-dedekind1@gmail.com>
 References: <1337183760-24417-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,398 +20,465 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-We have the "sefl-check" feature in UBI, but for historical reasons many
-corresponding functions and commentaries in the code use term "paranoid check"
-instead. Let's clean this up and use "self-check" everywhere.
-
-This patch renames functions, amends messages and kills several redundant
-debugging messages.
+This patch removes the 'dbg_err()' macro and we now use 'ubi_err' instead.
+The idea of 'dbg_err()' was to compile out some error message to make the
+binary a bit smaller - but I think it was a bad idea.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/scan.c |    8 +++----
- drivers/mtd/ubi/vmt.c  |   31 +++++++++++++--------------
- drivers/mtd/ubi/vtbl.c |   10 ++++-----
- drivers/mtd/ubi/wl.c   |   54 +++++++++++++++++++++++-------------------------
- 4 files changed, 49 insertions(+), 54 deletions(-)
+ drivers/mtd/ubi/build.c |    8 ++++----
+ drivers/mtd/ubi/cdev.c  |   24 ++++++++++++------------
+ drivers/mtd/ubi/debug.h |    2 --
+ drivers/mtd/ubi/io.c    |   36 ++++++++++++++++++------------------
+ drivers/mtd/ubi/kapi.c  |    2 +-
+ drivers/mtd/ubi/scan.c  |   10 +++++-----
+ drivers/mtd/ubi/vmt.c   |   18 +++++++++---------
+ drivers/mtd/ubi/vtbl.c  |    6 +++---
+ 8 files changed, 52 insertions(+), 54 deletions(-)
 
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 0fde9fc..2d57282 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -881,7 +881,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	for (i = 0; i < UBI_MAX_DEVICES; i++) {
+ 		ubi = ubi_devices[i];
+ 		if (ubi && mtd->index == ubi->mtd->index) {
+-			dbg_err("mtd%d is already attached to ubi%d",
++			ubi_err("mtd%d is already attached to ubi%d",
+ 				mtd->index, i);
+ 			return -EEXIST;
+ 		}
+@@ -907,7 +907,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 			if (!ubi_devices[ubi_num])
+ 				break;
+ 		if (ubi_num == UBI_MAX_DEVICES) {
+-			dbg_err("only %d UBI devices may be created",
++			ubi_err("only %d UBI devices may be created",
+ 				UBI_MAX_DEVICES);
+ 			return -ENFILE;
+ 		}
+@@ -917,7 +917,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 
+ 		/* Make sure ubi_num is not busy */
+ 		if (ubi_devices[ubi_num]) {
+-			dbg_err("ubi%d already exists", ubi_num);
++			ubi_err("ubi%d already exists", ubi_num);
+ 			return -EEXIST;
+ 		}
+ 	}
+@@ -955,7 +955,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 
+ 	err = attach_by_scanning(ubi);
+ 	if (err) {
+-		dbg_err("failed to attach by scanning, error %d", err);
++		ubi_err("failed to attach by scanning, error %d", err);
+ 		goto out_debugging;
+ 	}
+ 
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 633ac82..2364c00 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -63,7 +63,7 @@ static int get_exclusive(struct ubi_volume_desc *desc)
+ 	users = vol->readers + vol->writers + vol->exclusive;
+ 	ubi_assert(users > 0);
+ 	if (users > 1) {
+-		dbg_err("%d users for volume %d", users, vol->vol_id);
++		ubi_err("%d users for volume %d", users, vol->vol_id);
+ 		err = -EBUSY;
+ 	} else {
+ 		vol->readers = vol->writers = 0;
+@@ -159,7 +159,7 @@ static loff_t vol_cdev_llseek(struct file *file, loff_t offset, int origin)
+ 
+ 	if (vol->updating) {
+ 		/* Update is in progress, seeking is prohibited */
+-		dbg_err("updating");
++		ubi_err("updating");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -178,7 +178,7 @@ static loff_t vol_cdev_llseek(struct file *file, loff_t offset, int origin)
+ 	}
+ 
+ 	if (new_offset < 0 || new_offset > vol->used_bytes) {
+-		dbg_err("bad seek %lld", new_offset);
++		ubi_err("bad seek %lld", new_offset);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -216,11 +216,11 @@ static ssize_t vol_cdev_read(struct file *file, __user char *buf, size_t count,
+ 		count, *offp, vol->vol_id);
+ 
+ 	if (vol->updating) {
+-		dbg_err("updating");
++		ubi_err("updating");
+ 		return -EBUSY;
+ 	}
+ 	if (vol->upd_marker) {
+-		dbg_err("damaged volume, update marker is set");
++		ubi_err("damaged volume, update marker is set");
+ 		return -EBADF;
+ 	}
+ 	if (*offp == vol->used_bytes || count == 0)
+@@ -300,7 +300,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
+ 
+ 	lnum = div_u64_rem(*offp, vol->usable_leb_size, &off);
+ 	if (off & (ubi->min_io_size - 1)) {
+-		dbg_err("unaligned position");
++		ubi_err("unaligned position");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -309,7 +309,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
+ 
+ 	/* We can write only in fractions of the minimum I/O unit */
+ 	if (count & (ubi->min_io_size - 1)) {
+-		dbg_err("unaligned write length");
++		ubi_err("unaligned write length");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -643,7 +643,7 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
+ 	return 0;
+ 
+ bad:
+-	dbg_err("bad volume creation request");
++	ubi_err("bad volume creation request");
+ 	ubi_dump_mkvol_req(req);
+ 	return err;
+ }
+@@ -709,12 +709,12 @@ static int rename_volumes(struct ubi_device *ubi,
+ 	for (i = 0; i < req->count - 1; i++) {
+ 		for (n = i + 1; n < req->count; n++) {
+ 			if (req->ents[i].vol_id == req->ents[n].vol_id) {
+-				dbg_err("duplicated volume id %d",
++				ubi_err("duplicated volume id %d",
+ 					req->ents[i].vol_id);
+ 				return -EINVAL;
+ 			}
+ 			if (!strcmp(req->ents[i].name, req->ents[n].name)) {
+-				dbg_err("duplicated volume name \"%s\"",
++				ubi_err("duplicated volume name \"%s\"",
+ 					req->ents[i].name);
+ 				return -EINVAL;
+ 			}
+@@ -737,7 +737,7 @@ static int rename_volumes(struct ubi_device *ubi,
+ 		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_EXCLUSIVE);
+ 		if (IS_ERR(re->desc)) {
+ 			err = PTR_ERR(re->desc);
+-			dbg_err("cannot open volume %d, error %d", vol_id, err);
++			ubi_err("cannot open volume %d, error %d", vol_id, err);
+ 			kfree(re);
+ 			goto out_free;
+ 		}
+@@ -796,7 +796,7 @@ static int rename_volumes(struct ubi_device *ubi,
+ 				continue;
+ 
+ 			/* The volume exists but busy, or an error occurred */
+-			dbg_err("cannot open volume \"%s\", error %d",
++			ubi_err("cannot open volume \"%s\", error %d",
+ 				re->new_name, err);
+ 			goto out_free;
+ 		}
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index 3e5b60f..4499374 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -35,8 +35,6 @@ void ubi_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr);
+ 	}                                                                    \
+ } while (0)
+ 
+-#define dbg_err(fmt, ...) ubi_err(fmt, ##__VA_ARGS__)
+-
+ #define ubi_dbg_print_hex_dump(l, ps, pt, r, g, b, len, a)  \
+ 		print_hex_dump(l, ps, pt, r, g, b, len, a)
+ 
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 6843264..8a83962 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -272,7 +272,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 	}
+ 
+ 	if (ubi_dbg_is_write_failure(ubi)) {
+-		dbg_err("cannot write %d bytes to PEB %d:%d "
++		ubi_err("cannot write %d bytes to PEB %d:%d "
+ 			"(emulated)", len, pnum, offset);
+ 		dump_stack();
+ 		return -EIO;
+@@ -387,7 +387,7 @@ retry:
+ 		return err;
+ 
+ 	if (ubi_dbg_is_erase_failure(ubi)) {
+-		dbg_err("cannot erase PEB %d (emulated)", pnum);
++		ubi_err("cannot erase PEB %d (emulated)", pnum);
+ 		return -EIO;
+ 	}
+ 
+@@ -895,40 +895,40 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
+ 	int usable_leb_size = ubi->leb_size - data_pad;
+ 
+ 	if (copy_flag != 0 && copy_flag != 1) {
+-		dbg_err("bad copy_flag");
++		ubi_err("bad copy_flag");
+ 		goto bad;
+ 	}
+ 
+ 	if (vol_id < 0 || lnum < 0 || data_size < 0 || used_ebs < 0 ||
+ 	    data_pad < 0) {
+-		dbg_err("negative values");
++		ubi_err("negative values");
+ 		goto bad;
+ 	}
+ 
+ 	if (vol_id >= UBI_MAX_VOLUMES && vol_id < UBI_INTERNAL_VOL_START) {
+-		dbg_err("bad vol_id");
++		ubi_err("bad vol_id");
+ 		goto bad;
+ 	}
+ 
+ 	if (vol_id < UBI_INTERNAL_VOL_START && compat != 0) {
+-		dbg_err("bad compat");
++		ubi_err("bad compat");
+ 		goto bad;
+ 	}
+ 
+ 	if (vol_id >= UBI_INTERNAL_VOL_START && compat != UBI_COMPAT_DELETE &&
+ 	    compat != UBI_COMPAT_RO && compat != UBI_COMPAT_PRESERVE &&
+ 	    compat != UBI_COMPAT_REJECT) {
+-		dbg_err("bad compat");
++		ubi_err("bad compat");
+ 		goto bad;
+ 	}
+ 
+ 	if (vol_type != UBI_VID_DYNAMIC && vol_type != UBI_VID_STATIC) {
+-		dbg_err("bad vol_type");
++		ubi_err("bad vol_type");
+ 		goto bad;
+ 	}
+ 
+ 	if (data_pad >= ubi->leb_size / 2) {
+-		dbg_err("bad data_pad");
++		ubi_err("bad data_pad");
+ 		goto bad;
+ 	}
+ 
+@@ -940,45 +940,45 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
+ 		 * mapped logical eraseblocks.
+ 		 */
+ 		if (used_ebs == 0) {
+-			dbg_err("zero used_ebs");
++			ubi_err("zero used_ebs");
+ 			goto bad;
+ 		}
+ 		if (data_size == 0) {
+-			dbg_err("zero data_size");
++			ubi_err("zero data_size");
+ 			goto bad;
+ 		}
+ 		if (lnum < used_ebs - 1) {
+ 			if (data_size != usable_leb_size) {
+-				dbg_err("bad data_size");
++				ubi_err("bad data_size");
+ 				goto bad;
+ 			}
+ 		} else if (lnum == used_ebs - 1) {
+ 			if (data_size == 0) {
+-				dbg_err("bad data_size at last LEB");
++				ubi_err("bad data_size at last LEB");
+ 				goto bad;
+ 			}
+ 		} else {
+-			dbg_err("too high lnum");
++			ubi_err("too high lnum");
+ 			goto bad;
+ 		}
+ 	} else {
+ 		if (copy_flag == 0) {
+ 			if (data_crc != 0) {
+-				dbg_err("non-zero data CRC");
++				ubi_err("non-zero data CRC");
+ 				goto bad;
+ 			}
+ 			if (data_size != 0) {
+-				dbg_err("non-zero data_size");
++				ubi_err("non-zero data_size");
+ 				goto bad;
+ 			}
+ 		} else {
+ 			if (data_size == 0) {
+-				dbg_err("zero data_size of copy");
++				ubi_err("zero data_size of copy");
+ 				goto bad;
+ 			}
+ 		}
+ 		if (used_ebs != 0) {
+-			dbg_err("bad used_ebs");
++			ubi_err("bad used_ebs");
+ 			goto bad;
+ 		}
+ 	}
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 33ede23..d76fe47 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -221,7 +221,7 @@ out_free:
+ 	kfree(desc);
+ out_put_ubi:
+ 	ubi_put_device(ubi);
+-	dbg_err("cannot open device %d, volume %d, error %d",
++	ubi_err("cannot open device %d, volume %d, error %d",
+ 		ubi_num, vol_id, err);
+ 	return ERR_PTR(err);
+ }
 diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index bcbfe49..17fc6e5 100644
+index 17fc6e5..dc7f9db 100644
 --- a/drivers/mtd/ubi/scan.c
 +++ b/drivers/mtd/ubi/scan.c
-@@ -88,7 +88,7 @@
- #include <linux/random.h>
- #include "ubi.h"
+@@ -197,7 +197,7 @@ static int validate_vid_hdr(const struct ubi_vid_hdr *vid_hdr,
+ 		 */
  
--static int paranoid_check_si(struct ubi_device *ubi, struct ubi_scan_info *si);
-+static int self_check_si(struct ubi_device *ubi, struct ubi_scan_info *si);
+ 		if (vol_id != sv->vol_id) {
+-			dbg_err("inconsistent vol_id");
++			ubi_err("inconsistent vol_id");
+ 			goto bad;
+ 		}
  
- /* Temporary variables used during scanning */
- static struct ubi_ec_hdr *ech;
-@@ -1218,7 +1218,7 @@ struct ubi_scan_info *ubi_scan(struct ubi_device *ubi)
- 		if (seb->ec == UBI_SCAN_UNKNOWN_EC)
- 			seb->ec = si->mean_ec;
+@@ -207,17 +207,17 @@ static int validate_vid_hdr(const struct ubi_vid_hdr *vid_hdr,
+ 			sv_vol_type = UBI_VID_DYNAMIC;
  
--	err = paranoid_check_si(ubi, si);
-+	err = self_check_si(ubi, si);
- 	if (err)
- 		goto out_vidh;
+ 		if (vol_type != sv_vol_type) {
+-			dbg_err("inconsistent vol_type");
++			ubi_err("inconsistent vol_type");
+ 			goto bad;
+ 		}
  
-@@ -1326,14 +1326,14 @@ void ubi_scan_destroy_si(struct ubi_scan_info *si)
- }
+ 		if (used_ebs != sv->used_ebs) {
+-			dbg_err("inconsistent used_ebs");
++			ubi_err("inconsistent used_ebs");
+ 			goto bad;
+ 		}
  
- /**
-- * paranoid_check_si - check the scanning information.
-+ * self_check_si - check the scanning information.
-  * @ubi: UBI device description object
-  * @si: scanning information
-  *
-  * This function returns zero if the scanning information is all right, and a
-  * negative error code if not or if an error occurred.
-  */
--static int paranoid_check_si(struct ubi_device *ubi, struct ubi_scan_info *si)
-+static int self_check_si(struct ubi_device *ubi, struct ubi_scan_info *si)
- {
- 	int pnum, err, vols_found = 0;
- 	struct rb_node *rb1, *rb2;
+ 		if (data_pad != sv->data_pad) {
+-			dbg_err("inconsistent data_pad");
++			ubi_err("inconsistent data_pad");
+ 			goto bad;
+ 		}
+ 	}
+@@ -369,7 +369,7 @@ static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
+ 			if (err == UBI_IO_BITFLIPS)
+ 				bitflips = 1;
+ 			else {
+-				dbg_err("VID of PEB %d header is bad, but it "
++				ubi_err("VID of PEB %d header is bad, but it "
+ 					"was OK earlier, err %d", pnum, err);
+ 				if (err > 0)
+ 					err = -EIO;
 diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index b38ab92..1bfd4b6 100644
+index 1bfd4b6..e4b897a 100644
 --- a/drivers/mtd/ubi/vmt.c
 +++ b/drivers/mtd/ubi/vmt.c
-@@ -29,7 +29,7 @@
- #include <linux/export.h>
- #include "ubi.h"
+@@ -223,7 +223,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 			}
  
--static int paranoid_check_volumes(struct ubi_device *ubi);
-+static int self_check_volumes(struct ubi_device *ubi);
- 
- static ssize_t vol_attribute_show(struct device *dev,
- 				  struct device_attribute *attr, char *buf);
-@@ -356,8 +356,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	spin_unlock(&ubi->volumes_lock);
- 
- 	ubi_volume_notify(ubi, vol, UBI_VOLUME_ADDED);
--	if (paranoid_check_volumes(ubi))
--		dbg_err("check failed while creating volume %d", vol_id);
-+	self_check_volumes(ubi);
- 	return err;
- 
- out_sysfs:
-@@ -457,8 +456,8 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 	spin_unlock(&ubi->volumes_lock);
- 
- 	ubi_volume_notify(ubi, vol, UBI_VOLUME_REMOVED);
--	if (!no_vtbl && paranoid_check_volumes(ubi))
--		dbg_err("check failed while removing volume %d", vol_id);
-+	if (!no_vtbl)
-+		self_check_volumes(ubi);
- 
- 	return err;
- 
-@@ -584,8 +583,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 	}
- 
- 	ubi_volume_notify(ubi, vol, UBI_VOLUME_RESIZED);
--	if (paranoid_check_volumes(ubi))
--		dbg_err("check failed while re-sizing volume %d", vol_id);
-+	self_check_volumes(ubi);
- 	return err;
- 
- out_acc:
-@@ -634,8 +632,8 @@ int ubi_rename_volumes(struct ubi_device *ubi, struct list_head *rename_list)
+ 		if (vol_id == UBI_VOL_NUM_AUTO) {
+-			dbg_err("out of volume IDs");
++			ubi_err("out of volume IDs");
+ 			err = -ENFILE;
+ 			goto out_unlock;
  		}
+@@ -237,7 +237,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 	/* Ensure that this volume does not exist */
+ 	err = -EEXIST;
+ 	if (ubi->volumes[vol_id]) {
+-		dbg_err("volume %d already exists", vol_id);
++		ubi_err("volume %d already exists", vol_id);
+ 		goto out_unlock;
  	}
  
--	if (!err && paranoid_check_volumes(ubi))
--		;
-+	if (!err)
-+		self_check_volumes(ubi);
- 	return err;
- }
+@@ -246,7 +246,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 		if (ubi->volumes[i] &&
+ 		    ubi->volumes[i]->name_len == req->name_len &&
+ 		    !strcmp(ubi->volumes[i]->name, req->name)) {
+-			dbg_err("volume \"%s\" exists (ID %d)", req->name, i);
++			ubi_err("volume \"%s\" exists (ID %d)", req->name, i);
+ 			goto out_unlock;
+ 		}
  
-@@ -682,8 +680,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 		return err;
+@@ -257,9 +257,9 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 
+ 	/* Reserve physical eraseblocks */
+ 	if (vol->reserved_pebs > ubi->avail_pebs) {
+-		dbg_err("not enough PEBs, only %d available", ubi->avail_pebs);
++		ubi_err("not enough PEBs, only %d available", ubi->avail_pebs);
+ 		if (ubi->corr_peb_count)
+-			dbg_err("%d PEBs are corrupted and not used",
++			ubi_err("%d PEBs are corrupted and not used",
+ 				ubi->corr_peb_count);
+ 		err = -ENOSPC;
+ 		goto out_unlock;
+@@ -495,7 +495,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 
+ 	if (vol->vol_type == UBI_STATIC_VOLUME &&
+ 	    reserved_pebs < vol->used_ebs) {
+-		dbg_err("too small size %d, %d LEBs contain data",
++		ubi_err("too small size %d, %d LEBs contain data",
+ 			reserved_pebs, vol->used_ebs);
+ 		return -EINVAL;
+ 	}
+@@ -524,10 +524,10 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 	if (pebs > 0) {
+ 		spin_lock(&ubi->volumes_lock);
+ 		if (pebs > ubi->avail_pebs) {
+-			dbg_err("not enough PEBs: requested %d, available %d",
++			ubi_err("not enough PEBs: requested %d, available %d",
+ 				pebs, ubi->avail_pebs);
+ 			if (ubi->corr_peb_count)
+-				dbg_err("%d PEBs are corrupted and not used",
++				ubi_err("%d PEBs are corrupted and not used",
+ 					ubi->corr_peb_count);
+ 			spin_unlock(&ubi->volumes_lock);
+ 			err = -ENOSPC;
+@@ -762,7 +762,7 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
  	}
  
--	if (paranoid_check_volumes(ubi))
--		dbg_err("check failed while adding volume %d", vol_id);
-+	self_check_volumes(ubi);
- 	return err;
- 
- out_cdev:
-@@ -709,13 +706,13 @@ void ubi_free_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- }
- 
- /**
-- * paranoid_check_volume - check volume information.
-+ * self_check_volume - check volume information.
-  * @ubi: UBI device description object
-  * @vol_id: volume ID
-  *
-  * Returns zero if volume is all right and a a negative error code if not.
-  */
--static int paranoid_check_volume(struct ubi_device *ubi, int vol_id)
-+static int self_check_volume(struct ubi_device *ubi, int vol_id)
- {
- 	int idx = vol_id2idx(ubi, vol_id);
- 	int reserved_pebs, alignment, data_pad, vol_type, name_len, upd_marker;
-@@ -847,7 +844,7 @@ static int paranoid_check_volume(struct ubi_device *ubi, int vol_id)
- 	return 0;
- 
- fail:
--	ubi_err("paranoid check failed for volume %d", vol_id);
-+	ubi_err("self-check failed for volume %d", vol_id);
- 	if (vol)
- 		ubi_dump_vol_info(vol);
- 	ubi_dump_vtbl_record(&ubi->vtbl[vol_id], vol_id);
-@@ -857,12 +854,12 @@ fail:
- }
- 
- /**
-- * paranoid_check_volumes - check information about all volumes.
-+ * self_check_volumes - check information about all volumes.
-  * @ubi: UBI device description object
-  *
-  * Returns zero if volumes are all right and a a negative error code if not.
-  */
--static int paranoid_check_volumes(struct ubi_device *ubi)
-+static int self_check_volumes(struct ubi_device *ubi)
- {
- 	int i, err = 0;
- 
-@@ -870,7 +867,7 @@ static int paranoid_check_volumes(struct ubi_device *ubi)
- 		return 0;
- 
- 	for (i = 0; i < ubi->vtbl_slots; i++) {
--		err = paranoid_check_volume(ubi, i);
-+		err = self_check_volume(ubi, i);
- 		if (err)
- 			break;
+ 	if (vol->upd_marker && vol->corrupted) {
+-		dbg_err("update marker and corrupted simultaneously");
++		ubi_err("update marker and corrupted simultaneously");
+ 		goto fail;
  	}
+ 
 diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 277f154..befe6f8 100644
+index befe6f8..f3fbaa9 100644
 --- a/drivers/mtd/ubi/vtbl.c
 +++ b/drivers/mtd/ubi/vtbl.c
-@@ -62,7 +62,7 @@
- #include <asm/div64.h>
- #include "ubi.h"
+@@ -225,7 +225,7 @@ static int vtbl_check(const struct ubi_device *ubi,
  
--static void paranoid_vtbl_check(const struct ubi_device *ubi);
-+static void self_vtbl_check(const struct ubi_device *ubi);
- 
- /* Empty volume table record */
- static struct ubi_vtbl_record empty_vtbl_record;
-@@ -107,7 +107,7 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 			return err;
- 	}
- 
--	paranoid_vtbl_check(ubi);
-+	self_vtbl_check(ubi);
- 	return 0;
- }
- 
-@@ -855,16 +855,16 @@ out_free:
- }
- 
- /**
-- * paranoid_vtbl_check - check volume table.
-+ * self_vtbl_check - check volume table.
-  * @ubi: UBI device description object
-  */
--static void paranoid_vtbl_check(const struct ubi_device *ubi)
-+static void self_vtbl_check(const struct ubi_device *ubi)
- {
- 	if (!ubi->dbg->chk_gen)
- 		return;
- 
- 	if (vtbl_check(ubi, ubi->vtbl)) {
--		ubi_err("paranoid check failed");
-+		ubi_err("self-check failed");
- 		BUG();
- 	}
- }
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index f99dbd0..75d2c1f 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -155,12 +155,11 @@ struct ubi_work {
- 	int torture;
- };
- 
--static int paranoid_check_ec(struct ubi_device *ubi, int pnum, int ec);
--static int paranoid_check_in_wl_tree(const struct ubi_device *ubi,
--				     struct ubi_wl_entry *e,
--				     struct rb_root *root);
--static int paranoid_check_in_pq(const struct ubi_device *ubi,
--				struct ubi_wl_entry *e);
-+static int self_check_ec(struct ubi_device *ubi, int pnum, int ec);
-+static int self_check_in_wl_tree(const struct ubi_device *ubi,
-+				 struct ubi_wl_entry *e, struct rb_root *root);
-+static int self_check_in_pq(const struct ubi_device *ubi,
-+			    struct ubi_wl_entry *e);
- 
- /**
-  * wl_tree_add - add a wear-leveling entry to a WL RB-tree.
-@@ -404,7 +403,7 @@ retry:
- 	else
- 		e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF/2);
- 
--	paranoid_check_in_wl_tree(ubi, e, &ubi->free);
-+	self_check_in_wl_tree(ubi, e, &ubi->free);
- 
- 	/*
- 	 * Move the physical eraseblock to the protection queue where it will
-@@ -441,7 +440,7 @@ static int prot_queue_del(struct ubi_device *ubi, int pnum)
- 	if (!e)
- 		return -ENODEV;
- 
--	if (paranoid_check_in_pq(ubi, e))
-+	if (self_check_in_pq(ubi, e))
- 		return -ENODEV;
- 
- 	list_del(&e->u.list);
-@@ -467,7 +466,7 @@ static int sync_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- 
- 	dbg_wl("erase PEB %d, old EC %llu", e->pnum, ec);
- 
--	err = paranoid_check_ec(ubi, e->pnum, e->ec);
-+	err = self_check_ec(ubi, e->pnum, e->ec);
- 	if (err)
- 		return -EINVAL;
- 
-@@ -667,7 +666,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 			       e1->ec, e2->ec);
- 			goto out_cancel;
+ 		n = ubi->leb_size % alignment;
+ 		if (data_pad != n) {
+-			dbg_err("bad data_pad, has to be %d", n);
++			ubi_err("bad data_pad, has to be %d", n);
+ 			err = 6;
+ 			goto bad;
  		}
--		paranoid_check_in_wl_tree(ubi, e1, &ubi->used);
-+		self_check_in_wl_tree(ubi, e1, &ubi->used);
- 		rb_erase(&e1->u.rb, &ubi->used);
- 		dbg_wl("move PEB %d EC %d to PEB %d EC %d",
- 		       e1->pnum, e1->ec, e2->pnum, e2->ec);
-@@ -676,12 +675,12 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		scrubbing = 1;
- 		e1 = rb_entry(rb_first(&ubi->scrub), struct ubi_wl_entry, u.rb);
- 		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
--		paranoid_check_in_wl_tree(ubi, e1, &ubi->scrub);
-+		self_check_in_wl_tree(ubi, e1, &ubi->scrub);
- 		rb_erase(&e1->u.rb, &ubi->scrub);
- 		dbg_wl("scrub PEB %d to PEB %d", e1->pnum, e2->pnum);
- 	}
+@@ -241,7 +241,7 @@ static int vtbl_check(const struct ubi_device *ubi,
+ 		}
  
--	paranoid_check_in_wl_tree(ubi, e2, &ubi->free);
-+	self_check_in_wl_tree(ubi, e2, &ubi->free);
- 	rb_erase(&e2->u.rb, &ubi->free);
- 	ubi->move_from = e1;
- 	ubi->move_to = e2;
-@@ -1128,13 +1127,13 @@ retry:
- 		return 0;
+ 		if (reserved_pebs > ubi->good_peb_count) {
+-			dbg_err("too large reserved_pebs %d, good PEBs %d",
++			ubi_err("too large reserved_pebs %d, good PEBs %d",
+ 				reserved_pebs, ubi->good_peb_count);
+ 			err = 9;
+ 			goto bad;
+@@ -815,7 +815,7 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
  	} else {
- 		if (in_wl_tree(e, &ubi->used)) {
--			paranoid_check_in_wl_tree(ubi, e, &ubi->used);
-+			self_check_in_wl_tree(ubi, e, &ubi->used);
- 			rb_erase(&e->u.rb, &ubi->used);
- 		} else if (in_wl_tree(e, &ubi->scrub)) {
--			paranoid_check_in_wl_tree(ubi, e, &ubi->scrub);
-+			self_check_in_wl_tree(ubi, e, &ubi->scrub);
- 			rb_erase(&e->u.rb, &ubi->scrub);
- 		} else if (in_wl_tree(e, &ubi->erroneous)) {
--			paranoid_check_in_wl_tree(ubi, e, &ubi->erroneous);
-+			self_check_in_wl_tree(ubi, e, &ubi->erroneous);
- 			rb_erase(&e->u.rb, &ubi->erroneous);
- 			ubi->erroneous_peb_count -= 1;
- 			ubi_assert(ubi->erroneous_peb_count >= 0);
-@@ -1201,7 +1200,7 @@ retry:
- 	}
- 
- 	if (in_wl_tree(e, &ubi->used)) {
--		paranoid_check_in_wl_tree(ubi, e, &ubi->used);
-+		self_check_in_wl_tree(ubi, e, &ubi->used);
- 		rb_erase(&e->u.rb, &ubi->used);
- 	} else {
- 		int err;
-@@ -1521,7 +1520,7 @@ void ubi_wl_close(struct ubi_device *ubi)
- }
- 
- /**
-- * paranoid_check_ec - make sure that the erase counter of a PEB is correct.
-+ * self_check_ec - make sure that the erase counter of a PEB is correct.
-  * @ubi: UBI device description object
-  * @pnum: the physical eraseblock number to check
-  * @ec: the erase counter to check
-@@ -1530,7 +1529,7 @@ void ubi_wl_close(struct ubi_device *ubi)
-  * is equivalent to @ec, and a negative error code if not or if an error
-  * occurred.
-  */
--static int paranoid_check_ec(struct ubi_device *ubi, int pnum, int ec)
-+static int self_check_ec(struct ubi_device *ubi, int pnum, int ec)
- {
- 	int err;
- 	long long read_ec;
-@@ -1552,7 +1551,7 @@ static int paranoid_check_ec(struct ubi_device *ubi, int pnum, int ec)
- 
- 	read_ec = be64_to_cpu(ec_hdr->ec);
- 	if (ec != read_ec) {
--		ubi_err("paranoid check failed for PEB %d", pnum);
-+		ubi_err("self-check failed for PEB %d", pnum);
- 		ubi_err("read EC is %lld, should be %d", read_ec, ec);
- 		dump_stack();
- 		err = 1;
-@@ -1565,7 +1564,7 @@ out_free:
- }
- 
- /**
-- * paranoid_check_in_wl_tree - check that wear-leveling entry is in WL RB-tree.
-+ * self_check_in_wl_tree - check that wear-leveling entry is in WL RB-tree.
-  * @ubi: UBI device description object
-  * @e: the wear-leveling entry to check
-  * @root: the root of the tree
-@@ -1573,9 +1572,8 @@ out_free:
-  * This function returns zero if @e is in the @root RB-tree and %-EINVAL if it
-  * is not.
-  */
--static int paranoid_check_in_wl_tree(const struct ubi_device *ubi,
--				     struct ubi_wl_entry *e,
--				     struct rb_root *root)
-+static int self_check_in_wl_tree(const struct ubi_device *ubi,
-+				 struct ubi_wl_entry *e, struct rb_root *root)
- {
- 	if (!ubi->dbg->chk_gen)
- 		return 0;
-@@ -1583,22 +1581,22 @@ static int paranoid_check_in_wl_tree(const struct ubi_device *ubi,
- 	if (in_wl_tree(e, root))
- 		return 0;
- 
--	ubi_err("paranoid check failed for PEB %d, EC %d, RB-tree %p ",
-+	ubi_err("self-check failed for PEB %d, EC %d, RB-tree %p ",
- 		e->pnum, e->ec, root);
- 	dump_stack();
- 	return -EINVAL;
- }
- 
- /**
-- * paranoid_check_in_pq - check if wear-leveling entry is in the protection
-+ * self_check_in_pq - check if wear-leveling entry is in the protection
-  *                        queue.
-  * @ubi: UBI device description object
-  * @e: the wear-leveling entry to check
-  *
-  * This function returns zero if @e is in @ubi->pq and %-EINVAL if it is not.
-  */
--static int paranoid_check_in_pq(const struct ubi_device *ubi,
--				struct ubi_wl_entry *e)
-+static int self_check_in_pq(const struct ubi_device *ubi,
-+			    struct ubi_wl_entry *e)
- {
- 	struct ubi_wl_entry *p;
- 	int i;
-@@ -1611,7 +1609,7 @@ static int paranoid_check_in_pq(const struct ubi_device *ubi,
- 			if (p == e)
- 				return 0;
- 
--	ubi_err("paranoid check failed for PEB %d, EC %d, Protect queue",
-+	ubi_err("self-check failed for PEB %d, EC %d, Protect queue",
- 		e->pnum, e->ec);
- 	dump_stack();
- 	return -EINVAL;
+ 		if (sv->leb_count > UBI_LAYOUT_VOLUME_EBS) {
+ 			/* This must not happen with proper UBI images */
+-			dbg_err("too many LEBs (%d) in layout volume",
++			ubi_err("too many LEBs (%d) in layout volume",
+ 				sv->leb_count);
+ 			return -EINVAL;
+ 		}
 -- 
 1.7.10
