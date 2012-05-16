@@ -1,26 +1,22 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SPsLq-0002ON-2j
- for linux-mtd@lists.infradead.org; Thu, 03 May 2012 09:29:30 +0000
-Received: by lbbgg6 with SMTP id gg6so1373031lbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 03 May 2012 02:29:26 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1336024908.2056.3.camel@koala>
-References: <1335951710-9390-1-git-send-email-hechtb@gmail.com>
- <1335951710-9390-3-git-send-email-hechtb@gmail.com>
- <201205022249.30426.rjw@sisk.pl> <1336024825.2056.2.camel@koala>
- <1336024908.2056.3.camel@koala>
-Date: Thu, 3 May 2012 11:29:26 +0200
-Message-ID: <CABYn4szWZP4zZcz1MJ1xk5oCxiWh0nyJczcHGUqw4wE5MfJunA@mail.gmail.com>
-Subject: Re: [PATCH v3 02/10] ARM: sh-mobile: mackerel: Add error IRQ resource
-From: Bastian Hecht <hechtb@googlemail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: multipart/alternative; boundary=bcaec554d8eca083eb04bf1e7045
-Cc: linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
- "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
- Laurent Pichart <laurent.pinchart@ideasonboard.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Bastian Hecht <hechtb@googlemail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUZOo-0002fJ-T0
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 08:15:59 +0000
+Message-ID: <1337156368.24809.15.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [JFFS2] allow JFFS2 to discriminate between recoverable
+ and non-recoverable errors
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jean-Christophe DUBOIS <jcd@tribudubois.net>
+Date: Wed, 16 May 2012 11:19:28 +0300
+In-Reply-To: <1336755933.2625.100.camel@sauron.fi.intel.com>
+References: <1336662824-2594-1-git-send-email-jcd@tribudubois.net>
+ <1336755933.2625.100.camel@sauron.fi.intel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-MVoaPEGSo1PJLN4xwFmG"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,79 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---bcaec554d8eca083eb04bf1e7045
-Content-Type: text/plain; charset=ISO-8859-1
 
-Am 03.05.2012 08:01 schrieb "Artem Bityutskiy" <dedekind1@gmail.com>:
->
-> On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:
-> > On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:
-> > > On Wednesday, May 02, 2012, Bastian Hecht wrote:
-> > > > Supply the platform data for the FLSTEI error IRQ.
-> > > >
-> > > > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
-> > >
-> > > I'm going to take this patch into the renesas.git tree and push it
-> > > upstream throuch arm-soc, if that's not a problem.
-> >
-> > It is already in the MTD tree with the rest of the 10 patches...
->
-> Ops, sorry, this is not true. Then Bastian should separate it out and
-> not send it to the MTD tree.
-
-Alright I'll do. I need to fix the compiler warnings of the mtd patches
-anyway. So the board code is independant and can be pushed already by
-Rafael, right? How is it supposed to work in general? I think the sh-mobile
-list wants to be informed when I change something in the flctl code. Would
-the right approach be to send 2 patchsets - posted on both MLs so that
-Artem can take the mtd portions and Rafael the mackerel ones?
-
-Best regards,
-
-Bastian Hecht
-
-> --
-> Best Regards,
-> Artem Bityutskiy
-
---bcaec554d8eca083eb04bf1e7045
-Content-Type: text/html; charset=ISO-8859-1
+--=-MVoaPEGSo1PJLN4xwFmG
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-<p><br>
-Am 03.05.2012 08:01 schrieb &quot;Artem Bityutskiy&quot; &lt;<a href=3D"mai=
-lto:dedekind1@gmail.com">dedekind1@gmail.com</a>&gt;:<br>
-&gt;<br>
-&gt; On Thu, 2012-05-03 at 09:00 +0300, Artem Bityutskiy wrote:<br>
-&gt; &gt; On Wed, 2012-05-02 at 22:49 +0200, Rafael J. Wysocki wrote:<br>
-&gt; &gt; &gt; On Wednesday, May 02, 2012, Bastian Hecht wrote:<br>
-&gt; &gt; &gt; &gt; Supply the platform data for the FLSTEI error IRQ.<br>
-&gt; &gt; &gt; &gt;<br>
-&gt; &gt; &gt; &gt; Signed-off-by: Bastian Hecht &lt;<a href=3D"mailto:hech=
-tb@gmail.com">hechtb@gmail.com</a>&gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; I&#39;m going to take this patch into the renesas.git tree a=
-nd push it<br>
-&gt; &gt; &gt; upstream throuch arm-soc, if that&#39;s not a problem.<br>
-&gt; &gt;<br>
-&gt; &gt; It is already in the MTD tree with the rest of the 10 patches...<=
-br>
-&gt;<br>
-&gt; Ops, sorry, this is not true. Then Bastian should separate it out and<=
-br>
-&gt; not send it to the MTD tree.</p>
-<p>Alright I&#39;ll do. I need to fix the compiler warnings of the mtd patc=
-hes anyway. So the board code is independant and can be pushed already by R=
-afael, right? How is it supposed to work in general? I think the sh-mobile =
-list wants to be informed when I change something in the flctl code. Would =
-the right approach be to send 2 patchsets - posted on both MLs so that Arte=
-m can take the mtd portions and Rafael the mackerel ones?</p>
+On Fri, 2012-05-11 at 20:05 +0300, Artem Bityutskiy wrote:
+> Pushed both to l2-mtd.git, thanks!
+>=20
+> Can you confirm that these 2 patches solve the issues you earlier
+> described on this mailing list?
 
-<p>Best regards,</p>
-<p>Bastian Hecht</p>
-<p>&gt; --<br>
-&gt; Best Regards,<br>
-&gt; Artem Bityutskiy<br>
-</p>
+Ping.
 
---bcaec554d8eca083eb04bf1e7045--
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-MVoaPEGSo1PJLN4xwFmG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPs2MQAAoJECmIfjd9wqK0JzsP/0SqZ5JyVTvxsOX4FT0I4rkm
+NufGwpVxJsHM01NxJ0VUkm2o9y80xFjeB3/1H9PobZzyruCKL0iz+rk3Xs8QHEJt
+OJAcOJcF9sZZaE5PXEtKO7i9/C0pM/TyGtPRrDWXsLEzWNKd8Ku+tQA5saJeisJ8
+lV38Dgp2hR718uKI/hlccgWoUkVYIfLaxYgoFge2MbdrIy92KfBafaJQqG9DcIMC
+58uXsk+e9ExGUeviy70Gyo1YIFY6FYsgpHVa5LYiGQt8YrBxrD2EPpWmqsVdxP5G
+nnwmdglvzHDSAy8JzfCbN2HaAiJveoBewdQ627bSWjxzqapVzRpgJJoxkpXdYEvG
+UjTNi9xrGZQtoaPzLrPc8ANPndNYMrFDNUmL3WjxrZ0pMSkT3DQK51ZDsaKV/o69
+dMFz/cczdYtznfIJSvrVVXQSXVzf0aBgg6JdeMQiJzFcGYThoPmlaQyu2/zn2Azf
+1ogfykHVPCLjXlcPQeCeJOsFYhgR0SqzbYfF7RNDbUbKQ3BAtGz4mirZm6pY1+6w
+Ivph/fFwL//Vmm3H8N3QLZ01xcmjGWNTEFavWvbFVHU6HSDQRwSykKk4ee6M5LIj
+qZVgJjOqj+/SQ1S2bXcDfvzuh2a/B+3mR9uAmDTqMaI/yVsfvJz2Sv946GtGn6kJ
+2GdPDkiDkJbKD1jCwBu6
+=qy+t
+-----END PGP SIGNATURE-----
+
+--=-MVoaPEGSo1PJLN4xwFmG--
