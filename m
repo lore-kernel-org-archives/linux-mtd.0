@@ -1,23 +1,17 @@
-Received: from relais.videotron.ca ([24.201.245.36])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUkEl-0004LF-Tx
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 19:50:21 +0000
-MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_ZDGekh6i7OqduazMM2oruA)"
-Received: from xanadu.home ([66.130.28.92]) by VL-VM-MR005.ip.videotron.ca
- (Oracle Communications Messaging Exchange Server 7u4-22.01 64bit (built Apr 21
- 2011)) with ESMTP id <0M4400BQPSFSYY80@VL-VM-MR005.ip.videotron.ca> for
- linux-mtd@lists.infradead.org; Wed, 16 May 2012 15:50:16 -0400 (EDT)
-Date: Wed, 16 May 2012 15:50:16 -0400 (EDT)
-From: Nicolas Pitre <nico@fluxnic.net>
-To: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
-Subject: Re: [PATCH] mtd: nandsim: don't open code a do_div helper
-In-reply-to: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
-Message-id: <alpine.LFD.2.02.1205161542020.1640@xanadu.home>
-References: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUlCk-0000tD-5s
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 20:52:19 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 4/7] [RFC] UBI: Add fastmap structs to ubi_device
+Date: Wed, 16 May 2012 22:51:59 +0200
+Message-Id: <1337201522-86521-5-git-send-email-richard@nod.at>
+In-Reply-To: <1337201522-86521-1-git-send-email-richard@nod.at>
+References: <1337201522-86521-1-git-send-email-richard@nod.at>
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,140 +21,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+struct ubi_fastmap describes the currently used checkpoint.
+Upon checkpoint recreation all currently used PEBs will be returned
+to the wl subsystem.
 
---Boundary_(ID_ZDGekh6i7OqduazMM2oruA)
-Content-type: TEXT/PLAIN; CHARSET=US-ASCII
-Content-transfer-encoding: 7BIT
+struct ubi_fm_pool describes the fast pool.
+All PEBs within this pool have to be rescanned after reading the fastmap.
 
-On Wed, 16 May 2012, Herton Ronaldo Krzesinski wrote:
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/ubi.h |   46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 46 insertions(+), 0 deletions(-)
 
-> We don't need to open code the divide function, just use div_u64 that
-> already exists and do the same job. While this is a straightforward
-> clean up, there is more to that, the real motivation for this.
-> 
-> While building on a cross compiling environment in armel, using gcc
-> 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5), I was getting the following build
-> error:
-> 
-> ERROR: "__aeabi_uldivmod" [drivers/mtd/nand/nandsim.ko] undefined!
-> 
-> After investigating with objdump and hand built assembly version
-> generated with the compiler, I narrowed __aeabi_uldivmod as being
-> generated from the divide function. When nandsim.c is built with
-> -fno-inline-functions-called-once, that happens when
-> CONFIG_DEBUG_SECTION_MISMATCH is enabled, the do_div optimization in
-> arch/arm/include/asm/div64.h doesn't work as expected with the open
-> coded divide function: even if the do_div we are using doesn't have a
-> constant divisor, the compiler still includes the else parts of the
-> optimized do_div macro, and translates the divisions there to use
-> __aeabi_uldivmod, instead of only calling __do_div_asm -> __do_div64 and
-> optimizing/removing everything else out.
-> 
-> So to reproduce, gcc 4.6 plus CONFIG_DEBUG_SECTION_MISMATCH=y and
-> CONFIG_MTD_NAND_NANDSIM=m should do it, building on armel.
-
-This is a known gcc bug:
-http://old.nabble.com/-Bug-c-48783--New%3A-ARM%3A-kernel-compiled-at--O2-has-a-unused-reference-to-__aeabi_uldivmod-td31483124.html
-
-> After this change, the compiler does the intended thing even with
-> -fno-inline-functions-called-once, and optimizes out as expected the
-> constant handling in the optimized do_div on arm. As this also avoids a
-> build issue, I'm marking for Stable, as I think is applicable for this
-> case.
-> 
-> Signed-off-by: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
-> Cc: stable@vger.kernel.org
-
-The severity for stable can be debated, OTOH this can't hurt either.
-
-The cleanup is certainly worth it.
-
-Acked-by: Nicolas Pitre <nico@linaro.org>
-
-> ---
->  drivers/mtd/nand/nandsim.c |   12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
-> 
-> For more insight on the build issue, I'm attaching with this also:
-> 
-> * the pre-processed source with gcc -E
-> 
-> * the generated asm with gcc -S (nandsim.s-fno-inline-functions-called-once.txt.gz):
-> gcc -Wp,-MD,drivers/mtd/nand/.nandsim.o.d  -nostdinc -isystem /usr/lib/gcc/arm-linux-gnueabi/4.6/include -I/home/herton/build/linux-stable/arch/arm/include -Iarch/arm/include/generated -Iinclude  -I/home/herton/build/linux-stable/include -include /home/herton/build/linux-stable/include/linux/kconfig.h  -I/home/herton/build/linux-stable/drivers/mtd/nand -Idrivers/mtd/nand -D__KERNEL__ -mlittle-endian   -I/home/herton/build/linux-stable/arch/arm/mach-omap2/include   -I/home/herton/build/linux-stable/arch/arm/plat-omap/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -O2 -marm -fno-dwarf2-cfi-asm -fstack-protector -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -Wno-unused-but-set-variable -fomit-frame-pointer -g -fno-inline-functions-called-once -Wdeclaration-after-s
-> 
-> * generated asm, same as above but removing -fno-inline-functions-called-once
->   (nandsim.s-without-fno-inline-functions-called-once.txt.gz)
-> 
-> gcc -v output:
-> Using built-in specs.
-> COLLECT_GCC=/usr/bin/gcc
-> COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabi/4.6/lto-wrapper
-> Target: arm-linux-gnueabi
-> Configured with: ../src/configure -v --with-pkgversion='Ubuntu/Linaro 4.6.3-1ubuntu5' --with-bugurl=file:///usr/share/doc/gcc-4.6/README.Bugs --enable-languages=c,c++,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.6 --enable-shared --enable-linker-build-id --with-system-zlib --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.6 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --enable-plugin --enable-objc-gc --enable-multilib --disable-sjlj-exceptions --with-arch=armv7-a --with-float=softfp --with-fpu=vfpv3-d16 --with-mode=thumb --disable-werror --enable-checking=release --build=arm-linux-gnueabi --host=arm-linux-gnueabi --target=arm-linux-gnueabi
-> Thread model: posix
-> gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
-> 
-> Note that with the nandsim.s with -fno-inline-functions-called-once, a
-> divide.part.5 function is generated with code matching to the case on
-> do_div where the divisor is a constant, but divide.part.5 isn't used
-> anywhere as expected, gcc doesn't remove/optimize it out so later
-> linking fails.
-> 
-> Personally I think the optimized do_div on arch/arm/include/asm/div64.h
-> for gcc > 4 is too fragile, relying on gcc behaviour... other way I
-> could avoid the build issue, keeping the divide function as is (without
-> this patch), would be to add another bogus do_div with a constant
-> divisor to the divide function).
-> 
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index 261f478..c606b6a 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -28,7 +28,7 @@
->  #include <linux/module.h>
->  #include <linux/moduleparam.h>
->  #include <linux/vmalloc.h>
-> -#include <asm/div64.h>
-> +#include <linux/math64.h>
->  #include <linux/slab.h>
->  #include <linux/errno.h>
->  #include <linux/string.h>
-> @@ -547,12 +547,6 @@ static char *get_partition_name(int i)
->  	return kstrdup(buf, GFP_KERNEL);
->  }
->  
-> -static uint64_t divide(uint64_t n, uint32_t d)
-> -{
-> -	do_div(n, d);
-> -	return n;
-> -}
-> -
->  /*
->   * Initialize the nandsim structure.
->   *
-> @@ -581,7 +575,7 @@ static int init_nandsim(struct mtd_info *mtd)
->  	ns->geom.oobsz    = mtd->oobsize;
->  	ns->geom.secsz    = mtd->erasesize;
->  	ns->geom.pgszoob  = ns->geom.pgsz + ns->geom.oobsz;
-> -	ns->geom.pgnum    = divide(ns->geom.totsz, ns->geom.pgsz);
-> +	ns->geom.pgnum    = div_u64(ns->geom.totsz, ns->geom.pgsz);
->  	ns->geom.totszoob = ns->geom.totsz + (uint64_t)ns->geom.pgnum * ns->geom.oobsz;
->  	ns->geom.secshift = ffs(ns->geom.secsz) - 1;
->  	ns->geom.pgshift  = chip->page_shift;
-> @@ -924,7 +918,7 @@ static int setup_wear_reporting(struct mtd_info *mtd)
->  
->  	if (!rptwear)
->  		return 0;
-> -	wear_eb_count = divide(mtd->size, mtd->erasesize);
-> +	wear_eb_count = div_u64(mtd->size, mtd->erasesize);
->  	mem = wear_eb_count * sizeof(unsigned long);
->  	if (mem / sizeof(unsigned long) != wear_eb_count) {
->  		NS_ERR("Too many erase blocks for wear reporting\n");
-> -- 
-> 1.7.9.5
-> 
-> 
-
---Boundary_(ID_ZDGekh6i7OqduazMM2oruA)--
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 50c2af2..6c89971 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -197,6 +197,39 @@ struct ubi_rename_entry {
+ struct ubi_volume_desc;
+ 
+ /**
++ * struct ubi_fastmap - in-memory fastmap data structure.
++ * @peb: PEBs used by the current fastamp
++ * @ec: the erase counter of each used PEB
++ * @size: size of the fastmap in bytes
++ * @used_blocks: number of used PEBs
++ */
++struct ubi_fastmap {
++	int peb[UBI_FM_MAX_BLOCKS];
++	unsigned int ec[UBI_FM_MAX_BLOCKS];
++	size_t size;
++	int used_blocks;
++};
++
++/**
++ * struct ubi_fm_pool - in-memory fastmap pool
++ * @pebs: PEBs in this pool
++ * @used: number of used PEBs
++ * @size: total number of PEBs in this pool
++ * @max_size: maximal size of the pool
++ *
++ * A pool gets filled with up to max_size.
++ * If all PEBs within the pool are used a new fastmap will be written
++ * to the flash and the pool gets refilled with empty PEBs.
++ *
++ */
++struct ubi_fm_pool {
++	int pebs[UBI_FM_MAX_POOL_SIZE];
++	int used;
++	int size;
++	int max_size;
++};
++
++/**
+  * struct ubi_volume - UBI volume description data structure.
+  * @dev: device object to make use of the the Linux device model
+  * @cdev: character device object to create character device
+@@ -331,6 +364,13 @@ struct ubi_wl_entry;
+  * @ltree: the lock tree
+  * @alc_mutex: serializes "atomic LEB change" operations
+  *
++ * @fm: in-memory data structure of the currently used fastmap
++ * @old_fm: in-memory data structure old fastmap.
++ * 	    (only valid while writing a new one)
++ * @fm_pool: in-memory data structure of the fastmap pool
++ * @attached_by_scanning: this UBI device was attached by the old scanning
++ * 			  methold. All fastmap volumes have to be deleted.
++ *
+  * @used: RB-tree of used physical eraseblocks
+  * @erroneous: RB-tree of erroneous used physical eraseblocks
+  * @free: RB-tree of free physical eraseblocks
+@@ -422,6 +462,12 @@ struct ubi_device {
+ 	struct rb_root ltree;
+ 	struct mutex alc_mutex;
+ 
++	/* Fastmap stuff */
++	struct ubi_fastmap *fm;
++	struct ubi_fastmap *old_fm;
++	struct ubi_fm_pool fm_pool;
++	bool attached_by_scanning;
++
+ 	/* Wear-leveling sub-system's stuff */
+ 	struct rb_root used;
+ 	struct rb_root erroneous;
+-- 
+1.7.6.5
