@@ -1,17 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SUfG0-0002xN-IG
- for linux-mtd@lists.infradead.org; Wed, 16 May 2012 14:31:19 +0000
-Message-ID: <1337178865.24809.62.camel@sauron.fi.intel.com>
+ id 1SUfUF-0004pE-VJ
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 14:46:00 +0000
+Message-ID: <1337179769.24809.66.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] ubi: add volume id and LEB number to struct ubi_scan_leb
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Date: Wed, 16 May 2012 17:34:25 +0300
-In-Reply-To: <alpine.DEB.2.00.1205161419590.27131@eristoteles.iwoars.net>
+Date: Wed, 16 May 2012 17:49:29 +0300
+In-Reply-To: <1337178865.24809.62.camel@sauron.fi.intel.com>
 References: <alpine.DEB.2.00.1205161419590.27131@eristoteles.iwoars.net>
+ <1337178865.24809.62.camel@sauron.fi.intel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-0OWHzhopbHo/IzpuYDuv"
+ boundary="=-VGXf697C2CPCzbVffhQ8"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
@@ -25,47 +26,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-0OWHzhopbHo/IzpuYDuv
+--=-VGXf697C2CPCzbVffhQ8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-16 at 14:20 +0200, Joel Reardon wrote:
-> This patch adds the volume id and LEB number to struct ubi_scan_leb when
-> scanning the LEBs at startup.  PEBs now added to the erase queue will kno=
-w
-> their original LEB number and volume id, if available, and will be -1
-> otherwise (for instance, if the vid header is unreadable).
->=20
-> This was tested by creating an ubi device with 3 volumes and disabiling t=
-he
-> ubi_thread's do_work functionality. The different ubi volumes were format=
-ted
-> to ubifs and had files created and erased.  The ubi modules was reloaded =
-and
-> the list of LEB's added to the erased list was outputted, confirming the
-> volume ids and LEB numbers were appropriate.
->=20
-> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+On Wed, 2012-05-16 at 17:34 +0300, Artem Bityutskiy wrote:
+> I've added this code to the joel branch. But please, test this and
+> other
+> UBI merge candidates with all the UBI debugging checks enabled as
+> well.
+> Similar to UBIFS.=20
 
-I've added this code to the joel branch. But please, test this and other
-UBI merge candidates with all the UBI debugging checks enabled as well.
-Similar to UBIFS.
+To do this:
 
-Well, I mean, I am willing to merge this feature upstream as soon as it
-is in good shape, even if your crypto code is never merged. So testing
-with debugging enabled should be done. For various small patches you
-send which will land in the joel branch - I do not care much - test with
-debugging enabled just sometimes.
+1. Mount debugfs, in my Fedora it is already mounted:
 
-Anyway, this patch is in "joel", once the whole features is there, I'll
-move it to "master". So you could give this feature more priority for
-now.
+sudo mount -t debugfs none /sys/kernel/debug/
+
+
+Then:
+
+$cd /sys/kernel/debug/ubi/ubi0
+$sudo sh -c 'echo 1 > chk_gen'
+$sudo sh -c 'echo 1 > chk_io'
+
+This will enable "general" and "IO" extra self-checks for UBI device
+"ubi0"
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-0OWHzhopbHo/IzpuYDuv
+--=-VGXf697C2CPCzbVffhQ8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -73,19 +65,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPs7rxAAoJECmIfjd9wqK0kkwP/0MSWfli5DqFwvNOqItu0igZ
-5sJiUClvF0XTushxHblIRB/6tOh1VQ6RZzCz5/LyCJNcZn3qrKQN6lUS+9nJFkVV
-5Mlv8iHMzp37PUAf8uDCbCKRrEfy2fTRm3S1G+x01ldi1S/cwfA47ptX/IxoODlD
-lh0AGBtOgCd6Fm52pSviHIEaNQJb1qFYAu+dYOjZwJE2c+BCpTPnneZ790T0DQR3
-9KihpjjtbY46Af6EbYT0yU+760F4VvW4WChtGL7yvL4LF/QZYEdvklo3oYSB5KBO
-Op5Xog2R/I9dUY31I3CS7EpinOlw2KNIdW5iKBxrU66OVGt6oAQzlz97KjcfzqrJ
-4leqaCxXnB56gvcQWMRfrCrMCs+weUh6Ve/G3QvAnoPKQn+G+b5aM/xSc7ikj+T1
-gttfCn8wTPalXXDGyWMNOs29uJq4kcRaicxXapkFwYsVdBSB3lraccHaZ8Ox1FFg
-Aiyd/kNiohI9OGrUI1xywU7SU+yc75G2ZQ1FHmdmYzEAMGc+5XasqtguXzqdIRB5
-rgn/NzVLrxYGE7z56hfJtGe1FVCTj+Dw5ZGi1nejRkqjJ4tYxkCqbVmDCO/mhtX4
-AkyswETkLD2zAwKfu+d5vEtaVX+zzaLrRqEVrCJ+0eYrw0GjSQxZ/xJfnbJlNHMk
-j1rMSM+VQ/yvewWtLF2H
-=ia8j
+iQIcBAABAgAGBQJPs755AAoJECmIfjd9wqK0pswQAIVEk0T2fvTOW+vhsdqyKXfA
+vEdEO6qEpCRXIkATlhi3qOd/oCSyUxaUyailHETBcd07vi8YJIvWd84uclXXHdUw
+VSEaQJERFnWk8fw4sTkDNJJhOcm4shmputIpqgndJs7smke7fzJrJrXSE/8W+v9e
+ZCjZkuyY7wEcqTrOU6DbMQRq/NOz14SEx8qh2/jtVQ4kDsnJkX8PVZDaR9AML0HK
+GYFq3qdgqS/x7KUyr3zYM5coBzfcYdAvtOx1u7NzILZCZOPkxSPfb5QMWnB0ECXg
+0aKy/A0hhCcgQ8gWatxNAleeVbIjLCKbugqz0gxzpMxDyPQMI8FncNpSEuJjscU5
+9OACzAcBU8x/AYf/zwDi3GpQEYVae7pxr4rVFDrbBbz6GDqsACG+zuI3+OMgJLV3
+bcThbQqMfk22zdQ5smLvY68BcHGtFA/dLf3+XTGn6hLFe9pPUI/aw7uONfq0fe7m
+/TaoNfXU6FbcUCzVpLnBmNbda7Tw1QPJOlo9rmYZ8RGtJsbghbtsK86zCESOBnrq
+/5N6rlesS12rGxdiqjLe2qeIsB0frfupta6mfsC6es7o2nHPXA3M0m2Q6/1OM+oF
+0Y+mBzVq51MHzNzk8MbtTm6/qRCKydb2MSmwtMKOdja0nv0QmPDFxVtE8ihfvrsR
+Fwoj2hDf3D3BcWRiHWYJ
+=VJ66
 -----END PGP SIGNATURE-----
 
---=-0OWHzhopbHo/IzpuYDuv--
+--=-VGXf697C2CPCzbVffhQ8--
