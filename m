@@ -1,19 +1,22 @@
-Message-ID: <1337160353.24809.26.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUaTz-000235-CD
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2012 09:25:27 +0000
+Message-ID: <1337160532.24809.28.camel@sauron.fi.intel.com>
+Subject: Re: [uClinux-dev] [PATCH] mtd: clean up uclinux.c map driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Wed, 16 May 2012 12:25:53 +0300
-In-Reply-To: <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
-References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 16 May 2012 12:28:52 +0300
+In-Reply-To: <CAMjpGUcteBCy7OLVgxF1sDTNi4XqCKsetEQSW-dpG0Ji4mUh2A@mail.gmail.com>
+References: <1337054928-16228-1-git-send-email-gerg@snapgear.com>
+ <CAMjpGUcteBCy7OLVgxF1sDTNi4XqCKsetEQSW-dpG0Ji4mUh2A@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Zc6ZNC4faNyGjr1rjur4"
+ boundary="=-GPwnbII5bTtOvffyaeh1"
 Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org,
+ uClinux development list <uclinux-dev@uclinux.org>,
+ Greg Ungerer <gerg@uclinux.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,28 +28,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Zc6ZNC4faNyGjr1rjur4
+--=-GPwnbII5bTtOvffyaeh1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-15 at 22:47 +0800, Josh Wu wrote:
-> +	while (!(pmerrloc_readl(host->pmerrloc_base, ELISR)
-> +		 & PMERRLOC_CALC_DONE))
-> +		cpu_relax();
+On Tue, 2012-05-15 at 11:57 -0400, Mike Frysinger wrote:
+> On Tue, May 15, 2012 at 12:08 AM,  <gerg@snapgear.com> wrote:
+> > . make the struct uclinux_ram_map static
+>=20
+> NAK: this breaks Blackfin systems.  we specifically don't want this to
+> be static.
+>=20
+> it should probably get a comment added above it saying as much.
 
-How about some kind of time-out in something goes wrong?
+I've just amended that patch and made it non-static as well. But this is
+really ugly dependency.
 
-> +		dev_warn(host->dev, "Only 2048 page size is currently " \
-> +			"supported for PMECC, rolling back to Software ECC\n");
-
-Why do you use backslashes?
+diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+index ad75346..d8aa6df 100644
+--- a/drivers/mtd/maps/uclinux.c
++++ b/drivers/mtd/maps/uclinux.c
+@@ -21,7 +21,7 @@
+=20
+ extern char _ebss;
+=20
+-static struct map_info uclinux_ram_map =3D {
++struct map_info uclinux_ram_map =3D {
+        .name =3D "RAM",
+        .phys =3D (unsigned long)&_ebss,
+        .size =3D 0,
 
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Zc6ZNC4faNyGjr1rjur4
+--=-GPwnbII5bTtOvffyaeh1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +71,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPs3KhAAoJECmIfjd9wqK0J8gP/RkAa11ceb6TEy6n8DBSD0Zs
-K5jnIGHHJxRPU7nQTDWf89n4nonToFcCvA6DXai1CcLktZsjb0Asp9zHRsFJLw/V
-i7dWEMXmkVFSOz5jGMwvxZS2ohF32qv1p7Bx7ew5t1N77v52PjWJyqnnEqzXGu8u
-wbczzpH6pok8KnoyyGna6ElecVsK/4igp7N0xDMLxSR/KTg5it1W5bxV57mq28+U
-AIHWoEVU+6cDuZaMtttQ6KEPeWIs4lFBKj06NqmOS7vMtEIqITyFdA7+a2OZl5gc
-Nrzj/lkBbB+9Bzi48hboojtTMuEn1uIAYEqaV1Ja8nwQI7H4Zbaf9v0/+nHxdZg8
-6JF6FBysJiwXV2uewLsITzTsI06PVu+igupzCQw0/SQZs8UHjXSQZIjlf80Iv/XT
-TX1eeF/Z9mub+iNzcqyffTRtCE93ixkaZILyTBeUTvAjPrlff/6mP76ArIVNPPlj
-1J39A6x0imlcW/x23N9xJLDbOF02w2vnpkYIeRwV2b/hZTvbaUO6gNDaFqqIkQLT
-sxZd9PViIGFkbH09gNXF5862fE93Sa3Ut3JFyG/mWbZRVMzqMkHS9HfPinpDaiT3
-+9kVvupr6fvME6n0nLy5ZcrRRUvJM4C9m9cm/volsqNk4/1BeQvELsmfqv9TRmpf
-I3f0tI8I9HekGzSIkAYA
-=twyP
+iQIcBAABAgAGBQJPs3NUAAoJECmIfjd9wqK0nSIP/1C8a+g52cKR/P/zkB+ssgJz
+cIFQ4dcAODMtz5zRivWpSpEYxOxT4GonYENSx5b0Bp9HVQIG8EaRx1SxkmpWsvxQ
+vxuM5XYImkC19ROsEGaNq9kHbFl2949ecjme/klAzrVpc2e++F7fDNPVKb3fQTyk
+rLG1OhyWNvT2is5IkeoTiqmTDTwDf4ivYO7SckL6WNvX2GHBdllyI1dI8OiQUgP2
+iWUIIF5O349rv3Uumwv2j7XTQB6JVD2sKJLZ/4qhwwzXvPksWcRPAS+hA0z2q/Hc
+S6aBGuw7/6Dhuh9YhWXYO/vBlF1dzhooNehpaaGCTP31Yk7lKTnyJAdIUc6cSFfB
+UHT4W/FEEj+5cXUfq3G11DeVzAdbpISjE/cBXTHn5iQL1zTGdmPnqg3O+xEl4uXU
+U0v6i6JJmcsDy8Hqewu6jbf60L2uSFB0NC3avjJ1yLoIqZNS3WevoZ5boU6D5Efs
+cxUlZtpPSAyEIKDWm2HzBW2kEi9w/XO8dWROzBGIaAYgVQe/CgG7RIuuBi0caLLP
+aoh9Q4YhaEGC3rp6FwypFAH/N3UKk7ez41gtScJhRNDeiVbzSTbLrQ8/IL7thz4b
+XeHKo3FnSh8ND6+Y8GuP2etC3htpBY3uR8c/MKAQGRj2WPm+5JOdVxT0I2uDXe2Q
+5IAiSSGgnuDzmNj0dTVi
+=Rooq
 -----END PGP SIGNATURE-----
 
---=-Zc6ZNC4faNyGjr1rjur4--
+--=-GPwnbII5bTtOvffyaeh1--
