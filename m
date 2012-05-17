@@ -1,24 +1,27 @@
-Message-ID: <1337255011.2564.2.camel@koala>
-Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUz8c-0008Nu-2k
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2012 11:44:58 +0000
+Received: by lbbgg6 with SMTP id gg6so1527829lbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 17 May 2012 04:44:56 -0700 (PDT)
+Message-ID: <1337255093.2564.3.camel@koala>
+Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Thu, 17 May 2012 14:43:31 +0300
-In-Reply-To: <4FB49C60.5030002@atmel.com>
-References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
- <1337160353.24809.26.camel@sauron.fi.intel.com>
- <20403.29677.517067.528042@ipc1.ka-ro>
- <1337161217.24809.38.camel@sauron.fi.intel.com>
- <4FB49C60.5030002@atmel.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Thu, 17 May 2012 14:44:53 +0300
+In-Reply-To: <20120517124548.262c132a@pixies.home.jungo.com>
+References: <1337101871-31181-1-git-send-email-richard@nod.at>
+ <1337101871-31181-2-git-send-email-richard@nod.at>
+ <20120516170324.337f2932@pixies.home.jungo.com>
+ <1337178457.24809.56.camel@sauron.fi.intel.com>
+ <20120517124548.262c132a@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-VBMFPqZTTjE/yoxwzVy+"
+ boundary="=-3HTtGbtBfrxuNWizH4BF"
 Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org,
- Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +32,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-VBMFPqZTTjE/yoxwzVy+
+--=-3HTtGbtBfrxuNWizH4BF
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-17 at 14:36 +0800, Josh Wu wrote:
-> >> message text should not be split across lines anyway to ease grepping
-> >> for the message.
-> > I think the consensus is that it is personal decision of the author. I
-> > am not trying to enforce this and I also split messages. In this case I
-> > was only wondering why that backslash is used? I never saw this before
-> > in the linux kernel.
-> >
+On Thu, 2012-05-17 at 12:45 +0300, Shmulik Ladkani wrote:
+> Hi Artem,
 >=20
-> oh, I add the backslash only because if without it, there should be a=20
-> warning about message is splitting into two lines.
+> On Wed, 16 May 2012 17:27:37 +0300 Artem Bityutskiy <dedekind1@gmail.com>=
+ wrote:
+> > On Wed, 2012-05-16 at 17:03 +0300, Shmulik Ladkani wrote:
+> > > Comment above the function should have been changed too.
+> > > (look for the "next_sqnum - get next sequence number" comment)
+> >=20
+> > I do not think we should make these non-static. We should re-use the
+> > entire scan_peb() function instead to scan the fastmap internal volume.
+>=20
+> Sorry, couldn't follow you.
+>=20
+> The new (outside eba.c) calls to 'ubi_next_sqnum' are from
+> 'ubi_write_fastmap' (called from the 'ubi_update_fastmap' interface,
+> implemented in fastmap.c) - during construction of VID headers of the
+> FM_SB and FM_FATA.
+>=20
+> IMO this is reasonable.
+>=20
+> Do you suggest to somehow use existing ubi_eba_write_xxx functions?
+> Or place the FM_SB/FM_DATA peb writing funtions into eba.c?
 
-Backslash is not needed in C. The preprocessor removes it anyway. We do
-not put them.
-
-> Now I think I will just keep the text message in one line. That will=20
-> avoid any warnings. thanks.
-
-You can just remove the backslashes. I think your lines splitting is
-fine otherwise.
+I think I meant the compare_lebs() exporting, not this one, replied to
+wrong e-mail, sorry. Happens when I am in hurry - try to keep everyone
+happy and make sure Richard is always busy with something :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-VBMFPqZTTjE/yoxwzVy+
+--=-3HTtGbtBfrxuNWizH4BF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +76,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPtORjAAoJECmIfjd9wqK0+UsP/1W7xaoQ+meymyKCKPeKEiho
-Yqgu9wYMRXDxnIcVDoZLHCfWrX/UMYRjruUQHW4XtcsS6Y4/brtQviAl72jW2t+Y
-ohDT2orft2hNLaGpL5SExXBl5pkvHEs++W5V8lM+9ZenBxTJBQAPH/wUQChpyaWI
-rxk60KuLwoPTm24XBS/xr4AXK9++M5QEbDPYAjaO7KRCHSWxkQ9O2FaQPriN1m+t
-F7a6GGQW9TlkfJmQ+SAxAtyDPshIrreEtyCKHf0O3ZQ2c1jZyxxWtZNptB6uzMKL
-uZKccxtzoUEHysW7yG4ErTKcOwbcmXmP9XOvbWpN5G1/2djpBdgds2rvnh2nfaAf
-7EgB6vfxPA0rU4p6ie/lMPXn++hS6x3m0iDYK9UYN3MTniZpRsgQd3gN7umF0G6i
-FDqFHvsmqXXbh4GpgbOuEE33esggfpw41zCybpME8Z7u8d0RB8qUqDnYO3cfcXHF
-mqrH0wYQtYShsE1uVIqlVNEoSZHbDlXDBMUp/4FXNlU+6TUYzFrPK70MLjmxgaou
-Jvgu3cvVRQSuMrUN1VpkfvElRz6xX1917yhl7SRHlr9gMfDCPWg8BvyAVt1bglEK
-zC/oaaYcm/U/90C8+xgt+3Mg6+X8XrPMNZEsRfz2q4tcESPCrkzlbSf5dy08nSXN
-YTcQF/IYxqjnpTG2mkg3
-=uGNq
+iQIcBAABAgAGBQJPtOS1AAoJECmIfjd9wqK0FKgQAJUerJnTZzO0y5ulj2m2ee10
+pmrWYBrQCUB88mgHIlXo9qsTKp/Vq9HcSvYUOI8C3nFyM8Fwj+uQhQa9WlLGTvHn
++TpPbr8zwoYYLyWskBd3GKUhOGVAOhQG5dUYw6+i/4cN5dxxH6rH8dtefEn7HFkE
+1f1GvzBA9p37A8hakK/K8DJ/tqIlfdxF/oEU21YeINUw42AhSael5akxsHSjazIE
+fFzMLMyAf0m4agpMp6Nmp6eaQQGnKiNbP1vhjDXC6FJScC17WHYdECRpkmDReQHv
+KdbtTfbOud3OdQ9N7xbMq1zbTYVfPn0f6k0glWBezg0FtpY1r1+OVovZbVELEdIw
+cs4jkbGoXkBGoTRd5UNIrcXbTnxSh8MyfpgQkRGPOFfpgc3EUfsWzH2hjEpJN3Mt
+hBswvesshV1REnRKh05ekzQFv2AS3ES2JFrSYFhkKmLeXfRVmGcLcYBS39+T/tq9
+AtOPyo11ml2DFfmk2HtUCmMZTxPz63C5IJuZYWmpEPM95mGYofmzjsvA8ViEczIf
+wheNeyKMwHpFBlugowRs1Pxqv6wfiAsj0dHGkPlCkStb+OFFwQia62AoXpMB+L6G
+A+D+1gbOK06wX15muQha/aQXGlGJ0bo0Vf5PtGTMtL/S7xyHqlIGq1MJhDmR8Q0W
+wVlYr3DixWremZywSQXM
+=vkza
 -----END PGP SIGNATURE-----
 
---=-VBMFPqZTTjE/yoxwzVy+--
+--=-3HTtGbtBfrxuNWizH4BF--
