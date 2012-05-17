@@ -1,28 +1,28 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUzut-0004AB-AV
- for linux-mtd@lists.infradead.org; Thu, 17 May 2012 12:34:51 +0000
-Received: by lbbgg6 with SMTP id gg6so1568057lbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 17 May 2012 05:34:49 -0700 (PDT)
-Message-ID: <1337258086.2564.9.camel@koala>
-Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 17 May 2012 15:34:46 +0300
-In-Reply-To: <4FB4E56A.3040009@nod.at>
-References: <1337101871-31181-1-git-send-email-richard@nod.at>
- <1337101871-31181-2-git-send-email-richard@nod.at>
- <20120516170324.337f2932@pixies.home.jungo.com>
- <1337178457.24809.56.camel@sauron.fi.intel.com>
- <20120517124548.262c132a@pixies.home.jungo.com>
- <1337255093.2564.3.camel@koala> <4FB4E56A.3040009@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-lPTimvBXHnlVxpq/vgyl"
-Mime-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1SV0FV-0005SW-91
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2012 12:56:11 +0000
+Date: Thu, 17 May 2012 13:55:44 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
+ Programmable Multibit ECC controller
+Message-ID: <20120517125544.GJ9571@n2100.arm.linux.org.uk>
+References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
+ <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
+ <1337160353.24809.26.camel@sauron.fi.intel.com>
+ <20403.29677.517067.528042@ipc1.ka-ro>
+ <1337161217.24809.38.camel@sauron.fi.intel.com> <4FB49C60.5030002@atmel.com>
+ <1337255011.2564.2.camel@koala>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1337255011.2564.2.camel@koala>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org,
+ Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, May 17, 2012 at 02:43:31PM +0300, Artem Bityutskiy wrote:
+> On Thu, 2012-05-17 at 14:36 +0800, Josh Wu wrote:
+> > >> message text should not be split across lines anyway to ease grepping
+> > >> for the message.
+> > > I think the consensus is that it is personal decision of the author. I
+> > > am not trying to enforce this and I also split messages. In this case I
+> > > was only wondering why that backslash is used? I never saw this before
+> > > in the linux kernel.
+> > >
+> > 
+> > oh, I add the backslash only because if without it, there should be a 
+> > warning about message is splitting into two lines.
+> 
+> Backslash is not needed in C. The preprocessor removes it anyway. We do
+> not put them.
+> 
+> > Now I think I will just keep the text message in one line. That will 
+> > avoid any warnings. thanks.
+> 
+> You can just remove the backslashes. I think your lines splitting is
+> fine otherwise.
 
---=-lPTimvBXHnlVxpq/vgyl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2012-05-17 at 13:47 +0200, Richard Weinberger wrote:
-> Am 17.05.2012 13:44, schrieb Artem Bityutskiy:
->  > I think I meant the compare_lebs() exporting, not this one, replied to
-> > wrong e-mail, sorry. Happens when I am in hurry - try to keep everyone
-> > happy and make sure Richard is always busy with something :-)
-> >
->=20
-> Haha.
-> No need to keep me busy. :P
-
-By this I meant - give some review feed-back ASAP to make sure you have
-something to do and think about. Surely it is better than giving a lot
-more feed-back but with a couple of weeks delay?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-lPTimvBXHnlVxpq/vgyl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPtPBmAAoJECmIfjd9wqK0Mp8P/1FApMrs45lYv85Oo/Ht/Tg6
-F7sU7pFJy5FKnesNKhiHGoXTOD32bzKbuLOeVdUr1vqXNNp1/GtsKmJdAyK6eiJX
-AsHKZJE9oM6tvghmNGMGNYSxvnycxAtcjgPkrXgGYf16ILx2Ekt81oQSe9VEw9n/
-bKocKnLC+vCacL1kOsI9B2u5tpL6nLucTedalIZROJbvQijBVtVPkot5RLEYaYWK
-5fINoilzagCdfVEFYSjzuHwKF9OKM8PYCa/L0Tr+ZnPnOQkCYBOd19DERh14r/vC
-a/B0Is7E0bmfpI9ThUoECjJ2/f0+qfWv73y/5qKL38KgW4tB9lLMykkQzuiCxygC
-56O+PLmSq+Sn0ru2XugcadPzzyrTvjOWYjUrOPg5qndXR+dPoc0Yv/zLi0y9T9zO
-OwT13fglKEiMXkzumuRvZvHY0yksLOBmA28mRAspFz1Y2TFFCN/uY1L+sCoDovHe
-5LSLbZB6L7iV7N4O5DZHWZTcNcaK5GptFOO8p+tHujBBr7fjAS7Y/131V+aeWq7J
-j915txWG6+2U+AA2p2zyALbeLvzuYuvgixlUnUTeFRaqdSfSAn3lNttskvJWFcxf
-fG32GTiEaKWHZbDAj/OVZ/uJC1OdIDoM23hLdZkWKA34jrawj9jiiD9D5pE70Grf
-U2/imlAKomelV9bkiVLM
-=OxzL
------END PGP SIGNATURE-----
-
---=-lPTimvBXHnlVxpq/vgyl--
+It's also preferred _not_ to wrap error messages as that makes them
+harder to grep for.  Linus has mentioned this several times on LKML
+and has corrected error messages that he encounters that he can't
+find via grep.
