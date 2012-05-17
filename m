@@ -1,22 +1,15 @@
-Message-ID: <4FB49C60.5030002@atmel.com>
-Date: Thu, 17 May 2012 14:36:16 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
- <1337160353.24809.26.camel@sauron.fi.intel.com>
- <20403.29677.517067.528042@ipc1.ka-ro>
- <1337161217.24809.38.camel@sauron.fi.intel.com>
-In-Reply-To: <1337161217.24809.38.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org,
- =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SUwdR-0000B9-9I
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2012 09:04:37 +0000
+Received: by pbbrq13 with SMTP id rq13so2582433pbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 17 May 2012 02:04:35 -0700 (PDT)
+From: Sidney Amani <seed95@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBIFS: fix memory leak on error path
+Date: Thu, 17 May 2012 19:03:32 +1000
+Message-Id: <1337245412-22222-1-git-send-email-seed95@gmail.com>
+Cc: Ben Gardiner <bengardiner@nanometrics.ca>, Sidney Amani <seed95@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+UBIFS leaks memory on error path in 'mount_ubifs()'. In case of failure in
+'ubifs_lpt_init()' or 'ubifs_fixup_free_space()', it does not call
+'ubifs_lpt_free()' whereas LPT data structures can potentially be allocated.
+The amount of memory leaked can be quite high -- see 'ubifs_lpt_init()'.
 
-On 5/16/2012 5:40 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-05-16 at 11:31 +0200, Lothar Waßmann wrote:
->>>> +		dev_warn(host->dev, "Only 2048 page size is currently " \
->>>> +			"supported for PMECC, rolling back to Software ECC\n");
->>> Why do you use backslashes?
->>>
->> message text should not be split across lines anyway to ease grepping
->> for the message.
-> I think the consensus is that it is personal decision of the author. I
-> am not trying to enforce this and I also split messages. In this case I
-> was only wondering why that backslash is used? I never saw this before
-> in the linux kernel.
->
+The bug was introduced when moving the LPT initialisation earlier in the
+mount process (commit '781c5717a95a74b294beb38b8276943b0f8b5bb4').
 
-oh, I add the backslash only because if without it, there should be a 
-warning about message is splitting into two lines.
+CC: Ben Gardiner <bengardiner@nanometrics.ca>
+Signed-off-by: Sidney Amani <seed95@gmail.com>
+---
+ fs/ubifs/super.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Now I think I will just keep the text message in one line. That will 
-avoid any warnings. thanks.
-
-Best Regards,
-Josh Wu
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 76e4e05..50216ec 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1296,12 +1296,12 @@ static int mount_ubifs(struct ubifs_info *c)
+ 
+ 	err = ubifs_lpt_init(c, 1, !c->ro_mount);
+ 	if (err)
+-		goto out_master;
++		goto out_lpt;
+ 
+ 	if (!c->ro_mount && c->space_fixup) {
+ 		err = ubifs_fixup_free_space(c);
+ 		if (err)
+-			goto out_master;
++			goto out_lpt;
+ 	}
+ 
+ 	if (!c->ro_mount) {
+-- 
+1.7.5.4
