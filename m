@@ -1,20 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUzRZ-0002Ag-Bo
- for linux-mtd@lists.infradead.org; Thu, 17 May 2012 12:04:33 +0000
-Message-ID: <4FB4E94D.7090905@nod.at>
-Date: Thu, 17 May 2012 14:04:29 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [RFC v5] UBI: Fastmap support (aka checkpointing)
+ id 1SUzZd-0002Z3-HV
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2012 12:12:54 +0000
+Received: by lbbgg6 with SMTP id gg6so1549169lbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 17 May 2012 05:12:50 -0700 (PDT)
+Message-ID: <1337256768.2564.7.camel@koala>
+Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 17 May 2012 15:12:48 +0300
+In-Reply-To: <1337201522-86521-2-git-send-email-richard@nod.at>
 References: <1337201522-86521-1-git-send-email-richard@nod.at>
- <1337225964.2730.11.camel@brekeke> <4FB4E613.4020100@nod.at>
- <1337256176.2564.6.camel@koala>
-In-Reply-To: <1337256176.2564.6.camel@koala>
-Content-Type: multipart/signed; micalg=pgp-sha1;
+ <1337201522-86521-2-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="------------enig4E95368246D015A414AA8988"
+ boundary="=-usE+qSLH5LsVUpYCnsTY"
+Mime-Version: 1.0
 Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  tim.bird@am.sony.com
@@ -27,45 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig4E95368246D015A414AA8988
-Content-Type: text/plain; charset=UTF-8
+
+--=-usE+qSLH5LsVUpYCnsTY
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Am 17.05.2012 14:02, schrieb Artem Bityutskiy:
-> On Thu, 2012-05-17 at 13:50 +0200, Richard Weinberger wrote:
->>> Again, I am willing to do corresponding preparations for you, you'll
->>> need to amend your code then.
->>
->> As I said, v6 will contain all requested changes.
+On Wed, 2012-05-16 at 22:51 +0200, Richard Weinberger wrote:
+> The fastmap mechanism needs to read the next sequence nummber
+> directly.
 >=20
-> Please, stick to the master branch so far, let me do the code massaging=
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-> - then you'll rebase.
->=20
+Created a "fastmap_v6" branch and put this stuff there.
 
-No problem.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Thanks,
-//richard
-
-
-
---------------enig4E95368246D015A414AA8988
+--=-usE+qSLH5LsVUpYCnsTY
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPtOlOAAoJEN9758yqZn9eHx0IAKs7jtoizBuYghgXn1mPS1i4
-x28YM1uIQgKY4bome5m2xyFvFE8CtMJu0x9qV2+NzND9Pfs/TCJWbbkQXZUZoTQD
-Uj7wr/C71Vp1Sdl84l7SHplG2zQNhCJw01Ptkc1+R2TsJjzPMT7TE0v/SdqKfrO0
-2CQ/Xr5VUSJhG6JbT4L5b/J36BHDeQQtDhs8vpF4eqzE2zOw3kW9Fd01eUHFOQWY
-0Yvu2qkA4WqrAYxcXte/JRLZLfMa/Nda7XnLMTz/RzjiYpbSbTVrX/3jGrCD5eK4
-3c/oyalSLCX4+KNVR1JA8WRihO6rYBEik213OX9yfgWPaLlGz6HWWhX6v711NUQ=
-=uJq2
+iQIcBAABAgAGBQJPtOtAAAoJECmIfjd9wqK01DoP/3EsIyNWbH9Zl4QeRaMU1nxX
+mKbudpc+rj8n15kbu5eBgkYiciIks0Gso03sga+2Pdh1N2Iu9dw20n6+GSZs8HfS
+GQ460VdTaXb5TDFcDn9ho195fkV4rZPlbc8s+BUKMGW4e4IL8B7zSdVG6clh2Hkc
+dnQYC1RjoDwyg86XxyL87qZEf5t9QYGkZTUVsrjzk149u6zjqjBTum2G8Xtvusur
+ZIbV+zpr4Zj6ljQWL4CVJxAZHaNgQN4OVGYBH29yCvgY5UKM5ophynVYScLygx7P
+pkrnu8zqBi927E9vTbFujCRl+K/C4w0Yil7dKn41GSrGLzOnlKskm2WgVM1fR2cn
+TJSoxVwpcaJq5yVhOyOs1nKcVkAzMT4cfDkJWK2Ha8DZm80F7vnVpFRu6Lcn/svx
+2zCqwKHOhYMdqlGCWEZG7A2z+sJh72Kwimrafl0tpsAlqBfCJadmZVGEqDZo0le4
+3R6a26x+hVZ7TSwVoqtWUoRAX9cWTHHrxi17aROpNMCvNykp9ivJSLJn9n1Qieav
+NrnGwbs+E5HjFk5r8/0RrFxiniLV2MceSAo3CdDbwI7aZxNVRto+PyifNdOyVyWJ
+jyxNBDnFTOqvEnvFX5GcK4ff9jl+WzdcA/cmj8sRQGXmu6nxJabM3tcEWP+pAhiW
+TCVYN+7dpruEI5GBhtgN
+=7o/o
 -----END PGP SIGNATURE-----
 
---------------enig4E95368246D015A414AA8988--
+--=-usE+qSLH5LsVUpYCnsTY--
