@@ -1,24 +1,17 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SUrcH-0001C2-4R
- for linux-mtd@lists.infradead.org; Thu, 17 May 2012 03:43:05 +0000
-Received: by laap9 with SMTP id p9so1282666laa.36
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2012 20:43:02 -0700 (PDT)
-Message-ID: <1337225964.2730.11.camel@brekeke>
-Subject: Re: [RFC v5] UBI: Fastmap support (aka checkpointing)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 17 May 2012 06:39:24 +0300
-In-Reply-To: <1337201522-86521-1-git-send-email-richard@nod.at>
-References: <1337201522-86521-1-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-12x6ye6TYGX8mFPlrknX"
-Mime-Version: 1.0
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+Message-ID: <4FB49B67.2040705@atmel.com>
+Date: Thu, 17 May 2012 14:32:07 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v7 0/3] Add PMECC support for at91 nand flash driver
+References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
+ <1337159858.24809.21.camel@sauron.fi.intel.com>
+In-Reply-To: <1337159858.24809.21.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +21,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, Artem
 
---=-12x6ye6TYGX8mFPlrknX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 5/16/2012 5:17 PM, Artem Bityutskiy wrote:
+> On Tue, 2012-05-15 at 22:47 +0800, Josh Wu wrote:
+>> Changes since v6,
+>> 	split into 3 patches.
+>> 	remove of_flat_dt_is_compatible() function. use additional dt parameter "has-pmecc".
+>> 	refine the error handling code.
+>> 	refine original atmel_nand_init_params() function.
+>>
+>> Changes since v5,
+>> 	add has_pmecc field to replace cpu_has_pmecc() function. Use compatible check in when proble.
+>> 	simplify the pmecc_get_ecc_bytes() function.
+>>
+>> Changes since v4,
+>> 	fix typo and checkpatch warnings.
+>> 	fix according to JC's suggestion. replace cpu_is_xxx() with DT
+>> 	modify dt binding atmel nand document to add pmecc support.
+>> 	tested in sam9263 without break hw ecc.
+>> 	add ecc.strength.
+> Hi,
+>
+> Aiaiai identified the following issues with your patch-set - could you
+> please take a look?
 
-On Wed, 2012-05-16 at 22:51 +0200, Richard Weinberger wrote:
-> This is a bug-fix release. v4 handled static volumes wrong.
-> v6 will address everything that Artem pointed out.
+sure.
 
-Hi, I'll try to review this further, but few points I'd like to
-highlight.
+>
+> --------------------------------------------------------------------------------
+>
+> Successfully built configuration "arm-at91cap9_defconfig,arm,arm-unknown-linux-gnueabi-", results:
+>
+> --- before_patching.log
+> +++ after_patching.log
+> @@ @@
+> +drivers/mtd/nand/atmel_nand.c: In function 'atmel_pmecc_nand_init_params':
+> +drivers/mtd/nand/atmel_nand.c:910:29: warning: assignment from incompatible pointer type [enabled by default]
+> +drivers/mtd/nand/atmel_nand.c:910:50: warning: incorrect type in assignment (different argument counts) [sparse]
+> +drivers/mtd/nand/atmel_nand.c:910:50:    expected int ( *read_page )( ... ) [sparse]
+> +drivers/mtd/nand/atmel_nand.c:910:50:    got int ( static [toplevel] *<noident>  )( ... ) [sparse]
+> +drivers/mtd/nand/atmel_nand.c:912:30: warning: assignment from incompatible pointer type [enabled by default]
+> +drivers/mtd/nand/atmel_nand.c:912:51: warning: incorrect type in assignment (different argument counts) [sparse]
+> +drivers/mtd/nand/atmel_nand.c:912:51:    expected void ( *write_page )( ... ) [sparse]
+> +drivers/mtd/nand/atmel_nand.c:912:51:    got void ( static [toplevel] *<noident>  )( ... ) [sparse]
+>
+> --------------------------------------------------------------------------------
 
-1. We'll need to re-structure the code a bit and rename scan.[ch] to
-attach.[ch], all data structures like 'struct ubi_scan_volume' which you
-re-use we will also need to rename and remove the "scan" word, etc. I am
-willing to do this preparation.
+Since I used Code Sourcery tools-chain (2010q1-202) to compile the code 
+and I didn't get any warning.
 
-2. You need to re-use the scanning code we have for scanning the fastmap
-volumes, I think. May be you need some amendments there, but currently
-you have more duplication than needed. You'll just plug more of your
-code to the attach.c file: check if there fastmap, if yes, read it and
-scan the internal fastmap volumes by re-using functions in attach.c. So
-all the fastmap reading/checking/manipulating stuff is in fastmap.c, the
-scanning and interpreting is in attach.c.
+So I am not sure what's caused above warnings. From the warning message, 
+I don't know the reason exactly.
 
-Again, I am willing to do corresponding preparations for you, you'll
-need to amend your code then.
+I just checked the PMECC read/write functions definition in my patch
 
-Also, I think you probably do not have to split your patches. For me it
-looks like there is a lot of work needed anyway, so you could just send
-it as one patch so far, to make things easier. Because reviewing this
-stuff by reading patches is too difficult anyway, and the reviewer has
-to apply it and review / navigate the real code, and just look sometimes
-to the patch.
++static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
++		struct nand_chip *chip, uint8_t *buf, int32_t page)
 
---=20
++static void atmel_nand_pmecc_write_page(struct mtd_info *mtd,
++		struct nand_chip *chip, const uint8_t *buf)
+
+
+compare with the original HW read function (no write function)
+
+static int atmel_nand_read_page(struct mtd_info *mtd,
+		struct nand_chip *chip, uint8_t *buf, int page)
+
+
+The only difference is int32_t, and I don't think the warning is caused 
+by this int32_t.
+
+Could you have any ideas to fix such warning? That should be very 
+helpful for me.
+
+>
+> checkpatch.pl has some complaints:
+>
+> --------------------------------------------------------------------------------
+>
+> checkpatch.pl results for patch "[PATCH 3/3] MTD: atmel_nand: Update driver to support Programmable  Multibit ECC controller"
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #60: FILE: drivers/mtd/nand/atmel_nand.c:115:
+> +       int16_t                 smu[AT_NB_ERROR_MAX + 2][2 * AT_NB_ERROR_MAX + 1];
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #326: FILE: drivers/mtd/nand/atmel_nand.c:567:
+> +                               a = readw_relaxed(alpha_to + tmp % host->cw_len);
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #348: FILE: drivers/mtd/nand/atmel_nand.c:589:
+> +                               a = readw_relaxed(index_of + host->smu[i + 1][k]);
+>
+> total: 0 errors, 3 warnings, 879 lines checked
+>
+> --------------------------------------------------------------------------------
+>
+> checkpatch.pl results for the entire squashed patch-set
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #376: FILE: drivers/mtd/nand/atmel_nand.c:115:
+> +       int16_t                 smu[AT_NB_ERROR_MAX + 2][2 * AT_NB_ERROR_MAX + 1];
+
+I'll fix it.
+
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #642: FILE: drivers/mtd/nand/atmel_nand.c:567:
+> +                               a = readw_relaxed(alpha_to + tmp % host->cw_len);
+>
+> WARNING:LONG_LINE: line over 80 characters
+> #664: FILE: drivers/mtd/nand/atmel_nand.c:589:
+> +                               a = readw_relaxed(index_of + host->smu[i + 1][k]);
+>
+> total: 0 errors, 3 warnings, 1136 lines checked
+
+For these two warnings, I would like to keep it for more readable. but 
+if you would like to fix the warning, then I can fix them too by split 
+into two lines.
+
+> --------------------------------------------------------------------------------
+>
+Thanks
 Best Regards,
-Artem Bityutskiy
-
---=-12x6ye6TYGX8mFPlrknX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPtHLsAAoJECmIfjd9wqK0DqUP/1dK3mLWOZCRkIfhy12YaTyf
-EdWZJ8lRlCY3P62bQSStWOtuJqv+Ltm23U664ORTUnstaYOD94npu/cj3qmr4Tni
-iV/NaEYbo4M+xm8mtDvLVuNHQ37jyzEw7EF+xEDYtgeU1diMJ8elHSiFdm6HFeLh
-0+GN7ka6BWbDZJFNdBIABOLH4xkwC7DnMZzEOxVCt9XfmFXC/Ho2LUoiCAETsfsH
-8SopSD2Ek68f/OgbUBnVDSM9lu+EpWtOZjnSS0SVqrjGHJdv5VTA3FFAXnOm5goF
-ZzI7Ul+1YX1tQJzIInsA16h+r9VihxEoQDP9EzAtakrHmbhQoNO1zsd4EVL+dQjW
-gtEYYO60u35X40BpBlDV9oOyH/SbSnMLSQdjUc8MteLO4Xz3+3McATeHJ6Hn9NFt
-w52QeI+kajHD+Z68L1+1XtASjatT0+b6wbYLcHjRTHY1K+QczArt5K1rw3U1ZVPA
-ypIxKtWgfJNcyDz+eWxWrOlettKcoNDDSy/n5obQOnqfbotr1uF5WJI303iz7PDg
-WF2lURD9GumCOtsVL2WJvglvwacuOFiOLOp+s0Ko/NHtoKJJocgzohXNhvpoW5gd
-Fzfz7VENqEGtPvKvDSlJlZ9BWNRSCPRsFq1lLnWmdQxuEULCFj3HHWQiK8KIhS+Q
-9D04GcwOGaQjShZx2JN6
-=+oTh
------END PGP SIGNATURE-----
-
---=-12x6ye6TYGX8mFPlrknX--
+Josh Wu
