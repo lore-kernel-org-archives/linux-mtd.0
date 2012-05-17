@@ -1,19 +1,24 @@
-Message-ID: <1337254937.2564.1.camel@koala>
-Subject: Re: [PATCH v7 0/3] Add PMECC support for at91 nand flash driver
+Message-ID: <1337255011.2564.2.camel@koala>
+Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
+ Programmable Multibit ECC controller
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Josh Wu <josh.wu@atmel.com>
-Date: Thu, 17 May 2012 14:42:17 +0300
-In-Reply-To: <4FB49B67.2040705@atmel.com>
+Date: Thu, 17 May 2012 14:43:31 +0300
+In-Reply-To: <4FB49C60.5030002@atmel.com>
 References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337159858.24809.21.camel@sauron.fi.intel.com>
- <4FB49B67.2040705@atmel.com>
+ <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
+ <1337160353.24809.26.camel@sauron.fi.intel.com>
+ <20403.29677.517067.528042@ipc1.ka-ro>
+ <1337161217.24809.38.camel@sauron.fi.intel.com>
+ <4FB49C60.5030002@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zIJGiKXY8vMMLg6bQN6g"
+ boundary="=-VBMFPqZTTjE/yoxwzVy+"
 Mime-Version: 1.0
 Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
  ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+ linux-arm-kernel@lists.infradead.org,
+ Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +29,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zIJGiKXY8vMMLg6bQN6g
+--=-VBMFPqZTTjE/yoxwzVy+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-17 at 14:32 +0800, Josh Wu wrote:
-> > -----------------------------------------------------------------------=
----------
+On Thu, 2012-05-17 at 14:36 +0800, Josh Wu wrote:
+> >> message text should not be split across lines anyway to ease grepping
+> >> for the message.
+> > I think the consensus is that it is personal decision of the author. I
+> > am not trying to enforce this and I also split messages. In this case I
+> > was only wondering why that backslash is used? I never saw this before
+> > in the linux kernel.
 > >
-> > Successfully built configuration "arm-at91cap9_defconfig,arm,arm-unknow=
-n-linux-gnueabi-", results:
-> >
-> > --- before_patching.log
-> > +++ after_patching.log
-> > @@ @@
-> > +drivers/mtd/nand/atmel_nand.c: In function 'atmel_pmecc_nand_init_para=
-ms':
-> > +drivers/mtd/nand/atmel_nand.c:910:29: warning: assignment from incompa=
-tible pointer type [enabled by default]
-> > +drivers/mtd/nand/atmel_nand.c:910:50: warning: incorrect type in assig=
-nment (different argument counts) [sparse]
-> > +drivers/mtd/nand/atmel_nand.c:910:50:    expected int ( *read_page )( =
-... ) [sparse]
-> > +drivers/mtd/nand/atmel_nand.c:910:50:    got int ( static [toplevel] *=
-<noident>  )( ... ) [sparse]
-> > +drivers/mtd/nand/atmel_nand.c:912:30: warning: assignment from incompa=
-tible pointer type [enabled by default]
-> > +drivers/mtd/nand/atmel_nand.c:912:51: warning: incorrect type in assig=
-nment (different argument counts) [sparse]
-> > +drivers/mtd/nand/atmel_nand.c:912:51:    expected void ( *write_page )=
-( ... ) [sparse]
-> > +drivers/mtd/nand/atmel_nand.c:912:51:    got void ( static [toplevel] =
-*<noident>  )( ... ) [sparse]
-> >
-> > -----------------------------------------------------------------------=
----------
 >=20
-> Since I used Code Sourcery tools-chain (2010q1-202) to compile the code=
-=20
-> and I didn't get any warning.
->=20
-> So I am not sure what's caused above warnings. From the warning message,=
-=20
-> I don't know the reason exactly.
+> oh, I add the backslash only because if without it, there should be a=20
+> warning about message is splitting into two lines.
 
-The warnings come from sparse, not gcc. And they are introduced by this
-patch - aiaiai informs only about new warnings, otherwise it would be
-useless.
+Backslash is not needed in C. The preprocessor removes it anyway. We do
+not put them.
 
-> > WARNING:LONG_LINE: line over 80 characters
-> > #642: FILE: drivers/mtd/nand/atmel_nand.c:567:
-> > +                               a =3D readw_relaxed(alpha_to + tmp % ho=
-st->cw_len);
-> >
-> > WARNING:LONG_LINE: line over 80 characters
-> > #664: FILE: drivers/mtd/nand/atmel_nand.c:589:
-> > +                               a =3D readw_relaxed(index_of + host->sm=
-u[i + 1][k]);
-> >
-> > total: 0 errors, 3 warnings, 1136 lines checked
->=20
-> For these two warnings, I would like to keep it for more readable. but=
-=20
-> if you would like to fix the warning, then I can fix them too by split=
-=20
-> into two lines.
+> Now I think I will just keep the text message in one line. That will=20
+> avoid any warnings. thanks.
 
-Fine with me.
+You can just remove the backslashes. I think your lines splitting is
+fine otherwise.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zIJGiKXY8vMMLg6bQN6g
+--=-VBMFPqZTTjE/yoxwzVy+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -104,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPtOQZAAoJECmIfjd9wqK06tcP/Rqfr1iDnuoH9lWX/fUJG2Rm
-c9xx85tKo4Ul5+Zb4nZuuMb6hb40ixTWRPZ8jkOLr9LyX51y83eHO7QEGSOXN82I
-gQ0Y1B+5+Zkd8Yw8I33JqRIJs2tQZqZQbbuzvHtGdm+bfBT7IwRFu7Oy4yVZVga7
-UxmWTWQiktNfvQPFYvFiXSDY/0lIG/L7BUL6rrpCdRrA87fMV/b4YqQ7QhjLss9o
-MaI3CfGq61iXomW0RFwBgo1K42n5cCR27pXqeblieFLbBu1BxUff9yJ80F9Z9s+e
-MAwQczwcvc9dNNfWZ2afft/UjpdMkpb57YF82kGzegPiq06yfPAqX+HNL+4koJ1P
-cMaBgrVfbR9ff/0yEV8jSYi4brv8xUW3v5xa59/0hpQsEfwyhcLOQPG/QNxfirX5
-HLTq2/nro+MGBthmx1P5gVbOz33aqN0HnLQsVASQK7AHJOR/dnmuqNnx9StL/oMq
-INbvu+DTWlDBIwZsgsPqIdVRIah1eRO8OQKNLtR5Xz4fRmRXVwyqisU2mXuheu+N
-P3kJLNblSnXjlgQPcjrtiaQa3XaazKyoLljVWZqRRP5qsvCwTCMczRv/cajEre7b
-a4N956pdOVc8iewnUyKBmkBIwt/iKA5odhUwgofo1/bgt88hS5vL8Ee2Lr/VSsuK
-pNd9gssdt22DmvadTFjE
-=J9Ko
+iQIcBAABAgAGBQJPtORjAAoJECmIfjd9wqK0+UsP/1W7xaoQ+meymyKCKPeKEiho
+Yqgu9wYMRXDxnIcVDoZLHCfWrX/UMYRjruUQHW4XtcsS6Y4/brtQviAl72jW2t+Y
+ohDT2orft2hNLaGpL5SExXBl5pkvHEs++W5V8lM+9ZenBxTJBQAPH/wUQChpyaWI
+rxk60KuLwoPTm24XBS/xr4AXK9++M5QEbDPYAjaO7KRCHSWxkQ9O2FaQPriN1m+t
+F7a6GGQW9TlkfJmQ+SAxAtyDPshIrreEtyCKHf0O3ZQ2c1jZyxxWtZNptB6uzMKL
+uZKccxtzoUEHysW7yG4ErTKcOwbcmXmP9XOvbWpN5G1/2djpBdgds2rvnh2nfaAf
+7EgB6vfxPA0rU4p6ie/lMPXn++hS6x3m0iDYK9UYN3MTniZpRsgQd3gN7umF0G6i
+FDqFHvsmqXXbh4GpgbOuEE33esggfpw41zCybpME8Z7u8d0RB8qUqDnYO3cfcXHF
+mqrH0wYQtYShsE1uVIqlVNEoSZHbDlXDBMUp/4FXNlU+6TUYzFrPK70MLjmxgaou
+Jvgu3cvVRQSuMrUN1VpkfvElRz6xX1917yhl7SRHlr9gMfDCPWg8BvyAVt1bglEK
+zC/oaaYcm/U/90C8+xgt+3Mg6+X8XrPMNZEsRfz2q4tcESPCrkzlbSf5dy08nSXN
+YTcQF/IYxqjnpTG2mkg3
+=uGNq
 -----END PGP SIGNATURE-----
 
---=-zIJGiKXY8vMMLg6bQN6g--
+--=-VBMFPqZTTjE/yoxwzVy+--
