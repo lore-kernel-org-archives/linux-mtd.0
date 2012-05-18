@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVKxv-0005Xc-BY
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:28 +0000
+ id 1SVKy0-0005Xc-JX
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:32 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 10/22] UBI: rename ubi_scan_add_used
-Date: Fri, 18 May 2012 14:03:53 +0300
-Message-Id: <1337339045-8199-11-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 11/22] UBI: rename ubi_scan_find_av
+Date: Fri, 18 May 2012 14:03:54 +0300
+Message-Id: <1337339045-8199-12-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 References: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
@@ -21,90 +21,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The old name is not logical anymore - rename it to 'ubi_add_to_av()'.
+The old name is not logical anymore - rename it to 'ubi_find_av()'.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/scan.c |    9 ++++-----
- drivers/mtd/ubi/scan.h |    5 ++---
- drivers/mtd/ubi/vtbl.c |    7 +++----
- 3 files changed, 9 insertions(+), 12 deletions(-)
+ drivers/mtd/ubi/eba.c  |    2 +-
+ drivers/mtd/ubi/scan.c |    6 +++---
+ drivers/mtd/ubi/scan.h |    4 ++--
+ drivers/mtd/ubi/vtbl.c |    6 +++---
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 572281a..6f7f275 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1246,7 +1246,7 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 		for (j = 0; j < vol->reserved_pebs; j++)
+ 			vol->eba_tbl[j] = UBI_LEB_UNMAPPED;
+ 
+-		av = ubi_scan_find_av(ai, idx2vol_id(ubi, i));
++		av = ubi_find_av(ai, idx2vol_id(ubi, i));
+ 		if (!av)
+ 			continue;
+ 
 diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 06151fd..3665062 100644
+index 3665062..767b857 100644
 --- a/drivers/mtd/ubi/scan.c
 +++ b/drivers/mtd/ubi/scan.c
-@@ -425,7 +425,7 @@ out_free_vidh:
+@@ -585,15 +585,15 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
  }
  
  /**
-- * ubi_scan_add_used - add physical eraseblock to the attaching information.
-+ * ubi_add_to_av - add physical eraseblock to the attaching information.
-  * @ubi: UBI device description object
+- * ubi_scan_find_av - find volume in the attaching information.
++ * ubi_find_av - find volume in the attaching information.
   * @ai: attaching information
-  * @pnum: the physical eraseblock number
-@@ -440,9 +440,8 @@ out_free_vidh:
-  * to be picked, while the older one has to be dropped. This function returns
-  * zero in case of success and a negative error code in case of failure.
+  * @vol_id: the requested volume ID
+  *
+  * This function returns a pointer to the volume description or %NULL if there
+  * are no data about this volume in the attaching information.
   */
--int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_attach_info *ai,
--		      int pnum, int ec, const struct ubi_vid_hdr *vid_hdr,
--		      int bitflips)
-+int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
-+		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips)
+-struct ubi_ainf_volume *ubi_scan_find_av(const struct ubi_attach_info *ai,
+-					 int vol_id)
++struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
++				    int vol_id)
  {
- 	int err, vol_id, lnum;
- 	unsigned long long sqnum;
-@@ -1016,7 +1015,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	if (ec_err)
- 		ubi_warn("valid VID header but corrupted EC header at PEB %d",
- 			 pnum);
--	err = ubi_scan_add_used(ubi, ai, pnum, ec, vidh, bitflips);
-+	err = ubi_add_to_av(ubi, ai, pnum, ec, vidh, bitflips);
- 	if (err)
- 		return err;
- 
+ 	struct ubi_ainf_volume *av;
+ 	struct rb_node *p = ai->volumes.rb_node;
 diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index ef6e903..5a9ecc0 100644
+index 5a9ecc0..b1eeb0b 100644
 --- a/drivers/mtd/ubi/scan.h
 +++ b/drivers/mtd/ubi/scan.h
-@@ -157,9 +157,8 @@ static inline void ubi_scan_move_to_list(struct ubi_ainf_volume *av,
- 		list_add_tail(&aeb->u.list, list);
- }
+@@ -159,8 +159,8 @@ static inline void ubi_scan_move_to_list(struct ubi_ainf_volume *av,
  
--int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_attach_info *ai,
--		      int pnum, int ec, const struct ubi_vid_hdr *vid_hdr,
--		      int bitflips);
-+int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
-+		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips);
- struct ubi_ainf_volume *ubi_scan_find_av(const struct ubi_attach_info *ai,
- 					 int vol_id);
+ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+ 		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips);
+-struct ubi_ainf_volume *ubi_scan_find_av(const struct ubi_attach_info *ai,
+-					 int vol_id);
++struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
++				    int vol_id);
  void ubi_scan_rm_volume(struct ubi_attach_info *ai, struct ubi_ainf_volume *av);
+ struct ubi_ainf_peb *ubi_scan_get_free_peb(struct ubi_device *ubi,
+ 					   struct ubi_attach_info *ai);
 diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 0ea105b..5decd58 100644
+index 5decd58..0c8c172 100644
 --- a/drivers/mtd/ubi/vtbl.c
 +++ b/drivers/mtd/ubi/vtbl.c
-@@ -338,10 +338,9 @@ retry:
+@@ -591,7 +591,7 @@ static int init_volumes(struct ubi_device *ubi,
+ 		}
  
- 	/*
- 	 * And add it to the attaching information. Don't delete the old version
--	 * of this LEB as it will be deleted and freed in 'ubi_scan_add_used()'.
-+	 * of this LEB as it will be deleted and freed in 'ubi_add_to_av()'.
- 	 */
--	err = ubi_scan_add_used(ubi, ai, new_aeb->pnum, new_aeb->ec,
--				vid_hdr, 0);
-+	err = ubi_add_to_av(ubi, ai, new_aeb->pnum, new_aeb->ec, vid_hdr, 0);
- 	kfree(new_aeb);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
-@@ -428,7 +427,7 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
- 			 * aeb->scrub). If the data is not OK, the contents of
- 			 * the PEB will be recovered from the second copy, and
- 			 * aeb->scrub will be cleared in
--			 * 'ubi_scan_add_used()'.
-+			 * 'ubi_add_to_av()'.
- 			 */
- 			aeb->scrub = 1;
- 		else if (err)
+ 		/* Static volumes only */
+-		av = ubi_scan_find_av(ai, i);
++		av = ubi_find_av(ai, i);
+ 		if (!av) {
+ 			/*
+ 			 * No eraseblocks belonging to this volume found. We
+@@ -734,7 +734,7 @@ static int check_scanning_info(const struct ubi_device *ubi,
+ 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
+ 		cond_resched();
+ 
+-		av = ubi_scan_find_av(ai, i);
++		av = ubi_find_av(ai, i);
+ 		vol = ubi->volumes[i];
+ 		if (!vol) {
+ 			if (av)
+@@ -794,7 +794,7 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	ubi->vtbl_size = ubi->vtbl_slots * UBI_VTBL_RECORD_SIZE;
+ 	ubi->vtbl_size = ALIGN(ubi->vtbl_size, ubi->min_io_size);
+ 
+-	av = ubi_scan_find_av(ai, UBI_LAYOUT_VOLUME_ID);
++	av = ubi_find_av(ai, UBI_LAYOUT_VOLUME_ID);
+ 	if (!av) {
+ 		/*
+ 		 * No logical eraseblocks belonging to the layout volume were
 -- 
 1.7.10
