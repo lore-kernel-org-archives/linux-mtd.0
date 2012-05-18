@@ -1,21 +1,13 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVKrs-0004mU-2k
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 10:57:08 +0000
-Message-ID: <1337338834.2483.21.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: Fix typo in Kconfig
+ id 1SVKxb-0005Vd-Hq
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:04 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Frank Svendsboe <frank.svendsboe@gmail.com>
-Date: Fri, 18 May 2012 14:00:34 +0300
-In-Reply-To: <1337287389-28386-1-git-send-email-frank.svendsboe@gmail.com>
-References: <1337287389-28386-1-git-send-email-frank.svendsboe@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-PH2HGrvoGLczPATUGpnH"
-Mime-Version: 1.0
-Cc: dbaryshkov@gmail.com, linuxppc-dev@lists.ozlabs.org,
- randy.dunlap@oracle.com, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH 00/22] UBI: massage for fastmap
+Date: Fri, 18 May 2012 14:03:43 +0300
+Message-Id: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +17,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---=-PH2HGrvoGLczPATUGpnH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+thise patch-set massively re-names things in UBI and prepares to code
+for the fastmap work. Turns scan.c into attach.c, removes word "scan" from all
+the functions and data-structures which will presumably be used in fastmap.
 
-On Thu, 2012-05-17 at 22:43 +0200, Frank Svendsboe wrote:
-> MTD_OF_PARTS and the default setting is not working due to using 'Y'
-> instead of 'y', introduced in commit
-> d6137badeff1ef64b4e0092ec249ebdeaeb3ff37. This made our board, and
-> possibly other boards using DTS defined partitions and not having
-> CONFIG_MTD_OF_PARTS=3Dy defined in the defconfig, fail to mount root
-> after v3.1.
+Richard, by going through the commit messages you should get the idea what
+to re-name in your patches to make them match the new style. For functions
+it is easy - your code won't compile unless you rename. For variable names
+(e.g., si -> ai, seb -> aeb, etc) you'll need to just do the same I do in this
+patch-set.
 
-The commit was released in v3.2, so it not v3.1 probably?
-
-> Signed-off-by: Frank Svendsboe <frank.svendsboe@gmail.com>
-
-I've amended the subject to make it look scarier than just a fix of a
-typo, added a tag for the stable tree, and pushed to l2-mtd.git, thanks!
-
-commit aa2465b2d5d44defb269ac66a2d2b6e6b8feb399
-Author: Frank Svendsboe <frank.svendsboe@gmail.com>
-Date:   Thu May 17 22:43:09 2012 +0200
-
-    mtd: of_parts: fix breakage in Kconfig
-   =20
-    MTD_OF_PARTS and the default setting is not working due to using 'Y'
-    instead of 'y', introduced in commit
-    d6137badeff1ef64b4e0092ec249ebdeaeb3ff37. This made our board, and
-    possibly other boards using DTS defined partitions and not having
-    CONFIG_MTD_OF_PARTS=3Dy defined in the defconfig, fail to mount root.
-   =20
-    Signed-off-by: Frank Svendsboe <frank.svendsboe@gmail.com>
-    Cc: stable@kernel.org [3.2+]
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-PH2HGrvoGLczPATUGpnH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPtivSAAoJECmIfjd9wqK0CQUP/iZJxJ8pMyy7WqxpPY8rWiZu
-8TmGYs5Z9fGXcVfS3wDZXSuulk90lifLZSNXsACcjzY/0BV58nhcyuDK84cT6+hy
-YKenEk6/N/AB8UTFrj7buTKo5KQ01M2cMPWaVubN8C9rKN+yFlQ8pqrlAuYCmejD
-VbC/01gektB0m5SpuRjpZS+Fsmz7kXzb0+viUu4sh0v+xJ3aRAEnJ/ccjeFpyXjP
-uC+d8jjqFXyhrc7VoBKOtgGWgIufDFRygkL0LhLkIgL10VUkMTlk3+sTTGFm6UnF
-QcP0aiv5Mw7bkgsN/ehscUhahyAeTXyvlvmOvAm8CvSXxaQxDcVyRAUdzEJ258cI
-AcWiEtcswiIzL1HxO6CydmmawGw5BkdBPZImqHd8g8g/3N/uSEK5SyS2h357Pvmu
-NmakF+NlevxhL5AuEwTbwBZXz1PlD1yGFSxIut76KWMAn+OUGtsk0G6E+qJOQDeh
-Ic5A54qsLuGHqHW7eK6PdYvor0fB3Iqs2pxRfVPOXiXjgo+j/C6cCYp8P4l4tlWz
-TG6LfX6cae7ZqTc1IFbgNqFnM9g4ilY3ECC8SVdxdQOrHQsngIrnasXht+2a+Rqp
-lZGxBc63t3N5WInBZCvXTyPnZt1JiP+HEiEarw9tDqK0gTVsyuX73SfXsuINiHuH
-IsgtASpZY3wbZdqtLF9u
-=Z//J
------END PGP SIGNATURE-----
-
---=-PH2HGrvoGLczPATUGpnH--
+Artem.
