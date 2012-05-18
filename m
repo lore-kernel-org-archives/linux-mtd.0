@@ -1,22 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SVNgZ-0005zO-O7
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 13:57:41 +0000
-Received: by laap9 with SMTP id p9so2628648laa.36
- for <linux-mtd@lists.infradead.org>; Fri, 18 May 2012 06:57:36 -0700 (PDT)
-Date: Fri, 18 May 2012 15:57:29 +0200
-From: Frank Svendsboe <frank.svendsboe@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: Fix typo in Kconfig
-Message-ID: <20120518135729.GA11703@gnubox>
-References: <1337287389-28386-1-git-send-email-frank.svendsboe@gmail.com>
- <1337338834.2483.21.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1337338834.2483.21.camel@sauron.fi.intel.com>
-Cc: dbaryshkov@gmail.com, linuxppc-dev@lists.ozlabs.org,
- randy.dunlap@oracle.com, linux-mtd@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SVNzx-0007uf-RP
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 14:17:42 +0000
+Message-ID: <1337350869.2483.60.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3] UBI: add lnum and vol_id to struct ubi_work
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Fri, 18 May 2012 17:21:09 +0300
+In-Reply-To: <alpine.DEB.2.00.1205181538150.13472@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205181538150.13472@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-WwtQI/bItoiUlPZpZPNm"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 18, 2012 at 02:00:34PM +0300, Artem Bityutskiy wrote:
-> On Thu, 2012-05-17 at 22:43 +0200, Frank Svendsboe wrote:
-> > MTD_OF_PARTS and the default setting is not working due to using 'Y'
-> > instead of 'y', introduced in commit
-> > d6137badeff1ef64b4e0092ec249ebdeaeb3ff37. This made our board, and
-> > possibly other boards using DTS defined partitions and not having
-> > CONFIG_MTD_OF_PARTS=y defined in the defconfig, fail to mount root
-> > after v3.1.
-> 
-> The commit was released in v3.2, so it not v3.1 probably?
->
 
-It was committed between 3.1 and 3.2-rc1. I said _after_ 3.1, so it is
-not completely wrong either. Feel free to change to commit message, or
-I can resend the patch if you want me to.
+--=-WwtQI/bItoiUlPZpZPNm
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > Signed-off-by: Frank Svendsboe <frank.svendsboe@gmail.com>
-> 
-> I've amended the subject to make it look scarier than just a fix of a
-> typo, added a tag for the stable tree, and pushed to l2-mtd.git, thanks!
-> 
-> commit aa2465b2d5d44defb269ac66a2d2b6e6b8feb399
-> Author: Frank Svendsboe <frank.svendsboe@gmail.com>
-> Date:   Thu May 17 22:43:09 2012 +0200
-> 
->     mtd: of_parts: fix breakage in Kconfig
->     
->     MTD_OF_PARTS and the default setting is not working due to using 'Y'
->     instead of 'y', introduced in commit
->     d6137badeff1ef64b4e0092ec249ebdeaeb3ff37. This made our board, and
->     possibly other boards using DTS defined partitions and not having
->     CONFIG_MTD_OF_PARTS=y defined in the defconfig, fail to mount root.
->     
->     Signed-off-by: Frank Svendsboe <frank.svendsboe@gmail.com>
->     Cc: stable@kernel.org [3.2+]
->     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
+On Fri, 2012-05-18 at 15:40 +0200, Joel Reardon wrote:
+> This is part of a multipart patch to allow UBI to force the erasure of
+> particular logical eraseblock numbers. In this patch, the volume id and L=
+EB
+> number are added to ubi_work data structure, and both are also passed as =
+a
+> parameter to schedule erase to set it appropriately. Whenever ubi_wl_put_=
+peb
+> is called, the lnum is also passed to be forwarded to schedule erase. Lat=
+er,
+> a new ubi_sync_lnum will be added to execute immediately all work related=
+ to
+> that lnum.
+>=20
+> This was tested by outputting the vol_id and lnum during the schedule of
+> erasure. The ubi thread was disabled and two ubifs drives on separate
+> partitions repeated changed a small number of LEBs. The ubi module was re=
+added, and all
+> the erased LEBs, corresponding to the volumes, were added to the schedule
+> erase queue.
+>=20
+> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 
-Great. Thanks!
+Pushed to the "joel" branch, thanks. I did few amendments.
 
--- 
-Best regards,
-Frank
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-WwtQI/bItoiUlPZpZPNm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPtlrVAAoJECmIfjd9wqK0PMwP/1FYXVcT3omAxdYSvfX56+4B
+ChphV3QTRDRk+ooVGVzpZ/0N5oyacj9pEWwrYf9o+wCAaeuXgeSPw5XKmGicZ7j8
+khhtx9z+b8m0pEODgsD9RlTXGGTRXwz+4tYiuQZJv1QtfvVD5VWfOvLilD/nDooh
+9uEP5cGywi4MKBBs+apTh3+C5BDePNV12hlsvhocnsKSVKcyKMcjqQTq0SeEXti8
+OimAGB6GBmyP4A8Ashlw4C/uEsXBZ6xWR3e89BBiXQ69ChLNwt4LrWnOrmh8UMt/
+xfiXePsHUbX+T/zWkdYrlfeMl9pwK7AYVY50EbVOyQ/MVgQP7TuBbr02fUccfOZu
+NkcBTrdz93/m7vO8FgHZhxlXc3HjDzb71YYl4Zw2o9Q4FixnuFmxJ0mcFzJGM8lZ
+7dAWiF6PZOuuqJFSo3BDS4nElyrEkdtnAGtjj9sS0K7sqVaDPC3UAtZW8EgFGXwx
+CKEK9Kt+VLhcUbhpd1JOliWKW5CFYQtpuuPqN4yyLrqRfDceK1jZZzNsWKurFHlb
+BvNePYaQfle5EWPI06pL/6tZnyIzvB6Ud9kCD/T1jM/fwYwpdfzO04mTj5+8TgQ1
+kkw1sD3UcJEPiu29AfmsfVIM4yb80d3lItns1VwncB5y0guUgHIhfAMG61AbO0J3
+fROXaaYTHINehIfGeGwe
+=AXY7
+-----END PGP SIGNATURE-----
+
+--=-WwtQI/bItoiUlPZpZPNm--
