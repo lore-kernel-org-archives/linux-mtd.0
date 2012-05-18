@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVKy8-0005YL-1n
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:37 +0000
+ id 1SVKy8-0005YM-CJ
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:38 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 14/22] UBI: rename ubi_scan_destroy_ai
-Date: Fri, 18 May 2012 14:03:57 +0300
-Message-Id: <1337339045-8199-15-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 16/22] UBI: rename ubi_scan_leb_slab
+Date: Fri, 18 May 2012 14:03:59 +0300
+Message-Id: <1337339045-8199-17-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 References: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
@@ -21,74 +21,125 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The old name is not logical anymore - rename it to 'ubi_destroy_ai()'.
+The old name is not logical anymore - rename it to 'aeb_slab_cache'.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/build.c |    4 ++--
- drivers/mtd/ubi/scan.c  |    6 +++---
- drivers/mtd/ubi/scan.h  |    2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/mtd/ubi/scan.c |   28 ++++++++++++++--------------
+ drivers/mtd/ubi/scan.h |    4 ++--
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 1ae3cfa..2a8f26b 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -608,7 +608,7 @@ static int attach_by_scanning(struct ubi_device *ubi)
- 	if (err)
- 		goto out_wl;
- 
--	ubi_scan_destroy_ai(ai);
-+	ubi_destroy_ai(ai);
- 	return 0;
- 
- out_wl:
-@@ -617,7 +617,7 @@ out_vtbl:
- 	free_internal_volumes(ubi);
- 	vfree(ubi->vtbl);
- out_ai:
--	ubi_scan_destroy_ai(ai);
-+	ubi_destroy_ai(ai);
- 	return err;
- }
- 
 diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 2c5a558..daa53a8 100644
+index daa53a8..06a2d70 100644
 --- a/drivers/mtd/ubi/scan.c
 +++ b/drivers/mtd/ubi/scan.c
-@@ -1203,7 +1203,7 @@ out_vidh:
- out_ech:
- 	kfree(ech);
- out_ai:
--	ubi_scan_destroy_ai(ai);
-+	ubi_destroy_ai(ai);
- 	return ERR_PTR(err);
- }
+@@ -125,7 +125,7 @@ static int add_to_list(struct ubi_attach_info *ai, int pnum, int ec,
+ 	} else
+ 		BUG();
  
-@@ -1242,10 +1242,10 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- }
+-	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
++	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
+ 	if (!aeb)
+ 		return -ENOMEM;
  
- /**
-- * ubi_scan_destroy_ai - destroy attaching information.
-+ * ubi_destroy_ai - destroy attaching information.
-  * @ai: attaching information
-  */
--void ubi_scan_destroy_ai(struct ubi_attach_info *ai)
-+void ubi_destroy_ai(struct ubi_attach_info *ai)
- {
- 	struct ubi_ainf_peb *aeb, *aeb_tmp;
- 	struct ubi_ainf_volume *av;
+@@ -154,7 +154,7 @@ static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
+ 
+ 	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
+ 
+-	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
++	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+@@ -562,7 +562,7 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+ 	if (err)
+ 		return err;
+ 
+-	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
++	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+@@ -1133,10 +1133,10 @@ struct ubi_attach_info *ubi_scan(struct ubi_device *ubi)
+ 	ai->volumes = RB_ROOT;
+ 
+ 	err = -ENOMEM;
+-	ai->scan_leb_slab = kmem_cache_create("ubi_scan_leb_slab",
+-					      sizeof(struct ubi_ainf_peb),
+-					      0, 0, NULL);
+-	if (!ai->scan_leb_slab)
++	ai->aeb_slab_cache = kmem_cache_create("ubi_aeb_slab_cache",
++					       sizeof(struct ubi_ainf_peb),
++					       0, 0, NULL);
++	if (!ai->aeb_slab_cache)
+ 		goto out_ai;
+ 
+ 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+@@ -1235,7 +1235,7 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
+ 					this->rb_right = NULL;
+ 			}
+ 
+-			kmem_cache_free(ai->scan_leb_slab, aeb);
++			kmem_cache_free(ai->aeb_slab_cache, aeb);
+ 		}
+ 	}
+ 	kfree(av);
+@@ -1253,19 +1253,19 @@ void ubi_destroy_ai(struct ubi_attach_info *ai)
+ 
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->scan_leb_slab, aeb);
++		kmem_cache_free(ai->aeb_slab_cache, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->scan_leb_slab, aeb);
++		kmem_cache_free(ai->aeb_slab_cache, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->scan_leb_slab, aeb);
++		kmem_cache_free(ai->aeb_slab_cache, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->scan_leb_slab, aeb);
++		kmem_cache_free(ai->aeb_slab_cache, aeb);
+ 	}
+ 
+ 	/* Destroy the volume RB-tree */
+@@ -1290,8 +1290,8 @@ void ubi_destroy_ai(struct ubi_attach_info *ai)
+ 		}
+ 	}
+ 
+-	if (ai->scan_leb_slab)
+-		kmem_cache_destroy(ai->scan_leb_slab);
++	if (ai->aeb_slab_cache)
++		kmem_cache_destroy(ai->aeb_slab_cache);
+ 
+ 	kfree(ai);
+ }
 diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index 72ba24a..a406f5b 100644
+index aa76b3b..20bec7c 100644
 --- a/drivers/mtd/ubi/scan.h
 +++ b/drivers/mtd/ubi/scan.h
-@@ -165,6 +165,6 @@ void ubi_remove_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av);
- struct ubi_ainf_peb *ubi_early_get_peb(struct ubi_device *ubi,
- 				       struct ubi_attach_info *ai);
- struct ubi_attach_info *ubi_scan(struct ubi_device *ubi);
--void ubi_scan_destroy_ai(struct ubi_attach_info *ai);
-+void ubi_destroy_ai(struct ubi_attach_info *ai);
+@@ -110,7 +110,7 @@ struct ubi_ainf_volume {
+  * @mean_ec: mean erase counter value
+  * @ec_sum: a temporary variable used when calculating @mean_ec
+  * @ec_count: a temporary variable used when calculating @mean_ec
+- * @scan_leb_slab: slab cache for &struct ubi_ainf_peb objects
++ * @aeb_slab_cache: slab cache for &struct ubi_ainf_peb objects
+  *
+  * This data structure contains the result of attaching an MTD device and may
+  * be used by other UBI sub-systems to build final UBI data structures, further
+@@ -136,7 +136,7 @@ struct ubi_attach_info {
+ 	int mean_ec;
+ 	uint64_t ec_sum;
+ 	int ec_count;
+-	struct kmem_cache *scan_leb_slab;
++	struct kmem_cache *aeb_slab_cache;
+ };
  
- #endif /* !__UBI_SCAN_H__ */
+ struct ubi_device;
 -- 
 1.7.10
