@@ -1,26 +1,22 @@
-Message-ID: <1337342063.2483.37.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Date: Fri, 18 May 2012 14:54:23 +0300
-In-Reply-To: <20120517125544.GJ9571@n2100.arm.linux.org.uk>
-References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
- <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
- <1337160353.24809.26.camel@sauron.fi.intel.com>
- <20403.29677.517067.528042@ipc1.ka-ro>
- <1337161217.24809.38.camel@sauron.fi.intel.com>
- <4FB49C60.5030002@atmel.com> <1337255011.2564.2.camel@koala>
- <20120517125544.GJ9571@n2100.arm.linux.org.uk>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SVLx7-0000DZ-Os
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 12:06:38 +0000
+Message-ID: <1337343005.2483.38.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nandsim: don't open code a do_div helper
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
+Date: Fri, 18 May 2012 15:10:05 +0300
+In-Reply-To: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
+References: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-4PZr6jz0rdn9qk5I6ieg"
+ boundary="=-kl0hgMyQTcJf8zN8e+Vs"
 Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org,
- Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ Nicolas Pitre <nico@fluxnic.net>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +27,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4PZr6jz0rdn9qk5I6ieg
+--=-kl0hgMyQTcJf8zN8e+Vs
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-17 at 13:55 +0100, Russell King - ARM Linux wrote:
-> > You can just remove the backslashes. I think your lines splitting is
-> > fine otherwise.
->=20
-> It's also preferred _not_ to wrap error messages as that makes them
-> harder to grep for.  Linus has mentioned this several times on LKML
-> and has corrected error messages that he encounters that he can't
-> find via grep.
+On Wed, 2012-05-16 at 16:21 -0300, Herton Ronaldo Krzesinski wrote:
+> We don't need to open code the divide function, just use div_u64 that
+> already exists and do the same job. While this is a straightforward
+> clean up, there is more to that, the real motivation for this.
 
-OK, thanks for the info.
-
-One could argue that it probably only makes sense to avoid splitting up
-to the first %d or another printk placeholder. Beyond the placeholder
-grepping is not more difficult.
-
-Well, anyway, I would not like to force people to split or not split
-strings. I'd also say that it is more important to follow the style of
-the driver/subsystem and be consistent.
+Did not remove CC -stable, added Nicolas' Ack, and pushed to l2-mtd.git,
+thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-4PZr6jz0rdn9qk5I6ieg
+--=-kl0hgMyQTcJf8zN8e+Vs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPtjhvAAoJECmIfjd9wqK07DIP/ixH3cFmnPpwyYKWFRpHSb7R
-OuTlImT1fcFpeWterFt1Ea83+iAuD7LDL3p9r5O+fRMjAEwkP8oPqK2u2aswgNRg
-Eqs5Dd+uefeOvVEc19F2pazo8vP/OAmQ1+uVX6oHAq0bXz9775zzg32RlS775JJU
-CmuA3p6K5gUILAzEmxvCGXehqBEA/P2DIyKTh1XevmT9g/oifV2ToJ3IHk576wco
-uYD2tSw9zXJKZbV6Drth6cX+U2yFxemtf0ZtnMvNnGnWkQM3LGgEKuC9mdkfiPxD
-ND3GuxQLo7jAIq63P1rw7LSc5ViM0xXwKghYOCqVEn8SE5UE1FWglwWJ3+FdR4P4
-FJt2R723Lj2LHzIBOa6ixTR0Yck6Yi9/7ZNUhlcncjx+Swq9sXiDimWg3Kh8QsgL
-R9AZKZ0t03KhrZOtXqmxjYaqC3kJNiGCdM95br57JHuVbP1Rcy/Lum/GuR14oVMQ
-/DeXYKao8U4Yg4ESAOfHJpMYoU4yhwaQIBVJEEf9wdmrXGpNcV7y86Q0FD7wgMjx
-smJq2W8FTT49CKXA41NqeSBPua8zsVE9q651RBQwqXQGl8LJDsj5mWyksvSBfIDZ
-RSgp3LbIvpJaVx8BAebRc/XChYvMS3iM2YKkNFTIh+jBmYQIkmy0qOp6tCtiwedp
-2VkUZFprYD6qyO+DvoX+
-=M7Wd
+iQIcBAABAgAGBQJPtjweAAoJECmIfjd9wqK0LT8QALD1JoILwGnwKWCBbjFE1NA9
+9QONyTCfwnNjixaMZmPjB6DxfaMZuOkaNjFcEIbjpOrOn6tsQi2jhJN582i7nFuA
+4p8pG53DtHqEY+D6NH1dlGPo3Rvb6WWDbidlbvDec9evy8rJgehOeippwFaKXD48
+H5HESa9ahMZHyyOTzXSVFEFBcwSPcb0/8WuUNveP50mQkQ8Y06pwVqNTsc3/sYDh
+eXUdifZBmxl7WLCMmuSwxiBeTPd2KpMArGE3ki9qTTphm0tf34aI5vC2Q+5jbe6W
+pe7GM9mMptH/umTxFsyiTl3CYabeG/mFQRCQ+JLEJDtBKczIKHt28yPsORzKoq7L
+frjoPisd53erQGGL544SlRg7WG6HbFXgRe0IDsIJHFik90Z3pdwUbfNF+vpbAb9D
+T3ZOqpfiwPsHJNFYpEsu+henfsun3tco8jUHW68vkkJIR71RncQ80B8wGvmerIN8
+fZDiGYjrtLUbuU8rTA5kyuSl44kcAOpGZps/ShRUghChFzAaIcszZCtDNNbgEJe8
+q5sMXlvGWK+T/MpKPlvK3AfVFHgOzVHFAr+PyMThcV5VJumT/NVt4ec0GMALjNC+
+7z8i+4ZKqfudylLP+0/zUfTdj+nQN/jAWjgYbt81jta1euIQXVDnnrq6YOe0WZtQ
+zmaSem0hz3ypdKvYVhkx
+=UVlr
 -----END PGP SIGNATURE-----
 
---=-4PZr6jz0rdn9qk5I6ieg--
+--=-kl0hgMyQTcJf8zN8e+Vs--
