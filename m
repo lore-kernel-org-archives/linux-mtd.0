@@ -1,19 +1,25 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVLbZ-0006e5-Eb
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:44:22 +0000
-Message-ID: <1337341669.2483.31.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS and NAND issue (works only once)
+Message-ID: <1337342063.2483.37.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v7 3/3] MTD: atmel_nand: Update driver to support
+ Programmable Multibit ECC controller
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Bishop, Mark" <Mark.Bishop@cooperindustries.com>
-Date: Fri, 18 May 2012 14:47:49 +0300
-In-Reply-To: <5D308BD40154E4439D82454FE483A50206B6FFDD@EVS4.nam.ci.root>
-References: <5D308BD40154E4439D82454FE483A50206B6FFDD@EVS4.nam.ci.root>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Date: Fri, 18 May 2012 14:54:23 +0300
+In-Reply-To: <20120517125544.GJ9571@n2100.arm.linux.org.uk>
+References: <1337093256-19117-1-git-send-email-josh.wu@atmel.com>
+ <1337093256-19117-4-git-send-email-josh.wu@atmel.com>
+ <1337160353.24809.26.camel@sauron.fi.intel.com>
+ <20403.29677.517067.528042@ipc1.ka-ro>
+ <1337161217.24809.38.camel@sauron.fi.intel.com>
+ <4FB49C60.5030002@atmel.com> <1337255011.2564.2.camel@koala>
+ <20120517125544.GJ9571@n2100.arm.linux.org.uk>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-T5cXBka7vhlsNo5BI5Bs"
+ boundary="=-4PZr6jz0rdn9qk5I6ieg"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org,
+ Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,46 +31,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-T5cXBka7vhlsNo5BI5Bs
+--=-4PZr6jz0rdn9qk5I6ieg
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, 2012-05-17 at 13:55 +0100, Russell King - ARM Linux wrote:
+> > You can just remove the backslashes. I think your lines splitting is
+> > fine otherwise.
+>=20
+> It's also preferred _not_ to wrap error messages as that makes them
+> harder to grep for.  Linus has mentioned this several times on LKML
+> and has corrected error messages that he encounters that he can't
+> find via grep.
 
-On Thu, 2012-05-17 at 16:08 -0400, Bishop, Mark wrote:
-> root:/> ubiattach /dev/ubi_ctrl -m 3
-> UBI: attaching mtd3 to ubi0
-> UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> UBI: logical eraseblock size:    129024 bytes
-> UBI: smallest flash I/O unit:    2048
-> UBI: sub-page size:              512
-> UBI: VID header offset:          512 (aligned 512)
-> UBI: data offset:                2048
-> UBI error: process_eb: bad image sequence number 125589241 in PEB 1012,
-> expected 817099782
+OK, thanks for the info.
 
-This means that you did not flash it correctly. Image sequence number is
-a random number associated with an image. UBI tools pick it randomly.
+One could argue that it probably only makes sense to avoid splitting up
+to the first %d or another printk placeholder. Beyond the placeholder
+grepping is not more difficult.
 
-This message says that half of your flash contains the new image, but
-the half of it contains the pieces of the old image. I have no idea
-which tools you use for flashing images, but you should check that your
-tools erase the flash area beyond the new flash image.
-
-Read here:
-
-
-> slab error in kmem_cache_destroy(): cache `ubi_scan_leb_slab': Can't
-> free all objects
-
-This seems to be a bug on error path - we leek memory. A patch for
-fixing this will a good way to contribute back to the community.
+Well, anyway, I would not like to force people to split or not split
+strings. I'd also say that it is more important to follow the style of
+the driver/subsystem and be consistent.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-T5cXBka7vhlsNo5BI5Bs
+--=-4PZr6jz0rdn9qk5I6ieg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -72,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPtjblAAoJECmIfjd9wqK0YkYQAJNAKNC0QoGV+VU6aBFhnEI9
-KGx2IzPlENjTI550OQiPqX+xFj0+swVSiAhfEjYfXKOWx3+mISDxEkQQy2B+4nv4
-vtH1+1BTRa5jAwPptv9XmIqi7UeXer755fMHkH1J90V6JdJi/lQstyqUM1orJuI6
-55klqTI14SYHetAkl6M+J/zak2HrntqLtJ1gfH/NvDEiw+gzhEeuXB2q+Rr3X3xi
-Uoljask6VAJz2Ldo+rK1WRhnSTmB2SOeUXMBtmGunqNntDQx6Rp4yjbATvHn1ei4
-ZcJESPLhibw33dx0OS0vFIwlHIu7N8KddIyWbpEkK/SZyz7HdhZD+9dI/u0PCLAT
-E+jGl9OJPgDQyGisWOlOQbpDgLK/8EaNl3qqXE+6/jtr1yXamwV9ha2JWLs/Ffnn
-P56jMjBo9o/gjWu6qCdyEWW5/QRBBuAdMjpcuUFn3wv88SHYcZHM6CVXbiR74KSV
-QvnlR8XdPqdKu4NrhsA6eFZ5LRIJbb6F38d3C11TyB6X7Qg+ftne0B7gvYyy+VQ1
-vSsFhwH4nLkHAS9LduHn7gvvQZF+dt5p1/2TZvM/qwqqH1IhV5B4csYAQxl3Y52L
-IbjThrTReW9FXQuZqKqIX1Mex0ZNSBDw686jXrQBpOsKfshVDTiioz3gZGyOOA0K
-ihVv/9tGb/soWevIIFN/
-=73Hn
+iQIcBAABAgAGBQJPtjhvAAoJECmIfjd9wqK07DIP/ixH3cFmnPpwyYKWFRpHSb7R
+OuTlImT1fcFpeWterFt1Ea83+iAuD7LDL3p9r5O+fRMjAEwkP8oPqK2u2aswgNRg
+Eqs5Dd+uefeOvVEc19F2pazo8vP/OAmQ1+uVX6oHAq0bXz9775zzg32RlS775JJU
+CmuA3p6K5gUILAzEmxvCGXehqBEA/P2DIyKTh1XevmT9g/oifV2ToJ3IHk576wco
+uYD2tSw9zXJKZbV6Drth6cX+U2yFxemtf0ZtnMvNnGnWkQM3LGgEKuC9mdkfiPxD
+ND3GuxQLo7jAIq63P1rw7LSc5ViM0xXwKghYOCqVEn8SE5UE1FWglwWJ3+FdR4P4
+FJt2R723Lj2LHzIBOa6ixTR0Yck6Yi9/7ZNUhlcncjx+Swq9sXiDimWg3Kh8QsgL
+R9AZKZ0t03KhrZOtXqmxjYaqC3kJNiGCdM95br57JHuVbP1Rcy/Lum/GuR14oVMQ
+/DeXYKao8U4Yg4ESAOfHJpMYoU4yhwaQIBVJEEf9wdmrXGpNcV7y86Q0FD7wgMjx
+smJq2W8FTT49CKXA41NqeSBPua8zsVE9q651RBQwqXQGl8LJDsj5mWyksvSBfIDZ
+RSgp3LbIvpJaVx8BAebRc/XChYvMS3iM2YKkNFTIh+jBmYQIkmy0qOp6tCtiwedp
+2VkUZFprYD6qyO+DvoX+
+=M7Wd
 -----END PGP SIGNATURE-----
 
---=-T5cXBka7vhlsNo5BI5Bs--
+--=-4PZr6jz0rdn9qk5I6ieg--
