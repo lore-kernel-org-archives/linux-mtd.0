@@ -1,22 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVLx7-0000DZ-Os
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 12:06:38 +0000
-Message-ID: <1337343005.2483.38.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nandsim: don't open code a do_div helper
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
-Date: Fri, 18 May 2012 15:10:05 +0300
-In-Reply-To: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
-References: <20120516192145.GB2913@herton-Z68MA-D2H-B3>
+ id 1SVN62-0004Ej-Ne
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 13:19:55 +0000
+Message-ID: <1337347403.2483.48.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] UBIFS: read crypto_lookup from datanodes to znodes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Fri, 18 May 2012 16:23:23 +0300
+In-Reply-To: <alpine.DEB.2.00.1205161451250.27131@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
+ <1337087022.2528.204.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1205161451250.27131@eristoteles.iwoars.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kl0hgMyQTcJf8zN8e+Vs"
+ boundary="=-wD6DKjo42awzPpoXsJjc"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- Nicolas Pitre <nico@fluxnic.net>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +27,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kl0hgMyQTcJf8zN8e+Vs
+--=-wD6DKjo42awzPpoXsJjc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-05-16 at 16:21 -0300, Herton Ronaldo Krzesinski wrote:
-> We don't need to open code the divide function, just use div_u64 that
-> already exists and do the same job. While this is a straightforward
-> clean up, there is more to that, the real motivation for this.
+On Wed, 2012-05-16 at 14:52 +0200, Joel Reardon wrote:
+> +	if (key_type(c, &(zbr->key)) =3D=3D UBIFS_DATA_KEY) {
+> +		struct ubifs_data_node *dn =3D node;
+> +		long long crypto_lookup =3D le64_to_cpu(dn->crypto_lookup);
+> +		if (zbr->crypto_lookup !=3D 0)
+> +			ubifs_assert(zbr->crypto_lookup =3D=3D crypto_lookup);
+> +		else
+> +			zbr->crypto_lookup =3D crypto_lookup;
+> +	}
 
-Did not remove CC -stable, added Nicolas' Ack, and pushed to l2-mtd.git,
-thanks!
+Could you please just inject this code directly to
+'ubifs_tnc_read_node()' ? I think it is much easier and more nicer, no?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kl0hgMyQTcJf8zN8e+Vs
+--=-wD6DKjo42awzPpoXsJjc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPtjweAAoJECmIfjd9wqK0LT8QALD1JoILwGnwKWCBbjFE1NA9
-9QONyTCfwnNjixaMZmPjB6DxfaMZuOkaNjFcEIbjpOrOn6tsQi2jhJN582i7nFuA
-4p8pG53DtHqEY+D6NH1dlGPo3Rvb6WWDbidlbvDec9evy8rJgehOeippwFaKXD48
-H5HESa9ahMZHyyOTzXSVFEFBcwSPcb0/8WuUNveP50mQkQ8Y06pwVqNTsc3/sYDh
-eXUdifZBmxl7WLCMmuSwxiBeTPd2KpMArGE3ki9qTTphm0tf34aI5vC2Q+5jbe6W
-pe7GM9mMptH/umTxFsyiTl3CYabeG/mFQRCQ+JLEJDtBKczIKHt28yPsORzKoq7L
-frjoPisd53erQGGL544SlRg7WG6HbFXgRe0IDsIJHFik90Z3pdwUbfNF+vpbAb9D
-T3ZOqpfiwPsHJNFYpEsu+henfsun3tco8jUHW68vkkJIR71RncQ80B8wGvmerIN8
-fZDiGYjrtLUbuU8rTA5kyuSl44kcAOpGZps/ShRUghChFzAaIcszZCtDNNbgEJe8
-q5sMXlvGWK+T/MpKPlvK3AfVFHgOzVHFAr+PyMThcV5VJumT/NVt4ec0GMALjNC+
-7z8i+4ZKqfudylLP+0/zUfTdj+nQN/jAWjgYbt81jta1euIQXVDnnrq6YOe0WZtQ
-zmaSem0hz3ypdKvYVhkx
-=UVlr
+iQIcBAABAgAGBQJPtk1LAAoJECmIfjd9wqK0kZcP/1XEVMXn9Le+HBtv4j9Irs2X
+gcXOdB1VWUx/zy6+enOHErvRGI0eZiVsvHebE4DMRmlaTfvX14dflWGo2k4inydE
+9pGoX9x/LoOIbRt15SCz3LRAlnIM4G8cl5UmCjA6QHwCSf7KOK33qTM1r7q5y1C7
+HSLEarmpeOyw8CPOCOJK4+KZCnyli99MOOJl1g8PmuQwGvX6FhYBJiNragq1bTIy
+z7/ZmX4SiO0tQFXENqyJFSaqCFFbsVEaJM1Jz6Upp7ae21QJQAufBcZIvKpjqBST
+3u+O7TfHF37Six7BcIqSQ5cI6FX9yFhe09fx+R5C8x64Z5v5gD5DuXqUNmp0xGQJ
+0DlyS8/ZmTFy8AHJbEfwPa9RrugzgAJcN3EbU47cZYFx2X5ISPcZW/168HA9OKrA
+8mvdIS/voBpI5tLSGazCELdRVaSPAKUHTUBrucAyKY47YRz3/AgjaGpcz13zPYQ7
+l0bxO4kzUygqNd6KRi45xWF8KD9T5/+Zil02r1hEiVsXnf/zAugzlc00SvSTtUZq
+pgTPU+v+u5zAJpPN5j6FUM4si1hBv0kFL4792nAyK6dwrx6mja4xXMkgl0TXFWk8
+tR0EHAfKSTIMvYmRW0UocGoctPlL1ctiGSmylar00tnWAbqY2L+pt6fzvbnyxo9Z
+jK8TIHxZWLrtv9L1yfOw
+=5aab
 -----END PGP SIGNATURE-----
 
---=-kl0hgMyQTcJf8zN8e+Vs--
+--=-wD6DKjo42awzPpoXsJjc--
