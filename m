@@ -1,12 +1,12 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVKy8-0005YM-CJ
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:38 +0000
+ id 1SVKyA-0005YL-UC
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:03:40 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 16/22] UBI: rename ubi_scan_leb_slab
-Date: Fri, 18 May 2012 14:03:59 +0300
-Message-Id: <1337339045-8199-17-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 18/22] UBI: rename _init_scan functions
+Date: Fri, 18 May 2012 14:04:01 +0300
+Message-Id: <1337339045-8199-19-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 References: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
@@ -21,125 +21,109 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The old name is not logical anymore - rename it to 'aeb_slab_cache'.
+We have a couple of initialization funcntionsn left which have "_scan" suffic -
+rename them:
+
+ubi_eba_init_scan() -> ubi_eba_init()
+ubi_wl_init_scan() -> ubi_wl_init()
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/scan.c |   28 ++++++++++++++--------------
- drivers/mtd/ubi/scan.h |    4 ++--
- 2 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/mtd/ubi/build.c |    4 ++--
+ drivers/mtd/ubi/eba.c   |    6 +++---
+ drivers/mtd/ubi/ubi.h   |    4 ++--
+ drivers/mtd/ubi/wl.c    |    4 ++--
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index daa53a8..06a2d70 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -125,7 +125,7 @@ static int add_to_list(struct ubi_attach_info *ai, int pnum, int ec,
- 	} else
- 		BUG();
- 
--	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
- 	if (!aeb)
- 		return -ENOMEM;
- 
-@@ -154,7 +154,7 @@ static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
- 
- 	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
- 
--	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
- 	if (!aeb)
- 		return -ENOMEM;
- 
-@@ -562,7 +562,7 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 7f293b2..ecedd75 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -596,11 +596,11 @@ static int attach_by_scanning(struct ubi_device *ubi)
  	if (err)
- 		return err;
- 
--	aeb = kmem_cache_alloc(ai->scan_leb_slab, GFP_KERNEL);
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
- 	if (!aeb)
- 		return -ENOMEM;
- 
-@@ -1133,10 +1133,10 @@ struct ubi_attach_info *ubi_scan(struct ubi_device *ubi)
- 	ai->volumes = RB_ROOT;
- 
- 	err = -ENOMEM;
--	ai->scan_leb_slab = kmem_cache_create("ubi_scan_leb_slab",
--					      sizeof(struct ubi_ainf_peb),
--					      0, 0, NULL);
--	if (!ai->scan_leb_slab)
-+	ai->aeb_slab_cache = kmem_cache_create("ubi_aeb_slab_cache",
-+					       sizeof(struct ubi_ainf_peb),
-+					       0, 0, NULL);
-+	if (!ai->aeb_slab_cache)
  		goto out_ai;
  
- 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-@@ -1235,7 +1235,7 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- 					this->rb_right = NULL;
- 			}
+-	err = ubi_wl_init_scan(ubi, ai);
++	err = ubi_wl_init(ubi, ai);
+ 	if (err)
+ 		goto out_vtbl;
  
--			kmem_cache_free(ai->scan_leb_slab, aeb);
-+			kmem_cache_free(ai->aeb_slab_cache, aeb);
- 		}
- 	}
- 	kfree(av);
-@@ -1253,19 +1253,19 @@ void ubi_destroy_ai(struct ubi_attach_info *ai)
+-	err = ubi_eba_init_scan(ubi, ai);
++	err = ubi_eba_init(ubi, ai);
+ 	if (err)
+ 		goto out_wl;
  
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->scan_leb_slab, aeb);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->scan_leb_slab, aeb);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->scan_leb_slab, aeb);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->scan_leb_slab, aeb);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
- 	}
- 
- 	/* Destroy the volume RB-tree */
-@@ -1290,8 +1290,8 @@ void ubi_destroy_ai(struct ubi_attach_info *ai)
- 		}
- 	}
- 
--	if (ai->scan_leb_slab)
--		kmem_cache_destroy(ai->scan_leb_slab);
-+	if (ai->aeb_slab_cache)
-+		kmem_cache_destroy(ai->aeb_slab_cache);
- 
- 	kfree(ai);
- }
-diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index aa76b3b..20bec7c 100644
---- a/drivers/mtd/ubi/scan.h
-+++ b/drivers/mtd/ubi/scan.h
-@@ -110,7 +110,7 @@ struct ubi_ainf_volume {
-  * @mean_ec: mean erase counter value
-  * @ec_sum: a temporary variable used when calculating @mean_ec
-  * @ec_count: a temporary variable used when calculating @mean_ec
-- * @scan_leb_slab: slab cache for &struct ubi_ainf_peb objects
-+ * @aeb_slab_cache: slab cache for &struct ubi_ainf_peb objects
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 2592d1c..5fa726f 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1167,7 +1167,7 @@ out_unlock_leb:
+  * print_rsvd_warning - warn about not having enough reserved PEBs.
+  * @ubi: UBI device description object
   *
-  * This data structure contains the result of attaching an MTD device and may
-  * be used by other UBI sub-systems to build final UBI data structures, further
-@@ -136,7 +136,7 @@ struct ubi_attach_info {
- 	int mean_ec;
- 	uint64_t ec_sum;
- 	int ec_count;
--	struct kmem_cache *scan_leb_slab;
-+	struct kmem_cache *aeb_slab_cache;
- };
+- * This is a helper function for 'ubi_eba_init_scan()' which is called when UBI
++ * This is a helper function for 'ubi_eba_init()' which is called when UBI
+  * cannot reserve enough PEBs for bad block handling. This function makes a
+  * decision whether we have to print a warning or not. The algorithm is as
+  * follows:
+@@ -1205,14 +1205,14 @@ static void print_rsvd_warning(struct ubi_device *ubi,
+ }
  
- struct ubi_device;
+ /**
+- * ubi_eba_init_scan - initialize the EBA sub-system using attaching information.
++ * ubi_eba_init - initialize the EBA sub-system using attaching information.
+  * @ubi: UBI device description object
+  * @ai: attaching information
+  *
+  * This function returns zero in case of success and a negative error code in
+  * case of failure.
+  */
+-int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_attach_info *ai)
++int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ {
+ 	int i, j, err, num_volumes;
+ 	struct ubi_ainf_volume *av;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index faaf729..9563e1b 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -529,14 +529,14 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			      int lnum, const void *buf, int len);
+ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 		     struct ubi_vid_hdr *vid_hdr);
+-int ubi_eba_init_scan(struct ubi_device *ubi, struct ubi_attach_info *ai);
++int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
+ 
+ /* wl.c */
+ int ubi_wl_get_peb(struct ubi_device *ubi);
+ int ubi_wl_put_peb(struct ubi_device *ubi, int pnum, int torture);
+ int ubi_wl_flush(struct ubi_device *ubi);
+ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
+-int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_attach_info *ai);
++int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
+ void ubi_wl_close(struct ubi_device *ubi);
+ int ubi_thread(void *u);
+ 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 72fbae1..c143e61 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1373,14 +1373,14 @@ static void cancel_pending(struct ubi_device *ubi)
+ }
+ 
+ /**
+- * ubi_wl_init_scan - initialize the WL sub-system using attaching information.
++ * ubi_wl_init - initialize the WL sub-system using attaching information.
+  * @ubi: UBI device description object
+  * @ai: attaching information
+  *
+  * This function returns zero in case of success, and a negative error code in
+  * case of failure.
+  */
+-int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_attach_info *ai)
++int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ {
+ 	int err, i;
+ 	struct rb_node *rb1, *rb2;
 -- 
 1.7.10
