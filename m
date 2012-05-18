@@ -1,18 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SVKyH-0005Xc-JE
- for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:04:00 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: =?utf-8?q?=5BPATCH=2022/22=5D=20UBI=3A=20rename=20scan=2Ec=20to=20attach=2Ec?=
-Date: Fri, 18 May 2012 14:04:05 +0300
-Message-Id: <1337339045-8199-23-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
-References: <1337339045-8199-1-git-send-email-dedekind1@gmail.com>
+Received: from nm15-vm6.bullet.mail.ne1.yahoo.com ([98.138.91.108])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SVLGI-0003lY-Ck
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2012 11:22:23 +0000
+Message-ID: <1337340138.88122.YahooMailRC@web181712.mail.ne1.yahoo.com>
+Date: Fri, 18 May 2012 04:22:18 -0700 (PDT)
+From: Microsoft Office <web.microffice30@att.net>
+Subject: You have been selected as a potential winner of Microsoft Award,
+ kindly view attachment.
+To: undisclosed recipients: ;
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Cc: Richard Weinberger <richard@nod.at>
+Content-Type: multipart/mixed;
+ boundary="-289782389-1782894579-1337340138=:88122"
+Reply-To: Microsoft Office <microsoffices2@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,3273 +21,1331 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---289782389-1782894579-1337340138=:88122
+Content-Type: multipart/alternative; boundary="-289782389-1348826152-1337340138=:88122"
 
-Finally, rename the scan.c file. Now adding fastmap support won't look that
-hacky anymore.
+---289782389-1348826152-1337340138=:88122
+Content-Type: text/plain; charset=us-ascii
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/ubi/Makefile |    2 +-
- drivers/mtd/ubi/attach.c | 1615 ++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/scan.c   | 1615 ----------------------------------------------
- 3 files changed, 1616 insertions(+), 1616 deletions(-)
- create mode 100644 drivers/mtd/ubi/attach.c
- delete mode 100644 drivers/mtd/ubi/scan.c
 
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index da71655..a0803ac 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -1,6 +1,6 @@
- obj-$(CONFIG_MTD_UBI) += ubi.o
- 
--ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o scan.o
-+ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o attach.o
- ubi-y += misc.o debug.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-new file mode 100644
-index 0000000..3488dbe
---- /dev/null
-+++ b/drivers/mtd/ubi/attach.c
-@@ -0,0 +1,1615 @@
-+/*
-+ * Copyright (c) International Business Machines Corp., 2006
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+ *
-+ * Author: Artem Bityutskiy (Битюцкий Артём)
-+ */
-+
-+/*
-+ * UBI attaching sub-system.
-+ *
-+ * This sub-system is responsible for attaching MTD devices and it also
-+ * implements flash media scanning.
-+ *
-+ * The attaching information is represented by a &struct ubi_attach_info'
-+ * object. Information about volumes is represented by &struct ubi_ainf_volume
-+ * objects which are kept in volume RB-tree with root at the @volumes field.
-+ * The RB-tree is indexed by the volume ID.
-+ *
-+ * Logical eraseblocks are represented by &struct ubi_ainf_peb objects. These
-+ * objects are kept in per-volume RB-trees with the root at the corresponding
-+ * &struct ubi_ainf_volume object. To put it differently, we keep an RB-tree of
-+ * per-volume objects and each of these objects is the root of RB-tree of
-+ * per-LEB objects.
-+ *
-+ * Corrupted physical eraseblocks are put to the @corr list, free physical
-+ * eraseblocks are put to the @free list and the physical eraseblock to be
-+ * erased are put to the @erase list.
-+ *
-+ * About corruptions
-+ * ~~~~~~~~~~~~~~~~~
-+ *
-+ * UBI protects EC and VID headers with CRC-32 checksums, so it can detect
-+ * whether the headers are corrupted or not. Sometimes UBI also protects the
-+ * data with CRC-32, e.g., when it executes the atomic LEB change operation, or
-+ * when it moves the contents of a PEB for wear-leveling purposes.
-+ *
-+ * UBI tries to distinguish between 2 types of corruptions.
-+ *
-+ * 1. Corruptions caused by power cuts. These are expected corruptions and UBI
-+ * tries to handle them gracefully, without printing too many warnings and
-+ * error messages. The idea is that we do not lose important data in these
-+ * cases - we may lose only the data which were being written to the media just
-+ * before the power cut happened, and the upper layers (e.g., UBIFS) are
-+ * supposed to handle such data losses (e.g., by using the FS journal).
-+ *
-+ * When UBI detects a corruption (CRC-32 mismatch) in a PEB, and it looks like
-+ * the reason is a power cut, UBI puts this PEB to the @erase list, and all
-+ * PEBs in the @erase list are scheduled for erasure later.
-+ *
-+ * 2. Unexpected corruptions which are not caused by power cuts. During
-+ * attaching, such PEBs are put to the @corr list and UBI preserves them.
-+ * Obviously, this lessens the amount of available PEBs, and if at some  point
-+ * UBI runs out of free PEBs, it switches to R/O mode. UBI also loudly informs
-+ * about such PEBs every time the MTD device is attached.
-+ *
-+ * However, it is difficult to reliably distinguish between these types of
-+ * corruptions and UBI's strategy is as follows (in case of attaching by
-+ * scanning). UBI assumes corruption type 2 if the VID header is corrupted and
-+ * the data area does not contain all 0xFFs, and there were no bit-flips or
-+ * integrity errors (e.g., ECC errors in case of NAND) while reading the data
-+ * area.  Otherwise UBI assumes corruption type 1. So the decision criteria
-+ * are as follows.
-+ *   o If the data area contains only 0xFFs, there are no data, and it is safe
-+ *     to just erase this PEB - this is corruption type 1.
-+ *   o If the data area has bit-flips or data integrity errors (ECC errors on
-+ *     NAND), it is probably a PEB which was being erased when power cut
-+ *     happened, so this is corruption type 1. However, this is just a guess,
-+ *     which might be wrong.
-+ *   o Otherwise this it corruption type 2.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/slab.h>
-+#include <linux/crc32.h>
-+#include <linux/math64.h>
-+#include <linux/random.h>
-+#include "ubi.h"
-+
-+static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
-+
-+/* Temporary variables used during scanning */
-+static struct ubi_ec_hdr *ech;
-+static struct ubi_vid_hdr *vidh;
-+
-+/**
-+ * add_to_list - add physical eraseblock to a list.
-+ * @ai: attaching information
-+ * @pnum: physical eraseblock number to add
-+ * @ec: erase counter of the physical eraseblock
-+ * @to_head: if not zero, add to the head of the list
-+ * @list: the list to add to
-+ *
-+ * This function allocates a 'struct ubi_ainf_peb' object for physical
-+ * eraseblock @pnum and adds it to the "free", "erase", or "alien" lists.
-+ * If @to_head is not zero, PEB will be added to the head of the list, which
-+ * basically means it will be processed first later. E.g., we add corrupted
-+ * PEBs (corrupted due to power cuts) to the head of the erase list to make
-+ * sure we erase them first and get rid of corruptions ASAP. This function
-+ * returns zero in case of success and a negative error code in case of
-+ * failure.
-+ */
-+static int add_to_list(struct ubi_attach_info *ai, int pnum, int ec,
-+		       int to_head, struct list_head *list)
-+{
-+	struct ubi_ainf_peb *aeb;
-+
-+	if (list == &ai->free) {
-+		dbg_bld("add to free: PEB %d, EC %d", pnum, ec);
-+	} else if (list == &ai->erase) {
-+		dbg_bld("add to erase: PEB %d, EC %d", pnum, ec);
-+	} else if (list == &ai->alien) {
-+		dbg_bld("add to alien: PEB %d, EC %d", pnum, ec);
-+		ai->alien_peb_count += 1;
-+	} else
-+		BUG();
-+
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	if (!aeb)
-+		return -ENOMEM;
-+
-+	aeb->pnum = pnum;
-+	aeb->ec = ec;
-+	if (to_head)
-+		list_add(&aeb->u.list, list);
-+	else
-+		list_add_tail(&aeb->u.list, list);
-+	return 0;
-+}
-+
-+/**
-+ * add_corrupted - add a corrupted physical eraseblock.
-+ * @ai: attaching information
-+ * @pnum: physical eraseblock number to add
-+ * @ec: erase counter of the physical eraseblock
-+ *
-+ * This function allocates a 'struct ubi_ainf_peb' object for a corrupted
-+ * physical eraseblock @pnum and adds it to the 'corr' list.  The corruption
-+ * was presumably not caused by a power cut. Returns zero in case of success
-+ * and a negative error code in case of failure.
-+ */
-+static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
-+{
-+	struct ubi_ainf_peb *aeb;
-+
-+	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
-+
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	if (!aeb)
-+		return -ENOMEM;
-+
-+	ai->corr_peb_count += 1;
-+	aeb->pnum = pnum;
-+	aeb->ec = ec;
-+	list_add(&aeb->u.list, &ai->corr);
-+	return 0;
-+}
-+
-+/**
-+ * validate_vid_hdr - check volume identifier header.
-+ * @vid_hdr: the volume identifier header to check
-+ * @av: information about the volume this logical eraseblock belongs to
-+ * @pnum: physical eraseblock number the VID header came from
-+ *
-+ * This function checks that data stored in @vid_hdr is consistent. Returns
-+ * non-zero if an inconsistency was found and zero if not.
-+ *
-+ * Note, UBI does sanity check of everything it reads from the flash media.
-+ * Most of the checks are done in the I/O sub-system. Here we check that the
-+ * information in the VID header is consistent to the information in other VID
-+ * headers of the same volume.
-+ */
-+static int validate_vid_hdr(const struct ubi_vid_hdr *vid_hdr,
-+			    const struct ubi_ainf_volume *av, int pnum)
-+{
-+	int vol_type = vid_hdr->vol_type;
-+	int vol_id = be32_to_cpu(vid_hdr->vol_id);
-+	int used_ebs = be32_to_cpu(vid_hdr->used_ebs);
-+	int data_pad = be32_to_cpu(vid_hdr->data_pad);
-+
-+	if (av->leb_count != 0) {
-+		int av_vol_type;
-+
-+		/*
-+		 * This is not the first logical eraseblock belonging to this
-+		 * volume. Ensure that the data in its VID header is consistent
-+		 * to the data in previous logical eraseblock headers.
-+		 */
-+
-+		if (vol_id != av->vol_id) {
-+			ubi_err("inconsistent vol_id");
-+			goto bad;
-+		}
-+
-+		if (av->vol_type == UBI_STATIC_VOLUME)
-+			av_vol_type = UBI_VID_STATIC;
-+		else
-+			av_vol_type = UBI_VID_DYNAMIC;
-+
-+		if (vol_type != av_vol_type) {
-+			ubi_err("inconsistent vol_type");
-+			goto bad;
-+		}
-+
-+		if (used_ebs != av->used_ebs) {
-+			ubi_err("inconsistent used_ebs");
-+			goto bad;
-+		}
-+
-+		if (data_pad != av->data_pad) {
-+			ubi_err("inconsistent data_pad");
-+			goto bad;
-+		}
-+	}
-+
-+	return 0;
-+
-+bad:
-+	ubi_err("inconsistent VID header at PEB %d", pnum);
-+	ubi_dump_vid_hdr(vid_hdr);
-+	ubi_dump_av(av);
-+	return -EINVAL;
-+}
-+
-+/**
-+ * add_volume - add volume to the attaching information.
-+ * @ai: attaching information
-+ * @vol_id: ID of the volume to add
-+ * @pnum: physical eraseblock number
-+ * @vid_hdr: volume identifier header
-+ *
-+ * If the volume corresponding to the @vid_hdr logical eraseblock is already
-+ * present in the attaching information, this function does nothing. Otherwise
-+ * it adds corresponding volume to the attaching information. Returns a pointer
-+ * to the allocated "av" object in case of success and a negative error code in
-+ * case of failure.
-+ */
-+static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai,
-+					  int vol_id, int pnum,
-+					  const struct ubi_vid_hdr *vid_hdr)
-+{
-+	struct ubi_ainf_volume *av;
-+	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
-+
-+	ubi_assert(vol_id == be32_to_cpu(vid_hdr->vol_id));
-+
-+	/* Walk the volume RB-tree to look if this volume is already present */
-+	while (*p) {
-+		parent = *p;
-+		av = rb_entry(parent, struct ubi_ainf_volume, rb);
-+
-+		if (vol_id == av->vol_id)
-+			return av;
-+
-+		if (vol_id > av->vol_id)
-+			p = &(*p)->rb_left;
-+		else
-+			p = &(*p)->rb_right;
-+	}
-+
-+	/* The volume is absent - add it */
-+	av = kmalloc(sizeof(struct ubi_ainf_volume), GFP_KERNEL);
-+	if (!av)
-+		return ERR_PTR(-ENOMEM);
-+
-+	av->highest_lnum = av->leb_count = 0;
-+	av->vol_id = vol_id;
-+	av->root = RB_ROOT;
-+	av->used_ebs = be32_to_cpu(vid_hdr->used_ebs);
-+	av->data_pad = be32_to_cpu(vid_hdr->data_pad);
-+	av->compat = vid_hdr->compat;
-+	av->vol_type = vid_hdr->vol_type == UBI_VID_DYNAMIC ? UBI_DYNAMIC_VOLUME
-+							    : UBI_STATIC_VOLUME;
-+	if (vol_id > ai->highest_vol_id)
-+		ai->highest_vol_id = vol_id;
-+
-+	rb_link_node(&av->rb, parent, p);
-+	rb_insert_color(&av->rb, &ai->volumes);
-+	ai->vols_found += 1;
-+	dbg_bld("added volume %d", vol_id);
-+	return av;
-+}
-+
-+/**
-+ * compare_lebs - find out which logical eraseblock is newer.
-+ * @ubi: UBI device description object
-+ * @aeb: first logical eraseblock to compare
-+ * @pnum: physical eraseblock number of the second logical eraseblock to
-+ * compare
-+ * @vid_hdr: volume identifier header of the second logical eraseblock
-+ *
-+ * This function compares 2 copies of a LEB and informs which one is newer. In
-+ * case of success this function returns a positive value, in case of failure, a
-+ * negative error code is returned. The success return codes use the following
-+ * bits:
-+ *     o bit 0 is cleared: the first PEB (described by @aeb) is newer than the
-+ *       second PEB (described by @pnum and @vid_hdr);
-+ *     o bit 0 is set: the second PEB is newer;
-+ *     o bit 1 is cleared: no bit-flips were detected in the newer LEB;
-+ *     o bit 1 is set: bit-flips were detected in the newer LEB;
-+ *     o bit 2 is cleared: the older LEB is not corrupted;
-+ *     o bit 2 is set: the older LEB is corrupted.
-+ */
-+static int compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
-+			int pnum, const struct ubi_vid_hdr *vid_hdr)
-+{
-+	void *buf;
-+	int len, err, second_is_newer, bitflips = 0, corrupted = 0;
-+	uint32_t data_crc, crc;
-+	struct ubi_vid_hdr *vh = NULL;
-+	unsigned long long sqnum2 = be64_to_cpu(vid_hdr->sqnum);
-+
-+	if (sqnum2 == aeb->sqnum) {
-+		/*
-+		 * This must be a really ancient UBI image which has been
-+		 * created before sequence numbers support has been added. At
-+		 * that times we used 32-bit LEB versions stored in logical
-+		 * eraseblocks. That was before UBI got into mainline. We do not
-+		 * support these images anymore. Well, those images still work,
-+		 * but only if no unclean reboots happened.
-+		 */
-+		ubi_err("unsupported on-flash UBI format\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Obviously the LEB with lower sequence counter is older */
-+	second_is_newer = (sqnum2 > aeb->sqnum);
-+
-+	/*
-+	 * Now we know which copy is newer. If the copy flag of the PEB with
-+	 * newer version is not set, then we just return, otherwise we have to
-+	 * check data CRC. For the second PEB we already have the VID header,
-+	 * for the first one - we'll need to re-read it from flash.
-+	 *
-+	 * Note: this may be optimized so that we wouldn't read twice.
-+	 */
-+
-+	if (second_is_newer) {
-+		if (!vid_hdr->copy_flag) {
-+			/* It is not a copy, so it is newer */
-+			dbg_bld("second PEB %d is newer, copy_flag is unset",
-+				pnum);
-+			return 1;
-+		}
-+	} else {
-+		if (!aeb->copy_flag) {
-+			/* It is not a copy, so it is newer */
-+			dbg_bld("first PEB %d is newer, copy_flag is unset",
-+				pnum);
-+			return bitflips << 1;
-+		}
-+
-+		vh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
-+		if (!vh)
-+			return -ENOMEM;
-+
-+		pnum = aeb->pnum;
-+		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
-+		if (err) {
-+			if (err == UBI_IO_BITFLIPS)
-+				bitflips = 1;
-+			else {
-+				ubi_err("VID of PEB %d header is bad, but it "
-+					"was OK earlier, err %d", pnum, err);
-+				if (err > 0)
-+					err = -EIO;
-+
-+				goto out_free_vidh;
-+			}
-+		}
-+
-+		vid_hdr = vh;
-+	}
-+
-+	/* Read the data of the copy and check the CRC */
-+
-+	len = be32_to_cpu(vid_hdr->data_size);
-+	buf = vmalloc(len);
-+	if (!buf) {
-+		err = -ENOMEM;
-+		goto out_free_vidh;
-+	}
-+
-+	err = ubi_io_read_data(ubi, buf, pnum, 0, len);
-+	if (err && err != UBI_IO_BITFLIPS && !mtd_is_eccerr(err))
-+		goto out_free_buf;
-+
-+	data_crc = be32_to_cpu(vid_hdr->data_crc);
-+	crc = crc32(UBI_CRC32_INIT, buf, len);
-+	if (crc != data_crc) {
-+		dbg_bld("PEB %d CRC error: calculated %#08x, must be %#08x",
-+			pnum, crc, data_crc);
-+		corrupted = 1;
-+		bitflips = 0;
-+		second_is_newer = !second_is_newer;
-+	} else {
-+		dbg_bld("PEB %d CRC is OK", pnum);
-+		bitflips = !!err;
-+	}
-+
-+	vfree(buf);
-+	ubi_free_vid_hdr(ubi, vh);
-+
-+	if (second_is_newer)
-+		dbg_bld("second PEB %d is newer, copy_flag is set", pnum);
-+	else
-+		dbg_bld("first PEB %d is newer, copy_flag is set", pnum);
-+
-+	return second_is_newer | (bitflips << 1) | (corrupted << 2);
-+
-+out_free_buf:
-+	vfree(buf);
-+out_free_vidh:
-+	ubi_free_vid_hdr(ubi, vh);
-+	return err;
-+}
-+
-+/**
-+ * ubi_add_to_av - add used physical eraseblock to the attaching information.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ * @pnum: the physical eraseblock number
-+ * @ec: erase counter
-+ * @vid_hdr: the volume identifier header
-+ * @bitflips: if bit-flips were detected when this physical eraseblock was read
-+ *
-+ * This function adds information about a used physical eraseblock to the
-+ * 'used' tree of the corresponding volume. The function is rather complex
-+ * because it has to handle cases when this is not the first physical
-+ * eraseblock belonging to the same logical eraseblock, and the newer one has
-+ * to be picked, while the older one has to be dropped. This function returns
-+ * zero in case of success and a negative error code in case of failure.
-+ */
-+int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
-+		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips)
-+{
-+	int err, vol_id, lnum;
-+	unsigned long long sqnum;
-+	struct ubi_ainf_volume *av;
-+	struct ubi_ainf_peb *aeb;
-+	struct rb_node **p, *parent = NULL;
-+
-+	vol_id = be32_to_cpu(vid_hdr->vol_id);
-+	lnum = be32_to_cpu(vid_hdr->lnum);
-+	sqnum = be64_to_cpu(vid_hdr->sqnum);
-+
-+	dbg_bld("PEB %d, LEB %d:%d, EC %d, sqnum %llu, bitflips %d",
-+		pnum, vol_id, lnum, ec, sqnum, bitflips);
-+
-+	av = add_volume(ai, vol_id, pnum, vid_hdr);
-+	if (IS_ERR(av))
-+		return PTR_ERR(av);
-+
-+	if (ai->max_sqnum < sqnum)
-+		ai->max_sqnum = sqnum;
-+
-+	/*
-+	 * Walk the RB-tree of logical eraseblocks of volume @vol_id to look
-+	 * if this is the first instance of this logical eraseblock or not.
-+	 */
-+	p = &av->root.rb_node;
-+	while (*p) {
-+		int cmp_res;
-+
-+		parent = *p;
-+		aeb = rb_entry(parent, struct ubi_ainf_peb, u.rb);
-+		if (lnum != aeb->lnum) {
-+			if (lnum < aeb->lnum)
-+				p = &(*p)->rb_left;
-+			else
-+				p = &(*p)->rb_right;
-+			continue;
-+		}
-+
-+		/*
-+		 * There is already a physical eraseblock describing the same
-+		 * logical eraseblock present.
-+		 */
-+
-+		dbg_bld("this LEB already exists: PEB %d, sqnum %llu, EC %d",
-+			aeb->pnum, aeb->sqnum, aeb->ec);
-+
-+		/*
-+		 * Make sure that the logical eraseblocks have different
-+		 * sequence numbers. Otherwise the image is bad.
-+		 *
-+		 * However, if the sequence number is zero, we assume it must
-+		 * be an ancient UBI image from the era when UBI did not have
-+		 * sequence numbers. We still can attach these images, unless
-+		 * there is a need to distinguish between old and new
-+		 * eraseblocks, in which case we'll refuse the image in
-+		 * 'compare_lebs()'. In other words, we attach old clean
-+		 * images, but refuse attaching old images with duplicated
-+		 * logical eraseblocks because there was an unclean reboot.
-+		 */
-+		if (aeb->sqnum == sqnum && sqnum != 0) {
-+			ubi_err("two LEBs with same sequence number %llu",
-+				sqnum);
-+			ubi_dump_aeb(aeb, 0);
-+			ubi_dump_vid_hdr(vid_hdr);
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * Now we have to drop the older one and preserve the newer
-+		 * one.
-+		 */
-+		cmp_res = compare_lebs(ubi, aeb, pnum, vid_hdr);
-+		if (cmp_res < 0)
-+			return cmp_res;
-+
-+		if (cmp_res & 1) {
-+			/*
-+			 * This logical eraseblock is newer than the one
-+			 * found earlier.
-+			 */
-+			err = validate_vid_hdr(vid_hdr, av, pnum);
-+			if (err)
-+				return err;
-+
-+			err = add_to_list(ai, aeb->pnum, aeb->ec, cmp_res & 4,
-+					  &ai->erase);
-+			if (err)
-+				return err;
-+
-+			aeb->ec = ec;
-+			aeb->pnum = pnum;
-+			aeb->scrub = ((cmp_res & 2) || bitflips);
-+			aeb->copy_flag = vid_hdr->copy_flag;
-+			aeb->sqnum = sqnum;
-+
-+			if (av->highest_lnum == lnum)
-+				av->last_data_size =
-+					be32_to_cpu(vid_hdr->data_size);
-+
-+			return 0;
-+		} else {
-+			/*
-+			 * This logical eraseblock is older than the one found
-+			 * previously.
-+			 */
-+			return add_to_list(ai, pnum, ec, cmp_res & 4,
-+					   &ai->erase);
-+		}
-+	}
-+
-+	/*
-+	 * We've met this logical eraseblock for the first time, add it to the
-+	 * attaching information.
-+	 */
-+
-+	err = validate_vid_hdr(vid_hdr, av, pnum);
-+	if (err)
-+		return err;
-+
-+	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	if (!aeb)
-+		return -ENOMEM;
-+
-+	aeb->ec = ec;
-+	aeb->pnum = pnum;
-+	aeb->lnum = lnum;
-+	aeb->scrub = bitflips;
-+	aeb->copy_flag = vid_hdr->copy_flag;
-+	aeb->sqnum = sqnum;
-+
-+	if (av->highest_lnum <= lnum) {
-+		av->highest_lnum = lnum;
-+		av->last_data_size = be32_to_cpu(vid_hdr->data_size);
-+	}
-+
-+	av->leb_count += 1;
-+	rb_link_node(&aeb->u.rb, parent, p);
-+	rb_insert_color(&aeb->u.rb, &av->root);
-+	return 0;
-+}
-+
-+/**
-+ * ubi_find_av - find volume in the attaching information.
-+ * @ai: attaching information
-+ * @vol_id: the requested volume ID
-+ *
-+ * This function returns a pointer to the volume description or %NULL if there
-+ * are no data about this volume in the attaching information.
-+ */
-+struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
-+				    int vol_id)
-+{
-+	struct ubi_ainf_volume *av;
-+	struct rb_node *p = ai->volumes.rb_node;
-+
-+	while (p) {
-+		av = rb_entry(p, struct ubi_ainf_volume, rb);
-+
-+		if (vol_id == av->vol_id)
-+			return av;
-+
-+		if (vol_id > av->vol_id)
-+			p = p->rb_left;
-+		else
-+			p = p->rb_right;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * ubi_remove_av - delete attaching information about a volume.
-+ * @ai: attaching information
-+ * @av: the volume attaching information to delete
-+ */
-+void ubi_remove_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
-+{
-+	struct rb_node *rb;
-+	struct ubi_ainf_peb *aeb;
-+
-+	dbg_bld("remove attaching information about volume %d", av->vol_id);
-+
-+	while ((rb = rb_first(&av->root))) {
-+		aeb = rb_entry(rb, struct ubi_ainf_peb, u.rb);
-+		rb_erase(&aeb->u.rb, &av->root);
-+		list_add_tail(&aeb->u.list, &ai->erase);
-+	}
-+
-+	rb_erase(&av->rb, &ai->volumes);
-+	kfree(av);
-+	ai->vols_found -= 1;
-+}
-+
-+/**
-+ * early_erase_peb - erase a physical eraseblock.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ * @pnum: physical eraseblock number to erase;
-+ * @ec: erase counter value to write (%UBI_AINF_UNKNOWN if it is unknown)
-+ *
-+ * This function erases physical eraseblock 'pnum', and writes the erase
-+ * counter header to it. This function should only be used on UBI device
-+ * initialization stages, when the EBA sub-system had not been yet initialized.
-+ * This function returns zero in case of success and a negative error code in
-+ * case of failure.
-+ */
-+static int early_erase_peb(struct ubi_device *ubi,
-+			   const struct ubi_attach_info *ai, int pnum, int ec)
-+{
-+	int err;
-+	struct ubi_ec_hdr *ec_hdr;
-+
-+	if ((long long)ec >= UBI_MAX_ERASECOUNTER) {
-+		/*
-+		 * Erase counter overflow. Upgrade UBI and use 64-bit
-+		 * erase counters internally.
-+		 */
-+		ubi_err("erase counter overflow at PEB %d, EC %d", pnum, ec);
-+		return -EINVAL;
-+	}
-+
-+	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-+	if (!ec_hdr)
-+		return -ENOMEM;
-+
-+	ec_hdr->ec = cpu_to_be64(ec);
-+
-+	err = ubi_io_sync_erase(ubi, pnum, 0);
-+	if (err < 0)
-+		goto out_free;
-+
-+	err = ubi_io_write_ec_hdr(ubi, pnum, ec_hdr);
-+
-+out_free:
-+	kfree(ec_hdr);
-+	return err;
-+}
-+
-+/**
-+ * ubi_early_get_peb - get a free physical eraseblock.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ *
-+ * This function returns a free physical eraseblock. It is supposed to be
-+ * called on the UBI initialization stages when the wear-leveling sub-system is
-+ * not initialized yet. This function picks a physical eraseblocks from one of
-+ * the lists, writes the EC header if it is needed, and removes it from the
-+ * list.
-+ *
-+ * This function returns a pointer to the "aeb" of the found free PEB in case
-+ * of success and an error code in case of failure.
-+ */
-+struct ubi_ainf_peb *ubi_early_get_peb(struct ubi_device *ubi,
-+				       struct ubi_attach_info *ai)
-+{
-+	int err = 0;
-+	struct ubi_ainf_peb *aeb, *tmp_aeb;
-+
-+	if (!list_empty(&ai->free)) {
-+		aeb = list_entry(ai->free.next, struct ubi_ainf_peb, u.list);
-+		list_del(&aeb->u.list);
-+		dbg_bld("return free PEB %d, EC %d", aeb->pnum, aeb->ec);
-+		return aeb;
-+	}
-+
-+	/*
-+	 * We try to erase the first physical eraseblock from the erase list
-+	 * and pick it if we succeed, or try to erase the next one if not. And
-+	 * so forth. We don't want to take care about bad eraseblocks here -
-+	 * they'll be handled later.
-+	 */
-+	list_for_each_entry_safe(aeb, tmp_aeb, &ai->erase, u.list) {
-+		if (aeb->ec == UBI_AINF_UNKNOWN)
-+			aeb->ec = ai->mean_ec;
-+
-+		err = early_erase_peb(ubi, ai, aeb->pnum, aeb->ec+1);
-+		if (err)
-+			continue;
-+
-+		aeb->ec += 1;
-+		list_del(&aeb->u.list);
-+		dbg_bld("return PEB %d, EC %d", aeb->pnum, aeb->ec);
-+		return aeb;
-+	}
-+
-+	ubi_err("no free eraseblocks");
-+	return ERR_PTR(-ENOSPC);
-+}
-+
-+/**
-+ * check_corruption - check the data area of PEB.
-+ * @ubi: UBI device description object
-+ * @vid_hrd: the (corrupted) VID header of this PEB
-+ * @pnum: the physical eraseblock number to check
-+ *
-+ * This is a helper function which is used to distinguish between VID header
-+ * corruptions caused by power cuts and other reasons. If the PEB contains only
-+ * 0xFF bytes in the data area, the VID header is most probably corrupted
-+ * because of a power cut (%0 is returned in this case). Otherwise, it was
-+ * probably corrupted for some other reasons (%1 is returned in this case). A
-+ * negative error code is returned if a read error occurred.
-+ *
-+ * If the corruption reason was a power cut, UBI can safely erase this PEB.
-+ * Otherwise, it should preserve it to avoid possibly destroying important
-+ * information.
-+ */
-+static int check_corruption(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
-+			    int pnum)
-+{
-+	int err;
-+
-+	mutex_lock(&ubi->buf_mutex);
-+	memset(ubi->peb_buf, 0x00, ubi->leb_size);
-+
-+	err = ubi_io_read(ubi, ubi->peb_buf, pnum, ubi->leb_start,
-+			  ubi->leb_size);
-+	if (err == UBI_IO_BITFLIPS || mtd_is_eccerr(err)) {
-+		/*
-+		 * Bit-flips or integrity errors while reading the data area.
-+		 * It is difficult to say for sure what type of corruption is
-+		 * this, but presumably a power cut happened while this PEB was
-+		 * erased, so it became unstable and corrupted, and should be
-+		 * erased.
-+		 */
-+		err = 0;
-+		goto out_unlock;
-+	}
-+
-+	if (err)
-+		goto out_unlock;
-+
-+	if (ubi_check_pattern(ubi->peb_buf, 0xFF, ubi->leb_size))
-+		goto out_unlock;
-+
-+	ubi_err("PEB %d contains corrupted VID header, and the data does not "
-+		"contain all 0xFF, this may be a non-UBI PEB or a severe VID "
-+		"header corruption which requires manual inspection", pnum);
-+	ubi_dump_vid_hdr(vid_hdr);
-+	dbg_msg("hexdump of PEB %d offset %d, length %d",
-+		pnum, ubi->leb_start, ubi->leb_size);
-+	ubi_dbg_print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
-+			       ubi->peb_buf, ubi->leb_size, 1);
-+	err = 1;
-+
-+out_unlock:
-+	mutex_unlock(&ubi->buf_mutex);
-+	return err;
-+}
-+
-+/**
-+ * scan_peb - scan and process UBI headers of a PEB.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ * @pnum: the physical eraseblock number
-+ *
-+ * This function reads UBI headers of PEB @pnum, checks them, and adds
-+ * information about this PEB to the corresponding list or RB-tree in the
-+ * "attaching info" structure. Returns zero if the physical eraseblock was
-+ * successfully handled and a negative error code in case of failure.
-+ */
-+static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
-+		    int pnum)
-+{
-+	long long uninitialized_var(ec);
-+	int err, bitflips = 0, vol_id, ec_err = 0;
-+
-+	dbg_bld("scan PEB %d", pnum);
-+
-+	/* Skip bad physical eraseblocks */
-+	err = ubi_io_is_bad(ubi, pnum);
-+	if (err < 0)
-+		return err;
-+	else if (err) {
-+		ai->bad_peb_count += 1;
-+		return 0;
-+	}
-+
-+	err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
-+	if (err < 0)
-+		return err;
-+	switch (err) {
-+	case 0:
-+		break;
-+	case UBI_IO_BITFLIPS:
-+		bitflips = 1;
-+		break;
-+	case UBI_IO_FF:
-+		ai->empty_peb_count += 1;
-+		return add_to_list(ai, pnum, UBI_AINF_UNKNOWN, 0,
-+				   &ai->erase);
-+	case UBI_IO_FF_BITFLIPS:
-+		ai->empty_peb_count += 1;
-+		return add_to_list(ai, pnum, UBI_AINF_UNKNOWN, 1,
-+				   &ai->erase);
-+	case UBI_IO_BAD_HDR_EBADMSG:
-+	case UBI_IO_BAD_HDR:
-+		/*
-+		 * We have to also look at the VID header, possibly it is not
-+		 * corrupted. Set %bitflips flag in order to make this PEB be
-+		 * moved and EC be re-created.
-+		 */
-+		ec_err = err;
-+		ec = UBI_AINF_UNKNOWN;
-+		bitflips = 1;
-+		break;
-+	default:
-+		ubi_err("'ubi_io_read_ec_hdr()' returned unknown code %d", err);
-+		return -EINVAL;
-+	}
-+
-+	if (!ec_err) {
-+		int image_seq;
-+
-+		/* Make sure UBI version is OK */
-+		if (ech->version != UBI_VERSION) {
-+			ubi_err("this UBI version is %d, image version is %d",
-+				UBI_VERSION, (int)ech->version);
-+			return -EINVAL;
-+		}
-+
-+		ec = be64_to_cpu(ech->ec);
-+		if (ec > UBI_MAX_ERASECOUNTER) {
-+			/*
-+			 * Erase counter overflow. The EC headers have 64 bits
-+			 * reserved, but we anyway make use of only 31 bit
-+			 * values, as this seems to be enough for any existing
-+			 * flash. Upgrade UBI and use 64-bit erase counters
-+			 * internally.
-+			 */
-+			ubi_err("erase counter overflow, max is %d",
-+				UBI_MAX_ERASECOUNTER);
-+			ubi_dump_ec_hdr(ech);
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * Make sure that all PEBs have the same image sequence number.
-+		 * This allows us to detect situations when users flash UBI
-+		 * images incorrectly, so that the flash has the new UBI image
-+		 * and leftovers from the old one. This feature was added
-+		 * relatively recently, and the sequence number was always
-+		 * zero, because old UBI implementations always set it to zero.
-+		 * For this reasons, we do not panic if some PEBs have zero
-+		 * sequence number, while other PEBs have non-zero sequence
-+		 * number.
-+		 */
-+		image_seq = be32_to_cpu(ech->image_seq);
-+		if (!ubi->image_seq && image_seq)
-+			ubi->image_seq = image_seq;
-+		if (ubi->image_seq && image_seq &&
-+		    ubi->image_seq != image_seq) {
-+			ubi_err("bad image sequence number %d in PEB %d, "
-+				"expected %d", image_seq, pnum, ubi->image_seq);
-+			ubi_dump_ec_hdr(ech);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* OK, we've done with the EC header, let's look at the VID header */
-+
-+	err = ubi_io_read_vid_hdr(ubi, pnum, vidh, 0);
-+	if (err < 0)
-+		return err;
-+	switch (err) {
-+	case 0:
-+		break;
-+	case UBI_IO_BITFLIPS:
-+		bitflips = 1;
-+		break;
-+	case UBI_IO_BAD_HDR_EBADMSG:
-+		if (ec_err == UBI_IO_BAD_HDR_EBADMSG)
-+			/*
-+			 * Both EC and VID headers are corrupted and were read
-+			 * with data integrity error, probably this is a bad
-+			 * PEB, bit it is not marked as bad yet. This may also
-+			 * be a result of power cut during erasure.
-+			 */
-+			ai->maybe_bad_peb_count += 1;
-+	case UBI_IO_BAD_HDR:
-+		if (ec_err)
-+			/*
-+			 * Both headers are corrupted. There is a possibility
-+			 * that this a valid UBI PEB which has corresponding
-+			 * LEB, but the headers are corrupted. However, it is
-+			 * impossible to distinguish it from a PEB which just
-+			 * contains garbage because of a power cut during erase
-+			 * operation. So we just schedule this PEB for erasure.
-+			 *
-+			 * Besides, in case of NOR flash, we deliberately
-+			 * corrupt both headers because NOR flash erasure is
-+			 * slow and can start from the end.
-+			 */
-+			err = 0;
-+		else
-+			/*
-+			 * The EC was OK, but the VID header is corrupted. We
-+			 * have to check what is in the data area.
-+			 */
-+			err = check_corruption(ubi, vidh, pnum);
-+
-+		if (err < 0)
-+			return err;
-+		else if (!err)
-+			/* This corruption is caused by a power cut */
-+			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
-+		else
-+			/* This is an unexpected corruption */
-+			err = add_corrupted(ai, pnum, ec);
-+		if (err)
-+			return err;
-+		goto adjust_mean_ec;
-+	case UBI_IO_FF_BITFLIPS:
-+		err = add_to_list(ai, pnum, ec, 1, &ai->erase);
-+		if (err)
-+			return err;
-+		goto adjust_mean_ec;
-+	case UBI_IO_FF:
-+		if (ec_err)
-+			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
-+		else
-+			err = add_to_list(ai, pnum, ec, 0, &ai->free);
-+		if (err)
-+			return err;
-+		goto adjust_mean_ec;
-+	default:
-+		ubi_err("'ubi_io_read_vid_hdr()' returned unknown code %d",
-+			err);
-+		return -EINVAL;
-+	}
-+
-+	vol_id = be32_to_cpu(vidh->vol_id);
-+	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
-+		int lnum = be32_to_cpu(vidh->lnum);
-+
-+		/* Unsupported internal volume */
-+		switch (vidh->compat) {
-+		case UBI_COMPAT_DELETE:
-+			ubi_msg("\"delete\" compatible internal volume %d:%d"
-+				" found, will remove it", vol_id, lnum);
-+			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
-+			if (err)
-+				return err;
-+			return 0;
-+
-+		case UBI_COMPAT_RO:
-+			ubi_msg("read-only compatible internal volume %d:%d"
-+				" found, switch to read-only mode",
-+				vol_id, lnum);
-+			ubi->ro_mode = 1;
-+			break;
-+
-+		case UBI_COMPAT_PRESERVE:
-+			ubi_msg("\"preserve\" compatible internal volume %d:%d"
-+				" found", vol_id, lnum);
-+			err = add_to_list(ai, pnum, ec, 0, &ai->alien);
-+			if (err)
-+				return err;
-+			return 0;
-+
-+		case UBI_COMPAT_REJECT:
-+			ubi_err("incompatible internal volume %d:%d found",
-+				vol_id, lnum);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (ec_err)
-+		ubi_warn("valid VID header but corrupted EC header at PEB %d",
-+			 pnum);
-+	err = ubi_add_to_av(ubi, ai, pnum, ec, vidh, bitflips);
-+	if (err)
-+		return err;
-+
-+adjust_mean_ec:
-+	if (!ec_err) {
-+		ai->ec_sum += ec;
-+		ai->ec_count += 1;
-+		if (ec > ai->max_ec)
-+			ai->max_ec = ec;
-+		if (ec < ai->min_ec)
-+			ai->min_ec = ec;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * late_analysis - analyze the overall situation with PEB.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ *
-+ * This is a helper function which takes a look what PEBs we have after we
-+ * gather information about all of them ("ai" is compete). It decides whether
-+ * the flash is empty and should be formatted of whether there are too many
-+ * corrupted PEBs and we should not attach this MTD device. Returns zero if we
-+ * should proceed with attaching the MTD device, and %-EINVAL if we should not.
-+ */
-+static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
-+{
-+	struct ubi_ainf_peb *aeb;
-+	int max_corr, peb_count;
-+
-+	peb_count = ubi->peb_count - ai->bad_peb_count - ai->alien_peb_count;
-+	max_corr = peb_count / 20 ?: 8;
-+
-+	/*
-+	 * Few corrupted PEBs is not a problem and may be just a result of
-+	 * unclean reboots. However, many of them may indicate some problems
-+	 * with the flash HW or driver.
-+	 */
-+	if (ai->corr_peb_count) {
-+		ubi_err("%d PEBs are corrupted and preserved",
-+			ai->corr_peb_count);
-+		printk(KERN_ERR "Corrupted PEBs are:");
-+		list_for_each_entry(aeb, &ai->corr, u.list)
-+			printk(KERN_CONT " %d", aeb->pnum);
-+		printk(KERN_CONT "\n");
-+
-+		/*
-+		 * If too many PEBs are corrupted, we refuse attaching,
-+		 * otherwise, only print a warning.
-+		 */
-+		if (ai->corr_peb_count >= max_corr) {
-+			ubi_err("too many corrupted PEBs, refusing");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (ai->empty_peb_count + ai->maybe_bad_peb_count == peb_count) {
-+		/*
-+		 * All PEBs are empty, or almost all - a couple PEBs look like
-+		 * they may be bad PEBs which were not marked as bad yet.
-+		 *
-+		 * This piece of code basically tries to distinguish between
-+		 * the following situations:
-+		 *
-+		 * 1. Flash is empty, but there are few bad PEBs, which are not
-+		 *    marked as bad so far, and which were read with error. We
-+		 *    want to go ahead and format this flash. While formatting,
-+		 *    the faulty PEBs will probably be marked as bad.
-+		 *
-+		 * 2. Flash contains non-UBI data and we do not want to format
-+		 *    it and destroy possibly important information.
-+		 */
-+		if (ai->maybe_bad_peb_count <= 2) {
-+			ai->is_empty = 1;
-+			ubi_msg("empty MTD device detected");
-+			get_random_bytes(&ubi->image_seq,
-+					 sizeof(ubi->image_seq));
-+		} else {
-+			ubi_err("MTD device is not UBI-formatted and possibly "
-+				"contains non-UBI data - refusing it");
-+			return -EINVAL;
-+		}
-+
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * scan_all - scan entire MTD device.
-+ * @ubi: UBI device description object
-+ *
-+ * This function does full scanning of an MTD device and returns complete
-+ * information about it in form of a "struct ubi_attach_info" object. In case
-+ * of failure, an error code is returned.
-+ */
-+static struct ubi_attach_info *scan_all(struct ubi_device *ubi)
-+{
-+	int err, pnum;
-+	struct rb_node *rb1, *rb2;
-+	struct ubi_ainf_volume *av;
-+	struct ubi_ainf_peb *aeb;
-+	struct ubi_attach_info *ai;
-+
-+	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
-+	if (!ai)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&ai->corr);
-+	INIT_LIST_HEAD(&ai->free);
-+	INIT_LIST_HEAD(&ai->erase);
-+	INIT_LIST_HEAD(&ai->alien);
-+	ai->volumes = RB_ROOT;
-+
-+	err = -ENOMEM;
-+	ai->aeb_slab_cache = kmem_cache_create("ubi_aeb_slab_cache",
-+					       sizeof(struct ubi_ainf_peb),
-+					       0, 0, NULL);
-+	if (!ai->aeb_slab_cache)
-+		goto out_ai;
-+
-+	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-+	if (!ech)
-+		goto out_ai;
-+
-+	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
-+	if (!vidh)
-+		goto out_ech;
-+
-+	for (pnum = 0; pnum < ubi->peb_count; pnum++) {
-+		cond_resched();
-+
-+		dbg_gen("process PEB %d", pnum);
-+		err = scan_peb(ubi, ai, pnum);
-+		if (err < 0)
-+			goto out_vidh;
-+	}
-+
-+	dbg_msg("scanning is finished");
-+
-+	/* Calculate mean erase counter */
-+	if (ai->ec_count)
-+		ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
-+
-+	err = late_analysis(ubi, ai);
-+	if (err)
-+		goto out_vidh;
-+
-+	/*
-+	 * In case of unknown erase counter we use the mean erase counter
-+	 * value.
-+	 */
-+	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
-+		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
-+			if (aeb->ec == UBI_AINF_UNKNOWN)
-+				aeb->ec = ai->mean_ec;
-+	}
-+
-+	list_for_each_entry(aeb, &ai->free, u.list) {
-+		if (aeb->ec == UBI_AINF_UNKNOWN)
-+			aeb->ec = ai->mean_ec;
-+	}
-+
-+	list_for_each_entry(aeb, &ai->corr, u.list)
-+		if (aeb->ec == UBI_AINF_UNKNOWN)
-+			aeb->ec = ai->mean_ec;
-+
-+	list_for_each_entry(aeb, &ai->erase, u.list)
-+		if (aeb->ec == UBI_AINF_UNKNOWN)
-+			aeb->ec = ai->mean_ec;
-+
-+	err = self_check_ai(ubi, ai);
-+	if (err)
-+		goto out_vidh;
-+
-+	ubi_free_vid_hdr(ubi, vidh);
-+	kfree(ech);
-+
-+	return ai;
-+
-+out_vidh:
-+	ubi_free_vid_hdr(ubi, vidh);
-+out_ech:
-+	kfree(ech);
-+out_ai:
-+	ubi_destroy_ai(ai);
-+	return ERR_PTR(err);
-+}
-+
-+/**
-+ * ubi_attach - attach an MTD device.
-+ * @ubi: UBI device descriptor
-+ *
-+ * This function returns zero in case of success and a negative error code in
-+ * case of failure.
-+ */
-+int ubi_attach(struct ubi_device *ubi)
-+{
-+	int err;
-+	struct ubi_attach_info *ai;
-+
-+	ai = scan_all(ubi);
-+	if (IS_ERR(ai))
-+		return PTR_ERR(ai);
-+
-+	ubi->bad_peb_count = ai->bad_peb_count;
-+	ubi->good_peb_count = ubi->peb_count - ubi->bad_peb_count;
-+	ubi->corr_peb_count = ai->corr_peb_count;
-+	ubi->max_ec = ai->max_ec;
-+	ubi->mean_ec = ai->mean_ec;
-+	ubi_msg("max. sequence number:       %llu", ai->max_sqnum);
-+
-+	err = ubi_read_volume_table(ubi, ai);
-+	if (err)
-+		goto out_ai;
-+
-+	err = ubi_wl_init(ubi, ai);
-+	if (err)
-+		goto out_vtbl;
-+
-+	err = ubi_eba_init(ubi, ai);
-+	if (err)
-+		goto out_wl;
-+
-+	ubi_destroy_ai(ai);
-+	return 0;
-+
-+out_wl:
-+	ubi_wl_close(ubi);
-+out_vtbl:
-+	ubi_free_internal_volumes(ubi);
-+	vfree(ubi->vtbl);
-+out_ai:
-+	ubi_destroy_ai(ai);
-+	return err;
-+}
-+
-+/**
-+ * destroy_av - free volume attaching information.
-+ * @av: volume attaching information
-+ * @ai: attaching information
-+ *
-+ * This function destroys the volume attaching information.
-+ */
-+static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
-+{
-+	struct ubi_ainf_peb *aeb;
-+	struct rb_node *this = av->root.rb_node;
-+
-+	while (this) {
-+		if (this->rb_left)
-+			this = this->rb_left;
-+		else if (this->rb_right)
-+			this = this->rb_right;
-+		else {
-+			aeb = rb_entry(this, struct ubi_ainf_peb, u.rb);
-+			this = rb_parent(this);
-+			if (this) {
-+				if (this->rb_left == &aeb->u.rb)
-+					this->rb_left = NULL;
-+				else
-+					this->rb_right = NULL;
-+			}
-+
-+			kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		}
-+	}
-+	kfree(av);
-+}
-+
-+/**
-+ * ubi_destroy_ai - destroy attaching information.
-+ * @ai: attaching information
-+ */
-+void ubi_destroy_ai(struct ubi_attach_info *ai)
-+{
-+	struct ubi_ainf_peb *aeb, *aeb_tmp;
-+	struct ubi_ainf_volume *av;
-+	struct rb_node *rb;
-+
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+
-+	/* Destroy the volume RB-tree */
-+	rb = ai->volumes.rb_node;
-+	while (rb) {
-+		if (rb->rb_left)
-+			rb = rb->rb_left;
-+		else if (rb->rb_right)
-+			rb = rb->rb_right;
-+		else {
-+			av = rb_entry(rb, struct ubi_ainf_volume, rb);
-+
-+			rb = rb_parent(rb);
-+			if (rb) {
-+				if (rb->rb_left == &av->rb)
-+					rb->rb_left = NULL;
-+				else
-+					rb->rb_right = NULL;
-+			}
-+
-+			destroy_av(ai, av);
-+		}
-+	}
-+
-+	if (ai->aeb_slab_cache)
-+		kmem_cache_destroy(ai->aeb_slab_cache);
-+
-+	kfree(ai);
-+}
-+
-+/**
-+ * self_check_ai - check the attaching information.
-+ * @ubi: UBI device description object
-+ * @ai: attaching information
-+ *
-+ * This function returns zero if the attaching information is all right, and a
-+ * negative error code if not or if an error occurred.
-+ */
-+static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
-+{
-+	int pnum, err, vols_found = 0;
-+	struct rb_node *rb1, *rb2;
-+	struct ubi_ainf_volume *av;
-+	struct ubi_ainf_peb *aeb, *last_aeb;
-+	uint8_t *buf;
-+
-+	if (!ubi->dbg->chk_gen)
-+		return 0;
-+
-+	/*
-+	 * At first, check that attaching information is OK.
-+	 */
-+	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
-+		int leb_count = 0;
-+
-+		cond_resched();
-+
-+		vols_found += 1;
-+
-+		if (ai->is_empty) {
-+			ubi_err("bad is_empty flag");
-+			goto bad_av;
-+		}
-+
-+		if (av->vol_id < 0 || av->highest_lnum < 0 ||
-+		    av->leb_count < 0 || av->vol_type < 0 || av->used_ebs < 0 ||
-+		    av->data_pad < 0 || av->last_data_size < 0) {
-+			ubi_err("negative values");
-+			goto bad_av;
-+		}
-+
-+		if (av->vol_id >= UBI_MAX_VOLUMES &&
-+		    av->vol_id < UBI_INTERNAL_VOL_START) {
-+			ubi_err("bad vol_id");
-+			goto bad_av;
-+		}
-+
-+		if (av->vol_id > ai->highest_vol_id) {
-+			ubi_err("highest_vol_id is %d, but vol_id %d is there",
-+				ai->highest_vol_id, av->vol_id);
-+			goto out;
-+		}
-+
-+		if (av->vol_type != UBI_DYNAMIC_VOLUME &&
-+		    av->vol_type != UBI_STATIC_VOLUME) {
-+			ubi_err("bad vol_type");
-+			goto bad_av;
-+		}
-+
-+		if (av->data_pad > ubi->leb_size / 2) {
-+			ubi_err("bad data_pad");
-+			goto bad_av;
-+		}
-+
-+		last_aeb = NULL;
-+		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
-+			cond_resched();
-+
-+			last_aeb = aeb;
-+			leb_count += 1;
-+
-+			if (aeb->pnum < 0 || aeb->ec < 0) {
-+				ubi_err("negative values");
-+				goto bad_aeb;
-+			}
-+
-+			if (aeb->ec < ai->min_ec) {
-+				ubi_err("bad ai->min_ec (%d), %d found",
-+					ai->min_ec, aeb->ec);
-+				goto bad_aeb;
-+			}
-+
-+			if (aeb->ec > ai->max_ec) {
-+				ubi_err("bad ai->max_ec (%d), %d found",
-+					ai->max_ec, aeb->ec);
-+				goto bad_aeb;
-+			}
-+
-+			if (aeb->pnum >= ubi->peb_count) {
-+				ubi_err("too high PEB number %d, total PEBs %d",
-+					aeb->pnum, ubi->peb_count);
-+				goto bad_aeb;
-+			}
-+
-+			if (av->vol_type == UBI_STATIC_VOLUME) {
-+				if (aeb->lnum >= av->used_ebs) {
-+					ubi_err("bad lnum or used_ebs");
-+					goto bad_aeb;
-+				}
-+			} else {
-+				if (av->used_ebs != 0) {
-+					ubi_err("non-zero used_ebs");
-+					goto bad_aeb;
-+				}
-+			}
-+
-+			if (aeb->lnum > av->highest_lnum) {
-+				ubi_err("incorrect highest_lnum or lnum");
-+				goto bad_aeb;
-+			}
-+		}
-+
-+		if (av->leb_count != leb_count) {
-+			ubi_err("bad leb_count, %d objects in the tree",
-+				leb_count);
-+			goto bad_av;
-+		}
-+
-+		if (!last_aeb)
-+			continue;
-+
-+		aeb = last_aeb;
-+
-+		if (aeb->lnum != av->highest_lnum) {
-+			ubi_err("bad highest_lnum");
-+			goto bad_aeb;
-+		}
-+	}
-+
-+	if (vols_found != ai->vols_found) {
-+		ubi_err("bad ai->vols_found %d, should be %d",
-+			ai->vols_found, vols_found);
-+		goto out;
-+	}
-+
-+	/* Check that attaching information is correct */
-+	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
-+		last_aeb = NULL;
-+		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
-+			int vol_type;
-+
-+			cond_resched();
-+
-+			last_aeb = aeb;
-+
-+			err = ubi_io_read_vid_hdr(ubi, aeb->pnum, vidh, 1);
-+			if (err && err != UBI_IO_BITFLIPS) {
-+				ubi_err("VID header is not OK (%d)", err);
-+				if (err > 0)
-+					err = -EIO;
-+				return err;
-+			}
-+
-+			vol_type = vidh->vol_type == UBI_VID_DYNAMIC ?
-+				   UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
-+			if (av->vol_type != vol_type) {
-+				ubi_err("bad vol_type");
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (aeb->sqnum != be64_to_cpu(vidh->sqnum)) {
-+				ubi_err("bad sqnum %llu", aeb->sqnum);
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (av->vol_id != be32_to_cpu(vidh->vol_id)) {
-+				ubi_err("bad vol_id %d", av->vol_id);
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (av->compat != vidh->compat) {
-+				ubi_err("bad compat %d", vidh->compat);
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (aeb->lnum != be32_to_cpu(vidh->lnum)) {
-+				ubi_err("bad lnum %d", aeb->lnum);
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (av->used_ebs != be32_to_cpu(vidh->used_ebs)) {
-+				ubi_err("bad used_ebs %d", av->used_ebs);
-+				goto bad_vid_hdr;
-+			}
-+
-+			if (av->data_pad != be32_to_cpu(vidh->data_pad)) {
-+				ubi_err("bad data_pad %d", av->data_pad);
-+				goto bad_vid_hdr;
-+			}
-+		}
-+
-+		if (!last_aeb)
-+			continue;
-+
-+		if (av->highest_lnum != be32_to_cpu(vidh->lnum)) {
-+			ubi_err("bad highest_lnum %d", av->highest_lnum);
-+			goto bad_vid_hdr;
-+		}
-+
-+		if (av->last_data_size != be32_to_cpu(vidh->data_size)) {
-+			ubi_err("bad last_data_size %d", av->last_data_size);
-+			goto bad_vid_hdr;
-+		}
-+	}
-+
-+	/*
-+	 * Make sure that all the physical eraseblocks are in one of the lists
-+	 * or trees.
-+	 */
-+	buf = kzalloc(ubi->peb_count, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	for (pnum = 0; pnum < ubi->peb_count; pnum++) {
-+		err = ubi_io_is_bad(ubi, pnum);
-+		if (err < 0) {
-+			kfree(buf);
-+			return err;
-+		} else if (err)
-+			buf[pnum] = 1;
-+	}
-+
-+	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb)
-+		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
-+			buf[aeb->pnum] = 1;
-+
-+	list_for_each_entry(aeb, &ai->free, u.list)
-+		buf[aeb->pnum] = 1;
-+
-+	list_for_each_entry(aeb, &ai->corr, u.list)
-+		buf[aeb->pnum] = 1;
-+
-+	list_for_each_entry(aeb, &ai->erase, u.list)
-+		buf[aeb->pnum] = 1;
-+
-+	list_for_each_entry(aeb, &ai->alien, u.list)
-+		buf[aeb->pnum] = 1;
-+
-+	err = 0;
-+	for (pnum = 0; pnum < ubi->peb_count; pnum++)
-+		if (!buf[pnum]) {
-+			ubi_err("PEB %d is not referred", pnum);
-+			err = 1;
-+		}
-+
-+	kfree(buf);
-+	if (err)
-+		goto out;
-+	return 0;
-+
-+bad_aeb:
-+	ubi_err("bad attaching information about LEB %d", aeb->lnum);
-+	ubi_dump_aeb(aeb, 0);
-+	ubi_dump_av(av);
-+	goto out;
-+
-+bad_av:
-+	ubi_err("bad attaching information about volume %d", av->vol_id);
-+	ubi_dump_av(av);
-+	goto out;
-+
-+bad_vid_hdr:
-+	ubi_err("bad attaching information about volume %d", av->vol_id);
-+	ubi_dump_av(av);
-+	ubi_dump_vid_hdr(vidh);
-+
-+out:
-+	dump_stack();
-+	return -EINVAL;
-+}
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-deleted file mode 100644
-index 3488dbe..0000000
---- a/drivers/mtd/ubi/scan.c
-+++ /dev/null
-@@ -1,1615 +0,0 @@
--/*
-- * Copyright (c) International Business Machines Corp., 2006
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-- *
-- * Author: Artem Bityutskiy (Битюцкий Артём)
-- */
--
--/*
-- * UBI attaching sub-system.
-- *
-- * This sub-system is responsible for attaching MTD devices and it also
-- * implements flash media scanning.
-- *
-- * The attaching information is represented by a &struct ubi_attach_info'
-- * object. Information about volumes is represented by &struct ubi_ainf_volume
-- * objects which are kept in volume RB-tree with root at the @volumes field.
-- * The RB-tree is indexed by the volume ID.
-- *
-- * Logical eraseblocks are represented by &struct ubi_ainf_peb objects. These
-- * objects are kept in per-volume RB-trees with the root at the corresponding
-- * &struct ubi_ainf_volume object. To put it differently, we keep an RB-tree of
-- * per-volume objects and each of these objects is the root of RB-tree of
-- * per-LEB objects.
-- *
-- * Corrupted physical eraseblocks are put to the @corr list, free physical
-- * eraseblocks are put to the @free list and the physical eraseblock to be
-- * erased are put to the @erase list.
-- *
-- * About corruptions
-- * ~~~~~~~~~~~~~~~~~
-- *
-- * UBI protects EC and VID headers with CRC-32 checksums, so it can detect
-- * whether the headers are corrupted or not. Sometimes UBI also protects the
-- * data with CRC-32, e.g., when it executes the atomic LEB change operation, or
-- * when it moves the contents of a PEB for wear-leveling purposes.
-- *
-- * UBI tries to distinguish between 2 types of corruptions.
-- *
-- * 1. Corruptions caused by power cuts. These are expected corruptions and UBI
-- * tries to handle them gracefully, without printing too many warnings and
-- * error messages. The idea is that we do not lose important data in these
-- * cases - we may lose only the data which were being written to the media just
-- * before the power cut happened, and the upper layers (e.g., UBIFS) are
-- * supposed to handle such data losses (e.g., by using the FS journal).
-- *
-- * When UBI detects a corruption (CRC-32 mismatch) in a PEB, and it looks like
-- * the reason is a power cut, UBI puts this PEB to the @erase list, and all
-- * PEBs in the @erase list are scheduled for erasure later.
-- *
-- * 2. Unexpected corruptions which are not caused by power cuts. During
-- * attaching, such PEBs are put to the @corr list and UBI preserves them.
-- * Obviously, this lessens the amount of available PEBs, and if at some  point
-- * UBI runs out of free PEBs, it switches to R/O mode. UBI also loudly informs
-- * about such PEBs every time the MTD device is attached.
-- *
-- * However, it is difficult to reliably distinguish between these types of
-- * corruptions and UBI's strategy is as follows (in case of attaching by
-- * scanning). UBI assumes corruption type 2 if the VID header is corrupted and
-- * the data area does not contain all 0xFFs, and there were no bit-flips or
-- * integrity errors (e.g., ECC errors in case of NAND) while reading the data
-- * area.  Otherwise UBI assumes corruption type 1. So the decision criteria
-- * are as follows.
-- *   o If the data area contains only 0xFFs, there are no data, and it is safe
-- *     to just erase this PEB - this is corruption type 1.
-- *   o If the data area has bit-flips or data integrity errors (ECC errors on
-- *     NAND), it is probably a PEB which was being erased when power cut
-- *     happened, so this is corruption type 1. However, this is just a guess,
-- *     which might be wrong.
-- *   o Otherwise this it corruption type 2.
-- */
--
--#include <linux/err.h>
--#include <linux/slab.h>
--#include <linux/crc32.h>
--#include <linux/math64.h>
--#include <linux/random.h>
--#include "ubi.h"
--
--static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
--
--/* Temporary variables used during scanning */
--static struct ubi_ec_hdr *ech;
--static struct ubi_vid_hdr *vidh;
--
--/**
-- * add_to_list - add physical eraseblock to a list.
-- * @ai: attaching information
-- * @pnum: physical eraseblock number to add
-- * @ec: erase counter of the physical eraseblock
-- * @to_head: if not zero, add to the head of the list
-- * @list: the list to add to
-- *
-- * This function allocates a 'struct ubi_ainf_peb' object for physical
-- * eraseblock @pnum and adds it to the "free", "erase", or "alien" lists.
-- * If @to_head is not zero, PEB will be added to the head of the list, which
-- * basically means it will be processed first later. E.g., we add corrupted
-- * PEBs (corrupted due to power cuts) to the head of the erase list to make
-- * sure we erase them first and get rid of corruptions ASAP. This function
-- * returns zero in case of success and a negative error code in case of
-- * failure.
-- */
--static int add_to_list(struct ubi_attach_info *ai, int pnum, int ec,
--		       int to_head, struct list_head *list)
--{
--	struct ubi_ainf_peb *aeb;
--
--	if (list == &ai->free) {
--		dbg_bld("add to free: PEB %d, EC %d", pnum, ec);
--	} else if (list == &ai->erase) {
--		dbg_bld("add to erase: PEB %d, EC %d", pnum, ec);
--	} else if (list == &ai->alien) {
--		dbg_bld("add to alien: PEB %d, EC %d", pnum, ec);
--		ai->alien_peb_count += 1;
--	} else
--		BUG();
--
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
--	if (!aeb)
--		return -ENOMEM;
--
--	aeb->pnum = pnum;
--	aeb->ec = ec;
--	if (to_head)
--		list_add(&aeb->u.list, list);
--	else
--		list_add_tail(&aeb->u.list, list);
--	return 0;
--}
--
--/**
-- * add_corrupted - add a corrupted physical eraseblock.
-- * @ai: attaching information
-- * @pnum: physical eraseblock number to add
-- * @ec: erase counter of the physical eraseblock
-- *
-- * This function allocates a 'struct ubi_ainf_peb' object for a corrupted
-- * physical eraseblock @pnum and adds it to the 'corr' list.  The corruption
-- * was presumably not caused by a power cut. Returns zero in case of success
-- * and a negative error code in case of failure.
-- */
--static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
--{
--	struct ubi_ainf_peb *aeb;
--
--	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
--
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
--	if (!aeb)
--		return -ENOMEM;
--
--	ai->corr_peb_count += 1;
--	aeb->pnum = pnum;
--	aeb->ec = ec;
--	list_add(&aeb->u.list, &ai->corr);
--	return 0;
--}
--
--/**
-- * validate_vid_hdr - check volume identifier header.
-- * @vid_hdr: the volume identifier header to check
-- * @av: information about the volume this logical eraseblock belongs to
-- * @pnum: physical eraseblock number the VID header came from
-- *
-- * This function checks that data stored in @vid_hdr is consistent. Returns
-- * non-zero if an inconsistency was found and zero if not.
-- *
-- * Note, UBI does sanity check of everything it reads from the flash media.
-- * Most of the checks are done in the I/O sub-system. Here we check that the
-- * information in the VID header is consistent to the information in other VID
-- * headers of the same volume.
-- */
--static int validate_vid_hdr(const struct ubi_vid_hdr *vid_hdr,
--			    const struct ubi_ainf_volume *av, int pnum)
--{
--	int vol_type = vid_hdr->vol_type;
--	int vol_id = be32_to_cpu(vid_hdr->vol_id);
--	int used_ebs = be32_to_cpu(vid_hdr->used_ebs);
--	int data_pad = be32_to_cpu(vid_hdr->data_pad);
--
--	if (av->leb_count != 0) {
--		int av_vol_type;
--
--		/*
--		 * This is not the first logical eraseblock belonging to this
--		 * volume. Ensure that the data in its VID header is consistent
--		 * to the data in previous logical eraseblock headers.
--		 */
--
--		if (vol_id != av->vol_id) {
--			ubi_err("inconsistent vol_id");
--			goto bad;
--		}
--
--		if (av->vol_type == UBI_STATIC_VOLUME)
--			av_vol_type = UBI_VID_STATIC;
--		else
--			av_vol_type = UBI_VID_DYNAMIC;
--
--		if (vol_type != av_vol_type) {
--			ubi_err("inconsistent vol_type");
--			goto bad;
--		}
--
--		if (used_ebs != av->used_ebs) {
--			ubi_err("inconsistent used_ebs");
--			goto bad;
--		}
--
--		if (data_pad != av->data_pad) {
--			ubi_err("inconsistent data_pad");
--			goto bad;
--		}
--	}
--
--	return 0;
--
--bad:
--	ubi_err("inconsistent VID header at PEB %d", pnum);
--	ubi_dump_vid_hdr(vid_hdr);
--	ubi_dump_av(av);
--	return -EINVAL;
--}
--
--/**
-- * add_volume - add volume to the attaching information.
-- * @ai: attaching information
-- * @vol_id: ID of the volume to add
-- * @pnum: physical eraseblock number
-- * @vid_hdr: volume identifier header
-- *
-- * If the volume corresponding to the @vid_hdr logical eraseblock is already
-- * present in the attaching information, this function does nothing. Otherwise
-- * it adds corresponding volume to the attaching information. Returns a pointer
-- * to the allocated "av" object in case of success and a negative error code in
-- * case of failure.
-- */
--static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai,
--					  int vol_id, int pnum,
--					  const struct ubi_vid_hdr *vid_hdr)
--{
--	struct ubi_ainf_volume *av;
--	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
--
--	ubi_assert(vol_id == be32_to_cpu(vid_hdr->vol_id));
--
--	/* Walk the volume RB-tree to look if this volume is already present */
--	while (*p) {
--		parent = *p;
--		av = rb_entry(parent, struct ubi_ainf_volume, rb);
--
--		if (vol_id == av->vol_id)
--			return av;
--
--		if (vol_id > av->vol_id)
--			p = &(*p)->rb_left;
--		else
--			p = &(*p)->rb_right;
--	}
--
--	/* The volume is absent - add it */
--	av = kmalloc(sizeof(struct ubi_ainf_volume), GFP_KERNEL);
--	if (!av)
--		return ERR_PTR(-ENOMEM);
--
--	av->highest_lnum = av->leb_count = 0;
--	av->vol_id = vol_id;
--	av->root = RB_ROOT;
--	av->used_ebs = be32_to_cpu(vid_hdr->used_ebs);
--	av->data_pad = be32_to_cpu(vid_hdr->data_pad);
--	av->compat = vid_hdr->compat;
--	av->vol_type = vid_hdr->vol_type == UBI_VID_DYNAMIC ? UBI_DYNAMIC_VOLUME
--							    : UBI_STATIC_VOLUME;
--	if (vol_id > ai->highest_vol_id)
--		ai->highest_vol_id = vol_id;
--
--	rb_link_node(&av->rb, parent, p);
--	rb_insert_color(&av->rb, &ai->volumes);
--	ai->vols_found += 1;
--	dbg_bld("added volume %d", vol_id);
--	return av;
--}
--
--/**
-- * compare_lebs - find out which logical eraseblock is newer.
-- * @ubi: UBI device description object
-- * @aeb: first logical eraseblock to compare
-- * @pnum: physical eraseblock number of the second logical eraseblock to
-- * compare
-- * @vid_hdr: volume identifier header of the second logical eraseblock
-- *
-- * This function compares 2 copies of a LEB and informs which one is newer. In
-- * case of success this function returns a positive value, in case of failure, a
-- * negative error code is returned. The success return codes use the following
-- * bits:
-- *     o bit 0 is cleared: the first PEB (described by @aeb) is newer than the
-- *       second PEB (described by @pnum and @vid_hdr);
-- *     o bit 0 is set: the second PEB is newer;
-- *     o bit 1 is cleared: no bit-flips were detected in the newer LEB;
-- *     o bit 1 is set: bit-flips were detected in the newer LEB;
-- *     o bit 2 is cleared: the older LEB is not corrupted;
-- *     o bit 2 is set: the older LEB is corrupted.
-- */
--static int compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
--			int pnum, const struct ubi_vid_hdr *vid_hdr)
--{
--	void *buf;
--	int len, err, second_is_newer, bitflips = 0, corrupted = 0;
--	uint32_t data_crc, crc;
--	struct ubi_vid_hdr *vh = NULL;
--	unsigned long long sqnum2 = be64_to_cpu(vid_hdr->sqnum);
--
--	if (sqnum2 == aeb->sqnum) {
--		/*
--		 * This must be a really ancient UBI image which has been
--		 * created before sequence numbers support has been added. At
--		 * that times we used 32-bit LEB versions stored in logical
--		 * eraseblocks. That was before UBI got into mainline. We do not
--		 * support these images anymore. Well, those images still work,
--		 * but only if no unclean reboots happened.
--		 */
--		ubi_err("unsupported on-flash UBI format\n");
--		return -EINVAL;
--	}
--
--	/* Obviously the LEB with lower sequence counter is older */
--	second_is_newer = (sqnum2 > aeb->sqnum);
--
--	/*
--	 * Now we know which copy is newer. If the copy flag of the PEB with
--	 * newer version is not set, then we just return, otherwise we have to
--	 * check data CRC. For the second PEB we already have the VID header,
--	 * for the first one - we'll need to re-read it from flash.
--	 *
--	 * Note: this may be optimized so that we wouldn't read twice.
--	 */
--
--	if (second_is_newer) {
--		if (!vid_hdr->copy_flag) {
--			/* It is not a copy, so it is newer */
--			dbg_bld("second PEB %d is newer, copy_flag is unset",
--				pnum);
--			return 1;
--		}
--	} else {
--		if (!aeb->copy_flag) {
--			/* It is not a copy, so it is newer */
--			dbg_bld("first PEB %d is newer, copy_flag is unset",
--				pnum);
--			return bitflips << 1;
--		}
--
--		vh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
--		if (!vh)
--			return -ENOMEM;
--
--		pnum = aeb->pnum;
--		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
--		if (err) {
--			if (err == UBI_IO_BITFLIPS)
--				bitflips = 1;
--			else {
--				ubi_err("VID of PEB %d header is bad, but it "
--					"was OK earlier, err %d", pnum, err);
--				if (err > 0)
--					err = -EIO;
--
--				goto out_free_vidh;
--			}
--		}
--
--		vid_hdr = vh;
--	}
--
--	/* Read the data of the copy and check the CRC */
--
--	len = be32_to_cpu(vid_hdr->data_size);
--	buf = vmalloc(len);
--	if (!buf) {
--		err = -ENOMEM;
--		goto out_free_vidh;
--	}
--
--	err = ubi_io_read_data(ubi, buf, pnum, 0, len);
--	if (err && err != UBI_IO_BITFLIPS && !mtd_is_eccerr(err))
--		goto out_free_buf;
--
--	data_crc = be32_to_cpu(vid_hdr->data_crc);
--	crc = crc32(UBI_CRC32_INIT, buf, len);
--	if (crc != data_crc) {
--		dbg_bld("PEB %d CRC error: calculated %#08x, must be %#08x",
--			pnum, crc, data_crc);
--		corrupted = 1;
--		bitflips = 0;
--		second_is_newer = !second_is_newer;
--	} else {
--		dbg_bld("PEB %d CRC is OK", pnum);
--		bitflips = !!err;
--	}
--
--	vfree(buf);
--	ubi_free_vid_hdr(ubi, vh);
--
--	if (second_is_newer)
--		dbg_bld("second PEB %d is newer, copy_flag is set", pnum);
--	else
--		dbg_bld("first PEB %d is newer, copy_flag is set", pnum);
--
--	return second_is_newer | (bitflips << 1) | (corrupted << 2);
--
--out_free_buf:
--	vfree(buf);
--out_free_vidh:
--	ubi_free_vid_hdr(ubi, vh);
--	return err;
--}
--
--/**
-- * ubi_add_to_av - add used physical eraseblock to the attaching information.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- * @pnum: the physical eraseblock number
-- * @ec: erase counter
-- * @vid_hdr: the volume identifier header
-- * @bitflips: if bit-flips were detected when this physical eraseblock was read
-- *
-- * This function adds information about a used physical eraseblock to the
-- * 'used' tree of the corresponding volume. The function is rather complex
-- * because it has to handle cases when this is not the first physical
-- * eraseblock belonging to the same logical eraseblock, and the newer one has
-- * to be picked, while the older one has to be dropped. This function returns
-- * zero in case of success and a negative error code in case of failure.
-- */
--int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
--		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips)
--{
--	int err, vol_id, lnum;
--	unsigned long long sqnum;
--	struct ubi_ainf_volume *av;
--	struct ubi_ainf_peb *aeb;
--	struct rb_node **p, *parent = NULL;
--
--	vol_id = be32_to_cpu(vid_hdr->vol_id);
--	lnum = be32_to_cpu(vid_hdr->lnum);
--	sqnum = be64_to_cpu(vid_hdr->sqnum);
--
--	dbg_bld("PEB %d, LEB %d:%d, EC %d, sqnum %llu, bitflips %d",
--		pnum, vol_id, lnum, ec, sqnum, bitflips);
--
--	av = add_volume(ai, vol_id, pnum, vid_hdr);
--	if (IS_ERR(av))
--		return PTR_ERR(av);
--
--	if (ai->max_sqnum < sqnum)
--		ai->max_sqnum = sqnum;
--
--	/*
--	 * Walk the RB-tree of logical eraseblocks of volume @vol_id to look
--	 * if this is the first instance of this logical eraseblock or not.
--	 */
--	p = &av->root.rb_node;
--	while (*p) {
--		int cmp_res;
--
--		parent = *p;
--		aeb = rb_entry(parent, struct ubi_ainf_peb, u.rb);
--		if (lnum != aeb->lnum) {
--			if (lnum < aeb->lnum)
--				p = &(*p)->rb_left;
--			else
--				p = &(*p)->rb_right;
--			continue;
--		}
--
--		/*
--		 * There is already a physical eraseblock describing the same
--		 * logical eraseblock present.
--		 */
--
--		dbg_bld("this LEB already exists: PEB %d, sqnum %llu, EC %d",
--			aeb->pnum, aeb->sqnum, aeb->ec);
--
--		/*
--		 * Make sure that the logical eraseblocks have different
--		 * sequence numbers. Otherwise the image is bad.
--		 *
--		 * However, if the sequence number is zero, we assume it must
--		 * be an ancient UBI image from the era when UBI did not have
--		 * sequence numbers. We still can attach these images, unless
--		 * there is a need to distinguish between old and new
--		 * eraseblocks, in which case we'll refuse the image in
--		 * 'compare_lebs()'. In other words, we attach old clean
--		 * images, but refuse attaching old images with duplicated
--		 * logical eraseblocks because there was an unclean reboot.
--		 */
--		if (aeb->sqnum == sqnum && sqnum != 0) {
--			ubi_err("two LEBs with same sequence number %llu",
--				sqnum);
--			ubi_dump_aeb(aeb, 0);
--			ubi_dump_vid_hdr(vid_hdr);
--			return -EINVAL;
--		}
--
--		/*
--		 * Now we have to drop the older one and preserve the newer
--		 * one.
--		 */
--		cmp_res = compare_lebs(ubi, aeb, pnum, vid_hdr);
--		if (cmp_res < 0)
--			return cmp_res;
--
--		if (cmp_res & 1) {
--			/*
--			 * This logical eraseblock is newer than the one
--			 * found earlier.
--			 */
--			err = validate_vid_hdr(vid_hdr, av, pnum);
--			if (err)
--				return err;
--
--			err = add_to_list(ai, aeb->pnum, aeb->ec, cmp_res & 4,
--					  &ai->erase);
--			if (err)
--				return err;
--
--			aeb->ec = ec;
--			aeb->pnum = pnum;
--			aeb->scrub = ((cmp_res & 2) || bitflips);
--			aeb->copy_flag = vid_hdr->copy_flag;
--			aeb->sqnum = sqnum;
--
--			if (av->highest_lnum == lnum)
--				av->last_data_size =
--					be32_to_cpu(vid_hdr->data_size);
--
--			return 0;
--		} else {
--			/*
--			 * This logical eraseblock is older than the one found
--			 * previously.
--			 */
--			return add_to_list(ai, pnum, ec, cmp_res & 4,
--					   &ai->erase);
--		}
--	}
--
--	/*
--	 * We've met this logical eraseblock for the first time, add it to the
--	 * attaching information.
--	 */
--
--	err = validate_vid_hdr(vid_hdr, av, pnum);
--	if (err)
--		return err;
--
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
--	if (!aeb)
--		return -ENOMEM;
--
--	aeb->ec = ec;
--	aeb->pnum = pnum;
--	aeb->lnum = lnum;
--	aeb->scrub = bitflips;
--	aeb->copy_flag = vid_hdr->copy_flag;
--	aeb->sqnum = sqnum;
--
--	if (av->highest_lnum <= lnum) {
--		av->highest_lnum = lnum;
--		av->last_data_size = be32_to_cpu(vid_hdr->data_size);
--	}
--
--	av->leb_count += 1;
--	rb_link_node(&aeb->u.rb, parent, p);
--	rb_insert_color(&aeb->u.rb, &av->root);
--	return 0;
--}
--
--/**
-- * ubi_find_av - find volume in the attaching information.
-- * @ai: attaching information
-- * @vol_id: the requested volume ID
-- *
-- * This function returns a pointer to the volume description or %NULL if there
-- * are no data about this volume in the attaching information.
-- */
--struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
--				    int vol_id)
--{
--	struct ubi_ainf_volume *av;
--	struct rb_node *p = ai->volumes.rb_node;
--
--	while (p) {
--		av = rb_entry(p, struct ubi_ainf_volume, rb);
--
--		if (vol_id == av->vol_id)
--			return av;
--
--		if (vol_id > av->vol_id)
--			p = p->rb_left;
--		else
--			p = p->rb_right;
--	}
--
--	return NULL;
--}
--
--/**
-- * ubi_remove_av - delete attaching information about a volume.
-- * @ai: attaching information
-- * @av: the volume attaching information to delete
-- */
--void ubi_remove_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
--{
--	struct rb_node *rb;
--	struct ubi_ainf_peb *aeb;
--
--	dbg_bld("remove attaching information about volume %d", av->vol_id);
--
--	while ((rb = rb_first(&av->root))) {
--		aeb = rb_entry(rb, struct ubi_ainf_peb, u.rb);
--		rb_erase(&aeb->u.rb, &av->root);
--		list_add_tail(&aeb->u.list, &ai->erase);
--	}
--
--	rb_erase(&av->rb, &ai->volumes);
--	kfree(av);
--	ai->vols_found -= 1;
--}
--
--/**
-- * early_erase_peb - erase a physical eraseblock.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- * @pnum: physical eraseblock number to erase;
-- * @ec: erase counter value to write (%UBI_AINF_UNKNOWN if it is unknown)
-- *
-- * This function erases physical eraseblock 'pnum', and writes the erase
-- * counter header to it. This function should only be used on UBI device
-- * initialization stages, when the EBA sub-system had not been yet initialized.
-- * This function returns zero in case of success and a negative error code in
-- * case of failure.
-- */
--static int early_erase_peb(struct ubi_device *ubi,
--			   const struct ubi_attach_info *ai, int pnum, int ec)
--{
--	int err;
--	struct ubi_ec_hdr *ec_hdr;
--
--	if ((long long)ec >= UBI_MAX_ERASECOUNTER) {
--		/*
--		 * Erase counter overflow. Upgrade UBI and use 64-bit
--		 * erase counters internally.
--		 */
--		ubi_err("erase counter overflow at PEB %d, EC %d", pnum, ec);
--		return -EINVAL;
--	}
--
--	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
--	if (!ec_hdr)
--		return -ENOMEM;
--
--	ec_hdr->ec = cpu_to_be64(ec);
--
--	err = ubi_io_sync_erase(ubi, pnum, 0);
--	if (err < 0)
--		goto out_free;
--
--	err = ubi_io_write_ec_hdr(ubi, pnum, ec_hdr);
--
--out_free:
--	kfree(ec_hdr);
--	return err;
--}
--
--/**
-- * ubi_early_get_peb - get a free physical eraseblock.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- *
-- * This function returns a free physical eraseblock. It is supposed to be
-- * called on the UBI initialization stages when the wear-leveling sub-system is
-- * not initialized yet. This function picks a physical eraseblocks from one of
-- * the lists, writes the EC header if it is needed, and removes it from the
-- * list.
-- *
-- * This function returns a pointer to the "aeb" of the found free PEB in case
-- * of success and an error code in case of failure.
-- */
--struct ubi_ainf_peb *ubi_early_get_peb(struct ubi_device *ubi,
--				       struct ubi_attach_info *ai)
--{
--	int err = 0;
--	struct ubi_ainf_peb *aeb, *tmp_aeb;
--
--	if (!list_empty(&ai->free)) {
--		aeb = list_entry(ai->free.next, struct ubi_ainf_peb, u.list);
--		list_del(&aeb->u.list);
--		dbg_bld("return free PEB %d, EC %d", aeb->pnum, aeb->ec);
--		return aeb;
--	}
--
--	/*
--	 * We try to erase the first physical eraseblock from the erase list
--	 * and pick it if we succeed, or try to erase the next one if not. And
--	 * so forth. We don't want to take care about bad eraseblocks here -
--	 * they'll be handled later.
--	 */
--	list_for_each_entry_safe(aeb, tmp_aeb, &ai->erase, u.list) {
--		if (aeb->ec == UBI_AINF_UNKNOWN)
--			aeb->ec = ai->mean_ec;
--
--		err = early_erase_peb(ubi, ai, aeb->pnum, aeb->ec+1);
--		if (err)
--			continue;
--
--		aeb->ec += 1;
--		list_del(&aeb->u.list);
--		dbg_bld("return PEB %d, EC %d", aeb->pnum, aeb->ec);
--		return aeb;
--	}
--
--	ubi_err("no free eraseblocks");
--	return ERR_PTR(-ENOSPC);
--}
--
--/**
-- * check_corruption - check the data area of PEB.
-- * @ubi: UBI device description object
-- * @vid_hrd: the (corrupted) VID header of this PEB
-- * @pnum: the physical eraseblock number to check
-- *
-- * This is a helper function which is used to distinguish between VID header
-- * corruptions caused by power cuts and other reasons. If the PEB contains only
-- * 0xFF bytes in the data area, the VID header is most probably corrupted
-- * because of a power cut (%0 is returned in this case). Otherwise, it was
-- * probably corrupted for some other reasons (%1 is returned in this case). A
-- * negative error code is returned if a read error occurred.
-- *
-- * If the corruption reason was a power cut, UBI can safely erase this PEB.
-- * Otherwise, it should preserve it to avoid possibly destroying important
-- * information.
-- */
--static int check_corruption(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
--			    int pnum)
--{
--	int err;
--
--	mutex_lock(&ubi->buf_mutex);
--	memset(ubi->peb_buf, 0x00, ubi->leb_size);
--
--	err = ubi_io_read(ubi, ubi->peb_buf, pnum, ubi->leb_start,
--			  ubi->leb_size);
--	if (err == UBI_IO_BITFLIPS || mtd_is_eccerr(err)) {
--		/*
--		 * Bit-flips or integrity errors while reading the data area.
--		 * It is difficult to say for sure what type of corruption is
--		 * this, but presumably a power cut happened while this PEB was
--		 * erased, so it became unstable and corrupted, and should be
--		 * erased.
--		 */
--		err = 0;
--		goto out_unlock;
--	}
--
--	if (err)
--		goto out_unlock;
--
--	if (ubi_check_pattern(ubi->peb_buf, 0xFF, ubi->leb_size))
--		goto out_unlock;
--
--	ubi_err("PEB %d contains corrupted VID header, and the data does not "
--		"contain all 0xFF, this may be a non-UBI PEB or a severe VID "
--		"header corruption which requires manual inspection", pnum);
--	ubi_dump_vid_hdr(vid_hdr);
--	dbg_msg("hexdump of PEB %d offset %d, length %d",
--		pnum, ubi->leb_start, ubi->leb_size);
--	ubi_dbg_print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
--			       ubi->peb_buf, ubi->leb_size, 1);
--	err = 1;
--
--out_unlock:
--	mutex_unlock(&ubi->buf_mutex);
--	return err;
--}
--
--/**
-- * scan_peb - scan and process UBI headers of a PEB.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- * @pnum: the physical eraseblock number
-- *
-- * This function reads UBI headers of PEB @pnum, checks them, and adds
-- * information about this PEB to the corresponding list or RB-tree in the
-- * "attaching info" structure. Returns zero if the physical eraseblock was
-- * successfully handled and a negative error code in case of failure.
-- */
--static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
--		    int pnum)
--{
--	long long uninitialized_var(ec);
--	int err, bitflips = 0, vol_id, ec_err = 0;
--
--	dbg_bld("scan PEB %d", pnum);
--
--	/* Skip bad physical eraseblocks */
--	err = ubi_io_is_bad(ubi, pnum);
--	if (err < 0)
--		return err;
--	else if (err) {
--		ai->bad_peb_count += 1;
--		return 0;
--	}
--
--	err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
--	if (err < 0)
--		return err;
--	switch (err) {
--	case 0:
--		break;
--	case UBI_IO_BITFLIPS:
--		bitflips = 1;
--		break;
--	case UBI_IO_FF:
--		ai->empty_peb_count += 1;
--		return add_to_list(ai, pnum, UBI_AINF_UNKNOWN, 0,
--				   &ai->erase);
--	case UBI_IO_FF_BITFLIPS:
--		ai->empty_peb_count += 1;
--		return add_to_list(ai, pnum, UBI_AINF_UNKNOWN, 1,
--				   &ai->erase);
--	case UBI_IO_BAD_HDR_EBADMSG:
--	case UBI_IO_BAD_HDR:
--		/*
--		 * We have to also look at the VID header, possibly it is not
--		 * corrupted. Set %bitflips flag in order to make this PEB be
--		 * moved and EC be re-created.
--		 */
--		ec_err = err;
--		ec = UBI_AINF_UNKNOWN;
--		bitflips = 1;
--		break;
--	default:
--		ubi_err("'ubi_io_read_ec_hdr()' returned unknown code %d", err);
--		return -EINVAL;
--	}
--
--	if (!ec_err) {
--		int image_seq;
--
--		/* Make sure UBI version is OK */
--		if (ech->version != UBI_VERSION) {
--			ubi_err("this UBI version is %d, image version is %d",
--				UBI_VERSION, (int)ech->version);
--			return -EINVAL;
--		}
--
--		ec = be64_to_cpu(ech->ec);
--		if (ec > UBI_MAX_ERASECOUNTER) {
--			/*
--			 * Erase counter overflow. The EC headers have 64 bits
--			 * reserved, but we anyway make use of only 31 bit
--			 * values, as this seems to be enough for any existing
--			 * flash. Upgrade UBI and use 64-bit erase counters
--			 * internally.
--			 */
--			ubi_err("erase counter overflow, max is %d",
--				UBI_MAX_ERASECOUNTER);
--			ubi_dump_ec_hdr(ech);
--			return -EINVAL;
--		}
--
--		/*
--		 * Make sure that all PEBs have the same image sequence number.
--		 * This allows us to detect situations when users flash UBI
--		 * images incorrectly, so that the flash has the new UBI image
--		 * and leftovers from the old one. This feature was added
--		 * relatively recently, and the sequence number was always
--		 * zero, because old UBI implementations always set it to zero.
--		 * For this reasons, we do not panic if some PEBs have zero
--		 * sequence number, while other PEBs have non-zero sequence
--		 * number.
--		 */
--		image_seq = be32_to_cpu(ech->image_seq);
--		if (!ubi->image_seq && image_seq)
--			ubi->image_seq = image_seq;
--		if (ubi->image_seq && image_seq &&
--		    ubi->image_seq != image_seq) {
--			ubi_err("bad image sequence number %d in PEB %d, "
--				"expected %d", image_seq, pnum, ubi->image_seq);
--			ubi_dump_ec_hdr(ech);
--			return -EINVAL;
--		}
--	}
--
--	/* OK, we've done with the EC header, let's look at the VID header */
--
--	err = ubi_io_read_vid_hdr(ubi, pnum, vidh, 0);
--	if (err < 0)
--		return err;
--	switch (err) {
--	case 0:
--		break;
--	case UBI_IO_BITFLIPS:
--		bitflips = 1;
--		break;
--	case UBI_IO_BAD_HDR_EBADMSG:
--		if (ec_err == UBI_IO_BAD_HDR_EBADMSG)
--			/*
--			 * Both EC and VID headers are corrupted and were read
--			 * with data integrity error, probably this is a bad
--			 * PEB, bit it is not marked as bad yet. This may also
--			 * be a result of power cut during erasure.
--			 */
--			ai->maybe_bad_peb_count += 1;
--	case UBI_IO_BAD_HDR:
--		if (ec_err)
--			/*
--			 * Both headers are corrupted. There is a possibility
--			 * that this a valid UBI PEB which has corresponding
--			 * LEB, but the headers are corrupted. However, it is
--			 * impossible to distinguish it from a PEB which just
--			 * contains garbage because of a power cut during erase
--			 * operation. So we just schedule this PEB for erasure.
--			 *
--			 * Besides, in case of NOR flash, we deliberately
--			 * corrupt both headers because NOR flash erasure is
--			 * slow and can start from the end.
--			 */
--			err = 0;
--		else
--			/*
--			 * The EC was OK, but the VID header is corrupted. We
--			 * have to check what is in the data area.
--			 */
--			err = check_corruption(ubi, vidh, pnum);
--
--		if (err < 0)
--			return err;
--		else if (!err)
--			/* This corruption is caused by a power cut */
--			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
--		else
--			/* This is an unexpected corruption */
--			err = add_corrupted(ai, pnum, ec);
--		if (err)
--			return err;
--		goto adjust_mean_ec;
--	case UBI_IO_FF_BITFLIPS:
--		err = add_to_list(ai, pnum, ec, 1, &ai->erase);
--		if (err)
--			return err;
--		goto adjust_mean_ec;
--	case UBI_IO_FF:
--		if (ec_err)
--			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
--		else
--			err = add_to_list(ai, pnum, ec, 0, &ai->free);
--		if (err)
--			return err;
--		goto adjust_mean_ec;
--	default:
--		ubi_err("'ubi_io_read_vid_hdr()' returned unknown code %d",
--			err);
--		return -EINVAL;
--	}
--
--	vol_id = be32_to_cpu(vidh->vol_id);
--	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
--		int lnum = be32_to_cpu(vidh->lnum);
--
--		/* Unsupported internal volume */
--		switch (vidh->compat) {
--		case UBI_COMPAT_DELETE:
--			ubi_msg("\"delete\" compatible internal volume %d:%d"
--				" found, will remove it", vol_id, lnum);
--			err = add_to_list(ai, pnum, ec, 1, &ai->erase);
--			if (err)
--				return err;
--			return 0;
--
--		case UBI_COMPAT_RO:
--			ubi_msg("read-only compatible internal volume %d:%d"
--				" found, switch to read-only mode",
--				vol_id, lnum);
--			ubi->ro_mode = 1;
--			break;
--
--		case UBI_COMPAT_PRESERVE:
--			ubi_msg("\"preserve\" compatible internal volume %d:%d"
--				" found", vol_id, lnum);
--			err = add_to_list(ai, pnum, ec, 0, &ai->alien);
--			if (err)
--				return err;
--			return 0;
--
--		case UBI_COMPAT_REJECT:
--			ubi_err("incompatible internal volume %d:%d found",
--				vol_id, lnum);
--			return -EINVAL;
--		}
--	}
--
--	if (ec_err)
--		ubi_warn("valid VID header but corrupted EC header at PEB %d",
--			 pnum);
--	err = ubi_add_to_av(ubi, ai, pnum, ec, vidh, bitflips);
--	if (err)
--		return err;
--
--adjust_mean_ec:
--	if (!ec_err) {
--		ai->ec_sum += ec;
--		ai->ec_count += 1;
--		if (ec > ai->max_ec)
--			ai->max_ec = ec;
--		if (ec < ai->min_ec)
--			ai->min_ec = ec;
--	}
--
--	return 0;
--}
--
--/**
-- * late_analysis - analyze the overall situation with PEB.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- *
-- * This is a helper function which takes a look what PEBs we have after we
-- * gather information about all of them ("ai" is compete). It decides whether
-- * the flash is empty and should be formatted of whether there are too many
-- * corrupted PEBs and we should not attach this MTD device. Returns zero if we
-- * should proceed with attaching the MTD device, and %-EINVAL if we should not.
-- */
--static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
--{
--	struct ubi_ainf_peb *aeb;
--	int max_corr, peb_count;
--
--	peb_count = ubi->peb_count - ai->bad_peb_count - ai->alien_peb_count;
--	max_corr = peb_count / 20 ?: 8;
--
--	/*
--	 * Few corrupted PEBs is not a problem and may be just a result of
--	 * unclean reboots. However, many of them may indicate some problems
--	 * with the flash HW or driver.
--	 */
--	if (ai->corr_peb_count) {
--		ubi_err("%d PEBs are corrupted and preserved",
--			ai->corr_peb_count);
--		printk(KERN_ERR "Corrupted PEBs are:");
--		list_for_each_entry(aeb, &ai->corr, u.list)
--			printk(KERN_CONT " %d", aeb->pnum);
--		printk(KERN_CONT "\n");
--
--		/*
--		 * If too many PEBs are corrupted, we refuse attaching,
--		 * otherwise, only print a warning.
--		 */
--		if (ai->corr_peb_count >= max_corr) {
--			ubi_err("too many corrupted PEBs, refusing");
--			return -EINVAL;
--		}
--	}
--
--	if (ai->empty_peb_count + ai->maybe_bad_peb_count == peb_count) {
--		/*
--		 * All PEBs are empty, or almost all - a couple PEBs look like
--		 * they may be bad PEBs which were not marked as bad yet.
--		 *
--		 * This piece of code basically tries to distinguish between
--		 * the following situations:
--		 *
--		 * 1. Flash is empty, but there are few bad PEBs, which are not
--		 *    marked as bad so far, and which were read with error. We
--		 *    want to go ahead and format this flash. While formatting,
--		 *    the faulty PEBs will probably be marked as bad.
--		 *
--		 * 2. Flash contains non-UBI data and we do not want to format
--		 *    it and destroy possibly important information.
--		 */
--		if (ai->maybe_bad_peb_count <= 2) {
--			ai->is_empty = 1;
--			ubi_msg("empty MTD device detected");
--			get_random_bytes(&ubi->image_seq,
--					 sizeof(ubi->image_seq));
--		} else {
--			ubi_err("MTD device is not UBI-formatted and possibly "
--				"contains non-UBI data - refusing it");
--			return -EINVAL;
--		}
--
--	}
--
--	return 0;
--}
--
--/**
-- * scan_all - scan entire MTD device.
-- * @ubi: UBI device description object
-- *
-- * This function does full scanning of an MTD device and returns complete
-- * information about it in form of a "struct ubi_attach_info" object. In case
-- * of failure, an error code is returned.
-- */
--static struct ubi_attach_info *scan_all(struct ubi_device *ubi)
--{
--	int err, pnum;
--	struct rb_node *rb1, *rb2;
--	struct ubi_ainf_volume *av;
--	struct ubi_ainf_peb *aeb;
--	struct ubi_attach_info *ai;
--
--	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
--	if (!ai)
--		return ERR_PTR(-ENOMEM);
--
--	INIT_LIST_HEAD(&ai->corr);
--	INIT_LIST_HEAD(&ai->free);
--	INIT_LIST_HEAD(&ai->erase);
--	INIT_LIST_HEAD(&ai->alien);
--	ai->volumes = RB_ROOT;
--
--	err = -ENOMEM;
--	ai->aeb_slab_cache = kmem_cache_create("ubi_aeb_slab_cache",
--					       sizeof(struct ubi_ainf_peb),
--					       0, 0, NULL);
--	if (!ai->aeb_slab_cache)
--		goto out_ai;
--
--	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
--	if (!ech)
--		goto out_ai;
--
--	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
--	if (!vidh)
--		goto out_ech;
--
--	for (pnum = 0; pnum < ubi->peb_count; pnum++) {
--		cond_resched();
--
--		dbg_gen("process PEB %d", pnum);
--		err = scan_peb(ubi, ai, pnum);
--		if (err < 0)
--			goto out_vidh;
--	}
--
--	dbg_msg("scanning is finished");
--
--	/* Calculate mean erase counter */
--	if (ai->ec_count)
--		ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
--
--	err = late_analysis(ubi, ai);
--	if (err)
--		goto out_vidh;
--
--	/*
--	 * In case of unknown erase counter we use the mean erase counter
--	 * value.
--	 */
--	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
--		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
--			if (aeb->ec == UBI_AINF_UNKNOWN)
--				aeb->ec = ai->mean_ec;
--	}
--
--	list_for_each_entry(aeb, &ai->free, u.list) {
--		if (aeb->ec == UBI_AINF_UNKNOWN)
--			aeb->ec = ai->mean_ec;
--	}
--
--	list_for_each_entry(aeb, &ai->corr, u.list)
--		if (aeb->ec == UBI_AINF_UNKNOWN)
--			aeb->ec = ai->mean_ec;
--
--	list_for_each_entry(aeb, &ai->erase, u.list)
--		if (aeb->ec == UBI_AINF_UNKNOWN)
--			aeb->ec = ai->mean_ec;
--
--	err = self_check_ai(ubi, ai);
--	if (err)
--		goto out_vidh;
--
--	ubi_free_vid_hdr(ubi, vidh);
--	kfree(ech);
--
--	return ai;
--
--out_vidh:
--	ubi_free_vid_hdr(ubi, vidh);
--out_ech:
--	kfree(ech);
--out_ai:
--	ubi_destroy_ai(ai);
--	return ERR_PTR(err);
--}
--
--/**
-- * ubi_attach - attach an MTD device.
-- * @ubi: UBI device descriptor
-- *
-- * This function returns zero in case of success and a negative error code in
-- * case of failure.
-- */
--int ubi_attach(struct ubi_device *ubi)
--{
--	int err;
--	struct ubi_attach_info *ai;
--
--	ai = scan_all(ubi);
--	if (IS_ERR(ai))
--		return PTR_ERR(ai);
--
--	ubi->bad_peb_count = ai->bad_peb_count;
--	ubi->good_peb_count = ubi->peb_count - ubi->bad_peb_count;
--	ubi->corr_peb_count = ai->corr_peb_count;
--	ubi->max_ec = ai->max_ec;
--	ubi->mean_ec = ai->mean_ec;
--	ubi_msg("max. sequence number:       %llu", ai->max_sqnum);
--
--	err = ubi_read_volume_table(ubi, ai);
--	if (err)
--		goto out_ai;
--
--	err = ubi_wl_init(ubi, ai);
--	if (err)
--		goto out_vtbl;
--
--	err = ubi_eba_init(ubi, ai);
--	if (err)
--		goto out_wl;
--
--	ubi_destroy_ai(ai);
--	return 0;
--
--out_wl:
--	ubi_wl_close(ubi);
--out_vtbl:
--	ubi_free_internal_volumes(ubi);
--	vfree(ubi->vtbl);
--out_ai:
--	ubi_destroy_ai(ai);
--	return err;
--}
--
--/**
-- * destroy_av - free volume attaching information.
-- * @av: volume attaching information
-- * @ai: attaching information
-- *
-- * This function destroys the volume attaching information.
-- */
--static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
--{
--	struct ubi_ainf_peb *aeb;
--	struct rb_node *this = av->root.rb_node;
--
--	while (this) {
--		if (this->rb_left)
--			this = this->rb_left;
--		else if (this->rb_right)
--			this = this->rb_right;
--		else {
--			aeb = rb_entry(this, struct ubi_ainf_peb, u.rb);
--			this = rb_parent(this);
--			if (this) {
--				if (this->rb_left == &aeb->u.rb)
--					this->rb_left = NULL;
--				else
--					this->rb_right = NULL;
--			}
--
--			kmem_cache_free(ai->aeb_slab_cache, aeb);
--		}
--	}
--	kfree(av);
--}
--
--/**
-- * ubi_destroy_ai - destroy attaching information.
-- * @ai: attaching information
-- */
--void ubi_destroy_ai(struct ubi_attach_info *ai)
--{
--	struct ubi_ainf_peb *aeb, *aeb_tmp;
--	struct ubi_ainf_volume *av;
--	struct rb_node *rb;
--
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--
--	/* Destroy the volume RB-tree */
--	rb = ai->volumes.rb_node;
--	while (rb) {
--		if (rb->rb_left)
--			rb = rb->rb_left;
--		else if (rb->rb_right)
--			rb = rb->rb_right;
--		else {
--			av = rb_entry(rb, struct ubi_ainf_volume, rb);
--
--			rb = rb_parent(rb);
--			if (rb) {
--				if (rb->rb_left == &av->rb)
--					rb->rb_left = NULL;
--				else
--					rb->rb_right = NULL;
--			}
--
--			destroy_av(ai, av);
--		}
--	}
--
--	if (ai->aeb_slab_cache)
--		kmem_cache_destroy(ai->aeb_slab_cache);
--
--	kfree(ai);
--}
--
--/**
-- * self_check_ai - check the attaching information.
-- * @ubi: UBI device description object
-- * @ai: attaching information
-- *
-- * This function returns zero if the attaching information is all right, and a
-- * negative error code if not or if an error occurred.
-- */
--static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
--{
--	int pnum, err, vols_found = 0;
--	struct rb_node *rb1, *rb2;
--	struct ubi_ainf_volume *av;
--	struct ubi_ainf_peb *aeb, *last_aeb;
--	uint8_t *buf;
--
--	if (!ubi->dbg->chk_gen)
--		return 0;
--
--	/*
--	 * At first, check that attaching information is OK.
--	 */
--	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
--		int leb_count = 0;
--
--		cond_resched();
--
--		vols_found += 1;
--
--		if (ai->is_empty) {
--			ubi_err("bad is_empty flag");
--			goto bad_av;
--		}
--
--		if (av->vol_id < 0 || av->highest_lnum < 0 ||
--		    av->leb_count < 0 || av->vol_type < 0 || av->used_ebs < 0 ||
--		    av->data_pad < 0 || av->last_data_size < 0) {
--			ubi_err("negative values");
--			goto bad_av;
--		}
--
--		if (av->vol_id >= UBI_MAX_VOLUMES &&
--		    av->vol_id < UBI_INTERNAL_VOL_START) {
--			ubi_err("bad vol_id");
--			goto bad_av;
--		}
--
--		if (av->vol_id > ai->highest_vol_id) {
--			ubi_err("highest_vol_id is %d, but vol_id %d is there",
--				ai->highest_vol_id, av->vol_id);
--			goto out;
--		}
--
--		if (av->vol_type != UBI_DYNAMIC_VOLUME &&
--		    av->vol_type != UBI_STATIC_VOLUME) {
--			ubi_err("bad vol_type");
--			goto bad_av;
--		}
--
--		if (av->data_pad > ubi->leb_size / 2) {
--			ubi_err("bad data_pad");
--			goto bad_av;
--		}
--
--		last_aeb = NULL;
--		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
--			cond_resched();
--
--			last_aeb = aeb;
--			leb_count += 1;
--
--			if (aeb->pnum < 0 || aeb->ec < 0) {
--				ubi_err("negative values");
--				goto bad_aeb;
--			}
--
--			if (aeb->ec < ai->min_ec) {
--				ubi_err("bad ai->min_ec (%d), %d found",
--					ai->min_ec, aeb->ec);
--				goto bad_aeb;
--			}
--
--			if (aeb->ec > ai->max_ec) {
--				ubi_err("bad ai->max_ec (%d), %d found",
--					ai->max_ec, aeb->ec);
--				goto bad_aeb;
--			}
--
--			if (aeb->pnum >= ubi->peb_count) {
--				ubi_err("too high PEB number %d, total PEBs %d",
--					aeb->pnum, ubi->peb_count);
--				goto bad_aeb;
--			}
--
--			if (av->vol_type == UBI_STATIC_VOLUME) {
--				if (aeb->lnum >= av->used_ebs) {
--					ubi_err("bad lnum or used_ebs");
--					goto bad_aeb;
--				}
--			} else {
--				if (av->used_ebs != 0) {
--					ubi_err("non-zero used_ebs");
--					goto bad_aeb;
--				}
--			}
--
--			if (aeb->lnum > av->highest_lnum) {
--				ubi_err("incorrect highest_lnum or lnum");
--				goto bad_aeb;
--			}
--		}
--
--		if (av->leb_count != leb_count) {
--			ubi_err("bad leb_count, %d objects in the tree",
--				leb_count);
--			goto bad_av;
--		}
--
--		if (!last_aeb)
--			continue;
--
--		aeb = last_aeb;
--
--		if (aeb->lnum != av->highest_lnum) {
--			ubi_err("bad highest_lnum");
--			goto bad_aeb;
--		}
--	}
--
--	if (vols_found != ai->vols_found) {
--		ubi_err("bad ai->vols_found %d, should be %d",
--			ai->vols_found, vols_found);
--		goto out;
--	}
--
--	/* Check that attaching information is correct */
--	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
--		last_aeb = NULL;
--		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
--			int vol_type;
--
--			cond_resched();
--
--			last_aeb = aeb;
--
--			err = ubi_io_read_vid_hdr(ubi, aeb->pnum, vidh, 1);
--			if (err && err != UBI_IO_BITFLIPS) {
--				ubi_err("VID header is not OK (%d)", err);
--				if (err > 0)
--					err = -EIO;
--				return err;
--			}
--
--			vol_type = vidh->vol_type == UBI_VID_DYNAMIC ?
--				   UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
--			if (av->vol_type != vol_type) {
--				ubi_err("bad vol_type");
--				goto bad_vid_hdr;
--			}
--
--			if (aeb->sqnum != be64_to_cpu(vidh->sqnum)) {
--				ubi_err("bad sqnum %llu", aeb->sqnum);
--				goto bad_vid_hdr;
--			}
--
--			if (av->vol_id != be32_to_cpu(vidh->vol_id)) {
--				ubi_err("bad vol_id %d", av->vol_id);
--				goto bad_vid_hdr;
--			}
--
--			if (av->compat != vidh->compat) {
--				ubi_err("bad compat %d", vidh->compat);
--				goto bad_vid_hdr;
--			}
--
--			if (aeb->lnum != be32_to_cpu(vidh->lnum)) {
--				ubi_err("bad lnum %d", aeb->lnum);
--				goto bad_vid_hdr;
--			}
--
--			if (av->used_ebs != be32_to_cpu(vidh->used_ebs)) {
--				ubi_err("bad used_ebs %d", av->used_ebs);
--				goto bad_vid_hdr;
--			}
--
--			if (av->data_pad != be32_to_cpu(vidh->data_pad)) {
--				ubi_err("bad data_pad %d", av->data_pad);
--				goto bad_vid_hdr;
--			}
--		}
--
--		if (!last_aeb)
--			continue;
--
--		if (av->highest_lnum != be32_to_cpu(vidh->lnum)) {
--			ubi_err("bad highest_lnum %d", av->highest_lnum);
--			goto bad_vid_hdr;
--		}
--
--		if (av->last_data_size != be32_to_cpu(vidh->data_size)) {
--			ubi_err("bad last_data_size %d", av->last_data_size);
--			goto bad_vid_hdr;
--		}
--	}
--
--	/*
--	 * Make sure that all the physical eraseblocks are in one of the lists
--	 * or trees.
--	 */
--	buf = kzalloc(ubi->peb_count, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	for (pnum = 0; pnum < ubi->peb_count; pnum++) {
--		err = ubi_io_is_bad(ubi, pnum);
--		if (err < 0) {
--			kfree(buf);
--			return err;
--		} else if (err)
--			buf[pnum] = 1;
--	}
--
--	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb)
--		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
--			buf[aeb->pnum] = 1;
--
--	list_for_each_entry(aeb, &ai->free, u.list)
--		buf[aeb->pnum] = 1;
--
--	list_for_each_entry(aeb, &ai->corr, u.list)
--		buf[aeb->pnum] = 1;
--
--	list_for_each_entry(aeb, &ai->erase, u.list)
--		buf[aeb->pnum] = 1;
--
--	list_for_each_entry(aeb, &ai->alien, u.list)
--		buf[aeb->pnum] = 1;
--
--	err = 0;
--	for (pnum = 0; pnum < ubi->peb_count; pnum++)
--		if (!buf[pnum]) {
--			ubi_err("PEB %d is not referred", pnum);
--			err = 1;
--		}
--
--	kfree(buf);
--	if (err)
--		goto out;
--	return 0;
--
--bad_aeb:
--	ubi_err("bad attaching information about LEB %d", aeb->lnum);
--	ubi_dump_aeb(aeb, 0);
--	ubi_dump_av(av);
--	goto out;
--
--bad_av:
--	ubi_err("bad attaching information about volume %d", av->vol_id);
--	ubi_dump_av(av);
--	goto out;
--
--bad_vid_hdr:
--	ubi_err("bad attaching information about volume %d", av->vol_id);
--	ubi_dump_av(av);
--	ubi_dump_vid_hdr(vidh);
--
--out:
--	dump_stack();
--	return -EINVAL;
--}
--- 
-1.7.10
+
+---289782389-1348826152-1337340138=:88122
+Content-Type: text/html; charset=us-ascii
+
+<html><head><style type="text/css"><!-- DIV {margin:0px;} --></style></head><body><div style="font-family:'times new roman', 'new york', times, serif;font-size:12pt"><div><br></div><div style="font-family:times new roman, new york, times, serif;font-size:12pt"><div style="font-family:times new roman, new york, times, serif;font-size:12pt"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times,
+ serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div
+ style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div
+ style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div style="font-family:times new roman, new york, times, serif;font-size:12pt;"><div
+ style="font-family:times, serif;font-size:12pt;"><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div></div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div></div></div></div><div style=""></div></div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div></div></div><div style=""></div>
+
+
+</div><meta http-equiv="x-dns-prefetch-control" content="on"></div></div><div style="position:fixed"></div>
+
+
+</div></body></html>
+---289782389-1348826152-1337340138=:88122--
+
+---289782389-1782894579-1337340138=:88122
+Content-Type: application/pdf; name=Notification
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Notification letter.pdf"
+
+JVBERi0xLjMKJcfsj6IKNSAwIG9iago8PC9MZW5ndGggNiAwIFIvRmlsdGVy
+IC9GbGF0ZURlY29kZT4+CnN0cmVhbQp4nO29S7MtR3qepwuhy5KjW9alYUvd
+7EWRLZ0N9dmozKzMyqQpWmg0SdEhRYAUIuAIQqMjUbCiDxggWjQ186xH/A/u
+4J/w0BEecNQRGjQ998TBoX+Cv6zK78tae9Xe+xxg45JPMNg8qLVW3Z6s/N6s
+963L/uQ83fr5PNX/04kXL09v/+5y/o+fntz6+Q//o0z8LyfvUzynZT6/lMnJ
+n1PJ5x/JZFzOS1jqpCvTeZnn9dvgz0tJ67cpnZcctxnmc563b0M4Z1fWyVkm
+txmm4mSGsE7m+VymdYZpjucctxm8OxdXN+xKWdq3rsTc5pVJXYPLpbT1uuKm
+tjWX59L2weVF98xlmWHbX5ejbxRuyamxyWJTI3bLsqztoN/GSedNzuka0jTr
+eqN8bFuLKeg+xMnrnkVfdH/nbYZKESdjm0NR4rkEbYc5TNo6+q202Tbv2pLb
+Gtb23da7tvq2tfVYbPuwHqFtz9bjtu3vejQ3ivUYb2zbkV+Jf/+tU7h1Pp7/
+V+ke/5P8/39q/eV3f+sv+8pf9pWLvvLR6d+ePjlNZ1ekhWqfcGGb/tE2XVJd
+zdT++9Hpg/PHp0/Ofgl57VFliefn0c+3RZq9JLf+d5WpfP7hH5x+R/6vrn2S
+VU/nEKaVNcbL6cnWPN2GIsc9n4Mv5XZee6nMcSvs6zdhbsvcLv78XHQxzGGp
+zTPdplx3Zbp1wWcXtjW+Jat0Uwi3Qh7clG5LZQwxzbdxPofZLbe5koaS0m3O
+Zzf727ms7bZMTvbl/Nz52xLXvjOHeCuH47lL+XaeUt/CJ2cXpnDrzy5Nt1OW
+HZvdrRw62WdZZF5kvdMy38p//bI42cCdBpq0NicV9U9O860czrSsX+ynX7w8
+/+B9WVj6m6sbO7//+622paJunRxt6etOdj2d3395+r1nf/XmuVD74sKzv3Yz
+36aS8rO/fiN7Ja0Vnv3CzXNhEZj47I2bcpsmn5dnf+PmuTRYCDntvvybN0mm
+wuyf/a0bl2WNaXn2t29q60gfXp59+PGN7M4inf/Z37kRxJyz33+pG/Ll2X9z
+U3fPhyjLy9QitS3rfD5L+8uBe/bhH9ZvZaNxv7xiyFa/ceOKfLmEvn2Z+nfv
+i87J2gT7X5/ef+s1wL8pZDnEMn8GcF1kLtqAsqJnf1emyjLLbvdF/ltZpBbH
+kndL7wD/5k2QXu7CvqXu7ne4aBJdjTTU37vxtic+6EwiKc/+/s3zRfYl+iTt
+Lp1RlGPf2B3z79+4KM0w71u1b9b2ZLfsP6iTfhHQZ//wxsvCU/G7hb9lzXo0
+1Q/9/iDK2HQrlbIeyyDtdnAsdw1wwbb1qV33Kc/evHkeZc6Sl8tm27bs9i3d
+22E3p650li4nqIInW7o+9P6xnbro3taSb9yILM3OXxyjo779390899LO+aJG
+d91JNh5Ezry05W5Nu8ldRf2NGy+aWQvgv5cVTLJPUru9u/5C7QQhyXH8R7Xt
+0pzT0T752ApOzkrbEdLGCF53UhD3dbA2QHBZ9lx2JjvX62BaLgtB6+3+Skjp
+os3/sXwpo/WUbbdu+54ZaH727RvR+zm58uw765cymvpnv3gjXS0VaZLvrl+W
+ksOzc/1Sdt3tjsMvrZ1XtvxPrBf/sk39ik19b5uSBVqvzd4bf7SWk+Ei112U
+z/+sCtdkO9y7zT+9qT1EKkz2XFYVZmnLZ/9MduhWzlt8vuyWa9EI6PFK91V2
+VHkPf7dNLQ8vMR8scrTC8tobfu1dvRDZB5a4EKwn2O5rLfFlbHcbFWM9kZrO
+7//70++90voOjtDivkKKEberU+1sqAq/z7dxEv04VunD3/9RPX9wlwPm7uc+
+HhyNMF1J/9rWEaIME0k7wuE5xfFA1c8RUszypa9r+4335cw1p2U94fezE8vi
+y/oh1H/Fxv3hfzj9/mc8kw0CG8XoxexWnXxZJe39/3R6HiY5QT8/b9r279vX
+F1K3tfhS3E4/bajJe5Xv48GHz9q3S+rTMrTe3CyyH5MM8W/Z1D+v43GMS9qf
+DOiq3LPv29Lfv5Efs5NFntfhZD3nuL37q0syAtXvnJvngz12MlbJwmFOs6ym
+ztikVn/e7U7bjJxt9s3s17ONeTLiWxtcbFA72Nv2q441ztkIJJuZpClkhWXf
+4Xe75uoAmP08HzIcb1rn0yFTOry0fZBxUE7f9g2026PeqL6erMjQ7PzlfqwD
+rV9q32idfjfu941aT6+Hbr+v6x5Kn7loiH58D08ndl2m7+B+GWvG3qN2huDZ
+ru29l9P1eHHYw42XgzRP7p5DM8selygnePs26Uf2qPH7brx90GmOGPTXUHYL
+73bC13Ypi5w3HzZ338ejlR/1lL5s8xzZL4c1tWuUvkxHnVuP8Noddjt9WOrX
+9V12rXRYJ//0Rjqc346ANsPFsehr3DXYwe+7Hfr+wSaPy+OwS/YGODrCvZr7
+woc79PZB1zxUha5sF47u+TyXWopdvPsBWPZL6YYuzuJ05+Kuh+wY+77vWmPf
+3fWo7JtAy2K3nt6rroXzsrp324k3dZlSym47upDfD92dsffZXg5plZ++isPe
+3NOKPtUNyS/dMSSL1OhyMN9ysMT23SwWo3+XbaocTB11ol0L7dptX8u7LrGe
+Q9TLG9Hyr3XyMydgPng5fZXzhllOm1oCtvPpvRJ2bbvb496LjjSgl+H+6MnR
+WpLMlw60tRfKoRzvRrtu+nbG/FflTEY6i/jjo6O+HByHoz7xvQeP4S9fLREO
+t1tu5Ny0EuyP25OkliGX2yVeHrNDmbxWiPzYWUs/FPuTll73D5+VfJE9dY41
+vL6kfrOe7U+57M/fLmRG+losgnB4CnpYg73Neu/dDR39y1BXOaUS8oVe9R6v
+67nUq1fs8dehYLHe9j/U+gyLm5ed3Pzy0c/XOnfx81UGs/7chh7p0f5i6Gmr
+EMrvPbyyvtUas/7SwT78Q/n+Gzc+LtJC4cnrI8qxivUyUFgqg9ZHkDPBOMfd
+Yf/u/ggfDFMXJ1S6eD9L6Ye4H9jdQezj0q/p+Ox3/bT9vK/Snf7f556uIe45
+4dQZr93OxQngbs5HLYfO+NbBCftu1y9OpA6G5mOgwxK8j8NO7/shuBz7dal7
+zvS2zDPWix/txLaDdsew287R7i8XMapt8h/U9DcGd2xidzP2Vu679i9qPU1z
+LPG46R8+Roc63t1l35/DGXebORKqfiwP+9lBNJDr5MHx2bXrv6jx+pJCuu+c
+2xc5WwjxXk+vm+/hzKHD2vWuLscXe2+zaiJeqnaYCz7Yev/yPo/aJcNE4eg0
+dod5TypwNa6uQ+mmlW3yc18DjbKN0NSyXYdYLq7Z/LrJdz+R2gXqR2dc33zd
+GcOupo7m+x9r8Da7dJHfWWKowds+jt2dMlpssbvOtZs8zO9acrg/q+0XaS7C
+yOvrfbvLSPtLuP1ymF5a2i9zGC1eXJCyA9JX1Vff9/0Y8uAKc9i7pf1FtrUO
+Yr1C0spgt55drvAv7ZgcngA+yZAuzVSvnF500kO/30/FDqV/V4nffXiZw4Ti
+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
+3Iew28vej4924zs3cmZym3LvxEvrxCnlc30U5LoTP1HfEqldb567r2+tZwcu
+5Mv7uA7ODvT+nHD0oOuSr09Yaox5lUPlEI5Pbfo51GVgfPeMPsdjxXrlZyef
+Lka8cxpZLi7VaMuk+MWcRx704ac5e0yv8BSlet3+Eo+jm31f9RH7zennsj8i
+b5nT3T8MYx7nnifLDmOj6ztarp+JvbyWeThS7c31IzccH7R9fw5jN+fhod/n
+7ddPyn3/4NrpawSUr95vjtKnQx+4v9Xnul/sG+Popp6HowRrqcP7PB7L5K9D
+grJPGS8ilHU/losL6tsN1PMaZ7bUz9c38t1VySqO37JH947u0Dh4R0C4L/1r
+bwVZLq4uXxPvY62rZyMvLo23prvnvpffqv2y1Nvifqv2gixDRbicvPf35EJp
+v8vBerVlvsrf1y/Tcv3zMoXXWVM/wttUfdng5cuuao9YHuwRV0+AZxef/aCK
+mvih2bYWD/Z2dwCmlA5+969yMF6pBbOtKYtr/pKOUPZPsNLH5ny9I9zf43Zx
+RvQrT1/0xy/1OLiW04rZz5dCvw5R81NV467Cd78/TV/4UiRgrfZHa/zB4/4q
+U10BarfIT98tjs5Zj97btLvsfzG+b9eevoDG/rqNAU/YKx5e1dGB/+UHD/wu
+i9Qq392xfHEiqwc5XlzPO7i4dXFSrqei7XQur0dmNyQ8bRk+cOS/ltLwxEf+
+vuL/3hd5IrjrA+1c4fr8oJ0UPHbcP/upQP/yqY/7F9IvvtCK/6UHj7a+V3Z3
+i12+ut34MhDZ3bDQPXPrKst8nS3l/e1hx+9yevhtQDZIfDWl/rU85HeWL/2i
+xu78/p88eOj/6o2rRTul/aHvR0B1O5bDG5sf7g/LQXC1+MPFP2ePeMwPfH2H
++C6HPs/XCz2dClwYgvJgn+iX+XYZRTuzm/cPgexf/fkZ3ujYO+5fyv/TaMG+
+N/md/PfUp18IfWjYn+y+j6Xf/7Kkx25mOsxtn3S0v0PpdqeOX9jhHuEs73K0
+74f7W3a1+xXP8h67rWQnu/20oJ/4HdwBsDwk7p9ntH+s7J88Cfgy6n630J0+
+8Vk8/xpz52l3B/eRKfisacJ9U3onz7bh/b2nvWMuT90x++mJjk8Xd8+1S7Ky
+wsdfAHj37l45Z3n07l+9HfKVTnKn/Grd/uurZK/Sa9cx6IF+ufjd88BP3Qe/
+qD697fRxn/6VB8fW13qX6uGjQPefLC92g/h0qagHL917mmsqX/qA+cgg/5p5
+2tXvn4/pKn0//GMi66c6PrfXJYVwz628u8duj14EHA4uTtc/BNMvOB6+DFEt
+2nRxRbF1h3jnBfqPPWn1as863XPzwLX0fd/u07p2Dy59hlBx9/TWnYdyjpT3
+8JGN+54MPLh1+553meg6H3t0728fXI++9zWHbZ2HD6D3S/869C1hdxuQ3q6W
+46PPIb/Wc8aHj9A88hrd65+PH6E56i2H977ccy/E0aM+Fzfe7Bv3+GmsB3rL
+LvY4egfsYxf+d2s6uofisha2G7LrG5y0j1y+YvLzHLnPdA/9bvnvHt0iuvXG
+tByW38WbUfZCcFA/j/1phy5Ch7cOvHqh3vc+l6sZ73ko+UB17zyPVd8Ie3lO
+fAH30CNwSzmIzvQFEeHinq7vH/Ta65tnloP3fedld4APBfbRp7Re+Y+v3Hlc
+cNluIHGXrbf9UaXXfcRse2C6X5J65E876ODT9+7wnuf9HZ76PvF9EHLw1M5j
+F0Sv3y6128XjdwfqawZ6zX3eVwe+xnvIXvktOMdPdh69E2y3ydvrC8Sv8Gdh
+HrtT7Pqvp9zzUE9/nfdBRR691eSz3WBnJxO78fjwdTv6Po60M0r916tnFu8Z
+eo7uZDx80O0BvZ/Txd/Reuxx5kMJOWrfQ2nu67mnjz103+Zr9PXDsWR3FrJD
+651sP/xdKLu04h1l7wfj8MZFPfMu8y5sffiq2+G7Vo5eiHPPM6bmFsLlITp4
+2cVjL8A9fPvUrmov3gV198lDSys3g7S7WrX7Y5iHN8zabvUO8/CLeGI5sgTJ
+rpRdmLP+z+Vfk9xt4EiTd49AHZ7x7R5i3zXbkU/fvfbuu+bW+vHfPYt19Jjr
+LrB6hTNsPRJ/z15iefknxA7OVw8rptf1Ybke3a39yIsMjv7M1asPCEe3Bu8W
+OezNjz9nuzm0ZefQ6p+u2DrR+kDDsv7R3d+vD9PeebVKe0bhgT8w6tZTuLWB
+6sPUn/Mb/woz+bj/6tFVvtJMr/vNvXvkXmuV5an35LOj1c5Q9rHmKyx/DPvk
+jf3VNszXf6MP7MbBUR2/Xeb1AvHn2WxYvvJD9Dlb7Us9sO36QTp6fu2ZnXfU
+h6UvzyK/itGhfzN9XYaHgyHMvcoaBx8dvrAdcq/SD+ZHWu/rVtBP9c31X9kR
+d1SWeL6eWJ/dvvfXV30atr7+dv8sbPa3oZSzX9Pe9VHYfyW+o0z1ud+luol5
+ribgm33yW33SZliPnr+Vqe0valSTUqb1bLhOi4LPl2f3cnqe2mWKWF8SPq+v
+xXa1LfyalYdQ88/6/nTpx35asyH5yvsY99v662Kz6mm9W/ar6uuvJjzd+pC2
+K0x9hudOKOOaRcj5dKj3JfYN7Hd7t9T3b2JIt8m7z/v3PPQM3v7UTK6eYXcU
+nvUn6l1fc/3jdfWpaDG455cnX7YH/aX1zyFsz0uXEs6hvQCg5OX84jRPU/vk
+zrN0tnU6Lud5nrdpN9e50rZ8XurfFgnbtI/rH0Cs08uS61xh2/4ShMxtS8hh
+PkszbdOxbjGEbSvJh7Mv218br89w+7ZfSWTpxfqSbptrar8Il8ttiRxlLnFu
+bYvSVVNu+7LIXM72UeYqc9t7f/a+8TqZ3rXXi9NHp9AoUy7SfiG39blwnqdt
+n6X3CVm07Qizb63havu1rc71xQTbusV6Vubi21aztEabDjI96x6EOpdvv8zL
+uf71LZ3LL+3ouUrj25HJRTpGO2I5CY1r074eC9+2v8gRX9+OV6djsiUWt6yt
+rK05S2tsvNIhpaOFNu3qfk3tlxilJ7VjmWR61161/T546/zx6ZPzOqxMcupQ
+H9ZftN+t/33x8vSD3z69/dv/5vzjP/zP/+H09gcyx+ntf7X++4P33j2709s/
+/D13mv7d6e3ffPvdd39TPr73a7/29rt/8KP//PLjT2W2X//102//8Pydb/zk
+3Z/+17/48a/GN/5sm/jON/7knU+2iZ+8+6fvfSgT37Spbe6fv3m82Kcyyy/K
+T7/5v/8ff+V/+1vb/06/8dvn37mDsjaJR6CsVYdA8WsxMlBWjWagrLLGQEmY
+svcLp+wLpuyDw5R98JiyDzOm7EPElH1YOGVfMGW/WR0GiseU/RwwZT9HTNmb
+IV6W4VHUEANQ1BCPj2KGGICihhiAooYYgJIwZW+GGIBSMGVvhhiA4jFlb4YY
+gBIxZW+GGIBSMGVvhhiA4jFlb4YYgBIxZW+GuF1LHhlFDTEARQ3x+ChmiAEo
+aogBKGqIASgJU/ZmiAEoBVP2ZogBKB5T9maIASgRU/ZmiAEoBVP2ZogBKB5T
+9maIASgRU/ZmiOc4PIoaYgCKGuLxUcwQA1DUEANQ1BADUBKm7M0QA1AKpuzN
+EANQPKbszRADUCKm7M0QA1AKpuzNEANQPKbszRADUCKm7M0Q+zI8ihpiAIoa
+4vFRzBADUNQQA1DUEANQEqbszRADUAqm7M0QA1A8puzNEANQIqbszRADUAqm
+7M0QA1A8puzNEANQIqbszRC78R+HVkMMQFFDPD6KGWIAihpiAIoaYgBKwpS9
+GWIASsGUvRliAIrHlL0ZYgBKxJS9GWIASsGUvRliAIrHlL0ZYgBKxJS9GuJc
+xn8cuhliAkozxAAUNcQElGaICSjNEBNQEqbs1RATUAqm7NUQE1A8puzVEBNQ
+Iqbs1RATUAqm7NUQE1A8puzVEBNQIqbszRDn8R+HVkMMQFFDPD6KGWIAihpi
+AIoaYgBKwpS9GWIASsGUvRliAIrHlL0ZYgBKxJS9GWIASsGUvRliAIrHlL0Z
+YgBKxJS9GeI0/uPQaogBKGqIx0cxQwxAUUMMQFFDDEBJmLI3QwxAKZiyN0MM
+QPGYsjdDDECJmLI3QwxAKZiyN0MMQPGYsjdDDECJmLI3QzyP/zi0GmIAihri
+8VHMEANQ1BADUNQQA1ASpuzNEANQCqbszRADUDym7M0QA1AipuzNEANQCqbs
+zRADUDym7M0QA1AipuzNEIfxH4dWQwxAUUM8PooZYgCKGmIAihpiAErClL0Z
+YgBKwZS9GWIAiseUvRliAErElL0ZYgBKwZS9GWIAiseUvRliAErElL0ZYjf+
+49BqiAEoaojHRzFDDEBRQwxAUUMMQEmYsjdDDEApmLI3QwxA8ZiyN0MMQImY
+sjdDDEApmLI3QwxA8ZiyN0MMQImYsjdDPI3/OLQaYgCKGuLxUcwQA1DUEANQ
+1BADUBKm7M0QA1AKpuzNEANQPKbszRADUCKm7M0QA1AKpuzNEANQPKbszRAD
+UCKm7NUQL3n8x6GbISagNEMMQFFDTEBphpiA0gwxASVhyl4NMQGlYMpeDTEB
+xWPKXg0xASViyl4NMQGlYMpeDTEBxWPKXg0xASViyt4McRr/cWg1xAAUNcTj
+o5ghBqCoIQagqCEGoCRM2ZshBqAUTNmbIQageEzZmyEGoERM2ZshBqAUTNmb
+IQageEzZmyEGoERM2ZshjuM/Dq2GGICihnh8FDPEABQ1xAAUNcQAlIQpezPE
+AJSCKXszxAAUjyl7M8QAlIgpezPEAJSCKXszxAAUjyl7M8QAlIgpezPEYfzH
+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
+ED44hg7hg2MURInbED44hkeUuA3hY2NsQ7gf+3q+DuGDY+gQPjiGDuGDY+gQ
+PjiGDuGDYxREidsQPjiGR5S4DeFjY2xD+DT29XwdwgfH0CF8cAwdwgfH0CF8
+cAwdwgfHKIgStyF8cAyPKHEbwsfGWIfwmMe+nt+G8NEx2hA+OkYbwkfHaEP4
+6BhtCB8doyBKXIfw0TE8osR1CB8cYxvCl7Gv5+sQPjiGDuGDY+gQPjiGDuGD
+Y+gQPjhGQZS4DeGDY3hEidsQPjbGNoTHsa/n6xA+OIYO4YNj6BA+OIYO4YNj
+6BA+OEZBlLgN4YNjeESJ2xA+NsY2hM9jX8/XIXxwDB3CB8fQIXxwDB3CB8fQ
+IXxwjIIocRvCB8fwiBK3IXxsjG0I92Nfz9chfHAMHcIHx9AhfHAMHcIHx9Ah
+fHCMgihxG8IHx/CIErchfGyMbQifxr6er0P44Bg6hA+OoUP44Bg6hA+OoUP4
+4BgFUeI2hA+O4RElbkP42BjrED6Xsa/ntyF8dIw2hI+O0Ybw0THaED46RhvC
+R8coiBLXIXx0DI8ocR3CB8fYhvBl7Ov5OoQPjqFD+OAYOoQPjqFD+OAYOoQP
+jlEQJW5D+OAYHlHiNoSPjbEN4Wns6/k6hA+OoUP44Bg6hA+OoUP44Bg6hA+O
+URAlbkP44BgeUeI2hI+NsQ3h89jX83UIHxxDh/DBMXQIHxxDh/DBMXQIHxyj
+IErchvDBMTyixG0IHxtjG8L92NfzdQgfHEOH8MExdAgfHEOH8MExdAgfHKMg
+StyG8MExPKLEbQgfG2Mbwt3Y1/N1CB8cQ4fwwTF0CB8cQ4fwwTF0CB8coyBK
+3IbwwTE8osRtCB8NQ0BO66NwLi3l/FKmhcCllOvd9U6mokzNub7+fV7OL04r
+oUt5OssYI+CLkymfZM5lDvV3n6ZtWqf8+b/It+sakvwTXL1xv8iiYa4b8etS
+ISznbdPBp7rpOuViuz9Qll/q73lt6WnbV+fr+cay+PV3N8t0rlutyy9FPvog
+68/TvK5//X2R3Qxl3VdXL3rUOesjBEKVlm26T8lez3WvllxPa6a6rig7FBaZ
+Kj6vay2yL6VuZq5tVSrQ7GT2Etff5yi/51Qx8rLta2/rF6ePTh+8df74bk9a
+1xSf7Ewwaif4SXzjZ++1zvPTn73z6fvaZz5978M//2af1P7z7Z+/ef+y0vO+
+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
+R0mB5R4QnISSAss9IDgFJQWWe0BwPEoKLPeA4ESUFFjuAcHJKCmw3AOC41FS
+sOYesTDeVdJyDwpOyz0oOC33oOC03IOC03IPCk5BSYHmHhQcj5ICzT0oOAkl
+BZp7UHAKSgo096DgeJQUaO5BwYkoKdDcg4KTUVKguQcFx6OkYMs9Fsa7SjT3
+gOBo7gHB0dwDgqO5BwRHcw8ITkFJgeUeEByPkgLLPSA4CSUFlntAcApKCiz3
+gOB4lBRY7gHBiSgpsNwDgpNRUmC5BwTHo6Rgyz0i410lmntAcDT3gOBo7gHB
+0dwDgqO5BwSnoKTAcg8IjkdJgeUeEJyEkgLLPSA4BSUFlntAcDxKCiz3gOBE
+lBRY7gHBySgpsNwDguNRUrDlHjPjXSWae0BwNPeA4GjuAcHR3AOCo7kHBKeg
+pMByDwiOR0mB5R4QnISSAss9IDgFJQWWe0BwPEoKLPeA4ESUFFjuAcHJKCmw
+3AOC41FSsOUenvGuEs09IDiae0BwNPeA4GjuAcHR3AOCU1BSYLkHBMejpMBy
+DwhOQkmB5R4QnIKSAss9IDgeJQWWe0BwIkoKLPeA4GSUFFjuAcHxKCnYcg/H
+eFeJ5h4QHM09IDiae0BwNPeA4GjuAcEpKCmw3AOC41FSYLkHBCehpMByDwhO
+QUmB5R4QHI+SAss9IDgRJQWWe0BwMkoKLPeA4HiUFKy5x1wY7yppuQcFp+Ue
+FJyWe1BwWu5BwWm5BwWnoKRAcw8KjkdJgeYeFJyEkgLNPSg4BSUFmntQcDxK
+CjT3oOBElBRo7kHBySgp0NyDguMHlwIBOrk8zWdXfDy/PLmlOJl28sWyZJma
+vEwl+ZjLdH4hv8+h/j7Jt36qS8lMqTZBmZf6e0rr8lG+9XWpLMvHvMjUXOrv
+Mcu82dVvS13JEutU3UjI6+9LqauWBWKSf5a1lWPdnSmuv0dZKtetxrnuX1zf
+SDKf/bS03xeZznWpZZKpUtckO+HdtK4/xSTfznXVoe7pumvK/+L0kcyxyMJF
+Ni6tkUJdxyS7lKYgU2Hd77qFtrfSWrK2ULdR92HdG9kRPyW/0czbtE658x/V
+b3NdQ83Lcl2/qzS57k1ZtjaqbZymba2yZ3OdirU1tzauzbseozTXfZ1lUdvr
+yvDBW+eP7/ZU2Ulpgyd7Dc13tNvFN/5Me92fvPNJ637v/ul7H/6xTf1Ye+7P
+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
+d2EVOFne+7L+HpxMh/Wam6zJy1Iypyzj07a8rNXLv9t72WWrqf4l4LpON9ff
+s+yGn6Ksv8y+/l43nVPdkqu/lzLJtJ/qrkWZkgbv+//i9NHpg7fOH18LcN3+
+k10CjNqwP4lv/Oy9dkB++rN3Pn1fj8On7334f/fJP9dj8u2fv3nvsv/zj3/1
+F9dvH1PhUHsaBmcuKJwUUTjZoXDKQsLJDiUF2aOkIM8oKcgJJQV5YUlBQUlB
+mVBSUDxKCsqMkoISUVJQFpYUZJQUbFZ0frIrq18LKwrBUSsKwVErCsFRKwrB
+USvKwDErCsHxKCkwKwrBSSgpMCsKwSkoKTArCsHxKCkwKwrBiSgpMCsKwcko
+KdisqH+yC9ZfCysKwVErCsFRKwrBUSsKwVErysAxKwrB8SgpMCsKwUkoKTAr
+CsEpKCkwKwrB8SgpMCsKwYkoKTArCsHJKCnYrKh7sr8F8bWwohActaIQHLWi
+EBy1ohActaIMHLOiEByPkgKzohCchJICs6IQnIKSArOiEByPkgKzohCciJIC
+s6IQnIySgtWKyjFCsDQrSsFpVpSC06woBadZUQpOs6IQHLWiFByPkgK1ohSc
+hJICtaIUnIKSArWiFByPkgK1ohSciJICtaIUnIySgs2KZsZzr2pFIThqRSE4
+akUhOGpFIThqRRk4ZkUhOB4lBWZFITgJJQVmRSE4BSUFZkUhOB4lBWZFITgR
+JQVmRSE4GSUFmxVNjOde1YpCcNSKQnDUikJw1IpCcNSKMnDMikJwPEoKzIpC
+cBJKCsyKQnAKSgrMikJwPEoKzIpCcCJKCsyKQnAySgo2KzoznntVKwrBUSsK
+wVErCsFRKwrBUSvKwDErCsHxKCkwKwrBSSgpMCsKwSkoKTArCsHxKCkwKwrB
+iSgpMCsKwckoKdisaGA896pWFIKjVhSCo1YUgqNWFIKjVpSBY1YUguNRUmBW
+FIKTUFJgVhSCU1BSYFYUguNRUmBWFIITUVJgVhSCk1FSsFlRx3juVa0oBEet
+KARHrSgER60oBEetKAPHrCgEx6OkwKwoBCehpMCsKASnoKTArCgEx6OkwKwo
+BCeipMCsKAQno6Rgs6IT47lXtaIQHLWiEBy1ohActaIQHLWiDByzohAcj5IC
+s6IQnISSArOiEJyCkgKzohAcj5ICs6IQnIiSArOiEJyMkoLVik6Z8dxrs6IU
+nGZFKTjNilJwmhWl4DQrCsFRK0rB8SgpUCtKwUkoKVArSsEpKClQK0rB8Sgp
+UCtKwYkoKVArSsHJKCnYrGhiPPeqVhSCo1YUgqNWFIKjVhSCo1aUgWNWFILj
+UVJgVhSCk1BSYFYUglNQUmBWFILjUVJgVhSCE1FSYFYUgpNRUrBZ0ch47lWt
+KARHrSgER60oBEetKARHrSgDx6woBMejpMCsKAQnoaTArCgEp6CkwKwoBMej
+pMCsKAQnoqTArCgEJ6OkYLOigfHcq1pRCI5aUQiOWlEIjlpRCI5aUQaOWVEI
+jkdJgVlRCE5CSYFZUQhOQUmBWVEIjkdJgVlRCE5ESYFZUQhORknBZkU947lX
+taIQHLWiEBy1ohActaIQHLWiDByzohAcj5ICs6IQnISSArOiEJyCkgKzohAc
+j5ICs6IQnIiSArOiEJyMkoLNik6M517VikJw1IpCcNSKQnDUikJw1IoycMyK
+QnA8SgrMikJwEkoKzIpCcApKCsyKQnA8SgrMikJwIkoKzIpCcDJKCqoVrUwI
+ls2KYnA2K4rB2awoBmezohiczYpScJoVxeB4lBQ0K4rBSSgpaFYUg1NQUtCs
+KAbHo6SgWVEMTkRJQbOiGJyMkoLNii6M517VikJw1IpCcNSKQnDUikJw1Ioy
+cMyKQnA8SgrMikJwEkoKzIpCcApKCsyKQnA8SgrMikJwIkoKzIpCcDJKCjYr
+GhnPvaoVheCoFYXgqBWF4KgVheCoFWXgmBWF4HiUFJgVheAklBSYFYXgFJQU
+mBWF4HiUFJgVheBElBSYFYXg5MGl4HdOfu1g6VzmdH558iVun5ZyDsFt0yWc
+Q2rfZwE9zdPUPrnz7NM2LU0wz/M27eY6V9qWz4vMlcI27eN5jtvSy5LrXGHb
+/hKm8+y2JVKZzmHZ1pVq055C2LaSfDj7UrbpqZx9268kR+PFyYepzzW1X+Z1
+BNqm659/PbmlbT84afXc9mWpp6y2jzJXmdve+7P3jdfJ9K69Xpw+Ov3bU2ic
+KRdpwZDbGl04z9O218vshS3aloTat/ZwtQXbdmWN87StPWdfqYtv283SHm06
+yPSs+xDqXL79Mi/SNovN5Zd2/Fzl8e3Y5OKEZ9uvnITHtWlfj4Zv21/kmHvX
+2ikmW2Jxy9rO2p6ztMfGm5LMlUObdnW/pvZLjNKX2tFMMr1rr60Fl7wRuMnP
+0oRLWtpHaZ0lhtYLsxyx3PpdJUrtCLlpWjevyyyyRf3gazOmOepH+S3YhyId
+RT9I75MZnX100r1SnzG2Picf6mGPxfcNxKz7IZ0wLkF3qrZUTK3nlHiOc6uU
+HM4xtGO21JaKc2lHbTrHBpKldWJrlzzXYxNbv81hOcdY2lGT6dYb8loDcWrr
+kuqYF93NSTpg0N0stfVm3VFXN+r0gxyfGNtSfppWhIbupap1j5yXIol6AHxY
+m1kbzM+TFGTWD7M0c+kf6vGYdr9F+yBtHnWpsB5h7QheOmdadGtODtyiM67N
+nHKbUZzAuX9IsvrcVu/m9Qhri8iPVVq0RWTT1jypNuPFx92HeP6jk3To9nEJ
+sifaM+RQLpP+EmvfXpqCuklKc7GtBamjfY/fiiA6XdFUiyDOuk1fe9WkK8rS
+7LFvsXZa/S3Xltb11gILyr41UtB2ETlJszZELQMtEDdv9aIzxrnqp7Zm2i21
+xIs1Zlmjb4dERsOzVZIra2tO2r+K9Ne8W0q7u6xx7WxBVyJiGJVMDvl5zjsy
+6b5ld0jiZE0rXXTfjlvTZtMDGVhenrI1rYxyOWjBJvng9YDFWnFL1t2Ocmxn
+696zHOi2n6G+sPC0tAHChbmqVNvTICtZdFshrT2ijTHOL7VgizZEOF/s47bb
+6+FwodTuIG0w1a3FepzljMNL20lvqFOxHjOhzbU0pPCtXqV8i9L5tTFysbIp
+dVzu5ZujVtd6ZPPclguTkyYy2Ek+FAXy64xKLrspOrV9mEUdchvy3RzXNWrF
+ziLepZ1ASLuGc1F1iKE2UYn6UY5sya1VYp628UCmNl451DI912MljRKXOiVj
+tYutPVKQ6bkuFeucIpTSXnVqHQ5l+TpvPQWosi1TuQ4xuiP1oBY9VjHUVm00
+UdCKlkFcC6s0yXVz7U9ZP0jNZ13F7NbGUs0NchKQl6R9JvSlgpvW46THsDaW
+U81Nso9ee+HaQze3s3ZK+c3UUzZdFtXOtT1kUj/WhpA2WFe3NaPP89ZktbtJ
+z1ilRPbLVemo3a41uZwUyHFef1+ZWgk5GVrW32Oo307bQCtL1S1J/5GuMq+7
+EJVeoErb8ZBTP8qhLOuKpI1lpfXY1F2aZfFtR+btdymM+m2oypBrb8vnXiut
+dryUrKxjqbVTByT5fdkGEtnFZSsVGRPSur6lflvBXGWW0b1uL9Szw7htT/Yn
+bUokiy7TOmyWeu2mLS9f1JPOdYyU/jKd+/bb/tR+42SwqPtTe73Iaa4dqJ6D
+xrr5WtWivHV98/p7Xgs+1a3U9ck5lVvWEz6ZnrZpnfLn/yLfrmsQmZFOVCpF
+0yPZ9LpUlapt08GvfbdOVbK5bGut58AxtwF83VfRCWmKZVkP/8omklhbse5V
+qT1HysblVVtkXfX3pR7vsu5rbYBU55zKSpWWbbpPyV7XJpK11sNcFSzXYg71
+eJT1hFTWJftST2fld1ftfd6qSUaZ9XdxEzX/qxi1vy2rBGhbt7avO1hzjtr2
+S923su1q3coKWDtYXnV3a9ZSW3ypilv3Qg599Xjbsanntq6sHcLXpeqex7rl
+PK+UsR6FXHcw1j1fltg6lJy8rr/XZl1qN4prK6ziUxVqmda+FleeutU4rxcG
+a4cU3ZITnfa7nOWv9ScnBTJVlk0S5Wx9XX+qZ+v1fMOt/qasu6b8rT1S7a8l
+rbUhJwn1AdPadabqmlZZLHUbbX+rX5hqo1SxFVdV90d2xU+r/q/Cu07rlJMz
+JJle/xZL2YTbT/UaZ8x1f7YKjrUbldp5VwkvfhXzWNtza+XawOtRWv1bqX3J
+9rpRlPXRWLEFL6tZq/teGyzXgbH+JIPq2ku2o1rmRrHU9nNbWcny3q9HrbaV
+92tJ1zX5ehAWOSq+Flj9XdbqV5mQU4S61VS7al3nanWl87Q/gyp74uvvddNy
+kGRLbjWT0hf8OoRXJyDHqpz7/m88n5zkrFkOgVjINjDXTz+yT7Ns/Ucyz/bf
+j04fnD8+fVJt8hpHVGGqv20S++Ll6e3flUr/4R+cqsf/RE4F8zZbBavDm1+2
+Ny3LbFFn+/8BRoWLR2VuZHN0cmVhbQplbmRvYmoKNiAwIG9iagoyMzk3NQpl
+bmRvYmoKNCAwIG9iago8PC9UeXBlL1BhZ2UvTWVkaWFCb3ggWzAgMCA2MTIg
+NzkyXQovUGFyZW50IDMgMCBSCi9SZXNvdXJjZXM8PC9Qcm9jU2V0Wy9QREYg
+L0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgL1RleHRdCi9Db2xvclNwYWNlIDE2
+IDAgUgovRXh0R1N0YXRlIDE3IDAgUgovWE9iamVjdCAxOCAwIFIKL0ZvbnQg
+MTkgMCBSCj4+Ci9Bbm5vdHNbMTEgMCBSCjEyIDAgUl0vQ29udGVudHMgNSAw
+IFIKPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFsK
+NCAwIFIKXSAvQ291bnQgMQo+PgplbmRvYmoKMSAwIG9iago8PC9UeXBlIC9D
+YXRhbG9nIC9QYWdlcyAzIDAgUgovT3BlbkFjdGlvbiBbMCAvRml0XQovVHlw
+ZS9DYXRhbG9nCi9QYWdlTGF5b3V0L1NpbmdsZVBhZ2UKL1ZpZXdlclByZWZl
+cmVuY2VzPDwKL05vbkZ1bGxTY3JlZW5QYWdlTW9kZSAvTm9uZQovSGlkZVRv
+b2xiYXIgZmFsc2UKL0hpZGVNZW51YmFyIGZhbHNlCi9EaXNwbGF5RG9jVGl0
+bGUgZmFsc2UKL0hpZGVXaW5kb3dVSSBmYWxzZQo+PgovUGFnZU1vZGUvTm9u
+ZQo+PgplbmRvYmoKNyAwIG9iago8PC9UeXBlL0V4dEdTdGF0ZQovT1BNIDE+
+PmVuZG9iagoxMSAwIG9iago8PC9UeXBlL0Fubm90Ci9SZWN0IFs0NCA0MTAg
+MTc5IDQyMl0KL0JvcmRlciBbMCAwIDBdCi9BPDwvVVJJKG1haWx0bzpiYXJy
+LmZyYW5rbGluZWR3YXJkQGdtYWlsLmNvbSkKL1MvVVJJPj4KL1N1YnR5cGUv
+TGluaz4+ZW5kb2JqCjEyIDAgb2JqCjw8L1R5cGUvQW5ub3QKL1JlY3QgWzQx
+IDM5OSAxNDcgNDExXQovQm9yZGVyIFswIDAgMF0KL0E8PC9VUkkobWFpbHRv
+OmZyYW5rbGluZWR3YXJkQGdhbGEubmV0KQovUy9VUkk+PgovU3VidHlwZS9M
+aW5rPj5lbmRvYmoKMTQgMCBvYmoKWy9JbmRleGVkCi9EZXZpY2VHcmF5CjI1
+NQo8MDBGRkZFRkRGQUY5RjVGN0ZDRkJGNkYwRjhGMkY0NzAxOTE0MDgwQjBG
+MEM3M0YxREM0NTBEMTExNjMzRUE2QgoyNDFGMUE4OUVGREE5RjdDNzU2NEI1
+NTUwOTAxMDY3NEE3MTIwNzMyREUzRDAyOEYyMDhEQ0NEOEUxMjkwNDA1CjU4
+MDM1RDI1RDNEMDRBQTg0NjE4QzBDNEJEOUJEOUNGNzc0RkFFMTcyM0U4OUU2
+MDU0Q0FFM0VCRDZFQ0VERDEKQzVDREM3RTBERkM2QkZEMjREOEI2NTU2MEE3
+QjVBNTk1MEREOUQ1QzFEQTk5Njk5ODFENDdBQjgxMzRDQTE4MwozRjFCM0I4
+MEJDRjNFRTUyMTAyMkJFNjI2RTkzNDMwRTQ0OTVENUNCQjFCNEM4MkY0OEFE
+NDEzRTM0RTI3OEI3CkI2NUIxNTgyOTFFN0I5RTU5Q0MxNkE4ODFDQkFDMzg0
+QTVCMkMyMzZCMEEwMzBBQTcyNDk2MzM5OTQyRTRFNkYKNDAzQTkwMUU1RjhD
+QTQ1MTY5NEJBMjI4MzhBQjk3REI3RTcxQUNBMzg1RTkyQTlBMjFFNjI2NDI5
+OENFODc0NwozNTVFQjM2NzJCM0MyRDMxOEVBRjJDQkI2Qzc5MjdDOTY4NjY4
+NkQ3N0Q5MkU0MDAwMDAwMDAwMDAwMDAwMDAwPl1lbmRvYmoKMTYgMCBvYmoK
+PDwvUjE0CjE0IDAgUj4+CmVuZG9iagoxNyAwIG9iago8PC9SNwo3IDAgUj4+
+CmVuZG9iagoxOCAwIG9iago8PC9SMTUKMTUgMCBSL1IxMwoxMyAwIFIvUjgK
+OCAwIFI+PgplbmRvYmoKMTUgMCBvYmoKPDwvU3VidHlwZS9JbWFnZQovQ29s
+b3JTcGFjZSAxNCAwIFIKL1dpZHRoIDEyNQovSGVpZ2h0IDEyNQovQml0c1Bl
+ckNvbXBvbmVudCA4Ci9GaWx0ZXIvRmxhdGVEZWNvZGUvTGVuZ3RoIDI2Mjg+
+PnN0cmVhbQp4nO1Xe3QU1Rn/zp2Z3TvrZE1md03cJUAgBcWdIRlxkATu5KK8
+BBUNKCUQHklAZa2ISEQCAk3SVSkriqCiVqMgUl884gNpUalSUYmWWsVKrQ80
+1lq12v7d787sZjenPT2ntX/0j/ntOTOz9373u9/7fpcQHz58+PDhw4cPHz58
++PDhw4cPHz58+PDhw8f3hoQ/Wc7+kfGPIrmfARJ0Zwl1n98bKpGz+6mFw4o3
+J1EqPqg3GCKnZDelwUJqlaK0/40wGnJSXO7IjnocaH4/saMLOSeURDwB1D6K
+PO1/DDnoLdcKx0J9XzgXoqQoLIiQVBKEaC31n/h4kKR/YwKp71EA9GhI2J0S
+z3xhhWinFkOJHonGTitFgrLT4wkoHlAOAwcNhoohQ3FMq8wZQ0BVcTlqIakq
+LeBO+0eHazTJk1AA1fjBsOFnnDkC2SGzsOc7hZSeFYOkYZgwkkiaVFUNFugA
+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
+ZifYl/MImVaOklk1JPClkK7i48YOr996qrt734GjfyehMZuqln1L1BE7Rx85
+8I5y9YqHe196PIChNfW0rfHq8qV3z1alE+8cObbs/WYS0nBibvuznyYG3/Pm
+7rexJVbJlqETiwEG3DNydyV2eWjWBS+decXhDb0rOxWJzqlqPVb1Bi4qO79q
+TXf3niKabWFpkMiicazMNvCigQ64n9ibuO281zaKQiMeRfn+X/U6NkmVJMUb
+ksVLUsRFREyquZuAIOzMtbMKJYUNqVggiKSweOKGRSTf1UvZzbM83IV9rRx1
+1RZtpZztWVWlX2uP7JRc6ydyW3WLW7bPVPo45UZov1d2juZeUr4lp/mO3h2S
+8+p4JPnGWpL/9WWjsLtHwUKiV5T7Naled049cYRFqUL68ZXUQtbY1Uoke+OT
+lD5pxZDcJ0/fkOcaqhZY0ztzJJrXX3VvAWqOgvapJuUp3G4+L0Vh7ypR2VuW
+NVbBLSh3fxTswtndhY79mGU3VmSXac44YjQvk+dSleZtXuAmQnMb5ZnKNPdf
+9STTiHtPUz0bZ289aoGQ3i23z4JZVv1ubmqOkuZEIIKxlGPyv7h0+/Dhw4cP
+Hz58+PDhw4cPHz58+PDhw4eP/zv8AylQi2oKZW5kc3RyZWFtCmVuZG9iagox
+MyAwIG9iago8PC9TdWJ0eXBlL0ltYWdlCi9Db2xvclNwYWNlL0RldmljZVJH
+QgovV2lkdGggMTMxCi9IZWlnaHQgNDEKL0JpdHNQZXJDb21wb25lbnQgOAov
+RmlsdGVyL0RDVERlY29kZS9MZW5ndGggMTYzNj4+c3RyZWFtCv/Y/+4ADkFk
+b2JlAGQAAAAAAf/bAEMADgoLDQsJDg0MDRAPDhEWJBcWFBQWLCAhGiQ0Ljc2
+My4yMjpBU0Y6PU4+MjJIYklOVlhdXl04RWZtZVpsU1tdWf/bAEMBDxAQFhMW
+KhcXKlk7MjtZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZ
+WVlZWVlZWVlZWVlZWf/AABEIACkAgwMBIgACEQEDEQH/xAAfAAABBQEBAQEB
+AQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMA
+BBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygp
+KjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaH
+iImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX
+2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAA
+AQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFR
+B2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6
+Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SV
+lpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl
+5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APSaKKKACiimsyopZiFVRkkn
+AAoAdRVPTNQj1O1NzAkiwlysbOMeYB/EPY9quUAFFFFAFe+uhZWU9y0ckohQ
+uUjGWbHYCs1V1+7AczWNgjDIVY2mcfUkgZ/CtqigDFGnazwTrxPr/oaYqO5/
+tnT4TNLq2nNEvLNcwGMAfUN/St6uSsks4dXf/hIY86m0reRNcHMLLn5RHn5V
+OMccHNAGzoWqS6pbSSy23lBH2rICdkw/vLkA4/CtSiigAooooAKKKKACiism
+bVJLmeW00hEnnj4eZ8+TEfQkdW9h+JFAF68vbawtzPdzJDGOMsep9AO59hXP
+apa6l4j0y5/dvaWpjbyLZjsknbsX/uj0X8/StSy0WOK4F3fStfXw5E0o4j9k
+Xoo+nPvVbVdQlOpHT1votLXyxIJ5FDGXrkJu+UYxznJ56UAS6VqjzXi2EmmT
+2WyASJ5jKflBC4wpOK2a5CwsBdz3upSa3fC2jAhS43ogdV5Zs7cbdxOD7Glt
+NQ1OW5Sysb3z4rhXaK5u4MOirjLALgMDngkDn1oA6a8vLaxgM13PHBEP4nYA
+VT0/XbK/G6NmjidwkMkw2Cc/7APJ/Ks7UfCourBx9o+0ag+3dc3Y3ZXOSoAx
+tU9PlxT5fDTvCk32pX1SORJI55I/kTb0RVH3U9hz6k0Abl1cw2du89zKkUKD
+LO5wBWVpOuSarqlzBHZSw2sCKfNl+VmZuQNvbjnnnpxT7fRmlnS61e4+3XEZ
+3Rpt2wxH1VPX3OT9Ks6Tp50+KcPL5ss87zO+MZLHgfgMD8KAL9RXFvDdQNDc
+RJNE3DI6gg/hUV/ex2Fv5suTlgiKOrMTgD0GT61kXl3q0G2S7vdM06N2wibG
+lck9Bklcn6CgCfRVexvr3S97vbwKktuXOSqPuGzPcAqcexrarldLGv2U17Pe
+acLy5ncYkWdI12KPlGOcHk/nWo19qk4ZINJML4+/czKFH/fJYn9KAMjU9Uut
+Qjb7FNLbwyO0FosWBJdSDgtk/djX17469M9RbJJFawxzSebKiBXfGNxA5P41
+znh3TptHiQahbzT3afuEnQh1EY5G0cbB655J9a2jqcIkRDDdguAR/oz4GfU4
+4oAvUUnaigCtqFmt/am3eWWKNiN/lNtLDuueoB9qltreG0t0gt4kiiQYVEGA
+BUtFABUU9vBcx+XcQxzJnO2RQwz9DUtFAGFr0EpnsD9ilvLCEsz28O3JcY2E
+gkAqOePXFTaPaXJubjUtQjEV1cAIsIbd5MY6Ln1JJJ/+tWvRQAUUUUAFFFFA
+ENzbQ3du8FzEksLjDI4yDVOy0HS7CYTW1lEko4EhyzD6E5IrSooAKKKKACii
+igAooooA/9kKZW5kc3RyZWFtCmVuZG9iago4IDAgb2JqCjw8L1N1YnR5cGUv
+SW1hZ2UKL0NvbG9yU3BhY2UvRGV2aWNlUkdCCi9XaWR0aCA0MDcKL0hlaWdo
+dCAyMTUKL0JpdHNQZXJDb21wb25lbnQgOAovRmlsdGVyL0RDVERlY29kZS9M
+ZW5ndGggNTg3Nz4+c3RyZWFtCv/Y/+4ADkFkb2JlAGQAAAAAAf/bAEMADgoL
+DQsJDg0MDRAPDhEWJBcWFBQWLCAhGiQ0Ljc2My4yMjpBU0Y6PU4+MjJIYklO
+VlhdXl04RWZtZVpsU1tdWf/bAEMBDxAQFhMWKhcXKlk7MjtZWVlZWVlZWVlZ
+WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWf/AABEI
+ANcBlwMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJ
+Cgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGR
+oQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNU
+VVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaan
+qKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T1
+9vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQAC
+AQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS
+8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNk
+ZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1
+tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAM
+AwEAAhEDEQA/APSKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooprsERmY4CjJoAHdUUs7BVHUk4rFvfFWk2fBuPNf+7GM1
+57q2r3eo3MrS3EhiLHYgOABnis3OOnFc0qz6HtUssVr1GdteeO3ORaWmB/ek
+NY1x4r1ids/ahF7IKwqXFYucnuz0IYOjHaJek1jUn63034MRRHrGpJ92+myO
+mWJqmFJpwjNRzG3sYdjatfF2rwEbphMO4cZzXRaf45tpSEvoWgb+8vI/LrXC
+eVS7D9R6VSrNdTnqYGjPoexWt3BeRCW2lSVD3U1PXj9jeXWnzCW0maNvTPBr
+vNB8Uxai629ynk3J4GOjGuiFdS0Z5GIy+dL3o6o6Siiiug84KKKKACiiigAo
+oooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACii
+igAooooAKKKKACiiigAooooAKKKKACsbxVefY9BuCpw8g8tee5/+tmtmuH8f
+3eZLa0B4UGRh79B/Ws6srRZ04Sn7StFHEHqaAKAKlRM1wt2Pq0rDFQmpljqV
+I6sJFWMpiciusXtUgiq0sVSCKsnUM3MpiL2o8r2q95VHlVHtCecoGL2rd8M2
++y6jlK525fn8hVAxZ4ArpdEgCW7yY6naPoP/AK9dWF9+ZyYyty0XbqdC17El
+v5rhgAduAMnNSQTxzpuicMPY9Kx9QbYLaIEgjMzY9ulZMbSwSeZA5jfvjoa1
+rY32VXltofLTrcsrHZ0Vh2uvpwl4hjb+8OhrYhnimXMUiuPY11068Ki91mkZ
+xlsySiiitiwooooAKKjmnigQvNIkajuzYrBvvGGmWpKxM9zJ6Rjj86lzit2T
+KUY7s6KiuOtPEl/eyTS+XHb28Y4U8kn3P0rrbdme3jdwA7KCceuKiFaM20uh
+MKkZ7ElFFFamgUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQ
+AUUUUAFFFFABRRRQAUUUUAFeVeKLv7XrVy4PyhvLX6Lx/OvStUuhZ6bcXGcF
+EJH17frXkcmWl55Pf61y4iWyPYyqndym/QZGmatRx0kSVbjSvPnM9mUgSOp0
+jp6JU6JXNKZzymRrHUgjqZUqUJWLmYOZXEdHl1aCUuyo5yecqKgB3HovNdVZ
+QeXbwRd8DP16msS2g826ii7M2T9Bya6QuIYpZ24EaE17WAVqbmzz8dUvaPzM
+m8k868uHH3VIiX6Dk/0qsVqaJCIIw33iN7fU80hWvHrtzm5M8GWruVXQEEYq
+Dy2ibdE7xH/ZNXmWonXNZRk4syaGLq2pw4Czq4/216UreJtSTgwwtjuKgkSq
+0iV2QxVRdSXUmtmWZPFWqHhY4E9yM1Qudf1eYkNdiMeka4qORarSLXQq85bs
+zlWqdytM0k7bp5pJW/2mzTQAo+UAfSnsKSNDJIqKMliAKrmuY8ze50GkwkWl
+vH3nfefp/kV2FpNLJPgtlcdPSsDT4wbpyPuQII1+vf8Az710WnphGf1OBXdh
+I2hzdz18PHlgXKKKK6zoCiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooooAKKKKACiiigDmfG1yI9OigB5kfcfoP8iuAjGST6nNd
+H40uzPqrRA5WFQg57nk1gxLXm15Xkz6bAw9nQXnqTxJVuNKiiWrka1585Gk5
+D40qwiU2NasotcspHLOQipUoSnKtSqtZORg5EQSjZU+2ggAEntUp3diOYl0m
+HdcyykcIoQfU8n+lXNUOLSOAdbiQL+HejSIitgrHrKS/59P0qK8bztV2j7tv
+H/48f/rV9JL91hlE8zFzvJ/cRsMkmoytTkUwivHcTgaK7Co2WrDCo2FYyiQ0
+VXXIqrKlXmFQSrURdmZSRmyLVWRa0JVqpItdUJGEkUXFWdJQfbPNb7sKlz/T
+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
+3pCWNeRjJ3cY99fuPXox5Yss5pDSZpCa5Wy7DSozlSVPtQJZ0+7ID9RQTTSa
+xc3H4XYtK+443lyv8KNTDf3XaNB+NNJphNZSxdZbSLUI9hXu71v+WiKPYVUm
+E0n+tuXb2HAqcmoZDXJPE1ZbyZvCKWyKphiTkJk+rc0KvmtHF/ff9BSyGp7B
+N12zdokx+JrTCwdSoky6suWDZuw3G6QRhQFxxVmqdmuXZvTgVcr6k8gKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+KKKACsvxBN5WmOo6ykJ/j+lalct4uutpSIEfu1LH6ngVth4c9RIyrS5YNnJS
+yeZO7ds4FOQ1WU1Mpr6Jo8RlpDVhGqmjVOjVjJGbRcRqsI1Ukap0asJISdi4
+jVOrVSVqmV6xcTWMi4r1csB5l2p7RqW/E8D+tZivWxpS4geQ/wATYH0HH+Nc
+9X3YnbhlzTJ9Tk22hQdZCEFVx8qhR0HFF8++9ij7RrvP1NNzXzOJqXqvy0Pd
+hG0UPzSZpuaTNczmOwpNNJoJppNYymWkBNMJpSaYzYrmlI0SGu1V3anu1V3a
+oSNoxEHLjPQcmtDTVIti56yMWrM52Njq2FFbkMe1I4l7ALXs5ZT95yOfFysl
+E0bZdsK+p5qWkAwAB2pa9s88KKKKACiiigAooooAKKKKACiiigAooooAKKKK
+ACiiigAooooAKKKKACiiigAooooAKKKKACvO/Elz591IQfvvxz2HAru7+Uw2
+M0i/eCnH16CvOb6Evc/vJFRVGAOpP4CvRwEVzOTOHGTslEzwalQ56cmtK10m
+aUZS1bH96Y7R+VaMWhy/8tLlUHpEn9TXfUxVOOlzijQqS2iYaK/XafyqVcjq
+K6BdCs/42mk/3n/wqddE089LXP8AwJq5njqfmafUqr3aOdVsVMj1sv4dsmyV
+WaLP91z/AFqpL4dmTm2uw3+zIuP1FNYmlLrYiWCqrbUrq9Sq9Up0urFsXcDK
+v98cqfxqSOZXGVOa05bq62OVqUHZovxsc5HJHQV1FtH5UMcQ/hAB/rXNaVH5
+10mfuhsn6Dn+eK6KeXyraWTuFwPqa8zGTUd+h6+AheN+5R375Zpf77kD6Din
+ZqJRsRV9BTs18VOreTbPd5R2aM0zNGahzHyjiaaTTS1MZ6zcrlKI5mxUTvTW
+eoWelY1jEV2qB2pWaovvOF9TirSN4ot2ib7iFT0GXNb1ou6bd/dFZGnLukml
+7fcFbtkuIi39419JgYctK/c8jES5pliiiiu05wooooAKKKKACiiigAooooAK
+KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAZLGk0bRyDKsME
+VktplvaSKLW2ALcl8ZYn61s0U1JpWTFZXuZsdjI3LkKPzNWEsYl+9lvqatUU
+hjFhjT7qKPwp9FFABSFVbqAaWigCB7aN1KkcHqOoP4Vz2o+GV+aWxbypOuzP
+yH/CuoorSnVnTd4szqU41FaSOc0O2ngjZ7mPy3xtA/Hmr1+3yQRf3m3t9BWi
+8Kuc9D7Vka0lzHJ50URkj2bWx/CPpXHmE5zpyaWrNsLTjBqPYg8zJJ9aN9Uo
+51kGVOfan76+Ua7nrcpZ8ykL1XL00vRYfITl6jZ6iL0wvTsWoEjPUTNTS1Rl
+qpI0URzNRCfnZv7gJqItVmCFzHGCpAlfGcdhW1ON3ZBUajBs1rOMx2sa/wAR
+5P1NbabY1RMgHGACetZ1uu6UYGdozj+VcdI0k2oQSuzyLPHC00z4MaM7sGDA
+8gcbRjGDivqIR5YqK6HgN3dz0Wis/RZHexIZi6xyPHG5OS6KxAOe/A61oVQg
+ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACi
+iigAooooAKKKKACiiigAooooAKKKKACiiigApCMjBpaKAMa+0SKZjJFmOT+8
+v9RWVNbXdv8AfjEyD+JOv4iuupjxI/3hz6iuStg6VXVrU2hXnA40SxsceZtb
+0cYp2xyMqNw9VINdJcadHL95Ecf7QqhJosHP7hl90Y1588rl9mR1Rxi6oySk
+n/PNvyphST+4a0/7IhHV7gf8DpP7Jts5Jmb6tULLavdGn12PYy2Uj7zov1NM
+yhOFLyH0UVuJptsv3bbP1yatxWjqMRxBB9MVtDLX9qREsc+iMGKyuZOkawL6
+t1q9bWS2x3GV5G9zgflWulix++4HsKsJaxJ0XJ9TzXdSwlKnqlqck6857sg0
+9DhnI68Co5tFspnlYoyifmVEcqsn1ArRorqMRkUaQxLHEoREGFUDAAp9FFAB
+RRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFF
+FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUU
+UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQ
+AUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAB
+RRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/
+2QplbmRzdHJlYW0KZW5kb2JqCjE5IDAgb2JqCjw8L1IxMAoxMCAwIFI+Pgpl
+bmRvYmoKMjAgMCBvYmoKPDwvTGVuZ3RoMSAzNzU5Ni9GaWx0ZXIvRmxhdGVE
+ZWNvZGUvTGVuZ3RoIDIxIDAgUj4+c3RyZWFtCnic7X0HfBzF9f/M7vXee9U1
+SSfdne6kU7HKWZZkVavbkm3ZkrvBjjvGBoPpYDAQegmG0MEUWW4HJlQHQsCB
+gEMSCAlJyC+BIEIoIYB1+r/ZuZNOtkmA8Cufz58bvfvuzM7Ozrx58+a9md0T
+wgghOdqOWNTR3h2OIu5zTjF8zV68emgtjZ+9DyG8YPFpG13+v4fnQ8JvEOJ/
+vGzt8tU/fLf2AYQELyMk1i5ftWUZze9rRajz9hVLh5b8oeqp0xG66k5IjK+A
+BPmT0mqElG9D3Lti9cbT0/e7DCHVP1etWTxE46d9gJDo8Oqh09eqEfMinBNB
+out7Q6uXpvPr4Mu5ds2GjTR+1fnk/Nr1S9eqn/7n3ZA/FyF9DkLCXQilrkaT
+n3Mg/ADtRvvRo+gp9FP0KvoIS9AgugA9gf6I3kUfoi8wwkKsxzach761T+o8
+/mokZ59EAmREaPzz8XdS942/AzxUZKVcDTEjzz+ZMq4ZHz0+LXV1Kpn6mUCK
+VNy1KuYFSP0Aj45/ztSQ+HicxJmLyDF3xQfCXamHU7dOqc5atB5tQqejLWgr
+OgNtQ2ehs9F56EJ0EboYXQK8OBuOL0WXoZ3ocnQFuhJ9H12FrkbXoGvRdeh6
+dAO6Ed2EbgY+3oJ2oVvT50h8F4TruLPkzO3obnQfegDwDnQnugvdg+6F+P3A
+/QfQQ5BGU2j8QUi5Df0QUu+GVJKLpD0MYRjtQSNoL9oHfUbjmVgSPYkOoIOA
+j0BvHkKPoR+hx6Efn4SefZpLIymZ+JfnpN/PoMPox+hZ9Bz6CXoeJOMF9CI6
+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
+evzyesy41uPE+o71DOTau96b20Byj683WBrQetf6yHp2XeOa3rW71/R+r3F1
+70ur8anQlFOgSStDy3tX7F7euyy0pHfp7iW9i0OLeodCg70LQwO9C3YP9M4P
+ze2dt3tub3+or3cO5J8d6unt3d3T2x3q7O3a3dnbHprVOwvS20Itva27W3qb
+Q429Tbsbezsa8cxQQ289G3ciJ0YO+Fvr2O74wMGTDtrX2pm19rfsH9jZtbYP
+bMzZVqy0nG25wsIq4YuhX2an+QrzreaHzXwld8DK1mq2a5i16u1qJqJOqF9W
+v6XmIfVtakZ5hfJW5cNKtl25UPk35biS97ASP6x4QvGSIjHItisWKtYoWKWC
+pLCqhCJU1KCUO+VhOVsZltfI2+XsFXKckIeiDQm5N9BQI2uXLZSxt8pwQubP
+a/ibZFzCJCRw4m/icTEzLsaIxS6MEVYBsCLg8j6sdzawj2Gy2sNHGF+5p6c7
+GGxJCse7WobFHfOG8cXDvm7yneicOyy4eBj1zp3Xtwfjy/v3YGZGz7COLAZz
+8Qt27kT22pZhe3ffCHvbbfba/pbh7eQ4keCOx8kxgiz9wQUbNm3YsDG4IQhf
+QAs2QMrGTfDHAYZvwE0byZmNGxBkCX7JZwOlDZsWboJrIbJgwwZS6qYgiREi
+d/j/94P/tyvw/+3HtHABIkMKpTawb/AViEVCVI7a0CzU8xiS41uQEVXgF/bV
+1YkKhY9DlEEu/AISwRC8JaHlMXKrtcZTIriM7VQ31QgvY3pQzdhv33wWvo5o
+ysNHcPjN0ddGVWPPqsvDo0dHiyJY7VZzpFMwQqFA4MkJMSUBfzwWi1YzJcV+
+T46C4dKK46XVbCzqYFhdJqWaIXHMvnGsna0f8zJb3NO6i/g46DM6tSIR63TI
+fTGXsqXNE8+18HkiAcsXCQPxWk/v5uacn0lMAZs9YJIA2m2AY0/zFZ9/yFd8
+MYdX98VjzF/K+6q9gi1yKcMXi27Jdei9RbaqFrlSzldYjRabUKRWSPIbh8Zu
+tPiMEonRZ7H5SFm+sWnAEeP457xn+DqUg/zo90Td9PY9grzjf9knVeJWT3L8
+LwkHOfLJ5B6THBmwwuCXSjw5EuTiebDa4/fBbJxwJKRIhjWsTBawez0eh0Ru
+QJ4ck1Bj79L08nuRqaamRmMsL1PH1MDZhQsGYpa20Sg2hxcMWExHorFtFx0+
+jE2HFwzQw6II6CPr1GrsJwf/yd2KIsFgv89goP0WYN1CBevJ8fvjpZh2llHo
+Yd28PTKBoawoVu6Q8eakLF08ub0kGCrWCWT4CoHKUx2b1hBQC57GB/GaRd58
+PZ8Vq+SYN6bQSnkCY76Hd6ZaL2VZqUH77NjrII87EeLFQTIdKIjK0K0Z/jqZ
+q/dbpHq9FJE11QJ/jKwySi0BsEn2FhUJvcl0w71gxyTEqs5iE4kVE4snIeyB
+BkKDgjWjQWjeaDkOj0bDoyCkmnIQUuueb1hMUaQfBJvncef4S9TF8ZgbWKIn
+ku5gcXGI8XjURMy1k4e8uH/GwNqzZ6XudRcWunH95rvWVZpCM4KlA/W5qQdM
+kaaqC64urys0zHBUzG38weOlLaVOfH792tnVudpAAW9FQSC388yecHddsUoS
+bT8F/y5QnWdIDVvDNWOfFc6MWFJXGgtnkF2U9vG/8mR8D4zsSyn/Rmwo+Djz
+HFIgEx5CbuRPN9NPzFJtNw9szoMlEa6tEWK3JsSzubaOBY+O1pAv4NhREDLr
+Y9+0AOCVT6egCqBYE4+D+Aj06bFOtIBe52AIi4hY8WSsQGKombep7oLXruvo
+2/XmBfElvXVWiYDlSRRiZahpaUPblt6C8Jwz2hqWNYXlEpmId9jsMWuMXreh
+646Pb78Lo4fmaux+q8bmtznyLTJP0FOz6e4V6+9ZVeLOdYlMQQTjmEjakyBp
+GuRE6yifnkBa5mZQkBbmKiRGpnQjTWBaJ8SKTivXPisxuxP8LGHAVNnB8Puq
+V1DJYaZIDj9LTp4ceOizB1IvcFLS+uDf75qd+iC48NotF1yy6prFRcxNI2O3
+tVCB6Lz13Tvm79o4/diVZevuhZ6HNrGXQZsK0DBtEZFt5qqEUqx1aV3QJotJ
+DjWyPIrzSB8ekOM2v19gzoi9mau3vDPA1TtAXIqEYKrYB0l7YeCUh8MqoiKs
+B76NIql4MCcMJY9bfdwhNE+iFI+dRnjDXChWSPh8EIpUFF8kVpJjpTi1Bb9C
+jpfDBCClbJKYAw6YBqSpw1IjTAx+oyR1tdQUIGNl5/jn7GLgWAA9kuaYUJtk
+rkkY5HbksAtzlbhNaJLJcatQJYXDR/EcpB3/4AAca7VmQXL8rb2QQ8C1VoFb
+BeDE7UvkdJo5nUqamG5gkHDtsLqcY1lC/S2WOyFL2ZzKzKIZXkITpcClfrxT
+rJDyueMNMmc04I855MDHIZLKu92RZ5Kl7pSYch2OXIs05ZCqpAIBfPGuLQhI
+zfnArabxd3k3872oBr1BubXXZlOayAYVCigPMTeiYjIGSNVNUPW9cg4/2Csj
+iAP7cnLKw9WHcBgsEElaPiTQsoS4vFvHyYeOOMiJ8OyMfBDVQaYkykDQQaMQ
+yQy1/57bZPg5RTHFS9Uw83FGCcdlNdH7k2YKD5gilovlFYMX9C24YVXFtFOu
+nVsw2/eJRkeEE+9XmbUS/fTB5StLbv7k/rmDw5/d2LNjeZ1Vxqu355sl3nzv
+9M33LF1z3/oKnQ4XFMZtfqNUanDqxsYchRabTtJ/30c33Tq2Z4HR7bfFqMzy
+zgYLJIxeysyPYSowvrTgeNMoTaMkjQhwH6BHRvYWjV4pANgGxvwuL8cY7yG8
+GCWQDIwYHYkrZU4ZIwO7YYqlwJkIQY5zOHx0NKqitgL5WBPib1xWRglwgpst
+w3Ra0ENa5pB3ttwR9QdidnnKJnNQOZY7Yv5A1CHDb8vtsYA/6pB7JSqJQABf
+jHTsk8wx79nMUcqH38gcU67ia4GrepSf4SpirtmfkKi6aGVxGKoJwrc3kzCl
+wpmq4WvlmQo5o6RCk9WYvDXRPOz4e4wV7peL+rPut8+u8HSJk3jZQa3JlJ5L
+lsLskTWfgiYh1Rj5d/kmJVmQMac5u3uiqozV3b59gWNakVcmEjCsUC4Rmxy5
+VmueVSG3F/v9Uaccr+jbubhYrFDJFcYcS07YKpUr5EpfdRG7RUL1rSStRXnV
+0JYYWpSZSSPMNWAoSJirgaE5zLN7Cwr04iTzYkKRQPpAl1uisnapJqWgnEgS
+sJcMQtVYlLQvIT1Ztgme+/0BfBIZSZumep1AiLHBwKuWOuN508vNwtSWEwTl
+DKHOFQ3kFjtlGnPqFnyeQRyQqqUCCZS6bOymCe33jJT2mnTs14xfrpbwIFWi
+9gZS4bGDedb0rNsDrbeglkxP6mEKkSKxskvPdY6eLPVlzXs4fIRr4pdmmDoh
+TgwAosp7CNPHHnYXptshx9eTrvieI88qg+nu+oyMffE3qTmP9o1gHcxwlejX
+tHYJqTwSMYbDkpDJZEkyS/Z5i2QyCRwcRN54p1kmNR3ChTByQ+Mf7FN5mNYi
+0K0JFzkyqsi3nH4bw5GikMCZ2+nsnRjOxIsgaoC4D9Eo1Q7qmIp8qcurwrGY
+OgbN3v/t3mXKMPRg4qSAu4I9U2ZBzl/BMSIeHC8F66T2iM8bscmY1CU8jTOS
+kxNxatjUdYzUEYZ0uzRe+ECoNuKSYRMP58ideWW+PdaAOWs02794G6SB5RMZ
+sX3xx4n0c2Jxpac8/9gYi/MrvEoFXJUZI0m+BlWh/bQfDgSUkpBSqSO76Y5Q
+FGAfcpR15RFGaJR+pjUvN5QjU5EjmVSgTOJtB8GSIUZAiKxNT0gLNzDAnSkP
+whxWPqmTw2rK7pFvocwMjylrYex5DAb9iQzWOlhjzJ8lsrykyurTrvXEgrnm
+1OO2CiPD40mtIa8nZJGU5u70F+d5tccMwVy/BrOszBby5oTMkvlGmEEUvpoo
+MxDfNq3xitaxeRI6GCW8S8NhuaMkkAoEu7s7chtuqGcWSlQyPl8GSpVBHePv
+8M18H9KCPTdh0+uYp8Gmd8C3BJknzdL5MPq6PSbqLpPRx599Mpv+q16RZTdk
+tC1n0mc5N3xzx653brz+99e1AN509e+vb0u952rbPjh0bofb1bp9iCBz3Q9T
+ewbab/989y1fDC+YdfunB5bds3l609Y75p1y3+k1jWfeRTwXkCQWRrQN5aHt
+aavVKzgEqlaN7MxTCTFS+7hagvMf3CsQyDzJiXUBHNyX0HfKJuxIzuohEpO2
+5r/ehZlGe463OHnZ7gxbd+6Ptq9KT4uyolxcFOreuLmnIDUaaWjLW3taTW/c
+xl6w+t4NlanFE6PosnBYaKxeePaiur58aaopp6o33fI2aHkc1aFbaMv3qULq
+PMkh5lno41Lm5pG8GjX33FRIlam7Cpz5vYmEsSqTUAX+/IGEu9OYUSgT7eGW
+Bo6OctZgOVka+GalZGmkABtiT2CPwehg0ysFRqPBgIv9Ab8/w602kaMimh+1
+y3gb9blFifyuDOPAGWyP1VpnbZsTcicWVNpjhbna1UpJ6sGKWl2s8LQLy3rK
+bDlSpQRGmFqG3UWtMUtKO8HP6wsCPFYan7O5bfqpPdVaRW55U2jc72GXJPo0
+fEHq+9aiOqKlasbfARfLh5rQocxcNp25fr836o3KrGTtBclCRHGXIgkuPKAu
+hWCozLCkMokLE7LpVn5et4GTIwPZv8oaJkSpBNXUeVSNErHjPMlRbmkh9C0V
+OzkSeVPsnuIJO+j4pQcBe1nruQ8tnrGhb5pFygPnURHrWNMUaS2xRdoWrVjU
+FqnfdGt/aH5HtU7IJ3aSVBppmF8aTAT14fYlK5bMiuDzl920vNjgzLEUhZz5
+Fqk7123Mr/YX1BQFI1W9GzsHdg6EFCaHTmH0WOy5FpnNbdX7iu1Ben4D8F0G
+fui7INk5qDc9opEA/NC9JrVAk+GDhvMC7VmDMIrDh8eOEEH9l7kmfcRJ+zqj
+pzib4l3OcX6MWBTEQko9JqGOtYS9krjSvNvteWbZF6MTwqSVmfPsjnyzlLiF
+UPvLxt/hPQgWUBDNobV/DLmYK2FEGsC/kEn8XaquibWQ+dk9V5NRtAnpv8iU
+rVsnrSHd8fYs78GGi39y7tanL5zJ+bZgGvlnLq6qXlTnk5GGFYHJ94fNj51b
+V3XmI2eyEyNjjNe2rtnnbzq1jpVm2+fB8c+FOmhTJTo7bTeJwxIZqoxEZDBX
+tyUklTKjSe7zeGQ5SebahCZhkpV25XdFPFL2uHVVaKU5bKLmrTlcXq4pN6mO
+cseacqpnEsovvZTokrRJw3rYjHHj93NraDDjxrTpxdj0kcEgEPJ/J9Dn18bK
+63M1/JeYw3xNYEZpBUQEqdfFjLk8Fi61Sdg/4vd4cme8MFLuVPA+Zv7ISmzF
+4YIiAyueYbIr+Xyl3cQWH3vRaFdxx7yV3jwDn5Xqtcfc7K+0JjmfJzfpjuWy
+v1EZ5Xy+IegDnqlAP5uAZ/moLaM9jMy1I3KZi6zX5lsRWVqRJGS+LqtA0yXg
+mqkp5zyrsfI3R1WvEVE4eNxZ0vuTgpvVdIPBGIvHSyeazdxATWKnLLVLKzVW
+l4ZKXUrhlfo8PaPN1V7OVzqKg+U1RpkG/zVVnulq/BzzlC9Pz+dJNYrU06Fl
+ZfFlIVyp0sp4fH2+F+acmaART2N/Cb5NAuel11PFxuIkM28fCgRQRZKpT6jU
+rBF/ZMTGpKwYHyvGxWSrWEyWd4qLQ9Pzk9iUsL6Vg9ltOTtzmEROR85gDqvM
+ceYwMl5ODs8OXnlCIQPJt5tUuM3+eaiZzDIJMUSq3k7I2njIFM7YGUHqMg8M
+LBzg1iyCA+tGB9bBMDpcTlbkqDT9L9eGm//ItgGYgiXpbR8ySGMlaYsoncLj
+hq2QamEDWWZhT9MF8wvz1KU7Z8/cPCdStWXf5jnqwPRIzeLWmIpzzmwNC9ZM
+W3ntYMGng1Wz4+aZNSX9IadCJRSqFDOn1fqaVjXO2tDijefX5OtsOTaFxW90
+eu0ehzav98L5r2u8MXdZIl5M1n/PAp2F+GtBVqvQdel+lbjjh5hB8FiDzPlg
+Rukl8RI3jx/JqNZIErck5P5ma4OqtZxTVeXkUZoEv21CVZElTWN52qAinXHg
+m5aRpfQC+hO1Hx31GRNTqDYYOOsBFS+6Yl7hrJn1XlDNDmeeWSIDP8cXscty
+6uoacxfvmJOb+kKdPyNmjsTijpKhkqK6Qh1+b/PjFzaq/RV5Q5z9IFFK+Z6M
+yZ3SgmekaL9w76byU7qKFDnx3NSv6mZGO5bBeG8cf5d1s6+hkow1NmJDgceZ
+jdxOgxM5JzakvORhIW0z71HciIpAGqVS3FZUwDW/gDxxlBC3ZRYughNbDoej
+6S2H/6ykKXsPmflfQKd/QfbGAzSFLzRVNM8JLb91VemM0+9clNs2o8Qg5rM6
+ldpf3BhdtMISa4sVt5T55WKZkDds8ZiURrdFldi2b+OFz2yvhineoDR5zBVh
+EL3rr2r8XrPP6XdKrPlE3lpAj7zIX438qBxdm+aW1Fp+iCFbsmFmfUKidTdI
+ywNWniI/IywwVpsSYlPzxD5U076Eoo3fmpnZqaTQSZQOffE3LSPbi84es2Cs
+Tggd6/dn+zOl7IsSU57DlWuW1l8/f9nO/tzYoqsWtmytlHIiZ5N9Hl8cL5oZ
+1Gvy6ootRbG4KycjXoubu0CiFhOxq5qG/5iRtbHiusairqUlZad0R5U5pbmE
+b83AtwOgf4OoGPPTq85arbuAPO0eLOYlCefcbIG2gLEWPMMjqs4ox22Ip+Ix
+rR28QR5zG2+YB26nLZyka8YEEy7IE37b32z6B1KoFIyaVYhNMtwmNkEG8WcJ
+W0aIgkdBvY2mNd3AugUDwdEFA8RLeDO9FJ0Q/8/em1MLAo87S271U6Wb0Qfi
+XD8J2QN53rHfW6cNTK9d0hRRimUiluGJ5BVzN9Zu3nv6tOrT7jtl7a3LIh+z
+8xZGZobNDP48VFA+MD1Ha9QKNW6zwWlQKkxGdeXWR7dtfuKChtpNty1wnbLF
+W9UdhrFvHv+cuYF/OthHG9K9YlAhcBEW7o3k+yRJbN8bn2nxJyd3Cp0HEpFG
+V6uqccJbitbAMD8cGzscO8z52pKveNHxa/T69JJftqOVWa+PZdbomRt4IolA
+qDbnGK0Bi+wOYtjqtHfIbFGvt8guXavV8iFpjbdtc2egIVch5vE+tHu0QqFI
+qPZNC3ZJjLn20vBYKLPsybwSLrXnGiUt8y6ZF5Ir5eYAYpE1dTV7O/sqqkaz
+0ELMpO3GdmVEyJZ5mmPNzzSzzmbc/PvnZRh6XPZ8N3Z0Y1M37v77ET026jHS
+q/SMUq8fLGM/q2zMdxXUPlbLoFpce6SsWTkPq9h5LyZc7XSiANmoGR0YAAOJ
+m3nJJAzRgdc44OYPa6I3+87SZvzvbz5578raF2sZXi1W/sv7L5iswZQKDGRm
+MOgUg4HOX/6AAPStwZj2fjMiWwpWQnGc+6b6BhxkXOyfsArIHro/EFCw6Rh7
+u0G10qAtHrqkJzhLL9PGQr9u3dwZrNj48Kb1P1weVrsjzmA4HvTkly66uCu/
+zY2tan3qRx1NvjKfpmOmv8ynndZYs9fi1AqWzi+fFdGxg5GQqco9a0t3UK+Q
+ew12HyNifTMWVNZumh31JvpL3JWlUaOxPTxtKOBZ1DTrjN5Cibgg9VljhzlY
+7qxrN+WXjs0ujDB8rcflUEWLjf4w8R/OAo/uFbAvomh1xhaWMgtHovm6JDO4
+F5yn7KWFtoQ4UdjsbTC3UsWcWU2g6xFkEe+r5Z+6JcHNcMKTrJJTC1rPviKz
+FXl9RTaZ1lvujywqydgKGZx+UdO8bW05ORmhx2PTm0vsDTPGHs6kZNsJiZrK
+FZcuJjr71PHP8U7+LDCk3Kg+sw5nYJ5ANqQH+0qCnPiM/QmzqonW/jWo/OSK
+24nnTrrRoiVzOJEcEBm89fiaa6t7eqdV9fZUTtSd3QrzDtQUWhFprShrap1W
+nu6lQ9BLxZM7F0VQwxwkg28D8jAH9hYWGiRJ5iDZuTDkSPm5TbYG9QTbwX+b
+snPxNufLnixb9qLQV9i5YA9J7dHcvJhbI0z98vjWYZFI5y7y+2JOmVKZ+gKH
+ZFI3ePB8Hnm45rVU7om9c+zveLFMw6VKlTna1K9ShTo7bT/eCu3Xo5q0tlLK
+9RiMKqkEyxGW8sBlGySbYA20KelNMM7mH7DuzSSffCvshF7JObFitA4CMczw
+HWh3eu2jQUvmEYcjKiHv5XVUB4hVHgX3cnIAjLQ0Zz+u0wbdM725uqGwrKmw
+1ZzN96wl3fKj5Kkf8uQOiNl/VNi/GWdfNvD0adc13dUCscwW8fkjdqnaU+Ir
+nB8HPnkJn9Q5cW9o/sRwlFjynK58o6T56o7SvvqoOretpSXQv7XFNcFPRl14
+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
+IK+YW7eBz/8DTNL56AplbmRzdHJlYW0KZW5kb2JqCjIxIDAgb2JqCjE3NzE1
+CmVuZG9iagoyMiAwIG9iago8PC9GaWx0ZXIvRmxhdGVEZWNvZGUvTGVuZ3Ro
+IDIzIDAgUj4+c3RyZWFtCnicXdQxbtwwEAXQXqfQDcwZUpIXMNjYjYsEAZIL
+aLWUsYW1grwucvv8/ydOkeIvdkCK4iMpPjy/vrxu13v/8OO4LT/bvV+v2+Vo
+H7fPY2n9ub1dt868v1yX+99Kv8v7vHcPz9/m/dfvvfXo0NbOosdyu7SPfV7a
+MW9vrXtKqT6ta+3advmvaTzFE+f1q6vVSCqXitJrJJUTy1wjqWSWpUbS4CyH
+GkllZTnWSBrUeaqRVEaWjzWShsLyVCPJE8u5RlIxlucaScPEcsHfi1r1bKuR
+5AvLtUZS5lAGPINnB5bAWQAfWQJnArpK4CyAjSVwFkDyDTgT0FUCZwJmTtKA
+swByGgacCVhmlsCZgIVrZcBZACky4ExA13sBZFIaNTKsJu9Er8Fq8o5cWIPV
+5B1JwPopmBXf67C6gJkvcuBcwMzVcOBcwMyhHDgXMHOPHDgXcFRn4FzAiQQs
+mIKS64wlUdCZi+PAuYAjV8OBcwEntQLnEo30Aq2gVS+CxkNEL7ZRQSsJWGwF
+rZxkBi4LOJEAh4JWdQYuCzjyPAOtoDyzBC4HkCKskAK+SuCygFnTAC4LmEnA
+6irYMp72DFyOHdSLAMzawYk7mGHNsYOaM6w5TqxGhjXLO3FWBdYSXg6FL0BB
+yQ3F8VFQcrvxISo4otwFfBAKzpWGgrXEiVUJa5G3qDOsjCfnrPBBKCnNJ10W
+X7cC7w1eN7xtvs/vrV8+j6Ntd91JuoN4+1y39u/a2m87n+qR7g8xGylsCmVu
+ZHN0cmVhbQplbmRvYmoKMjMgMCBvYmoKNTY2CmVuZG9iagoxMCAwIG9iago8
+PC9CYXNlRm9udC9URk5GVE4rVFRFMURENEVBOHQwMC9Gb250RGVzY3JpcHRv
+ciA5IDAgUi9Ub1VuaWNvZGUgMjIgMCBSL1R5cGUvRm9udAovRmlyc3RDaGFy
+IDEvTGFzdENoYXIgNzIvV2lkdGhzWyA4NzQgMjY3IDUyOSA1NjMgNjc2IDQ3
+MyA0NTkgNDk1IDIyNiA2MDYgOTA2IDYzMCA0ODggMjU4IDUwNwo2NTMgNjMx
+IDMxMiA2NTkgNTIwIDMxMiA1MDcgNDIzIDMzMSA1NjEgNjM3IDI2NyA0OTQg
+MzQ3IDQxOCA1MzcKMjc2IDUwNyA1MDcgNTA3IDUwNyA1MDcgNTAzIDM1NSA1
+MzcgMjQ2IDI0NiA0NzQgNTM3IDUzOCA1MzcgNTM3Cjc0NSAzMTYgMzk5IDQ3
+NCA4MTMgNDgwIDUzNyA1MDcgNTA3IDUwNyA0MzAgMzA2IDUzNyA0NzMgNTA3
+IDM0NAozNDQgMzk3IDQ1OSA1MzIgNTQ3IDQ5OCA4OTggNzExIDgzNF0KL0Vu
+Y29kaW5nIDI0IDAgUi9TdWJ0eXBlL1RydWVUeXBlPj4KZW5kb2JqCjI0IDAg
+b2JqCjw8L1R5cGUvRW5jb2RpbmcvQmFzZUVuY29kaW5nL1dpbkFuc2lFbmNv
+ZGluZy9EaWZmZXJlbmNlc1sKMS9nNjgvZzQ3L2cxOC9nOTAvZzc1L2c5NC9n
+MzgvZzEwMC9nMy9nNC9nMTE2L2cyNC9nMjgvZzg1My9nMTAwNC9nMTA0L2c0
+NC9nODk0L2c2OS9nMTIyL2c4OTUvZzEwMDUvZzYyL2c1OC9nMTcvZzM5L2c4
+NTYvZzI1OC9nNDEwL2cyNzIvZzM0Ni9nODU1L2cxMDExL2cxMDEyL2cxMDA5
+L2cxMDA3L2cxMDEwL2cyODYvZzM5Ni9nMzkzL2czNDkvZzM2Ny9nNDU1L2cz
+NzQvZzM4MS9nNDM3L2cyODIvZzQ0OS9nMjk2L2c0MDAvZzMzNi9nMzczL2cz
+NjQvZzI3MS9nMTAwNi9nMTAwOC9nMTAxMy9nODc2L2c4ODIvZzM5NS9nNDQ4
+L2c5MzYvZzg5OC9nODk5L2c0NjAvZzQ1NC9nODcvZzYwL2cxMDg1L2c5MjMv
+Zzg1Ny9nOTI2XT4+CmVuZG9iago5IDAgb2JqCjw8L1R5cGUvRm9udERlc2Ny
+aXB0b3IvRm9udE5hbWUvVEZORlROK1RURTFERDRFQTh0MDAvRm9udEJCb3hb
+MCAtMTc4IDg4NCA3NDRdL0ZsYWdzIDQKL0FzY2VudCA3MjYKL0NhcEhlaWdo
+dCA3MjYKL0Rlc2NlbnQgLTE3OAovSXRhbGljQW5nbGUgMAovU3RlbVYgMTMy
+Ci9NaXNzaW5nV2lkdGggNTA2Ci9Gb250RmlsZTIgMjAgMCBSPj4KZW5kb2Jq
+CjIgMCBvYmoKPDwvUHJvZHVjZXIoRG9jdWRlc2spCi9DcmVhdGlvbkRhdGUo
+RDoyMDEyMDExNDE2Mjk1NikKL01vZERhdGUoRDoyMDEyMDExNDE2Mjk1NikK
+L1RpdGxlKE1JQ1JPU09GVCUyMEFXQVJEWzFdKQovQ3JlYXRvcihkZXNrUERG
+IDIuNTcpCi9BdXRob3IoKQovU3ViamVjdCgpCi9LZXl3b3JkcygpPj5lbmRv
+YmoKeHJlZgowIDI1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAyNDM3MiAw
+MDAwMCBuIAowMDAwMDU1ODAxIDAwMDAwIG4gCjAwMDAwMjQzMTMgMDAwMDAg
+biAKMDAwMDAyNDA4MSAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAw
+MDAwMjQwNjAgMDAwMDAgbiAKMDAwMDAyNDYyNyAwMDAwMCBuIAowMDAwMDMw
+MTc2IDAwMDAwIG4gCjAwMDAwNTU1OTUgMDAwMDAgbiAKMDAwMDA1NDcxMCAw
+MDAwMCBuIAowMDAwMDI0NjY4IDAwMDAwIG4gCjAwMDAwMjQ4MDggMDAwMDAg
+biAKMDAwMDAyODM5NCAwMDAwMCBuIAowMDAwMDI0OTQyIDAwMDAwIG4gCjAw
+MDAwMjU2MjAgMDAwMDAgbiAKMDAwMDAyNTUwNiAwMDAwMCBuIAowMDAwMDI1
+NTM4IDAwMDAwIG4gCjAwMDAwMjU1NjggMDAwMDAgbiAKMDAwMDAzNjE5OSAw
+MDAwMCBuIAowMDAwMDM2MjMxIDAwMDAwIG4gCjAwMDAwNTQwMzEgMDAwMDAg
+biAKMDAwMDA1NDA1MyAwMDAwMCBuIAowMDAwMDU0NjkwIDAwMDAwIG4gCjAw
+MDAwNTUxNjUgMDAwMDAgbiAKdHJhaWxlcgo8PCAvU2l6ZSAyNSAvUm9vdCAx
+IDAgUiAvSW5mbyAyIDAgUgovSUQgWyjf6jHgUrHkvj5GrI53JzLsKSjf6jHg
+UrHkvj5GrI53JzLsKV0KPj4Kc3RhcnR4cmVmCjU1OTgzCiUlRU9GCg==
+
+---289782389-1782894579-1337340138=:88122--
