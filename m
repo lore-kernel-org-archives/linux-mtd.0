@@ -1,24 +1,28 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SVhOn-0006vN-Qz
- for linux-mtd@lists.infradead.org; Sat, 19 May 2012 11:00:38 +0000
-Received: by lbbgg6 with SMTP id gg6so3331324lbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 19 May 2012 04:00:35 -0700 (PDT)
-Message-ID: <1337425233.2041.17.camel@koala>
-Subject: Re: [PATCH v3] UBIFS: read crypto_lookup from datanodes to znodes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Sat, 19 May 2012 14:00:33 +0300
-In-Reply-To: <alpine.DEB.2.00.1205191027340.18672@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205151101100.17750@eristoteles.iwoars.net>
- <1337087022.2528.204.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1205161451250.27131@eristoteles.iwoars.net>
- <alpine.DEB.2.00.1205191027340.18672@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-M50YmhQPM/FBi1MAemzZ"
+Received: from plane.gmane.org ([80.91.229.3])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SVhrT-0005y7-HX
+ for linux-mtd@lists.infradead.org; Sat, 19 May 2012 11:30:16 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1SVhrI-0006Zx-JA
+ for linux-mtd@lists.infradead.org; Sat, 19 May 2012 13:30:04 +0200
+Received: from rain.gmane.org ([80.91.229.7])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Sat, 19 May 2012 13:30:04 +0200
+Received: from eternaleye+usenet by rain.gmane.org with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Sat, 19 May 2012 13:30:04 +0200
+To: linux-mtd@lists.infradead.org
+From: Alex Elsayed <eternaleye+usenet@gmail.com>
+Subject: Re: [PATCH] mtd: sm_ftl: fix typo in major number.
+Date: Sat, 19 May 2012 04:28:20 -0700
+Message-ID: <jp804k$r4o$3@dough.gmane.org>
+References: <20120317175827.GB12111@agk-dp.fab.redhat.com>
+ <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7Bit
+Cc: linux-lvm@redhat.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Maxim Levitsky wrote:
 
---=-M50YmhQPM/FBi1MAemzZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> major == 0 allocates dynamic major, not major == -1
 
-On Sat, 2012-05-19 at 10:30 +0200, Joel Reardon wrote:
-> +			crypto_lookup =3D le64_to_cpu(dn->crypto_lookup);
-> +			if (zbr->crypto_lookup !=3D 0)
-> +				ubifs_assert(zbr->crypto_lookup =3D=3D
-> +					     crypto_lookup);
+I would appreciate if this could be submitted for -stable, since the 
+negative major number breaks LVM (regardless of whether any such devices are 
+present). I found this out the hard way when my system failed to boot. 
 
-This "crypto_lookup" name is too long. Would you mind if we re-name it
-to "ksa_pos" instead (KSA position)? Then we'll wrap less lines.
+-stable note: This is in Linus' tree as 
+452380efbd72d8d41f53ea64c8a6ea1fedc4394d
 
-We can do this as a separate patch on top of this one. How does this
-sound to you?
+For those who don't know (and potentially as a preface for -stable) the 
+reason lies in LVM's filtering; in lib/filter/filter.c, lines 230-233:
 
+        if ((line_maj <= 0) || (line_maj >= NUMBER_OF_MAJORS)) {
+            blocksection = (line[i] == 'B') ? 1 : 0;
+            continue;
+        }
 
---=20
-Best Regards,
-Artem Bityutskiy
+Basically, it scans through /proc/devices until it hits a line starting with 
+'B', at which point it starts processing block major numbers and 
+whitelisting them to be used as PVs. However, the negative number causes a 
+problem because it a.) sorts to the top of the list and b.) short-circuits 
+the if(). This causes blocksection to flip back to zero immediately, 
+terminating the enumeration of permitted devices before any actually get 
+whitelisted. As a result, *all* block devices are ignored, with messages 
+such as
 
---=-M50YmhQPM/FBi1MAemzZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Skipping: Unrecognised LVM device type 259
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPt31RAAoJECmIfjd9wqK0lfYP/icetYjBKbQqms+TYZlBY/Gx
-hl4rTLyuEn+fPPvmvLiY6PvVkrk6kX4mDGh1Bq058Gn0VwWa99NkhsxP4/n4Dis6
-4pQzI5hxsy3Z5DYPXKQMPWf5w2ICHebN2dWnk/gWEF5lK9B4DBwXYWPItBQsLo3x
-m2xlJuj7/QDEyYUjiJqr8kKS9K9w+oTv51wdIz7jBxspt3PtvFlW2nZyOpoR8+02
-1MQX0javr4PhEZGzpf/V8omls3NvBj1JLKlHt770kGWWIRPgfOas6rEXKR3MLucO
-cNe3UUSPdxN2TXHXiMNkizWvf80jfYis6w7QMb04fK5fKyHQ1fCDm/OBrS9jZhWj
-BihKYxldSyVWCB5ZgbfqqQGpluEnntnJDX7jNRlmUBEbNxdPKffogmAJI+VSaL5h
-UiKZTnCQCNZIKdG/DUoVTtCvNuGxQogPoecf+tx69v1nRR3Ain83xAm6hMQc5Tgy
-YHRDBGQA2tFTmK9rVgWjpgfZTJoWMpVX/EpIG65VLjpqqwWawLhH77gkVexSxJw+
-fcDwselj98MSPbM62REk4Skhk5FPkDJz2e+Tyw2JsMBkLPhr191XEaOTaaoettaG
-Fd01FO+O4YG2FuwkRm8KVa6z/0o7wySC7oAgjApRNlO1osNz23qyVKRznLfPbnHo
-1OhSJI9WExYjMrq4tXWP
-=O5HV
------END PGP SIGNATURE-----
-
---=-M50YmhQPM/FBi1MAemzZ--
+259 being blkext, which LVM explicitly allows.
