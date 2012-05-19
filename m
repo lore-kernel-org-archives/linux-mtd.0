@@ -1,23 +1,23 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SVhyR-00083y-KM
- for linux-mtd@lists.infradead.org; Sat, 19 May 2012 11:37:28 +0000
-Received: by laap9 with SMTP id p9so3327499laa.36
- for <linux-mtd@lists.infradead.org>; Sat, 19 May 2012 04:37:25 -0700 (PDT)
-Message-ID: <1337427443.2041.26.camel@koala>
-Subject: Re: [PATCH] mtd: sm_ftl: fix typo in major number.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alex Elsayed <eternaleye+usenet@gmail.com>
-Date: Sat, 19 May 2012 14:37:23 +0300
-In-Reply-To: <jp804k$r4o$3@dough.gmane.org>
-References: <20120317175827.GB12111@agk-dp.fab.redhat.com>
- <1332008213-3940-1-git-send-email-maximlevitsky@gmail.com>
- <jp804k$r4o$3@dough.gmane.org>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Mh5ecpQdd018BJXQYThK"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-lvm@redhat.com
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SVj7W-0000dr-RI
+ for linux-mtd@lists.infradead.org; Sat, 19 May 2012 12:50:55 +0000
+Date: Sat, 19 May 2012 14:50:18 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Afzal Mohammed <afzal@ti.com>
+Subject: Re: [PATCH 0/3] GPMC NAND isr using standard API
+Message-ID: <20120519125018.GA2407@parrot.com>
+References: <cover.1337090835.git.afzal@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cover.1337090835.git.afzal@ti.com>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, May 15, 2012 at 03:38:09PM +0100, Afzal Mohammed wrote:
+> Hi Tony, Artem,
+> 
+> This series creates a fictitious GPMC interrupt chip and provide the
+> clients with interrupts that could be handled using standard APIs.
+> This helps in removing the requirement of driver of peripheral
+> connected to GPMC having the knowledge about GPMC. The only user is
+> OMAP NAND driver, it has also been modified to use interrupts provided
+> by imaginary GPMC chip.
+> 
+> This series has a dependency on [2], while [2] has a trivial
+> dependency on [1].
+> 
+> With this series plus [1,2], GPMC driver conversion which is going to
+> happen shortly will not create noticable effect outside of
+> arch/arm/*omap*/.
+> 
+> If this series along with [1,2] can be taken in for 3.5, ripples felt
+> by MTD drivers upon GPMC driver conversion would be minimal.
 
---=-Mh5ecpQdd018BJXQYThK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Afzal,
 
-On Sat, 2012-05-19 at 04:28 -0700, Alex Elsayed wrote:
-> Maxim Levitsky wrote:
->=20
-> > major =3D=3D 0 allocates dynamic major, not major =3D=3D -1
->=20
-> I would appreciate if this could be submitted for -stable, since the=20
-> negative major number breaks LVM (regardless of whether any such devices =
-are=20
-> present). I found this out the hard way when my system failed to boot.=
-=20
->=20
-> -stable note: This is in Linus' tree as=20
-> 452380efbd72d8d41f53ea64c8a6ea1fedc4394d
+I tried to take your series of patches, but I had issues with the
+first [1] (I did not try the others): it depends on the following patch,
+which is not in the l2-mtd-2.6 tree:
 
-It is in Linuses tree already, so I cannot add the "Cc:
-stable@kernel.org" tag anymore. You should send a request to Greg and
-explain that you want this patch in -stable.
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg68258.html
 
---=20
-Best Regards,
-Artem Bityutskiy
+and it does not apply anyway to l2-mtd-2.6 because of (at least) the
+following patches:
 
---=-Mh5ecpQdd018BJXQYThK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+http://lists.infradead.org/pipermail/linux-mtd/2012-April/040631.html
+http://lists.infradead.org/pipermail/linux-mtd/2012-April/040724.html
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+So, do you think you could rebase your series on l2-mtd-2.6 ?
+And maybe merge the 3 series into a single one, if they have circular
+dependencies ?
 
-iQIcBAABAgAGBQJPt4XzAAoJECmIfjd9wqK03+4QALksHhNbOLYBQVC5nyg/jSNm
-hpldoW4ykfKTyqpAgnFKB6bYjcQxeoItH4T803CkETiLSG6ewGXNFI8/P6RxoyW1
-yXfmzZtXzqUoFPV4Z+mhg89ryv5A1sprRrxYPQ76lJHMLWv595NU0ztyfjk6SyMS
-AMd0IbCM3JY/sXwfyxSIGJt45VJN9k8BVp9gbXGp4185MXf9jM2qs8J8XcJDIP+3
-uB9HDv7MhB7oiJ+CiJCQ/0guCh47uRq7mbOi5hV47k0WolSQdf8Mmc1KxpnkTbQd
-jwCZO7hwHtACErKHqH6jFYVqqLY3vWQCdhF82LEzobUhbY1TuP0mXMt+TqDx1R4s
-Z2kN8Xe0giehPKA5xh9Oyk7t+rXTfJQs5Zk30skQLEpdTbVZjSs2JvbT9mw0PRZ6
-cfgUEckCVyZccj5Eg04mQSd9XkMhl/GOi+2gVJVVE/ymOjub/fUBO/tKX3EidbHt
-q8tidEnye8CkADMRafpVbfzHYzukrX/5wqh/Rue/qjoJgorKL2+RQPNHXlOfqYGh
-e+CS731DZUD9hMBxCuLSf9TbT95bsuZuS0PdCCy1+kFw1dcqT7G7SAdERr6j6Lrp
-W+aD3EaWPzRGoOSJKBOqDQ6ScMe0gckf0YPhUQKZ7vCR5esvKceNugNmjyKybA1N
-zfXhM17ZQcBjXdpJ7G8i
-=6Aem
------END PGP SIGNATURE-----
+Thanks,
 
---=-Mh5ecpQdd018BJXQYThK--
+--
+Ivan
+
+[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg68581.html
+[2] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg68652.html
