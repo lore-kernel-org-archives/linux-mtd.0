@@ -1,30 +1,23 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWOCX-0004aY-BK
- for linux-mtd@lists.infradead.org; Mon, 21 May 2012 08:42:50 +0000
-Received: from localhost (localhost [127.0.0.1])
- by anubis.se.axis.com (Postfix) with ESMTP id 1F1A419DE5
- for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:40 +0200 (CEST)
-Received: from anubis.se.axis.com ([127.0.0.1])
- by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id RSb6ITRQEkh7 for <linux-mtd@lists.infradead.org>;
- Mon, 21 May 2012 10:42:39 +0200 (CEST)
-Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
- by anubis.se.axis.com (Postfix) with ESMTP id 4C51F19DE0
- for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:39 +0200 (CEST)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by seth.se.axis.com (Postfix) with ESMTP id 494873EC91
- for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:39 +0200 (CEST)
-From: Johan Gunnarsson <johan.gunnarsson@axis.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] mtd: nand: panic_nand_wait expects timeout in ms.
-Date: Mon, 21 May 2012 10:42:37 +0200
-Message-ID: <1337589758-8775-2-git-send-email-johan.gunnarsson@axis.com>
-In-Reply-To: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
-References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: jespern@axis.com
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWQw6-0007Aq-Ry
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2012 11:38:03 +0000
+Message-ID: <1337600494.2483.67.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V4] UBI: modify ubi_wl_flush function to clear work
+ queue for a lnum
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Mon, 21 May 2012 14:41:34 +0300
+In-Reply-To: <alpine.DEB.2.00.1205202126480.29205@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205150943470.17750@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1205201309390.26953@eristoteles.iwoars.net>
+ <alpine.DEB.2.00.1205202126480.29205@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-olgWcxlo9jjiKPsq6Gsp"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Johan Gunnarsson <johan.gunnarsson@axis.com>
----
- drivers/mtd/nand/nand_base.c |   10 ++++++----
- 1 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index eb88d8b..b927e64 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -867,14 +867,16 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
-  */
- static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- {
--
-+	unsigned long timeout_ms;
- 	unsigned long timeo = jiffies;
- 	int status, state = chip->state;
- 
- 	if (state == FL_ERASING)
--		timeo += (HZ * 400) / 1000;
-+		timeout_ms = 400;
- 	else
--		timeo += (HZ * 20) / 1000;
-+		timeout_ms = 20;
-+
-+	timeo += (HZ * timeout_ms) / 1000;
- 
- 	led_trigger_event(nand_led_trigger, LED_FULL);
- 
-@@ -890,7 +892,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
- 
- 	if (in_interrupt() || oops_in_progress)
--		panic_nand_wait(mtd, chip, timeo);
-+		panic_nand_wait(mtd, chip, timeout_ms);
- 	else {
- 		while (time_before(jiffies, timeo)) {
- 			if (chip->dev_ready) {
--- 
-1.7.2.5
+--=-olgWcxlo9jjiKPsq6Gsp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, 2012-05-20 at 21:27 +0200, Joel Reardon wrote:
+> This patch modifies ubi_wl_flush to force the erasure of
+> particular volume id / logical eraseblock number pairs. Previous function=
+ality
+> is preserved when passing UBI_UNKNOWN for both values. The locations wher=
+e ubi_wl_flush
+> were called are appropriately changed: ubi_leb_erase only flushes for the
+> erased LEB, and ubi_create_volume forces only flushing for its volume id.
+> External code can call this new feature via the new function ubi_flush() =
+added
+> to kapi.c, which simply passes through to ubi_wl_flush().
+>=20
+> This was tested by disabling the call to do_work in ubi thread, which res=
+ults
+> in the work queue remaining unless explicitly called to remove. UBIFS was
+> changed to call ubifs_leb_change 50 times for four different LEBs. Then t=
+he
+> new function was called to clear the queue: passing wrong volume ids / ln=
+um,
+> correct ones, and finally UBI_UNKNOWN for both to ensure it was finally a=
+ll
+> cleard. The work queue was dumped each time and the selective removal
+> of the particular LEB numbers was observed. Extra checks were enabled and
+> ubifs's integck was also run. Finally, the drive was repeatedly filled an=
+d emptied to
+> ensure that the queue was cleared normally.
+
+I've amended this patch to use UBI_ALL instead, and pushed to
+linux-ubi.git tree, and in your branch as well. I'll send it to Linus
+this merge window as well. Thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-olgWcxlo9jjiKPsq6Gsp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPuinuAAoJECmIfjd9wqK0/Z8P/2uxoRjDwwz6OHS/9o6kxgpR
+HnZ/j15nH3l565gRFeAJ+Sy1WXKz6Zw0DcBvOTiHb4W3NgjkMvSTKwLSF5Rl7hdX
+Xciome670oDClEUm9Wti9LRQE8AEy7HFKMp4IvmSGaoLsZl7zFRO4p6kOj97SKIJ
+f2bqgZrkw5S20ZI7MCBr21W1dSKVtKRkGzSfDCr57eYgwdco78KaBi7Dm3Le1Uru
+1GU5h5scJlt2ub75W2MAUuMtT5fOwexQ2wqRlLgm2xWfx2iMOU4ZLg6ofrdb6R2k
+JYhkiOSn8l8yuqUuScGKnHq8479tfC1lXBNCJxZXXgdT3O+2dM8kWpeZkoEuGGuR
+a3ZrKDqNuO4TgmQQ0sVOKiJ0Ux80Ruy1fo7padaz91CamHemFMbFxbz2FawVb0Ge
+/pJFcubjJUKRF9KCc3hn7eclYkR4U1LSd66S1IsmKUEAjM8eS6UbrnpYFogp9XR8
+D6s5OF3NMDIitS1bYGIPBkTPNYrRX/gebCPaHuhdOcgE2HDkjCNd8TSHJhh7H0sG
+wSvFH3qJDu98AqTBSqqvxmlHP+/54JAWub4EXUeX3S3Zw8dDlBnKZlUNAbI56Q1l
+z5RvbMY/5gXGYKz5xUbeESxzKOMkqjRrNzDcWD7HNCk/t4ovjUgXwj5NK+vKxh8g
+o8bcU5gEgTfQuZgSQ91U
+=SvPg
+-----END PGP SIGNATURE-----
+
+--=-olgWcxlo9jjiKPsq6Gsp--
