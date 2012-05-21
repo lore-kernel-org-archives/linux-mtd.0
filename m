@@ -1,18 +1,16 @@
-Message-ID: <1337587991.2483.65.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] GPMI-NAND: Define ecc.strength
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <4FB9FC9A.6080805@freescale.com>
+Date: Mon, 21 May 2012 16:28:10 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
 To: Marek Vasut <marex@denx.de>
-Date: Mon, 21 May 2012 11:13:11 +0300
-In-Reply-To: <1337571865-8016-1-git-send-email-marex@denx.de>
+Subject: Re: [PATCH] GPMI-NAND: Define ecc.strength
 References: <1337571865-8016-1-git-send-email-marex@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-8qxEtcgMNK+ixo/eG8j6"
-Mime-Version: 1.0
+In-Reply-To: <1337571865-8016-1-git-send-email-marex@denx.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +20,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-8qxEtcgMNK+ixo/eG8j6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2012-05-21 at 05:44 +0200, Marek Vasut wrote:
+=D3=DA 2012=C4=EA05=D4=C221=C8=D5 11:44, Marek Vasut =D0=B4=B5=C0:
 > The ecc.strength wasn't set, resulting in the following crash:
+> [    2.550000] kernel BUG at drivers/mtd/nand/nand_base.c:3347!
+> [    2.550000] Internal error: Oops - BUG: 0 [#1] ARM
+> [    2.550000] Modules linked in:
+> [    2.550000] CPU: 0    Not tainted  (3.4.0-rc7-next-20120518-dirty #1=
+211)
+> [    2.550000] PC is at nand_scan_tail+0x328/0x650
+> [    2.550000] LR is at nand_scan_tail+0x328/0x650
+> [    2.550000] pc : [<c020841c>]    lr : [<c020841c>]    psr: 20000013
+> [    2.550000] sp : c7443ea8  ip : c7448000  fp : c043dc70
+> [    2.550000] r10: 00000000  r9 : c059dd20  r8 : c7526300
+> [    2.550000] r7 : 00000001  r6 : c7479c08  r5 : c7526300  r4 : c75260=
+98
+> [    2.550000] r3 : c7448000  r2 : 00000000  r1 : 00000001  r0 : 000000=
+34
+> [    2.550000] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Seg=
+ment kernel
+> [    2.550000] Control: 0005317f  Table: 40004000  DAC: 00000017
+> [    2.550000] Process swapper (pid: 1, stack limit =3D 0xc7442270)
+> [    2.550000] Stack: (0xc7443ea8 to 0xc7444000)
+> [    2.550000] 3ea0:                   c7526000 00000000 c7479c08 c02f6=
+8e0 c03d50ec c7526000
+> [    2.550000] 3ec0: c747c6e0 00000000 c0ae7720 00000004 00000000 00000=
+000 c7479c08 c0ae7720
+> [    2.550000] 3ee0: c7479c3c c0593e20 c7572200 c01f6618 c01f6604 c01f5=
+5b0 c7479c08 c0593e20
+> [    2.550000] 3f00: c7479c3c c059dd20 c7572200 c01f57cc 00000000 c0593=
+e20 c01f5738 c01f3d40
+> [    2.550000] 3f20: c74038a8 c74767d0 c0593e20 c04475ec c05901b8 c01f4=
+e18 c03d50e0 c019d438
+> [    2.550000] 3f40: c7403800 c0593e20 c04475ec 00000000 c059dd20 c0447=
+5f8 c7442000 c01f5a70
+> [    2.550000] 3f60: 00000000 c044e98c c04475ec 00000000 c059dd20 c0447=
+5f8 c7442000 c043dc7c
+> [    2.550000] 3f80: c044e98c c0008824 c03d6c30 c040c4e4 00000006 00000=
+006 c03b0ce4 c0bf54e0
+> [    2.550000] 3fa0: c044e98c c04475ec 00000006 c04475f8 0000004c c042a=
+21c 00000000 c042a8b8
+> [    2.550000] 3fc0: 00000006 00000006 c042a21c 00000000 00000000 00000=
+000 00000000 c042a7bc
+> [    2.550000] 3fe0: c000fab4 00000013 00000000 00000000 00000000 c000f=
+ab4 efbbfaa5 eaeafefe
+> [    2.550000] [<c020841c>] (nand_scan_tail+0x328/0x650) from [<c02f68e=
+0>] (gpmi_nand_probe+0x43c/0x5a4)
+> [    2.550000] [<c02f68e0>] (gpmi_nand_probe+0x43c/0x5a4) from [<c01f66=
+18>] (platform_drv_probe+0x14/0x18)
+> [    2.550000] [<c01f6618>] (platform_drv_probe+0x14/0x18) from [<c01f5=
+5b0>] (driver_probe_device+0x74/0x1fc)
+> [    2.550000] [<c01f55b0>] (driver_probe_device+0x74/0x1fc) from [<c01=
+f57cc>] (__driver_attach+0x94/0x98)
+> [    2.550000] [<c01f57cc>] (__driver_attach+0x94/0x98) from [<c01f3d40=
+>] (bus_for_each_dev+0x50/0x80)
+> [    2.550000] [<c01f3d40>] (bus_for_each_dev+0x50/0x80) from [<c01f4e1=
+8>] (bus_add_driver+0x188/0x25c)
+> [    2.550000] [<c01f4e18>] (bus_add_driver+0x188/0x25c) from [<c01f5a7=
+0>] (driver_register+0x78/0x138)
+> [    2.550000] [<c01f5a70>] (driver_register+0x78/0x138) from [<c043dc7=
+c>] (gpmi_nand_init+0xc/0x30)
+> [    2.550000] [<c043dc7c>] (gpmi_nand_init+0xc/0x30) from [<c0008824>]=
+ (do_one_initcall+0x108/0x17c)
+> [    2.550000] [<c0008824>] (do_one_initcall+0x108/0x17c) from [<c042a8=
+b8>] (kernel_init+0xfc/0x1bc)
+> [    2.550000] [<c042a8b8>] (kernel_init+0xfc/0x1bc) from [<c000fab4>] =
+(kernel_thread_exit+0x0/0x8)
+> [    2.550000] Code: e3530000 1affff76 e59f02d0 eb03c16a (e7f001f2)
+> [    2.830000] ---[ end trace 3f05d4c0039432f1 ]---
+> [    2.840000] Kernel panic - not syncing: Attempted to kill init! exit=
+code=3D0x0000000b
+>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Huang Shijie <b32955@freescale.com>
+> Cc: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Fabio Estevam <fabio.estevam@freescale.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> index 9b4c109..f5f3d761 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1436,6 +1436,9 @@ static int gpmi_pre_bbt_scan(struct gpmi_nand_dat=
+a  *this)
+>  	if (ret)
+>  		return ret;
+> =20
+> +	/* Adjust the ECC strength according to the chip. */
+> +	this->nand.ecc.strength =3D this->bch_geometry.ecc_strength;
+You miss to update the mtd->ecc_strength.
 
-How about ccing -stable? Can you find out which commit broke the driver?
+Could you please add it?
 
---=20
-Best Regards,
-Artem Bityutskiy
+I will ack it.
 
---=-8qxEtcgMNK+ixo/eG8j6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+thanks
+Huang Shijie
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPufkXAAoJECmIfjd9wqK0V30QALAFiuSILqyUGg4q97QUSAqH
-5R9Ng9TgqCzlFs5DRMynEshIJwnOieq61cFDMlfGlXmFNYfqneXY0D+pGZJ0LqAd
-Va6qWQ/WKu+yK0GPUzZI+vHCkoh8zFalY2VcJ5EnzwtX7jw8ewlN/5R66+FgWeX7
-KTqVgPNyesVNX6LxwwlIbWdfqPY2R0+opPOU4r6FycCaFsLb2bkNTBP5LRoWvqUy
-mqGtnTrOVLOrYeOTMCqRNyNFolZvHZUp+cUrsfit+v8VKyOKM7cvrnsZitsI9bIo
-g7z/7qyimoCKNhA3Gc/XNYiVfQ/QkUVw3HEPC/wUEF5fzn9zuXTnldJOP3EKT3Jx
-zILyxM9LKaM7UFYt3DrIN7Ka26K/MB8GtJg0ZYMiAEJUFiRWO3eJUlcSCkmlWiER
-4mY9ffZysJGRPpQO6p8rM00G0nyCMHDNuQ4yHhTNokvO6iK7kzQUMa7qATxJOE1+
-cy/ew4BXHGvVcBRnGDeRmAAgMQJ5AVaznymzvZICc/UNEkrzhy0polnCX/lwQ+23
-fC4Vbog27PpqYMU+/IkHjDYwXfkOH9weibYhUmsvR2T0D8TYsEd3huR3Pdr0w1GB
-fn8/ELdemTWwJiG0uoyVA5u8w7I94tsa3S13+viDyVUjb71TDKUh9pC+hgfsAECF
-OVN9ckaz5DXJ+cHf9TIJ
-=dxv3
------END PGP SIGNATURE-----
-
---=-8qxEtcgMNK+ixo/eG8j6--
+> +
+>  	/* NAND boot init, depends on the gpmi_set_geometry(). */
+>  	return nand_boot_init(this);
+>  }
+> @@ -1494,6 +1497,7 @@ static int __devinit gpmi_nfc_init(struct gpmi_na=
+nd_data *this)
+>  	chip->options		|=3D NAND_NO_SUBPAGE_WRITE;
+>  	chip->ecc.mode		=3D NAND_ECC_HW;
+>  	chip->ecc.size		=3D 1;
+> +	chip->ecc.strength	=3D 8;
+>  	chip->ecc.layout	=3D &gpmi_hw_ecclayout;
+> =20
+>  	/* Allocate a temporary DMA buffer for reading ID in the nand_scan() =
+*/
