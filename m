@@ -1,21 +1,16 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWHcY-0001lG-Lj
- for linux-mtd@lists.infradead.org; Mon, 21 May 2012 01:41:15 +0000
-Received: by dadm1 with SMTP id m1so7038583dad.36
- for <linux-mtd@lists.infradead.org>; Sun, 20 May 2012 18:41:12 -0700 (PDT)
-Date: Mon, 21 May 2012 09:41:23 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Marek Vasut <marex@denx.de>
+From: Marek Vasut <marex@denx.de>
+To: Shawn Guo <shawn.guo@linaro.org>
 Subject: Re: [PATCH 1/4] GPMI-NAND: Define ecc.strength
-Message-ID: <20120521014121.GO5427@S2101-09.ap.freescale.net>
+Date: Mon, 21 May 2012 04:40:09 +0200
 References: <1337562140-5739-1-git-send-email-marex@denx.de>
- <20120521011455.GL5427@S2101-09.ap.freescale.net>
  <201205210336.41860.marex@denx.de>
+ <20120521014121.GO5427@S2101-09.ap.freescale.net>
+In-Reply-To: <20120521014121.GO5427@S2101-09.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201205210336.41860.marex@denx.de>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201205210440.09310.marex@denx.de>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
@@ -28,16 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 21, 2012 at 03:36:41AM +0200, Marek Vasut wrote:
-> Dear Shawn Guo,
-> 
-> > So non-DT probe has the same issue?  Or this is a DT probe only issue?
-> 
-> I started using DT, so I'm now fixing everything to work like it used to. Damn 
-> this DT conversion broke about everything.
-> 
-So you are saying the issue is introduced by gpmi-nand DT conversion?
+Dear Shawn Guo,
 
--- 
-Regards,
-Shawn
+> On Mon, May 21, 2012 at 03:36:41AM +0200, Marek Vasut wrote:
+> > Dear Shawn Guo,
+> > 
+> > > So non-DT probe has the same issue?  Or this is a DT probe only issue?
+> > 
+> > I started using DT, so I'm now fixing everything to work like it used to.
+> > Damn this DT conversion broke about everything.
+> 
+> So you are saying the issue is introduced by gpmi-nand DT conversion?
+
+I doubt so ... but noone ever could test it without DT bindings as you 
+NAKed/stalled every single attempt to add the platform binding code. So this 
+code was rotting in the tree, who knows how many bugs are still in it. Now I 
+guess it's about time to start squashing the bugs.
+
+Best regards,
+Marek Vasut
