@@ -1,25 +1,27 @@
 Received: from anubis.se.axis.com ([195.60.68.12])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWOCV-0004jN-Vr
- for linux-mtd@lists.infradead.org; Mon, 21 May 2012 08:42:48 +0000
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWOCX-0004aY-BK
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2012 08:42:50 +0000
 Received: from localhost (localhost [127.0.0.1])
- by anubis.se.axis.com (Postfix) with ESMTP id 0BED119DE0
- for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:41 +0200 (CEST)
+ by anubis.se.axis.com (Postfix) with ESMTP id 1F1A419DE5
+ for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:40 +0200 (CEST)
 Received: from anubis.se.axis.com ([127.0.0.1])
  by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id buhE9TWS2iXP for <linux-mtd@lists.infradead.org>;
- Mon, 21 May 2012 10:42:40 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by anubis.se.axis.com (Postfix) with ESMTP id 2EB1219D82
+ with LMTP id RSb6ITRQEkh7 for <linux-mtd@lists.infradead.org>;
+ Mon, 21 May 2012 10:42:39 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by anubis.se.axis.com (Postfix) with ESMTP id 4C51F19DE0
  for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:39 +0200 (CEST)
 Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by thoth.se.axis.com (Postfix) with ESMTP id 2CD0B34E5D
+ by seth.se.axis.com (Postfix) with ESMTP id 494873EC91
  for <linux-mtd@lists.infradead.org>; Mon, 21 May 2012 10:42:39 +0200 (CEST)
 From: Johan Gunnarsson <johan.gunnarsson@axis.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/2] use hrtimer in nand_wait
-Date: Mon, 21 May 2012 10:42:36 +0200
-Message-ID: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
+Subject: [PATCH 1/2] mtd: nand: panic_nand_wait expects timeout in ms.
+Date: Mon, 21 May 2012 10:42:37 +0200
+Message-ID: <1337589758-8775-2-git-send-email-johan.gunnarsson@axis.com>
+In-Reply-To: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
+References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: jespern@axis.com
@@ -32,28 +34,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+Signed-off-by: Johan Gunnarsson <johan.gunnarsson@axis.com>
+---
+ drivers/mtd/nand/nand_base.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
 
-I've been researching a bug where blocks have gone bad when combining NAND writes with long periods of disabled interrupts. Such as lots of serial port writes (think printk) in interrupt context.
-
-I've narrowed it down to the nand_wait routine and its dependency on a reliable jiffies counter. Sadly, jiffies is not reliable when handling of timer interrupts are delayed or even completely discarded. If interrupts are disabled for, say, 3 timer periods, jiffies will stop counting during this time and have a very fast increment by 3 when interrupts are later enabled. This combined with unfortunate timing can cause the timeout loop think a 20ms timeout is happening when just <0.1ms has passed in wall clock time.
-
-To illustrate the jiffies/interrupt-relationship:
-
-Interrupts: |      |      |                    |      |      |      |
-Jiffies:    |      |      |                    |||    |      |      |
-
-This obviously only happen on multi-core CPUs, where the write and interrupts are executed by different cores simultaneously. Switching to hrtimer-based timeout solves this problem for me. I found a second (less serious) issue which included in the first patch.
-
-Johan
-
-
-Johan Gunnarsson (2):
-  mtd: nand: panic_nand_wait expects timeout in ms.
-  mtd: nand: use hrtimer to measure timeout in nand_wait{_ready,}
-
- drivers/mtd/nand/nand_base.c |   42 ++++++++++++++++++++++++++++++++++--------
- 1 files changed, 34 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index eb88d8b..b927e64 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -867,14 +867,16 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
+  */
+ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ {
+-
++	unsigned long timeout_ms;
+ 	unsigned long timeo = jiffies;
+ 	int status, state = chip->state;
+ 
+ 	if (state == FL_ERASING)
+-		timeo += (HZ * 400) / 1000;
++		timeout_ms = 400;
+ 	else
+-		timeo += (HZ * 20) / 1000;
++		timeout_ms = 20;
++
++	timeo += (HZ * timeout_ms) / 1000;
+ 
+ 	led_trigger_event(nand_led_trigger, LED_FULL);
+ 
+@@ -890,7 +892,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+ 
+ 	if (in_interrupt() || oops_in_progress)
+-		panic_nand_wait(mtd, chip, timeo);
++		panic_nand_wait(mtd, chip, timeout_ms);
+ 	else {
+ 		while (time_before(jiffies, timeo)) {
+ 			if (chip->dev_ready) {
 -- 
 1.7.2.5
