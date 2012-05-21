@@ -1,24 +1,14 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWT72-0005z2-US
- for linux-mtd@lists.infradead.org; Mon, 21 May 2012 13:57:29 +0000
-Message-ID: <1337608854.2483.71.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/7] [RFC] UBI: Export next_sqnum()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Mon, 21 May 2012 17:00:54 +0300
-In-Reply-To: <4FBA4448.20509@nod.at>
-References: <1337101871-31181-1-git-send-email-richard@nod.at>
- <1337101871-31181-2-git-send-email-richard@nod.at>
- <1337173272.24809.52.camel@sauron.fi.intel.com> <4FBA4448.20509@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ZVmqaDdU6kPZ8Mtmfu2+"
-Mime-Version: 1.0
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWTBd-0006N5-PJ
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2012 14:02:15 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC v6] UBI: Fastmap support (aka checkpointing)
+Date: Mon, 21 May 2012 16:01:55 +0200
+Message-Id: <1337608916-49771-1-git-send-email-richard@nod.at>
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de, tim.bird@am.sony.com,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +18,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+v1: https://lwn.net/Articles/481612/
+v2: https://lwn.net/Articles/496586/
+v3: Didn't release it to linux-mtd
+v4: http://article.gmane.org/gmane.linux.kernel/1297626
+v5: http://article.gmane.org/gmane.linux.kernel/1298488
 
---=-ZVmqaDdU6kPZ8Mtmfu2+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Changes since v1:
+       - renamed it to UBIVIS (at least in Kconfig)
+       - UBIVIS parameters are now configurable via Kconfig
+       - several bugs have been fixed (design and implementation bugs)
+       - added lots of comments to make the review process easier
+       - made checkpatch.pl happy
 
-On Mon, 2012-05-21 at 15:34 +0200, Richard Weinberger wrote:
-> > +	/* TODO: Before checking version - check the CRC.
->=20
-> The CRC covers only the fastmap data, not the super block.
+Changes since v2:
+       - minor bugs have been fixed
+       - renamed it to UBI fastmap (as Artem requested)
 
-Everything should be protected with CRC.
+Changes since v3:
+       - changed the on-flash layout (added padding fields, turned the
+         EBA storage into an array)
+       - fixed some corner cases (the protection queue needed some extra work)
+       - removed the data type hint logic
+       - rebased to Artems mtd tree
 
-> >   	for (i =3D 0; i<  nblocks; i++) {
-> > +		/* TODO: you basically perform the scanning here - you should
-> > +		 * share the same code as we use in scan.c: use process_peb().
-> > +		 */
->=20
-> What exactly do you mean by that?
-> process_eb() will not help much because the fastmap data is written=20
-> "raw" to the flash. (Without any interaction from the WL sub-system)
+Changes since v4:
+       - fixed static volume handling (used_ebs and last_data_bytes contained
+         bad values in some cases)
 
-It still contains EC and VID headers. So you can use the existing code
-for scanning it.
+Changes since v5:
+       - merged it into a single patch
+       - rebased to Artems mtd tree (addressed all renames)
+       - fixed issues pointed out by Artem
+       - redefined fastmap parameters
 
---=20
-Best Regards,
-Artem Bityutskiy
+The fastmap super block has to be located within the first 64 PEBs.
+A fastmap can use up to 32 PEBs.
+The fastmap pool (the number of to be scanned PEBs while attaching)
+is now derived from the flash size.
+The current formular is Np = max(min(5% of total PEBs, 256), 8)
+Comments/better ideas?
 
---=-ZVmqaDdU6kPZ8Mtmfu2+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+For now a fastmap contains only used and free PEBs.
+Shall we also take care about bad PEBs?
+What about bad_peb_count corr_peb_count?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v6
 
-iQIcBAABAgAGBQJPukqWAAoJECmIfjd9wqK0vGkQAMkOgV6tOpMnivvD8/gCQWNu
-sgvjZ7IkmcdvcJRyemYNGpVHaA/vvwTAjFh3fOnPLB+3dmJoJdGRSTQ0CQt1kYFN
-34US9nCapc82Jq2LapUngJ/AiPfV4QO6NoN25PMcZHTQsNsy8JGWTXbi7pFsS/Q8
-kK8A6mghzQDE08up6q00+NuZrhe8eOmz09GviIod+JIpKVfIU34z7sKcghFdceZw
-GibPxJcFyngBwdFs24gB6rMwUC1mnKZzRxpPv+s/0RBoWoXCZEXe1AWDPhFPoyL2
-79yAQS2XHOe/95mjfweJEVKct5x2Eb9XU7WLSdqz8eum/u7kU7+/gw3YfDrO2nLh
-PYb6MVkxcE5mZBj8/+l7i3EaaF43YKXmWi3kbR2p+JGiK+qmGBQL3sYRVRqagXSW
-B3L2GYc8fzCiIeMY372SuwOhvNeQYT9NMQ1ti+iSmxyLHEW31lePOYDpP9km2Z+V
-EYZkQA6MYXF2/ZgtWCKq3lkDyfBx3HxX7XkznduiV6DAbzwXkSC5f3yltd/Qtycx
-73T6NtSiRoOgMVtaP8S+a7MaKYp5WDGUD1AvwpII4BJ2nA6G6zozYMBZvrt95Zev
-CvdMXLJTvQ2DClbfhG5/CLRwEj5yMvyQ5thNarlGOa/5t3bPuo8xmBIf4zdERj4d
-5AudAdcZLTTgG50ulGBV
-=3/dh
------END PGP SIGNATURE-----
-
---=-ZVmqaDdU6kPZ8Mtmfu2+--
+[PATCH] [RFC] UBI: Implement Fastmap support
