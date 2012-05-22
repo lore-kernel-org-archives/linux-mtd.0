@@ -1,24 +1,20 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWkpT-0007TE-Az
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 08:52:33 +0000
-From: Johan Gunnarsson <johan.gunnarsson@axis.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Tue, 22 May 2012 10:52:22 +0200
-Subject: RE: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
- nand_wait{_ready, }
-Message-ID: <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
-References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
- <1337589758-8775-3-git-send-email-johan.gunnarsson@axis.com>
- <1337673190.2483.115.camel@sauron.fi.intel.com>
-In-Reply-To: <1337673190.2483.115.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.thb.de ([62.225.75.172] helo=mail.bury.com)
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWlLN-00063F-Hu
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 09:25:30 +0000
+Message-ID: <4FBB5B82.8070009@bury.com>
+Date: Tue, 22 May 2012 11:25:22 +0200
+From: Robert Homann <homann@bury.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jesper Nilsson <jespern@axis.com>
+To: dedekind1@gmail.com
+Subject: Re: Resizing of an existing UBIFS
+References: <4FBB3506.3020904@bury.com>
+ <1337669583.2483.88.camel@sauron.fi.intel.com> <4FBB3E7F.3080807@bury.com>
+ <1337674258.2483.123.camel@sauron.fi.intel.com>
+In-Reply-To: <1337674258.2483.123.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tp
-eSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+IFNlbnQ6IGRlbiAyMiBtYWogMjAxMiAw
-OTo1Mw0KPiBUbzogSm9oYW4gR3VubmFyc3NvbjsgQnJpYW4gTm9ycmlzDQo+IENjOiBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgSmVzcGVyIE5pbHNzb24NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSCAyLzJdIG10ZDogbmFuZDogdXNlIGhydGltZXIgdG8gbWVhc3VyZSB0aW1lb3V0IGluDQo+
-IG5hbmRfd2FpdHtfcmVhZHksIH0NCj4gDQo+IE9uIE1vbiwgMjAxMi0wNS0yMSBhdCAxMDo0MiAr
-MDIwMCwgSm9oYW4gR3VubmFyc3NvbiB3cm90ZToNCj4gPiBAQCAtNTMzLDE5ICs1NDEsMjkgQEAg
-c3RhdGljIHZvaWQgcGFuaWNfbmFuZF93YWl0X3JlYWR5KHN0cnVjdA0KPiBtdGRfaW5mbyAqbXRk
-LCB1bnNpZ25lZCBsb25nIHRpbWVvKQ0KPiA+ICB2b2lkIG5hbmRfd2FpdF9yZWFkeShzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCkNCj4gPiAgew0KPiA+ICAJc3RydWN0IG5hbmRfY2hpcCAqY2hpcCA9IG10
-ZC0+cHJpdjsNCj4gPiAtCXVuc2lnbmVkIGxvbmcgdGltZW8gPSBqaWZmaWVzICsgMjsNCj4gPiAr
-CXN0cnVjdCBocnRpbWVyIHRpbWVyOw0KPiA+DQo+ID4gIAkvKiA0MDBtcyB0aW1lb3V0ICovDQo+
-ID4gIAlpZiAoaW5faW50ZXJydXB0KCkgfHwgb29wc19pbl9wcm9ncmVzcykNCj4gPiAgCQlyZXR1
-cm4gcGFuaWNfbmFuZF93YWl0X3JlYWR5KG10ZCwgNDAwKTsNCj4gPg0KPiA+ICAJbGVkX3RyaWdn
-ZXJfZXZlbnQobmFuZF9sZWRfdHJpZ2dlciwgTEVEX0ZVTEwpOw0KPiA+ICsNCj4gPiArCS8qIEFy
-bSB0aW1lb3V0IHRpbWVyIGZvciAyMG1zIHRpbWVvdXQgKi8NCj4gPiArCWhydGltZXJfaW5pdCgm
-dGltZXIsIENMT0NLX1JFQUxUSU1FLCBIUlRJTUVSX01PREVfUkVMKTsNCj4gPiArCXRpbWVyLmZ1
-bmN0aW9uID0gbmFuZF93YWl0X3RpbWVvdXRfY2FsbGJhY2s7DQo+ID4gKwlocnRpbWVyX3N0YXJ0
-KCZ0aW1lciwgbnNfdG9fa3RpbWUoMjAgKiAxMDAwICogMTAwMCksDQo+ID4gKwkgICAgICAgICAg
-ICAgIEhSVElNRVJfTU9ERV9SRUwpOw0KPiA+ICsNCj4gPiAgCS8qIFdhaXQgdW50aWwgY29tbWFu
-ZCBpcyBwcm9jZXNzZWQgb3IgdGltZW91dCBvY2N1cnMgKi8NCj4gPiAgCWRvIHsNCj4gPiAgCQlp
-ZiAoY2hpcC0+ZGV2X3JlYWR5KG10ZCkpDQo+ID4gIAkJCWJyZWFrOw0KPiA+ICAJCXRvdWNoX3Nv
-ZnRsb2NrdXBfd2F0Y2hkb2coKTsNCj4gPiAtCX0gd2hpbGUgKHRpbWVfYmVmb3JlKGppZmZpZXMs
-IHRpbWVvKSk7DQo+IA0KPiBTaSB0aGlzIGZ1bmN0aW9uIHdhaXRzIGZvciB0aGUgY2hpcCwgYnV0
-IGlmIHdlIGNhbm5vdCBhY2Nlc3MgdGhlDQo+ICJyZWFkeSINCj4gcGluIC0gaXQgd2FpdHMgZm9y
-IDQwMG1zZWNzPyBXaGVyZSB0aGlzIG51bWJlciA0MDAgY29tZXMgZnJvbT8gV2h5IG5vdA0KPiA1
-MDA/IEhvdyBtYW55IGNoaXBzIHdlIGhhdmUgd2hpY2ggZG8gbm90IHByb3ZpZGUgImRldl9yZWFk
-eSgpIg0KPiBmdW5jdGlvbj8NCg0KTm90IGFuIGV4cGVydCBvbiB0aGUgTVREIGZyYW1ld29yayAt
-LSBidXQgSSBiZWxpZXZlIHRoZSA0MDAgY29tZXMgZnJvbSB0aGUgY29tbWVudCBhYm92ZSBuYW5k
-X3dhaXQoKTogIldhaXQgZm9yIGNvbW1hbmQgZG9uZS4gVGhpcyBhcHBsaWVzIHRvIGVyYXNlIGFu
-ZCBwcm9ncmFtIG9ubHkuIEVyYXNlIGNhbiB0YWtlIHVwIHRvIDQwMG1zIGFuZCBwcm9ncmFtIHVw
-IHRvIDIwbXMgYWNjb3JkaW5nIHRvIGdlbmVyYWwgTkFORCBhbmQgU21hcnRNZWRpYSBzcGVjcy4i
-DQoNCj4gQ2FuIHdlIHNpbXBsaWZ5IHRoaXMgZnVuY3Rpb24gYW5kIGFzc3VtZSBldmVyeW9uZSBo
-YXMgImRldl9yZWFkeSgpIiBhbmQNCj4gYWRkIEJVR19PTighY2hpcC0+ZGV2X3JlYWR5KSAtIGNv
-dWxkIHlvdSBtYWtlIGEgc21hbGwgcmVzZWFyY2ggPyBPciBjYW4NCg0KVGhlIGRyaXZlcnMvbXRk
-L25hbmQvaDE5MTAuYyBkcml2ZXIgc2V0cyBkZXZfcmVhZHkgdG8gTlVMTCBvbiBpbml0LiBUaGUg
-b3RoZXJzIHNlZW0gdG8gaGF2ZSBkZXZfcmVhZHkgaW1wbGVtZW50YXRpb25zLg0KDQo+IHdlIGRv
-IGxpa2UgdGhpczoNCj4gDQo+IGlmICghZGV2X3JlYWR5KCkpIHsNCj4gCW1zbGVlcCg0MDApOw0K
-PiAJcmV0dXJuDQo+IH0NCj4gDQo+IGRvIHsNCj4gfSB3aGlsZQ0KPiANCj4gV2h5IHNob3VsZCB3
-ZSBpdGVyYXRlIGlmICJkZXZfcmVhZHkiIGlzIE5VTEw/DQoNCkFjdHVhbGx5LCBpdCdzIHdvcnNl
-IHRoYW4gdGhhdC4gSWYgZGV2X3JlYWR5IGlzIE5VTEwgKGFzIGluIHRoZSBoMTkxMC5jIGNhc2Up
-IHdlJ2xsIGNyYXNoIHRoZSBrZXJuZWwsIHJpZ2h0Pw0KDQo+IA0KPiBNeSBwb2ludCBpcyB0aGF0
-IHRoaXMgc3R1ZmYgYW5jaWVudCBob3Jyb3Igd2hpY2ggbmVlZHMgbG92ZSBhbmQNCj4gY2xlYW5p
-bmcNCj4gdXAuIFlvdXIgZG9lcyBub3QgbWFrZSBpdCBsZXNzIHNjYXJ5LiBJJ2QgcHJlZmVyIHRv
-IGZpcnN0IGNsZWFuIHRoZQ0KPiB3aG9sZSB0aGluZyB1cCwgYW5kIHRoZW4gZml4IGl0Lg0KPiAN
-Cj4gSSdtIENDaW5nIEJyaWFuIHdobyBzcGVudCBhIGxvdCBvZiB0aW1lIGRpZ2dpbmcgbmFuZF9i
-YXNlLmMgcmVjZW50bHksDQo+IGhlDQo+IGhhcyBwcm9iYWJseSBnb3Qgc29tZSBpZGVhcy4NCj4g
-DQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0c2tpeQ0K
+On 05/22/2012 10:10 AM, Artem Bityutskiy wrote:
+
+> amend the indexing information. This is not a simple task, but doable.
+
+Thank you a lot for the quick answers! Looks like I need to learn a lot of
+details about UBIFS, should I really decide to make such a tool. I'll think
+it through again... :)
+
+Best regards,
+Robert Homann
