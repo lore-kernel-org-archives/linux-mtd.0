@@ -1,13 +1,25 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWtQw-00076O-SV
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 18:03:48 +0000
-From: Mike Dunn <mikedunn@newsguy.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: ABI documentation: clarification of bitflip_threshold
-Date: Tue, 22 May 2012 11:03:42 -0700
-Message-Id: <1337709822-11587-1-git-send-email-mikedunn@newsguy.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
+ id 1SWtf2-0007rT-TK
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 18:18:21 +0000
+Received: by laap9 with SMTP id p9so5672025laa.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 11:18:17 -0700 (PDT)
+Date: Tue, 22 May 2012 21:18:09 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
+Message-ID: <20120522211809.53bd6444@halley>
+In-Reply-To: <4FBBC4EE.4040802@nod.at>
+References: <1337608916-49771-1-git-send-email-richard@nod.at>
+ <1337608916-49771-2-git-send-email-richard@nod.at>
+ <20120522180119.2c2a10a8@pixies.home.jungo.com>
+ <4FBBC4EE.4040802@nod.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,56 +29,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The -EUCLEAN return value applies to mtd_read_oob() as well as mtd_read(), but
-only mtd_read() was mentioned in the blurd on bitflip_threshold in the ABI
-documentation.
+Hi Richard,
 
-Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
----
+On Tue, 22 May 2012 18:55:10 +0200 Richard Weinberger <richard@nod.at> wrote:
+> >> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> >> index 2c5ed5c..ef5d7b7 100644
+> >> --- a/drivers/mtd/ubi/build.c
+> >> +++ b/drivers/mtd/ubi/build.c
+> >> @@ -144,6 +144,16 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
+> >>
+> >>   	ubi_do_get_device_info(ubi,&nt.di);
+> >>   	ubi_do_get_volume_info(ubi, vol,&nt.vi);
+> >> +
+> >> +	switch (ntype) {
+> >> +	case UBI_VOLUME_ADDED:
+> >> +	case UBI_VOLUME_REMOVED:
+> >> +	case UBI_VOLUME_RESIZED:
+> >> +	case UBI_VOLUME_RENAMED:
+> >> +		if (ubi_update_fastmap(ubi))
+> >> +			ubi_err("Unable to update fastmap!");
+> >
+> > In the error case, what are the consequences leaving the older on-flash
+> > fastmap? Shouldn't it be invalidated?
+> 
+> If the fastmap is not written complete the CRC check will fail next time 
+> and we fall back to scanning mode.
 
-Sorry to keep revisiting this, but this seems like a big omission.  It looks
-like a big rewrite because of reformatting, but only the words "and
-mtd_read_oob()" are added to the first paragraph.  I deliberately left ambiguous
-the question of whether -EUCLEAN can be returned if mtd_read_oob() is used to
-read oob-only ;)
+There are many fail-points within 'ubi_update_fastmap' where an error
+code is returned, long before it attempts writing to the media.
+If 'ubi_update_fastmap' fails due to those, then the old on-flash
+fastmap is still valid.
+However we know a volume has been just changed.
+Will the system be coherent after a sudden reboot (that occurs prior
+next successful fastmap update)?
 
- Documentation/ABI/testing/sysfs-class-mtd |   17 +++++++++--------
- 1 files changed, 9 insertions(+), 8 deletions(-)
+> >> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> >> index 5275632..299a601 100644
+> >> --- a/drivers/mtd/ubi/ubi.h
+> >> +++ b/drivers/mtd/ubi/ubi.h
+> >> @@ -202,6 +202,39 @@ struct ubi_rename_entry {
+> >>   struct ubi_volume_desc;
+> >>
+> >>   /**
+> >> + * struct ubi_fastmap - in-memory fastmap data structure.
+> >> + * @peb: PEBs used by the current fastamp
+> >
+> > s/fastamp/fastmap/
+> >
+> >> + * @ec: the erase counter of each used PEB
+> >> + * @size: size of the fastmap in bytes
+> >> + * @used_blocks: number of used PEBs
+> >> + */
+> >> +struct ubi_fastmap {
+> >
+> > Suggestion: maybe ubi_fastmap_location / ubi_fastmap_layout /
+> > ubi_fastmap_position ? slightly more explanatory than 'ubi_fastmap'.
+> 
+> Good idea. ubi_fastmap_position seems good to me.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-index db1ad7e..938ef71 100644
---- a/Documentation/ABI/testing/sysfs-class-mtd
-+++ b/Documentation/ABI/testing/sysfs-class-mtd
-@@ -142,13 +142,14 @@ KernelVersion:	3.4
- Contact:	linux-mtd@lists.infradead.org
- Description:
- 		This allows the user to examine and adjust the criteria by which
--		mtd returns -EUCLEAN from mtd_read().  If the maximum number of
--		bit errors that were corrected on any single region comprising
--		an ecc step (as reported by the driver) equals or exceeds this
--		value, -EUCLEAN is returned.  Otherwise, absent an error, 0 is
--		returned.  Higher layers (e.g., UBI) use this return code as an
--		indication that an erase block may be degrading and should be
--		scrutinized as a candidate for being marked as bad.
-+		mtd returns -EUCLEAN from mtd_read() and mtd_read_oob().  If the
-+		maximum number of bit errors that were corrected on any single
-+		region comprising an ecc step (as reported by the driver) equals
-+		or exceeds this value, -EUCLEAN is returned.  Otherwise, absent
-+		an error, 0 is returned.  Higher layers (e.g., UBI) use this
-+		return code as an indication that an erase block may be
-+		degrading and should be scrutinized as a candidate for being
-+		marked as bad.
+Sounds good. You could amend the comments above the struct as well.
+
+> >> + * @root: the RB-tree where to look for
+> >> + * @max_pnum: highest possible pnum
+> >> + *
+> >> + * This function looks for a wear leveling entry containing a eb which
+> >> + * is in front of the memory.
+> >
+> > IMO can remove the last comment.
+> 
+> Documentation is like sex: when it is good, it is very, very good; and 
+> when it is bad, it is better than nothing.
+> - Dick Brandon
+
+:-)
+
+BTW what is "in front of the memory"? ;)
+
+> >> +		if (!e) {
+> >> +			spin_unlock(&ubi->wl_lock);
+> >> +			return -ENOMEM;
+> >
+> > This is traumatic; you must return the PEB back to WL, but fail to do so
+> > due to an internal error.
+> 
+> This is not easy. In the !e case I need memory.
+
+Yes, I noticed this is far from trivial ;)
+What troubles me, is that the system is unaware of the fault, acts
+business as usual, with one less PEB.
+
+Care to elaborate how come 'ubi->lookuptbl[pnum]' is NULL? What's the
+exact flow leading to it?
  
- 		The initial value may be specified by the flash device driver.
- 		If not, then the default value is ecc_strength.
-@@ -167,7 +168,7 @@ Description:
- 		block degradation, but high enough to avoid the consequences of
- 		a persistent return value of -EUCLEAN on devices where sticky
- 		bitflips occur.  Note that if bitflip_threshold exceeds
--		ecc_strength, -EUCLEAN is never returned by mtd_read().
-+		ecc_strength, -EUCLEAN is never returned by the read operations.
- 		Conversely, if bitflip_threshold is zero, -EUCLEAN is always
- 		returned, absent a hard error.
- 
--- 
-1.7.3.4
+> > (BTW the return value of ubi_wl_put_fm_peb is not tested at the call
+> > sites)
+> > The system is left with a missing PEB.
+> > Can't we guarantee ubi_wl_put_fm_peb is called only after wl_init is
+> > completed?
+> 
+> Why would that help?
+
+I tried to asses why 'ubi->lookuptbl[pnum]' gets NULL, I was
+probably mistaken in my analysis.
+
+There's a bit of assymetry here.
+
+'ubi_wl_get_fm_peb' doesn't clear the 'ubi_wl_entry' from the lookuptbl.
+It does not free the 'ubi_wl_entry' either (seems like it should, no?)
+
+However 'ubi_wl_put_fm_peb' creates a 'ubi_wl_entry' if not found in
+the lookuptbl.
+
+Formerly, wl_init was responsible for correctly populating
+'ubi->lookuptbl'. Can we somehow preserve this for FM pebs as well?
+
+Regards,
+Shmulik
