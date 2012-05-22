@@ -1,26 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWiJJ-00077l-Nf
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 06:11:10 +0000
-Message-ID: <1337667283.2483.83.camel@sauron.fi.intel.com>
-Subject: RE: [PATCH 0/3] GPMC NAND isr using standard API
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: "Mohammed, Afzal" <afzal@ti.com>
-Date: Tue, 22 May 2012 09:14:43 +0300
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E98EE28@DBDE01.ent.ti.com>
-References: <cover.1337090835.git.afzal@ti.com>
- <20120519125018.GA2407@parrot.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E98EE28@DBDE01.ent.ti.com>
+Message-ID: <1337668383.2483.87.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V2] GPMI-NAND: Define ecc.strength
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Date: Tue, 22 May 2012 09:33:03 +0300
+In-Reply-To: <1337633967-8387-1-git-send-email-marex@denx.de>
+References: <1337633967-8387-1-git-send-email-marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-pW/VzLfNYOozwNUZzQfw"
+ boundary="=-04siUU2sdMBrWxuAnyz4"
 Mime-Version: 1.0
-Cc: "tony@atomide.com" <tony@atomide.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +23,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-pW/VzLfNYOozwNUZzQfw
+--=-04siUU2sdMBrWxuAnyz4
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-22 at 04:26 +0000, Mohammed, Afzal wrote:
-> Tony, Artem, how should the conflict between omap & mtd trees be handled
-> for patch series ?
+On Mon, 2012-05-21 at 22:59 +0200, Marek Vasut wrote:
+> The ecc.strength wasn't set, resulting in the following crash:
+> [    2.550000] kernel BUG at drivers/mtd/nand/nand_base.c:3347!
+> [    2.550000] Internal error: Oops - BUG: 0 [#1] ARM
 
-You merge the 2 trees and work on top of that? Or you wait for 3.5-r1
-when everything is merged and work on top of that?
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-pW/VzLfNYOozwNUZzQfw
+--=-04siUU2sdMBrWxuAnyz4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPuy7TAAoJECmIfjd9wqK01UUQAMVTM6FBRL4Feh1gnqlWMaLF
-0My9stnGjTTygBKkVmzuO3y5y7utystNQiJ5kArx6z7UrJEcqJUy7FbBTBytZbbw
-dRZkDoWKUv/2ye2bj7UNA/Na2sqjKHzXC+0wsgus5uDidG9cK0G0yz7o9bHxzgA6
-LS5U9Bk2oDc7IWK0EUL/+8AsYESjYqRJr29PHkRUpntcDk0nOFffDvxJj8DAIkZ9
-+ZWIB34k7SasjFV2bbfWJl1LolsDpuHulBEZd8tsfrzIsHUaXtsuBXFExYkTG3R4
-2BSkk8Gd2snmfLlj09rhpm4tO0zt5Sf79zrCSpeAxbW5TQyapF9zO4FDCq2UB8eP
-J99ciuEAsd4cNrASR2WqB7xOeZvyHgQxG9znA9lWiSH4ayWe9LY7hhA3Rl+8rOkl
-pP7OV+iAIcBDyjhxdXRUtH1bVxILuckciHqumf2zCSjVzCXnur3fkJRnYfTBBEzD
-XiwQO+pMP0f6VPK2Y+zGyHz7dSGslqp+u56PSpo+kZFy6erMfmjY/CcHeITZWDNG
-eQHnLq3lrYUHEkV96WHGd9EUGGPDU+I34kch5uzCAzjNaSi670F5doz7MZFsB1ej
-H5OyXHjJ8kc3nUyqLB8xlzUUUqarkZoqX7NUvHjicZwN4FujnEwkipkzowWO4fgr
-dpk8/6Y98yn04wBYnHU7
-=sr3i
+iQIcBAABAgAGBQJPuzMfAAoJECmIfjd9wqK0Jb8P/jgBuulPlXJu0ESnLRboVjLl
+TqWo+iHMkEZKzoa4xSKttG/WGzdnolxjUSHoBKdP92lm0u2rHW4l6ssIYhAY4/dU
+ocg2eswNDBgEcf76MPhium8KgZXjheUtiuNnVNl0lLoDYnkZQ/zXat+OjPz2Z8uf
+bL7OLfel2cVMAyWMvaDaxrH7zqLUulZcqKV94/ID7Ks9370+E10/EjeUNChJMi7H
+v1T7P4eCOtFI6udUlMpuaIoqaQJxq/LBjunCrCfCEICCKL2l1mjPQElV/v9UDBjc
+cNHU+r8Ph+f4T531EH6UmOyYV7bNGHnPT52WeIiu4czBOqtl+v88CMIlOmLAx6Rt
+9nMosmh/Eyugzup5qUi2uWloFCY6ITaSGXDe1zKWBSS8t+GTT9IjwZZE0AZSaDKG
+McUiCHws/JWQpTVnGv7VhV4lBZoPYFsZPW9JmJ+gdf+gOdyt/5TO7U6T0FrrZUZj
+UT2AGCqY4fTBwjm/+uTfYkKpfXCHzEntFbNZg44U6d68R2cTfgoS9+jqds8WzYRJ
+GqOXW84/Uwe5o995lj+sVGZX19tocMeG81esu47dcSQy/eQiv/FimOoA6w34F/+W
+8SheWTy8H3y2mX7Oz2oNEGQjH0VIIH+FacOxnZE5O5Qt639irlRfKNice0Xb6Kmm
+do0bO1Dj9kYVnmVR7+lO
+=pvq6
 -----END PGP SIGNATURE-----
 
---=-pW/VzLfNYOozwNUZzQfw--
+--=-04siUU2sdMBrWxuAnyz4--
