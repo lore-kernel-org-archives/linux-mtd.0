@@ -1,26 +1,16 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWq1B-0000wu-BY
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 14:24:58 +0000
-From: Johan Gunnarsson <johan.gunnarsson@axis.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Tue, 22 May 2012 16:24:47 +0200
-Subject: RE: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
- nand_wait{_ready, }
-Message-ID: <A612847CFE53224C91B23E3A5B48BAC7534B668719@xmail3.se.axis.com>
-References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
- <1337589758-8775-3-git-send-email-johan.gunnarsson@axis.com>
- <1337673190.2483.115.camel@sauron.fi.intel.com>
- <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
- <1337682328.2483.144.camel@sauron.fi.intel.com>
-In-Reply-To: <1337682328.2483.144.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jesper Nilsson <jespern@axis.com>
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWq7o-0005v5-NB
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 14:31:49 +0000
+Received: by dadm1 with SMTP id m1so9457565dad.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 07:31:46 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 1/2] mtd: nand: add Eon Silicon Solutions manufacturer ID
+Date: Tue, 22 May 2012 07:30:47 -0700
+Message-Id: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tp
-eSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+IFNlbnQ6IGRlbiAyMiBtYWogMjAxMiAx
-MjoyNQ0KPiBUbzogSm9oYW4gR3VubmFyc3Nvbg0KPiBDYzogQnJpYW4gTm9ycmlzOyBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgSmVzcGVyIE5pbHNzb24NCj4gU3ViamVjdDogUkU6IFtQ
-QVRDSCAyLzJdIG10ZDogbmFuZDogdXNlIGhydGltZXIgdG8gbWVhc3VyZSB0aW1lb3V0IGluDQo+
-IG5hbmRfd2FpdHtfcmVhZHksIH0NCj4gDQo+IE9uIFR1ZSwgMjAxMi0wNS0yMiBhdCAxMDo1MiAr
-MDIwMCwgSm9oYW4gR3VubmFyc3NvbiB3cm90ZToNCj4gPiBOb3QgYW4gZXhwZXJ0IG9uIHRoZSBN
-VEQgZnJhbWV3b3JrIC0tIGJ1dCBJIGJlbGlldmUgdGhlIDQwMCBjb21lcw0KPiBmcm9tDQo+ID4g
-dGhlIGNvbW1lbnQgYWJvdmUgbmFuZF93YWl0KCk6ICJXYWl0IGZvciBjb21tYW5kIGRvbmUuIFRo
-aXMgYXBwbGllcw0KPiB0bw0KPiA+IGVyYXNlIGFuZCBwcm9ncmFtIG9ubHkuIEVyYXNlIGNhbiB0
-YWtlIHVwIHRvIDQwMG1zIGFuZCBwcm9ncmFtIHVwIHRvDQo+ID4gMjBtcyBhY2NvcmRpbmcgdG8g
-Z2VuZXJhbCBOQU5EIGFuZCBTbWFydE1lZGlhIHNwZWNzLiINCj4gDQo+IE1vc3QgcHJvYmFibHkg
-dGhpcyBsZWdhY3kgY2FuIGJlIGtpbGxlZCBhbG9uZyB3aXRoIHRoZSBJUEFRIGgxOTEwDQo+IGRy
-aXZlciB5b3UgcG9pbnRlZC4gQnV0IGNvdWxkIHlvdSBwbGVhc2Ugc3RhcnQgd2l0aCBjbGVhbmlu
-ZyB0aGVzZQ0KPiBmdW5jdGlvbnMgdXAgYW5kIHR1cm5pbmcgdGhlICIhY2hpcC0+ZGV2X3JlYWR5
-KCkiIGNhc2UgaW50byBhIHNpbXBsZQ0KPiBtc2xlZXAoKSBvcg0KPiBtZGVsYXkoKSBmb3IgdGhl
-IHBhbmljIGNhc2U/DQo+IA0KDQpJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCBjbGVhbi11cCBpcyBu
-ZWVkZWQgaGVyZS4gQ2FuIHlvdSBwbGVhc2UgZWxhYm9yYXRlPw0KDQpUaGUgY2FzZSB5b3UgbWVu
-dGlvbmVkIGVhcmxpZXIgZG9lc24ndCByZWFsbHkgbWFrZSBzZW5zZSB0byBtZToNCg0KaWYgKCFk
-ZXZfcmVhZHkoKSkgew0KCW1zbGVlcCg0MDApOw0KCXJldHVybg0KfQ0KDQpNYWtpbmcgYSBzaW5n
-bGUgY2FsbCB0byBkZXZfcmVhZHkoKSBhbmQgZ2l2aW5nIHVwIGlmIEZBTFNFIGlzIHdyb25nIElN
-SE8sIHNpbmNlIHdlIHZlcnkgbXVjaCB3YW50IHRvIHBvbGwgZGV2X3JlYWR5KCkgYW5kIHJldHVy
-biBhcyBzb29uIGFzIGl0IHR1cm5zIFRSVUUgKG9yIHRpbWVvdXQuKSBBc3N1bWluZyB5b3UgYWN0
-dWFsbHkgbWVhbiAiaWYoIWRldl9yZWFkeSkpIHsiIGFsc28gZG9lc24ndCBtYWtlIHNlbnNlIHNp
-bmNlIGNoZWNrcyBsaWtlIHRoYXQgZXhpc3RzIG9uIGFsbCBwYXRoIGxlYWRpbmcgdG8gbmFuZF93
-YWl0X3JlYWR5KCkuDQo=
+Eon's new NAND flash: EN27LN1G08.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_ids.c |    1 +
+ include/linux/mtd/nand.h    |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 621b70b..509a9f6 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -176,6 +176,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_MICRON, "Micron"},
+ 	{NAND_MFR_AMD, "AMD"},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
++	{NAND_MFR_EON, "Eon"},
+ 	{0x0, "Unknown"}
+ };
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 57977c6..53dcf49 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -559,6 +559,7 @@ struct nand_chip {
+ #define NAND_MFR_MICRON		0x2c
+ #define NAND_MFR_AMD		0x01
+ #define NAND_MFR_MACRONIX	0xc2
++#define NAND_MFR_EON		0x92
+ 
+ /**
+  * struct nand_flash_dev - NAND Flash Device ID Structure
+-- 
+1.7.5.4.2.g519b1
