@@ -1,16 +1,15 @@
 From: Heiko Schocher <hs@denx.de>
 To: davinci-linux-open-source@linux.davincidsp.com
-Subject: [PATCH v4 0/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-Date: Tue, 22 May 2012 15:55:13 +0200
-Message-Id: <1337694920-8925-1-git-send-email-hs@denx.de>
-Cc: Kevin Hilman <khilman@ti.com>, Sergei Shtylyov <sshtylyov@mvista.com>,
- netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
- Sekhar Nori <nsekhar@ti.com>, Wolfram Sang <w.sang@pengutronix.de>,
+Subject: [PATCH v4 6/7] ARM: mtd: nand: davinci: add OF support for davinci
+ nand controller
+Date: Tue, 22 May 2012 15:55:19 +0200
+Message-Id: <1337694920-8925-7-git-send-email-hs@denx.de>
+In-Reply-To: <1337694920-8925-1-git-send-email-hs@denx.de>
+References: <1337694920-8925-1-git-send-email-hs@denx.de>
+Cc: devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
  Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
- Heiko Schocher <hs@denx.de>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+ Scott Wood <scottwood@freescale.com>, Heiko Schocher <hs@denx.de>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,135 +19,234 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-this patchserie add support for the davinci am1808 based
-enbw_cmc board.
-
-changes for v2:
-Post this patchserie now as v2, as reworked in the
-comments I got for the RFC serie.
-
-changes for v3:
-- Interrupt Controller:
-  - comment from Sergei Shtylyov:
-    - rename compatible" prop to "ti,cp_intc"
-    - cp_intc_init() is now also for the of case
-      the name of the init function (it calls the
-      "new" __cp_intc_init() function, which was
-      the "old" cp_intc_init()). Through this
-      rework the changes for OF is better visible.
-      As the OF case uses the irq_domain rework from
-      Grant Likely, maybe the none OF case can use
-      this also, but this should be tested on a hw ...
-
-changes for v4:
-- Interrupt Controller:
-  - split in two patches as Nori Sekhar suggested
-    one for the irq_domain change
-    one for DT support
-  - add comment from Grant Likely for the DT part:
-    remove if/else clause, not needed.
-    Make use of DT runtime configurable
-    The non OF case is not tested!
-     
-Got no comments to the following points, I noted in the
-RFC series, so posting this patchseries with them:
-
-- ARM: davinci: configure davinci aemif chipselects through OF
-  not moved to mfd, as mentioned in this discussion:
-  http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
-  instead use a phandle in the DTS, so drivers which
-  uses the davinci aemif, can call davinci_aemif_setup_timing_of()
-
-  This is just thought as an RFC ... The enbw_cmc board
-  support not really need to setup this bus timings, as
-  they are setup in U-Boot ... but I want to post this,
-  as I think, it is a nice to have, and I am not really
-  sure, if this has to be a MFD device (If so, all bus
-  interfaces for other SoCs should be converted also to
-  MFD devices) ... as an example how this can be used
-  I add this to the davinci nand controller OF support
-  patch, in this patchserie.
-
-- ARM: davinci: mux: add OF support
-  I want to get rid of the pin setup code in board code ...
-  This patch introduces a davinci_cfg_reg_of() function,
-  which davinci drivers can call, if they found a
-  "pinmux-handle", so used in the following drivers in
-  this patchserie:
-
-  drivers/net/ethernet/ti/davinci_emac
-  drivers/i2c/busses/i2c-davinci.c
-  drivers/mtd/nand/davinci_nand.c
-
-  This is removed for v4 serie, as Nori Sekhar suggested.
-
-- post this board support with USB support, even though
-  USB is only working with the 10 ms "workaround", posted here:
-  http://comments.gmane.org/gmane.linux.usb.general/54505
-  I see this issue also on the AM1808 TMDXEXP1808L evalboard.
-
-  change for v4:
-  The 10 ms delay is no longer needed, see discussion here:
-
-  http://www.spinics.net/lists/linux-usb/msg64232.html
-
-  shows the way to go ...
-
-- MMC and USB are not using OF support yet, ideas how to port
-  this are welcome. I need for USB and MMC board specific
-  callbacks, how to solve this with OF support?
+add OF support for the davinci nand controller.
 
 Signed-off-by: Heiko Schocher <hs@denx.de>
+Cc: davinci-linux-open-source@linux.davincidsp.com
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: devicetree-discuss@lists.ozlabs.org
-Cc: davinci-linux-open-source@linux.davincidsp.com
 Cc: linux-mtd@lists.infradead.org
-Cc: linux-i2c@vger.kernel.org
-Cc: netdev@vger.kernel.org
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Sekhar Nori <nsekhar@ti.com>
-Cc: Kevin Hilman <khilman@ti.com>
-Cc: Wolfgang Denk <wd@denx.de>
-Cc: Sergei Shtylyov <sshtylyov@mvista.com>
 Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Sekhar Nori <nsekhar@ti.com>
+Cc: Wolfgang Denk <wd@denx.de>
+Cc: Scott Wood <scottwood@freescale.com>
 
-Heiko Schocher (7):
-  ARM: davinci, intc: Add irq domain support
-  ARM: davinci, intc: Add OF support for TI interrupt controller
-  ARM: davinci: configure davinci aemif chipselects through OF
-  ARM: davinci: net: davinci_emac: add OF support
-  ARM: davinci: i2c: add OF support
-  ARM: mtd: nand: davinci: add OF support for davinci nand controller
-  ARM: davinci: add support for the am1808 based enbw_cmc board
-
- .../devicetree/bindings/arm/davinci/aemif.txt      |  119 +++++++
- .../devicetree/bindings/arm/davinci/i2c.txt        |   31 ++
- .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
- .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++
- .../devicetree/bindings/net/davinci_emac.txt       |   41 +++
- arch/arm/boot/dts/enbw_cmc.dts                     |  172 +++++++++
- arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
- arch/arm/mach-davinci/Kconfig                      |    9 +
- arch/arm/mach-davinci/Makefile                     |    1 +
- arch/arm/mach-davinci/aemif.c                      |   86 +++++-
- arch/arm/mach-davinci/board-enbw-cmc.c             |  374 ++++++++++++++++++++
- arch/arm/mach-davinci/cp_intc.c                    |   74 ++++-
- arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
- arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
- drivers/i2c/busses/i2c-davinci.c                   |   32 ++
- drivers/mtd/nand/davinci_nand.c                    |   80 ++++-
- drivers/net/ethernet/ti/davinci_emac.c             |   87 +++++-
- 17 files changed, 1317 insertions(+), 13 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
- create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
- create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
+---
+- changes for v2:
+  - add comments from Scott Wood:
+    - add "ti,davinci-" prefix
+    - Dashes are preferred to underscores
+    - rename "nandflash" to "nand"
+    - introduce new "ti,davinci" specific properties for setting
+      up ecc_mode, ecc_bits, options and bbt options, instead
+      using linux defines
+    - readme fixes
+- no changes for v3
+- changes for v4
+  remove "pinmux-handle" property as discussed here:
+  http://www.spinics.net/lists/arm-kernel/msg175701.html
+  with Nori Sekhar
+---
+ .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++++++++++++++++
+ drivers/mtd/nand/davinci_nand.c                    |   80 +++++++++++++++++++-
+ 2 files changed, 151 insertions(+), 1 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
- create mode 100644 Documentation/devicetree/bindings/net/davinci_emac.txt
- create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
- create mode 100644 arch/arm/configs/enbw_cmc_defconfig
- create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
 
+diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+new file mode 100644
+index 0000000..5afe4a6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+@@ -0,0 +1,72 @@
++* Texas Instruments Davinci NAND
++
++This file provides information, what the device node for the
++davinci nand interface contain.
++
++Required properties:
++- compatible: "ti,davinci-nand";
++- reg : contain 2 offset/length values:
++        - offset and length for the access window
++        - offset and length for accessing the aemif control registers
++- ti,davinci-chipselect: Indicates on the davinci_nand driver which
++                         chipselect is used for accessing the nand.
++
++Recommended properties :
++- ti,davinci-mask-ale: mask for ale
++- ti,davinci-mask-cle: mask for cle
++- ti,davinci-mask-chipsel: mask for chipselect
++- ti,davinci-ecc-mode: ECC mode valid values for davinci driver:
++		- "none"
++		- "soft"
++		- "hw"
++- ti,davinci-ecc-bits: used ECC bits, currently supported 1 or 4.
++- ti,davinci-nand-buswidth: buswidth 8 or 16
++- ti,davinci-nand-use-bbt: use flash based bad block table support.
++
++Optional properties:
++- timing-handle: contains a handle to setup aemif timing.
++
++Example (enbw_cmc board):
++aemif@60000000 {
++	compatible = "ti,davinci-aemif";
++	#address-cells = <2>;
++	#size-cells = <1>;
++	reg = <0x68000000 0x80000>;
++	ranges = <2 0 0x60000000 0x02000000
++		  3 0 0x62000000 0x02000000
++		  4 0 0x64000000 0x02000000
++		  5 0 0x66000000 0x02000000
++		  6 0 0x68000000 0x02000000>;
++	nand_cs: cs3@68000000 {
++		compatible = "ti,davinci-cs";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		/* all timings in nanoseconds */
++		cs = <3>;
++		asize = <0>;
++		ta = <0>;
++		rhold = <7>;
++		rstrobe = <42>;
++		rsetup = <7>;
++		whold = <7>;
++		wstrobe = <14>;
++		wsetup = <7>;
++		ew = <0>;
++		ss = <0>;
++	};
++	nand@3,0 {
++		compatible = "ti,davinci-nand";
++		reg = <3 0x0 0x807ff
++			6 0x0 0x8000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ti,davinci-chipselect = <1>;
++		ti,davinci-mask-ale = <0>;
++		ti,davinci-mask-cle = <0>;
++		ti,davinci-mask-chipsel = <0>;
++		ti,davinci-ecc-mode = "hw";
++		ti,davinci-ecc-bits = <4>;
++		ti,davinci-nand-use-bbt;
++		timing-handle = <&nand_cs>;
++	};
++};
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index d94b03c..67bdd29 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -33,9 +33,12 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/slab.h>
++#include <linux/of_i2c.h>
++#include <linux/of_device.h>
+ 
+ #include <mach/nand.h>
+ #include <mach/aemif.h>
++#include <mach/mux.h>
+ 
+ /*
+  * This is a device driver for the NAND flash controller found on the
+@@ -518,9 +521,81 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
+ 	},
+ };
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id davinci_nand_of_match[] = {
++	{.compatible = "ti,davinci-nand", },
++	{},
++}
++MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
++
++static struct davinci_nand_pdata
++	*nand_davinci_get_pdata(struct platform_device *pdev)
++{
++	if ((pdev->dev.platform_data == NULL) &&
++		(pdev->dev.of_node)) {
++		struct device_node *tmp_np;
++		struct davinci_nand_pdata *pdata;
++		const char *mode;
++		u32 prop;
++		int len;
++
++		pdata =  kzalloc(sizeof(struct davinci_nand_pdata),
++				GFP_KERNEL);
++		pdev->dev.platform_data = pdata;
++		if (!pdata)
++			return NULL;
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-chipselect", &prop))
++			pdev->id = prop;
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-mask-ale", &prop))
++			pdata->mask_ale = prop;
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-mask-cle", &prop))
++			pdata->mask_cle = prop;
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-mask-chipsel", &prop))
++			pdata->mask_chipsel = prop;
++		if (!of_property_read_string(pdev->dev.of_node,
++			"ti,davinci-ecc-mode", &mode)) {
++			if (!strncmp("none", mode, 4))
++				pdata->ecc_mode = NAND_ECC_NONE;
++			if (!strncmp("soft", mode, 4))
++				pdata->ecc_mode = NAND_ECC_SOFT;
++			if (!strncmp("hw", mode, 2))
++				pdata->ecc_mode = NAND_ECC_HW;
++		}
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-ecc-bits", &prop))
++			pdata->ecc_bits = prop;
++		if (!of_property_read_u32(pdev->dev.of_node,
++			"ti,davinci-nand-buswidth", &prop))
++			if (prop == 16)
++				pdata->options |= NAND_BUSWIDTH_16;
++		if (of_find_property(pdev->dev.of_node,
++			"ti,davinci-nand-use-bbt", &len))
++			pdata->bbt_options = NAND_BBT_USE_FLASH;
++
++		tmp_np = of_parse_phandle(pdev->dev.of_node,
++				"timing-handle", 0);
++		if (tmp_np)
++			davinci_aemif_setup_timing_of(tmp_np);
++	}
++
++	return pdev->dev.platform_data;
++}
++#else
++#define davinci_nand_of_match NULL
++static struct davinci_nand_pdata
++	*nand_davinci_get_pdata(struct platform_device *pdev)
++{
++	return pdev->dev.platform_data;
++}
++#endif
++
+ static int __init nand_davinci_probe(struct platform_device *pdev)
+ {
+-	struct davinci_nand_pdata	*pdata = pdev->dev.platform_data;
++	struct davinci_nand_pdata	*pdata;
+ 	struct davinci_nand_info	*info;
+ 	struct resource			*res1;
+ 	struct resource			*res2;
+@@ -530,6 +605,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 	uint32_t			val;
+ 	nand_ecc_modes_t		ecc_mode;
+ 
++	pdata = nand_davinci_get_pdata(pdev);
+ 	/* insist on board-specific configuration */
+ 	if (!pdata)
+ 		return -ENODEV;
+@@ -816,6 +892,8 @@ static struct platform_driver nand_davinci_driver = {
+ 	.remove		= __exit_p(nand_davinci_remove),
+ 	.driver		= {
+ 		.name	= "davinci_nand",
++		.owner	= THIS_MODULE,
++		.of_match_table = davinci_nand_of_match,
+ 	},
+ };
+ MODULE_ALIAS("platform:davinci_nand");
 -- 
 1.7.7.6
