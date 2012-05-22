@@ -1,25 +1,21 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWkKn-0005qz-6X
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 08:20:49 +0000
-Received: by yenr9 with SMTP id r9so5809482yen.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 01:20:47 -0700 (PDT)
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWkbD-0002gE-Rk
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 08:37:48 +0000
+From: Johan Gunnarsson <johan.gunnarsson@axis.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Tue, 22 May 2012 10:37:47 +0200
+Subject: RE: [PATCH 0/2] use hrtimer in nand_wait
+Message-ID: <A612847CFE53224C91B23E3A5B48BAC7534B129CFD@xmail3.se.axis.com>
+References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
+ <1337671409.2483.98.camel@sauron.fi.intel.com>
+In-Reply-To: <1337671409.2483.98.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1337673875.2483.116.camel@sauron.fi.intel.com>
-References: <1337255133.2457.66.camel@debian.softace>
- <1337348152.2483.59.camel@sauron.fi.intel.com>
- <1337605024.2646.16.camel@debian.softace>
- <1337673875.2483.116.camel@sauron.fi.intel.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 22 May 2012 10:20:26 +0200
-Message-ID: <CAJpamw4XDgWiB1Za5qGDns1wV=Jnk1DyRS6MYBSypd8ab41hVQ@mail.gmail.com>
-Subject: Re: Problem with UBI / UBIFS (mainly ucorrectable error) on kernel
- higher than 2.6.30.10
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org,
- Lukasz Nowak <lukasz.nowak@homersoft.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jesper Nilsson <jespern@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/5/22 Artem Bityutskiy <dedekind1@gmail.com>:
-> I do not know, what is the commit id? Why not to put the author of that
-> change to CC?
-
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/bfee1a4311702c9fdecd8264ffd1126fd0ce92fb
-
-
--- 
-Guillaume LECERF
-OpenBricks developer - www.openbricks.org
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tp
+eSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+IFNlbnQ6IGRlbiAyMiBtYWogMjAxMiAw
+OToyMw0KPiBUbzogSm9oYW4gR3VubmFyc3Nvbg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJh
+ZGVhZC5vcmc7IEplc3BlciBOaWxzc29uDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMC8yXSB1c2Ug
+aHJ0aW1lciBpbiBuYW5kX3dhaXQNCj4gDQo+IE9uIE1vbiwgMjAxMi0wNS0yMSBhdCAxMDo0MiAr
+MDIwMCwgSm9oYW4gR3VubmFyc3NvbiB3cm90ZToNCj4gPiBJJ3ZlIG5hcnJvd2VkIGl0IGRvd24g
+dG8gdGhlIG5hbmRfd2FpdCByb3V0aW5lIGFuZCBpdHMgZGVwZW5kZW5jeSBvbg0KPiBhDQo+ID4g
+cmVsaWFibGUgamlmZmllcyBjb3VudGVyLiBTYWRseSwgamlmZmllcyBpcyBub3QgcmVsaWFibGUg
+d2hlbg0KPiBoYW5kbGluZw0KPiA+IG9mIHRpbWVyIGludGVycnVwdHMgYXJlIGRlbGF5ZWQgb3Ig
+ZXZlbiBjb21wbGV0ZWx5IGRpc2NhcmRlZC4gSWYNCj4gPiBpbnRlcnJ1cHRzIGFyZSBkaXNhYmxl
+ZCBmb3IsIHNheSwgMyB0aW1lciBwZXJpb2RzLCBqaWZmaWVzIHdpbGwgc3RvcA0KPiA+IGNvdW50
+aW5nIGR1cmluZyB0aGlzIHRpbWUgYW5kIGhhdmUgYSB2ZXJ5IGZhc3QgaW5jcmVtZW50IGJ5IDMg
+d2hlbg0KPiA+IGludGVycnVwdHMgYXJlIGxhdGVyIGVuYWJsZWQuDQo+IA0KPiBJIGNhbiBmb2xs
+b3cgdXAgdG8gdGhpcyBwb2ludC4NCj4gDQo+ID4gIFRoaXMgY29tYmluZWQgd2l0aCB1bmZvcnR1
+bmF0ZSB0aW1pbmcgY2FuIGNhdXNlIHRoZSB0aW1lb3V0IGxvb3ANCj4gPiB0aGluayBhIDIwbXMg
+dGltZW91dCBpcyBoYXBwZW5pbmcgd2hlbiBqdXN0IDwwLjFtcyBoYXMgcGFzc2VkIGluIHdhbGwN
+Cj4gPiBjbG9jayB0aW1lLg0KPiANCj4gV2hhdCBpcyB5b3UgSFo/IExldCdzIHNheSBpdCBpcyAx
+MDAsIHRoZW4gamlmZmllIGluY3JlbWVudHMgZXZlcnkgMTBtcywNCj4gcmlnaHQ/IEhvdyBjYW4g
+aXQgaW5jcmVtZW50IGJ5IDIgYWZ0ZXIgMC4xIG1zPw0KDQpJdCBpcyBzdXBwb3NlZCB0byBpbmNy
+ZW1lbnQgYnkgMSBlYWNoIGNsb2NrIHRpY2suIEJ1dCBpZiBpbnRlcnJ1cHRzIGFyZSBkaXNhYmxl
+ZCBmb3IgYSBudW1iZXIgb2YgY2xvY2sgdGlja3MsIGFsbCB0aGVzZSBpbmNyZW1lbnRzIHdpbGwg
+YmUgbHVtcGVkIHRvZ2V0aGVyIGFuZCBpbmNyZW1lbnRlZCBpbiBhIGxvb3Agd2hlbiBpbnRlcnJ1
+cHRzIGFyZSBlbmFibGVkIGFnYWluLiBTb3J0IG9mIHRvIGNhdGNoIHVwLg0KDQpUaGUgcmVsZXZh
+bnQgcGFydHMgb2YgdGhlIGtlcm5lbCB3aGVyZSB0aGlzIGhhcHBlbnMgaXMNCg0Ka2VybmVsL3Rp
+bWUvdGlja19jb21tb24uYzp0aWNrX2hhbmRsZV9wZXJpb2RpYygpDQprZXJuZWwvdGltZS90aWNr
+X2NvbW1vbi5jOnRpY2tfcGVyaW9kaWMoKQ0Ka2VybmVsL3RpbWUvY2xvY2tldmVudHMuYzpjbG9j
+a2V2ZW50c19wcm9ncmFtX2V2ZW50KCkNCg0KVGltZXIgaW50ZXJydXB0IGhhbmRsZXIgY2FsbHMg
+dGlja19oYW5kbGVfcGVyaW9kaWMgdGhyb3VnaCB0aGUgY2xvY2tldmVudHMgZnJhbWV3b3JrLiBU
+aGUgbG9vcCBpbiB0aWNrX2hhbmRsZV9wZXJpb2RpYyB3aWxsIGl0ZXJhdGUgb25lIGV4dHJhIHRp
+bWUgZm9yIGVhY2ggbWlzc2VkIHRpY2suIGNsb2NrZXZlbnRzX3Byb2dyYW1fZXZlbnQga25vd3Mg
+aWYgdGhlIG5leHQgdGltZXIgdG8gYmUgcHJvZ3JhbW1lZCBpcyBpbiB0aGUgcGFzdCBieSByZWFk
+aW5nIGJhY2sgdGhlIGN1cnJlbnQgSFcgdGltZXIgdmFsdWUgdGhyb3VnaCB0aGUgY2xvY2tzb3Vy
+Y2UgZnJhbWV3b3JrLiBUaGUgYWN0dWFsIGppZmZpZXMgaW5jcmVtZW50IGhhcHBlbnMgaW4gZG9f
+dGltZXIgdGhyb3VnaCB0aWNrX3BlcmlvZGljLg0KDQpBbHNvLCBwbGVhc2Ugbm90ZSB0aGF0IHdl
+J3JlIHVzaW5nIGEgb25lLXNob3QgdGltZSB0aGF0IGlzIHJlcHJvZ3JhbW1lZCBmb3IgZWFjaCB0
+aWNrLiBOb3QgYSBwZXJpb2RpYyB0aW1lci4NCg0KPiA+DQo+ID4gVG8gaWxsdXN0cmF0ZSB0aGUg
+amlmZmllcy9pbnRlcnJ1cHQtcmVsYXRpb25zaGlwOg0KPiA+DQo+ID4gSW50ZXJydXB0czogfCAg
+ICAgIHwgICAgICB8ICAgICAgICAgICAgICAgICAgICB8ICAgICAgfCAgICAgIHwgICAgICB8DQo+
+ID4gSmlmZmllczogICAgfCAgICAgIHwgICAgICB8ICAgICAgICAgICAgICAgICAgICB8fHwgICAg
+fCAgICAgIHwgICAgICB8DQo+ID4NCj4gPiBUaGlzIG9idmlvdXNseSBvbmx5IGhhcHBlbiBvbiBt
+dWx0aS1jb3JlIENQVXMsIHdoZXJlIHRoZSB3cml0ZSBhbmQNCj4gPiBpbnRlcnJ1cHRzIGFyZSBl
+eGVjdXRlZCBieSBkaWZmZXJlbnQgY29yZXMgc2ltdWx0YW5lb3VzbHkuIFN3aXRjaGluZw0KPiA+
+IHRvIGhydGltZXItYmFzZWQgdGltZW91dCBzb2x2ZXMgdGhpcyBwcm9ibGVtIGZvciBtZS4gSSBm
+b3VuZCBhIHNlY29uZA0KPiA+IChsZXNzIHNlcmlvdXMpIGlzc3VlIHdoaWNoIGluY2x1ZGVkIGlu
+IHRoZSBmaXJzdCBwYXRjaC4NCj4gDQo+IFNvcnJ5LCBJIGRvIG5vdCB1bmRlcnN0YW5kIHdoeSB0
+aGlzIGhhcHBlbnMgb25seSBvbiBTTVAuIENvdWxkIHlvdQ0KPiBwbGVhc2UgZXhwbGFpbiBzb21l
+IG1vcmU/DQoNClRoZSBvbmx5IHdheSB0aGlzIGNhbiBoYXBwZW4gaXMgYnkgZXhlY3V0aW5nIGEg
+bmFuZF93cml0ZSBhdCB0aGUgc2FtZSB0aW1lIGFzIHRoZSBqaWZmeSBjb3VudGVyIGlzICJjYXRj
+aGluZyB1cCIgKGllLiBydW5uaW5nIHRoZSBsb29wIGluIHRpY2tfaGFuZGxlX3BlcmlvZGljIGFz
+IGRlc2NyaWJlZCBhYm92ZS4pIE9uIGEgc2luZ2xlLWNvcmUgc3lzdGVtIEkgZG9uJ3QgdGhpbmsg
+dGhhdCB3b3VsZCBiZSBwb3NzaWJsZSBzaW5jZSB0aGUgY2F0Y2gtdXAgaGFwcGVucyBpbiBpbnRl
+cnJ1cHQgY29udGV4dC4NCg0KPiANCj4gSSBkbyBub3QgZGlzYWdyZWUgdGhhdCB3ZSBzaG91bGQg
+c3RvcCB1c2luZyBqaWZmaWVzLCBpZiB3ZSBjYW4sIEkganVzdA0KPiB3YW50IHRvIHVuZGVyc3Rh
+bmQgd2hhdCBpcyBoYXBwZW5pbmcuDQo+IA0KPiAtLQ0KPiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVt
+IEJpdHl1dHNraXkNCg==
