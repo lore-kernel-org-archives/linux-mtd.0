@@ -1,19 +1,19 @@
-From: Marek Vasut <marex@denx.de>
-To: linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
-Subject: Re: [PATCH V2] GPMI-NAND: Define ecc.strength
-Date: Tue, 22 May 2012 08:34:25 +0200
-References: <1337633967-8387-1-git-send-email-marex@denx.de>
- <1337668383.2483.87.camel@sauron.fi.intel.com>
-In-Reply-To: <1337668383.2483.87.camel@sauron.fi.intel.com>
+Received: from mail.thb.de ([62.225.75.172] helo=mail.bury.com)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWimX-0005QD-Qe
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 06:41:22 +0000
+Received: from [172.20.150.66] (port=40968)
+ by mail.bury.com with esmtp (Exim 4.76)
+ (envelope-from <homann@bury.com>) id 1SWimM-0003yn-1Y
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 08:41:10 +0200
+Message-ID: <4FBB3506.3020904@bury.com>
+Date: Tue, 22 May 2012 08:41:10 +0200
+From: Robert Homann <homann@bury.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Subject: Resizing of an existing UBIFS
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201205220834.25981.marex@denx.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
- linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem Bityutskiy,
+Hi,
 
-> On Mon, 2012-05-21 at 22:59 +0200, Marek Vasut wrote:
-> > The ecc.strength wasn't set, resulting in the following crash:
-> > [    2.550000] kernel BUG at drivers/mtd/nand/nand_base.c:3347!
-> > [    2.550000] Internal error: Oops - BUG: 0 [#1] ARM
-> 
-> Pushed to l2-mtd.git, thanks!
+I have a short question: Is it possible to expand the size of a UBIFS
+without creating a new image file or reformatting from scratch?
 
-Thank you!
+Suppose you have a UBIFS whose --max-leb-cnt has been set so to limit
+its size to 100 MiB. Now suppose this UBIFS lives in a dynamic UBI
+volume which gets expanded to a size of the whole partition, say,
+150 MiB. Being limited by the --max-leb-cnt parameter, the contained
+UBIFS is expanded to only 100 MiB, and the rest of the space in the
+volume is wasted. Is it possible to resize the UBIFS so that it can make
+use of the now wasted space?
 
 Best regards,
-Marek Vasut
+Robert Homann
