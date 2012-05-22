@@ -1,29 +1,13 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWtiG-000840-VD
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 18:21:42 +0000
-Received: by lbbgg6 with SMTP id gg6so5691567lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 11:21:38 -0700 (PDT)
-Message-ID: <1337710886.1977.6.camel@koala>
-Subject: Re: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
- nand_wait{_ready, }
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Date: Tue, 22 May 2012 21:21:26 +0300
-In-Reply-To: <20120522171023.GA2372@parrot.com>
-References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
- <1337589758-8775-3-git-send-email-johan.gunnarsson@axis.com>
- <1337673190.2483.115.camel@sauron.fi.intel.com>
- <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
- <20120522171023.GA2372@parrot.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-BwS+Zh7PdflTr2SW6h2a"
-Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jesper Nilsson <jespern@axis.com>,
- Johan Gunnarsson <johan.gunnarsson@axis.com>
+ id 1SWuAp-0000iv-5Q
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 18:51:11 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-www: clarification to -EUCLEAN explanation
+Date: Tue, 22 May 2012 11:51:09 -0700
+Message-Id: <1337712669-11801-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +17,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The -EUCLEAN return value applies to mtd_read_oob() as well as mtd_read(), but
+only mtd_read() was mentioned in the explanation of -EUCLEAN. 
 
---=-BwS+Zh7PdflTr2SW6h2a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
 
-On Tue, 2012-05-22 at 19:10 +0200, Ivan Djelic wrote:
-> Current NAND devices require approximately 1-3 ms per block erase, and 10=
-0-200 us per page program operation.
-> But I think this timeout is only useful to detect and recover from broken=
- hardware: IMHO there is no point in
-> trying to "optimize" the timeout delay to 20ms or 400ms depending on whic=
-h operation is being done (program or erase).
->=20
-> Why not simplify and just use a single 1s (1000ms) timeout ?
+Again, trivial change that looks bigger because of reformatting.
 
+ doc/general.xml |   27 ++++++++++++++-------------
+ 1 files changed, 14 insertions(+), 13 deletions(-)
 
-I have many things on my plate now so my answers are are sloppy - I
-spent 1 minute or less looking at the code. But I thought that this
-timeout is important for the the case when 'chip->device_ready' is NULL.
-This is why I wanted to get rid of that case, and then the timeout would
-only become about detecting the forever loops. And this is exactly what
-I meant by saying that I have further idea on improving that without
-hrtimer - just have one single 1 second timeout. We indeed do not have
-to be precise for the errors detection.
-
-Oops, SIGBABY.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-BwS+Zh7PdflTr2SW6h2a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPu9kmAAoJECmIfjd9wqK0okUQAIePx3h72R42piZ4Qh4Vv6Tn
-UBKyh8/jy3hkddn1E27WB9Y+K/D+hM4uhygF+L4Y5aDAhY9/3gQIM6Vlo6wMGess
-QZgb0ExDxjArve0HX2mWAcDqZV6LslpixMMcqF8hMkZy/NgiTjwThXDGwqJpXHzG
-BntGHufsPEpPNzh7vHS1eieoP3+ezrqauf0RfiInShYGkKJ7WlPOh5MAbttot9D/
-XAL8bIuEQfShoxydJg2AZTZ2ZT6pYef5rYMzz/g/68xK/o8L+Nnsr37flBIX4Dyv
-Z2b4Xrxa5wWelRjroOUNvQPPRjCYt9KQWY7/pkaqZWpzw4Lsc1MG6rcB5Dx6madH
-XBzAJMjt/0Nxqg7gWglE/wrxEmj4iyUJQzErZSgf98H+4Kd/LjFNmEub/7ZP89Br
-SBb+0gZuTEdSAev62vci5iquqHLl519JEf1g2/bslHQV1C8mKTOEVHweqQNBQ01k
-dGV48s8Da8soIFhAlragRm8JCmEF+BpSzfB5lJ9xruH5HP9H/tdYSXmCgoayWHK0
-aPkphu6UL9vSmc/tWecFgHsoMyPgPa/LncHm4wWyEfpLRkrIebMVngGktCOrwxpV
-tuQQukvMbsR8LMbJj7rzoiABvQ3dxpi739tX95H4yPDTx5moSQbHyAFIkMaVfb9J
-vNLk5Os1+HMrs7K/Jd76
-=GzF3
------END PGP SIGNATURE-----
-
---=-BwS+Zh7PdflTr2SW6h2a--
+diff --git a/doc/general.xml b/doc/general.xml
+index ba76c4f..31ea243 100644
+--- a/doc/general.xml
++++ b/doc/general.xml
+@@ -89,19 +89,20 @@ use those prototyped in <code>mtd.h</code> outside of <code>struct
+ mtd_info</code>.  These methods include <code>mtd_read()</code>,
+ <code>mtd_write()</code>, etc.</p>
+ 
+-Absent an error, the API methods will return zero, with one notable exception.
+-<code>mtd_read()</code> may return <code>-EUCLEAN</code> in some circumstances.
+-This return code is applicable mainly to NAND flash devices, and is used to
+-indicate that some bit errors were corrected by the device's ECC facility.
+-Prior to kernel version 3.4, <code>-EUCLEAN</code> was returned if one or more
+-bit errors were corrected during the read operation.  As of kernel 3.4, the
+-meaning is more nuanced, and can be broadly interpreted to mean "a dangerously
+-high number of bit errors were corrected".  The <code>-EUCLEAN</code> return
+-code is intended to help higher layers detect degradation of erase blocks.  The
+-conditions by which <code>mtd_read()</code> returns <code>-EUCLEAN</code> can be
+-tuned using the <code>bitflip_threshold</code> element of the sysfs interface.
+-Please see the kernel documentation for the MTD sysfs interface (referenced
+-above) before adjusting this value.
++Absent an error, the API methods will return zero, with two notable exceptions.
++<code>mtd_read()</code> and <code>mtd_read_oob()</code> may return
++<code>-EUCLEAN</code> in some circumstances.  This return code is applicable
++mainly to NAND flash devices, and is used to indicate that some bit errors were
++corrected by the device's ECC facility.  Prior to kernel version 3.4,
++<code>-EUCLEAN</code> was returned if one or more bit errors were corrected
++during the read operation.  As of kernel 3.4, the meaning is more nuanced, and
++can be broadly interpreted to mean "a dangerously high number of bit errors were
++corrected".  The <code>-EUCLEAN</code> return code is intended to help higher
++layers detect degradation of erase blocks.  The conditions by which
++<code>mtd_read()</code> and <code>mtd_read_oob()</code> return
++<code>-EUCLEAN</code> can be tuned using the <code>bitflip_threshold</code>
++element of the sysfs interface.  Please see the kernel documentation for the MTD
++sysfs interface (referenced above) before adjusting this value.
+ 
+ 
+ <h2><a name="L_mtd_tests">MTD tests</a></h2>
+-- 
+1.7.3.4
