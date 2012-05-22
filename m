@@ -1,23 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWn99-0005DN-LM
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 11:21:00 +0000
-Message-ID: <1337685876.2483.160.camel@sauron.fi.intel.com>
-Subject: Re: Resizing of an existing UBIFS
+ id 1SWpJE-0003QZ-Ct
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 13:39:33 +0000
+Message-ID: <1337694184.2483.186.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Homann <homann@bury.com>
-Date: Tue, 22 May 2012 14:24:36 +0300
-In-Reply-To: <4FBB747D.10804@bury.com>
-References: <4FBB3506.3020904@bury.com>
- <1337669583.2483.88.camel@sauron.fi.intel.com> <4FBB3E7F.3080807@bury.com>
- <1337674258.2483.123.camel@sauron.fi.intel.com> <4FBB5B82.8070009@bury.com>
- <Pine.LNX.4.64.1205221138410.4247@lnxricardw.se.axis.com>
- <1337681963.2483.140.camel@sauron.fi.intel.com> <4FBB747D.10804@bury.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 22 May 2012 16:43:04 +0300
+In-Reply-To: <1337608916-49771-2-git-send-email-richard@nod.at>
+References: <1337608916-49771-1-git-send-email-richard@nod.at>
+ <1337608916-49771-2-git-send-email-richard@nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-dBpw1HoaYR/MeqxxqN72"
+ boundary="=-eLu41EiJTtaQGCNcicfb"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ tim.bird@am.sony.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,46 +28,109 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-dBpw1HoaYR/MeqxxqN72
+--=-eLu41EiJTtaQGCNcicfb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-22 at 13:11 +0200, Robert Homann wrote:
-> On 05/22/2012 12:19 PM, Artem Bityutskiy wrote:
->=20
-> > Yeah, if someone wrote such a tool, it would make sense to support
-> > shrinking as well, because it is roughly a similar thin - you need to
-> > relocate data from the end, amend the index and probably some other
-> > UBIFS data-structures.
->=20
-> This is getting interesting.
->=20
-> On which level would such a tool operate? I guess it would have to do som=
-e
-> low-level operations directly on UBIFS structures, but it would use the U=
-BI
-> layer below only to get at the corresponding blocks. Other than that, the=
- UBI
-> structures would not require direct manipulations, am I right? In this ca=
-se,
-> such a tool could be implemented without strict dependency on UBI.
+Uhh, too many helpers.
 
-It would work directly with the UBI volume. It would need to know the
-UBIFS data structures. Yes, you should not have strict dependency on
-UBI. Well, may be you'd need to use UBI ioctls to write your data back
-to the eraseblock.
+On Mon, 2012-05-21 at 16:01 +0200, Richard Weinberger wrote:
+>  /**
+> - * ubi_attach - attach an MTD device.
+> - * @ubi: UBI device descriptor
+> + * scan_fastmap - attach MTD device using fastmap.
+> + * @ubi: UBI device description object
+>   *
+> - * This function returns zero in case of success and a negative error co=
+de in
+> - * case of failure.
+> + * This function attaches a MTD device using a fastmap and returns compl=
+ete
+> + * information about it in form of a "struct ubi_attach_info" object. In=
+ case
+> + * of failure, an error code is returned.
+>   */
+> -int ubi_attach(struct ubi_device *ubi)
+> +static struct ubi_attach_info *scan_fastmap(struct ubi_device *ubi)
+> +{
+> +       int fm_start;
+> +
+> +       fm_start =3D ubi_find_fastmap(ubi);
+> +       if (fm_start < 0)
+> +               return ERR_PTR(-ENOENT);
+> +
+> +       return ubi_read_fastmap(ubi, fm_start);
+> +}
 
-> Or would it be necessary to also touch UBI structures directly, in which =
-case
-> I guess it would become much more messy?
+This helper which does not do anything useful should not exist - just
+teach 'ubi_read_fastmap()' to return 1 if the fastmap is not found, and
+< 0 on error, and 0 on success. No one in attach.c should be interested
+in fm_start. So this helper should die. See below as well.
 
-No, you should not need to touch UBI structures.
+> +
+> +static int do_attach(struct ubi_device *ubi, bool fullscan)
+>  {
+>         int err;
+>         struct ubi_attach_info *ai;
+> =20
+> -       ai =3D scan_all(ubi);
+> +       if (fullscan)
+> +               ai =3D scan_all(ubi);
+> +       else
+> +               ai =3D scan_fastmap(ubi);
+> +
+>         if (IS_ERR(ai))
+>                 return PTR_ERR(ai);
+> =20
+> @@ -1256,6 +1277,31 @@ out_ai:
+>  }
+
+Another useless helper function, should die, see below.
+
+> =20
+>  /**
+> + * ubi_attach - attach an MTD device.
+> + * @ubi: UBI device descriptor
+> + *
+> + * This function returns zero in case of success and a negative error co=
+de in
+> + * case of failure.
+> + */
+> +int ubi_attach(struct ubi_device *ubi)
+> +{
+> +       int err;
+> +
+> +       err =3D do_attach(ubi, false);
+> +       if (err) {
+> +               if (err !=3D -ENOENT)
+> +                       ubi_err("Attach by fastmap failed! " \
+> +                               "Falling back to attach by scanning. " \
+> +                               "error =3D %i\n", err);
+> +
+> +               ubi->attached_by_scanning =3D true;
+> +               err =3D do_attach(ubi, true);
+> +       }
+> +
+> +       return err;
+> +}=20
+
+Just add this code to this function:
+
+       err =3D ubi_read_fastmap();
+       if (err < 0)
+               return err;
+       if (err =3D=3D 2)
+               return scan_all();
+
+       ... rest of the common nitializations (EBA, WL)...
+
+       return err;
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-dBpw1HoaYR/MeqxxqN72
+--=-eLu41EiJTtaQGCNcicfb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -76,19 +138,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPu3d0AAoJECmIfjd9wqK0StwP/jt0FeNui+DgL6hlblO1gqCo
-TBghFV8pIn4/Nc/6R8CoL42BAdIH81WJn47mVV5ClzpkGN0lSHgc1Qy18qTnNFUs
-5yzRj64KhZXpdHBsQqlPDolkPEizgZj15rjYlDNRG/7NvhoBzaL2S+R6nc7e/1lx
-W25J5Grfxu0QXMz/RX5MmmdLnzLRuZ1pWbNeY6nDdBRy3hdCrEo1IYWPc2lW1JE1
-qxEW/vflVbPdA8cWTC02HxKU4/HZQLRXcoj1NNFeLT9boqyMZSFsWEesuJZsZrbL
-uz0KYPqZ7ChPAkZ2ZzyZ0Q99hsupcyo3RvsBoKC+FbwNUvA7QQAautotNda/RMog
-O32JIZRlO1a4hmGxaob/Z/GXLiVSmRT9DsyLPgbgBzToUrb/EMUPAKFx59+rdTwz
-l/D0QQPiDOwDP7NWj6R0L/l4EFMOqTPqFTWUu1Wxh8eqOqLC+o5hCfuTPl+dEaBG
-1lwbT7bZdiqyJCBDVuf4KWLDgxPkDfywbHVs4Sd2EHwuX8scdf1bRJX9nm2GVmPr
-HOp6sTWJqCjwWmX2JXJkwbgTN9jzKWjLqGfTbJeHgobzNHRwVFRWS/YoMVpLiSIj
-jr6zIlgZnagK1GOqHNI5GQTd00d6JVHk5nUwrl8BQqNo2MBA3MQ7LJWKelcfCLyG
-ZqpGUNAkBmrUldhQUvTH
-=V8u1
+iQIcBAABAgAGBQJPu5foAAoJECmIfjd9wqK0iJgQALhq040tOkT51EkC7WtkxFgj
+oEhemceyAhhbdHslOJEgx001heXJij5D7gj6pWnDIFk8qd1PlR5rzBwKaKU5oDgV
+ochODPns/7MLobb8MRIoAb9L5CDDpnKzMS+2jfQFqAxi4vY3vCnRZsxanrD8kZo2
+QEQvfwP/H4gqmRQ+Dn6JTqvkXtII2IS/SEEEbgNZn3KsMrr+G11XKT/z+8Z+BwVf
+Tp1kSDlk4yLcRpDC8LJHynWAP+g638TRFlEfW0kHyfL/a+Dhjfamg57YDa6aiubG
+VtAekLNN36JgL/Gqh3uOnvRORK8ZPNcTAZFJ10b2YDwZ20dMOsyvrGsJknKrCJ/z
+To9Y7Ymmi9WY8cpyauUnlftkGw+07En1T3JoYpYtJt9NeQX0v/UeJMdWZkQly6am
+v0jrkK4q20pnhcNanf6EykinwR8WrRvRGzxM0D++JHlOUiXRcrQevRQvHJIHB289
+z46zoZvN9eebGZTfXjB+x7B/0VA1tnT2huCh410VYKAiYH9dDvv+cfaMt+4luC2m
+4z5+X7QEQwz1Y4yUhgqwZdxjioTKmWu4tIINO/QCP1PHjPD5G6WxkX7YDqL1dDqD
+g9e4EY9vkqyNsDmHD+hEPkZ9c79M2W4ytzUr2VPUZarXKBSFWHjW2l7Iy63W3VxM
++rSuAVxYcqgNQfOGDltg
+=ZYLk
 -----END PGP SIGNATURE-----
 
---=-dBpw1HoaYR/MeqxxqN72--
+--=-eLu41EiJTtaQGCNcicfb--
