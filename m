@@ -1,23 +1,16 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SWpJE-0003QZ-Ct
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 13:39:33 +0000
-Message-ID: <1337694184.2483.186.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Tue, 22 May 2012 16:43:04 +0300
-In-Reply-To: <1337608916-49771-2-git-send-email-richard@nod.at>
-References: <1337608916-49771-1-git-send-email-richard@nod.at>
- <1337608916-49771-2-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-eLu41EiJTtaQGCNcicfb"
-Mime-Version: 1.0
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+From: Heiko Schocher <hs@denx.de>
+To: davinci-linux-open-source@linux.davincidsp.com
+Subject: [PATCH v4 0/7] ARM: davinci: add support for the am1808 based
+ enbw_cmc board
+Date: Tue, 22 May 2012 15:55:13 +0200
+Message-Id: <1337694920-8925-1-git-send-email-hs@denx.de>
+Cc: Kevin Hilman <khilman@ti.com>, Sergei Shtylyov <sshtylyov@mvista.com>,
+ netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
+ Sekhar Nori <nsekhar@ti.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+ Heiko Schocher <hs@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,130 +20,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+this patchserie add support for the davinci am1808 based
+enbw_cmc board.
 
---=-eLu41EiJTtaQGCNcicfb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+changes for v2:
+Post this patchserie now as v2, as reworked in the
+comments I got for the RFC serie.
 
-Uhh, too many helpers.
+changes for v3:
+- Interrupt Controller:
+  - comment from Sergei Shtylyov:
+    - rename compatible" prop to "ti,cp_intc"
+    - cp_intc_init() is now also for the of case
+      the name of the init function (it calls the
+      "new" __cp_intc_init() function, which was
+      the "old" cp_intc_init()). Through this
+      rework the changes for OF is better visible.
+      As the OF case uses the irq_domain rework from
+      Grant Likely, maybe the none OF case can use
+      this also, but this should be tested on a hw ...
 
-On Mon, 2012-05-21 at 16:01 +0200, Richard Weinberger wrote:
->  /**
-> - * ubi_attach - attach an MTD device.
-> - * @ubi: UBI device descriptor
-> + * scan_fastmap - attach MTD device using fastmap.
-> + * @ubi: UBI device description object
->   *
-> - * This function returns zero in case of success and a negative error co=
-de in
-> - * case of failure.
-> + * This function attaches a MTD device using a fastmap and returns compl=
-ete
-> + * information about it in form of a "struct ubi_attach_info" object. In=
- case
-> + * of failure, an error code is returned.
->   */
-> -int ubi_attach(struct ubi_device *ubi)
-> +static struct ubi_attach_info *scan_fastmap(struct ubi_device *ubi)
-> +{
-> +       int fm_start;
-> +
-> +       fm_start =3D ubi_find_fastmap(ubi);
-> +       if (fm_start < 0)
-> +               return ERR_PTR(-ENOENT);
-> +
-> +       return ubi_read_fastmap(ubi, fm_start);
-> +}
+changes for v4:
+- Interrupt Controller:
+  - split in two patches as Nori Sekhar suggested
+    one for the irq_domain change
+    one for DT support
+  - add comment from Grant Likely for the DT part:
+    remove if/else clause, not needed.
+    Make use of DT runtime configurable
+    The non OF case is not tested!
+     
+Got no comments to the following points, I noted in the
+RFC series, so posting this patchseries with them:
 
-This helper which does not do anything useful should not exist - just
-teach 'ubi_read_fastmap()' to return 1 if the fastmap is not found, and
-< 0 on error, and 0 on success. No one in attach.c should be interested
-in fm_start. So this helper should die. See below as well.
+- ARM: davinci: configure davinci aemif chipselects through OF
+  not moved to mfd, as mentioned in this discussion:
+  http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
+  instead use a phandle in the DTS, so drivers which
+  uses the davinci aemif, can call davinci_aemif_setup_timing_of()
 
-> +
-> +static int do_attach(struct ubi_device *ubi, bool fullscan)
->  {
->         int err;
->         struct ubi_attach_info *ai;
-> =20
-> -       ai =3D scan_all(ubi);
-> +       if (fullscan)
-> +               ai =3D scan_all(ubi);
-> +       else
-> +               ai =3D scan_fastmap(ubi);
-> +
->         if (IS_ERR(ai))
->                 return PTR_ERR(ai);
-> =20
-> @@ -1256,6 +1277,31 @@ out_ai:
->  }
+  This is just thought as an RFC ... The enbw_cmc board
+  support not really need to setup this bus timings, as
+  they are setup in U-Boot ... but I want to post this,
+  as I think, it is a nice to have, and I am not really
+  sure, if this has to be a MFD device (If so, all bus
+  interfaces for other SoCs should be converted also to
+  MFD devices) ... as an example how this can be used
+  I add this to the davinci nand controller OF support
+  patch, in this patchserie.
 
-Another useless helper function, should die, see below.
+- ARM: davinci: mux: add OF support
+  I want to get rid of the pin setup code in board code ...
+  This patch introduces a davinci_cfg_reg_of() function,
+  which davinci drivers can call, if they found a
+  "pinmux-handle", so used in the following drivers in
+  this patchserie:
 
-> =20
->  /**
-> + * ubi_attach - attach an MTD device.
-> + * @ubi: UBI device descriptor
-> + *
-> + * This function returns zero in case of success and a negative error co=
-de in
-> + * case of failure.
-> + */
-> +int ubi_attach(struct ubi_device *ubi)
-> +{
-> +       int err;
-> +
-> +       err =3D do_attach(ubi, false);
-> +       if (err) {
-> +               if (err !=3D -ENOENT)
-> +                       ubi_err("Attach by fastmap failed! " \
-> +                               "Falling back to attach by scanning. " \
-> +                               "error =3D %i\n", err);
-> +
-> +               ubi->attached_by_scanning =3D true;
-> +               err =3D do_attach(ubi, true);
-> +       }
-> +
-> +       return err;
-> +}=20
+  drivers/net/ethernet/ti/davinci_emac
+  drivers/i2c/busses/i2c-davinci.c
+  drivers/mtd/nand/davinci_nand.c
 
-Just add this code to this function:
+  This is removed for v4 serie, as Nori Sekhar suggested.
 
-       err =3D ubi_read_fastmap();
-       if (err < 0)
-               return err;
-       if (err =3D=3D 2)
-               return scan_all();
+- post this board support with USB support, even though
+  USB is only working with the 10 ms "workaround", posted here:
+  http://comments.gmane.org/gmane.linux.usb.general/54505
+  I see this issue also on the AM1808 TMDXEXP1808L evalboard.
 
-       ... rest of the common nitializations (EBA, WL)...
+  change for v4:
+  The 10 ms delay is no longer needed, see discussion here:
 
-       return err;
+  http://www.spinics.net/lists/linux-usb/msg64232.html
 
---=20
-Best Regards,
-Artem Bityutskiy
+  shows the way to go ...
 
---=-eLu41EiJTtaQGCNcicfb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+- MMC and USB are not using OF support yet, ideas how to port
+  this are welcome. I need for USB and MMC board specific
+  callbacks, how to solve this with OF support?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Signed-off-by: Heiko Schocher <hs@denx.de>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: devicetree-discuss@lists.ozlabs.org
+Cc: davinci-linux-open-source@linux.davincidsp.com
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-i2c@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Sekhar Nori <nsekhar@ti.com>
+Cc: Kevin Hilman <khilman@ti.com>
+Cc: Wolfgang Denk <wd@denx.de>
+Cc: Sergei Shtylyov <sshtylyov@mvista.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
 
-iQIcBAABAgAGBQJPu5foAAoJECmIfjd9wqK0iJgQALhq040tOkT51EkC7WtkxFgj
-oEhemceyAhhbdHslOJEgx001heXJij5D7gj6pWnDIFk8qd1PlR5rzBwKaKU5oDgV
-ochODPns/7MLobb8MRIoAb9L5CDDpnKzMS+2jfQFqAxi4vY3vCnRZsxanrD8kZo2
-QEQvfwP/H4gqmRQ+Dn6JTqvkXtII2IS/SEEEbgNZn3KsMrr+G11XKT/z+8Z+BwVf
-Tp1kSDlk4yLcRpDC8LJHynWAP+g638TRFlEfW0kHyfL/a+Dhjfamg57YDa6aiubG
-VtAekLNN36JgL/Gqh3uOnvRORK8ZPNcTAZFJ10b2YDwZ20dMOsyvrGsJknKrCJ/z
-To9Y7Ymmi9WY8cpyauUnlftkGw+07En1T3JoYpYtJt9NeQX0v/UeJMdWZkQly6am
-v0jrkK4q20pnhcNanf6EykinwR8WrRvRGzxM0D++JHlOUiXRcrQevRQvHJIHB289
-z46zoZvN9eebGZTfXjB+x7B/0VA1tnT2huCh410VYKAiYH9dDvv+cfaMt+4luC2m
-4z5+X7QEQwz1Y4yUhgqwZdxjioTKmWu4tIINO/QCP1PHjPD5G6WxkX7YDqL1dDqD
-g9e4EY9vkqyNsDmHD+hEPkZ9c79M2W4ytzUr2VPUZarXKBSFWHjW2l7Iy63W3VxM
-+rSuAVxYcqgNQfOGDltg
-=ZYLk
------END PGP SIGNATURE-----
+Heiko Schocher (7):
+  ARM: davinci, intc: Add irq domain support
+  ARM: davinci, intc: Add OF support for TI interrupt controller
+  ARM: davinci: configure davinci aemif chipselects through OF
+  ARM: davinci: net: davinci_emac: add OF support
+  ARM: davinci: i2c: add OF support
+  ARM: mtd: nand: davinci: add OF support for davinci nand controller
+  ARM: davinci: add support for the am1808 based enbw_cmc board
 
---=-eLu41EiJTtaQGCNcicfb--
+ .../devicetree/bindings/arm/davinci/aemif.txt      |  119 +++++++
+ .../devicetree/bindings/arm/davinci/i2c.txt        |   31 ++
+ .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
+ .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++
+ .../devicetree/bindings/net/davinci_emac.txt       |   41 +++
+ arch/arm/boot/dts/enbw_cmc.dts                     |  172 +++++++++
+ arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
+ arch/arm/mach-davinci/Kconfig                      |    9 +
+ arch/arm/mach-davinci/Makefile                     |    1 +
+ arch/arm/mach-davinci/aemif.c                      |   86 +++++-
+ arch/arm/mach-davinci/board-enbw-cmc.c             |  374 ++++++++++++++++++++
+ arch/arm/mach-davinci/cp_intc.c                    |   74 ++++-
+ arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
+ arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
+ drivers/i2c/busses/i2c-davinci.c                   |   32 ++
+ drivers/mtd/nand/davinci_nand.c                    |   80 ++++-
+ drivers/net/ethernet/ti/davinci_emac.c             |   87 +++++-
+ 17 files changed, 1317 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+ create mode 100644 Documentation/devicetree/bindings/net/davinci_emac.txt
+ create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
+ create mode 100644 arch/arm/configs/enbw_cmc_defconfig
+ create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+
+-- 
+1.7.7.6
