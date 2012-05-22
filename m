@@ -1,16 +1,25 @@
-Message-ID: <4FBAF606.2040405@freescale.com>
-Date: Tue, 22 May 2012 10:12:22 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH V2] GPMI-NAND: Define ecc.strength
-References: <1337633967-8387-1-git-send-email-marex@denx.de>
-In-Reply-To: <1337633967-8387-1-git-send-email-marex@denx.de>
-Content-Type: text/plain; charset="GB2312"
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWggK-0001b2-Mn
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 04:26:49 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: RE: [PATCH 0/3] GPMC NAND isr using standard API
+Date: Tue, 22 May 2012 04:26:32 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E98EE28@DBDE01.ent.ti.com>
+References: <cover.1337090835.git.afzal@ti.com>
+ <20120519125018.GA2407@parrot.com>
+In-Reply-To: <20120519125018.GA2407@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+MIME-Version: 1.0
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,114 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2012=C4=EA05=D4=C222=C8=D5 04:59, Marek Vasut =D0=B4=B5=C0:
-> The ecc.strength wasn't set, resulting in the following crash:
-> [    2.550000] kernel BUG at drivers/mtd/nand/nand_base.c:3347!
-> [    2.550000] Internal error: Oops - BUG: 0 [#1] ARM
-> [    2.550000] Modules linked in:
-> [    2.550000] CPU: 0    Not tainted  (3.4.0-rc7-next-20120518-dirty #1=
-211)
-> [    2.550000] PC is at nand_scan_tail+0x328/0x650
-> [    2.550000] LR is at nand_scan_tail+0x328/0x650
-> [    2.550000] pc : [<c020841c>]    lr : [<c020841c>]    psr: 20000013
-> [    2.550000] sp : c7443ea8  ip : c7448000  fp : c043dc70
-> [    2.550000] r10: 00000000  r9 : c059dd20  r8 : c7526300
-> [    2.550000] r7 : 00000001  r6 : c7479c08  r5 : c7526300  r4 : c75260=
-98
-> [    2.550000] r3 : c7448000  r2 : 00000000  r1 : 00000001  r0 : 000000=
-34
-> [    2.550000] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Seg=
-ment kernel
-> [    2.550000] Control: 0005317f  Table: 40004000  DAC: 00000017
-> [    2.550000] Process swapper (pid: 1, stack limit =3D 0xc7442270)
-> [    2.550000] Stack: (0xc7443ea8 to 0xc7444000)
-> [    2.550000] 3ea0:                   c7526000 00000000 c7479c08 c02f6=
-8e0 c03d50ec c7526000
-> [    2.550000] 3ec0: c747c6e0 00000000 c0ae7720 00000004 00000000 00000=
-000 c7479c08 c0ae7720
-> [    2.550000] 3ee0: c7479c3c c0593e20 c7572200 c01f6618 c01f6604 c01f5=
-5b0 c7479c08 c0593e20
-> [    2.550000] 3f00: c7479c3c c059dd20 c7572200 c01f57cc 00000000 c0593=
-e20 c01f5738 c01f3d40
-> [    2.550000] 3f20: c74038a8 c74767d0 c0593e20 c04475ec c05901b8 c01f4=
-e18 c03d50e0 c019d438
-> [    2.550000] 3f40: c7403800 c0593e20 c04475ec 00000000 c059dd20 c0447=
-5f8 c7442000 c01f5a70
-> [    2.550000] 3f60: 00000000 c044e98c c04475ec 00000000 c059dd20 c0447=
-5f8 c7442000 c043dc7c
-> [    2.550000] 3f80: c044e98c c0008824 c03d6c30 c040c4e4 00000006 00000=
-006 c03b0ce4 c0bf54e0
-> [    2.550000] 3fa0: c044e98c c04475ec 00000006 c04475f8 0000004c c042a=
-21c 00000000 c042a8b8
-> [    2.550000] 3fc0: 00000006 00000006 c042a21c 00000000 00000000 00000=
-000 00000000 c042a7bc
-> [    2.550000] 3fe0: c000fab4 00000013 00000000 00000000 00000000 c000f=
-ab4 efbbfaa5 eaeafefe
-> [    2.550000] [<c020841c>] (nand_scan_tail+0x328/0x650) from [<c02f68e=
-0>] (gpmi_nand_probe+0x43c/0x5a4)
-> [    2.550000] [<c02f68e0>] (gpmi_nand_probe+0x43c/0x5a4) from [<c01f66=
-18>] (platform_drv_probe+0x14/0x18)
-> [    2.550000] [<c01f6618>] (platform_drv_probe+0x14/0x18) from [<c01f5=
-5b0>] (driver_probe_device+0x74/0x1fc)
-> [    2.550000] [<c01f55b0>] (driver_probe_device+0x74/0x1fc) from [<c01=
-f57cc>] (__driver_attach+0x94/0x98)
-> [    2.550000] [<c01f57cc>] (__driver_attach+0x94/0x98) from [<c01f3d40=
->] (bus_for_each_dev+0x50/0x80)
-> [    2.550000] [<c01f3d40>] (bus_for_each_dev+0x50/0x80) from [<c01f4e1=
-8>] (bus_add_driver+0x188/0x25c)
-> [    2.550000] [<c01f4e18>] (bus_add_driver+0x188/0x25c) from [<c01f5a7=
-0>] (driver_register+0x78/0x138)
-> [    2.550000] [<c01f5a70>] (driver_register+0x78/0x138) from [<c043dc7=
-c>] (gpmi_nand_init+0xc/0x30)
-> [    2.550000] [<c043dc7c>] (gpmi_nand_init+0xc/0x30) from [<c0008824>]=
- (do_one_initcall+0x108/0x17c)
-> [    2.550000] [<c0008824>] (do_one_initcall+0x108/0x17c) from [<c042a8=
-b8>] (kernel_init+0xfc/0x1bc)
-> [    2.550000] [<c042a8b8>] (kernel_init+0xfc/0x1bc) from [<c000fab4>] =
-(kernel_thread_exit+0x0/0x8)
-> [    2.550000] Code: e3530000 1affff76 e59f02d0 eb03c16a (e7f001f2)
-> [    2.830000] ---[ end trace 3f05d4c0039432f1 ]---
-> [    2.840000] Kernel panic - not syncing: Attempted to kill init! exit=
-code=3D0x0000000b
->
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Huang Shijie <b32955@freescale.com>
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Cc: Fabio Estevam <fabio.estevam@freescale.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
->
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    5 +++++
->  1 file changed, 5 insertions(+)
->
-> V2: Also configure mtd.ecc_strength
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> index 303e9848..d5e9f8b 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1436,6 +1436,10 @@ static int gpmi_pre_bbt_scan(struct gpmi_nand_da=
-ta  *this)
->  	if (ret)
->  		return ret;
-> =20
-> +	/* Adjust the ECC strength according to the chip. */
-> +	this->nand.ecc.strength =3D this->bch_geometry.ecc_strength;
-> +	this->mtd.ecc_strength =3D this->bch_geometry.ecc_strength;
-> +
->  	/* NAND boot init, depends on the gpmi_set_geometry(). */
->  	return nand_boot_init(this);
->  }
-> @@ -1494,6 +1498,7 @@ static int __devinit gpmi_nfc_init(struct gpmi_na=
-nd_data *this)
->  	chip->options		|=3D NAND_NO_SUBPAGE_WRITE;
->  	chip->ecc.mode		=3D NAND_ECC_HW;
->  	chip->ecc.size		=3D 1;
-> +	chip->ecc.strength	=3D 8;
->  	chip->ecc.layout	=3D &gpmi_hw_ecclayout;
-> =20
->  	/* Allocate a temporary DMA buffer for reading ID in the nand_scan() =
-*/
-Acked-by: Huang Shijie <b32955@freescale.com>
+Hi Ivan,
+
+On Sat, May 19, 2012 at 18:20:18, Ivan Djelic wrote:
+
+> Hi Afzal,
+>=20
+> I tried to take your series of patches, but I had issues with the
+> first [1] (I did not try the others): it depends on the following patch,
+> which is not in the l2-mtd-2.6 tree:
+>=20
+> http://www.mail-archive.com/linux-omap@vger.kernel.org/msg68258.html
+>=20
+> and it does not apply anyway to l2-mtd-2.6 because of (at least) the
+> following patches:
+>=20
+> http://lists.infradead.org/pipermail/linux-mtd/2012-April/040631.html
+> http://lists.infradead.org/pipermail/linux-mtd/2012-April/040724.html
+>=20
+> So, do you think you could rebase your series on l2-mtd-2.6 ?
+> And maybe merge the 3 series into a single one, if they have circular
+> dependencies ?
+
+I am not sure what the workflow should be here, all patch series were
+made over omap tree, if it is generated over mtd tree, similar issue
+would happen for omap platform patches.=20
+
+In any case, for your reference, the 3 series of patches of had been
+rebased over mtd tree, and is available,
+
+git@gitorious.org:x0148406-public/linux-kernel.git gpmc-mtd.
+
+To prevent confusion the 3 patch series has not been posted.
+
+Tony, Artem, how should the conflict between omap & mtd trees be handled
+for patch series ?
+
+I believe it is better to send the 3 patch series into one as mentioned
+by Ivan, and planning to do so, but in that case over which tree should
+it be based ?
+
+Regards
+Afzal
