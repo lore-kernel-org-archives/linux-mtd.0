@@ -1,14 +1,16 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWq7o-0005v5-NB
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 14:31:49 +0000
-Received: by dadm1 with SMTP id m1so9457565dad.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 07:31:46 -0700 (PDT)
+ id 1SWq7q-0005v5-B9
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 14:31:50 +0000
+Received: by mail-pz0-f49.google.com with SMTP id m1so9457565dad.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 07:31:50 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/2] mtd: nand: add Eon Silicon Solutions manufacturer ID
-Date: Tue, 22 May 2012 07:30:47 -0700
-Message-Id: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: nand: remove NAND_BBT_SEARCH option
+Date: Tue, 22 May 2012 07:30:48 -0700
+Message-Id: <1337697048-4577-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
+References: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,37 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eon's new NAND flash: EN27LN1G08.
+This option was never used and isn't currently used.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_ids.c |    1 +
- include/linux/mtd/nand.h    |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+ Documentation/DocBook/mtdnand.tmpl |    2 --
+ include/linux/mtd/bbm.h            |    2 --
+ 2 files changed, 0 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 621b70b..509a9f6 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -176,6 +176,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_MICRON, "Micron"},
- 	{NAND_MFR_AMD, "AMD"},
- 	{NAND_MFR_MACRONIX, "Macronix"},
-+	{NAND_MFR_EON, "Eon"},
- 	{0x0, "Unknown"}
- };
- 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 57977c6..53dcf49 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -559,6 +559,7 @@ struct nand_chip {
- #define NAND_MFR_MICRON		0x2c
- #define NAND_MFR_AMD		0x01
- #define NAND_MFR_MACRONIX	0xc2
-+#define NAND_MFR_EON		0x92
- 
- /**
-  * struct nand_flash_dev - NAND Flash Device ID Structure
+diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+index e0aedb7..fe122d6 100644
+--- a/Documentation/DocBook/mtdnand.tmpl
++++ b/Documentation/DocBook/mtdnand.tmpl
+@@ -1216,8 +1216,6 @@ in this page</entry>
+ #define	NAND_BBT_LASTBLOCK	0x00000010
+ /* The bbt is at the given page, else we must scan for the bbt */
+ #define NAND_BBT_ABSPAGE	0x00000020
+-/* The bbt is at the given page, else we must scan for the bbt */
+-#define NAND_BBT_SEARCH		0x00000040
+ /* bbt is stored per chip on multichip devices */
+ #define NAND_BBT_PERCHIP	0x00000080
+ /* bbt has a version counter at offset veroffs */
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 650ef35..5d9fcb7 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -78,8 +78,6 @@ struct nand_bbt_descr {
+ #define NAND_BBT_LASTBLOCK	0x00000010
+ /* The bbt is at the given page, else we must scan for the bbt */
+ #define NAND_BBT_ABSPAGE	0x00000020
+-/* The bbt is at the given page, else we must scan for the bbt */
+-#define NAND_BBT_SEARCH		0x00000040
+ /* bbt is stored per chip on multichip devices */
+ #define NAND_BBT_PERCHIP	0x00000080
+ /* bbt has a version counter at offset veroffs */
 -- 
 1.7.5.4.2.g519b1
