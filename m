@@ -1,22 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWsMk-0005T3-S4
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 16:55:24 +0000
-Message-ID: <4FBBC4EE.4040802@nod.at>
-Date: Tue, 22 May 2012 18:55:10 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SWsc4-0005jz-N7
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2012 17:11:14 +0000
+Date: Tue, 22 May 2012 19:10:24 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Johan Gunnarsson <johan.gunnarsson@axis.com>
+Subject: Re: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
+ nand_wait{_ready, }
+Message-ID: <20120522171023.GA2372@parrot.com>
+References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
+ <1337589758-8775-3-git-send-email-johan.gunnarsson@axis.com>
+ <1337673190.2483.115.camel@sauron.fi.intel.com>
+ <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-References: <1337608916-49771-1-git-send-email-richard@nod.at>
- <1337608916-49771-2-git-send-email-richard@nod.at>
- <20120522180119.2c2a10a8@pixies.home.jungo.com>
-In-Reply-To: <20120522180119.2c2a10a8@pixies.home.jungo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jesper Nilsson <jespern@axis.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,339 +28,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22.05.2012 17:01, Shmulik Ladkani wrote:
-> Thanks Richard,
->
-> Just reviewed your patch, besides fastmap.c and ubi-media.h (will get to
-> them soon).
-> Some comments below.
+On Tue, May 22, 2012 at 09:52:22AM +0100, Johan Gunnarsson wrote:
+> > -----Original Message-----
+> > From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+> > Sent: den 22 maj 2012 09:53
+> > To: Johan Gunnarsson; Brian Norris
+> > Cc: linux-mtd@lists.infradead.org; Jesper Nilsson
+> > Subject: Re: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
+> > nand_wait{_ready, }
 
-Thanks a lot!
+(...)
 
-> On Mon, 21 May 2012 16:01:56 +0200 Richard Weinberger<richard@nod.at>  wrote:
->> Fastmap (aka checkpointing) allows attaching of an UBI volume in nearly
->> constant time. Only a fixed number of PEBs has to be scanned.
->>
->> Signed-off-by: Richard Weinberger<richard@nod.at>
->> ---
->>   drivers/mtd/ubi/Makefile    |    2 +-
->>   drivers/mtd/ubi/attach.c    |   68 +++-
->>   drivers/mtd/ubi/build.c     |   23 +
->>   drivers/mtd/ubi/eba.c       |   18 +-
->>   drivers/mtd/ubi/fastmap.c   | 1132 +++++++++++++++++++++++++++++++++++++++++++
->>   drivers/mtd/ubi/ubi-media.h |  118 +++++
->>   drivers/mtd/ubi/ubi.h       |   61 +++-
->>   drivers/mtd/ubi/wl.c        |  170 +++++++-
->>   8 files changed, 1568 insertions(+), 24 deletions(-)
->>   create mode 100644 drivers/mtd/ubi/fastmap.c
->
-> The Kconfig changes are not present in this patch.
->
->> @@ -977,7 +977,12 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
->>   	}
->>
->>   	vol_id = be32_to_cpu(vidh->vol_id);
->> -	if (vol_id>  UBI_MAX_VOLUMES&&  vol_id != UBI_LAYOUT_VOLUME_ID) {
->> +
->> +	if (vol_id>  UBI_MAX_VOLUMES&&
->> +		vol_id != UBI_LAYOUT_VOLUME_ID&&
->> +		((vol_id != UBI_FM_SB_VOLUME_ID&&
->> +		vol_id != UBI_FM_DATA_VOLUME_ID) ||
->> +		ubi->attached_by_scanning == true)) {
->
-> I think it would be easier to understand if 'attached_by_scanning' is
-> evaluated first:
->
-> +		(ubi->attached_by_scanning == true ||
-> +		(vol_id != UBI_FM_SB_VOLUME_ID&&
-> +		vol_id != UBI_FM_DATA_VOLUME_ID))) {
+> > Si this function waits for the chip, but if we cannot access the
+> > "ready"
+> > pin - it waits for 400msecs? Where this number 400 comes from? Why not
+> > 500? How many chips we have which do not provide "dev_ready()"
+> > function?
+> 
+> Not an expert on the MTD framework -- but I believe the 400 comes from the comment above nand_wait(): "Wait for command done. This applies to erase and program only. Erase can take up to 400ms and program up to 20ms according to general NAND and SmartMedia specs."
+> 
 
-Yep, fixed!
+Hi Johan and Artem,
 
->>   /**
->> - * ubi_attach - attach an MTD device.
->> - * @ubi: UBI device descriptor
->> + * scan_fastmap - attach MTD device using fastmap.
->> + * @ubi: UBI device description object
->>    *
->> - * This function returns zero in case of success and a negative error code in
->> - * case of failure.
->> + * This function attaches a MTD device using a fastmap and returns complete
->> + * information about it in form of a "struct ubi_attach_info" object. In case
->> + * of failure, an error code is returned.
->>    */
->> -int ubi_attach(struct ubi_device *ubi)
->> +static struct ubi_attach_info *scan_fastmap(struct ubi_device *ubi)
->> +{
->> +	int fm_start;
->> +
->> +	fm_start = ubi_find_fastmap(ubi);
->> +	if (fm_start<  0)
->> +		return ERR_PTR(-ENOENT);
->> +
->> +	return ubi_read_fastmap(ubi, fm_start);
->> +}
->
-> I think the fastmap should include the bad peb count.
-> (formerly, it was detected by scanning all pebs).
-> Otherwise UBI is unaware of the correct number of good/available
-> pebs (reflected in good_peb_count/avail_pebs).
+Current NAND devices require approximately 1-3 ms per block erase, and 100-200 us per page program operation.
+But I think this timeout is only useful to detect and recover from broken hardware: IMHO there is no point in
+trying to "optimize" the timeout delay to 20ms or 400ms depending on which operation is being done (program or erase).
 
-Yeah, I'll add these counters.
+Why not simplify and just use a single 1s (1000ms) timeout ?
 
->> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
->> index 2c5ed5c..ef5d7b7 100644
->> --- a/drivers/mtd/ubi/build.c
->> +++ b/drivers/mtd/ubi/build.c
->> @@ -144,6 +144,16 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
->>
->>   	ubi_do_get_device_info(ubi,&nt.di);
->>   	ubi_do_get_volume_info(ubi, vol,&nt.vi);
->> +
->> +	switch (ntype) {
->> +	case UBI_VOLUME_ADDED:
->> +	case UBI_VOLUME_REMOVED:
->> +	case UBI_VOLUME_RESIZED:
->> +	case UBI_VOLUME_RENAMED:
->> +		if (ubi_update_fastmap(ubi))
->> +			ubi_err("Unable to update fastmap!");
->
-> In the error case, what are the consequences leaving the older on-flash
-> fastmap? Shouldn't it be invalidated?
+Johan,
+with such a timeout value, your bug would manifest itself only if interrupts are blocked for nearly a second: would that be acceptable ?
 
-If the fastmap is not written complete the CRC check will fail next time 
-and we fall back to scanning mode.
+> > Can we simplify this function and assume everyone has "dev_ready()" and
+> > add BUG_ON(!chip->dev_ready) - could you make a small research ? Or can
+> 
+> The drivers/mtd/nand/h1910.c driver sets dev_ready to NULL on init. The others seem to have dev_ready implementations.
+> 
+> > we do like this:
+> > 
+> > if (!dev_ready()) {
+> > 	msleep(400);
+> > 	return
+> > }
+> > 
+> > do {
+> > } while
+> > 
+> > Why should we iterate if "dev_ready" is NULL?
 
->> +int ubi_update_fastmap(struct ubi_device *ubi)
->> +{
->> +	int ret, i;
->> +	struct ubi_fastmap *new_fm;
->> +
->> +	if (ubi->ro_mode)
->> +		return 0;
->> +
->> +	new_fm = kmalloc(sizeof(*new_fm), GFP_KERNEL);
->> +	if (!new_fm)
->> +		return -ENOMEM;
->> +
->> +	ubi->old_fm = ubi->fm;
->> +	ubi->fm = NULL;
->> +
->> +	if (ubi->old_fm) {
->> +		spin_lock(&ubi->wl_lock);
->> +		new_fm->peb[0] = ubi_wl_get_fm_peb(ubi, UBI_FM_MAX_START);
->> +		spin_unlock(&ubi->wl_lock);
->
-> Same 3 lines are found later, in the 'else' clause.
-> You can place these prior the 'if (ubi->old_fm)'.
+nand_wait() polls the device until it is ready or a timeout has elapsed.
+More details here: http://lists.infradead.org/pipermail/linux-mtd/2011-June/036795.html
 
-Fixed.
 
->> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
->> index 5275632..299a601 100644
->> --- a/drivers/mtd/ubi/ubi.h
->> +++ b/drivers/mtd/ubi/ubi.h
->> @@ -202,6 +202,39 @@ struct ubi_rename_entry {
->>   struct ubi_volume_desc;
->>
->>   /**
->> + * struct ubi_fastmap - in-memory fastmap data structure.
->> + * @peb: PEBs used by the current fastamp
->
-> s/fastamp/fastmap/
->
->> + * @ec: the erase counter of each used PEB
->> + * @size: size of the fastmap in bytes
->> + * @used_blocks: number of used PEBs
->> + */
->> +struct ubi_fastmap {
->
-> Suggestion: maybe ubi_fastmap_location / ubi_fastmap_layout /
-> ubi_fastmap_position ? slightly more explanatory than 'ubi_fastmap'.
+> Actually, it's worse than that. If dev_ready is NULL (as in the h1910.c case) we'll crash the kernel, right?
+> 
+> > 
+> > My point is that this stuff ancient horror which needs love and
+> > cleaning
+> > up. Your does not make it less scary. I'd prefer to first clean the
+> > whole thing up, and then fix it.
 
-Good idea. ubi_fastmap_position seems good to me.
+I agree it needs some cleaning; here are a few things I have noticed:
 
->> @@ -427,6 +467,12 @@ struct ubi_device {
->>   	struct rb_root ltree;
->>   	struct mutex alc_mutex;
->>
->> +	/* Fastmap stuff */
->> +	struct ubi_fastmap *fm;
->> +	struct ubi_fastmap *old_fm;
->> +	struct ubi_fm_pool fm_pool;
->> +	bool attached_by_scanning;
->
-> Convention around MTD is 'int' for booleans.
+* panic_nand_wait() and panic_nand_wait_ready() are nearly identical
 
-Fixed.
+* Some patterns are repeated:
+	/* Apply delay or wait for ready/busy pin */
+	if (!chip->dev_ready)
+		udelay(chip->chip_delay);
+	else
+		nand_wait_ready(mtd);
 
->> @@ -670,6 +717,9 @@ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
->>   int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
->>   void ubi_wl_close(struct ubi_device *ubi);
->>   int ubi_thread(void *u);
->> +int ubi_wl_get_fm_peb(struct ubi_device *ubi, int max_pnum);
->> +int ubi_wl_put_fm_peb(struct ubi_device *ubi, int pnum, int torture);
->> +int ubi_is_fm_block(struct ubi_device *ubi, int pnum);
->
-> No users of 'ubi_is_fm_block' outside of wl.c (where it is defined).
-> Is it deliberately a part of the ubi interface?
+* the udelay() fallback should probably be phased out if only one driver (h1910) depends on it because it does not define chip->dev_ready() ?
 
-True. Fixed.
+* nand_wait() and nand_wait_ready() use different strategies to wait:
+  - nand_wait_ready = busy loop
+  - nand_wait       = busy loop with cond_resched call
+  Presumably, this is because nand_wait_ready() should not wait for more than ~25 us (typically),
+  so it is more efficient to avoid the cond_resched() call ?
 
->> @@ -367,13 +386,70 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
->>   }
->>
->>   /**
->> - * ubi_wl_get_peb - get a physical eraseblock.
->> + * find_early_wl_entry - find wear-leveling entry with a low pnum.
->
-> s/a low/the lowest/
+* We could separate dev_ready() and STATUS polling inside nand_wait(), or even better, directly call nand_wait_ready() from nand_wait() ?
+  The only difference between the 2 functions (besides cond_resched) is that nand_wait_ready() does not send any STATUS command: as a consequence,
+  it does not interfere with the device mode (polling the device with STATUS reads while waiting during a read operation requires
+  re-sending a READ0 command at the end to return to read mode).
 
-Fixed.
+I would suggest the following approach:
 
->> + * @root: the RB-tree where to look for
->> + * @max_pnum: highest possible pnum
->> + *
->> + * This function looks for a wear leveling entry containing a eb which
->> + * is in front of the memory.
->
-> IMO can remove the last comment.
+1. Use a single timeout value (1s for instance).
 
-Documentation is like sex: when it is good, it is very, very good; and 
-when it is bad, it is better than nothing.
-- Dick Brandon
+2. Rewrite and simplify nand_wait() as follows:
+   a) loop until dev_ready() returns true OR timeout
+   b) send a STATUS command
+   c) loop until status is ready OR timeout, and return NAND status
 
->> +static struct ubi_wl_entry *find_early_wl_entry(struct rb_root *root,
->> +						int max_pnum)
->> +{
->> +	struct rb_node *p;
->> +	struct ubi_wl_entry *e, *victim = NULL;
->> +
->> +	ubi_rb_for_each_entry(p, e, root, u.rb) {
->> +		if (e->pnum<  max_pnum) {
->> +			victim = e;
->> +			max_pnum = e->pnum;
->> +		}
->> +	}
->> +
->> +	return victim;
->> +}
->> +
->> +/**
->> + * ubi_wl_get_fm_peb - find a physical erase block with a given maximal number.
->> + * @ubi: UBI device description object
->> + * @max_pnum: the highest acceptable erase block number
->> + *
->> + * The function returns a physical erase block with a given maximal number
->> + * and removes it from the wl subsystem.
->> + * Must be called with wl_lock held!
->> + */
->> +int ubi_wl_get_fm_peb(struct ubi_device *ubi, int max_pnum)
->> +{
->> +	int ret = -ENOSPC;
->> +	struct ubi_wl_entry *e;
->> +
->> +	if (!ubi->free.rb_node) {
->> +		ubi_err("no free eraseblocks");
->> +
->> +		goto out;
->> +	}
->> +
->> +	e = find_early_wl_entry(&ubi->free, max_pnum);
->
-> This picks the eb with the lowest pnum within 'ubi->free'.
->
-> When called with INT_MAX (for the FM_DATA), why do you need to pick a
-> free eb with the minimal pnum? The FM_DATA EBs may reside everywhere (as
-> the FM_SB holds their location).
-> So why not pick the eb with a medium EC value (as done for standard
-> get_peb calls)? That might be better wear-leveling wise.
+The idea is that in most cases, dev_ready() will be defined and functional, and the loop in c) will finish immediately.
+If dev_ready() is not available or defective, step c) still ensures we properly wait.
+Step a) could be replaced with a call to a modified version of nand_wait_ready() with optional cond_resched-uling.
 
-Fair point.
-I'll fix that.
-Artem, any comments on that?
+What do you think ? Any suggestions ?
+I'm willing to submit patches if we reach a consensus on this,
 
->> +/* ubi_wl_get_peb - works exaclty like __ubi_wl_get_peb but keeps track of
->> + * the fastmap pool.
->> + */
->> +int ubi_wl_get_peb(struct ubi_device *ubi)
->> +{
->> +	struct ubi_fm_pool *pool =&ubi->fm_pool;
->> +
->> +	/* pool contains no free blocks, create a new one
->> +	 * and write a fastmap */
->> +	if (pool->used == pool->size || !pool->size) {
->> +		for (pool->size = 0; pool->size<  pool->max_size;
->> +				pool->size++) {
->> +			pool->pebs[pool->size] = __ubi_wl_get_peb(ubi);
->> +			if (pool->pebs[pool->size]<  0)
->> +				break;
->> +		}
->> +
->> +		pool->used = 0;
->> +		ubi_update_fastmap(ubi);
->> +	}
->> +
->> +	/* we got not a single free PEB */
->> +	if (!pool->size)
->> +		return -1;
->
-> Returning -ENOSPC is more appropriate and consistent with former
-> ubi_wl_get_peb implementation.
-
-Fixed.
-
->>   /**
->> + * ubi_wl_put_fm_peb - returns a PEB used in a fastmap to the wear-leveling
->> + * sub-system.
->> + *
->> + * see: ubi_wl_put_peb()
->> + */
->> +int ubi_wl_put_fm_peb(struct ubi_device *ubi, int pnum, int torture)
->> +{
->> +	int i, err = 0;
->> +	struct ubi_wl_entry *e;
->> +
->> +	dbg_wl("PEB %d", pnum);
->> +	ubi_assert(pnum>= 0);
->> +	ubi_assert(pnum<  ubi->peb_count);
->> +
->> +	spin_lock(&ubi->wl_lock);
->> +	e = ubi->lookuptbl[pnum];
->> +
->> +	/* This can happen if we recovered from a fastmap the very
->> +	 * frist time and writing now a new one. In this case the wl system
->
-> s/frist/first/
-
-Fixed.
-
->> +	 * has never seen any PEB used by the original fastmap.
->> +	 */
->> +	if (!e) {
->> +		ubi_assert(ubi->old_fm);
->> +		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_ATOMIC);
->
-> Must it be GFP_ATOMIC?
-
-Yes. This function is called under a spinlock.
-
->> +		if (!e) {
->> +			spin_unlock(&ubi->wl_lock);
->> +			return -ENOMEM;
->
-> This is traumatic; you must return the PEB back to WL, but fail to do so
-> due to an internal error.
-
-This is not easy. In the !e case I need memory.
-
-> (BTW the return value of ubi_wl_put_fm_peb is not tested at the call
-> sites)
-> The system is left with a missing PEB.
-> Can't we guarantee ubi_wl_put_fm_peb is called only after wl_init is
-> completed?
-
-Why would that help?
-
-Thanks,
-//richard
+Best regards,
+--
+Ivan
