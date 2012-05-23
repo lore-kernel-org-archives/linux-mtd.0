@@ -1,20 +1,14 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXAwR-0007IG-0X
- for linux-mtd@lists.infradead.org; Wed, 23 May 2012 12:45:27 +0000
-Message-ID: <1337777344.2483.208.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add Eon Silicon Solutions manufacturer ID
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 23 May 2012 15:49:04 +0300
-In-Reply-To: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
-References: <1337697048-4577-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-KbEh4XsqnOjQRatYQCCU"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from arrakis.dune.hu ([78.24.191.176])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXJyz-0004d8-On
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2012 22:24:42 +0000
+From: Gabor Juhos <juhosg@openwrt.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: block2mtd: fix recursive call of mtd_writev
+Date: Thu, 24 May 2012 00:17:23 +0200
+Message-Id: <1337811443-2603-1-git-send-email-juhosg@openwrt.org>
+Cc: Gabor Juhos <juhosg@openwrt.org>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The 'mtd_writev' interface calls the function assigned
+to the '_write' field of a given mtd device if that is
+not NULL. The block2mtd driver sets the '_writev' field
+to the 'mtd_writev' function itself and thus causes a
+endless loop.
 
---=-KbEh4XsqnOjQRatYQCCU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This is caused by 1dbebd32562b3c2caeca35960e5cb00bfcc12900
+(mtd: harmonize mtd_writev usage).
 
-On Tue, 2012-05-22 at 07:30 -0700, Brian Norris wrote:
-> Eon's new NAND flash: EN27LN1G08.
->=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Remove the assignment from the block2mtd driver to fix the
+issue.
 
-Pushed the 3 patches you recently sent to l2-mtd.git, thanks!
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: stable@vger.kernel.org
 
---=20
-Best Regards,
-Artem Bityutskiy
+---
+An identical patch has been tested on 3.3.7, but the actual
+one is not even compile tested.
+---
+ drivers/mtd/devices/block2mtd.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
---=-KbEh4XsqnOjQRatYQCCU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPvNzAAAoJECmIfjd9wqK04jMP/3VMtJt7RMegU/vf9FBtWD8a
-IfK0vyvTdq4HE2gm2lr7An4CI+oVFexlgkIUVqIBMfebjs34mlBlnlL6JyPVrKCt
-XfxbgdSNMWiSvYvjPCClfCxnau3ZlBCcqbJDwRvscvOwK3n+ln4tIDM5dG+jeLgL
-Pr3UvL2c1zs97pXpVkqsnbyWeQng6fLwxXcY34nEBEivF2SjXp9M87CkdAhpAA3y
-m2wFrlMMSotFZRZHJaOS+zy7KEL2Wk1CBJ0uUyVktGFTw8liINexbLiQvCLDzkXN
-DCfJsQrVxTa+EG2HMKFB6Lo2sjjn6DXk5CvpYqasikxM7M87t5QsLMt9TsRItktB
-I83+rG//ZvXXVLUo5UX0ip3oZ7QzYbvuF3e9WN7bIpVrLtyLLS8ux2oklcNTSWwH
-yUzGP8hMXMJaof/haS8wUXgzIb3wSOELQSjZevjZ3o7fXC+jZBHxJbiTntIaZUkR
-LdZzWtcAePa52FwWWB9gTvS63CwxU+NaSkN0TtmRk6Lo6F/FdJlgm4CiqC4sq95l
-LSigSbvXQAgQTDNlT208iBPEgZziLJ/0/HTqjisxcC1R8C4n6ttG5moc8DUD7836
-sny2zqN3I9h6jRknG1ywdCFpmE5nRj9aI3LFZyWv3uPM2lWX6r+ZmA+X/5hnJDiI
-PkSEnI85h5FaRLfHY0tx
-=y1zC
------END PGP SIGNATURE-----
-
---=-KbEh4XsqnOjQRatYQCCU--
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index a4a80b7..7d7000d 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -271,7 +271,6 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 	dev->mtd.flags = MTD_CAP_RAM;
+ 	dev->mtd._erase = block2mtd_erase;
+ 	dev->mtd._write = block2mtd_write;
+-	dev->mtd._writev = mtd_writev;
+ 	dev->mtd._sync = block2mtd_sync;
+ 	dev->mtd._read = block2mtd_read;
+ 	dev->mtd.priv = dev;
+-- 
+1.7.2.1
