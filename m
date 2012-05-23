@@ -1,20 +1,14 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SX91d-0005k2-Ec
- for linux-mtd@lists.infradead.org; Wed, 23 May 2012 10:42:41 +0000
-Message-ID: <1337769978.2483.204.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: introduce struct ubifs_keymap
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Wed, 23 May 2012 13:46:18 +0300
-In-Reply-To: <alpine.DEB.2.00.1205211640320.3833@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205211640320.3833@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-/G3G2d1OPU4lxk7lxlxd"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SX9T9-0006Ad-QE
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2012 11:11:08 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC v7] UBI: Fastmap support (aka checkpointing)
+Date: Wed, 23 May 2012 13:06:30 +0200
+Message-Id: <1337771191-95358-1-git-send-email-richard@nod.at>
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de, tim.bird@am.sony.com,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +18,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+v1: https://lwn.net/Articles/481612/
+v2: https://lwn.net/Articles/496586/
+v3: Didn't release it to linux-mtd
+v4: http://article.gmane.org/gmane.linux.kernel/1297626
+v5: http://article.gmane.org/gmane.linux.kernel/1298488
+v6: https://lwn.net/Articles/498041/
 
---=-/G3G2d1OPU4lxk7lxlxd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Changes since v1:
+       - renamed it to UBIVIS (at least in Kconfig)
+       - UBIVIS parameters are now configurable via Kconfig
+       - several bugs have been fixed (design and implementation bugs)
+       - added lots of comments to make the review process easier
+       - made checkpatch.pl happy
 
-On Mon, 2012-05-21 at 16:41 +0200, Joel Reardon wrote:
-> +static void generate_key(struct ubifs_keymap *km, u8 *to)
-> +{
-> +       get_random_bytes(to, km->key_size);
-> +}
+Changes since v2:
+       - minor bugs have been fixed
+       - renamed it to UBI fastmap (as Artem requested)
 
-If this function is not going to grow soon, just open-code
-'get_random_bytes()' instead. Try to not introduce wrappers like this -
-we do not appreciate it usually, we prefer open-coding things unless
-there is a good reason to have a wrapper function.
+Changes since v3:
+       - changed the on-flash layout (added padding fields, turned the
+         EBA storage into an array)
+       - fixed some corner cases (the protection queue needed some extra work)
+       - removed the data type hint logic
+       - rebased to Artems mtd tree
 
---=20
-Best Regards,
-Artem Bityutskiy
+Changes since v4:
+       - fixed static volume handling (used_ebs and last_data_bytes contained
+         bad values in some cases)
 
---=-/G3G2d1OPU4lxk7lxlxd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Changes since v5:
+       - merged it into a single patch
+       - rebased to Artems mtd tree (addressed all renames)
+       - fixed issues pointed out by Artem
+       - redefined fastmap parameters
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Changes since v6:
+       - massive return code cleanup
+       - made ubi_wl_put_fm_peb more robust
+       - fastmap stores now bad_peb_count
+       - some minor fixes (typos, renames)
+       - fastmap makes now use of ubi_io_is_bad() and checks image_seq
+         (mostly like scan_peb() does)
+       - if update_fastmap() fails we switch to read-only mode
+       - the CRC covers now the whole fastmap (super block + data)
 
-iQIcBAABAgAGBQJPvL/6AAoJECmIfjd9wqK0R3oQAJLN+3eJKoyhedcexw0TFUcT
-sLh0dyZWEnVAYApfgx6trqOUK3dmrpg9Hy1UQhFUB4jcU25W2Jn97GcCrvVl6rDw
-L/tEU7jkuylcCMSw4u4qvNFcm1R7BG7MMP95TkC3gHu7T9//zkUkaI5SjuDUiixf
-u7N9t3vkOOzd+MNIgwQgFlpBlC4Pd48o6Okhe6VwxbOodwk1JX9GzBt6W5d5XQQ8
-/XEl3Nbhn08Zs1Jd+xppbwcJbzt+EIajDqZtrP2eWDsWiuWDjM7EmfuUGJyYr9yd
-ryhpqJyEE/9iPUz0VRKDHeKvLddYl6uS5UsBk+LrPczVmuGzgpitfG6glZMkEBxr
-wSLMF00NN/uDpM4JLLKOFfUyFBW6rzcuoOGTVO+vtiM10VlBCcx4vgo2yCjIBeeV
-U1lzODHQ2hTwVcg/6pmzvT1wqarpPTqzb2Zz+cp6rSEc2jzWD15s9AbYvPYbjwSh
-/30JdgWaSrDHoflvLDbRhH+eQGGFilG7hKg1lhD2pxwu8VxuzvMj6FdII8x9IdOl
-uZDvzetfdmWBrXM9XYWPyQXyvkify2d9Stw3Wfizyv0Myc6EVTETd3L8G9SeahGl
-SwfhLbUf0ufxMr/BA74OsmkoGRqEbkBRtMYd0N7mqvkVoc7qBBUbsv0qPOiLojk4
-epWjAe8CbIcUq/uiDde7
-=R80t
------END PGP SIGNATURE-----
+The fastmap super block has to be located within the first 64 PEBs.
+A fastmap can use up to 32 PEBs.
+The fastmap pool (the number of to be scanned PEBs while attaching)
+is now derived from the flash size.
+The current formular is Np = max(min(5% of total PEBs, 256), 8)
+Comments/better ideas?
 
---=-/G3G2d1OPU4lxk7lxlxd--
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v7
+
+[PATCH] [RFC] UBI: Implement Fastmap support
+
+Thanks,
+//richard
