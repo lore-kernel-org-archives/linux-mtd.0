@@ -1,21 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SWvQp-0004H5-Nl
- for linux-mtd@lists.infradead.org; Tue, 22 May 2012 20:11:49 +0000
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Date: Tue, 22 May 2012 22:11:43 +0200
-From: Richard Weinberger <richard@nod.at>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1SX4uZ-0008W8-5K
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2012 06:19:08 +0000
+Received: by lbbgg6 with SMTP id gg6so6114894lbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 23:19:04 -0700 (PDT)
+Date: Wed, 23 May 2012 09:18:56 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
 Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-In-Reply-To: <20120522211809.53bd6444@halley>
+Message-ID: <20120523091856.4e9217a2@pixies.home.jungo.com>
+In-Reply-To: <2423212898cfc1c21343bff32e776dbd@radon2.swed.at>
 References: <1337608916-49771-1-git-send-email-richard@nod.at>
  <1337608916-49771-2-git-send-email-richard@nod.at>
- <20120522180119.2c2a10a8@pixies.home.jungo.com> <4FBBC4EE.4040802@nod.at>
- <20120522211809.53bd6444@halley>
-Message-ID: <b3d5919d0b35bb559b7dc115bc9e2720@radon2.swed.at>
+ <20120522180119.2c2a10a8@pixies.home.jungo.com>
+ <4FBBC4EE.4040802@nod.at> <20120522211809.53bd6444@halley>
+ <2423212898cfc1c21343bff32e776dbd@radon2.swed.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
  Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
  tglx@linutronix.de
@@ -28,35 +30,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 May 2012 21:18:09 +0300, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> Hi Richard,
+Hi Richard,
+
+On Tue, 22 May 2012 20:57:25 +0200 Richard Weinberger <richard@nod.at> wrote:
+> > Care to elaborate how come 'ubi->lookuptbl[pnum]' is NULL? What's the
+> > exact flow leading to it?
 > 
-> On Tue, 22 May 2012 18:55:10 +0200 Richard Weinberger <richard@nod.at> wrote:
->> >> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
->> >> index 2c5ed5c..ef5d7b7 100644
->> >> --- a/drivers/mtd/ubi/build.c
->> >> +++ b/drivers/mtd/ubi/build.c
->> >> @@ -144,6 +144,16 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
->> >>
->> >>   	ubi_do_get_device_info(ubi,&nt.di);
->> >>   	ubi_do_get_volume_info(ubi, vol,&nt.vi);
->> >> +
->> >> +	switch (ntype) {
->> >> +	case UBI_VOLUME_ADDED:
->> >> +	case UBI_VOLUME_REMOVED:
->> >> +	case UBI_VOLUME_RESIZED:
->> >> +	case UBI_VOLUME_RENAMED:
->> >> +		if (ubi_update_fastmap(ubi))
->> >> +			ubi_err("Unable to update fastmap!");
->> >
->> > In the error case, what are the consequences leaving the older on-flash
->> > fastmap? Shouldn't it be invalidated?
->>
+> PEBs used by the fastmap sub-system are not known by the WL and EBA
+> sub-system.
+> A PEB used by fastmap contains mostly raw data. (It does not have any
+> LEBs).
+> E.g. If PEBs 0,1 and 2 are used by fastmap they are not in
+> ubi->lookuptbl.
+> So, right after attaching from a fastmap ubi->lookuptbl[0|1|2] is NULL.
+> By writing a new fastmap 0, 1 and 2 will be put back to the WL
+> sub-system and they appear in
+> ubi->lookuptbl.
 
-After thinking a bit more about this case I think the best we can to is
-switching to read-only mode if ubi_update_fastmap()
-fails.
+Thanks. Understood.
 
-Thanks,
-//richard
+> > 'ubi_wl_get_fm_peb' doesn't clear the 'ubi_wl_entry' from the lookuptbl.
+> > It does not free the 'ubi_wl_entry' either (seems like it should, no?)
+> 
+> It removes a PEB from the free rb-tree.
+> ubi->lookuptbl[pnum] does not matter at this time.
+
+For practical matters, you are correct.
+Design wise, it is bit inconsistent and confusing.
+
+On one hand, you claim above that 'ubi->lookuptbl' holds the WL entries
+known to WL subsystem - that is, lookuptbl is a data structure used and
+maintained by the WL subsystem.
+OTOH, when a PEB is removed from hands of WL (by a ubi_wl_get_fm_peb
+call), you keep its WL entry assigned in ubi->lookuptbl.
+
+I'll rethink this, see if there's a potential trouble here.
+
+> > However 'ubi_wl_put_fm_peb' creates a 'ubi_wl_entry' if not found in
+> > the lookuptbl.
+> 
+> Yeah, but only in one corner case.
+> See my comment:
+>         /* This can happen if we recovered from a fastmap the very
+>          * frist time and writing now a new one. In this case the wl
+> system
+>          * has never seen any PEB used by the original fastmap.
+>          */
+> 
+> > Formerly, wl_init was responsible for correctly populating
+> > 'ubi->lookuptbl'. Can we somehow preserve this for FM pebs as well?
+> > 
+> 
+> Currently fastmap "fixes" ubi->lookuptbl on demand. Is this a problem?
+
+I guess not.
+
+The only problem, as previously noted, is the failure to create a new
+'ubi_wl_entry' when the PEB needs to be returned to WL subsystem.
+
+If all relevant wl entries are created during 'wl_init' (including those
+currently associated to the fastmap), then we are fine, as internal
+failures within 'wl_init' propagate back to the attach code.
+
+I'll give it some more thought.
+
+Regards,
+Shmulik
