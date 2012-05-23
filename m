@@ -1,28 +1,17 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SX5Eg-0001E3-G1
- for linux-mtd@lists.infradead.org; Wed, 23 May 2012 06:39:55 +0000
-Received: by ghbf11 with SMTP id f11so1239710ghb.36
- for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 23:39:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120522171023.GA2372@parrot.com>
-References: <1337589758-8775-1-git-send-email-johan.gunnarsson@axis.com>
- <1337589758-8775-3-git-send-email-johan.gunnarsson@axis.com>
- <1337673190.2483.115.camel@sauron.fi.intel.com>
- <A612847CFE53224C91B23E3A5B48BAC7534B129D18@xmail3.se.axis.com>
- <20120522171023.GA2372@parrot.com>
-Date: Tue, 22 May 2012 23:39:51 -0700
-Message-ID: <CAN8TOE90vWS713_vKNwkBDMBPbEiz10R0oiawnRVgmTYFRPh0g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
- nand_wait{_ready, }
+ id 1SX5Og-0001vf-HA
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2012 06:50:15 +0000
+Received: by pbbrq13 with SMTP id rq13so10636502pbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 22 May 2012 23:50:13 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>,
- Johan Gunnarsson <johan.gunnarsson@axis.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jesper Nilsson <jespern@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: kill NAND_NO_READRDY
+Date: Tue, 22 May 2012 23:50:00 -0700
+Message-Id: <1337755800-21085-1-git-send-email-computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Johan Gunnarsson <johan.gunnarsson@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,95 +21,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+According to its documentation, the NAND_NO_READRDY option is always used
+when autoincrement is not supported. Autoincrement support was recently
+dropped, so we can drop this options as well (defaulting to "no read ready
+check").
 
-On Tue, May 22, 2012 at 10:10 AM, Ivan Djelic <ivan.djelic@parrot.com> wrot=
-e:
-> On Tue, May 22, 2012 at 09:52:22AM +0100, Johan Gunnarsson wrote:
->> > -----Original Message-----
->> > From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
->> > Sent: den 22 maj 2012 09:53
->> > To: Johan Gunnarsson; Brian Norris
->> > Cc: linux-mtd@lists.infradead.org; Jesper Nilsson
->> > Subject: Re: [PATCH 2/2] mtd: nand: use hrtimer to measure timeout in
->> > nand_wait{_ready, }
->
-> (...)
->
->> > Si this function waits for the chip, but if we cannot access the
->> > "ready"
->> > pin - it waits for 400msecs? Where this number 400 comes from? Why not
->> > 500? How many chips we have which do not provide "dev_ready()"
->> > function?
->
-> Current NAND devices require approximately 1-3 ms per block erase, and 10=
-0-200 us per page program operation.
-> But I think this timeout is only useful to detect and recover from broken=
- hardware: IMHO there is no point in
-> trying to "optimize" the timeout delay to 20ms or 400ms depending on whic=
-h operation is being done (program or erase).
->
-> Why not simplify and just use a single 1s (1000ms) timeout ?
->
->> > Can we simplify this function and assume everyone has "dev_ready()" an=
-d
->> > add BUG_ON(!chip->dev_ready) - could you make a small research ? Or ca=
-n
->>
->> The drivers/mtd/nand/h1910.c driver sets dev_ready to NULL on init. The =
-others seem to have dev_ready implementations.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |    1 -
+ drivers/mtd/nand/fsl_ifc_nand.c  |    1 -
+ drivers/mtd/nand/nand_base.c     |   17 -----------------
+ drivers/mtd/nand/nand_ids.c      |    4 ++--
+ drivers/mtd/nand/pxa3xx_nand.c   |    1 -
+ include/linux/mtd/nand.h         |    6 ------
+ 6 files changed, 2 insertions(+), 28 deletions(-)
 
-Not true: there are several drivers which do not have dev_ready, but
-this is also because they are controller-based, so they provide their
-own cmdfunc as well, mostly avoiding the nand_wait_ready stuff.
-(Drivers: denali.c, docg4.c, my out-of-tree driver, ...)
-
-Note: another use of nand_wait_ready is in nand_do_read_ops and
-nand_do_read_oob, under the following condition:
-    if (!(chip->options & NAND_NO_READRDY)) {
-Isn't NAND_NO_READRDY no longer needed, since I killed autoincrement?
-(i.e., we *always* "do not support autoincrement", as its comment says
-in nand.h) So if we kill this option, we can kill the only use of
-nand_wait_ready outside of cmdfunc(); this brings us closer to being
-able to using BUG_ON(!chip->dev_ready). I'll send a patch for this,
-and you guys can comment.
-
->> Actually, it's worse than that. If dev_ready is NULL (as in the h1910.c =
-case) we'll crash the kernel, right?
-
-No, I don't think so. It looks like nand_wait_ready is never called
-when dev_ready is NULL.
-
->> >
->> > My point is that this stuff ancient horror which needs love and
->> > cleaning
->> > up. Your does not make it less scary. I'd prefer to first clean the
->> > whole thing up, and then fix it.
->
-> I agree it needs some cleaning; here are a few things I have noticed:
-
-Even though I'm mostly not a user of this code, I agree :)
-
-> * Some patterns are repeated:
-> =A0 =A0 =A0 =A0/* Apply delay or wait for ready/busy pin */
-> =A0 =A0 =A0 =A0if (!chip->dev_ready)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0udelay(chip->chip_delay);
-> =A0 =A0 =A0 =A0else
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0nand_wait_ready(mtd);
-
-I'm going to kill this pattern, I think.
-
-> * the udelay() fallback should probably be phased out if only one driver =
-(h1910) depends on it because it does not define chip->dev_ready() ?
-
-Clarification: only one driver does leaves both chip->dev_ready and
-chip->cmdfunc NULL, right?
-
-> What do you think ? Any suggestions ?
-> I'm willing to submit patches if we reach a consensus on this,
-
-Feel free to send a patch; it's probably easier to talk more
-concretely about a patch that implements your (seemingly reasonable)
-suggestions, and then provide comments based on concrete ideas.
-
-Brian
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 7842938..1d8d111 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -805,7 +805,6 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	chip->bbt_md = &bbt_mirror_descr;
+ 
+ 	/* set up nand options */
+-	chip->options = NAND_NO_READRDY;
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+ 
+ 	chip->controller = &elbc_fcm_ctrl->controller;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 9602c1b..c5d7f38 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -805,7 +805,6 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	out_be32(&ifc->ifc_nand.ncfgr, 0x0);
+ 
+ 	/* set up nand options */
+-	chip->options = NAND_NO_READRDY;
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+ 
+ 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d47586c..61805e7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1565,14 +1565,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 					oobreadlen -= toread;
+ 				}
+ 			}
+-
+-			if (!(chip->options & NAND_NO_READRDY)) {
+-				/* Apply delay or wait for ready/busy pin */
+-				if (!chip->dev_ready)
+-					udelay(chip->chip_delay);
+-				else
+-					nand_wait_ready(mtd);
+-			}
+ 		} else {
+ 			memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			buf += bytes;
+@@ -1837,14 +1829,6 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 		len = min(len, readlen);
+ 		buf = nand_transfer_oob(chip, buf, ops, len);
+ 
+-		if (!(chip->options & NAND_NO_READRDY)) {
+-			/* Apply delay or wait for ready/busy pin */
+-			if (!chip->dev_ready)
+-				udelay(chip->chip_delay);
+-			else
+-				nand_wait_ready(mtd);
+-		}
+-
+ 		readlen -= len;
+ 		if (!readlen)
+ 			break;
+@@ -2915,7 +2899,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		*busw = NAND_BUSWIDTH_16;
+ 
+ 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
+-	chip->options |= NAND_NO_READRDY & NAND_CHIPOPTIONS_MSK;
+ 
+ 	pr_info("ONFI flash detected\n");
+ 	return 1;
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 509a9f6..e04c675 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -70,7 +70,7 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	 * These are the new chips with large page size. The pagesize and the
+ 	 * erasesize is determined from the extended id bytes
+ 	 */
+-#define LP_OPTIONS (NAND_SAMSUNG_LP_OPTIONS | NAND_NO_READRDY)
++#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+ #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+ 
+ 	/* 512 Megabit */
+@@ -157,7 +157,7 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	 * writes possible, but not implemented now
+ 	 */
+ 	{"AND 128MiB 3,3V 8-bit",	0x01, 2048, 128, 0x4000,
+-	 NAND_IS_AND | NAND_NO_READRDY | NAND_4PAGE_ARRAY | BBT_AUTO_REFRESH},
++	 NAND_IS_AND | NAND_4PAGE_ARRAY | BBT_AUTO_REFRESH},
+ 
+ 	{NULL,}
+ };
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 252aaef..afc4681 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1005,7 +1005,6 @@ KEEP_CONFIG:
+ 	chip->ecc.size = host->page_size;
+ 	chip->ecc.strength = 1;
+ 
+-	chip->options |= NAND_NO_READRDY;
+ 	if (host->reg_ndcr & NDCR_DWIDTH_M)
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 53dcf49..a81ac89 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -185,12 +185,6 @@ typedef enum {
+  * This happens with the Renesas AG-AND chips, possibly others.
+  */
+ #define BBT_AUTO_REFRESH	0x00000080
+-/*
+- * Chip does not require ready check on read. True
+- * for all large page devices, as they do not support
+- * autoincrement.
+- */
+-#define NAND_NO_READRDY		0x00000100
+ /* Chip does not allow subpage writes */
+ #define NAND_NO_SUBPAGE_WRITE	0x00000200
+ 
