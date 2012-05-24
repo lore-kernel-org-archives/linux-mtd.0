@@ -1,23 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXTFV-0000qJ-B5
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 08:18:22 +0000
-Message-ID: <1337847720.15137.85.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
+ id 1SXTKs-0001Gd-Fn
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 08:23:55 +0000
+Message-ID: <1337848055.15137.86.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd-www: clarification to -EUCLEAN explanation
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 24 May 2012 11:22:00 +0300
-In-Reply-To: <4FBBC4EE.4040802@nod.at>
-References: <1337608916-49771-1-git-send-email-richard@nod.at>
- <1337608916-49771-2-git-send-email-richard@nod.at>
- <20120522180119.2c2a10a8@pixies.home.jungo.com> <4FBBC4EE.4040802@nod.at>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Thu, 24 May 2012 11:27:35 +0300
+In-Reply-To: <1337712669-11801-1-git-send-email-mikedunn@newsguy.com>
+References: <1337712669-11801-1-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ANTLuREx6GKnyESMJys2"
+ boundary="=-mMw9z2lMxkjbeK+MtM9c"
 Mime-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,34 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ANTLuREx6GKnyESMJys2
+--=-mMw9z2lMxkjbeK+MtM9c
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-05-22 at 18:55 +0200, Richard Weinberger wrote:
-> >> +     * has never seen any PEB used by the original fastmap.
-> >> +     */
-> >> +    if (!e) {
-> >> +            ubi_assert(ubi->old_fm);
-> >> +            e =3D kmem_cache_alloc(ubi_wl_entry_slab, GFP_ATOMIC);
-> >
-> > Must it be GFP_ATOMIC?
+On Tue, 2012-05-22 at 11:51 -0700, Mike Dunn wrote:
+> The -EUCLEAN return value applies to mtd_read_oob() as well as mtd_read()=
+, but
+> only mtd_read() was mentioned in the explanation of -EUCLEAN.=20
 >=20
-> Yes. This function is called under a spinlock.
+> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 
-I did not look close, but this sounds bad.
+Thanks Mike, very appreciated!
 
-You need to have a much better justification than "I allocate it under a
-spinlock". You need to tell "... because there is no way or very
-difficult to pre-allocate it while I do not have the spinlock held,
-because ... (explanation)".
-
->=20
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ANTLuREx6GKnyESMJys2
+--=-mMw9z2lMxkjbeK+MtM9c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPve+oAAoJECmIfjd9wqK0V9AP/33Gw2N7AeNDrQ1bl+FqgfoK
-dnLNrKk6vwphWWs+Ke/xM0t3sIbcMBJhzEyD0mlqJFE0ZYm9rKwRu2HMXocZ3QX0
-UNTRCD1E1peScgcUmZINu2vF5R9PNY0yQrD30UNHR8en198bsUWl+Vb+1zFjI9Yj
-8+ilIb3OYPPgXuPCCxDEsquDWSSIYwIjcBEH0d3tRxLA1/qIZFejWBb92oGA0T/W
-zrU19iV5sctfWMUhXZFK62dvD+8ZbjXbeKbXHE/FwJgsYejyKAstn69v2m/Pdean
-A61YlI7rg9jwt6U8ML2E4LOFqhKpt13xzOIoho4lK6rAaT8twrAo/mI6BwqMcrWF
-ujP1hK3lMgjhFBpTD3elQ/eNPMXuEeRlEWcskHPDKyWubfnNNtlO0Cqy8q3roxt8
-L6xGyeWYalKmi98YABcuHN2YKSlngZ1Kh1NucTp+7s8j3RPmWgJ53PySc8ZdTny8
-PJLdyAl6pM6pVzK6RaDgypWFJMQk4WGuOKr89bGCwnOXnCaRMN1mV42jaMwn/LQI
-0WvUpTbwppFdDwmoMQRedtwtCngwu4ZLf8gzLhHtQJgpJyQ30QYX5JM5fnkk0f7O
-ikK2WJBCHKoTuAbftC87OPA2CuADfKkxDSiKLWxFAIDnI0sCHze8LCUGELy5IXE4
-d9nXe+8zg8ZyvYKN3SWe
-=4H+H
+iQIcBAABAgAGBQJPvfD3AAoJECmIfjd9wqK0s34P/2lM1uMUQl2kDHNIrtBLN7cP
+wf3ZepO+Q59RxbklFKqGau5XzS7+vzjuugjIrOS2Ub2wNk8EDU9FnqId+opI1jDe
+a5NnO/8rGSzlnlwFnKW+5B2hEQ5RGOvwF19goCGJ4cZVxlRDviPIPuyO11hM/AU3
+EVHQQzPe99ONc4F3DtznDYA0PhKn2CNmGrzHz/z/GmRwBagHfM0Ja3ao7vJ1hqKw
+RrR15p/VqZ8Atd6+ExFAcFm0tJwZ7Ha9+m2LTDXhyFrmXSUyTZQzkjzbBelpR+Nh
+lAYx2KPASPzZ8rbAA25cbaHrZW0rfQoN3IIKQr+2vk3pyqVGHBxJe1FgX5wqLCcn
+pZari3Zsuhl4TVNQG3qv0PVZm5+wvX5hfvEWIdZN3vp//+46osOoxN1JFJ8aodPb
+ovluH2OJeiGttdONybkc5gmOI7ddHAV4FYgx8shBRBZ5vUW61cTx++o+XoEvJ76V
+0vMn7nr7F8YFMpo3UmQ0O5AJN2SCCtZFRwBPCCxSAI51kRxIHOmcELJPBeksyj+N
+fJXlCynRJSNu2sBGPsDl5BPy7p4pqumHn4k8ua7PufAGBYh2Hcd0gZohVb0FjhYE
+xrYMZsBCxVzTfhVFVkRq5LSuRTgp2vm/BCNWNSk3OscJ58u03h6A+LYCT9lop0yf
+AtYg5MJw6R/hTxakqmYR
+=V/hh
 -----END PGP SIGNATURE-----
 
---=-ANTLuREx6GKnyESMJys2--
+--=-mMw9z2lMxkjbeK+MtM9c--
