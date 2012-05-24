@@ -1,27 +1,28 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from 13.mo3.mail-out.ovh.net ([188.165.33.202]
+ helo=mo3.mail-out.ovh.net)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXUBD-0007Oa-BP
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 09:17:59 +0000
-Message-ID: <1337851299.15137.96.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 24 May 2012 12:21:39 +0300
-In-Reply-To: <4FBDF0CB.4040501@nod.at>
-References: <1337608916-49771-1-git-send-email-richard@nod.at>
- <1337608916-49771-2-git-send-email-richard@nod.at>
- <20120522180119.2c2a10a8@pixies.home.jungo.com> <4FBBC4EE.4040802@nod.at>
- <20120522211809.53bd6444@halley>
- <b3d5919d0b35bb559b7dc115bc9e2720@radon2.swed.at>
- <1337847592.15137.83.camel@sauron.fi.intel.com> <4FBDF0CB.4040501@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-qCgeaxNMRiuznhLW8LmQ"
-Mime-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Reply-To: dedekind1@gmail.com
+ id 1SXUdB-0000g0-E5
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 09:46:54 +0000
+Received: from mail91.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id C2FFDFF8754
+ for <linux-mtd@lists.infradead.org>; Thu, 24 May 2012 11:49:48 +0200 (CEST)
+Date: Thu, 24 May 2012 11:46:57 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH v8 1/3] MTD: at91: extract hw ecc initialization to one
+ function
+Message-ID: <20120524094657.GJ3377@game.jcrosoft.org>
+References: <1337759274-9921-1-git-send-email-josh.wu@atmel.com>
+ <1337759274-9921-2-git-send-email-josh.wu@atmel.com>
+ <20120523095141.GE3377@game.jcrosoft.org>
+ <4FBDEBB4.1040806@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4FBDEBB4.1040806@atmel.com>
+Cc: hongxu.cn@gmail.com, dedekind1@gmail.com, nicolas.ferre@atmel.com,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,56 +32,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-qCgeaxNMRiuznhLW8LmQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2012-05-24 at 10:26 +0200, Richard Weinberger wrote:
-> On 24.05.2012 10:19, Artem Bityutskiy wrote:
-> >> After thinking a bit more about this case I think the best we can to
-> >> is
-> >> switching to read-only mode if ubi_update_fastmap()
-> >> fails.
+On 16:05 Thu 24 May     , Josh Wu wrote:
+> 
+> On 5/23/2012 5:51 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> >On 15:47 Wed 23 May     , Josh Wu wrote:
+> >>Signed-off-by: Hong Xu<hong.xu@atmel.com>
+> >>Signed-off-by: Josh Wu<josh.wu@atmel.com>
+> >>---
+> >>  drivers/mtd/nand/atmel_nand.c     |  147 ++++++++++++++++++++-----------------
+> >>  drivers/mtd/nand/atmel_nand_ecc.h |    8 +-
+> >>  2 files changed, 85 insertions(+), 70 deletions(-)
 > >>
-> > Unless it fails because of -EIO, which means the PEB may become bad and
-> > you need to pick a different one and schedule the faulty one for
-> > torturing and marking as bad.
->=20
-> Wouldn't make more sense if ubi_update_fastmap() handles the -EIO case=
-=20
-> internally?
+> >>diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> >>index 2165576..9723702 100644
+> >>--- a/drivers/mtd/nand/atmel_nand.c
+> >>+++ b/drivers/mtd/nand/atmel_nand.c
+> >>@@ -42,20 +42,15 @@
+> >>
+> >>  #include<mach/cpu.h>
+> >>
+> >>+/* Hardware ECC registers */
+> >>+#include "atmel_nand_ecc.h"
+> >>+
+> >>  static int use_dma = 1;
+> >>  module_param(use_dma, int, 0);
+> >>
+> >>  static int on_flash_bbt = 0;
+> >>  module_param(on_flash_bbt, int, 0);
+> >>
+> >>-/* Register access macros */
+> >>-#define ecc_readl(add, reg)				\
+> >>-	__raw_readl(add + ATMEL_ECC_##reg)
+> >>-#define ecc_writel(add, reg, value)			\
+> >>-	__raw_writel((value), add + ATMEL_ECC_##reg)
+> >>-
+> >>-#include "atmel_nand_ecc.h"	/* Hardware ECC registers */
+> >>-
+> >>  /* oob layout for large page size
+> >>   * bad block info is on bytes 0 and 1
+> >>   * the bytes have to be consecutives to avoid
+> >>@@ -523,6 +518,75 @@ static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
+> >>  }
+> >>  #endif
+> >>
+> >>+static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+> >>+					 struct atmel_nand_host *host)
+> >>+{
+> >>+	struct resource		*regs;
+> >>+	struct mtd_info		*mtd;
+> >>+	struct nand_chip	*nand_chip;
+> >>+
+> >>+	nand_chip =&host->nand_chip;
+> >>+	mtd =&host->mtd;
+> >>+
+> >>+	nand_chip->ecc.mode = NAND_ECC_SOFT;
+> >>+	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> >>+	if (!regs) {
+> >>+		dev_err(host->dev,
+> >>+			"Can't get I/O resource regs, use software ECC\n");
+> >just return 0 and avoid the if else
+> 
+> sure. I'll fix it.
+> 
+> >
+> >Best Regards,
+> >J.
+> 
+> And I have same question about the relaxed version of read/write device.
+> 
+> this source code file still use __raw_readl/writel(), I think I can
+> convert it all to relaxed version, except that the ECC control reset
+> should use NO relaxed version.
+> so the patch to convert it will look like following:
+fine by me but put a comment about it
 
-Probably, I just meant that at the end the faulty PEB should end up
-being scheduled for erasure and torturing like all other places do it.
-We should preferably have one code path which marks PEBs as bad. It is
-much easier than to make changes there.
-
---=20
 Best Regards,
-Artem Bityutskiy
-
---=-qCgeaxNMRiuznhLW8LmQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPvf2jAAoJECmIfjd9wqK0hf0QAMSEx8rD+ao2IattZHAvlkv5
-nmIHSh0/L8SDObd2osriJrWgQXgBxKEfdAvxiq5wlVvYSqWtv6uLvmJyW6d3r2Rz
-78DWhHzhVHbmjz3Wido+O707dHMm+eY+n7NjVPNtd2ry7ErzZh1fGjY8Meqo5iYK
-JB+L/8TijxlMikWb6Qno3eBZYxj3M+ms7ktzYpQdrwwlJrGsbgtU9Zia8NCYYaSy
-ACG2vEXoiO20J55hS+kIYQCfTNCJ/4TvzclYyly4VXpvK8e5X9qMit8rI5Fz7g6K
-A7uyigWRb3nHw1kRLxdD7dCRfD9Fm2lkIz+SpgRcti0gIgRiHHEydmZencijSx5B
-nw5AKksqY3++ha0uChkSYhH/hnZ+EoGbisSxW5a6rPaVh+moxEB8c9lK4eMp2A54
-928T/o6BjgUqKHnx2qWKC9Vw8rvsQHEkj7R415V7sMF860fPFPN0wF60v9ZgtMUx
-RA9XLjh5LDGF81sktZt20qvyNgVhoh6ZOakpZBJJ85+OrwxA4cyxDAvbj8on2uU/
-ymRl6zyHtzppfjffSBa5x+b+JaiVTmaJpLSTCb6MElu+abK1T1YcG/20htEO5a6E
-P4WkMJQBbV6pZa4rZ1bQfUZcy0kxfPDzIxAn+8H1N8+wtgVyjICP4GPhzvLpC/L8
-1dOU1aVECDoPAvjaBc0S
-=/44u
------END PGP SIGNATURE-----
-
---=-qCgeaxNMRiuznhLW8LmQ--
+J.
