@@ -1,17 +1,18 @@
-Received: from mail-qc0-f177.google.com ([209.85.216.177])
+Received: from [208.43.159.202] (helo=softlayer.softlayer.marvquin.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SXc4s-0003b3-TK
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 17:43:59 +0000
-Received: by qcsu28 with SMTP id u28so43413qcs.36
- for <linux-mtd@lists.infradead.org>; Thu, 24 May 2012 10:43:57 -0700 (PDT)
-Message-ID: <4FBE7347.8000004@gmail.com>
-Date: Thu, 24 May 2012 14:43:35 -0300
-From: "William F." <william76.sh@gmail.com>
-MIME-Version: 1.0
+ id 1SXdPO-0005PN-D1
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 19:09:17 +0000
+Received: from nobody by softlayer.softlayer.marvquin.com with local (Exim
+ 4.77) (envelope-from <ophelia@dbdseo.com>) id 1SXdPC-0006W9-KK
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 14:09:02 -0500
 To: linux-mtd@lists.infradead.org
-Subject: To clone NAND from a mobile phone
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: I visited your website and had a question
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed; delsp=yes
+Content-Transfer-Encoding: 8Bit
+From: Alex Smith <alex@dbdseo.com>
+Message-Id: <E1SXdPC-0006W9-KK@softlayer.softlayer.marvquin.com>
+Date: Thu, 24 May 2012 14:09:02 -0500
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Hello my name is Alex Smith and I am an Internet Marketing Specialist.  I was
+looking up websites in Google under the keyword search flash devices and came
+upon your website www.linux-mtd.infradead.org.  I see that you are not ranked
+on the first page for your primary keyword searches.
 
-Firstly, sorry about my bad english and sorry about any stupid question.
-I need to get a clone (or to do an image) from a embedded NAND into a 
-Nokia 6267 mobile phone.
+There is no reason that you can’t have top three rankings for your keywords
+based on your website’s structure and content.  You need significantly more
+one way anchor text backlinks and I can help you with this.
 
-1) Do I need "MTD tests support" activated in the kernel, right?
-2) If I connect the phone through its usb cable will be created 
-something like /dev/mtd0?
-3) Can I clone the NAND with mtd-utils?
+I have a very simple way to prove that what I do works and it’s risk free
+for you to try.
 
+We pride ourselves on increasing our clients customers and sales to that end
+we also provide a fully upgraded website designed to convert.  Your new
+website comes complete with a mobile website (distinct website when people
+access your business from their phone), conversion optimization, online
+control panel, blog, social functions including Twitter and Facebook. A dated
+website costs you conversions, sales and additional business.
 
-Any help will be appreciated.
+Additionally, we have a very successful referral program which allows you to
+refer other businesses and receive a substantial compensation for the
+referral and the business they refer, five tiers down and includes a monthly
+residual!  Many of our clients earn our advanced packages for free because of
+the referrals they bring.
 
-Many thanks and cheers for all.
+Nothing beats performance and after you see what we are able to do for your
+business you will feel confident in the results we can achieve.
 
+Would it be okay if I were to give you a call or you can certainly call me
+anytime. I would love to continue this discussion over the phone with you.
 
-William.
+Sincerely,
+
+Alex Smith
+DBD SEO
+Internet Marketing Specialist
+(888) 2928858
