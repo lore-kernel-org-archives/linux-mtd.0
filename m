@@ -1,21 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXSjE-00069A-Bz
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 07:45:01 +0000
-Message-ID: <1337845719.15137.71.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: block2mtd: fix recursive call of mtd_writev
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Gabor Juhos <juhosg@openwrt.org>
-Date: Thu, 24 May 2012 10:48:39 +0300
-In-Reply-To: <1337811443-2603-1-git-send-email-juhosg@openwrt.org>
-References: <1337811443-2603-1-git-send-email-juhosg@openwrt.org>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-iYo/Z0+2DWUkn8uQ83f0"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- stable@vger.kernel.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Message-ID: <4FBDEBB4.1040806@atmel.com>
+Date: Thu, 24 May 2012 16:05:08 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [PATCH v8 1/3] MTD: at91: extract hw ecc initialization to one
+ function
+References: <1337759274-9921-1-git-send-email-josh.wu@atmel.com>
+ <1337759274-9921-2-git-send-email-josh.wu@atmel.com>
+ <20120523095141.GE3377@game.jcrosoft.org>
+In-Reply-To: <20120523095141.GE3377@game.jcrosoft.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: hongxu.cn@gmail.com, dedekind1@gmail.com, nicolas.ferre@atmel.com,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +24,157 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-iYo/Z0+2DWUkn8uQ83f0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 5/23/2012 5:51 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> On 15:47 Wed 23 May     , Josh Wu wrote:
+>> Signed-off-by: Hong Xu<hong.xu@atmel.com>
+>> Signed-off-by: Josh Wu<josh.wu@atmel.com>
+>> ---
+>>   drivers/mtd/nand/atmel_nand.c     |  147 ++++++++++++++++++++-----------------
+>>   drivers/mtd/nand/atmel_nand_ecc.h |    8 +-
+>>   2 files changed, 85 insertions(+), 70 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index 2165576..9723702 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -42,20 +42,15 @@
+>>
+>>   #include<mach/cpu.h>
+>>
+>> +/* Hardware ECC registers */
+>> +#include "atmel_nand_ecc.h"
+>> +
+>>   static int use_dma = 1;
+>>   module_param(use_dma, int, 0);
+>>
+>>   static int on_flash_bbt = 0;
+>>   module_param(on_flash_bbt, int, 0);
+>>
+>> -/* Register access macros */
+>> -#define ecc_readl(add, reg)				\
+>> -	__raw_readl(add + ATMEL_ECC_##reg)
+>> -#define ecc_writel(add, reg, value)			\
+>> -	__raw_writel((value), add + ATMEL_ECC_##reg)
+>> -
+>> -#include "atmel_nand_ecc.h"	/* Hardware ECC registers */
+>> -
+>>   /* oob layout for large page size
+>>    * bad block info is on bytes 0 and 1
+>>    * the bytes have to be consecutives to avoid
+>> @@ -523,6 +518,75 @@ static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
+>>   }
+>>   #endif
+>>
+>> +static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+>> +					 struct atmel_nand_host *host)
+>> +{
+>> +	struct resource		*regs;
+>> +	struct mtd_info		*mtd;
+>> +	struct nand_chip	*nand_chip;
+>> +
+>> +	nand_chip =&host->nand_chip;
+>> +	mtd =&host->mtd;
+>> +
+>> +	nand_chip->ecc.mode = NAND_ECC_SOFT;
+>> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> +	if (!regs) {
+>> +		dev_err(host->dev,
+>> +			"Can't get I/O resource regs, use software ECC\n");
+> just return 0 and avoid the if else
 
-On Thu, 2012-05-24 at 00:17 +0200, Gabor Juhos wrote:
-> The 'mtd_writev' interface calls the function assigned
-> to the '_write' field of a given mtd device if that is
-> not NULL. The block2mtd driver sets the '_writev' field
-> to the 'mtd_writev' function itself and thus causes a
-> endless loop.
->=20
-> This is caused by 1dbebd32562b3c2caeca35960e5cb00bfcc12900
-> (mtd: harmonize mtd_writev usage).
->=20
-> Remove the assignment from the block2mtd driver to fix the
-> issue.
->=20
-> Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: stable@vger.kernel.org
+sure. I'll fix it.
 
-Amended the "stable" tag and pushed to l2-mtd.git, thanks:
+>
+> Best Regards,
+> J.
 
-Cc: stable@kernel.org [3.3+]
+And I have same question about the relaxed version of read/write device.
 
---=20
+this source code file still use __raw_readl/writel(), I think I can 
+convert it all to relaxed version, except that the ECC control reset 
+should use NO relaxed version.
+so the patch to convert it will look like following:
+
+diff --git a/drivers/mtd/nand/atmel_nand_ecc.h 
+b/drivers/mtd/nand/atmel_nand_ecc.h
+index b437567..dc49dc9 100644
+--- a/drivers/mtd/nand/atmel_nand_ecc.h
++++ b/drivers/mtd/nand/atmel_nand_ecc.h
+@@ -37,9 +37,11 @@
+  #define                ATMEL_ECC_NPARITY       (0xffff << 0)           
+/* NParity */
+
+  /* Register Access Macros */
+-#define ecc_readl(add, reg)                            \
+-       __raw_readl(add + ATMEL_ECC_##reg)
+-#define ecc_writel(add, reg, value)                    \
+-       __raw_writel((value), add + ATMEL_ECC_##reg)
++#define ecc_readl_relaxed(add, reg)                            \
++       readl_relaxed(add + ATMEL_ECC_##reg)
++#define ecc_writel_relaxed(add, reg, value)                    \
++       writel_relaxed((value), add + ATMEL_ECC_##reg)
++#define ecc_writel(add, reg, value)                            \
++       writel((value), add + ATMEL_ECC_##reg)
+
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 9723702..ba61153 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -299,13 +299,13 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
+         unsigned int ecc_value;
+
+         /* get the first 2 ECC bytes */
+-       ecc_value = ecc_readl(host->ecc, PR);
++       ecc_value = ecc_readl_relaxed(host->ecc, PR);
+
+         ecc_code[0] = ecc_value & 0xFF;
+         ecc_code[1] = (ecc_value >> 8) & 0xFF;
+
+         /* get the last 2 ECC bytes */
+-       ecc_value = ecc_readl(host->ecc, NPR) & ATMEL_ECC_NPARITY;
++       ecc_value = ecc_readl_relaxed(host->ecc, NPR) & ATMEL_ECC_NPARITY;
+
+         ecc_code[2] = ecc_value & 0xFF;
+         ecc_code[3] = (ecc_value >> 8) & 0xFF;
+@@ -401,16 +401,16 @@ static int atmel_nand_correct(struct mtd_info 
+*mtd, u_char *dat,
+         unsigned int ecc_word, ecc_bit;
+
+         /* get the status from the Status Register */
+-       ecc_status = ecc_readl(host->ecc, SR);
++       ecc_status = ecc_readl_relaxed(host->ecc, SR);
+
+         /* if there's no error */
+         if (likely(!(ecc_status & ATMEL_ECC_RECERR)))
+                 return 0;
+
+         /* get error bit offset (4 bits) */
+-       ecc_bit = ecc_readl(host->ecc, PR) & ATMEL_ECC_BITADDR;
++       ecc_bit = ecc_readl_relaxed(host->ecc, PR) & ATMEL_ECC_BITADDR;
+         /* get word address (12 bits) */
+-       ecc_word = ecc_readl(host->ecc, PR) & ATMEL_ECC_WORDADDR;
++       ecc_word = ecc_readl_relaxed(host->ecc, PR) & ATMEL_ECC_WORDADDR;
+         ecc_word >>= 4;
+....
++       case 512:
++               nand_chip->ecc.layout = &atmel_oobinfo_small;
++               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
++               break;
++       case 1024:
++               nand_chip->ecc.layout = &atmel_oobinfo_large;
++               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
++               break;
++       case 2048:
++               nand_chip->ecc.layout = &atmel_oobinfo_large;
++               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
++               break;
++       case 4096:
++               nand_chip->ecc.layout = &atmel_oobinfo_large;
++               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
++               break;
+...
+
+
 Best Regards,
-Artem Bityutskiy
-
---=-iYo/Z0+2DWUkn8uQ83f0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPvefXAAoJECmIfjd9wqK0XFsP+wWegaskGwwfOgRBmkUbcB6z
-5VzfpQHjhHYC+wXGKxwW+mX/EVlPHG2SfFu/5OKS9Y6BEh7R7zSJX8Tt/WFOOgh+
-vsyDVmeaVxt+TfqD2k67uE15YPJ9ekxLxPCG7vanR95z6tfSmME+0UMm/HEns/qi
-jHNQ4etNoFn5HmRisjJceladhz5wFIEo6SAb8YYLdk9OMFBJzPHrTX4ICWjI3Dvd
-7TfqeynrdpH4I9uNr//nyOgbYcQSgxcrU3c7jzbqTzWLqKc+EQMP3Ny3Zq+K6liQ
-HIvFBEkvtU3e4+Bj+/e5EFwkdR5IugBvKSVexFGydf6yStqhnGyLUkW8U4FgAMAN
-67gKWWBuSgAdfu+qtyz2cAUvxOqDCRgKe+XwepAOHee76e37yGakI4EAb+RPgmhP
-TED9e3MrD6xIwsaLBbpNKKX/Fis2KW78WFZxeyPyQRnfFdMDN730Ftj8Dg+47ya+
-q40iKjRs6Dl316T56gSPG8j1gjNhOiTY2HoPw6qGybXxIALWUM8YaWkxVj3h1PXP
-b4cF2aRyDquVVFp5/XY9KLrX5GrvXolRSomsn6Q8eM4SEClzGe4jq3TW70R3HKfU
-kCUYrNBLUfzvGQQboYxaT53UvLgAVx2FbXu8HKS3wZvnRVGeNdPgymdBsYSmkWJL
-iSNsPo/pqWyiIW56+5uI
-=z/Px
------END PGP SIGNATURE-----
-
---=-iYo/Z0+2DWUkn8uQ83f0--
+Josh Wu
