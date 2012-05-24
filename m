@@ -1,19 +1,24 @@
-Message-ID: <4FBDEBB4.1040806@atmel.com>
-Date: Thu, 24 May 2012 16:05:08 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH v8 1/3] MTD: at91: extract hw ecc initialization to one
- function
-References: <1337759274-9921-1-git-send-email-josh.wu@atmel.com>
- <1337759274-9921-2-git-send-email-josh.wu@atmel.com>
- <20120523095141.GE3377@game.jcrosoft.org>
-In-Reply-To: <20120523095141.GE3377@game.jcrosoft.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, dedekind1@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- linux-arm-kernel@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXTBV-0000Tc-50
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 08:14:13 +0000
+Message-ID: <1337847472.15137.81.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 24 May 2012 11:17:52 +0300
+In-Reply-To: <4FBBC4EE.4040802@nod.at>
+References: <1337608916-49771-1-git-send-email-richard@nod.at>
+ <1337608916-49771-2-git-send-email-richard@nod.at>
+ <20120522180119.2c2a10a8@pixies.home.jungo.com> <4FBBC4EE.4040802@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-p2HPywNjchkueQDc4we+"
+Mime-Version: 1.0
+Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,157 +29,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On 5/23/2012 5:51 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 15:47 Wed 23 May     , Josh Wu wrote:
->> Signed-off-by: Hong Xu<hong.xu@atmel.com>
->> Signed-off-by: Josh Wu<josh.wu@atmel.com>
->> ---
->>   drivers/mtd/nand/atmel_nand.c     |  147 ++++++++++++++++++++-----------------
->>   drivers/mtd/nand/atmel_nand_ecc.h |    8 +-
->>   2 files changed, 85 insertions(+), 70 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->> index 2165576..9723702 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -42,20 +42,15 @@
->>
->>   #include<mach/cpu.h>
->>
->> +/* Hardware ECC registers */
->> +#include "atmel_nand_ecc.h"
->> +
->>   static int use_dma = 1;
->>   module_param(use_dma, int, 0);
->>
->>   static int on_flash_bbt = 0;
->>   module_param(on_flash_bbt, int, 0);
->>
->> -/* Register access macros */
->> -#define ecc_readl(add, reg)				\
->> -	__raw_readl(add + ATMEL_ECC_##reg)
->> -#define ecc_writel(add, reg, value)			\
->> -	__raw_writel((value), add + ATMEL_ECC_##reg)
->> -
->> -#include "atmel_nand_ecc.h"	/* Hardware ECC registers */
->> -
->>   /* oob layout for large page size
->>    * bad block info is on bytes 0 and 1
->>    * the bytes have to be consecutives to avoid
->> @@ -523,6 +518,75 @@ static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
->>   }
->>   #endif
->>
->> +static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
->> +					 struct atmel_nand_host *host)
->> +{
->> +	struct resource		*regs;
->> +	struct mtd_info		*mtd;
->> +	struct nand_chip	*nand_chip;
->> +
->> +	nand_chip =&host->nand_chip;
->> +	mtd =&host->mtd;
->> +
->> +	nand_chip->ecc.mode = NAND_ECC_SOFT;
->> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> +	if (!regs) {
->> +		dev_err(host->dev,
->> +			"Can't get I/O resource regs, use software ECC\n");
-> just return 0 and avoid the if else
+--=-p2HPywNjchkueQDc4we+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-sure. I'll fix it.
+On Tue, 2012-05-22 at 18:55 +0200, Richard Weinberger wrote:
+> >> +    e =3D find_early_wl_entry(&ubi->free, max_pnum);
+> >
+> > This picks the eb with the lowest pnum within 'ubi->free'.
+> >
+> > When called with INT_MAX (for the FM_DATA), why do you need to pick
+> a
+> > free eb with the minimal pnum? The FM_DATA EBs may reside everywhere
+> (as
+> > the FM_SB holds their location).
+> > So why not pick the eb with a medium EC value (as done for standard
+> > get_peb calls)? That might be better wear-leveling wise.
+>=20
+> Fair point.
+> I'll fix that.
+> Artem, any comments on that?
 
->
-> Best Regards,
-> J.
-
-And I have same question about the relaxed version of read/write device.
-
-this source code file still use __raw_readl/writel(), I think I can 
-convert it all to relaxed version, except that the ECC control reset 
-should use NO relaxed version.
-so the patch to convert it will look like following:
-
-diff --git a/drivers/mtd/nand/atmel_nand_ecc.h 
-b/drivers/mtd/nand/atmel_nand_ecc.h
-index b437567..dc49dc9 100644
---- a/drivers/mtd/nand/atmel_nand_ecc.h
-+++ b/drivers/mtd/nand/atmel_nand_ecc.h
-@@ -37,9 +37,11 @@
-  #define                ATMEL_ECC_NPARITY       (0xffff << 0)           
-/* NParity */
-
-  /* Register Access Macros */
--#define ecc_readl(add, reg)                            \
--       __raw_readl(add + ATMEL_ECC_##reg)
--#define ecc_writel(add, reg, value)                    \
--       __raw_writel((value), add + ATMEL_ECC_##reg)
-+#define ecc_readl_relaxed(add, reg)                            \
-+       readl_relaxed(add + ATMEL_ECC_##reg)
-+#define ecc_writel_relaxed(add, reg, value)                    \
-+       writel_relaxed((value), add + ATMEL_ECC_##reg)
-+#define ecc_writel(add, reg, value)                            \
-+       writel((value), add + ATMEL_ECC_##reg)
-
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 9723702..ba61153 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -299,13 +299,13 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
-         unsigned int ecc_value;
-
-         /* get the first 2 ECC bytes */
--       ecc_value = ecc_readl(host->ecc, PR);
-+       ecc_value = ecc_readl_relaxed(host->ecc, PR);
-
-         ecc_code[0] = ecc_value & 0xFF;
-         ecc_code[1] = (ecc_value >> 8) & 0xFF;
-
-         /* get the last 2 ECC bytes */
--       ecc_value = ecc_readl(host->ecc, NPR) & ATMEL_ECC_NPARITY;
-+       ecc_value = ecc_readl_relaxed(host->ecc, NPR) & ATMEL_ECC_NPARITY;
-
-         ecc_code[2] = ecc_value & 0xFF;
-         ecc_code[3] = (ecc_value >> 8) & 0xFF;
-@@ -401,16 +401,16 @@ static int atmel_nand_correct(struct mtd_info 
-*mtd, u_char *dat,
-         unsigned int ecc_word, ecc_bit;
-
-         /* get the status from the Status Register */
--       ecc_status = ecc_readl(host->ecc, SR);
-+       ecc_status = ecc_readl_relaxed(host->ecc, SR);
-
-         /* if there's no error */
-         if (likely(!(ecc_status & ATMEL_ECC_RECERR)))
-                 return 0;
-
-         /* get error bit offset (4 bits) */
--       ecc_bit = ecc_readl(host->ecc, PR) & ATMEL_ECC_BITADDR;
-+       ecc_bit = ecc_readl_relaxed(host->ecc, PR) & ATMEL_ECC_BITADDR;
-         /* get word address (12 bits) */
--       ecc_word = ecc_readl(host->ecc, PR) & ATMEL_ECC_WORDADDR;
-+       ecc_word = ecc_readl_relaxed(host->ecc, PR) & ATMEL_ECC_WORDADDR;
-         ecc_word >>= 4;
-....
-+       case 512:
-+               nand_chip->ecc.layout = &atmel_oobinfo_small;
-+               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
-+               break;
-+       case 1024:
-+               nand_chip->ecc.layout = &atmel_oobinfo_large;
-+               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
-+               break;
-+       case 2048:
-+               nand_chip->ecc.layout = &atmel_oobinfo_large;
-+               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
-+               break;
-+       case 4096:
-+               nand_chip->ecc.layout = &atmel_oobinfo_large;
-+               ecc_writel_relaxed(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
-+               break;
-...
-
-
+The 'find_early_wl_entry()' function is used (currently) only at early
+stages. At these stages the we do not have the PEBs sorted by EC. We
+have just a list. This function should not be use after the WL subsystem
+is initialized.
+>=20
+--=20
 Best Regards,
-Josh Wu
+Artem Bityutskiy
+
+--=-p2HPywNjchkueQDc4we+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPve6wAAoJECmIfjd9wqK08bsQALMJrcYQVWfSKXDcT2IPDIF/
+1qZKMG9Pi7bgesUEXQIC/N9uvUDUlYCmTpZg0CzqWJKh36hKF6v/9qkMkVbk/MSa
+Q0vR+HTe51ilNzAXBr6XNMo5FIL5Kx85Z1f1xbvjZlvl63yDkwVSGycY1CVM69sE
+lV2VZGNVjovi4GcIhzx0H3PNtJgJzndn4QseWbKn/5Zdv7enaojDdiwIS6PSoBYH
+FHufYl18bBuxZZSsRtXH9W7PV57lptV6PdPq4eu/mVeeQgMLu8mJuMdkfiOBUmns
+V3cyN6HDnT8uQGUXRcgjxEoYwdfPQANOEw0jrHo6+MJnaDBgVvU8GVT2ynoOGHnq
+P7TLkNHGF8Sh3lbyiRB+djtUkHbKqpe+tMCArCOHSKUTNgQgFpH5bYSMcZgmnWPA
+rsCH4EzN+a3CnyMbv2hHNFd+4xbOHfaEOgE9aKgAP9Qp9pYjo6oNNmwIZnKQ0W1+
+4WxoAa98CypRox+6X3OrijjCe/5M7BVebLE4RGrC68jjDnDwGxbgChFIx4vBl/Jr
+qh4KWKG8H/zrpof0cQXnrk0ONz8m09rjnwBtLqhTlSOvdld/G1mA3MoUX9M/4U5t
+WpEgdsxPydU0okQE2f4g46EzZkgojU8GPwG953Z31n6dtriI7Js6cD0HxZrndSj7
+v7hCDMsyhR5QwHVSUSmz
+=qvHp
+-----END PGP SIGNATURE-----
+
+--=-p2HPywNjchkueQDc4we+--
