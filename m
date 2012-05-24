@@ -1,25 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SXTNl-0001a7-F9
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 08:26:54 +0000
-Message-ID: <4FBDF0CB.4040501@nod.at>
-Date: Thu, 24 May 2012 10:26:51 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from arrakis.dune.hu ([78.24.191.176])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXTku-0007aJ-F3
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2012 08:50:49 +0000
+Message-ID: <4FBDF65D.8010205@openwrt.org>
+Date: Thu, 24 May 2012 10:50:37 +0200
+From: Gabor Juhos <juhosg@openwrt.org>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-References: <1337608916-49771-1-git-send-email-richard@nod.at>
- <1337608916-49771-2-git-send-email-richard@nod.at>
- <20120522180119.2c2a10a8@pixies.home.jungo.com> <4FBBC4EE.4040802@nod.at>
- <20120522211809.53bd6444@halley>
- <b3d5919d0b35bb559b7dc115bc9e2720@radon2.swed.at>
- <1337847592.15137.83.camel@sauron.fi.intel.com>
-In-Reply-To: <1337847592.15137.83.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Subject: Re: [PATCH] mtd: block2mtd: fix recursive call of mtd_writev
+References: <1337811443-2603-1-git-send-email-juhosg@openwrt.org>
+ <1337845719.15137.71.camel@sauron.fi.intel.com>
+In-Reply-To: <1337845719.15137.71.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24.05.2012 10:19, Artem Bityutskiy wrote:
->> After thinking a bit more about this case I think the best we can to
->> is
->> switching to read-only mode if ubi_update_fastmap()
->> fails.
->>
-> Unless it fails because of -EIO, which means the PEB may become bad and
-> you need to pick a different one and schedule the faulty one for
-> torturing and marking as bad.
+2012.05.24. 9:48 keltezéssel, Artem Bityutskiy írta:
+> On Thu, 2012-05-24 at 00:17 +0200, Gabor Juhos wrote:
+>> The 'mtd_writev' interface calls the function assigned to the '_write'
+>> field of a given mtd device if that is not NULL. The block2mtd driver
+>> sets the '_writev' field to the 'mtd_writev' function itself and thus
+>> causes a endless loop.
+>> 
+>> This is caused by 1dbebd32562b3c2caeca35960e5cb00bfcc12900 (mtd:
+>> harmonize mtd_writev usage).
+>> 
+>> Remove the assignment from the block2mtd driver to fix the issue.
+>> 
+>> Signed-off-by: Gabor Juhos <juhosg@openwrt.org> Cc: Artem Bityutskiy
+>> <artem.bityutskiy@linux.intel.com> Cc: stable@vger.kernel.org
+> 
+> Amended the "stable" tag and pushed to l2-mtd.git, thanks:
+> 
+> Cc: stable@kernel.org [3.3+]
+> 
 
-Wouldn't make more sense if ubi_update_fastmap() handles the -EIO case 
-internally?
-
-Currently (as of v7) both callers ubi_volume_notify() and 
-ubi_wl_get_peb() check the return value of ubi_update_fastmap()
-and set UBI into read-only mode if ubi_update_fastmap() fails.
-
-Thanks,
-//richard
+Thanks!
