@@ -1,15 +1,20 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXuI7-0007tN-Fj
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 13:10:52 +0000
-Date: Fri, 25 May 2012 15:10:48 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: compute KSA size and store in superblock
-Message-ID: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXuRl-00087y-2k
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 13:20:50 +0000
+Message-ID: <1337952271.30969.37.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: compute KSA size and store in superblock
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Fri, 25 May 2012 16:24:31 +0300
+In-Reply-To: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-KPmpepioGWYnejquzGV+"
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,281 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the super block reserve space for the KSA. It computes the
-number of KSA LEBs and adds the ksa_lebs to on-medium superblock. The value is
-read off the media. The decision to use a KSA is controlled by use_ubifsec
-switch, also added to the superblock, ubifs_info, and is controlled as a mount
-option.
 
-This is tested by creating a drive and checking the mount debug output. The
-number of LEBS assigned during create_default_filesystem was changed to ensure
-that remounting does infact read the old value. When the use_ubifsec option
-was not enabled, no LEBs were assigned. Integck was run and the drive was
-filled to capacity. The LEBs in the KSA were not used when filled.
+--=-KPmpepioGWYnejquzGV+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
----
- fs/ubifs/sb.c          |   29 ++++++++++++++++++++++++++---
- fs/ubifs/super.c       |   15 +++++++++++++++
- fs/ubifs/ubifs-media.h |    8 ++++++--
- fs/ubifs/ubifs.h       |   23 ++++++++++++++++++++++-
- 4 files changed, 69 insertions(+), 6 deletions(-)
+On Fri, 2012-05-25 at 15:10 +0200, Joel Reardon wrote:
+> This patch makes the super block reserve space for the KSA. It computes t=
+he
+> number of KSA LEBs and adds the ksa_lebs to on-medium superblock. The val=
+ue is
+> read off the media. The decision to use a KSA is controlled by use_ubifse=
+c
+> switch, also added to the superblock, ubifs_info, and is controlled as a =
+mount
+> option.
+>=20
+> This is tested by creating a drive and checking the mount debug output. T=
+he
+> number of LEBS assigned during create_default_filesystem was changed to e=
+nsure
+> that remounting does infact read the old value. When the use_ubifsec opti=
+on
+> was not enabled, no LEBs were assigned. Integck was run and the drive was
+> filled to capacity. The LEBs in the KSA were not used when filled.
+>=20
+> Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index f98d284..5583f2e 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -82,6 +82,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
- 	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
- 	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
-+	int ksa_lebs = 0, ksa_first;
- 	long long tmp64, main_bytes;
- 	__le64 tmp_le64;
+I do not have to time to review it now, but please, make sure that the
+KSA size is according to 'max_leb_cnt' (see the --max-leb-cnt of the
+mkfs.ubifs tool). Also, think about this use-case in general: you have
+UBI volume of size X, then the volume is resized to Y > X, then mounted
+- UBIFS should work and resize itself to Y, up to the 'max_leb_cnt'. If
+Y > 'max_leb_cnt', we resize only to 'max_leb_cnt'.
 
-@@ -138,7 +139,21 @@ static int create_default_filesystem(struct ubifs_info *c)
- 		 */
- 		orph_lebs += 1;
+>  struct ubifs_sb_node {
+>  	struct ubifs_ch ch;
+> @@ -649,7 +651,9 @@ struct ubifs_sb_node {
+>  	__le32 time_gran;
+>  	__u8 uuid[16];
+>  	__le32 ro_compat_version;
+> -	__u8 padding2[3968];
+> +	__le32 ksa_lebs;
+> +	__u8 use_ubifsec;
 
--	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS - log_lebs;
-+	if (c->use_ubifsec) {
-+		/*
-+		 * Compute the size of the key space area based on partition
-+		 * geometry. The following calculation is equivalant to:
-+		 * LEBS * LEB_SIZE / DATANODE_SIZE / KEYS_PER_KSA_LEB, because
-+		 * KEYS_PER_KSA_LEB = LEB_SIZE / KEY_SIZE.
-+		 */
-+		ksa_lebs = (c->leb_cnt * UBIFS_CRYPTO_KEYSIZE)
-+			>> UBIFS_BLOCK_SHIFT;
-+		ksa_lebs += ksa_lebs >> UBIFS_KSA_LEBS_SCALE_SHIFT;
-+		ksa_lebs += UBIFS_KSA_ADD_LEBS;
-+	}
-+
-+	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS
-+		    - log_lebs - ksa_lebs;
- 	main_lebs -= orph_lebs;
+If it is only one bit, document that only one bit (LSB?) is used. In the
+future someone can add more bits there, and rename it, theoretically
+(unlikely though).
 
- 	lpt_first = UBIFS_LOG_LNUM + log_lebs;
-@@ -153,6 +168,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 		lpt_first + lpt_lebs - 1);
+--=20
+Best Regards,
+Artem Bityutskiy
 
- 	main_first = c->leb_cnt - main_lebs;
-+	ksa_first = c->leb_cnt - main_lebs - ksa_lebs;
+--=-KPmpepioGWYnejquzGV+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
- 	/* Create default superblock */
- 	tmp = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
-@@ -173,6 +189,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	sup->max_leb_cnt   = cpu_to_le32(c->max_leb_cnt);
- 	sup->max_bud_bytes = cpu_to_le64(tmp64);
- 	sup->log_lebs      = cpu_to_le32(log_lebs);
-+	sup->ksa_lebs	   = cpu_to_le32(ksa_lebs);
- 	sup->lpt_lebs      = cpu_to_le32(lpt_lebs);
- 	sup->orph_lebs     = cpu_to_le32(orph_lebs);
- 	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
-@@ -180,6 +197,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
- 	sup->fmt_version   = cpu_to_le32(UBIFS_FORMAT_VERSION);
- 	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
-+	sup->use_ubifsec   = cpu_to_le32(c->use_ubifsec);
- 	if (c->mount_opts.override_compr)
- 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
- 	else
-@@ -444,7 +462,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 	}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
- 	if (UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs + c->lpt_lebs +
--	    c->orph_lebs + c->main_lebs != c->leb_cnt) {
-+	    c->orph_lebs + c->main_lebs + c->ksa_lebs != c->leb_cnt) {
- 		err = 12;
- 		goto failed;
- 	}
-@@ -605,6 +623,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->max_leb_cnt   = le32_to_cpu(sup->max_leb_cnt);
- 	c->max_bud_bytes = le64_to_cpu(sup->max_bud_bytes);
- 	c->log_lebs      = le32_to_cpu(sup->log_lebs);
-+	c->ksa_lebs	 = le32_to_cpu(sup->ksa_lebs);
- 	c->lpt_lebs      = le32_to_cpu(sup->lpt_lebs);
- 	c->orph_lebs     = le32_to_cpu(sup->orph_lebs);
- 	c->jhead_cnt     = le32_to_cpu(sup->jhead_cnt) + NONDATA_JHEADS_CNT;
-@@ -613,6 +632,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->rp_size       = le64_to_cpu(sup->rp_size);
- 	c->rp_uid        = le32_to_cpu(sup->rp_uid);
- 	c->rp_gid        = le32_to_cpu(sup->rp_gid);
-+	c->use_ubifsec   = le32_to_cpu(sup->use_ubifsec);
- 	sup_flags        = le32_to_cpu(sup->flags);
- 	if (!c->mount_opts.override_compr)
- 		c->default_compr = le16_to_cpu(sup->default_compr);
-@@ -646,8 +666,11 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
- 	c->orph_first = c->lpt_last + 1;
- 	c->orph_last = c->orph_first + c->orph_lebs - 1;
--	c->main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS;
-+	c->main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS
-+		       - c->ksa_lebs;
- 	c->main_lebs -= c->log_lebs + c->lpt_lebs + c->orph_lebs;
-+	c->ksa_first = c->leb_cnt - c->main_lebs - c->ksa_lebs;
-+	c->ksa_last = c->ksa_first + c->ksa_lebs - 1;
- 	c->main_first = c->leb_cnt - c->main_lebs;
+iQIcBAABAgAGBQJPv4gPAAoJECmIfjd9wqK0MB8P/3XKw3VkYSMRNgyr9it6GRvA
+dUMi4hyu9GROVuEQakxkbdAMDtP1R/vepIhCbECyq8UrIQjyLwo078ILFvo6T+zm
+DGqnOiKgYp3WN8mWWZQ2aUCSRYmP2PYgRSuBW1496irGJg+8TGfxZXUIX1o7NCA8
+OtTfrYvdOiUfytlI/BEwbkzzFajdB5JLHDgrmXDXlxPczGYYIVlZ3OT3VvC70uYr
+Y8vzWeh1O/kaT0sIOtmiuE4WYGiIteilr2a/TtYBFl6p+VygXz8HmmBtW5ScoCK8
+yaSRxHcxMtgb5Qgd6hFaItlOSCNrPxuWXZb3AadA7py8GCaZHo2W1EJWIe42nEBY
+lReKBjebeKgn4T5FbPeOgh2uOm07RaLDz4q/WhfWQV62+wAxbIslLWZDaX31IOB0
+39KW2z3mI/a3J3WaEGH3fg4G4TNZi3Zvz2zks3w5guVUSogvc3qgCMbI7234MeHJ
+vGrPaulhupPeorawOurxNwIIQOT9pe+qEy2xcOZcZJoOZJIO2aruj6Lld06rvclB
+OsNGf/G5XJ/QTpKnDcxlQkMWDkLEEIsmlJ5sljTt+6bnsKnFw0+6VHgse5L0mwGt
+hEoMJo6a7/a9MQITcIi/SSd6WU/vfm1bq+epVMYqx3OHxjaFI+r3ukgMB6i4ZLOU
+UVEGN85iwPtLWwY1W/ux
+=lCPV
+-----END PGP SIGNATURE-----
 
- 	err = validate_sb(c, sup);
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index d2fd76f..879ecf5 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -438,6 +438,8 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
- 	else if (c->mount_opts.chk_data_crc == 1)
- 		seq_printf(s, ",no_chk_data_crc");
-
-+	if (c->mount_opts.use_ubifsec)
-+		seq_printf(s, ",use_ubifsec");
- 	if (c->mount_opts.override_compr) {
- 		seq_printf(s, ",compr=%s",
- 			   ubifs_compr_name(c->mount_opts.compr_type));
-@@ -934,6 +936,7 @@ static int check_volume_empty(struct ubifs_info *c)
-  * Opt_chk_data_crc: check CRCs when reading data nodes
-  * Opt_no_chk_data_crc: do not check CRCs when reading data nodes
-  * Opt_override_compr: override default compressor
-+ * Opt_use_ubifsec: use ubifsec secure deletion feature
-  * Opt_err: just end of array marker
-  */
- enum {
-@@ -944,6 +947,7 @@ enum {
- 	Opt_chk_data_crc,
- 	Opt_no_chk_data_crc,
- 	Opt_override_compr,
-+	Opt_use_ubifsec,
- 	Opt_err,
- };
-
-@@ -955,6 +959,7 @@ static const match_table_t tokens = {
- 	{Opt_chk_data_crc, "chk_data_crc"},
- 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
- 	{Opt_override_compr, "compr=%s"},
-+	{Opt_use_ubifsec, "use_ubifsec"},
- 	{Opt_err, NULL},
- };
-
-@@ -1054,6 +1059,12 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			c->default_compr = c->mount_opts.compr_type;
- 			break;
- 		}
-+		case Opt_use_ubifsec:
-+		{
-+			c->mount_opts.use_ubifsec = 1;
-+			c->use_ubifsec = 1;
-+			break;
-+		}
- 		default:
- 		{
- 			unsigned long flag;
-@@ -1446,6 +1457,9 @@ static int mount_ubifs(struct ubifs_info *c)
- 		c->lpt_lebs, c->lpt_first, c->lpt_last);
- 	dbg_msg("orphan area LEBs:    %d (%d - %d)",
- 		c->orph_lebs, c->orph_first, c->orph_last);
-+	if (c->ksa_lebs)
-+		dbg_msg("KSA LEBs:            %d (%d - %d)",
-+			c->ksa_lebs, c->ksa_first, c->ksa_last);
- 	dbg_msg("main area LEBs:      %d (%d - %d)",
- 		c->main_lebs, c->main_first, c->leb_cnt - 1);
- 	dbg_msg("index LEBs:          %d", c->lst.idx_lebs);
-@@ -1483,6 +1497,7 @@ static int mount_ubifs(struct ubifs_info *c)
- 		c->bud_bytes, c->bud_bytes >> 10, c->bud_bytes >> 20);
- 	dbg_msg("max. seq. number:    %llu", c->max_sqnum);
- 	dbg_msg("commit number:       %llu", c->cmt_no);
-+	dbg_msg("use ubifsec:         %d", c->use_ubifsec);
-
- 	return 0;
-
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index 90f348c..905608b 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -618,10 +618,12 @@ struct ubifs_pad_node {
-  * @rp_uid: reserve pool UID
-  * @rp_gid: reserve pool GID
-  * @rp_size: size of the reserved pool in bytes
-- * @padding2: reserved for future, zeroes
-  * @time_gran: time granularity in nanoseconds
-  * @uuid: UUID generated when the file system image was created
-  * @ro_compat_version: UBIFS R/O compatibility version
-+ * @crypto_lebs: number of LEBS being used to store keys
-+ * @use_ubifsec: whether the file system should use secure deletion
-+ * @padding2: reserved for future, zeroes
-  */
- struct ubifs_sb_node {
- 	struct ubifs_ch ch;
-@@ -649,7 +651,9 @@ struct ubifs_sb_node {
- 	__le32 time_gran;
- 	__u8 uuid[16];
- 	__le32 ro_compat_version;
--	__u8 padding2[3968];
-+	__le32 ksa_lebs;
-+	__u8 use_ubifsec;
-+	__u8 padding2[3963];
- } __packed;
-
- /**
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index d7f639a..f34ab84 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -164,6 +164,16 @@
- #define UBIFS_CRYPTO_KEYSIZE 16
- /* AES in counter mode is the encryption algorithm */
- #define UBIFS_CRYPTO_ALGORITHM "ctr(aes)"
-+/*
-+ * Constant number of KSA LEBS to add to computed value, ensuring two plus a
-+ * checkpoint LEB.
-+ */
-+#define UBIFS_KSA_ADD_LEBS 3
-+/*
-+ * KSA LEBS is 1.125 * the computed min to allow unused keys when the drive is
-+ * full. This shift is used to compute 0.125 * LEBS.
-+ */
-+#define UBIFS_KSA_LEBS_SCALE_SHIFT 3
-
- /*
-  * Lockdep classes for UBIFS inode @ui_mutex.
-@@ -934,6 +944,7 @@ struct ubifs_orphan {
-  *                  specified in @compr_type)
-  * @compr_type: compressor type to override the superblock compressor with
-  *              (%UBIFS_COMPR_NONE, etc)
-+ * @use_ubifsec: use ubifsec secure deletion feature
-  */
- struct ubifs_mount_opts {
- 	unsigned int unmount_mode:2;
-@@ -941,6 +952,7 @@ struct ubifs_mount_opts {
- 	unsigned int chk_data_crc:2;
- 	unsigned int override_compr:1;
- 	unsigned int compr_type:2;
-+	unsigned int use_ubifsec:1;
- };
-
- /**
-@@ -1224,7 +1236,11 @@ struct ubifs_debug_info;
-  * @size_tree: inode size information for recovery
-  * @mount_opts: UBIFS-specific mount options
-  *
-- * @keymap: cryptographic key store for secure deletion
-+ * @km: cryptographic key store for secure deletion
-+ * @ksa_lebs: number of LEBS assigned to the KSA
-+ * @ksa_first: number of the first LEB assigned to the KSA
-+ * @ksa_last: number of the last LEB assigned to the KSA
-+ * @use_ubifsec: switch to enable/disable secure deletion for UBIFS
-  * @dbg: debugging-related information
-  */
- struct ubifs_info {
-@@ -1454,6 +1470,11 @@ struct ubifs_info {
- 	struct ubifs_mount_opts mount_opts;
-
- 	struct ubifs_keymap *km;
-+	int ksa_lebs;
-+	int ksa_first;
-+	int ksa_last;
-+	int use_ubifsec;
-+
- 	struct ubifs_debug_info *dbg;
- };
-
--- 
-1.7.5.4
+--=-KPmpepioGWYnejquzGV+--
