@@ -1,22 +1,17 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXpRc-0004Yf-PH
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 08:00:21 +0000
-Date: Fri, 25 May 2012 10:00:16 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Robert Homann <homann@bury.com>
-Subject: Re: Resizing of an existing UBIFS
-In-Reply-To: <4FBF396D.4070000@bury.com>
-Message-ID: <Pine.LNX.4.64.1205250958290.4247@lnxricardw.se.axis.com>
-References: <4FBB3506.3020904@bury.com>
- <1337669583.2483.88.camel@sauron.fi.intel.com>
- <4FBB3E7F.3080807@bury.com> <4FBF2DF7.8030809@intel.com>
- <4FBF396D.4070000@bury.com>
+Received: from faui40.informatik.uni-erlangen.de
+ ([2001:638:a00:22:1ec1:deff:fef4:b7a0])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXpsq-0007BZ-Ir
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 08:28:31 +0000
+Date: Fri, 25 May 2012 10:28:19 +0200
+From: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ vamos-dev@lists.cs.fau.de
+Subject: [PATCH] mtd: dc21285.c: handle nw_gpio_lock correctly
+Message-ID: <20120525082812.GA12238@faui49q.informatik.uni-erlangen.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+nw_gpio_lock is a raw_spinlock_t, therefore raw_spin_lock_irqsave should be
+used. it doesn't make a difference, while rlock is the first element of
+spinlock_t.
 
-On Fri, 25 May 2012, Robert Homann wrote:
+Also the check for machine_is_netwinder() is a double check of
+CONFIG_ARCH_NETWINDER.
 
-> It is definitely a lot simpler to just set this parameter to some big=20
-> value and generate new images from scratch since the overhead in space=20
-> consumption is not an issue in this case. But let's say, in my case the=
-=20
-> purpose of using such a resizing tool is not space optimization, but=20
-> fixing a former decision...
+Signed-off-by: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
+---
+ drivers/mtd/maps/dc21285.c |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
 
-I think this is a most important point. Whatever sizing strategy and=20
-volume sizes that are decided upon, one can be sure that a couple of years=
-=20
-down the line differing circumstances will require a re-think of that=20
-strategy, no matter how well founded the decision was to start with.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
+index 080f060..38fbf23 100644
+--- a/drivers/mtd/maps/dc21285.c
++++ b/drivers/mtd/maps/dc21285.c
+@@ -38,9 +38,9 @@ static void nw_en_write(void)
+ 	 * we want to write a bit pattern XXX1 to Xilinx to enable
+ 	 * the write gate, which will be open for about the next 2ms.
+ 	 */
+-	spin_lock_irqsave(&nw_gpio_lock, flags);
++	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+ 	nw_cpld_modify(CPLD_FLASH_WR_ENABLE, CPLD_FLASH_WR_ENABLE);
+-	spin_unlock_irqrestore(&nw_gpio_lock, flags);
++	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+ 
+ 	/*
+ 	 * let the ISA bus to catch on...
+@@ -79,8 +79,7 @@ static void dc21285_copy_from(struct map_info *map, void *to, unsigned long from
+ 
+ static void dc21285_write8(struct map_info *map, const map_word d, unsigned long adr)
+ {
+-	if (machine_is_netwinder())
+-		nw_en_write();
++	nw_en_write();
+ 	*CSR_ROMWRITEREG = adr & 3;
+ 	adr &= ~3;
+ 	*(uint8_t*)(map->virt + adr) = d.x[0];
+@@ -88,8 +87,7 @@ static void dc21285_write8(struct map_info *map, const map_word d, unsigned long
+ 
+ static void dc21285_write16(struct map_info *map, const map_word d, unsigned long adr)
+ {
+-	if (machine_is_netwinder())
+-		nw_en_write();
++	nw_en_write();
+ 	*CSR_ROMWRITEREG = adr & 3;
+ 	adr &= ~3;
+ 	*(uint16_t*)(map->virt + adr) = d.x[0];
+@@ -97,8 +95,7 @@ static void dc21285_write16(struct map_info *map, const map_word d, unsigned lon
+ 
+ static void dc21285_write32(struct map_info *map, const map_word d, unsigned long adr)
+ {
+-	if (machine_is_netwinder())
+-		nw_en_write();
++	nw_en_write();
+ 	*(uint32_t*)(map->virt + adr) = d.x[0];
+ }
+ 
+-- 
+1.7.5.4
