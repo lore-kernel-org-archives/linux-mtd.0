@@ -1,17 +1,25 @@
-Received: from faui40.informatik.uni-erlangen.de
- ([2001:638:a00:22:1ec1:deff:fef4:b7a0])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SXpsq-0007BZ-Ir
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 08:28:31 +0000
-Date: Fri, 25 May 2012 10:28:19 +0200
-From: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- vamos-dev@lists.cs.fau.de
-Subject: [PATCH] mtd: dc21285.c: handle nw_gpio_lock correctly
-Message-ID: <20120525082812.GA12238@faui49q.informatik.uni-erlangen.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <1337938767.30969.9.camel@sauron.fi.intel.com>
+Subject: Re: Problem with UBI / UBIFS (mainly ucorrectable error) on kernel
+ higher than 2.6.30.10
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?UTF-8?Q?=C5=81ukasz?= Nowak <lukasz.nowak@homersoft.com>
+Date: Fri, 25 May 2012 12:39:27 +0300
+In-Reply-To: <CACYZ3J4rP=JbB8XoVfg-dqWEhTXt_gGt4FsBf3NWngyCKaa+JQ@mail.gmail.com>
+References: <1337255133.2457.66.camel@debian.softace>
+ <1337348152.2483.59.camel@sauron.fi.intel.com>
+ <1337605024.2646.16.camel@debian.softace>
+ <1337673875.2483.116.camel@sauron.fi.intel.com>
+ <CAJpamw4XDgWiB1Za5qGDns1wV=Jnk1DyRS6MYBSypd8ab41hVQ@mail.gmail.com>
+ <OF453BD14D.DB41E7C8-ONC1257A06.003568DE-C1257A06.00357A39@transmode.se>
+ <CACYZ3J4rP=JbB8XoVfg-dqWEhTXt_gGt4FsBf3NWngyCKaa+JQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-0X/Fp3u5NhptX4PIlfJs"
+Mime-Version: 1.0
+Cc: linux-mtd-bounces@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Nicolas Pitre <nico@cam.org>, Guillaume LECERF <glecerf@gmail.com>,
+ Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nw_gpio_lock is a raw_spinlock_t, therefore raw_spin_lock_irqsave should be
-used. it doesn't make a difference, while rlock is the first element of
-spinlock_t.
 
-Also the check for machine_is_netwinder() is a double check of
-CONFIG_ARCH_NETWINDER.
+--=-0X/Fp3u5NhptX4PIlfJs
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
----
- drivers/mtd/maps/dc21285.c |   13 +++++--------
- 1 files changed, 5 insertions(+), 8 deletions(-)
+On Fri, 2012-05-25 at 11:04 +0200, =C5=81ukasz Nowak wrote:
+> So maybe the best solution right now will be to just add additional
+> flag to the kernel configuration MTD_ORION_NAND_BURSTS_READS turned of
+> as default? I saw that a lot of people had similar problems to mine.
+>=20
+Fist of all, someone should investigate what is happening and why
+exactly. Then we should find out the right solution - be that a flag or
+just a revert of that change.
 
-diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
-index 080f060..38fbf23 100644
---- a/drivers/mtd/maps/dc21285.c
-+++ b/drivers/mtd/maps/dc21285.c
-@@ -38,9 +38,9 @@ static void nw_en_write(void)
- 	 * we want to write a bit pattern XXX1 to Xilinx to enable
- 	 * the write gate, which will be open for about the next 2ms.
- 	 */
--	spin_lock_irqsave(&nw_gpio_lock, flags);
-+	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
- 	nw_cpld_modify(CPLD_FLASH_WR_ENABLE, CPLD_FLASH_WR_ENABLE);
--	spin_unlock_irqrestore(&nw_gpio_lock, flags);
-+	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
- 
- 	/*
- 	 * let the ISA bus to catch on...
-@@ -79,8 +79,7 @@ static void dc21285_copy_from(struct map_info *map, void *to, unsigned long from
- 
- static void dc21285_write8(struct map_info *map, const map_word d, unsigned long adr)
- {
--	if (machine_is_netwinder())
--		nw_en_write();
-+	nw_en_write();
- 	*CSR_ROMWRITEREG = adr & 3;
- 	adr &= ~3;
- 	*(uint8_t*)(map->virt + adr) = d.x[0];
-@@ -88,8 +87,7 @@ static void dc21285_write8(struct map_info *map, const map_word d, unsigned long
- 
- static void dc21285_write16(struct map_info *map, const map_word d, unsigned long adr)
- {
--	if (machine_is_netwinder())
--		nw_en_write();
-+	nw_en_write();
- 	*CSR_ROMWRITEREG = adr & 3;
- 	adr &= ~3;
- 	*(uint16_t*)(map->virt + adr) = d.x[0];
-@@ -97,8 +95,7 @@ static void dc21285_write16(struct map_info *map, const map_word d, unsigned lon
- 
- static void dc21285_write32(struct map_info *map, const map_word d, unsigned long adr)
- {
--	if (machine_is_netwinder())
--		nw_en_write();
-+	nw_en_write();
- 	*(uint32_t*)(map->virt + adr) = d.x[0];
- }
- 
--- 
-1.7.5.4
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-0X/Fp3u5NhptX4PIlfJs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPv1NPAAoJECmIfjd9wqK0S+gP/ROchxc0mwUaTIiXTuiGuLzr
+mzAZdc8FvW2FY0XUw0bl80yiOZnKgVANc8PI8cslsYguIrVIOXckJs2alkJQn5kr
+Ap1Wi+ITGIdEmO91FOQ1UHCOVZqiwiN49ZzW8xVzjwE3v3YjPD+YrfNml6rKq8H9
+Jrm9waYE4HGeFIr1XkaMCzV/77pc1X6Mj6s4b5q46pJwyjFHEJ+KDRmwNXDEB3eP
+pFbx5iTEXizqKWDtdiVHx+bJq3Gs7Gd/2j7Z+jTJVv1SEfuj/qdof+7PmPqgg+kt
+O1A10I06vEl3bSasw5I89st8syolq39pRSpf7G8Wg3YlX8v5ob/eEyU0IIVQ7G/+
+hSyH/q8+LVlpg+gBNJ411znpCGQYMK+BwcRHSzdfl8szFEGIMyh5BFmvyh8I9b74
+8nlLWQ1C11bPvk9fsRbv4Am5OlrI3sYzsZjl6APNRvyGBlefQldh6OfT4v1LvjTJ
+sCniHUh6VhF2rr0M4hpdGEKvqIHATtWU0CEcGnB8EaviHKRqZSSE9HFRyrCvzbQa
+pgIoizQF1yDoCNhOxEwzk68fPMKpecmSZXNNcB37FQ9l/bvsHiF1inxyEJRqcyis
+IPAhYRRq0on6BUWa64hVuZdhuveQ6/bheF+JUXVl/CEL7WBht+RBFth8MURXwfnO
+rhycJuWWvchPChwCDah2
+=4rsR
+-----END PGP SIGNATURE-----
+
+--=-0X/Fp3u5NhptX4PIlfJs--
