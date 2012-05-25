@@ -1,17 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SXvQ2-0003mq-Ec
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 14:23:07 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd mxc_nand: move ecc strengh setup before nand_scan_tail
-Date: Fri, 25 May 2012 16:22:42 +0200
-Message-Id: <1337955762-19157-2-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
-References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXvtU-0005ss-Pv
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 14:53:33 +0000
+Message-ID: <1337957835.30969.45.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd stresstest: Fix random number generation
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 25 May 2012 17:57:15 +0300
+In-Reply-To: <1337954309-18178-1-git-send-email-s.hauer@pengutronix.de>
+References: <1337954309-18178-1-git-send-email-s.hauer@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-ba8R6ou/QcvwICQK0Pjl"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since this commit:
 
-  commit 6a918bade9dab40aaef80559bd1169c69e8d69cb
-  Author: Mike Dunn <mikedunn@newsguy.com>
-  Date:   Sun Mar 11 14:21:11 2012 -0700
+--=-ba8R6ou/QcvwICQK0Pjl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-     mtd: flash drivers set ecc strength
+On Fri, 2012-05-25 at 15:58 +0200, Sascha Hauer wrote:
+> the random number generation in the mtd stresstest was changed from a
+> homebrew generator to random32. random32 generates unsigned random
+> numbers, but the values are assigned to signed integers. This results
+> in negative offsets, eraseblocks and writesized. Fix it by using unsigned
+> integers for these variables instead.
 
-The mxc_nand driver fails with:
+Pushed to l2-mtd.git, thanks!
 
-Driver must set ecc.strength when using hardware ECC
+--=20
+Best Regards,
+Artem Bityutskiy
 
-This is because nand_scan_tail checks for correct ecc strength
-settings, so we must set them up before nand_scan_tail.
+--=-ba8R6ou/QcvwICQK0Pjl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: stable@vger.kernel.org
----
- drivers/mtd/nand/mxc_nand.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 4d27ddc..aaf042b 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1485,12 +1485,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	else if (mtd->writesize == 4096)
- 		this->ecc.layout = host->devtype_data->ecclayout_4k;
- 
--	/* second phase scan */
--	if (nand_scan_tail(mtd)) {
--		err = -ENXIO;
--		goto escan;
--	}
--
- 	if (this->ecc.mode == NAND_ECC_HW) {
- 		if (nfc_is_v1())
- 			this->ecc.strength = 1;
-@@ -1498,6 +1492,12 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 			this->ecc.strength = (host->eccsize == 4) ? 4 : 8;
- 	}
- 
-+	/* second phase scan */
-+	if (nand_scan_tail(mtd)) {
-+		err = -ENXIO;
-+		goto escan;
-+	}
-+
- 	/* Register the partitions */
- 	mtd_device_parse_register(mtd, part_probes,
- 			&(struct mtd_part_parser_data){
--- 
-1.7.10
+iQIcBAABAgAGBQJPv53LAAoJECmIfjd9wqK0GnAP/0fo3m4sDtzFn4hUS3p9vg8W
+czMXwS4UdrBMfK/SSfMjLfXHnFDFzyFpY5qd/4vbekYKHNChQfKl4QhLt/k7Y54v
+QKB5OjmkRw28GTQGK8PmS7n8LD1PiXAR+UGjYd/WnfKfLiJjyBNrsUY/LkAapNmm
+AwCT19zLhsOF/2LIW1SAGlV24YTWKNYr6Qlk79/Pvm+W6JgaOX3FAkHc1nAc+aco
+4hL4Pq3NQrLJl9N92Xj1YXPrhIs4REfytki1On1x/m/2Hwj0ExbeY0HF/TDlGODr
+sdYW7U9YbvIopDfqYqxNhM6UfRTtdUe1Odc01vKePMEmotvalB47378D9JMNYWXQ
+UtCWk57N73FWng6Wvkt+jUX4nhp3e0dwYFmSrznyp5Bs7ueejus6dGYyuERJQgyo
+BI4GeCOJeZ/O+qgzSnJMt0UkwO75h4BS01n1wmiBbltpltm9ZBVtY6jt7EqySAWk
+7UcPVh/eCV0Q4vknud6QrmxEbGLhFo5yMqkkOk7gsgYaZk/C2nwFUkJdYaR2MN4z
+9CyA6hM3+CudpZ/BOR1FIU2b3MGzHMXpJE+zb49piC1wDrbv8zqg7p6NxiyqlfuS
+dfXrXxhO6AvhBb8zUqG1bVAxYQ4SAhI3+d8bZQyGIuWQBxW9L//whS9FTxk78k4d
+Ky8dfAS/K5naHZXEPCFU
+=u/fC
+-----END PGP SIGNATURE-----
+
+--=-ba8R6ou/QcvwICQK0Pjl--
