@@ -1,19 +1,20 @@
-Message-ID: <1337964907.30969.57.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/2] mtd mxc_nand: move ecc strengh setup before
- nand_scan_tail
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Fri, 25 May 2012 19:55:07 +0300
-In-Reply-To: <1337955762-19157-2-git-send-email-s.hauer@pengutronix.de>
-References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
- <1337955762-19157-2-git-send-email-s.hauer@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-7AhIWqJ7X8Jqiiq47ekF"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SY3jF-0006yR-Pu
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 23:15:30 +0000
+Received: by mail-vb0-f49.google.com with SMTP id fo1so1234373vbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 25 May 2012 16:15:29 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: kernel@pengutronix.de
+Subject: [PATCH 09/15] nand: mxc_nand: Use
+ clk_prepare_enable/clk_disable_unprepare
+Date: Fri, 25 May 2012 20:14:50 -0300
+Message-Id: <1337987696-31728-9-git-send-email-festevam@gmail.com>
+In-Reply-To: <1337987696-31728-1-git-send-email-festevam@gmail.com>
+References: <1337987696-31728-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, shawn.guo@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---=-7AhIWqJ7X8Jqiiq47ekF
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Prepare the clock before enabling it.
 
-On Fri, 2012-05-25 at 16:22 +0200, Sascha Hauer wrote:
-> Since this commit:
->=20
->   commit 6a918bade9dab40aaef80559bd1169c69e8d69cb
->   Author: Mike Dunn <mikedunn@newsguy.com>
->   Date:   Sun Mar 11 14:21:11 2012 -0700
->=20
->      mtd: flash drivers set ecc strength
->=20
-> The mxc_nand driver fails with:
->=20
-> Driver must set ecc.strength when using hardware ECC
->=20
-> This is because nand_scan_tail checks for correct ecc strength
-> settings, so we must set them up before nand_scan_tail.
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: <linux-mtd@lists.infradead.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/mxc_nand.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Pushed this one to l2-mtd.git as well, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-7AhIWqJ7X8Jqiiq47ekF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPv7lrAAoJECmIfjd9wqK0SpsP/3uOyb1qeMwTdGrzo0tXrMiu
-WLPayv1eNXUqJYfor7ZTuPINW20IoUxIvRujEnM9b/FuOkNXI0HxC1ItmLmbyHeL
-Gjxl3cXsXeud6aRHy8jAJ1uAaCnLdxRMOeeRfAPYJKm50LxaAs7PXqrOqI0ODN9A
-OX7v7fWC/+9oFGD8gI9xg7lhQhQsovEcPC42BUv4osXlUNl132jsC+ipYdmniVtR
-kdYEcXYE+OC4MVkgDmqdPATjuKmSCg2ZmMsXDRo4ksD7GiRs3g30qQBNHhR+eS6d
-YgcByD4L2guBTUVBzKshDrCDTt2ubnEew8LwnKGyux06k9fiTblRXoq41GFqdfHH
-XwDT3itpAF+nkCeZ6RJZTblcEIELsZ26ROpXfjSpwJogHXJevRt1GjyiAxVojxYb
-HRkoZ1b/yxGgsHN7kCxqRjK4J8yO3N2jA6ZEramopix8JiNybHNuADC3LcK7pNvg
-yqHitRo6hqw1ZvdFzacTDNoCNsmVpJRzIoQ7tehvg/lw9e6iSD3PH7cgNfY8/AUI
-orzE8NUsGHSgDNldC7NFzIGHY6H8kJ84degoJPjeHhkkUQcnRGe2i2cKSSFuQc5r
-XQOOmaurDBPPAv475tXCeORdDkaqTGffonE0U9VOZZGq1aru4Ciji4OzAGzlZ0su
-Jnxn598L2shl3vx4V49w
-=m9RB
------END PGP SIGNATURE-----
-
---=-7AhIWqJ7X8Jqiiq47ekF--
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index fd14966..d6efa17 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -764,7 +764,7 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
+ 	if (chip == -1) {
+ 		/* Disable the NFC clock */
+ 		if (host->clk_act) {
+-			clk_disable(host->clk);
++			clk_disable_unprepare(host->clk);
+ 			host->clk_act = 0;
+ 		}
+ 		return;
+@@ -772,7 +772,7 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
+ 
+ 	if (!host->clk_act) {
+ 		/* Enable the NFC clock */
+-		clk_enable(host->clk);
++		clk_prepare_enable(host->clk);
+ 		host->clk_act = 1;
+ 	}
+ 
+-- 
+1.7.1
