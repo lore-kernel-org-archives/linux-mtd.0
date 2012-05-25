@@ -1,19 +1,16 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXvtU-0005ss-Pv
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 14:53:33 +0000
-Message-ID: <1337957835.30969.45.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd stresstest: Fix random number generation
+Message-ID: <1337957902.30969.46.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd mxc_nand: use 32bit copy functions
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Fri, 25 May 2012 17:57:15 +0300
-In-Reply-To: <1337954309-18178-1-git-send-email-s.hauer@pengutronix.de>
-References: <1337954309-18178-1-git-send-email-s.hauer@pengutronix.de>
+Date: Fri, 25 May 2012 17:58:22 +0300
+In-Reply-To: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
+References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ba8R6ou/QcvwICQK0Pjl"
+ boundary="=-ltFIaKORGdhFNZeM/lkh"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +22,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ba8R6ou/QcvwICQK0Pjl
+--=-ltFIaKORGdhFNZeM/lkh
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-05-25 at 15:58 +0200, Sascha Hauer wrote:
-> the random number generation in the mtd stresstest was changed from a
-> homebrew generator to random32. random32 generates unsigned random
-> numbers, but the values are assigned to signed integers. This results
-> in negative offsets, eraseblocks and writesized. Fix it by using unsigned
-> integers for these variables instead.
+On Fri, 2012-05-25 at 16:22 +0200, Sascha Hauer wrote:
+> The following commit changes the function used to copy from/to
+> the hardware buffer to memcpy_[from|to]io. This does not work
+> since the hardware cannot handle the byte accesses used by these
+> functions. Instead of reverting this patch introduce 32bit
+> correspondents of these functions.
 
-Pushed to l2-mtd.git, thanks!
+Could you please take a look at the checkpatch.pl updates?
+
+WARNING:LONG_LINE: line over 80 characters
+#103: FILE: drivers/mtd/nand/mxc_nand.c:276:
++static void memcpy32_fromio(void *trg, const volatile void __iomem  *src, =
+size_t size)
+
+WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/volat=
+ile-considered-harmful.txt
+#103: FILE: drivers/mtd/nand/mxc_nand.c:276:
++static void memcpy32_fromio(void *trg, const volatile void __iomem  *src, =
+size_t size)
+
+WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/volat=
+ile-considered-harmful.txt
+#107: FILE: drivers/mtd/nand/mxc_nand.c:280:
++       const volatile u32 *s =3D src;
+
+WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/volat=
+ile-considered-harmful.txt
+#113: FILE: drivers/mtd/nand/mxc_nand.c:286:
++static void memcpy32_toio(volatile void __iomem *trg, const void *src, int=
+ size)
+
+WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/volat=
+ile-considered-harmful.txt
+#116: FILE: drivers/mtd/nand/mxc_nand.c:289:
++       volatile u32 *t =3D trg;
+
+WARNING:LONG_LINE: line over 80 characters
+#170: FILE: drivers/mtd/nand/mxc_nand.c:1093:
++               memcpy32_fromio(host->data_buf, host->main_area0, mtd->writ=
+esize);
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ba8R6ou/QcvwICQK0Pjl
+--=-ltFIaKORGdhFNZeM/lkh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +79,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPv53LAAoJECmIfjd9wqK0GnAP/0fo3m4sDtzFn4hUS3p9vg8W
-czMXwS4UdrBMfK/SSfMjLfXHnFDFzyFpY5qd/4vbekYKHNChQfKl4QhLt/k7Y54v
-QKB5OjmkRw28GTQGK8PmS7n8LD1PiXAR+UGjYd/WnfKfLiJjyBNrsUY/LkAapNmm
-AwCT19zLhsOF/2LIW1SAGlV24YTWKNYr6Qlk79/Pvm+W6JgaOX3FAkHc1nAc+aco
-4hL4Pq3NQrLJl9N92Xj1YXPrhIs4REfytki1On1x/m/2Hwj0ExbeY0HF/TDlGODr
-sdYW7U9YbvIopDfqYqxNhM6UfRTtdUe1Odc01vKePMEmotvalB47378D9JMNYWXQ
-UtCWk57N73FWng6Wvkt+jUX4nhp3e0dwYFmSrznyp5Bs7ueejus6dGYyuERJQgyo
-BI4GeCOJeZ/O+qgzSnJMt0UkwO75h4BS01n1wmiBbltpltm9ZBVtY6jt7EqySAWk
-7UcPVh/eCV0Q4vknud6QrmxEbGLhFo5yMqkkOk7gsgYaZk/C2nwFUkJdYaR2MN4z
-9CyA6hM3+CudpZ/BOR1FIU2b3MGzHMXpJE+zb49piC1wDrbv8zqg7p6NxiyqlfuS
-dfXrXxhO6AvhBb8zUqG1bVAxYQ4SAhI3+d8bZQyGIuWQBxW9L//whS9FTxk78k4d
-Ky8dfAS/K5naHZXEPCFU
-=u/fC
+iQIcBAABAgAGBQJPv54OAAoJECmIfjd9wqK0wIIP/igdfqAIQ8XOXvh7/urjsHlK
+gme0WPlAY+e0KInSmJMVvZFXeOcPHGLUvsoMOt/egx5ReXPq3EQVPoez8q/2Tgh8
+p9LjbLqH2vp2pc3DMw2XR930+48cW5LtwQI+4Frs1IZqOSCTHFvxUYE5v7wLIkFA
+eSTKfjRNADJIj4Bf2YadCEkhcC6384qDUKepzsXxCIn8DK50bSvdYGi3e6IVYwDv
+h3k6/SsA4EwZxMSjWh2POId3kAksWF6wVIfII4gL5003D2HDN5KxOtBp8fT5sqbz
+NiGIdK2Bm0HkV2PLw5NGt1AKTXCzNg2MrOITN7DwxgUv1S3nNBaQWQY+qcoBC9cc
+Am0IkmigTsR/dO7Smeovf23dxiD6UsUz4ckVCnmt054NZ9DKPjeQq7sw+Q6MxAgp
+SlVYdN4mFzT1k+JLj4NZhcrZGgsAbRXzZYsyZXCMJlovAUddjcOlUO5Isu8Aslla
+JgyMIOtdfeTyBjGuPCg9I+Js/F54MGg9CRBTyHX7Qjb5g1iVvAHiBCJp0T1Or/Qn
+rA9GEprlUfYTeRExpJfizr+mVBwmjlUTJw/A4fzQXbCVOUX60wQh6d97l6vI2tsM
+ZLBM6E7n3dtG1eF8Z1y807U0btHg9N3WgWFKlRYz9rZOIVtS/UXrhKRNWTjueB35
+PRQLvIHUVQo2/2UKR9Q9
+=lj6c
 -----END PGP SIGNATURE-----
 
---=-ba8R6ou/QcvwICQK0Pjl--
+--=-ltFIaKORGdhFNZeM/lkh--
