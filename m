@@ -1,17 +1,19 @@
-Received: from nm2-vm7.bullet.mail.sg3.yahoo.com ([106.10.148.110])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SXgAq-0003JY-Vc
- for linux-mtd@lists.infradead.org; Thu, 24 May 2012 22:06:26 +0000
-Message-ID: <6BF71195AFCF686F2592F3FE2B70C3A3@zscixnhza>
-From: =?utf-8?B?5rGq6ZuB6I+h?= <dangzhawbqa@yahoo.cn>
-To: <linus55@sina.com.cn>
-Subject: =?utf-8?B?dTBtJeS7o215YiXlvIAjKzUl5Y+Ra3QwcOelqA==?=
- =?utf-8?B?anh4NA==?=
-Date: Fri, 25 May 2012 06:09:09 +0800
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXoVR-0000jc-Az
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 07:00:14 +0000
+Message-ID: <4FBF2DF7.8030809@intel.com>
+Date: Fri, 25 May 2012 10:00:07 +0300
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+To: Robert Homann <homann@bury.com>
+Subject: Re: Resizing of an existing UBIFS
+References: <4FBB3506.3020904@bury.com>
+ <1337669583.2483.88.camel@sauron.fi.intel.com> <4FBB3E7F.3080807@bury.com>
+In-Reply-To: <4FBB3E7F.3080807@bury.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,7 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQrmnajlsI/lp5A6MTM1NjAwMDcwNTkNCg0KPOWPkT4gIDzku7c+ICA86aqMPiAgPOasoj4gICAN
-Cg0KPOelqD4gIDzmoLw+ICA856WoPiAgPOi/jj4gICANCg0KPOS7oz4gIDzkvJg+ICA85LuYPiAg
-POadpT4gICANCg0KPOW8gD4gIDzmg6A+ICA85qy+PiAgPOeUtT4gICANCg0KIHFxOjk5MjI0NzUx
-MyANCg==
+On 22/05/12 10:21, Robert Homann wrote:
+> On 05/22/2012 08:53 AM, Artem Bityutskiy wrote:
+> 
+> Hi!
+> 
+>>> I have a short question: Is it possible to expand the size of a UBIFS
+>>> without creating a new image file or reformatting from scratch?
+>>> ...
+>>
+>> Unfortunately there are not tools for this :-( You could write one,
+>> though :-)
+> 
+> OK, thanks. Actually, writing such a tool is not completely out of
+> question in my case... How hard do you think it would be to implement it?
+> Would such a tool simply change some values in a few structures or would it
+> have to do something much more complicated? Or could some existing tool from
+> mtd-utils be extended to do the job?
+
+Before writing a tool you should check how much overhead there is in simply
+making max-leb-cnt as big as you might ever want.
