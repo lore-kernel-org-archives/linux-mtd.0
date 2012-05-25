@@ -1,29 +1,22 @@
-Received: from mika.eatserver.nl ([195.20.9.75])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SXrVy-0004e7-Vt
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 10:13:00 +0000
-Received: from [195.242.97.150] (qore.networks.above.net [195.242.97.150] (may
- be forged)) (authenticated bits=0)
- by mika.eatserver.nl (8.13.8/8.13.8) with ESMTP id q4PACnmO003656
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2012 12:12:49 +0200
-Received: from localhost (localhost.localhost [127.0.0.1])
- by router38.aimvalley.nl (Postfix) with ESMTP id 6E35D818303
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2012 12:12:49 +0200 (CEST)
-Received: from mail3.aimsys.nl (mail.aimsys.nl [10.10.0.114])
- by router38.aimvalley.nl (Postfix) with ESMTP id 05D6D818302
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2012 12:12:49 +0200 (CEST)
-Message-ID: <4FBF5B20.50406@aimvalley.nl>
-Date: Fri, 25 May 2012 12:12:48 +0200
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Resizing of an existing UBIFS
-References: <4FBB3506.3020904@bury.com>
- <1337669583.2483.88.camel@sauron.fi.intel.com>
-In-Reply-To: <1337669583.2483.88.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SXtVo-0004rh-C0
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2012 12:20:57 +0000
+Message-ID: <1337948678.30969.31.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: introduce struct ubifs_keymap
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Fri, 25 May 2012 15:24:38 +0300
+In-Reply-To: <alpine.DEB.2.00.1205250947210.1340@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205211640320.3833@eristoteles.iwoars.net>
+ <1337769818.2483.202.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1205250947210.1340@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-x1s2xCuPahR6RpUBs2/Z"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/22/12 08:53, Artem Bityutskiy wrote:
-> On Tue, 2012-05-22 at 08:41 +0200, Robert Homann wrote:
->> Hi,
->>
->> I have a short question: Is it possible to expand the size of a UBIFS
->> without creating a new image file or reformatting from scratch?
->>
->> Suppose you have a UBIFS whose --max-leb-cnt has been set so to limit
->> its size to 100 MiB. Now suppose this UBIFS lives in a dynamic UBI
->> volume which gets expanded to a size of the whole partition, say,
->> 150 MiB. Being limited by the --max-leb-cnt parameter, the contained
->> UBIFS is expanded to only 100 MiB, and the rest of the space in the
->> volume is wasted. Is it possible to resize the UBIFS so that it can make
->> use of the now wasted space?
->
-> Unfortunately there are not tools for this :-( You could write one,
-> though :-)
->
 
+--=-x1s2xCuPahR6RpUBs2/Z
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is not a problem for a UBIFS being created dynamically, so with
-ubiformat + ubiattach + ubimkvol ? In this case the size of the lprops
-area is determined by the total amount of LEBs of the MTD partition ?
+On Fri, 2012-05-25 at 09:49 +0200, Joel Reardon wrote:
+> This patch introduces struct ubifs_keymap, the entity responsible for key
+> generation, distribution, and lifetime management for ubifs's secure dele=
+tion.
+> In addition to the struct's (partial) definition, it is added as a field =
+to
+> ubifs_info. The alloc routines are provided. More fields and functions
+> will come in following patches.
+>=20
+> This is tested using local unit tests for the functions: alloc,
+> and checking couple/decouple is sound. UBIFS integck is also run to ensur=
+e
+> UBIFS is not effected.
 
-A UBIFS volume can then be resized with ubirsvol as long as it does not
-conflict with other volumes and does not exceed the total amount of
-LEBs of the MTD partition ?
+Pushed to the "joel" branch with a minor amendment, thanks!
 
----
-N. van Bolhuis.
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-x1s2xCuPahR6RpUBs2/Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPv3oGAAoJECmIfjd9wqK0mX4QAJq1y73HE0QrzTXrRwIPyrF/
+HnMs4nxN4UjEZOLt5faLNORahiupauRfyJZPRCFaalUC2/D8kisBM/wW1wroQy69
+pgHshqoh1pN1TdDUby6m99MWLYl3BV/CrH1g1kSIVeb8gkSMeDtvKjOV6rj/Qg9q
+bOwC5/d99t44sTXhTUtcdOfFqUqBss7ze1V74WmRnqfH5iiEensh5crPJgq15VVG
+i/FeaMJxi6i5PxUw8FrnT6AdawGsFXUXa7zP5f7ji9woyH52jYGQOdgrVi2Ur2Ko
+VQiDtD98Yd/qOPb/nKlMMLMY42nUDrB2M01MKzcHsd40Yq7X2enpER81QV5bXuKP
+oWIug/o260dczJ0DBrLGAJf12T8n3FqcxQoU1VJhh5E67HutCWZLGOXUSWrHWK82
+OQ7vMTXaEnMsEfEe5AuMOwxTEdg7lmC/N2/01P3qG9jwer/hbAAr2CvEt3vMWXEs
+0x4m5d+E7Tl7rBp8G/Il3pORAN7oLm65WF+RSW4SelX1TNwfI7COQrdJzhxZ1rWb
+14+ElsKSvXG6P+/d7k12Q640kyNCm38+Zduwov2eJlbf7HfFrSbXUJulNvN8QvBg
+adPQuk/klS15NwplFoiljlBIO+C2nUQQw3Uecb+IYfeT0TKI3BjmRJCfM5jv9v8U
+3XvzCZBM/DmgoZq7tPo5
+=EMqy
+-----END PGP SIGNATURE-----
+
+--=-x1s2xCuPahR6RpUBs2/Z--
