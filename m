@@ -1,23 +1,21 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SYH5b-0008OW-ON
- for linux-mtd@lists.infradead.org; Sat, 26 May 2012 13:31:28 +0000
-Received: by laap9 with SMTP id p9so1545975laa.36
- for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 06:31:25 -0700 (PDT)
-Message-ID: <1338039083.2525.27.camel@koala>
-Subject: Re: [PATCH] UBIFS: compute KSA size and store in superblock
+ id 1SYHBB-0000IA-Dk
+ for linux-mtd@lists.infradead.org; Sat, 26 May 2012 13:37:14 +0000
+Received: by lbbgg6 with SMTP id gg6so1552335lbb.36
+ for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 06:37:11 -0700 (PDT)
+Message-ID: <1338039428.2525.30.camel@koala>
+Subject: Re: To clone NAND from a mobile phone
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Sat, 26 May 2012 16:31:23 +0300
-In-Reply-To: <alpine.DEB.2.00.1205261303000.9892@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
- <1337952271.30969.37.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1205261303000.9892@eristoteles.iwoars.net>
+To: "William F." <william76.sh@gmail.com>
+Date: Sat, 26 May 2012 16:37:08 +0300
+In-Reply-To: <4FBE7347.8000004@gmail.com>
+References: <4FBE7347.8000004@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-RhALlU5TcFxPQsPFj7VQ"
+ boundary="=-aAWGICmVMZu2Lm0AUTkB"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +26,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-RhALlU5TcFxPQsPFj7VQ
+--=-aAWGICmVMZu2Lm0AUTkB
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-BTW! While I remember this. You had a concern about bad blocks. I was
-thinking that UBI can notify UBIFS every time it marks a block as bad
-using the linux notifiers mechanism. UBI would tell UBIFS the volume id
-and leb number. Then UBIFS could asynchronously do all the security
-stuff which is required in the background thread, or by submitting a
-work. I think this is doable, but certainly not a priority.
-
-On Sat, 2012-05-26 at 13:21 +0200, Joel Reardon wrote:
-> >
-> > I do not have to time to review it now, but please, make sure that the
-> > KSA size is according to 'max_leb_cnt' (see the --max-leb-cnt of the
-> > mkfs.ubifs tool).
+On Thu, 2012-05-24 at 14:43 -0300, William F. wrote:
+> Hello.
 >=20
-> Ahh, I see now I also need to add the min number of lebs to min_leb_cnt i=
-f
-> the feature is enabled.
-
-Not sure what you mean...
-
-> > Also, think about this use-case in general: you have
-> > UBI volume of size X, then the volume is resized to Y > X, then mounted
-> > - UBIFS should work and resize itself to Y, up to the 'max_leb_cnt'. If
-> > Y > 'max_leb_cnt', we resize only to 'max_leb_cnt'.
+> Firstly, sorry about my bad english and sorry about any stupid question.
+> I need to get a clone (or to do an image) from a embedded NAND into a=20
+> Nokia 6267 mobile phone.
 >=20
-> For this case, it should be fine if the KSA is sized to maxlebcnt.
-> However, it will remain that size regardless of the real leb_cnt.
+> 1) Do I need "MTD tests support" activated in the kernel, right?
+> 2) If I connect the phone through its usb cable will be created=20
+> something like /dev/mtd0?
+> 3) Can I clone the NAND with mtd-utils?
 
-Yes, that's the idea. The lprops area behaves the same. This area stores
-a small object for each LEB, so the more LEBs we have, the larger lprops
-area is. And 'max_leb_cnt' defines lprops size. We can easily resize up
-to 'max_leb_cnt' but re-sizing more than that is currently impossible.
-
-> In general, removing KSA blocks is possible, but if datanodes are
-> encrypted with keys on those blocks, then they must be re-encrypted with =
-a
-> different key on the smaller set (or somehow write the new last KSA block
-> containing all the used keys from the removed KSA blocks along with a
-> relocation table, but this seems like alot of coding if removing LEBs fro=
-m
-> the KSA isn't that important.)
-
-Sure, no need to remove. Create them according to 'max_leb_cnt' and
-that's it.
+This is a Symbian phone AFAIK. It does not have linux inside. You
+connect it to your PC and it exposes the internal flash as a mass
+storage USB device. MTD has nothing to do with this.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-RhALlU5TcFxPQsPFj7VQ
+--=-aAWGICmVMZu2Lm0AUTkB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -88,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPwNsrAAoJECmIfjd9wqK0cZoQAMuv/10qy3ky+wj2DFhlW4b5
-PYQMdWQx70g37DLkgOa/HdkR+rRH/ewYN53BBDhRsCVYvSyzLERLljPPxjniug3f
-tosyWeq3NbMyn/uCTyYS5yEJCVw8damBYLYvobD6mLwT/zNAt3fLIl7d5qdo7Wfi
-cXBp46XoLV5qXQv2D3AwuvzJoER1eRTP3B+PE++qg8bAqrOUsNqN6zR7J4dzWfTX
-aIARLkH5t1BBc1JRT6qL+bwCv1tosjxFjjqzCBmXWHEOqKbJWN0Om7U71/XtFnPS
-xeqmH/RXcUr8e0yZiT5f33FxOaGcW9YUf5pikKW5tCB/jPhQHULay7NefS/FTLXY
-5AZ2jnSkvLYBei1cZkmoTqQ2NohRHpIZBUPtZjH3nCOqsNWlF4pfBlMVnO/VkPot
-TY/itH9hdkmQQ/NvmylM7YfcItPU32nB3fbpxEsOpPbJQec1R2Tl2GCNIpGj6cd/
-XKidF3pHCSf0MPCWKBE/cjPUKXJMN4q+TgQOIqpN+OwlGiw++SiNZjQohPoV7Xfo
-yvWF68piVxmuCoh+PKwcQrdXIdFStlnCwtF96sHfy7G6xeeSGYQO3n1yH75dLFox
-+TpO22xmFrnX/1tPFYcFkfndhpIlhIIoXQ42uZsq8kr5924Pc8vBOA3Zclc8Kavx
-12X+R+rlLjltlP4t2a0H
-=jAO5
+iQIcBAABAgAGBQJPwNyEAAoJECmIfjd9wqK0mnwQAJSNV6ax5gddunhEzfZzf/K0
+DLlBr+CTux6dHR+zRYCTn9NL9KvmPCkK1a8NrcdAhzCEtIkv9QCsAQou4mx8SrfV
+sqkYKODO89rtsAOtS6TBUE7CqrQ5eHFpEbZ6DPyV4ROcBv/TZblvhwqJhSouwtzJ
+abVLeDYLxw6dPvSaeYscIiv2bpfxwf7kBxC/ZM2KUDk2W2ghpwDhNK4o5nCqgZy8
+o3solgJDPFtBzSR7KND/trbytVvNNwyF2vPnX7Je3HDErcUnMa7KRVa/VSNn1SE7
+B3xwDgO9urbPk00spnra/Z2Ep0nlYO9snC6nHXUOLd/R1TyvLwnhbmrJPP87vsPy
+/uOLIWRO0BiPyq0fpwPCaJu29IIAsaDdWpsctaRGjgrcFtAoj7TmQc/DEb1vfpVG
+JhnKNMMmQy6FujGMJ2RTFw4E5/V0LB4wq8wI/EoSbornJkTQ1efceUeLiiUC5kIE
+OD7upw6xjxnvqQl+TseGwpDyXvrtjijMMhht2WJL922PW8fOFrLowAgKNB/5ajAV
+vICLYFXLQQjwR2hVleeLM8wX+CTPWObE+UUv4QSsTxxueWrImRzdmBaIZUz6sdyF
+3zmlHe94Sgv9uEz6SQlGIclM7lvN4YNt55N5lj4GCHWXqqNFI8bvewJ/xW4Bdg9a
+/WmJrTyTBX1Uqx2PEvJE
+=bRwO
 -----END PGP SIGNATURE-----
 
---=-RhALlU5TcFxPQsPFj7VQ--
+--=-aAWGICmVMZu2Lm0AUTkB--
