@@ -1,18 +1,24 @@
-Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SYF41-0007cH-7x
- for linux-mtd@lists.infradead.org; Sat, 26 May 2012 11:21:42 +0000
-Date: Sat, 26 May 2012 13:21:38 +0200 (CEST)
-From: Joel Reardon <joel@clambassador.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBIFS: compute KSA size and store in superblock
-In-Reply-To: <1337952271.30969.37.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1205261303000.9892@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
- <1337952271.30969.37.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SYGJZ-0000RU-MI
+ for linux-mtd@lists.infradead.org; Sat, 26 May 2012 12:41:51 +0000
+Received: by laap9 with SMTP id p9so1528352laa.36
+ for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 05:41:45 -0700 (PDT)
+Message-ID: <1338036094.2525.7.camel@koala>
+Subject: Re: [RFC v7] UBI: Fastmap support (aka checkpointing)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Date: Sat, 26 May 2012 15:41:34 +0300
+In-Reply-To: <1337771191-95358-1-git-send-email-richard@nod.at>
+References: <1337771191-95358-1-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Zxqr9OtDB5vkon/Zhznb"
+Mime-Version: 1.0
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> I do not have to time to review it now, but please, make sure that the
-> KSA size is according to 'max_leb_cnt' (see the --max-leb-cnt of the
-> mkfs.ubifs tool).
 
-Ahh, I see now I also need to add the min number of lebs to min_leb_cnt if
-the feature is enabled.
+--=-Zxqr9OtDB5vkon/Zhznb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Also, think about this use-case in general: you have
-> UBI volume of size X, then the volume is resized to Y > X, then mounted
-> - UBIFS should work and resize itself to Y, up to the 'max_leb_cnt'. If
-> Y > 'max_leb_cnt', we resize only to 'max_leb_cnt'.
+On Wed, 2012-05-23 at 13:06 +0200, Richard Weinberger wrote:
+> v1: https://lwn.net/Articles/481612/
+> v2: https://lwn.net/Articles/496586/
+> v3: Didn't release it to linux-mtd
+> v4: http://article.gmane.org/gmane.linux.kernel/1297626
+> v5: http://article.gmane.org/gmane.linux.kernel/1298488
+> v6: https://lwn.net/Articles/498041/
 
-For this case, it should be fine if the KSA is sized to maxlebcnt.
-However, it will remain that size regardless of the real leb_cnt.
+Hi Richard,
 
-In general, removing KSA blocks is possible, but if datanodes are
-encrypted with keys on those blocks, then they must be re-encrypted with a
-different key on the smaller set (or somehow write the new last KSA block
-containing all the used keys from the removed KSA blocks along with a
-relocation table, but this seems like alot of coding if removing LEBs from
-the KSA isn't that important.)
+while my daughters are sleeping, I have a chance to quickly review the
+code. I just start from the attaching path and add TODOs.
 
-Adding LEBs to the KSA is very simple, just add a new entry on the list
-and set all the key states to deleted--after purging will be random data;
-but KSA LEBs are logically-sequential, so if it comes from used main LEBs
-the data nodes need to be relocated. or some complicated code structure
-involved in determining where a key for an out-of-range KSA block is
-remapped.
+Can we change our workflow a bit. I will create a branch for fastmap in
+the UBI tree taking v7 as the base. I'll add my TODOs there and commit,
+and send them also as a patch to the mailing list. You then send
+incremental patches which fix TODOs or anything else.
 
-Cheers,
-Joel Reardon
+We can discuss my notes and if some of them make no sens - the patch
+would just kill the TODO.
+
+In any case, I feel a need to switch to incremental development and get
+incremental patches instead of code drops. You can send entire fastmap
+work to the list from time to time, of course, for people to look.
+
+How does this sound?
+
+Also, I'd like you to document the tests you do. I'd like to start
+making sure that we never break anything.
+
+We can start with the UBI tests from the mtd-utils plust the integck
+test. And whatever goes to my branch should never break them. Do these
+tests pass now? If not, let's make them pass.
+
+How does this sound to you?
+
+At some later points we'll start to move pieces to the master branch.
+
+Shmulik, is it fine with you?
+
+I'll publush the 'fastmap' branch a bit later and send you the patch
+with my TODO comments, if this is fine.
+
+Thanks!
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-Zxqr9OtDB5vkon/Zhznb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPwM9+AAoJECmIfjd9wqK01LEP/0/pBzNd373Bnt84wHX4HNPN
+bOTGy1O+dYUGjULtOx9CFECJsbvtUOeNOoLuAAQFC2J8/ZdQet2wt8Sngijze5or
+Uu46EqIfHF4fj3uuaM/arji0LCZQn2kCl3NdMWDepwpbPDugaKk195FzjvJEnMts
+a9ScrIIviaRPU/PME4oiaL8+9Z2F/eJ3mypEGEklrmi5xkwZUA1eWMzH1eO8RtJV
+RH/+fXQ+WSbBORnav27xqWSs/lDI8cw60Mz9WFUNkkO50o+FUSzSwxZtynOwsDN6
+QpWqPDF5rvU+RIXxWBTVRQXGLD2OPBQOj0dw0NhdjnJ1RXcbABgwVJsdENeWQVkD
+XPaFZB8l8KzZTOV/KPg6k1ePDVuTzbjNG4tSyqc+VsKlmTIIOL6HmZty3A1qkPPI
+C12nh2D0SWuJrVF51o+VIy2rQT7Sr3tZubqKzFi2ZD3m3IHAo9Gy1Uglib0Y1TsR
+xapjg7KHw1QvVESiLIgh+YvBbZUkXNh9/oG6vN0wdW2fygkK83L0yyrTLG6rt7nQ
+AmTk33FlJX6vKd/2se7Kku9krkeUy7gg1Bh1JW+p/oQvx748pBx89A5wH5ZFv8ld
+k4iY+VE6h7fbZJV884be4LaqgxRF1XfMrgopr0yk4NVw+XTGUKfltesQkX3zk85Q
+AY0Hi1ZliewEflHI4zEe
+=hL2M
+-----END PGP SIGNATURE-----
+
+--=-Zxqr9OtDB5vkon/Zhznb--
