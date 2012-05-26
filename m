@@ -1,21 +1,22 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SYHBB-0000IA-Dk
- for linux-mtd@lists.infradead.org; Sat, 26 May 2012 13:37:14 +0000
-Received: by lbbgg6 with SMTP id gg6so1552335lbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 06:37:11 -0700 (PDT)
-Message-ID: <1338039428.2525.30.camel@koala>
-Subject: Re: To clone NAND from a mobile phone
+ id 1SYHRt-0000YU-SO
+ for linux-mtd@lists.infradead.org; Sat, 26 May 2012 13:54:30 +0000
+Received: by laap9 with SMTP id p9so1554425laa.36
+ for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 06:54:27 -0700 (PDT)
+Message-ID: <1338040464.2525.38.camel@koala>
+Subject: Re: [PATCH] mtd: dc21285.c: handle nw_gpio_lock correctly
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "William F." <william76.sh@gmail.com>
-Date: Sat, 26 May 2012 16:37:08 +0300
-In-Reply-To: <4FBE7347.8000004@gmail.com>
-References: <4FBE7347.8000004@gmail.com>
+To: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
+Date: Sat, 26 May 2012 16:54:24 +0300
+In-Reply-To: <20120525082812.GA12238@faui49q.informatik.uni-erlangen.de>
+References: <20120525082812.GA12238@faui49q.informatik.uni-erlangen.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-aAWGICmVMZu2Lm0AUTkB"
+ boundary="=-gFP5b7tVR8t/h+tIbSOf"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ vamos-dev@lists.cs.fau.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +27,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-aAWGICmVMZu2Lm0AUTkB
+--=-gFP5b7tVR8t/h+tIbSOf
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-24 at 14:43 -0300, William F. wrote:
-> Hello.
+On Fri, 2012-05-25 at 10:28 +0200, Christian Dietrich wrote:
+> nw_gpio_lock is a raw_spinlock_t, therefore raw_spin_lock_irqsave should =
+be
+> used. it doesn't make a difference, while rlock is the first element of
+> spinlock_t.
 >=20
-> Firstly, sorry about my bad english and sorry about any stupid question.
-> I need to get a clone (or to do an image) from a embedded NAND into a=20
-> Nokia 6267 mobile phone.
+> Also the check for machine_is_netwinder() is a double check of
+> CONFIG_ARCH_NETWINDER.
 >=20
-> 1) Do I need "MTD tests support" activated in the kernel, right?
-> 2) If I connect the phone through its usb cable will be created=20
-> something like /dev/mtd0?
-> 3) Can I clone the NAND with mtd-utils?
+> Signed-off-by: Christian Dietrich <christian.dietrich@informatik.uni-erla=
+ngen.de>
 
-This is a Symbian phone AFAIK. It does not have linux inside. You
-connect it to your PC and it exposes the internal flash as a mass
-storage USB device. MTD has nothing to do with this.
+I do not understand this commit message. Please, split your patch on 2
+patches and put a better to each one. Thanks!
+
+> ---
+>  drivers/mtd/maps/dc21285.c |   13 +++++--------
+>  1 files changed, 5 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
+> index 080f060..38fbf23 100644
+> --- a/drivers/mtd/maps/dc21285.c
+> +++ b/drivers/mtd/maps/dc21285.c
+> @@ -38,9 +38,9 @@ static void nw_en_write(void)
+>  	 * we want to write a bit pattern XXX1 to Xilinx to enable
+>  	 * the write gate, which will be open for about the next 2ms.
+>  	 */
+> -	spin_lock_irqsave(&nw_gpio_lock, flags);
+> +	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+
+Please, make this to be a separate patch.
+
+And surely there are many other places in the kernel which need this
+conversion?
+
+>  static void dc21285_write8(struct map_info *map, const map_word d, unsig=
+ned long adr)
+>  {
+> -	if (machine_is_netwinder())
+> -		nw_en_write();
+> +	nw_en_write();
+>  	*CSR_ROMWRITEREG =3D adr & 3;
+
+I do not understand why this "if" statement is not needed? Why it was
+there in the first place and why you remove it? Please, describe this in
+the commit message.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-aAWGICmVMZu2Lm0AUTkB
+--=-gFP5b7tVR8t/h+tIbSOf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +90,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPwNyEAAoJECmIfjd9wqK0mnwQAJSNV6ax5gddunhEzfZzf/K0
-DLlBr+CTux6dHR+zRYCTn9NL9KvmPCkK1a8NrcdAhzCEtIkv9QCsAQou4mx8SrfV
-sqkYKODO89rtsAOtS6TBUE7CqrQ5eHFpEbZ6DPyV4ROcBv/TZblvhwqJhSouwtzJ
-abVLeDYLxw6dPvSaeYscIiv2bpfxwf7kBxC/ZM2KUDk2W2ghpwDhNK4o5nCqgZy8
-o3solgJDPFtBzSR7KND/trbytVvNNwyF2vPnX7Je3HDErcUnMa7KRVa/VSNn1SE7
-B3xwDgO9urbPk00spnra/Z2Ep0nlYO9snC6nHXUOLd/R1TyvLwnhbmrJPP87vsPy
-/uOLIWRO0BiPyq0fpwPCaJu29IIAsaDdWpsctaRGjgrcFtAoj7TmQc/DEb1vfpVG
-JhnKNMMmQy6FujGMJ2RTFw4E5/V0LB4wq8wI/EoSbornJkTQ1efceUeLiiUC5kIE
-OD7upw6xjxnvqQl+TseGwpDyXvrtjijMMhht2WJL922PW8fOFrLowAgKNB/5ajAV
-vICLYFXLQQjwR2hVleeLM8wX+CTPWObE+UUv4QSsTxxueWrImRzdmBaIZUz6sdyF
-3zmlHe94Sgv9uEz6SQlGIclM7lvN4YNt55N5lj4GCHWXqqNFI8bvewJ/xW4Bdg9a
-/WmJrTyTBX1Uqx2PEvJE
-=bRwO
+iQIcBAABAgAGBQJPwOCQAAoJECmIfjd9wqK0DdAP/R5armRIrJ40XiESi68SUCgK
+IjZxX5/JtUG8ux0zElinfYAgyfjjd/8/BpJkDY0337q0fvDq4tr5DHbvWR4yEqso
+e2nIzB5u106f1wVPwCB5xOASEEOVcWmNSMRoJ7/Go5K+HVRGbWrO+QXaklHTZI+C
+q5H4mlOuDXiQQsLyS8Z2ADTzI6lD40090tL7HDlD2a6bv0sVaAFwUmfLRrR0nWEN
+C0nQv0R4TsNnlJ73KjTvo+sbPXqzXYx7OLmsW39QSemeIIdlciEfJ2DQGO0GbYEo
+I9pfIO7fL4AoTb5ZZejVf13TuQwGoe7J0GEkuAKYVX71tuaCLdh5OKq3pPNKKFHT
+9UFXiZ6eTEyEXm7/BybsHTSH7NcoQkPrqGOWMhZNcuTY9m+PNlDYYUHSxYKh4WBf
+G5281nu7pMpcdVrCxVgFI+UmAOWdEeEj1VFKQxgt3Ns5ribX5/20bd5qghUKiSJB
+7nBr9ZjkRU+kNa1Y9rBwE7Cz4jXsio5z+UDQa7kEb+4bTynRN+zd28tXRVDXT1Eg
+Z1Bj65ckw7EMqoLhgGcz0KSf4HGPA87kwPjYtVIY5qC5Ksrm0EYM/mDBgUGLW1Wa
+pYjUnDEJdf1ZQIZ/IAGcT/5bblsUfioyFC/TaRG+TD0BlyBl/TLMcacodmc3+Nsn
+G8cGKDzxb4EFbN8ftoLc
+=oL7u
 -----END PGP SIGNATURE-----
 
---=-aAWGICmVMZu2Lm0AUTkB--
+--=-gFP5b7tVR8t/h+tIbSOf--
