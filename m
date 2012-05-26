@@ -1,20 +1,18 @@
-Received: from mail-vb0-f49.google.com ([209.85.212.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SY3jF-0006yR-Pu
- for linux-mtd@lists.infradead.org; Fri, 25 May 2012 23:15:30 +0000
-Received: by mail-vb0-f49.google.com with SMTP id fo1so1234373vbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2012 16:15:29 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: kernel@pengutronix.de
-Subject: [PATCH 09/15] nand: mxc_nand: Use
- clk_prepare_enable/clk_disable_unprepare
-Date: Fri, 25 May 2012 20:14:50 -0300
-Message-Id: <1337987696-31728-9-git-send-email-festevam@gmail.com>
-In-Reply-To: <1337987696-31728-1-git-send-email-festevam@gmail.com>
-References: <1337987696-31728-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, shawn.guo@freescale.com
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SYF41-0007cH-7x
+ for linux-mtd@lists.infradead.org; Sat, 26 May 2012 11:21:42 +0000
+Date: Sat, 26 May 2012 13:21:38 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: compute KSA size and store in superblock
+In-Reply-To: <1337952271.30969.37.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205261303000.9892@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
+ <1337952271.30969.37.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> I do not have to time to review it now, but please, make sure that the
+> KSA size is according to 'max_leb_cnt' (see the --max-leb-cnt of the
+> mkfs.ubifs tool).
 
-Prepare the clock before enabling it.
+Ahh, I see now I also need to add the min number of lebs to min_leb_cnt if
+the feature is enabled.
 
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: <linux-mtd@lists.infradead.org>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/mxc_nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> Also, think about this use-case in general: you have
+> UBI volume of size X, then the volume is resized to Y > X, then mounted
+> - UBIFS should work and resize itself to Y, up to the 'max_leb_cnt'. If
+> Y > 'max_leb_cnt', we resize only to 'max_leb_cnt'.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index fd14966..d6efa17 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -764,7 +764,7 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
- 	if (chip == -1) {
- 		/* Disable the NFC clock */
- 		if (host->clk_act) {
--			clk_disable(host->clk);
-+			clk_disable_unprepare(host->clk);
- 			host->clk_act = 0;
- 		}
- 		return;
-@@ -772,7 +772,7 @@ static void mxc_nand_select_chip_v2(struct mtd_info *mtd, int chip)
- 
- 	if (!host->clk_act) {
- 		/* Enable the NFC clock */
--		clk_enable(host->clk);
-+		clk_prepare_enable(host->clk);
- 		host->clk_act = 1;
- 	}
- 
--- 
-1.7.1
+For this case, it should be fine if the KSA is sized to maxlebcnt.
+However, it will remain that size regardless of the real leb_cnt.
+
+In general, removing KSA blocks is possible, but if datanodes are
+encrypted with keys on those blocks, then they must be re-encrypted with a
+different key on the smaller set (or somehow write the new last KSA block
+containing all the used keys from the removed KSA blocks along with a
+relocation table, but this seems like alot of coding if removing LEBs from
+the KSA isn't that important.)
+
+Adding LEBs to the KSA is very simple, just add a new entry on the list
+and set all the key states to deleted--after purging will be random data;
+but KSA LEBs are logically-sequential, so if it comes from used main LEBs
+the data nodes need to be relocated. or some complicated code structure
+involved in determining where a key for an out-of-range KSA block is
+remapped.
+
+Cheers,
+Joel Reardon
