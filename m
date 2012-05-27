@@ -1,19 +1,20 @@
-Message-ID: <1338123053.19389.9.camel@koala>
-Subject: Re: [PATCH v9 3/3] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Sun, 27 May 2012 15:50:53 +0300
-In-Reply-To: <1338038677-6752-4-git-send-email-josh.wu@atmel.com>
-References: <1338038677-6752-1-git-send-email-josh.wu@atmel.com>
- <1338038677-6752-4-git-send-email-josh.wu@atmel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-JLVCnh5Z4i7cPGII3wAV"
-Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Received: from mika.eatserver.nl ([195.20.9.75])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SYk0s-0001JY-3u
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2012 20:24:31 +0000
+Message-ID: <4FC28D71.1040107@aimvalley.nl>
+Date: Sun, 27 May 2012 22:24:17 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Resizing of an existing UBIFS
+References: <4FBB3506.3020904@bury.com>	
+ <1337669583.2483.88.camel@sauron.fi.intel.com>	 <4FBF5B20.50406@aimvalley.nl>
+ <1338040835.2525.41.camel@koala>
+In-Reply-To: <1338040835.2525.41.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 05/26/12 16:00, Artem Bityutskiy wrote:
+> On Fri, 2012-05-25 at 12:12 +0200, Norbert van Bolhuis wrote:
+>> This is not a problem for a UBIFS being created dynamically, so with
+>> ubiformat + ubiattach + ubimkvol ? In this case the size of the lprops
+>> area is determined by the total amount of LEBs of the MTD partition ?
+>
+> No, it is set according to the --max-leb-cnt parameter. Then UBIFS will
+> be able to grow up to "--max-leb-cnt" easily.
+>
+>> A UBIFS volume can then be resized with ubirsvol as long as it does not
+>> conflict with other volumes and does not exceed the total amount of
+>> LEBs of the MTD partition ?
+>
+> Yes, and if you resize withing '--max-leb-cnt', the UBIFS will
+> automatically resize itself.
+>
+> http://linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
+>
 
---=-JLVCnh5Z4i7cPGII3wAV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I was asking because there is no --max-leb-cnt parameter wen creating a UBIFS
+dynamically, or is there ?
 
-On Sat, 2012-05-26 at 21:24 +0800, Josh Wu wrote:
-> +       while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
-> +               if (unlikely(timeout_count++ > PMECC_MAX_TIMEOUT_COUNT)) =
-{
-> +                       dev_err(host->dev, "PMECC: Timeout to get ECC val=
-ue.\n");
-> +                       return; /* Time out */
-
-How this error is communicated then up the the user?
-
-> +               }
-> +               cpu_relax();
-> +       }
-
-I see this pattern all over the place - why people consider it reliable?
-Is this code guaranteed to run on the same CPU?
-
-Why not to use loops_per_jiffie * msecs_to_jiffies(TIMOUT) instead to
-calculate how many iterations to do? Yes, due to HW register reading and
-cpu_relax() the real timeout will be larger, but this is about error
-anyway, so it does not hurt to iterate longer?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-JLVCnh5Z4i7cPGII3wAV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPwiMtAAoJECmIfjd9wqK0jOUP/iEkozd64aGrK/vnmvpDGKP+
-8fKppDcEnTjeDyYt8q08O5F7c7CpiCyiWly3ZRLoKw8GOEY2QovSPmTOuxbhhVFQ
-6cSqsB+PX+ci+uhsEUE7OAxt9DUyyG3B4qyWmyhlnUF7mkcEzFkd+R+i8HQwjATG
-mMxFN2prGLsfGqKsjtBUo4Kx+agAwF2+/J+KGwOSP6J7+a0UZPBCiwNnJAa23wGe
-Sd+0oIqVl5lgve7htql2xogXTfrXpsysxw0hLE/qKQg/Z1n0380Q7PXoiDdiRUcf
-F09LZf6UXyRQUNOMbsv2KChbIBaL7rcUcxwmE1aGVdNWtoC3+f3A+CR6Ypp29+xi
-aBuUHQLCaCvjaIbmkNfIKXzCignLVP8MIaqC8iJ9yRc63md7I5nfJvpwk/YRZltT
-e8vQIbe/bY7xQ3Z0ZyA2jmzAxfpp9LOiOlGkqVhGD6wfG9obYxzoBxecpGO0wKwo
-n8hs/prCZgeAPdWe21hlnU96pbsd4lelnUkgS56O3yCxhYEHUWRttaKP9PuUDBD3
-rnc84u8YvYEBWuAECAmfgl1H1uyh5Dp7BFlbwofjTrgarqqNpAF2lTluc1wC8VkW
-AWCkgUf6D/gm77tTfavqgZ3IDtMKHqMoTJ09jxdl/zcbcvIdUuqDHX4FIjgEKGmr
-LKxalgLQ4vYSez2h7aG8
-=G5YW
------END PGP SIGNATURE-----
-
---=-JLVCnh5Z4i7cPGII3wAV--
+---
+N. van Bolhuis.
