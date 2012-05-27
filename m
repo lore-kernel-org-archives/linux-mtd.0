@@ -1,25 +1,19 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SYci5-0006FK-Nr
- for linux-mtd@lists.infradead.org; Sun, 27 May 2012 12:36:38 +0000
-Received: by laap9 with SMTP id p9so1931423laa.36
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2012 05:36:35 -0700 (PDT)
-Message-ID: <1338122182.19389.0.camel@koala>
-Subject: Re: [PATCH 09/15] nand: mxc_nand: Use
- clk_prepare_enable/clk_disable_unprepare
+Message-ID: <1338122668.19389.4.camel@koala>
+Subject: Re: [PATCH v9 1/3] MTD: at91: extract hw ecc initialization to one
+ function and use relaxed read/write
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Date: Sun, 27 May 2012 15:36:22 +0300
-In-Reply-To: <1337987696-31728-9-git-send-email-festevam@gmail.com>
-References: <1337987696-31728-1-git-send-email-festevam@gmail.com>
- <1337987696-31728-9-git-send-email-festevam@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Sun, 27 May 2012 15:44:28 +0300
+In-Reply-To: <1338038677-6752-2-git-send-email-josh.wu@atmel.com>
+References: <1338038677-6752-1-git-send-email-josh.wu@atmel.com>
+ <1338038677-6752-2-git-send-email-josh.wu@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-DPJNHmX5Mh4oEsph2v2A"
+ boundary="=-ZFxNNg0EJMJ4WJhNz7bM"
 Mime-Version: 1.0
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, shawn.guo@freescale.com, kernel@pengutronix.de
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +24,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-DPJNHmX5Mh4oEsph2v2A
+--=-ZFxNNg0EJMJ4WJhNz7bM
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-05-25 at 20:14 -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+On Sat, 2012-05-26 at 21:24 +0800, Josh Wu wrote:
+> use _relaxed read/write in most place. And use writel in operations of Co=
+ntrol Register since it needs memory barrier.
 >=20
-> Prepare the clock before enabling it.
+> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-Pushed to l2-mtd.git, thanks!
+This should be split on 2 or even 3 parts:
+
+1. You move definitions and things around.
+2. You separate out the init stuff into a function
+3. You start using _relaxed helpers.
+
+And you should provide better commit messages. You should explain why
+you do things - just cleanup? improvement? fix? preparation for
+something?
+
+I think this patch is too big, commit message is poor, patch does more
+things than documented in the commit message.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-DPJNHmX5Mh4oEsph2v2A
+--=-ZFxNNg0EJMJ4WJhNz7bM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPwh/GAAoJECmIfjd9wqK05xYP/i7jo8YKIYRkRxkuBbiX0fdO
-LMGg3gHfPpmz2lWr7llV4KVHlXmgFHKfsv4y3sdE2UWE0FnqucG6tXJRig8trqza
-NpKOhSWY18Yow2C4C6B6TMOFRE2A2L/vcOVSWMWn/7YpzPhL4hkXaHDJUe3EPfy/
-NzBafXR1mMlSpTlPFniWpPTNntAnEWyrEhtbJFIFHzCIFsRHie6JZVJVGblD/8B8
-eXduEL2JY3qEJvLe2ueRx8G4QPK467j012e+NgnYvypmb5L9SPnaqhQpgjiJUjBk
-+ByDq7+7zruDKWRD1yRB4ZE+h7x14gPrVIVw9VU57qvQI9OdhbFD6lzeIyKLCQM5
-2nnFpXlbFbomMvhEI9VcBEyqKiLO2e0g+mozRNJxM6M0PhnSBG9WsZMiUykRQPh6
-E1vTJNMoekwoMy6HE6Jm+7e+185MQaMVTbHj2D2WTr5K6XviYo04FCrQndcyc3hY
-aoMzMaZhE122BVWhOj1cWaGZuhkmvbRYeU5moREiEpnqQJcc3cbBb60+AT8nXZXw
-Tt3qD9eTbaiP/GU1O8W6LqaKJeTdsNcWSSwmevQQov5PP/lrTgmXdl0wnNrejjyu
-r1UiTCNKhn/VVs+pu5GOD1rsqdblsfYzmabdrLcEGsTOlD03KQgIZQaegfU7bGmC
-ThLHLt0BZ29jT/9QS3mj
-=xuXG
+iQIcBAABAgAGBQJPwiGsAAoJECmIfjd9wqK0QioP/29s5ZQ0ZeypC1EeRDyG42l1
+RoC9wUCbE8+9bTJelzYghIMHdPzZhtXjjwF36XSQMv5SERMVYMrXfK96+2WqMdb4
+3gD0w9zCmN+WP+OjjHhaocbEG+0ixlpIv2u+PvsDay8fztPyzdmt3+aAru1tK8Dn
+ozGN14Yht91mrK9Vt0n7G7g8BmpWlrLF8M8/NreHaWdYHdTvC0tFrYxzckcbZGxA
+izLqGk9etKrdTwNVHRkrF10M/arelrpowgrHkWH259YXOHNLMpAV0MlayZdrYD3X
+tFU24lgIHNylS//Q6SAamj5miBzBcqGO+CY1P981wGQp/tAfasnOBJn5OpFpoA7q
+7iPG7Ie+BN37x/RBoykKaM75QFKdRr6JIDqDwL7fHy44ftLrNTi46Fx9kaXWFZmg
+UV0R4mYpRMgDySdssc0N5j6ubfe1SVyuv+dGNlx+kwMpYXMabMV3BwHN9pyBXF0r
+lQ7wZ8031bkKurDy3hBJ+bcmdJEIAIWqXEQtVg9jo6nGr2VEwwk2B0CAWQNlPPxJ
+G10QTNKF3WB5oyhduNcVOAuKiEDkOrOfg40mtRTOVnnmyDBbdGCrWGw+v6WRVZRB
+n7FEq0Qp+2XGBW4FB9QoVobHkG0NCvfSALxEANE5+CaNJujD9Bo0yO8fW97u8Yp3
+ui1Xil9FhzScbvD3s3Hc
+=d049
 -----END PGP SIGNATURE-----
 
---=-DPJNHmX5Mh4oEsph2v2A--
+--=-ZFxNNg0EJMJ4WJhNz7bM--
