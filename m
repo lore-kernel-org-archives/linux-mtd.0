@@ -1,24 +1,25 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SYHmX-0001pw-O1
- for linux-mtd@lists.infradead.org; Sat, 26 May 2012 14:15:50 +0000
-Received: by laap9 with SMTP id p9so1562335laa.36
- for <linux-mtd@lists.infradead.org>; Sat, 26 May 2012 07:15:47 -0700 (PDT)
-Message-ID: <1338041744.2525.46.camel@koala>
-Subject: Re: [RFC v7] UBI: Fastmap support (aka checkpointing)
+ id 1SYci5-0006FK-Nr
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2012 12:36:38 +0000
+Received: by laap9 with SMTP id p9so1931423laa.36
+ for <linux-mtd@lists.infradead.org>; Sun, 27 May 2012 05:36:35 -0700 (PDT)
+Message-ID: <1338122182.19389.0.camel@koala>
+Subject: Re: [PATCH 09/15] nand: mxc_nand: Use
+ clk_prepare_enable/clk_disable_unprepare
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Sat, 26 May 2012 17:15:44 +0300
-In-Reply-To: <4FC0E257.1030403@nod.at>
-References: <1337771191-95358-1-git-send-email-richard@nod.at>
- <1338036094.2525.7.camel@koala> <4FC0E257.1030403@nod.at>
+To: Fabio Estevam <festevam@gmail.com>
+Date: Sun, 27 May 2012 15:36:22 +0300
+In-Reply-To: <1337987696-31728-9-git-send-email-festevam@gmail.com>
+References: <1337987696-31728-1-git-send-email-festevam@gmail.com>
+ <1337987696-31728-9-git-send-email-festevam@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-20S/G86t3TDymXYh5elg"
+ boundary="=-DPJNHmX5Mh4oEsph2v2A"
 Mime-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, shawn.guo@freescale.com, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +30,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-20S/G86t3TDymXYh5elg
+--=-DPJNHmX5Mh4oEsph2v2A
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-05-26 at 16:01 +0200, Richard Weinberger wrote:
-> > We can start with the UBI tests from the mtd-utils plust the integck
-> > test. And whatever goes to my branch should never break them. Do these
-> > tests pass now? If not, let's make them pass.
-> >=20
+On Fri, 2012-05-25 at 20:14 -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> What is "integck" test?
+> Prepare the clock before enabling it.
 
-It is a quite extensive FS check which we use for UBIFS. As UBIFS is the
-main UBI client - it makes sense to run it. It lives in the
-mtd-utils.git/tests/fs/integck
-
-./integck -n8 /mnt/ubifs
-
-would run in. /mnt/ubifs is the ubifs mount-point. -n8 means repeat 8
-times.
-
-> UBI tests from mtd-utils pass now.
-> The io_paral triggered a race condition on my very fast qemu-kvm test sys=
-tem.
-> On my test board with real NAND flash this race never happened.
-> Anyway, it's fixed now.
-
-Cool!
-
-> I'm mostly testing with custom scripts, shall I send a patch against UBI =
-tests?
-
-Yes, it would be great to integrate this, of course. I might also want
-to send you a patch, then I'd run it.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-20S/G86t3TDymXYh5elg
+--=-DPJNHmX5Mh4oEsph2v2A
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -76,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPwOWQAAoJECmIfjd9wqK0ZCgP/3mqtNa+nR8Nz2IQjh2Nh4mE
-HPzE9EHSOlgglKFqe1Dn2FZptU9rjqYJQrGXkRztc4mtHHnEfRgjVdDim2T/e6RV
-xycI00Nj99Nv4kRiNV9vMSo7Bq6t6ekA0JXRkMx/UbXaHBnes8HOZGXxW/cCHc2s
-R8WfWB2X8S9VcdnE3iEZLFrdCmEvs817OymJVSTxeO0M0/qYBnDkEND7PMx7JZ1P
-OlIKMaXopQ7Ubc7FKPd9TkqA0h3hx98L7r7BLox7rFzA9mwgTTpKyoH7XEIMMnoj
-JDMXxsSUtmuuDA9HDP6alSbL9OvVqczJ/OLirqw7VB9gTDZgtndM9koK7po1GYiy
-LAmkZdAv2q8ga8Dfi1ACZpS1uI6EfGenNnGstFhDG6NGcoL42ZN1C3loR7/SbdcZ
-6CptR+nXgyWbTRwf28bt0L4virMGHRaleAiP5Cps7zVkyqSmoAp9BnuPuB9dtC9L
-C6YnlTVPKLxezgbTD6HGpHVcrBkVrwm8LlnCRBoAtUssG9M8d80wZ+lejlHl0Ugk
-akgrQVUvmMEQjsE2nhMlQcmV8rWA5ZMi3ZL1LMWK0ELYjwRq0dR7sMiEAQUOuawU
-ifQd5oxjrSuzj8C30O0BJT+1nilMs79mttDzcnBkJBXaoljna6dOY+igFX/8A/GK
-iIYynJ1QlEsHCjHAIY0N
-=/fPx
+iQIcBAABAgAGBQJPwh/GAAoJECmIfjd9wqK05xYP/i7jo8YKIYRkRxkuBbiX0fdO
+LMGg3gHfPpmz2lWr7llV4KVHlXmgFHKfsv4y3sdE2UWE0FnqucG6tXJRig8trqza
+NpKOhSWY18Yow2C4C6B6TMOFRE2A2L/vcOVSWMWn/7YpzPhL4hkXaHDJUe3EPfy/
+NzBafXR1mMlSpTlPFniWpPTNntAnEWyrEhtbJFIFHzCIFsRHie6JZVJVGblD/8B8
+eXduEL2JY3qEJvLe2ueRx8G4QPK467j012e+NgnYvypmb5L9SPnaqhQpgjiJUjBk
++ByDq7+7zruDKWRD1yRB4ZE+h7x14gPrVIVw9VU57qvQI9OdhbFD6lzeIyKLCQM5
+2nnFpXlbFbomMvhEI9VcBEyqKiLO2e0g+mozRNJxM6M0PhnSBG9WsZMiUykRQPh6
+E1vTJNMoekwoMy6HE6Jm+7e+185MQaMVTbHj2D2WTr5K6XviYo04FCrQndcyc3hY
+aoMzMaZhE122BVWhOj1cWaGZuhkmvbRYeU5moREiEpnqQJcc3cbBb60+AT8nXZXw
+Tt3qD9eTbaiP/GU1O8W6LqaKJeTdsNcWSSwmevQQov5PP/lrTgmXdl0wnNrejjyu
+r1UiTCNKhn/VVs+pu5GOD1rsqdblsfYzmabdrLcEGsTOlD03KQgIZQaegfU7bGmC
+ThLHLt0BZ29jT/9QS3mj
+=xuXG
 -----END PGP SIGNATURE-----
 
---=-20S/G86t3TDymXYh5elg--
+--=-DPJNHmX5Mh4oEsph2v2A--
