@@ -1,14 +1,14 @@
-Message-ID: <4FC33ABD.7020405@atmel.com>
-Date: Mon, 28 May 2012 16:43:41 +0800
+Message-ID: <4FC33C6A.4070104@atmel.com>
+Date: Mon, 28 May 2012 16:50:50 +0800
 From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v9 3/3] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
+Subject: Re: [PATCH v9 1/3] MTD: at91: extract hw ecc initialization to one
+ function and use relaxed read/write
 References: <1338038677-6752-1-git-send-email-josh.wu@atmel.com>
- <1338038677-6752-4-git-send-email-josh.wu@atmel.com>
- <1338123053.19389.9.camel@koala>
-In-Reply-To: <1338123053.19389.9.camel@koala>
+ <1338038677-6752-2-git-send-email-josh.wu@atmel.com>
+ <1338122668.19389.4.camel@koala>
+In-Reply-To: <1338122668.19389.4.camel@koala>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
@@ -23,32 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/27/2012 8:50 PM, Artem Bityutskiy wrote:
+On 5/27/2012 8:44 PM, Artem Bityutskiy wrote:
 > On Sat, 2012-05-26 at 21:24 +0800, Josh Wu wrote:
->> +       while ((pmecc_readl_relaxed(host->ecc, SR)&  PMECC_SR_BUSY)) {
->> +               if (unlikely(timeout_count++>  PMECC_MAX_TIMEOUT_COUNT)) {
->> +                       dev_err(host->dev, "PMECC: Timeout to get ECC value.\n");
->> +                       return; /* Time out */
-> How this error is communicated then up the the user?
+>> use _relaxed read/write in most place. And use writel in operations of Control Register since it needs memory barrier.
+>>
+>> Signed-off-by: Hong Xu<hong.xu@atmel.com>
+>> Signed-off-by: Josh Wu<josh.wu@atmel.com>
+> This should be split on 2 or even 3 parts:
+>
+> 1. You move definitions and things around.
+> 2. You separate out the init stuff into a function
+> 3. You start using _relaxed helpers.
+>
+> And you should provide better commit messages. You should explain why
+> you do things - just cleanup? improvement? fix? preparation for
+> something?
 
-If this error happened, that should mean the PMECC is not configurated 
-correctly. I think I only I can do is that prompt to user and then call 
-BUG() here.
+My goal here is to prepare for the PMECC support.
+    Point 1 is consistent for the later PMECC patch.
+    Point 2 is prepare for PMECC support.
+
+So I think I will not add the _relaxed helpers for HW ECC operation in 
+this patch series. Since that is out of the goal of this patch series.
 
 >
->> +               }
->> +               cpu_relax();
->> +       }
-> I see this pattern all over the place - why people consider it reliable?
-> Is this code guaranteed to run on the same CPU?
->
-> Why not to use loops_per_jiffie * msecs_to_jiffies(TIMOUT) instead to
-> calculate how many iterations to do? Yes, due to HW register reading and
-> cpu_relax() the real timeout will be larger, but this is about error
-> anyway, so it does not hurt to iterate longer?
+> I think this patch is too big, commit message is poor, patch does more
+> things than documented in the commit message.
 >
 
-I will fix that in next version. thanks.
+Indeed the commit message is poor. I will fix it.
 
 Best Regards,
 Josh Wu
