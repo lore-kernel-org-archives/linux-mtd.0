@@ -1,25 +1,24 @@
-Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]
- helo=mo3.mail-out.ovh.net)
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SYtcO-0001hD-HG
- for linux-mtd@lists.infradead.org; Mon, 28 May 2012 06:39:54 +0000
-Received: from mail91.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 1C804FF85FF
- for <linux-mtd@lists.infradead.org>; Mon, 28 May 2012 08:42:57 +0200 (CEST)
-Date: Mon, 28 May 2012 08:39:58 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH v9 0/3] MTD: at91: Add PMECC support for at91 nand
- flash driver
-Message-ID: <20120528063958.GK3377@game.jcrosoft.org>
-References: <1338038677-6752-1-git-send-email-josh.wu@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1338038677-6752-1-git-send-email-josh.wu@atmel.com>
-Cc: hongxu.cn@gmail.com, dedekind1@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- linux-arm-kernel@lists.infradead.org
+ id 1SYtfp-0002HZ-CB
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2012 06:43:25 +0000
+Message-ID: <1338187619.2480.9.camel@sauron.fi.intel.com>
+Subject: Re: [RFC v7] UBI: Fastmap support (aka checkpointing)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Mon, 28 May 2012 09:46:59 +0300
+In-Reply-To: <20120528093625.050badc6@pixies.home.jungo.com>
+References: <1337771191-95358-1-git-send-email-richard@nod.at>
+ <1338036094.2525.7.camel@koala>
+ <20120528093625.050badc6@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-m3vkeQASIyXhV9Ycnf2V"
+Mime-Version: 1.0
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
+ tglx@linutronix.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21:24 Sat 26 May     , Josh Wu wrote:
-> Code is based on 3.4-rc2
-> 
-> Changes since v8,
-> 	use _relaxed read/write in most place. use writel in operations of Control Register since it needs memory barrier.
-> 	allocate the data for PMECC computation.
-> 	add pmecc prefix for related variable/functions.
-> 	modify code according to J.C's suggestion. except:
-> 		>> +	for (i = 2; i <= 2 * host->cap; i += 2) {
-> 		> manage the j in the for loop
-> 		since that will change to: 
-> 		+	for (i = 2, j = 1; i <= 2 * host->cap; i += 2, j = i / 2) {
-		why you insist on doing j = i / 2
 
-		you can simplify it by j++
+--=-m3vkeQASIyXhV9Ycnf2V
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-		or loop on j and do i = j << 1;
+On Mon, 2012-05-28 at 09:36 +0300, Shmulik Ladkani wrote:
+> Hi Artem,
+> Fine with me, I'm flexible ;)
+>=20
+> What's your plan for merging to the master branch?
 
-		it's more simple and faster
+Once it the review is finished, and we test it, verify power-cut
+robusteness and resilience (we can discuss how separately), we merge it
+to the master branch (by squeezing the history I guess).
 
+> BTW, I know you formerly disliked the idea, but I'm in favor of having a
+> CONFIG for the fastmap feature; with the config disabled, UBI must
+> behave exactly as it was. The config can be later removed.
+
+This makes maintaining difficult - I'll need to have another
+compile-test.
+
+We should have an ubiattach option instead (and add this feature to the
+attach ioctl - thankfully we have unused bytes there).
+
+--=20
 Best Regards,
-J.
+Artem Bityutskiy
+
+--=-m3vkeQASIyXhV9Ycnf2V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPwx9jAAoJECmIfjd9wqK0yUIQANBfkIxShVEAe4xuIvVsFKvA
+zC/kiXxGGZNoXD4KNUfDcdUa3Ctk0OD61Qpb0XsekoSpkW4oQux79BOAi+HKqlef
+dLYqGN/IbN/BZTjSyhyk/K7v2E44+LvhjFsf+MuC0eYUgRGd1r1vAmwg1eresPRZ
+6EmBVf6Wpes+WjiYwK2Vw8I6XOebr9wmlsalqnHCGgp6IQSPsoFPK4Ciejth6jbk
+hjybO3iaq5F9YS5q6+TlhJe1eg/1C5okwPbnxN9TpXud18GJmU6RnbSMhRfkHTl8
+GghigWgkcJOAn4hbwH8as4JI7oWjtvFWjdofkidGMd36LUs1+MrMTQOAmZ7ixrKR
+RK9PsjRHkmNRvXppN9J+TAwQl60CWtR1iQZESj1y5EuiOTsJoxTGCfV4bxOi3zWL
+sUsTPBxdLvDVH6NDpP2ICaOXcmWx8ywMyDvPWTftI1I45iqKCvVeE9Ce9eXlXG9e
+B26ly46A0ywtRonu7IHwXccWUNUbndSy4AbUIsJfZuNiopEWi0TzghFrbbR6xzb6
+NlLMB40EZhZPE9+DdusFL9efxC6/yu++1XViWkhW5GnWSbsRK4JYm+oyoll+m6ci
+S45sICCD4JrWd5ofgVdVpgpN/mXPCUXPI+3vfZFL2tX9UVFE81eR7Eo01YC74woc
+3UMkAQVfYNgIhSpObwZt
+=x0pq
+-----END PGP SIGNATURE-----
+
+--=-m3vkeQASIyXhV9Ycnf2V--
