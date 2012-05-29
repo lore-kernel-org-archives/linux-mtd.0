@@ -1,24 +1,18 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SYwaS-0006gI-JN
- for linux-mtd@lists.infradead.org; Mon, 28 May 2012 09:50:05 +0000
-Message-ID: <4FC34A40.8030000@nod.at>
-Date: Mon, 28 May 2012 11:49:52 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1SZHbJ-0007QQ-Th
+ for linux-mtd@lists.infradead.org; Tue, 29 May 2012 08:16:23 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd mxc_nand: use 32bit copy functions
+Date: Tue, 29 May 2012 10:16:09 +0200
+Message-Id: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC v7] UBI: Fastmap support (aka checkpointing)
-References: <1337771191-95358-1-git-send-email-richard@nod.at>
- <1338036094.2525.7.camel@koala>
- <20120528093625.050badc6@pixies.home.jungo.com>
- <1338187619.2480.9.camel@sauron.fi.intel.com>
-In-Reply-To: <1338187619.2480.9.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigC2070EFF36E3EBABF25BD24E"
-Cc: linux-kernel@vger.kernel.org, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org,
+ =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +22,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigC2070EFF36E3EBABF25BD24E
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+The following commit changes the function used to copy from/to
+the hardware buffer to memcpy_[from|to]io. This does not work
+since the hardware cannot handle the byte accesses used by these
+functions. Instead of reverting this patch introduce 32bit
+correspondents of these functions.
 
-Am 28.05.2012 08:46, schrieb Artem Bityutskiy:
-> We should have an ubiattach option instead (and add this feature to the=
+| commit 5775ba36ea9c760c2d7e697dac04f2f7fc95aa62
+| Author: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+| Date:   Tue Apr 24 10:05:22 2012 +0200
+|
+|    mtd: mxc_nand: fix several sparse warnings about incorrect address space
+|
+|     Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+|     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-> attach ioctl - thankfully we have unused bytes there).
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
 
-Okay, I put that on my list.
-I'll add an option to ubiattach and a kernel command line parameter.
+v2: remove volatile, fix line over 80 characters
 
-Thanks,
-//richard
+ drivers/mtd/nand/mxc_nand.c |   37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-
-
---------------enigC2070EFF36E3EBABF25BD24E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPw0pEAAoJEN9758yqZn9eEiAH+wY1xNv25XGCNO9XO+calym/
-wxxEd2RglS+/rmXOY9FvN0pamI2aHdiiG5vzkXU26V0PbOibSCoW35E0zNr1bXxJ
-11fMFiaZoF0sXsTup1qpQFB6SIAmHkd6fFXjBEatinnnxZ0aRwO9cvHyZE4gTA27
-yDqUtX2ROSemOfrkAbvxBXeGorn18Wdp0w55yLnSzBZwUzpZ7uVH8y5x1hQApH5r
-ItzCaIHz42qNO95nwi5qkAs1PZ1ngkUQzhA+85ZucOEAAjN2DOH0Y/0NUy5kVtly
-VjTr0kR+69uPoZYj2PUHZezzqWK2baXk1SZs+C7Fo3ceAhuBBqxLoByb3Q9o/1s=
-=jWti
------END PGP SIGNATURE-----
-
---------------enigC2070EFF36E3EBABF25BD24E--
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index fd14966..17ddcf0 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -273,6 +273,26 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
+ 
+ static const char *part_probes[] = { "RedBoot", "cmdlinepart", "ofpart", NULL };
+ 
++static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
++{
++	int i;
++	u32 *t = trg;
++	const __iomem u32 *s = src;
++
++	for (i = 0; i < (size >> 2); i++)
++		*t++ = __raw_readl(s++);
++}
++
++static void memcpy32_toio(void __iomem *trg, const void *src, int size)
++{
++	int i;
++	u32 __iomem *t = trg;
++	const u32 *s = src;
++
++	for (i = 0; i < (size >> 2); i++)
++		__raw_writel(*s++, t++);
++}
++
+ static int check_int_v3(struct mxc_nand_host *host)
+ {
+ 	uint32_t tmp;
+@@ -519,7 +539,7 @@ static void send_read_id_v3(struct mxc_nand_host *host)
+ 
+ 	wait_op_done(host, true);
+ 
+-	memcpy_fromio(host->data_buf, host->main_area0, 16);
++	memcpy32_fromio(host->data_buf, host->main_area0, 16);
+ }
+ 
+ /* Request the NANDFC to perform a read of the NAND device ID. */
+@@ -535,7 +555,7 @@ static void send_read_id_v1_v2(struct mxc_nand_host *host)
+ 	/* Wait for operation to complete */
+ 	wait_op_done(host, true);
+ 
+-	memcpy_fromio(host->data_buf, host->main_area0, 16);
++	memcpy32_fromio(host->data_buf, host->main_area0, 16);
+ 
+ 	if (this->options & NAND_BUSWIDTH_16) {
+ 		/* compress the ID info */
+@@ -797,16 +817,16 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+ 
+ 	if (bfrom) {
+ 		for (i = 0; i < n - 1; i++)
+-			memcpy_fromio(d + i * j, s + i * t, j);
++			memcpy32_fromio(d + i * j, s + i * t, j);
+ 
+ 		/* the last section */
+-		memcpy_fromio(d + i * j, s + i * t, mtd->oobsize - i * j);
++		memcpy32_fromio(d + i * j, s + i * t, mtd->oobsize - i * j);
+ 	} else {
+ 		for (i = 0; i < n - 1; i++)
+-			memcpy_toio(&s[i * t], &d[i * j], j);
++			memcpy32_toio(&s[i * t], &d[i * j], j);
+ 
+ 		/* the last section */
+-		memcpy_toio(&s[i * t], &d[i * j], mtd->oobsize - i * j);
++		memcpy32_toio(&s[i * t], &d[i * j], mtd->oobsize - i * j);
+ 	}
+ }
+ 
+@@ -1070,7 +1090,8 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 		host->devtype_data->send_page(mtd, NFC_OUTPUT);
+ 
+-		memcpy_fromio(host->data_buf, host->main_area0, mtd->writesize);
++		memcpy32_fromio(host->data_buf, host->main_area0,
++				mtd->writesize);
+ 		copy_spare(mtd, true);
+ 		break;
+ 
+@@ -1086,7 +1107,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
+-		memcpy_toio(host->main_area0, host->data_buf, mtd->writesize);
++		memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
+ 		copy_spare(mtd, false);
+ 		host->devtype_data->send_page(mtd, NFC_INPUT);
+ 		host->devtype_data->send_cmd(host, command, true);
+-- 
+1.7.10
