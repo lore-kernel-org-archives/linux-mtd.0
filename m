@@ -1,22 +1,21 @@
-Message-ID: <1338286268.11518.157.camel@shinybook.infradead.org>
-Subject: Re: [PATCH] netwinder: nw_gpio_lock is a raw_spinlock_t
+Message-ID: <1338286760.11518.162.camel@shinybook.infradead.org>
+Subject: Re: [PATCH] mtd: dc21285.c: remove double check of
+ CONFIG_ARCH_NETWINDER
 From: David Woodhouse <dwmw2@infradead.org>
 To: Christian Dietrich <christian.dietrich@informatik.uni-erlangen.de>
-Date: Tue, 29 May 2012 11:11:08 +0100
-In-Reply-To: <20120529100619.GA23186@faui49q.informatik.uni-erlangen.de>
+Date: Tue, 29 May 2012 11:19:20 +0100
+In-Reply-To: <20120529100646.GA23383@faui49q.informatik.uni-erlangen.de>
 References: <1338040464.2525.38.camel@koala>
  <20120525082812.GA12238@faui49q.informatik.uni-erlangen.de>
- <20120529100619.GA23186@faui49q.informatik.uni-erlangen.de>
+ <20120529100646.GA23383@faui49q.informatik.uni-erlangen.de>
 Content-Type: multipart/signed; micalg="sha1";
  protocol="application/x-pkcs7-signature";
- boundary="=-Ybn23zz+8glU2TRHavaH"
+ boundary="=-x9/6MZ9QqEVn4VVOe1Vt"
 Mime-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Artem Bityutskiy <dedekind1@gmail.com>, Takashi Iwai <tiwai@suse.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, vamos-dev@lists.cs.fau.de,
- linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
- David Howells <dhowells@redhat.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ vamos-dev@lists.cs.fau.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +26,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Ybn23zz+8glU2TRHavaH
+--=-x9/6MZ9QqEVn4VVOe1Vt
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Tue, 2012-05-29 at 12:06 +0200, Christian Dietrich wrote:
-> Since nw_gpio_lock is a raw_spinlock_t it should be used with the
-> raw_spinlock_* functions and not the spinlock_* variants. Functionally
-> this is equivalent at the moment, because the raw_spinlock_t is the
-> first field of spinlock_t, and therefore &nw_gpio_lock =3D=3D
-> &(nw_gpio_lock->rlock). But when other spinlock_t functions use other
-> field they read and write random memory.
+> When CONFIG_ARCH_NETWINDER is unset nw_en_write is a NOP. But
+> machine_is_netwinder() also checks for
+> CONFIG_ARCH_NETWINDER. Therefore in the !netwinder case the
+> preprocessed code is:
+>=20
+> if (0)
+>    do {} while(0);=20
 
-Hm, why are we exposing a raw spinlock to drivers?=20
+It's not a double check. It's a compile time check for "do we even need
+to build this code at all?", and a separate run time check for "do we
+need to run this code now?".
 
-Should we export a helper function (or macro, I suppose) which does the
-appropriate locking *and* the GPIO operation?
+Think about the case where CONFIG_ARCH_NETWINDER is set, but you aren't
+actually running this kernel binary on a netwinder *today*.
+
+Yes, we might not support multi-platform kernels on ARM yet, but we are
+slowly getting there. This kind of change just makes that harder.
+
+And even if the machine_is_netwinder() "function" is *currently* a macro
+which is hard-coded to return one or zero, that just means that your
+change achieves nothing in the compiler output. It'll be silently
+optimised away, or not, as appropriate.
 
 --=20
 dwmw2
 
---=-Ybn23zz+8glU2TRHavaH
+--=-x9/6MZ9QqEVn4VVOe1Vt
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -148,19 +158,19 @@ kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
 MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
 dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
 eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTI5MTAxMTA4WjAjBgkqhkiG9w0BCQQx
-FgQU9MHGgIgibG5gGpURFEyxso9xJN4wgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTI5MTAxOTIwWjAjBgkqhkiG9w0BCQQx
+FgQUMS3xl9c2uHPAM5nPKsAFmHIO30wwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
 SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
 ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
 ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
 TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
 aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAsYZWiY4sv+4djso/hZZg4Rlrd
-Ra6m1i6W8ksKq/4WF5tzimbcRil8P7d9ensoD9gUdrTIZF2DFFK+H+sPbwgl1kyBsn0Tme9kPmz8
-1G404wPhtjxVUSbVsdzHUnjDcDlKp9PwiUtehQ4QYYSsnkwS0zr62xZ1bfG1HKvPU1WCkd2ZnrZM
-cCRbW0XNA7+1LagtwlZkP7KUaUWEjUtLnh2KQ5arWDcwxLdAH3sSJaU98B2rXtTbQyRueWTzO6ti
-RrWbcC4EeGN7HLy2fzvHaVCe6KA5nReyP9qfLelN0CMaesHrxGOPhDrlfuqir7lfUJOxAlvVhr1T
-ZgIYitkipcVoAAAAAAAA
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQBLODJjXL07J8k75W5kptDQrD9o
+KqmYsyV5FioI631hJCnAHVzxBI7Wl1ayhEnHWWKFRJlMAXKtZh/OXoG4xPQOCLUcNeoofWicMcAv
+dxaWNLeUmfQ6ysZ0tleFD58xtSMQkyHWBU4JJ4D/jjY8cEwXOYoyEX93bPSdcStFtt2uG6vCoyN6
+7nJXFg/rN8BVSEEGpwqnKMn7E8JucrQOOKSe5JEXOlr0gkuOUoVLC3a2twOdZemyav91VRjQmaT9
+6O3DD/fE6X6TYV/E5cfmzvLgwjtRCdTjgEZTFaoMbWoVOWtET6v+XNwaaAeqnCp7irfUtQWWebRD
+n46EFLmqE0D0AAAAAAAA
 
 
---=-Ybn23zz+8glU2TRHavaH--
+--=-x9/6MZ9QqEVn4VVOe1Vt--
