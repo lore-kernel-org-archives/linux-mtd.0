@@ -1,18 +1,18 @@
-From: Heiko Schocher <hs@denx.de>
-To: davinci-linux-open-source@linux.davincidsp.com
-Subject: [PATCH v5 7/7] ARM: davinci: add support for the am1808 based
- enbw_cmc board
-Date: Wed, 30 May 2012 12:19:03 +0200
-Message-Id: <1338373143-7467-8-git-send-email-hs@denx.de>
-In-Reply-To: <1338373143-7467-1-git-send-email-hs@denx.de>
-References: <1338373143-7467-1-git-send-email-hs@denx.de>
-Cc: Kevin Hilman <khilman@ti.com>, netdev@vger.kernel.org,
- devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
- Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
- Scott Wood <scottwood@freescale.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>, Heiko Schocher <hs@denx.de>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SZj16-0000UY-L5
+ for linux-mtd@lists.infradead.org; Wed, 30 May 2012 13:32:55 +0000
+Date: Wed, 30 May 2012 15:32:45 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2] UBIFS: compute KSA size and store in superblock
+In-Reply-To: <1337952271.30969.37.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1205301531220.6465@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1205251509220.2989@eristoteles.iwoars.net>
+ <1337952271.30969.37.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,828 +22,300 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-- AM1808 based board
-- 64 MiB DDR ram
-- 2 MiB Nor flash
-- 128 MiB NAND flash
-- use internal RTC
-- I2C support
-- hwmon lm75 support
-- UBI/UBIFS support
-- MMC support
-- USB OTG support
+This patch makes the super block reserve space for the KSA. It computes the
+number of KSA LEBs and adds the ksa_lebs to on-medium superblock. The value is
+read off the media. The decision to use a KSA is controlled by use_ubifsec
+switch, also added to the superblock, ubifs_info, and is controlled as a mount
+option. In create_default_filesystem, the value of leb_cnt is used; later
+in the function max_leb_cnt is set to leb_cnt. Later, mkfs.ubifs, will use
+the value max_leb_cnt when computing the KSA size.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: devicetree-discuss@lists.ozlabs.org
-Cc: davinci-linux-open-source@linux.davincidsp.com
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-i2c@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Sekhar Nori <nsekhar@ti.com>
-Cc: Kevin Hilman <khilman@ti.com>
-Cc: Wolfgang Denk <wd@denx.de>
-Cc: Scott Wood <scottwood@freescale.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+This is tested by creating a drive and checking the mount debug output. The
+number of LEBS assigned during create_default_filesystem was changed to ensure
+that remounting does infact read the old value. When the use_ubifsec option
+was not enabled, no LEBs were assigned. Integck was run and the drive was
+filled to capacity. The LEBs in the KSA were not used when filled.
 
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
 ---
-- post this board support with USB support, even though
-  USB is only working with the 10 ms "workaround", posted here:
-  http://comments.gmane.org/gmane.linux.usb.general/54505
-  I see this issue also on the AM1808 TMDXEXP1808L evalboard.
-- MMC and USB are not using OF support yet, ideas how to port
-  this are welcome. I need for USB and MMC boards board
-  specific callbacks, how to solve this with OF support?
+ fs/ubifs/sb.c          |   31 ++++++++++++++++++++++++++++---
+ fs/ubifs/super.c       |   15 +++++++++++++++
+ fs/ubifs/ubifs-media.h |    9 +++++++--
+ fs/ubifs/ubifs.h       |   23 ++++++++++++++++++++++-
+ 4 files changed, 72 insertions(+), 6 deletions(-)
 
-- changes for v2:
-  - changes in the nand node due to comments from Scott Wood:
-    - add "ti,davinci-" prefix
-    - Dashes are preferred to underscores
-    - rename "nandflash" to "nand"
-    - introduce new "ti,davinci" specific properties for setting
-      up ecc_mode, ecc_bits, options and bbt options, instead
-      using linux defines
-  - changes for i2c due to comments from Sylwester Nawrocki:
-    - use "cell-index" instead "id"
-    - OF_DEV_AUXDATA in the machine code, instead pre-define
-      platform device name
-  - add comment from Grant Likely for i2c:
-    - removed "id" resp. "cell-index" completely
-    - fixed documentation
-    - use of_match_ptr()
-    - use devm_kzalloc() for allocating plattform data mem
-    - fixed a whitespace issue
-  - add net comments from Grant Likely:
-    - add prefix "ti,davinci-" to davinci specific property names
-    - remove version property
-    - use compatible name "ti,davinci-dm6460-emac"
-  - add comment from Grant Likely:
-    - rename compatible node
-    - do not use cell-index
-    - CONFIG_OF required for this board
-    TODO:
-    - create a generic board support file, as I got no
-      answer to my ping to grant, maybe this could be done
-      in a second step?
-- changes for v3:
-  - add comments from Sergei Shtylyov:
-    - rename compatible" prop to "ti,cp_intc"
-    - cp_intc_init now used for Interrupt controller init
-- changes for v4:
-  add comment from Nori Sekhar:
-  - rename davinci emac compatible property to "ti,davinci-dm6467-emac"
-  - remove "pinmux-handle" property as discussed here:
-    http://www.spinics.net/lists/arm-kernel/msg175701.html
-    with Nori Sekhar
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index f98d284..f2c9235 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -82,6 +82,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
+ 	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
+ 	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
++	int ksa_lebs = 0, ksa_first;
+ 	long long tmp64, main_bytes;
+ 	__le64 tmp_le64;
 
-- changes for v5:
-  add comments from Grant Likely:
-  - rename compatible" prop to "ti,cp-intc"
+@@ -103,6 +104,20 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	if (jnl_lebs * c->leb_size > DEFAULT_MAX_JNL)
+ 		jnl_lebs = DEFAULT_MAX_JNL / c->leb_size;
 
- arch/arm/boot/dts/enbw_cmc.dts                  |  172 +++++++++++
- arch/arm/configs/enbw_cmc_defconfig             |  123 ++++++++
- arch/arm/mach-davinci/Kconfig                   |    9 +
- arch/arm/mach-davinci/Makefile                  |    1 +
- arch/arm/mach-davinci/board-enbw-cmc.c          |  374 +++++++++++++++++++++++
- arch/arm/mach-davinci/include/mach/uncompress.h |    1 +
- 6 files changed, 680 insertions(+), 0 deletions(-)
- create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
- create mode 100644 arch/arm/configs/enbw_cmc_defconfig
- create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
++	if (c->use_ubifsec) {
++		/*
++		 * Compute the size of the key space area based on partition
++		 * geometry. The following calculation is equivalant to:
++		 * LEBS * LEB_SIZE / DATANODE_SIZE / KEYS_PER_KSA_LEB, because
++		 * KEYS_PER_KSA_LEB = LEB_SIZE / KEY_SIZE.
++		 */
++		ksa_lebs = (c->leb_cnt * UBIFS_CRYPTO_KEYSIZE)
++			>> UBIFS_BLOCK_SHIFT;
++		ksa_lebs += ksa_lebs >> UBIFS_KSA_LEBS_SCALE_SHIFT;
++		ksa_lebs += UBIFS_KSA_ADD_LEBS;
++		min_leb_cnt += ksa_lebs;
++	}
++
+ 	/*
+ 	 * The log should be large enough to fit reference nodes for all bud
+ 	 * LEBs. Because buds do not have to start from the beginning of LEBs
+@@ -138,7 +153,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		 */
+ 		orph_lebs += 1;
 
-diff --git a/arch/arm/boot/dts/enbw_cmc.dts b/arch/arm/boot/dts/enbw_cmc.dts
-new file mode 100644
-index 0000000..19c7559
---- /dev/null
-+++ b/arch/arm/boot/dts/enbw_cmc.dts
-@@ -0,0 +1,172 @@
+-	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS - log_lebs;
++	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS
++		    - log_lebs - ksa_lebs;
+ 	main_lebs -= orph_lebs;
+
+ 	lpt_first = UBIFS_LOG_LNUM + log_lebs;
+@@ -153,6 +169,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		lpt_first + lpt_lebs - 1);
+
+ 	main_first = c->leb_cnt - main_lebs;
++	ksa_first = c->leb_cnt - main_lebs - ksa_lebs;
+
+ 	/* Create default superblock */
+ 	tmp = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
+@@ -173,6 +190,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	sup->max_leb_cnt   = cpu_to_le32(c->max_leb_cnt);
+ 	sup->max_bud_bytes = cpu_to_le64(tmp64);
+ 	sup->log_lebs      = cpu_to_le32(log_lebs);
++	sup->ksa_lebs	   = cpu_to_le32(ksa_lebs);
+ 	sup->lpt_lebs      = cpu_to_le32(lpt_lebs);
+ 	sup->orph_lebs     = cpu_to_le32(orph_lebs);
+ 	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
+@@ -180,6 +198,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
+ 	sup->fmt_version   = cpu_to_le32(UBIFS_FORMAT_VERSION);
+ 	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
++	sup->use_ubifsec   = cpu_to_le32(c->use_ubifsec);
+ 	if (c->mount_opts.override_compr)
+ 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
+ 	else
+@@ -389,6 +408,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 	 */
+ 	min_leb_cnt = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs;
+ 	min_leb_cnt += c->lpt_lebs + c->orph_lebs + c->jhead_cnt + 6;
++	min_leb_cnt += c->ksa_lebs;
+
+ 	if (c->leb_cnt < min_leb_cnt || c->leb_cnt > c->vi.size) {
+ 		ubifs_err("bad LEB count: %d in superblock, %d on UBI volume, "
+@@ -444,7 +464,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 	}
+
+ 	if (UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs + c->lpt_lebs +
+-	    c->orph_lebs + c->main_lebs != c->leb_cnt) {
++	    c->orph_lebs + c->main_lebs + c->ksa_lebs != c->leb_cnt) {
+ 		err = 12;
+ 		goto failed;
+ 	}
+@@ -605,6 +625,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 	c->max_leb_cnt   = le32_to_cpu(sup->max_leb_cnt);
+ 	c->max_bud_bytes = le64_to_cpu(sup->max_bud_bytes);
+ 	c->log_lebs      = le32_to_cpu(sup->log_lebs);
++	c->ksa_lebs	 = le32_to_cpu(sup->ksa_lebs);
+ 	c->lpt_lebs      = le32_to_cpu(sup->lpt_lebs);
+ 	c->orph_lebs     = le32_to_cpu(sup->orph_lebs);
+ 	c->jhead_cnt     = le32_to_cpu(sup->jhead_cnt) + NONDATA_JHEADS_CNT;
+@@ -613,6 +634,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 	c->rp_size       = le64_to_cpu(sup->rp_size);
+ 	c->rp_uid        = le32_to_cpu(sup->rp_uid);
+ 	c->rp_gid        = le32_to_cpu(sup->rp_gid);
++	c->use_ubifsec   = le32_to_cpu(sup->use_ubifsec);
+ 	sup_flags        = le32_to_cpu(sup->flags);
+ 	if (!c->mount_opts.override_compr)
+ 		c->default_compr = le16_to_cpu(sup->default_compr);
+@@ -646,8 +668,11 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
+ 	c->orph_first = c->lpt_last + 1;
+ 	c->orph_last = c->orph_first + c->orph_lebs - 1;
+-	c->main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS;
++	c->main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS
++		       - c->ksa_lebs;
+ 	c->main_lebs -= c->log_lebs + c->lpt_lebs + c->orph_lebs;
++	c->ksa_first = c->leb_cnt - c->main_lebs - c->ksa_lebs;
++	c->ksa_last = c->ksa_first + c->ksa_lebs - 1;
+ 	c->main_first = c->leb_cnt - c->main_lebs;
+
+ 	err = validate_sb(c, sup);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index d2fd76f..879ecf5 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -438,6 +438,8 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+ 	else if (c->mount_opts.chk_data_crc == 1)
+ 		seq_printf(s, ",no_chk_data_crc");
+
++	if (c->mount_opts.use_ubifsec)
++		seq_printf(s, ",use_ubifsec");
+ 	if (c->mount_opts.override_compr) {
+ 		seq_printf(s, ",compr=%s",
+ 			   ubifs_compr_name(c->mount_opts.compr_type));
+@@ -934,6 +936,7 @@ static int check_volume_empty(struct ubifs_info *c)
+  * Opt_chk_data_crc: check CRCs when reading data nodes
+  * Opt_no_chk_data_crc: do not check CRCs when reading data nodes
+  * Opt_override_compr: override default compressor
++ * Opt_use_ubifsec: use ubifsec secure deletion feature
+  * Opt_err: just end of array marker
+  */
+ enum {
+@@ -944,6 +947,7 @@ enum {
+ 	Opt_chk_data_crc,
+ 	Opt_no_chk_data_crc,
+ 	Opt_override_compr,
++	Opt_use_ubifsec,
+ 	Opt_err,
+ };
+
+@@ -955,6 +959,7 @@ static const match_table_t tokens = {
+ 	{Opt_chk_data_crc, "chk_data_crc"},
+ 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
+ 	{Opt_override_compr, "compr=%s"},
++	{Opt_use_ubifsec, "use_ubifsec"},
+ 	{Opt_err, NULL},
+ };
+
+@@ -1054,6 +1059,12 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
+ 			c->default_compr = c->mount_opts.compr_type;
+ 			break;
+ 		}
++		case Opt_use_ubifsec:
++		{
++			c->mount_opts.use_ubifsec = 1;
++			c->use_ubifsec = 1;
++			break;
++		}
+ 		default:
+ 		{
+ 			unsigned long flag;
+@@ -1446,6 +1457,9 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		c->lpt_lebs, c->lpt_first, c->lpt_last);
+ 	dbg_msg("orphan area LEBs:    %d (%d - %d)",
+ 		c->orph_lebs, c->orph_first, c->orph_last);
++	if (c->ksa_lebs)
++		dbg_msg("KSA LEBs:            %d (%d - %d)",
++			c->ksa_lebs, c->ksa_first, c->ksa_last);
+ 	dbg_msg("main area LEBs:      %d (%d - %d)",
+ 		c->main_lebs, c->main_first, c->leb_cnt - 1);
+ 	dbg_msg("index LEBs:          %d", c->lst.idx_lebs);
+@@ -1483,6 +1497,7 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		c->bud_bytes, c->bud_bytes >> 10, c->bud_bytes >> 20);
+ 	dbg_msg("max. seq. number:    %llu", c->max_sqnum);
+ 	dbg_msg("commit number:       %llu", c->cmt_no);
++	dbg_msg("use ubifsec:         %d", c->use_ubifsec);
+
+ 	return 0;
+
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index 90f348c..1dda25d 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -618,10 +618,13 @@ struct ubifs_pad_node {
+  * @rp_uid: reserve pool UID
+  * @rp_gid: reserve pool GID
+  * @rp_size: size of the reserved pool in bytes
+- * @padding2: reserved for future, zeroes
+  * @time_gran: time granularity in nanoseconds
+  * @uuid: UUID generated when the file system image was created
+  * @ro_compat_version: UBIFS R/O compatibility version
++ * @crypto_lebs: number of LEBS being used to store keys
++ * @use_ubifsec: the LSB signifies whether the file system should use secure
++ *		 deletion
++ * @padding2: reserved for future, zeroes
+  */
+ struct ubifs_sb_node {
+ 	struct ubifs_ch ch;
+@@ -649,7 +652,9 @@ struct ubifs_sb_node {
+ 	__le32 time_gran;
+ 	__u8 uuid[16];
+ 	__le32 ro_compat_version;
+-	__u8 padding2[3968];
++	__le32 ksa_lebs;
++	__u8 use_ubifsec;
++	__u8 padding2[3963];
+ } __packed;
+
+ /**
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index d7f639a..f34ab84 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -164,6 +164,16 @@
+ #define UBIFS_CRYPTO_KEYSIZE 16
+ /* AES in counter mode is the encryption algorithm */
+ #define UBIFS_CRYPTO_ALGORITHM "ctr(aes)"
 +/*
-+ * Device Tree for the EnBW CMC plattform
-+ *
-+ * Copyright 2011 DENX Software Engineering GmbH
-+ * Heiko Schocher <hs@denx.de>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
++ * Constant number of KSA LEBS to add to computed value, ensuring two plus a
++ * checkpoint LEB.
 + */
-+/dts-v1/;
-+/include/ "skeleton.dtsi"
-+
-+/ {
-+	model = "EnBW CMC";
-+	compatible = "enbw,cmc";
-+
-+	aliases {
-+		ethernet0 = &eth0;
-+	};
-+
-+	arm {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0 0xfffee000 0x00020000>;
-+		intc: interrupt-controller@1 {
-+			compatible = "ti,cp-intc";
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+			ti,intc-size = <101>;
-+			reg = <0x0 0x2000>;
-+		};
-+	};
-+	soc@1c00000 {
-+		compatible = "ti,da850";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x01c00000 0x400000>;
-+
-+		serial0: serial@1c42000 {
-+			compatible = "ti,da850", "ns16550a";
-+			reg = <0x42000 0x100>;
-+			clock-frequency = <150000000>;
-+			reg-shift = <2>;
-+			interrupts = <25>;
-+			interrupt-parent = <&intc>;
-+		};
-+		serial1: serial@1d0c000 {
-+			compatible = "ti,da850", "ns16550a";
-+			reg = <0x10c000 0x100>;
-+			clock-frequency = <150000000>;
-+			reg-shift = <2>;
-+			interrupts = <53>;
-+			interrupt-parent = <&intc>;
-+		};
-+		serial2: serial@1d0d000 {
-+			compatible = "ti,da850", "ns16550a";
-+			reg = <0x10d000 0x100>;
-+			clock-frequency = <150000000>;
-+			reg-shift = <2>;
-+			interrupts = <61>;
-+			interrupt-parent = <&intc>;
-+		};
-+
-+		eth0: emac@1e20000 {
-+			compatible = "ti,davinci-dm6467-emac";
-+			reg = <0x220000 0x4000>;
-+			ti,davinci-ctrl-reg-offset = <0x3000>;
-+			ti,davinci-ctrl-mod-reg-offset = <0x2000>;
-+			ti,davinci-ctrl-ram-offset = <0>;
-+			ti,davinci-ctrl-ram-size = <0x2000>;
-+			local-mac-address = [ 00 00 00 00 00 00 ];
-+			interrupts = <33
-+					34
-+					35
-+					36
-+					>;
-+			interrupt-parent = <&intc>;
-+		};
-+
-+		i2c@1c22000 {
-+			compatible = "ti,davinci-i2c";
-+			reg = <0x22000 0x1000>;
-+			clock-frequency = <100000>;
-+			interrupts = <15>;
-+			interrupt-parent = <&intc>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			dtt@48 {
-+				compatible = "national,lm75";
-+				reg = <0x48>;
-+			};
-+		};
-+	};
-+	onchipram@8000000 {
-+		compatible = "ti,davinci-onchipram";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x80000000 0x20000>;
-+	};
-+	aemif@60000000 {
-+		compatible = "ti,davinci-aemif";
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		reg = <0x68000000 0x80000>;
-+		ranges = <2 0 0x60000000 0x02000000
-+			  3 0 0x62000000 0x02000000
-+			  4 0 0x64000000 0x02000000
-+			  5 0 0x66000000 0x02000000
-+			  6 0 0x68000000 0x02000000>;
-+		cs2@68000000 {
-+			compatible = "ti,davinci-cs";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			/* all timings in nanoseconds */
-+			cs = <2>;
-+			asize = <1>;
-+			ta = <0>;
-+			rhold = <7>;
-+			rstrobe = <42>;
-+			rsetup = <14>;
-+			whold = <7>;
-+			wstrobe = <42>;
-+			wsetup = <14>;
-+			ew = <0>;
-+			ss = <0>;
-+		};
-+		flash@2,0 {
-+			compatible = "cfi-flash";
-+			reg = <2 0x0 0x400000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			bank-width = <2>;
-+			device-width = <2>;
-+		};
-+		nand_cs: cs3@68000000 {
-+			compatible = "ti,davinci-cs";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			/* all timings in nanoseconds */
-+			cs = <3>;
-+			asize = <0>;
-+			ta = <0>;
-+			rhold = <7>;
-+			rstrobe = <42>;
-+			rsetup = <7>;
-+			whold = <7>;
-+			wstrobe = <14>;
-+			wsetup = <7>;
-+			ew = <0>;
-+			ss = <0>;
-+		};
-+		nand@3,0 {
-+			compatible = "ti,davinci-nand";
-+			reg = <3 0x0 0x807ff
-+				6 0x0 0x8000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ti,davinci-chipselect = <1>;
-+			ti,davinci-mask-ale = <0>;
-+			ti,davinci-mask-cle = <0>;
-+			ti,davinci-mask-chipsel = <0>;
-+			ti,davinci-ecc-mode = "hw";
-+			ti,davinci-ecc-bits = <4>;
-+			ti,davinci-nand-use-bbt;
-+			timing-handle = <&nand_cs>;
-+		};
-+
-+	};
-+};
-diff --git a/arch/arm/configs/enbw_cmc_defconfig b/arch/arm/configs/enbw_cmc_defconfig
-new file mode 100644
-index 0000000..9d98e7f
---- /dev/null
-+++ b/arch/arm/configs/enbw_cmc_defconfig
-@@ -0,0 +1,123 @@
-+CONFIG_EXPERIMENTAL=y
-+# CONFIG_SWAP is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_EXPERT=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODULE_FORCE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+# CONFIG_BLK_DEV_BSG is not set
-+CONFIG_PARTITION_ADVANCED=y
-+# CONFIG_IOSCHED_DEADLINE is not set
-+# CONFIG_IOSCHED_CFQ is not set
-+CONFIG_ARCH_DAVINCI=y
-+CONFIG_ARCH_DAVINCI_DA850=y
-+# CONFIG_MACH_DAVINCI_DA850_EVM is not set
-+CONFIG_GPIO_PCA953X=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_PREEMPT=y
-+CONFIG_AEABI=y
-+# CONFIG_OABI_COMPAT is not set
-+CONFIG_USE_OF=y
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+CONFIG_IP_PNP=y
-+CONFIG_IP_PNP_DHCP=y
-+# CONFIG_INET_LRO is not set
-+CONFIG_IPV6=y
-+CONFIG_NETFILTER=y
-+# CONFIG_WIRELESS is not set
-+CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+# CONFIG_FW_LOADER is not set
-+CONFIG_MTD=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+CONFIG_MTD_CHAR=y
-+CONFIG_MTD_BLKDEVS=y
-+CONFIG_MTD_CFI=y
-+CONFIG_MTD_CFI_INTELEXT=y
-+CONFIG_MTD_CFI_AMDSTD=y
-+CONFIG_MTD_PHYSMAP=y
-+CONFIG_MTD_PHYSMAP_OF=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_DAVINCI=y
-+CONFIG_MTD_UBI=y
-+CONFIG_BLK_DEV_LOOP=y
-+CONFIG_BLK_DEV_RAM=y
-+CONFIG_BLK_DEV_RAM_COUNT=1
-+CONFIG_BLK_DEV_RAM_SIZE=32768
-+CONFIG_EEPROM_AT24=y
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
-+CONFIG_NETDEVICES=y
-+CONFIG_MII=y
-+CONFIG_TI_DAVINCI_EMAC=y
-+# CONFIG_WLAN is not set
-+CONFIG_INPUT_POLLDEV=y
-+# CONFIG_INPUT_MOUSEDEV is not set
-+CONFIG_INPUT_EVDEV=y
-+CONFIG_INPUT_EVBUG=y
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
-+# CONFIG_SERIO is not set
-+# CONFIG_VT is not set
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_8250_NR_UARTS=3
-+CONFIG_SERIAL_8250_RUNTIME_UARTS=3
-+CONFIG_SERIAL_OF_PLATFORM=y
-+CONFIG_HW_RANDOM=y
-+CONFIG_I2C=y
-+CONFIG_I2C_CHARDEV=y
-+CONFIG_I2C_DAVINCI=y
-+CONFIG_GPIO_SYSFS=y
-+CONFIG_GPIO_PCF857X=y
-+CONFIG_SENSORS_LM75=y
-+CONFIG_WATCHDOG=y
-+CONFIG_WATCHDOG_CORE=y
-+CONFIG_DAVINCI_WATCHDOG=y
-+# CONFIG_HID_SUPPORT is not set
-+CONFIG_USB=y
-+CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
-+CONFIG_USB_MUSB_HDRC=y
-+CONFIG_USB_MUSB_DA8XX=y
-+CONFIG_USB_STORAGE=y
-+CONFIG_USB_UAS=y
-+CONFIG_USB_LIBUSUAL=y
-+CONFIG_USB_GADGET=y
-+CONFIG_USB_FUSB300=y
-+CONFIG_USB_ETH=y
-+CONFIG_MMC=y
-+CONFIG_MMC_DAVINCI=y
-+CONFIG_RTC_CLASS=y
-+CONFIG_RTC_DRV_OMAP=y
-+CONFIG_EXT2_FS=y
-+CONFIG_EXT3_FS=y
-+CONFIG_AUTOFS4_FS=y
-+CONFIG_MSDOS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_TMPFS=y
-+CONFIG_UBIFS_FS=y
-+CONFIG_CRAMFS=y
-+CONFIG_NFS_FS=y
-+CONFIG_NFS_V3=y
-+CONFIG_ROOT_NFS=y
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_TIMER_STATS=y
-+CONFIG_DEBUG_RT_MUTEXES=y
-+CONFIG_DEBUG_MUTEXES=y
-+# CONFIG_CRYPTO_ANSI_CPRNG is not set
-+# CONFIG_CRYPTO_HW is not set
-+CONFIG_CRC_CCITT=m
-+CONFIG_CRC_T10DIF=m
-diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
-index 32d837d..4cb0469 100644
---- a/arch/arm/mach-davinci/Kconfig
-+++ b/arch/arm/mach-davinci/Kconfig
-@@ -202,6 +202,15 @@ config DA850_WL12XX
- 	  Say Y if you want to use a wl1271 expansion card connected to the
- 	  AM18x EVM.
- 
-+config MACH_ENBW_CMC
-+	bool "EnBW Communication Module Compact"
-+	default ARCH_DAVINCI_DA850
-+	depends on ARCH_DAVINCI_DA850
-+	select OF
-+	help
-+	  Say Y here to select the EnBW Communication Module Compact
-+	  board.
-+
- config GPIO_PCA953X
- 	default MACH_DAVINCI_DA850_EVM
- 
-diff --git a/arch/arm/mach-davinci/Makefile b/arch/arm/mach-davinci/Makefile
-index 2db78bd..12f3166 100644
---- a/arch/arm/mach-davinci/Makefile
-+++ b/arch/arm/mach-davinci/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_MACH_DAVINCI_DA850_EVM)	+= board-da850-evm.o
- obj-$(CONFIG_MACH_TNETV107X)		+= board-tnetv107x-evm.o
- obj-$(CONFIG_MACH_MITYOMAPL138)		+= board-mityomapl138.o
- obj-$(CONFIG_MACH_OMAPL138_HAWKBOARD)	+= board-omapl138-hawk.o
-+obj-$(CONFIG_MACH_ENBW_CMC)		+= board-enbw-cmc.o
- 
- # Power Management
- obj-$(CONFIG_CPU_FREQ)			+= cpufreq.o
-diff --git a/arch/arm/mach-davinci/board-enbw-cmc.c b/arch/arm/mach-davinci/board-enbw-cmc.c
-new file mode 100644
-index 0000000..fcec14f
---- /dev/null
-+++ b/arch/arm/mach-davinci/board-enbw-cmc.c
-@@ -0,0 +1,374 @@
++#define UBIFS_KSA_ADD_LEBS 3
 +/*
-+ * EnBW Communication Module Compact board
-+ * Copyright 2011 DENX Software Engineering GmbH
-+ * Author: Heiko Schocher <hs@denx.de>
-+ *
-+ * based on:
-+ * TI DA850/OMAP-L138 EVM board
-+ *
-+ * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Derived from: arch/arm/mach-davinci/board-da850-evm.c
-+ * Original Copyrights follow:
-+ *
-+ * 2007, 2009 (c) MontaVista Software, Inc. This file is licensed under
-+ * the terms of the GNU General Public License version 2. This program
-+ * is licensed "as is" without any warranty of any kind, whether express
-+ * or implied.
++ * KSA LEBS is 1.125 * the computed min to allow unused keys when the drive is
++ * full. This shift is used to compute 0.125 * LEBS.
 + */
-+#include <linux/console.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio_keys.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/physmap.h>
-+#include <linux/of.h>
-+#include <linux/of_net.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/phy.h>
-+#include <linux/phy_fixed.h>
-+#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/flash.h>
-+#include <asm/mach-types.h>
-+#include <asm/mach/arch.h>
-+#include <mach/aemif.h>
-+#include <mach/cp_intc.h>
-+#include <mach/da8xx.h>
-+#include <mach/mux.h>
-+#include <mach/nand.h>
-+#include <mach/spi.h>
++#define UBIFS_KSA_LEBS_SCALE_SHIFT 3
+
+ /*
+  * Lockdep classes for UBIFS inode @ui_mutex.
+@@ -934,6 +944,7 @@ struct ubifs_orphan {
+  *                  specified in @compr_type)
+  * @compr_type: compressor type to override the superblock compressor with
+  *              (%UBIFS_COMPR_NONE, etc)
++ * @use_ubifsec: use ubifsec secure deletion feature
+  */
+ struct ubifs_mount_opts {
+ 	unsigned int unmount_mode:2;
+@@ -941,6 +952,7 @@ struct ubifs_mount_opts {
+ 	unsigned int chk_data_crc:2;
+ 	unsigned int override_compr:1;
+ 	unsigned int compr_type:2;
++	unsigned int use_ubifsec:1;
+ };
+
+ /**
+@@ -1224,7 +1236,11 @@ struct ubifs_debug_info;
+  * @size_tree: inode size information for recovery
+  * @mount_opts: UBIFS-specific mount options
+  *
+- * @keymap: cryptographic key store for secure deletion
++ * @km: cryptographic key store for secure deletion
++ * @ksa_lebs: number of LEBS assigned to the KSA
++ * @ksa_first: number of the first LEB assigned to the KSA
++ * @ksa_last: number of the last LEB assigned to the KSA
++ * @use_ubifsec: switch to enable/disable secure deletion for UBIFS
+  * @dbg: debugging-related information
+  */
+ struct ubifs_info {
+@@ -1454,6 +1470,11 @@ struct ubifs_info {
+ 	struct ubifs_mount_opts mount_opts;
+
+ 	struct ubifs_keymap *km;
++	int ksa_lebs;
++	int ksa_first;
++	int ksa_last;
++	int use_ubifsec;
 +
-+#define ENBW_CMC_MMCSD_CD_PIN          GPIO_TO_PIN(3, 13)
-+
-+/*
-+ * USB1 VBUS is controlled by GPIO7[12], over-current is reported on GPIO7[8].
-+ */
-+#define DA850_USB_VBUS_PIN	GPIO_TO_PIN(7, 12)
-+#define ON_BD_USB_OVC		GPIO_TO_PIN(7, 8)
-+
-+#if defined(CONFIG_USB_OHCI_HCD)
-+static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id);
-+static da8xx_ocic_handler_t enbw_cmc_usb_ocic_handler;
-+
-+static int enbw_cmc_usb_set_power(unsigned port, int on)
-+{
-+	gpio_set_value(DA850_USB_VBUS_PIN, on);
-+	return 0;
-+}
-+
-+static int enbw_cmc_usb_get_power(unsigned port)
-+{
-+	return gpio_get_value(DA850_USB_VBUS_PIN);
-+}
-+
-+static int enbw_cmc_usb_get_oci(unsigned port)
-+{
-+	return !gpio_get_value(ON_BD_USB_OVC);
-+}
-+
-+static irqreturn_t enbw_cmc_usb_ocic_irq(int, void *);
-+
-+static int enbw_cmc_usb_ocic_notify(da8xx_ocic_handler_t handler)
-+{
-+	int irq         = gpio_to_irq(ON_BD_USB_OVC);
-+	int error       = 0;
-+
-+	if (handler != NULL) {
-+		enbw_cmc_usb_ocic_handler = handler;
-+
-+		error = request_irq(irq, enbw_cmc_usb_ocic_irq,
-+					IRQF_DISABLED | IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING,
-+					"OHCI over-current indicator", NULL);
-+		if (error)
-+			pr_err("%s: could not request IRQ to watch "
-+				"over-current indicator changes\n", __func__);
-+	} else {
-+		free_irq(irq, NULL);
-+	}
-+	return error;
-+}
-+
-+static struct da8xx_ohci_root_hub enbw_cmc_usb11_pdata = {
-+	.set_power      = enbw_cmc_usb_set_power,
-+	.get_power      = enbw_cmc_usb_get_power,
-+	.get_oci        = enbw_cmc_usb_get_oci,
-+	.ocic_notify    = enbw_cmc_usb_ocic_notify,
-+	.potpgt         = (10 + 1) / 2,  /* 10 ms max */
-+};
-+
-+static irqreturn_t enbw_cmc_usb_ocic_irq(int irq, void *dev_id)
-+{
-+	enbw_cmc_usb_ocic_handler(&enbw_cmc_usb11_pdata, 1);
-+	return IRQ_HANDLED;
-+}
-+#endif
-+
-+static __init void enbw_cmc_usb_init(void)
-+{
-+	int ret;
-+	u32 cfgchip2;
-+
-+	/* Set up USB clock/mode in the CFGCHIP2 register. */
-+	cfgchip2 = __raw_readl(DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
-+
-+	/* USB2.0 PHY reference clock is AUXCLK with 24MHz */
-+	cfgchip2 &= ~CFGCHIP2_REFFREQ;
-+	cfgchip2 |=  CFGCHIP2_REFFREQ_24MHZ;
-+
-+	/*
-+	 * Select internal reference clock for USB 2.0 PHY
-+	 * and use it as a clock source for USB 1.1 PHY
-+	 * (this is the default setting anyway).
-+	 */
-+	cfgchip2 &= ~CFGCHIP2_USB1PHYCLKMUX;
-+	cfgchip2 |=  CFGCHIP2_USB2PHYCLKMUX;
-+
-+	cfgchip2 &= ~CFGCHIP2_OTGMODE;
-+	cfgchip2 |=  CFGCHIP2_SESENDEN | CFGCHIP2_VBDTCTEN;
-+
-+	__raw_writel(cfgchip2, DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
-+
-+	/*
-+	 * SP2525A @ 5V supplies 500mA,
-+	 * with the power on to power good time of 10 ms.
-+	 */
-+	ret = da8xx_register_usb20(500, 10);
-+	if (ret)
-+		pr_warning("%s: USB 2.0 registration failed: %d\n",
-+			   __func__, ret);
-+
-+#if defined(CONFIG_USB_OHCI_HCD)
-+	ret = gpio_request_one(DA850_USB_VBUS_PIN,
-+			GPIOF_DIR_OUT, "USB 1.1 VBUS");
-+	if (ret < 0) {
-+		pr_err("%s: failed to request GPIO for USB 1.1 port "
-+			"power control: %d\n", __func__, ret);
-+		return;
-+	}
-+	gpio_direction_input(DA850_USB_VBUS_PIN);
-+
-+	ret = gpio_request(ON_BD_USB_OVC, "ON_BD_USB_OVC");
-+	if (ret) {
-+		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
-+		       "over-current indicator: %d\n", __func__, ret);
-+		gpio_free(DA850_USB_VBUS_PIN);
-+		return;
-+	}
-+	gpio_direction_input(ON_BD_USB_OVC);
-+
-+	ret = da8xx_register_usb11(&enbw_cmc_usb11_pdata);
-+	if (ret) {
-+		pr_warning("%s: USB 1.1 registration failed: %d\n",
-+			   __func__, ret);
-+		gpio_free(ON_BD_USB_OVC);
-+		gpio_free(DA850_USB_VBUS_PIN);
-+	}
-+#endif
-+
-+	return;
-+}
-+
-+static int enbw_cmc_mmc_get_ro(int index)
-+{
-+	return 0;
-+}
-+
-+static int enbw_cmc_mmc_get_cd(int index)
-+{
-+	return gpio_get_value(ENBW_CMC_MMCSD_CD_PIN) ? 1 : 0;
-+}
-+
-+static struct davinci_mmc_config enbw_cmc_mmc_config = {
-+	.get_ro		= enbw_cmc_mmc_get_ro,
-+	.get_cd		= enbw_cmc_mmc_get_cd,
-+	.wires		= 4,
-+	.max_freq	= 50000000,
-+	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
-+	.version	= MMC_CTLR_VERSION_2,
-+};
-+
-+static int __init enbw_cmc_config_emac(void)
-+{
-+	void __iomem *cfg_chip3_base;
-+	u32 val;
-+	struct davinci_soc_info *soc_info = &davinci_soc_info;
-+
-+	if (!machine_is_enbw_cmc())
-+		return 0;
-+
-+	cfg_chip3_base = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
-+	val = __raw_readl(cfg_chip3_base);
-+	val &= ~BIT(8);
-+	pr_info("EMAC: MII PHY configured, RMII PHY will not be"
-+						" functional\n");
-+
-+	/* configure the CFGCHIP3 register for MII */
-+	__raw_writel(val, cfg_chip3_base);
-+
-+	/* use complete info from OF */
-+	soc_info->emac_pdata = NULL;
-+
-+	return 0;
-+}
-+device_initcall(enbw_cmc_config_emac);
-+
-+static const s16 da850_dma0_rsv_chans[][2] = {
-+	/* (offset, number) */
-+	{-1, -1}
-+};
-+
-+static const s16 da850_dma0_rsv_slots[][2] = {
-+	/* (offset, number) */
-+	{-1, -1}
-+};
-+
-+static const s16 da850_dma1_rsv_chans[][2] = {
-+	/* (offset, number) */
-+	{-1, -1}
-+};
-+
-+static const s16 da850_dma1_rsv_slots[][2] = {
-+	/* (offset, number) */
-+	{-1, -1}
-+};
-+
-+static struct edma_rsv_info da850_edma_cc0_rsv = {
-+	.rsv_chans	= da850_dma0_rsv_chans,
-+	.rsv_slots	= da850_dma0_rsv_slots,
-+};
-+
-+static struct edma_rsv_info da850_edma_cc1_rsv = {
-+	.rsv_chans	= da850_dma1_rsv_chans,
-+	.rsv_slots	= da850_dma1_rsv_slots,
-+};
-+
-+static struct edma_rsv_info *da850_edma_rsv[2] = {
-+	&da850_edma_cc0_rsv,
-+	&da850_edma_cc1_rsv,
-+};
-+
-+#ifdef CONFIG_CPU_FREQ
-+static __init int da850_evm_init_cpufreq(void)
-+{
-+	switch (system_rev & 0xF) {
-+	case 3:
-+		da850_max_speed = 456000;
-+		break;
-+	case 2:
-+		da850_max_speed = 408000;
-+		break;
-+	case 1:
-+		da850_max_speed = 372000;
-+		break;
-+	}
-+
-+	return da850_register_cpufreq("pll0_sysclk3");
-+}
-+#else
-+static __init int da850_evm_init_cpufreq(void) { return 0; }
-+#endif
-+
-+struct of_dev_auxdata enbw_cmc_auxdata_lookup[] __initdata = {
-+	OF_DEV_AUXDATA("ti,davinci-wdt", 0x01c21000, "ti,davinci-wdt", NULL),
-+	OF_DEV_AUXDATA("ti,davinci-i2c", 0x01c22000, "i2c_davinci.1", NULL),
-+	OF_DEV_AUXDATA("ti,davinci-i2c", 0x01e28000, "i2c_davinci.2", NULL),
-+	OF_DEV_AUXDATA("ti,davinci-dm6467-emac", 0x01e20000, "davinci_emac.1",
-+			NULL),
-+	{}
-+};
-+
-+const struct of_device_id enbw_cmc_bus_match_table[] = {
-+	{ .compatible = "simple-bus", },
-+	{ .compatible = "ti,da850", },
-+	{ .compatible = "ti,davinci-onchipram", },
-+	{ .compatible = "ti,davinci-aemif", },
-+	{} /* Empty terminated list */
-+};
-+
-+static __init void enbw_cmc_init(void)
-+{
-+	int ret;
-+
-+	of_platform_populate(NULL, enbw_cmc_bus_match_table,
-+		enbw_cmc_auxdata_lookup, NULL);
-+
-+	ret = da8xx_register_watchdog();
-+	if (ret)
-+		pr_warning("enbw_cmc_init: watchdog registration failed: %d\n",
-+				ret);
-+
-+	ret = da850_register_edma(da850_edma_rsv);
-+	if (ret)
-+		pr_warning("enbw_cmc_init: edma registration failed: %d\n",
-+				ret);
-+
-+	/*
-+	 * shut down uart 0 this port is not used on the board
-+	 */
-+	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
-+
-+	ret = da8xx_register_rtc();
-+	if (ret)
-+		pr_warning("enbw_cmc_init: rtc setup failed: %d\n", ret);
-+
-+	ret = da850_evm_init_cpufreq();
-+	if (ret)
-+		pr_warning("enbw_cmc_init: cpufreq registration failed: %d\n",
-+				ret);
-+
-+	ret = da8xx_register_cpuidle();
-+	if (ret)
-+		pr_warning("enbw_cmc_init: cpuidle registration failed: %d\n",
-+				ret);
-+
-+	ret = gpio_request(ENBW_CMC_MMCSD_CD_PIN, "MMC CD\n");
-+	if (ret)
-+		pr_warning("enbw_cmc_init: can not open GPIO %d\n",
-+				ENBW_CMC_MMCSD_CD_PIN);
-+	gpio_direction_input(ENBW_CMC_MMCSD_CD_PIN);
-+
-+	ret = da850_register_mmcsd1(&enbw_cmc_mmc_config);
-+	if (ret)
-+		pr_warning("enbw_cmc_init: mmcsd1 registration failed:"
-+				" %d\n", ret);
-+
-+	enbw_cmc_usb_init();
-+}
-+
-+#ifdef CONFIG_SERIAL_8250_CONSOLE
-+static int __init enbw_cmc_console_init(void)
-+{
-+	if (!machine_is_enbw_cmc())
-+		return 0;
-+
-+	return add_preferred_console("ttyS", 2, "115200");
-+}
-+console_initcall(enbw_cmc_console_init);
-+#endif
-+
-+static void __init enbw_cmc_map_io(void)
-+{
-+	da850_init();
-+}
-+
-+static const char *enbw_cmc_board_compat[] __initconst = {
-+	"enbw,cmc",
-+	NULL
-+};
-+
-+MACHINE_START(ENBW_CMC, "EnBW CMC")
-+	.map_io		= enbw_cmc_map_io,
-+	.init_irq	= cp_intc_init,
-+	.timer		= &davinci_timer,
-+	.init_machine	= enbw_cmc_init,
-+	.dt_compat	= enbw_cmc_board_compat,
-+	.dma_zone_size	= SZ_128M,
-+	.restart	= da8xx_restart,
-+MACHINE_END
-diff --git a/arch/arm/mach-davinci/include/mach/uncompress.h b/arch/arm/mach-davinci/include/mach/uncompress.h
-index da2fb2c..6119543 100644
---- a/arch/arm/mach-davinci/include/mach/uncompress.h
-+++ b/arch/arm/mach-davinci/include/mach/uncompress.h
-@@ -98,6 +98,7 @@ static inline void __arch_decomp_setup(unsigned long arch_id)
- 		DEBUG_LL_DA8XX(davinci_da850_evm,	2);
- 		DEBUG_LL_DA8XX(mityomapl138,		1);
- 		DEBUG_LL_DA8XX(omapl138_hawkboard,	2);
-+		DEBUG_LL_DA8XX(enbw_cmc,		2);
- 
- 		/* TNETV107x boards */
- 		DEBUG_LL_TNETV107X(tnetv107x,		1);
+ 	struct ubifs_debug_info *dbg;
+ };
+
 -- 
-1.7.7.6
+1.7.5.4
