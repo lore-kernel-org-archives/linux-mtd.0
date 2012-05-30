@@ -1,22 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SZfzA-0005Ty-Nj
- for linux-mtd@lists.infradead.org; Wed, 30 May 2012 10:18:37 +0000
-Message-ID: <4FC5F3DC.7050201@nod.at>
-Date: Wed, 30 May 2012 12:18:04 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH] ubi: fastmap: harmonize medium erase-counter seek
- algorithm
-References: <20120529164811.5e86b190@pixies.home.jungo.com>
-In-Reply-To: <20120529164811.5e86b190@pixies.home.jungo.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig1840CD128365A5951FC0A09D"
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- Artem Bityutskiy <dedekind1@gmail.com>
+From: Heiko Schocher <hs@denx.de>
+To: davinci-linux-open-source@linux.davincidsp.com
+Subject: [PATCH v5 0/7] ARM: davinci: add support for the am1808 based
+ enbw_cmc board
+Date: Wed, 30 May 2012 12:18:56 +0200
+Message-Id: <1338373143-7467-1-git-send-email-hs@denx.de>
+Cc: Kevin Hilman <khilman@ti.com>, Sergei Shtylyov <sshtylyov@mvista.com>,
+ netdev@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
+ Sekhar Nori <nsekhar@ti.com>, Wolfram Sang <w.sang@pengutronix.de>,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+ Heiko Schocher <hs@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +20,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1840CD128365A5951FC0A09D
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+this patchserie add support for the davinci am1808 based
+enbw_cmc board.
 
-Am 29.05.2012 15:48, schrieb Shmulik Ladkani:
-> Currently, there are two different locations where a wear-leveling entr=
-y
-> with a medium erase counter is looked-for, with the same search algorit=
-hm
-> duplicated.
->=20
-> Harmonize this by introducing a common function 'find_mean_wl_entry'.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+changes for v2:
+Post this patchserie now as v2, as reworked in the
+comments I got for the RFC serie.
 
-Applied!
+changes for v3:
+- Interrupt Controller:
+  - comment from Sergei Shtylyov:
+    - rename compatible" prop to "ti,cp_intc"
+    - cp_intc_init() is now also for the of case
+      the name of the init function (it calls the
+      "new" __cp_intc_init() function, which was
+      the "old" cp_intc_init()). Through this
+      rework the changes for OF is better visible.
+      As the OF case uses the irq_domain rework from
+      Grant Likely, maybe the none OF case can use
+      this also, but this should be tested on a hw ...
 
-Thanks,
-//richard
+changes for v4:
+- Interrupt Controller:
+  - split in two patches as Nori Sekhar suggested
+    one for the irq_domain change
+    one for DT support
+  - add comment from Grant Likely for the DT part:
+    remove if/else clause, not needed.
+    Make use of DT runtime configurable
+    The non OF case is not tested!
 
+changes for v5:
+- Interrupt Controller:
+  add comments from Sergei Shtylyov:
+  - s/intc/cp_intc in commit subject
+  - Codingstyle fixes
+  add comment from Grant Likely:
+  - rename compatible" prop to "ti,cp-intc"
+  - call irq_domain_add also in the non DT case
+    (was fixed in v4)
+  - switched from using d->irq to d->hwirq for the hardware
+    irq number in irq_chip hooks
+- I2C DT support:
+  add comments from Grant Likely:
+  - do not change value of dev->dev->platform_data, instead
+    hold a copy in davinci_i2c_dev.
+      
+Got no comments to the following points, I noted in the
+RFC series, so posting this patchseries with them:
 
---------------enig1840CD128365A5951FC0A09D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+- ARM: davinci: configure davinci aemif chipselects through OF
+  not moved to mfd, as mentioned in this discussion:
+  http://davinci-linux-open-source.1494791.n2.nabble.com/PATCH-arm-davinci-configure-davinci-aemif-chipselects-through-OF-td7059739.html
+  instead use a phandle in the DTS, so drivers which
+  uses the davinci aemif, can call davinci_aemif_setup_timing_of()
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+  This is just thought as an RFC ... The enbw_cmc board
+  support not really need to setup this bus timings, as
+  they are setup in U-Boot ... but I want to post this,
+  as I think, it is a nice to have, and I am not really
+  sure, if this has to be a MFD device (If so, all bus
+  interfaces for other SoCs should be converted also to
+  MFD devices) ... as an example how this can be used
+  I add this to the davinci nand controller OF support
+  patch, in this patchserie.
 
-iQEcBAEBAgAGBQJPxfPgAAoJEN9758yqZn9evwUH/32OThfN0W2XfZVaigCLg1Gy
-+7Y5WINVicSuLt9C5XPZ3w/aoUwsDET0c5JF6AM/D15mNcH9KRckCTA/5JcrKUmA
-rmsD5u7qiXeGIKLMQ1wVv2DZ/93Sbty61hzYWzpNnyapzXZ3y1IAnVVjRPfDmcSj
-Zy9rOvTavFE/A75tpUIeyBjSfki4aLPK5JQWHuDthxWPOtM3DHISXHGQOgqth2P+
-NbmMzxC3BORUGPR/B/+mbXWbb4FsvSWQiJ9OBKIBHl70e2uDIy+v6bkRQazbE71x
-9tPy20Dabp4utWNIMs5no+HtVXd9ucDP3VMVqqEbyzL/Dferx6kZswQ3AYQQ1Kk=
-=cnfs
------END PGP SIGNATURE-----
+- ARM: davinci: mux: add OF support
+  I want to get rid of the pin setup code in board code ...
+  This patch introduces a davinci_cfg_reg_of() function,
+  which davinci drivers can call, if they found a
+  "pinmux-handle", so used in the following drivers in
+  this patchserie:
 
---------------enig1840CD128365A5951FC0A09D--
+  drivers/net/ethernet/ti/davinci_emac
+  drivers/i2c/busses/i2c-davinci.c
+  drivers/mtd/nand/davinci_nand.c
+
+  This is removed for v4 serie, as Nori Sekhar suggested.
+
+- post this board support with USB support, even though
+  USB is only working with the 10 ms "workaround", posted here:
+  http://comments.gmane.org/gmane.linux.usb.general/54505
+  I see this issue also on the AM1808 TMDXEXP1808L evalboard.
+
+  change for v4:
+  The 10 ms delay is no longer needed, see discussion here:
+
+  http://www.spinics.net/lists/linux-usb/msg64232.html
+
+  shows the way to go ...
+
+- MMC and USB are not using OF support yet, ideas how to port
+  this are welcome. I need for USB and MMC board specific
+  callbacks, how to solve this with OF support?
+
+Signed-off-by: Heiko Schocher <hs@denx.de>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: devicetree-discuss@lists.ozlabs.org
+Cc: davinci-linux-open-source@linux.davincidsp.com
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-i2c@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Sekhar Nori <nsekhar@ti.com>
+Cc: Kevin Hilman <khilman@ti.com>
+Cc: Wolfgang Denk <wd@denx.de>
+Cc: Sergei Shtylyov <sshtylyov@mvista.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+
+Heiko Schocher (7):
+  ARM: davinci, cp_intc: Add irq domain support
+  ARM: davinci, cp_intc: Add OF support for TI interrupt controller
+  ARM: davinci: configure davinci aemif chipselects through OF
+  ARM: davinci: net: davinci_emac: add OF support
+  ARM: davinci: i2c: add OF support
+  ARM: mtd: nand: davinci: add OF support for davinci nand controller
+  ARM: davinci: add support for the am1808 based enbw_cmc board
+
+ .../devicetree/bindings/arm/davinci/aemif.txt      |  119 +++++++
+ .../devicetree/bindings/arm/davinci/i2c.txt        |   31 ++
+ .../devicetree/bindings/arm/davinci/intc.txt       |   27 ++
+ .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++
+ .../devicetree/bindings/net/davinci_emac.txt       |   41 +++
+ arch/arm/boot/dts/enbw_cmc.dts                     |  172 +++++++++
+ arch/arm/configs/enbw_cmc_defconfig                |  123 +++++++
+ arch/arm/mach-davinci/Kconfig                      |    9 +
+ arch/arm/mach-davinci/Makefile                     |    1 +
+ arch/arm/mach-davinci/aemif.c                      |   86 +++++-
+ arch/arm/mach-davinci/board-enbw-cmc.c             |  374 ++++++++++++++++++++
+ arch/arm/mach-davinci/cp_intc.c                    |   83 ++++-
+ arch/arm/mach-davinci/include/mach/aemif.h         |    1 +
+ arch/arm/mach-davinci/include/mach/uncompress.h    |    1 +
+ drivers/i2c/busses/i2c-davinci.c                   |   49 +++-
+ drivers/mtd/nand/davinci_nand.c                    |   80 ++++-
+ drivers/net/ethernet/ti/davinci_emac.c             |   87 +++++-
+ 17 files changed, 1335 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/aemif.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/i2c.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/intc.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+ create mode 100644 Documentation/devicetree/bindings/net/davinci_emac.txt
+ create mode 100644 arch/arm/boot/dts/enbw_cmc.dts
+ create mode 100644 arch/arm/configs/enbw_cmc_defconfig
+ create mode 100644 arch/arm/mach-davinci/board-enbw-cmc.c
+
+-- 
+1.7.7.6
