@@ -1,19 +1,17 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SZvwB-0001Li-Bo
- for linux-mtd@lists.infradead.org; Thu, 31 May 2012 03:20:37 +0000
-Received: by yhjj52 with SMTP id j52so418592yhj.36
- for <linux-mtd@lists.infradead.org>; Wed, 30 May 2012 20:20:32 -0700 (PDT)
-From: Charles Manning <cdhmanning@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Dynamically changing from hwecc to swecc
-Date: Thu, 31 May 2012 15:20:28 +1200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Received: from 187-072-214-250.static.ctbctelecom.com.br ([187.72.214.250]
+ helo=uberlandia.mg.gov.br)
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SZzlB-00016j-It
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2012 07:25:30 +0000
+Date: Thu, 31 May 2012 04:21:11 -0300 (BRT)
+From: Capt James Hans <emef.domoreno@uberlandia.mg.gov.br>
+Subject: Greeting from Kabul...
+Message-ID: <c6cd8d20-916c-4b6a-aef8-0c8f8208dd9b@mailzcs.uberlandia.mg.gov.br>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201205311520.28214.manningc2@actrix.gen.nz>
+MIME-Version: 1.0
+To: undisclosed-recipients:;
+Reply-To: Capt James Hans <captjhans@gmx.us>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All
 
-u-boot allows you to change between hw and sw ecc on the fly. This is pretty 
-handy for various purposes.
 
-Is there a way to do this under Linux?
 
-Thanks.
+Hello,
 
--- CHarles
+I am Cpt. James Hans an officer of the U.S Army, serving with the 82nd Airborne Division Peace keeping force in Kabul,Afghanistan.
+
+We are currently in Afghanistan and I have some important items that i need to ship to you.I need you to reply only if you are interested.I will explain further when i get a response from you and here is my private email: captjhans@gmx.us
+
+Cpt. James Hans.
