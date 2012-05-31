@@ -1,21 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from ns1.gatteins.it ([193.58.239.94])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sa2lX-0001Gy-PE
- for linux-mtd@lists.infradead.org; Thu, 31 May 2012 10:38:04 +0000
-Message-ID: <4FC74A04.30100@intel.com>
-Date: Thu, 31 May 2012 13:37:56 +0300
-From: Adrian Hunter <adrian.hunter@intel.com>
+ id 1Sa4FA-0004Kb-R2
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2012 12:12:45 +0000
+Received: from [10.16.100.127] (net-130-0-156-18.cust.dsl.vodafone.it
+ [130.0.156.18])
+ by ns1.gatteins.it (Postfix) with ESMTPA id 8226DDEF25
+ for <linux-mtd@lists.infradead.org>; Thu, 31 May 2012 14:12:52 +0200 (MEST)
+Message-ID: <4FC76039.6020701@sirius-es.it>
+Date: Thu, 31 May 2012 14:12:41 +0200
+From: Matteo Facchinetti <matteo.facchinetti@sirius-es.it>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-References: <1337771191-95358-1-git-send-email-richard@nod.at>
- <1337771191-95358-2-git-send-email-richard@nod.at>
-In-Reply-To: <1337771191-95358-2-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: mtd nand erase and bad block
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23/05/12 14:06, Richard Weinberger wrote:
-> Fastmap (aka checkpointing) allows attaching of an UBI volume in nearly
-> constant time. Only a fixed number of PEBs has to be scanned.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/Makefile    |    2 +-
->  drivers/mtd/ubi/attach.c    |   34 +-
->  drivers/mtd/ubi/build.c     |   25 +
->  drivers/mtd/ubi/eba.c       |   18 +-
->  drivers/mtd/ubi/fastmap.c   | 1240 +++++++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/ubi/ubi-media.h |  119 +++++
->  drivers/mtd/ubi/ubi.h       |   68 +++-
->  drivers/mtd/ubi/wl.c        |  184 +++++++-
->  8 files changed, 1667 insertions(+), 23 deletions(-)
->  create mode 100644 drivers/mtd/ubi/fastmap.c
-> 
+Hi,
 
-...
+I'm developing a mtd driver for a nand flash controller and I need help;
+I'm to the end of the work, and I have problems and dubts about bad 
+block handling.
 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> new file mode 100644
-> index 0000000..7757e5a
+For test, I mark manually bad block byte on flash block.
+When I erase with flash_erase, all works and skip the bad block:
+:~# flash_erase /dev/mtd6 0 0
+Erasing 1024 Kibyte @ 100000 --  2 % complete flash_erase: Skipping bad 
+block at 00200000
+Erasing 1024 Kibyte @ 2700000 -- 100 % complete
 
-...
+If I try to erase with -N parameter I read the following output:
+~# flash_erase -N /dev/mtd6 0 0 
 
-> +/**
-> + * ubi_find_fastmap - searches the first UBI_FM_MAX_START PEBs for the
-> + * fastmap super block.
-> + * @ubi: UBI device object
-> + */
-> +static int ubi_find_fastmap(struct ubi_device *ubi, int *fm_start)
-> +{
-> +	int i, ret;
-> +	struct ubi_vid_hdr *vhdr;
-> +
-> +	vhdr = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
-> +	if (!vhdr)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < UBI_FM_MAX_START; i++) {
-> +		ret = ubi_io_read_vid_hdr(ubi, i, vhdr, 0);
-> +		if (ret < 0)
-> +			break;
-> +		else if (ret > 0)
-> +			continue;
-> +
-> +		if (be32_to_cpu(vhdr->vol_id) == UBI_FM_SB_VOLUME_ID) {
-> +			*fm_start = i;
-> +			dbg_bld("Found fastmap super block at PEB %i\n", i);
-> +			ret = 0;
-> +
-> +			break;
+Erasing 1024 Kibnand_erase_nand: attempt to erase a bad block at page 
+0x00001600
+yte @ 200000 --  5 % complete libmtd: error!: MEMERASE64 ioctl failed 
+for eraseblock 2 (mtd6)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd6: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ 2700000 -- 100 % complete
 
-How do you know that this is the current fastmap and not a remnant of an old
-fastmap?
+I espected that with -N option, flash_erase should erase the 
+hand-damaged block, recovering the usability of the block. Is it true?
 
-> +		}
-> +	}
-> +
-> +	ubi_free_vid_hdr(ubi, vhdr);
-> +
-> +	return ret;
-> +}
+What's going wrong?
+
+Best Regards,
+Matteo
