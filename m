@@ -1,21 +1,15 @@
-Received: from ns1.gatteins.it ([193.58.239.94])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sa6Mh-0006hR-G7
- for linux-mtd@lists.infradead.org; Thu, 31 May 2012 14:28:40 +0000
-Received: from [10.16.100.127] (net-130-0-156-18.cust.dsl.vodafone.it
- [130.0.156.18])
- by ns1.gatteins.it (Postfix) with ESMTPA id 5FE05DEF24
- for <linux-mtd@lists.infradead.org>; Thu, 31 May 2012 16:28:49 +0200 (MEST)
-Message-ID: <4FC78012.5010704@sirius-es.it>
-Date: Thu, 31 May 2012 16:28:34 +0200
-From: Matteo Facchinetti <matteo.facchinetti@sirius-es.it>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: mtd nand erase and bad block
-References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
-In-Reply-To: <4FC771EC.4090500@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from oproxy5.bluehost.com ([2605:dc00:100:2::a5]
+ helo=oproxy5-pub.bluehost.com)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sa7Su-0000it-7T
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2012 15:39:09 +0000
+From: "ing. Federico Fuga" <fuga@studiofuga.com>
+To: 
+Subject: [PATCH] MTD: add JEDEC ID for w25q32wd to chip table
+Date: Thu, 31 May 2012 17:38:52 +0200
+Message-Id: <1338478732-31992-1-git-send-email-fuga@studiofuga.com>
+Cc: fuga@studiofuga.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/31/2012 03:28 PM, Adrian Hunter wrote:
-> On 31/05/12 15:12, Matteo Facchinetti wrote:
->> Hi,
->>
->> I'm developing a mtd driver for a nand flash controller and I need help;
->> I'm to the end of the work, and I have problems and dubts about bad block
->> handling.
->>
->> For test, I mark manually bad block byte on flash block.
->> When I erase with flash_erase, all works and skip the bad block:
->> :~# flash_erase /dev/mtd6 0 0
->> Erasing 1024 Kibyte @ 100000 --  2 % complete flash_erase: Skipping bad
->> block at 00200000
->> Erasing 1024 Kibyte @ 2700000 -- 100 % complete
->>
->> If I try to erase with -N parameter I read the following output:
->> ~# flash_erase -N /dev/mtd6 0 0
->> Erasing 1024 Kibnand_erase_nand: attempt to erase a bad block at page
->> 0x00001600
->> yte @ 200000 --  5 % complete libmtd: error!: MEMERASE64 ioctl failed for
->> eraseblock 2 (mtd6)
->>          error 5 (Input/output error)
->> flash_erase: error!: /dev/mtd6: MTD Erase failure
->>               error 5 (Input/output error)
->> Erasing 1024 Kibyte @ 2700000 -- 100 % complete
->>
->> I espected that with -N option, flash_erase should erase the hand-damaged
->> block, recovering the usability of the block. Is it true?
->>
->> What's going wrong?
->
-> The NAND driver has validation to prevent erasure of bad blocks.  Refer
-> nand_erase_nand() in drivers/mtd/nand/nand_base
->
-> 		/* Check if we have a bad block, we do not erase bad blocks! */
-> 		if (nand_block_checkbad(mtd, ((loff_t) page)<<
-> 					chip->page_shift, 0, allowbbt)) {
-> 			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
-> 				    __func__, page);
-> 			instr->state = MTD_ERASE_FAILED;
-> 			goto erase_exit;
-> 		}
->
->
-this means that -N parameter bypass only the BBT table check, but in the 
-erase routine there is a low level check that forbids the bad block erase.
+From: "ing. Federico Fuga" <fuga@studiofuga.com>
 
-What's the way for recheck bad blocks and refresh the BBT from userspace 
-application?
+Adds JEDEC ID for the 1.8V version of WinBond w25q32
 
+Signed-off-by: Federico Fuga <fuga@studiofuga.com>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Matteo
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7c60ddd..93ea3c1 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -757,6 +757,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
++	{ "w25q32wd", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
+ 
+-- 
+1.7.9.5
