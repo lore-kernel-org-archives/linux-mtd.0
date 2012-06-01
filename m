@@ -1,14 +1,17 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SaTb0-0001g7-Sz
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 15:17:00 +0000
+ id 1SaTb0-0001g8-Q7
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 15:17:01 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: UBI: Fastmap updates (v7+)
-Date: Fri,  1 Jun 2012 17:16:21 +0200
-Message-Id: <1338563804-85990-1-git-send-email-richard@nod.at>
-Cc: dedekind1@gmail.com, adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
- shmulik.ladkani@gmail.com, tglx@linutronix.de, tim.bird@am.sony.com
+Subject: [PATCH 01/23] UBI: Fastmap: Fix EC overflow calculation
+Date: Fri,  1 Jun 2012 17:16:22 +0200
+Message-Id: <1338563804-85990-2-git-send-email-richard@nod.at>
+In-Reply-To: <1338563804-85990-1-git-send-email-richard@nod.at>
+References: <1338563804-85990-1-git-send-email-richard@nod.at>
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de, shmulik.ladkani@gmail.com,
+ tglx@linutronix.de, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These patches apply on Artems fastmap tree.
-git://git.infradead.org/linux-ubi.git#fastmap
+Checking for an overflow without a be64_to_cpu() make no sense...
 
-[PATCH 01/23] UBI: Fastmap: Fix EC overflow calculation
-[PATCH 02/23] UBI: Fastmap: Introduce fm_mutex
-[PATCH 03/23] UBI: Fastmap: Fix find_fastmap() logic.
-[PATCH 04/23] UBI: Fastmap: Write a fastmap also at detaching
-[PATCH 05/23] UBI: Fastmap: Fix memory corruption
-[PATCH 06/23] UBI: Fastmap: Serialize ubi_wl_get_peb()
-[PATCH 07/23] UBI: Fastmap: Simplify ubi_wl_put_fm_peb() logic
-[PATCH 08/23] UBI: Fastmap: make ubi_is_fm_block() static
-[PATCH 09/23] UBI: Fastmap: Remove ubi->old_fm logic
-[PATCH 10/23] UBI: Fastmap: Allocate and free ubi_attach_info in
-[PATCH 11/23] UBI: Fastmap: Fix messages
-[PATCH 12/23] ubi: fastmap: harmonize medium erase-counter seek
-[PATCH 13/23] UBI: Fastmap: Add comments to fastmap paremters
-[PATCH 14/23] UBI: Fastmap: Rename fastmap attributes
-[PATCH 15/23] UBI: Fastmap: Use reserved_pebs
-[PATCH 16/23] UBI: Fastmap: Store bad_peb_count in fastmap
-[PATCH 17/23] UBI: Fastmap: Add ubi_assert()
-[PATCH 18/23] UBI: Fastmap: Handle bitflipps correctly
-[PATCH 19/23] UBI: Fastmap: Handle protection queue correctly
-[PATCH 20/23] UBI: Fastmap: Write fastmap only at detach time if
-[PATCH 21/23] UBI: Fastmap: Fix error message
-[PATCH 22/23] UBI: Fastmap: Address one of Artems TODOs
-[PATCH 23/23] UBI: Fastmap: Make checkpatch.pl happy (again)
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/fastmap.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-All patches have been tested with ubi-tests.
-
-TODO:
-- Add a function to UBI which produces a free PEB to be used as
-  fastmap super block.
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 2ba2a80..56479df 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1163,6 +1163,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 		/* no fresh early PEB was found, reuse the old one */
+ 		if (new_fm->e[0]->pnum < 0) {
+ 			struct ubi_ec_hdr *ec_hdr;
++			long long ec;
+ 
+ 			ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+ 			if (!ec_hdr) {
+@@ -1193,8 +1194,9 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 				return ret;
+ 			}
+ 
+-			ec_hdr->ec += ret;
+-			if (ec_hdr->ec > UBI_MAX_ERASECOUNTER) {
++			ec = be64_to_cpu(ec_hdr->ec);
++			ec += ret;
++			if (ec > UBI_MAX_ERASECOUNTER) {
+ 				ubi_err("Erase counter overflow!");
+ 				kfree(new_fm);
+ 				kfree(ec_hdr);
+-- 
+1.7.6.5
