@@ -1,23 +1,23 @@
-Received: from eu1sys200aog119.obsmtp.com ([207.126.144.147])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SaTmY-0007BX-P2
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 15:28:56 +0000
-Message-ID: <4FC8DFAB.30700@st.com>
-Date: Fri, 01 Jun 2012 16:28:43 +0100
-From: Angus CLARK <angus.clark@st.com>
-MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: mtd nand erase and bad block
-References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
- <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
- <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
- <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
- <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
- <20120601175407.7c39a8fb@halley>
-In-Reply-To: <20120601175407.7c39a8fb@halley>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SaVzc-000294-MW
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 17:50:33 +0000
+Received: by bkwj4 with SMTP id j4so2808879bkw.36
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2012 10:50:30 -0700 (PDT)
+Message-ID: <1338573027.2053.9.camel@koala>
+Subject: Re: UBI: Fastmap updates (v7+)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 01 Jun 2012 20:50:27 +0300
+In-Reply-To: <1338563804-85990-1-git-send-email-richard@nod.at>
+References: <1338563804-85990-1-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-abT3Ya+Vs5iLxJZX0LZC"
+Mime-Version: 1.0
+Cc: adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
+ tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,93 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Shmulik,
 
-On 06/01/2012 03:54 PM, Shmulik Ladkani wrote:
-> Hi Angus,
-> 
-> On Fri, 01 Jun 2012 15:03:19 +0100 Angus CLARK <angus.clark@st.com> wrote:
->> Hi Shmulik,
->>
->>>>>
->>>>> Typically, debugfs is only enabled in development environments, and even then it
->>>>> requires explicit user action, so this method of enabling erasing bad blocks is
->>>>> safe enough for our needs.
->>>>
->>>> Sounds ok to me, especially if you send the patch together with a piece
->>>> of doc for the mtd web-site. I just think it is important to document
->>>> this feature. Is this doable?
->>>
->>> I think we should prefer a local "allow erase bad blocks" policy than a
->>> global one.
->>>
->>> This is because when the global debugfs flag is on, *every* mtd erase
->>> operation might lead to erasure of bad blocks - not necessarily those
->>> triggered by the user which set the flag prior issuing his 'flash_erase'
->>> command.
->>>
->>> Meaning, other MTD users (ubi, various ffs) which currently work on
->>> other mtd partitions, are suddenly relaxed and allowed to erase bad
->>> blocks - which is probably not what user intented.
->>>
->>> I suggest to be more restrictive and have the "allow erase bad blocks"
->>> propery be local policy, that is - per an erase request.
->>>
->>> And since we'll probably need this thing only for userspace erase
->>> calls (e.g. flash_erase) - I suggest placing it into the MEMERASE ioctl.
->>>
->>> Comments?
->>>
->>
->> I would agree to some extent.  Enabling the "allow erase bad blocks" option per
->> erase request would certainly be a safer solution.  However, I suspect extending
->> the existing MEMERASE/MEMERASE64 IOCTLs is not really an option.  That leaves
->> inventing another IOCTL, or perhaps adding another file mode, which would
->> achieve per-file-descriptor scope, if not per-erase-request.
->>
->> My approach was largely motivated by the desire not to change the existing ABI,
->> and/or mtd-utils.  One could argue that such an option should only ever be
->> enabled by someone who knows what they are doing, and that might include things
->> like un-mounting any filesystems beforehand.
->>
->> To be honest, I am in two minds.  The solution I have at present is very simple
->> (or perhaps naive!), requires minimial changes to the kernel, no changes to
->> mtd-utils, and can be disabled completely by not including debugfs (which is
->> standard practice on production systems).  On the other hand, the ability to
->> enable per-erase-request is a safer and more elegant solution.  However, it
->> would require updates to mtd-utils, and agreement from the MTD community
->> regarding changes to the ABI...
->>
->> What do you think?
-> 
-> To be honest, I'm in two minds either ;)
-> 
-> I completely understand the reasons and motivation for a global
-> debugfs option. And it seems as a reasonable compromise.
-> 
-> OTOH, adding a new ioctl makes sense as we're offering a functionality
-> that didn't exist before.
-> 
-> Anyways, I guess its up to David or Artem.
-> 
-> My personal preference would be:
-> 1. A new ioctl (MEMSCRUB?)
-> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
-> 3. global debugfs flag
-> 
-> BTW what do you think about option (2)? Would you consider it, or do you
-> think it's an overdesign, if we already accept the debugfs way?
-> 
+--=-abT3Ya+Vs5iLxJZX0LZC
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Yes, option 2 could be a good compromise.  It would require a few extra hooks in
-mtdpart, to dynamically create/remove debugfs entries when partitions are
-added/deleted, and some updates to mtd_erase, to allow the flags to be passed to
-nand_base:nand_erase_nand(), but it shouldn't be too bad.  Perhaps moving it to
-sysfs might be cleaner?
+On Fri, 2012-06-01 at 17:16 +0200, Richard Weinberger wrote:
+> All patches have been tested with ubi-tests.
 
-In any case, I will wait for advice from David and Artem before commencing.  (I
-am away next week, so it will have to wait until I get back anyway.)
+While this is being reviewed, you could enable the bit-flips emulation
+in UBI (there is a debugfs switch for this) and test how this handles
+bit-flips.
 
-Cheers,
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Angus
+--=-abT3Ya+Vs5iLxJZX0LZC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPyQDjAAoJECmIfjd9wqK0nFEQAJM6o5XJIc2amP6qEVK2k+rd
+f7VkWV2ra2fHir30woz8fA15SJycYkHPGsvpj6x4j0QES/68GQwINxJgiMrOchnF
+b8pPw4iMC34vJDZjjCZS2ZdmZ/nC4R98Za0u+yJq2c/PHRP+as9GCM9zc51gUggH
+GsOo5pvWMGLQmNz2EETgrrgQq42ZaQPqQEv2VtLrGT8S1CX71HDqeNYYnZs46HKN
+ran/Uun0sT/vM72kH9eWUGePY++74Nntwdi5qO0tWXo9/1AuAM8JhBXlWeOgsMVU
+GiGiauMzIZR4RNXAMm+Hb/nN55po7NuQKJX1tN49mFeU9rgfWRtOKSkqD72ncboc
+Yg/9gyyCxVSElunVe+qNoglUtDzMZj02c17EPnkqoTGBJi2bX4vwTnEdcpN7nB32
+LDCuJM2cPm4yvUslrCRUSyJoTCvQkiShuAZZeRl0fv7qq85E6mcOZDdqpgx9oIVa
+ZbExEL6JQ6KpkYvb6uwqj81XPcXey1OuX12NP8+1kpdlCU4zxsihwZev8mirV1mI
+YvVMU8VGBHfuNAst5PD505pdagGMFG6oJKe1k3g2hqQryGZdp5H3On5EUGrElVou
+UkH7lcJ7TBDSdIy/+PC58BAcfTP2lCYaxD7UGD++VXaRGBCtssArnWhE9DVAVbUB
+jo61OfZQ7wgV38prC9/B
+=MvqA
+-----END PGP SIGNATURE-----
+
+--=-abT3Ya+Vs5iLxJZX0LZC--
