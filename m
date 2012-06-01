@@ -1,20 +1,19 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SaVzc-000294-MW
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 17:50:33 +0000
-Received: by bkwj4 with SMTP id j4so2808879bkw.36
- for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2012 10:50:30 -0700 (PDT)
-Message-ID: <1338573027.2053.9.camel@koala>
+ id 1SaW97-0002ZQ-Nu
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 18:00:22 +0000
+Message-ID: <4FC90330.4050804@nod.at>
+Date: Fri, 01 Jun 2012 20:00:16 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: UBI: Fastmap updates (v7+)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Fri, 01 Jun 2012 20:50:27 +0300
-In-Reply-To: <1338563804-85990-1-git-send-email-richard@nod.at>
 References: <1338563804-85990-1-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
+ <1338573027.2053.9.camel@koala>
+In-Reply-To: <1338573027.2053.9.camel@koala>
+Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="=-abT3Ya+Vs5iLxJZX0LZC"
-Mime-Version: 1.0
+ boundary="------------enig31E3115C9E7C01AADB87CE41"
 Cc: adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
  linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
  tim.bird@am.sony.com
@@ -27,43 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-abT3Ya+Vs5iLxJZX0LZC
-Content-Type: text/plain; charset="UTF-8"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig31E3115C9E7C01AADB87CE41
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-06-01 at 17:16 +0200, Richard Weinberger wrote:
-> All patches have been tested with ubi-tests.
+Am 01.06.2012 19:50, schrieb Artem Bityutskiy:
+> On Fri, 2012-06-01 at 17:16 +0200, Richard Weinberger wrote:
+>> All patches have been tested with ubi-tests.
+>=20
+> While this is being reviewed, you could enable the bit-flips emulation
+> in UBI (there is a debugfs switch for this) and test how this handles
+> bit-flips.
 
-While this is being reviewed, you could enable the bit-flips emulation
-in UBI (there is a debugfs switch for this) and test how this handles
-bit-flips.
+Of course I've tested fastmap already with bit-flips emulation. :-)
 
---=20
-Best Regards,
-Artem Bityutskiy
+Thanks,
+//richard
 
---=-abT3Ya+Vs5iLxJZX0LZC
+
+--------------enig31E3115C9E7C01AADB87CE41
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v2.0.18 (GNU/Linux)
 
-iQIcBAABAgAGBQJPyQDjAAoJECmIfjd9wqK0nFEQAJM6o5XJIc2amP6qEVK2k+rd
-f7VkWV2ra2fHir30woz8fA15SJycYkHPGsvpj6x4j0QES/68GQwINxJgiMrOchnF
-b8pPw4iMC34vJDZjjCZS2ZdmZ/nC4R98Za0u+yJq2c/PHRP+as9GCM9zc51gUggH
-GsOo5pvWMGLQmNz2EETgrrgQq42ZaQPqQEv2VtLrGT8S1CX71HDqeNYYnZs46HKN
-ran/Uun0sT/vM72kH9eWUGePY++74Nntwdi5qO0tWXo9/1AuAM8JhBXlWeOgsMVU
-GiGiauMzIZR4RNXAMm+Hb/nN55po7NuQKJX1tN49mFeU9rgfWRtOKSkqD72ncboc
-Yg/9gyyCxVSElunVe+qNoglUtDzMZj02c17EPnkqoTGBJi2bX4vwTnEdcpN7nB32
-LDCuJM2cPm4yvUslrCRUSyJoTCvQkiShuAZZeRl0fv7qq85E6mcOZDdqpgx9oIVa
-ZbExEL6JQ6KpkYvb6uwqj81XPcXey1OuX12NP8+1kpdlCU4zxsihwZev8mirV1mI
-YvVMU8VGBHfuNAst5PD505pdagGMFG6oJKe1k3g2hqQryGZdp5H3On5EUGrElVou
-UkH7lcJ7TBDSdIy/+PC58BAcfTP2lCYaxD7UGD++VXaRGBCtssArnWhE9DVAVbUB
-jo61OfZQ7wgV38prC9/B
-=MvqA
+iQEcBAEBAgAGBQJPyQMxAAoJEN9758yqZn9evikH/1QMfXbNR89A5ohWljNqgiIY
+U6LhyDZSw5SNqkVBLNP1/2C0Za8CW/ksbkSq6+0e4DOMjVn9+N5Imgl9JajeF700
+7UAlCIhpblbOxGRfw2UzBCmRH0bj7KnEhdM2xr4igWg5YsAwNR7cW2gvXitxGFim
+iTtO9u4Pka8uL9VLOy+Iih46A9A7Flfo3mRoiIc9fMxOecaTuvx7YyiHanZ2sQMe
+BJRVyI37TzlSD6B9A6MqupPjaqp3odDE6bmlyzqWyriTLfxZOth8WgmL15fCG00j
+WEr7fjZlFFiaEz2WfXANmIqlL4+o7oC0EHvAb3VFR8M0UT+tZVGw2m9n36DQshI=
+=ubuc
 -----END PGP SIGNATURE-----
 
---=-abT3Ya+Vs5iLxJZX0LZC--
+--------------enig31E3115C9E7C01AADB87CE41--
