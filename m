@@ -1,24 +1,25 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SaMwj-0006Kb-6j
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 08:10:57 +0000
-Message-ID: <4FC8790D.8070801@nod.at>
-Date: Fri, 01 Jun 2012 10:10:53 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from eu1sys200aog116.obsmtp.com ([207.126.144.141])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SaNEh-0006yO-DG
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 08:29:32 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 91BD4EF
+ for <linux-mtd@lists.infradead.org>; Fri,  1 Jun 2012 08:29:15 +0000 (GMT)
+Received: from mail7.sgp.st.com (mail7.sgp.st.com [164.129.223.81])
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 241AB2597
+ for <linux-mtd@lists.infradead.org>; Fri,  1 Jun 2012 08:29:15 +0000 (GMT)
+Message-ID: <4FC87D62.6020402@st.com>
+Date: Fri, 01 Jun 2012 09:29:22 +0100
+From: Angus CLARK <angus.clark@st.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] [RFC] UBI: Implement Fastmap support
-References: <1337771191-95358-1-git-send-email-richard@nod.at>
- <1337771191-95358-2-git-send-email-richard@nod.at>
- <4FC85780.9070200@intel.com> <4FC8768E.1010703@nod.at>
- <1338538244.2536.147.camel@sauron.fi.intel.com>
-In-Reply-To: <1338538244.2536.147.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig1E30CB438074B695CEEF2453"
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
+To: linux-mtd@lists.infradead.org
+Subject: Re: mtd nand erase and bad block
+References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
+ <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
+ <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1E30CB438074B695CEEF2453
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I have to do this regularly for testing new NAND drivers.  After getting fed up
+with doing temporary hacks all the time, I ended up adding a
+'nand_erasebadblock' entry to debugfs, which overrides the check in
+nand_erase_nand():
+...
+	if (!nand_erasebadblock &&
+	    nand_block_checkbad(mtd, ((loff_t) page) <<
+				chip->page_shift, 0, allowbbt)) {
+...
 
-Am 01.06.2012 10:10, schrieb Artem Bityutskiy:
-> On Fri, 2012-06-01 at 10:00 +0200, Richard Weinberger wrote:
->> True. But why is this a problem?
->> If we can recovers using a full scan after a power cut we are fine.
->=20
-> Does fastmap have zero power-cut tolerance by design?
+The sequence in userspace would then be something like:
 
-Yes.
-E.g. If the fastmap was not written corretly the CRC will not match and w=
-e fall back
-to scanning. That's why fastmap tries hard to fallback to scanning if any=
-thing goes wrong.
-Why should we make fastmap even more complicated than it already is?
+	target% echo 1 > /sys/kernel/debug/nand_erasebadblock
+	target% flash_erase -N /dev/mtd6 0x00200000 1
+	target% echo 0 > /sys/kernel/debug/nand_erasebadblock
 
-Thanks,
-//richard
+You need to be careful to only erase marked bad blocks that you know are
+actually good, or else you risk loosing the factory-programmed bad block markers.
 
+This method is also useful for erasing the BBTs, which will then force the
+driver to re-scan for OOB markers on the next boot.  Again care needs to be
+taken, as you may loose information about blocks that have gone bad through
+wear.  (The recent patch "mtd: nand: write BBM to OOB even with flash-based BBT"
+partly overcomes this issue.)
 
+Typically, debugfs is only enabled in development environments, and even then it
+requires explicit user action, so this method of enabling erasing bad blocks is
+safe enough for our needs.
 
+Happy to do a patch if others are interested...
 
---------------enig1E30CB438074B695CEEF2453
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Cheers,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Angus
 
-iQEcBAEBAgAGBQJPyHkOAAoJEN9758yqZn9eGcwH/jiz+9N7xd07v8Ttx7fHmZxh
-wTMw1IbIfBfZezWLhHjn2UOv3TG2UUdJTq97ZVtWjX6KXLDo8v/kaB8V1/aKELCl
-uWlIvjkZZ/MmhKgkUu/ektm0lnc4U6oWS+FAo8pQDgAOpoIzqfWLx9k5E3ozAJO0
-jGrVPoAcNSKzjQOtwEkJR2P5AOEAWSoVOyAo2UKyMKdEbF6Synk4UScPSVt+eRWs
-fbdgDxnY+izwe3VjBdM4Fxl8H+u2wN5Z5hRTGuQ1GFlS0Q0uEp7HGZ50uvlVAcaa
-3PIcDSIA4q5yHvkna5aahiLN1qSFv9Bm0QfThznLJM9zW+qyG63HQfwR74Hq08M=
-=mrC6
------END PGP SIGNATURE-----
-
---------------enig1E30CB438074B695CEEF2453--
+On 06/01/2012 07:37 AM, Ricard Wanderlof wrote:
+> 
+> On Fri, 1 Jun 2012, Adrian Hunter wrote:
+> 
+>>> What's the way for recheck bad blocks and refresh the BBT from userspace
+>>> application?
+>>
+>> I always just temporarily hack the kernel driver to allow the erase of
+>> the
+>> bad block in question.
+> 
+> I agree. Having that capability available at all times would be scary.
+> 
+> /Ricard
