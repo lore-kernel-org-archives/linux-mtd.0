@@ -1,24 +1,14 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SaOoH-0002dP-4b
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2012 10:10:22 +0000
-Date: Fri, 1 Jun 2012 12:10:11 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: Resizing of an existing UBIFS
-In-Reply-To: <4FC340D4.9020905@intel.com>
-Message-ID: <Pine.LNX.4.64.1206011133500.4247@lnxricardw.se.axis.com>
-References: <4FBB3506.3020904@bury.com>
- <1337669583.2483.88.camel@sauron.fi.intel.com>
- <4FBB3E7F.3080807@bury.com> <4FBF2DF7.8030809@intel.com>
- <4FBF396D.4070000@bury.com>
- <Pine.LNX.4.64.1205250958290.4247@lnxricardw.se.axis.com>
- <4FC340D4.9020905@intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Robert Homann <homann@bury.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
+Subject: [PATCH v10 1/3] MTD: at91: extract hw ecc initialization to one
+ function
+Date: Fri,  1 Jun 2012 18:13:12 +0800
+Message-Id: <1338545594-18483-2-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1338545594-18483-1-git-send-email-josh.wu@atmel.com>
+References: <1338545594-18483-1-git-send-email-josh.wu@atmel.com>
+Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, ivan.djelic@parrot.com,
+ plagnioj@jcrosoft.com, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +18,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch moves hw ecc initialization code to one function.
 
-On Mon, 28 May 2012, Adrian Hunter wrote:
+Signed-off-by: Hong Xu <hong.xu@atmel.com>
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |  127 +++++++++++++++++++++--------------------
+ 1 file changed, 66 insertions(+), 61 deletions(-)
 
-> On 25/05/12 11:00, Ricard Wanderlof wrote:
->>
->> On Fri, 25 May 2012, Robert Homann wrote:
->>
->>> It is definitely a lot simpler to just set this parameter to some big
->>> value and generate new images from scratch since the overhead in space
->>> consumption is not an issue in this case. But let's say, in my case the
->>> purpose of using such a resizing tool is not space optimization, but
->>> fixing a former decision...
->>
->> I think this is a most important point. Whatever sizing strategy and vol=
-ume
->> sizes that are decided upon, one can be sure that a couple of years down=
- the
->> line differing circumstances will require a re-think of that strategy, n=
-o
->> matter how well founded the decision was to start with.
->
-> Unless you set max_leb_cnt to match the media size.
->
-> The point is resizing when max_leb_cnt is not changed is much simpler.
-
-One point I ran into though is that when specifying a larger max-leb-cnt=20
-than the size of the volume, by default the journal size also increases
-(it is according to Artem 12% of the max-leb-cnt=20
-(http://lists.infradead.org/pipermail/linux-mtd/2012-March/040084.html),=20
-but on my system it seems to be less than that and varies with the LEB=20
-count; see below - perhaps 12% is the maximum size?).
-
-I've got a 128 MB flash with 128 kB blocks on my system, i.e. a LEB size=20
-of 129024 and a total LEB count for the whole device of 1024.
-
-Say you have an ~8 MB volume on the flash =3D 65 LEBs, and you create a fil=
-e=20
-system image for it with a max-leb-cnt of 65. This results in a default=20
-journal size of 903168 bytes according to mkfs.ubifs -v. (Incidentally,=20
-the journal size here appears to be about 11% of the total LEB count for=20
-the volume.)
-
-If you now create a file system image with a max-leb-cnt of 1024, this=20
-results in a default journal size of 8388608 =3D 8M which is larger than th=
-e=20
-space available in the volume. (Incidentally, the journal size in this=20
-case appears to be about 6% of the total LEB count specified).
-
-Of course, the volume size could be set to, say, 16 MB instead, but=20
-neverthless, 8 MB of this 16 MB volume is then wasted for a journal=20
-intended to fit a (future) larger volume size.
-
-So, just increasing max-leb-cnt causes a lot of wasted space in a small=20
-volume by default. Of course one could specify a smaller journal size, the=
-=20
-question is then what journal size to set? Are there any guidelines which=
-=20
-would be helpful in this case (Artem?) ?
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 2165576..4ea0a04 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -523,6 +523,66 @@ static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
+ }
+ #endif
+ 
++static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
++					 struct atmel_nand_host *host)
++{
++	struct mtd_info *mtd = &host->mtd;
++	struct nand_chip *nand_chip = &host->nand_chip;
++	struct resource		*regs;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!regs) {
++		dev_err(host->dev,
++			"Can't get I/O resource regs, use software ECC\n");
++		nand_chip->ecc.mode = NAND_ECC_SOFT;
++		return 0;
++	}
++
++	host->ecc = ioremap(regs->start, resource_size(regs));
++	if (host->ecc == NULL) {
++		dev_err(host->dev, "ioremap failed\n");
++		return -EIO;
++	}
++
++	/* ECC is calculated for the whole page (1 step) */
++	nand_chip->ecc.size = mtd->writesize;
++
++	/* set ECC page size and oob layout */
++	switch (mtd->writesize) {
++	case 512:
++		nand_chip->ecc.layout = &atmel_oobinfo_small;
++		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
++		break;
++	case 1024:
++		nand_chip->ecc.layout = &atmel_oobinfo_large;
++		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
++		break;
++	case 2048:
++		nand_chip->ecc.layout = &atmel_oobinfo_large;
++		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
++		break;
++	case 4096:
++		nand_chip->ecc.layout = &atmel_oobinfo_large;
++		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
++		break;
++	default:
++		/* page size not handled by HW ECC */
++		/* switching back to soft ECC */
++		nand_chip->ecc.mode = NAND_ECC_SOFT;
++		return 0;
++	}
++
++	/* set up for HW ECC */
++	nand_chip->ecc.calculate = atmel_nand_calculate;
++	nand_chip->ecc.correct = atmel_nand_correct;
++	nand_chip->ecc.hwctl = atmel_nand_hwctl;
++	nand_chip->ecc.read_page = atmel_nand_read_page;
++	nand_chip->ecc.bytes = 4;
++	nand_chip->ecc.strength = 1;
++
++	return 0;
++}
++
+ /*
+  * Probe for the NAND device.
+  */
+@@ -531,7 +591,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	struct atmel_nand_host *host;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nand_chip;
+-	struct resource *regs;
+ 	struct resource *mem;
+ 	struct mtd_part_parser_data ppdata = {};
+ 	int res;
+@@ -583,29 +642,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		nand_chip->dev_ready = atmel_nand_device_ready;
+ 
+ 	nand_chip->ecc.mode = host->board.ecc_mode;
+-
+-	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (!regs && nand_chip->ecc.mode == NAND_ECC_HW) {
+-		printk(KERN_ERR "atmel_nand: can't get I/O resource "
+-				"regs\nFalling back on software ECC\n");
+-		nand_chip->ecc.mode = NAND_ECC_SOFT;
+-	}
+-
+-	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+-		host->ecc = ioremap(regs->start, resource_size(regs));
+-		if (host->ecc == NULL) {
+-			printk(KERN_ERR "atmel_nand: ioremap failed\n");
+-			res = -EIO;
+-			goto err_ecc_ioremap;
+-		}
+-		nand_chip->ecc.calculate = atmel_nand_calculate;
+-		nand_chip->ecc.correct = atmel_nand_correct;
+-		nand_chip->ecc.hwctl = atmel_nand_hwctl;
+-		nand_chip->ecc.read_page = atmel_nand_read_page;
+-		nand_chip->ecc.bytes = 4;
+-		nand_chip->ecc.strength = 1;
+-	}
+-
+ 	nand_chip->chip_delay = 20;		/* 20us command delay time */
+ 
+ 	if (host->board.bus_width_16)	/* 16-bit bus width */
+@@ -657,40 +693,9 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+-		/* ECC is calculated for the whole page (1 step) */
+-		nand_chip->ecc.size = mtd->writesize;
+-
+-		/* set ECC page size and oob layout */
+-		switch (mtd->writesize) {
+-		case 512:
+-			nand_chip->ecc.layout = &atmel_oobinfo_small;
+-			ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
+-			break;
+-		case 1024:
+-			nand_chip->ecc.layout = &atmel_oobinfo_large;
+-			ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
+-			break;
+-		case 2048:
+-			nand_chip->ecc.layout = &atmel_oobinfo_large;
+-			ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
+-			break;
+-		case 4096:
+-			nand_chip->ecc.layout = &atmel_oobinfo_large;
+-			ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
+-			break;
+-		default:
+-			/* page size not handled by HW ECC */
+-			/* switching back to soft ECC */
+-			nand_chip->ecc.mode = NAND_ECC_SOFT;
+-			nand_chip->ecc.calculate = NULL;
+-			nand_chip->ecc.correct = NULL;
+-			nand_chip->ecc.hwctl = NULL;
+-			nand_chip->ecc.read_page = NULL;
+-			nand_chip->ecc.postpad = 0;
+-			nand_chip->ecc.prepad = 0;
+-			nand_chip->ecc.bytes = 0;
+-			break;
+-		}
++		res = atmel_hw_nand_init_params(pdev, host);
++		if (res != 0)
++			goto err_hw_ecc;
+ 	}
+ 
+ 	/* second phase scan */
+@@ -707,15 +712,15 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		return res;
+ 
+ err_scan_tail:
++	if (host->ecc)
++		iounmap(host->ecc);
++err_hw_ecc:
+ err_scan_ident:
+ err_no_card:
+ 	atmel_nand_disable(host);
+ 	platform_set_drvdata(pdev, NULL);
+ 	if (host->dma_chan)
+ 		dma_release_channel(host->dma_chan);
+-	if (host->ecc)
+-		iounmap(host->ecc);
+-err_ecc_ioremap:
+ 	iounmap(host->io_base);
+ err_nand_ioremap:
+ 	kfree(host);
+-- 
+1.7.10
