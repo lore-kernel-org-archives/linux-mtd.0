@@ -1,24 +1,21 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SbHYn-0002hw-HO
- for linux-mtd@lists.infradead.org; Sun, 03 Jun 2012 20:38:02 +0000
-Date: Sun, 3 Jun 2012 21:37:49 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Roland Stigge <stigge@antcom.de>
-Subject: Re: [PATCH v4] MTD: LPC32xx SLC NAND driver
-Message-ID: <20120603203749.GD23368@n2100.arm.linux.org.uk>
-References: <1338748689-29645-1-git-send-email-stigge@antcom.de>
- <20120603190932.GB23368@n2100.arm.linux.org.uk> <4FCBBFD4.9090401@antcom.de>
+Message-ID: <4FCBEE25.4020704@gmail.com>
+Date: Sun, 03 Jun 2012 20:07:17 -0300
+From: "William F." <william76.sh@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4FCBBFD4.9090401@antcom.de>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux-doc@vger.kernel.org,
- leiwen@marvell.com, devicetree-discuss@lists.ozlabs.org, dedekind1@gmail.com,
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: PLEASE, REMOVE MY EMAIL ADDRESS FROM ITS LIST.
+References: <1338748689-29645-1-git-send-email-stigge@antcom.de>
+ <20120603190932.GB23368@n2100.arm.linux.org.uk> <4FCBBABF.5080507@gmail.com>
+ <20120603193340.GC23368@n2100.arm.linux.org.uk>
+In-Reply-To: <20120603193340.GC23368@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com, lars@metafoo.de,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, kevin.wells@nxp.com, b32955@freescale.com,
- linux-mtd@lists.infradead.org, hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dwmw2@infradead.org, hechtb@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 03, 2012 at 09:49:40PM +0200, Roland Stigge wrote:
-> Hi!
-> 
-> Thanks for the suggestions!
-> 
-> On 03/06/12 21:09, Russell King - ARM Linux wrote:
-> >> +	dma_async_issue_pending(host->dma_chan);
-> >> +
-> >> +	wait_for_completion_timeout(&host->comp, msecs_to_jiffies(1000));
-> > 
-> > What about unmapping the buffer upon completion?
-> 
-> OK - by not specifying DMA_COMPL_SKIP_*_UNMAP in flags, I was thinking
-> that this happens somehow magically. ;-) But maybe I was just confused.
+I'm sorry, mates.
 
-Slave transfers should never be automatically unmapped by the DMA engine
-driver.
+Em 03-06-2012 16:33, Russell King - ARM Linux escreveu:
+> Sigh, here we go again... why are you emailing me directly over this
+> issue?
+>
+> In short, I can't.  I don't run these lists anymore.  Please look at
+> the bottom of any message you've received from the list to find the
+> URL you need to go to to control your subscription.
+>
+> Thanks.
+> .
+>
