@@ -1,14 +1,19 @@
-Message-ID: <4FCBBFD4.9090401@antcom.de>
-Date: Sun, 03 Jun 2012 21:49:40 +0200
-From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SbHYn-0002hw-HO
+ for linux-mtd@lists.infradead.org; Sun, 03 Jun 2012 20:38:02 +0000
+Date: Sun, 3 Jun 2012 21:37:49 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Roland Stigge <stigge@antcom.de>
 Subject: Re: [PATCH v4] MTD: LPC32xx SLC NAND driver
+Message-ID: <20120603203749.GD23368@n2100.arm.linux.org.uk>
 References: <1338748689-29645-1-git-send-email-stigge@antcom.de>
- <20120603190932.GB23368@n2100.arm.linux.org.uk>
-In-Reply-To: <20120603190932.GB23368@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <20120603190932.GB23368@n2100.arm.linux.org.uk> <4FCBBFD4.9090401@antcom.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4FCBBFD4.9090401@antcom.de>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux-doc@vger.kernel.org,
  leiwen@marvell.com, devicetree-discuss@lists.ozlabs.org, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, kevin.wells@nxp.com, b32955@freescale.com,
@@ -23,20 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Thanks for the suggestions!
-
-On 03/06/12 21:09, Russell King - ARM Linux wrote:
->> +	dma_async_issue_pending(host->dma_chan);
->> +
->> +	wait_for_completion_timeout(&host->comp, msecs_to_jiffies(1000));
+On Sun, Jun 03, 2012 at 09:49:40PM +0200, Roland Stigge wrote:
+> Hi!
 > 
-> What about unmapping the buffer upon completion?
+> Thanks for the suggestions!
+> 
+> On 03/06/12 21:09, Russell King - ARM Linux wrote:
+> >> +	dma_async_issue_pending(host->dma_chan);
+> >> +
+> >> +	wait_for_completion_timeout(&host->comp, msecs_to_jiffies(1000));
+> > 
+> > What about unmapping the buffer upon completion?
+> 
+> OK - by not specifying DMA_COMPL_SKIP_*_UNMAP in flags, I was thinking
+> that this happens somehow magically. ;-) But maybe I was just confused.
 
-OK - by not specifying DMA_COMPL_SKIP_*_UNMAP in flags, I was thinking
-that this happens somehow magically. ;-) But maybe I was just confused.
-
-Thanks,
-
-Roland
+Slave transfers should never be automatically unmapped by the DMA engine
+driver.
