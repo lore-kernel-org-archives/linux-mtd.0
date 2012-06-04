@@ -1,18 +1,26 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SbRJo-000262-KS
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2012 07:03:14 +0000
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 10/10] mtd: nand: omap2: use gpmc provided irqs
-Date: Mon, 4 Jun 2012 12:17:22 +0530
-Message-ID: <3ce2bd823685aed68123bffeaa1618bd32b61372.1338790118.git.afzal@ti.com>
-In-Reply-To: <cover.1338790117.git.afzal@ti.com>
-References: <cover.1338790117.git.afzal@ti.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SbSB1-0006np-VE
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2012 07:58:12 +0000
+Message-ID: <4FCC6A9D.4010208@intel.com>
+Date: Mon, 04 Jun 2012 10:58:21 +0300
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Resizing of an existing UBIFS
+References: <4FBB3506.3020904@bury.com>
+ <1337669583.2483.88.camel@sauron.fi.intel.com> <4FBB3E7F.3080807@bury.com>
+ <4FBF2DF7.8030809@intel.com> <4FBF396D.4070000@bury.com>
+ <Pine.LNX.4.64.1205250958290.4247@lnxricardw.se.axis.com>
+ <4FC340D4.9020905@intel.com>
+ <Pine.LNX.4.64.1206011133500.4247@lnxricardw.se.axis.com>
+ <4FC8AC00.7020309@intel.com>
+ <Pine.LNX.4.64.1206012135000.20240@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.1206012135000.20240@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Robert Homann <homann@bury.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,181 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPMC platform initialization provides it's clients
-with interrupts that can be used through struct
-resource. Make use of it for irq mode functionality.
+On 01/06/12 22:47, Ricard Wanderlof wrote:
+> 
+> On Fri, 1 Jun 2012, Adrian Hunter wrote:
+> 
+>> If you let mkfs.ubifs calculate the journal size it will limit it to 8MiB
+>> max.
+> 
+> Thanks, that explains the figures then.
+> 
+>> The journal must be scanned after an unclean unmount (e.g. power loss)
+>> so a small journal is better for that.  However once the journal is full it
+>> must be committed which involves a certain amount of overhead so a bigger
+>> journal is better for that, but at some point it makes hardly any difference.
+>>
+>> You can use the flash read speed to get an idea of how big a journal you can
+>> live with. e.g. in the worst case you want to mount in 3 seconds, your read
+>> speed is 4MiB/s so you need a journal less than 12MiB (but reading the
+>> journal is just one part of mounting so maybe 8MiB is better).
+> 
+> So what you're saying is that basically it's the worst-case mount time that
+> together with the read speed sets the maximum journal size?
 
-Also now write protect disable is done by GPMC,
-hence remove it.
+Generally yes.
 
-Signed-off-by: Afzal Mohammed <afzal@ti.com>
----
- drivers/mtd/nand/omap2.c |   70 +++++++++++++++++++++++++++-------------------
- 1 file changed, 42 insertions(+), 28 deletions(-)
+>                                                              I assume if the
+> unmount was clean there is no need to read the journal, or does it need to
+> be scanned anyway? What if there was an unclean unmount but no data recently
+> written so nothing in the journal, does it still have to be scanned in full?
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 8e2bc9b..8db0046 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -135,7 +135,8 @@ struct omap_nand_info {
- 	unsigned long			mem_size;
- 	struct completion		comp;
- 	int				dma_ch;
--	int				gpmc_irq;
-+	int				gpmc_irq_fifo;
-+	int				gpmc_irq_count;
- 	enum {
- 		OMAP_NAND_IO_READ = 0,	/* read */
- 		OMAP_NAND_IO_WRITE,	/* write */
-@@ -567,14 +568,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- {
- 	struct omap_nand_info *info = (struct omap_nand_info *) dev;
- 	u32 bytes;
--	u32 irq_stat;
- 
--	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
- 	bytes = readl(info->reg.gpmc_prefetch_status);
- 	bytes = GPMC_PREFETCH_STATUS_FIFO_CNT(bytes);
- 	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
- 	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 
- 		if (info->buf_len && (info->buf_len < bytes))
-@@ -591,20 +590,17 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- 						(u32 *)info->buf, bytes >> 2);
- 		info->buf = info->buf + bytes;
- 
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 	}
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
- 
- 	return IRQ_HANDLED;
- 
- done:
- 	complete(&info->comp);
--	/* disable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
- 
--	/* clear status */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
-+	disable_irq_nosync(info->gpmc_irq_fifo);
-+	disable_irq_nosync(info->gpmc_irq_count);
- 
- 	return IRQ_HANDLED;
- }
-@@ -638,9 +634,9 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--		(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for read to complete */
- 	wait_for_completion(&info->comp);
-@@ -688,12 +684,13 @@ static void omap_write_buf_irq_pref(struct mtd_info *mtd,
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--			(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for write to complete */
- 	wait_for_completion(&info->comp);
-+
- 	/* wait for data to flushed-out before reset the prefetch */
- 	tim = 0;
- 	limit = (loops_per_jiffy *  msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
-@@ -1312,9 +1309,6 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	info->nand.options	= pdata->devsize;
- 	info->nand.options	|= NAND_SKIP_BBTSCAN;
- 
--	/* NAND write protect off */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
--
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL) {
- 		err = -EINVAL;
-@@ -1337,6 +1331,14 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		goto out_release_mem_region;
- 	}
- 
-+	info->gpmc_irq_fifo = platform_get_irq(pdev, 0);
-+	if (info->gpmc_irq_fifo == -ENXIO)
-+		dev_warn(&pdev->dev, "error getting FIFO IRQ\n");
-+
-+	info->gpmc_irq_count = platform_get_irq(pdev, 1);
-+	if (info->gpmc_irq_count == -ENXIO)
-+		dev_warn(&pdev->dev, "error getting TERMINALCOUNT IRQ\n");
-+
- 	info->nand.controller = &info->controller;
- 
- 	info->nand.IO_ADDR_W = info->nand.IO_ADDR_R;
-@@ -1392,17 +1394,24 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		break;
- 
- 	case NAND_OMAP_PREFETCH_IRQ:
--		err = request_irq(pdata->gpmc_irq,
--				omap_nand_irq, IRQF_SHARED, "gpmc-nand", info);
-+		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-fifo", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
--							pdata->gpmc_irq, err);
-+						info->gpmc_irq_fifo, err);
- 			goto out_release_mem_region;
--		} else {
--			info->gpmc_irq	     = pdata->gpmc_irq;
--			info->nand.read_buf  = omap_read_buf_irq_pref;
--			info->nand.write_buf = omap_write_buf_irq_pref;
- 		}
-+		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-count", info);
-+		if (err) {
-+			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
-+						info->gpmc_irq_count, err);
-+			goto out_free_irq_gpmc_fifo;
-+		}
-+
-+		info->nand.read_buf  = omap_read_buf_irq_pref;
-+		info->nand.write_buf = omap_write_buf_irq_pref;
-+
- 		break;
- 
- 	default:
-@@ -1487,6 +1496,8 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+out_free_irq_gpmc_fifo:
-+	free_irq(info->gpmc_irq_fifo, info);
- out_release_mem_region:
- 	release_mem_region(info->phys_base, info->mem_size);
- out_free_info:
-@@ -1506,8 +1517,11 @@ static int omap_nand_remove(struct platform_device *pdev)
- 	if (info->dma_ch != -1)
- 		omap_free_dma(info->dma_ch);
- 
--	if (info->gpmc_irq)
--		free_irq(info->gpmc_irq, info);
-+	if (info->gpmc_irq_fifo > 0)
-+		free_irq(info->gpmc_irq_fifo, info);
-+
-+	if (info->gpmc_irq_count > 0)
-+		free_irq(info->gpmc_irq_count, info);
- 
- 	/* Release NAND device, its internal structures and partitions */
- 	nand_release(&info->mtd);
--- 
-1.7.10.2
+Mounting after a clean unmount is always quicker because the journal is empty.
+
+> 
+>> You can use the flash write speed to get an idea of how often a commit
+>> happens.  e.g. flash write speed is 3MiB/s, journal is 4MiB, a commit begins
+>> when the journal is 13/16 full, so there is a commit at most once per
+>> second, which sounds OK.
+> 
+> In my case there's not a lot of writes (much less than the flash write speed
+> would make possible), so even a small journal would probably be ok. Even if
+> there were the odd burst of writes we could live with a temporary surge in
+> flash writes.
+> 
+> One question here: when one mounts an empty volume, it seems the ubifs
+> creates a journal with some default value (which doesn't seem to be
+> identical to the defaults that mkfs.ubifs uses). Is there any way to adjust
+> those defaults, either with mount command options or with the sysfs?
+> 
+> What I'm getting at in a more concrete sense, is that if I create an empty 8
+> MB UBI volume, then mount it as a ubifs file system (rather than
+> mkfs.ubifs'ing an empty directory, setting appropriate parameters on the
+> mkfs.ubifs command line, and ubiupdatevol'ing that), can I specify a maximum
+> LEB count (and fix the journal size) that would be appropriate also for a
+> future larger volume size?
+
+No sorry.  UBIFS auto-formatting (aka default file system creation) takes no
+parameters.  Maximum LEB count is simply set to the actual LEB count.
