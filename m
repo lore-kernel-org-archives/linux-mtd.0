@@ -1,13 +1,15 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SbRHp-0001dI-Fv
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2012 07:01:10 +0000
+ id 1SbRIa-0001fY-Rz
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2012 07:01:57 +0000
 From: Afzal Mohammed <afzal@ti.com>
 To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
  <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
-Date: Mon, 4 Jun 2012 12:15:01 +0530
-Message-ID: <cover.1338790117.git.afzal@ti.com>
+Subject: [PATCH 01/10] ARM: OMAP2+: gpmc: update nand register helper
+Date: Mon, 4 Jun 2012 12:16:05 +0530
+Message-ID: <b917248067fd437da521f86aacfdd147a3211537.1338790117.git.afzal@ti.com>
+In-Reply-To: <cover.1338790117.git.afzal@ti.com>
+References: <cover.1338790117.git.afzal@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
@@ -20,53 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Provide helper function for updating NAND register details for
+the necessary chip select. NAND drivers platform data can be
+updated with this information so that NAND driver can handle
+GPMC NAND operations by itself.
 
-This series cleans up gpmc mtd interactions so that GPMC driver
-conversion which is going to happen shortly would happen smoothly
-by not creating much disturbance outside of arch/arm/*omap*/
+Signed-off-by: Afzal Mohammed <afzal@ti.com>
+---
+ arch/arm/mach-omap2/gpmc.c             |   20 ++++++++++++++++++++
+ arch/arm/plat-omap/include/plat/gpmc.h |   18 ++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-This series,
-1. provides the ability for OMAP NAND driver to configure GPMC-NAND
-   registers by NAND driver itself instead of using exported GPMC
-   symbols
-2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
-   allocated address space as resource
-3. creates a fictitious GPMC interrupt chip and provide the clients
-   with interrupts that could be handled using standard APIs (helps
-   in removing the requirement for driver of peripheral connected to
-   GPMC having the knowledge about GPMC interrupt handling). The
-   only user is OMAP NAND driver, it has also been modified to take
-   advantage of this
-
-This series has been made over 3.5-rc1
-
-Regards
-Afzal
-
-Reference:
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg69066.html
-
-Afzal Mohammed (10):
-  ARM: OMAP2+: gpmc: update nand register helper
-  ARM: OMAP2+: gpmc-nand: update gpmc-nand regs
-  mtd: nand: omap2: handle nand on gpmc
-  ARM: OMAP2+: gpmc-nand: update resource with memory
-  ARM: OMAP2+: gpmc-onenand: provide memory as resource
-  mtd: nand: omap2: obtain memory from resource
-  mtd: onenand: omap2: obtain memory from resource
-  ARM: OMAP2+: gpmc: Modify interrupt handling
-  ARM: OMAP2+: gpmc-nand: Modify Interrupt handling
-  mtd: nand: omap2: use gpmc provided irqs
-
- arch/arm/mach-omap2/gpmc-nand.c        |   28 ++-
- arch/arm/mach-omap2/gpmc-onenand.c     |   23 ++-
- arch/arm/mach-omap2/gpmc.c             |  156 +++++++++++++++--
- arch/arm/plat-omap/include/plat/gpmc.h |   19 +++
- arch/arm/plat-omap/include/plat/nand.h |    2 +-
- drivers/mtd/nand/omap2.c               |  294 ++++++++++++++++++++++++--------
- drivers/mtd/onenand/omap2.c            |   29 ++--
- 7 files changed, 439 insertions(+), 112 deletions(-)
-
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 2286410..a2c0588 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -682,6 +682,26 @@ int gpmc_prefetch_reset(int cs)
+ }
+ EXPORT_SYMBOL(gpmc_prefetch_reset);
+ 
++void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
++{
++	reg->gpmc_status = gpmc_base + GPMC_STATUS;
++	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
++				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
++	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
++				GPMC_CS_NAND_ADDRESS + GPMC_CS_SIZE * cs;
++	reg->gpmc_nand_data = gpmc_base + GPMC_CS0_OFFSET +
++				GPMC_CS_NAND_DATA + GPMC_CS_SIZE * cs;
++	reg->gpmc_prefetch_config1 = gpmc_base + GPMC_PREFETCH_CONFIG1;
++	reg->gpmc_prefetch_config2 = gpmc_base + GPMC_PREFETCH_CONFIG2;
++	reg->gpmc_prefetch_control = gpmc_base + GPMC_PREFETCH_CONTROL;
++	reg->gpmc_prefetch_status = gpmc_base + GPMC_PREFETCH_STATUS;
++	reg->gpmc_ecc_config = gpmc_base + GPMC_ECC_CONFIG;
++	reg->gpmc_ecc_control = gpmc_base + GPMC_ECC_CONTROL;
++	reg->gpmc_ecc_size_config = gpmc_base + GPMC_ECC_SIZE_CONFIG;
++	reg->gpmc_ecc1_result = gpmc_base + GPMC_ECC1_RESULT;
++	reg->gpmc_bch_result0 = gpmc_base + GPMC_ECC_BCH_RESULT_0;
++}
++
+ static void __init gpmc_mem_init(void)
+ {
+ 	int cs;
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index f37764a..06198a5 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -133,6 +133,24 @@ struct gpmc_timings {
+ 	u16 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
+ };
+ 
++struct gpmc_nand_regs {
++	void __iomem	*gpmc_status;
++	void __iomem	*gpmc_nand_command;
++	void __iomem	*gpmc_nand_address;
++	void __iomem	*gpmc_nand_data;
++	void __iomem	*gpmc_prefetch_config1;
++	void __iomem	*gpmc_prefetch_config2;
++	void __iomem	*gpmc_prefetch_control;
++	void __iomem	*gpmc_prefetch_status;
++	void __iomem	*gpmc_ecc_config;
++	void __iomem	*gpmc_ecc_control;
++	void __iomem	*gpmc_ecc_size_config;
++	void __iomem	*gpmc_ecc1_result;
++	void __iomem	*gpmc_bch_result0;
++};
++
++extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
++
+ extern unsigned int gpmc_ns_to_ticks(unsigned int time_ns);
+ extern unsigned int gpmc_ps_to_ticks(unsigned int time_ps);
+ extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
 -- 
 1.7.10.2
