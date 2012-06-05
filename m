@@ -1,25 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SbseD-0007VD-Ba
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:14:05 +0000
-Message-ID: <1338898670.2507.48.camel@sauron.fi.intel.com>
-Subject: Re: mtd nand erase and bad block
+ id 1SbtBS-0001uR-Jv
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:48:27 +0000
+Message-ID: <1338900730.2507.49.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] MTD: add JEDEC ID for w25q32wd to chip table
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Tue, 05 Jun 2012 15:17:50 +0300
-In-Reply-To: <20120601175407.7c39a8fb@halley>
-References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
- <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
- <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
- <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
- <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
- <20120601175407.7c39a8fb@halley>
+To: "ing. Federico Fuga" <fuga@studiofuga.com>
+Date: Tue, 05 Jun 2012 15:52:10 +0300
+In-Reply-To: <1338478732-31992-1-git-send-email-fuga@studiofuga.com>
+References: <1338478732-31992-1-git-send-email-fuga@studiofuga.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-B43VQ27YpP5QE4r9Sy9/"
+ boundary="=-+V6l5hlBmvNjzYh5eh5t"
 Mime-Version: 1.0
-Cc: Angus CLARK <angus.clark@st.com>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,24 +25,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-B43VQ27YpP5QE4r9Sy9/
+--=-+V6l5hlBmvNjzYh5eh5t
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-06-01 at 17:54 +0300, Shmulik Ladkani wrote:
+On Thu, 2012-05-31 at 17:38 +0200, ing. Federico Fuga wrote:
+> From: "ing. Federico Fuga" <fuga@studiofuga.com>
 >=20
-> My personal preference would be:
-> 1. A new ioctl (MEMSCRUB?)
-> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
-> 3. global debugfs flag
+> Adds JEDEC ID for the 1.8V version of WinBond w25q32
 >=20
-Yes, I guess option 1 is the best I think. Option 2 needs too much work.
+> Signed-off-by: Federico Fuga <fuga@studiofuga.com>
+> ---
+>  drivers/mtd/devices/m25p80.c |    1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 7c60ddd..93ea3c1 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -757,6 +757,7 @@ static const struct spi_device_id m25p_ids[] =3D {
+>  	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+>  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+>  	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+> +	{ "w25q32wd", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
+
+It is w25q32wd, not w25q32wd.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-B43VQ27YpP5QE4r9Sy9/
+--=-+V6l5hlBmvNjzYh5eh5t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPzfjuAAoJECmIfjd9wqK0flQP+wTW7/R85Rh8Ua84fe9ghfwV
-2skuJmhEW4+QY019GB/PdGrqk/cP46eZnbF2L6Uo7I/8Ag1kg2nkzfKlGKWM37yc
-64532vB7h8d4jY836Q1l5gbOil/WldIQdrJPb9rure5yXcy9kvWAHa0ukWwChDWW
-8hCHBxzjq1mty8kaS06q30RdAC63dvzTco9pYRU6Z77EAyle/IAj7CtbgtEHACtL
-qWDhJJjXCgeKe6ejf4UuPYB7/SWyOef9y3J7PaeBlTzi5ev3j0GRkub19QvjboUO
-nw7MlcUyjpWPtMUx/8DNgchZnTsMOnM5/+JtXh4DkKMpyZA1cCTcigXyk1VYe88q
-FfiEhhXZBPDqLp/WNyb9UBcD0Qknf8T+qOzh2OKzijzDQhWD056kbjbGoLJiKH0J
-Uzp/90PLAoS1DGXeNKDgtXimwDmXYL+/WPclQFdEth0rBSr4pyx4ecYnCn2tDGaH
-IsAiEefGwm7wZQCn+vmpDFPgJytXSqz81Z3CBVNV6ukTN7RNHmAV7qQSoLe2ZUXf
-sH+Sp5cxA5kzkh7XvQtbZpMagsMkduHgSgOzHwl+OnhPOt85SKPUrQss22SDfUNx
-aHx8FxQ+7rSu89vWXN3Vdpzc4o7H+D/oVwaCrl2rNQVU0IbbiCQaqihtJ540zl5i
-uOXJP48mc9F+v/Q2IZcz
-=ZBLH
+iQIcBAABAgAGBQJPzgD6AAoJECmIfjd9wqK0PWwQALkYtsly7t3PIy+GarebFe0u
+e9LYZxLoIcMTXjs7scN8w3R88hQRL8OMRdafNWm34cyFmk6JVz8p85KGlcaikqbU
+ewzjUkAzhTBD16SYqyKnk8couDXMY9AxqBViBbOwB3I1oMHXvY0jVJEWaSWjRR/4
+RnKQy6Cn4I66BHLQrGDgkeQFEHf4HfrMxtZ4QFYb/WGVxu/88HQnarZhTBmBFObJ
+xHV342/nYZ29b1YhOGFUKjzFGObc+ZYeSW8QNPIGV2DG/irPJ2rKTaX4hUtUjMQ4
+FYhKRkoTGx3CC2lBSZXIsEw/+Mt1ugLaKXhZXyEylRTG3Q3ZxN2zrDEe9EH6cmLM
+zlKDzI9OLzrU0FAUe807DEiIJo2520vm9MJCJPgqoau54dfEzUMqQhcPzjZW3Qca
+tDpZF2KaDB7/V+O0heCYMNMRu5EbgZ3nB3m9tFhqzDMNt47GjM7BuQb4GmiWj/fV
+AD0JAdB34nkg/LakvPLKQTO6Li8ZSZw1rEBf8r5cuwqhzG8HKOcnppwCitEFND1k
+RJ0keVxti4nn04fnrfaQ+iNK3cEHe34vjpeofA67cs4FKGdDodYJLzGG3Erg63c/
+SFjSh466uQw8q8EMDKENapxeei9gWkHwP7uwz2jsThDhka6xUdVc45o7kygeq1zP
+CYT1Ts4RRHKSB91p/Qoa
+=HQAC
 -----END PGP SIGNATURE-----
 
---=-B43VQ27YpP5QE4r9Sy9/--
+--=-+V6l5hlBmvNjzYh5eh5t--
