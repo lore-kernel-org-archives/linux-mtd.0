@@ -1,17 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SbtBS-0001uR-Jv
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:48:27 +0000
-Message-ID: <1338900730.2507.49.camel@sauron.fi.intel.com>
+ id 1SbtET-0002UR-GH
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:51:35 +0000
+Message-ID: <1338900917.2507.50.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] MTD: add JEDEC ID for w25q32wd to chip table
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: "ing. Federico Fuga" <fuga@studiofuga.com>
-Date: Tue, 05 Jun 2012 15:52:10 +0300
-In-Reply-To: <1338478732-31992-1-git-send-email-fuga@studiofuga.com>
+Date: Tue, 05 Jun 2012 15:55:17 +0300
+In-Reply-To: <1338900730.2507.49.camel@sauron.fi.intel.com>
 References: <1338478732-31992-1-git-send-email-fuga@studiofuga.com>
+ <1338900730.2507.49.camel@sauron.fi.intel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-+V6l5hlBmvNjzYh5eh5t"
+ boundary="=-b2Pqr3kmW0lMDCF5K4Hu"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
@@ -25,37 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-+V6l5hlBmvNjzYh5eh5t
+--=-b2Pqr3kmW0lMDCF5K4Hu
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-31 at 17:38 +0200, ing. Federico Fuga wrote:
-> From: "ing. Federico Fuga" <fuga@studiofuga.com>
+On Tue, 2012-06-05 at 15:52 +0300, Artem Bityutskiy wrote:
+> > +	{ "w25q32wd", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
 >=20
-> Adds JEDEC ID for the 1.8V version of WinBond w25q32
->=20
-> Signed-off-by: Federico Fuga <fuga@studiofuga.com>
-> ---
->  drivers/mtd/devices/m25p80.c |    1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7c60ddd..93ea3c1 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -757,6 +757,7 @@ static const struct spi_device_id m25p_ids[] =3D {
->  	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
->  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
-> +	{ "w25q32wd", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
+> It is w25q32wd, not w25q32wd.
 
-It is w25q32wd, not w25q32wd.
+Gr, "dw", not "wd".
+
+http://www.nexflash.com/hq/enu/ProductAndSales/ProductLines/FlashMemory/Ser=
+ialFlash/W25Q32DW.htm
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-+V6l5hlBmvNjzYh5eh5t
+--=-b2Pqr3kmW0lMDCF5K4Hu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPzgD6AAoJECmIfjd9wqK0PWwQALkYtsly7t3PIy+GarebFe0u
-e9LYZxLoIcMTXjs7scN8w3R88hQRL8OMRdafNWm34cyFmk6JVz8p85KGlcaikqbU
-ewzjUkAzhTBD16SYqyKnk8couDXMY9AxqBViBbOwB3I1oMHXvY0jVJEWaSWjRR/4
-RnKQy6Cn4I66BHLQrGDgkeQFEHf4HfrMxtZ4QFYb/WGVxu/88HQnarZhTBmBFObJ
-xHV342/nYZ29b1YhOGFUKjzFGObc+ZYeSW8QNPIGV2DG/irPJ2rKTaX4hUtUjMQ4
-FYhKRkoTGx3CC2lBSZXIsEw/+Mt1ugLaKXhZXyEylRTG3Q3ZxN2zrDEe9EH6cmLM
-zlKDzI9OLzrU0FAUe807DEiIJo2520vm9MJCJPgqoau54dfEzUMqQhcPzjZW3Qca
-tDpZF2KaDB7/V+O0heCYMNMRu5EbgZ3nB3m9tFhqzDMNt47GjM7BuQb4GmiWj/fV
-AD0JAdB34nkg/LakvPLKQTO6Li8ZSZw1rEBf8r5cuwqhzG8HKOcnppwCitEFND1k
-RJ0keVxti4nn04fnrfaQ+iNK3cEHe34vjpeofA67cs4FKGdDodYJLzGG3Erg63c/
-SFjSh466uQw8q8EMDKENapxeei9gWkHwP7uwz2jsThDhka6xUdVc45o7kygeq1zP
-CYT1Ts4RRHKSB91p/Qoa
-=HQAC
+iQIcBAABAgAGBQJPzgG1AAoJECmIfjd9wqK0nYUP/iWs69HQaYDtJvxOm1uaTKtt
+XNyckYSRpxEFCS2uqsYrA/27xo98IYUeadtYaPwXeyxl9Ovqv61qJdUhgGeUfmXp
+jBnaitQeLsbajTaXb2OzdQVifg5m8BjbAO6Dpi4onCuXcARo/hCPTmTnZp/kdXv/
+IE8hPCI+m7yUsMesJbFcYw2pInNfi+NOFlHDa96RvUi4oGd6A3pK+hP1dzh2eFbI
+Zd3rAaVinU4WtiXznNc+S/M0RDVxQu8A2PEyXrhLgb5Q6G5vSjilXBrgzxgDiGgx
+hsDhnFzUsQ3YlbQ/4NahnP9+lgqZDBblug13+6sIjEuIxVdMMjey46ddCN4JbxHh
+yG1hNel5DTn/3pryzd8hSMyVkxDPCtOee3JYwEQz8bnLO+dUzKNsj9bw5kn8iAsk
+a1IkTW8MsZ4r5FO5p7sMj/127vz+vAH6BkpyyUvOonFUb748W7eh2Fj+PQcQUXaF
+Y6jBIC5O1r94IPWxearycGXnkrAwOw9UpkHZJCnubAGPzgnA1U9zId0NesoR8Dr1
+XdXpSnbKWwaTIQo2RA1XaBH3gu20xjO98euSn060JLIi3O4QufZ6h3A3NmmNnaLU
+z6pIDmXhDDzLfnqYbm8SsdA82l67LPlv9rHeDYExZBPY/e9ROLsSko5pyWDjHIIW
+LGfQuV+5fWn/SFVkj1xq
+=OZxw
 -----END PGP SIGNATURE-----
 
---=-+V6l5hlBmvNjzYh5eh5t--
+--=-b2Pqr3kmW0lMDCF5K4Hu--
