@@ -1,20 +1,16 @@
-Message-ID: <1338901457.2507.53.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v10 3/3] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Tue, 05 Jun 2012 16:04:17 +0300
-In-Reply-To: <1338545594-18483-4-git-send-email-josh.wu@atmel.com>
-References: <1338545594-18483-1-git-send-email-josh.wu@atmel.com>
- <1338545594-18483-4-git-send-email-josh.wu@atmel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-9Xep7ML5aRYefLPbcvwE"
-Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from nm12-vm0.bullet.mail.ne1.yahoo.com ([98.138.91.51])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sbthe-0004ZM-Nx
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 13:21:43 +0000
+Message-ID: <1338902500.33577.YahooMailNeo@web39302.mail.mud.yahoo.com>
+Date: Tue, 5 Jun 2012 06:21:40 -0700 (PDT)
+From: Doug Kehn <rdkehn@yahoo.com>
+Subject: UBI: Single versus Multiple Images
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Doug Kehn <rdkehn@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-9Xep7ML5aRYefLPbcvwE
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2012-06-01 at 18:13 +0800, Josh Wu wrote:
-> +       end_time =3D jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
-> +       while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
-> +               if (unlikely(time_after(jiffies, end_time))) {
-> +                       dev_err(host->dev, "PMECC: Timeout to get ECC
-> value.\n");
-> +                       BUG();
-> +               }
-> +               cpu_relax();
-> +       }=20
-
-Sorry, but crashing the kernel is the worst thing to do. You should make
-'->write_page()' allow to return an error code, just like
-'->read_page()' does.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-9Xep7ML5aRYefLPbcvwE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPzgPRAAoJECmIfjd9wqK0p9IP/RdYBST4+NyFfkZEDLCPMoY9
-Qw39hYMUyxqfIRa8nye4xjxFFqwBcukXSoRHGiWFUhq5iPco330ziQ4gfN0xi0fz
-n8WKAoJaxziSI4xTl+K9+Ct376HGcoQP+EFIHG9A5Q22kaQZVkU3s+VyR7yP5lUY
-oFpyi0EFip33jaaCr/4H7buyErX1tG8AKbfgf2KPd+M633NInyVZ+3gq9MJfePEh
-D87wrPea56XcqqKiiWBreU28E1Noq21lSW5vlLBkU9M2XatHXrluh9lwUcswQFdu
-6ErUA+w1EjV6h9KsRE8unwpKeAHYLTYFchGDdlZPBqYzEmyJgUyCvLP71fBGPs0/
-djgj4mNWh4IGhSWeTTlO75jgXroAmu1/3k3lTmLZwYSub61rQlV9CY8ssxVG3Xv4
-f5bPRBW933Vaqcmp2PanYT798LKJr3gCzqElepXwHNgDU0xr1MgKP/A0ks2tsaFu
-NcPTHk2SxYPJNArTTyGpUHE5rbVqRGsXd9SgGmveEN1owJVyxQaoBg1ut03NhPWb
-ifrni/JWwGgGs8PPHsdKyD9U6EvoVjbWxCAXuUy39Eu+EDCDw2czU/muhNp08K14
-rk/wmkb57A02sR/xAqzXjpGoQvssfAAg8QSgUF0JUi/lM7A/O7ESaXBrsSG9mpRN
-jnQTjdM2NUXrRmhzhglZ
-=RPDm
------END PGP SIGNATURE-----
-
---=-9Xep7ML5aRYefLPbcvwE--
+Hi Everyone,=0A=0AI have the following NAND flash MTD layout (presently JFF=
+S2):=0A=0A* Boot-loader=0A* Kernel=0A* Root file-system (rootfs)=0A=0A* Dat=
+a=0A=0AI'm going to switch from JFFS2 to UBI/UBIFS.=A0 I'm wondering if it =
+is better to create a single UBI image containing both rootfs and data volu=
+mes or to create separate UBI images (each with a single volume) or is the =
+answer it depends?=0A=0AThe data volume will be used for logging data.=A0 T=
+he volume won't completely fill as old data will be purged to make room for=
+ new data.=A0 For the single image multiple volume case, if I understand th=
+e =0Adocumentation correctly, UBI will use all PEB from both volumes for ma=
+pping per-volume LEB, =0Acorrect?=A0 If my understanding is correct, then i=
+t's possible, after enough time, maximum PEB erase count will be reached an=
+d both rootfs and data volumes will be read-only?=A0 If the goal is to keep=
+ the rootfs volume writable, even if the data volume become read-only, then=
+ would it be better to create multiple UBI images?=A0 Or is my understandin=
+g all wrong?=0A=0AThanks,=0A...doug
