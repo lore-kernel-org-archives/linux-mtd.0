@@ -1,22 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sc0Pp-0003Cv-Vo
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 20:31:46 +0000
-Message-ID: <4FCE6CA3.1050905@nod.at>
-Date: Tue, 05 Jun 2012 22:31:31 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1Sc1tr-0005bV-JJ
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 22:06:52 +0000
+Date: Wed, 6 Jun 2012 00:06:47 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: flash bbt broken due to unitialized bitflip_threshold?
+Message-ID: <20120605220647.GV30400@pengutronix.de>
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: ubi: fastmap: v7: ubi_update_fastmap failure
-References: <20120605164142.02d9e235@pixies.home.jungo.com>
- <4FCE0E81.9000705@nod.at> <20120605232049.1e4f5184@halley>
-In-Reply-To: <20120605232049.1e4f5184@halley>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig62C920DDA7C4D753D2B0810D"
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
- Heinz.Egger@linutronix.de, linux-mtd@lists.infradead.org, tim.bird@am.sony.com,
- tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig62C920DDA7C4D753D2B0810D
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi All,
 
-Am 05.06.2012 22:20, schrieb Shmulik Ladkani:
-> Thanks, will retest.
->=20
-> BTW, a UBIFS question.
-> Any idea why UBIFS failed to mount eventually?
+nand_scan_tail calls chip->scan_bbt which in case of a flash based bbt
+calls mtd_read. mtd_read returns -EUCLEAN when the number of errors
+exceeds bitflip_threshold. The problem is that bitflip_threshold is
+uninitialized at that time, it is initialized in add_mtd_device which is
+called after nand_scan. This is seen on the mxc_nand controller, but
+probably on other drivers aswell.
 
-Maybe you need commit "UBI: Fastmap: Handle protection queue correctly".
-Again, please use v7+. :)
+Am I missing something?
 
-Thanks,
-//richard
+Sascha
 
-
---------------enig62C920DDA7C4D753D2B0810D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPzmyjAAoJEN9758yqZn9eJwIH/1bHDXA7XF9pYpfIjpFwnZMO
-KHq/MivYZpiEobmrF0x8/13yDCzWeNbF2iBBSvFOjaByABOTUFrXvcFUr+65nStX
-Yt2cbJ7i38bMdbpQnOgzMFOfAbU4AaKhWfN8Nz9Gfzv9t93IPDmihDC0iTPd4C9O
-5saHCP1kfRs+SY2D/6zqw63K8tRtWjqW+MDyltS8ALGiX+DiFwfJHTwm05YfCW+g
-61FoMTv6JG7AiGRHeJ63R55bFGwzIcdjkYTKmy7j2xszURrubplM5LLX/QI9LUJd
-pDeIrKnxLqtEyuUXPQJbWmMSmF2a1FIytBMisojpPGEWE5t9GrTNEcOLTSdOk3g=
-=J+7X
------END PGP SIGNATURE-----
-
---------------enig62C920DDA7C4D753D2B0810D--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
