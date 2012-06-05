@@ -1,12 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SbvPF-0004Gc-Mv
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 15:10:50 +0000
+ id 1SbvPH-0004HA-GW
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 15:10:52 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4/5] UBI: fastmap: more annoying TODOs
-Date: Tue,  5 Jun 2012 18:11:58 +0300
-Message-Id: <1338909119-5188-5-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 5/5] UBI: fastmap: more tiny TODOs
+Date: Tue,  5 Jun 2012 18:11:59 +0300
+Message-Id: <1338909119-5188-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
 References: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
@@ -24,40 +24,44 @@ From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/fastmap.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ TODO                      |    2 ++
+ drivers/mtd/ubi/fastmap.c |    7 +++++++
+ 2 files changed, 9 insertions(+)
 
+diff --git a/TODO b/TODO
+index 17e30b6..a944159 100644
+--- a/TODO
++++ b/TODO
+@@ -9,3 +9,5 @@ to the ubi-utils.git repository, to a separate branch at the beginning
+    test UBI + fastmap with it.
+ 3. Test the autoresize feature
+ 4. Test 'ubi_flush()'
++5. Test that the same UBI image works fine on both LE and BE machines. I guess
++   we can do this using sime kind of emulators?
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index e6900e4..f938507 100644
+index f938507..d446fc3 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -356,6 +356,14 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+@@ -455,6 +455,9 @@ out:
+  * @fm_raw: the fastmap it self as byte array
+  * @fm_size: size of the fastmap in bytes
+  */
++/* TODO: please, make all pointers like 'fm_raw' of type void. It is indeed a
++ * pointer to data blob, it is not a pointer to a string of characters. Note,
++ * that in pointer arithmetics void * is the same as char *. */
+ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 			      struct ubi_attach_info *ai,
+ 			      char *fm_raw, size_t fm_size)
+@@ -503,6 +506,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	if (fm_pos >= fm_size)
+ 		goto fail_bad;
  
- 		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
- 
-+		/* TODO: so here again - calling the function and checking what
-+		 * it returns I consider to be one logical block which should
-+		 * not contain newlines inbetween. You are inconsistent about
-+		 * this and in some places you have a newline, in some you
-+		 * don't. Could we please remove them globally in cases like
-+		 * this?
-+		 * Again my disclaimer: sorry, I hope this is not too annoying
-+		 * for you. */
- 		if (err == UBI_IO_FF || err == UBI_IO_FF_BITFLIPS)
- 			continue;
- 		else if (err == 0 || err == UBI_IO_BITFLIPS) {
-@@ -394,6 +402,12 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 				list_del(&tmp_aeb->u.list);
- 			}
- 
-+			/* TODO: could you please follow UBI style of how we
-+			 * split lines? Notice that we aling arguments WRT the
-+			 * bracket. We use few tabs, and then at the and use
-+			 * few spaces for fine-tuning the alignment. Please,
-+			 * let's be consistent. Take a look at any UBI file for
-+			 * example. */
- 			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
- 				GFP_KERNEL);
- 			if (!new_aeb) {
++	/* TODO: this is difficult to read. Can we please have instead an
++	 * aggregate data structure? I did not think hard on it may be you have
++	 * a good reason for this difficult style, but on the first glance it
++	 * does not look like. And where are all the endiness stuff?  */
+ 	fmhdr = (struct ubi_fm_hdr *)(fm_raw + fm_pos);
+ 	fm_pos += sizeof(*fmhdr);
+ 	if (fm_pos >= fm_size)
 -- 
 1.7.10
