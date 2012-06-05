@@ -1,17 +1,22 @@
-Received: from oproxy1.bluehost.com ([2605:dc00:100:2::a1]
- helo=oproxy1-pub.bluehost.com)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sbvoo-0005gl-0r
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 15:37:15 +0000
-From: Federico Fuga <fuga@studiofuga.com>
-To: 
-Subject: [PATCH] MTD: add JEDEC ID for w25q32dw to chip table
-Date: Tue,  5 Jun 2012 17:37:01 +0200
-Message-Id: <1338910621-3843-1-git-send-email-fuga@studiofuga.com>
-In-Reply-To: <1338900917.2507.50.camel@sauron.fi.intel.com>
-References: <1338900917.2507.50.camel@sauron.fi.intel.com>
-Cc: fuga@studiofuga.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sc0Fe-0002yM-MK
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 20:21:15 +0000
+Received: by werc12 with SMTP id c12so4671514wer.36
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2012 13:21:12 -0700 (PDT)
+Date: Tue, 5 Jun 2012 23:20:49 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: ubi: fastmap: v7: ubi_update_fastmap failure
+Message-ID: <20120605232049.1e4f5184@halley>
+In-Reply-To: <4FCE0E81.9000705@nod.at>
+References: <20120605164142.02d9e235@pixies.home.jungo.com>
+ <4FCE0E81.9000705@nod.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com, adrian.hunter@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "ing. Federico Fuga" <fuga@studiofuga.com>
+Hi,
 
-Adds JEDEC ID for the 1.8V version of WinBond w25q32
+On Tue, 05 Jun 2012 15:49:53 +0200 Richard Weinberger <richard@nod.at> wrote:
+> Am 05.06.2012 15:41, schrieb Shmulik Ladkani:
+> > Hi Richard,
+> > 
+> > I got the below UBI error when working with fastmap v7 (linux-ubi.git,
+> > branch fastmap, HEAD at bd8313d).
+> > 
+> > Had no time to investigate (could be fixed by your v7+ patches); please
+> > take a look if you can.
+> > 
+> > Setup:
+> > - Beagle with SLC NAND.
+> > - ubi.mtd=4 root=ubi0:beagleboard-rootfs rootfstype=ubifs
+> > - A single volume on the ubi0 device (the ubifs rootfs).
+> > 
+> > The board booted several times succesfully with fastmap-v7.
+> > Then I got the error below, when ubifs was mounted (note UBI attach was
+> > successful).
+> > 
+> > Switched to non-fastmap kernel, board booted successfully (with ubifs
+> > mounted succesfully).
+> > 
+> > Regards,
+> > Shmulik
+> > 
+> > [    3.222808] UBIFS: recovery needed
+> > [    3.281646] UBI error: __ubi_wl_get_peb: no free eraseblocks
+> > [    3.287750] UBI error: ubi_wl_get_fm_peb: no free eraseblocks
+> > [    3.294952] UBI error: ubi_update_fastmap: Erase counter overflow!
+> 
+> Please use v7+.
+> It looks like you need:
+> [PATCH 01/23] UBI: Fastmap: Fix EC overflow calculation
 
-Signed-off-by: Federico Fuga <fuga@studiofuga.com>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 file changed, 1 insertion(+)
+Thanks, will retest.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7c60ddd..9d16890 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -757,6 +757,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
- 
--- 
-1.7.9.5
+BTW, a UBIFS question.
+Any idea why UBIFS failed to mount eventually?
+
+As you can see, both UBI and UBIFS switched themselves to RO mode. Okay.
+However eventually, the mount failed.
+
+Regards,
+Shmulik
