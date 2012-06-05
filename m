@@ -1,18 +1,18 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SbsUA-00079a-HL
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:03:43 +0000
-Message-ID: <1338898027.2507.46.camel@sauron.fi.intel.com>
-Subject: Re: ubifs_jnl_update and extended attribute inode removal
+ id 1Sbsbl-0007NG-Ui
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2012 12:11:34 +0000
+Message-ID: <1338898518.2507.47.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS master node corruption
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Subodh Nijsure <snijsure@grid-net.com>
-Date: Tue, 05 Jun 2012 15:07:07 +0300
-In-Reply-To: <4FAC4DC9.2050901@grid-net.com>
-References: <4FAB33B2.80104@grid-net.com> <1336624262.1936.27.camel@brekeke>
- <4FAC4DC9.2050901@grid-net.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Date: Tue, 05 Jun 2012 15:15:18 +0300
+In-Reply-To: <jqa0im$9gb$1@dough.gmane.org>
+References: <jq7t2r$md2$1@dough.gmane.org> <4FC87383.2020303@intel.com>
+ <jqa0im$9gb$1@dough.gmane.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HA0VXPbfVzbSpAzjMa9A"
+ boundary="=-ofOmGc7VyRhBLb3elTxk"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -26,22 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HA0VXPbfVzbSpAzjMa9A
+--=-ofOmGc7VyRhBLb3elTxk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-05-10 at 16:22 -0700, Subodh Nijsure wrote:
-> > Would you prepare a description how I could reproduce this?
-> I re-submitted patches for integck and as well as v3 of extended=20
-> attribute patch set that I have been holding on to.
+On Fri, 2012-06-01 at 09:04 +0000, Romain Izard wrote:
+> From what I understand of the user-space application running on the
+> devices, there are many operations related to switching UBI and UBIFS to
+> a read-only mode, to support a 'boot snapshot' feature implemented with
+> Linux suspend. Since the patch you indicated me was related to changing
+> the read-only property of the volume, I guess I should continue to
+> search in this direction.
 
-Hi, did I miss some patches from you or you just disappeared?
+Can you share your corrupted image?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-HA0VXPbfVzbSpAzjMa9A
+--=-ofOmGc7VyRhBLb3elTxk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPzfZsAAoJECmIfjd9wqK0UdoP/R1b2avAC9cHZOAJLwNI0sja
-IprxvedAvjnLS/NhD8elbxkyJRzM3rBULRmtqKuM3RMrkpKTPckhnaE8zAh1i6wx
-2AxkvuIzdjRB9GxWmnFv+lo5xxkVIu22GIdDg3ckizItM8ErfN7pON5U9Q1POags
-nxxbTfTPepq0GjngdcgdjYanIh2we+t7lzOjVN2SbjjMrhaQ/nwn7IPOrqb6+a/B
-oklGL6MKgg4VRHd8tN5tFbWImhWjDTy1bcgkc0bzVqH1YAv2dUnYq3vygUfjaAI+
-5OdAhKe1b2iNkcnQ7QCxB05AEhp9O7D4mWMIHf+dUgKcJAEbfMw6i7wvb9h5+9uE
-b1AiOOSIFSUys93o/hEmVaTITy7h0GrNPvSX8gakGsLIggsh5ruT3/kW4PZTgRgM
-U6RD/JBZJfLOpgvWN5BjFuQJ4QP2KqGnN6tvjrhxKVw8eJqaNIITzT69KKxfTJ2O
-WhD92D56gggsElhOEuNRBt3w53mnxfo1+FPsxN4SPBbO9LydeBpkbRLcC2A19aAP
-rVewm5NNYvX1t8ddLy9pV9aAhVBW57DOceTkbsULvrqwkpUaZJelOsS3paCJZbx7
-COzUbmoIT0k85OPys4oDggKvSG97QY6uN7vmRgAGh+vwh17pp9D/zSVyshsu5Kp4
-YZ3PK2Qb3sGvqXsOiB35
-=tnwt
+iQIcBAABAgAGBQJPzfhWAAoJECmIfjd9wqK0BEwP/02CnmrM3xGPLurYghip1XQ8
+Xq4JVqaDgLyQWVwGSIjJTxEb07wFHlCxru7UyBvDjTdqBuFr9KK6ytsk1VPQc5e8
+8UzIOqo2LxqPbsQUpdkvshEqYqMjVmTPUHvHW8Tc+6hN4q/4Ri2p91EgVaERezDW
++7lyoCooK5KExf0sH/PC4mRWSD2TK7VOv51AxxtRlPL6MIm+t++qti+rlTK90YP2
+f0o3qTckgUyL5nuWEdnS1njUmC9KnvHqkcFwDQZF7emLC6zfcRwwQglEzDRcuCuB
+Y03vDDtGQtUdrb5IAvAFaywwNkBt5bCewg8sldZFs9MDUDxqql7EjZ110NLcFH3Q
+S38ouvEYvaZ7Ze2arAt7OX3qBedSWFKstv/L2jpe3/yqiEE5n3uESRMyGGc/j/1l
+Fi5nTvmW/l+XKbJ49Zc7y+/XRMT8+I5eFdVouFHfbrB+GNnlTEPg2/fsRsCOtN//
+J7248mS92aSOKnJrZJfAnbznBMzfSQkxnxMlOZAxnr/AhwhMr2aLSHPp2jhMgZ0K
+PAVo6ndYFZr+2vt65FUmsfjkDxw6YN2GzQsiS9Axjqb+p0pVS3WSHgjgpgk1Fbr/
+Pv+cewIRufz2s/VqhKHi1Ah8V6xfzEByIsf6KVN3VEGIYiyFQBv9L0VQQs+eGgg8
+p6dvmSMnV0uTp6nUoa5r
+=Y46b
 -----END PGP SIGNATURE-----
 
---=-HA0VXPbfVzbSpAzjMa9A--
+--=-ofOmGc7VyRhBLb3elTxk--
