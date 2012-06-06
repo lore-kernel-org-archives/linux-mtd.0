@@ -1,21 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScNo0-0003J9-3V
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 21:30:17 +0000
-Message-ID: <4FCFCBE5.1000107@nod.at>
-Date: Wed, 06 Jun 2012 23:30:13 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 5/5] UBI: fastmap: more tiny TODOs
+ id 1ScPje-000166-5B
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 23:33:54 +0000
+Received: by wgbds1 with SMTP id ds1so7507wgb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2012 16:33:51 -0700 (PDT)
+Message-ID: <1339025375.8066.9.camel@brekeke>
+Subject: Re: [PATCH 2/5] UBI: fastmap: kill junk newlines and add a TODO
+ about that
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 07 Jun 2012 02:29:35 +0300
+In-Reply-To: <4FCFCBE3.9000508@nod.at>
 References: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
- <1338909119-5188-6-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1338909119-5188-6-git-send-email-dedekind1@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
+ <1338909119-5188-3-git-send-email-dedekind1@gmail.com>
+ <4FCFCBE3.9000508@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="------------enig39C9138422C66DAD1FEB7DA9"
+ boundary="=-wTHOnTwmI9kyJQysTQYx"
+Mime-Version: 1.0
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,112 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig39C9138422C66DAD1FEB7DA9
-Content-Type: text/plain; charset=ISO-8859-15
+
+--=-wTHOnTwmI9kyJQysTQYx
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Am 05.06.2012 17:11, schrieb Artem Bityutskiy:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, 2012-06-06 at 23:30 +0200, Richard Weinberger wrote:
+> a =3D 1 + b;
+> res =3D c + a;
 >=20
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  TODO                      |    2 ++
->  drivers/mtd/ubi/fastmap.c |    7 +++++++
->  2 files changed, 9 insertions(+)
+> return res;
 >=20
-> diff --git a/TODO b/TODO
-> index 17e30b6..a944159 100644
-> --- a/TODO
-> +++ b/TODO
-> @@ -9,3 +9,5 @@ to the ubi-utils.git repository, to a separate branch a=
-t the beginning
->     test UBI + fastmap with it.
->  3. Test the autoresize feature
->  4. Test 'ubi_flush()'
-> +5. Test that the same UBI image works fine on both LE and BE machines.=
- I guess
-> +   we can do this using sime kind of emulators?
+> vs:
+>=20
+> a =3D 1 + b;
+> res =3D c + a;
+> return res;
 
-Okay, I'll test the same image on x86 and ppc.
+Sorry, but I think the above example is not quite suitable because it
+looks too general, while I was asking only about a specific thing, not
+for any return or goto.
 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index f938507..d446fc3 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -455,6 +455,9 @@ out:
->   * @fm_raw: the fastmap it self as byte array
->   * @fm_size: size of the fastmap in bytes
->   */
-> +/* TODO: please, make all pointers like 'fm_raw' of type void. It is i=
-ndeed a
-> + * pointer to data blob, it is not a pointer to a string of characters=
-=2E Note,
-> + * that in pointer arithmetics void * is the same as char *. */
+ret =3D func();
+if (ret) {
+	free(x);
 
-I know that char * and void * are equivalent.
-That's why I've chosen char *.
-IMHO a blob is a string of chars. (Of course it's not a C sting).
-Anyway, if you prefer void * I'll change it. :-)
+	goto out;
+}
 
->  static int ubi_attach_fastmap(struct ubi_device *ubi,
->  			      struct ubi_attach_info *ai,
->  			      char *fm_raw, size_t fm_size)
-> @@ -503,6 +506,10 @@ static int ubi_attach_fastmap(struct ubi_device *u=
-bi,
->  	if (fm_pos >=3D fm_size)
->  		goto fail_bad;
-> =20
-> +	/* TODO: this is difficult to read. Can we please have instead an
-> +	 * aggregate data structure? I did not think hard on it may be you ha=
-ve
-> +	 * a good reason for this difficult style, but on the first glance it=
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> +	 * does not look like. And where are all the endiness stuff?  */
-
-Yes, it's difficult to read but an aggregate data structure is not really=
- doable.
-Please let me explain why:
-
-The fastmap data blob has not a fixed length and it's internal field don'=
-t have fixed positions.
-
-1 struct ubi_fm_sb followed by
-1 struct ubi_fm_hdr followed by
-1 struct ubi_fm_scan_pool followed by
-free_peb_count+used_peb_count struct ubi_fm_ec followed by
-vol_count (
- struct ubi_fm_volhdr
- struct ubi_fm_eba
-)
-
-You see that only the first three structs have fixed positions.
-So, the whole blob cannot be mapped into one aggregate data structure.
-And I really don't want to play nasty games with variable-length arrays i=
-n stucts...
-
-Why do you mean by "where are all the endiness stuff"?
-The position calculation takes care about endiness.
-
-Thanks,
-//richard
-
-
---------------enig39C9138422C66DAD1FEB7DA9
+--=-wTHOnTwmI9kyJQysTQYx
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPz8vlAAoJEN9758yqZn9e3dUIALY0sN+gf5MO+a/hLTMykrHh
-u1REtgzxJvleeQYsrG0SHf9gTcYfvQPHR1HDvCrcFvY/3hWlc12p1Dio1i0MsU2k
-n/NgKAJCReN7AaVvRnnE9ngwq36honlnUs4RveidKcadFEDwGAqSsCzEKkbGZLhS
-y7S2XBF2dEBi3GNe8qALr+kK2MpjY5ntswtn3Nb2vDAUpVgcSMtKqY8WCqy0M5sK
-fFEzv8m8MGNJD9s4zzn9Y/0lGVdu2d0I63SZctn5B4qAqHakYQmBMgi9jeGi8G2F
-7TV9HbkaTkScV1nGuHBeXYJiFAuc2QnNVJsPhpqdWppkeBXks0wrjhx2/sygPVQ=
-=+tB5
+iQIcBAABAgAGBQJPz+ffAAoJECmIfjd9wqK01g4P/3MdlM/8sSMSsg47BWLNk77e
+vhwRXLm9krjvMP84bG7Pu1btG1MCtCgXLnxfWSMjz4f+dTuyP3OZqJT5BKJ/iitB
+sGLBitI+f2/RIdzTPjdtugLA7W5NtRHHifNStUi91Ov08RdC3NzYaKcteASAqWng
+N3xrbkNR9ROPWU9yNbuQ06QCDCFrDXR8eCjbb3Yzn6DlpI8UkSnu54X6OQmvsNbS
+Cjg820rLNp87nxaorDdutuzEw78yqpJetOCHoeC6P25wdWKBLvayIw3ppYsJ6e4S
+bC5YNlN+mzqQaZdIxr9bgUkNecyKx48a+QgUO4tJg0Vx/JQq9/Ju0sh6abj2D5X6
+ph/bxECsiYYj7oI17DAvGibrD70WPXUwalzsYMPL729bQmdz0ULG6CWdsMlL+YU4
+9xhJXYEgPznZieMjejc9pXKzKlCFZefI/9dwKmDydplwF9vxe/1SE9mhAv8EAGC1
+R2Vj6PoFFeR9dP7bchhxjCJxr4oVQnGjtMMbzKbL3CG7PC/Qg20SGvreEf1ID/2t
+f/RQWaWHH/8ZhIhRq5JjcZh9Qjt/EZZlY7clbWCxiSo2iwdNWBVoPKG5zNVYKSth
+zxDywYCB9rZtPAJJ1VcP0HInuSCCC14RUXeqBhfdpRtVzae6WdtGhC3aNuEFr5UH
+U0sWzt1mEsyYyaKmCvED
+=FYhg
 -----END PGP SIGNATURE-----
 
---------------enig39C9138422C66DAD1FEB7DA9--
+--=-wTHOnTwmI9kyJQysTQYx--
