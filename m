@@ -1,18 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScDeh-0007ch-L6
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 10:40:00 +0000
-Date: Wed, 6 Jun 2012 12:39:47 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] i.MX5 nand support
-Message-ID: <20120606103947.GA2528@pengutronix.de>
-References: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScDjU-0004Bi-Rf
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 10:44:57 +0000
+Message-ID: <1338979723.6875.34.camel@sauron.fi.intel.com>
+Subject: Re: ubi debugfs possible regression
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Paul Parsons <lost.distance@yahoo.com>
+Date: Wed, 06 Jun 2012 13:48:43 +0300
+In-Reply-To: <1338943789.75555.YahooMailClassic@web29010.mail.ird.yahoo.com>
+References: <1338943789.75555.YahooMailClassic@web29010.mail.ird.yahoo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-7SSehcMnRnvtLbvijUiJ"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@intel.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Damned, forgot subject (again)
 
-Sascha
+--=-7SSehcMnRnvtLbvijUiJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 06, 2012 at 12:33:12PM +0200, Sascha Hauer wrote:
-> The following adds i.MX53 nand support and generally devicetree
-> based probing for i.MX5 boards. The first three patches should go
-> via mtd, the last patch optionally aswell if all agree.
-> 
-> Sascha
-> 
-> The following changes since commit f8f5701bdaf9134b1f90e5044a82c66324d2073f:
-> 
->   Linux 3.5-rc1 (2012-06-02 18:29:26 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.pengutronix.de/git/imx/linux-2.6.git imx/nand-mx53
-> 
-> for you to fetch changes up to d55d1479a3bfaedbb9f0c6c956f4dff6bb6d6d61:
-> 
->   ARM i.MX5: Add nand oftree support (2012-06-06 12:20:24 +0200)
-> 
-> ----------------------------------------------------------------
-> Sascha Hauer (4):
->       mtd nand mxc_nand: Use managed resources
->       mtd nand mxc_nand: swap iomem resource order
->       mtd nand mxc_nand: add i.MX53 support
->       ARM i.MX5: Add nand oftree support
-> 
->  arch/arm/boot/dts/imx51.dtsi                  |    7 ++
->  arch/arm/boot/dts/imx53.dtsi                  |    7 ++
->  arch/arm/mach-imx/clk-imx51-imx53.c           |    2 +
->  arch/arm/plat-mxc/devices/platform-mxc_nand.c |   11 +-
->  drivers/mtd/nand/mxc_nand.c                   |  137 ++++++++++++++-----------
->  5 files changed, 97 insertions(+), 67 deletions(-)
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+On Wed, 2012-06-06 at 01:49 +0100, Paul Parsons wrote:
+> In v3.4, ubi worked OK without debugfs.
+>=20
+> In v3.5-rc1, ubi fails without debugfs:
+>=20
+> UBI error: ubi_debugfs_init: cannot create "ubi" debugfs directory, error=
+ -19
+> UBI error: ubi_init: UBI error: cannot initialize UBI, error -19
+>=20
+> Is this not a regression?
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+It is, I'll look at this.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-7SSehcMnRnvtLbvijUiJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPzzWLAAoJECmIfjd9wqK0mkMQAJeG5un+2sxvgY+gVzC10obB
+bge5WKmDn5sknVH4db6TNYnvqvQk13HxYz4GfgRViaqpS4FMMbhqynGljjZofA6V
+dy1s7nwtN0gl0KHdO3m0/+7ouZ/atCS5mJjgCiOsr7IAthGk2EB3JvjXjptHvm4X
+3HxwmYxt5pNm++3kpy74lNDeZV3+X29doDxFV0K8idsoVEvnB6UwH/9OKXmo+KKA
+BpBdD1VFxjr90AXUaaSiwE+gMh+/IlkJPjW8UpRDkPAxDOc6Q0djLX4MdsmRHKPJ
+fGEITX4QAyEmem+mVyzHgkSPG1NjbKXSdGkQeIC3ltWTQaf6XnmJtTrTT07ZNk4N
+uQC3LvdBHH8gwIYTomPjK4P2gcegDfGALNVompGdbMzeZsvXWmBzJ2hdu8C6HtZb
+99B4HhljVHxk94amj1BHHH8s0OELNMGhe7LYlq8hXp/u4t9uwtnF5zKARLEoEYoi
+Ubj1cPyRlblBCEUKU/Wv0lZb8s40Zwhv+XJXw1XrW42kLcr97DqTOPYN/8deJsEc
+sRk3+pl1up81D/eLkcJ45vbq9ucJ2/DuCp4uoT3mg2oyPI0FhSjGzNImwzl5W1Rk
+gnuei2q2ClB56uC7pDk6JPSRMsi87V0YhnH1Lnk+0vTXaf8UYjO6cIoM2IkNkRx5
+6BTmRGJVVajNuJO5T2j0
+=1mvV
+-----END PGP SIGNATURE-----
+
+--=-7SSehcMnRnvtLbvijUiJ--
