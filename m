@@ -1,23 +1,21 @@
-From: "Wu, Josh" <Josh.wu@atmel.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH v10 3/3] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-Date: Wed, 6 Jun 2012 03:32:08 +0000
-Message-ID: <94D61891A2E83846BC68FB50291DC2DD0F68A271@penmbx02>
-References: <1338545594-18483-1-git-send-email-josh.wu@atmel.com>
- <1338545594-18483-4-git-send-email-josh.wu@atmel.com>
- <1338901457.2507.53.camel@sauron.fi.intel.com>
-In-Reply-To: <1338901457.2507.53.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "hongxu.cn@gmail.com" <hongxu.cn@gmail.com>, "Ferre,
- Nicolas" <Nicolas.FERRE@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <1338972168.6875.7.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v5] MTD: LPC32xx SLC NAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Wed, 06 Jun 2012 11:42:48 +0300
+In-Reply-To: <1338837901-24075-1-git-send-email-stigge@antcom.de>
+References: <1338837901-24075-1-git-send-email-stigge@antcom.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-WzbfxerG2eTWwgqj3ru0"
+Mime-Version: 1.0
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
 
-On 6/5/2012 9:04 PM, Artem Bityutskiy wrote:
+--=-WzbfxerG2eTWwgqj3ru0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, 2012-06-01 at 18:13 +0800, Josh Wu wrote:
->> +       end_time =3D jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
->> +       while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
->> +               if (unlikely(time_after(jiffies, end_time))) {
->> +                       dev_err(host->dev, "PMECC: Timeout to get ECC
->> value.\n");
->> +                       BUG();
->> +               }
->> +               cpu_relax();
->> +       }=20
+On Mon, 2012-06-04 at 21:25 +0200, Roland Stigge wrote:
+> +config MTD_NAND_SLC_LPC32XX
+> +	bool "NXP LPC32xx SLC Controller"
 
-> Sorry, but crashing the kernel is the worst thing to do. You should make
-> '->write_page()' allow to return an error code, just like
-> '->read_page()' does.
+Why bool and not tristate here? Why you force this to be compiled-in and
+make it impossible to be a kernel module like other drivers are?
 
-> --=20
-> Best Regards,
-> Artem Bityutskiy
-
-I understand crashing kernel here is not good. but I think it makes a littl=
-e sense because if the PMECC status reading is time out (I set a very long =
-time duration here), that only means the PMECC configuration is not correct=
-.=20
-In other word, user needs set the PMECC correctly, then the PMECC status re=
-ading will not meet time out error. Otherwise they will get a Time out erro=
-r.
-
-Yes, If the '->write_page()' can return an error code then it should be bet=
-ter. But in the 'struct nand_ecc_ctrl', the '->write_page()' defined as voi=
-d function, shows in following,
-        void (*write_page)(struct mtd_info *mtd, struct nand_chip *chip, co=
-nst uint8_t *buf);
-
-So change the above definition of '->write_page()' to return a error code w=
-ill impact all other nand ecc code. Such change is out of the scope of this=
- patch series. And maybe it also need another discussion.
-
+--=20
 Best Regards,
-Josh Wu
+Artem Bityutskiy
+
+--=-WzbfxerG2eTWwgqj3ru0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJPzxgIAAoJECmIfjd9wqK0S/4P/isrXfnJuvL9Wq8WDK5jgLdM
+J4DgBmJrPVSYPeMU76fZGK46zMCEb76K45x8jCTkm+sXiRM2ET20sBMIlCByOc1U
+nV1tE1dA9ux6oXa3ZaCdAPxGUIWPW0Es2blqLwUu8C6VtIiIxGFrQBUHpEeZ0iTJ
+/bg2L38QnTmt6nWhNMzCIaHOGYoXz/OlHizEmi640/S0JWK5wNHGmuJ3oDxVdbbX
+0QoH7NcFq+kIfgUe/Fp+g051apSqc3oQ8oMkrPQidx6kishQnz6OlzlV+Lif8W2r
+Nv/gYIBGWbNtLjUVjlwOf8whdi/EvZz+jpp7kM0DlxUF4s/PBMbGebNbp8cUmnqJ
+e9UzETGdH9w+mmE1Wp7AtU9oFQCGe2Wk+GLI0mac22kl5aF4Wm8naAcrb9PWALb5
+/2zg8yC02ZvlcMPPpVkdcISB4yhO46Lt2FWmiD9/QwPtSjE0pL2I8dG51zrBtkoA
+vvuFYCs42B1ls/B+6db9u3QW546Rdm2glNASHoBCXwyskI6HTZxUv8jE5VEbWLFj
+COTn0v82HJi00oX0msJ8gAhNKoAK3w5CTPqExkEOStkN0gCzHAXUi8TqfP/jp0g+
+CRJRYM19J2A0wLS7fzchpwyBwoxPZ3sp3Ye1MSYaFpqVthLLGakS35RbMBrKUOok
+9DDkVvNm2tn3ByjDkSIK
+=BWe3
+-----END PGP SIGNATURE-----
+
+--=-WzbfxerG2eTWwgqj3ru0--
