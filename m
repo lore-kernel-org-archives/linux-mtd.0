@@ -1,19 +1,20 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScNnx-0003Ih-NV
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 21:30:16 +0000
-Message-ID: <4FCFCBE0.5060604@nod.at>
-Date: Wed, 06 Jun 2012 23:30:08 +0200
+ id 1ScNnx-0003Ii-NS
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 21:30:17 +0000
+Message-ID: <4FCFCBE3.9000508@nod.at>
+Date: Wed, 06 Jun 2012 23:30:11 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 3/5] UBI: fastmap: more nitpicks
+Subject: Re: [PATCH 2/5] UBI: fastmap: kill junk newlines and add a TODO about
+ that
 References: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
- <1338909119-5188-4-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1338909119-5188-4-git-send-email-dedekind1@gmail.com>
+ <1338909119-5188-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1338909119-5188-3-git-send-email-dedekind1@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="------------enig6472AB404B59B3E98B587ED0"
+ boundary="------------enigF1CE97D8FC582E4C77288E0B"
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,29 +27,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig6472AB404B59B3E98B587ED0
+--------------enigF1CE97D8FC582E4C77288E0B
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
 Am 05.06.2012 17:11, schrieb Artem Bityutskiy:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->=20
-> Again, I feel that this may be annoing for others, but it will make me =
-happier
-> if I see UBI code having consistent style. After all, people come and g=
-o but I
-> stay maintaining this stuff so I want reading the code to be pleasant f=
-or me.
-> So please, bear with my strange requirements, I will not add this long
-> explanation anymore, ok? :-)
+> +		/* TODO: nitpick, sorry for being annoying, but this should not
+> +		 * be difficult to fix. I find it very irritating when there
+> +		 * are useless blank lines like this - they only make less code
+> +		 * fit my screen and make large functions even larger.
+> +		 *
+> +		 * Why we use blank lines inside a single function? To make
+> +		 * code more readable. How we make it more readable? By
+> +		 * separating logically different blocks of code with a
+> +		 * newline.
+> +		 *
+> +		 * What is the perbose of these newlines before goto's? This is
+> +		 * a single piece of error-handling code - you assing the
+> +		 * return value and go to the further error processing. These
+> +		 * newlines serve no purpose just blow the lines number in the
+> +		 * code. Could we please kill them globally?
+> +		 *
+> +		 * I am again sorry - probably this is not completely
+> +		 * technical, but I gave the explanation why these newlines are
+> +		 * annying. And as a person who spent a lot of personal
+> +		 * (non-paid) time maintaining this code and who will keep
+> +		 * doing this - I think I have right to require to do such
+> +		 * cosmetic things :-) If you do not agree with my reasoning,
+> +		 * may be this is better - you'll keep me happier :-) */
+>  		goto out;
 
-No problem. :-)
+Your and mine coding style are quite different. :-)
+I *hate* it when statements like goto and return are glued to a code bloc=
+k.
+E.g.
+
+a =3D 1 + b;
+res =3D c + a;
+
+return res;
+
+vs:
+
+a =3D 1 + b;
+res =3D c + a;
+return res;
+
+Anyway, I'll change this to match the UBI style.
 
 Thanks,
 //richard
 
+P.s: Can we please have a ubi_checkpatch.pl? *SCNR*
 
---------------enig6472AB404B59B3E98B587ED0
+
+--------------enigF1CE97D8FC582E4C77288E0B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -56,13 +89,13 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.18 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPz8vgAAoJEN9758yqZn9eeBgIAMEpM9Gb1OxRRQ5UgFiXbpYu
-od9ewY0Ib9WY4DA+QKzB3UEbmOqECylma1HRDU3WK/QTQhgQKEEMBn4vSYMrZQB/
-YFe0U7/VSoh+MFZ8FbgwEuQs7R7/GPwE2vj7J9P/SGkssjM8BcgjfgE2bjLxcXYv
-z5Ce7O4fCV60o9Etp0w4sA/7BzM2bXvN5KXerbRNcOzPAqUnjPI8ec++arzTKYo4
-CFTbhpsOjP6BN8MmG6QlMeEDpkcSysdVcN2uB2LZVSIW4L5YOTTBa1Y+V6+4s14j
-xY8MSDNxYMYsPAyZ0Z6yNpyJbB/33M4LB5xvEMSAgdh+ZikyGbm/4voxNTxUxDg=
-=Qu1E
+iQEcBAEBAgAGBQJPz8vjAAoJEN9758yqZn9e1CAIAM5zJLEoAcmviNv+49qFk2qi
+gP/Xxcx2UgSUKy0Husmo/+mgZAVXgsZdQ0u1Oz1DeJjBqN90h4zkCJJPK81csYux
+gq52EjQ/sDilBcI5M7/MuflBro24d8qbCcvfDF1MkyLjFnco1xyHVWY+il4ijtHj
+abbHkubfziyfgBQQ3+wC32i010l6/muj7c0S983SiIshC8jcM32C3m/yWZ5JPnqE
+jqSmu7HhGYqjBT/tS2Kb/mL5cv0eO4UtSDQwqPb9TzS3HEYA43+WldjISPt11Iad
+uU1XItqdftv7D9dhbmZM0V8cq4tcZrWpxKqvCeg6XnU/Nv6JnIxig+vb0vbOFQI=
+=WqCF
 -----END PGP SIGNATURE-----
 
---------------enig6472AB404B59B3E98B587ED0--
+--------------enigF1CE97D8FC582E4C77288E0B--
