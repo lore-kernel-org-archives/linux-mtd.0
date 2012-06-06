@@ -1,21 +1,14 @@
-Message-ID: <1338990096.6875.52.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v6] MTD: LPC32xx SLC NAND driver
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScGkP-00018f-3V
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 13:58:05 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roland Stigge <stigge@antcom.de>
-Date: Wed, 06 Jun 2012 16:41:36 +0300
-In-Reply-To: <1338974414-5308-1-git-send-email-stigge@antcom.de>
-References: <1338974414-5308-1-git-send-email-stigge@antcom.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-4702nwg7fga9mZeThSKX"
-Mime-Version: 1.0
-Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: [PATCH] of: mtd: nuke useless const qualifier
+Date: Wed,  6 Jun 2012 16:59:21 +0300
+Message-Id: <1338991161-18176-1-git-send-email-dedekind1@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Stefan Roese <sr@denx.de>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +18,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
---=-4702nwg7fga9mZeThSKX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This patch does the following:
+ -const int of_get_nand_ecc_mode(struct device_node *np)
+ +int of_get_nand_ecc_mode(struct device_node *np)
 
-On Wed, 2012-06-06 at 11:20 +0200, Roland Stigge wrote:
->  drivers/mtd/nand/lpc32xx_nand_slc.c                   | 1060 +++++++++++=
-+++++++
+because:
+1. it is probably just a typo?
+2. it causes warnings like this when people assing the returned
+   value to an 'int' variable:
+   include/linux/of_mtd.h:14:18: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
 
-Can you please rename it to lpc32xx_slc.c? It is already in the "nand"
-sub-directory, no need to add "nand" to the file name.
+Remove also the unnecessary "extern" qualifier to be consistent with other
+declarations in this file.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/of/of_mtd.c    |    2 +-
+ include/linux/of_mtd.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---=-4702nwg7fga9mZeThSKX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPz14QAAoJECmIfjd9wqK0V6oQANCYRPLO5K9qalkxC83P9V+A
-2LYCUIaXWs0zvNT/Ho+8M+faTu+pBHMlDsknaiG6IaX/uj9AgD/M+pGD4t6A3MgA
-OUHtFZhEXEStAak87n5Nfa8+GjDsDGoLfIalhc4LWXTAxlzExcB2+DEdY9xpQtKR
-YjplXhEedBbuLEMMp88uX8nLzFvFTQdf888EGLs18N2RqrYy/vVcspGVCmqUYCmo
-oglv3tRxS6yCpfHqwv6L8h/lWq29xOmOObQZXzJzMrC6/0t3yRvOTppmsaOMFIiH
-WoxhZpC3lvCyyf2qN3Yp0Cpu3FLHVU75vhTYjptiXkugpx7Q69AUIbnJf9L169wN
-bONf+iqwxAzbkHmiTxwAOAt/GQSDL4Zl5LZVk6ywxInFpK4YrRwfcclfX/ZEXhGR
-Fm7diq2Ng7Vo9ZZClHziatTfcq6FlFGykoMCQrGm4vk3Ck2cUlyHuIfhyQ424nUZ
-HL2B+eJk/QVQAcVONXZjeeGwbSWkd8ew7FlGV34OLljdLza7kkkD1gCdrwaRy15p
-QjdNipn90vlFtBBReI//ynExJaRog57tZNGZ9guAsfDwWtvDgPKnaOzSfC94cc0B
-UeZPXVOD16yoTaCHWI0zNz50X2SQx+dWeNYGXcxjpJ/npWpwLVWJX6AmNYqMhRS1
-Au7LogFVYeJysWE5mwlb
-=7oQh
------END PGP SIGNATURE-----
-
---=-4702nwg7fga9mZeThSKX--
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+index e7cad62..a27ec94 100644
+--- a/drivers/of/of_mtd.c
++++ b/drivers/of/of_mtd.c
+@@ -32,7 +32,7 @@ static const char *nand_ecc_modes[] = {
+  * The function gets ecc mode string from property 'nand-ecc-mode',
+  * and return its index in nand_ecc_modes table, or errno in error case.
+  */
+-const int of_get_nand_ecc_mode(struct device_node *np)
++int of_get_nand_ecc_mode(struct device_node *np)
+ {
+ 	const char *pm;
+ 	int err, i;
+diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+index bae1b60..ed7f267 100644
+--- a/include/linux/of_mtd.h
++++ b/include/linux/of_mtd.h
+@@ -11,7 +11,7 @@
+ 
+ #ifdef CONFIG_OF_MTD
+ #include <linux/of.h>
+-extern const int of_get_nand_ecc_mode(struct device_node *np);
++int of_get_nand_ecc_mode(struct device_node *np);
+ int of_get_nand_bus_width(struct device_node *np);
+ bool of_get_nand_on_flash_bbt(struct device_node *np);
+ #endif
+-- 
+1.7.10
