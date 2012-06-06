@@ -1,26 +1,17 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from db3ehsobe005.messaging.microsoft.com ([213.199.154.143]
+ helo=db3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScPje-000166-5B
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 23:33:54 +0000
-Received: by wgbds1 with SMTP id ds1so7507wgb.18
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2012 16:33:51 -0700 (PDT)
-Message-ID: <1339025375.8066.9.camel@brekeke>
-Subject: Re: [PATCH 2/5] UBI: fastmap: kill junk newlines and add a TODO
- about that
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 07 Jun 2012 02:29:35 +0300
-In-Reply-To: <4FCFCBE3.9000508@nod.at>
-References: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
- <1338909119-5188-3-git-send-email-dedekind1@gmail.com>
- <4FCFCBE3.9000508@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-wTHOnTwmI9kyJQysTQYx"
-Mime-Version: 1.0
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Reply-To: dedekind1@gmail.com
+ id 1ScPmT-0001FM-OY
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 23:36:50 +0000
+Date: Wed, 6 Jun 2012 18:36:39 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: elbc nand: use drvdata to only remove the relevant chip
+Message-ID: <20120606233639.GA13977@tyr.buserror.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,59 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Previously the remove method was looping and removing all chips,
+which is obviously not the right thing to do -- left over from when
+the driver was organized differently and that was the remove method for
+the entire controller.  This would result in bad things happening if
+you have more than one NAND chip, and remove the module.
 
---=-wTHOnTwmI9kyJQysTQYx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This also fixes priv->dev to properly point to the chip's device rather than
+the controller's.  Until now priv->dev was only used for error/debug prints
+(and it's an improvement there), so this shouldn't break anything.
 
-On Wed, 2012-06-06 at 23:30 +0200, Richard Weinberger wrote:
-> a =3D 1 + b;
-> res =3D c + a;
->=20
-> return res;
->=20
-> vs:
->=20
-> a =3D 1 + b;
-> res =3D c + a;
-> return res;
+Signed-off-by: Scott Wood <scottwood@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-Sorry, but I think the above example is not quite suitable because it
-looks too general, while I was asking only about a specific thing, not
-for any return or goto.
-
-ret =3D func();
-if (ret) {
-	free(x);
-
-	goto out;
-}
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-wTHOnTwmI9kyJQysTQYx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJPz+ffAAoJECmIfjd9wqK01g4P/3MdlM/8sSMSsg47BWLNk77e
-vhwRXLm9krjvMP84bG7Pu1btG1MCtCgXLnxfWSMjz4f+dTuyP3OZqJT5BKJ/iitB
-sGLBitI+f2/RIdzTPjdtugLA7W5NtRHHifNStUi91Ov08RdC3NzYaKcteASAqWng
-N3xrbkNR9ROPWU9yNbuQ06QCDCFrDXR8eCjbb3Yzn6DlpI8UkSnu54X6OQmvsNbS
-Cjg820rLNp87nxaorDdutuzEw78yqpJetOCHoeC6P25wdWKBLvayIw3ppYsJ6e4S
-bC5YNlN+mzqQaZdIxr9bgUkNecyKx48a+QgUO4tJg0Vx/JQq9/Ju0sh6abj2D5X6
-ph/bxECsiYYj7oI17DAvGibrD70WPXUwalzsYMPL729bQmdz0ULG6CWdsMlL+YU4
-9xhJXYEgPznZieMjejc9pXKzKlCFZefI/9dwKmDydplwF9vxe/1SE9mhAv8EAGC1
-R2Vj6PoFFeR9dP7bchhxjCJxr4oVQnGjtMMbzKbL3CG7PC/Qg20SGvreEf1ID/2t
-f/RQWaWHH/8ZhIhRq5JjcZh9Qjt/EZZlY7clbWCxiSo2iwdNWBVoPKG5zNVYKSth
-zxDywYCB9rZtPAJJ1VcP0HInuSCCC14RUXeqBhfdpRtVzae6WdtGhC3aNuEFr5UH
-U0sWzt1mEsyYyaKmCvED
-=FYhg
------END PGP SIGNATURE-----
-
---=-wTHOnTwmI9kyJQysTQYx--
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 7842938..a3c5578 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -916,7 +916,8 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
+ 	elbc_fcm_ctrl->chips[bank] = priv;
+ 	priv->bank = bank;
+ 	priv->ctrl = fsl_lbc_ctrl_dev;
+-	priv->dev = dev;
++	priv->dev = &pdev->dev;
++	dev_set_drvdata(priv->dev, priv);
+ 
+ 	priv->vbase = ioremap(res.start, resource_size(&res));
+ 	if (!priv->vbase) {
+@@ -963,11 +964,10 @@ err:
+ 
+ static int fsl_elbc_nand_remove(struct platform_device *pdev)
+ {
+-	int i;
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+-	for (i = 0; i < MAX_BANKS; i++)
+-		if (elbc_fcm_ctrl->chips[i])
+-			fsl_elbc_chip_remove(elbc_fcm_ctrl->chips[i]);
++	struct fsl_elbc_mtd *priv = dev_get_drvdata(&pdev->dev);
++
++	fsl_elbc_chip_remove(priv);
+ 
+ 	mutex_lock(&fsl_elbc_nand_mutex);
+ 	elbc_fcm_ctrl->counter--;
+-- 
+1.7.5.4
