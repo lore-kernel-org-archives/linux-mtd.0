@@ -1,22 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScGGQ-00069o-PD
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 13:27:07 +0000
-Message-ID: <1338989453.6875.49.camel@sauron.fi.intel.com>
-Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 06 Jun 2012 16:30:53 +0300
-In-Reply-To: <20120606125013.5897a02d@pixies.home.jungo.com>
-References: <20120605220647.GV30400@pengutronix.de>
- <20120606125013.5897a02d@pixies.home.jungo.com>
+Message-ID: <1338989921.6875.50.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v6] MTD: LPC32xx SLC NAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Wed, 06 Jun 2012 16:38:41 +0300
+In-Reply-To: <1338974414-5308-1-git-send-email-stigge@antcom.de>
+References: <1338974414-5308-1-git-send-email-stigge@antcom.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-RQo8s6XDGmEhr7qhRq2L"
+ boundary="=-BV9XYac1pt6IiyWn8trZ"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
- Mike Dunn <mikedunn@newsguy.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +26,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-RQo8s6XDGmEhr7qhRq2L
+--=-BV9XYac1pt6IiyWn8trZ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-06-06 at 12:50 +0300, Shmulik Ladkani wrote:
-> +	if (!mtd->bitflip_threshold)
-> +		mtd->bitflip_threshold =3D mtd->ecc_strength;
+On Wed, 2012-06-06 at 11:20 +0200, Roland Stigge wrote:
+> +#ifdef CONFIG_PM
+> +static int lpc32xx_nand_resume(struct platform_device *pdev)
+> +{
+> +	struct lpc32xx_nand_host *host =3D platform_get_drvdata(pdev);
+> +
+> +	/* Re-enable NAND clock */
+> +	clk_enable(host->clk);
+> +
+> +	/* Fresh init of NAND controller */
+> +	lpc32xx_nand_setup(host);
+> +
+> +	/* Disable write protect */
+> +	lpc32xx_wp_disable(host);
+> +
+> +	return 0;
+> +}
+> +
+> +static int lpc32xx_nand_suspend(struct platform_device *pdev, pm_message=
+_t pm)
+> +{
+> +	u32 tmp;
+> +	struct lpc32xx_nand_host *host =3D platform_get_drvdata(pdev);
+> +
+> +	/* Force CE high */
+> +	tmp =3D readl(SLC_CTRL(host->io_base));
+> +	tmp &=3D ~SLCCFG_CE_LOW;
+> +	writel(tmp, SLC_CTRL(host->io_base));
+> +
+> +	/* Enable write protect for safety */
+> +	lpc32xx_wp_enable(host);
+> +
+> +	/* Disable clock */
+> +	clk_disable(host->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +#else
+> +#define lpc32xx_nand_resume NULL
+> +#define lpc32xx_nand_suspend NULL
+> +#endif
 
-Hmm, why se default is to report bit-flips only when one more flipping
-bit would cause an ECC error? The default be 1 - report on any bit-flip.
-The same should be done in 'add_mtd_device()' - we should preserve the
-old behavior, as it was before these patches. Do I miss something?
+0, not NULL.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-RQo8s6XDGmEhr7qhRq2L
+--=-BV9XYac1pt6IiyWn8trZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +87,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPz1uNAAoJECmIfjd9wqK0aEYP/2o9A/j1TYzFWPBHdvb6SRww
-PvRzkE8UVNImnjRelByY+Uys+Col2I/GgWnEU9+GBnnpnaMU/VZ5Wx//CrezgBYf
-1O7U4MiQ7P45RF/y6Uh7Vlqx6eyG0BVngC8bq38+01A9+95gUmoREFw6te+44wLD
-nSbMJF86Q16uQJRGFjEJSVeWa8HynTnI9hOMM9e4ZqmbluXmfYnZV1LYjxExAk52
-NdHvmn+lUT29K+KSBCfMmGiTaGYK8fGm6rQQgHS1GPN2MKvRsNA5VY0KQczuq6NQ
-S98k/jcnNcjKjrYaZ87UGuHcphxOm4lbKHwzMmzIV7MG0lAet9NFPJ2YCe5eHLp+
-h2yrRa82NjF0aeCPFV+mXBU19ISejP/vYDFJLrF5pIVHcLEYlerExKEYdEjCaWvk
-+9fEq1pIoUikfJaHiKtRYN6Bsb01PgWYKKV9zlZqpMJqDYKSebdEBB0nzZ+aVjAu
-Qte7bw0+Hre2/6VH8J+Db2xVCaFtyJf2OnI86bGsGeVK01HHUJ26twlfhFm/mNXX
-CWXdF6mnYTt+Kqod/Sqx9hlW8sJGi66u9cRcDO5gb1rjIjH3iQNSfa+aduhVXMow
-5RJ4S381CawaOBjp7MohYd/6hXZhSOpy0K7Ub/ThjUQmbTxc8KSHX7l+aTNFU10v
-kkDlUfCVPpNIx64BXAku
-=ckuE
+iQIcBAABAgAGBQJPz11hAAoJECmIfjd9wqK0zXYP/0XeKxiYFsgdBuLZs9y8rmLD
+LvIIjTjmN4cQC8OmTwX57RHVxxCPc3ZmOxNc0mzxMrsbArpONPOX66M2cmM23OS/
+tjh2pup1kRzZCEqDIOIv6cnCo+VpTrGW0dopmLMjkUGNCFzcvk59evkJIadbZQCy
+uYcmzl13B7hrcHLL0s5gDOVIkDuFpCTbYl382+5JO9Xgc1UZCfgcatfEAyvzBTvA
+Qpgk9flf6hYYJAy0wrckPl/hTXT8doeZSBT21cyL3AbKn+H1gqMcc/yzYRw5qcBD
+5BpqBIsMY3aQvcEW9gJcUpR5xCuh6dCLDfGdux68G7GhSOgpiFE5pI/gT3wZQrOh
+kqb91Mss3jUK//w9VjvOeAaRXWdCMZYpuSCpeu/dgNEJLDtD0ol+47DyC7WTqG3H
+6bddJok3Fz72WulaLfcbfExF4TxwisyKSkPtuhE6qIWyByBg0Gd8L7TZqqjwRSfN
+S6FDCgyWYjxty+7wSWbYN2Y1QsX40sTEbzb9dGr0ufagwDoagrcquq3wqkklaBUS
+g75mcbcWgwRl2YueT88ZQbaWRJtBHsx6mmXMYGA2n+jYxvn1ypes5L6Rfdldd1pA
+KxQ5KwD3oI+QCuprCQ3IAsM+kS0WLbOExD+sX28mnqbU6p9FkkJuTpI4D1yfMV3m
+rADYN3Sx+yXk9rhzunPn
+=y6sL
 -----END PGP SIGNATURE-----
 
---=-RQo8s6XDGmEhr7qhRq2L--
+--=-BV9XYac1pt6IiyWn8trZ--
