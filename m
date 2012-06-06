@@ -1,22 +1,21 @@
 Received: from mail.free-electrons.com ([88.190.12.23])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScLbM-0002TG-Dj
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 19:09:07 +0000
-Date: Wed, 6 Jun 2012 21:08:41 +0200
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScLe2-00059q-OU
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 19:11:51 +0000
+Received: from skate (AToulouse-555-1-5-124.w92-156.abo.wanadoo.fr
+ [92.156.88.124])
+ by mail.free-electrons.com (Postfix) with ESMTPSA id 5B26AE5
+ for <linux-mtd@lists.infradead.org>; Wed,  6 Jun 2012 21:11:31 +0200 (CEST)
+Date: Wed, 6 Jun 2012 21:11:25 +0200
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: linux-mtd@lists.infradead.org
 Subject: Re: Q: Cramfs Vs. Ubifs
-Message-ID: <20120606210841.615fdd6a@skate>
-In-Reply-To: <Pine.LNX.4.64.1206051122380.4247@lnxricardw.se.axis.com>
+Message-ID: <20120606211125.62aba982@skate>
+In-Reply-To: <CAJ2oMhJxM6UTfj3zX7DFnc8PPcNNLfnXeV68ELLaCY=_8inFTg@mail.gmail.com>
 References: <CAJ2oMhJxM6UTfj3zX7DFnc8PPcNNLfnXeV68ELLaCY=_8inFTg@mail.gmail.com>
- <Pine.LNX.4.64.1206050837380.4247@lnxricardw.se.axis.com>
- <CAJ2oMhK0isouNBTzMEXPvRLAjFFcSCzWn_gvszrgt1_6Nvw13A@mail.gmail.com>
- <Pine.LNX.4.64.1206051122380.4247@lnxricardw.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ran Shalit <ranshalit@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +27,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hello,
 
-Le Tue, 5 Jun 2012 11:29:08 +0200 (CEST),
-Ricard Wanderlof <ricard.wanderlof@axis.com> a =C3=A9crit :
+Ricard has already answered your points, but I felt that adding an
+additional detail would be useful. See below.
 
-> I should make it clear that cramfs can not be run directly on NAND flash=
-=20
-> as it has no concept of bad blocks. But neither can ubifs, which requires=
-=20
-> UBI. So both require UBI.
->=20
-> As a matter of fact, come to think of it, I'm not sure how to run cramfs=
-=20
-> on UBI as it requires a block device which UBI doesn't supply. But I have=
-=20
-> tested it in some way, so it's probably just my mind drawing a blank righ=
-t=20
-> now. :-)
+Le Mon, 4 Jun 2012 21:17:34 +0200,
+Ran Shalit <ranshalit@gmail.com> a =C3=A9crit :
 
-You can use gluebi+mtdblock on top of a MTD volume to use a read-only
-block filesystem on top of MTD. Or, you can use the ubiblk driver,
-which isn't mainline for now, but has been posted multiple times last
-year by one of my colleagues.
+> I read about cramfs and ubifs, but there is still something I don't
+> understand here, I hope you can help me with that...
+> 1. It seems reasonable that execution from RAM is faster then Nand flash.
+>     So If I'm using ubifs, should I copy the executables to RAM before ex=
+ecute ?
 
-> The only real advantage I can see with cramfs is that it does use up less=
-=20
-> space in the flash for the same amount of data. On the other hand, flash=
-=20
-> space is usually not a big concern in NAND flash systems anyway.
-
-cramfs is kind of useless now that we have squashfs that overcomes the
-limitations of cramfs (in number of files and filesystem size) and
-provides an even higher compression ratio.
-
-So definitely, if you had to use a read-only block filesystem, you
-should go with squashfs. But as Ricard pointed, you cannot directly use
-either cramfs or squashfs on top of MTD partitions, since those
-filesystems do not handle bad blocks.
+This is not needed. The Linux kernel uses the MMU to do demand paging
+so load on demand into RAM the portions of the program that are
+actually being used. So Linux userspace applications are always
+executed from RAM (unless, as Ricard pointed out, you use some XIP
+mechanism, but that requires NOR flash and special filesystems, so it's
+a very uncommon situation these days). However, an application is not
+completely loaded at once at the beginning of its execution, parts of
+it are loaded on demand during the execution.
 
 Best regards,
 
