@@ -1,22 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScPvZ-0001lV-K1
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 23:46:14 +0000
-Message-ID: <4FCFEBC2.9000009@nod.at>
-Date: Thu, 07 Jun 2012 01:46:10 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
+ id 1ScPyj-0001zO-Lv
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 23:49:30 +0000
+Received: by wgbds1 with SMTP id ds1so13483wgb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2012 16:49:27 -0700 (PDT)
+Message-ID: <1339026321.8066.19.camel@brekeke>
 Subject: Re: [PATCH 1/5] UBI: fastmap: add more TODOs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 07 Jun 2012 02:45:21 +0300
+In-Reply-To: <4FCFEBC2.9000009@nod.at>
 References: <1338909119-5188-1-git-send-email-dedekind1@gmail.com>
  <1338909119-5188-2-git-send-email-dedekind1@gmail.com>
  <4FCFCBDD.8030907@nod.at> <1339025892.8066.16.camel@brekeke>
-In-Reply-To: <1339025892.8066.16.camel@brekeke>
-Content-Type: multipart/signed; micalg=pgp-sha1;
+ <4FCFEBC2.9000009@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="------------enigF952B6230A99926F975FE048"
+ boundary="=-iYS18Z12auBNr9SHGay7"
+Mime-Version: 1.0
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF952B6230A99926F975FE048
-Content-Type: text/plain; charset=UTF-8
+
+--=-iYS18Z12auBNr9SHGay7
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Am 07.06.2012 01:38, schrieb Artem Bityutskiy:
-> On Wed, 2012-06-06 at 23:30 +0200, Richard Weinberger wrote:
->> I'm confused to find bad PEBs I'd still need a full scan, right?
+On Thu, 2012-06-07 at 01:46 +0200, Richard Weinberger wrote:
+> >> To catch UBI_IO_BAD_HDR, UBI_IO_BAD_HDR_EBADMSG and friends.
+> >=20
+> > Which are never returned by ubi_io_read().
 >=20
-> If full scan means call mtd_block_isbad() for each PEB, then yes.
->=20
->>>  	ret =3D ubi_io_read(ubi, fmsb, sb_pnum, ubi->leb_start, sizeof(*fms=
-b));
->>>  	if (ret && ret !=3D UBI_IO_BITFLIPS) {
->>> +		/* TODO: what are the error codes > 0 ? Why is this check? */
->>
->> To catch UBI_IO_BAD_HDR, UBI_IO_BAD_HDR_EBADMSG and friends.
->=20
-> Which are never returned by ubi_io_read().
+> Also never ever in future?
+> If so, I'll drop this check.=20
 
-Also never ever in future?
-If so, I'll drop this check.
+Well, if you read those constants they suggest that they are specific to
+functions which read the UBI headers. ubi_io_read() function is just a
+general read function which is just a simple wrapper over mtd_read()
+plus re-trying, nice error messaging, debugging prints, some error codes
+handling, nothing else.
 
->> AFAIK ->magic is the only __b32 field where I not use be32_to_cpu() be=
-cause it's useless here.
->=20
-> Why is it useless?
->=20
-> if we have the following bytes starting from address 0xC0000000:
-> 7B 11 D6 9F
->=20
-> then we do:
->=20
-> unsigned int *p =3D 0xC0000000;
-> printk("%#x\n", *p);
->=20
-> we should see:
->=20
-> 0x7B11D69F on BE system (e.g., powerpc)
-> and
-> 0x9FD6117B on LE system (e.g., x86).
->=20
+So no, it is not going to ever check UBI headers and return those codes.
 
-Damit, you are right!
-Sorry,
-//richard
+/me goes to sleep.
 
+--=20
+Best Regards,
+Artem Bityutskiy
 
---------------enigF952B6230A99926F975FE048
+--=-iYS18Z12auBNr9SHGay7
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJPz+vDAAoJEN9758yqZn9eiD8IAIxYnBquynNJJw9SKYwf1k5i
-ZV33pO3WAuxQSwbBV7oiGeebhxbg1ZRtoKSkQ/gLKU9m2F+3pLmHIAKudKYZx9OC
-IgVm00+a74L69KK3e+bcyU6d/pIEKSI2Dw0mMSsVbtM8aU/0Ob4PWOjHMPurL+tB
-qQl4A5AyqCX0qV0ROxiq1pI5SsZXXBKTCUA92xUlfA1aEgK1arzo7ZMcrptggtnR
-9msLZVLG9YC2o6tSPkEcrKjmS5rEYQGRPUQNSFIJeOgRXXDs27NCNGG51iMaJrLM
-EXZ8DOOhVBDLHfBIY2oC8aPXC/J5dMCGapYWEaKol1cdrz5gOJ99TSRYLU4+IfY=
-=KD/e
+iQIcBAABAgAGBQJPz+uRAAoJECmIfjd9wqK0xEgP/3w77IDpOhJ4c3OEQ9iW8h3b
+KBiiMqJIBCuAT6i4B+vcHqs24jb6uSkJ5IafsIY5sy7nxgOGpHOJ5s1niZnUrAyD
+M9DUIUegoS+uXxLoY4+4iOzLv7XG3gYLAlwR4c5yoyxaiAq8fqrkGSktAO7Z7Bgz
+UoyML6mHX5IkdKey6vBQudUCz2ZV5CQLwaPWoe4zMzLirk0ZP9tjWlTkaJzkbP4W
+gd3VrrUhPZ2Hq1dOYWCTWxfKPnxOyZFyWv6aWqlm4He0MW3YcZVl8mO4YjKgcZNF
+kpNvM08vd7HUIRZZ12wNq6NR1xgLTjZGzKwAVGveeCu6qQ8gIuC4pX1GtX7env6K
+Zv8vz0VELcAUBdSGf0uq9BWmrOjNHW5A9Z7wM+vOIsmu0Noluc0afqIY3wh9OhBY
+t7cZvZwa2yPmUPg5CX/BuyKC+QUWwwH002j9hQ9YEWgLnzpHzdqYA9MnKgqB/1CQ
+qCOEozU4ZmeBPVdhEJ3qnh3egeCD1vznIBc+2vmqCrtPxofyZFHCNqP0Gyf6NXsM
+ay3BJ2mDfGIoJM1BYDRbzDP2laBZclr8MF47dW1OooYThFip4pTT23szujCntn7M
+XhTifkt7zr24P5riQiMxtK1bUdzcOxG9XKY+rS2iXcISSxOuBnoN0d82RGgbL0CK
+I4N1W01JpGUPdmStupgH
+=mOf7
 -----END PGP SIGNATURE-----
 
---------------enigF952B6230A99926F975FE048--
+--=-iYS18Z12auBNr9SHGay7--
