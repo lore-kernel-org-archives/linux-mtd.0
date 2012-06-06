@@ -1,21 +1,13 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScDLV-0007MG-6g
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 10:20:10 +0000
-Message-ID: <1338978235.6875.33.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: add JEDEC ID for w25q32dw to chip table
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Federico Fuga <fuga@studiofuga.com>
-Date: Wed, 06 Jun 2012 13:23:55 +0300
-In-Reply-To: <1338910621-3843-1-git-send-email-fuga@studiofuga.com>
-References: <1338900917.2507.50.camel@sauron.fi.intel.com>
- <1338910621-3843-1-git-send-email-fuga@studiofuga.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-6zYvqiU7G5lf7HW+OiFG"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScDYH-0008Ht-3U
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2012 10:33:23 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: 
+Date: Wed,  6 Jun 2012 12:33:12 +0200
+Message-Id: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +17,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The following adds i.MX53 nand support and generally devicetree
+based probing for i.MX5 boards. The first three patches should go
+via mtd, the last patch optionally aswell if all agree.
 
---=-6zYvqiU7G5lf7HW+OiFG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sascha
 
-On Tue, 2012-06-05 at 17:37 +0200, Federico Fuga wrote:
-> From: "ing. Federico Fuga" <fuga@studiofuga.com>
->=20
-> Adds JEDEC ID for the 1.8V version of WinBond w25q32
->=20
-> Signed-off-by: Federico Fuga <fuga@studiofuga.com>
+The following changes since commit f8f5701bdaf9134b1f90e5044a82c66324d2073f:
 
-Pushed to l2-mtd.git, thanks!
+  Linux 3.5-rc1 (2012-06-02 18:29:26 -0700)
 
---=20
-Best Regards,
-Artem Bityutskiy
+are available in the git repository at:
 
---=-6zYvqiU7G5lf7HW+OiFG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+  git://git.pengutronix.de/git/imx/linux-2.6.git imx/nand-mx53
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+for you to fetch changes up to d55d1479a3bfaedbb9f0c6c956f4dff6bb6d6d61:
 
-iQIcBAABAgAGBQJPzy+7AAoJECmIfjd9wqK0QbMQAK9da8bvYQ8MxjjMSyfjyjhD
-AWC79u0wCDSFXC5ivCtrHQF0HwdlHvAQisksHOtT1heLQo4rgrp9sPxzMjNORbPW
-U4db5OwpxVmlot98ASbpMlOluzS0b3mTrgJSEIcM2Utd7htV0UEy9/YjkWcQYD99
-HU00oHzVY4ALAXwgfU5rWi7m9IVDmejwKxqeYKk3miAcbm6HWCBuzJSME7oz6WoC
-rXtJeT11DXxR1AOnT4XfX99y21wsl8wG+kYcXRwCmrSjzCfGgxXz91zmcpf9M8lW
-jtB8U+5VRxMKboDDIZX4oalUCG/mExyJYY1iHJM6LfwMMbBuxbbmCeKzx3NvSSI5
-iSXBzn5lYpIplxbqJpbuWGMlSi2r+97IxYV0FA2+XxUw6TlnzfCaOhcV7Wn72EQp
-hxyCL/8OcaskcG4SnnYWVTszYxlCpjq81tRGMSCkGcq7pe2ez+W0ZWeZXsWZWNnF
-pGhkC+R/QZokYiG55kbHQKxeIoo7RnO3E7PH+yAMTwz9kGWq8Jeer2++Sz6TAu6n
-Q/tRlK+PMoYCyXS4ZA++GQJYE5AUzCURgzsjXtRAfRQeqQ8ZG3927/+CTu83Rcr4
-dtYwDXtAxMDPmhRTtsnfGcJu1h5HJwNEgTHuaGPYtwBXMalGe3ypuDjdEm0G5U/g
-MJua4nta42VBzcPsBmDO
-=igL2
------END PGP SIGNATURE-----
+  ARM i.MX5: Add nand oftree support (2012-06-06 12:20:24 +0200)
 
---=-6zYvqiU7G5lf7HW+OiFG--
+----------------------------------------------------------------
+Sascha Hauer (4):
+      mtd nand mxc_nand: Use managed resources
+      mtd nand mxc_nand: swap iomem resource order
+      mtd nand mxc_nand: add i.MX53 support
+      ARM i.MX5: Add nand oftree support
+
+ arch/arm/boot/dts/imx51.dtsi                  |    7 ++
+ arch/arm/boot/dts/imx53.dtsi                  |    7 ++
+ arch/arm/mach-imx/clk-imx51-imx53.c           |    2 +
+ arch/arm/plat-mxc/devices/platform-mxc_nand.c |   11 +-
+ drivers/mtd/nand/mxc_nand.c                   |  137 ++++++++++++++-----------
+ 5 files changed, 97 insertions(+), 67 deletions(-)
