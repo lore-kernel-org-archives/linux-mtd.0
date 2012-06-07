@@ -1,12 +1,12 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScYeG-0001cu-BU
+ id 1ScYeG-0001ct-BU
  for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 09:04:57 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joel Reardon <joel@clambassador.com>
-Subject: [PATCH 3/4] UBIFS: improvement to Joel's patch
-Date: Thu,  7 Jun 2012 12:06:07 +0300
-Message-Id: <1339059968-25753-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/4] UBIFS: another correction to joel's patch
+Date: Thu,  7 Jun 2012 12:06:06 +0300
+Message-Id: <1339059968-25753-2-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1339059968-25753-1-git-send-email-dedekind1@gmail.com>
 References: <alpine.DEB.2.00.1206062052140.31834@eristoteles.iwoars.net>
  <1339059968-25753-1-git-send-email-dedekind1@gmail.com>
@@ -22,57 +22,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Introduce a 'calc_ksa_lebs()' helper. It is very simple now, but we
-will put more calculations there. The code is cleaner this way.
+Fix the following GCC warning identified by aiaiai:
++fs/ubifs/sb.c: In function 'create_default_filesystem':
++fs/ubifs/sb.c:85:20: warning: variable 'ksa_first' set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- fs/ubifs/sb.c |   19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ fs/ubifs/sb.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 7b6adc0..91c78e7 100644
+index d4328bd..7b6adc0 100644
 --- a/fs/ubifs/sb.c
 +++ b/fs/ubifs/sb.c
-@@ -64,6 +64,19 @@
- #define DEFAULT_TIME_GRAN 1000000000
+@@ -81,7 +81,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	union ubifs_key key;
+ 	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
+ 	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
+-	int min_leb_cnt = UBIFS_MIN_LEB_CNT, ksa_lebs = 0, ksa_first;
++	int min_leb_cnt = UBIFS_MIN_LEB_CNT, ksa_lebs = 0;
+ 	long long tmp64, main_bytes;
+ 	__le64 tmp_le64;
  
- /**
-+ * min_ksa_lebs - calculate the minimum amount of LEBs required for KSA.
-+ * @c: UBIFS file-system description object
-+ * @leb_cnt: total amount of LEBs on the UBI volume to calculate for
-+ *
-+ * This is a helper function which calculates and returns the amount of LEBs
-+ * required for the KSA area if the underlying UBI volume has @leb_cnt LEBs.
-+ */
-+static int calc_ksa_lebs(struct ubifs_info *c, int leb_cnt)
-+{
-+	return (leb_cnt * UBIFS_CRYPTO_KEYSIZE) >> UBIFS_BLOCK_SHIFT;
-+}
-+
-+/**
-  * create_default_filesystem - format empty UBI volume.
-  * @c: UBIFS file-system description object
-  *
-@@ -110,8 +123,7 @@ static int create_default_filesystem(struct ubifs_info *c)
- 		 * LEBS * LEB_SIZE / DATANODE_SIZE / KEYS_PER_KSA_LEB, because
- 		 * KEYS_PER_KSA_LEB = LEB_SIZE / KEY_SIZE.
- 		 */
--		ksa_lebs = (c->leb_cnt * UBIFS_CRYPTO_KEYSIZE)
--			>> UBIFS_BLOCK_SHIFT;
-+		ksa_lebs = calc_ksa_lebs(c->leb_cnt);
- 		ksa_lebs += ksa_lebs >> UBIFS_KSA_LEBS_SCALE_SHIFT;
- 		ksa_lebs += UBIFS_KSA_ADD_LEBS;
- 		min_leb_cnt += ksa_lebs;
-@@ -484,8 +496,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 		goto failed;
- 	}
+@@ -168,7 +168,6 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		lpt_first + lpt_lebs - 1);
  
--	min_ksa_leb_cnt = (c->leb_cnt * UBIFS_CRYPTO_KEYSIZE)
--			  >> UBIFS_BLOCK_SHIFT;
-+	min_ksa_leb_cnt = calc_ksa_lebs(c->leb_cnt);
- 	max_ksa_leb_cnt = min_ksa_leb_cnt << 1;
- 	min_ksa_leb_cnt += UBIFS_KSA_ADD_LEBS;
- 	max_ksa_leb_cnt += UBIFS_KSA_ADD_LEBS;
+ 	main_first = c->leb_cnt - main_lebs;
+-	ksa_first = c->leb_cnt - main_lebs - ksa_lebs;
+ 
+ 	/* Create default superblock */
+ 	tmp = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
 -- 
 1.7.10
