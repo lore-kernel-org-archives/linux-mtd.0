@@ -1,20 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Scc81-0005Rm-F7
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 12:47:54 +0000
-Message-ID: <1339073501.6875.104.camel@sauron.fi.intel.com>
-Subject: Re: UBI and volume checksum
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Giovanni Malfara' <Giovanni.Malfara.ext@altran.it>
-Date: Thu, 07 Jun 2012 15:51:41 +0300
-In-Reply-To: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
-References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ExCpTf5buuCzZX7wq4o0"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SccVb-0003VV-Ij
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 13:12:19 +0000
+Date: Thu, 7 Jun 2012 14:11:58 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
+Message-ID: <20120607131158.GC15973@n2100.arm.linux.org.uk>
+References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
+ <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
+ <1339073375.6875.102.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1339073375.6875.102.camel@sauron.fi.intel.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Jun 07, 2012 at 03:49:35PM +0300, Artem Bityutskiy wrote:
+> On Thu, 2012-06-07 at 12:09 +0100, Russell King wrote:
+> > Add DMA engine support to the OMAP2 NAND driver.  This supplements the
+> > private DMA API implementation contained within this driver, and the
+> > driver can be independently switched at build time between using DMA
+> > engine and the private DMA API.
+> > 
+> > Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+> > Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> 
+> I guess it is makes sense to make this stuff to go in via the OMAP tree.
 
---=-ExCpTf5buuCzZX7wq4o0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+No, it makes sense to get this stuff via a single tree all together,
+because, as you can see from the thread structure, it isn't purely
+an OMAP thing.
 
-On Thu, 2012-06-07 at 14:21 +0200, Giovanni Malfara' wrote:
-> Hi all,
->=20
-> I need to verify that the UBI image once it has been written on the UBI
-> volume.
-> So I try to extract the content with the "dd" tool from the UBI bolume
-> and I calculate the checksum to be compared with the one of the original
-> UBI image.
->=20
-> My question is: is it always true? If I extract the content of the UBI
-> volume at any time (the fileystem is mounted read-only) , will the
-> checksum always the same? Will the data move from a PEB that has
-> bit-flips to a new one cause a difference in checksum?
+The OMAP stuff depends on a core set, as does a bunch of PL08x and
+SA11x0 changes.  We can't stuff all that through the OMAP tree, that
+wouldn't make any sense.
 
-Yes, if you read the UBI volume (/dev/ubiX_Y), and it is R/O, the CRC
-should be the same all the time.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-ExCpTf5buuCzZX7wq4o0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP0KPeAAoJECmIfjd9wqK03GwQAMJRA4RqTs/JRY+fXe7793mw
-18jmToKbK218sGNSMVk4jWI2f+5/NSoNZQwlM2OyVHxCS7+WyabvA43Ve8vpPbc+
-XnhuFvz6PBhOKgalm7kvqBlFiGEp7yziqg1Hl+1pmqa4KJiLdgP6C6bIu72LWRrK
-XvfonwilhxIgHk/BJb7zZJ9uC1AiXIcDZlTXEcLZHDu9fppaYndXE2vLr86Bv20b
-gnEyZgbGWXG/t+vvHvx6hQx9yHZQ1M7CVk3apDJ+SxRrEYcyA38p6RQc2uKIa36H
-IaOEvEcD62Q2zxJ7leZBWcraKXJrArl1FUQk+ls8R9JyccDI8N2BZzF1tjVYbtht
-b1kxhlkcGzjEinJMxnq6PhTlw/wcmQ/xMyTsAFtM3I8LqfipOglduEvAbdfKuNNh
-V/Wtegn/KW++B/VqcI6VK+nn1GwMidXOjY2Z13GUm+lR2k+WXKIzGfoKedWMLvce
-tDX0jZo3ikdK2qrtY/+9XYglTfTXBa74eTagCt9+en2imkkn1FvM1ujE7ixfEcmu
-YByJ0GAkrLdcWuSi/P7K/hDZ3GJWht+3cjyw6Ycaw0nmp+R0DpOdZi2pIKbi1LaS
-GKVi+HYtvR+u51xSsJw4QhKSHl6JCKIs48ZUZToVWJnYVuOXzJcbziEE8Pt0YbE6
-Ismv5F00vpDXsEFnv/dC
-=OuSx
------END PGP SIGNATURE-----
-
---=-ExCpTf5buuCzZX7wq4o0--
+What probably should happen is that the tip of the OMAP stuff gets
+pulled by Tony into his tree, and we share those commits between my
+tree and his - and then it doesn't matter what goes in when and by
+whom.
