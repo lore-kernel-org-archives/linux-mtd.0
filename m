@@ -1,22 +1,20 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScePd-0003la-1i
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 15:14:13 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "tony@atomide.com" <tony@atomide.com>, "artem.bityutskiy@linux.intel.com"
- <artem.bityutskiy@linux.intel.com>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
-Date: Thu, 7 Jun 2012 15:14:03 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9962E7@DBDE01.ent.ti.com>
-References: <cover.1338790117.git.afzal@ti.com>
-In-Reply-To: <cover.1338790117.git.afzal@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 7 Jun 2012 10:10:16 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
+Message-ID: <20120607171015.GK12766@atomide.com>
+References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
+ <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
+ <1339073375.6875.102.camel@sauron.fi.intel.com>
+ <20120607131158.GC15973@n2100.arm.linux.org.uk>
+ <1339075683.6875.109.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Cc: "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1339075683.6875.109.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+* Artem Bityutskiy <dedekind1@gmail.com> [120607 06:28]:
+> On Thu, 2012-06-07 at 14:11 +0100, Russell King - ARM Linux wrote:
+> > No, it makes sense to get this stuff via a single tree all together,
+> > because, as you can see from the thread structure, it isn't purely
+> > an OMAP thing.
+> > 
+> > The OMAP stuff depends on a core set, as does a bunch of PL08x and
+> > SA11x0 changes.  We can't stuff all that through the OMAP tree, that
+> > wouldn't make any sense.
+> > 
+> > What probably should happen is that the tip of the OMAP stuff gets
+> > pulled by Tony into his tree, and we share those commits between my
+> > tree and his - and then it doesn't matter what goes in when and by
+> > whom.
+> 
+> Oh, sure, sorry, I actually wanted to say that these to patches should
+> _not_ got via the MTD tree.
 
-On Mon, Jun 04, 2012 at 12:15:01, Mohammed, Afzal wrote:
-> Hi,
->=20
-> This series cleans up gpmc mtd interactions so that GPMC driver
-> conversion which is going to happen shortly would happen smoothly
-> by not creating much disturbance outside of arch/arm/*omap*/
->=20
-> This series,
-> 1. provides the ability for OMAP NAND driver to configure GPMC-NAND
->    registers by NAND driver itself instead of using exported GPMC
->    symbols
-> 2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
->    allocated address space as resource
-> 3. creates a fictitious GPMC interrupt chip and provide the clients
->    with interrupts that could be handled using standard APIs (helps
->    in removing the requirement for driver of peripheral connected to
->    GPMC having the knowledge about GPMC interrupt handling). The
->    only user is OMAP NAND driver, it has also been modified to take
->    advantage of this
->=20
-> This series has been made over 3.5-rc1
+What Russell is suggesting works good for me.
 
-Ping
+Regards,
 
-Regards
-Afzal
+Tony
