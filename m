@@ -1,17 +1,23 @@
-Received: from blu0-omc1-s36.blu0.hotmail.com ([65.55.116.47])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sch8z-0000Bw-Tn
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 18:09:14 +0000
-Message-ID: <BLU0-SMTP519734F19EE74DFC6E2366B8F30@phx.gbl>
-From: Bill Pringlemeir <bpringle@sympatico.ca>
-To: linux-mtd@lists.infradead.org
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SchKG-0001XC-Ja
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 18:20:53 +0000
+Received: by bkwj4 with SMTP id j4so1026797bkw.36
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2012 11:20:51 -0700 (PDT)
+Message-ID: <1339092992.10379.0.camel@brekeke>
 Subject: Re: Latest UBI/UBIFS requires DebugFs?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Bill Pringlemeir <bpringle@sympatico.ca>
+Date: Thu, 07 Jun 2012 21:16:32 +0300
+In-Reply-To: <BLU0-SMTP519734F19EE74DFC6E2366B8F30@phx.gbl>
 References: <87sje7rp0x.fsf@sympatico.ca>
-Date: Thu, 7 Jun 2012 14:09:45 -0400
-In-Reply-To: <87sje7rp0x.fsf@sympatico.ca> (Bill Pringlemeir's message of
- "Thu, 07 Jun 2012 13:49:02 -0400")
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+ <BLU0-SMTP519734F19EE74DFC6E2366B8F30@phx.gbl>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-EGDYgUfy47mJ1i51+lzu"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +28,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Arrgh.  Sorry for this noise.  I missed this post,
+--=-EGDYgUfy47mJ1i51+lzu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-http://lists.infradead.org/pipermail/linux-mtd/2012-June/042091.html
+On Thu, 2012-06-07 at 14:09 -0400, Bill Pringlemeir wrote:
+> Arrgh.  Sorry for this noise.  I missed this post,
+>=20
+> http://lists.infradead.org/pipermail/linux-mtd/2012-June/042091.html
+>=20
+> I guess I need to apply those patches to the back port.
 
-I guess I need to apply those patches to the back port.
+I will push them to the backport trees.
 
-On  7 Jun 2012, bpringle@sympatico.ca wrote:
+--=20
+Best Regards,
+Artem Bityutskiy
 
+--=-EGDYgUfy47mJ1i51+lzu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> I have pulled the latest UBI/UBIFS from
-> git://git.infradead.org/users/dedekind/ubifs-v2.6.36.git.  I think that
-> the same issue may exist on the head.
->
-> If your root device is ubifs and you do not configure with
-> CONFIG_DEBUG_FS, then several functions will fail and the root will not
-> be mounted.  Depending on other configurations, you might not get any
-> error messages.
->
-> It appears that ubi_debugfs_init_dev, ubi_debugfs_init,
-> dbg_debugfs_init_fs, and dbg_debugfs_init rely on DEBUGFS and return
-> errors when creating DEBUGFS files.
->
-> I think either we could conditionalize these functions to return 0 when
-> DEBUGFS is not present or use a '#error UBI/UBIFS not supported without
-> DebugFs'.
->
-> I think maybe this was an over zealous commit to get good bug reports
-> and the DEBUGFS itself is not needed, but just the other printk stuff in
-> the debug.c files?
->
-> I can submit a patch, but I think the explanation above is probably
-> enough for someone else with a better understanding of the structure.
->
-> Regards,
-> Bill Pringlemeir.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP0PAAAAoJECmIfjd9wqK0v/oP/ieJH/DTUH9UeTKSDVLMTVgW
+gfvedRzYo93C8qfWauvCKn2BGFsm4ZZsJfb9mQvWrenBlFPXAqrX93FMb0gTIe8l
+AIsa382B88jKdbJb01cf9lYc9C+SF1kjv6iCOyxjl1+kR0p73aBmvobO3ybivstS
+hCjLwzDLOK0xdpb5fZgMMN1RBvLgM7jxT0pyx2IGMSJtK6iU7LGwqjnjbdJYm4TO
+akEEWZzayFmpvLfG0ge+8Z/lp5RjOTiZaR0v3uFNwy/nYKUKd6ROefxcW2J5D899
+3VA+vs+6J4+GBdruw+v8MHwiBpwXK/a261j8hDsYj30MTFeDgCFqqLHyf/d6Ol5b
+z0bZS1pW1Kt9+0Hd1bkzMgBvVmnQXrzQciLSeA9loZM8WHg24//FC4xHvYdS8SIv
+/8O2ryCl9+FN5ZgdpWz236884BKXPMFjXeJNVP800syXaldPQgpYp58dT2MuauqW
+ELG/rcraG9nTxbCE8QgCHUtGMP1ra3YJfwzwA+LBwtTdstBL2GcFo3TuEFpqCnUO
+0XcUWJU5s1rFHjArcJIiGpFcmby709S4jxQPjmQ8DD5SXfX1m59oEjHBkAUY4Rie
+/yjqiCyp5FWEpMXwW4TAeZ6EPKVPx4x8EbBVOM175wAZs5fdCG6oT8wUu1n0Y+ZQ
+2aTwF38iyGLWQzBHivTF
+=yYd7
+-----END PGP SIGNATURE-----
+
+--=-EGDYgUfy47mJ1i51+lzu--
