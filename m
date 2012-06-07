@@ -1,17 +1,19 @@
-Message-ID: <1339073375.6875.102.camel@sauron.fi.intel.com>
-Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Scc81-0005Rm-F7
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 12:47:54 +0000
+Message-ID: <1339073501.6875.104.camel@sauron.fi.intel.com>
+Subject: Re: UBI and volume checksum
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Date: Thu, 07 Jun 2012 15:49:35 +0300
-In-Reply-To: <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
-References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
- <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
+To: Giovanni Malfara' <Giovanni.Malfara.ext@altran.it>
+Date: Thu, 07 Jun 2012 15:51:41 +0300
+In-Reply-To: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
+References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YCdqRaR1c6JqlZiHog8o"
+ boundary="=-ExCpTf5buuCzZX7wq4o0"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +25,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YCdqRaR1c6JqlZiHog8o
+--=-ExCpTf5buuCzZX7wq4o0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-06-07 at 12:09 +0100, Russell King wrote:
-> Add DMA engine support to the OMAP2 NAND driver.  This supplements the
-> private DMA API implementation contained within this driver, and the
-> driver can be independently switched at build time between using DMA
-> engine and the private DMA API.
+On Thu, 2012-06-07 at 14:21 +0200, Giovanni Malfara' wrote:
+> Hi all,
 >=20
-> Tested-by: Grazvydas Ignotas <notasas@gmail.com>
-> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> I need to verify that the UBI image once it has been written on the UBI
+> volume.
+> So I try to extract the content with the "dd" tool from the UBI bolume
+> and I calculate the checksum to be compared with the one of the original
+> UBI image.
+>=20
+> My question is: is it always true? If I extract the content of the UBI
+> volume at any time (the fileystem is mounted read-only) , will the
+> checksum always the same? Will the data move from a PEB that has
+> bit-flips to a new one cause a difference in checksum?
 
-I guess it is makes sense to make this stuff to go in via the OMAP tree.
+Yes, if you read the UBI volume (/dev/ubiX_Y), and it is R/O, the CRC
+should be the same all the time.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YCdqRaR1c6JqlZiHog8o
+--=-ExCpTf5buuCzZX7wq4o0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP0KNfAAoJECmIfjd9wqK02kMQAMFlAXK7rPogAzGkS2z1jy+X
-XGtdvdrSYqU4nPtKEJ6pLo+DZQmhJEly0YCvhtclCGpeFAAvQvqupaha1BkIdpqq
-uOZVB0ve7x4VEKMIueLCPN64750qAM0+WEtsdxJyGhZOkeyAJl5l3RW0LnjCsvU8
-Hazu+P1vMszq6JLKSW0rIPdCNsjaiRsJUUzlCny3M01u/CH1Nw3c/vZcv0FO0nfi
-z5h/t2NVp/xM+rRV0MeM6lvdhZ8d5fFZ2WO2fQXb7zHoz8SlRWui2w1Ef35hHcv8
-JG0dEsBi6kZiVDK1zT0LokYiby9rZuqv4kye8y4+xvERCO01aJJTV0Fsqv1trBJQ
-oXuVMUq5E/5i/347PxoYKRHCO3ue7/gRMtvrjtqZ71Yjd+g8py3ePsN+hnQ0lf04
-5KdJTSLOFRmM6uhGJPlVnfKjKaHk73GzXybiurqJ/in/EHlFsYdDu7+NZPFvm0oe
-dkpgbgbHZI+NjgjZV1aDjeq/FW30IqTHikLM256xYe7c3xdOlWy1VfY6ZMUr9fKl
-sHmyiX7aVPwABdHS4QPodkyjERqppCfpmfJQ4TxTqSnllSkfUDszHluCK4pd/jcp
-tD6L0jJopCIUVxgrHXvsidX4JqJICYxVj/ldSHrYb25fHQ/Q1POsPjUbt3eHgmA2
-Lng/DpLP1FLBLcvySlBK
-=+nUe
+iQIcBAABAgAGBQJP0KPeAAoJECmIfjd9wqK03GwQAMJRA4RqTs/JRY+fXe7793mw
+18jmToKbK218sGNSMVk4jWI2f+5/NSoNZQwlM2OyVHxCS7+WyabvA43Ve8vpPbc+
+XnhuFvz6PBhOKgalm7kvqBlFiGEp7yziqg1Hl+1pmqa4KJiLdgP6C6bIu72LWRrK
+XvfonwilhxIgHk/BJb7zZJ9uC1AiXIcDZlTXEcLZHDu9fppaYndXE2vLr86Bv20b
+gnEyZgbGWXG/t+vvHvx6hQx9yHZQ1M7CVk3apDJ+SxRrEYcyA38p6RQc2uKIa36H
+IaOEvEcD62Q2zxJ7leZBWcraKXJrArl1FUQk+ls8R9JyccDI8N2BZzF1tjVYbtht
+b1kxhlkcGzjEinJMxnq6PhTlw/wcmQ/xMyTsAFtM3I8LqfipOglduEvAbdfKuNNh
+V/Wtegn/KW++B/VqcI6VK+nn1GwMidXOjY2Z13GUm+lR2k+WXKIzGfoKedWMLvce
+tDX0jZo3ikdK2qrtY/+9XYglTfTXBa74eTagCt9+en2imkkn1FvM1ujE7ixfEcmu
+YByJ0GAkrLdcWuSi/P7K/hDZ3GJWht+3cjyw6Ycaw0nmp+R0DpOdZi2pIKbi1LaS
+GKVi+HYtvR+u51xSsJw4QhKSHl6JCKIs48ZUZToVWJnYVuOXzJcbziEE8Pt0YbE6
+Ismv5F00vpDXsEFnv/dC
+=OuSx
 -----END PGP SIGNATURE-----
 
---=-YCdqRaR1c6JqlZiHog8o--
+--=-ExCpTf5buuCzZX7wq4o0--
