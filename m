@@ -1,17 +1,21 @@
-Received: from smtp1.altran.com ([194.98.79.72])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Scbsl-0002Jt-Ou
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 12:32:08 +0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
-Subject: UBI and volume checksum
-Date: Thu, 7 Jun 2012 14:21:53 +0200
-Message-ID: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
-From: "Giovanni Malfara'" <Giovanni.Malfara.ext@altran.it>
-To: <linux-mtd@lists.infradead.org>
+Message-ID: <1339072748.6875.100.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v7] MTD: LPC32xx SLC NAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Thu, 07 Jun 2012 15:39:08 +0300
+In-Reply-To: <1339064536-20553-1-git-send-email-stigge@antcom.de>
+References: <1339064536-20553-1-git-send-email-stigge@antcom.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-dL/mz9iGgrqke2qktgDF"
+Mime-Version: 1.0
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I need to verify that the UBI image once it has been written on the UBI
-volume.
-So I try to extract the content with the "dd" tool from the UBI bolume
-and I calculate the checksum to be compared with the one of the original
-UBI image.
+--=-dL/mz9iGgrqke2qktgDF
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-My question is: is it always true? If I extract the content of the UBI
-volume at any time (the fileystem is mounted read-only) , will the
-checksum always the same? Will the data move from a PEB that has
-bit-flips to a new one cause a difference in checksum?
+On Thu, 2012-06-07 at 12:22 +0200, Roland Stigge wrote:
+> This patch adds support for the SLC NAND controller inside the LPC32xx So=
+C.
+>=20
+> Signed-off-by: Roland Stigge <stigge@antcom.de>
 
-Is this the best way to achieve this?
-
-Thansk in advance.
+Pushed to l2-mtd.git, thanks!
 
 --=20
-Giovanni Malfar=E0
+Best Regards,
+Artem Bityutskiy
+
+--=-dL/mz9iGgrqke2qktgDF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP0KDsAAoJECmIfjd9wqK0aTkQAIfkmp7/O2ovGN7E954gGVfu
+9A4JKJP5qBqiCbkPOUI/9XG1r4PusTkbChduJqjv94r7BcXoBEmru9/F3OCfpG4u
+Ge2g70rteWRgXB9OIqfzKx3FhGqKmBFR0R42/v45UyVZo1nsjYl04xMmmWZ/++lG
+TM9yuM5kD6N6jDXGsndToBz8gRo3C0N6Dh3CEAOUAzAj0np79agbWY2m6vwAxRbX
+YsUffd6YDJ5zzvWSACB/aj6rVe/nP6A9tJvHxEBrx+XIqoCqAB7zCkxJGFlMY+r1
+ERwsqHAN/5rjbv3t7sNY4lUDJbnzaiWAwYqSWscgOHA7I9rLYePq1vm3mbWYgtLA
+T3KilvBvQiJd4mGxgMky2ZBMjnOV4vgCD7jhfXZPQlGTMt6UApKtHskURM7pJx0i
+OkWDVScA1T+Zq9GiSEV0dgpVzkkf/7uF23U2fJBpTD7W8RDiMjiuyvWArAbds3Tt
+CXbvaWHLeYHd8X6N4BiF2mgiKbCRwhYMOuzy0sQcYnjA/SLgMazR9nmUum0DbGtz
+WtePqKX+qk6tCcmMfEj/WWejMiVkirSX1EUOtlRZrwpgJI4sQlCyxt2y1HLFSSiM
+SSruj1iigp7ARjOPhSmpy5htfBM5sJpVxa+7kdZz/avdWxU931gOdtBdZkJSl8Yt
+/Tw3NLP0KLVCRvF3xgkv
+=otGa
+-----END PGP SIGNATURE-----
+
+--=-dL/mz9iGgrqke2qktgDF--
