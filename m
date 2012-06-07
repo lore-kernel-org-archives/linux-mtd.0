@@ -1,20 +1,28 @@
-Message-ID: <1339075683.6875.109.camel@sauron.fi.intel.com>
-Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Date: Thu, 07 Jun 2012 16:28:03 +0300
-In-Reply-To: <20120607131158.GC15973@n2100.arm.linux.org.uk>
-References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
- <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
- <1339073375.6875.102.camel@sauron.fi.intel.com>
- <20120607131158.GC15973@n2100.arm.linux.org.uk>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-YJJUcFuMMw2jXBEcQEui"
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScdI3-0001qM-GT
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 14:02:21 +0000
+Received: by laap9 with SMTP id p9so506447laa.36
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2012 07:02:16 -0700 (PDT)
+Date: Thu, 7 Jun 2012 17:02:08 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
+Message-ID: <20120607170208.57ba86ca@pixies.home.jungo.com>
+In-Reply-To: <1339054570.6875.84.camel@sauron.fi.intel.com>
+References: <20120605220647.GV30400@pengutronix.de>
+ <20120606125013.5897a02d@pixies.home.jungo.com>
+ <1338989453.6875.49.camel@sauron.fi.intel.com>
+ <20120606181529.291aa9a6@halley>
+ <1338997575.6875.72.camel@sauron.fi.intel.com>
+ <20120606175507.GC17332@parrot.com>
+ <1339054570.6875.84.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mike Dunn <mikedunn@newsguy.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +32,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 07 Jun 2012 10:36:10 +0300 Artem Bityutskiy <artem.bityutskiy@linux.intel.com> wrote:
+> Shmulik, would you please send your BBT read fix as a nice patch?
+> Please, add a not to the commit message that this fixes an issue
+> introduced in 3.5-rc1 and should be merged before 3.5. Thanks!
 
---=-YJJUcFuMMw2jXBEcQEui
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Will do.
 
-On Thu, 2012-06-07 at 14:11 +0100, Russell King - ARM Linux wrote:
-> No, it makes sense to get this stuff via a single tree all together,
-> because, as you can see from the thread structure, it isn't purely
-> an OMAP thing.
->=20
-> The OMAP stuff depends on a core set, as does a bunch of PL08x and
-> SA11x0 changes.  We can't stuff all that through the OMAP tree, that
-> wouldn't make any sense.
->=20
-> What probably should happen is that the tip of the OMAP stuff gets
-> pulled by Tony into his tree, and we share those commits between my
-> tree and his - and then it doesn't matter what goes in when and by
-> whom.
-
-Oh, sure, sorry, I actually wanted to say that these to patches should
-_not_ got via the MTD tree.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-YJJUcFuMMw2jXBEcQEui
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP0KxjAAoJECmIfjd9wqK09KQP/3rgp5e2/qOp4C6P4131kiiG
-AZMSWH2Bq59oiBuz4bnlZqQuCDuVmc5fU6J6YvNqgWmvoPrTFNObDSJ589an2/tm
-sGx0J0tJYHA8oI7sxNFpjXZrod+JXnIoVsI9qo0Y4heFwmmF/5QFzj/OLsAvskKR
-MhOHtbctZt6K2huu9wM0XpR/Taken7RwvLR/C1E7somh875XaBb7scdlhkShD3c2
-G+Ub7DlMMB6vUaF1Kw9XgCoXvyKYB89I3tS84SzGevWA8JjlA+rOR8GwpzactLqW
-yQCPLot67xhGRIHYMHbuMM8QC9LlastZ3MP4vzeEYQmioQiLIvgpYSrYcymB9wa8
-S0wnOazA7rLrkukbygmYEi437OwHQbmRKpW3fDdFgElXw+Z33Zl0KwEzP2uPMUu9
-pd3KhE6ZEF/EnaQFwXQwdm66q5TQ9BocrJTUgUshiLDVuh3hfBrYyO5EHlEEYPhf
-K1J5Z9dKeOhUXf7/Xt+u+MRwzdVWqXznMj4FAqpkxj+/czfeNY9YYNU2hzho9get
-epVEQ8bzhSR/BCGWXGxqFOdxqr4wPFZC0V4UbfcnOK8D4MrT+RMxXUV5X2P1OgYs
-0ubzL0kelh/ZUzvtOdN6Vl/wsusho2SDUtNhidBmCD7DLh2y5swk1NKrCmm/eZPF
-9VTBv5bHPduTJwnEkaqj
-=MwEk
------END PGP SIGNATURE-----
-
---=-YJJUcFuMMw2jXBEcQEui--
+Regards,
+Shmulik
