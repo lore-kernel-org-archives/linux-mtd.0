@@ -1,12 +1,12 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScXCh-00026T-4f
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 07:32:23 +0000
-Message-ID: <1339054570.6875.84.camel@sauron.fi.intel.com>
+ id 1ScXK5-0003SH-Ac
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 07:40:02 +0000
+Message-ID: <1339055028.6875.87.camel@sauron.fi.intel.com>
 Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Ivan Djelic <ivan.djelic@parrot.com>
-Date: Thu, 07 Jun 2012 10:36:10 +0300
+Date: Thu, 07 Jun 2012 10:43:48 +0300
 In-Reply-To: <20120606175507.GC17332@parrot.com>
 References: <20120605220647.GV30400@pengutronix.de>
  <20120606125013.5897a02d@pixies.home.jungo.com>
@@ -16,7 +16,7 @@ References: <20120605220647.GV30400@pengutronix.de>
  <20120606175507.GC17332@parrot.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Fu2gFwm3rYYfzhQ9C3B0"
+ boundary="=-4W+5WYaqK0vv03jIOD/U"
 Mime-Version: 1.0
 Cc: Mike Dunn <mikedunn@newsguy.com>, Sascha Hauer <s.hauer@pengutronix.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -32,32 +32,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Fu2gFwm3rYYfzhQ9C3B0
+--=-4W+5WYaqK0vv03jIOD/U
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, 2012-06-06 at 19:55 +0200, Ivan Djelic wrote:
-> 1. on legacy systems with 1-bit nand and strength =3D 1, default bitflip_=
-threshold is 1
-> 2. on legacy systems with 1-bit nand and strength > 1, default bitflip_th=
-reshold is 'strength'
-> 3. on new systems   with 2+ bit nand and strength > 1, default bitflip_th=
-reshold is 'strength'
+> In your doc2000 example, why would it break with a threshold of 2 ?
 
-Ivan, Shmulik,
-
-I've gave this another though, and I think it is OK to leave this as it
-is now. Your replies were very helpful, thanks.
-
-Shmulik, would you please send your BBT read fix as a nice patch?
-Please, add a not to the commit message that this fixes an issue
-introduced in 3.5-rc1 and should be merged before 3.5. Thanks!
+Yes, "break" was a wrong word. It would just change the behavior. But I
+guess it would in fact _improve_ the behavior. Let's not try treat the
+legacy specially, I think we can indeed treat this change as an
+improvement and se if anyone complains.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Fu2gFwm3rYYfzhQ9C3B0
+--=-4W+5WYaqK0vv03jIOD/U
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -65,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP0FnqAAoJECmIfjd9wqK0Vb0P+wVUrhY0HUqeh/KJ388KKz0E
-Mnlr3k8v/qQCDcKKDc30b/i1owtkchYLduCxXUOZKszLdGISuYwu03fGBjEt3S6m
-GIMnBYQl4PezKLyPdjGvysMGbc8Ng3Qu8vTsiks8GDaOBjhj/X1Exc21cZIgM7XG
-kIhD04gWvizWNxgBA7ShkLywYzRYmQ5D1d1OFUDALPabr5GBr/i2dWimmEmtgUjv
-hQT3I3qs/YxgABiAXfqJatR6oMxYxBaw2YY5BgKUMzeS1ioMSEWGVciPNb5JXwse
-7p0BXSED8LAqN3fiyHWsxmgM//QaI35RB8X+i9I4YSgj7OEBpmkM47Z61W0P3Ybu
-n3r/xbVPQwjnLzTJW/I8xMjITDGVrbp3fNVK9vtwk0zzXgT/PBJpmX4Cvvwqj1IN
-E+Hq7ghKNqMhP5yFehSPQABIR0cFBy+Je43zO1I/c/11VKk38IJFbW1iAMKsNoJS
-PJ6MEGx/vQOVZS1t+WnOKOQzbrzdQoV7/a57cPqpu22FTXvBJ5+QG/29swiP9mho
-fdexKS3hAIu89RCoI7OHQ/S9F1uophuPObht/8G1NC5dbnTrIXamsnEO1oJsdsWf
-jSwcY2rLWdpa5ESS6yDzeYELWu8diT55i9rP8db6cMAS1Z8i7nWdZwMCgrnTUA/u
-49o5sn4Rn8k8MK03Hfej
-=yHDs
+iQIcBAABAgAGBQJP0Fu0AAoJECmIfjd9wqK07ncQAK36OZguHJm6vMw2tY78NO5M
+UiYvqWWEgVtBRwlPy0MXViSXQbjT6YiyC7tZFuEjEpfhg+NenDxeqqbbBEb30F21
+Am6CaPLVhPh8qJXwvcyKPyrNMkAHRJ8W3GJoaLas1Bieyl7cpCHVsRsJsgUa1nNd
++twZkvcdfJPwRH11nNWQ1WIGIzetKOUiwq1SfCr+Ejx7WIiXMm1r8kQIlABaLMoS
+XRA8CU78XgJRJ5PpW1c90KwRJN2mEdZXZngvtYJRq0A4FAMD8PnNx4wjGcCVc4GQ
+4A8TyJ5ycIOavnAasEAbhvQ8OHnQpw5v+gUitNH5zBS3B6zJEx5P4+37ZwpxgqE8
+8TyfG/2rfFmXGOlTqGSR2ecKAIN1E27HO/DUG837pTu0qf9g10Xz2A46yceU/rUx
+V+yp/lvNIVs2xW1WMqUc2iqbhlXcQW5VpMY8o6j02h3cMphyPPHLaq3nWAUHGOox
+nU+KvwEfZNplltU/zKiQ8tFWL7LxWyiDY0oPA0EGQdy7lvweohDT27nHTIWOu35N
+nsWvkIZ6LhOGVgx275cP5S0BlIQwPRjYKOiRPQpQOoMb91hALWXzH7nFcCeeLvmM
+vHmnXotxMwEoAy6xIGvwN3nKS1EF8Dw3ZJXGrGxvplh3VwiAqLvLcKArKDs28pai
+xoAdISFkPTH3yo2yvJPE
+=KViO
 -----END PGP SIGNATURE-----
 
---=-Fu2gFwm3rYYfzhQ9C3B0--
+--=-4W+5WYaqK0vv03jIOD/U--
