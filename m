@@ -1,21 +1,20 @@
-Received: from smtp1.altran.com ([194.98.79.72])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SccWs-0004cF-Hp
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 13:13:37 +0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-In-Reply-To: <1339073501.6875.104.camel@sauron.fi.intel.com>
-Content-class: urn:content-classes:message
-Subject: Re: UBI and volume checksum
-Date: Thu, 7 Jun 2012 15:13:31 +0200
-Message-ID: <0D6614B1791E3B4C86DD3784FCD9B20617B90133@XMB-TODC-23.altranit.corp.altran.com>
-References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
- <1339073501.6875.104.camel@sauron.fi.intel.com>
-From: "Giovanni Malfara'" <Giovanni.Malfara.ext@altran.it>
-To: <dedekind1@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Message-ID: <1339075683.6875.109.camel@sauron.fi.intel.com>
+Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Date: Thu, 07 Jun 2012 16:28:03 +0300
+In-Reply-To: <20120607131158.GC15973@n2100.arm.linux.org.uk>
+References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
+ <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
+ <1339073375.6875.102.camel@sauron.fi.intel.com>
+ <20120607131158.GC15973@n2100.arm.linux.org.uk>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-YJJUcFuMMw2jXBEcQEui"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDYvMDcvMjAxMiAwMjo1MSBQTSwgQXJ0ZW0gQml0eXV0c2tpeSB3cm90ZToNCj4gT24gVGh1
-LCAyMDEyLTA2LTA3IGF0IDE0OjIxICswMjAwLCBHaW92YW5uaSBNYWxmYXJhJyB3cm90ZToNCj4+
-IEhpIGFsbCwNCj4+DQo+PiBJIG5lZWQgdG8gdmVyaWZ5IHRoYXQgdGhlIFVCSSBpbWFnZSBvbmNl
-IGl0IGhhcyBiZWVuIHdyaXR0ZW4gb24gdGhlIFVCSQ0KPj4gdm9sdW1lLg0KPj4gU28gSSB0cnkg
-dG8gZXh0cmFjdCB0aGUgY29udGVudCB3aXRoIHRoZSAiZGQiIHRvb2wgZnJvbSB0aGUgVUJJIGJv
-bHVtZQ0KPj4gYW5kIEkgY2FsY3VsYXRlIHRoZSBjaGVja3N1bSB0byBiZSBjb21wYXJlZCB3aXRo
-IHRoZSBvbmUgb2YgdGhlIG9yaWdpbmFsDQo+PiBVQkkgaW1hZ2UuDQo+Pg0KPj4gTXkgcXVlc3Rp
-b24gaXM6IGlzIGl0IGFsd2F5cyB0cnVlPyBJZiBJIGV4dHJhY3QgdGhlIGNvbnRlbnQgb2YgdGhl
-IFVCSQ0KPj4gdm9sdW1lIGF0IGFueSB0aW1lICh0aGUgZmlsZXlzdGVtIGlzIG1vdW50ZWQgcmVh
-ZC1vbmx5KSAsIHdpbGwgdGhlDQo+PiBjaGVja3N1bSBhbHdheXMgdGhlIHNhbWU/IFdpbGwgdGhl
-IGRhdGEgbW92ZSBmcm9tIGEgUEVCIHRoYXQgaGFzDQo+PiBiaXQtZmxpcHMgdG8gYSBuZXcgb25l
-IGNhdXNlIGEgZGlmZmVyZW5jZSBpbiBjaGVja3N1bT8NCj4gWWVzLCBpZiB5b3UgcmVhZCB0aGUg
-VUJJIHZvbHVtZSAoL2Rldi91YmlYX1kpLCBhbmQgaXQgaXMgUi9PLCB0aGUgQ1JDDQo+IHNob3Vs
-ZCBiZSB0aGUgc2FtZSBhbGwgdGhlIHRpbWUuDQo+DQpUaGFuayB5b3UgdmVyeSBtdWNoIEFydGVt
-IQ0KQmVzdCBSZWdhcmRzLA0KDQotLSANCkdpb3Zhbm5pIE1hbGZhcsOgDQo=
+
+--=-YJJUcFuMMw2jXBEcQEui
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2012-06-07 at 14:11 +0100, Russell King - ARM Linux wrote:
+> No, it makes sense to get this stuff via a single tree all together,
+> because, as you can see from the thread structure, it isn't purely
+> an OMAP thing.
+>=20
+> The OMAP stuff depends on a core set, as does a bunch of PL08x and
+> SA11x0 changes.  We can't stuff all that through the OMAP tree, that
+> wouldn't make any sense.
+>=20
+> What probably should happen is that the tip of the OMAP stuff gets
+> pulled by Tony into his tree, and we share those commits between my
+> tree and his - and then it doesn't matter what goes in when and by
+> whom.
+
+Oh, sure, sorry, I actually wanted to say that these to patches should
+_not_ got via the MTD tree.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-YJJUcFuMMw2jXBEcQEui
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP0KxjAAoJECmIfjd9wqK09KQP/3rgp5e2/qOp4C6P4131kiiG
+AZMSWH2Bq59oiBuz4bnlZqQuCDuVmc5fU6J6YvNqgWmvoPrTFNObDSJ589an2/tm
+sGx0J0tJYHA8oI7sxNFpjXZrod+JXnIoVsI9qo0Y4heFwmmF/5QFzj/OLsAvskKR
+MhOHtbctZt6K2huu9wM0XpR/Taken7RwvLR/C1E7somh875XaBb7scdlhkShD3c2
+G+Ub7DlMMB6vUaF1Kw9XgCoXvyKYB89I3tS84SzGevWA8JjlA+rOR8GwpzactLqW
+yQCPLot67xhGRIHYMHbuMM8QC9LlastZ3MP4vzeEYQmioQiLIvgpYSrYcymB9wa8
+S0wnOazA7rLrkukbygmYEi437OwHQbmRKpW3fDdFgElXw+Z33Zl0KwEzP2uPMUu9
+pd3KhE6ZEF/EnaQFwXQwdm66q5TQ9BocrJTUgUshiLDVuh3hfBrYyO5EHlEEYPhf
+K1J5Z9dKeOhUXf7/Xt+u+MRwzdVWqXznMj4FAqpkxj+/czfeNY9YYNU2hzho9get
+epVEQ8bzhSR/BCGWXGxqFOdxqr4wPFZC0V4UbfcnOK8D4MrT+RMxXUV5X2P1OgYs
+0ubzL0kelh/ZUzvtOdN6Vl/wsusho2SDUtNhidBmCD7DLh2y5swk1NKrCmm/eZPF
+9VTBv5bHPduTJwnEkaqj
+=MwEk
+-----END PGP SIGNATURE-----
+
+--=-YJJUcFuMMw2jXBEcQEui--
