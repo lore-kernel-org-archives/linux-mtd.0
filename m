@@ -1,18 +1,17 @@
-Message-ID: <1339073159.6875.101.camel@sauron.fi.intel.com>
-Subject: Re: Re:
+Message-ID: <1339073375.6875.102.camel@sauron.fi.intel.com>
+Subject: Re: [CFT 09/11] mtd: omap2: add DMA engine support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Thu, 07 Jun 2012 15:45:59 +0300
-In-Reply-To: <20120607101124.GH30400@pengutronix.de>
-References: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
- <1338993547.6875.65.camel@sauron.fi.intel.com>
- <20120607101124.GH30400@pengutronix.de>
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Date: Thu, 07 Jun 2012 15:49:35 +0300
+In-Reply-To: <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
+References: <20120607110610.GB15973@n2100.arm.linux.org.uk>
+ <E1Scaaa-0003uB-1l@rmk-PC.arm.linux.org.uk>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-nyypWaBPJ4IBRsqWLxz3"
+ boundary="=-YCdqRaR1c6JqlZiHog8o"
 Mime-Version: 1.0
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,29 +23,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-nyypWaBPJ4IBRsqWLxz3
+--=-YCdqRaR1c6JqlZiHog8o
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-06-07 at 12:11 +0200, Sascha Hauer wrote:
-> Fixing these warnings in the nand driver does not seem to be the correct
-> approach. Initializing mxc_nand_devtype_data as const seems sane, the
-> problem is that struct of_device_id expects a void * instead of a const
-> void *. A patch fixing this is outstanding here:
+On Thu, 2012-06-07 at 12:09 +0100, Russell King wrote:
+> Add DMA engine support to the OMAP2 NAND driver.  This supplements the
+> private DMA API implementation contained within this driver, and the
+> driver can be independently switched at build time between using DMA
+> engine and the private DMA API.
 >=20
-> http://permalink.gmane.org/gmane.linux.drivers.devicetree/15069
->=20
-> (this will also fix the other sparse warnings from this driver)
->=20
-> I asked Uwe to resend this.
+> Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-Pushed to l2-mtd.git, thanks!
+I guess it is makes sense to make this stuff to go in via the OMAP tree.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-nyypWaBPJ4IBRsqWLxz3
+--=-YCdqRaR1c6JqlZiHog8o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP0KKHAAoJECmIfjd9wqK0XEQQAJsMOgKi+pIbNqxpSCa/m93w
-IDqnim4x9+tAO4B9i3Cb43eSvqdLk+1KeeuMwDArq6bFnZGL8Wbs22uSx059deWQ
-et8vxucWPlg4Vwiyh9xtsWDSYnloDXYW0U5ZT+sip1TEdJY3Tat4zmdHEHFnb45H
-fZLJlERPtgRrpLA209ljxfy/eVyjQja2447pFdnMzSE92sAuZ73l6+Q0zeyZEnYU
-wFMD7XR+c2JFBKb9J3SMj2HbrRF/94cDx0aPB9xeLkh5pHV6ur7e3kJi0a962d+5
-U2SP9BrURbaGD/I9+/QC6dOo5cdQ4Cj+4SKgKgQHm4Aj1dUKT+ZWrCq3e7Wdevfn
-21c/ip3HserXoJQla4Zb8RaPwf925XwpFH4R6x+BGuMlApbQW462AP04dN56fpVi
-UpTM0UsSfzZNQBSNv/QLMfE2YVRadBwfJ7DVcb1Nkwut2Ov/aKf5da59JxTvdLYe
-d9rpcbntTjZJXByLM7BF4+BB2TYk9lD0tx0SDGaJoRtezhcXlNCtnamaHh67dFDE
-VnK+6Rv8JTW3v7/uNVJaQyYWQjXKDVQ+FVrpAWNMv+UTJdDAqkLkt3u1veFZ2p7v
-TLwSohpsFiFowGGehIMQJaQLKC41xZEyvMtM9bI6O2so3O9FpMo8Ge1wf81YnNWz
-1XBBmUtfPh9P5iMssY/Y
-=fncZ
+iQIcBAABAgAGBQJP0KNfAAoJECmIfjd9wqK02kMQAMFlAXK7rPogAzGkS2z1jy+X
+XGtdvdrSYqU4nPtKEJ6pLo+DZQmhJEly0YCvhtclCGpeFAAvQvqupaha1BkIdpqq
+uOZVB0ve7x4VEKMIueLCPN64750qAM0+WEtsdxJyGhZOkeyAJl5l3RW0LnjCsvU8
+Hazu+P1vMszq6JLKSW0rIPdCNsjaiRsJUUzlCny3M01u/CH1Nw3c/vZcv0FO0nfi
+z5h/t2NVp/xM+rRV0MeM6lvdhZ8d5fFZ2WO2fQXb7zHoz8SlRWui2w1Ef35hHcv8
+JG0dEsBi6kZiVDK1zT0LokYiby9rZuqv4kye8y4+xvERCO01aJJTV0Fsqv1trBJQ
+oXuVMUq5E/5i/347PxoYKRHCO3ue7/gRMtvrjtqZ71Yjd+g8py3ePsN+hnQ0lf04
+5KdJTSLOFRmM6uhGJPlVnfKjKaHk73GzXybiurqJ/in/EHlFsYdDu7+NZPFvm0oe
+dkpgbgbHZI+NjgjZV1aDjeq/FW30IqTHikLM256xYe7c3xdOlWy1VfY6ZMUr9fKl
+sHmyiX7aVPwABdHS4QPodkyjERqppCfpmfJQ4TxTqSnllSkfUDszHluCK4pd/jcp
+tD6L0jJopCIUVxgrHXvsidX4JqJICYxVj/ldSHrYb25fHQ/Q1POsPjUbt3eHgmA2
+Lng/DpLP1FLBLcvySlBK
+=+nUe
 -----END PGP SIGNATURE-----
 
---=-nyypWaBPJ4IBRsqWLxz3--
+--=-YCdqRaR1c6JqlZiHog8o--
