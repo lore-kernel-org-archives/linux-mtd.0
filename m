@@ -1,23 +1,20 @@
-Message-ID: <1339060265.6875.91.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v6] MTD: LPC32xx SLC NAND driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Date: Thu, 07 Jun 2012 12:11:05 +0300
-In-Reply-To: <20120607081108.GO8262@n2100.arm.linux.org.uk>
-References: <1338974414-5308-1-git-send-email-stigge@antcom.de>
- <1338989921.6875.50.camel@sauron.fi.intel.com>
- <20120607081108.GO8262@n2100.arm.linux.org.uk>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-HlyRmc8aspg0NFDOi0CL"
-Mime-Version: 1.0
-Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com, lars@metafoo.de,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScZFO-0004t7-Ob
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 09:43:19 +0000
+Date: Thu, 7 Jun 2012 11:43:16 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 4/4] ARM i.MX5: Add nand oftree support
+Message-ID: <20120607094316.GG30400@pengutronix.de>
+References: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
+ <1338978796-26129-5-git-send-email-s.hauer@pengutronix.de>
+ <20120607022952.GI2667@S2101-09.ap.freescale.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20120607022952.GI2667@S2101-09.ap.freescale.net>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Jun 07, 2012 at 10:29:54AM +0800, Shawn Guo wrote:
+> On Wed, Jun 06, 2012 at 12:33:16PM +0200, Sascha Hauer wrote:
+> > This adds snippets to the i.MX51/53 devicetrees for the nand
+> > flash controller.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+> Acked-by: Shawn Guo <shawn.guo@linaro.org>
 
---=-HlyRmc8aspg0NFDOi0CL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks. Will address Artems comments and resend.
 
-On Thu, 2012-06-07 at 09:11 +0100, Russell King - ARM Linux wrote:
-> On Wed, Jun 06, 2012 at 04:38:41PM +0300, Artem Bityutskiy wrote:
-> > On Wed, 2012-06-06 at 11:20 +0200, Roland Stigge wrote:
-> > > +#else
-> > > +#define lpc32xx_nand_resume NULL
-> > > +#define lpc32xx_nand_suspend NULL
-> > > +#endif
-> >=20
-> > 0, not NULL.
->=20
-> Err, what planet are you on there.  These are _pointers_ to functions,
-> so using a _pointer_ is more correct than using an _integer_.
+Sascha
 
-Yes, thanks, I was wrong.=20
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-HlyRmc8aspg0NFDOi0CL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP0HApAAoJECmIfjd9wqK04RsQAI8lnLfEntn0nSK+pohXkzd4
-Ea56RZe6g+mSUVieRq1g2L1BlbhRQ6KL3HByWSeFCrTwJOsy2crRJz8EuMc6meh5
-u7eTmGjUP0mS2GK0W6serb2iwe/e5QC2WWXFoIYwhnekwoT7n90M9Pk7prcmGXos
-IIoDpv7WMcbGBb6KJO9BwoBWg8d+S36+ddvlXgVmGGdEzFyXc33tEzx/KNjG7lEH
-Y/h6CSwNw6LS9iVURkQ8wY+l34xk/U6uRHlBVP64xSGcTEpMAnBMnz687oBfMNAo
-BsH3US4VVDPVT3qaZI/vyJohBi9Xf3+qF9RKaqYSa7l/n6ezHI1kNbkvHFxdxNr9
-1x1u7ers7fN83ruyn5jlW+4fUTjXLe4ChlJdXQTNUxttO3AWHZF+9ltzBfxgg6O2
-J1FP01ZSZTUb8ti1fHhnJ4eVP8Vi9RVR0eG7uvRXN7eDInz5lAuMrJ23zfAWua4j
-2yLXSG4XskclVuoHvnnqQ9HxNP/0C5jAuPWh320sT3231+Bf6vMz5/SbN56EhOYP
-vMPnjsWCnNXuytGf4lT+0L3JlJRLp3wH+Z/a8xgPFbOMGkTRDX5ocoQ/bITmiXH5
-D00aF+H25mNC6SV8uAD8usY97BkorZcTfbctbl9rMZfk6GkeKr+VnHyYPP359DCP
-w7ItUxvXp8zRIFQbm3NW
-=+9MT
------END PGP SIGNATURE-----
-
---=-HlyRmc8aspg0NFDOi0CL--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
