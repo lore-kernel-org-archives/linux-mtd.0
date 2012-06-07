@@ -1,21 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScZaH-0006T2-T1
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 10:04:54 +0000
-Message-ID: <1339063722.6875.94.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: elbc nand: use drvdata to only remove the relevant
- chip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Scott Wood <scottwood@freescale.com>
-Date: Thu, 07 Jun 2012 13:08:42 +0300
-In-Reply-To: <20120606233639.GA13977@tyr.buserror.net>
-References: <20120606233639.GA13977@tyr.buserror.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-dirkQ5nQZ32phUzqD07c"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScZgh-0006jg-Ez
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 10:11:35 +0000
+Date: Thu, 7 Jun 2012 12:11:24 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re:
+Message-ID: <20120607101124.GH30400@pengutronix.de>
+References: <1338978796-26129-1-git-send-email-s.hauer@pengutronix.de>
+ <1338993547.6875.65.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1338993547.6875.65.camel@sauron.fi.intel.com>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---=-dirkQ5nQZ32phUzqD07c
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 06, 2012 at 05:39:07PM +0300, Artem Bityutskiy wrote:
+> On Wed, 2012-06-06 at 12:33 +0200, Sascha Hauer wrote:
+> > The following adds i.MX53 nand support and generally devicetree
+> > based probing for i.MX5 boards. The first three patches should go
+> > via mtd, the last patch optionally aswell if all agree.
+> > 
+> > Sascha
+> > 
+> > The following changes since commit f8f5701bdaf9134b1f90e5044a82c66324d2073f:
+> > 
+> >   Linux 3.5-rc1 (2012-06-02 18:29:26 -0700)
+> > 
+> > are available in the git repository at:
+> > 
+> >   git://git.pengutronix.de/git/imx/linux-2.6.git imx/nand-mx53
+> > 
+> > for you to fetch changes up to d55d1479a3bfaedbb9f0c6c956f4dff6bb6d6d61:
+> > 
+> >   ARM i.MX5: Add nand oftree support (2012-06-06 12:20:24 +0200)
+> 
+> Do you want this to go via the MTD tree? Would you be able to collect
+> acks for the arch/arm bits? Meanwhile, please, take a look at these
+> sparse warnings added by this patch-set and detected by aiaiai:
+> 
+> --------------------------------------------------------------------------------
+> 
+> Successfully built configuration "arm-mxc-imx_defconfig,arm,arm-unknown-linux-gnueabi-", results:
+> 
+> --- before_patching.log
+> +++ after_patching.log
+> @@ @@
+> +drivers/mtd/nand/mxc_nand.c:1289:26: warning: incorrect type in initializer (different modifiers) [sparse]
+> +drivers/mtd/nand/mxc_nand.c:1289:26:    expected void *data [sparse]
+> +drivers/mtd/nand/mxc_nand.c:1289:26:    got struct mxc_nand_devtype_data static const [toplevel] *<noident> [sparse]
+> +drivers/mtd/nand/mxc_nand.c:1289:3: warning: initialization discards 'const' qualifier from pointer target type [enabled by default]
 
-On Wed, 2012-06-06 at 18:36 -0500, Scott Wood wrote:
-> Previously the remove method was looping and removing all chips,
-> which is obviously not the right thing to do -- left over from when
-> the driver was organized differently and that was the remove method for
-> the entire controller.  This would result in bad things happening if
-> you have more than one NAND chip, and remove the module.
->=20
-> This also fixes priv->dev to properly point to the chip's device rather t=
-han
-> the controller's.  Until now priv->dev was only used for error/debug prin=
-ts
-> (and it's an improvement there), so this shouldn't break anything.
->=20
-> Signed-off-by: Scott Wood <scottwood@freescale.com>
+Fixing these warnings in the nand driver does not seem to be the correct
+approach. Initializing mxc_nand_devtype_data as const seems sane, the
+problem is that struct of_device_id expects a void * instead of a const
+void *. A patch fixing this is outstanding here:
 
-Pushed to l2-mtd.git, thanks!
+http://permalink.gmane.org/gmane.linux.drivers.devicetree/15069
 
---=20
-Best Regards,
-Artem Bityutskiy
+(this will also fix the other sparse warnings from this driver)
 
---=-dirkQ5nQZ32phUzqD07c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+I asked Uwe to resend this.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+So I only added Shawns Ack to the arm-i.MX part, you can pull this into
+the mtd tree:
 
-iQIcBAABAgAGBQJP0H2qAAoJECmIfjd9wqK0EX4P/jcgh6AY7gV2kyd7vQU+EmG3
-maCumN5svXIKhIVxxXaS9++Fj6YcnQkKGGHxSjxGoMB8h0MgR+b86B5qie94zGcy
-jKQm63zmg1vkPDeVgriHa/1od2DdI0VXJqpWzWkIFgT0Z6VCE8BornztMy16uwoD
-Yu7/AzryLMto7rC287+z2P5BaWFbdRJlEAZnAwOyuuV17+nOXTAlbd+ab4SDUkBW
-Fc/S5uaOZfvfMWAAzX++DEq1Vv+P2xgbI4Lw4P+jGw7e3LmUHYlJ8eoBRQlRR9pS
-cz8ugkEXOCyk7eOKBPzZbifyJTLvf0vOVd8TfSUBAB401xi/cd26p8Vl0w5HzUas
-liFmu4CTwdYb+PxKvAEVBjPGLu+P39SXG+Ft/Zh40/a8PSJ6+fkzxIi23QNZMHTd
-CVlMuzQBUQYiLymVq3dOvWjajF/KkyNrGs95Akrjr8lNE20/M9ci+M9wRYlXMbz9
-jTrDBqySWL5p6ewMuGDsqWMWNqvxOsSGv1LUvMKTNpmyhu47IA1o1DI7L4hb5uLA
-aePWKu/Qgql1aATOu+OiP0Gjn5I4oOOANHJrhadw4gxnH+my3j76cBvdfzgb4oZL
-7tqmWpHJxDQC7T98T9vWgpEgcejfy63ACDhW4Pj+n9/c3y4yLOZ+86qUAX/O5EV3
-Xhd8Y0TVcQ3RkoX0Iugk
-=nZsG
------END PGP SIGNATURE-----
 
---=-dirkQ5nQZ32phUzqD07c--
+The following changes since commit f8f5701bdaf9134b1f90e5044a82c66324d2073f:
+
+  Linux 3.5-rc1 (2012-06-02 18:29:26 -0700)
+
+are available in the git repository at:
+
+  git://git.pengutronix.de/git/imx/linux-2.6.git tags/mtd-imx53-nand-support
+
+for you to fetch changes up to 25d097d575d7c06b76e4e6e2488718976b70c432:
+
+  ARM i.MX5: Add nand oftree support (2012-06-07 11:59:19 +0200)
+
+----------------------------------------------------------------
+Nand support for i.MX53 and devicetree snippets for i.MX5 nand
+
+----------------------------------------------------------------
+Sascha Hauer (4):
+      mtd nand mxc_nand: Use managed resources
+      mtd nand mxc_nand: swap iomem resource order
+      mtd nand mxc_nand: add i.MX53 support
+      ARM i.MX5: Add nand oftree support
+
+ arch/arm/boot/dts/imx51.dtsi                  |    7 ++
+ arch/arm/boot/dts/imx53.dtsi                  |    7 ++
+ arch/arm/mach-imx/clk-imx51-imx53.c           |    2 +
+ arch/arm/plat-mxc/devices/platform-mxc_nand.c |   11 +-
+ drivers/mtd/nand/mxc_nand.c                   |  137 ++++++++++++++-----------
+ 5 files changed, 97 insertions(+), 67 deletions(-)
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
