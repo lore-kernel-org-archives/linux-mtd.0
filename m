@@ -1,23 +1,13 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SchKG-0001XC-Ja
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 18:20:53 +0000
-Received: by bkwj4 with SMTP id j4so1026797bkw.36
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2012 11:20:51 -0700 (PDT)
-Message-ID: <1339092992.10379.0.camel@brekeke>
-Subject: Re: Latest UBI/UBIFS requires DebugFs?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bill Pringlemeir <bpringle@sympatico.ca>
-Date: Thu, 07 Jun 2012 21:16:32 +0300
-In-Reply-To: <BLU0-SMTP519734F19EE74DFC6E2366B8F30@phx.gbl>
-References: <87sje7rp0x.fsf@sympatico.ca>
- <BLU0-SMTP519734F19EE74DFC6E2366B8F30@phx.gbl>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-EGDYgUfy47mJ1i51+lzu"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1SchX9-00023Y-J7
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 18:34:12 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: ignore ecc errors during bbt reads
+Date: Thu,  7 Jun 2012 11:32:08 -0700
+Message-Id: <1339093928-17545-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +17,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Ignore ecc errors in the scan_read_raw_oob() function.  Also removed code that
+is now redundant.
 
---=-EGDYgUfy47mJ1i51+lzu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ drivers/mtd/nand/nand_bbt.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-On Thu, 2012-06-07 at 14:09 -0400, Bill Pringlemeir wrote:
-> Arrgh.  Sorry for this noise.  I missed this post,
->=20
-> http://lists.infradead.org/pipermail/linux-mtd/2012-June/042091.html
->=20
-> I guess I need to apply those patches to the back port.
-
-I will push them to the backport trees.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-EGDYgUfy47mJ1i51+lzu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP0PAAAAoJECmIfjd9wqK0v/oP/ieJH/DTUH9UeTKSDVLMTVgW
-gfvedRzYo93C8qfWauvCKn2BGFsm4ZZsJfb9mQvWrenBlFPXAqrX93FMb0gTIe8l
-AIsa382B88jKdbJb01cf9lYc9C+SF1kjv6iCOyxjl1+kR0p73aBmvobO3ybivstS
-hCjLwzDLOK0xdpb5fZgMMN1RBvLgM7jxT0pyx2IGMSJtK6iU7LGwqjnjbdJYm4TO
-akEEWZzayFmpvLfG0ge+8Z/lp5RjOTiZaR0v3uFNwy/nYKUKd6ROefxcW2J5D899
-3VA+vs+6J4+GBdruw+v8MHwiBpwXK/a261j8hDsYj30MTFeDgCFqqLHyf/d6Ol5b
-z0bZS1pW1Kt9+0Hd1bkzMgBvVmnQXrzQciLSeA9loZM8WHg24//FC4xHvYdS8SIv
-/8O2ryCl9+FN5ZgdpWz236884BKXPMFjXeJNVP800syXaldPQgpYp58dT2MuauqW
-ELG/rcraG9nTxbCE8QgCHUtGMP1ra3YJfwzwA+LBwtTdstBL2GcFo3TuEFpqCnUO
-0XcUWJU5s1rFHjArcJIiGpFcmby709S4jxQPjmQ8DD5SXfX1m59oEjHBkAUY4Rie
-/yjqiCyp5FWEpMXwW4TAeZ6EPKVPx4x8EbBVOM175wAZs5fdCG6oT8wUu1n0Y+ZQ
-2aTwF38iyGLWQzBHivTF
-=yYd7
------END PGP SIGNATURE-----
-
---=-EGDYgUfy47mJ1i51+lzu--
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 30d1319..585da44 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -319,7 +319,8 @@ static int scan_read_raw_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 
+ 		res = mtd_read_oob(mtd, offs, &ops);
+ 
+-		if (res)
++		/* Ignore ECC errors when checking for BBM */
++		if (res && !mtd_is_bitflip_or_eccerr(res))
+ 			return res;
+ 
+ 		buf += mtd->oobsize + mtd->writesize;
+@@ -406,8 +407,7 @@ static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+ 	int ret, j;
+ 
+ 	ret = scan_read_raw_oob(mtd, buf, offs, readlen);
+-	/* Ignore ECC errors when checking for BBM */
+-	if (ret && !mtd_is_bitflip_or_eccerr(ret))
++	if (ret)
+ 		return ret;
+ 
+ 	for (j = 0; j < len; j++, buf += scanlen) {
+-- 
+1.7.3.4
