@@ -1,20 +1,25 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1ScXOF-00042e-Vk
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 07:44:20 +0000
-Message-ID: <1339055288.6875.88.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/2] UBIFS: fix debugfs-less systems support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Parsons <lost.distance@yahoo.com>
-Date: Thu, 07 Jun 2012 10:48:08 +0300
-In-Reply-To: <1339000030.17721.YahooMailClassic@web29003.mail.ird.yahoo.com>
-References: <1339000030.17721.YahooMailClassic@web29003.mail.ird.yahoo.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-MlJkJlLqUqwu+Ec8/nWd"
-Mime-Version: 1.0
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScXoQ-00073V-MZ
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 08:11:24 +0000
+Date: Thu, 7 Jun 2012 09:11:08 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v6] MTD: LPC32xx SLC NAND driver
+Message-ID: <20120607081108.GO8262@n2100.arm.linux.org.uk>
+References: <1338974414-5308-1-git-send-email-stigge@antcom.de>
+ <1338989921.6875.50.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1338989921.6875.50.camel@sauron.fi.intel.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com, lars@metafoo.de,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Jun 06, 2012 at 04:38:41PM +0300, Artem Bityutskiy wrote:
+> On Wed, 2012-06-06 at 11:20 +0200, Roland Stigge wrote:
+> > +#else
+> > +#define lpc32xx_nand_resume NULL
+> > +#define lpc32xx_nand_suspend NULL
+> > +#endif
+> 
+> 0, not NULL.
 
---=-MlJkJlLqUqwu+Ec8/nWd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2012-06-06 at 17:27 +0100, Paul Parsons wrote:
-> Tested-by: Paul Parsons <lost.distance@yahoo.com>
-
-Thanks! Pushed to linux-ubifs.git and will send to Linus soon.
-
-http://git.infradead.org/ubifs-2.6.git/commit/818039c7d597db3b1d30964a8f948=
-9ac42c0642d
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-MlJkJlLqUqwu+Ec8/nWd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP0Fy4AAoJECmIfjd9wqK03ykP/0SkSGjqCpIVBCXIn2KLzx9P
-cmQ/Kn5vqsEuEi/r5hy03FkX4kvCagkWEXInzZPFG09bVUWgOjundX3IDkJmvZx7
-i+PEDKd08DQQap0scU32vVkpzvUicPVZeyHO8RZZ1bY93h3GRTMwRwtvwZyoXZzQ
-Pcc4RoXLd1OyuT+NaBl5rt9JGNTXNe366n/yk6VP324LGs1eC9UIhZ2caHgHBfD4
-zLj1ABOHgVFGiavWXx12iiWFoqQTkXJ3dv4G4McCf3gJrXwPTYOcHsnI/JkGffd/
-pfULiLyQYLI9SeQJkyBbFowA53+WIYsB1omxUgVZ/RvIRMZ+lwKFZEUKOLgrMRtE
-R/bUagD9PWmfoArk9J20/zBTg7E+pILSWR3ZnEI3LpZEtskA3tZch/W9dR8/R/a4
-cCVzVhNmrGOllDUxv4+5HDEFHPWYGBAq5e64G6smJwXNstF3MYE+qBZ15s1ghyh1
-R1OnWPKll8v22uPEZ2QGQkibXMnHo2s3JEeyeLBANgd98p8B6PrfOAg/FI8ALbL6
-gprj9DqeZxkPCGEXlngdsqwEJnlgXmxxdVvXvC0iir/L7KLFBvgl+W+MFpK3ot52
-yxpby2C2TVhQqBUosTrObd/IT6vqWFClzNeIwgpKAjoWTVcEfzNtd+eYu9Y0Ld6Q
-4G1uOgSVt/4R9IFVPAHi
-=CPU5
------END PGP SIGNATURE-----
-
---=-MlJkJlLqUqwu+Ec8/nWd--
+Err, what planet are you on there.  These are _pointers_ to functions,
+so using a _pointer_ is more correct than using an _integer_.
