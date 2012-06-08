@@ -1,29 +1,15 @@
-Date: Sat, 9 Jun 2012 01:14:46 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC, PATCH, RESEND] fs: push rcu_barrier() from
- deactivate_locked_super() to filesystems
-Message-ID: <20120608221446.GA18250@otc-wbsnb-06>
-References: <1339191663-17693-1-git-send-email-kirill.shutemov@linux.intel.com>
- <20120608150253.e42464a6.akpm@linux-foundation.org>
+Received: from [78.46.68.141] (helo=eristoteles.iwoars.net)
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sd7U6-0002Cu-BC
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 22:16:48 +0000
+Date: Sat, 9 Jun 2012 00:16:43 +0200 (CEST)
+From: Joel Reardon <joel@clambassador.com>
+To: From: ;
+Subject: [patch] UBIFS: add key state map data structure and accessors
+Message-ID: <alpine.DEB.2.00.1206090016010.14953@eristoteles.iwoars.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-In-Reply-To: <20120608150253.e42464a6.akpm@linux-foundation.org>
-Cc: jfs-discussion@lists.sourceforge.net, "Dmitry V. Levin" <ldv@altlinux.org>,
- linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
- codalist@TELEMANN.coda.cs.cmu.edu, linux-cifs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, Boaz Harrosh <bharrosh@panasas.com>,
- v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- Nick Piggin <npiggin@kernel.dk>, fuse-devel@lists.sourceforge.net,
- Tao Ma <boyu.mt@taobao.com>, ecryptfs@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
- linux-kernel@vger.kernel.org, logfs@logfs.org, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
- linux-btrfs@vger.kernel.org, osd-dev@open-osd.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,73 +19,235 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch adds the key state map to keymap, a structure that holds the state
+of all keys in the KSA. The states are defined in an enum, and a get/set
+accessor is added. These accessors are static only: the external interface
+will simply be "mark used" or "mark deleted" and range checking, along with
+locking the mutex for the state object, will be done there.
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The memory is allocated in keymap_init() and keymap_free()
+is added to deallocate the memory. Init is called when mounting is performed,
+and free is called mounting failed or when unmounting. This was tested using
+integck along with unit tests for get/set sanity.
 
-On Fri, Jun 08, 2012 at 03:02:53PM -0700, Andrew Morton wrote:
-> On Sat,  9 Jun 2012 00:41:03 +0300
-> "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> wrote:
->=20
-> > There's no reason to call rcu_barrier() on every deactivate_locked_supe=
-r().
-> > We only need to make sure that all delayed rcu free inodes are flushed
-> > before we destroy related cache.
-> >=20
-> > Removing rcu_barrier() from deactivate_locked_super() affects some
-> > fas paths. E.g. on my machine exit_group() of a last process in IPC
-> > namespace takes 0.07538s. rcu_barrier() takes 0.05188s of that time.
->=20
-> What an unpleasant patch.  Is final-process-exiting-ipc-namespace a
-> sufficiently high-frequency operation to justify the change?
-=20
-> I don't really understand what's going on here.  Are you saying that
-> there is some filesystem against which we run deactivate_locked_super()
-> during exit_group(), and that this filesystem doesn't use rcu-freeing
-> of inodes?  The description needs this level of detail, please.
+Signed-off-by: Joel Reardon <reardonj@inf.ethz.ch>
+---
+ fs/ubifs/keymap.c |  118 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/ubifs/super.c  |    6 +++
+ fs/ubifs/ubifs.h  |    1 +
+ 3 files changed, 122 insertions(+), 3 deletions(-)
 
-I think the rcu_barrier() is in wrong place. We need it to safely destroy
-inode cache. deactivate_locked_super() is part of umount() path, but all
-filesystems I've checked have inode cache for whole filesystem, not
-per-mount.
+diff --git a/fs/ubifs/keymap.c b/fs/ubifs/keymap.c
+index 6f812c5..9fa04c3 100644
+--- a/fs/ubifs/keymap.c
++++ b/fs/ubifs/keymap.c
+@@ -28,14 +28,36 @@
+ #include <linux/random.h>
+ #include "ubifs.h"
 
-> The implementation would be less unpleasant if we could do the
-> rcu_barrier() in kmem_cache_destroy().  I can't see a way of doing that
-> without adding a dedicated slab flag, which would require editing all
-> the filesystems anyway.
++#define KEYMAP_STATES_PER_BYTE 4
++#define KEYMAP_STATES_PER_BYTE_SHIFT 2
++
++/**
++ * Defines the three possible states of a key:
++ * @KEYMAP_STATE_UNUSED: the key has never been assigned or used
++ * @KEYMAP_STATE_USED: the key has been assigned and is used for live data
++ * @KEYMAP_STATE_DELETED: the key has been assigned and is used for
++ *			  deleted data.
++ */
++enum {
++	KEYMAP_STATE_UNUSED  = 0,
++	KEYMAP_STATE_USED    = 1,
++	KEYMAP_STATE_DELETED = 2,
++};
++
+ /**
+  * struct ubifs_keymap - UBIFS key map.
+  * @key_size: size of a key in bytes
+  * @keys_per_leb: number of keys per KSA LEB
+- * @ksa_size: number of LEBS in the KSA
++ * @ksa_lebs: number of LEBS in the KSA
+  * @ksa_first: the first LEB belonging to the KSA
++ * @state: a double-array [ksa_lebs]x[keys_per_leb] that stores the
++ *	   state of the key at that position. The state consumes two bits so
++ *	   each byte contains four states. The first index is from 0 to the
++ *	   number of KSA LEBs - 1, and the second is from 0 to the number of
++ *	   keys per (KSA LEB - 1) >> 2
+  * @unused: the number of unused keys in the system
+  * @deleted: the number of deleted keys in the system.
++ * @state_mutex: this mutex must be locked when updating a key's state
+  *
+  * This manages the use of keys in UBIFS. There is only
+  * instance of the keymap for the UBIFS main context. Its main purpose is to
+@@ -45,13 +67,56 @@
+ struct ubifs_keymap {
+ 	unsigned int key_size;
+ 	unsigned int keys_per_leb;
+-	unsigned int ksa_size;
++	unsigned int ksa_lebs;
+ 	unsigned int ksa_first;
++	u8 **state;
+ 	long long unused;
+ 	long long deleted;
++	struct mutex state_mutex;
+ };
 
-I think rcu_barrier() for all kmem_cache_destroy() would be too expensive.
-=20
-=20
-> (kmem_cache_destroy() already has an rcu_barrier().  Can we do away
-> with the private rcu games in the vfs and switch to
-> SLAB_DESTROY_BY_RCU?)
+ /**
++ * set_state - set the key state
++ * @km: the keymap
++ * @ksa_leb: the KSA eraseblock number
++ * @ksa_offset: the key's offset in the KSA eraseblock
++ * @value: the new state
++ *
++ * This function sets a key position's state. It assumes @km's @state_mutex is
++ * currently held.
++ */
++static void set_state(struct ubifs_keymap *km, int ksa_leb,
++		      int ksa_offset, int value)
++{
++	static const int minor_mask = (1 << KEYMAP_STATES_PER_BYTE_SHIFT) - 1;
++	int major, shift, mask, old;
++
++	major = ksa_offset >> KEYMAP_STATES_PER_BYTE_SHIFT;
++	shift = (ksa_offset & minor_mask) << 1;
++	mask  = minor_mask << shift;
++	old = km->state[ksa_leb][major];
++	km->state[ksa_leb][major] = old - (old & mask) + (value << shift);
++}
++
++/**
++ * get_state - get the key state
++ * @km: the keymap
++ * @ksa_leb: the KSA eraseblock number
++ * @ksa_offset: the key's offset in the KSA eraseblock
++ *
++ * This function returns key position's state.
++ */
++static int get_state(struct ubifs_keymap *km, int ksa_leb, int ksa_offset)
++{
++	static const int minor_mask = (1 << KEYMAP_STATES_PER_BYTE_SHIFT) - 1;
++	int major, shift;
++
++	major = ksa_offset >> KEYMAP_STATES_PER_BYTE_SHIFT;
++	shift = (ksa_offset & minor_mask) << 1;
++	return (km->state[ksa_leb][major] >> shift) & minor_mask;
++}
++
++/**
+  * ksa_pos_decouple - convert a ksa_pos to ksa_leb and offset
+  * @ksa_pos: the key's position in the KSA
+  * @ksa_leb: gets the KSA LEB number for the key position
+@@ -85,20 +150,67 @@ static long long ksa_pos_couple(int ksa_leb, int ksa_offs)
+  * @c: the ubifs info context to put the keymap into
+  *
+  * This function allocates a keymap data structure and initializes its fields.
+- * The ubifs_info context @c is passed as a parameter and its @km field is set
++ * It assumes that @c has already correctly loaded the superblock. The
++ * ubifs_info context @c is passed as a parameter and its @km field is set
+  * to the keymap that is preprared by this function. If memory cannot be
+  * allocated, it returns -ENOMEM. Otherwise it returns 0.
+  */
+ int keymap_init(struct ubifs_info *c)
+ {
+ 	struct ubifs_keymap *km;
++	int i, len;
 
---=20
- Kirill A. Shutemov
++	if (!c->use_ubifsec)
++		return 0;
+ 	c->km = km = kzalloc(sizeof(struct ubifs_keymap), GFP_NOFS);
+ 	if (!km)
+ 		return -ENOMEM;
 
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ 	km->key_size = UBIFS_CRYPTO_KEYSIZE;
+ 	km->keys_per_leb = c->leb_size / km->key_size;
++	ubifs_assert(km->keys_per_leb % KEYMAP_STATES_PER_BYTE == 0);
++
++	km->ksa_lebs = c->ksa_lebs;
++	km->ksa_first = c->ksa_first;
++	km->state = NULL;
++	km->unused = 0;
++	km->deleted = 0;
++	km->state = kmalloc(sizeof(u8 *) * km->ksa_lebs, GFP_NOFS);
++	if (!km->state)
++		return -ENOMEM;
++	len = (sizeof(u8) * km->keys_per_leb) >> KEYMAP_STATES_PER_BYTE_SHIFT;
++	for (i = 0; i < km->ksa_lebs; ++i) {
++		km->state[i] = kzalloc(len, GFP_NOFS);
++		if (!(km->state[i]))
++			return -ENOMEM;
++		km->unused += km->keys_per_leb;
++	}
++	mutex_init(&km->state_mutex);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+ 	return 0;
+ }
++
++/**
++ * keymap_free - destruct and free memory used by a struct keymap
++ * @c: the ubifs info context that contanis the keymap
++ *
++ * This function frees the memory being used by the keymap.
++ */
++void keymap_free(struct ubifs_info *c)
++{
++	struct ubifs_keymap *km = c->km;
++
++	if (!c->use_ubifsec)
++		return;
++	ubifs_assert(km);
++
++	mutex_destroy(&km->state_mutex);
++	if (km->state) {
++		int i;
++		for (i = 0; i < km->ksa_lebs; ++i)
++			kfree(km->state[i]);
++		kfree(km->state);
++	}
++	kfree(km);
++	c->km = NULL;
++}
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 879ecf5..ed76644 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1244,6 +1244,10 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	if (err)
+ 		goto out_free;
 
-iQIcBAEBAgAGBQJP0nlWAAoJEAd+omnVudOMmbEP/13S9Evr5LclYc6Vfqwj8xrb
-jk/Q93iEc0pcUv+/wkCpJZ/FyU3MY/GAKzIKjtYnHInou17Eq1SFI7MFeAFH+foP
-PKgfXij3cTzBAHe1qJMfYHFveiXxUxrjXN8ki3RL9Ogv9Vv9QmgDH5qBV6uE+Tb7
-mYJH3Vlze6j3AI6d0jxh3wxLYtYQ4SWGp7YYO+CgXyzxDnc+ve6OaJI//GSsy3L0
-Aapqi5e2nBwM3WiDSc/EbHsqWG/MmFqv5A0qeE2invTbgfh8r174KWk/vSq2G65I
-2S4nJae/sk5iTeRbs83su+yj7Ku9wxFOW/0T6tDueF+hzGKJ92xaXt13oHuf8vOX
-nMeEVuN+tLi+rAjhx0HULAXcd3X4Go2T5r6AxtgUZyuJTCdHEI22E8/kxhJh+9vJ
-GrPJRdFJ6f5SCdTNZc7CJK8jG0PACl1qhdfceNIMDgQfA88QptuDvcBFxLYVyuh2
-urkoMg/bf30rEWYf5wGyEeP3zb/CIxh0VtRbXOzfRvTUZoQcMHLZKttrxnkDNPTP
-y7aenO8Efy5X8BTnYbW4jjNAPw7EWcCLfgrtMMgb4ZmfRS98yCtEJEawDFSOEas2
-r0Tr/9L8ukjVDPisNEMj1op02KhGJmfB+++m1bTnpkjIr0P7BxBzoQFTBI6lDMo/
-R2eRrtK96/pv3fX/bA5P
-=XBsY
------END PGP SIGNATURE-----
++	err = keymap_init(c);
++	if (err)
++		goto out_free;
++
+ 	/*
+ 	 * Make sure the compressor which is set as default in the superblock
+ 	 * or overridden by mount options is actually compiled in.
+@@ -1525,6 +1529,7 @@ out_free:
+ 	kfree(c->bu.buf);
+ 	vfree(c->ileb_buf);
+ 	vfree(c->sbuf);
++	keymap_free(c);
+ 	kfree(c->bottom_up_buf);
+ 	ubifs_debugging_exit(c);
+ 	return err;
+@@ -1564,6 +1569,7 @@ static void ubifs_umount(struct ubifs_info *c)
+ 	kfree(c->bu.buf);
+ 	vfree(c->ileb_buf);
+ 	vfree(c->sbuf);
++	keymap_free(c);
+ 	kfree(c->bottom_up_buf);
+ 	ubifs_debugging_exit(c);
+ }
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 2b43107..7efab26 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1812,6 +1812,7 @@ int ubifs_decompress(void *buf, int len, void *out, int *out_len,
 
---fdj2RfSjLxBAspz7--
+ /* keymap.c */
+ int keymap_init(struct ubifs_info *c);
++void keymap_free(struct ubifs_info *c);
+
+ #include "debug.h"
+ #include "misc.h"
+-- 
+1.7.5.4
