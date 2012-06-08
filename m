@@ -1,18 +1,21 @@
-Received: from va3ehsobe002.messaging.microsoft.com ([216.32.180.12]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Scupd-0005Zj-T6
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 08:46:10 +0000
-Message-ID: <4FD1BD03.60800@freescale.com>
-Date: Fri, 8 Jun 2012 16:51:15 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Huang Shijie
- <shijie8@gmail.com>
-Subject: Is there a bug in the UBIFS?
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1ScvZ2-0001x6-VQ
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 09:33:05 +0000
+Message-ID: <1339148214.6875.117.camel@sauron.fi.intel.com>
+Subject: Re: Is there a bug in the UBIFS?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Fri, 08 Jun 2012 12:36:54 +0300
+In-Reply-To: <4FD1BD03.60800@freescale.com>
+References: <4FD1BD03.60800@freescale.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Gs/8W5bbFjz4a+LvpyUd"
+Mime-Version: 1.0
+Cc: Huang Shijie <shijie8@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,84 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem:
-I tested the GPMI driver in imx28 board with Linus's latest tree.
 
-The gpmi-nand driver passed the mtd_speedtest.ko and mtd_stresstest.ko
-tests.
+--=-Gs/8W5bbFjz4a+LvpyUd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-But when I test the UBIFS, i meet a bug:
+On Fri, 2012-06-08 at 16:51 +0800, Huang Shijie wrote:
+> [ 3526.960000] UBIFS error (pid 389): ubifs_scan: garbage
 
------------------------------------------------------------------------------------------------------
-root@freescale ~$ ubiattach /dev/ubi_ctrl -m 1
-[ 3243.960000] UBI: attaching mtd1 to ubi0
-[ 3243.960000] UBI DBG (pid 379): ubi_attach_mtd_dev: sizeof(struct
-ubi_ainf_peb) 48
-[ 3243.970000] UBI DBG (pid 379): ubi_attach_mtd_dev: sizeof(struct
-ubi_wl_entry) 20
-[ 3243.980000] UBI DBG (pid 379): io_init: min_io_size 4096
-[ 3243.980000] UBI DBG (pid 379): io_init: max_write_size 4096
-[ 3243.990000] UBI DBG (pid 379): io_init: hdrs_min_io_size 4096
-[ 3243.990000] UBI DBG (pid 379): io_init: ec_hdr_alsize 4096
-[ 3244.000000] UBI DBG (pid 379): io_init: vid_hdr_alsize 4096
-[ 3244.010000] UBI DBG (pid 379): io_init: vid_hdr_offset 4096
-[ 3244.010000] UBI DBG (pid 379): io_init: vid_hdr_aloffset 4096
-[ 3244.020000] UBI DBG (pid 379): io_init: vid_hdr_shift 0
-[ 3244.020000] UBI DBG (pid 379): io_init: leb_start 8192
-[ 3244.030000] UBI DBG (pid 379): io_init: max_erroneous 20
-[ 3244.030000] UBI: physical eraseblock size: 524288 bytes (512 KiB)
-[ 3244.040000] UBI: logical eraseblock size: 516096 bytes
-[ 3244.050000] UBI: smallest flash I/O unit: 4096
-[ 3244.050000] UBI: VID header offset: 4096 (aligned 4096)
-[ 3244.060000] UBI: data offset: 8192
-[ 3244.390000] UBI DBG (pid 379): scan_all: scanning is finished
-[ 3244.390000] UBI: empty MTD device detected
-[ 3244.400000] UBI: max. sequence number: 0
-[ 3244.400000] UBI: create volume table (copy #1)
-[ 3244.430000] UBI: create volume table (copy #2)
-[ 3244.500000] UBI: attached mtd1 to ubi0
-[ 3244.500000] UBI: MTD device name: "Kernel"
-[ 3244.500000] UBI: MTD device size: 100 MiB
-[ 3244.510000] UBI: number of good PEBs: 200
-[ 3244.510000] UBI: number of bad PEBs: 0
-[ 3244.520000] UBI: number of corrupted PEBs: 0
-[ 3244.520000] UBI: max. allowed volumes: 128
-[ 3244.530000] UBI: wear-leveling threshold: 4096
-[ 3244.530000] UBI: number of internal volumes: 1
-[ 3244.540000] UBI: number of user volumes: 0
-[ 3244.540000] UBI: available PEBs: 194
-[ 3244.550000] UBI: total number of reserved PEBs: 6
-[ 3244.550000] UBI: number of PEBs reserved for bad PEB handling: 2
-[ 3244.560000] UBI: max/mean erase counter: 0/0
-[ 3244.560000] UBI: image sequence number: -1339417594
-[ 3244.570000] UBI: background thread "ubi_bgt0d" started, PID 382
-UBI device number 0, total 200 LEBs (103219200 bytes, 98.4 MiB),
-available 194 LEBs (100122624 bytes, 95.5 MiB), LEB size 516096 bytes
-(504.0 KiB)
-root@freescale ~$ ubimkvol /dev/ubi
-/dev/ubi0 /dev/ubi_ctrl
-root@freescale ~$ ubimkvol /dev/ubi0 -N test -m
-Set volume size to 100122624
-Volume ID 0, size 194 LEBs (100122624 bytes, 95.5 MiB), LEB size 516096
-bytes (504.0 KiB), dynamic, name "test", alignment 1
+UBIFS complains that it read garbage instead of proper UBIFS nodes.
 
-root@freescale ~$ mount -t ubifs ubi0:test tmp
-[ 3526.770000] UBIFS: default file-system created
-[ 3526.780000] UBIFS DBG (pid 391): ubifs_bg_thread: background thread
-"ubifs_bgt0_0" started, PID 391
-[ 3526.960000] UBIFS error (pid 389): ubifs_scan: garbage
-[ 3527.140000] UBIFS error (pid 389): ubifs_recover_master_node: failed
-to recover master node
-[ 3527.150000] UBIFS DBG (pid 391): ubifs_bg_thread: background thread
-"ubifs_bgt0_0" stops
-mount: mounting ubi0:test on tmp failed: Invalid argument
-------------------------------------------------------------------------------------------------------
+> I am not sure whether it's a UBIFS's bug, or the gpmi-nand's bug.
 
-I am not sure whether it's a UBIFS's bug, or the gpmi-nand's bug.
+Does not look like a UBIFS issue. You can always validate UBIFS using
+nandsim.
 
-If you think it's not the UBIFS's bug, please tell me.
+modprobe nandsim
+modprobe ubi mtd=3D0
+ubimkvol /dev/ubi0 -N test -m
+mount -t ubifs /dev/ubi0_0 /mnt/ubifs
+integck /mnt/ubifs
 
-Anyway, i am debugging it now.
 
-Best Regards
-Huang Shijie
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-Gs/8W5bbFjz4a+LvpyUd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP0ce3AAoJECmIfjd9wqK08cwP/RmpZI9BbuoQgbzPGOb2PG0M
+zBRMzaAn8iFlnYfGumXj4vI2QS0y08+hNh/4e0ntC6nt/gBPI76GaqcgNtqRkRrD
+7lnUTtlE2k2clyGlG99ZZeUGwQYJi7h08w5wPy5Zsh83c0BbDgEfYiO5EMDpfEuD
++LbfbuRi3j2kw9SngJZ9PDADRQKTrmFvE8B1Hb3OnH0MwJoZG1izFQC1/XjmKdeY
+A7uZP74V25CS9xI9JbkWlpKiRzFAAw6icjWzh3crNXQSnxnMcvWlXxrItnT3wX0z
+hTLr3eFxY04FLKdK/J2sUu8aBat+3hf98ZuNAVd/xJNT7bUTBQTyNOwTS2k+ZKQE
+6VQXDylBP/3UpmvjC5ecjhAHH/flDf4G7m+S4hPrRQW399+N3KNVvvbmQSfn/h+g
+25Ah24VTgPAIL5F4IcHhVpga5O+vMxBQLm5QVNVvvdpAIOX6rz2FZQu0alE43c/V
+kVNh4rTgaxFOFETB59EpHh74Hf8ejTxKKA1XJjjl8TfXHgH8y3Nv8jq26MO57lJE
++K/OzZhUuBQhjiRhPH13zaPCyDSYZ9GIpfewgoFVIU5uRWkZmfw6pxg79eUb0MkV
+3yJH56wFEJQNZWzEHdi/XYt/zzOnNo9se1oBzxPjxI10/9/V6ljxuKjhbBwUGk/o
+QvafP08O3uo7VhKBoAuw
+=YF+u
+-----END PGP SIGNATURE-----
+
+--=-Gs/8W5bbFjz4a+LvpyUd--
