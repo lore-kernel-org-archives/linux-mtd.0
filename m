@@ -1,22 +1,20 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sd1Jf-0003E9-Lp
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 15:41:36 +0000
-Received: by lbbgg6 with SMTP id gg6so1676706lbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 08 Jun 2012 08:41:33 -0700 (PDT)
-Date: Fri, 8 Jun 2012 18:41:26 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Received: from [194.90.113.100] (helo=mx1.jungo.com)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sd1Vh-0005nE-Go
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 15:54:02 +0000
+Date: Fri, 8 Jun 2012 18:29:06 +0300
+From: Shmulik Ladkani <shmulik@jungo.com>
 To: David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy
  <artem.bityutskiy@linux.intel.com>
 Subject: [PATCH] mtd: nand: Properly initialize 'mtd->bitflip_threshold'
  prior 'scan_bbt()' is invoked
-Message-ID: <20120608184126.6dce8977@halley>
+Message-ID: <20120608182906.57b4844a@halley>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
- Mike Dunn <mikedunn@newsguy.com>, Ivan Djelic <ivan.djelic@parrot.com>,
- linux-kernel@vger.kernel.org
+Cc: Mike Dunn <mikedunn@newsguy.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Ivan Djelic <ivan.djelic@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,9 +45,9 @@ set by the driver), prior invocation of 'scan_bbt()'.
 Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 ---
-- The issue was introduced in v3.5-rc1, and needs to be merged prior v3.5
-- Sascha, I've credited you as reporter, is that ok with you?
-- Sashca, care to test the fix on your system?
+- The issue was introduced in 3.5-rc1 and needs to be merged before 3.5
+- Sascha, I've credited you as the reporter, is that ok?
+- Sascha, care to test and verify it works for your system?
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
 index 61805e7..0a8724e 100644
