@@ -1,29 +1,18 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ScjwJ-0006ru-9c
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2012 21:08:19 +0000
-Received: by eekd17 with SMTP id d17so636147eek.36
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2012 14:08:15 -0700 (PDT)
-Date: Fri, 8 Jun 2012 00:07:54 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>, artem.bityutskiy@linux.intel.com
-Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
-Message-ID: <20120608000754.6f364490@halley>
-In-Reply-To: <4FD0E632.2080905@newsguy.com>
-References: <20120605220647.GV30400@pengutronix.de>
- <20120606125013.5897a02d@pixies.home.jungo.com>
- <1338989453.6875.49.camel@sauron.fi.intel.com>
- <20120606181529.291aa9a6@halley>
- <1338997575.6875.72.camel@sauron.fi.intel.com>
- <20120606175507.GC17332@parrot.com>
- <1339054570.6875.84.camel@sauron.fi.intel.com>
- <4FD0E632.2080905@newsguy.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>
+Received: from nm20-vm3.bullet.mail.sg3.yahoo.com ([106.10.149.130])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Scsih-0006dK-PR
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2012 06:30:54 +0000
+Message-ID: <A3826CA64FB794063F22D639574EFFA4@cjp>
+From: "wkvwkt" <wuwenbeca@yahoo.cn>
+To: <dwarner@occs.cs.oberlin.edu>
+Subject: =?utf-8?B?XCheb14pL34oIDwtPC08QFwoXuKXhw==?=
+ =?utf-8?B?Ly/nkIZcXOKVrijila9f4pWwKeKVrVgvL+elqFxc4peOJg==?=
+ =?utf-8?B?bWFjcjviiacmbX5Ze1JBTkRfTlVNQg==?= =?utf-8?B?RVJfMzV9?=
+Date: Fri, 8 Jun 2012 14:30:34 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mike,
-
-On Thu, 07 Jun 2012 10:34:42 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
-> I addition to the patch suggested by Shmulik, I would also suggest the
-> following, in the interest of consistency with the bad block scanning code, and
-> also thoroughness:
-> 
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index 30d1319..ed59aa8 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -319,7 +319,7 @@ static int scan_read_raw_oob(struct mtd_info *mtd, uint8_t
-> *buf, loff_t offs,
-> 
->                 res = mtd_read_oob(mtd, offs, &ops);
-> 
-> -               if (res)
-> +               if (res && !mtd_is_bitflip_or_eccerr(res))
->                         return res;
-> 
->                 buf += mtd->oobsize + mtd->writesize;
-
-Saw you submitted it.
-
-I'll review it thoroughly later on, didn't grasp it on first glance.
-
-> Shmulik, please let me know if yuo'd like me to submit the patch you suggested,
-> and I will do so promptly.  Otherwise, thanks again!
-
-Thanks Mike.
-
-I'll work on the patch, as I already digged further, and found two
-more problematic spots where same "threshold initialization" is needed.
-Obviously, your review would be much appreciated.
-I'll probably submit during Friday or Sunday.
-
-Artem, is the ETA ok with your merge plans?
-
-Regards,
-Shmulik
+ZHdhcm5lcg0KDQrku6MvLy/plost5ZCEXOmhnuOAkOemvuWFjC/npajjgJENCg0KajBncWkyZ2N2
+amZ1b3hqZ3RhNG03dDB1NXE1OGVibDZqd2VkbGhrdG90eW9paWwwZmhteGFuaGF6YnY4YWtrbHlz
+aHdxcGVyd3l2ZHFua2toNmpncHV0cWRuNjJ5OWwzdHYwDQoNCueUtSror50xIDMgOVxcXDE0Nzcv
+LzE2NDMNCg0KbHhscHV1eTY3dnI3bWN1c3NsY2h1eWtzbG92bGNvODVuc3p1dWZqY2FkdnZ0dGJh
+bnRycGRpNHRwYXRrNXpjeXlvYW5wdXZsdGJmeHQ4cnJnd2pqY3BtcHM4Y203cGFuOHdiDQoNCuWu
+oi7mnI1RLVEgNCAwIDYvLy8gNSA3IDUvLy84NSAzDQoNCg0KDQrmib4nJyfmooEnJyfkvJovO+iu
+oTsnJw0KDQp5OXdxbGJ4aGdzNXYxeG11cXFscHhkZDA4N3d2bXl5ZWl2cmV0eGJudTZqNGpuYWVy
+aWw1b3NreGl3dWQzcnprNGljejNwdnljZTFpOTFsd3N1c3lldG01bGpqZndsZGdubDEg
