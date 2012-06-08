@@ -1,28 +1,29 @@
-MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <20120608220049.GA18024@otc-wbsnb-06>
+Date: Sat, 9 Jun 2012 01:14:46 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC, PATCH, RESEND] fs: push rcu_barrier() from
+ deactivate_locked_super() to filesystems
+Message-ID: <20120608221446.GA18250@otc-wbsnb-06>
 References: <1339191663-17693-1-git-send-email-kirill.shutemov@linux.intel.com>
- <20120608220049.GA18024@otc-wbsnb-06>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 8 Jun 2012 15:06:20 -0700
-Message-ID: <CA+55aFxbEk0k0jYtkn-H-sT0m4Fy5pH_OQZiPwCtwMvh22-3-w@mail.gmail.com>
-Subject: Re: [RFC, PATCH] fs: push rcu_barrier() from deactivate_locked_super()
- to filesystems
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ <20120608150253.e42464a6.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
+Content-Disposition: inline
+In-Reply-To: <20120608150253.e42464a6.akpm@linux-foundation.org>
 Cc: jfs-discussion@lists.sourceforge.net, "Dmitry V. Levin" <ldv@altlinux.org>,
  linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- codalist@coda.cs.cmu.edu, Boaz Harrosh <bharrosh@panasas.com>,
+ codalist@TELEMANN.coda.cs.cmu.edu, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, Boaz Harrosh <bharrosh@panasas.com>,
  v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  Nick Piggin <npiggin@kernel.dk>, fuse-devel@lists.sourceforge.net,
  Tao Ma <boyu.mt@taobao.com>, ecryptfs@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, osd-dev@open-osd.org,
+ reiserfs-devel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
  ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
  linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
  linux-kernel@vger.kernel.org, logfs@logfs.org, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- linux-btrfs@vger.kernel.org
+ linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-btrfs@vger.kernel.org, osd-dev@open-osd.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +33,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 8, 2012 at 3:00 PM, Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
->
-> IIUC, moving rcu_barrier() up should help, but I can't say that I fully
-> understand SLAB_DESTROY_BY_RCU semantics.
 
-.. hmm. I think you may be right. Even if we do move it up, we
-probably shouldn't use it.
+--fdj2RfSjLxBAspz7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We don't even want SLAB_DESTROY_BY_RCU, since we do the delayed RCU
-free for other reasons anyway, so it would duplicate the RCU delaying
-and cause problems. I forgot about that little complication.
+On Fri, Jun 08, 2012 at 03:02:53PM -0700, Andrew Morton wrote:
+> On Sat,  9 Jun 2012 00:41:03 +0300
+> "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> wrote:
+>=20
+> > There's no reason to call rcu_barrier() on every deactivate_locked_supe=
+r().
+> > We only need to make sure that all delayed rcu free inodes are flushed
+> > before we destroy related cache.
+> >=20
+> > Removing rcu_barrier() from deactivate_locked_super() affects some
+> > fas paths. E.g. on my machine exit_group() of a last process in IPC
+> > namespace takes 0.07538s. rcu_barrier() takes 0.05188s of that time.
+>=20
+> What an unpleasant patch.  Is final-process-exiting-ipc-namespace a
+> sufficiently high-frequency operation to justify the change?
+=20
+> I don't really understand what's going on here.  Are you saying that
+> there is some filesystem against which we run deactivate_locked_super()
+> during exit_group(), and that this filesystem doesn't use rcu-freeing
+> of inodes?  The description needs this level of detail, please.
 
-We could have a separate "RCU_BARRIER_ON_DESTROY" thing, but that's
-just silly too.
+I think the rcu_barrier() is in wrong place. We need it to safely destroy
+inode cache. deactivate_locked_super() is part of umount() path, but all
+filesystems I've checked have inode cache for whole filesystem, not
+per-mount.
 
-Maybe your patch is the right thing.
+> The implementation would be less unpleasant if we could do the
+> rcu_barrier() in kmem_cache_destroy().  I can't see a way of doing that
+> without adding a dedicated slab flag, which would require editing all
+> the filesystems anyway.
 
-            Linus
+I think rcu_barrier() for all kmem_cache_destroy() would be too expensive.
+=20
+=20
+> (kmem_cache_destroy() already has an rcu_barrier().  Can we do away
+> with the private rcu games in the vfs and switch to
+> SLAB_DESTROY_BY_RCU?)
+
+--=20
+ Kirill A. Shutemov
+
+--fdj2RfSjLxBAspz7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP0nlWAAoJEAd+omnVudOMmbEP/13S9Evr5LclYc6Vfqwj8xrb
+jk/Q93iEc0pcUv+/wkCpJZ/FyU3MY/GAKzIKjtYnHInou17Eq1SFI7MFeAFH+foP
+PKgfXij3cTzBAHe1qJMfYHFveiXxUxrjXN8ki3RL9Ogv9Vv9QmgDH5qBV6uE+Tb7
+mYJH3Vlze6j3AI6d0jxh3wxLYtYQ4SWGp7YYO+CgXyzxDnc+ve6OaJI//GSsy3L0
+Aapqi5e2nBwM3WiDSc/EbHsqWG/MmFqv5A0qeE2invTbgfh8r174KWk/vSq2G65I
+2S4nJae/sk5iTeRbs83su+yj7Ku9wxFOW/0T6tDueF+hzGKJ92xaXt13oHuf8vOX
+nMeEVuN+tLi+rAjhx0HULAXcd3X4Go2T5r6AxtgUZyuJTCdHEI22E8/kxhJh+9vJ
+GrPJRdFJ6f5SCdTNZc7CJK8jG0PACl1qhdfceNIMDgQfA88QptuDvcBFxLYVyuh2
+urkoMg/bf30rEWYf5wGyEeP3zb/CIxh0VtRbXOzfRvTUZoQcMHLZKttrxnkDNPTP
+y7aenO8Efy5X8BTnYbW4jjNAPw7EWcCLfgrtMMgb4ZmfRS98yCtEJEawDFSOEas2
+r0Tr/9L8ukjVDPisNEMj1op02KhGJmfB+++m1bTnpkjIr0P7BxBzoQFTBI6lDMo/
+R2eRrtK96/pv3fX/bA5P
+=XBsY
+-----END PGP SIGNATURE-----
+
+--fdj2RfSjLxBAspz7--
