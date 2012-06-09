@@ -1,17 +1,20 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SdHeu-0007se-RH
- for linux-mtd@lists.infradead.org; Sat, 09 Jun 2012 09:08:37 +0000
-Date: Sat, 9 Jun 2012 12:08:23 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [patch] UBIFS: change | to & in assertion
-Message-ID: <20120609090823.GA877@elgon.mountain>
+ id 1SdI6l-0008EW-UZ
+ for linux-mtd@lists.infradead.org; Sat, 09 Jun 2012 09:37:24 +0000
+Received: by ghbf11 with SMTP id f11so1973920ghb.36
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Jun 2012 02:37:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>
+In-Reply-To: <20110103191415.GA15176@bicker>
+References: <20110103191415.GA15176@bicker>
+Date: Sat, 9 Jun 2012 12:37:22 +0300
+Message-ID: <CA+_b7DKZ84bMnN6b9TrUNvAQfbEoW-pxOREnWqPZuUH0-NVm9w@mail.gmail.com>
+Subject: Re: smatch stuff: mtd/cafe_nand: cafe_device_ready() always returns
+ true
+From: Dan Carpenter <error27@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The asserts here never check anything because it uses '|' instead of
-'&'.  Now if the flags are not set it prints a warning a a stack trace.
+On 1/3/11, Dan Carpenter <error27@gmail.com> wrote:
+> Hi David,
+>
+> cafe_device_ready() always returns 1.  It looks like something else was
+> intended but I don't know the code enough to say what should go there.
+>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Static checker stuff.  I have not tested this and it really does need to
-be tested.
+Probably we should just change the | to an &.  I'll send a patch for that.
 
-diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
-index 2559d17..28ec13a 100644
---- a/fs/ubifs/find.c
-+++ b/fs/ubifs/find.c
-@@ -939,8 +939,8 @@ static int find_dirtiest_idx_leb(struct ubifs_info *c)
- 	}
- 	dbg_find("LEB %d, dirty %d and free %d flags %#x", lp->lnum, lp->dirty,
- 		 lp->free, lp->flags);
--	ubifs_assert(lp->flags | LPROPS_TAKEN);
--	ubifs_assert(lp->flags | LPROPS_INDEX);
-+	ubifs_assert(lp->flags & LPROPS_TAKEN);
-+	ubifs_assert(lp->flags & LPROPS_INDEX);
- 	return lnum;
- }
- 
+regards,
+dan carpenter
+
+> drivers/mtd/nand/cafe_nand.c +107 cafe_device_ready(3)
+> 	warn: condition is always true
+>
+>    104  static int cafe_device_ready(struct mtd_info *mtd)
+>    105  {
+>    106          struct cafe_priv *cafe = mtd->priv;
+>    107          int result = !!(cafe_readl(cafe, NAND_STATUS) | 0x40000000);
+>                                                              ^^^^^^^^^^^^^
+> 	This bit is always non-zero because we take the result of
+> 	cafe_readl() and do a bitwize or with 0x40000000.  Then the
+> 	double negate means that result is always 1.
+>
+>    108          uint32_t irqs = cafe_readl(cafe, NAND_IRQ);
+>    109
+>
+> regards,
+> dan carpenter
+>
+>
