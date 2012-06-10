@@ -1,16 +1,19 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sdhv9-0005gX-GK
- for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 13:11:08 +0000
-Received: by laap9 with SMTP id p9so2474694laa.36
- for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 06:11:04 -0700 (PDT)
+ id 1Sdivm-0006QA-Ke
+ for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 14:15:51 +0000
+Received: by laap9 with SMTP id p9so2493614laa.36
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 07:15:47 -0700 (PDT)
 MIME-Version: 1.0
-Date: Sun, 10 Jun 2012 16:11:04 +0300
-Message-ID: <CAJ2oMhJ93QORgUxfCerErreJuKg2z8weu5nKiYGDRrJabDdm9g@mail.gmail.com>
-Subject: Q: ubifs writings into flash
-From: Ran Shalit <ranshalit@gmail.com>
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <CAJ2oMhJ93QORgUxfCerErreJuKg2z8weu5nKiYGDRrJabDdm9g@mail.gmail.com>
+References: <CAJ2oMhJ93QORgUxfCerErreJuKg2z8weu5nKiYGDRrJabDdm9g@mail.gmail.com>
+Date: Sun, 10 Jun 2012 16:15:47 +0200
+Message-ID: <CAFLxGvyqc4RxKT1_fxuP1JfqMcUkr=sWbXuF2jP2mQL9+R_Org@mail.gmail.com>
+Subject: Re: Q: ubifs writings into flash
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Ran Shalit <ranshalit@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Sun, Jun 10, 2012 at 3:11 PM, Ran Shalit <ranshalit@gmail.com> wrote:
+> Hello,
+>
+> I have some beginner question if I'm allowed...
+> I would like to know if ubifs is writing stuff to Nand flash after the
+> application starts.
 
-I have some beginner question if I'm allowed...
-I would like to know if ubifs is writing stuff to Nand flash after the
-application starts.
-for example, the /var and /tmp are written into flash ?
-I actaully do not want any wrting to Nand flash to be done after the
-program starts (or at least to know about all of them and control when
-they are done).
+What is "the application"?
 
+> for example, the /var and /tmp are written into flash ?
+> I actaully do not want any wrting to Nand flash to be done after the
+> program starts (or at least to know about all of them and control when
+> they are done).
 
-Thank You,
+-ENOPARSE. :-)
 
-Ran
+-- 
+Thanks,
+//richard
