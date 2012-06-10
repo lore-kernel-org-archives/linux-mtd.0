@@ -1,19 +1,23 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SdlXB-0001HW-79
- for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 17:02:38 +0000
-Message-ID: <4FD4D326.1010205@linutronix.de>
-Date: Sun, 10 Jun 2012 19:02:30 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+ id 1SdrYx-0002Ii-Lo
+ for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 23:28:52 +0000
+Received: by wibhn14 with SMTP id hn14so2680970wib.0
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 16:28:49 -0700 (PDT)
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Is there a bug in the UBIFS?
+Date: Mon, 11 Jun 2012 01:28:45 +0200
+References: <4FD1BD03.60800@freescale.com>
+ <1339148214.6875.117.camel@sauron.fi.intel.com>
+ <4FD1CA7C.4040501@freescale.com>
+In-Reply-To: <4FD1CA7C.4040501@freescale.com>
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading
- its version
-References: <20120610135812.01dce4e7@pixies.home.jungo.com>
-In-Reply-To: <20120610135812.01dce4e7@pixies.home.jungo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201206110128.45829.marek.vasut@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, Huang Shijie <shijie8@gmail.com>,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,37 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/10/2012 12:58 PM, Shmulik Ladkani wrote:
-> The code responsible for reading the version of the mirror bbt was
-> incorrectly using the descriptor of the main bbt.
->
-> Pass the mirror bbt descriptor to 'scan_read_raw' when reading the
-> version of the mirror bbt.
->
-> Signed-off-by: Shmulik Ladkani<shmulik.ladkani@gmail.com>
-> ---
-> - Spotted while reviewing BBT code.
-> - Introduced by 7cba7b1 [mtd: nand: add support for BBT without OOB].
-> - Looks like a typo.
-> - Not runtime tested.
-> - Sebastian, care to take a look and Ack?
+Dear Huang Shijie,
 
-Looks good.
+> =E4=BA=8E 2012=E5=B9=B406=E6=9C=8808=E6=97=A5 17:36, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> > On Fri, 2012-06-08 at 16:51 +0800, Huang Shijie wrote:
+> >> [ 3526.960000] UBIFS error (pid 389): ubifs_scan: garbage
+> >=20
+> > UBIFS complains that it read garbage instead of proper UBIFS nodes.
+> >=20
+> >> I am not sure whether it's a UBIFS's bug, or the gpmi-nand's bug.
+> >=20
+> > Does not look like a UBIFS issue. You can always validate UBIFS using
+> > nandsim.
+> >=20
+> > modprobe nandsim
+> > modprobe ubi mtd=3D0
+> > ubimkvol /dev/ubi0 -N test -m
+> > mount -t ubifs /dev/ubi0_0 /mnt/ubifs
+> > integck /mnt/ubifs
+>=20
+> ok, thanks a lot.
 
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Did you possibly finally shoot yourself in the leg with this issue that is=
+=20
+constantly ignored?
 
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index 30d1319..c126469 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -390,7 +390,7 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
->   	/* Read the mirror version, if available */
->   	if (md&&  (md->options&  NAND_BBT_VERSION)) {
->   		scan_read_raw(mtd, buf, (loff_t)md->pages[0]<<  this->page_shift,
-> -			      mtd->writesize, td);
-> +			      mtd->writesize, md);
->   		md->version[0] = buf[bbt_get_ver_offs(mtd, md)];
->   		pr_info("Bad block table at page %d, version 0x%02X\n",
->   			 md->pages[0], md->version[0]);
+http://lists.infradead.org/pipermail/linux-mtd/2012-January/039127.html
 
-Sebastian
+>=20
+> Huang Shijie
+
+Best regards,
+Marek Vasut
