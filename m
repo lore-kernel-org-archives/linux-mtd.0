@@ -1,20 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sdfqe-0002HQ-Fd
- for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 10:58:21 +0000
-Received: by laap9 with SMTP id p9so2439638laa.36
- for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 03:58:17 -0700 (PDT)
-Date: Sun, 10 Jun 2012 13:58:12 +0300
+ id 1Sdgep-0003Uq-RR
+ for linux-mtd@lists.infradead.org; Sun, 10 Jun 2012 11:50:12 +0000
+Received: by lbbgg6 with SMTP id gg6so2588594lbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 04:50:09 -0700 (PDT)
+Date: Sun, 10 Jun 2012 14:50:04 +0300
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading its
- version
-Message-ID: <20120610135812.01dce4e7@pixies.home.jungo.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH] mtd: nand: ignore ecc errors during bbt reads
+Message-ID: <20120610145004.702d24d7@pixies.home.jungo.com>
+In-Reply-To: <1339093928-17545-1-git-send-email-mikedunn@newsguy.com>
+References: <1339093928-17545-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The code responsible for reading the version of the mirror bbt was
-incorrectly using the descriptor of the main bbt.
+Hi Mike,
 
-Pass the mirror bbt descriptor to 'scan_read_raw' when reading the
-version of the mirror bbt.
+On Thu,  7 Jun 2012 11:32:08 -0700 Mike Dunn <mikedunn@newsguy.com> wrote:
+> Ignore ecc errors in the scan_read_raw_oob() function.  Also removed code that
+> is now redundant.
+> 
+> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> ---
+>  drivers/mtd/nand/nand_bbt.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 30d1319..585da44 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -319,7 +319,8 @@ static int scan_read_raw_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+>  
+>  		res = mtd_read_oob(mtd, offs, &ops);
+>  
+> -		if (res)
+> +		/* Ignore ECC errors when checking for BBM */
+> +		if (res && !mtd_is_bitflip_or_eccerr(res))
+>  			return res;
 
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
----
-- Spotted while reviewing BBT code.
-- Introduced by 7cba7b1 [mtd: nand: add support for BBT without OOB].
-- Looks like a typo.
-- Not runtime tested.
-- Sebastian, care to take a look and Ack?
+IMO this is not necessary.
+Note the 'ops.mode' is initialized to MTD_OPS_RAW;  meaning, no ECC is
+performed during read ('ecc.read_page_raw' will be invoked).
+Thus, EUCLEAN/EBADMSG should not be reported.
+Am I missing something here?
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 30d1319..c126469 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -390,7 +390,7 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
- 	/* Read the mirror version, if available */
- 	if (md && (md->options & NAND_BBT_VERSION)) {
- 		scan_read_raw(mtd, buf, (loff_t)md->pages[0] << this->page_shift,
--			      mtd->writesize, td);
-+			      mtd->writesize, md);
- 		md->version[0] = buf[bbt_get_ver_offs(mtd, md)];
- 		pr_info("Bad block table at page %d, version 0x%02X\n",
- 			 md->pages[0], md->version[0]);
+> @@ -406,8 +407,7 @@ static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+>  	int ret, j;
+>  
+>  	ret = scan_read_raw_oob(mtd, buf, offs, readlen);
+> -	/* Ignore ECC errors when checking for BBM */
+> -	if (ret && !mtd_is_bitflip_or_eccerr(ret))
+> +	if (ret)
+>  		return ret;
+
+Don't understand why 'mtd_is_bitflip_or_eccerr' is originally tested.
+As noted above, 'scan_read_raw_oob' won't return EUCLEAN/EBADMSG, as it
+uses MTD_OPS_RAW.
+
+And what's even stranger is the code in 'scan_block_fast()', quote:
+
+	ops.datbuf = NULL;
+	ops.mode = MTD_OPS_PLACE_OOB;
+
+	for (j = 0; j < len; j++) {
+		ret = mtd_read_oob(mtd, offs, &ops);
+		/* Ignore ECC errors when checking for BBM */
+		if (ret && !mtd_is_bitflip_or_eccerr(ret))
+			return ret;
+
+Here, 'MTD_OPS_PLACE_OOB' is explicitly used - so *theoretically*
+'mtd_read_oob' might return EUCLEAN/EBADMSG, see 'nand_do_read_oob',
+(although NO driver YET reports maxbitflips from its 'chip->ecc.read_oob'
+method).
+
+Why not use 'MTD_OPS_RAW' in 'scan_block_fast()' as well (as done in
+'scan_block_full')?
+
+Regards,
+Shmulik
