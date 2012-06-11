@@ -1,24 +1,38 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SdyVG-0006ah-6U
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2012 06:53:30 +0000
-Received: by dadm1 with SMTP id m1so5474876dad.36
- for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2012 23:53:28 -0700 (PDT)
-Message-ID: <4FD595E5.6070309@gmail.com>
-Date: Sun, 10 Jun 2012 23:53:25 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 11 Jun 2012 12:16:00 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC, PATCH, RESEND] fs: push rcu_barrier() from
+ deactivate_locked_super() to filesystems
+Message-ID: <20120611091600.GA1122@otc-wbsnb-06>
+References: <20120608221446.GA18250@otc-wbsnb-06>
+ <20120608152550.258d6a30.akpm@linux-foundation.org>
+ <20120608222734.GT30000@ZenIV.linux.org.uk>
+ <20120608153120.b722d7c3.akpm@linux-foundation.org>
+ <20120608233127.GB18981@otc-wbsnb-06>
+ <20120608163751.7a8ec2bc.akpm@linux-foundation.org>
+ <CA+55aFw5k3daxeoZb9H1HGcOCWjPF+d7inSbf0QHmG-atp4reQ@mail.gmail.com>
+ <20120608172842.9826b5cd.akpm@linux-foundation.org>
+ <4FD2F5F4.1000106@gmail.com>
+ <20120609002557.b8aba759.akpm@linux-foundation.org>
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH] mtd: nand: ignore ecc errors during bbt reads
-References: <1339093928-17545-1-git-send-email-mikedunn@newsguy.com>
- <20120610145004.702d24d7@pixies.home.jungo.com>
- <CAN8TOE_JVZYnVqAL=63ErnUHxdREjQw6EMZNNTm6h=jeyG9=6A@mail.gmail.com>
- <20120611094117.73145dda@pixies.home.jungo.com>
-In-Reply-To: <20120611094117.73145dda@pixies.home.jungo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>,
- dedekind1@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+In-Reply-To: <20120609002557.b8aba759.akpm@linux-foundation.org>
+Cc: jfs-discussion@lists.sourceforge.net, "Dmitry V. Levin" <ldv@altlinux.org>,
+ linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
+ codalist@telemann.coda.cs.cmu.edu, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, Boaz Harrosh <bharrosh@panasas.com>,
+ v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ Nick Piggin <npiggin@kernel.dk>, fuse-devel@lists.sourceforge.net,
+ Tao Ma <boyu.mt@taobao.com>, ecryptfs@vger.kernel.org,
+ reiserfs-devel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+ ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ Marco Stornelli <marco.stornelli@gmail.com>, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, logfs@logfs.org,
+ linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+ linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-btrfs@vger.kernel.org, osd-dev@open-osd.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +42,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/10/2012 11:41 PM, Shmulik Ladkani wrote:
-> Thanks Brian for your comments,
 
-You're welcome. And thanks for the interest in reviewing the code. Few 
-people actually delve into nand_bbt.c, it seems :)
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Sun, 10 Jun 2012 22:45:50 -0700 Brian Norris<computersforpeace@gmail.com>  wrote:
->>> Why not use 'MTD_OPS_RAW' in 'scan_block_fast()' as well (as done in
->>> 'scan_block_full')?
->>
->> Because when ECC is available on OOB, it is good to utilize it, so
->> that bitflips don't cause good blocks to be marked bad. Less
->> importantly, when bad block markers are written by Linux (with ECC),
->> then these markers can be read back more reliably.
->
-> Ok (due to the second reason, as we're discussing the BBM read
-> implementation).
+On Sat, Jun 09, 2012 at 12:25:57AM -0700, Andrew Morton wrote:
+> And...  it seems that I misread what's going on.  The individual
+> filesystems are doing the rcu freeing of their inodes, so it is
+> appropriate that they also call rcu_barrier() prior to running
+> kmem_cache_free().  Which is what Kirill's patch does.  oops.
 
-I guess I worded my 'first' reason a little wrong. I meant: so that 
-bitflips don't cause good blocks (0xff) to be read as bad blocks 
-(bitflip => non-0xff). I think this would be far more significant, as a 
-single bitflip in the BBM byte could cause errors.
+Ack? ;)
 
->> So, I can send a patch that straightens out naming and brings
->> scan_block_fast() and scan_block_full() into alignment on using
->> MTD_OPS_PLACE_OOB. Then I think that we should continue using this
->> code in both:
->>                  /* Ignore ECC errors when checking for BBM */
->>                  if (ret&&  !mtd_is_bitflip_or_eccerr(ret))
->
-> Sounds reasonable.
+--=20
+ Kirill A. Shutemov
 
-OK, I'll do that this week.
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->> And we can (as agreed previously?) avoid using/checking max_bitflips
->> in mtd_read_oob(), although there is the datbuf+oob case that calls
->> nand_do_read_ops...
->
-> This is a separate thing that needs to be addressed.
-> See my findings in [1].
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Right, I saw both threads kinda simultaneously. It looks like Mike may 
-need to add some max_bitflips logic to mtd_read_oob after all.
+iQIcBAEBAgAGBQJP1bdQAAoJEAd+omnVudOMOWIP/0ggxQY/gopg5nzCYdokfLxR
+gz+eQJznRY+O6tbDMn0QyMJNfwsqKWUKVPxVmBnzrXv2YXiU2s1pdeWcUrkhkGzo
+t+dSzoQYx3IsVY23ViQvCojLacfFODIUvb/fu7h+ZOFN3xkCB9VW7Do7y4JwflUV
+2kEzQc+a6BU660CPnkDsGVLQTj9gw6XSmKazzbHkLg6wAr4IyyKAq7MPvLQfocIo
+ZF9oqOTKx+2K0+YaupJJRzxPPPxOCXUzxPDjbJIAOJHJQ2DtJy2WEME5V4wS9R7K
++9ldJwDN4uu+IpWGVMJFNXCkRQk6UfmKgBLrVv+32Y2+B2VebXeaEj3QECpmqqcG
+vm3vLoQB0TITfjtGTSqojE7WjTJl61jarsFzXEY3bvwdJ3h1XHeUhK5pbBiRVcu2
+v7RkgZH04E5Y+3/FGJVvxWRy+GJafI7ip+G8Rdl2r7aNmuyjmqtkdmBms/VS53Pp
+Oc1bDv+wmVwJjPJzT6z/7gE/A8LHvizvZfvt8ttS2WbWHhTuObLvtSnNd03ayhWu
+ROYpfE7qQ6CTrcGilpOLg9+N5wZOrT1mxn4s8h9d2+mkUdLHkudMFOoM/aTUyR0r
+A+Jq0iCfFYO6+SdhRo4zbecLVf0aihZ+pdOHQJ428Cguf28QPHusRiPlaYYTrsHD
+8zzLHxfwcftJ4IqVR7K4
+=IpC+
+-----END PGP SIGNATURE-----
 
-Brian
+--LZvS9be/3tNcYl/X--
