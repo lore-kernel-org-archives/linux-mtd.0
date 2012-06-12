@@ -1,21 +1,23 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SeJ87-0006Jp-B8
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 04:55:00 +0000
-Received: by laap9 with SMTP id p9so3604479laa.36
- for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2012 21:54:54 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1206050837380.4247@lnxricardw.se.axis.com>
-References: <CAJ2oMhJxM6UTfj3zX7DFnc8PPcNNLfnXeV68ELLaCY=_8inFTg@mail.gmail.com>
- <Pine.LNX.4.64.1206050837380.4247@lnxricardw.se.axis.com>
-Date: Tue, 12 Jun 2012 07:54:54 +0300
-Message-ID: <CAJ2oMhLn-FNqXgdTOSamQry1BBm+Otu3PdjEPCyj2qsS-F_=QA@mail.gmail.com>
-Subject: Re: Q: Cramfs Vs. Ubifs
-From: Ran Shalit <ranshalit@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ id 1SeNqz-00077D-56
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 09:57:38 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "tony@atomide.com" <tony@atomide.com>, "artem.bityutskiy@linux.intel.com"
+ <artem.bityutskiy@linux.intel.com>, "linux-omap@vger.kernel.org"
+ <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Date: Tue, 12 Jun 2012 09:57:26 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E997FF8@DBDE01.ent.ti.com>
+References: <cover.1338790117.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9962E7@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9962E7@DBDE01.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Cc: "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>
->> 1. It seems reasonable that execution from RAM is faster then Nand flash=
-.
->> =A0 So If I'm using ubifs, should I copy the executables to RAM before
->> execute ?
->
->
-> Most systems can't execute directly from NAND flash, so that is not reall=
-y
-> an option either way. In fact, since NAND flash cannot be mapped to an
-> address space, there is no way to directly execute from NAND flash, howev=
-er,
-> one could imagine a system with some form of memory managment scheme whic=
-h
-> buffers the data so that the flash appears to be directly addressable. I
-> don't know if there is such a system though; I've never heard of one (but
-> that's not saying much).
->
-> The 'copy to RAM' is nothing one normally has to worry about; all the
-> binaries are on the flash and loaded into RAM when run. Execute in place =
-is
-> a special situation that must be explicitly enabled (and I'm very hazy on
-> that subject as I've never worked with it).
->
->
+Hi Tony, Artem,
 
-Hi Ricard,
+On Thu, Jun 07, 2012 at 20:44:03, Mohammed, Afzal wrote:
 
-If I start several executable from ubifs in some start point, Is it
-right to assume that all of them are running in RAM, and there is no
-access to flash after this start point of execution ?
+> > This series cleans up gpmc mtd interactions so that GPMC driver
+> > conversion which is going to happen shortly would happen smoothly
+> > by not creating much disturbance outside of arch/arm/*omap*/
+> >=20
+> > This series,
+> > 1. provides the ability for OMAP NAND driver to configure GPMC-NAND
+> >    registers by NAND driver itself instead of using exported GPMC
+> >    symbols
+> > 2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
+> >    allocated address space as resource
+> > 3. creates a fictitious GPMC interrupt chip and provide the clients
+> >    with interrupts that could be handled using standard APIs (helps
+> >    in removing the requirement for driver of peripheral connected to
+> >    GPMC having the knowledge about GPMC interrupt handling). The
+> >    only user is OMAP NAND driver, it has also been modified to take
+> >    advantage of this
+> >=20
+> > This series has been made over 3.5-rc1
+>=20
+> Ping
 
-Thank you very much,
-Ran
+Please let me know your comments on this. This is a prerequisite for
+gpmc driver conversion series [1]
+
+[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg69897.html
+
+Regards
+Afzal
