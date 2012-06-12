@@ -1,19 +1,16 @@
-Message-ID: <4FD722B2.3080407@atmel.com>
-Date: Tue, 12 Jun 2012 19:06:26 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from ftp.meprolight.com ([194.90.149.17] helo=meprolight.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SePF8-0007G4-4e
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 11:26:38 +0000
+From: Alex Gershgorin <alexg@meprolight.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd: nand: mxc_nand fix compiler warning
+Date: Tue, 12 Jun 2012 14:18:07 +0300
+Message-ID: <1339499887-17859-1-git-send-email-alexg@meprolight.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC PATCH] MTD: nand: add return value for write_page() function
- in structure of nand_ecc_ctrl.
-References: <1339153855-3761-1-git-send-email-josh.wu@atmel.com>
- <1339498176.2401.27.camel@sauron.fi.intel.com>
-In-Reply-To: <1339498176.2401.27.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: bryan.wu@analog.com, jack.lan@freescale.com, nick.spence@freescale.com,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org, scottwood@freescale.com,
- Dipen.Dudhat@freescale.com, tglx@linutronix.de, tie-fei.zang@freescale.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+ Alex Gershgorin <alexg@meprolight.com>, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+This patch removes the following warning:
+drivers/mtd/nand/mxc_nand.c:1246: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1249: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1252: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1255: warning: initialization discards qualifiers from pointer target type
 
-Thanks for the review.
+Signed-off-by: Alex Gershgorin <alexg@meprolight.com>
 
-On 6/12/2012 6:49 PM, Artem Bityutskiy wrote:
-> On Fri, 2012-06-08 at 19:10 +0800, Josh Wu wrote:
->>   /**
->> + * nand_write_page_none - [INTERN] raw page writen function with return value
->> + * @mtd: mtd info structure
->> + * @chip: nand chip info structure
->> + * @buf: data buffer
->> + * @oob_required: must write chip->oob_poi to OOB
->> + */
->> +static inline int nand_write_page_none(struct mtd_info *mtd,
->> +                               struct nand_chip *chip,
->> +                               const uint8_t *buf, int oob_required)
->> +{
->> +       nand_write_page_raw(mtd, chip, buf, oob_required);
->> +
->> +       return 0;
->> +}
-> Thanks!
->
-> Would you please also make the wrtite_page_raw call-back return an error
-> code - it is just strange to change '->write_page' and avoid changing
-> '->write_page_raw'...
+Applies to v3.5-rc2+
+---
+ drivers/mtd/nand/mxc_nand.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Ok. I'll do a version 2 patch that makes write_page_raw return an error 
-code too.
-
->
-> P.S. Not sure we still want these baroque header comments, but this is
-> just a side note and separate issue.
->
-
-If change the write_page_raw call back with return value. then I will 
-remove all the function and comments.
-
-Best Regards,
-Josh Wu
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index c58e6a9..74b6e75 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1243,16 +1243,16 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ static const struct of_device_id mxcnd_dt_ids[] = {
+ 	{
+ 		.compatible = "fsl,imx21-nand",
+-		.data = &imx21_nand_devtype_data,
++		.data = (void *)&imx21_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx27-nand",
+-		.data = &imx27_nand_devtype_data,
++		.data = (void *)&imx27_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx25-nand",
+-		.data = &imx25_nand_devtype_data,
++		.data = (void *)&imx25_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx51-nand",
+-		.data = &imx51_nand_devtype_data,
++		.data = (void *)&imx51_nand_devtype_data,
+ 	},
+ 	{ /* sentinel */ }
+ };
+-- 
+1.7.0.4
