@@ -1,16 +1,21 @@
-Received: from ftp.meprolight.com ([194.90.149.17] helo=meprolight.com)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SePF8-0007G4-4e
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 11:26:38 +0000
-From: Alex Gershgorin <alexg@meprolight.com>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH] mtd: nand: mxc_nand fix compiler warning
-Date: Tue, 12 Jun 2012 14:18:07 +0300
-Message-ID: <1339499887-17859-1-git-send-email-alexg@meprolight.com>
+ id 1SePc1-0000Nd-KN
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 11:50:18 +0000
+Date: Tue, 12 Jun 2012 13:50:08 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Alex Gershgorin <alexg@meprolight.com>
+Subject: Re: mtd mxc_nand: mx35 kernel panic during request to read Device ID
+Message-ID: <20120612115008.GT22191@pengutronix.de>
+References: <4875438356E7CA4A8F2145FCD3E61C0B2CD8AD332F@MEP-EXCH.meprolight.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
- Alex Gershgorin <alexg@meprolight.com>, u.kleine-koenig@pengutronix.de
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4875438356E7CA4A8F2145FCD3E61C0B2CD8AD332F@MEP-EXCH.meprolight.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch removes the following warning:
-drivers/mtd/nand/mxc_nand.c:1246: warning: initialization discards qualifiers from pointer target type
-drivers/mtd/nand/mxc_nand.c:1249: warning: initialization discards qualifiers from pointer target type
-drivers/mtd/nand/mxc_nand.c:1252: warning: initialization discards qualifiers from pointer target type
-drivers/mtd/nand/mxc_nand.c:1255: warning: initialization discards qualifiers from pointer target type
+Hi Alex,
 
-Signed-off-by: Alex Gershgorin <alexg@meprolight.com>
+On Tue, Jun 12, 2012 at 01:35:57PM +0300, Alex Gershgorin wrote:
+> In kernel 3.4, I have not encountered this problem
+Which version did you test? Does reverting
+4b6f05e14df163e319bc85ca6e35d2720a91207d help? If so Sascha's patch send
+with Message-Id:
+1338279369-25915-1-git-send-email-s.hauer@pengutronix.de might help you.
 
-Applies to v3.5-rc2+
----
- drivers/mtd/nand/mxc_nand.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+Best regards
+Uwe
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index c58e6a9..74b6e75 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1243,16 +1243,16 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- static const struct of_device_id mxcnd_dt_ids[] = {
- 	{
- 		.compatible = "fsl,imx21-nand",
--		.data = &imx21_nand_devtype_data,
-+		.data = (void *)&imx21_nand_devtype_data,
- 	}, {
- 		.compatible = "fsl,imx27-nand",
--		.data = &imx27_nand_devtype_data,
-+		.data = (void *)&imx27_nand_devtype_data,
- 	}, {
- 		.compatible = "fsl,imx25-nand",
--		.data = &imx25_nand_devtype_data,
-+		.data = (void *)&imx25_nand_devtype_data,
- 	}, {
- 		.compatible = "fsl,imx51-nand",
--		.data = &imx51_nand_devtype_data,
-+		.data = (void *)&imx51_nand_devtype_data,
- 	},
- 	{ /* sentinel */ }
- };
 -- 
-1.7.0.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
