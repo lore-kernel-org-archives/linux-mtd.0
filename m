@@ -1,19 +1,18 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SeXBh-00042j-NT
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 19:55:38 +0000
-Received: by ghbf11 with SMTP id f11so4143006ghb.36
- for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2012 12:55:36 -0700 (PDT)
-From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: m25p80: Add support for n25q064
-Date: Tue, 12 Jun 2012 16:55:15 -0300
-Message-Id: <1339530915-24799-1-git-send-email-aletes.xgr@gmail.com>
-Cc: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+ id 1SeZ4q-0003jU-Sm
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 21:56:42 +0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Tue, 12 Jun 2012 23:56:35 +0200
+From: Richard Weinberger <richard@nod.at>
+To: <dedekind1@gmail.com>
+Subject: UBIFS: unlink failure
+Message-ID: <332997dc8907401d45f417c18fd2aace@radon2.swed.at>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 file changed, 1 insertion(+)
+Hi!
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4cc818e..53c77bf 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -646,6 +646,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
- 	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
- 	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
-+	{ "n25q064",  INFO(0x20ba17, 0, 64 * 1024, 128, 0) },
- 
- 	/* Macronix */
- 	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
--- 
-1.7.10
+While testing UBI fastmap I encountered a problem.
+After multiple writes unlink fails.
+
+This is my test case:
+---cut---
+function do_mount_write1()
+{
+        ubiattach -m 0 /dev/ubi_ctrl
+        mount /dev/ubi0_0 /mnt/ -t ubifs
+        dd if=/dev/urandom of=/mnt/x bs=1M count=1
+        dd if=/dev/urandom of=/mnt/x bs=1M count=2
+        dd if=/dev/urandom of=/mnt/x bs=1M count=10
+        dd if=/dev/urandom of=/mnt/x bs=1M count=30
+        rm x
+        umount /mnt
+        ubidetach -m 0 /dev/ubi_ctrl
+}
+
+flash_eraseall /dev/mtd0
+
+ubiattach -m 0 /dev/ubi_ctrl
+ubimkvol -N test -s 100MiB /dev/ubi0
+mkfs.ubifs /dev/ubi0_0
+ubidetach -m 0 /dev/ubi_ctrl
+
+do_mount_write1
+---cut---
+
+rm does newfstatat() and unlinkat(), both fail with ENOENT.
+The issue is 100% reproducible on a current kernel (3.4)
+Adding a "sleep 10" before the rm does _not_ help.
+
+Thanks,
+//richard
