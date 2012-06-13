@@ -1,20 +1,24 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SehU7-0001IV-I3
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 06:55:20 +0000
-Date: Wed, 13 Jun 2012 08:55:13 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Ran Shalit <ranshalit@gmail.com>
-Subject: Re: Q: Cramfs Vs. Ubifs
-In-Reply-To: <CAJ2oMhLn-FNqXgdTOSamQry1BBm+Otu3PdjEPCyj2qsS-F_=QA@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1206130851420.4247@lnxricardw.se.axis.com>
-References: <CAJ2oMhJxM6UTfj3zX7DFnc8PPcNNLfnXeV68ELLaCY=_8inFTg@mail.gmail.com>
- <Pine.LNX.4.64.1206050837380.4247@lnxricardw.se.axis.com>
- <CAJ2oMhLn-FNqXgdTOSamQry1BBm+Otu3PdjEPCyj2qsS-F_=QA@mail.gmail.com>
+Received: from mail.meprolight.com ([194.90.149.17] helo=meprolight.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SehgS-0002an-93
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 07:08:05 +0000
+From: Alex Gershgorin <alexg@meprolight.com>
+To: =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Wed, 13 Jun 2012 10:06:50 +0300
+Subject: RE: [PATCH] mtd: nand: mxc_nand fix compiler warning
+Message-ID: <4875438356E7CA4A8F2145FCD3E61C0B2CD8AD3334@MEP-EXCH.meprolight.com>
+References: <1339499887-17859-1-git-send-email-alexg@meprolight.com>
+ <20120612120115.GU22191@pengutronix.de>
+ <4875438356E7CA4A8F2145FCD3E61C0B2CD8AD3332@MEP-EXCH.meprolight.com>,
+ <20120612142443.GV22191@pengutronix.de>
+In-Reply-To: <20120612142443.GV22191@pengutronix.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Uwe,
 
-On Tue, 12 Jun 2012, Ran Shalit wrote:
+> > >Having said that, I prefer to have
+>
+> > >  http://mid.gmane.org/1335171381-24869-1-git-send-email-u.kleine-koen=
+ig@pengutronix.de
+> > > (and the follow-ups) applied. Casting away consts is nearly always
+> > > wrong.
+>
+> I think this patch will solve the warnings problem only in mxc_nand drive=
+r, but this patch also creates
+>  new same problems to  other drivers that use struct of_device_id.
+> > > >Yeah, but IMHO they are worth to be fixed. With your patch you assum=
+e
+> > > > that the data member will never be modified (and in fact it shouldn=
+'t).
 
->> Most systems can't execute directly from NAND flash, so that is not real=
-ly
->> an option either way. In fact, since NAND flash cannot be mapped to an
->> address space, there is no way to directly execute from NAND flash, howe=
-ver,
->> one could imagine a system with some form of memory managment scheme whi=
-ch
->> buffers the data so that the flash appears to be directly addressable. I
->> don't know if there is such a system though; I've never heard of one (bu=
-t
->> that's not saying much).
->>
->> The 'copy to RAM' is nothing one normally has to worry about; all the
->> binaries are on the flash and loaded into RAM when run. Execute in place=
- is
->> a special situation that must be explicitly enabled (and I'm very hazy o=
-n
->> that subject as I've never worked with it).
-
-> If I start several executable from ubifs in some start point, Is it
-> right to assume that all of them are running in RAM, and there is no
-> access to flash after this start point of execution ?
-
-As someone else mentioned on the mtd list, Linux is demand paged which=20
-means that the code is loaded into memory when needed. If there's a chunk=
+No my patch only removes a compiler warning of the mxc_nand driver in curre=
+nt version of the kernel.
 =20
-of code (Linux uses a page size of 4 kbytes so that's the granularity of=20
-the paging) that is not used until after a while after the start of=20
-execution, it won't be loaded until it is actually run.
+> > > > So the right thing is to make that assumption offical.
+> > > > And for well-behaved drivers the fix is easy (i.e. spread a few con=
+sts),
+> > > > and bad drivers are forced to be fixed (or introduce casts for cons=
+t
+> > > > that hopefully will be catched during review).
 
-I don't know if there's a way to force it all into memory when execution=20
-starts; there probably is.
+Can you imagine how many drivers will require additional patches and what s=
+hould be the level of fixation?
+I do not know
+But in general your idea is good, only in my opinion this requires a more i=
+n-depth review.
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Regards,
+Alex
+
+
+
+
+
+
+=20
