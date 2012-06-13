@@ -1,18 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SeZ4q-0003jU-Sm
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2012 21:56:42 +0000
+ id 1Sebes-00010M-8z
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 00:42:03 +0000
+Received: by yhjj52 with SMTP id j52so127668yhj.36
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2012 17:42:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Tue, 12 Jun 2012 23:56:35 +0200
-From: Richard Weinberger <richard@nod.at>
-To: <dedekind1@gmail.com>
-Subject: UBIFS: unlink failure
-Message-ID: <332997dc8907401d45f417c18fd2aace@radon2.swed.at>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <1339497736.2401.24.camel@sauron.fi.intel.com>
+References: <20120610135812.01dce4e7@pixies.home.jungo.com>
+ <CAN8TOE_Li5bysfUS_MPPaBOF-vC64s3j-feTqfUJQsR6c_yb+A@mail.gmail.com>
+ <1339497736.2401.24.camel@sauron.fi.intel.com>
+Date: Tue, 12 Jun 2012 17:42:00 -0700
+Message-ID: <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading its
+ version
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Tue, Jun 12, 2012 at 3:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sun, 2012-06-10 at 22:59 -0700, Brian Norris wrote:
+>> On Sun, Jun 10, 2012 at 3:58 AM, Shmulik Ladkani
+>> <shmulik.ladkani@gmail.com> wrote:
+>> > - Not runtime tested.
+>>
+>> Patch looks fine, but this makes me curious: does anyone use
+>> NAND_BBT_ABSPAGE? It looked broken to me when I tried it not too long
+>> ago, but I didn't look too deeply. (I doubt that this typo was its
+>> only problem, but I may try again...)
+>
+> Looks like this is used in diskonchip.c.
 
-While testing UBI fastmap I encountered a problem.
-After multiple writes unlink fails.
+Hmm, OK. This driver seems to be very stale (very few real
+fixes/improvements in git history). Anyone know if diskonchip.c even
+works with the current BBT code?
 
-This is my test case:
----cut---
-function do_mount_write1()
-{
-        ubiattach -m 0 /dev/ubi_ctrl
-        mount /dev/ubi0_0 /mnt/ -t ubifs
-        dd if=/dev/urandom of=/mnt/x bs=1M count=1
-        dd if=/dev/urandom of=/mnt/x bs=1M count=2
-        dd if=/dev/urandom of=/mnt/x bs=1M count=10
-        dd if=/dev/urandom of=/mnt/x bs=1M count=30
-        rm x
-        umount /mnt
-        ubidetach -m 0 /dev/ubi_ctrl
-}
+I retried NAND_BBT_ABSPAGE on my own driver, and it seems that this
+code-path has no ability to *create* a bad block table where one
+didn't exist previously. It simply reads whatever data is present at
+the given page(s) (according to td->pages[]), regardless of ECC
+errors, junk data, lack of BBT markers (i.e., "Bbt0" or "1tbB"), and
+versioning.
 
-flash_eraseall /dev/mtd0
+So when I use NAND_BBT_ABSPAGE with an erased block at page 1024, I
+get the following:
 
-ubiattach -m 0 /dev/ubi_ctrl
-ubimkvol -N test -s 100MiB /dev/ubi0
-mkfs.ubifs /dev/ubi0_0
-ubidetach -m 0 /dev/ubi_ctrl
+   Bad block table at page 1024, version 0xFF
 
-do_mount_write1
----cut---
+And no blocks are detected bad (simply because there was 0xff "table
+data"). But then, I get even worse results if the uninitialized BBT
+block has arbitrary (non-0xff) data! nand_bbt would just mark random
+blocks as bad...
 
-rm does newfstatat() and unlinkat(), both fail with ENOENT.
-The issue is 100% reproducible on a current kernel (3.4)
-Adding a "sleep 10" before the rm does _not_ help.
+So, this "feature" seems severely limited - designed for a somewhat
+static, pre-initialized BBT. I can probably survive by continuing to
+ignore this eyesore, but I'd rather just fix it or kill it.
 
-Thanks,
-//richard
+Brian
