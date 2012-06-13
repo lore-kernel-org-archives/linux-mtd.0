@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sel24-00076z-Qp
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:38 +0000
+ id 1Sel25-00077X-Jv
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:39 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/21] UBI: Fastmap: Check for duplicated PEBs in add_aeb()
-Date: Wed, 13 Jun 2012 12:42:01 +0200
-Message-Id: <1339584138-69914-5-git-send-email-richard@nod.at>
+Subject: [PATCH 05/21] UBI: Fastmap: Rewrite scan_pool()
+Date: Wed, 13 Jun 2012 12:42:02 +0200
+Message-Id: <1339584138-69914-6-git-send-email-richard@nod.at>
 In-Reply-To: <1339584138-69914-1-git-send-email-richard@nod.at>
 References: <1339584138-69914-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, adrian.hunter@intel.com,
@@ -21,25 +21,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Rewrite scan_pool() and make sure that free PEBs are added
+to the free list.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/fastmap.c |   51 +++++++++++++++++++-------------------------
+ 1 files changed, 22 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index d446fc3..97d694f 100644
+index 97d694f..a82a604 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -53,6 +53,10 @@ static int add_aeb(struct ubi_attach_info *ai, struct list_head *list,
- {
- 	struct ubi_ainf_peb *aeb;
- 
-+	list_for_each_entry(aeb, list, u.list)
-+		if (aeb->pnum == pnum)
-+			return 0;
+@@ -349,6 +349,8 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	 * after the creation of the fastmap
+ 	 */
+ 	for (i = 0; i < pool_size; i++) {
++		int scrub = 0;
 +
- 	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
- 	if (!aeb)
- 		return -ENOMEM;
+ 		pnum = be32_to_cpu(pebs[i]);
+ 
+ 		if (ubi_io_is_bad(ubi, pnum)) {
+@@ -358,42 +360,33 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			goto out;
+ 		}
+ 
++		err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
++		if (err && err != UBI_IO_BITFLIPS) {
++			dbg_bld("unable to read EC header!");
++			ret = err > 0 ? UBI_BAD_FASTMAP : err;
++			goto out;
++		} else if (ret == UBI_IO_BITFLIPS)
++			scrub = 1;
++
++		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
++			dbg_bld("image seq mismatch!");
++			err = UBI_BAD_FASTMAP;
++			goto out;
++		}
++
+ 		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
++		if (err == UBI_IO_FF || err == UBI_IO_FF_BITFLIPS) {
++			scrub = 1;
++			//TODO SCRUB!
++			add_aeb(ai, &ai->free, pnum, be64_to_cpu(ech->ec));
+ 
+-		/* TODO: so here again - calling the function and checking what
+-		 * it returns I consider to be one logical block which should
+-		 * not contain newlines inbetween. You are inconsistent about
+-		 * this and in some places you have a newline, in some you
+-		 * don't. Could we please remove them globally in cases like
+-		 * this?
+-		 * Again my disclaimer: sorry, I hope this is not too annoying
+-		 * for you. */
+-		if (err == UBI_IO_FF || err == UBI_IO_FF_BITFLIPS)
+ 			continue;
+-		else if (err == 0 || err == UBI_IO_BITFLIPS) {
+-			int scrub = 0;
+-
+-			ubi_msg("Found non empty PEB:%i in pool", pnum);
++		} else if (err == 0 || err == UBI_IO_BITFLIPS) {
++			dbg_bld("Found non empty PEB:%i in pool", pnum);
+ 
+ 			if (err == UBI_IO_BITFLIPS)
+ 				scrub = 1;
+ 
+-			err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
+-			if (err && err != UBI_IO_BITFLIPS) {
+-				dbg_bld("unable to read EC header!");
+-				ret = err > 0 ? UBI_BAD_FASTMAP : err;
+-
+-				goto out;
+-			} else if (ret == UBI_IO_BITFLIPS)
+-				scrub = 1;
+-
+-			if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
+-				dbg_bld("image seq mismatch!");
+-				err = UBI_BAD_FASTMAP;
+-
+-				goto out;
+-			}
+-
+ 			found_orphan = 0;
+ 			list_for_each_entry(tmp_aeb, eba_orphans, u.list) {
+ 				if (tmp_aeb->pnum == pnum) {
 -- 
 1.7.6.5
