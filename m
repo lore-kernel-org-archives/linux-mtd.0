@@ -1,24 +1,22 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SemC1-00064P-JB
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 11:56:59 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
-Subject: RE: [PATCH v2 08/10] ARM: OMAP2+: gpmc: Modify interrupt handling
-Date: Wed, 13 Jun 2012 11:56:51 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E998C70@DBDE01.ent.ti.com>
-References: <cover.1339586624.git.afzal@ti.com>
- <35f198577330e7260ff7e5f1f3ac603372d83589.1339586624.git.afzal@ti.com>
- <1339588558.2401.117.camel@sauron.fi.intel.com>
-In-Reply-To: <1339588558.2401.117.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1SeoWW-0005W9-Qt
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 14:26:17 +0000
+Received: by lbbgg6 with SMTP id gg6so1348185lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2012 07:26:11 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "tony@atomide.com" <tony@atomide.com>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <Pine.LNX.4.64.1206130851420.4247@lnxricardw.se.axis.com>
+References: <CAJ2oMhJxM6UTfj3zX7DFnc8PPcNNLfnXeV68ELLaCY=_8inFTg@mail.gmail.com>
+ <Pine.LNX.4.64.1206050837380.4247@lnxricardw.se.axis.com>
+ <CAJ2oMhLn-FNqXgdTOSamQry1BBm+Otu3PdjEPCyj2qsS-F_=QA@mail.gmail.com>
+ <Pine.LNX.4.64.1206130851420.4247@lnxricardw.se.axis.com>
+Date: Wed, 13 Jun 2012 17:26:11 +0300
+Message-ID: <CAJ2oMhL4Y-=sfWTzKuFvqr2Ci9MiVGWHx8sHpJLoZz9wzcgF1Q@mail.gmail.com>
+Subject: Re: Q: Cramfs Vs. Ubifs
+From: Ran Shalit <ranshalit@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,12 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCk9uIFdlZCwgSnVuIDEzLCAyMDEyIGF0IDE3OjI1OjU4LCBBcnRlbSBCaXR5
-dXRza2l5IHdyb3RlOg0KPiBPbiBXZWQsIDIwMTItMDYtMTMgYXQgMTc6MDMgKzA1MzAsIEFmemFs
-IE1vaGFtbWVkIHdyb3RlOg0KPiA+ICsvKiBYWFg6IE9ubHkgTkFORCBpcnEgaGFzIGJlZW4gY29u
-c2lkZXJlZCxjdXJyZW50bHkgdGhlc2UgYXJlIHRoZSBvbmx5IG9uZXMgdXNlZA0KPiA+ICsgKi8N
-Cj4gPiArI2RlZmluZQlHUE1DX05SX0lSUQkJMg0KPiANCj4gSSBndWVzcyAiWFhYIiBtZWFucyAi
-V2FybmluZyI/IFdoeSBub3QgdG8gdXNlIHBsYWluIEVuZ2xpc2g/IDotKQ0KDQpJdCB3YXMgbWFk
-ZSBzbyB0aGF0IGluIGVkaXRvciAodmltLCBtYXliZSBnb3QgYmlhc2VkIHRvd2FyZHMgaXQgYXMg
-SQ0KdXNlIGl0KSBpdCBnZXRzIGhpZ2hsaWdodGVkLCBkbyB5b3Ugd2FudCBtZSB0byBzZW5kIGFu
-IHVwZGF0ZWQgc2VyaWVzID8NCg0KUmVnYXJkcw0KQWZ6YWwNCg==
+>> If I start several executable from ubifs in some start point, Is it
+>> right to assume that all of them are running in RAM, and there is no
+>> access to flash after this start point of execution ?
+>
+>
+> As someone else mentioned on the mtd list, Linux is demand paged which means
+> that the code is loaded into memory when needed. If there's a chunk of code
+> (Linux uses a page size of 4 kbytes so that's the granularity of the paging)
+> that is not used until after a while after the start of execution, it won't
+> be loaded until it is actually run.
+>
+> I don't know if there's a way to force it all into memory when execution
+> starts; there probably is.
+>
+In embedded system it is desired to execute only from RAM, therefore
+it seems that ubifs is not best choice here.
+It seems that in order to run completely from RAM I need to copy all
+the files in ubifs potion to RAM and then execute the application in
+RAM. Therefore it seems that best choice here would be to use both
+root file system in RAM, and also mount ubifs file system in flash,
+for easily flashing executables and other files. Is there a simpler
+way that I miss here or any wrong assumptions I've made ?
+
+Many Thanks, Ran
