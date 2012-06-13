@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sel26-00077m-6Q
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:39 +0000
+ id 1Sel26-000781-Qg
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:40 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/21] UBI: Fastmap: Ensure that new_fm->e[0]->ec is always set
-Date: Wed, 13 Jun 2012 12:42:03 +0200
-Message-Id: <1339584138-69914-7-git-send-email-richard@nod.at>
+Subject: [PATCH 07/21] UBI: Fastmap: Prevent PEB leak
+Date: Wed, 13 Jun 2012 12:42:04 +0200
+Message-Id: <1339584138-69914-8-git-send-email-richard@nod.at>
 In-Reply-To: <1339584138-69914-1-git-send-email-richard@nod.at>
 References: <1339584138-69914-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, adrian.hunter@intel.com,
@@ -21,34 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Before writing the new fastmap we have to ensure that no
+PEBs are in flight.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/fastmap.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index a82a604..c2a1c18 100644
+index c2a1c18..82a011d 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -1310,7 +1310,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 			}
- 
- 			new_fm->e[0]->pnum = old_fm->e[0]->pnum;
--			new_fm->e[0]->ec = old_fm->e[0]->ec;
- 		} else {
- 			/* we've got a new early PEB, return the old one */
- 			ubi_wl_put_fm_peb(ubi, old_fm->e[0], 0);
-@@ -1326,9 +1325,10 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 
- 			goto err;
- 		}
--		new_fm->e[0]->ec = get_ec(ubi, new_fm->e[0]->pnum);
+@@ -1366,6 +1366,14 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 		kfree(old_fm);
  	}
  
-+	new_fm->e[0]->ec = get_ec(ubi, new_fm->e[0]->pnum);
++	/* Ensure that the PEBs of the old fastmap got erased and added to the
++	 * free list before we write the fastmap. Otherwise fastmp does not
++	 * see these PEBs and we leak them.
++	 * FIXME: Rewrite ubi_wl_flush() such that we can flush only the
++	 * erase work instead of all work.
++	 */
++	ubi_wl_flush(ubi);
 +
- 	if (new_fm->used_blocks > UBI_FM_MAX_BLOCKS) {
- 		ubi_err("fastmap too large");
- 		ret = -ENOSPC;
+ 	ret = ubi_write_fastmap(ubi, new_fm);
+ out_unlock:
+ 	mutex_unlock(&ubi->fm_mutex);
 -- 
 1.7.6.5
