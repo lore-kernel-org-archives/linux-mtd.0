@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sel28-00079G-Q8
+ id 1Sel29-00079W-Ek
  for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:43 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 11/21] UBI: Fastmap: Adjust comment above ubi_wl_flush()
-Date: Wed, 13 Jun 2012 12:42:08 +0200
-Message-Id: <1339584138-69914-12-git-send-email-richard@nod.at>
+Subject: [PATCH 12/21] UBI: Fastmap: Handle unused "used" PEBs better
+Date: Wed, 13 Jun 2012 12:42:09 +0200
+Message-Id: <1339584138-69914-13-git-send-email-richard@nod.at>
 In-Reply-To: <1339584138-69914-1-git-send-email-richard@nod.at>
 References: <1339584138-69914-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, adrian.hunter@intel.com,
@@ -21,25 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+If fastmap detects that some PEBs in the used list are no longer
+used it has to erase them.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/fastmap.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index b42f81c..20b016e 100644
+index 20b016e..1c2e906 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -1387,8 +1387,8 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 	/* Ensure that the PEBs of the old fastmap got erased and added to the
- 	 * free list before we write the fastmap. Otherwise fastmp does not
- 	 * see these PEBs and we leak them.
--	 * FIXME: Rewrite ubi_wl_flush() such that we can flush only the
--	 * erase work instead of all work.
-+	 * We need the flush also to ensure that no to be scrubbed PEBs are in
-+	 * flight.
- 	 */
- 	ubi_wl_flush(ubi);
+@@ -712,6 +712,13 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	if (max_sqnum > ai->max_sqnum)
+ 		ai->max_sqnum = max_sqnum;
  
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
++		list_del(&tmp_aeb->u.list);
++		dbg_bld("adding PEB from used to erase list: %i", tmp_aeb->pnum);
++		add_aeb(ai, &ai->erase, tmp_aeb->pnum, tmp_aeb->ec, 0);
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++	}
++
+ 	return 0;
+ 
+ fail_bad:
 -- 
 1.7.6.5
