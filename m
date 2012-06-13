@@ -1,24 +1,19 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sebes-00010M-8z
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 00:42:03 +0000
-Received: by yhjj52 with SMTP id j52so127668yhj.36
- for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2012 17:42:00 -0700 (PDT)
+From: "Changming Chen (changmingche)" <changmingche@micron.com>
+To: "linux-mtd-owner@lists.infradead.org"
+ <linux-mtd-owner@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Patch MTD: increase time out value for buffer program
+Date: Wed, 13 Jun 2012 04:29:39 +0000
+Message-ID: <6ACDE3A4C2F7E94C8DBB6FCC0D06A0873DA88046@NTXBOIMBX05.micron.com>
+References: <mailman.0.1338988276.11201.linux-mtd@lists.infradead.org>
+In-Reply-To: <mailman.0.1338988276.11201.linux-mtd@lists.infradead.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1339497736.2401.24.camel@sauron.fi.intel.com>
-References: <20120610135812.01dce4e7@pixies.home.jungo.com>
- <CAN8TOE_Li5bysfUS_MPPaBOF-vC64s3j-feTqfUJQsR6c_yb+A@mail.gmail.com>
- <1339497736.2401.24.camel@sauron.fi.intel.com>
-Date: Tue, 12 Jun 2012 17:42:00 -0700
-Message-ID: <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading its
- version
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "Youxin He \(youxinhe\)" <youxinhe@micron.com>,
+ "Frank Liu \(frankliu\)" <frankliu@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 12, 2012 at 3:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sun, 2012-06-10 at 22:59 -0700, Brian Norris wrote:
->> On Sun, Jun 10, 2012 at 3:58 AM, Shmulik Ladkani
->> <shmulik.ladkani@gmail.com> wrote:
->> > - Not runtime tested.
->>
->> Patch looks fine, but this makes me curious: does anyone use
->> NAND_BBT_ABSPAGE? It looked broken to me when I tried it not too long
->> ago, but I didn't look too deeply. (I doubt that this typo was its
->> only problem, but I may try again...)
->
-> Looks like this is used in diskonchip.c.
+The time out value(1ms:typical HZ defined smaller than 1000) defined for fu=
+nction "do_write_buffer" in "cfi_cmdset_0002.c" is not enough. Because the =
+enlargement of buffer size, much time will cost for buffer program. It's ha=
+s risk that time out will be triggered before buffer program finished and m=
+ake misjudge for buffer program. we suggest that 4ms is more appropriate co=
+mpare to 1ms. This change has no impact of program performance.
 
-Hmm, OK. This driver seems to be very stale (very few real
-fixes/improvements in git history). Anyone know if diskonchip.c even
-works with the current BBT code?
+diff --git a/a/drivers/mtd/chips/cfi_cmdset_0002.c b/b/drivers/mtd/chips/cf=
+i_cmd
+index 9d93c45..7da8fca 100755
+--- a/a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1312,7 +1312,7 @@ static int __xipram do_write_buffer(struct map_info *=
+map,=20
+         struct cfi_private *cfi =3D map->fldrv_priv;
+         unsigned long timeo =3D jiffies + HZ;
+         /* see comments in do_write_oneword() regarding uWriteTimeo. */
+-        unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
++        unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 4;
+         int ret =3D -EIO;
+         unsigned long cmd_adr;
+         int z, words;
 
-I retried NAND_BBT_ABSPAGE on my own driver, and it seems that this
-code-path has no ability to *create* a bad block table where one
-didn't exist previously. It simply reads whatever data is present at
-the given page(s) (according to td->pages[]), regardless of ECC
-errors, junk data, lack of BBT markers (i.e., "Bbt0" or "1tbB"), and
-versioning.
+Best Regards!
+chenchangming
 
-So when I use NAND_BBT_ABSPAGE with an erased block at page 1024, I
-get the following:
-
-   Bad block table at page 1024, version 0xFF
-
-And no blocks are detected bad (simply because there was 0xff "table
-data"). But then, I get even worse results if the uninitialized BBT
-block has arbitrary (non-0xff) data! nand_bbt would just mark random
-blocks as bad...
-
-So, this "feature" seems severely limited - designed for a somewhat
-static, pre-initialized BBT. I can probably survive by continuing to
-ignore this eyesore, but I'd rather just fix it or kill it.
-
-Brian
+Tel:+86-21-3899-7193
+E-Mail:changmingche@micron.com
