@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sel26-000781-Qg
+ id 1Sel27-00078L-9p
  for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:42:40 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/21] UBI: Fastmap: Prevent PEB leak
-Date: Wed, 13 Jun 2012 12:42:04 +0200
-Message-Id: <1339584138-69914-8-git-send-email-richard@nod.at>
+Subject: [PATCH 03/21] UBI: Fastmap: Remove useless code
+Date: Wed, 13 Jun 2012 12:42:00 +0200
+Message-Id: <1339584138-69914-4-git-send-email-richard@nod.at>
 In-Reply-To: <1339584138-69914-1-git-send-email-richard@nod.at>
 References: <1339584138-69914-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, adrian.hunter@intel.com,
@@ -21,32 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Before writing the new fastmap we have to ensure that no
-PEBs are in flight.
+This case can not happen. No need to check for it.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/wl.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index c2a1c18..82a011d 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1366,6 +1366,14 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		kfree(old_fm);
- 	}
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index ea0ab86..52548e7 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1630,8 +1630,6 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 			e->pnum = aeb->pnum;
+ 			e->ec = aeb->ec;
+ 			ubi->lookuptbl[e->pnum] = e;
+-			if (ubi_is_fm_block(ubi, aeb->pnum))
+-				continue;
  
-+	/* Ensure that the PEBs of the old fastmap got erased and added to the
-+	 * free list before we write the fastmap. Otherwise fastmp does not
-+	 * see these PEBs and we leak them.
-+	 * FIXME: Rewrite ubi_wl_flush() such that we can flush only the
-+	 * erase work instead of all work.
-+	 */
-+	ubi_wl_flush(ubi);
-+
- 	ret = ubi_write_fastmap(ubi, new_fm);
- out_unlock:
- 	mutex_unlock(&ubi->fm_mutex);
+ 			if (!aeb->scrub) {
+ 				dbg_wl("add PEB %d EC %d to the used tree",
 -- 
 1.7.6.5
