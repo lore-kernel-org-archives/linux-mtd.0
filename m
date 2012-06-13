@@ -1,20 +1,23 @@
 Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sel4b-0000Fi-TY
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 10:45:16 +0000
-Date: Wed, 13 Jun 2012 03:45:06 -0700
+ id 1SelRr-00066A-38
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2012 11:09:15 +0000
+Date: Wed, 13 Jun 2012 04:09:08 -0700
 From: Tony Lindgren <tony@atomide.com>
-To: Afzal Mohammed <afzal@ti.com>
-Subject: Re: [PATCH 03/10] mtd: nand: omap2: handle nand on gpmc
-Message-ID: <20120613104505.GI12766@atomide.com>
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Message-ID: <20120613110908.GJ12766@atomide.com>
 References: <cover.1338790117.git.afzal@ti.com>
- <f39c9f3c8403d1ddc925ddcb6bf03ce1fe805c59.1338790117.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9962E7@DBDE01.ent.ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E997FF8@DBDE01.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f39c9f3c8403d1ddc925ddcb6bf03ce1fe805c59.1338790117.git.afzal@ti.com>
-Cc: artem.bityutskiy@linux.intel.com, ivan.djelic@parrot.com,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E997FF8@DBDE01.ent.ti.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Afzal Mohammed <afzal@ti.com> [120604 00:06]:
-> +static int omap_prefetch_enable(int cs, int fifo_th, int dma_mode,
-> +	unsigned int u32_count, int is_write, struct omap_nand_info *info)
-> +{
-> +	u32 val;
-> +
-> +	if (fifo_th > PREFETCH_FIFOTHRESHOLD_MAX) {
-> +		pr_err("gpmc: fifo threshold is not supported\n");
-> +		return -1;
-> +	} else if (!(readl(info->reg.gpmc_prefetch_control))) {
-> +		/* Set the amount of bytes to be prefetched */
-> +		writel(u32_count, info->reg.gpmc_prefetch_config2);
-> +
-> +		/* Set dma/mpu mode, the prefetch read / post write and
-> +		 * enable the engine. Set which cs is has requested for.
-> +		 */
-> +		val = ((cs << PREFETCH_CONFIG1_CS_SHIFT) |
-> +					PREFETCH_FIFOTHRESHOLD(fifo_th) |
-> +					ENABLE_PREFETCH |
-> +					(dma_mode << DMA_MPU_MODE_SHIFT) |
-> +					(0x1 & is_write));
-> +		writel(val, info->reg.gpmc_prefetch_config1);
-> +
-> +		/*  Start the prefetch engine */
-> +		writel(0x1, info->reg.gpmc_prefetch_control);
-> +	} else {
-> +		return -EBUSY;
-> +	}
-> +
-> +	return 0;
-> +}
+Hi,
 
-You can simplify the above by leaving out the if else stuff by
-returning early:
+Sorry for the delay, had to do some fixes to get my GPMC testcase
+working..
 
-	if (fifo_th > PREFETCH_FIFOTHRESHOLD_MAX)
-		return -1;
+* Mohammed, Afzal <afzal@ti.com> [120612 03:01]:
+> Hi Tony, Artem,
+> 
+> On Thu, Jun 07, 2012 at 20:44:03, Mohammed, Afzal wrote:
+> 
+> > > This series cleans up gpmc mtd interactions so that GPMC driver
+> > > conversion which is going to happen shortly would happen smoothly
+> > > by not creating much disturbance outside of arch/arm/*omap*/
+> > > 
+> > > This series,
+> > > 1. provides the ability for OMAP NAND driver to configure GPMC-NAND
+> > >    registers by NAND driver itself instead of using exported GPMC
+> > >    symbols
+> > > 2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
+> > >    allocated address space as resource
+> > > 3. creates a fictitious GPMC interrupt chip and provide the clients
+> > >    with interrupts that could be handled using standard APIs (helps
+> > >    in removing the requirement for driver of peripheral connected to
+> > >    GPMC having the knowledge about GPMC interrupt handling). The
+> > >    only user is OMAP NAND driver, it has also been modified to take
+> > >    advantage of this
+> > > 
+> > > This series has been made over 3.5-rc1
+> > 
+> > Ping
+> 
+> Please let me know your comments on this. This is a prerequisite for
+> gpmc driver conversion series [1]
 
-	if (readl(info->reg.gpmc_prefetch_control))
-		return -EBUSY;
-
-	/* Set the amount of bytes to be prefetched */
-	writel(u32_count, info->reg.gpmc_prefetch_config2);
-	...
-
-	return 0;
+Looks good to me, made one comment to "mtd: nand: omap2: handle nand on gpmc"
+patch. Maybe after that is fixed Artem can take a look and maybe ack
+the two mtd related patches?
 
 Regards,
 
 Tony
+ 
+> [1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg69897.html
+> 
+> Regards
+> Afzal
