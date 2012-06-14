@@ -1,17 +1,25 @@
-Received: from mail1.bemta5.messagelabs.com ([195.245.231.130])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sf542-0003mR-2I
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2012 08:05:58 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SfCUJ-00030D-9Z
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2012 16:01:36 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
+Subject: RE: [PATCH 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Date: Thu, 14 Jun 2012 16:01:29 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E999E95@DBDE01.ent.ti.com>
+References: <cover.1338790117.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9962E7@DBDE01.ent.ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E997FF8@DBDE01.ent.ti.com>
+ <20120613110908.GJ12766@atomide.com>
+In-Reply-To: <20120613110908.GJ12766@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: Overrule mtd "ro" ?
-Date: Thu, 14 Jun 2012 10:05:33 +0200
-Message-ID: <1531E53627F1F749B4FE809BF2A4EB670345A94E@WETMEX10.loepfe.com>
-From: "Vellemans, Noel" <Noel.Vellemans@visionBMS.com>
-To: <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Cc: Tony Lindgren <tony@atomide.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
-Hi all,
+On Wed, Jun 13, 2012 at 16:39:08, Tony Lindgren wrote:
 
-I've a rather simple question, don't know if it is the good place to
-ask, but I'll give it a go.
+> Looks good to me, made one comment to "mtd: nand: omap2: handle nand on g=
+pmc"
+> patch. Maybe after that is fixed Artem can take a look and maybe ack
+> the two mtd related patches?
 
+After fixing as per Tony's comments, V2 [1] of the series has been
+posted, can you please take a look at it.
 
-If I have a mtd device that has been mounted ad READ-only.
-For example because I've injected kernel command line parameters
-mtdparts=3Datmel_nand:4M(BOOT)ro,16M(l1)ro.
+Regards
+Afzal
 
-Is there any way on the kernel "prompt" to over-rule this "ro" behavior
-and to make it writable.
-
-
-Regards,
-Noel
+[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg70096.html
