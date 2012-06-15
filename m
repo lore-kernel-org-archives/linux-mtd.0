@@ -1,20 +1,25 @@
-Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SfQRs-00005X-Rj
- for linux-mtd@lists.infradead.org; Fri, 15 Jun 2012 06:56:01 +0000
-Message-ID: <4FDADC62.2040407@st.com>
-Date: Fri, 15 Jun 2012 07:55:30 +0100
-From: Angus CLARK <angus.clark@st.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: mtd nand erase and bad block
-References: <4FC76039.6020701@sirius-es.it>	<4FC771EC.4090500@intel.com>	<4FC78012.5010704@sirius-es.it>	<4FC8601C.5070708@intel.com>	<Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>	<4FC87D62.6020402@st.com>	<1338540121.2536.150.camel@sauron.fi.intel.com>	<20120601140445.346e322e@halley>	<4FC8CBA7.6000702@st.com>	<20120601175407.7c39a8fb@halley>	<1338898670.2507.48.camel@sauron.fi.intel.com>
- <CAN8TOE_47JHHakwHYApZhOgb72dQxk7f1bxMoN5kb6NaxnqZBg@mail.gmail.com>
-In-Reply-To: <CAN8TOE_47JHHakwHYApZhOgb72dQxk7f1bxMoN5kb6NaxnqZBg@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from plane.gmane.org ([80.91.229.3])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SffZq-0004s0-BW
+ for linux-mtd@lists.infradead.org; Fri, 15 Jun 2012 23:05:15 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1SffZf-0003IW-Rs
+ for linux-mtd@lists.infradead.org; Sat, 16 Jun 2012 01:05:04 +0200
+Received: from netrokpix001.spirentcom.com ([96.241.21.98])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Sat, 16 Jun 2012 01:05:03 +0200
+Received: from aspam by netrokpix001.spirentcom.com with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Sat, 16 Jun 2012 01:05:03 +0200
+To: linux-mtd@lists.infradead.org
+From: Joe Buehler <aspam@cox.net>
+Subject: M28W320 incorrect chip ID?
+Date: Fri, 15 Jun 2012 19:33:02 +0000 (UTC)
+Message-ID: <loom.20120615T211822-727@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+The following lines in drivers/mtd/chips/cfi_cmdset_0001.c are suspicious:
 
-On 06/14/2012 06:48 PM, Brian Norris wrote:
-> On Tue, Jun 5, 2012 at 5:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> On Fri, 2012-06-01 at 17:54 +0300, Shmulik Ladkani wrote:
->>>
->>> My personal preference would be:
->>> 1. A new ioctl (MEMSCRUB?)
->>> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
->>> 3. global debugfs flag
-[snip]
-> I like the idea of an ioctl (option 1), since that does not require
-> recompilation (even in the event that debugfs wasn't enabled) and can
-> be built into a user-space tool, with appropriate warnings and
-> prompting for the user, of course. The debugfs ideas seem a little bit
-> too manual to be useful for anyone but a true driver/kernel developer
-> and also a little bit too unsafe (a user may want to target a specific
-> block without disabling bad block checking for all chips or even for
-> the entire partition).
-> 
+#if !FORCE_WORD_WRITE
+	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL },
+#endif
+	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
+	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
 
-Yes, I agree, option 1 is looking good.  The main motivation behind option 3 was
-to add support with minimal code changes, but option 1 is a cleaner solution.
+There are several issues:
 
-> 
-> So Angus, are you going to code this?
-> 
+1.  The documentation lists the chip ID as 0x88ba/0x88bb, not 0x00ba/0x00bb.  A
+vendor based a patch for the M28W640 part on these lines and it was indeed
+broken because of the zeroed high bytes.
 
-Yes, I will have go later today or early next week...
+2. The fixup_st_m28w320ct function zeroes cfi->cfiq->BufWriteTimeoutTyp, but
+fixup_use_write_buffers tests it first because it is earlier in the array.  So
+fixup_use_write_buffers should be moved to the end I think.
 
-Cheers,
+3. Knowing next to nothing about MTD, I am not clear on what "top" vs. "bottom"
+parts are all about.  The card I am using does not have both.  Only one of the
+M28W320 fixups is clearing cfi->cfiq->BufWriteTimeoutTyp -- should they both do
+that?
 
-Angus
+Joe Buehler
