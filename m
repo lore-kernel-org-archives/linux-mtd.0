@@ -1,23 +1,17 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SfiCK-0002xS-6M
- for linux-mtd@lists.infradead.org; Sat, 16 Jun 2012 01:53:08 +0000
-Date: Sat, 16 Jun 2012 09:53:01 +0800
-From: Fengguang Wu <wfg@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [driver-core:driver-core-linus 6/6]
- drivers/firmware/iscsi_ibft_find.o: In function `kmsg_dump_rewind':
- (.text+0x18): multiple definition of `kmsg_dump_rewind'
-Message-ID: <20120616015301.GB7847@localhost>
-References: <4fdbcd2f.Ta8kRp58FRzqrqaL%wfg@linux.intel.com>
- <20120616111550.597c8f605fa64fb9789fa506@canb.auug.org.au>
+Received: from nm5.bullet.mail.ird.yahoo.com ([77.238.189.62])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SfvtJ-0006uU-8M
+ for linux-mtd@lists.infradead.org; Sat, 16 Jun 2012 16:30:26 +0000
+Message-ID: <1339864223.85794.YahooMailNeo@web132102.mail.ird.yahoo.com>
+Date: Sat, 16 Jun 2012 17:30:23 +0100 (BST)
+From: Glory Lares <sherryracina3o@yahoo.com>
+Subject: Hi! Let's talk a little and if you like then we can meet. What do u
+ think?
+To: "jp.lemoine@wanadoo.fr" <jp.lemoine@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20120616111550.597c8f605fa64fb9789fa506@canb.auug.org.au>
-Cc: devel@driverdev.osuosl.org, linuxppc-dev@lists.ozlabs.org,
- Kay Sievers <kay@vrfy.org>, linux-mtd@lists.infradead.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Glory Lares <glory.lares@songwriter.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +21,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stephen,
-
-On Sat, Jun 16, 2012 at 11:15:50AM +1000, Stephen Rothwell wrote:
-> Hi,
-> 
-> On Sat, 16 Jun 2012 08:02:55 +0800 wfg@linux.intel.com wrote:
-> >
-> > Kernel build failed on
-> > 
-> > tree:   git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git driver-core-linus
-> > head:   e2ae715d66bf4becfb85eb84b7150e23cf27df30
-> > commit: e2ae715d66bf4becfb85eb84b7150e23cf27df30 [6/6] kmsg - kmsg_dump() use iterator to receive log buffer content
-> > config: i386-randconfig-usb1 (attached as .config)
-> 
-> Please have a good look at what you are sending out.  I don't understand
-> why this report has come to linuxppc-dev (the patch touches an
-> arch/powerpc file, but none of the problems reported are in that file).
-
-Because I blindly used the lists reported by scripts/get_maintainer.pl ...
-
-I'll build a "mailing list <=> git tree" mapping based on MAINTAINERS
-and use that to build CC list, rather than depending on the source files
-that the patch randomly touch.
-
-> You should put the .config on a web site somewhere and include the URL and
-> you should not include the whole patch (these were all quite large) -
-> people can find them given a tree and commit (like above).
-
-That's a valid option. Unfortunately I don't have a website to run
-this for now. Anyway, I'm still on the way improving the kernel
-testing backend based on your and others' feedback :)
-
-> And you sent out 7 reports for the same patch!
-
-That's where a website could help. Different kconfigs may trigger
-different errors for the same commit. So it's a hard decision whether
-to send emails for all broken kconfigs and risk being a noise, or to
-limit it to the first broken kconfig and risk lose of information.
-
-For now, I can send the patch author all the emails, but CC others
-only on the first one (with an statement that there are actually more
-errors in other kconfigs). So that the author that is responsive for
-fixing the bug get the full information, while the others still can
-keep track of the error situation.
-
-> I approved this bunch, but will not (unless pressured) approve any more.
-> This scatter gun automated approach is like the boy crying wolf.
-> I appreciate the effort, but please tone down the reports considerably.
-
-Heh, thanks! We should be able to reach a polished automated system
-that's fast and accurate in the end :-)
-
-Thanks,
-Fengguang
+I saw u having journey here and became turned on? Yeah, it is truth that I =
+loved you from the first look. =0AUsually I'm not writing or calling boys f=
+irst but some stuff happened to me when I checked up your account. =0AOh, I=
+ am Glory. Write me about u. How do u spend ur free time? What turns you on=
+? Which food do u prefer? =0AWould you write me next day?:)=0AI will be in =
+the Internet at 10 pm tomorrow. Interested in having chat with you!
