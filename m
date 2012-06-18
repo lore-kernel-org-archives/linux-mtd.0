@@ -1,26 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SgZpE-0005Ab-Rn
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 11:08:53 +0000
-Message-ID: <1340017963.2420.29.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading
- its version
+ id 1SgZwq-0006BE-Dx
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 11:16:45 +0000
+Message-ID: <1340018436.2420.30.camel@sauron.fi.intel.com>
+Subject: Re: [patch] UBIFS: change | to & in assertion
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, Mike Dunn
- <mikedunn@newsguy.com>,  Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Mon, 18 Jun 2012 14:12:43 +0300
-In-Reply-To: <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
-References: <20120610135812.01dce4e7@pixies.home.jungo.com>
- <CAN8TOE_Li5bysfUS_MPPaBOF-vC64s3j-feTqfUJQsR6c_yb+A@mail.gmail.com>
- <1339497736.2401.24.camel@sauron.fi.intel.com>
- <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 18 Jun 2012 14:20:36 +0300
+In-Reply-To: <20120609090823.GA877@elgon.mountain>
+References: <20120609090823.GA877@elgon.mountain>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-UVJHacVhheXFaZ1iJ7fy"
+ boundary="=-fGpb/Sk/+dA+NFcp2DrS"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,59 +26,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-UVJHacVhheXFaZ1iJ7fy
+--=-fGpb/Sk/+dA+NFcp2DrS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Let's probe Mike and Robert and see what they say.
+On Sat, 2012-06-09 at 12:08 +0300, Dan Carpenter wrote:
+> The asserts here never check anything because it uses '|' instead of
+> '&'.  Now if the flags are not set it prints a warning a a stack trace.
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-On Tue, 2012-06-12 at 17:42 -0700, Brian Norris wrote:
-> On Tue, Jun 12, 2012 at 3:42 AM, Artem Bityutskiy <dedekind1@gmail.com> w=
-rote:
-> > On Sun, 2012-06-10 at 22:59 -0700, Brian Norris wrote:
-> >> On Sun, Jun 10, 2012 at 3:58 AM, Shmulik Ladkani
-> >> <shmulik.ladkani@gmail.com> wrote:
-> >> > - Not runtime tested.
-> >>
-> >> Patch looks fine, but this makes me curious: does anyone use
-> >> NAND_BBT_ABSPAGE? It looked broken to me when I tried it not too long
-> >> ago, but I didn't look too deeply. (I doubt that this typo was its
-> >> only problem, but I may try again...)
-> >
-> > Looks like this is used in diskonchip.c.
->=20
-> Hmm, OK. This driver seems to be very stale (very few real
-> fixes/improvements in git history). Anyone know if diskonchip.c even
-> works with the current BBT code?
->=20
-> I retried NAND_BBT_ABSPAGE on my own driver, and it seems that this
-> code-path has no ability to *create* a bad block table where one
-> didn't exist previously. It simply reads whatever data is present at
-> the given page(s) (according to td->pages[]), regardless of ECC
-> errors, junk data, lack of BBT markers (i.e., "Bbt0" or "1tbB"), and
-> versioning.
->=20
-> So when I use NAND_BBT_ABSPAGE with an erased block at page 1024, I
-> get the following:
->=20
->    Bad block table at page 1024, version 0xFF
->=20
-> And no blocks are detected bad (simply because there was 0xff "table
-> data"). But then, I get even worse results if the uninitialized BBT
-> block has arbitrary (non-0xff) data! nand_bbt would just mark random
-> blocks as bad...
->=20
-> So, this "feature" seems severely limited - designed for a somewhat
-> static, pre-initialized BBT. I can probably survive by continuing to
-> ignore this eyesore, but I'd rather just fix it or kill it.
->=20
-> Brian
+Pushed to linux-ubifs.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-UVJHacVhheXFaZ1iJ7fy
+--=-fGpb/Sk/+dA+NFcp2DrS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -92,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP3w0rAAoJECmIfjd9wqK02CoP/2lZqpKJmdFQ4xcOASBOfRPB
-JUmBiZCSYwUJ8MyqbC+itQIVpBrlxmc80LA31D350sM6uXMZ0yUh4dYF0GixwIx8
-5kO4rzsSAKAohId1X5Mh/BoITnAIU2IiIQRBWRmuz88D9APfYthaaIlP1IyGTMSj
-tQ49pQ1XJPl5mMe8JVYrrZGYkU3m1IQ38t0aqS3C8Us88MIfl+6bsWKrPfi5OFhm
-WGX6GCKBy0iGp5MzIz2HzveSdLqrqbIfzXRchwh+52kYNtjnh58HCGt6GhW4wg7w
-2awouRpxXcGakLo14Yjih6iey2Lb5zCf0VRwINs0rIoqT1OlTjNH4gwIlMH33h+/
-8IpewWcWHk6Fz/P6B/QNaRmBY+AdBLzp1NcQoJOTsIqbYuj3lPtsqVl3YRAy4lsE
-HZ0ygZVnsiNCdLqhTr/oXOG+0F1e2LCGWeuZ22i6LUk522hQ2yOdPor63RYaWWFy
-6VAy8xG3fLAP8ao2MO3lRmqIfKNsVmELSybEfDXKtFbmLGw9ssM4Jbzmw3dk27YI
-xSdBSGU3Rf/1L7/aJ9RQPIpN1Ruw0WrURZQZSEZ18VQXnMR3/xXHabwfMkVHkzji
-ZyBTxUuoVJrZPCV4kPwJjVRx1SyVciB4YzD0ZvqlrtdaLdsGCuXDfj2z2MH9T+Ly
-PjJ90PtN8GRy3ASMrICw
-=LE9V
+iQIcBAABAgAGBQJP3w8EAAoJECmIfjd9wqK0FXYP/R4uMMdvhglAznQLefHiv96I
+YjAVJXKbMI8xeJlTSr7Si0ADkwVapEVRZpPWTy/DmKAIxOmP9KrqTQqc/szn2IZj
+KoVMgjxUYrP0An/UL2vyuba3qR3NAoLvwWQbTWDoUUg+umQrxqT9i2UNzKVENAmC
+3kaEsJwrn52nfPu3uO5g8U9Y67jmBrf5aVZVoKpDtqMf/edXSE9+MBo6ur0kolUs
+mZmk3r08k7v6fUF9685EnRRpixmkawSWAfrXEy8QC3GulLMS8MdcAHPkBMAoPiMY
+fK+zyX0laDmX5MQ5grCUXxgEG6mbTaujhTkQCeOBOaZf880bbtuxAkjpt+zR2zOp
+kRFM6iQat/1643PhsamFp2DJ+qIeNbtmJ01Vv1jMS36/4AsuekWt81OrtyKlq732
+NUWzp7Zq8Xr5zLEYr+TYBCnBdk6My6h94osZbjf4HZV0Me2HbLQC3hiqhwzVUvLU
+8b5COePaM4jbT5P3YAJ+A7azsIikKLdh83frTbMKE0Irhkc6z75b0lYC+vr7wvCP
+DsTK5s0U+qdiIVge8wXrPUQ7vYFJx7G8LIN/4Y1ZCRBhGR9DZbqNjHnXxca0Mh94
+6ner2bQAYNOuQcFksUTteENJXqKOXGDuufLwJF8i4lZ8fpaqJeF00/z2VMm5Jfrv
+NsnOBOryyB++svHH7A+Q
+=YMdv
 -----END PGP SIGNATURE-----
 
---=-UVJHacVhheXFaZ1iJ7fy--
+--=-fGpb/Sk/+dA+NFcp2DrS--
