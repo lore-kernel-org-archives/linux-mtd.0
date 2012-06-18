@@ -1,15 +1,16 @@
 Received: from mail-de.keymile.com ([195.8.104.1])
  by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SgWKg-0002jK-1q
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 07:25:07 +0000
+ id 1SgWKg-0002jJ-3E
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 07:25:08 +0000
 From: Gerlando Falauto <gerlando.falauto@keymile.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH RFC 1/2] mtd: cfi_cmdset_0002: Micron M29EW bugfix "Correcting
- Erase Suspend Hang Ups"
-Date: Mon, 18 Jun 2012 09:24:38 +0200
-Message-Id: <1340004279-26496-2-git-send-email-gerlando.falauto@keymile.com>
-In-Reply-To: <1340004279-26496-1-git-send-email-gerlando.falauto@keymile.com>
-References: <1340004279-26496-1-git-send-email-gerlando.falauto@keymile.com>
+Subject: [PATCH RFC 0/2] Micron (formerly Numonyx) M29EW NOR flash issues
+Date: Mon, 18 Jun 2012 09:24:37 +0200
+Message-Id: <1340004279-26496-1-git-send-email-gerlando.falauto@keymile.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: Holger Brunck <holger.brunck@keymile.com>, Leo <leo.costa77@gmail.com>,
  Stefan Bigler <stefan.bigler@keymile.com>,
  Gerlando Falauto <gerlando.falauto@keymile.com>
@@ -22,52 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From TN-13-07: Patching the Linux Kernel and U-Boot for M29 Flash, page 20:
+Hi everyone,
 
-Some revisions of the M29EW suffer from erase suspend hang ups. In particular, it can
-occur when the sequence Erase Confirm -> Suspend -> Program -> Resume
-causes a lockup due to internal timing issues. The consequence is that the erase cannot
-be resumed without inserting a dummy command after programming and prior to
-resuming. [...] The work-around is to issue a dummy write cycle that
-writes an F0 command code before the RESUME command.
+we have been experiencing some problems with the above NOR flash.
+Please find our analysis and the patches we applied to 3.0.8.
+Patches of course are not meant for mainlining "as is"; we'd rather appreciate
+your suggestions as to how to make them suitable for inclusion.
+It should be a fairly common flash part, but it sounds like noone has run into
+this issue so far except
+http://lists.infradead.org/pipermail/linux-mtd/2011-April/034867.html
 
-Signed-off-by: Stefan Bigler <stefan.bigler@keymile.com>
+Thank you very much,
+Gerlando Falauto
+
+PROBLEM ANALYSIS:
+
+This issue only appears when performing concurrent operations like simultaneous
+UBI volume creation/deletion, but rarerly under normal conditions.
+The problem seems to happen rather soon though when the unit is put in a
+Climate Chamber at high temperatures (say 60°C).
+
+In our experience the most probable root cause is the delay needed after an
+erase resume, before a new erase suspend can be issued again [PATCH 2/2].
+
+This is documented on page 22 of the technical note TN-13-07 from Micron:
+http://www.micron.com/~/media/Documents/Products/Technical%20Note/NOR%20Flash/tn1307_patching_linux_kernel_for_m29.ashx
+
+[NOTE: TN-13-07 explicitly refers to "some revisions of the M29EW (for example,
+A1 and A2 step revisions)", even though our boards are equipped with silicon
+revision 12 = 0xC]
+
+Adding this delay with a value of 500 us seems to fix the problem even at high
+temperatures. This is also incidentally the typical value for the "Erase to
+suspend" parameter as specified the datasheet:
+Erase to suspend is the typical time between an initial BLOCK ERASE or
+ERASE RESUME command and a subsequent ERASE SUSPEND command. Violating the
+specification repeatedly during any particular block erase may cause erase
+failures.
+
+Also, [PATCH 1/2] described on page 20 (Correcting Erase Suspend Hang Ups,
+was added first, although it does not appear to have any impact on the issue.
+
+SIDE NOTE:
+
+The flash stressing test used to reproduce this issue has shown in some cases
+the unforeseen side effect of inexplicably damaging sector 0 (which is where
+u-boot code resides). When this happened, sector 0 could not be erased anymore,
+not even through JTAG. A couple of times, further attempts at reprogramming the
+sector mysteriously lead it to be erasable again.
+One particular board however (incidentally brought into that condition after a
+test in the climate chamber) showed unstable values for some bits of sector 0
+among successive reads. All other sectors seemed to be immune to this problem.
+For this board I could not find any way to erase sector 0.
+This is currently an open issue with wrong software operations causing hardware
+to break.
+
 Signed-off-by: Gerlando Falauto <gerlando.falauto@keymile.com>
+Cc: Stefan Bigler <stefan.bigler@keymile.com>
 Cc: Holger Brunck <holger.brunck@keymile.com>
 Cc: Leo <leo.costa77@gmail.com>
 
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+Gerlando Falauto (2):
+  mtd: cfi_cmdset_0002: Micron M29EW bugfix "Correcting Erase Suspend
+    Hang Ups"
+  mtd: cfi_cmdset_0002: Micron M29EW bugfix "Resolving the Delay After
+    Resume Issue"
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 23175ed..72f6164 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -761,6 +761,11 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
- 
- 	switch(chip->oldstate) {
- 	case FL_ERASING:
-+		/* before resume, insert a dummy 0xF0 cycle for Micron M29EW devices */
-+		if ( (cfi->mfr == 0x0089) &&
-+		   (((cfi->device_type == CFI_DEVICETYPE_X8) && ((cfi->id & 0xff)== 0x7e))
-+			  || ((cfi->device_type == CFI_DEVICETYPE_X16) && (cfi->id == 0x227e))) )
-+			map_write(map, CMD(0xF0), chip->in_progress_block_addr);
- 		map_write(map, cfi->sector_erase_cmd, chip->in_progress_block_addr);
- 		chip->oldstate = FL_READY;
- 		chip->state = FL_ERASING;
-@@ -904,6 +909,12 @@ static void __xipram xip_udelay(struct map_info *map, struct flchip *chip,
- 			local_irq_disable();
- 
- 			/* Resume the write or erase operation */
-+			/* before resume, insert a dummy 0xF0 cycle for Micron M29EW devices */
-+			if ( (cfi->mfr == 0x0089) &&
-+				 (((cfi->device_type == CFI_DEVICETYPE_X8) && ((cfi->id & 0xff)== 0x7e))
-+				  || ((cfi->device_type == CFI_DEVICETYPE_X16) && (cfi->id == 0x227e))) )
-+					map_write(map, CMD(0xF0), adr);
-+
- 			map_write(map, cfi->sector_erase_cmd, adr);
- 			chip->state = oldstate;
- 			start = xip_currtime();
--- 
-1.7.1
+ drivers/mtd/chips/cfi_cmdset_0002.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
