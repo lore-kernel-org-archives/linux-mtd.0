@@ -1,19 +1,25 @@
-Received: from mail-de.keymile.com ([195.8.104.1])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SgWKg-0002jJ-3E
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 07:25:08 +0000
-From: Gerlando Falauto <gerlando.falauto@keymile.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH RFC 0/2] Micron (formerly Numonyx) M29EW NOR flash issues
-Date: Mon, 18 Jun 2012 09:24:37 +0200
-Message-Id: <1340004279-26496-1-git-send-email-gerlando.falauto@keymile.com>
+Received: from eu1sys200aog115.obsmtp.com ([207.126.144.139])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SgYLo-0007f3-2T
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 09:34:24 +0000
+Message-ID: <4FDEF60A.7010607@st.com>
+Date: Mon, 18 Jun 2012 10:34:02 +0100
+From: Angus CLARK <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Holger Brunck <holger.brunck@keymile.com>, Leo <leo.costa77@gmail.com>,
- Stefan Bigler <stefan.bigler@keymile.com>,
- Gerlando Falauto <gerlando.falauto@keymile.com>
+To: dedekind1@gmail.com
+Subject: Re: mtd nand erase and bad block
+References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
+ <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
+ <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
+ <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
+ <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
+ <20120601175407.7c39a8fb@halley>
+ <1338898670.2507.48.camel@sauron.fi.intel.com>
+In-Reply-To: <1338898670.2507.48.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+Hi Artem,
 
-we have been experiencing some problems with the above NOR flash.
-Please find our analysis and the patches we applied to 3.0.8.
-Patches of course are not meant for mainlining "as is"; we'd rather appreciate
-your suggestions as to how to make them suitable for inclusion.
-It should be a fairly common flash part, but it sounds like noone has run into
-this issue so far except
-http://lists.infradead.org/pipermail/linux-mtd/2011-April/034867.html
+On 06/05/2012 01:17 PM, Artem Bityutskiy wrote:
+> On Fri, 2012-06-01 at 17:54 +0300, Shmulik Ladkani wrote:
+>>
+>> My personal preference would be:
+>> 1. A new ioctl (MEMSCRUB?)
+>> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
+>> 3. global debugfs flag
+>>
+> Yes, I guess option 1 is the best I think. Option 2 needs too much work.
 
-Thank you very much,
-Gerlando Falauto
+Are you ok with the name MEMSCRUB?  I know previously you have objected to this
+name, since it might get confused with UBI scrubbing
+(http://lists.infradead.org/pipermail/linux-mtd/2010-September/032031.html).  In
+fact, the conclusion of that thread was to add an extended erase IOCTL, with a
+'flags' parameter to capture options such as erase bad blocks.  Would this be
+the preferred method (it didn't seem to go anywhere last time), or is 'MEMSCRUB'
+with the existing erase_info_user64 structure acceptable?
 
-PROBLEM ANALYSIS:
+Cheers,
 
-This issue only appears when performing concurrent operations like simultaneous
-UBI volume creation/deletion, but rarerly under normal conditions.
-The problem seems to happen rather soon though when the unit is put in a
-Climate Chamber at high temperatures (say 60°C).
-
-In our experience the most probable root cause is the delay needed after an
-erase resume, before a new erase suspend can be issued again [PATCH 2/2].
-
-This is documented on page 22 of the technical note TN-13-07 from Micron:
-http://www.micron.com/~/media/Documents/Products/Technical%20Note/NOR%20Flash/tn1307_patching_linux_kernel_for_m29.ashx
-
-[NOTE: TN-13-07 explicitly refers to "some revisions of the M29EW (for example,
-A1 and A2 step revisions)", even though our boards are equipped with silicon
-revision 12 = 0xC]
-
-Adding this delay with a value of 500 us seems to fix the problem even at high
-temperatures. This is also incidentally the typical value for the "Erase to
-suspend" parameter as specified the datasheet:
-Erase to suspend is the typical time between an initial BLOCK ERASE or
-ERASE RESUME command and a subsequent ERASE SUSPEND command. Violating the
-specification repeatedly during any particular block erase may cause erase
-failures.
-
-Also, [PATCH 1/2] described on page 20 (Correcting Erase Suspend Hang Ups,
-was added first, although it does not appear to have any impact on the issue.
-
-SIDE NOTE:
-
-The flash stressing test used to reproduce this issue has shown in some cases
-the unforeseen side effect of inexplicably damaging sector 0 (which is where
-u-boot code resides). When this happened, sector 0 could not be erased anymore,
-not even through JTAG. A couple of times, further attempts at reprogramming the
-sector mysteriously lead it to be erasable again.
-One particular board however (incidentally brought into that condition after a
-test in the climate chamber) showed unstable values for some bits of sector 0
-among successive reads. All other sectors seemed to be immune to this problem.
-For this board I could not find any way to erase sector 0.
-This is currently an open issue with wrong software operations causing hardware
-to break.
-
-Signed-off-by: Gerlando Falauto <gerlando.falauto@keymile.com>
-Cc: Stefan Bigler <stefan.bigler@keymile.com>
-Cc: Holger Brunck <holger.brunck@keymile.com>
-Cc: Leo <leo.costa77@gmail.com>
-
-Gerlando Falauto (2):
-  mtd: cfi_cmdset_0002: Micron M29EW bugfix "Correcting Erase Suspend
-    Hang Ups"
-  mtd: cfi_cmdset_0002: Micron M29EW bugfix "Resolving the Delay After
-    Resume Issue"
-
- drivers/mtd/chips/cfi_cmdset_0002.c |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+Angus
