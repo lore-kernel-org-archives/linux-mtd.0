@@ -1,17 +1,21 @@
-Received: from mail-vc0-f177.google.com ([209.85.220.177])
+Received: from smtp2.altran.com ([194.98.79.76])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SgiZN-0008Oa-5J
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:29:05 +0000
-Received: by vcbf13 with SMTP id f13so3209179vcb.36
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2012 13:29:03 -0700 (PDT)
+ id 1Sgie3-0000UF-Nf
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:33:56 +0000
 MIME-Version: 1.0
-Date: Mon, 18 Jun 2012 22:29:03 +0200
-Message-ID: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com>
-Subject: Loosed files after umount/mount
-From: Andreas Friesen <ndrs.frsn@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+In-Reply-To: <1339073501.6875.104.camel@sauron.fi.intel.com>
+Content-class: urn:content-classes:message
+Subject: Re: UBI and volume checksum
+Date: Mon, 18 Jun 2012 22:22:52 +0200
+Message-ID: <0D6614B1791E3B4C86DD3784FCD9B20617B90149@XMB-TODC-23.altranit.corp.altran.com>
+References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
+ <1339073501.6875.104.camel@sauron.fi.intel.com>
+From: "Giovanni Malfara'" <Giovanni.Malfara.ext@altran.it>
+To: <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,82 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-I'm experiencing a strange problem with JFFS2 using Linux
-3.1.5, 3.4 from kernel.org.git on PowerPC. After unmounting and
-remounting the filesystem,
-directory is empty.
-
-$ flash_erase /dev/mtd2
-$ reboot
-$ mount mtd:storage /storage -t jffs2
-$ scp root@server:/tmp/settings/*.xml /storage
-$ sync
-$ umount /storage
-$ mount mtd:storage /storage -t jffs2
-$ ls /storage
-... empty ?????
-
-Any Hints?
-
--- Andreas Friesen
-
-
-root@hbm-000c4e:/$lsmod
-Module                  Size  Used by
-jffs2                  85057  1
-lzo_decompress          5219  1 jffs2
-lzo_compress            5143  1 jffs2
-
-
-root@hbm-000c4e:/$uname -a
-Linux hbm-000c4e 3.4.0+ #10 PREEMPT Mon Jun 18 20:07:04 CEST 2012 ppc
-GNU/Linux
-
-$ cat build/linux/.config | grep JFFS2
-CONFIG_JFFS2_FS=3Dm
-CONFIG_JFFS2_FS_DEBUG=3D0
-CONFIG_JFFS2_SUMMARY=3Dy
-CONFIG_JFFS2_COMPRESSION_OPTIONS=3Dy
-CONFIG_JFFS2_LZO=3Dy
-CONFIG_JFFS2_RTIME=3Dy
-CONFIG_JFFS2_CMODE_PRIORITY=3Dy
-
-$ cat build/linux/.config | grep MTD
-CONFIG_MTD=3Dy
-CONFIG_MTD_OF_PARTS=3Dy
-CONFIG_MTD_CHAR=3Dy
-CONFIG_MTD_BLKDEVS=3Dy
-CONFIG_MTD_BLOCK=3Dy
-CONFIG_MTD_CFI=3Dy
-CONFIG_MTD_GEN_PROBE=3Dy
-CONFIG_MTD_MAP_BANK_WIDTH_1=3Dy
-CONFIG_MTD_MAP_BANK_WIDTH_2=3Dy
-CONFIG_MTD_MAP_BANK_WIDTH_4=3Dy
-CONFIG_MTD_CFI_I1=3Dy
-CONFIG_MTD_CFI_I2=3Dy
-CONFIG_MTD_CFI_INTELEXT=3Dy
-CONFIG_MTD_CFI_UTIL=3Dy
-CONFIG_MTD_PHYSMAP_OF=3Dy
-CONFIG_OF_MTD=3Dy
-
-
-dmesg  output:
-[    0.476401] ff000000.flash: Found 1 x16 devices at 0x0 in 8-bit
-bank. Manufacturer ID 0x000089 Chip ID 0x000018
-[    0.486776] Intel/Sharp Extended Query Table at 0x0031
-[    0.492098] Intel/Sharp Extended Query Table at 0x0031
-[    0.497412] Using buffer write method
-[    0.501208] cfi_cmdset_0001: Erase suspend on write enabled
-[    0.506957] erase region 0: offset=3D0x0,size=3D0x20000,blocks=3D128
-[    0.508533] 8 ofpart partitions found on MTD device ff000000.flash
-[    0.514996] Creating 8 MTD partitions on "ff000000.flash":
-[    0.520718] 0x000000000000-0x000000200000 : "kernel"
-[    0.527869] 0x000000200000-0x000000600000 : "rootfs"
-[    0.535008] 0x000000600000-0x000000c00000 : "storage"
-[    0.542277] 0x000000c00000-0x000000f00000 : "parameter"
-[    0.549535] 0x000000f00000-0x000000f40000 : "uboot"
-[    0.556607] 0x000000f40000-0x000000f60000 : "ubootenv"
-..
-[    8.914470] jffs2: version 2.2. (SUMMARY)  =A9 2001-2006 Red Hat, Inc.
+DQotLS0tLUJFR0lOIFBHUCBTSUdORUQgTUVTU0FHRS0tLS0tDQpIYXNoOiBTSEExDQoNCk9uIDA2
+LzA3LzIwMTIgMDI6NTEgUE0sIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6DQo+IE9uIFRodSwgMjAx
+Mi0wNi0wNyBhdCAxNDoyMSArMDIwMCwgR2lvdmFubmkgTWFsZmFyYScgd3JvdGU6DQo+PiBIaSBh
+bGwsDQo+Pg0KPj4gSSBuZWVkIHRvIHZlcmlmeSB0aGF0IHRoZSBVQkkgaW1hZ2Ugb25jZSBpdCBo
+YXMgYmVlbiB3cml0dGVuIG9uIHRoZSBVQkkNCj4+IHZvbHVtZS4NCj4+IFNvIEkgdHJ5IHRvIGV4
+dHJhY3QgdGhlIGNvbnRlbnQgd2l0aCB0aGUgImRkIiB0b29sIGZyb20gdGhlIFVCSSBib2x1bWUN
+Cj4+IGFuZCBJIGNhbGN1bGF0ZSB0aGUgY2hlY2tzdW0gdG8gYmUgY29tcGFyZWQgd2l0aCB0aGUg
+b25lIG9mIHRoZSBvcmlnaW5hbA0KPj4gVUJJIGltYWdlLg0KPj4NCj4+IE15IHF1ZXN0aW9uIGlz
+OiBpcyBpdCBhbHdheXMgdHJ1ZT8gSWYgSSBleHRyYWN0IHRoZSBjb250ZW50IG9mIHRoZSBVQkkN
+Cj4+IHZvbHVtZSBhdCBhbnkgdGltZSAodGhlIGZpbGV5c3RlbSBpcyBtb3VudGVkIHJlYWQtb25s
+eSkgLCB3aWxsIHRoZQ0KPj4gY2hlY2tzdW0gYWx3YXlzIHRoZSBzYW1lPyBXaWxsIHRoZSBkYXRh
+IG1vdmUgZnJvbSBhIFBFQiB0aGF0IGhhcw0KPj4gYml0LWZsaXBzIHRvIGEgbmV3IG9uZSBjYXVz
+ZSBhIGRpZmZlcmVuY2UgaW4gY2hlY2tzdW0/DQo+DQo+IFllcywgaWYgeW91IHJlYWQgdGhlIFVC
+SSB2b2x1bWUgKC9kZXYvdWJpWF9ZKSwgYW5kIGl0IGlzIFIvTywgdGhlIENSQw0KPiBzaG91bGQg
+YmUgdGhlIHNhbWUgYWxsIHRoZSB0aW1lLg0KPg0KSEksDQoNCklmIEkgdHJ5IHRvIHJlYWQgYmFj
+ayBmcm9tIHRoZSB2b2x1bWUgKHVzaW5nICJkZCIpIGFmdGVyIEkgd3JpdGUgdGhlDQpOQU5EIEZs
+YXNoICh1c2luZyAidWJpcHVkYXRldm9sIikgSSBnZXQgYSBkaWZmZXJlbnQgdmFsdWUgY29tcGFy
+ZWQgdG8NCnRoZSBDUkMgb2YgdGhlIGltYWdlIGZpbGUgZm9yIHRoZSBDUkMgb2YgdGhlIHZvbHVt
+ZSBjb250ZW50IGlmIHRoZXJlIGFyZQ0Kc29tZSBiYWQgYmxvY2tzLg0KRG8gSSBoYXZlIHRvIHVz
+ZSBhbm90aGVyIHRvb2wgKGUuZy4gbmFuZGR1bXApPw0KDQpUaGFua3MgaW4gYWR2YW5jZSwNCkdp
+b3Zhbm5pDQoNCi0gLS0gDQpHaW92YW5uaSBNYWxmYXLDoA0KLS0tLS1CRUdJTiBQR1AgU0lHTkFU
+VVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjQuMTEgKEdOVS9MaW51eCkNCkNvbW1lbnQ6IFVz
+aW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9lbmlnbWFpbC5tb3pkZXYub3JnLw0KDQpp
+UUVjQkFFQkFnQUdCUUpQMzQ0Y0FBb0pFRzRUY1Jqc3ZXL0tRaG9JQU5FVVhnRVp2V2QzWDFlQjkw
+OGxxa05ODQpjam1hTDhBU0k2OUN5bkcxSTQwRzYwZ2NhWVk3Y2VWeVlzakxzNlVRdjEyY2tKSUZv
+SzNXaTlESi9xZXR3TGJ2DQp0QzRZUXU1STBKeGY3SU9wU1RYNkZDcVg2NmJBZVJaWVRrdnZ4YW10
+M0dPVjQrZnlmMFQ2UzZpdGNUakJXRURzDQpaM1U4MnF2eERUV253QitFTy9TUG1qQkdLc1BmUDdE
+TkdXZnY2aDdvUDA4VnZna0thR1pzc1ZadFp0RjlDd3lKDQpDSWZ0NzZkRDh2SWF4WjJOL0wyV1lW
+UmhraWxWUjVPNncrRFdGWTdIdVN4OGFlVjQwSENsaXpGbUJmQTRDWWFFDQpaeC9zYVEyUUxET09F
+MGY5UnZGSnFiWXhiTzZIMlZ6RXR1aHNCYWZwNWlRYUl0WjNPbFVLVStFTWIrOVh6UGs9DQo9U09p
+Sg0KLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tDQo=
