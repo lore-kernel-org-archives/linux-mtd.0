@@ -1,24 +1,23 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sga1G-0006WU-CI
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 11:21:18 +0000
-Message-ID: <1340018702.2420.32.camel@sauron.fi.intel.com>
-Subject: Re: [patch] mtd: cafe_nand: fix an & vs | mistake
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>, Daniel Drake <dsd@laptop.org>
-Date: Mon, 18 Jun 2012 14:25:02 +0300
-In-Reply-To: <20120609160825.GC6488@elgon.mountain>
-References: <20120609160825.GC6488@elgon.mountain>
+ id 1Sga8I-0007Gv-UP
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 11:28:35 +0000
+Message-ID: <1340019147.2420.34.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading
+ its version
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Mon, 18 Jun 2012 14:32:27 +0300
+In-Reply-To: <20120610135812.01dce4e7@pixies.home.jungo.com>
+References: <20120610135812.01dce4e7@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Y4qdUGQx/Q6Y4SaHH4yr"
+ boundary="=-vwWGd/j0un7DgG17fwZh"
 Mime-Version: 1.0
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +28,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Y4qdUGQx/Q6Y4SaHH4yr
+--=-vwWGd/j0un7DgG17fwZh
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Pushed this patch to l2-mtd.git and added CC to -stable. The patch seems
-to be a real bug-fix. Daniel, could you please check it - it will be
-shame if it hits -stable and breaks something.
+On Sun, 2012-06-10 at 13:58 +0300, Shmulik Ladkani wrote:
+> The code responsible for reading the version of the mirror bbt was
+> incorrectly using the descriptor of the main bbt.
+>=20
+> Pass the mirror bbt descriptor to 'scan_read_raw' when reading the
+> version of the mirror bbt.
+>=20
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Thanks!
+Added
 
-On Sat, 2012-06-09 at 19:08 +0300, Dan Carpenter wrote:
-> The intent here was clearly to set result to true if the 0x40000000 flag
-> was set.  But instead there was a | vs & typo and we always set result
-> to true.
->=20
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> I do not have the hardware to test this.  The original code is clearly
-> buggy, but what about if 0x40000000 is the wrong flag?
->=20
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index f3594a6..ac0d967 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -102,7 +102,7 @@ static const char *part_probes[] =3D { "cmdlinepart",=
- "RedBoot", NULL };
->  static int cafe_device_ready(struct mtd_info *mtd)
->  {
->  	struct cafe_priv *cafe =3D mtd->priv;
-> -	int result =3D !!(cafe_readl(cafe, NAND_STATUS) | 0x40000000);
-> +	int result =3D !!(cafe_readl(cafe, NAND_STATUS) & 0x40000000);
->  	uint32_t irqs =3D cafe_readl(cafe, NAND_IRQ);
-> =20
->  	cafe_writel(cafe, irqs, NAND_IRQ);
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Cc: stable@vger.kernel.org [v2.6.37+]
+
+and pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Y4qdUGQx/Q6Y4SaHH4yr
+--=-vwWGd/j0un7DgG17fwZh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -80,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP3xAOAAoJECmIfjd9wqK05poP/RkT/BdhlrAVJlTvUQfAaytN
-M370dgaeofoH4VoYMGliL+Vw5ccDbaJSAj/NcBMrvvXFZ0Z+GX2cfVO4ZF/6LrvQ
-PmZITgWhy+bltUEIWnn6RuaeQW2AvJP/n6/7t87mFosGtaJ8TOKxLUFk+fiYEQXm
-9jqw6tqCifECzm0m0dci6rT9uocuxpKwtd1+i7o+aAF1iJQePV9eGjhxKD0v9MMS
-3nK4iY25Xx9bhFcITYfLj1LEaK2pbDMvkapDsZ2PNKxHdvtJnEyCe9SuzdfmRBhm
-sbMK48euSovb3zuurJJUr28qdX2lxzIn5Kog+zI8kgKn/Z3PzgNPFnyIjF+w1Puy
-rYTiOZrywmriRTYqf5ghSxgRQ/ci8D8EhWmheRDXKN5eh5XaQHUxoPPC4p89Lt5D
-0hZUZDCgRiQMPju2nWUGvXO4FMOMutFlNskAIGsRLu4CnA10DtDmdjM1U9rzngoK
-0B9apQprvQsdVsqRucGLrqS0Iym/wnVzAyTiHhp3hyOwHNHlLV6Yvb40s1pRLotn
-Eih9bnxlYIqrvas8JObhgfBuhwrNtwRtDvDlKl1aBXuAL3t/JJsOh467hQ0CgYzn
-Ugth+yVA8svxqHKtpukv/c6JQ9WK8q6QzjT6E/kRjfAZ2dsmmz7G7e+2FTxAeqbQ
-MHfjuIZZZB+/738Gbfyy
-=gHCP
+iQIcBAABAgAGBQJP3xHLAAoJECmIfjd9wqK0cQUP/22Ss+eLASaPNQnvsOS1jA2o
+mMwX23wtW5iGl6zm0aA1Nzv/8vEuBQLH/77Jc++CGm/8qEizd1w/kdIo/1Gfy2jg
+eVAIlxYsF0BxtVWz8JYhmn+NwrNzbNtlEE0BIyGX7X9bjxIH3QVTFAvHLM8VGMW1
+dECQlUValUTu37ynM+TnoqY4Row+b7F4exSWp6yOuUQwxNwtpnw1OL3IjUgPzjBn
+thhF9WuM1AZRJ6ciZMDdn/8i+RL+iHdhHrR0bHABka+bSohPUBQqEQlpAqsxCM3a
+CPNf3RgrFKsQOxS0C/UY941rrSexShBnZBGBoCnRFxTH4rYEyMIwao1GgQksMcH2
+ebC5dhtxzZP8fGfwgTVB4KQeCkS5bT1462G3pih4x8o8bLSjCb8aNnBrMCO6ndth
+6yM39Cyb2Fkt5CDFjih988vW9mVWcviVOR6+uH4wohtRkwWCFIxkFZcYAMw2dkFL
+a8ucA5o99/vhIppPtoyV+gfjG8p0f77PHvK4iu5N3NkGnX+FV6FQLM0iYXhWMTnM
+owTrieErEq16pIPiepgK62r+aTEuSRSZ++jyoCLP3hJ4iMFHfH/pRiS3y6k2qA+w
+jYy0Rx62xGsSuost4sK0Xz7Qi7OKALotwsX22zhnCSZ238Ri0sRQu1ZkupRWZNTZ
+XvGTz4eyEdCdEwTjhLAI
+=nYog
 -----END PGP SIGNATURE-----
 
---=-Y4qdUGQx/Q6Y4SaHH4yr--
+--=-vwWGd/j0un7DgG17fwZh--
