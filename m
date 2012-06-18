@@ -1,30 +1,17 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SgiYn-0008Ha-Ox
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:28:30 +0000
-Received: by bkwj4 with SMTP id j4so5085924bkw.36
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2012 13:28:28 -0700 (PDT)
-Message-ID: <1340051296.1971.5.camel@koala>
-Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading
- its version
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Mon, 18 Jun 2012 23:28:16 +0300
-In-Reply-To: <87ehpc1oyb.fsf@free.fr>
-References: <20120610135812.01dce4e7@pixies.home.jungo.com>
- <CAN8TOE_Li5bysfUS_MPPaBOF-vC64s3j-feTqfUJQsR6c_yb+A@mail.gmail.com>
- <1339497736.2401.24.camel@sauron.fi.intel.com>
- <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
- <1340017963.2420.29.camel@sauron.fi.intel.com> <87ehpc1oyb.fsf@free.fr>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-YCXHW71VKs60BPr3Dmj+"
-Mime-Version: 1.0
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1SgiZN-0008Oa-5J
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:29:05 +0000
+Received: by vcbf13 with SMTP id f13so3209179vcb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2012 13:29:03 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 18 Jun 2012 22:29:03 +0200
+Message-ID: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com>
+Subject: Loosed files after umount/mount
+From: Andreas Friesen <ndrs.frsn@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,60 +21,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
---=-YCXHW71VKs60BPr3Dmj+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I'm experiencing a strange problem with JFFS2 using Linux
+3.1.5, 3.4 from kernel.org.git on PowerPC. After unmounting and
+remounting the filesystem,
+directory is empty.
 
-On Mon, 2012-06-18 at 19:59 +0200, Robert Jarzmik wrote:
-> To store worn out blocks, each filesystem implementation has to do someth=
-ing
-> smart. UBI has it way, SAFTL (docg3 fs) has its way, etc ...
+$ flash_erase /dev/mtd2
+$ reboot
+$ mount mtd:storage /storage -t jffs2
+$ scp root@server:/tmp/settings/*.xml /storage
+$ sync
+$ umount /storage
+$ mount mtd:storage /storage -t jffs2
+$ ls /storage
+... empty ?????
 
-UBI does not do anything about storing the bad block table. UBI relies
-on the MTD layer - it may mark a block as bad and MTD should take care
-of storing this information either in the OOB or in the BBT on in both
-places.
+Any Hints?
 
-> But in the end, the bad block table is immutable, and represents factory =
-bad
-> blocks, not up-to-date list of bad blocks.
+-- Andreas Friesen
 
-How do you store the information about the later developed bad blocks?
 
-> As to whether you should kill it or not, it's up to the maintainer of dis=
-konchip
-> I suppose.
+root@hbm-000c4e:/$lsmod
+Module                  Size  Used by
+jffs2                  85057  1
+lzo_decompress          5219  1 jffs2
+lzo_compress            5143  1 jffs2
 
-There is no DoC maintainer, you can consider yourself to be the
-maintainer, because you and Mike are the only people who care about this
-AFAICS.
 
---=20
-Best Regards,
-Artem Bityutskiy
+root@hbm-000c4e:/$uname -a
+Linux hbm-000c4e 3.4.0+ #10 PREEMPT Mon Jun 18 20:07:04 CEST 2012 ppc
+GNU/Linux
 
---=-YCXHW71VKs60BPr3Dmj+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+$ cat build/linux/.config | grep JFFS2
+CONFIG_JFFS2_FS=3Dm
+CONFIG_JFFS2_FS_DEBUG=3D0
+CONFIG_JFFS2_SUMMARY=3Dy
+CONFIG_JFFS2_COMPRESSION_OPTIONS=3Dy
+CONFIG_JFFS2_LZO=3Dy
+CONFIG_JFFS2_RTIME=3Dy
+CONFIG_JFFS2_CMODE_PRIORITY=3Dy
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+$ cat build/linux/.config | grep MTD
+CONFIG_MTD=3Dy
+CONFIG_MTD_OF_PARTS=3Dy
+CONFIG_MTD_CHAR=3Dy
+CONFIG_MTD_BLKDEVS=3Dy
+CONFIG_MTD_BLOCK=3Dy
+CONFIG_MTD_CFI=3Dy
+CONFIG_MTD_GEN_PROBE=3Dy
+CONFIG_MTD_MAP_BANK_WIDTH_1=3Dy
+CONFIG_MTD_MAP_BANK_WIDTH_2=3Dy
+CONFIG_MTD_MAP_BANK_WIDTH_4=3Dy
+CONFIG_MTD_CFI_I1=3Dy
+CONFIG_MTD_CFI_I2=3Dy
+CONFIG_MTD_CFI_INTELEXT=3Dy
+CONFIG_MTD_CFI_UTIL=3Dy
+CONFIG_MTD_PHYSMAP_OF=3Dy
+CONFIG_OF_MTD=3Dy
 
-iQIcBAABAgAGBQJP349gAAoJECmIfjd9wqK0rm4QALYrfSPP4WX4EtKwgrWUcDbO
-0oij6xTfP+npGv9sjssxA8uuDKmZ4fGLJ8i7IBDv+ldtvp5V9isnTeD0iKK1P2Iy
-dWeyJvNAsYSsqYJj/FnwAjX7dfb1/vCvjAYz4J7ObGBw7IodlNPxKu/+R3ix7qAg
-EznYIMIQ9YIyhD90TXgIvwiov1PrM+vw5rwDFAU7NgyurDTibH6snGYsKBfTR/Cm
-3RxPlutQMH/tgbgYsnuAEWAgGs/SujDM0E9+exJVsO9SWPXQ44T0T93x3qb7pGxV
-dZorZwYxZ2BRHvBYKVtC5dACxxH4gVdQWKbLbKrp1X/Bqe89YBNZRWQQxXIK2aEg
-oRcHa8u/hK4SQmGam4WzDxMoOphsY/L/EczcogRxrPlWpvzlcuYQoobXtnjh+Yf0
-tahL+GSz9o6FFjM83rHNvGMvC3aOAE3DRdaAjOIpbjC++D1oleTzRDcpCSoXyQ/I
-DTLMfK6xdpdtrr0M9XmWaQ1kDQYaEFzektsBFxDBKx1UYv6g0iTVztMYLP3xH962
-N8G2gnM7cy2olBFDMNMBdxN+NysHotCHbPhvf7HLd9NnTO26wKEtY08eSp3PHidR
-3O0HwsubzSgew0PzQIDcNcB/qeIj47ok3JOf95VLnfzf1XT16+Jt9VaFp9YAN2CX
-FALtMbivuCcmoHdvWUO/
-=bVWp
------END PGP SIGNATURE-----
 
---=-YCXHW71VKs60BPr3Dmj+--
+dmesg  output:
+[    0.476401] ff000000.flash: Found 1 x16 devices at 0x0 in 8-bit
+bank. Manufacturer ID 0x000089 Chip ID 0x000018
+[    0.486776] Intel/Sharp Extended Query Table at 0x0031
+[    0.492098] Intel/Sharp Extended Query Table at 0x0031
+[    0.497412] Using buffer write method
+[    0.501208] cfi_cmdset_0001: Erase suspend on write enabled
+[    0.506957] erase region 0: offset=3D0x0,size=3D0x20000,blocks=3D128
+[    0.508533] 8 ofpart partitions found on MTD device ff000000.flash
+[    0.514996] Creating 8 MTD partitions on "ff000000.flash":
+[    0.520718] 0x000000000000-0x000000200000 : "kernel"
+[    0.527869] 0x000000200000-0x000000600000 : "rootfs"
+[    0.535008] 0x000000600000-0x000000c00000 : "storage"
+[    0.542277] 0x000000c00000-0x000000f00000 : "parameter"
+[    0.549535] 0x000000f00000-0x000000f40000 : "uboot"
+[    0.556607] 0x000000f40000-0x000000f60000 : "ubootenv"
+..
+[    8.914470] jffs2: version 2.2. (SUMMARY)  =A9 2001-2006 Red Hat, Inc.
