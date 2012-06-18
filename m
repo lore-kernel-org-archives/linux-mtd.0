@@ -1,13 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sgefu-0000eF-Au
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 16:19:35 +0000
+ id 1Sgefv-0000eU-5G
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 16:19:36 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 08/22] Revert "UBI: Fastmap: Check for duplicated PEBs in
- add_aeb()"
-Date: Mon, 18 Jun 2012 18:18:51 +0200
-Message-Id: <1340036345-96726-9-git-send-email-richard@nod.at>
+Subject: [PATCH 09/22] UBI: Fastmap: Fix PEB count assert
+Date: Mon, 18 Jun 2012 18:18:52 +0200
+Message-Id: <1340036345-96726-10-git-send-email-richard@nod.at>
 In-Reply-To: <1340036345-96726-1-git-send-email-richard@nod.at>
 References: <1340036345-96726-1-git-send-email-richard@nod.at>
 Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -24,30 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This reverts commit 95bbb0d1b2ea86103edfdd4b07ddfb058b1e0eff.
-
-That check is no longer needed.
-It must not happen that fastmap creates duplicates.
+Use also the bad PEB count value, otherwise the assert will fail
+if the FLASH has bad blocks.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/wl.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index bc29835..caefcb3 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -54,10 +54,6 @@ static int add_aeb(struct ubi_attach_info *ai, struct list_head *list,
- {
- 	struct ubi_ainf_peb *aeb;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 4d9384b..58d74e4 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1728,9 +1728,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	dbg_wl("found %i PEBs", found_pebs);
  
--	list_for_each_entry(aeb, list, u.list)
--		if (aeb->pnum == pnum)
--			return 0;
--
- 	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
- 	if (!aeb)
- 		return -ENOMEM;
+ 	if (ubi->fm)
+-		ubi_assert(ubi->peb_count == found_pebs + ubi->fm->used_blocks);
++		ubi_assert(ubi->peb_count - ubi->bad_peb_count == \
++			   found_pebs + ubi->fm->used_blocks);
+ 	else
+-		ubi_assert(ubi->peb_count == found_pebs);
++		ubi_assert(ubi->peb_count - ubi->bad_peb_count == found_pebs);
+ 
+ 	if (ubi->avail_pebs < WL_RESERVED_PEBS) {
+ 		ubi_err("no enough physical eraseblocks (%d, need %d)",
 -- 
 1.7.6.5
