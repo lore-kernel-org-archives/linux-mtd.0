@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sgeg4-0000gx-Kh
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 16:19:46 +0000
+ id 1Sgeg5-0000hF-GS
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 16:19:47 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 20/22] UBI: Fastmap: Use good_peb_count in assert
-Date: Mon, 18 Jun 2012 18:19:03 +0200
-Message-Id: <1340036345-96726-21-git-send-email-richard@nod.at>
+Subject: [PATCH 21/22] UBI: Fastmap: Fix and explain duplicated PEBs
+Date: Mon, 18 Jun 2012 18:19:04 +0200
+Message-Id: <1340036345-96726-22-git-send-email-richard@nod.at>
 In-Reply-To: <1340036345-96726-1-git-send-email-richard@nod.at>
 References: <1340036345-96726-1-git-send-email-richard@nod.at>
 Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -25,25 +25,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/fastmap.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index e5ab683..f4d2c79 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1720,10 +1720,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	dbg_wl("found %i PEBs", found_pebs);
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index bea9446..45f70db 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -714,6 +714,15 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
  
- 	if (ubi->fm)
--		ubi_assert(ubi->peb_count - ubi->bad_peb_count == \
-+		ubi_assert(ubi->good_peb_count == \
- 			   found_pebs + ubi->fm->used_blocks);
- 	else
--		ubi_assert(ubi->peb_count - ubi->bad_peb_count == found_pebs);
-+		ubi_assert(ubi->good_peb_count == found_pebs);
++	/*
++	 * Sort out dups. We are allowed to have duplicates here because
++	 * the fastmap can be written without refilling all pools.
++	 * E.g. If PEB X is in a pool fastmap may detect it as empty and
++	 * puts it into the free list. But ff PEB X is in the pool, get's
++	 * used and returned (e.g. by schedule_erase()) it remains in
++	 * the erase or free list too.
++	 * We could also sort out these dups while creating the fastmap.
++	 */
+ 	if (list_empty(&free))
+ 		goto out;
  
- 	if (ubi->avail_pebs < WL_RESERVED_PEBS) {
- 		ubi_err("no enough physical eraseblocks (%d, need %d)",
+@@ -729,6 +738,18 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 		}
+ 	}
+ 
++	list_for_each_entry(aeb, &ai->erase, u.list) {
++		list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
++			if (aeb->pnum == tmp_aeb->pnum) {
++				aeb->scrub = tmp_aeb->scrub;
++				aeb->ec = tmp_aeb->ec;
++				list_del(&tmp_aeb->u.list);
++				kfree(tmp_aeb);
++				continue;
++			}
++		}
++	}
++
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+ 		list_del(&tmp_aeb->u.list);
+ 		list_add_tail(&tmp_aeb->u.list, &ai->free);
 -- 
 1.7.6.5
