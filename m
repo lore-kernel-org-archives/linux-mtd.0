@@ -1,21 +1,21 @@
-Received: from smtp2.altran.com ([194.98.79.76])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sgie3-0000UF-Nf
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:33:56 +0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-In-Reply-To: <1339073501.6875.104.camel@sauron.fi.intel.com>
-Content-class: urn:content-classes:message
-Subject: Re: UBI and volume checksum
-Date: Mon, 18 Jun 2012 22:22:52 +0200
-Message-ID: <0D6614B1791E3B4C86DD3784FCD9B20617B90149@XMB-TODC-23.altranit.corp.altran.com>
-References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
- <1339073501.6875.104.camel@sauron.fi.intel.com>
-From: "Giovanni Malfara'" <Giovanni.Malfara.ext@altran.it>
-To: <dedekind1@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+ id 1Sgip7-0001VX-2y
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2012 20:45:21 +0000
+Received: by bkwj4 with SMTP id j4so5102414bkw.36
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2012 13:45:19 -0700 (PDT)
+Message-ID: <1340052317.1971.14.camel@koala>
+Subject: Re: ubifs error : read_znode: bad indexing node
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Mon, 18 Jun 2012 23:45:17 +0300
+In-Reply-To: <4FD5F9D6.9020800@parrot.com>
+References: <4FD5F9D6.9020800@parrot.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-dUdVUu2HkwlmTYfsiJmx"
+Mime-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQotLS0tLUJFR0lOIFBHUCBTSUdORUQgTUVTU0FHRS0tLS0tDQpIYXNoOiBTSEExDQoNCk9uIDA2
-LzA3LzIwMTIgMDI6NTEgUE0sIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6DQo+IE9uIFRodSwgMjAx
-Mi0wNi0wNyBhdCAxNDoyMSArMDIwMCwgR2lvdmFubmkgTWFsZmFyYScgd3JvdGU6DQo+PiBIaSBh
-bGwsDQo+Pg0KPj4gSSBuZWVkIHRvIHZlcmlmeSB0aGF0IHRoZSBVQkkgaW1hZ2Ugb25jZSBpdCBo
-YXMgYmVlbiB3cml0dGVuIG9uIHRoZSBVQkkNCj4+IHZvbHVtZS4NCj4+IFNvIEkgdHJ5IHRvIGV4
-dHJhY3QgdGhlIGNvbnRlbnQgd2l0aCB0aGUgImRkIiB0b29sIGZyb20gdGhlIFVCSSBib2x1bWUN
-Cj4+IGFuZCBJIGNhbGN1bGF0ZSB0aGUgY2hlY2tzdW0gdG8gYmUgY29tcGFyZWQgd2l0aCB0aGUg
-b25lIG9mIHRoZSBvcmlnaW5hbA0KPj4gVUJJIGltYWdlLg0KPj4NCj4+IE15IHF1ZXN0aW9uIGlz
-OiBpcyBpdCBhbHdheXMgdHJ1ZT8gSWYgSSBleHRyYWN0IHRoZSBjb250ZW50IG9mIHRoZSBVQkkN
-Cj4+IHZvbHVtZSBhdCBhbnkgdGltZSAodGhlIGZpbGV5c3RlbSBpcyBtb3VudGVkIHJlYWQtb25s
-eSkgLCB3aWxsIHRoZQ0KPj4gY2hlY2tzdW0gYWx3YXlzIHRoZSBzYW1lPyBXaWxsIHRoZSBkYXRh
-IG1vdmUgZnJvbSBhIFBFQiB0aGF0IGhhcw0KPj4gYml0LWZsaXBzIHRvIGEgbmV3IG9uZSBjYXVz
-ZSBhIGRpZmZlcmVuY2UgaW4gY2hlY2tzdW0/DQo+DQo+IFllcywgaWYgeW91IHJlYWQgdGhlIFVC
-SSB2b2x1bWUgKC9kZXYvdWJpWF9ZKSwgYW5kIGl0IGlzIFIvTywgdGhlIENSQw0KPiBzaG91bGQg
-YmUgdGhlIHNhbWUgYWxsIHRoZSB0aW1lLg0KPg0KSEksDQoNCklmIEkgdHJ5IHRvIHJlYWQgYmFj
-ayBmcm9tIHRoZSB2b2x1bWUgKHVzaW5nICJkZCIpIGFmdGVyIEkgd3JpdGUgdGhlDQpOQU5EIEZs
-YXNoICh1c2luZyAidWJpcHVkYXRldm9sIikgSSBnZXQgYSBkaWZmZXJlbnQgdmFsdWUgY29tcGFy
-ZWQgdG8NCnRoZSBDUkMgb2YgdGhlIGltYWdlIGZpbGUgZm9yIHRoZSBDUkMgb2YgdGhlIHZvbHVt
-ZSBjb250ZW50IGlmIHRoZXJlIGFyZQ0Kc29tZSBiYWQgYmxvY2tzLg0KRG8gSSBoYXZlIHRvIHVz
-ZSBhbm90aGVyIHRvb2wgKGUuZy4gbmFuZGR1bXApPw0KDQpUaGFua3MgaW4gYWR2YW5jZSwNCkdp
-b3Zhbm5pDQoNCi0gLS0gDQpHaW92YW5uaSBNYWxmYXLDoA0KLS0tLS1CRUdJTiBQR1AgU0lHTkFU
-VVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjQuMTEgKEdOVS9MaW51eCkNCkNvbW1lbnQ6IFVz
-aW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9lbmlnbWFpbC5tb3pkZXYub3JnLw0KDQpp
-UUVjQkFFQkFnQUdCUUpQMzQ0Y0FBb0pFRzRUY1Jqc3ZXL0tRaG9JQU5FVVhnRVp2V2QzWDFlQjkw
-OGxxa05ODQpjam1hTDhBU0k2OUN5bkcxSTQwRzYwZ2NhWVk3Y2VWeVlzakxzNlVRdjEyY2tKSUZv
-SzNXaTlESi9xZXR3TGJ2DQp0QzRZUXU1STBKeGY3SU9wU1RYNkZDcVg2NmJBZVJaWVRrdnZ4YW10
-M0dPVjQrZnlmMFQ2UzZpdGNUakJXRURzDQpaM1U4MnF2eERUV253QitFTy9TUG1qQkdLc1BmUDdE
-TkdXZnY2aDdvUDA4VnZna0thR1pzc1ZadFp0RjlDd3lKDQpDSWZ0NzZkRDh2SWF4WjJOL0wyV1lW
-UmhraWxWUjVPNncrRFdGWTdIdVN4OGFlVjQwSENsaXpGbUJmQTRDWWFFDQpaeC9zYVEyUUxET09F
-MGY5UnZGSnFiWXhiTzZIMlZ6RXR1aHNCYWZwNWlRYUl0WjNPbFVLVStFTWIrOVh6UGs9DQo9U09p
-Sg0KLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tDQo=
+
+--=-dUdVUu2HkwlmTYfsiJmx
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, 2012-06-11 at 15:59 +0200, Matthieu CASTET wrote:
+> we have products where rw ubifs partition are corrupted.
+> They all failed with the "read_znode: bad indexing node at LEB 558:22056,=
+ error
+> 6" or "read_znode: bad indexing node at LEB 446:62888, error 2".
+
+So we read the indexing node, and its CRC is correct, but then we
+validate it by checking that various fields are withing possible limits,
+and we see that there is some garbage.
+
+This smells more like memory corruption somewhere - we write garbage or
+corrupted buffers to the media.
+
+I guess it would be a good improvement to UBIFS if we validated when we
+write, not only read, then we could catch issues earlier.
+
+> The last ubifs stable commit we have is
+> http://git.infradead.org/users/dedekind/ubifs-v2.6.32.git/commit/7eb3b6c0=
+999bd2cbc37adb2bd0fb8127f98240ea
+
+Does not look like something which could cause those errors. Is that
+problem reproducible? Only on these devices or on other too?
+
+
+> Do you know if the bug is known ?
+> Google doesn't provide any info on this and looking at ubifs new commits =
+don't
+> provide explicit bug fix.
+
+No, this is the first time I see such a problem.
+
+> Are there any document that explain how znode works ?
+
+Well, Adrian's PDF file may give some insight. znode is just an in-RAM
+representation of an indexing node on the flash.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-dUdVUu2HkwlmTYfsiJmx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP35NdAAoJECmIfjd9wqK05wgQAL8dDyVA3Mm0IWZNqvK/TDia
+YQ2oq2hE4UWvH2j41VPIvYtkYzSyFXyU+vGPKVYyVhNXwcdhdwhvLbHvSObJDoGu
+OuLxfnoA01cAMNihIx25D0ONdDNsVoggorZT1Rq8tL7Qw/CUUoXKGlocRfJ84wDk
+o07tTILM37y2QCf4mlFQwgYdgP2OUnKWgPxMjKH9x6yU5n65i5pT51PG6yviIUNR
+nRO3nqGMInWDLRE6GMwCcD73QNNaObvEm7alTWx4RrG/ix9C1ZeSHbl4TV4FNFP4
+mdN28QVoootARYPBBSvs8Z4rdFJ4nEL2V/8sXA35ThJVb4KEHQQBHYuTF+hSYa9I
+gIs4hIjlCBPnWgM5rfrcanmcPlXgtABMfDHxiWSttD3qJfoEx1cSZSsrS7bHUfn3
+DgHjbdFDygPGE205aApXuX9CLAZk5O3yLkhqpnPlyXsZ1ttILS2DCf2zC64WaOti
+H+h+illhWMWiHW4pbFL47cD8NJOMn2uBnnIoafAhoSqmYOfq1IBTIAET47vltxvW
+Zt4vA/Tf9/V6giiEq4lrd87FqFo4dOgak5OyLWZXtxYKxhWLem9JlFSFWd7t21Bf
+Jsj3IW8gOGnsCPQaA/6gsoBoRIRcq5f4jHZt3xJzFEaioUXcn51nBYYZHqLwYk6g
+FRFJNITiSRti4iznUGTh
+=HkRw
+-----END PGP SIGNATURE-----
+
+--=-dUdVUu2HkwlmTYfsiJmx--
