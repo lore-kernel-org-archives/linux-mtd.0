@@ -1,17 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sh10j-0006uF-Hi
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2012 16:10:34 +0000
-Message-ID: <1340122445.13910.55.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: m25p80: Add support for m25pe20
+ id 1Sh11y-0006wW-2g
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2012 16:11:51 +0000
+Message-ID: <1340122458.13910.56.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: Add support for n25q064
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-Date: Tue, 19 Jun 2012 19:14:05 +0300
-In-Reply-To: <1339530160-23579-1-git-send-email-aletes.xgr@gmail.com>
-References: <1339530160-23579-1-git-send-email-aletes.xgr@gmail.com>
+Date: Tue, 19 Jun 2012 19:14:18 +0300
+In-Reply-To: <1339530915-24799-1-git-send-email-aletes.xgr@gmail.com>
+References: <1339530915-24799-1-git-send-email-aletes.xgr@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ZlEtgt3wp3/Fr/4Ewq5Y"
+ boundary="=-AGRRS4lK0fFEZGZsuMl5"
 Mime-Version: 1.0
 Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
  linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
@@ -27,11 +27,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ZlEtgt3wp3/Fr/4Ewq5Y
+--=-AGRRS4lK0fFEZGZsuMl5
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-06-12 at 16:42 -0300, Alexandre Pereira da Silva wrote:
+On Tue, 2012-06-12 at 16:55 -0300, Alexandre Pereira da Silva wrote:
 > Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
@@ -40,7 +40,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-ZlEtgt3wp3/Fr/4Ewq5Y
+--=-AGRRS4lK0fFEZGZsuMl5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -48,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP4KVNAAoJECmIfjd9wqK0GxQP/AtmKu9ukRR8GggDxO/XWGtE
-EpyYDzP0B3/vHIqolVD0/QubVt7GFvsTUKDHXeUt2L0H95jqqCenQtA4HqizyviC
-OWVI70Rs6TS1W+s0Pae3HkVZcnHSH03y97TGe9IEaI+o2VyBSewbU/6oUBVgZAk/
-K+H1Y+LAk78ZowEBKwVxLvw1d/enhg+bT2Xrf70F/o3gjoOov3g+7jEwzNlRp0tz
-z4BySrUmIpo4ddjtuEF3vBetSq3tJDW+AsWchMYNSAX9OD+YA3rTE2Vl0nmDzYag
-TAzBZGmute+nyr7L92xYHRUBgFyE7ZZc1+49zfhwz1OmCrN0oARaSsqIgHzXHHwY
-VXaghM/tXnv1m7iRNhMFrNY2jlPIJ+mDOkbbtz1MwCEL9EM+Ujh+75nH2VQsmbF8
-shomPxUqxzrmtfbeg7YbTW9tSI/CxUgSPWLj4jauq3QuX9KhgMQCYRrz6hv0ni8X
-hrLzvoQreH7WOewdFpYVB1myZHOYYTUjXcQ5VjIWjbNApq29g1nVcNwVDLeeHVwx
-AgYXr97ZKypJ4/gtAYswJCFN5nZOs2oOquh+ETrQBS7P5l7pEPvtf+W5ndOm79K5
-nYgAgmWZp5QAaoCVnteIS/PFYI8MNleAebcmu46QWnh1rd+XEXVHcH+XA4LIiGFR
-MktDNYGnJptTK2sTUxPO
-=BGTN
+iQIbBAABAgAGBQJP4KVaAAoJECmIfjd9wqK0hdoP+La/BHtfDMBNlDQRtYIWVI+q
+2o+602JPXso4npFIk0na0W2qgli4O18LCKnm9nELdh4F0gbl44LMbgkl5DT5zpkp
+m0VZlIrnXwXyHknqmYmaI3zYAL77l3UeNk3Xv92E9uoG9RWcxiG2hT5zLy4IY+e+
+W2ono30eytzA8Dk3tTvSIpKvYZTCSCumSsQIO1cSJT0rMWsQmfJg8UJF670A1ZHt
+tTPbGthpwymj/lA9oleHABDTL5PlhofuPScuvvfl+7Pd9QwHTlMRKHw/EV+MJsuZ
+JMBt/pN6gn+3q+0gWsvB4/XhIKvwx8aDrfBwjN1MUZt5ekAtCDfGeR/vE9AUSoOL
+vV6Jn3353Gc/2kYGlZa39l2ZgwGtb1ocwRt7Dl2ufaGy6h+QXj0DPqDYn6sfyB7Q
+AOmZ94bfn6o+SS5iqyHYxQoXQtN13l/vP6mBU7nddWAuoG+ex5uTk1I7MUnixEql
+xOOPA3MmtRZK+JQywHVt8vP1XZieQ/NRn+stifkbFvuF1JpAeQ1+HJ6dbtmPDugG
++KnZ5YDeN7rg41tO7mpkaGB4tGprHv7K88Js6/0iDS/8yiMUI3yDhSE3Q6wD7b5m
+WsElmHO9ndUIR/Nq4EDZnv4TzJzPR7aDka5UkEOaMN1OTdTEoH/GdqPPkrxvfUKx
+0azFo4p6asIg1it1lu4=
+=6pki
 -----END PGP SIGNATURE-----
 
---=-ZlEtgt3wp3/Fr/4Ewq5Y--
+--=-AGRRS4lK0fFEZGZsuMl5--
