@@ -1,16 +1,22 @@
-Received: from cpsmtpb-ews07.kpnxchange.com ([213.75.39.10])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SgwzK-00021X-DI
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2012 11:52:51 +0000
-Message-ID: <1340106762.1936.25.camel@x61.thuisdomein>
-Subject: [PATCH] mtd: chips: reorganize Kconfig help on swapping
-From: Paul Bolle <pebolle@tiscali.nl>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 19 Jun 2012 13:52:42 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ id 1Sh10j-0006uF-Hi
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2012 16:10:34 +0000
+Message-ID: <1340122445.13910.55.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: Add support for m25pe20
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+Date: Tue, 19 Jun 2012 19:14:05 +0300
+In-Reply-To: <1339530160-23579-1-git-send-email-aletes.xgr@gmail.com>
+References: <1339530160-23579-1-git-send-email-aletes.xgr@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-ZlEtgt3wp3/Fr/4Ewq5Y"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Kconfig help on "Flash cmd/query data swapping" still mentions
-LART_ENDIAN_BYTE. That option used to be relevant for setting
-CONFIG_MTD_CFI_LART_BIT_SWAP. That option and macro got both removed in
-v2.4.11-pre4. So, although LART endianness sounds intriguing, that part
-of the help text can be removed.
 
-And, while we're touching this choice, move the help text up one level.
-Currently it's available under the "NO" option, while it's relevant for
-all three options.
+--=-ZlEtgt3wp3/Fr/4Ewq5Y
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
-0) Tested only with "make menuconfig".
+On Tue, 2012-06-12 at 16:42 -0300, Alexandre Pereira da Silva wrote:
+> Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
 
-1) Triggers a checkpatch warning: "please write a paragraph that
-describes the config symbol fully". That's a bit of a false positive
-here (also see the comment starting at line 1708 in checkpatch.pl).
+Pushed to l2-mtd.git, thanks!
 
- drivers/mtd/chips/Kconfig |   11 ++---------
- 1 files changed, 2 insertions(+), 9 deletions(-)
+--=20
+Best Regards,
+Artem Bityutskiy
 
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index b1e3c26..e469b01 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -43,9 +43,6 @@ choice
- 	prompt "Flash cmd/query data swapping"
- 	depends on MTD_CFI_ADV_OPTIONS
- 	default MTD_CFI_NOSWAP
--
--config MTD_CFI_NOSWAP
--	bool "NO"
- 	---help---
- 	  This option defines the way in which the CPU attempts to arrange
- 	  data bits when writing the 'magic' commands to the chips. Saying
-@@ -55,12 +52,8 @@ config MTD_CFI_NOSWAP
- 	  Specific arrangements are possible with the BIG_ENDIAN_BYTE and
- 	  LITTLE_ENDIAN_BYTE, if the bytes are reversed.
- 
--	  If you have a LART, on which the data (and address) lines were
--	  connected in a fashion which ensured that the nets were as short
--	  as possible, resulting in a bit-shuffling which seems utterly
--	  random to the untrained eye, you need the LART_ENDIAN_BYTE option.
--
--	  Yes, there really exists something sicker than PDP-endian :)
-+config MTD_CFI_NOSWAP
-+	bool "NO"
- 
- config MTD_CFI_BE_BYTE_SWAP
- 	bool "BIG_ENDIAN_BYTE"
--- 
-1.7.7.6
+--=-ZlEtgt3wp3/Fr/4Ewq5Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP4KVNAAoJECmIfjd9wqK0GxQP/AtmKu9ukRR8GggDxO/XWGtE
+EpyYDzP0B3/vHIqolVD0/QubVt7GFvsTUKDHXeUt2L0H95jqqCenQtA4HqizyviC
+OWVI70Rs6TS1W+s0Pae3HkVZcnHSH03y97TGe9IEaI+o2VyBSewbU/6oUBVgZAk/
+K+H1Y+LAk78ZowEBKwVxLvw1d/enhg+bT2Xrf70F/o3gjoOov3g+7jEwzNlRp0tz
+z4BySrUmIpo4ddjtuEF3vBetSq3tJDW+AsWchMYNSAX9OD+YA3rTE2Vl0nmDzYag
+TAzBZGmute+nyr7L92xYHRUBgFyE7ZZc1+49zfhwz1OmCrN0oARaSsqIgHzXHHwY
+VXaghM/tXnv1m7iRNhMFrNY2jlPIJ+mDOkbbtz1MwCEL9EM+Ujh+75nH2VQsmbF8
+shomPxUqxzrmtfbeg7YbTW9tSI/CxUgSPWLj4jauq3QuX9KhgMQCYRrz6hv0ni8X
+hrLzvoQreH7WOewdFpYVB1myZHOYYTUjXcQ5VjIWjbNApq29g1nVcNwVDLeeHVwx
+AgYXr97ZKypJ4/gtAYswJCFN5nZOs2oOquh+ETrQBS7P5l7pEPvtf+W5ndOm79K5
+nYgAgmWZp5QAaoCVnteIS/PFYI8MNleAebcmu46QWnh1rd+XEXVHcH+XA4LIiGFR
+MktDNYGnJptTK2sTUxPO
+=BGTN
+-----END PGP SIGNATURE-----
+
+--=-ZlEtgt3wp3/Fr/4Ewq5Y--
