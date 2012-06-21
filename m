@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ShpGh-0001iT-V9
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:27 +0000
+ id 1ShpGi-0001iX-Dh
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:28 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 01/15] UBI: Fastmap: Relax EBA selfcheck
-Date: Thu, 21 Jun 2012 23:49:54 +0200
-Message-Id: <1340315408-27375-2-git-send-email-richard@nod.at>
+Subject: [PATCH 05/15] UBI: Fastmap: Amend locking
+Date: Thu, 21 Jun 2012 23:49:58 +0200
+Message-Id: <1340315408-27375-6-git-send-email-richard@nod.at>
 In-Reply-To: <1340315408-27375-1-git-send-email-richard@nod.at>
 References: <UBI fastmap updates>
  <1340315408-27375-1-git-send-email-richard@nod.at>
@@ -24,36 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is allowed that fastmap knows an EBA table entry
-as unmapped while scanning would know this entry as
-mapped.
-Fastmap knows the current EBA table and scannning
-reconstructs it. This case can happen if the fastmap
-gets written while the entry is alredy unmapped but the
-PEB has not been erased.
-If the UBI device gets detached at this moment, scanning
-may detect this EBA entry as mapped.
-(Of course the upper layer, UBIFS, knows this LEB is no longer
-used)
+__ubi_wl_get_peb() gets called under wl_lock.
+So need to grab it again.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/eba.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ drivers/mtd/ubi/wl.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 2bee8be..6698d5e 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1276,7 +1276,8 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index ec0a954..e014f7e 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -255,7 +255,6 @@ static int produce_free_peb(struct ubi_device *ubi)
+ {
+ 	int err;
  
- 		for (j = 0; j < vol->reserved_pebs; j++) {
- 			if (scan_eba[i][j] != fm_eba[i][j]) {
--				if (scan_eba[i][j] == UBI_LEB_UNMAPPED)
-+				if (scan_eba[i][j] == UBI_LEB_UNMAPPED ||
-+					fm_eba[i][j] == UBI_LEB_UNMAPPED)
- 					continue;
+-	spin_lock(&ubi->wl_lock);
+ 	while (!ubi->free.rb_node) {
+ 		spin_unlock(&ubi->wl_lock);
  
- 				ubi_err("LEB:%i is mapped to PEB:%i instead of PEB:%i!", i, fm_eba[i][j], scan_eba[i][j]);
+@@ -266,7 +265,6 @@ static int produce_free_peb(struct ubi_device *ubi)
+ 
+ 		spin_lock(&ubi->wl_lock);
+ 	}
+-	spin_unlock(&ubi->wl_lock);
+ 
+ 	return 0;
+ }
+@@ -460,7 +458,6 @@ static int __ubi_wl_get_peb(struct ubi_device *ubi)
+ 	struct ubi_wl_entry *e;
+ 
+ retry:
+-	spin_lock(&ubi->wl_lock);
+ 	if (!ubi->free.rb_node) {
+ 		if (ubi->works_count == 0) {
+ 			ubi_assert(list_empty(&ubi->works));
+@@ -468,7 +465,6 @@ retry:
+ 			spin_unlock(&ubi->wl_lock);
+ 			return -ENOSPC;
+ 		}
+-		spin_unlock(&ubi->wl_lock);
+ 
+ 		err = produce_free_peb(ubi);
+ 		if (err < 0)
+@@ -486,7 +482,6 @@ retry:
+ 	 */
+ 	rb_erase(&e->u.rb, &ubi->free);
+ 	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
+-	spin_unlock(&ubi->wl_lock);
+ 
+ 	err = ubi_self_check_all_ff(ubi, e->pnum, ubi->vid_hdr_aloffset,
+ 				    ubi->peb_size - ubi->vid_hdr_aloffset);
 -- 
 1.7.6.5
