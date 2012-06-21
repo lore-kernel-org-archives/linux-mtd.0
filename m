@@ -1,22 +1,13 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ShpKb-0003jk-1i
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:54:25 +0000
-Received: by lbbgg6 with SMTP id gg6so2737919lbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2012 14:54:22 -0700 (PDT)
+Message-ID: <4FE39F19.9090105@grid-net.com>
+Date: Thu, 21 Jun 2012 15:24:25 -0700
+From: Subodh Nijsure <snijsure@grid-net.com>
 MIME-Version: 1.0
-Date: Thu, 21 Jun 2012 23:54:21 +0200
-Message-ID: <CAFLxGvyvbr1pTP9Qy+bJhLXnm3OkutqW0QGf8fRi6Dj4-_qUnw@mail.gmail.com>
-Subject: UBI fastmap updates (was: no subject)
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
- adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
- thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
- shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
- tim.bird@am.sony.com
+To: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: GPMI NAND on MX28 with DT.with
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>, mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +17,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 21, 2012 at 11:49 PM, Richard Weinberger <richard@nod.at> wrote=
-:
-> This is the next round of UBI fastmap updates.
->
-> The highlights are:
-> =A0 =A0 =A0 =A0- New self checks and a better fall back to scanning mecha=
-nism
-> =A0 =A0 =A0 =A0- The attaching by fastmap code got simplified
-> =A0 =A0 =A0 =A0- invalidate_fastmap() now really invalidates the fastmap =
-B-)
-> =A0 =A0 =A0 =A0- Minor fixes
->
-> If you want to test fastmap you can use my git repo:
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v12
+Has anyone gotten the latest GPMI NAND patches for MX28 with device-tree 
+to work?
 
-Sorry, I've killed the subject line. :-\
+I came across this thread where Huang Shijie reported that it has some 
+issues with ECC.
 
---=20
-Thanks,
-//richard
+Our attempt to attach fail as shown below, anybody else encountered 
+these errors?
+
+cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00a00000 00020000 "boot"
+mtd1: 0f200000 00020000 "data"
+mtd2: 00400000 00020000 "boot-config"
+
+ubiformat /dev/mtd1
+ubiformat: mtd1 (nand), size 253755392 bytes (242.0 MiB), 1936 
+eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 1935 -- 100 % complete
+ubiformat: 1933 eraseblocks have valid erase counter, mean value is 3
+ubiformat: 3 bad eraseblocks found, numbers: 264, 468, 1593
+ubiformat: formatting eraseblock 1935 -- 100 % complete
+/ # ubiattach /dev/ubi_ctrl -m 1
+[  185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd5, 
+not 0x000000
+[  185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd5, 
+not 0x000000
+[  185.560000] UBI error: process_lvol: both volume tables are corrupted
+[  185.560000] UBI error: ubi_attach_mtd_dev: failed to attach mtd1, 
+error -22
+ubiattach: error!: cannot attach mtd1
+            error 22 (Invalid argument)
+
+
+-Subodh Nijsure
