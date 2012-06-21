@@ -1,13 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ShpGk-0001jX-CT
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:31 +0000
+ id 1ShpGm-0001jz-FF
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:32 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/15] UBI: Fastmap: Add a workqueue to allow delayed fastmap
- update
-Date: Thu, 21 Jun 2012 23:50:00 +0200
-Message-Id: <1340315408-27375-8-git-send-email-richard@nod.at>
+Subject: [PATCH 09/15] UBI: Fastmap: Simplify attach by fastmap
+Date: Thu, 21 Jun 2012 23:50:02 +0200
+Message-Id: <1340315408-27375-10-git-send-email-richard@nod.at>
 In-Reply-To: <1340315408-27375-1-git-send-email-richard@nod.at>
 References: <UBI fastmap updates>
  <1340315408-27375-1-git-send-email-richard@nod.at>
@@ -25,72 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+No need to check for this corner cases anymore.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi.h |    2 ++
- drivers/mtd/ubi/wl.c  |   16 ++++++++++++++++
- 2 files changed, 18 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/fastmap.c |   43 -------------------------------------------
+ 1 files changed, 0 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index a0c2103..7e0dfda 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -385,6 +385,7 @@ struct ubi_wl_entry;
-  * @fm_pool_mutex: serializes ubi_wl_get_peb()
-  * @fm_mutex: serializes ubi_update_fastmap()
-  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
-+ * @fm_work: fastmap work queue
-  * @attached_by_scanning: this UBI device was attached by the old scanning
-  *			  methold. All fastmap volumes have to be deleted.
-  *
-@@ -486,6 +487,7 @@ struct ubi_device {
- 	struct rw_semaphore fm_sem;
- 	struct mutex fm_mutex;
- 	struct mutex fm_pool_mutex;
-+	struct work_struct fm_work;
- 	int attached_by_scanning;
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index ba69267..da303b6 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -707,49 +707,6 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	if (max_sqnum > ai->max_sqnum)
+ 		ai->max_sqnum = max_sqnum;
  
- 	/* Wear-leveling sub-system's stuff */
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 7520319..6f346f5 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -140,6 +140,17 @@ static int self_check_in_wl_tree(const struct ubi_device *ubi,
- 				 struct ubi_wl_entry *e, struct rb_root *root);
- static int self_check_in_pq(const struct ubi_device *ubi,
- 			    struct ubi_wl_entry *e);
-+
-+/**
-+ * update_fastmap_work_fn - calls ubi_update_fastmap from a work queue
-+ * @wrk: the work description object
-+ */
-+static void update_fastmap_work_fn(struct work_struct *wrk)
-+{
-+	struct ubi_device *ubi = container_of(wrk, struct ubi_device, fm_work);
-+	ubi_update_fastmap(ubi);
-+}
-+
- /**
-  *  ubi_ubi_is_fm_block - returns 1 if a PEB is currently used in a fastmap.
-  *  @ubi: UBI device description object
-@@ -604,6 +615,10 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- 	int pnum;
- 
- 	if (pool->used == pool->size || !pool->size) {
-+		/* We cannot update the fastmap here because this
-+		 * function is called in atomic context.
-+		 * Let's fail an refill/update it as soon as possible. */
-+		schedule_work(&ubi->fm_work);
- 		return NULL;
- 	} else {
- 		pnum = pool->pebs[pool->used++];
-@@ -1671,6 +1686,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	init_rwsem(&ubi->work_sem);
- 	ubi->max_ec = ai->max_ec;
- 	INIT_LIST_HEAD(&ubi->works);
-+	INIT_WORK(&ubi->fm_work, update_fastmap_work_fn);
- 
- 	sprintf(ubi->bgt_name, UBI_BGT_NAME_PATTERN, ubi->ubi_num);
- 
+-	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
+-		list_del(&tmp_aeb->u.list);
+-		ubi_msg("moving PEB from used to erase: %i", tmp_aeb->pnum);
+-		add_aeb(ai, &ai->erase, tmp_aeb->pnum, tmp_aeb->ec, 0);
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+-	}
+-
+-	/*
+-	 * Sort out dups. We are allowed to have duplicates here because
+-	 * the fastmap can be written without refilling all pools.
+-	 * E.g. If PEB X is in a pool fastmap may detect it as empty and
+-	 * puts it into the free list. But ff PEB X is in the pool, get's
+-	 * used and returned (e.g. by schedule_erase()) it remains in
+-	 * the erase or free list too.
+-	 * We could also sort out these dups while creating the fastmap.
+-	 */
+-	if (list_empty(&free))
+-		goto out;
+-
+-	list_for_each_entry(aeb, &ai->free, u.list) {
+-		list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+-			if (aeb->pnum == tmp_aeb->pnum) {
+-				aeb->scrub = tmp_aeb->scrub;
+-				aeb->ec = tmp_aeb->ec;
+-				list_del(&tmp_aeb->u.list);
+-				kfree(tmp_aeb);
+-				continue;
+-			}
+-		}
+-	}
+-
+-	list_for_each_entry(aeb, &ai->erase, u.list) {
+-		list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+-			if (aeb->pnum == tmp_aeb->pnum) {
+-				aeb->scrub = tmp_aeb->scrub;
+-				aeb->ec = tmp_aeb->ec;
+-				list_del(&tmp_aeb->u.list);
+-				kfree(tmp_aeb);
+-				continue;
+-			}
+-		}
+-	}
+-
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+ 		list_del(&tmp_aeb->u.list);
+ 		list_add_tail(&tmp_aeb->u.list, &ai->free);
 -- 
 1.7.6.5
