@@ -1,12 +1,13 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ShpGi-0001iX-Dh
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:28 +0000
+ id 1ShpGk-0001jX-CT
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:31 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 05/15] UBI: Fastmap: Amend locking
-Date: Thu, 21 Jun 2012 23:49:58 +0200
-Message-Id: <1340315408-27375-6-git-send-email-richard@nod.at>
+Subject: [PATCH 07/15] UBI: Fastmap: Add a workqueue to allow delayed fastmap
+ update
+Date: Thu, 21 Jun 2012 23:50:00 +0200
+Message-Id: <1340315408-27375-8-git-send-email-richard@nod.at>
 In-Reply-To: <1340315408-27375-1-git-send-email-richard@nod.at>
 References: <UBI fastmap updates>
  <1340315408-27375-1-git-send-email-richard@nod.at>
@@ -24,57 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-__ubi_wl_get_peb() gets called under wl_lock.
-So need to grab it again.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c |    5 -----
- 1 files changed, 0 insertions(+), 5 deletions(-)
+ drivers/mtd/ubi/ubi.h |    2 ++
+ drivers/mtd/ubi/wl.c  |   16 ++++++++++++++++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a0c2103..7e0dfda 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -385,6 +385,7 @@ struct ubi_wl_entry;
+  * @fm_pool_mutex: serializes ubi_wl_get_peb()
+  * @fm_mutex: serializes ubi_update_fastmap()
+  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
++ * @fm_work: fastmap work queue
+  * @attached_by_scanning: this UBI device was attached by the old scanning
+  *			  methold. All fastmap volumes have to be deleted.
+  *
+@@ -486,6 +487,7 @@ struct ubi_device {
+ 	struct rw_semaphore fm_sem;
+ 	struct mutex fm_mutex;
+ 	struct mutex fm_pool_mutex;
++	struct work_struct fm_work;
+ 	int attached_by_scanning;
+ 
+ 	/* Wear-leveling sub-system's stuff */
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index ec0a954..e014f7e 100644
+index 7520319..6f346f5 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -255,7 +255,6 @@ static int produce_free_peb(struct ubi_device *ubi)
- {
- 	int err;
+@@ -140,6 +140,17 @@ static int self_check_in_wl_tree(const struct ubi_device *ubi,
+ 				 struct ubi_wl_entry *e, struct rb_root *root);
+ static int self_check_in_pq(const struct ubi_device *ubi,
+ 			    struct ubi_wl_entry *e);
++
++/**
++ * update_fastmap_work_fn - calls ubi_update_fastmap from a work queue
++ * @wrk: the work description object
++ */
++static void update_fastmap_work_fn(struct work_struct *wrk)
++{
++	struct ubi_device *ubi = container_of(wrk, struct ubi_device, fm_work);
++	ubi_update_fastmap(ubi);
++}
++
+ /**
+  *  ubi_ubi_is_fm_block - returns 1 if a PEB is currently used in a fastmap.
+  *  @ubi: UBI device description object
+@@ -604,6 +615,10 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
+ 	int pnum;
  
--	spin_lock(&ubi->wl_lock);
- 	while (!ubi->free.rb_node) {
- 		spin_unlock(&ubi->wl_lock);
+ 	if (pool->used == pool->size || !pool->size) {
++		/* We cannot update the fastmap here because this
++		 * function is called in atomic context.
++		 * Let's fail an refill/update it as soon as possible. */
++		schedule_work(&ubi->fm_work);
+ 		return NULL;
+ 	} else {
+ 		pnum = pool->pebs[pool->used++];
+@@ -1671,6 +1686,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	init_rwsem(&ubi->work_sem);
+ 	ubi->max_ec = ai->max_ec;
+ 	INIT_LIST_HEAD(&ubi->works);
++	INIT_WORK(&ubi->fm_work, update_fastmap_work_fn);
  
-@@ -266,7 +265,6 @@ static int produce_free_peb(struct ubi_device *ubi)
+ 	sprintf(ubi->bgt_name, UBI_BGT_NAME_PATTERN, ubi->ubi_num);
  
- 		spin_lock(&ubi->wl_lock);
- 	}
--	spin_unlock(&ubi->wl_lock);
- 
- 	return 0;
- }
-@@ -460,7 +458,6 @@ static int __ubi_wl_get_peb(struct ubi_device *ubi)
- 	struct ubi_wl_entry *e;
- 
- retry:
--	spin_lock(&ubi->wl_lock);
- 	if (!ubi->free.rb_node) {
- 		if (ubi->works_count == 0) {
- 			ubi_assert(list_empty(&ubi->works));
-@@ -468,7 +465,6 @@ retry:
- 			spin_unlock(&ubi->wl_lock);
- 			return -ENOSPC;
- 		}
--		spin_unlock(&ubi->wl_lock);
- 
- 		err = produce_free_peb(ubi);
- 		if (err < 0)
-@@ -486,7 +482,6 @@ retry:
- 	 */
- 	rb_erase(&e->u.rb, &ubi->free);
- 	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
--	spin_unlock(&ubi->wl_lock);
- 
- 	err = ubi_self_check_all_ff(ubi, e->pnum, ubi->vid_hdr_aloffset,
- 				    ubi->peb_size - ubi->vid_hdr_aloffset);
 -- 
 1.7.6.5
