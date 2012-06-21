@@ -1,13 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1ShpGj-0001j5-DJ
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:33 +0000
+ id 1ShpGr-0001km-5G
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2012 21:50:35 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/15] UBI: Fastmap: Call ensure_wear_leveling() again in
- erase_worker()
-Date: Thu, 21 Jun 2012 23:49:59 +0200
-Message-Id: <1340315408-27375-7-git-send-email-richard@nod.at>
+Subject: [PATCH 13/15] UBI: Fastmap: Add new self check
+Date: Thu, 21 Jun 2012 23:50:06 +0200
+Message-Id: <1340315408-27375-14-git-send-email-richard@nod.at>
 In-Reply-To: <1340315408-27375-1-git-send-email-richard@nod.at>
 References: <UBI fastmap updates>
  <1340315408-27375-1-git-send-email-richard@nod.at>
@@ -25,108 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This call to ensure_wear_leveling() has been removed because of a restriction
-in fastmap.
-It's no loner valid, now we can call it again.
+If fastmap is able to detect that it's missing PEBs
+fall back to scanning mode and print a fat warning.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c |   35 +++++++++++++++++++++++++++--------
- 1 files changed, 27 insertions(+), 8 deletions(-)
+ drivers/mtd/ubi/fastmap.c |   33 +++++++++++++++++++++++++++++++++
+ 1 files changed, 33 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index e014f7e..7520319 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -741,16 +741,15 @@ repeat:
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 76b0d2f..68be3d5 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -461,6 +461,26 @@ out:
+ 	return ret;
  }
  
- /**
-- * schedule_ubi_work - schedule a work.
-+ * __schedule_ubi_work - schedule a work.
-  * @ubi: UBI device description object
-  * @wrk: the work to schedule
-  *
-  * This function adds a work defined by @wrk to the tail of the pending works
-- * list.
-+ * list. Can only be used of ubi->work_sem is already held in read mode!
-  */
--static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- {
--	down_read(&ubi->work_sem);
- 	spin_lock(&ubi->wl_lock);
- 	list_add_tail(&wrk->list, &ubi->works);
- 	ubi_assert(ubi->works_count >= 0);
-@@ -758,6 +757,20 @@ static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- 	if (ubi->thread_enabled && !ubi_dbg_is_bgt_disabled(ubi))
- 		wake_up_process(ubi->bgt_thread);
- 	spin_unlock(&ubi->wl_lock);
++static int self_check_fastmap(struct ubi_attach_info *ai)
++{
++	struct ubi_ainf_peb *aeb;
++	struct ubi_ainf_volume *av;
++	struct rb_node *rb1, *rb2;
++	int n = 0;
++
++	list_for_each_entry(aeb, &ai->erase, u.list)
++		n++;
++
++	list_for_each_entry(aeb, &ai->free, u.list)
++		n++;
++
++	 ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb)
++		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
++			n++;
++
++	return n;
 +}
 +
-+/**
-+ * schedule_ubi_work - schedule a work.
-+ * @ubi: UBI device description object
-+ * @wrk: the work to schedule
-+ *
-+ * This function adds a work defined by @wrk to the tail of the pending works
-+ * list.
-+ */
-+static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+{
-+	down_read(&ubi->work_sem);
-+	__schedule_ubi_work(ubi, wrk);
- 	up_read(&ubi->work_sem);
- }
- 
-@@ -1157,7 +1170,7 @@ out_cancel:
-  * if yes. This function returns zero in case of success and a negative error
-  * code in case of failure.
-  */
--static int ensure_wear_leveling(struct ubi_device *ubi)
-+static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
- {
- 	int err = 0;
- 	struct ubi_wl_entry *e1;
-@@ -1203,7 +1216,10 @@ static int ensure_wear_leveling(struct ubi_device *ubi)
- 	}
- 
- 	wrk->func = &wear_leveling_worker;
--	schedule_ubi_work(ubi, wrk);
-+	if (nested)
-+		__schedule_ubi_work(ubi, wrk);
-+	else
-+		schedule_ubi_work(ubi, wrk);
- 	return err;
- 
- out_cancel:
-@@ -1256,6 +1272,9 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 		 * protected physical eraseblocks.
- 		 */
- 		serve_prot_queue(ubi);
-+
-+		/* And take care about wear-leveling */
-+		ensure_wear_leveling(ubi, 1);
- 		return err;
- 	}
- 
-@@ -1479,7 +1498,7 @@ retry:
- 	 * Technically scrubbing is the same as wear-leveling, so it is done
- 	 * by the WL worker.
- 	 */
--	return ensure_wear_leveling(ubi);
-+	return ensure_wear_leveling(ubi, 0);
- }
- 
  /**
-@@ -1748,7 +1767,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	ubi->rsvd_pebs += WL_RESERVED_PEBS;
+  * ubi_attach_fastmap - creates ubi_attach_info from a fastmap.
+  * @ubi: UBI device object
+@@ -978,6 +998,19 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 		goto free_hdr;
+ 	}
  
- 	/* Schedule wear-leveling if needed */
--	err = ensure_wear_leveling(ubi);
-+	err = ensure_wear_leveling(ubi, 0);
- 	if (err)
- 		goto out_free;
++	/*
++	 * If fastmap is leaking PEBs (must not happen), raise a
++	 * fat warning and fall back to scanning mode.
++	 * We do this here because in ubi_wl_init() it's too late
++	 * and we cannot fall back to scanning.
++	 */
++	if (WARN_ON(self_check_fastmap(ai) != ubi->peb_count -
++		    ubi->bad_peb_count - used_blocks)) {
++		ret = UBI_BAD_FASTMAP;
++		kfree(fm);
++		goto free_hdr;
++	}
++
+ 	fm->size = fm_size;
+ 	fm->used_blocks = used_blocks;
  
 -- 
 1.7.6.5
