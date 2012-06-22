@@ -1,22 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Si8us-0004vB-4l
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 18:49:11 +0000
-Message-ID: <4FE4BE22.3010709@nod.at>
-Date: Fri, 22 Jun 2012 20:49:06 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: "Nikita V. Youshchenko" <nyoushchenko@mvista.com>
-Subject: Re: ubi_update_fastmap: could not find an early PEB
-References: <201206222005.02308@blacky.localdomain>
- <201206222126.12515@blacky.localdomain> <4FE4AD74.1040907@nod.at>
- <201206222246.23389@blacky.localdomain>
-In-Reply-To: <201206222246.23389@blacky.localdomain>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigE6F981223FD5C7B9DCE32C69"
-Cc: Rob Taylor <rtaylor@mvista.com>, Alexander Kaliadin <akaliadin@mvista.com>,
- linux-mtd@lists.infradead.org, Pavan Jadhav <pjadhav@mvista.com>
+In-Reply-To: <4FE29CB8.3000404@atmel.com>
+References: <1339567570-4816-1-git-send-email-josh.wu@atmel.com>
+ <4FE13CB2.3000605@atmel.com>
+ <CAN8TOE8iDtzw4eTKa6tJ5oBxbaDUxg9nDLaKBhW4D86vGWxGJg@mail.gmail.com>
+ <4FE29CB8.3000404@atmel.com>
+Date: Fri, 22 Jun 2012 12:32:53 -0700
+Message-ID: <CAN8TOE9ebFAfJHaG2-po0LeLi=wTq9YZ9pNFXhQE0PLt5TQxeg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] MTD: nand: add return value for
+ write_page()/write_page_raw() functions in structure of nand_ecc_ctrl.
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: bryan.wu@analog.com, jack.lan@freescale.com, nick.spence@freescale.com,
+ dedekind1@gmail.com, tie-fei.zang@freescale.com, linux-mtd@lists.infradead.org,
+ scottwood@freescale.com, Dipen.Dudhat@freescale.com, tglx@linutronix.de,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE6F981223FD5C7B9DCE32C69
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi Josh,
 
-Am 22.06.2012 20:46, schrieb Nikita V. Youshchenko:
-> Tried code from there, plus patch you've sent, and still getting
->=20
-> # ubidetach /dev/ubi_ctrl -m 2
-> UBI error: ubi_update_fastmap: could not find an anchor PEB
-> UBI warning: ubi_update_fastmap: Unable to write new fastmap, err=3D-28=
+On Wed, Jun 20, 2012 at 9:02 PM, Josh Wu <josh.wu@atmel.com> wrote:
+> On 6/21/2012 2:43 AM, Brian Norris wrote:
+>> On Tue, Jun 19, 2012 at 8:00 PM, Josh Wu<josh.wu@atmel.com> =A0wrote:
+>>> On 6/13/2012 2:06 PM, Josh Wu wrote:
+>>>>
+>>>> There is an implemention of hardware ECC write page function which may
+>>>> return an error indication. But now the definition of 'write_page'
+>>>> function
+>>>> in struct nand_ecc_ctrl is 'void'.
+>>
+>> I think it would help reviewers (and changelog readers) to note which
+>> implementations are the real issue, if there are a small number of
+>> implementations targeted.
+>
+> Currently, I am introducing the atmel pragrammable multibit ECC(PMECC)
+> hardware code to nand flash. I meet following situation that I need chang=
+e
+> the write_page()'s return value to 'int':
+>
+> when writing one page into a nand flash with PMECC enabled, the hardware
+> engine will compute the BCH ecc code for this page. so we need read a the
+> status register to theck whether the ecc code is generated.
+> But we cannot assume the status register always can be ready, (for instan=
+ce,
+> incorrect hardware configuration or hardware issue), in such case I need
+> write_page() to return a error code.
+>
+> So this is the reason that I push this patch to change the return value t=
+o
+> int.
 
-> UBI: mtd2 is detached from ubi0
+OK, thanks for the clarification here. I think that this is valuable
+information that should be included in the change log when you send
+v3. Also, this is the kind of fix that should probably be sent in a
+series with the patch for your Atmel PMECC driver. That way, they can
+be reviewed/accepted together. As you mention, it is pointless to
+merge this patch without your driver patch.
 
-As I said, the posted patch may or may not help.
-Most likely the freshly created anchor PEBs got consumed by one
-of the pools.
-Anyway, I'll present a proper solution within the next few days.
+>>>> --- a/drivers/mtd/nand/nand_base.c
+>>>> +++ b/drivers/mtd/nand/nand_base.c
+>>
+>> ...
+>>>>
+>>>> @@ -2096,9 +2104,14 @@ static int nand_write_page(struct mtd_info *mtd=
+,
+>>>> struct nand_chip *chip,
+>>>> =A0 =A0 =A0 =A0chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+>>>>
+>>>> =A0 =A0 =A0 =A0if (unlikely(raw))
+>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->ecc.write_page_raw(mtd, chip, buf,=
+ oob_required);
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 status =3D chip->ecc.write_page_raw(mtd,=
+ chip, buf, oob_required);
+>>>> =A0 =A0 =A0 =A0else
+>>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->ecc.write_page(mtd, chip, buf, oob=
+_required);
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 status =3D chip->ecc.write_page(mtd, chi=
+p, buf, oob_required);
+>>>> +
+>>>> + =A0 =A0 =A0 if (status< =A0 =A00) {
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warn("Error happened when calling nan=
+d_write_page()\n");
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return status;
+>>>> + =A0 =A0 =A0 }
+>>
+>> I'm not sure this is the most informative error message. (Similar
+>> comment applies in cafe_nand.c, which imitates a lot of nand_base.c
+>> code)
+>
+> Maybe in this case I need print the error code as well.
 
-Thanks,
-//richard
+After a little closer look, I don't think you need to print anything
+(here, or in cafe_nand.c). This is a kind of intermediate-layer
+function that doesn't print anything on other errors (e.g., when it
+checks the status, it just fails with 'return -EIO;'). The error will
+be caught by upper layers and an appropriate error code may or may not
+be displayed. So just make sure that your new driver asserts an
+appropriate error code, and no print should be necessary.
 
-
---------------enigE6F981223FD5C7B9DCE32C69
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJP5L4iAAoJEN9758yqZn9eZrcH/jtqWG39xEnn7D+5WUhLW7wC
-qZ6pL2+YOb6NDteqCIkpNY3ikzagrwgyJwH00lGfyq8B8BXqr6+g3u7TMnnot3sN
-Ur/XZg8P7v8Y9vhgmLZYa8VzvgqY3xZ5EeMuMGCktyado+k0OMsensKg6t1lIbvy
-n7+MyklskJi/b+xKFlE9kN+CEd/m23++R5KpoEZ7Ti5x2LcEKSKTXR6/tF5+6Zt3
-xvVxLFwIru3NY4xdVl59N0eW9rAesQTmNgyY2T2NNNk728d5WCb2kwb1PcEyPUJm
-MnmMfcyviDbTyDvVBj8dG9xUQ1nWLSgUm/GlrC7EYLipwjmFSquL4mNI8aUoZwQ=
-=4TlZ
------END PGP SIGNATURE-----
-
---------------enigE6F981223FD5C7B9DCE32C69--
+Regards,
+Brian
