@@ -1,12 +1,16 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] Atmel NAND ECC: Remove unaffected config option
-Date: Fri, 22 Jun 2012 15:29:28 +0200
-Message-Id: <1340371768-24703-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
+In-Reply-To: <4FE39F19.9090105@grid-net.com>
+References: <4FE39F19.9090105@grid-net.com>
+Date: Fri, 22 Jun 2012 22:45:19 +0800
+Message-ID: <CAMiH66HMCte-8BAqZiPu0T=U9MzCEfyznND0Hwm7TsctzJe9UQ@mail.gmail.com>
+Subject: Re: GPMI NAND on MX28 with DT.with
+From: Huang Shijie <shijie8@gmail.com>
+To: Subodh Nijsure <snijsure@grid-net.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <b32955@freescale.com>, mtd <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,119 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The commit bf4289cba02b8cf770ecd7959ca70839f0dd9d3c removed the use of
-CONFIG_MTD_NAND_ATMEL_ECC_NONE and CONFIG_MTD_NAND_ATMEL_ECC_HW but the
-Kconfig file was forgotten.
+Hi,
+  yes, the gpmi-nand has bugs now.
+I will try to fix it when I am free.
 
-This patch remove those inoperative options.
+thanks
+Huang Shijie
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- arch/arm/configs/afeb9260_defconfig    |    1 -
- arch/arm/configs/at91sam9263_defconfig |    1 -
- arch/arm/configs/qil-a9260_defconfig   |    1 -
- arch/arm/configs/usb-a9260_defconfig   |    1 -
- drivers/mtd/nand/Kconfig               |   40 --------------------------------
- 5 files changed, 0 insertions(+), 44 deletions(-)
 
-diff --git a/arch/arm/configs/afeb9260_defconfig b/arch/arm/configs/afeb9260_defconfig
-index 2afdf67..c285a9d 100644
---- a/arch/arm/configs/afeb9260_defconfig
-+++ b/arch/arm/configs/afeb9260_defconfig
-@@ -39,7 +39,6 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
--CONFIG_MTD_NAND_ATMEL_ECC_SOFT=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=8192
- CONFIG_ATMEL_SSC=y
-diff --git a/arch/arm/configs/at91sam9263_defconfig b/arch/arm/configs/at91sam9263_defconfig
-index 1cf9626..585e7e0 100644
---- a/arch/arm/configs/at91sam9263_defconfig
-+++ b/arch/arm/configs/at91sam9263_defconfig
-@@ -61,7 +61,6 @@ CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_BLOCK2MTD=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
--CONFIG_MTD_NAND_ATMEL_ECC_SOFT=y
- CONFIG_MTD_UBI=y
- CONFIG_MTD_UBI_GLUEBI=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/qil-a9260_defconfig b/arch/arm/configs/qil-a9260_defconfig
-index 9160f3b..2bb100b 100644
---- a/arch/arm/configs/qil-a9260_defconfig
-+++ b/arch/arm/configs/qil-a9260_defconfig
-@@ -50,7 +50,6 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
--CONFIG_MTD_NAND_ATMEL_ECC_SOFT=y
- CONFIG_BLK_DEV_LOOP=y
- # CONFIG_MISC_DEVICES is not set
- CONFIG_SCSI=y
-diff --git a/arch/arm/configs/usb-a9260_defconfig b/arch/arm/configs/usb-a9260_defconfig
-index 2e39f38..a1501e1 100644
---- a/arch/arm/configs/usb-a9260_defconfig
-+++ b/arch/arm/configs/usb-a9260_defconfig
-@@ -49,7 +49,6 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
--CONFIG_MTD_NAND_ATMEL_ECC_SOFT=y
- CONFIG_BLK_DEV_LOOP=y
- # CONFIG_MISC_DEVICES is not set
- CONFIG_SCSI=y
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 31bb7e5..0d93407 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -406,46 +406,6 @@ config MTD_NAND_ATMEL
- 	help
- 	  Enables support for NAND Flash / Smart Media Card interface
- 	  on Atmel AT91 and AVR32 processors.
--choice
--	prompt "ECC management for NAND Flash / SmartMedia on AT91 / AVR32"
--	depends on MTD_NAND_ATMEL
--
--config MTD_NAND_ATMEL_ECC_HW
--	bool "Hardware ECC"
--	depends on ARCH_AT91SAM9263 || ARCH_AT91SAM9260 || AVR32
--	help
--	  Use hardware ECC instead of software ECC when the chip
--	  supports it.
--
--	  The hardware ECC controller is capable of single bit error
--	  correction and 2-bit random detection per page.
--
--	  NB : hardware and software ECC schemes are incompatible.
--	  If you switch from one to another, you'll have to erase your
--	  mtd partition.
--
--	  If unsure, say Y
--
--config MTD_NAND_ATMEL_ECC_SOFT
--	bool "Software ECC"
--	help
--	  Use software ECC.
--
--	  NB : hardware and software ECC schemes are incompatible.
--	  If you switch from one to another, you'll have to erase your
--	  mtd partition.
--
--config MTD_NAND_ATMEL_ECC_NONE
--	bool "No ECC (testing only, DANGEROUS)"
--	depends on DEBUG_KERNEL
--	help
--	  No ECC will be used.
--	  It's not a good idea and it should be reserved for testing
--	  purpose only.
--
--	  If unsure, say N
--
--endchoice
- 
- config MTD_NAND_PXA3xx
- 	tristate "Support for NAND flash devices on PXA3xx"
--- 
-1.7.2.5
+On Fri, Jun 22, 2012 at 6:24 AM, Subodh Nijsure <snijsure@grid-net.com> wro=
+te:
+> Has anyone gotten the latest GPMI NAND patches for MX28 with device-tree =
+to
+> work?
+>
+> I came across this thread where Huang Shijie reported that it has some
+> issues with ECC.
+>
+> Our attempt to attach fail as shown below, anybody else encountered these
+> errors?
+>
+> cat /proc/mtd
+> dev: =C2=A0 =C2=A0size =C2=A0 erasesize =C2=A0name
+> mtd0: 00a00000 00020000 "boot"
+> mtd1: 0f200000 00020000 "data"
+> mtd2: 00400000 00020000 "boot-config"
+>
+> ubiformat /dev/mtd1
+> ubiformat: mtd1 (nand), size 253755392 bytes (242.0 MiB), 1936 eraseblock=
+s
+> of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 1935 -- 100 % complete
+> ubiformat: 1933 eraseblocks have valid erase counter, mean value is 3
+> ubiformat: 3 bad eraseblocks found, numbers: 264, 468, 1593
+> ubiformat: formatting eraseblock 1935 -- 100 % complete
+> / # ubiattach /dev/ubi_ctrl -m 1
+> [ =C2=A0185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd=
+5, not
+> 0x000000
+> [ =C2=A0185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd=
+5, not
+> 0x000000
+> [ =C2=A0185.560000] UBI error: process_lvol: both volume tables are corru=
+pted
+> [ =C2=A0185.560000] UBI error: ubi_attach_mtd_dev: failed to attach mtd1,=
+ error
+> -22
+> ubiattach: error!: cannot attach mtd1
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 error 22 (Invalid argument)
+>
+>
+> -Subodh Nijsure
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
