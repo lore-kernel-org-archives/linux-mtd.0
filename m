@@ -1,13 +1,27 @@
-Message-ID: <4FE39F19.9090105@grid-net.com>
-Date: Thu, 21 Jun 2012 15:24:25 -0700
-From: Subodh Nijsure <snijsure@grid-net.com>
+Received: from canuck.infradead.org ([2001:4978:20e::1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Shwks-0003pI-0P
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 05:50:02 +0000
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Shwkq-0003cn-OY
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 05:50:01 +0000
+Date: Fri, 22 Jun 2012 07:49:42 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: [PATCH] of: fix a few typos in the binding documentation
+Message-ID: <20120622054942.GI5642@pengutronix.de>
+References: <1335171443-15371-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <20120518142148.GC3710@pengutronix.de>
 MIME-Version: 1.0
-To: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: GPMI NAND on MX28 with DT.with
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20120518142148.GC3710@pengutronix.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ devicetree-discuss@lists.ozlabs.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +31,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Has anyone gotten the latest GPMI NAND patches for MX28 with device-tree 
-to work?
+Hello Randy,
 
-I came across this thread where Huang Shijie reported that it has some 
-issues with ECC.
+expanding the audience a bit ...
 
-Our attempt to attach fail as shown below, anybody else encountered 
-these errors?
+On Fri, May 18, 2012 at 04:21:48PM +0200, Uwe Kleine-König wrote:
+> On Mon, Apr 23, 2012 at 10:57:23AM +0200, Uwe Kleine-König wrote:
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/atmel-nand.txt |    2 +-
+> >  Documentation/devicetree/bindings/mtd/partition.txt  |    2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> > index a200695..0c1bccd 100644
+> > --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> > @@ -3,7 +3,7 @@ Atmel NAND flash
+> >  Required properties:
+> >  - compatible : "atmel,at91rm9200-nand".
+> >  - reg : should specify localbus address and size used for the chip,
+> > -	and if availlable the ECC.
+> > +	and if available the ECC.
+> >  - atmel,nand-addr-offset : offset for the address latch.
+> >  - atmel,nand-cmd-offset : offset for the command latch.
+> >  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+> > diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+> > index f114ce1..6e1f61f 100644
+> > --- a/Documentation/devicetree/bindings/mtd/partition.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+> > @@ -35,4 +35,4 @@ flash@0 {
+> >  	uimage@100000 {
+> >  		reg = <0x0100000 0x200000>;
+> >  	};
+> > -];
+> > +};
+> this patch didn't appear in next yet (looking at next-20120518). Do you
+> have concerns? Or do you think someone else should take and/or ack the
+> patch?
+ping
 
-cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00a00000 00020000 "boot"
-mtd1: 0f200000 00020000 "data"
-mtd2: 00400000 00020000 "boot-config"
+Best regards
+Uwe
 
-ubiformat /dev/mtd1
-ubiformat: mtd1 (nand), size 253755392 bytes (242.0 MiB), 1936 
-eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-libscan: scanning eraseblock 1935 -- 100 % complete
-ubiformat: 1933 eraseblocks have valid erase counter, mean value is 3
-ubiformat: 3 bad eraseblocks found, numbers: 264, 468, 1593
-ubiformat: formatting eraseblock 1935 -- 100 % complete
-/ # ubiattach /dev/ubi_ctrl -m 1
-[  185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd5, 
-not 0x000000
-[  185.560000] UBI error: vtbl_check: bad CRC at record 0: 0x2b4f6dd5, 
-not 0x000000
-[  185.560000] UBI error: process_lvol: both volume tables are corrupted
-[  185.560000] UBI error: ubi_attach_mtd_dev: failed to attach mtd1, 
-error -22
-ubiattach: error!: cannot attach mtd1
-            error 22 (Invalid argument)
-
-
--Subodh Nijsure
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
