@@ -1,21 +1,18 @@
 Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SiDO1-0004h1-GY
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 23:35:34 +0000
-Received: by dadm1 with SMTP id m1so3145809dad.36
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 16:35:32 -0700 (PDT)
+ id 1SiDO2-0004hF-IX
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 23:35:36 +0000
+Received: by dadm1 with SMTP id m1so3145823dad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 16:35:33 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
-Date: Fri, 22 Jun 2012 16:35:39 -0700
-Message-Id: <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/8] mtd: nand: rename "no_bbt" descriptors to "no_oob"
+Date: Fri, 22 Jun 2012 16:35:40 -0700
+Message-Id: <1340408145-24531-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
 References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_read_oob() has some unexpected similarities to mtd_read(). For
-instance, when ops->datbuf != NULL, nand_base.c might return max_bitflips;
-however, when ops->datbuf == NULL, nand_base's code potentially could
-return -EUCLEAN (no in-tree drivers do this yet). In any case where the
-driver might return max_bitflips, we should translate this into an
-appropriate return code using the bitflip_threshold.
-
-Essentially, mtd_read_oob() duplicates the logic from mtd_read().
-
-This prevents users of mtd_read_oob() from receiving a positive return
-value (i.e., from max_bitflips) and interpreting it as an unknown error.
+These descriptors are for BBT's that don't use OOB; the "no_bbt" name doesn't
+really make sense.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
 ---
- drivers/mtd/mtdcore.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/nand_bbt.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index fcfce24..75288d3 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -860,10 +860,22 @@ EXPORT_SYMBOL_GPL(mtd_panic_write);
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index c126469..dff24fa 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1274,7 +1274,7 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 	.pattern = mirror_pattern
+ };
  
- int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
- {
-+	int ret_code;
- 	ops->retlen = ops->oobretlen = 0;
- 	if (!mtd->_read_oob)
- 		return -EOPNOTSUPP;
--	return mtd->_read_oob(mtd, from, ops);
-+	/*
-+	 * In cases where ops->datbuf != NULL, mtd->_read_oob() can have
-+	 * semantics similar to mtd->_read(), regarding max bitflips. In other
-+	 * cases, mtd->_read_oob() may return -EUCLEAN. In all cases, perform
-+	 * similar logic to mtd_read() (see above).
-+	 */
-+	ret_code = mtd->_read_oob(mtd, from, ops);
-+	if (unlikely(ret_code < 0))
-+		return ret_code;
-+	if (mtd->ecc_strength == 0)
-+		return 0;	/* device lacks ecc */
-+	return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
- }
- EXPORT_SYMBOL_GPL(mtd_read_oob);
+-static struct nand_bbt_descr bbt_main_no_bbt_descr = {
++static struct nand_bbt_descr bbt_main_no_oob_descr = {
+ 	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+ 		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+ 		| NAND_BBT_NO_OOB,
+@@ -1284,7 +1284,7 @@ static struct nand_bbt_descr bbt_main_no_bbt_descr = {
+ 	.pattern = bbt_pattern
+ };
  
+-static struct nand_bbt_descr bbt_mirror_no_bbt_descr = {
++static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
+ 	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+ 		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+ 		| NAND_BBT_NO_OOB,
+@@ -1355,8 +1355,8 @@ int nand_default_bbt(struct mtd_info *mtd)
+ 		/* Use the default pattern descriptors */
+ 		if (!this->bbt_td) {
+ 			if (this->bbt_options & NAND_BBT_NO_OOB) {
+-				this->bbt_td = &bbt_main_no_bbt_descr;
+-				this->bbt_md = &bbt_mirror_no_bbt_descr;
++				this->bbt_td = &bbt_main_no_oob_descr;
++				this->bbt_md = &bbt_mirror_no_oob_descr;
+ 			} else {
+ 				this->bbt_td = &bbt_main_descr;
+ 				this->bbt_md = &bbt_mirror_descr;
 -- 
 1.7.10
