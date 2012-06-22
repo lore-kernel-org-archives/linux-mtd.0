@@ -1,21 +1,30 @@
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SiAdX-0000jS-Vf
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 20:39:24 +0000
+Received: by yenr9 with SMTP id r9so2042373yen.36
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 13:39:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4FE29CB8.3000404@atmel.com>
-References: <1339567570-4816-1-git-send-email-josh.wu@atmel.com>
- <4FE13CB2.3000605@atmel.com>
- <CAN8TOE8iDtzw4eTKa6tJ5oBxbaDUxg9nDLaKBhW4D86vGWxGJg@mail.gmail.com>
- <4FE29CB8.3000404@atmel.com>
-Date: Fri, 22 Jun 2012 12:32:53 -0700
-Message-ID: <CAN8TOE9ebFAfJHaG2-po0LeLi=wTq9YZ9pNFXhQE0PLt5TQxeg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] MTD: nand: add return value for
- write_page()/write_page_raw() functions in structure of nand_ecc_ctrl.
+In-Reply-To: <20120610100839.1f0ff1fe@pixies.home.jungo.com>
+References: <20120605220647.GV30400@pengutronix.de>
+ <20120606125013.5897a02d@pixies.home.jungo.com>
+ <1338989453.6875.49.camel@sauron.fi.intel.com>
+ <20120606181529.291aa9a6@halley>
+ <1338997575.6875.72.camel@sauron.fi.intel.com>
+ <20120606175507.GC17332@parrot.com>
+ <1339054570.6875.84.camel@sauron.fi.intel.com>
+ <4FD0E632.2080905@newsguy.com>
+ <20120610100839.1f0ff1fe@pixies.home.jungo.com>
+Date: Fri, 22 Jun 2012 13:39:20 -0700
+Message-ID: <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
+Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
 From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Mike Dunn <mikedunn@newsguy.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: bryan.wu@analog.com, jack.lan@freescale.com, nick.spence@freescale.com,
- dedekind1@gmail.com, tie-fei.zang@freescale.com, linux-mtd@lists.infradead.org,
- scottwood@freescale.com, Dipen.Dudhat@freescale.com, tglx@linutronix.de,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ivan Djelic <ivan.djelic@parrot.com>, dwmw2@infradead.org,
+ Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,86 +34,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
-
-On Wed, Jun 20, 2012 at 9:02 PM, Josh Wu <josh.wu@atmel.com> wrote:
-> On 6/21/2012 2:43 AM, Brian Norris wrote:
->> On Tue, Jun 19, 2012 at 8:00 PM, Josh Wu<josh.wu@atmel.com> =A0wrote:
->>> On 6/13/2012 2:06 PM, Josh Wu wrote:
->>>>
->>>> There is an implemention of hardware ECC write page function which may
->>>> return an error indication. But now the definition of 'write_page'
->>>> function
->>>> in struct nand_ecc_ctrl is 'void'.
->>
->> I think it would help reviewers (and changelog readers) to note which
->> implementations are the real issue, if there are a small number of
->> implementations targeted.
+On Sun, Jun 10, 2012 at 12:08 AM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+> To summarize, return value of the 'mtd_read_oob()' API is
+> inconsistent (sometimes max_bitflips, other times EUCLEAN), and does not
+> adhere to return code policy of 'mtd_read()' - return EUCLEAN to the users,
+> they're not interested with internals such as max_bitflips.
 >
-> Currently, I am introducing the atmel pragrammable multibit ECC(PMECC)
-> hardware code to nand flash. I meet following situation that I need chang=
-e
-> the write_page()'s return value to 'int':
+> This might affect users of 'mtd_read_oob()' which might falsely think
+> the OOB read has failed.
 >
-> when writing one page into a nand flash with PMECC enabled, the hardware
-> engine will compute the BCH ecc code for this page. so we need read a the
-> status register to theck whether the ecc code is generated.
-> But we cannot assume the status register always can be ready, (for instan=
-ce,
-> incorrect hardware configuration or hardware issue), in such case I need
-> write_page() to return a error code.
->
-> So this is the reason that I push this patch to change the return value t=
-o
-> int.
+> Mike, care to take a look and amend if necessary?
+> I think this needs to be fixed pre v3.5 as well.
 
-OK, thanks for the clarification here. I think that this is valuable
-information that should be included in the change log when you send
-v3. Also, this is the kind of fix that should probably be sent in a
-series with the patch for your Atmel PMECC driver. That way, they can
-be reviewed/accepted together. As you mention, it is pointless to
-merge this patch without your driver patch.
+Mike, are you planning on handling this?
 
->>>> --- a/drivers/mtd/nand/nand_base.c
->>>> +++ b/drivers/mtd/nand/nand_base.c
->>
->> ...
->>>>
->>>> @@ -2096,9 +2104,14 @@ static int nand_write_page(struct mtd_info *mtd=
-,
->>>> struct nand_chip *chip,
->>>> =A0 =A0 =A0 =A0chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
->>>>
->>>> =A0 =A0 =A0 =A0if (unlikely(raw))
->>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->ecc.write_page_raw(mtd, chip, buf,=
- oob_required);
->>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 status =3D chip->ecc.write_page_raw(mtd,=
- chip, buf, oob_required);
->>>> =A0 =A0 =A0 =A0else
->>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 chip->ecc.write_page(mtd, chip, buf, oob=
-_required);
->>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 status =3D chip->ecc.write_page(mtd, chi=
-p, buf, oob_required);
->>>> +
->>>> + =A0 =A0 =A0 if (status< =A0 =A00) {
->>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warn("Error happened when calling nan=
-d_write_page()\n");
->>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return status;
->>>> + =A0 =A0 =A0 }
->>
->> I'm not sure this is the most informative error message. (Similar
->> comment applies in cafe_nand.c, which imitates a lot of nand_base.c
->> code)
->
-> Maybe in this case I need print the error code as well.
+I think it would be safe to basically C&P the max_bitflips code from
+mtd_read() into mtd_read_oob(). This would simply pass through the
+EUCLEAN that may be returned for OOB-only case (only for my driver?),
+and it would translate the 'ret_code > 0' case properly for data+OOB
+reads. I'll resend officially if this looks OK. Or I'll defer to Mike
+if he's working on this.
 
-After a little closer look, I don't think you need to print anything
-(here, or in cafe_nand.c). This is a kind of intermediate-layer
-function that doesn't print anything on other errors (e.g., when it
-checks the status, it just fails with 'return -EIO;'). The error will
-be caught by upper layers and an appropriate error code may or may not
-be displayed. So just make sure that your new driver asserts an
-appropriate error code, and no print should be necessary.
-
-Regards,
 Brian
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5757307..37c9820 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -821,6 +821,27 @@ int mtd_read(struct mtd_info *mtd, loff_t from,
+size_t len, size_t *retlen,
+ }
+ EXPORT_SYMBOL_GPL(mtd_read);
+
++int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
++{
++       int ret_code;
++       ops->retlen = ops->oobretlen = 0;
++       if (!mtd->_read_oob)
++               return -EOPNOTSUPP;
++       /*
++        * In cases where ops->datbuf != NULL, mtd->_read_oob() can have
++        * semantics similar to mtd->_read(), regarding max bitflips. In other
++        * cases, mtd->_read_oob() may return -EUCLEAN. In all cases, perform
++        * similar logic to mtd_read() (see above).
++        */
++       ret_code = mtd->_read_oob(mtd, from, ops);
++       if (unlikely(ret_code < 0))
++               return ret_code;
++       if (mtd->ecc_strength == 0)
++               return 0;       /* device lacks ecc */
++       return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
++}
++EXPORT_SYMBOL_GPL(mtd_read_oob);
++
+ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+              const u_char *buf)
+ {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 63dadc0..81d61e7 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -265,14 +265,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to,
+size_t len, size_t *retlen,
+ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+size_t *retlen,
+                    const u_char *buf);
+
+-static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
+-                              struct mtd_oob_ops *ops)
+-{
+-       ops->retlen = ops->oobretlen = 0;
+-       if (!mtd->_read_oob)
+-               return -EOPNOTSUPP;
+-       return mtd->_read_oob(mtd, from, ops);
+-}
++int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops);
+
+ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+                                struct mtd_oob_ops *ops)
