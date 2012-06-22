@@ -1,30 +1,19 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SiAdX-0000jS-Vf
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 20:39:24 +0000
-Received: by yenr9 with SMTP id r9so2042373yen.36
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 13:39:21 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120610100839.1f0ff1fe@pixies.home.jungo.com>
-References: <20120605220647.GV30400@pengutronix.de>
- <20120606125013.5897a02d@pixies.home.jungo.com>
- <1338989453.6875.49.camel@sauron.fi.intel.com>
- <20120606181529.291aa9a6@halley>
- <1338997575.6875.72.camel@sauron.fi.intel.com>
- <20120606175507.GC17332@parrot.com>
- <1339054570.6875.84.camel@sauron.fi.intel.com>
- <4FD0E632.2080905@newsguy.com>
- <20120610100839.1f0ff1fe@pixies.home.jungo.com>
-Date: Fri, 22 Jun 2012 13:39:20 -0700
-Message-ID: <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
-Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
+ id 1SiDNz-0004ge-Qg
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 23:35:32 +0000
+Received: by pbbrq13 with SMTP id rq13so4463121pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 16:35:30 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Mike Dunn <mikedunn@newsguy.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>, dwmw2@infradead.org,
- Sascha Hauer <s.hauer@pengutronix.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/8] NAND and NAND-BBT improvements
+Date: Fri, 22 Jun 2012 16:35:37 -0700
+Message-Id: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,82 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 10, 2012 at 12:08 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> To summarize, return value of the 'mtd_read_oob()' API is
-> inconsistent (sometimes max_bitflips, other times EUCLEAN), and does not
-> adhere to return code policy of 'mtd_read()' - return EUCLEAN to the users,
-> they're not interested with internals such as max_bitflips.
->
-> This might affect users of 'mtd_read_oob()' which might falsely think
-> the OOB read has failed.
->
-> Mike, care to take a look and amend if necessary?
-> I think this needs to be fixed pre v3.5 as well.
+Hi,
 
-Mike, are you planning on handling this?
+This series includes several assorted changes to MTD, NAND, and NAND-BBT code.
+I wanted to get these out there now, as I will be off the radar for the next
+week. These aren't too thoroughly tested, but for those that are somewhat
+obvious, feel free to merge them. Others are meant for some discussion; feel
+free to improve them and resubmit yourself.
 
-I think it would be safe to basically C&P the max_bitflips code from
-mtd_read() into mtd_read_oob(). This would simply pass through the
-EUCLEAN that may be returned for OOB-only case (only for my driver?),
-and it would translate the 'ret_code > 0' case properly for data+OOB
-reads. I'll resend officially if this looks OK. Or I'll defer to Mike
-if he's working on this.
+Of note: the first two patches address a problem with mtd_read_oob() and the
+recent max_bitflips changes by Mike Dunn. If they are satisfactory, it may be
+worth merging them in the 3.5-rc cycle, as they help avoid an API inconsistency
+that recently emerged.
 
+"mtd: nand: use ECC, if present, when scanning OOB"
+This patch may not be needed/wanted, as it affects the NAND_BBT_ABSPAGE
+codepath. Refer to previous discussions with Mike Dunn regarding diskonchip.c.
+
+Regards,
 Brian
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5757307..37c9820 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -821,6 +821,27 @@ int mtd_read(struct mtd_info *mtd, loff_t from,
-size_t len, size_t *retlen,
- }
- EXPORT_SYMBOL_GPL(mtd_read);
+Brian Norris (8):
+  mtd: move mtd_read_oob() definition out of mtd.h
+  mtd: check for max_bitflips in mtd_read_oob()
+  mtd: nand: rename "no_bbt" descriptors to "no_oob"
+  mtd: nand: remove unused 'int' return codes
+  mtd: nand: rename '_raw' BBT scan functions
+  mtd: nand_bbt: refactor check_pattern_no_oob()
+  mtd: nand_bbt: use string library
+  mtd: nand: use ECC, if present, when scanning OOB
 
-+int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
-+{
-+       int ret_code;
-+       ops->retlen = ops->oobretlen = 0;
-+       if (!mtd->_read_oob)
-+               return -EOPNOTSUPP;
-+       /*
-+        * In cases where ops->datbuf != NULL, mtd->_read_oob() can have
-+        * semantics similar to mtd->_read(), regarding max bitflips. In other
-+        * cases, mtd->_read_oob() may return -EUCLEAN. In all cases, perform
-+        * similar logic to mtd_read() (see above).
-+        */
-+       ret_code = mtd->_read_oob(mtd, from, ops);
-+       if (unlikely(ret_code < 0))
-+               return ret_code;
-+       if (mtd->ecc_strength == 0)
-+               return 0;       /* device lacks ecc */
-+       return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
-+}
-+EXPORT_SYMBOL_GPL(mtd_read_oob);
-+
- int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
-              const u_char *buf)
- {
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 63dadc0..81d61e7 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -265,14 +265,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to,
-size_t len, size_t *retlen,
- int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
-size_t *retlen,
-                    const u_char *buf);
+ drivers/mtd/mtdcore.c       |   21 +++++++++
+ drivers/mtd/nand/nand_bbt.c |  108 +++++++++++++++++++++----------------------
+ include/linux/mtd/mtd.h     |    9 +---
+ 3 files changed, 75 insertions(+), 63 deletions(-)
 
--static inline int mtd_read_oob(struct mtd_info *mtd, loff_t from,
--                              struct mtd_oob_ops *ops)
--{
--       ops->retlen = ops->oobretlen = 0;
--       if (!mtd->_read_oob)
--               return -EOPNOTSUPP;
--       return mtd->_read_oob(mtd, from, ops);
--}
-+int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops);
-
- static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
-                                struct mtd_oob_ops *ops)
+-- 
+1.7.10
