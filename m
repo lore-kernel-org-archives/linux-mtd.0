@@ -1,13 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SiQ06-0001CR-AD
- for linux-mtd@lists.infradead.org; Sat, 23 Jun 2012 13:03:44 +0000
+ id 1SiQ07-0001DI-2I
+ for linux-mtd@lists.infradead.org; Sat, 23 Jun 2012 13:03:45 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/7] UBI: Fastmap: Reuse all fastmap PEB if no free PEBs are
- available
-Date: Sat, 23 Jun 2012 15:03:21 +0200
-Message-Id: <1340456602-46050-7-git-send-email-richard@nod.at>
+Subject: [PATCH 7/7] UBI: Fastmap: Get rid of fm_pool_mutex
+Date: Sat, 23 Jun 2012 15:03:22 +0200
+Message-Id: <1340456602-46050-8-git-send-email-richard@nod.at>
 In-Reply-To: <1340456602-46050-1-git-send-email-richard@nod.at>
 References: <1340456602-46050-1-git-send-email-richard@nod.at>
 Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
@@ -24,88 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This mutex is no longer needed.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |   42 ++++++++++++++++++++++++++++++++----------
- 1 files changed, 32 insertions(+), 10 deletions(-)
+ drivers/mtd/ubi/build.c |    1 -
+ drivers/mtd/ubi/ubi.h   |    2 --
+ drivers/mtd/ubi/wl.c    |    4 ----
+ 3 files changed, 0 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index acd0561..ecbed52 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1423,7 +1423,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		tmp_e = ubi_wl_get_fm_peb(ubi, 0);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 611d0c4..d00101e 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -906,7 +906,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	mutex_init(&ubi->buf_mutex);
+ 	mutex_init(&ubi->ckvol_mutex);
+ 	mutex_init(&ubi->device_mutex);
+-	mutex_init(&ubi->fm_pool_mutex);
+ 	mutex_init(&ubi->fm_mutex);
+ 	init_rwsem(&ubi->fm_sem);
+ 	spin_lock_init(&ubi->volumes_lock);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a2c1bcc..2ff1807 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -382,7 +382,6 @@ struct ubi_wl_entry;
+  *
+  * @fm: in-memory data structure of the currently used fastmap
+  * @fm_pool: in-memory data structure of the fastmap pool
+- * @fm_pool_mutex: serializes ubi_wl_get_peb()
+  * @fm_mutex: serializes ubi_update_fastmap()
+  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
+  * @fm_work: fastmap work queue
+@@ -486,7 +485,6 @@ struct ubi_device {
+ 	struct ubi_fm_pool fm_wl_pool;
+ 	struct rw_semaphore fm_sem;
+ 	struct mutex fm_mutex;
+-	struct mutex fm_pool_mutex;
+ 	struct work_struct fm_work;
+ 	int attached_by_scanning;
+ 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 4f8b06a..dc45bd3 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -609,8 +609,6 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+ 	struct ubi_fm_pool *pool = &ubi->fm_pool;
+ 	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
+ 
+-	mutex_lock(&ubi->fm_pool_mutex);
+-
+ 	if (!pool->size || !wl_pool->size || pool->used == pool->size ||
+ 	    wl_pool->used == wl_pool->size)
+ 		ubi_update_fastmap(ubi);
+@@ -625,8 +623,6 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
  		spin_unlock(&ubi->wl_lock);
- 
--		if (!tmp_e) {
-+		if (!tmp_e && !old_fm) {
- 			int j;
- 			ubi_err("could not get any free erase block");
- 
-@@ -1432,10 +1432,28 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 
- 			ret = -ENOSPC;
- 			goto err;
--		}
-+		} else if (!tmp_e && old_fm) {
-+			ret = erase_block(ubi, old_fm->e[i]->pnum);
-+			if (ret < 0) {
-+				int j;
-+
-+				for (j = 1; j < i; j++)
-+					ubi_wl_put_fm_peb(ubi, new_fm->e[j], 0);
-+
-+				ubi_err("could not erase old fastmap PEB");
-+				goto err;
-+			}
- 
--		new_fm->e[i]->pnum = tmp_e->pnum;
--		new_fm->e[i]->ec = tmp_e->ec;
-+			new_fm->e[i]->pnum = old_fm->e[i]->pnum;
-+			new_fm->e[i]->ec = old_fm->e[i]->ec;
-+		} else {
-+			new_fm->e[i]->pnum = tmp_e->pnum;
-+			new_fm->e[i]->ec = tmp_e->ec;
-+
-+			if (old_fm)
-+				ubi_wl_put_fm_peb(ubi, old_fm->e[i],
-+						  old_fm->to_be_tortured[i]);
-+		}
  	}
  
- 	spin_lock(&ubi->wl_lock);
-@@ -1447,7 +1465,11 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		if (!tmp_e) {
- 			ret = erase_block(ubi, old_fm->e[0]->pnum);
- 			if (ret < 0) {
-+				int i;
- 				ubi_err("could not erase old anchor PEB");
-+
-+				for (i = 1; i < new_fm->used_blocks; i++)
-+					ubi_wl_put_fm_peb(ubi, new_fm->e[i], 0);
- 				goto err;
- 			}
- 
-@@ -1461,14 +1483,14 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 			new_fm->e[0]->pnum = tmp_e->pnum;
- 			new_fm->e[0]->ec = tmp_e->ec;
- 		}
+-	mutex_unlock(&ubi->fm_pool_mutex);
 -
--		/* return all other fastmap block to the wl system */
--		for (i = 1; i < old_fm->used_blocks; i++)
--			ubi_wl_put_fm_peb(ubi, old_fm->e[i],
--					  old_fm->to_be_tortured[i]);
- 	} else {
- 		if (!tmp_e) {
--			ubi_err("could not find an anchor PEB");
-+			int i;
-+			ubi_err("could not find any anchor PEB");
-+
-+			for (i = 1; i < new_fm->used_blocks; i++)
-+				ubi_wl_put_fm_peb(ubi, new_fm->e[i], 0);
-+
- 			ret = -ENOSPC;
- 			goto err;
- 		}
+ 	return ret;
+ }
+ 
 -- 
 1.7.6.5
