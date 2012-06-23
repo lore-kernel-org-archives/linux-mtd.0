@@ -1,21 +1,19 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SiDO8-0004ge-0g
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2012 23:35:43 +0000
-Received: by mail-pb0-f49.google.com with SMTP id rq13so4463121pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2012 16:35:39 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
-Date: Fri, 22 Jun 2012 16:35:45 -0700
-Message-Id: <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+From: Marek Vasut <marex@denx.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
+Date: Sat, 23 Jun 2012 04:15:18 +0200
+References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
+ <4E31B713.1030901@free.fr> <20110728214521.GA4674@ponder.secretlab.ca>
+In-Reply-To: <20110728214521.GA4674@ponder.secretlab.ca>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201206230415.18833.marex@denx.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, manu <manuel.pezzin@free.fr>,
+ patches@linaro.org, devicetree-discuss@lists.ozlabs.org,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,85 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-scan_read_raw_oob() is used in only in places where the MTD_OPS_PLACE_OOB
-mode is preferable MTD_OPS_RAW mode, so use MTD_OPS_PLACE_OOB instead.
-MTD_OPS_PLACE_OOB provides the same functionality with the potential[1]
-added bonus of error correction.
+Dear Grant Likely,
 
-This brings scan_block_full() in line with scan_block_fast() so that they
-both read bad block markers with MTD_OPS_PLACE_OOB. This can help in
-preventing 0xff markers (in good blocks) from being interpreted as bad
-block indicators in the presence of a single bitflip.
+> On Thu, Jul 28, 2011 at 09:22:59PM +0200, manu wrote:
+> > Dear Grant, Shawn,
+> > I don't this patch is required as m25p** serial flashes are
+> > supported already with generic OF/SPI and OF/MTD schemes.
+> > I have successfully used it myself on an unmodified 2.6.36.3 vanilla
+> > kernel on a xilinx/powerpc platform with a m25p32 part from STM.
+> > You will find attached the corresponding working defconfig + dts
+> > files (appart from partitions which I didn't managed to configure
+> > properly...).
+> > Best Regards,
+> > 
+> > Manuel
+> 
+> There is a heuristic which allows spi and i2c devices to get bound
+> without a match table, which is why it works for you, but there is no
+> guarantee that the heuristic will continue to exist in the long term.
+> This is still probably the right thing to do.
+> 
+> g.
 
-Note that ECC error codes (EUCLEAN or EBADMSG) are already silently
-ignored in all users of scan_read_raw_oob().
+So is there any particular reason why this wasn't applied?
 
-[1] Few  drivers perform proper error correction on OOB data. In those
-    cases, the use of MTD_OPS_RAW vs. MTD_OPS_PLACE_OOB is not
-    significant.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/nand/nand_bbt.c |   27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 45cdb97..7b9a0a7 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -289,14 +289,24 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
- 	return mtd_read(mtd, offs, len, &retlen, buf);
- }
- 
--/* Scan read data from flash */
-+/**
-+ * scan_read_oob - [GENERIC] Scan data+OOB region to buffer
-+ * @mtd: MTD device structure
-+ * @buf: temporary buffer
-+ * @offs: offset at which to scan
-+ * @len: length of data region to read
-+ *
-+ * Scan read data from data+OOB. May traverse multiple pages, interleaving
-+ * page,OOB,page,OOB,... in buf. Completes transfer and returns the "strongest"
-+ * ECC condition (error or bitflip). May quit on the first (non-ECC) error.
-+ */
- static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
- 			 size_t len)
- {
- 	struct mtd_oob_ops ops;
--	int res;
-+	int res, ret = 0;
- 
--	ops.mode = MTD_OPS_RAW;
-+	ops.mode = MTD_OPS_PLACE_OOB;
- 	ops.ooboffs = 0;
- 	ops.ooblen = mtd->oobsize;
- 
-@@ -306,15 +316,18 @@ static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
- 		ops.oobbuf = buf + ops.len;
- 
- 		res = mtd_read_oob(mtd, offs, &ops);
--
--		if (res)
--			return res;
-+		if (res) {
-+			if (!mtd_is_bitflip_or_eccerr(res))
-+				return res;
-+			else if (mtd_is_eccerr(res) || !ret)
-+				ret = res;
-+		}
- 
- 		buf += mtd->oobsize + mtd->writesize;
- 		len -= mtd->writesize;
- 		offs += mtd->writesize;
- 	}
--	return 0;
-+	return ret;
- }
- 
- static int scan_read(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
--- 
-1.7.10
+Best regards,
+Marek Vasut
