@@ -1,16 +1,15 @@
-Received: from nm6.bullet.mail.ird.yahoo.com ([77.238.189.63])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SiTfE-0007gz-QB
- for linux-mtd@lists.infradead.org; Sat, 23 Jun 2012 16:58:25 +0000
-Message-ID: <1340470702.83340.YahooMailNeo@web132405.mail.ird.yahoo.com>
-Date: Sat, 23 Jun 2012 17:58:22 +0100 (BST)
-From: Jessi Narvaez <donreigh@yahoo.com>
-Subject: We have to meet. Everything is here...
-To: "hervenakache@wanadoo.fr" <hervenakache@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Jessi Narvaez <jessi.narvaez@doctor.com>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SiVGO-0008Pk-QZ
+ for linux-mtd@lists.infradead.org; Sat, 23 Jun 2012 18:40:54 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: Fix bogus inequation
+Date: Sat, 23 Jun 2012 20:40:43 +0200
+Message-Id: <1340476843-2662-1-git-send-email-marex@denx.de>
+Cc: Marek Vasut <marex@denx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,9 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Howdy, name of mine is Jessi. I don't know u. =0AI found your profile on th=
-is dating website, was turned on with it and now write u. =0AMy ex-boyfrien=
-d and I decided to stay just friends about two weeks ago. =0AThat's, I deci=
-ded to find something new and maybe find it on this site. I didn't use to m=
-eet on some dating sites but u impressed me!  I wait for ur message :)=0AKi=
-ssing u
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+---
+ drivers/mtd/devices/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 4cdb2af..6cc5a1a 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -97,7 +97,7 @@ config MTD_M25P80
+ 	  doesn't support the JEDEC ID instruction.
+ 
+ config M25PXX_USE_FAST_READ
+-	bool "Use FAST_READ OPCode allowing SPI CLK <= 50MHz"
++	bool "Use FAST_READ OPCode allowing SPI CLK >= 50MHz"
+ 	depends on MTD_M25P80
+ 	default y
+ 	help
+-- 
+1.7.10
