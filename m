@@ -1,19 +1,17 @@
-From: Marek Vasut <marex@denx.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
-Date: Sat, 23 Jun 2012 04:15:18 +0200
-References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
- <4E31B713.1030901@free.fr> <20110728214521.GA4674@ponder.secretlab.ca>
-In-Reply-To: <20110728214521.GA4674@ponder.secretlab.ca>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201206230415.18833.marex@denx.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>, manu <manuel.pezzin@free.fr>,
- patches@linaro.org, devicetree-discuss@lists.ozlabs.org,
- Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@intel.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SiQ05-0001Bw-Hn
+ for linux-mtd@lists.infradead.org; Sat, 23 Jun 2012 13:03:42 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: UBI fastmap updates 
+Date: Sat, 23 Jun 2012 15:03:15 +0200
+Message-Id: <1340456602-46050-1-git-send-email-richard@nod.at>
+Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Grant Likely,
+This is the next round of UBI fastmap updates.
 
-> On Thu, Jul 28, 2011 at 09:22:59PM +0200, manu wrote:
-> > Dear Grant, Shawn,
-> > I don't this patch is required as m25p** serial flashes are
-> > supported already with generic OF/SPI and OF/MTD schemes.
-> > I have successfully used it myself on an unmodified 2.6.36.3 vanilla
-> > kernel on a xilinx/powerpc platform with a m25p32 part from STM.
-> > You will find attached the corresponding working defconfig + dts
-> > files (appart from partitions which I didn't managed to configure
-> > properly...).
-> > Best Regards,
-> > 
-> > Manuel
-> 
-> There is a heuristic which allows spi and i2c devices to get bound
-> without a match table, which is why it works for you, but there is no
-> guarantee that the heuristic will continue to exist in the long term.
-> This is still probably the right thing to do.
-> 
-> g.
+The highlights are:
+	- Fastmap produces anchor PEBs if none are available
+	  (creating a fastmap on an image created by ubinize works now)
+	- Fastmap is now able to reuse all PEBs if no empty PEBs are available
+	- Minor fixes
 
-So is there any particular reason why this wasn't applied?
+If you want to test fastmap you can use my git repo:
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v13
 
-Best regards,
-Marek Vasut
+Enjoy!
+//richard
+
+[PATCH 1/7] UBI: Fastmap: Modify the WL sub-system to prodcue a free
+[PATCH 2/7] UBI: Fastmap: Fix WARN_ON()
+[PATCH 3/7] UBI: Fastmap: Ensure that not all anchor PEBs go into a
+[PATCH 4/7] UBI: Fastmap: Fix ubi_assert()
+[PATCH 5/7] UBI: Fastmap: Kill max_pnum logic
+[PATCH 6/7] UBI: Fastmap: Reuse all fastmap PEB if no free PEBs are
+[PATCH 7/7] UBI: Fastmap: Get rid of fm_pool_mutex
