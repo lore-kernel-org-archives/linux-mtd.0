@@ -1,29 +1,23 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjDLc-00038b-FL
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 17:45:12 +0000
-Message-ID: <4FE8A39B.6060409@newsguy.com>
-Date: Mon, 25 Jun 2012 10:44:59 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1SjDx5-0004pz-1D
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 18:23:55 +0000
+Received: by ghbf11 with SMTP id f11so3349838ghb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2012 11:23:54 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
-References: <20120605220647.GV30400@pengutronix.de>
- <20120606125013.5897a02d@pixies.home.jungo.com>
- <1338989453.6875.49.camel@sauron.fi.intel.com>
- <20120606181529.291aa9a6@halley>
- <1338997575.6875.72.camel@sauron.fi.intel.com>
- <20120606175507.GC17332@parrot.com>
- <1339054570.6875.84.camel@sauron.fi.intel.com> <4FD0E632.2080905@newsguy.com>
- <20120610100839.1f0ff1fe@pixies.home.jungo.com>
- <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
-In-Reply-To: <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
+In-Reply-To: <4FE88E9A.4040605@xenotime.net>
+References: <1340637580-12711-1-git-send-email-aletes.xgr@gmail.com>
+ <4FE88E9A.4040605@xenotime.net>
+Date: Mon, 25 Jun 2012 15:23:53 -0300
+Message-ID: <CAAAP30Gmfw-wLztrb7HUbeWYo5zAac6DOnewOJNPz0zXEy03zQ@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Fix build warning
+From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+To: Randy Dunlap <rdunlap@xenotime.net>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, dwmw2@infradead.org,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/22/2012 01:39 PM, Brian Norris wrote:
-> On Sun, Jun 10, 2012 at 12:08 AM, Shmulik Ladkani
-> <shmulik.ladkani@gmail.com> wrote:
->> To summarize, return value of the 'mtd_read_oob()' API is
->> inconsistent (sometimes max_bitflips, other times EUCLEAN), and does not
->> adhere to return code policy of 'mtd_read()' - return EUCLEAN to the users,
->> they're not interested with internals such as max_bitflips.
+On Mon, Jun 25, 2012 at 1:15 PM, Randy Dunlap <rdunlap@xenotime.net> wrote:
+> On 06/25/2012 08:19 AM, Alexandre Pereira da Silva wrote:
+>
+>> Fix:
+>> fs/ubifs/dir.c: In function 'ubifs_rename':
+>> fs/ubifs/dir.c:972:15: warning: 'saved_nlink' may be used uninitialized
+>> in this function
 >>
->> This might affect users of 'mtd_read_oob()' which might falsely think
->> the OOB read has failed.
->>
->> Mike, care to take a look and amend if necessary?
->> I think this needs to be fixed pre v3.5 as well.
-> 
-> Mike, are you planning on handling this?
-> 
-> I think it would be safe to basically C&P the max_bitflips code from
-> mtd_read() into mtd_read_oob(). This would simply pass through the
-> EUCLEAN that may be returned for OOB-only case (only for my driver?),
-> and it would translate the 'ret_code > 0' case properly for data+OOB
-> reads. I'll resend officially if this looks OK. Or I'll defer to Mike
-> if he's working on this.
+>> Initilize saved_nlink to 0
+>
+> Does nlink need to be init at all? =A0is the warning bogus or valid?
 
+>From the code, this is a bogus warning.
 
-I'm sorry Brian, I missed Shmulik's post and thought this issue was put to bed
-with the patch that initialized bitflip_threshold before the nand_scan_tail()
-call.
+> If the warning is bogus, the preferred solution is:
+>
+> #include <linux/compiler-gcc.h>
+> ...
+> =A0 =A0 =A0 =A0unsigned int uninitialized_var(nlink);
 
-I will take a look at your patch set that addresses this.  Sorry for dropping
-the ball.
-
-Mike
+I will fix the patch as suggested. Thanks.
