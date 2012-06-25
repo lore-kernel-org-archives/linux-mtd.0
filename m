@@ -1,18 +1,20 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjB4n-0006pr-3D
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 15:19:41 +0000
-Received: by ghbf11 with SMTP id f11so3144135ghb.36
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2012 08:19:39 -0700 (PDT)
-From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-To: 
-Subject: [PATCH] ubifs: Fix build warning
-Date: Mon, 25 Jun 2012 12:19:40 -0300
-Message-Id: <1340637580-12711-1-git-send-email-aletes.xgr@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- Alexandre Pereira da Silva <aletes.xgr@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Date: Mon, 25 Jun 2012 23:40:09 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
+Message-ID: <20120625154006.GB2342@S2101-09.ap.freescale.net>
+References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
+ <4E31B713.1030901@free.fr>
+ <20110728214521.GA4674@ponder.secretlab.ca>
+ <201206230415.18833.marex@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <201206230415.18833.marex@denx.de>
+Cc: manu <manuel.pezzin@free.fr>, patches@linaro.org,
+ devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix:
-fs/ubifs/dir.c: In function 'ubifs_rename':
-fs/ubifs/dir.c:972:15: warning: 'saved_nlink' may be used uninitialized
-in this function
+On Sat, Jun 23, 2012 at 04:15:18AM +0200, Marek Vasut wrote:
+> So is there any particular reason why this wasn't applied?
+> 
+Let me remind Artem by resending the patch tomorrow.
 
-Initilize saved_nlink to 0
-
-Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
----
- fs/ubifs/dir.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index a6d42ef..d5b8cb1e 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -969,7 +969,7 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
- 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
- 	struct timespec time;
--	unsigned int saved_nlink;
-+	unsigned int saved_nlink = 0;
- 
- 	/*
- 	 * Budget request settings: deletion direntry, new direntry, removing
 -- 
-1.7.10
+Regards,
+Shawn
