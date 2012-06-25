@@ -1,20 +1,29 @@
-From: Marek Vasut <marex@denx.de>
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
-Date: Mon, 25 Jun 2012 18:50:10 +0200
-References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
- <201206251801.22385.marex@denx.de>
- <20120625161506.GH2342@S2101-09.ap.freescale.net>
-In-Reply-To: <20120625161506.GH2342@S2101-09.ap.freescale.net>
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjDLc-00038b-FL
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 17:45:12 +0000
+Message-ID: <4FE8A39B.6060409@newsguy.com>
+Date: Mon, 25 Jun 2012 10:44:59 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: flash bbt broken due to unitialized bitflip_threshold?
+References: <20120605220647.GV30400@pengutronix.de>
+ <20120606125013.5897a02d@pixies.home.jungo.com>
+ <1338989453.6875.49.camel@sauron.fi.intel.com>
+ <20120606181529.291aa9a6@halley>
+ <1338997575.6875.72.camel@sauron.fi.intel.com>
+ <20120606175507.GC17332@parrot.com>
+ <1339054570.6875.84.camel@sauron.fi.intel.com> <4FD0E632.2080905@newsguy.com>
+ <20120610100839.1f0ff1fe@pixies.home.jungo.com>
+ <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
+In-Reply-To: <CAN8TOE90sB0-ZHZPX4+ASUDBCSRHgumVqDu0BOrcphyijm6Xgw@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <201206251850.10839.marex@denx.de>
-Cc: manu <manuel.pezzin@free.fr>, patches@linaro.org,
- devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <artem.bityutskiy@intel.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Ivan Djelic <ivan.djelic@parrot.com>, dwmw2@infradead.org,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Shawn Guo,
-
-> On Mon, Jun 25, 2012 at 06:01:22PM +0200, Marek Vasut wrote:
-> > Dear Shawn Guo,
-> > 
-> > > On Sat, Jun 23, 2012 at 04:15:18AM +0200, Marek Vasut wrote:
-> > > > So is there any particular reason why this wasn't applied?
-> > > 
-> > > Let me remind Artem by resending the patch tomorrow.
-> > 
-> > Actually ... the SPI does have the heuristics to probe this chip without
-> > the patch. But there was this discussion about them eventually being
-> > removed. That was a point raised by you I think. Is that still valid?
+On 06/22/2012 01:39 PM, Brian Norris wrote:
+> On Sun, Jun 10, 2012 at 12:08 AM, Shmulik Ladkani
+> <shmulik.ladkani@gmail.com> wrote:
+>> To summarize, return value of the 'mtd_read_oob()' API is
+>> inconsistent (sometimes max_bitflips, other times EUCLEAN), and does not
+>> adhere to return code policy of 'mtd_read()' - return EUCLEAN to the users,
+>> they're not interested with internals such as max_bitflips.
+>>
+>> This might affect users of 'mtd_read_oob()' which might falsely think
+>> the OOB read has failed.
+>>
+>> Mike, care to take a look and amend if necessary?
+>> I think this needs to be fixed pre v3.5 as well.
 > 
-> That was a point raised by Grant.  IIRC, the reason I made the patch
-> is my system does not probe the device without the patch.  I can
-> retest, and if it's true that the patch is not necessarily needed,
-> I will probably let it be.
+> Mike, are you planning on handling this?
+> 
+> I think it would be safe to basically C&P the max_bitflips code from
+> mtd_read() into mtd_read_oob(). This would simply pass through the
+> EUCLEAN that may be returned for OOB-only case (only for my driver?),
+> and it would translate the 'ret_code > 0' case properly for data+OOB
+> reads. I'll resend officially if this looks OK. Or I'll defer to Mike
+> if he's working on this.
 
-116                         ssp2: ssp@80014000 {
-117                                 #address-cells = <1>;
-118                                 #size-cells = <0>;
-119                                 compatible = "fsl,imx28-spi";
-120                                 pinctrl-names = "default";
-121                                 pinctrl-0 = <&spi2_pins_a>;
-122                                 status = "okay";
-123 
-124                                 flash: m25p80@0 {
-125                                         #address-cells = <1>;
-126                                         #size-cells = <1>;
-127                                         compatible = "m25p80";
-128                                         spi-max-frequency = <25000000>;
-129                                         reg = <0>;
-130                                 };
-131                         };
 
-I use this + my SPI patches I submitted recently.
+I'm sorry Brian, I missed Shmulik's post and thought this issue was put to bed
+with the patch that initialized bitflip_threshold before the nand_scan_tail()
+call.
 
-Best regards,
-Marek Vasut
+I will take a look at your patch set that addresses this.  Sorry for dropping
+the ball.
+
+Mike
