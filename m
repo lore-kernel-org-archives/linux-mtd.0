@@ -1,21 +1,20 @@
-Received: from oproxy5.bluehost.com ([2605:dc00:100:2::a5]
- helo=oproxy5-pub.bluehost.com)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjBxC-0006F6-5i
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 16:15:55 +0000
-Message-ID: <4FE88E9A.4040605@xenotime.net>
-Date: Mon, 25 Jun 2012 09:15:22 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
+From: Marek Vasut <marex@denx.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
+Date: Mon, 25 Jun 2012 18:50:10 +0200
+References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
+ <201206251801.22385.marex@denx.de>
+ <20120625161506.GH2342@S2101-09.ap.freescale.net>
+In-Reply-To: <20120625161506.GH2342@S2101-09.ap.freescale.net>
 MIME-Version: 1.0
-To: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-Subject: Re: [PATCH] ubifs: Fix build warning
-References: <1340637580-12711-1-git-send-email-aletes.xgr@gmail.com>
-In-Reply-To: <1340637580-12711-1-git-send-email-aletes.xgr@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-Id: <201206251850.10839.marex@denx.de>
+Cc: manu <manuel.pezzin@free.fr>, patches@linaro.org,
+ devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <artem.bityutskiy@intel.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/25/2012 08:19 AM, Alexandre Pereira da Silva wrote:
+Dear Shawn Guo,
 
-> Fix:
-> fs/ubifs/dir.c: In function 'ubifs_rename':
-> fs/ubifs/dir.c:972:15: warning: 'saved_nlink' may be used uninitialized
-> in this function
+> On Mon, Jun 25, 2012 at 06:01:22PM +0200, Marek Vasut wrote:
+> > Dear Shawn Guo,
+> > 
+> > > On Sat, Jun 23, 2012 at 04:15:18AM +0200, Marek Vasut wrote:
+> > > > So is there any particular reason why this wasn't applied?
+> > > 
+> > > Let me remind Artem by resending the patch tomorrow.
+> > 
+> > Actually ... the SPI does have the heuristics to probe this chip without
+> > the patch. But there was this discussion about them eventually being
+> > removed. That was a point raised by you I think. Is that still valid?
 > 
-> Initilize saved_nlink to 0
+> That was a point raised by Grant.  IIRC, the reason I made the patch
+> is my system does not probe the device without the patch.  I can
+> retest, and if it's true that the patch is not necessarily needed,
+> I will probably let it be.
 
-Does nlink need to be init at all?  is the warning bogus or valid?
+116                         ssp2: ssp@80014000 {
+117                                 #address-cells = <1>;
+118                                 #size-cells = <0>;
+119                                 compatible = "fsl,imx28-spi";
+120                                 pinctrl-names = "default";
+121                                 pinctrl-0 = <&spi2_pins_a>;
+122                                 status = "okay";
+123 
+124                                 flash: m25p80@0 {
+125                                         #address-cells = <1>;
+126                                         #size-cells = <1>;
+127                                         compatible = "m25p80";
+128                                         spi-max-frequency = <25000000>;
+129                                         reg = <0>;
+130                                 };
+131                         };
 
-If the warning is bogus, the preferred solution is:
+I use this + my SPI patches I submitted recently.
 
-#include <linux/compiler-gcc.h>
-...
-	unsigned int uninitialized_var(nlink);
-
-
-> Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-> ---
->  fs/ubifs/dir.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index a6d42ef..d5b8cb1e 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -969,7 +969,7 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
->  	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
->  			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
->  	struct timespec time;
-> -	unsigned int saved_nlink;
-> +	unsigned int saved_nlink = 0;
->  
->  	/*
->  	 * Budget request settings: deletion direntry, new direntry, removing
-
-
-
--- 
-~Randy
+Best regards,
+Marek Vasut
