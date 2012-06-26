@@ -1,19 +1,19 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjWks-0001Hs-Gn
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 14:28:35 +0000
-Received: by bkwj4 with SMTP id j4so4665848bkw.36
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 07:28:32 -0700 (PDT)
-Date: Tue, 26 Jun 2012 17:28:28 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Better comment NAND_BBT_NO_OOB
-Message-ID: <20120626172828.4a458196@pixies.home.jungo.com>
+ id 1SjWlL-0001J4-L2
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 14:29:04 +0000
+Date: Tue, 26 Jun 2012 16:28:55 +0200
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: Re: UBIFS: unlink failure
+Message-ID: <20120626162855.7934f0fa@spider.haslach.nod.at>
+In-Reply-To: <1340720760.3119.142.camel@sauron.fi.intel.com>
+References: <332997dc8907401d45f417c18fd2aace@radon2.swed.at>
+ <1340720760.3119.142.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Am Tue, 26 Jun 2012 17:26:00 +0300
+schrieb Artem Bityutskiy <dedekind1@gmail.com>:
 
-Amend the comment to reflect the fact NAND_BBT_NO_OOB refers to the
-location of the bad block table marker.
+> On Tue, 2012-06-12 at 23:56 +0200, Richard Weinberger wrote:
+> >         dd if=/dev/urandom of=/mnt/x bs=1M count=1
+> >         dd if=/dev/urandom of=/mnt/x bs=1M count=2
+> >         dd if=/dev/urandom of=/mnt/x bs=1M count=10
+> >         dd if=/dev/urandom of=/mnt/x bs=1M count=30
+> >         rm x
+> 
+> rm /mnt/x, not rm x. Then it works.
 
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
----
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 5d9fcb7..211ff67 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -108,7 +108,10 @@ struct nand_bbt_descr {
-  * OOB area. This option is passed to the default bad block table function.
-  */
- #define NAND_BBT_USE_FLASH	0x00020000
--/* Do not store flash based bad block table in OOB area; store it in-band */
-+/*
-+ * Do not store flash based bad block table marker in the OOB area; store it
-+ * in-band.
-+ */
- #define NAND_BBT_NO_OOB		0x00040000
- /*
-  * Do not write new bad block markers to OOB; useful, e.g., when ECC covers
+Hmmmmmmmmmm, I quite sure this is just a typo in the mail.
+Anyway, I'll retest :-D
+
+Thanks,
+//richard
