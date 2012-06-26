@@ -1,21 +1,17 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail.windriver.com ([147.11.1.11])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjaQM-0003zF-Vn
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 18:23:39 +0000
-Message-ID: <4FE9FE1A.9070801@newsguy.com>
-Date: Tue, 26 Jun 2012 11:23:22 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1Sjbql-0006Mf-2s
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 19:55:00 +0000
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+To: benh@kernel.crashing.org
+Subject: [PATCH 2/3] mtd: delete SBC82xx/SBC8560 MTD mapping support
+Date: Tue, 26 Jun 2012 15:54:28 -0400
+Message-Id: <1340740469-31445-3-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <1340740469-31445-1-git-send-email-paul.gortmaker@windriver.com>
+References: <1340740469-31445-1-git-send-email-paul.gortmaker@windriver.com>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
+ linuxppc-dev@lists.ozlabs.org, David Woodhouse <David.Woodhouse@intel.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +21,222 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/22/2012 04:35 PM, Brian Norris wrote:
-> mtd_read_oob() has some unexpected similarities to mtd_read(). For
-> instance, when ops->datbuf != NULL, nand_base.c might return max_bitflips;
-> however, when ops->datbuf == NULL, nand_base's code potentially could
-> return -EUCLEAN (no in-tree drivers do this yet). In any case where the
-> driver might return max_bitflips, we should translate this into an
-> appropriate return code using the bitflip_threshold.
-> 
-> Essentially, mtd_read_oob() duplicates the logic from mtd_read().
-> 
-> This prevents users of mtd_read_oob() from receiving a positive return
-> value (i.e., from max_bitflips) and interpreting it as an unknown error.
+The SBC8260 support was dropped back when we moved from ppc to
+powerpc.  We are now also dropping the support for the EOL SBC8560,
+so we can also delete this mapping support, as they were the only
+users of it.
 
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+ drivers/mtd/maps/Kconfig            |   12 ---
+ drivers/mtd/maps/wr_sbc82xx_flash.c |  174 -----------------------------------
+ 2 files changed, 0 insertions(+), 186 deletions(-)
+ delete mode 100644 drivers/mtd/maps/wr_sbc82xx_flash.c
 
-Reviewed-by Mike Dunn <mikedunn@newsguy.com>
-
-This should fix the problem, but it's still confusing and inconsistent; see below...
-
-
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> Cc: Mike Dunn <mikedunn@newsguy.com>
-> ---
->  drivers/mtd/mtdcore.c |   14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index fcfce24..75288d3 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -860,10 +860,22 @@ EXPORT_SYMBOL_GPL(mtd_panic_write);
->  
->  int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
->  {
-> +	int ret_code;
->  	ops->retlen = ops->oobretlen = 0;
->  	if (!mtd->_read_oob)
->  		return -EOPNOTSUPP;
-> -	return mtd->_read_oob(mtd, from, ops);
-> +	/*
-> +	 * In cases where ops->datbuf != NULL, mtd->_read_oob() can have
-> +	 * semantics similar to mtd->_read(), regarding max bitflips. In other
-> +	 * cases, mtd->_read_oob() may return -EUCLEAN. In all cases, perform
-> +	 * similar logic to mtd_read() (see above).
-> +	 */
-> +	ret_code = mtd->_read_oob(mtd, from, ops);
-> +	if (unlikely(ret_code < 0))
-> +		return ret_code;
-
-
-As Brian explains in the comment, here the return code propagated up could be
--EUCLEAN for an oob-only read (ops->databuf == NULL), which is unlike the
-mtd_read() case, where here only a hard error will be propagated up.  To be
-consistent, nand_do_read_oob(), and non-nand drivers' implementation of
-mtd->_read_oob(), should not return -EUCLEAN.  When (or if) a policy is decided
-for reporting bitflips within the oob area, this will need to be revisited.
-
-Thanks Brian!
-
-
-> +	if (mtd->ecc_strength == 0)
-> +		return 0;	/* device lacks ecc */
-> +	return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
->  }
->  EXPORT_SYMBOL_GPL(mtd_read_oob);
->  
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 185454a..626200a 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -447,18 +447,6 @@ config MTD_UCLINUX
+ 	help
+ 	  Map driver to support image based filesystems for uClinux.
+ 
+-config MTD_WRSBC8260
+-	tristate "Map driver for WindRiver PowerQUICC II MPC82xx board"
+-	depends on (SBC82xx || SBC8560)
+-	select MTD_MAP_BANK_WIDTH_4
+-	select MTD_MAP_BANK_WIDTH_1
+-	select MTD_CFI_I1
+-	select MTD_CFI_I4
+-	help
+-	  Map driver for WindRiver PowerQUICC II MPC82xx board. Drives
+-	  all three flash regions on CS0, CS1 and CS6 if they are configured
+-	  correctly by the boot loader.
+-
+ config MTD_DMV182
+         tristate "Map driver for Dy-4 SVME/DMV-182 board."
+         depends on DMV182
+diff --git a/drivers/mtd/maps/wr_sbc82xx_flash.c b/drivers/mtd/maps/wr_sbc82xx_flash.c
+deleted file mode 100644
+index e7534c8..0000000
+--- a/drivers/mtd/maps/wr_sbc82xx_flash.c
++++ /dev/null
+@@ -1,174 +0,0 @@
+-/*
+- * Map for flash chips on Wind River PowerQUICC II SBC82xx board.
+- *
+- * Copyright (C) 2004 Red Hat, Inc.
+- *
+- * Author: David Woodhouse <dwmw2@infradead.org>
+- *
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <asm/io.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/immap_cpm2.h>
+-
+-static struct mtd_info *sbcmtd[3];
+-
+-struct map_info sbc82xx_flash_map[3] = {
+-	{.name = "Boot flash"},
+-	{.name = "Alternate boot flash"},
+-	{.name = "User flash"}
+-};
+-
+-static struct mtd_partition smallflash_parts[] = {
+-	{
+-		.name =		"space",
+-		.size =		0x100000,
+-		.offset =	0,
+-	}, {
+-		.name =		"bootloader",
+-		.size =		MTDPART_SIZ_FULL,
+-		.offset =	MTDPART_OFS_APPEND,
+-	}
+-};
+-
+-static struct mtd_partition bigflash_parts[] = {
+-	{
+-		.name =		"bootloader",
+-		.size =		0x00100000,
+-		.offset =	0,
+-	}, {
+-		.name =		"file system",
+-		.size =		0x01f00000,
+-		.offset =	MTDPART_OFS_APPEND,
+-	}, {
+-		.name =		"boot config",
+-		.size =		0x00100000,
+-		.offset =	MTDPART_OFS_APPEND,
+-	}, {
+-		.name =		"space",
+-		.size =		0x01f00000,
+-		.offset =	MTDPART_OFS_APPEND,
+-	}
+-};
+-
+-static const char *part_probes[] __initconst = {"cmdlinepart", "RedBoot", NULL};
+-
+-#define init_sbc82xx_one_flash(map, br, or)			\
+-do {								\
+-	(map).phys = (br & 1) ? (br & 0xffff8000) : 0;		\
+-	(map).size = (br & 1) ? (~(or & 0xffff8000) + 1) : 0;	\
+-	switch (br & 0x00001800) {				\
+-	case 0x00000000:					\
+-	case 0x00000800:	(map).bankwidth = 1;	break;	\
+-	case 0x00001000:	(map).bankwidth = 2;	break;	\
+-	case 0x00001800:	(map).bankwidth = 4;	break;	\
+-	}							\
+-} while (0);
+-
+-static int __init init_sbc82xx_flash(void)
+-{
+-	volatile memctl_cpm2_t *mc = &cpm2_immr->im_memctl;
+-	int bigflash;
+-	int i;
+-
+-#ifdef CONFIG_SBC8560
+-	mc = ioremap(0xff700000 + 0x5000, sizeof(memctl_cpm2_t));
+-#else
+-	mc = &cpm2_immr->im_memctl;
+-#endif
+-
+-	bigflash = 1;
+-	if ((mc->memc_br0 & 0x00001800) == 0x00001800)
+-		bigflash = 0;
+-
+-	init_sbc82xx_one_flash(sbc82xx_flash_map[0], mc->memc_br0, mc->memc_or0);
+-	init_sbc82xx_one_flash(sbc82xx_flash_map[1], mc->memc_br6, mc->memc_or6);
+-	init_sbc82xx_one_flash(sbc82xx_flash_map[2], mc->memc_br1, mc->memc_or1);
+-
+-#ifdef CONFIG_SBC8560
+-	iounmap((void *) mc);
+-#endif
+-
+-	for (i=0; i<3; i++) {
+-		int8_t flashcs[3] = { 0, 6, 1 };
+-		int nr_parts;
+-		struct mtd_partition *defparts;
+-
+-		printk(KERN_NOTICE "PowerQUICC II %s (%ld MiB on CS%d",
+-		       sbc82xx_flash_map[i].name,
+-		       (sbc82xx_flash_map[i].size >> 20),
+-		       flashcs[i]);
+-		if (!sbc82xx_flash_map[i].phys) {
+-			/* We know it can't be at zero. */
+-			printk("): disabled by bootloader.\n");
+-			continue;
+-		}
+-		printk(" at %08lx)\n",  sbc82xx_flash_map[i].phys);
+-
+-		sbc82xx_flash_map[i].virt = ioremap(sbc82xx_flash_map[i].phys,
+-						    sbc82xx_flash_map[i].size);
+-
+-		if (!sbc82xx_flash_map[i].virt) {
+-			printk("Failed to ioremap\n");
+-			continue;
+-		}
+-
+-		simple_map_init(&sbc82xx_flash_map[i]);
+-
+-		sbcmtd[i] = do_map_probe("cfi_probe", &sbc82xx_flash_map[i]);
+-
+-		if (!sbcmtd[i])
+-			continue;
+-
+-		sbcmtd[i]->owner = THIS_MODULE;
+-
+-		/* No partitioning detected. Use default */
+-		if (i == 2) {
+-			defparts = NULL;
+-			nr_parts = 0;
+-		} else if (i == bigflash) {
+-			defparts = bigflash_parts;
+-			nr_parts = ARRAY_SIZE(bigflash_parts);
+-		} else {
+-			defparts = smallflash_parts;
+-			nr_parts = ARRAY_SIZE(smallflash_parts);
+-		}
+-
+-		mtd_device_parse_register(sbcmtd[i], part_probes, NULL,
+-					  defparts, nr_parts);
+-	}
+-	return 0;
+-}
+-
+-static void __exit cleanup_sbc82xx_flash(void)
+-{
+-	int i;
+-
+-	for (i=0; i<3; i++) {
+-		if (!sbcmtd[i])
+-			continue;
+-
+-		mtd_device_unregister(sbcmtd[i]);
+-
+-		map_destroy(sbcmtd[i]);
+-
+-		iounmap((void *)sbc82xx_flash_map[i].virt);
+-		sbc82xx_flash_map[i].virt = 0;
+-	}
+-}
+-
+-module_init(init_sbc82xx_flash);
+-module_exit(cleanup_sbc82xx_flash);
+-
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
+-MODULE_DESCRIPTION("Flash map driver for WindRiver PowerQUICC II");
+-- 
+1.7.9.1
