@@ -1,17 +1,20 @@
-Received: from mail.windriver.com ([147.11.1.11])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sjbql-0006Mf-2s
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 19:55:00 +0000
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-To: benh@kernel.crashing.org
-Subject: [PATCH 2/3] mtd: delete SBC82xx/SBC8560 MTD mapping support
-Date: Tue, 26 Jun 2012 15:54:28 -0400
-Message-Id: <1340740469-31445-3-git-send-email-paul.gortmaker@windriver.com>
-In-Reply-To: <1340740469-31445-1-git-send-email-paul.gortmaker@windriver.com>
-References: <1340740469-31445-1-git-send-email-paul.gortmaker@windriver.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- linuxppc-dev@lists.ozlabs.org, David Woodhouse <David.Woodhouse@intel.com>,
- linux-mtd@lists.infradead.org
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjcBt-0007Ll-P7
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 20:16:51 +0000
+Received: from beldin (unknown [IPv6:2a01:e35:2f37:a360:1036:e451:c7cd:ed7b])
+ by smtp1-g21.free.fr (Postfix) with ESMTP id BE35094019C
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 22:16:41 +0200 (CEST)
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Linux 3.5-rc2 and ubifs as root
+References: <87k3z616s4.fsf@free.fr>
+Date: Tue, 26 Jun 2012 22:16:40 +0200
+In-Reply-To: <87k3z616s4.fsf@free.fr> (Robert Jarzmik's message of "Sun, 17
+ Jun 2012 14:07:07 +0200")
+Message-ID: <87hatxzv4n.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,222 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The SBC8260 support was dropped back when we moved from ppc to
-powerpc.  We are now also dropping the support for the EOL SBC8560,
-so we can also delete this mapping support, as they were the only
-users of it.
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-Cc: David Woodhouse <David.Woodhouse@intel.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- drivers/mtd/maps/Kconfig            |   12 ---
- drivers/mtd/maps/wr_sbc82xx_flash.c |  174 -----------------------------------
- 2 files changed, 0 insertions(+), 186 deletions(-)
- delete mode 100644 drivers/mtd/maps/wr_sbc82xx_flash.c
+> Hi all,
+>
+> I have my root partition on a UBIFS, on top on my docg3 MTD.
+> With version 3.4, my kernel boots fine. With version 3.5-rc2, my kernel can't
+> find the root partition.
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 185454a..626200a 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -447,18 +447,6 @@ config MTD_UCLINUX
- 	help
- 	  Map driver to support image based filesystems for uClinux.
- 
--config MTD_WRSBC8260
--	tristate "Map driver for WindRiver PowerQUICC II MPC82xx board"
--	depends on (SBC82xx || SBC8560)
--	select MTD_MAP_BANK_WIDTH_4
--	select MTD_MAP_BANK_WIDTH_1
--	select MTD_CFI_I1
--	select MTD_CFI_I4
--	help
--	  Map driver for WindRiver PowerQUICC II MPC82xx board. Drives
--	  all three flash regions on CS0, CS1 and CS6 if they are configured
--	  correctly by the boot loader.
--
- config MTD_DMV182
-         tristate "Map driver for Dy-4 SVME/DMV-182 board."
-         depends on DMV182
-diff --git a/drivers/mtd/maps/wr_sbc82xx_flash.c b/drivers/mtd/maps/wr_sbc82xx_flash.c
-deleted file mode 100644
-index e7534c8..0000000
---- a/drivers/mtd/maps/wr_sbc82xx_flash.c
-+++ /dev/null
-@@ -1,174 +0,0 @@
--/*
-- * Map for flash chips on Wind River PowerQUICC II SBC82xx board.
-- *
-- * Copyright (C) 2004 Red Hat, Inc.
-- *
-- * Author: David Woodhouse <dwmw2@infradead.org>
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/slab.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/immap_cpm2.h>
--
--static struct mtd_info *sbcmtd[3];
--
--struct map_info sbc82xx_flash_map[3] = {
--	{.name = "Boot flash"},
--	{.name = "Alternate boot flash"},
--	{.name = "User flash"}
--};
--
--static struct mtd_partition smallflash_parts[] = {
--	{
--		.name =		"space",
--		.size =		0x100000,
--		.offset =	0,
--	}, {
--		.name =		"bootloader",
--		.size =		MTDPART_SIZ_FULL,
--		.offset =	MTDPART_OFS_APPEND,
--	}
--};
--
--static struct mtd_partition bigflash_parts[] = {
--	{
--		.name =		"bootloader",
--		.size =		0x00100000,
--		.offset =	0,
--	}, {
--		.name =		"file system",
--		.size =		0x01f00000,
--		.offset =	MTDPART_OFS_APPEND,
--	}, {
--		.name =		"boot config",
--		.size =		0x00100000,
--		.offset =	MTDPART_OFS_APPEND,
--	}, {
--		.name =		"space",
--		.size =		0x01f00000,
--		.offset =	MTDPART_OFS_APPEND,
--	}
--};
--
--static const char *part_probes[] __initconst = {"cmdlinepart", "RedBoot", NULL};
--
--#define init_sbc82xx_one_flash(map, br, or)			\
--do {								\
--	(map).phys = (br & 1) ? (br & 0xffff8000) : 0;		\
--	(map).size = (br & 1) ? (~(or & 0xffff8000) + 1) : 0;	\
--	switch (br & 0x00001800) {				\
--	case 0x00000000:					\
--	case 0x00000800:	(map).bankwidth = 1;	break;	\
--	case 0x00001000:	(map).bankwidth = 2;	break;	\
--	case 0x00001800:	(map).bankwidth = 4;	break;	\
--	}							\
--} while (0);
--
--static int __init init_sbc82xx_flash(void)
--{
--	volatile memctl_cpm2_t *mc = &cpm2_immr->im_memctl;
--	int bigflash;
--	int i;
--
--#ifdef CONFIG_SBC8560
--	mc = ioremap(0xff700000 + 0x5000, sizeof(memctl_cpm2_t));
--#else
--	mc = &cpm2_immr->im_memctl;
--#endif
--
--	bigflash = 1;
--	if ((mc->memc_br0 & 0x00001800) == 0x00001800)
--		bigflash = 0;
--
--	init_sbc82xx_one_flash(sbc82xx_flash_map[0], mc->memc_br0, mc->memc_or0);
--	init_sbc82xx_one_flash(sbc82xx_flash_map[1], mc->memc_br6, mc->memc_or6);
--	init_sbc82xx_one_flash(sbc82xx_flash_map[2], mc->memc_br1, mc->memc_or1);
--
--#ifdef CONFIG_SBC8560
--	iounmap((void *) mc);
--#endif
--
--	for (i=0; i<3; i++) {
--		int8_t flashcs[3] = { 0, 6, 1 };
--		int nr_parts;
--		struct mtd_partition *defparts;
--
--		printk(KERN_NOTICE "PowerQUICC II %s (%ld MiB on CS%d",
--		       sbc82xx_flash_map[i].name,
--		       (sbc82xx_flash_map[i].size >> 20),
--		       flashcs[i]);
--		if (!sbc82xx_flash_map[i].phys) {
--			/* We know it can't be at zero. */
--			printk("): disabled by bootloader.\n");
--			continue;
--		}
--		printk(" at %08lx)\n",  sbc82xx_flash_map[i].phys);
--
--		sbc82xx_flash_map[i].virt = ioremap(sbc82xx_flash_map[i].phys,
--						    sbc82xx_flash_map[i].size);
--
--		if (!sbc82xx_flash_map[i].virt) {
--			printk("Failed to ioremap\n");
--			continue;
--		}
--
--		simple_map_init(&sbc82xx_flash_map[i]);
--
--		sbcmtd[i] = do_map_probe("cfi_probe", &sbc82xx_flash_map[i]);
--
--		if (!sbcmtd[i])
--			continue;
--
--		sbcmtd[i]->owner = THIS_MODULE;
--
--		/* No partitioning detected. Use default */
--		if (i == 2) {
--			defparts = NULL;
--			nr_parts = 0;
--		} else if (i == bigflash) {
--			defparts = bigflash_parts;
--			nr_parts = ARRAY_SIZE(bigflash_parts);
--		} else {
--			defparts = smallflash_parts;
--			nr_parts = ARRAY_SIZE(smallflash_parts);
--		}
--
--		mtd_device_parse_register(sbcmtd[i], part_probes, NULL,
--					  defparts, nr_parts);
--	}
--	return 0;
--}
--
--static void __exit cleanup_sbc82xx_flash(void)
--{
--	int i;
--
--	for (i=0; i<3; i++) {
--		if (!sbcmtd[i])
--			continue;
--
--		mtd_device_unregister(sbcmtd[i]);
--
--		map_destroy(sbcmtd[i]);
--
--		iounmap((void *)sbc82xx_flash_map[i].virt);
--		sbc82xx_flash_map[i].virt = 0;
--	}
--}
--
--module_init(init_sbc82xx_flash);
--module_exit(cleanup_sbc82xx_flash);
--
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
--MODULE_DESCRIPTION("Flash map driver for WindRiver PowerQUICC II");
+OK, I found out, wrong manipulation on my part, the cmdline mtdparts on my
+3.5-rc2 was corrupted ... I rechecked, and everything works as expected.
+
+Cheers.
+
 -- 
-1.7.9.1
+Robert
