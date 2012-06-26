@@ -1,20 +1,18 @@
-Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjcBt-0007Ll-P7
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 20:16:51 +0000
-Received: from beldin (unknown [IPv6:2a01:e35:2f37:a360:1036:e451:c7cd:ed7b])
- by smtp1-g21.free.fr (Postfix) with ESMTP id BE35094019C
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 22:16:41 +0200 (CEST)
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Linux 3.5-rc2 and ubifs as root
-References: <87k3z616s4.fsf@free.fr>
-Date: Tue, 26 Jun 2012 22:16:40 +0200
-In-Reply-To: <87k3z616s4.fsf@free.fr> (Robert Jarzmik's message of "Sun, 17
- Jun 2012 14:07:07 +0200")
-Message-ID: <87hatxzv4n.fsf@free.fr>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sjdbh-0001uC-7D
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 21:47:35 +0000
+Received: by pbbrq13 with SMTP id rq13so682365pbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 14:47:31 -0700 (PDT)
+Message-ID: <4FEA2DC1.9090003@gmail.com>
+Date: Tue, 26 Jun 2012 14:46:41 -0700
+From: Tomer Barletz <barletz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: Check mtdoffset is not larger than mtd.size in
+ case of a bad block.
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Robert Jarzmik <robert.jarzmik@free.fr> writes:
+mtdoffset is being tested against mtd.size in the outer two loops, but 
+the third nested one does not test against it.
+In case of a bad block we'll try to access an out of bounds offset in 
+the next MEMGETBADBLOCK ioctl, which will fail with EINVAL.
+In case mtdoffset is indeed larger than the partition size, we need to 
+bail, since there are not enough "good" blocks to complete the write.
 
-> Hi all,
->
-> I have my root partition on a UBIFS, on top on my docg3 MTD.
-> With version 3.4, my kernel boots fine. With version 3.5-rc2, my kernel can't
-> find the root partition.
+Signed-off-by: Tomer Barletz <barletz@gmail.com>
+---
+  nandwrite.c |    5 +++++
+  1 files changed, 5 insertions(+), 0 deletions(-)
 
-OK, I found out, wrong manipulation on my part, the cmdline mtdparts on my
-3.5-rc2 was corrupted ... I rechecked, and everything works as expected.
+diff --git a/nandwrite.c b/nandwrite.c
+index a42f7c9..8bd00c1 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -399,6 +399,11 @@ int main(int argc, char * const argv[])
 
-Cheers.
-
+  				if (baderaseblock) {
+  					mtdoffset = blockstart + ebsize_aligned;
++
++					if (mtdoffset > mtd.size) {
++						perror("Too many bad blocks - cannot complete request.");
++						goto closeall;
++					}
+  				}
+  				offs +=  ebsize_aligned / blockalign;
+  			} while (offs < blockstart + ebsize_aligned);
 -- 
-Robert
+1.7.1
+
+
+--Tomer
