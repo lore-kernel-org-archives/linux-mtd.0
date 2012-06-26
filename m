@@ -1,20 +1,22 @@
-From: Marek Vasut <marex@denx.de>
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] mtd/m25p80: add device tree probe support
-Date: Tue, 26 Jun 2012 13:47:01 +0200
-References: <1311601063-16581-1-git-send-email-shawn.guo@linaro.org>
- <201206251850.10839.marex@denx.de>
- <20120626081546.GB4928@S2101-09.ap.freescale.net>
-In-Reply-To: <20120626081546.GB4928@S2101-09.ap.freescale.net>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjUcM-0005Xm-Dd
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 12:11:38 +0000
+Received: by wgbds1 with SMTP id ds1so3519152wgb.18
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 05:11:29 -0700 (PDT)
+Date: Tue, 26 Jun 2012 15:11:19 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
+Message-ID: <20120626151119.713859dd@pixies.home.jungo.com>
+In-Reply-To: <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <201206261347.01995.marex@denx.de>
-Cc: manu <manuel.pezzin@free.fr>, patches@linaro.org,
- devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <artem.bityutskiy@intel.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Shawn Guo,
+Hi Brian,
 
-> On Mon, Jun 25, 2012 at 06:50:10PM +0200, Marek Vasut wrote:
-> > 116                         ssp2: ssp@80014000 {
-> > 117                                 #address-cells = <1>;
-> > 118                                 #size-cells = <0>;
-> > 119                                 compatible = "fsl,imx28-spi";
-> > 120                                 pinctrl-names = "default";
-> > 121                                 pinctrl-0 = <&spi2_pins_a>;
-> > 122                                 status = "okay";
-> > 123
-> > 124                                 flash: m25p80@0 {
-> > 125                                         #address-cells = <1>;
-> > 126                                         #size-cells = <1>;
-> > 127                                         compatible = "m25p80";
-> > 128                                         spi-max-frequency =
-> > <25000000>; 129                                         reg = <0>;
-> > 130                                 };
-> > 131                         };
-> > 
-> > I use this + my SPI patches I submitted recently.
-> 
-> I do not have the flash on my imx28-evk board, but I just tested on
-> imx6q-sabrelite, and yes, it can be probed without the patch.  I'm
-> fine then.
+On Fri, 22 Jun 2012 16:35:39 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index fcfce24..75288d3 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -860,10 +860,22 @@ EXPORT_SYMBOL_GPL(mtd_panic_write);
+>  
+>  int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+>  {
+> +	int ret_code;
+>  	ops->retlen = ops->oobretlen = 0;
+>  	if (!mtd->_read_oob)
+>  		return -EOPNOTSUPP;
+> -	return mtd->_read_oob(mtd, from, ops);
+> +	/*
+> +	 * In cases where ops->datbuf != NULL, mtd->_read_oob() can have
 
-Good, let's discard this patch and close this issue :-)
+s/can have/has/
 
-Best regards,
-Marek Vasut
+> +	 * semantics similar to mtd->_read(), regarding max bitflips. In other
+
+Please consider:
+s/regarding max bitflips/returning a non-negative integer representing max bitflips/
+
+Other than these tiny comment amendments,
+
+Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+
+Thanks,
+Shmulik
