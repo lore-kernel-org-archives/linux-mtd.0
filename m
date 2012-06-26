@@ -1,29 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjXpn-0004vf-I0
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 15:37:44 +0000
-Message-ID: <1340725301.3119.146.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: Use the mirror BBT descriptor when reading
- its version
+ id 1SjY6T-0005bI-0Q
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 15:54:57 +0000
+Message-ID: <1340726334.3119.150.camel@sauron.fi.intel.com>
+Subject: Re: Patch MTD: increase time out value for buffer program
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 26 Jun 2012 18:41:41 +0300
-In-Reply-To: <87y5nczgo6.fsf@free.fr>
-References: <20120610135812.01dce4e7@pixies.home.jungo.com>
- <CAN8TOE_Li5bysfUS_MPPaBOF-vC64s3j-feTqfUJQsR6c_yb+A@mail.gmail.com>
- <1339497736.2401.24.camel@sauron.fi.intel.com>
- <CAN8TOE9icRO8t_qwn-k3R+Q1y1X39-PZU=devSW07YpDW_KqNQ@mail.gmail.com>
- <1340017963.2420.29.camel@sauron.fi.intel.com> <87ehpc1oyb.fsf@free.fr>
- <1340051296.1971.5.camel@koala> <87y5nczgo6.fsf@free.fr>
+To: "Changming Chen (changmingche)" <changmingche@micron.com>
+Date: Tue, 26 Jun 2012 18:58:54 +0300
+In-Reply-To: <6ACDE3A4C2F7E94C8DBB6FCC0D06A0873DA88046@NTXBOIMBX05.micron.com>
+References: <mailman.0.1338988276.11201.linux-mtd@lists.infradead.org>
+ <6ACDE3A4C2F7E94C8DBB6FCC0D06A0873DA88046@NTXBOIMBX05.micron.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-cSCSa4ewgrn/ZKuT47IE"
+ boundary="=-wTSv4k6jD8Dmc46LJRnG"
 Mime-Version: 1.0
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Youxin He \(youxinhe\)" <youxinhe@micron.com>,
+ "Frank Liu \(frankliu\)" <frankliu@micron.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,37 +29,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-cSCSa4ewgrn/ZKuT47IE
+--=-wTSv4k6jD8Dmc46LJRnG
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-06-24 at 20:52 +0200, Robert Jarzmik wrote:
-> > UBI does not do anything about storing the bad block table. UBI relies
-> > on the MTD layer - it may mark a block as bad and MTD should take care
-> > of storing this information either in the OOB or in the BBT on in both
-> > places.
-> Urg ... I was under the impression UBI stored that information in its con=
-trol
-> data, too bad for me ...
+On Wed, 2012-06-13 at 04:29 +0000, Changming Chen (changmingche) wrote:
+> The time out value(1ms:typical HZ defined smaller than 1000) defined for =
+function "do_write_buffer" in "cfi_cmdset_0002.c" is not enough. Because th=
+e enlargement of buffer size, much time will cost for buffer program. It's =
+has risk that time out will be triggered before buffer program finished and=
+ make misjudge for buffer program. we suggest that 4ms is more appropriate =
+compare to 1ms. This change has no impact of program performance.
+>=20
+> diff --git a/a/drivers/mtd/chips/cfi_cmdset_0002.c b/b/drivers/mtd/chips/=
+cfi_cmd
+> index 9d93c45..7da8fca 100755
+> --- a/a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1312,7 +1312,7 @@ static int __xipram do_write_buffer(struct map_info=
+ *map,=20
+>          struct cfi_private *cfi =3D map->fldrv_priv;
+>          unsigned long timeo =3D jiffies + HZ;
+>          /* see comments in do_write_oneword() regarding uWriteTimeo. */
+> -        unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
+> +        unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 4;
 
-No, UBI calls 'mtd_block_markbad()' and relies on MTD marking the block
-as bad - either by writing to OOB or using a bad block table.
-
-> > There is no DoC maintainer, you can consider yourself to be the
-> > maintainer, because you and Mike are the only people who care about thi=
-s
-> > AFAICS.
-> Same as Mike, I don't have the hardware. If somebody has some spare hardw=
-are to
-> provide, I'd gladly take over the maintenership.
-
-I do not have any HW with those, unfortunately.
+No, sorry, this is not a fix, this is a band-aid. The whole HZ/1000
+thing is broken. You should not use HZ at all. For this driver it looks
+like you should use ' schedule_timeout()' with the right timout instead
+of 'schedule()' and get rid of all the HZ and jiffies stuff.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-cSCSa4ewgrn/ZKuT47IE
+--=-wTSv4k6jD8Dmc46LJRnG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -73,19 +71,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6dg1AAoJECmIfjd9wqK0qAMP/RmdixNeLkUuldiW4cbUFDtx
-X8H+jgtGzSWlZOLUFneUIwLK1Tt+9NjMCm8DlRH/ar329j2+QwYJ02F/CnG2vYai
-IJ9csDtpUssV/NZW3mpX/xWO+VK5mPFIyKrYMDQjI/huNkgkFxh5Ejn2I3nFTKHD
-Ts22UlGA0RqFO6QmEfw1T84Dv86tEaSqvnLgONAPariPMNRolSkJz2GpBLakJJlY
-L8rr3QOdM8JbkjV2guxk3Icvq6wEjNVCzZC3/w2n+6TAjxjCK+KmfGvoOr/7D7Ez
-RiZc7+Bm9OyUPZyZGXdlq9VtrPsuZNskJ8ImoIDEeVMgh95nVI9s+qtFZ4UDMw6s
-2CLJgYwDtLX7ENVUPJF8+DNgF1pepzZz+nlQSCizK4ZqbwLLTifof5BI/6/w7YQg
-qehl8ssLICAbNeUJ+MT45rHdC60z72Ux1gKSH9cr6jmGYo0QibEKugAmMOhV+Wpi
-8MZbZo+Ben0dH/ot0D7y4w8uQuiuWx+E2ftVQibH8iG5qnhaln7BZdl2hETK8/ct
-SXkOm4UntPQBeNvML+2gmiCF4DQGR8fW1dv4NLavbuvxhlYm9kgcMcCUwF7oxtJe
-BdODSqps3BPHwt0jHkLz4BMpvfut9Cua/SSs05IPy5c4CK9ieJ5Y/uktnboN43Jj
-N4r00dnMzP1ty0dsG4K7
-=9Ytj
+iQIcBAABAgAGBQJP6dw+AAoJECmIfjd9wqK0WZkQALxwheOGn83uJhSMP6uauXtY
+Z7S1HzecdsTuEpOJIGHgF5cEZLBfaRFf0Yf1Rye+jjjNPYBevqDeaLVFIz5Nwisy
+k04u12bMEcmfRYzSsJE1WL/Foejr2zLwclTLg4sk90Kx3SX+A46dAErYcTIxFQcd
+0xigqouxQjOmzWnkNCzyyTmqfvMA692Ovc3Fp5JUFW6bvaMjGswblkowhqKB3cbE
+UqePE3q0xgFwCkvFJpDMQh0b8eAjdZKlnVCXiVqoXikc7wTkvTDV1yx3JyJe8sCL
+94cXWMq760j1qctDPLlxCHPylKUS+chTOZunIwJFIAKGYhzPDkaUwJ0aWsxQ4mtL
+gF9V6cPiEgyLngVjUgWcPIw4FGe/3iTOTuYE3HyVEZ8oa8S7gpvIr/JTTypKiajK
+U77OgXv6vsSHfSjAGBTB8Uep6Ji1ESi8q5jGQaPcollxMJ9vo3RJ3ju90jnou8NF
+wziAb0Kyrlw6e8OOdJm3nSRYvEgI4wFXWuS7N1FDCyAC5kUDGgeVjOKrTTRcWIdh
+8xz9ZhZiCJ5JcKfA+JA7kL8E3iHCJtFoeqj46adOZ8IFIIPypY530YFgC5avn30+
+XlUieq3UyPx5ab51HldF0WgqdqbW6dNZ96Xo4303Y2u7SIOXXOHQxpiqcgYPiOx7
+Podn5vRF7JTPOR/PyhJM
+=XZ7M
 -----END PGP SIGNATURE-----
 
---=-cSCSa4ewgrn/ZKuT47IE--
+--=-wTSv4k6jD8Dmc46LJRnG--
