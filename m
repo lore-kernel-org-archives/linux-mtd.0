@@ -1,21 +1,21 @@
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sjyep-0002cS-Rl
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 20:16:13 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org,
+ artem.bityutskiy@linux.intel.com
+Subject: Re: [PATCH] MTD: Fix bogus inequation
+Date: Wed, 27 Jun 2012 22:16:06 +0200
+References: <1340476843-2662-1-git-send-email-marex@denx.de>
+ <1340805336.3070.12.camel@sauron.fi.intel.com>
+In-Reply-To: <1340805336.3070.12.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20120627193039.GF25319@n2100.arm.linux.org.uk>
-References: <1340812275-1197-1-git-send-email-stigge@antcom.de>
- <20120627191542.GC25319@n2100.arm.linux.org.uk>
- <CAAAP30Fdr2_tcgMYjCirVPCPTtrUgbeMb=7j=69wGtvJeiLsOA@mail.gmail.com>
- <20120627193039.GF25319@n2100.arm.linux.org.uk>
-Date: Wed, 27 Jun 2012 16:49:54 -0300
-Message-ID: <CAAAP30HE++jF084LZbG+yMgddKtwqUAwVxuiXr4RPD0B4-H_8A@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mtd: lpc32xx_slc: Select AMBA_PL08X in Kconfig
-From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com, lars@metafoo.de,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, dedekind1@gmail.com,
- linux-kernel@vger.kernel.org, kevin.wells@nxp.com, b32955@freescale.com,
- linux-mtd@lists.infradead.org, hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201206272216.07122.marex@denx.de>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 27, 2012 at 4:30 PM, Russell King - ARM Linux
-<linux@arm.linux.org.uk> wrote:
-> Well, the DMA engine API gets stubbed out when no DMA engine is selected,
-> so I'm not sure why spi-pl022 needs all those ifdefs (yes, you may wish
-> to do that if you want to shrink your driver private struct size.)
->
-> Provided the driver is capable of working without DMA engine, I don't see
-> any reason what so ever to make that driver select or depend on DMA engine
-> stuff.
+Dear Artem Bityutskiy,
 
-Ok, so this one can be dropped.
+> On Sat, 2012-06-23 at 20:40 +0200, Marek Vasut wrote:
+> > Signed-off-by: Marek Vasut <marex@denx.de>
+> > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> > Cc: David Woodhouse <David.Woodhouse@intel.com>
+> > ---
+> > 
+> >  drivers/mtd/devices/Kconfig |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Pushed to l2-mtd.git, thanks!
 
-It was proposed because of an build error in the past, but it's not
-happening anymore.
+Heh, you're welcome :-)
+
+Best regards,
+Marek Vasut
