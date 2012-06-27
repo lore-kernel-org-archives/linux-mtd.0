@@ -1,17 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjrwM-00056n-Ff
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 13:05:50 +0000
-Message-ID: <1340802593.3070.3.camel@sauron.fi.intel.com>
-Subject: Re: mkfs.ubifs: Exclude path arg
+ id 1Sjs0z-0005fJ-1Q
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 13:10:38 +0000
+Message-ID: <1340802877.3070.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: change "AMD" manuf. ID to "AMD/Spansion"
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexey <alexey.knyshev@gmail.com>
-Date: Wed, 27 Jun 2012 16:09:53 +0300
-In-Reply-To: <1365970.7M11Fyf9F7@alexey-desktop.localdomain>
-References: <1365970.7M11Fyf9F7@alexey-desktop.localdomain>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 27 Jun 2012 16:14:37 +0300
+In-Reply-To: <1340234042-28917-1-git-send-email-computersforpeace@gmail.com>
+References: <1340234042-28917-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-qUY8pN4BN2mU/jFPG5V8"
+ boundary="=-5Am/2J5Hxaa20UMnHZQO"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,25 +25,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-qUY8pN4BN2mU/jFPG5V8
+--=-5Am/2J5Hxaa20UMnHZQO
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-06-20 at 16:52 +0400, Alexey wrote:
-> --exclude PATH (-z PATH) argument for mkfs.ubifs to exclude PATH (relativ=
-e to=20
-> the root)
+On Wed, 2012-06-20 at 16:14 -0700, Brian Norris wrote:
+> This manufacturer ID is used under the name Spansion.
+>=20
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Hi, no objections to the feature in general, but please, split you large
-patch and send a nice patch-set instead - reviewable and with one step
-per patch. Please, also send patches in-line, with a commit message. Use
-"git format-patch" and "git send-email". Thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-qUY8pN4BN2mU/jFPG5V8
+--=-5Am/2J5Hxaa20UMnHZQO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6wYhAAoJECmIfjd9wqK0RXsQALcHCi9mO61XEQ6hzGZVDrCo
-/5sbvsb68u4ijoLz5L0FH+eRInDE0jRzuCc2Dh/R1wKInwLpB5JYtdWy4w0PNFyK
-7+FE7Mt2J7yJQCGWRPTuAsu6EUmZwUXEtSicWRPRY+X5rxAXRYyLDVnUUCTIy/Ie
-IfAPhXEV8sNNENxa+w49rNAYrFXjHX77JUv4cycsYAOvlocvMW8mR2zUuHT7Jknd
-/xawxcd5Xe6ZZK0gwqdhjzkh1l5PZCvEHBtjJADeaBzS2wzbq9lySVvEG3EfOery
-eDFZdTHHP8B+p8cKV4m5rBRbfvjjX4FHg8nfR2brDnK2b8tPNenq2szvkFgQnIK8
-sV2QOEKJzGY18N0VNtLo9LURHWJMRISjdvCzp94qO26NJe4rT33P4+9jzA1oyHtj
-G1rsEtObGCh2CRIcC2MPWcuZLBPZyyKfdQitYH0DZUGx8WdFEakdsVPT98/gLlWI
-izEogqaoIcjTSJiNYebgfKzJhA8jQhFB3F8A9dgjZ0xVDl3aUBi18pGwMYVVoltw
-AdVnLhMR/BnfEFAx8orxbDu+GqsftKBUUawU1S+ejhPiqweShUWpL8gLcg0KJM7k
-8PcYoI1Fu1jI7SwHaGyE9LVecrak0Nl7W4t3VxRAaeto0Rs7Fq8XlOdOxHjfsRRK
-NkFIrBK1/GRAUf5gndKG
-=v2/o
+iQIcBAABAgAGBQJP6wc9AAoJECmIfjd9wqK0DR4P/2GirqU5ra3lOFz33JxiqcSQ
+NtBaf7iXNz7ILozzwZQgmOMO7K3/CDdOKVQk5U9RAcrufF04y7b7LAoURFLsXwMA
+GXt7Qp+uhInlO33lzKEof32GmY30/nwk1P42nM4e81i8qqIR0hHquoycdL5kDOiU
+5gdPfd4ztxs21ufQr+NcP4qK6N1T0U9dNeRGUoYsdCs5LxEEeYuOK3EvRDCIHh9+
+t70XMucF4eq3HYZo4vHL0TU3jy2zR1zwsW9XQpj4/3bWem1QuySINzHr1Pg1W7iH
+hQQIWZLq/Xi3M2//nNi5i+VrjjirBUQD+jEQiwpe/52+ZLUjIDfepsCoXatAVLbU
+rw4PqUgsOIMqGBbf4FiVDbCaKj30p2SKPRKXLoY4257et+PUfpGnLOcz4snHL2o8
+JHUF1Nlms4w+0/N2yjS9qxUbP7LBP6e5/VeKSkfoNE45aRfxs3CYIHJF+gQJpx6d
+2+BnRzGQnsGRECBv9QhRa9sJRca3Wj/pCbAs6rij2LwH1U587RpXRYnlarQ5t/pI
+sMt3ay1NfMZ9BEolGZXraYosB4KtL4tCEfyBnO0v+8yO6el/TZtu5BRFFkoM4iFS
+IOuVxC6nEJemc7gGTSc3yArSYRF/9euMIhMWnolQT27ztQ976ecktLB9/eGxfCz9
+E+B9pMDUw0+WZzQMnQDC
+=WL9N
 -----END PGP SIGNATURE-----
 
---=-qUY8pN4BN2mU/jFPG5V8--
+--=-5Am/2J5Hxaa20UMnHZQO--
