@@ -1,21 +1,18 @@
-Message-ID: <4FEB2619.8020000@antcom.de>
-Date: Wed, 27 Jun 2012 17:26:17 +0200
 From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v7] MTD: LPC32xx SLC NAND driver
-References: <1339064536-20553-1-git-send-email-stigge@antcom.de>
- <1340794007.29342.50.camel@sauron.fi.intel.com> <4FEAF90B.5030809@antcom.de>
- <1340800392.1799.17.camel@sauron.fi.intel.com>
-In-Reply-To: <1340800392.1799.17.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: dedekind1@gmail.com, linux-mtd@lists.infradead.org, aletes.xgr@gmail.com,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, dwmw2@infradead.org,
+ kevin.wells@nxp.com, srinivas.bakki@nxp.com,
+ linux-arm-kernel@lists.infradead.org, hechtb@googlemail.com,
+ lars@metafoo.de, b32955@freescale.com, leiwen@marvell.com,
+ linux@arm.linux.org.uk
+Subject: [PATCH 4/4] mtd: lpc32xx_slc: Make probe() return -EPROBE_DEFER if
+ necessary
+Date: Wed, 27 Jun 2012 17:51:15 +0200
+Message-Id: <1340812275-1197-4-git-send-email-stigge@antcom.de>
+In-Reply-To: <1340812275-1197-1-git-send-email-stigge@antcom.de>
+References: <1340812275-1197-1-git-send-email-stigge@antcom.de>
+Cc: Roland Stigge <stigge@antcom.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/27/2012 02:33 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-06-27 at 14:14 +0200, Roland Stigge wrote:
->> Thanks for the note! I'm sending an incremental patch. There was 
->> actually only one place in the two functions that could fail
->> (return code of lpc32xx_xfer()).
-> 
-> Could you please check the MCL patch as well and re-send it against
-> the l2 tree?
-> 
-> I've squashed your change into the driver and pushed out, thanks!
+Via of_get_named_gpio(), wp_gpio can become -EPROBE_DEFER which now makes
+probe() return -EPROBE_DEFER as well to wait until the gpio controller is
+probed before trying to probe lpc32xx_slc again.
 
-Yes, thanks!
+Signed-off-by: Roland Stigge <stigge@antcom.de>
+Acked-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+---
+ drivers/mtd/nand/lpc32xx_slc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-Will post an updated MLC against l2-mtd later today.
-
-Roland
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index 4e8db3a..142a91d 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -821,6 +821,8 @@ static int __devinit lpc32xx_nand_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "Missing platform data\n");
+ 		return -ENOENT;
+ 	}
++	if (host->ncfg->wp_gpio == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
+ 	if (gpio_is_valid(host->ncfg->wp_gpio) &&
+ 			gpio_request(host->ncfg->wp_gpio, "NAND WP")) {
+ 		dev_err(&pdev->dev, "GPIO not available\n");
+-- 
+1.7.10.4
