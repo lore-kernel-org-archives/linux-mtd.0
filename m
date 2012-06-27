@@ -1,19 +1,26 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjonU-0005NE-OX
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 09:44:29 +0000
-Message-ID: <1340790509.29342.16.camel@sauron.fi.intel.com>
-Subject: Re: Overrule mtd "ro" ?
+ id 1Sjosu-0006TA-Cc
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 09:50:05 +0000
+Message-ID: <1340790846.29342.19.camel@sauron.fi.intel.com>
+Subject: Re: mtd nand erase and bad block
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Vellemans, Noel" <Noel.Vellemans@visionBMS.com>
-Date: Wed, 27 Jun 2012 12:48:29 +0300
-In-Reply-To: <1531E53627F1F749B4FE809BF2A4EB670345A94E@WETMEX10.loepfe.com>
-References: <1531E53627F1F749B4FE809BF2A4EB670345A94E@WETMEX10.loepfe.com>
+To: Angus CLARK <angus.clark@st.com>
+Date: Wed, 27 Jun 2012 12:54:06 +0300
+In-Reply-To: <4FDEF60A.7010607@st.com>
+References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
+ <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
+ <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
+ <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
+ <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
+ <20120601175407.7c39a8fb@halley>
+ <1338898670.2507.48.camel@sauron.fi.intel.com> <4FDEF60A.7010607@st.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-+5LqdFx2QSjRjQWwqAH6"
+ boundary="=-SNBX0kPGhT+Vu9eIH0Vc"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +32,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-+5LqdFx2QSjRjQWwqAH6
+--=-SNBX0kPGhT+Vu9eIH0Vc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-06-14 at 10:05 +0200, Vellemans, Noel wrote:
-> Hi all,
+On Mon, 2012-06-18 at 10:34 +0100, Angus CLARK wrote:
+> Hi Artem,
 >=20
-> I've a rather simple question, don't know if it is the good place to
-> ask, but I'll give it a go.
+> On 06/05/2012 01:17 PM, Artem Bityutskiy wrote:
+> > On Fri, 2012-06-01 at 17:54 +0300, Shmulik Ladkani wrote:
+> >>
+> >> My personal preference would be:
+> >> 1. A new ioctl (MEMSCRUB?)
+> >> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
+> >> 3. global debugfs flag
+> >>
+> > Yes, I guess option 1 is the best I think. Option 2 needs too much work=
+.
 >=20
->=20
-> If I have a mtd device that has been mounted ad READ-only.
-> For example because I've injected kernel command line parameters
-> mtdparts=3Datmel_nand:4M(BOOT)ro,16M(l1)ro.
->=20
-> Is there any way on the kernel "prompt" to over-rule this "ro" behavior
-> and to make it writable.
+> Are you ok with the name MEMSCRUB?  I know previously you have objected t=
+o this
+> name, since it might get confused with UBI scrubbing
+> (http://lists.infradead.org/pipermail/linux-mtd/2010-September/032031.htm=
+l).  In
+> fact, the conclusion of that thread was to add an extended erase IOCTL, w=
+ith a
+> 'flags' parameter to capture options such as erase bad blocks.  Would thi=
+s be
+> the preferred method (it didn't seem to go anywhere last time), or is 'ME=
+MSCRUB'
+> with the existing erase_info_user64 structure acceptable?
 
-Not sure, probably not. Check the if any mtd ioctl allows this. I guess
-you could implement this feature.
+I think Shmulik had a good point - scrubbing is not only about erasing,
+but also about changing the BBT. So a separate ioctl makes more sense.
+As for the name, we could name it MEMBBSCRUB, I guess?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-+5LqdFx2QSjRjQWwqAH6
+--=-SNBX0kPGhT+Vu9eIH0Vc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +79,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6tbtAAoJECmIfjd9wqK0T5sP/iMcYd28ONS14wjZ/7EcMJvw
-2qFsYsCUcZxAK2CTkhEiaMpXPQ9uO6VtPDqxH1i+jumHKPNd9j2qSqNsbZfUOtvY
-gm/pTLn1MkyKoBlaSKn/r9iCU22E52FL0zacsxCsbF1G9BgddkabXXKsKpZG7nsl
-/CX6GJEfPr8HG3/+eHNFXSI2EczNrygV++b0qlS5d212bmsTzVe/9XCrxsVc0Roz
-s/wG9evCrM865Ps3PY19FNz5jgqezsM2iEfm2QdjUuBfLWsD0sSWG9e1AdblBYTF
-076O6HFAv97TopPDf3LDZ0MmbXfw0RC0S5I0G+fcw8dD7+uD0m1LR7t3B/wH0aO2
-zuQ2z+yg6YjZvk5E5DRxtQaw7nZZURH8nur2crYVllgldBQJSOYvyvhOBEfl7+D4
-xVgTTzKCPk/z2isW8T+nKs7Dd8EexU9obViJGVcrP+zdZtbIAtgf4Tizi/HLY2fG
-aHUgIJPBwKkFwIYZNiYwKGZCyLPL2MY1wcwMCLg+9ET2+HDCeEvikFj6GgWGJ3tC
-KpH+L2h+rOZgBvgGGt9nYsVN6Sl1lP8eAl2ehv23zm5NLMtAi4Po2qa40O58skRG
-LfTkQan5PByuxtqO9erOk1LVgEpDHxyE4JoFZI0rJ1BjfEL6UNG8W/OmxyYrpQlX
-J7sLH0pPRdTv+R7nVb+Q
-=29J2
+iQIcBAABAgAGBQJP6tg+AAoJECmIfjd9wqK0XO4P/1peZFjFwk6dZMkgw3lzV7AB
+S5XMUk4Y3AGM8NdkkI5TkkZvnCt6867ud9iktgFq/dFWrQ9LfOYNabwYb6RfEveP
+b0PrZBxc/mdhkCH/kPdAUkbX8fTRNfolqzk+mIO4I+1iAbJRjYNEmNOQNpEPft+6
+ace8pFujoAm4TlX9GJVcvElHpownvPBR6t/WBsnWeRoRAO2oOje9Oq+nvxCT7+Bp
+QcZ2bwBQR58Qy3nDPjSYrawBY8UEIPFimmVti+IROqEB6OfznZ2Tg1eHgCFzTxrm
+xN9wBufdv7/r1Q1uHrmTDwxeCrYLv8yent6PTSPzjVHygLvjn6SYdMvSCXBrs5Uk
+6zdUgB30sVGQxd/TDCO4v9bw4WiUWitkSyZwIu3GaDX5SwHJ7rz2pMUbZ1yG+YRN
+B5IM5n+wHZ+e+sNSsVy2zKOHlIMd0eOYR6gMxidkLb+xUtfeonsnNGM4JF3TlO2c
+PigwssCP+thjGvsL5q69PAzKrRHrvko8wHyO5ddra+gdkdhOurBmp/CGQq0HdSdl
+EFB+tPQtXX0/C0BFHLPomGurz857sM5n1PhnJKPT4UxYmwmyMCRWX4XO5fQfHKP9
+i23IV315q3OrJtKpPOKk7rfCGEfK6RQHb3Z1h9RT9YHKOK0cuhFRo9sg208blvdJ
+cFLj4pZUHpu1b2bC96pf
+=wMjF
 -----END PGP SIGNATURE-----
 
---=-+5LqdFx2QSjRjQWwqAH6--
+--=-SNBX0kPGhT+Vu9eIH0Vc--
