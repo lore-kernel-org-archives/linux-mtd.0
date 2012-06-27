@@ -1,18 +1,20 @@
-Message-ID: <1340803508.3070.6.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] Atmel NAND ECC: Remove unaffected config option
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sjsby-0004lY-51
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 13:48:52 +0000
+Message-ID: <1340805168.3070.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/8] NAND and NAND-BBT improvements
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 27 Jun 2012 16:25:08 +0300
-In-Reply-To: <1340371768-24703-1-git-send-email-richard.genoud@gmail.com>
-References: <1340371768-24703-1-git-send-email-richard.genoud@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 27 Jun 2012 16:52:48 +0300
+In-Reply-To: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-hUCwcmOyEax2dBgt0Oxe"
+ boundary="=-D3sMixXVu+9POBIkHixi"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,38 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-hUCwcmOyEax2dBgt0Oxe
+--=-D3sMixXVu+9POBIkHixi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-06-22 at 15:29 +0200, Richard Genoud wrote:
-> The commit bf4289cba02b8cf770ecd7959ca70839f0dd9d3c removed the use of
-> CONFIG_MTD_NAND_ATMEL_ECC_NONE and CONFIG_MTD_NAND_ATMEL_ECC_HW but the
-> Kconfig file was forgotten.
->=20
-> This patch remove those inoperative options.
->=20
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-> ---
->  arch/arm/configs/afeb9260_defconfig    |    1 -
->  arch/arm/configs/at91sam9263_defconfig |    1 -
->  arch/arm/configs/qil-a9260_defconfig   |    1 -
->  arch/arm/configs/usb-a9260_defconfig   |    1 -
+Pushed these patches to l2-mtd.git, thanks!
 
-I've dropped these changes.
+mtd: move mtd_read_oob() definition out of mtd.h
+mtd: nand_bbt: refactor check_pattern_no_oob()
+mtd: nand: rename "no_bbt" descriptors to "no_oob"
 
->  drivers/mtd/nand/Kconfig               |   40 --------------------------=
-------
 
-And pushed Kconfig changes to l2-mtd.git, thank you!
-
-http://git.infradead.org/users/dedekind/l2-mtd.git/commit/61251f029c8d11683=
-70db922a22ac4d0d7df3b8b
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-hUCwcmOyEax2dBgt0Oxe
+--=-D3sMixXVu+9POBIkHixi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6wm0AAoJECmIfjd9wqK0bFgP+wWGK04GRp8mU+lK1j9XiTli
-zaTBdvM37j9mqlsH+F12wB1pwlF68wzr8MRBTY1yTsPBe3q+fYm/FbDJwCRTzyN7
-uhIhbQa05vsrXem4UifIaFnVrMpaJem0mzCGQq3FUWnqoksJyvs3AwJkNgAqm9Rq
-mfv7/+mEhbeTm7kU1G8nhPY/XuYhUQffVswvlmv9Jzsb/QzF44UjObcEK/7cfkMP
-L8WTEsUwlpQm4tmTrhfLC1KVerFlS1Rlc5YIk8Mwle/yh1xlV2NWuYu2apDM5HYE
-4D7y1Rcf5XtyYj3wi+dethqtHlsGOtJfYyEzCMXS5oldjtgotuwJl7mzyBrgWL2w
-U8yk2fwTTexPSHbCBv0du2e31awWO87tydZW7zncz9Eu5LeRNgriEszWFI6QJVGW
-plEbyXfTJzBlbNnIyoW7l+mSwqtNc+CX2v6vOfYbRdNIC0fOsWEV/11kiTCG7qCK
-mIhrZ99ItyL8dpubILFVIWFAgoSUMCkni6uY1jLwREVDqThuCp+/OGYuFWUpBfrL
-qVhD60udz+Ck8Pp4irDhshnbLsxTqaTARV3WyQq2L/SRHvp/qnz7TrhbMI1Qoi0n
-guxKew8wo3O9QGyFKQfexQ8NpO0LW8w3tYWF/NHEAF5Wcxv41EURi2E45gAPk2fX
-NkJG943oGUR94fXCIrT1
-=nJht
+iQIcBAABAgAGBQJP6xAwAAoJECmIfjd9wqK0eZcP/jQdZ9wdabLObIImeZepl2Yr
+12eMKhUjeotwfjV4ovhHnSCnNEJJFXpSU2GwHoPAnayEcKiiGq1yHF9ujNdIergb
+hbcmhkxXOqHIS0m6okDLHftSQXJvTzCvDH5TZ8Y5XWbbstWkebnC969Qfj4VnomA
+u7/Gne4+wqK36DqKvc938B0wKxAhuHkE8BATRficSOUFHxbJx4eLTDW4XF0wnHYR
+zScKDkDz5Rx9as4I5Mp54v6zBMNB67+kkKqNRA6HByWo4KEQjkQSyMECx8n4iKu5
+oJ2cjUnwA7dDHjapSG4vPMpWT5VFQw5OqZ1xT25tqAcboK2zbKGvvodq39a+Dq+B
+4eeBb5oO5A5f1kM92zPFPOXcWeP3wqcKvNj9nWyqEXXjstMvstMG0sXeHKFIajkf
+nGHEJrhm1HzL3aR3XdtAsjA8X3xKBMmAtxTxU/T4cM0FN6638SjP6/wdjRdsNxvH
+b3a6mMD7UyyCTBwnV/lP/pfyy5+yzMbeTU31hNxF/arC8SOCdWkKY+XeVUwZTGFd
+GWJqWLIIewUzffM2nqNdSOS90bEAvxO8DtXzqSHaJy9rn0YjmAfshOT6hEw4qEsy
+ExjBG91pkGCYrbU7NdUz/jixYzRlWZ1usiauQ0jqvMuljuyviEXziPIGNs2yk4h9
+kaR26oUkV7u9/iUH/9Dn
+=w6Ns
 -----END PGP SIGNATURE-----
 
---=-hUCwcmOyEax2dBgt0Oxe--
+--=-D3sMixXVu+9POBIkHixi--
