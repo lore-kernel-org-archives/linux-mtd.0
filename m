@@ -1,21 +1,20 @@
-Message-ID: <4FEAED02.5080003@atmel.com>
-Date: Wed, 27 Jun 2012 19:22:42 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH v11 4/4] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
- <1340618866-28776-5-git-send-email-josh.wu@atmel.com>
- <CACQ1gAhQDbpogep=fTM-odO0XDHXJGn3uWHx7FP7Ywjt+7tzMw@mail.gmail.com>
-In-Reply-To: <CACQ1gAhQDbpogep=fTM-odO0XDHXJGn3uWHx7FP7Ywjt+7tzMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, nick.spence@freescale.com, dedekind1@gmail.com,
- dwmw2@infradead.org, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, scottwood@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, tie-fei.zang@freescale.com, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjqS9-000429-Jr
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 11:30:35 +0000
+Message-ID: <1340796875.29342.60.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/2] UBI(FS): fixing IS_ENABLED() usage + backport trees
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 27 Jun 2012 14:34:35 +0300
+In-Reply-To: <1340062283-11421-1-git-send-email-computersforpeace@gmail.com>
+References: <1340062283-11421-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-6BBtH9ITlPG0mvlAHSbb"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,176 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Richard
 
-On 6/26/2012 10:15 PM, Richard Genoud wrote:
-> 2012/6/25 Josh Wu <josh.wu@atmel.com>:
->> +static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf,
->> +               int extra_bytes, int err_nbr)
->> +{
->> +       struct nand_chip *nand_chip = mtd->priv;
->> +       struct atmel_nand_host *host = nand_chip->priv;
->> +       int i = 0;
->> +       int byte_pos, bit_pos, sector_size, ecc_size;
->> +       uint32_t tmp;
->> +
->> +       sector_size = host->pmecc_sector_size;
->> +       ecc_size = nand_chip->ecc.bytes;
->> +
->> +       while (err_nbr) {
->> +               tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_base, i) - 1;
->> +               byte_pos = tmp / 8;
->> +               bit_pos  = tmp % 8;
->> +               dev_info(host->dev, "PMECC correction, byte_pos: %d bit_pos: %d\n",
->> +                                       byte_pos, bit_pos);
->> +
->> +               if (byte_pos < (sector_size + extra_bytes)) {
->> +                       tmp = sector_size +
->> +                               pmecc_readl_relaxed(host->ecc, SADDR);
->> +
->> +                       if (byte_pos < tmp)
->> +                               *(buf + byte_pos) ^= (1 << bit_pos);
->> +                       else
->> +                               *(buf + byte_pos + ecc_size) ^= (1 << bit_pos);
->> +               }
-> I think there's a problem in there.
-> On my board (sam9g35-ek), I've got 2KB pages and 4 sectors per page + 64B OOB.
-> When I flip a bit on the 63rd OOB byte (the last ECC byte), byte_pos is 515.
-> If I flip a bit on the 51th OOB byte (the 3rd ECC byte), byte_pos is also 515.
-> So, if I get it correct, byte_pos will always be between 0 and
-> sector_size + sector_ecc_bytes.
-> (and I think that sector_ecc_bytes == extra_bytes (cf below))
-> And, pmecc_readl_relaxed(host->ecc, SADDR) gives me the ECC offset in OOB (48).
-> So, (byte_pos < sector_size + extra_bytes) will always be correct as
-> far as the PMECC controller doesn't give us crap.
-> But, IHMO the "tmp = sector_size + pmecc_readl_relaxed(host->ecc,
-> SADDR);" line is wrong.
+--=-6BBtH9ITlPG0mvlAHSbb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Yes, you are right, I didn't test the ECC bytes bit flip. thanks.
+On Mon, 2012-06-18 at 16:31 -0700, Brian Norris wrote:
+> Hi Artem,
+>=20
+> It looks like your ubifs-v3.3.git tree does not compile successfully. I
+> think there are two issues:
+>=20
+>  1) IS_ENABLED() should be used with the CONFIG_ prefix. i.e.,
+>  IS_ENABLED(CONFIG_DEBUG_FS) instead of IS_ENABLED(DEBUG_FS)
 
->
-> I think that it should be something like this:
-> static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
-> 		int extra_bytes, int err_nbr, int sector_number)
-> {
-> [...]
-> 		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_base, i) - 1;
-> 		byte_pos = tmp / 8;
-> 		bit_pos  = tmp % 8;
-> 		if (byte_pos < (sector_size + extra_bytes)) {
-> 			if (byte_pos < sector_size) {
-> 				*(buf + byte_pos) ^= (1 << bit_pos);
-> 				/* It may be easier to read this info if the byte_pos
-> 				 * is relative to the page start, not just the sector */
-> 				dev_info(host->dev, "PMECC correction, byte_pos: %d bit_pos: %d\n",
-> 					 sector_number * sector_sz + byte_pos, bit_pos);
-> 			} else {
-> 				/* number of ecc bytes per sector */
-> 				tmp = pmecc_get_ecc_bytes(nand_chip->ecc.strength, sector_size);
-> 				/* offset in the ecc of the ecc bytes for current sector */
-> 				tmp *= sector_number;
-> 				/* now, tmp is the offset of the byte error in the ecc */
-> 				tmp += byte_pos - sector_size;
-> 				ecc[tmp] ^= (1 << bit_pos);
-> 				dev_info(host->dev, "Bit flip in ECC, ecc_byte_pos: %d bit_pos: %d\n",
-> 					 tmp, bit_pos);
-> 				/* or */
-> 				dev_info(host->dev, "Bit flip in OOB, oob_byte_pos: %d bit_pos: %d\n",
-> 					 tmp + nand_chip->ecc_layout.eccpos[0], bit_pos);
-> 			}
-> 		}
-> [...]
+Thanks, I've pushed this to linux-ubifs.git. I'll let is sit there for
+few days and get exposed to linux-next and then send a pull request to
+Linus.
 
-Your code is nice, I will refine this part code base on your code. Thank 
-you very much.
+>=20
+>  2) IS_ENABLED() has changed some between v3.3 and when this commit was
+>  originally integrated in mainline, so it masks a compile error in the
+>  mainline version
 
->> +
->> +               i++;
->> +               err_nbr--;
->> +       }
->> +
->> +       return;
->> +}
->> +
->> +static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->> +       u8 *ecc)
->> +{
->> +       struct nand_chip *nand_chip = mtd->priv;
->> +       struct atmel_nand_host *host = nand_chip->priv;
->> +       int i, err_nbr, eccbytes;
->> +       uint8_t *buf_pos;
->> +
->> +       eccbytes = nand_chip->ecc.bytes;
->> +       for (i = 0; i < eccbytes; i++)
->> +               if (ecc[i] != 0xff)
->> +                       goto normal_check;
->> +       /* Erased page, return OK */
->> +       return 0;
->> +
->> +normal_check:
->> +       for (i = 0; i < host->pmecc_sector_number; i++) {
->> +               err_nbr = 0;
->> +               if (pmecc_stat & 0x1) {
->> +                       buf_pos = buf + i * host->pmecc_sector_size;
->> +
->> +                       pmecc_gen_syndrome(mtd, i);
->> +                       pmecc_substitute(mtd);
->> +                       pmecc_get_sigma(mtd);
->> +
->> +                       err_nbr = pmecc_err_location(mtd);
->> +                       if (err_nbr == -1) {
->> +                               dev_err(host->dev, "PMECC: Too many errors\n");
->> +                               mtd->ecc_stats.failed++;
->> +                               return -EIO;
->> +                       } else {
->> +                               pmecc_correct_data(mtd, buf_pos, 0, err_nbr);
-> IHMO, extra_bytes should be (eccbytes / host->pmecc_sector_number)
-> pmecc_correct_data(mtd, buf_pos, ecc, eccbytes /
-> host->pmecc_sector_number, err_nbr, i);
+Not sure what you mean. It was introduced in 3.1
+(2a11c8ea20bf850b3a2c60db8c2e7497d28aba99), so I have to back-port it
+older ubifs backport trees.
 
-sure. I'll fix this too
+> This patch series addresses issue 1. I suggest that this be backported to
+> the appropriate UBIFS tree to solve some build failures. But I think issu=
+e
+> 2 may still be a problem, so perhaps the mainline IS_ENABLED() fix should
+> be backported as well?
 
->> +                               mtd->ecc_stats.corrected += err_nbr;
->> +                       }
->> +               }
->> +               pmecc_stat >>= 1;
->> +       }
->> +
->> +       return 0;
->> +}
-> I tested the patchset against 3.5-rc4, on a at91sam9g35-ek board.
-> the DTS config I used is:
-> reg = <0x40000000 0x10000000 0xffffe000 0x600 0xffffe600 0x200
-> 0x00100000 0x00100000 >;
-> nand-bus-width = <8>;
-> nand-ecc-mode = "hw";
-> nand-on-flash-bbt;
-> atmel,nand-addr-offset = <21>;
-> atmel,nand-cmd-offset = <22>;
-> gpios = <&pioD 5 0 &pioD 4 0 0 >;
-> atmel,has-pmecc;
-> atmel,pmecc-cap = <2>;
-> atmel,pmecc-sector-size = <512>;
-> atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
->
-> (nand on the -ek is 2KiB page size, 128KiB eraseblock)
->
-> I tested
-> - 1 bit flip on a page
-> - 4 bit flips on a page (1 per sector)
-> - 5 bit flips on a page (2 on sector 1, and then 1 per sector)
-> - 1 bit flip on ECC
-> - 2 bit flips on ECC (on the same byte)
-> - 3 bit flips => I/O error (ok, since pmecc-cap = 2 )
-> - 3 bit flips on ECC => I/O error (ok, since pmecc-cap = 2 )
-> only problem : ECC is not corrected (should be better with the fixes above)
->
-> When you have corrected the ECC correction issue, you can add my:
-> Tested-by: Richard Genoud <richard.genoud@gmail.com>
+I guess you are talking about commit
+69349c2dc01c489eccaa4c472542c08e370c6d7e ? I'll port it too, thanks.
 
-Thanks again. I will send out the next version tomorrow.
+> BTW, there may be more than one backport tree that fails; I just tested
+> v3.3.
 
-> Regards.
+I'll check.
 
+Thanks!
+
+--=20
 Best Regards,
-Josh Wu
+Artem Bityutskiy
+
+--=-6BBtH9ITlPG0mvlAHSbb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP6u/MAAoJECmIfjd9wqK0bD8QAIDZc1dZ5FHzpfDhjnLxwCbf
+NIZ/6G7ON0wCniwlwGcu5krZwKs1T1u8DX/NAejGa47xIwBqaP7i7Jl/8mras9au
+qW2WYrU8cHHOOktiWiwT320+Gg58F7If9Xq2mwUbwpItX9l1jeNv9zqI2sRCvdpb
+0Y2fHACM/DyM7sp+UeCyygE3qhB8OgwZASm53XO3cHgXNqnXUwoZDifOhUpBoXCe
+D5VWnx6KQO1vDLj3bhbymAjxH9RX2IanEL83jJ+VnCNGEasfqML9scBHNdeEc8kG
+Gnms0KtIu/loLQVRS3WRgNTK0xTQ99Q4oBGPIBRucdgbPb7JxeyEoiltriplNg0R
+3Tpp+2QLBNvVII6/+/GtJPWy5HP5DLcu7sRgLUE1X/j7oZRTFMIsTZvkPAaPoNA5
+1KotFUaGbW6DWxYs0QgQ8I5UG/brjVBixWdSzOkjal/uanE0+DQW0x5R4iA0qm52
+2+B5513VEetP+MC7WmRxQ5SLWhuZFL6LP42bJFXqIug10HQLlIwEUpmxiJDPv58V
+k/w+X6U5VGQBA4IT5qVaAJb96O3r9dzuyRok1GdZFN1Db4dBySeHHoXc8VIn3s7A
+diD3YHoJx90/090K2enAG9YrqI6H/ZeGiMrvSmiIEZwtn+qlVLQT4dzbYT0eKLfy
+jwaYxUPtfT1hQkTfbWkD
+=erbn
+-----END PGP SIGNATURE-----
+
+--=-6BBtH9ITlPG0mvlAHSbb--
