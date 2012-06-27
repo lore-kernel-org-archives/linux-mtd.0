@@ -1,19 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sjpt3-0000vf-Dr
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 10:54:17 +0000
-Message-ID: <1340794700.29342.53.camel@sauron.fi.intel.com>
-Subject: Re: UBI and volume checksum
+ id 1Sjpve-00018N-LF
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 10:56:59 +0000
+Message-ID: <1340794858.29342.55.camel@sauron.fi.intel.com>
+Subject: Re: Loosed files after umount/mount
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Giovanni Malfara' <Giovanni.Malfara.ext@altran.it>
-Date: Wed, 27 Jun 2012 13:58:20 +0300
-In-Reply-To: <0D6614B1791E3B4C86DD3784FCD9B20617B90149@XMB-TODC-23.altranit.corp.altran.com>
-References: <0D6614B1791E3B4C86DD3784FCD9B20617B90131@XMB-TODC-23.altranit.corp.altran.com>
- <1339073501.6875.104.camel@sauron.fi.intel.com>
- <0D6614B1791E3B4C86DD3784FCD9B20617B90149@XMB-TODC-23.altranit.corp.altran.com>
+To: Andreas Friesen <ndrs.frsn@googlemail.com>
+Date: Wed, 27 Jun 2012 14:00:58 +0300
+In-Reply-To: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com>
+References: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-S/Hy6ZFxvKIfnjb9owaN"
+ boundary="=-R94n54fDz5g4KHmiT0aA"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -27,25 +25,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-S/Hy6ZFxvKIfnjb9owaN
+--=-R94n54fDz5g4KHmiT0aA
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-06-18 at 22:22 +0200, Giovanni Malfara' wrote:
-> If I try to read back from the volume (using "dd") after I write the
-> NAND Flash (using "ubipudatevol") I get a different value compared to
-> the CRC of the image file for the CRC of the volume content if there are
-> some bad blocks.
-> Do I have to use another tool (e.g. nanddump)?
+On Mon, 2012-06-18 at 22:29 +0200, Andreas Friesen wrote:
+> Hello,
+>=20
+> I'm experiencing a strange problem with JFFS2 using Linux
+> 3.1.5, 3.4 from kernel.org.git on PowerPC. After unmounting and
+> remounting the filesystem,
+> directory is empty.
 
-Could you please create a small test script which demonstates this and
-send it?
+So is it 3.4 or 3.1.5?
+
+> $ flash_erase /dev/mtd2
+> $ reboot
+> $ mount mtd:storage /storage -t jffs2
+> $ scp root@server:/tmp/settings/*.xml /storage
+If you add "sleep 20" here - does it help?
+> $ sync
+> $ umount /storage
+> $ mount mtd:storage /storage -t jffs2
+> $ ls /storage
+> ... empty ?????
+>=20
+> Any Hints?
+
+Is it NOR or NAND? My first guess is that the write-buffer is not
+synced. Or there are issues with the driver, try to run mtd tests.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-S/Hy6ZFxvKIfnjb9owaN
+--=-R94n54fDz5g4KHmiT0aA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +67,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6udMAAoJECmIfjd9wqK0xXoP/RPMtLjcEkb3LmY8vcnPuJfh
-auZQ0XRutjUPPySnjgGlwjTesfNmqxD24ysSzBIwyROIG2+XXaeqEGfC66CklsLE
-m0bJJfMN9Y5G8Qzqr3mwMjJWcQZU/CT8f6R2qvmCUSeNEEbixlj5acNz8voiOjZa
-j9lH925lx7SO1+IM3zwOoyQFbcbVu48c4Hf+sV6L+clhINPmB0Pi2QXYq7hRmVzT
-I7XSoDqFj6AUqnYlwwqTj8Z2qyzz/wZVsZXfTx8/4qfjYzwSfaQT2D/Lfxy6H/ms
-f2QorCFuKHvJalYNOVT8GhYLNji1dXtIan3Ddz/RLhEhyk71BvBRnaq8238fmroX
-rpNtSzda4hkywKt1ttrQzD4GFGxJ8YqMxVsM9+IgBnc46j1oP2QrYssvMt3dFLTW
-zqNUv6drladoZS/TqtBSfr4HTitErJcaA9uprFV0EZabFXwqgqKqnDq/rnY/wwN8
-v8HxiZWaQfbd8Xjt8Ud4DWjCD14PdD7597TOl4DjXyCx1bT4yDtw+U++g8x+SB6w
-s/u2su4qjmG/AXdGy0GEo8ShvuMSWsW77013dLBhGjgkOL/sAqMqKxqSCRq3/Nn7
-jaIYGOYfHLRY9efIqeKFNb/UoqR+NkNf71n9R4ppNBZ3IMvG1qtlIgfQCR3LKNGH
-2oEfohIzuYcRrEZilOOj
-=g0Tq
+iQIcBAABAgAGBQJP6ufqAAoJECmIfjd9wqK0E3sP/RiUtVZgLPjUJ0rZfcYmaHam
+Z9HrvuYrjZhVDm3PR6KcOOw1lpqVnaqNMDAA9aXOZzVPS5EN/fgSUwFWfkSs6nTh
+qfpQihFJhZoCfwM0Wd3qwZS1jY/wSIm0g2Ez0NSgDPsO0iOXmNNFzLtGZ5cIEiRz
+q2LN1ueaHtjl3zSQp1eVMC6T1t+yPRs2EXaaEwGMADWlA4v42RwN1U8Jx4BC48RJ
+mEiSkt3tcpLYFfTZ81wSqhit/HDR4zQwg6cxKNQDFcOLm1osWyXIO61KNjYmWU/+
+NIFPv6jnu97oaji4AcdZIkf4IOUoWOyinMZcbgB+pIhvrNCPChTOAO7VHBxSyv6Q
+TsQGACdyBH7qlpNqkN4BF0ztpXlDEZrnhn0lsApI0Geu4DPvWr5ULTW/ASVYTuBr
+W8DUfkWxtFGQkzRs2JdyAoIbntLAVDJhtSt1dP4YgrQc87gGWhvbhlf5Wf4Lw5hl
+rT9Pv9O3fJFNgA/XHIphZgVu8gaT2FpNNIYyZtC06ggrVAmwELqAnbabxhtzA6wK
+bY0D3afg4G0Fx1qPyYMVgktv1ubuF3RK+O5SgGkiDaI5gAKkXEmZJglptEh3Md3I
+DW+kcDhYmgjiLScF8drnmhD9VRXGIu3zVAbCROYX40qwAkNPKKhoPWZTVtWApTK0
+Lp2lhtW4nUDmtTsfYvVA
+=2vHR
 -----END PGP SIGNATURE-----
 
---=-S/Hy6ZFxvKIfnjb9owaN--
+--=-R94n54fDz5g4KHmiT0aA--
