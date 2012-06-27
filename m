@@ -1,23 +1,25 @@
-Message-ID: <4FEAC6B2.6030104@atmel.com>
-Date: Wed, 27 Jun 2012 10:39:14 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>, Jean-Christophe PLAGNIOL-VILLARD
- <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand flash
- driver
+Message-ID: <1340788471.29342.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand
+ flash driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Date: Wed, 27 Jun 2012 12:14:31 +0300
+In-Reply-To: <4FEAC6B2.6030104@atmel.com>
 References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
  <1340768981.2317.7.camel@koala> <4FEA87E5.9010604@atmel.com>
- <1340771320.2317.13.camel@koala>
-In-Reply-To: <1340771320.2317.13.camel@koala>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ <1340771320.2317.13.camel@koala> <4FEAC6B2.6030104@atmel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-kmmHrF59VVgvpPk71zJ2"
+Mime-Version: 1.0
 Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
  tie-fei.zang@freescale.com, Josh Wu <josh.wu@atmel.com>, dwmw2@infradead.org,
  linux-mtd@lists.infradead.org, scottwood@freescale.com,
  Dipen.Dudhat@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com, tglx@linutronix.de,
+ computersforpeace@gmail.com,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, tglx@linutronix.de,
  linux-arm-kernel@lists.infradead.org, bryan.wu@analog.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-On 06/27/2012 06:28 AM, Artem Bityutskiy :
-> On Wed, 2012-06-27 at 12:11 +0800, Josh Wu wrote:
->> Hi, Artem
->> 
->> On 6/27/2012 11:49 AM, Artem Bityutskiy wrote:
->>> On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
->>>> Those patches is based on v3.5-rc4
->>>> 
->>>> Changes since v10, add one more patch in this patch set,
->>>> which add 'int' return value for
->>>> write_page()/write_page_raw() functions in structure of
->>>> nand_ecc_ctrl. Instead of calling BUG(),
->>>> atmel_nand_pmecc_write_page() will return -EIO when time out
->>>> to read the pmecc status register. increase the time-out
->>>> duration to 100ms, which has more toleration. add
->>>> oob_required argument for pmecc read/write functions to align
->>>> with v3.5-rc4.
->>> I have issues compiling l2-mtd.git tree (based on 3.5-rc5) with
->>> the attached defconfig. Probably not your fault, but may be you
->>> have a fix/suggestion? I did not have time to look closer.
->>> Aiaiai reports:
->> 
->> I think the name of kernel config for AT91 is changed, so you can
->> try add following two line in your original config file.
->> 
->> CONFIG_SOC_AT91SAM9=y CONFIG_SOC_AT91RM9200=y
->> 
->> run the make menuconfig will get new config, that can pass the
->> compile.
-> 
-> I get "arm-unknown-linux-gnueabi-ld: no machine record defined". I
-> think it wants me to select the board. I've tried one and get
-> another compilation issue:
-> 
-> arch/arm/mach-at91/built-in.o:(.arch.info.init+0xbc): undefined 
-> reference to `at91sam926x_timer'
-> 
-> It looks like AT91 stuff is not looked after carefully.
+--=-kmmHrF59VVgvpPk71zJ2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-AT91 is looked after carefully, yes it is.
+On Wed, 2012-06-27 at 10:39 +0200, Nicolas Ferre wrote:
+> AT91 is looked after carefully, yes it is.
+>=20
+> The thing is that CAP9 SoC (the defconfig that you are using)
+> has been obsoleted then removed for 3.4:
+> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dco=
+mmit;h=3D9918ceafd4a9e013572e03983f528017c29bb1cb
 
-The thing is that CAP9 SoC (the defconfig that you are using)
-has been obsoleted then removed for 3.4:
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=9918ceafd4a9e013572e03983f528017c29bb1cb
+Ok, sorry for that phrase. I basically only need to do compile-testing.
+And I only care about atmel_nand, so I take a defconfig, disable most of
+the stuff, and use it for compilation. And when this minimal defconfig
+stops working, I get upstet. If you have any suggestion what should I
+base my configuration on, please, let me know.
 
-Defconfigs for AT91 may need some update though.
+Thanks!
 
-Best regards,
-- -- 
-Nicolas Ferre
+--=20
+Best Regards,
+Artem Bityutskiy
 
+--=-kmmHrF59VVgvpPk71zJ2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJP6sORAAoJEAf03oE53VmQyEoIAIhnUw2Vjv5xNQymHDXBqzEK
-PwiLwOQROSQ2bFBqfYmV5vZ5FglYa0v+dnNu8bJ7Fpah5KlHPNDWb3r+0HKQfaep
-CzyZnDHhNA+QL3GnirCiyal9GtDrhJzPdnkrO4SFvS6c72AptqSAyOEGMZGenhaT
-dnyLsHj7m5Po5OGmiSpKwJfv2S8YFQLLWYyMcNe/lkyE/QhYVb3kX8C3gm24nSnA
-s80j9O1a6SLdRBZRh+jPFjKNUZMcWVN+DIuJnoUOUeDpU4en3PRGJ/88VSxs4k/c
-xUXkpx7m8QXVCs5khMpKXkK5fj5dATuUjlzslI3FFZTDCjYf5eXzv/6ZupVutI0=
-=8MqL
+iQIcBAABAgAGBQJP6s73AAoJECmIfjd9wqK0ahgP/11t7kIVovqLVbKTR1dN3bu6
+jc62dk4XAmoHJ9FeAHenxldvXR+5c/pfWO8VJ94qPQEVOpbjxX+WBZ6xbF09DHtD
+ZWKYIhR9i/gIaSJYMh3XS3igisMRJPDyrxfxYh8WIcDowZ+rf67bE9qT+GFwiXU3
+jdTNXMVu3VfTHJn3RYlgUYlVvPiixMlk/6G7f5lgJPwgs0Pm5VPT9NNV6ZY3t+jp
+o/LH+/+FH3cy/IGJphwdokVcaZ6RMJna1IgfpXTGF46b5YcBwEW5j9bWEFz1iGlM
+mGCkKeobJF/MBZlS2DMc6qg4ATvXk0RrJ/y//7WBUl+Z9/8AMo15gZ1kFRf21wel
+GvT6dwyOv2m3YV7cDAnEUbtXFuTBakb6vQmYbumqEi9phX0hilzXi6jITLCZkxnN
+NqyHdYqmd0xlhZRWmeT/UGIJmAt4PoDIot7Q1n+BSa2givBggRFGmbRfaJFRkool
+OC1y85pKUpM6IfGoeERDNYUIJOAqOGGpygDePGm9ZRQdIKlnRadL19ryy76DpP81
+UZk30d2lLxMUGOSfHX79fos2EitDa2BNBZOpc4MOFhlHTshY8CqBake/ZBsr1rl6
+3lI1zUKVgaSMvYmWRNKIh2FbeDKKXLBR5T+T7cNjguuy7r5F/Y7Rw2IiPU8kN3jn
+9E98uScd7ta1eOUZEXp/
+=8Eb8
 -----END PGP SIGNATURE-----
+
+--=-kmmHrF59VVgvpPk71zJ2--
