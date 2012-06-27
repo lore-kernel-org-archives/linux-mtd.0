@@ -1,20 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sjrkw-0003zB-G7
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 12:54:04 +0000
-Message-ID: <1340801874.3070.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: chips: reorganize Kconfig help on swapping
+ id 1SjrwM-00056n-Ff
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 13:05:50 +0000
+Message-ID: <1340802593.3070.3.camel@sauron.fi.intel.com>
+Subject: Re: mkfs.ubifs: Exclude path arg
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Date: Wed, 27 Jun 2012 15:57:54 +0300
-In-Reply-To: <1340106762.1936.25.camel@x61.thuisdomein>
-References: <1340106762.1936.25.camel@x61.thuisdomein>
+To: Alexey <alexey.knyshev@gmail.com>
+Date: Wed, 27 Jun 2012 16:09:53 +0300
+In-Reply-To: <1365970.7M11Fyf9F7@alexey-desktop.localdomain>
+References: <1365970.7M11Fyf9F7@alexey-desktop.localdomain>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Z0lzSNEx9hcCmM8Hmsg4"
+ boundary="=-qUY8pN4BN2mU/jFPG5V8"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,30 +25,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Z0lzSNEx9hcCmM8Hmsg4
+--=-qUY8pN4BN2mU/jFPG5V8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-06-19 at 13:52 +0200, Paul Bolle wrote:
-> The Kconfig help on "Flash cmd/query data swapping" still mentions
-> LART_ENDIAN_BYTE. That option used to be relevant for setting
-> CONFIG_MTD_CFI_LART_BIT_SWAP. That option and macro got both removed in
-> v2.4.11-pre4. So, although LART endianness sounds intriguing, that part
-> of the help text can be removed.
->=20
-> And, while we're touching this choice, move the help text up one level.
-> Currently it's available under the "NO" option, while it's relevant for
-> all three options.
->=20
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+On Wed, 2012-06-20 at 16:52 +0400, Alexey wrote:
+> --exclude PATH (-z PATH) argument for mkfs.ubifs to exclude PATH (relativ=
+e to=20
+> the root)
 
-Pushed to l2-mtd.git, thanks!
+Hi, no objections to the feature in general, but please, split you large
+patch and send a nice patch-set instead - reviewable and with one step
+per patch. Please, also send patches in-line, with a commit message. Use
+"git format-patch" and "git send-email". Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Z0lzSNEx9hcCmM8Hmsg4
+--=-qUY8pN4BN2mU/jFPG5V8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6wNSAAoJECmIfjd9wqK0plcQAJC8bxFnzluDgQVBaYoV3cSU
-XtI6W1ENBYsPaY9cX2NPTIy9BaXyp4TddtOutarn1r6xyP4+56tu5crQod7XXVcQ
-Ty1HooKJUAv7Kg2jJBiXOa9GvHLNHRSoH68AviV+f4hk/cF728rFoHtaEaw//eVd
-oYpVR1wH2COxZjQSRv5TH05rk0JrUuXPXwQ04rk3svti5rpM1W+/bZIYvWeVQViJ
-7a0Xu2wyyCWqEhga2ox2YnwIBTvep76UNancuFpqwqRuXPlI4QCKhLoXeJeQY8Hw
-w4O7aO4ib3a9SjLituS2fBkFHojBxdZFgK+8GVtIe1WU7lmtl5l0r192ZpP4yeap
-MkOdOgL7WtMaCrdzjDIlvvTfF60A0acRY8fE6bLStd/zFK9otL8YhQdTguyBqq7s
-qgDMF1u2AMDQSIaCWJ/BhJj0YH27gkRyF4vreBDMFQ0ZcEcaw3fw5y2MuJSag73r
-Gc71IFiuX/hKk0HcslIt+YIfEIHBUwjkIUubLBgtVuWguKyoGhQdmSYCsIR5rqlv
-ZVMwxvS+wgZar8SeK91ZTrd1NmzqpurL0WG7MSMzN6sFB1h3vdnG11J2LfAlQ0iq
-u+Q3t74nE953+reVvEPGt8PjXp0W839Dtb9VVI7/L0FyU3coM+JjrgvMSH+dvMNM
-8iXH4jrexlnNxdSRjedB
-=0pUi
+iQIcBAABAgAGBQJP6wYhAAoJECmIfjd9wqK0RXsQALcHCi9mO61XEQ6hzGZVDrCo
+/5sbvsb68u4ijoLz5L0FH+eRInDE0jRzuCc2Dh/R1wKInwLpB5JYtdWy4w0PNFyK
+7+FE7Mt2J7yJQCGWRPTuAsu6EUmZwUXEtSicWRPRY+X5rxAXRYyLDVnUUCTIy/Ie
+IfAPhXEV8sNNENxa+w49rNAYrFXjHX77JUv4cycsYAOvlocvMW8mR2zUuHT7Jknd
+/xawxcd5Xe6ZZK0gwqdhjzkh1l5PZCvEHBtjJADeaBzS2wzbq9lySVvEG3EfOery
+eDFZdTHHP8B+p8cKV4m5rBRbfvjjX4FHg8nfR2brDnK2b8tPNenq2szvkFgQnIK8
+sV2QOEKJzGY18N0VNtLo9LURHWJMRISjdvCzp94qO26NJe4rT33P4+9jzA1oyHtj
+G1rsEtObGCh2CRIcC2MPWcuZLBPZyyKfdQitYH0DZUGx8WdFEakdsVPT98/gLlWI
+izEogqaoIcjTSJiNYebgfKzJhA8jQhFB3F8A9dgjZ0xVDl3aUBi18pGwMYVVoltw
+AdVnLhMR/BnfEFAx8orxbDu+GqsftKBUUawU1S+ejhPiqweShUWpL8gLcg0KJM7k
+8PcYoI1Fu1jI7SwHaGyE9LVecrak0Nl7W4t3VxRAaeto0Rs7Fq8XlOdOxHjfsRRK
+NkFIrBK1/GRAUf5gndKG
+=v2/o
 -----END PGP SIGNATURE-----
 
---=-Z0lzSNEx9hcCmM8Hmsg4--
+--=-qUY8pN4BN2mU/jFPG5V8--
