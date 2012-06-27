@@ -1,20 +1,21 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sj819-0004u1-Lr
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2012 12:03:47 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 CRC problems
-Date: Mon, 25 Jun 2012 14:01:59 +0200
-References: <20070906081215.GA5693@anita.doom>
- <1189144034.14370.73.camel@sauron> <20070907074450.GB2143@z1.synertronixx>
-In-Reply-To: <20070907074450.GB2143@z1.synertronixx>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201206251401.59546.sr@denx.de>
-Cc: Konstantin Kletschke <lists@ku-gbr.de>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sjrkw-0003zB-G7
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 12:54:04 +0000
+Message-ID: <1340801874.3070.0.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: chips: reorganize Kconfig help on swapping
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Paul Bolle <pebolle@tiscali.nl>
+Date: Wed, 27 Jun 2012 15:57:54 +0300
+In-Reply-To: <1340106762.1936.25.camel@x61.thuisdomein>
+References: <1340106762.1936.25.camel@x61.thuisdomein>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Z0lzSNEx9hcCmM8Hmsg4"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Konstantin!
 
-While debugging and researching a problem we experience on our MPC5200 system, 
-I found a thread on the MTD list "jffs2 with sync burst mode" initiated by 
-you. This pretty much seems to be the same problem that we are experiencing on 
-our MPC5200 system using JFFS2 on Intel Strataflash NOR devices.
+--=-Z0lzSNEx9hcCmM8Hmsg4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--bash-3.2# mount -t jffs2 /dev/mtdblock3 /mnt
-[  266.571967] jffs2: jffs2_scan_dirent_node(): Name CRC failed on node at 
-0x002c0050: Read 0x1c0cc6df, calculated 0x5eb3f212
--bash-3.2#
+On Tue, 2012-06-19 at 13:52 +0200, Paul Bolle wrote:
+> The Kconfig help on "Flash cmd/query data swapping" still mentions
+> LART_ENDIAN_BYTE. That option used to be relevant for setting
+> CONFIG_MTD_CFI_LART_BIT_SWAP. That option and macro got both removed in
+> v2.4.11-pre4. So, although LART endianness sounds intriguing, that part
+> of the help text can be removed.
+>=20
+> And, while we're touching this choice, move the help text up one level.
+> Currently it's available under the "NO" option, while it's relevant for
+> all three options.
+>=20
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-While I'm continuing to dig into this, I wanted to "poll" your status on this 
-issue. I know that it was a long time ago. But perhaps you can remember the 
-outcome of this issue. What caused it? How did you fix it?
+Pushed to l2-mtd.git, thanks!
 
-Any pointers are really welcome.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-BTW: We are using latest Linux kernel here (currently testing with v3.4).
+--=-Z0lzSNEx9hcCmM8Hmsg4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Thanks.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Best regards,
-Stefan
+iQIcBAABAgAGBQJP6wNSAAoJECmIfjd9wqK0plcQAJC8bxFnzluDgQVBaYoV3cSU
+XtI6W1ENBYsPaY9cX2NPTIy9BaXyp4TddtOutarn1r6xyP4+56tu5crQod7XXVcQ
+Ty1HooKJUAv7Kg2jJBiXOa9GvHLNHRSoH68AviV+f4hk/cF728rFoHtaEaw//eVd
+oYpVR1wH2COxZjQSRv5TH05rk0JrUuXPXwQ04rk3svti5rpM1W+/bZIYvWeVQViJ
+7a0Xu2wyyCWqEhga2ox2YnwIBTvep76UNancuFpqwqRuXPlI4QCKhLoXeJeQY8Hw
+w4O7aO4ib3a9SjLituS2fBkFHojBxdZFgK+8GVtIe1WU7lmtl5l0r192ZpP4yeap
+MkOdOgL7WtMaCrdzjDIlvvTfF60A0acRY8fE6bLStd/zFK9otL8YhQdTguyBqq7s
+qgDMF1u2AMDQSIaCWJ/BhJj0YH27gkRyF4vreBDMFQ0ZcEcaw3fw5y2MuJSag73r
+Gc71IFiuX/hKk0HcslIt+YIfEIHBUwjkIUubLBgtVuWguKyoGhQdmSYCsIR5rqlv
+ZVMwxvS+wgZar8SeK91ZTrd1NmzqpurL0WG7MSMzN6sFB1h3vdnG11J2LfAlQ0iq
+u+Q3t74nE953+reVvEPGt8PjXp0W839Dtb9VVI7/L0FyU3coM+JjrgvMSH+dvMNM
+8iXH4jrexlnNxdSRjedB
+=0pUi
+-----END PGP SIGNATURE-----
 
---
-DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-0 Fax: (+49)-8142-66989-80 Email: office@denx.de
+--=-Z0lzSNEx9hcCmM8Hmsg4--
