@@ -1,22 +1,25 @@
-Message-ID: <1340771320.2317.13.camel@koala>
-Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand
- flash driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Wed, 27 Jun 2012 07:28:40 +0300
-In-Reply-To: <4FEA87E5.9010604@atmel.com>
-References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
- <1340768981.2317.7.camel@koala> <4FEA87E5.9010604@atmel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FTXWNZHaeBtoKQ9JJWB7"
-Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
- tie-fei.zang@freescale.com, nicolas.ferre@atmel.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, scottwood@freescale.com,
- Dipen.Dudhat@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, bryan.wu@analog.com
+Received: from masquerade.micron.com ([137.201.242.130])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjkjS-0005tN-Ix
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 05:24:03 +0000
+From: "Youxin He (youxinhe)" <youxinhe@micron.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, "Changming Chen (changmingche)"
+ <changmingche@micron.com>
+Subject: RE: Patch MTD: increase time out value for buffer program
+Date: Wed, 27 Jun 2012 05:23:48 +0000
+Message-ID: <567E14D9F917DD43923114D48B1586363D569F2F@NTXBOIMBX01.micron.com>
+References: <mailman.0.1338988276.11201.linux-mtd@lists.infradead.org>
+ <6ACDE3A4C2F7E94C8DBB6FCC0D06A0873DA88046@NTXBOIMBX05.micron.com>
+ <1340726334.3119.150.camel@sauron.fi.intel.com>
+ <1340767634.2317.1.camel@koala>
+In-Reply-To: <1340767634.2317.1.camel@koala>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "Frank Liu
+ \(frankliu\)" <frankliu@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +29,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-FTXWNZHaeBtoKQ9JJWB7
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2012-06-27 at 12:11 +0800, Josh Wu wrote:
-> Hi, Artem
->=20
-> On 6/27/2012 11:49 AM, Artem Bityutskiy wrote:
-> > On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
-> >> Those patches is based on v3.5-rc4
-> >>
-> >> Changes since v10,
-> >> 	add one more patch in this patch set, which add 'int' return value fo=
-r write_page()/write_page_raw() functions in structure of nand_ecc_ctrl.
-> >> 	Instead of calling BUG(), atmel_nand_pmecc_write_page() will return -=
-EIO when time out to read the pmecc status register.
-> >> 	increase the time-out duration to 100ms, which has more toleration.
-> >> 	add oob_required argument for pmecc read/write functions to align wit=
-h v3.5-rc4.
-> > I have issues compiling l2-mtd.git tree (based on 3.5-rc5) with the
-> > attached defconfig. Probably not your fault, but may be you have a
-> > fix/suggestion? I did not have time to look closer. Aiaiai reports:
->=20
-> I think the name of kernel config for AT91 is changed, so you can try=20
-> add following two line in your original config file.
->=20
-> CONFIG_SOC_AT91SAM9=3Dy
-> CONFIG_SOC_AT91RM9200=3Dy
->=20
-> run the make menuconfig will get new config, that can pass the compile.
-
-I get "arm-unknown-linux-gnueabi-ld: no machine record defined". I think
-it wants me to select the board. I've tried one and get another
-compilation issue:
-
-arch/arm/mach-at91/built-in.o:(.arch.info.init+0xbc): undefined
-reference to `at91sam926x_timer'
-
-It looks like AT91 stuff is not looked after carefully.
-
-Can you please send me a working defconfig based on the one I sent you -
-just modify it.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-FTXWNZHaeBtoKQ9JJWB7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP6ov5AAoJECmIfjd9wqK0TGEP/RsoTbHJehE2mxMlZVsIt7ll
-7l24EC1ucM1IyE/gNHr+ZKZaaotWevJ+votK9QRUnw67tDNmyPjS/bZMYnSBS35h
-miwcs8QrrX0rr0ImV6OvfIzy4gLVtQ3cvwrBnYNEWf6jr/kESXtZgrG6nfzKx+Yj
-I13fRfkeK2u5NdihIlQJfAA4rSCpGy0Ba3/0DRyYwzTyCfqbPmZGijb4gjwO/KRz
-jgqH5QzwruiDoPhVcN3eE9QFxuGgAfSYx8ouQdrsmxZ/qsuJOQ7k4jebr57BhsWq
-UyYx0eekJW1QSVVmOEyHOYn5P8FaJRFK4LFoeaDVdCu+XX4nrrh2THlG67EQUdL7
-Rh+EGhCiRh79KcAIewHE90/TirTwB7VHYTM0Wk/WBYjIaW2Si2F0aRafv9Y/JTdH
-upV0F8pWoX6ZX4tvIFB6gzK6lCKrsxVlBQgBcYl+0BwgHMOSuI9HVoYhd4Li1yOH
-NzpKYAHc9OS7aOVDN7L+Qavm+FrUf28Um/SsqYFKEDNhMmxClU47YzFiLUcJZkjZ
-Rw+jkk1tj14QO0zClGhfQ81Gg2dp0awkB3+yb/ZP0AZQMvjGWmIsHcTW++lv5GFJ
-Np42bGxyZSVnQXJdJjQfbn8Xf5f4+Z+hkJPnCtJuLofkxuUsYH0S6eTmfYr35Vm0
-K+jzxl/ECe/WP99UyeBT
-=LPBx
------END PGP SIGNATURE-----
-
---=-FTXWNZHaeBtoKQ9JJWB7--
+SGkgQXJ0ZW0sDQpIb3cgYWJvdXQganVzdCBjaGFuZ2UgSFovMTAwMCBzdHVmZiB0byBtc2Vjc190
+b19qaWZmaWVzKCk/IFNjaGVkdWxlX3RpbWVvdXQoKSBpcyBhIGdvb2QgaWRlYSBidXQgSSBkb24n
+dCBzZWUgaXQgaXMgbmVjZXNzYXJ5IHRvIHVzZSBzY2hlZHVsZV90aW1lb3V0KCkgdG8gcmVwbGFj
+ZSBzY2hlZHVsZSgpLiBUaGUgY29kZSB5b3UgYWRkIGJlbG93IGlzIGp1c3QgZm9yIHN1c3BlbmQg
+Y2FzZSwgbm9ybWFsIGNhc2Ugd2lsbCBub3QgZ28gdG8gc2NoZWR1bGUoKSwgYnV0IG5vcm1hbCBj
+YXNlIHlvdSBzaG91bGQgY2hlY2sgZm9yIHRpbWVvdXQgb3RoZXJ3aXNlIGluZmluaXRlIGxvb3Ag
+aW4gY2FzZSBhIHByb2dyYW0gZmFpbHVyZSBvY2N1ci4gIA0KDQorCSNkZWZpbmUgV1JJVEVfVElF
+TUVPVVQgNA0KLi4uLi4uLg0KLQl1bnNpZ25lZCBsb25nIHVXcml0ZVRpbWVvdXQgPSAoIEhaIC8g
+MTAwMCApICsgMTsNCisJdW5zaWduZWQgbG9uZyB1V3JpdGVUaW1lb3V0ID0gbXNlY3NfdG9famlm
+ZmllcyhXUklURV9USUVNRU9VVCk7DQouLi4uLi4uDQoNCg0KVGhhbmtzLg0KQmVzdCByZWdhcmRz
+LA0KWW91eGluIEhlIA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0g
+Qml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogV2VkbmVzZGF5
+LCBKdW5lIDI3LCAyMDEyIDExOjI3IEFNDQpUbzogQ2hhbmdtaW5nIENoZW4gKGNoYW5nbWluZ2No
+ZSkNCkNjOiBkd213MkBpbmZyYWRlYWQub3JnOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9y
+ZzsgWW91eGluIEhlICh5b3V4aW5oZSk7IEZyYW5rIExpdSAoZnJhbmtsaXUpDQpTdWJqZWN0OiBS
+ZTogUGF0Y2ggTVREOiBpbmNyZWFzZSB0aW1lIG91dCB2YWx1ZSBmb3IgYnVmZmVyIHByb2dyYW0N
+Cg0KT24gVHVlLCAyMDEyLTA2LTI2IGF0IDE4OjU4ICswMzAwLCBBcnRlbSBCaXR5dXRza2l5IHdy
+b3RlOg0KPiBPbiBXZWQsIDIwMTItMDYtMTMgYXQgMDQ6MjkgKzAwMDAsIENoYW5nbWluZyBDaGVu
+IChjaGFuZ21pbmdjaGUpIHdyb3RlOg0KPiA+IFRoZSB0aW1lIG91dCB2YWx1ZSgxbXM6dHlwaWNh
+bCBIWiBkZWZpbmVkIHNtYWxsZXIgdGhhbiAxMDAwKSBkZWZpbmVkIGZvciBmdW5jdGlvbiAiZG9f
+d3JpdGVfYnVmZmVyIiBpbiAiY2ZpX2NtZHNldF8wMDAyLmMiIGlzIG5vdCBlbm91Z2guIEJlY2F1
+c2UgdGhlIGVubGFyZ2VtZW50IG9mIGJ1ZmZlciBzaXplLCBtdWNoIHRpbWUgd2lsbCBjb3N0IGZv
+ciBidWZmZXIgcHJvZ3JhbS4gSXQncyBoYXMgcmlzayB0aGF0IHRpbWUgb3V0IHdpbGwgYmUgdHJp
+Z2dlcmVkIGJlZm9yZSBidWZmZXIgcHJvZ3JhbSBmaW5pc2hlZCBhbmQgbWFrZSBtaXNqdWRnZSBm
+b3IgYnVmZmVyIHByb2dyYW0uIHdlIHN1Z2dlc3QgdGhhdCA0bXMgaXMgbW9yZSBhcHByb3ByaWF0
+ZSBjb21wYXJlIHRvIDFtcy4gVGhpcyBjaGFuZ2UgaGFzIG5vIGltcGFjdCBvZiBwcm9ncmFtIHBl
+cmZvcm1hbmNlLg0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9hL2RyaXZlcnMvbXRkL2NoaXBzL2Nm
+aV9jbWRzZXRfMDAwMi5jIA0KPiA+IGIvYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kIGluZGV4
+IDlkOTNjNDUuLjdkYThmY2EgMTAwNzU1DQo+ID4gLS0tIGEvYS9kcml2ZXJzL210ZC9jaGlwcy9j
+ZmlfY21kc2V0XzAwMDIuYw0KPiA+ICsrKyBiL2IvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
+dF8wMDAyLmMNCj4gPiBAQCAtMTMxMiw3ICsxMzEyLDcgQEAgc3RhdGljIGludCBfX3hpcHJhbSBk
+b193cml0ZV9idWZmZXIoc3RydWN0IG1hcF9pbmZvICptYXAsIA0KPiA+ICAgICAgICAgIHN0cnVj
+dCBjZmlfcHJpdmF0ZSAqY2ZpID0gbWFwLT5mbGRydl9wcml2Ow0KPiA+ICAgICAgICAgIHVuc2ln
+bmVkIGxvbmcgdGltZW8gPSBqaWZmaWVzICsgSFo7DQo+ID4gICAgICAgICAgLyogc2VlIGNvbW1l
+bnRzIGluIGRvX3dyaXRlX29uZXdvcmQoKSByZWdhcmRpbmcgdVdyaXRlVGltZW8uICovDQo+ID4g
+LSAgICAgICAgdW5zaWduZWQgbG9uZyB1V3JpdGVUaW1lb3V0ID0gKCBIWiAvIDEwMDAgKSArIDE7
+DQo+ID4gKyAgICAgICAgdW5zaWduZWQgbG9uZyB1V3JpdGVUaW1lb3V0ID0gKCBIWiAvIDEwMDAg
+KSArIDQ7DQo+IA0KPiBObywgc29ycnksIHRoaXMgaXMgbm90IGEgZml4LCB0aGlzIGlzIGEgYmFu
+ZC1haWQuIFRoZSB3aG9sZSBIWi8xMDAwIA0KPiB0aGluZyBpcyBicm9rZW4uIFlvdSBzaG91bGQg
+bm90IHVzZSBIWiBhdCBhbGwuIEZvciB0aGlzIGRyaXZlciBpdCANCj4gbG9va3MgbGlrZSB5b3Ug
+c2hvdWxkIHVzZSAnIHNjaGVkdWxlX3RpbWVvdXQoKScgd2l0aCB0aGUgcmlnaHQgdGltb3V0IA0K
+PiBpbnN0ZWFkIG9mICdzY2hlZHVsZSgpJyBhbmQgZ2V0IHJpZCBvZiBhbGwgdGhlIEhaIGFuZCBq
+aWZmaWVzIHN0dWZmLg0KDQpXaGF0IEkgbWVhbnQgaXMgc29tZXRoaW5nIGxpa2UgdGhpcyAobm90
+IHRlc3RlZCwgbm90IGV2ZW4gY29tcGlsZWQpLCB3aGljaCBzaG91bGQgYWxzbyBiZSBkb25lIGlu
+IG1hbnkgb3RoZXIgcGxhY2VzIGluIHRoaXMgZmlsZToNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
+dF8wMDAyLmMNCmluZGV4IDIyZDA0OTMuLjhjZTNiNDQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210
+ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
+ZHNldF8wMDAyLmMNCkBAIC00OCw2ICs0OCw5IEBADQogI2RlZmluZSBTU1Q0OUxGMDA4QQkJMHgw
+MDVhDQogI2RlZmluZSBBVDQ5QlY2NDE2CQkweDAwZDYNCiANCisvKiBXcml0ZSBvcGVyYXRpb24g
+dGltZW91dCwgbXMgKi8NCisjZGVmaW5lIFdSSVRFX1RJRU1FT1VUIDINCisNCiBzdGF0aWMgaW50
+IGNmaV9hbWRzdGRfcmVhZCAoc3RydWN0IG10ZF9pbmZvICosIGxvZmZfdCwgc2l6ZV90LCBzaXpl
+X3QgKiwgdV9jaGFyICopOyAgc3RhdGljIGludCBjZmlfYW1kc3RkX3dyaXRlX3dvcmRzKHN0cnVj
+dCBtdGRfaW5mbyAqLCBsb2ZmX3QsIHNpemVfdCwgc2l6ZV90ICosIGNvbnN0IHVfY2hhciAqKTsg
+IHN0YXRpYyBpbnQgY2ZpX2FtZHN0ZF93cml0ZV9idWZmZXJzKHN0cnVjdCBtdGRfaW5mbyAqLCBs
+b2ZmX3QsIHNpemVfdCwgc2l6ZV90ICosIGNvbnN0IHVfY2hhciAqKTsgQEAgLTExNDMsMTcgKzEx
+NDYsNiBAQCBzdGF0aWMgaW50IGNmaV9hbWRzdGRfc2Vjc2lfcmVhZCAoc3RydWN0IG10ZF9pbmZv
+ICptdGQsIGxvZmZfdCBmcm9tLCBzaXplX3QgbGVuLCAgc3RhdGljIGludCBfX3hpcHJhbSBkb193
+cml0ZV9vbmV3b3JkKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1
+bnNpZ25lZCBsb25nIGFkciwgbWFwX3dvcmQgZGF0dW0pICB7DQogCXN0cnVjdCBjZmlfcHJpdmF0
+ZSAqY2ZpID0gbWFwLT5mbGRydl9wcml2Ow0KLQl1bnNpZ25lZCBsb25nIHRpbWVvID0gamlmZmll
+cyArIEhaOw0KLQkvKg0KLQkgKiBXZSB1c2UgYSAxbXMgKyAxIGppZmZpZXMgZ2VuZXJpYyB0aW1l
+b3V0IGZvciB3cml0ZXMgKG1vc3QgZGV2aWNlcw0KLQkgKiBoYXZlIGEgbWF4IHdyaXRlIHRpbWUg
+b2YgYSBmZXcgaHVuZHJlZHMgdXNlYykuIEhvd2V2ZXIsIHdlIHNob3VsZA0KLQkgKiB1c2UgdGhl
+IG1heGltdW0gdGltZW91dCB2YWx1ZSBnaXZlbiBieSB0aGUgY2hpcCBhdCBwcm9iZSB0aW1lDQot
+CSAqIGluc3RlYWQuICBVbmZvcnR1bmF0ZWx5LCBzdHJ1Y3QgZmxjaGlwIGRvZXMgaGF2ZSBhIGZp
+ZWxkIGZvcg0KLQkgKiBtYXhpbXVtIHRpbWVvdXQsIG9ubHkgZm9yIHR5cGljYWwgd2hpY2ggY2Fu
+IGJlIGZhciB0b28gc2hvcnQNCi0JICogZGVwZW5kaW5nIG9mIHRoZSBjb25kaXRpb25zLgkgVGhl
+ICcgKyAxJyBpcyB0byBhdm9pZCBoYXZpbmcgYQ0KLQkgKiB0aW1lb3V0IG9mIDAgamlmZmllcyBp
+ZiBIWiBpcyBzbWFsbGVyIHRoYW4gMTAwMC4NCi0JICovDQotCXVuc2lnbmVkIGxvbmcgdVdyaXRl
+VGltZW91dCA9ICggSFogLyAxMDAwICkgKyAxOw0KIAlpbnQgcmV0ID0gMDsNCiAJbWFwX3dvcmQg
+b2xkZDsNCiAJaW50IHJldHJ5X2NudCA9IDA7DQpAQCAtMTE5Nyw4ICsxMTg5LDYgQEAgc3RhdGlj
+IGludCBfX3hpcHJhbSBkb193cml0ZV9vbmV3b3JkKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1
+Y3QgZmxjaGlwICpjaGlwLA0KIAkJCQlhZHIsIG1hcF9iYW5rd2lkdGgobWFwKSwNCiAJCQkJY2hp
+cC0+d29yZF93cml0ZV90aW1lKTsNCiANCi0JLyogU2VlIGNvbW1lbnQgYWJvdmUgZm9yIHRpbWVv
+dXQgdmFsdWUuICovDQotCXRpbWVvID0gamlmZmllcyArIHVXcml0ZVRpbWVvdXQ7DQogCWZvciAo
+OzspIHsNCiAJCWlmIChjaGlwLT5zdGF0ZSAhPSBGTF9XUklUSU5HKSB7DQogCQkJLyogU29tZW9u
+ZSdzIHN1c3BlbmRlZCB0aGUgd3JpdGUuIFNsZWVwICovIEBAIC0xMjA3LDIwICsxMTk3LDE4IEBA
+IHN0YXRpYyBpbnQgX194aXByYW0gZG9fd3JpdGVfb25ld29yZChzdHJ1Y3QgbWFwX2luZm8gKm1h
+cCwgc3RydWN0IGZsY2hpcCAqY2hpcCwNCiAJCQlzZXRfY3VycmVudF9zdGF0ZShUQVNLX1VOSU5U
+RVJSVVBUSUJMRSk7DQogCQkJYWRkX3dhaXRfcXVldWUoJmNoaXAtPndxLCAmd2FpdCk7DQogCQkJ
+bXV0ZXhfdW5sb2NrKCZjaGlwLT5tdXRleCk7DQotCQkJc2NoZWR1bGUoKTsNCisJCQlyZXQgPSBz
+Y2hlZHVsZV90aW1lb3V0KG1zZWNzX3RvX2ppZmZpZXMoV1JJVEVfVElFTUVPVVQpKTsNCiAJCQly
+ZW1vdmVfd2FpdF9xdWV1ZSgmY2hpcC0+d3EsICZ3YWl0KTsNCi0JCQl0aW1lbyA9IGppZmZpZXMg
+KyAoSFogLyAyKTsgLyogRklYTUUgKi8NCiAJCQltdXRleF9sb2NrKCZjaGlwLT5tdXRleCk7DQor
+CQkJaWYgKCFyZXQpIHsNCisJCQkJeGlwX2VuYWJsZShtYXAsIGNoaXAsIGFkcik7DQorCQkJCXBy
+aW50ayhLRVJOX1dBUk5JTkcgIk1URCAlcygpOiBzb2Z0d2FyZSB0aW1lb3V0XG4iLCBfX2Z1bmNf
+Xyk7DQorCQkJCXhpcF9kaXNhYmxlKG1hcCwgY2hpcCwgYWRyKTsNCisJCQkJYnJlYWs7DQorCQkJ
+fQ0KIAkJCWNvbnRpbnVlOw0KIAkJfQ0KIA0KLQkJaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdGlt
+ZW8pICYmICFjaGlwX3JlYWR5KG1hcCwgYWRyKSl7DQotCQkJeGlwX2VuYWJsZShtYXAsIGNoaXAs
+IGFkcik7DQotCQkJcHJpbnRrKEtFUk5fV0FSTklORyAiTVREICVzKCk6IHNvZnR3YXJlIHRpbWVv
+dXRcbiIsIF9fZnVuY19fKTsNCi0JCQl4aXBfZGlzYWJsZShtYXAsIGNoaXAsIGFkcik7DQotCQkJ
+YnJlYWs7DQotCQl9DQotDQogCQlpZiAoY2hpcF9yZWFkeShtYXAsIGFkcikpDQogCQkJYnJlYWs7
+DQogDQotLQ0KQmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0K
