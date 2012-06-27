@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjudF-0008Un-Ej
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 15:58:25 +0000
+ id 1SjudJ-00004t-47
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 15:58:27 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 09/16] UBI: Fastmap: Be more verbose on fastmap failure
-Date: Wed, 27 Jun 2012 17:57:49 +0200
-Message-Id: <1340812676-14460-10-git-send-email-richard@nod.at>
+Subject: [PATCH 12/16] UBI: Fastmap: Make checkpatch.pl happy
+Date: Wed, 27 Jun 2012 17:57:52 +0200
+Message-Id: <1340812676-14460-13-git-send-email-richard@nod.at>
 In-Reply-To: <1340812676-14460-1-git-send-email-richard@nod.at>
 References: <1340812676-14460-1-git-send-email-richard@nod.at>
 Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
@@ -25,197 +25,140 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |   67 ++++++++++++++++++++++++++++++---------------
- 1 files changed, 45 insertions(+), 22 deletions(-)
+ drivers/mtd/ubi/fastmap.c |   21 ++++++++++++---------
+ drivers/mtd/ubi/wl.c      |   17 ++++++++---------
+ 2 files changed, 20 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 4d8ef9e..07ac06e 100644
+index e285e3b..2c7c350 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -299,7 +299,6 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		av = tmp_av;
- 	else {
- 		ubi_err("orphaned volume in fastmap pool!");
--
- 		return UBI_BAD_FASTMAP;
- 	}
- 
-@@ -378,21 +377,23 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		pnum = be32_to_cpu(pebs[i]);
- 
- 		if (ubi_io_is_bad(ubi, pnum)) {
--			dbg_bld("bad PEB in fastmap pool!");
-+			ubi_err("bad PEB in fastmap pool!");
- 			ret = UBI_BAD_FASTMAP;
- 			goto out;
- 		}
- 
- 		err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
- 		if (err && err != UBI_IO_BITFLIPS) {
--			dbg_bld("unable to read EC header!");
-+			ubi_err("unable to read EC header! PEB:%i err:%i",
-+				pnum, err);
- 			ret = err > 0 ? UBI_BAD_FASTMAP : err;
- 			goto out;
- 		} else if (ret == UBI_IO_BITFLIPS)
- 			scrub = 1;
- 
- 		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
--			dbg_bld("image seq mismatch!");
-+			ubi_err("bad image seq: 0x%x, expected: 0x%x",
-+				be32_to_cpu(ech->image_seq), ubi->image_seq);
- 			err = UBI_BAD_FASTMAP;
- 			goto out;
- 		}
-@@ -540,22 +541,31 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 	if (fm_pos >= fm_size)
- 		goto fail_bad;
- 
--	if (be32_to_cpu(fmhdr->magic) != UBI_FM_HDR_MAGIC)
-+	if (be32_to_cpu(fmhdr->magic) != UBI_FM_HDR_MAGIC) {
-+		ubi_err("bad fastmap header magic: 0x%x, expected: 0x%x",
-+			be32_to_cpu(fmhdr->magic), UBI_FM_HDR_MAGIC);
- 		goto fail_bad;
-+	}
- 
- 	fmpl1 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
- 	fm_pos += sizeof(*fmpl1);
- 	if (fm_pos >= fm_size)
- 		goto fail_bad;
--	if (be32_to_cpu(fmpl1->magic) != UBI_FM_POOL_MAGIC)
-+	if (be32_to_cpu(fmpl1->magic) != UBI_FM_POOL_MAGIC) {
-+		ubi_err("bad fastmap pool magic: 0x%x, expected: 0x%x",
-+			be32_to_cpu(fmpl1->magic), UBI_FM_POOL_MAGIC);
- 		goto fail_bad;
-+	}
- 
- 	fmpl2 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
- 	fm_pos += sizeof(*fmpl2);
- 	if (fm_pos >= fm_size)
- 		goto fail_bad;
--	if (be32_to_cpu(fmpl2->magic) != UBI_FM_POOL_MAGIC)
-+	if (be32_to_cpu(fmpl2->magic) != UBI_FM_POOL_MAGIC) {
-+		ubi_err("bad fastmap pool magic: 0x%x, expected: 0x%x",
-+			be32_to_cpu(fmpl2->magic), UBI_FM_POOL_MAGIC);
- 		goto fail_bad;
-+	}
- 
- 	/* read EC values from free list */
- 	for (i = 0; i < be32_to_cpu(fmhdr->free_peb_count); i++) {
-@@ -611,8 +621,12 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
+@@ -668,7 +668,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
  			goto fail_bad;
  
--		if (be32_to_cpu(fmvhdr->magic) != UBI_FM_VHDR_MAGIC)
-+		if (be32_to_cpu(fmvhdr->magic) != UBI_FM_VHDR_MAGIC) {
-+			ubi_err("bad fastmap vol header magic: 0x%x, "
-+				"expected: 0x%x",
-+				be32_to_cpu(fmvhdr->magic), UBI_FM_VHDR_MAGIC);
+ 		if (be32_to_cpu(fmvhdr->magic) != UBI_FM_VHDR_MAGIC) {
+-			ubi_err("bad fastmap vol header magic: 0x%x, "
++			ubi_err("bad fastmap vol header magic: 0x%x, " \
+ 				"expected: 0x%x",
+ 				be32_to_cpu(fmvhdr->magic), UBI_FM_VHDR_MAGIC);
  			goto fail_bad;
-+		}
- 
- 		av = add_vol(ai, be32_to_cpu(fmvhdr->vol_id),
- 			     be32_to_cpu(fmvhdr->used_ebs),
-@@ -633,8 +647,12 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
+@@ -694,7 +694,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
  			goto fail_bad;
  
--		if (be32_to_cpu(fm_eba->magic) != UBI_FM_EBA_MAGIC)
-+		if (be32_to_cpu(fm_eba->magic) != UBI_FM_EBA_MAGIC) {
-+			ubi_err("bad fastmap EBA header magic: 0x%x, "
-+				"expected: 0x%x",
-+				be32_to_cpu(fm_eba->magic), UBI_FM_EBA_MAGIC);
+ 		if (be32_to_cpu(fm_eba->magic) != UBI_FM_EBA_MAGIC) {
+-			ubi_err("bad fastmap EBA header magic: 0x%x, "
++			ubi_err("bad fastmap EBA header magic: 0x%x, " \
+ 				"expected: 0x%x",
+ 				be32_to_cpu(fm_eba->magic), UBI_FM_EBA_MAGIC);
  			goto fail_bad;
-+		}
- 
- 		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
- 			int pnum = be32_to_cpu(fm_eba->pnum[j]);
-@@ -694,6 +712,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 			int err;
- 
- 			if (ubi_io_is_bad(ubi, tmp_aeb->pnum)) {
-+				ubi_err("bad PEB in fastmap EBA orphan list");
- 				ret = UBI_BAD_FASTMAP;
- 				kfree(ech);
- 				goto fail;
-@@ -701,7 +720,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+@@ -766,7 +766,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
  
  			err = ubi_io_read_ec_hdr(ubi, tmp_aeb->pnum, ech, 0);
  			if (err && err != UBI_IO_BITFLIPS) {
--				dbg_bld("unable to read EC header!");
-+				ubi_err("unable to read EC header! PEB:%i "
-+					"err:%i", tmp_aeb->pnum, err);
+-				ubi_err("unable to read EC header! PEB:%i "
++				ubi_err("unable to read EC header! PEB:%i " \
+ 					"err:%i", tmp_aeb->pnum, err);
  				ret = err > 0 ? UBI_BAD_FASTMAP : err;
  				kfree(ech);
- 
-@@ -841,14 +861,8 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		fm->to_be_tortured[0] = 1;
- 
- 	if (be32_to_cpu(fmsb->magic) != UBI_FM_SB_MAGIC) {
--		/* TODO: not urgent, but examine all the error messages and
--		 * print more information there. Here you should print what was
--		 * read and what was expected. See io.c and do similarly or
--		 * better.
--		 * Please, change globally. E.g., when you print about bad
--		 * version - print what was expected and what was actually
--		 * found. */
--		ubi_err("super block magic does not match");
-+		ubi_err("bad super block magic: 0x%x, expected: 0x%x",
-+			be32_to_cpu(fmsb->magic), UBI_FM_SB_MAGIC);
- 		ret = UBI_BAD_FASTMAP;
- 		kfree(fmsb);
- 		kfree(fm);
-@@ -856,7 +870,8 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	}
- 
- 	if (fmsb->version != UBI_FM_FMT_VERSION) {
--		ubi_err("unknown fastmap format version!");
-+		ubi_err("bad fastmap version: %i, expected: %i",
-+			fmsb->version, UBI_FM_FMT_VERSION);
- 		ret = UBI_BAD_FASTMAP;
- 		kfree(fmsb);
- 		kfree(fm);
-@@ -865,7 +880,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 	used_blocks = be32_to_cpu(fmsb->used_blocks);
- 	if (used_blocks > UBI_FM_MAX_BLOCKS || used_blocks < 1) {
--		ubi_err("number of fastmap blocks is invalid");
-+		ubi_err("number of fastmap blocks is invalid: %i", used_blocks);
- 		ret = UBI_BAD_FASTMAP;
- 		kfree(fmsb);
- 		kfree(fm);
-@@ -942,6 +957,10 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
+@@ -1013,7 +1013,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
  
  		if (i == 0) {
  			if (be32_to_cpu(vh->vol_id) != UBI_FM_SB_VOLUME_ID) {
-+				ubi_err("bad fastmap anchor vol_id: 0x%x,"
-+					" expected: 0x%x",
-+					be32_to_cpu(vh->vol_id),
-+					UBI_FM_SB_VOLUME_ID);
- 				ret = UBI_BAD_FASTMAP;
- 				kfree(fmsb);
- 				kfree(fm);
-@@ -949,6 +968,10 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
+-				ubi_err("bad fastmap anchor vol_id: 0x%x,"
++				ubi_err("bad fastmap anchor vol_id: 0x%x," \
+ 					" expected: 0x%x",
+ 					be32_to_cpu(vh->vol_id),
+ 					UBI_FM_SB_VOLUME_ID);
+@@ -1024,7 +1024,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
  			}
  		} else {
  			if (be32_to_cpu(vh->vol_id) != UBI_FM_DATA_VOLUME_ID) {
-+				ubi_err("bad fastmap data vol_id: 0x%x,"
-+					" expected: 0x%x",
-+					be32_to_cpu(vh->vol_id),
-+					UBI_FM_DATA_VOLUME_ID);
- 				ret = UBI_BAD_FASTMAP;
- 				kfree(fmsb);
- 				goto free_hdr;
-@@ -961,8 +984,8 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
+-				ubi_err("bad fastmap data vol_id: 0x%x,"
++				ubi_err("bad fastmap data vol_id: 0x%x," \
+ 					" expected: 0x%x",
+ 					be32_to_cpu(vh->vol_id),
+ 					UBI_FM_DATA_VOLUME_ID);
+@@ -1040,7 +1040,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai)
  		ret = ubi_io_read(ubi, fm_raw + (ubi->leb_size * i), pnum,
  				  ubi->leb_start, ubi->leb_size);
  		if (ret && ret != UBI_IO_BITFLIPS) {
--			ubi_err("unable to read fastmap block# %i (PEB: %i)",
--				i, pnum);
-+			ubi_err("unable to read fastmap block# %i (PEB: %i, "
-+				"err: %i)", i, pnum, ret);
+-			ubi_err("unable to read fastmap block# %i (PEB: %i, "
++			ubi_err("unable to read fastmap block# %i (PEB: %i, " \
+ 				"err: %i)", i, pnum, ret);
  			kfree(fmsb);
  			kfree(fm);
- 			goto free_hdr;
+@@ -1305,7 +1305,8 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 	}
+ 
+ 	fmsb->data_crc = 0;
+-	fmsb->data_crc = cpu_to_be32(crc32(UBI_CRC32_INIT, fm_raw, new_fm->size));
++	fmsb->data_crc = cpu_to_be32(crc32(UBI_CRC32_INIT, fm_raw,
++					   new_fm->size));
+ 
+ 	for (i = 1; i < new_fm->used_blocks; i++) {
+ 		dvhdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+@@ -1510,7 +1511,8 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 				int j;
+ 
+ 				for (j = 1; j < i; j++)
+-					ubi_wl_put_fm_peb(ubi, new_fm->e[j], j, 0);
++					ubi_wl_put_fm_peb(ubi, new_fm->e[j],
++							  j, 0);
+ 
+ 				ubi_err("could not erase old fastmap PEB");
+ 				goto err;
+@@ -1541,7 +1543,8 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 				ubi_err("could not erase old anchor PEB");
+ 
+ 				for (i = 1; i < new_fm->used_blocks; i++)
+-					ubi_wl_put_fm_peb(ubi, new_fm->e[i], i, 0);
++					ubi_wl_put_fm_peb(ubi, new_fm->e[i],
++							  i, 0);
+ 				goto err;
+ 			}
+ 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 06bf985..28385d2 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -349,8 +349,8 @@ static void prot_queue_add(struct ubi_device *ubi, struct ubi_wl_entry *e)
+  * This function looks for a wear leveling entry with erase counter closest to
+  * min + @diff, where min is the smallest erase counter.
+  */
+-static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi, struct rb_root *root,
+-					  int diff)
++static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
++					  struct rb_root *root, int diff)
+ {
+ 	struct rb_node *p;
+ 	struct ubi_wl_entry *e, *prev_e = NULL;
+@@ -403,12 +403,12 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
+ 		e = rb_entry(root->rb_node, struct ubi_wl_entry, u.rb);
+ 
+ 		/* If no fastmap has been written and this WL entry can be used
+-		 * as anchor PEB, hold it back and return the second best WL entry
+-		 * such that fastmap can use the anchor PEB later. */
++		 * as anchor PEB, hold it back and return the second best
++		 * WL entry such that fastmap can use the anchor PEB later. */
+ 		if (e && !ubi->fm && e->pnum < UBI_FM_MAX_START)
+-			e = rb_entry(rb_next(root->rb_node), struct ubi_wl_entry, u.rb);
+-	}
+-	else
++			e = rb_entry(rb_next(root->rb_node),
++				     struct ubi_wl_entry, u.rb);
++	} else
+ 		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
+ 
+ 	return e;
+@@ -997,8 +997,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		self_check_in_wl_tree(ubi, e1, &ubi->used);
+ 		rb_erase(&e1->u.rb, &ubi->used);
+ 		dbg_wl("anchor-move PEB %d to PEB %d", e1->pnum, e2->pnum);
+-	}
+-	else if (!ubi->scrub.rb_node) {
++	} else if (!ubi->scrub.rb_node) {
+ 		/*
+ 		 * Now pick the least worn-out used physical eraseblock and a
+ 		 * highly worn-out free physical eraseblock. If the erase
 -- 
 1.7.6.5
