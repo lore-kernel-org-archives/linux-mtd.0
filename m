@@ -1,28 +1,23 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sjdxn-0004wn-Ix
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2012 22:10:24 +0000
-Received: by pbbrq13 with SMTP id rq13so706183pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 15:10:21 -0700 (PDT)
-Message-ID: <4FEA3349.3090701@gmail.com>
-Date: Tue, 26 Jun 2012 15:10:17 -0700
-From: Tomer Barletz <barletz@gmail.com>
+ id 1Sjhka-0005fC-Gk
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 02:13:01 +0000
+Message-ID: <4FEA6D7B.8010804@freescale.com>
+Date: Wed, 27 Jun 2012 10:18:35 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: mtd nand erase and bad block
-References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
- <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
- <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
- <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
- <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
- <20120601175407.7c39a8fb@halley>
- <1338898670.2507.48.camel@sauron.fi.intel.com>
- <CAN8TOE_47JHHakwHYApZhOgb72dQxk7f1bxMoN5kb6NaxnqZBg@mail.gmail.com>
-In-Reply-To: <CAN8TOE_47JHHakwHYApZhOgb72dQxk7f1bxMoN5kb6NaxnqZBg@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Angus CLARK <angus.clark@st.com>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] mtd gpmi-nand: Fix read page when reading to vmalloced
+ area
+References: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: Subodh Nijsure <snijsure@grid-net.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/14/2012 10:48 AM, Brian Norris wrote:
-> Hi,
+=D3=DA 2012=C4=EA06=D4=C226=C8=D5 23:26, Sascha Hauer =D0=B4=B5=C0:
+> The gpmi-nand driver uses virt_addr_valid() to check whether a buffer
+> is suitable for dma. If it's not, a driver allocated buffer is used
+> instead. Then after a page read the driver allocated buffer must be
+> copied to the user supplied buffer. This does not happen since:
 >
-> On Tue, Jun 5, 2012 at 5:17 AM, Artem Bityutskiy<dedekind1@gmail.com>  wrote:
->> On Fri, 2012-06-01 at 17:54 +0300, Shmulik Ladkani wrote:
->>>
->>> My personal preference would be:
->>> 1. A new ioctl (MEMSCRUB?)
->>> 2. debugfs flag, PER MTD PART (slightly safer than your global flag)
->>> 3. global debugfs flag
->>>
->> Yes, I guess option 1 is the best I think. Option 2 needs too much work.
+> commit 7725cc85932bd02dd12c23108e0ef748c551ccba
+> Author: Brian Norris <computersforpeace@gmail.com>
+> Date:   Wed May 2 10:15:02 2012 -0700
 >
-> Just to put my 2 cents in and revive this thread: I'm also interested
-> in this kind of feature. I personally recompile to disable bad block
-> tables temporarily whenever I need to reset a flash-based BBT or
-> unmark a "bad block." But this isn't always so easy for others I deal
-> with, so I'm all for a feature that can be used by a
-> relatively-inexperienced user to reset bad block tables, erase bad
-> block markers, etc.
+>     mtd: gpmi-nand: utilize oob_requested parameter
 >
-> I like the idea of an ioctl (option 1), since that does not require
-> recompilation (even in the event that debugfs wasn't enabled) and can
-> be built into a user-space tool, with appropriate warnings and
-> prompting for the user, of course. The debugfs ideas seem a little bit
-> too manual to be useful for anyone but a true driver/kernel developer
-> and also a little bit too unsafe (a user may want to target a specific
-> block without disabling bad block checking for all chips or even for
-> the entire partition).
+>     Don't read OOB if the caller didn't request it.
 >
-> FWIW, a similar topic was brought up a long time back, with little result:
-> http://lists.infradead.org/pipermail/linux-mtd/2010-October/032577.html
+>     Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>     Acked-by: Huang Shijie <b32955@freescale.com>
+>     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>     Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 >
-> So Angus, are you going to code this?
+> This patch fixes this. The bug is encountered with UBI which uses a vma=
+lloced
+> buffer for the volume table.
 >
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: stable@vger.kernel.org
+> Cc: Huang Shijie <b32955@freescale.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Subodh Nijsure <snijsure@grid-net.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> index 6bb6f48..0179685 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -920,12 +920,12 @@ static int gpmi_ecc_read_page(struct mtd_info *mt=
+d, struct nand_chip *chip,
+>  		 */
+>  		memset(chip->oob_poi, ~0, mtd->oobsize);
+>  		chip->oob_poi[0] =3D ((uint8_t *) auxiliary_virt)[0];
+> -
+> -		read_page_swap_end(this, buf, mtd->writesize,
+> -				this->payload_virt, this->payload_phys,
+> -				nfc_geo->payload_size,
+> -				payload_virt, payload_phys);
+>  	}
+> +
+> +	read_page_swap_end(this, buf, mtd->writesize,
+> +			this->payload_virt, this->payload_phys,
+> +			nfc_geo->payload_size,
+> +			payload_virt, payload_phys);
+>  exit_nfc:
+>  	return ret;
+>  }
+Thanks a lot for debugging this bug. I am really busy recently, and have
+no time to debug it.
 
-Isn't Jon's patch match option number 1?
 
---Tomer
+
+Acked-by: Huang Shijie <b32955@freescale.com>
