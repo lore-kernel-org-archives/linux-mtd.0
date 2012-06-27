@@ -1,16 +1,20 @@
-From: Roland Stigge <stigge@antcom.de>
-To: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree-discuss@lists.ozlabs.org, dwmw2@infradead.org,
- kevin.wells@nxp.com, srinivas.bakki@nxp.com,
- linux-arm-kernel@lists.infradead.org, hechtb@googlemail.com,
- lars@metafoo.de, b32955@freescale.com, leiwen@marvell.com,
- linux@arm.linux.org.uk
-Subject: [PATCH] MTD: LPC32xx SLC NAND driver: Add error handling to write
- function
-Date: Wed, 27 Jun 2012 14:13:52 +0200
-Message-Id: <1340799232-23092-1-git-send-email-stigge@antcom.de>
-Cc: Roland Stigge <stigge@antcom.de>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjrFb-0004jY-4t
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 12:21:39 +0000
+Message-ID: <1340799940.1799.16.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: Add support for Atmel at45db081d
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Chunhe Lan <Chunhe.Lan@freescale.com>
+Date: Wed, 27 Jun 2012 15:25:40 +0300
+In-Reply-To: <1340074508-4393-1-git-send-email-Chunhe.Lan@freescale.com>
+References: <1340074508-4393-1-git-send-email-Chunhe.Lan@freescale.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-itv7/j2XLlsJ0CTSoYOv"
+Mime-Version: 1.0
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds error handling to the lpc32xx_nand_write_page_syndrome()
-function.
 
-Signed-off-by: Roland Stigge <stigge@antcom.de>
+--=-itv7/j2XLlsJ0CTSoYOv
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
----
- drivers/mtd/nand/lpc32xx_slc.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On Tue, 2012-06-19 at 10:55 +0800, Chunhe Lan wrote:
+> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 7e2e78d..b27b3b3 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -679,9 +679,12 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
- {
- 	struct lpc32xx_nand_host *host = chip->priv;
- 	u8 *pb = chip->oob_poi + chip->ecc.layout->eccpos[0];
-+	int error;
- 
- 	/* Write data, calculate ECC on outbound data */
--	lpc32xx_xfer(mtd, (u8 *)buf, chip->ecc.steps, 0);
-+	error = lpc32xx_xfer(mtd, (u8 *)buf, chip->ecc.steps, 0);
-+	if (error)
-+		return error;
- 
- 	/*
- 	 * The calculated ECC needs some manual work done to it before
--- 
-1.7.10.4
+Pushed to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-itv7/j2XLlsJ0CTSoYOv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP6vvEAAoJECmIfjd9wqK0WDUQAMkG6Ovub+Nrouzr5mYDetsl
+zuB8CKQxWKtiDRfndaIN/819od36SezpczJD5NlMWUMz/ZJef8aZ8sl90z2stU5u
+UhlYK1QwvatyLDxO14Hb2bStWli+I/2LOvD3flUZRsBO9O/rXGloX2hULE4gBmX4
+wZEwomZTzcw99PrToAGMBBAluHIPTit1T6tJRPyaEx4PDi66Wyo0U8uccnc1aWlc
+wZmlEAQvtrauDabRI3TZziPT37nHp6m3CrWUKZwawCBCEn49oN41jJQug93MYjNQ
+tB47pgoLi9QzHrjj9AIfY8Rf+eSNkKmwK96YaxVXSmTvh8rZtB6zgSi4CpGmypYa
+1nGCdfV9BX4uz900sLTR7m9xPsy8gMV+9rXlL0m6dx0EIVX0SCTgqcWGHPHo6fDn
+MNYt0DPfwr2tN2FId6IcvnBswgwbuHnD6NOpE+e1KLR0CSuKKX8T4uwof/s+QFM8
+Xnr1p/94//bZBoQI67/gUzUXme9STsmawO1uhbgCdEUnFWoGRkrhIu3C7ZbQVwJx
+a88LBT/qCyjJ07+NsL7WSEnoLIulUsOpJ/70b6qpl8/a3IVO/M1LuuqJDVsqOQ6g
+ExvafHFdMimhDhqmpQ0Tkf/OaJnaBLPpNBfvu+f43/41f2NjzmYxfgJiNfqtXx8S
+XXykzHNDgGpdLb1wUaO5
+=MsdG
+-----END PGP SIGNATURE-----
+
+--=-itv7/j2XLlsJ0CTSoYOv--
