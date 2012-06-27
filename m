@@ -1,25 +1,23 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjjdB-0001y8-VH
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 04:13:31 +0000
-Received: by wibhm2 with SMTP id hm2so1497770wib.0
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 21:13:28 -0700 (PDT)
-Message-ID: <1340770405.2317.10.camel@koala>
-Subject: Re: [PATCH 13/21] UBI: Fastmap: Introduce WL pool Signed-off-by:
- Richard Weinberger <richard@nod.at>
-From: Artem Bityutskiy <dedekind1@gmail.com>
+ id 1Sjjjm-0002kL-Os
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 04:20:19 +0000
+Received: by wgbds1 with SMTP id ds1so422385wgb.18
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2012 21:20:16 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1340456602-46050-1-git-send-email-richard@nod.at>
+References: <1340456602-46050-1-git-send-email-richard@nod.at>
+Date: Wed, 27 Jun 2012 13:20:15 +0900
+Message-ID: <CAKYAXd-3ArdssdotKHjvUU0f+yqcFC6y2rHF-mqnJnUcP=+eOg@mail.gmail.com>
+Subject: Re: UBI fastmap updates
+From: Namjae Jeon <linkinjeon@gmail.com>
 To: Richard Weinberger <richard@nod.at>
-Date: Wed, 27 Jun 2012 07:13:25 +0300
-In-Reply-To: <1339584138-69914-14-git-send-email-richard@nod.at>
-References: <1339584138-69914-1-git-send-email-richard@nod.at>
- <1339584138-69914-14-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-DxSDjPmiPspZtLg2ym1R"
-Mime-Version: 1.0
-Cc: adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
- linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
- shmulik.ladkani@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
+ Marius.Mazarel@ugal.ro, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi. Richard.
 
---=-DxSDjPmiPspZtLg2ym1R
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Would you infom me how much UBI attach time is improved with fastmap ?
 
-On Wed, 2012-06-13 at 12:42 +0200, Richard Weinberger wrote:
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/build.c     |    4 ++
->  drivers/mtd/ubi/fastmap.c   |   51 ++++++++++++++++----------
->  drivers/mtd/ubi/ubi-media.h |    2 +
->  drivers/mtd/ubi/ubi.h       |    1 +
->  drivers/mtd/ubi/wl.c        |   82 +++++++++++++++++++++++++++++++++++++=
-+----
->  5 files changed, 112 insertions(+), 28 deletions(-)
+Thanks.
 
-Hi, I've rebased the fastmap branch against v3.5-rc4, and your patches
-do not apply cleanly anymore, because there are collisions with Joel's
-changes which were merged recently. I've applied everything up to this
-patch and pushed out. Could you please re-base and re-send your queue?
-Thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-DxSDjPmiPspZtLg2ym1R
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP6ohlAAoJECmIfjd9wqK0/5oP/1fcr7bXV+q9ZbN3FQdr8ZEU
-4B1nqSQoGoSAOigEx+xaXuyrATCXj2BhzD+o7AyXC/8IJ7Gn+4cmKSM+KIDCC28G
-rWGZd9TkUkomCkNvCd9t0hq5nwjJOwtq3JehnNYIPLmbTKA50VBFIhfnY0yEeFy7
-flsVQOt0kGL/DWCdSfmZ1ZASPy9o1oNr+F2J9TikWtwshZOaN4HPv7MZQ54h7OZX
-pAEzadWDb0ADRicjkgKLU5FGzP/NLGb5iWjMLMxHfC0ABtlftp4LS8NeTNab93hc
-uLce7elZqdA/dexHrWr58MQrLZYVThGAWJtcyR9NdaCORhTpRYSmnMjJWZ/BBng1
-MdcO9c7eyjpStnkopIDybQ33t3c0L8mEd08oeMlYLM6+4mbx41MjN7mj3KklMJcq
-Qf/EbZAXjwNNn4o3d3jsNGYfp3cvo+eeqpbqPio3U3q6GZUZbKnnCJNa2dyzjq8E
-IZHTtcoWmHyrg1vdLs67AHwZ0rBtxy0O+O7gqZgm+vpD38rxKKv35A6Nf8fMFUg3
-/130lViDVMXmq4H4mqP3DzI4S+HQUEV+C/84Vk+Ws5AYgCQ/W/td7YRxHe534FKZ
-Wv2XarDY64OMIPzG0Fg6YtXXI/TJt3OlZJrngy9EDpw5YwD+FJYduqMt9haRLNOh
-US1ikbLaM5EwmCdGj5yX
-=/LeQ
------END PGP SIGNATURE-----
-
---=-DxSDjPmiPspZtLg2ym1R--
+2012/6/23, Richard Weinberger <richard@nod.at>:
+> This is the next round of UBI fastmap updates.
+>
+> The highlights are:
+> 	- Fastmap produces anchor PEBs if none are available
+> 	  (creating a fastmap on an image created by ubinize works now)
+> 	- Fastmap is now able to reuse all PEBs if no empty PEBs are available
+> 	- Minor fixes
+>
+> If you want to test fastmap you can use my git repo:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v13
+>
+> Enjoy!
+> //richard
+>
+> [PATCH 1/7] UBI: Fastmap: Modify the WL sub-system to prodcue a free
+> [PATCH 2/7] UBI: Fastmap: Fix WARN_ON()
+> [PATCH 3/7] UBI: Fastmap: Ensure that not all anchor PEBs go into a
+> [PATCH 4/7] UBI: Fastmap: Fix ubi_assert()
+> [PATCH 5/7] UBI: Fastmap: Kill max_pnum logic
+> [PATCH 6/7] UBI: Fastmap: Reuse all fastmap PEB if no free PEBs are
+> [PATCH 7/7] UBI: Fastmap: Get rid of fm_pool_mutex
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
