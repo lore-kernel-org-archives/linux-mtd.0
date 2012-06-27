@@ -1,20 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sjt5m-0006yX-2p
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 14:19:38 +0000
-Message-ID: <1340806994.3070.34.camel@sauron.fi.intel.com>
-Subject: Re: Help needed with corruption detection/ubifs_wbuf_sync_nolock
+ id 1Sjt9y-0007jh-61
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 14:23:58 +0000
+Message-ID: <1340807279.3070.39.camel@sauron.fi.intel.com>
+Subject: Re: How does UBI FS handle invalid PEB on nand flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Reginald Perrin <reggyperrin@yahoo.com>
-Date: Wed, 27 Jun 2012 17:23:14 +0300
-In-Reply-To: <1340635736.72938.YahooMailNeo@web114615.mail.gq1.yahoo.com>
-References: <1340632690.58836.YahooMailNeo@web114616.mail.gq1.yahoo.com>
- <1340635736.72938.YahooMailNeo@web114615.mail.gq1.yahoo.com>
+To: Steven Munk =?ISO-8859-1?Q?=D8stergaard?= <sml@rosetechnology.dk>
+Date: Wed, 27 Jun 2012 17:27:59 +0300
+In-Reply-To: <4FE872C3.1020402@rosetechnology.dk>
+References: <4FE872C3.1020402@rosetechnology.dk>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-BXM3oawrqGSbNXXl8E2A"
+ boundary="=-gi/AHT+wO0PuwViw4lLc"
 Mime-Version: 1.0
-Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,26 +25,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-BXM3oawrqGSbNXXl8E2A
+--=-gi/AHT+wO0PuwViw4lLc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-06-25 at 07:48 -0700, Reginald Perrin wrote:
-> Update: =20
+On Mon, 2012-06-25 at 16:16 +0200, Steven Munk =C3=98stergaard wrote:
+> Been reading all of the available documentation on UBI and UBIFS but I=
+=20
+> cannot  find a clear statement on how UBIFS handles production marked=20
+> invalid PEB's, and if their location is saved; So when a format is done,=
+=20
+> this information is not lost.
 >=20
-> I'm now doing this, and it seems to work.  Is this correct?
->=20
-> if ( wbuf->dtype !=3D UBI_UNKNOWN && ((struct ubifs_ch *)wbuf->buf)->node=
-_type > UBIFS_ORPH_NODE )=20
+> is there a way to make sure UBIFS allways checks for production marked=
+=20
+> invalid PEB's when a device is started the first time?
 
-I do not think so, wbuf->buf points to a random byte, not to the
-beginning of a node.
+UBIFS / UBI do not store information about bad eraseblocks. This is
+handled by MTD. UBI may only query "if this eraseblock is good?" or mark
+an eraseblock as bad. The bad block management is done at the MTD level.
+Traditionally, the bad block marker is stored in the OOB of the first
+page, but there are variations. When MTD initalizes, it scans the entire
+flash and reads all OOBs, and builds the in-memory bad block table. The
+other option is on-flash bad block table, which is typically stored at
+the 2 last good eraseblocks of the flash (AFAIR) and stores information
+about all bad eraseblocks. In this case you do not need scanning, which
+is faster. There are flashes which cannot store bad/good status in OOB,
+they use the on-flash BBT.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-BXM3oawrqGSbNXXl8E2A
+--=-gi/AHT+wO0PuwViw4lLc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +65,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6xdSAAoJECmIfjd9wqK0rx8QAMtiZKPuDlxqiBF1LWxmzVH5
-AWTjotBG71UdMesZrIR2tFQAoMqG9qSzhy+QC8g5Io+4QKRxqCNGB0MidC9U8MK3
-DXnh+5IOGUQ7Tm5ezzGQfKvYCQmjqguHKYevPNFILTH5mL6vcpC+F4D2y9l3l+eP
-8ye1B8iiYRE9PF87kk6479+Jaq+tHOzHOeb8EQLEHiNmk2QKb+dGnedm4LcJCO9t
-q5Hfg67rFmZzOIPYVUj+YYx1B0LuG+Xp9Q8hqXCwI6qqRBrqFahGZV3RuMFXHt1/
-/IjvrVpjQJnOiRjzuLxUJkUHzHiuMNIk+eo4cGBEnsdGDJTEFL4pdP7kFog7hgK6
-Pfjq6j8uxLopUEt0jPPS81LlwH/AvtsaGkHTkJLdudGA6TRM9YxmiOXomjUhQpLZ
-5zvzqTjflsByQWP+6n5EEuqspvO2uWJycVA64aLELi2kTjDk2pS096jU1SZb8jOY
-Yq4EYK7UyRsIULfU+/yzKLfeXM5KDgfn0sq18KZh60cy88nTsQ2x1abGAphr4QAb
-QyqmHmGzMvTipnHArnJYKN90v1rooIq7j+HEH7Tt60w7ft8zkUAAUFe7z24WXmFi
-ERSlaZRheC/UBoDWkWT1y8dBfoCIGw+wG97gNIHBTPgRUmFZW4wV3/PqJib7QHxZ
-zGH96m4nqixhZ5wOZI/l
-=l3Xj
+iQIcBAABAgAGBQJP6xhvAAoJECmIfjd9wqK08HgP/i5H5aifZVJQZ4vk/8oxIPiR
+w2OtCPdYAFFlDafCu/mZuQbRnNaOcLvaIGpwYn0jjORz0D1KrYF7gRuMF8zq4SMt
+XwP0gxr1ab/35L60b/v6A9eQyVvhpFnOztsWPQKoc9zXb3CCcWe88m0SynzEaa3f
+5OChsloo8yhJ7JMT8e4zB+52iD48Ded0zlhCRuNa3B1WlJXS1ZmJPSQo/nv0AHMg
+Za9VcKLWaToMwveYCMT5Ex9D+mpZXoldcnRS/DvA1w0xXBWOaP/J12DgbA4NfnTH
+6wf7fdhrpZNR+1NClOtYL40R76NxLo/MnovKA6Htp7Ti/FwPytv6FqlKuf1fB+Cl
+JYqaOepEt+nDHMck2ms0vwAXJShxq2bMP+v6o5hCAMiYEXUZdm5/veoD0+YSn31X
+jnnwVi192aj3+broKrYbA0vS9tvGflFENMD8HjC2+ACUFtHqoO4Tj+6RtZN6i+ZY
+LlwgfMnh0oQFPTX33ppOq7DUe2Ig/NKFRQQR3UPaiT0hO2MZ6Yl2PdYyRZdVgHXr
+4LSsT4WcVsmBgARNTKNiCkz6MI1kRHYIfPfHlvWSQDn1Nto9eyZsbxYILIiTnGe1
+8iZ4RqT3WHE9XdA/jXyItbWWwl3EeM8W/Iut3litGEMs+oduLPX2bA/MtSucBDZN
+yMuJN2D5ri0PPRPUFdE5
+=jjg6
 -----END PGP SIGNATURE-----
 
---=-BXM3oawrqGSbNXXl8E2A--
+--=-gi/AHT+wO0PuwViw4lLc--
