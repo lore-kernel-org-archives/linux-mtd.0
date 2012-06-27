@@ -1,22 +1,26 @@
-Message-ID: <1340789322.29342.9.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand
- flash driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Wed, 27 Jun 2012 12:28:42 +0300
-In-Reply-To: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
-References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjoZM-00040b-FB
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 09:29:54 +0000
+Message-ID: <1340789633.29342.10.camel@sauron.fi.intel.com>
+Subject: RE: [PATCH v2 08/10] ARM: OMAP2+: gpmc: Modify interrupt handling
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: "Mohammed, Afzal" <afzal@ti.com>
+Date: Wed, 27 Jun 2012 12:33:53 +0300
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E998C70@DBDE01.ent.ti.com>
+References: <cover.1339586624.git.afzal@ti.com>
+ <35f198577330e7260ff7e5f1f3ac603372d83589.1339586624.git.afzal@ti.com>
+ <1339588558.2401.117.camel@sauron.fi.intel.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E998C70@DBDE01.ent.ti.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-dASSspmPPDCVePuQJz1k"
+ boundary="=-Y+y69xwDoTrr5T8fjzIn"
 Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
- tie-fei.zang@freescale.com, nicolas.ferre@atmel.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, scottwood@freescale.com,
- Dipen.Dudhat@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, bryan.wu@analog.com
-Reply-To: dedekind1@gmail.com
+Cc: "tony@atomide.com" <tony@atomide.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +31,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-dASSspmPPDCVePuQJz1k
+--=-Y+y69xwDoTrr5T8fjzIn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
-> Those patches is based on v3.5-rc4
+On Wed, 2012-06-13 at 11:56 +0000, Mohammed, Afzal wrote:
+> > I guess "XXX" means "Warning"? Why not to use plain English? :-)
+>=20
+> It was made so that in editor (vim, maybe got biased towards it as I
+> use it) it gets highlighted, do you want me to send an updated series ?
 
-Pushed patches 1 and 3. The other ones were not pushed because you was
-going to address review comments and re-send. Please, base them on the
-l2-mtd.git three, not v3.5-rcX. Thanks!
-
-The l2-mtd.git tree is here:
-git://git.infradead.org/users/dedekind/l2-mtd.git
-
+No, thanks.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-dASSspmPPDCVePuQJz1k
+--=-Y+y69xwDoTrr5T8fjzIn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6tJKAAoJECmIfjd9wqK0IbEP/jwzfWrSvDRSGOSi007hRxqr
-ED/oCI/vjOt8TagntJmjIYjQyat17J30x/DlTLOBkQ0p620+/OiO5MK3MbEvcSAF
-PDfHYX4kH7+Cna3cC88mdOCny/mvPYKpCBS1orZ7mU/9XzSghiFg88WPVW9VpBcs
-izEvtFc4iW2+TgOWToTxkZekGl9IxQDzQfOO0pWxSAHDJrpAv/IWCheGf9a5m4+H
-OiDydy6XROTtAr9ItP/4MlGQd1SZBScIENd/3xzUNpN7GSA8KuoDL4rcVXFueN8M
-rJT4meh4IqSwihDEoBCUHUrd69HkaMxTnqyM93b++2x5ujShtwL9UOJO5AjqJxyp
-4anWIk59U1ruCgvFWZ0GcKIyHXiEw2zG+WUGr1vbh3XB8m4QaLam9jxQrUe5x3cH
-sCvw1mpjkYRaDm0wz1qD98gFCJd0oOsvXCOQqOS68zhLoSU2v0MSegeianYnIiO0
-wZ6w1rKFWS1m8z6fshiYL4u6vfZRrFDGjP0vatRWpmruqyb7x9QJmmVHWwLTLo8X
-XyZVZbTf+P162Uux9mXKfRizMhfBkTIKFQ/tMLzBlaTeDKmrsE8fmjdXLl3NPqq1
-RBlyya28RJrBVew80sdufFY9OToeRxgvFapNhVoePr08twrypK2G963EZ6zaFEb1
-LdFQGGuSh+79lWRzV1qy
-=LLHl
+iQIcBAABAgAGBQJP6tOBAAoJECmIfjd9wqK0QEUP/0JsxkjKPm97rodbwa8cjica
++cH0gf5z2W7t5HlHrAoGE5vGrfWjCz6jP3YD1rcdUUeMq36hXwhanq7+HqNc/IdZ
+MHy7IJxDQ0fqwdhTqzDWoqFATURVLOGjgcrsUy7EbHPo7SLv54g/cBhYAtKo5Ue5
+6hkwZAAMiLl90dpwR8xlNx1BYK+TBPIyGvjSct2iVuulmSySXd1H9uUUbusXM48I
+kyjm0SfV6m8dJvkFSAznWPr/7GzcMk51kvR3kGybcJ1WI5aDMMi9py+jsx2klz7p
++hzgGpkNJ3zNDlSDxWdSukSYRnveNX/HFXO4pIeNOi1vpMG4RZsMKabj9hyHkvTh
+e2ioWBPtmRcdc3NnwxekGDc9cQ4SAY7Ha7APTnQ8+ZdTEvAY2bXLjBMgQiFmCheF
+cUUvFxLNPw6mqSwoO/bnvKiw4XE2b8p6UvEQKGPUSQmrs+jmfvdeLUTFbuUxy/I+
+hZdrGa3xNn8IDmdc92aNbWb385L/OmgIcGlhV2l1D3beFT4BU4ID8nKGguRMysIZ
+KiQcTZDwIeP6+cbVO+IKEmnONNzLjebLwrZP0p2ytm2D4Wfaqb/M5Vwys6n2Nk3X
+jkCrzYEUlFCJCHyQMSg3mW/ZwEhQBWRo7/8LiWm0X7EJSQUsd7kldcORbZLJaSqD
+a7gYYw9ehsDdckQy4KIu
+=7U8n
 -----END PGP SIGNATURE-----
 
---=-dASSspmPPDCVePuQJz1k--
+--=-Y+y69xwDoTrr5T8fjzIn--
