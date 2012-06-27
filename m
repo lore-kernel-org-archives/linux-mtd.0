@@ -1,20 +1,21 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SjrFb-0004jY-4t
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 12:21:39 +0000
-Message-ID: <1340799940.1799.16.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: m25p80: Add support for Atmel at45db081d
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Chunhe Lan <Chunhe.Lan@freescale.com>
-Date: Wed, 27 Jun 2012 15:25:40 +0300
-In-Reply-To: <1340074508-4393-1-git-send-email-Chunhe.Lan@freescale.com>
-References: <1340074508-4393-1-git-send-email-Chunhe.Lan@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-itv7/j2XLlsJ0CTSoYOv"
-Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <4FEAF90B.5030809@antcom.de>
+References: <1339064536-20553-1-git-send-email-stigge@antcom.de>
+ <1340794007.29342.50.camel@sauron.fi.intel.com>
+ <4FEAF90B.5030809@antcom.de>
+Date: Wed, 27 Jun 2012 09:26:48 -0300
+Message-ID: <CAAAP30HemOV9svhVghLTWfZe95=P3CT-H7UsQ=xY6rC8=AfBsA@mail.gmail.com>
+Subject: Re: [PATCH v7] MTD: LPC32xx SLC NAND driver
+From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, dedekind1@gmail.com,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Jun 27, 2012 at 9:14 AM, Roland Stigge <stigge@antcom.de> wrote:
+> On 06/27/2012 12:46 PM, Artem Bityutskiy wrote:
+>> On Thu, 2012-06-07 at 12:22 +0200, Roland Stigge wrote:
+>>> This patch adds support for the SLC NAND controller inside the
+>>> LPC32xx SoC.
+>>>
+>>> Signed-off-by: Roland Stigge <stigge@antcom.de>
+>>
+>> Now the write_page and write_page_raw functions return an error
+>> code, see this commit in the l2 tree:
+>>
+>> http://git.infradead.org/users/dedekind/l2-mtd.git/commit/49c8d9ab3b7073=
+2665249f2d993f734378ebbba9
+>>
+>> =A0I've amended your SLC driver, see below the diff. But I think it
+>> could return the real return code becuse it can fail - could you
+>> please take a look and send an incremental patch?
+>>
+>> Please, base your work on top of the l2-mtd tree:
+>> git://git.infradead.org/users/dedekind/l2-mtd.git
+>
+> Thanks for the note! I'm sending an incremental patch. There was
+> actually only one place in the two functions that could fail (return
+> code of lpc32xx_xfer()).
 
---=-itv7/j2XLlsJ0CTSoYOv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-06-19 at 10:55 +0800, Chunhe Lan wrote:
-> Signed-off-by: Chunhe Lan <Chunhe.Lan@freescale.com>
-
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-itv7/j2XLlsJ0CTSoYOv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP6vvEAAoJECmIfjd9wqK0WDUQAMkG6Ovub+Nrouzr5mYDetsl
-zuB8CKQxWKtiDRfndaIN/819od36SezpczJD5NlMWUMz/ZJef8aZ8sl90z2stU5u
-UhlYK1QwvatyLDxO14Hb2bStWli+I/2LOvD3flUZRsBO9O/rXGloX2hULE4gBmX4
-wZEwomZTzcw99PrToAGMBBAluHIPTit1T6tJRPyaEx4PDi66Wyo0U8uccnc1aWlc
-wZmlEAQvtrauDabRI3TZziPT37nHp6m3CrWUKZwawCBCEn49oN41jJQug93MYjNQ
-tB47pgoLi9QzHrjj9AIfY8Rf+eSNkKmwK96YaxVXSmTvh8rZtB6zgSi4CpGmypYa
-1nGCdfV9BX4uz900sLTR7m9xPsy8gMV+9rXlL0m6dx0EIVX0SCTgqcWGHPHo6fDn
-MNYt0DPfwr2tN2FId6IcvnBswgwbuHnD6NOpE+e1KLR0CSuKKX8T4uwof/s+QFM8
-Xnr1p/94//bZBoQI67/gUzUXme9STsmawO1uhbgCdEUnFWoGRkrhIu3C7ZbQVwJx
-a88LBT/qCyjJ07+NsL7WSEnoLIulUsOpJ/70b6qpl8/a3IVO/M1LuuqJDVsqOQ6g
-ExvafHFdMimhDhqmpQ0Tkf/OaJnaBLPpNBfvu+f43/41f2NjzmYxfgJiNfqtXx8S
-XXykzHNDgGpdLb1wUaO5
-=MsdG
------END PGP SIGNATURE-----
-
---=-itv7/j2XLlsJ0CTSoYOv--
+I think it's best in case of *_raw to use nand base default functions,
+like in the MLC patch.
