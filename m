@@ -1,15 +1,15 @@
-Message-ID: <1340789161.29342.6.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v11 1/4] MTD: at91: extract hw ecc initialization to one
- function
+Message-ID: <1340789196.29342.7.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v11 3/4] MTD: nand: add return value for
+ write_page()/write_page_raw() functions in structure of nand_ecc_ctrl.
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Josh Wu <josh.wu@atmel.com>
-Date: Wed, 27 Jun 2012 12:26:01 +0300
-In-Reply-To: <1340618866-28776-2-git-send-email-josh.wu@atmel.com>
+Date: Wed, 27 Jun 2012 12:26:36 +0300
+In-Reply-To: <1340618866-28776-4-git-send-email-josh.wu@atmel.com>
 References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
- <1340618866-28776-2-git-send-email-josh.wu@atmel.com>
+ <1340618866-28776-4-git-send-email-josh.wu@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YtgBtO8mOO4xZzD2y3rz"
+ boundary="=-z0+265ZfC1roM/Q9MfME"
 Mime-Version: 1.0
 Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
  tie-fei.zang@freescale.com, nicolas.ferre@atmel.com, dwmw2@infradead.org,
@@ -28,14 +28,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YtgBtO8mOO4xZzD2y3rz
+--=-z0+265ZfC1roM/Q9MfME
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
-> This patch moves hw ecc initialization code to one function.
+> There is an implemention of hardware ECC write page function which may re=
+turn an
+> error indication.
+> For instance, using Atmel HW PMECC to write one page into a nand flash, t=
+he hardware
+> engine will compute the BCH ecc code for this page. so we need read a the
+> status register to theck whether the ecc code is generated.
+> But we cannot assume the status register always can be ready, for example=
+,
+> incorrect hardware configuration or hardware issue, in such case we need
+> write_page() to return a error code.
 >=20
-> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> Since the definition of 'write_page' function in struct nand_ecc_ctrl is =
+'void'.
+> So this patch will:
+>   1. add return 'int' value for 'write_page' function.
+>   2. to be consitent, add return 'int' value for 'write_page_raw' fuction=
+s too.
+>   3. add code to test the return value, and if negative, indicate an
+>   error happend when write page with ECC.
+>   4. fix the compile warning in all impacted nand flash driver.
+>=20
+> Note: I couldn't compile-test all of these easily, as some had ARCH depen=
+dencies.
+>=20
 > Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
 Pushed this patch to l2-mtd.git, thanks!
@@ -44,7 +66,7 @@ Pushed this patch to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-YtgBtO8mOO4xZzD2y3rz
+--=-z0+265ZfC1roM/Q9MfME
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +74,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6tGpAAoJECmIfjd9wqK0gGoP/0Hx+U4heXQaMrJZsl3oq0D9
-pebXCfpWHUWrbiBwiLCNZwzKiCK8hrSiePqmqVb8m5ZKcnKKDNNOkCYdKFmcOFrT
-zSmNRNfmDGZf64873eGIyibyQtlHJGuju5w1FjpAkT7XcD7YNLj6rQB1/X4vYr/D
-++mCe0EnmLCTzM/T+rW0RKU5aI18FkKdhBsOaTI2gqszNllFBSfwyX7cECO7N8fv
-mL/4HhoFBi/eJrcPZTa2vMLMTHLXP4djZR3cWNMdm+jCIE4CPaw8pfpCk6m+dLE3
-2vd4nnfXJ4AYioI15pYrtCYeix3QHOqKyF8oHtiKRm/0EbWVAkR8qjtVoc3Nwh5Q
-HmVg+Stbuu190qc/av6XUDaXLizXXdX0EPzvsYz+NlA8cQW1Bls840LmwEXpk/gf
-mX76+uGKiXb+wNLalVdtonXRgVrei8U2IXespkYW18Zlx8L+S5WIYGnR2B8ELpCr
-WO4SUy83xuaTLEEXvw09e1Oq1AEAlm+Ts5QNcXrJ8XR54lX8vANzx4uA4xBdl0I7
-nNQj8iXTpRobLHXypxMDIn12wZCoi4mHg/AURfmxnoQPyeHvucvjM02qPoXMPRi5
-FunzeVhM4j+nn5F9gniTYkHh2cf1jNKfc7GDfvD/bpP7SAoezxpeqvLdQg34UrWa
-9R6ba6vl4y1QU4vWtOxh
-=1QAb
+iQIcBAABAgAGBQJP6tHMAAoJECmIfjd9wqK0UakQAJH51T4MBM9/3AjI6uOsfX7N
+JM+EgleS+/pcQb6UQC+tGRFWBxvaFWhx7vAk4RX8Ic4XuXSK70bAmg5dWzmObjTB
+uRHgWwQodpnqc7LXzaZDeFR5IfTPbmx2prZowpsBklivoqJPKdbXv0Cixy1iBpT+
+V5lJso8IXR8V7o3lYUs3epeVrU0jXUVX1Wezl6QFBzUOGDpy4xFXq6lXa9FRaEtq
+tW0v51wg+FHFwy3IrkXnbBz5FKY2uetu41DeaHjhFP1BJRhWRjqhzVBaol+qp/ir
+yFrOYPH9uMik30nASIwBtc9CDnL6F0AiMsYBbL2AzMFYVWTV9lQYu2VqKwuv5FgU
+9YTVvFpfFIc7GS9SoFcZL7iqT+ERrzrBCoPXOQ7txvwQfTzB0xYwZK3FuXYBJ8Mh
+s5Wyyomd/f2B5Yc5z58vv7wstLn9sTUh4TvYqtu0cgiv32LbuTnbbtmEkMW9PaxA
+r5SDnR9SyMIbhjHjBgQUDfn8sbuyusI0Xg+K3EyhegoDMXs5t2qKzP3qt4s8TjAB
+QEJlnSulYJsaIff15OuX4+jSH0Hoa7MaoiVpXs7kqtS2cZ7jVERVcfz0Cokr4iKx
+utdeBC7XlvD+nl+tTnDxW9YlS+/YgNSo2W8hyr3/04qpXWbJh6xKmoK+Qc0jTCxo
+psJwAjD3JVIMc8on62sh
+=HVpe
 -----END PGP SIGNATURE-----
 
---=-YtgBtO8mOO4xZzD2y3rz--
+--=-z0+265ZfC1roM/Q9MfME--
