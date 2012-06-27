@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjudD-0008Sx-96
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 15:58:19 +0000
+ id 1SjudE-0008TW-0S
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 15:58:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/16] UBI: Fastmap: Address another TODO
-Date: Wed, 27 Jun 2012 17:57:46 +0200
-Message-Id: <1340812676-14460-7-git-send-email-richard@nod.at>
+Subject: [PATCH 07/16] UBI: Fastmap: Address jet another TOOD
+Date: Wed, 27 Jun 2012 17:57:47 +0200
+Message-Id: <1340812676-14460-8-git-send-email-richard@nod.at>
 In-Reply-To: <1340812676-14460-1-git-send-email-richard@nod.at>
 References: <1340812676-14460-1-git-send-email-richard@nod.at>
 Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
@@ -23,30 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixed.
+Writing the fastmap upon attach time if ai->is_empty=1
+does not make sense. At this stage the erase worker is busy
+with erasing all PEBs and fastmap won't get a free anchor PEB.
+While detaching we write anyway a fastmap.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+ drivers/mtd/ubi/attach.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index c2434cd..4d8ef9e 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -797,13 +797,6 @@ out:
-  * @ubi: UBI device object
-  * @ai: UBI attach info to be filled
-  *
-- * TODO: not urgent, but at some point - check the code with kernel doc and fix
-- * its complaints.
-- *
-- * TODO: not urgent, but for consistency, follow the UBI/UBIFS style and put a
-- * dot at the end of the first short description sentence (globally):
-- *    ubi_scan_fastmap - scan the fastmap. (<-dot).
-- *
-  * TODO: not urgent, but it is desireble to document error codes in the header
-  * comments and probably describe what the function does, if there is something
-  * to say (globally).
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 021c7d3..068f11a 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1301,14 +1301,6 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 	}
+ 
+ 	destroy_ai(ubi, ai);
+-
+-	/* TODO: UBI auto formats the flash if it is empty (see ubi->is_empty).
+-	 * It is currently done so that every sub-system writes initializes its
+-	 * own stuff. Well, now it is only the vtbl sub-system - it creates
+-	 * empty volume table. And this is why we have "early" function for
+-	 * getting free PEBs. Fastmap should do the same - so I guess it is
+-	 * good to do it somewhere here. Also, we need to re-create the fastmap
+-	 * on-flash data-structures if they were corrupted. */
+ 	return 0;
+ 
+ out_wl:
 -- 
 1.7.6.5
