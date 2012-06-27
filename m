@@ -1,23 +1,20 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SjonO-0005MN-Bi
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 09:44:23 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: "tony@atomide.com" <tony@atomide.com>, "artem.bityutskiy@linux.intel.com"
- <artem.bityutskiy@linux.intel.com>
-Subject: RE: [PATCH v2 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
-Date: Wed, 27 Jun 2012 09:44:16 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E99FA39@DBDE01.ent.ti.com>
-References: <cover.1339586624.git.afzal@ti.com>
- <1340790002.29342.15.camel@sauron.fi.intel.com>
-In-Reply-To: <1340790002.29342.15.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjonU-0005NE-OX
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 09:44:29 +0000
+Message-ID: <1340790509.29342.16.camel@sauron.fi.intel.com>
+Subject: Re: Overrule mtd "ro" ?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Vellemans, Noel" <Noel.Vellemans@visionBMS.com>
+Date: Wed, 27 Jun 2012 12:48:29 +0300
+In-Reply-To: <1531E53627F1F749B4FE809BF2A4EB670345A94E@WETMEX10.loepfe.com>
+References: <1531E53627F1F749B4FE809BF2A4EB670345A94E@WETMEX10.loepfe.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-+5LqdFx2QSjRjQWwqAH6"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCk9uIFdlZCwgSnVuIDI3LCAyMDEyIGF0IDE1OjEwOjAyLCBBcnRlbSBCaXR5
-dXRza2l5IHdyb3RlOg0KPiBPbiBXZWQsIDIwMTItMDYtMTMgYXQgMTc6MDIgKzA1MzAsIEFmemFs
-IE1vaGFtbWVkIHdyb3RlOg0KPiA+IEhpLA0KPiA+IA0KPiA+IFRoaXMgc2VyaWVzIGNsZWFucyB1
-cCBncG1jIG10ZCBpbnRlcmFjdGlvbnMgc28gdGhhdCBHUE1DIGRyaXZlcg0KPiA+IGNvbnZlcnNp
-b24gd2hpY2ggaXMgZ29pbmcgdG8gaGFwcGVuIHNob3J0bHkgd291bGQgaGFwcGVuIHNtb290aGx5
-DQo+ID4gYnkgbm90IGNyZWF0aW5nIG11Y2ggZGlzdHVyYmFuY2Ugb3V0c2lkZSBvZiBhcmNoL2Fy
-bS8qb21hcCovDQo+IA0KPiBCVFcsIGJlIGF3YXJlIHRoYXQgUnVzc2VsIEtpbmcgcGF0Y2hlZCB0
-aGUgb21hcDIuYyBmaWxlIGluIHBhdGNoIHNlcmllcw0KPiB3aGljaCBzd2l0Y2hlcyB0byB0aGUg
-RE1BIGVuZ2luZSwgc28gSSBleHBlY3QgY29uZmxpY3RzLiBZb3UgY2FuIGNoZWNrDQo+IGhpcyB0
-cmVlLCBJIGd1ZXNzLiBUaGUgc3ViamVjdHMgd2VyZToNCj4gDQo+IFtDRlQgMDkvMTFdIG10ZDog
-b21hcDI6IGFkZCBETUEgZW5naW5lIHN1cHBvcnQNCj4gW0NGVCAxMC8xMV0gbXRkOiBvbWFwMjog
-cmVtb3ZlIHByaXZhdGUgRE1BIEFQSSBpbXBsZW1lbnRhdGlvbg0KDQoNClRoYW5rcyBmb3IgdGhl
-IGluZm9ybWF0aW9uLg0KDQpIaSBUb255LA0KDQpXZSBoYXZlIEFydGVtJ3MgYWNrIG9uIE1URCBj
-aGFuZ2VzIGluIHRoaXMgc2VyaWVzLCBwbGVhc2UgbGV0IG1lIGtub3cgd2hldGhlcg0KSSBuZWVk
-IHRvIGRvIGFueXRoaW5nIG1vcmUgdG8gZ2V0IHRoaXMgc2VyaWVzIHBpY2tlZCB1cCBpbiB5b3Vy
-IHRyZWUuDQoNClJlZ2FyZHMNCkFmemFsDQo=
+
+--=-+5LqdFx2QSjRjQWwqAH6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2012-06-14 at 10:05 +0200, Vellemans, Noel wrote:
+> Hi all,
+>=20
+> I've a rather simple question, don't know if it is the good place to
+> ask, but I'll give it a go.
+>=20
+>=20
+> If I have a mtd device that has been mounted ad READ-only.
+> For example because I've injected kernel command line parameters
+> mtdparts=3Datmel_nand:4M(BOOT)ro,16M(l1)ro.
+>=20
+> Is there any way on the kernel "prompt" to over-rule this "ro" behavior
+> and to make it writable.
+
+Not sure, probably not. Check the if any mtd ioctl allows this. I guess
+you could implement this feature.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-+5LqdFx2QSjRjQWwqAH6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP6tbtAAoJECmIfjd9wqK0T5sP/iMcYd28ONS14wjZ/7EcMJvw
+2qFsYsCUcZxAK2CTkhEiaMpXPQ9uO6VtPDqxH1i+jumHKPNd9j2qSqNsbZfUOtvY
+gm/pTLn1MkyKoBlaSKn/r9iCU22E52FL0zacsxCsbF1G9BgddkabXXKsKpZG7nsl
+/CX6GJEfPr8HG3/+eHNFXSI2EczNrygV++b0qlS5d212bmsTzVe/9XCrxsVc0Roz
+s/wG9evCrM865Ps3PY19FNz5jgqezsM2iEfm2QdjUuBfLWsD0sSWG9e1AdblBYTF
+076O6HFAv97TopPDf3LDZ0MmbXfw0RC0S5I0G+fcw8dD7+uD0m1LR7t3B/wH0aO2
+zuQ2z+yg6YjZvk5E5DRxtQaw7nZZURH8nur2crYVllgldBQJSOYvyvhOBEfl7+D4
+xVgTTzKCPk/z2isW8T+nKs7Dd8EexU9obViJGVcrP+zdZtbIAtgf4Tizi/HLY2fG
+aHUgIJPBwKkFwIYZNiYwKGZCyLPL2MY1wcwMCLg+9ET2+HDCeEvikFj6GgWGJ3tC
+KpH+L2h+rOZgBvgGGt9nYsVN6Sl1lP8eAl2ehv23zm5NLMtAi4Po2qa40O58skRG
+LfTkQan5PByuxtqO9erOk1LVgEpDHxyE4JoFZI0rJ1BjfEL6UNG8W/OmxyYrpQlX
+J7sLH0pPRdTv+R7nVb+Q
+=29J2
+-----END PGP SIGNATURE-----
+
+--=-+5LqdFx2QSjRjQWwqAH6--
