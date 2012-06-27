@@ -1,20 +1,22 @@
-Message-ID: <1340794007.29342.50.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7] MTD: LPC32xx SLC NAND driver
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SjprG-0000o7-Ea
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 10:52:26 +0000
+Message-ID: <1340794586.29342.52.camel@sauron.fi.intel.com>
+Subject: Re: ubi_update_fastmap: could not find an early PEB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roland Stigge <stigge@antcom.de>
-Date: Wed, 27 Jun 2012 13:46:47 +0300
-In-Reply-To: <1339064536-20553-1-git-send-email-stigge@antcom.de>
-References: <1339064536-20553-1-git-send-email-stigge@antcom.de>
+To: "Nikita V. Youshchenko" <nyoushchenko@mvista.com>
+Date: Wed, 27 Jun 2012 13:56:26 +0300
+In-Reply-To: <201206222126.12515@blacky.localdomain>
+References: <201206222005.02308@blacky.localdomain>
+ <4FE49E19.4070005@nod.at> <201206222126.12515@blacky.localdomain>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-agi+MRH9evovqYYqw4oW"
+ boundary="=-eB4V2KH7Tk9sWBp+0+ty"
 Mime-Version: 1.0
-Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- hechtb@googlemail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, Rob Taylor <rtaylor@mvista.com>,
+ Alexander Kaliadin <akaliadin@mvista.com>, linux-mtd@lists.infradead.org,
+ Pavan Jadhav <pjadhav@mvista.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,87 +28,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-agi+MRH9evovqYYqw4oW
+--=-eB4V2KH7Tk9sWBp+0+ty
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-06-07 at 12:22 +0200, Roland Stigge wrote:
-> This patch adds support for the SLC NAND controller inside the LPC32xx So=
-C.
+On Fri, 2012-06-22 at 21:26 +0400, Nikita V. Youshchenko wrote:
+> > > How to overcome this?
+> >
+> > Can you please try the attached patch?
+> > This patch allows the WL-worker to produce free anchor PEBS.
 >=20
-> Signed-off-by: Roland Stigge <stigge@antcom.de>
+> This patch does not apply against 'fastmap' branch of=20
+> git://git.infradead.org/linux-ubi.git
+>=20
+> And incompatibility is big enough to be not obviously resolvable.
 
-Now the write_page and write_page_raw functions return an error code,
-see this commit in the l2 tree:
-
-http://git.infradead.org/users/dedekind/l2-mtd.git/commit/49c8d9ab3b7073266=
-5249f2d993f734378ebbba9
-
-I've amended your SLC driver, see below the diff. But I think it could
-return the real return code becuse it can fail - could you please take a
-look and send an incremental patch?
-
-Please, base your work on top of the l2-mtd tree:
-git://git.infradead.org/users/dedekind/l2-mtd.git
-
-Thanks!
-
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.=
-c
-index 796e37b..7e2e78d 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -673,9 +673,9 @@ static int lpc32xx_nand_read_page_raw_syndrome(struct m=
-td_info *mtd,
-  * Write the data and OOB data to the device, use ECC with the data,
-  * disable ECC for the OOB data
-  */
--static void lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
--                                            struct nand_chip *chip,
--                                            const u8 *buf, int oob_require=
-d)
-+static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
-+                                           struct nand_chip *chip,
-+                                           const u8 *buf, int oob_required=
-)
- {
-        struct lpc32xx_nand_host *host =3D chip->priv;
-        u8 *pb =3D chip->oob_poi + chip->ecc.layout->eccpos[0];
-@@ -691,20 +691,22 @@ static void lpc32xx_nand_write_page_syndrome(struct m=
-td_info *mtd,
-=20
-        /* Write ECC data to device */
-        chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+       return 0;
- }
-=20
- /*
-  * Write the data and OOB data to the device, no ECC correction with the
-  * data or OOB data
-  */
--static void lpc32xx_nand_write_page_raw_syndrome(struct mtd_info *mtd,
--                                                struct nand_chip *chip,
--                                                const u8 *buf,
--                                                int oob_required)
-+static int lpc32xx_nand_write_page_raw_syndrome(struct mtd_info *mtd,
-+                                               struct nand_chip *chip,
-+                                               const u8 *buf,
-+                                               int oob_required)
- {
-        /* Raw writes can just use the FIFO interface */
-        chip->write_buf(mtd, buf, chip->ecc.size * chip->ecc.steps);
-        chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+       return 0;
- }
-=20
- static bool lpc32xx_dma_filter(struct dma_chan *chan, void *param)
-
+I've just pushed out the latest work of Richard to the "fastmap" branch,
+should be up-to-date now. Thanks for feed-back, testing is very
+appreciated and certainly should help merging this faster.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-agi+MRH9evovqYYqw4oW
+--=-eB4V2KH7Tk9sWBp+0+ty
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -114,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6uSXAAoJECmIfjd9wqK0czYQAMkP5FNnN/B+qIwsdWX6+ea2
-djtf95zk0KJ7Nla/0N3IwOY1vJJ8RNod6H1e7wxX1N7RV3rl9UJMqN445AwfXlt9
-MMgMZwE2jj67POH00OjROIfZvOEg1URBBUY7CDfaW0830wAPofgTPUc/v96uVmSQ
-wdzkXprLN9aRGJs7mua7x4BKf0Fe8DZAIl2znt9sOyUbSUmun8jTzFsnemqlI8Yi
-8GabZJhpBuZXjNwi3HkKZLoXOaxbaUrFQswabnyQZxUxLeAWXZ/lc2/hRDiRaKqA
-yzR1YZim+lDz2Jg89TBUUdVdrcDfn/+jUlIxnMMXFn7BZ+qaIiKPjjllNcFckoIY
-ouAIMRwcYuFvW99KNE/xXdCXAbXImVwH34lm5Jl9tA1oA50hI4SN4vHuP1hTro67
-9LYbWdJU8DhHZGDnUYGHRw2wVJAeiBRWp/gIZrrPaXLRpFlNnzOkbamiZoC3Zw8D
-KxwCYQ92oywiEx7DDmj8fUrzd6Op/wT30Aey/sFJUrzlBzkrz8IkaZUPOJxHbFYT
-0fh7PnJ5D2dGWP4GRNZKhukhkea5qjNRaDQtFMiKdpx2OZWcKrv8JtVJSfLtNjdF
-CC3Vydt+V3S3RxjIc3dQ+lFti+5QOAal12SqK/Qgblwp3751cPlkgIgcznJR4NGM
-xWev6Q5/RLoULGmx5Gzx
-=nM4M
+iQIcBAABAgAGBQJP6ubaAAoJECmIfjd9wqK09/YP/01HYpzdfb2C3eCcoDXubidW
+j8IuvP8XnQjjrFd5rzVULxMIF3OgfTRREoy2yes2+VMwcjtoQv5l3Jw/OCW3CxTL
+TKbSXbhAxJHPZgcXZBhhrYoBJG1+76M0EEa9swzjLXN6Sbiz15NTUZN+5dYfRvpV
+wWA1TrjUQ9vkHSWUvdQ4rxPGOSwKf/cpGdLYOWLKMGNfNwLO6hH03S0/ypWt34a8
+iz2CKcNFJBbz/ddwVuwLJ1zuWsmeV3z3RtJKOMnzYQvCqRQQ5ReKX6KdlTzP6m5h
+DXDdeUt/q/ABpoxANLD5TIOiG6CCVcvHEQHHNJeZRpTBuNZYqE7rFrqdWlWMCPQy
+icD8EMIXaFEuxYvdc0has/1tda8dzxArT45ty+tlnjRSymXeWM/6IUWZitmRzsnr
+5XBhMez0Y490Xf1E0yQb4+DR4v77bBCiQaV3q90CHvT0SpBv8FybV0ytACE+n0i+
+4d3rKdWi9GmQPz81FxAsL7hwCZacKynoiPviezyik8Brk//c9+5Z5P+VXdx9tLeY
+qFdyv6Plutc3Ct2w8Hx1nptnYD+JMm+5uayne61Nqi8YrLpYdUE0mOLBcEBKy2Yi
+2Y+GN1i77DdLfozFv00aMgZora2gkBI9WJWBayoNF9whuoUejwFCUNXMhukTMdO3
+cglHhYpGjNiM4fShafCP
+=4wRI
 -----END PGP SIGNATURE-----
 
---=-agi+MRH9evovqYYqw4oW--
+--=-eB4V2KH7Tk9sWBp+0+ty--
