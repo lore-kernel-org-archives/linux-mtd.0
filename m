@@ -1,23 +1,21 @@
-Message-ID: <1340788471.29342.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand
- flash driver
+Message-ID: <1340789161.29342.6.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v11 1/4] MTD: at91: extract hw ecc initialization to one
+ function
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Date: Wed, 27 Jun 2012 12:14:31 +0300
-In-Reply-To: <4FEAC6B2.6030104@atmel.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Wed, 27 Jun 2012 12:26:01 +0300
+In-Reply-To: <1340618866-28776-2-git-send-email-josh.wu@atmel.com>
 References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
- <1340768981.2317.7.camel@koala> <4FEA87E5.9010604@atmel.com>
- <1340771320.2317.13.camel@koala> <4FEAC6B2.6030104@atmel.com>
+ <1340618866-28776-2-git-send-email-josh.wu@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kmmHrF59VVgvpPk71zJ2"
+ boundary="=-YtgBtO8mOO4xZzD2y3rz"
 Mime-Version: 1.0
 Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
- tie-fei.zang@freescale.com, Josh Wu <josh.wu@atmel.com>, dwmw2@infradead.org,
+ tie-fei.zang@freescale.com, nicolas.ferre@atmel.com, dwmw2@infradead.org,
  linux-mtd@lists.infradead.org, scottwood@freescale.com,
  Dipen.Dudhat@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, tglx@linutronix.de,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com, tglx@linutronix.de,
  linux-arm-kernel@lists.infradead.org, bryan.wu@analog.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,31 +28,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kmmHrF59VVgvpPk71zJ2
+--=-YtgBtO8mOO4xZzD2y3rz
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-06-27 at 10:39 +0200, Nicolas Ferre wrote:
-> AT91 is looked after carefully, yes it is.
+On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
+> This patch moves hw ecc initialization code to one function.
 >=20
-> The thing is that CAP9 SoC (the defconfig that you are using)
-> has been obsoleted then removed for 3.4:
-> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dco=
-mmit;h=3D9918ceafd4a9e013572e03983f528017c29bb1cb
+> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-Ok, sorry for that phrase. I basically only need to do compile-testing.
-And I only care about atmel_nand, so I take a defconfig, disable most of
-the stuff, and use it for compilation. And when this minimal defconfig
-stops working, I get upstet. If you have any suggestion what should I
-base my configuration on, please, let me know.
-
-Thanks!
+Pushed this patch to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kmmHrF59VVgvpPk71zJ2
+--=-YtgBtO8mOO4xZzD2y3rz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP6s73AAoJECmIfjd9wqK0ahgP/11t7kIVovqLVbKTR1dN3bu6
-jc62dk4XAmoHJ9FeAHenxldvXR+5c/pfWO8VJ94qPQEVOpbjxX+WBZ6xbF09DHtD
-ZWKYIhR9i/gIaSJYMh3XS3igisMRJPDyrxfxYh8WIcDowZ+rf67bE9qT+GFwiXU3
-jdTNXMVu3VfTHJn3RYlgUYlVvPiixMlk/6G7f5lgJPwgs0Pm5VPT9NNV6ZY3t+jp
-o/LH+/+FH3cy/IGJphwdokVcaZ6RMJna1IgfpXTGF46b5YcBwEW5j9bWEFz1iGlM
-mGCkKeobJF/MBZlS2DMc6qg4ATvXk0RrJ/y//7WBUl+Z9/8AMo15gZ1kFRf21wel
-GvT6dwyOv2m3YV7cDAnEUbtXFuTBakb6vQmYbumqEi9phX0hilzXi6jITLCZkxnN
-NqyHdYqmd0xlhZRWmeT/UGIJmAt4PoDIot7Q1n+BSa2givBggRFGmbRfaJFRkool
-OC1y85pKUpM6IfGoeERDNYUIJOAqOGGpygDePGm9ZRQdIKlnRadL19ryy76DpP81
-UZk30d2lLxMUGOSfHX79fos2EitDa2BNBZOpc4MOFhlHTshY8CqBake/ZBsr1rl6
-3lI1zUKVgaSMvYmWRNKIh2FbeDKKXLBR5T+T7cNjguuy7r5F/Y7Rw2IiPU8kN3jn
-9E98uScd7ta1eOUZEXp/
-=8Eb8
+iQIcBAABAgAGBQJP6tGpAAoJECmIfjd9wqK0gGoP/0Hx+U4heXQaMrJZsl3oq0D9
+pebXCfpWHUWrbiBwiLCNZwzKiCK8hrSiePqmqVb8m5ZKcnKKDNNOkCYdKFmcOFrT
+zSmNRNfmDGZf64873eGIyibyQtlHJGuju5w1FjpAkT7XcD7YNLj6rQB1/X4vYr/D
+++mCe0EnmLCTzM/T+rW0RKU5aI18FkKdhBsOaTI2gqszNllFBSfwyX7cECO7N8fv
+mL/4HhoFBi/eJrcPZTa2vMLMTHLXP4djZR3cWNMdm+jCIE4CPaw8pfpCk6m+dLE3
+2vd4nnfXJ4AYioI15pYrtCYeix3QHOqKyF8oHtiKRm/0EbWVAkR8qjtVoc3Nwh5Q
+HmVg+Stbuu190qc/av6XUDaXLizXXdX0EPzvsYz+NlA8cQW1Bls840LmwEXpk/gf
+mX76+uGKiXb+wNLalVdtonXRgVrei8U2IXespkYW18Zlx8L+S5WIYGnR2B8ELpCr
+WO4SUy83xuaTLEEXvw09e1Oq1AEAlm+Ts5QNcXrJ8XR54lX8vANzx4uA4xBdl0I7
+nNQj8iXTpRobLHXypxMDIn12wZCoi4mHg/AURfmxnoQPyeHvucvjM02qPoXMPRi5
+FunzeVhM4j+nn5F9gniTYkHh2cf1jNKfc7GDfvD/bpP7SAoezxpeqvLdQg34UrWa
+9R6ba6vl4y1QU4vWtOxh
+=1QAb
 -----END PGP SIGNATURE-----
 
---=-kmmHrF59VVgvpPk71zJ2--
+--=-YtgBtO8mOO4xZzD2y3rz--
