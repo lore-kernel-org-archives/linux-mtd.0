@@ -1,21 +1,22 @@
-Message-ID: <4FEA9B5D.80208@atmel.com>
-Date: Wed, 27 Jun 2012 13:34:21 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sjlg6-0000Cx-Tt
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 06:24:40 +0000
+Date: Wed, 27 Jun 2012 08:24:23 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd gpmi-nand: Fix read page when reading to vmalloced
+ area
+Message-ID: <20120627062423.GD24458@pengutronix.de>
+References: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v11 0/4] MTD: at91: Add PMECC support for at91 nand flash
- driver
-References: <1340618866-28776-1-git-send-email-josh.wu@atmel.com>
- <1340768981.2317.7.camel@koala> <4FEA87E5.9010604@atmel.com>
- <1340771320.2317.13.camel@koala>
-In-Reply-To: <1340771320.2317.13.camel@koala>
-Content-Type: multipart/mixed; boundary="------------070300000807060005020100"
-Cc: hongxu.cn@gmail.com, jack.lan@freescale.com, nick.spence@freescale.com,
- tie-fei.zang@freescale.com, nicolas.ferre@atmel.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, scottwood@freescale.com,
- Dipen.Dudhat@freescale.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, bryan.wu@analog.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
+Cc: Subodh Nijsure <snijsure@grid-net.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, kernel@pengutronix.de,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,157 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------070300000807060005020100
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, Jun 26, 2012 at 05:26:16PM +0200, Sascha Hauer wrote:
+> The gpmi-nand driver uses virt_addr_valid() to check whether a buffer
+> is suitable for dma. If it's not, a driver allocated buffer is used
+> instead. Then after a page read the driver allocated buffer must be
+> copied to the user supplied buffer. This does not happen since:
+> 
+> commit 7725cc85932bd02dd12c23108e0ef748c551ccba
+> Author: Brian Norris <computersforpeace@gmail.com>
+> Date:   Wed May 2 10:15:02 2012 -0700
+> 
+>     mtd: gpmi-nand: utilize oob_requested parameter
+> 
+>     Don't read OOB if the caller didn't request it.
+> 
+>     Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>     Acked-by: Huang Shijie <b32955@freescale.com>
+>     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>     Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+> 
+> This patch fixes this. The bug is encountered with UBI which uses a vmalloced
+> buffer for the volume table.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: stable@vger.kernel.org
 
-On 6/27/2012 12:28 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-06-27 at 12:11 +0800, Josh Wu wrote:
->> Hi, Artem
->>
->> On 6/27/2012 11:49 AM, Artem Bityutskiy wrote:
->>> On Mon, 2012-06-25 at 18:07 +0800, Josh Wu wrote:
->>>> Those patches is based on v3.5-rc4
->>>>
->>>> Changes since v10,
->>>> 	add one more patch in this patch set, which add 'int' return value for write_page()/write_page_raw() functions in structure of nand_ecc_ctrl.
->>>> 	Instead of calling BUG(), atmel_nand_pmecc_write_page() will return -EIO when time out to read the pmecc status register.
->>>> 	increase the time-out duration to 100ms, which has more toleration.
->>>> 	add oob_required argument for pmecc read/write functions to align with v3.5-rc4.
->>> I have issues compiling l2-mtd.git tree (based on 3.5-rc5) with the
->>> attached defconfig. Probably not your fault, but may be you have a
->>> fix/suggestion? I did not have time to look closer. Aiaiai reports:
->> I think the name of kernel config for AT91 is changed, so you can try
->> add following two line in your original config file.
->>
->> CONFIG_SOC_AT91SAM9=y
->> CONFIG_SOC_AT91RM9200=y
->>
->> run the make menuconfig will get new config, that can pass the compile.
-> I get "arm-unknown-linux-gnueabi-ld: no machine record defined". I think
-> it wants me to select the board. I've tried one and get another
-> compilation issue:
->
-> arch/arm/mach-at91/built-in.o:(.arch.info.init+0xbc): undefined
-> reference to `at91sam926x_timer'
->
-> It looks like AT91 stuff is not looked after carefully.
+Sorry, please remove the stable tag, this bug was introduced in the last
+merge window.
 
-I find out the reason, we need add "CONFIG_ARCH_AT91RM9200=y" in your 
-config file. The ARCH_AT91xxx is for non DT board.
-more information can be found in: 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=1e3ce2b8545390a2aee8dbfcd49ca4161b636000
-which introduce SOC_AT91xxx definition for SoC core support.
+Sascha
 
-> Can you please send me a working defconfig based on the one I sent you -
-> just modify it.
->
-
-I attached the defconfig file.
-
-Best Regards,
-Josh Wu
-
-
---------------070300000807060005020100
-Content-Type: text/plain; charset=gb18030;
- name="arm-at91cap9_defconfig.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="arm-at91cap9_defconfig.txt"
-
-Q09ORklHX0VYUEVSSU1FTlRBTD15DQojIENPTkZJR19MT0NBTFZFUlNJT05fQVVUTyBpcyBu
-b3Qgc2V0DQpDT05GSUdfU1lTVklQQz15DQpDT05GSUdfQlNEX1BST0NFU1NfQUNDVD15DQpD
-T05GSUdfTE9HX0JVRl9TSElGVD0xOA0KQ09ORklHX0NHUk9VUFM9eQ0KQ09ORklHX0NHUk9V
-UF9GUkVFWkVSPXkNCkNPTkZJR19DUFVTRVRTPXkNCkNPTkZJR19DR1JPVVBfQ1BVQUNDVD15
-DQpDT05GSUdfUkVTT1VSQ0VfQ09VTlRFUlM9eQ0KQ09ORklHX0NHUk9VUF9TQ0hFRD15DQpD
-T05GSUdfQkxLX0RFVl9JTklUUkQ9eQ0KIyBDT05GSUdfQ09NUEFUX0JSSyBpcyBub3Qgc2V0
-DQpDT05GSUdfUFJPRklMSU5HPXkNCkNPTkZJR19LUFJPQkVTPXkNCkNPTkZJR19NT0RVTEVT
-PXkNCkNPTkZJR19NT0RVTEVfVU5MT0FEPXkNCkNPTkZJR19NT0RVTEVfRk9SQ0VfVU5MT0FE
-PXkNCkNPTkZJR19QQVJUSVRJT05fQURWQU5DRUQ9eQ0KQ09ORklHX09TRl9QQVJUSVRJT049
-eQ0KQ09ORklHX0FNSUdBX1BBUlRJVElPTj15DQpDT05GSUdfTUFDX1BBUlRJVElPTj15DQpD
-T05GSUdfQlNEX0RJU0tMQUJFTD15DQpDT05GSUdfTUlOSVhfU1VCUEFSVElUSU9OPXkNCkNP
-TkZJR19TT0xBUklTX1g4Nl9QQVJUSVRJT049eQ0KQ09ORklHX1VOSVhXQVJFX0RJU0tMQUJF
-TD15DQpDT05GSUdfU0dJX1BBUlRJVElPTj15DQpDT05GSUdfU1VOX1BBUlRJVElPTj15DQpD
-T05GSUdfS0FSTUFfUEFSVElUSU9OPXkNCkNPTkZJR19FRklfUEFSVElUSU9OPXkNCkNPTkZJ
-R19BUkNIX0FUOTE9eQ0KQ09ORklHX01BQ0hfT05FQVJNPXkNCkNPTkZJR19BUkNIX0FUOTFS
-TTkyMDA9eQ0KQ09ORklHX0FSQ0hfQVQ5MVJNOTIwMERLPXkNCkNPTkZJR19NQUNIX0FUOTFS
-TTkyMDBFSz15DQpDT05GSUdfTUFDSF9DU0IzMzc9eQ0KQ09ORklHX01BQ0hfQ1NCNjM3PXkN
-CkNPTkZJR19NQUNIX0NBUk1FVkE9eQ0KQ09ORklHX01BQ0hfQVRFQjkyMDA9eQ0KQ09ORklH
-X01BQ0hfS0I5MjAwPXkNCkNPTkZJR19NQUNIX1BJQ09UVVgyWFg9eQ0KQ09ORklHX01BQ0hf
-S0FGQT15DQpDT05GSUdfTUFDSF9FQ0JBVDkxPXkNCkNPTkZJR19NQUNIX1lMOTIwMD15DQpD
-T05GSUdfTUFDSF9DUFVBVDkxPXkNCkNPTkZJR19NQUNIX0VDTzkyMD15DQpDT05GSUdfTUFD
-SF9SU0lfRVdTPXkNCkNPTkZJR19NVERfQVQ5MV9EQVRBRkxBU0hfQ0FSRD15DQpDT05GSUdf
-QVQ5MV9QUk9HUkFNTUFCTEVfQ0xPQ0tTPXkNCkNPTkZJR19QQ0NBUkQ9eQ0KQ09ORklHX05P
-X0haPXkNCkNPTkZJR19ISUdIX1JFU19USU1FUlM9eQ0KQ09ORklHX1BSRUVNUFRfVk9MVU5U
-QVJZPXkNCkNPTkZJR19VU0VfT0Y9eQ0KQ09ORklHX0tFWEVDPXkNCkNPTkZJR19DUkFTSF9E
-VU1QPXkNCkNPTkZJR19CSU5GTVRfTUlTQz15DQojIENPTkZJR19TVVNQRU5EIGlzIG5vdCBz
-ZXQNCkNPTkZJR19VRVZFTlRfSEVMUEVSX1BBVEg9Ii9zYmluL2hvdHBsdWciDQpDT05GSUdf
-REVCVUdfREVWUkVTPXkNCkNPTkZJR19NVEQ9eQ0KQ09ORklHX01URF9URVNUUz1tDQpDT05G
-SUdfTVREX1JFREJPT1RfUEFSVFM9bQ0KQ09ORklHX01URF9SRURCT09UX1BBUlRTX1VOQUxM
-T0NBVEVEPXkNCkNPTkZJR19NVERfUkVEQk9PVF9QQVJUU19SRUFET05MWT15DQpDT05GSUdf
-TVREX0NNRExJTkVfUEFSVFM9eQ0KQ09ORklHX01URF9BRlNfUEFSVFM9eQ0KQ09ORklHX01U
-RF9PRl9QQVJUUz15DQpDT05GSUdfTVREX0FSN19QQVJUUz1tDQpDT05GSUdfTVREX0NIQVI9
-eQ0KQ09ORklHX01URF9CTE9DSz15DQpDT05GSUdfRlRMPW0NCkNPTkZJR19ORlRMPW0NCkNP
-TkZJR19ORlRMX1JXPXkNCkNPTkZJR19JTkZUTD1tDQpDT05GSUdfUkZEX0ZUTD1tDQpDT05G
-SUdfU1NGREM9eQ0KQ09ORklHX1NNX0ZUTD1tDQpDT05GSUdfTVREX09PUFM9bQ0KQ09ORklH
-X01URF9TV0FQPXkNCkNPTkZJR19NVERfQ0ZJPW0NCkNPTkZJR19NVERfSkVERUNQUk9CRT1t
-DQpDT05GSUdfTVREX0NGSV9BRFZfT1BUSU9OUz15DQpDT05GSUdfTVREX0NGSV9HRU9NRVRS
-WT15DQojIENPTkZJR19NVERfTUFQX0JBTktfV0lEVEhfMSBpcyBub3Qgc2V0DQpDT05GSUdf
-TVREX01BUF9CQU5LX1dJRFRIXzE2PXkNCiMgQ09ORklHX01URF9DRklfSTEgaXMgbm90IHNl
-dA0KQ09ORklHX01URF9DRklfSTQ9eQ0KQ09ORklHX01URF9PVFA9eQ0KQ09ORklHX01URF9D
-RklfSU5URUxFWFQ9bQ0KQ09ORklHX01URF9DRklfQU1EU1REPW0NCkNPTkZJR19NVERfQ0ZJ
-X1NUQUE9bQ0KQ09ORklHX01URF9ST009bQ0KQ09ORklHX01URF9BQlNFTlQ9bQ0KQ09ORklH
-X01URF9DT01QTEVYX01BUFBJTkdTPXkNCkNPTkZJR19NVERfUEhZU01BUD1tDQpDT05GSUdf
-TVREX1BIWVNNQVBfQ09NUEFUPXkNCkNPTkZJR19NVERfUEhZU01BUF9PRj1tDQpDT05GSUdf
-TVREX0lNUEE3PW0NCkNPTkZJR19NVERfUENNQ0lBPW0NCkNPTkZJR19NVERfUENNQ0lBX0FO
-T05ZTU9VUz15DQpDT05GSUdfTVREX0dQSU9fQUREUj15DQpDT05GSUdfTVREX1BMQVRSQU09
-eQ0KQ09ORklHX01URF9MQVRDSF9BRERSPW0NCkNPTkZJR19NVERfREFUQUZMQVNIPW0NCkNP
-TkZJR19NVERfREFUQUZMQVNIX1dSSVRFX1ZFUklGWT15DQpDT05GSUdfTVREX0RBVEFGTEFT
-SF9PVFA9eQ0KQ09ORklHX01URF9NMjVQODA9bQ0KQ09ORklHX01URF9TU1QyNUw9bQ0KQ09O
-RklHX01URF9TTFJBTT15DQpDT05GSUdfTVREX1BIUkFNPXkNCkNPTkZJR19NVERfTVREUkFN
-PXkNCkNPTkZJR19NVERfQkxPQ0syTVREPW0NCkNPTkZJR19NVERfRE9DMjAwMD1tDQpDT05G
-SUdfTVREX0RPQzIwMDE9bQ0KQ09ORklHX01URF9ET0MyMDAxUExVUz1tDQpDT05GSUdfTVRE
-X0RPQ0czPW0NCkNPTkZJR19NVERfRE9DUFJPQkVfQURWQU5DRUQ9eQ0KQ09ORklHX01URF9E
-T0NQUk9CRV9ISUdIPXkNCkNPTkZJR19NVERfTkFORF9FQ0NfU01DPXkNCkNPTkZJR19NVERf
-TkFORD15DQpDT05GSUdfTVREX05BTkRfVkVSSUZZX1dSSVRFPXkNCkNPTkZJR19NVERfTkFO
-RF9FQ0NfQkNIPXkNCkNPTkZJR19NVERfTkFORF9NVVNFVU1fSURTPXkNCkNPTkZJR19NVERf
-TkFORF9HUElPPXkNCkNPTkZJR19NVERfTkFORF9ESVNLT05DSElQPW0NCkNPTkZJR19NVERf
-TkFORF9ESVNLT05DSElQX0JCVFdSSVRFPXkNCkNPTkZJR19NVERfTkFORF9ET0NHND1tDQpD
-T05GSUdfTVREX05BTkRfQVRNRUw9bQ0KQ09ORklHX01URF9OQU5EX05BTkRTSU09eQ0KQ09O
-RklHX01URF9OQU5EX1BMQVRGT1JNPW0NCkNPTkZJR19NVERfQUxBVURBPW0NCkNPTkZJR19N
-VERfT05FTkFORD15DQpDT05GSUdfTVREX09ORU5BTkRfVkVSSUZZX1dSSVRFPXkNCkNPTkZJ
-R19NVERfT05FTkFORF9HRU5FUklDPXkNCkNPTkZJR19NVERfT05FTkFORF8yWF9QUk9HUkFN
-PXkNCkNPTkZJR19NVERfT05FTkFORF9TSU09bQ0KQ09ORklHX01URF9MUEREUj15DQpDT05G
-SUdfTVREX1VCST15DQpDT05GSUdfTVREX1VCSV9HTFVFQkk9bQ0KIyBDT05GSUdfQkxLX0RF
-ViBpcyBub3Qgc2V0DQpDT05GSUdfSU5QVVRfRkZfTUVNTEVTUz15DQojIENPTkZJR19JTlBV
-VF9NT1VTRURFVl9QU0FVWCBpcyBub3Qgc2V0DQojIENPTkZJR19JTlBVVF9LRVlCT0FSRCBp
-cyBub3Qgc2V0DQojIENPTkZJR19JTlBVVF9NT1VTRSBpcyBub3Qgc2V0DQojIENPTkZJR19T
-RVJJTyBpcyBub3Qgc2V0DQpDT05GSUdfVlRfSFdfQ09OU09MRV9CSU5ESU5HPXkNCiMgQ09O
-RklHX0xFR0FDWV9QVFlTIGlzIG5vdCBzZXQNCiMgQ09ORklHX0RFVktNRU0gaXMgbm90IHNl
-dA0KQ09ORklHX1NFUklBTF84MjUwPXkNCkNPTkZJR19TRVJJQUxfODI1MF9DT05TT0xFPXkN
-CkNPTkZJR19TRVJJQUxfODI1MF9OUl9VQVJUUz0zMg0KQ09ORklHX1NFUklBTF84MjUwX0VY
-VEVOREVEPXkNCkNPTkZJR19TRVJJQUxfODI1MF9NQU5ZX1BPUlRTPXkNCkNPTkZJR19TRVJJ
-QUxfODI1MF9TSEFSRV9JUlE9eQ0KQ09ORklHX1NFUklBTF84MjUwX0RFVEVDVF9JUlE9eQ0K
-Q09ORklHX1NFUklBTF84MjUwX1JTQT15DQojIENPTkZJR19IV19SQU5ET00gaXMgbm90IHNl
-dA0KQ09ORklHX1NQST15DQojIENPTkZJR19IV01PTiBpcyBub3Qgc2V0DQpDT05GSUdfRFJN
-PXkNCiMgQ09ORklHX0hJRF9TVVBQT1JUIGlzIG5vdCBzZXQNCkNPTkZJR19VU0I9bQ0KIyBD
-T05GSUdfSU9NTVVfU1VQUE9SVCBpcyBub3Qgc2V0DQpDT05GSUdfUVVPVEE9eQ0KIyBDT05G
-SUdfUFJJTlRfUVVPVEFfV0FSTklORyBpcyBub3Qgc2V0DQpDT05GSUdfUUZNVF9WMj15DQpD
-T05GSUdfSkZGUzJfRlM9eQ0KIyBDT05GSUdfSkZGUzJfRlNfV1JJVEVCVUZGRVIgaXMgbm90
-IHNldA0KQ09ORklHX0pGRlMyX0NPTVBSRVNTSU9OX09QVElPTlM9eQ0KQ09ORklHX0pGRlMy
-X0xaTz15DQpDT05GSUdfSkZGUzJfUlVCSU49eQ0KQ09ORklHX0pGRlMyX0NNT0RFX0ZBVk9V
-UkxaTz15DQpDT05GSUdfVUJJRlNfRlM9bQ0KQ09ORklHX1VCSUZTX0ZTX0FEVkFOQ0VEX0NP
-TVBSPXkNCiMgQ09ORklHX1VCSUZTX0ZTX1pMSUIgaXMgbm90IHNldA0KQ09ORklHX1VCSUZT
-X0ZTX0RFQlVHPXkNCkNPTkZJR19MT0dGUz1tDQpDT05GSUdfQ1JBTUZTPW0NCkNPTkZJR19O
-TFM9eQ0KQ09ORklHX05MU19ERUZBVUxUPSJ1dGY4Ig0KQ09ORklHX05MU19DT0RFUEFHRV80
-Mzc9eQ0KQ09ORklHX05MU19VVEY4PXkNCkNPTkZJR19QUklOVEtfVElNRT15DQojIENPTkZJ
-R19FTkFCTEVfV0FSTl9ERVBSRUNBVEVEIGlzIG5vdCBzZXQNCkNPTkZJR19GUkFNRV9XQVJO
-PTIwNDgNCkNPTkZJR19NQUdJQ19TWVNSUT15DQpDT05GSUdfREVCVUdfS0VSTkVMPXkNCiMg
-Q09ORklHX1NDSEVEX0RFQlVHIGlzIG5vdCBzZXQNCkNPTkZJR19TQ0hFRFNUQVRTPXkNCkNP
-TkZJR19USU1FUl9TVEFUUz15DQpDT05GSUdfREVCVUdfU1RBQ0tfVVNBR0U9eQ0KQ09ORklH
-X0JMS19ERVZfSU9fVFJBQ0U9eQ0KQ09ORklHX0NSWVBUTz15DQojIENPTkZJR19DUllQVE9f
-QU5TSV9DUFJORyBpcyBub3Qgc2V0DQojIENPTkZJR19DUllQVE9fSFcgaXMgbm90IHNldA0K
-
---------------070300000807060005020100--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
