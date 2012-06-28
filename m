@@ -1,18 +1,23 @@
-Message-ID: <4FEC5487.7020904@atmel.com>
-Date: Thu, 28 Jun 2012 14:56:39 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>, <linux-mtd@lists.infradead.org>,
- <dedekind1@gmail.com>
-Subject: Re: [PATCH v12 1/2] MTD: at91: add dt parameters for Atmel PMECC
-References: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
- <1340871698-477-2-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1340871698-477-2-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkF9U-0001jt-0W
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 13:52:56 +0000
+Received: by bkwj4 with SMTP id j4so2160730bkw.36
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 06:52:53 -0700 (PDT)
+Date: Thu, 28 Jun 2012 16:52:39 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubi: fastmap: Remove 'ubi' parameter of 'destroy_ai()'
+Message-ID: <20120628165239.52cffc64@pixies.home.jungo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: nyoushchenko@mvista.com,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
+ Marius.Mazarel@ugal.ro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,164 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/28/2012 10:21 AM, Josh Wu :
-> Add DT support for PMECC parameters.
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+The 'ubi' argument of 'destroy_ai' was added during fastmap development,
+but it is no longer used.
 
-> ---
-> changes:
-> since v11
->    1. update the documentation for reg parameter
->    2. add one example for PMECC support.
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         |   40 ++++++++++++++-
->  drivers/mtd/nand/atmel_nand.c                      |   52 +++++++++++++++++++-
->  2 files changed, 90 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index a200695..d555421 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -3,7 +3,9 @@ Atmel NAND flash
->  Required properties:
->  - compatible : "atmel,at91rm9200-nand".
->  - reg : should specify localbus address and size used for the chip,
-> -	and if availlable the ECC.
-> +	and hardware ECC controller if available.
-> +	If the hardware ECC is PMECC, it should contain address and size for
-> +	PMECC, PMECC Error Location controller and ROM which has lookup tables.
->  - atmel,nand-addr-offset : offset for the address latch.
->  - atmel,nand-cmd-offset : offset for the command latch.
->  - #address-cells, #size-cells : Must be present if the device has sub-nodes
-> @@ -16,6 +18,15 @@ Optional properties:
->  - nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
->    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
->    "soft_bch".
-> +- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
-> +  Only supported by at91sam9x5 or later sam9 product.
-> +- atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
-> +  Controller. Supported values are: 2, 4, 8, 12, 24.
-> +- atmel,pmecc-sector-size : sector size for ECC computation. Supported values
-> +  are: 512, 1024.
-> +- atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
-> +  for different sector size. First one is for sector size 512, the next is for
-> +  sector size 1024.
->  - nand-bus-width : 8 or 16 bus width if not present 8
->  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
->  
-> @@ -39,3 +50,30 @@ nand0: nand@40000000,0 {
->  		...
->  	};
->  };
-> +
-> +/* for PMECC supported chips */
-> +nand0: nand@40000000 {
-> +	compatible = "atmel,at91rm9200-nand";
-> +	#address-cells = <1>;
-> +	#size-cells = <1>;
-> +	reg = < 0x40000000 0x10000000	/* bus addr & size */
-> +		0xffffe000 0x00000600	/* PMECC addr & size */
-> +		0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
-> +		0x00100000 0x00100000	/* ROM addr & size */
-> +		>;
-> +	atmel,nand-addr-offset = <21>;	/* ale */
-> +	atmel,nand-cmd-offset = <22>;	/* cle */
-> +	nand-on-flash-bbt;
-> +	nand-ecc-mode = "hw";
-> +	atmel,has-pmecc;	/* enable PMECC */
-> +	atmel,pmecc-cap = <2>;
-> +	atmel,pmecc-sector-size = <512>;
-> +	atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
-> +	gpios = <&pioD 5 0	/* rdy */
-> +		 &pioD 4 0	/* nce */
-> +		 0		/* cd */
-> +		>;
-> +	partition@0 {
-> +		...
-> +	};
-> +};
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 7a41a04..b97ad9f 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -93,6 +93,11 @@ struct atmel_nand_host {
->  
->  	struct completion	comp;
->  	struct dma_chan		*dma_chan;
-> +
-> +	bool			has_pmecc;
-> +	u8			pmecc_corr_cap;
-> +	u16			pmecc_sector_size;
-> +	u32			pmecc_lookup_table_offset;
->  };
->  
->  static int cpu_has_dma(void)
-> @@ -481,7 +486,8 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
->  static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
->  					 struct device_node *np)
->  {
-> -	u32 val;
-> +	u32 val, table_offset;
-> +	u32 offset[2];
->  	int ecc_mode;
->  	struct atmel_nand_data *board = &host->board;
->  	enum of_gpio_flags flags;
-> @@ -517,6 +523,50 @@ static int __devinit atmel_of_init_port(struct atmel_nand_host *host,
->  	board->enable_pin = of_get_gpio(np, 1);
->  	board->det_pin = of_get_gpio(np, 2);
->  
-> +	host->has_pmecc = of_property_read_bool(np, "atmel,has-pmecc");
-> +
-> +	if (!(board->ecc_mode == NAND_ECC_HW) || !host->has_pmecc)
-> +		return 0;	/* Not using PMECC */
-> +
-> +	/* use PMECC, get correction capability, sector size and lookup
-> +	 * table offset.
-> +	 */
-> +	if (of_property_read_u32(np, "atmel,pmecc-cap", &val) != 0) {
-> +		dev_err(host->dev, "Cannot decide PMECC Capability\n");
-> +		return -EINVAL;
-> +	} else if ((val != 2) && (val != 4) && (val != 8) && (val != 12) &&
-> +	    (val != 24)) {
-> +		dev_err(host->dev,
-> +			"Unsupported PMECC correction capability: %d; should be 2, 4, 8, 12 or 24\n",
-> +			val);
-> +		return -EINVAL;
-> +	}
-> +	host->pmecc_corr_cap = (u8)val;
-> +
-> +	if (of_property_read_u32(np, "atmel,pmecc-sector-size", &val) != 0) {
-> +		dev_err(host->dev, "Cannot decide PMECC Sector Size\n");
-> +		return -EINVAL;
-> +	} else if ((val != 512) && (val != 1024)) {
-> +		dev_err(host->dev,
-> +			"Unsupported PMECC sector size: %d; should be 512 or 1024 bytes\n",
-> +			val);
-> +		return -EINVAL;
-> +	}
-> +	host->pmecc_sector_size = (u16)val;
-> +
-> +	if (of_property_read_u32_array(np, "atmel,pmecc-lookup-table-offset",
-> +			offset, 2) != 0) {
-> +		dev_err(host->dev, "Cannot get PMECC lookup table offset\n");
-> +		return -EINVAL;
-> +	}
-> +	table_offset = host->pmecc_sector_size == 512 ? offset[0] : offset[1];
-> +
-> +	if (!table_offset) {
-> +		dev_err(host->dev, "Invalid PMECC lookup table offset\n");
-> +		return -EINVAL;
-> +	}
-> +	host->pmecc_lookup_table_offset = table_offset;
-> +
->  	return 0;
->  }
->  #else
-> 
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+Applies to linux-ubi.git fastmap
 
-
--- 
-Nicolas Ferre
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 3d9be42..019fbd3 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -97,7 +97,7 @@
+  * it that way, or re-structure all the code. :-)
+  */
+ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
+-static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
++static void destroy_ai(struct ubi_attach_info *ai);
+ 
+ /* Temporary variables used during scanning */
+ static struct ubi_ec_hdr *ech;
+@@ -1219,7 +1219,7 @@ out_vidh:
+ out_ech:
+ 	kfree(ech);
+ out_ai:
+-	destroy_ai(ubi, ai);
++	destroy_ai(ai);
+ 	return err;
+ }
+ 
+@@ -1280,7 +1280,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 		 */
+ 		err = ubi_scan_fastmap(ubi, ai);
+ 		if (err > 0) {
+-			destroy_ai(ubi, ai);
++			destroy_ai(ai);
+ 			ai = alloc_ai();
+ 			if (!ai)
+ 				return -ENOMEM;
+@@ -1334,10 +1334,10 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 		}
+ 
+ 		self_check_eba(ubi, ai, scan_ai);
+-		destroy_ai(ubi, scan_ai);
++		destroy_ai(scan_ai);
+ 	}
+ 
+-	destroy_ai(ubi, ai);
++	destroy_ai(ai);
+ 	return 0;
+ 
+ out_wl:
+@@ -1346,7 +1346,7 @@ out_vtbl:
+ 	ubi_free_internal_volumes(ubi);
+ 	vfree(ubi->vtbl);
+ out_ai:
+-	destroy_ai(ubi, ai);
++	destroy_ai(ai);
+ 	return err;
+ }
+ 
+@@ -1385,10 +1385,9 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
+ 
+ /**
+  * destroy_ai - destroy attaching information.
+- * @ubi: UBI device object
+  * @ai: attaching information
+  */
+-static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
++static void destroy_ai(struct ubi_attach_info *ai)
+ {
+ 	struct ubi_ainf_peb *aeb, *aeb_tmp;
+ 	struct ubi_ainf_volume *av;
