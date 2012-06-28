@@ -1,18 +1,25 @@
-Message-ID: <4FEC1790.6000907@atmel.com>
-Date: Thu, 28 Jun 2012 10:36:32 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v12 2/2] MTD: at91: atmel_nand: Update driver to support
- Programmable Multibit ECC controller
-References: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
- <1340871698-477-3-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1340871698-477-3-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, dedekind1@gmail.com, richard.genoud@gmail.com,
- ivan.djelic@parrot.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkE1C-0006sy-UQ
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 12:40:20 +0000
+Message-ID: <1340887459.3070.100.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 04/16] UBI: Fastmap: Rename self_check_fastmap()
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 28 Jun 2012 15:44:19 +0300
+In-Reply-To: <1340812676-14460-5-git-send-email-richard@nod.at>
+References: <1340812676-14460-1-git-send-email-richard@nod.at>
+ <1340812676-14460-5-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-jiHgj+UTY2ID7az2mGeS"
+Mime-Version: 1.0
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,973 +29,290 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/28/2012 10:21 AM, Josh Wu :
-> The Programmable Multibit ECC (PMECC) controller is a programmable binary
-> BCH(Bose, Chaudhuri and Hocquenghem) encoder and decoder. This controller
-> can be used to support both SLC and MLC NAND Flash devices. It supports to
-> generate ECC to correct 2, 4, 8, 12 or 24 bits of error per sector of data.
-> 
-> To use PMECC in this driver, the user needs to set the address and size of
-> PMECC, PMECC error location controllers and ROM. And also needs to pass the
-> correction capability, the sector size and ROM lookup table offsets via dt.
-> 
-> This driver has been tested on AT91SAM9X5-EK and AT91SAM9N12-EK with JFFS2,
-> YAFFS2, UBIFS and mtd-utils.
-> 
-> Signed-off-by: Hong Xu <hong.xu@atmel.com>
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> Tested-by: Richard Genoud <richard.genoud@gmail.com>
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+--=-jiHgj+UTY2ID7az2mGeS
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> ---
-> since v11
->    1. fix bug: not report error if fail to get resources for PMECC ERRLOC or ROM.
->    2. fix bug: no correction when ecc data has bit flipped.
->    3. add clearer debug information for data correction.
-> 
-> since v10
->    1. atmel_nand_pmecc_write_page() will return -EIO when time out to read the pmecc status register.
->    2. increase the time-out duration to 100ms, which has more toleration.
->    3. add oob_required argument for pmecc read/write functions to align with v3.5-rc4.
-> 
->  drivers/mtd/nand/atmel_nand.c     |  749 ++++++++++++++++++++++++++++++++++++-
->  drivers/mtd/nand/atmel_nand_ecc.h |  114 +++++-
->  2 files changed, 861 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index b97ad9f..328b4d9 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -15,6 +15,8 @@
->   *     		(u-boot-1.1.5/board/atmel/at91sam9263ek/nand.c)
->   *     (C) Copyright 2006 ATMEL Rousset, Lacressonniere Nicolas
->   *
-> + *  Add Programmable Multibit ECC support for various AT91 SoC
-> + *     (C) Copyright 2012 ATMEL, Hong Xu
->   *
->   * This program is free software; you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License version 2 as
-> @@ -98,8 +100,31 @@ struct atmel_nand_host {
->  	u8			pmecc_corr_cap;
->  	u16			pmecc_sector_size;
->  	u32			pmecc_lookup_table_offset;
-> +
-> +	int			pmecc_bytes_per_sector;
-> +	int			pmecc_sector_number;
-> +	int			pmecc_degree;	/* Degree of remainders */
-> +	int			pmecc_cw_len;	/* Length of codeword */
-> +
-> +	void __iomem		*pmerrloc_base;
-> +	void __iomem		*pmecc_rom_base;
-> +
-> +	/* lookup table for alpha_to and index_of */
-> +	void __iomem		*pmecc_alpha_to;
-> +	void __iomem		*pmecc_index_of;
-> +
-> +	/* data for pmecc computation */
-> +	int16_t			*pmecc_partial_syn;
-> +	int16_t			*pmecc_si;
-> +	int16_t			*pmecc_smu;	/* Sigma table */
-> +	int16_t			*pmecc_lmu;	/* polynomal order */
-> +	int			*pmecc_mu;
-> +	int			*pmecc_dmu;
-> +	int			*pmecc_delta;
->  };
->  
-> +static struct nand_ecclayout atmel_pmecc_oobinfo;
-> +
->  static int cpu_has_dma(void)
->  {
->  	return cpu_is_at91sam9rl() || cpu_is_at91sam9g45();
-> @@ -293,6 +318,705 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
->  }
->  
->  /*
-> + * Return number of ecc bytes per sector according to sector size and
-> + * correction capability
-> + *
-> + * Following table shows what at91 PMECC supported:
-> + * Correction Capability	Sector_512_bytes	Sector_1024_bytes
-> + * =====================	================	=================
-> + *                2-bits                 4-bytes                  4-bytes
-> + *                4-bits                 7-bytes                  7-bytes
-> + *                8-bits                13-bytes                 14-bytes
-> + *               12-bits                20-bytes                 21-bytes
-> + *               24-bits                39-bytes                 42-bytes
-> + */
-> +static int __devinit pmecc_get_ecc_bytes(int cap, int sector_size)
-> +{
-> +	int m = 12 + sector_size / 512;
-> +	return (m * cap + 7) / 8;
-> +}
-> +
-> +static void __devinit pmecc_config_ecc_layout(struct nand_ecclayout *layout,
-> +	int oobsize, int ecc_len)
-> +{
-> +	int i;
-> +
-> +	layout->eccbytes = ecc_len;
-> +
-> +	/* ECC will occupy the last ecc_len bytes continuously */
-> +	for (i = 0; i < ecc_len; i++)
-> +		layout->eccpos[i] = oobsize - ecc_len + i;
-> +
-> +	layout->oobfree[0].offset = 2;
-> +	layout->oobfree[0].length =
-> +		oobsize - ecc_len - layout->oobfree[0].offset;
-> +}
-> +
-> +static void __devinit __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
-> +{
-> +	int table_size;
-> +
-> +	table_size = host->pmecc_sector_size == 512 ?
-> +		PMECC_LOOKUP_TABLE_SIZE_512 : PMECC_LOOKUP_TABLE_SIZE_1024;
-> +
-> +	return host->pmecc_rom_base + host->pmecc_lookup_table_offset +
-> +			table_size * sizeof(int16_t);
-> +}
-> +
-> +static void pmecc_data_free(struct atmel_nand_host *host)
-> +{
-> +	kfree(host->pmecc_partial_syn);
-> +	kfree(host->pmecc_si);
-> +	kfree(host->pmecc_lmu);
-> +	kfree(host->pmecc_smu);
-> +	kfree(host->pmecc_mu);
-> +	kfree(host->pmecc_dmu);
-> +	kfree(host->pmecc_delta);
-> +}
-> +
-> +static int __devinit pmecc_data_alloc(struct atmel_nand_host *host)
-> +{
-> +	const int cap = host->pmecc_corr_cap;
-> +
-> +	host->pmecc_partial_syn = kzalloc((2 * cap + 1) * sizeof(int16_t),
-> +					GFP_KERNEL);
-> +	host->pmecc_si = kzalloc((2 * cap + 1) * sizeof(int16_t), GFP_KERNEL);
-> +	host->pmecc_lmu = kzalloc((cap + 1) * sizeof(int16_t), GFP_KERNEL);
-> +	host->pmecc_smu = kzalloc((cap + 2) * (2 * cap + 1) * sizeof(int16_t),
-> +					GFP_KERNEL);
-> +	host->pmecc_mu = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
-> +	host->pmecc_dmu = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
-> +	host->pmecc_delta = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
-> +
-> +	if (host->pmecc_partial_syn &&
-> +			host->pmecc_si &&
-> +			host->pmecc_lmu &&
-> +			host->pmecc_smu &&
-> +			host->pmecc_mu &&
-> +			host->pmecc_dmu &&
-> +			host->pmecc_delta)
-> +		return 0;
-> +
-> +	/* error happened */
-> +	pmecc_data_free(host);
-> +	return -ENOMEM;
-> +}
-> +
-> +static void pmecc_gen_syndrome(struct mtd_info *mtd, int sector)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	int i;
-> +	uint32_t value;
-> +
-> +	/* Fill odd syndromes */
-> +	for (i = 0; i < host->pmecc_corr_cap; i++) {
-> +		value = pmecc_readl_rem_relaxed(host->ecc, sector, i / 2);
-> +		if (i & 1)
-> +			value >>= 16;
-> +		value &= 0xffff;
-> +		host->pmecc_partial_syn[(2 * i) + 1] = (int16_t)value;
-> +	}
-> +}
-> +
-> +static void pmecc_substitute(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	int16_t __iomem *alpha_to = host->pmecc_alpha_to;
-> +	int16_t __iomem *index_of = host->pmecc_index_of;
-> +	int16_t *partial_syn = host->pmecc_partial_syn;
-> +	const int cap = host->pmecc_corr_cap;
-> +	int16_t *si;
-> +	int i, j;
-> +
-> +	/* si[] is a table that holds the current syndrome value,
-> +	 * an element of that table belongs to the field
-> +	 */
-> +	si = host->pmecc_si;
-> +
-> +	memset(&si[1], 0, sizeof(int16_t) * (2 * cap - 1));
-> +
-> +	/* Computation 2t syndromes based on S(x) */
-> +	/* Odd syndromes */
-> +	for (i = 1; i < 2 * cap; i += 2) {
-> +		for (j = 0; j < host->pmecc_degree; j++) {
-> +			if (partial_syn[i] & ((unsigned short)0x1 << j))
-> +				si[i] = readw_relaxed(alpha_to + i * j) ^ si[i];
-> +		}
-> +	}
-> +	/* Even syndrome = (Odd syndrome) ** 2 */
-> +	for (i = 2, j = 1; j <= cap; i = ++j << 1) {
-> +		if (si[j] == 0) {
-> +			si[i] = 0;
-> +		} else {
-> +			int16_t tmp;
-> +
-> +			tmp = readw_relaxed(index_of + si[j]);
-> +			tmp = (tmp * 2) % host->pmecc_cw_len;
-> +			si[i] = readw_relaxed(alpha_to + tmp);
-> +		}
-> +	}
-> +
-> +	return;
-> +}
-> +
-> +static void pmecc_get_sigma(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +
-> +	int16_t *lmu = host->pmecc_lmu;
-> +	int16_t *si = host->pmecc_si;
-> +	int *mu = host->pmecc_mu;
-> +	int *dmu = host->pmecc_dmu;	/* Discrepancy */
-> +	int *delta = host->pmecc_delta; /* Delta order */
-> +	int cw_len = host->pmecc_cw_len;
-> +	const int16_t cap = host->pmecc_corr_cap;
-> +	int16_t __iomem	*index_of = host->pmecc_index_of;
-> +	int16_t __iomem	*alpha_to = host->pmecc_alpha_to;
-> +	int i, j, k;
-> +	uint32_t dmu_0_count, tmp;
-> +	int16_t (*smu)[2 * cap + 1];
-> +
-> +	/* index of largest delta */
-> +	int ro;
-> +	int largest;
-> +	int diff;
-> +
-> +	dmu_0_count = 0;
-> +	smu = (int16_t(*)[2 * cap + 1])host->pmecc_smu;
-> +
-> +	/* First Row */
-> +
-> +	/* Mu */
-> +	mu[0] = -1;
-> +
-> +	memset(&smu[0][0], 0,
-> +		sizeof(int16_t) * (2 * cap + 1));
-> +	smu[0][0] = 1;
-> +
-> +	/* discrepancy set to 1 */
-> +	dmu[0] = 1;
-> +	/* polynom order set to 0 */
-> +	lmu[0] = 0;
-> +	delta[0] = (mu[0] * 2 - lmu[0]) >> 1;
-> +
-> +	/* Second Row */
-> +
-> +	/* Mu */
-> +	mu[1] = 0;
-> +	/* Sigma(x) set to 1 */
-> +	memset(&smu[1][0], 0,
-> +		sizeof(int16_t) * (2 * cap + 1));
-> +	smu[1][0] = 1;
-> +
-> +	/* discrepancy set to S1 */
-> +	dmu[1] = si[1];
-> +
-> +	/* polynom order set to 0 */
-> +	lmu[1] = 0;
-> +
-> +	delta[1] = (mu[1] * 2 - lmu[1]) >> 1;
-> +
-> +	/* Init the Sigma(x) last row */
-> +	memset(&smu[cap + 1][0], 0,
-> +		sizeof(int16_t) * (2 * cap + 1));
-> +
-> +	for (i = 1; i <= cap; i++) {
-> +		mu[i + 1] = i << 1;
-> +		/* Begin Computing Sigma (Mu+1) and L(mu) */
-> +		/* check if discrepancy is set to 0 */
-> +		if (dmu[i] == 0) {
-> +			dmu_0_count++;
-> +
-> +			tmp = ((cap - (lmu[i] >> 1) - 1) / 2);
-> +			if ((cap - (lmu[i] >> 1) - 1) & 0x1)
-> +				tmp += 2;
-> +			else
-> +				tmp += 1;
-> +
-> +			if (dmu_0_count == tmp) {
-> +				for (j = 0; j <= (lmu[i] >> 1) + 1; j++)
-> +					smu[cap + 1][j] = smu[i][j];
-> +				lmu[cap + 1] = lmu[i];
-> +				return;
-> +			}
-> +
-> +			/* copy polynom */
-> +			for (j = 0; j <= lmu[i] >> 1; j++)
-> +				smu[i + 1][j] = smu[i][j];
-> +
-> +			/* copy previous polynom order to the next */
-> +			lmu[i + 1] = lmu[i];
-> +		} else {
-> +			ro = 0;
-> +			largest = -1;
-> +			/* find largest delta with dmu != 0 */
-> +			for (j = 0; j < i; j++) {
-> +				if ((dmu[j]) && (delta[j] > largest)) {
-> +					largest = delta[j];
-> +					ro = j;
-> +				}
-> +			}
-> +
-> +			/* compute difference */
-> +			diff = (mu[i] - mu[ro]);
-> +
-> +			/* Compute degree of the new smu polynomial */
-> +			if ((lmu[i] >> 1) > ((lmu[ro] >> 1) + diff))
-> +				lmu[i + 1] = lmu[i];
-> +			else
-> +				lmu[i + 1] = ((lmu[ro] >> 1) + diff) * 2;
-> +
-> +			/* Init smu[i+1] with 0 */
-> +			for (k = 0; k < (2 * cap + 1); k++)
-> +				smu[i + 1][k] = 0;
-> +
-> +			/* Compute smu[i+1] */
-> +			for (k = 0; k <= lmu[ro] >> 1; k++) {
-> +				int16_t a, b, c;
-> +
-> +				if (!(smu[ro][k] && dmu[i]))
-> +					continue;
-> +				a = readw_relaxed(index_of + dmu[i]);
-> +				b = readw_relaxed(index_of + dmu[ro]);
-> +				c = readw_relaxed(index_of + smu[ro][k]);
-> +				tmp = a + (cw_len - b) + c;
-> +				a = readw_relaxed(alpha_to + tmp % cw_len);
-> +				smu[i + 1][k + diff] = a;
-> +			}
-> +
-> +			for (k = 0; k <= lmu[i] >> 1; k++)
-> +				smu[i + 1][k] ^= smu[i][k];
-> +		}
-> +
-> +		/* End Computing Sigma (Mu+1) and L(mu) */
-> +		/* In either case compute delta */
-> +		delta[i + 1] = (mu[i + 1] * 2 - lmu[i + 1]) >> 1;
-> +
-> +		/* Do not compute discrepancy for the last iteration */
-> +		if (i >= cap)
-> +			continue;
-> +
-> +		for (k = 0; k <= (lmu[i + 1] >> 1); k++) {
-> +			tmp = 2 * (i - 1);
-> +			if (k == 0) {
-> +				dmu[i + 1] = si[tmp + 3];
-> +			} else if (smu[i + 1][k] && si[tmp + 3 - k]) {
-> +				int16_t a, b, c;
-> +				a = readw_relaxed(index_of + smu[i + 1][k]);
-> +				b = si[2 * (i - 1) + 3 - k];
-> +				c = readw_relaxed(index_of + b);
-> +				tmp = a + c;
-> +				tmp %= cw_len;
-> +				dmu[i + 1] = readw_relaxed(alpha_to + tmp) ^
-> +					dmu[i + 1];
-> +			}
-> +		}
-> +	}
-> +
-> +	return;
-> +}
-> +
-> +static int pmecc_err_location(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	unsigned long end_time;
-> +	const int cap = host->pmecc_corr_cap;
-> +	int sector_size = host->pmecc_sector_size;
-> +	int err_nbr = 0;	/* number of error */
-> +	int roots_nbr;		/* number of roots */
-> +	int i;
-> +	uint32_t val;
-> +	int16_t (*smu)[2 * cap + 1];
-> +
-> +	smu = (int16_t(*)[2 * cap + 1])host->pmecc_smu;
-> +
-> +	pmerrloc_writel(host->pmerrloc_base, ELDIS, PMERRLOC_DISABLE);
-> +
-> +	for (i = 0; i <= host->pmecc_lmu[cap + 1] >> 1; i++) {
-> +		pmerrloc_writel_sigma_relaxed(host->pmerrloc_base, i,
-> +				      smu[cap + 1][i]);
-> +		err_nbr++;
-> +	}
-> +
-> +	val = (err_nbr - 1) << 16;
-> +	if (sector_size == 1024)
-> +		val |= 1;
-> +
-> +	pmerrloc_writel(host->pmerrloc_base, ELCFG, val);
-> +	pmerrloc_writel(host->pmerrloc_base, ELEN,
-> +			sector_size * 8 + host->pmecc_degree * cap);
-> +
-> +	end_time = jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
-> +	while (!(pmerrloc_readl_relaxed(host->pmerrloc_base, ELISR)
-> +		 & PMERRLOC_CALC_DONE)) {
-> +		if (unlikely(time_after(jiffies, end_time))) {
-> +			dev_err(host->dev, "PMECC: Timeout to calculate error location.\n");
-> +			return -1;
-> +		}
-> +		cpu_relax();
-> +	}
-> +
-> +	roots_nbr = (pmerrloc_readl_relaxed(host->pmerrloc_base, ELISR)
-> +		& PMERRLOC_ERR_NUM_MASK) >> 8;
-> +	/* Number of roots == degree of smu hence <= cap */
-> +	if (roots_nbr == host->pmecc_lmu[cap + 1] >> 1)
-> +		return err_nbr - 1;
-> +
-> +	/* Number of roots does not match the degree of smu
-> +	 * unable to correct error */
-> +	return -1;
-> +}
-> +
-> +static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
-> +		int sector_num, int extra_bytes, int err_nbr)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	int i = 0;
-> +	int byte_pos, bit_pos, sector_size, ecc_size, pos;
-> +	uint32_t tmp;
-> +	uint8_t err_byte;
-> +
-> +	sector_size = host->pmecc_sector_size;
-> +	ecc_size = nand_chip->ecc.bytes;
-> +
-> +	while (err_nbr) {
-> +		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_base, i) - 1;
-> +		byte_pos = tmp / 8;
-> +		bit_pos  = tmp % 8;
-> +
-> +		if (byte_pos >= (sector_size + extra_bytes))
-> +			BUG();	/* should never happen */
-> +
-> +		if (byte_pos < sector_size) {
-> +			err_byte = *(buf + byte_pos);
-> +			*(buf + byte_pos) ^= (1 << bit_pos);
-> +
-> +			pos = sector_num * host->pmecc_sector_size + byte_pos;
-> +			dev_info(host->dev, "Bit flip in data area, byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
-> +				pos, bit_pos, err_byte, *(buf + byte_pos));
-> +		} else {
-> +			/* Bit flip in OOB area */
-> +			tmp = sector_num * host->pmecc_bytes_per_sector
-> +					+ (byte_pos - sector_size);
-> +			err_byte = ecc[tmp];
-> +			ecc[tmp] ^= (1 << bit_pos);
-> +
-> +			pos = tmp + nand_chip->ecc.layout->eccpos[0];
-> +			dev_info(host->dev, "Bit flip in OOB, oob_byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
-> +				pos, bit_pos, err_byte, ecc[tmp]);
-> +		}
-> +
-> +		i++;
-> +		err_nbr--;
-> +	}
-> +
-> +	return;
-> +}
-> +
-> +static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
-> +	u8 *ecc)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	int i, err_nbr, eccbytes;
-> +	uint8_t *buf_pos;
-> +
-> +	eccbytes = nand_chip->ecc.bytes;
-> +	for (i = 0; i < eccbytes; i++)
-> +		if (ecc[i] != 0xff)
-> +			goto normal_check;
-> +	/* Erased page, return OK */
-> +	return 0;
-> +
-> +normal_check:
-> +	for (i = 0; i < host->pmecc_sector_number; i++) {
-> +		err_nbr = 0;
-> +		if (pmecc_stat & 0x1) {
-> +			buf_pos = buf + i * host->pmecc_sector_size;
-> +
-> +			pmecc_gen_syndrome(mtd, i);
-> +			pmecc_substitute(mtd);
-> +			pmecc_get_sigma(mtd);
-> +
-> +			err_nbr = pmecc_err_location(mtd);
-> +			if (err_nbr == -1) {
-> +				dev_err(host->dev, "PMECC: Too many errors\n");
-> +				mtd->ecc_stats.failed++;
-> +				return -EIO;
-> +			} else {
-> +				pmecc_correct_data(mtd, buf_pos, ecc, i,
-> +					host->pmecc_bytes_per_sector, err_nbr);
-> +				mtd->ecc_stats.corrected += err_nbr;
-> +			}
-> +		}
-> +		pmecc_stat >>= 1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
-> +	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
-> +{
-> +	struct atmel_nand_host *host = chip->priv;
-> +	int eccsize = chip->ecc.size;
-> +	uint8_t *oob = chip->oob_poi;
-> +	uint32_t *eccpos = chip->ecc.layout->eccpos;
-> +	uint32_t stat;
-> +	unsigned long end_time;
-> +
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +	pmecc_writel(host->ecc, CFG, (pmecc_readl_relaxed(host->ecc, CFG)
-> +		& ~PMECC_CFG_WRITE_OP) | PMECC_CFG_AUTO_ENABLE);
-> +
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
-> +
-> +	chip->read_buf(mtd, buf, eccsize);
-> +	chip->read_buf(mtd, oob, mtd->oobsize);
-> +
-> +	end_time = jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
-> +	while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
-> +		if (unlikely(time_after(jiffies, end_time))) {
-> +			dev_err(host->dev, "PMECC: Timeout to get error status.\n");
-> +			return -EIO;
-> +		}
-> +		cpu_relax();
-> +	}
-> +
-> +	stat = pmecc_readl_relaxed(host->ecc, ISR);
-> +	if (stat != 0)
-> +		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
-> +			return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
-> +		struct nand_chip *chip, const uint8_t *buf, int oob_required)
-> +{
-> +	struct atmel_nand_host *host = chip->priv;
-> +	uint32_t *eccpos = chip->ecc.layout->eccpos;
-> +	int i, j;
-> +	unsigned long end_time;
-> +
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +
-> +	pmecc_writel(host->ecc, CFG, (pmecc_readl_relaxed(host->ecc, CFG) |
-> +		PMECC_CFG_WRITE_OP) & ~PMECC_CFG_AUTO_ENABLE);
-> +
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
-> +
-> +	chip->write_buf(mtd, (u8 *)buf, mtd->writesize);
-> +
-> +	end_time = jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
-> +	while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
-> +		if (unlikely(time_after(jiffies, end_time))) {
-> +			dev_err(host->dev, "PMECC: Timeout to get ECC value.\n");
-> +			return -EIO;
-> +		}
-> +		cpu_relax();
-> +	}
-> +
-> +	for (i = 0; i < host->pmecc_sector_number; i++) {
-> +		for (j = 0; j < host->pmecc_bytes_per_sector; j++) {
-> +			int pos;
-> +
-> +			pos = i * host->pmecc_bytes_per_sector + j;
-> +			chip->oob_poi[eccpos[pos]] =
-> +				pmecc_readb_ecc_relaxed(host->ecc, i, j);
-> +		}
-> +	}
-> +	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +
-> +	return 0;
-> +}
-> +
-> +static void atmel_pmecc_core_init(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *nand_chip = mtd->priv;
-> +	struct atmel_nand_host *host = nand_chip->priv;
-> +	uint32_t val = 0;
-> +	struct nand_ecclayout *ecc_layout;
-> +
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +
-> +	switch (host->pmecc_corr_cap) {
-> +	case 2:
-> +		val = PMECC_CFG_BCH_ERR2;
-> +		break;
-> +	case 4:
-> +		val = PMECC_CFG_BCH_ERR4;
-> +		break;
-> +	case 8:
-> +		val = PMECC_CFG_BCH_ERR8;
-> +		break;
-> +	case 12:
-> +		val = PMECC_CFG_BCH_ERR12;
-> +		break;
-> +	case 24:
-> +		val = PMECC_CFG_BCH_ERR24;
-> +		break;
-> +	}
-> +
-> +	if (host->pmecc_sector_size == 512)
-> +		val |= PMECC_CFG_SECTOR512;
-> +	else if (host->pmecc_sector_size == 1024)
-> +		val |= PMECC_CFG_SECTOR1024;
-> +
-> +	switch (host->pmecc_sector_number) {
-> +	case 1:
-> +		val |= PMECC_CFG_PAGE_1SECTOR;
-> +		break;
-> +	case 2:
-> +		val |= PMECC_CFG_PAGE_2SECTORS;
-> +		break;
-> +	case 4:
-> +		val |= PMECC_CFG_PAGE_4SECTORS;
-> +		break;
-> +	case 8:
-> +		val |= PMECC_CFG_PAGE_8SECTORS;
-> +		break;
-> +	}
-> +
-> +	val |= (PMECC_CFG_READ_OP | PMECC_CFG_SPARE_DISABLE
-> +		| PMECC_CFG_AUTO_DISABLE);
-> +	pmecc_writel(host->ecc, CFG, val);
-> +
-> +	ecc_layout = nand_chip->ecc.layout;
-> +	pmecc_writel(host->ecc, SAREA, mtd->oobsize - 1);
-> +	pmecc_writel(host->ecc, SADDR, ecc_layout->eccpos[0]);
-> +	pmecc_writel(host->ecc, EADDR,
-> +			ecc_layout->eccpos[ecc_layout->eccbytes - 1]);
-> +	/* See datasheet about PMECC Clock Control Register */
-> +	pmecc_writel(host->ecc, CLK, 2);
-> +	pmecc_writel(host->ecc, IDR, 0xff);
-> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
-> +}
-> +
-> +static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
-> +					 struct atmel_nand_host *host)
-> +{
-> +	struct mtd_info *mtd = &host->mtd;
-> +	struct nand_chip *nand_chip = &host->nand_chip;
-> +	struct resource *regs, *regs_pmerr, *regs_rom;
-> +	int cap, sector_size, err_no;
-> +
-> +	cap = host->pmecc_corr_cap;
-> +	sector_size = host->pmecc_sector_size;
-> +	dev_info(host->dev, "Initialize PMECC params, cap: %d, sector: %d\n",
-> +		 cap, sector_size);
-> +
-> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	if (!regs) {
-> +		dev_warn(host->dev,
-> +			"Can't get I/O resource regs for PMECC controller, rolling back on software ECC\n");
-> +		nand_chip->ecc.mode = NAND_ECC_SOFT;
-> +		return 0;
-> +	}
-> +
-> +	host->ecc = ioremap(regs->start, resource_size(regs));
-> +	if (host->ecc == NULL) {
-> +		dev_err(host->dev, "ioremap failed\n");
-> +		err_no = -EIO;
-> +		goto err_pmecc_ioremap;
-> +	}
-> +
-> +	regs_pmerr = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-> +	regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
-> +	if (regs_pmerr && regs_rom) {
-> +		host->pmerrloc_base = ioremap(regs_pmerr->start,
-> +			resource_size(regs_pmerr));
-> +		host->pmecc_rom_base = ioremap(regs_rom->start,
-> +			resource_size(regs_rom));
-> +	}
-> +
-> +	if (!host->pmerrloc_base || !host->pmecc_rom_base) {
-> +		dev_err(host->dev,
-> +			"Can not get I/O resource for PMECC ERRLOC controller or ROM!\n");
-> +		err_no = -EIO;
-> +		goto err_pmloc_ioremap;
-> +	}
-> +
-> +	/* ECC is calculated for the whole page (1 step) */
-> +	nand_chip->ecc.size = mtd->writesize;
-> +
-> +	/* set ECC page size and oob layout */
-> +	switch (mtd->writesize) {
-> +	case 2048:
-> +		host->pmecc_degree = PMECC_GF_DIMENSION_13;
-> +		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
-> +		host->pmecc_sector_number = mtd->writesize / sector_size;
-> +		host->pmecc_bytes_per_sector = pmecc_get_ecc_bytes(
-> +			cap, sector_size);
-> +		host->pmecc_alpha_to = pmecc_get_alpha_to(host);
-> +		host->pmecc_index_of = host->pmecc_rom_base +
-> +			host->pmecc_lookup_table_offset;
-> +
-> +		nand_chip->ecc.steps = 1;
-> +		nand_chip->ecc.strength = cap;
-> +		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector *
-> +				       host->pmecc_sector_number;
-> +		if (nand_chip->ecc.bytes > mtd->oobsize - 2) {
-> +			dev_err(host->dev, "No room for ECC bytes\n");
-> +			err_no = -EINVAL;
-> +			goto err_no_ecc_room;
-> +		}
-> +		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
-> +					mtd->oobsize,
-> +					nand_chip->ecc.bytes);
-> +		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
-> +		break;
-> +	case 512:
-> +	case 1024:
-> +	case 4096:
-> +		/* TODO */
-> +		dev_warn(host->dev,
-> +			"Unsupported page size for PMECC, use Software ECC\n");
-> +	default:
-> +		/* page size not handled by HW ECC */
-> +		/* switching back to soft ECC */
-> +		nand_chip->ecc.mode = NAND_ECC_SOFT;
-> +		return 0;
-> +	}
-> +
-> +	/* Allocate data for PMECC computation */
-> +	err_no = pmecc_data_alloc(host);
-> +	if (err_no) {
-> +		dev_err(host->dev,
-> +				"Cannot allocate memory for PMECC computation!\n");
-> +		goto err_pmecc_data_alloc;
-> +	}
-> +
-> +	nand_chip->ecc.read_page = atmel_nand_pmecc_read_page;
-> +	nand_chip->ecc.write_page = atmel_nand_pmecc_write_page;
-> +
-> +	atmel_pmecc_core_init(mtd);
-> +
-> +	return 0;
-> +
-> +err_pmecc_data_alloc:
-> +err_no_ecc_room:
-> +err_pmloc_ioremap:
-> +	iounmap(host->ecc);
-> +	if (host->pmerrloc_base)
-> +		iounmap(host->pmerrloc_base);
-> +	if (host->pmecc_rom_base)
-> +		iounmap(host->pmecc_rom_base);
-> +err_pmecc_ioremap:
-> +	return err_no;
-> +}
-> +
-> +/*
->   * Calculate HW ECC
->   *
->   * function called after a write
-> @@ -747,7 +1471,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  	}
->  
->  	if (nand_chip->ecc.mode == NAND_ECC_HW) {
-> -		res = atmel_hw_nand_init_params(pdev, host);
-> +		if (host->has_pmecc)
-> +			res = atmel_pmecc_nand_init_params(pdev, host);
-> +		else
-> +			res = atmel_hw_nand_init_params(pdev, host);
-> +
->  		if (res != 0)
->  			goto err_hw_ecc;
->  	}
-> @@ -766,8 +1494,16 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  		return res;
->  
->  err_scan_tail:
-> +	if (host->has_pmecc && host->nand_chip.ecc.mode == NAND_ECC_HW) {
-> +		pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +		pmecc_data_free(host);
-> +	}
->  	if (host->ecc)
->  		iounmap(host->ecc);
-> +	if (host->pmerrloc_base)
-> +		iounmap(host->pmerrloc_base);
-> +	if (host->pmecc_rom_base)
-> +		iounmap(host->pmecc_rom_base);
->  err_hw_ecc:
->  err_scan_ident:
->  err_no_card:
-> @@ -793,8 +1529,19 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->  
->  	atmel_nand_disable(host);
->  
-> +	if (host->has_pmecc && host->nand_chip.ecc.mode == NAND_ECC_HW) {
-> +		pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-> +		pmerrloc_writel(host->pmerrloc_base, ELDIS,
-> +				PMERRLOC_DISABLE);
-> +		pmecc_data_free(host);
-> +	}
-> +
->  	if (host->ecc)
->  		iounmap(host->ecc);
-> +	if (host->pmecc_rom_base)
-> +		iounmap(host->pmecc_rom_base);
-> +	if (host->pmerrloc_base)
-> +		iounmap(host->pmerrloc_base);
->  
->  	if (host->dma_chan)
->  		dma_release_channel(host->dma_chan);
-> diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-> index 578c776..8a1e9a6 100644
-> --- a/drivers/mtd/nand/atmel_nand_ecc.h
-> +++ b/drivers/mtd/nand/atmel_nand_ecc.h
-> @@ -3,7 +3,7 @@
->   * Based on AT91SAM9260 datasheet revision B.
->   *
->   * Copyright (C) 2007 Andrew Victor
-> - * Copyright (C) 2007 Atmel Corporation.
-> + * Copyright (C) 2007 - 2012 Atmel Corporation.
->   *
->   * This program is free software; you can redistribute it and/or modify it
->   * under the terms of the GNU General Public License as published by the
-> @@ -36,4 +36,116 @@
->  #define ATMEL_ECC_NPR		0x10			/* NParity register */
->  #define		ATMEL_ECC_NPARITY	(0xffff << 0)		/* NParity */
->  
-> +/* PMECC Register Definitions */
-> +#define ATMEL_PMECC_CFG			0x000	/* Configuration Register */
-> +#define		PMECC_CFG_BCH_ERR2		(0 << 0)
-> +#define		PMECC_CFG_BCH_ERR4		(1 << 0)
-> +#define		PMECC_CFG_BCH_ERR8		(2 << 0)
-> +#define		PMECC_CFG_BCH_ERR12		(3 << 0)
-> +#define		PMECC_CFG_BCH_ERR24		(4 << 0)
-> +
-> +#define		PMECC_CFG_SECTOR512		(0 << 4)
-> +#define		PMECC_CFG_SECTOR1024		(1 << 4)
-> +
-> +#define		PMECC_CFG_PAGE_1SECTOR		(0 << 8)
-> +#define		PMECC_CFG_PAGE_2SECTORS		(1 << 8)
-> +#define		PMECC_CFG_PAGE_4SECTORS		(2 << 8)
-> +#define		PMECC_CFG_PAGE_8SECTORS		(3 << 8)
-> +
-> +#define		PMECC_CFG_READ_OP		(0 << 12)
-> +#define		PMECC_CFG_WRITE_OP		(1 << 12)
-> +
-> +#define		PMECC_CFG_SPARE_ENABLE		(1 << 16)
-> +#define		PMECC_CFG_SPARE_DISABLE		(0 << 16)
-> +
-> +#define		PMECC_CFG_AUTO_ENABLE		(1 << 20)
-> +#define		PMECC_CFG_AUTO_DISABLE		(0 << 20)
-> +
-> +#define ATMEL_PMECC_SAREA		0x004	/* Spare area size */
-> +#define ATMEL_PMECC_SADDR		0x008	/* PMECC starting address */
-> +#define ATMEL_PMECC_EADDR		0x00c	/* PMECC ending address */
-> +#define ATMEL_PMECC_CLK			0x010	/* PMECC clock control */
-> +#define		PMECC_CLK_133MHZ		(2 << 0)
-> +
-> +#define ATMEL_PMECC_CTRL		0x014	/* PMECC control register */
-> +#define		PMECC_CTRL_RST			(1 << 0)
-> +#define		PMECC_CTRL_DATA			(1 << 1)
-> +#define		PMECC_CTRL_USER			(1 << 2)
-> +#define		PMECC_CTRL_ENABLE		(1 << 4)
-> +#define		PMECC_CTRL_DISABLE		(1 << 5)
-> +
-> +#define ATMEL_PMECC_SR			0x018	/* PMECC status register */
-> +#define		PMECC_SR_BUSY			(1 << 0)
-> +#define		PMECC_SR_ENABLE			(1 << 4)
-> +
-> +#define ATMEL_PMECC_IER			0x01c	/* PMECC interrupt enable */
-> +#define		PMECC_IER_ENABLE		(1 << 0)
-> +#define ATMEL_PMECC_IDR			0x020	/* PMECC interrupt disable */
-> +#define		PMECC_IER_DISABLE		(1 << 0)
-> +#define ATMEL_PMECC_IMR			0x024	/* PMECC interrupt mask */
-> +#define		PMECC_IER_MASK			(1 << 0)
-> +#define ATMEL_PMECC_ISR			0x028	/* PMECC interrupt status */
-> +#define ATMEL_PMECC_ECCx		0x040	/* PMECC ECC x */
-> +#define ATMEL_PMECC_REMx		0x240	/* PMECC REM x */
-> +
-> +/* PMERRLOC Register Definitions */
-> +#define ATMEL_PMERRLOC_ELCFG		0x000	/* Error location config */
-> +#define		PMERRLOC_ELCFG_SECTOR_512	(0 << 0)
-> +#define		PMERRLOC_ELCFG_SECTOR_1024	(1 << 0)
-> +#define		PMERRLOC_ELCFG_NUM_ERRORS(n)	((n) << 16)
-> +
-> +#define ATMEL_PMERRLOC_ELPRIM		0x004	/* Error location primitive */
-> +#define ATMEL_PMERRLOC_ELEN		0x008	/* Error location enable */
-> +#define ATMEL_PMERRLOC_ELDIS		0x00c	/* Error location disable */
-> +#define		PMERRLOC_DISABLE		(1 << 0)
-> +
-> +#define ATMEL_PMERRLOC_ELSR		0x010	/* Error location status */
-> +#define		PMERRLOC_ELSR_BUSY		(1 << 0)
-> +#define ATMEL_PMERRLOC_ELIER		0x014	/* Error location int enable */
-> +#define ATMEL_PMERRLOC_ELIDR		0x018	/* Error location int disable */
-> +#define ATMEL_PMERRLOC_ELIMR		0x01c	/* Error location int mask */
-> +#define ATMEL_PMERRLOC_ELISR		0x020	/* Error location int status */
-> +#define		PMERRLOC_ERR_NUM_MASK		(0x1f << 8)
-> +#define		PMERRLOC_CALC_DONE		(1 << 0)
-> +#define ATMEL_PMERRLOC_SIGMAx		0x028	/* Error location SIGMA x */
-> +#define ATMEL_PMERRLOC_ELx		0x08c	/* Error location x */
-> +
-> +/* Register access macros for PMECC */
-> +#define pmecc_readl_relaxed(addr, reg) \
-> +	readl_relaxed((addr) + ATMEL_PMECC_##reg)
-> +
-> +#define pmecc_writel(addr, reg, value) \
-> +	writel((value), (addr) + ATMEL_PMECC_##reg)
-> +
-> +#define pmecc_readb_ecc_relaxed(addr, sector, n) \
-> +	readb_relaxed((addr) + ATMEL_PMECC_ECCx + ((sector) * 0x40) + (n))
-> +
-> +#define pmecc_readl_rem_relaxed(addr, sector, n) \
-> +	readl_relaxed((addr) + ATMEL_PMECC_REMx + ((sector) * 0x40) + ((n) * 4))
-> +
-> +#define pmerrloc_readl_relaxed(addr, reg) \
-> +	readl_relaxed((addr) + ATMEL_PMERRLOC_##reg)
-> +
-> +#define pmerrloc_writel(addr, reg, value) \
-> +	writel((value), (addr) + ATMEL_PMERRLOC_##reg)
-> +
-> +#define pmerrloc_writel_sigma_relaxed(addr, n, value) \
-> +	writel_relaxed((value), (addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
-> +
-> +#define pmerrloc_readl_sigma_relaxed(addr, n) \
-> +	readl_relaxed((addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
-> +
-> +#define pmerrloc_readl_el_relaxed(addr, n) \
-> +	readl_relaxed((addr) + ATMEL_PMERRLOC_ELx + ((n) * 4))
-> +
-> +/* Galois field dimension */
-> +#define PMECC_GF_DIMENSION_13			13
-> +#define PMECC_GF_DIMENSION_14			14
-> +
-> +#define PMECC_LOOKUP_TABLE_SIZE_512		0x2000
-> +#define PMECC_LOOKUP_TABLE_SIZE_1024		0x4000
-> +
-> +/* Time out value for reading PMECC status register */
-> +#define PMECC_MAX_TIMEOUT_MS			100
-> +
->  #endif
-> 
+On Wed, 2012-06-27 at 17:57 +0200, Richard Weinberger wrote:
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+
+Hi, pushed this and added a couple of TODOs. Could you please take a
+look? Most TODOs are non-essential and easy, but one is more important -
+the one about regression in attach time of non-fastmap images.
+
+Thanks!
+
+=46rom b43ceb01a33b322898232fb05e5cc7f754656421 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Thu, 28 Jun 2012 15:08:29 +0300
+Subject: [PATCH 1/2] UBI: Fastmap: rename new_ai to alloc_ia
+
+Just more consistent, we do not use "new" in, e.g., 'ubi_zalloc_vid_hdr()'.
+Also move the code to avoid forward references, which we also do not use.
+
+Also get rid of unneeded goto in alloc_ia(). Nothing major.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/attach.c |   41 +++++++++++++++++++----------------------
+ 1 file changed, 19 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 7552d25..8204b2d 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -91,7 +91,6 @@
+=20
+ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *a=
+i);
+ static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)=
+;
+-static struct ubi_attach_info *new_ai(void);
+=20
+ /* Temporary variables used during scanning */
+ static struct ubi_ec_hdr *ech;
+@@ -1216,6 +1215,22 @@ out_ai:
+ 	return err;
+ }
+=20
++static struct ubi_attach_info *alloc_ai(void)
++{
++	static struct ubi_attach_info *ai;
++
++	ai =3D kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
++	if (ai) {
++		INIT_LIST_HEAD(&ai->corr);
++		INIT_LIST_HEAD(&ai->free);
++		INIT_LIST_HEAD(&ai->erase);
++		INIT_LIST_HEAD(&ai->alien);
++		ai->volumes =3D RB_ROOT;
++	}
++
++	return ai;
++}
++
+ /**
+  * ubi_attach - attach an MTD device.
+  * @ubi: UBI device descriptor
+@@ -1229,7 +1244,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan=
+)
+ 	int err;
+ 	struct ubi_attach_info *ai;
+=20
+-	ai =3D new_ai();
++	ai =3D alloc_ai();
+ 	if (!ai)
+ 		return -ENOMEM;
+=20
+@@ -1239,7 +1254,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan=
+)
+ 		err =3D ubi_scan_fastmap(ubi, ai);
+ 		if (err > 0) {
+ 			destroy_ai(ubi, ai);
+-			ai =3D new_ai();
++			ai =3D alloc_ai();
+ 			if (!ai)
+ 				return -ENOMEM;
+=20
+@@ -1279,7 +1294,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan=
+)
+=20
+ 	if (ubi->fm && ubi->dbg->chk_gen) {
+ 		struct ubi_attach_info *scan_ai;
+-		scan_ai =3D new_ai();
++		scan_ai =3D alloc_ai();
+ 		if (!scan_ai)
+ 			goto out_ai;
+=20
+@@ -1395,24 +1410,6 @@ static void destroy_ai(struct ubi_device *ubi, struc=
+t ubi_attach_info *ai)
+ 	kfree(ai);
+ }
+=20
+-static struct ubi_attach_info *new_ai(void)
+-{
+-	static struct ubi_attach_info *ai;
+-
+-	ai =3D kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
+-	if (!ai)
+-		goto out;
+-
+-	INIT_LIST_HEAD(&ai->corr);
+-	INIT_LIST_HEAD(&ai->free);
+-	INIT_LIST_HEAD(&ai->erase);
+-	INIT_LIST_HEAD(&ai->alien);
+-	ai->volumes =3D RB_ROOT;
+-
+-out:
+-	return ai;
+-}
+-
+ /**
+  * self_check_ai - check the attaching information.
+  * @ubi: UBI device description object
+--=20
+1.7.10
 
 
--- 
-Nicolas Ferre
+=46rom 400a911b104d88bbf6cc593e8bb24c9865a1c449 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Thu, 28 Jun 2012 15:34:17 +0300
+Subject: [PATCH 2/2] UBI: fastmap: some todo and random changes
+
+Add few consmetic changes and a bunch of TODOs.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/attach.c |   29 +++++++++++++++++++++++++++++
+ drivers/mtd/ubi/eba.c    |    7 ++++---
+ 2 files changed, 33 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 8204b2d..3d9be42 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -89,6 +89,13 @@
+ #include <linux/random.h>
+ #include "ubi.h"
+=20
++/*
++ * TODO: please, no forward declarations. We do not use them in UBI code.
++ * Actually initially I did use them a lot, but when upstreaming, I was as=
+ked
++ * to remove. Please, follow this convention as well. Please, change globa=
+lly.
++ * I mean, I am already used to that _all_ the code is upside-down, let's =
+keep
++ * it that way, or re-structure all the code. :-)
++ */
+ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *a=
+i);
+ static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)=
+;
+=20
+@@ -1170,6 +1177,7 @@ static int scan_all(struct ubi_device *ubi, struct ub=
+i_attach_info *ai)
+ 	if (ai->ec_count)
+ 		ai->mean_ec =3D div_u64(ai->ec_sum, ai->ec_count);
+=20
++	/* TODO: if we attach by fastmap, we do not execute this? */
+ 	err =3D late_analysis(ubi, ai);
+ 	if (err)
+ 		goto out_vidh;
+@@ -1251,6 +1259,25 @@ int ubi_attach(struct ubi_device *ubi, int force_sca=
+n)
+ 	if (force_scan)
+ 		err =3D scan_all(ubi, ai);
+ 	else {
++		/* TODO: this is a regression. If I have an old image, and I do
++		 * not want to use fastmap, I will be forced to waste time for
++		 * useless scan of 64 first eraseblocks. Not good.
++		 *
++		 * Can you teach ubi_scan_fastmap() to use 'scan_peb()'
++		 * function for scanning and build normal ai information? If it
++		 * finds fastmap - it can destroy the collected ai. If it does
++		 * not find, it returns ai. Then you just confinue scanning.
++		 *
++		 * I buess what we'll need is:
++		 * 1. scan_all() -> scan_range(..., int pnum1, int pnum2);
++		 * 2. ubi_scan_fastmap() returns the pnum of the last scanned
++		 *    eraseblock if fastmap was not found;
++		 *    Also 'ubi_scan_fastmap()' uses scan_peb() for scanning.
++		 * 3. You call 'scan_range(..., pnum, c->peb_cnt - 1)' and
++		 *    it continues.
++		 *
++		 * And no regressions.
++		 */
+ 		err =3D ubi_scan_fastmap(ubi, ai);
+ 		if (err > 0) {
+ 			destroy_ai(ubi, ai);
+@@ -1276,6 +1303,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan=
+)
+ 	if (err)
+ 		goto out_ai;
+=20
++	/* TODO: Hmm why this code is not hidden in 'ubi_scan_fastmap()' ? */
+ 	if (ubi->fm) {
+ 		ubi->fm_pool.max_size =3D ubi->fm->max_pool_size;
+ 		ubi->fm_wl_pool.max_size =3D ubi->fm->max_wl_pool_size;
+@@ -1294,6 +1322,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan=
+)
+=20
+ 	if (ubi->fm && ubi->dbg->chk_gen) {
+ 		struct ubi_attach_info *scan_ai;
++
+ 		scan_ai =3D alloc_ai();
+ 		if (!scan_ai)
+ 			goto out_ai;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index cb0139c..6d6e301 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1218,11 +1218,12 @@ static void print_rsvd_warning(struct ubi_device *u=
+bi,
+ }
+=20
+ /**
+- * self_check_eba - run a self check on the EBA table construected by fast=
+map.
+- *
++ * self_check_eba - run a self check on the EBA table constructed by fastm=
+ap.
+  * @ubi: UBI device description object
+  * @ai_fastmap: UBI attach info object created by fastmap
+  * @ai_scan: UBI attach info object created by scanning
++ *
++ * TODO: what we do and what return.
+  */
+ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fast=
+map,
+ 		   struct ubi_attach_info *ai_scan)
+@@ -1290,6 +1291,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi=
+_attach_info *ai_fastmap,
+=20
+ 				ubi_err("LEB:%i:%i is PEB:%i instead of %i!",
+ 					vol->vol_id, i, fm_eba[i][j], scan_eba[i][j]);
++				/* TODO: no, please, return error instead */
+ 				BUG();
+ 			}
+ 		}
+@@ -1306,7 +1308,6 @@ out_free:
+=20
+ 	kfree(scan_eba);
+ 	kfree(fm_eba);
+-
+ 	return ret;
+ }
+=20
+--=20
+1.7.10
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-jiHgj+UTY2ID7az2mGeS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7FGjAAoJECmIfjd9wqK0yd0P/16gmyWi8SjHUFvoeWYvXVbx
+Ob5azqSVv4L81WqYXp3itkCVR6rlq7GZcsMDEVs6Ly78LQp7Jnb6VZM0RnfFplQt
+Yx9jdThayQuuoOnZJMMI+rgp7BBsGx0dwXWsp/07x4bZAMIM7HuqjtRIxQrbEbml
+n+sc+6ovctq4u1uD+7gRMSvV5np0mMzuFVyXNEyvGgUnkpgMSNZRa+B+8d9uj+48
+nbZVr/3RwjoxXLN/RpPtXUAtgVKblL+Cjpf5dBmvQHHY0FJaSfyhfN7gS8Q28c3g
+art9ygG8aWE1VrSsH9Ae66p7Zf8Up5uCdVZnbzaiKv3DVJr6e8SqEaI7TSVJFkNU
+4Mwx5whLxeJb7oA1ghoPKme3pjkoiyV2tNoeZBUPA4WiZrvXdvq21lEaa4MzV8I3
+KGrCy0JuZZOsZwcxyi+oXAGl4snSZRRNKnZ6CTIaMG+Xx7nV8sB+eiMROkU0joqr
+Os2VmfPruRhJ389VpSb9H4iJVLTVh/L/TuVtKovUiKsCbO2wPgR1GrLZ/iUAYr5z
+fbQlWm1FrZAi3L6ZFtNGCXDBERMTmHzJSp347qP+Nl0bEi5qalsXW2KRQzuYfzqh
+wPky6eZasz0+8+x/JcClfHgHRu4DKpFHzfVXbxwcU/dkLXRWTGp8XjYRuOtiyiff
+E4y913zDc7myZAHxF0K4
+=pJsA
+-----END PGP SIGNATURE-----
+
+--=-jiHgj+UTY2ID7az2mGeS--
