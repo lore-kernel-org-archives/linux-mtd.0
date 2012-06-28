@@ -1,20 +1,23 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkHIH-0007EZ-Je
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 16:10:10 +0000
-Message-ID: <1340899998.3070.127.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: Better comment NAND_BBT_NO_OOB
+ id 1SkHQH-0007uR-0Z
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 16:18:25 +0000
+Message-ID: <1340900549.3070.130.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: add minimal amount of reserved erase blocks in
+ Kconfig
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Thu, 28 Jun 2012 19:13:18 +0300
-In-Reply-To: <20120626172828.4a458196@pixies.home.jungo.com>
-References: <20120626172828.4a458196@pixies.home.jungo.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Thu, 28 Jun 2012 19:22:29 +0300
+In-Reply-To: <CACQ1gAjLdR-ZRUS6gxMrJzVpRdvdMK2JRceyiFmeSq-FQkZbZg@mail.gmail.com>
+References: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
+ <1340894351.3070.121.camel@sauron.fi.intel.com>
+ <CACQ1gAjLdR-ZRUS6gxMrJzVpRdvdMK2JRceyiFmeSq-FQkZbZg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Ee3qnxsVIjXkysNsrNeF"
+ boundary="=-DQjyhYpN6CLAu9oaDX5r"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,25 +29,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Ee3qnxsVIjXkysNsrNeF
+--=-DQjyhYpN6CLAu9oaDX5r
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-06-26 at 17:28 +0300, Shmulik Ladkani wrote:
-> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
->=20
-> Amend the comment to reflect the fact NAND_BBT_NO_OOB refers to the
-> location of the bad block table marker.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+On Thu, 2012-06-28 at 18:07 +0200, Richard Genoud wrote:
+> Agreed, it seems that 2% of the whole flash (at least for SLC device)
+> is more realistic.
 
-Pushed to l2-mtd.git, thanks!
+Agree, feel free to send a separate patch for this.
+
+> > Frankly, I do not understand this logic :-) And your patch looks wrong =
+-
+> > it touches the "auto-format" code which you may consider more like a
+> > "debugging" feature and should not rely on this in production.
+> Sorry, but I don't understand what you mean by the "auto-format" code.
+
+Yeah, right, this comment was incorrect, sorry.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Ee3qnxsVIjXkysNsrNeF
+--=-DQjyhYpN6CLAu9oaDX5r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP7IKeAAoJECmIfjd9wqK0TE8P/09sZZQKbeiAGk9vyQFuF/+d
-MILkg+270hOaa5lNxIu175pqK4yhKbQ4k4rZeK8EQ6G/89Kj0xs7tkkFjwCj7Lz/
-edWehREi5Hc01eQ/2TW833K8PIy3XXa0xkRLmnmaQx+S7hUnMb1Vv5/eeT8LltJ/
-SFZ5GFf70O4UNL+o8BC75od2ZLAkAgU3L6XKUEkuy3HV9Lq3iCoYJyLg/334eM78
-UJUJcEgrHGC18hJqoTwOD4Kyx07XeLuB2XTj1ZJzv8XuMMnoOy6P6ltxuXgn3pYR
-Mz/cFamaM2E6knH4xl48hKK+FxMFw4WFllIIjN5yR8r0hFIwFC1R4Q5lDJjyV1Gk
-yVA0ytwBfmDpfWur/o74uLPRkYGYaR4iltIV17Ytypu8ViWDBQzh/c7pZZYJwbqo
-jDscy+tH74DcXkxxasuAJzOyk/1hWuQW9+g+1ev+lQtUx24RNwSL5RTRJx5iF6Tl
-dPeaATul6OmJE6pPV37M5ONbpz8BjZSSdkGxdW6nb2XBWZq1Yb+gwKAzuhknx8iN
-Bgl+zrI8FChDW/boS1sh/p8pP2yPuCRfzYgGW6lbYBeBldZffWHBlS9UsfMtj9Ox
-oo3TeB7uYj0aW8ZgLW5jW1roedbvi235Kwj4feGnU+4WsP5sn7uXbV8bObeo1sZm
-NY97MzIIm7Lo/fexArWl
-=rIwV
+iQIcBAABAgAGBQJP7ITFAAoJECmIfjd9wqK0O74QAMKiMT5YSAQeoZKrwzPWbr67
+nyoCK41vCeKlR3/hIOjPJXVNBr3Gj50GXLf4xayOuiVf0R2FvSFJEvs3AWGGr2QV
+l1zqxfBlsIyayGlPQHqGMmvzP2HQ8rYYu3Lp6N2rTP8zWqyPQc/nQkpoxTanG+p7
+rvjtCzVaM6gs3OfG02LoToRnu9GB6Pcil/dfm4BLvHyd26rqxCPmYQag8B+mrBy3
+8kVKUtQD1ic6Sh6K5hi9kkiz4OI/4MS1Vkv42yhD7SBKt7NsNDCi4zfqkRkZ8M6z
++lSr0QOZK6j1+Z/A9qSRNo2RN7FkxvmlczXrnOUwkqj/5hVH5sWdvv6/GXiErrPG
+B+0JAcwHz5w9s9x9sogvdGwOueOx/d/x+KXKVXw7CpwQ0EyuTYCKf+CavyCbytLv
+R8RUMdbBXc1m5cbiLs1UNSnLndkM8n7nmMGjqAg2dHFK2FdKggGU8qpvzyMd+sMI
+CHyrvy36QLZX/7cLMTfl/xRi2ePdpabhSielnnucOzdPP0VayvvMOXCRar57RiH6
+9CuvcFer2ORtypUWvd6seZPZ+QmDMOJsLl1glDPaF7CuqNRT6bYeqigbaTUtpYsG
+4dIreunC73LepLfR9n81hXjMWmZo1W0+/u3qrJWO6v+gIk/Q15SlZQf+ubK4Kgy8
+Pn/quQrJuarHS4f8SlIS
+=yYGH
 -----END PGP SIGNATURE-----
 
---=-Ee3qnxsVIjXkysNsrNeF--
+--=-DQjyhYpN6CLAu9oaDX5r--
