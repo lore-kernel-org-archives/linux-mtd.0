@@ -1,23 +1,21 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkHFv-0006yo-Im
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 16:07:44 +0000
-Received: by bkwj4 with SMTP id j4so2333566bkw.36
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 09:07:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1340894351.3070.121.camel@sauron.fi.intel.com>
-References: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
- <1340894351.3070.121.camel@sauron.fi.intel.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Thu, 28 Jun 2012 18:07:24 +0200
-Message-ID: <CACQ1gAjLdR-ZRUS6gxMrJzVpRdvdMK2JRceyiFmeSq-FQkZbZg@mail.gmail.com>
-Subject: Re: [PATCH] UBI: add minimal amount of reserved erase blocks in
- Kconfig
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkHIH-0007EZ-Je
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 16:10:10 +0000
+Message-ID: <1340899998.3070.127.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: Better comment NAND_BBT_NO_OOB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Thu, 28 Jun 2012 19:13:18 +0300
+In-Reply-To: <20120626172828.4a458196@pixies.home.jungo.com>
+References: <20120626172828.4a458196@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Ee3qnxsVIjXkysNsrNeF"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,100 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/6/28 Artem Bityutskiy <dedekind1@gmail.com>:
-> Hi, first of all, this 1% is does is not good enough for modern devices.
-> It is just a default I picked out of the thin air.
-Hi !
-Agreed, it seems that 2% of the whole flash (at least for SLC device)
-is more realistic.
->
-> What we really need is to make it possible to specify beb_rsvd_level at
-> attach time. I believe it is not difficult to implement:
->
-> 1. Add a parameter to ubiattach
-> 2. Extend the attach ioctl and add beb_rsvd_level there. We have 12
-> unused bytes in 'struct ubi_attach_req'.
-> 3. Extend the "mtd" module parameter and allow to specify beb_rsvd_level
-> there as well.
->
-> That's it - you can specify the needed numbers for your flash.
->
-> =C2=A0to make this per-MTD device
-All right, with this approach, we can have different flash devices
-with different MBB. Got it.
 
-> On Mon, 2012-06-25 at 17:08 +0200, Richard Genoud wrote:
->> The problem with this behaviour is that NAND flash manufacturers give a
->> minimum number of valid block (NVB) during the endurance life of the
->> device.
->> E.G.:
->> Parameter =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Symbol =C2=A0 =C2=A0=
-Min =C2=A0 =C2=A0Max =C2=A0 =C2=A0Unit =C2=A0 =C2=A0 =C2=A0Notes
->> --------------------------------------------------------------
->> Valid block number =C2=A0 =C2=A0 NVB =C2=A0 =C2=A0 1004 =C2=A0 =C2=A0102=
-4 =C2=A0 Blocks =C2=A0 =C2=A0 1
->> Note:
->> 1. Invalid blocks are block that contain one or more bad bits beyond
->> ECC. The device may contain bad blocks upon shipment. Additional bad
->> blocks may develop over time; however, the total number of available
->> blocks will not drop below NVB during the endurance life of the device.
->
-> OK, in this discussion is is easier to talk about maximum bad blocks
-> (MBB) rather than minimum good blocks, though. So basically, the vendor
-> guarantees that there will be at most MBB bad blocks.
->
->> From this number we can deduce the maximum number of bad PEB that a
->> device will contain during its endurance life :
->> A 128MiB NAND flash (1024 PEB) will not have less than 20 bad blocks
->> during the flash endurance life.
->
-> OK.
->
->> BUT, the manufacturer doesn't tell where those bad block will appear. He
->> doesn't say either if they will be equally disposed on the whole device
->> (and I'm pretty sure they won't).
->
-> Right, then if you implement what I suggested, you'll pass
-> "beb_rsvd_level=3D20" when attaching both partitions.
->
->> So, according to the datasheets, we should reserve the maximum number of
->> bad PEB for each UBI volume.
->> (Worst case scenario: 20 bad blocks appears on the smallest UBI volume.)
->
-> Err, not smallest UBI volume, but smallest MTD partition. We reserve
-> PEBs per-MTD device.
-Yes, you're right (I usually use only one ubi volume per mdt device,
-that's why I mixed up things)
+--=-Ee3qnxsVIjXkysNsrNeF
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->> =3D> The actual parameter MTD_UBI_BEB_RESERVE is not enough to cover thi=
-s
->> scenario. We need to set a minimal number of reserved PEB for a UBI
->> volume.
->
-> Frankly, I do not understand this logic :-) And your patch looks wrong -
-> it touches the "auto-format" code which you may consider more like a
-> "debugging" feature and should not rely on this in production.
-Sorry, but I don't understand what you mean by the "auto-format" code.
-The other thing I don't understand is that the patch touches only the
-ubi_calculate_reserved() function which is the only place where
-beb_rsvd_level is set.
-And with your approach, as far as we'll get beb_rsvd_level value from
-ioctl, I'll have also to touch this function...
-(or maybe what's wrong with this patch is that beb_rsvd_level can be
-less that 2, in this case I should have set a minimum range of 2 in
-Kconfig)
+On Tue, 2012-06-26 at 17:28 +0300, Shmulik Ladkani wrote:
+> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+>=20
+> Amend the comment to reflect the fact NAND_BBT_NO_OOB refers to the
+> location of the bad block table marker.
+>=20
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Thanks for your comments.
-
-Best regards,
-Richard.
-
-> --
-> Best Regards,
-> Artem Bityutskiy
-
-
+Pushed to l2-mtd.git, thanks!
 
 --=20
-for me, ck means con kolivas and not calvin klein... does it mean I'm a gee=
-k ?
+Best Regards,
+Artem Bityutskiy
+
+--=-Ee3qnxsVIjXkysNsrNeF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7IKeAAoJECmIfjd9wqK0TE8P/09sZZQKbeiAGk9vyQFuF/+d
+MILkg+270hOaa5lNxIu175pqK4yhKbQ4k4rZeK8EQ6G/89Kj0xs7tkkFjwCj7Lz/
+edWehREi5Hc01eQ/2TW833K8PIy3XXa0xkRLmnmaQx+S7hUnMb1Vv5/eeT8LltJ/
+SFZ5GFf70O4UNL+o8BC75od2ZLAkAgU3L6XKUEkuy3HV9Lq3iCoYJyLg/334eM78
+UJUJcEgrHGC18hJqoTwOD4Kyx07XeLuB2XTj1ZJzv8XuMMnoOy6P6ltxuXgn3pYR
+Mz/cFamaM2E6knH4xl48hKK+FxMFw4WFllIIjN5yR8r0hFIwFC1R4Q5lDJjyV1Gk
+yVA0ytwBfmDpfWur/o74uLPRkYGYaR4iltIV17Ytypu8ViWDBQzh/c7pZZYJwbqo
+jDscy+tH74DcXkxxasuAJzOyk/1hWuQW9+g+1ev+lQtUx24RNwSL5RTRJx5iF6Tl
+dPeaATul6OmJE6pPV37M5ONbpz8BjZSSdkGxdW6nb2XBWZq1Yb+gwKAzuhknx8iN
+Bgl+zrI8FChDW/boS1sh/p8pP2yPuCRfzYgGW6lbYBeBldZffWHBlS9UsfMtj9Ox
+oo3TeB7uYj0aW8ZgLW5jW1roedbvi235Kwj4feGnU+4WsP5sn7uXbV8bObeo1sZm
+NY97MzIIm7Lo/fexArWl
+=rIwV
+-----END PGP SIGNATURE-----
+
+--=-Ee3qnxsVIjXkysNsrNeF--
