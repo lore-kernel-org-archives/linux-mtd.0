@@ -1,13 +1,19 @@
-From: Huang Shijie <shijie8@gmail.com>
-To: shawn.guo@linaro.org
-Subject: [PATCH 3/3] mtd: gpmi: change the code for clocks
-Date: Thu, 28 Jun 2012 23:52:05 -0400
-Message-Id: <1340941925-14591-3-git-send-email-shijie8@gmail.com>
-In-Reply-To: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
-References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkH35-0003tk-NC
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 15:54:28 +0000
+Message-ID: <1340899111.3070.126.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI/UBIFS changes for 3.5-rc5
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 28 Jun 2012 18:58:31 +0300
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-PZKDkVvda3jWlDauxaQc"
+Mime-Version: 1.0
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,237 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
 
-The gpmi nand driver may needs several clocks(MX6Q needs five clocks).
+--=-PZKDkVvda3jWlDauxaQc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In the old clock framework, all these clocks are chained together,
-all you need is to manipulate the first clock.
+Hi Linus,
 
-But the kernel uses the common clk framework now, which forces us to
-get the clocks one by one. When we use them, we have to enable them
-one by one too.
+The following changes since commit 485802a6c524e62b5924849dd727ddbb1497cc71=
+:
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   43 ++++++++++++++++++----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   63 +++++++++++++++++++++++++++-----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    3 +-
- 3 files changed, 91 insertions(+), 18 deletions(-)
+  Linux 3.5-rc3 (2012-06-16 17:25:17 -0700)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index a1f4332..c3778c0 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -124,12 +124,40 @@ error:
- 	return -ETIMEDOUT;
- }
- 
-+static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
-+{
-+	struct clk *clk;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < GPMI_CLK_MAX; i++) {
-+		clk = this->resources.clock[i];
-+		if (!clk)
-+			break;
-+
-+		if (v) {
-+			ret = clk_prepare_enable(clk);
-+			if (ret)
-+				goto err_clk;
-+		} else {
-+			clk_disable_unprepare(clk);
-+		}
-+	}
-+	return 0;
-+
-+err_clk:
-+	return ret;
-+}
-+
-+#define gpmi_enable_clk(x) __gpmi_enable_clk(x, true)
-+#define gpmi_disable_clk(x) __gpmi_enable_clk(x, false)
-+
- int gpmi_init(struct gpmi_nand_data *this)
- {
- 	struct resources *r = &this->resources;
- 	int ret;
- 
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret)
- 		goto err_out;
- 	ret = gpmi_reset_block(r->gpmi_regs, false);
-@@ -149,7 +177,7 @@ int gpmi_init(struct gpmi_nand_data *this)
- 	/* Select BCH ECC. */
- 	writel(BM_GPMI_CTRL1_BCH_MODE, r->gpmi_regs + HW_GPMI_CTRL1_SET);
- 
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- 	return 0;
- err_out:
- 	return ret;
-@@ -205,7 +233,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	ecc_strength  = bch_geo->ecc_strength >> 1;
- 	page_size     = bch_geo->page_size;
- 
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret)
- 		goto err_out;
- 
-@@ -240,7 +268,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
- 				r->bch_regs + HW_BCH_CTRL_SET);
- 
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- 	return 0;
- err_out:
- 	return ret;
-@@ -716,7 +744,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 	int ret;
- 
- 	/* Enable the clock. */
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret) {
- 		pr_err("We failed in enable the clk\n");
- 		goto err_out;
-@@ -727,7 +755,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 		gpmi_regs + HW_GPMI_TIMING1);
- 
- 	/* Get the timing information we need. */
--	nfc->clock_frequency_in_hz = clk_get_rate(r->clock);
-+	nfc->clock_frequency_in_hz = clk_get_rate(r->clock[0]);
- 	clock_period_in_ns = 1000000000 / nfc->clock_frequency_in_hz;
- 
- 	gpmi_nfc_compute_hardware_timing(this, &hw);
-@@ -784,8 +812,7 @@ err_out:
- 
- void gpmi_end(struct gpmi_nand_data *this)
- {
--	struct resources *r = &this->resources;
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- }
- 
- /* Clears a BCH interrupt. */
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 941cfb7..edda3b1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -464,9 +464,59 @@ acquire_err:
- 	return -EINVAL;
- }
- 
-+static void gpmi_put_clks(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	struct clk *clk;
-+	int i;
-+
-+	for (i = 0; i < GPMI_CLK_MAX; i++) {
-+		clk = r->clock[i];
-+		if (clk) {
-+			clk_put(clk);
-+			r->clock[i] = NULL;
-+		}
-+	}
-+}
-+
-+static char *extra_clks_for_mx6q[] = {
-+	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
-+};
-+
-+static int __devinit gpmi_get_clks(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	char **extra_clks = NULL;
-+	struct clk *clk;
-+	int i;
-+
-+	r->clock[0] = clk_get(&this->pdev->dev, NULL);
-+	if (IS_ERR(r->clock[0]))
-+		goto err_clock;
-+
-+	/* Get extra clocks */
-+	if (GPMI_IS_MX6Q(this))
-+		extra_clks = extra_clks_for_mx6q;
-+	if (!extra_clks)
-+		return 0;
-+
-+	for (i = 1; i < GPMI_CLK_MAX; i++) {
-+		clk = clk_get(NULL, extra_clks[i - 1]);
-+		if (IS_ERR(clk))
-+			goto err_clock;
-+
-+		r->clock[i] = clk;
-+	}
-+	return 0;
-+
-+err_clock:
-+	pr_err("failed in finding the clocks.\n");
-+	gpmi_put_clks(this);
-+	return -ENOMEM;
-+}
-+
- static int __devinit acquire_resources(struct gpmi_nand_data *this)
- {
--	struct resources *res = &this->resources;
- 	struct pinctrl *pinctrl;
- 	int ret;
- 
-@@ -492,12 +542,9 @@ static int __devinit acquire_resources(struct gpmi_nand_data *this)
- 		goto exit_pin;
- 	}
- 
--	res->clock = clk_get(&this->pdev->dev, NULL);
--	if (IS_ERR(res->clock)) {
--		pr_err("can not get the clock\n");
--		ret = -ENOENT;
-+	ret = gpmi_get_clks(this);
-+	if (ret)
- 		goto exit_clock;
--	}
- 	return 0;
- 
- exit_clock:
-@@ -512,9 +559,7 @@ exit_regs:
- 
- static void release_resources(struct gpmi_nand_data *this)
- {
--	struct resources *r = &this->resources;
--
--	clk_put(r->clock);
-+	gpmi_put_clks(this);
- 	release_register_block(this);
- 	release_bch_irq(this);
- 	release_dma_channels(this);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index ce5daa1..1547a60 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -22,6 +22,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/fsl/mxs-dma.h>
- 
-+#define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
- struct resources {
- 	void          *gpmi_regs;
- 	void          *bch_regs;
-@@ -29,7 +30,7 @@ struct resources {
- 	unsigned int  bch_high_interrupt;
- 	unsigned int  dma_low_channel;
- 	unsigned int  dma_high_channel;
--	struct clk    *clock;
-+	struct clk    *clock[GPMI_CLK_MAX];
- };
- 
- /**
--- 
-1.7.4.4
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.5-rc5
+
+for you to fetch changes up to 903e0e4ef9120c3d7693599acb95e76e8263fb35:
+
+  UBI: correct usage of IS_ENABLED() (2012-06-27 14:22:15 +0300)
+
+----------------------------------------------------------------
+Fix the debugfs regression - we never enable it because incorrect
+'IS_ENABLED()' macro usage: should be 'IS_ENABLED(CONFIG_DEBUG_FS)',
+but we had 'IS_ENABLED(DEBUG_FS)'. Also fix incorrect assertion.
+
+----------------------------------------------------------------
+Brian Norris (2):
+      UBIFS: correct usage of IS_ENABLED()
+      UBI: correct usage of IS_ENABLED()
+
+Dan Carpenter (1):
+      UBIFS: fix assertion
+
+ drivers/mtd/ubi/debug.c |    8 ++++----
+ fs/ubifs/debug.c        |    8 ++++----
+ fs/ubifs/find.c         |    4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-PZKDkVvda3jWlDauxaQc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7H8nAAoJECmIfjd9wqK0RM8P/iWPdp+fCC0hF+dz1wCTNGq5
+5gs0j7g1YtmDEKbs8yo0HYHISCca73MpE2tjWUIcWlFaXm+iXUzhC7bIaaoctVPp
+xyuiKgsh+ux0BLpHz+TcMBeq43KGsooKcb0suBPIOJ6DBEmGeQ/nAfxVQNc9oII6
+1eW9uwI/cIq7gXmMQGbcuZ7nKY7lLOf24BEK6dNVhIVWz6VVDaVl27O1vTYDsC8+
+5VtX8eGJCC2KYonH6NZoq51IgQbwf1vZCS7n7gWbonz7HN0xDygmOwsqtFpQboQJ
+oxOWaPMOEGa8yvXX/2WUboSt9WhJ63K8QBfhhaWUVGSevLfEfjL9StH6UWqUt6jC
+ZfEKdKEPmKxL72r1rqf+GxDDV70YbxdwZ503HutkHRVEs7eS/g1QVK5HvmtiCduk
+rClhWAmC42XSW4El4vfW20ccVHwJctWrVI3MP1DtA5t3WixjTCsvUoqL1uGwGVX0
+Ga8mtZ01LbGk6yApgmk2QAQAtCAplbhj73DpYETSwvz5VHX6hwzhA6ogM1NdbaML
+WDCcoznFEggbYeM3+bUrurxyMe2MTRwtlL1n2sQmlGToVxYGQT/mVc1t3J3yobRy
+T/SDmKCLg7GcgF1nOLu8FHZQ/UtrhxQB3apdt8qbpHaE35KSCauxJbkrqGzHz+V0
+pE8PDW+fdTrSYkCEh0VR
+=zOS9
+-----END PGP SIGNATURE-----
+
+--=-PZKDkVvda3jWlDauxaQc--
