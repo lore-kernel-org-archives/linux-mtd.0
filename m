@@ -1,20 +1,16 @@
-Message-ID: <1340898021.3070.123.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v12 0/2] MTD: at91: Add PMECC support for at91 nand
- flash driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Thu, 28 Jun 2012 18:40:21 +0300
-In-Reply-To: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
-References: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-c3RomT6FRXGvt0lLt7nt"
-Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkGwP-0000cI-19
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 15:47:33 +0000
+Received: by eekd17 with SMTP id d17so886005eek.36
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 08:47:30 -0700 (PDT)
+Sender: Castet Matthieu <matthieu.castet@gmail.com>
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] nand_btt : use nand chip->block_bad
+Date: Thu, 28 Jun 2012 17:47:22 +0200
+Message-Id: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
+Cc: Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +20,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This allow to have only one code for detecting bad block.
+Also block_bad support badblockbits configuration, for case
+where there are bitflip in bad block marker.
+---
+ drivers/mtd/nand/nand_bbt.c |  102 +------------------------------------------
+ 1 file changed, 2 insertions(+), 100 deletions(-)
 
---=-c3RomT6FRXGvt0lLt7nt
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2012-06-28 at 16:21 +0800, Josh Wu wrote:
-> Those patches is based on the l2-mtd.git three.
->=20
-> Since there are two patches of v11 already pushed, so this version v12 on=
-ly includes the left two patches.
-> which includes the modification according to Richard Genoud's review sugg=
-estion.
->=20
-> Changes since v11,
-> 	add documentation for atmel nand reg parameter and one example for PMECC=
- support.
-> 	fix the bug: no error reported when fail to get resoures of PMECC ERRLOC=
- or ROM.
-> 	fix the bug: no correction when ecc data has bit flipped.
-> 	add clearer debug information for data correction.
->=20
-> Josh Wu (2):
->   MTD: at91: add dt parameters for Atmel PMECC
->   MTD: at91: atmel_nand: Update driver to support Programmable Multibit
->     ECC controller
->=20
->  .../devicetree/bindings/mtd/atmel-nand.txt         |   40 +-
->  drivers/mtd/nand/atmel_nand.c                      |  801 ++++++++++++++=
-+++++-
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  114 ++-
->  3 files changed, 951 insertions(+), 4 deletions(-)
-
-Aiaiai is not 100% happy, could you take a look?
-
-dedekind@blue:~/git/maintaining$ ../aiaiai/aiaiai-concat-mboxes ~/tmp/wu* |=
- ./verify ../l2-mtd/ atmel_nand
-Tested the patch(es) on top of the following commits:
-9328bb5 Quick fixes - applied by aiaiai
-ea3b6ef mtd: fix bogus inequation
-0960e57 mtd: move mtd_read_oob() definition out of mtd.h
-0560176 mtd: nand_bbt: refactor check_pattern_no_oob()
-
----------------------------------------------------------------------------=
------
-
-Successfully built configuration "arm-at91cap9_defconfig,arm,arm-unknown-li=
-nux-gnueabi-", results:
-
---- before_patching.log
-+++ after_patching.log
-@@ @@
-+drivers/mtd/nand/atmel_nand.c: In function 'pmecc_correct_data':
-+drivers/mtd/nand/atmel_nand.c:680:38: warning: variable 'ecc_size' set but=
- not used [-Wunused-but-set-variable]
-+drivers/mtd/nand/atmel_nand.c:480:32: error: bad constant expression [spar=
-se]
-+drivers/mtd/nand/atmel_nand.c:488:35: error: bad constant expression [spar=
-se]
-+drivers/mtd/nand/atmel_nand.c:633:32: error: bad constant expression [spar=
-se]
-+drivers/mtd/nand/atmel_nand.c:635:35: error: bad constant expression [spar=
-se]
-
----------------------------------------------------------------------------=
------
-
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-c3RomT6FRXGvt0lLt7nt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP7HrlAAoJECmIfjd9wqK0FH8P/A6J+38QMCQ9TQmUkPTtRtOw
-tdLo/I1F6bJedp1k9H4a2VSJOZ/5oGvC4blpZeBI90OXrq/veuhdYnEkeSOqhZX0
-Vbn2UvFHTpfD6yRJXglYBY/i2t/R3ptA0wVZfZyu+7Qe4tWPuIx+ISuteusEKZz8
-q/pVpoZaaunmIdBa6trkuRosJHJwPmsFBT4eFJUHCR4P6AHNeCp0FIRcMBzBxvWx
-WUIek//i4iRGspkwhDSVk/2jYWEsdvtACWXYaPCWY4N8EVYbFEaw631Fd0D991Z3
-vNW7/f+nbhNSvwf2Gc6TvW8t8jJRJxL1odDLO/5+tGPQxxExG6EcfO5Kj+dlMvEC
-ClTrSt/b2cyBg+sHy217wqjFc+gd4aZ8vZU96zC7+iMoVy5V9IfRyBFTUKzYB02p
-zsh5su8VPfGrwy7ztfdS/6xw9f5bZ0DNqMfuE0jxriv2SmXJ8xVSZ7XFzBNXbwbe
-TLGDRBZmSuZ1Aw4mQyawPFguXpQjMIApflX2GZHWotL8ink2zG2a8IMEX5wCzl7h
-HGfA4bBzVIsByo4vOG//oefz62wargx1qYNHozLv3XKHCgV+iZjXFyOCqKK6OmZb
-pSTkqBQAVVzmBdQD0PYYk+OxTg1pd6ZnfdN3rr9QbvzQdgsx/pCNGUPDyP5vhLny
-Qsh00Y/w2+OEkw/Qukf5
-=d4BX
------END PGP SIGNATURE-----
-
---=-c3RomT6FRXGvt0lLt7nt--
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 30d1319..3d4f6ef 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -123,28 +123,6 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
+ }
+ 
+ /**
+- * check_short_pattern - [GENERIC] check if a pattern is in the buffer
+- * @buf: the buffer to search
+- * @td:	search pattern descriptor
+- *
+- * Check for a pattern at the given place. Used to search bad block tables and
+- * good / bad block identifiers. Same as check_pattern, but no optional empty
+- * check.
+- */
+-static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
+-{
+-	int i;
+-	uint8_t *p = buf;
+-
+-	/* Compare the pattern */
+-	for (i = 0; i < td->len; i++) {
+-		if (p[td->offs + i] != td->pattern[i])
+-			return -1;
+-	}
+-	return 0;
+-}
+-
+-/**
+  * add_marker_len - compute the length of the marker in data area
+  * @td: BBT descriptor used for computation
+  *
+@@ -398,56 +376,6 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
+ 	return 1;
+ }
+ 
+-/* Scan a given block full */
+-static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+-			   loff_t offs, uint8_t *buf, size_t readlen,
+-			   int scanlen, int len)
+-{
+-	int ret, j;
+-
+-	ret = scan_read_raw_oob(mtd, buf, offs, readlen);
+-	/* Ignore ECC errors when checking for BBM */
+-	if (ret && !mtd_is_bitflip_or_eccerr(ret))
+-		return ret;
+-
+-	for (j = 0; j < len; j++, buf += scanlen) {
+-		if (check_pattern(buf, scanlen, mtd->writesize, bd))
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/* Scan a given block partially */
+-static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+-			   loff_t offs, uint8_t *buf, int len)
+-{
+-	struct mtd_oob_ops ops;
+-	int j, ret;
+-
+-	ops.ooblen = mtd->oobsize;
+-	ops.oobbuf = buf;
+-	ops.ooboffs = 0;
+-	ops.datbuf = NULL;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-
+-	for (j = 0; j < len; j++) {
+-		/*
+-		 * Read the full oob until read_oob is fixed to handle single
+-		 * byte reads for 16 bit buswidth.
+-		 */
+-		ret = mtd_read_oob(mtd, offs, &ops);
+-		/* Ignore ECC errors when checking for BBM */
+-		if (ret && !mtd_is_bitflip_or_eccerr(ret))
+-			return ret;
+-
+-		if (check_short_pattern(buf, bd))
+-			return 1;
+-
+-		offs += mtd->writesize;
+-	}
+-	return 0;
+-}
+-
+ /**
+  * create_bbt - [GENERIC] Create a bad block table by scanning the device
+  * @mtd: MTD device structure
+@@ -463,30 +391,12 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	struct nand_bbt_descr *bd, int chip)
+ {
+ 	struct nand_chip *this = mtd->priv;
+-	int i, numblocks, len, scanlen;
++	int i, numblocks;
+ 	int startblock;
+ 	loff_t from;
+-	size_t readlen;
+ 
+ 	pr_info("Scanning device for bad blocks\n");
+ 
+-	if (bd->options & NAND_BBT_SCANALLPAGES)
+-		len = 1 << (this->bbt_erase_shift - this->page_shift);
+-	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
+-		len = 2;
+-	else
+-		len = 1;
+-
+-	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
+-		/* We need only read few bytes from the OOB area */
+-		scanlen = 0;
+-		readlen = bd->len;
+-	} else {
+-		/* Full page content should be read */
+-		scanlen = mtd->writesize + mtd->oobsize;
+-		readlen = len * mtd->writesize;
+-	}
+-
+ 	if (chip == -1) {
+ 		/*
+ 		 * Note that numblocks is 2 * (real numblocks) here, see i+=2
+@@ -507,20 +417,12 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		from = (loff_t)startblock << (this->bbt_erase_shift - 1);
+ 	}
+ 
+-	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
+-		from += mtd->erasesize - (mtd->writesize * len);
+-
+ 	for (i = startblock; i < numblocks;) {
+ 		int ret;
+ 
+ 		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+ 
+-		if (bd->options & NAND_BBT_SCANALLPAGES)
+-			ret = scan_block_full(mtd, bd, from, buf, readlen,
+-					      scanlen, len);
+-		else
+-			ret = scan_block_fast(mtd, bd, from, buf, len);
+-
++		ret = this->block_bad(mtd, from, 1);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-- 
+1.7.10.4
